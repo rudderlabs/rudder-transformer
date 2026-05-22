@@ -39,6 +39,7 @@ const processRecordEventArray = async (
   } = context;
 
   const fieldsArray = await mapInBatches(records, (record) => record.message.fields);
+
   const metadata = await mapInBatches(records, (record) => record.metadata);
 
   const recordIdentifiers = populateIdentifiersForRecordEvent(
@@ -51,7 +52,8 @@ const processRecordEventArray = async (
   );
 
   const validMetadata: (typeof metadata)[0][] = [];
-  const userIdentifiersList: Record<string, unknown>[] = [];
+  // one inner array of identifiers per record/user — record boundaries are preserved
+  const userIdentifiersByRecord: Record<string, unknown>[][] = [];
   const invalidResponses: unknown[] = [];
 
   recordIdentifiers.forEach((result, i) => {
@@ -62,20 +64,28 @@ const processRecordEventArray = async (
       );
     } else {
       validMetadata.push(metadata[i]);
-      userIdentifiersList.push(...result.identifiers);
+      userIdentifiersByRecord.push(result.identifiers);
     }
   });
 
-  if (userIdentifiersList.length === 0) {
+  if (userIdentifiersByRecord.length === 0) {
     return { successResponse: null, invalidResponses };
   }
 
   const outputPayload = constructPayload(message, offlineDataJobsMapping)!;
 
-  const userIdentifierChunks = returnArrayOfSubarrays(userIdentifiersList, 20);
-  outputPayload.operations = await mapInBatches(userIdentifierChunks, (chunk) => ({
-    [operationType]: { userIdentifiers: chunk },
-  }));
+  // one operation per record so identifiers from different users are never mixed into the
+  // same UserData; a record exceeding Google's 20-identifier limit is split across operations
+  outputPayload.operations = await reduceInBatches(
+    userIdentifiersByRecord,
+    (operations: Record<string, unknown>[], recordIdentifierGroup: Record<string, unknown>[]) => {
+      returnArrayOfSubarrays(recordIdentifierGroup, 20).forEach((chunk) => {
+        operations.push({ [operationType]: { userIdentifiers: chunk } });
+      });
+      return operations;
+    },
+    [],
+  );
 
   const consentObj = populateConsentFromConfig(
     { userDataConsent, personalizationConsent },

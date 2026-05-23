@@ -483,9 +483,9 @@ describe('AudienceListStrategy', () => {
             expect(entry.error).toContain(`error ${status}`);
           },
         );
-        expect(caught?.response.map((e: { metadata: { jobId: number } }) => e.metadata.jobId)).toEqual([
-          1, 2, 3,
-        ]);
+        expect(
+          caught?.response.map((e: { metadata: { jobId: number } }) => e.metadata.jobId),
+        ).toEqual([1, 2, 3]);
       },
     );
 

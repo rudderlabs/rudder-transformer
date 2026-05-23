@@ -24,3 +24,17 @@ Iterable's error response shape for duplicate list name is not specified in the 
 ## Per-project rate limits not published
 
 Iterable does not publicly document per-project rate limits for list subscribe/unsubscribe endpoints. Framework-level 429 backoff is the default mitigation. If real traffic surfaces persistent 429 errors, investigate per-project limits with Iterable support.
+
+## Integration component tests cannot run in isolated worktrees
+
+`test/integrations/component.test.ts` requires the `isolated-vm` native binary (`.node` file) which is missing from the `out/` directory of the symlinked `node_modules`. This affects ALL destination integration tests when running inside a loom worktree.
+
+**Workaround:** Use focused unit tests via `npx jest --testPathPattern <dest> --forceExit --runInBand` — works in ~2-3s without the native binary.
+
+**Root fix (if needed):** Run `cd node_modules/isolated-vm && node-gyp rebuild` in the parent repo. Loom worktrees symlink node_modules from the parent; once rebuilt there, it is available in all worktrees.
+
+## Jest hangs on Prometheus handles
+
+Global Prometheus counters (e.g., `transformer_iterable_audience_invalid_field`, `transformer_output_batch_size`) keep open handles that prevent jest from exiting cleanly. Without `--forceExit`, tests may hang 30+ seconds after passing.
+
+**Mitigation:** Always run unit tests with `--forceExit --runInBand` flag in worktree sessions.

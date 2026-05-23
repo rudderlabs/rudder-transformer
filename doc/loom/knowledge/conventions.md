@@ -78,3 +78,28 @@ Import `processAxiosResponse` from `src/adapters/utils/networkUtils`
 - **Never** pass as a query string (Iterable enforces stricter rate limiting on query-string auth)
 - US datacenter: `https://api.iterable.com/api/`
 - EU datacenter: `https://api.eu.iterable.com/api/`
+
+## identifierMappings shape
+
+Audience destinations use `{ from: string; to: string }` for identifier mapping entries — NOT `{ iterableField, warehouseColumn }` or other shapes. `from` is the source warehouse column name; `to` is the destination field name (e.g., `'email'` or `'userId'`). This matches the `CustomMapping` convention in `customerio_audience` and `custom_audience`.
+
+## Identifier case-folding
+
+- **email**: always lowercase on ingress (via `normalize: (v) => v.toLowerCase()` in `IDENTIFIER_FIELD_CONFIG`) and on egress (subscriber object). Apply `email.toLowerCase()` when constructing the subscriber to send to Iterable.
+- **userId**: preserved exactly as provided — no case transformation.
+
+## Audience compliance metric tags
+
+When emitting metrics for GDPR-compliance events (e.g., `UserForgotten` violations), metric tags MUST include only `identifierType` (`'email'` or `'userId'`) — **NEVER the identifier value itself**.
+
+```typescript
+stats.counter('iterable_forgotten_user_violations', 1, {
+  destType: 'ITERABLE_AUDIENCE',
+  destinationId,
+  workspaceId,
+  identifierType: subscriber.email ? 'email' : 'userId',
+  // ✗ NEVER: identifierValue: subscriber.email  ← PII/GDPR-deleted data
+});
+```
+
+Reason: identifier values are subject to GDPR deletion — logging them in metrics would persist deleted user data.

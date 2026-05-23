@@ -284,6 +284,48 @@ describe('IterableAudienceIntegration batching', () => {
       channelUnsubscribe: false,
     });
   });
+
+  it('produces one subscribe + one unsubscribe batch from a hybrid 3+2 mixed-identifier batch', async () => {
+    // Hybrid project with email + userId mappings; 5 events mix email-only,
+    // userId-only and hybrid rows across INSERT and DELETE actions.
+    const destination = buildDestination({ projectType: 'hybrid' });
+    const hybridMappings: IdentifierMapping[] = [
+      { from: 'email_col', to: 'email' },
+      { from: 'uid_col', to: 'userId' },
+    ];
+    const connection = buildConnection(777, hybridMappings);
+
+    const inputs = [
+      // INSERTs: email-only, userId-only, hybrid-row (both columns present)
+      buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection),
+      buildInput(2, 'insert', { uid_col: 'u-2' }, destination, connection),
+      buildInput(3, 'insert', { email_col: 'c@d.com', uid_col: 'u-3' }, destination, connection),
+      // DELETEs: email-only, userId-only
+      buildInput(4, 'delete', { email_col: 'e@f.com' }, destination, connection),
+      buildInput(5, 'delete', { uid_col: 'u-5' }, destination, connection),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+    const successes = results.filter((r) => r.statusCode === 200);
+    expect(successes).toHaveLength(2);
+
+    const subscribe = successes.find((r) => getEndpoint(r).endsWith('/api/lists/subscribe'))!;
+    const unsubscribe = successes.find((r) => getEndpoint(r).endsWith('/api/lists/unsubscribe'))!;
+
+    // Hybrid prefers userId when both are present (row 3 → userId).
+    expect(getJsonBody(subscribe)).toEqual({
+      listId: 777,
+      subscribers: [{ email: 'a@b.com' }, { userId: 'u-2' }, { userId: 'u-3' }],
+    });
+    expect(subscribe.metadata.map((m) => m.jobId)).toEqual([1, 2, 3]);
+
+    expect(getJsonBody(unsubscribe)).toEqual({
+      listId: 777,
+      subscribers: [{ email: 'e@f.com' }, { userId: 'u-5' }],
+      channelUnsubscribe: false,
+    });
+    expect(unsubscribe.metadata.map((m) => m.jobId)).toEqual([4, 5]);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -379,6 +421,22 @@ describe('IterableAudienceIntegration datacenter + auth', () => {
     const results = await processBatchedDestination(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getEndpoint(success)).toBe('https://api.eu.iterable.com/api/lists/subscribe');
+  });
+
+  it('lowercases emails end-to-end on the outgoing batch body', async () => {
+    const destination = buildDestination({ projectType: 'email-based' });
+    const connection = buildConnection(123, emailMappings);
+    const inputs = [
+      buildInput(1, 'insert', { email_col: '  Alice@EXAMPLE.com  ' }, destination, connection),
+      buildInput(2, 'insert', { email_col: 'BOB@example.COM' }, destination, connection),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+    const success = results.find((r) => r.statusCode === 200)!;
+    expect(getJsonBody(success)).toEqual({
+      listId: 123,
+      subscribers: [{ email: 'alice@example.com' }, { email: 'bob@example.com' }],
+    });
   });
 
   it('sets Api-Key header from destination config', async () => {

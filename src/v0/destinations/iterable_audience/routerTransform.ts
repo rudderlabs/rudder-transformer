@@ -1,4 +1,4 @@
-import { z, ZodType } from 'zod';
+import type { ZodType } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
@@ -8,7 +8,6 @@ import {
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
-import { EVENT_TYPES } from '../../util/recordUtils';
 import { processAudienceRecord } from '../../util/audienceUtils';
 import {
   ACTION_RECORD_MAP,
@@ -25,10 +24,11 @@ import {
   selectIdentifierForRow,
   validateProjectTypeMappings,
 } from './utils';
-import type {
-  IterableAccountConfig,
-  IterableAudiencePayload,
-  IterableConnectionConfig,
+import {
+  IterableAudienceRouterRequestSchema,
+  type IterableAccountConfig,
+  type IterableAudiencePayload,
+  type IterableConnectionConfig,
 } from './types';
 
 class IterableAudienceIntegration extends BatchDestination<
@@ -142,17 +142,7 @@ class IterableAudienceIntegration extends BatchDestination<
   }
 
   getInputSchema(): ZodType {
-    return z
-      .object({
-        message: z
-          .object({
-            type: z.literal('record'),
-            action: z.enum([EVENT_TYPES.INSERT, EVENT_TYPES.UPDATE, EVENT_TYPES.DELETE]),
-            identifiers: z.record(z.unknown()).optional(),
-          })
-          .passthrough(),
-      })
-      .passthrough();
+    return IterableAudienceRouterRequestSchema;
   }
 }
 

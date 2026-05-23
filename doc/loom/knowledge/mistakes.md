@@ -76,3 +76,53 @@ if (forgottenLookup.has(identifier)) {
 ```
 
 **Fix:** Build a separate `forgottenLookup` Set from `response.failedUpdates.forgottenEmails` and `forgottenUserIds`, then check it first.
+
+## Test runner glob mismatch (test:js vs npm test for TypeScript)
+
+**What happened:** Signal acceptance criterion used `npm run test:js -- --testPathPattern iterable_audience` which exits 1 with "No tests found" for any TypeScript destination.
+
+**Why:** `jest.default.config.js` (used by `test:js`) only globs `**/*.test.[j]s` — no `.ts` extension. `iterable_audience` tests are TypeScript. The correct command is `npm test` (uses `jest.config.js` which matches both `.ts` and `.js`).
+
+**Prevention:** Before adding an acceptance criterion that runs tests, verify the test runner's `testMatch` or `testPathPattern` glob covers the file extensions of the destination's tests. `test:js` → JS only; `npm test` → both.
+
+**Fix:** Use `npm test -- --testPathPattern="iterable_audience" --no-coverage --forceExit --runInBand` for TypeScript destination unit tests.
+
+## identifierMappings field naming — LLD vs codebase convention
+
+**What happened:** The LLD/spec used `{ iterableField, warehouseColumn }` for identifierMappings entries. The codebase convention (from `customerio_audience`, `custom_audience`) is `{ from: warehouseColumn, to: destinationField }`.
+
+**Why:** The spec was written independently of the codebase; the canonical shape is the `CustomMapping` convention used across audience destinations.
+
+**Prevention:** When the LLD specifies a field mapping shape, check adjacent audience destinations first (`customerio_audience/types.ts`, `custom_audience/types.ts`). If they use `{ from, to }`, prefer that and note the conflict.
+
+**Fix:** Use `{ from: string; to: 'email' | 'userId' }` — `from` is the source warehouse column, `to` is the Iterable field name.
+
+## Relative import path depth wrong in spec
+
+**What happened:** Spec gave relative paths with incorrect `../` depth for strategy files under `v1/destinations/iterable_audience/strategies/`. A file 4 levels deep below `src/` needs 4 `../` hops to reach `src/`, not 3.
+
+**Why:** Counting relative path hops is error-prone when directory nesting was not explicitly verified.
+
+**Prevention:** Count directory components from the file's location to the target before trusting any relative path from a spec. Formula: `levels_deep - 1` = number of `../` hops needed from the file to `src/`.
+
+**Fix:** Verify import paths compile (`npx tsc --noEmit`) before committing.
+
+## eslint no-continue blocks continue statements
+
+**What happened:** Agent wrote `for` loop body with `continue` to skip iterations. eslint rule `no-continue` fails the lint check.
+
+**Why:** The project's eslint config prohibits `continue` statements.
+
+**Prevention:** Invert the condition. Replace `if (cond) continue; doX();` with `if (\!cond) { doX(); }`.
+
+**Fix:** Refactor any `continue`-based loop body to use inverted-if or early-return pattern.
+
+## prettier reformats knowledge files during lint
+
+**What happened:** `npm run lint` (which calls `prettier --write .`) scanned `doc/loom/knowledge/*.md` and reformatted them — adding blank lines before code fences, escaping underscores in backtick blocks.
+
+**Why:** Knowledge files are not in `.prettierignore`.
+
+**Prevention:** Before committing after running lint, run `git diff doc/loom/knowledge/` to check for spurious prettier changes. If found, revert: `git checkout -- doc/loom/knowledge/`
+
+**Fix (permanent):** Add `doc/loom/knowledge/` to `.prettierignore`.

@@ -201,3 +201,67 @@ const result = await processBatchedDestination(inputs, Integration, {});
 ```
 
 This is the canonical way to exercise the BatchDestination in unit tests.
+
+## BatchDestination audience pattern (end-to-end)
+
+Complete pattern for adding a new audience destination using the BatchDestination framework:
+
+**1. Per-endpoint grouping (no internalGroupKey needed)**
+
+Subscribe and unsubscribe land on different endpoints → the BatchDestination framework's composite key `(endpoint, method, headers, params)` already creates separate groups. Do NOT set `internalGroupKey` — only needed when multiple actions share the same endpoint (e.g., `custom_audience`).
+
+**2. Per-row identifier normalization via processAudienceRecord**
+
+```typescript
+// Always HashingType.NONE for plain identifiers; config.isHashRequired must be present
+const processed = processAudienceRecord(remapped, {
+  fieldConfigs: IDENTIFIER_FIELD_CONFIG,
+  destination: {
+    workspaceId: metadata.workspaceId,
+    id: destination.ID,
+    type: DESTINATION_TYPE,
+    config: { isHashRequired: false },  // required by destructure at audienceUtils.ts:48-56
+  },
+});
+
+if (Object.keys(processed).length === 0) {
+  throw new InstrumentationError('All identifier values are empty after normalization');
+}
+```
+
+`processAudienceRecord` applies field-level normalization (e.g., email → lowercase), validation, and optional hashing. Returns empty object when all identifiers are null/empty/invalid — throw `InstrumentationError` immediately.
+
+**3. Per-endpoint ChunkBatchStrategy (fresh instance per call)**
+
+```typescript
+getBatchStrategy(endpoint: string): BatchStrategy<IterableAudiencePayload> {
+  const { listId } = this.connection\!.config.destination;
+  const isSubscribe = endpoint.endsWith('/api/lists/subscribe');
+  return new ChunkBatchStrategy<IterableAudiencePayload>({
+    maxItems: MAX_BATCH_SIZE,
+    wrapBody: (bodies) => isSubscribe
+      ? buildSubscribeBody(listId, bodies.map(b => b.subscriber))
+      : buildUnsubscribeBody(listId, bodies.map(b => b.subscriber)),
+  });
+}
+```
+
+The endpoint string acts as both the group discriminator AND the runtime branch signal for wrapBody. Fresh instance per call captures closure state.
+
+**4. Email case-folding**
+
+`processAudienceRecord` with `normalize: (v) => v.toLowerCase()` lowercases email on input. The subscriber sent to Iterable must also be lowercase — apply `email.toLowerCase()` when constructing the subscriber object.
+
+## v1 strategy reuse from existing iterable destination
+
+`iterable_audience` v1 reuses the following from `src/v1/destinations/iterable/` with zero changes to the source:
+
+| Symbol | Source file | How reused |
+|--------|-------------|-----------|
+| `BaseStrategy` | `strategies/base.ts` | `AudienceListStrategy extends BaseStrategy` |
+| `createBatchErrorChecker` | `utils.ts` | Pre-builds O(1) lookup Maps over all 12 failedUpdates paths |
+| `FailedUpdates` | `types.ts` | Type for `response.failedUpdates` in handleSuccess |
+| `GeneralApiResponse` | `types.ts` | Inner response type |
+| `IterableBulkApiResponse` | `types.ts` | Full response shape from processAxiosResponse |
+
+The `AudienceListStrategy` file re-exports `IterableBulkApiResponse` from `iterable/types.ts` rather than duplicating the type. The pattern is: add a local `types.ts` in `iterable_audience/` that re-exports types and narrows only what differs (e.g., a narrower subscriber shape).

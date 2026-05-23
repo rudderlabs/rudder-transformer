@@ -5,8 +5,8 @@ import type { IterableBulkApiResponse } from '../iterable/types';
 // works against the same response type the existing iterable utils produce.
 // FailedUpdates is intentionally NOT re-exported because it is not exported
 // from the iterable destination's types module — its shape is reachable via
-// `GeneralApiResponse['failedUpdates']` if a consumer needs it.
-export type { IterableBulkApiResponse, GeneralApiResponse } from '../iterable/types';
+// `IterableBulkApiResponse['response']['failedUpdates']` if a consumer needs it.
+export type { IterableBulkApiResponse } from '../iterable/types';
 
 // Per-subscriber payload shape emitted by the v0 transform layer. Each subscriber
 // has EXACTLY ONE identifier (email XOR userId) — enforced at transform time.
@@ -15,7 +15,9 @@ export type IterableSubscriber = { email: string } | { userId: string };
 export type IterableAudienceRequestBody = {
   listId: string | number;
   subscribers: IterableSubscriber[];
-  // Only present on /api/lists/unsubscribe responses.
+  // Only present on outgoing /api/lists/unsubscribe REQUESTS — set to
+  // `false` so Iterable removes the user from this list without unsubscribing
+  // them from every channel. Absent on /api/lists/subscribe requests.
   channelUnsubscribe?: boolean;
 };
 

@@ -20,10 +20,6 @@ export const IterableAccountConfigSchema = z
 
 export type IterableAccountConfig = z.infer<typeof IterableAccountConfigSchema>;
 
-// Readability alias — the BatchDestination generic uses TConfig for the
-// destination's Config object.
-export type IterableDestConfig = IterableAccountConfig;
-
 // ---------------------------------------------------------------------------
 // Connection config (connection.config.destination)
 // ---------------------------------------------------------------------------
@@ -31,7 +27,7 @@ export type IterableDestConfig = IterableAccountConfig;
 // Identifier mapping uses the canonical `{ from, to }` shape:
 //   `from` — the source column (warehouse column / record identifier key)
 //   `to`   — the destination Iterable field (`email` or `userId`)
-export const IdentifierMappingSchema = z.object({
+const IdentifierMappingSchema = z.object({
   from: z.string().min(1),
   to: z.enum(['email', 'userId']),
 });
@@ -48,29 +44,15 @@ export const IterableConnectionConfigSchema = z
 export type IterableConnectionConfig = z.infer<typeof IterableConnectionConfigSchema>;
 
 // ---------------------------------------------------------------------------
-// Per-event record message
+// Router-transform request schema (consumed by `getInputSchema()`)
 // ---------------------------------------------------------------------------
 
-export const RecordMessageSchema = z
+const RecordMessageSchema = z
   .object({
     type: z.literal('record'),
     action: z.enum([EVENT_TYPES.INSERT, EVENT_TYPES.UPDATE, EVENT_TYPES.DELETE]),
     identifiers: z.record(z.unknown()).optional(),
     fields: z.record(z.unknown()).optional(),
-  })
-  .passthrough();
-
-export type RecordMessage = z.infer<typeof RecordMessageSchema>;
-
-// ---------------------------------------------------------------------------
-// Router-transform request schema (consumed by `getInputSchema()`)
-// ---------------------------------------------------------------------------
-
-export const MetadataSchema = z
-  .object({
-    workspaceId: z.string().optional(),
-    jobId: z.number().optional(),
-    secret: z.record(z.unknown()).optional(),
   })
   .passthrough();
 

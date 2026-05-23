@@ -139,6 +139,74 @@ describe('AudienceListStrategy', () => {
       expect(result.response[0].error).toContain('failedUpdates.conflictEmails');
     });
 
+    it('classifies subscribers in failedUpdates.conflictUserIds as 400', () => {
+      const subscribers = [{ userId: 'conflict_user' }];
+      const input = buildInput(
+        {
+          successCount: 0,
+          failCount: 1,
+          failedUpdates: { conflictUserIds: ['conflict_user'] },
+        },
+        subscribers,
+      );
+
+      const result = strategy.handleSuccess(input);
+
+      expect(result.response[0].statusCode).toBe(400);
+      expect(result.response[0].error).toContain('failedUpdates.conflictUserIds');
+    });
+
+    it('classifies subscribers in failedUpdates.invalidUserIds as 400', () => {
+      const subscribers = [{ userId: 'bad_user' }];
+      const input = buildInput(
+        {
+          successCount: 0,
+          failCount: 1,
+          failedUpdates: { invalidUserIds: ['bad_user'] },
+        },
+        subscribers,
+      );
+
+      const result = strategy.handleSuccess(input);
+
+      expect(result.response[0].statusCode).toBe(400);
+      expect(result.response[0].error).toContain('failedUpdates.invalidUserIds');
+    });
+
+    it('classifies subscribers in failedUpdates.invalidDataEmails as 400', () => {
+      const subscribers = [{ email: 'baddata@example.com' }];
+      const input = buildInput(
+        {
+          successCount: 0,
+          failCount: 1,
+          failedUpdates: { invalidDataEmails: ['baddata@example.com'] },
+        },
+        subscribers,
+      );
+
+      const result = strategy.handleSuccess(input);
+
+      expect(result.response[0].statusCode).toBe(400);
+      expect(result.response[0].error).toContain('failedUpdates.invalidDataEmails');
+    });
+
+    it('classifies subscribers in failedUpdates.invalidDataUserIds as 400', () => {
+      const subscribers = [{ userId: 'baddata_user' }];
+      const input = buildInput(
+        {
+          successCount: 0,
+          failCount: 1,
+          failedUpdates: { invalidDataUserIds: ['baddata_user'] },
+        },
+        subscribers,
+      );
+
+      const result = strategy.handleSuccess(input);
+
+      expect(result.response[0].statusCode).toBe(400);
+      expect(result.response[0].error).toContain('failedUpdates.invalidDataUserIds');
+    });
+
     it('classifies failedUpdates.notFoundEmails as 400 on subscribe', () => {
       const subscribers = [{ email: 'missing@example.com' }];
       const input = buildInput(
@@ -191,6 +259,24 @@ describe('AudienceListStrategy', () => {
 
       expect(result.response[0].statusCode).toBe(200);
       expect(result.response[0].error).toBe('success');
+    });
+
+    it('classifies failedUpdates.notFoundUserIds as 400 on subscribe', () => {
+      const subscribers = [{ userId: 'user_missing' }];
+      const input = buildInput(
+        {
+          successCount: 0,
+          failCount: 1,
+          failedUpdates: { notFoundUserIds: ['user_missing'] },
+        },
+        subscribers,
+        SUBSCRIBE_ENDPOINT,
+      );
+
+      const result = strategy.handleSuccess(input);
+
+      expect(result.response[0].statusCode).toBe(400);
+      expect(result.response[0].error).toContain('failedUpdates.notFoundUserIds');
     });
 
     it('returns 200 and emits metric for forgottenEmails on subscribe (no value tagged)', () => {
@@ -367,30 +453,41 @@ describe('AudienceListStrategy', () => {
       { name: '404', status: 404 },
       { name: '429', status: 429 },
       { name: '500', status: 500 },
-    ])('throws TransformerProxyError with no AuthErrorCategory on $name', ({ status }) => {
-      const mockInput: GenericProxyHandlerInput = {
-        destinationResponse: {
-          status,
-          response: { msg: `error ${status}` },
-        },
-        rudderJobMetadata: [createMetadata(1)],
-        destType: 'ITERABLE_AUDIENCE',
-        destinationRequest: {} as GenericProxyHandlerInput['destinationRequest'],
-      };
+    ])(
+      'throws TransformerProxyError fanned-out over every metadata with no AuthErrorCategory on $name',
+      ({ status }) => {
+        const mockInput: GenericProxyHandlerInput = {
+          destinationResponse: {
+            status,
+            response: { msg: `error ${status}` },
+          },
+          rudderJobMetadata: [createMetadata(1), createMetadata(2), createMetadata(3)],
+          destType: 'ITERABLE_AUDIENCE',
+          destinationRequest: {} as GenericProxyHandlerInput['destinationRequest'],
+        };
 
-      let caught: TransformerProxyError | undefined;
-      try {
-        strategy.handleError(mockInput);
-      } catch (err) {
-        caught = err as TransformerProxyError;
-      }
+        let caught: TransformerProxyError | undefined;
+        try {
+          strategy.handleError(mockInput);
+        } catch (err) {
+          caught = err as TransformerProxyError;
+        }
 
-      expect(caught).toBeInstanceOf(TransformerProxyError);
-      expect(caught?.status).toBe(status);
-      expect(caught?.authErrorCategory).toBe('');
-      expect(caught?.response[0].statusCode).toBe(status);
-      expect(caught?.response[0].error).toContain(`error ${status}`);
-    });
+        expect(caught).toBeInstanceOf(TransformerProxyError);
+        expect(caught?.status).toBe(status);
+        expect(caught?.authErrorCategory).toBe('');
+        expect(caught?.response).toHaveLength(3);
+        caught?.response.forEach(
+          (entry: { statusCode: number; error: string; metadata: { jobId: number } }) => {
+            expect(entry.statusCode).toBe(status);
+            expect(entry.error).toContain(`error ${status}`);
+          },
+        );
+        expect(caught?.response.map((e: { metadata: { jobId: number } }) => e.metadata.jobId)).toEqual([
+          1, 2, 3,
+        ]);
+      },
+    );
 
     it('uses msg field for the error message when present', () => {
       const mockInput: GenericProxyHandlerInput = {

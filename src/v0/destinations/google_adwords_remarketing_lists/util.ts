@@ -124,14 +124,15 @@ const responseBuilder = (
 };
 
 /**
- * This function helps creates an array with proper mapping for userIdentiFier.
- * Logics: Here we are creating an array with all the attributes provided in the add/remove array
- * inside listData.
+ * This function helps create the userIdentifiers grouped per user.
+ * Logics: Here we traverse every element in the add/remove array inside listData and build
+ * the identifiers for that single user. Each element of the input array maps to one inner
+ * array in the output, so identifiers from different users are never mixed together.
  * @param {Array} attributeArray rudder event message properties listData add
  * @param {string} typeOfList
  * @param {Array<string>} userSchema
  * @param {boolean} isHashRequired
- * @returns
+ * @returns {Array<Array>} one inner array of identifiers per user
  */
 const populateIdentifiers = (
   attributeArray: Record<string, unknown>[],
@@ -140,8 +141,8 @@ const populateIdentifiers = (
   isHashRequired: boolean,
   workspaceId: string,
   destinationId: string,
-) => {
-  const userIdentifier: Record<string, unknown>[] = [];
+): Record<string, unknown>[][] => {
+  const userIdentifiersByUser: Record<string, unknown>[][] = [];
   let attribute: string | string[];
   if (TYPEOFLIST[typeOfList]) {
     attribute = TYPEOFLIST[typeOfList];
@@ -161,6 +162,8 @@ const populateIdentifiers = (
         fieldConfigs: GARL_FIELD_CONFIG,
         destination: audienceDest,
       });
+      // identifiers belonging to this single user
+      const userIdentifier: Record<string, unknown>[] = [];
       // checking if the attribute is an array or not for generic type list
       if (!Array.isArray(attribute)) {
         if (element[attribute]) {
@@ -183,9 +186,12 @@ const populateIdentifiers = (
           }
         });
       }
+      if (userIdentifier.length > 0) {
+        userIdentifiersByUser.push(userIdentifier);
+      }
     });
   }
-  return userIdentifier;
+  return userIdentifiersByUser;
 };
 
 const populateIdentifiersForRecordEvent = (

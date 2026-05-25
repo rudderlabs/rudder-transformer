@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.133.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.133.1...v1.133.2) (2026-05-22)
+
+
+### Bug Fixes
+
+* **garl:** build one operation per user in record and audiencelist flows ([#5226](https://github.com/rudderlabs/rudder-transformer/issues/5226)) ([cc9b9f5](https://github.com/rudderlabs/rudder-transformer/commit/cc9b9f539d69ceade66fcea5a0d83000114b081b))
+
 ### [1.133.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.133.0...v1.133.1) (2026-05-21)
 
 

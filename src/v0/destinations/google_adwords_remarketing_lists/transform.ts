@@ -38,12 +38,15 @@ function extraKeysPresent(dictionary: Record<string, unknown>, keyList: string[]
   return false;
 }
 
+// Google Ads caps userIdentifiers at 20 per UserData (i.e. per operation/user).
+const MAX_IDENTIFIERS_PER_OPERATION = 20;
+
 /**
- * This function helps to create different operations by breaking the
- * userIdentiFier Array in chunks of 20.
- * Logics: Here for add/remove type lists, we are creating create/remove operations by
- * breaking the userIdentiFier array in chunks of 20 and putting them inside one
- * create/remove object each chunk.
+ * This function helps to create one operation per user.
+ * Logics: Here for add/remove type lists, we create one create/remove operation per user so
+ * identifiers from different users are never mixed into the same UserData. If a single user
+ * has more than 20 identifiers, that user's identifiers are split across multiple operations
+ * to respect Google's per-UserData limit.
  * @param {rudder event message} message
  * @param {rudder event destination} destination
  * @returns
@@ -57,7 +60,8 @@ const createPayload = (message: Message, destination: GARLDestination, workspace
   const typeOfOperation = Object.keys(listData);
   typeOfOperation.forEach((key) => {
     if (properties.includes(key)) {
-      const userIdentifiersList = populateIdentifiers(
+      // one inner array of identifiers per user
+      const userIdentifiersByUser = populateIdentifiers(
         listData[key],
         typeOfList,
         userSchema,
@@ -65,7 +69,7 @@ const createPayload = (message: Message, destination: GARLDestination, workspace
         workspaceId,
         destination.ID,
       );
-      if (userIdentifiersList.length === 0) {
+      if (userIdentifiersByUser.length === 0) {
         logger.info(
           `Google_adwords_remarketing_list]:: No attributes are present in the '${key}' property.`,
         );
@@ -77,35 +81,14 @@ const createPayload = (message: Message, destination: GARLDestination, workspace
         offlineDataJobsMapping,
       ) as OfflineDataJobPayload;
       outputPayload.operations = [];
-      // breaking the userIdentiFier array in chunks of 20
-      const userIdentifierChunks: Record<string, unknown>[][] = returnArrayOfSubarrays(
-        userIdentifiersList,
-        20,
-      );
-      // putting each chunk in different create/remove operations
-      switch (key) {
-        case 'add':
-          // for add operation
-          userIdentifierChunks.forEach((element) => {
-            const operations = {
-              create: { userIdentifiers: element },
-            };
-            outputPayload.operations.push(operations);
-          });
-          outputPayloads = { ...outputPayloads, create: outputPayload };
-          break;
-        case 'remove':
-          // for remove operation
-          userIdentifierChunks.forEach((element) => {
-            const operations = {
-              remove: { userIdentifiers: element },
-            };
-            outputPayload.operations.push(operations);
-          });
-          outputPayloads = { ...outputPayloads, remove: outputPayload };
-          break;
-        default:
-      }
+      const operationType = key === 'add' ? 'create' : 'remove';
+      // one operation per user; a user exceeding the limit is split across operations
+      userIdentifiersByUser.forEach((userIdentifiers) => {
+        returnArrayOfSubarrays(userIdentifiers, MAX_IDENTIFIERS_PER_OPERATION).forEach((chunk) => {
+          outputPayload.operations.push({ [operationType]: { userIdentifiers: chunk } });
+        });
+      });
+      outputPayloads = { ...outputPayloads, [operationType]: outputPayload };
     } else {
       logger.info(`listData "${key}" is not valid. Supported types are "add" and "remove"`);
     }

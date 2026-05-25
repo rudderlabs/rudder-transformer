@@ -133,25 +133,28 @@ const attributeArray = [
   },
 ];
 
+// populateIdentifiers groups identifiers per user: one inner array per element of attributeArray
 const hashedArray = [
-  {
-    // test@abc.com → normalized (non-Gmail: trim+lowercase only) → test@abc.com → sha256
-    hashedEmail: 'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
-  },
-  {
-    // @09876543210 → strip spaces/dashes/parens/dots (@ not stripped) → @09876543210 → add + → +@09876543210 → sha256
-    hashedPhoneNumber: sha256('+@09876543210'),
-  },
-  {
-    addressInfo: {
-      // 'test' → trim+lowercase → 'test' → sha256
-      hashedFirstName: sha256('test'),
-      // 'rudderlabs' → trim+lowercase → 'rudderlabs' → sha256
-      hashedLastName: sha256('rudderlabs'),
-      countryCode: 'US',
-      postalCode: '1245',
+  [
+    {
+      // test@abc.com → normalized (non-Gmail: trim+lowercase only) → test@abc.com → sha256
+      hashedEmail: 'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
     },
-  },
+    {
+      // @09876543210 → strip spaces/dashes/parens/dots (@ not stripped) → @09876543210 → add + → +@09876543210 → sha256
+      hashedPhoneNumber: sha256('+@09876543210'),
+    },
+    {
+      addressInfo: {
+        // 'test' → trim+lowercase → 'test' → sha256
+        hashedFirstName: sha256('test'),
+        // 'rudderlabs' → trim+lowercase → 'rudderlabs' → sha256
+        hashedLastName: sha256('rudderlabs'),
+        countryCode: 'US',
+        postalCode: '1245',
+      },
+    },
+  ],
 ];
 
 describe('GARL utils test', () => {

@@ -778,6 +778,12 @@ export const data = [
                                   postalCode: '1245',
                                 },
                               },
+                            ],
+                          },
+                        },
+                        {
+                          create: {
+                            userIdentifiers: [
                               {
                                 hashedEmail:
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
@@ -1372,6 +1378,12 @@ export const data = [
                                   postalCode: '1245',
                                 },
                               },
+                            ],
+                          },
+                        },
+                        {
+                          create: {
+                            userIdentifiers: [
                               {
                                 hashedEmail:
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',

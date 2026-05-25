@@ -19,6 +19,20 @@ import {
 
 import { ENDPOINT_CONFIG, RESERVED_KEYS } from './config';
 
+type EndpointEntry = (typeof ENDPOINT_CONFIG)[keyof typeof ENDPOINT_CONFIG];
+
+function buildResponse(endpoint: EndpointEntry, apiKey: string, payload: Record<string, any>) {
+  const response = defaultRequestConfig();
+  response.endpoint = endpoint.url;
+  response.method = endpoint.method;
+  response.headers = {
+    'Content-Type': endpoint.contentType,
+    Authorization: `Bearer ${apiKey}`,
+  };
+  response.body.JSON = payload;
+  return response;
+}
+
 /**
  * Remove reserved identifiers from a traits object.
  */
@@ -101,24 +115,14 @@ const processIdentifyEvent = (
     message_id: msg.messageId,
   };
 
-  // merge any non‑reserved traits
   Object.assign(payload, filterTraits(msg.context?.traits));
+  Object.assign(payload, filterTraits(msg.traits));
 
   // attach filtered context
-  const ctx = extractContext(msg.context);
-  if (ctx) payload.context = ctx;
+  const ctxIdentify = extractContext(msg.context);
+  if (ctxIdentify) payload.context = ctxIdentify;
 
-  // Create the response
-  const response = defaultRequestConfig();
-  response.endpoint = ENDPOINT_CONFIG.IDENTIFY.url;
-  response.method = ENDPOINT_CONFIG.IDENTIFY.method;
-  response.headers = {
-    'Content-Type': ENDPOINT_CONFIG.IDENTIFY.contentType,
-    'Authorization': `Bearer ${destinationConfig.destinationKey}`,
-  };
-  response.body.JSON = payload;
-
-  return response;
+  return buildResponse(ENDPOINT_CONFIG.IDENTIFY, destinationConfig.destinationKey, payload);
 };
 
 
@@ -152,34 +156,22 @@ const processGroupEvent = (
     throw new InstrumentationError('groupId is required for group events.');
   }
 
-  // Build the payload using the utility function
   const payload: Record<string, any> = {
     user_id: msg.userId,
     group_id: msg.groupId,
-    traits: msg.traits || {},
     timestamp: msg.originalTimestamp,
     message_id: msg.messageId,
   };
 
-  // merge non‑reserved traits from context
   Object.assign(payload, filterTraits(msg.context?.traits));
+  Object.assign(payload, filterTraits(msg.traits));
 
   // attach filtered context
   const ctxGroup = extractContext(msg.context);
   if (ctxGroup) payload.context = ctxGroup;
 
 
-  // Create the response
-  const response = defaultRequestConfig();
-  response.endpoint = ENDPOINT_CONFIG.GROUP.url;
-  response.method = ENDPOINT_CONFIG.GROUP.method;
-  response.headers = {
-    'Content-Type': ENDPOINT_CONFIG.GROUP.contentType,
-    'Authorization': `Bearer ${destinationConfig.destinationKey}`,
-  };
-  response.body.JSON = payload;
-
-  return response;
+  return buildResponse(ENDPOINT_CONFIG.GROUP, destinationConfig.destinationKey, payload);
 };
 
 /**
@@ -228,17 +220,7 @@ const processTrackEvent = (
   const ctxTrack = extractContext(msg.context);
   if (ctxTrack) payload.context = ctxTrack;
 
-  // Create the response
-  const response = defaultRequestConfig();
-  response.endpoint = ENDPOINT_CONFIG.TRACK.url;
-  response.method = ENDPOINT_CONFIG.TRACK.method;
-  response.headers = {
-    'Content-Type': ENDPOINT_CONFIG.TRACK.contentType,
-    'Authorization': `Bearer ${destinationConfig.destinationKey}`,
-  };
-  response.body.JSON = payload;
-
-  return response;
+  return buildResponse(ENDPOINT_CONFIG.TRACK, destinationConfig.destinationKey, payload);
 };
 
 /**
@@ -250,7 +232,7 @@ const processTrackEvent = (
  * @throws ConfigurationError if destination key is missing
  * @throws InstrumentationError if event type is not supported or required fields are missing
  */
-const process = (event: SurvicateRouterRequest) => {
+const processEvent = (event: SurvicateRouterRequest) => {
   const { message, destination } = event;
   const { destinationKey } = destination.Config;
 
@@ -283,11 +265,8 @@ const process = (event: SurvicateRouterRequest) => {
  * @returns Promise resolving to array of processed responses
  */
 const processRouterDest = async (
-  inputs: SurvicateRouterRequest[],
+  inputs: unknown[],
   reqMetadata: Record<string, unknown>,
-) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata, {});
-  return respList;
-};
+) => ( simpleProcessRouterDest(inputs as SurvicateRouterRequest[], processEvent, reqMetadata, {}));
 
-export { process, processRouterDest };
+export { processRouterDest };

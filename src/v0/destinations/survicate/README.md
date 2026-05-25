@@ -237,10 +237,28 @@ export const SurvicateDestinationConfigSchema = z
 export const SurvicateMessageSchema = z
   .object({
     type: z.enum(['identify', 'group', 'track']),
+    userId: z.string().optional(),
+    groupId: z.string().optional(),
+    event: z.string().optional(),
+    // fields required for request tracing
+    messageId: z.string(),
+    originalTimestamp: z.string(),
+    // snake_case aliases (present after normalization)
     user_id: z.string().optional(),
     group_id: z.string().optional(),
-    event: z.string().optional(),
-    // ... other fields
+    message_id: z.string().optional(),
+    original_timestamp: z.string().optional(),
+    properties: z.record(z.string(), z.unknown()).optional(),
+    traits: z.record(z.string(), z.unknown()).optional(),
+    context: z
+      .object({
+        traits: z.record(z.string(), z.unknown()).optional(),
+        locale: z.string().optional(),
+        campaign: z.record(z.string(), z.unknown()).optional(),
+        userAgent: z.string().optional(),
+      })
+      .passthrough()
+      .optional(),
   })
   .passthrough();
 ```

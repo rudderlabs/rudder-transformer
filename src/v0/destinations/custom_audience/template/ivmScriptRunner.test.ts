@@ -81,16 +81,7 @@ jest.mock('isolated-vm', () => {
   return { __esModule: true, default: { Isolate: MockIsolate } };
 });
 
-// fs: mock readFileSync (getBundleCode) so we don't need the real esbuild bundle on disk.
-jest.mock('fs', () => {
-  const actual = jest.requireActual('fs');
-  return {
-    ...actual,
-    readFileSync: jest.fn().mockReturnValue('// mock bundle'),
-  };
-});
-
-import { IvmScriptRunner } from './ivmScriptRunner';
+import { IvmScriptRunner, BUNDLE_PATH } from './ivmScriptRunner';
 
 describe('IvmScriptRunner', () => {
   let runner: IvmScriptRunner;
@@ -98,7 +89,7 @@ describe('IvmScriptRunner', () => {
   beforeEach(() => {
     isolateCreateCount = 0;
     runner = new IvmScriptRunner({
-      bundlePath: '/fake/bundle.js',
+      bundlePath: BUNDLE_PATH,
       memoryLimitMb: 8,
       initTimeoutMs: 5_000,
       execTimeoutMs: 1_000,

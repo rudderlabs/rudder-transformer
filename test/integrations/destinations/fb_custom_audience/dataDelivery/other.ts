@@ -1,6 +1,6 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
-import { statTags, testParams2 as testParams } from './business';
+import { statTags, testParams2 as testParams, testBodyJson2 as testBodyJson } from './business';
 
 export const otherScenariosV1: ProxyV1TestData[] = [
   {
@@ -17,11 +17,12 @@ export const otherScenariosV1: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'tooManyCallsError',
           },
           params: testParams,
+          JSON: testBodyJson,
         }),
         method: 'POST',
       },
@@ -64,11 +65,12 @@ export const otherScenariosV1: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'htmlResponse',
           },
           params: testParams,
+          JSON: testBodyJson,
         }),
         method: 'POST',
       },

@@ -14,50 +14,51 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'successResponse',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: [
-                'EMAIL',
-                'DOBM',
-                'DOBD',
-                'DOBY',
-                'PHONE',
-                'GEN',
-                'FI',
-                'MADID',
-                'ZIP',
-                'ST',
-                'COUNTRY',
-              ],
-              data: [
-                [
-                  'shrouti@abc.com',
-                  '2',
-                  '13',
-                  '2013',
-                  '@09432457768',
-                  'f',
-                  'Ms.',
-                  'ABC',
-                  'ZIP ',
-                  '123abc ',
-                  'IN',
-                ],
-              ],
-            },
           },
           userId: '',
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: [
+                  'EMAIL',
+                  'DOBM',
+                  'DOBD',
+                  'DOBY',
+                  'PHONE',
+                  'GEN',
+                  'FI',
+                  'MADID',
+                  'ZIP',
+                  'ST',
+                  'COUNTRY',
+                ],
+                data: [
+                  [
+                    'shrouti@abc.com',
+                    '2',
+                    '13',
+                    '2013',
+                    '@09432457768',
+                    'f',
+                    'Ms.',
+                    'ABC',
+                    'ZIP ',
+                    '123abc ',
+                    'IN',
+                  ],
+                ],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -97,36 +98,37 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'POST',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'permissionMissingError',
           },
           params: {
             access_token: 'BCD',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: [
-                'DOBM',
-                'DOBD',
-                'DOBY',
-                'PHONE',
-                'GEN',
-                'FI',
-                'MADID',
-                'ZIP',
-                'ST',
-                'COUNTRY',
-              ],
-              data: [
-                ['2', '13', '2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN'],
-              ],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: [
+                  'DOBM',
+                  'DOBD',
+                  'DOBY',
+                  'PHONE',
+                  'GEN',
+                  'FI',
+                  'MADID',
+                  'ZIP',
+                  'ST',
+                  'COUNTRY',
+                ],
+                data: [
+                  ['2', '13', '2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN'],
+                ],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -179,23 +181,24 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'audienceUnavailableError',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -248,23 +251,24 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'audienceDeletedError',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -316,23 +320,24 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'failedToUpdateAudienceError',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -385,23 +390,24 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'parameterExceededError',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -453,23 +459,24 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'tooManyCallsError',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -521,23 +528,24 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'code200PermissionError',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -590,23 +598,24 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'accessTokenInvalidError',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -664,23 +673,24 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'messagingTOSNotAccepted',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -733,23 +743,24 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
           headers: {
             'test-dest-response-key': 'accessTokenInvalidError-2',
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},

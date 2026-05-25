@@ -4487,6 +4487,148 @@ export const dataV3: ProcessorTestData[] = [
                         ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
                         st: '6db488fc98e30afdf67a05a6da916805b02891ce58f03970c6deff79129c5f1c',
                       },
+                      custom_data: {
+                        contents: [
+                          {
+                            brand: 'abc',
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns,
+  },
+  {
+    id: 'snapchat-conversion-v3-brand-field-mapping',
+    name: 'snapchat_conversion',
+    description: '[CAPIv3]: Test case for brand field mapping in products contents',
+    scenario: 'Business',
+    successCriteria:
+      'brand field from product object should be mapped to contents[].brand in the output',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-22T10:57:58Z',
+              channel: 'web',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                traits: {
+                  email: 'test@email.com',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              type: 'track',
+              event: 'Product List Viewed',
+              properties: {
+                event_conversion_type: 'web',
+                products: [
+                  {
+                    product_id: 'p1',
+                    price: 50,
+                    quantity: 1,
+                    brand: 'Nike',
+                  },
+                  {
+                    product_id: 'p2',
+                    price: 30,
+                    quantity: 2,
+                    brand: 'Adidas',
+                  },
+                  {
+                    product_id: 'p3',
+                    price: 20,
+                    quantity: 1,
+                  },
+                ],
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2022-04-22T10:57:58Z',
+            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              params: {
+                access_token: 'snapchat_conversion1',
+              },
+              body: {
+                JSON: {
+                  data: [
+                    {
+                      action_source: 'WEB',
+                      event_name: 'VIEW_CONTENT',
+                      event_time: '1650625078',
+                      user_data: {
+                        client_user_agent:
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                      },
+                      custom_data: {
+                        content_ids: ['p1', 'p2', 'p3'],
+                        value: '130',
+                        contents: [
+                          {
+                            id: 'p1',
+                            item_price: 50,
+                            quantity: 1,
+                            brand: 'Nike',
+                          },
+                          {
+                            id: 'p2',
+                            item_price: 30,
+                            quantity: 2,
+                            brand: 'Adidas',
+                          },
+                          {
+                            id: 'p3',
+                            item_price: 20,
+                            quantity: 1,
+                          },
+                        ],
+                      },
                     },
                   ],
                 },

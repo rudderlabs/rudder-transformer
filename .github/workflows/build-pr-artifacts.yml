@@ -7,18 +7,19 @@ on:
       - reopened
       - synchronize
 
-permissions:
-  contents: read
-  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   generate-tag-names:
     runs-on: ubuntu-latest
     name: Generate Tag Names
+    permissions:
+      contents: read # to checkout repository code (actions/checkout)
     # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     outputs:
@@ -26,7 +27,7 @@ jobs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
@@ -38,8 +39,10 @@ jobs:
       # Replace problematic characters in branch name (like '/') with safe characters (like '.')
       - name: Generate Tag Names
         id: gen_tag_names
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
-          tag_name=$(echo ${{ github.head_ref }} | tr "/" .)
+          tag_name=$(echo "$HEAD_REF" | tr "/" .)
           echo "Tag Name: branch-$tag_name"
           echo "tag_name=branch-$tag_name" >> $GITHUB_OUTPUT
 
@@ -49,6 +52,9 @@ jobs:
 
   build-transformer-image:
     name: Build Transformer Docker Image - PR
+    permissions:
+      id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
+      contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Skip for the release pull requests as staging artifacts will be generated
     # Skip main to develop sync pull requests
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
@@ -66,6 +72,9 @@ jobs:
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - PR
+    permissions:
+      id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
+      contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     needs: [generate-tag-names]
@@ -82,10 +91,12 @@ jobs:
 
   run-ingestion-service-test:
     name: Run Ingestion Service Test
+    permissions:
+      contents: read # to call reusable workflow (ingestion-service-test.yml)
     needs: [build-transformer-image, generate-tag-names]
     uses: ./.github/workflows/ingestion-service-test.yml
     with:
       build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
     secrets:
-      PAT: ${{ secrets.PAT }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      RELEASE_PRIVATE_KEY: ${{ secrets.RELEASE_PRIVATE_KEY }}

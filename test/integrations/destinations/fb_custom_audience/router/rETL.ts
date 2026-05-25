@@ -55,6 +55,14 @@ const connectionWithValueBasedAudience: Connection = {
   },
 };
 
+const destinationV2MissingAccessToken: Destination = {
+  ...destinationV2,
+  Config: {
+    ...destinationV2.Config,
+    accessToken: '',
+  },
+};
+
 const missingAudienceIDConnection: Connection = {
   sourceId: '2MUWghI7u85n91dd1qzGyswpZan',
   destinationId: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -159,6 +167,58 @@ export const rETLRecordV2RouterRequest: RouterTransformationRequest = {
         type: 'record',
       },
       metadata: generateMetadata(4),
+    },
+  ],
+  destType: 'fb_custom_audience',
+};
+
+export const rETLRecordV2AllNullRouterRequest: RouterTransformationRequest = {
+  input: [
+    {
+      destination: destinationV2,
+      connection: connection,
+      message: {
+        action: 'insert',
+        context: {
+          sources: {
+            job_run_id: 'cgiiurt8um7k7n5dq480',
+            task_run_id: 'cgiiurt8um7k7n5dq48g',
+            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+            version: '895/merge',
+          },
+        },
+        recordId: '1',
+        rudderId: '1',
+        identifiers: {
+          EMAIL: null,
+          FI: null,
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(1),
+    },
+    {
+      destination: destinationV2,
+      connection: connection,
+      message: {
+        action: 'insert',
+        context: {
+          sources: {
+            job_run_id: 'cgiiurt8um7k7n5dq480',
+            task_run_id: 'cgiiurt8um7k7n5dq48g',
+            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+            version: '895/merge',
+          },
+        },
+        recordId: '2',
+        rudderId: '2',
+        identifiers: {
+          EMAIL: null,
+          FI: null,
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(2),
     },
   ],
   destType: 'fb_custom_audience',
@@ -664,6 +724,35 @@ export const rETLRecordV1RouterRequest: RouterTransformationRequest = {
         type: 'record',
       },
       metadata: generateMetadata(7),
+    },
+  ],
+  destType: 'fb_custom_audience',
+};
+
+export const rETLRecordV2RouterMissingAccessTokenRequest: RouterTransformationRequest = {
+  input: [
+    {
+      destination: destinationV2MissingAccessToken,
+      connection: connection,
+      message: {
+        action: 'insert',
+        context: {
+          sources: {
+            job_run_id: 'cgiiurt8um7k7n5dq480',
+            task_run_id: 'cgiiurt8um7k7n5dq48g',
+            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+            version: '895/merge',
+          },
+        },
+        recordId: '2',
+        rudderId: '2',
+        identifiers: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(1),
     },
   ],
   destType: 'fb_custom_audience',

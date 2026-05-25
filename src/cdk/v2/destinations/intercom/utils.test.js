@@ -377,6 +377,121 @@ describe('addMetadataToPayload utility test', () => {
 });
 
 describe('searchContact utility test', () => {
+  beforeEach(() => {
+    axios.post.mockReset();
+  });
+
+  it('Should build OR query with email and external_id when both are present', async () => {
+    const message = {
+      userId: 'user-123',
+      context: {
+        traits: {
+          email: 'TEST@RUDDERLABS.COM',
+        },
+      },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [],
+      },
+    });
+
+    await searchContact(message, destination, message.metadata);
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${getBaseEndpoint(destination)}/contacts/search`,
+      JSON.stringify({
+        query: {
+          operator: 'OR',
+          value: [
+            {
+              field: 'email',
+              operator: '=',
+              value: 'test@rudderlabs.com',
+            },
+            {
+              field: 'external_id',
+              operator: '=',
+              value: 'user-123',
+            },
+          ],
+        },
+      }),
+      expect.objectContaining({
+        headers: getHeaders(destination),
+      }),
+    );
+  });
+
+  it('Should search by external_id only for mappedToDestination flow without email', async () => {
+    const message = {
+      context: {
+        mappedToDestination: true,
+      },
+      traits: {
+        external_id: 'retl-ext-id',
+      },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [],
+      },
+    });
+
+    await searchContact(message, destination, message.metadata);
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${getBaseEndpoint(destination)}/contacts/search`,
+      JSON.stringify({
+        query: {
+          operator: 'AND',
+          value: [
+            {
+              field: 'external_id',
+              operator: '=',
+              value: 'retl-ext-id',
+            },
+          ],
+        },
+      }),
+      expect.objectContaining({
+        headers: getHeaders(destination),
+      }),
+    );
+  });
+
   it('Should successfully search contact by email', async () => {
     const message = { context: { traits: { email: 'test@rudderlabs.com' } } };
     const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
@@ -401,7 +516,7 @@ describe('searchContact utility test', () => {
       },
     });
 
-    const result = await searchContact(message, destination);
+    const result = await searchContact(message, destination, message.metadata);
     expect(result).toEqual('1');
   });
 
@@ -410,6 +525,11 @@ describe('searchContact utility test', () => {
       context: {
         traits: { email: 'test@rudderlabs.com', phone: '+91 9999999999' },
         integrations: { INTERCOM: { lookup: 'phone' } },
+      },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
       },
     };
     const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
@@ -441,7 +561,7 @@ describe('searchContact utility test', () => {
       },
     });
 
-    const result = await searchContact(message, destination);
+    const result = await searchContact(message, destination, message.metadata);
     expect(result).toEqual('1');
   });
 
@@ -450,6 +570,11 @@ describe('searchContact utility test', () => {
       context: {
         traits: { email: 'test+10@rudderlabs.com', phone: '+91 9999999999' },
         integrations: { INTERCOM: { lookup: 'email' } },
+      },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
       },
     };
     const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
@@ -468,7 +593,7 @@ describe('searchContact utility test', () => {
       },
     });
 
-    const result = await searchContact(message, destination);
+    const result = await searchContact(message, destination, message.metadata);
     expect(result).toBeNull();
   });
 
@@ -477,6 +602,11 @@ describe('searchContact utility test', () => {
       context: {
         traits: { email: 'test+3@rudderlabs.com', phone: '+91 9999999999' },
         integrations: { INTERCOM: { lookup: 'email' } },
+      },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
       },
     };
     const destination = { Config: { apiKey: 'invalidTestApiKey', apiServer: 'us' } };
@@ -495,7 +625,7 @@ describe('searchContact utility test', () => {
     });
 
     try {
-      const result = await searchContact(message, destination);
+      const result = await searchContact(message, destination, message.metadata);
       expect(result).toEqual('');
     } catch (error) {
       expect(error.message).toEqual(
@@ -503,29 +633,133 @@ describe('searchContact utility test', () => {
       );
     }
   });
+
   it('Should return null if lookup field value is not present', async () => {
     const message = {
       context: {
         traits: { phone: '+91 9999999999' },
         integrations: { INTERCOM: { lookup: 'email' } },
       },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
+      },
     };
     const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
 
-    const result = await searchContact(message, destination);
+    const result = await searchContact(message, destination, message.metadata);
     expect(result).toBeNull();
   });
+
   it('Should return null if lookup field value of type other than string, number, or boolean', async () => {
     const message = {
       context: {
         traits: { phone: '+91 9999999999', key: { value: 1, type: 'number' } },
       },
       integrations: { INTERCOM: { lookup: 'key' } },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
+      },
     };
     const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
 
-    const result = await searchContact(message, destination);
+    const result = await searchContact(message, destination, message.metadata);
     expect(result).toBeNull();
+  });
+
+  it('Should return null when no lookup values are present in message', async () => {
+    const message = {
+      context: {
+        integrations: { INTERCOM: { lookup: 'phone' } },
+      },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+
+    const result = await searchContact(message, destination, message.metadata);
+    expect(result).toBeNull();
+    expect(axios.post).not.toHaveBeenCalled();
+  });
+
+  it('Should return null when external_id fallback value has invalid type', async () => {
+    const message = {
+      userId: { id: 'ext-123' },
+      context: {
+        traits: {
+          email: 'test@rudderlabs.com',
+        },
+      },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+
+    const result = await searchContact(message, destination, message.metadata);
+    expect(result).toBeNull();
+    expect(axios.post).not.toHaveBeenCalled();
+  });
+
+  it('Should use context.traits as fallback for configured lookup field', async () => {
+    const message = {
+      context: {
+        traits: {
+          phone: '+91 9999999999',
+        },
+      },
+      integrations: { INTERCOM: { lookup: 'phone' } },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [],
+      },
+    });
+
+    await searchContact(message, destination, message.metadata);
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${getBaseEndpoint(destination)}/contacts/search`,
+      JSON.stringify({
+        query: {
+          operator: 'AND',
+          value: [
+            {
+              field: 'phone',
+              operator: '=',
+              value: '+91 9999999999',
+            },
+          ],
+        },
+      }),
+      expect.objectContaining({
+        headers: getHeaders(destination),
+      }),
+    );
   });
 });
 

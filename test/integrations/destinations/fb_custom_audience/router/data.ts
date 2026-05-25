@@ -1,20 +1,25 @@
 import {
-  eventStreamAudienceListRouterRequest,
-  eventStreamRecordV1RouterRequest,
-  esDestinationAudience,
-  esDestinationRecord,
-} from './eventStream';
-import {
   rETLRecordV1RouterRequest,
   rETLRecordV2RouterRequest,
+  rETLRecordV2AllNullRouterRequest,
   rETLRecordV2RouterInvalidRequest,
   rETLRecordV2RouterRequestWithValueBasedAudience,
   rETLRecordV2RouterInvalidRequestWithValueBasedAudience,
   rETLRecordV2RouterInvalidRequestWithLookalikeValue,
+  rETLRecordV2RouterMissingAccessTokenRequest,
 } from './rETL';
 import { mockFns } from '../mocks';
 import { defaultAccessToken } from '../../../common/secrets';
 import { generateMetadata } from '../../../testUtils';
+import {
+  esDestinationAudience,
+  esDestinationRecord,
+  eventStreamAudienceListRouterRequest,
+  eventStreamHashOffRouterRequest,
+  eventStreamPreHashedRouterRequest,
+  eventStreamRecordV1RouterRequest,
+} from './eventStream';
+
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -40,48 +45,49 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
-                    payload: {
-                      is_raw: true,
-                      data_source: {
-                        sub_type: 'ANYTHING',
-                      },
-                      schema: [
-                        'EMAIL',
-                        'DOBM',
-                        'DOBD',
-                        'DOBY',
-                        'PHONE',
-                        'GEN',
-                        'FI',
-                        'MADID',
-                        'ZIP',
-                        'ST',
-                        'COUNTRY',
-                      ],
-                      data: [
-                        [
-                          'shrouti@abc.com',
-                          '2',
-                          '13',
-                          '2013',
-                          '@09432457768',
-                          'f',
-                          'Ms.',
-                          'ABC',
-                          'ZIP ',
-                          '123abc ',
-                          'IN',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: {
+                          sub_type: 'ANYTHING',
+                        },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            'shrouti@abc.com',
+                            '2',
+                            '13',
+                            '2013',
+                            '@09432457768',
+                            'f',
+                            'Ms.',
+                            'abc',
+                            'ZIP ',
+                            '123abc ',
+                            'IN',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -92,48 +98,49 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
-                    payload: {
-                      is_raw: true,
-                      data_source: {
-                        sub_type: 'ANYTHING',
-                      },
-                      schema: [
-                        'EMAIL',
-                        'DOBM',
-                        'DOBD',
-                        'DOBY',
-                        'PHONE',
-                        'GEN',
-                        'FI',
-                        'MADID',
-                        'ZIP',
-                        'ST',
-                        'COUNTRY',
-                      ],
-                      data: [
-                        [
-                          'shrouti@abc.com',
-                          '2',
-                          '13',
-                          '2013',
-                          '@09432457768',
-                          'f',
-                          'Ms.',
-                          'ABC',
-                          'ZIP ',
-                          '123abc ',
-                          'IN',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: {
+                          sub_type: 'ANYTHING',
+                        },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            'shrouti@abc.com',
+                            '2',
+                            '13',
+                            '2013',
+                            '@09432457768',
+                            'f',
+                            'Ms.',
+                            'abc',
+                            'ZIP ',
+                            '123abc ',
+                            'IN',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -165,48 +172,49 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
-                    payload: {
-                      is_raw: true,
-                      data_source: {
-                        sub_type: 'ANYTHING',
-                      },
-                      schema: [
-                        'EMAIL',
-                        'DOBM',
-                        'DOBD',
-                        'DOBY',
-                        'PHONE',
-                        'GEN',
-                        'FI',
-                        'MADID',
-                        'ZIP',
-                        'ST',
-                        'COUNTRY',
-                      ],
-                      data: [
-                        [
-                          'shrouti@abc.com',
-                          '2',
-                          '13',
-                          '2013',
-                          '@09432457768',
-                          'f',
-                          'Ms.',
-                          'ABC',
-                          'ZIP ',
-                          '123abc ',
-                          'IN',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: {
+                          sub_type: 'ANYTHING',
+                        },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            'shrouti@abc.com',
+                            '2',
+                            '13',
+                            '2013',
+                            '@09432457768',
+                            'f',
+                            'Ms.',
+                            'abc',
+                            'ZIP ',
+                            '123abc ',
+                            'IN',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -217,48 +225,49 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
-                    payload: {
-                      is_raw: true,
-                      data_source: {
-                        sub_type: 'ANYTHING',
-                      },
-                      schema: [
-                        'EMAIL',
-                        'DOBM',
-                        'DOBD',
-                        'DOBY',
-                        'PHONE',
-                        'GEN',
-                        'FI',
-                        'MADID',
-                        'ZIP',
-                        'ST',
-                        'COUNTRY',
-                      ],
-                      data: [
-                        [
-                          'shrouti@abc.com',
-                          '2',
-                          '13',
-                          '2013',
-                          '@09432457768',
-                          'f',
-                          'Ms.',
-                          'ABC',
-                          'ZIP ',
-                          '123abc ',
-                          'IN',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: {
+                          sub_type: 'ANYTHING',
+                        },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            'shrouti@abc.com',
+                            '2',
+                            '13',
+                            '2013',
+                            '@09432457768',
+                            'f',
+                            'Ms.',
+                            'abc',
+                            'ZIP ',
+                            '123abc ',
+                            'IN',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -313,27 +322,28 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI'],
+                        data: [
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -377,23 +387,24 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI'],
+                        data: [
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -425,31 +436,32 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI'],
+                        data: [
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -557,7 +569,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -565,22 +577,23 @@ export const data = [
                     appsecret_proof:
                       'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
                     appsecret_time: 1697328000,
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI'],
+                        data: [
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -649,7 +662,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -657,18 +670,19 @@ export const data = [
                     appsecret_proof:
                       'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
                     appsecret_time: 1697328000,
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI'],
+                        data: [
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -725,7 +739,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -733,26 +747,27 @@ export const data = [
                     appsecret_proof:
                       'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
                     appsecret_time: 1697328000,
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI'],
+                        data: [
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -881,37 +896,38 @@ export const data = [
         body: {
           output: [
             {
+              batched: true,
               batchedRequest: [
                 {
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        ['', ''],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI'],
+                        data: [
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -919,58 +935,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 2,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 3,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 4,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-              ],
-              batched: true,
-              statusCode: 200,
+              metadata: [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
               destination: {
                 Config: {
                   accessToken: 'ABC',
@@ -981,19 +946,95 @@ export const data = [
                   subType: 'NA',
                   type: 'NA',
                 },
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 Name: 'FB_CUSTOM_AUDIENCE',
                 Enabled: true,
                 WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
                 DestinationDefinition: {
-                  Config: {},
-                  DisplayName: 'FB_CUSTOM_AUDIENCE',
                   ID: '1aIXqM806xAVm92nx07YwKbRrO9',
                   Name: 'FB_CUSTOM_AUDIENCE',
+                  DisplayName: 'FB_CUSTOM_AUDIENCE',
+                  Config: {},
                 },
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 Transformations: [],
                 IsConnectionEnabled: true,
                 IsProcessorEnabled: true,
+              },
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              error:
+                'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
+              metadata: [generateMetadata(4)],
+              statusCode: 400,
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 all events have null user data',
+    scenario: 'Framework',
+    successCriteria:
+      'all record events should return individual error responses when all user properties are null',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2AllNullRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              error:
+                'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
+              metadata: [generateMetadata(1)],
+              statusCode: 400,
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+            {
+              batched: false,
+              error:
+                'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
+              metadata: [generateMetadata(2)],
+              statusCode: 400,
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
               },
             },
           ],
@@ -1117,50 +1158,51 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
                     access_token: 'ABC',
-                    payload: {
-                      schema: ['EMAIL', 'FI', 'LOOKALIKE_VALUE'],
-                      data: [
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                          0,
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                          100.1,
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                          100,
-                        ],
-                        ['', '', 0.1],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                          100,
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                          0,
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                          0,
-                        ],
-                      ],
-                    },
                   },
                   body: {
-                    JSON: {},
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI', 'LOOKALIKE_VALUE'],
+                        data: [
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                            0,
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                            100.1,
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                            100,
+                          ],
+                          ['', '', 0.1],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                            100,
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                            0,
+                          ],
+                          [
+                            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                            0,
+                          ],
+                        ],
+                      },
+                    },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -1232,6 +1274,133 @@ export const data = [
               batched: false,
               statusCode: 400,
               error: 'LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description:
+      'unhashed data with isHashRequired false should fail when hashing validation is enabled',
+    scenario: 'business',
+    successCriteria:
+      'should throw InstrumentationError when unhashed data is sent with hashing disabled and validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamHashOffRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+              destination: esDestinationAudience,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
+  },
+  {
+    name: 'fb_custom_audience',
+    description:
+      'pre-hashed data with isHashRequired true should fail when hashing validation is enabled',
+    scenario: 'business',
+    successCriteria:
+      'should throw InstrumentationError when pre-hashed data is sent with hashing enabled and validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamPreHashedRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is enabled but the value for field EMAIL appears to already be hashed. Either disable hashing or send unhashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+              destination: esDestinationRecord,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 missing accessToken tests',
+    scenario: 'Framework',
+    successCriteria: 'All the record V2 events should fail with missing accessToken error',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2RouterMissingAccessTokenRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error: 'Access Token is a mandatory field',
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',

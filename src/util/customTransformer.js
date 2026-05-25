@@ -1,5 +1,6 @@
 const ivm = require('isolated-vm');
 const { compileUserLibrary } = require('../util/ivmFactory');
+const { validateIp } = require('./utils');
 const fetch = require('node-fetch');
 const { getTransformationCode } = require('./customTransforrmationsStore');
 const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
@@ -99,9 +100,7 @@ async function runUserTransform(
       const geoStartTime = new Date();
       const geoTags = { ...trTags };
       try {
-        if (args.length < 1) {
-          throw new Error('ip address is required');
-        }
+        validateIp(args[0]);
         if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
 
         const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {

@@ -63,6 +63,8 @@ export const RedditProductSchema = z.object({
   category: z.string().optional(),
   id: z.string().optional(),
   name: z.string().optional(),
+  quantity: z.number().int().nonnegative().optional(),
+  item_price: z.number().nonnegative().optional(),
 });
 
 export const RedditEventMetadataSchema = z.object({
@@ -144,6 +146,8 @@ export interface ProductProperties {
   product_id?: string;
   name?: string;
   category?: string;
+  price?: number;
+  quantity?: number;
 }
 
 export interface EventProperties {
@@ -151,4 +155,6 @@ export interface EventProperties {
   product_id?: string;
   name?: string;
   category?: string;
+  price?: number;
+  quantity?: number;
 }

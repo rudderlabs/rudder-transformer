@@ -22,8 +22,6 @@ import {
   getValueFromMessage,
   isNull,
   validateEventName,
-  defaultBatchRequestConfig,
-  getSuccessRespEvents,
   isHttpStatusSuccess,
 } from '../../util';
 import {
@@ -54,9 +52,7 @@ import type {
   HubSpotSearchRequest,
   HubSpotSearchResponse,
   HubSpotSearchResult,
-  HubSpotRouterTransformationOutput,
   HubspotRouterRequest,
-  HubspotProcessorTransformationOutput,
   HubspotRudderMessage,
   HubSpotExternalIdObject,
   HubSpotTrackEventRequest,
@@ -973,46 +969,6 @@ const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {
   set(getFieldValueFromMessage(message, 'traits'), externalIdObj.identifierType, externalIdObj.id);
 };
 
-const convertToResponseFormat = (
-  successRespListWithDontBatchTrue: {
-    message: HubspotProcessorTransformationOutput;
-    metadata: Partial<Metadata>;
-    destination: HubSpotDestination;
-  }[],
-): HubSpotRouterTransformationOutput[] => {
-  const response: HubSpotRouterTransformationOutput[] = [];
-  if (Array.isArray(successRespListWithDontBatchTrue)) {
-    successRespListWithDontBatchTrue.forEach((event) => {
-      const { message, metadata, destination } = event;
-      const endpoint =
-        typeof message.endpoint === 'string'
-          ? message.endpoint
-          : String(get(message, 'endpoint') ?? '');
-
-      const batchedResponse = defaultBatchRequestConfig();
-      batchedResponse.batchedRequest.headers = message.headers!;
-      batchedResponse.batchedRequest.endpoint = endpoint;
-      batchedResponse.batchedRequest.body = {
-        ...batchedResponse.batchedRequest.body,
-        ...message.body,
-      };
-      batchedResponse.batchedRequest.params = message.params!;
-      batchedResponse.batchedRequest.method = message.method!;
-      batchedResponse.metadata = [metadata];
-      batchedResponse.destination = destination;
-
-      response.push(
-        getSuccessRespEvents(
-          batchedResponse.batchedRequest,
-          batchedResponse.metadata,
-          batchedResponse.destination,
-        ),
-      );
-    });
-  }
-  return response;
-};
-
 // remove system fields from the properties because they are not allowed to be updated
 const removeHubSpotSystemField = (properties: Record<string, unknown>): Record<string, unknown> =>
   omit(properties, HUBSPOT_SYSTEM_FIELDS);
@@ -1108,35 +1064,6 @@ const isLookupFieldUnique = async (
   return propertiesMap[lookupField] ?? false;
 };
 
-/**
- * Determines if the upsert feature is enabled for a given workspace.
- *
- * Logic:
- * 1. If ENABLED = "ALL" -> return true
- * 2. If workspaceId in ENABLED list -> return true
- * 3. Default -> return false
- *
- * @param workspaceId - The workspace ID to check
- * @returns Whether upsert is enabled for this workspace
- */
-const isUpsertEnabled = (workspaceId: string): boolean => {
-  const enabledWorkspaces = process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES || '';
-
-  // Check if enabled for all workspaces
-  if (enabledWorkspaces.trim().toUpperCase() === 'ALL') {
-    return true;
-  }
-
-  // Check if workspace is in the enabled list
-  if (enabledWorkspaces && workspaceId) {
-    const enabledList = enabledWorkspaces.split(',').map((ws) => ws.trim());
-    return enabledList.includes(workspaceId);
-  }
-
-  // Default: upsert not enabled
-  return false;
-};
-
 export {
   validateDestinationConfig,
   addHsAuthentication,
@@ -1157,9 +1084,7 @@ export {
   getObjectAndIdentifierType,
   extractIDsForSearchAPI,
   getRequestData,
-  convertToResponseFormat,
   removeHubSpotSystemField,
-  isUpsertEnabled,
   getLookupFieldValue,
   isLookupFieldUnique,
 };

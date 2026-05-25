@@ -14,7 +14,7 @@ The integration supports three types of RudderStack events:
 
 ## Authentication
 
-The integration requires a **Destination Key** from Survicate, which is used to authenticate API requests via the `X-API-Key` header.
+The integration requires a **Destination Key** from Survicate, which is used to authenticate API requests via the Authorization: 'Bearer test-key' header.
 
 ## File Structure
 
@@ -119,42 +119,6 @@ test/integrations/destinations/survicate/
   },
   "timestamp": "2020-04-22T08:06:20.338Z",
   "message_id": "msg-123"
-}
-```
-
-## Nested Attributes Flattening
-
-The integration automatically flattens nested objects in all payloads by joining keys with underscores.
-
-**Example:**
-```javascript
-{
-  "company": { "id": "company-A" }
-}
-```
-
-Gets transformed to:
-```javascript
-{
-  "company_id": "company-A"
-}
-```
-
-**Deep Nesting Example:**
-```javascript
-{
-  "plan": {
-    "tier": "pro",
-    "renewal": { "date": "2025-12-01" }
-  }
-}
-```
-
-Gets transformed to:
-```javascript
-{
-  "plan_tier": "pro",
-  "plan_renewal_date": "2025-12-01"
 }
 ```
 

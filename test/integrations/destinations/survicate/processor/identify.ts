@@ -106,7 +106,7 @@ export const data: ProcessorTestData[] = [
                   name: 'User name',
                   email: 'user@domain.com',
                   plan: 'Enterprise',
-                  company_id: 'company-A',
+                  company: { id: 'company-A' },
                   createdAt: 'Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)',
                   context: {
                     locale: 'en-US',
@@ -123,10 +123,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.survicate.com/v1/users/identify',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/identify',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <destination-key>',
+                Authorization: 'Bearer test-destination-key-12345',
               },
               params: {},
               files: {},
@@ -193,10 +193,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.survicate.com/v1/users/identify',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/identify',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <destination-key>',
+                Authorization: 'Bearer test-key',
               },
               params: {},
               files: {},
@@ -371,8 +371,14 @@ export const data: ProcessorTestData[] = [
                 JSON: {
                   user_id: 'user-456',
                   name: 'John Doe',
-                  subscription_plan_tier: 'pro',
-                  subscription_plan_renewal_date: '2025-12-01',
+                  subscription: {
+                    plan: {
+                      tier: 'pro',
+                      renewal: {
+                        date: '2025-12-01',
+                      },
+                    },
+                  },
                   context: {
                     locale: 'en-GB',
                   },
@@ -386,10 +392,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.survicate.com/v1/users/identify',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/identify',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <destination-key>',
+                Authorization: 'Bearer test-key',
               },
               params: {},
               files: {},
@@ -419,6 +425,7 @@ export const data: ProcessorTestData[] = [
               type: 'identify',
               anonymous_id: '21b43de4-3b9b-423f-b51f-794eae31fc03',
               message_id: 'msg-anonymous',
+              originalTimestamp: '2024-01-01T00:00:00.000Z',
               context: {
                 traits: {
                   email: 'user@example.com',
@@ -455,7 +462,7 @@ export const data: ProcessorTestData[] = [
               workspaceId: 'wspId',
             },
             statusCode: 400,
-            error: 'Anonymous identify calls are not supported. user_id is required.',
+            error: 'Anonymous identify calls are not supported. userId is required.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -472,7 +479,7 @@ export const data: ProcessorTestData[] = [
   },
   {
     name: 'survicate',
-    description: 'Identify event missing both userId and anonymousId - should fail',
+    description: 'Identify event missing userId - should fail',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -515,7 +522,7 @@ export const data: ProcessorTestData[] = [
               workspaceId: 'wspId',
             },
             statusCode: 400,
-            error: 'Either userId or anonymousId must be provided',
+            error: 'Anonymous identify calls are not supported. userId is required.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

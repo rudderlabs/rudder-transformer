@@ -125,12 +125,26 @@ export const data: ProcessorTestData[] = [
                     product_name: 'new_boots',
                     price: 60,
                     currency: 'USD',
-                    product_sku: 'SKU-123',
-                    product_vendor_name: 'Vendor Inc.',
-                    product_vendor_region: 'North America',
+                    product: {
+                      sku: 'SKU-123',
+                      vendor: {
+                        name: 'Vendor Inc.',
+                        region: 'North America',
+                      },
+                    },
+                    name: 'User name',
+                    email: 'user@domain.com',
+                    plan: 'Enterprise',
+                    company: { id: 'company-A' },
+                    createdAt: 'Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)',
                   },
                   timestamp: '2020-04-22T08:06:20.338Z',
                   message_id: '04a303b1-a466-4e66-9022-2a24edaca4fc',
+                  context: {
+                    locale: 'en-US',
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -139,10 +153,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://integrations.survicate.com/endpoint/rudder-stack/track',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/track',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <destination-key>',
+                Authorization: 'Bearer test-destination-key-12345',
               },
               params: {},
               files: {},
@@ -211,10 +225,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.survicate.com/v1/events/track',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/track',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <destination-key>',
+                Authorization: 'Bearer test-key',
               },
               params: {},
               files: {},
@@ -240,6 +254,7 @@ export const data: ProcessorTestData[] = [
             message: {
               type: 'track',
               messageId: 'msg-no-event',
+              originalTimestamp: '2023-01-01T00:00:00.000Z',
               userId: 'user-123',
               properties: {
                 amount: 100,
@@ -304,6 +319,7 @@ export const data: ProcessorTestData[] = [
               type: 'track',
               anonymous_id: 'anon-456',
               messageId: 'msg-anon-track',
+              originalTimestamp: '2024-01-01T00:00:00.000Z',
               event: 'Purchase',
               properties: {
                 amount: 150,
@@ -339,7 +355,7 @@ export const data: ProcessorTestData[] = [
               workspaceId: 'wspId',
             },
             statusCode: 400,
-            error: 'Anonymous track calls are not supported. user_id is required.',
+            error: 'Anonymous track calls are not supported. userId is required.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -522,10 +538,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.survicate.com/v1/events/track',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/track',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <destination-key>',
+                Authorization: 'Bearer test-key',
               },
               params: {},
               files: {},

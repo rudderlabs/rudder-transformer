@@ -87,7 +87,11 @@ export const data: ProcessorTestData[] = [
                   industry: 'SaaS',
                   employees: 1200,
                   plan: 'Enterprise',
-                  nested_settings_notifications: true,
+                  nested: {
+                    settings: {
+                      notifications: true,
+                    },
+                  },
                   context: {
                     locale: 'en-US',
                     campaign: {
@@ -107,10 +111,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://integrations.survicate.com/endpoint/rudder-stack/group',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/group',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <destination-key>',
+                Authorization: 'Bearer test-destination-key-12345',
               },
               params: {},
               files: {},
@@ -179,10 +183,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://integrations.survicate.com/endpoint/rudder-stack/group',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/group',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <destination-key>',
+                Authorization: 'Bearer test-key',
               },
               params: {},
               files: {},
@@ -197,7 +201,7 @@ export const data: ProcessorTestData[] = [
   },
   {
     name: 'survicate',
-    description: 'Group event without group_id - should fail',
+    description: 'Group event without groupId - should fail',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -208,6 +212,7 @@ export const data: ProcessorTestData[] = [
             message: {
               type: 'group',
               messageId: 'msg-missing-group_id',
+              originalTimestamp: '2023-01-01T00:00:00.000Z',
               userId: 'user-123',
               traits: {
                 name: 'Company Name',
@@ -243,7 +248,7 @@ export const data: ProcessorTestData[] = [
               workspaceId: 'wspId',
             },
             statusCode: 400,
-            error: 'group_id is required for group events.',
+            error: 'groupId is required for group events.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -273,6 +278,7 @@ export const data: ProcessorTestData[] = [
               anonymous_id: 'anon-123',
               groupId: 'company-B',
               messageId: 'msg-anon-group',
+              originalTimestamp: '2024-01-01T00:00:00.000Z',
               traits: {
                 name: 'Company B',
               },
@@ -307,7 +313,7 @@ export const data: ProcessorTestData[] = [
               workspaceId: 'wspId',
             },
             statusCode: 400,
-            error: 'Anonymous group calls are not supported. user_id is required.',
+            error: 'Anonymous group calls are not supported. userId is required.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

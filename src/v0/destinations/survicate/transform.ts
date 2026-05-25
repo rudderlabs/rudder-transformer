@@ -17,19 +17,7 @@ import {
   SurvicateMessageSchema,
 } from './types';
 
-import { ENDPOINT_CONFIG } from './config';
-
-// reserved keys in either snake_case or camelCase that should be stripped from traits
-const RESERVED_KEYS = [
-  'user_id',
-  'userId',
-  'group_id',
-  'groupId',
-  'timestamp',
-  'originalTimestamp',
-  'message_id',
-  'messageId',
-];
+import { ENDPOINT_CONFIG, RESERVED_KEYS } from './config';
 
 /**
  * Remove reserved identifiers from a traits object.

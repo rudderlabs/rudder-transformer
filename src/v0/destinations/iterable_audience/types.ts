@@ -36,7 +36,7 @@ export type IdentifierMapping = z.infer<typeof IdentifierMappingSchema>;
 
 export const IterableConnectionConfigSchema = z
   .object({
-    listId: z.union([z.string(), z.number()]),
+    audienceId: z.union([z.string(), z.number()]),
     identifierMappings: z.array(IdentifierMappingSchema),
   })
   .passthrough();

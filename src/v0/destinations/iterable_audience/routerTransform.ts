@@ -128,7 +128,10 @@ class IterableAudienceIntegration extends BatchDestination<
     // listId + subscribe/unsubscribe branch are captured in the closure here.
     // `ChunkBatchStrategy.wrapBody(bodies)` receives only the bodies array
     // (no endpoint, no group key), so this state cannot be passed at call-time.
-    const { listId } = this.connectionConfig;
+    // Iterable's API expects a numeric listId; VDM Next supplies it as
+    // `audienceId` (string) on the connection config.
+    const { audienceId } = this.connectionConfig;
+    const listId = typeof audienceId === 'number' ? audienceId : Number(audienceId);
     const isSubscribe = endpoint.endsWith('/api/lists/subscribe');
     return new ChunkBatchStrategy<IterableAudiencePayload>({
       maxItems: MAX_BATCH_SIZE,

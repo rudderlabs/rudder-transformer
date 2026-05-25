@@ -37,7 +37,7 @@ const buildDestination = (
 });
 
 const buildConnection = (
-  listId: string | number,
+  audienceId: string | number,
   identifierMappings: IdentifierMapping[],
 ): IterableAudienceConnection => ({
   sourceId: 'src-1',
@@ -45,7 +45,7 @@ const buildConnection = (
   enabled: true,
   config: {
     destination: {
-      listId,
+      audienceId: String(audienceId),
       identifierMappings,
     },
   },

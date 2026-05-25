@@ -30,7 +30,7 @@ const connection: Connection = {
   enabled: true,
   config: {
     destination: {
-      listId: 12345,
+      audienceId: '12345',
       identifierMappings: [{ from: 'email', to: 'email' }],
     },
   },
@@ -49,7 +49,7 @@ const userIdConnection: Connection = {
   ...connection,
   config: {
     destination: {
-      listId: 12345,
+      audienceId: '12345',
       identifierMappings: [{ from: 'user_id', to: 'userId' }],
     },
   },
@@ -68,7 +68,7 @@ const hybridConnection: Connection = {
   ...connection,
   config: {
     destination: {
-      listId: 12345,
+      audienceId: '12345',
       identifierMappings: [
         { from: 'email', to: 'email' },
         { from: 'user_id', to: 'userId' },

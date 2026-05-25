@@ -1,6 +1,3 @@
-// Destination type for logging and error tracking
-const DEST_TYPE = 'SURVICATE';
-
 export const RESERVED_KEYS = [
   'user_id',
   'userId',
@@ -39,9 +36,4 @@ const ENDPOINT_CONFIG = {
   },
 } as const;
 
-// Headers configuration
-const HEADERS_CONFIG = {
-  CONTENT_TYPE: contentType,
-} as const;
-
-export { ENDPOINT_CONFIG, DEST_TYPE, HEADERS_CONFIG };
+export { ENDPOINT_CONFIG };

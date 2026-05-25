@@ -55,6 +55,7 @@ export interface IdentifyPayload {
   user_id: string;
   timestamp: string;
   message_id: string;
+  context?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
@@ -63,6 +64,7 @@ export interface GroupPayload {
   group_id: string;
   timestamp: string;
   message_id: string;
+  context?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
@@ -72,4 +74,5 @@ export interface TrackPayload {
   properties: Record<string, unknown>;
   timestamp: string;
   message_id: string;
+  context?: Record<string, unknown>;
 }

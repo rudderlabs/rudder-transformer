@@ -13,6 +13,25 @@ type DestTransformInput = {
   connection?: Connection;
 };
 
+type EventTesterStage = {
+  user_transform: boolean;
+  dest_transform: boolean;
+  send_to_destination: boolean;
+};
+
+type EventTesterV2Payload = {
+  events: RudderMessage[];
+  destination: Destination;
+  connection: Connection;
+  stage: EventTesterStage;
+  libraries: Array<{ versionId?: string }>;
+};
+
+type UserTransformResult = {
+  message?: RudderMessage;
+  error?: string;
+};
+
 export class EventTesterService {
   private static getDestHandler(version, destination) {
     // eslint-disable-next-line global-require, import/no-dynamic-require
@@ -46,6 +65,111 @@ export class EventTesterService {
     }
     const output = await this.getDestHandler(version, dest).process(ev);
     return Array.isArray(output) ? output : [output];
+  }
+
+  private static async runDestTransformBatch(
+    version: string,
+    dest: string,
+    events: DestTransformInput[],
+  ): Promise<unknown[]> {
+    if (events.length === 0) {
+      return [];
+    }
+    const { WorkspaceId: workspaceId } = events[0].destination;
+    if (!workspaceId) {
+      throw new Error('destination.WorkspaceId is required');
+    }
+
+    if (isBatchingFrameworkEnabled(dest, workspaceId)) {
+      const IntegrationClass = FetchHandler.getBatchDestinationHandler(dest);
+      const inputs: RouterTransformationRequestData[] = events.map((event, idx) => ({
+        message: event.message,
+        metadata: { workspaceId, jobId: idx + 1 } as Metadata,
+        destination: event.destination,
+        connection: event.connection,
+      }));
+      const responses = await processBatchedDestination(inputs, IntegrationClass, {});
+      const failed = responses.find((r) => r.error);
+      if (failed) {
+        throw new Error(failed.error);
+      }
+      return responses.map((r) => r.batchedRequest);
+    }
+
+    const transformed = await Promise.all(
+      events.map((event) => this.runDestTransform(version, dest, event)),
+    );
+    return transformed.flat();
+  }
+
+  private static async runUserTransform(
+    events: DestTransformInput[],
+    libraries: Array<{ versionId?: string }> = [],
+  ): Promise<UserTransformResult[]> {
+    if (events.length === 0) {
+      return [];
+    }
+    const librariesVersionIDs = libraries
+      .map((library) => library.versionId)
+      .filter((versionId): versionId is string => Boolean(versionId));
+    const destination = events[0].destination as FixMe;
+    const transformationVersionId =
+      destination.Transformations &&
+      destination.Transformations[0] &&
+      destination.Transformations[0].versionId;
+
+    if (!transformationVersionId) {
+      return events.map(() => ({ error: 'Transformation VersionID not found' }));
+    }
+
+    const results: UserTransformResult[] = new Array(events.length);
+    await Promise.all(
+      events.map(async (event, idx) => {
+        try {
+          const transformedEvents = await userTransformHandler()(
+            [event],
+            transformationVersionId,
+            librariesVersionIDs,
+          );
+          const transformedEvent = transformedEvents[0];
+          if (transformedEvent.error) {
+            throw new Error(transformedEvent.error);
+          }
+          results[idx] = { message: transformedEvent.transformedEvent };
+        } catch (err: any) {
+          results[idx] = { error: err.message || JSON.stringify(err) };
+        }
+      }),
+    );
+    return results;
+  }
+
+  private static async sendPayloadsToDestination(
+    dest: string,
+    transformedPayloads: unknown[],
+  ): Promise<{ responses: unknown[]; statuses: number[] }> {
+    const responses: unknown[] = [];
+    const statuses: number[] = [];
+
+    for (const payload of transformedPayloads) {
+      // eslint-disable-next-line no-await-in-loop
+      const parsedResponse = await sendToDestination(dest, payload);
+      let contentType = '';
+      let responsePayload = '';
+      if (parsedResponse.headers) {
+        contentType = parsedResponse.headers['content-type'];
+        if (this.isSupportedContentType(contentType)) {
+          responsePayload = parsedResponse.response;
+        }
+      } else if (parsedResponse.networkFailure) {
+        responsePayload = parsedResponse.response;
+      }
+
+      responses.push(responsePayload);
+      statuses.push(parsedResponse.status);
+    }
+
+    return { responses, statuses };
   }
 
   private static transformDestination(dest) {
@@ -208,5 +332,87 @@ export class EventTesterService {
       }),
     );
     return respList;
+  }
+
+  public static async testEventV2(payload: EventTesterV2Payload, version: string, dest: string) {
+    const { events, destination, connection, stage, libraries } = payload;
+    if (!events || !Array.isArray(events)) {
+      throw new Error('events array is required in payload');
+    }
+
+    const transformedDestination = this.transformDestination(destination);
+    const preparedEvents: DestTransformInput[] = events.map((message) => ({
+      message,
+      destination: transformedDestination,
+      connection,
+    }));
+
+    const userTransformResults: unknown[] = [];
+    const eventsForDestinationTransform: DestTransformInput[] = [];
+
+    if (stage.user_transform) {
+      const results = await this.runUserTransform(preparedEvents, libraries);
+      results.forEach((result, idx) => {
+        if (result.error) {
+          userTransformResults[idx] = { error: result.error };
+          return;
+        }
+        userTransformResults[idx] = result.message;
+        eventsForDestinationTransform.push({
+          ...preparedEvents[idx],
+          message: result.message as RudderMessage,
+        });
+      });
+    } else {
+      preparedEvents.forEach((event, idx) => {
+        userTransformResults[idx] = event.message;
+      });
+      eventsForDestinationTransform.push(...preparedEvents);
+    }
+
+    const response: {
+      user_transformed_payload: unknown[];
+      dest_transformed_payload: unknown[];
+      destination_response: unknown[];
+      destination_response_status: number[];
+    } = {
+      user_transformed_payload: userTransformResults,
+      dest_transformed_payload: [],
+      destination_response: [],
+      destination_response_status: [],
+    };
+
+    if (!stage.dest_transform) {
+      return response;
+    }
+
+    try {
+      response.dest_transformed_payload = await this.runDestTransformBatch(
+        version,
+        dest,
+        eventsForDestinationTransform,
+      );
+    } catch (err: any) {
+      response.dest_transformed_payload = [{ error: err.message || JSON.stringify(err) }];
+      if (stage.send_to_destination) {
+        response.destination_response = [{
+          error: 'error encountered in dest_transformation stage. Aborting.',
+        }];
+        response.destination_response_status = [400];
+      }
+      return response;
+    }
+
+    if (!stage.send_to_destination) {
+      return response;
+    }
+
+    const destinationResponse = await this.sendPayloadsToDestination(
+      dest,
+      response.dest_transformed_payload,
+    );
+    response.destination_response = destinationResponse.responses;
+    response.destination_response_status = destinationResponse.statuses;
+    return response;
   }
 }

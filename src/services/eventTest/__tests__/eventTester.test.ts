@@ -123,3 +123,108 @@ describe('EventTesterService.runDestTransform', () => {
     });
   });
 });
+
+describe('EventTesterService.testEventV2', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
+
+  it('runs user transform per event and forwards only successful events into batch dest transform', async () => {
+    const runUserTransformSpy = jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runUserTransform: (events: unknown[], libraries: unknown[]) => Promise<unknown[]>;
+        },
+        'runUserTransform',
+      )
+      .mockResolvedValue([
+        { message: { type: 'record', id: 'ok-1' } },
+        { error: 'user transform failed' },
+        { message: { type: 'record', id: 'ok-2' } },
+      ]);
+
+    const runDestTransformBatchSpy = jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runDestTransformBatch: (version: string, dest: string, events: unknown[]) => Promise<unknown[]>;
+        },
+        'runDestTransformBatch',
+      )
+      .mockResolvedValue([sampleOutput]);
+
+    const result = await EventTesterService.testEventV2(
+      {
+        events: [{ type: 'record' }, { type: 'record' }, { type: 'record' }],
+        destination: {
+          workspaceId: 'ws-1',
+          destinationDefinition: {},
+          transformations: [{ versionId: 'transform-1' }],
+        },
+        connection: {},
+        stage: { user_transform: true, dest_transform: true, send_to_destination: false },
+        libraries: [{ versionId: 'lib-1' }],
+      },
+      'v0',
+      'custom_audience',
+    );
+
+    expect(runUserTransformSpy).toHaveBeenCalledTimes(1);
+    expect(runDestTransformBatchSpy).toHaveBeenCalledWith(
+      'v0',
+      'custom_audience',
+      expect.arrayContaining([
+        expect.objectContaining({ message: { type: 'record', id: 'ok-1' } }),
+        expect.objectContaining({ message: { type: 'record', id: 'ok-2' } }),
+      ]),
+    );
+    expect(runDestTransformBatchSpy.mock.calls[0][2]).toHaveLength(2);
+    expect(result.user_transformed_payload).toEqual([
+      { type: 'record', id: 'ok-1' },
+      { error: 'user transform failed' },
+      { type: 'record', id: 'ok-2' },
+    ]);
+    expect(result.dest_transformed_payload).toEqual([sampleOutput]);
+  });
+
+  it('maps destination responses/statuses 1:1 to batched transformed payloads', async () => {
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runDestTransformBatch: (version: string, dest: string, events: unknown[]) => Promise<unknown[]>;
+        },
+        'runDestTransformBatch',
+      )
+      .mockResolvedValue([sampleOutput, { ...sampleOutput, endpoint: 'https://api.example.com/y' }]);
+
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          sendPayloadsToDestination: (
+            destination: string,
+            transformedPayloads: unknown[],
+          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
+        },
+        'sendPayloadsToDestination',
+      )
+      .mockResolvedValue({ responses: ['ok-1', 'ok-2'], statuses: [200, 202] });
+
+    const result = await EventTesterService.testEventV2(
+      {
+        events: [{ type: 'record' }, { type: 'record' }],
+        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+        connection: {},
+        stage: { user_transform: false, dest_transform: true, send_to_destination: true },
+        libraries: [],
+      },
+      'v0',
+      'custom_audience',
+    );
+
+    expect(result.dest_transformed_payload).toHaveLength(2);
+    expect(result.destination_response).toEqual(['ok-1', 'ok-2']);
+    expect(result.destination_response_status).toEqual([200, 202]);
+    expect(result.destination_response).toHaveLength(result.dest_transformed_payload.length);
+    expect(result.destination_response_status).toHaveLength(result.dest_transformed_payload.length);
+  });
+});

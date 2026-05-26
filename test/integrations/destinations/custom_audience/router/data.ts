@@ -291,7 +291,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'insert',
-                fields: { email: '', other: null },
+                identifiers: { email: '', other: null },
               }),
               metadata: generateMetadata(2),
               destination,

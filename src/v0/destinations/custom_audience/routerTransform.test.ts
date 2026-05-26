@@ -167,6 +167,17 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       failingJobId: 2,
       errorMatch: /Invalid/,
     },
+    {
+      name: 'event with empty-string customMapping "from" value',
+      buildInputs: () => {
+        const connection = buildConnection({ customMappings: [{ from: '', to: 'listId' }] });
+        return [
+          buildInput(1, 'insert', { email: 'a@b.com' }, buildDestination(), connection),
+        ];
+      },
+      failingJobId: 1,
+      errorMatch: /Custom mapping "from" value must be non-empty/,
+    },
   ];
 
   it.each(errorCases)(

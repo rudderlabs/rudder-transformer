@@ -65,11 +65,9 @@ export const injectCustomMappings = (
   }
   const merged: Record<string, unknown> = { ...fields };
   // `from` holds the literal value (user-supplied constant), `to` is the destination field.
-  customMappings
-    .filter((mapping) => mapping?.to)
-    .forEach((mapping) => {
-      merged[mapping.to] = mapping.from;
-    });
+  for (const mapping of customMappings) {
+    merged[mapping.to] = mapping.from;
+  }
   return merged;
 };
 

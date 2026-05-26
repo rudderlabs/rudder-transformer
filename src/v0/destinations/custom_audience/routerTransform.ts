@@ -143,6 +143,24 @@ class CustomAudienceIntegration extends BatchDestination<
             identifiers: z.record(z.unknown()),
           })
           .passthrough(),
+        connection: z
+          .object({
+            config: z.object({
+              destination: z
+                .object({
+                  customMappings: z
+                    .array(
+                      z.object({
+                        from: z.string().min(1, 'Custom mapping "from" value must be non-empty'),
+                        to: z.string().min(1, 'Custom mapping "to" value must be non-empty'),
+                      }),
+                    )
+                    .optional(),
+                })
+                .passthrough(),
+            }),
+          })
+          .passthrough(),
       })
       .passthrough();
   }

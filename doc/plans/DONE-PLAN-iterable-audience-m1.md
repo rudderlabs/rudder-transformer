@@ -45,11 +45,11 @@ A single implementation stage `data-plane` runs three parallel subagents (v0 tra
 
 **Subagents:**
 
-| Subagent | Files Owned (write) | Files Read-Only |
-|---|---|---|
-| A — v0 transform | `src/v0/destinations/iterable_audience/{config,types,utils,routerTransform}.ts` + `src/v0/destinations/iterable_audience/__tests__/{routerTransform,utils}.test.ts` | existing `iterable/` v0 config; `src/v0/util/audienceUtils.ts`; `src/v0/util/recordUtils.ts`; `custom_audience/routerTransform.ts`; `customerio_audience/transform.ts`; `chunkBatchStrategy.ts` |
-| B — v1 delivery | `src/v1/destinations/iterable_audience/{networkHandler,types}.ts` + `src/v1/destinations/iterable_audience/strategies/audience-list.ts` + `src/v1/destinations/iterable_audience/__tests__/networkHandler.test.ts` | existing `iterable/` v1 (`strategies/base.ts`, `utils.ts`, `types.ts`); `src/v0/destinations/iterable/config.js` (`ITERABLE_RESPONSE_*_PATHS`, `BASE_URL`, `constructEndpoint`) |
-| C — Registry + data-driven tests | `src/constants/batchedDestinationsMap.ts` (1-line add) + `test/integrations/destinations/iterable_audience/router/data.ts` + mocks | `src/constants/batchedDestinationsMap.ts` (read first); template data files in `custom_audience` / `customerio_audience` |
+| Subagent                         | Files Owned (write)                                                                                                                                                                                                | Files Read-Only                                                                                                                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A — v0 transform                 | `src/v0/destinations/iterable_audience/{config,types,utils,routerTransform}.ts` + `src/v0/destinations/iterable_audience/__tests__/{routerTransform,utils}.test.ts`                                                | existing `iterable/` v0 config; `src/v0/util/audienceUtils.ts`; `src/v0/util/recordUtils.ts`; `custom_audience/routerTransform.ts`; `customerio_audience/transform.ts`; `chunkBatchStrategy.ts` |
+| B — v1 delivery                  | `src/v1/destinations/iterable_audience/{networkHandler,types}.ts` + `src/v1/destinations/iterable_audience/strategies/audience-list.ts` + `src/v1/destinations/iterable_audience/__tests__/networkHandler.test.ts` | existing `iterable/` v1 (`strategies/base.ts`, `utils.ts`, `types.ts`); `src/v0/destinations/iterable/config.js` (`ITERABLE_RESPONSE_*_PATHS`, `BASE_URL`, `constructEndpoint`)                 |
+| C — Registry + data-driven tests | `src/constants/batchedDestinationsMap.ts` (1-line add) + `test/integrations/destinations/iterable_audience/router/data.ts` + mocks                                                                                 | `src/constants/batchedDestinationsMap.ts` (read first); template data files in `custom_audience` / `customerio_audience`                                                                        |
 
 NO FILE OVERLAP. Subagent A's tests live under `src/v0/destinations/iterable_audience/__tests__/`; Subagent B's tests under `src/v1/destinations/iterable_audience/__tests__/`; Subagent C owns the constants edit and the `test/integrations/...` data fixture.
 
@@ -89,32 +89,32 @@ loom:
     enabled: true
     auto_allow: true
     excluded_commands:
-      - "loom"
+      - 'loom'
     filesystem:
       deny_read:
-        - "~/.ssh/**"
-        - "~/.aws/**"
-        - "~/.config/gcloud/**"
-        - "~/.gnupg/**"
+        - '~/.ssh/**'
+        - '~/.aws/**'
+        - '~/.config/gcloud/**'
+        - '~/.gnupg/**'
       allow_write:
-        - "src/v0/destinations/iterable_audience/**"
-        - "src/v1/destinations/iterable_audience/**"
-        - "src/constants/batchedDestinationsMap.ts"
-        - "test/integrations/destinations/iterable_audience/**"
-        - "doc/loom/knowledge/**"
-        - "doc/plans/**"
+        - 'src/v0/destinations/iterable_audience/**'
+        - 'src/v1/destinations/iterable_audience/**'
+        - 'src/constants/batchedDestinationsMap.ts'
+        - 'test/integrations/destinations/iterable_audience/**'
+        - 'doc/loom/knowledge/**'
+        - 'doc/plans/**'
     network:
       allowed_domains:
-        - "registry.npmjs.org"
-        - "registry.yarnpkg.com"
+        - 'registry.npmjs.org'
+        - 'registry.yarnpkg.com'
       allow_local_binding: false
       allow_unix_sockets: []
   stages:
     - id: knowledge-bootstrap
-      name: "Bootstrap Knowledge Base"
+      name: 'Bootstrap Knowledge Base'
       stage_type: knowledge
-      model: "sonnet"
-      reasoning_effort: "high"
+      model: 'sonnet'
+      reasoning_effort: 'high'
       description: |
         MANDATORY first stage. Capture reuse contracts from the existing iterable/
         destination and the BatchDestination framework path before writing any code.
@@ -183,21 +183,21 @@ loom:
         ⛔ NEVER use Claude Code auto-memory.
       dependencies: []
       acceptance:
-        - "loom knowledge check"
+        - 'loom knowledge check'
         - 'rg -q "## " doc/loom/knowledge/entry-points.md'
         - 'rg -q "## " doc/loom/knowledge/patterns.md'
       files:
-        - "doc/loom/knowledge/**"
-      working_dir: "."
+        - 'doc/loom/knowledge/**'
+      working_dir: '.'
       artifacts:
-        - "doc/loom/knowledge/entry-points.md"
-        - "doc/loom/knowledge/patterns.md"
+        - 'doc/loom/knowledge/entry-points.md'
+        - 'doc/loom/knowledge/patterns.md'
 
     - id: data-plane
-      name: "Data plane — v0 transform + v1 delivery"
+      name: 'Data plane — v0 transform + v1 delivery'
       stage_type: standard
-      model: "opus[1m]"
-      reasoning_effort: "xhigh"
+      model: 'opus[1m]'
+      reasoning_effort: 'xhigh'
       description: |
         Implement v0 transform layer and v1 delivery layer for iterable_audience.
         Three parallel subagents, file-exclusive ownership.
@@ -467,46 +467,46 @@ loom:
           ⛔ AUTO-MEMORY: NEVER use ~/.claude/projects/*/memory/; only loom memory
           Record mistakes, decisions, surprises via loom memory note/decision.
           Do NOT record procedural actions.
-      dependencies: ["knowledge-bootstrap"]
+      dependencies: ['knowledge-bootstrap']
       acceptance:
-        - "npm run test:js -- --testPathPattern iterable_audience"
-        - "npm run lint"
+        - 'npm run test:js -- --testPathPattern iterable_audience'
+        - 'npm run lint'
       files:
-        - "src/v0/destinations/iterable_audience/**"
-        - "src/v1/destinations/iterable_audience/**"
-        - "test/integrations/destinations/iterable_audience/**"
-        - "src/constants/batchedDestinationsMap.ts"
-      working_dir: "."
+        - 'src/v0/destinations/iterable_audience/**'
+        - 'src/v1/destinations/iterable_audience/**'
+        - 'test/integrations/destinations/iterable_audience/**'
+        - 'src/constants/batchedDestinationsMap.ts'
+      working_dir: '.'
       artifacts:
-        - "src/v0/destinations/iterable_audience/config.ts"
-        - "src/v0/destinations/iterable_audience/types.ts"
-        - "src/v0/destinations/iterable_audience/utils.ts"
-        - "src/v0/destinations/iterable_audience/routerTransform.ts"
-        - "src/v1/destinations/iterable_audience/networkHandler.ts"
-        - "src/v1/destinations/iterable_audience/types.ts"
-        - "src/v1/destinations/iterable_audience/strategies/audience-list.ts"
+        - 'src/v0/destinations/iterable_audience/config.ts'
+        - 'src/v0/destinations/iterable_audience/types.ts'
+        - 'src/v0/destinations/iterable_audience/utils.ts'
+        - 'src/v0/destinations/iterable_audience/routerTransform.ts'
+        - 'src/v1/destinations/iterable_audience/networkHandler.ts'
+        - 'src/v1/destinations/iterable_audience/types.ts'
+        - 'src/v1/destinations/iterable_audience/strategies/audience-list.ts'
       wiring:
-        - source: "src/constants/batchedDestinationsMap.ts"
+        - source: 'src/constants/batchedDestinationsMap.ts'
           pattern: 'ITERABLE_AUDIENCE'
-          description: "Destination registered in batchedDestinationsMap so BatchDestination loader instantiates it"
-        - source: "src/v0/destinations/iterable_audience/config.ts"
+          description: 'Destination registered in batchedDestinationsMap so BatchDestination loader instantiates it'
+        - source: 'src/v0/destinations/iterable_audience/config.ts'
           pattern: "from '../iterable/config'"
-          description: "Reuses existing iterable destination constructEndpoint and BASE_URL"
-        - source: "src/v1/destinations/iterable_audience/strategies/audience-list.ts"
+          description: 'Reuses existing iterable destination constructEndpoint and BASE_URL'
+        - source: 'src/v1/destinations/iterable_audience/strategies/audience-list.ts'
           pattern: "from '../../iterable/"
-          description: "v1 strategy reuses existing iterable destination BaseStrategy/createBatchErrorChecker"
-        - source: "src/v0/destinations/iterable_audience/utils.ts"
+          description: 'v1 strategy reuses existing iterable destination BaseStrategy/createBatchErrorChecker'
+        - source: 'src/v0/destinations/iterable_audience/utils.ts'
           pattern: 'channelUnsubscribe'
-          description: "channelUnsubscribe: false explicit in unsubscribe body builder"
-        - source: "src/v0/destinations/iterable_audience/utils.ts"
+          description: 'channelUnsubscribe: false explicit in unsubscribe body builder'
+        - source: 'src/v0/destinations/iterable_audience/utils.ts'
           pattern: 'processAudienceRecord'
-          description: "Per-row pipeline reuses shared audienceUtils.processAudienceRecord"
+          description: 'Per-row pipeline reuses shared audienceUtils.processAudienceRecord'
 
     - id: integration-verify
-      name: "Integration Verification"
+      name: 'Integration Verification'
       stage_type: integration-verify
-      model: "opus[1m]"
-      reasoning_effort: "xhigh"
+      model: 'opus[1m]'
+      reasoning_effort: 'xhigh'
       description: |
         Full build, lint, test, code review, and functional smoke for the
         iterable_audience transformer code.
@@ -587,29 +587,29 @@ loom:
           ⛔ NO knowledge writes — only loom memory in this stage.
           Record mistakes, decisions, surprises via loom memory note/decision.
           Do NOT record procedural actions.
-      dependencies: ["data-plane"]
+      dependencies: ['data-plane']
       acceptance:
-        - "npm run test:js -- --testPathPattern iterable_audience"
-        - "npm run lint"
+        - 'npm run test:js -- --testPathPattern iterable_audience'
+        - 'npm run lint'
         - 'rg -qF "ITERABLE_AUDIENCE" src/constants/batchedDestinationsMap.ts'
         - 'rg -qF "channelUnsubscribe" src/v0/destinations/iterable_audience/utils.ts'
         - 'rg -qF "iterable_forgotten_user_violations" src/v1/destinations/iterable_audience/strategies/audience-list.ts'
-      working_dir: "."
+      working_dir: '.'
       truths:
         - 'rg -qF "ITERABLE_AUDIENCE" src/constants/batchedDestinationsMap.ts'
       wiring:
-        - source: "src/constants/batchedDestinationsMap.ts"
+        - source: 'src/constants/batchedDestinationsMap.ts'
           pattern: 'ITERABLE_AUDIENCE'
-          description: "BatchDestination loader registered"
-        - source: "src/v1/destinations/iterable_audience/strategies/audience-list.ts"
+          description: 'BatchDestination loader registered'
+        - source: 'src/v1/destinations/iterable_audience/strategies/audience-list.ts'
           pattern: 'iterable_forgotten_user_violations'
-          description: "UserForgotten compliance metric emitted"
+          description: 'UserForgotten compliance metric emitted'
 
     - id: knowledge-distill
-      name: "Knowledge Distillation"
+      name: 'Knowledge Distillation'
       stage_type: knowledge-distill
-      model: "sonnet"
-      reasoning_effort: "high"
+      model: 'sonnet'
+      reasoning_effort: 'high'
       description: |
         Curate stage memories into permanent doc/loom/knowledge/.
 
@@ -643,13 +643,13 @@ loom:
         - If a per-destination docs page is expected (see existing iterable destination's
           docs/ for the template), add a stub. Apply skill: generate-integration-docs
           (reference am/docs/ per LLD §7.1).
-      dependencies: ["integration-verify"]
+      dependencies: ['integration-verify']
       acceptance:
         - 'rg -q "## " doc/loom/knowledge/patterns.md'
       files:
-        - "doc/loom/knowledge/**"
-        - "src/v0/destinations/iterable_audience/docs/**"
-      working_dir: "."
+        - 'doc/loom/knowledge/**'
+        - 'src/v0/destinations/iterable_audience/docs/**'
+      working_dir: '.'
 ```
 
 <!-- END loom METADATA -->

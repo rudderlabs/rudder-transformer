@@ -50,10 +50,10 @@ export class EventTesterService {
       return { payloads: [], error: 'destination.WorkspaceId is required' };
     }
 
-    const inputs = events.map((event, idx) => ({
+    const inputs = events.map((event) => ({
       message: event.message as RudderMessage,
       // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
-      metadata: { workspaceId, jobId: 12 } as Metadata,
+      metadata: { workspaceId } as Metadata,
       destination: event.destination as Destination,
       connection: event.connection as Connection,
     }));

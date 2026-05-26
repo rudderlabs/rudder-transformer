@@ -11,17 +11,17 @@ type DestTransformInput = {
 };
 
 type EventTesterStage = {
-  user_transform: boolean;
-  dest_transform: boolean;
-  send_to_destination: boolean;
+  user_transform?: boolean;
+  dest_transform?: boolean;
+  send_to_destination?: boolean;
 };
 
 type EventTesterV2Payload = {
   events: Record<string, unknown>[];
   destination: Record<string, unknown>;
-  connection: Record<string, unknown>;
+  connection?: Record<string, unknown>;
   stage: EventTesterStage;
-  libraries: Record<string, unknown>[];
+  libraries?: Record<string, unknown>[];
 };
 
 type UserTransformResult = {
@@ -53,7 +53,7 @@ export class EventTesterService {
     const inputs = events.map((event, idx) => ({
       message: event.message as RudderMessage,
       // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
-      metadata: { workspaceId } as Metadata,
+      metadata: { workspaceId, jobId: 12} as Metadata,
       destination: event.destination as Destination,
       connection: event.connection as Connection,
     }));
@@ -65,7 +65,9 @@ export class EventTesterService {
       return { payloads: [], error: failed.error };
     }
     const payloads = responses.flatMap((r) =>
-      Array.isArray(r.batchedRequest) ? r.batchedRequest : r.batchedRequest ? [r.batchedRequest] : [],
+      Array.isArray(r.batchedRequest)
+        ? r.batchedRequest
+        : [r.batchedRequest]
     );
     return { payloads };
   }
@@ -81,8 +83,9 @@ export class EventTesterService {
       .map((library) => library.versionId)
       .filter((versionId): versionId is string => typeof versionId === 'string');
     const { Transformations } = events[0].destination;
-    const transformationVersionId =
-      Array.isArray(Transformations) ? Transformations[0]?.VersionID : undefined;
+    const transformationVersionId = Array.isArray(Transformations)
+      ? Transformations[0]?.versionId
+      : undefined;
 
     if (!transformationVersionId) {
       return events.map(() => ({ error: 'Transformation VersionID not found' }));
@@ -255,15 +258,15 @@ export class EventTesterService {
 
     let userTransformResults: UserTransformResult[];
     if (stage.user_transform) {
-      userTransformResults = await this.runUserTransform(preparedEvents, libraries);
+      userTransformResults = await this.runUserTransform(preparedEvents, libraries || []);
     } else {
       userTransformResults = preparedEvents.map((event) => ({ message: event.message }));
     }
 
     const response: EventTesterV2Response = {
-      user_transformed_payload: userTransformResults.map((r) =>
-        r.error ? { error: r.error } : r.message,
-      ),
+      user_transformed_payload: stage.user_transform
+        ? userTransformResults.map((r) => (r.error ? { error: r.error } : r.message))
+        : [],
       dest_transformed_payload: [],
       destination_response: [],
       destination_response_status: [],

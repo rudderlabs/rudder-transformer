@@ -1,4 +1,13 @@
 import { EventTesterService } from '../eventTester';
+import { NativeIntegrationDestinationService } from '../../destination/nativeIntegration';
+import { userTransformHandler } from '../../../routerUtils';
+
+jest.mock('../../../routerUtils', () => ({
+  ...jest.requireActual('../../../routerUtils'),
+  userTransformHandler: jest.fn(),
+}));
+
+const mockUserTransformHandler = userTransformHandler as jest.Mock;
 
 const sampleOutput = {
   version: '1',
@@ -47,7 +56,11 @@ describe('EventTesterService.testEvent', () => {
       .mockResolvedValue({ payloads: [sampleOutput] });
 
     const result = await EventTesterService.testEvent(
-      [buildV1Event({ stage: { user_transform: false, dest_transform: true, send_to_destination: false } })],
+      [
+        buildV1Event({
+          stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+        }),
+      ],
       'v0',
       'custom_audience',
     );
@@ -83,7 +96,9 @@ describe('EventTesterService.testEvent', () => {
     expect(result).toEqual([
       {
         user_transformed_payload: { error: 'transform compilation error' },
-        dest_transformed_payload: { error: 'error encountered in user_transformation stage. Aborting.' },
+        dest_transformed_payload: {
+          error: 'error encountered in user_transformation stage. Aborting.',
+        },
       },
     ]);
   });
@@ -175,7 +190,9 @@ describe('EventTesterService.testEvent', () => {
     expect(result).toEqual([
       {
         dest_transformed_payload: { error: 'batch transform failed' },
-        destination_response: { error: 'error encountered in dest_transformation stage. Aborting.' },
+        destination_response: {
+          error: 'error encountered in dest_transformation stage. Aborting.',
+        },
       },
     ]);
   });
@@ -293,7 +310,7 @@ describe('EventTesterService.testEventV2', () => {
     );
 
     expect(result).toEqual({
-      user_transformed_payload: [{ type: 'record' }, { type: 'record' }],
+      user_transformed_payload: [],
       dest_transformed_payload: [
         sampleOutput,
         { ...sampleOutput, endpoint: 'https://api.example.com/y' },
@@ -330,12 +347,227 @@ describe('EventTesterService.testEventV2', () => {
     );
 
     expect(result).toEqual({
-      user_transformed_payload: [{ type: 'record' }],
+      user_transformed_payload: [],
       dest_transformed_payload: [{ error: 'template evaluation failed' }],
       destination_response: [
         { error: 'error encountered in dest_transformation stage. Aborting.' },
       ],
       destination_response_status: [],
     });
+  });
+});
+
+describe('EventTesterService.runUserTransform', () => {
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
+
+  it('reads camelCase versionId from transformed destination and calls userTransformHandler', async () => {
+    // transformDestination capitalises top-level keys only:
+    //   { transformations: [{ versionId: '...' }] }
+    //   → { Transformations: [{ versionId: '...' }] }   (array contents untouched)
+    //
+    // runUserTransform must read Transformations[0]?.versionId (camelCase v)
+    // to find the value and pass it to userTransformHandler.
+    const innerHandler = jest
+      .fn()
+      .mockResolvedValue([{ transformedEvent: { type: 'record', transformed: true } }]);
+    mockUserTransformHandler.mockReturnValue(innerHandler);
+
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          stage: { user_transform: true, dest_transform: false, send_to_destination: false },
+          destination: {
+            workspaceId: 'ws-1',
+            destinationDefinition: {},
+            transformations: [{ versionId: 'transform-v1' }],
+          },
+        }),
+      ],
+      'v0',
+      'custom_audience',
+    );
+
+    expect(innerHandler).toHaveBeenCalledWith([expect.anything()], 'transform-v1', []);
+    expect(result).toEqual([{ user_transformed_payload: { type: 'record', transformed: true } }]);
+  });
+
+  it('continues to dest_transform after successful user_transform', async () => {
+    const innerHandler = jest
+      .fn()
+      .mockResolvedValue([{ transformedEvent: { type: 'record', transformed: true } }]);
+    mockUserTransformHandler.mockReturnValue(innerHandler);
+
+    jest
+      .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
+      .mockResolvedValue([
+        {
+          batchedRequest: sampleOutput,
+          metadata: [{}] as any,
+          destination: {} as any,
+          batched: false,
+          statusCode: 200,
+        },
+      ]);
+
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          stage: { user_transform: true, dest_transform: true, send_to_destination: false },
+          destination: {
+            workspaceId: 'ws-1',
+            destinationDefinition: {},
+            transformations: [{ versionId: 'transform-v1' }],
+          },
+        }),
+      ],
+      'v0',
+      'custom_audience',
+    );
+
+    expect(result).toEqual([
+      {
+        user_transformed_payload: { type: 'record', transformed: true },
+        dest_transformed_payload: [sampleOutput],
+      },
+    ]);
+  });
+
+  it('runs full pipeline when user_transform succeeds', async () => {
+    const innerHandler = jest
+      .fn()
+      .mockResolvedValue([{ transformedEvent: { type: 'record', transformed: true } }]);
+    mockUserTransformHandler.mockReturnValue(innerHandler);
+
+    jest
+      .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
+      .mockResolvedValue([
+        {
+          batchedRequest: sampleOutput,
+          metadata: [{}] as any,
+          destination: {} as any,
+          batched: false,
+          statusCode: 200,
+        },
+      ]);
+
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          sendPayloadsToDestination: (
+            destination: string,
+            transformedPayloads: unknown[],
+          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
+        },
+        'sendPayloadsToDestination',
+      )
+      .mockResolvedValue({ responses: ['ok'], statuses: [200] });
+
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          stage: { user_transform: true, dest_transform: true, send_to_destination: true },
+          destination: {
+            workspaceId: 'ws-1',
+            destinationDefinition: {},
+            transformations: [{ versionId: 'transform-v1' }],
+          },
+        }),
+      ],
+      'v0',
+      'custom_audience',
+    );
+
+    expect(result).toEqual([
+      {
+        user_transformed_payload: { type: 'record', transformed: true },
+        dest_transformed_payload: [sampleOutput],
+        destination_response: ['ok'],
+        destination_response_status: [200],
+      },
+    ]);
+  });
+});
+
+describe('EventTesterService.runDestTransform', () => {
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
+
+  it('delegates to NativeIntegrationDestinationService.doRouterTransformation', async () => {
+    const doRouterSpy = jest
+      .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
+      .mockResolvedValue([
+        {
+          batchedRequest: sampleOutput,
+          metadata: [{}] as any,
+          destination: {} as any,
+          batched: false,
+          statusCode: 200,
+        },
+      ]);
+
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+          destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+        }),
+      ],
+      'v0',
+      'custom_audience',
+    );
+
+    expect(doRouterSpy).toHaveBeenCalledTimes(1);
+    expect(doRouterSpy).toHaveBeenCalledWith(
+      [expect.objectContaining({ metadata: { workspaceId: 'ws-1' } })],
+      'custom_audience',
+      'v0',
+      {},
+    );
+    expect(result).toEqual([{ dest_transformed_payload: [sampleOutput] }]);
+  });
+
+  it('flattens array-valued batchedRequest entries to a uniform level', async () => {
+    const output2 = { ...sampleOutput, endpoint: 'https://api.example.com/y' };
+    jest
+      .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
+      .mockResolvedValue([
+        {
+          batchedRequest: sampleOutput,
+          metadata: [{}] as any,
+          destination: {} as any,
+          batched: false,
+          statusCode: 200,
+        },
+        {
+          batchedRequest: [sampleOutput, output2],
+          metadata: [{}] as any,
+          destination: {} as any,
+          batched: true,
+          statusCode: 200,
+        },
+      ]);
+
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+          destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+        }),
+      ],
+      'v0',
+      'custom_audience',
+    );
+
+    // flatMap normalizes: single object + array both become top-level entries
+    expect(result).toEqual([
+      { dest_transformed_payload: [sampleOutput, sampleOutput, output2] },
+    ]);
   });
 });

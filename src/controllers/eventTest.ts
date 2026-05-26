@@ -14,13 +14,13 @@ const parseTemplateBodySchema = z.object({
 const testEventV2Schema = z.object({
   events: z.array(z.record(z.unknown())),
   destination: z.record(z.unknown()),
-  connection: z.record(z.unknown()),
+  connection: z.record(z.unknown()).optional(),
   stage: z.object({
-    user_transform: z.boolean(),
-    dest_transform: z.boolean(),
-    send_to_destination: z.boolean(),
+    user_transform: z.boolean().optional(),
+    dest_transform: z.boolean().optional(),
+    send_to_destination: z.boolean().optional(),
   }),
-  libraries: z.array(z.record(z.unknown())),
+  libraries: z.array(z.record(z.unknown())).optional(),
 });
 
 export class EventTestController {

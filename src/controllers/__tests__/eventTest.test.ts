@@ -28,7 +28,6 @@ afterAll(async () => {
 
 beforeEach(() => {
   mockParseTemplate.mockReset();
-  jest.restoreAllMocks();
 });
 
 const ENDPOINT = '/test-router/custom_audience/parse-template';
@@ -109,16 +108,18 @@ describe('POST /test-router/custom_audience/parse-template', () => {
   });
 });
 
-describe('POST /test-router/v2/:version/:destination', () => {
-  const ENDPOINT_V2 = '/test-router/v2/v0/custom_audience';
+describe('POST /test-router/:version/:destination/batch', () => {
+  const ENDPOINT_V2 = '/test-router/v0/custom_audience/batch';
 
   it('should return 400 for malformed request payload', async () => {
-    const response = await request(server).post(ENDPOINT_V2).send({
-      destination: {},
-      connection: {},
-      stage: { user_transform: false, dest_transform: true, send_to_destination: false },
-      libraries: [],
-    });
+    const response = await request(server)
+      .post(ENDPOINT_V2)
+      .send({
+        destination: {},
+        connection: {},
+        stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+        libraries: [],
+      });
 
     expect(response.status).toBe(400);
     expect(response.body.error).toContain('events: Required');

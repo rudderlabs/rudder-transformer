@@ -147,7 +147,11 @@ describe('EventTesterService.testEventV2', () => {
     const runDestTransformBatchSpy = jest
       .spyOn(
         EventTesterService as unknown as {
-          runDestTransformBatch: (version: string, dest: string, events: unknown[]) => Promise<unknown[]>;
+          runDestTransformBatch: (
+            version: string,
+            dest: string,
+            events: unknown[],
+          ) => Promise<unknown[]>;
         },
         'runDestTransformBatch',
       )
@@ -179,23 +183,34 @@ describe('EventTesterService.testEventV2', () => {
       ]),
     );
     expect(runDestTransformBatchSpy.mock.calls[0][2]).toHaveLength(2);
-    expect(result.user_transformed_payload).toEqual([
-      { type: 'record', id: 'ok-1' },
-      { error: 'user transform failed' },
-      { type: 'record', id: 'ok-2' },
-    ]);
-    expect(result.dest_transformed_payload).toEqual([sampleOutput]);
+    expect(result).toEqual({
+      user_transformed_payload: [
+        { type: 'record', id: 'ok-1' },
+        { error: 'user transform failed' },
+        { type: 'record', id: 'ok-2' },
+      ],
+      dest_transformed_payload: [sampleOutput],
+      destination_response: [],
+      destination_response_status: [],
+    });
   });
 
   it('maps destination responses/statuses 1:1 to batched transformed payloads', async () => {
     jest
       .spyOn(
         EventTesterService as unknown as {
-          runDestTransformBatch: (version: string, dest: string, events: unknown[]) => Promise<unknown[]>;
+          runDestTransformBatch: (
+            version: string,
+            dest: string,
+            events: unknown[],
+          ) => Promise<unknown[]>;
         },
         'runDestTransformBatch',
       )
-      .mockResolvedValue([sampleOutput, { ...sampleOutput, endpoint: 'https://api.example.com/y' }]);
+      .mockResolvedValue([
+        sampleOutput,
+        { ...sampleOutput, endpoint: 'https://api.example.com/y' },
+      ]);
 
     jest
       .spyOn(
@@ -221,10 +236,50 @@ describe('EventTesterService.testEventV2', () => {
       'custom_audience',
     );
 
-    expect(result.dest_transformed_payload).toHaveLength(2);
-    expect(result.destination_response).toEqual(['ok-1', 'ok-2']);
-    expect(result.destination_response_status).toEqual([200, 202]);
-    expect(result.destination_response).toHaveLength(result.dest_transformed_payload.length);
-    expect(result.destination_response_status).toHaveLength(result.dest_transformed_payload.length);
+    expect(result).toEqual({
+      user_transformed_payload: [{ type: 'record' }, { type: 'record' }],
+      dest_transformed_payload: [
+        sampleOutput,
+        { ...sampleOutput, endpoint: 'https://api.example.com/y' },
+      ],
+      destination_response: ['ok-1', 'ok-2'],
+      destination_response_status: [200, 202],
+    });
+  });
+
+  it('returns error and aborts send when dest transform fails', async () => {
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runDestTransformBatch: (
+            version: string,
+            dest: string,
+            events: unknown[],
+          ) => Promise<unknown[]>;
+        },
+        'runDestTransformBatch',
+      )
+      .mockRejectedValue(new Error('template evaluation failed'));
+
+    const result = await EventTesterService.testEventV2(
+      {
+        events: [{ type: 'record' }],
+        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+        connection: {},
+        stage: { user_transform: false, dest_transform: true, send_to_destination: true },
+        libraries: [],
+      },
+      'v0',
+      'custom_audience',
+    );
+
+    expect(result).toEqual({
+      user_transformed_payload: [{ type: 'record' }],
+      dest_transformed_payload: [{ error: 'template evaluation failed' }],
+      destination_response: [
+        { error: 'error encountered in dest_transformation stage. Aborting.' },
+      ],
+      destination_response_status: [],
+    });
   });
 });

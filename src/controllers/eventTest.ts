@@ -48,19 +48,10 @@ export class EventTestController {
     if (!parsed.success) {
       ctx.status = 400;
       ctx.body = { error: formatZodError(parsed.error) };
-      ctx.set('apiVersion', EventTestController.API_VERSION);
       return;
     }
 
-    try {
-      ctx.body = await EventTesterService.testEventV2(parsed.data, version, destination);
-    } catch (err: CatchErr) {
-      ctx.body = {
-        error: err.message || JSON.stringify(err),
-      };
-      ctx.status = 400;
-    }
-    ctx.set('apiVersion', EventTestController.API_VERSION);
+    ctx.body = await EventTesterService.testEventV2(parsed.data, version, destination);
   }
 
   public static status(ctx: Context) {

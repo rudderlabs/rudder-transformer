@@ -43,7 +43,7 @@ export class EventTestController {
   }
 
   public static async testEventV2(ctx: Context) {
-    const { version, destination }: { version: string; destination: string } = ctx.params as any;
+    const { version, destination } = ctx.params;
     const parsed = testEventV2Schema.safeParse(ctx.request.body);
     if (!parsed.success) {
       ctx.status = 400;

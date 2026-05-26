@@ -179,6 +179,24 @@ users: [
 ],
 ```
 
+## Assert Whole Response Objects, Not Individual Fields
+
+When testing a method that returns a structured response, assert the entire object with `toEqual` rather than picking individual fields. This catches unexpected extra fields and makes the expected shape explicit at a glance.
+
+```ts
+// Good — full response shape visible in one assertion
+expect(result).toEqual({
+  users: [{ id: 'u1', status: 'active' }],
+  errors: [],
+  metadata: { total: 1 },
+});
+
+// Bad — individual field assertions hide the overall shape
+expect(result.users).toEqual([{ id: 'u1', status: 'active' }]);
+expect(result.errors).toEqual([]);
+expect(result.metadata).toEqual({ total: 1 });
+```
+
 ## Mock Leaf Dependencies, Not Intermediate Modules
 
 Prefer using the real module and mocking only its leaf dependencies (logger, stats) rather than replacing the whole module with a stub. Only mock the module itself if using it makes the test significantly more complex.

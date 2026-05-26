@@ -1,8 +1,6 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 import { FixMe } from '../../types';
-import { isBatchingFrameworkEnabled } from '../../constants/batchedDestinationsMap';
-import { FetchHandler } from '../../helpers/fetchHandlers';
-import { processBatchedDestination } from '../destination/nativeBatching/processBatchedDestination';
+import { NativeIntegrationDestinationService } from '../destination/nativeIntegration';
 import type { Destination, Connection } from '../../types/controlPlaneConfig';
 import type { Metadata, RudderMessage } from '../../types/rudderEvents';
 
@@ -39,64 +37,37 @@ type EventTesterV2Response = {
 };
 
 export class EventTesterService {
-  private static getDestHandler(version, destination) {
-    // eslint-disable-next-line global-require, import/no-dynamic-require
-    return require(`../../${version}/destinations/${destination}/transform`);
-  }
-
   private static async runDestTransform(
     version: string,
     dest: string,
-    ev: DestTransformInput,
-  ): Promise<unknown[]> {
-    const workspaceId = ev.destination.WorkspaceId;
-    if (typeof workspaceId !== 'string' || !workspaceId) {
-      throw new Error('destination.WorkspaceId is required');
-    }
-    if (isBatchingFrameworkEnabled(dest, workspaceId)) {
-      return this.runDestTransformBatch(version, dest, [ev]);
-    }
-    const output = await this.getDestHandler(version, dest).process(ev);
-    return Array.isArray(output) ? output : [output];
-  }
-
-  private static async runDestTransformBatch(
-    version: string,
-    dest: string,
     events: DestTransformInput[],
-  ): Promise<unknown[]> {
+  ): Promise<{ payloads: unknown[]; error?: string }> {
     if (events.length === 0) {
-      return [];
+      return { payloads: [] };
     }
     const workspaceId = events[0].destination.WorkspaceId;
     if (typeof workspaceId !== 'string' || !workspaceId) {
-      throw new Error('destination.WorkspaceId is required');
+      return { payloads: [], error: 'destination.WorkspaceId is required' };
     }
 
-    // For batching-framework destinations, send all events in a single
-    // processBatchedDestination call so the framework can group and chunk them.
-    if (isBatchingFrameworkEnabled(dest, workspaceId)) {
-      const IntegrationClass = FetchHandler.getBatchDestinationHandler(dest);
-      const inputs = events.map((event) => ({
-        message: event.message as RudderMessage,
-        // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
-        metadata: { workspaceId } as Metadata,
-        destination: event.destination as Destination,
-        connection: event.connection as Connection,
-      }));
-      const responses = await processBatchedDestination(inputs, IntegrationClass, {});
-      const failed = responses.find((r) => r.error);
-      if (failed) {
-        throw new Error(failed.error);
-      }
-      return responses.map((r) => r.batchedRequest);
-    }
+    const inputs = events.map((event, idx) => ({
+      message: event.message as RudderMessage,
+      // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
+      metadata: { workspaceId } as Metadata,
+      destination: event.destination as Destination,
+      connection: event.connection as Connection,
+    }));
 
-    // Legacy destinations: delegate each event to the single-event transform.
-    const transformed = await Promise.all(
-      events.map((event) => this.runDestTransform(version, dest, event)),
+    const service = new NativeIntegrationDestinationService();
+    const responses = await service.doRouterTransformation(inputs, dest, version, {});
+    const failed = responses.find((r) => r.error);
+    if (failed) {
+      return { payloads: [], error: failed.error };
+    }
+    const payloads = responses.flatMap((r) =>
+      Array.isArray(r.batchedRequest) ? r.batchedRequest : r.batchedRequest ? [r.batchedRequest] : [],
     );
-    return transformed.flat();
+    return { payloads };
   }
 
   private static async runUserTransform(
@@ -232,13 +203,12 @@ export class EventTesterService {
 
         if (stage.dest_transform) {
           if (!errorFound) {
-            try {
-              response.dest_transformed_payload = await this.runDestTransform(version, dest, ev);
-            } catch (err: any) {
+            const destResult = await this.runDestTransform(version, dest, [ev]);
+            if (destResult.error) {
               errorFound = true;
-              response.dest_transformed_payload = {
-                error: err.message || JSON.stringify(err),
-              };
+              response.dest_transformed_payload = { error: destResult.error };
+            } else {
+              response.dest_transformed_payload = destResult.payloads;
             }
           } else {
             response.dest_transformed_payload = {
@@ -311,12 +281,7 @@ export class EventTesterService {
         connection,
       }));
 
-    const destResult = await this.runDestTransformBatch(version, dest, eventsForDestTransform)
-      .then((payloads) => ({ payloads, error: undefined as string | undefined }))
-      .catch((err: unknown) => ({
-        payloads: [] as unknown[],
-        error: err instanceof Error ? err.message : JSON.stringify(err),
-      }));
+    const destResult = await this.runDestTransform(version, dest, eventsForDestTransform);
 
     if (destResult.error) {
       response.dest_transformed_payload = [{ error: destResult.error }];

@@ -382,3 +382,32 @@ const resolveEndpoint = (template, baseUrl, conn) => {
   // ...
 };
 ```
+
+## Handle Errors Closest to the Source
+
+Orchestrator methods that coordinate multiple stages should not contain try-catch blocks. The helper that can fail should catch its own errors and return a structured result. The orchestrator then checks the result — no catching, just branching.
+
+```ts
+// Good — helper catches internally; orchestrator is a clean linear flow
+async function safeTransformBatch(events) {
+  try {
+    return { payloads: await transformBatch(events) };
+  } catch (err: unknown) {
+    return { payloads: [], error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+// orchestrator — no try-catch, just checks the result
+const result = await safeTransformBatch(events);
+if (result.error) {
+  return { transformed: [{ error: result.error }] };
+}
+return { transformed: result.payloads };
+
+// Bad — orchestrator wraps the call in try-catch far from the error source
+try {
+  response.transformed = await transformBatch(events);
+} catch (err: any) {
+  response.transformed = [{ error: err.message }];
+}
+```

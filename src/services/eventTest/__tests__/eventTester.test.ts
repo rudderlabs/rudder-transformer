@@ -1,20 +1,4 @@
-import { isBatchingFrameworkEnabled } from '../../../constants/batchedDestinationsMap';
-import { FetchHandler } from '../../../helpers/fetchHandlers';
-import { processBatchedDestination } from '../../destination/nativeBatching/processBatchedDestination';
-import type { BatchDestinationConstructor } from '../../destination/nativeBatching/batchDestination';
 import { EventTesterService } from '../eventTester';
-
-jest.mock('../../../constants/batchedDestinationsMap');
-jest.mock('../../destination/nativeBatching/processBatchedDestination');
-
-const runDestTransform = (
-  EventTesterService as unknown as {
-    runDestTransform: (v: string, d: string, ev: unknown) => Promise<unknown[]>;
-  }
-).runDestTransform.bind(EventTesterService);
-
-const mockIsBatchingEnabled = isBatchingFrameworkEnabled as jest.Mock;
-const mockProcessBatched = processBatchedDestination as jest.Mock;
 
 const sampleOutput = {
   version: '1',
@@ -27,100 +11,173 @@ const sampleOutput = {
   files: {},
 };
 
-describe('EventTesterService.runDestTransform', () => {
+const buildV1Event = (overrides: Record<string, unknown> = {}) => ({
+  message: { type: 'record' },
+  destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+  connection: {},
+  stage: { user_transform: false, dest_transform: false, send_to_destination: false },
+  libraries: [],
+  ...overrides,
+});
+
+describe('EventTesterService.testEvent', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
   });
 
-  describe('batching-framework path', () => {
-    beforeEach(() => {
-      mockIsBatchingEnabled.mockReturnValue(true);
-      jest
-        .spyOn(FetchHandler, 'getBatchDestinationHandler')
-        .mockReturnValue(class FakeIntegration {} as unknown as BatchDestinationConstructor);
-    });
-
-    it('returns batchedRequest payloads as a flat array on success', async () => {
-      mockProcessBatched.mockResolvedValue([{ batchedRequest: sampleOutput }]);
-
-      const result = await runDestTransform('v0', 'custom_audience', {
-        message: { type: 'record' },
-        destination: { WorkspaceId: 'ws-1' },
-        connection: {},
-      });
-
-      expect(result).toEqual([sampleOutput]);
-    });
-
-    it('throws with the error message when a response carries an error', async () => {
-      mockProcessBatched.mockResolvedValue([{ error: 'message.type: expected "record"' }]);
-
-      await expect(
-        runDestTransform('v0', 'custom_audience', { destination: { WorkspaceId: 'ws-1' } }),
-      ).rejects.toThrow('message.type: expected "record"');
-    });
-
-    it('passes the event with synthetic metadata into processBatchedDestination', async () => {
-      mockProcessBatched.mockResolvedValue([{ batchedRequest: sampleOutput }]);
-
-      const ev = {
-        message: { type: 'record' },
-        destination: { WorkspaceId: 'ws-1' },
-        connection: { foo: 'bar' },
-      };
-      await runDestTransform('v0', 'custom_audience', ev);
-
-      expect(mockProcessBatched).toHaveBeenCalledWith(
-        [{ ...ev, metadata: { workspaceId: 'ws-1' } }],
-        expect.any(Function),
-        {},
-      );
-    });
+  it('throws when events is not an array', async () => {
+    await expect(EventTesterService.testEvent(null, 'v0', 'custom_audience')).rejects.toThrow(
+      'events array is required in payload',
+    );
   });
 
-  describe('legacy processor path', () => {
-    beforeEach(() => {
-      mockIsBatchingEnabled.mockReturnValue(false);
-    });
+  it('returns dest_transformed_payload when only dest_transform is enabled', async () => {
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runDestTransform: (
+            version: string,
+            dest: string,
+            events: unknown[],
+          ) => Promise<{ payloads: unknown[]; error?: string }>;
+        },
+        'runDestTransform',
+      )
+      .mockResolvedValue({ payloads: [sampleOutput] });
 
-    it.each([
-      { name: 'single object', mockOutput: sampleOutput, expected: [sampleOutput] },
+    const result = await EventTesterService.testEvent(
+      [buildV1Event({ stage: { user_transform: false, dest_transform: true, send_to_destination: false } })],
+      'v0',
+      'custom_audience',
+    );
+
+    expect(result).toEqual([{ dest_transformed_payload: [sampleOutput] }]);
+  });
+
+  it('aborts dest_transform when user_transform fails', async () => {
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runUserTransform: (events: unknown[], libraries: unknown[]) => Promise<unknown[]>;
+        },
+        'runUserTransform',
+      )
+      .mockResolvedValue([{ error: 'transform compilation error' }]);
+
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          stage: { user_transform: true, dest_transform: true, send_to_destination: false },
+          destination: {
+            workspaceId: 'ws-1',
+            destinationDefinition: {},
+            transformations: [{ versionId: 'v1' }],
+          },
+        }),
+      ],
+      'v0',
+      'custom_audience',
+    );
+
+    expect(result).toEqual([
       {
-        name: 'array of outputs',
-        mockOutput: [sampleOutput, { ...sampleOutput, endpoint: '/y' }],
-        expected: [sampleOutput, { ...sampleOutput, endpoint: '/y' }],
+        user_transformed_payload: { error: 'transform compilation error' },
+        dest_transformed_payload: { error: 'error encountered in user_transformation stage. Aborting.' },
       },
-    ])('normalizes process() $name into an array', async ({ mockOutput, expected }) => {
-      jest
-        .spyOn(
-          EventTesterService as unknown as { getDestHandler: (...a: unknown[]) => unknown },
-          'getDestHandler',
-        )
-        .mockReturnValue({ process: jest.fn().mockResolvedValue(mockOutput) });
+    ]);
+  });
 
-      const result = await runDestTransform('v0', 'webhook', {
-        destination: { WorkspaceId: 'ws-1' },
-      });
+  it('runs full pipeline: user_transform → dest_transform → send_to_destination', async () => {
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runUserTransform: (events: unknown[], libraries: unknown[]) => Promise<unknown[]>;
+        },
+        'runUserTransform',
+      )
+      .mockResolvedValue([{ message: { type: 'record', transformed: true } }]);
 
-      expect(result).toEqual(expected);
-    });
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runDestTransform: (
+            version: string,
+            dest: string,
+            events: unknown[],
+          ) => Promise<{ payloads: unknown[]; error?: string }>;
+        },
+        'runDestTransform',
+      )
+      .mockResolvedValue({ payloads: [sampleOutput] });
 
-    it('forwards version and destination to getDestHandler and passes ev to process', async () => {
-      const processSpy = jest.fn().mockResolvedValue(sampleOutput);
-      const getDestHandlerSpy = jest
-        .spyOn(
-          EventTesterService as unknown as { getDestHandler: (...a: unknown[]) => unknown },
-          'getDestHandler',
-        )
-        .mockReturnValue({ process: processSpy });
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          sendPayloadsToDestination: (
+            destination: string,
+            transformedPayloads: unknown[],
+          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
+        },
+        'sendPayloadsToDestination',
+      )
+      .mockResolvedValue({ responses: ['ok'], statuses: [200] });
 
-      const ev = { message: { type: 'track' }, destination: { WorkspaceId: 'ws-1' } };
-      await runDestTransform('v0', 'webhook', ev);
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          stage: { user_transform: true, dest_transform: true, send_to_destination: true },
+          destination: {
+            workspaceId: 'ws-1',
+            destinationDefinition: {},
+            transformations: [{ versionId: 'v1' }],
+          },
+        }),
+      ],
+      'v0',
+      'custom_audience',
+    );
 
-      expect(getDestHandlerSpy).toHaveBeenCalledWith('v0', 'webhook');
-      expect(processSpy).toHaveBeenCalledWith(ev);
-    });
+    expect(result).toEqual([
+      {
+        user_transformed_payload: { type: 'record', transformed: true },
+        dest_transformed_payload: [sampleOutput],
+        destination_response: ['ok'],
+        destination_response_status: [200],
+      },
+    ]);
+  });
+
+  it('aborts send_to_destination when dest_transform fails', async () => {
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runDestTransform: (
+            version: string,
+            dest: string,
+            events: unknown[],
+          ) => Promise<{ payloads: unknown[]; error?: string }>;
+        },
+        'runDestTransform',
+      )
+      .mockResolvedValue({ payloads: [], error: 'batch transform failed' });
+
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          stage: { user_transform: false, dest_transform: true, send_to_destination: true },
+        }),
+      ],
+      'v0',
+      'custom_audience',
+    );
+
+    expect(result).toEqual([
+      {
+        dest_transformed_payload: { error: 'batch transform failed' },
+        destination_response: { error: 'error encountered in dest_transformation stage. Aborting.' },
+      },
+    ]);
   });
 });
 
@@ -144,18 +201,18 @@ describe('EventTesterService.testEventV2', () => {
         { message: { type: 'record', id: 'ok-2' } },
       ]);
 
-    const runDestTransformBatchSpy = jest
+    const runDestTransformSpy = jest
       .spyOn(
         EventTesterService as unknown as {
-          runDestTransformBatch: (
+          runDestTransform: (
             version: string,
             dest: string,
             events: unknown[],
-          ) => Promise<unknown[]>;
+          ) => Promise<{ payloads: unknown[]; error?: string }>;
         },
-        'runDestTransformBatch',
+        'runDestTransform',
       )
-      .mockResolvedValue([sampleOutput]);
+      .mockResolvedValue({ payloads: [sampleOutput] });
 
     const result = await EventTesterService.testEventV2(
       {
@@ -174,7 +231,7 @@ describe('EventTesterService.testEventV2', () => {
     );
 
     expect(runUserTransformSpy).toHaveBeenCalledTimes(1);
-    expect(runDestTransformBatchSpy).toHaveBeenCalledWith(
+    expect(runDestTransformSpy).toHaveBeenCalledWith(
       'v0',
       'custom_audience',
       expect.arrayContaining([
@@ -182,7 +239,7 @@ describe('EventTesterService.testEventV2', () => {
         expect.objectContaining({ message: { type: 'record', id: 'ok-2' } }),
       ]),
     );
-    expect(runDestTransformBatchSpy.mock.calls[0][2]).toHaveLength(2);
+    expect(runDestTransformSpy.mock.calls[0][2]).toHaveLength(2);
     expect(result).toEqual({
       user_transformed_payload: [
         { type: 'record', id: 'ok-1' },
@@ -199,18 +256,17 @@ describe('EventTesterService.testEventV2', () => {
     jest
       .spyOn(
         EventTesterService as unknown as {
-          runDestTransformBatch: (
+          runDestTransform: (
             version: string,
             dest: string,
             events: unknown[],
-          ) => Promise<unknown[]>;
+          ) => Promise<{ payloads: unknown[]; error?: string }>;
         },
-        'runDestTransformBatch',
+        'runDestTransform',
       )
-      .mockResolvedValue([
-        sampleOutput,
-        { ...sampleOutput, endpoint: 'https://api.example.com/y' },
-      ]);
+      .mockResolvedValue({
+        payloads: [sampleOutput, { ...sampleOutput, endpoint: 'https://api.example.com/y' }],
+      });
 
     jest
       .spyOn(
@@ -251,15 +307,15 @@ describe('EventTesterService.testEventV2', () => {
     jest
       .spyOn(
         EventTesterService as unknown as {
-          runDestTransformBatch: (
+          runDestTransform: (
             version: string,
             dest: string,
             events: unknown[],
-          ) => Promise<unknown[]>;
+          ) => Promise<{ payloads: unknown[]; error?: string }>;
         },
-        'runDestTransformBatch',
+        'runDestTransform',
       )
-      .mockRejectedValue(new Error('template evaluation failed'));
+      .mockResolvedValue({ payloads: [], error: 'template evaluation failed' });
 
     const result = await EventTesterService.testEventV2(
       {

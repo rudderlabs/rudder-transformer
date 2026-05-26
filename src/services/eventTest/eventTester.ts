@@ -1,9 +1,16 @@
+import stableStringify from 'fast-json-stable-stringify';
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 import { FixMe } from '../../types';
 import { isBatchingFrameworkEnabled } from '../../constants/batchedDestinationsMap';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import { processBatchedDestination } from '../destination/nativeBatching/processBatchedDestination';
-import type { RouterTransformationRequestData } from '../../types/destinationTransformation';
+import type {
+  EventTesterBatchOutput,
+  EventTesterGroupResponse,
+  EventTesterInputEvent,
+  RouterTransformationRequestData,
+  RouterTransformationResponse,
+} from '../../types/destinationTransformation';
 import type { Destination, Connection } from '../../types/controlPlaneConfig';
 import type { Metadata, RudderMessage } from '../../types/rudderEvents';
 
@@ -11,6 +18,21 @@ type DestTransformInput = {
   message: RudderMessage;
   destination: Destination & { WorkspaceId: string };
   connection?: Connection;
+  metadata: Metadata;
+};
+
+type GroupedEvent = {
+  inputIndex: number;
+  source: EventTesterInputEvent;
+  transformedDestination: Destination & { WorkspaceId: string };
+  transformedMessage: RudderMessage;
+  userTransformedPayload?: unknown;
+  errorFound: boolean;
+};
+
+type DestinationSendResult = {
+  responsePayload: unknown;
+  status: number;
 };
 
 export class EventTesterService {
@@ -19,33 +41,100 @@ export class EventTesterService {
     return require(`../../${version}/destinations/${destination}/transform`);
   }
 
+  private static toDestTransformInput(groupEvents: GroupedEvent[]): DestTransformInput[] {
+    return groupEvents.map((groupEvent, idx) => ({
+      message: groupEvent.transformedMessage,
+      destination: groupEvent.transformedDestination,
+      connection: groupEvent.source.connection,
+      metadata: {
+        workspaceId: groupEvent.transformedDestination.WorkspaceId,
+        jobId: idx + 1,
+      } as Metadata,
+    }));
+  }
+
+  private static flattenBatchedRequests(
+    responses: RouterTransformationResponse[],
+    jobIdToInputIndex: Map<number, number>,
+  ): EventTesterBatchOutput[] {
+    return responses.flatMap((response) => {
+      if (!response.batchedRequest) {
+        return [];
+      }
+      const requestList = Array.isArray(response.batchedRequest)
+        ? response.batchedRequest
+        : [response.batchedRequest];
+      const sourceEventIndexes = response.metadata
+        .map((metadata) => (metadata.jobId ? jobIdToInputIndex.get(metadata.jobId) : undefined))
+        .filter((index): index is number => index !== undefined)
+        .sort((a, b) => a - b);
+      return requestList.map((payload) => ({
+        payload,
+        source_event_indexes: sourceEventIndexes,
+      }));
+    });
+  }
+
   private static async runDestTransform(
     version: string,
     dest: string,
-    ev: DestTransformInput,
-  ): Promise<unknown[]> {
-    const { WorkspaceId: workspaceId } = ev.destination;
+    events: DestTransformInput[],
+  ): Promise<EventTesterBatchOutput[]> {
+    if (events.length === 0) {
+      return [];
+    }
+
+    const { WorkspaceId: workspaceId } = events[0].destination;
     if (!workspaceId) {
       throw new Error('destination.WorkspaceId is required');
     }
+
+    const jobIdToInputIndex = new Map<number, number>();
+    events.forEach((event, index) => {
+      jobIdToInputIndex.set(event.metadata.jobId!, index);
+    });
+
+    let responses: RouterTransformationResponse[];
     if (isBatchingFrameworkEnabled(dest, workspaceId)) {
       const IntegrationClass = FetchHandler.getBatchDestinationHandler(dest);
-      const input: RouterTransformationRequestData = {
-        message: ev.message,
-        // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
-        metadata: { workspaceId } as Metadata,
-        destination: ev.destination,
-        connection: ev.connection,
-      };
-      const responses = await processBatchedDestination([input], IntegrationClass, {});
-      const failed = responses.find((r) => r.error);
-      if (failed) {
-        throw new Error(failed.error);
+      const inputs: RouterTransformationRequestData[] = events.map((event) => ({
+        message: event.message,
+        metadata: event.metadata,
+        destination: event.destination,
+        connection: event.connection,
+      }));
+      responses = await processBatchedDestination(inputs, IntegrationClass, {});
+    } else {
+      const handler = this.getDestHandler(version, dest);
+      if (typeof handler.processRouterDest === 'function') {
+        responses = await handler.processRouterDest(events);
+      } else {
+        responses = await Promise.all(
+          events.map(async (event) => {
+            const output = await handler.process({
+              message: event.message,
+              destination: event.destination,
+              connection: event.connection,
+            });
+            const batchedRequest = Array.isArray(output) ? output : [output];
+            return {
+              batchedRequest,
+              metadata: [event.metadata],
+              batched: false,
+              destination: event.destination,
+              statusCode: 200,
+            } as RouterTransformationResponse;
+          }),
+        );
       }
-      return responses.map((r) => r.batchedRequest);
     }
-    const output = await this.getDestHandler(version, dest).process(ev);
-    return Array.isArray(output) ? output : [output];
+
+    const failedResponse = responses.find((response) => response.error);
+    if (failedResponse?.error) {
+      throw new Error(failedResponse.error);
+    }
+
+    return this.flattenBatchedRequests(responses, jobIdToInputIndex);
   }
 
   private static transformDestination(dest) {
@@ -81,132 +170,213 @@ export class EventTesterService {
     return supported;
   }
 
-  public static async testEvent(events: any, version: string, dest: any) {
-    const respList: any[] = [];
+  private static getGroupingKey(
+    destination: Destination,
+    connection: Connection,
+    stage: FixMe,
+  ): string {
+    return stableStringify({ destination, connection, stage });
+  }
+
+  private static validateSendFlags(
+    batchOutputs: EventTesterBatchOutput[],
+    groupEvents: GroupedEvent[],
+  ): void {
+    batchOutputs.forEach((batchOutput) => {
+      const sendFlags = batchOutput.source_event_indexes.map(
+        (index) => !!groupEvents[index]?.source.stage?.send_to_destination,
+      );
+      const hasTrue = sendFlags.some(Boolean);
+      const hasFalse = sendFlags.some((flag) => !flag);
+      if (hasTrue && hasFalse) {
+        throw new Error(
+          'Mixed send_to_destination flags within a batched destination payload are not supported.',
+        );
+      }
+    });
+  }
+
+  private static async applyUserTransform(groupEvents: GroupedEvent[]): Promise<GroupedEvent[]> {
+    return Promise.all(
+      groupEvents.map(async (groupEvent) => {
+        const librariesVersionIDs = (groupEvent.source.libraries ?? []).map(
+          (library) => library.VersionID,
+        );
+        const transformationVersionId =
+          groupEvent.transformedDestination?.Transformations?.[0]?.VersionID;
+
+        if (!transformationVersionId) {
+          return {
+            ...groupEvent,
+            userTransformedPayload: {
+              error: 'Transformation VersionID not found',
+            },
+          };
+        }
+
+        try {
+          const destTransformedEvents = await userTransformHandler()(
+            [
+              {
+                message: groupEvent.transformedMessage,
+                destination: groupEvent.transformedDestination,
+                connection: groupEvent.source.connection,
+                libraries: groupEvent.source.libraries,
+              },
+            ],
+            transformationVersionId,
+            librariesVersionIDs,
+          );
+          const userTransformedEvent = destTransformedEvents[0];
+          if (userTransformedEvent.error) {
+            throw new Error(userTransformedEvent.error);
+          }
+
+          return {
+            ...groupEvent,
+            transformedMessage: userTransformedEvent.transformedEvent,
+            userTransformedPayload: userTransformedEvent.transformedEvent,
+          };
+        } catch (err: any) {
+          return {
+            ...groupEvent,
+            errorFound: true,
+            userTransformedPayload: {
+              error: err.message || JSON.stringify(err),
+            },
+          };
+        }
+      }),
+    );
+  }
+
+  private static async sendPayloadToDestination(
+    dest: string,
+    transformedPayload: EventTesterBatchOutput,
+  ): Promise<DestinationSendResult> {
+    const parsedResponse = await sendToDestination(dest, transformedPayload.payload);
+
+    let contentType = '';
+    let responsePayload = '';
+    if (parsedResponse.headers) {
+      contentType = parsedResponse.headers['content-type'];
+      if (this.isSupportedContentType(contentType)) {
+        responsePayload = parsedResponse.response;
+      }
+    } else if (parsedResponse.networkFailure) {
+      responsePayload = parsedResponse.response;
+    }
+
+    return {
+      responsePayload,
+      status: parsedResponse.status,
+    };
+  }
+
+  private static buildGroupedEvents(events: EventTesterInputEvent[]): Map<string, GroupedEvent[]> {
+    const groupedEventsMap = new Map<string, GroupedEvent[]>();
+    events.forEach((event, inputIndex) => {
+      const transformedDestination = this.transformDestination(event.destination);
+      const groupEvent: GroupedEvent = {
+        inputIndex,
+        source: event,
+        transformedDestination,
+        transformedMessage: event.message,
+        errorFound: false,
+      };
+      const key = this.getGroupingKey(
+        transformedDestination,
+        event.connection as Connection,
+        event.stage as FixMe,
+      );
+      const existingGroup = groupedEventsMap.get(key) ?? [];
+      existingGroup.push(groupEvent);
+      groupedEventsMap.set(key, existingGroup);
+    });
+    return groupedEventsMap;
+  }
+
+  private static async buildGroupResponse(
+    groupEvents: GroupedEvent[],
+    version: string,
+    dest: string,
+  ): Promise<EventTesterGroupResponse> {
+    const firstEvent = groupEvents[0].source;
+    const groupResponse: EventTesterGroupResponse = {
+      group: {
+        destination: groupEvents[0].transformedDestination,
+        connection: firstEvent.connection,
+        stage: firstEvent.stage,
+      },
+      source_event_indexes: groupEvents.map((event) => event.inputIndex),
+    };
+
+    let preparedGroupEvents = groupEvents;
+
+    if (firstEvent.stage?.user_transform) {
+      preparedGroupEvents = await this.applyUserTransform(preparedGroupEvents);
+      groupResponse.user_transformed_payloads = preparedGroupEvents.map((groupEvent) => ({
+        source_event_index: groupEvent.inputIndex,
+        payload: groupEvent.userTransformedPayload,
+      }));
+    }
+
+    if (firstEvent.stage?.dest_transform) {
+      if (preparedGroupEvents.some((groupEvent) => groupEvent.errorFound)) {
+        groupResponse.dest_transformed_payload = {
+          error: 'error encountered in user_transformation stage. Aborting.',
+        };
+      } else {
+        const batchOutputs = await this.runDestTransform(
+          version,
+          dest,
+          this.toDestTransformInput(preparedGroupEvents),
+        );
+        this.validateSendFlags(batchOutputs, preparedGroupEvents);
+        groupResponse.dest_transformed_payload = batchOutputs;
+      }
+    }
+
+    if (firstEvent.stage?.dest_transform && firstEvent.stage?.send_to_destination) {
+      if (
+        !groupResponse.dest_transformed_payload ||
+        !Array.isArray(groupResponse.dest_transformed_payload)
+      ) {
+        groupResponse.destination_response = {
+          error: 'error encountered in dest_transformation stage. Aborting.',
+        };
+      } else {
+        const sendResults = await Promise.all(
+          groupResponse.dest_transformed_payload.map((transformedPayload) =>
+            this.sendPayloadToDestination(dest, transformedPayload),
+          ),
+        );
+
+        groupResponse.destination_response = sendResults.map((result) => result.responsePayload);
+        groupResponse.destination_response_status = sendResults.map((result) => result.status);
+      }
+    }
+
+    return groupResponse;
+  }
+
+  public static async testEvent(
+    events: EventTesterInputEvent[],
+    version: string,
+    dest: string,
+  ): Promise<EventTesterGroupResponse[]> {
     if (!events || !Array.isArray(events)) {
       throw new Error('events array is required in payload');
     }
-    await Promise.all(
-      events.map(async (event) => {
-        const { message, destination, connection, stage, libraries } = event;
-        const ev = {
-          message,
-          destination: this.transformDestination(destination),
-          connection,
-          libraries,
-        };
 
-        let response: FixMe = {};
-        let errorFound = false;
+    const groupedEventsMap = this.buildGroupedEvents(events);
+    const groupedResponses: EventTesterGroupResponse[] = [];
+    for (const groupEvents of groupedEventsMap.values()) {
+      // eslint-disable-next-line no-await-in-loop -- keep deterministic group/result ordering
+      const groupResponse = await this.buildGroupResponse(groupEvents, version, dest);
+      groupedResponses.push(groupResponse);
+    }
 
-        if (stage.user_transform) {
-          let librariesVersionIDs = [];
-          if (libraries) {
-            librariesVersionIDs = events[0].libraries.map((library) => library.versionId);
-          }
-          const transformationVersionId =
-            ev.destination &&
-            ev.destination.Transformations &&
-            ev.destination.Transformations[0] &&
-            ev.destination.Transformations[0].versionId;
-
-          if (transformationVersionId) {
-            try {
-              const destTransformedEvents = await userTransformHandler()(
-                [ev],
-                transformationVersionId,
-                librariesVersionIDs,
-              );
-              const userTransformedEvent = destTransformedEvents[0];
-              if (userTransformedEvent.error) {
-                throw new Error(userTransformedEvent.error);
-              }
-
-              response.user_transformed_payload = userTransformedEvent.transformedEvent;
-              ev.message = userTransformedEvent.transformedEvent;
-            } catch (err: any) {
-              errorFound = true;
-              response.user_transformed_payload = {
-                error: err.message || JSON.stringify(err),
-              };
-            }
-          } else {
-            response.user_transformed_payload = {
-              error: 'Transformation VersionID not found',
-            };
-          }
-        }
-
-        if (stage.dest_transform) {
-          if (!errorFound) {
-            try {
-              response.dest_transformed_payload = await this.runDestTransform(version, dest, ev);
-            } catch (err: any) {
-              errorFound = true;
-              response.dest_transformed_payload = {
-                error: err.message || JSON.stringify(err),
-              };
-            }
-          } else {
-            response.dest_transformed_payload = {
-              error: 'error encountered in user_transformation stage. Aborting.',
-            };
-          }
-        }
-        // const transformerStatuses = [];
-        if (stage.dest_transform && stage.send_to_destination) {
-          // send event to destination only after transformation
-          if (!errorFound) {
-            const destResponses: FixMe[] = [];
-            const destResponseStatuses: FixMe[] = [];
-
-            const transformedPayloads = response.dest_transformed_payload;
-            for (const payload of transformedPayloads) {
-              // eslint-disable-next-line no-await-in-loop
-              const parsedResponse = await sendToDestination(dest, payload);
-
-              let contentType = '';
-              let responsePayload = '';
-              if (parsedResponse.headers) {
-                contentType = parsedResponse.headers['content-type'];
-                if (this.isSupportedContentType(contentType)) {
-                  responsePayload = parsedResponse.response;
-                }
-              } else if (parsedResponse.networkFailure) {
-                responsePayload = parsedResponse.response;
-              }
-
-              destResponses.push(responsePayload);
-              destResponseStatuses.push(parsedResponse.status);
-
-              // TODO: Use updated handleResponseTransform function
-              // Removing the below part, because transformerStatus is not
-              // currently being returned by test api response
-
-              // call response transform here
-              // const ctxMock = {
-              //   request: {
-              //     body: parsedResponse
-              //   }
-              // };
-              // handleResponseTransform(version, dest, ctxMock);
-              // const { output } = ctxMock.body;
-              // transformerStatuses.push(output.status);
-            }
-            response = {
-              ...response,
-              destination_response: destResponses,
-              destination_response_status: destResponseStatuses,
-            };
-          } else {
-            response.destination_response = {
-              error: 'error encountered in dest_transformation stage. Aborting.',
-            };
-          }
-        }
-        respList.push(response);
-      }),
-    );
-    return respList;
+    return groupedResponses;
   }
 }

@@ -290,3 +290,35 @@ export interface ResponseProxyObject
 export type PreProcessableRequest =
   | ProcessorTransformationRequest
   | RouterTransformationRequestData;
+
+export type EventTesterStage = {
+  user_transform?: boolean;
+  dest_transform?: boolean;
+  send_to_destination?: boolean;
+};
+
+export type EventTesterInputEvent = {
+  message: RudderMessage;
+  destination: Destination;
+  connection?: Connection;
+  stage: EventTesterStage;
+  libraries?: UserTransformationLibrary[];
+};
+
+export type EventTesterBatchOutput = {
+  payload: ProcessorTransformationOutput;
+  source_event_indexes: number[];
+};
+
+export type EventTesterGroupResponse = {
+  group: {
+    destination: Destination;
+    connection?: Connection;
+    stage: EventTesterStage;
+  };
+  source_event_indexes: number[];
+  user_transformed_payloads?: { source_event_index: number; payload: unknown }[];
+  dest_transformed_payload?: EventTesterBatchOutput[] | { error: string };
+  destination_response?: unknown[] | { error: string };
+  destination_response_status?: unknown[];
+};

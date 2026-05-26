@@ -4,6 +4,7 @@ import bodyParser from 'koa-bodyparser';
 import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import { applicationRoutes } from '../../routes';
+import { EventTesterService } from '../../services/eventTest/eventTester';
 import { sandboxedParseTemplate } from '../../v0/destinations/custom_audience/template/templateSandboxClient';
 
 jest.mock('../../v0/destinations/custom_audience/template/templateSandboxClient');
@@ -104,5 +105,25 @@ describe('POST /test-router/custom_audience/parse-template', () => {
 
     expect(response.status).toBe(400);
     expect(response.body.error).toBe(expectedError);
+  });
+});
+
+describe('POST /test-router/:version/:destination', () => {
+  it('returns batched group responses from EventTesterService', async () => {
+    const testEventSpy = jest
+      .spyOn(EventTesterService, 'testEvent')
+      .mockResolvedValue([{ source_event_indexes: [0], group: { stage: {} } }] as never[]);
+
+    const response = await request(server)
+      .post('/test-router/v0/custom_audience')
+      .send({ events: [{ stage: {}, destination: {}, message: {} }] });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([{ source_event_indexes: [0], group: { stage: {} } }]);
+    expect(testEventSpy).toHaveBeenCalledWith(
+      [{ stage: {}, destination: {}, message: {} }],
+      'v0',
+      'custom_audience',
+    );
   });
 });

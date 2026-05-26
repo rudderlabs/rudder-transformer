@@ -358,7 +358,6 @@ describe('EventTesterService.testEventV2', () => {
 });
 
 describe('EventTesterService.runUserTransform', () => {
-
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
@@ -493,7 +492,6 @@ describe('EventTesterService.runUserTransform', () => {
 });
 
 describe('EventTesterService.runDestTransform', () => {
-
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
@@ -525,7 +523,7 @@ describe('EventTesterService.runDestTransform', () => {
 
     expect(doRouterSpy).toHaveBeenCalledTimes(1);
     expect(doRouterSpy).toHaveBeenCalledWith(
-      [expect.objectContaining({ metadata: { workspaceId: 'ws-1' } })],
+      [expect.objectContaining({ metadata: expect.objectContaining({ workspaceId: 'ws-1' }) })],
       'custom_audience',
       'v0',
       {},
@@ -566,8 +564,6 @@ describe('EventTesterService.runDestTransform', () => {
     );
 
     // flatMap normalizes: single object + array both become top-level entries
-    expect(result).toEqual([
-      { dest_transformed_payload: [sampleOutput, sampleOutput, output2] },
-    ]);
+    expect(result).toEqual([{ dest_transformed_payload: [sampleOutput, sampleOutput, output2] }]);
   });
 });

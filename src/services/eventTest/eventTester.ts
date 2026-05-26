@@ -53,7 +53,7 @@ export class EventTesterService {
     const inputs = events.map((event, idx) => ({
       message: event.message as RudderMessage,
       // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
-      metadata: { workspaceId, jobId: 12} as Metadata,
+      metadata: { workspaceId, jobId: 12 } as Metadata,
       destination: event.destination as Destination,
       connection: event.connection as Connection,
     }));
@@ -65,9 +65,7 @@ export class EventTesterService {
       return { payloads: [], error: failed.error };
     }
     const payloads = responses.flatMap((r) =>
-      Array.isArray(r.batchedRequest)
-        ? r.batchedRequest
-        : [r.batchedRequest]
+      Array.isArray(r.batchedRequest) ? r.batchedRequest : [r.batchedRequest],
     );
     return { payloads };
   }

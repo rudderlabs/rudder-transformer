@@ -309,7 +309,6 @@ describe('EventTesterService.testEventV2', () => {
     );
 
     expect(result).toEqual({
-      user_transformed_payload: [],
       dest_transform_output: [
         {
           dest_transformed_payload: sampleOutput,
@@ -352,7 +351,6 @@ describe('EventTesterService.testEventV2', () => {
     );
 
     expect(result).toEqual({
-      user_transformed_payload: [],
       dest_transform_output: [
         { dest_transformed_payload: { error: 'template evaluation failed' } },
       ],

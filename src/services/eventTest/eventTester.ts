@@ -38,7 +38,7 @@ type DestTransformOutputEntry = {
 };
 
 type EventTesterV2Response = {
-  user_transformed_payload: unknown[];
+  user_transformed_payload?: unknown[];
   dest_transform_output: DestTransformOutputEntry[];
 };
 
@@ -84,6 +84,7 @@ export class EventTesterService {
 
   private static async runUserTransform(
     events: DestTransformInput[],
+    destination: Record<string, unknown>,
     libraries: Record<string, unknown>[] = [],
   ): Promise<UserTransformResult[]> {
     if (events.length === 0) {
@@ -92,7 +93,7 @@ export class EventTesterService {
     const librariesVersionIDs = libraries
       .map((library) => library.versionId)
       .filter((versionId): versionId is string => typeof versionId === 'string');
-    const { Transformations } = events[0].destination;
+    const { Transformations } = destination;
     const transformationVersionId = Array.isArray(Transformations)
       ? Transformations[0]?.versionId
       : undefined;
@@ -203,7 +204,7 @@ export class EventTesterService {
         let errorFound = false;
 
         if (stage.user_transform) {
-          const results = await this.runUserTransform([ev], libraries || []);
+          const results = await this.runUserTransform([ev], ev.destination, libraries || []);
           const result = results[0];
           if (result.error) {
             errorFound = true;
@@ -271,15 +272,21 @@ export class EventTesterService {
 
     let userTransformResults: UserTransformResult[];
     if (stage.user_transform) {
-      userTransformResults = await this.runUserTransform(preparedEvents, libraries || []);
+      userTransformResults = await this.runUserTransform(
+        preparedEvents,
+        transformedDestination,
+        libraries || [],
+      );
     } else {
       userTransformResults = preparedEvents.map((event) => ({ message: event.message }));
     }
 
     const response: EventTesterV2Response = {
-      user_transformed_payload: stage.user_transform
-        ? userTransformResults.map((r) => (r.error ? { error: r.error } : r.message))
-        : [],
+      ...(stage.user_transform && {
+        user_transformed_payload: userTransformResults.map((r) =>
+          r.error ? { error: r.error } : r.message,
+        ),
+      }),
       dest_transform_output: [],
     };
 

@@ -132,9 +132,9 @@ describe('processFields', () => {
   const cases = [
     {
       name: 'strips empty values, no hashing when isHashRequired=false',
-      fields: { email: 'a@b.com', phone: '', missing: null },
+      fields: { email: sha256('a@b.com'), phone: '', missing: null },
       isHashRequired: false,
-      expected: { email: 'a@b.com' },
+      expected: { email: sha256('a@b.com') },
     },
     {
       name: 'hashes hashable fields when isHashRequired=true',

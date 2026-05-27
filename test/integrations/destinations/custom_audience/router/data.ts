@@ -43,7 +43,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'insert',
-                identifiers: { email: 'a@b.com' },
+                identifiers: { email: sha256('a@b.com') },
               }),
               metadata: generateMetadata(1),
               destination,
@@ -52,7 +52,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'insert',
-                identifiers: { email: 'c@d.com' },
+                identifiers: { email: sha256('c@d.com') },
               }),
               metadata: generateMetadata(2),
               destination,
@@ -61,7 +61,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'update',
-                identifiers: { email: 'e@f.com' },
+                identifiers: { email: sha256('e@f.com') },
               }),
               metadata: generateMetadata(3),
               destination,
@@ -70,7 +70,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'delete',
-                identifiers: { email: 'g@h.com' },
+                identifiers: { email: sha256('g@h.com') },
               }),
               metadata: generateMetadata(4),
               destination,
@@ -98,7 +98,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     audienceId: 'aud-42',
-                    users: [{ email: 'a@b.com' }, { email: 'c@d.com' }],
+                    users: [{ email: sha256('a@b.com') }, { email: sha256('c@d.com') }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -122,7 +122,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     audienceId: 'aud-42',
-                    users: [{ email: 'e@f.com' }],
+                    users: [{ email: sha256('e@f.com') }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -146,7 +146,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     audienceId: 'aud-42',
-                    users: [{ email: 'g@h.com' }],
+                    users: [{ email: sha256('g@h.com') }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -181,7 +181,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'insert',
-                identifiers: { email: 'a@b.com' },
+                identifiers: { email: sha256('a@b.com') },
               }),
               metadata: generateMetadata(1),
               destination: {
@@ -196,7 +196,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'delete',
-                identifiers: { email: 'g@h.com' },
+                identifiers: { email: sha256('g@h.com') },
               }),
               metadata: generateMetadata(2),
               destination: {
@@ -228,7 +228,7 @@ export const data: RouterTestData[] = [
                 headers,
                 params: {},
                 body: {
-                  JSON: { audienceId: 'aud-42', users: [{ email: 'a@b.com' }] },
+                  JSON: { audienceId: 'aud-42', users: [{ email: sha256('a@b.com') }] },
                   JSON_ARRAY: {},
                   XML: {},
                   FORM: {},
@@ -282,7 +282,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'insert',
-                identifiers: { email: 'a@b.com' },
+                identifiers: { email: sha256('a@b.com') },
               }),
               metadata: generateMetadata(1),
               destination,
@@ -317,7 +317,7 @@ export const data: RouterTestData[] = [
                 headers,
                 params: {},
                 body: {
-                  JSON: { audienceId: 'aud-42', users: [{ email: 'a@b.com' }] },
+                  JSON: { audienceId: 'aud-42', users: [{ email: sha256('a@b.com') }] },
                   JSON_ARRAY: {},
                   XML: {},
                   FORM: {},
@@ -359,7 +359,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'insert',
-                identifiers: { email: 'a@b.com' },
+                identifiers: { email: sha256('a@b.com') },
               }),
               metadata: generateMetadata(1),
               destination: customMappingsDestination,
@@ -368,7 +368,7 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'insert',
-                identifiers: { email: 'c@d.com' },
+                identifiers: { email: sha256('c@d.com') },
               }),
               metadata: generateMetadata(2),
               destination: customMappingsDestination,
@@ -397,8 +397,8 @@ export const data: RouterTestData[] = [
                   JSON: {
                     audienceId: 'aud-42',
                     users: [
-                      { email: 'a@b.com', listType: 'subscribers' },
-                      { email: 'c@d.com', listType: 'subscribers' },
+                      { email: sha256('a@b.com'), listType: 'subscribers' },
+                      { email: sha256('c@d.com'), listType: 'subscribers' },
                     ],
                   },
                   JSON_ARRAY: {},

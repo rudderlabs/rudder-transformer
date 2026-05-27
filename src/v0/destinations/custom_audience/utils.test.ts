@@ -45,6 +45,50 @@ describe('lookupActionConfig', () => {
   it('throws InstrumentationError when action key is missing', () => {
     expect(() => lookupActionConfig('delete', baseDestConfig)).toThrow(InstrumentationError);
   });
+
+  const useInsertConfigCases = [
+    {
+      name: 'returns insert config when update has useInsertConfig: true',
+      updateConfig: {
+        ...baseDestConfig.actions.insert!,
+        endpoint: '/update-path',
+        useInsertConfig: true,
+      },
+      expectedEndpoint: '/audiences/{{connection.audienceId}}/members',
+    },
+    {
+      name: 'returns update config when useInsertConfig is false',
+      updateConfig: {
+        ...baseDestConfig.actions.insert!,
+        endpoint: '/update-path',
+        useInsertConfig: false,
+      },
+      expectedEndpoint: '/update-path',
+    },
+    {
+      name: 'returns update config when useInsertConfig is absent',
+      updateConfig: { ...baseDestConfig.actions.insert!, endpoint: '/update-path' },
+      expectedEndpoint: '/update-path',
+    },
+  ];
+
+  it.each(useInsertConfigCases)('$name', ({ updateConfig, expectedEndpoint }) => {
+    const config: CustomAudienceDestConfig = {
+      ...baseDestConfig,
+      actions: { ...baseDestConfig.actions, update: updateConfig },
+    };
+    expect(lookupActionConfig('update', config).endpoint).toBe(expectedEndpoint);
+  });
+
+  it('throws when useInsertConfig is true but insert config is missing', () => {
+    const config: CustomAudienceDestConfig = {
+      ...baseDestConfig,
+      actions: {
+        update: { ...baseDestConfig.actions.insert!, useInsertConfig: true },
+      },
+    };
+    expect(() => lookupActionConfig('update', config)).toThrow(InstrumentationError);
+  });
 });
 
 describe('resolveEndpoint', () => {

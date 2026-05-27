@@ -53,10 +53,10 @@ class CustomAudienceIntegration extends BatchDestination<
 
   private buildEndpointsByAction(): Partial<Record<Action, string>> {
     return Object.fromEntries(
-      Object.entries(this.destination.Config.actions).map(([action, actionConfig]) => [
+      Object.keys(this.destination.Config.actions).map((action) => [
         action,
         resolveEndpoint(
-          actionConfig!.endpoint,
+          lookupActionConfig(action as Action, this.destination.Config).endpoint,
           this.destination.Config.baseUrl,
           this.connectionConfig,
         ),
@@ -97,12 +97,11 @@ class CustomAudienceIntegration extends BatchDestination<
 
   getBatchStrategy(): BatchStrategy<Record<string, string>> {
     const { Config, WorkspaceID: workspaceId } = this.destination;
-    const { actions } = Config;
     const { connectionConfig } = this;
 
     return new CustomBatchStrategy<Record<string, string>>(async (payloads) => {
       const action = payloads[0].internalGroupKey as Action;
-      const actionConfig = actions[action]!;
+      const actionConfig = lookupActionConfig(action, Config);
 
       // Chunk outside the isolate so the existing native-batching split logic
       // is reused. Each chunk's records are passed through to the isolate

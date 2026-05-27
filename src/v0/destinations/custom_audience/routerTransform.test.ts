@@ -246,11 +246,48 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
   );
 
   it('throws when requestBody template fails at runtime', async () => {
-    const destination = buildDestination();
-    destination.Config.actions.insert!.requestBody = '$$.records[0].$notARealMethod()';
+    const destination = buildDestination({
+      actions: {
+        insert: { ...baseInsertAction, requestBody: '$$.records[0].$notARealMethod()' },
+        delete: baseDeleteAction,
+      },
+    });
 
     const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
 
     await expect(processBatchedDestination(inputs, Integration, {})).rejects.toThrow();
+  });
+
+  it('uses insert config for update events when useInsertConfig is true', async () => {
+    const destination = buildDestination({
+      actions: {
+        insert: baseInsertAction,
+        update: {
+          endpoint: '/audiences/{{connection.audienceId}}/update-members',
+          method: 'PUT',
+          requestBody: '{ "should": "not appear" }',
+          batchSize: 10,
+          fields: baseInsertAction.fields,
+          useInsertConfig: true,
+        },
+        delete: baseDeleteAction,
+      },
+    });
+
+    const inputs = [
+      buildInput(1, 'update', { email: hashedEmail('a@b.com') }, destination),
+      buildInput(2, 'update', { email: hashedEmail('c@d.com') }, destination),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+
+    const success = results.find((r) => r.statusCode === 200);
+    const batched = success?.batchedRequest;
+    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
+    // Should use insert config's endpoint and method, not update's
+    expect(batched.endpoint).toBe('https://api.example.com/audiences/aud-42/members');
+    expect(batched.method).toBe('POST');
+    const body = batched.body?.JSON as { users: { email: string }[] };
+    expect(body.users).toHaveLength(2);
   });
 });

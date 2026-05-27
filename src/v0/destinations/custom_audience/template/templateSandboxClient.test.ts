@@ -102,12 +102,12 @@ describe('templateSandboxClient', () => {
       expect(bodies).toEqual(expected);
     });
 
-    it('throws InstrumentationError when the template fails at runtime', async () => {
+    it('throws InstrumentationError with a descriptive message when the template fails at runtime', async () => {
       const template = '$$.records[0].$notARealMethod()';
 
       await expect(
         sandboxedEvaluateTemplate(template, [[{ email: 'a@b.com' }]], {}, 'ws-eval'),
-      ).rejects.toThrow(InstrumentationError);
+      ).rejects.toThrow(/Attempted to invoke a non-function/);
     });
 
     it('throws InstrumentationError for unparseable templates', async () => {

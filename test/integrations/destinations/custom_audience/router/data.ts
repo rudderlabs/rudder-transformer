@@ -11,6 +11,7 @@ import {
   customMappingsDestination,
   customMappingsConnection,
   hashRequiredConnection,
+  useInsertConfigDestination,
 } from '../common';
 
 const errorStatTags = {
@@ -483,6 +484,79 @@ export const data: RouterTestData[] = [
               batched: true,
               statusCode: 200,
               destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-6',
+    name: destType,
+    description:
+      'Uses insert config for update events when useInsertConfig is true on the update action',
+    scenario: 'Framework+Business',
+    successCriteria:
+      'Update events use the insert action endpoint (POST /members) instead of the update action endpoint (PUT /update-members)',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'update',
+                identifiers: { email: sha256('a@b.com') },
+              }),
+              metadata: generateMetadata(1),
+              destination: useInsertConfigDestination,
+              connection,
+            },
+            {
+              message: generateRecordPayload({
+                action: 'update',
+                identifiers: { email: sha256('c@d.com') },
+              }),
+              metadata: generateMetadata(2),
+              destination: useInsertConfigDestination,
+              connection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertEndpoint,
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    audienceId: 'aud-42',
+                    users: [{ email: sha256('a@b.com') }, { email: sha256('c@d.com') }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1), generateMetadata(2)],
+              batched: true,
+              statusCode: 200,
+              destination: useInsertConfigDestination,
             },
           ],
         },

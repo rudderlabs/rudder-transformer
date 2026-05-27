@@ -203,54 +203,7 @@ describe('processAudienceRecord', () => {
     const sha512HashedEmail = createHash('sha512').update(plaintextEmail).digest('hex');
     const md5HashedEmail = md5(plaintextEmail);
 
-    it('emits audience_hashing_inconsistency metric when hashing ON but value already hashed', () => {
-      expect(() =>
-        processAudienceRecord(
-          { email: sha256HashedEmail },
-          {
-            fieldConfigs: { email: emailField },
-            destination: makeDestination({ isHashRequired: true }),
-          },
-        ),
-      ).toThrow(InstrumentationError);
-      expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-        propertyName: 'email',
-        type: 'hashed_when_hash_enabled',
-        workspaceId: 'ws-1',
-        destinationId: 'dest-1',
-        destType: 'test_dest',
-      });
-    });
-
-    it('emits audience_hashing_inconsistency metric when hashing OFF but value is plaintext', () => {
-      expect(() =>
-        processAudienceRecord(
-          { email: plaintextEmail },
-          {
-            fieldConfigs: { email: emailField },
-            destination: makeDestination({ isHashRequired: false }),
-          },
-        ),
-      ).toThrow(InstrumentationError);
-      expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-        propertyName: 'email',
-        type: 'unhashed_when_hash_disabled',
-        workspaceId: 'ws-1',
-        destinationId: 'dest-1',
-        destType: 'test_dest',
-      });
-    });
-
-    it('throws InstrumentationError when hashing ON + pre-hashed value', () => {
-      expect(() =>
-        processAudienceRecord(
-          { email: sha256HashedEmail },
-          {
-            fieldConfigs: { email: emailField },
-            destination: makeDestination({ isHashRequired: true }),
-          },
-        ),
-      ).toThrow(InstrumentationError);
+    it('hashing ON + pre-hashed value → emits metric and throws InstrumentationError', () => {
       expect(() =>
         processAudienceRecord(
           { email: sha256HashedEmail },
@@ -260,9 +213,16 @@ describe('processAudienceRecord', () => {
           },
         ),
       ).toThrow(/already be hashed/);
+      expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+        propertyName: 'email',
+        type: 'hashed_when_hash_enabled',
+        workspaceId: 'ws-1',
+        destinationId: 'dest-1',
+        destType: 'test_dest',
+      });
     });
 
-    it('throws InstrumentationError when hashing OFF + plaintext value', () => {
+    it('hashing OFF + plaintext value → emits metric and throws InstrumentationError', () => {
       expect(() =>
         processAudienceRecord(
           { email: plaintextEmail },
@@ -272,6 +232,13 @@ describe('processAudienceRecord', () => {
           },
         ),
       ).toThrow(/appears to be unhashed/);
+      expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+        propertyName: 'email',
+        type: 'unhashed_when_hash_disabled',
+        workspaceId: 'ws-1',
+        destinationId: 'dest-1',
+        destType: 'test_dest',
+      });
     });
 
     it('does not emit hashing inconsistency metric for non-hashable fields', () => {

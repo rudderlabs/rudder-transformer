@@ -13,6 +13,7 @@ import { defaultAccessToken } from '../../../common/secrets';
 import { generateMetadata } from '../../../testUtils';
 import {
   esDestinationAudience,
+  esDestinationAudienceHashOn,
   esDestinationRecord,
   eventStreamAudienceListRouterRequest,
   eventStreamHashOffRouterRequest,
@@ -23,7 +24,7 @@ import {
 export const data = [
   {
     name: 'fb_custom_audience',
-    description: 'eventStream using audienceList tests',
+    description: 'eventStream using audienceList tests with hashing enabled',
     scenario: 'business',
     successCriteria: 'event stream events should be batched correctly',
     feature: 'router',
@@ -40,6 +41,114 @@ export const data = [
         body: {
           output: [
             {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'DELETE',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: {
+                          sub_type: 'ANYTHING',
+                        },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
+                            'a953f09a1b6b6725b81956e9ad0b1eb49e3ad40004c04307ef8af6246a054116',
+                            '3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278',
+                            '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
+                            '0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686',
+                            '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
+                            'db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc',
+                            'abc',
+                            '4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2',
+                            'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+                            '582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf',
+                          ],
+                        ],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: {
+                          sub_type: 'ANYTHING',
+                        },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
+                            'a953f09a1b6b6725b81956e9ad0b1eb49e3ad40004c04307ef8af6246a054116',
+                            '3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278',
+                            '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
+                            '0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686',
+                            '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
+                            'db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc',
+                            'abc',
+                            '4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2',
+                            'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+                            '582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf',
+                          ],
+                        ],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
               metadata: [
                 {
                   attemptNum: 1,
@@ -55,22 +164,118 @@ export const data = [
                 },
               ],
               batched: false,
-              statusCode: 400,
-              error:
-                'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
-              statTags: {
-                destType: 'FB_CUSTOM_AUDIENCE',
-                destinationId: 'default-destinationId',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-                workspaceId: 'default-workspaceId',
-              },
-              destination: esDestinationAudience,
+              statusCode: 200,
+              destination: esDestinationAudienceHashOn,
             },
             {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'DELETE',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: {
+                          sub_type: 'ANYTHING',
+                        },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
+                            'a953f09a1b6b6725b81956e9ad0b1eb49e3ad40004c04307ef8af6246a054116',
+                            '3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278',
+                            '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
+                            '0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686',
+                            '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
+                            'db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc',
+                            'abc',
+                            '4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2',
+                            'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+                            '582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf',
+                          ],
+                        ],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: {
+                          sub_type: 'ANYTHING',
+                        },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
+                            'a953f09a1b6b6725b81956e9ad0b1eb49e3ad40004c04307ef8af6246a054116',
+                            '3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278',
+                            '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
+                            '0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686',
+                            '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
+                            'db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc',
+                            'abc',
+                            '4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2',
+                            'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+                            '582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf',
+                          ],
+                        ],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
               metadata: [
                 {
                   attemptNum: 1,
@@ -86,20 +291,8 @@ export const data = [
                 },
               ],
               batched: false,
-              statusCode: 400,
-              error:
-                'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
-              statTags: {
-                destType: 'FB_CUSTOM_AUDIENCE',
-                destinationId: 'default-destinationId',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-                workspaceId: 'default-workspaceId',
-              },
-              destination: esDestinationAudience,
+              statusCode: 200,
+              destination: esDestinationAudienceHashOn,
             },
           ],
         },

@@ -574,11 +574,11 @@ describe('GARL utils test', () => {
           expected: [{ identifiers: [{ addressInfo: { postalCode: '12345' } }] }],
         },
         {
-          description: 'unhashed email when isHashRequired=false passes through unchanged',
-          identifiers: [{ email: 'test@example.com' }],
+          description: 'pre-hashed email when isHashRequired=false passes through unchanged',
+          identifiers: [{ email: sha256('test@example.com') }],
           userSchema: ['email'],
           isHashRequired: false,
-          expected: [{ identifiers: [{ hashedEmail: 'test@example.com' }] }],
+          expected: [{ identifiers: [{ hashedEmail: sha256('test@example.com') }] }],
         },
       ])('$description', ({ identifiers, userSchema, isHashRequired, expected }) => {
         const result = populateIdentifiersForRecordEvent(
@@ -611,11 +611,11 @@ describe('GARL utils test', () => {
           expected: [{ identifiers: [{ hashedPhoneNumber: sha256('+@09876543210') }] }],
         },
         {
-          description: 'unhashed email when isHashRequired=false → passed through as-is',
-          identifiers: [{ email: 'test@example.com' }],
+          description: 'pre-hashed email when isHashRequired=false → passed through as-is',
+          identifiers: [{ email: sha256('test@example.com') }],
           userSchema: ['email'],
           isHashRequired: false,
-          expected: [{ identifiers: [{ hashedEmail: 'test@example.com' }] }],
+          expected: [{ identifiers: [{ hashedEmail: sha256('test@example.com') }] }],
         },
       ])('$description', ({ identifiers, userSchema, isHashRequired, expected }) => {
         const result = populateIdentifiersForRecordEvent(

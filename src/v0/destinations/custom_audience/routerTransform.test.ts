@@ -14,6 +14,10 @@ import type {
   CustomAudienceDestination,
 } from './types';
 
+// Pre-hashed emails used when isHashRequired=false (the default).
+// validateHashingConsistency rejects unhashed values when hashing is disabled.
+const hashedEmail = (plain: string) => sha256(plain);
+
 const baseInsertAction: ActionConfig = {
   endpoint: '/audiences/{{connection.audienceId}}/members',
   method: 'POST',
@@ -104,10 +108,10 @@ const buildInput = (
 describe('CustomAudienceIntegration via processBatchedDestination', () => {
   it('groups events by action and chunks by batchSize', async () => {
     const inputs = [
-      buildInput(1, 'insert', { email: 'a@b.com' }),
-      buildInput(2, 'insert', { email: 'c@d.com' }),
-      buildInput(3, 'insert', { email: 'e@f.com' }),
-      buildInput(4, 'delete', { email: 'g@h.com' }),
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }),
+      buildInput(2, 'insert', { email: hashedEmail('c@d.com') }),
+      buildInput(3, 'insert', { email: hashedEmail('e@f.com') }),
+      buildInput(4, 'delete', { email: hashedEmail('g@h.com') }),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});
@@ -139,8 +143,8 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
         const destination = buildDestination();
         delete destination.Config.actions.delete;
         return [
-          buildInput(1, 'insert', { email: 'a@b.com' }, destination),
-          buildInput(2, 'delete', { email: 'g@h.com' }, destination),
+          buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination),
+          buildInput(2, 'delete', { email: hashedEmail('g@h.com') }, destination),
         ];
       },
       failingJobId: 2,
@@ -149,7 +153,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     {
       name: 'event with all fields stripped',
       buildInputs: () => [
-        buildInput(1, 'insert', { email: 'a@b.com' }),
+        buildInput(1, 'insert', { email: hashedEmail('a@b.com') }),
         buildInput(2, 'insert', { email: '', other: null }),
       ],
       failingJobId: 2,
@@ -158,9 +162,9 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     {
       name: 'event failing schema validation (wrong type)',
       buildInputs: () => [
-        buildInput(1, 'insert', { email: 'a@b.com' }),
+        buildInput(1, 'insert', { email: hashedEmail('a@b.com') }),
         {
-          ...buildInput(2, 'insert', { email: 'b@c.com' }),
+          ...buildInput(2, 'insert', { email: hashedEmail('b@c.com') }),
           message: { type: 'identify' },
         } as unknown as RouterTransformationRequestData,
       ],
@@ -229,7 +233,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     'builds $name auth header when configured',
     async ({ overrides, expectedHeader, expectedValue }) => {
       const destination = buildDestination(overrides);
-      const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination)];
+      const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
 
       const results = await processBatchedDestination(inputs, Integration, {});
 
@@ -245,7 +249,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     const destination = buildDestination();
     destination.Config.actions.insert!.requestBody = '$$.records[0].$notARealMethod()';
 
-    const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination)];
+    const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
 
     await expect(processBatchedDestination(inputs, Integration, {})).rejects.toThrow();
   });

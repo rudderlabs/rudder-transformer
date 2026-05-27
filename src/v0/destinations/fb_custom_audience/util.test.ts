@@ -85,18 +85,19 @@ describe('FB_custom_audience utils test', () => {
         ).toEqual([sha256('somename')]); // 'some-name' normalized (hyphen stripped) → 'somename'
       });
 
-      it('passes field value through unchanged when isHashRequired is false', () => {
+      it('passes pre-hashed field value through unchanged when isHashRequired is false', () => {
+        const hashedFn = sha256('some-name');
         expect(
           processAndAppendDataElement(
             [],
             false,
             false,
             'FN',
-            'some-name',
+            hashedFn,
             TEST_WORKSPACE_ID,
             TEST_DESTINATION_ID,
           ),
-        ).toEqual(['some-name']);
+        ).toEqual([hashedFn]);
       });
 
       describe('fields that are never hashed', () => {
@@ -166,134 +167,80 @@ describe('FB_custom_audience utils test', () => {
           mockStatsIncrement.mockClear();
         });
 
-        afterEach(() => {
-          delete process.env.AUDIENCE_HASHING_VALIDATION_ENABLED;
-        });
-
-        describe('when validation is enabled', () => {
-          beforeEach(() => {
-            process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
-          });
-
-          it('hashing ON + pre-hashed value → emits metric and throws', () => {
-            expect(() =>
-              processAndAppendDataElement(
-                [],
-                true,
-                false,
-                'EMAIL',
-                hashedValue,
-                TEST_WORKSPACE_ID,
-                TEST_DESTINATION_ID,
-              ),
-            ).toThrow(
-              'Hashing is enabled but the value for field EMAIL appears to already be hashed. Either disable hashing or send unhashed data.',
-            );
-            expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-              propertyName: 'EMAIL',
-              type: 'hashed_when_hash_enabled',
-              workspaceId: 'ws-1',
-              destinationId: 'dest-1',
-              destType: 'fb_custom_audience',
-            });
-          });
-
-          it('hashing ON + plaintext value → no error, no metric', () => {
-            expect(() =>
-              processAndAppendDataElement(
-                [],
-                true,
-                false,
-                'EMAIL',
-                plaintextEmail,
-                TEST_WORKSPACE_ID,
-                TEST_DESTINATION_ID,
-              ),
-            ).not.toThrow();
-            expect(mockStatsIncrement).not.toHaveBeenCalled();
-          });
-
-          it('hashing OFF + plaintext value → emits metric and throws', () => {
-            expect(() =>
-              processAndAppendDataElement(
-                [],
-                false,
-                false,
-                'EMAIL',
-                plaintextEmail,
-                TEST_WORKSPACE_ID,
-                TEST_DESTINATION_ID,
-              ),
-            ).toThrow(
-              'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
-            );
-            expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-              propertyName: 'EMAIL',
-              type: 'unhashed_when_hash_disabled',
-              workspaceId: 'ws-1',
-              destinationId: 'dest-1',
-              destType: 'fb_custom_audience',
-            });
-          });
-
-          it('hashing OFF + 64-char hex value → no error, no metric', () => {
-            expect(() =>
-              processAndAppendDataElement(
-                [],
-                false,
-                false,
-                'EMAIL',
-                hashedValue,
-                TEST_WORKSPACE_ID,
-                TEST_DESTINATION_ID,
-              ),
-            ).not.toThrow();
-            expect(mockStatsIncrement).not.toHaveBeenCalled();
+        it('hashing ON + pre-hashed value → emits metric and throws', () => {
+          expect(() =>
+            processAndAppendDataElement(
+              [],
+              true,
+              false,
+              'EMAIL',
+              hashedValue,
+              TEST_WORKSPACE_ID,
+              TEST_DESTINATION_ID,
+            ),
+          ).toThrow(
+            'Hashing is enabled but the value for field EMAIL appears to already be hashed. Either disable hashing or send unhashed data.',
+          );
+          expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+            propertyName: 'EMAIL',
+            type: 'hashed_when_hash_enabled',
+            workspaceId: 'ws-1',
+            destinationId: 'dest-1',
+            destType: 'fb_custom_audience',
           });
         });
 
-        describe('when validation is disabled (default)', () => {
-          it('hashing ON + pre-hashed value → emits metric but does not throw', () => {
-            expect(() =>
-              processAndAppendDataElement(
-                [],
-                true,
-                false,
-                'EMAIL',
-                hashedValue,
-                TEST_WORKSPACE_ID,
-                TEST_DESTINATION_ID,
-              ),
-            ).not.toThrow();
-            expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-              propertyName: 'EMAIL',
-              type: 'hashed_when_hash_enabled',
-              workspaceId: 'ws-1',
-              destinationId: 'dest-1',
-              destType: 'fb_custom_audience',
-            });
-          });
+        it('hashing ON + plaintext value → no error, no metric', () => {
+          expect(() =>
+            processAndAppendDataElement(
+              [],
+              true,
+              false,
+              'EMAIL',
+              plaintextEmail,
+              TEST_WORKSPACE_ID,
+              TEST_DESTINATION_ID,
+            ),
+          ).not.toThrow();
+          expect(mockStatsIncrement).not.toHaveBeenCalled();
+        });
 
-          it('hashing OFF + plaintext value → emits metric but does not throw', () => {
-            expect(() =>
-              processAndAppendDataElement(
-                [],
-                false,
-                false,
-                'EMAIL',
-                plaintextEmail,
-                TEST_WORKSPACE_ID,
-                TEST_DESTINATION_ID,
-              ),
-            ).not.toThrow();
-            expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-              propertyName: 'EMAIL',
-              type: 'unhashed_when_hash_disabled',
-              workspaceId: 'ws-1',
-              destinationId: 'dest-1',
-              destType: 'fb_custom_audience',
-            });
+        it('hashing OFF + plaintext value → emits metric and throws', () => {
+          expect(() =>
+            processAndAppendDataElement(
+              [],
+              false,
+              false,
+              'EMAIL',
+              plaintextEmail,
+              TEST_WORKSPACE_ID,
+              TEST_DESTINATION_ID,
+            ),
+          ).toThrow(
+            'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
+          );
+          expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+            propertyName: 'EMAIL',
+            type: 'unhashed_when_hash_disabled',
+            workspaceId: 'ws-1',
+            destinationId: 'dest-1',
+            destType: 'fb_custom_audience',
           });
+        });
+
+        it('hashing OFF + 64-char hex value → no error, no metric', () => {
+          expect(() =>
+            processAndAppendDataElement(
+              [],
+              false,
+              false,
+              'EMAIL',
+              hashedValue,
+              TEST_WORKSPACE_ID,
+              TEST_DESTINATION_ID,
+            ),
+          ).not.toThrow();
+          expect(mockStatsIncrement).not.toHaveBeenCalled();
         });
       });
     });

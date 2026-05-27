@@ -1079,12 +1079,12 @@ export const dmRouterData = [
     mockFns,
   },
 
-  // ── Test 07: Pre-hashed input + AUDIENCE_HASHING_VALIDATION_ENABLED → error
+  // ── Test 07: Pre-hashed input with hash required → error
   {
     id: 'garl-dm-router-07',
     name: 'google_adwords_remarketing_lists',
     description:
-      '[DM API] pre-hashed data with isHashRequired true → error when hashing validation enabled',
+      '[DM API] pre-hashed data with isHashRequired true → hashing consistency validation error',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1126,16 +1126,15 @@ export const dmRouterData = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
     mockFns,
   },
 
-  // ── Test 08: Hash-off plaintext input + AUDIENCE_HASHING_VALIDATION_ENABLED → error
+  // ── Test 08: Hash-off plaintext input → error
   {
     id: 'garl-dm-router-08',
     name: 'google_adwords_remarketing_lists',
     description:
-      '[DM API] plaintext data with isHashRequired false → error when hashing validation enabled',
+      '[DM API] plaintext data with isHashRequired false → hashing consistency validation error',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1177,7 +1176,6 @@ export const dmRouterData = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
     mockFns,
   },
 

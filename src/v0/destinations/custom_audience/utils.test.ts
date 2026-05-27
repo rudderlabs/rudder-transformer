@@ -49,12 +49,20 @@ describe('lookupActionConfig', () => {
   const useInsertConfigCases = [
     {
       name: 'returns insert config when update has useInsertConfig: true',
-      updateConfig: { ...baseDestConfig.actions.insert!, endpoint: '/update-path', useInsertConfig: true },
+      updateConfig: {
+        ...baseDestConfig.actions.insert!,
+        endpoint: '/update-path',
+        useInsertConfig: true,
+      },
       expectedEndpoint: '/audiences/{{connection.audienceId}}/members',
     },
     {
       name: 'returns update config when useInsertConfig is false',
-      updateConfig: { ...baseDestConfig.actions.insert!, endpoint: '/update-path', useInsertConfig: false },
+      updateConfig: {
+        ...baseDestConfig.actions.insert!,
+        endpoint: '/update-path',
+        useInsertConfig: false,
+      },
       expectedEndpoint: '/update-path',
     },
     {

@@ -313,8 +313,7 @@ export class EventTesterService {
     if (stage.send_to_destination) {
       const successfulPayloads: unknown[] = [];
       const successIndices: number[] = [];
-      for (let i = 0; i < destResults.length; i++) {
-        const r = destResults[i];
+      for (const [i, r] of destResults.entries()) {
         if ('payload' in r) {
           successfulPayloads.push(r.payload);
           successIndices.push(i);
@@ -326,9 +325,9 @@ export class EventTesterService {
           dest,
           successfulPayloads,
         );
-        for (let j = 0; j < successIndices.length; j++) {
-          destOutput[successIndices[j]].destination_response = responses[j];
-          destOutput[successIndices[j]].destination_response_status = statuses[j];
+        for (const [j, successIndex] of successIndices.entries()) {
+          destOutput[successIndex].destination_response = responses[j];
+          destOutput[successIndex].destination_response_status = statuses[j];
         }
       }
     }

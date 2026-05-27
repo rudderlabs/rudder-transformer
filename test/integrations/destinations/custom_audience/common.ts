@@ -96,6 +96,10 @@ export const customMappingsDestination: CustomAudienceDestination = {
       ...destination.Config.actions,
       insert: {
         ...insertActionConfig,
+        fields: [
+          ...insertActionConfig.fields,
+          { name: 'listType', hashType: HashingType.NONE, isRequired: false, isCustom: true },
+        ],
         requestBody:
           '{ "audienceId": $$.connection.audienceId, "users": [$$.records.{ "email": email, "listType": listType }] }',
       },

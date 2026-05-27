@@ -4,6 +4,7 @@ import bodyParser from 'koa-bodyparser';
 import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import { applicationRoutes } from '../../routes';
+import { EventTesterService } from '../../services/eventTest/eventTester';
 import { sandboxedParseTemplate } from '../../v0/destinations/custom_audience/template/templateSandboxClient';
 
 jest.mock('../../v0/destinations/custom_audience/template/templateSandboxClient');
@@ -104,5 +105,50 @@ describe('POST /test-router/custom_audience/parse-template', () => {
 
     expect(response.status).toBe(400);
     expect(response.body.error).toBe(expectedError);
+  });
+});
+
+describe('POST /test-router/:version/:destination/batch', () => {
+  const ENDPOINT_V2 = '/test-router/v0/custom_audience/batch';
+
+  it('should return 400 for malformed request payload', async () => {
+    const response = await request(server)
+      .post(ENDPOINT_V2)
+      .send({
+        destination: {},
+        connection: {},
+        stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+        libraries: [],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain('events: Required');
+  });
+
+  it('should delegate valid payloads to EventTesterService.testEventV2', async () => {
+    const testEventV2Spy = jest.spyOn(EventTesterService, 'testEventV2').mockResolvedValue({
+      user_transformed_payload: [{ type: 'record' }],
+      dest_transform_output: [],
+    });
+
+    const payload = {
+      events: [{ type: 'record' }],
+      destination: {
+        workspaceId: 'ws-1',
+        destinationDefinition: {},
+      },
+      connection: {},
+      stage: { user_transform: false, dest_transform: false, send_to_destination: false },
+      libraries: [],
+    };
+
+    const response = await request(server).post(ENDPOINT_V2).send(payload);
+
+    expect(response.status).toBe(200);
+    expect(testEventV2Spy).toHaveBeenCalledWith(payload, 'v0', 'custom_audience');
+    expect(response.body).toEqual({
+      user_transformed_payload: [{ type: 'record' }],
+      dest_transform_output: [],
+    });
   });
 });

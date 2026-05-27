@@ -59,17 +59,24 @@ export const resolveEndpoint = (
 export const injectCustomMappings = (
   fields: Record<string, unknown>,
   customMappings: CustomMapping[] | undefined,
+  actionFields: ActionFieldConfig[],
 ): Record<string, unknown> => {
   if (!customMappings || customMappings.length === 0) {
     return fields;
   }
+  const allowedFieldNames = actionFields.map((f) => f.name);
+  for (const mapping of customMappings) {
+    if (!allowedFieldNames.includes(mapping.to)) {
+      throw new InstrumentationError(
+        ERROR_MESSAGES.CUSTOM_MAPPING_UNKNOWN_FIELD(mapping.to, allowedFieldNames),
+      );
+    }
+  }
   const merged: Record<string, unknown> = { ...fields };
   // `from` holds the literal value (user-supplied constant), `to` is the destination field.
-  customMappings
-    .filter((mapping) => mapping?.to)
-    .forEach((mapping) => {
-      merged[mapping.to] = mapping.from;
-    });
+  for (const mapping of customMappings) {
+    merged[mapping.to] = mapping.from;
+  }
   return merged;
 };
 

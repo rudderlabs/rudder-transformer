@@ -70,6 +70,7 @@ class CustomAudienceIntegration extends BatchDestination<
     const fieldsWithCustomMappings = injectCustomMappings(
       message.identifiers!,
       this.connectionConfig.customMappings,
+      actionConfig.fields,
     );
     const record = processFields(
       fieldsWithCustomMappings,
@@ -141,6 +142,24 @@ class CustomAudienceIntegration extends BatchDestination<
             type: z.literal('record'),
             action: z.enum([EVENT_TYPES.INSERT, EVENT_TYPES.UPDATE, EVENT_TYPES.DELETE]),
             identifiers: z.record(z.unknown()),
+          })
+          .passthrough(),
+        connection: z
+          .object({
+            config: z.object({
+              destination: z
+                .object({
+                  customMappings: z
+                    .array(
+                      z.object({
+                        from: z.string().min(1, 'Custom mapping "from" value must be non-empty'),
+                        to: z.string().min(1, 'Custom mapping "to" value must be non-empty'),
+                      }),
+                    )
+                    .optional(),
+                })
+                .passthrough(),
+            }),
           })
           .passthrough(),
       })

@@ -11,6 +11,18 @@ const parseTemplateBodySchema = z.object({
   workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
 });
 
+const testEventV2Schema = z.object({
+  events: z.array(z.record(z.unknown())),
+  destination: z.record(z.unknown()),
+  connection: z.record(z.unknown()).optional(),
+  stage: z.object({
+    user_transform: z.boolean().optional(),
+    dest_transform: z.boolean().optional(),
+    send_to_destination: z.boolean().optional(),
+  }),
+  libraries: z.array(z.record(z.unknown())).optional(),
+});
+
 export class EventTestController {
   private static API_VERSION = '1';
 
@@ -28,6 +40,18 @@ export class EventTestController {
       ctx.status = 400;
     }
     ctx.set('apiVersion', EventTestController.API_VERSION);
+  }
+
+  public static async testEventV2(ctx: Context) {
+    const { version, destination } = ctx.params;
+    const parsed = testEventV2Schema.safeParse(ctx.request.body);
+    if (!parsed.success) {
+      ctx.status = 400;
+      ctx.body = { error: formatZodError(parsed.error) };
+      return;
+    }
+
+    ctx.body = await EventTesterService.testEventV2(parsed.data, version, destination);
   }
 
   public static status(ctx: Context) {

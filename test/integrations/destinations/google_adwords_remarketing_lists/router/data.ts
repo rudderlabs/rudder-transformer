@@ -1632,7 +1632,7 @@ export const data = [
   {
     name: 'google_adwords_remarketing_lists record event tests EventStream pre-hashed input',
     description:
-      'pre-hashed data with isHashRequired true should fail when hashing validation is enabled',
+      'pre-hashed data with isHashRequired true should fail hashing consistency validation',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1679,12 +1679,11 @@ export const data = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
   },
   {
     name: 'google_adwords_remarketing_lists record event tests EventStream hash-off plaintext input',
     description:
-      'plaintext data with isHashRequired false should fail when hashing validation is enabled',
+      'plaintext data with isHashRequired false should fail hashing consistency validation',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1731,7 +1730,6 @@ export const data = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
   },
   {
     name: 'google_adwords_remarketing_lists field validation: invalid email stripped, valid fields sent',

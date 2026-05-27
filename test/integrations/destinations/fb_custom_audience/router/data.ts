@@ -40,114 +40,6 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
-                  endpointPath: 'users',
-                  headers: {},
-                  params: {
-                    access_token: 'ABC',
-                  },
-                  body: {
-                    JSON: {
-                      payload: {
-                        is_raw: true,
-                        data_source: {
-                          sub_type: 'ANYTHING',
-                        },
-                        schema: [
-                          'EMAIL',
-                          'DOBM',
-                          'DOBD',
-                          'DOBY',
-                          'PHONE',
-                          'GEN',
-                          'FI',
-                          'MADID',
-                          'ZIP',
-                          'ST',
-                          'COUNTRY',
-                        ],
-                        data: [
-                          [
-                            'shrouti@abc.com',
-                            '2',
-                            '13',
-                            '2013',
-                            '@09432457768',
-                            'f',
-                            'Ms.',
-                            'abc',
-                            'ZIP ',
-                            '123abc ',
-                            'IN',
-                          ],
-                        ],
-                      },
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
-                  endpointPath: 'users',
-                  headers: {},
-                  params: {
-                    access_token: 'ABC',
-                  },
-                  body: {
-                    JSON: {
-                      payload: {
-                        is_raw: true,
-                        data_source: {
-                          sub_type: 'ANYTHING',
-                        },
-                        schema: [
-                          'EMAIL',
-                          'DOBM',
-                          'DOBD',
-                          'DOBY',
-                          'PHONE',
-                          'GEN',
-                          'FI',
-                          'MADID',
-                          'ZIP',
-                          'ST',
-                          'COUNTRY',
-                        ],
-                        data: [
-                          [
-                            'shrouti@abc.com',
-                            '2',
-                            '13',
-                            '2013',
-                            '@09432457768',
-                            'f',
-                            'Ms.',
-                            'abc',
-                            'ZIP ',
-                            '123abc ',
-                            'IN',
-                          ],
-                        ],
-                      },
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-              ],
               metadata: [
                 {
                   attemptNum: 1,
@@ -163,118 +55,22 @@ export const data = [
                 },
               ],
               batched: false,
-              statusCode: 200,
+              statusCode: 400,
+              error:
+                'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
+              statTags: {
+                destType: 'FB_CUSTOM_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
               destination: esDestinationAudience,
             },
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
-                  endpointPath: 'users',
-                  headers: {},
-                  params: {
-                    access_token: 'ABC',
-                  },
-                  body: {
-                    JSON: {
-                      payload: {
-                        is_raw: true,
-                        data_source: {
-                          sub_type: 'ANYTHING',
-                        },
-                        schema: [
-                          'EMAIL',
-                          'DOBM',
-                          'DOBD',
-                          'DOBY',
-                          'PHONE',
-                          'GEN',
-                          'FI',
-                          'MADID',
-                          'ZIP',
-                          'ST',
-                          'COUNTRY',
-                        ],
-                        data: [
-                          [
-                            'shrouti@abc.com',
-                            '2',
-                            '13',
-                            '2013',
-                            '@09432457768',
-                            'f',
-                            'Ms.',
-                            'abc',
-                            'ZIP ',
-                            '123abc ',
-                            'IN',
-                          ],
-                        ],
-                      },
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
-                  endpointPath: 'users',
-                  headers: {},
-                  params: {
-                    access_token: 'ABC',
-                  },
-                  body: {
-                    JSON: {
-                      payload: {
-                        is_raw: true,
-                        data_source: {
-                          sub_type: 'ANYTHING',
-                        },
-                        schema: [
-                          'EMAIL',
-                          'DOBM',
-                          'DOBD',
-                          'DOBY',
-                          'PHONE',
-                          'GEN',
-                          'FI',
-                          'MADID',
-                          'ZIP',
-                          'ST',
-                          'COUNTRY',
-                        ],
-                        data: [
-                          [
-                            'shrouti@abc.com',
-                            '2',
-                            '13',
-                            '2013',
-                            '@09432457768',
-                            'f',
-                            'Ms.',
-                            'abc',
-                            'ZIP ',
-                            '123abc ',
-                            'IN',
-                          ],
-                        ],
-                      },
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-              ],
               metadata: [
                 {
                   attemptNum: 1,
@@ -290,7 +86,19 @@ export const data = [
                 },
               ],
               batched: false,
-              statusCode: 200,
+              statusCode: 400,
+              error:
+                'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
+              statTags: {
+                destType: 'FB_CUSTOM_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
               destination: esDestinationAudience,
             },
           ],
@@ -1293,10 +1101,10 @@ export const data = [
   {
     name: 'fb_custom_audience',
     description:
-      'unhashed data with isHashRequired false should fail when hashing validation is enabled',
+      'unhashed data with isHashRequired false should fail hashing consistency validation',
     scenario: 'business',
     successCriteria:
-      'should throw InstrumentationError when unhashed data is sent with hashing disabled and validation is enabled',
+      'should throw InstrumentationError when unhashed data is sent with hashing disabled',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1332,15 +1140,14 @@ export const data = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
   },
   {
     name: 'fb_custom_audience',
     description:
-      'pre-hashed data with isHashRequired true should fail when hashing validation is enabled',
+      'pre-hashed data with isHashRequired true should fail hashing consistency validation',
     scenario: 'business',
     successCriteria:
-      'should throw InstrumentationError when pre-hashed data is sent with hashing enabled and validation is enabled',
+      'should throw InstrumentationError when pre-hashed data is sent with hashing enabled',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1376,7 +1183,6 @@ export const data = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
   },
   {
     name: 'fb_custom_audience',

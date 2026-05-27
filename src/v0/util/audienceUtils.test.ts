@@ -47,12 +47,10 @@ const idField: AudienceField = {
 
 beforeEach(() => {
   mockStatsIncrement.mockClear();
-  delete process.env.AUDIENCE_HASHING_VALIDATION_ENABLED;
   delete process.env.TEST_DEST_REJECT_INVALID_FIELDS;
 });
 
 afterEach(() => {
-  delete process.env.AUDIENCE_HASHING_VALIDATION_ENABLED;
   delete process.env.TEST_DEST_REJECT_INVALID_FIELDS;
 });
 
@@ -113,15 +111,16 @@ describe('processAudienceRecord', () => {
       expect(result.email).toBe(sha256('user@example.com'));
     });
 
-    it('does not hash hashable fields when isHashRequired=false', () => {
+    it('passes pre-hashed hashable fields through when isHashRequired=false', () => {
+      const sha256HashedEmail = hashToSha256('user@example.com');
       const result = processAudienceRecord(
-        { email: 'user@example.com' },
+        { email: sha256HashedEmail },
         {
           fieldConfigs: { email: emailField },
           destination: makeDestination({ isHashRequired: false }),
         },
       );
-      expect(result.email).toBe('user@example.com');
+      expect(result.email).toBe(sha256HashedEmail);
     });
 
     it('does not hash non-hashable fields even when isHashRequired=true', () => {
@@ -173,7 +172,10 @@ describe('processAudienceRecord', () => {
     it('does not emit invalid_field metric for valid fields', () => {
       processAudienceRecord(
         { email: 'user@example.com' },
-        { fieldConfigs: { email: emailField }, destination: makeDestination() },
+        {
+          fieldConfigs: { email: emailField },
+          destination: makeDestination({ isHashRequired: true }),
+        },
       );
       expect(mockStatsIncrement).not.toHaveBeenCalledWith(
         'test_dest_invalid_field',
@@ -202,13 +204,15 @@ describe('processAudienceRecord', () => {
     const md5HashedEmail = md5(plaintextEmail);
 
     it('emits audience_hashing_inconsistency metric when hashing ON but value already hashed', () => {
-      processAudienceRecord(
-        { email: sha256HashedEmail },
-        {
-          fieldConfigs: { email: emailField },
-          destination: makeDestination({ isHashRequired: true }),
-        },
-      );
+      expect(() =>
+        processAudienceRecord(
+          { email: sha256HashedEmail },
+          {
+            fieldConfigs: { email: emailField },
+            destination: makeDestination({ isHashRequired: true }),
+          },
+        ),
+      ).toThrow(InstrumentationError);
       expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
         propertyName: 'email',
         type: 'hashed_when_hash_enabled',
@@ -219,13 +223,15 @@ describe('processAudienceRecord', () => {
     });
 
     it('emits audience_hashing_inconsistency metric when hashing OFF but value is plaintext', () => {
-      processAudienceRecord(
-        { email: plaintextEmail },
-        {
-          fieldConfigs: { email: emailField },
-          destination: makeDestination({ isHashRequired: false }),
-        },
-      );
+      expect(() =>
+        processAudienceRecord(
+          { email: plaintextEmail },
+          {
+            fieldConfigs: { email: emailField },
+            destination: makeDestination({ isHashRequired: false }),
+          },
+        ),
+      ).toThrow(InstrumentationError);
       expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
         propertyName: 'email',
         type: 'unhashed_when_hash_disabled',
@@ -235,8 +241,7 @@ describe('processAudienceRecord', () => {
       });
     });
 
-    it('throws InstrumentationError when AUDIENCE_HASHING_VALIDATION_ENABLED=true and hashing ON + pre-hashed value', () => {
-      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+    it('throws InstrumentationError when hashing ON + pre-hashed value', () => {
       expect(() =>
         processAudienceRecord(
           { email: sha256HashedEmail },
@@ -257,8 +262,7 @@ describe('processAudienceRecord', () => {
       ).toThrow(/already be hashed/);
     });
 
-    it('throws InstrumentationError when AUDIENCE_HASHING_VALIDATION_ENABLED=true and hashing OFF + plaintext value', () => {
-      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+    it('throws InstrumentationError when hashing OFF + plaintext value', () => {
       expect(() =>
         processAudienceRecord(
           { email: plaintextEmail },
@@ -313,8 +317,6 @@ describe('processAudienceRecord', () => {
     });
 
     it('dont throw error when hashing type is sha256 and value is already hashed', () => {
-      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
-
       const emailField: AudienceField = {
         normalize: (v) => v,
         hashingType: HashingType.SHA256,
@@ -330,8 +332,6 @@ describe('processAudienceRecord', () => {
     });
 
     it('dont throw error when hashing type is sha512 and value is already hashed', () => {
-      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
-
       const emailField: AudienceField = {
         normalize: (v) => v,
         hashingType: HashingType.SHA512,
@@ -347,8 +347,6 @@ describe('processAudienceRecord', () => {
     });
 
     it('dont throw error when hashing type is md5 and value is already hashed', () => {
-      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
-
       const emailField: AudienceField = {
         normalize: (v) => v,
         hashingType: HashingType.MD5,

@@ -54,14 +54,10 @@ interface AudienceDestination {
   };
 }
 
-function isHashingValidationEnabled(): boolean {
-  return process.env.AUDIENCE_HASHING_VALIDATION_ENABLED === 'true';
-}
-
 /**
  * Validates that the hashing configuration is consistent with the actual data.
  * Emits a metric when inconsistency is detected.
- * Optionally throws an error when validation is enabled via env var AUDIENCE_HASHING_VALIDATION_ENABLED.
+ * Throws an error when inconsistency is detected.
  */
 export const validateHashingConsistency = (
   propertyName: string,
@@ -80,11 +76,9 @@ export const validateHashingConsistency = (
       destinationId,
       destType,
     });
-    if (isHashingValidationEnabled()) {
-      throw new InstrumentationError(
-        `Hashing is enabled but the value for field ${propertyName} appears to already be hashed. Either disable hashing or send unhashed data.`,
-      );
-    }
+    throw new InstrumentationError(
+      `Hashing is enabled but the value for field ${propertyName} appears to already be hashed. Either disable hashing or send unhashed data.`,
+    );
   }
   if (!isHashRequired && !isAlreadyHashed) {
     stats.increment('audience_hashing_inconsistency', {
@@ -94,11 +88,9 @@ export const validateHashingConsistency = (
       destinationId,
       destType,
     });
-    if (isHashingValidationEnabled()) {
-      throw new InstrumentationError(
-        `Hashing is disabled but the value for field ${propertyName} appears to be unhashed. Either enable hashing or send pre-hashed data.`,
-      );
-    }
+    throw new InstrumentationError(
+      `Hashing is disabled but the value for field ${propertyName} appears to be unhashed. Either enable hashing or send pre-hashed data.`,
+    );
   }
 };
 

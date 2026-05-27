@@ -275,8 +275,8 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     });
 
     const inputs = [
-      buildInput(1, 'update', { email: 'a@b.com' }, destination),
-      buildInput(2, 'update', { email: 'c@d.com' }, destination),
+      buildInput(1, 'update', { email: hashedEmail('a@b.com') }, destination),
+      buildInput(2, 'update', { email: hashedEmail('c@d.com') }, destination),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});

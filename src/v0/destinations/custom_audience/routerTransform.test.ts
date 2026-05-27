@@ -246,8 +246,12 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
   );
 
   it('throws when requestBody template fails at runtime', async () => {
-    const destination = buildDestination();
-    destination.Config.actions.insert!.requestBody = '$$.records[0].$notARealMethod()';
+    const destination = buildDestination({
+      actions: {
+        insert: { ...baseInsertAction, requestBody: '$$.records[0].$notARealMethod()' },
+        delete: baseDeleteAction,
+      },
+    });
 
     const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
 

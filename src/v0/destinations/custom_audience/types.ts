@@ -25,6 +25,10 @@ export type ActionConfig = {
   fields: ActionFieldConfig[];
 };
 
+export type UpdateActionConfig = ActionConfig & {
+  useInsertConfig?: boolean;
+};
+
 export type CustomAudienceHeader = {
   key: string;
   value: string;
@@ -34,7 +38,11 @@ export type CustomAudienceDestConfig = {
   baseUrl: string;
   authenticationType: AuthenticationType;
   headers?: CustomAudienceHeader[];
-  actions: Partial<Record<Action, ActionConfig>>;
+  actions: {
+    insert?: ActionConfig;
+    update?: UpdateActionConfig;
+    delete?: ActionConfig;
+  };
   basicAuthUserName?: string;
   basicAuthPassword?: string;
   bearerToken?: string;

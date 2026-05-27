@@ -4,6 +4,7 @@ import type {
   ActionConfig,
   CustomAudienceConnection,
   CustomAudienceDestination,
+  UpdateActionConfig,
 } from '../../../../src/v0/destinations/custom_audience/types';
 import { bearerToken } from './maskedSecrets';
 
@@ -111,5 +112,28 @@ export const hashRequiredConnection: CustomAudienceConnection = {
   ...connection,
   config: {
     destination: { ...connection.config.destination, isHashRequired: true },
+  },
+};
+
+// Update action with useInsertConfig: true — uses a distinct endpoint/method so
+// tests can prove the insert config was substituted.
+const useInsertConfigUpdateAction: UpdateActionConfig = {
+  endpoint: '/audiences/{{connection.audienceId}}/update-members',
+  method: 'PUT',
+  requestBody: '{ "should": "not appear" }',
+  batchSize: 10,
+  fields: insertActionConfig.fields,
+  useInsertConfig: true,
+};
+
+export const useInsertConfigDestination: CustomAudienceDestination = {
+  ...destination,
+  Config: {
+    ...destination.Config,
+    actions: {
+      insert: insertActionConfig,
+      update: useInsertConfigUpdateAction,
+      delete: deleteActionConfig,
+    },
   },
 };

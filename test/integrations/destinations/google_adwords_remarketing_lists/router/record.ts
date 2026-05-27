@@ -391,7 +391,7 @@ export const rETLRecordRouterRequestVDMv1: RouterTransformationRequest = {
   destType: 'google_adwords_remarketing_lists',
 };
 
-// GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=true: invalid email stripped, valid phone + addressInfo sent
+// invalid email stripped, valid phone + addressInfo sent
 export const fieldStrippingRequest: RouterTransformationRequest = {
   input: [
     {
@@ -402,7 +402,7 @@ export const fieldStrippingRequest: RouterTransformationRequest = {
         recordId: '10',
         rudderId: '10',
         fields: {
-          email: 'invalid-email', // invalid — stripped when flag on
+          email: 'invalid-email', // invalid — stripped
           phone: '09876543210', // valid
           firstName: 'test',
           lastName: 'rudderlabs',
@@ -417,7 +417,7 @@ export const fieldStrippingRequest: RouterTransformationRequest = {
   destType: 'google_adwords_remarketing_lists',
 };
 
-// GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=true: all fields invalid → InstrumentationError
+// all fields invalid → InstrumentationError
 export const allFieldsInvalidRequest: RouterTransformationRequest = {
   input: [
     {

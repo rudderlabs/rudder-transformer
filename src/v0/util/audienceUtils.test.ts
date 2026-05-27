@@ -47,11 +47,6 @@ const idField: AudienceField = {
 
 beforeEach(() => {
   mockStatsIncrement.mockClear();
-  delete process.env.TEST_DEST_REJECT_INVALID_FIELDS;
-});
-
-afterEach(() => {
-  delete process.env.TEST_DEST_REJECT_INVALID_FIELDS;
 });
 
 describe('processAudienceRecord', () => {
@@ -136,24 +131,7 @@ describe('processAudienceRecord', () => {
   });
 
   describe('validation', () => {
-    it('keeps invalid fields by default (REJECT_INVALID_FIELDS not set)', () => {
-      const result = processAudienceRecord(
-        { email: 'not-an-email' },
-        {
-          fieldConfigs: { email: emailField },
-          destination: makeDestination({ isHashRequired: true }),
-        },
-      );
-      expect(result).toHaveProperty('email', sha256('not-an-email'));
-      expect(mockStatsIncrement).toHaveBeenCalledWith('test_dest_invalid_field', {
-        fieldName: 'email',
-        workspaceId: 'ws-1',
-        destinationId: 'dest-1',
-      });
-    });
-
-    it('drops invalid fields when REJECT_INVALID_FIELDS env var is enabled', () => {
-      process.env.TEST_DEST_REJECT_INVALID_FIELDS = 'true';
+    it('drops invalid fields and emits invalid field metric', () => {
       const result = processAudienceRecord(
         { email: 'not-an-email' },
         {
@@ -343,8 +321,7 @@ describe('processAudienceRecord', () => {
       expect(result.extern_id).toBe('abc');
     });
 
-    it('drops invalid fields and keeps valid ones when reject enabled', () => {
-      process.env.TEST_DEST_REJECT_INVALID_FIELDS = 'true';
+    it('drops invalid fields and keeps valid ones', () => {
       const result = processAudienceRecord(
         { email: 'bad', phone: '+1 (650) 555-1212' },
         {

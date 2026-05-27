@@ -1272,7 +1272,6 @@ export const dmRouterData = [
         },
       },
     },
-    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
     mockFns,
   },
 
@@ -1321,7 +1320,6 @@ export const dmRouterData = [
         },
       },
     },
-    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
     mockFns,
   },
 

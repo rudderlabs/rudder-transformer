@@ -1733,8 +1733,7 @@ export const data = [
   },
   {
     name: 'google_adwords_remarketing_lists field validation: invalid email stripped, valid fields sent',
-    description:
-      'With GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=true, an invalid email is stripped while valid phone and addressInfo are forwarded',
+    description: 'An invalid email is stripped while valid phone and addressInfo are forwarded',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1848,12 +1847,10 @@ export const data = [
         },
       },
     },
-    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
   },
   {
     name: 'google_adwords_remarketing_lists field validation: all fields invalid → InstrumentationError',
-    description:
-      'With GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=true, when all fields are invalid the record is rejected with InstrumentationError',
+    description: 'When all fields are invalid the record is rejected with InstrumentationError',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1899,6 +1896,5 @@ export const data = [
         },
       },
     },
-    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
   },
 ];

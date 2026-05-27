@@ -293,32 +293,27 @@ describe('FB_custom_audience utils test', () => {
 
         describe('invalid codes', () => {
           const invalidCases = [
-            { input: 'USA', normalized: 'usa', description: 'three letters' },
-            { input: 'U', normalized: 'u', description: 'single letter' },
-            { input: 'U1', normalized: 'u1', description: 'contains digit' },
-            { input: '12', normalized: '12', description: 'all digits' },
+            { input: 'USA', description: 'three letters' },
+            { input: 'U', description: 'single letter' },
+            { input: 'U1', description: 'contains digit' },
+            { input: '12', description: 'all digits' },
           ];
-          invalidCases.forEach(({ input, normalized, description }) => {
-            it(`${description}: "${input}" → sha256("${normalized}") when reject disabled`, () => {
-              expect(normalize('COUNTRY', input)).toBe(sha256(normalized));
+          invalidCases.forEach(({ input, description }) => {
+            it(`${description}: "${input}" → empty string`, () => {
+              expect(normalize('COUNTRY', input)).toBe('');
             });
           });
 
-          it('increments stats counter and returns empty string when reject enabled', () => {
+          it('increments stats counter and returns empty string', () => {
             const mockStatsIncrement = stats.increment as jest.Mock;
             mockStatsIncrement.mockClear();
-            process.env.FB_CUSTOM_AUDIENCE_REJECT_INVALID_FIELDS = 'true';
-            try {
-              const result = normalize('COUNTRY', 'USA');
-              expect(result).toBe('');
-              expect(mockStatsIncrement).toHaveBeenCalledWith('fb_custom_audience_invalid_field', {
-                fieldName: 'COUNTRY',
-                workspaceId: TEST_WORKSPACE_ID,
-                destinationId: TEST_DESTINATION_ID,
-              });
-            } finally {
-              delete process.env.FB_CUSTOM_AUDIENCE_REJECT_INVALID_FIELDS;
-            }
+            const result = normalize('COUNTRY', 'USA');
+            expect(result).toBe('');
+            expect(mockStatsIncrement).toHaveBeenCalledWith('fb_custom_audience_invalid_field', {
+              fieldName: 'COUNTRY',
+              workspaceId: TEST_WORKSPACE_ID,
+              destinationId: TEST_DESTINATION_ID,
+            });
           });
         });
       });

@@ -16,7 +16,6 @@ import {
   ENDPOINT_PATH,
   ACTION_RECORD_MAP,
   DESTINATION_TYPE,
-  isRejectInvalidFieldsEnabled,
   REMOVE_SPACES_REGEX,
   TRAITS_SET,
 } from './config';
@@ -49,7 +48,7 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Identifi
           workspaceId: metadata.workspaceId,
           destinationId: destination.ID,
         });
-        return isRejectInvalidFieldsEnabled() ? '' : emailValue;
+        return '';
       }
       case 'IDFA_SHA256':
       case 'AAID_SHA256':

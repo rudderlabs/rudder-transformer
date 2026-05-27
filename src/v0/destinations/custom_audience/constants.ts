@@ -14,4 +14,6 @@ export const ERROR_MESSAGES = {
     `Failed to evaluate requestBody template: ${reason}`,
   ENDPOINT_RESOLUTION_FAILED: (placeholder: string) =>
     `Unresolved placeholder in endpoint template: ${placeholder}`,
+  CUSTOM_MAPPING_UNKNOWN_FIELD: (fieldName: string, allowedFields: string[]) =>
+    `Custom mapping target "${fieldName}" is not a configured field. Allowed fields: ${allowedFields.join(', ')}`,
 };

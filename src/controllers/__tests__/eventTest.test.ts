@@ -128,9 +128,7 @@ describe('POST /test-router/:version/:destination/batch', () => {
   it('should delegate valid payloads to EventTesterService.testEventV2', async () => {
     const testEventV2Spy = jest.spyOn(EventTesterService, 'testEventV2').mockResolvedValue({
       user_transformed_payload: [{ type: 'record' }],
-      dest_transformed_payload: [],
-      destination_response: [],
-      destination_response_status: [],
+      dest_transform_output: [],
     });
 
     const payload = {
@@ -150,9 +148,7 @@ describe('POST /test-router/:version/:destination/batch', () => {
     expect(testEventV2Spy).toHaveBeenCalledWith(payload, 'v0', 'custom_audience');
     expect(response.body).toEqual({
       user_transformed_payload: [{ type: 'record' }],
-      dest_transformed_payload: [],
-      destination_response: [],
-      destination_response_status: [],
+      dest_transform_output: [],
     });
   });
 });

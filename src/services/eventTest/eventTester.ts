@@ -29,11 +29,17 @@ type UserTransformResult = {
   error?: string;
 };
 
+type DestTransformEntry = { payload: unknown } | { error: string };
+
+type DestTransformOutputEntry = {
+  dest_transformed_payload: unknown;
+  destination_response?: unknown;
+  destination_response_status?: number;
+};
+
 type EventTesterV2Response = {
   user_transformed_payload: unknown[];
-  dest_transformed_payload: unknown[];
-  destination_response: unknown[];
-  destination_response_status: number[];
+  dest_transform_output: DestTransformOutputEntry[];
 };
 
 export class EventTesterService {
@@ -41,33 +47,39 @@ export class EventTesterService {
     version: string,
     dest: string,
     events: DestTransformInput[],
-  ): Promise<{ payloads: unknown[]; error?: string }> {
+  ): Promise<DestTransformEntry[]> {
     if (events.length === 0) {
-      return { payloads: [] };
+      return [];
     }
     const workspaceId = events[0].destination.WorkspaceId;
     if (typeof workspaceId !== 'string' || !workspaceId) {
-      return { payloads: [], error: 'destination.WorkspaceId is required' };
+      return [{ error: 'destination.WorkspaceId is required' }];
     }
 
-    const inputs = events.map((event) => ({
+    const inputs = events.map((event, idx) => ({
       message: event.message as RudderMessage,
       // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
-      metadata: { workspaceId } as Metadata,
+      // jobId must be unique per event so the batching framework can track per-event failures.
+      metadata: { workspaceId, jobId: idx + 1 } as Metadata,
       destination: event.destination as Destination,
       connection: event.connection as Connection,
     }));
 
     const service = new NativeIntegrationDestinationService();
     const responses = await service.doRouterTransformation(inputs, dest, version, {});
-    const failed = responses.find((r) => r.error);
-    if (failed) {
-      return { payloads: [], error: failed.error };
+
+    const results: DestTransformEntry[] = [];
+    for (const r of responses) {
+      if (r.error) {
+        results.push({ error: r.error });
+      } else {
+        const payloads = Array.isArray(r.batchedRequest) ? r.batchedRequest : [r.batchedRequest];
+        for (const p of payloads) {
+          results.push({ payload: p });
+        }
+      }
     }
-    const payloads = responses.flatMap((r) =>
-      Array.isArray(r.batchedRequest) ? r.batchedRequest : [r.batchedRequest],
-    );
-    return { payloads };
+    return results;
   }
 
   private static async runUserTransform(
@@ -204,12 +216,15 @@ export class EventTesterService {
 
         if (stage.dest_transform) {
           if (!errorFound) {
-            const destResult = await this.runDestTransform(version, dest, [ev]);
-            if (destResult.error) {
+            const destResults = await this.runDestTransform(version, dest, [ev]);
+            const destError = destResults.find((r): r is { error: string } => 'error' in r);
+            if (destError) {
               errorFound = true;
-              response.dest_transformed_payload = { error: destResult.error };
+              response.dest_transformed_payload = { error: destError.error };
             } else {
-              response.dest_transformed_payload = destResult.payloads;
+              response.dest_transformed_payload = destResults.map(
+                (r) => (r as { payload: unknown }).payload,
+              );
             }
           } else {
             response.dest_transformed_payload = {
@@ -265,9 +280,7 @@ export class EventTesterService {
       user_transformed_payload: stage.user_transform
         ? userTransformResults.map((r) => (r.error ? { error: r.error } : r.message))
         : [],
-      dest_transformed_payload: [],
-      destination_response: [],
-      destination_response_status: [],
+      dest_transform_output: [],
     };
 
     if (!stage.dest_transform) {
@@ -282,29 +295,38 @@ export class EventTesterService {
         connection,
       }));
 
-    const destResult = await this.runDestTransform(version, dest, eventsForDestTransform);
+    const destResults = await this.runDestTransform(version, dest, eventsForDestTransform);
 
-    if (destResult.error) {
-      response.dest_transformed_payload = [{ error: destResult.error }];
-      if (stage.send_to_destination) {
-        response.destination_response = [
-          { error: 'error encountered in dest_transformation stage. Aborting.' },
-        ];
-      }
-      return response;
-    }
-
-    response.dest_transformed_payload = destResult.payloads;
-    if (!stage.send_to_destination) {
-      return response;
-    }
-
-    const destinationResponse = await this.sendPayloadsToDestination(
-      dest,
-      response.dest_transformed_payload,
+    const destOutput: DestTransformOutputEntry[] = destResults.map((r) =>
+      'error' in r
+        ? { dest_transformed_payload: { error: r.error } }
+        : { dest_transformed_payload: r.payload },
     );
-    response.destination_response = destinationResponse.responses;
-    response.destination_response_status = destinationResponse.statuses;
+
+    if (stage.send_to_destination) {
+      const successfulPayloads: unknown[] = [];
+      const successIndices: number[] = [];
+      for (let i = 0; i < destResults.length; i++) {
+        const r = destResults[i];
+        if ('payload' in r) {
+          successfulPayloads.push(r.payload);
+          successIndices.push(i);
+        }
+      }
+
+      if (successfulPayloads.length > 0) {
+        const { responses, statuses } = await this.sendPayloadsToDestination(
+          dest,
+          successfulPayloads,
+        );
+        for (let j = 0; j < successIndices.length; j++) {
+          destOutput[successIndices[j]].destination_response = responses[j];
+          destOutput[successIndices[j]].destination_response_status = statuses[j];
+        }
+      }
+    }
+
+    response.dest_transform_output = destOutput;
     return response;
   }
 }

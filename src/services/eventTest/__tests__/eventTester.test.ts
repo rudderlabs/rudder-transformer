@@ -49,11 +49,11 @@ describe('EventTesterService.testEvent', () => {
             version: string,
             dest: string,
             events: unknown[],
-          ) => Promise<{ payloads: unknown[]; error?: string }>;
+          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
         },
         'runDestTransform',
       )
-      .mockResolvedValue({ payloads: [sampleOutput] });
+      .mockResolvedValue([{ payload: sampleOutput }]);
 
     const result = await EventTesterService.testEvent(
       [
@@ -120,11 +120,11 @@ describe('EventTesterService.testEvent', () => {
             version: string,
             dest: string,
             events: unknown[],
-          ) => Promise<{ payloads: unknown[]; error?: string }>;
+          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
         },
         'runDestTransform',
       )
-      .mockResolvedValue({ payloads: [sampleOutput] });
+      .mockResolvedValue([{ payload: sampleOutput }]);
 
     jest
       .spyOn(
@@ -171,11 +171,11 @@ describe('EventTesterService.testEvent', () => {
             version: string,
             dest: string,
             events: unknown[],
-          ) => Promise<{ payloads: unknown[]; error?: string }>;
+          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
         },
         'runDestTransform',
       )
-      .mockResolvedValue({ payloads: [], error: 'batch transform failed' });
+      .mockResolvedValue([{ error: 'batch transform failed' }]);
 
     const result = await EventTesterService.testEvent(
       [
@@ -225,11 +225,11 @@ describe('EventTesterService.testEventV2', () => {
             version: string,
             dest: string,
             events: unknown[],
-          ) => Promise<{ payloads: unknown[]; error?: string }>;
+          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
         },
         'runDestTransform',
       )
-      .mockResolvedValue({ payloads: [sampleOutput] });
+      .mockResolvedValue([{ payload: sampleOutput }]);
 
     const result = await EventTesterService.testEventV2(
       {
@@ -263,9 +263,7 @@ describe('EventTesterService.testEventV2', () => {
         { error: 'user transform failed' },
         { type: 'record', id: 'ok-2' },
       ],
-      dest_transformed_payload: [sampleOutput],
-      destination_response: [],
-      destination_response_status: [],
+      dest_transform_output: [{ dest_transformed_payload: sampleOutput }],
     });
   });
 
@@ -277,13 +275,14 @@ describe('EventTesterService.testEventV2', () => {
             version: string,
             dest: string,
             events: unknown[],
-          ) => Promise<{ payloads: unknown[]; error?: string }>;
+          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
         },
         'runDestTransform',
       )
-      .mockResolvedValue({
-        payloads: [sampleOutput, { ...sampleOutput, endpoint: 'https://api.example.com/y' }],
-      });
+      .mockResolvedValue([
+        { payload: sampleOutput },
+        { payload: { ...sampleOutput, endpoint: 'https://api.example.com/y' } },
+      ]);
 
     jest
       .spyOn(
@@ -311,12 +310,18 @@ describe('EventTesterService.testEventV2', () => {
 
     expect(result).toEqual({
       user_transformed_payload: [],
-      dest_transformed_payload: [
-        sampleOutput,
-        { ...sampleOutput, endpoint: 'https://api.example.com/y' },
+      dest_transform_output: [
+        {
+          dest_transformed_payload: sampleOutput,
+          destination_response: 'ok-1',
+          destination_response_status: 200,
+        },
+        {
+          dest_transformed_payload: { ...sampleOutput, endpoint: 'https://api.example.com/y' },
+          destination_response: 'ok-2',
+          destination_response_status: 202,
+        },
       ],
-      destination_response: ['ok-1', 'ok-2'],
-      destination_response_status: [200, 202],
     });
   });
 
@@ -328,11 +333,11 @@ describe('EventTesterService.testEventV2', () => {
             version: string,
             dest: string,
             events: unknown[],
-          ) => Promise<{ payloads: unknown[]; error?: string }>;
+          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
         },
         'runDestTransform',
       )
-      .mockResolvedValue({ payloads: [], error: 'template evaluation failed' });
+      .mockResolvedValue([{ error: 'template evaluation failed' }]);
 
     const result = await EventTesterService.testEventV2(
       {
@@ -348,12 +353,69 @@ describe('EventTesterService.testEventV2', () => {
 
     expect(result).toEqual({
       user_transformed_payload: [],
-      dest_transformed_payload: [{ error: 'template evaluation failed' }],
-      destination_response: [
-        { error: 'error encountered in dest_transformation stage. Aborting.' },
+      dest_transform_output: [
+        { dest_transformed_payload: { error: 'template evaluation failed' } },
       ],
-      destination_response_status: [],
     });
+  });
+
+  it('interleaves successes and errors when dest transform partially fails', async () => {
+    const failedOutput = { error: 'invalid field mapping' };
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runDestTransform: (
+            version: string,
+            dest: string,
+            events: unknown[],
+          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
+        },
+        'runDestTransform',
+      )
+      .mockResolvedValue([
+        { payload: sampleOutput },
+        { error: 'invalid field mapping' },
+        { payload: { ...sampleOutput, endpoint: 'https://api.example.com/y' } },
+      ]);
+
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          sendPayloadsToDestination: (
+            destination: string,
+            transformedPayloads: unknown[],
+          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
+        },
+        'sendPayloadsToDestination',
+      )
+      .mockResolvedValue({ responses: ['ok-1', 'ok-2'], statuses: [200, 202] });
+
+    const result = await EventTesterService.testEventV2(
+      {
+        events: [{ type: 'record' }, { type: 'record' }, { type: 'record' }],
+        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+        connection: {},
+        stage: { user_transform: false, dest_transform: true, send_to_destination: true },
+        libraries: [],
+      },
+      'v0',
+      'custom_audience',
+    );
+
+    // each entry groups its payload with its destination response; failed entries have no response
+    expect(result.dest_transform_output).toEqual([
+      {
+        dest_transformed_payload: sampleOutput,
+        destination_response: 'ok-1',
+        destination_response_status: 200,
+      },
+      { dest_transformed_payload: failedOutput },
+      {
+        dest_transformed_payload: { ...sampleOutput, endpoint: 'https://api.example.com/y' },
+        destination_response: 'ok-2',
+        destination_response_status: 202,
+      },
+    ]);
   });
 });
 

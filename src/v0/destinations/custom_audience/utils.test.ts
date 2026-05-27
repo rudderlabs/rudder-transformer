@@ -91,6 +91,11 @@ describe('resolveEndpoint', () => {
 });
 
 describe('injectCustomMappings', () => {
+  const actionFields = [
+    { name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false },
+    { name: 'listId', hashType: HashingType.NONE, isRequired: false, isCustom: false },
+  ];
+
   const cases = [
     {
       name: 'returns fields untouched when no mappings',
@@ -113,7 +118,17 @@ describe('injectCustomMappings', () => {
   ];
 
   it.each(cases)('$name', ({ fields, mappings, expected }) => {
-    expect(injectCustomMappings(fields, mappings)).toEqual(expected);
+    expect(injectCustomMappings(fields, mappings, actionFields)).toEqual(expected);
+  });
+
+  it('throws InstrumentationError when mapping targets an unknown field', () => {
+    expect(() =>
+      injectCustomMappings(
+        { email: 'a@b.com' },
+        [{ from: 'some-value', to: 'unknownField' }],
+        actionFields,
+      ),
+    ).toThrow(InstrumentationError);
   });
 });
 

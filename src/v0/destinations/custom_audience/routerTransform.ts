@@ -70,6 +70,7 @@ class CustomAudienceIntegration extends BatchDestination<
     const fieldsWithCustomMappings = injectCustomMappings(
       message.identifiers!,
       this.connectionConfig.customMappings,
+      actionConfig.fields,
     );
     const record = processFields(
       fieldsWithCustomMappings,

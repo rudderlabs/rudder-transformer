@@ -39,6 +39,7 @@ const buildDestination = (
 const buildConnection = (
   audienceId: string | number,
   identifierMappings: IdentifierMapping[],
+  extra: { updateExistingUsersOnly?: boolean } = {},
 ): IterableAudienceConnection => ({
   sourceId: 'src-1',
   destinationId: 'dest-1',
@@ -47,6 +48,9 @@ const buildConnection = (
     destination: {
       audienceId: String(audienceId),
       identifierMappings,
+      ...(typeof extra.updateExistingUsersOnly === 'boolean'
+        ? { updateExistingUsersOnly: extra.updateExistingUsersOnly }
+        : {}),
     },
   },
 });
@@ -109,8 +113,8 @@ const getHeaders = (response: any): Record<string, string> => {
 };
 
 // Project-type fixtures used by the parameterised happy-path test.
-const emailMappings: IdentifierMapping[] = [{ from: 'email_col', to: 'email' }];
-const userIdMappings: IdentifierMapping[] = [{ from: 'uid_col', to: 'userId' }];
+const emailMappings: IdentifierMapping[] = [{ from: 'email', to: 'email' }];
+const userIdMappings: IdentifierMapping[] = [{ from: 'userId', to: 'userId' }];
 
 // ---------------------------------------------------------------------------
 // Happy-path coverage: project type x action
@@ -120,7 +124,7 @@ describe('IterableAudienceIntegration happy paths', () => {
   it('email-based + INSERT emits subscribe body', async () => {
     const destination = buildDestination({ projectType: 'email-based' });
     const connection = buildConnection(123, emailMappings);
-    const inputs = [buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection)];
+    const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
     const results = await processBatchedDestination(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
@@ -134,7 +138,7 @@ describe('IterableAudienceIntegration happy paths', () => {
   it('email-based + UPDATE emits subscribe body', async () => {
     const destination = buildDestination({ projectType: 'email-based' });
     const connection = buildConnection(123, emailMappings);
-    const inputs = [buildInput(1, 'update', { email_col: 'a@b.com' }, destination, connection)];
+    const inputs = [buildInput(1, 'update', { email: 'a@b.com' }, destination, connection)];
 
     const results = await processBatchedDestination(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
@@ -148,7 +152,7 @@ describe('IterableAudienceIntegration happy paths', () => {
   it('email-based + DELETE emits unsubscribe body with channelUnsubscribe:false', async () => {
     const destination = buildDestination({ projectType: 'email-based' });
     const connection = buildConnection(123, emailMappings);
-    const inputs = [buildInput(1, 'delete', { email_col: 'a@b.com' }, destination, connection)];
+    const inputs = [buildInput(1, 'delete', { email: 'a@b.com' }, destination, connection)];
 
     const results = await processBatchedDestination(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
@@ -163,7 +167,7 @@ describe('IterableAudienceIntegration happy paths', () => {
   it('userId-based + INSERT emits subscribe body with userId', async () => {
     const destination = buildDestination({ projectType: 'userId-based' });
     const connection = buildConnection(123, userIdMappings);
-    const inputs = [buildInput(1, 'insert', { uid_col: 'u-1' }, destination, connection)];
+    const inputs = [buildInput(1, 'insert', { userId: 'u-1' }, destination, connection)];
 
     const results = await processBatchedDestination(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
@@ -176,7 +180,7 @@ describe('IterableAudienceIntegration happy paths', () => {
   it('userId-based + DELETE emits unsubscribe with userId', async () => {
     const destination = buildDestination({ projectType: 'userId-based' });
     const connection = buildConnection(123, userIdMappings);
-    const inputs = [buildInput(1, 'delete', { uid_col: 'u-1' }, destination, connection)];
+    const inputs = [buildInput(1, 'delete', { userId: 'u-1' }, destination, connection)];
 
     const results = await processBatchedDestination(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
@@ -194,15 +198,15 @@ describe('IterableAudienceIntegration happy paths', () => {
 
 describe('IterableAudienceIntegration hybrid project', () => {
   const hybridMappings: IdentifierMapping[] = [
-    { from: 'email_col', to: 'email' },
-    { from: 'uid_col', to: 'userId' },
+    { from: 'email', to: 'email' },
+    { from: 'userId', to: 'userId' },
   ];
 
   it('row with email+userId emits userId (preferred for hybrid)', async () => {
     const destination = buildDestination({ projectType: 'hybrid' });
     const connection = buildConnection(123, hybridMappings);
     const inputs = [
-      buildInput(1, 'insert', { email_col: 'a@b.com', uid_col: 'u-1' }, destination, connection),
+      buildInput(1, 'insert', { email: 'a@b.com', userId: 'u-1' }, destination, connection),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});
@@ -216,7 +220,7 @@ describe('IterableAudienceIntegration hybrid project', () => {
   it('row with only email emits email', async () => {
     const destination = buildDestination({ projectType: 'hybrid' });
     const connection = buildConnection(123, hybridMappings);
-    const inputs = [buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection)];
+    const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
     const results = await processBatchedDestination(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
@@ -238,7 +242,7 @@ describe('IterableAudienceIntegration batching', () => {
     const inputs: RouterTransformationRequestData[] = [];
     for (let i = 1; i <= 1001; i += 1) {
       inputs.push(
-        buildInput(i, 'insert', { email_col: `user${i}@example.com` }, destination, connection),
+        buildInput(i, 'insert', { email: `user${i}@example.com` }, destination, connection),
       );
     }
 
@@ -263,8 +267,8 @@ describe('IterableAudienceIntegration batching', () => {
     const destination = buildDestination({ projectType: 'email-based' });
     const connection = buildConnection(123, emailMappings);
     const inputs = [
-      buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection),
-      buildInput(2, 'delete', { email_col: 'c@d.com' }, destination, connection),
+      buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection),
+      buildInput(2, 'delete', { email: 'c@d.com' }, destination, connection),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});
@@ -285,24 +289,55 @@ describe('IterableAudienceIntegration batching', () => {
     });
   });
 
+  it('propagates updateExistingUsersOnly into subscribe body but not unsubscribe', async () => {
+    const destination = buildDestination({ projectType: 'email-based' });
+    const connection = buildConnection(123, emailMappings, { updateExistingUsersOnly: true });
+    const inputs = [
+      buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection),
+      buildInput(2, 'delete', { email: 'c@d.com' }, destination, connection),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+    const successes = results.filter((r) => r.statusCode === 200);
+    expect(successes).toHaveLength(2);
+
+    const subscribe = successes.find((r) => getEndpoint(r).endsWith('/api/lists/subscribe'))!;
+    const unsubscribe = successes.find((r) => getEndpoint(r).endsWith('/api/lists/unsubscribe'))!;
+
+    expect(getJsonBody(subscribe)).toEqual({
+      listId: 123,
+      subscribers: [{ email: 'a@b.com' }],
+      updateExistingUsersOnly: true,
+    });
+    const unsubscribeBody = getJsonBody(unsubscribe);
+    expect(unsubscribeBody).toEqual({
+      listId: 123,
+      subscribers: [{ email: 'c@d.com' }],
+      channelUnsubscribe: false,
+    });
+    expect(Object.prototype.hasOwnProperty.call(unsubscribeBody, 'updateExistingUsersOnly')).toBe(
+      false,
+    );
+  });
+
   it('produces one subscribe + one unsubscribe batch from a hybrid 3+2 mixed-identifier batch', async () => {
     // Hybrid project with email + userId mappings; 5 events mix email-only,
     // userId-only and hybrid rows across INSERT and DELETE actions.
     const destination = buildDestination({ projectType: 'hybrid' });
     const hybridMappings: IdentifierMapping[] = [
-      { from: 'email_col', to: 'email' },
-      { from: 'uid_col', to: 'userId' },
+      { from: 'email', to: 'email' },
+      { from: 'userId', to: 'userId' },
     ];
     const connection = buildConnection(777, hybridMappings);
 
     const inputs = [
       // INSERTs: email-only, userId-only, hybrid-row (both columns present)
-      buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection),
-      buildInput(2, 'insert', { uid_col: 'u-2' }, destination, connection),
-      buildInput(3, 'insert', { email_col: 'c@d.com', uid_col: 'u-3' }, destination, connection),
+      buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection),
+      buildInput(2, 'insert', { userId: 'u-2' }, destination, connection),
+      buildInput(3, 'insert', { email: 'c@d.com', userId: 'u-3' }, destination, connection),
       // DELETEs: email-only, userId-only
-      buildInput(4, 'delete', { email_col: 'e@f.com' }, destination, connection),
-      buildInput(5, 'delete', { uid_col: 'u-5' }, destination, connection),
+      buildInput(4, 'delete', { email: 'e@f.com' }, destination, connection),
+      buildInput(5, 'delete', { userId: 'u-5' }, destination, connection),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});
@@ -337,8 +372,8 @@ describe('IterableAudienceIntegration per-row errors', () => {
     const destination = buildDestination({ projectType: 'email-based' });
     const connection = buildConnection(123, emailMappings);
     const inputs = [
-      buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection),
-      buildInput(2, 'insert', { email_col: '' }, destination, connection),
+      buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection),
+      buildInput(2, 'insert', { email: '' }, destination, connection),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});
@@ -360,8 +395,8 @@ describe('IterableAudienceIntegration per-row errors', () => {
       const destination = buildDestination({ projectType: 'email-based' });
       const connection = buildConnection(123, emailMappings);
       const inputs = [
-        buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection),
-        buildInput(2, 'insert', { email_col: 'not-an-email' }, destination, connection),
+        buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection),
+        buildInput(2, 'insert', { email: 'not-an-email' }, destination, connection),
       ];
 
       const results = await processBatchedDestination(inputs, Integration, {});
@@ -390,7 +425,7 @@ describe('IterableAudienceIntegration configuration validation', () => {
   it('throws ConfigurationError when email-based account is paired with userId mapping', async () => {
     const destination = buildDestination({ projectType: 'email-based' });
     const connection = buildConnection(123, userIdMappings);
-    const inputs = [buildInput(1, 'insert', { uid_col: 'u-1' }, destination, connection)];
+    const inputs = [buildInput(1, 'insert', { userId: 'u-1' }, destination, connection)];
 
     await expect(processBatchedDestination(inputs, Integration, {})).rejects.toBeInstanceOf(
       ConfigurationError,
@@ -400,7 +435,7 @@ describe('IterableAudienceIntegration configuration validation', () => {
   it('throws ConfigurationError when userId-based account is paired with email mapping', async () => {
     const destination = buildDestination({ projectType: 'userId-based' });
     const connection = buildConnection(123, emailMappings);
-    const inputs = [buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection)];
+    const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
     await expect(processBatchedDestination(inputs, Integration, {})).rejects.toBeInstanceOf(
       ConfigurationError,
@@ -416,7 +451,7 @@ describe('IterableAudienceIntegration datacenter + auth', () => {
   it('EU datacenter routes to api.eu.iterable.com', async () => {
     const destination = buildDestination({ dataCenter: 'EU', projectType: 'email-based' });
     const connection = buildConnection(123, emailMappings);
-    const inputs = [buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection)];
+    const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
     const results = await processBatchedDestination(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
@@ -427,8 +462,8 @@ describe('IterableAudienceIntegration datacenter + auth', () => {
     const destination = buildDestination({ projectType: 'email-based' });
     const connection = buildConnection(123, emailMappings);
     const inputs = [
-      buildInput(1, 'insert', { email_col: '  Alice@EXAMPLE.com  ' }, destination, connection),
-      buildInput(2, 'insert', { email_col: 'BOB@example.COM' }, destination, connection),
+      buildInput(1, 'insert', { email: '  Alice@EXAMPLE.com  ' }, destination, connection),
+      buildInput(2, 'insert', { email: 'BOB@example.COM' }, destination, connection),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});
@@ -445,7 +480,7 @@ describe('IterableAudienceIntegration datacenter + auth', () => {
       projectType: 'email-based',
     });
     const connection = buildConnection(123, emailMappings);
-    const inputs = [buildInput(1, 'insert', { email_col: 'a@b.com' }, destination, connection)];
+    const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
     const results = await processBatchedDestination(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;

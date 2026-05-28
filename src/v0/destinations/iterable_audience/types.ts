@@ -38,6 +38,10 @@ export const IterableConnectionConfigSchema = z
   .object({
     audienceId: z.union([z.string(), z.number()]),
     identifierMappings: z.array(IdentifierMappingSchema),
+    // Forwarded into the subscribe request body. Iterable defaults to false
+    // when omitted, so we only include it when explicitly set on the
+    // connection. Only respected for userID-based and hybrid projects.
+    updateExistingUsersOnly: z.boolean().optional(),
   })
   .passthrough();
 

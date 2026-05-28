@@ -17,6 +17,20 @@ import {
 } from '../common';
 import { RouterTestData } from '../../../testTypes';
 
+// Same shape as `connection` but with `updateExistingUsersOnly: true` —
+// exercises the flag flowing into the subscribe body. Other test cases keep
+// the default-omission path covered.
+const connectionWithUpdateExistingUsersOnly = {
+  ...connection,
+  config: {
+    destination: {
+      audienceId: '12345',
+      identifierMappings: [{ from: 'email', to: 'email' }],
+      updateExistingUsersOnly: true,
+    },
+  },
+};
+
 export const data: RouterTestData[] = [
   /**
    * Test Case 1: Subscribe + unsubscribe batching (email-based)
@@ -28,10 +42,10 @@ export const data: RouterTestData[] = [
     id: 'iterable-audience-router-subscribe-unsubscribe-email-based',
     name: destType,
     description:
-      'Email-based: INSERT/UPDATE events batch to subscribe; DELETE events batch to unsubscribe with channelUnsubscribe:false',
+      'Email-based with updateExistingUsersOnly:true: INSERT/UPDATE events batch to subscribe (with flag); DELETE events batch to unsubscribe with channelUnsubscribe:false (no flag)',
     scenario: 'Framework+Business',
     successCriteria:
-      'Insert and update events must be batched to subscribe endpoint; delete events batched to unsubscribe endpoint',
+      'Insert and update events must be batched to subscribe endpoint and carry updateExistingUsersOnly:true; delete events batched to unsubscribe endpoint without the flag',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -47,7 +61,7 @@ export const data: RouterTestData[] = [
               }),
               metadata: generateMetadata(1),
               destination,
-              connection,
+              connection: connectionWithUpdateExistingUsersOnly,
             },
             {
               message: generateRecordPayload({
@@ -56,7 +70,7 @@ export const data: RouterTestData[] = [
               }),
               metadata: generateMetadata(2),
               destination,
-              connection,
+              connection: connectionWithUpdateExistingUsersOnly,
             },
             {
               message: generateRecordPayload({
@@ -65,7 +79,7 @@ export const data: RouterTestData[] = [
               }),
               metadata: generateMetadata(3),
               destination,
-              connection,
+              connection: connectionWithUpdateExistingUsersOnly,
             },
             {
               message: generateRecordPayload({
@@ -74,7 +88,7 @@ export const data: RouterTestData[] = [
               }),
               metadata: generateMetadata(4),
               destination,
-              connection,
+              connection: connectionWithUpdateExistingUsersOnly,
             },
             {
               message: generateRecordPayload({
@@ -83,7 +97,7 @@ export const data: RouterTestData[] = [
               }),
               metadata: generateMetadata(5),
               destination,
-              connection,
+              connection: connectionWithUpdateExistingUsersOnly,
             },
             {
               message: generateRecordPayload({
@@ -92,7 +106,7 @@ export const data: RouterTestData[] = [
               }),
               metadata: generateMetadata(6),
               destination,
-              connection,
+              connection: connectionWithUpdateExistingUsersOnly,
             },
           ],
           destType,
@@ -121,6 +135,7 @@ export const data: RouterTestData[] = [
                       { email: 'user3@example.com' },
                       { email: 'user4@example.com' },
                     ],
+                    updateExistingUsersOnly: true,
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -191,7 +206,7 @@ export const data: RouterTestData[] = [
           input: [
             {
               message: generateRecordPayload({
-                identifiers: { user_id: 'uid-1' },
+                identifiers: { userId: 'uid-1' },
                 action: 'insert',
               }),
               metadata: generateMetadata(1),
@@ -200,7 +215,7 @@ export const data: RouterTestData[] = [
             },
             {
               message: generateRecordPayload({
-                identifiers: { user_id: 'uid-2' },
+                identifiers: { userId: 'uid-2' },
                 action: 'update',
               }),
               metadata: generateMetadata(2),
@@ -209,7 +224,7 @@ export const data: RouterTestData[] = [
             },
             {
               message: generateRecordPayload({
-                identifiers: { user_id: 'uid-3' },
+                identifiers: { userId: 'uid-3' },
                 action: 'delete',
               }),
               metadata: generateMetadata(3),
@@ -305,7 +320,7 @@ export const data: RouterTestData[] = [
             // Both email + user_id present → userId preferred
             {
               message: generateRecordPayload({
-                identifiers: { email: 'hybrid@example.com', user_id: 'hybrid-uid-1' },
+                identifiers: { email: 'hybrid@example.com', userId: 'hybrid-uid-1' },
                 action: 'insert',
               }),
               metadata: generateMetadata(1),

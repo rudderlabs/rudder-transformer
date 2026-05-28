@@ -130,7 +130,7 @@ class IterableAudienceIntegration extends BatchDestination<
     // (no endpoint, no group key), so this state cannot be passed at call-time.
     // Iterable's API expects a numeric listId; VDM Next supplies it as
     // `audienceId` (string) on the connection config.
-    const { audienceId } = this.connectionConfig;
+    const { audienceId, updateExistingUsersOnly } = this.connectionConfig;
     const listId = typeof audienceId === 'number' ? audienceId : Number(audienceId);
     const isSubscribe = endpoint.endsWith('/api/lists/subscribe');
     return new ChunkBatchStrategy<IterableAudiencePayload>({
@@ -138,7 +138,7 @@ class IterableAudienceIntegration extends BatchDestination<
       wrapBody: (bodies) => {
         const subscribers = bodies.map((b) => b.subscriber);
         return isSubscribe
-          ? buildSubscribeBody(listId, subscribers)
+          ? buildSubscribeBody(listId, subscribers, updateExistingUsersOnly)
           : buildUnsubscribeBody(listId, subscribers);
       },
     });

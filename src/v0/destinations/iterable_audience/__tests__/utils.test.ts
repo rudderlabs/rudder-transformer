@@ -11,28 +11,40 @@ import { PROJECT_TYPES } from '../config';
 import type { IdentifierMapping, IterableSubscriber } from '../types';
 
 describe('remapToIterableFields', () => {
+  // `from` is metadata for control-plane traceability — it varies by
+  // workspace setup. The lookup keys are the canonical `to` values, which
+  // is how rudder-server emits `message.identifiers`.
   const mappings: IdentifierMapping[] = [
     { from: 'email_col', to: 'email' },
     { from: 'uid_col', to: 'userId' },
   ];
 
-  it('maps non-empty source columns to iterable field keys', () => {
-    expect(remapToIterableFields({ email_col: 'a@b.com', uid_col: 'u-1' }, mappings)).toEqual({
+  it('picks identifiers keyed by canonical destination field name', () => {
+    expect(remapToIterableFields({ email: 'a@b.com', userId: 'u-1' }, mappings)).toEqual({
       email: 'a@b.com',
       userId: 'u-1',
     });
   });
 
   it('drops null, undefined, and empty-string values', () => {
-    expect(remapToIterableFields({ email_col: null, uid_col: '' }, mappings)).toEqual({});
-    expect(remapToIterableFields({ email_col: undefined, uid_col: 'u-1' }, mappings)).toEqual({
+    expect(remapToIterableFields({ email: null, userId: '' }, mappings)).toEqual({});
+    expect(remapToIterableFields({ email: undefined, userId: 'u-1' }, mappings)).toEqual({
       userId: 'u-1',
     });
   });
 
-  it('ignores source columns not present in mappings', () => {
-    expect(remapToIterableFields({ extra_col: 'x', email_col: 'a@b.com' }, mappings)).toEqual({
+  it('ignores identifier keys not covered by any mapping', () => {
+    expect(remapToIterableFields({ extra_col: 'x', email: 'a@b.com' }, mappings)).toEqual({
       email: 'a@b.com',
+    });
+  });
+
+  it('reads by `to` regardless of the `from` value (from is metadata only)', () => {
+    // Even when the mapping declares an unrelated `from`, the identifier is
+    // resolved by its `to` key — matching the real rudder-server contract.
+    const mappingsWithUnrelatedFrom: IdentifierMapping[] = [{ from: 'id', to: 'userId' }];
+    expect(remapToIterableFields({ userId: 'usr-1' }, mappingsWithUnrelatedFrom)).toEqual({
+      userId: 'usr-1',
     });
   });
 });
@@ -131,16 +143,47 @@ describe('buildSubscribeBody', () => {
     expect(body).toEqual({ listId: 42, subscribers });
     expect(Object.prototype.hasOwnProperty.call(body, 'channelUnsubscribe')).toBe(false);
   });
+
+  it('includes updateExistingUsersOnly:true when explicitly set', () => {
+    const subscribers: IterableSubscriber[] = [{ email: 'a@b.com' }];
+    expect(buildSubscribeBody(42, subscribers, true)).toEqual({
+      listId: 42,
+      subscribers,
+      updateExistingUsersOnly: true,
+    });
+  });
+
+  it('includes updateExistingUsersOnly:false when explicitly set', () => {
+    const subscribers: IterableSubscriber[] = [{ email: 'a@b.com' }];
+    expect(buildSubscribeBody(42, subscribers, false)).toEqual({
+      listId: 42,
+      subscribers,
+      updateExistingUsersOnly: false,
+    });
+  });
+
+  it('omits updateExistingUsersOnly from the wire body when undefined', () => {
+    const subscribers: IterableSubscriber[] = [{ email: 'a@b.com' }];
+    const body = buildSubscribeBody(42, subscribers, undefined);
+    // toEqual treats `{ x: undefined }` as equal to `{}`, mirroring how
+    // JSON.stringify drops `undefined`-valued keys before the wire send.
+    expect(body).toEqual({ listId: 42, subscribers });
+    expect(JSON.parse(JSON.stringify(body))).toEqual({ listId: 42, subscribers });
+  });
 });
 
 describe('buildUnsubscribeBody', () => {
   it('returns listId + subscribers + channelUnsubscribe:false', () => {
     const subscribers: IterableSubscriber[] = [{ userId: 'u-1' }];
-    expect(buildUnsubscribeBody(42, subscribers)).toEqual({
+    const body = buildUnsubscribeBody(42, subscribers);
+    expect(body).toEqual({
       listId: 42,
       subscribers,
       channelUnsubscribe: false,
     });
+    // Iterable's unsubscribe endpoint does not document updateExistingUsersOnly;
+    // make sure it never sneaks into the unsubscribe body.
+    expect(Object.prototype.hasOwnProperty.call(body, 'updateExistingUsersOnly')).toBe(false);
   });
 
   it('keeps channelUnsubscribe:false explicit even with empty subscribers', () => {

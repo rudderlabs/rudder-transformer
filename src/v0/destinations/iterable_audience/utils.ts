@@ -25,20 +25,23 @@ export const IDENTIFIER_FIELD_CONFIG: Record<IdentifierKey, AudienceField> = {
   },
 };
 
-// Remap the warehouse columns supplied on the record event into the canonical
-// `email`/`userId` keys that `processAudienceRecord` and `selectIdentifierForRow`
-// expect. Drops null/undefined/empty values so downstream code can rely on
-// presence-checks.
+// `message.identifiers` arrives keyed by the canonical Iterable field name
+// (`email` / `userId`) — rudder-server pre-resolves the warehouse column to
+// the destination field before emitting the record event. The mapping's
+// `from` value is metadata for control-plane traceability and is *not* the
+// key to look up at this layer; we read by `to` instead. This matches
+// `customerio_audience/utils.ts:154`, which also ignores `from` and reads
+// the identifier value directly out of `message.identifiers`.
 //
-// Mapping shape: `{ from, to }` — `from` is the source column on the record
-// (warehouse column name), `to` is the target Iterable field.
+// Drops null/undefined/empty values so downstream code can rely on
+// presence-checks.
 export const remapToIterableFields = (
   rowIdentifiers: Record<string, unknown>,
   mappings: IdentifierMapping[],
 ): Record<IdentifierKey, unknown> => {
   const out: Partial<Record<IdentifierKey, unknown>> = {};
-  for (const { from, to } of mappings) {
-    const raw = rowIdentifiers[from];
+  for (const { to } of mappings) {
+    const raw = rowIdentifiers[to];
     if (raw !== null && raw !== undefined && raw !== '') {
       out[to] = raw;
     }
@@ -68,10 +71,19 @@ export const selectIdentifierForRow = (
   throw new InstrumentationError('No valid identifier value for this record');
 };
 
+// `updateExistingUsersOnly` is included only when explicitly set on the
+// connection config. Iterable defaults the flag to `false` server-side, so
+// omitting it on absence keeps the request body minimal and back-compatible
+// with existing fixtures.
 export const buildSubscribeBody = (
   listId: string | number,
   subscribers: IterableSubscriber[],
-): Record<string, unknown> => ({ listId, subscribers });
+  updateExistingUsersOnly?: boolean,
+): Record<string, unknown> => ({
+  listId,
+  subscribers,
+  updateExistingUsersOnly,
+});
 
 // `channelUnsubscribe: false` is set explicitly — Iterable defaults it to
 // `true`, which would unsubscribe the user from *all* messaging channels,

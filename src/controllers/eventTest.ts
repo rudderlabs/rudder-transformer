@@ -5,9 +5,12 @@ import { EventTesterService } from '../services/eventTest/eventTester';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../types';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
+import { lookupActionConfig } from '../v0/destinations/custom_audience/utils';
+import type { Action, CustomAudienceDestConfig } from '../v0/destinations/custom_audience/types';
 
 const parseTemplateBodySchema = z.object({
-  requestBody: z.string().min(1, 'requestBody must be a non-empty string'),
+  action: z.enum(['insert', 'update', 'delete']),
+  actions: z.record(z.unknown()),
   workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
 });
 
@@ -66,6 +69,11 @@ export class EventTestController {
       ctx.body = { error: formatZodError(parsed.error) };
       return;
     }
-    ctx.body = await sandboxedParseTemplate(parsed.data.requestBody, parsed.data.workspaceId);
+    const { action, actions, workspaceId } = parsed.data;
+    const actionConfig = lookupActionConfig(
+      action as Action,
+      { actions } as CustomAudienceDestConfig,
+    );
+    ctx.body = await sandboxedParseTemplate(actionConfig.requestBody, workspaceId);
   }
 }

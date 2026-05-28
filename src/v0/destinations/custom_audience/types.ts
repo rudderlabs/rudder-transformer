@@ -25,8 +25,8 @@ export const actionConfigSchema = z.object({
 });
 
 const updateActionConfigSchema = z.union([
-  actionConfigSchema.extend({ useInsertConfig: z.literal(false).optional() }),
-  actionConfigSchema.partial().extend({ useInsertConfig: z.literal(true) }),
+  actionConfigSchema.extend({ useInsertConfig: z.boolean().optional() }),
+  z.object({ useInsertConfig: z.literal(true) }),
 ]);
 
 export const actionsSchema = z.object({

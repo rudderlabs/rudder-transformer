@@ -125,7 +125,7 @@ const expectedResponse = {
 const attributeArray = [
   {
     email: 'test@abc.com',
-    phone: '@09876543210',
+    phone: '09876543210',
     firstName: 'test',
     lastName: 'rudderlabs',
     country: 'US',
@@ -139,6 +139,10 @@ const hashedArray = [
     {
       // test@abc.com → normalized (non-Gmail: trim+lowercase only) → test@abc.com → sha256
       hashedEmail: 'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+    },
+    {
+      // 09876543210 → strip spaces/dashes/parens/dots → 09876543210 → add + → +09876543210 → sha256
+      hashedPhoneNumber: sha256('+09876543210'),
     },
     {
       addressInfo: {

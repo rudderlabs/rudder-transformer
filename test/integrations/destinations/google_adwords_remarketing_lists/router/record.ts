@@ -97,7 +97,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         rudderId: '2',
         fields: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           firstName: 'test',
           lastName: 'rudderlabs',
           country: 'US',
@@ -122,7 +122,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         rudderId: '2',
         fields: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           firstName: 'test',
           lastName: 'rudderlabs',
           country: 'US',
@@ -146,7 +146,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         rudderId: '2',
         fields: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           firstName: 'test',
           lastName: 'rudderlabs',
           country: 'US',
@@ -170,7 +170,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         rudderId: '2',
         fields: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           firstName: 'test',
           lastName: 'rudderlabs',
           country: 'US',
@@ -194,7 +194,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
         rudderId: '2',
         fields: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           firstName: 'test',
           lastName: 'rudderlabs',
           country: 'US',
@@ -225,7 +225,7 @@ export const rETLRecordRouterRequestVDMv2General: RouterTransformationRequest = 
         rudderId: '2',
         identifiers: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           firstName: 'test',
           lastName: 'rudderlabs',
           country: 'US',
@@ -256,7 +256,7 @@ export const rETLRecordRouterRequestVDMv2UserId: RouterTransformationRequest = {
         rudderId: '2',
         identifiers: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           firstName: 'test',
           lastName: 'rudderlabs',
           country: 'US',
@@ -281,7 +281,7 @@ export const eventStreamRecordPreHashedRequest: RouterTransformationRequest = {
         recordId: '2',
         rudderId: '2',
         fields: {
-          // pre-hashed values: sha256('test@abc.com') and sha256('+@09876543210')
+          // pre-hashed values: sha256('test@abc.com') and sha256('+09876543210')
           email: 'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
           phone: '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
           country: 'US',
@@ -315,7 +315,7 @@ export const eventStreamRecordHashOffRequest: RouterTransformationRequest = {
         rudderId: '2',
         fields: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           country: 'US',
           postalCode: '1245',
         },
@@ -343,7 +343,7 @@ export const eventStreamRecordRouterRequest: RouterTransformationRequest = {
         rudderId: '2',
         fields: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           firstName: 'test',
           lastName: 'rudderlabs',
           country: 'US',
@@ -377,7 +377,7 @@ export const rETLRecordRouterRequestVDMv1: RouterTransformationRequest = {
         rudderId: '2',
         fields: {
           email: 'test@abc.com',
-          phone: '@09876543210',
+          phone: '09876543210',
           firstName: 'test',
           lastName: 'rudderlabs',
           country: 'US',

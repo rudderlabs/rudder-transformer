@@ -1,3 +1,4 @@
+import sha256 from 'sha256';
 import { authHeader3, secret3 } from '../maskedSecrets';
 import { rETLAudienceRouterRequest } from './audience';
 import {
@@ -66,8 +67,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -186,8 +186,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -304,8 +303,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -400,8 +398,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -496,8 +493,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -547,8 +543,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -667,8 +662,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -765,8 +759,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -789,8 +782,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -899,8 +891,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1048,8 +1039,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1267,8 +1257,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1365,8 +1354,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1389,8 +1377,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1499,8 +1486,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {

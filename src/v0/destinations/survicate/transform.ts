@@ -22,6 +22,9 @@ import {
 
 import { ENDPOINT_CONFIG, RESERVED_KEYS } from './config';
 
+const ERR_MISSING_MESSAGE_ID = 'messageId is required.';
+const ERR_MISSING_TIMESTAMP = 'originalTimestamp is required.';
+
 type EndpointEntry = (typeof ENDPOINT_CONFIG)[keyof typeof ENDPOINT_CONFIG];
 
 function buildResponse(endpoint: EndpointEntry, apiKey: string, payload: Record<string, any>) {
@@ -101,6 +104,13 @@ const processIdentifyEvent = (
   // allow snake_case input by normalizing first
   const msg = normalizeMessage(message);
 
+  if (!msg.messageId) {
+    throw new InstrumentationError(ERR_MISSING_MESSAGE_ID);
+  }
+  if (!msg.originalTimestamp) {
+    throw new InstrumentationError(ERR_MISSING_TIMESTAMP);
+  }
+
   // validate message shape
   SurvicateMessageSchema.parse(msg);
 
@@ -145,7 +155,15 @@ const processGroupEvent = (
   destinationConfig: SurvicateDestinationConfig,
 ) => {
   const msg = normalizeMessage(message);
-  // validate message
+
+  if (!msg.messageId) {
+    throw new InstrumentationError(ERR_MISSING_MESSAGE_ID);
+  }
+  if (!msg.originalTimestamp) {
+    throw new InstrumentationError(ERR_MISSING_TIMESTAMP);
+  }
+
+  // validate message shape
   SurvicateMessageSchema.parse(msg);
 
   // Skip anonymous calls - we only accept identified users
@@ -194,7 +212,15 @@ const processTrackEvent = (
   destinationConfig: SurvicateDestinationConfig,
 ) => {
   const msg = normalizeMessage(message);
-  // validate message
+
+  if (!msg.messageId) {
+    throw new InstrumentationError(ERR_MISSING_MESSAGE_ID);
+  }
+  if (!msg.originalTimestamp) {
+    throw new InstrumentationError(ERR_MISSING_TIMESTAMP);
+  }
+
+  // validate message shape
   SurvicateMessageSchema.parse(msg);
 
   // Skip anonymous calls - we only accept identified users

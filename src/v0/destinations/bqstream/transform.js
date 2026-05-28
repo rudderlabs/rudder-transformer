@@ -22,6 +22,27 @@ const getInsertIdColValue = (properties, insertIdCol) => {
   return null;
 };
 
+const getBQRow = (properties, insertIdColumn) => {
+  const row = { json: { ...properties } };
+  const insertId = getInsertIdColValue(properties, insertIdColumn);
+  if (insertId) {
+    row.insertId = insertId;
+  }
+  return row;
+};
+
+const getBQRRowsFromMessage = (message, insertIdColumn) => {
+  if (Array.isArray(message.rows) && message.rows.length > 0) {
+    return message.rows;
+  }
+
+  if (message.properties && typeof message.properties === 'object') {
+    return [getBQRow(message.properties, insertIdColumn)];
+  }
+
+  throw new InstrumentationError('Invalid payload for the destination');
+};
+
 const process = (event) => {
   const { message } = event;
   const { properties, type } = message;
@@ -37,17 +58,12 @@ const process = (event) => {
       Config: { datasetId, tableId, projectId, insertId: insertIdColumn },
     },
   } = event;
-  const propInsertId = getInsertIdColValue(properties, insertIdColumn);
-  const props = { ...properties };
-  if (propInsertId) {
-    props.insertId = propInsertId;
-  }
 
   return {
     datasetId,
     tableId,
     projectId,
-    properties: { ...props },
+    rows: [getBQRow(properties, insertIdColumn)],
   };
 };
 
@@ -64,11 +80,9 @@ const batchEachUserSuccessEvents = (eventsChunk) => {
 
     let batchEventResponse = defaultBatchRequestConfig();
     const { message, destination } = chunk[0];
-
     // Batch event into dest batch structure
     chunk.forEach((ev) => {
-      // Pixel code must be added above "batch": [..]
-      batchResponseList.push(ev.message.properties);
+      batchResponseList.push(ev.message.rows[0]);
       metadata.push(ev.metadata[0]);
     });
 
@@ -76,7 +90,7 @@ const batchEachUserSuccessEvents = (eventsChunk) => {
       datasetId: message.datasetId,
       tableId: message.tableId,
       projectId: message.projectId,
-      properties: batchResponseList,
+      rows: batchResponseList,
     };
 
     batchEventResponse = {
@@ -107,7 +121,17 @@ const processEachTypedEventList = (
     try {
       if (event.message.statusCode) {
         // already transformed event
-        eachTypeSuccessEventList.push(event);
+        const insertIdColumn = event.destination?.Config?.insertId;
+        const rows = getBQRRowsFromMessage(event.message, insertIdColumn);
+        rows.forEach((row) => {
+          eachTypeSuccessEventList.push({
+            ...event,
+            message: {
+              ...event.message,
+              rows: [row],
+            },
+          });
+        });
       } else {
         // if not transformed
         const response = process(event);

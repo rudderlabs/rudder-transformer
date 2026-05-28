@@ -262,4 +262,45 @@ describe('getRearrangedEvents', () => {
     const result = getRearrangedEvents(successEventslist, errorEventsList);
     expect(result).toEqual(expected);
   });
+
+  it('should preserve already-array metadata entries while formatting errors', () => {
+    const successEventslist = [];
+    const eachUserErrorEventsList = [
+      {
+        batched: false,
+        destination: {},
+        error: 'Invalid payload for the destination',
+        metadata: [{ jobId: 11 }, { jobId: 12 }],
+      },
+    ];
+    const expected = [
+      [
+        {
+          batched: false,
+          destination: {},
+          error: 'Invalid payload for the destination',
+          metadata: [{ jobId: 11 }, { jobId: 12 }],
+        },
+      ],
+    ];
+
+    const result = getRearrangedEvents(successEventslist, eachUserErrorEventsList);
+    expect(result).toEqual(expected);
+  });
+
+  it('should keep error-group ordering based on first seen error type', () => {
+    const successEventslist = [];
+    const eachUserErrorEventsList = [
+      { batched: false, destination: {}, error: 'E2', metadata: [{ jobId: 1 }] },
+      { batched: false, destination: {}, error: 'E1', metadata: [{ jobId: 2 }] },
+      { batched: false, destination: {}, error: 'E2', metadata: [{ jobId: 3 }] },
+    ];
+    const expected = [
+      [{ batched: false, destination: {}, error: 'E2', metadata: [{ jobId: 1 }, { jobId: 3 }] }],
+      [{ batched: false, destination: {}, error: 'E1', metadata: [{ jobId: 2 }] }],
+    ];
+
+    const result = getRearrangedEvents(successEventslist, eachUserErrorEventsList);
+    expect(result).toEqual(expected);
+  });
 });

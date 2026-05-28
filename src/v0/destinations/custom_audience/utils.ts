@@ -23,7 +23,7 @@ export const lookupActionConfig = (
     throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG(action));
   }
   // When the update action opts into reusing the insert config, substitute it.
-  if (action === 'update' && actions.update?.useInsertConfig) {
+  if ('useInsertConfig' in actionConfig && actionConfig.useInsertConfig) {
     const insertConfig = actions.insert;
     if (!insertConfig) {
       throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG('insert'));

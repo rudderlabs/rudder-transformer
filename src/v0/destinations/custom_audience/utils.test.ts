@@ -38,12 +38,12 @@ const destinationMeta = { id: 'dest-1', type: 'CUSTOM_AUDIENCE', workspaceId: 'w
 
 describe('lookupActionConfig', () => {
   it('returns the action config when present', () => {
-    const result = lookupActionConfig('insert', baseDestConfig);
+    const result = lookupActionConfig('insert', baseDestConfig.actions);
     expect(result.endpoint).toBe('/audiences/{{connection.audienceId}}/members');
   });
 
   it('throws InstrumentationError when action key is missing', () => {
-    expect(() => lookupActionConfig('delete', baseDestConfig)).toThrow(InstrumentationError);
+    expect(() => lookupActionConfig('delete', baseDestConfig.actions)).toThrow(InstrumentationError);
   });
 
   const useInsertConfigCases = [
@@ -77,7 +77,7 @@ describe('lookupActionConfig', () => {
       ...baseDestConfig,
       actions: { ...baseDestConfig.actions, update: updateConfig },
     };
-    expect(lookupActionConfig('update', config).endpoint).toBe(expectedEndpoint);
+    expect(lookupActionConfig('update', config.actions).endpoint).toBe(expectedEndpoint);
   });
 
   it('throws when useInsertConfig is true but insert config is missing', () => {
@@ -87,7 +87,7 @@ describe('lookupActionConfig', () => {
         update: { ...baseDestConfig.actions.insert!, useInsertConfig: true },
       },
     };
-    expect(() => lookupActionConfig('update', config)).toThrow(InstrumentationError);
+    expect(() => lookupActionConfig('update', config.actions)).toThrow(InstrumentationError);
   });
 });
 

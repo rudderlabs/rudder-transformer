@@ -9,40 +9,35 @@ export type Action = `${RecordAction}`;
 
 export type AuthenticationType = (typeof AUTHENTICATION_TYPES)[keyof typeof AUTHENTICATION_TYPES];
 
-export type HttpMethod = 'POST' | 'PUT' | 'PATCH' | 'GET' | 'DELETE';
-
-export type ActionFieldConfig = {
-  name: string;
-  isRequired: boolean;
-  hashType: HashingType;
-  isCustom: boolean;
-};
-
-export type ActionConfig = {
-  endpoint: string;
-  method: HttpMethod;
-  requestBody: string;
-  batchSize: number;
-  fields: ActionFieldConfig[];
-};
-
-export type UpdateActionConfig = ActionConfig & {
-  useInsertConfig?: boolean;
-};
+export const actionFieldConfigSchema = z.object({
+  name: z.string(),
+  isRequired: z.boolean(),
+  hashType: z.nativeEnum(HashingType),
+  isCustom: z.boolean(),
+});
 
 export const actionConfigSchema = z.object({
   endpoint: z.string(),
-  method: z.string(),
+  method: z.enum(['POST', 'PUT', 'PATCH', 'GET', 'DELETE']),
   requestBody: z.string(),
   batchSize: z.number(),
-  fields: z.array(z.object({ name: z.string() }).passthrough()),
+  fields: z.array(actionFieldConfigSchema),
+});
+
+const updateActionConfigSchema = actionConfigSchema.extend({
+  useInsertConfig: z.boolean().optional(),
 });
 
 export const actionsSchema = z.object({
   insert: actionConfigSchema.optional(),
-  update: actionConfigSchema.extend({ useInsertConfig: z.boolean().optional() }).optional(),
+  update: updateActionConfigSchema.optional(),
   delete: actionConfigSchema.optional(),
 });
+
+export type HttpMethod = z.infer<typeof actionConfigSchema>['method'];
+export type ActionFieldConfig = z.infer<typeof actionFieldConfigSchema>;
+export type ActionConfig = z.infer<typeof actionConfigSchema>;
+export type UpdateActionConfig = z.infer<typeof updateActionConfigSchema>;
 
 export type CustomAudienceHeader = {
   key: string;
@@ -53,11 +48,7 @@ export type CustomAudienceDestConfig = {
   baseUrl: string;
   authenticationType: AuthenticationType;
   headers?: CustomAudienceHeader[];
-  actions: {
-    insert?: ActionConfig;
-    update?: UpdateActionConfig;
-    delete?: ActionConfig;
-  };
+  actions: z.infer<typeof actionsSchema>;
   basicAuthUserName?: string;
   basicAuthPassword?: string;
   bearerToken?: string;

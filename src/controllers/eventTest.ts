@@ -7,7 +7,6 @@ import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
 import { actionsSchema } from '../v0/destinations/custom_audience/types';
-import type { CustomAudienceDestConfig } from '../v0/destinations/custom_audience/types';
 import { lookupActionConfig } from '../v0/destinations/custom_audience/utils';
 
 const parseTemplateBodySchema = z.object({
@@ -72,10 +71,7 @@ export class EventTestController {
       return;
     }
     const { action, actions, workspaceId } = parsed.data;
-    const actionConfig = lookupActionConfig(
-      action,
-      { actions } as CustomAudienceDestConfig,
-    );
+    const actionConfig = lookupActionConfig(action, actions);
     ctx.body = await sandboxedParseTemplate(actionConfig.requestBody, workspaceId);
   }
 }

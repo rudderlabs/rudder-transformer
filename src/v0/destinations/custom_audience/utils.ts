@@ -16,15 +16,15 @@ import type {
 
 export const lookupActionConfig = (
   action: Action,
-  destConfig: CustomAudienceDestConfig,
+  actions: CustomAudienceDestConfig['actions'],
 ): ActionConfig => {
-  const actionConfig = destConfig.actions[action];
+  const actionConfig = actions[action];
   if (!actionConfig) {
     throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG(action));
   }
   // When the update action opts into reusing the insert config, substitute it.
-  if (action === 'update' && destConfig.actions.update?.useInsertConfig) {
-    const insertConfig = destConfig.actions.insert;
+  if (action === 'update' && actions.update?.useInsertConfig) {
+    const insertConfig = actions.insert;
     if (!insertConfig) {
       throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG('insert'));
     }

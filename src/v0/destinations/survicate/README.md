@@ -49,7 +49,7 @@ test/integrations/destinations/survicate/
 
 ### Identify Events
 
-**Endpoint:** `POST /endpoint/rudder-stack/identify`
+**Endpoint:** `POST https://hv.survicate.com/integrations/partners/rudder-stack/identify`
 
 **Requirements:**
 - `user_id` is required (anonymous calls are skipped)
@@ -74,7 +74,7 @@ test/integrations/destinations/survicate/
 
 ### Group Events
 
-**Endpoint:** `POST /endpoint/rudder-stack/group`
+**Endpoint:** `POST https://hv.survicate.com/integrations/partners/rudder-stack/group`
 
 **Requirements:**
 - `user_id` is required (anonymous calls are skipped)
@@ -99,7 +99,7 @@ test/integrations/destinations/survicate/
 
 ### Track Events
 
-**Endpoint:** `POST /endpoint/rudder-stack/track`
+**Endpoint:** `POST https://hv.survicate.com/integrations/partners/rudder-stack/track`
 
 **Requirements:**
 - `user_id` is required (anonymous calls are skipped)

@@ -1,6 +1,6 @@
 /**
  * Router test data for Survicate destination
- * Tests batch event processing
+ * Tests all event types (identify, group, track) in router format
  */
 
 type RouterTestData = {
@@ -848,6 +848,1532 @@ export const data: RouterTestData[] = [
                 Enabled: true,
                 Transformations: [],
               },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 400,
+            error: 'originalTimestamp is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+
+  // ─── Identify ─────────────────────────────────────────────────────────────
+
+  {
+    name: 'survicate',
+    description: 'Complete identify event with nested traits',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                messageId: '508d5e8c-96e4-4301-bd46-1890dba5c866',
+                originalTimestamp: '2020-04-22T08:06:20.337Z',
+                sentAt: '2020-04-22T08:06:20.337Z',
+                userId: 'my-user-id',
+                anonymous_id: '21b43de4-3b9b-423f-b51f-794eae31fc03',
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.1.1-rc.2',
+                  },
+                  traits: {
+                    name: 'User name',
+                    email: 'user@domain.com',
+                    plan: 'Enterprise',
+                    company: {
+                      id: 'company-A',
+                    },
+                    createdAt: 'Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)',
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.1-rc.2',
+                  },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+                  locale: 'en-US',
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 1.600000023841858,
+                  },
+                  page: {
+                    path: '/tests/html/script-test.html',
+                    referrer: 'http://localhost:1111/tests/html/',
+                    search: '',
+                    title: '',
+                    url: 'http://localhost:1111/tests/html/script-test.html',
+                  },
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-destination-key-12345',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'my-user-id',
+                  name: 'User name',
+                  email: 'user@domain.com',
+                  plan: 'Enterprise',
+                  company: { id: 'company-A' },
+                  createdAt: 'Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)',
+                  context: {
+                    locale: 'en-US',
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+                  },
+                  timestamp: '2020-04-22T08:06:20.337Z',
+                  message_id: '508d5e8c-96e4-4301-bd46-1890dba5c866',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/identify',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer test-destination-key-12345',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Identify using snake_case keys',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                message_id: 'snake-2',
+                user_id: 'user-snake2',
+                originalTimestamp: '2022-02-02T02:02:02.000Z',
+                context: { traits: { x: 'y' } },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'user-snake2',
+                  x: 'y',
+                  timestamp: '2022-02-02T02:02:02.000Z',
+                  message_id: 'snake-2',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/identify',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer test-key',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Identify event with deeply nested attributes',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                messageId: 'msg-456',
+                originalTimestamp: '2020-04-22T08:06:20.337Z',
+                userId: 'user-456',
+                context: {
+                  traits: {
+                    name: 'John Doe',
+                    subscription: {
+                      plan: {
+                        tier: 'pro',
+                        renewal: {
+                          date: '2025-12-01',
+                        },
+                      },
+                    },
+                  },
+                  locale: 'en-GB',
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'user-456',
+                  name: 'John Doe',
+                  subscription: {
+                    plan: {
+                      tier: 'pro',
+                      renewal: {
+                        date: '2025-12-01',
+                      },
+                    },
+                  },
+                  context: {
+                    locale: 'en-GB',
+                  },
+                  timestamp: '2020-04-22T08:06:20.337Z',
+                  message_id: 'msg-456',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/identify',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer test-key',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Identify event missing messageId - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                originalTimestamp: '2021-01-01T00:00:00.000Z',
+                userId: 'user-1',
+                context: { traits: { foo: 'bar' } },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 400,
+            error: 'messageId is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Identify event missing originalTimestamp - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                messageId: 'msg-missing-ts',
+                userId: 'user-2',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 400,
+            error: 'originalTimestamp is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Anonymous identify event - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                anonymous_id: '21b43de4-3b9b-423f-b51f-794eae31fc03',
+                message_id: 'msg-anonymous',
+                originalTimestamp: '2024-01-01T00:00:00.000Z',
+                context: {
+                  traits: {
+                    email: 'user@example.com',
+                  },
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            error: 'Anonymous identify calls are not supported. userId is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Identify event missing userId - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                messageId: 'no-id',
+                originalTimestamp: '2024-01-01T00:00:00.000Z',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            error: 'Anonymous identify calls are not supported. userId is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+
+  // ─── Group ────────────────────────────────────────────────────────────────
+
+  {
+    name: 'survicate',
+    description: 'Complete group event with nested traits',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'group',
+                messageId: '0b0e-test-cafe',
+                originalTimestamp: '2025-11-07T10:15:00.000Z',
+                sentAt: '2025-11-07T10:15:02.000Z',
+                userId: 'my-user-id',
+                groupId: 'company-A',
+                anonymous_id: '21b4-test-fc03',
+                traits: {
+                  name: 'Acme Inc.',
+                  industry: 'SaaS',
+                  employees: 1200,
+                  plan: 'Enterprise',
+                  nested: {
+                    settings: {
+                      notifications: true,
+                    },
+                  },
+                },
+                context: {
+                  locale: 'en-US',
+                  campaign: {
+                    name: 'autumn',
+                    source: 'referral',
+                  },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36',
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-destination-key-12345',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'my-user-id',
+                  group_id: 'company-A',
+                  name: 'Acme Inc.',
+                  industry: 'SaaS',
+                  employees: 1200,
+                  plan: 'Enterprise',
+                  nested: {
+                    settings: {
+                      notifications: true,
+                    },
+                  },
+                  context: {
+                    locale: 'en-US',
+                    campaign: {
+                      name: 'autumn',
+                      source: 'referral',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36',
+                  },
+                  timestamp: '2025-11-07T10:15:00.000Z',
+                  message_id: '0b0e-test-cafe',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/group',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer test-destination-key-12345',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Group event with snake_case keys',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'group',
+                message_id: 'snake-group',
+                user_id: 'user-snake-group',
+                group_id: 'company-S',
+                originalTimestamp: '2023-01-01T00:00:00.000Z',
+                traits: { name: 'Snake Corp' },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'user-snake-group',
+                  group_id: 'company-S',
+                  name: 'Snake Corp',
+                  timestamp: '2023-01-01T00:00:00.000Z',
+                  message_id: 'snake-group',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/group',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer test-key',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Group event without groupId - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'group',
+                messageId: 'msg-missing-group_id',
+                originalTimestamp: '2023-01-01T00:00:00.000Z',
+                userId: 'user-123',
+                traits: {
+                  name: 'Company Name',
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            error: 'groupId is required for group events.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Anonymous group event - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'group',
+                anonymous_id: 'anon-123',
+                groupId: 'company-B',
+                messageId: 'msg-anon-group',
+                originalTimestamp: '2024-01-01T00:00:00.000Z',
+                traits: {
+                  name: 'Company B',
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            error: 'Anonymous group calls are not supported. userId is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Group event missing messageId - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'group',
+                userId: 'user-1',
+                groupId: 'company-X',
+                originalTimestamp: '2023-01-01T00:00:00.000Z',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 400,
+            error: 'messageId is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Group event missing originalTimestamp - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'group',
+                messageId: 'msg-missing-ts',
+                userId: 'user-2',
+                groupId: 'company-Y',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 400,
+            error: 'originalTimestamp is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+
+  // ─── Track ────────────────────────────────────────────────────────────────
+
+  {
+    name: 'survicate',
+    description: 'Complete track event with nested properties',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                messageId: '04a303b1-a466-4e66-9022-2a24edaca4fc',
+                originalTimestamp: '2020-04-22T08:06:20.338Z',
+                sentAt: '2020-04-22T08:06:20.338Z',
+                userId: 'my-user-id',
+                anonymous_id: '21b43de4-3b9b-423f-b51f-794eae31fc03',
+                channel: 'web',
+                event: 'Product Purchased',
+                properties: {
+                  order_ID: '1',
+                  category: 'boots',
+                  product_name: 'new_boots',
+                  price: 60,
+                  currency: 'USD',
+                  product: {
+                    sku: 'SKU-123',
+                    vendor: {
+                      name: 'Vendor Inc.',
+                      region: 'North America',
+                    },
+                  },
+                },
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.1.1-rc.2',
+                  },
+                  traits: {
+                    name: 'User name',
+                    email: 'user@domain.com',
+                    plan: 'Enterprise',
+                    company: {
+                      id: 'company-A',
+                    },
+                    createdAt: 'Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)',
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.1-rc.2',
+                  },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+                  locale: 'en-US',
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 1.600000023841858,
+                  },
+                  page: {
+                    path: '/tests/html/script-test.html',
+                    referrer: 'http://localhost:1111/tests/html/',
+                    search: '',
+                    title: '',
+                    url: 'http://localhost:1111/tests/html/script-test.html',
+                  },
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-destination-key-12345',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'my-user-id',
+                  event: 'Product Purchased',
+                  properties: {
+                    order_ID: '1',
+                    category: 'boots',
+                    product_name: 'new_boots',
+                    price: 60,
+                    currency: 'USD',
+                    product: {
+                      sku: 'SKU-123',
+                      vendor: {
+                        name: 'Vendor Inc.',
+                        region: 'North America',
+                      },
+                    },
+                    name: 'User name',
+                    email: 'user@domain.com',
+                    plan: 'Enterprise',
+                    company: { id: 'company-A' },
+                    createdAt: 'Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)',
+                  },
+                  timestamp: '2020-04-22T08:06:20.338Z',
+                  message_id: '04a303b1-a466-4e66-9022-2a24edaca4fc',
+                  context: {
+                    locale: 'en-US',
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/track',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer test-destination-key-12345',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Track event with snake_case keys',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                message_id: 'snake-track',
+                user_id: 'user-snake-track',
+                originalTimestamp: '2022-02-02T02:02:02.000Z',
+                event: 'Clicked',
+                properties: { foo: 'bar' },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'user-snake-track',
+                  event: 'Clicked',
+                  properties: { foo: 'bar' },
+                  timestamp: '2022-02-02T02:02:02.000Z',
+                  message_id: 'snake-track',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/track',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer test-key',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Track event with simple properties',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                messageId: 'msg-simple',
+                originalTimestamp: '2020-04-22T08:06:20.338Z',
+                userId: 'user-123',
+                event: 'Page View',
+                properties: {
+                  page: '/checkout',
+                  referrer: '/home',
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'user-123',
+                  event: 'Page View',
+                  properties: {
+                    page: '/checkout',
+                    referrer: '/home',
+                  },
+                  timestamp: '2020-04-22T08:06:20.338Z',
+                  message_id: 'msg-simple',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hv.survicate.com/integrations/partners/rudder-stack/track',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer test-key',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Track event without event name - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                messageId: 'msg-no-event',
+                originalTimestamp: '2023-01-01T00:00:00.000Z',
+                userId: 'user-123',
+                properties: {
+                  amount: 100,
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            error: 'event name is required for track events.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Anonymous track event - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                anonymous_id: 'anon-456',
+                messageId: 'msg-anon-track',
+                originalTimestamp: '2024-01-01T00:00:00.000Z',
+                event: 'Purchase',
+                properties: {
+                  amount: 150,
+                },
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            error: 'Anonymous track calls are not supported. userId is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Track event missing messageId - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                originalTimestamp: '2023-01-01T00:00:00.000Z',
+                userId: 'user-1',
+                event: 'Test',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 400,
+            error: 'messageId is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Track event missing originalTimestamp - should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                messageId: 'msg-missing-ts',
+                userId: 'user-2',
+                event: 'Test',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
             },
           ],
         },

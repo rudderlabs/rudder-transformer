@@ -15,6 +15,9 @@ import {
   SurvicateDestinationConfig,
   SurvicateMessage,
   SurvicateMessageSchema,
+  IdentifyPayload,
+  GroupPayload,
+  TrackPayload,
 } from './types';
 
 import { ENDPOINT_CONFIG, RESERVED_KEYS } from './config';
@@ -109,12 +112,13 @@ const processIdentifyEvent = (
   }
 
   // Build the payload - flatten traits and include context properties
-  const payload: Record<string, any> = {
+  const payload: IdentifyPayload = {
     user_id: msg.userId,
     timestamp: msg.originalTimestamp,
     message_id: msg.messageId,
   };
 
+  // msg.traits applied second so it wins over msg.context.traits on key conflicts
   Object.assign(payload, filterTraits(msg.context?.traits));
   Object.assign(payload, filterTraits(msg.traits));
 
@@ -156,13 +160,14 @@ const processGroupEvent = (
     throw new InstrumentationError('groupId is required for group events.');
   }
 
-  const payload: Record<string, any> = {
+  const payload: GroupPayload = {
     user_id: msg.userId,
     group_id: msg.groupId,
     timestamp: msg.originalTimestamp,
     message_id: msg.messageId,
   };
 
+  // msg.traits applied second so it wins over msg.context.traits on key conflicts
   Object.assign(payload, filterTraits(msg.context?.traits));
   Object.assign(payload, filterTraits(msg.traits));
 
@@ -205,7 +210,7 @@ const processTrackEvent = (
   }
 
   // Build the payload using the utility function
-  const payload: Record<string, any> = {
+  const payload: TrackPayload = {
     user_id: msg.userId,
     event: msg.event,
     properties: msg.properties || {},
@@ -213,8 +218,9 @@ const processTrackEvent = (
     timestamp: msg.originalTimestamp,
   };
 
-  // merge non‑reserved traits into properties
+  // merge non‑reserved traits into properties; msg.traits wins over msg.context.traits on key conflicts
   Object.assign(payload.properties, filterTraits(msg.context?.traits));
+  Object.assign(payload.properties, filterTraits(msg.traits));
 
   // attach filtered context
   const ctxTrack = extractContext(msg.context);

@@ -50,6 +50,8 @@ describe('lookupActionConfig', () => {
     {
       name: 'returns insert config when update has useInsertConfig: true',
       updateConfig: {
+        ...baseDestConfig.actions.insert!,
+        endpoint: '/update-path',
         useInsertConfig: true as const,
       },
       expectedEndpoint: '/audiences/{{connection.audienceId}}/members',
@@ -79,10 +81,13 @@ describe('lookupActionConfig', () => {
   });
 
   it('throws when useInsertConfig is true but insert config is missing', () => {
-    const actions: CustomAudienceDestConfig['actions'] = {
-      update: { useInsertConfig: true },
+    const config: CustomAudienceDestConfig = {
+      ...baseDestConfig,
+      actions: {
+        update: { ...baseDestConfig.actions.insert!, useInsertConfig: true as const },
+      },
     };
-    expect(() => lookupActionConfig('update', actions)).toThrow(InstrumentationError);
+    expect(() => lookupActionConfig('update', config.actions)).toThrow(InstrumentationError);
   });
 });
 

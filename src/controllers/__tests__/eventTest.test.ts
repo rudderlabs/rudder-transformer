@@ -121,27 +121,28 @@ describe('POST /test-router/custom_audience/parse-template', () => {
     {
       name: 'missing action',
       body: { actions: makeActions('x'), workspaceId: 'ws' },
-      expectedError: /action/,
+      expectedError: 'action: Required',
     },
     {
       name: 'missing actions',
       body: { action: 'insert', workspaceId: 'ws' },
-      expectedError: /actions/,
+      expectedError: 'actions: Required',
     },
     {
       name: 'missing workspaceId',
       body: { action: 'insert', actions: makeActions('x') },
-      expectedError: /workspaceId/,
+      expectedError: 'workspaceId: Required',
     },
     {
       name: 'empty string workspaceId',
       body: { action: 'insert', actions: makeActions('x'), workspaceId: '' },
-      expectedError: /workspaceId/,
+      expectedError: 'workspaceId: workspaceId must be a non-empty string',
     },
     {
       name: 'invalid action value',
       body: { action: 'upsert', actions: makeActions('x'), workspaceId: 'ws' },
-      expectedError: /action/,
+      expectedError:
+        "action: Invalid enum value. Expected 'insert' | 'update' | 'delete', received 'upsert'",
     },
   ];
 
@@ -149,7 +150,7 @@ describe('POST /test-router/custom_audience/parse-template', () => {
     const response = await request(server).post(ENDPOINT).send(body);
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toMatch(expectedError);
+    expect(response.body.error).toBe(expectedError);
   });
 });
 

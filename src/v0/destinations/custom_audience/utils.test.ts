@@ -43,7 +43,9 @@ describe('lookupActionConfig', () => {
   });
 
   it('throws InstrumentationError when action key is missing', () => {
-    expect(() => lookupActionConfig('delete', baseDestConfig.actions)).toThrow(InstrumentationError);
+    expect(() => lookupActionConfig('delete', baseDestConfig.actions)).toThrow(
+      InstrumentationError,
+    );
   });
 
   const useInsertConfigCases = [

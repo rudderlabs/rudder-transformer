@@ -11,6 +11,7 @@
  * Old API tests continue to use 'default-workspaceId' and are unaffected.
  */
 
+import sha256 from 'sha256';
 import { RedisDB } from '../../../../../../src/util/redis/redisConnector';
 import { secret4, authHeader4 } from '../../maskedSecrets';
 
@@ -21,7 +22,7 @@ const EMAIL_HASH_SUDIP = '938758751f5af66652a118e26503af824404bc13acd1cb7642ddff
 const EMAIL_HASH_TEST1_MAIL = '78310d2dd727b704ff9d9c4742d01941b1217b89f45ab71d1e9bf5a010144048';
 const EMAIL_HASH_TEST5_XMAIL = '34a6406a076b943abfb9e97a6761e0c6b8cf049ab15b013412c57cf8370b5436';
 const EMAIL_HASH_TEST3_MAIL = '8075d00e5f006b95eb090bf50f5246bc3c18c3d771fa1edf967b033b274b8d84';
-const PHONE_HASH = '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f';
+const PHONE_HASH = sha256('+09876543210');
 const GIVEN_TEST = '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08';
 const FAMILY_RUDDERLABS = 'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251';
 const GIVEN_GHI = '50ae61e841fac4e8f9e40baf2ad36ec868922ea48368c18f9535e47db56dd7fb';
@@ -215,7 +216,7 @@ export const dataManagerData = [
                   add: [
                     {
                       email: 'test@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'test',
                       lastName: 'rudderlabs',
                       country: 'US',
@@ -267,7 +268,7 @@ export const dataManagerData = [
                   remove: [
                     {
                       email: 'test@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'test',
                       lastName: 'rudderlabs',
                       country: 'US',
@@ -329,7 +330,7 @@ export const dataManagerData = [
                   add: [
                     {
                       email: 'test@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'test',
                       lastName: 'rudderlabs',
                       country: 'US',
@@ -399,7 +400,7 @@ export const dataManagerData = [
                   add: [
                     {
                       email: 'test@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'test',
                       lastName: 'rudderlabs',
                       country: 'US',
@@ -465,7 +466,7 @@ export const dataManagerData = [
                   add: [
                     {
                       email: 'abc@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'abc',
                       lastName: 'efg',
                       country: 'US',
@@ -474,7 +475,7 @@ export const dataManagerData = [
                     },
                     {
                       email: 'def@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'def',
                       lastName: 'ghi',
                       country: 'US',
@@ -483,7 +484,7 @@ export const dataManagerData = [
                     },
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -539,7 +540,7 @@ export const dataManagerData = [
                   remove: [
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -594,7 +595,7 @@ export const dataManagerData = [
                   remove: [
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -695,7 +696,7 @@ export const dataManagerData = [
                   add: [
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -703,7 +704,7 @@ export const dataManagerData = [
                     },
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -756,7 +757,7 @@ export const dataManagerData = [
                     // user 0: no postalCode → email+phone only
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -765,7 +766,7 @@ export const dataManagerData = [
                     // users 1–49: all have email+phone+address
                     ...Array(49).fill({
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -817,7 +818,7 @@ export const dataManagerData = [
                   add: [
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -825,7 +826,7 @@ export const dataManagerData = [
                     },
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -835,7 +836,7 @@ export const dataManagerData = [
                   remove: [
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -843,7 +844,7 @@ export const dataManagerData = [
                     },
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -905,7 +906,7 @@ export const dataManagerData = [
                   delete: [
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -913,7 +914,7 @@ export const dataManagerData = [
                     },
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -966,7 +967,7 @@ export const dataManagerData = [
                     // firstName null → no addressInfo (givenName missing)
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: null,
                       lastName: 'jkl',
                       country: 'US',
@@ -974,7 +975,7 @@ export const dataManagerData = [
                     },
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -993,7 +994,7 @@ export const dataManagerData = [
                     },
                     {
                       email: 'ghi@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'ghi',
                       lastName: 'jkl',
                       country: 'US',
@@ -1132,7 +1133,7 @@ export const dataManagerData = [
                   add: [
                     {
                       email: 'test@abc.com',
-                      phone: '@09876543210',
+                      phone: '09876543210',
                       firstName: 'test',
                       lastName: 'rudderlabs',
                       country: 'US',

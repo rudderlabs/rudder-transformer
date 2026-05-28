@@ -114,8 +114,6 @@ export const processAudienceRecord = (
   const { isHashRequired } = destination.config;
   const { workspaceId, id: destinationId, type: destType } = destination;
   const invalidFieldMetric = `${destType}_invalid_field`;
-  const shouldRejectInvalidFields =
-    process.env[`${destType.toUpperCase()}_REJECT_INVALID_FIELDS`] === 'true';
   const result: Record<string, string> = {};
 
   Object.entries(record).forEach(([fieldName, rawValue]) => {
@@ -149,9 +147,7 @@ export const processAudienceRecord = (
 
     if (isInvalid) {
       stats.increment(invalidFieldMetric, { fieldName, workspaceId, destinationId });
-      if (shouldRejectInvalidFields) {
-        return;
-      }
+      return;
     }
 
     result[fieldName] =

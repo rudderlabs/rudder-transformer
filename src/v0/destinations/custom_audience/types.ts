@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { HashingType } from '../../util/audienceUtils';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import type { Metadata, RecordAction, RudderRecordV2 } from '../../../types/rudderEvents';
@@ -28,6 +29,20 @@ export type ActionConfig = {
 export type UpdateActionConfig = ActionConfig & {
   useInsertConfig?: boolean;
 };
+
+export const actionConfigSchema = z.object({
+  endpoint: z.string(),
+  method: z.string(),
+  requestBody: z.string(),
+  batchSize: z.number(),
+  fields: z.array(z.object({ name: z.string() }).passthrough()),
+});
+
+export const actionsSchema = z.object({
+  insert: actionConfigSchema.optional(),
+  update: actionConfigSchema.extend({ useInsertConfig: z.boolean().optional() }).optional(),
+  delete: actionConfigSchema.optional(),
+});
 
 export type CustomAudienceHeader = {
   key: string;

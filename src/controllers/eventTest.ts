@@ -6,24 +6,13 @@ import { EventTesterService } from '../services/eventTest/eventTester';
 import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
-import { lookupActionConfig } from '../v0/destinations/custom_audience/utils';
+import { actionsSchema } from '../v0/destinations/custom_audience/types';
 import type { CustomAudienceDestConfig } from '../v0/destinations/custom_audience/types';
-
-const actionConfigSchema = z.object({
-  endpoint: z.string(),
-  method: z.string(),
-  requestBody: z.string(),
-  batchSize: z.number(),
-  fields: z.array(z.object({ name: z.string() }).passthrough()),
-});
+import { lookupActionConfig } from '../v0/destinations/custom_audience/utils';
 
 const parseTemplateBodySchema = z.object({
   action: z.nativeEnum(RecordAction),
-  actions: z.object({
-    insert: actionConfigSchema.optional(),
-    update: actionConfigSchema.extend({ useInsertConfig: z.boolean().optional() }).optional(),
-    delete: actionConfigSchema.optional(),
-  }),
+  actions: actionsSchema,
   workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
 });
 

@@ -56,7 +56,7 @@ class CustomAudienceIntegration extends BatchDestination<
       Object.keys(this.destination.Config.actions).map((action) => [
         action,
         resolveEndpoint(
-          lookupActionConfig(action as Action, this.destination.Config).endpoint,
+          lookupActionConfig(action as Action, this.destination.Config.actions).endpoint,
           this.destination.Config.baseUrl,
           this.connectionConfig,
         ),
@@ -66,7 +66,7 @@ class CustomAudienceIntegration extends BatchDestination<
 
   transformEvent(input: CustomAudienceRouterRequest): TransformedEvent<Record<string, string>> {
     const { message } = input;
-    const actionConfig = lookupActionConfig(message.action, this.destination.Config);
+    const actionConfig = lookupActionConfig(message.action, this.destination.Config.actions);
     const fieldsWithCustomMappings = injectCustomMappings(
       message.identifiers!,
       this.connectionConfig.customMappings,
@@ -101,7 +101,7 @@ class CustomAudienceIntegration extends BatchDestination<
 
     return new CustomBatchStrategy<Record<string, string>>(async (payloads) => {
       const action = payloads[0].internalGroupKey as Action;
-      const actionConfig = lookupActionConfig(action, Config);
+      const actionConfig = lookupActionConfig(action, Config.actions);
 
       // Chunk outside the isolate so the existing native-batching split logic
       // is reused. Each chunk's records are passed through to the isolate

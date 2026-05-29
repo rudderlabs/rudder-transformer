@@ -6,12 +6,12 @@ import { EventTesterService } from '../services/eventTest/eventTester';
 import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
-import { actionsSchema } from '../v0/destinations/custom_audience/types';
+import { parseTemplateActionsSchema } from '../v0/destinations/custom_audience/types';
 import { lookupActionConfig } from '../v0/destinations/custom_audience/utils';
 
 const parseTemplateBodySchema = z.object({
   action: z.nativeEnum(RecordAction),
-  actions: actionsSchema,
+  actions: parseTemplateActionsSchema,
   workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
 });
 

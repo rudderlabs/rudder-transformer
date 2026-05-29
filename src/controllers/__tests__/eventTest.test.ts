@@ -34,11 +34,7 @@ const ENDPOINT = '/test-router/custom_audience/parse-template';
 
 const makeActions = (requestBody: string) => ({
   insert: {
-    endpoint: '/members',
-    method: 'POST',
     requestBody,
-    batchSize: 100,
-    fields: [],
   },
 });
 
@@ -89,6 +85,32 @@ describe('POST /test-router/custom_audience/parse-template', () => {
     expect(response.body.errors[0]).toMatch(/spread_expr/);
   });
 
+  it('should accept requestBody-only action config for delete action', async () => {
+    mockParseTemplate.mockResolvedValue({
+      valid: true,
+      recordFields: ['email'],
+    });
+
+    const response = await request(server)
+      .post(ENDPOINT)
+      .send({
+        action: 'delete',
+        actions: {
+          delete: {
+            requestBody: template,
+          },
+        },
+        workspaceId: 'test-workspace',
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      valid: true,
+      recordFields: ['email'],
+    });
+    expect(mockParseTemplate).toHaveBeenCalledWith(template, 'test-workspace');
+  });
+
   it('should resolve useInsertConfig and validate with insert requestBody', async () => {
     mockParseTemplate.mockResolvedValue({
       valid: true,
@@ -99,11 +121,6 @@ describe('POST /test-router/custom_audience/parse-template', () => {
       insert: makeActions(template).insert,
       update: {
         useInsertConfig: true,
-        endpoint: '/members',
-        method: 'PUT',
-        requestBody: '',
-        batchSize: 100,
-        fields: [],
       },
     };
 
@@ -143,6 +160,19 @@ describe('POST /test-router/custom_audience/parse-template', () => {
       body: { action: 'upsert', actions: makeActions('x'), workspaceId: 'ws' },
       expectedError:
         "action: Invalid enum value. Expected 'insert' | 'update' | 'delete', received 'upsert'",
+    },
+    {
+      name: 'missing requestBody in action config',
+      body: {
+        action: 'insert',
+        actions: {
+          insert: {
+            endpoint: '/members',
+          },
+        },
+        workspaceId: 'ws',
+      },
+      expectedError: 'actions.insert.requestBody: Required',
     },
   ];
 

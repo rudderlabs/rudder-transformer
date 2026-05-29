@@ -21,6 +21,7 @@ const { ERROR_MESSAGES, FEATURE_FILTER_CODE } = require('./constant');
 // Names of the utility functions to test
 const functionNames = [
   'getDestinationExternalID',
+  'getDestinationExternalIDInfoForRetl',
   'isHybridModeEnabled',
   'handleSourceKeysOperation',
   'getValueFromPropertiesOrTraits',

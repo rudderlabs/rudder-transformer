@@ -10,8 +10,10 @@ import {
   deleteEndpoint,
   customMappingsDestination,
   customMappingsConnection,
+  extraTargetCustomMappingsConnection,
   hashRequiredConnection,
   useInsertConfigDestination,
+  useInsertConfigWithRequiredInsertFieldDestination,
 } from '../common';
 
 const errorStatTags = {
@@ -508,6 +510,237 @@ export const data: RouterTestData[] = [
             {
               message: generateRecordPayload({
                 action: 'update',
+                identifiers: { email: sha256('a@b.com') },
+              }),
+              metadata: generateMetadata(1),
+              destination: useInsertConfigDestination,
+              connection,
+            },
+            {
+              message: generateRecordPayload({
+                action: 'update',
+                identifiers: { email: sha256('c@d.com') },
+              }),
+              metadata: generateMetadata(2),
+              destination: useInsertConfigDestination,
+              connection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertEndpoint,
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    audienceId: 'aud-42',
+                    users: [{ email: sha256('a@b.com') }, { email: sha256('c@d.com') }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1), generateMetadata(2)],
+              batched: true,
+              statusCode: 200,
+              destination: useInsertConfigDestination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-7',
+    name: destType,
+    description:
+      'Allows customMappings targets not present in configured action fields and ignores them in output',
+    scenario: 'Business',
+    successCriteria:
+      'Event succeeds even when customMappings includes an unknown target field; template output remains unchanged',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: sha256('a@b.com') },
+              }),
+              metadata: generateMetadata(1),
+              destination,
+              connection: extraTargetCustomMappingsConnection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertEndpoint,
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    audienceId: 'aud-42',
+                    users: [{ email: sha256('a@b.com') }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-8',
+    name: destType,
+    description: 'Returns 400 when required action fields are missing from identifiers',
+    scenario: 'Business',
+    successCriteria:
+      'Events with missing required identifiers fail with a clear validation message before template evaluation',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { externalId: '123' },
+              }),
+              metadata: generateMetadata(1),
+              destination,
+              connection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error: 'Missing required fields for action "insert": email',
+              statTags: errorStatTags,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-9',
+    name: destType,
+    description:
+      'Returns 400 for update when useInsertConfig=true and insert-required fields are missing',
+    scenario: 'Business',
+    successCriteria:
+      'Required fields are resolved from effective insert config for update events using useInsertConfig',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'update',
+                identifiers: { email: sha256('a@b.com') },
+              }),
+              metadata: generateMetadata(1),
+              destination: useInsertConfigWithRequiredInsertFieldDestination,
+              connection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error: 'Missing required fields for action "update": externalId',
+              statTags: errorStatTags,
+              destination: useInsertConfigWithRequiredInsertFieldDestination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-10',
+    name: destType,
+    description: 'Co-batches insert and update events when update uses insert config',
+    scenario: 'Framework+Business',
+    successCriteria:
+      'Insert and update events land in the same batch when update action has useInsertConfig: true',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'insert',
                 identifiers: { email: sha256('a@b.com') },
               }),
               metadata: generateMetadata(1),

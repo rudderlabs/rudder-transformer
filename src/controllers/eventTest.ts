@@ -89,7 +89,10 @@ export class EventTestController {
       return;
     }
     const { action, actions, workspaceId } = parsed.data;
-    const actionConfig = lookupActionConfig(action, actions as CustomAudienceDestConfig['actions']);
+    const { config: actionConfig } = lookupActionConfig(
+      action,
+      actions as CustomAudienceDestConfig['actions'],
+    );
     ctx.body = await sandboxedParseTemplate(actionConfig.requestBody, workspaceId);
   }
 }

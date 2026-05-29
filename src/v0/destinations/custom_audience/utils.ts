@@ -2,6 +2,7 @@ import { InstrumentationError } from '@rudderstack/integrations-lib';
 
 import { HashingType, processAudienceRecord, type AudienceField } from '../../util/audienceUtils';
 
+import { EVENT_TYPES } from '../../util/recordUtils';
 import { AUTHENTICATION_TYPES, ERROR_MESSAGES } from './constants';
 import type {
   Action,
@@ -17,20 +18,22 @@ import type {
 export const lookupActionConfig = (
   action: Action,
   actions: CustomAudienceDestConfig['actions'],
-): ActionConfig => {
+): { action: Action; config: ActionConfig } => {
   const actionConfig = actions[action];
   if (!actionConfig) {
     throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG(action));
   }
-  // When the update action opts into reusing the insert config, substitute it.
+  // When the update action opts into reusing the insert config, substitute it
+  // and return 'insert' as the resolved action so callers can use it as a
+  // batch group key that matches the config actually used.
   if ('useInsertConfig' in actionConfig && actionConfig.useInsertConfig) {
     const insertConfig = actions.insert;
     if (!insertConfig) {
       throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG('insert'));
     }
-    return insertConfig;
+    return { action: EVENT_TYPES.INSERT as Action, config: insertConfig };
   }
-  return actionConfig;
+  return { action, config: actionConfig };
 };
 
 // Replaces {{dotted.path}} placeholders with values from the connection object,
@@ -67,18 +70,9 @@ export const resolveEndpoint = (
 export const injectCustomMappings = (
   fields: Record<string, unknown>,
   customMappings: CustomMapping[] | undefined,
-  actionFields: ActionFieldConfig[],
 ): Record<string, unknown> => {
   if (!customMappings || customMappings.length === 0) {
     return fields;
-  }
-  const allowedFieldNames = actionFields.map((f) => f.name);
-  for (const mapping of customMappings) {
-    if (!allowedFieldNames.includes(mapping.to)) {
-      throw new InstrumentationError(
-        ERROR_MESSAGES.CUSTOM_MAPPING_UNKNOWN_FIELD(mapping.to, allowedFieldNames),
-      );
-    }
   }
   const merged: Record<string, unknown> = { ...fields };
   // `from` holds the literal value (user-supplied constant), `to` is the destination field.
@@ -86,6 +80,21 @@ export const injectCustomMappings = (
     merged[mapping.to] = mapping.from;
   }
   return merged;
+};
+
+export const validateRequiredFields = (
+  action: Action,
+  fields: Record<string, unknown>,
+  actionFields: ActionFieldConfig[],
+): void => {
+  const missingRequiredFieldNames = actionFields
+    .filter((field) => field.isRequired && !(field.name in fields))
+    .map((field) => field.name);
+  if (missingRequiredFieldNames.length > 0) {
+    throw new InstrumentationError(
+      ERROR_MESSAGES.MISSING_REQUIRED_FIELDS(action, missingRequiredFieldNames),
+    );
+  }
 };
 
 const buildFieldConfigs = (actionFields: ActionFieldConfig[]): Record<string, AudienceField> => {

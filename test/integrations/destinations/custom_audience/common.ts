@@ -89,6 +89,16 @@ export const customMappingsConnection: CustomAudienceConnection = {
   },
 };
 
+export const extraTargetCustomMappingsConnection: CustomAudienceConnection = {
+  ...connection,
+  config: {
+    destination: {
+      ...connection.config.destination,
+      customMappings: [{ from: 'ignored', to: 'unusedField' }],
+    },
+  },
+};
+
 export const customMappingsDestination: CustomAudienceDestination = {
   ...destination,
   Config: {
@@ -132,6 +142,29 @@ export const useInsertConfigDestination: CustomAudienceDestination = {
     ...destination.Config,
     actions: {
       insert: insertActionConfig,
+      update: useInsertConfigUpdateAction,
+      delete: deleteActionConfig,
+    },
+  },
+};
+
+export const useInsertConfigWithRequiredInsertFieldDestination: CustomAudienceDestination = {
+  ...destination,
+  Config: {
+    ...destination.Config,
+    actions: {
+      insert: {
+        ...insertActionConfig,
+        fields: [
+          ...insertActionConfig.fields,
+          {
+            name: 'externalId',
+            hashType: HashingType.NONE,
+            isRequired: true,
+            isCustom: false,
+          },
+        ],
+      },
       update: useInsertConfigUpdateAction,
       delete: deleteActionConfig,
     },

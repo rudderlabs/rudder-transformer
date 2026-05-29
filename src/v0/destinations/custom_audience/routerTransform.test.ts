@@ -157,7 +157,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
         buildInput(2, 'insert', { email: '', other: null }),
       ],
       failingJobId: 2,
-      errorMatch: /All fields were stripped/,
+      errorMatch: /All fields were stripped after processing; nothing to send/,
     },
     {
       name: 'event failing schema validation (wrong type)',
@@ -179,6 +179,40 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       },
       failingJobId: 1,
       errorMatch: /Custom mapping "from" value must be non-empty/,
+    },
+    {
+      name: 'event missing required fields for action',
+      buildInputs: () => [buildInput(1, 'insert', { phone: '+1' })],
+      failingJobId: 1,
+      errorMatch: /Missing required fields for action "insert": email/,
+    },
+    {
+      name: 'update event validates required fields from insert action when useInsertConfig is true',
+      buildInputs: () => {
+        const destination = buildDestination({
+          actions: {
+            insert: {
+              ...baseInsertAction,
+              fields: [
+                ...baseInsertAction.fields,
+                {
+                  name: 'externalId',
+                  hashType: HashingType.NONE,
+                  isRequired: true,
+                  isCustom: false,
+                },
+              ],
+            },
+            update: {
+              useInsertConfig: true,
+            },
+            delete: baseDeleteAction,
+          },
+        });
+        return [buildInput(1, 'update', { email: hashedEmail('a@b.com') }, destination)];
+      },
+      failingJobId: 1,
+      errorMatch: /Missing required fields for action "update": externalId/,
     },
   ];
 
@@ -208,6 +242,24 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     const body = batched.body?.JSON as { users: { email: string }[] };
     const emails = body.users.map((u) => u.email).sort();
     expect(emails).toEqual([sha256('a@b.com'), sha256('c@d.com')].sort());
+  });
+
+  it('allows custom mappings for unknown target fields and ignores them in template output', async () => {
+    const connection = buildConnection({ customMappings: [{ from: 'some-value', to: 'unused' }] });
+    const inputs = [
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, buildDestination(), connection),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+
+    const success = results.find((r) => r.statusCode === 200);
+    const batched = success?.batchedRequest;
+    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
+    const body = batched.body?.JSON as { users: { email: string }[] };
+    expect(body).toEqual({
+      audienceId: 'aud-42',
+      users: [{ email: hashedEmail('a@b.com') }],
+    });
   });
 
   const authCases = [
@@ -258,14 +310,14 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     await expect(processBatchedDestination(inputs, Integration, {})).rejects.toThrow();
   });
 
-  it('uses insert config for update events when useInsertConfig is true', async () => {
+  it('batches insert and update events together when update uses insert config', async () => {
     const destination = buildDestination({
       actions: {
         insert: baseInsertAction,
         update: {
-          endpoint: '/audiences/{{connection.audienceId}}/update-members',
-          method: 'PUT',
-          requestBody: '{ "should": "not appear" }',
+          endpoint: '/audiences/{{connection.audienceId}}/members',
+          method: 'POST',
+          requestBody: '{ "users": [$$.records.{ "email": email }] }',
           batchSize: 10,
           fields: baseInsertAction.fields,
           useInsertConfig: true,
@@ -275,19 +327,45 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     });
 
     const inputs = [
-      buildInput(1, 'update', { email: hashedEmail('a@b.com') }, destination),
+      buildInput(1, 'insert', { email: hashedEmail('z@x.com') }, destination),
+      buildInput(2, 'update', { email: hashedEmail('a@b.com') }, destination),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+
+    const success = results.filter((r) => r.statusCode === 200);
+    expect(success).toHaveLength(1);
+    const batched = success[0]?.batchedRequest;
+    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
+    // Should use insert config's endpoint and method, and batch insert/update together.
+    expect(batched.endpoint).toBe('https://api.example.com/audiences/aud-42/members');
+    expect(batched.method).toBe('POST');
+    const body = batched.body?.JSON as { users: { email: string }[] };
+    expect(body.users).toHaveLength(2);
+    expect(success[0].metadata.map((m) => m.jobId).sort()).toEqual([1, 2]);
+  });
+
+  it('keeps update batches separate when update uses its own config', async () => {
+    const destination = buildDestination({
+      actions: {
+        insert: baseInsertAction,
+        update: {
+          ...baseInsertAction,
+          useInsertConfig: false,
+        },
+        delete: baseDeleteAction,
+      },
+    });
+
+    const inputs = [
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination),
       buildInput(2, 'update', { email: hashedEmail('c@d.com') }, destination),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});
 
-    const success = results.find((r) => r.statusCode === 200);
-    const batched = success?.batchedRequest;
-    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
-    // Should use insert config's endpoint and method, not update's
-    expect(batched.endpoint).toBe('https://api.example.com/audiences/aud-42/members');
-    expect(batched.method).toBe('POST');
-    const body = batched.body?.JSON as { users: { email: string }[] };
-    expect(body.users).toHaveLength(2);
+    const success = results.filter((r) => r.statusCode === 200);
+    expect(success).toHaveLength(2);
+    expect(success.map((r) => r.metadata.map((m) => m.jobId).sort())).toEqual([[1], [2]]);
   });
 });

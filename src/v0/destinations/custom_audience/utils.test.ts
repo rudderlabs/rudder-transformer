@@ -194,10 +194,8 @@ describe('validateRequiredFields', () => {
     { name: 'undefined', fields: { email: 'a@b.com', phone: undefined } },
     { name: 'empty string', fields: { email: 'a@b.com', phone: '' } },
     { name: 'false', fields: { email: 'a@b.com', phone: false } },
-  ])('treats required field with $name value as missing', ({ fields }) => {
-    expect(() => validateRequiredFields('insert', fields, actionFields)).toThrow(
-      'Missing required fields for action "insert": phone',
-    );
+  ])('allows required field with $name value (key present)', ({ fields }) => {
+    expect(() => validateRequiredFields('insert', fields, actionFields)).not.toThrow();
   });
 });
 

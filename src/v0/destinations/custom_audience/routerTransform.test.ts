@@ -157,7 +157,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
         buildInput(2, 'insert', { email: '', other: null }),
       ],
       failingJobId: 2,
-      errorMatch: /All fields were stripped/,
+      errorMatch: /All fields were stripped after processing; nothing to send/,
     },
     {
       name: 'event failing schema validation (wrong type)',
@@ -204,11 +204,6 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
               ],
             },
             update: {
-              endpoint: '/audiences/{{connection.audienceId}}/update-members',
-              method: 'PUT',
-              requestBody: '{ "should": "not appear" }',
-              batchSize: 10,
-              fields: [],
               useInsertConfig: true,
             },
             delete: baseDeleteAction,

@@ -85,14 +85,7 @@ export const validateRequiredFields = (
   actionFields: ActionFieldConfig[],
 ): void => {
   const missingRequiredFieldNames = actionFields
-    .filter(
-      (field) =>
-        field.isRequired &&
-        (!Object.prototype.hasOwnProperty.call(fields, field.name) ||
-          fields[field.name] == null ||
-          fields[field.name] === '' ||
-          fields[field.name] === false),
-    )
+    .filter((field) => field.isRequired && !(field.name in fields))
     .map((field) => field.name);
   if (missingRequiredFieldNames.length > 0) {
     throw new InstrumentationError(

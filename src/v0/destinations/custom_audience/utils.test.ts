@@ -54,7 +54,7 @@ describe('lookupActionConfig', () => {
       updateConfig: {
         ...baseDestConfig.actions.insert!,
         endpoint: '/update-path',
-        useInsertConfig: true as const,
+        useInsertConfig: true,
       },
       expectedEndpoint: '/audiences/{{connection.audienceId}}/members',
     },

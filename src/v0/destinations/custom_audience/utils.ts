@@ -67,18 +67,9 @@ export const resolveEndpoint = (
 export const injectCustomMappings = (
   fields: Record<string, unknown>,
   customMappings: CustomMapping[] | undefined,
-  actionFields: ActionFieldConfig[],
 ): Record<string, unknown> => {
   if (!customMappings || customMappings.length === 0) {
     return fields;
-  }
-  const allowedFieldNames = actionFields.map((f) => f.name);
-  for (const mapping of customMappings) {
-    if (!allowedFieldNames.includes(mapping.to)) {
-      throw new InstrumentationError(
-        ERROR_MESSAGES.CUSTOM_MAPPING_UNKNOWN_FIELD(mapping.to, allowedFieldNames),
-      );
-    }
   }
   const merged: Record<string, unknown> = { ...fields };
   // `from` holds the literal value (user-supplied constant), `to` is the destination field.
@@ -86,6 +77,28 @@ export const injectCustomMappings = (
     merged[mapping.to] = mapping.from;
   }
   return merged;
+};
+
+export const validateRequiredFields = (
+  action: Action,
+  fields: Record<string, unknown>,
+  actionFields: ActionFieldConfig[],
+): void => {
+  const missingRequiredFieldNames = actionFields
+    .filter(
+      (field) =>
+        field.isRequired &&
+        (!Object.prototype.hasOwnProperty.call(fields, field.name) ||
+          fields[field.name] == null ||
+          fields[field.name] === '' ||
+          fields[field.name] === false),
+    )
+    .map((field) => field.name);
+  if (missingRequiredFieldNames.length > 0) {
+    throw new InstrumentationError(
+      ERROR_MESSAGES.MISSING_REQUIRED_FIELDS(action, missingRequiredFieldNames),
+    );
+  }
 };
 
 const buildFieldConfigs = (actionFields: ActionFieldConfig[]): Record<string, AudienceField> => {

@@ -180,6 +180,45 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       failingJobId: 1,
       errorMatch: /Custom mapping "from" value must be non-empty/,
     },
+    {
+      name: 'event missing required fields for action',
+      buildInputs: () => [buildInput(1, 'insert', { phone: '+1' })],
+      failingJobId: 1,
+      errorMatch: /Missing required fields for action "insert": email/,
+    },
+    {
+      name: 'update event validates required fields from insert action when useInsertConfig is true',
+      buildInputs: () => {
+        const destination = buildDestination({
+          actions: {
+            insert: {
+              ...baseInsertAction,
+              fields: [
+                ...baseInsertAction.fields,
+                {
+                  name: 'externalId',
+                  hashType: HashingType.NONE,
+                  isRequired: true,
+                  isCustom: false,
+                },
+              ],
+            },
+            update: {
+              endpoint: '/audiences/{{connection.audienceId}}/update-members',
+              method: 'PUT',
+              requestBody: '{ "should": "not appear" }',
+              batchSize: 10,
+              fields: [],
+              useInsertConfig: true,
+            },
+            delete: baseDeleteAction,
+          },
+        });
+        return [buildInput(1, 'update', { email: hashedEmail('a@b.com') }, destination)];
+      },
+      failingJobId: 1,
+      errorMatch: /Missing required fields for action "update": externalId/,
+    },
   ];
 
   it.each(errorCases)(
@@ -208,6 +247,24 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     const body = batched.body?.JSON as { users: { email: string }[] };
     const emails = body.users.map((u) => u.email).sort();
     expect(emails).toEqual([sha256('a@b.com'), sha256('c@d.com')].sort());
+  });
+
+  it('allows custom mappings for unknown target fields and ignores them in template output', async () => {
+    const connection = buildConnection({ customMappings: [{ from: 'some-value', to: 'unused' }] });
+    const inputs = [
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, buildDestination(), connection),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+
+    const success = results.find((r) => r.statusCode === 200);
+    const batched = success?.batchedRequest;
+    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
+    const body = batched.body?.JSON as { users: { email: string }[] };
+    expect(body).toEqual({
+      audienceId: 'aud-42',
+      users: [{ email: hashedEmail('a@b.com') }],
+    });
   });
 
   const authCases = [

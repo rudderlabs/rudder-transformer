@@ -57,7 +57,7 @@ describe('lookupActionConfig', () => {
         endpoint: '/update-path',
         useInsertConfig: true,
       },
-      expectedAction: 'insert' as const,
+      expectedAction: 'insert',
       expectedEndpoint: '/audiences/{{connection.audienceId}}/members',
     },
     {
@@ -67,13 +67,13 @@ describe('lookupActionConfig', () => {
         endpoint: '/update-path',
         useInsertConfig: false,
       },
-      expectedAction: 'update' as const,
+      expectedAction: 'update',
       expectedEndpoint: '/update-path',
     },
     {
       name: 'keeps update action and config when useInsertConfig is absent',
       updateConfig: { ...baseDestConfig.actions.insert!, endpoint: '/update-path' },
-      expectedAction: 'update' as const,
+      expectedAction: 'update',
       expectedEndpoint: '/update-path',
     },
   ];

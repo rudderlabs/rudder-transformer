@@ -6,8 +6,26 @@ import { EventTesterService } from '../services/eventTest/eventTester';
 import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
-import { parseTemplateActionsSchema } from '../v0/destinations/custom_audience/types';
+import {
+  actionConfigSchema,
+  CustomAudienceDestConfig,
+} from '../v0/destinations/custom_audience/types';
 import { lookupActionConfig } from '../v0/destinations/custom_audience/utils';
+
+const parseTemplateActionConfigSchema = actionConfigSchema
+  .partial()
+  .extend({ requestBody: actionConfigSchema.shape.requestBody });
+
+const parseTemplateUpdateActionConfigSchema = z.union([
+  parseTemplateActionConfigSchema.extend({ useInsertConfig: z.boolean().optional() }),
+  z.object({ useInsertConfig: z.literal(true) }),
+]);
+
+const parseTemplateActionsSchema = z.object({
+  insert: parseTemplateActionConfigSchema.optional(),
+  update: parseTemplateUpdateActionConfigSchema.optional(),
+  delete: parseTemplateActionConfigSchema.optional(),
+});
 
 const parseTemplateBodySchema = z.object({
   action: z.nativeEnum(RecordAction),
@@ -71,7 +89,7 @@ export class EventTestController {
       return;
     }
     const { action, actions, workspaceId } = parsed.data;
-    const actionConfig = lookupActionConfig(action, actions);
+    const actionConfig = lookupActionConfig(action, actions as CustomAudienceDestConfig['actions']);
     ctx.body = await sandboxedParseTemplate(actionConfig.requestBody, workspaceId);
   }
 }

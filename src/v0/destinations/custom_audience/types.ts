@@ -29,25 +29,10 @@ const updateActionConfigSchema = z.union([
   z.object({ useInsertConfig: z.literal(true) }),
 ]);
 
-const parseTemplateActionConfigSchema = actionConfigSchema
-  .partial()
-  .extend({ requestBody: actionConfigSchema.shape.requestBody });
-
-const parseTemplateUpdateActionConfigSchema = z.union([
-  parseTemplateActionConfigSchema.extend({ useInsertConfig: z.boolean().optional() }),
-  z.object({ useInsertConfig: z.literal(true) }),
-]);
-
 export const actionsSchema = z.object({
   insert: actionConfigSchema.optional(),
   update: updateActionConfigSchema.optional(),
   delete: actionConfigSchema.optional(),
-});
-
-export const parseTemplateActionsSchema = z.object({
-  insert: parseTemplateActionConfigSchema.optional(),
-  update: parseTemplateUpdateActionConfigSchema.optional(),
-  delete: parseTemplateActionConfigSchema.optional(),
 });
 
 export type HttpMethod = z.infer<typeof actionConfigSchema>['method'];

@@ -16,6 +16,7 @@ import {
   lookupActionConfig,
   processFields,
   resolveEndpoint,
+  validateRequiredFields,
 } from './utils';
 import type {
   Action,
@@ -67,10 +68,10 @@ class CustomAudienceIntegration extends BatchDestination<
   transformEvent(input: CustomAudienceRouterRequest): TransformedEvent<Record<string, string>> {
     const { message } = input;
     const actionConfig = lookupActionConfig(message.action, this.destination.Config.actions);
+    validateRequiredFields(message.action, message.identifiers!, actionConfig.fields);
     const fieldsWithCustomMappings = injectCustomMappings(
       message.identifiers!,
       this.connectionConfig.customMappings,
-      actionConfig.fields,
     );
     const record = processFields(
       fieldsWithCustomMappings,

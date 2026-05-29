@@ -10,10 +10,10 @@ export const AUTHENTICATION_TYPES = {
 export const ERROR_MESSAGES = {
   NO_ACTION_CONFIG: (action: string) => `No action configuration found for action: ${action}`,
   ALL_FIELDS_STRIPPED: 'All fields were stripped after processing; nothing to send',
+  MISSING_REQUIRED_FIELDS: (action: string, missingFields: string[]) =>
+    `Missing required fields for action "${action}": ${missingFields.join(', ')}`,
   TEMPLATE_EVALUATION_FAILED: (reason: string) =>
     `Failed to evaluate requestBody template: ${reason}`,
   ENDPOINT_RESOLUTION_FAILED: (placeholder: string) =>
     `Unresolved placeholder in endpoint template: ${placeholder}`,
-  CUSTOM_MAPPING_UNKNOWN_FIELD: (fieldName: string, allowedFields: string[]) =>
-    `Custom mapping target "${fieldName}" is not a configured field. Allowed fields: ${allowedFields.join(', ')}`,
 };

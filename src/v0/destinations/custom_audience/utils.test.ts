@@ -7,6 +7,7 @@ import {
   lookupActionConfig,
   processFields,
   resolveEndpoint,
+  validateRequiredFields,
 } from './utils';
 import { AUTHENTICATION_TYPES } from './constants';
 import type {
@@ -143,11 +144,6 @@ describe('resolveEndpoint', () => {
 });
 
 describe('injectCustomMappings', () => {
-  const actionFields = [
-    { name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false },
-    { name: 'listId', hashType: HashingType.NONE, isRequired: false, isCustom: false },
-  ];
-
   const cases = [
     {
       name: 'returns fields untouched when no mappings',
@@ -170,17 +166,42 @@ describe('injectCustomMappings', () => {
   ];
 
   it.each(cases)('$name', ({ fields, mappings, expected }) => {
-    expect(injectCustomMappings(fields, mappings, actionFields)).toEqual(expected);
+    expect(injectCustomMappings(fields, mappings)).toEqual(expected);
   });
 
-  it('throws InstrumentationError when mapping targets an unknown field', () => {
+  it('allows mapping targets that are not in configured action fields', () => {
+    expect(
+      injectCustomMappings({ email: 'a@b.com' }, [{ from: 'some-value', to: 'unknownField' }]),
+    ).toEqual({ email: 'a@b.com', unknownField: 'some-value' });
+  });
+});
+
+describe('validateRequiredFields', () => {
+  const actionFields = [
+    { name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false },
+    { name: 'phone', hashType: HashingType.NONE, isRequired: true, isCustom: false },
+    { name: 'listType', hashType: HashingType.NONE, isRequired: false, isCustom: true },
+  ];
+
+  it('does not throw when all required fields are present', () => {
     expect(() =>
-      injectCustomMappings(
-        { email: 'a@b.com' },
-        [{ from: 'some-value', to: 'unknownField' }],
-        actionFields,
-      ),
-    ).toThrow(InstrumentationError);
+      validateRequiredFields('insert', { email: 'a@b.com', phone: '+1' }, actionFields),
+    ).not.toThrow();
+  });
+
+  it('throws InstrumentationError when required fields are missing', () => {
+    expect(() => validateRequiredFields('insert', { email: 'a@b.com' }, actionFields)).toThrow(
+      'Missing required fields for action "insert": phone',
+    );
+  });
+
+  it.each([
+    { name: 'null', fields: { email: 'a@b.com', phone: null } },
+    { name: 'undefined', fields: { email: 'a@b.com', phone: undefined } },
+    { name: 'empty string', fields: { email: 'a@b.com', phone: '' } },
+    { name: 'false', fields: { email: 'a@b.com', phone: false } },
+  ])('allows required field with $name value (key present)', ({ fields }) => {
+    expect(() => validateRequiredFields('insert', fields, actionFields)).not.toThrow();
   });
 });
 

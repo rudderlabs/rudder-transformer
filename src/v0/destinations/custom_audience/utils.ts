@@ -30,7 +30,7 @@ export const lookupActionConfig = (
     }
     return insertConfig;
   }
-  return actionConfig as ActionConfig;
+  return actionConfig;
 };
 
 // Replaces {{dotted.path}} placeholders with values from the connection object,

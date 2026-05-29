@@ -17,39 +17,22 @@ import type {
 export const lookupActionConfig = (
   action: Action,
   actions: CustomAudienceDestConfig['actions'],
-): ActionConfig => {
+): { action: Action; config: ActionConfig } => {
   const actionConfig = actions[action];
   if (!actionConfig) {
     throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG(action));
   }
-  // When the update action opts into reusing the insert config, substitute it.
+  // When the update action opts into reusing the insert config, substitute it
+  // and return 'insert' as the resolved action so callers can use it as a
+  // batch group key that matches the config actually used.
   if ('useInsertConfig' in actionConfig && actionConfig.useInsertConfig) {
     const insertConfig = actions.insert;
     if (!insertConfig) {
       throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG('insert'));
     }
-    return insertConfig;
+    return { action: 'insert', config: insertConfig };
   }
-  return actionConfig;
-};
-
-export const resolveBatchGroupKey = (
-  action: Action,
-  actions: CustomAudienceDestConfig['actions'],
-): Action => {
-  const actionConfig = actions[action];
-  if (!actionConfig) {
-    throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG(action));
-  }
-
-  // When update reuses the insert config, it must share insert's batch group.
-  // The framework groups by this key before batching, so the alias must match
-  // the config that will be used for request construction.
-  if (action === 'update' && 'useInsertConfig' in actionConfig && actionConfig.useInsertConfig) {
-    return 'insert';
-  }
-
-  return action;
+  return { action, config: actionConfig };
 };
 
 // Replaces {{dotted.path}} placeholders with values from the connection object,

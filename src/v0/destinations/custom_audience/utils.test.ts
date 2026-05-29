@@ -6,7 +6,6 @@ import {
   injectCustomMappings,
   lookupActionConfig,
   processFields,
-  resolveBatchGroupKey,
   resolveEndpoint,
 } from './utils';
 import { AUTHENTICATION_TYPES } from './constants';
@@ -38,9 +37,10 @@ const baseDestConfig: CustomAudienceDestConfig = {
 const destinationMeta = { id: 'dest-1', type: 'CUSTOM_AUDIENCE', workspaceId: 'ws-1' };
 
 describe('lookupActionConfig', () => {
-  it('returns the action config when present', () => {
+  it('returns the action and config when present', () => {
     const result = lookupActionConfig('insert', baseDestConfig.actions);
-    expect(result.endpoint).toBe('/audiences/{{connection.audienceId}}/members');
+    expect(result.action).toBe('insert');
+    expect(result.config.endpoint).toBe('/audiences/{{connection.audienceId}}/members');
   });
 
   it('throws InstrumentationError when action key is missing', () => {
@@ -51,36 +51,41 @@ describe('lookupActionConfig', () => {
 
   const useInsertConfigCases = [
     {
-      name: 'returns insert config when update has useInsertConfig: true',
+      name: 'resolves to insert action and config when useInsertConfig is true',
       updateConfig: {
         ...baseDestConfig.actions.insert!,
         endpoint: '/update-path',
         useInsertConfig: true,
       },
+      expectedAction: 'insert' as const,
       expectedEndpoint: '/audiences/{{connection.audienceId}}/members',
     },
     {
-      name: 'returns update config when useInsertConfig is false',
+      name: 'keeps update action and config when useInsertConfig is false',
       updateConfig: {
         ...baseDestConfig.actions.insert!,
         endpoint: '/update-path',
         useInsertConfig: false,
       },
+      expectedAction: 'update' as const,
       expectedEndpoint: '/update-path',
     },
     {
-      name: 'returns update config when useInsertConfig is absent',
+      name: 'keeps update action and config when useInsertConfig is absent',
       updateConfig: { ...baseDestConfig.actions.insert!, endpoint: '/update-path' },
+      expectedAction: 'update' as const,
       expectedEndpoint: '/update-path',
     },
   ];
 
-  it.each(useInsertConfigCases)('$name', ({ updateConfig, expectedEndpoint }) => {
+  it.each(useInsertConfigCases)('$name', ({ updateConfig, expectedAction, expectedEndpoint }) => {
     const config: CustomAudienceDestConfig = {
       ...baseDestConfig,
       actions: { ...baseDestConfig.actions, update: updateConfig },
     };
-    expect(lookupActionConfig('update', config.actions).endpoint).toBe(expectedEndpoint);
+    const result = lookupActionConfig('update', config.actions);
+    expect(result.action).toBe(expectedAction);
+    expect(result.config.endpoint).toBe(expectedEndpoint);
   });
 
   it('throws when useInsertConfig is true but insert config is missing', () => {
@@ -91,45 +96,6 @@ describe('lookupActionConfig', () => {
       },
     };
     expect(() => lookupActionConfig('update', config.actions)).toThrow(InstrumentationError);
-  });
-});
-
-describe('resolveBatchGroupKey', () => {
-  const cases = [
-    {
-      name: 'returns insert for update when useInsertConfig is true',
-      action: 'update' as const,
-      actions: {
-        ...baseDestConfig.actions,
-        update: { ...baseDestConfig.actions.insert!, useInsertConfig: true },
-      },
-      expected: 'insert' as const,
-    },
-    {
-      name: 'returns update when useInsertConfig is false',
-      action: 'update' as const,
-      actions: {
-        ...baseDestConfig.actions,
-        update: { ...baseDestConfig.actions.insert!, useInsertConfig: false },
-      },
-      expected: 'update' as const,
-    },
-    {
-      name: 'returns original action for insert',
-      action: 'insert' as const,
-      actions: baseDestConfig.actions,
-      expected: 'insert' as const,
-    },
-  ];
-
-  it.each(cases)('$name', ({ action, actions, expected }) => {
-    expect(resolveBatchGroupKey(action, actions)).toBe(expected);
-  });
-
-  it('throws when action key is missing', () => {
-    expect(() => resolveBatchGroupKey('delete', { insert: baseDestConfig.actions.insert })).toThrow(
-      InstrumentationError,
-    );
   });
 });
 

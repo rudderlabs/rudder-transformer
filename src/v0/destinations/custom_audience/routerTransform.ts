@@ -16,6 +16,7 @@ import {
   lookupActionConfig,
   processFields,
   resolveEndpoint,
+  resolveBatchGroupKey,
 } from './utils';
 import type {
   Action,
@@ -88,10 +89,9 @@ class CustomAudienceIntegration extends BatchDestination<
       endpoint: this.endpointByAction[message.action]!,
       method: actionConfig.method,
       headers: this.headers,
-      // Force the framework's composite-key grouping to keep different actions
-      // in separate groups, even when their (endpoint, method, headers) match.
-      // Each action carries its own requestBody template.
-      internalGroupKey: message.action,
+      // Keep actions separated unless update explicitly aliases to insert.
+      // This key must match the config used later for requestBody/batchSize.
+      internalGroupKey: resolveBatchGroupKey(message.action, this.destination.Config.actions),
     };
   }
 

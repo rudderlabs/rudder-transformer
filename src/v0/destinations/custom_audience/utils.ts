@@ -33,6 +33,25 @@ export const lookupActionConfig = (
   return actionConfig;
 };
 
+export const resolveBatchGroupKey = (
+  action: Action,
+  actions: CustomAudienceDestConfig['actions'],
+): Action => {
+  const actionConfig = actions[action];
+  if (!actionConfig) {
+    throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG(action));
+  }
+
+  // When update reuses the insert config, it must share insert's batch group.
+  // The framework groups by this key before batching, so the alias must match
+  // the config that will be used for request construction.
+  if (action === 'update' && 'useInsertConfig' in actionConfig && actionConfig.useInsertConfig) {
+    return 'insert';
+  }
+
+  return action;
+};
+
 // Replaces {{dotted.path}} placeholders with values from the connection object,
 // then prepends baseUrl.
 // e.g. "/audiences/{{connection.audienceId}}/members" with connection = { audienceId: "123" }

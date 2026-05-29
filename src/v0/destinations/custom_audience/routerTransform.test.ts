@@ -258,14 +258,14 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     await expect(processBatchedDestination(inputs, Integration, {})).rejects.toThrow();
   });
 
-  it('uses insert config for update events when useInsertConfig is true', async () => {
+  it('batches insert and update events together when update uses insert config', async () => {
     const destination = buildDestination({
       actions: {
         insert: baseInsertAction,
         update: {
-          endpoint: '/audiences/{{connection.audienceId}}/update-members',
-          method: 'PUT',
-          requestBody: '{ "should": "not appear" }',
+          endpoint: '/audiences/{{connection.audienceId}}/members',
+          method: 'POST',
+          requestBody: '{ "users": [$$.records.{ "email": email }] }',
           batchSize: 10,
           fields: baseInsertAction.fields,
           useInsertConfig: true,
@@ -275,19 +275,45 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     });
 
     const inputs = [
-      buildInput(1, 'update', { email: hashedEmail('a@b.com') }, destination),
+      buildInput(1, 'insert', { email: hashedEmail('z@x.com') }, destination),
+      buildInput(2, 'update', { email: hashedEmail('a@b.com') }, destination),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+
+    const success = results.filter((r) => r.statusCode === 200);
+    expect(success).toHaveLength(1);
+    const batched = success[0]?.batchedRequest;
+    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
+    // Should use insert config's endpoint and method, and batch insert/update together.
+    expect(batched.endpoint).toBe('https://api.example.com/audiences/aud-42/members');
+    expect(batched.method).toBe('POST');
+    const body = batched.body?.JSON as { users: { email: string }[] };
+    expect(body.users).toHaveLength(2);
+    expect(success[0].metadata.map((m) => m.jobId).sort()).toEqual([1, 2]);
+  });
+
+  it('keeps update batches separate when update uses its own config', async () => {
+    const destination = buildDestination({
+      actions: {
+        insert: baseInsertAction,
+        update: {
+          ...baseInsertAction,
+          useInsertConfig: false,
+        },
+        delete: baseDeleteAction,
+      },
+    });
+
+    const inputs = [
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination),
       buildInput(2, 'update', { email: hashedEmail('c@d.com') }, destination),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});
 
-    const success = results.find((r) => r.statusCode === 200);
-    const batched = success?.batchedRequest;
-    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
-    // Should use insert config's endpoint and method, not update's
-    expect(batched.endpoint).toBe('https://api.example.com/audiences/aud-42/members');
-    expect(batched.method).toBe('POST');
-    const body = batched.body?.JSON as { users: { email: string }[] };
-    expect(body.users).toHaveLength(2);
+    const success = results.filter((r) => r.statusCode === 200);
+    expect(success).toHaveLength(2);
+    expect(success.map((r) => r.metadata.map((m) => m.jobId).sort())).toEqual([[1], [2]]);
   });
 });

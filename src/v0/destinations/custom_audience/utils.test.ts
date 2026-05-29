@@ -6,6 +6,7 @@ import {
   injectCustomMappings,
   lookupActionConfig,
   processFields,
+  resolveBatchGroupKey,
   resolveEndpoint,
 } from './utils';
 import { AUTHENTICATION_TYPES } from './constants';
@@ -90,6 +91,45 @@ describe('lookupActionConfig', () => {
       },
     };
     expect(() => lookupActionConfig('update', config.actions)).toThrow(InstrumentationError);
+  });
+});
+
+describe('resolveBatchGroupKey', () => {
+  const cases = [
+    {
+      name: 'returns insert for update when useInsertConfig is true',
+      action: 'update' as const,
+      actions: {
+        ...baseDestConfig.actions,
+        update: { ...baseDestConfig.actions.insert!, useInsertConfig: true },
+      },
+      expected: 'insert' as const,
+    },
+    {
+      name: 'returns update when useInsertConfig is false',
+      action: 'update' as const,
+      actions: {
+        ...baseDestConfig.actions,
+        update: { ...baseDestConfig.actions.insert!, useInsertConfig: false },
+      },
+      expected: 'update' as const,
+    },
+    {
+      name: 'returns original action for insert',
+      action: 'insert' as const,
+      actions: baseDestConfig.actions,
+      expected: 'insert' as const,
+    },
+  ];
+
+  it.each(cases)('$name', ({ action, actions, expected }) => {
+    expect(resolveBatchGroupKey(action, actions)).toBe(expected);
+  });
+
+  it('throws when action key is missing', () => {
+    expect(() => resolveBatchGroupKey('delete', { insert: baseDestConfig.actions.insert })).toThrow(
+      InstrumentationError,
+    );
   });
 });
 

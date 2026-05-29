@@ -92,8 +92,9 @@ class CustomAudienceIntegration extends BatchDestination<
       endpoint: this.endpointByAction[message.action]!,
       method: actionConfig.method,
       headers: this.headers,
-      // Keep actions separated unless update explicitly aliases to insert.
-      // This key must match the config used later for requestBody/batchSize.
+      // Force the framework's composite-key grouping to keep different actions
+      // in separate groups, even when their (endpoint, method, headers) match.
+      // Each action carries its own requestBody template.
       internalGroupKey: resolvedAction,
     };
   }

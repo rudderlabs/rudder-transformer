@@ -86,7 +86,7 @@ describe('lookupActionConfig', () => {
     const config: CustomAudienceDestConfig = {
       ...baseDestConfig,
       actions: {
-        update: { ...baseDestConfig.actions.insert!, useInsertConfig: true as const },
+        update: { ...baseDestConfig.actions.insert!, useInsertConfig: true },
       },
     };
     expect(() => lookupActionConfig('update', config.actions)).toThrow(InstrumentationError);

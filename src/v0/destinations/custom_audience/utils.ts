@@ -2,6 +2,7 @@ import { InstrumentationError } from '@rudderstack/integrations-lib';
 
 import { HashingType, processAudienceRecord, type AudienceField } from '../../util/audienceUtils';
 
+import { EVENT_TYPES } from '../../util/recordUtils';
 import { AUTHENTICATION_TYPES, ERROR_MESSAGES } from './constants';
 import type {
   Action,
@@ -17,20 +18,22 @@ import type {
 export const lookupActionConfig = (
   action: Action,
   actions: CustomAudienceDestConfig['actions'],
-): ActionConfig => {
+): { action: Action; config: ActionConfig } => {
   const actionConfig = actions[action];
   if (!actionConfig) {
     throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG(action));
   }
-  // When the update action opts into reusing the insert config, substitute it.
+  // When the update action opts into reusing the insert config, substitute it
+  // and return 'insert' as the resolved action so callers can use it as a
+  // batch group key that matches the config actually used.
   if ('useInsertConfig' in actionConfig && actionConfig.useInsertConfig) {
     const insertConfig = actions.insert;
     if (!insertConfig) {
       throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG('insert'));
     }
-    return insertConfig;
+    return { action: EVENT_TYPES.INSERT as Action, config: insertConfig };
   }
-  return actionConfig;
+  return { action, config: actionConfig };
 };
 
 // Replaces {{dotted.path}} placeholders with values from the connection object,

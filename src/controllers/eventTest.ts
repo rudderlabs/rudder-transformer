@@ -71,7 +71,7 @@ export class EventTestController {
       return;
     }
     const { action, actions, workspaceId } = parsed.data;
-    const actionConfig = lookupActionConfig(action, actions);
+    const { config: actionConfig } = lookupActionConfig(action, actions);
     ctx.body = await sandboxedParseTemplate(actionConfig.requestBody, workspaceId);
   }
 }

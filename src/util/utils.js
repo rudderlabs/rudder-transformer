@@ -205,6 +205,10 @@ function logProcessInfo() {
 // stringLiterals expected to be an array of strings. A line in trace should contain
 // atleast one string in the stringLiterals array for lastMatchingIndex to be updated appropriately.
 const extractStackTraceUptoLastSubstringMatch = (trace, stringLiterals) => {
+  // Some thrown values (plain objects, strings, errors from native bindings)
+  // arrive without a `.stack` — return empty rather than crashing, so the
+  // caller's catch path can fall back to error.message instead.
+  if (typeof trace !== 'string' || !trace.length) return '';
   const traceLines = trace.split('\n');
   let lastRelevantIndex = 0;
 

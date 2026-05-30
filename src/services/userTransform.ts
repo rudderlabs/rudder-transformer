@@ -256,7 +256,13 @@ export class UserTransformService {
     } catch (error: CatchErr) {
       response.status = 400;
       response.body = {
-        error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES),
+        // Prefer the cleaned stack trace, but fall back to the error message
+        // when the thrown value has no `.stack` (e.g. errors from
+        // native/isolated-vm bindings) so the response is never empty.
+        error:
+          extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES) ||
+          error.message ||
+          String(error),
       };
       errorCode = error.statusCode;
     } finally {

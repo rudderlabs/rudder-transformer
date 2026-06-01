@@ -92,6 +92,28 @@ describe('processAudienceRecord', () => {
       );
       expect(result.age).toBe('42');
     });
+
+    it('stringifies boolean false instead of dropping it', () => {
+      const result = processAudienceRecord(
+        { opt_out: false },
+        {
+          fieldConfigs: { opt_out: { normalize: (v) => v, hashingType: HashingType.NONE } },
+          destination: makeDestination(),
+        },
+      );
+      expect(result.opt_out).toBe('false');
+    });
+
+    it('stringifies boolean true', () => {
+      const result = processAudienceRecord(
+        { opt_in: true },
+        {
+          fieldConfigs: { opt_in: { normalize: (v) => v, hashingType: HashingType.NONE } },
+          destination: makeDestination(),
+        },
+      );
+      expect(result.opt_in).toBe('true');
+    });
   });
 
   describe('hashing', () => {

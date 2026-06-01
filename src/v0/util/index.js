@@ -1179,19 +1179,25 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   let destinationExternalId = null;
   let identifierType = null;
   let objectType = null;
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
+  const { externalId } = message.context || {};
+  if (externalId) {
+    if (Array.isArray(externalId)) {
+      externalIdArray = externalId;
+    } else if (isObject(externalId) && !isEmptyObject(externalId)) {
+      externalIdArray = [externalId];
+    }
   }
-  if (externalIdArray) {
-    externalIdArray.forEach((extIdObj) => {
-      const { type, id } = extIdObj;
-      if (type?.includes(`${destination}-`)) {
-        destinationExternalId = id;
-        objectType = type.replace(`${destination}-`, '');
-        identifierType = extIdObj.identifierType;
-      }
-    });
-  }
+  externalIdArray.forEach((extIdObj) => {
+    if (!isObject(extIdObj)) {
+      return;
+    }
+    const { type, id } = extIdObj;
+    if (typeof type === 'string' && type.includes(`${destination}-`)) {
+      destinationExternalId = id;
+      objectType = type.replace(`${destination}-`, '');
+      identifierType = extIdObj.identifierType;
+    }
+  });
   return { destinationExternalId, objectType, identifierType };
 };
 

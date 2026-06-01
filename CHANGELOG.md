@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.133.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.133.2...v1.133.3) (2026-06-01)
+
+
+### Bug Fixes
+
+* guard getDestinationExternalIDInfoForRetl against malformed externalId ([#5243](https://github.com/rudderlabs/rudder-transformer/issues/5243)) ([475d5d4](https://github.com/rudderlabs/rudder-transformer/commit/475d5d473dd1b28fa35bd925152137eb6bfd7177))
+
 ### [1.133.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.133.1...v1.133.2) (2026-05-22)
 
 

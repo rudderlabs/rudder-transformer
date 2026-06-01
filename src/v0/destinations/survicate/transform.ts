@@ -18,16 +18,15 @@ import {
   IdentifyPayload,
   GroupPayload,
   TrackPayload,
+  SurvicatePayload,
+  EndpointEntry,
+  ERR_MISSING_MESSAGE_ID,
+  ERR_MISSING_TIMESTAMP,
 } from './types';
 
 import { ENDPOINT_CONFIG, RESERVED_KEYS } from './config';
 
-const ERR_MISSING_MESSAGE_ID = 'messageId is required.';
-const ERR_MISSING_TIMESTAMP = 'originalTimestamp is required.';
-
-type EndpointEntry = (typeof ENDPOINT_CONFIG)[keyof typeof ENDPOINT_CONFIG];
-
-function buildResponse(endpoint: EndpointEntry, apiKey: string, payload: Record<string, any>) {
+function buildResponse(endpoint: EndpointEntry, apiKey: string, payload: SurvicatePayload) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint.url;
   response.method = endpoint.method;
@@ -42,8 +41,8 @@ function buildResponse(endpoint: EndpointEntry, apiKey: string, payload: Record<
 /**
  * Remove reserved identifiers from a traits object.
  */
-function filterTraits(traits: Record<string, any> = {}): Record<string, any> {
-  const result: Record<string, any> = {};
+function filterTraits(traits: Record<string, unknown> = {}): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(traits)) {
     if (!RESERVED_KEYS.includes(k)) {
       result[k] = v;
@@ -55,9 +54,9 @@ function filterTraits(traits: Record<string, any> = {}): Record<string, any> {
 /**
  * Extract only the allowed context properties from message.context.
  */
-function extractContext(ctx: any): Record<string, any> | undefined {
+function extractContext(ctx: SurvicateMessage['context']): Record<string, unknown> | undefined {
   if (!ctx) return undefined;
-  const out: Record<string, any> = {};
+  const out: Record<string, unknown> = {};
   if (ctx.locale) out.locale = ctx.locale;
   if (ctx.campaign) out.campaign = ctx.campaign;
   if (ctx.userAgent) out.userAgent = ctx.userAgent;
@@ -69,8 +68,8 @@ function extractContext(ctx: any): Record<string, any> | undefined {
  * delivers snake_case (e.g. `user_id`) but our handler logic and Zod schema
  * expect camelCase.  Call this at the very start of each processor.
  */
-function normalizeMessage(raw: any): SurvicateMessage {
-  const msg: any = { ...raw };
+function normalizeMessage(raw: SurvicateMessage): SurvicateMessage {
+  const msg: SurvicateMessage = { ...raw };
 
   if (raw.user_id && !raw.userId) {
     msg.userId = raw.user_id;

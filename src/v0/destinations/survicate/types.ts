@@ -1,5 +1,12 @@
 import { z } from 'zod';
 import { Destination, RouterTransformationRequestData, Metadata } from '../../../types';
+import type { ENDPOINT_CONFIG } from './config';
+
+// Validation error messages for required tracing fields.
+export const ERR_MISSING_MESSAGE_ID = 'messageId is required.';
+export const ERR_MISSING_TIMESTAMP = 'originalTimestamp is required.';
+
+export type EndpointEntry = (typeof ENDPOINT_CONFIG)[keyof typeof ENDPOINT_CONFIG];
 
 export const SurvicateDestinationConfigSchema = z
   .object({
@@ -76,3 +83,5 @@ export interface TrackPayload {
   message_id: string;
   context?: Record<string, unknown>;
 }
+
+export type SurvicatePayload = IdentifyPayload | GroupPayload | TrackPayload;

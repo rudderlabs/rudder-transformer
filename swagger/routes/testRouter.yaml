@@ -1,0 +1,55 @@
+/test-router/{version}/{destination}/batch:
+  post:
+    tags:
+      - Test Router
+    summary: Test destination transformation pipeline in batch mode
+    parameters:
+      - in: path
+        name: version
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: destination
+        description: The destination identifier
+        required: true
+        schema:
+          type: string
+    requestBody:
+      description: Request body for batch test router execution
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/testRouterBatchRequest.yaml'
+          examples:
+            success:
+              summary: Successful request payload
+              value:
+                $ref: '../components/examples/testRouterBatch/request/success.yaml'
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/testRouterBatchResponse.yaml'
+            examples:
+              success:
+                summary: Successful response payload
+                value:
+                  $ref: '../components/examples/testRouterBatch/response/success.yaml'
+      400:
+        description: Validation failure
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+            examples:
+              validationError:
+                summary: Invalid request payload
+                value:
+                  $ref: '../components/examples/testRouterBatch/response/validationError.yaml'

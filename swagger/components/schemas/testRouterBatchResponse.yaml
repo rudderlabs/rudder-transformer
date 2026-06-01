@@ -1,0 +1,38 @@
+title: Test Router Batch Response
+type: object
+required:
+  - dest_transform_output
+properties:
+  user_transformed_payload:
+    type: array
+    items:
+      anyOf:
+        - type: object
+          additionalProperties: true
+        - type: object
+          required:
+            - error
+          properties:
+            error:
+              type: string
+  dest_transform_output:
+    type: array
+    items:
+      type: object
+      required:
+        - dest_transformed_payload
+      properties:
+        dest_transformed_payload:
+          anyOf:
+            - type: object
+              additionalProperties: true
+            - type: object
+              required:
+                - error
+              properties:
+                error:
+                  type: string
+        destination_response:
+          description: Populated when send_to_destination is true and destination call succeeds.
+        destination_response_status:
+          type: number

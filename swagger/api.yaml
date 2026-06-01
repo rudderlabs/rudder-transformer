@@ -17,6 +17,7 @@ tags:
   - name: 'Delivery'
   - name: 'Source'
   - name: 'User Transform'
+  - name: 'Test Router'
 
 paths:
   #Misc Routes
@@ -76,3 +77,7 @@ paths:
     $ref: './routes/userTransform.yaml#/~1transformation~1sethandle'
   /extractLibs:
     $ref: './routes/userTransform.yaml#/~1extractLibs'
+
+  #Test Router Routes
+  /test-router/{version}/{destination}/batch:
+    $ref: './routes/testRouter.yaml#/~1test-router~1{version}~1{destination}~1batch'

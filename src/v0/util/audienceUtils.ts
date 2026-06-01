@@ -117,7 +117,7 @@ export const processAudienceRecord = (
   const result: Record<string, string> = {};
 
   Object.entries(record).forEach(([fieldName, rawValue]) => {
-    if (!isDefinedAndNotNull(rawValue) || rawValue === '' || rawValue === false) {
+    if (!isDefinedAndNotNull(rawValue) || rawValue === '') {
       return;
     }
 

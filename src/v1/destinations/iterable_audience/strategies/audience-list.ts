@@ -50,12 +50,12 @@ const buildNotFoundLookups = (
 });
 
 const matchesIdentifier = (subscriber: IterableSubscriber, lookups: IdentifierLookups): boolean => {
-  if ('email' in subscriber) {
-    // Iterable lowercases emails server-side; same case-folding applied on the
-    // request side, so what we sent matches what we look up here.
-    return lookups.emails.has(subscriber.email.toLowerCase());
-  }
-  return lookups.userIds.has(subscriber.userId);
+  // A subscriber may carry both identifiers (hybrid projects) — a match on
+  // either one counts. Emails are case-folded on both the request and lookup
+  // sides, mirroring Iterable's server-side lowercasing.
+  const emailMatch = subscriber.email ? lookups.emails.has(subscriber.email.toLowerCase()) : false;
+  const userIdMatch = subscriber.userId ? lookups.userIds.has(subscriber.userId) : false;
+  return emailMatch || userIdMatch;
 };
 
 class AudienceListStrategy extends BaseStrategy {
@@ -79,10 +79,10 @@ class AudienceListStrategy extends BaseStrategy {
 
     const response: DeliveryJobState[] = subscribers.map((subscriber, idx) => {
       const metadata = rudderJobMetadata[idx];
-      const identifierType: 'email' | 'userId' = 'email' in subscriber ? 'email' : 'userId';
+      const identifierType: 'email' | 'userId' = subscriber.email ? 'email' : 'userId';
       const eventForCheck = {
-        email: 'email' in subscriber ? subscriber.email.toLowerCase() : undefined,
-        userId: 'userId' in subscriber ? subscriber.userId : undefined,
+        email: subscriber.email ? subscriber.email.toLowerCase() : undefined,
+        userId: subscriber.userId,
       };
 
       // 1. GDPR-forgotten user → success + metric.
@@ -130,17 +130,14 @@ class AudienceListStrategy extends BaseStrategy {
       error: errorMessage,
     }));
 
-    // On 401 (bad / revoked API key) set AuthErrorCategory: 'AUTH' so the
-    // downstream platform layer can flag the destination. Auto-disable on
-    // persistent 401 is out of M1 scope (see concerns.md).
-    const authErrorCategory = status === 401 ? 'AUTH' : '';
-
     throw new TransformerProxyError(
       `ITERABLE_AUDIENCE: Error transformer proxy during ITERABLE_AUDIENCE response transformation. ${errorMessage}`,
       status,
       { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status) },
       destinationResponse,
-      authErrorCategory,
+      // Iterable list APIs use Api-Key header auth, not OAuth — AuthErrorCategory
+      // ('AUTH') applies only to OAuth refresh flows, so it stays empty here.
+      '',
       responseWithIndividualEvents,
     );
   }

@@ -8,9 +8,12 @@ import type { IterableBulkApiResponse } from '../iterable/types';
 // `IterableBulkApiResponse['response']['failedUpdates']` if a consumer needs it.
 export type { IterableBulkApiResponse } from '../iterable/types';
 
-// Per-subscriber payload shape emitted by the v0 transform layer. Each subscriber
-// has EXACTLY ONE identifier (email XOR userId) — enforced at transform time.
-export type IterableSubscriber = { email: string } | { userId: string };
+// Per-subscriber payload shape emitted by the v0 transform layer. A subscriber
+// carries at least one identifier; hybrid projects may send both `email` and
+// `userId` for the same row.
+export type IterableSubscriber =
+  | { email: string; userId?: string }
+  | { email?: string; userId: string };
 
 export type IterableAudienceRequestBody = {
   listId: string | number;

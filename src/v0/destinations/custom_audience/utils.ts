@@ -115,7 +115,7 @@ export const processFields = (
   actionConfig: ActionConfig,
   destinationMeta: { id: string; type: string; workspaceId: string },
   isHashRequired: boolean,
-): Record<string, string> => {
+): Record<string, unknown> => {
   const fieldConfigs = buildFieldConfigs(actionConfig.fields);
   const processed = processAudienceRecord(fields, {
     fieldConfigs,

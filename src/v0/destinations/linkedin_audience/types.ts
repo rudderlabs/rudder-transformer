@@ -71,7 +71,7 @@ export type LinkedinAudienceRecordRequest = z.infer<typeof LinkedinAudienceRoute
 
 export type LinkedinAudienceUserPayload = {
   action: (typeof ACTION_RECORD_MAP)[keyof typeof ACTION_RECORD_MAP];
-  userIds: { idType: string; idValue: string }[];
+  userIds: { idType: string; idValue: unknown }[];
 };
 
 export type LinkedinAudienceCompanyPayload = {

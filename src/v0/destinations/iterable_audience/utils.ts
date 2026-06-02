@@ -12,16 +12,19 @@ type IdentifierKey = 'email' | 'userId';
 export const IDENTIFIER_FIELD_CONFIG: Record<IdentifierKey, AudienceField> = {
   email: {
     hashingType: HashingType.NONE,
-    normalize: (v: string) => v.trim().toLowerCase(),
-    validate: (v: string) => validator.isEmail(v),
+    // `processAudienceRecord` preserves the raw value type for non-hashable
+    // fields, so coerce to string here (e.g. a numeric identifier → its string
+    // form) before normalizing.
+    normalize: (v: unknown) => String(v).trim().toLowerCase(),
+    validate: (v: unknown) => typeof v === 'string' && validator.isEmail(v),
   },
   userId: {
     hashingType: HashingType.NONE,
-    normalize: (v: string) => v,
+    normalize: (v: unknown) => String(v),
     // Reject leading/trailing whitespace — Iterable treats whitespace-padded
     // userIds as distinct identifiers, which surfaces as a `notFoundUserIds`
     // mismatch on unsubscribe.
-    validate: (v: string) => v.length > 0 && v === v.trim(),
+    validate: (v: unknown) => typeof v === 'string' && v.length > 0 && v === v.trim(),
   },
 };
 

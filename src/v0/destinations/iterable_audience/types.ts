@@ -27,6 +27,11 @@ export type IterableAccountConfig = z.infer<typeof IterableAccountConfigSchema>;
 // Identifier mapping uses the canonical `{ from, to }` shape:
 //   `from` — the source column (warehouse column / record identifier key)
 //   `to`   — the destination Iterable field (`email` or `userId`)
+// The control plane always sends this. rudder-sources resolves the mappings
+// before emitting the record, so `message.identifiers` already arrives keyed by
+// the destination field — this destination reads `email`/`userId` directly and
+// does not consult the mapping at transform time. It stays in the schema to
+// document the connection contract.
 const IdentifierMappingSchema = z.object({
   from: z.string().min(1),
   to: z.enum(['email', 'userId']),
@@ -70,9 +75,12 @@ export const IterableAudienceRouterRequestSchema = z
 // Subscriber + outbound payload shapes
 // ---------------------------------------------------------------------------
 
-// Iterable's list subscribe/unsubscribe accepts one identifier per subscriber.
-// Modeled as a tagged union so call sites can never produce `{ email, userId }`.
-export type IterableSubscriber = { email: string } | { userId: string };
+// A subscriber carries at least one identifier. Hybrid projects send BOTH
+// `email` and `userId` when a row has both (gives Iterable both keys to match
+// on); single-identifier projects send only their configured field.
+export type IterableSubscriber =
+  | { email: string; userId?: string }
+  | { email?: string; userId: string };
 
 // Per-event payload produced by `transformEvent`. Wrapping into the final
 // request body happens later in `ChunkBatchStrategy.wrapBody`.

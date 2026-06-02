@@ -20,9 +20,7 @@ import {
   IDENTIFIER_FIELD_CONFIG,
   buildSubscribeBody,
   buildUnsubscribeBody,
-  remapToIterableFields,
   selectIdentifierForRow,
-  validateProjectTypeMappings,
 } from './utils';
 import {
   IterableAudienceRouterRequestSchema,
@@ -47,15 +45,6 @@ class IterableAudienceIntegration extends BatchDestination<
     if (!this.connection) {
       throw new InstrumentationError('Connection config is required for iterable_audience');
     }
-    // Cross-field validation across Destination.Config.projectType and the
-    // connection's identifierMappings — throws ConfigurationError if the
-    // combination is invalid (e.g. email-based project paired with userId
-    // mapping). Surfaces at integration construction, before any event is
-    // transformed.
-    validateProjectTypeMappings(
-      this.destination.Config.projectType,
-      this.connection.config.destination.identifierMappings,
-    );
 
     this.headers = {
       'Content-Type': 'application/json',
@@ -88,13 +77,16 @@ class IterableAudienceIntegration extends BatchDestination<
     }
 
     const identifiers = (message as { identifiers?: Record<string, unknown> }).identifiers ?? {};
-    const remapped = remapToIterableFields(identifiers, this.connectionConfig.identifierMappings);
 
-    // `processAudienceRecord` is shared with custom_audience and other
-    // audience destinations — it normalises + validates each field per the
-    // supplied `fieldConfigs`. `config: { isHashRequired: false }` is required
-    // by the destructure even when no field is hashable (see mistakes.md).
-    const processed = processAudienceRecord(remapped, {
+    // `message.identifiers` already arrives keyed by the Iterable field
+    // (`email` / `userId`) — rudder-sources resolves the mapping upstream — so
+    // it is passed straight through. `processAudienceRecord` normalises +
+    // validates the `email`/`userId` fields per `IDENTIFIER_FIELD_CONFIG` and
+    // drops null/empty values; any other key passes through untouched and is
+    // then ignored by `selectIdentifierForRow`, which only reads email/userId.
+    // `config: { isHashRequired: false }` is required by the destructure even
+    // though no identifier field is hashable.
+    const processed = processAudienceRecord(identifiers, {
       fieldConfigs: IDENTIFIER_FIELD_CONFIG,
       destination: {
         workspaceId:

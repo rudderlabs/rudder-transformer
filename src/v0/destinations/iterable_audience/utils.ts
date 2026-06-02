@@ -1,8 +1,8 @@
 import validator from 'validator';
-import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { HashingType, type AudienceField } from '../../util/audienceUtils';
 import { PROJECT_TYPES, type ProjectType } from './config';
-import type { IdentifierMapping, IterableSubscriber } from './types';
+import type { IterableSubscriber } from './types';
 
 type IdentifierKey = 'email' | 'userId';
 
@@ -25,33 +25,9 @@ export const IDENTIFIER_FIELD_CONFIG: Record<IdentifierKey, AudienceField> = {
   },
 };
 
-// `message.identifiers` arrives keyed by the canonical Iterable field name
-// (`email` / `userId`) — rudder-server pre-resolves the warehouse column to
-// the destination field before emitting the record event. The mapping's
-// `from` value is metadata for control-plane traceability and is *not* the
-// key to look up at this layer; we read by `to` instead. This matches
-// `customerio_audience/utils.ts:154`, which also ignores `from` and reads
-// the identifier value directly out of `message.identifiers`.
-//
-// Drops null/undefined/empty values so downstream code can rely on
-// presence-checks.
-export const remapToIterableFields = (
-  rowIdentifiers: Record<string, unknown>,
-  mappings: IdentifierMapping[],
-): Record<IdentifierKey, unknown> => {
-  const out: Partial<Record<IdentifierKey, unknown>> = {};
-  for (const { to } of mappings) {
-    const raw = rowIdentifiers[to];
-    if (raw !== null && raw !== undefined && raw !== '') {
-      out[to] = raw;
-    }
-  }
-  return out as Record<IdentifierKey, unknown>;
-};
-
-// Choose which identifier to send to Iterable for a single row.
-// Hybrid projects prefer `userId` when both are present (more stable identifier
-// across browser/device boundaries).
+// Choose which identifier(s) to send to Iterable for a single row.
+// Hybrid projects send both `email` and `userId` when both are present;
+// single-identifier projects send only their configured field.
 export const selectIdentifierForRow = (
   processed: Partial<Record<IdentifierKey, string>>,
   projectType: ProjectType,
@@ -60,6 +36,10 @@ export const selectIdentifierForRow = (
   const hasUserId = typeof processed.userId === 'string' && processed.userId.length > 0;
 
   if (projectType === PROJECT_TYPES.HYBRID) {
+    // Send both identifiers when a row has both, so Iterable can match on either.
+    if (hasUserId && hasEmail) {
+      return { userId: processed.userId as string, email: processed.email as string };
+    }
     if (hasUserId) return { userId: processed.userId as string };
     if (hasEmail) return { email: processed.email as string };
   } else if (projectType === PROJECT_TYPES.EMAIL_BASED && hasEmail) {
@@ -96,46 +76,3 @@ export const buildUnsubscribeBody = (
   subscribers,
   channelUnsubscribe: false,
 });
-
-// Cross-field validation between Destination.Config.projectType and
-// connection.config.destination.identifierMappings.
-//
-// Zod's `superRefine` only sees the object it's attached to, so this check
-// lives in user-land code rather than the schema. Called from the
-// IterableAudienceIntegration constructor — throws `ConfigurationError` so
-// the framework surfaces the failure as a config-error rather than a 400
-// instrumentation error.
-export const validateProjectTypeMappings = (
-  projectType: ProjectType,
-  mappings: IdentifierMapping[],
-): void => {
-  if (projectType === PROJECT_TYPES.EMAIL_BASED) {
-    if (mappings.length !== 1 || mappings[0].to !== 'email') {
-      throw new ConfigurationError(
-        "iterable_audience: 'email-based' project type requires exactly one mapping with 'to' = 'email'",
-      );
-    }
-    return;
-  }
-  if (projectType === PROJECT_TYPES.USERID_BASED) {
-    if (mappings.length !== 1 || mappings[0].to !== 'userId') {
-      throw new ConfigurationError(
-        "iterable_audience: 'userId-based' project type requires exactly one mapping with 'to' = 'userId'",
-      );
-    }
-    return;
-  }
-  if (projectType === PROJECT_TYPES.HYBRID) {
-    if (mappings.length === 0 || mappings.length > 2) {
-      throw new ConfigurationError(
-        "iterable_audience: 'hybrid' project type requires 1-2 identifier mappings",
-      );
-    }
-    const fields = new Set(mappings.map((m) => m.to));
-    if (fields.size !== mappings.length) {
-      throw new ConfigurationError(
-        "iterable_audience: 'hybrid' project type requires distinct 'to' values across mappings",
-      );
-    }
-  }
-};

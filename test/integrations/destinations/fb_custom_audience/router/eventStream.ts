@@ -38,6 +38,43 @@ export const esDestinationAudience: Destination = {
   WorkspaceID: '123',
 };
 
+export const esDestinationAudienceHashOn: Destination = {
+  Config: {
+    accessToken: 'ABC',
+    userSchema: [
+      'EMAIL',
+      'DOBM',
+      'DOBD',
+      'DOBY',
+      'PHONE',
+      'GEN',
+      'FI',
+      'MADID',
+      'ZIP',
+      'ST',
+      'COUNTRY',
+    ],
+    isHashRequired: true,
+    disableFormat: false,
+    audienceId: 'aud1',
+    isRaw: true,
+    type: 'NA',
+    subType: 'ANYTHING',
+  },
+  Enabled: true,
+  Transformations: [],
+  IsProcessorEnabled: true,
+  ID: '123',
+  Name: 'fb_custom_audience',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'fb_custom_audience',
+    DisplayName: 'fb_custom_audience',
+    Config: {},
+  },
+  WorkspaceID: '123',
+};
+
 export const eventStreamAudienceListRouterRequest: RouterTransformationRequest = {
   input: [
     {
@@ -84,7 +121,7 @@ export const eventStreamAudienceListRouterRequest: RouterTransformationRequest =
         timestamp: '2020-02-02T00:23:09.544Z',
       },
       metadata: generateMetadata(1),
-      destination: esDestinationAudience,
+      destination: esDestinationAudienceHashOn,
     },
     {
       message: {
@@ -130,7 +167,7 @@ export const eventStreamAudienceListRouterRequest: RouterTransformationRequest =
         timestamp: '2020-02-02T00:23:09.544Z',
       },
       metadata: generateMetadata(2),
-      destination: esDestinationAudience,
+      destination: esDestinationAudienceHashOn,
       request: { query: {} },
     },
   ],

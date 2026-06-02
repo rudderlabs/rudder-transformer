@@ -57,7 +57,7 @@ const normalizePhone = (v: string): string => {
  * Normalization follows Google Customer Match requirements:
  * https://developers.google.com/google-ads/api/docs/remarketing/audience-segments/customer-match/get-started
  */
-const GARL_FIELD_CONFIG: Record<string, AudienceField> = {
+const GARL_STRING_FIELD_CONFIG = {
   email: {
     normalize: normalizeEmail,
     validate: validator.isEmail,
@@ -69,26 +69,38 @@ const GARL_FIELD_CONFIG: Record<string, AudienceField> = {
     hashingType: HashingType.SHA256,
   },
   firstName: {
-    normalize: (v) => v.trim().toLowerCase(),
-    validate: (v) => v.length > 0,
+    normalize: (v: string) => v.trim().toLowerCase(),
+    validate: (v: string) => v.length > 0,
     hashingType: HashingType.SHA256,
   },
   lastName: {
-    normalize: (v) => v.trim().toLowerCase(),
-    validate: (v) => v.length > 0,
+    normalize: (v: string) => v.trim().toLowerCase(),
+    validate: (v: string) => v.length > 0,
     hashingType: HashingType.SHA256,
   },
   country: {
-    normalize: (v) => v.trim(),
-    validate: (v) => COUNTRY_CODE_REGEX.test(v),
+    normalize: (v: string) => v.trim(),
+    validate: (v: string) => COUNTRY_CODE_REGEX.test(v),
     hashingType: HashingType.NONE,
   },
   postalCode: {
-    normalize: (v) => v.trim(),
-    validate: (v) => v.length > 0,
+    normalize: (v: string) => v.trim(),
+    validate: (v: string) => v.length > 0,
     hashingType: HashingType.NONE,
   },
 };
+
+// Bridge string-typed config to the unknown-typed AudienceField interface
+const GARL_FIELD_CONFIG: Record<string, AudienceField> = Object.fromEntries(
+  Object.entries(GARL_STRING_FIELD_CONFIG).map(([key, { normalize, validate, ...rest }]) => [
+    key,
+    {
+      ...rest,
+      normalize: (v: unknown) => normalize(String(v)),
+      validate: (v: unknown) => validate(v as string),
+    },
+  ]),
+);
 
 const responseBuilder = (
   accessToken: string,
@@ -124,14 +136,15 @@ const responseBuilder = (
 };
 
 /**
- * This function helps creates an array with proper mapping for userIdentiFier.
- * Logics: Here we are creating an array with all the attributes provided in the add/remove array
- * inside listData.
+ * This function helps create the userIdentifiers grouped per user.
+ * Logics: Here we traverse every element in the add/remove array inside listData and build
+ * the identifiers for that single user. Each element of the input array maps to one inner
+ * array in the output, so identifiers from different users are never mixed together.
  * @param {Array} attributeArray rudder event message properties listData add
  * @param {string} typeOfList
  * @param {Array<string>} userSchema
  * @param {boolean} isHashRequired
- * @returns
+ * @returns {Array<Array>} one inner array of identifiers per user
  */
 const populateIdentifiers = (
   attributeArray: Record<string, unknown>[],
@@ -140,8 +153,8 @@ const populateIdentifiers = (
   isHashRequired: boolean,
   workspaceId: string,
   destinationId: string,
-) => {
-  const userIdentifier: Record<string, unknown>[] = [];
+): Record<string, unknown>[][] => {
+  const userIdentifiersByUser: Record<string, unknown>[][] = [];
   let attribute: string | string[];
   if (TYPEOFLIST[typeOfList]) {
     attribute = TYPEOFLIST[typeOfList];
@@ -161,6 +174,8 @@ const populateIdentifiers = (
         fieldConfigs: GARL_FIELD_CONFIG,
         destination: audienceDest,
       });
+      // identifiers belonging to this single user
+      const userIdentifier: Record<string, unknown>[] = [];
       // checking if the attribute is an array or not for generic type list
       if (!Array.isArray(attribute)) {
         if (element[attribute]) {
@@ -183,9 +198,12 @@ const populateIdentifiers = (
           }
         });
       }
+      if (userIdentifier.length > 0) {
+        userIdentifiersByUser.push(userIdentifier);
+      }
     });
   }
-  return userIdentifier;
+  return userIdentifiersByUser;
 };
 
 const populateIdentifiersForRecordEvent = (

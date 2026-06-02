@@ -1,0 +1,40 @@
+title: Test Router Batch Response
+type: object
+required:
+  - dest_transform_output
+properties:
+  user_transformed_payload:
+    description: Present only when `stage.user_transform` is true.
+    type: array
+    items:
+      anyOf:
+        - type: object
+          additionalProperties: true
+        - type: object
+          required:
+            - error
+          properties:
+            error:
+              type: string
+  dest_transform_output:
+    type: array
+    items:
+      type: object
+      required:
+        - dest_transformed_payload
+      properties:
+        dest_transformed_payload:
+          anyOf:
+            - type: object
+              additionalProperties: true
+            - type: object
+              required:
+                - error
+              properties:
+                error:
+                  type: string
+        destination_response:
+          description: Raw response from the destination API. Shape varies by destination and is present only when `stage.send_to_destination` is true and destination delivery succeeds.
+        destination_response_status:
+          description: Destination API status code. Present only when `stage.send_to_destination` is true and destination delivery succeeds.
+          type: number

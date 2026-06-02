@@ -956,6 +956,12 @@ class Prometheus {
         labelNames: ['cache', 'operation'],
       },
       {
+        name: 'ivm_cache_total_heap',
+        help: 'Sum of V8 total_heap_size across all cached isolates (bytes)',
+        type: 'gauge',
+        labelNames: ['cache'],
+      },
+      {
         name: 'fetchV2_call_duration',
         help: 'fetchV2_call_duration',
         type: 'histogram',

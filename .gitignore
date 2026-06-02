@@ -129,7 +129,7 @@ dist-test
 !.vscode/launch.json
 
 # Claude Code local settings
-.claude/settings.json
+.claude/settings.local.json
 
 # yarn v2
 .yarn/cache

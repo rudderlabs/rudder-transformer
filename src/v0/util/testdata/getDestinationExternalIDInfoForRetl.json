@@ -1,0 +1,236 @@
+[
+  {
+    "description": "Should return externalId info when context.externalId is a valid array",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": [
+            {
+              "type": "HS-lead",
+              "id": "user-123",
+              "identifierType": "email"
+            }
+          ]
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": "user-123",
+      "objectType": "lead",
+      "identifierType": "email"
+    }
+  },
+  {
+    "description": "Should return all-null result when context.externalId is a string (malformed upstream payload)",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": "1974894"
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": null,
+      "objectType": null,
+      "identifierType": null
+    }
+  },
+  {
+    "description": "Should accept a single externalId object (auto-wrapped as array) — mirrors getDestinationExternalIDObjectForRetl behaviour",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": {
+            "type": "HS-lead",
+            "id": "user-123",
+            "identifierType": "email"
+          }
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": "user-123",
+      "objectType": "lead",
+      "identifierType": "email"
+    }
+  },
+  {
+    "description": "Should return all-null result when context.externalId is absent",
+    "input": [
+      {
+        "type": "identify",
+        "context": {}
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": null,
+      "objectType": null,
+      "identifierType": null
+    }
+  },
+  {
+    "description": "Should return all-null result when no entry matches the destination prefix",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": [
+            {
+              "type": "OTHER-lead",
+              "id": "user-123",
+              "identifierType": "email"
+            }
+          ]
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": null,
+      "objectType": null,
+      "identifierType": null
+    }
+  },
+  {
+    "description": "Should skip array entries that are null or undefined without throwing",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": [
+            null,
+            {
+              "type": "HS-lead",
+              "id": "user-123",
+              "identifierType": "email"
+            }
+          ]
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": "user-123",
+      "objectType": "lead",
+      "identifierType": "email"
+    }
+  },
+  {
+    "description": "Should skip array entries that are not objects (e.g. strings, numbers)",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": [
+            "1974894",
+            42,
+            {
+              "type": "HS-lead",
+              "id": "user-123",
+              "identifierType": "email"
+            }
+          ]
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": "user-123",
+      "objectType": "lead",
+      "identifierType": "email"
+    }
+  },
+  {
+    "description": "Should skip entries where 'type' field is missing",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": [{ "id": "user-123", "identifierType": "email" }]
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": null,
+      "objectType": null,
+      "identifierType": null
+    }
+  },
+  {
+    "description": "Should skip entries where 'type' is not a string (numeric type would otherwise crash on .includes)",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": [{ "type": 123, "id": "user-123", "identifierType": "email" }]
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": null,
+      "objectType": null,
+      "identifierType": null
+    }
+  },
+  {
+    "description": "Should skip random objects with no recognised fields",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": [{ "foo": "bar", "baz": 1 }]
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": null,
+      "objectType": null,
+      "identifierType": null
+    }
+  },
+  {
+    "description": "Should map objectType but leave id/identifierType undefined when matching entry omits them (current behaviour: no validation, just maps what is present)",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": [{ "type": "HS-lead" }]
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "objectType": "lead"
+    }
+  },
+  {
+    "description": "Should pick the last matching entry when multiple HS entries exist (existing behaviour preserved)",
+    "input": [
+      {
+        "type": "identify",
+        "context": {
+          "externalId": [
+            { "type": "HS-lead", "id": "first", "identifierType": "email" },
+            { "type": "HS-company", "id": "second", "identifierType": "domain" }
+          ]
+        }
+      },
+      "HS"
+    ],
+    "output": {
+      "destinationExternalId": "second",
+      "objectType": "company",
+      "identifierType": "domain"
+    }
+  }
+]

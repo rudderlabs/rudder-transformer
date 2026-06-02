@@ -42,7 +42,7 @@ globalThis.evaluateTemplateInSandbox = async (
     );
     return { ok: true, bodies };
   } catch (e: unknown) {
-    const error = e instanceof Error ? e.message : String(e);
+    const error = (e as { message?: string })?.message || String(e);
     return { ok: false, error };
   }
 };

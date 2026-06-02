@@ -7,6 +7,7 @@ import {
   lookupActionConfig,
   processFields,
   resolveEndpoint,
+  validateRequiredFields,
 } from './utils';
 import { AUTHENTICATION_TYPES } from './constants';
 import type {
@@ -37,13 +38,65 @@ const baseDestConfig: CustomAudienceDestConfig = {
 const destinationMeta = { id: 'dest-1', type: 'CUSTOM_AUDIENCE', workspaceId: 'ws-1' };
 
 describe('lookupActionConfig', () => {
-  it('returns the action config when present', () => {
-    const result = lookupActionConfig('insert', baseDestConfig);
-    expect(result.endpoint).toBe('/audiences/{{connection.audienceId}}/members');
+  it('returns the action and config when present', () => {
+    const result = lookupActionConfig('insert', baseDestConfig.actions);
+    expect(result.action).toBe('insert');
+    expect(result.config.endpoint).toBe('/audiences/{{connection.audienceId}}/members');
   });
 
   it('throws InstrumentationError when action key is missing', () => {
-    expect(() => lookupActionConfig('delete', baseDestConfig)).toThrow(InstrumentationError);
+    expect(() => lookupActionConfig('delete', baseDestConfig.actions)).toThrow(
+      InstrumentationError,
+    );
+  });
+
+  const useInsertConfigCases = [
+    {
+      name: 'resolves to insert action and config when useInsertConfig is true',
+      updateConfig: {
+        ...baseDestConfig.actions.insert!,
+        endpoint: '/update-path',
+        useInsertConfig: true,
+      },
+      expectedAction: 'insert',
+      expectedEndpoint: '/audiences/{{connection.audienceId}}/members',
+    },
+    {
+      name: 'keeps update action and config when useInsertConfig is false',
+      updateConfig: {
+        ...baseDestConfig.actions.insert!,
+        endpoint: '/update-path',
+        useInsertConfig: false,
+      },
+      expectedAction: 'update',
+      expectedEndpoint: '/update-path',
+    },
+    {
+      name: 'keeps update action and config when useInsertConfig is absent',
+      updateConfig: { ...baseDestConfig.actions.insert!, endpoint: '/update-path' },
+      expectedAction: 'update',
+      expectedEndpoint: '/update-path',
+    },
+  ];
+
+  it.each(useInsertConfigCases)('$name', ({ updateConfig, expectedAction, expectedEndpoint }) => {
+    const config: CustomAudienceDestConfig = {
+      ...baseDestConfig,
+      actions: { ...baseDestConfig.actions, update: updateConfig },
+    };
+    const result = lookupActionConfig('update', config.actions);
+    expect(result.action).toBe(expectedAction);
+    expect(result.config.endpoint).toBe(expectedEndpoint);
+  });
+
+  it('throws when useInsertConfig is true but insert config is missing', () => {
+    const config: CustomAudienceDestConfig = {
+      ...baseDestConfig,
+      actions: {
+        update: { ...baseDestConfig.actions.insert!, useInsertConfig: true },
+      },
+    };
+    expect(() => lookupActionConfig('update', config.actions)).toThrow(InstrumentationError);
   });
 });
 
@@ -115,6 +168,41 @@ describe('injectCustomMappings', () => {
   it.each(cases)('$name', ({ fields, mappings, expected }) => {
     expect(injectCustomMappings(fields, mappings)).toEqual(expected);
   });
+
+  it('allows mapping targets that are not in configured action fields', () => {
+    expect(
+      injectCustomMappings({ email: 'a@b.com' }, [{ from: 'some-value', to: 'unknownField' }]),
+    ).toEqual({ email: 'a@b.com', unknownField: 'some-value' });
+  });
+});
+
+describe('validateRequiredFields', () => {
+  const actionFields = [
+    { name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false },
+    { name: 'phone', hashType: HashingType.NONE, isRequired: true, isCustom: false },
+    { name: 'listType', hashType: HashingType.NONE, isRequired: false, isCustom: true },
+  ];
+
+  it('does not throw when all required fields are present', () => {
+    expect(() =>
+      validateRequiredFields('insert', { email: 'a@b.com', phone: '+1' }, actionFields),
+    ).not.toThrow();
+  });
+
+  it('throws InstrumentationError when required fields are missing', () => {
+    expect(() => validateRequiredFields('insert', { email: 'a@b.com' }, actionFields)).toThrow(
+      'Missing required fields for action "insert": phone',
+    );
+  });
+
+  it.each([
+    { name: 'null', fields: { email: 'a@b.com', phone: null } },
+    { name: 'undefined', fields: { email: 'a@b.com', phone: undefined } },
+    { name: 'empty string', fields: { email: 'a@b.com', phone: '' } },
+    { name: 'false', fields: { email: 'a@b.com', phone: false } },
+  ])('allows required field with $name value (key present)', ({ fields }) => {
+    expect(() => validateRequiredFields('insert', fields, actionFields)).not.toThrow();
+  });
 });
 
 describe('processFields', () => {
@@ -132,9 +220,9 @@ describe('processFields', () => {
   const cases = [
     {
       name: 'strips empty values, no hashing when isHashRequired=false',
-      fields: { email: 'a@b.com', phone: '', missing: null },
+      fields: { email: sha256('a@b.com'), phone: '', missing: null },
       isHashRequired: false,
-      expected: { email: 'a@b.com' },
+      expected: { email: sha256('a@b.com') },
     },
     {
       name: 'hashes hashable fields when isHashRequired=true',

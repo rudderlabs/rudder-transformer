@@ -125,7 +125,7 @@ const expectedResponse = {
 const attributeArray = [
   {
     email: 'test@abc.com',
-    phone: '@09876543210',
+    phone: '09876543210',
     firstName: 'test',
     lastName: 'rudderlabs',
     country: 'US',
@@ -133,25 +133,28 @@ const attributeArray = [
   },
 ];
 
+// populateIdentifiers groups identifiers per user: one inner array per element of attributeArray
 const hashedArray = [
-  {
-    // test@abc.com → normalized (non-Gmail: trim+lowercase only) → test@abc.com → sha256
-    hashedEmail: 'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
-  },
-  {
-    // @09876543210 → strip spaces/dashes/parens/dots (@ not stripped) → @09876543210 → add + → +@09876543210 → sha256
-    hashedPhoneNumber: sha256('+@09876543210'),
-  },
-  {
-    addressInfo: {
-      // 'test' → trim+lowercase → 'test' → sha256
-      hashedFirstName: sha256('test'),
-      // 'rudderlabs' → trim+lowercase → 'rudderlabs' → sha256
-      hashedLastName: sha256('rudderlabs'),
-      countryCode: 'US',
-      postalCode: '1245',
+  [
+    {
+      // test@abc.com → normalized (non-Gmail: trim+lowercase only) → test@abc.com → sha256
+      hashedEmail: 'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
     },
-  },
+    {
+      // 09876543210 → strip spaces/dashes/parens/dots → 09876543210 → add + → +09876543210 → sha256
+      hashedPhoneNumber: sha256('+09876543210'),
+    },
+    {
+      addressInfo: {
+        // 'test' → trim+lowercase → 'test' → sha256
+        hashedFirstName: sha256('test'),
+        // 'rudderlabs' → trim+lowercase → 'rudderlabs' → sha256
+        hashedLastName: sha256('rudderlabs'),
+        countryCode: 'US',
+        postalCode: '1245',
+      },
+    },
+  ],
 ];
 
 describe('GARL utils test', () => {
@@ -385,7 +388,6 @@ describe('GARL utils test', () => {
     const HASHED_PHONE = '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45';
 
     beforeEach(() => {
-      delete process.env.GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS;
       jest.spyOn(stats, 'increment').mockImplementation(() => {});
     });
 
@@ -511,11 +513,7 @@ describe('GARL utils test', () => {
       });
     });
 
-    describe('invalid fields stripped when GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=true (isValidGARLField cases)', () => {
-      beforeEach(() => {
-        process.env.GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS = 'true';
-      });
-
+    describe('invalid fields are stripped (isValidGARLField cases)', () => {
       it.each([
         {
           description: 'invalid email format',
@@ -571,48 +569,11 @@ describe('GARL utils test', () => {
           expected: [{ identifiers: [{ addressInfo: { postalCode: '12345' } }] }],
         },
         {
-          description: 'unhashed email when isHashRequired=false passes through unchanged',
-          identifiers: [{ email: 'test@example.com' }],
+          description: 'pre-hashed email when isHashRequired=false passes through unchanged',
+          identifiers: [{ email: sha256('test@example.com') }],
           userSchema: ['email'],
           isHashRequired: false,
-          expected: [{ identifiers: [{ hashedEmail: 'test@example.com' }] }],
-        },
-      ])('$description', ({ identifiers, userSchema, isHashRequired, expected }) => {
-        const result = populateIdentifiersForRecordEvent(
-          identifiers,
-          'General',
-          userSchema,
-          isHashRequired,
-          wsId,
-          destId,
-        );
-        expect(result).toEqual(expected);
-      });
-    });
-
-    describe('invalid fields pass through when GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=false (default)', () => {
-      it.each([
-        {
-          description: 'invalid email → hashed and passed through',
-          identifiers: [{ email: 'not-an-email' }],
-          userSchema: ['email'],
-          isHashRequired: true,
-          expected: [{ identifiers: [{ hashedEmail: sha256('not-an-email') }] }],
-        },
-        {
-          description:
-            'invalid phone → normalized (@ preserved, + added) → hashed and passed through',
-          identifiers: [{ phone: '@09876543210' }],
-          userSchema: ['phone'],
-          isHashRequired: true,
-          expected: [{ identifiers: [{ hashedPhoneNumber: sha256('+@09876543210') }] }],
-        },
-        {
-          description: 'unhashed email when isHashRequired=false → passed through as-is',
-          identifiers: [{ email: 'test@example.com' }],
-          userSchema: ['email'],
-          isHashRequired: false,
-          expected: [{ identifiers: [{ hashedEmail: 'test@example.com' }] }],
+          expected: [{ identifiers: [{ hashedEmail: sha256('test@example.com') }] }],
         },
       ])('$description', ({ identifiers, userSchema, isHashRequired, expected }) => {
         const result = populateIdentifiersForRecordEvent(
@@ -682,7 +643,6 @@ describe('GARL utils test', () => {
       });
 
       it('does not emit metric for unknown fields (no fieldConfig → always valid)', () => {
-        process.env.GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS = 'true';
         const identifiers = [{ email: 'test@example.com', customField: 'any-value' }];
         populateIdentifiersForRecordEvent(identifiers, 'General', ['email'], true, wsId, destId);
         expect(stats.increment).not.toHaveBeenCalledWith(

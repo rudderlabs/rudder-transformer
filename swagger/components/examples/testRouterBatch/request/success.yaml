@@ -1,0 +1,30 @@
+events:
+  - type: identify
+    userId: user-1
+    context:
+      traits:
+        email: user1@example.com
+  - type: identify
+    userId: user-2
+    context:
+      traits:
+        email: user2@example.com
+destination:
+  id: destination-1
+  name: Example Destination
+  destinationDefinition:
+    id: destination-definition-1
+  workspaceId: workspace-1
+  transformations:
+    - versionId: transformation-v1
+connection:
+  config:
+    destination:
+      endpoint: https://api.example-destination.com/events
+      apiKey: sample-api-key
+stage:
+  user_transform: true
+  dest_transform: true
+  send_to_destination: true
+libraries:
+  - versionId: lib-v1

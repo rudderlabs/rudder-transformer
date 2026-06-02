@@ -35,9 +35,9 @@ import {
   MAX_BATCH_SIZE,
 } from './config';
 
-import { AudienceField, HashingType, processAudienceRecord } from '../../util/audienceUtils';
+import { type AudienceField, HashingType, processAudienceRecord } from '../../util/audienceUtils';
 
-const USERS_IDENTIFIER_CONFIG: Record<string, AudienceField> = {
+const USERS_IDENTIFIER_CONFIG = {
   sha256Email: {
     hashingType: HashingType.SHA256,
     normalize: (value: string) => value.replace(REMOVE_SPACES_REGEX, '').toLowerCase(),
@@ -55,6 +55,18 @@ const USERS_IDENTIFIER_CONFIG: Record<string, AudienceField> = {
   },
 };
 
+// Bridge string-typed config to the unknown-typed AudienceField interface
+const USERS_AUDIENCE_FIELDS: Record<string, AudienceField> = Object.fromEntries(
+  Object.entries(USERS_IDENTIFIER_CONFIG).map(([key, { normalize, validate, ...rest }]) => [
+    key,
+    {
+      ...rest,
+      normalize: (v: unknown) => normalize(String(v)),
+      validate: (v: unknown) => validate(v as string),
+    },
+  ]),
+);
+
 function validateLinkedinAudienceEvent(event: unknown): LinkedinAudienceRecordRequest {
   const result = LinkedinAudienceRouterRequestSchema.safeParse(event);
   if (!result.success) {
@@ -71,14 +83,14 @@ export function generateEndpoint(audienceType: string, audienceId: string | numb
 }
 
 const prepareUserIds = (
-  ids: Record<string, string>,
+  ids: Record<string, unknown>,
 ): {
   idType: (typeof USER_IDENTIFIER_MAP)[keyof typeof USER_IDENTIFIER_MAP];
-  idValue: string;
+  idValue: unknown;
 }[] => {
   const userIds: {
     idType: (typeof USER_IDENTIFIER_MAP)[keyof typeof USER_IDENTIFIER_MAP];
-    idValue: string;
+    idValue: unknown;
   }[] = [];
   Object.keys(ids).forEach((key) => {
     const value = ids[key];
@@ -101,7 +113,7 @@ function prepareUserTypePayload(event: LinkedinAudienceRecordRequest): LinkedinA
   });
 
   const processedIdentifiers = processAudienceRecord(identifiers, {
-    fieldConfigs: USERS_IDENTIFIER_CONFIG,
+    fieldConfigs: USERS_AUDIENCE_FIELDS,
     destination: {
       workspaceId: metadata.workspaceId,
       id: destination.ID,

@@ -63,13 +63,7 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     mockStatsIncrement.mockClear();
   });
 
-  afterEach(() => {
-    delete process.env.AUDIENCE_HASHING_VALIDATION_ENABLED;
-    delete process.env.TIKTOK_AUDIENCE_REJECT_INVALID_FIELDS;
-  });
-
-  it('Hashing ON + pre-hashed value → emits metric and returns failed response when validation enabled', () => {
-    process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+  it('Hashing ON + pre-hashed value → emits metric and returns failed response', () => {
     const event = buildBaseEvent({
       identifiers: {
         EMAIL_SHA256: sha256HashedValue,
@@ -106,12 +100,11 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     expect(mockStatsIncrement).not.toHaveBeenCalled();
   });
 
-  it('Hashing OFF + plaintext value → emits metric and returns failed response when validation enabled', () => {
-    process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+  it('Hashing OFF + plaintext value → emits metric and returns failed response', () => {
     const event = buildBaseEvent(
       {
         identifiers: {
-          EMAIL_SHA256: sha256HashedValue,
+          EMAIL_SHA256: plaintextEmail,
         },
       },
       false,
@@ -119,8 +112,18 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
 
     const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
 
-    expect(failedResponses).toHaveLength(0);
-    expect(successfulResponses).toHaveLength(1);
+    expect(failedResponses).toHaveLength(1);
+    expect(successfulResponses).toHaveLength(0);
+    expect(failedResponses[0].error).toContain(
+      'Hashing is disabled but the value for field EMAIL_SHA256 appears to be unhashed. Either enable hashing or send pre-hashed data.',
+    );
+    expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+      propertyName: 'EMAIL_SHA256',
+      type: 'unhashed_when_hash_disabled',
+      workspaceId: TEST_WORKSPACE_ID,
+      destinationId: TEST_DESTINATION_ID,
+      destType: 'tiktok_audience',
+    });
   });
 
   it('Hashing OFF + 64-char hex value → no error, one successful response', () => {
@@ -134,55 +137,12 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     );
 
     const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
-
     expect(failedResponses).toHaveLength(0);
     expect(successfulResponses).toHaveLength(1);
+    expect(mockStatsIncrement).not.toHaveBeenCalled();
   });
 
-  it('Validation disabled (default) + hashing ON + pre-hashed value → emits metric but no failed responses', () => {
-    const event = buildBaseEvent({
-      identifiers: {
-        EMAIL_SHA256: sha256HashedValue,
-      },
-    });
-
-    const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
-
-    expect(failedResponses).toHaveLength(0);
-    expect(successfulResponses).toHaveLength(1);
-    expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-      propertyName: 'EMAIL_SHA256',
-      type: 'hashed_when_hash_enabled',
-      workspaceId: TEST_WORKSPACE_ID,
-      destinationId: TEST_DESTINATION_ID,
-      destType: 'tiktok_audience',
-    });
-  });
-
-  it('Validation disabled (default) + hashing ON + plaintext value → emits metric but no failed responses', () => {
-    const event = buildBaseEvent(
-      {
-        identifiers: {
-          EMAIL_SHA256: plaintextEmail,
-        },
-      },
-      false,
-    );
-
-    const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
-    expect(failedResponses).toHaveLength(0);
-    expect(successfulResponses).toHaveLength(1);
-    expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-      propertyName: 'EMAIL_SHA256',
-      type: 'unhashed_when_hash_disabled',
-      workspaceId: TEST_WORKSPACE_ID,
-      destinationId: TEST_DESTINATION_ID,
-      destType: 'tiktok_audience',
-    });
-  });
-
-  it('Validation enabled + hashing OFF + pre-hashed value → no error, one successful response', () => {
-    process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+  it('Hashing OFF + pre-hashed identifiers across SHA256/MD5 fields → no error', () => {
     const event = buildBaseEvent(
       {
         identifiers: {
@@ -207,11 +167,6 @@ describe('processTiktokAudienceRecords tiktok_audience record edge cases', () =>
 
   beforeEach(() => {
     mockStatsIncrement.mockClear();
-  });
-
-  afterEach(() => {
-    delete process.env.TIKTOK_AUDIENCE_REJECT_INVALID_FIELDS;
-    delete process.env.AUDIENCE_HASHING_VALIDATION_ENABLED;
   });
 
   it('Unknown identifier key → returns failed response with invalid trait error', () => {
@@ -242,34 +197,7 @@ describe('processTiktokAudienceRecords tiktok_audience record edge cases', () =>
     expect(failedResponses[0].error).toContain('No identifiers found, aborting event.');
   });
 
-  it('Invalid email + reject disabled (default) → increments metric and hashes normalized value', () => {
-    const event = buildBaseEvent({
-      identifiers: {
-        EMAIL_SHA256: ' Not-An-Email ',
-      },
-    });
-
-    const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
-    expect(failedResponses).toHaveLength(0);
-    expect(successfulResponses).toHaveLength(1);
-    expect(successfulResponses[0]).toBeDefined();
-
-    expect(mockStatsIncrement).toHaveBeenCalledWith('tiktok_audience_invalid_email', {
-      workspaceId: TEST_WORKSPACE_ID,
-      destinationId: TEST_DESTINATION_ID,
-    });
-
-    const output = (
-      successfulResponses[0] as unknown as {
-        batchedRequest: { body: { JSON: { batch_data: { id: string }[] } } };
-      }
-    ).batchedRequest;
-    const id = output.body.JSON.batch_data[0][0].id;
-    expect(id).toBe(sha256('not-an-email'));
-  });
-
-  it('Invalid email + reject enabled → returns failed response', () => {
-    process.env.TIKTOK_AUDIENCE_REJECT_INVALID_FIELDS = 'true';
+  it('Invalid email → increments metric and returns failed response', () => {
     const event = buildBaseEvent({
       identifiers: {
         EMAIL_SHA256: ' Not-An-Email ',
@@ -280,6 +208,10 @@ describe('processTiktokAudienceRecords tiktok_audience record edge cases', () =>
     expect(successfulResponses).toHaveLength(0);
     expect(failedResponses).toHaveLength(1);
     expect(failedResponses[0].error).toContain('No identifiers found');
+    expect(mockStatsIncrement).toHaveBeenCalledWith('tiktok_audience_invalid_email', {
+      workspaceId: TEST_WORKSPACE_ID,
+      destinationId: TEST_DESTINATION_ID,
+    });
   });
 
   it('MD5 traits are trimmed/lowercased before hashing when hashing enabled', () => {

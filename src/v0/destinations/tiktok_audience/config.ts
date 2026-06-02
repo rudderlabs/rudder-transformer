@@ -22,14 +22,3 @@ export const ENDPOINT_PATH = '/segment/mapping/';
 export const ENDPOINT = `${BASE_URL}${ENDPOINT_PATH}`;
 
 export const REMOVE_SPACES_REGEX = /\s/g;
-
-/**
- * Whether to reject invalid field values (e.g., malformed emails, invalid country codes) for TikTok Audience
- * by replacing them with empty strings. When disabled, invalid values are passed through as-is.
- *
- * Controlled via env var: TIKTOK_AUDIENCE_REJECT_INVALID_FIELDS=true
- * Default: false
- */
-export function isRejectInvalidFieldsEnabled(): boolean {
-  return process.env.TIKTOK_AUDIENCE_REJECT_INVALID_FIELDS === 'true';
-}

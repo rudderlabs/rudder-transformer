@@ -1,4 +1,3 @@
-import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { Integration } from '../routerTransform';
 import { processBatchedDestination } from '../../../../services/destination/nativeBatching/processBatchedDestination';
 import type { Metadata } from '../../../../types/rudderEvents';
@@ -202,7 +201,7 @@ describe('IterableAudienceIntegration hybrid project', () => {
     { from: 'userId', to: 'userId' },
   ];
 
-  it('row with email+userId emits userId (preferred for hybrid)', async () => {
+  it('row with email+userId emits both identifiers (hybrid)', async () => {
     const destination = buildDestination({ projectType: 'hybrid' });
     const connection = buildConnection(123, hybridMappings);
     const inputs = [
@@ -213,7 +212,7 @@ describe('IterableAudienceIntegration hybrid project', () => {
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getJsonBody(success)).toEqual({
       listId: 123,
-      subscribers: [{ userId: 'u-1' }],
+      subscribers: [{ userId: 'u-1', email: 'a@b.com' }],
     });
   });
 
@@ -347,10 +346,10 @@ describe('IterableAudienceIntegration batching', () => {
     const subscribe = successes.find((r) => getEndpoint(r).endsWith('/api/lists/subscribe'))!;
     const unsubscribe = successes.find((r) => getEndpoint(r).endsWith('/api/lists/unsubscribe'))!;
 
-    // Hybrid prefers userId when both are present (row 3 → userId).
+    // Hybrid sends both identifiers when a row has both (row 3 → email + userId).
     expect(getJsonBody(subscribe)).toEqual({
       listId: 777,
-      subscribers: [{ email: 'a@b.com' }, { userId: 'u-2' }, { userId: 'u-3' }],
+      subscribers: [{ email: 'a@b.com' }, { userId: 'u-2' }, { userId: 'u-3', email: 'c@d.com' }],
     });
     expect(subscribe.metadata.map((m) => m.jobId)).toEqual([1, 2, 3]);
 
@@ -418,28 +417,33 @@ describe('IterableAudienceIntegration per-row errors', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Cross-field configuration validation (constructor)
+// Identifier / project-type mismatch (per-row, not construction-time)
 // ---------------------------------------------------------------------------
 
-describe('IterableAudienceIntegration configuration validation', () => {
-  it('throws ConfigurationError when email-based account is paired with userId mapping', async () => {
+describe('IterableAudienceIntegration identifier selection errors', () => {
+  // Identifiers are mapped at rudder-sources, so there is no construction-time
+  // mapping validation. A row whose identifier does not match the project type
+  // surfaces as a per-row 400 from `selectIdentifierForRow`.
+  it('returns 400 when an email-based project row carries only a userId', async () => {
     const destination = buildDestination({ projectType: 'email-based' });
-    const connection = buildConnection(123, userIdMappings);
+    const connection = buildConnection(123, emailMappings);
     const inputs = [buildInput(1, 'insert', { userId: 'u-1' }, destination, connection)];
 
-    await expect(processBatchedDestination(inputs, Integration, {})).rejects.toBeInstanceOf(
-      ConfigurationError,
-    );
+    const results = await processBatchedDestination(inputs, Integration, {});
+    const errors = results.filter((r) => r.statusCode === 400);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].metadata[0].jobId).toBe(1);
   });
 
-  it('throws ConfigurationError when userId-based account is paired with email mapping', async () => {
+  it('returns 400 when a userId-based project row carries only an email', async () => {
     const destination = buildDestination({ projectType: 'userId-based' });
-    const connection = buildConnection(123, emailMappings);
+    const connection = buildConnection(123, userIdMappings);
     const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
-    await expect(processBatchedDestination(inputs, Integration, {})).rejects.toBeInstanceOf(
-      ConfigurationError,
-    );
+    const results = await processBatchedDestination(inputs, Integration, {});
+    const errors = results.filter((r) => r.statusCode === 400);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].metadata[0].jobId).toBe(1);
   });
 });
 

@@ -298,17 +298,17 @@ export const data: RouterTestData[] = [
   /**
    * Test Case 3: Hybrid project — both columns mapped
    *
-   * - 1 record with both email + user_id → subscriber emitted is { userId } (preferred).
+   * - 1 record with both email + user_id → subscriber emitted carries both.
    * - 1 record with only email → subscriber is { email }.
    */
   {
     id: 'iterable-audience-router-hybrid-identifier-selection',
     name: destType,
     description:
-      'Hybrid: row with both email+userId emits userId (preferred); row with only email emits email',
+      'Hybrid: row with both email+userId emits both identifiers; row with only email emits email',
     scenario: 'Business',
     successCriteria:
-      'Hybrid project must prefer userId when both identifiers present; fall back to email when userId absent',
+      'Hybrid project must send both identifiers when present; fall back to a single field when only one is present',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -317,7 +317,7 @@ export const data: RouterTestData[] = [
         method: 'POST',
         body: {
           input: [
-            // Both email + user_id present → userId preferred
+            // Both email + user_id present → both identifiers sent
             {
               message: generateRecordPayload({
                 identifiers: { email: 'hybrid@example.com', userId: 'hybrid-uid-1' },
@@ -358,7 +358,10 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     listId: 12345,
-                    subscribers: [{ userId: 'hybrid-uid-1' }, { email: 'emailonly@example.com' }],
+                    subscribers: [
+                      { userId: 'hybrid-uid-1', email: 'hybrid@example.com' },
+                      { email: 'emailonly@example.com' },
+                    ],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -565,7 +568,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(3)],
               batched: false,
               statusCode: 400,
-              error: 'All identifier values are empty after normalization',
+              error: 'No valid identifier value for this record',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

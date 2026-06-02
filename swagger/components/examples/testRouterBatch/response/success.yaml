@@ -10,16 +10,18 @@ dest_transform_output:
       version: '1'
       type: REST
       method: POST
-      endpoint: https://api.example.com/audience/users
+      endpoint: https://api.example-destination.com/events
       headers:
         Content-Type: application/json
       params: {}
       files: {}
       body:
         JSON:
-          audienceId: aud-123
-          users:
-            - email: user1@example.com
+          eventType: identify
+          user:
+            id: user-1
+            traits:
+              email: user1@example.com
         JSON_ARRAY: {}
         XML: {}
         FORM: {}

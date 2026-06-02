@@ -26,8 +26,8 @@ const HASHING_CONFIG: Partial<Record<HashingType, { regex: RegExp; hash: (v: str
 
 export interface AudienceField {
   hashingType: HashingType;
-  normalize: ((v: string) => string) | undefined;
-  validate?: (normalized: string) => boolean;
+  normalize: ((v: unknown) => unknown) | undefined;
+  validate?: (normalized: unknown) => boolean;
 }
 
 const PHONE_NUMBER_REGEX = /^\+?\d+$/;
@@ -110,11 +110,11 @@ export const processAudienceRecord = (
     fieldConfigs: Record<string, AudienceField>;
     destination: AudienceDestination;
   },
-): Record<string, string> => {
+): Record<string, unknown> => {
   const { isHashRequired } = destination.config;
   const { workspaceId, id: destinationId, type: destType } = destination;
   const invalidFieldMetric = `${destType}_invalid_field`;
-  const result: Record<string, string> = {};
+  const result: Record<string, unknown> = {};
 
   Object.entries(record).forEach(([fieldName, rawValue]) => {
     if (!isDefinedAndNotNull(rawValue) || rawValue === '') {
@@ -125,11 +125,12 @@ export const processAudienceRecord = (
 
     const hashingType = fieldConfig?.hashingType ?? HashingType.NONE;
     const isHashable = hashingType !== HashingType.NONE;
-    const sourceValue = String(rawValue);
+    // Hashable fields require string processing; non-hashable fields preserve their type
+    const sourceValue = isHashable ? String(rawValue) : rawValue;
 
     // Hashing consistency check runs on the source value before normalization
     if (isHashable) {
-      validateHashingConsistency(fieldName, sourceValue, destination, hashingType);
+      validateHashingConsistency(fieldName, sourceValue as string, destination, hashingType);
     }
 
     // Pre-hashed values are passed through as-is: skip normalization and validation
@@ -138,8 +139,8 @@ export const processAudienceRecord = (
       return;
     }
 
-    const normalizedValue = (fieldConfig?.normalize ?? ((v: string) => v))(sourceValue);
-    if (!normalizedValue) {
+    const normalizedValue = (fieldConfig?.normalize ?? ((v: unknown) => v))(sourceValue);
+    if (!isDefinedAndNotNull(normalizedValue) || normalizedValue === '') {
       return;
     }
 
@@ -151,7 +152,9 @@ export const processAudienceRecord = (
     }
 
     result[fieldName] =
-      isHashRequired && isHashable ? hashValue(normalizedValue, hashingType) : normalizedValue;
+      isHashRequired && isHashable
+        ? hashValue(normalizedValue as string, hashingType)
+        : normalizedValue;
   });
 
   return result;

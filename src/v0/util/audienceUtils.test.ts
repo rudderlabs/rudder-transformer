@@ -28,17 +28,17 @@ const makeDestination = (
   },
 });
 
-const emailField: AudienceField = {
-  normalize: (v) => v.toLowerCase().trim(),
-  validate: (v) => v.includes('@'),
+const emailField = {
+  normalize: (v: string) => v.toLowerCase().trim(),
+  validate: (v: string) => v.includes('@'),
   hashingType: HashingType.SHA256,
-};
+} as AudienceField;
 
-const phoneField: AudienceField = {
-  normalize: (v) => v.replace(/\D/g, ''),
-  validate: (v) => v.length >= 7,
+const phoneField = {
+  normalize: (v: string) => v.replace(/\D/g, ''),
+  validate: (v: string) => v.length >= 7,
   hashingType: HashingType.SHA256,
-};
+} as AudienceField;
 
 const idField: AudienceField = {
   normalize: (v) => v,
@@ -82,7 +82,7 @@ describe('processAudienceRecord', () => {
       expect(result).not.toHaveProperty('email');
     });
 
-    it('converts raw value to string before normalizing', () => {
+    it('preserves number type for non-hashable fields', () => {
       const result = processAudienceRecord(
         { age: 42 },
         {
@@ -90,10 +90,10 @@ describe('processAudienceRecord', () => {
           destination: makeDestination(),
         },
       );
-      expect(result.age).toBe('42');
+      expect(result.age).toBe(42);
     });
 
-    it('stringifies boolean false instead of dropping it', () => {
+    it('preserves boolean false for non-hashable fields', () => {
       const result = processAudienceRecord(
         { opt_out: false },
         {
@@ -101,10 +101,10 @@ describe('processAudienceRecord', () => {
           destination: makeDestination(),
         },
       );
-      expect(result.opt_out).toBe('false');
+      expect(result.opt_out).toBe(false);
     });
 
-    it('stringifies boolean true', () => {
+    it('preserves boolean true for non-hashable fields', () => {
       const result = processAudienceRecord(
         { opt_in: true },
         {
@@ -112,7 +112,60 @@ describe('processAudienceRecord', () => {
           destination: makeDestination(),
         },
       );
-      expect(result.opt_in).toBe('true');
+      expect(result.opt_in).toBe(true);
+    });
+
+    it('stringifies number for hashing when field is hashable', () => {
+      const result = processAudienceRecord(
+        { age: 42 },
+        {
+          fieldConfigs: {
+            age: { normalize: (v) => v, hashingType: HashingType.SHA256 },
+          },
+          destination: makeDestination({ isHashRequired: true }),
+        },
+      );
+      expect(result.age).toBe(sha256('42'));
+    });
+
+    it('stringifies boolean for hashing when field is hashable', () => {
+      const result = processAudienceRecord(
+        { flag: true },
+        {
+          fieldConfigs: {
+            flag: { normalize: (v) => v, hashingType: HashingType.SHA256 },
+          },
+          destination: makeDestination({ isHashRequired: true }),
+        },
+      );
+      expect(result.flag).toBe(sha256('true'));
+    });
+
+    it('normalizes string values for non-hashable fields', () => {
+      const result = processAudienceRecord(
+        { name: '  Alice  ' },
+        {
+          fieldConfigs: {
+            name: {
+              normalize: (v) => (typeof v === 'string' ? v.trim() : v),
+              hashingType: HashingType.NONE,
+            },
+          },
+          destination: makeDestination(),
+        },
+      );
+      expect(result.name).toBe('Alice');
+    });
+
+    it('preserves array values for non-hashable fields', () => {
+      const result = processAudienceRecord(
+        { tags: ['a', 'b'] },
+        {
+          fieldConfigs: { tags: { normalize: (v) => v, hashingType: HashingType.NONE } },
+          destination: makeDestination(),
+        },
+      );
+      expect(result.tags).toEqual(['a', 'b']);
     });
   });
 

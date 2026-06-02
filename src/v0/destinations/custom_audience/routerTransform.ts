@@ -26,7 +26,7 @@ import type {
 } from './types';
 
 class CustomAudienceIntegration extends BatchDestination<
-  Record<string, string>,
+  Record<string, unknown>,
   CustomAudienceDestConfig,
   { destination: CustomAudienceConnectionDestConfig }
 > {
@@ -65,7 +65,7 @@ class CustomAudienceIntegration extends BatchDestination<
     ) as Partial<Record<Action, string>>;
   }
 
-  transformEvent(input: CustomAudienceRouterRequest): TransformedEvent<Record<string, string>> {
+  transformEvent(input: CustomAudienceRouterRequest): TransformedEvent<Record<string, unknown>> {
     const { message } = input;
     const { action: resolvedAction, config: actionConfig } = lookupActionConfig(
       message.action,
@@ -99,11 +99,11 @@ class CustomAudienceIntegration extends BatchDestination<
     };
   }
 
-  getBatchStrategy(): BatchStrategy<Record<string, string>> {
+  getBatchStrategy(): BatchStrategy<Record<string, unknown>> {
     const { Config, WorkspaceID: workspaceId } = this.destination;
     const { connectionConfig } = this;
 
-    return new CustomBatchStrategy<Record<string, string>>(async (payloads) => {
+    return new CustomBatchStrategy<Record<string, unknown>>(async (payloads) => {
       const action = payloads[0].internalGroupKey as Action;
       const { config: actionConfig } = lookupActionConfig(action, Config.actions);
 

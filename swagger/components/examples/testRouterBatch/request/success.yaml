@@ -11,7 +11,7 @@ events:
         email: user2@example.com
 destination:
   id: destination-1
-  name: Custom Audience
+  name: Example Destination
   destinationDefinition:
     id: destination-definition-1
   workspaceId: workspace-1
@@ -20,8 +20,8 @@ destination:
 connection:
   config:
     destination:
-      audienceId: aud-123
-      isHashRequired: true
+      endpoint: https://api.example-destination.com/events
+      apiKey: sample-api-key
 stage:
   user_transform: true
   dest_transform: true

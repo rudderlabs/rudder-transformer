@@ -6,6 +6,7 @@
     parameters:
       - in: path
         name: version
+        description: API version (for example `v0` or `v1`)
         required: true
         schema:
           type: string

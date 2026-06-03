@@ -8,6 +8,29 @@ const ConfigCategory = {
   DEFAULT: {
     name: 'BrazeUserAttributesConfig',
   },
+  // Recommended ecommerce events — per-event mappings powering the
+  // `useRecommendedEcommerceEvents` flag. See ecommerceUtil.ts.
+  BRAZE_PRODUCT_VIEWED: {
+    name: 'BrazeProductViewedConfig',
+  },
+  BRAZE_CART_UPDATED: {
+    name: 'BrazeCartUpdatedConfig',
+  },
+  BRAZE_CHECKOUT_STARTED: {
+    name: 'BrazeCheckoutStartedConfig',
+  },
+  BRAZE_ORDER_PLACED: {
+    name: 'BrazeOrderPlacedConfig',
+  },
+  BRAZE_ORDER_REFUNDED: {
+    name: 'BrazeOrderRefundedConfig',
+  },
+  BRAZE_ORDER_CANCELLED: {
+    name: 'BrazeOrderCancelledConfig',
+  },
+  BRAZE_ECOMMERCE_PRODUCT: {
+    name: 'BrazeEcommerceProductConfig',
+  },
 };
 
 function getIdentifyEndpoint(baseEndpoint: string): BrazeEndpointDetails {

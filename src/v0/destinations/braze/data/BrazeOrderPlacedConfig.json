@@ -1,0 +1,44 @@
+[
+  {
+    "destKey": "order_id",
+    "sourceKeys": "properties.order_id",
+    "required": false,
+    "brazeRequired": true
+  },
+  {
+    "destKey": "total_value",
+    "sourceKeys": ["properties.total", "properties.revenue", "properties.value"],
+    "required": false,
+    "brazeRequired": true
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false,
+    "brazeRequired": true
+  },
+  {
+    "destKey": "cart_id",
+    "sourceKeys": "properties.cart_id",
+    "required": false,
+    "brazeRequired": false
+  },
+  {
+    "destKey": "tax",
+    "sourceKeys": "properties.tax",
+    "required": false,
+    "brazeRequired": false
+  },
+  {
+    "destKey": "shipping",
+    "sourceKeys": "properties.shipping",
+    "required": false,
+    "brazeRequired": false
+  },
+  {
+    "destKey": "total_discounts",
+    "sourceKeys": "properties.discount",
+    "required": false,
+    "brazeRequired": false
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "destKey": "order_id",
+    "sourceKeys": "properties.order_id",
+    "required": false,
+    "brazeRequired": true
+  },
+  {
+    "destKey": "total_value",
+    "sourceKeys": ["properties.total", "properties.revenue", "properties.value"],
+    "required": false,
+    "brazeRequired": true
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false,
+    "brazeRequired": true
+  },
+  {
+    "destKey": "total_discounts",
+    "sourceKeys": "properties.discount",
+    "required": false,
+    "brazeRequired": false
+  }
+]

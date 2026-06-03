@@ -8,6 +8,7 @@ import ivm from 'isolated-vm';
 import fs from 'fs';
 import path from 'path';
 import DisposableCache from '../../../../util/ivmCache/index';
+import stats from '../../../../util/stats';
 
 export interface IvmScriptRunnerOptions {
   /** Absolute path to the IIFE bundle loaded into each isolate context. */
@@ -18,6 +19,12 @@ export interface IvmScriptRunnerOptions {
   initTimeoutMs: number;
   /** Timeout for each execute() call (ms). */
   execTimeoutMs: number;
+}
+
+interface CacheEntry {
+  isolate: ivm.Isolate;
+  context: ivm.Context;
+  destroy: () => Promise<void>;
 }
 
 function releaseIvmResources(context?: ivm.Context, isolate?: ivm.Isolate) {
@@ -53,7 +60,11 @@ export class IvmScriptRunner {
     this.memoryLimitMb = options.memoryLimitMb;
     this.initTimeoutMs = options.initTimeoutMs;
     this.execTimeoutMs = options.execTimeoutMs;
-    this.cache = new DisposableCache({ name: 'custom_audience_ivm' });
+    this.cache = new DisposableCache({
+      name: 'custom_audience_ivm',
+      ttlAutopurge: true,
+      onChange: () => this.emitAggregateHeapStats(),
+    });
   }
 
   /**
@@ -67,7 +78,7 @@ export class IvmScriptRunner {
     try {
       const result = await entry.context.evalClosure(expression, args, {
         arguments: { copy: true },
-        result: { copy: true },
+        result: { copy: true, promise: true },
         timeout: this.execTimeoutMs,
       });
       return result as T;
@@ -76,6 +87,19 @@ export class IvmScriptRunner {
       this.cache.delete(cacheKey);
       throw err;
     }
+  }
+
+  /** Sum heap across all cached isolates. Called on cache mutation only. */
+  private emitAggregateHeapStats() {
+    let totalHeap = 0;
+    for (const cached of this.cache.values() as CacheEntry[]) {
+      try {
+        totalHeap += cached.isolate.getHeapStatisticsSync().total_heap_size;
+      } catch {
+        // isolate may already be disposed
+      }
+    }
+    stats.gauge('ivm_cache_total_heap', totalHeap, { cache: this.cache.cacheName });
   }
 
   private getBundleCode(): string {
@@ -143,10 +167,12 @@ export class IvmScriptRunner {
 
 // Production runs from dist/src/…/template — 5 levels up reaches dist/.
 // Tests run from src/…/template via ts-jest — 5 levels up reaches <root>, needs dist/ prefix.
-const PRODUCTION_BUNDLE = path.resolve(__dirname, '../../../../../sandboxedTemplate.bundle.js');
-const BUNDLE_PATH = fs.existsSync(PRODUCTION_BUNDLE)
+const BUNDLE_FILENAME = 'templateEngineSandbox.bundle.js';
+const ROOT_FROM_HERE = '../../../../../';
+const PRODUCTION_BUNDLE = path.resolve(__dirname, ROOT_FROM_HERE, BUNDLE_FILENAME);
+export const BUNDLE_PATH = fs.existsSync(PRODUCTION_BUNDLE)
   ? PRODUCTION_BUNDLE
-  : path.resolve(__dirname, '../../../../../dist/sandboxedTemplate.bundle.js');
+  : path.resolve(__dirname, ROOT_FROM_HERE, 'dist', BUNDLE_FILENAME);
 
 export const templateSandboxRunner = new IvmScriptRunner({
   bundlePath: BUNDLE_PATH,

@@ -9,13 +9,14 @@ import type { BatchStrategy } from '../../../services/destination/nativeBatching
 import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import { EVENT_TYPES } from '../../util/recordUtils';
-import { sandboxedEvaluateTemplate } from './template/templateSandbox';
+import { sandboxedEvaluateTemplate } from './template/templateSandboxClient';
 import {
   buildRequestHeaders,
   injectCustomMappings,
   lookupActionConfig,
   processFields,
   resolveEndpoint,
+  validateRequiredFields,
 } from './utils';
 import type {
   Action,
@@ -25,7 +26,7 @@ import type {
 } from './types';
 
 class CustomAudienceIntegration extends BatchDestination<
-  Record<string, string>,
+  Record<string, unknown>,
   CustomAudienceDestConfig,
   { destination: CustomAudienceConnectionDestConfig }
 > {
@@ -53,10 +54,10 @@ class CustomAudienceIntegration extends BatchDestination<
 
   private buildEndpointsByAction(): Partial<Record<Action, string>> {
     return Object.fromEntries(
-      Object.entries(this.destination.Config.actions).map(([action, actionConfig]) => [
+      Object.keys(this.destination.Config.actions).map((action) => [
         action,
         resolveEndpoint(
-          actionConfig!.endpoint,
+          lookupActionConfig(action as Action, this.destination.Config.actions).config.endpoint,
           this.destination.Config.baseUrl,
           this.connectionConfig,
         ),
@@ -64,11 +65,15 @@ class CustomAudienceIntegration extends BatchDestination<
     ) as Partial<Record<Action, string>>;
   }
 
-  transformEvent(input: CustomAudienceRouterRequest): TransformedEvent<Record<string, string>> {
+  transformEvent(input: CustomAudienceRouterRequest): TransformedEvent<Record<string, unknown>> {
     const { message } = input;
-    const actionConfig = lookupActionConfig(message.action, this.destination.Config);
+    const { action: resolvedAction, config: actionConfig } = lookupActionConfig(
+      message.action,
+      this.destination.Config.actions,
+    );
+    validateRequiredFields(message.action, message.identifiers!, actionConfig.fields);
     const fieldsWithCustomMappings = injectCustomMappings(
-      message.fields!,
+      message.identifiers!,
       this.connectionConfig.customMappings,
     );
     const record = processFields(
@@ -90,18 +95,17 @@ class CustomAudienceIntegration extends BatchDestination<
       // Force the framework's composite-key grouping to keep different actions
       // in separate groups, even when their (endpoint, method, headers) match.
       // Each action carries its own requestBody template.
-      internalGroupKey: message.action,
+      internalGroupKey: resolvedAction,
     };
   }
 
-  getBatchStrategy(): BatchStrategy<Record<string, string>> {
+  getBatchStrategy(): BatchStrategy<Record<string, unknown>> {
     const { Config, WorkspaceID: workspaceId } = this.destination;
-    const { actions } = Config;
     const { connectionConfig } = this;
 
-    return new CustomBatchStrategy<Record<string, string>>(async (payloads) => {
+    return new CustomBatchStrategy<Record<string, unknown>>(async (payloads) => {
       const action = payloads[0].internalGroupKey as Action;
-      const actionConfig = actions[action]!;
+      const { config: actionConfig } = lookupActionConfig(action, Config.actions);
 
       // Chunk outside the isolate so the existing native-batching split logic
       // is reused. Each chunk's records are passed through to the isolate
@@ -140,7 +144,25 @@ class CustomAudienceIntegration extends BatchDestination<
           .object({
             type: z.literal('record'),
             action: z.enum([EVENT_TYPES.INSERT, EVENT_TYPES.UPDATE, EVENT_TYPES.DELETE]),
-            fields: z.record(z.unknown()),
+            identifiers: z.record(z.unknown()),
+          })
+          .passthrough(),
+        connection: z
+          .object({
+            config: z.object({
+              destination: z
+                .object({
+                  customMappings: z
+                    .array(
+                      z.object({
+                        from: z.string().min(1, 'Custom mapping "from" value must be non-empty'),
+                        to: z.string().min(1, 'Custom mapping "to" value must be non-empty'),
+                      }),
+                    )
+                    .optional(),
+                })
+                .passthrough(),
+            }),
           })
           .passthrough(),
       })

@@ -5,7 +5,6 @@ import { processBatchedDestination } from '../../../services/destination/nativeB
 import type { Metadata } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { AUTHENTICATION_TYPES } from './constants';
-import { assertBundleFreshness } from './template/templateSandbox.test';
 import type {
   Action,
   ActionConfig,
@@ -15,19 +14,23 @@ import type {
   CustomAudienceDestination,
 } from './types';
 
+// Pre-hashed emails used when isHashRequired=false (the default).
+// validateHashingConsistency rejects unhashed values when hashing is disabled.
+const hashedEmail = (plain: string) => sha256(plain);
+
 const baseInsertAction: ActionConfig = {
-  endpoint: '/audiences/${$.connection.audienceId}/members',
+  endpoint: '/audiences/{{connection.audienceId}}/members',
   method: 'POST',
   requestBody:
-    '{ "audienceId": $.connection.audienceId, "users": $.records.({ "email": .email }) }',
+    '{ "audienceId": $$.connection.audienceId, "users": [$$.records.{ "email": email }] }',
   batchSize: 2,
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
 
 const baseDeleteAction: ActionConfig = {
-  endpoint: '/audiences/${$.connection.audienceId}/members',
+  endpoint: '/audiences/{{connection.audienceId}}/members',
   method: 'DELETE',
-  requestBody: '{ "audienceId": $.connection.audienceId, "users": $.records }',
+  requestBody: '{ "audienceId": $$.connection.audienceId, "users": $$.records }',
   batchSize: 2,
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
@@ -84,7 +87,7 @@ const buildMetadata = (jobId: number): Metadata =>
 const buildInput = (
   jobId: number,
   action: Action,
-  fields: Record<string, unknown>,
+  identifiers: Record<string, unknown>,
   destination: CustomAudienceDestination = buildDestination(),
   connection: CustomAudienceConnection = buildConnection(),
 ): RouterTransformationRequestData =>
@@ -92,7 +95,7 @@ const buildInput = (
     message: {
       type: 'record',
       action,
-      fields,
+      identifiers,
       channel: 'sources',
       context: {},
       recordId: String(jobId),
@@ -103,16 +106,12 @@ const buildInput = (
   }) as unknown as RouterTransformationRequestData;
 
 describe('CustomAudienceIntegration via processBatchedDestination', () => {
-  beforeAll(() => {
-    assertBundleFreshness();
-  });
-
   it('groups events by action and chunks by batchSize', async () => {
     const inputs = [
-      buildInput(1, 'insert', { email: 'a@b.com' }),
-      buildInput(2, 'insert', { email: 'c@d.com' }),
-      buildInput(3, 'insert', { email: 'e@f.com' }),
-      buildInput(4, 'delete', { email: 'g@h.com' }),
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }),
+      buildInput(2, 'insert', { email: hashedEmail('c@d.com') }),
+      buildInput(3, 'insert', { email: hashedEmail('e@f.com') }),
+      buildInput(4, 'delete', { email: hashedEmail('g@h.com') }),
     ];
 
     const results = await processBatchedDestination(inputs, Integration, {});
@@ -144,8 +143,8 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
         const destination = buildDestination();
         delete destination.Config.actions.delete;
         return [
-          buildInput(1, 'insert', { email: 'a@b.com' }, destination),
-          buildInput(2, 'delete', { email: 'g@h.com' }, destination),
+          buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination),
+          buildInput(2, 'delete', { email: hashedEmail('g@h.com') }, destination),
         ];
       },
       failingJobId: 2,
@@ -154,23 +153,66 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     {
       name: 'event with all fields stripped',
       buildInputs: () => [
-        buildInput(1, 'insert', { email: 'a@b.com' }),
+        buildInput(1, 'insert', { email: hashedEmail('a@b.com') }),
         buildInput(2, 'insert', { email: '', other: null }),
       ],
       failingJobId: 2,
-      errorMatch: /All fields were stripped/,
+      errorMatch: /All fields were stripped after processing; nothing to send/,
     },
     {
       name: 'event failing schema validation (wrong type)',
       buildInputs: () => [
-        buildInput(1, 'insert', { email: 'a@b.com' }),
+        buildInput(1, 'insert', { email: hashedEmail('a@b.com') }),
         {
-          ...buildInput(2, 'insert', { email: 'b@c.com' }),
+          ...buildInput(2, 'insert', { email: hashedEmail('b@c.com') }),
           message: { type: 'identify' },
         } as unknown as RouterTransformationRequestData,
       ],
       failingJobId: 2,
       errorMatch: /Invalid/,
+    },
+    {
+      name: 'event with empty-string customMapping "from" value',
+      buildInputs: () => {
+        const connection = buildConnection({ customMappings: [{ from: '', to: 'listId' }] });
+        return [buildInput(1, 'insert', { email: 'a@b.com' }, buildDestination(), connection)];
+      },
+      failingJobId: 1,
+      errorMatch: /Custom mapping "from" value must be non-empty/,
+    },
+    {
+      name: 'event missing required fields for action',
+      buildInputs: () => [buildInput(1, 'insert', { phone: '+1' })],
+      failingJobId: 1,
+      errorMatch: /Missing required fields for action "insert": email/,
+    },
+    {
+      name: 'update event validates required fields from insert action when useInsertConfig is true',
+      buildInputs: () => {
+        const destination = buildDestination({
+          actions: {
+            insert: {
+              ...baseInsertAction,
+              fields: [
+                ...baseInsertAction.fields,
+                {
+                  name: 'externalId',
+                  hashType: HashingType.NONE,
+                  isRequired: true,
+                  isCustom: false,
+                },
+              ],
+            },
+            update: {
+              useInsertConfig: true,
+            },
+            delete: baseDeleteAction,
+          },
+        });
+        return [buildInput(1, 'update', { email: hashedEmail('a@b.com') }, destination)];
+      },
+      failingJobId: 1,
+      errorMatch: /Missing required fields for action "update": externalId/,
     },
   ];
 
@@ -202,6 +244,24 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     expect(emails).toEqual([sha256('a@b.com'), sha256('c@d.com')].sort());
   });
 
+  it('allows custom mappings for unknown target fields and ignores them in template output', async () => {
+    const connection = buildConnection({ customMappings: [{ from: 'some-value', to: 'unused' }] });
+    const inputs = [
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, buildDestination(), connection),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+
+    const success = results.find((r) => r.statusCode === 200);
+    const batched = success?.batchedRequest;
+    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
+    const body = batched.body?.JSON as { users: { email: string }[] };
+    expect(body).toEqual({
+      audienceId: 'aud-42',
+      users: [{ email: hashedEmail('a@b.com') }],
+    });
+  });
+
   const authCases = [
     {
       name: 'Bearer',
@@ -225,7 +285,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
     'builds $name auth header when configured',
     async ({ overrides, expectedHeader, expectedValue }) => {
       const destination = buildDestination(overrides);
-      const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination)];
+      const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
 
       const results = await processBatchedDestination(inputs, Integration, {});
 
@@ -238,11 +298,74 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
   );
 
   it('throws when requestBody template fails at runtime', async () => {
-    const destination = buildDestination();
-    destination.Config.actions.insert!.requestBody = '$.records[0].notARealMethod()';
+    const destination = buildDestination({
+      actions: {
+        insert: { ...baseInsertAction, requestBody: '$$.records[0].$notARealMethod()' },
+        delete: baseDeleteAction,
+      },
+    });
 
-    const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination)];
+    const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
 
     await expect(processBatchedDestination(inputs, Integration, {})).rejects.toThrow();
+  });
+
+  it('batches insert and update events together when update uses insert config', async () => {
+    const destination = buildDestination({
+      actions: {
+        insert: baseInsertAction,
+        update: {
+          endpoint: '/audiences/{{connection.audienceId}}/members',
+          method: 'POST',
+          requestBody: '{ "users": [$$.records.{ "email": email }] }',
+          batchSize: 10,
+          fields: baseInsertAction.fields,
+          useInsertConfig: true,
+        },
+        delete: baseDeleteAction,
+      },
+    });
+
+    const inputs = [
+      buildInput(1, 'insert', { email: hashedEmail('z@x.com') }, destination),
+      buildInput(2, 'update', { email: hashedEmail('a@b.com') }, destination),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+
+    const success = results.filter((r) => r.statusCode === 200);
+    expect(success).toHaveLength(1);
+    const batched = success[0]?.batchedRequest;
+    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
+    // Should use insert config's endpoint and method, and batch insert/update together.
+    expect(batched.endpoint).toBe('https://api.example.com/audiences/aud-42/members');
+    expect(batched.method).toBe('POST');
+    const body = batched.body?.JSON as { users: { email: string }[] };
+    expect(body.users).toHaveLength(2);
+    expect(success[0].metadata.map((m) => m.jobId).sort()).toEqual([1, 2]);
+  });
+
+  it('keeps update batches separate when update uses its own config', async () => {
+    const destination = buildDestination({
+      actions: {
+        insert: baseInsertAction,
+        update: {
+          ...baseInsertAction,
+          useInsertConfig: false,
+        },
+        delete: baseDeleteAction,
+      },
+    });
+
+    const inputs = [
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination),
+      buildInput(2, 'update', { email: hashedEmail('c@d.com') }, destination),
+    ];
+
+    const results = await processBatchedDestination(inputs, Integration, {});
+
+    const success = results.filter((r) => r.statusCode === 200);
+    expect(success).toHaveLength(2);
+    expect(success.map((r) => r.metadata.map((m) => m.jobId).sort())).toEqual([[1], [2]]);
   });
 });

@@ -3,14 +3,15 @@
  * user-supplied requestBody templates inside isolated-vm.
  *
  * One isolate per workspaceId serves both operations. The combined bundle at
- * dist/sandboxedTemplate.bundle.js is produced by
+ * dist/templateEngineSandbox.bundle.js is produced by
  * `npm run build:custom-audience-sandbox`.
  */
 import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import logger from '../../../../logger';
 import { ERROR_MESSAGES } from '../constants';
 import { templateSandboxRunner } from './ivmScriptRunner';
-import type { ParseTemplateResult } from './templateParser';
+import type { ParseTemplateResult } from './templateEngine';
+import type { EvaluateResult } from './templateEngineSandbox';
 
 // ---------------------------------------------------------------------------
 // Parse
@@ -36,10 +37,6 @@ export async function sandboxedParseTemplate(
 // ---------------------------------------------------------------------------
 // Evaluate
 // ---------------------------------------------------------------------------
-
-export type EvaluateResult =
-  | { ok: true; bodies: Record<string, unknown>[] }
-  | { ok: false; error: string };
 
 export async function sandboxedEvaluateTemplate(
   template: string,

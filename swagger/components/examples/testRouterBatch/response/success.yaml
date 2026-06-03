@@ -1,0 +1,32 @@
+user_transformed_payload:
+  - type: identify
+    userId: user-1
+    context:
+      traits:
+        email: user1@example.com
+  - error: user transform failed
+dest_transform_output:
+  - dest_transformed_payload:
+      version: '1'
+      type: REST
+      method: POST
+      endpoint: https://api.example-destination.com/events
+      headers:
+        Content-Type: application/json
+      params: {}
+      files: {}
+      body:
+        JSON:
+          eventType: identify
+          user:
+            id: user-1
+            traits:
+              email: user1@example.com
+        JSON_ARRAY: {}
+        XML: {}
+        FORM: {}
+    destination_response:
+      success: true
+    destination_response_status: 200
+  - dest_transformed_payload:
+      error: invalid field mapping

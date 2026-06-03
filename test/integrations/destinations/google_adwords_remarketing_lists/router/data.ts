@@ -1,3 +1,4 @@
+import sha256 from 'sha256';
 import { authHeader3, secret3 } from '../maskedSecrets';
 import { rETLAudienceRouterRequest } from './audience';
 import {
@@ -66,8 +67,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -186,8 +186,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -304,8 +303,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -400,8 +398,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -496,8 +493,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -547,8 +543,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -667,8 +662,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -765,8 +759,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -789,8 +782,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -899,8 +891,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1048,8 +1039,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1267,8 +1257,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1365,8 +1354,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1389,8 +1377,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1499,8 +1486,7 @@ export const data = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                hashedPhoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                hashedPhoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1632,7 +1618,7 @@ export const data = [
   {
     name: 'google_adwords_remarketing_lists record event tests EventStream pre-hashed input',
     description:
-      'pre-hashed data with isHashRequired true should fail when hashing validation is enabled',
+      'pre-hashed data with isHashRequired true should fail hashing consistency validation',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1679,12 +1665,11 @@ export const data = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
   },
   {
     name: 'google_adwords_remarketing_lists record event tests EventStream hash-off plaintext input',
     description:
-      'plaintext data with isHashRequired false should fail when hashing validation is enabled',
+      'plaintext data with isHashRequired false should fail hashing consistency validation',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1731,12 +1716,10 @@ export const data = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
   },
   {
     name: 'google_adwords_remarketing_lists field validation: invalid email stripped, valid fields sent',
-    description:
-      'With GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=true, an invalid email is stripped while valid phone and addressInfo are forwarded',
+    description: 'An invalid email is stripped while valid phone and addressInfo are forwarded',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1850,12 +1833,10 @@ export const data = [
         },
       },
     },
-    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
   },
   {
     name: 'google_adwords_remarketing_lists field validation: all fields invalid → InstrumentationError',
-    description:
-      'With GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=true, when all fields are invalid the record is rejected with InstrumentationError',
+    description: 'When all fields are invalid the record is rejected with InstrumentationError',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1901,6 +1882,5 @@ export const data = [
         },
       },
     },
-    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
   },
 ];

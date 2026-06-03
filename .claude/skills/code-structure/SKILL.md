@@ -9,7 +9,7 @@ Follow these conventions when writing or restructuring modules.
 
 ## Avoid eslint-disable; Restructure Instead
 
-Never suppress lint rules with `eslint-disable`. If a pattern triggers a violation (e.g. circular references between a const map and functions), restructure the code to eliminate the forward reference.
+Prefer restructuring code to eliminate lint violations rather than suppressing them. However, use a targeted `eslint-disable-next-line` with a reason comment when the violation IS the intended behavior (e.g. in-place mutation in a function whose purpose is mutation) and restructuring would just be cosmetic indirection hiding the same operation from the linter.
 
 ```ts
 // Good — pass the recursive function as a parameter to break the cycle
@@ -39,6 +39,30 @@ function render(content: Content): string {
   return PLUGINS[content.type].render(content);
 }
 /* eslint-enable @typescript-eslint/no-use-before-define */
+```
+
+```ts
+// Good — targeted disable when the function's purpose IS mutation
+function stripInternalProps(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    for (const prop of INTERNAL_PROPS) {
+      // eslint-disable-next-line no-param-reassign -- intentional in-place mutation
+      if (prop in value) delete (value as Record<string, unknown>)[prop];
+    }
+  }
+  return value;
+}
+
+// Bad — local variable indirection that just hides the same mutation from the linter
+function stripInternalProps(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    const arr: Record<string, unknown> = value as unknown as Record<string, unknown>;
+    for (const prop of INTERNAL_PROPS) {
+      if (prop in arr) delete arr[prop]; // still mutating `value`
+    }
+  }
+  return value;
+}
 ```
 
 ## Centralized Handler Map Over Duplicated Logic
@@ -140,7 +164,38 @@ if (prop.type === 'str') {
 
 Comment density should match code complexity. Straightforward code needs no comments. Non-obvious code — especially code operating on parsed structures, engine internals, or implicit conventions — needs inline comments showing concrete examples of the runtime data shape.
 
+JSDoc describes the function's contract (what it does, what it returns). Implementation workarounds (library quirks, perf tradeoffs, upstream bug references) belong as inline comments directly above the relevant code line, not in the JSDoc.
+
 ```ts
+// Good — JSDoc = contract; inline comment = implementation workaround
+/**
+ * Compile and evaluate a template against the provided data.
+ * Returns the evaluation result. Throws on parse or evaluation errors.
+ */
+export async function evaluateTemplate(
+  template: string,
+  data: Record<string, unknown>,
+): Promise<unknown> {
+  const result = await expr.evaluate(data);
+  // Strip JSONata-internal properties (e.g. `sequence` flag on mapped arrays).
+  // No built-in cleanup API exists — see jsonata-js/jsonata#296.
+  return JSON.parse(JSON.stringify(result));
+}
+
+// Bad — implementation workaround in JSDoc pollutes the contract
+/**
+ * Compile and evaluate a template against the provided data.
+ * The result is JSON-round-tripped to strip JSONata-internal properties
+ * (e.g. the `sequence` flag). Recommended per jsonata-js/jsonata#296.
+ */
+export async function evaluateTemplate(
+  template: string,
+  data: Record<string, unknown>,
+): Promise<unknown> {
+  const result = await expr.evaluate(data);
+  return JSON.parse(JSON.stringify(result));
+}
+
 // Good — complex code has comments showing the actual data shape
 // $ path — check if this is `$.records.(<block>)` to enter iteration context.
 // AST shape: root="___d", parts=[selector("records"), block_expr([...])]
@@ -326,4 +381,33 @@ const resolveEndpoint = (template, baseUrl, conn) => {
   }
   // ...
 };
+```
+
+## Handle Errors Closest to the Source
+
+Orchestrator methods that coordinate multiple stages should not contain try-catch blocks. The helper that can fail should catch its own errors and return a structured result. The orchestrator then checks the result — no catching, just branching.
+
+```ts
+// Good — helper catches internally; orchestrator is a clean linear flow
+async function safeTransformBatch(events) {
+  try {
+    return { payloads: await transformBatch(events) };
+  } catch (err: unknown) {
+    return { payloads: [], error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+// orchestrator — no try-catch, just checks the result
+const result = await safeTransformBatch(events);
+if (result.error) {
+  return { transformed: [{ error: result.error }] };
+}
+return { transformed: result.payloads };
+
+// Bad — orchestrator wraps the call in try-catch far from the error source
+try {
+  response.transformed = await transformBatch(events);
+} catch (err: any) {
+  response.transformed = [{ error: err.message }];
+}
 ```

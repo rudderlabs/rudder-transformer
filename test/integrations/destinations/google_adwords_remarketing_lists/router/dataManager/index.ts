@@ -8,6 +8,7 @@
  * Redis mocking is applied via mockFns to avoid ETIMEDOUT during feature-flag checks.
  */
 
+import sha256 from 'sha256';
 import { RedisDB } from '../../../../../../src/util/redis/redisConnector';
 import { secret4, authHeader4 } from '../../maskedSecrets';
 import { dmAudienceRequest } from './audience';
@@ -80,8 +81,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -179,8 +179,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -279,8 +278,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -358,8 +356,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -432,8 +429,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -491,8 +487,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -587,8 +582,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -661,8 +655,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -689,8 +682,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -778,8 +770,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -905,8 +896,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1079,12 +1069,12 @@ export const dmRouterData = [
     mockFns,
   },
 
-  // ── Test 07: Pre-hashed input + AUDIENCE_HASHING_VALIDATION_ENABLED → error
+  // ── Test 07: Pre-hashed input with hash required → error
   {
     id: 'garl-dm-router-07',
     name: 'google_adwords_remarketing_lists',
     description:
-      '[DM API] pre-hashed data with isHashRequired true → error when hashing validation enabled',
+      '[DM API] pre-hashed data with isHashRequired true → hashing consistency validation error',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1126,16 +1116,15 @@ export const dmRouterData = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
     mockFns,
   },
 
-  // ── Test 08: Hash-off plaintext input + AUDIENCE_HASHING_VALIDATION_ENABLED → error
+  // ── Test 08: Hash-off plaintext input → error
   {
     id: 'garl-dm-router-08',
     name: 'google_adwords_remarketing_lists',
     description:
-      '[DM API] plaintext data with isHashRequired false → error when hashing validation enabled',
+      '[DM API] plaintext data with isHashRequired false → hashing consistency validation error',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1177,7 +1166,6 @@ export const dmRouterData = [
         },
       },
     },
-    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
     mockFns,
   },
 
@@ -1274,7 +1262,6 @@ export const dmRouterData = [
         },
       },
     },
-    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
     mockFns,
   },
 
@@ -1323,7 +1310,6 @@ export const dmRouterData = [
         },
       },
     },
-    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
     mockFns,
   },
 
@@ -1375,8 +1361,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1449,8 +1434,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1477,8 +1461,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {
@@ -1566,8 +1549,7 @@ export const dmRouterData = [
                                   'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                               },
                               {
-                                phoneNumber:
-                                  '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
+                                phoneNumber: sha256('+09876543210'),
                               },
                               {
                                 addressInfo: {

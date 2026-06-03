@@ -91,53 +91,53 @@ const normalizeDobPart = (v: string) => {
  * Per-field normalization and validation rules for Facebook Custom Audiences.
  * https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/customer-information-parameters
  */
-const FB_FIELD_CONFIG: Record<string, AudienceField> = {
+const FB_FIELD_CONFIG = {
   EMAIL: {
-    normalize: (v) => v.trim().toLowerCase(),
-    validate: (v) => validator.isEmail(v),
+    normalize: (v: string) => v.trim().toLowerCase(),
+    validate: (v: string) => validator.isEmail(v),
     hashingType: HashingType.SHA256,
   },
   PHONE: {
     // Remove all non-numerical characters, then remove all leading zeros.
     // Note: libphonenumber-js is not used here as it requires a country code to validate.
-    normalize: (v) => v.trim().replace(/\D/g, '').replace(/^0+/g, ''),
+    normalize: (v: string) => v.trim().replace(/\D/g, '').replace(/^0+/g, ''),
     validate: isValidPhoneNumber,
     hashingType: HashingType.SHA256,
   },
   GEN: {
-    normalize: (v) => {
+    normalize: (v: string) => {
       const lower = v.trim().toLowerCase();
       return lower === 'f' || lower === 'female' ? 'f' : 'm';
     },
     hashingType: HashingType.SHA256,
   },
-  DOBY: { normalize: (v) => v.trim().replace(/\./g, ''), hashingType: HashingType.SHA256 },
+  DOBY: { normalize: (v: string) => v.trim().replace(/\./g, ''), hashingType: HashingType.SHA256 },
   DOBM: { normalize: normalizeDobPart, hashingType: HashingType.SHA256 },
   DOBD: { normalize: normalizeDobPart, hashingType: HashingType.SHA256 },
   LN: { normalize: normalizeNameField, hashingType: HashingType.SHA256 },
   FN: { normalize: normalizeNameField, hashingType: HashingType.SHA256 },
   FI: {
-    normalize: (v) =>
+    normalize: (v: string) =>
       v
         .trim()
         .toLowerCase()
         .replace(/[^!"#$%&'()*+,-./a-z]/g, ''),
     hashingType: HashingType.SHA256,
   },
-  MADID: { normalize: (v) => v.trim().toLowerCase(), hashingType: HashingType.NONE },
+  MADID: { normalize: (v: string) => v.trim().toLowerCase(), hashingType: HashingType.NONE },
   COUNTRY: {
-    normalize: (v) => v.trim().toLowerCase(),
-    validate: (v) => COUNTRY_CODE_REGEX.test(v),
+    normalize: (v: string) => v.trim().toLowerCase(),
+    validate: (v: string) => COUNTRY_CODE_REGEX.test(v),
     hashingType: HashingType.SHA256,
   },
   ZIP: {
-    normalize: (v) => v.trim().replace(/[\s-]/g, '').toLowerCase(),
+    normalize: (v: string) => v.trim().replace(/[\s-]/g, '').toLowerCase(),
     hashingType: HashingType.SHA256,
   },
   ST: { normalize: normalizeLocationTextField, hashingType: HashingType.SHA256 },
   CT: { normalize: normalizeLocationTextField, hashingType: HashingType.SHA256 },
-  EXTERN_ID: { normalize: (v) => v, hashingType: HashingType.NONE },
-  LOOKALIKE_VALUE: { normalize: (v) => v, hashingType: HashingType.NONE },
+  EXTERN_ID: { normalize: (v: string) => v, hashingType: HashingType.NONE },
+  LOOKALIKE_VALUE: { normalize: (v: string) => v, hashingType: HashingType.NONE },
 };
 
 /**
@@ -174,10 +174,14 @@ const processAndAppendDataElement = (
     throw new ConfigurationError(`The property ${propertyName} is not supported`);
   }
 
+  // Bridge string-typed FB_FIELD_CONFIG to the unknown-typed AudienceField interface.
   // When disableFormat=true, skip normalization by omitting the normalize function.
-  const effectiveFieldConfig = disableFormat
-    ? { ...fieldConfig, normalize: undefined }
-    : fieldConfig;
+  const { normalize, validate } = fieldConfig;
+  const effectiveFieldConfig: AudienceField = {
+    ...fieldConfig,
+    normalize: disableFormat ? undefined : (v) => normalize(String(v)),
+    validate: validate ? (v) => validate(v as string) : undefined,
+  };
   const destination = {
     workspaceId,
     id: destinationId,

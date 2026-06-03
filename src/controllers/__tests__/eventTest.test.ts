@@ -4,9 +4,10 @@ import bodyParser from 'koa-bodyparser';
 import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import { applicationRoutes } from '../../routes';
-import { sandboxedParseTemplate } from '../../v0/destinations/custom_audience/template/templateSandbox';
+import { EventTesterService } from '../../services/eventTest/eventTester';
+import { sandboxedParseTemplate } from '../../v0/destinations/custom_audience/template/templateSandboxClient';
 
-jest.mock('../../v0/destinations/custom_audience/template/templateSandbox');
+jest.mock('../../v0/destinations/custom_audience/template/templateSandboxClient');
 const mockParseTemplate = sandboxedParseTemplate as jest.MockedFunction<
   typeof sandboxedParseTemplate
 >;
@@ -31,7 +32,20 @@ beforeEach(() => {
 
 const ENDPOINT = '/test-router/custom_audience/parse-template';
 
+const makeActions = (requestBody: string) => ({
+  insert: {
+    requestBody,
+  },
+});
+
 describe('POST /test-router/custom_audience/parse-template', () => {
+  const template = `{
+    "data": [$$.records.({
+      "email": email,
+      "phone": phone_sha256
+    })]
+  }`;
+
   it('should return valid=true with recordFields for a valid template', async () => {
     mockParseTemplate.mockResolvedValue({
       valid: true,
@@ -41,19 +55,15 @@ describe('POST /test-router/custom_audience/parse-template', () => {
     const response = await request(server)
       .post(ENDPOINT)
       .send({
-        requestBody: `{
-          "data": $.records.({
-            "email": .email,
-            "phone": .phone_sha256
-          })
-        }`,
+        action: 'insert',
+        actions: makeActions(template),
         workspaceId: 'test-workspace',
       });
 
     expect(response.status).toBe(200);
     expect(response.body.valid).toBe(true);
     expect(response.body.recordFields.sort()).toEqual(['email', 'phone_sha256']);
-    expect(mockParseTemplate).toHaveBeenCalledWith(expect.any(String), 'test-workspace');
+    expect(mockParseTemplate).toHaveBeenCalledWith(template, 'test-workspace');
   });
 
   it('should return valid=false with errors for an invalid template', async () => {
@@ -64,38 +74,105 @@ describe('POST /test-router/custom_audience/parse-template', () => {
 
     const response = await request(server)
       .post(ENDPOINT)
-      .send({ requestBody: '{ ...$.records }', workspaceId: 'test-workspace' });
+      .send({
+        action: 'insert',
+        actions: makeActions('{ ...$.records }'),
+        workspaceId: 'test-workspace',
+      });
 
     expect(response.status).toBe(200);
     expect(response.body.valid).toBe(false);
     expect(response.body.errors[0]).toMatch(/spread_expr/);
   });
 
+  it('should accept requestBody-only action config for delete action', async () => {
+    mockParseTemplate.mockResolvedValue({
+      valid: true,
+      recordFields: ['email'],
+    });
+
+    const response = await request(server)
+      .post(ENDPOINT)
+      .send({
+        action: 'delete',
+        actions: {
+          delete: {
+            requestBody: template,
+          },
+        },
+        workspaceId: 'test-workspace',
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      valid: true,
+      recordFields: ['email'],
+    });
+    expect(mockParseTemplate).toHaveBeenCalledWith(template, 'test-workspace');
+  });
+
+  it('should resolve useInsertConfig and validate with insert requestBody', async () => {
+    mockParseTemplate.mockResolvedValue({
+      valid: true,
+      recordFields: ['email'],
+    });
+
+    const actions = {
+      insert: makeActions(template).insert,
+      update: {
+        useInsertConfig: true,
+      },
+    };
+
+    const response = await request(server)
+      .post(ENDPOINT)
+      .send({ action: 'update', actions, workspaceId: 'test-workspace' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.valid).toBe(true);
+    // Should have been called with insert's template, not update's empty one
+    expect(mockParseTemplate).toHaveBeenCalledWith(template, 'test-workspace');
+  });
+
   const badRequestCases = [
     {
-      name: 'missing requestBody',
-      body: { workspaceId: 'ws' },
-      expectedError: 'requestBody: Required',
+      name: 'missing action',
+      body: { actions: makeActions('x'), workspaceId: 'ws' },
+      expectedError: 'action: Required',
     },
     {
-      name: 'empty string requestBody',
-      body: { requestBody: '', workspaceId: 'ws' },
-      expectedError: 'requestBody: requestBody must be a non-empty string',
-    },
-    {
-      name: 'non-string requestBody',
-      body: { requestBody: 123, workspaceId: 'ws' },
-      expectedError: 'requestBody: Expected string, received number',
+      name: 'missing actions',
+      body: { action: 'insert', workspaceId: 'ws' },
+      expectedError: 'actions: Required',
     },
     {
       name: 'missing workspaceId',
-      body: { requestBody: '{ "a": 1 }' },
+      body: { action: 'insert', actions: makeActions('x') },
       expectedError: 'workspaceId: Required',
     },
     {
       name: 'empty string workspaceId',
-      body: { requestBody: '{ "a": 1 }', workspaceId: '' },
+      body: { action: 'insert', actions: makeActions('x'), workspaceId: '' },
       expectedError: 'workspaceId: workspaceId must be a non-empty string',
+    },
+    {
+      name: 'invalid action value',
+      body: { action: 'upsert', actions: makeActions('x'), workspaceId: 'ws' },
+      expectedError:
+        "action: Invalid enum value. Expected 'insert' | 'update' | 'delete', received 'upsert'",
+    },
+    {
+      name: 'missing requestBody in action config',
+      body: {
+        action: 'insert',
+        actions: {
+          insert: {
+            endpoint: '/members',
+          },
+        },
+        workspaceId: 'ws',
+      },
+      expectedError: 'actions.insert.requestBody: Required',
     },
   ];
 
@@ -104,5 +181,50 @@ describe('POST /test-router/custom_audience/parse-template', () => {
 
     expect(response.status).toBe(400);
     expect(response.body.error).toBe(expectedError);
+  });
+});
+
+describe('POST /test-router/:version/:destination/batch', () => {
+  const ENDPOINT_V2 = '/test-router/v0/custom_audience/batch';
+
+  it('should return 400 for malformed request payload', async () => {
+    const response = await request(server)
+      .post(ENDPOINT_V2)
+      .send({
+        destination: {},
+        connection: {},
+        stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+        libraries: [],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain('events: Required');
+  });
+
+  it('should delegate valid payloads to EventTesterService.testEventV2', async () => {
+    const testEventV2Spy = jest.spyOn(EventTesterService, 'testEventV2').mockResolvedValue({
+      user_transformed_payload: [{ type: 'record' }],
+      dest_transform_output: [],
+    });
+
+    const payload = {
+      events: [{ type: 'record' }],
+      destination: {
+        workspaceId: 'ws-1',
+        destinationDefinition: {},
+      },
+      connection: {},
+      stage: { user_transform: false, dest_transform: false, send_to_destination: false },
+      libraries: [],
+    };
+
+    const response = await request(server).post(ENDPOINT_V2).send(payload);
+
+    expect(response.status).toBe(200);
+    expect(testEventV2Spy).toHaveBeenCalledWith(payload, 'v0', 'custom_audience');
+    expect(response.body).toEqual({
+      user_transformed_payload: [{ type: 'record' }],
+      dest_transform_output: [],
+    });
   });
 });

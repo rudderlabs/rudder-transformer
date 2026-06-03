@@ -1,8 +1,8 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { JsonTemplateEngine, PathType } from '@rudderstack/json-template-engine';
 
 import { HashingType, processAudienceRecord, type AudienceField } from '../../util/audienceUtils';
 
+import { EVENT_TYPES } from '../../util/recordUtils';
 import { AUTHENTICATION_TYPES, ERROR_MESSAGES } from './constants';
 import type {
   Action,
@@ -17,39 +17,51 @@ import type {
 
 export const lookupActionConfig = (
   action: Action,
-  destConfig: CustomAudienceDestConfig,
-): ActionConfig => {
-  const actionConfig = destConfig.actions[action];
+  actions: CustomAudienceDestConfig['actions'],
+): { action: Action; config: ActionConfig } => {
+  const actionConfig = actions[action];
   if (!actionConfig) {
     throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG(action));
   }
-  return actionConfig;
+  // When the update action opts into reusing the insert config, substitute it
+  // and return 'insert' as the resolved action so callers can use it as a
+  // batch group key that matches the config actually used.
+  if ('useInsertConfig' in actionConfig && actionConfig.useInsertConfig) {
+    const insertConfig = actions.insert;
+    if (!insertConfig) {
+      throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG('insert'));
+    }
+    return { action: EVENT_TYPES.INSERT as Action, config: insertConfig };
+  }
+  return { action, config: actionConfig };
 };
 
+// Replaces {{dotted.path}} placeholders with values from the connection object,
+// then prepends baseUrl.
+// e.g. "/audiences/{{connection.audienceId}}/members" with connection = { audienceId: "123" }
+//   → "/audiences/123/members" → "https://api.example.com/audiences/123/members"
 export const resolveEndpoint = (
   endpointTemplate: string,
   baseUrl: string,
   connection: CustomAudienceConnectionDestConfig,
 ): string => {
-  // Endpoint is a plain string with `${...}` placeholders (regex-validated upstream
-  // to allow only simple connection-field interpolation). Wrap in backticks so the
-  // template engine treats it as a string-interpolation expression.
-  //
-  // Evaluated in-process intentionally: there is no record data and no
-  // user-controlled template path. The user-controlled requestBody template
-  // runs inside isolated-vm via templateSandbox.
-  const wrapped = `\`${endpointTemplate}\``;
-  let resolved: string;
-  try {
-    resolved = String(
-      JsonTemplateEngine.createAsSync(wrapped, { defaultPathType: PathType.JSON }).evaluate({
-        connection,
-      }) ?? '',
+  // Match every {{...}} placeholder and walk the dotted path against { connection }
+  // to resolve the value. Throws if a referenced field doesn't exist.
+  const resolved = endpointTemplate.replace(/{{([\w.]+)}}/g, (_match, path: string) => {
+    const value = path.split('.').reduce<unknown>(
+      (obj, key) => {
+        if (obj != null && typeof obj === 'object') return (obj as Record<string, unknown>)[key];
+        return undefined;
+      },
+      { connection },
     );
-  } catch (err: unknown) {
-    const reason = err instanceof Error ? err.message : String(err);
-    throw new InstrumentationError(ERROR_MESSAGES.TEMPLATE_EVALUATION_FAILED(reason));
-  }
+    if (value === undefined || value === null) {
+      throw new InstrumentationError(ERROR_MESSAGES.ENDPOINT_RESOLUTION_FAILED(`{{${path}}}`));
+    }
+    return String(value);
+  });
+  // Normalize: strip trailing slash from base, ensure leading slash on path,
+  // then join them.
   const trimmedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
   const joinedPath = resolved.startsWith('/') || resolved === '' ? resolved : `/${resolved}`;
   return `${trimmedBase}${joinedPath}`;
@@ -64,12 +76,25 @@ export const injectCustomMappings = (
   }
   const merged: Record<string, unknown> = { ...fields };
   // `from` holds the literal value (user-supplied constant), `to` is the destination field.
-  customMappings
-    .filter((mapping) => mapping?.to)
-    .forEach((mapping) => {
-      merged[mapping.to] = mapping.from;
-    });
+  for (const mapping of customMappings) {
+    merged[mapping.to] = mapping.from;
+  }
   return merged;
+};
+
+export const validateRequiredFields = (
+  action: Action,
+  fields: Record<string, unknown>,
+  actionFields: ActionFieldConfig[],
+): void => {
+  const missingRequiredFieldNames = actionFields
+    .filter((field) => field.isRequired && !(field.name in fields))
+    .map((field) => field.name);
+  if (missingRequiredFieldNames.length > 0) {
+    throw new InstrumentationError(
+      ERROR_MESSAGES.MISSING_REQUIRED_FIELDS(action, missingRequiredFieldNames),
+    );
+  }
 };
 
 const buildFieldConfigs = (actionFields: ActionFieldConfig[]): Record<string, AudienceField> => {
@@ -90,7 +115,7 @@ export const processFields = (
   actionConfig: ActionConfig,
   destinationMeta: { id: string; type: string; workspaceId: string },
   isHashRequired: boolean,
-): Record<string, string> => {
+): Record<string, unknown> => {
   const fieldConfigs = buildFieldConfigs(actionConfig.fields);
   const processed = processAudienceRecord(fields, {
     fieldConfigs,

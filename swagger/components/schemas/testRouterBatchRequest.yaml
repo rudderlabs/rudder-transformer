@@ -1,0 +1,42 @@
+title: Test Router Batch Request
+type: object
+required:
+  - events
+  - destination
+  - stage
+properties:
+  events:
+    type: array
+    items:
+      type: object
+      additionalProperties: true
+    description: Rudder events to be tested.
+  destination:
+    type: object
+    required:
+      - destinationDefinition
+    properties:
+      destinationDefinition:
+        type: object
+        additionalProperties: true
+    additionalProperties: true
+    description: Destination configuration object.
+  connection:
+    type: object
+    additionalProperties: true
+    description: Optional connection-level configuration.
+  stage:
+    type: object
+    properties:
+      user_transform:
+        type: boolean
+      dest_transform:
+        type: boolean
+      send_to_destination:
+        type: boolean
+  libraries:
+    type: array
+    items:
+      type: object
+      additionalProperties: true
+    description: Optional transformation library metadata.

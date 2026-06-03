@@ -26,8 +26,8 @@ const HASHING_CONFIG: Partial<Record<HashingType, { regex: RegExp; hash: (v: str
 
 export interface AudienceField {
   hashingType: HashingType;
-  normalize: ((v: string) => string) | undefined;
-  validate?: (normalized: string) => boolean;
+  normalize: ((v: unknown) => unknown) | undefined;
+  validate?: (normalized: unknown) => boolean;
 }
 
 const PHONE_NUMBER_REGEX = /^\+?\d+$/;
@@ -54,14 +54,10 @@ interface AudienceDestination {
   };
 }
 
-function isHashingValidationEnabled(): boolean {
-  return process.env.AUDIENCE_HASHING_VALIDATION_ENABLED === 'true';
-}
-
 /**
  * Validates that the hashing configuration is consistent with the actual data.
  * Emits a metric when inconsistency is detected.
- * Optionally throws an error when validation is enabled via env var AUDIENCE_HASHING_VALIDATION_ENABLED.
+ * Throws an error when inconsistency is detected.
  */
 export const validateHashingConsistency = (
   propertyName: string,
@@ -80,11 +76,9 @@ export const validateHashingConsistency = (
       destinationId,
       destType,
     });
-    if (isHashingValidationEnabled()) {
-      throw new InstrumentationError(
-        `Hashing is enabled but the value for field ${propertyName} appears to already be hashed. Either disable hashing or send unhashed data.`,
-      );
-    }
+    throw new InstrumentationError(
+      `Hashing is enabled but the value for field ${propertyName} appears to already be hashed. Either disable hashing or send unhashed data.`,
+    );
   }
   if (!isHashRequired && !isAlreadyHashed) {
     stats.increment('audience_hashing_inconsistency', {
@@ -94,11 +88,9 @@ export const validateHashingConsistency = (
       destinationId,
       destType,
     });
-    if (isHashingValidationEnabled()) {
-      throw new InstrumentationError(
-        `Hashing is disabled but the value for field ${propertyName} appears to be unhashed. Either enable hashing or send pre-hashed data.`,
-      );
-    }
+    throw new InstrumentationError(
+      `Hashing is disabled but the value for field ${propertyName} appears to be unhashed. Either enable hashing or send pre-hashed data.`,
+    );
   }
 };
 
@@ -118,16 +110,14 @@ export const processAudienceRecord = (
     fieldConfigs: Record<string, AudienceField>;
     destination: AudienceDestination;
   },
-): Record<string, string> => {
+): Record<string, unknown> => {
   const { isHashRequired } = destination.config;
   const { workspaceId, id: destinationId, type: destType } = destination;
   const invalidFieldMetric = `${destType}_invalid_field`;
-  const shouldRejectInvalidFields =
-    process.env[`${destType.toUpperCase()}_REJECT_INVALID_FIELDS`] === 'true';
-  const result: Record<string, string> = {};
+  const result: Record<string, unknown> = {};
 
   Object.entries(record).forEach(([fieldName, rawValue]) => {
-    if (!isDefinedAndNotNull(rawValue) || rawValue === '' || rawValue === false) {
+    if (!isDefinedAndNotNull(rawValue) || rawValue === '') {
       return;
     }
 
@@ -135,11 +125,12 @@ export const processAudienceRecord = (
 
     const hashingType = fieldConfig?.hashingType ?? HashingType.NONE;
     const isHashable = hashingType !== HashingType.NONE;
-    const sourceValue = String(rawValue);
+    // Hashable fields require string processing; non-hashable fields preserve their type
+    const sourceValue = isHashable ? String(rawValue) : rawValue;
 
     // Hashing consistency check runs on the source value before normalization
     if (isHashable) {
-      validateHashingConsistency(fieldName, sourceValue, destination, hashingType);
+      validateHashingConsistency(fieldName, sourceValue as string, destination, hashingType);
     }
 
     // Pre-hashed values are passed through as-is: skip normalization and validation
@@ -148,8 +139,8 @@ export const processAudienceRecord = (
       return;
     }
 
-    const normalizedValue = (fieldConfig?.normalize ?? ((v: string) => v))(sourceValue);
-    if (!normalizedValue) {
+    const normalizedValue = (fieldConfig?.normalize ?? ((v: unknown) => v))(sourceValue);
+    if (!isDefinedAndNotNull(normalizedValue) || normalizedValue === '') {
       return;
     }
 
@@ -157,13 +148,13 @@ export const processAudienceRecord = (
 
     if (isInvalid) {
       stats.increment(invalidFieldMetric, { fieldName, workspaceId, destinationId });
-      if (shouldRejectInvalidFields) {
-        return;
-      }
+      return;
     }
 
     result[fieldName] =
-      isHashRequired && isHashable ? hashValue(normalizedValue, hashingType) : normalizedValue;
+      isHashRequired && isHashable
+        ? hashValue(normalizedValue as string, hashingType)
+        : normalizedValue;
   });
 
   return result;

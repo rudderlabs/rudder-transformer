@@ -42,7 +42,7 @@ export const rETLAudienceRouterRequest: RouterTransformationRequest = {
             add: [
               {
                 email: 'test@abc.com',
-                phone: '@09876543210',
+                phone: '09876543210',
                 firstName: 'test',
                 lastName: 'rudderlabs',
                 country: 'US',
@@ -69,7 +69,7 @@ export const rETLAudienceRouterRequest: RouterTransformationRequest = {
             remove: [
               {
                 email: 'test@abc.com',
-                phone: '@09876543210',
+                phone: '09876543210',
                 firstName: 'test',
                 lastName: 'rudderlabs',
                 country: 'US',
@@ -96,7 +96,7 @@ export const rETLAudienceRouterRequest: RouterTransformationRequest = {
             remove: [
               {
                 email: 'test@abc.com',
-                phone: '@09876543210',
+                phone: '09876543210',
                 firstName: 'test',
                 lastName: 'rudderlabs',
                 country: 'US',
@@ -106,7 +106,7 @@ export const rETLAudienceRouterRequest: RouterTransformationRequest = {
             add: [
               {
                 email: 'test@abc.com',
-                phone: '@09876543210',
+                phone: '09876543210',
                 firstName: 'test',
                 lastName: 'rudderlabs',
                 country: 'US',

@@ -6,7 +6,7 @@
 
 ```
                               ┌──JS──▶ rudder-transformer (isolated-vm, single shared deployment)
-rudder-server ──check lang──▶│
+rudder-server ──check lang──▶ │
                               └──Py──▶ rudder-pytransformer (RestrictedPython + ProcessPool, single shared deployment)
 ```
 

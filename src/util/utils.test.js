@@ -140,7 +140,6 @@ describe('fetchWithDnsWrapper', () => {
   });
 
   it('should set up onDnsResolved callback that calls stats.timing with transformation tags', async () => {
-    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
     const transformationTags = { workspaceId: 'ws123', transformationId: 'tr456' };
 
     // Capture the callback stored in dnsCallbackStorage during the fetch
@@ -168,8 +167,6 @@ describe('fetchWithDnsWrapper', () => {
   });
 
   it('should use shared https agent for https URLs', async () => {
-    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
-
     await fetchWithDnsWrapper({}, 'https://example.com/api');
 
     expect(fetch).toHaveBeenCalledWith(
@@ -188,8 +185,6 @@ describe('fetchWithDnsWrapper', () => {
   });
 
   it('should use shared http agent for http URLs', async () => {
-    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
-
     await fetchWithDnsWrapper({}, 'http://example.com/api');
     const firstCallAgent = fetch.mock.calls[0][1].agent;
 
@@ -197,18 +192,6 @@ describe('fetchWithDnsWrapper', () => {
     const secondCallAgent = fetch.mock.calls[1][1].agent;
 
     expect(secondCallAgent).toBe(firstCallAgent);
-  });
-
-  it('should bypass DNS wrapper when DNS_RESOLVE_FETCH_HOST is not true', async () => {
-    process.env.DNS_RESOLVE_FETCH_HOST = 'false';
-
-    await fetchWithDnsWrapper({}, 'https://example.com/api');
-
-    expect(fetch).toHaveBeenCalledWith(
-      'https://example.com/api',
-      expect.objectContaining({ agent: expect.any(Object) }),
-    );
-    expect(stats.timing).not.toHaveBeenCalled();
   });
 });
 

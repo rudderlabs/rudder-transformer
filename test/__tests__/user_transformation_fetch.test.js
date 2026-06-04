@@ -30,7 +30,6 @@ const versionId = "testVersionId";
 describe("User transformation fetch tests", () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
   });
   afterAll(() => {});
 
@@ -356,7 +355,6 @@ describe("User transformation fetch tests", () => {
 describe("User transformation fetch tests with IVM Cache", () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
     process.env.USE_IVM_CACHE = 'true';
     process.env.IVM_CACHE_STRATEGY = 'isolate';
     ivmCacheManager.initializeStrategy();

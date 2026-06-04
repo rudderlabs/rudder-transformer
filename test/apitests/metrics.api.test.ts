@@ -6,40 +6,81 @@ import bodyParser from 'koa-bodyparser';
 import { Server } from 'http';
 import request from 'supertest';
 
+// jest.spyOn needs the raw mutable CJS module object — an ESM namespace import
+// (`import * as`) is wrapped by TS interop helpers and its properties cannot be
+// redefined at runtime.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const workerThreads = require('worker_threads') as typeof import('worker_threads');
+
 jest.setTimeout(30000);
 
 const OLD_ENV = process.env;
+
+interface MetricsServerSetup {
+  metricsServer: Server;
+  terminator: HttpTerminator;
+}
+
+// Shared setup for all describe blocks: overrides the environment, loads the stat
+// middleware and metrics router inside jest.isolateModules (so each block gets a
+// fresh stats module with its own env baked in, immune to test ordering), and starts
+// a Koa server exposing the metrics routes. `setupExtras` runs inside the same
+// isolation boundary, letting a block require additional modules that must share the
+// isolated module registry.
+const createMetricsServer = (
+  envOverrides: Record<string, string>,
+  setupExtras?: () => void,
+): Promise<MetricsServerSetup> =>
+  new Promise((resolve, reject) => {
+    jest.isolateModules(() => {
+      try {
+        process.env = { ...OLD_ENV, ...envOverrides };
+
+        const { addStatMiddleware } = require('../../src/middleware');
+        const { metricsRouter } = require('../../src/routes/metricsRouter');
+
+        const metricsApp = new Koa();
+        addStatMiddleware(metricsApp);
+        metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
+        const metricsServer = metricsApp.listen();
+
+        setupExtras?.();
+
+        resolve({ metricsServer, terminator: createHttpTerminator({ server: metricsServer }) });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  });
 
 // prometheusRegistry.metrics() returns the full Prometheus text format including
 // default Node.js process metrics and custom metrics recorded by addStatMiddleware.
 describe('metrics endpoint (CLUSTER_ENABLED=false)', () => {
   let mainServer: Server;
   let metricsServer: Server;
+  let terminator: HttpTerminator;
 
   beforeAll(async () => {
-    process.env = { ...OLD_ENV, CLUSTER_ENABLED: 'false' };
+    ({ metricsServer, terminator } = await createMetricsServer({ CLUSTER_ENABLED: 'false' }, () => {
+      // The main app must be built inside the same isolation boundary so it shares
+      // the stats module (and Prometheus registry) with the metrics app — requests
+      // recorded here must be visible on the /metrics endpoint.
+      const { addStatMiddleware } = require('../../src/middleware');
+      const { applicationRoutes } = require('../../src/routes');
 
-    const { addStatMiddleware } = require('../../src/middleware');
-    const { metricsRouter } = require('../../src/routes/metricsRouter');
-    const { applicationRoutes } = require('../../src/routes');
-
-    const app = new Koa();
-    addStatMiddleware(app);
-    app.use(bodyParser({ jsonLimit: '200mb' }));
-    applicationRoutes(app);
-    mainServer = app.listen();
-
-    const metricsApp = new Koa();
-    addStatMiddleware(metricsApp);
-    metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
-    metricsServer = metricsApp.listen();
+      const app = new Koa();
+      addStatMiddleware(app);
+      app.use(bodyParser({ jsonLimit: '200mb' }));
+      applicationRoutes(app);
+      mainServer = app.listen();
+    }));
   });
 
   afterAll(async () => {
     process.env = OLD_ENV;
     await Promise.all([
       mainServer && createHttpTerminator({ server: mainServer }).terminate(),
-      metricsServer && createHttpTerminator({ server: metricsServer }).terminate(),
+      terminator?.terminate(),
     ]);
   });
 
@@ -70,25 +111,10 @@ describe('metrics endpoint (CLUSTER_ENABLED=true, USE_METRICS_AGGREGATOR=false)'
   let terminator: HttpTerminator;
 
   beforeAll(async () => {
-    await new Promise<void>((resolve, reject) => {
-      jest.isolateModules(() => {
-        try {
-          process.env = { ...OLD_ENV, CLUSTER_ENABLED: 'true', USE_METRICS_AGGREGATOR: 'false' };
-
-          const { addStatMiddleware } = require('../../src/middleware');
-          const { metricsRouter } = require('../../src/routes/metricsRouter');
-
-          const metricsApp = new Koa();
-          addStatMiddleware(metricsApp);
-          metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
-          metricsServer = metricsApp.listen();
-          terminator = createHttpTerminator({ server: metricsServer });
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      });
-    });
+    ({ metricsServer, terminator } = await createMetricsServer({
+      CLUSTER_ENABLED: 'true',
+      USE_METRICS_AGGREGATOR: 'false',
+    }));
   });
 
   afterAll(async () => {
@@ -120,53 +146,40 @@ describe('metrics endpoint (CLUSTER_ENABLED=true, USE_METRICS_AGGREGATOR=true)',
   let terminator: HttpTerminator;
   let shutdownStats: () => Promise<void>;
   let capturedWorkerCallCount: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let workerSpy: any;
+  let workerSpy: jest.SpyInstance;
 
   beforeAll(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const workerThreads = require('worker_threads');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const OriginalWorker: any = workerThreads.Worker;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    workerSpy = jest.spyOn(workerThreads as any, 'Worker').mockImplementation(function (
-      ...args: unknown[]
-    ) {
-      return new OriginalWorker(...args);
-    });
+    // worker_threads is a Node.js built-in — a singleton that jest.isolateModules
+    // does not re-evaluate — so the spy installed here on the shared module object
+    // is visible inside the isolated require() in createMetricsServer below.
+    const OriginalWorker = workerThreads.Worker;
+    workerSpy = jest
+      .spyOn(workerThreads, 'Worker')
+      .mockImplementation(
+        (...args: ConstructorParameters<typeof workerThreads.Worker>) =>
+          new OriginalWorker(...args),
+      );
 
     // Run from the OS temp dir so a cwd-relative worker path fails to resolve.
     const originalCwd = process.cwd();
     process.chdir(os.tmpdir());
 
     try {
-      await new Promise<void>((resolve, reject) => {
-        jest.isolateModules(() => {
-          try {
-            process.env = {
-              ...OLD_ENV,
-              CLUSTER_ENABLED: 'true',
-              USE_METRICS_AGGREGATOR: 'true',
-              METRICS_AGGREGATOR_REQUEST_TIMEOUT_SECONDS: '1',
-            };
+      ({ metricsServer, terminator } = await createMetricsServer(
+        {
+          CLUSTER_ENABLED: 'true',
+          USE_METRICS_AGGREGATOR: 'true',
+          METRICS_AGGREGATOR_REQUEST_TIMEOUT_SECONDS: '1',
+        },
+        () => {
+          const stats = require('../../src/util/stats');
+          shutdownStats = stats.shutdownMetricsClient;
+        },
+      ));
 
-            const { addStatMiddleware } = require('../../src/middleware');
-            const { metricsRouter } = require('../../src/routes/metricsRouter');
-            const stats = require('../../src/util/stats');
-            shutdownStats = stats.shutdownMetricsClient;
-
-            const metricsApp = new Koa();
-            addStatMiddleware(metricsApp);
-            metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
-            metricsServer = metricsApp.listen();
-            terminator = createHttpTerminator({ server: metricsServer });
-            resolve();
-          } catch (err) {
-            reject(err);
-          }
-        });
-      });
-
+      // Allow time for any crash-restart cycle to surface: if the worker path were
+      // broken, the worker would repeatedly fail, exit, and be recreated, inflating
+      // the spy's call count (see PR #5221).
       await new Promise((resolve) => setTimeout(resolve, 500));
       capturedWorkerCallCount = workerSpy.mock.calls.length;
     } finally {

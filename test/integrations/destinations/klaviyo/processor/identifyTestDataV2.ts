@@ -225,6 +225,89 @@ export const identifyData: ProcessorTestData[] = [
     },
   },
   {
+    id: 'klaviyo-identify-150624-test-1a',
+    name: 'klaviyo',
+    description:
+      '150624 -> Identify subscribe call without explicit consent should infer channels from identifiers',
+    scenario: 'Business',
+    successCriteria:
+      'The subscribe request should still contain subscriptions for email and sms based on available identifiers',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: generateSimplifiedIdentifyPayload({
+              sentAt,
+              userId,
+              context: {
+                traits: {
+                  ...commonTraits,
+                  properties: {
+                    ...commonTraits.properties,
+                    consent: undefined,
+                  },
+                },
+              },
+              anonymousId,
+              originalTimestamp,
+            }),
+            metadata: generateMetadata(2),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: userProfileCommonEndpoint,
+              endpointPath: '/api/profile-import',
+              headers: commonOutputHeaders,
+              JSON: {
+                data: {
+                  type: 'profile',
+                  attributes: commonOutputUserProps,
+                  meta: {
+                    patch_properties: {},
+                  },
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(2),
+          },
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: subscribeEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-create-jobs',
+              headers: commonOutputHeaders,
+              JSON: {
+                data: {
+                  type: 'profile-subscription-bulk-create-job',
+                  attributes: commonOutputSubscriptionProps,
+                  relationships: subscriptionRelations,
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(2),
+          },
+        ],
+      },
+    },
+  },
+  {
     id: 'klaviyo-identify-150624-test-2',
     name: 'klaviyo',
     description:

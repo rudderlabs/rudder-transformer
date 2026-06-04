@@ -540,7 +540,7 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
   };
 
   // Klaviyo requires subscriptions for both subscribe and unsubscribe jobs.
-  if (operation === 'subscribe' && subscribeConsent) {
+  if (operation === 'subscribe') {
     updateProfileWithConsents(profileAttributes, subscribeConsent, email, phone);
   } else if (operation === 'unsubscribe') {
     updateProfileWithConsents(profileAttributes, subscribeConsent, email, phone, 'UNSUBSCRIBED');

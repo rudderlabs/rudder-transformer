@@ -42,7 +42,7 @@ const commonOutputHeaders = {
   Accept: 'application/json',
   Authorization: authHeader1,
   'Content-Type': 'application/json',
-  revision: '2024-10-15',
+  revision: '2026-04-15',
 };
 const profileAttributes = {
   email: 'test@rudderstack.com',

@@ -114,14 +114,14 @@ const commonOutputHeaders = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  revision: '2024-10-15',
+  revision: '2026-04-15',
 };
 
-const commonOutputHeadersForOct2024 = {
+const commonOutputHeadersV2 = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  revision: '2024-10-15',
+  revision: '2026-04-15',
 };
 
 const anonymousId = '97c46c81-3140-456d-b2a9-690d70aaca35';
@@ -550,7 +550,7 @@ export const identifyData: ProcessorTestData[] = [
               method: 'POST',
               endpoint: userProfileCommonEndpoint,
               endpointPath: '/api/profile-import',
-              headers: commonOutputHeadersForOct2024,
+              headers: commonOutputHeadersV2,
               JSON: {
                 data: {
                   type: 'profile',
@@ -578,7 +578,7 @@ export const identifyData: ProcessorTestData[] = [
               method: 'POST',
               endpoint: subscribeEndpoint,
               endpointPath: '/api/profile-subscription-bulk-create-jobs',
-              headers: commonOutputHeadersForOct2024,
+              headers: commonOutputHeadersV2,
               JSON: {
                 data: {
                   type: 'profile-subscription-bulk-create-job',

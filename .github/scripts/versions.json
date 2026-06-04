@@ -183,10 +183,10 @@
   },
   {
     "Destination": "Klaviyo",
-    "Version currently referred in CloudMode Services": "/api/profiles, /api/profile-import, /api/events, /api/profile-subscription-bulk-create-jobs, /api/profile-subscription-bulk-delete-jobs (revision headers: 2023-02-22, 2024-06-15)",
+    "Version currently referred in CloudMode Services": "/api/profiles, /api/profile-import, /api/events, /api/profile-subscription-bulk-create-jobs, /api/profile-subscription-bulk-delete-jobs (revision headers: 2023-02-22 (legacy fallback), 2026-04-15 (default v2))",
     "Link to check Versions documentation": "https://developers.klaviyo.com/en/reference/api_overview",
-    "Latest Version rolled out": "2025-04-15",
-    "Sunset Date Current Version used in backend": "2023-02-22 → till 2025-02-22\n2024-06-15 → till 2026-06-15"
+    "Latest Version rolled out": "2026-04-15",
+    "Sunset Date Current Version used in backend": "2023-02-22 → deprecated/retired upstream; retained in transformer as explicit rollback compatibility path\n2026-04-15 → active default revision for v2"
   },
   {
     "Destination": "LaunchDarkly Segment",

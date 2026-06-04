@@ -91,8 +91,8 @@ const WhiteListedTraitsV2 = [
   'address',
 ];
 const destType = 'klaviyo';
-// api version used
-const revision = '2024-10-15';
+// Shared revision header for v2/default Klaviyo requests.
+const revision = '2026-04-15';
 
 module.exports = {
   BASE_ENDPOINT,

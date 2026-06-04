@@ -426,7 +426,7 @@ const getProfileMetadataAndMetadataFields = (message) => {
 };
 
 /**
- * Following function is used to construct profile object for version 15-06-2024
+ * Following function is used to construct profile object for v2 revision flow
  * If we have isIdentifyCall as true then there are two extra scenarios
  *  1. `enforceEmailAsPrimary` config kicks in and if email or phone is not present we throw an error
  *  2. Place of Metadata object in payload for klaviyo is a little but different

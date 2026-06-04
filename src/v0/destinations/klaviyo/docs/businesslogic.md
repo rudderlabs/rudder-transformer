@@ -10,10 +10,11 @@ The Klaviyo destination supports two API versions:
 
 | Config Value | API Revision | Status            |
 | ------------ | ------------ | ----------------- |
-| `v1`         | `2023-02-22` | Deprecated        |
-| `v2`         | `2024-10-15` | Current (Default) |
+| `v1`         | `2023-02-22` | Legacy Fallback   |
+| `v2`         | `2026-04-15` | Current (Default) |
 
 The API version is selected via `destination.Config.apiVersion` and affects endpoints, request formats, and available features.
+The v1 path is intentionally retained as a rollback/compatibility mode while live customer-config migration audit is in progress.
 
 ## API Endpoints and Request Flow
 
@@ -74,7 +75,7 @@ The API version is selected via `destination.Config.apiVersion` and affects endp
      Authorization: Klaviyo-API-Key {privateApiKey}
      Content-Type: application/json
      Accept: application/json
-     revision: 2024-10-15
+     revision: 2026-04-15
    ```
 
 **RudderStack Input → V2 Profile Import** (Identify call):
@@ -320,7 +321,7 @@ The API version is selected via `destination.Config.apiVersion` and affects endp
      Authorization: Klaviyo-API-Key {privateApiKey}
      Content-Type: application/json
      Accept: application/json
-     revision: 2023-02-22 (v1) or 2024-10-15 (v2)
+     revision: 2023-02-22 (v1) or 2026-04-15 (v2)
    ```
 
 **Payload Structure**:

@@ -14,8 +14,8 @@ Implementation in **JavaScript**
 - **Public API Key**: Required for client-side SDK implementations (device mode)
 
 - **API Version**: Specifies the Klaviyo API revision to use
-  - `v1`: Uses revision `2023-02-22` (deprecated, scheduled for removal)
-  - `v2`: Uses revision `2024-10-15` (recommended, default)
+  - `v1`: Uses revision `2023-02-22` (legacy fallback compatibility path)
+  - `v2`: Uses revision `2026-04-15` (recommended, default)
 
 ### Optional Settings
 
@@ -281,7 +281,7 @@ The transformer groups consecutive events of the same type to maintain ordering 
 ### Current Version
 
 - **V1 API**: Revision `2023-02-22` (deprecated)
-- **V2 API**: Revision `2024-10-15` (current default)
+- **V2 API**: Revision `2026-04-15` (current default)
 
 ### API Version Lifecycle
 
@@ -293,10 +293,10 @@ Klaviyo provides **2 years** of support for each API revision:
 
 ### Version Deprecation Schedule
 
-| Revision   | Status     | Planned Retirement |
-| ---------- | ---------- | ------------------ |
-| 2023-02-22 | Deprecated | ~February 2025     |
-| 2024-10-15 | Stable     | ~October 2026      |
+| Revision   | Status                                  | Planned Retirement |
+| ---------- | --------------------------------------- | ------------------ |
+| 2023-02-22 | Deprecated upstream, retained as fallback | See Klaviyo policy |
+| 2026-04-15 | Stable default for `apiVersion: v2`    | See Klaviyo policy |
 
 **Recommendation**: Use `apiVersion: v2` for new integrations and upgrade existing integrations to avoid deprecation.
 

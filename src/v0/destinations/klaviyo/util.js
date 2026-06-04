@@ -487,22 +487,39 @@ const constructProfile = (message, destination, isIdentifyCall) => {
   return { data };
 };
 
-/** This function update profile with consents for subscribing to email and/or phone
+/** This function update profile with consent state for email and/or phone
  * @param {*} profileAttributes
  * @param {*} subscribeConsent
  * @param {*} email
  * @param {*} phone
+ * @param {*} consentStatus
  */
-const updateProfileWithConsents = (profileAttributes, subscribeConsent, email, phone) => {
+const updateProfileWithConsents = (
+  profileAttributes,
+  subscribeConsent,
+  email,
+  phone,
+  consentStatus = 'SUBSCRIBED',
+) => {
   let consent = subscribeConsent;
+  // When consent is not explicitly provided, infer channels from identifiers.
+  if (!consent) {
+    consent = [];
+    if (email) {
+      consent.push('email');
+    }
+    if (phone) {
+      consent.push('sms');
+    }
+  }
   if (!Array.isArray(consent)) {
     consent = [consent];
   }
   if (consent.includes('email') && email) {
-    set(profileAttributes, 'subscriptions.email.marketing.consent', 'SUBSCRIBED');
+    set(profileAttributes, 'subscriptions.email.marketing.consent', consentStatus);
   }
   if (consent.includes('sms') && phone) {
-    set(profileAttributes, 'subscriptions.sms.marketing.consent', 'SUBSCRIBED');
+    set(profileAttributes, 'subscriptions.sms.marketing.consent', consentStatus);
   }
 };
 /**
@@ -522,9 +539,11 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
     phone_number: phone,
   };
 
-  // used only for subscription and not for unsubscription
+  // Klaviyo requires subscriptions for both subscribe and unsubscribe jobs.
   if (operation === 'subscribe' && subscribeConsent) {
     updateProfileWithConsents(profileAttributes, subscribeConsent, email, phone);
+  } else if (operation === 'unsubscribe') {
+    updateProfileWithConsents(profileAttributes, subscribeConsent, email, phone, 'UNSUBSCRIBED');
   }
 
   const profile = removeUndefinedAndNullValues({

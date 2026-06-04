@@ -1609,12 +1609,18 @@ export const dataV2: RouterTestData[] = [
                                 type: 'profile',
                                 attributes: {
                                   email: 'testklaviyo3@rs.com',
+                                  subscriptions: {
+                                    email: { marketing: { consent: 'UNSUBSCRIBED' } },
+                                  },
                                 },
                               },
                               {
                                 type: 'profile',
                                 attributes: {
                                   email: 'testklaviyo4@rs.com',
+                                  subscriptions: {
+                                    email: { marketing: { consent: 'UNSUBSCRIBED' } },
+                                  },
                                 },
                               },
                             ],
@@ -1996,12 +2002,18 @@ export const dataV2: RouterTestData[] = [
                                 type: 'profile',
                                 attributes: {
                                   email: 'testklaviyo2@rs.com',
+                                  subscriptions: {
+                                    email: { marketing: { consent: 'UNSUBSCRIBED' } },
+                                  },
                                 },
                               },
                               {
                                 type: 'profile',
                                 attributes: {
                                   email: 'testklaviyo3@rs.com',
+                                  subscriptions: {
+                                    email: { marketing: { consent: 'UNSUBSCRIBED' } },
+                                  },
                                 },
                               },
                             ],

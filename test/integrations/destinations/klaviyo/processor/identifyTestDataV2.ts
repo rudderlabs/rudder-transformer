@@ -96,6 +96,10 @@ const commonOutputUnsubscriptionProps = {
         attributes: {
           email: 'test@rudderstack.com',
           phone_number: '+12 345 578 900',
+          subscriptions: {
+            email: { marketing: { consent: 'UNSUBSCRIBED' } },
+            sms: { marketing: { consent: 'UNSUBSCRIBED' } },
+          },
         },
       },
     ],

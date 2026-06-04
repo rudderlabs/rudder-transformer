@@ -198,7 +198,6 @@ describe('fetchWithDnsWrapper', () => {
 
     expect(secondCallAgent).toBe(firstCallAgent);
   });
-
 });
 
 describe('blockLocalhostRequests via fetchWithDnsWrapper', () => {

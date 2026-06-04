@@ -117,14 +117,15 @@ export class TestEnvironment {
     this.originalEnv = {
       CONFIG_BACKEND_URL: process.env.CONFIG_BACKEND_URL,
       ENABLE_FUNCTIONS: process.env.ENABLE_FUNCTIONS,
-      ALLOW_LOCALHOST_FETCH: process.env.ALLOW_LOCALHOST_FETCH,
+      ALLOW_IP_RANGES: process.env.ALLOW_IP_RANGES,
     };
 
     // Set environment variables to point to mock servers
     process.env.CONFIG_BACKEND_URL = this.configBackend.getBaseUrl();
     process.env.ENABLE_FUNCTIONS = 'true';
     process.env.MOCK_EXTERNAL_API_URL = this.externalApiServer.getBaseUrl();
-    process.env.ALLOW_LOCALHOST_FETCH = 'true';
+    // Mock servers bind to 127.0.0.1; allow loopback through the SSRF guard.
+    process.env.ALLOW_IP_RANGES = '127.0.0.0/8,::1/128';
 
     console.log(`[TestEnvironment] Setup complete:`);
     console.log(`  - Config Backend: ${this.configBackend.getBaseUrl()}`);

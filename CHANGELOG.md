@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.134.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.133.3...v1.134.0) (2026-06-02)
+
+
+### Features
+
+* **custom_audience:** replace json-template-engine with JSONata ([#5195](https://github.com/rudderlabs/rudder-transformer/issues/5195)) ([cadd1bc](https://github.com/rudderlabs/rudder-transformer/commit/cadd1bc6449413aff7b34e669fd6c0192a7c775d))
+* **custom_audience:** support useInsertConfig toggle for UPDATE action ([#5234](https://github.com/rudderlabs/rudder-transformer/issues/5234)) ([6b4feef](https://github.com/rudderlabs/rudder-transformer/commit/6b4feefde63f8626eeb1a2e79e55cb86c1a8b28c))
+* **reddit:** add dynamic action_source, event_source_url, and partner to v3 CAPI ([#5204](https://github.com/rudderlabs/rudder-transformer/issues/5204)) ([7dd635c](https://github.com/rudderlabs/rudder-transformer/commit/7dd635c8f2a2312ccd837dc84f1c566d0616eadb))
+
+
+### Bug Fixes
+
+* **audienceUtils:** non-string values silently converted to strings in audience record output ([#5249](https://github.com/rudderlabs/rudder-transformer/issues/5249)) ([7346eb6](https://github.com/rudderlabs/rudder-transformer/commit/7346eb65a7c8fcd943c8806177413506f1c66fbc))
+* **custom_audience:** add IVM cache heap metrics and fix TTL purging ([#5239](https://github.com/rudderlabs/rudder-transformer/issues/5239)) ([e4bf74a](https://github.com/rudderlabs/rudder-transformer/commit/e4bf74adb7e012352927d5325e7eaf567694212a))
+* **custom_audience:** boolean false silently dropped from audience record output ([#5246](https://github.com/rudderlabs/rudder-transformer/issues/5246)) ([fa26f06](https://github.com/rudderlabs/rudder-transformer/commit/fa26f064e5c15e59fbaffeac2753cbd42d277e44))
+* **custom_audience:** co-batch updates with insert config ([#5241](https://github.com/rudderlabs/rudder-transformer/issues/5241)) ([2717365](https://github.com/rudderlabs/rudder-transformer/commit/2717365063d9f6dcdf07beb11e0d04e4f34d039e))
+* **custom_audience:** parse-template API breaks for update action with useInsertConfig ([#5237](https://github.com/rudderlabs/rudder-transformer/issues/5237)) ([6c4961c](https://github.com/rudderlabs/rudder-transformer/commit/6c4961ce0926cd42bc511e2e55e2a13b8af66cb7))
+* **custom_audience:** read message.identifiers instead of message.fields ([#5215](https://github.com/rudderlabs/rudder-transformer/issues/5215)) ([db92a1f](https://github.com/rudderlabs/rudder-transformer/commit/db92a1fdeac936246439c8fe73492b0e4a39705d))
+* **custom_audience:** relax parse-template action schema requirements ([#5242](https://github.com/rudderlabs/rudder-transformer/issues/5242)) ([1436a85](https://github.com/rudderlabs/rudder-transformer/commit/1436a857b334a981aed38788d78becd2974d5f1e))
+* **custom_audience:** require required fields and allow extra custom mappings ([#5240](https://github.com/rudderlabs/rudder-transformer/issues/5240)) ([0736781](https://github.com/rudderlabs/rudder-transformer/commit/07367811bef1b9054ff73fde48a371408fb9e9f0))
+* **custom_audience:** sandbox bundle not found ([#5229](https://github.com/rudderlabs/rudder-transformer/issues/5229)) ([4b43422](https://github.com/rudderlabs/rudder-transformer/commit/4b4342207a729f464c63747f6eb09a54087ab1f2))
+* **event-tester:** batch-aware test endpoint with per-event error isolation ([#5232](https://github.com/rudderlabs/rudder-transformer/issues/5232)) ([175ab77](https://github.com/rudderlabs/rudder-transformer/commit/175ab77b6c2c0a64818577f38a3dc2e6b3d4c880))
+
 ### [1.133.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.133.2...v1.133.3) (2026-06-01)
 
 

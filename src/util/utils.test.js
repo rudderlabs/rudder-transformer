@@ -199,17 +199,6 @@ describe('fetchWithDnsWrapper', () => {
     expect(secondCallAgent).toBe(firstCallAgent);
   });
 
-  it('should bypass DNS wrapper when DNS_RESOLVE_FETCH_HOST is not true', async () => {
-    process.env.DNS_RESOLVE_FETCH_HOST = 'false';
-
-    await fetchWithDnsWrapper({}, 'https://example.com/api');
-
-    expect(fetch).toHaveBeenCalledWith(
-      'https://example.com/api',
-      expect.objectContaining({ agent: expect.any(Object) }),
-    );
-    expect(stats.timing).not.toHaveBeenCalled();
-  });
 });
 
 describe('blockLocalhostRequests via fetchWithDnsWrapper', () => {

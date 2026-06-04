@@ -110,9 +110,6 @@ const sharedAgentOptions = {
   maxFreeSockets: SHARED_HTTP_AGENT_MAX_FREE_SOCKETS,
 };
 
-const sharedHttpAgent = new http.Agent(sharedAgentOptions);
-const sharedHttpsAgent = new https.Agent(sharedAgentOptions);
-
 const sharedHttpAgentWithLookup = new http.Agent({
   ...sharedAgentOptions,
   lookup: staticLookup(),
@@ -156,11 +153,6 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   blockInvalidProtocolRequests(fetchURL);
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
-
-  if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
-    fetchOptions.agent = schemeName === 'https' ? sharedHttpsAgent : sharedHttpAgent;
-    return await fetch(fetchURL, fetchOptions);
-  }
 
   const onDnsResolved = ({ resolveStartTime, cacheHit, error }) => {
     // Destructure to exclude isSuccess which is not part of fetch_dns_resolve_time labelset

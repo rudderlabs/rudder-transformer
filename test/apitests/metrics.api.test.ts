@@ -34,7 +34,7 @@ const createMetricsServer = (
   new Promise((resolve, reject) => {
     jest.isolateModules(() => {
       try {
-        process.env = { ...OLD_ENV, ...envOverrides };
+        process.env = { ...OLD_ENV, ...envOverrides, ENABLE_STATS: 'true' };
 
         const { addStatMiddleware } = require('../../src/middleware');
         const { metricsRouter } = require('../../src/routes/metricsRouter');
@@ -207,7 +207,7 @@ describe('metrics endpoint (CLUSTER_ENABLED=true, USE_METRICS_AGGREGATOR=true)',
   test('GET /metrics returns 400 when no cluster workers are available', async () => {
     const response = await request(metricsServer).get('/metrics');
     expect(response.status).toBe(400);
-    expect(response.text).toContain('timed out');
+    expect(response.text).toContain('Metrics request timed out');
   }, 5000);
 
   test('GET /resetMetrics returns 200', async () => {

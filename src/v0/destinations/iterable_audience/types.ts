@@ -20,6 +20,15 @@ export const IterableAccountConfigSchema = z
 
 export type IterableAccountConfig = z.infer<typeof IterableAccountConfigSchema>;
 
+// Destination config: the account-level auth/project fields extended with the
+// destination `name`. Named `IterableDestinationConfig` to match the
+// `<Dest>DestinationConfig` convention used by the other audience destinations.
+export const IterableDestinationConfigSchema = IterableAccountConfigSchema.extend({
+  name: z.string().min(1),
+});
+
+export type IterableDestinationConfig = z.infer<typeof IterableDestinationConfigSchema>;
+
 // ---------------------------------------------------------------------------
 // Connection config (connection.config.destination)
 // ---------------------------------------------------------------------------

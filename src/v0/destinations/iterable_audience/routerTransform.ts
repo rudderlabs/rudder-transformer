@@ -24,21 +24,21 @@ import {
 } from './utils';
 import {
   IterableAudienceRouterRequestSchema,
-  type IterableAccountConfig,
   type IterableAudiencePayload,
   type IterableConnectionConfig,
+  type IterableDestinationConfig,
 } from './types';
 
 class IterableAudienceIntegration extends BatchDestination<
   IterableAudiencePayload,
-  IterableAccountConfig,
+  IterableDestinationConfig,
   { destination: IterableConnectionConfig }
 > {
   // Headers are constant per (destination + connection) — build once.
   private readonly headers: Record<string, string>;
 
   constructor(
-    destination: Destination<IterableAccountConfig>,
+    destination: Destination<IterableDestinationConfig>,
     connection?: Connection<{ destination: IterableConnectionConfig }>,
   ) {
     super(destination, connection);
@@ -54,7 +54,7 @@ class IterableAudienceIntegration extends BatchDestination<
     };
   }
 
-  private get accountConfig(): IterableAccountConfig {
+  private get accountConfig(): IterableDestinationConfig {
     return this.destination.Config;
   }
 

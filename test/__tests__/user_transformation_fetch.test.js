@@ -30,7 +30,6 @@ const versionId = "testVersionId";
 describe("User transformation fetch tests", () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
   });
   afterAll(() => {});
 
@@ -128,11 +127,14 @@ describe("User transformation fetch tests", () => {
       }
       `
     };
-    const errMsg = "invalid url, localhost requests are not allowed";
-    
+    // localhost is a name now (no fast-path); it resolves then the IP-layer guard blocks the loopback result.
+    const errMsg =
+      "request to http://localhost:1000/dummyUrl failed, reason: cannot use 127.0.0.1 as IP address for localhost";
+
+    mockResolver.mockResolvedValue([{ address: '127.0.0.1', ttl: 300 }]);
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
-    
-    expect(mockResolver).toHaveBeenCalledTimes(0);
+
+    expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
     });
@@ -234,9 +236,11 @@ describe("User transformation fetch tests", () => {
     };
     const errMsg = "ERROR";
 
+    // localhost is a name now (no fast-path) so it is resolved before the loopback result is blocked.
+    mockResolver.mockResolvedValue([{ address: '127.0.0.1', ttl: 300 }]);
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
-    
-    expect(mockResolver).toHaveBeenCalledTimes(0);
+
+    expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
     });
@@ -285,10 +289,11 @@ describe("User transformation fetch tests", () => {
         }
       `
     };
-    const errMsg = "invalid url, localhost requests are not allowed";
-    
+    // IP literal is blocked up front by the agent factory; no DNS lookup happens.
+    const errMsg = "blocked request to non-public address: 127.0.0.1";
+
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
-    
+
     expect(mockResolver).toHaveBeenCalledTimes(0);
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
@@ -356,7 +361,6 @@ describe("User transformation fetch tests", () => {
 describe("User transformation fetch tests with IVM Cache", () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
     process.env.USE_IVM_CACHE = 'true';
     process.env.IVM_CACHE_STRATEGY = 'isolate';
     ivmCacheManager.initializeStrategy();
@@ -410,9 +414,11 @@ describe("User transformation fetch tests with IVM Cache", () => {
     };
     const errMsg = "ERROR";
     customTransformStore.getTransformationCode.mockResolvedValue(trRevCode);
+    // localhost is a name now (no fast-path) so it is resolved before the loopback result is blocked.
+    mockResolver.mockResolvedValue([{ address: '127.0.0.1', ttl: 300 }]);
     const output = await userTransformHandler(inputData, versionId, []);
-    
-    expect(mockResolver).toHaveBeenCalledTimes(0);
+
+    expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
     output.forEach(ev => {
       expect(ev.transformedEvent.errMsg).toEqual(errMsg);
     });
@@ -467,10 +473,11 @@ describe("User transformation fetch tests with IVM Cache", () => {
         }
       `
     };
-    const errMsg = "invalid url, localhost requests are not allowed";
+    // IP literal is blocked up front by the agent factory; no DNS lookup happens.
+    const errMsg = "blocked request to non-public address: 127.0.0.1";
     customTransformStore.getTransformationCode.mockResolvedValue(trRevCode);
     const output = await userTransformHandler(inputData, versionId, []);
-    
+
     expect(mockResolver).toHaveBeenCalledTimes(0);
     output.forEach(ev => {
       expect(ev.transformedEvent.errMsg).toEqual(errMsg);

@@ -17,7 +17,7 @@ import { processRecordInputs } from './recordTransform';
 import { populateIdentifiers, responseBuilder, getOperationAudienceId } from './util';
 import type { GARLDestination, Message, OfflineDataJobPayload, RecordInput } from './types';
 import { Metadata } from '../../../types';
-import { isDataManagerAPIEnabled } from './dataManager/featureFlag';
+import { isDataManagerAccount } from './dataManager/util';
 import {
   processRouterDest as dataManagerProcessRouterDest,
   transformAudienceListEvent as dataManagerTransformAudienceListEvent,
@@ -144,9 +144,7 @@ const process = async (event: {
   destination: GARLDestination;
 }) => {
   const { metadata, message, destination } = event;
-  const accessToken = getAccessToken(metadata, 'access_token');
-
-  if (await isDataManagerAPIEnabled(metadata.workspaceId, metadata.destinationId, accessToken)) {
+  if (isDataManagerAccount(destination)) {
     return dataManagerTransformAudienceListEvent({
       metadata,
       message: message as unknown as DMGARLAudienceMessage,
@@ -158,13 +156,9 @@ const process = async (event: {
 };
 
 const processRouterDest = async (inputs: { message: Message }[], reqMetadata: unknown) => {
-  const { workspaceId, destinationId } = (inputs[0] as unknown as RecordInput).metadata;
-  const accessToken = getAccessToken(
-    (inputs[0] as unknown as RecordInput).metadata,
-    'access_token',
-  );
+  const { destination } = inputs[0] as unknown as RecordInput;
 
-  if (await isDataManagerAPIEnabled(workspaceId, destinationId, accessToken)) {
+  if (isDataManagerAccount(destination)) {
     return dataManagerProcessRouterDest(inputs as unknown as DMGARLRouterRequest[], reqMetadata);
   }
 

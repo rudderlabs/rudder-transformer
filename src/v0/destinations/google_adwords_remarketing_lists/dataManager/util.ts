@@ -12,7 +12,11 @@ import logger from '../../../../logger';
 import { GARL_FIELD_CONFIG } from '../util';
 import { TYPEOFLIST, consentConfigMap, destType } from '../config';
 import { populateConsentFromConfig } from '../../../util/googleUtils';
-import { DATA_MANAGER_DEFAULT_ACCOUNT_TYPE, dmUserIdentifierMapping } from './config';
+import {
+  DATA_MANAGER_DEFAULT_ACCOUNT_TYPE,
+  DM_ACCOUNT_DEFINITION_NAME,
+  dmUserIdentifierMapping,
+} from './config';
 import type {
   AudienceMember,
   Consent,
@@ -23,6 +27,7 @@ import type {
   GARLIngestAPIPayload,
   GARLRemoveAPIPayload,
   GARLBatchRequest,
+  GARLDestination,
 } from './types';
 import type { GARLDestinationConfig } from '../types';
 
@@ -39,6 +44,14 @@ interface AudienceDestinationContext {
 }
 
 const ADDRESS_SCHEMA_FIELDS = ['firstName', 'lastName', 'country', 'postalCode'];
+
+/**
+ * The destination uses the Data Manager API when it is connected to the
+ * dedicated DM OAuth account definition. Decided purely from the connected
+ * account definition name — no token, no Redis, no network call.
+ */
+export const isDataManagerAccount = (destination?: GARLDestination): boolean =>
+  destination?.deliveryAccount?.accountDefinitionName === DM_ACCOUNT_DEFINITION_NAME;
 
 // Mapping from GoogleUtils consent values (GRANTED/DENIED) to DM API values
 const CONSENT_VALUE_MAP: Partial<Record<string, ConsentStatus>> = {

@@ -1,5 +1,51 @@
-import { buildMemberConsentFromConfig, buildAudienceMemberFromProcessedFields } from './util';
-import type { Consent, AudienceMember } from './types';
+import {
+  buildMemberConsentFromConfig,
+  buildAudienceMemberFromProcessedFields,
+  isDataManagerAccount,
+} from './util';
+import { DM_ACCOUNT_DEFINITION_NAME } from './config';
+import type { Consent, AudienceMember, GARLDestination } from './types';
+
+const LEGACY_ACCOUNT_DEFINITION_NAME = 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_OAUTH';
+
+const buildDestination = (accountDefinitionName?: string): GARLDestination =>
+  ({
+    deliveryAccount:
+      accountDefinitionName === undefined ? undefined : ({ accountDefinitionName } as never),
+  }) as unknown as GARLDestination;
+
+describe('isDataManagerAccount', () => {
+  const testCases: {
+    description: string;
+    destination?: GARLDestination;
+    expected: boolean;
+  }[] = [
+    {
+      description: 'DM account definition name → true',
+      destination: buildDestination(DM_ACCOUNT_DEFINITION_NAME),
+      expected: true,
+    },
+    {
+      description: 'legacy account definition name → false',
+      destination: buildDestination(LEGACY_ACCOUNT_DEFINITION_NAME),
+      expected: false,
+    },
+    {
+      description: 'undefined account definition name → false',
+      destination: buildDestination(undefined),
+      expected: false,
+    },
+    {
+      description: 'missing destination → false',
+      destination: undefined,
+      expected: false,
+    },
+  ];
+
+  it.each(testCases)('$description', ({ destination, expected }) => {
+    expect(isDataManagerAccount(destination)).toBe(expected);
+  });
+});
 
 describe('buildMemberConsentFromConfig', () => {
   const testCases: {

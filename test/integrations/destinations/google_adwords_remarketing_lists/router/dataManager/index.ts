@@ -1,16 +1,15 @@
 /**
  * GARL (Google Ads Remarketing Lists) - Router Tests (Data Manager API)
  *
- * Mirrors the existing router/data.ts tests but routes through the DM API path:
- *   - workspaceId = 'dm-enabled-workspaceId' (registered in test/setup.ts)
- *   - access_token = secret4 (tokenInfo mock returns datamanager scope in network.ts)
- *
- * Redis mocking is applied via mockFns to avoid ETIMEDOUT during feature-flag checks.
+ * Mirrors the existing router/data.ts tests but routes through the DM API path,
+ * selected purely from the connected account:
+ *   destination.deliveryAccount.accountDefinitionName === DM_ACCOUNT_DEFINITION_NAME
+ *   (the dedicated DM OAuth account is what selects the Data Manager API path).
  */
 
 import sha256 from 'sha256';
-import { RedisDB } from '../../../../../../src/util/redis/redisConnector';
 import { secret4, authHeader4 } from '../../maskedSecrets';
+import { DM_ACCOUNT_DEFINITION_NAME } from '../../../../../../src/v0/destinations/google_adwords_remarketing_lists/dataManager/config';
 import { dmAudienceRequest } from './audience';
 import {
   dmDestination,
@@ -27,12 +26,6 @@ import {
 } from './record';
 
 const DM_WORKSPACE_ID = 'dm-enabled-workspaceId';
-
-// ── Redis mock ────────────────────────────────────────────────────────────────
-const mockFns = (_: unknown) => {
-  jest.spyOn(RedisDB, 'getVal').mockResolvedValue(null);
-  jest.spyOn(RedisDB, 'setVal').mockResolvedValue(undefined);
-};
 
 // ── Test cases ────────────────────────────────────────────────────────────────
 export const dmRouterData = [
@@ -131,7 +124,6 @@ export const dmRouterData = [
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 02: VDMv1 record insert → DM ingest ──────────────────────────────
@@ -229,7 +221,6 @@ export const dmRouterData = [
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 03: Audiencelist — add-only, remove-only, add+remove ─────────────
@@ -532,7 +523,6 @@ export const dmRouterData = [
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 04: Record events — delete/insert/update/invalid action ──────────
@@ -848,7 +838,6 @@ export const dmRouterData = [
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 05: VDMv2 General typeOfList insert → DM ingest ──────────────────
@@ -961,13 +950,18 @@ export const dmRouterData = [
                 Transformations: [],
                 IsConnectionEnabled: true,
                 IsProcessorEnabled: true,
+                deliveryAccount: {
+                  id: 'dm-delivery-account-id',
+                  options: null,
+                  secret: null,
+                  accountDefinitionName: DM_ACCOUNT_DEFINITION_NAME,
+                },
               },
             },
           ],
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 06: VDMv2 UserId typeOfList insert → DM ingest with userIdData ───
@@ -1060,13 +1054,18 @@ export const dmRouterData = [
                 Transformations: [],
                 IsConnectionEnabled: true,
                 IsProcessorEnabled: true,
+                deliveryAccount: {
+                  id: 'dm-delivery-account-id',
+                  options: null,
+                  secret: null,
+                  accountDefinitionName: DM_ACCOUNT_DEFINITION_NAME,
+                },
               },
             },
           ],
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 07: Pre-hashed input with hash required → error
@@ -1116,7 +1115,6 @@ export const dmRouterData = [
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 08: Hash-off plaintext input → error
@@ -1166,7 +1164,6 @@ export const dmRouterData = [
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 09: Field stripping — invalid email stripped, valid fields sent ───
@@ -1262,7 +1259,6 @@ export const dmRouterData = [
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 10: All fields invalid → InstrumentationError ────────────────────
@@ -1310,7 +1306,6 @@ export const dmRouterData = [
         },
       },
     },
-    mockFns,
   },
 
   // ── Test 11: VDMv2 flow — delete/insert×2/update/lol/empty-identifiers ────
@@ -1655,6 +1650,5 @@ export const dmRouterData = [
         },
       },
     },
-    mockFns,
   },
 ];

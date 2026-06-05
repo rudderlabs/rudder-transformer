@@ -17,18 +17,26 @@ const dnsCallbackStorage = new AsyncLocalStorage();
 const BLOCK_HOST_NAMES = process.env.BLOCK_HOST_NAMES || '';
 const BLOCK_HOST_NAMES_LIST = BLOCK_HOST_NAMES.split(',');
 
-// Always-on SSRF denylist: ranges that are never a legitimate outbound target.
-// These are blocked regardless of configuration (only ALLOW_IP_RANGES can
-// exempt them). Operators block additional ranges
-// (e.g. RFC1918 private space, carrier-grade NAT, test-nets) by appending to
-// BLOCK_IP_RANGES.
+// Always-on SSRF denylist: loopback, private, and other non-public ranges a
+// sandboxed transformation must not reach. Secure-by-default — self-hosted
+// installs without a network-layer egress policy rely solely on this list.
+// Legitimate internal fetches must be allow-listed via ALLOW_IP_RANGES;
+// BLOCK_IP_RANGES appends further ranges.
 const BLOCKED_CIDRS = [
-  '127.0.0.0/8', // IPv4 loopback
-  '0.0.0.0/8', // IPv4 unspecified / this-host
-  '169.254.0.0/16', // IPv4 link-local (incl. 169.254.169.254 cloud metadata)
-  '::1/128', // IPv6 loopback
-  '::/128', // IPv6 unspecified
-  'fe80::/10', // IPv6 link-local
+  // IPv4
+  '0.0.0.0/8', // unspecified / this-host
+  '10.0.0.0/8', // RFC1918 private
+  '100.64.0.0/10', // RFC6598 carrier-grade NAT (e.g. EKS VPC-CNI pod CIDRs)
+  '127.0.0.0/8', // loopback
+  '169.254.0.0/16', // link-local (incl. 169.254.169.254 cloud metadata)
+  '172.16.0.0/12', // RFC1918 private
+  '192.168.0.0/16', // RFC1918 private
+  '255.255.255.255/32', // broadcast
+  // IPv6
+  '::1/128', // loopback
+  '::/128', // unspecified
+  'fc00::/7', // unique-local (incl. AWS IPv6 IMDS fd00:ec2::254)
+  'fe80::/10', // link-local
 ];
 
 // Parse a comma-separated env var of CIDRs into ipaddr [addr, prefix] pairs.

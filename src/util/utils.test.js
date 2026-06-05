@@ -9,12 +9,11 @@ jest.mock('dns', () => ({
 }));
 
 // BLOCK_IP_RANGES is additive on top of the always-on core. Set it before utils
-// is required (the denylist is built at module load) to exercise the
-// config-appended ranges. The core ranges (loopback, metadata, unspecified,
-// link-local) are deliberately omitted here, so the cases that rely on them also
-// prove the core blocks with no configuration.
-process.env.BLOCK_IP_RANGES =
-  '10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10,fc00::/7,255.255.255.255/32';
+// is required (the denylist is built at module load) to a range that is NOT in
+// the core (198.18.0.0/15), so it proves the config-appended path. The private/
+// loopback/metadata ranges are already in the core and are asserted without any
+// configuration below.
+process.env.BLOCK_IP_RANGES = '198.18.0.0/15';
 process.env.BLOCK_HOST_NAMES = 'blocked.example.com';
 
 const fetch = require('node-fetch');
@@ -277,6 +276,8 @@ describe('isBlockedIP', () => {
     ['fe80::1', true],
     ['fc00::1', true],
     ['::ffff:127.0.0.1', true],
+    // added via BLOCK_IP_RANGES (additive, not in the always-on core)
+    ['198.18.0.1', true],
     // unparsable / empty fail closed
     ['', true],
     ['not-an-ip', true],

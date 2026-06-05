@@ -16,18 +16,79 @@ const dnsCallbackStorage = new AsyncLocalStorage();
 
 const BLOCK_HOST_NAMES = process.env.BLOCK_HOST_NAMES || '';
 const BLOCK_HOST_NAMES_LIST = BLOCK_HOST_NAMES.split(',');
-const LOCAL_HOST_NAMES_LIST = [
-  'localhost',
-  '127.0.0.1',
-  '0.0.0.0',
-  '[::]',
-  '[::1]',
-  '[::ffff:127.0.0.1]',
-  '[::ffff:7f00:1]',
-];
-const LOCALHOST_OCTET = '127.';
 
-const isBlockedIP = (address) => !address || address.startsWith('127.') || address === '0.0.0.0';
+// Always-on SSRF denylist: loopback, private, and other non-public ranges a
+// sandboxed transformation must not reach. Secure-by-default — self-hosted
+// installs without a network-layer egress policy rely solely on this list.
+// Legitimate internal fetches must be allow-listed via ALLOW_IP_RANGES;
+// BLOCK_IP_RANGES appends further ranges.
+const BLOCKED_CIDRS = [
+  // IPv4
+  '0.0.0.0/8', // unspecified / this-host
+  '10.0.0.0/8', // RFC1918 private
+  '100.64.0.0/10', // RFC6598 carrier-grade NAT (e.g. EKS VPC-CNI pod CIDRs)
+  '127.0.0.0/8', // loopback
+  '169.254.0.0/16', // link-local (incl. 169.254.169.254 cloud metadata)
+  '172.16.0.0/12', // RFC1918 private
+  '192.168.0.0/16', // RFC1918 private
+  '255.255.255.255/32', // broadcast
+  // IPv6
+  '::1/128', // loopback
+  '::/128', // unspecified
+  'fc00::/7', // unique-local (incl. AWS IPv6 IMDS fd00:ec2::254)
+  'fe80::/10', // link-local
+];
+
+// Parse a comma-separated env var of CIDRs into ipaddr [addr, prefix] pairs.
+// Invalid entries are logged and skipped rather than crashing startup.
+const parseCidrConfig = (raw) =>
+  (raw || '')
+    .split(',')
+    .map((cidr) => cidr.trim())
+    .filter(Boolean)
+    .reduce((acc, cidr) => {
+      try {
+        acc.push(ipaddr.parseCIDR(cidr));
+      } catch (error) {
+        logger.error(`Ignoring invalid CIDR "${cidr}": ${error.message}`);
+      }
+      return acc;
+    }, []);
+
+// Always-on core plus any operator-configured ranges; BLOCK_IP_RANGES is additive.
+const BLOCKED_IP_RANGES = [
+  ...parseCidrConfig(BLOCKED_CIDRS.join(',')),
+  ...parseCidrConfig(process.env.BLOCK_IP_RANGES),
+];
+// Exceptions: addresses here are allowed even if they match a blocked range
+// (e.g. ALLOW_IP_RANGES=127.0.0.0/8 to permit loopback in a trusted deployment).
+const ALLOWED_IP_RANGES = parseCidrConfig(process.env.ALLOW_IP_RANGES);
+
+const matchesAnyCidr = (addr, cidrs) =>
+  cidrs.some((cidr) => addr.kind() === cidr[0].kind() && addr.match(cidr));
+
+// SSRF guard. Blocks any address matching the (configured or default) denylist,
+// unless it is explicitly permitted via ALLOWED_IP_RANGES. IPv4-mapped IPv6 is
+// unwrapped first (so ::ffff:127.0.0.1 is treated as 127.0.0.1) and input that
+// cannot be parsed fails closed.
+const isBlockedIP = (address) => {
+  if (!address) {
+    return true;
+  }
+  let addr;
+  try {
+    addr = ipaddr.parse(address);
+  } catch (error) {
+    return true;
+  }
+  if (addr.kind() === 'ipv6' && addr.isIPv4MappedAddress()) {
+    addr = addr.toIPv4Address();
+  }
+  if (matchesAnyCidr(addr, ALLOWED_IP_RANGES)) {
+    return false;
+  }
+  return matchesAnyCidr(addr, BLOCKED_IP_RANGES);
+};
 const RECORD_TYPE_A = 4; // ipv4
 const DNS_CACHE_ENABLED = process.env.DNS_CACHE_ENABLED === 'true';
 const DNS_CACHE_TTL = process.env.DNS_CACHE_TTL ? parseInt(process.env.DNS_CACHE_TTL, 10) : 300;
@@ -69,6 +130,9 @@ const staticLookup =
           onDnsResolved({ resolveStartTime, cacheHit, error: false });
         }
 
+        // Validates the resolved IP of a hostname hop. IP-literal hosts never
+        // reach here (net.connect skips lookup for them); those are checked up
+        // front in ssrfSafeAgentFactory.
         if (isBlockedIP(address)) {
           cb(new Error(`cannot use ${address || 'empty'} as IP address for ${hostname}`), null);
         } else if (options?.all) {
@@ -120,16 +184,49 @@ const sharedHttpsAgentWithLookup = new https.Agent({
   lookup: staticLookup(),
 });
 
-const blockLocalhostRequests = (url) => {
-  if (process.env.ALLOW_LOCALHOST_FETCH === 'true') {
-    return;
+// Per-hop agent selector. node-fetch calls this for the initial request AND for
+// every redirect hop, so it is the SSRF choke point that also sees redirect
+// targets.
+//
+// Why this is needed even though the agents' `lookup` already runs isBlockedIP:
+// net.connect only calls `lookup` when the host is a DNS *name* — for a numeric
+// IP host there is nothing to resolve, so `lookup` (and the isBlockedIP inside
+// it) is skipped entirely. That is exactly how `http://host/redirect?url=
+// http://127.0.0.1:9090` slipped through: the redirect target is an IP literal,
+// so it never reached `lookup`. (node-fetch did reuse the agent on the redirect
+// hop — the literal IP, not the redirect, was the bypass.)
+//
+// So isBlockedIP is enforced in two complementary places, one check, both host
+// forms covered:
+//   - IP-literal hosts -> validated here, before connect (initial + every hop)
+//   - hostname  hosts  -> deferred to the agents' `lookup`, which resolves then
+//                         validates at connect time (covers names + DNS rebinding)
+const ssrfSafeAgentFactory = (parsedURL) => {
+  // Defense-in-depth. node-fetch already rejects non-http(s) before it calls the
+  // agent, so this never fires for real traffic today; it is kept so the egress
+  // protocol allowlist is explicit at the choke point and survives an HTTP-client
+  // upgrade/swap. Valid http/https requests pass through unaffected.
+  if (parsedURL.protocol !== 'http:' && parsedURL.protocol !== 'https:') {
+    throw new Error('invalid protocol, only http and https are supported');
   }
+  // URL.hostname keeps the brackets around IPv6 literals (e.g. "[::1]") per
+  // RFC 3986, but ipaddr rejects bracketed input — ipaddr.isValid("[::1]") is
+  // false while ipaddr.isValid("::1") is true. Without stripping, the isValid
+  // guard below would skip every IPv6 literal and "[::1]" (loopback) would leak.
+  // The anchors peel only the wrapping brackets; it is a no-op for IPv4 and names.
+  const host = parsedURL.hostname.replace(/^\[/, '').replace(/]$/, '');
+  if (ipaddr.isValid(host) && isBlockedIP(host)) {
+    throw new Error(`blocked request to non-public address: ${host}`);
+  }
+  return parsedURL.protocol === 'https:' ? sharedHttpsAgentWithLookup : sharedHttpAgentWithLookup;
+};
+
+// Blocks operator-denylisted hostnames (BLOCK_HOST_NAMES). Localhost and other
+// internal addresses are handled by isBlockedIP (the BLOCKED_CIDRS core) at the
+// agent/lookup layer, so they are not special-cased here.
+const blockLocalhostRequests = (url) => {
   try {
-    const parseUrl = new URL(url);
-    const { hostname } = parseUrl;
-    if (LOCAL_HOST_NAMES_LIST.includes(hostname) || hostname.startsWith(LOCALHOST_OCTET)) {
-      throw new Error('localhost requests are not allowed');
-    }
+    const { hostname } = new URL(url);
     if (BLOCK_HOST_NAMES_LIST.includes(hostname)) {
       throw new Error('blocked host requests are not allowed');
     }
@@ -152,7 +249,6 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   blockLocalhostRequests(fetchURL);
   blockInvalidProtocolRequests(fetchURL);
   const fetchOptions = args[1] || {};
-  const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
 
   const onDnsResolved = ({ resolveStartTime, cacheHit, error }) => {
     // Destructure to exclude isSuccess which is not part of fetch_dns_resolve_time labelset
@@ -163,8 +259,7 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
     });
   };
 
-  fetchOptions.agent =
-    schemeName === 'https' ? sharedHttpsAgentWithLookup : sharedHttpAgentWithLookup;
+  fetchOptions.agent = ssrfSafeAgentFactory;
   return dnsCallbackStorage.run(onDnsResolved, () => fetch(fetchURL, fetchOptions));
 };
 
@@ -310,6 +405,8 @@ module.exports = {
   logProcessInfo,
   extractStackTraceUptoLastSubstringMatch,
   fetchWithDnsWrapper,
+  ssrfSafeAgentFactory,
+  isBlockedIP,
   staticLookup,
   dnsCallbackStorage,
   shouldSkipDynamicConfigProcessing,

@@ -257,6 +257,32 @@ export const networkCallsData = [
     },
   },
   {
+    // COQL injection regression: this mock only matches the *escaped* query.
+    // The single quotes from the identifier value are backslash-escaped, keeping them inside the
+    // string literal instead of breaking out into `OR id IS NOT NULL ...`.
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query: "SELECT id FROM Leads WHERE Email = 'x\\' OR id IS NOT NULL OR id != \\''",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<ESCAPED_LOOKUP_RECORD_ID>',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
     httpReq: {
       url: 'https://www.zohoapis.in/crm/v6/coql',
       headers: {

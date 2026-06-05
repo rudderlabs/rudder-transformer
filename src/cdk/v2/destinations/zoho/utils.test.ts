@@ -104,6 +104,46 @@ describe('searchRecordIdV2', () => {
   };
   const mockQuery = "SELECT id FROM Leads WHERE Email = 'test@example.com'";
 
+  // Many-field identifier payload used to exercise the recursive AND grouping. Every key is
+  // mapped as an identifier below so the allowlist keeps them all (see identifierMappings override).
+  const multiRecordIdentifierFields = {
+    Name: 'rid1927ce14265c006ae11555ec6e1cdbbac',
+    Name1: 'Liam Bailey',
+    Has_Chargeback: true,
+    Last_Client_Purchase: '2021-06-15T00:00:00Z',
+    Purchase_Category: ['category1', 'category2'],
+    Lifetime_Client_Revenue: 1200,
+    Name2: 'Olivia Smith',
+    Has_Chargeback2: false,
+    Last_Client_Purchase2: '2022-01-10T00:00:00Z',
+    Purchase_Category2: ['category3', 'category4'],
+    Lifetime_Client_Revenue2: 800,
+    Name3: 'Noah Johnson',
+    Has_Chargeback3: true,
+    Last_Client_Purchase3: '2023-03-22T00:00:00Z',
+    Purchase_Category3: ['category5'],
+    Lifetime_Client_Revenue3: 1500,
+    Name4: 'Emma Davis',
+    Has_Chargeback4: false,
+    Last_Client_Purchase4: '2023-07-01T00:00:00Z',
+    Purchase_Category4: ['category6', 'category7'],
+    Lifetime_Client_Revenue4: 900,
+    Name5: 'James Wilson',
+    Has_Chargeback5: true,
+    Last_Client_Purchase5: '2022-11-05T00:00:00Z',
+    Purchase_Category5: ['category8'],
+    Lifetime_Client_Revenue5: 1100,
+    Name6: 'Sophia Miller',
+    Has_Chargeback6: false,
+    Last_Client_Purchase6: '2024-01-12T00:00:00Z',
+    Purchase_Category6: ['category9', 'category10'],
+    Lifetime_Client_Revenue6: 1300,
+  };
+  const multiRecordIdentifierMappings = Object.keys(multiRecordIdentifierFields).map((field) => ({
+    from: field,
+    to: field,
+  }));
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -221,39 +261,8 @@ describe('searchRecordIdV2', () => {
       },
     },
     {
-      fields: {
-        Name: 'rid1927ce14265c006ae11555ec6e1cdbbac',
-        Name1: 'Liam Bailey',
-        Has_Chargeback: true,
-        Last_Client_Purchase: '2021-06-15T00:00:00Z',
-        Purchase_Category: ['category1', 'category2'],
-        Lifetime_Client_Revenue: 1200,
-        Name2: 'Olivia Smith',
-        Has_Chargeback2: false,
-        Last_Client_Purchase2: '2022-01-10T00:00:00Z',
-        Purchase_Category2: ['category3', 'category4'],
-        Lifetime_Client_Revenue2: 800,
-        Name3: 'Noah Johnson',
-        Has_Chargeback3: true,
-        Last_Client_Purchase3: '2023-03-22T00:00:00Z',
-        Purchase_Category3: ['category5'],
-        Lifetime_Client_Revenue3: 1500,
-        Name4: 'Emma Davis',
-        Has_Chargeback4: false,
-        Last_Client_Purchase4: '2023-07-01T00:00:00Z',
-        Purchase_Category4: ['category6', 'category7'],
-        Lifetime_Client_Revenue4: 900,
-        Name5: 'James Wilson',
-        Has_Chargeback5: true,
-        Last_Client_Purchase5: '2022-11-05T00:00:00Z',
-        Purchase_Category5: ['category8'],
-        Lifetime_Client_Revenue5: 1100,
-        Name6: 'Sophia Miller',
-        Has_Chargeback6: false,
-        Last_Client_Purchase6: '2024-01-12T00:00:00Z',
-        Purchase_Category6: ['category9', 'category10'],
-        Lifetime_Client_Revenue6: 1300,
-      },
+      fields: multiRecordIdentifierFields,
+      identifierMappings: multiRecordIdentifierMappings,
       module: mockConConfig.destination.object,
       query:
         "SELECT id FROM Leads WHERE ((Name = 'rid1927ce14265c006ae11555ec6e1cdbbac' AND Name1 = 'Liam Bailey') AND ((Has_Chargeback = 'true' AND Last_Client_Purchase = '2021-06-15T00:00:00Z') AND ((Purchase_Category = 'category1;category2' AND Lifetime_Client_Revenue = 1200) AND ((Name2 = 'Olivia Smith' AND Has_Chargeback2 = 'false') AND ((Last_Client_Purchase2 = '2022-01-10T00:00:00Z' AND Purchase_Category2 = 'category3;category4') AND ((Lifetime_Client_Revenue2 = 800 AND Name3 = 'Noah Johnson') AND ((Has_Chargeback3 = 'true' AND Last_Client_Purchase3 = '2023-03-22T00:00:00Z') AND ((Purchase_Category3 = 'category5' AND Lifetime_Client_Revenue3 = 1500) AND ((Name4 = 'Emma Davis' AND Has_Chargeback4 = 'false') AND ((Last_Client_Purchase4 = '2023-07-01T00:00:00Z' AND Purchase_Category4 = 'category6;category7') AND ((Lifetime_Client_Revenue4 = 900 AND Name5 = 'James Wilson') AND ((Has_Chargeback5 = 'true' AND Last_Client_Purchase5 = '2022-11-05T00:00:00Z') AND Purchase_Category5 = 'category8'))))))))))))",
@@ -303,7 +312,7 @@ describe('searchRecordIdV2', () => {
     },
   ];
 
-  testCases.forEach(({ name, response, error, expected, query, fields }) => {
+  testCases.forEach(({ name, response, error, expected, query, fields, identifierMappings }) => {
     it(name, async () => {
       if (error) {
         jest.mocked(handleHttpRequest).mockRejectedValueOnce(error);
@@ -315,7 +324,10 @@ describe('searchRecordIdV2', () => {
         identifiers: fields,
         metadata: mockMetadata,
         destination: { Config: mockConfig } as unknown as Destination,
-        destConfig: mockConConfig.destination,
+        destConfig: {
+          ...mockConConfig.destination,
+          identifierMappings: identifierMappings ?? mockConConfig.destination.identifierMappings,
+        },
       });
       expect(handleHttpRequest).toHaveBeenCalledWith(
         'post',
@@ -378,6 +390,82 @@ describe('searchRecordIdV2', () => {
       });
       expect(result).toEqual(expected);
     });
+  });
+});
+
+/**
+ * COQL injection defenses for the legacy single-event deletion path (INT-6478 / SEC-292).
+ *
+ * Identifier keys AND values from `event.message.identifiers` are user-controlled. These tests
+ * verify the two defenses that close the injection:
+ *   1. string/array VALUES are escaped so a quote cannot break out of the string literal, and
+ *   2. KEYS are allowlisted against the configured identifierMappings so an attacker-controlled
+ *      key cannot be interpolated into the clause.
+ */
+describe('searchRecordIdV2 - COQL injection defenses', () => {
+  const mockMetadata = { secret: { accessToken: 'mock-token' } };
+  const mockConfig = { region: 'US' as const };
+  const destConfig = {
+    object: 'Leads',
+    identifierMappings: [{ to: 'Email', from: 'Email' }],
+    multiSelectFieldLevelDecision: [],
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.mocked(handleHttpRequest).mockResolvedValue({
+      httpResponse: Promise.resolve({}),
+      processedResponse: {
+        status: 200,
+        response: { data: [{ id: '<RECORD_ID>' }] },
+      },
+    } as never);
+  });
+
+  const getSentQuery = () =>
+    (jest.mocked(handleHttpRequest).mock.calls[0][2] as { select_query: string }).select_query;
+
+  it('escapes single quotes in identifier values so they cannot break out of the string literal', async () => {
+    // SEC-292 PoC payload: without escaping this matches every record in the module.
+    await searchRecordIdV2({
+      identifiers: { Email: "x' OR id IS NOT NULL OR id != '" },
+      metadata: mockMetadata,
+      destination: { Config: mockConfig } as unknown as Destination,
+      destConfig,
+    });
+
+    // The quotes are backslash-escaped, so the value stays a single inert string literal.
+    expect(getSentQuery()).toBe(
+      "SELECT id FROM Leads WHERE Email = 'x\\' OR id IS NOT NULL OR id != \\''",
+    );
+  });
+
+  it('drops an identifier key that is not in the configured identifierMappings', async () => {
+    const result = await searchRecordIdV2({
+      identifiers: { "Email = 'x' OR 1=1 OR Email": 'ignored' },
+      metadata: mockMetadata,
+      destination: { Config: mockConfig } as unknown as Destination,
+      destConfig,
+    });
+
+    // Only key is not an allowlisted identifier -> no query is built and no request is sent.
+    expect(handleHttpRequest).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      status: false,
+      message: 'Identifier values are not provided for Leads',
+      errorType: 'instrumentation',
+    });
+  });
+
+  it('keeps only allowlisted keys when a payload mixes a valid and an injected key', async () => {
+    await searchRecordIdV2({
+      identifiers: { Email: 'real@example.com', "Foo = 'x' OR Email": 'x' },
+      metadata: mockMetadata,
+      destination: { Config: mockConfig } as unknown as Destination,
+      destConfig,
+    });
+
+    expect(getSentQuery()).toBe("SELECT id FROM Leads WHERE Email = 'real@example.com'");
   });
 });
 

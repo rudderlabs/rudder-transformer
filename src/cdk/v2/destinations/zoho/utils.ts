@@ -194,31 +194,51 @@ const groupConditionsWithOR = (conditions: string[]) => {
 };
 
 /**
+ * Escapes a value for safe interpolation inside a single-quoted COQL string literal.
+ * Escapes backslashes first, then single quotes, so attacker-controlled identifier values
+ * cannot break out of the quoted context and inject additional COQL.
+ *
+ * @param {unknown} value - The value to escape
+ * @returns {string} The escaped string, safe to place between single quotes
+ */
+const escapeCOQLStringValue = (value: unknown): string =>
+  String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+/**
  * Generates a WHERE clause for COQL queries from field-value pairs.
  * Handles different data types (strings, numbers, arrays) according to Zoho COQL syntax.
  * Cleans input by removing undefined, null, and empty values.
  *
+ * Keys are allowlisted against the configured identifier fields and string/array values are
+ * escaped, so neither side of `key = 'value'` can be used to inject COQL.
+ *
  * @param {Record<string, unknown>} fields - Field-value pairs to convert to WHERE conditions
+ * @param {string[]} allowedFields - Configured identifier field names; keys not in this list are dropped
  * @returns {string} WHERE clause with nested AND conditions, or empty string if no valid fields
  * @see https://help.zoho.com/portal/en/kb/creator/developer-guide/forms/add-and-manage-fields/articles/understand-fields#Types_of_fields
  * @see https://www.zoho.com/crm/developer/docs/api/v6/Get-Records-through-COQL-Query.html
  *
  * @example
- * generateWhereClause({ Email: 'test@example.com', Phone: '123' })
+ * generateWhereClause({ Email: 'test@example.com', Phone: '123' }, ['Email', 'Phone'])
  * // Returns: "WHERE (Email = 'test@example.com' AND Phone = '123')"
  */
-const generateWhereClause = (fields: Record<string, unknown>) => {
+const generateWhereClause = (fields: Record<string, unknown>, allowedFields: string[]) => {
   const cleanedFields = removeUndefinedNullEmptyExclBoolInt(fields) as Record<string, unknown>;
-  const conditions = Object.keys(cleanedFields).map((key) => {
-    const value = cleanedFields[key];
-    if (Array.isArray(value)) {
-      return `${key} = '${value.join(';')}'`;
-    }
-    if (typeof value === 'number') {
-      return `${key} = ${value}`;
-    }
-    return `${key} = '${value}'`;
-  });
+  const allowedFieldSet = new Set(allowedFields);
+  const conditions = Object.keys(cleanedFields)
+    // Only allow configured identifier fields through; an attacker-controlled key (e.g.
+    // "Email = 'x' OR 1=1 OR Email") is never interpolated into the query.
+    .filter((key) => allowedFieldSet.has(key))
+    .map((key) => {
+      const value = cleanedFields[key];
+      if (Array.isArray(value)) {
+        return `${key} = '${escapeCOQLStringValue(value.join(';'))}'`;
+      }
+      if (typeof value === 'number') {
+        return `${key} = ${value}`;
+      }
+      return `${key} = '${escapeCOQLStringValue(value)}'`;
+    });
 
   return conditions.length > 0 ? `WHERE ${groupConditions(conditions)}` : '';
 };
@@ -229,17 +249,22 @@ const generateWhereClause = (fields: Record<string, unknown>) => {
  *
  * @param {string} module - Zoho module name (e.g., 'Leads', 'Contacts')
  * @param {Record<string, unknown>} fields - Identifier field-value pairs
+ * @param {string[]} allowedFields - Configured identifier field names used to allowlist keys
  * @returns {string} Complete COQL query string or empty string if no valid WHERE clause
  *
  * @example
- * generateSqlQuery('Leads', { Email: 'test@example.com', Phone: '123' })
+ * generateSqlQuery('Leads', { Email: 'test@example.com', Phone: '123' }, ['Email', 'Phone'])
  * // Returns: "SELECT id FROM Leads WHERE (Email = 'test@example.com' AND Phone = '123')"
  */
-const generateSqlQuery = (module: string, fields: Record<string, unknown>) => {
+const generateSqlQuery = (
+  module: string,
+  fields: Record<string, unknown>,
+  allowedFields: string[],
+) => {
   // Generate the WHERE clause based on the fields
   // Limiting to 25 fields
   const entries = Object.entries(fields).slice(0, 25);
-  const whereClause = generateWhereClause(Object.fromEntries(entries));
+  const whereClause = generateWhereClause(Object.fromEntries(entries), allowedFields);
   if (whereClause === '') {
     return '';
   }
@@ -333,9 +358,11 @@ const searchRecordIdV2 = async ({
 > => {
   try {
     const region = getRegion(destination);
-    const { object } = destConfig;
+    const { object, identifierMappings } = destConfig;
 
-    const selectQuery = generateSqlQuery(object, identifiers);
+    // Allowlist of configured identifier fields; any other key in `identifiers` is dropped.
+    const allowedFields = identifierMappings.map(({ to }) => to);
+    const selectQuery = generateSqlQuery(object, identifiers, allowedFields);
     const result = await sendCOQLRequest(region, metadata.secret.accessToken, object, selectQuery);
     return result;
   } catch (error: any) {
@@ -442,8 +469,8 @@ const buildBatchedCOQLQueryWithIN = (
       .map((v) => {
         // Numbers don't need quotes
         if (typeof v === 'number') return v;
-        // Escape backslashes first, then single quotes
-        return `'${String(v).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+        // Escape backslashes and single quotes to prevent breaking out of the string literal
+        return `'${escapeCOQLStringValue(v)}'`;
       })
       .join(', ');
 

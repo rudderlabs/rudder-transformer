@@ -101,6 +101,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     POSTSCRIPT: true,
     POSTHOG: true,
     CUSTOM_AUDIENCE: true,
+    ITERABLE_AUDIENCE: true,
   },
   regulations: [
     'BRAZE',

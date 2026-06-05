@@ -10,3 +10,4 @@ src/util/url-search-params.min.js
 dist
 .eslintignore
 .prettierignore
+.claude/

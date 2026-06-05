@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.135.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.134.0...v1.135.0) (2026-06-04)
+
+
+### Features
+
+* iterable audience implementation ([#5230](https://github.com/rudderlabs/rudder-transformer/issues/5230)) ([9ecc8b6](https://github.com/rudderlabs/rudder-transformer/commit/9ecc8b690934ea592ac02bc301bf499cc017ce27))
+
 ## [1.134.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.133.3...v1.134.0) (2026-06-02)
 
 

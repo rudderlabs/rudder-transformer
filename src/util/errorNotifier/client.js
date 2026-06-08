@@ -1,4 +1,4 @@
-const { stripKeysDeep } = require('./sanitize');
+const { sanitizeMetadata } = require('./sanitize');
 
 let notifier;
 
@@ -16,9 +16,10 @@ function init() {
 
 function notify(err, context, metadata) {
   try {
-    // Strip the per-job `metadata` (contains `secret` with access/refresh/developer
-    // tokens) at this single choke point, before it reaches any notifier or logger.
-    if (notifier?.notify) notifier.notify(err, context, stripKeysDeep(metadata));
+    // Reduce the per-job `metadata` to an allowlist of non-sensitive fields at this
+    // single choke point, before it reaches any notifier or logger. This drops
+    // `secret` (access/refresh/developer tokens) and other noisy fields.
+    if (notifier?.notify) notifier.notify(err, context, sanitizeMetadata(metadata));
   } catch (errObj) {
     // Do nothing
   }

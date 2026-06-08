@@ -50,8 +50,8 @@ const ADDRESS_SCHEMA_FIELDS = ['firstName', 'lastName', 'country', 'postalCode']
  * dedicated DM OAuth account definition. Decided purely from the connected
  * account definition name — no token, no Redis, no network call.
  */
-export const isDataManagerAccount = (destination?: GARLDestination): boolean =>
-  destination?.deliveryAccount?.accountDefinitionName === DM_ACCOUNT_DEFINITION_NAME;
+export const isDataManagerAccount = (destination: GARLDestination): boolean =>
+  destination.deliveryAccount.accountDefinitionName === DM_ACCOUNT_DEFINITION_NAME;
 
 // Mapping from GoogleUtils consent values (GRANTED/DENIED) to DM API values
 const CONSENT_VALUE_MAP: Partial<Record<string, ConsentStatus>> = {

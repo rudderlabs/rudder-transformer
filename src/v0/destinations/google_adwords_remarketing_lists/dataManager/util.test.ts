@@ -8,16 +8,15 @@ import type { Consent, AudienceMember, GARLDestination } from './types';
 
 const LEGACY_ACCOUNT_DEFINITION_NAME = 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_OAUTH';
 
-const buildDestination = (accountDefinitionName?: string): GARLDestination =>
+const buildDestination = (accountDefinitionName: string): GARLDestination =>
   ({
-    deliveryAccount:
-      accountDefinitionName === undefined ? undefined : ({ accountDefinitionName } as never),
+    deliveryAccount: { accountDefinitionName } as never,
   }) as unknown as GARLDestination;
 
 describe('isDataManagerAccount', () => {
   const testCases: {
     description: string;
-    destination?: GARLDestination;
+    destination: GARLDestination;
     expected: boolean;
   }[] = [
     {
@@ -28,16 +27,6 @@ describe('isDataManagerAccount', () => {
     {
       description: 'legacy account definition name → false',
       destination: buildDestination(LEGACY_ACCOUNT_DEFINITION_NAME),
-      expected: false,
-    },
-    {
-      description: 'undefined account definition name → false',
-      destination: buildDestination(undefined),
-      expected: false,
-    },
-    {
-      description: 'missing destination → false',
-      destination: undefined,
       expected: false,
     },
   ];

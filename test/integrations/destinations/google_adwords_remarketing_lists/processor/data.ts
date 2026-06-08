@@ -4,6 +4,10 @@ import { dataManagerData } from './dataManager';
 
 const API_VERSION = 'v22';
 
+const deliveryAccount = {
+  accountDefinitionName: 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_OAUTH',
+};
+
 export const data = [
   ...dataManagerData,
   {
@@ -35,9 +39,7 @@ export const data = [
                 isHashRequired: true,
                 typeOfList: 'General',
               },
-              deliveryAccount: {
-                accountDefinitionName: 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_OAUTH',
-              },
+              deliveryAccount,
             },
             message: {
               userId: 'user 1',
@@ -157,6 +159,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -285,6 +288,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -402,6 +406,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -518,6 +523,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -624,6 +630,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -712,6 +719,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -798,6 +806,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -872,6 +881,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -966,6 +976,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -3135,6 +3146,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -3393,6 +3405,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -7673,6 +7686,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -7831,6 +7845,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -7926,6 +7941,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12206,6 +12222,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12464,6 +12481,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12716,6 +12734,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12836,6 +12855,7 @@ export const data = [
               secret: null,
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12920,6 +12940,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',
@@ -13043,6 +13064,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',
@@ -13190,6 +13212,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',
@@ -13337,6 +13360,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',
@@ -13489,6 +13513,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',

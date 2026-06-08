@@ -18,7 +18,7 @@ const DATA_MANAGER_BATCH_SIZE = 10000;
  * inlined) to avoid drift with the same name in rudder-integrations-config
  * and the rudder-auth resolver.
  */
-const DM_ACCOUNT_DEFINITION_NAME = 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_DMOAUTH';
+const DM_ACCOUNT_DEFINITION_NAME = 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_DM_OAUTH';
 
 const DM_CONFIG_CATEGORIES = {
   USER_IDENTIFIER: { type: 'userIdentifier', name: 'userIdentifier' },

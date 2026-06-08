@@ -14,14 +14,15 @@ import {
   SurvicateRouterRequest,
   SurvicateDestinationConfig,
   SurvicateMessage,
+  SurvicateIdentifyMessage,
+  SurvicateGroupMessage,
+  SurvicateTrackMessage,
   SurvicateMessageSchema,
   IdentifyPayload,
   GroupPayload,
   TrackPayload,
   SurvicatePayload,
   EndpointEntry,
-  ERR_MISSING_MESSAGE_ID,
-  ERR_MISSING_TIMESTAMP,
 } from './types';
 
 import { ENDPOINT_CONFIG, RESERVED_KEYS } from './config';
@@ -64,26 +65,18 @@ function extractContext(ctx: SurvicateMessage['context']): Record<string, unknow
 }
 
 /**
- * Normalize incoming message keys to canonical camelCase.  Rudder sometimes
- * delivers snake_case (e.g. `user_id`) but our handler logic and Zod schema
- * expect camelCase.  Call this at the very start of each processor.
+ * Validate (and normalize, via the schema's preprocess) an incoming message
+ * once, up front. safeParse keeps schema failures at 400 (InstrumentationError)
+ * rather than a raw ZodError (500), and returns a typed, discriminated message
+ * so each handler needs no further field checks or casts.
  */
-function normalizeMessage(raw: SurvicateMessage): SurvicateMessage {
-  const msg: SurvicateMessage = { ...raw };
-
-  if (raw.user_id && !raw.userId) {
-    msg.userId = raw.user_id;
+function validateMessage(message: unknown): SurvicateMessage {
+  const result = SurvicateMessageSchema.safeParse(message);
+  if (!result.success) {
+    // The schema attaches a friendly, field-specific message to each issue.
+    throw new InstrumentationError(result.error.errors[0].message);
   }
-  if (raw.group_id && !raw.groupId) {
-    msg.groupId = raw.group_id;
-  }
-  if (raw.message_id && !raw.messageId) {
-    msg.messageId = raw.message_id;
-  }
-  if (raw.original_timestamp && !raw.originalTimestamp) {
-    msg.originalTimestamp = raw.original_timestamp;
-  }
-  return msg;
+  return result.data;
 }
 
 /**
@@ -97,29 +90,9 @@ function normalizeMessage(raw: SurvicateMessage): SurvicateMessage {
  * @returns Formatted HTTP response
  */
 const processIdentifyEvent = (
-  message: SurvicateMessage,
+  msg: SurvicateIdentifyMessage,
   destinationConfig: SurvicateDestinationConfig,
 ) => {
-  // allow snake_case input by normalizing first
-  const msg = normalizeMessage(message);
-
-  if (!msg.messageId) {
-    throw new InstrumentationError(ERR_MISSING_MESSAGE_ID);
-  }
-  if (!msg.originalTimestamp) {
-    throw new InstrumentationError(ERR_MISSING_TIMESTAMP);
-  }
-
-  // validate message shape
-  SurvicateMessageSchema.parse(msg);
-
-  // Skip anonymous calls - we only accept identified users
-  if (!msg.userId) {
-    throw new InstrumentationError(
-      'Anonymous identify calls are not supported. userId is required.',
-    );
-  }
-
   // Build the payload - flatten traits and include context properties
   const payload: IdentifyPayload = {
     user_id: msg.userId,
@@ -150,33 +123,9 @@ const processIdentifyEvent = (
  * @returns Formatted HTTP response
  */
 const processGroupEvent = (
-  message: SurvicateMessage,
+  msg: SurvicateGroupMessage,
   destinationConfig: SurvicateDestinationConfig,
 ) => {
-  const msg = normalizeMessage(message);
-
-  if (!msg.messageId) {
-    throw new InstrumentationError(ERR_MISSING_MESSAGE_ID);
-  }
-  if (!msg.originalTimestamp) {
-    throw new InstrumentationError(ERR_MISSING_TIMESTAMP);
-  }
-
-  // validate message shape
-  SurvicateMessageSchema.parse(msg);
-
-  // Skip anonymous calls - we only accept identified users
-  if (!msg.userId) {
-    throw new InstrumentationError(
-      'Anonymous group calls are not supported. userId is required.',
-    );
-  }
-
-  // groupId is required for group events
-  if (!msg.groupId) {
-    throw new InstrumentationError('groupId is required for group events.');
-  }
-
   const payload: GroupPayload = {
     user_id: msg.userId,
     group_id: msg.groupId,
@@ -207,33 +156,9 @@ const processGroupEvent = (
  * @returns Formatted HTTP response
  */
 const processTrackEvent = (
-  message: SurvicateMessage,
+  msg: SurvicateTrackMessage,
   destinationConfig: SurvicateDestinationConfig,
 ) => {
-  const msg = normalizeMessage(message);
-
-  if (!msg.messageId) {
-    throw new InstrumentationError(ERR_MISSING_MESSAGE_ID);
-  }
-  if (!msg.originalTimestamp) {
-    throw new InstrumentationError(ERR_MISSING_TIMESTAMP);
-  }
-
-  // validate message shape
-  SurvicateMessageSchema.parse(msg);
-
-  // Skip anonymous calls - we only accept identified users
-  if (!msg.userId) {
-    throw new InstrumentationError(
-      'Anonymous track calls are not supported. userId is required.',
-    );
-  }
-
-  // event name is required for track events
-  if (!msg.event) {
-    throw new InstrumentationError('event name is required for track events.');
-  }
-
   // Build the payload using the utility function
   const payload: TrackPayload = {
     user_id: msg.userId,
@@ -272,18 +197,20 @@ const processEvent = (event: SurvicateRouterRequest) => {
     throw new ConfigurationError('Destination Key is required');
   }
 
-  // Route based on message type
-  switch (message.type) {
+  // Normalize + validate once here so each handler receives a validated message.
+  const msg = validateMessage(message);
+
+  // Route based on message type. Unsupported types are already rejected by the
+  // schema's discriminated union, so `msg.type` is exhaustively narrowed here.
+  switch (msg.type) {
     case 'identify':
-      return processIdentifyEvent(message, destination.Config);
+      return processIdentifyEvent(msg, destination.Config);
     case 'group':
-      return processGroupEvent(message, destination.Config);
+      return processGroupEvent(msg, destination.Config);
     case 'track':
-      return processTrackEvent(message, destination.Config);
+      return processTrackEvent(msg, destination.Config);
     default:
-      throw new InstrumentationError(
-        `Message type "${message.type}" is not supported. Supported types are: identify, group, track`,
-      );
+      throw new InstrumentationError('Unsupported Survicate event type.');
   }
 };
 
@@ -296,8 +223,8 @@ const processEvent = (event: SurvicateRouterRequest) => {
  * @returns Promise resolving to array of processed responses
  */
 const processRouterDest = async (
-  inputs: unknown[],
+  inputs: SurvicateRouterRequest[],
   reqMetadata: Record<string, unknown>,
-) => ( simpleProcessRouterDest(inputs as SurvicateRouterRequest[], processEvent, reqMetadata, {}));
+) => simpleProcessRouterDest(inputs, processEvent, reqMetadata, {});
 
 export { processRouterDest };

@@ -2,9 +2,15 @@ import { z } from 'zod';
 import { Destination, RouterTransformationRequestData, Metadata } from '../../../types';
 import type { ENDPOINT_CONFIG } from './config';
 
-// Validation error messages for required tracing fields.
+// Validation error messages. Kept as constants so the schema and tests stay in sync.
 export const ERR_MISSING_MESSAGE_ID = 'messageId is required.';
 export const ERR_MISSING_TIMESTAMP = 'originalTimestamp is required.';
+export const ERR_ANONYMOUS_IDENTIFY =
+  'Anonymous identify calls are not supported. userId is required.';
+export const ERR_ANONYMOUS_GROUP = 'Anonymous group calls are not supported. userId is required.';
+export const ERR_ANONYMOUS_TRACK = 'Anonymous track calls are not supported. userId is required.';
+export const ERR_MISSING_GROUP_ID = 'groupId is required for group events.';
+export const ERR_MISSING_EVENT = 'event name is required for track events.';
 
 export type EndpointEntry = (typeof ENDPOINT_CONFIG)[keyof typeof ENDPOINT_CONFIG];
 
@@ -14,45 +20,87 @@ export const SurvicateDestinationConfigSchema = z
   })
   .passthrough();
 
+// Fields shared by every supported event type.
+const baseFields = {
+  messageId: z.string({ required_error: ERR_MISSING_MESSAGE_ID }).min(1, ERR_MISSING_MESSAGE_ID),
+  originalTimestamp: z
+    .string({ required_error: ERR_MISSING_TIMESTAMP })
+    .min(1, ERR_MISSING_TIMESTAMP),
+  properties: z.record(z.string(), z.unknown()).optional(),
+  traits: z.record(z.string(), z.unknown()).optional(),
+  context: z
+    .object({
+      traits: z.record(z.string(), z.unknown()).optional(),
+      locale: z.string().optional(),
+      campaign: z.record(z.string(), z.unknown()).optional(),
+      userAgent: z.string().optional(),
+    })
+    .passthrough()
+    .optional(),
+};
+
 /**
- * Message schema for incoming RudderStack events.
- * Accepts both camelCase and snake_case field names; the transformer
- * normalizes to camelCase before validation.
+ * Map snake_case aliases onto canonical camelCase keys before validation.
+ * `||` (not `??`) preserves the behaviour of treating empty strings as absent.
  */
-export const SurvicateMessageSchema = z
-  .object({
-    type: z.enum(['identify', 'group', 'track']),
-    userId: z.string().optional(),
-    groupId: z.string().optional(),
-    event: z.string().optional(),
-    // fields required for request tracing
-    messageId: z.string(),
-    originalTimestamp: z.string(),
-    // snake_case aliases (present after normalization)
-    user_id: z.string().optional(),
-    group_id: z.string().optional(),
-    message_id: z.string().optional(),
-    original_timestamp: z.string().optional(),
-    properties: z.record(z.string(), z.unknown()).optional(),
-    traits: z.record(z.string(), z.unknown()).optional(),
-    context: z
+const normalizeRaw = (raw: unknown) => {
+  if (typeof raw !== 'object' || raw === null) return raw;
+  const r = raw as Record<string, unknown>;
+  return {
+    ...r,
+    userId: r.userId || r.user_id,
+    groupId: r.groupId || r.group_id,
+    messageId: r.messageId || r.message_id,
+    originalTimestamp: r.originalTimestamp || r.original_timestamp,
+  };
+};
+
+/**
+ * Message schema for incoming RudderStack events. Normalizes snake_case to
+ * camelCase, then validates per-event-type required fields. All field
+ * presence/anonymity checks live here so the transformer stays declarative.
+ */
+export const SurvicateMessageSchema = z.preprocess(
+  normalizeRaw,
+  z.discriminatedUnion('type', [
+    z
       .object({
-        traits: z.record(z.string(), z.unknown()).optional(),
-        locale: z.string().optional(),
-        campaign: z.record(z.string(), z.unknown()).optional(),
-        userAgent: z.string().optional(),
+        type: z.literal('identify'),
+        userId: z.string({ required_error: ERR_ANONYMOUS_IDENTIFY }).min(1, ERR_ANONYMOUS_IDENTIFY),
+        ...baseFields,
       })
-      .passthrough()
-      .optional(),
-  })
-  .passthrough();
+      .passthrough(),
+    z
+      .object({
+        type: z.literal('group'),
+        userId: z.string({ required_error: ERR_ANONYMOUS_GROUP }).min(1, ERR_ANONYMOUS_GROUP),
+        groupId: z.string({ required_error: ERR_MISSING_GROUP_ID }).min(1, ERR_MISSING_GROUP_ID),
+        ...baseFields,
+      })
+      .passthrough(),
+    z
+      .object({
+        type: z.literal('track'),
+        userId: z.string({ required_error: ERR_ANONYMOUS_TRACK }).min(1, ERR_ANONYMOUS_TRACK),
+        event: z.string({ required_error: ERR_MISSING_EVENT }).min(1, ERR_MISSING_EVENT),
+        ...baseFields,
+      })
+      .passthrough(),
+  ]),
+);
 
 export type SurvicateDestinationConfig = z.infer<typeof SurvicateDestinationConfigSchema>;
 export type SurvicateMessage = z.infer<typeof SurvicateMessageSchema>;
+export type SurvicateIdentifyMessage = Extract<SurvicateMessage, { type: 'identify' }>;
+export type SurvicateGroupMessage = Extract<SurvicateMessage, { type: 'group' }>;
+export type SurvicateTrackMessage = Extract<SurvicateMessage, { type: 'track' }>;
 export type SurvicateDestination = Destination<SurvicateDestinationConfig>;
 
+// Raw, pre-validation message shape coming off the router (type may be anything).
+export type RawSurvicateMessage = { type?: string } & Record<string, unknown>;
+
 export type SurvicateRouterRequest = RouterTransformationRequestData<
-  SurvicateMessage,
+  RawSurvicateMessage,
   SurvicateDestination,
   undefined,
   Metadata

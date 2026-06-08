@@ -38,12 +38,6 @@ export type Message = {
   identifiers?: Record<string, unknown>;
 };
 
-export type SearchRecordParams = {
-  identifiers: Record<string, unknown>;
-  metadata: { secret: { accessToken: string } };
-  destination: Destination;
-  destConfig: DestConfig;
-};
 /**
  * Zoho router input/output request type with message and metadata.
  * Combines routing information, destination config, and authentication metadata.

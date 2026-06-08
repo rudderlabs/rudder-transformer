@@ -1,11 +1,8 @@
-jest.mock('../../../../adapters/network');
 import { PlatformError } from '@rudderstack/integrations-lib';
-import { handleHttpRequest } from '../../../../adapters/network';
 import {
   deduceModuleInfoV2,
   formatMultiSelectFieldsV2,
   calculateTrigger,
-  searchRecordIdV2,
   getRegion,
   buildBatchedCOQLQueryWithIN,
   chunkByIdentifierLimit,
@@ -87,296 +84,6 @@ describe('calculateTrigger', () => {
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
       expect(calculateTrigger(input)).toEqual(expected);
-    });
-  });
-});
-
-describe('searchRecordIdV2', () => {
-  const mockFields = { Email: 'test@example.com' };
-  const mockMetadata = { secret: { accessToken: 'mock-token' } };
-  const mockConfig = { region: 'US' as const };
-  const mockConConfig = {
-    destination: {
-      object: 'Leads',
-      identifierMappings: [{ to: 'Email', from: 'Email' }],
-      multiSelectFieldLevelDecision: [],
-    },
-  };
-  const mockQuery = "SELECT id FROM Leads WHERE Email = 'test@example.com'";
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  const testCases = [
-    {
-      fields: mockFields,
-      module: mockConConfig.destination.object,
-      query: mockQuery,
-      name: 'should handle non-array response data',
-      response: {
-        httpResponse: Promise.resolve({}),
-        processedResponse: {
-          status: 200,
-          response: {
-            data: 'not-an-array',
-          },
-        },
-      },
-      expected: {
-        status: false,
-        message: 'No Leads is found for record identifier',
-        apiResponse: {
-          data: 'not-an-array',
-        },
-        apiStatus: 200,
-        errorType: 'instrumentation',
-      },
-    },
-    {
-      fields: mockFields,
-      query: mockQuery,
-      module: mockConConfig.destination.object,
-      name: 'should handle missing response data property',
-      response: {
-        httpResponse: Promise.resolve({}),
-        processedResponse: {
-          status: 200,
-          response: {},
-        },
-      },
-      expected: {
-        status: false,
-        message: 'No Leads is found for record identifier',
-        apiResponse: {},
-        apiStatus: 200,
-        errorType: 'instrumentation',
-      },
-    },
-    {
-      fields: mockFields,
-      query: mockQuery,
-      module: mockConConfig.destination.object,
-      name: 'should handle null response data',
-      response: {
-        httpResponse: Promise.resolve({}),
-        processedResponse: {
-          status: 200,
-          response: {
-            data: null,
-          },
-        },
-      },
-      expected: {
-        status: false,
-        message: 'No Leads is found for record identifier',
-        apiResponse: {
-          data: null,
-        },
-        apiStatus: 200,
-        errorType: 'instrumentation',
-      },
-    },
-    {
-      fields: mockFields,
-      query: mockQuery,
-      module: mockConConfig.destination.object,
-      name: 'should handle empty array response data',
-      response: {
-        httpResponse: Promise.resolve({}),
-        processedResponse: {
-          status: 200,
-          response: {
-            data: [],
-          },
-        },
-      },
-      expected: {
-        status: false,
-        message: 'No Leads is found for record identifier',
-        apiResponse: {
-          data: [],
-        },
-        apiStatus: 200,
-        errorType: 'instrumentation',
-      },
-    },
-    {
-      fields: mockFields,
-      query: mockQuery,
-      module: mockConConfig.destination.object,
-      name: 'should handle valid array response data with single record',
-      response: {
-        httpResponse: Promise.resolve({}),
-        processedResponse: {
-          status: 200,
-          response: {
-            data: [{ id: '123' }],
-          },
-        },
-      },
-      expected: {
-        status: true,
-        records: [{ id: '123' }],
-      },
-    },
-    {
-      fields: {
-        Name: 'rid1927ce14265c006ae11555ec6e1cdbbac',
-        Name1: 'Liam Bailey',
-        Has_Chargeback: true,
-        Last_Client_Purchase: '2021-06-15T00:00:00Z',
-        Purchase_Category: ['category1', 'category2'],
-        Lifetime_Client_Revenue: 1200,
-        Name2: 'Olivia Smith',
-        Has_Chargeback2: false,
-        Last_Client_Purchase2: '2022-01-10T00:00:00Z',
-        Purchase_Category2: ['category3', 'category4'],
-        Lifetime_Client_Revenue2: 800,
-        Name3: 'Noah Johnson',
-        Has_Chargeback3: true,
-        Last_Client_Purchase3: '2023-03-22T00:00:00Z',
-        Purchase_Category3: ['category5'],
-        Lifetime_Client_Revenue3: 1500,
-        Name4: 'Emma Davis',
-        Has_Chargeback4: false,
-        Last_Client_Purchase4: '2023-07-01T00:00:00Z',
-        Purchase_Category4: ['category6', 'category7'],
-        Lifetime_Client_Revenue4: 900,
-        Name5: 'James Wilson',
-        Has_Chargeback5: true,
-        Last_Client_Purchase5: '2022-11-05T00:00:00Z',
-        Purchase_Category5: ['category8'],
-        Lifetime_Client_Revenue5: 1100,
-        Name6: 'Sophia Miller',
-        Has_Chargeback6: false,
-        Last_Client_Purchase6: '2024-01-12T00:00:00Z',
-        Purchase_Category6: ['category9', 'category10'],
-        Lifetime_Client_Revenue6: 1300,
-      },
-      module: mockConConfig.destination.object,
-      query:
-        "SELECT id FROM Leads WHERE ((Name = 'rid1927ce14265c006ae11555ec6e1cdbbac' AND Name1 = 'Liam Bailey') AND ((Has_Chargeback = 'true' AND Last_Client_Purchase = '2021-06-15T00:00:00Z') AND ((Purchase_Category = 'category1;category2' AND Lifetime_Client_Revenue = 1200) AND ((Name2 = 'Olivia Smith' AND Has_Chargeback2 = 'false') AND ((Last_Client_Purchase2 = '2022-01-10T00:00:00Z' AND Purchase_Category2 = 'category3;category4') AND ((Lifetime_Client_Revenue2 = 800 AND Name3 = 'Noah Johnson') AND ((Has_Chargeback3 = 'true' AND Last_Client_Purchase3 = '2023-03-22T00:00:00Z') AND ((Purchase_Category3 = 'category5' AND Lifetime_Client_Revenue3 = 1500) AND ((Name4 = 'Emma Davis' AND Has_Chargeback4 = 'false') AND ((Last_Client_Purchase4 = '2023-07-01T00:00:00Z' AND Purchase_Category4 = 'category6;category7') AND ((Lifetime_Client_Revenue4 = 900 AND Name5 = 'James Wilson') AND ((Has_Chargeback5 = 'true' AND Last_Client_Purchase5 = '2022-11-05T00:00:00Z') AND Purchase_Category5 = 'category8'))))))))))))",
-      name: 'should handle valid array response data with multiple records',
-      response: {
-        httpResponse: Promise.resolve({}),
-        processedResponse: {
-          status: 200,
-          response: {
-            data: [{ id: '123' }, { id: '456' }],
-          },
-        },
-      },
-      expected: {
-        status: true,
-        records: [{ id: '123' }, { id: '456' }],
-      },
-    },
-    {
-      fields: mockFields,
-      query: mockQuery,
-      module: mockConConfig.destination.object,
-      name: 'should handle non-success HTTP status code',
-      response: {
-        httpResponse: Promise.resolve({}),
-        processedResponse: {
-          status: 400,
-          response: 'Bad Request Error',
-        },
-      },
-      expected: {
-        status: false,
-        apiStatus: 400,
-        apiResponse: 'Bad Request Error',
-      },
-    },
-    {
-      fields: mockFields,
-      query: mockQuery,
-      module: mockConConfig.destination.object,
-      name: 'should handle HTTP request error',
-      error: new Error('Network Error'),
-      expected: {
-        status: false,
-        message: 'Network Error',
-      },
-    },
-  ];
-
-  testCases.forEach(({ name, response, error, expected, query, fields }) => {
-    it(name, async () => {
-      if (error) {
-        jest.mocked(handleHttpRequest).mockRejectedValueOnce(error);
-      } else {
-        jest.mocked(handleHttpRequest).mockResolvedValueOnce(response);
-      }
-
-      const result = await searchRecordIdV2({
-        identifiers: fields,
-        metadata: mockMetadata,
-        destination: { Config: mockConfig } as unknown as Destination,
-        destConfig: mockConConfig.destination,
-      });
-      expect(handleHttpRequest).toHaveBeenCalledWith(
-        'post',
-        'https://www.zohoapis.com/crm/v6/coql',
-        {
-          select_query: query,
-        },
-        {
-          headers: {
-            Authorization: `Zoho-oauthtoken ${mockMetadata.secret.accessToken}`,
-          },
-        },
-        {
-          destType: 'zoho',
-          feature: 'deleteRecords',
-          requestMethod: 'POST',
-          endpointPath: 'https://www.zohoapis.com/crm/v6/coql',
-          module: 'router',
-        },
-      );
-
-      expect(result).toEqual(expected);
-    });
-  });
-
-  const testCases2 = [
-    {
-      fields: {
-        Email: '',
-        phone: null,
-        jobs: [],
-      },
-      query: mockQuery,
-      module: mockConConfig.destination.object,
-      name: 'should return intrumentation error when identifier value is empty',
-      response: {
-        httpResponse: Promise.resolve({}),
-        processedResponse: {
-          status: 200,
-          response: {
-            data: [{ id: '123' }],
-          },
-        },
-      },
-      expected: {
-        status: false,
-        message: 'Identifier values are not provided for Leads',
-        errorType: 'instrumentation',
-      },
-    },
-  ];
-
-  testCases2.forEach(({ name, expected, fields }) => {
-    it(name, async () => {
-      const result = await searchRecordIdV2({
-        identifiers: fields,
-        metadata: mockMetadata,
-        destination: { Config: mockConfig } as unknown as Destination,
-        destConfig: mockConConfig.destination,
-      });
-      expect(result).toEqual(expected);
     });
   });
 });
@@ -700,6 +407,29 @@ describe('buildBatchedCOQLQueryWithIN', () => {
         identifierFields: ['Name'],
       },
       expected: "SELECT id, Name FROM Leads WHERE Name in ('O\\'Brien', 'D\\'Angelo')",
+    },
+    {
+      // COQL injection guard (key side): a key not in identifierFields must be dropped, so an
+      // attacker-controlled identifier key cannot be interpolated into the query.
+      name: 'should exclude identifier keys that are not in identifierFields',
+      input: {
+        module: 'Leads',
+        filters: [{ Email: 'real@example.com', "Email = 'x' OR Email": 'injected' }],
+        identifierFields: ['Email'],
+      },
+      expected: "SELECT id, Email FROM Leads WHERE Email in ('real@example.com')",
+    },
+    {
+      // COQL injection guard (value side): a quote in the value is escaped so it cannot break
+      // out of the string literal (SEC-292 PoC payload).
+      name: 'should escape injection payloads in identifier values',
+      input: {
+        module: 'Leads',
+        filters: [{ Email: "x' OR id IS NOT NULL OR id != '" }],
+        identifierFields: ['Email'],
+      },
+      expected:
+        "SELECT id, Email FROM Leads WHERE Email in ('x\\' OR id IS NOT NULL OR id != \\'')",
     },
     {
       name: 'should process IN clause to 50 values',

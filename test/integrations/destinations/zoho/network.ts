@@ -217,138 +217,6 @@ export const networkCallsData = [
         Authorization: 'Zoho-oauthtoken correct-access-token',
       },
       data: {
-        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted@gmail.com'",
-      },
-      method: 'POST',
-    },
-    httpRes: {
-      data: {
-        data: [
-          {
-            id: '<RECORD_ID_1>',
-          },
-        ],
-      },
-      status: 200,
-      statusText: 'OK',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/coql',
-      headers: {
-        Authorization: 'Zoho-oauthtoken correct-access-token',
-      },
-      data: {
-        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted2@gmail.com'",
-      },
-      method: 'POST',
-    },
-    httpRes: {
-      data: {
-        data: [
-          {
-            id: '<RECORD_ID_2>',
-          },
-        ],
-      },
-      status: 200,
-      statusText: 'OK',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/coql',
-      headers: {
-        Authorization: 'Zoho-oauthtoken correct-access-token',
-      },
-      data: {
-        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted3@gmail.com'",
-      },
-      method: 'POST',
-    },
-    httpRes: {
-      data: '',
-      status: 204,
-      statusText: 'OK',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/coql',
-      headers: {
-        Authorization: 'Zoho-oauthtoken expired-access-token',
-      },
-      data: {
-        select_query: "SELECT id FROM Leads WHERE Email = 'tobedeleted3@gmail.com'",
-      },
-      method: 'POST',
-    },
-    httpRes: {
-      data: {
-        code: 'INVALID_TOKEN',
-        details: {},
-        message: 'invalid oauth token',
-        status: 'error',
-      },
-      status: 401,
-      statusText: 'Bad Request',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/coql',
-      headers: {
-        Authorization: 'Zoho-oauthtoken correct-access-token',
-      },
-      data: {
-        select_query:
-          "SELECT id FROM Leads WHERE ((Email = 'tobedeleted2@gmail.com' AND First_Name = 'subcribed2') AND Last_Name = ' User2')",
-      },
-      method: 'POST',
-    },
-    httpRes: {
-      data: {
-        data: [
-          {
-            id: '<RECORD_ID_2>',
-          },
-        ],
-      },
-      status: 200,
-      statusText: 'OK',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/coql',
-      headers: {
-        Authorization: 'Zoho-oauthtoken correct-access-token',
-      },
-      data: {
-        select_query: "SELECT id FROM Contacts WHERE Email = 'tobedeleted2@gmail.com'",
-      },
-      method: 'POST',
-    },
-    httpRes: {
-      data: {
-        data: [
-          {
-            id: '<RECORD_ID_2>',
-          },
-        ],
-      },
-      status: 200,
-      statusText: 'OK',
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://www.zohoapis.in/crm/v6/coql',
-      headers: {
-        Authorization: 'Zoho-oauthtoken correct-access-token',
-      },
-      data: {
         select_query: "SELECT id, Email FROM Contacts WHERE Email in ('tobedeleted2@gmail.com')",
       },
       method: 'POST',
@@ -509,6 +377,34 @@ export const networkCallsData = [
             Company: 'Company Five',
             Website: 'https://company5.com',
             Lead_Source: 'Partner',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    // COQL injection regression (INT-6478 / SEC-292): this mock only matches the *escaped* batched
+    // query. The single quotes from the identifier value are backslash-escaped, keeping them inside
+    // the string literal instead of breaking out into `OR id IS NOT NULL ...`.
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query:
+          "SELECT id, Email FROM Leads WHERE Email in ('x\\' OR id IS NOT NULL OR id != \\'')",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<ESCAPED_LOOKUP_RECORD_ID>',
+            Email: "x' OR id IS NOT NULL OR id != '",
           },
         ],
       },

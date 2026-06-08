@@ -26,11 +26,9 @@ import {
   validatePresenceOfMandatoryPropertiesV2,
   formatMultiSelectFieldsV2,
   handleDuplicateCheckV2,
-  searchRecordIdV2,
   calculateTrigger,
   batchedSearchRecordIds,
   getRegion,
-  isDeletionLookupBatchingEnabled,
 } from './utils';
 import { REFRESH_TOKEN } from '../../../../adapters/networkhandler/authConstants';
 import { Destination } from '../../../../types';
@@ -232,50 +230,6 @@ const handleSearchError = (searchResponse: ProcessedCOQLAPIErrorResponse) => {
   }
 
   return new InstrumentationError(`failed to fetch zoho id for record: ${rootMessage}`);
-};
-
-/**
- * Asynchronously handles the deletion operation based on the search response.
- *
- * @param {Object} input - The input object containing metadata and other details.
- * @param {Array} fields - The fields to be used for searching the record.
- * @param {Object} Config - The configuration object.
- * @param {Object} transformedResponseToBeBatched - The object to store transformed response data to be batched.
- * @param {Array} errorResponseList - The list to store error responses.
- */
-const handleDeletion = async (
-  input: ZohoRouterIORequest,
-  destination: Destination,
-  destConfig: DestConfig,
-  transformedResponseToBeBatched: TransformedResponseToBeBatched,
-  errorResponseList: unknown[],
-) => {
-  const {
-    message: { identifiers },
-    metadata,
-  } = input;
-
-  if (!identifiers || isEmptyObject(identifiers)) {
-    const error = new InstrumentationError('`identifiers` cannot be empty');
-    errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
-    return;
-  }
-  const searchResponse = await searchRecordIdV2({
-    identifiers,
-    metadata,
-    destination,
-    destConfig,
-  });
-
-  if (!searchResponse.status) {
-    const error = handleSearchError(searchResponse);
-    errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
-    return;
-  }
-
-  const recordIds = searchResponse.records.map((record) => record.id as string);
-  transformedResponseToBeBatched.deletionData.push(...recordIds);
-  transformedResponseToBeBatched.deletionSuccessMetadata.push(metadata);
 };
 
 /**
@@ -487,33 +441,14 @@ const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?
 
   const deletionEvents = groupedRecordsByAction.delete;
   if (deletionEvents && deletionEvents.length > 0) {
-    const {
-      metadata: { workspaceId },
-    } = inputs[0];
-    const useBatchedDeletion = isDeletionLookupBatchingEnabled(workspaceId);
-    if (useBatchedDeletion) {
-      await handleDeletionBatching({
-        destination,
-        deletionEvents,
-        identifierMappings,
-        object,
-        transformedResponseToBeBatched,
-        errorResponseList,
-      });
-    } else {
-      // Legacy one-by-one deletion approach
-      await Promise.all(
-        deletionEvents.map(async (deletionEvent) => {
-          await handleDeletion(
-            deletionEvent,
-            destination,
-            destConfig,
-            transformedResponseToBeBatched,
-            errorResponseList,
-          );
-        }),
-      );
-    }
+    await handleDeletionBatching({
+      destination,
+      deletionEvents,
+      identifierMappings,
+      object,
+      transformedResponseToBeBatched,
+      errorResponseList,
+    });
   }
 
   const {

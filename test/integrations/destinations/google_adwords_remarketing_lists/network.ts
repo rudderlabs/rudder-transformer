@@ -1,4 +1,4 @@
-import { authHeader1, authHeader2, authHeader4, secret2, secret4 } from './maskedSecrets';
+import { authHeader1, authHeader2, authHeader4, secret2 } from './maskedSecrets';
 const API_VERSION = 'v22';
 
 export const networkCallsData = [
@@ -338,21 +338,6 @@ export const networkCallsData = [
       },
     },
   },
-  {
-    httpReq: {
-      url: `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${secret4}`,
-      method: 'GET',
-    },
-    httpRes: {
-      status: 200,
-      data: {
-        scope:
-          'https://www.googleapis.com/auth/datamanager https://www.googleapis.com/auth/adwords',
-        expires_in: '3599',
-      },
-    },
-  },
-
   // ── Data Manager API mocks ────────────────────────────────────────────────────
 
   // DM-1: audienceMembers:ingest — 200 success

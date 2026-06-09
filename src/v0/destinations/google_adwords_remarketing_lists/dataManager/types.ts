@@ -1,4 +1,5 @@
 import {
+  Account,
   BatchedRequest,
   BatchRequestOutput,
   Destination,
@@ -103,7 +104,9 @@ export interface GARLDestinationConfig {
   personalizationConsent?: string;
 }
 
-export type GARLDestination = Destination<GARLDestinationConfig>;
+export type GARLDestination = Destination<GARLDestinationConfig> & {
+  deliveryAccount: Account;
+};
 
 export type GARLConnection = Connection<{
   destination: GARLDestinationConfig;

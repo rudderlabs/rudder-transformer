@@ -2,18 +2,13 @@
  * GARL (Google Ads Remarketing Lists) - Processor Tests (Data Manager API)
  *
  * Each test case mirrors a corresponding test in processor/data.ts, ported to the
- * Data Manager API path. The DM API path is enabled when:
- *   1. DEST_GARL_DATA_MANAGER_API_ALLOWED_WORKSPACE_IDS includes the workspaceId (set in test/setup.ts)
- *   2. The OAuth token includes the https://www.googleapis.com/auth/datamanager scope
- *      (mocked via network.ts tokenInfo response)
- *
- * Workspace: 'dm-enabled-workspaceId'  (registered in test/setup.ts)
- * Old API tests continue to use 'default-workspaceId' and are unaffected.
+ * Data Manager API path. The DM API path is selected purely from the connected
+ * account: destination.deliveryAccount.accountDefinitionName === DM_ACCOUNT_DEFINITION_NAME.
  */
 
 import sha256 from 'sha256';
-import { RedisDB } from '../../../../../../src/util/redis/redisConnector';
 import { secret4, authHeader4 } from '../../maskedSecrets';
+import { DM_ACCOUNT_DEFINITION_NAME } from '../../../../../../src/v0/destinations/google_adwords_remarketing_lists/dataManager/config';
 
 // ── Hashes ────────────────────────────────────────────────────────────────────
 const EMAIL_HASH_TEST = 'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419';
@@ -62,6 +57,9 @@ const baseConfig = {
   isHashRequired: true,
   typeOfList: 'General',
 };
+
+// Connecting the dedicated DM OAuth account is what selects the Data Manager API path.
+const dmDeliveryAccount = { accountDefinitionName: DM_ACCOUNT_DEFINITION_NAME };
 
 // ── Reusable audience members ─────────────────────────────────────────────────
 const testMemberFullAddress = {
@@ -180,15 +178,6 @@ const errorOutput = (meta: unknown, statusCode: number, error: string, statTags:
   statTags,
 });
 
-/**
- * Mocks Redis to prevent connection attempts during tests.
- * getVal returns null (cache miss) so the tokenInfo network mock is exercised.
- */
-const mockFns = (_: unknown) => {
-  jest.spyOn(RedisDB, 'getVal').mockResolvedValue(null);
-  jest.spyOn(RedisDB, 'setVal').mockResolvedValue(undefined);
-};
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Test cases
 // ─────────────────────────────────────────────────────────────────────────────
@@ -202,13 +191,16 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
           {
             metadata: baseMeta,
-            destination: { ID: 'dest-id-1', Config: baseConfig },
+            destination: {
+              ID: 'dest-id-1',
+              Config: baseConfig,
+              deliveryAccount: dmDeliveryAccount,
+            },
             message: {
               type: 'audiencelist',
               properties: {
@@ -254,13 +246,16 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
           {
             metadata: baseMeta,
-            destination: { ID: 'dest-id-1', Config: baseConfig },
+            destination: {
+              ID: 'dest-id-1',
+              Config: baseConfig,
+              deliveryAccount: dmDeliveryAccount,
+            },
             message: {
               type: 'audiencelist',
               properties: {
@@ -307,7 +302,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -315,6 +309,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: {
                 ...baseConfig,
                 customerId: '769-372-9833',
@@ -383,7 +378,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -391,6 +385,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: { ...baseConfig, typeOfList: 'mobileDeviceID' },
             },
             message: {
@@ -449,7 +444,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -457,6 +451,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: { ...baseConfig, typeOfList: 'mobileDeviceID' },
             },
             message: {
@@ -523,7 +518,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -531,6 +525,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: { ...baseConfig, typeOfList: 'mobileDeviceID' },
             },
             message: {
@@ -578,7 +573,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -586,6 +580,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: { ...baseConfig, typeOfList: 'mobileDeviceID' },
             },
             message: {
@@ -633,7 +628,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -641,6 +635,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: { ...baseConfig, typeOfList: 'mobileDeviceID' },
             },
             message: {
@@ -674,7 +669,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -682,6 +676,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: {
                 ...baseConfig,
                 subAccount: true,
@@ -742,13 +737,16 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
           {
             metadata: baseMeta,
-            destination: { ID: 'dest-id-1', Config: baseConfig },
+            destination: {
+              ID: 'dest-id-1',
+              Config: baseConfig,
+              deliveryAccount: dmDeliveryAccount,
+            },
             message: {
               type: 'audiencelisT',
               properties: {
@@ -804,13 +802,16 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
           {
             metadata: baseMeta,
-            destination: { ID: 'dest-id-1', Config: baseConfig },
+            destination: {
+              ID: 'dest-id-1',
+              Config: baseConfig,
+              deliveryAccount: dmDeliveryAccount,
+            },
             message: {
               type: 'audiencelisT',
               properties: {
@@ -892,13 +893,16 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
           {
             metadata: baseMeta,
-            destination: { ID: 'dest-id-1', Config: baseConfig },
+            destination: {
+              ID: 'dest-id-1',
+              Config: baseConfig,
+              deliveryAccount: dmDeliveryAccount,
+            },
             message: {
               type: 'audiencelisT',
               properties: {
@@ -952,13 +956,16 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
           {
             metadata: baseMeta,
-            destination: { ID: 'dest-id-1', Config: baseConfig },
+            destination: {
+              ID: 'dest-id-1',
+              Config: baseConfig,
+              deliveryAccount: dmDeliveryAccount,
+            },
             message: {
               type: 'audiencelisT',
               properties: {
@@ -1059,13 +1066,16 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
           {
             metadata: baseMeta,
-            destination: { ID: 'dest-id-1', Config: baseConfig },
+            destination: {
+              ID: 'dest-id-1',
+              Config: baseConfig,
+              deliveryAccount: dmDeliveryAccount,
+            },
             message: {
               type: 'audiencelist',
               properties: {
@@ -1119,13 +1129,16 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
           {
             metadata: { workspaceId: DM_WORKSPACE_ID, secret: null },
-            destination: { ID: 'dest-id-1', Config: baseConfig },
+            destination: {
+              ID: 'dest-id-1',
+              Config: baseConfig,
+              deliveryAccount: dmDeliveryAccount,
+            },
             message: {
               type: 'audiencelist',
               properties: {
@@ -1170,7 +1183,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -1178,6 +1190,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: { ...baseConfig, audienceId: 'aud1234' },
             },
             message: {
@@ -1239,7 +1252,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -1247,6 +1259,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: { ...baseConfig, audienceId: '' },
             },
             message: {
@@ -1320,7 +1333,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -1328,6 +1340,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: { ...baseConfig, audienceId: '' },
             },
             message: {
@@ -1401,7 +1414,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -1409,6 +1421,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: {
                 ...baseConfig,
                 audienceId: '',
@@ -1497,7 +1510,6 @@ export const dataManagerData = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    mockFns,
     input: {
       request: {
         body: [
@@ -1505,6 +1517,7 @@ export const dataManagerData = [
             metadata: baseMeta,
             destination: {
               ID: 'dest-id-1',
+              deliveryAccount: dmDeliveryAccount,
               Config: {
                 ...baseConfig,
                 audienceId: '',

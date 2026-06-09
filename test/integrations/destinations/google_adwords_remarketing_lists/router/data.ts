@@ -17,6 +17,13 @@ import { dmRouterData } from './dataManager';
 
 const API_VERSION = 'v22';
 
+const deliveryAccount = {
+  id: '',
+  options: null,
+  secret: null,
+  accountDefinitionName: 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_OAUTH',
+};
+
 export const data = [
   ...dmRouterData,
   {
@@ -108,6 +115,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -227,6 +235,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -344,6 +353,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -439,6 +449,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -584,6 +595,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -703,6 +715,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -835,6 +848,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -932,6 +946,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -1080,6 +1095,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -1182,6 +1198,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -1298,6 +1315,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -1430,6 +1448,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -1527,6 +1546,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',
@@ -1804,6 +1824,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                deliveryAccount,
                 Config: {
                   rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
                   audienceId: '7090784486',

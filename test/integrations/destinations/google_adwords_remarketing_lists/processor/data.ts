@@ -4,8 +4,144 @@ import { dataManagerData } from './dataManager';
 
 const API_VERSION = 'v22';
 
+const deliveryAccount = {
+  accountDefinitionName: 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_OAUTH',
+};
+
 export const data = [
   ...dataManagerData,
+  {
+    name: 'google_adwords_remarketing_lists',
+    description:
+      'legacy OAuth account → routes to the legacy offlineUserDataJobs endpoint (selection is driven by the connected account definition name)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              workspaceId: 'dm-enabled-workspaceId',
+              secret: {
+                access_token: secret1,
+                refresh_token: 'dummy-refresh',
+              },
+            },
+            destination: {
+              Config: {
+                rudderAccountId: 'rudder-acc-id',
+                audienceId: 'list111',
+                customerId: '7693729833',
+                loginCustomerId: '',
+                subAccount: false,
+                userSchema: ['email', 'phone', 'addressInfo'],
+                isHashRequired: true,
+                typeOfList: 'General',
+              },
+              deliveryAccount,
+            },
+            message: {
+              userId: 'user 1',
+              anonymousId: 'anon-id-new',
+              event: 'event1',
+              type: 'audiencelist',
+              properties: {
+                listData: {
+                  add: [
+                    {
+                      email: 'test@abc.com',
+                      phone: '09876543210',
+                      firstName: 'test',
+                      lastName: 'rudderlabs',
+                      country: 'US',
+                      postalCode: '1245',
+                    },
+                  ],
+                },
+                enablePartialFailure: true,
+              },
+              context: {
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+              },
+              params: {
+                listId: 'list111',
+                customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
+              },
+              body: {
+                JSON: {
+                  enablePartialFailure: true,
+                  operations: [
+                    {
+                      create: {
+                        userIdentifiers: [
+                          {
+                            hashedEmail:
+                              'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+                          },
+                          {
+                            hashedPhoneNumber: sha256('+09876543210'),
+                          },
+                          {
+                            addressInfo: {
+                              hashedFirstName:
+                                '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                              hashedLastName:
+                                'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
+                              countryCode: 'US',
+                              postalCode: '1245',
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'dm-enabled-workspaceId',
+              secret: {
+                access_token: secret1,
+                refresh_token: 'dummy-refresh',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
   {
     name: 'google_adwords_remarketing_lists',
     description: 'Test 0',
@@ -23,6 +159,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -151,6 +288,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -268,6 +406,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -384,6 +523,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -490,6 +630,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -578,6 +719,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -664,6 +806,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -738,6 +881,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -832,6 +976,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -3001,6 +3146,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -3259,6 +3405,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -7539,6 +7686,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -7697,6 +7845,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -7792,6 +7941,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12072,6 +12222,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12330,6 +12481,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12582,6 +12734,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12702,6 +12855,7 @@ export const data = [
               secret: null,
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 audienceId: 'list111',
@@ -12786,6 +12940,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',
@@ -12909,6 +13064,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',
@@ -13056,6 +13212,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',
@@ -13203,6 +13360,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',
@@ -13355,6 +13513,7 @@ export const data = [
               },
             },
             destination: {
+              deliveryAccount,
               Config: {
                 rudderAccountId: 'rudder-acc-id',
                 customerId: '7693729833',

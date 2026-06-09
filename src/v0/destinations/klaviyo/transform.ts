@@ -1,10 +1,14 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
-const get = require('get-value');
-const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
-const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
-const {
+import get from 'get-value';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  TransformationError,
+} from '@rudderstack/integrations-lib';
+import { EventType, WhiteListedTraits, MappedToDestinationKey } from '../../../constants';
+import {
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,
   MAPPING_CONFIG,
@@ -12,9 +16,9 @@ const {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
-} = require('./config');
-const { processRouter: processRouterV2, processV2 } = require('./transformV2');
-const {
+} from './config';
+import { processRouter as processRouterV2, processV2 } from './transformV2';
+import {
   createCustomerProperties,
   subscribeUserToList,
   populateCustomFieldsFromTraits,
@@ -22,8 +26,8 @@ const {
   getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
   addSubscribeFlagToTraits,
-} = require('./util');
-const {
+} from './util';
+import {
   defaultRequestConfig,
   constructPayload,
   getFieldValueFromMessage,
@@ -38,8 +42,8 @@ const {
   groupEventsByType,
   flattenJson,
   isNewStatusCodesAccepted,
-} = require('../../util');
-const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
+} from '../../util';
+import { JSON_MIME_TYPE, HTTP_STATUS_CODES } from '../../util/constant';
 
 /**
  * Main Identify request handler func
@@ -69,6 +73,9 @@ const identifyRequestHandler = async (
   }
 
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  if (!propertyPayload) {
+    throw new TransformationError('Failed to construct identify payload');
+  }
   // Extract other K-V property from traits about user custom properties
   let customPropertyPayload = {};
   customPropertyPayload = extractCustomFields(
@@ -89,7 +96,7 @@ const identifyRequestHandler = async (
       _id: getFieldValueFromMessage(message, 'userId'),
     };
   }
-  const data = {
+  const data: { type: string; attributes: { [key: string]: unknown } } = {
     type: 'profile',
     attributes: {
       ...propertyPayload,
@@ -124,7 +131,11 @@ const identifyRequestHandler = async (
     metadata,
   });
 
-  const responseMap = {
+  const responseMap: {
+    profileUpdateResponse: Record<string, unknown>;
+    subscribeUserToListResponse?: unknown;
+    suppressEventResponse?: unknown;
+  } = {
     profileUpdateResponse: profileUpdateResponseBuilder(
       payload,
       profileId,
@@ -161,27 +172,40 @@ const identifyRequestHandler = async (
 // ----------------------
 
 const trackRequestHandler = (message, category, destination) => {
-  const payload = {};
+  const payload: { properties?: unknown; data?: unknown } = {};
   const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
   if (event && typeof event !== 'string') {
     throw new InstrumentationError('Event type should be a string');
   }
   event = event ? event.trim().toLowerCase() : event;
-  let attributes = {};
+  let attributes: {
+    metric?: unknown;
+    properties?: { items?: unknown[]; [key: string]: unknown };
+    profile?: unknown;
+    customProperties?: unknown;
+    value?: unknown;
+    time?: unknown;
+  } = {};
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
     const eventMap = jsonNameMapping[eventName];
     attributes.metric = { name: eventName };
     const categ = CONFIG_CATEGORIES[eventMap];
-    attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
+    const ecomPayload = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
+    if (!ecomPayload) {
+      throw new TransformationError('Failed to construct ecom event properties payload');
+    }
+    const ecomProperties: { items?: unknown[]; [key: string]: unknown } = {};
+    Object.assign(ecomProperties, ecomPayload);
+    attributes.properties = ecomProperties;
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
     // properties.items is to be deprecated soon
     if (message.properties?.products || message.properties?.items) {
       const items = message.properties.items || message.properties.products;
-      const itemArr = [];
+      const itemArr: unknown[] = [];
       if (Array.isArray(items)) {
         items.forEach((key) => {
           let item = constructPayload(key, MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]);
@@ -220,15 +244,22 @@ const trackRequestHandler = (message, category, destination) => {
   } else {
     const value =
       message.properties?.revenue || message.properties?.total || message.properties?.value;
-    attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
+    const trackPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+    if (!trackPayload) {
+      throw new TransformationError('Failed to construct track event attributes payload');
+    }
+    attributes = {};
+    Object.assign(attributes, trackPayload);
     if (value) {
       attributes.value = value;
     }
   }
   // if flattenProperties is enabled from UI, flatten the event properties
-  attributes.properties = flattenProperties
-    ? flattenJson(attributes.properties, '.', 'normal', false)
-    : attributes.properties;
+  if (flattenProperties) {
+    const flattened: { items?: unknown[]; [key: string]: unknown } = {};
+    Object.assign(flattened, flattenJson(attributes.properties, '.', 'normal', false));
+    attributes.properties = flattened;
+  }
   // Map user properties to profile object
   attributes.profile = {
     ...createCustomerProperties(message, destination.Config),
@@ -242,8 +273,7 @@ const trackRequestHandler = (message, category, destination) => {
   if (message.timestamp) {
     attributes.time = message.timestamp;
   }
-  payload.data = { type: 'event' };
-  payload.data.attributes = attributes;
+  payload.data = { type: 'event', attributes };
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
   response.endpointPath = category.apiUrl;
@@ -284,7 +314,7 @@ const groupRequestHandler = (message, category, destination) => {
 const processEvent = async (event, reqMetadata) => {
   const { message, destination, metadata } = event;
   if (destination.Config?.apiVersion === 'v2') {
-    return processV2(event, reqMetadata);
+    return processV2(event);
   }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -341,10 +371,14 @@ const processRouter = async (inputs, reqMetadata) => {
   if (destination.Config?.apiVersion === 'v2') {
     return processRouterV2(inputs, reqMetadata);
   }
-  let batchResponseList = [];
-  const batchErrorRespList = [];
-  const subscribeRespList = [];
-  const nonSubscribeRespList = [];
+  let batchResponseList: unknown[] = [];
+  const batchErrorRespList: unknown[] = [];
+  const subscribeRespList: unknown[] = [];
+  const nonSubscribeRespList: {
+    message: { statusCode?: number; error?: unknown; [key: string]: unknown };
+    metadata: unknown;
+    destination: unknown;
+  }[] = [];
   await Promise.all(
     inputs.map(async (event) => {
       try {
@@ -373,7 +407,7 @@ const processRouter = async (inputs, reqMetadata) => {
       }
     }),
   );
-  const batchedSubscribeResponseList = [];
+  const batchedSubscribeResponseList: unknown[] = [];
   if (subscribeRespList.length > 0) {
     const batchedResponseList = batchSubscribeEvents(subscribeRespList);
     batchedSubscribeResponseList.push(...batchedResponseList);
@@ -416,8 +450,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
   Output after transformation: [1, [2,4], [3,5,6]]
   */
   const inputsGroupedByType = groupEventsByType(inputs);
-  const respList = [];
-  const errList = [];
+  const respList: unknown[] = [];
+  const errList: unknown[] = [];
   await Promise.all(
     inputsGroupedByType.map(async (typedEventList) => {
       const { successEvents, errorEvents } = await processRouter(typedEventList, reqMetadata);
@@ -427,4 +461,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
   return [...respList, ...errList];
 };
-module.exports = { process, processRouterDest };
+export { process, processRouterDest };

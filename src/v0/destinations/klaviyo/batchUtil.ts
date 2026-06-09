@@ -1,8 +1,8 @@
-const lodash = require('lodash');
-const { defaultRequestConfig, getSuccessRespEvents, isDefinedAndNotNull } = require('../../util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-const { BASE_ENDPOINT, CONFIG_CATEGORIES, MAX_BATCH_SIZE, revision } = require('./config');
-const { buildRequest, getSubscriptionPayload } = require('./util');
+import lodash from 'lodash';
+import { defaultRequestConfig, getSuccessRespEvents, isDefinedAndNotNull } from '../../util';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import { BASE_ENDPOINT, CONFIG_CATEGORIES, MAX_BATCH_SIZE, revision } from './config';
+import { buildRequest, getSubscriptionPayload } from './util';
 
 /**
  * This function groups the subscription responses on list id
@@ -32,7 +32,7 @@ const generateBatchedSubscriptionRequest = (subscription, destination) => {
   const subscriptionPayloadResponse = defaultRequestConfig();
   const { privateApiKey } = destination.Config;
   // fetching listId from first event as listId is same for all the events
-  const profiles = []; // list of profiles to be subscribed
+  const profiles: unknown[] = []; // list of profiles to be subscribed
   const { listId, subscriptionProfileList, operation } = subscription;
   subscriptionProfileList.forEach((profileList) => profiles.push(...profileList));
   subscriptionPayloadResponse.body.JSON = getSubscriptionPayload(listId, profiles, operation);
@@ -91,7 +91,7 @@ const populateArrWithRespectiveProfileData = (
 
 /**
  * This function generates the final output batched payload for each object in profileSubscriptionAndMetadataArr
- * ex: 
+ * ex:
  * profileSubscriptionAndMetadataArr = [
       {
         subscription: { subscriptionProfileList, listId1, operation },
@@ -107,14 +107,14 @@ const populateArrWithRespectiveProfileData = (
         profiles: [respectiveProfiles for above metadata with no subscription]
       }
   ]
- * @param {*} profileSubscriptionAndMetadataArr 
- * @param {*} destination 
- * @returns 
+ * @param {*} profileSubscriptionAndMetadataArr
+ * @param {*} destination
+ * @returns
  */
 const buildProfileAndSubscriptionRequests = (profileSubscriptionAndMetadataArr, destination) => {
-  const finalResponseList = [];
+  const finalResponseList: unknown[] = [];
   profileSubscriptionAndMetadataArr.forEach((profileSubscriptionData) => {
-    const batchedRequest = [];
+    const batchedRequest: unknown[] = [];
     // we are keeping profiles request prior to subscription ones as first profile creation and then subscription should happen
     if (profileSubscriptionData.profiles?.length > 0) {
       batchedRequest.push(...getProfileRequests(profileSubscriptionData.profiles, destination));
@@ -184,7 +184,7 @@ const updateArrWithSubscriptions = (
  * @returns
  */
 const batchRequestV2 = (subscribeList, unsubscribeList, profilesList, destination) => {
-  const profileSubscriptionAndMetadataArr = [];
+  const profileSubscriptionAndMetadataArr: unknown[] = [];
   const metaDataIndexMap = new Map();
   updateArrWithSubscriptions(
     subscribeList,
@@ -205,7 +205,7 @@ const batchRequestV2 = (subscribeList, unsubscribeList, profilesList, destinatio
     metaDataIndexMap,
     profilesList,
   );
-  /* Till this point I have a profileSubscriptionAndMetadataArr 
+  /* Till this point I have a profileSubscriptionAndMetadataArr
   containing the the events in one object for which batching has to happen in following format
   [
       {
@@ -229,11 +229,11 @@ const batchRequestV2 = (subscribeList, unsubscribeList, profilesList, destinatio
     [
       [2 calls for identify with batching],
       [1 call identify calls with batching]
-    ] 
+    ]
   */
 };
 
-module.exports = {
+export {
   groupSubscribeResponsesUsingListIdV2,
   populateArrWithRespectiveProfileData,
   generateBatchedSubscriptionRequest,

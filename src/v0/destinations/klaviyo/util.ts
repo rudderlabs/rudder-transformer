@@ -1,9 +1,13 @@
-const set = require('set-value');
-const lodash = require('lodash');
-const { parsePhoneNumberFromString } = require('libphonenumber-js');
-const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
-const { WhiteListedTraits } = require('../../../constants');
-const {
+import set from 'set-value';
+import lodash from 'lodash';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import {
+  NetworkError,
+  InstrumentationError,
+  TransformationError,
+} from '@rudderstack/integrations-lib';
+import { WhiteListedTraits } from '../../../constants';
+import {
   constructPayload,
   getFieldValueFromMessage,
   defaultPostRequestConfig,
@@ -17,20 +21,20 @@ const {
   getDestinationExternalID,
   getIntegrationsObj,
   defaultRequestConfig,
-} = require('../../util');
-const tags = require('../../util/tags');
-const { handleHttpRequest } = require('../../../adapters/network');
-const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const {
+} from '../../util';
+import tags from '../../util/tags';
+import { handleHttpRequest } from '../../../adapters/network';
+import { JSON_MIME_TYPE, HTTP_STATUS_CODES } from '../../util/constant';
+import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
+import {
   BASE_ENDPOINT,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   MAX_BATCH_SIZE,
   WhiteListedTraitsV2,
   revision,
-} = require('./config');
-const logger = require('../../../logger');
+} from './config';
+import logger from '../../../logger';
 
 const REVISION_CONSTANT = '2023-02-22';
 
@@ -150,14 +154,14 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
   const { privateApiKey, consent } = destination.Config;
   let { listId } = destination.Config;
   const targetUrl = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
-  const subscriptionObj = {
+  const subscriptionObj: Record<string, unknown> = {
     email: getFieldValueFromMessage(message, 'email'),
     phone_number: getFieldValueFromMessage(message, 'phone'),
   };
 
   if (traitsInfo?.properties?.consent || consent) {
     const subscribeConsent = traitsInfo?.properties?.consent || consent;
-    const channels = {};
+    const channels: Record<string, string[]> = {};
 
     let subscribeConsentArr = subscribeConsent;
     if (!Array.isArray(subscribeConsentArr)) {
@@ -210,6 +214,9 @@ const createCustomerProperties = (message, Config) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILE.name],
   );
+  if (!customerProperties) {
+    throw new TransformationError('Failed to construct customer properties payload');
+  }
   if (!enforceEmailAsPrimary) {
     customerProperties.$id = getFieldValueFromMessage(message, 'userId');
   } else {
@@ -238,9 +245,15 @@ const populateCustomFieldsFromTraits = (message) => {
 };
 
 const generateBatchedPaylaodForArray = (events) => {
-  let batchEventResponse = defaultBatchRequestConfig();
-  const batchResponseList = [];
-  const metadata = [];
+  const initialBatchEventResponse = defaultBatchRequestConfig();
+  type RequestConfig = typeof initialBatchEventResponse.batchedRequest;
+  let batchEventResponse: {
+    batchedRequest: RequestConfig[];
+    metadata?: unknown[];
+    destination?: unknown;
+  } = { batchedRequest: Object.values(initialBatchEventResponse) };
+  const batchResponseList: { data: { attributes: { subscriptions: unknown[] } } }[] = [];
+  const metadata: unknown[] = [];
   // extracting destination from the first event in a batch
   const { destination } = events[0];
   // Batch event into dest batch structure
@@ -255,7 +268,6 @@ const generateBatchedPaylaodForArray = (events) => {
     metadata.push(ev.metadata);
   });
 
-  batchEventResponse.batchedRequest = Object.values(batchEventResponse);
   batchEventResponse.batchedRequest[0].body.JSON = {
     data: batchResponseList[0].data,
   };
@@ -294,7 +306,7 @@ const groupSubscribeResponsesUsingListId = (subscribeResponseList) => {
 };
 
 const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
-  let batchedResponseList = [];
+  let batchedResponseList: { batchedRequest: unknown[] }[] = [];
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     const eventChunks = lodash.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
@@ -318,7 +330,7 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
 };
 
 const batchSubscribeEvents = (subscribeRespList) => {
-  const identifyResponseList = [];
+  const identifyResponseList: unknown[] = [];
   subscribeRespList.forEach((event) => {
     const processedEvent = event;
     // for group and identify events (it will contain only subscribe response)
@@ -357,7 +369,7 @@ const buildRequest = (payload, destination, category) => {
 };
 
 /**
- * This function generates the metadat object used for updating a list attribute and unset properties 
+ * This function generates the metadat object used for updating a list attribute and unset properties
  * message = {
     integrations: {
       Klaviyo: { fieldsToUnset: ['Unset1', 'Unset2'],
@@ -382,12 +394,12 @@ const buildRequest = (payload, destination, category) => {
             }
         }
       }
- * @param {*} message 
+ * @param {*} message
  */
 const getProfileMetadataAndMetadataFields = (message) => {
   const intgObj = getIntegrationsObj(message, 'Klaviyo');
-  const meta = { patch_properties: {} };
-  let metadataFields = [];
+  const meta: { patch_properties: Record<string, unknown> } = { patch_properties: {} };
+  let metadataFields: string[] = [];
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   // fetch and set fields to unset
   const fieldsToUnset = intgObj?.fieldsToUnset;
@@ -399,7 +411,7 @@ const getProfileMetadataAndMetadataFields = (message) => {
   // fetch list of fields to append , their value and append these fields in metadataFields
   const fieldsToAppend = intgObj?.fieldsToAppend;
   if (Array.isArray(fieldsToAppend)) {
-    const append = {};
+    const append: Record<string, unknown> = {};
     fieldsToAppend.forEach((key) => {
       if (isDefinedAndNotNull(traitsInfo[key])) {
         append[key] = traitsInfo[key];
@@ -412,7 +424,7 @@ const getProfileMetadataAndMetadataFields = (message) => {
   // fetch list of fields to unappend , their value and append these fields in metadataFields
   const fieldsToUnappend = intgObj?.fieldsToUnappend;
   if (Array.isArray(fieldsToUnappend)) {
-    const unappend = {};
+    const unappend: Record<string, unknown> = {};
     fieldsToUnappend.forEach((key) => {
       if (isDefinedAndNotNull(traitsInfo[key])) {
         unappend[key] = traitsInfo[key];
@@ -441,6 +453,9 @@ const constructProfile = (message, destination, isIdentifyCall) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILEV2.name],
   );
+  if (!profileAttributes) {
+    throw new TransformationError('Failed to construct profile attributes payload');
+  }
   if (
     isDefinedAndNotNull(profileAttributes.phone_number) &&
     !isValidE164PhoneNumber(profileAttributes.phone_number)
@@ -609,7 +624,7 @@ const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => 
 
 const getTrackRequests = (eventRespList, destination) => {
   // building and pushing all the event requests
-  const respList = [];
+  const respList: unknown[] = [];
   eventRespList.forEach((resp) =>
     respList.push(
       getSuccessRespEvents(
@@ -658,7 +673,7 @@ const addSubscribeFlagToTraits = (traitsInfo) => {
   return traits;
 };
 
-module.exports = {
+export {
   subscribeUserToList,
   createCustomerProperties,
   populateCustomFieldsFromTraits,

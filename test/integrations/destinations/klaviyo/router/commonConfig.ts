@@ -39,10 +39,30 @@ const destinationV2: Destination = {
   WorkspaceID: '123',
   Transformations: [],
 };
+const destinationV3: Destination = {
+  ID: '123',
+  Name: 'klaviyo',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'klaviyo',
+    DisplayName: 'klaviyo',
+    Config: {},
+  },
+  Config: {
+    privateApiKey: secret1,
+    apiVersion: 'v3',
+    consent: ['email'],
+  },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
+};
 const getRequest = (apiVersion) => {
+  const destinationByVersion =
+    apiVersion === 'v2' ? destinationV2 : apiVersion === 'v3' ? destinationV3 : destination;
   return [
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(1),
       message: {
         type: 'identify',
@@ -88,7 +108,7 @@ const getRequest = (apiVersion) => {
       },
     },
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(2),
       message: {
         type: 'identify',
@@ -134,7 +154,7 @@ const getRequest = (apiVersion) => {
       },
     },
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(3),
       message: {
         userId: 'user123',
@@ -154,7 +174,7 @@ const getRequest = (apiVersion) => {
       },
     },
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(4),
       message: {
         userId: 'user123',
@@ -174,7 +194,7 @@ const getRequest = (apiVersion) => {
       },
     },
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(5),
       message: {
         userId: 'user123',
@@ -201,5 +221,9 @@ export const routerRequest: RouterTransformationRequest = {
 };
 export const routerRequestV2: RouterTransformationRequest = {
   input: getRequest('v2') as unknown as RouterTransformationRequestData[],
+  destType: 'klaviyo',
+};
+export const routerRequestV3: RouterTransformationRequest = {
+  input: getRequest('v3') as unknown as RouterTransformationRequestData[],
   destType: 'klaviyo',
 };

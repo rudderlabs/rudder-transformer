@@ -3,7 +3,7 @@ import {
   populateArrWithRespectiveProfileData,
   generateBatchedSubscriptionRequest,
 } from './batchUtil';
-import { revision } from './config';
+import { revision, getKlaviyoRevision } from './config';
 
 describe('groupSubscribeResponsesUsingListIdV2', () => {
   // Groups subscription responses by listId correctly
@@ -189,5 +189,23 @@ describe('generateBatchedSubscriptionRequest', () => {
     };
     const result = generateBatchedSubscriptionRequest(subscription, destination);
     expect(result).toEqual(expectedRequest);
+  });
+
+  it('should use v3 revision for v3 destination batching', () => {
+    const subscription = {
+      listId: 'test-list-id',
+      subscriptionProfileList: [[{ id: 'profile1' }]],
+      operation: 'unsubscribe',
+    };
+    const destination = {
+      Config: {
+        privateApiKey: 'test-api-key',
+        apiVersion: 'v3',
+      },
+    };
+
+    const result = generateBatchedSubscriptionRequest(subscription, destination);
+    expect(result.headers.revision).toBe(getKlaviyoRevision('v3'));
+    expect(result.endpointPath).toBe('/api/profile-subscription-bulk-delete-jobs');
   });
 });

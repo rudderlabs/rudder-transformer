@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import { defaultRequestConfig, getSuccessRespEvents, isDefinedAndNotNull } from '../../util';
 import { JSON_MIME_TYPE } from '../../util/constant';
-import { BASE_ENDPOINT, CONFIG_CATEGORIES, MAX_BATCH_SIZE, revision } from './config';
+import { BASE_ENDPOINT, CONFIG_CATEGORIES, MAX_BATCH_SIZE, getKlaviyoRevision } from './config';
 import { buildRequest, getSubscriptionPayload } from './util';
 
 /**
@@ -43,7 +43,7 @@ const generateBatchedSubscriptionRequest = (subscription, destination) => {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision,
+    revision: getKlaviyoRevision(destination.Config?.apiVersion),
   };
   return subscriptionPayloadResponse;
 };

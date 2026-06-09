@@ -28,11 +28,16 @@ import {
   CONFIG_CATEGORIES,
   MAX_BATCH_SIZE,
   WhiteListedTraitsV2,
-  revision,
+  KLAVIYO_API_VERSION,
+  getKlaviyoRevision,
 } from './config';
 import logger from '../../../logger';
 
 const REVISION_CONSTANT = '2023-02-22';
+const KLAVIYO_MARKETING_CHANNELS = {
+  EMAIL: 'email',
+  SMS: 'sms',
+};
 
 /**
  * This function is used to check if the phone number is in E.164 format. It uses libphonenumber-js library to parse the phone number
@@ -354,7 +359,7 @@ const buildRequest = (payload, destination, category) => {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
-    revision,
+    revision: getKlaviyoRevision(destination.Config?.apiVersion),
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
 
@@ -493,21 +498,40 @@ const constructProfile = (message, destination, isIdentifyCall) => {
 };
 
 /** This function update profile with consents for subscribing to email and/or phone
- * @param {*} profileAttributes
- * @param {*} subscribeConsent
- * @param {*} email
- * @param {*} phone
+ * @param {*} consent
+ * @returns normalized consent channels
  */
-const updateProfileWithConsents = (profileAttributes, subscribeConsent, email, phone) => {
-  let consent = subscribeConsent;
+const getConsentChannels = (consent) => {
   if (!Array.isArray(consent)) {
     consent = [consent];
   }
-  if (consent.includes('email') && email) {
-    set(profileAttributes, 'subscriptions.email.marketing.consent', 'SUBSCRIBED');
+  return consent.filter(
+    (channel) =>
+      channel === KLAVIYO_MARKETING_CHANNELS.EMAIL || channel === KLAVIYO_MARKETING_CHANNELS.SMS,
+  );
+};
+
+/** This function updates profile with consent channels
+ * @param {*} profileAttributes
+ * @param {*} consentChannels
+ * @param {*} consentStatus
+ * @param {*} email
+ * @param {*} phone
+ * @param {*} strictConsentMode
+ */
+const updateProfileWithConsents = (
+  profileAttributes,
+  consentChannels,
+  consentStatus,
+  email,
+  phone,
+  strictConsentMode = false,
+) => {
+  if (consentChannels.includes(KLAVIYO_MARKETING_CHANNELS.EMAIL) && (email || strictConsentMode)) {
+    set(profileAttributes, 'subscriptions.email.marketing.consent', consentStatus);
   }
-  if (consent.includes('sms') && phone) {
-    set(profileAttributes, 'subscriptions.sms.marketing.consent', 'SUBSCRIBED');
+  if (consentChannels.includes(KLAVIYO_MARKETING_CHANNELS.SMS) && (phone || strictConsentMode)) {
+    set(profileAttributes, 'subscriptions.sms.marketing.consent', consentStatus);
   }
 };
 /**
@@ -518,8 +542,18 @@ const updateProfileWithConsents = (profileAttributes, subscribeConsent, email, p
 const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, operation) => {
   // listId from message properties are preferred over Config listId
   const { consent } = destination.Config;
+  const isV3 = destination.Config?.apiVersion === KLAVIYO_API_VERSION.V3;
   let { listId } = destination.Config;
-  const subscribeConsent = traitsInfo.consent || traitsInfo.properties?.consent || consent;
+  let subscribeConsent = traitsInfo?.consent || traitsInfo?.properties?.consent || consent;
+  if (isV3) {
+    if (traitsInfo?.properties?.consent !== undefined && traitsInfo.properties.consent !== null) {
+      subscribeConsent = traitsInfo.properties.consent;
+    }
+    if (traitsInfo?.consent !== undefined && traitsInfo.consent !== null) {
+      subscribeConsent = traitsInfo.consent;
+    }
+  }
+  const consentChannels = getConsentChannels(subscribeConsent);
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getFieldValueFromMessage(message, 'phone');
   const profileAttributes = {
@@ -527,9 +561,19 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
     phone_number: phone,
   };
 
-  // used only for subscription and not for unsubscription
-  if (operation === 'subscribe' && subscribeConsent) {
-    updateProfileWithConsents(profileAttributes, subscribeConsent, email, phone);
+  const shouldAttachSubscriptions = isV3 || operation === 'subscribe';
+  if (shouldAttachSubscriptions && subscribeConsent) {
+    updateProfileWithConsents(
+      profileAttributes,
+      consentChannels,
+      operation === 'subscribe' ? 'SUBSCRIBED' : 'UNSUBSCRIBED',
+      email,
+      phone,
+      isV3,
+    );
+  }
+  if (isV3) {
+    profileAttributes.subscriptions = profileAttributes.subscriptions || {};
   }
 
   const profile = removeUndefinedAndNullValues({
@@ -540,7 +584,7 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
         : undefined, // id is not applicable for unsubscription
     attributes: removeUndefinedAndNullValues(profileAttributes),
   });
-  if (!email && !phone && profile.id) {
+  if (!isV3 && !email && !phone && profile.id) {
     if (operation === 'subscribe') {
       throw new InstrumentationError(
         'Profile Id, Email or/and Phone are required to subscribe to a list',
@@ -601,7 +645,7 @@ const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => 
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
-    revision,
+    revision: getKlaviyoRevision(destination.Config?.apiVersion),
   };
   response.body.JSON = getSubscriptionPayload(
     subscription.listId,

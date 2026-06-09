@@ -91,8 +91,20 @@ const WhiteListedTraitsV2 = [
   'address',
 ];
 const destType = 'klaviyo';
-// api version used
-const revision = '2024-10-15';
+const KLAVIYO_API_VERSION = {
+  V2: 'v2',
+  V3: 'v3',
+};
+const KLAVIYO_API_REVISIONS = {
+  [KLAVIYO_API_VERSION.V2]: '2024-10-15',
+  [KLAVIYO_API_VERSION.V3]: '2026-04-15',
+};
+
+const getKlaviyoRevision = (apiVersion) =>
+  KLAVIYO_API_REVISIONS[apiVersion] || KLAVIYO_API_REVISIONS[KLAVIYO_API_VERSION.V2];
+
+// kept for backwards compatibility with existing v2 tests and helpers
+const revision = KLAVIYO_API_REVISIONS[KLAVIYO_API_VERSION.V2];
 
 export {
   BASE_ENDPOINT,
@@ -106,6 +118,9 @@ export {
   jsonNameMapping,
   destType,
   revision,
+  KLAVIYO_API_VERSION,
+  KLAVIYO_API_REVISIONS,
+  getKlaviyoRevision,
   WhiteListedTraitsV2,
   useUpdatedKlaviyoAPI,
 };

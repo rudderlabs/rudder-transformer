@@ -6,12 +6,13 @@ This document outlines the business logic and mappings used in the Klaviyo desti
 
 ## API Versions
 
-The Klaviyo destination supports two API versions:
+The Klaviyo destination supports three API versions:
 
 | Config Value | API Revision | Status            |
 | ------------ | ------------ | ----------------- |
 | `v1`         | `2023-02-22` | Deprecated        |
-| `v2`         | `2024-10-15` | Current (Default) |
+| `v2`         | `2024-10-15` | Default           |
+| `v3`         | `2026-04-15` | Opt-in (strict consent) |
 
 The API version is selected via `destination.Config.apiVersion` and affects endpoints, request formats, and available features.
 
@@ -56,7 +57,7 @@ The API version is selected via `destination.Config.apiVersion` and affects endp
    POST https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs
    ```
 
-#### V2 API Flow
+#### V2 / V3 API Flow
 
 **Primary Endpoint**: `POST /api/profile-import`
 **Subscribe Endpoint**: `POST /api/profile-subscription-bulk-create-jobs`
@@ -74,7 +75,7 @@ The API version is selected via `destination.Config.apiVersion` and affects endp
      Authorization: Klaviyo-API-Key {privateApiKey}
      Content-Type: application/json
      Accept: application/json
-     revision: 2024-10-15
+     revision: 2024-10-15 (v2) or 2026-04-15 (v3)
    ```
 
 **RudderStack Input → V2 Profile Import** (Identify call):
@@ -237,11 +238,12 @@ The API version is selected via `destination.Config.apiVersion` and affects endp
 }
 ```
 
-**V2 Subscription Notes**:
+**V2 / V3 Subscription Notes**:
 
 - `traits.properties.listId` overrides destination `listId` config when present
 - `traits.properties.consent` controls channels: `["email"]`, `["sms"]`, or `["email", "sms"]`
-- At least one of `email` or `phone_number` is required for both subscribe and unsubscribe
+- V2 only sets profile `subscriptions` during subscribe flows.
+- V3 always sets profile `subscriptions` for both subscribe and unsubscribe flows using consent config (or trait override), even when consent is empty or does not match available identifiers.
 
 #### Identify Payload Structure
 

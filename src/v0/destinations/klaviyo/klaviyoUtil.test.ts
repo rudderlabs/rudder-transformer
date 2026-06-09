@@ -1,4 +1,8 @@
-import { addSubscribeFlagToTraits, getProfileMetadataAndMetadataFields } from './util';
+import {
+  addSubscribeFlagToTraits,
+  getProfileMetadataAndMetadataFields,
+  subscribeOrUnsubscribeUserToListV2,
+} from './util';
 
 describe('addSubscribeFlagToTraits', () => {
   // The function should add a 'subscribe' property to the 'properties' object if it exists in the input 'traitsInfo'.
@@ -221,5 +225,135 @@ describe('getProfileMetadataAndMetadataFields', () => {
 
     result = getProfileMetadataAndMetadataFields(undefined);
     expect(result).toEqual({ meta: { patch_properties: {} }, metadataFields: [] });
+  });
+});
+
+describe('subscribeOrUnsubscribeUserToListV2', () => {
+  const destination = {
+    Config: {
+      apiVersion: 'v3',
+      listId: 'dest-list-id',
+      consent: ['email', 'sms'],
+    },
+  };
+
+  it.each([
+    {
+      name: 'v3 subscribe with both identifiers and consent override',
+      operation: 'subscribe',
+      traitsConsent: ['email', 'sms'],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+      expectedSubscriptions: {
+        email: { marketing: { consent: 'SUBSCRIBED' } },
+        sms: { marketing: { consent: 'SUBSCRIBED' } },
+      },
+    },
+    {
+      name: 'v3 subscribe with email consent but only phone identifier',
+      operation: 'subscribe',
+      traitsConsent: ['email'],
+      email: undefined,
+      phone: '+12125550000',
+      expectedSubscriptions: {
+        email: { marketing: { consent: 'SUBSCRIBED' } },
+      },
+    },
+    {
+      name: 'v3 unsubscribe with sms consent but only email identifier',
+      operation: 'unsubscribe',
+      traitsConsent: ['sms'],
+      email: 'user@domain.com',
+      phone: undefined,
+      expectedSubscriptions: {
+        sms: { marketing: { consent: 'UNSUBSCRIBED' } },
+      },
+    },
+    {
+      name: 'v3 subscribe with empty consent list',
+      operation: 'subscribe',
+      traitsConsent: [],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+      expectedSubscriptions: {},
+    },
+  ])(
+    'should apply strict channel consent matrix: $name',
+    ({ operation, traitsConsent, email, phone, expectedSubscriptions }) => {
+      const message = {
+        type: 'identify',
+        traits: {
+          email,
+          phone,
+        },
+      };
+
+      const traitsInfo = {
+        properties: {
+          listId: 'traits-list-id',
+          consent: traitsConsent,
+        },
+      };
+
+      const result = subscribeOrUnsubscribeUserToListV2(
+        message,
+        traitsInfo,
+        destination,
+        operation,
+      );
+
+      expect(result).toEqual({
+        listId: 'traits-list-id',
+        operation,
+        profile: [
+          {
+            type: 'profile',
+            attributes: {
+              ...(email && { email }),
+              ...(phone && { phone_number: phone }),
+              subscriptions: expectedSubscriptions,
+            },
+          },
+        ],
+      });
+    },
+  );
+
+  it('should preserve v2 unsubscribe behavior without subscriptions in profile attributes', () => {
+    const message = {
+      type: 'identify',
+      traits: {
+        email: 'user@domain.com',
+        phone: '+12125550000',
+      },
+    };
+    const traitsInfo = {
+      properties: {
+        listId: 'traits-list-id',
+        consent: ['email'],
+      },
+    };
+    const v2Destination = {
+      Config: {
+        apiVersion: 'v2',
+        listId: 'dest-list-id',
+        consent: ['email', 'sms'],
+      },
+    };
+
+    const result = subscribeOrUnsubscribeUserToListV2(
+      message,
+      traitsInfo,
+      v2Destination,
+      'unsubscribe',
+    );
+
+    expect(result.profile[0]).toEqual({
+      type: 'profile',
+      attributes: {
+        email: 'user@domain.com',
+        phone_number: '+12125550000',
+      },
+    });
   });
 });

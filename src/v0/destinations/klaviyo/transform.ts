@@ -89,7 +89,10 @@ const identifyRequestHandler = async (
       _id: getFieldValueFromMessage(message, 'userId'),
     };
   }
-  const data: any = {
+  const data: {
+    type: string;
+    attributes: { properties?: unknown; [key: string]: unknown };
+  } = {
     type: 'profile',
     attributes: {
       ...propertyPayload,
@@ -165,20 +168,27 @@ const identifyRequestHandler = async (
 // ----------------------
 
 const trackRequestHandler = (message, category, destination) => {
-  const payload: any = {};
+  const payload: { properties?: unknown; data?: { type: string; attributes?: unknown } } = {};
   const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
   if (event && typeof event !== 'string') {
     throw new InstrumentationError('Event type should be a string');
   }
   event = event ? event.trim().toLowerCase() : event;
-  let attributes: any = {};
+  let attributes: {
+    metric?: unknown;
+    properties?: { items?: unknown[] };
+    profile?: unknown;
+    customProperties?: unknown;
+    value?: unknown;
+    time?: unknown;
+  } = {};
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
     const eventMap = jsonNameMapping[eventName];
     attributes.metric = { name: eventName };
     const categ = CONFIG_CATEGORIES[eventMap];
-    attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
+    attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name])!;
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
@@ -199,7 +209,7 @@ const trackRequestHandler = (message, category, destination) => {
         payload.properties = {};
       }
       if (itemArr.length > 0) {
-        attributes.properties.items = itemArr;
+        attributes.properties!.items = itemArr;
       }
     }
 
@@ -224,7 +234,7 @@ const trackRequestHandler = (message, category, destination) => {
   } else {
     const value =
       message.properties?.revenue || message.properties?.total || message.properties?.value;
-    attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
+    attributes = constructPayload(message, MAPPING_CONFIG[category.name])!;
     if (value) {
       attributes.value = value;
     }

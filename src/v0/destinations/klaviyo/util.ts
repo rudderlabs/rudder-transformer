@@ -238,7 +238,13 @@ const populateCustomFieldsFromTraits = (message) => {
 };
 
 const generateBatchedPaylaodForArray = (events) => {
-  let batchEventResponse: any = defaultBatchRequestConfig();
+  const initialBatchEventResponse = defaultBatchRequestConfig();
+  type ReqConfig = typeof initialBatchEventResponse.batchedRequest;
+  let batchEventResponse: {
+    batchedRequest: ReqConfig[];
+    metadata?: unknown[];
+    destination?: unknown;
+  } = { batchedRequest: Object.values(initialBatchEventResponse) };
   const batchResponseList: { data: { attributes: { subscriptions: unknown[] } } }[] = [];
   const metadata: unknown[] = [];
   // extracting destination from the first event in a batch
@@ -255,7 +261,6 @@ const generateBatchedPaylaodForArray = (events) => {
     metadata.push(ev.metadata);
   });
 
-  batchEventResponse.batchedRequest = Object.values(batchEventResponse);
   batchEventResponse.batchedRequest[0].body.JSON = {
     data: batchResponseList[0].data,
   };

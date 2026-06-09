@@ -134,7 +134,7 @@ export const data = [
             output: {
               datasetId: 'gc_dataset',
               projectId: 'gc-project-id',
-              properties: { count: 25, productId: 6, productName: 'Product-5' },
+              rows: [{ json: { count: 25, productId: 6, productName: 'Product-5' } }],
               tableId: 'gc_table',
               userId: '',
             },
@@ -279,12 +279,16 @@ export const data = [
             output: {
               datasetId: 'gc_dataset',
               projectId: 'gc-project-id',
-              properties: {
-                count: 25,
-                productId: 6,
-                productName: 'Product-5',
-                insertId: '6',
-              },
+              rows: [
+                {
+                  insertId: '6',
+                  json: {
+                    count: 25,
+                    productId: 6,
+                    productName: 'Product-5',
+                  },
+                },
+              ],
               tableId: 'gc_table',
               userId: '',
             },

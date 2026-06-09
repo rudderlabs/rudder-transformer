@@ -230,11 +230,23 @@ export const data = [
               batchedRequest: {
                 datasetId: 'gc_dataset',
                 projectId: 'gc-project-id',
-                properties: [
-                  { count: 10, insertId: '10', productId: 10, productName: 'Product-10' },
-                  { count: 20, insertId: '20', productId: 20, productName: 'Product-20' },
-                  { count: 20, insertId: '20', productId: 20, productName: 'Product-20' },
-                  { count: 20, insertId: '20', productId: 20, productName: 'Product-20' },
+                rows: [
+                  {
+                    insertId: '10',
+                    json: { count: 10, productId: 10, productName: 'Product-10' },
+                  },
+                  {
+                    insertId: '20',
+                    json: { count: 20, productId: 20, productName: 'Product-20' },
+                  },
+                  {
+                    insertId: '20',
+                    json: { count: 20, productId: 20, productName: 'Product-20' },
+                  },
+                  {
+                    insertId: '20',
+                    json: { count: 20, productId: 20, productName: 'Product-20' },
+                  },
                 ],
                 tableId: 'gc_table',
               },

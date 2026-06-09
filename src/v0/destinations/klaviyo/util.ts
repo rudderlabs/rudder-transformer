@@ -1,11 +1,7 @@
 import set from 'set-value';
 import lodash from 'lodash';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import {
-  NetworkError,
-  InstrumentationError,
-  TransformationError,
-} from '@rudderstack/integrations-lib';
+import { NetworkError, InstrumentationError } from '@rudderstack/integrations-lib';
 import { WhiteListedTraits } from '../../../constants';
 import {
   constructPayload,
@@ -213,10 +209,7 @@ const createCustomerProperties = (message, Config) => {
   let customerProperties = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILE.name],
-  );
-  if (!customerProperties) {
-    throw new TransformationError('Failed to construct customer properties payload');
-  }
+  )!;
   if (!enforceEmailAsPrimary) {
     customerProperties.$id = getFieldValueFromMessage(message, 'userId');
   } else {
@@ -245,13 +238,7 @@ const populateCustomFieldsFromTraits = (message) => {
 };
 
 const generateBatchedPaylaodForArray = (events) => {
-  const initialBatchEventResponse = defaultBatchRequestConfig();
-  type RequestConfig = typeof initialBatchEventResponse.batchedRequest;
-  let batchEventResponse: {
-    batchedRequest: RequestConfig[];
-    metadata?: unknown[];
-    destination?: unknown;
-  } = { batchedRequest: Object.values(initialBatchEventResponse) };
+  let batchEventResponse: any = defaultBatchRequestConfig();
   const batchResponseList: { data: { attributes: { subscriptions: unknown[] } } }[] = [];
   const metadata: unknown[] = [];
   // extracting destination from the first event in a batch
@@ -268,6 +255,7 @@ const generateBatchedPaylaodForArray = (events) => {
     metadata.push(ev.metadata);
   });
 
+  batchEventResponse.batchedRequest = Object.values(batchEventResponse);
   batchEventResponse.batchedRequest[0].body.JSON = {
     data: batchResponseList[0].data,
   };
@@ -452,10 +440,7 @@ const constructProfile = (message, destination, isIdentifyCall) => {
   const profileAttributes = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILEV2.name],
-  );
-  if (!profileAttributes) {
-    throw new TransformationError('Failed to construct profile attributes payload');
-  }
+  )!;
   if (
     isDefinedAndNotNull(profileAttributes.phone_number) &&
     !isValidE164PhoneNumber(profileAttributes.phone_number)

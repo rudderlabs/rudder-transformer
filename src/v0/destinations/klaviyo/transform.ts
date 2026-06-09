@@ -2,11 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 import get from 'get-value';
-import {
-  ConfigurationError,
-  InstrumentationError,
-  TransformationError,
-} from '@rudderstack/integrations-lib';
+import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
 import { EventType, WhiteListedTraits, MappedToDestinationKey } from '../../../constants';
 import {
   CONFIG_CATEGORIES,
@@ -72,10 +68,7 @@ const identifyRequestHandler = async (
     traitsInfo = addSubscribeFlagToTraits(traitsInfo);
   }
 
-  let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  if (!propertyPayload) {
-    throw new TransformationError('Failed to construct identify payload');
-  }
+  let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name])!;
   // Extract other K-V property from traits about user custom properties
   let customPropertyPayload = {};
   customPropertyPayload = extractCustomFields(
@@ -96,7 +89,7 @@ const identifyRequestHandler = async (
       _id: getFieldValueFromMessage(message, 'userId'),
     };
   }
-  const data: { type: string; attributes: { [key: string]: unknown } } = {
+  const data: any = {
     type: 'profile',
     attributes: {
       ...propertyPayload,
@@ -172,33 +165,20 @@ const identifyRequestHandler = async (
 // ----------------------
 
 const trackRequestHandler = (message, category, destination) => {
-  const payload: { properties?: unknown; data?: unknown } = {};
+  const payload: any = {};
   const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
   if (event && typeof event !== 'string') {
     throw new InstrumentationError('Event type should be a string');
   }
   event = event ? event.trim().toLowerCase() : event;
-  let attributes: {
-    metric?: unknown;
-    properties?: { items?: unknown[]; [key: string]: unknown };
-    profile?: unknown;
-    customProperties?: unknown;
-    value?: unknown;
-    time?: unknown;
-  } = {};
+  let attributes: any = {};
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
     const eventMap = jsonNameMapping[eventName];
     attributes.metric = { name: eventName };
     const categ = CONFIG_CATEGORIES[eventMap];
-    const ecomPayload = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
-    if (!ecomPayload) {
-      throw new TransformationError('Failed to construct ecom event properties payload');
-    }
-    const ecomProperties: { items?: unknown[]; [key: string]: unknown } = {};
-    Object.assign(ecomProperties, ecomPayload);
-    attributes.properties = ecomProperties;
+    attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
@@ -244,22 +224,15 @@ const trackRequestHandler = (message, category, destination) => {
   } else {
     const value =
       message.properties?.revenue || message.properties?.total || message.properties?.value;
-    const trackPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-    if (!trackPayload) {
-      throw new TransformationError('Failed to construct track event attributes payload');
-    }
-    attributes = {};
-    Object.assign(attributes, trackPayload);
+    attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
     if (value) {
       attributes.value = value;
     }
   }
   // if flattenProperties is enabled from UI, flatten the event properties
-  if (flattenProperties) {
-    const flattened: { items?: unknown[]; [key: string]: unknown } = {};
-    Object.assign(flattened, flattenJson(attributes.properties, '.', 'normal', false));
-    attributes.properties = flattened;
-  }
+  attributes.properties = flattenProperties
+    ? flattenJson(attributes.properties, '.', 'normal', false)
+    : attributes.properties;
   // Map user properties to profile object
   attributes.profile = {
     ...createCustomerProperties(message, destination.Config),
@@ -273,7 +246,8 @@ const trackRequestHandler = (message, category, destination) => {
   if (message.timestamp) {
     attributes.time = message.timestamp;
   }
-  payload.data = { type: 'event', attributes };
+  payload.data = { type: 'event' };
+  payload.data.attributes = attributes;
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
   response.endpointPath = category.apiUrl;

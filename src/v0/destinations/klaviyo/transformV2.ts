@@ -2,11 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 import get from 'get-value';
-import {
-  ConfigurationError,
-  InstrumentationError,
-  TransformationError,
-} from '@rudderstack/integrations-lib';
+import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
 import { EventType, MappedToDestinationKey } from '../../../constants';
 import { CONFIG_CATEGORIES, MAPPING_CONFIG } from './config';
 import {
@@ -84,10 +80,7 @@ const trackOrScreenRequestHandler = (message, category, destination) => {
   if (event && typeof event !== 'string') {
     throw new InstrumentationError('Event type should be a string');
   }
-  const attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
-  if (!attributes) {
-    throw new TransformationError('Failed to construct track/screen event attributes payload');
-  }
+  const attributes = constructPayload(message, MAPPING_CONFIG[category.name])!;
 
   // if flattenProperties is enabled from UI, flatten the event properties
   attributes.properties = flattenProperties

@@ -222,9 +222,7 @@ const processEvent = (event: SurvicateRouterRequest) => {
  * @param reqMetadata - Metadata for the request
  * @returns Promise resolving to array of processed responses
  */
-const processRouterDest = async (
-  inputs: SurvicateRouterRequest[],
-  reqMetadata: Record<string, unknown>,
-) => simpleProcessRouterDest(inputs, processEvent, reqMetadata, {});
+const processRouterDest = async (inputs: unknown, reqMetadata: Record<string, unknown>) =>
+  simpleProcessRouterDest(inputs as SurvicateRouterRequest[], processEvent, reqMetadata, {});
 
 export { processRouterDest };

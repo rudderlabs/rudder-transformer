@@ -30,7 +30,7 @@ const groupSubscribeResponsesUsingListIdV2 = (subscribeResponseList) => {
  */
 const generateBatchedSubscriptionRequest = (subscription, destination) => {
   const subscriptionPayloadResponse = defaultRequestConfig();
-  const { privateApiKey } = destination.Config;
+  const { privateApiKey, apiVersion } = destination.Config;
   // fetching listId from first event as listId is same for all the events
   const profiles: unknown[] = []; // list of profiles to be subscribed
   const { listId, subscriptionProfileList, operation } = subscription;
@@ -43,7 +43,7 @@ const generateBatchedSubscriptionRequest = (subscription, destination) => {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: getKlaviyoRevision(destination.Config?.apiVersion),
+    revision: getKlaviyoRevision(apiVersion),
   };
   return subscriptionPayloadResponse;
 };

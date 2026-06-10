@@ -349,7 +349,7 @@ const batchSubscribeEvents = (subscribeRespList) => {
   return batchedResponseList;
 };
 const buildRequest = (payload, destination, category) => {
-  const { privateApiKey } = destination.Config;
+  const { privateApiKey, apiVersion } = destination.Config;
   const response = defaultRequestConfig();
 
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
@@ -359,7 +359,7 @@ const buildRequest = (payload, destination, category) => {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
-    revision: getKlaviyoRevision(destination.Config?.apiVersion),
+    revision: getKlaviyoRevision(apiVersion),
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
 
@@ -502,10 +502,8 @@ const constructProfile = (message, destination, isIdentifyCall) => {
  * @returns normalized consent channels
  */
 const getConsentChannels = (consent) => {
-  if (!Array.isArray(consent)) {
-    consent = [consent];
-  }
-  return consent.filter(
+  const normalizedConsent = Array.isArray(consent) ? consent : [consent];
+  return normalizedConsent.filter(
     (channel) =>
       channel === KLAVIYO_MARKETING_CHANNELS.EMAIL || channel === KLAVIYO_MARKETING_CHANNELS.SMS,
   );
@@ -541,8 +539,8 @@ const updateProfileWithConsents = (
  */
 const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, operation) => {
   // listId from message properties are preferred over Config listId
-  const { consent } = destination.Config;
-  const isV3 = destination.Config?.apiVersion === KLAVIYO_API_VERSION.V3;
+  const { consent, apiVersion } = destination.Config;
+  const isV3 = apiVersion === KLAVIYO_API_VERSION.V3;
   let { listId } = destination.Config;
   let subscribeConsent = traitsInfo?.consent || traitsInfo?.properties?.consent || consent;
   if (isV3) {
@@ -556,7 +554,7 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
   const consentChannels = getConsentChannels(subscribeConsent);
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getFieldValueFromMessage(message, 'phone');
-  const profileAttributes = {
+  const profileAttributes: Record<string, unknown> = {
     email,
     phone_number: phone,
   };
@@ -636,7 +634,7 @@ const getSubscriptionPayload = (listId, profiles, operation) => ({
  */
 const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => {
   const response = defaultRequestConfig();
-  const { privateApiKey } = destination.Config;
+  const { privateApiKey, apiVersion } = destination.Config;
   const { apiUrl } = CONFIG_CATEGORIES[subscription.operation.toUpperCase()];
   response.endpoint = `${BASE_ENDPOINT}${apiUrl}`;
   response.endpointPath = apiUrl;
@@ -645,7 +643,7 @@ const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => 
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
-    revision: getKlaviyoRevision(destination.Config?.apiVersion),
+    revision: getKlaviyoRevision(apiVersion),
   };
   response.body.JSON = getSubscriptionPayload(
     subscription.listId,

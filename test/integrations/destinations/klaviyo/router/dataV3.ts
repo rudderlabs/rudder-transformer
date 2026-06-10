@@ -1,6 +1,10 @@
 import { Destination, RouterTransformationRequest } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
-import { generateMetadata, generateSimplifiedGroupPayload, transformResultBuilder } from '../../../testUtils';
+import {
+  generateMetadata,
+  generateSimplifiedGroupPayload,
+  transformResultBuilder,
+} from '../../../testUtils';
 import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {

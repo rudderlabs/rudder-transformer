@@ -4,10 +4,19 @@
  */
 import { Destination, Connection, RouterTransformationRequest } from '../../../../../../src/types';
 import { VDM_V2_SCHEMA_VERSION } from '../../../../../../src/v0/util/constant';
+import { DM_ACCOUNT_DEFINITION_NAME } from '../../../../../../src/v0/destinations/google_adwords_remarketing_lists/dataManager/config';
 import { generateGoogleOAuthMetadata } from '../../../../testUtils';
 import { secret4 } from '../../maskedSecrets';
 
 const DM_WORKSPACE_ID = 'dm-enabled-workspaceId';
+
+// Connecting the dedicated DM OAuth account is what selects the Data Manager API path.
+const dmDeliveryAccount = {
+  id: 'dm-delivery-account-id',
+  options: null,
+  secret: null,
+  accountDefinitionName: DM_ACCOUNT_DEFINITION_NAME,
+};
 
 const generateDMGoogleOAuthMetadata = (jobId: number) => ({
   ...generateGoogleOAuthMetadata(jobId),
@@ -39,6 +48,7 @@ export const dmDestination: Destination = {
   Transformations: [],
   IsConnectionEnabled: true,
   IsProcessorEnabled: true,
+  deliveryAccount: dmDeliveryAccount,
 };
 
 // Destination used for VDMv2 (no explicit schema/typeOfList — comes from connection config)
@@ -63,6 +73,7 @@ const dmDestinationNoSchema: Destination = {
   Transformations: [],
   IsConnectionEnabled: true,
   IsProcessorEnabled: true,
+  deliveryAccount: dmDeliveryAccount,
 };
 
 // Destination with hashing off — for eventStreamRecordHashOffRequest mirror

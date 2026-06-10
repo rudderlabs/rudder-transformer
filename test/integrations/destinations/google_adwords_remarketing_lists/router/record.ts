@@ -1,6 +1,18 @@
-import { Connection, Destination, RouterTransformationRequest } from '../../../../../src/types';
+import {
+  Account,
+  Connection,
+  Destination,
+  RouterTransformationRequest,
+} from '../../../../../src/types';
 import { VDM_V2_SCHEMA_VERSION } from '../../../../../src/v0/util/constant';
 import { generateGoogleOAuthMetadata } from '../../../testUtils';
+
+const deliveryAccount: Account = {
+  id: '',
+  options: null,
+  secret: null,
+  accountDefinitionName: 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_OAUTH',
+};
 
 const destination: Destination = {
   Config: {
@@ -13,6 +25,7 @@ const destination: Destination = {
     isHashRequired: true,
     typeOfList: 'General',
   },
+  deliveryAccount,
   ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
   Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
   Enabled: true,
@@ -36,6 +49,7 @@ const destination2: Destination = {
     loginCustomerId: '',
     subAccount: false,
   },
+  deliveryAccount,
   ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
   Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
   Enabled: true,

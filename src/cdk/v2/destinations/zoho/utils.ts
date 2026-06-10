@@ -13,7 +13,6 @@ import { CommonUtils } from '../../../../util/common';
 import { Destination, FixMe } from '../../../../types';
 import {
   DestConfig,
-  SearchRecordParams,
   ProcessedCOQLAPISuccessResponse,
   ProcessedCOQLAPIErrorResponse,
   COQLResultMapping,
@@ -147,30 +146,6 @@ const handleDuplicateCheckV2 = (
 };
 
 /**
- * Groups conditions with AND operator using Zoho COQL nested grouping convention.
- * Recursively creates nested parentheses: ((A AND B) AND C).
- * Required by Zoho COQL - flat format (A AND B AND C) is not allowed.
- *
- * @param {string[]} conditions - Array of condition strings to group with AND
- * @returns {string} Nested AND condition string with proper parentheses
- * @see https://www.zoho.com/crm/developer/docs/api/v6/COQL-Limitations.html
- *
- * @example
- * groupConditions(['A', 'B', 'C']) // Returns: "(A AND (B AND C))"
- * groupConditions(['A', 'B']) // Returns: "(A AND B)"
- * groupConditions(['A']) // Returns: "A"
- */
-const groupConditions = (conditions: string[]): string => {
-  if (conditions.length === 1) {
-    return conditions[0]; // No need for grouping with a single condition
-  }
-  if (conditions.length === 2) {
-    return `(${conditions[0]} AND ${conditions[1]})`; // Base case
-  }
-  return `(${groupConditions(conditions.slice(0, 2))} AND ${groupConditions(conditions.slice(2))})`;
-};
-
-/**
  * Groups conditions with OR operator using Zoho COQL nested grouping convention.
  * Recursively creates nested parentheses: ((A OR B) OR C).
  * Required by Zoho COQL - flat format (A OR B OR C) is not allowed.
@@ -191,61 +166,6 @@ const groupConditionsWithOR = (conditions: string[]) => {
     return `(${conditions[0]} OR ${conditions[1]})`; // Base case
   }
   return `(${groupConditionsWithOR(conditions.slice(0, 2))} OR ${groupConditionsWithOR(conditions.slice(2))})`;
-};
-
-/**
- * Generates a WHERE clause for COQL queries from field-value pairs.
- * Handles different data types (strings, numbers, arrays) according to Zoho COQL syntax.
- * Cleans input by removing undefined, null, and empty values.
- *
- * @param {Record<string, unknown>} fields - Field-value pairs to convert to WHERE conditions
- * @returns {string} WHERE clause with nested AND conditions, or empty string if no valid fields
- * @see https://help.zoho.com/portal/en/kb/creator/developer-guide/forms/add-and-manage-fields/articles/understand-fields#Types_of_fields
- * @see https://www.zoho.com/crm/developer/docs/api/v6/Get-Records-through-COQL-Query.html
- *
- * @example
- * generateWhereClause({ Email: 'test@example.com', Phone: '123' })
- * // Returns: "WHERE (Email = 'test@example.com' AND Phone = '123')"
- */
-const generateWhereClause = (fields: Record<string, unknown>) => {
-  const cleanedFields = removeUndefinedNullEmptyExclBoolInt(fields) as Record<string, unknown>;
-  const conditions = Object.keys(cleanedFields).map((key) => {
-    const value = cleanedFields[key];
-    if (Array.isArray(value)) {
-      return `${key} = '${value.join(';')}'`;
-    }
-    if (typeof value === 'number') {
-      return `${key} = ${value}`;
-    }
-    return `${key} = '${value}'`;
-  });
-
-  return conditions.length > 0 ? `WHERE ${groupConditions(conditions)}` : '';
-};
-
-/**
- * Generates a complete COQL SELECT query to find record IDs by identifier fields.
- * Limits fields to first 25 to avoid Zoho API restrictions.
- *
- * @param {string} module - Zoho module name (e.g., 'Leads', 'Contacts')
- * @param {Record<string, unknown>} fields - Identifier field-value pairs
- * @returns {string} Complete COQL query string or empty string if no valid WHERE clause
- *
- * @example
- * generateSqlQuery('Leads', { Email: 'test@example.com', Phone: '123' })
- * // Returns: "SELECT id FROM Leads WHERE (Email = 'test@example.com' AND Phone = '123')"
- */
-const generateSqlQuery = (module: string, fields: Record<string, unknown>) => {
-  // Generate the WHERE clause based on the fields
-  // Limiting to 25 fields
-  const entries = Object.entries(fields).slice(0, 25);
-  const whereClause = generateWhereClause(Object.fromEntries(entries));
-  if (whereClause === '') {
-    return '';
-  }
-
-  // Construct the SQL query with specific fields in the SELECT clause
-  return `SELECT id FROM ${module} ${whereClause}`;
 };
 
 /**
@@ -323,66 +243,9 @@ const sendCOQLRequest = async (
   };
 };
 
-const searchRecordIdV2 = async ({
-  identifiers,
-  metadata,
-  destination,
-  destConfig,
-}: SearchRecordParams): Promise<
-  ProcessedCOQLAPISuccessResponse | ProcessedCOQLAPIErrorResponse
-> => {
-  try {
-    const region = getRegion(destination);
-    const { object } = destConfig;
-
-    const selectQuery = generateSqlQuery(object, identifiers);
-    const result = await sendCOQLRequest(region, metadata.secret.accessToken, object, selectQuery);
-    return result;
-  } catch (error: any) {
-    return {
-      status: false,
-      message: error.message,
-    };
-  }
-};
-
 // ============================================================================
 // Batched Deletion with IN/OR + Post-Filter Approach
 // ============================================================================
-
-// Check if this workspace is in the feature flag list
-const zohoBatchDeletionLookupWorkspaces =
-  process.env.DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS?.split(',')?.map?.((s) =>
-    s?.trim?.(),
-  );
-/**
- * Determines if batched deletion lookup is enabled for a given workspace.
- * Uses DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS environment variable as a feature flag.
- * If env var is not set or empty, batching is disabled by default.
- * If env var is set, only workspaces in the comma-separated list get batching.
- *
- * @param {string} workspaceId - The workspace ID to check
- * @returns {boolean} True if batched deletion lookup should be used, false for legacy one-by-one approach
- *
- * @example
- * // Env: DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS="workspace1,workspace2"
- * isDeletionLookupBatchingEnabled('workspace1') // Returns: true
- * isDeletionLookupBatchingEnabled('workspace3') // Returns: false
- *
- */
-const isDeletionLookupBatchingEnabled = (workspaceId: string | undefined) => {
-  // If no workspaceId provided (tests or legacy behavior), disable batching
-  if (!workspaceId) {
-    return false;
-  }
-
-  // If env var not set, disable batching by default for backward compatibility
-  if (!zohoBatchDeletionLookupWorkspaces || zohoBatchDeletionLookupWorkspaces.length === 0) {
-    return false;
-  }
-
-  return zohoBatchDeletionLookupWorkspaces.includes(workspaceId);
-};
 
 /**
  * Builds a COQL query using IN/OR operators to fetch a superset of records
@@ -828,11 +691,9 @@ export {
   validatePresenceOfMandatoryPropertiesV2,
   formatMultiSelectFieldsV2,
   handleDuplicateCheckV2,
-  searchRecordIdV2,
   calculateTrigger,
   getRegion,
   // Batched deletion functions (IN/OR + Post-Filter approach)
-  isDeletionLookupBatchingEnabled,
   batchedSearchRecordIds,
   buildBatchedCOQLQueryWithIN,
   filterExactMatches,

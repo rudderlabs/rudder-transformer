@@ -1,4 +1,4 @@
-import type { Destination, Metadata } from '../../../types';
+import type { Account, Destination, Metadata } from '../../../types';
 
 export interface GARLDestinationConfig {
   customerId: string;
@@ -12,7 +12,9 @@ export interface GARLDestinationConfig {
   personalizationConsent?: string;
 }
 
-export type GARLDestination = Destination<GARLDestinationConfig>;
+export type GARLDestination = Destination<GARLDestinationConfig> & {
+  deliveryAccount: Account;
+};
 
 export interface RecordEventContext {
   message: unknown;

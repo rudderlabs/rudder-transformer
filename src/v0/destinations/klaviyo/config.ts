@@ -1,4 +1,4 @@
-const { getMappingConfig } = require('../../util');
+import { getMappingConfig } from '../../util';
 
 const BASE_ENDPOINT = 'https://a.klaviyo.com';
 
@@ -47,13 +47,13 @@ const ecomExclusionKeys = [
 ];
 
 const ecomEvents = ['product viewed', 'product clicked', 'product added', 'checkout started'];
-const eventNameMapping = {
+const eventNameMapping: Record<string, string> = {
   'product viewed': 'Viewed Product',
   'product clicked': 'Viewed Product',
   'product added': 'Added to Cart',
   'checkout started': 'Started Checkout',
 };
-const jsonNameMapping = {
+const jsonNameMapping: Record<string, string> = {
   'Viewed Product': 'VIEWED_PRODUCT',
   'Added to Cart': 'ADDED_TO_CART',
   'Started Checkout': 'STARTED_CHECKOUT',
@@ -94,7 +94,7 @@ const destType = 'klaviyo';
 // api version used
 const revision = '2024-10-15';
 
-module.exports = {
+export {
   BASE_ENDPOINT,
   MAX_BATCH_SIZE,
   CONFIG_CATEGORIES,

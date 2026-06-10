@@ -126,7 +126,9 @@ const gaecResponseHandler = (responseParams) => {
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // for google ads enhance conversions the partialFailureError returns with status 200
-    const { partialFailureError } = destinationResponse.response;
+    // a successful 200 may also have an empty/undefined body (no partial failures),
+    // so guard against destructuring undefined before reading partialFailureError
+    const { partialFailureError } = destinationResponse?.response || {};
     // non-zero code signifies partialFailure
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {

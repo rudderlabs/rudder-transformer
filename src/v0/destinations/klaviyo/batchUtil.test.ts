@@ -1,10 +1,9 @@
-const { OperatorType } = require('@rudderstack/json-template-engine');
-const {
+import {
   groupSubscribeResponsesUsingListIdV2,
   populateArrWithRespectiveProfileData,
   generateBatchedSubscriptionRequest,
-} = require('./batchUtil');
-const { revision } = require('./config');
+} from './batchUtil';
+import { revision } from './config';
 
 describe('groupSubscribeResponsesUsingListIdV2', () => {
   // Groups subscription responses by listId correctly

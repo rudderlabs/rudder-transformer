@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.137.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.136.0...v1.137.0) (2026-06-10)
+
+
+### Features
+
+* **garl:** select DM API path via deliveryAccount ([#5260](https://github.com/rudderlabs/rudder-transformer/issues/5260)) ([6912f17](https://github.com/rudderlabs/rudder-transformer/commit/6912f1797b0ed8d0510f99624838f68a13a70f22))
+* iterable audience implementation ([#5230](https://github.com/rudderlabs/rudder-transformer/issues/5230)) ([9ecc8b6](https://github.com/rudderlabs/rudder-transformer/commit/9ecc8b690934ea592ac02bc301bf499cc017ce27))
+
+
+### Bug Fixes
+
+* block SSRF via redirect and literal-IP hosts in transformation fetch ([#5259](https://github.com/rudderlabs/rudder-transformer/issues/5259)) ([128db4f](https://github.com/rudderlabs/rudder-transformer/commit/128db4fdd7b8e97c38161490ed186040f6f6645b))
+* handle undefined google ads response ([#5253](https://github.com/rudderlabs/rudder-transformer/issues/5253)) ([6ecb55c](https://github.com/rudderlabs/rudder-transformer/commit/6ecb55c51d4688f76ca39a5b35c6b95b9ed327f0))
+* remove DNS_RESOLVE_FETCH_HOST bypass in fetch wrapper ([#5254](https://github.com/rudderlabs/rudder-transformer/issues/5254)) ([5b0b798](https://github.com/rudderlabs/rudder-transformer/commit/5b0b79816f737e8ad1a882f16d4ea467141ec59d))
+
 ## [1.136.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.135.0...v1.136.0) (2026-06-05)
 
 

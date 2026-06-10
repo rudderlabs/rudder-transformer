@@ -270,8 +270,27 @@ describe('subscribeOrUnsubscribeUserToListV2', () => {
       },
     },
     {
+      name: 'v3 unsubscribe with both identifiers and consent override',
+      operation: 'unsubscribe',
+      traitsConsent: ['email', 'sms'],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+      expectedSubscriptions: {
+        email: { marketing: { consent: 'UNSUBSCRIBED' } },
+        sms: { marketing: { consent: 'UNSUBSCRIBED' } },
+      },
+    },
+    {
       name: 'v3 subscribe with empty consent list',
       operation: 'subscribe',
+      traitsConsent: [],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+      expectedSubscriptions: {},
+    },
+    {
+      name: 'v3 unsubscribe with empty consent list',
+      operation: 'unsubscribe',
       traitsConsent: [],
       email: 'user@domain.com',
       phone: '+12125550000',

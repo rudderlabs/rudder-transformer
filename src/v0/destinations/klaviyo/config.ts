@@ -95,24 +95,38 @@ const KLAVIYO_API_VERSION = {
   V2: 'v2',
   V3: 'v3',
 };
-const KLAVIYO_API_REVISIONS = {
-  [KLAVIYO_API_VERSION.V2]: '2024-10-15',
-  [KLAVIYO_API_VERSION.V3]: '2026-04-15',
+const KLAVIYO_SUBSCRIPTION_MODE = {
+  LEGACY: 'legacy',
+  STRICT: 'strict',
 };
-const PROFILE_IMPORT_API_VERSIONS = new Set([KLAVIYO_API_VERSION.V2, KLAVIYO_API_VERSION.V3]);
+const KLAVIYO_VERSION_CONFIG = {
+  [KLAVIYO_API_VERSION.V2]: {
+    revision: '2024-10-15',
+    usesProfileImportApi: true,
+    subscriptionMode: KLAVIYO_SUBSCRIPTION_MODE.LEGACY,
+  },
+  [KLAVIYO_API_VERSION.V3]: {
+    revision: '2026-04-15',
+    usesProfileImportApi: true,
+    subscriptionMode: KLAVIYO_SUBSCRIPTION_MODE.STRICT,
+  },
+};
 
-const usesProfileImportApi = (apiVersion) => PROFILE_IMPORT_API_VERSIONS.has(apiVersion);
-
-const getKlaviyoRevision = (apiVersion) => {
-  if (apiVersion === undefined || apiVersion === null) {
-    return KLAVIYO_API_REVISIONS[KLAVIYO_API_VERSION.V2];
-  }
-  const revision = KLAVIYO_API_REVISIONS[apiVersion];
-  if (!revision) {
+const getKlaviyoVersionConfig = (apiVersion) => {
+  const resolvedApiVersion =
+    apiVersion === undefined || apiVersion === null ? KLAVIYO_API_VERSION.V2 : apiVersion;
+  const versionConfig = KLAVIYO_VERSION_CONFIG[resolvedApiVersion];
+  if (!versionConfig) {
     throw new Error(`Unsupported Klaviyo apiVersion: ${apiVersion}`);
   }
-  return revision;
+  return versionConfig;
 };
+
+const usesProfileImportApi = (apiVersion) => getKlaviyoVersionConfig(apiVersion).usesProfileImportApi;
+
+const getKlaviyoSubscriptionMode = (apiVersion) => getKlaviyoVersionConfig(apiVersion).subscriptionMode;
+
+const getKlaviyoRevision = (apiVersion) => getKlaviyoVersionConfig(apiVersion).revision;
 
 export {
   BASE_ENDPOINT,
@@ -126,8 +140,9 @@ export {
   jsonNameMapping,
   destType,
   KLAVIYO_API_VERSION,
-  KLAVIYO_API_REVISIONS,
+  KLAVIYO_SUBSCRIPTION_MODE,
   usesProfileImportApi,
+  getKlaviyoSubscriptionMode,
   getKlaviyoRevision,
   WhiteListedTraitsV2,
   useUpdatedKlaviyoAPI,

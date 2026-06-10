@@ -28,7 +28,8 @@ import {
   CONFIG_CATEGORIES,
   MAX_BATCH_SIZE,
   WhiteListedTraitsV2,
-  KLAVIYO_API_VERSION,
+  KLAVIYO_SUBSCRIPTION_MODE,
+  getKlaviyoSubscriptionMode,
   getKlaviyoRevision,
 } from './config';
 import logger from '../../../logger';
@@ -520,30 +521,30 @@ const resolveV3Consent = (message, traitsInfo, defaultConsent) =>
     message?.traits?.consent,
     traitsInfo?.consent,
     traitsInfo?.properties?.consent,
-    resolveLegacyConsent(traitsInfo, defaultConsent),
+    defaultConsent,
   );
 
-const getSubscriptionVersionStrategy = (apiVersion) => {
-  const strategyMap = {
-    [KLAVIYO_API_VERSION.V2]: {
-      resolveConsent: (_message, traitsInfo, defaultConsent) =>
-        resolveLegacyConsent(traitsInfo, defaultConsent),
-      shouldAttachSubscriptions: (operation) => operation === 'subscribe',
-      strictConsentMode: false,
-      forceSubscriptionsObject: false,
-      enforceIdentifierValidation: true,
-    },
-    [KLAVIYO_API_VERSION.V3]: {
-      resolveConsent: (message, traitsInfo, defaultConsent) =>
-        resolveV3Consent(message, traitsInfo, defaultConsent),
-      shouldAttachSubscriptions: () => true,
-      strictConsentMode: true,
-      forceSubscriptionsObject: true,
-      enforceIdentifierValidation: false,
-    },
-  };
-  return strategyMap[apiVersion] || strategyMap[KLAVIYO_API_VERSION.V2];
+const SUBSCRIPTION_STRATEGIES_BY_MODE = {
+  [KLAVIYO_SUBSCRIPTION_MODE.LEGACY]: {
+    resolveConsent: (_message, traitsInfo, defaultConsent) =>
+      resolveLegacyConsent(traitsInfo, defaultConsent),
+    shouldAttachSubscriptions: (operation) => operation === 'subscribe',
+    strictConsentMode: false,
+    forceSubscriptionsObject: false,
+    enforceIdentifierValidation: true,
+  },
+  [KLAVIYO_SUBSCRIPTION_MODE.STRICT]: {
+    resolveConsent: (message, traitsInfo, defaultConsent) =>
+      resolveV3Consent(message, traitsInfo, defaultConsent),
+    shouldAttachSubscriptions: () => true,
+    strictConsentMode: true,
+    forceSubscriptionsObject: true,
+    enforceIdentifierValidation: false,
+  },
 };
+
+const getSubscriptionVersionStrategy = (apiVersion) =>
+  SUBSCRIPTION_STRATEGIES_BY_MODE[getKlaviyoSubscriptionMode(apiVersion)];
 
 /** This function updates profile with consent channels
  * @param {*} profileAttributes

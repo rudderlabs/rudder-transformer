@@ -38,14 +38,16 @@ Functions from .js files will infer as 'any' - that's acceptable
 Many JS utility functions (`constructPayload`, `flattenJson`, etc.) return `{} | null` per TS inference. The original JS code never validates these returns — it trusts them non-null and would crash on the next access if not. Migration must preserve that trust.
 
 ❌ WRONG: Adding `if (!x) throw new TransformationError(...)` just to satisfy TS
-   - This changes the runtime error type (TransformationError vs the JS TypeError).
-   - It's defensive code the original didn't have — a refactor.
+
+- This changes the runtime error type (TransformationError vs the JS TypeError).
+- It's defensive code the original didn't have — a refactor.
 
 ✅ RIGHT: Use the non-null assertion `!`
+
 ```typescript
 let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name])!;
 attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name])!;
-attributes.properties!.items = itemArr;  // mirrors original JS's implicit non-null trust
+attributes.properties!.items = itemArr; // mirrors original JS's implicit non-null trust
 ```
 
 `!` is a type-only assertion (no runtime check) — it tells TS "trust this is non-null" without changing behavior. The original JS already trusts this implicitly.
@@ -55,6 +57,7 @@ attributes.properties!.items = itemArr;  // mirrors original JS's implicit non-n
 If `constructPayload(...)` returns `{}` and you want to assign it to a `Record<string, unknown>` slot, do NOT do this:
 
 ❌ WRONG:
+
 ```typescript
 const target: { items?: unknown[]; [key: string]: unknown } = {};
 Object.assign(target, constructPayload(...));
@@ -113,7 +116,7 @@ let x: {
   batchedRequest: ReqConfig[];
   metadata?: unknown[];
   destination?: unknown;
-} = { batchedRequest: Object.values(initial) };  // same Object.values call as original
+} = { batchedRequest: Object.values(initial) }; // same Object.values call as original
 // ... rest of the function is byte-identical to original
 ```
 
@@ -254,13 +257,13 @@ const items: {
 ### Nullable Returns - Use Non-Null Assertion, NOT Fallback Operators or Validation
 
 ❌ WRONG: `const payload = constructPayload(traits, mappingJson) || {};`
-  (Fallback operator silently swallows the null case, changes runtime behavior.)
+(Fallback operator silently swallows the null case, changes runtime behavior.)
 
 ❌ WRONG: `if (!payload) throw new TransformationError(...)`
-  (Defensive code the original didn't have. Changes the error type vs the original JS TypeError.)
+(Defensive code the original didn't have. Changes the error type vs the original JS TypeError.)
 
 ✅ RIGHT: `const payload = constructPayload(traits, mappingJson)!;`
-  (Type-only assertion. Preserves original JS's implicit non-null trust. See critical principle #6.)
+(Type-only assertion. Preserves original JS's implicit non-null trust. See critical principle #6.)
 
 ### CRITICAL - Preserve Original JavaScript Behavior
 
@@ -480,10 +483,11 @@ getUserId(message, headers, baseEndpoint, undefined, metadata);
    Example: npm run test:ts -- src/cdk/v2/destinations/zoho
 
 10. ⚠️ No behavioral changes - Compare with original .js file side-by-side. The migrated `.ts` body should be byte-near-identical except for:
+
     - Type annotations
     - `require → import`, `module.exports → export`
     - `!` non-null assertions on JS-returned values
-    No `Object.assign` rewrites, no `if-throw` additions, no merging of two-statement assignments into one, no array literal substitutions for `Object.values`.
+      No `Object.assign` rewrites, no `if-throw` additions, no merging of two-statement assignments into one, no array literal substitutions for `Object.values`.
 
 11. ✅ Build passes: npm run build:ci
 

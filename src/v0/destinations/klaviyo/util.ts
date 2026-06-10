@@ -544,6 +544,15 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
   let { listId } = destination.Config;
   let subscribeConsent = traitsInfo?.consent || traitsInfo?.properties?.consent || consent;
   if (isV3) {
+    if (message?.traits?.consent !== undefined && message.traits.consent !== null) {
+      subscribeConsent = message.traits.consent;
+    }
+    if (
+      message?.context?.traits?.consent !== undefined &&
+      message.context.traits.consent !== null
+    ) {
+      subscribeConsent = message.context.traits.consent;
+    }
     if (traitsInfo?.properties?.consent !== undefined && traitsInfo.properties.consent !== null) {
       subscribeConsent = traitsInfo.properties.consent;
     }

@@ -1,4 +1,4 @@
-import { Destination, RouterTransformationRequest } from '../../../../../src/types';
+import { Destination, RouterTransformationRequest, RudderMessage } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import {
   generateMetadata,
@@ -46,7 +46,7 @@ const subscriptionRelations = {
 };
 
 const getRouterRequest = (
-  message: Record<string, unknown>,
+  message: RudderMessage,
   destinationOverride?: Destination,
 ): RouterTransformationRequest => ({
   input: [
@@ -122,7 +122,6 @@ export const dataV3: RouterTestData[] = [
                   endpointPath: '/api/profile-subscription-bulk-create-jobs',
                   headers,
                   method: 'POST',
-                  userId: '',
                 }),
               ],
               metadata: [generateMetadata(1)],
@@ -206,7 +205,6 @@ export const dataV3: RouterTestData[] = [
                   endpointPath: '/api/profile-subscription-bulk-delete-jobs',
                   headers,
                   method: 'POST',
-                  userId: '',
                 }),
               ],
               metadata: [generateMetadata(1)],

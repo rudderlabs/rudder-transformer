@@ -3,7 +3,7 @@ import {
   populateArrWithRespectiveProfileData,
   generateBatchedSubscriptionRequest,
 } from './batchUtil';
-import { revision, getKlaviyoRevision } from './config';
+import { getKlaviyoRevision } from './config';
 
 describe('groupSubscribeResponsesUsingListIdV2', () => {
   // Groups subscription responses by listId correctly
@@ -111,7 +111,7 @@ describe('generateBatchedSubscriptionRequest', () => {
         Authorization: 'Klaviyo-API-Key test-api-key',
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        revision,
+        revision: getKlaviyoRevision('v2'),
       },
       params: {},
       body: {
@@ -163,7 +163,7 @@ describe('generateBatchedSubscriptionRequest', () => {
         Authorization: 'Klaviyo-API-Key test-api-key',
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        revision,
+        revision: getKlaviyoRevision('v2'),
       },
       params: {},
       body: {
@@ -207,5 +207,23 @@ describe('generateBatchedSubscriptionRequest', () => {
     const result = generateBatchedSubscriptionRequest(subscription, destination);
     expect(result.headers.revision).toBe(getKlaviyoRevision('v3'));
     expect(result.endpointPath).toBe('/api/profile-subscription-bulk-delete-jobs');
+  });
+
+  it('should throw for unsupported apiVersion', () => {
+    const subscription = {
+      listId: 'test-list-id',
+      subscriptionProfileList: [[{ id: 'profile1' }]],
+      operation: 'subscribe',
+    };
+    const destination = {
+      Config: {
+        privateApiKey: 'test-api-key',
+        apiVersion: 'v4',
+      },
+    };
+
+    expect(() => generateBatchedSubscriptionRequest(subscription, destination)).toThrow(
+      'Unsupported Klaviyo apiVersion: v4',
+    );
   });
 });

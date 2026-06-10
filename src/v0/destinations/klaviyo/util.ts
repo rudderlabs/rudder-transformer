@@ -38,6 +38,8 @@ const KLAVIYO_MARKETING_CHANNELS = {
   EMAIL: 'email',
   SMS: 'sms',
 };
+const isDefined = (value) => value !== undefined && value !== null;
+const firstDefined = (...values) => values.find(isDefined);
 
 /**
  * This function is used to check if the phone number is in E.164 format. It uses libphonenumber-js library to parse the phone number
@@ -509,6 +511,40 @@ const getConsentChannels = (consent) => {
   );
 };
 
+const resolveLegacyConsent = (traitsInfo, defaultConsent) =>
+  traitsInfo?.consent || traitsInfo?.properties?.consent || defaultConsent;
+
+const resolveV3Consent = (message, traitsInfo, defaultConsent) =>
+  firstDefined(
+    message?.context?.traits?.consent,
+    message?.traits?.consent,
+    traitsInfo?.consent,
+    traitsInfo?.properties?.consent,
+    resolveLegacyConsent(traitsInfo, defaultConsent),
+  );
+
+const getSubscriptionVersionStrategy = (apiVersion) => {
+  const strategyMap = {
+    [KLAVIYO_API_VERSION.V2]: {
+      resolveConsent: (_message, traitsInfo, defaultConsent) =>
+        resolveLegacyConsent(traitsInfo, defaultConsent),
+      shouldAttachSubscriptions: (operation) => operation === 'subscribe',
+      strictConsentMode: false,
+      forceSubscriptionsObject: false,
+      enforceIdentifierValidation: true,
+    },
+    [KLAVIYO_API_VERSION.V3]: {
+      resolveConsent: (message, traitsInfo, defaultConsent) =>
+        resolveV3Consent(message, traitsInfo, defaultConsent),
+      shouldAttachSubscriptions: () => true,
+      strictConsentMode: true,
+      forceSubscriptionsObject: true,
+      enforceIdentifierValidation: false,
+    },
+  };
+  return strategyMap[apiVersion] || strategyMap[KLAVIYO_API_VERSION.V2];
+};
+
 /** This function updates profile with consent channels
  * @param {*} profileAttributes
  * @param {*} consentChannels
@@ -540,26 +576,9 @@ const updateProfileWithConsents = (
 const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, operation) => {
   // listId from message properties are preferred over Config listId
   const { consent, apiVersion } = destination.Config;
-  const isV3 = apiVersion === KLAVIYO_API_VERSION.V3;
+  const versionStrategy = getSubscriptionVersionStrategy(apiVersion);
   let { listId } = destination.Config;
-  let subscribeConsent = traitsInfo?.consent || traitsInfo?.properties?.consent || consent;
-  if (isV3) {
-    if (message?.traits?.consent !== undefined && message.traits.consent !== null) {
-      subscribeConsent = message.traits.consent;
-    }
-    if (
-      message?.context?.traits?.consent !== undefined &&
-      message.context.traits.consent !== null
-    ) {
-      subscribeConsent = message.context.traits.consent;
-    }
-    if (traitsInfo?.properties?.consent !== undefined && traitsInfo.properties.consent !== null) {
-      subscribeConsent = traitsInfo.properties.consent;
-    }
-    if (traitsInfo?.consent !== undefined && traitsInfo.consent !== null) {
-      subscribeConsent = traitsInfo.consent;
-    }
-  }
+  const subscribeConsent = versionStrategy.resolveConsent(message, traitsInfo, consent);
   const consentChannels = getConsentChannels(subscribeConsent);
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getFieldValueFromMessage(message, 'phone');
@@ -568,7 +587,7 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
     phone_number: phone,
   };
 
-  const shouldAttachSubscriptions = isV3 || operation === 'subscribe';
+  const shouldAttachSubscriptions = versionStrategy.shouldAttachSubscriptions(operation);
   if (shouldAttachSubscriptions && subscribeConsent) {
     updateProfileWithConsents(
       profileAttributes,
@@ -576,10 +595,10 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
       operation === 'subscribe' ? 'SUBSCRIBED' : 'UNSUBSCRIBED',
       email,
       phone,
-      isV3,
+      versionStrategy.strictConsentMode,
     );
   }
-  if (isV3) {
+  if (versionStrategy.forceSubscriptionsObject) {
     profileAttributes.subscriptions = profileAttributes.subscriptions || {};
   }
 
@@ -591,7 +610,7 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
         : undefined, // id is not applicable for unsubscription
     attributes: removeUndefinedAndNullValues(profileAttributes),
   });
-  if (!isV3 && !email && !phone && profile.id) {
+  if (versionStrategy.enforceIdentifierValidation && !email && !phone && profile.id) {
     if (operation === 'subscribe') {
       throw new InstrumentationError(
         'Profile Id, Email or/and Phone are required to subscribe to a list',

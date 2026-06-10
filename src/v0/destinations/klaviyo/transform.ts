@@ -12,7 +12,7 @@ import {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
-  KLAVIYO_API_VERSION,
+  usesProfileImportApi,
 } from './config';
 import { processRouter as processRouterV2, processV2 } from './transformV2';
 import {
@@ -298,10 +298,7 @@ const groupRequestHandler = (message, category, destination) => {
 // Main event processor using specific handler funcs
 const processEvent = async (event, reqMetadata) => {
   const { message, destination, metadata } = event;
-  if (
-    destination.Config?.apiVersion === KLAVIYO_API_VERSION.V2 ||
-    destination.Config?.apiVersion === KLAVIYO_API_VERSION.V3
-  ) {
+  if (usesProfileImportApi(destination.Config?.apiVersion)) {
     return processV2(event);
   }
   if (!message.type) {
@@ -356,10 +353,7 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
 const processRouter = async (inputs, reqMetadata) => {
   const { destination } = inputs[0];
   // This is used to switch to latest API version
-  if (
-    destination.Config?.apiVersion === KLAVIYO_API_VERSION.V2 ||
-    destination.Config?.apiVersion === KLAVIYO_API_VERSION.V3
-  ) {
+  if (usesProfileImportApi(destination.Config?.apiVersion)) {
     return processRouterV2(inputs, reqMetadata);
   }
   let batchResponseList: unknown[] = [];

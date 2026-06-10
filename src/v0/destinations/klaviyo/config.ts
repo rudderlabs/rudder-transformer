@@ -99,12 +99,20 @@ const KLAVIYO_API_REVISIONS = {
   [KLAVIYO_API_VERSION.V2]: '2024-10-15',
   [KLAVIYO_API_VERSION.V3]: '2026-04-15',
 };
+const PROFILE_IMPORT_API_VERSIONS = new Set([KLAVIYO_API_VERSION.V2, KLAVIYO_API_VERSION.V3]);
 
-const getKlaviyoRevision = (apiVersion) =>
-  KLAVIYO_API_REVISIONS[apiVersion] || KLAVIYO_API_REVISIONS[KLAVIYO_API_VERSION.V2];
+const usesProfileImportApi = (apiVersion) => PROFILE_IMPORT_API_VERSIONS.has(apiVersion);
 
-// kept for backwards compatibility with existing v2 tests and helpers
-const revision = KLAVIYO_API_REVISIONS[KLAVIYO_API_VERSION.V2];
+const getKlaviyoRevision = (apiVersion) => {
+  if (apiVersion === undefined || apiVersion === null) {
+    return KLAVIYO_API_REVISIONS[KLAVIYO_API_VERSION.V2];
+  }
+  const revision = KLAVIYO_API_REVISIONS[apiVersion];
+  if (!revision) {
+    throw new Error(`Unsupported Klaviyo apiVersion: ${apiVersion}`);
+  }
+  return revision;
+};
 
 export {
   BASE_ENDPOINT,
@@ -117,9 +125,9 @@ export {
   eventNameMapping,
   jsonNameMapping,
   destType,
-  revision,
   KLAVIYO_API_VERSION,
   KLAVIYO_API_REVISIONS,
+  usesProfileImportApi,
   getKlaviyoRevision,
   WhiteListedTraitsV2,
   useUpdatedKlaviyoAPI,

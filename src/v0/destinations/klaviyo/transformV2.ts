@@ -1,11 +1,11 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
-const get = require('get-value');
-const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
-const { EventType, MappedToDestinationKey } = require('../../../constants');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
-const {
+import get from 'get-value';
+import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
+import { EventType, MappedToDestinationKey } from '../../../constants';
+import { CONFIG_CATEGORIES, MAPPING_CONFIG } from './config';
+import {
   constructProfile,
   subscribeOrUnsubscribeUserToListV2,
   buildRequest,
@@ -13,9 +13,9 @@ const {
   getTrackRequests,
   fetchTransformedEvents,
   addSubscribeFlagToTraits,
-} = require('./util');
-const { batchRequestV2 } = require('./batchUtil');
-const {
+} from './util';
+import { batchRequestV2 } from './batchUtil';
+import {
   constructPayload,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
@@ -24,7 +24,7 @@ const {
   adduserIdFromExternalId,
   flattenJson,
   isDefinedAndNotNull,
-} = require('../../util');
+} from '../../util';
 
 /**
  * Main Identify request handler func
@@ -48,7 +48,7 @@ const identifyRequestHandler = (message, category, destination) => {
     traitsInfo = addSubscribeFlagToTraits(traitsInfo);
   }
   const payload = removeUndefinedAndNullValues(constructProfile(message, destination, true));
-  const response = { profile: payload };
+  const response: { profile: unknown; subscription?: unknown } = { profile: payload };
   // check if user wants to subscribe/unsubscribe profile or do nothing and listId is present or not
   if (
     isDefinedAndNotNull(traitsInfo?.properties?.subscribe) &&
@@ -80,7 +80,7 @@ const trackOrScreenRequestHandler = (message, category, destination) => {
   if (event && typeof event !== 'string') {
     throw new InstrumentationError('Event type should be a string');
   }
-  const attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
+  const attributes = constructPayload(message, MAPPING_CONFIG[category.name])!;
 
   // if flattenProperties is enabled from UI, flatten the event properties
   attributes.properties = flattenProperties
@@ -162,7 +162,7 @@ const processEvent = (event) => {
 const processV2 = (event) => {
   const response = processEvent(event);
   const { destination } = event;
-  const respList = [];
+  const respList: unknown[] = [];
   if (response.profile) {
     respList.push(buildRequest(response.profile, destination, CONFIG_CATEGORIES.IDENTIFYV2));
   }
@@ -199,12 +199,12 @@ const getEventChunks = (
 };
 
 const processRouter = (inputs, reqMetadata) => {
-  const batchResponseList = [];
-  const batchErrorRespList = [];
-  const subscribeRespList = [];
-  const unsubscriptionList = [];
-  const profileRespList = [];
-  const eventRespList = [];
+  const batchResponseList: unknown[] = [];
+  const batchErrorRespList: unknown[] = [];
+  const subscribeRespList: unknown[] = [];
+  const unsubscriptionList: unknown[] = [];
+  const profileRespList: unknown[] = [];
+  const eventRespList: unknown[] = [];
   const { destination } = inputs[0];
   inputs.map((event) => {
     try {
@@ -242,4 +242,4 @@ const processRouter = (inputs, reqMetadata) => {
   return { successEvents: batchResponseList, errorEvents: batchErrorRespList };
 };
 
-module.exports = { processV2, processRouter };
+export { processV2, processRouter };

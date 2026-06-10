@@ -1,4 +1,4 @@
-const { addSubscribeFlagToTraits } = require('./util');
+import { addSubscribeFlagToTraits, getProfileMetadataAndMetadataFields } from './util';
 
 describe('addSubscribeFlagToTraits', () => {
   // The function should add a 'subscribe' property to the 'properties' object if it exists in the input 'traitsInfo'.
@@ -154,8 +154,6 @@ describe('addSubscribeFlagToTraits', () => {
     expect(result.properties.subscribe).toBe(true);
   });
 });
-
-const { getProfileMetadataAndMetadataFields } = require('./util');
 
 describe('getProfileMetadataAndMetadataFields', () => {
   // Correctly generates metadata with fields to unset, append, and unappend when all fields are provided

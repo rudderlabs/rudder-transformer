@@ -96,25 +96,39 @@ const KLAVIYO_API_VERSION = {
   V2: 'v2',
   V3: 'v3',
 };
-const KLAVIYO_SUBSCRIPTION_MODE = {
-  LEGACY: 'legacy',
-  STRICT: 'strict',
-};
 const KLAVIYO_VERSION_CONFIG = {
   [KLAVIYO_API_VERSION.V1]: {
     revision: '2023-02-22',
     usesProfileImportApi: false,
-    subscriptionMode: KLAVIYO_SUBSCRIPTION_MODE.LEGACY,
+    subscriptionStrategy: {
+      consentResolution: 'legacy',
+      attachSubscriptionsOnUnsubscribe: false,
+      strictConsentMode: false,
+      forceSubscriptionsObject: false,
+      enforceIdentifierValidation: true,
+    },
   },
   [KLAVIYO_API_VERSION.V2]: {
     revision: '2024-10-15',
     usesProfileImportApi: true,
-    subscriptionMode: KLAVIYO_SUBSCRIPTION_MODE.LEGACY,
+    subscriptionStrategy: {
+      consentResolution: 'legacy',
+      attachSubscriptionsOnUnsubscribe: false,
+      strictConsentMode: false,
+      forceSubscriptionsObject: false,
+      enforceIdentifierValidation: true,
+    },
   },
   [KLAVIYO_API_VERSION.V3]: {
     revision: '2026-04-15',
     usesProfileImportApi: true,
-    subscriptionMode: KLAVIYO_SUBSCRIPTION_MODE.STRICT,
+    subscriptionStrategy: {
+      consentResolution: 'strict',
+      attachSubscriptionsOnUnsubscribe: true,
+      strictConsentMode: true,
+      forceSubscriptionsObject: true,
+      enforceIdentifierValidation: false,
+    },
   },
 };
 
@@ -133,7 +147,8 @@ const usesProfileImportApi = (apiVersion) => {
   return getKlaviyoVersionConfig(apiVersion).usesProfileImportApi;
 };
 
-const getKlaviyoSubscriptionMode = (apiVersion) => getKlaviyoVersionConfig(apiVersion).subscriptionMode;
+const getKlaviyoSubscriptionStrategy = (apiVersion) =>
+  getKlaviyoVersionConfig(apiVersion).subscriptionStrategy;
 
 const getKlaviyoRevision = (apiVersion) => {
   if (apiVersion === undefined || apiVersion === null) {
@@ -154,9 +169,8 @@ export {
   jsonNameMapping,
   destType,
   KLAVIYO_API_VERSION,
-  KLAVIYO_SUBSCRIPTION_MODE,
   usesProfileImportApi,
-  getKlaviyoSubscriptionMode,
+  getKlaviyoSubscriptionStrategy,
   getKlaviyoRevision,
   WhiteListedTraitsV2,
   useUpdatedKlaviyoAPI,

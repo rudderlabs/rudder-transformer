@@ -28,8 +28,7 @@ import {
   CONFIG_CATEGORIES,
   MAX_BATCH_SIZE,
   WhiteListedTraitsV2,
-  KLAVIYO_SUBSCRIPTION_MODE,
-  getKlaviyoSubscriptionMode,
+  getKlaviyoSubscriptionStrategy,
   getKlaviyoRevision,
 } from './config';
 import logger from '../../../logger';
@@ -524,27 +523,22 @@ const resolveV3Consent = (message, traitsInfo, defaultConsent) =>
     defaultConsent,
   );
 
-const SUBSCRIPTION_STRATEGIES_BY_MODE = {
-  [KLAVIYO_SUBSCRIPTION_MODE.LEGACY]: {
-    resolveConsent: (_message, traitsInfo, defaultConsent) =>
-      resolveLegacyConsent(traitsInfo, defaultConsent),
-    shouldAttachSubscriptions: (operation) => operation === 'subscribe',
-    strictConsentMode: false,
-    forceSubscriptionsObject: false,
-    enforceIdentifierValidation: true,
-  },
-  [KLAVIYO_SUBSCRIPTION_MODE.STRICT]: {
-    resolveConsent: (message, traitsInfo, defaultConsent) =>
-      resolveV3Consent(message, traitsInfo, defaultConsent),
-    shouldAttachSubscriptions: () => true,
-    strictConsentMode: true,
-    forceSubscriptionsObject: true,
-    enforceIdentifierValidation: false,
-  },
-};
+const getSubscriptionVersionStrategy = (apiVersion) => {
+  const subscriptionStrategy = getKlaviyoSubscriptionStrategy(apiVersion);
+  const resolveConsent =
+    subscriptionStrategy.consentResolution === 'strict'
+      ? resolveV3Consent
+      : (_message, traitsInfo, defaultConsent) => resolveLegacyConsent(traitsInfo, defaultConsent);
 
-const getSubscriptionVersionStrategy = (apiVersion) =>
-  SUBSCRIPTION_STRATEGIES_BY_MODE[getKlaviyoSubscriptionMode(apiVersion)];
+  return {
+    resolveConsent,
+    shouldAttachSubscriptions: (operation) =>
+      operation === 'subscribe' || subscriptionStrategy.attachSubscriptionsOnUnsubscribe,
+    strictConsentMode: subscriptionStrategy.strictConsentMode,
+    forceSubscriptionsObject: subscriptionStrategy.forceSubscriptionsObject,
+    enforceIdentifierValidation: subscriptionStrategy.enforceIdentifierValidation,
+  };
+};
 
 /** This function updates profile with consent channels
  * @param {*} profileAttributes

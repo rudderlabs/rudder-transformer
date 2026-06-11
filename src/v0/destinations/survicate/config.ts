@@ -1,3 +1,13 @@
+// Validation error messages. Kept as constants so the schema and tests stay in sync.
+export const ERR_MISSING_MESSAGE_ID = 'messageId is required.';
+export const ERR_MISSING_TIMESTAMP = 'originalTimestamp is required.';
+export const ERR_ANONYMOUS_IDENTIFY =
+  'Anonymous identify calls are not supported. userId is required.';
+export const ERR_ANONYMOUS_GROUP = 'Anonymous group calls are not supported. userId is required.';
+export const ERR_ANONYMOUS_TRACK = 'Anonymous track calls are not supported. userId is required.';
+export const ERR_MISSING_GROUP_ID = 'groupId is required for group events.';
+export const ERR_MISSING_EVENT = 'event name is required for track events.';
+
 // Keys that must not be overwritten by incoming traits; filterTraits strips these from any trait map.
 export const RESERVED_KEYS = [
   'user_id',

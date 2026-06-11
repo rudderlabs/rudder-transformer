@@ -1,16 +1,15 @@
 import { z } from 'zod';
 import { Destination, RouterTransformationRequestData, Metadata } from '../../../types';
 import type { ENDPOINT_CONFIG } from './config';
-
-// Validation error messages. Kept as constants so the schema and tests stay in sync.
-export const ERR_MISSING_MESSAGE_ID = 'messageId is required.';
-export const ERR_MISSING_TIMESTAMP = 'originalTimestamp is required.';
-export const ERR_ANONYMOUS_IDENTIFY =
-  'Anonymous identify calls are not supported. userId is required.';
-export const ERR_ANONYMOUS_GROUP = 'Anonymous group calls are not supported. userId is required.';
-export const ERR_ANONYMOUS_TRACK = 'Anonymous track calls are not supported. userId is required.';
-export const ERR_MISSING_GROUP_ID = 'groupId is required for group events.';
-export const ERR_MISSING_EVENT = 'event name is required for track events.';
+import {
+  ERR_MISSING_MESSAGE_ID,
+  ERR_MISSING_TIMESTAMP,
+  ERR_ANONYMOUS_IDENTIFY,
+  ERR_ANONYMOUS_GROUP,
+  ERR_ANONYMOUS_TRACK,
+  ERR_MISSING_GROUP_ID,
+  ERR_MISSING_EVENT,
+} from './config';
 
 export type EndpointEntry = (typeof ENDPOINT_CONFIG)[keyof typeof ENDPOINT_CONFIG];
 
@@ -94,7 +93,7 @@ export type SurvicateMessage = z.infer<typeof SurvicateMessageSchema>;
 export type SurvicateIdentifyMessage = Extract<SurvicateMessage, { type: 'identify' }>;
 export type SurvicateGroupMessage = Extract<SurvicateMessage, { type: 'group' }>;
 export type SurvicateTrackMessage = Extract<SurvicateMessage, { type: 'track' }>;
-export type SurvicateDestination = Destination<SurvicateDestinationConfig>;
+type SurvicateDestination = Destination<SurvicateDestinationConfig>;
 
 // Raw, pre-validation message shape coming off the router (type may be anything).
 export type RawSurvicateMessage = { type?: string } & Record<string, unknown>;

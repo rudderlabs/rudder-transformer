@@ -222,7 +222,11 @@ const processEvent = (event: SurvicateRouterRequest) => {
  * @param reqMetadata - Metadata for the request
  * @returns Promise resolving to array of processed responses
  */
-const processRouterDest = async (inputs: unknown, reqMetadata: Record<string, unknown>) =>
-  simpleProcessRouterDest(inputs as SurvicateRouterRequest[], processEvent, reqMetadata, {});
+const processRouterDest = async (inputs: unknown, reqMetadata: Record<string, unknown>) => {
+  if (!Array.isArray(inputs)) {
+    throw new InstrumentationError('Router transformation expects an array of events.');
+  }
+  return simpleProcessRouterDest(inputs, processEvent, reqMetadata, {});
+};
 
 export { processRouterDest };

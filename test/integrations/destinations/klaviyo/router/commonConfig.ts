@@ -39,27 +39,8 @@ const destinationV2: Destination = {
   WorkspaceID: '123',
   Transformations: [],
 };
-const destinationV3: Destination = {
-  ID: '123',
-  Name: 'klaviyo',
-  DestinationDefinition: {
-    ID: '123',
-    Name: 'klaviyo',
-    DisplayName: 'klaviyo',
-    Config: {},
-  },
-  Config: {
-    privateApiKey: secret1,
-    apiVersion: 'v3',
-    consent: ['email'],
-  },
-  Enabled: true,
-  WorkspaceID: '123',
-  Transformations: [],
-};
 const getRequest = (apiVersion) => {
-  const destinationByVersion =
-    apiVersion === 'v2' ? destinationV2 : apiVersion === 'v3' ? destinationV3 : destination;
+  const destinationByVersion = apiVersion === 'v2' ? destinationV2 : destination;
   return [
     {
       destination: destinationByVersion,
@@ -221,9 +202,5 @@ export const routerRequest: RouterTransformationRequest = {
 };
 export const routerRequestV2: RouterTransformationRequest = {
   input: getRequest('v2') as unknown as RouterTransformationRequestData[],
-  destType: 'klaviyo',
-};
-export const routerRequestV3: RouterTransformationRequest = {
-  input: getRequest('v3') as unknown as RouterTransformationRequestData[],
   destType: 'klaviyo',
 };

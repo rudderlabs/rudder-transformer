@@ -92,6 +92,7 @@ const WhiteListedTraitsV2 = [
 ];
 const destType = 'klaviyo';
 const KLAVIYO_API_VERSION = {
+  V1: 'v1',
   V2: 'v2',
   V3: 'v3',
 };
@@ -100,6 +101,11 @@ const KLAVIYO_SUBSCRIPTION_MODE = {
   STRICT: 'strict',
 };
 const KLAVIYO_VERSION_CONFIG = {
+  [KLAVIYO_API_VERSION.V1]: {
+    revision: '2023-02-22',
+    usesProfileImportApi: false,
+    subscriptionMode: KLAVIYO_SUBSCRIPTION_MODE.LEGACY,
+  },
   [KLAVIYO_API_VERSION.V2]: {
     revision: '2024-10-15',
     usesProfileImportApi: true,
@@ -113,8 +119,7 @@ const KLAVIYO_VERSION_CONFIG = {
 };
 
 const getKlaviyoVersionConfig = (apiVersion) => {
-  const resolvedApiVersion =
-    apiVersion === undefined || apiVersion === null ? KLAVIYO_API_VERSION.V2 : apiVersion;
+  const resolvedApiVersion = apiVersion;
   const versionConfig = KLAVIYO_VERSION_CONFIG[resolvedApiVersion];
   if (!versionConfig) {
     throw new Error(`Unsupported Klaviyo apiVersion: ${apiVersion}`);
@@ -122,11 +127,21 @@ const getKlaviyoVersionConfig = (apiVersion) => {
   return versionConfig;
 };
 
-const usesProfileImportApi = (apiVersion) => getKlaviyoVersionConfig(apiVersion).usesProfileImportApi;
+const usesProfileImportApi = (apiVersion) => {
+  if (apiVersion === undefined || apiVersion === null) {
+    return false;
+  }
+  return getKlaviyoVersionConfig(apiVersion).usesProfileImportApi;
+};
 
 const getKlaviyoSubscriptionMode = (apiVersion) => getKlaviyoVersionConfig(apiVersion).subscriptionMode;
 
-const getKlaviyoRevision = (apiVersion) => getKlaviyoVersionConfig(apiVersion).revision;
+const getKlaviyoRevision = (apiVersion) => {
+  if (apiVersion === undefined || apiVersion === null) {
+    return KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V2].revision;
+  }
+  return getKlaviyoVersionConfig(apiVersion).revision;
+};
 
 export {
   BASE_ENDPOINT,

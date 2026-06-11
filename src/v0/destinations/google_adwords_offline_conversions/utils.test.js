@@ -336,7 +336,7 @@ describe('getCallConversionPayload', () => {
     });
     expect(result).toEqual({
       endpointDetails: {
-        endpoint: 'https://googleads.googleapis.com/v22/customers/9625812972:uploadCallConversions',
+        endpoint: 'https://googleads.googleapis.com/v23/customers/9625812972:uploadCallConversions',
         path: CALL_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
@@ -368,7 +368,7 @@ describe('getCallConversionPayload', () => {
     });
     expect(result).toEqual({
       endpointDetails: {
-        endpoint: 'https://googleads.googleapis.com/v22/customers/9625812972:uploadCallConversions',
+        endpoint: 'https://googleads.googleapis.com/v23/customers/9625812972:uploadCallConversions',
         path: CALL_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
@@ -397,7 +397,7 @@ describe('getCallConversionPayload', () => {
     const result = getCallConversionPayload(message, '9625812972', {});
     expect(result).toEqual({
       endpointDetails: {
-        endpoint: 'https://googleads.googleapis.com/v22/customers/9625812972:uploadCallConversions',
+        endpoint: 'https://googleads.googleapis.com/v23/customers/9625812972:uploadCallConversions',
         path: CALL_CONVERSION_ENDPOINT_PATH,
       },
       payload: {

@@ -2,7 +2,7 @@ import sha256 from 'sha256';
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { dataManagerData } from './dataManager';
 
-const API_VERSION = 'v22';
+const API_VERSION = 'v23';
 
 const deliveryAccount = {
   accountDefinitionName: 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_OAUTH',

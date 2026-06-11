@@ -1,6 +1,6 @@
 import { getMappingConfig } from '../../util';
 
-const API_VERSION = 'v22';
+const API_VERSION = 'v23';
 
 const OFFLINE_USER_DATA_JOBS_ENDPOINT = 'offlineUserDataJobs';
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers`;

@@ -126,13 +126,18 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, c
   let eventValue = {};
   const { addPropertiesAtRoot, afCurrencyAtRoot, listOfProps } = config;
   const clonedProp = message.properties && lodash.cloneDeep(message.properties);
+  // A track event may legitimately arrive without `properties`; fall back to an empty object so
+  // the property look-ups below don't dereference `undefined`. `clonedProp` itself is left falsy
+  // when properties are absent so the empty `properties` wrapper continues to be dropped (yielding
+  // an empty eventValue) rather than emitting `{ "properties": {} }`.
+  const safeClonedProp = clonedProp || {};
   if (addPropertiesAtRoot) {
-    eventValue = clonedProp;
+    eventValue = safeClonedProp;
   } else {
     if (Array.isArray(listOfProps) && listOfProps.length > 0) {
       listOfProps.forEach((prop) => {
-        eventValue[prop.property] = clonedProp[prop.property];
-        delete clonedProp[prop.property];
+        eventValue[prop.property] = safeClonedProp[prop.property];
+        delete safeClonedProp[prop.property];
       });
     }
     eventValue.properties = clonedProp;
@@ -142,11 +147,11 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, c
   sourceKeys.forEach((sourceKey) => {
     set(eventValue, mappingJson[sourceKey], get(message, sourceKey));
   });
-  if (isMultiSupport && clonedProp?.products?.length > 0) {
+  if (isMultiSupport && safeClonedProp?.products?.length > 0) {
     const contentIds = [];
     const quantities = [];
     const prices = [];
-    clonedProp.products.forEach((product) => {
+    safeClonedProp.products.forEach((product) => {
       contentIds.push(product.product_id);
       quantities.push(product.quantity);
       prices.push(product.price);
@@ -159,7 +164,7 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, c
     };
   }
   if (afCurrencyAtRoot) {
-    eventValue.af_currency = clonedProp.currency;
+    eventValue.af_currency = safeClonedProp.currency;
   }
   eventValue = removeUndefinedValues(eventValue);
   if (Object.keys(eventValue).length > 0) {

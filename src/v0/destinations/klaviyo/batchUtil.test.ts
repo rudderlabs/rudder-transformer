@@ -3,7 +3,6 @@ import {
   populateArrWithRespectiveProfileData,
   generateBatchedSubscriptionRequest,
 } from './batchUtil';
-import { getKlaviyoRevision } from './config';
 
 describe('groupSubscribeResponsesUsingListIdV2', () => {
   // Groups subscription responses by listId correctly
@@ -112,7 +111,7 @@ describe('generateBatchedSubscriptionRequest', () => {
         Authorization: 'Klaviyo-API-Key test-api-key',
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        revision: getKlaviyoRevision('v2'),
+        revision: '2024-10-15',
       },
       params: {},
       body: {
@@ -165,7 +164,7 @@ describe('generateBatchedSubscriptionRequest', () => {
         Authorization: 'Klaviyo-API-Key test-api-key',
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        revision: getKlaviyoRevision('v2'),
+        revision: '2024-10-15',
       },
       params: {},
       body: {
@@ -207,7 +206,7 @@ describe('generateBatchedSubscriptionRequest', () => {
     };
 
     const result = generateBatchedSubscriptionRequest(subscription, destination);
-    expect(result.headers.revision).toBe(getKlaviyoRevision('v3'));
+    expect(result.headers.revision).toBe('2026-04-15');
     expect(result.endpointPath).toBe('/api/profile-subscription-bulk-delete-jobs');
   });
 

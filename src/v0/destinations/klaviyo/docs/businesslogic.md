@@ -11,10 +11,11 @@ The Klaviyo destination supports three API versions:
 | Config Value | API Revision | Status                  |
 | ------------ | ------------ | ----------------------- |
 | `v1`         | `2023-02-22` | Deprecated              |
-| `v2`         | `2024-10-15` | Default                 |
+| `v2`         | `2024-10-15` | Control-plane default   |
 | `v3`         | `2026-04-15` | Opt-in (strict consent) |
 
 The API version is selected via `destination.Config.apiVersion` and affects endpoints, request formats, and available features.
+If `apiVersion` is absent at runtime, transformer fallback remains on legacy (`v1`) flow.
 
 ## API Endpoints and Request Flow
 

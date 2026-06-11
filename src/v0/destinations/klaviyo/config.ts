@@ -119,8 +119,7 @@ const KLAVIYO_VERSION_CONFIG = {
 };
 
 const getKlaviyoVersionConfig = (apiVersion) => {
-  const resolvedApiVersion = apiVersion;
-  const versionConfig = KLAVIYO_VERSION_CONFIG[resolvedApiVersion];
+  const versionConfig = KLAVIYO_VERSION_CONFIG[apiVersion];
   if (!versionConfig) {
     throw new Error(`Unsupported Klaviyo apiVersion: ${apiVersion}`);
   }
@@ -138,7 +137,7 @@ const getKlaviyoSubscriptionMode = (apiVersion) => getKlaviyoVersionConfig(apiVe
 
 const getKlaviyoRevision = (apiVersion) => {
   if (apiVersion === undefined || apiVersion === null) {
-    return KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V2].revision;
+    return KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V1].revision;
   }
   return getKlaviyoVersionConfig(apiVersion).revision;
 };

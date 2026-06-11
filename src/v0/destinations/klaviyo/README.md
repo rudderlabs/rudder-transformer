@@ -299,6 +299,7 @@ Klaviyo provides **2 years** of support for each API revision:
 | ---------- | ---------- | ------------------ |
 | 2023-02-22 | Deprecated | ~February 2025     |
 | 2024-10-15 | Stable     | ~October 2026      |
+| 2026-04-15 | Stable     | ~April 2028        |
 
 **Recommendation**: Continue using `apiVersion: v2` to preserve existing behavior. Use `apiVersion: v3` only when you are ready for strict consent enforcement on both subscribe and unsubscribe requests.
 

@@ -99,6 +99,7 @@ describe('generateBatchedSubscriptionRequest', () => {
     const destination = {
       Config: {
         privateApiKey: 'test-api-key',
+        apiVersion: 'v2',
       },
     };
     const expectedRequest = {
@@ -151,6 +152,7 @@ describe('generateBatchedSubscriptionRequest', () => {
     const destination = {
       Config: {
         privateApiKey: 'test-api-key',
+        apiVersion: 'v2',
       },
     };
     const expectedRequest = {

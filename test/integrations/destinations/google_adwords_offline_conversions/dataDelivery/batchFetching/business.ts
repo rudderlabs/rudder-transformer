@@ -21,7 +21,7 @@ import {
   generateProxyV1Payload,
 } from '../../../../testUtils';
 
-const API_VERSION = 'v22';
+const API_VERSION = 'v23';
 
 const transactionAttribute = {
   CUSTOM_KEY: 'CUSTOM_VALUE',
@@ -640,7 +640,7 @@ export const testScenariosForV1API = [
                   details: [
                     {
                       '@type':
-                        'type.googleapis.com/google.ads.googleads.v22.errors.GoogleAdsFailure',
+                        'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
                       errors: [
                         {
                           errorCode: {

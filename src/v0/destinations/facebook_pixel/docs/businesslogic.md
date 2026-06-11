@@ -8,7 +8,7 @@ This document outlines the business logic and mappings used in the Facebook Pixe
 
 ### Single Endpoint for All Events
 
-**Primary Endpoint**: `https://graph.facebook.com/v22.0/{PIXEL_ID}/events`
+**Primary Endpoint**: `https://graph.facebook.com/v24.0/{PIXEL_ID}/events`
 **Method**: POST
 **Documentation**: [Facebook Conversions API Events Endpoint](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
 

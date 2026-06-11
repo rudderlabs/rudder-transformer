@@ -104,7 +104,7 @@ Implementation in **Javascript**
 
 The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 
-- **Endpoint**: `https://graph.facebook.com/v22.0/{PIXEL_ID}/events`
+- **Endpoint**: `https://graph.facebook.com/v24.0/{PIXEL_ID}/events`
 - **Method**: POST
 - **Rate Limiting**: Conversions API calls are not calculated into the Graph API throttling
 - **Reference**: [Facebook Conversions API Documentation](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
@@ -247,21 +247,21 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 
 ### Current Version
 
-- **API Version**: v22.0 (Facebook Graph API)
-- **Release Date**: January 21, 2025
-- **Endpoint**: `https://graph.facebook.com/v22.0/{PIXEL_ID}/events`
+- **API Version**: v24.0 (Facebook Graph API)
+- **Release Date**: October 8, 2025
+- **Endpoint**: `https://graph.facebook.com/v24.0/{PIXEL_ID}/events`
 
 ### Available Versions
 
-- **Latest Version**: v23.0 (Released May 29, 2025)
-- **Current Implementation**: v22.0 (January 21, 2025)
-- **Previous Versions**: v21.0, v20.0, v19.0, etc.
+- **Latest Version**: v25.0 (Released February 18, 2026)
+- **Current Implementation**: v24.0 (Released October 8, 2025)
+- **Previous Versions**: v23.0, v22.0, v21.0, etc.
 
 ### Version Deprecation
 
-- **Deprecation Schedule**: Facebook typically maintains API versions for approximately 2 years
-- **v22.0 Status**: Currently active and supported
-- **Upgrade Recommendation**: Consider upgrading to v23.0 for latest features and improvements
+- **Deprecation Schedule**: Facebook Graph API versions have explicit expiration dates in the changelog
+- **v24.0 Status**: Active; scheduled to expire on October 6, 2026
+- **Upgrade Recommendation**: Plan migration to v25.0 before October 6, 2026
 - **Breaking Changes**: Review Facebook's changelog when upgrading between versions
 
 ## Documentation Links

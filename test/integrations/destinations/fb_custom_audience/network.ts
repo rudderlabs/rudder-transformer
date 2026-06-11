@@ -4,7 +4,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'successResponse',
       },
@@ -71,7 +71,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'POST',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'permissionMissingError',
       },
@@ -113,7 +113,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'audienceUnavailableError',
       },
@@ -155,7 +155,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'audienceDeletedError',
       },
@@ -222,7 +222,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'failedToUpdateAudienceError',
       },
@@ -289,7 +289,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'parameterExceededError',
       },
@@ -356,7 +356,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'tooManyCallsError',
       },
@@ -423,7 +423,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'code200PermissionError',
       },
@@ -491,7 +491,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'accessTokenInvalidError',
       },
@@ -537,7 +537,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'accessTokenInvalidError-2',
       },
@@ -580,7 +580,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
         'test-dest-response-key': 'htmlResponse',
       },
@@ -641,7 +641,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud-value-based/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud-value-based/users',
       headers: {
         'test-dest-response-key': 'validAccessToken',
       },
@@ -683,7 +683,7 @@ export const networkCallsData = [
       version: '1',
       type: 'REST',
       method: 'DELETE',
-      endpoint: 'https://graph.facebook.com/v22.0/aud-new/users',
+      endpoint: 'https://graph.facebook.com/v25.0/aud-new/users',
       headers: {
         'test-dest-response-key': 'messagingTOSNotAccepted',
       },

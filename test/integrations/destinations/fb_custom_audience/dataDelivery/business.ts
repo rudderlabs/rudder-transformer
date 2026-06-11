@@ -96,7 +96,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
           headers: {
             'test-dest-response-key': 'successResponse',
           },
@@ -144,7 +144,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'POST',
-          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
           headers: {
             'test-dest-response-key': 'permissionMissingError',
           },
@@ -189,7 +189,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
           headers: {
             'test-dest-response-key': 'audienceUnavailableError',
           },
@@ -234,7 +234,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
           headers: {
             'test-dest-response-key': 'audienceDeletedError',
           },
@@ -279,7 +279,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
           headers: {
             'test-dest-response-key': 'failedToUpdateAudienceError',
           },
@@ -325,7 +325,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
           headers: {
             'test-dest-response-key': 'parameterExceededError',
           },
@@ -370,7 +370,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
           headers: {
             'test-dest-response-key': 'code200PermissionError',
           },
@@ -415,7 +415,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
           headers: {
             'test-dest-response-key': 'accessTokenInvalidError',
           },
@@ -465,7 +465,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v24.0/aud-value-based/users',
+          endpoint: 'https://graph.facebook.com/v25.0/aud-value-based/users',
           headers: {
             'test-dest-response-key': 'validAccessToken',
           },

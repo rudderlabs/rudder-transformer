@@ -1,5 +1,5 @@
 import { authHeader1, authHeader2, authHeader401Test, secret3 } from './maskedSecrets';
-const API_VERSION = 'v22';
+const API_VERSION = 'v23';
 
 const commonResponse = {
   status: 401,
@@ -1389,7 +1389,7 @@ export const networkCallsData = [
             "The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
           details: [
             {
-              '@type': 'type.googleapis.com/google.ads.googleads.v22.errors.GoogleAdsFailure',
+              '@type': 'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
               errors: [
                 {
                   errorCode: {

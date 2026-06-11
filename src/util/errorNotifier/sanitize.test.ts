@@ -117,6 +117,20 @@ describe('sanitizeMetadata', () => {
     expect(sanitizeMetadata(value)).toBe(value);
   });
 
+  it('drops a primitive metadata value rather than forwarding it', () => {
+    const payload = { metadata: 'secret-token' };
+    expect(sanitizeMetadata(payload)).toEqual({ metadata: {} });
+  });
+
+  it('preserves a shared (non-circular) object reference instead of dropping it', () => {
+    const shared = { statusCode: 500 };
+    const payload = { first: shared, second: shared };
+    expect(sanitizeMetadata(payload)).toEqual({
+      first: { statusCode: 500 },
+      second: { statusCode: 500 },
+    });
+  });
+
   it('handles circular references without throwing', () => {
     const payload: Record<string, unknown> = { status: 500 };
     payload.self = payload;

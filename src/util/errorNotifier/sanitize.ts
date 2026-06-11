@@ -37,7 +37,9 @@ const allowlistMetadata = (metadataValue: unknown, allowedFields: string[]): unk
   if (isRecord(metadataValue)) {
     return pickFields(metadataValue, allowedFields);
   }
-  return metadataValue;
+  // A primitive (or null) metadata value cannot be allowlisted and might itself
+  // be a secret (e.g. a token string), so drop it rather than forwarding it.
+  return {};
 };
 
 /**
@@ -61,27 +63,33 @@ export const sanitizeMetadata = (
     return value;
   }
 
-  // Circular reference — drop it rather than recursing infinitely
+  // Only suppress true circular references (a back-edge to an ancestor still being
+  // traversed) — `seen` tracks the in-progress path and is cleared in `finally`,
+  // so shared (non-cyclic) references are preserved rather than dropped.
   if (seen.has(value)) {
     return undefined;
   }
   seen.add(value);
 
-  if (Array.isArray(value)) {
-    return value.map((item) => sanitizeMetadata(item, allowedFields, seen));
-  }
-
-  if (!isRecord(value)) {
-    return value;
-  }
-
-  const result: Record<string, unknown> = {};
-  Object.keys(value).forEach((key) => {
-    if (key === 'metadata') {
-      result[key] = allowlistMetadata(value[key], allowedFields);
-      return;
+  try {
+    if (Array.isArray(value)) {
+      return value.map((item) => sanitizeMetadata(item, allowedFields, seen));
     }
-    result[key] = sanitizeMetadata(value[key], allowedFields, seen);
-  });
-  return result;
+
+    if (!isRecord(value)) {
+      return value;
+    }
+
+    const result: Record<string, unknown> = {};
+    Object.keys(value).forEach((key) => {
+      if (key === 'metadata') {
+        result[key] = allowlistMetadata(value[key], allowedFields);
+        return;
+      }
+      result[key] = sanitizeMetadata(value[key], allowedFields, seen);
+    });
+    return result;
+  } finally {
+    seen.delete(value);
+  }
 };

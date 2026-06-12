@@ -1,4 +1,5 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
+import { newData as batchingData } from './batching-data';
 
 const events = [
   {
@@ -1063,4 +1064,5 @@ export const data = [
     },
   },
   ...invalidRtTfCases,
+  ...batchingData,
 ];

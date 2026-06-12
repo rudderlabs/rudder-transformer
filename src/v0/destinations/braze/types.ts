@@ -175,6 +175,10 @@ export interface BrazeDestinationConfig {
   enableIdentifyForAnonymousUser?: boolean;
   blacklistedEvents?: string[];
   whitelistedEvents?: string[];
+  // When true, RS ecommerce track events are mapped to Braze recommended
+  // `ecommerce.*` events instead of legacy custom/purchase events.
+  // Single toggle gates both cloud and device-mode SDKs.
+  useRecommendedEcommerceEvents?: boolean;
 }
 
 // Product object structure for e-commerce events

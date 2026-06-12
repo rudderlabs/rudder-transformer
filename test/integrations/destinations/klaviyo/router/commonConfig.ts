@@ -40,9 +40,10 @@ const destinationV2: Destination = {
   Transformations: [],
 };
 const getRequest = (apiVersion) => {
+  const destinationByVersion = apiVersion === 'v2' ? destinationV2 : destination;
   return [
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(1),
       message: {
         type: 'identify',
@@ -88,7 +89,7 @@ const getRequest = (apiVersion) => {
       },
     },
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(2),
       message: {
         type: 'identify',
@@ -134,7 +135,7 @@ const getRequest = (apiVersion) => {
       },
     },
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(3),
       message: {
         userId: 'user123',
@@ -154,7 +155,7 @@ const getRequest = (apiVersion) => {
       },
     },
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(4),
       message: {
         userId: 'user123',
@@ -174,7 +175,7 @@ const getRequest = (apiVersion) => {
       },
     },
     {
-      destination: apiVersion === 'v2' ? destinationV2 : destination,
+      destination: destinationByVersion,
       metadata: generateMetadata(5),
       message: {
         userId: 'user123',

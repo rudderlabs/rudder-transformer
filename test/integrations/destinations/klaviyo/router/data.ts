@@ -3,6 +3,7 @@ import { RouterTestData } from '../../../testTypes';
 import { routerRequest } from './commonConfig';
 import { generateMetadata } from '../../../testUtils';
 import { dataV2 } from './dataV2';
+import { dataV3 } from './dataV3';
 import { secret1, authHeader1 } from '../maskedSecrets';
 
 const destination: Destination = {
@@ -255,4 +256,5 @@ export const data: RouterTestData[] = [
     },
   },
   ...dataV2,
+  ...dataV3,
 ];

@@ -265,14 +265,7 @@ Based on Facebook's official documentation:
 - **Implementation**: JavaScript (v0)
 - **Current Implementation Uses**: v25.0
 - **v25.0 Release Date**: February 18, 2026
-- **Previous implementation**: v24.0 (kept as rollback target during rollout if needed)
-
-### Migration Plan (v24.0 -> v25.0)
-
-1. **Validation window (completed in this change)**: update endpoint construction and all component fixtures to v25.0.
-2. **Controlled rollout**: deploy transformer with existing customer destination configs unchanged, and monitor delivery/error rates.
-3. **Fallback strategy**: if a customer-specific issue appears, pin requests back to v24.0 temporarily while validating payload parity.
-4. **Sunset readiness**: complete customer migration checks before Meta retires v24.0 support.
+- **Previous implementation**: v24.0
 
 ### Version Features (v25.0)
 

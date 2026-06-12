@@ -1,3 +1,4 @@
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { getMappingConfig } from '../../util';
 
 const BASE_ENDPOINT = 'https://a.klaviyo.com';
@@ -100,24 +101,35 @@ const KLAVIYO_VERSION_CONFIG = {
   [KLAVIYO_API_VERSION.V1]: {
     revision: '2023-02-22',
     usesProfileImportApi: false,
-    shouldAttachSubscriptions: (operation) => operation === 'subscribe',
+    shouldAttachSubscriptions: (operation, resolvedConsent) =>
+      operation === 'subscribe' && !!resolvedConsent,
+    validateSubscriptions: () => {},
   },
   [KLAVIYO_API_VERSION.V2]: {
     revision: '2024-10-15',
     usesProfileImportApi: true,
-    shouldAttachSubscriptions: (operation) => operation === 'subscribe',
+    shouldAttachSubscriptions: (operation, resolvedConsent) =>
+      operation === 'subscribe' && !!resolvedConsent,
+    validateSubscriptions: () => {},
   },
   [KLAVIYO_API_VERSION.V3]: {
     revision: '2026-04-15',
     usesProfileImportApi: true,
     shouldAttachSubscriptions: () => true,
+    validateSubscriptions: (profileAttributes) => {
+      if (!profileAttributes.subscriptions) {
+        throw new InstrumentationError(
+          'No subscriptions could be resolved for v3 API version. Ensure consent channels (email/sms) match the identifiers present in the event',
+        );
+      }
+    },
   },
 };
 
 const getKlaviyoVersionConfig = (apiVersion) => {
   const versionConfig = KLAVIYO_VERSION_CONFIG[apiVersion];
   if (!versionConfig) {
-    throw new Error(`Unsupported Klaviyo apiVersion: ${apiVersion}`);
+    throw new InstrumentationError(`Unsupported Klaviyo apiVersion: ${apiVersion}`);
   }
   return versionConfig;
 };

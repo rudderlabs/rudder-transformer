@@ -524,7 +524,7 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
     phone_number: phone,
   };
 
-  if (versionConfig.shouldAttachSubscriptions(operation) && resolvedConsent) {
+  if (versionConfig.shouldAttachSubscriptions(operation, resolvedConsent)) {
     updateProfileWithConsents(
       profileAttributes,
       resolvedConsent,
@@ -533,6 +533,8 @@ const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, op
       phone,
     );
   }
+
+  versionConfig.validateSubscriptions(profileAttributes);
 
   const profile = removeUndefinedAndNullValues({
     type: 'profile',

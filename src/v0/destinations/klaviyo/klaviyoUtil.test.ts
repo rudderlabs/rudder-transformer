@@ -250,22 +250,6 @@ describe('subscribeOrUnsubscribeUserToListV2', () => {
       },
     },
     {
-      name: 'v3 subscribe with email consent but only phone identifier',
-      operation: 'subscribe',
-      traitsConsent: ['email'],
-      email: undefined,
-      phone: '+12125550000',
-      expectedSubscriptions: undefined,
-    },
-    {
-      name: 'v3 unsubscribe with sms consent but only email identifier',
-      operation: 'unsubscribe',
-      traitsConsent: ['sms'],
-      email: 'user@domain.com',
-      phone: undefined,
-      expectedSubscriptions: undefined,
-    },
-    {
       name: 'v3 unsubscribe with both identifiers and consent override',
       operation: 'unsubscribe',
       traitsConsent: ['email', 'sms'],
@@ -275,22 +259,6 @@ describe('subscribeOrUnsubscribeUserToListV2', () => {
         email: { marketing: { consent: 'UNSUBSCRIBED' } },
         sms: { marketing: { consent: 'UNSUBSCRIBED' } },
       },
-    },
-    {
-      name: 'v3 subscribe with empty consent list',
-      operation: 'subscribe',
-      traitsConsent: [],
-      email: 'user@domain.com',
-      phone: '+12125550000',
-      expectedSubscriptions: undefined,
-    },
-    {
-      name: 'v3 unsubscribe with empty consent list',
-      operation: 'unsubscribe',
-      traitsConsent: [],
-      email: 'user@domain.com',
-      phone: '+12125550000',
-      expectedSubscriptions: undefined,
     },
   ])(
     'should apply strict channel consent matrix: $name',
@@ -331,6 +299,49 @@ describe('subscribeOrUnsubscribeUserToListV2', () => {
           },
         ],
       });
+    },
+  );
+
+  it.each([
+    {
+      name: 'v3 subscribe with email consent but only phone identifier',
+      operation: 'subscribe',
+      traitsConsent: ['email'],
+      email: undefined,
+      phone: '+12125550000',
+    },
+    {
+      name: 'v3 unsubscribe with sms consent but only email identifier',
+      operation: 'unsubscribe',
+      traitsConsent: ['sms'],
+      email: 'user@domain.com',
+      phone: undefined,
+    },
+    {
+      name: 'v3 subscribe with empty consent list',
+      operation: 'subscribe',
+      traitsConsent: [],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+    },
+    {
+      name: 'v3 unsubscribe with empty consent list',
+      operation: 'unsubscribe',
+      traitsConsent: [],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+    },
+  ])(
+    'should throw when v3 subscriptions resolve to empty: $name',
+    ({ operation, traitsConsent, email, phone }) => {
+      const message = { type: 'identify', traits: { email, phone } };
+      const traitsInfo = { properties: { listId: 'traits-list-id', consent: traitsConsent } };
+
+      expect(() =>
+        subscribeOrUnsubscribeUserToListV2(message, traitsInfo, destination, operation),
+      ).toThrow(
+        'No subscriptions could be resolved for v3 API version. Ensure consent channels (email/sms) match the identifiers present in the event',
+      );
     },
   );
 

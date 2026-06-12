@@ -1,21 +1,6 @@
-import { cloneDeep } from 'lodash';
 import { getFormData } from '../../../../src/adapters/network';
-import * as fbPixelNw from '../facebook_pixel/network';
 import { data } from './dataDelivery/data';
 import { VERSION } from '../../../../src/v0/destinations/fb/config';
-
-const fbPixelTcs = data
-  .filter((_, i) => [2, 3, 4].includes(i))
-  .map((d) => {
-    const fbendpoint = d.input.request.body.endpoint;
-    const fbpTc = fbPixelNw.networkCallsData.filter((nw) => {
-      return nw.httpReq.url === fbendpoint;
-    })[0];
-    const clonedFbpTc = cloneDeep(fbpTc);
-    const clonedFormData = cloneDeep(d.input.request.body.body?.FORM);
-    clonedFbpTc.httpReq.data = getFormData(clonedFormData).toString();
-    return clonedFbpTc;
-  });
 
 export const networkCallsData = [
   {
@@ -53,5 +38,71 @@ export const networkCallsData = [
       statusText: 'OK',
     },
   },
-  ...fbPixelTcs,
+  {
+    httpReq: {
+      url: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_timestamp_correct_access_token`,
+      data: getFormData(data[2].input.request.body.body?.FORM).toString(),
+      params: { destination: 'fb' },
+      headers: { 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        error: {
+          message: 'Invalid parameter',
+          type: 'OAuthException',
+          code: 100,
+          error_subcode: 2804003,
+          is_transient: false,
+          error_user_title: 'Event Timestamp Too Old',
+          error_user_msg:
+            'The timestamp for this event is too far in the past. Events need to be sent from your server within 7 days of when they occurred. Enter a timestamp that has occurred within the last 7 days.',
+          fbtrace_id: 'A6UyEgg_HdoiRX9duxcBOjb',
+        },
+      },
+      status: 400,
+    },
+  },
+  {
+    httpReq: {
+      url: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=throttled_valid_access_token`,
+      data: getFormData(data[3].input.request.body.body?.FORM).toString(),
+      params: { destination: 'fb' },
+      headers: { 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        error: {
+          message: 'User request limit reached',
+          type: 'OAuthException',
+          code: 17,
+          fbtrace_id: 'facebook_px_trace_id_4',
+        },
+      },
+      status: 500,
+    },
+  },
+  {
+    httpReq: {
+      url: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_account_id_valid_access_token`,
+      data: getFormData(data[4].input.request.body.body?.FORM).toString(),
+      params: { destination: 'fb' },
+      headers: { 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        error: {
+          message:
+            "Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api",
+          type: 'GraphMethodException',
+          code: 100,
+          error_subcode: 33,
+          fbtrace_id: 'facebook_px_trace_id_5',
+        },
+      },
+      status: 400,
+    },
+  },
 ];

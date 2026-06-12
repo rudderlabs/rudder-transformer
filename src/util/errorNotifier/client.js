@@ -1,3 +1,5 @@
+const { sanitizeMetadata } = require('./sanitize');
+
 let notifier;
 
 function setNotifier(inNotifier) {
@@ -14,7 +16,10 @@ function init() {
 
 function notify(err, context, metadata) {
   try {
-    if (notifier?.notify) notifier.notify(err, context, metadata);
+    // Reduce the per-job `metadata` to an allowlist of non-sensitive fields at this
+    // single choke point, before it reaches any notifier or logger. This drops
+    // `secret` (access/refresh/developer tokens) and other noisy fields.
+    if (notifier?.notify) notifier.notify(err, context, sanitizeMetadata(metadata));
   } catch (errObj) {
     // Do nothing
   }

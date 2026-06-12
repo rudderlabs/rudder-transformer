@@ -267,9 +267,9 @@ The following Facebook API error codes are configured as abortable (will not be 
 
 ### Current Version
 
-- **API Version**: v22.0
-- **Endpoint**: `https://graph.facebook.com/v22.0/{audience-id}/users`
-- **Implementation**: Hardcoded in `config.js`
+- **API Version**: v25.0
+- **Endpoint**: `https://graph.facebook.com/v25.0/{audience-id}/users`
+- **Implementation**: Hardcoded in `config.ts`
 
 ### Version Support Policy
 
@@ -281,11 +281,11 @@ The following Facebook API error codes are configured as abortable (will not be 
 
 ### Version Deprecation
 
-**NEEDS REVIEW**: Current deprecation timeline for v22.0 needs verification from official Facebook documentation.
+**NEEDS REVIEW**: Current deprecation timeline for v25.0 needs verification from official Facebook documentation.
 
 ### Upgrade Considerations
 
-**NEEDS REVIEW**: Breaking changes between v22.0 and newer versions need to be documented when upgrading.
+**NEEDS REVIEW**: Breaking changes between v25.0 and newer versions need to be documented when upgrading.
 
 ## Documentation Links
 

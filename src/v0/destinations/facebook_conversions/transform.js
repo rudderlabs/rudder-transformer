@@ -108,7 +108,7 @@ const responseBuilderSimple = (message, category, destination) => {
     userData,
     commonData,
     customData,
-    getEndpointDetails(datasetId, accessToken, Config.apiVersion),
+    getEndpointDetails(datasetId, accessToken),
     testDestination,
     testEventCode,
     appData,

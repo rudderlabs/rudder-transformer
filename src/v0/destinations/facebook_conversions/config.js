@@ -4,24 +4,8 @@ const VERSION = 'v25.0';
 
 const ENDPOINT_PATH = 'events';
 
-const GRAPH_API_VERSION_REGEX = /^v\d+\.\d+$/;
-
-const getGraphApiVersion = (apiVersion) => {
-  if (apiVersion === undefined || apiVersion === null || apiVersion === '') {
-    return VERSION;
-  }
-
-  if (typeof apiVersion === 'string' && GRAPH_API_VERSION_REGEX.test(apiVersion)) {
-    return apiVersion;
-  }
-
-  throw new Error(
-    `Invalid Facebook Conversions apiVersion '${apiVersion}'. Expected format 'vNN.N' (example: 'v24.0').`,
-  );
-};
-
-const getEndpointDetails = (pixelId, accessToken, apiVersion) => ({
-  endpoint: `https://graph.facebook.com/${getGraphApiVersion(apiVersion)}/${pixelId}/${ENDPOINT_PATH}?access_token=${accessToken}`,
+const getEndpointDetails = (pixelId, accessToken) => ({
+  endpoint: `https://graph.facebook.com/${VERSION}/${pixelId}/${ENDPOINT_PATH}?access_token=${accessToken}`,
   path: ENDPOINT_PATH,
 });
 

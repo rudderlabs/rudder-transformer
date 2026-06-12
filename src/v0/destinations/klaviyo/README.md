@@ -255,7 +255,7 @@ However, if track events include profile attributes, those attributes should sti
    | V2  | `POST /api/profile-import` - Create/update profile                         | `POST /api/profile-subscription-bulk-create-jobs` (subscribe) or `POST /api/profile-subscription-bulk-delete-jobs` (unsubscribe) |
 
    - **Note**: V1 only supports subscription (`subscribe: true`). V2 and V3 both support subscribe and unsubscribe based on the `subscribe` trait value.
-   - **V3 Note**: Subscription payloads always include a `subscriptions` object built from consent config (and trait overrides). Empty consent or consent/identifier mismatch is forwarded to Klaviyo as-is and can return 400 to surface misconfiguration.
+   - **V3 Note**: Subscription payloads always include a `subscriptions` object built from consent config (and trait overrides). If the resolved subscriptions are empty (no consent provided, or consent channels don't match available identifiers), the transformer rejects the event with an `InstrumentationError` before it reaches Klaviyo.
 
 2. **Group Events**:
 

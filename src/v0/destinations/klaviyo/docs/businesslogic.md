@@ -244,7 +244,7 @@ If `apiVersion` is absent at runtime, transformer fallback remains on legacy (`v
 - `traits.properties.listId` overrides destination `listId` config when present
 - `traits.properties.consent` controls channels: `["email"]`, `["sms"]`, or `["email", "sms"]`
 - V2 only sets profile `subscriptions` during subscribe flows.
-- V3 always sets profile `subscriptions` for both subscribe and unsubscribe flows using consent config (or trait override), even when consent is empty or does not match available identifiers.
+- V3 always sets profile `subscriptions` for both subscribe and unsubscribe flows using consent config (or trait override). If the resolved subscriptions are empty (no consent provided, or consent channels don't match available identifiers), the transformer rejects the event with an `InstrumentationError`.
 
 #### Identify Payload Structure
 

@@ -106,10 +106,10 @@
   },
   {
     "Destination": "Facebook Pixel",
-    "Version currently referred in CloudMode Services": "/v24.0/:pixelId/events",
+    "Version currently referred in CloudMode Services": "/v25.0/:pixelId/events",
     "Link to check Versions documentation": "https://developers.facebook.com/docs/graph-api/changelog/versions/",
     "Latest Version rolled out": "v25.0",
-    "Sunset Date Current Version used in backend": "v24.0 (released October 8, 2025) expires on October 6, 2026 per Graph API versions changelog."
+    "Sunset Date Current Version used in backend": "v25.0 (released February 18, 2026) is currently active; expiration date is not yet listed in Meta's Graph API versions table."
   },
   {
     "Destination": "Fullstory",

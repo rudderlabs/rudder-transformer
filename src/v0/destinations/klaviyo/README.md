@@ -15,7 +15,8 @@ Implementation in **JavaScript**
 
 - **API Version**: Specifies the Klaviyo API revision to use
   - `v1`: Uses revision `2023-02-22` (deprecated, scheduled for removal)
-  - `v2`: Uses revision `2024-10-15` (recommended, default)
+  - `v2`: Uses revision `2024-10-15` (deprecated, scheduled for removal)
+  - `v3`: Uses revision `2026-04-15` (default)
 
 ### Optional Settings
 
@@ -29,7 +30,7 @@ Implementation in **JavaScript**
 
 - **Enforce Email As Primary**: When enabled, uses email or phone as primary identifier instead of external_id (default: `false`)
 
-- **Consent**: Array of consent channels to apply (default: `["email"]`)
+- **Consent**: Array of consent channels to manage (default: `["email"]`)
 
   - Options: `email`, `sms`
   - Controls which marketing channels users are subscribed to
@@ -58,7 +59,7 @@ Implementation in **JavaScript**
   - Subscription events: 100 profiles per batch
   - Profile and Track events: Not batched together with subscriptions
 
-Both API versions use `MAX_BATCH_SIZE` (100) when chunking subscription requests. V1 batches subscribe requests to `POST /api/profile-subscription-bulk-create-jobs`. V2 batches both subscribe requests to `POST /api/profile-subscription-bulk-create-jobs` and unsubscribe requests to `POST /api/profile-subscription-bulk-delete-jobs`. Profile and track events are sent individually.
+All API versions use `MAX_BATCH_SIZE` (100) when chunking subscription requests. V1 batches subscribe requests to `POST /api/profile-subscription-bulk-create-jobs`. V2 and V3 batch both subscribe requests to `POST /api/profile-subscription-bulk-create-jobs` and unsubscribe requests to `POST /api/profile-subscription-bulk-delete-jobs`. Profile and track events are sent individually.
 
 ### Rate Limits
 
@@ -253,7 +254,8 @@ However, if track events include profile attributes, those attributes should sti
    | V1  | `POST /api/profiles` or `PATCH /api/profiles/{id}` - Create/update profile | `POST /api/profile-subscription-bulk-create-jobs` - Subscribe to list                                                            |
    | V2  | `POST /api/profile-import` - Create/update profile                         | `POST /api/profile-subscription-bulk-create-jobs` (subscribe) or `POST /api/profile-subscription-bulk-delete-jobs` (unsubscribe) |
 
-   - **Note**: V1 only supports subscription (`subscribe: true`). V2 supports both subscribe and unsubscribe based on the `subscribe` trait value.
+   - **Note**: V1 only supports subscription (`subscribe: true`). V2 and V3 both support subscribe and unsubscribe based on the `subscribe` trait value.
+   - **V3 Note**: Subscription payloads always include a `subscriptions` object built from consent config (and trait overrides). If the resolved subscriptions are empty (no consent provided, or consent channels don't match available identifiers), the transformer rejects the event with an `InstrumentationError` before it reaches Klaviyo.
 
 2. **Group Events**:
 
@@ -297,8 +299,9 @@ Klaviyo provides **2 years** of support for each API revision:
 | ---------- | ---------- | ------------------ |
 | 2023-02-22 | Deprecated | ~February 2025     |
 | 2024-10-15 | Stable     | ~October 2026      |
+| 2026-04-15 | Stable     | ~April 2028        |
 
-**Recommendation**: Use `apiVersion: v2` for new integrations and upgrade existing integrations to avoid deprecation.
+**Recommendation**: Continue using `apiVersion: v2` to preserve existing behavior. Use `apiVersion: v3` only when you are ready for strict consent enforcement on both subscribe and unsubscribe requests.
 
 ### Breaking Changes Between Versions
 

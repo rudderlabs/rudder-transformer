@@ -159,7 +159,7 @@ const processEvent = (event) => {
   return response;
 };
 // {subscription:{}, event:{}, profile:{}}
-const processV2 = (event) => {
+const processImportApi = (event) => {
   const response = processEvent(event);
   const { destination } = event;
   const respList: unknown[] = [];
@@ -242,4 +242,4 @@ const processRouter = (inputs, reqMetadata) => {
   return { successEvents: batchResponseList, errorEvents: batchErrorRespList };
 };
 
-export { processV2, processRouter };
+export { processImportApi, processRouter };

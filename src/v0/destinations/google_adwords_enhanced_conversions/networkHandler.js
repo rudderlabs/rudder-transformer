@@ -108,7 +108,12 @@ const gaecProxyRequest = async (request) => {
     googleAds,
   });
 
-  set(body.JSON, 'conversionAdjustments[0].conversionAction', `${conversionActionId}`);
+  // A request may carry multiple conversion adjustments when events are batched. They all
+  // share the same conversion name (grouping key), so the single resolved conversionActionId
+  // applies to every adjustment. For the non-batched path this is an array of one.
+  body.JSON.conversionAdjustments.forEach((_, index) => {
+    set(body.JSON, `conversionAdjustments[${index}].conversionAction`, `${conversionActionId}`);
+  });
 
   const response = await googleAds.addConversionAdjustMent(body.JSON);
 

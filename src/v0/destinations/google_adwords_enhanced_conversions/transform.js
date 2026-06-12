@@ -33,7 +33,7 @@ const updateMappingJson = (mapping) => {
   return newMapping;
 };
 
-const responseBuilder = async (metadata, message, { Config }, payload) => {
+const responseBuilder = (metadata, message, { Config }, payload) => {
   const deliveryRequest = defaultRequestConfig();
   const { event } = message;
   const { subAccount } = Config;
@@ -77,7 +77,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   return deliveryRequest;
 };
 
-const processTrackEvent = async (metadata, message, destination) => {
+const processTrackEvent = (metadata, message, destination) => {
   let flag = false;
   const { Config } = destination;
   const { event } = message;
@@ -122,7 +122,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   return responseBuilder(metadata, message, destination, payload);
 };
 
-const processEvent = async (metadata, message, destination) => {
+const processEvent = (metadata, message, destination) => {
   const { type } = message;
   if (!type) {
     throw new InstrumentationError('Invalid payload. Message Type is not present');
@@ -134,7 +134,7 @@ const processEvent = async (metadata, message, destination) => {
   }
 };
 
-const process = async (event) => processEvent(event.metadata, event.message, event.destination);
+const process = (event) => processEvent(event.metadata, event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

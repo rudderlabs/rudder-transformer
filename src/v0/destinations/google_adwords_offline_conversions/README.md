@@ -123,7 +123,7 @@ const query = 'SELECT conversion_custom_variable.name FROM conversion_custom_var
 ### Proxy Delivery
 
 - **Supported**: Yes
-- **Source Code Path**: `src/v0/destinations/google_adwords_offline_conversions/networkHandler.js`
+- **Source Code Path**: `src/v1/destinations/google_adwords_offline_conversions/networkHandler.js`
 
 ### User Deletion
 

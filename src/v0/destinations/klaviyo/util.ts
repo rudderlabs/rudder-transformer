@@ -28,11 +28,16 @@ import {
   CONFIG_CATEGORIES,
   MAX_BATCH_SIZE,
   WhiteListedTraitsV2,
-  revision,
+  getKlaviyoVersionConfig,
+  getKlaviyoRevision,
 } from './config';
 import logger from '../../../logger';
 
 const REVISION_CONSTANT = '2023-02-22';
+const KLAVIYO_MARKETING_CHANNELS = {
+  EMAIL: 'email',
+  SMS: 'sms',
+};
 
 /**
  * This function is used to check if the phone number is in E.164 format. It uses libphonenumber-js library to parse the phone number
@@ -344,7 +349,7 @@ const batchSubscribeEvents = (subscribeRespList) => {
   return batchedResponseList;
 };
 const buildRequest = (payload, destination, category) => {
-  const { privateApiKey } = destination.Config;
+  const { privateApiKey, apiVersion } = destination.Config;
   const response = defaultRequestConfig();
 
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
@@ -354,7 +359,7 @@ const buildRequest = (payload, destination, category) => {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
-    revision,
+    revision: getKlaviyoRevision(apiVersion),
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
 
@@ -492,22 +497,13 @@ const constructProfile = (message, destination, isIdentifyCall) => {
   return { data };
 };
 
-/** This function update profile with consents for subscribing to email and/or phone
- * @param {*} profileAttributes
- * @param {*} subscribeConsent
- * @param {*} email
- * @param {*} phone
- */
-const updateProfileWithConsents = (profileAttributes, subscribeConsent, email, phone) => {
-  let consent = subscribeConsent;
-  if (!Array.isArray(consent)) {
-    consent = [consent];
+const updateProfileWithConsents = (profileAttributes, consent, consentStatus, email, phone) => {
+  const channels = Array.isArray(consent) ? consent : [consent];
+  if (channels.includes(KLAVIYO_MARKETING_CHANNELS.EMAIL) && email) {
+    set(profileAttributes, 'subscriptions.email.marketing.consent', consentStatus);
   }
-  if (consent.includes('email') && email) {
-    set(profileAttributes, 'subscriptions.email.marketing.consent', 'SUBSCRIBED');
-  }
-  if (consent.includes('sms') && phone) {
-    set(profileAttributes, 'subscriptions.sms.marketing.consent', 'SUBSCRIBED');
+  if (channels.includes(KLAVIYO_MARKETING_CHANNELS.SMS) && phone) {
+    set(profileAttributes, 'subscriptions.sms.marketing.consent', consentStatus);
   }
 };
 /**
@@ -517,19 +513,25 @@ const updateProfileWithConsents = (profileAttributes, subscribeConsent, email, p
  */
 const subscribeOrUnsubscribeUserToListV2 = (message, traitsInfo, destination, operation) => {
   // listId from message properties are preferred over Config listId
-  const { consent } = destination.Config;
+  const { consent, apiVersion } = destination.Config;
+  const versionConfig = getKlaviyoVersionConfig(apiVersion);
   let { listId } = destination.Config;
-  const subscribeConsent = traitsInfo.consent || traitsInfo.properties?.consent || consent;
+  const resolvedConsent = traitsInfo?.consent || traitsInfo?.properties?.consent || consent;
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getFieldValueFromMessage(message, 'phone');
-  const profileAttributes = {
+  const profileAttributes: Record<string, unknown> = {
     email,
     phone_number: phone,
   };
 
-  // used only for subscription and not for unsubscription
-  if (operation === 'subscribe' && subscribeConsent) {
-    updateProfileWithConsents(profileAttributes, subscribeConsent, email, phone);
+  if (versionConfig.shouldAttachSubscriptions(operation) && resolvedConsent) {
+    updateProfileWithConsents(
+      profileAttributes,
+      resolvedConsent,
+      operation === 'subscribe' ? 'SUBSCRIBED' : 'UNSUBSCRIBED',
+      email,
+      phone,
+    );
   }
 
   const profile = removeUndefinedAndNullValues({
@@ -592,7 +594,7 @@ const getSubscriptionPayload = (listId, profiles, operation) => ({
  */
 const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => {
   const response = defaultRequestConfig();
-  const { privateApiKey } = destination.Config;
+  const { privateApiKey, apiVersion } = destination.Config;
   const { apiUrl } = CONFIG_CATEGORIES[subscription.operation.toUpperCase()];
   response.endpoint = `${BASE_ENDPOINT}${apiUrl}`;
   response.endpointPath = apiUrl;
@@ -601,7 +603,7 @@ const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => 
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
-    revision,
+    revision: getKlaviyoRevision(apiVersion),
   };
   response.body.JSON = getSubscriptionPayload(
     subscription.listId,

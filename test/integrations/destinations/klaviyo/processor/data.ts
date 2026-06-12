@@ -5,9 +5,11 @@ import { screenTestData } from './screenTestData';
 import { trackTestData } from './trackTestData';
 import { validationTestData } from './validationTestData';
 import { dataV2 } from './dataV2';
+import { dataV3 } from './dataV3';
 
 export const data = [
   ...dataV2,
+  ...dataV3,
   ...identifyData,
   ...trackTestData,
   ...screenTestData,

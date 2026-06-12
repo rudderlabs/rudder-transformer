@@ -91,8 +91,50 @@ const WhiteListedTraitsV2 = [
   'address',
 ];
 const destType = 'klaviyo';
-// api version used
-const revision = '2024-10-15';
+const KLAVIYO_API_VERSION = {
+  V1: 'v1',
+  V2: 'v2',
+  V3: 'v3',
+};
+const KLAVIYO_VERSION_CONFIG = {
+  [KLAVIYO_API_VERSION.V1]: {
+    revision: '2023-02-22',
+    usesProfileImportApi: false,
+    shouldAttachSubscriptions: (operation) => operation === 'subscribe',
+  },
+  [KLAVIYO_API_VERSION.V2]: {
+    revision: '2024-10-15',
+    usesProfileImportApi: true,
+    shouldAttachSubscriptions: (operation) => operation === 'subscribe',
+  },
+  [KLAVIYO_API_VERSION.V3]: {
+    revision: '2026-04-15',
+    usesProfileImportApi: true,
+    shouldAttachSubscriptions: () => true,
+  },
+};
+
+const getKlaviyoVersionConfig = (apiVersion) => {
+  const versionConfig = KLAVIYO_VERSION_CONFIG[apiVersion];
+  if (!versionConfig) {
+    throw new Error(`Unsupported Klaviyo apiVersion: ${apiVersion}`);
+  }
+  return versionConfig;
+};
+
+const usesProfileImportApi = (apiVersion) => {
+  if (apiVersion === undefined || apiVersion === null) {
+    return false;
+  }
+  return getKlaviyoVersionConfig(apiVersion).usesProfileImportApi;
+};
+
+const getKlaviyoRevision = (apiVersion) => {
+  if (apiVersion === undefined || apiVersion === null) {
+    return KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V1].revision;
+  }
+  return getKlaviyoVersionConfig(apiVersion).revision;
+};
 
 export {
   BASE_ENDPOINT,
@@ -105,7 +147,10 @@ export {
   eventNameMapping,
   jsonNameMapping,
   destType,
-  revision,
+  KLAVIYO_API_VERSION,
+  usesProfileImportApi,
+  getKlaviyoVersionConfig,
+  getKlaviyoRevision,
   WhiteListedTraitsV2,
   useUpdatedKlaviyoAPI,
 };

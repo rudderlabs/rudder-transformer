@@ -2049,6 +2049,74 @@ export const existingTestCases = [
       },
     },
   },
+  {
+    name: 'af',
+    description: 'Track event without properties and a configured listOfProps does not crash',
+    id: 'trackWithoutPropertiesAndListOfProps',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Some Custom Event',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: commonContextWithExternalId,
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: { AF: { af_uid: 'afUid' } },
+            },
+            destination: {
+              Config: {
+                devKey: 'abcde',
+                androidAppId: 'com.rudderlabs.javascript',
+                addPropertiesAtRoot: false,
+                listOfProps: [{ property: 'value' }],
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
+              headers: commonHeader,
+              params: {},
+              body: {
+                JSON: {
+                  bundleIdentifier: 'com.rudderlabs.javascript',
+                  eventValue: '',
+                  eventName: 'Some Custom Event',
+                  eventTime: '2020-08-14T05:30:30.118Z',
+                  appsflyer_id: 'afUid',
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];
 
 export const data = [...existingTestCases, ...newConfigValidationTests];

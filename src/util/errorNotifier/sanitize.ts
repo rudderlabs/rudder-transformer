@@ -23,37 +23,36 @@ const allowlistMetadata = (value: unknown): unknown => {
   );
 };
 
-/**
- * Returns a sanitized deep copy of an error payload: wherever a `metadata` key
- * appears (at any depth) its value is reduced to the allowlisted fields. The input
- * is never mutated — it doubles as the live delivery response — and circular
- * references are dropped rather than followed.
- */
-export const sanitizeMetadata = (
-  value: unknown,
-  seen: WeakSet<object> = new WeakSet(),
-): unknown => {
+// Recursive worker. `seen` tracks the in-progress traversal path so that only true
+// circular references (a back-edge to an ancestor) are suppressed; it is cleared in
+// `finally`, so shared (non-cyclic) references are preserved rather than dropped.
+const sanitize = (value: unknown, seen: WeakSet<object>): unknown => {
   if (value === null || typeof value !== 'object') {
     return value;
   }
-  // Only suppress true circular references (a back-edge to an ancestor still being
-  // traversed); `seen` tracks the in-progress path and is cleared in `finally`, so
-  // shared (non-cyclic) references are preserved rather than dropped.
   if (seen.has(value)) {
     return undefined;
   }
   seen.add(value);
   try {
     if (Array.isArray(value)) {
-      return value.map((item) => sanitizeMetadata(item, seen));
+      return value.map((item) => sanitize(item, seen));
     }
     return Object.fromEntries(
       Object.entries(value).map(([key, val]) => [
         key,
-        key === 'metadata' ? allowlistMetadata(val) : sanitizeMetadata(val, seen),
+        key === 'metadata' ? allowlistMetadata(val) : sanitize(val, seen),
       ]),
     );
   } finally {
     seen.delete(value);
   }
 };
+
+/**
+ * Returns a sanitized deep copy of an error payload: wherever a `metadata` key
+ * appears (at any depth) its value is reduced to the allowlisted fields. The input
+ * is never mutated — it doubles as the live delivery response — and circular
+ * references are dropped rather than followed.
+ */
+export const sanitizeMetadata = (value: unknown): unknown => sanitize(value, new WeakSet());

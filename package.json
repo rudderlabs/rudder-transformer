@@ -54,8 +54,7 @@
     "commit-msg": "commitlint --edit",
     "prepare": "npm --prefix ./node_modules/isolated-vm run rebuild",
     "release": "npx standard-version",
-    "release:github": "echo '⚠️  DEPRECATED: Use release:github:modern instead' && DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
-    "release:github:modern": "node scripts/create-github-release.js",
+    "release:github": "node scripts/create-github-release.js",
     "clean:node": "modclean",
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0",
     "generate:testcases": "ts-node ./test/scripts/generateJson.ts --location testcases"
@@ -151,7 +150,6 @@
     "commander": "^14.0.2",
     "commitizen": "^4.3.0",
     "commitlint": "^19.8.0",
-    "conventional-github-releaser": "^3.1.5",
     "esbuild": "^0.28.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",

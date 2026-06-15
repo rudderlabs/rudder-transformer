@@ -8,24 +8,23 @@
  * - track: Track user events
  */
 
-import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
-import { defaultRequestConfig, simpleProcessRouterDest } from '../../util';
+import { formatZodError, InstrumentationError } from '@rudderstack/integrations-lib';
+import { defaultRequestConfig, getSuccessRespEvents, handleRtTfSingleEventError } from '../../util';
 import {
   SurvicateRouterRequest,
-  SurvicateDestinationConfig,
-  SurvicateMessage,
   SurvicateIdentifyMessage,
   SurvicateGroupMessage,
   SurvicateTrackMessage,
-  SurvicateMessageSchema,
   IdentifyPayload,
   GroupPayload,
   TrackPayload,
   SurvicatePayload,
   EndpointEntry,
+  SurvicateRouterRequestSchema,
 } from './types';
 
 import { ENDPOINT_CONFIG, RESERVED_KEYS } from './config';
+import { RouterTransformationResponse } from '../../../types';
 
 function buildResponse(endpoint: EndpointEntry, apiKey: string, payload: SurvicatePayload) {
   const response = defaultRequestConfig();
@@ -55,7 +54,9 @@ function filterTraits(traits: Record<string, unknown> = {}): Record<string, unkn
 /**
  * Extract only the allowed context properties from message.context.
  */
-function extractContext(ctx: SurvicateMessage['context']): Record<string, unknown> | undefined {
+function extractContext(
+  ctx: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
   if (!ctx) return undefined;
   const out: Record<string, unknown> = {};
   if (ctx.locale) out.locale = ctx.locale;
@@ -70,11 +71,10 @@ function extractContext(ctx: SurvicateMessage['context']): Record<string, unknow
  * rather than a raw ZodError (500), and returns a typed, discriminated message
  * so each handler needs no further field checks or casts.
  */
-function validateMessage(message: unknown): SurvicateMessage {
-  const result = SurvicateMessageSchema.safeParse(message);
+function validateSurvicateEvent(event: unknown): SurvicateRouterRequest {
+  const result = SurvicateRouterRequestSchema.safeParse(event);
   if (!result.success) {
-    // The schema attaches a friendly, field-specific message to each issue.
-    throw new InstrumentationError(result.error.errors[0].message);
+    throw new InstrumentationError(formatZodError(result.error));
   }
   return result.data;
 }
@@ -89,28 +89,24 @@ function validateMessage(message: unknown): SurvicateMessage {
  * @param destinationConfig - The destination configuration
  * @returns Formatted HTTP response
  */
-const processIdentifyEvent = (
-  msg: SurvicateIdentifyMessage,
-  destinationConfig: SurvicateDestinationConfig,
-) => {
+const processIdentifyEvent = (message: SurvicateIdentifyMessage, destinationKey: string) => {
   // Build the payload - flatten traits and include context properties
   const payload: IdentifyPayload = {
-    user_id: msg.userId,
-    timestamp: msg.originalTimestamp,
-    message_id: msg.messageId,
+    user_id: message.userId,
+    timestamp: message.originalTimestamp,
+    message_id: message.messageId,
   };
 
-  // msg.traits applied second so it wins over msg.context.traits on key conflicts
-  Object.assign(payload, filterTraits(msg.context?.traits));
-  Object.assign(payload, filterTraits(msg.traits));
+  // message.traits applied second so it wins over message.context.traits on key conflicts
+  Object.assign(payload, filterTraits(message.context?.traits));
+  Object.assign(payload, filterTraits(message.traits));
 
   // attach filtered context
-  const ctxIdentify = extractContext(msg.context);
+  const ctxIdentify = extractContext(message.context);
   if (ctxIdentify) payload.context = ctxIdentify;
 
-  return buildResponse(ENDPOINT_CONFIG.IDENTIFY, destinationConfig.destinationKey, payload);
+  return buildResponse(ENDPOINT_CONFIG.IDENTIFY, destinationKey, payload);
 };
-
 
 /**
  * Process group event
@@ -122,27 +118,23 @@ const processIdentifyEvent = (
  * @param destinationConfig - The destination configuration
  * @returns Formatted HTTP response
  */
-const processGroupEvent = (
-  msg: SurvicateGroupMessage,
-  destinationConfig: SurvicateDestinationConfig,
-) => {
+const processGroupEvent = (message: SurvicateGroupMessage, destinationKey: string) => {
   const payload: GroupPayload = {
-    user_id: msg.userId,
-    group_id: msg.groupId,
-    timestamp: msg.originalTimestamp,
-    message_id: msg.messageId,
+    user_id: message.userId,
+    group_id: message.groupId,
+    timestamp: message.originalTimestamp,
+    message_id: message.messageId,
   };
 
-  // msg.traits applied second so it wins over msg.context.traits on key conflicts
-  Object.assign(payload, filterTraits(msg.context?.traits));
-  Object.assign(payload, filterTraits(msg.traits));
+  // message.traits applied second so it wins over message.context.traits on key conflicts
+  Object.assign(payload, filterTraits(message.context?.traits));
+  Object.assign(payload, filterTraits(message.traits));
 
   // attach filtered context
-  const ctxGroup = extractContext(msg.context);
+  const ctxGroup = extractContext(message.context);
   if (ctxGroup) payload.context = ctxGroup;
 
-
-  return buildResponse(ENDPOINT_CONFIG.GROUP, destinationConfig.destinationKey, payload);
+  return buildResponse(ENDPOINT_CONFIG.GROUP, destinationKey, payload);
 };
 
 /**
@@ -155,28 +147,25 @@ const processGroupEvent = (
  * @param destinationConfig - The destination configuration
  * @returns Formatted HTTP response
  */
-const processTrackEvent = (
-  msg: SurvicateTrackMessage,
-  destinationConfig: SurvicateDestinationConfig,
-) => {
+const processTrackEvent = (message: SurvicateTrackMessage, destinationKey: string) => {
   // Build the payload using the utility function
   const payload: TrackPayload = {
-    user_id: msg.userId,
-    event: msg.event,
-    properties: msg.properties || {},
-    message_id: msg.messageId,
-    timestamp: msg.originalTimestamp,
+    user_id: message.userId,
+    event: message.event,
+    properties: message.properties || {},
+    message_id: message.messageId,
+    timestamp: message.originalTimestamp,
   };
 
-  // merge non‑reserved traits into properties; msg.traits wins over msg.context.traits on key conflicts
-  Object.assign(payload.properties, filterTraits(msg.context?.traits));
-  Object.assign(payload.properties, filterTraits(msg.traits));
+  // merge non‑reserved traits into properties; message.traits wins over message.context.traits on key conflicts
+  Object.assign(payload.properties, filterTraits(message.context?.traits));
+  Object.assign(payload.properties, filterTraits(message.traits));
 
   // attach filtered context
-  const ctxTrack = extractContext(msg.context);
+  const ctxTrack = extractContext(message.context);
   if (ctxTrack) payload.context = ctxTrack;
 
-  return buildResponse(ENDPOINT_CONFIG.TRACK, destinationConfig.destinationKey, payload);
+  return buildResponse(ENDPOINT_CONFIG.TRACK, destinationKey, payload);
 };
 
 /**
@@ -192,23 +181,15 @@ const processEvent = (event: SurvicateRouterRequest) => {
   const { message, destination } = event;
   const { destinationKey } = destination.Config;
 
-  // Validate destination configuration
-  if (!destinationKey) {
-    throw new ConfigurationError('Destination Key is required');
-  }
-
-  // Normalize + validate once here so each handler receives a validated message.
-  const msg = validateMessage(message);
-
   // Route based on message type. Unsupported types are already rejected by the
-  // schema's discriminated union, so `msg.type` is exhaustively narrowed here.
-  switch (msg.type) {
+  // schema's discriminated union, so `message.type` is exhaustively narrowed here.
+  switch (message.type) {
     case 'identify':
-      return processIdentifyEvent(msg, destination.Config);
+      return processIdentifyEvent(message, destinationKey);
     case 'group':
-      return processGroupEvent(msg, destination.Config);
+      return processGroupEvent(message, destinationKey);
     case 'track':
-      return processTrackEvent(msg, destination.Config);
+      return processTrackEvent(message, destinationKey);
     default:
       throw new InstrumentationError('Unsupported Survicate event type.');
   }
@@ -222,11 +203,30 @@ const processEvent = (event: SurvicateRouterRequest) => {
  * @param reqMetadata - Metadata for the request
  * @returns Promise resolving to array of processed responses
  */
-const processRouterDest = async (inputs: unknown, reqMetadata: Record<string, unknown>) => {
-  if (!Array.isArray(inputs)) {
-    throw new InstrumentationError('Router transformation expects an array of events.');
+const processRouterDest = async (events: unknown[]): Promise<RouterTransformationResponse[]> => {
+  if (!events || events.length === 0) return [];
+
+  const failedResponses: RouterTransformationResponse[] = [];
+  const successfulResponses: RouterTransformationResponse[] = [];
+
+  for (const event of events) {
+    try {
+      const survicateEvent = validateSurvicateEvent(event);
+      const response = processEvent(survicateEvent);
+      successfulResponses.push(
+        getSuccessRespEvents(
+          response,
+          [survicateEvent.metadata],
+          survicateEvent.destination,
+          false,
+        ),
+      );
+    } catch (error) {
+      failedResponses.push(handleRtTfSingleEventError(event, error, {}));
+    }
   }
-  return simpleProcessRouterDest(inputs, processEvent, reqMetadata, {});
+
+  return [...successfulResponses, ...failedResponses];
 };
 
 export { processRouterDest };

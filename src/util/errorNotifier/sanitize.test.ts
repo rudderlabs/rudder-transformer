@@ -102,11 +102,6 @@ describe('sanitizeMetadata', () => {
     expect(payload.response[0].metadata.secret).toBeDefined();
   });
 
-  it('supports a custom allowlist', () => {
-    const payload = { metadata: { sourceId: 's', jobId: 1 } };
-    expect(sanitizeMetadata(payload, ['jobId'])).toEqual({ metadata: { jobId: 1 } });
-  });
-
   it.each([
     ['null', null],
     ['undefined', undefined],

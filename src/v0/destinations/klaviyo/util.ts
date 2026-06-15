@@ -28,12 +28,13 @@ import {
   CONFIG_CATEGORIES,
   MAX_BATCH_SIZE,
   WhiteListedTraitsV2,
+  KLAVIYO_API_VERSION,
+  KLAVIYO_VERSION_CONFIG,
   getKlaviyoVersionConfig,
   getKlaviyoRevision,
 } from './config';
 import logger from '../../../logger';
 
-const REVISION_CONSTANT = '2023-02-22';
 const KLAVIYO_MARKETING_CHANNELS = {
   EMAIL: 'email',
   SMS: 'sms',
@@ -140,7 +141,7 @@ const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKe
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: REVISION_CONSTANT,
+    revision: KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V1].revision,
   };
   identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
   return identifyResponse;
@@ -201,7 +202,7 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: REVISION_CONSTANT,
+    revision: KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V1].revision,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
 
@@ -279,7 +280,7 @@ const generateBatchedPaylaodForArray = (events) => {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: REVISION_CONSTANT,
+    revision: KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V1].revision,
   };
 
   batchEventResponse = {

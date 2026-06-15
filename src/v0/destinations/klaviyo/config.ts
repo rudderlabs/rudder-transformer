@@ -160,6 +160,7 @@ export {
   jsonNameMapping,
   destType,
   KLAVIYO_API_VERSION,
+  KLAVIYO_VERSION_CONFIG,
   usesProfileImportApi,
   getKlaviyoVersionConfig,
   getKlaviyoRevision,

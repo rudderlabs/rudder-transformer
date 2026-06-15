@@ -118,7 +118,7 @@ Implementation in **JavaScript**
 
 | Endpoint                     | Event Types         | Description                                    |
 | ---------------------------- | ------------------- | ---------------------------------------------- |
-| `/v22.0/{dataset_id}/events` | Track, Page, Screen | Primary endpoint for sending conversion events |
+| `/v25.0/{dataset_id}/events` | Track, Page, Screen | Primary endpoint for sending conversion events |
 
 ### Standard Event Mapping
 
@@ -261,17 +261,13 @@ Based on Facebook's official documentation:
 
 ### Current Version
 
-- **Facebook Graph API**: v23.0 (Latest)
-- **Implementation**: JavaScript (v0) - **NEEDS UPDATE**
-- **Current Implementation Uses**: v22.0 (Outdated)
-- **v23.0 Release Date**: May 29, 2025
-- **Deprecation**: Facebook typically maintains API versions for 2+ years
+- **Facebook Graph API**: v25.0 (latest as of June 11, 2026)
+- **Implementation**: JavaScript (v0)
+- **Current Implementation Uses**: v25.0
+- **v25.0 Release Date**: February 18, 2026
+- **Previous implementation**: v24.0
 
-### Version Update Required
-
-**⚠️ IMPORTANT**: The current implementation uses v22.0, but v23.0 is now available and should be updated.
-
-### Version Features (v23.0)
+### Version Features (v25.0)
 
 - Latest privacy controls and compliance features
 - Enhanced attribution modeling
@@ -279,14 +275,14 @@ Based on Facebook's official documentation:
 - Improved debugging and monitoring capabilities
 - Performance optimizations
 
-**Recommendation**: Update the implementation to use v23.0 for latest features and long-term support.
+**Recommendation**: Keep Facebook Conversions on the latest supported Graph API version and review Meta changelog at each release.
 
 ## Documentation Links
 
 ### Facebook API Documentation
 
 - [Facebook Conversions API Overview](https://developers.facebook.com/docs/marketing-api/conversions-api/)
-- [Graph API v23.0 Documentation](https://developers.facebook.com/docs/graph-api/)
+- [Graph API Versions](https://developers.facebook.com/docs/graph-api/changelog/versions)
 - [Server Events API](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
 - [Data Processing Options](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/data-processing-options/)
 - [Graph API Changelog](https://developers.facebook.com/docs/graph-api/changelog/)
@@ -309,26 +305,26 @@ This destination does not support RETL (Real-time Extract, Transform, Load) func
 
 ## Known Issues and Recommendations
 
-### API Version Update Required
+### API Version Lifecycle Tracking
 
-**Current Status**: The implementation uses Facebook Graph API v22.0, but v23.0 is now available (released May 29, 2025).
+**Current Status**: The implementation now uses Facebook Graph API v25.0.
 
 **Impact**:
 
-- Missing latest features and improvements
-- Potential future compatibility issues
-- Not using the most current API capabilities
+- Any future Graph API release can introduce behavior changes that require schema and payload validation.
+- Endpoint expectations are duplicated across processor/router component fixtures and must be updated together.
 
-**Recommendation**: Update the implementation to use v23.0 for:
+**Recommendation**: For each Meta Graph API release:
 
-- Latest privacy and compliance features
-- Enhanced performance optimizations
-- Long-term API support
+1. Verify release + deprecation timelines in Meta changelog.
+2. Run destination component tests against the new endpoint version.
+3. Roll out with monitoring and keep a temporary fallback to the previous version.
 
-**Files to Update**:
+**Files impacted by version bumps**:
 
-- `src/v0/destinations/facebook_conversions/config.js` - Update ENDPOINT URL
-- Test files and documentation references
+- `src/v0/destinations/facebook_conversions/config.js` (version constant)
+- `test/integrations/destinations/facebook_conversions/processor/data.ts`
+- `test/integrations/destinations/facebook_conversions/router/data.ts`
 
 ## Troubleshooting
 

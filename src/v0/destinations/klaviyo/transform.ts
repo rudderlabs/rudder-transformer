@@ -12,8 +12,9 @@ import {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
+  usesProfileImportApi,
 } from './config';
-import { processRouter as processRouterV2, processV2 } from './transformV2';
+import { processRouter as processRouterImportApi, processImportApi } from './transformV2';
 import {
   createCustomerProperties,
   subscribeUserToList,
@@ -297,8 +298,8 @@ const groupRequestHandler = (message, category, destination) => {
 // Main event processor using specific handler funcs
 const processEvent = async (event, reqMetadata) => {
   const { message, destination, metadata } = event;
-  if (destination.Config?.apiVersion === 'v2') {
-    return processV2(event);
+  if (usesProfileImportApi(destination.Config?.apiVersion)) {
+    return processImportApi(event);
   }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -352,8 +353,8 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
 const processRouter = async (inputs, reqMetadata) => {
   const { destination } = inputs[0];
   // This is used to switch to latest API version
-  if (destination.Config?.apiVersion === 'v2') {
-    return processRouterV2(inputs, reqMetadata);
+  if (usesProfileImportApi(destination.Config?.apiVersion)) {
+    return processRouterImportApi(inputs, reqMetadata);
   }
   let batchResponseList: unknown[] = [];
   const batchErrorRespList: unknown[] = [];

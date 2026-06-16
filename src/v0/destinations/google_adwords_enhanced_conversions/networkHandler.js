@@ -177,4 +177,4 @@ class networkHandler {
   }
 }
 
-module.exports = { networkHandler };
+module.exports = { networkHandler, gaecProxyRequest, gaecProcessAxiosResponse };

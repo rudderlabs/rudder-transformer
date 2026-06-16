@@ -1,4 +1,4 @@
-import { authHeader1 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -215,7 +215,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     name: 'google_adwords_enhanced_conversions',
     description:
       '[Proxy v1 API] :: Test for a valid request with a successful 200 response from the destination',
-    successCriteria: 'Should return 200 with destination response',
+    successCriteria: 'Should return 200 with per-event success',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -240,22 +240,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error: JSON.stringify([
-                  {
-                    results: [
-                      {
-                        adjustmentType: 'ENHANCEMENT',
-                        conversionAction: 'customers/7693729833/conversionActions/874224905',
-                        adjustmentDateTime: '2021-01-01 12:32:45-08:00',
-                        gclidDateTimePair: {
-                          gclid: '1234',
-                          conversionDateTime: '2021-01-01 12:32:45-08:00',
-                        },
-                        orderId: '12345',
-                      },
-                    ],
-                  },
-                ]),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -271,7 +256,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     name: 'google_adwords_enhanced_conversions',
     description:
       '[Proxy v1 API] :: Test for a partial failure request with a 200 response from the destination',
-    successCriteria: 'Should return 400 with partial failure error',
+    successCriteria: 'Should return per-event error for the failed event',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -301,29 +286,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            message: JSON.stringify({
-              code: 3,
-              message:
-                'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
-              details: [
-                {
-                  '@type': 'type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure',
-                  errors: [
-                    {
-                      errorCode: { conversionAdjustmentUploadError: 'CONVERSION_ALREADY_ENHANCED' },
-                      message:
-                        'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.',
-                      location: {
-                        fieldPathElements: [{ fieldName: 'conversion_adjustments', index: 0 }],
-                      },
-                    },
-                  ],
-                },
-              ],
-            }),
-            response: [
-              {
-                error: JSON.stringify({
+            message:
+              '[Google Ads Enhanced Conversions]:: Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
+            destinationResponse: {
+              response: {
+                partialFailureError: {
                   code: 3,
                   message:
                     'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
@@ -345,7 +312,14 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                       ],
                     },
                   ],
-                }),
+                },
+              },
+              status: 200,
+            },
+            response: [
+              {
+                error:
+                  'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
                 metadata: generateMetadata(1),
                 statusCode: 400,
               },
@@ -480,6 +454,157 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             ],
             statTags: expectedStatTags,
             status: 401,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'gaec_v1_scenario_5',
+    name: 'google_adwords_enhanced_conversions',
+    description:
+      '[Proxy v1 API] :: Test for a multi-event batch with partial failure — first event succeeds, second fails',
+    successCriteria:
+      'Should return per-event statuses: 200 for the first event, 400 for the second',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            headers,
+            params: {
+              event: 'Product Added',
+              customerId: '1234567777',
+              destination: 'google_adwords_enhanced_conversions',
+              accessToken: secret1,
+              subAccount: false,
+            },
+            JSON: {
+              partialFailure: true,
+              conversionAdjustments: [
+                {
+                  gclidDateTimePair: {
+                    gclid: 'gclid1234',
+                    conversionDateTime: '2022-01-01 12:32:45-08:00',
+                  },
+                  restatementValue: { adjustedValue: 10, currency: 'INR' },
+                  order_id: '10000',
+                  adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                  userIdentifiers: [
+                    {
+                      addressInfo: {
+                        hashedFirstName:
+                          'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
+                        hashedLastName:
+                          '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
+                        state: 'UK',
+                        city: 'London',
+                        hashedStreetAddress:
+                          '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                      },
+                    },
+                  ],
+                  adjustmentType: 'ENHANCEMENT',
+                },
+                {
+                  gclidDateTimePair: {
+                    gclid: 'gclid5678',
+                    conversionDateTime: '2022-01-01 12:32:45-08:00',
+                  },
+                  restatementValue: { adjustedValue: 20, currency: 'INR' },
+                  order_id: '10001',
+                  adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                  userIdentifiers: [
+                    {
+                      addressInfo: {
+                        hashedFirstName:
+                          'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
+                        hashedLastName:
+                          '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
+                        state: 'UK',
+                        city: 'London',
+                        hashedStreetAddress:
+                          '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                      },
+                    },
+                  ],
+                  adjustmentType: 'ENHANCEMENT',
+                },
+              ],
+            },
+            endpoint: '',
+          },
+          [generateMetadata(1), generateMetadata(2)],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              '[Google Ads Enhanced Conversions]:: Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[1]',
+            destinationResponse: {
+              response: {
+                partialFailureError: {
+                  code: 3,
+                  message:
+                    'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[1]',
+                  details: [
+                    {
+                      '@type':
+                        'type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure',
+                      errors: [
+                        {
+                          errorCode: {
+                            conversionAdjustmentUploadError: 'CONVERSION_ALREADY_ENHANCED',
+                          },
+                          message:
+                            'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.',
+                          location: {
+                            fieldPathElements: [{ fieldName: 'conversion_adjustments', index: 1 }],
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+                results: [
+                  {
+                    adjustmentType: 'ENHANCEMENT',
+                    conversionAction: 'customers/1234567777/conversionActions/123434350',
+                    adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                    orderId: '10000',
+                  },
+                  {},
+                ],
+              },
+              status: 200,
+            },
+            response: [
+              {
+                error: 'success',
+                metadata: generateMetadata(1),
+                statusCode: 200,
+              },
+              {
+                error:
+                  'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[1]',
+                metadata: generateMetadata(2),
+                statusCode: 400,
+              },
+            ],
+            statTags: expectedStatTags,
+            status: 400,
           },
         },
       },

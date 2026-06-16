@@ -279,11 +279,11 @@ export const testScenariosForV1API = [
         body: {
           output: {
             message:
-              '[Google Ads Offline Conversions]:: Request contains an invalid argument. during google_ads_offline_store_conversions Add Conversion',
+              '[Google Ads Offline Conversions]:: {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"create"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}],"requestId":"68697987"}]}} during google_ads_offline_store_conversions Add Conversion',
             response: [
               {
                 error:
-                  '[Google Ads Offline Conversions]:: Request contains an invalid argument. during google_ads_offline_store_conversions Add Conversion',
+                  '[Google Ads Offline Conversions]:: {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"offlineUserDataJobError":"INVALID_SHA256_FORMAT"},"message":"The SHA256 encoded value is malformed.","location":{"fieldPathElements":[{"fieldName":"operations","index":0},{"fieldName":"create"},{"fieldName":"user_identifiers","index":0},{"fieldName":"hashed_email"}]}}],"requestId":"68697987"}]}} during google_ads_offline_store_conversions Add Conversion',
                 metadata: generateMetadata(1),
                 statusCode: 400,
               },

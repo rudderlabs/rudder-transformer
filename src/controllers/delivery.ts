@@ -16,35 +16,16 @@ import {
 } from '../types';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
-import logger from '../logger';
-import { isFeatureEnabled } from '../util/featureFlags';
 
 const NON_DETERMINABLE = 'Non-determinable';
 
-// Env var gating the request/response payload logs below. These emit full request/response
-// bodies which may contain sensitive customer data/PII, so they are enabled per-workspace
-// (value: "ALL" or a comma-separated list of workspace IDs) and logged at `warn` so they
-// surface at the default LOG_LEVEL when explicitly turned on for debugging.
-const DELIVERY_REQUEST_RESPONSE_LOG_FLAG = 'DELIVERY_REQUEST_RESPONSE_LOG_ENABLED';
-
 export class DeliveryController {
-  private static logDeliveryPayload(workspaceId: string, message: string, payload: unknown) {
-    if (isFeatureEnabled(DELIVERY_REQUEST_RESPONSE_LOG_FLAG, workspaceId)) {
-      logger.warn(message, payload);
-    }
-  }
-
   public static async deliverToDestination(ctx: Context) {
     let deliveryResponse: DeliveryV0Response;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const deliveryRequest = ctx.request.body as ProxyV0Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
-    DeliveryController.logDeliveryPayload(
-      deliveryRequest.metadata.workspaceId,
-      'Native(Delivery):: Request to transformer for delivery::',
-      ctx.request.body,
-    );
     try {
       deliveryResponse = (await integrationService.deliver(
         deliveryRequest,
@@ -69,11 +50,6 @@ export class DeliveryController {
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
-    DeliveryController.logDeliveryPayload(
-      deliveryRequest.metadata.workspaceId,
-      'Native(Delivery):: Response from transformer after delivery::',
-      ctx.body,
-    );
     return ctx;
   }
 
@@ -83,11 +59,6 @@ export class DeliveryController {
     const deliveryRequest = ctx.request.body as ProxyV1Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
-    DeliveryController.logDeliveryPayload(
-      deliveryRequest.metadata[0].workspaceId,
-      'Native(Delivery):: Request to transformer for delivery::',
-      ctx.request.body,
-    );
     try {
       deliveryResponse = (await integrationService.deliver(
         deliveryRequest,
@@ -116,11 +87,6 @@ export class DeliveryController {
       ControllerUtility.deliveryPostProcess(ctx);
     }
 
-    DeliveryController.logDeliveryPayload(
-      deliveryRequest.metadata[0].workspaceId,
-      'Native(Delivery):: Response from transformer::',
-      ctx.body,
-    );
     return ctx;
   }
 

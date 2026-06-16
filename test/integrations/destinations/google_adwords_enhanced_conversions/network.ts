@@ -528,7 +528,7 @@ const v19NetworkCallsData = [
   // Multi-event batch: searchStream to resolve conversionActionId for customerId 1234567777
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v22/customers/1234567777/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/v23/customers/1234567777/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -559,7 +559,7 @@ const v19NetworkCallsData = [
   // Multi-event batch: uploadConversionAdjustments with 2 events → partial failure (event 0 ok, event 1 failed)
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v22/customers/1234567777:uploadConversionAdjustments`,
+      url: `https://googleads.googleapis.com/v23/customers/1234567777:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {

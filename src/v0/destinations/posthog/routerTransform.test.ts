@@ -72,6 +72,7 @@ describe('Integration', () => {
 
       expect(result).toEqual({
         endpoint: 'https://app.posthog.com/batch',
+        endpointPath: '/batch',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: expect.objectContaining({ type: expect.any(String) }),
@@ -120,7 +121,13 @@ describe('Integration', () => {
       ];
 
       const [result] = await strategy.batch(
-        testBodies.map((body, i) => ({ body, endpoint: '', method: 'POST', jobId: i + 1 })),
+        testBodies.map((body, i) => ({
+          body,
+          endpoint: '',
+          endpointPath: '/batch',
+          method: 'POST',
+          jobId: i + 1,
+        })),
       );
 
       expect(result.body).toEqual({

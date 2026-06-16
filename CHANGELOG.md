@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.138.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.137.0...v1.138.0) (2026-06-16)
+
+
+### Features
+
+* **gaec:** batch conversion adjustments with per-event partial failure handling ([#5288](https://github.com/rudderlabs/rudder-transformer/issues/5288)) ([496c5fe](https://github.com/rudderlabs/rudder-transformer/commit/496c5fec1a6509684141d376c58a3b4d07e5f8bc))
+
+
+### Bug Fixes
+
+* **gaoc:** google ads delivery errors show generic messages, hiding the actual error detail ([#5294](https://github.com/rudderlabs/rudder-transformer/issues/5294)) ([a288791](https://github.com/rudderlabs/rudder-transformer/commit/a288791843f0227d1e17ef7eda0ff6d1aedeb00f))
+
 ## [1.137.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.136.0...v1.137.0) (2026-06-10)
 
 

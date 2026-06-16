@@ -90,6 +90,9 @@ class CustomAudienceIntegration extends BatchDestination<
     return {
       body: record,
       endpoint: this.endpointByAction[message.action]!,
+      // Use the action name rather than the full URL to keep metric cardinality low —
+      // each destination instance has a unique endpoint, but actions are a fixed set.
+      endpointPath: `/${resolvedAction}`,
       method: actionConfig.method,
       headers: this.headers,
       // Force the framework's composite-key grouping to keep different actions

@@ -52,6 +52,7 @@ class SimpleIntegration extends BatchDestination<TestBody> {
     return {
       body: { value: message.data ?? '' },
       endpoint: 'https://api.test.com/events',
+      endpointPath: '/events',
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     };
@@ -76,6 +77,7 @@ class MultiEndpointIntegration extends BatchDestination<TestBody> {
       body: { value: message.data ?? '' },
       endpoint:
         message.type === 'track' ? 'https://api.test.com/track' : 'https://api.test.com/identify',
+      endpointPath: message.type === 'track' ? '/track' : '/identify',
       method: 'POST',
     };
   }
@@ -101,6 +103,7 @@ class PartialFailIntegration extends BatchDestination<TestBody> {
     return {
       body: { value: 'ok' },
       endpoint: 'https://api.test.com/events',
+      endpointPath: '/events',
       method: 'POST',
     };
   }
@@ -120,6 +123,7 @@ class CustomBatchIntegration extends BatchDestination<TestBody> {
     return {
       body: { value: message.data ?? '' },
       endpoint: 'https://api.test.com/merge',
+      endpointPath: '/merge',
       method: 'POST',
     };
   }
@@ -150,6 +154,7 @@ class TypedErrorIntegration extends BatchDestination<TestBody> {
     return {
       body: { value: 'ok' },
       endpoint: 'https://api.test.com/events',
+      endpointPath: '/events',
       method: 'POST',
     };
   }
@@ -453,6 +458,7 @@ describe('groupPayloadsByCompositeKey', () => {
       {
         body: { value: 'a' },
         endpoint: 'https://a.com',
+        endpointPath: '/a',
         method: 'POST',
         headers: { h: '1' },
         jobId: 1,
@@ -460,6 +466,7 @@ describe('groupPayloadsByCompositeKey', () => {
       {
         body: { value: 'b' },
         endpoint: 'https://a.com',
+        endpointPath: '/a',
         method: 'POST',
         headers: { h: '1' },
         jobId: 2,
@@ -467,6 +474,7 @@ describe('groupPayloadsByCompositeKey', () => {
       {
         body: { value: 'c' },
         endpoint: 'https://b.com',
+        endpointPath: '/b',
         method: 'POST',
         headers: { h: '1' },
         jobId: 3,
@@ -483,6 +491,7 @@ describe('groupPayloadsByCompositeKey', () => {
       {
         body: { value: 'a' },
         endpoint: 'https://a.com',
+        endpointPath: '/a',
         method: 'POST',
         headers: { h: '1' },
         jobId: 1,
@@ -490,6 +499,7 @@ describe('groupPayloadsByCompositeKey', () => {
       {
         body: { value: 'b' },
         endpoint: 'https://a.com',
+        endpointPath: '/a',
         method: 'POST',
         headers: { h: '2' },
         jobId: 2,

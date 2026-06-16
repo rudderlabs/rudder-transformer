@@ -5,6 +5,7 @@
 export type TransformedEvent<TBody extends Record<string, unknown> = Record<string, unknown>> = {
   body: TBody;
   endpoint: string;
+  endpointPath: string;
   method: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;

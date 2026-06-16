@@ -168,8 +168,20 @@ describe('strategy classes', () => {
       { body: { merged: true }, jobIds: new Set(payloads.map((p) => p.jobId)) },
     ]);
     const payloads = [
-      { body: { value: 'a' }, endpoint: '/test', endpointPath: '/test', method: 'POST' as const, jobId: 1 },
-      { body: { value: 'b' }, endpoint: '/test', endpointPath: '/test', method: 'POST' as const, jobId: 2 },
+      {
+        body: { value: 'a' },
+        endpoint: '/test',
+        endpointPath: '/test',
+        method: 'POST' as const,
+        jobId: 1,
+      },
+      {
+        body: { value: 'b' },
+        endpoint: '/test',
+        endpointPath: '/test',
+        method: 'POST' as const,
+        jobId: 2,
+      },
     ];
     const result = await strategy.batch(payloads);
     expect(result).toHaveLength(1);

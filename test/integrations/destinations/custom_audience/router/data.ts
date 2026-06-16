@@ -96,6 +96,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: insertEndpoint,
+                endpointPath: '/insert',
                 headers,
                 params: {},
                 body: {
@@ -120,6 +121,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: insertEndpoint,
+                endpointPath: '/update',
                 headers,
                 params: {},
                 body: {
@@ -144,6 +146,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'DELETE',
                 endpoint: deleteEndpoint,
+                endpointPath: '/delete',
                 headers,
                 params: {},
                 body: {
@@ -228,6 +231,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: insertEndpoint,
+                endpointPath: '/insert',
                 headers,
                 params: {},
                 body: {
@@ -317,6 +321,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: insertEndpoint,
+                endpointPath: '/insert',
                 headers,
                 params: {},
                 body: {
@@ -394,6 +399,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: insertEndpoint,
+                endpointPath: '/insert',
                 headers,
                 params: {},
                 body: {
@@ -469,6 +475,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: insertEndpoint,
+                endpointPath: '/insert',
                 headers,
                 params: {},
                 body: {
@@ -542,6 +549,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: insertEndpoint,
+                endpointPath: '/insert',
                 headers,
                 params: {},
                 body: {
@@ -606,6 +614,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: insertEndpoint,
+                endpointPath: '/insert',
                 headers,
                 params: {},
                 body: {
@@ -773,6 +782,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: insertEndpoint,
+                endpointPath: '/insert',
                 headers,
                 params: {},
                 body: {

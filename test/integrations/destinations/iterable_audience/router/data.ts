@@ -124,6 +124,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: subscribeEndpoint,
+                endpointPath: '/lists/subscribe',
                 headers,
                 params: {},
                 body: {
@@ -159,6 +160,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: unsubscribeEndpoint,
+                endpointPath: '/lists/unsubscribe',
                 headers,
                 params: {},
                 body: {
@@ -247,6 +249,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: subscribeEndpoint,
+                endpointPath: '/lists/subscribe',
                 headers,
                 params: {},
                 body: {
@@ -271,6 +274,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: unsubscribeEndpoint,
+                endpointPath: '/lists/unsubscribe',
                 headers,
                 params: {},
                 body: {
@@ -353,6 +357,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: subscribeEndpoint,
+                endpointPath: '/lists/subscribe',
                 headers,
                 params: {},
                 body: {
@@ -432,6 +437,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: euSubscribeEndpoint,
+                endpointPath: '/lists/subscribe',
                 headers,
                 params: {},
                 body: {
@@ -456,6 +462,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: euUnsubscribeEndpoint,
+                endpointPath: '/lists/unsubscribe',
                 headers,
                 params: {},
                 body: {
@@ -546,6 +553,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: subscribeEndpoint,
+                endpointPath: '/lists/subscribe',
                 headers,
                 params: {},
                 body: {

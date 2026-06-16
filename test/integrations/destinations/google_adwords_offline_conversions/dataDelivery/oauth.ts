@@ -119,11 +119,11 @@ export const v1oauthScenarios = [
           output: {
             authErrorCategory: 'REFRESH_TOKEN',
             message:
-              '[Google Ads Offline Conversions]:: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during google_ads_offline_store_conversions Job Creation',
+              '[Google Ads Offline Conversions]:: {"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}} during google_ads_offline_store_conversions Job Creation',
             response: [
               {
                 error:
-                  '[Google Ads Offline Conversions]:: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during google_ads_offline_store_conversions Job Creation',
+                  '[Google Ads Offline Conversions]:: {"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}} during google_ads_offline_store_conversions Job Creation',
                 metadata: generateMetadata(1),
                 statusCode: 401,
               },
@@ -165,11 +165,11 @@ export const v1oauthScenarios = [
           output: {
             authErrorCategory: 'AUTH_STATUS_INACTIVE',
             message:
-              '[Google Ads Offline Conversions]:: Request had insufficient authentication scopes during google_ads_offline_store_conversions Job Creation',
+              '[Google Ads Offline Conversions]:: {"error":{"code":403,"message":"Request had insufficient authentication scopes","status":"PERMISSION_DENIED"}} during google_ads_offline_store_conversions Job Creation',
             response: [
               {
                 error:
-                  '[Google Ads Offline Conversions]:: Request had insufficient authentication scopes during google_ads_offline_store_conversions Job Creation',
+                  '[Google Ads Offline Conversions]:: {"error":{"code":403,"message":"Request had insufficient authentication scopes","status":"PERMISSION_DENIED"}} during google_ads_offline_store_conversions Job Creation',
                 metadata: generateMetadata(1),
                 statusCode: 403,
               },
@@ -216,11 +216,11 @@ export const v1oauthScenarios = [
           output: {
             authErrorCategory: 'AUTH_STATUS_INACTIVE',
             message:
-              '[Google Ads Offline Conversions]:: Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during google_ads_offline_store_conversions Job Creation',
+              '[Google Ads Offline Conversions]:: [{"error":{"code":401,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"authenticationError":"TWO_STEP_VERIFICATION_NOT_ENROLLED"},"message":"An account administrator changed this account\'s authentication settings. To access this Google Ads account, enable 2-Step Verification in your Google account at https://www.google.com/landing/2step."}],"requestId":"wy4ZYbsjWcgh6uC2Ruc_Zg"}],"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during google_ads_offline_store_conversions Job Creation',
             response: [
               {
                 error:
-                  '[Google Ads Offline Conversions]:: Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during google_ads_offline_store_conversions Job Creation',
+                  '[Google Ads Offline Conversions]:: [{"error":{"code":401,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"authenticationError":"TWO_STEP_VERIFICATION_NOT_ENROLLED"},"message":"An account administrator changed this account\'s authentication settings. To access this Google Ads account, enable 2-Step Verification in your Google account at https://www.google.com/landing/2step."}],"requestId":"wy4ZYbsjWcgh6uC2Ruc_Zg"}],"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during google_ads_offline_store_conversions Job Creation',
                 metadata: {
                   attemptNum: 1,
                   destinationId: 'default-destinationId',

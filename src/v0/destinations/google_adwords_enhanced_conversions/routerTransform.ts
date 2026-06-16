@@ -23,6 +23,7 @@ class GoogleAdwordsEnhancedConversionsIntegration extends BatchDestination<Conve
     return {
       body: result.body.JSON.conversionAdjustments[0],
       endpoint: result.endpoint, // '' — delivery is handled by the networkHandler/proxy
+      endpointPath: '/uploadConversionAdjustments',
       method: result.method,
       headers: result.headers,
       // params carries event (conversion name), customerId, loginCustomerId, subAccount and

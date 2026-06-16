@@ -74,6 +74,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://app.posthog.com/batch',
+                endpointPath: '/batch',
                 headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -223,6 +224,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://app.posthog.com/batch',
+                endpointPath: '/batch',
                 headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -453,6 +455,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://app.posthog.com/batch',
+                endpointPath: '/batch',
                 headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -604,6 +607,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://app.posthog.com/batch',
+                endpointPath: '/batch',
                 headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {

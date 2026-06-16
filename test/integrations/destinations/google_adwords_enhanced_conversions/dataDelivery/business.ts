@@ -432,11 +432,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             authErrorCategory: 'REFRESH_TOKEN',
             message:
-              'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project." during Google_adwords_enhanced_conversions response transformation',
+              'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during Google_adwords_enhanced_conversions response transformation',
             response: [
               {
                 error:
-                  'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project." during Google_adwords_enhanced_conversions response transformation',
+                  'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during Google_adwords_enhanced_conversions response transformation',
                 metadata: {
                   attemptNum: 1,
                   destinationId: 'default-destinationId',

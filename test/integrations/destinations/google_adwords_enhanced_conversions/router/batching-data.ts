@@ -129,6 +129,7 @@ export const newData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: '',
+                endpointPath: '/uploadConversionAdjustments',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
@@ -204,6 +205,7 @@ export const newData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: '',
+                endpointPath: '/uploadConversionAdjustments',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
@@ -238,6 +240,7 @@ export const newData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: '',
+                endpointPath: '/uploadConversionAdjustments',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',

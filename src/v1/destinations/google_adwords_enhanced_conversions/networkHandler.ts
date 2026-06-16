@@ -102,7 +102,7 @@ const gaecResponseHandler = (responseParams: ResponseHandlerParams): ResponsePro
   const { response } = destinationResponse;
   const errMessage = response?.error?.message || '';
   throw new NetworkError(
-    `${errMessage}" during Google_adwords_enhanced_conversions response transformation`,
+    `${errMessage} during Google_adwords_enhanced_conversions response transformation`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

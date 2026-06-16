@@ -27,6 +27,7 @@ class PostHogIntegration extends BatchDestination<PostHogPayload> {
     return {
       body: eventBody,
       endpoint: result.endpoint,
+      endpointPath: '/batch',
       method: result.method,
       headers: result.headers,
     };

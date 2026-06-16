@@ -125,7 +125,13 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       ];
 
       const [result] = await strategy.batch(
-        adjustments.map((body, i) => ({ body, endpoint: '', method: 'POST', jobId: i + 1 })),
+        adjustments.map((body, i) => ({
+          body,
+          endpoint: '',
+          endpointPath: '/uploadConversionAdjustments',
+          method: 'POST',
+          jobId: i + 1,
+        })),
       );
 
       expect(result.body).toEqual({

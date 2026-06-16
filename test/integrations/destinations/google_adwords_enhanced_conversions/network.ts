@@ -525,6 +525,150 @@ const v19NetworkCallsData = [
       },
     },
   },
+  // Multi-event batch: searchStream to resolve conversionActionId for customerId 1234567777
+  {
+    httpReq: {
+      url: `https://googleads.googleapis.com/v23/customers/1234567777/googleAds:searchStream`,
+      data: {
+        query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
+      },
+      params: { destination: 'google_adwords_enhanced_conversion' },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: [
+        {
+          results: [
+            {
+              conversionAction: {
+                id: 123434350,
+                resourceName: 'customers/1234567777/conversionActions/123434350',
+              },
+            },
+          ],
+        },
+      ],
+      status: 200,
+    },
+  },
+  // Multi-event batch: uploadConversionAdjustments with 2 events → partial failure (event 0 ok, event 1 failed)
+  {
+    httpReq: {
+      url: `https://googleads.googleapis.com/v23/customers/1234567777:uploadConversionAdjustments`,
+      data: {
+        conversionAdjustments: [
+          {
+            adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+            adjustmentType: 'ENHANCEMENT',
+            conversionAction: 'customers/1234567777/conversionActions/123434350',
+            gclidDateTimePair: {
+              conversionDateTime: '2022-01-01 12:32:45-08:00',
+              gclid: 'gclid1234',
+            },
+            order_id: '10000',
+            restatementValue: { adjustedValue: 10, currency: 'INR' },
+            userAgent:
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+            userIdentifiers: [
+              {
+                addressInfo: {
+                  hashedFirstName:
+                    'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
+                  hashedLastName:
+                    '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
+                  state: 'UK',
+                  city: 'London',
+                  hashedStreetAddress:
+                    '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                },
+              },
+            ],
+          },
+          {
+            adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+            adjustmentType: 'ENHANCEMENT',
+            conversionAction: 'customers/1234567777/conversionActions/123434350',
+            gclidDateTimePair: {
+              conversionDateTime: '2022-01-01 12:32:45-08:00',
+              gclid: 'gclid5678',
+            },
+            order_id: '10001',
+            restatementValue: { adjustedValue: 20, currency: 'INR' },
+            userAgent:
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+            userIdentifiers: [
+              {
+                addressInfo: {
+                  hashedFirstName:
+                    'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
+                  hashedLastName:
+                    '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
+                  state: 'UK',
+                  city: 'London',
+                  hashedStreetAddress:
+                    '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                },
+              },
+            ],
+          },
+        ],
+        partialFailure: true,
+      },
+      params: { destination: 'google_adwords_enhanced_conversion' },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        partialFailureError: {
+          code: 3,
+          message:
+            'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[1]',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure',
+              errors: [
+                {
+                  errorCode: {
+                    conversionAdjustmentUploadError: 'CONVERSION_ALREADY_ENHANCED',
+                  },
+                  message:
+                    'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.',
+                  location: {
+                    fieldPathElements: [
+                      {
+                        fieldName: 'conversion_adjustments',
+                        index: 1,
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        results: [
+          {
+            adjustmentType: 'ENHANCEMENT',
+            conversionAction: 'customers/1234567777/conversionActions/123434350',
+            adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+            orderId: '10000',
+          },
+          {},
+        ],
+      },
+    },
+  },
 ];
 
 export const networkCallsData = [

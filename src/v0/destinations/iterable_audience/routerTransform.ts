@@ -103,7 +103,7 @@ class IterableAudienceIntegration extends BatchDestination<
 
     const subscriber = selectIdentifierForRow(processed, this.accountConfig.projectType);
 
-    const endpoint =
+    const { endpoint, endpointPath } =
       action === 'subscribe'
         ? getSubscribeEndpoint(this.accountConfig.dataCenter)
         : getUnsubscribeEndpoint(this.accountConfig.dataCenter);
@@ -111,6 +111,7 @@ class IterableAudienceIntegration extends BatchDestination<
     return {
       body: { action, subscriber },
       endpoint,
+      endpointPath,
       method: 'POST',
       headers: this.headers,
     };

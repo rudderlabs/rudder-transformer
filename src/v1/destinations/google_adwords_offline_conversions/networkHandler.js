@@ -36,6 +36,18 @@ const conversionCustomVariableCache = new Cache(
   CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
 );
 
+/**
+ * Extracts the full error detail from a Google Ads API error response.
+ */
+const getGoogleAdsError = (response) => {
+  if (typeof response === 'string') return response;
+  try {
+    return JSON.stringify(response);
+  } catch {
+    return String(response);
+  }
+};
+
 const createJob = async ({ endpoint, headers, payload, metadata }) => {
   const endPoint = `${endpoint}:create`;
   let createJobResponse = await httpPOST(
@@ -55,7 +67,7 @@ const createJob = async ({ endpoint, headers, payload, metadata }) => {
   const { response, status } = createJobResponse;
   if (!isHttpStatusSuccess(status)) {
     throw new AbortedError(
-      `[Google Ads Offline Conversions]:: ${response?.error?.message || response?.[0]?.error?.message} during google_ads_offline_store_conversions Job Creation`,
+      `[Google Ads Offline Conversions]:: ${getGoogleAdsError(response)} during google_ads_offline_store_conversions Job Creation`,
       status,
       response,
       getAuthErrCategory(createJobResponse),
@@ -83,7 +95,7 @@ const addConversionToJob = async ({ endpoint, headers, jobId, payload, metadata 
   const { response, status } = addConversionToJobResponse;
   if (!isHttpStatusSuccess(status)) {
     throw new AbortedError(
-      `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
+      `[Google Ads Offline Conversions]:: ${getGoogleAdsError(response)} during google_ads_offline_store_conversions Add Conversion`,
       status,
       response,
       getAuthErrCategory(addConversionToJobResponse),
@@ -141,7 +153,7 @@ const getConversionCustomVariable = async ({ headers, params, metadata }) => {
     const { response, status } = searchStreamResponse;
     if (!isHttpStatusSuccess(status)) {
       throw new NetworkError(
-        `[Google Ads Offline Conversions]:: ${response?.[0]?.error?.message} during google_ads_offline_conversions response transformation`,
+        `[Google Ads Offline Conversions]:: ${getGoogleAdsError(response)} during google_ads_offline_conversions response transformation`,
         status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -367,7 +379,7 @@ const responseHandler = (responseParams) => {
   // return status, original destination response, message
   const { response } = destinationResponse;
   throw new AbortedError(
-    `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_conversions response transformation`,
+    `[Google Ads Offline Conversions]:: ${getGoogleAdsError(response)} during google_ads_offline_conversions response transformation`,
     status,
     response,
     getAuthErrCategory(destinationResponse),

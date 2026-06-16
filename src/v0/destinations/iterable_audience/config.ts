@@ -27,11 +27,19 @@ export const UNSUBSCRIBE_CATEGORY = {
   endpoint: 'lists/unsubscribe',
 } as const;
 
-export const getSubscribeEndpoint = (dataCenter: DataCenter): string =>
-  constructEndpoint(DATA_CENTER_TO_BASE_KEY[dataCenter], SUBSCRIBE_CATEGORY);
+export const getSubscribeEndpoint = (
+  dataCenter: DataCenter,
+): { endpoint: string; endpointPath: string } => ({
+  endpoint: constructEndpoint(DATA_CENTER_TO_BASE_KEY[dataCenter], SUBSCRIBE_CATEGORY),
+  endpointPath: `/${SUBSCRIBE_CATEGORY.endpoint}`,
+});
 
-export const getUnsubscribeEndpoint = (dataCenter: DataCenter): string =>
-  constructEndpoint(DATA_CENTER_TO_BASE_KEY[dataCenter], UNSUBSCRIBE_CATEGORY);
+export const getUnsubscribeEndpoint = (
+  dataCenter: DataCenter,
+): { endpoint: string; endpointPath: string } => ({
+  endpoint: constructEndpoint(DATA_CENTER_TO_BASE_KEY[dataCenter], UNSUBSCRIBE_CATEGORY),
+  endpointPath: `/${UNSUBSCRIBE_CATEGORY.endpoint}`,
+});
 
 // Iterable's documented per-request maximum for list subscribe/unsubscribe.
 // See doc/loom/knowledge/concerns.md — unverified against the live API.

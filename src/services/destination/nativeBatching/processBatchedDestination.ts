@@ -100,6 +100,8 @@ type RequestGroup<TBody extends Record<string, unknown>> = {
   headers: Record<string, unknown> | undefined;
   params: Record<string, unknown> | undefined;
   payloads: TransformResult<TBody>['successPayloads'];
+  // Observability-only — not part of the grouping key
+  endpointPath: string;
 };
 
 export function groupPayloadsByCompositeKey<
@@ -120,6 +122,7 @@ export function groupPayloadsByCompositeKey<
     if (!group) {
       group = {
         endpoint: payload.endpoint,
+        endpointPath: payload.endpointPath,
         method: payload.method,
         headers: payload.headers,
         params: payload.params,
@@ -140,6 +143,7 @@ export function groupPayloadsByCompositeKey<
 function mapSuccessPayloadToServerFormat(
   batchResult: { body: Record<string, unknown>; jobIds: Set<number> },
   endpoint: string,
+  endpointPath: string,
   method: string,
   headers: Record<string, unknown> | undefined,
   params: Record<string, unknown> | undefined,
@@ -153,6 +157,7 @@ function mapSuccessPayloadToServerFormat(
       type: 'REST',
       method,
       endpoint,
+      endpointPath,
       headers: headers ?? {},
       params: params ?? {},
       body: {
@@ -292,6 +297,7 @@ export async function processBatchedDestination<
         mapSuccessPayloadToServerFormat(
           batchResult,
           group.endpoint,
+          group.endpointPath,
           group.method,
           group.headers,
           group.params,

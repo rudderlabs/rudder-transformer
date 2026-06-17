@@ -1,11 +1,11 @@
-const {
+import {
   encodePathParameter,
   isdeviceRelatedEventName,
   identifyResponseBuilder,
   aliasResponseBuilder,
   groupResponseBuilder,
   defaultResponseBuilder,
-} = require('./util');
+} from './util';
 
 const getTestMessage = () => {
   let message = {
@@ -125,7 +125,7 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
     let expectedOutput = 'userId or email is not present';
     try {
       identifyResponseBuilder(null, getIdentifyTestMessage());
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toEqual(expectedOutput);
     }
   });
@@ -133,7 +133,7 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
     let expectedOutput = 'userId or email is not present';
     try {
       identifyResponseBuilder('', getIdentifyTestMessage());
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toEqual(expectedOutput);
     }
   });
@@ -141,7 +141,7 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
     let expectedOutput = 'userId or email is not present';
     try {
       identifyResponseBuilder(null, getIdentifyTestMessage());
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toEqual(expectedOutput);
     }
   });
@@ -219,7 +219,7 @@ describe('Unit test cases for customerio groupResponseBuilder', () => {
       },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
-    expect(groupResponseBuilder(getGroupTestMessage(), 'user1')).toEqual(expectedOutput);
+    expect(groupResponseBuilder(getGroupTestMessage())).toEqual(expectedOutput);
   });
 });
 
@@ -332,7 +332,7 @@ describe('Unit test cases for customerio defaultResponseBuilder with userId cont
       );
 
       // Check that the userId is properly encoded in the endpoint URL
-      expect(result.endpointDetails.endpoint).toEqual(testCase.expectedEndpoint);
+      expect(result.endpointDetails!.endpoint).toEqual(testCase.expectedEndpoint);
 
       // Verify other parts of the response
       if (testCase.expectedPayloadProps.data) {

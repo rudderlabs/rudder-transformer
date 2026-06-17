@@ -1,11 +1,11 @@
-const {
+import {
   encodePathParameter,
   isdeviceRelatedEventName,
   identifyResponseBuilder,
   aliasResponseBuilder,
   groupResponseBuilder,
   defaultResponseBuilder,
-} = require('./util');
+} from './util';
 
 const getTestMessage = () => {
   let message = {
@@ -69,7 +69,6 @@ describe('Unit test cases for customerio isdeviceRelatedEventName', () => {
     const destination = {
       Config: {
         apiKey: 'ef32c3f60fb98f39ef35',
-        datacenterEU: true,
         deviceTokenEventName: 'device_token_registered',
         siteID: 'c0efdbd20b9fbe24a7e2',
       },
@@ -80,7 +79,6 @@ describe('Unit test cases for customerio isdeviceRelatedEventName', () => {
     const destination = {
       Config: {
         apiKey: 'ef32c3f60fb98f39ef35',
-        datacenterEU: true,
         deviceTokenEventName: 'test',
         siteID: 'c0efdbd20b9fbe24a7e2',
       },
@@ -92,7 +90,6 @@ describe('Unit test cases for customerio isdeviceRelatedEventName', () => {
     const destination = {
       Config: {
         apiKey: 'ef32c3f60fb98f39ef35',
-        datacenterEU: true,
         deviceTokenEventName: 'test',
         siteID: 'c0efdbd20b9fbe24a7e2',
       },
@@ -125,7 +122,7 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
     let expectedOutput = 'userId or email is not present';
     try {
       identifyResponseBuilder(null, getIdentifyTestMessage());
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toEqual(expectedOutput);
     }
   });
@@ -133,7 +130,7 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
     let expectedOutput = 'userId or email is not present';
     try {
       identifyResponseBuilder('', getIdentifyTestMessage());
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toEqual(expectedOutput);
     }
   });
@@ -141,7 +138,7 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
     let expectedOutput = 'userId or email is not present';
     try {
       identifyResponseBuilder(null, getIdentifyTestMessage());
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toEqual(expectedOutput);
     }
   });
@@ -219,7 +216,7 @@ describe('Unit test cases for customerio groupResponseBuilder', () => {
       },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
-    expect(groupResponseBuilder(getGroupTestMessage(), 'user1')).toEqual(expectedOutput);
+    expect(groupResponseBuilder(getGroupTestMessage())).toEqual(expectedOutput);
   });
 });
 
@@ -332,7 +329,7 @@ describe('Unit test cases for customerio defaultResponseBuilder with userId cont
       );
 
       // Check that the userId is properly encoded in the endpoint URL
-      expect(result.endpointDetails.endpoint).toEqual(testCase.expectedEndpoint);
+      expect(result.endpointDetails!.endpoint).toEqual(testCase.expectedEndpoint);
 
       // Verify other parts of the response
       if (testCase.expectedPayloadProps.data) {

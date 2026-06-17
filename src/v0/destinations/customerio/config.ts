@@ -1,4 +1,4 @@
-const { getMappingConfig } = require('../../util');
+import { getMappingConfig } from '../../util';
 
 const BASE_ENDPOINT = 'https://track.customer.io/api';
 const BASE_ENDPOINT_V1 = `${BASE_ENDPOINT}/v1`;
@@ -50,7 +50,7 @@ const OBJECT_ACTIONS = ['identify', 'delete', 'add_relationships', 'delete_relat
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
-module.exports = {
+export {
   MAX_BATCH_SIZE,
   MAPPING_CONFIG,
   OBJECT_ACTIONS,

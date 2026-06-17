@@ -65,7 +65,6 @@ export const data = [
               metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
-                  datacenterEU: false,
                   siteID: secret1,
                   apiKey: secret2,
                 },
@@ -109,7 +108,6 @@ export const data = [
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
-                  datacenterEU: false,
                   siteID: secret1,
                   apiKey: secret2,
                 },
@@ -147,7 +145,6 @@ export const data = [
               metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
-                  datacenterEU: false,
                   siteID: secret1,
                   apiKey: secret2,
                 },
@@ -185,7 +182,6 @@ export const data = [
               metadata: { jobId: 4, userId: 'u1' },
               destination: {
                 Config: {
-                  datacenterEU: false,
                   siteID: secret1,
                   apiKey: secret2,
                 },
@@ -238,7 +234,6 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  datacenterEU: false,
                   siteID: secret1,
                   apiKey: secret2,
                 },
@@ -279,7 +274,6 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  datacenterEU: false,
                   siteID: secret1,
                   apiKey: secret2,
                 },
@@ -338,7 +332,6 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  datacenterEU: false,
                   siteID: secret1,
                   apiKey: secret2,
                 },

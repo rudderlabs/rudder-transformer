@@ -23,8 +23,7 @@ export const CustomerIODestinationConfigSchema = z
   .object({
     siteID: z.string().min(1, 'siteID is required'),
     apiKey: z.string().min(1, 'apiKey is required'),
-    datacenter: z.string().optional(),
-    datacenterEU: z.boolean().optional(),
+    datacenter: z.enum(['US', 'EU']).optional(),
     deviceTokenEventName: z.string().optional(),
   })
   .passthrough();

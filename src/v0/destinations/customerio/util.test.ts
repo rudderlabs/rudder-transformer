@@ -69,7 +69,6 @@ describe('Unit test cases for customerio isdeviceRelatedEventName', () => {
     const destination = {
       Config: {
         apiKey: 'ef32c3f60fb98f39ef35',
-        datacenterEU: true,
         deviceTokenEventName: 'device_token_registered',
         siteID: 'c0efdbd20b9fbe24a7e2',
       },
@@ -80,7 +79,6 @@ describe('Unit test cases for customerio isdeviceRelatedEventName', () => {
     const destination = {
       Config: {
         apiKey: 'ef32c3f60fb98f39ef35',
-        datacenterEU: true,
         deviceTokenEventName: 'test',
         siteID: 'c0efdbd20b9fbe24a7e2',
       },
@@ -92,7 +90,6 @@ describe('Unit test cases for customerio isdeviceRelatedEventName', () => {
     const destination = {
       Config: {
         apiKey: 'ef32c3f60fb98f39ef35',
-        datacenterEU: true,
         deviceTokenEventName: 'test',
         siteID: 'c0efdbd20b9fbe24a7e2',
       },

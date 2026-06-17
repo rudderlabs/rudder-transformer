@@ -4830,11 +4830,11 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter'],
                     web: ['useNativeSDK'],
                   },
                   excludeKeys: [],
-                  includeKeys: ['apiKey', 'siteID', 'datacenterEU'],
+                  includeKeys: ['apiKey', 'siteID', 'datacenter'],
                   saveDestinationResponse: true,
                   secretKeys: [],
                   supportedSourceTypes: [
@@ -4957,11 +4957,11 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter'],
                     web: ['useNativeSDK'],
                   },
                   excludeKeys: [],
-                  includeKeys: ['apiKey', 'siteID', 'datacenterEU'],
+                  includeKeys: ['apiKey', 'siteID', 'datacenter'],
                   saveDestinationResponse: true,
                   secretKeys: [],
                   supportedSourceTypes: [
@@ -5124,14 +5124,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -5301,14 +5301,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -5477,14 +5477,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -5653,14 +5653,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -5826,14 +5826,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -6002,14 +6002,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -6179,14 +6179,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -6356,14 +6356,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -6532,14 +6532,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -6705,14 +6705,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -6881,14 +6881,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -7023,14 +7023,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -7176,14 +7176,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -7332,14 +7332,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -7488,14 +7488,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -7644,14 +7644,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -7814,14 +7814,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],
@@ -7984,14 +7984,14 @@ export const data = [
                 DisplayName: 'Customer IO',
                 Config: {
                   destConfig: {
-                    defaultConfig: ['apiKey', 'siteID', 'datacenterEU', 'deviceTokenEventName'],
+                    defaultConfig: ['apiKey', 'siteID', 'datacenter', 'deviceTokenEventName'],
                     web: ['useNativeSDK', 'blackListedEvents', 'whiteListedEvents'],
                   },
                   excludeKeys: [],
                   includeKeys: [
                     'apiKey',
                     'siteID',
-                    'datacenterEU',
+                    'datacenter',
                     'blackListedEvents',
                     'whiteListedEvents',
                   ],

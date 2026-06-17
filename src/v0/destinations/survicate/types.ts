@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { Destination, RouterTransformationRequestData, Metadata } from '../../../types';
 import type { ENDPOINT_CONFIG } from './config';
 import {
   ERR_MISSING_MESSAGE_ID,
@@ -10,12 +9,17 @@ import {
   ERR_MISSING_GROUP_ID,
   ERR_MISSING_EVENT,
 } from './config';
+import { MetadataSchema } from '../../../types/rudderEvents';
 
 export type EndpointEntry = (typeof ENDPOINT_CONFIG)[keyof typeof ENDPOINT_CONFIG];
 
-export const SurvicateDestinationConfigSchema = z
+export const SurvicateDestinationSchema = z
   .object({
-    destinationKey: z.string().min(1, 'Destination Key is required'),
+    Config: z
+      .object({
+        destinationKey: z.string().min(1, 'Destination Key is required'),
+      })
+      .passthrough(),
   })
   .passthrough();
 
@@ -59,7 +63,7 @@ const normalizeRaw = (raw: unknown) => {
  * camelCase, then validates per-event-type required fields. All field
  * presence/anonymity checks live here so the transformer stays declarative.
  */
-export const SurvicateMessageSchema = z.preprocess(
+const SurvicateMessageSchema = z.preprocess(
   normalizeRaw,
   z.discriminatedUnion('type', [
     z
@@ -88,22 +92,18 @@ export const SurvicateMessageSchema = z.preprocess(
   ]),
 );
 
-export type SurvicateDestinationConfig = z.infer<typeof SurvicateDestinationConfigSchema>;
-export type SurvicateMessage = z.infer<typeof SurvicateMessageSchema>;
+type SurvicateMessage = z.infer<typeof SurvicateMessageSchema>;
 export type SurvicateIdentifyMessage = Extract<SurvicateMessage, { type: 'identify' }>;
 export type SurvicateGroupMessage = Extract<SurvicateMessage, { type: 'group' }>;
 export type SurvicateTrackMessage = Extract<SurvicateMessage, { type: 'track' }>;
-type SurvicateDestination = Destination<SurvicateDestinationConfig>;
 
-// Raw, pre-validation message shape coming off the router (type may be anything).
-export type RawSurvicateMessage = { type?: string } & Record<string, unknown>;
+export const SurvicateRouterRequestSchema = z.object({
+  message: SurvicateMessageSchema,
+  destination: SurvicateDestinationSchema,
+  metadata: MetadataSchema,
+});
 
-export type SurvicateRouterRequest = RouterTransformationRequestData<
-  RawSurvicateMessage,
-  SurvicateDestination,
-  undefined,
-  Metadata
->;
+export type SurvicateRouterRequest = z.infer<typeof SurvicateRouterRequestSchema>;
 
 export interface IdentifyPayload {
   user_id: string;

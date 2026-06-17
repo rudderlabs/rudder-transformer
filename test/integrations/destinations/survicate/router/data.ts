@@ -23,10 +23,18 @@ const dest = (key: string) => ({
   Transformations: [],
 });
 
-const meta = (jobId: number = 1) => ({ destinationId: 'destId', workspaceId: 'wspId', jobId });
+const meta = (jobId: number = 1) => ({
+  destinationId: 'destId',
+  workspaceId: 'wspId',
+  jobId,
+  sourceId: 'sourceId',
+  sourceType: 'sourceType',
+  sourceCategory: 'sourceCategory',
+  destinationType: 'destinationType',
+  messageId: 'messageId',
+});
 
-const identifyEndpoint =
-  'https://hv.survicate.com/integrations/partners/rudder-stack/identify';
+const identifyEndpoint = 'https://hv.survicate.com/integrations/partners/rudder-stack/identify';
 const groupEndpoint = 'https://hv.survicate.com/integrations/partners/rudder-stack/group';
 const trackEndpoint = 'https://hv.survicate.com/integrations/partners/rudder-stack/track';
 
@@ -35,12 +43,7 @@ const headers = (key: string) => ({
   Authorization: `Bearer ${key}`,
 });
 
-const okRequest = (
-  endpoint: string,
-  key: string,
-  json: Record<string, unknown>,
-  m = meta(),
-) => ({
+const okRequest = (endpoint: string, key: string, json: Record<string, unknown>, m = meta()) => ({
   batchedRequest: {
     body: { FORM: {}, JSON: json, JSON_ARRAY: {}, XML: {} },
     endpoint,
@@ -83,6 +86,73 @@ const errItem = (
 export const data: RouterTestData[] = [
   // ─── Batch / multi-event tests ────────────────────────────────────────────
 
+  {
+    name: 'survicate',
+    description:
+      'A malformed event in the batch fails per-event without aborting the rest of the batch',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                messageId: 'msg-valid',
+                userId: 'user-valid',
+                originalTimestamp: '2020-04-22T08:06:20.337Z',
+                context: { traits: { name: 'Valid User' } },
+              },
+              metadata: meta(1),
+              destination: dest('test-key'),
+            },
+            {
+              // Unsupported event type -> validation fails inside processRouterDest's
+              // try/catch and must surface as a single failed response, leaving the
+              // valid sibling event untouched.
+              message: {
+                type: 'page',
+                messageId: 'msg-bad',
+                userId: 'user-bad',
+                originalTimestamp: '2020-04-22T08:06:20.337Z',
+              },
+              metadata: meta(2),
+              destination: dest('test-key'),
+            },
+          ],
+          destType: 'survicate',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            okRequest(
+              identifyEndpoint,
+              'test-key',
+              {
+                user_id: 'user-valid',
+                name: 'Valid User',
+                timestamp: '2020-04-22T08:06:20.337Z',
+                message_id: 'msg-valid',
+              },
+              meta(1),
+            ),
+            errItem(
+              'test-key',
+              "message.type: Invalid discriminator value. Expected 'identify' | 'group' | 'track'",
+              'instrumentation',
+              meta(2),
+            ),
+          ],
+        },
+      },
+    },
+  },
   {
     name: 'survicate',
     description: 'Router Test: Multiple identify events in batch',
@@ -131,23 +201,33 @@ export const data: RouterTestData[] = [
         status: 200,
         body: {
           output: [
-            okRequest(identifyEndpoint, 'test-key-123', {
-              user_id: 'user-1',
-              name: 'User 1',
-              email: 'user1@example.com',
-              context: { locale: 'en-US' },
-              timestamp: '2020-04-22T08:06:20.337Z',
-              message_id: 'msg-1',
-            }, meta(1)),
-            okRequest(identifyEndpoint, 'test-key-123', {
-              user_id: 'user-2',
-              name: 'User 2',
-              email: 'user2@example.com',
-              company: { id: 'comp-2' },
-              context: { locale: 'en-GB' },
-              timestamp: '2020-04-22T08:06:20.337Z',
-              message_id: 'msg-2',
-            }, meta(2)),
+            okRequest(
+              identifyEndpoint,
+              'test-key-123',
+              {
+                user_id: 'user-1',
+                name: 'User 1',
+                email: 'user1@example.com',
+                context: { locale: 'en-US' },
+                timestamp: '2020-04-22T08:06:20.337Z',
+                message_id: 'msg-1',
+              },
+              meta(1),
+            ),
+            okRequest(
+              identifyEndpoint,
+              'test-key-123',
+              {
+                user_id: 'user-2',
+                name: 'User 2',
+                email: 'user2@example.com',
+                company: { id: 'comp-2' },
+                context: { locale: 'en-GB' },
+                timestamp: '2020-04-22T08:06:20.337Z',
+                message_id: 'msg-2',
+              },
+              meta(2),
+            ),
           ],
         },
       },
@@ -208,26 +288,41 @@ export const data: RouterTestData[] = [
         status: 200,
         body: {
           output: [
-            okRequest(identifyEndpoint, 'test-key', {
-              user_id: 'user-123',
-              name: 'John Doe',
-              timestamp: '2020-04-22T08:06:20.337Z',
-              message_id: 'msg-identify',
-            }, meta(1)),
-            okRequest(trackEndpoint, 'test-key', {
-              user_id: 'user-123',
-              event: 'Purchase',
-              properties: { amount: 100 },
-              timestamp: '2020-04-22T08:06:21.337Z',
-              message_id: 'msg-track',
-            }, meta(2)),
-            okRequest(groupEndpoint, 'test-key', {
-              user_id: 'user-123',
-              group_id: 'group-456',
-              name: 'Company ABC',
-              timestamp: '2020-04-22T08:06:22.337Z',
-              message_id: 'msg-group',
-            }, meta(3)),
+            okRequest(
+              identifyEndpoint,
+              'test-key',
+              {
+                user_id: 'user-123',
+                name: 'John Doe',
+                timestamp: '2020-04-22T08:06:20.337Z',
+                message_id: 'msg-identify',
+              },
+              meta(1),
+            ),
+            okRequest(
+              trackEndpoint,
+              'test-key',
+              {
+                user_id: 'user-123',
+                event: 'Purchase',
+                properties: { amount: 100 },
+                timestamp: '2020-04-22T08:06:21.337Z',
+                message_id: 'msg-track',
+              },
+              meta(2),
+            ),
+            okRequest(
+              groupEndpoint,
+              'test-key',
+              {
+                user_id: 'user-123',
+                group_id: 'group-456',
+                name: 'Company ABC',
+                timestamp: '2020-04-22T08:06:22.337Z',
+                message_id: 'msg-group',
+              },
+              meta(3),
+            ),
           ],
         },
       },
@@ -293,10 +388,14 @@ export const data: RouterTestData[] = [
                 originalTimestamp: '2021-01-01T00:00:00.000Z',
                 context: {
                   traits: {
-                    user_id: 'bad', userId: 'bad2',
-                    group_id: 'bad', groupId: 'bad2',
-                    timestamp: 'bad', originalTimestamp: 'bad2',
-                    message_id: 'bad', messageId: 'bad2',
+                    user_id: 'bad',
+                    userId: 'bad2',
+                    group_id: 'bad',
+                    groupId: 'bad2',
+                    timestamp: 'bad',
+                    originalTimestamp: 'bad2',
+                    message_id: 'bad',
+                    messageId: 'bad2',
                     extra: 'value1',
                   },
                 },
@@ -314,10 +413,14 @@ export const data: RouterTestData[] = [
                 traits: { foo: 'bar' },
                 context: {
                   traits: {
-                    user_id: 'override', userId: 'override2',
-                    group_id: 'override', groupId: 'override2',
-                    timestamp: 'override', originalTimestamp: 'override2',
-                    message_id: 'override', messageId: 'override2',
+                    user_id: 'override',
+                    userId: 'override2',
+                    group_id: 'override',
+                    groupId: 'override2',
+                    timestamp: 'override',
+                    originalTimestamp: 'override2',
+                    message_id: 'override',
+                    messageId: 'override2',
                     other: 'value2',
                   },
                 },
@@ -335,20 +438,30 @@ export const data: RouterTestData[] = [
         status: 200,
         body: {
           output: [
-            okRequest(identifyEndpoint, 'test-key', {
-              user_id: 'user-reserved',
-              extra: 'value1',
-              timestamp: '2021-01-01T00:00:00.000Z',
-              message_id: 'msg-reserved',
-            }, meta(1)),
-            okRequest(groupEndpoint, 'test-key', {
-              user_id: 'user-reserved',
-              group_id: 'group-reserved',
-              foo: 'bar',
-              other: 'value2',
-              timestamp: '2021-01-01T01:00:00.000Z',
-              message_id: 'msg-res-g',
-            }, meta(2)),
+            okRequest(
+              identifyEndpoint,
+              'test-key',
+              {
+                user_id: 'user-reserved',
+                extra: 'value1',
+                timestamp: '2021-01-01T00:00:00.000Z',
+                message_id: 'msg-reserved',
+              },
+              meta(1),
+            ),
+            okRequest(
+              groupEndpoint,
+              'test-key',
+              {
+                user_id: 'user-reserved',
+                group_id: 'group-reserved',
+                foo: 'bar',
+                other: 'value2',
+                timestamp: '2021-01-01T01:00:00.000Z',
+                message_id: 'msg-res-g',
+              },
+              meta(2),
+            ),
           ],
         },
       },
@@ -434,7 +547,7 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'messageId is required.')] },
+        body: { output: [errItem('test-key', 'message.messageId: messageId is required.')] },
       },
     },
   },
@@ -467,7 +580,10 @@ export const data: RouterTestData[] = [
         status: 200,
         body: {
           output: [
-            errItem('test-key', 'Anonymous identify calls are not supported. userId is required.'),
+            errItem(
+              'test-key',
+              'message.userId: Anonymous identify calls are not supported. userId is required.',
+            ),
           ],
         },
       },
@@ -501,7 +617,11 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'originalTimestamp is required.')] },
+        body: {
+          output: [
+            errItem('test-key', 'message.originalTimestamp: originalTimestamp is required.'),
+          ],
+        },
       },
     },
   },
@@ -713,7 +833,7 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'messageId is required.')] },
+        body: { output: [errItem('test-key', 'message.messageId: messageId is required.')] },
       },
     },
   },
@@ -744,7 +864,11 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'originalTimestamp is required.')] },
+        body: {
+          output: [
+            errItem('test-key', 'message.originalTimestamp: originalTimestamp is required.'),
+          ],
+        },
       },
     },
   },
@@ -781,7 +905,7 @@ export const data: RouterTestData[] = [
           output: [
             errItem(
               'test-key',
-              'Anonymous identify calls are not supported. userId is required.',
+              'message.userId: Anonymous identify calls are not supported. userId is required.',
             ),
           ],
         },
@@ -819,7 +943,7 @@ export const data: RouterTestData[] = [
           output: [
             errItem(
               'test-key',
-              'Anonymous identify calls are not supported. userId is required.',
+              'message.userId: Anonymous identify calls are not supported. userId is required.',
             ),
           ],
         },
@@ -858,8 +982,7 @@ export const data: RouterTestData[] = [
                 context: {
                   locale: 'en-US',
                   campaign: { name: 'autumn', source: 'referral' },
-                  userAgent:
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36',
+                  userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36',
                 },
               },
               destination: dest('test-destination-key-12345'),
@@ -886,8 +1009,7 @@ export const data: RouterTestData[] = [
               context: {
                 locale: 'en-US',
                 campaign: { name: 'autumn', source: 'referral' },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36',
+                userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36',
               },
               timestamp: '2025-11-07T10:15:00.000Z',
               message_id: '0b0e-test-cafe',
@@ -970,7 +1092,9 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'groupId is required for group events.')] },
+        body: {
+          output: [errItem('test-key', 'message.groupId: groupId is required for group events.')],
+        },
       },
     },
   },
@@ -1008,7 +1132,7 @@ export const data: RouterTestData[] = [
           output: [
             errItem(
               'test-key',
-              'Anonymous group calls are not supported. userId is required.',
+              'message.userId: Anonymous group calls are not supported. userId is required.',
             ),
           ],
         },
@@ -1043,7 +1167,7 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'messageId is required.')] },
+        body: { output: [errItem('test-key', 'message.messageId: messageId is required.')] },
       },
     },
   },
@@ -1075,7 +1199,11 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'originalTimestamp is required.')] },
+        body: {
+          output: [
+            errItem('test-key', 'message.originalTimestamp: originalTimestamp is required.'),
+          ],
+        },
       },
     },
   },
@@ -1305,7 +1433,9 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'event name is required for track events.')] },
+        body: {
+          output: [errItem('test-key', 'message.event: event name is required for track events.')],
+        },
       },
     },
   },
@@ -1343,7 +1473,7 @@ export const data: RouterTestData[] = [
           output: [
             errItem(
               'test-key',
-              'Anonymous track calls are not supported. userId is required.',
+              'message.userId: Anonymous track calls are not supported. userId is required.',
             ),
           ],
         },
@@ -1378,7 +1508,7 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'messageId is required.')] },
+        body: { output: [errItem('test-key', 'message.messageId: messageId is required.')] },
       },
     },
   },
@@ -1410,7 +1540,11 @@ export const data: RouterTestData[] = [
     output: {
       response: {
         status: 200,
-        body: { output: [errItem('test-key', 'originalTimestamp is required.')] },
+        body: {
+          output: [
+            errItem('test-key', 'message.originalTimestamp: originalTimestamp is required.'),
+          ],
+        },
       },
     },
   },

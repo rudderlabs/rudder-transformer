@@ -40,22 +40,21 @@ test/integrations/destinations/survicate/
 
 > **Key normalization:** Incoming Rudder messages often use `snake_case` for the standard fields (`user_id`, `group_id`, `message_id`, etc.). The integration normalizes these to a canonical `camelCase` form at the transformer boundary, so the rest of the code (and Zod schema) can operate on a single convention. You may continue to send or store snake_case on your side.
 
-
-
 > **Audit fields:** All messages must include `messageId` and `originalTimestamp`. The internal schema enforces their presence; missing values result in validation errors.
 
 > **Key normalization:** See above.
-
 
 ### Identify Events
 
 **Endpoint:** `POST https://hv.survicate.com/integrations/partners/rudder-stack/identify`
 
 **Requirements:**
+
 - `user_id` is required (anonymous calls are skipped)
 - `messageId` and `originalTimestamp` are mandatory and will be validated by the schema
 
 **Transformed Payload:**
+
 ```json
 {
   "user_id": "user-123",
@@ -77,11 +76,13 @@ test/integrations/destinations/survicate/
 **Endpoint:** `POST https://hv.survicate.com/integrations/partners/rudder-stack/group`
 
 **Requirements:**
+
 - `user_id` is required (anonymous calls are skipped)
 - `group_id` is required
 - `messageId` and `originalTimestamp` are mandatory and will be validated by the schema
 
 **Transformed Payload:**
+
 ```json
 {
   "user_id": "user-123",
@@ -102,11 +103,13 @@ test/integrations/destinations/survicate/
 **Endpoint:** `POST https://hv.survicate.com/integrations/partners/rudder-stack/track`
 
 **Requirements:**
+
 - `user_id` is required (anonymous calls are skipped)
 - `event` is required (event name)
 - `messageId` and `originalTimestamp` are mandatory and will be validated by the schema
 
 **Transformed Payload:**
+
 ```json
 {
   "user_id": "user-123",
@@ -125,6 +128,7 @@ test/integrations/destinations/survicate/
 ## Context Properties Extraction
 
 From the incoming RudderStack event context, only these properties are extracted and included:
+
 - `locale` - Language/locale information
 - `campaign` - Campaign attribution data
 - `userAgent` - Browser/device user agent string
@@ -136,6 +140,7 @@ All other context properties are excluded from the payload sent to Survicate.
 ### 1. Deploy the Integration Code
 
 The integration files are located in:
+
 - Transformation code: `src/v0/destinations/survicate/`
 - Tests: `test/integrations/destinations/survicate/`
 
@@ -155,6 +160,7 @@ npm run test:ts -- component --destination=survicate
 ### 3. Configuration
 
 Create/Update Survicate destination configuration in `rudder-integrations-config` repository:
+
 ```json
 {
   "id": "survicate_destination_id",
@@ -181,6 +187,7 @@ Create/Update Survicate destination configuration in `rudder-integrations-config
 The integration includes comprehensive tests covering:
 
 ### Processor Tests
+
 - Identify events with traits and nested attributes
 - Group events with deep nesting
 - Track events with event properties
@@ -188,6 +195,7 @@ The integration includes comprehensive tests covering:
 - Missing required fields validation
 
 ### Router Tests
+
 - Batch processing of multiple events
 - Mixed event types in a single batch
 - Multiple identify events
@@ -209,18 +217,23 @@ npm run test:ts -- component --destination=survicate --verbose=true
 The `utils.ts` file provides the following helper functions:
 
 #### `flattenNestedAttributes(obj, prefix)`
+
 Recursively flattens nested objects using underscore-separated keys.
 
 #### `extractContextProperties(context)`
+
 Extracts only `locale`, `campaign`, and `userAgent` from the context object.
 
 #### `buildIdentifyPayload(message)`
+
 Constructs the complete identify event payload with flattened traits.
 
 #### `buildGroupPayload(message)`
+
 Constructs the complete group event payload with flattened traits.
 
 #### `buildTrackPayload(message)`
+
 Constructs the complete track event payload with flattened properties.
 
 ### Type Definitions
@@ -287,12 +300,15 @@ All errors return HTTP 400 status with appropriate error messages.
 ## Troubleshooting
 
 ### Test Failures
+
 If tests fail, check:
+
 1. TypeScript compilation errors: `npm run build`
 2. Missing dependencies: `npm ci`
 3. Destination configuration in test data
 
 ### Runtime Issues
+
 1. Verify Destination Key is correctly configured
 2. Check API endpoint URLs are accessible
 3. Ensure user has proper RudderStack event format

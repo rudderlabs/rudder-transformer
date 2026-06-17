@@ -18,9 +18,9 @@ export const RESERVED_KEYS = [
   'originalTimestamp',
   'message_id',
   'messageId',
-  'event',       // track event name
-  'properties',  // track properties bag
-  'context',     // enriched context block set explicitly after trait merge
+  'event', // track event name
+  'properties', // track properties bag
+  'context', // enriched context block set explicitly after trait merge
 ];
 
 // API endpoints for different event types

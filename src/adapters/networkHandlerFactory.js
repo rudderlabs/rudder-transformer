@@ -5,6 +5,10 @@ const { networkHandler: GenericNetworkHandler } = require('./networkhandler/gene
 
 const { SUPPORTED_VERSIONS } = require('../routes/utils/constants');
 const { getIntegrations } = require('../routes/utils');
+const {
+  assertValidDestination,
+  getDestinationHandlerName,
+} = require('../constants/destinationCanonicalNames');
 
 const handlers = {
   generic: GenericNetworkHandler,
@@ -37,10 +41,15 @@ SUPPORTED_VERSIONS.forEach((version) => {
 });
 
 const getNetworkHandler = (type, version) => {
+  assertValidDestination(type);
+  const exactHandlerName = type.toLowerCase();
+  const handlerName = getDestinationHandlerName(type);
   let handlerVersion = version;
-  let NetworkHandler = handlers[version][type] || handlers.generic;
+  let NetworkHandler =
+    handlers[version][exactHandlerName] || handlers[version][handlerName] || handlers.generic;
   if (version === 'v1' && NetworkHandler === handlers.generic) {
-    NetworkHandler = handlers.v0[type] || handlers.generic;
+    NetworkHandler =
+      handlers.v0[exactHandlerName] || handlers.v0[handlerName] || handlers.generic;
     handlerVersion = 'v0';
   }
   const networkHandler = new NetworkHandler();

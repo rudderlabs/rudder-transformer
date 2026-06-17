@@ -6,11 +6,13 @@ import { RouteActivationMiddleware } from '../middlewares/routeActivation';
 import { SecretSpreader } from '../middlewares/arraySpreader';
 import { DestTransformCompactedPayloadV1Middleware } from '../middlewares/destTransformCompactedPayloadV1';
 import { RouterTransformCompactedPayloadV1Middleware } from '../middlewares/routerTransformCompactedPayloadV1';
+import { DestinationValidationMiddleware } from '../middlewares/destinationValidation';
 
 const router = new Router();
 
 router.post(
   '/:version/destinations/:destination',
+  DestinationValidationMiddleware.pathParam,
   RouteActivationMiddleware.isDestinationRouteActive,
   RouteActivationMiddleware.destinationProcFilter,
   FeatureFlagMiddleware.handle,
@@ -23,6 +25,7 @@ router.post(
   RouteActivationMiddleware.destinationRtFilter,
   FeatureFlagMiddleware.handle,
   RouterTransformCompactedPayloadV1Middleware,
+  DestinationValidationMiddleware.bodyDestType,
   SecretSpreader.middleware(),
   DestinationController.destinationTransformAtRouter,
 );
@@ -32,10 +35,15 @@ router.post(
   RouteActivationMiddleware.destinationBatchFilter,
   FeatureFlagMiddleware.handle,
   RouterTransformCompactedPayloadV1Middleware,
+  DestinationValidationMiddleware.bodyDestType,
   DestinationController.batchProcess,
 );
 
-router.post('/deleteUsers', RegulationController.deleteUsers);
+router.post(
+  '/deleteUsers',
+  DestinationValidationMiddleware.userDeletionBody,
+  RegulationController.deleteUsers,
+);
 
 const destinationRoutes = router.routes();
 export default destinationRoutes;

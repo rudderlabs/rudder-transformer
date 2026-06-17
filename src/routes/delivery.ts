@@ -1,11 +1,13 @@
 import Router from '@koa/router';
 import { DeliveryController } from '../controllers/delivery';
 import { RouteActivationMiddleware } from '../middlewares/routeActivation';
+import { DestinationValidationMiddleware } from '../middlewares/destinationValidation';
 
 const router = new Router();
 
 router.post(
   '/v0/destinations/:destination/proxy',
+  DestinationValidationMiddleware.pathParam,
   RouteActivationMiddleware.isDeliveryRouteActive,
   RouteActivationMiddleware.destinationDeliveryFilter,
   DeliveryController.deliverToDestination,
@@ -13,6 +15,7 @@ router.post(
 
 router.post(
   '/v1/destinations/:destination/proxy',
+  DestinationValidationMiddleware.pathParam,
   RouteActivationMiddleware.isDeliveryRouteActive,
   RouteActivationMiddleware.destinationDeliveryFilter,
   DeliveryController.deliverToDestinationV1,
@@ -20,6 +23,7 @@ router.post(
 
 router.post(
   '/:version/destinations/:destination/proxyTest',
+  DestinationValidationMiddleware.pathParam,
   RouteActivationMiddleware.isDeliveryTestRouteActive,
   DeliveryController.testDestinationDelivery,
 );

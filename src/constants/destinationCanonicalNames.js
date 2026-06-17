@@ -1,7 +1,12 @@
+const fs = require('fs');
+const path = require('path');
+
 const DestHandlerMap = {
   ga360: 'ga',
   salesforce_oauth: 'salesforce',
   salesforce_oauth_sandbox: 'salesforce',
+  __rudder_test__: 'rudder_test',
+  webhook_v2: 'webhook',
 };
 
 const DestCanonicalNames = {
@@ -192,4 +197,235 @@ const DestCanonicalNames = {
   singular: ['Singular'],
 };
 
-module.exports = { DestHandlerMap, DestCanonicalNames };
+const ROUTER_TRANSFORM_DESTINATIONS = [
+  'AM',
+  'ACTIVE_CAMPAIGN',
+  'ALGOLIA',
+  'CANDU',
+  'DELIGHTED',
+  'DRIP',
+  'FB_CUSTOM_AUDIENCE',
+  'GA',
+  'GAINSIGHT',
+  'GAINSIGHT_PX',
+  'GOOGLESHEETS',
+  'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+  'GOOGLE_ADWORDS_REMARKETING_LISTS',
+  'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+  'HS',
+  'ITERABLE',
+  'KLAVIYO',
+  'KUSTOMER',
+  'MAILCHIMP',
+  'MAILMODO',
+  'MARKETO',
+  'OMETRIA',
+  'PARDOT',
+  'PINTEREST_TAG',
+  'PROFITWELL',
+  'SALESFORCE',
+  'SALESFORCE_OAUTH',
+  'SALESFORCE_OAUTH_SANDBOX',
+  'SFMC',
+  'SNAPCHAT_CONVERSION',
+  'TIKTOK_ADS',
+  'TRENGO',
+  'YAHOO_DSP',
+  'CANNY',
+  'LAMBDA',
+  'WOOTRIC',
+  'GOOGLE_CLOUD_FUNCTION',
+  'BQSTREAM',
+  'CLICKUP',
+  'FRESHMARKETER',
+  'FRESHSALES',
+  'MONDAY',
+  'CUSTIFY',
+  'USER',
+  'REFINER',
+  'FACEBOOK_OFFLINE_CONVERSIONS',
+  'MAILJET',
+  'SNAPCHAT_CUSTOM_AUDIENCE',
+  'MARKETO_STATIC_LIST',
+  'CAMPAIGN_MANAGER',
+  'SENDGRID',
+  'SENDINBLUE',
+  'ZENDESK',
+  'MP',
+  'TIKTOK_ADS_OFFLINE_EVENTS',
+  'CRITEO_AUDIENCE',
+  'CUSTOMERIO',
+  'BRAZE',
+  'OPTIMIZELY_FULLSTACK',
+  'TWITTER_ADS',
+  'CLEVERTAP',
+  'ORTTO',
+  'GLADLY',
+  'ONE_SIGNAL',
+  'TIKTOK_AUDIENCE',
+  'REDDIT',
+  'THE_TRADE_DESK',
+  'INTERCOM',
+  'NINETAILED',
+  'KOALA',
+  'LINKEDIN_ADS',
+  'BLOOMREACH',
+  'MOVABLE_INK',
+  'EMARSYS',
+  'KODDI',
+  'WUNDERKIND',
+  'CLICKSEND',
+  'ZOHO',
+  'CORDIAL',
+  'X_AUDIENCE',
+  'BLOOMREACH_CATALOG',
+  'SMARTLY',
+  'HTTP',
+  'AMAZON_AUDIENCE',
+  'INTERCOM_V2',
+  'LINKEDIN_AUDIENCE',
+  'TOPSORT',
+  'CUSTOMERIO_AUDIENCE',
+  'ACCOIL_ANALYTICS',
+  'POSTSCRIPT',
+  'POSTHOG',
+  'CUSTOM_AUDIENCE',
+  'ITERABLE_AUDIENCE',
+];
+
+const REGULATION_DESTINATIONS = [
+  'BRAZE',
+  'AM',
+  'INTERCOM',
+  'CLEVERTAP',
+  'AF',
+  'MP',
+  'GA',
+  'ITERABLE',
+  'ENGAGE',
+  'CUSTIFY',
+  'SENDGRID',
+  'SPRIG',
+  'EMARSYS',
+];
+
+const BATCHING_FRAMEWORK_GA_DESTINATIONS = ['POSTHOG', 'CUSTOM_AUDIENCE', 'ITERABLE_AUDIENCE'];
+
+const repoRoot = path.resolve(__dirname, '..');
+const destinationRoots = [
+  path.join(repoRoot, 'v0', 'destinations'),
+  path.join(repoRoot, 'v1', 'destinations'),
+  path.join(repoRoot, 'cdk', 'v2', 'destinations'),
+];
+
+const normalizeDestinationName = (destination) => destination.trim().toLowerCase();
+
+const getDestinationDirectories = () =>
+  destinationRoots.flatMap((destinationRoot) => {
+    try {
+      return fs
+        .readdirSync(destinationRoot, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name);
+    } catch {
+      return [];
+    }
+  });
+
+const destinationRegistry = Object.create(null);
+
+const hasDestination = (destination) =>
+  Object.prototype.hasOwnProperty.call(destinationRegistry, destination);
+
+const buildDestinationEntry = (key) => ({
+  name: key,
+  aliases: [],
+  routerTransform: false,
+  regulation: false,
+  batchingFrameworkGa: false,
+});
+
+getDestinationDirectories().forEach((destination) => {
+  const key = normalizeDestinationName(destination);
+  destinationRegistry[key] = destinationRegistry[key] || buildDestinationEntry(key);
+});
+
+Object.entries(DestHandlerMap).forEach(([alias, destination]) => {
+  const key = normalizeDestinationName(alias);
+  const handler = normalizeDestinationName(destination);
+  if (!hasDestination(handler)) {
+    throw new Error(
+      `Destination handler alias ${alias} points to unknown destination: ${destination}`,
+    );
+  }
+  destinationRegistry[key] = {
+    ...(destinationRegistry[key] || buildDestinationEntry(key)),
+    handler,
+  };
+});
+
+const setCapability = (destinations, capability) => {
+  destinations.forEach((destination, index) => {
+    const key = normalizeDestinationName(destination);
+    if (!hasDestination(key)) {
+      throw new Error(
+        `Destination capability ${capability} references unknown destination: ${destination}`,
+      );
+    }
+    destinationRegistry[key][capability] = true;
+    destinationRegistry[key][`${capability}Name`] = destination;
+    destinationRegistry[key][`${capability}Order`] = index;
+  });
+};
+
+setCapability(ROUTER_TRANSFORM_DESTINATIONS, 'routerTransform');
+setCapability(REGULATION_DESTINATIONS, 'regulation');
+setCapability(BATCHING_FRAMEWORK_GA_DESTINATIONS, 'batchingFrameworkGa');
+
+const isValidDestination = (destination) =>
+  typeof destination === 'string' &&
+  destination.length > 0 &&
+  hasDestination(normalizeDestinationName(destination));
+
+const assertValidDestination = (destination) => {
+  if (!isValidDestination(destination)) {
+    const error = new Error(`Invalid destination: ${destination}`);
+    error.status = 400;
+    error.statusCode = 400;
+    error.isRetryable = false;
+    throw error;
+  }
+};
+
+const getDestinationHandlerName = (destination) => {
+  assertValidDestination(destination);
+  const normalized = normalizeDestinationName(destination);
+  return destinationRegistry[normalized].handler || normalized;
+};
+
+const getCapabilityDestinations = (capability) =>
+  Object.fromEntries(
+    Object.values(destinationRegistry)
+      .filter((destination) => destination[capability])
+      .sort((left, right) => left[`${capability}Order`] - right[`${capability}Order`])
+      .map((destination) => [destination[`${capability}Name`], true]),
+  );
+
+const getRouterTransformDestinations = () => getCapabilityDestinations('routerTransform');
+
+const getRegulationDestinations = () => Object.keys(getCapabilityDestinations('regulation'));
+
+const getBatchingFrameworkGaDestinations = () => getCapabilityDestinations('batchingFrameworkGa');
+
+module.exports = {
+  DestHandlerMap,
+  DestCanonicalNames,
+  destinationRegistry,
+  normalizeDestinationName,
+  isValidDestination,
+  assertValidDestination,
+  getDestinationHandlerName,
+  getRouterTransformDestinations,
+  getRegulationDestinations,
+  getBatchingFrameworkGaDestinations,
+};

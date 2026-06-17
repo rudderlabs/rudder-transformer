@@ -26,8 +26,19 @@ describe('Network Handler Tests', () => {
     expect(networkHandler).toEqual(new brazeProxy());
   });
 
-  it('Should return generic handler', () => {
-    const { networkHandler } = getNetworkHandler('abc', 'v1');
-    expect(networkHandler).toEqual(new GenericNetworkHandler());
+  it('Should prefer exact networkhandler before canonical alias fallback', () => {
+    const { networkHandler } = getNetworkHandler('salesforce_oauth', 'v0');
+    const salesforceOAuthProxy =
+      require('../v0/destinations/salesforce_oauth/networkHandler').networkHandler;
+    expect(networkHandler).toEqual(new salesforceOAuthProxy());
+  });
+
+  it('Should return generic handler for a valid destination without a custom handler', () => {
+    const { networkHandler } = getNetworkHandler('am', 'v1');
+    expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
+  });
+
+  it('Should reject invalid destinations before handler lookup', () => {
+    expect(() => getNetworkHandler('../abc', 'v1')).toThrow('Invalid destination: ../abc');
   });
 });

@@ -88,6 +88,64 @@ describe('features tests', () => {
 });
 
 describe('Api tests with a mock source/destination', () => {
+  test.each([
+    {
+      name: 'processor path destination',
+      request: () => request(server).post('/v0/destinations/not_a_destination').send([]),
+    },
+    {
+      name: 'routerTransform body destType',
+      request: () =>
+        request(server).post('/routerTransform').send({ input: [], destType: 'not_a_destination' }),
+    },
+    {
+      name: 'batch body destType',
+      request: () =>
+        request(server).post('/batch').send({ input: [], destType: 'not_a_destination' }),
+    },
+    {
+      name: 'deleteUsers body destType',
+      request: () =>
+        request(server)
+          .post('/deleteUsers')
+          .send([{ destType: 'not_a_destination' }]),
+    },
+    {
+      name: 'v0 proxy path destination',
+      request: () => request(server).post('/v0/destinations/not_a_destination/proxy').send({}),
+    },
+    {
+      name: 'v1 proxy path destination',
+      request: () => request(server).post('/v1/destinations/not_a_destination/proxy').send({}),
+    },
+    {
+      name: 'proxyTest path destination',
+      request: () => request(server).post('/v0/destinations/not_a_destination/proxyTest').send({}),
+    },
+    {
+      name: 'public test-router path destination',
+      request: () => request(server).post('/test-router/v0/not_a_destination').send({ events: [] }),
+    },
+    {
+      name: 'public test-router batch path destination',
+      request: () =>
+        request(server).post('/test-router/v0/not_a_destination/batch').send({ events: [] }),
+    },
+  ])(
+    'rejects invalid destination before handler lookup: $name',
+    async ({ request: makeRequest }) => {
+      const getDestHandlerSpy = jest.spyOn(FetchHandler, 'getDestHandler');
+      const getNetworkHandlerSpy = jest.spyOn(networkHandlerFactory, 'getNetworkHandler');
+
+      const response = await makeRequest().set('Accept', 'application/json');
+
+      expect(response.status).toEqual(400);
+      expect(JSON.parse(response.text).error).toContain('Invalid destination');
+      expect(getDestHandlerSpy).not.toHaveBeenCalled();
+      expect(getNetworkHandlerSpy).not.toHaveBeenCalled();
+    },
+  );
+
   test('(mock destination) Processor transformation scenario with single event', async () => {
     const destType = '__rudder_test__';
     const version = 'v0';

@@ -7,7 +7,7 @@ afterEach(() => {
 
 describe('FetchHandlers Service', () => {
   test('should save the handlers in the respective maps', async () => {
-    const dest = 'dest';
+    const dest = 'am';
     const source = 'source';
     const version = 'version';
 
@@ -32,5 +32,17 @@ describe('FetchHandlers Service', () => {
     expect(FetchHandler['deletionHandlerMap'].get(dest)).toBeUndefined();
     FetchHandler.getDeletionHandler(dest, version);
     expect(FetchHandler['deletionHandlerMap'].get(dest)).toBeDefined();
+  });
+
+  test('should reject invalid destination handler names', async () => {
+    expect(() => FetchHandler.getDestHandler('../dest', 'v0')).toThrow(
+      'Invalid destination: ../dest',
+    );
+    expect(() => FetchHandler.getDeletionHandler('../dest', 'v0')).toThrow(
+      'Invalid destination: ../dest',
+    );
+    expect(() => FetchHandler.getBatchDestinationHandler('../dest')).toThrow(
+      'Invalid destination: ../dest',
+    );
   });
 });

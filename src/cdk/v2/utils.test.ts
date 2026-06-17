@@ -1,3 +1,5 @@
+import { cdkV2DestinationsMap } from './constants/cdkV2DestinationsMap';
+import { isValidDestination } from '../../constants/destinationCanonicalNames';
 import { shouldUseCdkV2 } from './utils';
 
 describe('cdk/v2 utils', () => {
@@ -12,8 +14,8 @@ describe('cdk/v2 utils', () => {
 
     const cases: Case[] = [
       {
-        name: 'returns false when destination is not CDK v2 enabled',
-        destType: 'some_unknown_destination',
+        name: 'returns false when valid destination is not CDK v2 enabled',
+        destType: 'am',
         workspaceId: 'w1',
         expected: false,
       },
@@ -74,6 +76,18 @@ describe('cdk/v2 utils', () => {
           }
         }
       }
+    });
+
+    test('returns false for unknown destinations before CDK v2 lookup', () => {
+      expect(shouldUseCdkV2('../unknown', 'w1')).toBe(false);
+    });
+  });
+
+  describe('cdkV2DestinationsMap', () => {
+    test('contains only destinations known to the shared registry', () => {
+      expect(
+        Object.keys(cdkV2DestinationsMap).filter((destination) => !isValidDestination(destination)),
+      ).toEqual([]);
     });
   });
 });

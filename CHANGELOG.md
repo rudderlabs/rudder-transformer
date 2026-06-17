@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.139.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.138.0...v1.139.0) (2026-06-16)
+
+
+### Features
+
+* **google_adwords_remarketing_lists:** upgrade google ads api to v23 ([#5278](https://github.com/rudderlabs/rudder-transformer/issues/5278)) ([43fa07c](https://github.com/rudderlabs/rudder-transformer/commit/43fa07c1c09a171c063a344664513f3113edd737))
+* **klaviyo:** add opt-in v3 strict consent flow ([#5286](https://github.com/rudderlabs/rudder-transformer/issues/5286)) ([4f9a117](https://github.com/rudderlabs/rudder-transformer/commit/4f9a117b6f4661988baac8d49e45d14e84d23968))
+
+
+### Bug Fixes
+
+* **af:** track event without properties crashes with 500 transformation error ([#5284](https://github.com/rudderlabs/rudder-transformer/issues/5284)) ([b3a3f53](https://github.com/rudderlabs/rudder-transformer/commit/b3a3f5310b03ee2ecd299e3e115d74d8d8251386))
+* allowlist non-sensitive metadata in error notifier payloads ([#5257](https://github.com/rudderlabs/rudder-transformer/issues/5257)) ([1c624ec](https://github.com/rudderlabs/rudder-transformer/commit/1c624ec034bc8876391027870579c953a4e7644e))
+* **gaec:** enhanced conversions delivery test fails with missing v23 mock ([6f22cff](https://github.com/rudderlabs/rudder-transformer/commit/6f22cff9467bf2a8fe2ee4cf185411b35cdb1247))
+* **google-ads:** scope transformer changes to enhanced conversions and bump integrations-lib ([#5281](https://github.com/rudderlabs/rudder-transformer/issues/5281)) ([dbd5ecf](https://github.com/rudderlabs/rudder-transformer/commit/dbd5ecf34c803890d087b3c3b43fc87c0318b757))
+
 ## [1.138.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.137.0...v1.138.0) (2026-06-16)
 
 

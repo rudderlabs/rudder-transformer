@@ -1,4 +1,8 @@
-import { addSubscribeFlagToTraits, getProfileMetadataAndMetadataFields } from './util';
+import {
+  addSubscribeFlagToTraits,
+  getProfileMetadataAndMetadataFields,
+  subscribeOrUnsubscribeUserToListV2,
+} from './util';
 
 describe('addSubscribeFlagToTraits', () => {
   // The function should add a 'subscribe' property to the 'properties' object if it exists in the input 'traitsInfo'.
@@ -221,5 +225,161 @@ describe('getProfileMetadataAndMetadataFields', () => {
 
     result = getProfileMetadataAndMetadataFields(undefined);
     expect(result).toEqual({ meta: { patch_properties: {} }, metadataFields: [] });
+  });
+});
+
+describe('subscribeOrUnsubscribeUserToListV2', () => {
+  const destination = {
+    Config: {
+      apiVersion: 'v3',
+      listId: 'dest-list-id',
+      consent: ['email', 'sms'],
+    },
+  };
+
+  it.each([
+    {
+      name: 'v3 subscribe with both identifiers and consent override',
+      operation: 'subscribe',
+      traitsConsent: ['email', 'sms'],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+      expectedSubscriptions: {
+        email: { marketing: { consent: 'SUBSCRIBED' } },
+        sms: { marketing: { consent: 'SUBSCRIBED' } },
+      },
+    },
+    {
+      name: 'v3 unsubscribe with both identifiers and consent override',
+      operation: 'unsubscribe',
+      traitsConsent: ['email', 'sms'],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+      expectedSubscriptions: {
+        email: { marketing: { consent: 'UNSUBSCRIBED' } },
+        sms: { marketing: { consent: 'UNSUBSCRIBED' } },
+      },
+    },
+  ])(
+    'should apply strict channel consent matrix: $name',
+    ({ operation, traitsConsent, email, phone, expectedSubscriptions }) => {
+      const message = {
+        type: 'identify',
+        traits: {
+          email,
+          phone,
+        },
+      };
+
+      const traitsInfo = {
+        properties: {
+          listId: 'traits-list-id',
+          consent: traitsConsent,
+        },
+      };
+
+      const result = subscribeOrUnsubscribeUserToListV2(
+        message,
+        traitsInfo,
+        destination,
+        operation,
+      );
+
+      expect(result).toEqual({
+        listId: 'traits-list-id',
+        operation,
+        profile: [
+          {
+            type: 'profile',
+            attributes: {
+              ...(email && { email }),
+              ...(phone && { phone_number: phone }),
+              ...(expectedSubscriptions && { subscriptions: expectedSubscriptions }),
+            },
+          },
+        ],
+      });
+    },
+  );
+
+  it.each([
+    {
+      name: 'v3 subscribe with email consent but only phone identifier',
+      operation: 'subscribe',
+      traitsConsent: ['email'],
+      email: undefined,
+      phone: '+12125550000',
+    },
+    {
+      name: 'v3 unsubscribe with sms consent but only email identifier',
+      operation: 'unsubscribe',
+      traitsConsent: ['sms'],
+      email: 'user@domain.com',
+      phone: undefined,
+    },
+    {
+      name: 'v3 subscribe with empty consent list',
+      operation: 'subscribe',
+      traitsConsent: [],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+    },
+    {
+      name: 'v3 unsubscribe with empty consent list',
+      operation: 'unsubscribe',
+      traitsConsent: [],
+      email: 'user@domain.com',
+      phone: '+12125550000',
+    },
+  ])(
+    'should throw when v3 subscriptions resolve to empty: $name',
+    ({ operation, traitsConsent, email, phone }) => {
+      const message = { type: 'identify', traits: { email, phone } };
+      const traitsInfo = { properties: { listId: 'traits-list-id', consent: traitsConsent } };
+
+      expect(() =>
+        subscribeOrUnsubscribeUserToListV2(message, traitsInfo, destination, operation),
+      ).toThrow(
+        'No subscriptions could be resolved for v3 API version. Ensure consent channels (email/sms) match the identifiers present in the event',
+      );
+    },
+  );
+
+  it('should preserve v2 unsubscribe behavior without subscriptions in profile attributes', () => {
+    const message = {
+      type: 'identify',
+      traits: {
+        email: 'user@domain.com',
+        phone: '+12125550000',
+      },
+    };
+    const traitsInfo = {
+      properties: {
+        listId: 'traits-list-id',
+        consent: ['email'],
+      },
+    };
+    const v2Destination = {
+      Config: {
+        apiVersion: 'v2',
+        listId: 'dest-list-id',
+        consent: ['email', 'sms'],
+      },
+    };
+
+    const result = subscribeOrUnsubscribeUserToListV2(
+      message,
+      traitsInfo,
+      v2Destination,
+      'unsubscribe',
+    );
+
+    expect(result.profile[0]).toEqual({
+      type: 'profile',
+      attributes: {
+        email: 'user@domain.com',
+        phone_number: '+12125550000',
+      },
+    });
   });
 });

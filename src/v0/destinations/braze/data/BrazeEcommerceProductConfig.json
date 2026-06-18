@@ -2,43 +2,36 @@
   {
     "destKey": "product_id",
     "sourceKeys": ["product_id", "sku"],
-    "required": false,
     "brazeRequired": true
   },
   {
     "destKey": "product_name",
     "sourceKeys": "name",
-    "required": false,
     "brazeRequired": true
   },
   {
     "destKey": "variant_id",
     "sourceKeys": ["variant", "sku", "product_id"],
-    "required": false,
     "brazeRequired": true
   },
   {
     "destKey": "quantity",
     "sourceKeys": "quantity",
-    "required": false,
     "brazeRequired": true
   },
   {
     "destKey": "price",
     "sourceKeys": "price",
-    "required": false,
     "brazeRequired": true
   },
   {
     "destKey": "image_url",
     "sourceKeys": "image_url",
-    "required": false,
     "brazeRequired": false
   },
   {
     "destKey": "product_url",
     "sourceKeys": "url",
-    "required": false,
     "brazeRequired": false
   }
 ]

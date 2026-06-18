@@ -4784,45 +4784,6 @@ export const data = [
   },
   {
     name: 'braze',
-    description:
-      'T-I-04 recommended ecommerce: Cart Viewed → cart_updated(replace) with products[]',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: buildProcessorInput(
-      trackMessage('Cart Viewed', {
-        cart_id: 'cart_001',
-        currency: 'USD',
-        total: 19.98,
-        products: [{ product_id: 'sku_42', name: 'Widget', quantity: 2, price: 9.99 }],
-      }),
-    ),
-    output: {
-      response: {
-        status: 200,
-        body: [
-          expectedEcommerceOutput('ecommerce.cart_updated', {
-            cart_id: 'cart_001',
-            currency: 'USD',
-            total_value: 19.98,
-            action: 'replace',
-            source: 'web',
-            products: [
-              {
-                product_id: 'sku_42',
-                product_name: 'Widget',
-                variant_id: 'sku_42',
-                quantity: 2,
-                price: 9.99,
-              },
-            ],
-          }),
-        ],
-      },
-    },
-  },
-  {
-    name: 'braze',
     description: 'T-I-05 recommended ecommerce: Checkout Started → ecommerce.checkout_started',
     feature: 'processor',
     module: 'destination',

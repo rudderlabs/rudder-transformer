@@ -20,7 +20,7 @@ export const BRAZE_ECOMMERCE_EVENTS = {
 export type BrazeEcommerceEventName =
   (typeof BRAZE_ECOMMERCE_EVENTS)[keyof typeof BRAZE_ECOMMERCE_EVENTS];
 
-export type CartUpdatedAction = 'add' | 'remove' | 'replace';
+export type CartUpdatedAction = 'add' | 'remove';
 
 export type EcommerceMapping = {
   brazeEvent: BrazeEcommerceEventName;
@@ -30,7 +30,7 @@ export type EcommerceMapping = {
 export type EcommerceEventProperties = Record<string, unknown> & {
   products?: Record<string, unknown>[];
   metadata?: Record<string, unknown>;
-  source?: 'web' | 'ios' | 'android';
+  source: 'web' | 'ios' | 'android';
   action?: CartUpdatedAction;
 };
 
@@ -39,12 +39,15 @@ const VALIDATION_WARN_COUNTER = 'braze_recommended_event_validation_warn';
 const BRAZE_SOURCE_VALUES = new Set<string>(['web', 'ios', 'android']);
 
 // Case-insensitive RS event name → Braze recommended event mapping.
-// Keys are lowercased RS event names.
+// Keys are lowercased RS event names. `Cart Viewed` and `Cart Updated` are
+// intentionally absent — both were dropped from scope on 2026-06-16 because the
+// `cart_updated(replace)` overwrite-on-view semantics were deemed too risky for v1.
+// Both fall through to the legacy custom-event path. No event in this map uses
+// `action: 'replace'`, so `CartUpdatedAction` is narrowed to `'add' | 'remove'`.
 const EVENT_NAME_TO_BRAZE: Record<string, EcommerceMapping> = {
   'product viewed': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED },
   'product added': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'add' },
   'product removed': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'remove' },
-  'cart viewed': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'replace' },
   'checkout started': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.CHECKOUT_STARTED },
   'order completed': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED },
   'order refunded': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED },
@@ -60,21 +63,9 @@ const PER_EVENT_MAPPING_NAME: Record<BrazeEcommerceEventName, string> = {
   [BRAZE_ECOMMERCE_EVENTS.ORDER_CANCELLED]: ConfigCategory.BRAZE_ORDER_CANCELLED.name,
 };
 
-// Events that carry a products[] array on the outgoing payload.
-// product_viewed is the only flat (single-product) event.
-const EVENTS_WITH_PRODUCTS_ARRAY: ReadonlySet<BrazeEcommerceEventName> =
-  new Set<BrazeEcommerceEventName>([
-    BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
-    BRAZE_ECOMMERCE_EVENTS.CHECKOUT_STARTED,
-    BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
-    BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED,
-    BRAZE_ECOMMERCE_EVENTS.ORDER_CANCELLED,
-  ]);
-
 type MappingEntry = {
   destKey: string;
   sourceKeys: string | string[];
-  required?: boolean;
   brazeRequired?: boolean;
   sourceFromGenericMap?: boolean;
   metadata?: Record<string, unknown>;
@@ -129,58 +120,64 @@ function consumedKeysFromMapping(mapping: MappingEntry[]): Set<string> {
 }
 
 /**
- * Emit one `braze_recommended_event_validation_warn` counter increment per
- * brazeRequired field that resolved to a missing value on the constructed payload.
+ * Emit a single `braze_recommended_event_validation_warn` counter increment if the
+ * constructed payload is missing any brazeRequired field — event-level or per-product.
+ * Fires at most once per event regardless of how many fields are missing.
  *
- * `extraRequired` lets the caller add conditionally-required fields (e.g. `total_value`
- * becomes required when `action=replace`).
+ * Per-product fields are checked against every entry of `payload.products`; an
+ * empty `products[]` on a product-bearing event also counts as missing.
  *
  * Counter labels match the LLD § 11.1 contract; values are bounded categorical.
  */
-function emitMissingFieldCounters(params: {
+function emitValidationCounter(params: {
   destination: BrazeDestination;
   brazeEvent: BrazeEcommerceEventName;
-  mapping: MappingEntry[];
+  eventMapping: MappingEntry[];
+  productMapping: MappingEntry[] | null;
   payload: Record<string, unknown>;
-  extraRequired?: string[];
 }): void {
-  const { destination, brazeEvent, mapping, payload, extraRequired } = params;
+  const { destination, brazeEvent, eventMapping, productMapping, payload } = params;
 
-  const requiredDestKeys = new Set<string>();
-  mapping.forEach((entry) => {
-    if (entry.brazeRequired) {
-      requiredDestKeys.add(entry.destKey);
-    }
-  });
-  if (extraRequired) {
-    extraRequired.forEach((key) => requiredDestKeys.add(key));
+  const fieldsMissingFromEvent = eventMapping.some(
+    (entry) => entry.brazeRequired && !isResolvedValue(lodash.get(payload, entry.destKey)),
+  );
+
+  let fieldMissingFromProduct = false;
+  if (productMapping !== null) {
+    const products = Array.isArray(payload.products)
+      ? (payload.products as Record<string, unknown>[])
+      : null;
+    fieldMissingFromProduct =
+      products === null ||
+      products.length === 0 ||
+      products.some((product) =>
+        productMapping.some(
+          (entry) => entry.brazeRequired && !isResolvedValue(lodash.get(product, entry.destKey)),
+        ),
+      );
   }
 
-  requiredDestKeys.forEach((destKey) => {
-    if (!isResolvedValue(lodash.get(payload, destKey))) {
-      stats.counter(VALIDATION_WARN_COUNTER, 1, {
-        destination_id: destination.ID,
-        workspace_id: destination.WorkspaceID,
-        braze_event: brazeEvent,
-        missing_field: destKey,
-      });
-    }
-  });
+  if (fieldsMissingFromEvent || fieldMissingFromProduct) {
+    stats.counter(VALIDATION_WARN_COUNTER, 1, {
+      destination_id: destination.ID,
+      workspace_id: destination.WorkspaceID,
+      braze_event: brazeEvent,
+    });
+  }
 }
 
 /**
  * Compute the set of message-property keys that are "consumed" by the event-level
  * mapping (so they don't get duplicated into `metadata`). Includes:
  *   - keys referenced by `sourceKeys` (stripping the `properties.` prefix)
- *   - per-product keys for cart_updated add/remove (since those fields live at
- *     `properties.X` top-level and are folded into `products[0]`)
+ *   - per-product keys for cart_updated (folded into `products[0]` via single-product wrap)
  *   - the `products` key itself for product-bearing events
  *   - the `source` key (always derived/written, never passed through to metadata)
  */
 function consumedTopLevelKeysForEvent(
   brazeEvent: BrazeEcommerceEventName,
-  action: CartUpdatedAction | undefined,
   eventMapping: MappingEntry[],
+  productMapping: MappingEntry[] | null,
 ): Set<string> {
   const consumed = new Set<string>();
   consumed.add('source');
@@ -195,17 +192,13 @@ function consumedTopLevelKeysForEvent(
     });
   });
 
-  if (EVENTS_WITH_PRODUCTS_ARRAY.has(brazeEvent)) {
+  if (productMapping !== null) {
     consumed.add('products');
   }
 
-  // cart_updated add/remove uses top-level product fields as a single wrapped product.
-  const isCartAddOrRemove =
-    brazeEvent === BRAZE_ECOMMERCE_EVENTS.CART_UPDATED && (action === 'add' || action === 'remove');
-  if (isCartAddOrRemove) {
-    const productMapping = mappingConfig[
-      ConfigCategory.BRAZE_ECOMMERCE_PRODUCT.name
-    ] as unknown as MappingEntry[];
+  // cart_updated uses top-level product fields as the single wrapped product;
+  // mark those keys as consumed so they don't duplicate into event-level metadata.
+  if (brazeEvent === BRAZE_ECOMMERCE_EVENTS.CART_UPDATED && productMapping !== null) {
     consumedKeysFromMapping(productMapping).forEach((key) => consumed.add(key));
   }
 
@@ -213,70 +206,35 @@ function consumedTopLevelKeysForEvent(
 }
 
 /**
- * Map a single product item via the shared product mapping, route unmapped keys to
- * its `metadata` field, and emit validation-warn counters per missing brazeRequired field.
- */
-function mapProduct(
-  item: Record<string, unknown>,
-  productMapping: MappingEntry[],
-  destination: BrazeDestination,
-  brazeEvent: BrazeEcommerceEventName,
-): Record<string, unknown> {
-  const product = (constructPayload(item, productMapping) || {}) as Record<string, unknown>;
-
-  const consumedKeys = consumedKeysFromMapping(productMapping);
-  const productMetadata = pickUnmappedKeys(item, consumedKeys);
-  if (Object.keys(productMetadata).length > 0) {
-    product.metadata = productMetadata;
-  }
-
-  emitMissingFieldCounters({
-    destination,
-    brazeEvent,
-    mapping: productMapping,
-    payload: product,
-  });
-
-  return product;
-}
-
-/**
  * Build the `products[]` array for the outgoing payload.
- * - cart_updated (add/remove): wrap top-level product fields into a 1-element array.
- * - cart_updated (replace) and other product-bearing events: map each item in `properties.products`.
+ * - cart_updated: read top-level product fields directly from `properties` into a
+ *   1-element products[]. No per-product metadata — unmapped event-level keys
+ *   (cart_id, currency, custom attrs) flow through the event-level metadata pass.
+ * - other product-bearing events: map each item in `properties.products` and route
+ *   per-product unmapped keys to `products[i].metadata`.
  */
 function buildProductsArray(
   message: RudderBrazeMessage,
   brazeEvent: BrazeEcommerceEventName,
-  action: CartUpdatedAction | undefined,
-  destination: BrazeDestination,
+  productMapping: MappingEntry[],
 ): Record<string, unknown>[] {
-  const productMapping = mappingConfig[
-    ConfigCategory.BRAZE_ECOMMERCE_PRODUCT.name
-  ] as unknown as MappingEntry[];
-
   const properties = (message.properties || {}) as Record<string, unknown>;
-  const isCartAddOrRemove =
-    brazeEvent === BRAZE_ECOMMERCE_EVENTS.CART_UPDATED && (action === 'add' || action === 'remove');
+  const isCartUpdated = brazeEvent === BRAZE_ECOMMERCE_EVENTS.CART_UPDATED;
 
-  // Single-product wrapping: treat top-level RS product fields as a 1-element array.
-  // No per-product metadata here — unmapped event-level keys (cart_id, currency, ...) flow
-  // through the event-level metadata pass instead.
-  if (isCartAddOrRemove && !Array.isArray(properties.products)) {
-    const product = (constructPayload(properties, productMapping) || {}) as Record<string, unknown>;
-    emitMissingFieldCounters({
-      destination,
-      brazeEvent,
-      mapping: productMapping,
-      payload: product,
-    });
-    return [product];
+  if (isCartUpdated && !Array.isArray(properties.products)) {
+    return [(constructPayload(properties, productMapping) || {}) as Record<string, unknown>];
   }
 
   const rawProducts = Array.isArray(properties.products) ? properties.products : [];
+  const consumedKeys = consumedKeysFromMapping(productMapping);
   return rawProducts.map((raw) => {
     const item = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
-    return mapProduct(item, productMapping, destination, brazeEvent);
+    const product = (constructPayload(item, productMapping) || {}) as Record<string, unknown>;
+    const productMetadata = pickUnmappedKeys(item, consumedKeys);
+    if (Object.keys(productMetadata).length > 0) {
+      product.metadata = productMetadata;
+    }
+    return product;
   });
 }
 
@@ -337,14 +295,15 @@ export function deriveSource(message: RudderBrazeMessage): 'web' | 'ios' | 'andr
  * Algorithm:
  * 1. Resolve the per-event mapping JSON.
  * 2. Run `constructPayload` against the message (all mappings use `required: false`,
- *    so it never throws — send-anyway is enforced here instead).
+ *    so it never throws — send-anyway is enforced via the validation counter instead).
  * 3. For events with a `products[]`, build the array (single-product wrap for
- *    `cart_updated` add/remove, iterate `properties.products` otherwise).
+ *    `cart_updated`, iterate `properties.products` otherwise).
  * 4. Set `source` via `deriveSource` (always resolves).
  * 5. Set `action` when present.
  * 6. Route unmapped event-level keys to `properties.metadata`,
  *    and unmapped per-product keys to `products[].metadata`.
- * 7. Emit one validation-warn counter increment per missing Braze-required field.
+ * 7. Emit a single validation-warn counter increment if the event is missing
+ *    any Braze-required field (event-level or per-product).
  *
  * Never throws on data shape; counter + missing field on payload is the contract.
  */
@@ -357,24 +316,17 @@ export function buildEcommerceEventProperties(
   const eventMapping = mappingConfig[
     PER_EVENT_MAPPING_NAME[brazeEvent]
   ] as unknown as MappingEntry[];
+  const productMapping =
+    brazeEvent === BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED
+      ? null
+      : (mappingConfig[ConfigCategory.BRAZE_ECOMMERCE_PRODUCT.name] as unknown as MappingEntry[]);
 
   // Step 1+2: event-level field mapping.
   const payload = (constructPayload(message, eventMapping) || {}) as EcommerceEventProperties;
 
   // Step 3: products[] (skipped for product_viewed — flat, single-product event).
-  if (EVENTS_WITH_PRODUCTS_ARRAY.has(brazeEvent)) {
-    payload.products = buildProductsArray(message, brazeEvent, action, destination);
-    if (payload.products.length === 0) {
-      // products[] is Braze-required on these events. Per-item brazeRequired
-      // checks are skipped because there's nothing to check; surface the gap as
-      // a single `products[]` counter increment instead.
-      stats.counter(VALIDATION_WARN_COUNTER, 1, {
-        destination_id: destination.ID,
-        workspace_id: destination.WorkspaceID,
-        braze_event: brazeEvent,
-        missing_field: 'products[]',
-      });
-    }
+  if (productMapping !== null) {
+    payload.products = buildProductsArray(message, brazeEvent, productMapping);
   }
 
   // Step 4+5: source + action.
@@ -384,19 +336,19 @@ export function buildEcommerceEventProperties(
   }
 
   // Step 6: route unmapped event-level keys to metadata.
-  const consumedEventKeys = consumedTopLevelKeysForEvent(brazeEvent, action, eventMapping);
+  const consumedEventKeys = consumedTopLevelKeysForEvent(brazeEvent, eventMapping, productMapping);
   const eventMetadata = pickUnmappedKeys(message.properties || {}, consumedEventKeys);
   if (Object.keys(eventMetadata).length > 0) {
     payload.metadata = eventMetadata;
   }
 
-  // Step 7: validation counter for missing Braze-required event-level fields.
-  emitMissingFieldCounters({
+  // Step 7: single validation counter for any missing Braze-required field.
+  emitValidationCounter({
     destination,
     brazeEvent,
-    mapping: eventMapping,
+    eventMapping,
+    productMapping,
     payload,
-    extraRequired: action === 'replace' ? ['total_value'] : undefined,
   });
 
   return payload;

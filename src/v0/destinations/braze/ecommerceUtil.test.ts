@@ -34,12 +34,8 @@ beforeEach(() => {
   mockedCounter.mockClear();
 });
 
-const counterCallsForField = (field: string) =>
-  mockedCounter.mock.calls.filter(
-    ([name, , labels]) =>
-      name === VALIDATION_WARN_COUNTER &&
-      (labels as Record<string, string> | undefined)?.missing_field === field,
-  );
+const validationCounterCalls = () =>
+  mockedCounter.mock.calls.filter(([name]) => name === VALIDATION_WARN_COUNTER);
 
 describe('getEcommerceMapping', () => {
   const mappingCases: Array<{ input: string; brazeEvent: string; action?: string }> = [
@@ -48,7 +44,6 @@ describe('getEcommerceMapping', () => {
     { input: '  PRODUCT VIEWED  ', brazeEvent: BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED },
     { input: 'Product Added', brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'add' },
     { input: 'Product Removed', brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'remove' },
-    { input: 'Cart Viewed', brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'replace' },
     { input: 'Checkout Started', brazeEvent: BRAZE_ECOMMERCE_EVENTS.CHECKOUT_STARTED },
     { input: 'Order Completed', brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED },
     { input: 'Order Refunded', brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED },
@@ -182,7 +177,7 @@ describe('buildEcommerceEventProperties', () => {
         currency: 'USD',
         source: 'web',
       });
-      expect(counterCallsForField('product_id')).toHaveLength(0);
+      expect(validationCounterCalls()).toHaveLength(0);
     });
 
     it('routes unmapped event-level keys to metadata', () => {
@@ -291,7 +286,7 @@ describe('buildEcommerceEventProperties', () => {
       expect((result.products as Record<string, unknown>[])[0].quantity).toBe(0);
     });
 
-    it('fires currency counter when Product Added has no currency (RS-spec gap)', () => {
+    it('fires the validation counter when Product Added has no currency (RS-spec gap)', () => {
       const message = baseMessage({
         event: 'Product Added',
         properties: {
@@ -310,13 +305,12 @@ describe('buildEcommerceEventProperties', () => {
         destination,
       );
 
-      const currencyCalls = counterCallsForField('currency');
-      expect(currencyCalls).toHaveLength(1);
-      expect(currencyCalls[0][2]).toEqual({
+      const calls = validationCounterCalls();
+      expect(calls).toHaveLength(1);
+      expect(calls[0][2]).toEqual({
         destination_id: DESTINATION_ID,
         workspace_id: WORKSPACE_ID,
         braze_event: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
-        missing_field: 'currency',
       });
     });
   });
@@ -362,7 +356,7 @@ describe('buildEcommerceEventProperties', () => {
       });
     });
 
-    it('emits one counter per missing required field (no throw)', () => {
+    it('emits a single validation counter when multiple required fields are missing (no throw)', () => {
       const message = baseMessage({
         event: 'Order Completed',
         properties: {
@@ -380,9 +374,13 @@ describe('buildEcommerceEventProperties', () => {
         ),
       ).not.toThrow();
 
-      expect(counterCallsForField('order_id')).toHaveLength(1);
-      expect(counterCallsForField('total_value')).toHaveLength(1);
-      expect(counterCallsForField('currency')).toHaveLength(1);
+      const calls = validationCounterCalls();
+      expect(calls).toHaveLength(1);
+      expect(calls[0][2]).toEqual({
+        destination_id: DESTINATION_ID,
+        workspace_id: WORKSPACE_ID,
+        braze_event: BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+      });
     });
 
     it('routes per-product unmapped keys to products[].metadata', () => {
@@ -411,7 +409,7 @@ describe('buildEcommerceEventProperties', () => {
       });
     });
 
-    it('fires products[] counter when properties.products is empty', () => {
+    it('fires the validation counter when properties.products is empty', () => {
       const message = baseMessage({
         event: 'Order Completed',
         properties: {
@@ -430,65 +428,18 @@ describe('buildEcommerceEventProperties', () => {
       );
 
       expect(result.products).toEqual([]);
-      const productsCalls = counterCallsForField('products[]');
-      expect(productsCalls).toHaveLength(1);
-      expect(productsCalls[0][2]).toEqual({
+      const calls = validationCounterCalls();
+      expect(calls).toHaveLength(1);
+      expect(calls[0][2]).toEqual({
         destination_id: DESTINATION_ID,
         workspace_id: WORKSPACE_ID,
         braze_event: BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
-        missing_field: 'products[]',
       });
-    });
-  });
-
-  describe('Cart Viewed → cart_updated(replace) — conditional required total_value', () => {
-    it('fires total_value counter when missing on replace action', () => {
-      const message = baseMessage({
-        event: 'Cart Viewed',
-        properties: {
-          cart_id: 'cart_001',
-          currency: 'USD',
-          products: [{ product_id: 'p1', name: 'W', quantity: 1, price: 1 }],
-          // no total/value
-        },
-      });
-
-      buildEcommerceEventProperties(
-        message,
-        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
-        'replace',
-        destination,
-      );
-
-      expect(counterCallsForField('total_value')).toHaveLength(1);
-    });
-
-    it('does NOT fire total_value counter when missing on add action', () => {
-      const message = baseMessage({
-        event: 'Product Added',
-        properties: {
-          cart_id: 'cart_001',
-          currency: 'USD',
-          product_id: 'p1',
-          name: 'W',
-          quantity: 1,
-          price: 1,
-        },
-      });
-
-      buildEcommerceEventProperties(
-        message,
-        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
-        'add',
-        destination,
-      );
-
-      expect(counterCallsForField('total_value')).toHaveLength(0);
     });
   });
 
   describe('Order Refunded → order_refunded (chronic GAP per OQ-8)', () => {
-    it('fires counters for total_value, currency, products[] when RS only sends order_id', () => {
+    it('fires one validation counter when RS only sends order_id', () => {
       const message = baseMessage({
         event: 'Order Refunded',
         properties: { order_id: 'ord_001' },
@@ -503,9 +454,13 @@ describe('buildEcommerceEventProperties', () => {
 
       expect(result.order_id).toBe('ord_001');
       expect(result.products).toEqual([]);
-      expect(counterCallsForField('total_value')).toHaveLength(1);
-      expect(counterCallsForField('currency')).toHaveLength(1);
-      expect(counterCallsForField('products[]')).toHaveLength(1);
+      const calls = validationCounterCalls();
+      expect(calls).toHaveLength(1);
+      expect(calls[0][2]).toEqual({
+        destination_id: DESTINATION_ID,
+        workspace_id: WORKSPACE_ID,
+        braze_event: BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED,
+      });
     });
   });
 });

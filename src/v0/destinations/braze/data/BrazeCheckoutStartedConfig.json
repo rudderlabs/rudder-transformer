@@ -2,37 +2,36 @@
   {
     "destKey": "checkout_id",
     "sourceKeys": ["properties.checkout_id", "properties.order_id"],
-    "required": false,
-    "brazeRequired": true
-  },
-  {
-    "destKey": "total_value",
-    "sourceKeys": ["properties.total", "properties.revenue", "properties.value"],
-    "required": false,
-    "brazeRequired": true
-  },
-  {
-    "destKey": "currency",
-    "sourceKeys": "properties.currency",
-    "required": false,
     "brazeRequired": true
   },
   {
     "destKey": "cart_id",
     "sourceKeys": "properties.cart_id",
-    "required": false,
+    "brazeRequired": false
+  },
+  {
+    "destKey": "total_value",
+    "sourceKeys": ["properties.total", "properties.revenue", "properties.value"],
+    "brazeRequired": true
+  },
+  {
+    "destKey": "subtotal_value",
+    "sourceKeys": "properties.subtotal_value",
     "brazeRequired": false
   },
   {
     "destKey": "tax",
     "sourceKeys": "properties.tax",
-    "required": false,
     "brazeRequired": false
   },
   {
     "destKey": "shipping",
     "sourceKeys": "properties.shipping",
-    "required": false,
     "brazeRequired": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "brazeRequired": true
   }
 ]

@@ -5,6 +5,9 @@ const DestHandlerMap = {
   ga360: 'ga',
   salesforce_oauth: 'salesforce',
   salesforce_oauth_sandbox: 'salesforce',
+};
+
+const WhitelistOnlyDestinationAliases = {
   __rudder_test__: 'rudder_test',
   webhook_v2: 'webhook',
 };
@@ -364,6 +367,17 @@ Object.entries(DestHandlerMap).forEach(([alias, destination]) => {
   };
 });
 
+Object.entries(WhitelistOnlyDestinationAliases).forEach(([alias, destination]) => {
+  const key = normalizeDestinationName(alias);
+  const canonicalDestination = normalizeDestinationName(destination);
+  if (!hasDestination(canonicalDestination)) {
+    throw new Error(
+      `Destination whitelist alias ${alias} points to unknown destination: ${destination}`,
+    );
+  }
+  destinationRegistry[key] = destinationRegistry[key] || buildDestinationEntry(key);
+});
+
 const setCapability = (destinations, capability) => {
   destinations.forEach((destination, index) => {
     const key = normalizeDestinationName(destination);
@@ -420,6 +434,7 @@ const getBatchingFrameworkGaDestinations = () => getCapabilityDestinations('batc
 module.exports = {
   DestHandlerMap,
   DestCanonicalNames,
+  WhitelistOnlyDestinationAliases,
   destinationRegistry,
   normalizeDestinationName,
   isValidDestination,

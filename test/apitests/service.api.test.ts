@@ -118,6 +118,14 @@ describe('Api tests with a mock source/destination', () => {
           .send([{ destType: 'ga' }, { userId: 'user-1' }]),
     },
     {
+      name: 'deleteUsers empty body',
+      request: () => request(server).post('/deleteUsers').send([]),
+    },
+    {
+      name: 'deleteUsers non-array body',
+      request: () => request(server).post('/deleteUsers').send({ destType: 'ga' }),
+    },
+    {
       name: 'v0 proxy path destination',
       request: () => request(server).post('/v0/destinations/not_a_destination/proxy').send({}),
     },

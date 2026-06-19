@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {
   DestHandlerMap,
+  WhitelistOnlyDestinationAliases,
   destinationRegistry,
   getBatchingFrameworkGaDestinations,
   getDestinationHandlerName,
@@ -21,10 +22,11 @@ const getDestinationDirectories = () => {
 };
 
 describe('destinationCanonicalNames', () => {
-  it('derives valid destination names from destination directories and handler aliases', () => {
+  it('derives valid destination names from destination directories and aliases', () => {
     const expectedDestinations = new Set([
       ...getDestinationDirectories(),
       ...Object.keys(DestHandlerMap),
+      ...Object.keys(WhitelistOnlyDestinationAliases),
     ]);
 
     expect(Object.keys(destinationRegistry).sort()).toEqual([...expectedDestinations].sort());
@@ -33,8 +35,13 @@ describe('destinationCanonicalNames', () => {
   it('preserves handler aliases accepted by dynamic loading boundaries', () => {
     expect(isValidDestination('salesforce_oauth')).toBe(true);
     expect(getDestinationHandlerName('salesforce_oauth_sandbox')).toBe('salesforce');
-    expect(getDestinationHandlerName('__rudder_test__')).toBe('rudder_test');
-    expect(getDestinationHandlerName('WEBHOOK_V2')).toBe('webhook');
+  });
+
+  it('keeps whitelist-only aliases out of handler resolution', () => {
+    expect(isValidDestination('__rudder_test__')).toBe(true);
+    expect(isValidDestination('WEBHOOK_V2')).toBe(true);
+    expect(getDestinationHandlerName('__rudder_test__')).toBe('__rudder_test__');
+    expect(getDestinationHandlerName('WEBHOOK_V2')).toBe('webhook_v2');
   });
 
   it('rejects unknown destination names', () => {

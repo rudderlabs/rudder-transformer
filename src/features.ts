@@ -99,6 +99,7 @@ export const destinationCapabilities: Record<string, DestinationCapabilities> = 
   posthog: { routerTransform: true, batching: true },
   custom_audience: { routerTransform: true, batching: true },
   iterable_audience: { routerTransform: true, batching: true },
+  survicate: { routerTransform: true },
   af: { regulations: true },
   engage: { regulations: true },
   sprig: { regulations: true, cdkV2: true },

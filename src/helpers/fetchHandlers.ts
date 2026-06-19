@@ -1,6 +1,5 @@
 import { BatchDestinationConstructor } from '../services/destination/nativeBatching/batchDestination';
 import { Hydrator, MiscService } from '../services/misc';
-import { assertValidDestination } from '../constants/destinationCanonicalNames';
 
 export class FetchHandler {
   private static sourceHandlerMap: Map<string, any> = new Map();
@@ -14,7 +13,6 @@ export class FetchHandler {
   private static batchDestinationHandlerMap: Map<string, BatchDestinationConstructor> = new Map();
 
   public static getDestHandler(dest: string, version: string) {
-    assertValidDestination(dest);
     let destinationHandler: any;
     if (this.destHandlerMap.has(dest)) {
       destinationHandler = this.destHandlerMap.get(dest);
@@ -47,7 +45,6 @@ export class FetchHandler {
   }
 
   public static getBatchDestinationHandler(dest: string): BatchDestinationConstructor {
-    assertValidDestination(dest);
     const key = dest.toLowerCase();
     const routerTransformHandler = this.batchDestinationHandlerMap.get(key);
     if (routerTransformHandler) {
@@ -59,7 +56,6 @@ export class FetchHandler {
   }
 
   public static getDeletionHandler(dest: string, version: string) {
-    assertValidDestination(dest);
     let deletionHandler: any;
     if (this.deletionHandlerMap.has(dest)) {
       deletionHandler = this.deletionHandlerMap.get(dest);

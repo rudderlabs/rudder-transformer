@@ -29,14 +29,16 @@ const generateAlphanumericId = (size = 36) => {
   return Array.from(bytes, (byte) => chars[byte % chars.length]).join('');
 };
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
-  const globPattern = join(dirPath, '**', 'data.ts');
+  // join() uses backslashes on Windows, but globSync requires forward-slash patterns.
+  const globPattern = join(dirPath, '**', 'data.ts').replace(/\\/g, '/');
   let testFilePaths = globSync(globPattern);
-  let filteredTestFilePaths: string[] = testFilePaths;
+  // Normalise returned paths to forward slashes so the includes() filters work on Windows too.
+  let filteredTestFilePaths: string[] = testFilePaths.map((p) => p.replace(/\\/g, '/'));
 
   const destinationOrSource = opts.destination || opts.source;
   if (destinationOrSource) {
     const resources = destinationOrSource.split(',');
-    filteredTestFilePaths = testFilePaths.filter((testFile) =>
+    filteredTestFilePaths = filteredTestFilePaths.filter((testFile) =>
       resources.some((resource) => testFile.includes(`/${resource}/`)),
     );
   }

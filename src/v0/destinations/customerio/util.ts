@@ -1,27 +1,36 @@
-const get = require('get-value');
-const set = require('set-value');
-const truncate = require('truncate-utf8-bytes');
-const validator = require('validator');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
-const { MAX_BATCH_SIZE, configFieldsToCheck } = require('./config');
-const {
+import get from 'get-value';
+import set from 'set-value';
+import truncate from 'truncate-utf8-bytes';
+import validator from 'validator';
+import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
+import {
+  MAX_BATCH_SIZE,
+  configFieldsToCheck,
+  MAPPING_CONFIG,
+  OBJECT_ACTIONS,
+  CONFIG_CATEGORIES,
+  DEFAULT_OBJECT_ACTION,
+  ENDPOINTS,
+} from './config';
+import {
   constructPayload,
   defaultPutRequestConfig,
   defaultPostRequestConfig,
   getFieldValueFromMessage,
   defaultDeleteRequestConfig,
   isAppleFamily,
-} = require('../../util');
+} from '../../util';
 
-const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
-
-const {
-  MAPPING_CONFIG,
-  OBJECT_ACTIONS,
-  CONFIG_CATEGORIES,
-  DEFAULT_OBJECT_ACTION,
-  ENDPOINTS,
-} = require('./config');
+import { EventType, SpecedTraits, TraitsMapping } from '../../../constants';
+import {
+  ResponseDetails,
+  CustomerIOSuccessfulEvent,
+  EndpointDetails,
+  CustomerIOIdentifyPayload,
+  CustomerIOMergePayload,
+  CustomerIOObjectPayload,
+  CustomerIODevicePayload,
+} from './types';
 
 const deviceRelatedEventNames = [
   'Application Installed',
@@ -31,19 +40,30 @@ const deviceRelatedEventNames = [
 
 const deviceDeleteRelatedEventName = 'Application Uninstalled';
 
-const getEndpointDetails = ({ eventType, id, deviceId }) => {
+const getEndpointDetails = ({
+  eventType,
+  id,
+  deviceId,
+}: {
+  eventType: keyof typeof ENDPOINTS;
+  id?: string;
+  deviceId?: string;
+}): EndpointDetails => {
   const { endpoint, path } = ENDPOINTS[eventType];
-  return { endpoint: endpoint.replace(':id', id).replace(':device_id', deviceId), path };
+  return {
+    endpoint: endpoint.replace(':id', id ?? '').replace(':device_id', deviceId ?? ''),
+    path,
+  };
 };
 
-const encodePathParameter = (param) => {
+const encodePathParameter = <T>(param: T): T | string => {
   if (typeof param !== 'string') return param;
   // return param.includes('/') ? encodeURIComponent(param) : param;
   return encodeURIComponent(param);
 };
 
-const getSizeInBytes = (obj) => {
-  let str = null;
+const getSizeInBytes = (obj: unknown) => {
+  let str: string | null = null;
   if (typeof obj === 'string') {
     // If obj is a string, then use it
     str = obj;
@@ -56,10 +76,10 @@ const getSizeInBytes = (obj) => {
   return bytes;
 };
 
-const getEventChunks = (groupEvents) => {
-  const eventChunks = [];
-  let batchedData = [];
-  let metadata = [];
+const getEventChunks = (groupEvents: CustomerIOSuccessfulEvent[]) => {
+  const eventChunks: { data: unknown[]; metadata: unknown[] }[] = [];
+  let batchedData: unknown[] = [];
+  let metadata: unknown[] = [];
   let size = 0;
 
   groupEvents.forEach((events) => {
@@ -102,8 +122,8 @@ const isdeviceRelatedEventName = (eventName, destination) =>
   destination?.Config?.deviceTokenEventName === eventName;
 
 // https://customer.io/docs/api/track/#operation/identify
-const identifyResponseBuilder = (userId, message) => {
-  const rawPayload = {};
+const identifyResponseBuilder = (userId, message): ResponseDetails => {
+  const rawPayload: CustomerIOIdentifyPayload = {};
   // if userId is not there simply drop the payload
   const id = userId || getFieldValueFromMessage(message, 'email');
   if (!id) {
@@ -170,7 +190,7 @@ const identifyResponseBuilder = (userId, message) => {
   return { rawPayload, endpointDetails, requestConfig };
 };
 
-const aliasResponseBuilder = (message, userId) => {
+const aliasResponseBuilder = (message, userId): ResponseDetails => {
   // ref : https://customer.io/docs/api/#operation/merge
   if (!userId || !message.previousId) {
     throw new InstrumentationError('Both userId and previousId are mandatory for merge operation');
@@ -179,7 +199,7 @@ const aliasResponseBuilder = (message, userId) => {
   const requestConfig = defaultPostRequestConfig;
   const cioProperty = validator.isEmail(userId) ? 'email' : 'id';
   const prevCioProperty = validator.isEmail(message.previousId) ? 'email' : 'id';
-  const rawPayload = {
+  const rawPayload: CustomerIOMergePayload = {
     primary: {
       [cioProperty]: userId,
     },
@@ -191,9 +211,9 @@ const aliasResponseBuilder = (message, userId) => {
   return { rawPayload, endpointDetails, requestConfig };
 };
 
-const groupResponseBuilder = (message) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.OBJECT_EVENTS.name]);
-  const rawPayload = {
+const groupResponseBuilder = (message): ResponseDetails => {
+  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.OBJECT_EVENTS.name])!;
+  const rawPayload: CustomerIOObjectPayload = {
     identifiers: {
       object_id: payload.object_id,
       object_type_id: payload.object_type_id,
@@ -217,8 +237,25 @@ const groupResponseBuilder = (message) => {
   return { rawPayload, endpointDetails, requestConfig };
 };
 
-const defaultResponseBuilder = (message, evName, userId, evType, destination, messageType) => {
-  const rawPayload = {};
+const defaultResponseBuilder = (
+  message,
+  evName,
+  userId,
+  evType,
+  destination,
+  messageType,
+): ResponseDetails => {
+  // Built incrementally into one of three shapes: a device-register payload, a
+  // track-event payload, or an empty body for device-delete. Fields are populated
+  // via direct assignment (data, anonymous_id) and set() (device, name, type, timestamp).
+  const rawPayload: {
+    device?: CustomerIODevicePayload['device'];
+    data?: unknown;
+    name?: string;
+    type?: unknown;
+    timestamp?: number;
+    anonymous_id?: string;
+  } = {};
   let endpointDetails;
   let trimmedEvName;
   let requestConfig = defaultPostRequestConfig;
@@ -313,7 +350,7 @@ const validateConfigFields = (destination) => {
   });
 };
 
-module.exports = {
+export {
   getEndpointDetails,
   encodePathParameter,
   getEventChunks,

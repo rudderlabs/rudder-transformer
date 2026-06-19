@@ -5,7 +5,7 @@ const { networkHandler: GenericNetworkHandler } = require('./networkhandler/gene
 
 const { SUPPORTED_VERSIONS } = require('../routes/utils/constants');
 const { getIntegrations } = require('../routes/utils');
-const { assertValidDestination } = require('../constants/destinationCanonicalNames');
+const { assertValidDestination } = require('../middlewares/destinationValidation');
 
 const handlers = {
   generic: GenericNetworkHandler,

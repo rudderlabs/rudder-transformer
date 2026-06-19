@@ -3,10 +3,12 @@ import path from 'path';
 import {
   DestHandlerMap,
   WhitelistOnlyDestinationAliases,
+} from '../../constants/destinationCanonicalNames';
+import {
   destinationRegistry,
   getDestinationHandlerName,
   isValidDestination,
-} from '../destinationCanonicalNames';
+} from '../destinationValidation';
 
 const getDestinationDirectories = () => {
   const srcRoot = path.resolve(__dirname, '..', '..');
@@ -18,7 +20,7 @@ const getDestinationDirectories = () => {
   );
 };
 
-describe('destinationCanonicalNames', () => {
+describe('destinationValidation', () => {
   it('derives valid destination names from destination directories and aliases', () => {
     const expectedDestinations = new Set([
       ...getDestinationDirectories(),

@@ -7,10 +7,7 @@ import { generateErrorObject } from '../../v0/util';
 import tags from '../../v0/util/tags';
 import { CatchErr } from '../../types';
 import { isDestinationCdkV2Enabled } from '../../features';
-import {
-  getDestinationHandlerName,
-  isValidDestination,
-} from '../../constants/destinationCanonicalNames';
+import { getDestinationHandlerName } from '../../middlewares/destinationValidation';
 
 const CDK_V2_ROOT_DIR = __dirname;
 
@@ -114,9 +111,6 @@ export function getErrorInfo(err: CatchErr, isProd: boolean, defTags) {
 }
 
 export function shouldUseCdkV2(destType: string, workspaceId: string) {
-  if (!isValidDestination(destType)) {
-    return false;
-  }
   const destTypeUpper = destType.toUpperCase();
 
   if (!isDestinationCdkV2Enabled(destType)) {

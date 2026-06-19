@@ -61,7 +61,7 @@ export const getV2InputSchema = (): ZodType =>
         .refine(
           (msg) => {
             if (msg.type === 'alias') {
-              return !!msg.userId && msg.previousId != null;
+              return !!msg.userId && !!msg.previousId;
             }
             if (msg.type === 'group') {
               return true;

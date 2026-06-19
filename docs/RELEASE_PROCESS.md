@@ -162,5 +162,4 @@ The release process uses these environment variables:
 
 - `.github/workflows/publish-new-release.yml` - Main release workflow
 - `scripts/create-github-release.js` - Release creation script
-- `github-release.config.js` - Legacy configuration (deprecated)
 - `package.json` - NPM scripts for release commands

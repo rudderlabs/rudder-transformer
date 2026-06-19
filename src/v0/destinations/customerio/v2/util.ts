@@ -59,8 +59,12 @@ const buildTraitAttributes = (message): Record<string, unknown> => {
         trait !== 'anonymousId',
     )
     .forEach((trait) => {
-      // Escape dots so keys like `dot.name` stay flat rather than nesting.
-      set(attributes, trait.replace(/\./g, '\\.'), get(message, `${pathToTraits}.${trait}`));
+      // Escape backslashes first, then dots, so keys remain flat and unambiguous for set-value path parsing
+      set(
+        attributes,
+        trait.replace(/\\/g, '\\\\').replace(/\./g, '\\.'),
+        get(message, `${pathToTraits}.${trait}`),
+      );
     });
 
   return attributes;

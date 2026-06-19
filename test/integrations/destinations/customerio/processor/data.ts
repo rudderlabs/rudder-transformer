@@ -12,7 +12,7 @@ import {
   secret7,
   secret8,
 } from '../maskedSecrets';
-import { v2data } from './v2data';
+import { v2data } from './dataV2';
 const v1data = [
   {
     name: 'customerio',

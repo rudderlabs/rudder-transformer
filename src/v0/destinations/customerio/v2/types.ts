@@ -52,10 +52,10 @@ export const getV2InputSchema = (): ZodType =>
       message: z
         .object({
           type: z.enum(SUPPORTED_TYPES),
-          userId: z.union([z.string(), z.number()]).nullish(),
-          anonymousId: z.union([z.string(), z.number()]).nullish(),
-          previousId: z.union([z.string(), z.number()]).nullish(),
-          groupId: z.union([z.string(), z.number()]).nullish(),
+          userId: z.string().nullish(),
+          anonymousId: z.string().nullish(),
+          previousId: z.string().nullish(),
+          groupId: z.string().nullish(),
         })
         .passthrough()
         .refine(

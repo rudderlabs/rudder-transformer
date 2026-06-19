@@ -9,7 +9,7 @@ const getV2Endpoint = (datacenter?: string): string => `https://${host(datacente
 const V2_BATCH_PATH = 'v2/batch';
 
 const MAX_OBJECT_SIZE_BYTES = 32 * 1024; // 32KB per object
-const MAX_BATCH_PAYLOAD = '500KB';
+const MAX_BATCH_PAYLOAD = '500000B';
 
 const DEVICE_EVENT_NAMES = [
   'Application Installed',

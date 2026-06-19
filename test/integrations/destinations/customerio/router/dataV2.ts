@@ -399,4 +399,285 @@ export const v2data = [
       },
     },
   },
+  {
+    name: 'customerio',
+    description: 'v2: 3 valid events batch together, 2 invalid events returned as errors',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                type: 'track',
+                userId: 'cio_v2_user1',
+                event: 'Order Completed',
+                properties: {
+                  orderId: 'abc-123',
+                  revenue: 49.99,
+                },
+                sentAt: '2024-01-15T10:00:00.000Z',
+              },
+              metadata: {
+                jobId: 10,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                type: 'identify',
+                userId: 'cio_v2_user2',
+                traits: {
+                  email: 'user2@example.com',
+                  plan: 'pro',
+                },
+                sentAt: '2024-01-15T10:01:00.000Z',
+              },
+              metadata: {
+                jobId: 11,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                type: 'alias',
+                userId: 'cio_v2_new_id',
+                previousId: 'cio_v2_old_id',
+                sentAt: '2024-01-15T10:02:00.000Z',
+              },
+              metadata: {
+                jobId: 12,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                type: 'track',
+                event: 'Button Clicked',
+                properties: {
+                  buttonId: 'signup',
+                },
+                sentAt: '2024-01-15T10:03:00.000Z',
+              },
+              metadata: {
+                jobId: 13,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                type: 'alias',
+                previousId: 'cio_v2_orphan_old',
+                sentAt: '2024-01-15T10:04:00.000Z',
+              },
+              metadata: {
+                jobId: 14,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: {
+                          id: 'cio_v2_user1',
+                        },
+                        name: 'Order Completed',
+                        attributes: {
+                          orderId: 'abc-123',
+                          revenue: 49.99,
+                        },
+                      },
+                      {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: {
+                          id: 'cio_v2_user2',
+                        },
+                        attributes: {
+                          email: 'user2@example.com',
+                          plan: 'pro',
+                        },
+                      },
+                      {
+                        type: 'person',
+                        action: 'merge',
+                        primary: {
+                          id: 'cio_v2_new_id',
+                        },
+                        secondary: {
+                          id: 'cio_v2_old_id',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 10,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+                {
+                  jobId: 11,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+                {
+                  jobId: 12,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+              ],
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+              batched: true,
+              statusCode: 200,
+            },
+            {
+              metadata: [
+                {
+                  jobId: 13,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error: 'message: userId, email or anonymousId is required',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+            {
+              metadata: [
+                {
+                  jobId: 14,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error: 'message: userId, email or anonymousId is required',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

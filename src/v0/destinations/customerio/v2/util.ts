@@ -145,9 +145,6 @@ export const buildScreen = (message, action: 'screen', evName): CustomerIOV2Payl
 
 export const buildMerge = (message): CustomerIOV2Payload => {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
-  if (!userId || message.previousId == null) {
-    throw new InstrumentationError('Both userId and previousId are mandatory for merge operation');
-  }
   const primaryKey = validator.isEmail(String(userId)) ? 'email' : 'id';
   const secondaryKey = validator.isEmail(String(message.previousId)) ? 'email' : 'id';
   return {

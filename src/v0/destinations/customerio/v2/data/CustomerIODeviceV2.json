@@ -1,0 +1,6 @@
+[
+  { "destKey": "device_os", "sourceKeys": "context.os.name" },
+  { "destKey": "device_model", "sourceKeys": "context.device.model" },
+  { "destKey": "app_version", "sourceKeys": "context.app.version" },
+  { "destKey": "device_locale", "sourceKeys": "context.locale" }
+]

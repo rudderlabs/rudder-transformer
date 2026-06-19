@@ -1,12 +1,17 @@
 import { authHeader1, secret1, secret2 } from '../maskedSecrets';
-import { v2data } from './v2data';
-const v1data = [
+
+// Generated from the exact v1 router input (see captureV2.ts / genV2data.ts) with
+// the batching flag enabled, asserting the Track API v2 batched output.
+export const v2data = [
   {
     name: 'customerio',
-    description: 'Test 0',
+    description: 'v2: mixed events batch into a single /v2/batch request',
     feature: 'router',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: {
@@ -34,21 +39,34 @@ const v1data = [
                     ip: '0.0.0.0',
                     age: 26,
                   },
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.0.0',
+                  },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 2,
+                  },
                 },
-                user_properties: { prop1: 'val1', prop2: 'val2' },
+                user_properties: {
+                  prop1: 'val1',
+                  prop2: 'val2',
+                },
                 type: 'identify',
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 originalTimestamp: '2019-10-14T09:03:17.562Z',
                 anonymousId: '123456',
                 userId: '123456',
-                integrations: { All: true },
+                integrations: {
+                  All: true,
+                },
                 traits: {
                   anonymousId: 'anon-id',
                   email: 'test@gmail.com',
@@ -63,7 +81,11 @@ const v1data = [
                 },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: { jobId: 1, userId: 'u1' },
+              metadata: {
+                jobId: 1,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
               destination: {
                 Config: {
                   siteID: secret1,
@@ -81,14 +103,25 @@ const v1data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: { email: 'test@rudderstack.com', anonymousId: '12345' },
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  traits: {
+                    email: 'test@rudderstack.com',
+                    anonymousId: '12345',
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.0.0',
+                  },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 2,
+                  },
                 },
                 type: 'page',
                 messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
@@ -102,11 +135,17 @@ const v1data = [
                   title: 'Test Page',
                   url: 'www.rudderlabs.com',
                 },
-                integrations: { All: true },
+                integrations: {
+                  All: true,
+                },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
               destination: {
                 Config: {
                   siteID: secret1,
@@ -125,15 +164,25 @@ const v1data = [
                     version: '1.1.0-beta.2',
                   },
                   ip: '0.0.0.0',
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.0-beta.2' },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.0-beta.2',
+                  },
                   locale: 'en-GB',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 2,
+                  },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
                 },
                 groupId: 'group@1',
-                integrations: { All: true },
+                integrations: {
+                  All: true,
+                },
                 traits: {
                   domainNames: 'rudderstack.com',
                   email: 'help@rudderstack.com',
@@ -143,7 +192,11 @@ const v1data = [
                 type: 'group',
                 userId: 'user@1',
               },
-              metadata: { jobId: 3, userId: 'u1' },
+              metadata: {
+                jobId: 3,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
               destination: {
                 Config: {
                   siteID: secret1,
@@ -162,15 +215,25 @@ const v1data = [
                     version: '1.1.0-beta.2',
                   },
                   ip: '0.0.0.0',
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.0-beta.2' },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.0-beta.2',
+                  },
                   locale: 'en-GB',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 2,
+                  },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
                 },
                 groupId: 'group@1',
-                integrations: { All: true },
+                integrations: {
+                  All: true,
+                },
                 traits: {
                   domainNames: 'rudderstack.com',
                   email: 'help@rudderstack.com',
@@ -180,7 +243,11 @@ const v1data = [
                 type: 'group',
                 userId: 'user@1',
               },
-              metadata: { jobId: 4, userId: 'u1' },
+              metadata: {
+                jobId: 4,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
               destination: {
                 Config: {
                   siteID: secret1,
@@ -203,87 +270,6 @@ const v1data = [
               batchedRequest: {
                 version: '1',
                 type: 'REST',
-                method: 'PUT',
-                endpoint: 'https://track.customer.io/api/v1/customers/123456',
-                endpointPath: 'v1/customers',
-                headers: { Authorization: authHeader1 },
-                params: {},
-                body: {
-                  JSON: {
-                    anonymous_id: '123456',
-                    city: 'NY',
-                    country: 'USA',
-                    postalCode: 712136,
-                    state: 'CA',
-                    street: '',
-                    email: 'test@gmail.com',
-                    'dot.name': 'Arnab Pal',
-                    prop1: 'val1',
-                    prop2: 'val2',
-                    _timestamp: 1571043797,
-                  },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                },
-                files: {},
-                userId: '123456',
-                statusCode: 200,
-              },
-              metadata: [{ jobId: 1, userId: 'u1' }],
-              batched: false,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  siteID: secret1,
-                  apiKey: secret2,
-                },
-              },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
-                endpointPath: 'v1/customers/events',
-                headers: { Authorization: authHeader1 },
-                params: {},
-                body: {
-                  JSON: {
-                    data: {
-                      path: '/test',
-                      referrer: 'Rudder',
-                      search: 'abc',
-                      title: 'Test Page',
-                      url: 'www.rudderlabs.com',
-                    },
-                    name: 'ApplicationLoaded',
-                    type: 'page',
-                    timestamp: 1571051718,
-                  },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                },
-                files: {},
-                userId: '12345',
-                statusCode: 200,
-              },
-              metadata: [{ jobId: 2, userId: 'u1' }],
-              batched: false,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  siteID: secret1,
-                  apiKey: secret2,
-                },
-              },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
                 method: 'POST',
                 endpoint: 'https://track.customer.io/api/v2/batch',
                 endpointPath: 'v2/batch',
@@ -293,50 +279,120 @@ const v1data = [
                 },
                 params: {},
                 body: {
-                  FORM: {},
-                  XML: {},
                   JSON: {
                     batch: [
                       {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: {
+                          id: '123456',
+                        },
+                        attributes: {
+                          city: 'NY',
+                          country: 'USA',
+                          postalCode: 712136,
+                          state: 'CA',
+                          street: '',
+                          email: 'test@gmail.com',
+                          'dot.name': 'Arnab Pal',
+                          _timestamp: 1571043797,
+                          anonymous_id: '123456',
+                        },
+                      },
+                      {
+                        type: 'person',
+                        action: 'page',
+                        identifiers: {
+                          id: '12345',
+                        },
+                        name: 'ApplicationLoaded',
+                        attributes: {
+                          path: '/test',
+                          referrer: 'Rudder',
+                          search: 'abc',
+                          title: 'Test Page',
+                          url: 'www.rudderlabs.com',
+                        },
+                        timestamp: 1571051718,
+                      },
+                      {
                         type: 'object',
                         action: 'identify',
-                        attributes: {
-                          name: 'rudderstack',
-                          email: 'help@rudderstack.com',
-                          domainNames: 'rudderstack.com',
+                        identifiers: {
+                          object_id: 'group@1',
+                          object_type_id: '1',
                         },
-                        identifiers: { object_id: 'group@1', object_type_id: '1' },
-                        cio_relationships: [{ identifiers: { id: 'user@1' } }],
+                        attributes: {
+                          domainNames: 'rudderstack.com',
+                          email: 'help@rudderstack.com',
+                          name: 'rudderstack',
+                        },
+                        cio_relationships: [
+                          {
+                            identifiers: {
+                              id: 'user@1',
+                            },
+                          },
+                        ],
                       },
                       {
                         type: 'object',
                         action: 'delete',
-                        attributes: {
-                          name: 'rudderstack',
-                          email: 'help@rudderstack.com',
-                          domainNames: 'rudderstack.com',
+                        identifiers: {
+                          object_id: 'group@1',
+                          object_type_id: '1',
                         },
-                        identifiers: { object_id: 'group@1', object_type_id: '1' },
-                        cio_relationships: [{ identifiers: { id: 'user@1' } }],
+                        attributes: {
+                          domainNames: 'rudderstack.com',
+                          email: 'help@rudderstack.com',
+                          name: 'rudderstack',
+                        },
+                        cio_relationships: [
+                          {
+                            identifiers: {
+                              id: 'user@1',
+                            },
+                          },
+                        ],
                       },
                     ],
                   },
                   JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
                 },
                 files: {},
               },
               metadata: [
-                { jobId: 3, userId: 'u1' },
-                { jobId: 4, userId: 'u1' },
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+                {
+                  jobId: 3,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+                {
+                  jobId: 4,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
               ],
-              batched: false,
-              statusCode: 200,
               destination: {
                 Config: {
                   siteID: secret1,
                   apiKey: secret2,
                 },
               },
+              batched: true,
+              statusCode: 200,
             },
           ],
         },
@@ -344,5 +400,3 @@ const v1data = [
     },
   },
 ];
-
-export const data = [...v1data, ...v2data];

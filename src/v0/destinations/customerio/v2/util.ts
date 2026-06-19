@@ -112,8 +112,6 @@ export const buildTrack = (message, evName): CustomerIOV2Payload => {
 };
 
 export const buildPage = (message, action: 'page', evName): CustomerIOV2Payload => {
-  // Mirror v1: a page/screen with no resolvable name is rejected rather than
-  // coerced to the string "undefined".
   if (typeof evName !== 'string') {
     throw new InstrumentationError('Event Name type should be a string');
   }
@@ -128,8 +126,6 @@ export const buildPage = (message, action: 'page', evName): CustomerIOV2Payload 
 };
 
 export const buildScreen = (message, action: 'screen', evName): CustomerIOV2Payload => {
-  // Mirror v1: a page/screen with no resolvable name is rejected rather than
-  // coerced to the string "undefined".
   if (typeof evName !== 'string') {
     throw new InstrumentationError('Event Name type should be a string');
   }

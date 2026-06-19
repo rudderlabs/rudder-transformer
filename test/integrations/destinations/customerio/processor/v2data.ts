@@ -12,14 +12,17 @@ import {
   secret7,
   secret8,
 } from '../maskedSecrets';
-import { v2data } from './v2data';
-const v1data = [
+
+export const v2data = [
   {
     name: 'customerio',
-    description: 'Test for userId with forward slash',
+    description: 'v2: Test for userId with forward slash',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -42,6 +45,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -53,30 +59,42 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  data: {
-                    test: 'property',
-                    value: 123,
-                  },
-                  name: 'Test Event',
-                  type: 'event',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        id: 'user/with/slashes',
+                      },
+                      name: 'Test Event',
+                      attributes: {
+                        test: 'property',
+                        value: 123,
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/user%2Fwith%2Fslashes/events',
-              endpointPath: 'v1/customers/events',
-              userId: 'user/with/slashes',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -86,10 +104,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 0',
+    description: 'v2: Test 0',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -114,6 +135,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -125,26 +149,41 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  email: 'updated_email@example.com',
-                  id: 'updated-id-value',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'identify',
+                      identifiers: {
+                        id: 'cio_1234',
+                      },
+                      attributes: {
+                        email: 'updated_email@example.com',
+                        id: 'updated-id-value',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/cio_1234',
-              endpointPath: 'v1/customers',
-              userId: 'cio_1234',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -154,10 +193,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 1',
+    description: 'v2: Test 1',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -232,6 +274,9 @@ const v1data = [
                 siteID: secret1,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -241,6 +286,9 @@ const v1data = [
         status: 200,
         body: [
           {
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
             error: 'apiKey not found in Configs',
             statTags: {
               destType: 'CUSTOMERIO',
@@ -249,6 +297,7 @@ const v1data = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 400,
           },
@@ -258,10 +307,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 2',
+    description: 'v2: Test 2',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -337,6 +389,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -348,35 +403,48 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  _timestamp: 1571043797,
-                  anonymous_id: '123456',
-                  city: 'NY',
-                  state: 'CA',
-                  street: '',
-                  prop1: 'val1',
-                  prop2: 'val2',
-                  country: 'USA',
-                  postalCode: 712136,
-                  email: 'test@gmail.com',
-                  'dot.name': 'Arnab Pal',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'identify',
+                      identifiers: {
+                        id: '123456',
+                      },
+                      attributes: {
+                        city: 'NY',
+                        country: 'USA',
+                        postalCode: 712136,
+                        state: 'CA',
+                        street: '',
+                        email: 'test@gmail.com',
+                        'dot.name': 'Arnab Pal',
+                        _timestamp: 1571043797,
+                        anonymous_id: '123456',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/123456',
-              endpointPath: 'v1/customers',
-              userId: '123456',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -386,10 +454,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 3',
+    description: 'v2: Test 3',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -462,6 +533,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -471,6 +545,9 @@ const v1data = [
         status: 200,
         body: [
           {
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
             error: 'userId or email is not present',
             statTags: {
               destType: 'CUSTOMERIO',
@@ -479,6 +556,7 @@ const v1data = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 400,
           },
@@ -488,10 +566,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 4',
+    description: 'v2: Test 4',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -566,6 +647,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -577,35 +661,48 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  _timestamp: 1571043797,
-                  anonymous_id: '123456',
-                  city: 'NY',
-                  country: 'USA',
-                  'dot.name': 'Arnab Pal',
-                  email: 'test@gmail.com',
-                  postalCode: 712136,
-                  prop1: 'val1',
-                  prop2: 'val2',
-                  state: 'CA',
-                  street: '',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'identify',
+                      identifiers: {
+                        email: 'test@gmail.com',
+                      },
+                      attributes: {
+                        city: 'NY',
+                        country: 'USA',
+                        postalCode: 712136,
+                        state: 'CA',
+                        street: '',
+                        email: 'test@gmail.com',
+                        'dot.name': 'Arnab Pal',
+                        _timestamp: 1571043797,
+                        anonymous_id: '123456',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/test%40gmail.com',
-              endpointPath: 'v1/customers',
-              userId: '123456',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -615,10 +712,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 5',
+    description: 'v2: Test 5',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -677,6 +777,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -688,34 +791,46 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  type: 'page',
-                  data: {
-                    url: 'www.rudderlabs.com',
-                    path: '/test',
-                    search: 'abc',
-                    referrer: 'Rudder',
-                    title: 'Test Page',
-                  },
-                  timestamp: 1571051718,
-                  name: 'ApplicationLoaded',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'page',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      name: 'ApplicationLoaded',
+                      attributes: {
+                        path: '/test',
+                        referrer: 'Rudder',
+                        search: 'abc',
+                        title: 'Test Page',
+                        url: 'www.rudderlabs.com',
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -725,10 +840,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 6',
+    description: 'v2: Test 6',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -785,6 +903,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -796,32 +917,44 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  type: 'event',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'test track event',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      name: 'test track event',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50000,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -831,10 +964,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 7',
+    description: 'v2: Test 7',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -891,6 +1027,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -902,32 +1041,44 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  type: 'event',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'test track event',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        email: 'test@rudderstack.com',
+                      },
+                      name: 'test track event',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50000,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/events',
-              endpointPath: 'v1/customers/events',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -937,10 +1088,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 8',
+    description: 'v2: Test 8',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -996,6 +1150,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -1007,33 +1164,44 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  type: 'event',
-                  anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'test track event',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                      },
+                      name: 'test track event',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50000,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/events',
-              endpointPath: 'v1/events',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -1043,10 +1211,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 9',
+    description: 'v2: Test 9',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -1119,6 +1290,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -1130,33 +1304,52 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  device: {
-                    review_body: 'Some Review Body',
-                    rating: 2,
-                    review_id: 'some_review_id',
-                    last_used: 1578564113,
-                    platform: 'android',
-                    id: 'abcxyz',
-                    product_id: 'some_product_id_a',
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'abcxyz',
+                        last_used: 1578564113,
+                        attributes: {
+                          device_os: 'Android',
+                          device_model: 'Android SDK built for x86',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                          product_id: 'some_product_id_a',
+                          rating: 2,
+                          review_body: 'Some Review Body',
+                          review_id: 'some_review_id',
+                        },
+                        platform: 'android',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/devices',
-              endpointPath: 'v1/customers/devices',
-              userId: '12345',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -1166,10 +1359,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 10',
+    description: 'v2: Test 10',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -1242,6 +1438,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -1253,23 +1452,40 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
+                JSON: {
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'delete_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'abcxyz',
+                      },
+                    },
+                  ],
+                },
                 JSON_ARRAY: {},
-                JSON: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/devices/abcxyz',
-              endpointPath: 'v1/customers/devices/delete',
-              userId: '12345',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'DELETE',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -1279,10 +1495,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 11',
+    description: 'v2: Test 11',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -1346,6 +1565,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -1357,23 +1579,40 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
+                JSON: {
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'delete_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'somel',
+                      },
+                    },
+                  ],
+                },
                 JSON_ARRAY: {},
-                JSON: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/devices/somel',
-              endpointPath: 'v1/customers/devices/delete',
-              userId: '12345',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'DELETE',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -1383,10 +1622,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 12',
+    description: 'v2: Test 12',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -1449,6 +1691,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -1460,24 +1705,40 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
+                JSON: {
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'delete_device',
+                      identifiers: {
+                        email: 'test@rudderstack.com',
+                      },
+                      device: {
+                        token: 'somel',
+                      },
+                    },
+                  ],
+                },
                 JSON_ARRAY: {},
-                JSON: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint:
-                'https://track.customer.io/api/v1/customers/test%40rudderstack.com/devices/somel',
-              endpointPath: 'v1/customers/devices/delete',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'DELETE',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -1487,10 +1748,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 13',
+    description: 'v2: Test 13',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -1552,6 +1816,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -1561,6 +1828,9 @@ const v1data = [
         status: 200,
         body: [
           {
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
             error: 'userId/email or device_token not present',
             statTags: {
               destType: 'CUSTOMERIO',
@@ -1569,6 +1839,7 @@ const v1data = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 400,
           },
@@ -1578,10 +1849,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 14',
+    description: 'v2: Test 14',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -1644,116 +1918,8 @@ const v1data = [
                 apiKey: secret2,
               },
             },
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            output: {
-              body: {
-                XML: {},
-                JSON_ARRAY: {},
-                JSON: {
-                  device: {
-                    id: 'somel',
-                    last_used: 1571051718,
-                    platform: 'mobile',
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                },
-                FORM: {},
-              },
-              files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/devices',
-              endpointPath: 'v1/customers/devices',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              headers: {
-                Authorization: authHeader1,
-              },
-              version: '1',
-              params: {},
-              type: 'REST',
-              method: 'PUT',
-              statusCode: 200,
-            },
-            statusCode: 200,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'customerio',
-    description: 'Test 15',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              channel: 'mobile',
-              context: {
-                device: {
-                  name: 'test android',
-                  id: 'sample_device_id',
-                  model: 'some_model_device',
-                  type: 'mobile',
-                  token: 'somel',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                traits: {
-                  anonymousId: '12345',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                locale: 'en-US',
-                ip: '0.0.0.0',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-              },
-              type: 'track',
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2019-10-14T11:15:18.300Z',
-              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              event: 'Application Installed',
-              properties: {
-                user_actual_role: 'system_admin',
-                user_actual_id: 12345,
-                user_time_spent: 50000,
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T11:15:53.296Z',
-            },
-            destination: {
-              Config: {
-                datacenter: 'US',
-                siteID: secret1,
-                apiKey: secret2,
-              },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
           },
         ],
@@ -1766,33 +1932,50 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  name: 'Application Installed',
-                  timestamp: 1571051718,
-                  type: 'event',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        email: 'test@rudderstack.com',
+                      },
+                      device: {
+                        token: 'somel',
+                        last_used: 1571051718,
+                        attributes: {
+                          device_model: 'some_model_device',
+                          app_version: '1.0.0',
+                          device_locale: 'en-US',
+                          user_actual_id: 12345,
+                          user_actual_role: 'system_admin',
+                          user_time_spent: 50000,
+                        },
+                        platform: 'mobile',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/events',
-              endpointPath: 'v1/events',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -1802,10 +1985,114 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 16',
+    description: 'v2: Test 15',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'mobile',
+              context: {
+                device: {
+                  name: 'test android',
+                  id: 'sample_device_id',
+                  model: 'some_model_device',
+                  type: 'mobile',
+                  token: 'somel',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: {
+                  anonymousId: '12345',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              type: 'track',
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2019-10-14T11:15:18.300Z',
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              event: 'Application Installed',
+              properties: {
+                user_actual_role: 'system_admin',
+                user_actual_id: 12345,
+                user_time_spent: 50000,
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            destination: {
+              Config: {
+                datacenter: 'US',
+                siteID: secret1,
+                apiKey: secret2,
+              },
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
+            error: 'userId/email or device_token not present',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'customerio',
+    description: 'v2: Test 16',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -1869,6 +2156,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -1880,32 +2170,50 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  device: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    last_used: 1571051718,
-                    user_time_spent: 50000,
-                    platform: 'mobile',
-                    id: 'somel',
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'somel',
+                        last_used: 1571051718,
+                        attributes: {
+                          device_model: 'some_model_device',
+                          app_version: '1.0.0',
+                          device_locale: 'en-US',
+                          user_actual_id: 12345,
+                          user_actual_role: 'system_admin',
+                          user_time_spent: 50000,
+                        },
+                        platform: 'mobile',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/devices',
-              endpointPath: 'v1/customers/devices',
-              userId: '12345',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -1915,10 +2223,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 17',
+    description: 'v2: Test 17',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -1981,6 +2292,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -1990,36 +2304,20 @@ const v1data = [
         status: 200,
         body: [
           {
-            output: {
-              body: {
-                XML: {},
-                JSON_ARRAY: {},
-                JSON: {
-                  type: 'event',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'Application Installed',
-                },
-                FORM: {},
-              },
-              files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
-              headers: {
-                Authorization: authHeader1,
-              },
-              version: '1',
-              params: {},
-              type: 'REST',
-              method: 'POST',
-              statusCode: 200,
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
-            statusCode: 200,
+            error: 'userId/email or device_token not present',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
           },
         ],
       },
@@ -2027,10 +2325,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 18',
+    description: 'v2: Test 18',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -2093,6 +2394,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -2102,36 +2406,20 @@ const v1data = [
         status: 200,
         body: [
           {
-            output: {
-              body: {
-                XML: {},
-                JSON_ARRAY: {},
-                JSON: {
-                  type: 'event',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'Application Opened',
-                },
-                FORM: {},
-              },
-              files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
-              headers: {
-                Authorization: authHeader1,
-              },
-              version: '1',
-              params: {},
-              type: 'REST',
-              method: 'POST',
-              statusCode: 200,
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
-            statusCode: 200,
+            error: 'userId/email or device_token not present',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
           },
         ],
       },
@@ -2139,10 +2427,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 19',
+    description: 'v2: Test 19',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -2206,6 +2497,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -2217,32 +2511,50 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  device: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    last_used: 1571051718,
-                    user_time_spent: 50000,
-                    platform: 'mobile',
-                    id: 'sample_device_token',
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'sample_device_token',
+                        last_used: 1571051718,
+                        attributes: {
+                          device_model: 'some_model_device',
+                          app_version: '1.0.0',
+                          device_locale: 'en-US',
+                          user_actual_id: 12345,
+                          user_actual_role: 'system_admin',
+                          user_time_spent: 50000,
+                        },
+                        platform: 'mobile',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/devices',
-              endpointPath: 'v1/customers/devices',
-              userId: '12345',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -2252,10 +2564,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 20',
+    description: 'v2: Test 20',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -2319,6 +2634,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -2330,24 +2648,40 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
+                JSON: {
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'delete_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'sample_device_token',
+                      },
+                    },
+                  ],
+                },
                 JSON_ARRAY: {},
-                JSON: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint:
-                'https://track.customer.io/api/v1/customers/12345/devices/sample_device_token',
-              endpointPath: 'v1/customers/devices/delete',
-              userId: '12345',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'DELETE',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -2357,10 +2691,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 21',
+    description: 'v2: Test 21',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -2435,6 +2772,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -2446,34 +2786,47 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  _timestamp: 1571043797,
-                  anonymous_id: '123456',
-                  city: 'NY',
-                  state: 'CA',
-                  street: '',
-                  prop1: 'val1',
-                  prop2: 'val2',
-                  country: 'USA',
-                  postalCode: 712136,
-                  email: 'test@gmail.com',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'identify',
+                      identifiers: {
+                        id: '123456',
+                      },
+                      attributes: {
+                        city: 'NY',
+                        country: 'USA',
+                        postalCode: 712136,
+                        state: 'CA',
+                        street: '',
+                        email: 'test@gmail.com',
+                        _timestamp: 1571043797,
+                        anonymous_id: '123456',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/123456',
-              endpointPath: 'v1/customers',
-              userId: '123456',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -2483,10 +2836,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 22',
+    description: 'v2: Test 22',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -2545,6 +2901,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -2556,34 +2915,46 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  type: 'page',
-                  data: {
-                    url: 'www.rudderlabs.com',
-                    path: '/test',
-                    search: 'abc',
-                    referrer: 'Rudder',
-                    title: 'Test Page',
-                  },
-                  timestamp: 1571051718,
-                  name: 'ApplicationLoaded',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'page',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      name: 'ApplicationLoaded',
+                      attributes: {
+                        path: '/test',
+                        referrer: 'Rudder',
+                        search: 'abc',
+                        title: 'Test Page',
+                        url: 'www.rudderlabs.com',
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -2593,10 +2964,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 23',
+    description: 'v2: Test 23',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -2653,6 +3027,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -2664,32 +3041,44 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  type: 'event',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'test track event',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      name: 'test track event',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50000,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -2699,10 +3088,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 24',
+    description: 'v2: Test 24',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -2759,6 +3151,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -2770,33 +3165,44 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  type: 'event',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'test track event',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        email: 'test@rudderstack.com',
+                      },
+                      name: 'test track event',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50000,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint:
-                'https://track-eu.customer.io/api/v1/customers/test%40rudderstack.com/events',
-              endpointPath: 'v1/customers/events',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -2806,10 +3212,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 25',
+    description: 'v2: Test 25',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -2865,6 +3274,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -2876,33 +3288,44 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  type: 'event',
-                  anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'test track event',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                      },
+                      name: 'test track event',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50000,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/events',
-              endpointPath: 'v1/events',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -2912,10 +3335,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 26',
+    description: 'v2: Test 26',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -2988,6 +3414,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -2999,33 +3428,52 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  device: {
-                    review_body: 'Some Review Body',
-                    rating: 2,
-                    review_id: 'some_review_id',
-                    last_used: 1578564113,
-                    platform: 'android',
-                    id: 'abcxyz',
-                    product_id: 'some_product_id_a',
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'abcxyz',
+                        last_used: 1578564113,
+                        attributes: {
+                          device_os: 'Android',
+                          device_model: 'Android SDK built for x86',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                          product_id: 'some_product_id_a',
+                          rating: 2,
+                          review_body: 'Some Review Body',
+                          review_id: 'some_review_id',
+                        },
+                        platform: 'android',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices',
-              endpointPath: 'v1/customers/devices',
-              userId: '12345',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -3035,10 +3483,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 27',
+    description: 'v2: Test 27',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -3111,6 +3562,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -3122,23 +3576,40 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
+                JSON: {
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'delete_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'abcxyz',
+                      },
+                    },
+                  ],
+                },
                 JSON_ARRAY: {},
-                JSON: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices/abcxyz',
-              endpointPath: 'v1/customers/devices/delete',
-              userId: '12345',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'DELETE',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -3148,10 +3619,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 28',
+    description: 'v2: Test 28',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -3215,6 +3689,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -3226,23 +3703,40 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
+                JSON: {
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'delete_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'somel',
+                      },
+                    },
+                  ],
+                },
                 JSON_ARRAY: {},
-                JSON: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices/somel',
-              endpointPath: 'v1/customers/devices/delete',
-              userId: '12345',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'DELETE',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -3252,10 +3746,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 29',
+    description: 'v2: Test 29',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -3317,6 +3814,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -3326,6 +3826,9 @@ const v1data = [
         status: 200,
         body: [
           {
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
             error: 'userId/email or device_token not present',
             statTags: {
               destType: 'CUSTOMERIO',
@@ -3334,6 +3837,7 @@ const v1data = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 400,
           },
@@ -3343,10 +3847,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 30',
+    description: 'v2: Test 30',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -3409,117 +3916,8 @@ const v1data = [
                 apiKey: secret2,
               },
             },
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            output: {
-              body: {
-                XML: {},
-                JSON_ARRAY: {},
-                JSON: {
-                  device: {
-                    id: 'somel',
-                    last_used: 1571051718,
-                    platform: 'mobile',
-                    user_actual_role: 'system_admin',
-                    user_actual_id: 12345,
-                    user_time_spent: 50000,
-                  },
-                },
-                FORM: {},
-              },
-              files: {},
-              endpoint:
-                'https://track-eu.customer.io/api/v1/customers/test%40rudderstack.com/devices',
-              endpointPath: 'v1/customers/devices',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              headers: {
-                Authorization: authHeader1,
-              },
-              version: '1',
-              params: {},
-              type: 'REST',
-              method: 'PUT',
-              statusCode: 200,
-            },
-            statusCode: 200,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'customerio',
-    description: 'Test 31',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              channel: 'mobile',
-              context: {
-                device: {
-                  name: 'test android',
-                  id: 'sample_device_id',
-                  model: 'some_model_device',
-                  type: 'mobile',
-                  token: 'somel',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                traits: {
-                  anonymousId: '12345',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                locale: 'en-US',
-                ip: '0.0.0.0',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-              },
-              type: 'track',
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2019-10-14T11:15:18.300Z',
-              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              event: 'Application Installed',
-              properties: {
-                user_actual_role: 'system_admin',
-                user_actual_id: 12345,
-                user_time_spent: 50000,
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T11:15:53.296Z',
-            },
-            destination: {
-              Config: {
-                datacenter: 'EU',
-                siteID: secret1,
-                apiKey: secret2,
-              },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
           },
         ],
@@ -3532,33 +3930,50 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                  data: {
-                    user_actual_role: 'system_admin',
-                    user_actual_id: 12345,
-                    user_time_spent: 50000,
-                  },
-                  name: 'Application Installed',
-                  timestamp: 1571051718,
-                  type: 'event',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        email: 'test@rudderstack.com',
+                      },
+                      device: {
+                        token: 'somel',
+                        last_used: 1571051718,
+                        attributes: {
+                          device_model: 'some_model_device',
+                          app_version: '1.0.0',
+                          device_locale: 'en-US',
+                          user_actual_id: 12345,
+                          user_actual_role: 'system_admin',
+                          user_time_spent: 50000,
+                        },
+                        platform: 'mobile',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/events',
-              endpointPath: 'v1/events',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -3568,10 +3983,114 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 32',
+    description: 'v2: Test 31',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'mobile',
+              context: {
+                device: {
+                  name: 'test android',
+                  id: 'sample_device_id',
+                  model: 'some_model_device',
+                  type: 'mobile',
+                  token: 'somel',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: {
+                  anonymousId: '12345',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              type: 'track',
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2019-10-14T11:15:18.300Z',
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              event: 'Application Installed',
+              properties: {
+                user_actual_role: 'system_admin',
+                user_actual_id: 12345,
+                user_time_spent: 50000,
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            destination: {
+              Config: {
+                datacenter: 'EU',
+                siteID: secret1,
+                apiKey: secret2,
+              },
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
+            error: 'userId/email or device_token not present',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'customerio',
+    description: 'v2: Test 32',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -3635,6 +4154,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -3646,32 +4168,50 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  device: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    last_used: 1571051718,
-                    user_time_spent: 50000,
-                    platform: 'mobile',
-                    id: 'somel',
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'somel',
+                        last_used: 1571051718,
+                        attributes: {
+                          device_model: 'some_model_device',
+                          app_version: '1.0.0',
+                          device_locale: 'en-US',
+                          user_actual_id: 12345,
+                          user_actual_role: 'system_admin',
+                          user_time_spent: 50000,
+                        },
+                        platform: 'mobile',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices',
-              endpointPath: 'v1/customers/devices',
-              userId: '12345',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -3681,10 +4221,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 33',
+    description: 'v2: Test 33',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -3747,6 +4290,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -3756,36 +4302,20 @@ const v1data = [
         status: 200,
         body: [
           {
-            output: {
-              body: {
-                XML: {},
-                JSON_ARRAY: {},
-                JSON: {
-                  type: 'event',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'Application Installed',
-                },
-                FORM: {},
-              },
-              files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
-              headers: {
-                Authorization: authHeader1,
-              },
-              version: '1',
-              params: {},
-              type: 'REST',
-              method: 'POST',
-              statusCode: 200,
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
-            statusCode: 200,
+            error: 'userId/email or device_token not present',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
           },
         ],
       },
@@ -3793,10 +4323,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 34',
+    description: 'v2: Test 34',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -3859,6 +4392,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -3868,36 +4404,20 @@ const v1data = [
         status: 200,
         body: [
           {
-            output: {
-              body: {
-                XML: {},
-                JSON_ARRAY: {},
-                JSON: {
-                  type: 'event',
-                  data: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    user_time_spent: 50000,
-                  },
-                  timestamp: 1571051718,
-                  name: 'Application Opened',
-                },
-                FORM: {},
-              },
-              files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
-              headers: {
-                Authorization: authHeader1,
-              },
-              version: '1',
-              params: {},
-              type: 'REST',
-              method: 'POST',
-              statusCode: 200,
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
-            statusCode: 200,
+            error: 'userId/email or device_token not present',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
           },
         ],
       },
@@ -3905,10 +4425,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 35',
+    description: 'v2: Test 35',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -3972,6 +4495,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -3983,32 +4509,50 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  device: {
-                    user_actual_id: 12345,
-                    user_actual_role: 'system_admin',
-                    last_used: 1571051718,
-                    user_time_spent: 50000,
-                    platform: 'mobile',
-                    id: 'sample_device_token',
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'sample_device_token',
+                        last_used: 1571051718,
+                        attributes: {
+                          device_model: 'some_model_device',
+                          app_version: '1.0.0',
+                          device_locale: 'en-US',
+                          user_actual_id: 12345,
+                          user_actual_role: 'system_admin',
+                          user_time_spent: 50000,
+                        },
+                        platform: 'mobile',
+                      },
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices',
-              endpointPath: 'v1/customers/devices',
-              userId: '12345',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'PUT',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -4018,10 +4562,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 36',
+    description: 'v2: Test 36',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -4085,6 +4632,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -4096,24 +4646,40 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
+                JSON: {
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'delete_device',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      device: {
+                        token: 'sample_device_token',
+                      },
+                    },
+                  ],
+                },
                 JSON_ARRAY: {},
-                JSON: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint:
-                'https://track-eu.customer.io/api/v1/customers/12345/devices/sample_device_token',
-              endpointPath: 'v1/customers/devices/delete',
-              userId: '12345',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
-              method: 'DELETE',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -4123,10 +4689,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 37',
+    description: 'v2: Test 37',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -4182,6 +4751,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -4192,34 +4764,45 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v1/events',
-              endpointPath: 'v1/events',
-              headers: {
-                Authorization: authHeader1,
-              },
-              params: {},
               body: {
                 JSON: {
-                  data: {
-                    user_actual_role: 'system_admin',
-                    user_actual_id: 12345,
-                    user_time_spent: 50,
-                  },
-                  anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                  name: 'https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-s',
-                  type: 'event',
-                  timestamp: 1571051718,
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                      },
+                      name: 'https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -4229,10 +4812,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 38',
+    description: 'v2: Test 38',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -4289,6 +4875,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -4299,33 +4888,45 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/events',
-              endpointPath: 'v1/customers/events',
-              headers: {
-                Authorization: authHeader1,
-              },
-              params: {},
               body: {
                 JSON: {
-                  data: {
-                    user_actual_role: 'system_admin',
-                    user_actual_id: 12345,
-                    user_time_spent: 50,
-                  },
-                  name: 'https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/',
-                  type: 'event',
-                  timestamp: 1571051718,
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        email: 'test@rudderstack.com',
+                      },
+                      name: 'https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -4335,10 +4936,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 39',
+    description: 'v2: Test 39',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -4394,6 +4998,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -4404,34 +5011,45 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v1/events',
-              endpointPath: 'v1/events',
-              headers: {
-                Authorization: authHeader1,
-              },
-              params: {},
               body: {
                 JSON: {
-                  data: {
-                    user_actual_role: 'system_admin',
-                    user_actual_id: 12345,
-                    user_time_spent: 50000,
-                  },
-                  anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                  name: 'Viewed https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-q Screen',
-                  type: 'event',
-                  timestamp: 1571051718,
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'screen',
+                      identifiers: {
+                        anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                      },
+                      name: 'Viewed https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/ Screen',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50000,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -4441,10 +5059,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 40',
+    description: 'v2: Test 40',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -4501,6 +5122,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -4511,33 +5135,45 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/events',
-              endpointPath: 'v1/customers/events',
-              headers: {
-                Authorization: authHeader1,
-              },
-              params: {},
               body: {
                 JSON: {
-                  data: {
-                    user_actual_role: 'system_admin',
-                    user_actual_id: 12345,
-                    user_time_spent: 50000,
-                  },
-                  name: 'Viewed https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/ Screen',
-                  type: 'event',
-                  timestamp: 1571051718,
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'screen',
+                      identifiers: {
+                        email: 'test@rudderstack.com',
+                      },
+                      name: 'Viewed https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/ Screen',
+                      attributes: {
+                        user_actual_role: 'system_admin',
+                        user_actual_id: 12345,
+                        user_time_spent: 50000,
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -4547,10 +5183,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 41',
+    description: 'v2: Test 41',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -4618,6 +5257,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -4628,29 +5270,41 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v1/customers/dummy-user-id-100/events',
-              endpointPath: 'v1/customers/events',
-              headers: {
-                Authorization: authHeader1,
-              },
-              params: {},
               body: {
                 JSON: {
-                  data: {},
-                  name: 'Home: Viewed',
-                  type: 'event',
-                  timestamp: 1632314412,
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'event',
+                      identifiers: {
+                        id: 'dummy-user-id-100',
+                      },
+                      name: 'Home: Viewed',
+                      attributes: {},
+                      timestamp: 1632314412,
+                    },
+                  ],
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'dummy-user-id-100',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -4660,10 +5314,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 42',
+    description: 'v2: Test 42',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -4733,6 +5390,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -4743,33 +5403,48 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/dummy-user-id-100',
-              endpointPath: 'v1/customers',
-              headers: {
-                Authorization: authHeader1,
-              },
-              params: {},
               body: {
                 JSON: {
-                  city: 'NY',
-                  country: 'USA',
-                  postalCode: 712136,
-                  state: 'CA',
-                  street: '',
-                  email: 'test@gmail.com',
-                  _timestamp: 1571043797,
-                  anonymous_id: 'dummy-100-anon',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'identify',
+                      identifiers: {
+                        id: 'dummy-user-id-100',
+                      },
+                      attributes: {
+                        city: 'NY',
+                        country: 'USA',
+                        postalCode: 712136,
+                        state: 'CA',
+                        street: '',
+                        email: 'test@gmail.com',
+                        _timestamp: 1571043797,
+                        anonymous_id: 'dummy-100-anon',
+                      },
+                    },
+                  ],
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'dummy-user-id-100',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -4779,10 +5454,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 43',
+    description: 'v2: Test 43',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -4865,6 +5543,9 @@ const v1data = [
             request: {
               query: {},
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -4875,29 +5556,43 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint: 'https://track.customer.io/api/v1/customers/xaviercharles%40hotmail.com',
-              endpointPath: 'v1/customers',
-              headers: {
-                Authorization: authHeader2,
-              },
-              params: {},
               body: {
                 JSON: {
-                  last_name: 'xavier',
-                  first_name: 'charles',
-                  email: 'xaviercharles@hotmail.com',
-                  _timestamp: 1635325796,
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'identify',
+                      identifiers: {
+                        id: 'xaviercharles@hotmail.com',
+                      },
+                      attributes: {
+                        last_name: 'xavier',
+                        first_name: 'charles',
+                        _timestamp: 1635325796,
+                      },
+                    },
+                  ],
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'xaviercharles@hotmail.com',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader2,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -4907,10 +5602,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 44',
+    description: 'v2: Test 44',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -4992,6 +5690,9 @@ const v1data = [
             request: {
               query: {},
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -5002,29 +5703,43 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint: 'https://track.customer.io/api/v1/customers/xaviercharles',
-              endpointPath: 'v1/customers',
-              headers: {
-                Authorization: authHeader2,
-              },
-              params: {},
               body: {
                 JSON: {
-                  last_name: 'xavier',
-                  first_name: 'charles',
-                  id: 'xaviercharles',
-                  _timestamp: 1635325796,
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'identify',
+                      identifiers: {
+                        id: 'xaviercharles',
+                      },
+                      attributes: {
+                        last_name: 'xavier',
+                        first_name: 'charles',
+                        _timestamp: 1635325796,
+                      },
+                    },
+                  ],
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'xaviercharles',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader2,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -5034,10 +5749,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 45',
+    description: 'v2: Test 45',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -5166,6 +5884,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -5176,32 +5897,50 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
-              endpointPath: 'v1/customers/devices',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
               body: {
                 JSON: {
-                  device: {
-                    from_background: false,
-                    id: 'deviceToken',
-                    platform: 'ios',
-                    last_used: 1641808826,
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+                      },
+                      device: {
+                        token: 'deviceToken',
+                        last_used: 1641808826,
+                        attributes: {
+                          device_os: 'iOS',
+                          device_model: 'iPhone',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                          from_background: false,
+                        },
+                        platform: 'ios',
+                      },
+                    },
+                  ],
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader3,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -5211,10 +5950,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 46',
+    description: 'v2: Test 46',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -5343,6 +6085,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -5352,35 +6097,20 @@ const v1data = [
         status: 200,
         body: [
           {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/events',
-              endpointPath: 'v1/customers/events',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
-              body: {
-                JSON: {
-                  data: {
-                    from_background: false,
-                  },
-                  name: 'Application Opened',
-                  type: 'event',
-                  timestamp: 1641827343,
-                },
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
-              statusCode: 200,
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
-            statusCode: 200,
+            error: 'userId/email or device_token not present',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
           },
         ],
       },
@@ -5388,10 +6118,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 47',
+    description: 'v2: Test 47',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -5519,6 +6252,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -5529,32 +6265,50 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
-              endpointPath: 'v1/customers/devices',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
               body: {
                 JSON: {
-                  device: {
-                    from_background: false,
-                    id: 'deviceToken',
-                    platform: 'ios',
-                    last_used: 1641808826,
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+                      },
+                      device: {
+                        token: 'deviceToken',
+                        last_used: 1641808826,
+                        attributes: {
+                          device_os: 'iOS',
+                          device_model: 'iPhone',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                          from_background: false,
+                        },
+                        platform: 'ios',
+                      },
+                    },
+                  ],
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader3,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -5564,10 +6318,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 48',
+    description: 'v2: Test 48',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -5695,6 +6452,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -5705,32 +6465,50 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
-              endpointPath: 'v1/customers/devices',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
               body: {
                 JSON: {
-                  device: {
-                    from_background: false,
-                    id: 'deviceToken',
-                    platform: 'ios',
-                    last_used: 1641808826,
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+                      },
+                      device: {
+                        token: 'deviceToken',
+                        last_used: 1641808826,
+                        attributes: {
+                          device_os: 'iOS',
+                          device_model: 'iPhone',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                          from_background: false,
+                        },
+                        platform: 'ios',
+                      },
+                    },
+                  ],
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader3,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -5740,10 +6518,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 49',
+    description: 'v2: Test 49',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -5868,6 +6649,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -5878,31 +6662,49 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
-              endpointPath: 'v1/customers/devices',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
               body: {
                 JSON: {
-                  device: {
-                    id: 'deviceToken',
-                    platform: 'ios',
-                    last_used: 1641808826,
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+                      },
+                      device: {
+                        token: 'deviceToken',
+                        last_used: 1641808826,
+                        attributes: {
+                          device_os: 'iOS',
+                          device_model: 'iPhone',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                        },
+                        platform: 'ios',
+                      },
+                    },
+                  ],
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader3,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -5912,10 +6714,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 50',
+    description: 'v2: Test 50',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -6044,6 +6849,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -6054,32 +6862,50 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
-              endpointPath: 'v1/customers/devices',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
               body: {
                 JSON: {
-                  device: {
-                    from_background: false,
-                    id: 'deviceToken',
-                    platform: 'ios',
-                    last_used: 1641808826,
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+                      },
+                      device: {
+                        token: 'deviceToken',
+                        last_used: 1641808826,
+                        attributes: {
+                          device_os: 'iOS',
+                          device_model: 'iPhone',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                          from_background: false,
+                        },
+                        platform: 'ios',
+                      },
+                    },
+                  ],
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader3,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -6089,10 +6915,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 51',
+    description: 'v2: Test 51',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -6221,6 +7050,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -6230,35 +7062,20 @@ const v1data = [
         status: 200,
         body: [
           {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/events',
-              endpointPath: 'v1/customers/events',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
-              body: {
-                JSON: {
-                  data: {
-                    from_background: false,
-                  },
-                  name: 'device_token_registered',
-                  type: 'event',
-                  timestamp: 1641828016,
-                },
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
-              statusCode: 200,
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
-            statusCode: 200,
+            error: 'userId/email or device_token not present',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
           },
         ],
       },
@@ -6266,10 +7083,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 52',
+    description: 'v2: Test 52',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -6398,6 +7218,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -6408,32 +7231,50 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
-              endpointPath: 'v1/customers/devices',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
               body: {
                 JSON: {
-                  device: {
-                    from_background: false,
-                    id: 'deviceToken',
-                    platform: 'ios',
-                    last_used: 1641828138,
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+                      },
+                      device: {
+                        token: 'deviceToken',
+                        last_used: 1641828138,
+                        attributes: {
+                          device_os: 'iOS',
+                          device_model: 'iPhone',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                          from_background: false,
+                        },
+                        platform: 'ios',
+                      },
+                    },
+                  ],
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader3,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -6443,10 +7284,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 53',
+    description: 'v2: Test 53',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -6574,6 +7418,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -6584,32 +7431,50 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
-              endpointPath: 'v1/customers/devices',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
               body: {
                 JSON: {
-                  device: {
-                    from_background: false,
-                    id: 'deviceToken',
-                    platform: 'ios',
-                    last_used: 1641808826,
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+                      },
+                      device: {
+                        token: 'deviceToken',
+                        last_used: 1641808826,
+                        attributes: {
+                          device_os: 'iOS',
+                          device_model: 'iPhone',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                          from_background: false,
+                        },
+                        platform: 'ios',
+                      },
+                    },
+                  ],
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader3,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -6619,10 +7484,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 54',
+    description: 'v2: Test 54',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -6747,6 +7615,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -6757,31 +7628,49 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
-              endpointPath: 'v1/customers/devices',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
               body: {
                 JSON: {
-                  device: {
-                    id: 'deviceToken',
-                    platform: 'ios',
-                    last_used: 1641808826,
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+                      },
+                      device: {
+                        token: 'deviceToken',
+                        last_used: 1641808826,
+                        attributes: {
+                          device_os: 'iOS',
+                          device_model: 'iPhone',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                        },
+                        platform: 'ios',
+                      },
+                    },
+                  ],
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader3,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -6791,10 +7680,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 55',
+    description: 'v2: Test 55',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -6923,6 +7815,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -6933,32 +7828,50 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'PUT',
-              endpoint:
-                'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
-              endpointPath: 'v1/customers/devices',
-              headers: {
-                Authorization: authHeader3,
-              },
-              params: {},
               body: {
                 JSON: {
-                  device: {
-                    from_background: false,
-                    id: 'deviceToken',
-                    platform: 'ios',
-                    last_used: 1641808826,
-                  },
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'add_device',
+                      identifiers: {
+                        id: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+                      },
+                      device: {
+                        token: 'deviceToken',
+                        last_used: 1641808826,
+                        attributes: {
+                          device_os: 'iOS',
+                          device_model: 'iPhone',
+                          app_version: '1.0',
+                          device_locale: 'en-US',
+                          from_background: false,
+                        },
+                        platform: 'ios',
+                      },
+                    },
+                  ],
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'e91e0378-63fe-11ec-82ac-0a028ee659c3',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader3,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -6968,10 +7881,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 56',
+    description: 'v2: Test 56',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -7065,6 +7981,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -7075,43 +7994,51 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v2/batch',
-              endpointPath: 'v2/batch',
-              headers: {
-                Authorization: authHeader4,
-              },
-              params: {},
               body: {
-                XML: {},
-                FORM: {},
                 JSON: {
-                  type: 'object',
-                  action: 'identify',
-                  attributes: {
-                    name: 'rudderstack',
-                    email: 'help@rudderstack.com',
-                    domainNames: 'rudderstack.com',
-                  },
-                  identifiers: {
-                    object_id: 'group@1',
-                    object_type_id: '1',
-                  },
-                  cio_relationships: [
+                  batch: [
                     {
+                      type: 'object',
+                      action: 'identify',
                       identifiers: {
-                        id: 'user@1',
+                        object_id: 'group@1',
+                        object_type_id: '1',
                       },
+                      attributes: {
+                        domainNames: 'rudderstack.com',
+                        email: 'help@rudderstack.com',
+                        name: 'rudderstack',
+                      },
+                      cio_relationships: [
+                        {
+                          identifiers: {
+                            id: 'user@1',
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
                 JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
               },
               files: {},
-              userId: 'user@1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader4,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -7121,10 +8048,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 57',
+    description: 'v2: Test 57',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -7218,6 +8148,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -7228,43 +8161,51 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v2/batch',
-              endpointPath: 'v2/batch',
-              headers: {
-                Authorization: authHeader4,
-              },
-              params: {},
               body: {
-                XML: {},
-                FORM: {},
                 JSON: {
-                  type: 'object',
-                  action: 'delete',
-                  attributes: {
-                    name: 'rudderstack',
-                    email: 'help@rudderstack.com',
-                    domainNames: 'rudderstack.com',
-                  },
-                  identifiers: {
-                    object_id: 'group@1',
-                    object_type_id: '1',
-                  },
-                  cio_relationships: [
+                  batch: [
                     {
+                      type: 'object',
+                      action: 'delete',
                       identifiers: {
-                        id: 'user@1',
+                        object_id: 'group@1',
+                        object_type_id: '1',
                       },
+                      attributes: {
+                        domainNames: 'rudderstack.com',
+                        email: 'help@rudderstack.com',
+                        name: 'rudderstack',
+                      },
+                      cio_relationships: [
+                        {
+                          identifiers: {
+                            id: 'user@1',
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
                 JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
               },
               files: {},
-              userId: 'user@1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader4,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -7274,10 +8215,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 58',
+    description: 'v2: Test 58',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -7374,6 +8318,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -7384,43 +8331,51 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v2/batch',
-              endpointPath: 'v2/batch',
-              headers: {
-                Authorization: authHeader4,
-              },
-              params: {},
               body: {
-                XML: {},
-                FORM: {},
                 JSON: {
-                  type: 'object',
-                  action: 'add_relationships',
-                  attributes: {
-                    name: 'rudderstack',
-                    email: 'help@rudderstack.com',
-                    domainNames: 'rudderstack.com',
-                  },
-                  identifiers: {
-                    object_id: 'group@1',
-                    object_type_id: '1',
-                  },
-                  cio_relationships: [
+                  batch: [
                     {
+                      type: 'object',
+                      action: 'add_relationships',
                       identifiers: {
-                        id: 'user@1',
+                        object_id: 'group@1',
+                        object_type_id: '1',
                       },
+                      attributes: {
+                        domainNames: 'rudderstack.com',
+                        email: 'help@rudderstack.com',
+                        name: 'rudderstack',
+                      },
+                      cio_relationships: [
+                        {
+                          identifiers: {
+                            id: 'user@1',
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
                 JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
               },
               files: {},
-              userId: 'user@1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader4,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -7430,10 +8385,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 59',
+    description: 'v2: Test 59',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -7530,6 +8488,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -7540,43 +8501,51 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v2/batch',
-              endpointPath: 'v2/batch',
-              headers: {
-                Authorization: authHeader4,
-              },
-              params: {},
               body: {
-                XML: {},
-                FORM: {},
                 JSON: {
-                  type: 'object',
-                  action: 'delete_relationships',
-                  attributes: {
-                    name: 'rudderstack',
-                    email: 'help@rudderstack.com',
-                    domainNames: 'rudderstack.com',
-                  },
-                  identifiers: {
-                    object_id: 'group@1',
-                    object_type_id: '1',
-                  },
-                  cio_relationships: [
+                  batch: [
                     {
+                      type: 'object',
+                      action: 'delete_relationships',
                       identifiers: {
-                        id: 'user@1',
+                        object_id: 'group@1',
+                        object_type_id: '1',
                       },
+                      attributes: {
+                        domainNames: 'rudderstack.com',
+                        email: 'help@rudderstack.com',
+                        name: 'rudderstack',
+                      },
+                      cio_relationships: [
+                        {
+                          identifiers: {
+                            id: 'user@1',
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
                 JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
               },
               files: {},
-              userId: 'user@1',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader4,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -7586,10 +8555,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 60',
+    description: 'v2: Test 60',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -7686,6 +8658,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -7696,57 +8671,65 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v2/batch',
-              endpointPath: 'v2/batch',
-              headers: {
-                Authorization: authHeader4,
-              },
-              params: {},
               body: {
-                XML: {},
-                FORM: {},
                 JSON: {
-                  type: 'object',
-                  action: 'identify',
-                  attributes: {
-                    city: 'Frankfurt',
-                    name: 'rudder test',
-                    state: 'Hessen',
-                    isFake: true,
-                    address: 'Solmsstraße 83',
-                    country: 'DE',
-                    website: 'http://www.rudderstack.com',
-                    industry: 'Waste and recycling',
-                    postcode: '60486',
-                    whiteLabel: 'rudderlabs',
-                    maxNbJobBoards: 2,
-                    organisationId: 306,
-                    pricingPackage: 'packageExpert',
-                    dateProTrialEnd: '2022-08-31T00:00:00+00:00',
-                    isProTrialActive: true,
-                    datetimeRegistration: '2020-07-01T10:23:41+00:00',
-                    isPersonnelServiceProvider: false,
-                  },
-                  identifiers: {
-                    object_id: '306',
-                    object_type_id: '1',
-                  },
-                  cio_relationships: [
+                  batch: [
                     {
+                      type: 'object',
+                      action: 'identify',
                       identifiers: {
-                        id: '432',
+                        object_id: '306',
+                        object_type_id: '1',
                       },
+                      attributes: {
+                        city: 'Frankfurt',
+                        name: 'rudder test',
+                        state: 'Hessen',
+                        isFake: true,
+                        address: 'Solmsstraße 83',
+                        country: 'DE',
+                        website: 'http://www.rudderstack.com',
+                        industry: 'Waste and recycling',
+                        postcode: '60486',
+                        whiteLabel: 'rudderlabs',
+                        maxNbJobBoards: 2,
+                        organisationId: 306,
+                        pricingPackage: 'packageExpert',
+                        dateProTrialEnd: '2022-08-31T00:00:00+00:00',
+                        isProTrialActive: true,
+                        datetimeRegistration: '2020-07-01T10:23:41+00:00',
+                        isPersonnelServiceProvider: false,
+                      },
+                      cio_relationships: [
+                        {
+                          identifiers: {
+                            id: '432',
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
                 JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
               },
               files: {},
-              userId: '432',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader4,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -7756,10 +8739,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 61',
+    description: 'v2: Test 61',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -7856,6 +8842,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -7866,57 +8855,65 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track.customer.io/api/v2/batch',
-              endpointPath: 'v2/batch',
-              headers: {
-                Authorization: authHeader4,
-              },
-              params: {},
               body: {
-                XML: {},
-                FORM: {},
                 JSON: {
-                  type: 'object',
-                  action: 'identify',
-                  attributes: {
-                    city: 'Frankfurt',
-                    name: 'rudder test',
-                    state: 'Hessen',
-                    isFake: true,
-                    address: 'Solmsstraße 83',
-                    country: 'DE',
-                    website: 'http://www.rudderstack.com',
-                    industry: 'Waste and recycling',
-                    postcode: '60486',
-                    whiteLabel: 'rudderlabs',
-                    maxNbJobBoards: 2,
-                    organisationId: 306,
-                    pricingPackage: 'packageExpert',
-                    dateProTrialEnd: '2022-08-31T00:00:00+00:00',
-                    isProTrialActive: true,
-                    datetimeRegistration: '2020-07-01T10:23:41+00:00',
-                    isPersonnelServiceProvider: false,
-                  },
-                  identifiers: {
-                    object_id: '306',
-                    object_type_id: '1',
-                  },
-                  cio_relationships: [
+                  batch: [
                     {
+                      type: 'object',
+                      action: 'identify',
                       identifiers: {
-                        email: 'abc@xyz.com',
+                        object_id: '306',
+                        object_type_id: '1',
                       },
+                      attributes: {
+                        city: 'Frankfurt',
+                        name: 'rudder test',
+                        state: 'Hessen',
+                        isFake: true,
+                        address: 'Solmsstraße 83',
+                        country: 'DE',
+                        website: 'http://www.rudderstack.com',
+                        industry: 'Waste and recycling',
+                        postcode: '60486',
+                        whiteLabel: 'rudderlabs',
+                        maxNbJobBoards: 2,
+                        organisationId: 306,
+                        pricingPackage: 'packageExpert',
+                        dateProTrialEnd: '2022-08-31T00:00:00+00:00',
+                        isProTrialActive: true,
+                        datetimeRegistration: '2020-07-01T10:23:41+00:00',
+                        isPersonnelServiceProvider: false,
+                      },
+                      cio_relationships: [
+                        {
+                          identifiers: {
+                            email: 'abc@xyz.com',
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
                 JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
               },
               files: {},
-              userId: 'abc@xyz.com',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader4,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -7926,10 +8923,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 62',
+    description: 'v2: Test 62',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -8026,6 +9026,9 @@ const v1data = [
               Transformations: [],
               IsProcessorEnabled: true,
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -8036,57 +9039,65 @@ const v1data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://track-eu.customer.io/api/v2/batch',
-              endpointPath: 'v2/batch',
-              headers: {
-                Authorization: authHeader4,
-              },
-              params: {},
               body: {
-                XML: {},
-                FORM: {},
                 JSON: {
-                  type: 'object',
-                  action: 'identify',
-                  attributes: {
-                    city: 'Frankfurt',
-                    name: 'rudder test',
-                    state: 'Hessen',
-                    isFake: true,
-                    address: 'Solmsstraße 83',
-                    country: 'DE',
-                    website: 'http://www.rudderstack.com',
-                    industry: 'Waste and recycling',
-                    postcode: '60486',
-                    whiteLabel: 'rudderlabs',
-                    maxNbJobBoards: 2,
-                    organisationId: 306,
-                    pricingPackage: 'packageExpert',
-                    dateProTrialEnd: '2022-08-31T00:00:00+00:00',
-                    isProTrialActive: true,
-                    datetimeRegistration: '2020-07-01T10:23:41+00:00',
-                    isPersonnelServiceProvider: false,
-                  },
-                  identifiers: {
-                    object_id: '306',
-                    object_type_id: '1',
-                  },
-                  cio_relationships: [
+                  batch: [
                     {
+                      type: 'object',
+                      action: 'identify',
                       identifiers: {
-                        id: '432',
+                        object_id: '306',
+                        object_type_id: '1',
                       },
+                      attributes: {
+                        city: 'Frankfurt',
+                        name: 'rudder test',
+                        state: 'Hessen',
+                        isFake: true,
+                        address: 'Solmsstraße 83',
+                        country: 'DE',
+                        website: 'http://www.rudderstack.com',
+                        industry: 'Waste and recycling',
+                        postcode: '60486',
+                        whiteLabel: 'rudderlabs',
+                        maxNbJobBoards: 2,
+                        organisationId: 306,
+                        pricingPackage: 'packageExpert',
+                        dateProTrialEnd: '2022-08-31T00:00:00+00:00',
+                        isProTrialActive: true,
+                        datetimeRegistration: '2020-07-01T10:23:41+00:00',
+                        isPersonnelServiceProvider: false,
+                      },
+                      cio_relationships: [
+                        {
+                          identifiers: {
+                            id: '432',
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
                 JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
               },
               files: {},
-              userId: '432',
+              endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader4,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -8096,10 +9107,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 63',
+    description: 'v2: Test 63',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -8157,6 +9171,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -8168,34 +9185,46 @@ const v1data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  type: 'page',
-                  data: {
-                    url: 'www.rudderlabs.com',
-                    path: '/test',
-                    search: 'abc',
-                    referrer: 'Rudder',
-                    title: 'Test Page',
-                  },
-                  timestamp: 1571051718,
-                  name: 'www.rudderlabs.com',
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'page',
+                      identifiers: {
+                        id: '12345',
+                      },
+                      name: 'www.rudderlabs.com',
+                      attributes: {
+                        path: '/test',
+                        referrer: 'Rudder',
+                        search: 'abc',
+                        title: 'Test Page',
+                        url: 'www.rudderlabs.com',
+                      },
+                      timestamp: 1571051718,
+                    },
+                  ],
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader1,
+                'Content-Type': 'application/json',
               },
               version: '1',
               params: {},
               type: 'REST',
               method: 'POST',
               statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 200,
           },
@@ -8205,10 +9234,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 64',
+    description: 'v2: Test 64',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -8265,6 +9297,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -8274,36 +9309,20 @@ const v1data = [
         status: 200,
         body: [
           {
-            output: {
-              body: {
-                XML: {},
-                JSON_ARRAY: {},
-                JSON: {
-                  type: 'page',
-                  data: {
-                    path: '/test',
-                    search: 'abc',
-                    referrer: 'Rudder',
-                    title: 'Test Page',
-                  },
-                  timestamp: 1571051718,
-                },
-                FORM: {},
-              },
-              files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
-              headers: {
-                Authorization: authHeader1,
-              },
-              version: '1',
-              params: {},
-              type: 'REST',
-              method: 'POST',
-              statusCode: 200,
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
-            statusCode: 200,
+            error: 'Event Name type should be a string',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
           },
         ],
       },
@@ -8311,10 +9330,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 65',
+    description: 'v2: Test 65',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -8365,6 +9387,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -8374,30 +9399,20 @@ const v1data = [
         status: 200,
         body: [
           {
-            output: {
-              body: {
-                XML: {},
-                JSON_ARRAY: {},
-                JSON: {
-                  type: 'page',
-                  timestamp: 1571051718,
-                },
-                FORM: {},
-              },
-              files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
-              endpointPath: 'v1/customers/events',
-              userId: '12345',
-              headers: {
-                Authorization: authHeader1,
-              },
-              version: '1',
-              params: {},
-              type: 'REST',
-              method: 'POST',
-              statusCode: 200,
+            metadata: {
+              workspaceId: 'ws-cio-v2',
             },
-            statusCode: 200,
+            error: 'Event Name type should be a string',
+            statTags: {
+              destType: 'CUSTOMERIO',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 400,
           },
         ],
       },
@@ -8405,10 +9420,13 @@ const v1data = [
   },
   {
     name: 'customerio',
-    description: 'Test 66 -> Invalid Page call',
+    description: 'v2: Test 66 -> Invalid Page call',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
     input: {
       request: {
         body: [
@@ -8433,6 +9451,9 @@ const v1data = [
                 apiKey: secret2,
               },
             },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
           },
         ],
       },
@@ -8442,6 +9463,9 @@ const v1data = [
         status: 200,
         body: [
           {
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
             error: 'Event Name type should be a string',
             statTags: {
               destType: 'CUSTOMERIO',
@@ -8450,6 +9474,7 @@ const v1data = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'ws-cio-v2',
             },
             statusCode: 400,
           },
@@ -8457,6 +9482,112 @@ const v1data = [
       },
     },
   },
+  {
+    name: 'customerio',
+    description: 'v2: alias call maps to merge action',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.5',
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.5',
+                },
+                locale: 'en-GB',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+              },
+              request_ip: '[::1]:53709',
+              type: 'alias',
+              previousId: 'cio_v2_2',
+              userId: 'cio_v2_1',
+            },
+            destination: {
+              Config: {
+                datacenter: 'US',
+                siteID: secret1,
+                apiKey: secret2,
+              },
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'merge',
+                      primary: {
+                        id: 'cio_v2_1',
+                      },
+                      secondary: {
+                        id: 'cio_v2_2',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
+              statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];
-
-export const data = [...v1data, ...v2data];

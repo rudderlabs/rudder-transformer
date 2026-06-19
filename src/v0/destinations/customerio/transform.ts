@@ -26,7 +26,14 @@ import {
   validateConfigFields,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
-import { ResponseDetails, CustomerIOSuccessfulEvent, CustomerIOBatchResponse } from './types';
+import {
+  ResponseDetails,
+  CustomerIOSuccessfulEvent,
+  CustomerIOBatchResponse,
+  CustomerIOBatchedRequest,
+} from './types';
+import { isBatchingFrameworkEnabled } from '../../../constants/batchedDestinationsMap';
+import { processV2 } from './v2/transform';
 
 function responseBuilder(message, evType, evName, destination, messageType) {
   let identifyResponse;
@@ -129,7 +136,13 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
+  if (isBatchingFrameworkEnabled('CUSTOMERIO', metadata?.workspaceId ?? '')) {
+    // v2 output is a complete delivery request but not shaped like the v1
+    // CustomerIOBatchedRequest; v2 events never reach the v1 processRouterDest
+    // path, so widen here at the v1/v2 seam.
+    return processV2({ message, destination });
+  }
   const result = processSingleMessage(message, destination);
   if (!result.statusCode) {
     result.statusCode = 200;
@@ -194,8 +207,11 @@ const processRouterDest = (inputs, reqMetadata) => {
         });
       } else {
         // if not transformed
+        // v2-enabled events are routed through routerTransform.ts (BatchDestination
+        // framework) before processRouterDest is reached, so process() always
+        // returns the v1 shape here.
         const transformedPayload = {
-          message: process(event),
+          message: process(event) as CustomerIOBatchedRequest,
           metadata: event.metadata,
           destination,
         };

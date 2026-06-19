@@ -1,4 +1,4 @@
-import { getBatchingFrameworkGaDestinations } from './destinationCanonicalNames';
+import { getBatchingFrameworkGaDestinations } from '../features';
 
 // Destinations that have completed GA for the batching framework.
 // Once a destination is added here, it always uses the new path regardless of env var.

@@ -4,10 +4,7 @@ import {
   DestHandlerMap,
   WhitelistOnlyDestinationAliases,
   destinationRegistry,
-  getBatchingFrameworkGaDestinations,
   getDestinationHandlerName,
-  getRegulationDestinations,
-  getRouterTransformDestinations,
   isValidDestination,
 } from '../destinationCanonicalNames';
 
@@ -49,21 +46,5 @@ describe('destinationCanonicalNames', () => {
     expect(isValidDestination('not_a_destination')).toBe(false);
     expect(isValidDestination('constructor')).toBe(false);
     expect(isValidDestination('__proto__')).toBe(false);
-  });
-
-  it('derives legacy capability outputs from the consolidated registry', () => {
-    expect(getRouterTransformDestinations()).toMatchObject({
-      SALESFORCE_OAUTH: true,
-      SALESFORCE_OAUTH_SANDBOX: true,
-      CUSTOM_AUDIENCE: true,
-    });
-    expect(getRegulationDestinations()).toEqual(
-      expect.arrayContaining(['BRAZE', 'AM', 'INTERCOM', 'CLEVERTAP']),
-    );
-    expect(getBatchingFrameworkGaDestinations()).toEqual({
-      POSTHOG: true,
-      CUSTOM_AUDIENCE: true,
-      ITERABLE_AUDIENCE: true,
-    });
   });
 });

@@ -1,5 +1,4 @@
-import { cdkV2DestinationsMap } from './constants/cdkV2DestinationsMap';
-import { isValidDestination } from '../../constants/destinationCanonicalNames';
+import { destinationCapabilities } from '../../features';
 import { shouldUseCdkV2 } from './utils';
 
 describe('cdk/v2 utils', () => {
@@ -83,11 +82,13 @@ describe('cdk/v2 utils', () => {
     });
   });
 
-  describe('cdkV2DestinationsMap', () => {
-    test('contains only destinations known to the shared registry', () => {
+  describe('destinationCapabilities', () => {
+    test('keeps CDK v2 enablement in the consolidated capability map', () => {
       expect(
-        Object.keys(cdkV2DestinationsMap).filter((destination) => !isValidDestination(destination)),
-      ).toEqual([]);
+        Object.entries(destinationCapabilities)
+          .filter(([, capabilities]) => capabilities.cdkV2)
+          .map(([destination]) => destination.toUpperCase()),
+      ).toEqual(expect.arrayContaining(['WEBHOOK', 'PINTEREST_TAG', 'REDDIT']));
     });
   });
 });

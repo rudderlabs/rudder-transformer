@@ -38,6 +38,11 @@ describe('Network Handler Tests', () => {
     expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
   });
 
+  it('Should keep network handler lookup case-sensitive after validation', () => {
+    const { networkHandler } = getNetworkHandler('BRAZE', 'v0');
+    expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
+  });
+
   it('Should return generic handler for a valid destination without a custom handler', () => {
     const { networkHandler } = getNetworkHandler('am', 'v1');
     expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);

@@ -39,11 +39,10 @@ SUPPORTED_VERSIONS.forEach((version) => {
 
 const getNetworkHandler = (type, version) => {
   assertValidDestination(type);
-  const exactHandlerName = type.toLowerCase();
   let handlerVersion = version;
-  let NetworkHandler = handlers[version][exactHandlerName] || handlers.generic;
+  let NetworkHandler = handlers[version][type] || handlers.generic;
   if (version === 'v1' && NetworkHandler === handlers.generic) {
-    NetworkHandler = handlers.v0[exactHandlerName] || handlers.generic;
+    NetworkHandler = handlers.v0[type] || handlers.generic;
     handlerVersion = 'v0';
   }
   const networkHandler = new NetworkHandler();

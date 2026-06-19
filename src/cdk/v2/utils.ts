@@ -6,7 +6,7 @@ import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
 import tags from '../../v0/util/tags';
 import { CatchErr } from '../../types';
-import { cdkV2DestinationsMap } from './constants/cdkV2DestinationsMap';
+import { isDestinationCdkV2Enabled } from '../../features';
 import {
   getDestinationHandlerName,
   isValidDestination,
@@ -119,8 +119,7 @@ export function shouldUseCdkV2(destType: string, workspaceId: string) {
   }
   const destTypeUpper = destType.toUpperCase();
 
-  // Check if the destination type is in the CDK v2 enabled map
-  if (!cdkV2DestinationsMap[destTypeUpper]) {
+  if (!isDestinationCdkV2Enabled(destType)) {
     return false;
   }
 

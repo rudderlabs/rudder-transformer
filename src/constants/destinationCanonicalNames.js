@@ -200,120 +200,6 @@ const DestCanonicalNames = {
   singular: ['Singular'],
 };
 
-const ROUTER_TRANSFORM_DESTINATIONS = [
-  'AM',
-  'ACTIVE_CAMPAIGN',
-  'ALGOLIA',
-  'CANDU',
-  'DELIGHTED',
-  'DRIP',
-  'FB_CUSTOM_AUDIENCE',
-  'GA',
-  'GAINSIGHT',
-  'GAINSIGHT_PX',
-  'GOOGLESHEETS',
-  'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
-  'GOOGLE_ADWORDS_REMARKETING_LISTS',
-  'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
-  'HS',
-  'ITERABLE',
-  'KLAVIYO',
-  'KUSTOMER',
-  'MAILCHIMP',
-  'MAILMODO',
-  'MARKETO',
-  'OMETRIA',
-  'PARDOT',
-  'PINTEREST_TAG',
-  'PROFITWELL',
-  'SALESFORCE',
-  'SALESFORCE_OAUTH',
-  'SALESFORCE_OAUTH_SANDBOX',
-  'SFMC',
-  'SNAPCHAT_CONVERSION',
-  'TIKTOK_ADS',
-  'TRENGO',
-  'YAHOO_DSP',
-  'CANNY',
-  'LAMBDA',
-  'WOOTRIC',
-  'GOOGLE_CLOUD_FUNCTION',
-  'BQSTREAM',
-  'CLICKUP',
-  'FRESHMARKETER',
-  'FRESHSALES',
-  'MONDAY',
-  'CUSTIFY',
-  'USER',
-  'REFINER',
-  'FACEBOOK_OFFLINE_CONVERSIONS',
-  'MAILJET',
-  'SNAPCHAT_CUSTOM_AUDIENCE',
-  'MARKETO_STATIC_LIST',
-  'CAMPAIGN_MANAGER',
-  'SENDGRID',
-  'SENDINBLUE',
-  'ZENDESK',
-  'MP',
-  'TIKTOK_ADS_OFFLINE_EVENTS',
-  'CRITEO_AUDIENCE',
-  'CUSTOMERIO',
-  'BRAZE',
-  'OPTIMIZELY_FULLSTACK',
-  'TWITTER_ADS',
-  'CLEVERTAP',
-  'ORTTO',
-  'GLADLY',
-  'ONE_SIGNAL',
-  'TIKTOK_AUDIENCE',
-  'REDDIT',
-  'THE_TRADE_DESK',
-  'INTERCOM',
-  'NINETAILED',
-  'KOALA',
-  'LINKEDIN_ADS',
-  'BLOOMREACH',
-  'MOVABLE_INK',
-  'EMARSYS',
-  'KODDI',
-  'WUNDERKIND',
-  'CLICKSEND',
-  'ZOHO',
-  'CORDIAL',
-  'X_AUDIENCE',
-  'BLOOMREACH_CATALOG',
-  'SMARTLY',
-  'HTTP',
-  'AMAZON_AUDIENCE',
-  'INTERCOM_V2',
-  'LINKEDIN_AUDIENCE',
-  'TOPSORT',
-  'CUSTOMERIO_AUDIENCE',
-  'ACCOIL_ANALYTICS',
-  'POSTSCRIPT',
-  'POSTHOG',
-  'CUSTOM_AUDIENCE',
-  'ITERABLE_AUDIENCE',
-];
-
-const REGULATION_DESTINATIONS = [
-  'BRAZE',
-  'AM',
-  'INTERCOM',
-  'CLEVERTAP',
-  'AF',
-  'MP',
-  'GA',
-  'ITERABLE',
-  'ENGAGE',
-  'CUSTIFY',
-  'SENDGRID',
-  'SPRIG',
-  'EMARSYS',
-];
-
-const BATCHING_FRAMEWORK_GA_DESTINATIONS = ['POSTHOG', 'CUSTOM_AUDIENCE', 'ITERABLE_AUDIENCE'];
-
 const repoRoot = path.resolve(__dirname, '..');
 const destinationRoots = [
   path.join(repoRoot, 'v0', 'destinations'),
@@ -343,9 +229,6 @@ const hasDestination = (destination) =>
 const buildDestinationEntry = (key) => ({
   name: key,
   aliases: [],
-  routerTransform: false,
-  regulation: false,
-  batchingFrameworkGa: false,
 });
 
 getDestinationDirectories().forEach((destination) => {
@@ -378,24 +261,6 @@ Object.entries(WhitelistOnlyDestinationAliases).forEach(([alias, destination]) =
   destinationRegistry[key] = destinationRegistry[key] || buildDestinationEntry(key);
 });
 
-const setCapability = (destinations, capability) => {
-  destinations.forEach((destination, index) => {
-    const key = normalizeDestinationName(destination);
-    if (!hasDestination(key)) {
-      throw new Error(
-        `Destination capability ${capability} references unknown destination: ${destination}`,
-      );
-    }
-    destinationRegistry[key][capability] = true;
-    destinationRegistry[key][`${capability}Name`] = destination;
-    destinationRegistry[key][`${capability}Order`] = index;
-  });
-};
-
-setCapability(ROUTER_TRANSFORM_DESTINATIONS, 'routerTransform');
-setCapability(REGULATION_DESTINATIONS, 'regulation');
-setCapability(BATCHING_FRAMEWORK_GA_DESTINATIONS, 'batchingFrameworkGa');
-
 const isValidDestination = (destination) =>
   typeof destination === 'string' &&
   destination.length > 0 &&
@@ -417,20 +282,6 @@ const getDestinationHandlerName = (destination) => {
   return destinationRegistry[normalized].handler || normalized;
 };
 
-const getCapabilityDestinations = (capability) =>
-  Object.fromEntries(
-    Object.values(destinationRegistry)
-      .filter((destination) => destination[capability])
-      .sort((left, right) => left[`${capability}Order`] - right[`${capability}Order`])
-      .map((destination) => [destination[`${capability}Name`], true]),
-  );
-
-const getRouterTransformDestinations = () => getCapabilityDestinations('routerTransform');
-
-const getRegulationDestinations = () => Object.keys(getCapabilityDestinations('regulation'));
-
-const getBatchingFrameworkGaDestinations = () => getCapabilityDestinations('batchingFrameworkGa');
-
 module.exports = {
   DestHandlerMap,
   DestCanonicalNames,
@@ -440,7 +291,4 @@ module.exports = {
   isValidDestination,
   assertValidDestination,
   getDestinationHandlerName,
-  getRouterTransformDestinations,
-  getRegulationDestinations,
-  getBatchingFrameworkGaDestinations,
 };

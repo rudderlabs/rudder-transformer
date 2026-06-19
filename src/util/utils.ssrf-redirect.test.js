@@ -8,7 +8,12 @@
 // redirector) is reachable; the redirect TARGET (169.254.169.254 cloud metadata)
 // is NOT allow-listed and must be blocked on the redirect hop, before any connect.
 process.env.ALLOW_IP_RANGES = '127.0.0.0/8';
+// The blocked-redirect test aborts mid-hop; without this, node-fetch can return
+// the initial hop's keep-alive socket to the shared agent pool in a bad state and
+// the next test's redirect follow fails with "Premature close".
+process.env.SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE = 'true';
 
+jest.resetModules();
 const http = require('http');
 const { fetchWithDnsWrapper } = require('./utils');
 
@@ -42,6 +47,10 @@ describe('fetchWithDnsWrapper redirect SSRF guard (real node-fetch)', () => {
       base = `http://127.0.0.1:${server.address().port}`;
       done();
     });
+  });
+
+  afterEach(() => {
+    sockets.forEach((socket) => socket.destroy());
   });
 
   afterAll((done) => {

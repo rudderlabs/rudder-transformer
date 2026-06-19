@@ -48,8 +48,7 @@ const getNetworkHandler = (type, version) => {
   let NetworkHandler =
     handlers[version][exactHandlerName] || handlers[version][handlerName] || handlers.generic;
   if (version === 'v1' && NetworkHandler === handlers.generic) {
-    NetworkHandler =
-      handlers.v0[exactHandlerName] || handlers.v0[handlerName] || handlers.generic;
+    NetworkHandler = handlers.v0[exactHandlerName] || handlers.v0[handlerName] || handlers.generic;
     handlerVersion = 'v0';
   }
   const networkHandler = new NetworkHandler();

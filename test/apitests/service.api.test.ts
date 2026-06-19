@@ -111,6 +111,13 @@ describe('Api tests with a mock source/destination', () => {
           .send([{ destType: 'not_a_destination' }]),
     },
     {
+      name: 'deleteUsers body with later missing destType',
+      request: () =>
+        request(server)
+          .post('/deleteUsers')
+          .send([{ destType: 'ga' }, { userId: 'user-1' }]),
+    },
+    {
       name: 'v0 proxy path destination',
       request: () => request(server).post('/v0/destinations/not_a_destination/proxy').send({}),
     },
@@ -135,6 +142,8 @@ describe('Api tests with a mock source/destination', () => {
     'rejects invalid destination before handler lookup: $name',
     async ({ request: makeRequest }) => {
       const getDestHandlerSpy = jest.spyOn(FetchHandler, 'getDestHandler');
+      const getDeletionHandlerSpy = jest.spyOn(FetchHandler, 'getDeletionHandler');
+      const getBatchDestinationHandlerSpy = jest.spyOn(FetchHandler, 'getBatchDestinationHandler');
       const getNetworkHandlerSpy = jest.spyOn(networkHandlerFactory, 'getNetworkHandler');
 
       const response = await makeRequest().set('Accept', 'application/json');
@@ -142,9 +151,52 @@ describe('Api tests with a mock source/destination', () => {
       expect(response.status).toEqual(400);
       expect(JSON.parse(response.text).error).toContain('Invalid destination');
       expect(getDestHandlerSpy).not.toHaveBeenCalled();
+      expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
+      expect(getBatchDestinationHandlerSpy).not.toHaveBeenCalled();
       expect(getNetworkHandlerSpy).not.toHaveBeenCalled();
     },
   );
+
+  test('rejects invalid router and batch destinations before route filters', async () => {
+    const oldDestinationFilterList = process.env.DESTINATION_FILTER_LIST;
+    process.env.DESTINATION_FILTER_LIST = 'ga';
+    let filteredApplicationRoutes!: typeof applicationRoutes;
+    jest.isolateModules(() => {
+      filteredApplicationRoutes = require('../../src/routes').applicationRoutes;
+    });
+    const filteredApp = new Koa();
+    filteredApp.use(
+      bodyParser({
+        jsonLimit: '200mb',
+      }),
+    );
+    filteredApplicationRoutes(filteredApp);
+    const filteredServer = filteredApp.listen();
+
+    try {
+      const responses = await Promise.all([
+        request(filteredServer)
+          .post('/routerTransform')
+          .send({ input: [], destType: 'not_a_destination' }),
+        request(filteredServer).post('/batch').send({ input: [], destType: 'not_a_destination' }),
+      ]);
+
+      responses.forEach((response) => {
+        expect(response.status).toEqual(400);
+        expect(JSON.parse(response.text).error).toContain('Invalid destination');
+      });
+    } finally {
+      if (oldDestinationFilterList === undefined) {
+        delete process.env.DESTINATION_FILTER_LIST;
+      } else {
+        process.env.DESTINATION_FILTER_LIST = oldDestinationFilterList;
+      }
+      const httpTerminator = createHttpTerminator({
+        server: filteredServer,
+      });
+      await httpTerminator.terminate();
+    }
+  });
 
   test('(mock destination) Processor transformation scenario with single event', async () => {
     const destType = '__rudder_test__';

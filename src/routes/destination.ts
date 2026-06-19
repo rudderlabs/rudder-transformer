@@ -22,20 +22,20 @@ router.post(
 router.post(
   '/routerTransform',
   RouteActivationMiddleware.isDestinationRouteActive,
+  DestinationValidationMiddleware.bodyDestType,
   RouteActivationMiddleware.destinationRtFilter,
   FeatureFlagMiddleware.handle,
   RouterTransformCompactedPayloadV1Middleware,
-  DestinationValidationMiddleware.bodyDestType,
   SecretSpreader.middleware(),
   DestinationController.destinationTransformAtRouter,
 );
 router.post(
   '/batch',
   RouteActivationMiddleware.isDestinationRouteActive,
+  DestinationValidationMiddleware.bodyDestType,
   RouteActivationMiddleware.destinationBatchFilter,
   FeatureFlagMiddleware.handle,
   RouterTransformCompactedPayloadV1Middleware,
-  DestinationValidationMiddleware.bodyDestType,
   DestinationController.batchProcess,
 );
 

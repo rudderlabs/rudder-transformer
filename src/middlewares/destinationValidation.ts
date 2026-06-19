@@ -32,11 +32,16 @@ export class DestinationValidationMiddleware {
 
   public static async userDeletionBody(ctx: Context, next: Next) {
     const requests = ctx.request.body;
-    const invalidRequest = Array.isArray(requests)
-      ? requests.find((request) => !isValidDestination(request?.destType))
-      : undefined;
+    const userDeletionRequests = Array.isArray(requests)
+      ? (requests as Array<{ destType?: unknown } | null | undefined>)
+      : [];
+    const invalidRequestIndex = userDeletionRequests.findIndex(
+      (request) => !isValidDestination(request?.destType),
+    );
     const destination =
-      invalidRequest?.destType ?? (Array.isArray(requests) ? requests[0]?.destType : undefined);
+      invalidRequestIndex >= 0
+        ? userDeletionRequests[invalidRequestIndex]?.destType
+        : userDeletionRequests[0]?.destType;
     if (!validateDestination(ctx, destination)) {
       return;
     }

@@ -89,7 +89,7 @@ function validateSurvicateEvent(event: unknown): SurvicateRouterRequest {
  * @param destinationConfig - The destination configuration
  * @returns Formatted HTTP response
  */
-const processIdentifyEvent = (message: SurvicateIdentifyMessage, destinationKey: string) => {
+const processIdentifyEvent = (message: SurvicateIdentifyMessage, apiKey: string) => {
   // Build the payload - flatten traits and include context properties
   const payload: IdentifyPayload = {
     user_id: message.userId,
@@ -105,7 +105,7 @@ const processIdentifyEvent = (message: SurvicateIdentifyMessage, destinationKey:
   const ctxIdentify = extractContext(message.context);
   if (ctxIdentify) payload.context = ctxIdentify;
 
-  return buildResponse(ENDPOINT_CONFIG.IDENTIFY, destinationKey, payload);
+  return buildResponse(ENDPOINT_CONFIG.IDENTIFY, apiKey, payload);
 };
 
 /**
@@ -118,7 +118,7 @@ const processIdentifyEvent = (message: SurvicateIdentifyMessage, destinationKey:
  * @param destinationConfig - The destination configuration
  * @returns Formatted HTTP response
  */
-const processGroupEvent = (message: SurvicateGroupMessage, destinationKey: string) => {
+const processGroupEvent = (message: SurvicateGroupMessage, apiKey: string) => {
   const payload: GroupPayload = {
     user_id: message.userId,
     group_id: message.groupId,
@@ -134,7 +134,7 @@ const processGroupEvent = (message: SurvicateGroupMessage, destinationKey: strin
   const ctxGroup = extractContext(message.context);
   if (ctxGroup) payload.context = ctxGroup;
 
-  return buildResponse(ENDPOINT_CONFIG.GROUP, destinationKey, payload);
+  return buildResponse(ENDPOINT_CONFIG.GROUP, apiKey, payload);
 };
 
 /**
@@ -147,7 +147,7 @@ const processGroupEvent = (message: SurvicateGroupMessage, destinationKey: strin
  * @param destinationConfig - The destination configuration
  * @returns Formatted HTTP response
  */
-const processTrackEvent = (message: SurvicateTrackMessage, destinationKey: string) => {
+const processTrackEvent = (message: SurvicateTrackMessage, apiKey: string) => {
   // Build the payload using the utility function
   const payload: TrackPayload = {
     user_id: message.userId,
@@ -165,7 +165,7 @@ const processTrackEvent = (message: SurvicateTrackMessage, destinationKey: strin
   const ctxTrack = extractContext(message.context);
   if (ctxTrack) payload.context = ctxTrack;
 
-  return buildResponse(ENDPOINT_CONFIG.TRACK, destinationKey, payload);
+  return buildResponse(ENDPOINT_CONFIG.TRACK, apiKey, payload);
 };
 
 /**
@@ -179,17 +179,17 @@ const processTrackEvent = (message: SurvicateTrackMessage, destinationKey: strin
  */
 const processEvent = (event: SurvicateRouterRequest) => {
   const { message, destination } = event;
-  const { destinationKey } = destination.Config;
+  const { apiKey } = destination.Config;
 
   // Route based on message type. Unsupported types are already rejected by the
   // schema's discriminated union, so `message.type` is exhaustively narrowed here.
   switch (message.type) {
     case 'identify':
-      return processIdentifyEvent(message, destinationKey);
+      return processIdentifyEvent(message, apiKey);
     case 'group':
-      return processGroupEvent(message, destinationKey);
+      return processGroupEvent(message, apiKey);
     case 'track':
-      return processTrackEvent(message, destinationKey);
+      return processTrackEvent(message, apiKey);
     default:
       throw new InstrumentationError('Unsupported Survicate event type.');
   }

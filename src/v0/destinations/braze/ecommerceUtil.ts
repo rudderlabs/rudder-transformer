@@ -1,4 +1,8 @@
 import lodash from 'lodash';
+import {
+  isDefinedNotNullNotEmpty,
+  removeUndefinedNullEmptyExclBoolInt,
+} from '@rudderstack/integrations-lib';
 import stats from '../../../util/stats';
 import { constructPayload } from '../../util';
 import { ConfigCategory, mappingConfig } from './config';
@@ -76,18 +80,17 @@ type MappingEntry = {
 // ---------------------------------------------------------------------------
 
 /**
- * Mirror `constructPayload`'s truthiness rule: `0` and `false` are valid values; only
- * undefined/null/empty-string count as missing.
+ * A field counts as "resolved" iff it survives the outgoing payload scrub
+ * (`removeUndefinedNullEmptyExclBoolInt`). Reuse that exact predicate so the
+ * validation counter can never drift from what's actually sent — e.g. a required
+ * field of `{}`/`[]`/`''` is both stripped from the payload AND counted as missing,
+ * while `0`/`false`/numbers stay valid.
  */
-function isResolvedValue(value: unknown): boolean {
-  if (value === 0 || value === false) return true;
-  if (value === undefined || value === null) return false;
-  return !(typeof value === 'string' && value.length === 0);
-}
+const isResolvedValue = isDefinedNotNullNotEmpty;
 
 /**
- * Return the subset of `source` whose keys are not in `consumed`.
- * Used to derive the `metadata` pass-through.
+ * Return the subset of `source` whose keys are not in `consumed`, with undefined/null/empty
+ * values scrubbed out. Used to derive the `metadata` pass-through.
  */
 function pickUnmappedKeys(
   source: Record<string, unknown>,
@@ -95,11 +98,11 @@ function pickUnmappedKeys(
 ): Record<string, unknown> {
   const result: Record<string, unknown> = {};
   Object.keys(source).forEach((key) => {
-    if (!consumed.has(key) && source[key] !== undefined) {
+    if (!consumed.has(key)) {
       result[key] = source[key];
     }
   });
-  return result;
+  return removeUndefinedNullEmptyExclBoolInt(result) as Record<string, unknown>;
 }
 
 /**
@@ -170,7 +173,9 @@ function emitValidationCounter(params: {
  * Compute the set of message-property keys that are "consumed" by the event-level
  * mapping (so they don't get duplicated into `metadata`). Includes:
  *   - keys referenced by `sourceKeys` (stripping the `properties.` prefix)
- *   - per-product keys for cart_updated (folded into `products[0]` via single-product wrap)
+ *   - per-product keys for cart_updated WITHOUT an explicit `products[]` (folded into
+ *     `products[0]` via single-product wrap); when an explicit `products[]` is provided
+ *     the top-level fields are untouched and flow through to metadata
  *   - the `products` key itself for product-bearing events
  *   - the `source` key (always derived/written, never passed through to metadata)
  */
@@ -178,6 +183,7 @@ function consumedTopLevelKeysForEvent(
   brazeEvent: BrazeEcommerceEventName,
   eventMapping: MappingEntry[],
   productMapping: MappingEntry[] | null,
+  hasExplicitProductsArray: boolean,
 ): Set<string> {
   const consumed = new Set<string>();
   consumed.add('source');
@@ -196,9 +202,14 @@ function consumedTopLevelKeysForEvent(
     consumed.add('products');
   }
 
-  // cart_updated uses top-level product fields as the single wrapped product;
-  // mark those keys as consumed so they don't duplicate into event-level metadata.
-  if (brazeEvent === BRAZE_ECOMMERCE_EVENTS.CART_UPDATED && productMapping !== null) {
+  // cart_updated wraps top-level product fields into a single product ONLY when no
+  // explicit `products[]` is provided. In that case mark those keys as consumed so they
+  // don't duplicate into event-level metadata.
+  if (
+    brazeEvent === BRAZE_ECOMMERCE_EVENTS.CART_UPDATED &&
+    productMapping !== null &&
+    !hasExplicitProductsArray
+  ) {
     consumedKeysFromMapping(productMapping).forEach((key) => consumed.add(key));
   }
 
@@ -207,11 +218,12 @@ function consumedTopLevelKeysForEvent(
 
 /**
  * Build the `products[]` array for the outgoing payload.
- * - cart_updated: read top-level product fields directly from `properties` into a
- *   1-element products[]. No per-product metadata — unmapped event-level keys
- *   (cart_id, currency, custom attrs) flow through the event-level metadata pass.
- * - other product-bearing events: map each item in `properties.products` and route
- *   per-product unmapped keys to `products[i].metadata`.
+ * - cart_updated WITHOUT an explicit `products[]`: read top-level product fields
+ *   directly from `properties` into a 1-element products[]. No per-product metadata —
+ *   unmapped event-level keys flow through the event-level metadata pass. If no
+ *   product fields resolve, an empty array is returned (the final scrub strips it).
+ * - all other cases: map each item in `properties.products` and route per-product
+ *   unmapped keys to `products[i].metadata`. Empty product objects are filtered out.
  */
 function buildProductsArray(
   message: RudderBrazeMessage,
@@ -222,20 +234,27 @@ function buildProductsArray(
   const isCartUpdated = brazeEvent === BRAZE_ECOMMERCE_EVENTS.CART_UPDATED;
 
   if (isCartUpdated && !Array.isArray(properties.products)) {
-    return [(constructPayload(properties, productMapping) || {}) as Record<string, unknown>];
+    const product = removeUndefinedNullEmptyExclBoolInt(
+      (constructPayload(properties, productMapping) || {}) as Record<string, unknown>,
+    ) as Record<string, unknown>;
+    return Object.keys(product).length > 0 ? [product] : [];
   }
 
   const rawProducts = Array.isArray(properties.products) ? properties.products : [];
   const consumedKeys = consumedKeysFromMapping(productMapping);
-  return rawProducts.map((raw) => {
-    const item = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
-    const product = (constructPayload(item, productMapping) || {}) as Record<string, unknown>;
-    const productMetadata = pickUnmappedKeys(item, consumedKeys);
-    if (Object.keys(productMetadata).length > 0) {
-      product.metadata = productMetadata;
-    }
-    return product;
-  });
+  return rawProducts
+    .map((raw) => {
+      const item = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+      const product = removeUndefinedNullEmptyExclBoolInt(
+        (constructPayload(item, productMapping) || {}) as Record<string, unknown>,
+      ) as Record<string, unknown>;
+      const productMetadata = pickUnmappedKeys(item, consumedKeys);
+      if (Object.keys(productMetadata).length > 0) {
+        product.metadata = productMetadata;
+      }
+      return product;
+    })
+    .filter((product) => Object.keys(product).length > 0);
 }
 
 // ---------------------------------------------------------------------------
@@ -266,7 +285,7 @@ export function getEcommerceMapping(eventName: string | undefined): EcommerceMap
  * Always returns one of Braze's enum values; never undefined.
  */
 export function deriveSource(message: RudderBrazeMessage): 'web' | 'ios' | 'android' {
-  const explicit = (message.properties?.source ?? '').toString().toLowerCase();
+  const explicit = (message.properties?.source ?? '').toString().trim().toLowerCase();
   if (BRAZE_SOURCE_VALUES.has(explicit)) {
     return explicit as 'web' | 'ios' | 'android';
   }
@@ -321,6 +340,9 @@ export function buildEcommerceEventProperties(
       ? null
       : (mappingConfig[ConfigCategory.BRAZE_ECOMMERCE_PRODUCT.name] as unknown as MappingEntry[]);
 
+  const properties = (message.properties || {}) as Record<string, unknown>;
+  const hasExplicitProductsArray = Array.isArray(properties.products);
+
   // Step 1+2: event-level field mapping.
   const payload = (constructPayload(message, eventMapping) || {}) as EcommerceEventProperties;
 
@@ -335,9 +357,18 @@ export function buildEcommerceEventProperties(
     payload.action = action;
   }
 
-  // Step 6: route unmapped event-level keys to metadata.
-  const consumedEventKeys = consumedTopLevelKeysForEvent(brazeEvent, eventMapping, productMapping);
-  const eventMetadata = pickUnmappedKeys(message.properties || {}, consumedEventKeys);
+  // Step 6: route unmapped event-level keys to metadata. Exclude `action` when set
+  // (Step 5) so a caller-provided `properties.action` can't leak into metadata.
+  const consumedEventKeys = consumedTopLevelKeysForEvent(
+    brazeEvent,
+    eventMapping,
+    productMapping,
+    hasExplicitProductsArray,
+  );
+  if (action) {
+    consumedEventKeys.add('action');
+  }
+  const eventMetadata = pickUnmappedKeys(properties, consumedEventKeys);
   if (Object.keys(eventMetadata).length > 0) {
     payload.metadata = eventMetadata;
   }
@@ -351,5 +382,7 @@ export function buildEcommerceEventProperties(
     payload,
   });
 
-  return payload;
+  // Step 8: scrub undefined/null/empty values from the final payload so the outgoing
+  // shape matches what the validation counter saw as resolved.
+  return removeUndefinedNullEmptyExclBoolInt(payload) as EcommerceEventProperties;
 }

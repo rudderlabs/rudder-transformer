@@ -4883,7 +4883,6 @@ export const data = [
           expectedEcommerceOutput('ecommerce.order_refunded', {
             order_id: 'ord_001',
             source: 'web',
-            products: [],
           }),
         ],
       },

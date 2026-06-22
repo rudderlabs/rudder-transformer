@@ -16,7 +16,7 @@
   },
   {
     "destKey": "total_discounts",
-    "sourceKeys": "properties.total_discounts",
+    "sourceKeys": ["properties.discount", "properties.total_discounts"],
     "brazeRequired": false
   },
   {

@@ -409,7 +409,7 @@ describe('buildEcommerceEventProperties', () => {
       });
     });
 
-    it('fires the validation counter when properties.products is empty', () => {
+    it('fires the validation counter when properties.products is empty and strips the field', () => {
       const message = baseMessage({
         event: 'Order Completed',
         properties: {
@@ -427,7 +427,8 @@ describe('buildEcommerceEventProperties', () => {
         destination,
       );
 
-      expect(result.products).toEqual([]);
+      // empty products[] is scrubbed off the outgoing payload
+      expect(result.products).toBeUndefined();
       const calls = validationCounterCalls();
       expect(calls).toHaveLength(1);
       expect(calls[0][2]).toEqual({
@@ -435,6 +436,45 @@ describe('buildEcommerceEventProperties', () => {
         workspace_id: WORKSPACE_ID,
         braze_event: BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
       });
+    });
+
+    it('accepts total_discounts under either properties.discount or properties.total_discounts', () => {
+      const messageWithDiscount = baseMessage({
+        event: 'Order Completed',
+        properties: {
+          order_id: 'ord_001',
+          total: 10,
+          currency: 'USD',
+          discount: 3,
+          products: [{ product_id: 'sku', name: 'W', variant: 'v', quantity: 1, price: 10 }],
+        },
+      });
+      const messageWithTotalDiscounts = baseMessage({
+        event: 'Order Completed',
+        properties: {
+          order_id: 'ord_001',
+          total: 10,
+          currency: 'USD',
+          total_discounts: 3,
+          products: [{ product_id: 'sku', name: 'W', variant: 'v', quantity: 1, price: 10 }],
+        },
+      });
+
+      const a = buildEcommerceEventProperties(
+        messageWithDiscount,
+        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        undefined,
+        destination,
+      );
+      const b = buildEcommerceEventProperties(
+        messageWithTotalDiscounts,
+        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        undefined,
+        destination,
+      );
+
+      expect(a.total_discounts).toBe(3);
+      expect(b.total_discounts).toBe(3);
     });
   });
 
@@ -453,7 +493,8 @@ describe('buildEcommerceEventProperties', () => {
       );
 
       expect(result.order_id).toBe('ord_001');
-      expect(result.products).toEqual([]);
+      // empty products[] is scrubbed off the outgoing payload
+      expect(result.products).toBeUndefined();
       const calls = validationCounterCalls();
       expect(calls).toHaveLength(1);
       expect(calls[0][2]).toEqual({
@@ -461,6 +502,167 @@ describe('buildEcommerceEventProperties', () => {
         workspace_id: WORKSPACE_ID,
         braze_event: BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED,
       });
+    });
+  });
+
+  describe('payload scrubbing & metadata handling', () => {
+    it('cart_updated with an explicit products[] keeps top-level product-like fields in metadata', () => {
+      const message = baseMessage({
+        event: 'Product Added',
+        properties: {
+          cart_id: 'cart_001',
+          currency: 'USD',
+          // top-level product-like fields coexisting with an explicit products[] array
+          product_id: 'top-level-pid',
+          name: 'top-level-name',
+          products: [
+            { product_id: 'sku_42', name: 'Widget', variant: 'v', quantity: 2, price: 9.99 },
+          ],
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        'add',
+        destination,
+      );
+
+      // array is mapped, not the top-level wrap
+      expect(result.products).toEqual([
+        { product_id: 'sku_42', product_name: 'Widget', variant_id: 'v', quantity: 2, price: 9.99 },
+      ]);
+      // top-level product-like fields flow to metadata
+      expect(result.metadata).toEqual({ product_id: 'top-level-pid', name: 'top-level-name' });
+    });
+
+    it('does not leak a caller-provided properties.action into metadata', () => {
+      const message = baseMessage({
+        event: 'Product Added',
+        properties: {
+          cart_id: 'cart_001',
+          currency: 'USD',
+          product_id: 'sku_42',
+          name: 'Widget',
+          variant: 'v',
+          quantity: 1,
+          price: 9.99,
+          action: 'caller-supplied',
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        'add',
+        destination,
+      );
+
+      expect(result.action).toBe('add');
+      expect(result.metadata).toBeUndefined();
+    });
+
+    it('does not emit a degenerate [{}] when cart_updated has no product fields', () => {
+      const message = baseMessage({
+        event: 'Product Added',
+        properties: { cart_id: 'cart_001', currency: 'USD' },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        'add',
+        destination,
+      );
+
+      // no degenerate `[{}]` — the empty products array is scrubbed off entirely
+      expect(result.products).toBeUndefined();
+    });
+
+    it('scrubs null/empty values out of event-level and per-product metadata', () => {
+      const message = baseMessage({
+        event: 'Order Completed',
+        properties: {
+          order_id: 'ord_001',
+          total: 31.98,
+          currency: 'USD',
+          coupon: '',
+          note: null,
+          campaign: 'spring',
+          products: [
+            {
+              product_id: 'sku',
+              name: 'W',
+              variant: 'v',
+              quantity: 2,
+              price: 15.99,
+              color: '',
+              shade: null,
+              finish: 'matte',
+            },
+          ],
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        undefined,
+        destination,
+      );
+
+      expect(result.metadata).toEqual({ campaign: 'spring' });
+      expect((result.products as Record<string, unknown>[])[0].metadata).toEqual({
+        finish: 'matte',
+      });
+    });
+
+    it('honors an explicit properties.source with surrounding whitespace', () => {
+      const message = baseMessage({
+        event: 'Product Viewed',
+        properties: {
+          product_id: 'sku_42',
+          name: 'Widget',
+          variant: 'v',
+          price: 9.99,
+          currency: 'USD',
+          source: 'ios ',
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        undefined,
+        destination,
+      );
+
+      expect(result.source).toBe('ios');
+    });
+
+    it('warns and scrubs a required field provided as an empty object', () => {
+      const message = baseMessage({
+        event: 'Product Viewed',
+        properties: {
+          product_id: 'sku_42',
+          name: 'Widget',
+          variant: 'v',
+          price: 9.99,
+          currency: {} as unknown as string,
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        undefined,
+        destination,
+      );
+
+      // empty-object required value is scrubbed off the payload...
+      expect(result.currency).toBeUndefined();
+      // ...AND counted as missing.
+      expect(validationCounterCalls()).toHaveLength(1);
     });
   });
 });

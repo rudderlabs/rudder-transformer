@@ -39,21 +39,7 @@ export type CustomerIOV2ProcessorOutput = Omit<ProcessorTransformationOutput, 'b
 
 const SUPPORTED_TYPES = ['identify', 'track', 'page', 'screen', 'alias', 'group'] as const;
 
-const hasEmailTrait = (msg: Record<string, unknown>): boolean => {
-  const traits = (msg.traits ?? (msg.context as Record<string, unknown> | undefined)?.traits) as
-    | Record<string, unknown>
-    | undefined;
-  return !!traits?.email;
-};
-
-// RETL/warehouse sources supply the identifier via context.externalId and set
-// context.mappedToDestination. The identifier is derived by adduserIdFromExternalId
-// inside processV2, which runs *after* schema validation. Allow these events through
-// so preprocessing can hydrate userId before the payload is built.
-const isMappedToDestination = (msg: Record<string, unknown>): boolean => {
-  const ctx = msg.context as Record<string, unknown> | undefined;
-  return !!(ctx?.mappedToDestination);
-};
+const emailTraitSchema = z.object({ email: z.unknown() }).passthrough().nullish();
 
 export const getV2InputSchema = (): ZodType =>
   z
@@ -65,6 +51,19 @@ export const getV2InputSchema = (): ZodType =>
           anonymousId: z.string().nullish(),
           previousId: z.string().nullish(),
           groupId: z.string().nullish(),
+          traits: emailTraitSchema,
+          // Declaring the fields the refine inspects so no runtime casts are needed.
+          context: z
+            .object({
+              // RETL/warehouse sources set mappedToDestination and supply the identifier
+              // via externalId. adduserIdFromExternalId (called in processV2, after this
+              // validation) hydrates userId — so these events must pass the refine even
+              // without a top-level userId/anonymousId/email.
+              mappedToDestination: z.unknown(),
+              traits: emailTraitSchema,
+            })
+            .passthrough()
+            .nullish(),
         })
         .passthrough()
         .refine(
@@ -75,7 +74,9 @@ export const getV2InputSchema = (): ZodType =>
             if (msg.type === 'group') {
               return true;
             }
-            return !!msg.userId || !!msg.anonymousId || hasEmailTrait(msg) || isMappedToDestination(msg);
+            const hasEmail = !!msg.traits?.email || !!msg.context?.traits?.email;
+            const isMappedToDestination = !!msg.context?.mappedToDestination;
+            return !!msg.userId || !!msg.anonymousId || hasEmail || isMappedToDestination;
           },
           { message: 'userId, email or anonymousId is required' },
         ),

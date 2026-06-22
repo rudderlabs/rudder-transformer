@@ -14,10 +14,13 @@ async function transform(isolatevm, events) {
   transformationPayload.events = events;
   transformationPayload.transformationType = isolatevm.fName;
   const executionPromise = new Promise(async (resolve, reject) => {
-    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
-      transferIn: true,
-    });
     try {
+      // ExternalCopy deep-clones the payload into the isolate. A pathologically deep/large
+      // event can throw synchronously here (e.g. "Maximum call stack size exceeded"); keep it
+      // inside the try so it rejects cleanly instead of leaking as an unhandled rejection.
+      const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
+        transferIn: true,
+      });
       await isolatevm.bootstrapScriptResult.apply(
         undefined,
         [

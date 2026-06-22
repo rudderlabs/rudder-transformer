@@ -138,9 +138,10 @@ function processSingleMessage(message, destination) {
 function process(event) {
   const { message, destination, metadata } = event;
   if (isBatchingFrameworkEnabled('CUSTOMERIO', metadata?.workspaceId ?? '')) {
-    // v2 output is a complete delivery request but not shaped like the v1
-    // CustomerIOBatchedRequest; v2 events never reach the v1 processRouterDest
-    // path, so widen here at the v1/v2 seam.
+    // The destination is router-only (transformAt: router), so in production the
+    // v2 path runs via routerTransform -> transformEvent -> processV2 and this
+    // branch is not exercised. It is retained so processor-mode component tests
+    // can validate processV2 output directly.
     return processV2({ message, destination });
   }
   const result = processSingleMessage(message, destination);

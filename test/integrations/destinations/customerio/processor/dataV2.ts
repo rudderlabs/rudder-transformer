@@ -104,6 +104,106 @@ export const v2data = [
   },
   {
     name: 'customerio',
+    description:
+      'v2: RETL/warehouse source with mappedToDestination derives userId from externalId',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              type: 'identify',
+              context: {
+                mappedToDestination: true,
+                externalId: [
+                  {
+                    type: 'CUSTOMERIO-userId',
+                    identifierType: 'userId',
+                    id: 'cio_ext_123',
+                  },
+                ],
+                traits: {
+                  email: 'retl_user@example.com',
+                  plan: 'enterprise',
+                },
+              },
+              traits: {
+                email: 'retl_user@example.com',
+                plan: 'enterprise',
+              },
+              sentAt: '2023-05-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                datacenter: 'US',
+                siteID: secret1,
+                apiKey: secret2,
+              },
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  batch: [
+                    {
+                      type: 'person',
+                      action: 'identify',
+                      identifiers: {
+                        id: 'cio_ext_123',
+                      },
+                      attributes: {
+                        email: 'retl_user@example.com',
+                        plan: 'enterprise',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              params: {},
+              type: 'REST',
+              method: 'POST',
+              statusCode: 200,
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'ws-cio-v2',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'customerio',
     description: 'v2: Test 0',
     feature: 'processor',
     module: 'destination',
@@ -5568,6 +5668,7 @@ export const v2data = [
                       attributes: {
                         last_name: 'xavier',
                         first_name: 'charles',
+                        email: 'xaviercharles@hotmail.com',
                         _timestamp: 1635325796,
                       },
                     },
@@ -5715,6 +5816,7 @@ export const v2data = [
                       attributes: {
                         last_name: 'xavier',
                         first_name: 'charles',
+                        id: 'xaviercharles',
                         _timestamp: 1635325796,
                       },
                     },

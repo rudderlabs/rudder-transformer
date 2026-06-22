@@ -1,4 +1,11 @@
-import { defaultRequestConfig, removeUndefinedValues } from '../../../util';
+import get from 'get-value';
+import {
+  defaultRequestConfig,
+  removeUndefinedValues,
+  addExternalIdToTraits,
+  adduserIdFromExternalId,
+} from '../../../util';
+import { MappedToDestinationKey } from '../../../../constants';
 import { RudderMessage } from '../../../../types';
 import { validateConfigFields } from '../util';
 import { buildEnvelope, buildRequestMeta } from './util';
@@ -10,6 +17,13 @@ export const processV2 = (event: {
 }): CustomerIOV2ProcessorOutput => {
   const { message, destination } = event;
   validateConfigFields(destination);
+  // For RETL/warehouse sources (mappedToDestination), derive userId from
+  // context.externalId and fold externalId into traits, mirroring the v1 path.
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+    adduserIdFromExternalId(message);
+  }
   const envelope = buildEnvelope(message, destination);
   const { endpoint, endpointPath, method, headers } = buildRequestMeta(destination);
   const response = defaultRequestConfig() as unknown as CustomerIOV2ProcessorOutput;

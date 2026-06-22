@@ -213,7 +213,7 @@ const deviceActionFor = (
   destination: CustomerIODestination,
 ): 'add_device' | 'delete_device' | null => {
   const isDevice =
-    DEVICE_EVENT_NAMES.includes(evName) || destination.Config?.deviceTokenEventName === evName;
+    DEVICE_EVENT_NAMES.includes(evName) || destination.Config.deviceTokenEventName === evName;
   if (!isDevice) {
     return null;
   }
@@ -254,7 +254,7 @@ export const buildRequestMeta = (
   method: string;
   headers: Record<string, unknown>;
 } => ({
-  endpoint: getV2Endpoint(destination.Config?.datacenter),
+  endpoint: getV2Endpoint(destination.Config.datacenter),
   endpointPath: V2_BATCH_PATH,
   method: 'POST',
   headers: {

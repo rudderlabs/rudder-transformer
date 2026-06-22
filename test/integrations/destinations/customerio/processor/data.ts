@@ -12,7 +12,6 @@ import {
   secret7,
   secret8,
 } from '../maskedSecrets';
-import { v2data } from './dataV2';
 const v1data = [
   {
     name: 'customerio',
@@ -8459,4 +8458,4 @@ const v1data = [
   },
 ];
 
-export const data = [...v1data, ...v2data];
+export const data = [...v1data];

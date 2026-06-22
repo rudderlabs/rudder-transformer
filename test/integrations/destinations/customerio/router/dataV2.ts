@@ -680,4 +680,119 @@ export const v2data = [
       },
     },
   },
+  {
+    name: 'customerio',
+    description:
+      'v2: RETL identify with externalId only (no userId/anonymousId/email) passes schema validation and resolves userId',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                type: 'identify',
+                context: {
+                  mappedToDestination: true,
+                  externalId: [
+                    {
+                      type: 'CUSTOMERIO-userId',
+                      identifierType: 'userId',
+                      id: 'cio_retl_router_user',
+                    },
+                  ],
+                  traits: {
+                    plan: 'enterprise',
+                  },
+                },
+                traits: {
+                  plan: 'enterprise',
+                },
+                sentAt: '2024-01-15T10:00:00.000Z',
+              },
+              metadata: {
+                jobId: 20,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: {
+                          id: 'cio_retl_router_user',
+                        },
+                        attributes: {
+                          plan: 'enterprise',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 20,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+              ],
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

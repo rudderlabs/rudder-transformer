@@ -46,6 +46,15 @@ const hasEmailTrait = (msg: Record<string, unknown>): boolean => {
   return !!traits?.email;
 };
 
+// RETL/warehouse sources supply the identifier via context.externalId and set
+// context.mappedToDestination. The identifier is derived by adduserIdFromExternalId
+// inside processV2, which runs *after* schema validation. Allow these events through
+// so preprocessing can hydrate userId before the payload is built.
+const isMappedToDestination = (msg: Record<string, unknown>): boolean => {
+  const ctx = msg.context as Record<string, unknown> | undefined;
+  return !!(ctx?.mappedToDestination);
+};
+
 export const getV2InputSchema = (): ZodType =>
   z
     .object({
@@ -66,7 +75,7 @@ export const getV2InputSchema = (): ZodType =>
             if (msg.type === 'group') {
               return true;
             }
-            return !!msg.userId || !!msg.anonymousId || hasEmailTrait(msg);
+            return !!msg.userId || !!msg.anonymousId || hasEmailTrait(msg) || isMappedToDestination(msg);
           },
           { message: 'userId, email or anonymousId is required' },
         ),

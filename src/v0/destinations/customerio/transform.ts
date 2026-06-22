@@ -32,8 +32,6 @@ import {
   CustomerIOBatchResponse,
   CustomerIOBatchedRequest,
 } from './types';
-import { isBatchingFrameworkEnabled } from '../../../constants/batchedDestinationsMap';
-import { processV2 } from './v2/transform';
 
 function responseBuilder(message, evType, evName, destination, messageType) {
   let identifyResponse;
@@ -136,14 +134,7 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  const { message, destination, metadata } = event;
-  if (isBatchingFrameworkEnabled('CUSTOMERIO', metadata?.workspaceId ?? '')) {
-    // The destination is router-only (transformAt: router), so in production the
-    // v2 path runs via routerTransform -> transformEvent -> processV2 and this
-    // branch is not exercised. It is retained so processor-mode component tests
-    // can validate processV2 output directly.
-    return processV2({ message, destination });
-  }
+  const { message, destination } = event;
   const result = processSingleMessage(message, destination);
   if (!result.statusCode) {
     result.statusCode = 200;

@@ -295,7 +295,7 @@ if (isDeviceRelatedEvent && id && token) {
 
 ```javascript
 // replace default domain with EU data center domain for EU based account
-if (destination.Config?.datacenter === 'EU' || destination.Config?.datacenterEU) {
+if (destination.Config?.datacenter === 'EU') {
   response.endpoint = response.endpoint.replace('track.customer.io', 'track-eu.customer.io');
 }
 ```

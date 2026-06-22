@@ -37,7 +37,15 @@ export type CustomerIOV2ProcessorOutput = Omit<ProcessorTransformationOutput, 'b
   statusCode: number;
 };
 
-const SUPPORTED_TYPES = ['identify', 'track', 'page', 'screen', 'alias', 'group'] as const;
+const SUPPORTED_TYPES = [
+  'identify',
+  'track',
+  'page',
+  'screen',
+  'alias',
+  'group',
+  'record',
+] as const;
 
 const emailTraitSchema = z.object({ email: z.unknown() }).passthrough().nullish();
 
@@ -74,6 +82,9 @@ export const getV2InputSchema = (): ZodType =>
             if (msg.type === 'group') {
               return true;
             }
+            if (msg.type === 'record') {
+              return true;
+            }
             const hasEmail = !!msg.traits?.email || !!msg.context?.traits?.email;
             const isMappedToDestination = !!msg.context?.mappedToDestination;
             return !!msg.userId || !!msg.anonymousId || hasEmail || isMappedToDestination;
@@ -83,4 +94,18 @@ export const getV2InputSchema = (): ZodType =>
     })
     .passthrough();
 
-export { type CustomerIODestination, type CustomerIODestinationConfig } from '../types';
+export type CustomerIORecordPayload = {
+  type: 'person';
+  action: 'identify' | 'delete';
+  identifiers: Record<string, string | number>;
+  attributes?: Record<string, unknown>;
+};
+
+export type { RudderRecordV2 as CustomerIORecordMessage } from '../../../../types/rudderEvents';
+
+export {
+  type CustomerIODestination,
+  type CustomerIODestinationConfig,
+  type CustomerIOConnectionConfig,
+  CustomerIOConnectionConfigSchema,
+} from '../types';

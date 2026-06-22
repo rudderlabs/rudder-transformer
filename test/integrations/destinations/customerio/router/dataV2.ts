@@ -1173,7 +1173,12 @@ export const v2data = [
                 anonymousId: '7e32188a4dab669f',
                 channel: 'mobile',
                 context: {
-                  app: { build: '1', name: 'RudderAndroidClient', namespace: 'com.example', version: '1.0' },
+                  app: {
+                    build: '1',
+                    name: 'RudderAndroidClient',
+                    namespace: 'com.example',
+                    version: '1.0',
+                  },
                   device: {
                     id: '7e32188a4dab669f',
                     manufacturer: 'Google',
@@ -1274,7 +1279,12 @@ export const v2data = [
                 anonymousId: '7e32188a4dab669f',
                 channel: 'mobile',
                 context: {
-                  app: { build: '1', name: 'RudderAndroidClient', namespace: 'com.example', version: '1.0' },
+                  app: {
+                    build: '1',
+                    name: 'RudderAndroidClient',
+                    namespace: 'com.example',
+                    version: '1.0',
+                  },
                   device: {
                     id: '7e32188a4dab669f',
                     manufacturer: 'Google',
@@ -1360,7 +1370,12 @@ export const v2data = [
               message: {
                 channel: 'mobile',
                 context: {
-                  device: { name: 'test android', model: 'some_model', type: 'mobile', token: 'somel' },
+                  device: {
+                    name: 'test android',
+                    model: 'some_model',
+                    type: 'mobile',
+                    token: 'somel',
+                  },
                   // no email in traits
                   traits: { anonymousId: '12345' },
                 },
@@ -1936,6 +1951,189 @@ export const v2data = [
                 files: {},
               },
               metadata: [{ jobId: 44, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'cio-v2-router-record-mirror',
+    name: 'customerio',
+    description: 'v2: record events (mirror mode) — insert+delete batch into one request',
+    scenario: 'business',
+    successCriteria:
+      'insert maps to identify person action, delete maps to delete person action, both batched',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: { id: 'user-123' },
+                fields: { plan: 'pro', age: 30 },
+              },
+              metadata: { jobId: 100, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { syncMode: 'mirror' } },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'delete',
+                identifiers: { id: 'user-456' },
+                fields: {},
+              },
+              metadata: { jobId: 101, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { syncMode: 'mirror' } },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: { id: 'user-123' },
+                        attributes: { plan: 'pro', age: 30 },
+                      },
+                      {
+                        type: 'person',
+                        action: 'delete',
+                        identifiers: { id: 'user-456' },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 100, userId: 'u1', workspaceId: 'ws-cio-v2' },
+                { jobId: 101, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              ],
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'cio-v2-router-record-upsert-email',
+    name: 'customerio',
+    description: 'v2: record event (upsert mode) — update with email identifier',
+    scenario: 'business',
+    successCriteria: 'update maps to identify person action with email as identifier',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                identifiers: { email: 'user@example.com' },
+                fields: { plan: 'enterprise' },
+              },
+              metadata: { jobId: 102, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { syncMode: 'upsert' } },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: { email: 'user@example.com' },
+                        attributes: { plan: 'enterprise' },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 102, userId: 'u1', workspaceId: 'ws-cio-v2' }],
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
               batched: true,
               statusCode: 200,

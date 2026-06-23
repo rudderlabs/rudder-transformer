@@ -51,6 +51,8 @@ class CustomerIOIntegration extends BatchDestination<
 
     const { message } = input;
     validateConfigFields(this.destination);
+    // For RETL/warehouse sources (mappedToDestination), derive userId from
+    // context.externalId and fold externalId into traits, mirroring the v1 path.
     if (get(message, MappedToDestinationKey)) {
       addExternalIdToTraits(message);
       adduserIdFromExternalId(message);

@@ -12,7 +12,7 @@ import {
 
 // Generated from the exact v1 router input (see captureV2.ts / genV2data.ts) with
 // the batching flag enabled, asserting the Track API v2 batched output.
-export const v2data = [
+export const dataV2 = [
   {
     name: 'customerio',
     description: 'v2: mixed events batch into a single /v2/batch request',

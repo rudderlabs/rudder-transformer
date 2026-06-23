@@ -1,5 +1,6 @@
 import { authHeader1, secret1, secret2 } from '../maskedSecrets';
-export const data = [
+import { v2data } from './dataV2';
+const v1data = [
   {
     name: 'customerio',
     description: 'Test 0',
@@ -343,3 +344,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...v1data, ...v2data];

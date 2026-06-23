@@ -35,20 +35,9 @@ class CustomerIOIntegration extends BatchDestination<
     }
   }
 
-  transformEvent(input: CustomerIORouterRequest): TransformedEvent<CustomerIOV2Payload> {
-    validateConfigFields(this.destination);
-    const { message } = input;
+  private buildBody(message: CustomerIORouterRequest['message']): CustomerIOV2Payload {
     if (isRecordMessage(message)) {
-      const body = buildRecordEvent(message, this.connection?.config?.destination);
-      this.assertObjectSize(body);
-      const meta = buildRequestMeta(this.destination);
-      return {
-        body,
-        endpoint: meta.endpoint,
-        endpointPath: meta.endpointPath,
-        method: meta.method,
-        headers: meta.headers,
-      };
+      return buildRecordEvent(message, this.connection?.config?.destination);
     }
     // For RETL/warehouse sources (mappedToDestination), derive userId from
     // context.externalId and fold externalId into traits, mirroring the v1 path.
@@ -56,15 +45,13 @@ class CustomerIOIntegration extends BatchDestination<
       addExternalIdToTraits(message);
       adduserIdFromExternalId(message);
     }
-    const body = removeUndefinedValues(
-      buildEnvelope(message, this.destination),
-    ) as CustomerIOV2Payload;
-    const size = Buffer.byteLength(JSON.stringify(body), 'utf8');
-    if (size > MAX_OBJECT_SIZE_BYTES) {
-      throw new InstrumentationError(
-        `Event size (${size} bytes) exceeds CustomerIO's 32KB per-object limit.`,
-      );
-    }
+    return removeUndefinedValues(buildEnvelope(message, this.destination)) as CustomerIOV2Payload;
+  }
+
+  transformEvent(input: CustomerIORouterRequest): TransformedEvent<CustomerIOV2Payload> {
+    validateConfigFields(this.destination);
+    const body = this.buildBody(input.message);
+    this.assertObjectSize(body);
     return { body, ...buildRequestMeta(this.destination) };
   }
 

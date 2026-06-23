@@ -1,5 +1,4 @@
 import { z, ZodType } from 'zod';
-import { BatchedRequestBody, ProcessorTransformationOutput } from '../../../../types';
 
 export type CustomerIOV2Identifiers = {
   id?: string;
@@ -30,11 +29,6 @@ export type CustomerIOV2Payload = {
   secondary?: { id?: string; email?: string };
   anonymous_id?: string;
   [key: string]: unknown;
-};
-
-export type CustomerIOV2ProcessorOutput = Omit<ProcessorTransformationOutput, 'body'> & {
-  body: BatchedRequestBody<{ batch: CustomerIOV2Payload[] }>;
-  statusCode: number;
 };
 
 const SUPPORTED_TYPES = [
@@ -93,8 +87,6 @@ export const getV2InputSchema = (): ZodType =>
         ),
     })
     .passthrough();
-
-export type { RudderRecordV2 as CustomerIORecordMessage } from '../../../../types/rudderEvents';
 
 export {
   type CustomerIODestination,

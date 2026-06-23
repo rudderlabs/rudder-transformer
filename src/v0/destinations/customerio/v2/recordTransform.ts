@@ -1,13 +1,10 @@
 import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
 import { RECORD_ACTION_MAP, REQUIRED_IDENTIFIER_KEYS } from './config';
-import {
-  CustomerIOConnectionConfigSchema,
-  CustomerIOV2Payload,
-  type CustomerIORecordMessage,
-} from './types';
+import { CustomerIOConnectionConfigSchema, CustomerIOV2Payload } from './types';
+import type { RudderRecordV2 } from '../../../../types/rudderEvents';
 
 export const buildRecordEvent = (
-  message: CustomerIORecordMessage,
+  message: RudderRecordV2,
   rawConnectionConfig: unknown,
 ): CustomerIOV2Payload => {
   const parsed = CustomerIOConnectionConfigSchema.safeParse(rawConnectionConfig);

@@ -8,8 +8,7 @@ import type {
   ProxyMetdata,
   ProxyV1Request,
 } from '../../../types/index';
-
-const tags = require('../../../v0/util/tags');
+import tags from '../../../v0/util/tags';
 
 type CustomerIOError = {
   batch_index: number;
@@ -91,4 +90,4 @@ function networkHandler(this: any) {
   this.responseHandler = responseHandler;
 }
 
-export { networkHandler, handle207MultiStatus };
+export { networkHandler };

@@ -2,14 +2,14 @@ import { InstrumentationError, ConfigurationError } from '@rudderstack/integrati
 import { RECORD_ACTION_MAP, REQUIRED_IDENTIFIER_KEYS } from './config';
 import {
   CustomerIOConnectionConfigSchema,
+  CustomerIOV2Payload,
   type CustomerIORecordMessage,
-  type CustomerIORecordPayload,
 } from './types';
 
 export const buildRecordEvent = (
   message: CustomerIORecordMessage,
   rawConnectionConfig: unknown,
-): CustomerIORecordPayload => {
+): CustomerIOV2Payload => {
   const parsed = CustomerIOConnectionConfigSchema.safeParse(rawConnectionConfig);
   if (!parsed.success) {
     throw new ConfigurationError('Invalid or missing connection config for record events');
@@ -30,7 +30,7 @@ export const buildRecordEvent = (
     throw new InstrumentationError('A non-empty `id` or `email` identifier is required');
   }
 
-  const payload: CustomerIORecordPayload = {
+  const payload: CustomerIOV2Payload = {
     type: 'person',
     action: cioAction,
     identifiers: identifiers as Record<string, string | number>,

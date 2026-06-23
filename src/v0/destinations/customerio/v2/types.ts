@@ -94,13 +94,6 @@ export const getV2InputSchema = (): ZodType =>
     })
     .passthrough();
 
-export type CustomerIORecordPayload = {
-  type: 'person';
-  action: 'identify' | 'delete';
-  identifiers: Record<string, string | number>;
-  attributes?: Record<string, unknown>;
-};
-
 export type { RudderRecordV2 as CustomerIORecordMessage } from '../../../../types/rudderEvents';
 
 export {

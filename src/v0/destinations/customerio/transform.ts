@@ -26,12 +26,7 @@ import {
   validateConfigFields,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
-import {
-  ResponseDetails,
-  CustomerIOSuccessfulEvent,
-  CustomerIOBatchResponse,
-  CustomerIOBatchedRequest,
-} from './types';
+import { ResponseDetails, CustomerIOSuccessfulEvent, CustomerIOBatchResponse } from './types';
 
 function responseBuilder(message, evType, evName, destination, messageType) {
   let identifyResponse;
@@ -199,11 +194,8 @@ const processRouterDest = (inputs, reqMetadata) => {
         });
       } else {
         // if not transformed
-        // v2-enabled events are routed through routerTransform.ts (BatchDestination
-        // framework) before processRouterDest is reached, so process() always
-        // returns the v1 shape here.
         const transformedPayload = {
-          message: process(event) as CustomerIOBatchedRequest,
+          message: process(event),
           metadata: event.metadata,
           destination,
         };

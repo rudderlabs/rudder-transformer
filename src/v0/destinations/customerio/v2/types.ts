@@ -1,5 +1,4 @@
 import { z, ZodType } from 'zod';
-import { BatchedRequestBody, ProcessorTransformationOutput } from '../../../../types';
 
 export type CustomerIOV2Identifiers = {
   id?: string;
@@ -32,11 +31,6 @@ export type CustomerIOV2Payload = {
   [key: string]: unknown;
 };
 
-export type CustomerIOV2ProcessorOutput = Omit<ProcessorTransformationOutput, 'body'> & {
-  body: BatchedRequestBody<{ batch: CustomerIOV2Payload[] }>;
-  statusCode: number;
-};
-
 const SUPPORTED_TYPES = ['identify', 'track', 'page', 'screen', 'alias', 'group'] as const;
 
 const emailTraitSchema = z.object({ email: z.unknown() }).passthrough().nullish();
@@ -56,8 +50,8 @@ export const getV2InputSchema = (): ZodType =>
           context: z
             .object({
               // RETL/warehouse sources set mappedToDestination and supply the identifier
-              // via externalId. adduserIdFromExternalId (called in processV2, after this
-              // validation) hydrates userId — so these events must pass the refine even
+              // via externalId. adduserIdFromExternalId (called in transformEvent, after
+              // this validation) hydrates userId — so these events must pass the refine even
               // without a top-level userId/anonymousId/email.
               mappedToDestination: z.unknown(),
               traits: emailTraitSchema,

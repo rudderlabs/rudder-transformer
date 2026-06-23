@@ -1173,7 +1173,12 @@ export const v2data = [
                 anonymousId: '7e32188a4dab669f',
                 channel: 'mobile',
                 context: {
-                  app: { build: '1', name: 'RudderAndroidClient', namespace: 'com.example', version: '1.0' },
+                  app: {
+                    build: '1',
+                    name: 'RudderAndroidClient',
+                    namespace: 'com.example',
+                    version: '1.0',
+                  },
                   device: {
                     id: '7e32188a4dab669f',
                     manufacturer: 'Google',
@@ -1274,7 +1279,12 @@ export const v2data = [
                 anonymousId: '7e32188a4dab669f',
                 channel: 'mobile',
                 context: {
-                  app: { build: '1', name: 'RudderAndroidClient', namespace: 'com.example', version: '1.0' },
+                  app: {
+                    build: '1',
+                    name: 'RudderAndroidClient',
+                    namespace: 'com.example',
+                    version: '1.0',
+                  },
                   device: {
                     id: '7e32188a4dab669f',
                     manufacturer: 'Google',
@@ -1360,7 +1370,12 @@ export const v2data = [
               message: {
                 channel: 'mobile',
                 context: {
-                  device: { name: 'test android', model: 'some_model', type: 'mobile', token: 'somel' },
+                  device: {
+                    name: 'test android',
+                    model: 'some_model',
+                    type: 'mobile',
+                    token: 'somel',
+                  },
                   // no email in traits
                   traits: { anonymousId: '12345' },
                 },

@@ -12,7 +12,7 @@ import {
   secret7,
   secret8,
 } from '../maskedSecrets';
-const v1data = [
+export const data = [
   {
     name: 'customerio',
     description: 'Test for userId with forward slash',
@@ -8457,5 +8457,3 @@ const v1data = [
     },
   },
 ];
-
-export const data = [...v1data];

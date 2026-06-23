@@ -18,7 +18,7 @@ const dest = (key: string) => ({
   ID: 'survicate-dest-id',
   Name: 'Survicate',
   DestinationDefinition: { Config: {} },
-  Config: { destinationKey: key },
+  Config: { apiKey: key },
   Enabled: true,
   Transformations: [],
 });

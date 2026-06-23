@@ -197,10 +197,10 @@
   },
   {
     "Destination": "Linkedin Ads",
-    "Version currently referred in CloudMode Services": "/rest/conversionEvents (API version header: 202509)",
+    "Version currently referred in CloudMode Services": "/rest/conversionEvents (API version header: 202511)",
     "Link to check Versions documentation": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes",
     "Latest Version rolled out": "202511 (November 2025)",
-    "Sunset Date Current Version used in backend": "September 2026 (version 202509 released September 2025, supported for minimum 12 months)"
+    "Sunset Date Current Version used in backend": "November 2026 (version 202511 released November 2025, supported for minimum 12 months)"
   },
   {
     "Destination": "Linkedin Audience",

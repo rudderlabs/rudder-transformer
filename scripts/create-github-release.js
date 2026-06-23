@@ -9,7 +9,6 @@
  * Features:
  * - Uses GitHub CLI for reliable release creation
  * - Generates release notes from conventional commits
- * - Fallback to conventional-github-releaser for backward compatibility
  * - Better error handling and logging
  */
 
@@ -24,7 +23,7 @@ const CONFIG = {
   preset: 'angular',
   generateNotes: true,
   latest: true,
-  debug: process.env.DEBUG === 'true' || process.env.DEBUG === 'conventional-github-releaser',
+  debug: process.env.DEBUG === 'true',
 };
 
 // Repository URL configuration
@@ -243,25 +242,6 @@ function createReleaseWithGitHubCLI(version) {
   }
 }
 
-function createReleaseWithConventionalReleaser(version) {
-  log(`Creating release v${version} using conventional-github-releaser...`);
-
-  const command =
-    'DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js';
-  const result = execCommand(command);
-
-  if (result.success) {
-    log(`Release v${version} created successfully with conventional-github-releaser`);
-    return true;
-  } else {
-    log(`❌ conventional-github-releaser failed: ${result.error}`, 'error');
-    if (result.output) {
-      log(`Output: ${result.output}`, 'error');
-    }
-    return false;
-  }
-}
-
 function main() {
   log('Starting GitHub release creation process...');
 
@@ -289,21 +269,14 @@ function main() {
     log(`Release v${version} does not exist. Proceeding with creation...`);
   }
 
-  // Try GitHub CLI first (modern approach)
+  // Create the release using GitHub CLI
   if (createReleaseWithGitHubCLI(version)) {
     log('🎉 Release created successfully!');
     process.exit(0);
   }
 
-  // Fallback to conventional-github-releaser
-  log('Falling back to conventional-github-releaser...');
-  if (createReleaseWithConventionalReleaser(version)) {
-    log('🎉 Release created successfully with fallback method!');
-    process.exit(0);
-  }
-
-  // Both methods failed
-  log('❌ All release creation methods failed', 'error');
+  // Release creation failed
+  log('❌ Release creation failed', 'error');
   process.exit(1);
 }
 
@@ -314,7 +287,6 @@ if (require.main === module) {
 
 module.exports = {
   createReleaseWithGitHubCLI,
-  createReleaseWithConventionalReleaser,
   generateConventionalReleaseNotes,
   getPreviousTag,
   getVersion,

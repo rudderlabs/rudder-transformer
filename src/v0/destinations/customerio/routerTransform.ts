@@ -36,8 +36,10 @@ class CustomerIOIntegration extends BatchDestination<
   }
 
   transformEvent(input: CustomerIORouterRequest): TransformedEvent<CustomerIOV2Payload> {
-    if (isRecordMessage(input.message)) {
-      const body = buildRecordEvent(input.message, this.connection?.config?.destination);
+    validateConfigFields(this.destination);
+    const { message } = input;
+    if (isRecordMessage(message)) {
+      const body = buildRecordEvent(message, this.connection?.config?.destination);
       this.assertObjectSize(body);
       const meta = buildRequestMeta(this.destination);
       return {
@@ -48,9 +50,6 @@ class CustomerIOIntegration extends BatchDestination<
         headers: meta.headers,
       };
     }
-
-    const { message } = input;
-    validateConfigFields(this.destination);
     // For RETL/warehouse sources (mappedToDestination), derive userId from
     // context.externalId and fold externalId into traits, mirroring the v1 path.
     if (get(message, MappedToDestinationKey)) {

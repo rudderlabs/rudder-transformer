@@ -24,7 +24,7 @@ const handle207MultiStatus = (
   response: CustomerIO207Response,
   rudderJobMetadata: ProxyMetdata[],
 ): DeliveryV1Response => {
-  const errors = response.errors ?? [];
+  const errors = Array.isArray(response.errors) ? response.errors : [];
   const failedByIndex = new Map<number, string>();
   errors.forEach((e) => {
     failedByIndex.set(e.batch_index, e.reason ?? 'Unknown error from CustomerIO');

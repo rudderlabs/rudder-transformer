@@ -665,6 +665,158 @@ describe('buildEcommerceEventProperties', () => {
       expect(validationCounterCalls()).toHaveLength(1);
     });
 
+    it('coerces numeric-string price to Float (event-level, Product Viewed)', () => {
+      const message = baseMessage({
+        event: 'Product Viewed',
+        properties: {
+          product_id: 'sku_42',
+          name: 'Widget',
+          variant: 'v',
+          price: '29.99',
+          currency: 'USD',
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        undefined,
+        destination,
+      );
+
+      expect(result.price).toBe(29.99);
+      expect(typeof result.price).toBe('number');
+    });
+
+    it('coerces numeric-string quantity to Integer (per-product)', () => {
+      const message = baseMessage({
+        event: 'Order Completed',
+        properties: {
+          order_id: 'ord_001',
+          total: 99.99,
+          currency: 'USD',
+          products: [
+            {
+              product_id: 'sku',
+              name: 'W',
+              variant: 'v',
+              quantity: '2' as unknown as number,
+              price: 99.99,
+            },
+          ],
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        undefined,
+        destination,
+      );
+
+      const product = (result.products as Record<string, unknown>[])[0];
+      expect(product.quantity).toBe(2);
+      expect(typeof product.quantity).toBe('number');
+    });
+
+    it('coerces numeric order_id to String', () => {
+      const message = baseMessage({
+        event: 'Order Completed',
+        properties: {
+          order_id: 12345 as unknown as string,
+          total: 99.99,
+          currency: 'USD',
+          products: [{ product_id: 'sku', name: 'W', variant: 'v', quantity: 1, price: 99.99 }],
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        undefined,
+        destination,
+      );
+
+      expect(result.order_id).toBe('12345');
+      expect(typeof result.order_id).toBe('string');
+    });
+
+    it('passes non-numeric string through verbatim for Float fields', () => {
+      const message = baseMessage({
+        event: 'Product Viewed',
+        properties: {
+          product_id: 'sku_42',
+          name: 'Widget',
+          variant: 'v',
+          price: 'abc' as unknown as number,
+          currency: 'USD',
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        undefined,
+        destination,
+      );
+
+      expect(result.price).toBe('abc');
+    });
+
+    it('does NOT coerce fractional numeric-string to Integer (would be lossy)', () => {
+      const message = baseMessage({
+        event: 'Order Completed',
+        properties: {
+          order_id: 'ord_001',
+          total: 10,
+          currency: 'USD',
+          products: [
+            {
+              product_id: 'sku',
+              name: 'W',
+              variant: 'v',
+              quantity: '2.5' as unknown as number,
+              price: 10,
+            },
+          ],
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        undefined,
+        destination,
+      );
+
+      const product = (result.products as Record<string, unknown>[])[0];
+      // fractional string stays as-is — Braze will reject; no silent truncation
+      expect(product.quantity).toBe('2.5');
+    });
+
+    it('leaves already-correct types untouched', () => {
+      const message = baseMessage({
+        event: 'Product Viewed',
+        properties: {
+          product_id: 'sku_42',
+          name: 'Widget',
+          variant: 'v',
+          price: 29.99,
+          currency: 'USD',
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        undefined,
+        destination,
+      );
+
+      expect(result.price).toBe(29.99);
+      expect(result.product_id).toBe('sku_42');
+    });
+
     it('strips Braze-reserved keys (`time`, `event_name`) from event-level metadata', () => {
       const message = baseMessage({
         event: 'Order Completed',

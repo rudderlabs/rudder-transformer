@@ -68,13 +68,75 @@ const PER_EVENT_MAPPING_NAME: Record<BrazeEcommerceEventName, string> = {
   [BRAZE_ECOMMERCE_EVENTS.ORDER_CANCELLED]: ConfigCategory.BRAZE_ORDER_CANCELLED.name,
 };
 
+type BrazeFieldType = 'String' | 'Float' | 'Integer' | 'Array' | 'Object';
+
 type MappingEntry = {
   destKey: string;
   sourceKeys: string | string[];
+  type: BrazeFieldType;
   brazeRequired?: boolean;
   sourceFromGenericMap?: boolean;
   metadata?: Record<string, unknown>;
 };
+
+/**
+ * Coerce a value to the Braze-declared type when the conversion is safe and lossless.
+ * Mirrors the LLD's Type validation table:
+ *   - Numeric String → Float (when `Number(value)` is finite)
+ *   - Numeric String → Integer (only when no fractional part, so no truncation)
+ *   - Number → String (always safe via `String(n)`)
+ * Anything outside this set passes through verbatim — Braze will reject with a typed
+ * error which the network handler surfaces via `braze_partial_failure`.
+ */
+function coerceValue(value: unknown, type: BrazeFieldType): unknown {
+  if (value === undefined || value === null) return value;
+
+  switch (type) {
+    case 'Float':
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (trimmed.length === 0) return value;
+        const n = Number(trimmed);
+        if (Number.isFinite(n)) return n;
+      }
+      return value;
+
+    case 'Integer':
+      if (typeof value === 'string' && /^-?\d+$/.test(value.trim())) {
+        return parseInt(value, 10);
+      }
+      return value;
+
+    case 'String':
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        return String(value);
+      }
+      return value;
+
+    default:
+      return value;
+  }
+}
+
+/**
+ * Apply per-field coercion to a constructed payload object using its mapping entries.
+ * Returns a shallow copy with coerced values; the input is not mutated.
+ */
+function applyCoercions(
+  payload: Record<string, unknown>,
+  mapping: MappingEntry[],
+): Record<string, unknown> {
+  const result = { ...payload };
+  mapping.forEach((entry) => {
+    const current = result[entry.destKey];
+    if (current === undefined) return;
+    const coerced = coerceValue(current, entry.type);
+    if (coerced !== current) {
+      result[entry.destKey] = coerced;
+    }
+  });
+  return result;
+}
 
 // ---------------------------------------------------------------------------
 // Private helpers (declared before the public surface for no-use-before-define)
@@ -236,7 +298,10 @@ function buildProductsArray(
 
   if (isCartUpdated && !Array.isArray(properties.products)) {
     const product = removeUndefinedNullEmptyExclBoolInt(
-      (constructPayload(properties, productMapping) || {}) as Record<string, unknown>,
+      applyCoercions(
+        (constructPayload(properties, productMapping) || {}) as Record<string, unknown>,
+        productMapping,
+      ),
     ) as Record<string, unknown>;
     return Object.keys(product).length > 0 ? [product] : [];
   }
@@ -247,7 +312,10 @@ function buildProductsArray(
     .map((raw) => {
       const item = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
       const product = removeUndefinedNullEmptyExclBoolInt(
-        (constructPayload(item, productMapping) || {}) as Record<string, unknown>,
+        applyCoercions(
+          (constructPayload(item, productMapping) || {}) as Record<string, unknown>,
+          productMapping,
+        ),
       ) as Record<string, unknown>;
       const productMetadata = pickUnmappedKeys(item, consumedKeys);
       if (Object.keys(productMetadata).length > 0) {
@@ -344,8 +412,11 @@ export function buildEcommerceEventProperties(
   const properties = (message.properties || {}) as Record<string, unknown>;
   const hasExplicitProductsArray = Array.isArray(properties.products);
 
-  // Step 1+2: event-level field mapping.
-  const payload = (constructPayload(message, eventMapping) || {}) as EcommerceEventProperties;
+  // Step 1+2: event-level field mapping + per-field coercion to Braze-declared types.
+  const payload = applyCoercions(
+    (constructPayload(message, eventMapping) || {}) as Record<string, unknown>,
+    eventMapping,
+  ) as EcommerceEventProperties;
 
   // Step 3: products[] (skipped for product_viewed — flat, single-product event).
   if (productMapping !== null) {

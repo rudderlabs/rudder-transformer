@@ -100,6 +100,16 @@ describe('buildRecordEvent', () => {
     expect(() => buildRecordEvent(message)).toThrow('Action "upsert" is not supported');
   });
 
+  it('falls back to empty fields when identifiers is absent', () => {
+    const message = {
+      type: 'record' as const,
+      action: 'delete' as const,
+    } as any;
+    const result = buildRecordEvent(message);
+    expect(result.action).toBe('delete');
+    expect(result.attributes).toBeUndefined();
+  });
+
   describe('event object type', () => {
     it('maps insert action to event with top-level name and attributes', () => {
       const message = {
@@ -160,6 +170,16 @@ describe('buildRecordEvent', () => {
       expect(() => buildRecordEvent(message, 'event')).toThrow(
         'Delete action is not supported for "event" object type',
       );
+    });
+
+    it('throws InstrumentationError for an unsupported (non-delete) action on event object type', () => {
+      const message = {
+        type: 'record' as const,
+        action: 'upsert' as any,
+        identifiers: { id: 'user-1', name: 'Some Event' },
+      };
+      expect(() => buildRecordEvent(message, 'event')).toThrow(InstrumentationError);
+      expect(() => buildRecordEvent(message, 'event')).toThrow('Action "upsert" is not supported');
     });
 
     it('preserves identifier priority (cio_id > id > email) in the event branch', () => {

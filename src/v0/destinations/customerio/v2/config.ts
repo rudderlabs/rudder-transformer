@@ -30,6 +30,15 @@ const CONFIG_CATEGORIES = {
 // __dirname (the v2 folder) — mappings resolve from v2/data/.
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
+const RECORD_ACTION_MAP = {
+  insert: 'identify',
+  update: 'identify',
+  delete: 'delete',
+} as const;
+
+// Ordered by priority: cio_id > id > email
+const RECORD_IDENTIFIER_KEYS = ['cio_id', 'id', 'email'] as const;
+
 export {
   getV2Endpoint,
   V2_BATCH_PATH,
@@ -41,4 +50,6 @@ export {
   DEFAULT_OBJECT_ACTION,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
+  RECORD_ACTION_MAP,
+  RECORD_IDENTIFIER_KEYS,
 };

@@ -1981,8 +1981,7 @@ export const dataV2 = [
               message: {
                 type: 'record',
                 action: 'insert',
-                identifiers: { id: 'user-123' },
-                fields: { plan: 'pro', age: 30 },
+                identifiers: { id: 'user-123', plan: 'pro', age: 30 },
               },
               metadata: { jobId: 100, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
@@ -1998,7 +1997,6 @@ export const dataV2 = [
                 type: 'record',
                 action: 'delete',
                 identifiers: { id: 'user-456' },
-                fields: {},
               },
               metadata: { jobId: 101, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
@@ -2065,6 +2063,85 @@ export const dataV2 = [
     },
   },
   {
+    id: 'cio-v2-router-record-id-priority-over-email',
+    name: 'customerio',
+    description: 'v2: record event — id takes priority over email when both present in identifiers',
+    scenario: 'business',
+    successCriteria:
+      'only id appears in payload identifiers; email is moved to attributes along with other fields',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: { id: 'user-789', email: 'user@example.com', plan: 'pro' },
+              },
+              metadata: { jobId: 103, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { syncMode: 'upsert' } },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: { id: 'user-789' },
+                        attributes: { plan: 'pro' },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 103, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
     id: 'cio-v2-router-record-upsert-email',
     name: 'customerio',
     description: 'v2: record event (upsert mode) — update with email identifier',
@@ -2084,8 +2161,7 @@ export const dataV2 = [
               message: {
                 type: 'record',
                 action: 'update',
-                identifiers: { email: 'user@example.com' },
-                fields: { plan: 'enterprise' },
+                identifiers: { email: 'user@example.com', plan: 'enterprise' },
               },
               metadata: { jobId: 102, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },

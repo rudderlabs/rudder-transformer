@@ -4,12 +4,11 @@ import { buildRecordEvent } from './recordTransform';
 const baseConnectionConfig = {};
 
 describe('buildRecordEvent', () => {
-  it('maps insert action to identify with attributes', () => {
+  it('maps insert action to identify with attributes from identifiers', () => {
     const message = {
       type: 'record' as const,
       action: 'insert' as const,
-      identifiers: { id: 'user-1' },
-      fields: { name: 'Alice', plan: 'pro' },
+      identifiers: { id: 'user-1', name: 'Alice', plan: 'pro' },
     };
     const result = buildRecordEvent(message, baseConnectionConfig);
     expect(result).toEqual({
@@ -20,12 +19,11 @@ describe('buildRecordEvent', () => {
     });
   });
 
-  it('maps update action to identify with attributes', () => {
+  it('maps update action to identify with attributes from identifiers', () => {
     const message = {
       type: 'record' as const,
       action: 'update' as const,
-      identifiers: { email: 'alice@example.com' },
-      fields: { plan: 'enterprise' },
+      identifiers: { email: 'alice@example.com', plan: 'enterprise' },
     };
     const result = buildRecordEvent(message, baseConnectionConfig);
     expect(result).toEqual({
@@ -40,8 +38,7 @@ describe('buildRecordEvent', () => {
     const message = {
       type: 'record' as const,
       action: 'delete' as const,
-      identifiers: { id: 'user-1' },
-      fields: { name: 'Alice' },
+      identifiers: { id: 'user-1', name: 'Alice' },
     };
     const result = buildRecordEvent(message, baseConnectionConfig);
     expect(result).toEqual({
@@ -52,44 +49,43 @@ describe('buildRecordEvent', () => {
     expect(result.attributes).toBeUndefined();
   });
 
-  it('omits attributes when fields is empty object', () => {
+  it('omits attributes when identifiers has only id', () => {
     const message = {
       type: 'record' as const,
       action: 'insert' as const,
       identifiers: { id: 'user-1' },
-      fields: {},
     };
     const result = buildRecordEvent(message, baseConnectionConfig);
     expect(result.attributes).toBeUndefined();
   });
 
-  it('omits attributes when fields is undefined', () => {
+  it('prefers id over email when both are present', () => {
     const message = {
       type: 'record' as const,
       action: 'insert' as const,
-      identifiers: { id: 'user-1' },
+      identifiers: { id: 'user-1', email: 'alice@example.com', plan: 'pro' },
     };
     const result = buildRecordEvent(message, baseConnectionConfig);
-    expect(result.attributes).toBeUndefined();
+    expect(result.identifiers).toEqual({ id: 'user-1' });
+    expect(result.attributes).toEqual({ plan: 'pro' });
   });
 
   it('uses email identifier when id is absent', () => {
     const message = {
       type: 'record' as const,
       action: 'insert' as const,
-      identifiers: { email: 'alice@example.com' },
-      fields: { plan: 'pro' },
+      identifiers: { email: 'alice@example.com', plan: 'pro' },
     };
     const result = buildRecordEvent(message, baseConnectionConfig);
     expect(result.identifiers).toEqual({ email: 'alice@example.com' });
+    expect(result.attributes).toEqual({ plan: 'pro' });
   });
 
   it('throws InstrumentationError when both id and email are missing', () => {
     const message = {
       type: 'record' as const,
       action: 'insert' as const,
-      identifiers: { customField: 'value-1' },
-      fields: { plan: 'pro' },
+      identifiers: { customField: 'value-1', plan: 'pro' },
     };
     expect(() => buildRecordEvent(message, baseConnectionConfig)).toThrow(InstrumentationError);
     expect(() => buildRecordEvent(message, baseConnectionConfig)).toThrow(

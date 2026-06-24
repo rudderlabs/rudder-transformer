@@ -11,30 +11,38 @@ export const buildRecordEvent = (
   if (!parsed.success) {
     throw new ConfigurationError('Invalid or missing connection config for record events');
   }
-  const { action, identifiers: rawIdentifiers, fields } = message;
-  const identifiers = rawIdentifiers ?? {};
+  const { action, identifiers: rawIdentifiers } = message;
+  const rawFields = rawIdentifiers ?? {};
 
   if (!(action in RECORD_ACTION_MAP)) {
     throw new InstrumentationError(`Action "${action}" is not supported`);
   }
   const cioAction = RECORD_ACTION_MAP[action as keyof typeof RECORD_ACTION_MAP];
 
-  const validId = [...REQUIRED_IDENTIFIER_KEYS].find(
-    (key) => typeof identifiers[key] === 'string' && (identifiers[key] as string).length > 0,
+  // id takes priority over email; at least one must be a non-empty string
+  const validId = ['id', 'email'].find(
+    (key) => typeof rawFields[key] === 'string' && (rawFields[key] as string).length > 0,
   );
 
   if (!validId) {
     throw new InstrumentationError('A non-empty `id` or `email` identifier is required');
   }
 
+  const identifiers: Record<string, string | number> = { [validId]: rawFields[validId] as string };
+
+  // everything in rawFields except id/email becomes attributes
+  const attributeEntries = Object.entries(rawFields).filter(
+    ([key]) => !REQUIRED_IDENTIFIER_KEYS.has(key),
+  );
+
   const payload: CustomerIOV2Payload = {
     type: 'person',
     action: cioAction,
-    identifiers: identifiers as Record<string, string | number>,
+    identifiers,
   };
 
-  if (cioAction !== 'delete' && fields && Object.keys(fields).length > 0) {
-    payload.attributes = fields;
+  if (cioAction !== 'delete' && attributeEntries.length > 0) {
+    payload.attributes = Object.fromEntries(attributeEntries);
   }
 
   return payload;

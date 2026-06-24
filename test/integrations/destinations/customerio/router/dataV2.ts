@@ -2068,7 +2068,7 @@ export const dataV2 = [
     description: 'v2: record event — id takes priority over email when both present in identifiers',
     scenario: 'business',
     successCriteria:
-      'only id appears in payload identifiers; email is moved to attributes along with other fields',
+      'only id appears in payload identifiers; email and other non-id fields are moved to attributes',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -2121,7 +2121,7 @@ export const dataV2 = [
                         type: 'person',
                         action: 'identify',
                         identifiers: { id: 'user-789' },
-                        attributes: { plan: 'pro' },
+                        attributes: { email: 'user@example.com', plan: 'pro' },
                       },
                     ],
                   },
@@ -2135,6 +2135,117 @@ export const dataV2 = [
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
               batched: true,
               statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'cio-v2-router-record-missing-identifiers',
+    name: 'customerio',
+    description:
+      'v2: record batch — valid event succeeds, event with undefined identifiers fails with 400',
+    scenario: 'business',
+    successCriteria:
+      'valid record is batched and emitted; event with no identifiers returns a 400 instrumentation error',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: { id: 'user-100', plan: 'pro' },
+              },
+              metadata: { jobId: 200, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { syncMode: 'upsert' } },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: undefined,
+              },
+              metadata: { jobId: 201, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { syncMode: 'upsert' } },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: { id: 'user-100' },
+                        attributes: { plan: 'pro' },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 200, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              batched: true,
+              statusCode: 200,
+            },
+            {
+              metadata: [{ jobId: 201, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              batched: false,
+              statusCode: 400,
+              error: 'message: A non-empty `id` or `email` identifier is required',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
             },
           ],
         },

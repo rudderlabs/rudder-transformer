@@ -36,7 +36,8 @@ const RECORD_ACTION_MAP = {
   delete: 'delete',
 } as const;
 
-const REQUIRED_IDENTIFIER_KEYS = new Set(['id', 'email']);
+// Ordered by priority: id wins over email
+const RECORD_IDENTIFIER_KEYS = ['id', 'email'] as const;
 
 export {
   getV2Endpoint,
@@ -50,5 +51,5 @@ export {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   RECORD_ACTION_MAP,
-  REQUIRED_IDENTIFIER_KEYS,
+  RECORD_IDENTIFIER_KEYS,
 };

@@ -1,8 +1,6 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { buildRecordEvent } from './recordTransform';
 
-const baseConnectionConfig = {};
-
 describe('buildRecordEvent', () => {
   it('maps insert action to identify with attributes from identifiers', () => {
     const message = {
@@ -10,7 +8,7 @@ describe('buildRecordEvent', () => {
       action: 'insert' as const,
       identifiers: { id: 'user-1', name: 'Alice', plan: 'pro' },
     };
-    const result = buildRecordEvent(message, baseConnectionConfig);
+    const result = buildRecordEvent(message);
     expect(result).toEqual({
       type: 'person',
       action: 'identify',
@@ -25,7 +23,7 @@ describe('buildRecordEvent', () => {
       action: 'update' as const,
       identifiers: { email: 'alice@example.com', plan: 'enterprise' },
     };
-    const result = buildRecordEvent(message, baseConnectionConfig);
+    const result = buildRecordEvent(message);
     expect(result).toEqual({
       type: 'person',
       action: 'identify',
@@ -40,7 +38,7 @@ describe('buildRecordEvent', () => {
       action: 'delete' as const,
       identifiers: { id: 'user-1', name: 'Alice' },
     };
-    const result = buildRecordEvent(message, baseConnectionConfig);
+    const result = buildRecordEvent(message);
     expect(result).toEqual({
       type: 'person',
       action: 'delete',
@@ -55,7 +53,7 @@ describe('buildRecordEvent', () => {
       action: 'insert' as const,
       identifiers: { id: 'user-1' },
     };
-    const result = buildRecordEvent(message, baseConnectionConfig);
+    const result = buildRecordEvent(message);
     expect(result.attributes).toBeUndefined();
   });
 
@@ -65,9 +63,9 @@ describe('buildRecordEvent', () => {
       action: 'insert' as const,
       identifiers: { id: 'user-1', email: 'alice@example.com', plan: 'pro' },
     };
-    const result = buildRecordEvent(message, baseConnectionConfig);
+    const result = buildRecordEvent(message);
     expect(result.identifiers).toEqual({ id: 'user-1' });
-    expect(result.attributes).toEqual({ plan: 'pro' });
+    expect(result.attributes).toEqual({ email: 'alice@example.com', plan: 'pro' });
   });
 
   it('uses email identifier when id is absent', () => {
@@ -76,39 +74,9 @@ describe('buildRecordEvent', () => {
       action: 'insert' as const,
       identifiers: { email: 'alice@example.com', plan: 'pro' },
     };
-    const result = buildRecordEvent(message, baseConnectionConfig);
+    const result = buildRecordEvent(message);
     expect(result.identifiers).toEqual({ email: 'alice@example.com' });
     expect(result.attributes).toEqual({ plan: 'pro' });
-  });
-
-  it('throws InstrumentationError when both id and email are missing', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'insert' as const,
-      identifiers: { customField: 'value-1', plan: 'pro' },
-    };
-    expect(() => buildRecordEvent(message, baseConnectionConfig)).toThrow(InstrumentationError);
-    expect(() => buildRecordEvent(message, baseConnectionConfig)).toThrow(
-      'A non-empty `id` or `email` identifier is required',
-    );
-  });
-
-  it('throws InstrumentationError when identifiers is empty object', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'insert' as const,
-      identifiers: {},
-    };
-    expect(() => buildRecordEvent(message, baseConnectionConfig)).toThrow(InstrumentationError);
-  });
-
-  it('throws InstrumentationError when id is empty string', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'insert' as const,
-      identifiers: { id: '' },
-    };
-    expect(() => buildRecordEvent(message, baseConnectionConfig)).toThrow(InstrumentationError);
   });
 
   it('throws InstrumentationError for unsupported action', () => {
@@ -117,9 +85,7 @@ describe('buildRecordEvent', () => {
       action: 'upsert' as any,
       identifiers: { id: 'user-1' },
     };
-    expect(() => buildRecordEvent(message, baseConnectionConfig)).toThrow(InstrumentationError);
-    expect(() => buildRecordEvent(message, baseConnectionConfig)).toThrow(
-      'Action "upsert" is not supported',
-    );
+    expect(() => buildRecordEvent(message)).toThrow(InstrumentationError);
+    expect(() => buildRecordEvent(message)).toThrow('Action "upsert" is not supported');
   });
 });

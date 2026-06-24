@@ -1,4 +1,5 @@
 import { z, ZodType } from 'zod';
+import { RECORD_IDENTIFIER_KEYS } from './config';
 
 export type CustomerIOV2Identifiers = {
   id?: string;
@@ -31,60 +32,63 @@ export type CustomerIOV2Payload = {
   [key: string]: unknown;
 };
 
-const SUPPORTED_TYPES = [
-  'identify',
-  'track',
-  'page',
-  'screen',
-  'alias',
-  'group',
-  'record',
-] as const;
-
 const emailTraitSchema = z.object({ email: z.unknown() }).passthrough().nullish();
+
+const recordMessageSchema = z
+  .object({
+    type: z.literal('record'),
+    action: z.string(),
+    identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+  })
+  .passthrough()
+  .refine(
+    (msg) =>
+      RECORD_IDENTIFIER_KEYS.some(
+        (key) => typeof msg.identifiers?.[key] === 'string' && msg.identifiers[key].length > 0,
+      ),
+    { message: 'A non-empty `id` or `email` identifier is required' },
+  );
+
+const eventStreamMessageSchema = z
+  .object({
+    type: z.enum(['identify', 'track', 'page', 'screen', 'alias', 'group']),
+    userId: z.string().nullish(),
+    anonymousId: z.string().nullish(),
+    previousId: z.string().nullish(),
+    groupId: z.string().nullish(),
+    traits: emailTraitSchema,
+    context: z
+      .object({
+        // RETL/warehouse sources set mappedToDestination and supply the identifier
+        // via externalId. adduserIdFromExternalId (called in processV2, after this
+        // validation) hydrates userId — so these events must pass the refine even
+        // without a top-level userId/anonymousId/email.
+        mappedToDestination: z.unknown(),
+        traits: emailTraitSchema,
+      })
+      .passthrough()
+      .nullish(),
+  })
+  .passthrough()
+  .refine(
+    (msg) => {
+      if (msg.type === 'alias') {
+        return !!msg.userId && !!msg.previousId;
+      }
+      if (msg.type === 'group') {
+        return true;
+      }
+      const hasEmail = !!msg.traits?.email || !!msg.context?.traits?.email;
+      const isMappedToDestination = !!msg.context?.mappedToDestination;
+      return !!msg.userId || !!msg.anonymousId || hasEmail || isMappedToDestination;
+    },
+    { message: 'userId, email or anonymousId is required' },
+  );
 
 export const getV2InputSchema = (): ZodType =>
   z
     .object({
-      message: z
-        .object({
-          type: z.enum(SUPPORTED_TYPES),
-          userId: z.string().nullish(),
-          anonymousId: z.string().nullish(),
-          previousId: z.string().nullish(),
-          groupId: z.string().nullish(),
-          traits: emailTraitSchema,
-          // Declaring the fields the refine inspects so no runtime casts are needed.
-          context: z
-            .object({
-              // RETL/warehouse sources set mappedToDestination and supply the identifier
-              // via externalId. adduserIdFromExternalId (called in processV2, after this
-              // validation) hydrates userId — so these events must pass the refine even
-              // without a top-level userId/anonymousId/email.
-              mappedToDestination: z.unknown(),
-              traits: emailTraitSchema,
-            })
-            .passthrough()
-            .nullish(),
-        })
-        .passthrough()
-        .refine(
-          (msg) => {
-            if (msg.type === 'alias') {
-              return !!msg.userId && !!msg.previousId;
-            }
-            if (msg.type === 'group') {
-              return true;
-            }
-            if (msg.type === 'record') {
-              return true;
-            }
-            const hasEmail = !!msg.traits?.email || !!msg.context?.traits?.email;
-            const isMappedToDestination = !!msg.context?.mappedToDestination;
-            return !!msg.userId || !!msg.anonymousId || hasEmail || isMappedToDestination;
-          },
-          { message: 'userId, email or anonymousId is required' },
-        ),
+      message: z.union([recordMessageSchema, eventStreamMessageSchema]),
     })
     .passthrough();
 

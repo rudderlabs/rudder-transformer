@@ -57,7 +57,18 @@ describe('buildRecordEvent', () => {
     expect(result.attributes).toBeUndefined();
   });
 
-  it('prefers id over email when both are present', () => {
+  it('prefers cio_id over id and email when all are present', () => {
+    const message = {
+      type: 'record' as const,
+      action: 'insert' as const,
+      identifiers: { cio_id: 'cio-abc', id: 'user-1', email: 'alice@example.com', plan: 'pro' },
+    };
+    const result = buildRecordEvent(message);
+    expect(result.identifiers).toEqual({ cio_id: 'cio-abc' });
+    expect(result.attributes).toEqual({ id: 'user-1', email: 'alice@example.com', plan: 'pro' });
+  });
+
+  it('prefers id over email when cio_id is absent', () => {
     const message = {
       type: 'record' as const,
       action: 'insert' as const,

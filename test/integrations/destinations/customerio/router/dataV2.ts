@@ -2063,12 +2063,13 @@ export const dataV2 = [
     },
   },
   {
-    id: 'cio-v2-router-record-id-priority-over-email',
+    id: 'cio-v2-router-record-identifier-priority',
     name: 'customerio',
-    description: 'v2: record event — id takes priority over email when both present in identifiers',
+    description:
+      'v2: record event — cio_id takes priority over id and email when all are present in identifiers',
     scenario: 'business',
     successCriteria:
-      'only id appears in payload identifiers; email and other non-id fields are moved to attributes',
+      'only cio_id appears in payload identifiers; id, email and other fields are moved to attributes',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -2083,7 +2084,12 @@ export const dataV2 = [
               message: {
                 type: 'record',
                 action: 'insert',
-                identifiers: { id: 'user-789', email: 'user@example.com', plan: 'pro' },
+                identifiers: {
+                  cio_id: 'cio-abc',
+                  id: 'user-789',
+                  email: 'user@example.com',
+                  plan: 'pro',
+                },
               },
               metadata: { jobId: 103, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
@@ -2120,8 +2126,8 @@ export const dataV2 = [
                       {
                         type: 'person',
                         action: 'identify',
-                        identifiers: { id: 'user-789' },
-                        attributes: { email: 'user@example.com', plan: 'pro' },
+                        identifiers: { cio_id: 'cio-abc' },
+                        attributes: { id: 'user-789', email: 'user@example.com', plan: 'pro' },
                       },
                     ],
                   },

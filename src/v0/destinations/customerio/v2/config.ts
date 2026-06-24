@@ -36,8 +36,8 @@ const RECORD_ACTION_MAP = {
   delete: 'delete',
 } as const;
 
-// Ordered by priority: id > cio_id > email
-const RECORD_IDENTIFIER_KEYS = ['id', 'cio_id', 'email'] as const;
+// Ordered by priority: cio_id > id > email
+const RECORD_IDENTIFIER_KEYS = ['cio_id', 'id', 'email'] as const;
 
 export {
   getV2Endpoint,

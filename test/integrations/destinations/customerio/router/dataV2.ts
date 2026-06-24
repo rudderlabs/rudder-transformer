@@ -2098,8 +2098,12 @@ export const dataV2 = [
               message: {
                 type: 'record',
                 action: 'update',
-                identifiers: { email: 'user@example.com', plan: 'enterprise' },
-                fields: { eventName: 'Plan Changed', previousPlan: 'pro' },
+                identifiers: {
+                  email: 'user@example.com',
+                  eventName: 'Plan Changed',
+                  plan: 'enterprise',
+                },
+                fields: { previousPlan: 'pro' },
               },
               metadata: { jobId: 105, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
@@ -2139,7 +2143,6 @@ export const dataV2 = [
                         identifiers: { id: 'user-123' },
                         name: 'Order Completed',
                         attributes: {
-                          eventName: 'Order Completed',
                           plan: 'pro',
                         },
                       },

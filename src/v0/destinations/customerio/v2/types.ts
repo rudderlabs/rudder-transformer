@@ -1,5 +1,6 @@
 import { z, ZodType } from 'zod';
 import { RECORD_IDENTIFIER_KEYS } from './config';
+import { CustomerIOConnectionConfigSchema } from '../types';
 
 export type CustomerIOV2Identifiers = {
   id?: string;
@@ -89,6 +90,16 @@ export const getV2InputSchema = (): ZodType =>
   z
     .object({
       message: z.union([recordMessageSchema, eventStreamMessageSchema]),
+      connection: z
+        .object({
+          config: z
+            .object({
+              destination: CustomerIOConnectionConfigSchema,
+            })
+            .passthrough(),
+        })
+        .passthrough()
+        .optional(),
     })
     .passthrough();
 

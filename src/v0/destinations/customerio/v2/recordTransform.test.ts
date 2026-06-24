@@ -5,11 +5,11 @@ describe('buildRecordEvent', () => {
   const eventCases = [
     {
       action: 'insert' as const,
-      expectedAttributes: { eventName: 'Order Completed', plan: 'pro' },
+      expectedAttributes: { plan: 'pro' },
     },
     {
       action: 'update' as const,
-      expectedAttributes: { eventName: 'Order Completed', plan: 'pro' },
+      expectedAttributes: { plan: 'pro' },
     },
   ];
 
@@ -107,11 +107,9 @@ describe('buildRecordEvent', () => {
       const message = {
         type: 'record' as const,
         action,
-        object: 'event',
         identifiers: { id: 'user-1', eventName: 'Order Completed', plan: 'pro' },
-        fields: { value: 99 },
       };
-      const result = buildRecordEvent(message);
+      const result = buildRecordEvent(message, 'event');
       expect(result).toEqual({
         type: 'person',
         action: 'event',
@@ -126,8 +124,7 @@ describe('buildRecordEvent', () => {
     const message = {
       type: 'record' as const,
       action: 'update' as const,
-      identifiers: { email: 'alice@example.com', plan: 'enterprise' },
-      fields: { eventName: 'Plan Changed' },
+      identifiers: { email: 'alice@example.com', eventName: 'Plan Changed', plan: 'enterprise' },
     };
     const result = buildRecordEvent(message, 'event');
     expect(result).toEqual({
@@ -143,11 +140,10 @@ describe('buildRecordEvent', () => {
     const message = {
       type: 'record' as const,
       action: 'delete' as const,
-      object: 'event',
       identifiers: { id: 'user-1', eventName: 'Order Completed' },
     };
-    expect(() => buildRecordEvent(message)).toThrow(InstrumentationError);
-    expect(() => buildRecordEvent(message)).toThrow(
+    expect(() => buildRecordEvent(message, 'event')).toThrow(InstrumentationError);
+    expect(() => buildRecordEvent(message, 'event')).toThrow(
       'Delete action is not supported for CustomerIO event records',
     );
   });

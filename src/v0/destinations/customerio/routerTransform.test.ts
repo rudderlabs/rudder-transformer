@@ -88,7 +88,7 @@ describe('CustomerIOIntegration — record event routing', () => {
       action: 'event',
       identifiers: { id: 'user-1' },
       name: 'Order Completed',
-      attributes: { eventName: 'Order Completed', plan: 'pro' },
+      attributes: { plan: 'pro' },
     });
   });
 

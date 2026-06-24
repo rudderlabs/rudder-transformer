@@ -27,8 +27,7 @@ const makeInput = (overrides: Record<string, unknown>) => ({
   message: {
     type: 'record',
     action: 'insert',
-    identifiers: { id: 'user-1' },
-    fields: { plan: 'pro' },
+    identifiers: { id: 'user-1', plan: 'pro' },
     ...overrides,
   },
   metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
@@ -54,9 +53,7 @@ describe('CustomerIOIntegration — record event routing', () => {
 
   it('transforms delete record into delete person payload without attributes', () => {
     const integration = new Integration(baseDestination as any, baseConnection as any);
-    const result = integration.transformEvent(
-      makeInput({ action: 'delete', fields: { plan: 'pro' } }) as any,
-    );
+    const result = integration.transformEvent(makeInput({ action: 'delete' }) as any);
     expect(result.body).toMatchObject({
       type: 'person',
       action: 'delete',
@@ -65,23 +62,28 @@ describe('CustomerIOIntegration — record event routing', () => {
     expect((result.body as any).attributes).toBeUndefined();
   });
 
-  it('throws InstrumentationError when identifier is missing', () => {
+  it('throws InstrumentationError for unsupported action', () => {
     const integration = new Integration(baseDestination as any, baseConnection as any);
-    expect(() =>
-      integration.transformEvent(makeInput({ identifiers: { customKey: 'val' } }) as any),
-    ).toThrow(InstrumentationError);
+    expect(() => integration.transformEvent(makeInput({ action: 'upsert' }) as any)).toThrow(
+      InstrumentationError,
+    );
   });
 
-  it('throws ConfigurationError when connection is absent', () => {
+  it('succeeds when connection is absent (no connection config needed for record events)', () => {
     const integration = new Integration(baseDestination as any, undefined);
-    expect(() => integration.transformEvent(makeInput({}) as any)).toThrow(ConfigurationError);
+    const result = integration.transformEvent(makeInput({}) as any);
+    expect(result.body).toMatchObject({
+      type: 'person',
+      action: 'identify',
+      identifiers: { id: 'user-1' },
+    });
   });
 
   it('batches multiple record events into one { batch: [...] } body', async () => {
     const integration = new Integration(baseDestination as any, baseConnection as any);
     const inputs = [
-      makeInput({ identifiers: { id: 'u1' }, fields: { plan: 'pro' } }),
-      makeInput({ action: 'update', identifiers: { id: 'u2' }, fields: { plan: 'starter' } }),
+      makeInput({ identifiers: { id: 'u1', plan: 'pro' } }),
+      makeInput({ action: 'update', identifiers: { id: 'u2', plan: 'starter' } }),
       makeInput({ action: 'delete', identifiers: { id: 'u3' } }),
     ];
     const { successPayloads } = await integration.transformEvents(inputs as any);

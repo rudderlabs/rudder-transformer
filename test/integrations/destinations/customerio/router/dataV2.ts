@@ -2336,4 +2336,114 @@ export const dataV2 = [
       },
     },
   },
+  {
+    id: 'cio-v2-router-record-event-object',
+    name: 'customerio',
+    description:
+      'v2: record event with connection object type "event" — insert/update map to event action with top-level name',
+    scenario: 'business',
+    successCriteria:
+      'object type "event" produces action "event" with a top-level name lifted out of attributes',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: { id: 'user-123', name: 'Signup Completed', plan: 'pro' },
+              },
+              metadata: { jobId: 300, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { object: 'event', syncMode: 'upsert' } },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                identifiers: {
+                  email: 'user@example.com',
+                  name: 'Plan Upgraded',
+                  plan: 'enterprise',
+                },
+              },
+              metadata: { jobId: 301, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { object: 'event', syncMode: 'upsert' } },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: { id: 'user-123' },
+                        name: 'Signup Completed',
+                        attributes: { plan: 'pro' },
+                      },
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: { email: 'user@example.com' },
+                        name: 'Plan Upgraded',
+                        attributes: { plan: 'enterprise' },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 300, userId: 'u1', workspaceId: 'ws-cio-v2' },
+                { jobId: 301, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              ],
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

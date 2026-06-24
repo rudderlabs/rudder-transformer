@@ -36,6 +36,13 @@ const RECORD_ACTION_MAP = {
   delete: 'delete',
 } as const;
 
+// Action map for the `event` object type. insert/update both emit an event;
+// delete is intentionally absent (unsupported and rejected in recordTransform).
+const EVENT_RECORD_ACTION_MAP = {
+  insert: 'event',
+  update: 'event',
+} as const;
+
 // Ordered by priority: cio_id > id > email
 const RECORD_IDENTIFIER_KEYS = ['cio_id', 'id', 'email'] as const;
 
@@ -51,5 +58,6 @@ export {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   RECORD_ACTION_MAP,
+  EVENT_RECORD_ACTION_MAP,
   RECORD_IDENTIFIER_KEYS,
 };

@@ -37,7 +37,8 @@ class CustomerIOIntegration extends BatchDestination<
 
   private buildBody(message: CustomerIORouterRequest['message']): CustomerIOV2Payload {
     if (isRecordMessage(message)) {
-      return buildRecordEvent(message);
+      const objectType = this.connection?.config?.destination?.object;
+      return buildRecordEvent(message, objectType);
     }
     // For RETL/warehouse sources (mappedToDestination), derive userId from
     // context.externalId and fold externalId into traits, mirroring the v1 path.

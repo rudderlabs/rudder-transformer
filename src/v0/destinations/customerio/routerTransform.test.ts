@@ -35,6 +35,11 @@ const makeInput = (overrides: Record<string, unknown>): CustomerIORouterRequest 
     destination: baseDestination,
   }) as unknown as CustomerIORouterRequest;
 
+const eventConnection = {
+  ...baseConnection,
+  config: { destination: { object: 'event' } },
+} as CustomerIORouterRequest['connection'];
+
 describe('CustomerIOIntegration — record event routing', () => {
   it('transforms insert record into identify person payload', () => {
     const integration = new Integration(baseDestination, baseConnection);
@@ -67,6 +72,33 @@ describe('CustomerIOIntegration — record event routing', () => {
     const integration = new Integration(baseDestination, baseConnection);
     expect(() => integration.transformEvent(makeInput({ action: 'upsert' }))).toThrow(
       InstrumentationError,
+    );
+  });
+
+  it('transforms event object record into event person payload', () => {
+    const integration = new Integration(baseDestination, eventConnection);
+    const result = integration.transformEvent(
+      makeInput({
+        action: 'update',
+        identifiers: { id: 'user-1', eventName: 'Order Completed', plan: 'pro' },
+      }),
+    );
+    expect(result.body).toEqual({
+      type: 'person',
+      action: 'event',
+      identifiers: { id: 'user-1' },
+      name: 'Order Completed',
+      attributes: { eventName: 'Order Completed', plan: 'pro' },
+    });
+  });
+
+  it('throws InstrumentationError for event object delete records', () => {
+    const integration = new Integration(baseDestination, eventConnection);
+    expect(() => integration.transformEvent(makeInput({ action: 'delete' }))).toThrow(
+      InstrumentationError,
+    );
+    expect(() => integration.transformEvent(makeInput({ action: 'delete' }))).toThrow(
+      'Delete action is not supported for CustomerIO event records',
     );
   });
 

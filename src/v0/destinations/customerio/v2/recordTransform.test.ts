@@ -2,6 +2,17 @@ import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { buildRecordEvent } from './recordTransform';
 
 describe('buildRecordEvent', () => {
+  const eventCases = [
+    {
+      action: 'insert' as const,
+      expectedAttributes: { eventName: 'Order Completed', plan: 'pro' },
+    },
+    {
+      action: 'update' as const,
+      expectedAttributes: { eventName: 'Order Completed', plan: 'pro' },
+    },
+  ];
+
   it('maps insert action to identify with attributes from identifiers', () => {
     const message = {
       type: 'record' as const,
@@ -88,6 +99,57 @@ describe('buildRecordEvent', () => {
     const result = buildRecordEvent(message);
     expect(result.identifiers).toEqual({ email: 'alice@example.com' });
     expect(result.attributes).toEqual({ plan: 'pro' });
+  });
+
+  it.each(eventCases)(
+    'maps event record $action action to event payload',
+    ({ action, expectedAttributes }) => {
+      const message = {
+        type: 'record' as const,
+        action,
+        object: 'event',
+        identifiers: { id: 'user-1', eventName: 'Order Completed', plan: 'pro' },
+        fields: { value: 99 },
+      };
+      const result = buildRecordEvent(message);
+      expect(result).toEqual({
+        type: 'person',
+        action: 'event',
+        identifiers: { id: 'user-1' },
+        name: 'Order Completed',
+        attributes: expectedAttributes,
+      });
+    },
+  );
+
+  it('maps event record update action using connection object marker', () => {
+    const message = {
+      type: 'record' as const,
+      action: 'update' as const,
+      identifiers: { email: 'alice@example.com', plan: 'enterprise' },
+      fields: { eventName: 'Plan Changed' },
+    };
+    const result = buildRecordEvent(message, 'event');
+    expect(result).toEqual({
+      type: 'person',
+      action: 'event',
+      identifiers: { email: 'alice@example.com' },
+      name: 'Plan Changed',
+      attributes: { plan: 'enterprise' },
+    });
+  });
+
+  it('throws InstrumentationError for event record delete action', () => {
+    const message = {
+      type: 'record' as const,
+      action: 'delete' as const,
+      object: 'event',
+      identifiers: { id: 'user-1', eventName: 'Order Completed' },
+    };
+    expect(() => buildRecordEvent(message)).toThrow(InstrumentationError);
+    expect(() => buildRecordEvent(message)).toThrow(
+      'Delete action is not supported for CustomerIO event records',
+    );
   });
 
   it('throws InstrumentationError for unsupported action', () => {

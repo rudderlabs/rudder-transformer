@@ -7,6 +7,7 @@ import stats from '../../../util/stats';
 import { constructPayload } from '../../util';
 import { ConfigCategory, mappingConfig } from './config';
 import type { BrazeDestination, RudderBrazeMessage } from './types';
+import { handleReservedProperties } from './util';
 
 /**
  * Braze recommended ecommerce event names.
@@ -368,7 +369,11 @@ export function buildEcommerceEventProperties(
   if (action) {
     consumedEventKeys.add('action');
   }
-  const eventMetadata = pickUnmappedKeys(properties, consumedEventKeys);
+  // Strip Braze-reserved keys (`time`, `event_name`) from the metadata pass-through —
+  // these would collide with the event-envelope fields. Same scrub the legacy custom-
+  // event path applies; we do it on metadata (not the whole `properties`) because the
+  // reserved names aren't mapped anywhere else, so the effect is identical.
+  const eventMetadata = handleReservedProperties(pickUnmappedKeys(properties, consumedEventKeys));
   if (Object.keys(eventMetadata).length > 0) {
     payload.metadata = eventMetadata;
   }

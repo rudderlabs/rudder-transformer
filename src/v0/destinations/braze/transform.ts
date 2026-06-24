@@ -353,7 +353,7 @@ function processTrackEvent(
 
   // New recommended-events path. Gated by destination config; falls through to legacy
   // for unmapped events. Preserves attributes[] + dedup built above.
-  if (messageType === EventType.TRACK && destination.Config.useRecommendedEcommerceEvents) {
+  if (messageType === EventType.TRACK && destination.Config.useEcommerceRecommendedEvents) {
     const ecomMapping = getEcommerceMapping(eventName);
     if (ecomMapping) {
       const { timestamp } = message;

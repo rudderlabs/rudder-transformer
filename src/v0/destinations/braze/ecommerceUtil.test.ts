@@ -664,5 +664,32 @@ describe('buildEcommerceEventProperties', () => {
       // ...AND counted as missing.
       expect(validationCounterCalls()).toHaveLength(1);
     });
+
+    it('strips Braze-reserved keys (`time`, `event_name`) from event-level metadata', () => {
+      const message = baseMessage({
+        event: 'Order Completed',
+        properties: {
+          order_id: 'ord_001',
+          total: 10,
+          currency: 'USD',
+          time: 'should-be-stripped',
+          event_name: 'should-be-stripped',
+          campaign: 'spring',
+          products: [
+            { product_id: 'sku_42', name: 'Widget', variant: 'v', quantity: 1, price: 10 },
+          ],
+        },
+      });
+
+      const result = buildEcommerceEventProperties(
+        message,
+        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        undefined,
+        destination,
+      );
+
+      // reserved keys never reach metadata; legitimate unmapped key still flows through
+      expect(result.metadata).toEqual({ campaign: 'spring' });
+    });
   });
 });

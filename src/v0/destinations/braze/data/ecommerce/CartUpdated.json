@@ -6,7 +6,7 @@
   },
   {
     "destKey": "total_value",
-    "sourceKeys": ["properties.total", "properties.value"],
+    "sourceKeys": ["properties.total", "properties.revenue", "properties.value"],
     "brazeRequired": false
   },
   {

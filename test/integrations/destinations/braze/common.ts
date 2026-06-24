@@ -1,7 +1,7 @@
 /**
  * Shared fixtures for the Braze recommended-ecommerce-events component tests.
  * Used by processor/data.ts (and router/data.ts if needed) for the new
- * `useRecommendedEcommerceEvents` flow. The pre-existing fixtures in those files
+ * `useEcommerceRecommendedEvents` flow. The pre-existing fixtures in those files
  * define their own destination + message blocks inline; this file is the
  * convention going forward (see writing-tests skill).
  */
@@ -18,7 +18,7 @@ export const ecommerceDestination = {
     prefixProperties: true,
     useNativeSDK: false,
     dataCenter: 'us-01',
-    useRecommendedEcommerceEvents: true,
+    useEcommerceRecommendedEvents: true,
   },
   DestinationDefinition: {
     DisplayName: 'Braze',

@@ -4665,7 +4665,7 @@ export const data = [
   },
 
   // ----------------------------------------------------------------------------
-  // Recommended ecommerce events (useRecommendedEcommerceEvents = true)
+  // Recommended ecommerce events (useEcommerceRecommendedEvents = true)
   // Fixture IDs follow LLD § 9.4 (T-I-01 through T-I-09).
   // T-I-10 (flag-off byte-identical) is implicitly covered by the existing legacy
   // fixtures above continuing to pass without changes.

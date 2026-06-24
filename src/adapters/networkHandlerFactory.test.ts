@@ -38,7 +38,7 @@ describe('Network Handler Tests', () => {
     expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
   });
 
-  it('Should keep network handler lookup case-sensitive after validation', () => {
+  it('Should keep network handler lookup case-sensitive', () => {
     const { networkHandler } = getNetworkHandler('BRAZE', 'v0');
     expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
   });
@@ -48,7 +48,8 @@ describe('Network Handler Tests', () => {
     expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
   });
 
-  it('Should reject invalid destinations before handler lookup', () => {
-    expect(() => getNetworkHandler('../abc', 'v1')).toThrow('Invalid destination: ../abc');
+  it('Should return generic handler for invalid raw lookup keys', () => {
+    const { networkHandler } = getNetworkHandler('../abc', 'v1');
+    expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
   });
 });

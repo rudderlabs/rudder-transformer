@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.140.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.139.0...v1.140.0) (2026-06-25)
+
+
+### Features
+
+* **customerio:** add record event support in v2 router transform ([#5311](https://github.com/rudderlabs/rudder-transformer/issues/5311)) ([94f2ec7](https://github.com/rudderlabs/rudder-transformer/commit/94f2ec741fcae8350f39d9190308097e8fb73560))
+* **customerio:** add v2 API support with native batching framework ([#5303](https://github.com/rudderlabs/rudder-transformer/issues/5303)) ([7b004f4](https://github.com/rudderlabs/rudder-transformer/commit/7b004f4c3377fced72bc300d814373b237dbcec0))
+* **new integration:** onboarding survicate cloud mode destination ([#5292](https://github.com/rudderlabs/rudder-transformer/issues/5292)) ([f64488c](https://github.com/rudderlabs/rudder-transformer/commit/f64488c395a386d11a05fb03139db2642ef90db2))
+
+
+### Bug Fixes
+
+* cleanup survicate cloud mode destination ([#5291](https://github.com/rudderlabs/rudder-transformer/issues/5291)) ([07ecbc7](https://github.com/rudderlabs/rudder-transformer/commit/07ecbc7d9cdf9c0b42dcb40296c701cfce6c3b57))
+* types for survicate ([#5305](https://github.com/rudderlabs/rudder-transformer/issues/5305)) ([cdc967f](https://github.com/rudderlabs/rudder-transformer/commit/cdc967fc48cfc110eacb1f6c46fbace4b7b4852c))
+* update linkedin ads conversion API version to 202511 ([#5306](https://github.com/rudderlabs/rudder-transformer/issues/5306)) ([3876afb](https://github.com/rudderlabs/rudder-transformer/commit/3876afb4800f3a4afc368c955170f805a508c338))
+
 ## [1.139.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.138.0...v1.139.0) (2026-06-16)
 
 

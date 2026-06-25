@@ -2084,7 +2084,7 @@ export const dataV2 = [
                 action: 'insert',
                 identifiers: {
                   id: 'user-123',
-                  event: 'Order Completed',
+                  name: 'Order Completed',
                   plan: 'pro',
                   created_at: '2024-06-25T14:00:00.000Z',
                 },
@@ -2104,7 +2104,7 @@ export const dataV2 = [
                 action: 'update',
                 identifiers: {
                   email: 'user@example.com',
-                  event: 'Plan Changed',
+                  name: 'Plan Changed',
                   plan: 'enterprise',
                   created_at: '2024-06-25T15:00:00.000Z',
                 },
@@ -2367,7 +2367,7 @@ export const dataV2 = [
               message: {
                 type: 'record',
                 action: 'insert',
-                identifiers: undefined,
+                identifiers: {},
               },
               metadata: { jobId: 201, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },

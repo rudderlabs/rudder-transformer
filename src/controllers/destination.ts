@@ -11,7 +11,7 @@ import {
 } from '../types';
 import { DynamicConfigParser } from '../util/dynamicConfigParser';
 import stats from '../util/stats';
-import { getIntegrationVersion } from '../util/utils';
+import { getIntegrationVersion, getDestinationVersion } from '../util/utils';
 import { checkInvalidRtTfEvents } from '../v0/util';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
@@ -26,6 +26,7 @@ export class DestinationController {
     stats.histogram('dest_transform_input_events', events.length, {
       destination,
       version,
+      destVersion: getDestinationVersion(events[0]?.destination?.version),
       ...metaTags,
     });
     const integrationService = ServiceSelector.getDestinationService(events);
@@ -64,6 +65,7 @@ export class DestinationController {
     stats.histogram('dest_transform_output_events', resplist.length, {
       destination,
       version,
+      destVersion: getDestinationVersion(events[0]?.destination?.version),
       ...metaTags,
     });
     return ctx;
@@ -92,6 +94,7 @@ export class DestinationController {
     stats.histogram('dest_transform_input_events', events.length, {
       destination,
       version: 'v0',
+      destVersion: getDestinationVersion(events[0]?.destination?.version),
       ...metaTags,
     });
 
@@ -128,6 +131,7 @@ export class DestinationController {
     stats.histogram('dest_transform_output_events', resplist.length, {
       destination,
       version: 'v0',
+      destVersion: getDestinationVersion(events[0]?.destination?.version),
       ...metaTags,
     });
     return ctx;

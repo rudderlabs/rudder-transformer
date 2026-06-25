@@ -1,4 +1,20 @@
 // ---------------------------------------------------------------------------
+// Schema-driven type inference utilities
+// ---------------------------------------------------------------------------
+
+/** Extract destination Config type from a schema output. Falls back to Record<string, unknown>. */
+export type ExtractDestinationConfig<T> = T extends { destination: { Config: infer C } }
+  ? C
+  : Record<string, unknown>;
+
+/** Extract connection config type from a schema output. Falls back to Record<string, unknown>. */
+export type ExtractConnectionConfig<T> = 'connection' extends keyof T
+  ? T extends { connection: { config: infer C } }
+    ? C
+    : Record<string, unknown>
+  : Record<string, unknown>;
+
+// ---------------------------------------------------------------------------
 // Shared types and utilities for the native batching framework
 // ---------------------------------------------------------------------------
 

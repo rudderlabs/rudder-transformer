@@ -1,4 +1,4 @@
-import { ZodType } from 'zod';
+import { z } from 'zod';
 import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
@@ -9,13 +9,12 @@ import {
 import { addExternalIdToTraits, adduserIdFromExternalId, removeUndefinedValues } from '../../util';
 import { MappedToDestinationKey } from '../../../constants';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import { getV2InputSchema, CustomerIOV2Payload, CustomerIODestinationConfig } from './v2/types';
+import { customerIOInputSchema, CustomerIOV2Payload } from './v2/types';
 import type { RudderRecordV2 } from '../../../types/rudderEvents';
 import { MAX_OBJECT_SIZE_BYTES, MAX_BATCH_PAYLOAD } from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
 import { buildEnvelope, buildRequestMeta } from './v2/util';
-import { CustomerIORouterRequest, CustomerIOConnection } from './types';
 
 function isRecordMessage(msg: { type: string }): msg is RudderRecordV2 {
   return msg.type === 'record';
@@ -23,8 +22,7 @@ function isRecordMessage(msg: { type: string }): msg is RudderRecordV2 {
 
 class CustomerIOIntegration extends BatchDestination<
   CustomerIOV2Payload,
-  CustomerIODestinationConfig,
-  CustomerIOConnection['config']
+  typeof customerIOInputSchema
 > {
   private assertObjectSize(body: unknown): void {
     const size = Buffer.byteLength(JSON.stringify(body), 'utf8');
@@ -35,7 +33,9 @@ class CustomerIOIntegration extends BatchDestination<
     }
   }
 
-  private buildBody(message: CustomerIORouterRequest['message']): CustomerIOV2Payload {
+  private buildBody(
+    message: z.infer<typeof customerIOInputSchema>['message'],
+  ): CustomerIOV2Payload {
     if (isRecordMessage(message)) {
       return buildRecordEvent(message);
     }
@@ -48,7 +48,9 @@ class CustomerIOIntegration extends BatchDestination<
     return removeUndefinedValues(buildEnvelope(message, this.destination)) as CustomerIOV2Payload;
   }
 
-  transformEvent(input: CustomerIORouterRequest): TransformedEvent<CustomerIOV2Payload> {
+  transformEvent(
+    input: z.infer<typeof customerIOInputSchema>,
+  ): TransformedEvent<CustomerIOV2Payload> {
     validateConfigFields(this.destination);
     const body = this.buildBody(input.message);
     this.assertObjectSize(body);
@@ -62,8 +64,8 @@ class CustomerIOIntegration extends BatchDestination<
     });
   }
 
-  getInputSchema(): ZodType {
-    return getV2InputSchema();
+  getInputSchema() {
+    return customerIOInputSchema;
   }
 }
 

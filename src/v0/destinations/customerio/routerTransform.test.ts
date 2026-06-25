@@ -1,5 +1,7 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { Integration } from './routerTransform';
+
+type CIOInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
 import type { CustomerIORouterRequest } from './types';
 import type { CustomerIOV2Payload } from './v2/types';
 
@@ -23,7 +25,7 @@ const baseConnection = {
   config: { destination: {} },
 } as CustomerIORouterRequest['connection'];
 
-const makeInput = (overrides: Record<string, unknown>): CustomerIORouterRequest =>
+const makeInput = (overrides: Record<string, unknown>): CIOInput =>
   ({
     message: {
       type: 'record' as const,
@@ -33,7 +35,7 @@ const makeInput = (overrides: Record<string, unknown>): CustomerIORouterRequest 
     },
     metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
     destination: baseDestination,
-  }) as unknown as CustomerIORouterRequest;
+  }) as unknown as CIOInput;
 
 describe('CustomerIOIntegration — record event routing', () => {
   it('transforms insert record into identify person payload', () => {

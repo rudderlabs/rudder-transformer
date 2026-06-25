@@ -1,5 +1,7 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 import { RECORD_IDENTIFIER_KEYS } from './config';
+
+import { CustomerIODestinationConfigSchema, CustomerIOConnectionConfigSchema } from '../types';
 
 export type CustomerIOV2Identifiers = {
   id?: string;
@@ -85,16 +87,21 @@ const eventStreamMessageSchema = z
     { message: 'userId, email or anonymousId is required' },
   );
 
-export const getV2InputSchema = (): ZodType =>
-  z
-    .object({
-      message: z.union([recordMessageSchema, eventStreamMessageSchema]),
-    })
-    .passthrough();
+export const customerIOInputSchema = z
+  .object({
+    message: z.union([recordMessageSchema, eventStreamMessageSchema]),
+    destination: z.object({ Config: CustomerIODestinationConfigSchema }).passthrough(),
+    connection: z
+      .object({
+        config: z.object({ destination: CustomerIOConnectionConfigSchema }).passthrough(),
+      })
+      .passthrough()
+      .optional(),
+  })
+  .passthrough();
 
 export {
   type CustomerIODestination,
   type CustomerIODestinationConfig,
   type CustomerIOConnectionConfig,
-  CustomerIOConnectionConfigSchema,
 } from '../types';

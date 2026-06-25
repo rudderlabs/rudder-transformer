@@ -2,7 +2,7 @@ import { InstrumentationError } from '@rudderstack/integrations-lib';
 
 import { HashingType, processAudienceRecord, type AudienceField } from '../../util/audienceUtils';
 
-import { EVENT_TYPES } from '../../util/recordUtils';
+import { RecordAction } from '../../../types/rudderEvents';
 import { AUTHENTICATION_TYPES, ERROR_MESSAGES } from './constants';
 import type {
   Action,
@@ -31,7 +31,7 @@ export const lookupActionConfig = (
     if (!insertConfig) {
       throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG('insert'));
     }
-    return { action: EVENT_TYPES.INSERT as Action, config: insertConfig };
+    return { action: RecordAction.INSERT, config: insertConfig };
   }
   return { action, config: actionConfig };
 };

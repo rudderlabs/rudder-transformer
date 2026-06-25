@@ -19,7 +19,7 @@ import { MAX_OBJECT_SIZE_BYTES, MAX_BATCH_PAYLOAD } from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
 import { buildEnvelope, buildRequestMeta } from './v2/util';
-import { CUSTOMERIO_RECORD_OBJECTS, CustomerIORouterRequest, CustomerIOConnection } from './types';
+import { CustomerIORouterRequest, CustomerIOConnection } from './types';
 
 function isRecordMessage(msg: { type: string }): msg is CustomerIOV2RecordMessage {
   return msg.type === 'record';
@@ -41,13 +41,7 @@ class CustomerIOIntegration extends BatchDestination<
 
   private buildBody(message: CustomerIORouterRequest['message']): CustomerIOV2Payload {
     if (isRecordMessage(message)) {
-      const connectionObject = this.connection?.config.destination.object;
-      if (
-        connectionObject !== CUSTOMERIO_RECORD_OBJECTS.person &&
-        connectionObject !== CUSTOMERIO_RECORD_OBJECTS.event
-      ) {
-        throw new InstrumentationError('CustomerIO record object is required for record events');
-      }
+      const connectionObject = this.connection!.config.destination.object;
       return buildRecordEvent(message, connectionObject);
     }
     // For RETL/warehouse sources (mappedToDestination), derive userId from

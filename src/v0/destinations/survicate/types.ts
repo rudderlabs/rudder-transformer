@@ -16,7 +16,7 @@ export const SurvicateDestinationSchema = z
   .object({
     Config: z
       .object({
-        apiKey: z.string().min(1, 'API Key is required'),
+        destinationKey: z.string().min(1, 'Destination Key is required'),
       })
       .passthrough(),
   })

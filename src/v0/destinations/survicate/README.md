@@ -172,10 +172,10 @@ Create/Update Survicate destination configuration in `rudder-integrations-config
   "website": "https://www.survicate.com",
   "logoUrl": "https://...",
   "config": {
-    "apiKey": {
+    "destinationKey": {
       "type": "string",
-      "displayName": "API Key",
-      "description": "Your Survicate API Key for authentication",
+      "displayName": "Destination Key",
+      "description": "Your Survicate Destination Key for authentication",
       "required": true
     }
   }
@@ -243,7 +243,7 @@ The integration uses Zod schemas for runtime validation:
 ```typescript
 export const SurvicateDestinationConfigSchema = z
   .object({
-    apiKey: z.string().min(1, 'API Key is required'),
+    destinationKey: z.string().min(1, 'Destination Key is required'),
   })
   .passthrough();
 

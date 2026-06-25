@@ -1,6 +1,6 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 import { RECORD_IDENTIFIER_KEYS } from './config';
-import { CustomerIOConnectionConfigSchema } from '../types';
+import { CustomerIODestinationConfigSchema, CustomerIOConnectionConfigSchema } from '../types';
 
 export type CustomerIOV2Identifiers = {
   id?: string;
@@ -88,35 +88,34 @@ const eventStreamMessageSchema = z
     { message: 'userId, email or anonymousId is required' },
   );
 
-export const getV2InputSchema = (): ZodType =>
-  z.union([
-    // Record messages: validate connection.config.destination against the record-specific schema
-    z
-      .object({
-        message: recordMessageSchema,
-        connection: z
-          .object({
-            config: z
-              .object({
-                destination: CustomerIOConnectionConfigSchema,
-              })
-              .passthrough(),
-          })
-          .passthrough()
-          .optional(),
-      })
-      .passthrough(),
-    // Non-record messages: connection config not enforced (record-specific fields like `object` don't apply)
-    z
-      .object({
-        message: eventStreamMessageSchema,
-      })
-      .passthrough(),
-  ]);
+// Discriminated on message type. Record events validate connection.config.destination
+// against the record-specific schema (which requires `object`); event-stream events may
+// carry a connection lacking those record-only fields, so their connection is not enforced
+// — validating it against the record schema would wrongly reject them (#5331). `destination`
+// is validated in both branches so schema-driven typing resolves `this.destination.Config`.
+export const customerIOInputSchema = z.union([
+  z
+    .object({
+      message: recordMessageSchema,
+      destination: z.object({ Config: CustomerIODestinationConfigSchema }).passthrough(),
+      connection: z
+        .object({
+          config: z.object({ destination: CustomerIOConnectionConfigSchema }).passthrough(),
+        })
+        .passthrough()
+        .optional(),
+    })
+    .passthrough(),
+  z
+    .object({
+      message: eventStreamMessageSchema,
+      destination: z.object({ Config: CustomerIODestinationConfigSchema }).passthrough(),
+    })
+    .passthrough(),
+]);
 
 export {
   type CustomerIODestination,
   type CustomerIODestinationConfig,
   type CustomerIOConnectionConfig,
-  CustomerIOConnectionConfigSchema,
 } from '../types';

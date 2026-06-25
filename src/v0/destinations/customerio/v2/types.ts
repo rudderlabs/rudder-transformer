@@ -38,7 +38,7 @@ const emailTraitSchema = z.object({ email: z.unknown() }).passthrough().nullish(
 const recordMessageSchema = z
   .object({
     type: z.literal('record'),
-    action: z.string(),
+    action: z.enum(['insert', 'update', 'delete']),
     identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
   })
   .passthrough()
@@ -49,6 +49,8 @@ const recordMessageSchema = z
       ),
     { message: 'A non-empty `id` or `email` identifier is required' },
   );
+
+export type CustomerIOV2RecordMessage = z.infer<typeof recordMessageSchema>;
 
 const eventStreamMessageSchema = z
   .object({

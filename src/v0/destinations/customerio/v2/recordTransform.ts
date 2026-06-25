@@ -1,11 +1,11 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { RECORD_ACTION_MAP, RECORD_IDENTIFIER_KEYS } from './config';
-import { CustomerIOV2Payload } from './types';
-import type { RudderRecordV2 } from '../../../../types/rudderEvents';
+import { CustomerIOV2Payload, type CustomerIOV2RecordMessage } from './types';
+import { toUnixSeconds } from './util';
 import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from '../types';
 
 type RecordFields = Record<string, string | number>;
-type RecordActionKey = keyof typeof RECORD_ACTION_MAP;
+type RecordActionKey = CustomerIOV2RecordMessage['action'];
 
 type RecordPayloadContext = {
   rawIdentifiers: RecordFields;
@@ -16,15 +16,24 @@ type RecordPayloadContext = {
 type RecordPayloadBuilder = {
   getAction: (recordAction: RecordActionKey) => string;
   validateAction?: (recordAction: RecordActionKey) => void;
-  getBuilderFields?: (context: RecordPayloadContext) => Partial<CustomerIOV2Payload>;
+  getAdditionalObjectFields?: (context: RecordPayloadContext) => Partial<CustomerIOV2Payload>;
   getExcludedAttributeKeys?: (context: RecordPayloadContext) => string[];
 };
 
-const CUSTOMERIO_PERSON_TYPE = 'person';
-const CUSTOMERIO_DELETE_ACTION = 'delete';
-const CUSTOMERIO_EVENT_ACTION = 'event';
-const EVENT_NAME_IDENTIFIER_KEY = 'event';
-const CREATED_AT_FIELD_KEY = 'created_at';
+const RECORD_OBJECT_TYPES = {
+  PERSON: CUSTOMERIO_RECORD_OBJECTS.person,
+  EVENT: CUSTOMERIO_RECORD_OBJECTS.event,
+} as const;
+
+const RECORD_ACTIONS = {
+  DELETE: 'delete',
+  EVENT: 'event',
+} as const;
+
+const RESERVED_RECORD_IDENTIFIERS = {
+  EVENT: 'event',
+  CREATED_AT: 'created_at',
+} as const;
 
 const buildAttributes = (
   rawIdentifiers: RecordFields,
@@ -39,33 +48,16 @@ const buildAttributes = (
   return Object.fromEntries(attributeEntries);
 };
 
-const parseTimestamp = (createdAt: unknown): number | undefined => {
-  if (typeof createdAt === 'number') {
-    return createdAt;
-  }
-  if (typeof createdAt !== 'string' || createdAt.length === 0) {
-    return undefined;
-  }
-
-  const numericTimestamp = Number(createdAt);
-  if (Number.isFinite(numericTimestamp)) {
-    return numericTimestamp;
-  }
-
-  const parsedTimestamp = Math.floor(new Date(createdAt).getTime() / 1000);
-  return Number.isFinite(parsedTimestamp) ? parsedTimestamp : undefined;
-};
-
 const buildPayload = (
-  message: RudderRecordV2,
+  message: CustomerIOV2RecordMessage,
   builder: RecordPayloadBuilder,
 ): CustomerIOV2Payload => {
-  const { action, fields, identifiers: rawIdentifiers = {} } = message;
+  const { action, identifiers: rawIdentifiers = {} } = message;
 
   if (!(action in RECORD_ACTION_MAP)) {
     throw new InstrumentationError(`Action "${action}" is not supported`);
   }
-  const recordAction = action as RecordActionKey;
+  const recordAction = action;
   builder.validateAction?.(recordAction);
 
   // Schema guarantees id or email is present; id takes priority over email
@@ -73,29 +65,27 @@ const buildPayload = (
     (key) => typeof rawIdentifiers[key] === 'string' && (rawIdentifiers[key] as string).length > 0,
   ) as string;
 
-  const actionName = builder.getAction(recordAction);
+  const cioAction = builder.getAction(recordAction);
   const payload: CustomerIOV2Payload = {
-    type: CUSTOMERIO_PERSON_TYPE,
-    action: actionName,
+    type: RECORD_OBJECT_TYPES.PERSON,
+    action: cioAction,
     identifiers: {
       [identifierKey]: rawIdentifiers[identifierKey] as string,
     },
-    ...builder.getBuilderFields?.({ rawIdentifiers, identifierKey, recordAction }),
+    ...builder.getAdditionalObjectFields?.({ rawIdentifiers, identifierKey, recordAction }),
   };
 
-  const timestamp = parseTimestamp(
-    fields?.[CREATED_AT_FIELD_KEY] ?? rawIdentifiers[CREATED_AT_FIELD_KEY],
-  );
-  if (timestamp !== undefined) {
-    payload.timestamp = timestamp;
+  const createdAt = rawIdentifiers[RESERVED_RECORD_IDENTIFIERS.CREATED_AT];
+  if (createdAt !== undefined) {
+    payload.timestamp = toUnixSeconds(createdAt);
   }
 
-  if (actionName !== CUSTOMERIO_DELETE_ACTION) {
+  if (cioAction !== RECORD_ACTIONS.DELETE) {
     const attributes = buildAttributes(
       rawIdentifiers,
       new Set([
         identifierKey,
-        CREATED_AT_FIELD_KEY,
+        RESERVED_RECORD_IDENTIFIERS.CREATED_AT,
         ...(builder.getExcludedAttributeKeys?.({ rawIdentifiers, identifierKey, recordAction }) ??
           []),
       ]),
@@ -113,33 +103,32 @@ const personRecordPayloadBuilder: RecordPayloadBuilder = {
 };
 
 const eventRecordPayloadBuilder: RecordPayloadBuilder = {
-  getAction: () => CUSTOMERIO_EVENT_ACTION,
+  getAction: () => RECORD_ACTIONS.EVENT,
   validateAction: (recordAction) => {
-    if (recordAction === CUSTOMERIO_DELETE_ACTION) {
+    if (recordAction === RECORD_ACTIONS.DELETE) {
       throw new InstrumentationError('Delete action is not supported for CustomerIO event records');
     }
   },
-  getBuilderFields: ({ rawIdentifiers }) => {
-    const name = rawIdentifiers[EVENT_NAME_IDENTIFIER_KEY];
+  getAdditionalObjectFields: ({ rawIdentifiers }) => {
+    const name = rawIdentifiers[RESERVED_RECORD_IDENTIFIERS.EVENT];
     if (typeof name !== 'string' || name.length === 0) {
       throw new InstrumentationError('Event name is required for CustomerIO event records');
     }
     return { name };
   },
-  getExcludedAttributeKeys: () => [EVENT_NAME_IDENTIFIER_KEY],
+  getExcludedAttributeKeys: () => [RESERVED_RECORD_IDENTIFIERS.EVENT],
 };
 
 const recordPayloadBuilders: Record<CustomerIORecordObject, RecordPayloadBuilder> = {
-  [CUSTOMERIO_RECORD_OBJECTS.person]: personRecordPayloadBuilder,
-  [CUSTOMERIO_RECORD_OBJECTS.event]: eventRecordPayloadBuilder,
+  [RECORD_OBJECT_TYPES.PERSON]: personRecordPayloadBuilder,
+  [RECORD_OBJECT_TYPES.EVENT]: eventRecordPayloadBuilder,
 };
 
 export const buildRecordEvent = (
-  message: RudderRecordV2,
-  connectionObject?: CustomerIORecordObject,
+  message: CustomerIOV2RecordMessage,
+  connectionObject: CustomerIORecordObject,
 ): CustomerIOV2Payload => {
-  const recordPayloadBuilder =
-    recordPayloadBuilders[connectionObject ?? CUSTOMERIO_RECORD_OBJECTS.person];
+  const recordPayloadBuilder = recordPayloadBuilders[connectionObject];
 
   return buildPayload(message, recordPayloadBuilder);
 };

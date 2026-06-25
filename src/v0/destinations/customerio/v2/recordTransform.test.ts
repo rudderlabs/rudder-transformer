@@ -17,10 +17,14 @@ describe('buildRecordEvent', () => {
     const message = {
       type: 'record' as const,
       action: 'insert' as const,
-      identifiers: { id: 'user-1', name: 'Alice', plan: 'pro' },
-      fields: { created_at: 1719324000 },
+      identifiers: {
+        id: 'user-1',
+        name: 'Alice',
+        plan: 'pro',
+        created_at: '2024-06-25T14:00:00.000Z',
+      },
     };
-    const result = buildRecordEvent(message);
+    const result = buildRecordEvent(message, 'person');
     expect(result).toEqual({
       type: 'person',
       action: 'identify',
@@ -36,7 +40,7 @@ describe('buildRecordEvent', () => {
       action: 'update' as const,
       identifiers: { email: 'alice@example.com', plan: 'enterprise' },
     };
-    const result = buildRecordEvent(message);
+    const result = buildRecordEvent(message, 'person');
     expect(result).toEqual({
       type: 'person',
       action: 'identify',
@@ -51,7 +55,7 @@ describe('buildRecordEvent', () => {
       action: 'delete' as const,
       identifiers: { id: 'user-1', name: 'Alice' },
     };
-    const result = buildRecordEvent(message);
+    const result = buildRecordEvent(message, 'person');
     expect(result).toEqual({
       type: 'person',
       action: 'delete',
@@ -66,7 +70,7 @@ describe('buildRecordEvent', () => {
       action: 'insert' as const,
       identifiers: { id: 'user-1' },
     };
-    const result = buildRecordEvent(message);
+    const result = buildRecordEvent(message, 'person');
     expect(result.attributes).toBeUndefined();
   });
 
@@ -76,7 +80,7 @@ describe('buildRecordEvent', () => {
       action: 'insert' as const,
       identifiers: { cio_id: 'cio-abc', id: 'user-1', email: 'alice@example.com', plan: 'pro' },
     };
-    const result = buildRecordEvent(message);
+    const result = buildRecordEvent(message, 'person');
     expect(result.identifiers).toEqual({ cio_id: 'cio-abc' });
     expect(result.attributes).toEqual({ id: 'user-1', email: 'alice@example.com', plan: 'pro' });
   });
@@ -87,7 +91,7 @@ describe('buildRecordEvent', () => {
       action: 'insert' as const,
       identifiers: { id: 'user-1', email: 'alice@example.com', plan: 'pro' },
     };
-    const result = buildRecordEvent(message);
+    const result = buildRecordEvent(message, 'person');
     expect(result.identifiers).toEqual({ id: 'user-1' });
     expect(result.attributes).toEqual({ email: 'alice@example.com', plan: 'pro' });
   });
@@ -98,7 +102,7 @@ describe('buildRecordEvent', () => {
       action: 'insert' as const,
       identifiers: { email: 'alice@example.com', plan: 'pro' },
     };
-    const result = buildRecordEvent(message);
+    const result = buildRecordEvent(message, 'person');
     expect(result.identifiers).toEqual({ email: 'alice@example.com' });
     expect(result.attributes).toEqual({ plan: 'pro' });
   });
@@ -109,8 +113,12 @@ describe('buildRecordEvent', () => {
       const message = {
         type: 'record' as const,
         action,
-        identifiers: { id: 'user-1', event: 'Order Completed', plan: 'pro' },
-        fields: { created_at: 1719324000 },
+        identifiers: {
+          id: 'user-1',
+          event: 'Order Completed',
+          plan: 'pro',
+          created_at: '2024-06-25T14:00:00.000Z',
+        },
       };
       const result = buildRecordEvent(message, 'event');
       expect(result).toEqual({
@@ -158,7 +166,7 @@ describe('buildRecordEvent', () => {
       action: 'upsert' as any,
       identifiers: { id: 'user-1' },
     };
-    expect(() => buildRecordEvent(message)).toThrow(InstrumentationError);
-    expect(() => buildRecordEvent(message)).toThrow('Action "upsert" is not supported');
+    expect(() => buildRecordEvent(message, 'person')).toThrow(InstrumentationError);
+    expect(() => buildRecordEvent(message, 'person')).toThrow('Action "upsert" is not supported');
   });
 });

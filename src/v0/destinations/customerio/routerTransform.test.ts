@@ -20,7 +20,7 @@ const baseConnection = {
   sourceId: 'src-1',
   destinationId: 'dest-1',
   enabled: true,
-  config: { destination: {} },
+  config: { destination: { object: 'person' } },
 } as CustomerIORouterRequest['connection'];
 
 const makeInput = (overrides: Record<string, unknown>): CustomerIORouterRequest =>
@@ -80,8 +80,12 @@ describe('CustomerIOIntegration — record event routing', () => {
     const result = integration.transformEvent(
       makeInput({
         action: 'update',
-        identifiers: { id: 'user-1', event: 'Order Completed', plan: 'pro' },
-        fields: { created_at: 1719324000 },
+        identifiers: {
+          id: 'user-1',
+          event: 'Order Completed',
+          plan: 'pro',
+          created_at: '2024-06-25T14:00:00.000Z',
+        },
       }),
     );
     expect(result.body).toEqual({
@@ -104,14 +108,12 @@ describe('CustomerIOIntegration — record event routing', () => {
     );
   });
 
-  it('succeeds when connection is absent (no connection config needed for record events)', () => {
+  it('throws InstrumentationError when record connection object is absent', () => {
     const integration = new Integration(baseDestination, undefined);
-    const result = integration.transformEvent(makeInput({}));
-    expect(result.body).toMatchObject({
-      type: 'person',
-      action: 'identify',
-      identifiers: { id: 'user-1' },
-    });
+    expect(() => integration.transformEvent(makeInput({}))).toThrow(InstrumentationError);
+    expect(() => integration.transformEvent(makeInput({}))).toThrow(
+      'CustomerIO record object is required for record events',
+    );
   });
 
   it('batches multiple record events into one { batch: [...] } body', async () => {

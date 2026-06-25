@@ -38,7 +38,7 @@ export type CustomerIORecordObject = z.infer<typeof CustomerIORecordObjectSchema
 
 export const CustomerIOConnectionConfigSchema = z
   .object({
-    object: CustomerIORecordObjectSchema.optional(),
+    object: CustomerIORecordObjectSchema.default(CUSTOMERIO_RECORD_OBJECTS.person),
     syncMode: z.string().optional(),
     identifierMappings: z.array(z.object({ from: z.string(), to: z.string() })).optional(),
     fieldMappings: z.array(z.object({ from: z.string(), to: z.string() })).optional(),

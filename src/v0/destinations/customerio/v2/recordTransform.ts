@@ -6,7 +6,7 @@ import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from '../types
 import { EVENT_TYPES } from '../../../util/recordUtils';
 
 type RecordPayloadContext = {
-  rawIdentifiers: CustomerIOV2RecordMessage["identifiers"];
+  rawIdentifiers: CustomerIOV2RecordMessage['identifiers'];
   identifierKey: string;
   action: CustomerIOV2RecordMessage['action'];
 };

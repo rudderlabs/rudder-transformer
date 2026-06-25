@@ -2082,8 +2082,12 @@ export const dataV2 = [
               message: {
                 type: 'record',
                 action: 'insert',
-                identifiers: { id: 'user-123', eventName: 'Order Completed', plan: 'pro' },
-                fields: { revenue: 99 },
+                identifiers: {
+                  id: 'user-123',
+                  event: 'Order Completed',
+                  plan: 'pro',
+                },
+                fields: { revenue: 99, created_at: 1719324000 },
               },
               metadata: { jobId: 104, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
@@ -2100,10 +2104,10 @@ export const dataV2 = [
                 action: 'update',
                 identifiers: {
                   email: 'user@example.com',
-                  eventName: 'Plan Changed',
+                  event: 'Plan Changed',
                   plan: 'enterprise',
                 },
-                fields: { previousPlan: 'pro' },
+                fields: { previousPlan: 'pro', created_at: 1719327600 },
               },
               metadata: { jobId: 105, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
@@ -2142,6 +2146,7 @@ export const dataV2 = [
                         action: 'event',
                         identifiers: { id: 'user-123' },
                         name: 'Order Completed',
+                        timestamp: 1719324000,
                         attributes: {
                           plan: 'pro',
                         },
@@ -2151,6 +2156,7 @@ export const dataV2 = [
                         action: 'event',
                         identifiers: { email: 'user@example.com' },
                         name: 'Plan Changed',
+                        timestamp: 1719327600,
                         attributes: {
                           plan: 'enterprise',
                         },
@@ -2196,7 +2202,7 @@ export const dataV2 = [
               message: {
                 type: 'record',
                 action: 'delete',
-                identifiers: { id: 'user-123', eventName: 'Order Completed' },
+                identifiers: { id: 'user-123', event: 'Order Completed' },
               },
               metadata: { jobId: 106, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },

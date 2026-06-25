@@ -5,20 +5,26 @@ import type { RudderRecordV2 } from '../../../../types/rudderEvents';
 import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from '../types';
 
 type RecordFields = Record<string, string | number>;
-type RecordAction = (typeof RECORD_ACTION_MAP)[keyof typeof RECORD_ACTION_MAP];
+type RecordActionKey = keyof typeof RECORD_ACTION_MAP;
 
 type RecordPayloadContext = {
-  cioAction: RecordAction;
   rawIdentifiers: RecordFields;
   identifierKey: string;
-  identifiers: Record<string, string>;
+  recordAction: RecordActionKey;
 };
 
 type RecordPayloadBuilder = {
-  buildPayload: (context: RecordPayloadContext) => CustomerIOV2Payload;
+  getAction: (recordAction: RecordActionKey) => string;
+  validateAction?: (recordAction: RecordActionKey) => void;
+  getBuilderFields?: (context: RecordPayloadContext) => Partial<CustomerIOV2Payload>;
+  getExcludedAttributeKeys?: (context: RecordPayloadContext) => string[];
 };
 
-const EVENT_NAME_IDENTIFIER_KEY = 'eventName';
+const CUSTOMERIO_PERSON_TYPE = 'person';
+const CUSTOMERIO_DELETE_ACTION = 'delete';
+const CUSTOMERIO_EVENT_ACTION = 'event';
+const EVENT_NAME_IDENTIFIER_KEY = 'event';
+const CREATED_AT_FIELD_KEY = 'created_at';
 
 const buildAttributes = (
   rawIdentifiers: RecordFields,
@@ -33,54 +39,94 @@ const buildAttributes = (
   return Object.fromEntries(attributeEntries);
 };
 
-const personRecordPayloadBuilder: RecordPayloadBuilder = {
-  buildPayload: ({ cioAction, rawIdentifiers, identifierKey, identifiers }) => {
-    const payload: CustomerIOV2Payload = {
-      type: 'person',
-      action: cioAction,
-      identifiers,
-    };
+const parseTimestamp = (createdAt: unknown): number | undefined => {
+  if (typeof createdAt === 'number') {
+    return createdAt;
+  }
+  if (typeof createdAt !== 'string' || createdAt.length === 0) {
+    return undefined;
+  }
 
-    const attributes =
-      cioAction === 'delete'
-        ? undefined
-        : buildAttributes(rawIdentifiers, new Set([identifierKey]));
-    if (attributes) {
-      payload.attributes = attributes;
-    }
+  const numericTimestamp = Number(createdAt);
+  if (Number.isFinite(numericTimestamp)) {
+    return numericTimestamp;
+  }
 
-    return payload;
-  },
+  const parsedTimestamp = Math.floor(new Date(createdAt).getTime() / 1000);
+  return Number.isFinite(parsedTimestamp) ? parsedTimestamp : undefined;
 };
 
-const eventRecordPayloadBuilder: RecordPayloadBuilder = {
-  buildPayload: ({ cioAction, rawIdentifiers, identifierKey, identifiers }) => {
-    if (cioAction === 'delete') {
-      throw new InstrumentationError('Delete action is not supported for CustomerIO event records');
-    }
+const buildPayload = (
+  message: RudderRecordV2,
+  builder: RecordPayloadBuilder,
+): CustomerIOV2Payload => {
+  const { action, fields, identifiers: rawIdentifiers = {} } = message;
 
-    const name = rawIdentifiers[EVENT_NAME_IDENTIFIER_KEY];
-    if (typeof name !== 'string' || name.length === 0) {
-      throw new InstrumentationError('Event name is required for CustomerIO event records');
-    }
+  if (!(action in RECORD_ACTION_MAP)) {
+    throw new InstrumentationError(`Action "${action}" is not supported`);
+  }
+  const recordAction = action as RecordActionKey;
+  builder.validateAction?.(recordAction);
 
-    const payload: CustomerIOV2Payload = {
-      type: 'person',
-      action: 'event',
-      identifiers,
-      name,
-    };
+  // Schema guarantees id or email is present; id takes priority over email
+  const identifierKey = RECORD_IDENTIFIER_KEYS.find(
+    (key) => typeof rawIdentifiers[key] === 'string' && (rawIdentifiers[key] as string).length > 0,
+  ) as string;
 
+  const actionName = builder.getAction(recordAction);
+  const payload: CustomerIOV2Payload = {
+    type: CUSTOMERIO_PERSON_TYPE,
+    action: actionName,
+    identifiers: {
+      [identifierKey]: rawIdentifiers[identifierKey] as string,
+    },
+    ...builder.getBuilderFields?.({ rawIdentifiers, identifierKey, recordAction }),
+  };
+
+  const timestamp = parseTimestamp(
+    fields?.[CREATED_AT_FIELD_KEY] ?? rawIdentifiers[CREATED_AT_FIELD_KEY],
+  );
+  if (timestamp !== undefined) {
+    payload.timestamp = timestamp;
+  }
+
+  if (actionName !== CUSTOMERIO_DELETE_ACTION) {
     const attributes = buildAttributes(
       rawIdentifiers,
-      new Set([identifierKey, EVENT_NAME_IDENTIFIER_KEY]),
+      new Set([
+        identifierKey,
+        CREATED_AT_FIELD_KEY,
+        ...(builder.getExcludedAttributeKeys?.({ rawIdentifiers, identifierKey, recordAction }) ??
+          []),
+      ]),
     );
     if (attributes) {
       payload.attributes = attributes;
     }
+  }
 
-    return payload;
+  return payload;
+};
+
+const personRecordPayloadBuilder: RecordPayloadBuilder = {
+  getAction: (recordAction) => RECORD_ACTION_MAP[recordAction],
+};
+
+const eventRecordPayloadBuilder: RecordPayloadBuilder = {
+  getAction: () => CUSTOMERIO_EVENT_ACTION,
+  validateAction: (recordAction) => {
+    if (recordAction === CUSTOMERIO_DELETE_ACTION) {
+      throw new InstrumentationError('Delete action is not supported for CustomerIO event records');
+    }
   },
+  getBuilderFields: ({ rawIdentifiers }) => {
+    const name = rawIdentifiers[EVENT_NAME_IDENTIFIER_KEY];
+    if (typeof name !== 'string' || name.length === 0) {
+      throw new InstrumentationError('Event name is required for CustomerIO event records');
+    }
+    return { name };
+  },
+  getExcludedAttributeKeys: () => [EVENT_NAME_IDENTIFIER_KEY],
 };
 
 const recordPayloadBuilders: Record<CustomerIORecordObject, RecordPayloadBuilder> = {
@@ -92,29 +138,8 @@ export const buildRecordEvent = (
   message: RudderRecordV2,
   connectionObject?: CustomerIORecordObject,
 ): CustomerIOV2Payload => {
-  const { action, identifiers: rawIdentifiers } = message;
-
-  if (!(action in RECORD_ACTION_MAP)) {
-    throw new InstrumentationError(`Action "${action}" is not supported`);
-  }
-  const cioAction = RECORD_ACTION_MAP[action as keyof typeof RECORD_ACTION_MAP];
   const recordPayloadBuilder =
     recordPayloadBuilders[connectionObject ?? CUSTOMERIO_RECORD_OBJECTS.person];
 
-  // Schema guarantees id or email is present; id takes priority over email
-  const identifierKey = RECORD_IDENTIFIER_KEYS.find(
-    (key) =>
-      typeof rawIdentifiers?.[key] === 'string' && (rawIdentifiers[key] as string).length > 0,
-  ) as string;
-
-  const identifiers: Record<string, string> = {
-    [identifierKey]: rawIdentifiers?.[identifierKey] as string,
-  };
-
-  return recordPayloadBuilder.buildPayload({
-    cioAction,
-    rawIdentifiers: rawIdentifiers ?? {},
-    identifierKey,
-    identifiers,
-  });
+  return buildPayload(message, recordPayloadBuilder);
 };

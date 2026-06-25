@@ -18,12 +18,14 @@ describe('buildRecordEvent', () => {
       type: 'record' as const,
       action: 'insert' as const,
       identifiers: { id: 'user-1', name: 'Alice', plan: 'pro' },
+      fields: { created_at: 1719324000 },
     };
     const result = buildRecordEvent(message);
     expect(result).toEqual({
       type: 'person',
       action: 'identify',
       identifiers: { id: 'user-1' },
+      timestamp: 1719324000,
       attributes: { name: 'Alice', plan: 'pro' },
     });
   });
@@ -107,7 +109,8 @@ describe('buildRecordEvent', () => {
       const message = {
         type: 'record' as const,
         action,
-        identifiers: { id: 'user-1', eventName: 'Order Completed', plan: 'pro' },
+        identifiers: { id: 'user-1', event: 'Order Completed', plan: 'pro' },
+        fields: { created_at: 1719324000 },
       };
       const result = buildRecordEvent(message, 'event');
       expect(result).toEqual({
@@ -115,6 +118,7 @@ describe('buildRecordEvent', () => {
         action: 'event',
         identifiers: { id: 'user-1' },
         name: 'Order Completed',
+        timestamp: 1719324000,
         attributes: expectedAttributes,
       });
     },
@@ -124,7 +128,7 @@ describe('buildRecordEvent', () => {
     const message = {
       type: 'record' as const,
       action: 'update' as const,
-      identifiers: { email: 'alice@example.com', eventName: 'Plan Changed', plan: 'enterprise' },
+      identifiers: { email: 'alice@example.com', event: 'Plan Changed', plan: 'enterprise' },
     };
     const result = buildRecordEvent(message, 'event');
     expect(result).toEqual({
@@ -140,7 +144,7 @@ describe('buildRecordEvent', () => {
     const message = {
       type: 'record' as const,
       action: 'delete' as const,
-      identifiers: { id: 'user-1', eventName: 'Order Completed' },
+      identifiers: { id: 'user-1', event: 'Order Completed' },
     };
     expect(() => buildRecordEvent(message, 'event')).toThrow(InstrumentationError);
     expect(() => buildRecordEvent(message, 'event')).toThrow(

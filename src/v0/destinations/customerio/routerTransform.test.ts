@@ -80,7 +80,8 @@ describe('CustomerIOIntegration — record event routing', () => {
     const result = integration.transformEvent(
       makeInput({
         action: 'update',
-        identifiers: { id: 'user-1', eventName: 'Order Completed', plan: 'pro' },
+        identifiers: { id: 'user-1', event: 'Order Completed', plan: 'pro' },
+        fields: { created_at: 1719324000 },
       }),
     );
     expect(result.body).toEqual({
@@ -88,6 +89,7 @@ describe('CustomerIOIntegration — record event routing', () => {
       action: 'event',
       identifiers: { id: 'user-1' },
       name: 'Order Completed',
+      timestamp: 1719324000,
       attributes: { plan: 'pro' },
     });
   });

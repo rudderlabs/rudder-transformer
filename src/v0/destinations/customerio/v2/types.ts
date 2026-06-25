@@ -39,7 +39,7 @@ const recordMessageSchema = z
   .object({
     type: z.literal('record'),
     action: z.enum(['insert', 'update', 'delete']),
-    identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+    identifiers: z.record(z.string(), z.unknown()),
   })
   .passthrough()
   .refine(

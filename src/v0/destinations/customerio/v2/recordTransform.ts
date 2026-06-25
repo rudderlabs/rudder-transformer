@@ -5,10 +5,8 @@ import { toUnixSeconds } from './util';
 import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from '../types';
 import { EVENT_TYPES } from '../../../util/recordUtils';
 
-type RecordFields = Record<string, string | number>;
-
 type RecordPayloadContext = {
-  rawIdentifiers: RecordFields;
+  rawIdentifiers: CustomerIOV2RecordMessage["identifiers"];
   identifierKey: string;
   action: CustomerIOV2RecordMessage['action'];
 };
@@ -81,7 +79,7 @@ export const buildRecordEvent = (
     payload.timestamp = toUnixSeconds(createdAt);
   }
 
-  if (cioAction !== EVENT_TYPES.DELETE) {
+  if (action !== EVENT_TYPES.DELETE) {
     const excludedKeys = new Set([
       identifierKey,
       IDENTIFIERS.CREATED_AT,

@@ -41,10 +41,7 @@ class CustomerIOIntegration extends BatchDestination<
 
   private buildBody(message: CustomerIORouterRequest['message']): CustomerIOV2Payload {
     if (isRecordMessage(message)) {
-      const connectionObject = this.connection?.config.destination.object;
-      if (!connectionObject) {
-        throw new InstrumentationError('CustomerIO record object is required for record events');
-      }
+      const connectionObject = this.connection!.config.destination.object;
       return buildRecordEvent(message, connectionObject);
     }
     // For RETL/warehouse sources (mappedToDestination), derive userId from

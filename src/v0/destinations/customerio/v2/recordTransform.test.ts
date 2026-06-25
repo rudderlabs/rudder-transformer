@@ -115,7 +115,7 @@ describe('buildRecordEvent', () => {
         action,
         identifiers: {
           id: 'user-1',
-          event: 'Order Completed',
+          name: 'Order Completed',
           plan: 'pro',
           created_at: '2024-06-25T14:00:00.000Z',
         },
@@ -136,7 +136,7 @@ describe('buildRecordEvent', () => {
     const message = {
       type: 'record' as const,
       action: 'update' as const,
-      identifiers: { email: 'alice@example.com', event: 'Plan Changed', plan: 'enterprise' },
+      identifiers: { email: 'alice@example.com', name: 'Plan Changed', plan: 'enterprise' },
     };
     const result = buildRecordEvent(message, 'event');
     expect(result).toEqual({

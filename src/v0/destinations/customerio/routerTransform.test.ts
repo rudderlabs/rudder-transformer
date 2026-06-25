@@ -82,7 +82,7 @@ describe('CustomerIOIntegration — record event routing', () => {
         action: 'update',
         identifiers: {
           id: 'user-1',
-          event: 'Order Completed',
+          name: 'Order Completed',
           plan: 'pro',
           created_at: '2024-06-25T14:00:00.000Z',
         },

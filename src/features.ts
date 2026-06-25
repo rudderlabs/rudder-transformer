@@ -102,6 +102,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     POSTHOG: true,
     CUSTOM_AUDIENCE: true,
     ITERABLE_AUDIENCE: true,
+    SURVICATE: true,
   },
   regulations: [
     'BRAZE',

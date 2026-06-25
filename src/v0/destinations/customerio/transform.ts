@@ -1,10 +1,10 @@
-const get = require('get-value');
-const btoa = require('btoa');
+import get from 'get-value';
+import btoa from 'btoa';
 
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { EventType, MappedToDestinationKey } = require('../../../constants');
+import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { EventType, MappedToDestinationKey } from '../../../constants';
 
-const {
+import {
   getSuccessRespEvents,
   defaultRequestConfig,
   addExternalIdToTraits,
@@ -13,10 +13,10 @@ const {
   getFieldValueFromMessage,
   handleRtTfSingleEventError,
   validateEventName,
-} = require('../../util');
+} from '../../util';
 
-const logger = require('../../../logger');
-const {
+import logger from '../../../logger';
+import {
   getEndpointDetails,
   getEventChunks,
   identifyResponseBuilder,
@@ -24,15 +24,16 @@ const {
   groupResponseBuilder,
   defaultResponseBuilder,
   validateConfigFields,
-} = require('./util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+} from './util';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import { ResponseDetails, CustomerIOSuccessfulEvent, CustomerIOBatchResponse } from './types';
 
 function responseBuilder(message, evType, evName, destination, messageType) {
   let identifyResponse;
   let aliasResponse;
   let groupResponse;
   let defaultResponse;
-  let temporaryResponseDetails = {};
+  let temporaryResponseDetails: ResponseDetails;
 
   // let requestConfig = defaultPostRequestConfig;
   // override userId with externalId in context(if present) and event is mapped to destination
@@ -120,7 +121,7 @@ function processSingleMessage(message, destination) {
   const response = responseBuilder(message, evType, evName, destination, messageType);
 
   // replace default domain with EU data center domainc for EU based account
-  if (destination.Config?.datacenter === 'EU' || destination.Config?.datacenterEU) {
+  if (destination.Config?.datacenter === 'EU') {
     response.endpoint = response.endpoint.replace('track.customer.io', 'track-eu.customer.io');
   }
 
@@ -136,9 +137,9 @@ function process(event) {
   return result;
 }
 
-const batchEvents = (successRespList) => {
-  const batchedResponseList = [];
-  const groupEvents = [];
+const batchEvents = (successRespList: CustomerIOSuccessfulEvent[]) => {
+  const batchedResponseList: CustomerIOBatchResponse[] = [];
+  const groupEvents: CustomerIOSuccessfulEvent[] = [];
   const endpointDetails = getEndpointDetails({ eventType: 'objectEvent' });
 
   // Filtering out group calls to process batching
@@ -178,9 +179,9 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  let batchResponseList = [];
-  const batchErrorRespList = [];
-  const successRespList = [];
+  let batchResponseList: unknown[] = [];
+  const batchErrorRespList: unknown[] = [];
+  const successRespList: CustomerIOSuccessfulEvent[] = [];
   const { destination } = inputs[0];
   inputs.forEach((event) => {
     try {
@@ -192,7 +193,6 @@ const processRouterDest = (inputs, reqMetadata) => {
           destination,
         });
       } else {
-        // if not transformed
         const transformedPayload = {
           message: process(event),
           metadata: event.metadata,
@@ -213,4 +213,4 @@ const processRouterDest = (inputs, reqMetadata) => {
   return [...batchResponseList, ...batchErrorRespList];
 };
 
-module.exports = { process, processRouterDest };
+export { process, processRouterDest };

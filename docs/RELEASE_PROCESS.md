@@ -72,7 +72,7 @@ The release notes follow Angular conventional commit style with automatic catego
 git checkout v1.102.0
 
 # Run the release script
-npm run release:github:modern
+npm run release:github
 ```
 
 ### Using GitHub CLI Directly
@@ -98,8 +98,7 @@ Modern release creation script that:
 
 ### NPM Scripts
 
-- `npm run release:github:modern` - **Recommended**: Uses the modern script
-- `npm run release:github` - **Deprecated**: Uses old conventional-github-releaser (broken)
+- `npm run release:github` - Uses the modern script (`scripts/create-github-release.js`)
 
 ## Troubleshooting
 
@@ -163,5 +162,4 @@ The release process uses these environment variables:
 
 - `.github/workflows/publish-new-release.yml` - Main release workflow
 - `scripts/create-github-release.js` - Release creation script
-- `github-release.config.js` - Legacy configuration (deprecated)
 - `package.json` - NPM scripts for release commands

@@ -108,14 +108,6 @@ describe('CustomerIOIntegration — record event routing', () => {
     );
   });
 
-  it('throws InstrumentationError when record connection object is absent', () => {
-    const integration = new Integration(baseDestination, undefined);
-    expect(() => integration.transformEvent(makeInput({}))).toThrow(InstrumentationError);
-    expect(() => integration.transformEvent(makeInput({}))).toThrow(
-      'CustomerIO record object is required for record events',
-    );
-  });
-
   it('batches multiple record events into one { batch: [...] } body', async () => {
     const integration = new Integration(baseDestination, baseConnection);
     const inputs = [

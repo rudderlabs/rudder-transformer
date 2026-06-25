@@ -103,6 +103,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     CUSTOM_AUDIENCE: true,
     ITERABLE_AUDIENCE: true,
     SURVICATE: true,
+    TEST_DESTINATION: true, // dev-only test fixture for definition-versioning (INT-6492); gated out of staging/prod at the control plane
   },
   regulations: [
     'BRAZE',

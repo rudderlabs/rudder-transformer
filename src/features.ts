@@ -103,7 +103,9 @@ const defaultFeaturesConfig: FeaturesConfig = {
     CUSTOM_AUDIENCE: true,
     ITERABLE_AUDIENCE: true,
     SURVICATE: true,
-    TEST_DESTINATION: true, // dev-only test fixture for definition-versioning (INT-6492); gated out of staging/prod at the control plane
+    // dev-only test fixture for definition-versioning (INT-6492); kept out of the prod /features
+    // payload here (NODE_ENV==='production'), so exposure no longer rests solely on control-plane gating.
+    ...(process.env.NODE_ENV !== 'production' && { TEST_DESTINATION: true }),
   },
   regulations: [
     'BRAZE',

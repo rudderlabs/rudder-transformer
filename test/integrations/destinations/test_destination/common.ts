@@ -52,3 +52,28 @@ export const baseMessage = {
 };
 
 export const v1Endpoint = 'https://eu.test-destination.invalid/v1/events';
+
+// Shared v1 REST request shape produced by processV1 — dataCenter-scoped endpoint + restApiKey
+// header. Single source for the processor/router fixtures so the wire shape lives in one place.
+export const v1RequestShape = {
+  version: '1',
+  type: 'REST',
+  method: 'POST',
+  endpoint: v1Endpoint,
+  headers: { 'Content-Type': 'application/json', 'X-Api-Key': 'v1-secret-key' },
+  params: {},
+  body: { JSON: baseMessage, JSON_ARRAY: {}, XML: {}, FORM: {} },
+  files: {},
+};
+
+// statTags emitted when a v2 event hits the not-yet-implemented ConfigurationError, by feature.
+export const v2StatTags = (feature: string) => ({
+  destType: destTypeInUpperCase,
+  destinationId: 'default-destinationId',
+  errorCategory: 'dataValidation',
+  errorType: 'configuration',
+  feature,
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+});

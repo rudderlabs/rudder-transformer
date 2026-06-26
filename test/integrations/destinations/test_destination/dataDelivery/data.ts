@@ -1,7 +1,7 @@
 // ⚠️ DEV-ONLY TEST FIXTURE — NOT A REAL DESTINATION (INT-6492).
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
-import { v1Endpoint } from '../common';
+import { v1Endpoint, v2StatTags } from '../common';
 
 const v1Headers = { 'Content-Type': 'application/json', 'X-Api-Key': 'v1-secret-key' };
 const deliveryBody = { event: 'Test Event', userId: 'user-1' };
@@ -33,7 +33,8 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: '[test_destination] delivery processed successfully',
+            message:
+              '[Generic Response Handler] Request for destination: test_destination Processed Successfully',
             response: [
               {
                 error: JSON.stringify({ success: true }),
@@ -71,16 +72,7 @@ export const data: ProxyV1TestData[] = [
                 metadata: generateMetadata(1),
               },
             ],
-            statTags: {
-              destType: 'TEST_DESTINATION',
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'configuration',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: v2StatTags('dataDelivery'),
           },
         },
       },

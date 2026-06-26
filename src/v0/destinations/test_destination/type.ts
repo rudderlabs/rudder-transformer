@@ -3,7 +3,6 @@ import {
   Destination,
   Metadata,
   ProcessorTransformationRequest,
-  ProxyRequest,
   RouterTransformationRequestData,
   RudderMessage,
 } from '../../../types';
@@ -29,10 +28,3 @@ export type TestDestinationRouterRequest = RouterTransformationRequestData<
   undefined, // no connection needed for this fixture
   Metadata
 >;
-
-// Minimal shape consumed by the proxy responseHandler; destinationRequest carries the major.
-export interface TestDestinationResponseParams {
-  destinationResponse: { status: number; response?: unknown };
-  destType: string;
-  destinationRequest: ProxyRequest;
-}

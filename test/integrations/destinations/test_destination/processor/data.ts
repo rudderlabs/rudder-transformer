@@ -5,20 +5,11 @@ import {
   destinationV1,
   destinationV2,
   baseMessage,
-  v1Endpoint,
+  v1RequestShape,
+  v2StatTags,
 } from '../common';
 
-const v1Output = {
-  version: '1',
-  type: 'REST',
-  method: 'POST',
-  endpoint: v1Endpoint,
-  headers: { 'Content-Type': 'application/json', 'X-Api-Key': 'v1-secret-key' },
-  params: {},
-  body: { JSON: baseMessage, JSON_ARRAY: {}, XML: {}, FORM: {} },
-  files: {},
-  userId: '',
-};
+const v1Output = { ...v1RequestShape, userId: '' };
 
 export const data: ProcessorTestData[] = [
   {
@@ -95,16 +86,7 @@ export const data: ProcessorTestData[] = [
             statusCode: 400,
             error: 'test_destination v2 transformation is not yet implemented',
             metadata: generateMetadata(3),
-            statTags: {
-              destType: 'TEST_DESTINATION',
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'configuration',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: v2StatTags('processor'),
           },
         ],
       },

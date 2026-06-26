@@ -5,19 +5,11 @@ import {
   destinationV1,
   destinationV2,
   baseMessage,
-  v1Endpoint,
+  v1RequestShape,
+  v2StatTags,
 } from '../common';
 
-const v1BatchedRequest = {
-  version: '1',
-  type: 'REST',
-  method: 'POST',
-  endpoint: v1Endpoint,
-  headers: { 'Content-Type': 'application/json', 'X-Api-Key': 'v1-secret-key' },
-  params: {},
-  body: { JSON: baseMessage, JSON_ARRAY: {}, XML: {}, FORM: {} },
-  files: {},
-};
+const v1BatchedRequest = v1RequestShape;
 
 export const data: RouterTestData[] = [
   {
@@ -100,16 +92,7 @@ export const data: RouterTestData[] = [
               statusCode: 400,
               error: 'test_destination v2 transformation is not yet implemented',
               destination: destinationV2,
-              statTags: {
-                destType: 'TEST_DESTINATION',
-                destinationId: 'default-destinationId',
-                errorCategory: 'dataValidation',
-                errorType: 'configuration',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-                workspaceId: 'default-workspaceId',
-              },
+              statTags: v2StatTags('router'),
             },
           ],
         },

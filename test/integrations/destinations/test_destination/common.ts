@@ -54,7 +54,7 @@ export const baseMessage = {
 export const v1Endpoint = 'https://eu.test-destination.invalid/v1/events';
 
 // Shared v1 REST request shape produced by processV1 — dataCenter-scoped endpoint + restApiKey
-// header. Single source for the processor/router fixtures so the wire shape lives in one place.
+// header. Used by the processor fixture (the router fixture asserts the batched-request shape).
 export const v1RequestShape = {
   version: '1',
   type: 'REST',

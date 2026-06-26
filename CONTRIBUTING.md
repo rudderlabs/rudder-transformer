@@ -980,7 +980,7 @@ const process = (event) => {
 - **The proxy / dataDelivery route has no destination object** — the major arrives as a top-level **`destinationVersion`** on the proxy request payload. Read it there (e.g. in `networkHandler`'s `proxy`/`responseHandler`), not `destination.version`.
 - **Never route integration majors through `getDestHandler`.** That argument is the architecture version; routing majors there would explode the directory matrix.
 
-See `src/v0/destinations/test_destination` for a worked, dev-only example exercising this idiom across `process`, `processRouterDest`, and `networkHandler`.
+See `src/v0/destinations/test_destination` for a worked, dev-only example exercising this idiom across `process` and `networkHandler`. Its router runs through the native batching framework (`routerTransform.ts`), which reuses `process`, so the major dispatch lives in one place rather than a separate `processRouterDest`.
 
 ### 3. Test your destination integration
 

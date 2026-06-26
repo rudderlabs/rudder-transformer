@@ -175,7 +175,7 @@ Create/Update Survicate destination configuration in `rudder-integrations-config
     "destinationKey": {
       "type": "string",
       "displayName": "Destination Key",
-      "description": "Your Survicate Destination Key for authentication",
+      "description": "Get your Survicate Destination Key for authentication by selecting RudderStack on the integrations page",
       "required": true
     }
   }

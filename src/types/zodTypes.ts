@@ -141,6 +141,7 @@ export const ProxyV0RequestSchema = z.object({
   files: z.record(z.unknown()).optional(),
   metadata: ProxyMetadataSchema,
   destinationConfig: z.record(z.unknown()),
+  destinationVersion: z.number().optional(),
 });
 
 export const ProxyV1RequestSchema = z.object({
@@ -162,6 +163,7 @@ export const ProxyV1RequestSchema = z.object({
   files: z.record(z.unknown()).optional(),
   metadata: z.array(ProxyMetadataSchema),
   destinationConfig: z.record(z.unknown()),
+  destinationVersion: z.number().optional(),
 });
 
 const validateStatTags = (data: any) => {

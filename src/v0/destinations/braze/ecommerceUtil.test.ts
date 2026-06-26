@@ -1,10 +1,6 @@
 import stats from '../../../util/stats';
-import {
-  BRAZE_ECOMMERCE_EVENTS,
-  buildEcommerceEventProperties,
-  deriveSource,
-  getEcommerceMapping,
-} from './ecommerceUtil';
+import { ConfigCategory } from './config';
+import { buildEcommerceEventProperties, deriveSource, getEcommerceMapping } from './ecommerceUtil';
 import type { BrazeDestination, RudderBrazeMessage } from './types';
 
 jest.mock('../../../util/stats', () => ({
@@ -39,15 +35,23 @@ const validationCounterCalls = () =>
 
 describe('getEcommerceMapping', () => {
   const mappingCases: Array<{ input: string; brazeEvent: string; action?: string }> = [
-    { input: 'Product Viewed', brazeEvent: BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED },
-    { input: 'product viewed', brazeEvent: BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED },
-    { input: '  PRODUCT VIEWED  ', brazeEvent: BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED },
-    { input: 'Product Added', brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'add' },
-    { input: 'Product Removed', brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'remove' },
-    { input: 'Checkout Started', brazeEvent: BRAZE_ECOMMERCE_EVENTS.CHECKOUT_STARTED },
-    { input: 'Order Completed', brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED },
-    { input: 'Order Refunded', brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED },
-    { input: 'Order Cancelled', brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_CANCELLED },
+    { input: 'Product Viewed', brazeEvent: ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent },
+    { input: 'product viewed', brazeEvent: ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent },
+    { input: '  PRODUCT VIEWED  ', brazeEvent: ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent },
+    {
+      input: 'Product Added',
+      brazeEvent: ConfigCategory.BRAZE_CART_UPDATED.brazeEvent,
+      action: 'add',
+    },
+    {
+      input: 'Product Removed',
+      brazeEvent: ConfigCategory.BRAZE_CART_UPDATED.brazeEvent,
+      action: 'remove',
+    },
+    { input: 'Checkout Started', brazeEvent: ConfigCategory.BRAZE_CHECKOUT_STARTED.brazeEvent },
+    { input: 'Order Completed', brazeEvent: ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent },
+    { input: 'Order Refunded', brazeEvent: ConfigCategory.BRAZE_ORDER_REFUNDED.brazeEvent },
+    { input: 'Order Cancelled', brazeEvent: ConfigCategory.BRAZE_ORDER_CANCELLED.brazeEvent },
   ];
 
   it.each(mappingCases)(
@@ -164,7 +168,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent,
         undefined,
         destination,
       );
@@ -196,7 +200,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent,
         undefined,
         destination,
       );
@@ -212,7 +216,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent,
         undefined,
         destination,
       );
@@ -240,7 +244,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        ConfigCategory.BRAZE_CART_UPDATED.brazeEvent,
         'add',
         destination,
       );
@@ -278,7 +282,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        ConfigCategory.BRAZE_CART_UPDATED.brazeEvent,
         'add',
         destination,
       );
@@ -300,7 +304,7 @@ describe('buildEcommerceEventProperties', () => {
 
       buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        ConfigCategory.BRAZE_CART_UPDATED.brazeEvent,
         'add',
         destination,
       );
@@ -310,7 +314,7 @@ describe('buildEcommerceEventProperties', () => {
       expect(calls[0][2]).toEqual({
         destination_id: DESTINATION_ID,
         workspace_id: WORKSPACE_ID,
-        braze_event: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        braze_event: ConfigCategory.BRAZE_CART_UPDATED.brazeEvent,
       });
     });
   });
@@ -332,7 +336,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );
@@ -368,7 +372,7 @@ describe('buildEcommerceEventProperties', () => {
       expect(() =>
         buildEcommerceEventProperties(
           message,
-          BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+          ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
           undefined,
           destination,
         ),
@@ -379,7 +383,7 @@ describe('buildEcommerceEventProperties', () => {
       expect(calls[0][2]).toEqual({
         destination_id: DESTINATION_ID,
         workspace_id: WORKSPACE_ID,
-        braze_event: BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        braze_event: ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
       });
     });
 
@@ -398,7 +402,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );
@@ -422,7 +426,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );
@@ -434,7 +438,7 @@ describe('buildEcommerceEventProperties', () => {
       expect(calls[0][2]).toEqual({
         destination_id: DESTINATION_ID,
         workspace_id: WORKSPACE_ID,
-        braze_event: BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        braze_event: ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
       });
     });
 
@@ -462,13 +466,13 @@ describe('buildEcommerceEventProperties', () => {
 
       const a = buildEcommerceEventProperties(
         messageWithDiscount,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );
       const b = buildEcommerceEventProperties(
         messageWithTotalDiscounts,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );
@@ -487,7 +491,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED,
+        ConfigCategory.BRAZE_ORDER_REFUNDED.brazeEvent,
         undefined,
         destination,
       );
@@ -500,7 +504,7 @@ describe('buildEcommerceEventProperties', () => {
       expect(calls[0][2]).toEqual({
         destination_id: DESTINATION_ID,
         workspace_id: WORKSPACE_ID,
-        braze_event: BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED,
+        braze_event: ConfigCategory.BRAZE_ORDER_REFUNDED.brazeEvent,
       });
     });
   });
@@ -523,7 +527,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        ConfigCategory.BRAZE_CART_UPDATED.brazeEvent,
         'add',
         destination,
       );
@@ -553,7 +557,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        ConfigCategory.BRAZE_CART_UPDATED.brazeEvent,
         'add',
         destination,
       );
@@ -570,7 +574,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.CART_UPDATED,
+        ConfigCategory.BRAZE_CART_UPDATED.brazeEvent,
         'add',
         destination,
       );
@@ -606,7 +610,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );
@@ -632,7 +636,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent,
         undefined,
         destination,
       );
@@ -654,7 +658,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent,
         undefined,
         destination,
       );
@@ -679,7 +683,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent,
         undefined,
         destination,
       );
@@ -709,7 +713,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );
@@ -732,7 +736,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );
@@ -755,7 +759,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent,
         undefined,
         destination,
       );
@@ -784,7 +788,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );
@@ -808,7 +812,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED,
+        ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent,
         undefined,
         destination,
       );
@@ -835,7 +839,7 @@ describe('buildEcommerceEventProperties', () => {
 
       const result = buildEcommerceEventProperties(
         message,
-        BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED,
+        ConfigCategory.BRAZE_ORDER_PLACED.brazeEvent,
         undefined,
         destination,
       );

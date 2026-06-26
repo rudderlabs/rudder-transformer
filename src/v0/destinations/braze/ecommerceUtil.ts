@@ -9,21 +9,22 @@ import { ConfigCategory, mappingConfig } from './config';
 import type { BrazeDestination, RudderBrazeMessage } from './types';
 import { handleReservedProperties } from './util';
 
-/**
- * Braze recommended ecommerce event names.
- * https://www.braze.com/docs/user_guide/data/activation/events/recommended_events
- */
-export const BRAZE_ECOMMERCE_EVENTS = {
-  PRODUCT_VIEWED: 'ecommerce.product_viewed',
-  CART_UPDATED: 'ecommerce.cart_updated',
-  CHECKOUT_STARTED: 'ecommerce.checkout_started',
-  ORDER_PLACED: 'ecommerce.order_placed',
-  ORDER_REFUNDED: 'ecommerce.order_refunded',
-  ORDER_CANCELLED: 'ecommerce.order_cancelled',
-} as const;
+// Braze recommended ecommerce event routing is sourced from `ConfigCategory` in
+// config.ts — that's the single source of truth (file mapping name + Braze event
+// name + RS event aliases + per-alias action). Adding a new event = one entry in
+// ConfigCategory + one JSON under `data/ecommerce/`.
+// https://www.braze.com/docs/user_guide/data/activation/events/recommended_events
 
-export type BrazeEcommerceEventName =
-  (typeof BRAZE_ECOMMERCE_EVENTS)[keyof typeof BRAZE_ECOMMERCE_EVENTS];
+// Union of routed ConfigCategory entries (carries the per-event literal types
+// induced by `as const`). Drives the type predicate on the filter below and the
+// derivation of BrazeEcommerceEventName.
+
+type EcommerceRoutedCategory = Extract<
+  (typeof ConfigCategory)[keyof typeof ConfigCategory],
+  { brazeEvent: string }
+>;
+
+export type BrazeEcommerceEventName = EcommerceRoutedCategory['brazeEvent'];
 
 export type CartUpdatedAction = 'add' | 'remove';
 
@@ -39,34 +40,44 @@ export type EcommerceEventProperties = Record<string, unknown> & {
   action?: CartUpdatedAction;
 };
 
+type RsEventAlias = { readonly name: string; readonly action?: CartUpdatedAction };
+
+// Normalized iteration shape — widens the per-entry literal tuple types in
+// EcommerceRoutedCategory to a uniform array, so `.map` on `rsEvents` doesn't
+// trip on the "method on union of tuples" inference issue.
+type EcommerceRoutedEntry = {
+  readonly name: string;
+  readonly brazeEvent: BrazeEcommerceEventName;
+  readonly rsEvents: readonly RsEventAlias[];
+};
+
 const VALIDATION_WARN_COUNTER = 'braze_recommended_event_validation_warn';
 
 const BRAZE_SOURCE_VALUES = new Set<string>(['web', 'ios', 'android']);
 
-// Case-insensitive RS event name → Braze recommended event mapping.
-// Keys are lowercased RS event names. `Cart Viewed` and `Cart Updated` are
-// intentionally absent — both were dropped from scope on 2026-06-16 because the
-// `cart_updated(replace)` overwrite-on-view semantics were deemed too risky for v1.
-// Both fall through to the legacy custom-event path. No event in this map uses
-// `action: 'replace'`, so `CartUpdatedAction` is narrowed to `'add' | 'remove'`.
-const EVENT_NAME_TO_BRAZE: Record<string, EcommerceMapping> = {
-  'product viewed': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED },
-  'product added': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'add' },
-  'product removed': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.CART_UPDATED, action: 'remove' },
-  'checkout started': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.CHECKOUT_STARTED },
-  'order completed': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED },
-  'order refunded': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED },
-  'order cancelled': { brazeEvent: BRAZE_ECOMMERCE_EVENTS.ORDER_CANCELLED },
-};
+// Routed entries pulled out of ConfigCategory once at module load. `Cart Viewed`
+// and `Cart Updated` (RS event names) are intentionally not represented — both
+// were dropped from scope on 2026-06-16 because `cart_updated(replace)` overwrite-
+// on-view semantics were deemed too risky for v1; they fall through to the legacy
+// custom-event path. No entry uses `action: 'replace'`, so `CartUpdatedAction`
+// stays narrowed to `'add' | 'remove'`.
+const ECOMMERCE_ROUTED_ENTRIES: readonly EcommerceRoutedEntry[] = Object.values(
+  ConfigCategory,
+).filter((entry): entry is EcommerceRoutedCategory => 'brazeEvent' in entry);
 
-const PER_EVENT_MAPPING_NAME: Record<BrazeEcommerceEventName, string> = {
-  [BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED]: ConfigCategory.BRAZE_PRODUCT_VIEWED.name,
-  [BRAZE_ECOMMERCE_EVENTS.CART_UPDATED]: ConfigCategory.BRAZE_CART_UPDATED.name,
-  [BRAZE_ECOMMERCE_EVENTS.CHECKOUT_STARTED]: ConfigCategory.BRAZE_CHECKOUT_STARTED.name,
-  [BRAZE_ECOMMERCE_EVENTS.ORDER_PLACED]: ConfigCategory.BRAZE_ORDER_PLACED.name,
-  [BRAZE_ECOMMERCE_EVENTS.ORDER_REFUNDED]: ConfigCategory.BRAZE_ORDER_REFUNDED.name,
-  [BRAZE_ECOMMERCE_EVENTS.ORDER_CANCELLED]: ConfigCategory.BRAZE_ORDER_CANCELLED.name,
-};
+// Case-insensitive RS event name (lowercased, trimmed) → Braze mapping.
+const EVENT_NAME_TO_BRAZE: Record<string, EcommerceMapping> = Object.fromEntries(
+  ECOMMERCE_ROUTED_ENTRIES.flatMap((entry) =>
+    entry.rsEvents.map((rs) => [rs.name, { brazeEvent: entry.brazeEvent, action: rs.action }]),
+  ),
+);
+
+// `Object.fromEntries` returns the broad `{ [k: string]: string }`; the cast
+// narrows to the concrete union of brazeEvent literals. Safe by construction:
+// keys are sourced from ECOMMERCE_ROUTED_ENTRIES which IS the source of truth.
+const PER_EVENT_MAPPING_NAME = Object.fromEntries(
+  ECOMMERCE_ROUTED_ENTRIES.map((entry) => [entry.brazeEvent, entry.name]),
+) as Record<BrazeEcommerceEventName, string>;
 
 type BrazeFieldType = 'String' | 'Float' | 'Integer' | 'Array' | 'Object';
 
@@ -269,7 +280,7 @@ function consumedTopLevelKeysForEvent(
   // explicit `products[]` is provided. In that case mark those keys as consumed so they
   // don't duplicate into event-level metadata.
   if (
-    brazeEvent === BRAZE_ECOMMERCE_EVENTS.CART_UPDATED &&
+    brazeEvent === ConfigCategory.BRAZE_CART_UPDATED.brazeEvent &&
     productMapping !== null &&
     !hasExplicitProductsArray
   ) {
@@ -294,7 +305,7 @@ function buildProductsArray(
   productMapping: MappingEntry[],
 ): Record<string, unknown>[] {
   const properties = (message.properties || {}) as Record<string, unknown>;
-  const isCartUpdated = brazeEvent === BRAZE_ECOMMERCE_EVENTS.CART_UPDATED;
+  const isCartUpdated = brazeEvent === ConfigCategory.BRAZE_CART_UPDATED.brazeEvent;
 
   if (isCartUpdated && !Array.isArray(properties.products)) {
     const product = removeUndefinedNullEmptyExclBoolInt(
@@ -405,7 +416,7 @@ export function buildEcommerceEventProperties(
     PER_EVENT_MAPPING_NAME[brazeEvent]
   ] as unknown as MappingEntry[];
   const productMapping =
-    brazeEvent === BRAZE_ECOMMERCE_EVENTS.PRODUCT_VIEWED
+    brazeEvent === ConfigCategory.BRAZE_PRODUCT_VIEWED.brazeEvent
       ? null
       : (mappingConfig[ConfigCategory.BRAZE_ECOMMERCE_PRODUCT.name] as unknown as MappingEntry[]);
 

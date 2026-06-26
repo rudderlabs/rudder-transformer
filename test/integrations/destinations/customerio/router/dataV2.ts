@@ -1989,7 +1989,7 @@ export const dataV2 = [
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
                 enabled: true,
-                config: { destination: { syncMode: 'mirror' } },
+                config: { destination: { object: 'person', syncMode: 'mirror' } },
               },
             },
             {
@@ -2004,7 +2004,7 @@ export const dataV2 = [
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
                 enabled: true,
-                config: { destination: { syncMode: 'mirror' } },
+                config: { destination: { object: 'person', syncMode: 'mirror' } },
               },
             },
           ],
@@ -2063,6 +2063,189 @@ export const dataV2 = [
     },
   },
   {
+    id: 'cio-v2-router-record-event-object',
+    name: 'customerio',
+    description: 'v2: event object records — insert+update batch into event actions',
+    scenario: 'business',
+    successCriteria: 'insert and update map to CustomerIO event actions with top-level event names',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: {
+                  id: 'user-123',
+                  name: 'Order Completed',
+                  plan: 'pro',
+                  created_at: '2024-06-25T14:00:00.000Z',
+                },
+              },
+              metadata: { jobId: 104, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { object: 'event', syncMode: 'upsert' } },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                identifiers: {
+                  email: 'user@example.com',
+                  name: 'Plan Changed',
+                  plan: 'enterprise',
+                  created_at: '2024-06-25T15:00:00.000Z',
+                },
+              },
+              metadata: { jobId: 105, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { object: 'event', syncMode: 'upsert' } },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: { id: 'user-123' },
+                        name: 'Order Completed',
+                        timestamp: 1719324000,
+                        attributes: {
+                          plan: 'pro',
+                        },
+                      },
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: { email: 'user@example.com' },
+                        name: 'Plan Changed',
+                        timestamp: 1719327600,
+                        attributes: {
+                          plan: 'enterprise',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 104, userId: 'u1', workspaceId: 'ws-cio-v2' },
+                { jobId: 105, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              ],
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'cio-v2-router-record-event-delete',
+    name: 'customerio',
+    description: 'v2: event object record delete returns instrumentation error',
+    scenario: 'business',
+    successCriteria: 'delete is rejected for CustomerIO event object records',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'delete',
+                identifiers: { id: 'user-123', event: 'Order Completed' },
+              },
+              metadata: { jobId: 106, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { object: 'event', syncMode: 'mirror' } },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [{ jobId: 106, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              batched: false,
+              statusCode: 400,
+              error: 'Delete action is not supported for CustomerIO event records',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
     id: 'cio-v2-router-record-identifier-priority',
     name: 'customerio',
     description:
@@ -2097,7 +2280,7 @@ export const dataV2 = [
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
                 enabled: true,
-                config: { destination: { syncMode: 'upsert' } },
+                config: { destination: { object: 'person', syncMode: 'upsert' } },
               },
             },
           ],
@@ -2177,14 +2360,14 @@ export const dataV2 = [
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
                 enabled: true,
-                config: { destination: { syncMode: 'upsert' } },
+                config: { destination: { object: 'person', syncMode: 'upsert' } },
               },
             },
             {
               message: {
                 type: 'record',
                 action: 'insert',
-                identifiers: undefined,
+                identifiers: {},
               },
               metadata: { jobId: 201, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
@@ -2192,7 +2375,7 @@ export const dataV2 = [
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
                 enabled: true,
-                config: { destination: { syncMode: 'upsert' } },
+                config: { destination: { object: 'person', syncMode: 'upsert' } },
               },
             },
           ],
@@ -2286,7 +2469,7 @@ export const dataV2 = [
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
                 enabled: true,
-                config: { destination: { syncMode: 'upsert' } },
+                config: { destination: { object: 'person', syncMode: 'upsert' } },
               },
             },
           ],

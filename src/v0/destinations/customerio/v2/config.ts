@@ -1,4 +1,5 @@
 import { getMappingConfig } from '../../../util';
+import { EVENT_TYPES } from '../../../util/recordUtils';
 
 const V2_HOST = 'track.customer.io';
 const V2_HOST_EU = 'track-eu.customer.io';
@@ -31,9 +32,9 @@ const CONFIG_CATEGORIES = {
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 const RECORD_ACTION_MAP = {
-  insert: 'identify',
-  update: 'identify',
-  delete: 'delete',
+  [EVENT_TYPES.INSERT]: 'identify',
+  [EVENT_TYPES.UPDATE]: 'identify',
+  [EVENT_TYPES.DELETE]: 'delete',
 } as const;
 
 // Ordered by priority: cio_id > id > email

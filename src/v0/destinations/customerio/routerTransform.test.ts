@@ -20,7 +20,7 @@ const baseConnection = {
   sourceId: 'src-1',
   destinationId: 'dest-1',
   enabled: true,
-  config: { destination: {} },
+  config: { destination: { object: 'person' } },
 } as CustomerIORouterRequest['connection'];
 
 const makeInput = (overrides: Record<string, unknown>): CustomerIORouterRequest =>
@@ -34,6 +34,11 @@ const makeInput = (overrides: Record<string, unknown>): CustomerIORouterRequest 
     metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
     destination: baseDestination,
   }) as unknown as CustomerIORouterRequest;
+
+const eventConnection = {
+  ...baseConnection,
+  config: { destination: { object: 'event' } },
+} as CustomerIORouterRequest['connection'];
 
 describe('CustomerIOIntegration — record event routing', () => {
   it('transforms insert record into identify person payload', () => {
@@ -70,14 +75,37 @@ describe('CustomerIOIntegration — record event routing', () => {
     );
   });
 
-  it('succeeds when connection is absent (no connection config needed for record events)', () => {
-    const integration = new Integration(baseDestination, undefined);
-    const result = integration.transformEvent(makeInput({}));
-    expect(result.body).toMatchObject({
+  it('transforms event object record into event person payload', () => {
+    const integration = new Integration(baseDestination, eventConnection);
+    const result = integration.transformEvent(
+      makeInput({
+        action: 'update',
+        identifiers: {
+          id: 'user-1',
+          name: 'Order Completed',
+          plan: 'pro',
+          created_at: '2024-06-25T14:00:00.000Z',
+        },
+      }),
+    );
+    expect(result.body).toEqual({
       type: 'person',
-      action: 'identify',
+      action: 'event',
       identifiers: { id: 'user-1' },
+      name: 'Order Completed',
+      timestamp: 1719324000,
+      attributes: { plan: 'pro' },
     });
+  });
+
+  it('throws InstrumentationError for event object delete records', () => {
+    const integration = new Integration(baseDestination, eventConnection);
+    expect(() => integration.transformEvent(makeInput({ action: 'delete' }))).toThrow(
+      InstrumentationError,
+    );
+    expect(() => integration.transformEvent(makeInput({ action: 'delete' }))).toThrow(
+      'Delete action is not supported for CustomerIO event records',
+    );
   });
 
   it('batches multiple record events into one { batch: [...] } body', async () => {

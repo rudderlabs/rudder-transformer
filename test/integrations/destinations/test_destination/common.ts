@@ -25,7 +25,7 @@ export const destinationV1: Destination = {
   version: 1,
 };
 
-// No version stamped — must dispatch identically to v1 (Number(undefined) => NaN < 2).
+// No version stamped — must dispatch identically to v1 (getDestinationVersion normalizes undefined to major 1).
 export const destinationNoVersion: Destination = {
   ...destinationV1,
   ID: 'test-destination-no-version',

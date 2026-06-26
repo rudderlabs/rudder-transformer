@@ -27,7 +27,8 @@ const v1Response = {
 };
 
 describe('test_destination process — integration-major dispatch', () => {
-  // major 0 / undefined / 1 all resolve to Number(...) < 2 and run the v1 path
+  // getDestinationVersion normalizes the major (0 / undefined / non-numeric -> 1), so 0 / undefined / 1
+  // all run the v1 path (< V2_MAJOR)
   const v1Cases: { name: string; version: number | undefined }[] = [
     { name: 'version 1', version: 1 },
     { name: 'version 0', version: 0 },

@@ -16,7 +16,6 @@ type RecordPayloadBuilder = {
   validateAction?: (action: CustomerIOV2RecordMessage['action']) => void;
   getAdditionalFields?: (context: RecordPayloadContext) => Partial<CustomerIOV2Payload>;
   getExcludedAttributeKeys?: () => string[];
-  shouldBuildAttributes?: (action: CustomerIOV2RecordMessage['action']) => boolean;
 };
 
 const IDENTIFIERS = {
@@ -27,7 +26,6 @@ const IDENTIFIERS = {
 const recordPayloadBuilders: Record<CustomerIORecordObject, RecordPayloadBuilder> = {
   [CUSTOMERIO_RECORD_OBJECTS.person]: {
     getCIOAction: (action) => RECORD_ACTION_MAP[action],
-    shouldBuildAttributes: (action) => action !== EVENT_TYPES.DELETE,
   },
   [CUSTOMERIO_RECORD_OBJECTS.event]: {
     getCIOAction: () => 'event',
@@ -81,7 +79,7 @@ export const buildRecordEvent = (
     payload.timestamp = toUnixSeconds(createdAt);
   }
 
-  if (builder.shouldBuildAttributes?.(action) ?? true) {
+  if (action !== EVENT_TYPES.DELETE) {
     const excludedKeys = new Set([
       identifierKey,
       IDENTIFIERS.CREATED_AT,

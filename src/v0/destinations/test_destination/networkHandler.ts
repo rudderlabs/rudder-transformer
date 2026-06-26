@@ -3,6 +3,7 @@ import { ConfigurationError, NetworkError } from '@rudderstack/integrations-lib'
 import { isHttpStatusSuccess } from '../../util/index';
 import { proxyRequest, prepareProxyRequest } from '../../../adapters/network';
 import { getDynamicErrorType, processAxiosResponse } from '../../../adapters/utils/networkUtils';
+import { getDestinationVersion } from '../../../util/utils';
 import tags from '../../util/tags';
 import { ProxyRequest } from '../../../types';
 import { TestDestinationResponseParams } from './type';
@@ -15,7 +16,7 @@ const V2_MAJOR = 2;
 // Proxy/dataDelivery carries no destination object — the major arrives as the top-level
 // `destinationVersion` on the proxy payload. Dispatch on it: 0/undefined/1 deliver via the v1 path.
 const proxy = async (deliveryRequest: ProxyRequest, destType: string) => {
-  const major = Number(deliveryRequest.destinationVersion);
+  const major = getDestinationVersion(deliveryRequest.destinationVersion);
   if (major >= V2_MAJOR) {
     throw new ConfigurationError(`${DEST} v2 delivery is not yet implemented`);
   }

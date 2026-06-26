@@ -24,6 +24,7 @@ const {
   fetchWithDnsWrapper,
   isBlockedIP,
   ssrfSafeAgentFactory,
+  getDestinationVersion,
 } = require('./utils');
 
 describe('asyncHooks behaviour', () => {
@@ -333,5 +334,22 @@ describe('ssrfSafeAgentFactory', () => {
     const a = ssrfSafeAgentFactory(url('https://a.example.com'));
     const b = ssrfSafeAgentFactory(url('https://b.example.com'));
     expect(a).toBe(b);
+  });
+});
+
+describe('getDestinationVersion', () => {
+  // 0 (workspace config carries no version), undefined/absent, and non-numeric all mean "first
+  // major" — they must normalize to 1 so dispatch falls to v1 and metrics never see destVersion=0.
+  it.each([
+    [undefined, 1],
+    [0, 1],
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [NaN, 1],
+    ['2', 2], // defensive: stringified majors coerce
+    ['not-a-number', 1],
+  ])('normalizes %p to %p', (input, expected) => {
+    expect(getDestinationVersion(input)).toBe(expected);
   });
 });

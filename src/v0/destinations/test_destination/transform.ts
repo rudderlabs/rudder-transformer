@@ -1,6 +1,7 @@
 // ⚠️ DEV-ONLY TEST FIXTURE — NOT A REAL DESTINATION (INT-6492). See config.ts.
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { simpleProcessRouterDest } from '../../util';
+import { getDestinationVersion } from '../../../util/utils';
 import { processV1 } from './utils';
 import { TestDestinationProcessorRequest, TestDestinationRouterRequest } from './type';
 
@@ -8,9 +9,9 @@ import { TestDestinationProcessorRequest, TestDestinationRouterRequest } from '.
 const V2_MAJOR = 2;
 
 // In-file dispatch on the integration major (destination.version). Defaults to v1: a major of
-// 0, undefined ("1" not yet stamped) or 1 all yield Number(...) < 2 and run the v1 path.
+// 0, undefined ("1" not yet stamped) or 1 all normalize to 1 (< 2) and run the v1 path.
 const process = (event: TestDestinationProcessorRequest) => {
-  const major = Number(event.destination.version);
+  const major = getDestinationVersion(event.destination.version);
   if (major >= V2_MAJOR) {
     throw new ConfigurationError('test_destination v2 transformation is not yet implemented');
   }

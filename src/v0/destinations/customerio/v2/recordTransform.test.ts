@@ -1,30 +1,31 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
+import type { RecordContext } from '../../../../services/destination/nativeBatching/types';
+import type { CustomerIOConnection } from '../types';
 import { buildRecordEvent } from './recordTransform';
 
-describe('buildRecordEvent', () => {
-  const eventCases = [
-    {
-      action: 'insert' as const,
-      expectedAttributes: { plan: 'pro' },
-    },
-    {
-      action: 'update' as const,
-      expectedAttributes: { plan: 'pro' },
-    },
-  ];
+type TestContext = RecordContext<CustomerIOConnection['config']>;
 
+const makeContext = (
+  action: 'insert' | 'update' | 'delete',
+  identifiers: Record<string, string | number>,
+): TestContext => ({
+  action,
+  identifiers,
+  objectType: 'person',
+  connection: {} as any,
+});
+
+describe('buildRecordEvent', () => {
   it('maps insert action to identify with attributes from identifiers', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'insert' as const,
-      identifiers: {
+    const result = buildRecordEvent(
+      makeContext('insert', {
         id: 'user-1',
         name: 'Alice',
         plan: 'pro',
         created_at: '2024-06-25T14:00:00.000Z',
-      },
-    };
-    const result = buildRecordEvent(message, 'person');
+      }),
+      'person',
+    );
     expect(result).toEqual({
       type: 'person',
       action: 'identify',
@@ -35,12 +36,10 @@ describe('buildRecordEvent', () => {
   });
 
   it('maps update action to identify with attributes from identifiers', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'update' as const,
-      identifiers: { email: 'alice@example.com', plan: 'enterprise' },
-    };
-    const result = buildRecordEvent(message, 'person');
+    const result = buildRecordEvent(
+      makeContext('update', { email: 'alice@example.com', plan: 'enterprise' }),
+      'person',
+    );
     expect(result).toEqual({
       type: 'person',
       action: 'identify',
@@ -50,12 +49,10 @@ describe('buildRecordEvent', () => {
   });
 
   it('maps delete action to delete without attributes', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'delete' as const,
-      identifiers: { id: 'user-1', name: 'Alice' },
-    };
-    const result = buildRecordEvent(message, 'person');
+    const result = buildRecordEvent(
+      makeContext('delete', { id: 'user-1', name: 'Alice' }),
+      'person',
+    );
     expect(result).toEqual({
       type: 'person',
       action: 'delete',
@@ -65,80 +62,74 @@ describe('buildRecordEvent', () => {
   });
 
   it('omits attributes when identifiers has only id', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'insert' as const,
-      identifiers: { id: 'user-1' },
-    };
-    const result = buildRecordEvent(message, 'person');
+    const result = buildRecordEvent(makeContext('insert', { id: 'user-1' }), 'person');
     expect(result.attributes).toBeUndefined();
   });
 
   it('prefers cio_id over id and email when all are present', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'insert' as const,
-      identifiers: { cio_id: 'cio-abc', id: 'user-1', email: 'alice@example.com', plan: 'pro' },
-    };
-    const result = buildRecordEvent(message, 'person');
+    const result = buildRecordEvent(
+      makeContext('insert', {
+        cio_id: 'cio-abc',
+        id: 'user-1',
+        email: 'alice@example.com',
+        plan: 'pro',
+      }),
+      'person',
+    );
     expect(result.identifiers).toEqual({ cio_id: 'cio-abc' });
     expect(result.attributes).toEqual({ id: 'user-1', email: 'alice@example.com', plan: 'pro' });
   });
 
   it('prefers id over email when cio_id is absent', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'insert' as const,
-      identifiers: { id: 'user-1', email: 'alice@example.com', plan: 'pro' },
-    };
-    const result = buildRecordEvent(message, 'person');
+    const result = buildRecordEvent(
+      makeContext('insert', { id: 'user-1', email: 'alice@example.com', plan: 'pro' }),
+      'person',
+    );
     expect(result.identifiers).toEqual({ id: 'user-1' });
     expect(result.attributes).toEqual({ email: 'alice@example.com', plan: 'pro' });
   });
 
   it('uses email identifier when id is absent', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'insert' as const,
-      identifiers: { email: 'alice@example.com', plan: 'pro' },
-    };
-    const result = buildRecordEvent(message, 'person');
+    const result = buildRecordEvent(
+      makeContext('insert', { email: 'alice@example.com', plan: 'pro' }),
+      'person',
+    );
     expect(result.identifiers).toEqual({ email: 'alice@example.com' });
     expect(result.attributes).toEqual({ plan: 'pro' });
   });
 
-  it.each(eventCases)(
+  it.each([{ action: 'insert' as const }, { action: 'update' as const }])(
     'maps event record $action action to event payload',
-    ({ action, expectedAttributes }) => {
-      const message = {
-        type: 'record' as const,
-        action,
-        identifiers: {
+    ({ action }) => {
+      const result = buildRecordEvent(
+        makeContext(action, {
           id: 'user-1',
           name: 'Order Completed',
           plan: 'pro',
           created_at: '2024-06-25T14:00:00.000Z',
-        },
-      };
-      const result = buildRecordEvent(message, 'event');
+        }),
+        'event',
+      );
       expect(result).toEqual({
         type: 'person',
         action: 'event',
         identifiers: { id: 'user-1' },
         name: 'Order Completed',
         timestamp: 1719324000,
-        attributes: expectedAttributes,
+        attributes: { plan: 'pro' },
       });
     },
   );
 
   it('maps event record update action using connection object marker', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'update' as const,
-      identifiers: { email: 'alice@example.com', name: 'Plan Changed', plan: 'enterprise' },
-    };
-    const result = buildRecordEvent(message, 'event');
+    const result = buildRecordEvent(
+      makeContext('update', {
+        email: 'alice@example.com',
+        name: 'Plan Changed',
+        plan: 'enterprise',
+      }),
+      'event',
+    );
     expect(result).toEqual({
       type: 'person',
       action: 'event',
@@ -149,24 +140,11 @@ describe('buildRecordEvent', () => {
   });
 
   it('throws InstrumentationError for event record delete action', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'delete' as const,
-      identifiers: { id: 'user-1', event: 'Order Completed' },
-    };
-    expect(() => buildRecordEvent(message, 'event')).toThrow(InstrumentationError);
-    expect(() => buildRecordEvent(message, 'event')).toThrow(
-      'Delete action is not supported for CustomerIO event records',
-    );
-  });
-
-  it('throws InstrumentationError for unsupported action', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'upsert' as any,
-      identifiers: { id: 'user-1' },
-    };
-    expect(() => buildRecordEvent(message, 'person')).toThrow(InstrumentationError);
-    expect(() => buildRecordEvent(message, 'person')).toThrow('Action "upsert" is not supported');
+    expect(() =>
+      buildRecordEvent(makeContext('delete', { id: 'user-1', event: 'Order Completed' }), 'event'),
+    ).toThrow(InstrumentationError);
+    expect(() =>
+      buildRecordEvent(makeContext('delete', { id: 'user-1', event: 'Order Completed' }), 'event'),
+    ).toThrow('Delete action is not supported for CustomerIO event records');
   });
 });

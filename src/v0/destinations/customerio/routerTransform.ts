@@ -2,30 +2,29 @@ import { ZodType } from 'zod';
 import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  BatchDestination,
   TransformedEvent,
   ChunkBatchStrategy,
 } from '../../../services/destination/nativeBatching/batchDestination';
+import { VDMV2ObjectDestination } from '../../../services/destination/nativeBatching/vdmV2ObjectDestination';
+import type {
+  RecordContext,
+  BatchStrategy,
+} from '../../../services/destination/nativeBatching/types';
 import { addExternalIdToTraits, adduserIdFromExternalId, removeUndefinedValues } from '../../util';
 import { MappedToDestinationKey } from '../../../constants';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import {
-  getV2InputSchema,
-  CustomerIOV2Payload,
-  CustomerIODestinationConfig,
-  type CustomerIOV2RecordMessage,
-} from './v2/types';
+import { getV2InputSchema, CustomerIOV2Payload, CustomerIODestinationConfig } from './v2/types';
 import { MAX_OBJECT_SIZE_BYTES, MAX_BATCH_PAYLOAD } from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
 import { buildEnvelope, buildRequestMeta } from './v2/util';
-import { CustomerIORouterRequest, CustomerIOConnection } from './types';
+import {
+  CustomerIORouterRequest,
+  CustomerIOConnection,
+  CUSTOMERIO_RECORD_OBJECTS,
+  type CustomerIORecordObject,
+} from './types';
 
-function isRecordMessage(msg: { type: string }): msg is CustomerIOV2RecordMessage {
-  return msg.type === 'record';
-}
-
-class CustomerIOIntegration extends BatchDestination<
+class CustomerIOIntegration extends VDMV2ObjectDestination<
   CustomerIOV2Payload,
   CustomerIODestinationConfig,
   CustomerIOConnection['config']
@@ -39,23 +38,37 @@ class CustomerIOIntegration extends BatchDestination<
     }
   }
 
-  private buildBody(message: CustomerIORouterRequest['message']): CustomerIOV2Payload {
-    if (isRecordMessage(message)) {
-      const connectionObject = this.connection!.config.destination.object;
-      return buildRecordEvent(message, connectionObject);
-    }
-    // For RETL/warehouse sources (mappedToDestination), derive userId from
-    // context.externalId and fold externalId into traits, mirroring the v1 path.
-    if (get(message, MappedToDestinationKey)) {
-      addExternalIdToTraits(message);
-      adduserIdFromExternalId(message);
-    }
-    return removeUndefinedValues(buildEnvelope(message, this.destination)) as CustomerIOV2Payload;
+  private buildRecord(
+    context: RecordContext<CustomerIOConnection['config']>,
+    objectType: CustomerIORecordObject,
+  ): TransformedEvent<CustomerIOV2Payload> {
+    validateConfigFields(this.destination);
+    const body = buildRecordEvent(context, objectType);
+    this.assertObjectSize(body);
+    return { body, ...buildRequestMeta(this.destination) };
+  }
+
+  transformObjectRecord() {
+    const person = (ctx: RecordContext<CustomerIOConnection['config']>) =>
+      this.buildRecord(ctx, CUSTOMERIO_RECORD_OBJECTS.person);
+    const event = (ctx: RecordContext<CustomerIOConnection['config']>) =>
+      this.buildRecord(ctx, CUSTOMERIO_RECORD_OBJECTS.event);
+    return {
+      [CUSTOMERIO_RECORD_OBJECTS.person]: { insert: person, update: person, delete: person },
+      [CUSTOMERIO_RECORD_OBJECTS.event]: { insert: event, update: event },
+    };
   }
 
   transformEvent(input: CustomerIORouterRequest): TransformedEvent<CustomerIOV2Payload> {
     validateConfigFields(this.destination);
-    const body = this.buildBody(input.message);
+    const { message } = input;
+    if (get(message, MappedToDestinationKey)) {
+      addExternalIdToTraits(message);
+      adduserIdFromExternalId(message);
+    }
+    const body = removeUndefinedValues(
+      buildEnvelope(message, this.destination),
+    ) as CustomerIOV2Payload;
     this.assertObjectSize(body);
     return { body, ...buildRequestMeta(this.destination) };
   }

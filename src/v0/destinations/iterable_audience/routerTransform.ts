@@ -4,13 +4,12 @@ import {
   BatchDestination,
   ChunkBatchStrategy,
   type TransformedEvent,
+  type RecordContext,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
-import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { processAudienceRecord } from '../../util/audienceUtils';
 import {
-  ACTION_RECORD_MAP,
   DESTINATION_TYPE,
   MAX_BATCH_SIZE,
   getSubscribeEndpoint,
@@ -63,34 +62,25 @@ class IterableAudienceIntegration extends BatchDestination<
     return this.connection!.config.destination;
   }
 
-  transformEvent(
-    input: RouterTransformationRequestData,
+  private static readonly ACTION_MAP: Record<string, 'subscribe' | 'unsubscribe'> = {
+    insert: 'subscribe',
+    update: 'subscribe',
+    delete: 'unsubscribe',
+  };
+
+  transformRecord(
+    context: RecordContext<{ destination: IterableConnectionConfig }>,
   ): TransformedEvent<IterableAudiencePayload> {
-    const { message, metadata } = input;
-    const messageAction = (message as { action?: string }).action;
-    if (!messageAction) {
-      throw new InstrumentationError('record event is missing action');
-    }
-    const action = ACTION_RECORD_MAP[messageAction];
+    const { identifiers, action: rawAction } = context;
+    const action = IterableAudienceIntegration.ACTION_MAP[rawAction];
     if (!action) {
-      throw new InstrumentationError(`Unsupported record action: ${messageAction}`);
+      throw new InstrumentationError(`Unsupported record action: ${rawAction}`);
     }
 
-    const identifiers = (message as { identifiers?: Record<string, unknown> }).identifiers ?? {};
-
-    // `message.identifiers` already arrives keyed by the Iterable field
-    // (`email` / `userId`) — rudder-sources resolves the mapping upstream — so
-    // it is passed straight through. `processAudienceRecord` normalises +
-    // validates the `email`/`userId` fields per `IDENTIFIER_FIELD_CONFIG` and
-    // drops null/empty values; any other key passes through untouched and is
-    // then ignored by `selectIdentifierForRow`, which only reads email/userId.
-    // `config: { isHashRequired: false }` is required by the destructure even
-    // though no identifier field is hashable.
     const processed = processAudienceRecord(identifiers, {
       fieldConfigs: IDENTIFIER_FIELD_CONFIG,
       destination: {
-        workspaceId:
-          (metadata as { workspaceId?: string }).workspaceId ?? this.destination.WorkspaceID,
+        workspaceId: this.destination.WorkspaceID,
         id: this.destination.ID,
         type: DESTINATION_TYPE,
         config: { isHashRequired: false },

@@ -2,6 +2,8 @@
 // Shared types and utilities for the native batching framework
 // ---------------------------------------------------------------------------
 
+import type { Connection } from '../../../types/controlPlaneConfig';
+
 export type TransformedEvent<TBody extends Record<string, unknown> = Record<string, unknown>> = {
   body: TBody;
   endpoint: string;
@@ -43,6 +45,17 @@ export interface BatchStrategy<TBody extends Record<string, unknown> = Record<st
   bodyFormat: BodyFormat;
   batch(payloads: (TransformedEvent<TBody> & { jobId: number })[]): Promise<BatchGroup[]>;
 }
+
+// ---------------------------------------------------------------------------
+// Record event dispatch types
+// ---------------------------------------------------------------------------
+
+export type RecordContext<TConnectionConfig = Record<string, unknown>> = {
+  action: 'insert' | 'update' | 'delete';
+  objectType: string;
+  identifiers: Record<string, string | number>;
+  connection: Connection<TConnectionConfig>;
+};
 
 const SIZE_UNITS: Record<string, number> = {
   B: 1,

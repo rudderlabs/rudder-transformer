@@ -1,8 +1,9 @@
 import { ZodType } from 'zod';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { generateErrorObject } from '../../../v0/util';
-import type { BatchStrategy, TransformedEvent, TransformResult } from './types';
+import type { BatchStrategy, TransformedEvent, TransformResult, RecordContext } from './types';
 
 export type {
   TransformedEvent,
@@ -10,6 +11,7 @@ export type {
   TransformResult,
   BatchGroup,
   BatchStrategy,
+  RecordContext,
 } from './types';
 export { BodyFormat, parseSizeToBytes } from './types';
 export { ChunkBatchStrategy } from './chunkBatchStrategy';
@@ -48,16 +50,32 @@ export abstract class BatchDestination<
 
   // --- MUST implement ---
 
-  abstract transformEvent(
-    input: RouterTransformationRequestData,
-    reqMetadata?: NonNullable<unknown>,
-  ): TransformedEvent<TBody> | TransformedEvent<TBody>[];
-
   abstract getBatchStrategy(endpoint: string): BatchStrategy<TBody>;
 
   abstract getInputSchema(): ZodType;
 
   // --- MAY override ---
+
+  // --- Event-stream events (identify, track, page, screen, alias, group) ---
+  // Override in subclasses that handle event-stream events.
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  transformEvent(
+    input: RouterTransformationRequestData,
+    reqMetadata?: NonNullable<unknown>,
+  ): TransformedEvent<TBody> | TransformedEvent<TBody>[] {
+    throw new InstrumentationError('Event-stream events are not supported by this destination');
+  }
+  /* eslint-enable @typescript-eslint/no-unused-vars */
+
+  // --- Record events (insert, update, delete) ---
+  // Override in subclasses that handle record events.
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  transformRecord(
+    context: RecordContext<TConnectionConfig>,
+  ): TransformedEvent<TBody> | TransformedEvent<TBody>[] {
+    throw new InstrumentationError('Record events are not supported by this destination');
+  }
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   async transformEvents(
     inputs: RouterTransformationRequestData[],
@@ -69,7 +87,26 @@ export abstract class BatchDestination<
     for (const input of inputs) {
       const jobId = input.metadata?.jobId;
       try {
-        const transformedPayload = this.transformEvent(input, reqMetadata);
+        let transformedPayload: TransformedEvent<TBody> | TransformedEvent<TBody>[];
+
+        if (input.message?.type === 'record') {
+          const msg = input.message as unknown as {
+            action: string;
+            identifiers?: Record<string, string | number>;
+          };
+          const context: RecordContext<TConnectionConfig> = {
+            action: msg.action as RecordContext['action'],
+            objectType:
+              (input.connection?.config as Record<string, Record<string, string>>)?.destination
+                ?.object ?? '',
+            identifiers: msg.identifiers ?? {},
+            connection: input.connection as Connection<TConnectionConfig>,
+          };
+          transformedPayload = this.transformRecord(context);
+        } else {
+          transformedPayload = this.transformEvent(input, reqMetadata);
+        }
+
         const results = Array.isArray(transformedPayload)
           ? transformedPayload
           : [transformedPayload];

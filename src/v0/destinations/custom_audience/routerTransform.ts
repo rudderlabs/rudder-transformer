@@ -5,7 +5,10 @@ import {
   CustomBatchStrategy,
   TransformedEvent,
 } from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+import type {
+  BatchStrategy,
+  RecordContext,
+} from '../../../services/destination/nativeBatching/types';
 import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import { EVENT_TYPES } from '../../util/recordUtils';
@@ -18,12 +21,7 @@ import {
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import type {
-  Action,
-  CustomAudienceConnectionDestConfig,
-  CustomAudienceDestConfig,
-  CustomAudienceRouterRequest,
-} from './types';
+import type { Action, CustomAudienceConnectionDestConfig, CustomAudienceDestConfig } from './types';
 
 class CustomAudienceIntegration extends BatchDestination<
   Record<string, unknown>,
@@ -65,15 +63,21 @@ class CustomAudienceIntegration extends BatchDestination<
     ) as Partial<Record<Action, string>>;
   }
 
-  transformEvent(input: CustomAudienceRouterRequest): TransformedEvent<Record<string, unknown>> {
-    const { message } = input;
+  transformRecord(
+    context: RecordContext<{ destination: CustomAudienceConnectionDestConfig }>,
+  ): TransformedEvent<Record<string, unknown>> {
+    const { action: messageAction, identifiers } = context;
     const { action: resolvedAction, config: actionConfig } = lookupActionConfig(
-      message.action,
+      messageAction,
       this.destination.Config.actions,
     );
-    validateRequiredFields(message.action, message.identifiers!, actionConfig.fields);
+    validateRequiredFields(
+      messageAction,
+      identifiers as Record<string, unknown>,
+      actionConfig.fields,
+    );
     const fieldsWithCustomMappings = injectCustomMappings(
-      message.identifiers!,
+      identifiers as Record<string, unknown>,
       this.connectionConfig.customMappings,
     );
     const record = processFields(
@@ -89,7 +93,7 @@ class CustomAudienceIntegration extends BatchDestination<
 
     return {
       body: record,
-      endpoint: this.endpointByAction[message.action]!,
+      endpoint: this.endpointByAction[messageAction]!,
       // Use the action name rather than the full URL to keep metric cardinality low —
       // each destination instance has a unique endpoint, but actions are a fixed set.
       endpointPath: `/${resolvedAction}`,

@@ -1,19 +1,24 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
+import type { RecordContext } from '../../../../services/destination/nativeBatching/types';
 import { RECORD_ACTION_MAP, RECORD_IDENTIFIER_KEYS } from './config';
-import { CustomerIOV2Payload, type CustomerIOV2RecordMessage } from './types';
+import { CustomerIOV2Payload } from './types';
 import { toUnixSeconds } from './util';
-import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from '../types';
+import {
+  CUSTOMERIO_RECORD_OBJECTS,
+  type CustomerIORecordObject,
+  type CustomerIOConnection,
+} from '../types';
 import { EVENT_TYPES } from '../../../util/recordUtils';
 
 type RecordPayloadContext = {
-  rawIdentifiers: CustomerIOV2RecordMessage['identifiers'];
+  rawIdentifiers: Record<string, string | number>;
   identifierKey: string;
-  action: CustomerIOV2RecordMessage['action'];
+  action: 'insert' | 'update' | 'delete';
 };
 
 type RecordPayloadBuilder = {
-  getCIOAction: (action: CustomerIOV2RecordMessage['action']) => string;
-  validateAction?: (action: CustomerIOV2RecordMessage['action']) => void;
+  getCIOAction: (action: 'insert' | 'update' | 'delete') => string;
+  validateAction?: (action: 'insert' | 'update' | 'delete') => void;
   getAdditionalFields?: (context: RecordPayloadContext) => Partial<CustomerIOV2Payload>;
   getExcludedAttributeKeys?: () => string[];
 };
@@ -48,10 +53,10 @@ const recordPayloadBuilders: Record<CustomerIORecordObject, RecordPayloadBuilder
 };
 
 export const buildRecordEvent = (
-  message: CustomerIOV2RecordMessage,
+  context: RecordContext<CustomerIOConnection['config']>,
   connectionObject: CustomerIORecordObject,
 ): CustomerIOV2Payload => {
-  const { action, identifiers: rawIdentifiers = {} } = message;
+  const { action, identifiers: rawIdentifiers = {} } = context;
 
   if (!(action in RECORD_ACTION_MAP)) {
     throw new InstrumentationError(`Action "${action}" is not supported`);
@@ -64,10 +69,9 @@ export const buildRecordEvent = (
     (key) => typeof rawIdentifiers[key] === 'string' && (rawIdentifiers[key] as string).length > 0,
   ) as string;
 
-  const cioAction = builder.getCIOAction(action);
   const payload: CustomerIOV2Payload = {
     type: CUSTOMERIO_RECORD_OBJECTS.person,
-    action: cioAction,
+    action: builder.getCIOAction(action),
     identifiers: {
       [identifierKey]: rawIdentifiers[identifierKey] as string,
     },

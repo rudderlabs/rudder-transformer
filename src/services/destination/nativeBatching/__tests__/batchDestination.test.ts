@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
   TransformedEvent,
@@ -6,9 +7,10 @@ import {
   CustomBatchStrategy,
   parseSizeToBytes,
 } from '../batchDestination';
-import type { BatchStrategy } from '../batchDestination';
+import { VDMV2ObjectDestination } from '../vdmV2ObjectDestination';
+import type { BatchStrategy, RecordContext } from '../batchDestination';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
-import type { Destination } from '../../../../types/controlPlaneConfig';
+import type { Destination, Connection } from '../../../../types/controlPlaneConfig';
 import type { Metadata, RudderMessage } from '../../../../types/rudderEvents';
 
 // ---------------------------------------------------------------------------
@@ -79,6 +81,94 @@ class FailingIntegration extends BatchDestination<TestBody> {
   getInputSchema() {
     return z.object({}).passthrough();
   }
+}
+
+type TestConnectionConfig = { destination: { object: string } };
+
+class RecordIntegration extends VDMV2ObjectDestination<
+  TestBody,
+  Record<string, unknown>,
+  TestConnectionConfig
+> {
+  private upsertUser(context: RecordContext<TestConnectionConfig>): TransformedEvent<TestBody> {
+    return {
+      body: { value: `upsert:${context.objectType}` },
+      endpoint: 'https://api.test.com/records',
+      endpointPath: '/records',
+      method: 'POST',
+    };
+  }
+
+  private removeUser(context: RecordContext<TestConnectionConfig>): TransformedEvent<TestBody> {
+    return {
+      body: { value: `remove:${context.objectType}` },
+      endpoint: 'https://api.test.com/records',
+      endpointPath: '/records',
+      method: 'POST',
+    };
+  }
+
+  private createEvent(context: RecordContext<TestConnectionConfig>): TransformedEvent<TestBody> {
+    return {
+      body: { value: `create:${context.objectType}` },
+      endpoint: 'https://api.test.com/records',
+      endpointPath: '/records',
+      method: 'POST',
+    };
+  }
+
+  transformObjectRecord() {
+    return {
+      user: {
+        insert: (ctx: RecordContext<TestConnectionConfig>) => this.upsertUser(ctx),
+        update: (ctx: RecordContext<TestConnectionConfig>) => this.upsertUser(ctx),
+        delete: (ctx: RecordContext<TestConnectionConfig>) => this.removeUser(ctx),
+      },
+      event: {
+        insert: (ctx: RecordContext<TestConnectionConfig>) => this.createEvent(ctx),
+        update: (ctx: RecordContext<TestConnectionConfig>) => this.createEvent(ctx),
+        // delete not listed — framework rejects automatically
+      },
+    };
+  }
+
+  getBatchStrategy(): BatchStrategy<TestBody> {
+    return new ChunkBatchStrategy({ maxItems: 10, wrapBody: (bodies) => ({ records: bodies }) });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
+  }
+}
+
+const mockConnection: Connection<TestConnectionConfig> = {
+  sourceId: 'src-1',
+  destinationId: 'dest-1',
+  enabled: true,
+  config: { destination: { object: 'user' } },
+};
+
+function makeRecordInput(
+  jobId: number,
+  action: string,
+  identifiers: Record<string, string | number>,
+  connection?: Connection<TestConnectionConfig>,
+): RouterTransformationRequestData {
+  return {
+    message: { type: 'record', action, identifiers },
+    metadata: {
+      jobId,
+      workspaceId: 'ws-1',
+      sourceId: 'src-1',
+      sourceType: 'web',
+      sourceCategory: 'cloud',
+      destinationId: 'dest-1',
+      destinationType: 'TEST',
+      messageId: `msg-${jobId}`,
+    },
+    destination: mockDestination,
+    connection: connection ?? mockConnection,
+  } as RouterTransformationRequestData;
 }
 
 function makeInput(
@@ -187,5 +277,99 @@ describe('strategy classes', () => {
     expect(result).toHaveLength(1);
     expect(result[0].body).toEqual({ merged: true });
     expect(result[0].jobIds).toEqual(new Set([1, 2]));
+  });
+});
+
+describe('BatchDestination — record dispatch', () => {
+  it('dispatches record events to transformRecord via handler map', async () => {
+    const integration = new RecordIntegration(mockDestination, mockConnection);
+    const input = makeRecordInput(1, 'insert', { id: 'u1' });
+    const result = await integration.transformEvents([input]);
+    expect(result.successPayloads).toHaveLength(1);
+    expect(result.successPayloads[0].body.value).toBe('upsert:user');
+    expect(result.successPayloads[0].jobId).toBe(1);
+  });
+
+  it('dispatches event-stream events to transformEvent', async () => {
+    const integration = new RecordIntegration(mockDestination, mockConnection);
+    // RecordIntegration doesn't override transformEvent → default throws
+    const eventInput = makeInput(2, 'hello');
+    const result = await integration.transformEvents([eventInput]);
+    expect(result.errorPayloads).toHaveLength(1);
+    expect(result.errorPayloads[0].error).toContain('Event-stream events are not supported');
+  });
+
+  it('handles mixed record and event-stream inputs', async () => {
+    // Use TestIntegration which implements transformEvent but not transformRecord
+    const integration = new TestIntegration(mockDestination);
+    const eventInput = makeInput(1, 'hello');
+    const recordInput = makeRecordInput(2, 'insert', { id: 'u1' });
+    const result = await integration.transformEvents([eventInput, recordInput]);
+    expect(result.successPayloads).toHaveLength(1);
+    expect(result.successPayloads[0].body.value).toBe('hello');
+    expect(result.errorPayloads).toHaveLength(1);
+    expect(result.errorPayloads[0].error).toContain('Record events are not supported');
+  });
+
+  it('rejects unsupported action for object type', async () => {
+    const eventConn: Connection<TestConnectionConfig> = {
+      ...mockConnection,
+      config: { destination: { object: 'event' } },
+    };
+    const integration = new RecordIntegration(mockDestination, eventConn);
+    const input = makeRecordInput(1, 'delete', { id: 'u1' }, eventConn);
+    const result = await integration.transformEvents([input]);
+    expect(result.errorPayloads).toHaveLength(1);
+    expect(result.errorPayloads[0].error).toContain(
+      '"delete" is not supported for object type "event"',
+    );
+  });
+
+  it('rejects unsupported object type', async () => {
+    const badConn: Connection<TestConnectionConfig> = {
+      ...mockConnection,
+      config: { destination: { object: 'unknown_type' } },
+    };
+    const integration = new RecordIntegration(mockDestination, badConn);
+    const input = makeRecordInput(1, 'insert', { id: 'u1' }, badConn);
+    const result = await integration.transformEvents([input]);
+    expect(result.errorPayloads).toHaveLength(1);
+    expect(result.errorPayloads[0].error).toContain('Unsupported object type: "unknown_type"');
+  });
+
+  it('passes identifiers from message into RecordContext', async () => {
+    // Create an integration that echoes identifiers into the body for assertion
+    class EchoIntegration extends VDMV2ObjectDestination<
+      Record<string, unknown>,
+      Record<string, unknown>,
+      TestConnectionConfig
+    > {
+      transformObjectRecord() {
+        const handler = (context: RecordContext<TestConnectionConfig>) => ({
+          body: { ids: context.identifiers, action: context.action, obj: context.objectType },
+          endpoint: 'https://api.test.com',
+          endpointPath: '/test',
+          method: 'POST',
+        });
+        return {
+          user: { insert: handler, update: handler, delete: handler },
+        };
+      }
+      getBatchStrategy() {
+        return new ChunkBatchStrategy({ wrapBody: (b) => ({ batch: b }) });
+      }
+      getInputSchema() {
+        return z.object({}).passthrough();
+      }
+    }
+
+    const integration = new EchoIntegration(mockDestination, mockConnection);
+    const input = makeRecordInput(1, 'insert', { email: 'a@b.com', plan: 'pro' });
+    const result = await integration.transformEvents([input]);
+    expect(result.successPayloads[0].body).toEqual({
+      ids: { email: 'a@b.com', plan: 'pro' },
+      action: 'insert',
+      obj: 'user',
+    });
   });
 });

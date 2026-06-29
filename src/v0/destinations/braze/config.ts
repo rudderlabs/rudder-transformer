@@ -8,7 +8,49 @@ const ConfigCategory = {
   DEFAULT: {
     name: 'BrazeUserAttributesConfig',
   },
-};
+  // Recommended ecommerce events — per-event mappings powering the
+  // `useEcommerceRecommendedEvents` flag. The `brazeEvent` + `rsEvents` rows are
+  // the single source of truth for routing in ecommerceUtil.ts; adding a new
+  // event = one entry here + one JSON under `data/ecommerce/`.
+  BRAZE_PRODUCT_VIEWED: {
+    name: 'ecommerce/ProductViewed',
+    brazeEvent: 'ecommerce.product_viewed',
+    rsEvents: [{ name: 'product viewed' }],
+  },
+  BRAZE_CART_UPDATED: {
+    name: 'ecommerce/CartUpdated',
+    brazeEvent: 'ecommerce.cart_updated',
+    rsEvents: [
+      { name: 'product added', action: 'add' },
+      { name: 'product removed', action: 'remove' },
+    ],
+  },
+  BRAZE_CHECKOUT_STARTED: {
+    name: 'ecommerce/CheckoutStarted',
+    brazeEvent: 'ecommerce.checkout_started',
+    rsEvents: [{ name: 'checkout started' }],
+  },
+  BRAZE_ORDER_PLACED: {
+    name: 'ecommerce/OrderPlaced',
+    brazeEvent: 'ecommerce.order_placed',
+    rsEvents: [{ name: 'order completed' }],
+  },
+  BRAZE_ORDER_REFUNDED: {
+    name: 'ecommerce/OrderRefunded',
+    brazeEvent: 'ecommerce.order_refunded',
+    rsEvents: [{ name: 'order refunded' }],
+  },
+  BRAZE_ORDER_CANCELLED: {
+    name: 'ecommerce/OrderCancelled',
+    brazeEvent: 'ecommerce.order_cancelled',
+    rsEvents: [{ name: 'order cancelled' }],
+  },
+  // Shared per-product mapping for ecommerce events with a `products[]` array.
+  // No `brazeEvent` → not a top-level routed event.
+  BRAZE_ECOMMERCE_PRODUCT: {
+    name: 'ecommerce/Product',
+  },
+} as const;
 
 function getIdentifyEndpoint(baseEndpoint: string): BrazeEndpointDetails {
   return {

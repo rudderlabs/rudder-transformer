@@ -23,7 +23,8 @@ import {
 } from './config';
 import { CustomerIOV2Payload, CustomerIOV2Identifiers, CustomerIODestination } from './types';
 
-const toUnixSeconds = (v: unknown): number => Math.floor(new Date(v as string).getTime() / 1000);
+export const toUnixSeconds = (v: unknown): number =>
+  Math.floor(new Date(v as string).getTime() / 1000);
 
 const personIdentifiers = (message): CustomerIOV2Identifiers => {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');

@@ -4,6 +4,7 @@ export const batchedDestinationsMap: Record<string, true> = {
   POSTHOG: true,
   CUSTOM_AUDIENCE: true,
   ITERABLE_AUDIENCE: true,
+  TEST_DESTINATION: true, // dev-only fixture — see src/v0/destinations/test_destination/config.ts
 };
 
 // Per-destination env var: {DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS

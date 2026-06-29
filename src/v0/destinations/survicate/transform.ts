@@ -26,13 +26,13 @@ import {
 import { ENDPOINT_CONFIG, RESERVED_KEYS } from './config';
 import { RouterTransformationResponse } from '../../../types';
 
-function buildResponse(endpoint: EndpointEntry, apiKey: string, payload: SurvicatePayload) {
+function buildResponse(endpoint: EndpointEntry, destinationKey: string, payload: SurvicatePayload) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint.url;
   response.method = endpoint.method;
   response.headers = {
     'Content-Type': endpoint.contentType,
-    Authorization: `Bearer ${apiKey}`,
+    Authorization: `Bearer ${destinationKey}`,
   };
   response.body.JSON = payload;
   return response;
@@ -89,7 +89,7 @@ function validateSurvicateEvent(event: unknown): SurvicateRouterRequest {
  * @param destinationConfig - The destination configuration
  * @returns Formatted HTTP response
  */
-const processIdentifyEvent = (message: SurvicateIdentifyMessage, apiKey: string) => {
+const processIdentifyEvent = (message: SurvicateIdentifyMessage, destinationKey: string) => {
   // Build the payload - flatten traits and include context properties
   const payload: IdentifyPayload = {
     user_id: message.userId,
@@ -105,7 +105,7 @@ const processIdentifyEvent = (message: SurvicateIdentifyMessage, apiKey: string)
   const ctxIdentify = extractContext(message.context);
   if (ctxIdentify) payload.context = ctxIdentify;
 
-  return buildResponse(ENDPOINT_CONFIG.IDENTIFY, apiKey, payload);
+  return buildResponse(ENDPOINT_CONFIG.IDENTIFY, destinationKey, payload);
 };
 
 /**
@@ -118,7 +118,7 @@ const processIdentifyEvent = (message: SurvicateIdentifyMessage, apiKey: string)
  * @param destinationConfig - The destination configuration
  * @returns Formatted HTTP response
  */
-const processGroupEvent = (message: SurvicateGroupMessage, apiKey: string) => {
+const processGroupEvent = (message: SurvicateGroupMessage, destinationKey: string) => {
   const payload: GroupPayload = {
     user_id: message.userId,
     group_id: message.groupId,
@@ -134,7 +134,7 @@ const processGroupEvent = (message: SurvicateGroupMessage, apiKey: string) => {
   const ctxGroup = extractContext(message.context);
   if (ctxGroup) payload.context = ctxGroup;
 
-  return buildResponse(ENDPOINT_CONFIG.GROUP, apiKey, payload);
+  return buildResponse(ENDPOINT_CONFIG.GROUP, destinationKey, payload);
 };
 
 /**
@@ -147,7 +147,7 @@ const processGroupEvent = (message: SurvicateGroupMessage, apiKey: string) => {
  * @param destinationConfig - The destination configuration
  * @returns Formatted HTTP response
  */
-const processTrackEvent = (message: SurvicateTrackMessage, apiKey: string) => {
+const processTrackEvent = (message: SurvicateTrackMessage, destinationKey: string) => {
   // Build the payload using the utility function
   const payload: TrackPayload = {
     user_id: message.userId,
@@ -165,7 +165,7 @@ const processTrackEvent = (message: SurvicateTrackMessage, apiKey: string) => {
   const ctxTrack = extractContext(message.context);
   if (ctxTrack) payload.context = ctxTrack;
 
-  return buildResponse(ENDPOINT_CONFIG.TRACK, apiKey, payload);
+  return buildResponse(ENDPOINT_CONFIG.TRACK, destinationKey, payload);
 };
 
 /**
@@ -179,17 +179,17 @@ const processTrackEvent = (message: SurvicateTrackMessage, apiKey: string) => {
  */
 const processEvent = (event: SurvicateRouterRequest) => {
   const { message, destination } = event;
-  const { apiKey } = destination.Config;
+  const { destinationKey } = destination.Config;
 
   // Route based on message type. Unsupported types are already rejected by the
   // schema's discriminated union, so `message.type` is exhaustively narrowed here.
   switch (message.type) {
     case 'identify':
-      return processIdentifyEvent(message, apiKey);
+      return processIdentifyEvent(message, destinationKey);
     case 'group':
-      return processGroupEvent(message, apiKey);
+      return processGroupEvent(message, destinationKey);
     case 'track':
-      return processTrackEvent(message, apiKey);
+      return processTrackEvent(message, destinationKey);
     default:
       throw new InstrumentationError('Unsupported Survicate event type.');
   }

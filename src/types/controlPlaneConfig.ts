@@ -45,6 +45,7 @@ export type Destination<
   deliveryAccount?: DeliveryAccountT;
   deleteAccount?: DeleteAccountT;
   hasDynamicConfig?: boolean; // Flag indicating whether the destination config contains dynamic config patterns
+  version?: number; // integration major (mirrors Go DestinationT.Version). May be undefined; 0/undefined/1 all dispatch as v1.
 };
 
 export type DestinationConnectionConfig<T> = {

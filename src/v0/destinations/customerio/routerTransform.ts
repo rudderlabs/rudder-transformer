@@ -9,14 +9,17 @@ import {
 import { addExternalIdToTraits, adduserIdFromExternalId, removeUndefinedValues } from '../../util';
 import { MappedToDestinationKey } from '../../../constants';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import { customerIOInputSchema, CustomerIOV2Payload } from './v2/types';
-import type { RudderRecordV2 } from '../../../types/rudderEvents';
+import {
+  customerIOInputSchema,
+  CustomerIOV2Payload,
+  type CustomerIOV2RecordMessage,
+} from './v2/types';
 import { MAX_OBJECT_SIZE_BYTES, MAX_BATCH_PAYLOAD } from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
 import { buildEnvelope, buildRequestMeta } from './v2/util';
 
-function isRecordMessage(msg: { type: string }): msg is RudderRecordV2 {
+function isRecordMessage(msg: { type: string }): msg is CustomerIOV2RecordMessage {
   return msg.type === 'record';
 }
 
@@ -37,7 +40,8 @@ class CustomerIOIntegration extends BatchDestination<
     message: z.infer<typeof customerIOInputSchema>['message'],
   ): CustomerIOV2Payload {
     if (isRecordMessage(message)) {
-      return buildRecordEvent(message);
+      const connectionObject = this.connection!.config.destination.object;
+      return buildRecordEvent(message, connectionObject);
     }
     // For RETL/warehouse sources (mappedToDestination), derive userId from
     // context.externalId and fold externalId into traits, mirroring the v1 path.

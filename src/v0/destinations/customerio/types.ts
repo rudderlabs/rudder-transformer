@@ -32,9 +32,13 @@ export const CustomerIODestinationConfigSchema = z
 
 export type CustomerIODestinationConfig = z.infer<typeof CustomerIODestinationConfigSchema>;
 
+export const CustomerIORecordObjectSchema = z.enum(['person', 'event']);
+export const CUSTOMERIO_RECORD_OBJECTS = CustomerIORecordObjectSchema.enum;
+export type CustomerIORecordObject = z.infer<typeof CustomerIORecordObjectSchema>;
+
 export const CustomerIOConnectionConfigSchema = z
   .object({
-    object: z.string().optional(),
+    object: CustomerIORecordObjectSchema,
     syncMode: z.string().optional(),
     identifierMappings: z.array(z.object({ from: z.string(), to: z.string() })).optional(),
     fieldMappings: z.array(z.object({ from: z.string(), to: z.string() })).optional(),

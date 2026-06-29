@@ -7,9 +7,14 @@ export type ExtractDestinationConfig<T> = T extends { destination: { Config: inf
   ? C
   : Record<string, unknown>;
 
-/** Extract connection config type from a schema output. Falls back to Record<string, unknown>. */
-export type ExtractConnectionConfig<T> = 'connection' extends keyof T
-  ? T extends { connection: { config: infer C } }
+/**
+ * Extract connection config type from a schema output. Falls back to
+ * Record<string, unknown>. Handles both required and optional `connection`
+ * (destinations like CustomerIO mark it optional since event-stream messages
+ * carry no connection, while record events do).
+ */
+export type ExtractConnectionConfig<T> = T extends { connection?: infer Conn }
+  ? NonNullable<Conn> extends { config: infer C }
     ? C
     : Record<string, unknown>
   : Record<string, unknown>;

@@ -22,7 +22,10 @@ const baseConnection = {
   config: { destination: { object: 'person' } },
 } as CustomerIORouterRequest['connection'];
 
-const makeInput = (overrides: Record<string, unknown>): CustomerIORouterRequest =>
+const makeInput = (
+  overrides: Record<string, unknown>,
+  connection = baseConnection,
+): CustomerIORouterRequest =>
   ({
     message: {
       type: 'record' as const,
@@ -32,7 +35,7 @@ const makeInput = (overrides: Record<string, unknown>): CustomerIORouterRequest 
     },
     metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
     destination: baseDestination,
-    connection: baseConnection,
+    connection,
   }) as unknown as CustomerIORouterRequest;
 
 const eventConnection = {
@@ -86,17 +89,18 @@ describe('CustomerIOIntegration — record event routing', () => {
 
   it('transforms event object record into event person payload', async () => {
     const integration = new Integration(baseDestination, eventConnection);
-    const input = makeInput({
-      action: 'update',
-      identifiers: {
-        id: 'user-1',
-        name: 'Order Completed',
-        plan: 'pro',
-        created_at: '2024-06-25T14:00:00.000Z',
+    const input = makeInput(
+      {
+        action: 'update',
+        identifiers: {
+          id: 'user-1',
+          name: 'Order Completed',
+          plan: 'pro',
+          created_at: '2024-06-25T14:00:00.000Z',
+        },
       },
-    });
-    // makeInput uses baseConnection; override connection for event object
-    (input as any).connection = eventConnection;
+      eventConnection,
+    );
     const { successPayloads } = await integration.transformEvents([input]);
     expect(successPayloads).toHaveLength(1);
     expect(successPayloads[0].body).toEqual({
@@ -111,8 +115,7 @@ describe('CustomerIOIntegration — record event routing', () => {
 
   it('returns error payload for event object delete records', async () => {
     const integration = new Integration(baseDestination, eventConnection);
-    const input = makeInput({ action: 'delete' });
-    (input as any).connection = eventConnection;
+    const input = makeInput({ action: 'delete' }, eventConnection);
     const { successPayloads, errorPayloads } = await integration.transformEvents([input]);
     expect(successPayloads).toHaveLength(0);
     expect(errorPayloads).toHaveLength(1);

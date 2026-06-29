@@ -5,17 +5,14 @@ import {
   TransformedEvent,
   ChunkBatchStrategy,
 } from '../../../services/destination/nativeBatching/batchDestination';
-import { VDMV2ObjectDestination } from '../../../services/destination/nativeBatching/vdmV2ObjectDestination';
+import {
+  VDMV2ObjectDestination,
+  type RecordInput,
+} from '../../../services/destination/nativeBatching/vdmV2ObjectDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { addExternalIdToTraits, adduserIdFromExternalId, removeUndefinedValues } from '../../util';
 import { MappedToDestinationKey } from '../../../constants';
-import {
-  getV2InputSchema,
-  CustomerIOV2Payload,
-  CustomerIODestinationConfig,
-  type CustomerIOV2RecordMessage,
-} from './v2/types';
+import { getV2InputSchema, CustomerIOV2Payload, CustomerIODestinationConfig } from './v2/types';
 import { MAX_OBJECT_SIZE_BYTES, MAX_BATCH_PAYLOAD } from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
@@ -26,10 +23,6 @@ import {
   CUSTOMERIO_RECORD_OBJECTS,
   type CustomerIORecordObject,
 } from './types';
-
-function isRecordMessage(msg: { type: string }): msg is CustomerIOV2RecordMessage {
-  return msg.type === 'record';
-}
 
 class CustomerIOIntegration extends VDMV2ObjectDestination<
   CustomerIOV2Payload,
@@ -46,23 +39,18 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
   }
 
   private buildRecord(
-    input: RouterTransformationRequestData,
+    input: RecordInput,
     objectType: CustomerIORecordObject,
   ): TransformedEvent<CustomerIOV2Payload> {
     validateConfigFields(this.destination);
-    if (!isRecordMessage(input.message)) {
-      throw new InstrumentationError('Expected record message');
-    }
     const body = buildRecordEvent(input.message, objectType);
     this.assertObjectSize(body);
     return { body, ...buildRequestMeta(this.destination) };
   }
 
-  transformObjectRecord() {
-    const person = (input: RouterTransformationRequestData) =>
-      this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.person);
-    const event = (input: RouterTransformationRequestData) =>
-      this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.event);
+  transformObjectRecord(input: RecordInput) {
+    const person = () => this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.person);
+    const event = () => this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.event);
     return {
       [CUSTOMERIO_RECORD_OBJECTS.person]: { insert: person, update: person, delete: person },
       [CUSTOMERIO_RECORD_OBJECTS.event]: { insert: event, update: event },

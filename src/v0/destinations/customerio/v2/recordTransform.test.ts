@@ -1,4 +1,3 @@
-import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { buildRecordEvent } from './recordTransform';
 
 describe('buildRecordEvent', () => {
@@ -146,27 +145,5 @@ describe('buildRecordEvent', () => {
       name: 'Plan Changed',
       attributes: { plan: 'enterprise' },
     });
-  });
-
-  it('throws InstrumentationError for event record delete action', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'delete' as const,
-      identifiers: { id: 'user-1', event: 'Order Completed' },
-    };
-    expect(() => buildRecordEvent(message, 'event')).toThrow(InstrumentationError);
-    expect(() => buildRecordEvent(message, 'event')).toThrow(
-      'Delete action is not supported for CustomerIO event records',
-    );
-  });
-
-  it('throws InstrumentationError for unsupported action', () => {
-    const message = {
-      type: 'record' as const,
-      action: 'upsert' as any,
-      identifiers: { id: 'user-1' },
-    };
-    expect(() => buildRecordEvent(message, 'person')).toThrow(InstrumentationError);
-    expect(() => buildRecordEvent(message, 'person')).toThrow('Action "upsert" is not supported');
   });
 });

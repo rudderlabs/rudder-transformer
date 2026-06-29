@@ -7,7 +7,7 @@ import {
   CustomBatchStrategy,
   parseSizeToBytes,
 } from '../batchDestination';
-import { VDMV2ObjectDestination } from '../vdmV2ObjectDestination';
+import { VDMV2ObjectDestination, type RecordInput } from '../vdmV2ObjectDestination';
 import type { BatchStrategy } from '../batchDestination';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Destination, Connection } from '../../../../types/controlPlaneConfig';
@@ -117,7 +117,7 @@ class RecordIntegration extends VDMV2ObjectDestination<
     };
   }
 
-  transformObjectRecord() {
+  transformObjectRecord(_input: RecordInput) {
     return {
       user: {
         insert: () => this.upsertUser(),
@@ -332,19 +332,13 @@ describe('VDMV2ObjectDestination — record dispatch', () => {
       Record<string, unknown>,
       TestConnectionConfig
     > {
-      transformObjectRecord() {
-        const handler = (input: RouterTransformationRequestData) => {
-          const msg = input.message as unknown as {
-            action: string;
-            identifiers: Record<string, unknown>;
-          };
-          return {
-            body: { ids: msg.identifiers, action: msg.action },
-            endpoint: 'https://api.test.com',
-            endpointPath: '/test',
-            method: 'POST',
-          };
-        };
+      transformObjectRecord(input: RecordInput) {
+        const handler = () => ({
+          body: { ids: input.message.identifiers, action: input.message.action },
+          endpoint: 'https://api.test.com',
+          endpointPath: '/test',
+          method: 'POST',
+        });
         return {
           user: { insert: handler, update: handler, delete: handler },
         };

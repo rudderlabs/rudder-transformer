@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
   TransformedEvent,
@@ -6,9 +7,10 @@ import {
   CustomBatchStrategy,
   parseSizeToBytes,
 } from '../batchDestination';
+import { VDMV2ObjectDestination } from '../vdmV2ObjectDestination';
 import type { BatchStrategy } from '../batchDestination';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
-import type { Destination } from '../../../../types/controlPlaneConfig';
+import type { Destination, Connection } from '../../../../types/controlPlaneConfig';
 import type { Metadata, RudderMessage } from '../../../../types/rudderEvents';
 
 // ---------------------------------------------------------------------------
@@ -79,6 +81,94 @@ class FailingIntegration extends BatchDestination<TestBody> {
   getInputSchema() {
     return z.object({}).passthrough();
   }
+}
+
+type TestConnectionConfig = { destination: { object: string } };
+
+class RecordIntegration extends VDMV2ObjectDestination<
+  TestBody,
+  Record<string, unknown>,
+  TestConnectionConfig
+> {
+  private upsertUser(): TransformedEvent<TestBody> {
+    return {
+      body: { value: 'upsert:user' },
+      endpoint: 'https://api.test.com/records',
+      endpointPath: '/records',
+      method: 'POST',
+    };
+  }
+
+  private removeUser(): TransformedEvent<TestBody> {
+    return {
+      body: { value: 'remove:user' },
+      endpoint: 'https://api.test.com/records',
+      endpointPath: '/records',
+      method: 'POST',
+    };
+  }
+
+  private createEvent(): TransformedEvent<TestBody> {
+    return {
+      body: { value: 'create:event' },
+      endpoint: 'https://api.test.com/records',
+      endpointPath: '/records',
+      method: 'POST',
+    };
+  }
+
+  transformObjectRecord() {
+    return {
+      user: {
+        insert: () => this.upsertUser(),
+        update: () => this.upsertUser(),
+        delete: () => this.removeUser(),
+      },
+      event: {
+        insert: () => this.createEvent(),
+        update: () => this.createEvent(),
+        // delete not listed — framework rejects automatically
+      },
+    };
+  }
+
+  getBatchStrategy(): BatchStrategy<TestBody> {
+    return new ChunkBatchStrategy({ maxItems: 10, wrapBody: (bodies) => ({ records: bodies }) });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
+  }
+}
+
+const mockConnection: Connection<TestConnectionConfig> = {
+  sourceId: 'src-1',
+  destinationId: 'dest-1',
+  enabled: true,
+  config: { destination: { object: 'user' } },
+};
+
+function makeRecordInput(
+  jobId: number,
+  action: string,
+  identifiers: Record<string, string | number>,
+  connection?: Connection<TestConnectionConfig>,
+): RouterTransformationRequestData {
+  return {
+    message: { type: 'record', action, identifiers },
+    metadata: {
+      jobId,
+      workspaceId: 'ws-1',
+      sourceId: 'src-1',
+      sourceType: 'web',
+      sourceCategory: 'cloud',
+      destinationId: 'dest-1',
+      destinationType: 'TEST',
+      messageId: `msg-${jobId}`,
+    },
+    destination: mockDestination,
+    connection: connection ?? mockConnection,
+  } as RouterTransformationRequestData;
 }
 
 function makeInput(
@@ -187,5 +277,92 @@ describe('strategy classes', () => {
     expect(result).toHaveLength(1);
     expect(result[0].body).toEqual({ merged: true });
     expect(result[0].jobIds).toEqual(new Set([1, 2]));
+  });
+});
+
+describe('VDMV2ObjectDestination — record dispatch', () => {
+  it('dispatches record events via handler map', async () => {
+    const integration = new RecordIntegration(mockDestination, mockConnection);
+    const input = makeRecordInput(1, 'insert', { id: 'u1' });
+    const result = await integration.transformEvents([input]);
+    expect(result.successPayloads).toHaveLength(1);
+    expect(result.successPayloads[0].body.value).toBe('upsert:user');
+    expect(result.successPayloads[0].jobId).toBe(1);
+  });
+
+  it('falls through to transformStreamEvent for event-stream events', async () => {
+    const integration = new RecordIntegration(mockDestination, mockConnection);
+    // RecordIntegration doesn't override transformStreamEvent → default throws
+    const eventInput = makeInput(2, 'hello');
+    const result = await integration.transformEvents([eventInput]);
+    expect(result.errorPayloads).toHaveLength(1);
+    expect(result.errorPayloads[0].error).toContain('Event-stream events are not supported');
+  });
+
+  it('rejects unsupported action for object type', async () => {
+    const eventConn: Connection<TestConnectionConfig> = {
+      ...mockConnection,
+      config: { destination: { object: 'event' } },
+    };
+    const integration = new RecordIntegration(mockDestination, eventConn);
+    const input = makeRecordInput(1, 'delete', { id: 'u1' }, eventConn);
+    const result = await integration.transformEvents([input]);
+    expect(result.errorPayloads).toHaveLength(1);
+    expect(result.errorPayloads[0].error).toContain(
+      '"delete" is not supported for object type "event"',
+    );
+  });
+
+  it('rejects unsupported object type', async () => {
+    const badConn: Connection<TestConnectionConfig> = {
+      ...mockConnection,
+      config: { destination: { object: 'unknown_type' } },
+    };
+    const integration = new RecordIntegration(mockDestination, badConn);
+    const input = makeRecordInput(1, 'insert', { id: 'u1' }, badConn);
+    const result = await integration.transformEvents([input]);
+    expect(result.errorPayloads).toHaveLength(1);
+    expect(result.errorPayloads[0].error).toContain('Unsupported object type: "unknown_type"');
+  });
+
+  it('passes standard input to handler', async () => {
+    // Create an integration that echoes message fields into the body for assertion
+    class EchoIntegration extends VDMV2ObjectDestination<
+      Record<string, unknown>,
+      Record<string, unknown>,
+      TestConnectionConfig
+    > {
+      transformObjectRecord() {
+        const handler = (input: RouterTransformationRequestData) => {
+          const msg = input.message as unknown as {
+            action: string;
+            identifiers: Record<string, unknown>;
+          };
+          return {
+            body: { ids: msg.identifiers, action: msg.action },
+            endpoint: 'https://api.test.com',
+            endpointPath: '/test',
+            method: 'POST',
+          };
+        };
+        return {
+          user: { insert: handler, update: handler, delete: handler },
+        };
+      }
+      getBatchStrategy() {
+        return new ChunkBatchStrategy({ wrapBody: (b) => ({ batch: b }) });
+      }
+      getInputSchema() {
+        return z.object({}).passthrough();
+      }
+    }
+
+    const integration = new EchoIntegration(mockDestination, mockConnection);
+    const input = makeRecordInput(1, 'insert', { email: 'a@b.com', plan: 'pro' });
+    const result = await integration.transformEvents([input]);
+    expect(result.successPayloads[0].body).toEqual({
+      ids: { email: 'a@b.com', plan: 'pro' },
+      action: 'insert',
+    });
   });
 });

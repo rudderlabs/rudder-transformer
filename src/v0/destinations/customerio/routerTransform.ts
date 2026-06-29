@@ -2,13 +2,14 @@ import { ZodType } from 'zod';
 import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  BatchDestination,
   TransformedEvent,
   ChunkBatchStrategy,
 } from '../../../services/destination/nativeBatching/batchDestination';
+import { VDMV2ObjectDestination } from '../../../services/destination/nativeBatching/vdmV2ObjectDestination';
+import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { addExternalIdToTraits, adduserIdFromExternalId, removeUndefinedValues } from '../../util';
 import { MappedToDestinationKey } from '../../../constants';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import {
   getV2InputSchema,
   CustomerIOV2Payload,
@@ -19,13 +20,18 @@ import { MAX_OBJECT_SIZE_BYTES, MAX_BATCH_PAYLOAD } from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
 import { buildEnvelope, buildRequestMeta } from './v2/util';
-import { CustomerIORouterRequest, CustomerIOConnection } from './types';
+import {
+  CustomerIORouterRequest,
+  CustomerIOConnection,
+  CUSTOMERIO_RECORD_OBJECTS,
+  type CustomerIORecordObject,
+} from './types';
 
 function isRecordMessage(msg: { type: string }): msg is CustomerIOV2RecordMessage {
   return msg.type === 'record';
 }
 
-class CustomerIOIntegration extends BatchDestination<
+class CustomerIOIntegration extends VDMV2ObjectDestination<
   CustomerIOV2Payload,
   CustomerIODestinationConfig,
   CustomerIOConnection['config']
@@ -39,23 +45,40 @@ class CustomerIOIntegration extends BatchDestination<
     }
   }
 
-  private buildBody(message: CustomerIORouterRequest['message']): CustomerIOV2Payload {
-    if (isRecordMessage(message)) {
-      const connectionObject = this.connection!.config.destination.object;
-      return buildRecordEvent(message, connectionObject);
+  private buildRecord(
+    input: RouterTransformationRequestData,
+    objectType: CustomerIORecordObject,
+  ): TransformedEvent<CustomerIOV2Payload> {
+    validateConfigFields(this.destination);
+    if (!isRecordMessage(input.message)) {
+      throw new InstrumentationError('Expected record message');
     }
-    // For RETL/warehouse sources (mappedToDestination), derive userId from
-    // context.externalId and fold externalId into traits, mirroring the v1 path.
+    const body = buildRecordEvent(input.message, objectType);
+    this.assertObjectSize(body);
+    return { body, ...buildRequestMeta(this.destination) };
+  }
+
+  transformObjectRecord() {
+    const person = (input: RouterTransformationRequestData) =>
+      this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.person);
+    const event = (input: RouterTransformationRequestData) =>
+      this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.event);
+    return {
+      [CUSTOMERIO_RECORD_OBJECTS.person]: { insert: person, update: person, delete: person },
+      [CUSTOMERIO_RECORD_OBJECTS.event]: { insert: event, update: event },
+    };
+  }
+
+  transformEventStream(input: CustomerIORouterRequest): TransformedEvent<CustomerIOV2Payload> {
+    validateConfigFields(this.destination);
+    const { message } = input;
     if (get(message, MappedToDestinationKey)) {
       addExternalIdToTraits(message);
       adduserIdFromExternalId(message);
     }
-    return removeUndefinedValues(buildEnvelope(message, this.destination)) as CustomerIOV2Payload;
-  }
-
-  transformEvent(input: CustomerIORouterRequest): TransformedEvent<CustomerIOV2Payload> {
-    validateConfigFields(this.destination);
-    const body = this.buildBody(input.message);
+    const body = removeUndefinedValues(
+      buildEnvelope(message, this.destination),
+    ) as CustomerIOV2Payload;
     this.assertObjectSize(body);
     return { body, ...buildRequestMeta(this.destination) };
   }

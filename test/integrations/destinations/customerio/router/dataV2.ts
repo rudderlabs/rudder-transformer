@@ -2232,7 +2232,7 @@ export const dataV2 = [
               statTags: {
                 destType: 'CUSTOMERIO',
                 errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
+                errorType: 'configuration',
                 feature: 'router',
                 implementation: 'native',
                 module: 'destination',

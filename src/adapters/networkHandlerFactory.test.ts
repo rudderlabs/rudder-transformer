@@ -26,8 +26,30 @@ describe('Network Handler Tests', () => {
     expect(networkHandler).toEqual(new brazeProxy());
   });
 
-  it('Should return generic handler', () => {
-    const { networkHandler } = getNetworkHandler('abc', 'v1');
-    expect(networkHandler).toEqual(new GenericNetworkHandler());
+  it('Should use exact destination networkhandler for aliases with their own handler', () => {
+    const { networkHandler } = getNetworkHandler('salesforce_oauth', 'v0');
+    const salesforceOAuthProxy =
+      require('../v0/destinations/salesforce_oauth/networkHandler').networkHandler;
+    expect(networkHandler).toEqual(new salesforceOAuthProxy());
+  });
+
+  it('Should not route network handlers through transform aliases', () => {
+    const { networkHandler } = getNetworkHandler('ga360', 'v0');
+    expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
+  });
+
+  it('Should keep network handler lookup case-sensitive', () => {
+    const { networkHandler } = getNetworkHandler('BRAZE', 'v0');
+    expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
+  });
+
+  it('Should return generic handler for a valid destination without a custom handler', () => {
+    const { networkHandler } = getNetworkHandler('am', 'v1');
+    expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
+  });
+
+  it('Should return generic handler for invalid raw lookup keys', () => {
+    const { networkHandler } = getNetworkHandler('../abc', 'v1');
+    expect(networkHandler.constructor.name).toEqual(GenericNetworkHandler.name);
   });
 });

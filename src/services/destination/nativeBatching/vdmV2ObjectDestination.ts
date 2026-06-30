@@ -81,7 +81,7 @@ export abstract class VDMV2ObjectDestination<
       return handler();
     }
 
-    const messageType = input.message?.type as string | undefined;
+    const messageType = (input.message?.type as string | undefined)?.toLowerCase();
     if (!messageType) {
       throw new ConfigurationError('Missing message type');
     }

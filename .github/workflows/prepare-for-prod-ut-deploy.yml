@@ -278,7 +278,6 @@ jobs:
 
     env:
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
       # Single rolling branch so the same devops PR is reused (and updated) every release.
       BRANCH: dedicated-user-transformer-upgrade
     outputs:
@@ -378,7 +377,7 @@ jobs:
         with:
           repository: rudderlabs/rudder-devops
           branch-name: ${{ env.BRANCH }}
-          commit-message: 'chore: upgrade dedicated user transformers to ${{ env.TAG_NAME }}'
+          commit-message: 'chore: upgrade dedicated user transformers to ${{ env.UT_TAG_NAME }}'
           files: ${{ steps.collect-dedicated-files.outputs.files }}
 
       - name: Create or update PR for dedicated user-transformers
@@ -386,8 +385,8 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-          PR_TITLE: "chore: upgrade dedicated user transformers to ${{ env.TAG_NAME }}"
-          PR_BODY: "Automated PR to update dedicated user transformer default version to ${{ env.TAG_NAME }}"
+          PR_TITLE: "chore: upgrade dedicated user transformers to ${{ env.UT_TAG_NAME }}"
+          PR_BODY: "Automated PR to update dedicated user transformer default version to ${{ env.UT_TAG_NAME }}"
         run: |
           # Reuse the open PR for the rolling branch if one exists; otherwise create it.
           PR_NUMBER=$(gh pr list --repo rudderlabs/rudder-devops --head "$BRANCH" --state open --json number --jq '.[0].number // empty')

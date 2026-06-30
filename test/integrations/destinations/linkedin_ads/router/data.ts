@@ -417,7 +417,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
-                  'LinkedIn-Version': '202509',
+                  'LinkedIn-Version': '202511',
                   Authorization: defaultAccessTokenAuthHeader,
                 },
                 params: {},

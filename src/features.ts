@@ -100,6 +100,8 @@ export const destinationCapabilities: Record<string, DestinationCapabilities> = 
   custom_audience: { routerTransform: true, batching: true },
   iterable_audience: { routerTransform: true, batching: true },
   survicate: { routerTransform: true },
+  // dev-only fixture — see src/v0/destinations/test_destination/config.ts
+  test_destination: { routerTransform: true, batching: true },
   af: { regulations: true },
   engage: { regulations: true },
   sprig: { regulations: true, cdkV2: true },

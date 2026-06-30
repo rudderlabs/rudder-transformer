@@ -7,10 +7,12 @@
 
 import { z } from 'zod';
 import {
+  Connection,
   Destination,
   Metadata,
   RouterTransformationRequestData,
   RudderMessage,
+  RudderRecordV2,
 } from '../../../types';
 import { BatchedRequest, BatchRequestOutput } from '../../../types/destinationTransformation';
 
@@ -30,13 +32,33 @@ export const CustomerIODestinationConfigSchema = z
 
 export type CustomerIODestinationConfig = z.infer<typeof CustomerIODestinationConfigSchema>;
 
+export const CustomerIORecordObjectSchema = z.enum(['person', 'event']);
+export const CUSTOMERIO_RECORD_OBJECTS = CustomerIORecordObjectSchema.enum;
+export type CustomerIORecordObject = z.infer<typeof CustomerIORecordObjectSchema>;
+
+export const CustomerIOConnectionConfigSchema = z
+  .object({
+    object: CustomerIORecordObjectSchema,
+    syncMode: z.string().optional(),
+    identifierMappings: z.array(z.object({ from: z.string(), to: z.string() })).optional(),
+    fieldMappings: z.array(z.object({ from: z.string(), to: z.string() })).optional(),
+  })
+  .passthrough();
+
+export type CustomerIOConnectionConfig = z.infer<typeof CustomerIOConnectionConfigSchema>;
+
 // ==================== Destination-Specific Types ====================
 
 export type CustomerIODestination = Destination<CustomerIODestinationConfig>;
 
+export type CustomerIOConnection = Connection<{
+  destination: CustomerIOConnectionConfig;
+}>;
+
 export type CustomerIORouterRequest = RouterTransformationRequestData<
-  RudderMessage,
-  CustomerIODestination
+  RudderMessage | RudderRecordV2,
+  CustomerIODestination,
+  CustomerIOConnection
 >;
 
 // ==================== API Request Types ====================

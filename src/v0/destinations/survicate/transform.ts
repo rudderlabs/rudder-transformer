@@ -26,13 +26,13 @@ import {
 import { ENDPOINT_CONFIG, RESERVED_KEYS } from './config';
 import { RouterTransformationResponse } from '../../../types';
 
-function buildResponse(endpoint: EndpointEntry, apiKey: string, payload: SurvicatePayload) {
+function buildResponse(endpoint: EndpointEntry, destinationKey: string, payload: SurvicatePayload) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint.url;
   response.method = endpoint.method;
   response.headers = {
     'Content-Type': endpoint.contentType,
-    Authorization: `Bearer ${apiKey}`,
+    Authorization: `Bearer ${destinationKey}`,
   };
   response.body.JSON = payload;
   return response;

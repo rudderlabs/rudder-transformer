@@ -9,7 +9,6 @@ import {
   ERR_MISSING_GROUP_ID,
   ERR_MISSING_EVENT,
 } from './config';
-import { MetadataSchema } from '../../../types/rudderEvents';
 
 export type EndpointEntry = (typeof ENDPOINT_CONFIG)[keyof typeof ENDPOINT_CONFIG];
 
@@ -100,7 +99,7 @@ export type SurvicateTrackMessage = Extract<SurvicateMessage, { type: 'track' }>
 export const SurvicateRouterRequestSchema = z.object({
   message: SurvicateMessageSchema,
   destination: SurvicateDestinationSchema,
-  metadata: MetadataSchema,
+  metadata: z.unknown(),
 });
 
 export type SurvicateRouterRequest = z.infer<typeof SurvicateRouterRequestSchema>;

@@ -1,16 +1,8 @@
 import { FetchHandler } from '../fetchHandlers';
 import { MiscService } from '../../services/misc';
 
-beforeEach(() => {
-  FetchHandler['sourceHandlerMap'].clear();
-  FetchHandler['sourceHydrateHandlerMap'].clear();
-  FetchHandler['destHandlerMap'].clear();
-  FetchHandler['deletionHandlerMap'].clear();
-  FetchHandler['batchDestinationHandlerMap'].clear();
-});
-
 afterEach(() => {
-  jest.restoreAllMocks();
+  jest.clearAllMocks();
 });
 
 describe('FetchHandlers Service', () => {
@@ -19,9 +11,15 @@ describe('FetchHandlers Service', () => {
     const source = 'source';
     const version = 'version';
 
-    jest.spyOn(MiscService, 'getDestHandler').mockReturnValue({});
-    jest.spyOn(MiscService, 'getSourceHandler').mockReturnValue({});
-    jest.spyOn(MiscService, 'getDeletionHandler').mockReturnValue({});
+    MiscService.getDestHandler = jest.fn().mockImplementation((dest, version) => {
+      return {};
+    });
+    MiscService.getSourceHandler = jest.fn().mockImplementation((source) => {
+      return {};
+    });
+    MiscService.getDeletionHandler = jest.fn().mockImplementation((source, version) => {
+      return {};
+    });
 
     expect(FetchHandler['sourceHandlerMap'].get(source)).toBeUndefined();
     FetchHandler.getSourceHandler(source);
@@ -36,29 +34,15 @@ describe('FetchHandlers Service', () => {
     expect(FetchHandler['deletionHandlerMap'].get(dest)).toBeDefined();
   });
 
-  test('should delegate destination validation to MiscService read sites', async () => {
-    const error = new Error('read-site validation');
-    const getDestHandlerSpy = jest.spyOn(MiscService, 'getDestHandler').mockImplementation(() => {
-      throw error;
-    });
-    const getDeletionHandlerSpy = jest
-      .spyOn(MiscService, 'getDeletionHandler')
-      .mockImplementation(() => {
-        throw error;
-      });
-    const getBatchDestinationHandlerSpy = jest
-      .spyOn(MiscService, 'getBatchDestinationHandler')
-      .mockImplementation(() => {
-        throw error;
-      });
-
-    expect(() => FetchHandler.getDestHandler('../dest', 'v0')).toThrow(error);
-    expect(getDestHandlerSpy).toHaveBeenCalledWith('../dest', 'v0');
-
-    expect(() => FetchHandler.getDeletionHandler('../dest', 'v0')).toThrow(error);
-    expect(getDeletionHandlerSpy).toHaveBeenCalledWith('../dest', 'v0');
-
-    expect(() => FetchHandler.getBatchDestinationHandler('../dest')).toThrow(error);
-    expect(getBatchDestinationHandlerSpy).toHaveBeenCalledWith('../dest');
+  test('should reject invalid destination handler names', async () => {
+    expect(() => FetchHandler.getDestHandler('../dest', 'v0')).toThrow(
+      'Invalid destination: ../dest',
+    );
+    expect(() => FetchHandler.getDeletionHandler('../dest', 'v0')).toThrow(
+      'Invalid destination: ../dest',
+    );
+    expect(() => FetchHandler.getBatchDestinationHandler('../dest')).toThrow(
+      'Invalid destination: ../dest',
+    );
   });
 });

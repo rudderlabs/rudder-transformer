@@ -5,7 +5,7 @@ import {
   getRouterTransformDestinations,
   isDestinationCdkV2Enabled,
 } from './features';
-import { isValidDestination } from './middlewares/destinationValidation';
+import { isValidDestination } from './constants/destinationCanonicalNames';
 
 describe('features destination capabilities', () => {
   it('derives legacy capability outputs from the consolidated map', () => {
@@ -13,7 +13,6 @@ describe('features destination capabilities', () => {
       SALESFORCE_OAUTH: true,
       SALESFORCE_OAUTH_SANDBOX: true,
       CUSTOM_AUDIENCE: true,
-      SURVICATE: true,
     });
     expect(getRegulationDestinations()).toEqual(
       expect.arrayContaining(['BRAZE', 'AM', 'INTERCOM', 'CLEVERTAP']),
@@ -22,6 +21,7 @@ describe('features destination capabilities', () => {
       POSTHOG: true,
       CUSTOM_AUDIENCE: true,
       ITERABLE_AUDIENCE: true,
+      TEST_DESTINATION: true,
     });
   });
 

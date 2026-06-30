@@ -193,7 +193,6 @@ const processRouterDest = (inputs, reqMetadata) => {
           destination,
         });
       } else {
-        // if not transformed
         const transformedPayload = {
           message: process(event),
           metadata: event.metadata,

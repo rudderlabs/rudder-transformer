@@ -286,6 +286,23 @@ const responseStatusHandler = (status, entity, id, url) => {
 };
 
 const getIntegrationVersion = () => 'v0';
+
+/**
+ * Resolves the integration major (the destination definition version) to dispatch on, normalized
+ * for both branching and metrics. The control plane carries the major as `destination.version` on
+ * the transform/router routes and as a top-level `destinationVersion` on the proxy route; it sends
+ * `0` when the workspace config has no version stamped, and the field is absent on payloads that
+ * don't carry it. `0`, `undefined`, and any non-numeric value all normalize to `1` (the implicit
+ * first major), and a fractional value is truncated toward zero to a whole major — the result is
+ * always an integer `>= 1`, so dashboards never see a bogus `destVersion=0` or a non-integer major.
+ * @param {number} [version] raw destination.version / destinationVersion off the payload
+ * @returns {number} the integration major, an integer always >= 1
+ */
+const getDestinationVersion = (version) => {
+  const major = Math.trunc(Number(version));
+  return major >= 1 ? major : 1;
+};
+
 const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
   const vTags = {
     'Unplanned-Event': 0,
@@ -400,6 +417,7 @@ module.exports = {
   RetryRequestError,
   responseStatusHandler,
   getIntegrationVersion,
+  getDestinationVersion,
   constructValidationErrors,
   sendViolationMetrics,
   logProcessInfo,

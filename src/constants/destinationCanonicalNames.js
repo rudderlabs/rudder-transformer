@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const DestHandlerMap = {
   ga360: 'ga',
   salesforce_oauth: 'salesforce',
@@ -197,8 +200,95 @@ const DestCanonicalNames = {
   singular: ['Singular'],
 };
 
+const repoRoot = path.resolve(__dirname, '..');
+const destinationRoots = [
+  path.join(repoRoot, 'v0', 'destinations'),
+  path.join(repoRoot, 'v1', 'destinations'),
+  path.join(repoRoot, 'cdk', 'v2', 'destinations'),
+];
+
+const normalizeDestinationName = (destination) => destination.trim().toLowerCase();
+
+const getDestinationDirectories = () =>
+  destinationRoots.flatMap((destinationRoot) => {
+    try {
+      return fs
+        .readdirSync(destinationRoot, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name);
+    } catch {
+      return [];
+    }
+  });
+
+const destinationRegistry = Object.create(null);
+
+const hasDestination = (destination) =>
+  Object.prototype.hasOwnProperty.call(destinationRegistry, destination);
+
+const buildDestinationEntry = (key) => ({
+  name: key,
+  aliases: [],
+});
+
+getDestinationDirectories().forEach((destination) => {
+  const key = normalizeDestinationName(destination);
+  destinationRegistry[key] = destinationRegistry[key] || buildDestinationEntry(key);
+});
+
+Object.entries(DestHandlerMap).forEach(([alias, destination]) => {
+  const key = normalizeDestinationName(alias);
+  const handler = normalizeDestinationName(destination);
+  if (!hasDestination(handler)) {
+    throw new Error(
+      `Destination handler alias ${alias} points to unknown destination: ${destination}`,
+    );
+  }
+  destinationRegistry[key] = {
+    ...(destinationRegistry[key] || buildDestinationEntry(key)),
+    handler,
+  };
+});
+
+Object.entries(WhitelistOnlyDestinationAliases).forEach(([alias, destination]) => {
+  const key = normalizeDestinationName(alias);
+  const canonicalDestination = normalizeDestinationName(destination);
+  if (!hasDestination(canonicalDestination)) {
+    throw new Error(
+      `Destination whitelist alias ${alias} points to unknown destination: ${destination}`,
+    );
+  }
+  destinationRegistry[key] = destinationRegistry[key] || buildDestinationEntry(key);
+});
+
+const isValidDestination = (destination) =>
+  typeof destination === 'string' &&
+  destination.length > 0 &&
+  hasDestination(normalizeDestinationName(destination));
+
+const assertValidDestination = (destination) => {
+  if (!isValidDestination(destination)) {
+    const error = new Error(`Invalid destination: ${destination}`);
+    error.status = 400;
+    error.statusCode = 400;
+    error.isRetryable = false;
+    throw error;
+  }
+};
+
+const getDestinationHandlerName = (destination) => {
+  assertValidDestination(destination);
+  const normalized = normalizeDestinationName(destination);
+  return destinationRegistry[normalized].handler || normalized;
+};
+
 module.exports = {
   DestHandlerMap,
   DestCanonicalNames,
   WhitelistOnlyDestinationAliases,
+  destinationRegistry,
+  normalizeDestinationName,
+  isValidDestination,
+  assertValidDestination,
+  getDestinationHandlerName,
 };

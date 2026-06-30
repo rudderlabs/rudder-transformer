@@ -4,7 +4,7 @@ import {
   assertValidDestination,
   getDestinationHandlerName,
   normalizeDestinationName,
-} from '../middlewares/destinationValidation';
+} from '../constants/destinationCanonicalNames';
 import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
 import defaultFeaturesConfig from '../features';
 import { BatchDestinationConstructor } from './destination/nativeBatching/batchDestination';

@@ -9,7 +9,6 @@ router.post(
   '/v0/destinations/:destination/proxy',
   DestinationValidationMiddleware.pathParam,
   RouteActivationMiddleware.isDeliveryRouteActive,
-  RouteActivationMiddleware.destinationDeliveryFilter,
   DeliveryController.deliverToDestination,
 );
 
@@ -17,7 +16,6 @@ router.post(
   '/v1/destinations/:destination/proxy',
   DestinationValidationMiddleware.pathParam,
   RouteActivationMiddleware.isDeliveryRouteActive,
-  RouteActivationMiddleware.destinationDeliveryFilter,
   DeliveryController.deliverToDestinationV1,
 );
 

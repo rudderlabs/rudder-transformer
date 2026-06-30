@@ -58,6 +58,7 @@ import {
   CustomAttributeOperationTypes,
   DESTINATION,
 } from './config';
+import { buildEcommerceEventProperties, getEcommerceMapping } from './ecommerceUtil';
 
 import logger from '../../../logger';
 import { handleHttpRequest } from '../../../adapters/network';
@@ -347,6 +348,35 @@ function processTrackEvent(
       } else {
         delete requestJson.attributes;
       }
+    }
+  }
+
+  // New recommended-events path. Gated by destination config; falls through to legacy
+  // for unmapped events. Preserves attributes[] + dedup built above.
+  if (messageType === EventType.TRACK && destination.Config.useEcommerceRecommendedEvents) {
+    const ecomMapping = getEcommerceMapping(eventName);
+    if (ecomMapping) {
+      const { timestamp } = message;
+      const ecomProperties = buildEcommerceEventProperties(
+        message,
+        ecomMapping.brazeEvent,
+        ecomMapping.action,
+        destination,
+      );
+      let ecomEvent: Record<string, unknown> = {
+        name: ecomMapping.brazeEvent,
+        time: timestamp,
+        properties: ecomProperties,
+      };
+      ecomEvent = setExternalIdOrAliasObject(ecomEvent, message);
+      ecomEvent = addAppId(ecomEvent, message);
+      requestJson.events = [ecomEvent];
+      return buildResponse(
+        message,
+        destination,
+        requestJson,
+        getTrackEndPoint(getEndpointFromConfig(destination)),
+      );
     }
   }
 

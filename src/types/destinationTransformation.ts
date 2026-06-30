@@ -183,6 +183,7 @@ export type ProxyV0Request = {
   files?: Record<string, unknown>;
   metadata: ProxyMetdata;
   destinationConfig: Record<string, unknown>;
+  destinationVersion?: number; // integration major; the proxy payload carries no destination object, so the major arrives as this sibling field
 };
 
 /**

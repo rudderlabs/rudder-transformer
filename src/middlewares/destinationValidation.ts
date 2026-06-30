@@ -24,6 +24,10 @@ export class DestinationValidationMiddleware {
 
   public static async bodyDestType(ctx: Context, next: Next) {
     const body = ctx.request.body as { destType?: unknown };
+    if (body?.destType === undefined) {
+      await next();
+      return;
+    }
     if (!validateDestination(ctx, body?.destType)) {
       return;
     }

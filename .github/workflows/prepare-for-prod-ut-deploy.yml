@@ -153,8 +153,8 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-          PR_TITLE: "chore: upgrade shared user-transformers to ${{ env.UT_TAG_NAME }}"
-          PR_BODY: "Automated PR to update production shared user-transformers image to ${{ env.UT_TAG_NAME }}"
+          PR_TITLE: 'chore: upgrade shared user-transformers to ${{ env.UT_TAG_NAME }}'
+          PR_BODY: 'Automated PR to update production shared user-transformers image to ${{ env.UT_TAG_NAME }}'
         run: |
           # Reuse the open PR for the rolling branch if one exists; otherwise create it.
           PR_NUMBER=$(gh pr list --repo rudderlabs/rudder-devops --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
@@ -252,8 +252,8 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-          PR_TITLE: "chore: upgrade hosted user-transformer to ${{ env.UT_TAG_NAME }}"
-          PR_BODY: "Automated PR to update production hosted user-transformer image to ${{ env.UT_TAG_NAME }}"
+          PR_TITLE: 'chore: upgrade hosted user-transformer to ${{ env.UT_TAG_NAME }}'
+          PR_BODY: 'Automated PR to update production hosted user-transformer image to ${{ env.UT_TAG_NAME }}'
         run: |
           # Reuse the open PR for the rolling branch if one exists; otherwise create it.
           PR_NUMBER=$(gh pr list --repo rudderlabs/rudder-devops --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
@@ -385,8 +385,8 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-          PR_TITLE: "chore: upgrade dedicated user transformers to ${{ env.UT_TAG_NAME }}"
-          PR_BODY: "Automated PR to update dedicated user transformer default version to ${{ env.UT_TAG_NAME }}"
+          PR_TITLE: 'chore: upgrade dedicated user transformers to ${{ env.UT_TAG_NAME }}'
+          PR_BODY: 'Automated PR to update dedicated user transformer default version to ${{ env.UT_TAG_NAME }}'
         run: |
           # Reuse the open PR for the rolling branch if one exists; otherwise create it.
           PR_NUMBER=$(gh pr list --repo rudderlabs/rudder-devops --head "$BRANCH" --state open --json number --jq '.[0].number // empty')

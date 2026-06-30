@@ -1,12 +1,7 @@
 /* eslint-disable global-require, import/no-dynamic-require */
 import { Context } from 'koa';
-import {
-  assertValidDestination,
-  getDestinationHandlerName,
-  normalizeDestinationName,
-} from '../constants/destinationCanonicalNames';
+import defaultFeaturesConfig, { getDestinationHandlerName } from '../features';
 import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
-import defaultFeaturesConfig from '../features';
 import { BatchDestinationConstructor } from './destination/nativeBatching/batchDestination';
 
 export interface Hydrator {
@@ -28,14 +23,12 @@ export class MiscService {
   }
 
   public static getDeletionHandler(dest: string, version: string) {
-    assertValidDestination(dest);
-    const handlerName = normalizeDestinationName(dest);
+    const handlerName = getDestinationHandlerName(dest);
     return require(`../${version}/destinations/${handlerName}/deleteUsers`);
   }
 
   public static getBatchDestinationHandler(dest: string): BatchDestinationConstructor {
-    assertValidDestination(dest);
-    const handlerName = normalizeDestinationName(dest);
+    const handlerName = getDestinationHandlerName(dest);
     return require(`../v0/destinations/${handlerName}/routerTransform`).Integration;
   }
 

@@ -1,16 +1,12 @@
 import { Context, Next } from 'koa';
-import { isValidDestination } from '../constants/destinationCanonicalNames';
-
-const invalidDestinationResponse = (ctx: Context, destination: string) => {
-  ctx.status = 400;
-  ctx.body = { error: `Invalid destination: ${destination}` };
-};
+import { isValidDestination } from '../features';
 
 const validateDestination = (ctx: Context, destination: unknown): boolean => {
-  if (typeof destination === 'string' && isValidDestination(destination)) {
+  if (isValidDestination(destination)) {
     return true;
   }
-  invalidDestinationResponse(ctx, String(destination));
+  ctx.status = 400;
+  ctx.body = { error: `Invalid destination: ${String(destination)}` };
   return false;
 };
 
@@ -24,10 +20,6 @@ export class DestinationValidationMiddleware {
 
   public static async bodyDestType(ctx: Context, next: Next) {
     const body = ctx.request.body as { destType?: unknown };
-    if (body?.destType === undefined) {
-      await next();
-      return;
-    }
     if (!validateDestination(ctx, body?.destType)) {
       return;
     }

@@ -25,14 +25,11 @@ describe('Misc tests', () => {
     );
   });
 
-  test('should not use transform aliases for capability-specific handlers', async () => {
+  test('should resolve handler aliases for capability-specific handlers', async () => {
     const version = 'v0';
 
-    expect(() => MiscService.getDeletionHandler('ga360', version)).toThrow(
-      'destinations/ga360/deleteUsers',
-    );
-    expect(() => MiscService.getBatchDestinationHandler('webhook_v2')).toThrow(
-      'destinations/webhook_v2/routerTransform',
+    expect(MiscService.getDeletionHandler('ga360', version)).toEqual(
+      require(`../../${version}/destinations/ga/deleteUsers`),
     );
   });
 });

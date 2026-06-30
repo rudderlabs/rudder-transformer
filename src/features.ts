@@ -1,3 +1,12 @@
+import fs from 'fs';
+import path from 'path';
+import { ConfigurationError } from '@rudderstack/integrations-lib';
+import { DestHandlerMap } from './constants/destinationCanonicalNames';
+
+// ---------------------------------------------------------------------------
+// Destination capabilities
+// ---------------------------------------------------------------------------
+
 interface DestinationCapabilities {
   routerTransform?: true;
   regulations?: true;
@@ -5,132 +14,216 @@ interface DestinationCapabilities {
   cdkV2?: true;
 }
 
-export const destinationCapabilities: Record<string, DestinationCapabilities> = {
-  am: { routerTransform: true, regulations: true },
-  active_campaign: { routerTransform: true },
-  algolia: { routerTransform: true, cdkV2: true },
-  candu: { routerTransform: true },
-  delighted: { routerTransform: true },
-  drip: { routerTransform: true },
-  fb_custom_audience: { routerTransform: true },
-  ga: { routerTransform: true, regulations: true },
-  gainsight: { routerTransform: true },
-  gainsight_px: { routerTransform: true },
-  googlesheets: { routerTransform: true },
-  google_adwords_enhanced_conversions: { routerTransform: true },
-  google_adwords_remarketing_lists: { routerTransform: true },
-  google_adwords_offline_conversions: { routerTransform: true },
-  hs: { routerTransform: true },
-  iterable: { routerTransform: true, regulations: true },
-  klaviyo: { routerTransform: true },
-  kustomer: { routerTransform: true },
-  mailchimp: { routerTransform: true },
-  mailmodo: { routerTransform: true },
-  marketo: { routerTransform: true },
-  ometria: { routerTransform: true },
-  pardot: { routerTransform: true },
-  pinterest_tag: { routerTransform: true, cdkV2: true },
-  profitwell: { routerTransform: true },
-  salesforce: { routerTransform: true },
-  salesforce_oauth: { routerTransform: true },
-  salesforce_oauth_sandbox: { routerTransform: true },
-  sfmc: { routerTransform: true },
-  snapchat_conversion: { routerTransform: true },
-  tiktok_ads: { routerTransform: true },
-  trengo: { routerTransform: true },
-  yahoo_dsp: { routerTransform: true },
-  canny: { routerTransform: true },
-  lambda: { routerTransform: true },
-  wootric: { routerTransform: true },
-  google_cloud_function: { routerTransform: true },
-  bqstream: { routerTransform: true },
-  clickup: { routerTransform: true },
-  freshmarketer: { routerTransform: true },
-  freshsales: { routerTransform: true },
-  monday: { routerTransform: true },
-  custify: { routerTransform: true, regulations: true },
-  user: { routerTransform: true },
-  refiner: { routerTransform: true },
-  facebook_offline_conversions: { routerTransform: true },
-  mailjet: { routerTransform: true },
-  snapchat_custom_audience: { routerTransform: true },
-  marketo_static_list: { routerTransform: true },
-  campaign_manager: { routerTransform: true },
-  sendgrid: { routerTransform: true, regulations: true },
-  sendinblue: { routerTransform: true },
-  zendesk: { routerTransform: true },
-  mp: { routerTransform: true, regulations: true },
-  tiktok_ads_offline_events: { routerTransform: true },
-  criteo_audience: { routerTransform: true },
-  customerio: { routerTransform: true },
-  braze: { routerTransform: true, regulations: true },
-  optimizely_fullstack: { routerTransform: true, cdkV2: true },
-  twitter_ads: { routerTransform: true },
-  clevertap: { routerTransform: true, regulations: true },
-  ortto: { routerTransform: true, cdkV2: true },
-  gladly: { routerTransform: true, cdkV2: true },
-  one_signal: { routerTransform: true },
-  tiktok_audience: { routerTransform: true },
-  reddit: { routerTransform: true, cdkV2: true },
-  the_trade_desk: { routerTransform: true, cdkV2: true },
-  intercom: { routerTransform: true, regulations: true, cdkV2: true },
-  ninetailed: { routerTransform: true, cdkV2: true },
-  koala: { routerTransform: true, cdkV2: true },
-  linkedin_ads: { routerTransform: true, cdkV2: true },
-  bloomreach: { routerTransform: true, cdkV2: true },
-  movable_ink: { routerTransform: true, cdkV2: true },
-  emarsys: { routerTransform: true, regulations: true, cdkV2: true },
-  koddi: { routerTransform: true, cdkV2: true },
-  wunderkind: { routerTransform: true, cdkV2: true },
-  clicksend: { routerTransform: true, cdkV2: true },
-  zoho: { routerTransform: true, cdkV2: true },
-  cordial: { routerTransform: true, cdkV2: true },
-  x_audience: { routerTransform: true },
-  bloomreach_catalog: { routerTransform: true, cdkV2: true },
-  smartly: { routerTransform: true, cdkV2: true },
-  http: { routerTransform: true, cdkV2: true },
-  amazon_audience: { routerTransform: true },
-  intercom_v2: { routerTransform: true },
-  linkedin_audience: { routerTransform: true },
-  topsort: { routerTransform: true },
-  customerio_audience: { routerTransform: true },
-  accoil_analytics: { routerTransform: true, cdkV2: true },
-  postscript: { routerTransform: true },
-  posthog: { routerTransform: true, batching: true },
-  custom_audience: { routerTransform: true, batching: true },
-  iterable_audience: { routerTransform: true, batching: true },
-  survicate: { routerTransform: true },
+const destinationCapabilities: Record<string, DestinationCapabilities> = {
+  AM: { routerTransform: true, regulations: true },
+  ACTIVE_CAMPAIGN: { routerTransform: true },
+  ALGOLIA: { routerTransform: true, cdkV2: true },
+  CANDU: { routerTransform: true },
+  DELIGHTED: { routerTransform: true },
+  DRIP: { routerTransform: true },
+  FB_CUSTOM_AUDIENCE: { routerTransform: true },
+  GA: { routerTransform: true, regulations: true },
+  GAINSIGHT: { routerTransform: true },
+  GAINSIGHT_PX: { routerTransform: true },
+  GOOGLESHEETS: { routerTransform: true },
+  GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: { routerTransform: true },
+  GOOGLE_ADWORDS_REMARKETING_LISTS: { routerTransform: true },
+  GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: { routerTransform: true },
+  HS: { routerTransform: true },
+  ITERABLE: { routerTransform: true, regulations: true },
+  KLAVIYO: { routerTransform: true },
+  KUSTOMER: { routerTransform: true },
+  MAILCHIMP: { routerTransform: true },
+  MAILMODO: { routerTransform: true },
+  MARKETO: { routerTransform: true },
+  OMETRIA: { routerTransform: true },
+  PARDOT: { routerTransform: true },
+  PINTEREST_TAG: { routerTransform: true, cdkV2: true },
+  PROFITWELL: { routerTransform: true },
+  SALESFORCE: { routerTransform: true },
+  SALESFORCE_OAUTH: { routerTransform: true },
+  SALESFORCE_OAUTH_SANDBOX: { routerTransform: true },
+  SFMC: { routerTransform: true },
+  SNAPCHAT_CONVERSION: { routerTransform: true },
+  TIKTOK_ADS: { routerTransform: true },
+  TRENGO: { routerTransform: true },
+  YAHOO_DSP: { routerTransform: true },
+  CANNY: { routerTransform: true },
+  LAMBDA: { routerTransform: true },
+  WOOTRIC: { routerTransform: true },
+  GOOGLE_CLOUD_FUNCTION: { routerTransform: true },
+  BQSTREAM: { routerTransform: true },
+  CLICKUP: { routerTransform: true },
+  FRESHMARKETER: { routerTransform: true },
+  FRESHSALES: { routerTransform: true },
+  MONDAY: { routerTransform: true },
+  CUSTIFY: { routerTransform: true, regulations: true },
+  USER: { routerTransform: true },
+  REFINER: { routerTransform: true },
+  FACEBOOK_OFFLINE_CONVERSIONS: { routerTransform: true },
+  MAILJET: { routerTransform: true },
+  SNAPCHAT_CUSTOM_AUDIENCE: { routerTransform: true },
+  MARKETO_STATIC_LIST: { routerTransform: true },
+  CAMPAIGN_MANAGER: { routerTransform: true },
+  SENDGRID: { routerTransform: true, regulations: true },
+  SENDINBLUE: { routerTransform: true },
+  ZENDESK: { routerTransform: true },
+  MP: { routerTransform: true, regulations: true },
+  TIKTOK_ADS_OFFLINE_EVENTS: { routerTransform: true },
+  CRITEO_AUDIENCE: { routerTransform: true },
+  CUSTOMERIO: { routerTransform: true },
+  BRAZE: { routerTransform: true, regulations: true },
+  OPTIMIZELY_FULLSTACK: { routerTransform: true, cdkV2: true },
+  TWITTER_ADS: { routerTransform: true },
+  CLEVERTAP: { routerTransform: true, regulations: true },
+  ORTTO: { routerTransform: true, cdkV2: true },
+  GLADLY: { routerTransform: true, cdkV2: true },
+  ONE_SIGNAL: { routerTransform: true },
+  TIKTOK_AUDIENCE: { routerTransform: true },
+  REDDIT: { routerTransform: true, cdkV2: true },
+  THE_TRADE_DESK: { routerTransform: true, cdkV2: true },
+  INTERCOM: { routerTransform: true, regulations: true, cdkV2: true },
+  NINETAILED: { routerTransform: true, cdkV2: true },
+  KOALA: { routerTransform: true, cdkV2: true },
+  LINKEDIN_ADS: { routerTransform: true, cdkV2: true },
+  BLOOMREACH: { routerTransform: true, cdkV2: true },
+  MOVABLE_INK: { routerTransform: true, cdkV2: true },
+  EMARSYS: { routerTransform: true, regulations: true, cdkV2: true },
+  KODDI: { routerTransform: true, cdkV2: true },
+  WUNDERKIND: { routerTransform: true, cdkV2: true },
+  CLICKSEND: { routerTransform: true, cdkV2: true },
+  ZOHO: { routerTransform: true, cdkV2: true },
+  CORDIAL: { routerTransform: true, cdkV2: true },
+  X_AUDIENCE: { routerTransform: true },
+  BLOOMREACH_CATALOG: { routerTransform: true, cdkV2: true },
+  SMARTLY: { routerTransform: true, cdkV2: true },
+  HTTP: { routerTransform: true, cdkV2: true },
+  AMAZON_AUDIENCE: { routerTransform: true },
+  INTERCOM_V2: { routerTransform: true },
+  LINKEDIN_AUDIENCE: { routerTransform: true },
+  TOPSORT: { routerTransform: true },
+  CUSTOMERIO_AUDIENCE: { routerTransform: true },
+  ACCOIL_ANALYTICS: { routerTransform: true, cdkV2: true },
+  POSTSCRIPT: { routerTransform: true },
+  POSTHOG: { routerTransform: true, batching: true },
+  CUSTOM_AUDIENCE: { routerTransform: true, batching: true },
+  ITERABLE_AUDIENCE: { routerTransform: true, batching: true },
+  SURVICATE: { routerTransform: true },
   // dev-only fixture — see src/v0/destinations/test_destination/config.ts
-  test_destination: { routerTransform: true, batching: true },
-  af: { regulations: true },
-  engage: { regulations: true },
-  sprig: { regulations: true, cdkV2: true },
-  autopilot: { cdkV2: true },
-  bingads_audience: { cdkV2: true },
-  bluecore: { cdkV2: true },
-  dcm_floodlight: { cdkV2: true },
-  dynamic_yield: { cdkV2: true },
-  eloqua: { cdkV2: true },
-  fullstory: { cdkV2: true },
-  heap: { cdkV2: true },
-  klaviyo_bulk_upload: { cdkV2: true },
-  kochava: { cdkV2: true },
-  launchdarkly_audience: { cdkV2: true },
-  loops: { cdkV2: true },
-  lytics: { cdkV2: true },
-  new_relic: { cdkV2: true },
-  rakuten: { cdkV2: true },
-  statsig: { cdkV2: true },
-  the_trade_desk_real_time_conversions: { cdkV2: true },
-  userlist: { cdkV2: true },
-  userpilot: { cdkV2: true },
-  variance: { cdkV2: true },
-  vitally: { cdkV2: true },
-  webhook: { cdkV2: true },
-  webhook_v2: { cdkV2: true },
-  yandex_metrica_offline_events: { cdkV2: true },
-  zapier: { cdkV2: true },
+  TEST_DESTINATION: { routerTransform: true, batching: true },
+  AF: { regulations: true },
+  ENGAGE: { regulations: true },
+  SPRIG: { regulations: true, cdkV2: true },
+  AUTOPILOT: { cdkV2: true },
+  BINGADS_AUDIENCE: { cdkV2: true },
+  BLUECORE: { cdkV2: true },
+  DCM_FLOODLIGHT: { cdkV2: true },
+  DYNAMIC_YIELD: { cdkV2: true },
+  ELOQUA: { cdkV2: true },
+  FULLSTORY: { cdkV2: true },
+  HEAP: { cdkV2: true },
+  KLAVIYO_BULK_UPLOAD: { cdkV2: true },
+  KOCHAVA: { cdkV2: true },
+  LAUNCHDARKLY_AUDIENCE: { cdkV2: true },
+  LOOPS: { cdkV2: true },
+  LYTICS: { cdkV2: true },
+  NEW_RELIC: { cdkV2: true },
+  RAKUTEN: { cdkV2: true },
+  STATSIG: { cdkV2: true },
+  THE_TRADE_DESK_REAL_TIME_CONVERSIONS: { cdkV2: true },
+  USERLIST: { cdkV2: true },
+  USERPILOT: { cdkV2: true },
+  VARIANCE: { cdkV2: true },
+  VITALLY: { cdkV2: true },
+  WEBHOOK: { cdkV2: true },
+  YANDEX_METRICA_OFFLINE_EVENTS: { cdkV2: true },
+  ZAPIER: { cdkV2: true },
 };
+
+// ---------------------------------------------------------------------------
+// Destination registry – built once at module load from filesystem + aliases
+// ---------------------------------------------------------------------------
+
+const normalizeDestinationName = (destination: string) => destination.trim().toLowerCase();
+
+const destinationRegistry: Record<string, string> = Object.create(null);
+
+const hasDestination = (destination: string) =>
+  Object.prototype.hasOwnProperty.call(destinationRegistry, destination);
+
+function initDestinationRegistry() {
+  const repoRoot = path.resolve(__dirname);
+  const destinationRoots = [
+    path.join(repoRoot, 'v0', 'destinations'),
+    path.join(repoRoot, 'v1', 'destinations'),
+    path.join(repoRoot, 'cdk', 'v2', 'destinations'),
+  ];
+
+  destinationRoots
+    .flatMap((root) => {
+      try {
+        return fs
+          .readdirSync(root, { withFileTypes: true })
+          .filter((entry) => entry.isDirectory())
+          .map((entry) => entry.name);
+      } catch {
+        return [];
+      }
+    })
+    .forEach((destination) => {
+      const key = normalizeDestinationName(destination);
+      destinationRegistry[key] = key;
+    });
+
+  Object.entries(DestHandlerMap).forEach(([alias, destination]) => {
+    const key = normalizeDestinationName(alias);
+    const handler = normalizeDestinationName(destination);
+    if (!hasDestination(handler)) {
+      throw new Error(
+        `Destination handler alias ${alias} points to unknown destination: ${destination}`,
+      );
+    }
+    destinationRegistry[key] = handler;
+  });
+}
+
+initDestinationRegistry();
+
+// ---------------------------------------------------------------------------
+// Validation helpers
+// ---------------------------------------------------------------------------
+
+export const isValidDestination = (destination: unknown): boolean =>
+  typeof destination === 'string' &&
+  destination.length > 0 &&
+  hasDestination(normalizeDestinationName(destination));
+
+export const getDestinationHandlerName = (destination: string): string => {
+  if (!isValidDestination(destination)) {
+    throw new ConfigurationError(`Invalid destination: ${destination}`);
+  }
+  return destinationRegistry[normalizeDestinationName(destination)];
+};
+
+// ---------------------------------------------------------------------------
+// Feature capability helpers
+// ---------------------------------------------------------------------------
+
+const getCapabilityEntries = (capability: keyof DestinationCapabilities) =>
+  Object.entries(destinationCapabilities).filter(([, capabilities]) => capabilities[capability]);
+
+const getCapabilityMap = (capability: keyof DestinationCapabilities): Record<string, true> =>
+  Object.fromEntries(getCapabilityEntries(capability).map(([destination]) => [destination, true]));
+
+export const getBatchingFrameworkGaDestinations = (): Record<string, true> =>
+  getCapabilityMap('batching');
+
+export const isDestinationCdkV2Enabled = (destination: string): boolean =>
+  Boolean(destinationCapabilities[destination.trim().toUpperCase()]?.cdkV2);
+
+// ---------------------------------------------------------------------------
+// Features config
+// ---------------------------------------------------------------------------
 
 interface FeaturesConfig {
   routerTransform: Record<string, true>;
@@ -141,32 +234,9 @@ interface FeaturesConfig {
   supportDestTransformCompactedPayloadV1: true;
 }
 
-const normalizeDestinationName = (destination: string) => destination.trim().toLowerCase();
-const featureName = (destination: string) => destination.toUpperCase();
-
-const getCapabilityEntries = (capability: keyof DestinationCapabilities) =>
-  Object.entries(destinationCapabilities).filter(([, capabilities]) => capabilities[capability]);
-
-const getCapabilityMap = (capability: keyof DestinationCapabilities): Record<string, true> =>
-  Object.fromEntries(
-    getCapabilityEntries(capability).map(([destination]) => [featureName(destination), true]),
-  );
-
-export const getRouterTransformDestinations = (): Record<string, true> =>
-  getCapabilityMap('routerTransform');
-
-export const getRegulationDestinations = (): string[] =>
-  getCapabilityEntries('regulations').map(([destination]) => featureName(destination));
-
-export const getBatchingFrameworkGaDestinations = (): Record<string, true> =>
-  getCapabilityMap('batching');
-
-export const isDestinationCdkV2Enabled = (destination: string): boolean =>
-  Boolean(destinationCapabilities[normalizeDestinationName(destination)]?.cdkV2);
-
 const defaultFeaturesConfig: FeaturesConfig = {
-  routerTransform: getRouterTransformDestinations(),
-  regulations: getRegulationDestinations(),
+  routerTransform: getCapabilityMap('routerTransform'),
+  regulations: getCapabilityEntries('regulations').map(([destination]) => destination),
   supportSourceTransformV1: true,
   supportTransformerProxyV1: true,
   upgradedToSourceTransformV2: true,

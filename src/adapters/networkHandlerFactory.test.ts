@@ -20,10 +20,16 @@ describe('Network Handler Tests', () => {
     expect(networkHandler).toEqual(new cmProxy());
   });
 
-  it('Should return v0 handler if v1 version and handler is present for destination in v0', () => {
+  it('Should return v1 networkhandler braze', () => {
     const { networkHandler } = getNetworkHandler('braze', 'v1');
-    const brazeProxy = require('../v0/destinations/braze/networkHandler').networkHandler;
+    const brazeProxy = require('../v1/destinations/braze/networkHandler').networkHandler;
     expect(networkHandler).toEqual(new brazeProxy());
+  });
+
+  it('Should return v0 handler if v1 version and handler is present for destination in v0', () => {
+    const { networkHandler } = getNetworkHandler('marketo', 'v1');
+    const marketoProxy = require('../v0/destinations/marketo/networkHandler').networkHandler;
+    expect(networkHandler).toEqual(new marketoProxy());
   });
 
   it('Should return generic handler', () => {

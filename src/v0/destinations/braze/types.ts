@@ -8,6 +8,7 @@ import {
   BatchedRequest,
   MultiBatchRequestOutput,
   ProcessorTransformationOutput,
+  ProxyMetdata,
 } from '../../../types/destinationTransformation';
 
 // Braze User Alias Object
@@ -150,6 +151,7 @@ export interface BrazeResponseHandlerParams {
     };
     status: number;
   };
+  rudderJobMetadata: ProxyMetdata[];
 }
 
 export interface BrazeUser extends BrazeUserAttributes {

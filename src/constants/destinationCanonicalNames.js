@@ -2,6 +2,8 @@ const DestHandlerMap = {
   ga360: 'ga',
   salesforce_oauth: 'salesforce',
   salesforce_oauth_sandbox: 'salesforce',
+  // dev-only alias — tests use __rudder_test__ but the handler directory is rudder_test
+  __rudder_test__: 'rudder_test',
 };
 
 const DestCanonicalNames = {

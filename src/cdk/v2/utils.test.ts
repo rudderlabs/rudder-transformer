@@ -12,8 +12,8 @@ describe('cdk/v2 utils', () => {
 
     const cases: Case[] = [
       {
-        name: 'returns false when destination is not CDK v2 enabled',
-        destType: 'some_unknown_destination',
+        name: 'returns false when valid destination is not CDK v2 enabled',
+        destType: 'am',
         workspaceId: 'w1',
         expected: false,
       },

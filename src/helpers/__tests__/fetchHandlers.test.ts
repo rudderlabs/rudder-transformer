@@ -7,7 +7,7 @@ afterEach(() => {
 
 describe('FetchHandlers Service', () => {
   test('should save the handlers in the respective maps', async () => {
-    const dest = 'dest';
+    const dest = 'am';
     const source = 'source';
     const version = 'version';
 

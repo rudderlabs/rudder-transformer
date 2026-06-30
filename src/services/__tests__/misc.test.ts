@@ -24,6 +24,14 @@ describe('Misc tests', () => {
       require(`../../${version}/destinations/intercom/deleteUsers`),
     );
   });
+
+  test('should resolve handler aliases for capability-specific handlers', async () => {
+    const version = 'v0';
+
+    expect(MiscService.getDeletionHandler('ga360', version)).toEqual(
+      require(`../../${version}/destinations/ga/deleteUsers`),
+    );
+  });
 });
 
 describe('Misc | getFeatures', () => {

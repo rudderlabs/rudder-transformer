@@ -1,4 +1,4 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
@@ -7,8 +7,7 @@ import {
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
-import type { Connection, Destination } from '../../../types/controlPlaneConfig';
-import { EVENT_TYPES } from '../../util/recordUtils';
+import { RecordAction } from '../../../types/rudderEvents';
 import { sandboxedEvaluateTemplate } from './template/templateSandboxClient';
 import {
   buildRequestHeaders,
@@ -18,17 +17,32 @@ import {
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import type {
-  Action,
-  CustomAudienceConnectionDestConfig,
-  CustomAudienceDestConfig,
-  CustomAudienceRouterRequest,
-} from './types';
+import type { Action } from './types';
+import { CustomAudienceDestConfigSchema, CustomAudienceConnectionDestConfigSchema } from './types';
+
+const customAudienceInputSchema = z
+  .object({
+    message: z
+      .object({
+        type: z.literal('record'),
+        action: z.nativeEnum(RecordAction),
+        identifiers: z.record(z.unknown()),
+      })
+      .passthrough(),
+    destination: z.object({ Config: CustomAudienceDestConfigSchema }).passthrough(),
+    connection: z
+      .object({
+        config: z.object({
+          destination: CustomAudienceConnectionDestConfigSchema,
+        }),
+      })
+      .passthrough(),
+  })
+  .passthrough();
 
 class CustomAudienceIntegration extends BatchDestination<
   Record<string, unknown>,
-  CustomAudienceDestConfig,
-  { destination: CustomAudienceConnectionDestConfig }
+  typeof customAudienceInputSchema
 > {
   // Endpoint depends only on action.endpoint + connection (constant per request),
   // so resolve once per configured action — not once per event.
@@ -36,19 +50,16 @@ class CustomAudienceIntegration extends BatchDestination<
 
   private readonly headers: Record<string, string>;
 
-  constructor(
-    destination: Destination<CustomAudienceDestConfig>,
-    connection?: Connection<{ destination: CustomAudienceConnectionDestConfig }>,
-  ) {
-    super(destination, connection);
+  constructor(...args: ConstructorParameters<typeof BatchDestination>) {
+    super(...args);
     if (!this.connection) {
       throw new InstrumentationError('Connection config is required for custom_audience');
     }
-    this.headers = buildRequestHeaders(destination.Config);
+    this.headers = buildRequestHeaders(this.destination.Config);
     this.endpointByAction = this.buildEndpointsByAction();
   }
 
-  private get connectionConfig(): CustomAudienceConnectionDestConfig {
+  private get connectionConfig() {
     return this.connection!.config.destination;
   }
 
@@ -65,15 +76,18 @@ class CustomAudienceIntegration extends BatchDestination<
     ) as Partial<Record<Action, string>>;
   }
 
-  transformEvent(input: CustomAudienceRouterRequest): TransformedEvent<Record<string, unknown>> {
+  transformEvent(
+    input: z.infer<typeof customAudienceInputSchema>,
+  ): TransformedEvent<Record<string, unknown>> {
     const { message } = input;
+    const { action, identifiers } = message;
     const { action: resolvedAction, config: actionConfig } = lookupActionConfig(
-      message.action,
+      action,
       this.destination.Config.actions,
     );
-    validateRequiredFields(message.action, message.identifiers!, actionConfig.fields);
+    validateRequiredFields(action, identifiers, actionConfig.fields);
     const fieldsWithCustomMappings = injectCustomMappings(
-      message.identifiers!,
+      identifiers,
       this.connectionConfig.customMappings,
     );
     const record = processFields(
@@ -89,7 +103,7 @@ class CustomAudienceIntegration extends BatchDestination<
 
     return {
       body: record,
-      endpoint: this.endpointByAction[message.action]!,
+      endpoint: this.endpointByAction[action]!,
       // Use the action name rather than the full URL to keep metric cardinality low —
       // each destination instance has a unique endpoint, but actions are a fixed set.
       endpointPath: `/${resolvedAction}`,
@@ -140,36 +154,8 @@ class CustomAudienceIntegration extends BatchDestination<
     });
   }
 
-  getInputSchema(): ZodType {
-    return z
-      .object({
-        message: z
-          .object({
-            type: z.literal('record'),
-            action: z.enum([EVENT_TYPES.INSERT, EVENT_TYPES.UPDATE, EVENT_TYPES.DELETE]),
-            identifiers: z.record(z.unknown()),
-          })
-          .passthrough(),
-        connection: z
-          .object({
-            config: z.object({
-              destination: z
-                .object({
-                  customMappings: z
-                    .array(
-                      z.object({
-                        from: z.string().min(1, 'Custom mapping "from" value must be non-empty'),
-                        to: z.string().min(1, 'Custom mapping "to" value must be non-empty'),
-                      }),
-                    )
-                    .optional(),
-                })
-                .passthrough(),
-            }),
-          })
-          .passthrough(),
-      })
-      .passthrough();
+  getInputSchema() {
+    return customAudienceInputSchema;
   }
 }
 

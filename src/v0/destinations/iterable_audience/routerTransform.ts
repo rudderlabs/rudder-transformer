@@ -1,4 +1,4 @@
-import type { ZodType } from 'zod';
+import { z } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
@@ -6,8 +6,6 @@ import {
   type TransformedEvent,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import type { Connection, Destination } from '../../../types/controlPlaneConfig';
-import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { processAudienceRecord } from '../../util/audienceUtils';
 import {
   ACTION_RECORD_MAP,
@@ -26,22 +24,17 @@ import {
   IterableAudienceRouterRequestSchema,
   type IterableAudiencePayload,
   type IterableConnectionConfig,
-  type IterableDestinationConfig,
 } from './types';
 
 class IterableAudienceIntegration extends BatchDestination<
   IterableAudiencePayload,
-  IterableDestinationConfig,
-  { destination: IterableConnectionConfig }
+  typeof IterableAudienceRouterRequestSchema
 > {
   // Headers are constant per (destination + connection) — build once.
   private readonly headers: Record<string, string>;
 
-  constructor(
-    destination: Destination<IterableDestinationConfig>,
-    connection?: Connection<{ destination: IterableConnectionConfig }>,
-  ) {
-    super(destination, connection);
+  constructor(...args: ConstructorParameters<typeof BatchDestination>) {
+    super(...args);
     if (!this.connection) {
       throw new InstrumentationError('Connection config is required for iterable_audience');
     }
@@ -54,7 +47,7 @@ class IterableAudienceIntegration extends BatchDestination<
     };
   }
 
-  private get accountConfig(): IterableDestinationConfig {
+  private get accountConfig() {
     return this.destination.Config;
   }
 
@@ -64,10 +57,10 @@ class IterableAudienceIntegration extends BatchDestination<
   }
 
   transformEvent(
-    input: RouterTransformationRequestData,
+    input: z.infer<typeof IterableAudienceRouterRequestSchema>,
   ): TransformedEvent<IterableAudiencePayload> {
-    const { message, metadata } = input;
-    const messageAction = (message as { action?: string }).action;
+    const { message } = input;
+    const messageAction = message.action;
     if (!messageAction) {
       throw new InstrumentationError('record event is missing action');
     }
@@ -76,7 +69,7 @@ class IterableAudienceIntegration extends BatchDestination<
       throw new InstrumentationError(`Unsupported record action: ${messageAction}`);
     }
 
-    const identifiers = (message as { identifiers?: Record<string, unknown> }).identifiers ?? {};
+    const identifiers = message.identifiers ?? {};
 
     // `message.identifiers` already arrives keyed by the Iterable field
     // (`email` / `userId`) — rudder-sources resolves the mapping upstream — so
@@ -89,8 +82,7 @@ class IterableAudienceIntegration extends BatchDestination<
     const processed = processAudienceRecord(identifiers, {
       fieldConfigs: IDENTIFIER_FIELD_CONFIG,
       destination: {
-        workspaceId:
-          (metadata as { workspaceId?: string }).workspaceId ?? this.destination.WorkspaceID,
+        workspaceId: this.destination.WorkspaceID,
         id: this.destination.ID,
         type: DESTINATION_TYPE,
         config: { isHashRequired: false },
@@ -137,7 +129,7 @@ class IterableAudienceIntegration extends BatchDestination<
     });
   }
 
-  getInputSchema(): ZodType {
+  getInputSchema() {
     return IterableAudienceRouterRequestSchema;
   }
 }

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { EVENT_TYPES } from '../../util/recordUtils';
+import { RecordAction } from '../../../types/rudderEvents';
 import { PROJECT_TYPES } from './config';
 
 // ---------------------------------------------------------------------------
@@ -20,12 +20,9 @@ export const IterableAccountConfigSchema = z
 
 export type IterableAccountConfig = z.infer<typeof IterableAccountConfigSchema>;
 
-// Destination config: the account-level auth/project fields extended with the
-// destination `name`. Named `IterableDestinationConfig` to match the
-// `<Dest>DestinationConfig` convention used by the other audience destinations.
-export const IterableDestinationConfigSchema = IterableAccountConfigSchema.extend({
-  name: z.string().min(1),
-});
+// Aliased as `IterableDestinationConfig` to match the `<Dest>DestinationConfig`
+// convention used by the other audience destinations.
+export const IterableDestinationConfigSchema = IterableAccountConfigSchema;
 
 export type IterableDestinationConfig = z.infer<typeof IterableDestinationConfigSchema>;
 
@@ -68,7 +65,7 @@ export type IterableConnectionConfig = z.infer<typeof IterableConnectionConfigSc
 const RecordMessageSchema = z
   .object({
     type: z.literal('record'),
-    action: z.enum([EVENT_TYPES.INSERT, EVENT_TYPES.UPDATE, EVENT_TYPES.DELETE]),
+    action: z.nativeEnum(RecordAction),
     identifiers: z.record(z.unknown()).optional(),
     fields: z.record(z.unknown()).optional(),
   })
@@ -77,6 +74,12 @@ const RecordMessageSchema = z
 export const IterableAudienceRouterRequestSchema = z
   .object({
     message: RecordMessageSchema,
+    destination: z.object({ Config: IterableDestinationConfigSchema }).passthrough(),
+    connection: z
+      .object({
+        config: z.object({ destination: IterableConnectionConfigSchema }).passthrough(),
+      })
+      .passthrough(),
   })
   .passthrough();
 

@@ -108,6 +108,48 @@ describe('CustomerIOIntegration — record event routing', () => {
     );
   });
 
+  it.each([
+    {
+      name: 'no destination object (VDM v1)',
+      connection: {
+        sourceId: 'src-1',
+        destinationId: 'dest-1',
+        enabled: true,
+        config: {},
+      },
+    },
+    {
+      name: 'connection with nil config',
+      connection: {
+        sourceId: 'src-1',
+        destinationId: 'dest-1',
+        enabled: true,
+        config: null,
+      },
+    },
+    {
+      name: 'no connection at all',
+      connection: undefined,
+    },
+  ])('input schema accepts non VDM v2 messages — $name', ({ connection }) => {
+    const integration = new Integration(baseDestination);
+    const schema = integration.getInputSchema();
+
+    const input = {
+      message: {
+        type: 'identify',
+        userId: 'user-1',
+        traits: { email: 'test@example.com' },
+      },
+      metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
+      destination: baseDestination,
+      ...(connection !== undefined && { connection }),
+    };
+
+    const result = schema.safeParse(input);
+    expect(result.success).toBe(true);
+  });
+
   it('batches multiple record events into one { batch: [...] } body', async () => {
     const integration = new Integration(baseDestination, baseConnection);
     const inputs = [

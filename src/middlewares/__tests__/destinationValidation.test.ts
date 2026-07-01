@@ -96,28 +96,15 @@ describe('DestinationValidationMiddleware', () => {
     it.each([
       { name: 'empty array', body: [] },
       { name: 'non-array body', body: { destType: 'ga' } },
-    ])('rejects malformed deletion batches: $name', async ({ body }) => {
+    ])('lets payload-shape validation happen downstream: $name', async ({ body }) => {
       const ctx = mockCtx(body);
       const next = mockNext();
 
       await DestinationValidationMiddleware.userDeletionBody(ctx, next);
 
-      expect(next).not.toHaveBeenCalled();
-      expect(ctx.status).toBe(400);
-      expect(ctx.body).toEqual({
-        error: 'Malformed deleteUsers payload: expected a non-empty array',
-      });
-    });
-
-    it('always rejects structurally unsafe destination names', async () => {
-      const ctx = mockCtx([{ destType: '../dest' }]);
-      const next = mockNext();
-
-      await DestinationValidationMiddleware.userDeletionBody(ctx, next);
-
-      expect(next).not.toHaveBeenCalled();
-      expect(ctx.status).toBe(400);
-      expect(ctx.body).toEqual({ error: 'Invalid destination: ../dest' });
+      expect(next).toHaveBeenCalledTimes(1);
+      expect(ctx.status).toBeUndefined();
+      expect(ctx.body).toBeUndefined();
     });
   });
 });

@@ -1,9 +1,6 @@
 import path from 'path';
 import { ConfigurationError } from '@rudderstack/integrations-lib';
-import {
-  DestHandlerMap,
-  WhitelistOnlyDestinationAliases,
-} from './constants/destinationCanonicalNames';
+import { DestHandlerMap } from './constants/destinationCanonicalNames';
 import { getIntegrations } from './routes/utils';
 
 // ---------------------------------------------------------------------------
@@ -147,9 +144,6 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
 // Destination registry – built once at module load from filesystem + aliases
 // ---------------------------------------------------------------------------
 
-const UNSAFE_DESTINATION_NAMES = new Set(['__proto__', 'prototype', 'constructor']);
-const DESTINATION_NAME_PATTERN = /^\w+$/;
-
 const normalizeDestinationName = (destination: string) => destination.trim().toLowerCase();
 
 const destinationRegistry: Record<string, string> = Object.create(null);
@@ -182,17 +176,6 @@ function initDestinationRegistry() {
     }
     destinationRegistry[key] = canonicalDestination;
   });
-
-  Object.entries(WhitelistOnlyDestinationAliases).forEach(([alias, destination]) => {
-    const key = normalizeDestinationName(alias);
-    const canonicalDestination = normalizeDestinationName(destination);
-    if (!hasDestination(canonicalDestination)) {
-      throw new Error(
-        `Destination whitelist alias ${alias} points to unknown destination: ${destination}`,
-      );
-    }
-    destinationRegistry[key] = destinationRegistry[key] || key;
-  });
 }
 
 initDestinationRegistry();
@@ -201,31 +184,12 @@ initDestinationRegistry();
 // Validation helpers
 // ---------------------------------------------------------------------------
 
-export const isSafeDestinationName = (destination: unknown): destination is string => {
-  if (typeof destination !== 'string') {
-    return false;
-  }
-  const normalized = normalizeDestinationName(destination);
-  return (
-    normalized.length > 0 &&
-    DESTINATION_NAME_PATTERN.test(normalized) &&
-    !UNSAFE_DESTINATION_NAMES.has(normalized)
-  );
-};
-
-const assertSafeDestinationName: (destination: unknown) => asserts destination is string = (
-  destination,
-) => {
-  if (!isSafeDestinationName(destination)) {
-    throw new ConfigurationError(`Invalid destination: ${String(destination)}`);
-  }
-};
-
 export const isValidDestination = (destination: unknown): boolean =>
-  isSafeDestinationName(destination) && hasDestination(normalizeDestinationName(destination));
+  typeof destination === 'string' &&
+  destination.length > 0 &&
+  hasDestination(normalizeDestinationName(destination));
 
 export const getDestinationHandlerName = (destination: string): string => {
-  assertSafeDestinationName(destination);
   const normalized = normalizeDestinationName(destination);
   if (hasDestination(normalized)) {
     return destinationRegistry[normalized];

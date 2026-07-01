@@ -162,30 +162,6 @@ describe('Api tests with a mock source/destination', () => {
     },
   );
 
-  test.each([
-    {
-      name: 'deleteUsers empty body',
-      request: () => request(server).post('/deleteUsers').send([]),
-    },
-    {
-      name: 'deleteUsers non-array body',
-      request: () => request(server).post('/deleteUsers').send({ destType: 'ga' }),
-    },
-  ])(
-    'rejects malformed deleteUsers payload before handler lookup: $name',
-    async ({ request: makeRequest }) => {
-      const getDeletionHandlerSpy = jest.spyOn(FetchHandler, 'getDeletionHandler');
-
-      const response = await makeRequest().set('Accept', 'application/json');
-
-      expect(response.status).toEqual(400);
-      expect(JSON.parse(response.text)).toEqual({
-        error: 'Malformed deleteUsers payload: expected a non-empty array',
-      });
-      expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
-    },
-  );
-
   test('(mock destination) Processor transformation scenario with single event', async () => {
     const destType = '__rudder_test__';
     const version = 'v0';

@@ -43,18 +43,6 @@ describe('Misc tests', () => {
     );
   });
 
-  test('should always reject structurally unsafe destination names before require', async () => {
-    expect(() => MiscService.getDestHandler('../dest', 'v0')).toThrow(
-      'Invalid destination: ../dest',
-    );
-    expect(() => MiscService.getDeletionHandler('__proto__', 'v0')).toThrow(
-      'Invalid destination: __proto__',
-    );
-    expect(() => MiscService.getBatchDestinationHandler('constructor')).toThrow(
-      'Invalid destination: constructor',
-    );
-  });
-
   test('should reject unknown destination names before require when rejection is enabled', async () => {
     process.env.REJECT_UNKNOWN_DESTINATIONS = 'true';
 

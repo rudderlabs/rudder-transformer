@@ -2,17 +2,13 @@ import { Context, Next } from 'koa';
 import logger from '../logger';
 import { isValidDestination } from '../features';
 
-const rejectInvalidDestination = (ctx: Context, destination: unknown) => {
-  ctx.status = 400;
-  ctx.body = { error: `Invalid destination: ${String(destination)}` };
-};
-
 const validateDestination = (ctx: Context, destination: unknown): boolean => {
   if (isValidDestination(destination)) {
     return true;
   }
   if (process.env.REJECT_UNKNOWN_DESTINATIONS === 'true') {
-    rejectInvalidDestination(ctx, destination);
+    ctx.status = 400;
+    ctx.body = { error: `Invalid destination: ${String(destination)}` };
     return false;
   }
   logger.warn(`Unknown destination encountered: ${String(destination)}`);

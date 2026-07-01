@@ -4,11 +4,6 @@ const DestHandlerMap = {
   salesforce_oauth_sandbox: 'salesforce',
 };
 
-const WhitelistOnlyDestinationAliases = {
-  __rudder_test__: 'rudder_test',
-  webhook_v2: 'webhook',
-};
-
 const DestCanonicalNames = {
   facebook_conversions: [
     'fb_conversions',
@@ -200,5 +195,4 @@ const DestCanonicalNames = {
 module.exports = {
   DestHandlerMap,
   DestCanonicalNames,
-  WhitelistOnlyDestinationAliases,
 };

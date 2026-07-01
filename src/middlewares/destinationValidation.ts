@@ -40,14 +40,20 @@ export class DestinationValidationMiddleware {
     const userDeletionRequests = Array.isArray(requests)
       ? (requests as Array<{ destType?: unknown } | null | undefined>)
       : [];
+    if (userDeletionRequests.length === 0) {
+      if (!validateDestination(ctx, undefined)) {
+        return;
+      }
+      await next();
+      return;
+    }
     const invalidRequestIndex = userDeletionRequests.findIndex(
       (request) => !isValidDestination(request?.destType),
     );
-    const destination =
-      invalidRequestIndex >= 0
-        ? userDeletionRequests[invalidRequestIndex]?.destType
-        : userDeletionRequests[0]?.destType;
-    if (!validateDestination(ctx, destination)) {
+    if (
+      invalidRequestIndex >= 0 &&
+      !validateDestination(ctx, userDeletionRequests[invalidRequestIndex]?.destType)
+    ) {
       return;
     }
     await next();

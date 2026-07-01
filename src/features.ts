@@ -177,13 +177,13 @@ function initDestinationRegistry() {
 
   Object.entries(DestHandlerMap).forEach(([alias, destination]) => {
     const key = normalizeDestinationName(alias);
-    const handler = normalizeDestinationName(destination);
-    if (!hasDestination(handler)) {
+    const canonicalDestination = normalizeDestinationName(destination);
+    if (!hasDestination(canonicalDestination)) {
       throw new Error(
         `Destination handler alias ${alias} points to unknown destination: ${destination}`,
       );
     }
-    destinationRegistry[key] = handler;
+    destinationRegistry[key] = canonicalDestination;
   });
 }
 

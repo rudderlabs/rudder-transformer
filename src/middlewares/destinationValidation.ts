@@ -1,18 +1,31 @@
 import { Context, Next } from 'koa';
 import logger from '../logger';
-import { isValidDestination } from '../features';
+import { isSafeDestinationName, isValidDestination } from '../features';
+
+const rejectInvalidDestination = (ctx: Context, destination: unknown) => {
+  ctx.status = 400;
+  ctx.body = { error: `Invalid destination: ${String(destination)}` };
+};
 
 const validateDestination = (ctx: Context, destination: unknown): boolean => {
   if (isValidDestination(destination)) {
     return true;
   }
+  if (!isSafeDestinationName(destination)) {
+    rejectInvalidDestination(ctx, destination);
+    return false;
+  }
   if (process.env.REJECT_UNKNOWN_DESTINATIONS === 'true') {
-    ctx.status = 400;
-    ctx.body = { error: `Invalid destination: ${String(destination)}` };
+    rejectInvalidDestination(ctx, destination);
     return false;
   }
   logger.warn(`Unknown destination encountered: ${String(destination)}`);
   return true;
+};
+
+const rejectMalformedUserDeletionPayload = (ctx: Context) => {
+  ctx.status = 400;
+  ctx.body = { error: 'Malformed deleteUsers payload: expected a non-empty array' };
 };
 
 export class DestinationValidationMiddleware {
@@ -37,24 +50,16 @@ export class DestinationValidationMiddleware {
 
   public static async userDeletionBody(ctx: Context, next: Next) {
     const requests = ctx.request.body;
-    const userDeletionRequests = Array.isArray(requests)
-      ? (requests as Array<{ destType?: unknown } | null | undefined>)
-      : [];
-    if (userDeletionRequests.length === 0) {
-      if (!validateDestination(ctx, undefined)) {
-        return;
-      }
-      await next();
+    if (!Array.isArray(requests) || requests.length === 0) {
+      rejectMalformedUserDeletionPayload(ctx);
       return;
     }
-    const invalidRequestIndex = userDeletionRequests.findIndex(
-      (request) => !isValidDestination(request?.destType),
-    );
-    if (
-      invalidRequestIndex >= 0 &&
-      !validateDestination(ctx, userDeletionRequests[invalidRequestIndex]?.destType)
-    ) {
-      return;
+
+    const userDeletionRequests = requests as Array<{ destType?: unknown } | null | undefined>;
+    for (const request of userDeletionRequests) {
+      if (!validateDestination(ctx, request?.destType)) {
+        return;
+      }
     }
     await next();
   }

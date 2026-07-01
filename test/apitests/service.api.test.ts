@@ -118,14 +118,6 @@ describe('Api tests with a mock source/destination', () => {
           .send([{ destType: 'ga' }, { userId: 'user-1' }]),
     },
     {
-      name: 'deleteUsers empty body',
-      request: () => request(server).post('/deleteUsers').send([]),
-    },
-    {
-      name: 'deleteUsers non-array body',
-      request: () => request(server).post('/deleteUsers').send({ destType: 'ga' }),
-    },
-    {
       name: 'v0 proxy path destination',
       request: () => request(server).post('/v0/destinations/not_a_destination/proxy').send({}),
     },
@@ -167,6 +159,30 @@ describe('Api tests with a mock source/destination', () => {
       } finally {
         delete process.env.REJECT_UNKNOWN_DESTINATIONS;
       }
+    },
+  );
+
+  test.each([
+    {
+      name: 'deleteUsers empty body',
+      request: () => request(server).post('/deleteUsers').send([]),
+    },
+    {
+      name: 'deleteUsers non-array body',
+      request: () => request(server).post('/deleteUsers').send({ destType: 'ga' }),
+    },
+  ])(
+    'rejects malformed deleteUsers payload before handler lookup: $name',
+    async ({ request: makeRequest }) => {
+      const getDeletionHandlerSpy = jest.spyOn(FetchHandler, 'getDeletionHandler');
+
+      const response = await makeRequest().set('Accept', 'application/json');
+
+      expect(response.status).toEqual(400);
+      expect(JSON.parse(response.text)).toEqual({
+        error: 'Malformed deleteUsers payload: expected a non-empty array',
+      });
+      expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
     },
   );
 

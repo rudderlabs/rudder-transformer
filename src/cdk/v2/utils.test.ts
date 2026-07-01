@@ -1,4 +1,4 @@
-import { destinationCapabilities } from '../../features';
+import { isDestinationCdkV2Enabled } from '../../features';
 import { shouldUseCdkV2 } from './utils';
 
 describe('cdk/v2 utils', () => {
@@ -82,13 +82,11 @@ describe('cdk/v2 utils', () => {
     });
   });
 
-  describe('destinationCapabilities', () => {
+  describe('CDK v2 feature API', () => {
     test('keeps CDK v2 enablement in the consolidated capability map', () => {
-      expect(
-        Object.entries(destinationCapabilities)
-          .filter(([, capabilities]) => capabilities.cdkV2)
-          .map(([destination]) => destination.toUpperCase()),
-      ).toEqual(expect.arrayContaining(['WEBHOOK', 'PINTEREST_TAG', 'REDDIT']));
+      expect(isDestinationCdkV2Enabled('webhook')).toBe(true);
+      expect(isDestinationCdkV2Enabled('pinterest_tag')).toBe(true);
+      expect(isDestinationCdkV2Enabled('reddit')).toBe(true);
     });
   });
 });

@@ -1,8 +1,7 @@
 /* eslint-disable global-require, import/no-dynamic-require */
 import { Context } from 'koa';
-import { DestHandlerMap } from '../constants/destinationCanonicalNames';
+import defaultFeaturesConfig, { getDestinationHandlerName } from '../features';
 import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
-import defaultFeaturesConfig from '../features';
 import { BatchDestinationConstructor } from './destination/nativeBatching/batchDestination';
 
 export interface Hydrator {
@@ -11,10 +10,8 @@ export interface Hydrator {
 
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
-    if (DestHandlerMap.hasOwnProperty(dest)) {
-      return require(`../${version}/destinations/${DestHandlerMap[dest]}/transform`);
-    }
-    return require(`../${version}/destinations/${dest}/transform`);
+    const handlerName = getDestinationHandlerName(dest);
+    return require(`../${version}/destinations/${handlerName}/transform`);
   }
 
   public static getSourceHandler(source: string) {
@@ -26,11 +23,13 @@ export class MiscService {
   }
 
   public static getDeletionHandler(dest: string, version: string) {
-    return require(`../${version}/destinations/${dest}/deleteUsers`);
+    const handlerName = getDestinationHandlerName(dest);
+    return require(`../${version}/destinations/${handlerName}/deleteUsers`);
   }
 
   public static getBatchDestinationHandler(dest: string): BatchDestinationConstructor {
-    return require(`../v0/destinations/${dest}/routerTransform`).Integration;
+    const handlerName = getDestinationHandlerName(dest);
+    return require(`../v0/destinations/${handlerName}/routerTransform`).Integration;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

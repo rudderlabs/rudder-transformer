@@ -88,6 +88,80 @@ describe('features tests', () => {
 });
 
 describe('Api tests with a mock source/destination', () => {
+  test.each([
+    {
+      name: 'processor path destination',
+      request: () => request(server).post('/v0/destinations/not_a_destination').send([]),
+    },
+    {
+      name: 'routerTransform body destType',
+      request: () =>
+        request(server).post('/routerTransform').send({ input: [], destType: 'not_a_destination' }),
+    },
+    {
+      name: 'batch body destType',
+      request: () =>
+        request(server).post('/batch').send({ input: [], destType: 'not_a_destination' }),
+    },
+    {
+      name: 'deleteUsers body destType',
+      request: () =>
+        request(server)
+          .post('/deleteUsers')
+          .send([{ destType: 'not_a_destination' }]),
+    },
+    {
+      name: 'deleteUsers body with later missing destType',
+      request: () =>
+        request(server)
+          .post('/deleteUsers')
+          .send([{ destType: 'ga' }, { userId: 'user-1' }]),
+    },
+    {
+      name: 'v0 proxy path destination',
+      request: () => request(server).post('/v0/destinations/not_a_destination/proxy').send({}),
+    },
+    {
+      name: 'v1 proxy path destination',
+      request: () => request(server).post('/v1/destinations/not_a_destination/proxy').send({}),
+    },
+    {
+      name: 'proxyTest path destination',
+      request: () => request(server).post('/v0/destinations/not_a_destination/proxyTest').send({}),
+    },
+    {
+      name: 'public test-router path destination',
+      request: () => request(server).post('/test-router/v0/not_a_destination').send({ events: [] }),
+    },
+    {
+      name: 'public test-router batch path destination',
+      request: () =>
+        request(server).post('/test-router/v0/not_a_destination/batch').send({ events: [] }),
+    },
+  ])(
+    'rejects invalid destination before handler lookup: $name',
+    async ({ request: makeRequest }) => {
+      process.env.REJECT_UNKNOWN_DESTINATIONS = 'true';
+      const getDestHandlerSpy = jest.spyOn(FetchHandler, 'getDestHandler');
+      const getDeletionHandlerSpy = jest.spyOn(FetchHandler, 'getDeletionHandler');
+      const getBatchDestinationHandlerSpy = jest.spyOn(FetchHandler, 'getBatchDestinationHandler');
+      const getNetworkHandlerSpy = jest.spyOn(networkHandlerFactory, 'getNetworkHandler');
+
+      try {
+        const response = await makeRequest().set('Accept', 'application/json');
+
+        expect(response.status).toEqual(400);
+        expect(JSON.parse(response.text).error).toContain('Invalid destination');
+        expect(getDestHandlerSpy).not.toHaveBeenCalled();
+        expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
+        expect(getBatchDestinationHandlerSpy).not.toHaveBeenCalled();
+        expect(getNetworkHandlerSpy).not.toHaveBeenCalled();
+      } finally {
+        delete process.env.REJECT_UNKNOWN_DESTINATIONS;
+      }
+    },
+  );
+
   test('(mock destination) Processor transformation scenario with single event', async () => {
     const destType = '__rudder_test__';
     const version = 'v0';

@@ -6,7 +6,7 @@ import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
 import tags from '../../v0/util/tags';
 import { CatchErr } from '../../types';
-import { cdkV2DestinationsMap } from './constants/cdkV2DestinationsMap';
+import { isDestinationCdkV2Enabled, getDestinationHandlerName } from '../../features';
 
 const CDK_V2_ROOT_DIR = __dirname;
 
@@ -37,8 +37,7 @@ export async function getWorkflowPath(destDir, feature) {
 }
 
 export function getRootPathForDestination(destName) {
-  // TODO: Resolve the CDK v2 destination directory
-  const originalDestName = destName;
+  const originalDestName = getDestinationHandlerName(destName);
   // path from the root directory
   return path.join(CDK_V2_ROOT_DIR, 'destinations', originalDestName);
 }
@@ -113,8 +112,7 @@ export function getErrorInfo(err: CatchErr, isProd: boolean, defTags) {
 export function shouldUseCdkV2(destType: string, workspaceId: string) {
   const destTypeUpper = destType.toUpperCase();
 
-  // Check if the destination type is in the CDK v2 enabled map
-  if (!cdkV2DestinationsMap[destTypeUpper]) {
+  if (!isDestinationCdkV2Enabled(destType)) {
     return false;
   }
 

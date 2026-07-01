@@ -1,11 +1,8 @@
+import { getBatchingFrameworkGaDestinations } from '../features';
+
 // Destinations that have completed GA for the batching framework.
 // Once a destination is added here, it always uses the new path regardless of env var.
-export const batchedDestinationsMap: Record<string, true> = {
-  POSTHOG: true,
-  CUSTOM_AUDIENCE: true,
-  ITERABLE_AUDIENCE: true,
-  TEST_DESTINATION: true, // dev-only fixture — see src/v0/destinations/test_destination/config.ts
-};
+export const batchedDestinationsMap: Record<string, true> = getBatchingFrameworkGaDestinations();
 
 // Per-destination env var: {DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces

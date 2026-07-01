@@ -1,3 +1,4 @@
+import { isDestinationCdkV2Enabled } from '../../features';
 import { shouldUseCdkV2 } from './utils';
 
 describe('cdk/v2 utils', () => {
@@ -12,8 +13,8 @@ describe('cdk/v2 utils', () => {
 
     const cases: Case[] = [
       {
-        name: 'returns false when destination is not CDK v2 enabled',
-        destType: 'some_unknown_destination',
+        name: 'returns false when valid destination is not CDK v2 enabled',
+        destType: 'am',
         workspaceId: 'w1',
         expected: false,
       },
@@ -74,6 +75,18 @@ describe('cdk/v2 utils', () => {
           }
         }
       }
+    });
+
+    test('returns false for unknown destinations before CDK v2 lookup', () => {
+      expect(shouldUseCdkV2('../unknown', 'w1')).toBe(false);
+    });
+  });
+
+  describe('CDK v2 feature API', () => {
+    test('keeps CDK v2 enablement in the consolidated capability map', () => {
+      expect(isDestinationCdkV2Enabled('webhook')).toBe(true);
+      expect(isDestinationCdkV2Enabled('pinterest_tag')).toBe(true);
+      expect(isDestinationCdkV2Enabled('reddit')).toBe(true);
     });
   });
 });

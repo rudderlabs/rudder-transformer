@@ -192,4 +192,7 @@ const DestCanonicalNames = {
   singular: ['Singular'],
 };
 
-module.exports = { DestHandlerMap, DestCanonicalNames };
+module.exports = {
+  DestHandlerMap,
+  DestCanonicalNames,
+};

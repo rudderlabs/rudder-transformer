@@ -14,7 +14,7 @@ interface DestinationCapabilities {
   cdkV2?: true;
 }
 
-const destinationCapabilities: Record<string, DestinationCapabilities> = {
+export const destinationCapabilities: Record<string, DestinationCapabilities> = {
   AM: { routerTransform: true, regulations: true },
   ACTIVE_CAMPAIGN: { routerTransform: true },
   ALGOLIA: { routerTransform: true, cdkV2: true },

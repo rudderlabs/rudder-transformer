@@ -25,8 +25,18 @@ describe('DestinationValidationMiddleware', () => {
   it('rejects supplied unknown body destType values', async () => {
     const ctx = mockCtx({ input: [], destType: 'not_a_destination' });
     const next = mockNext();
+    const previousValue = process.env.REJECT_UNKNOWN_DESTINATIONS;
 
-    await DestinationValidationMiddleware.bodyDestType(ctx, next);
+    process.env.REJECT_UNKNOWN_DESTINATIONS = 'true';
+    try {
+      await DestinationValidationMiddleware.bodyDestType(ctx, next);
+    } finally {
+      if (previousValue === undefined) {
+        delete process.env.REJECT_UNKNOWN_DESTINATIONS;
+      } else {
+        process.env.REJECT_UNKNOWN_DESTINATIONS = previousValue;
+      }
+    }
 
     expect(next).not.toHaveBeenCalled();
     expect(ctx.status).toBe(400);

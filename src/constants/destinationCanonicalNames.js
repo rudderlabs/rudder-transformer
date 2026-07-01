@@ -260,7 +260,7 @@ Object.entries(WhitelistOnlyDestinationAliases).forEach(([alias, destination]) =
       `Destination whitelist alias ${alias} points to unknown destination: ${destination}`,
     );
   }
-  destinationRegistry[key] = destinationRegistry[key] || buildDestinationEntry(key);
+  destinationRegistry[key] = buildDestinationEntry(key);
 });
 
 const isValidDestination = (destination) =>

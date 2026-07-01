@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { DestHandlerMap } from './constants/destinationCanonicalNames';
+import { getIntegrations } from './routes/utils';
 
 // ---------------------------------------------------------------------------
 // Destination capabilities
@@ -160,16 +160,7 @@ function initDestinationRegistry() {
   ];
 
   destinationRoots
-    .flatMap((root) => {
-      try {
-        return fs
-          .readdirSync(root, { withFileTypes: true })
-          .filter((entry) => entry.isDirectory())
-          .map((entry) => entry.name);
-      } catch {
-        return [];
-      }
-    })
+    .flatMap((root) => getIntegrations(root))
     .forEach((destination) => {
       const key = normalizeDestinationName(destination);
       destinationRegistry[key] = key;

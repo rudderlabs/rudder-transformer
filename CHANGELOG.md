@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.141.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.140.0...v1.141.0) (2026-06-30)
+
+
+### Features
+
+* add support of recommended events to braze ([#5251](https://github.com/rudderlabs/rudder-transformer/issues/5251)) ([999d612](https://github.com/rudderlabs/rudder-transformer/commit/999d612dcd0a586c8c24331aa9e9fbbd06fb9a4d))
+* **customerIO:** support VDM v2 event object ([#5312](https://github.com/rudderlabs/rudder-transformer/issues/5312)) ([6c468e1](https://github.com/rudderlabs/rudder-transformer/commit/6c468e139cf73e23960a3c813bf4ac83ae74bc76))
+* **metrics:** destVersion label on per-destination transform metrics ([#5319](https://github.com/rudderlabs/rudder-transformer/issues/5319)) ([e200671](https://github.com/rudderlabs/rudder-transformer/commit/e200671627ea0cdb5dc1fa76fa0d0dd48fd08b3e)), closes [#5318](https://github.com/rudderlabs/rudder-transformer/issues/5318) [#5318](https://github.com/rudderlabs/rudder-transformer/issues/5318) [#5318](https://github.com/rudderlabs/rudder-transformer/issues/5318) [rudderlabs/rudder-server#7125](https://github.com/rudderlabs/rudder-server/issues/7125)
+* **versioning:** carry integration major on Destination + dev-only test_destination ([#5318](https://github.com/rudderlabs/rudder-transformer/issues/5318)) ([ec450b8](https://github.com/rudderlabs/rudder-transformer/commit/ec450b85a75faeead90181d9ae4d73db16ff07c7)), closes [rudderlabs/rudder-server#7125](https://github.com/rudderlabs/rudder-server/issues/7125) [#5319](https://github.com/rudderlabs/rudder-transformer/issues/5319)
+
+
+### Bug Fixes
+
+* survicate destination keys ([#5317](https://github.com/rudderlabs/rudder-transformer/issues/5317)) ([d6666c9](https://github.com/rudderlabs/rudder-transformer/commit/d6666c96606ec82ec36979db0ad5d9aed0565f6a))
+
 ## [1.140.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.139.0...v1.140.0) (2026-06-25)
 
 

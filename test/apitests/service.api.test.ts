@@ -149,19 +149,24 @@ describe('Api tests with a mock source/destination', () => {
   ])(
     'rejects invalid destination before handler lookup: $name',
     async ({ request: makeRequest }) => {
+      process.env.REJECT_UNKNOWN_DESTINATIONS = 'true';
       const getDestHandlerSpy = jest.spyOn(FetchHandler, 'getDestHandler');
       const getDeletionHandlerSpy = jest.spyOn(FetchHandler, 'getDeletionHandler');
       const getBatchDestinationHandlerSpy = jest.spyOn(FetchHandler, 'getBatchDestinationHandler');
       const getNetworkHandlerSpy = jest.spyOn(networkHandlerFactory, 'getNetworkHandler');
 
-      const response = await makeRequest().set('Accept', 'application/json');
+      try {
+        const response = await makeRequest().set('Accept', 'application/json');
 
-      expect(response.status).toEqual(400);
-      expect(JSON.parse(response.text).error).toContain('Invalid destination');
-      expect(getDestHandlerSpy).not.toHaveBeenCalled();
-      expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
-      expect(getBatchDestinationHandlerSpy).not.toHaveBeenCalled();
-      expect(getNetworkHandlerSpy).not.toHaveBeenCalled();
+        expect(response.status).toEqual(400);
+        expect(JSON.parse(response.text).error).toContain('Invalid destination');
+        expect(getDestHandlerSpy).not.toHaveBeenCalled();
+        expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
+        expect(getBatchDestinationHandlerSpy).not.toHaveBeenCalled();
+        expect(getNetworkHandlerSpy).not.toHaveBeenCalled();
+      } finally {
+        delete process.env.REJECT_UNKNOWN_DESTINATIONS;
+      }
     },
   );
 

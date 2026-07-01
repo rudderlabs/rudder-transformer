@@ -89,21 +89,30 @@ const eventStreamMessageSchema = z
   );
 
 export const getV2InputSchema = (): ZodType =>
-  z
-    .object({
-      message: z.union([recordMessageSchema, eventStreamMessageSchema]),
-      connection: z
-        .object({
-          config: z
-            .object({
-              destination: CustomerIOConnectionConfigSchema,
-            })
-            .passthrough(),
-        })
-        .passthrough()
-        .optional(),
-    })
-    .passthrough();
+  z.union([
+    // Record messages: validate connection.config.destination against the record-specific schema
+    z
+      .object({
+        message: recordMessageSchema,
+        connection: z
+          .object({
+            config: z
+              .object({
+                destination: CustomerIOConnectionConfigSchema,
+              })
+              .passthrough(),
+          })
+          .passthrough()
+          .optional(),
+      })
+      .passthrough(),
+    // Event stream messages: no connection schema enforcement
+    z
+      .object({
+        message: eventStreamMessageSchema,
+      })
+      .passthrough(),
+  ]);
 
 export {
   type CustomerIODestination,

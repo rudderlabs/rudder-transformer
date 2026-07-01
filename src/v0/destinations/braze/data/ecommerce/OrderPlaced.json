@@ -1,0 +1,56 @@
+[
+  {
+    "destKey": "order_id",
+    "sourceKeys": "properties.order_id",
+    "type": "String",
+    "brazeRequired": true
+  },
+  {
+    "destKey": "total_value",
+    "sourceKeys": ["properties.total", "properties.revenue", "properties.value"],
+    "type": "Float",
+    "brazeRequired": true
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "type": "String",
+    "brazeRequired": true
+  },
+  {
+    "destKey": "cart_id",
+    "sourceKeys": "properties.cart_id",
+    "type": "String",
+    "brazeRequired": false
+  },
+  {
+    "destKey": "tax",
+    "sourceKeys": "properties.tax",
+    "type": "Float",
+    "brazeRequired": false
+  },
+  {
+    "destKey": "shipping",
+    "sourceKeys": "properties.shipping",
+    "type": "Float",
+    "brazeRequired": false
+  },
+  {
+    "destKey": "total_discounts",
+    "sourceKeys": ["properties.discount", "properties.total_discounts"],
+    "type": "Float",
+    "brazeRequired": false
+  },
+  {
+    "destKey": "subtotal_value",
+    "sourceKeys": "properties.subtotal_value",
+    "type": "Float",
+    "brazeRequired": false
+  },
+  {
+    "destKey": "discounts",
+    "sourceKeys": "properties.discounts",
+    "type": "Array",
+    "brazeRequired": false
+  }
+]

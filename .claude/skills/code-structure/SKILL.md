@@ -411,3 +411,25 @@ try {
   response.transformed = [{ error: err.message }];
 }
 ```
+
+## Dispatch on the Integration Major (`destination.version`)
+
+A destination definition can ship multiple **integration majors** (its config/API v1 → v2). The data plane carries the major as `destination.version` (a number; `destinationVersion` on the proxy payload). Branch on it **inside the destination's own code** — never route majors through `getDestHandler` (that argument is the unrelated `v0`/`v1`/`v2` architecture directory).
+
+Default to an in-file inline branch on `getDestinationVersion(event.destination.version)` (from `src/util/utils`, which normalizes the raw major) at the top of the entry `process`; keep v1 in place and factor shared logic into `utils.ts`. `0`, `undefined`, non-numeric, and `1` all normalize to `1` and fall to v1; fractions are truncated. Branch on the helper, not the bare `Number(...)`, so metrics never see a `destVersion=0`.
+
+```ts
+// Good — in-file branch; v1 unchanged; shared logic in utils
+import { getDestinationVersion } from '../../../util/utils';
+
+const process = (event) => {
+  const major = getDestinationVersion(event.destination.version);
+  if (major >= 2) return processV2(event);
+  return processV1(event);
+};
+
+// Bad — bare Number(event.destination.version) (skips normalization; destVersion=0 leaks to metrics)
+// Bad — routing the major through getDestHandler (conflates the architecture-version axis)
+```
+
+Escalate the v2 branch to a sibling module (`transformV2.ts` — the existing repo convention) only on large divergence; prefer that over `./v1` / `./v2` subdirs (none exist today), though subdirs aren't strictly banned for a major large enough to warrant its own tree. Branch `routerTransform` / `deleteUsers` / the proxy `networkHandler` (which reads top-level `destinationVersion`) only when a major actually changes them. Full reference: CONTRIBUTING.md → "Dispatching on the integration major".

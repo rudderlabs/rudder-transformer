@@ -1,4 +1,5 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
+import { buildProcessorInput, expectedEcommerceOutput, trackMessage } from '../common';
 export const data = [
   {
     name: 'braze',
@@ -4658,6 +4659,309 @@ export const data = [
             },
             statusCode: 200,
           },
+        ],
+      },
+    },
+  },
+
+  // ----------------------------------------------------------------------------
+  // Recommended ecommerce events (useEcommerceRecommendedEvents = true)
+  // Fixture IDs follow LLD § 9.4 (T-I-01 through T-I-09).
+  // T-I-10 (flag-off byte-identical) is implicitly covered by the existing legacy
+  // fixtures above continuing to pass without changes.
+  // ----------------------------------------------------------------------------
+  {
+    name: 'braze',
+    description: 'T-I-01 recommended ecommerce: Product Viewed → ecommerce.product_viewed',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(
+      trackMessage('Product Viewed', {
+        product_id: 'sku_42',
+        name: 'Widget',
+        variant: 'red',
+        price: 9.99,
+        currency: 'USD',
+        category: 'home',
+      }),
+    ),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          expectedEcommerceOutput('ecommerce.product_viewed', {
+            product_id: 'sku_42',
+            product_name: 'Widget',
+            variant_id: 'red',
+            price: 9.99,
+            currency: 'USD',
+            source: 'web',
+            metadata: { category: 'home' },
+          }),
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      'T-I-02 recommended ecommerce: Product Added → cart_updated(add) with single-product wrap',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(
+      trackMessage('Product Added', {
+        cart_id: 'cart_001',
+        currency: 'USD',
+        product_id: 'sku_42',
+        name: 'Widget',
+        quantity: 2,
+        price: 9.99,
+      }),
+    ),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          expectedEcommerceOutput('ecommerce.cart_updated', {
+            cart_id: 'cart_001',
+            currency: 'USD',
+            action: 'add',
+            source: 'web',
+            products: [
+              {
+                product_id: 'sku_42',
+                product_name: 'Widget',
+                variant_id: 'sku_42',
+                quantity: 2,
+                price: 9.99,
+              },
+            ],
+          }),
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'T-I-03 recommended ecommerce: Product Removed → cart_updated(remove)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(
+      trackMessage('Product Removed', {
+        cart_id: 'cart_001',
+        currency: 'USD',
+        product_id: 'sku_42',
+        name: 'Widget',
+        quantity: 1,
+        price: 9.99,
+      }),
+    ),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          expectedEcommerceOutput('ecommerce.cart_updated', {
+            cart_id: 'cart_001',
+            currency: 'USD',
+            action: 'remove',
+            source: 'web',
+            products: [
+              {
+                product_id: 'sku_42',
+                product_name: 'Widget',
+                variant_id: 'sku_42',
+                quantity: 1,
+                price: 9.99,
+              },
+            ],
+          }),
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'T-I-05 recommended ecommerce: Checkout Started → ecommerce.checkout_started',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(
+      trackMessage('Checkout Started', {
+        order_id: 'ord_001',
+        revenue: 99.99,
+        currency: 'USD',
+        tax: 5,
+        shipping: 3,
+        products: [{ product_id: 'sku_42', name: 'Widget', quantity: 1, price: 99.99 }],
+      }),
+    ),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          expectedEcommerceOutput('ecommerce.checkout_started', {
+            checkout_id: 'ord_001',
+            total_value: 99.99,
+            currency: 'USD',
+            tax: 5,
+            shipping: 3,
+            source: 'web',
+            products: [
+              {
+                product_id: 'sku_42',
+                product_name: 'Widget',
+                variant_id: 'sku_42',
+                quantity: 1,
+                price: 99.99,
+              },
+            ],
+          }),
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      'T-I-06 recommended ecommerce: Order Completed → ecommerce.order_placed (no purchases[])',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(
+      trackMessage('Order Completed', {
+        order_id: 'ord_001',
+        revenue: 99.99,
+        currency: 'USD',
+        discount: 5,
+        products: [
+          { product_id: 'sku_42', name: 'Widget', quantity: 1, price: 99.99, color: 'blue' },
+        ],
+        campaign_id: 'spring26',
+      }),
+    ),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          expectedEcommerceOutput('ecommerce.order_placed', {
+            order_id: 'ord_001',
+            total_value: 99.99,
+            currency: 'USD',
+            total_discounts: 5,
+            source: 'web',
+            products: [
+              {
+                product_id: 'sku_42',
+                product_name: 'Widget',
+                variant_id: 'sku_42',
+                quantity: 1,
+                price: 99.99,
+                metadata: { color: 'blue' },
+              },
+            ],
+            metadata: { campaign_id: 'spring26' },
+          }),
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      'T-I-07 recommended ecommerce: Order Refunded → order_refunded (only order_id; chronic GAPs per OQ-8)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(trackMessage('Order Refunded', { order_id: 'ord_001' })),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          expectedEcommerceOutput('ecommerce.order_refunded', {
+            order_id: 'ord_001',
+            source: 'web',
+          }),
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      'T-I-08 recommended ecommerce: Order Cancelled with cancel_reason → order_cancelled',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(
+      trackMessage('Order Cancelled', {
+        order_id: 'ord_001',
+        total: 99.99,
+        currency: 'USD',
+        cancel_reason: 'out_of_stock',
+        products: [{ product_id: 'sku_42', name: 'Widget', quantity: 1, price: 99.99 }],
+      }),
+    ),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          expectedEcommerceOutput('ecommerce.order_cancelled', {
+            order_id: 'ord_001',
+            total_value: 99.99,
+            currency: 'USD',
+            cancel_reason: 'out_of_stock',
+            source: 'web',
+            products: [
+              {
+                product_id: 'sku_42',
+                product_name: 'Widget',
+                variant_id: 'sku_42',
+                quantity: 1,
+                price: 99.99,
+              },
+            ],
+          }),
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      'T-I-09 recommended ecommerce: Order Cancelled WITHOUT cancel_reason — event still sent',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(
+      trackMessage('Order Cancelled', {
+        order_id: 'ord_001',
+        total: 99.99,
+        currency: 'USD',
+        products: [{ product_id: 'sku_42', name: 'Widget', quantity: 1, price: 99.99 }],
+      }),
+    ),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          expectedEcommerceOutput('ecommerce.order_cancelled', {
+            order_id: 'ord_001',
+            total_value: 99.99,
+            currency: 'USD',
+            source: 'web',
+            products: [
+              {
+                product_id: 'sku_42',
+                product_name: 'Widget',
+                variant_id: 'sku_42',
+                quantity: 1,
+                price: 99.99,
+              },
+            ],
+          }),
         ],
       },
     },

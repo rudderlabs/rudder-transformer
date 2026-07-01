@@ -103,6 +103,9 @@ const defaultFeaturesConfig: FeaturesConfig = {
     CUSTOM_AUDIENCE: true,
     ITERABLE_AUDIENCE: true,
     SURVICATE: true,
+    // dev-only fixture — see src/v0/destinations/test_destination/config.ts. The /features payload is
+    // informational; whether a destination is processed is governed by control-plane workspace config.
+    TEST_DESTINATION: true,
   },
   regulations: [
     'BRAZE',

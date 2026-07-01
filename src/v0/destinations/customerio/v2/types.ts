@@ -1,5 +1,6 @@
 import { z, ZodType } from 'zod';
 import { RECORD_IDENTIFIER_KEYS } from './config';
+import { CustomerIOConnectionConfigSchema } from '../types';
 
 export type CustomerIOV2Identifiers = {
   id?: string;
@@ -37,8 +38,8 @@ const emailTraitSchema = z.object({ email: z.unknown() }).passthrough().nullish(
 const recordMessageSchema = z
   .object({
     type: z.literal('record'),
-    action: z.string(),
-    identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+    action: z.enum(['insert', 'update', 'delete']),
+    identifiers: z.record(z.string(), z.unknown()),
   })
   .passthrough()
   .refine(
@@ -48,6 +49,8 @@ const recordMessageSchema = z
       ),
     { message: 'A non-empty `id` or `email` identifier is required' },
   );
+
+export type CustomerIOV2RecordMessage = z.infer<typeof recordMessageSchema>;
 
 const eventStreamMessageSchema = z
   .object({
@@ -89,6 +92,16 @@ export const getV2InputSchema = (): ZodType =>
   z
     .object({
       message: z.union([recordMessageSchema, eventStreamMessageSchema]),
+      connection: z
+        .object({
+          config: z
+            .object({
+              destination: CustomerIOConnectionConfigSchema,
+            })
+            .passthrough(),
+        })
+        .passthrough()
+        .optional(),
     })
     .passthrough();
 

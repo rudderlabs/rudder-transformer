@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.141.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.0...v1.141.1) (2026-07-02)
+
+
+### Bug Fixes
+
+* **customerio:** event stream events rejected by record-only connection schema ([#5331](https://github.com/rudderlabs/rudder-transformer/issues/5331)) ([ee04ae3](https://github.com/rudderlabs/rudder-transformer/commit/ee04ae32dddaeef1fb656985fc1ba0f092f2b016))
+
 ## [1.141.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.140.0...v1.141.0) (2026-06-30)
 
 

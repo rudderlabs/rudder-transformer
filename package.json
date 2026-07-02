@@ -145,7 +145,7 @@
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "allure-jest": "^3.0.7",
-    "axios-mock-adapter": "^1.22.0",
+    "axios-mock-adapter": "^2.1.0",
     "benchmark-suite": "^0.1.8",
     "commander": "^14.0.2",
     "commitizen": "^4.3.0",

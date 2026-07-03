@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import type { RudderMessage, Metadata } from '../../../types';
 import type { Destination } from '../../../types/controlPlaneConfig';
 import type {
@@ -7,11 +8,15 @@ import type {
   RouterTransformationRequestData,
 } from '../../../types/destinationTransformation';
 
-export type PostHogDestinationConfig = {
-  useV2Group?: boolean;
-  teamApiKey: string;
-  yourInstance?: string;
-};
+export const PostHogDestinationConfigSchema = z
+  .object({
+    teamApiKey: z.string().min(1),
+    useV2Group: z.boolean().optional(),
+    yourInstance: z.string().optional(),
+  })
+  .passthrough();
+
+export type PostHogDestinationConfig = z.infer<typeof PostHogDestinationConfigSchema>;
 
 // Properties directly accessed in transform.ts; remaining PHPropertiesConfig fields
 // are populated implicitly by constructPayload and covered by the index signature.

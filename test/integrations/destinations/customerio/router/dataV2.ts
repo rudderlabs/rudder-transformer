@@ -919,7 +919,7 @@ export const dataV2 = [
               metadata: [{ jobId: 31, userId: 'u1', workspaceId: 'ws-cio-v2' }],
               batched: false,
               statusCode: 400,
-              error: 'apiKey not found in Configs',
+              error: 'destination.Config.apiKey: Required',
               statTags: {
                 destType: 'CUSTOMERIO',
                 errorCategory: 'dataValidation',

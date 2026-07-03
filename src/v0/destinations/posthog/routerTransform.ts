@@ -1,18 +1,43 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
   TransformedEvent,
   ChunkBatchStrategy,
+  makeRouterInputSchema,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { processEvent } from './transform';
-import type { PostHogPayload, PostHogRouterRequest } from './types';
+import type { PostHogPayload } from './types';
+import { PostHogDestinationConfigSchema } from './types';
+import type { RudderMessage } from '../../../types';
 import { MAX_EVENT_SIZE_BYTES } from './config';
 
-class PostHogIntegration extends BatchDestination<PostHogPayload> {
-  transformEvent(input: PostHogRouterRequest): TransformedEvent<PostHogPayload> {
-    const result = processEvent(input.message, input.destination);
+const postHogInputSchema = makeRouterInputSchema({
+  destinationConfig: PostHogDestinationConfigSchema,
+  variants: [
+    {
+      message: z
+        .object({
+          userId: z.union([z.string(), z.number()]).nullish(),
+          anonymousId: z.union([z.string(), z.number()]).nullish(),
+          type: z.enum(['track', 'page', 'screen', 'identify', 'alias', 'group']),
+        })
+        .passthrough()
+        .refine((msg) => !!msg.userId || !!msg.anonymousId, {
+          message: 'Either userId or anonymousId must be provided',
+        }),
+    },
+  ],
+});
+
+class PostHogIntegration extends BatchDestination<PostHogPayload, typeof postHogInputSchema> {
+  transformEvent(input: z.infer<typeof postHogInputSchema>): TransformedEvent<PostHogPayload> {
+    // Schema-inferred message type is narrower than RudderMessage (e.g. userId
+    // includes number|null from the Zod union). The runtime object is a full
+    // RudderMessage — the schema only validates a subset of fields — so the cast
+    // is safe.
+    const result = processEvent(input.message as unknown as RudderMessage, this.destination);
     // Strip api_key from the body — it belongs in the wrapBody wrapper
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { api_key, ...eventBody } = result.body.JSON!;
@@ -43,21 +68,8 @@ class PostHogIntegration extends BatchDestination<PostHogPayload> {
     });
   }
 
-  getInputSchema(): ZodType {
-    return z
-      .object({
-        message: z
-          .object({
-            userId: z.union([z.string(), z.number()]).nullish(),
-            anonymousId: z.union([z.string(), z.number()]).nullish(),
-            type: z.enum(['track', 'page', 'screen', 'identify', 'alias', 'group']),
-          })
-          .passthrough()
-          .refine((msg) => !!msg.userId || !!msg.anonymousId, {
-            message: 'Either userId or anonymousId must be provided',
-          }),
-      })
-      .passthrough();
+  getInputSchema() {
+    return postHogInputSchema;
   }
 }
 

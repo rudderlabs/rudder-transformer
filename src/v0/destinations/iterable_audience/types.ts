@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { RecordAction } from '../../../types/rudderEvents';
+import { makeRouterInputSchema } from '../../../services/destination/nativeBatching/batchDestination';
 import { PROJECT_TYPES } from './config';
 
 // ---------------------------------------------------------------------------
@@ -71,17 +72,15 @@ const RecordMessageSchema = z
   })
   .passthrough();
 
-export const IterableAudienceRouterRequestSchema = z
-  .object({
-    message: RecordMessageSchema,
-    destination: z.object({ Config: IterableDestinationConfigSchema }).passthrough(),
-    connection: z
-      .object({
-        config: z.object({ destination: IterableConnectionConfigSchema }).passthrough(),
-      })
-      .passthrough(),
-  })
-  .passthrough();
+export const IterableAudienceRouterRequestSchema = makeRouterInputSchema({
+  destinationConfig: IterableDestinationConfigSchema,
+  variants: [
+    {
+      message: RecordMessageSchema,
+      connectionConfig: z.object({ destination: IterableConnectionConfigSchema }).passthrough(),
+    },
+  ],
+});
 
 // ---------------------------------------------------------------------------
 // Subscriber + outbound payload shapes

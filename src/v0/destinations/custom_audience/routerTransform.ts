@@ -4,6 +4,7 @@ import {
   BatchDestination,
   CustomBatchStrategy,
   TransformedEvent,
+  makeRouterInputSchema,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
@@ -20,25 +21,21 @@ import {
 import type { Action } from './types';
 import { CustomAudienceDestConfigSchema, CustomAudienceConnectionDestConfigSchema } from './types';
 
-const customAudienceInputSchema = z
-  .object({
-    message: z
-      .object({
-        type: z.literal('record'),
-        action: z.nativeEnum(RecordAction),
-        identifiers: z.record(z.unknown()),
-      })
-      .passthrough(),
-    destination: z.object({ Config: CustomAudienceDestConfigSchema }).passthrough(),
-    connection: z
-      .object({
-        config: z.object({
-          destination: CustomAudienceConnectionDestConfigSchema,
-        }),
-      })
-      .passthrough(),
-  })
-  .passthrough();
+const customAudienceInputSchema = makeRouterInputSchema({
+  destinationConfig: CustomAudienceDestConfigSchema,
+  variants: [
+    {
+      message: z
+        .object({
+          type: z.literal('record'),
+          action: z.nativeEnum(RecordAction),
+          identifiers: z.record(z.unknown()),
+        })
+        .passthrough(),
+      connectionConfig: z.object({ destination: CustomAudienceConnectionDestConfigSchema }),
+    },
+  ],
+});
 
 class CustomAudienceIntegration extends BatchDestination<
   Record<string, unknown>,

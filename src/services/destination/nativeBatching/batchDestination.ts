@@ -19,6 +19,7 @@ export type {
   ExtractConnectionConfig,
 } from './types';
 export { BodyFormat, parseSizeToBytes } from './types';
+export { makeRouterInputSchema } from './inputSchema';
 export { ChunkBatchStrategy } from './chunkBatchStrategy';
 export { CustomBatchStrategy } from './customBatchStrategy';
 

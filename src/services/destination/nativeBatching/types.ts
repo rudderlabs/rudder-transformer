@@ -7,9 +7,13 @@ export type ExtractDestinationConfig<T> = T extends { destination: { Config: inf
   ? C
   : Record<string, unknown>;
 
-/** Extract connection config type from a schema output. Falls back to Record<string, unknown>. */
+/**
+ * Extract connection config type from a schema output. Falls back to
+ * Record<string, unknown>. `connection` is optional on the router envelope, so
+ * strip the `| undefined` before inferring `config`.
+ */
 export type ExtractConnectionConfig<T> = 'connection' extends keyof T
-  ? T extends { connection: { config: infer C } }
+  ? NonNullable<T['connection']> extends { config: infer C }
     ? C
     : Record<string, unknown>
   : Record<string, unknown>;

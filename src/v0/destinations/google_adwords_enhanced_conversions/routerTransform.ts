@@ -3,6 +3,7 @@ import {
   BatchDestination,
   TransformedEvent,
   ChunkBatchStrategy,
+  makeRouterInputSchema,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 // `process` (from transform.js) builds the single-event delivery request synchronously and is
@@ -13,18 +14,20 @@ import { MAX_CONVERSION_ADJUSTMENTS_PER_BATCH } from './config';
 // Each batched item is a single Google Ads conversion adjustment.
 type ConversionAdjustment = Record<string, unknown>;
 
-const gaecInputSchema = z
-  .object({
-    message: z
-      .object({
-        type: z.string().refine((type) => type.toLowerCase() === 'track', {
-          message: 'Message Type is not supported. Only track events are supported.',
-        }),
-        event: z.string().min(1, 'event is required for track calls'),
-      })
-      .passthrough(),
-  })
-  .passthrough();
+const gaecInputSchema = makeRouterInputSchema({
+  variants: [
+    {
+      message: z
+        .object({
+          type: z.string().refine((type) => type.toLowerCase() === 'track', {
+            message: 'Message Type is not supported. Only track events are supported.',
+          }),
+          event: z.string().min(1, 'event is required for track calls'),
+        })
+        .passthrough(),
+    },
+  ],
+});
 
 class GoogleAdwordsEnhancedConversionsIntegration extends BatchDestination<
   ConversionAdjustment,

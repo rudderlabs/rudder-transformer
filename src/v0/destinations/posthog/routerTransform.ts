@@ -4,6 +4,7 @@ import {
   BatchDestination,
   TransformedEvent,
   ChunkBatchStrategy,
+  makeRouterInputSchema,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { processEvent } from './transform';
@@ -12,21 +13,23 @@ import { PostHogDestinationConfigSchema } from './types';
 import type { RudderMessage } from '../../../types';
 import { MAX_EVENT_SIZE_BYTES } from './config';
 
-const postHogInputSchema = z
-  .object({
-    message: z
-      .object({
-        userId: z.union([z.string(), z.number()]).nullish(),
-        anonymousId: z.union([z.string(), z.number()]).nullish(),
-        type: z.enum(['track', 'page', 'screen', 'identify', 'alias', 'group']),
-      })
-      .passthrough()
-      .refine((msg) => !!msg.userId || !!msg.anonymousId, {
-        message: 'Either userId or anonymousId must be provided',
-      }),
-    destination: z.object({ Config: PostHogDestinationConfigSchema }).passthrough(),
-  })
-  .passthrough();
+const postHogInputSchema = makeRouterInputSchema({
+  destinationConfig: PostHogDestinationConfigSchema,
+  variants: [
+    {
+      message: z
+        .object({
+          userId: z.union([z.string(), z.number()]).nullish(),
+          anonymousId: z.union([z.string(), z.number()]).nullish(),
+          type: z.enum(['track', 'page', 'screen', 'identify', 'alias', 'group']),
+        })
+        .passthrough()
+        .refine((msg) => !!msg.userId || !!msg.anonymousId, {
+          message: 'Either userId or anonymousId must be provided',
+        }),
+    },
+  ],
+});
 
 class PostHogIntegration extends BatchDestination<PostHogPayload, typeof postHogInputSchema> {
   transformEvent(input: z.infer<typeof postHogInputSchema>): TransformedEvent<PostHogPayload> {

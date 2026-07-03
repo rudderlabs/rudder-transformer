@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { makeRouterInputSchema } from '../../../../services/destination/nativeBatching/batchDestination';
 import { RECORD_IDENTIFIER_KEYS } from './config';
 import { CustomerIODestinationConfigSchema, CustomerIOConnectionConfigSchema } from '../types';
 
@@ -88,31 +89,20 @@ const eventStreamMessageSchema = z
     { message: 'userId, email or anonymousId is required' },
   );
 
-// Discriminated on message type. Record events validate connection.config.destination
-// against the record-specific schema (which requires `object`); event-stream events may
-// carry a connection lacking those record-only fields, so their connection is not enforced
-// — validating it against the record schema would wrongly reject them (#5331). `destination`
-// is validated in both branches so schema-driven typing resolves `this.destination.Config`.
-export const customerIOInputSchema = z.union([
-  z
-    .object({
+// Hybrid destination: record events validate connection.config.destination against the
+// record-specific schema (which requires `object`); event-stream events may carry a
+// connection lacking those record-only fields, so their connection is not enforced —
+// validating it against the record schema would wrongly reject them (#5331).
+export const customerIOInputSchema = makeRouterInputSchema({
+  destinationConfig: CustomerIODestinationConfigSchema,
+  variants: [
+    {
       message: recordMessageSchema,
-      destination: z.object({ Config: CustomerIODestinationConfigSchema }).passthrough(),
-      connection: z
-        .object({
-          config: z.object({ destination: CustomerIOConnectionConfigSchema }).passthrough(),
-        })
-        .passthrough()
-        .optional(),
-    })
-    .passthrough(),
-  z
-    .object({
-      message: eventStreamMessageSchema,
-      destination: z.object({ Config: CustomerIODestinationConfigSchema }).passthrough(),
-    })
-    .passthrough(),
-]);
+      connectionConfig: z.object({ destination: CustomerIOConnectionConfigSchema }).passthrough(),
+    },
+    { message: eventStreamMessageSchema },
+  ],
+});
 
 export {
   type CustomerIODestination,

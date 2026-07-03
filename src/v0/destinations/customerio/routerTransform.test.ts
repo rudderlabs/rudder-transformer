@@ -1,9 +1,8 @@
-import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { Integration } from './routerTransform';
-
-type CIOInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
 import type { CustomerIORouterRequest } from './types';
 import type { CustomerIOV2Payload } from './v2/types';
+
+type CIOInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
 
 const siteID = 'test-site-id';
 const apiKey = 'test-api-key';
@@ -25,7 +24,7 @@ const baseConnection = {
   config: { destination: { object: 'person' } },
 } as CustomerIORouterRequest['connection'];
 
-const makeInput = (overrides: Record<string, unknown>): CIOInput =>
+const makeInput = (overrides: Record<string, unknown>, connection = baseConnection): CIOInput =>
   ({
     message: {
       type: 'record' as const,
@@ -35,6 +34,7 @@ const makeInput = (overrides: Record<string, unknown>): CIOInput =>
     },
     metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
     destination: baseDestination,
+    connection,
   }) as unknown as CIOInput;
 
 const eventConnection = {
@@ -43,9 +43,11 @@ const eventConnection = {
 } as CustomerIORouterRequest['connection'];
 
 describe('CustomerIOIntegration — record event routing', () => {
-  it('transforms insert record into identify person payload', () => {
+  it('transforms insert record into identify person payload', async () => {
     const integration = new Integration(baseDestination, baseConnection);
-    const result = integration.transformEvent(makeInput({}));
+    const { successPayloads } = await integration.transformEvents([makeInput({})]);
+    expect(successPayloads).toHaveLength(1);
+    const result = successPayloads[0];
     expect(result).toMatchObject({
       body: {
         type: 'person',
@@ -59,9 +61,13 @@ describe('CustomerIOIntegration — record event routing', () => {
     expect(result.endpoint).toMatch(/track\.customer\.io\/api\/v2\/batch/);
   });
 
-  it('transforms delete record into delete person payload without attributes', () => {
+  it('transforms delete record into delete person payload without attributes', async () => {
     const integration = new Integration(baseDestination, baseConnection);
-    const result = integration.transformEvent(makeInput({ action: 'delete' }));
+    const { successPayloads } = await integration.transformEvents([
+      makeInput({ action: 'delete' }),
+    ]);
+    expect(successPayloads).toHaveLength(1);
+    const result = successPayloads[0];
     expect(result.body).toMatchObject({
       type: 'person',
       action: 'delete',
@@ -70,17 +76,20 @@ describe('CustomerIOIntegration — record event routing', () => {
     expect((result.body as CustomerIOV2Payload).attributes).toBeUndefined();
   });
 
-  it('throws InstrumentationError for unsupported action', () => {
+  it('returns error payload for unsupported action', async () => {
     const integration = new Integration(baseDestination, baseConnection);
-    expect(() => integration.transformEvent(makeInput({ action: 'upsert' }))).toThrow(
-      InstrumentationError,
-    );
+    const { successPayloads, errorPayloads } = await integration.transformEvents([
+      makeInput({ action: 'upsert' }),
+    ]);
+    expect(successPayloads).toHaveLength(0);
+    expect(errorPayloads).toHaveLength(1);
+    expect(errorPayloads[0].error).toMatch(/"upsert" is not supported for object type "person"/);
   });
 
-  it('transforms event object record into event person payload', () => {
+  it('transforms event object record into event person payload', async () => {
     const integration = new Integration(baseDestination, eventConnection);
-    const result = integration.transformEvent(
-      makeInput({
+    const input = makeInput(
+      {
         action: 'update',
         identifiers: {
           id: 'user-1',
@@ -88,9 +97,12 @@ describe('CustomerIOIntegration — record event routing', () => {
           plan: 'pro',
           created_at: '2024-06-25T14:00:00.000Z',
         },
-      }),
+      },
+      eventConnection,
     );
-    expect(result.body).toEqual({
+    const { successPayloads } = await integration.transformEvents([input]);
+    expect(successPayloads).toHaveLength(1);
+    expect(successPayloads[0].body).toEqual({
       type: 'person',
       action: 'event',
       identifiers: { id: 'user-1' },
@@ -100,14 +112,13 @@ describe('CustomerIOIntegration — record event routing', () => {
     });
   });
 
-  it('throws InstrumentationError for event object delete records', () => {
+  it('returns error payload for event object delete records', async () => {
     const integration = new Integration(baseDestination, eventConnection);
-    expect(() => integration.transformEvent(makeInput({ action: 'delete' }))).toThrow(
-      InstrumentationError,
-    );
-    expect(() => integration.transformEvent(makeInput({ action: 'delete' }))).toThrow(
-      'Delete action is not supported for CustomerIO event records',
-    );
+    const input = makeInput({ action: 'delete' }, eventConnection);
+    const { successPayloads, errorPayloads } = await integration.transformEvents([input]);
+    expect(successPayloads).toHaveLength(0);
+    expect(errorPayloads).toHaveLength(1);
+    expect(errorPayloads[0].error).toMatch(/"delete" is not supported for object type "event"/);
   });
 
   it.each([

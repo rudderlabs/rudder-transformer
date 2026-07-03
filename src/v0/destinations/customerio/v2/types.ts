@@ -92,17 +92,21 @@ const eventStreamMessageSchema = z
 // Hybrid destination: record events validate connection.config.destination against the
 // record-specific schema (which requires `object`); event-stream events may carry a
 // connection lacking those record-only fields, so their connection is not enforced —
-// validating it against the record schema would wrongly reject them (#5331).
-export const customerIOInputSchema = makeRouterInputSchema({
+// validating it against the record schema would wrongly reject them (#5331). Both
+// variants carry the shared destinationConfig via CustomerIODestinationConfigSchema.
+export const recordInputSchema = makeRouterInputSchema({
+  message: recordMessageSchema,
   destinationConfig: CustomerIODestinationConfigSchema,
-  variants: [
-    {
-      message: recordMessageSchema,
-      connectionConfig: z.object({ destination: CustomerIOConnectionConfigSchema }).passthrough(),
-    },
-    { message: eventStreamMessageSchema },
-  ],
+  connectionConfig: z.object({ destination: CustomerIOConnectionConfigSchema }).passthrough(),
 });
+
+export const eventStreamInputSchema = makeRouterInputSchema({
+  message: eventStreamMessageSchema,
+  destinationConfig: CustomerIODestinationConfigSchema,
+});
+
+export type CustomerIORecordInput = z.infer<typeof recordInputSchema>;
+export type CustomerIOEventStreamInput = z.infer<typeof eventStreamInputSchema>;
 
 export {
   type CustomerIODestination,

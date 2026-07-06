@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
@@ -7,13 +8,7 @@ import {
 import { VDMV2ObjectDestination } from '../../../services/destination/nativeBatching/vdmV2ObjectDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { removeUndefinedValues } from '../../util';
-import {
-  recordInputSchema,
-  eventStreamInputSchema,
-  CustomerIOV2Payload,
-  type CustomerIORecordInput,
-  type CustomerIOEventStreamInput,
-} from './v2/types';
+import { recordInputSchema, eventStreamInputSchema, CustomerIOV2Payload } from './v2/types';
 import { MAX_OBJECT_SIZE_BYTES, MAX_BATCH_PAYLOAD } from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
@@ -49,7 +44,7 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
   }
 
   private buildRecord(
-    input: CustomerIORecordInput,
+    input: z.infer<typeof recordInputSchema>,
     objectType: CustomerIORecordObject,
   ): TransformedEvent<CustomerIOV2Payload> {
     validateConfigFields(this.destination);
@@ -58,7 +53,7 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
     return { body, ...buildRequestMeta(this.destination) };
   }
 
-  transformObjectRecord(input: CustomerIORecordInput) {
+  transformObjectRecord(input: z.infer<typeof recordInputSchema>) {
     const person = () => this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.person);
     const event = () => this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.event);
     return {
@@ -73,7 +68,7 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
     return { body, ...buildRequestMeta(this.destination) };
   }
 
-  transformEventStream(input: CustomerIOEventStreamInput) {
+  transformEventStream(input: z.infer<typeof eventStreamInputSchema>) {
     validateConfigFields(this.destination);
     const { message } = input;
     return {

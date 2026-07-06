@@ -44,19 +44,16 @@ export abstract class VDMV2ObjectDestination<
 
   protected abstract readonly eventStreamSchema: TEventStreamSchema;
 
-  private cachedInputSchema?: ObjectRouterInput<TRecordSchema, TEventStreamSchema>;
-
   getInputSchema(): ObjectRouterInput<TRecordSchema, TEventStreamSchema> {
-    if (!this.cachedInputSchema) {
-      // destinationConfig lives inside both variants; a bad Config surfaces as an
-      // `invalid_union` error which processBatchedDestination.resolveIssues classifies
-      // as CONFIGURATION.
-      this.cachedInputSchema = z.union([
-        this.recordSchema,
-        this.eventStreamSchema,
-      ]) as unknown as ObjectRouterInput<TRecordSchema, TEventStreamSchema>;
-    }
-    return this.cachedInputSchema;
+    // The framework calls this once per instance (processBatchedDestination validates the
+    // whole batch in a single validateInputs pass), so the union is built once — no cache
+    // needed. destinationConfig lives inside both variants; a bad Config surfaces as an
+    // `invalid_union` error which processBatchedDestination.resolveIssues classifies as
+    // CONFIGURATION.
+    return z.union([this.recordSchema, this.eventStreamSchema]) as unknown as ObjectRouterInput<
+      TRecordSchema,
+      TEventStreamSchema
+    >;
   }
 
   // Returns a map of object type → { action → handler }. Missing object types or actions

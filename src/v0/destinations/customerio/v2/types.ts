@@ -105,9 +105,6 @@ export const eventStreamInputSchema = makeRouterInputSchema({
   destinationConfig: CustomerIODestinationConfigSchema,
 });
 
-export type CustomerIORecordInput = z.infer<typeof recordInputSchema>;
-export type CustomerIOEventStreamInput = z.infer<typeof eventStreamInputSchema>;
-
 export {
   type CustomerIODestination,
   type CustomerIODestinationConfig,

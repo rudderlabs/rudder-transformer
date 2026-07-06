@@ -74,7 +74,9 @@ See `src/v0/destinations/customerio/routerTransform.ts` -- `transformObjectRecor
 
 ### Transform methods are typed from your schemas
 
-Declare two schemas built with `makeRouterInputSchema` -- `recordSchema` and `eventStreamSchema` -- as `readonly` properties, both using the same `destinationConfig` constant. The framework unions them in `getInputSchema()`; you never build the union yourself. `transformObjectRecord(input)` is typed as `z.infer<typeof recordSchema>` and `transformEventStream(input)` as `z.infer<typeof eventStreamSchema>`, so no casting is needed. `RecordInput`/`RecordMessage`/`isRecordInput` remain framework-internal (routing/guard).
+Declare two schemas built with `makeRouterInputSchema` -- `recordSchema` and `eventStreamSchema` -- as `readonly` properties, both using the same `destinationConfig` constant. The framework unions them in `getInputSchema()`; you never build the union yourself. `RecordInput`/`RecordMessage`/`isRecordInput` remain framework-internal (routing/guard).
+
+Type the transform-method parameters inline with `z.infer<typeof recordInputSchema>` (for `transformObjectRecord`) and `z.infer<typeof eventStreamInputSchema>` (for `transformEventStream`), referencing the module-level schema constants. Do **not** introduce a named alias like `type MyRecordInput = z.infer<typeof recordInputSchema>` and annotate with that — the alias reads like a hand-written type that could drift from the schema, whereas `z.infer<typeof ...>` at the use site makes it obvious the type is the schema, single-sourced. No casting is needed. See `src/v0/destinations/customerio/routerTransform.ts`.
 
 ### Connection config constraint
 

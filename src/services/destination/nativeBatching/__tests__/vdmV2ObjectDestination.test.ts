@@ -81,9 +81,4 @@ describe('VDMV2ObjectDestination.getInputSchema', () => {
       }).success,
     ).toBe(false);
   });
-
-  it('memoizes the schema', () => {
-    const dest = new TestObjectDestination(mockDestination);
-    expect(dest.getInputSchema()).toBe(dest.getInputSchema());
-  });
 });

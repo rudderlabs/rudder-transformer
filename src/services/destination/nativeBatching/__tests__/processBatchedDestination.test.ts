@@ -556,17 +556,25 @@ describe('validateInputs', () => {
     }
   }
 
-  const unionInput = (jobId: number, message: unknown, config: unknown, connection?: unknown) => ({
-    message,
-    destination: { Config: config },
-    ...(connection ? { connection } : {}),
-    metadata: { jobId },
-  });
+  // Builds deliberately loose/malformed envelopes to exercise schema validation. The cast
+  // is localized here so call sites pass a typed RouterTransformationRequestData[].
+  const unionInput = (
+    jobId: number,
+    message: unknown,
+    config: unknown,
+    connection?: unknown,
+  ): RouterTransformationRequestData =>
+    ({
+      message,
+      destination: { Config: config },
+      ...(connection ? { connection } : {}),
+      metadata: { jobId },
+    }) as unknown as RouterTransformationRequestData;
 
   it('accepts a valid event-stream message under a union schema', () => {
     const integration = new UnionIntegration(mockDestination);
     const { valid, errors } = validateInputs(
-      [unionInput(1, { type: 'track', userId: 'u1' }, { apiKey: 'k' })] as any,
+      [unionInput(1, { type: 'track', userId: 'u1' }, { apiKey: 'k' })],
       integration,
     );
     expect(valid).toHaveLength(1);
@@ -576,7 +584,7 @@ describe('validateInputs', () => {
   it('classifies a bad shared Config as CONFIGURATION with a precise path', () => {
     const integration = new UnionIntegration(mockDestination);
     const { errors } = validateInputs(
-      [unionInput(2, { type: 'track', userId: 'u1' }, {})] as any,
+      [unionInput(2, { type: 'track', userId: 'u1' }, {})],
       integration,
     );
     expect(errors).toHaveLength(1);
@@ -596,7 +604,7 @@ describe('validateInputs', () => {
             config: { destination: {} },
           },
         ),
-      ] as any,
+      ],
       integration,
     );
     expect(errors).toHaveLength(1);
@@ -606,7 +614,7 @@ describe('validateInputs', () => {
   it('classifies a message matching no variant as INSTRUMENTATION', () => {
     const integration = new UnionIntegration(mockDestination);
     const { errors } = validateInputs(
-      [unionInput(4, { type: 'group', groupId: 'g1' }, { apiKey: 'k' })] as any,
+      [unionInput(4, { type: 'group', groupId: 'g1' }, { apiKey: 'k' })],
       integration,
     );
     expect(errors).toHaveLength(1);

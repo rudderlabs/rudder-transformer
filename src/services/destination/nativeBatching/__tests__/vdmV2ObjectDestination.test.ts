@@ -1,10 +1,18 @@
 import { z } from 'zod';
-import { VDMV2ObjectDestination, type RecordInput } from '../vdmV2ObjectDestination';
+import { VDMV2ObjectDestination } from '../vdmV2ObjectDestination';
 import { makeRouterInputSchema, TransformedEvent, ChunkBatchStrategy } from '../batchDestination';
 import type { BatchStrategy } from '../types';
 import type { Destination, Connection } from '../../../../types/controlPlaneConfig';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Metadata, RudderMessage } from '../../../../types/rudderEvents';
+
+// The framework un-exports its internal record envelope type; the test declares its own
+// to annotate transformObjectRecord overrides.
+type RecordInput = RouterTransformationRequestData<{
+  type: 'record';
+  action: 'insert' | 'update' | 'delete';
+  identifiers: Record<string, unknown>;
+}>;
 
 type Body = { value: string };
 

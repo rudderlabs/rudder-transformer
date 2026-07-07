@@ -175,13 +175,18 @@ export const buildObject = (message): CustomerIOV2Payload => {
   };
 };
 
+// Resolve the person id (userId/email) and device token used to decide and build
+// device payloads. Shared by deviceActionFor (gating) and buildDevice (construction).
+const getDeviceCredentials = (message): { id: unknown; token: unknown } => ({
+  id: getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email'),
+  token: get(message, 'context.device.token'),
+});
+
 export const buildDevice = (
   message,
   action: 'add_device' | 'delete_device',
 ): CustomerIOV2Payload => {
-  const id =
-    getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email');
-  const token = get(message, 'context.device.token');
+  const { id, token } = getDeviceCredentials(message);
   if (!id || !token) {
     throw new InstrumentationError('userId/email or device_token not present');
   }
@@ -225,9 +230,7 @@ const deviceActionFor = (
   // add_device: mirror v0 behaviour — a device-register event with a missing
   // userId/email or device token degrades to a normal track event rather than
   // building a device payload.
-  const id =
-    getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email');
-  const token = get(message, 'context.device.token');
+  const { id, token } = getDeviceCredentials(message);
   if (!id || !token) {
     return null;
   }

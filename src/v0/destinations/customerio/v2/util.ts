@@ -10,7 +10,7 @@ import {
   validateEventName,
 } from '../../../util';
 import { populateSpecedTraits } from '../util';
-import { EventType, SpecedTraits } from '../../../../constants';
+import { SpecedTraits } from '../../../../constants';
 import {
   getV2Endpoint,
   V2_BATCH_PATH,
@@ -209,7 +209,7 @@ export const buildDevice = (
   return { type: 'person', action, identifiers, device };
 };
 
-const deviceActionFor = (
+export const deviceActionFor = (
   evName: string,
   destination: CustomerIODestination,
 ): 'add_device' | 'delete_device' | null => {
@@ -219,30 +219,6 @@ const deviceActionFor = (
     return null;
   }
   return evName === DEVICE_DELETE_EVENT_NAME ? 'delete_device' : 'add_device';
-};
-
-// Build the unified v2 envelope (type/action/identifiers/...) for a single event.
-export const buildEnvelope = (message, destination: CustomerIODestination): CustomerIOV2Payload => {
-  const messageType = message.type?.toLowerCase();
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      return buildIdentify(message);
-    case EventType.ALIAS:
-      return buildMerge(message);
-    case EventType.GROUP:
-      return buildObject(message);
-    case EventType.PAGE:
-      return buildPage(message, 'page', message.name || message.properties?.url);
-    case EventType.SCREEN:
-      return buildScreen(message, 'screen', message.event || message.properties?.name);
-    case EventType.TRACK: {
-      const evName = message.event;
-      const deviceAction = deviceActionFor(evName, destination);
-      return deviceAction ? buildDevice(message, deviceAction) : buildTrack(message, evName);
-    }
-    default:
-      throw new InstrumentationError(`could not determine type ${messageType}`);
-  }
 };
 
 // Resolve the v2 request metadata (endpoint/method/headers) shared by every

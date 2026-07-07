@@ -23,18 +23,14 @@ import { CustomAudienceDestConfigSchema, CustomAudienceConnectionDestConfigSchem
 
 const customAudienceInputSchema = makeRouterInputSchema({
   destinationConfig: CustomAudienceDestConfigSchema,
-  variants: [
-    {
-      message: z
-        .object({
-          type: z.literal('record'),
-          action: z.nativeEnum(RecordAction),
-          identifiers: z.record(z.unknown()),
-        })
-        .passthrough(),
-      connectionConfig: z.object({ destination: CustomAudienceConnectionDestConfigSchema }),
-    },
-  ],
+  message: z
+    .object({
+      type: z.literal('record'),
+      action: z.nativeEnum(RecordAction),
+      identifiers: z.record(z.unknown()),
+    })
+    .passthrough(),
+  connectionConfig: z.object({ destination: CustomAudienceConnectionDestConfigSchema }),
 });
 
 class CustomAudienceIntegration extends BatchDestination<

@@ -74,12 +74,8 @@ const RecordMessageSchema = z
 
 export const IterableAudienceRouterRequestSchema = makeRouterInputSchema({
   destinationConfig: IterableDestinationConfigSchema,
-  variants: [
-    {
-      message: RecordMessageSchema,
-      connectionConfig: z.object({ destination: IterableConnectionConfigSchema }).passthrough(),
-    },
-  ],
+  message: RecordMessageSchema,
+  connectionConfig: z.object({ destination: IterableConnectionConfigSchema }).passthrough(),
 });
 
 // ---------------------------------------------------------------------------

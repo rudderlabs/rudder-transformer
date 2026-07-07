@@ -15,18 +15,14 @@ import { MAX_CONVERSION_ADJUSTMENTS_PER_BATCH } from './config';
 type ConversionAdjustment = Record<string, unknown>;
 
 const gaecInputSchema = makeRouterInputSchema({
-  variants: [
-    {
-      message: z
-        .object({
-          type: z.string().refine((type) => type.toLowerCase() === 'track', {
-            message: 'Message Type is not supported. Only track events are supported.',
-          }),
-          event: z.string().min(1, 'event is required for track calls'),
-        })
-        .passthrough(),
-    },
-  ],
+  message: z
+    .object({
+      type: z.string().refine((type) => type.toLowerCase() === 'track', {
+        message: 'Message Type is not supported. Only track events are supported.',
+      }),
+      event: z.string().min(1, 'event is required for track calls'),
+    })
+    .passthrough(),
 });
 
 class GoogleAdwordsEnhancedConversionsIntegration extends BatchDestination<

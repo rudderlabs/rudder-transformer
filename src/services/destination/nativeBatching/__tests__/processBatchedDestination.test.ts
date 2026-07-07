@@ -518,4 +518,106 @@ describe('validateInputs', () => {
     expect(valid).toHaveLength(1);
     expect(errors).toHaveLength(0);
   });
+
+  // A hybrid (record + event-stream) union schema, mirroring what the object base builds.
+  const recordVariant = z
+    .object({
+      message: z
+        .object({ type: z.literal('record'), identifiers: z.record(z.unknown()) })
+        .passthrough(),
+      destination: z.object({ Config: z.object({ apiKey: z.string() }) }).passthrough(),
+      connection: z
+        .object({ config: z.object({ destination: z.object({ object: z.string() }) }) })
+        .passthrough()
+        .optional(),
+    })
+    .passthrough();
+  const eventVariant = z
+    .object({
+      message: z.object({ type: z.enum(['track', 'identify']), userId: z.string() }).passthrough(),
+      destination: z.object({ Config: z.object({ apiKey: z.string() }) }).passthrough(),
+    })
+    .passthrough();
+
+  class UnionIntegration extends BatchDestination<TestBody> {
+    transformEvent(): TransformedEvent<TestBody> {
+      return {
+        body: { value: 'x' },
+        endpoint: 'https://api.test.com/events',
+        endpointPath: '/events',
+        method: 'POST',
+      };
+    }
+    getBatchStrategy(): BatchStrategy<TestBody> {
+      return new ChunkBatchStrategy({ maxItems: 3, wrapBody: (bodies) => ({ events: bodies }) });
+    }
+    getInputSchema() {
+      return z.union([recordVariant, eventVariant]);
+    }
+  }
+
+  // Builds deliberately loose/malformed envelopes to exercise schema validation. The cast
+  // is localized here so call sites pass a typed RouterTransformationRequestData[].
+  const unionInput = (
+    jobId: number,
+    message: unknown,
+    config: unknown,
+    connection?: unknown,
+  ): RouterTransformationRequestData =>
+    ({
+      message,
+      destination: { Config: config },
+      ...(connection ? { connection } : {}),
+      metadata: { jobId },
+    }) as unknown as RouterTransformationRequestData;
+
+  it('accepts a valid event-stream message under a union schema', () => {
+    const integration = new UnionIntegration(mockDestination);
+    const { valid, errors } = validateInputs(
+      [unionInput(1, { type: 'track', userId: 'u1' }, { apiKey: 'k' })],
+      integration,
+    );
+    expect(valid).toHaveLength(1);
+    expect(errors).toHaveLength(0);
+  });
+
+  it('classifies a bad shared Config as CONFIGURATION with a precise path', () => {
+    const integration = new UnionIntegration(mockDestination);
+    const { errors } = validateInputs(
+      [unionInput(2, { type: 'track', userId: 'u1' }, {})],
+      integration,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0].statTags?.errorType).toBe('configuration');
+    expect(errors[0].error).toContain('destination.Config.apiKey');
+  });
+
+  it('classifies a bad connection on a record as CONFIGURATION', () => {
+    const integration = new UnionIntegration(mockDestination);
+    const { errors } = validateInputs(
+      [
+        unionInput(
+          3,
+          { type: 'record', identifiers: { id: 'u1' } },
+          { apiKey: 'k' },
+          {
+            config: { destination: {} },
+          },
+        ),
+      ],
+      integration,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0].statTags?.errorType).toBe('configuration');
+  });
+
+  it('classifies a message matching no variant as INSTRUMENTATION', () => {
+    const integration = new UnionIntegration(mockDestination);
+    const { errors } = validateInputs(
+      [unionInput(4, { type: 'group', groupId: 'g1' }, { apiKey: 'k' })],
+      integration,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0].statTags?.errorType).toBe('instrumentation');
+  });
 });

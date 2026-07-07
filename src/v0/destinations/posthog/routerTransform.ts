@@ -15,20 +15,16 @@ import { MAX_EVENT_SIZE_BYTES } from './config';
 
 const postHogInputSchema = makeRouterInputSchema({
   destinationConfig: PostHogDestinationConfigSchema,
-  variants: [
-    {
-      message: z
-        .object({
-          userId: z.union([z.string(), z.number()]).nullish(),
-          anonymousId: z.union([z.string(), z.number()]).nullish(),
-          type: z.enum(['track', 'page', 'screen', 'identify', 'alias', 'group']),
-        })
-        .passthrough()
-        .refine((msg) => !!msg.userId || !!msg.anonymousId, {
-          message: 'Either userId or anonymousId must be provided',
-        }),
-    },
-  ],
+  message: z
+    .object({
+      userId: z.union([z.string(), z.number()]).nullish(),
+      anonymousId: z.union([z.string(), z.number()]).nullish(),
+      type: z.enum(['track', 'page', 'screen', 'identify', 'alias', 'group']),
+    })
+    .passthrough()
+    .refine((msg) => !!msg.userId || !!msg.anonymousId, {
+      message: 'Either userId or anonymousId must be provided',
+    }),
 });
 
 class PostHogIntegration extends BatchDestination<PostHogPayload, typeof postHogInputSchema> {

@@ -2,20 +2,16 @@ import { z, ZodType } from 'zod';
 import get from 'get-value';
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
+import type { RudderRecordV2 } from '../../../types/rudderEvents';
 import { MappedToDestinationKey } from '../../../constants';
 import { addExternalIdToTraits, adduserIdFromExternalId } from '../../../v0/util';
 import { BatchDestination } from './batchDestination';
 import type { TransformedEvent } from './types';
 
 // Record message shape known to the framework after schema validation
-export type RecordMessage = {
-  type: 'record';
-  action: 'insert' | 'update' | 'delete';
-  identifiers: Record<string, unknown>;
-  [key: string]: unknown;
-};
+type RecordMessage = Pick<RudderRecordV2, 'type' | 'action' | 'identifiers'>;
 
-export type RecordInput = RouterTransformationRequestData<RecordMessage>;
+type RecordInput = RouterTransformationRequestData<RecordMessage>;
 
 function isRecordInput(input: RouterTransformationRequestData): input is RecordInput {
   return input.message?.type === 'record';

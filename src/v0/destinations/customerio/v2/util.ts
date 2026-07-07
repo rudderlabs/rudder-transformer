@@ -175,13 +175,18 @@ export const buildObject = (message): CustomerIOV2Payload => {
   };
 };
 
+// Resolve the person id (userId/email) and device token used to decide and build
+// device payloads. Shared by deviceActionFor (gating) and buildDevice (construction).
+const getDeviceCredentials = (message): { id: unknown; token: unknown } => ({
+  id: getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email'),
+  token: get(message, 'context.device.token'),
+});
+
 export const buildDevice = (
   message,
   action: 'add_device' | 'delete_device',
 ): CustomerIOV2Payload => {
-  const id =
-    getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email');
-  const token = get(message, 'context.device.token');
+  const { id, token } = getDeviceCredentials(message);
   if (!id || !token) {
     throw new InstrumentationError('userId/email or device_token not present');
   }
@@ -210,6 +215,7 @@ export const buildDevice = (
 };
 
 const deviceActionFor = (
+  message,
   evName: string,
   destination: CustomerIODestination,
 ): 'add_device' | 'delete_device' | null => {
@@ -218,7 +224,17 @@ const deviceActionFor = (
   if (!isDevice) {
     return null;
   }
-  return evName === DEVICE_DELETE_EVENT_NAME ? 'delete_device' : 'add_device';
+  if (evName === DEVICE_DELETE_EVENT_NAME) {
+    return 'delete_device';
+  }
+  // add_device: mirror v0 behaviour — a device-register event with a missing
+  // userId/email or device token degrades to a normal track event rather than
+  // building a device payload.
+  const { id, token } = getDeviceCredentials(message);
+  if (!id || !token) {
+    return null;
+  }
+  return 'add_device';
 };
 
 // Build the unified v2 envelope (type/action/identifiers/...) for a single event.
@@ -237,7 +253,7 @@ export const buildEnvelope = (message, destination: CustomerIODestination): Cust
       return buildScreen(message, 'screen', message.event || message.properties?.name);
     case EventType.TRACK: {
       const evName = message.event;
-      const deviceAction = deviceActionFor(evName, destination);
+      const deviceAction = deviceActionFor(message, evName, destination);
       return deviceAction ? buildDevice(message, deviceAction) : buildTrack(message, evName);
     }
     default:

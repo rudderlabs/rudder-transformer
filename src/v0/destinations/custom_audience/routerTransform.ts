@@ -56,19 +56,16 @@ class CustomAudienceIntegration extends BatchDestination<
   }
 
   private buildEndpointsByAction(): Partial<Record<Action, string>> {
-    const { actions, baseUrl } = this.destination.Config;
-    const entries = Object.keys(actions).flatMap((action) => {
-      const actionConfig = actions[action as Action];
-      const endpointConfig =
-        actionConfig && 'useInsertConfig' in actionConfig && actionConfig.useInsertConfig
-          ? actions.insert
-          : actionConfig;
-      if (!endpointConfig || !('endpoint' in endpointConfig)) {
-        return [];
-      }
-      return [[action, resolveEndpoint(endpointConfig.endpoint, baseUrl, this.connectionConfig)]];
-    });
-    return Object.fromEntries(entries) as Partial<Record<Action, string>>;
+    return Object.fromEntries(
+      Object.keys(this.destination.Config.actions).map((action) => [
+        action,
+        resolveEndpoint(
+          lookupActionConfig(action as Action, this.destination.Config.actions).config.endpoint,
+          this.destination.Config.baseUrl,
+          this.connectionConfig,
+        ),
+      ]),
+    ) as Partial<Record<Action, string>>;
   }
 
   transformEvent(

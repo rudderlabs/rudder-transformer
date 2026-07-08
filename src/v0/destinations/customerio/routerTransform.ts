@@ -1,35 +1,39 @@
-import { ZodType } from 'zod';
+import { z } from 'zod';
 import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  BatchDestination,
   TransformedEvent,
   ChunkBatchStrategy,
 } from '../../../services/destination/nativeBatching/batchDestination';
-import { addExternalIdToTraits, adduserIdFromExternalId, removeUndefinedValues } from '../../util';
-import { MappedToDestinationKey } from '../../../constants';
+import { VDMV2ObjectDestination } from '../../../services/destination/nativeBatching/vdmV2ObjectDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import {
-  getV2InputSchema,
-  CustomerIOV2Payload,
-  CustomerIODestinationConfig,
-  type CustomerIOV2RecordMessage,
-} from './v2/types';
+import { removeUndefinedValues } from '../../util';
+import { recordInputSchema, eventStreamInputSchema, CustomerIOV2Payload } from './v2/types';
 import { MAX_OBJECT_SIZE_BYTES, MAX_BATCH_PAYLOAD } from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
-import { buildEnvelope, buildRequestMeta } from './v2/util';
-import { CustomerIORouterRequest, CustomerIOConnection } from './types';
+import {
+  buildIdentify,
+  buildTrack,
+  buildPage,
+  buildScreen,
+  buildMerge,
+  buildObject,
+  buildDevice,
+  deviceActionFor,
+  buildRequestMeta,
+} from './v2/util';
+import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from './types';
 
-function isRecordMessage(msg: { type: string }): msg is CustomerIOV2RecordMessage {
-  return msg.type === 'record';
-}
-
-class CustomerIOIntegration extends BatchDestination<
+class CustomerIOIntegration extends VDMV2ObjectDestination<
   CustomerIOV2Payload,
-  CustomerIODestinationConfig,
-  CustomerIOConnection['config']
+  typeof recordInputSchema,
+  typeof eventStreamInputSchema
 > {
+  protected readonly recordSchema = recordInputSchema;
+
+  protected readonly eventStreamSchema = eventStreamInputSchema;
+
   private assertObjectSize(body: unknown): void {
     const size = Buffer.byteLength(JSON.stringify(body), 'utf8');
     if (size > MAX_OBJECT_SIZE_BYTES) {
@@ -39,25 +43,54 @@ class CustomerIOIntegration extends BatchDestination<
     }
   }
 
-  private buildBody(message: CustomerIORouterRequest['message']): CustomerIOV2Payload {
-    if (isRecordMessage(message)) {
-      const connectionObject = this.connection!.config.destination.object;
-      return buildRecordEvent(message, connectionObject);
-    }
-    // For RETL/warehouse sources (mappedToDestination), derive userId from
-    // context.externalId and fold externalId into traits, mirroring the v1 path.
-    if (get(message, MappedToDestinationKey)) {
-      addExternalIdToTraits(message);
-      adduserIdFromExternalId(message);
-    }
-    return removeUndefinedValues(buildEnvelope(message, this.destination)) as CustomerIOV2Payload;
-  }
-
-  transformEvent(input: CustomerIORouterRequest): TransformedEvent<CustomerIOV2Payload> {
+  private buildRecord(
+    input: z.infer<typeof recordInputSchema>,
+    objectType: CustomerIORecordObject,
+  ): TransformedEvent<CustomerIOV2Payload> {
     validateConfigFields(this.destination);
-    const body = this.buildBody(input.message);
+    const body = buildRecordEvent(input.message, objectType);
     this.assertObjectSize(body);
     return { body, ...buildRequestMeta(this.destination) };
+  }
+
+  transformObjectRecord(input: z.infer<typeof recordInputSchema>) {
+    const person = () => this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.person);
+    const event = () => this.buildRecord(input, CUSTOMERIO_RECORD_OBJECTS.event);
+    return {
+      [CUSTOMERIO_RECORD_OBJECTS.person]: { insert: person, update: person, delete: person },
+      [CUSTOMERIO_RECORD_OBJECTS.event]: { insert: event, update: event },
+    };
+  }
+
+  private wrapEventStreamBody(payload: CustomerIOV2Payload): TransformedEvent<CustomerIOV2Payload> {
+    const body = removeUndefinedValues(payload) as CustomerIOV2Payload;
+    this.assertObjectSize(body);
+    return { body, ...buildRequestMeta(this.destination) };
+  }
+
+  transformEventStream(input: z.infer<typeof eventStreamInputSchema>) {
+    validateConfigFields(this.destination);
+    const { message } = input;
+    return {
+      identify: () => this.wrapEventStreamBody(buildIdentify(message)),
+      track: () => {
+        const evName = get(message, 'event');
+        const deviceAction = deviceActionFor(message, evName, this.destination);
+        return this.wrapEventStreamBody(
+          deviceAction ? buildDevice(message, deviceAction) : buildTrack(message, evName),
+        );
+      },
+      page: () =>
+        this.wrapEventStreamBody(
+          buildPage(message, 'page', get(message, 'name') || get(message, 'properties.url')),
+        ),
+      screen: () =>
+        this.wrapEventStreamBody(
+          buildScreen(message, 'screen', get(message, 'event') || get(message, 'properties.name')),
+        ),
+      group: () => this.wrapEventStreamBody(buildObject(message)),
+      alias: () => this.wrapEventStreamBody(buildMerge(message)),
+    };
   }
 
   getBatchStrategy(): BatchStrategy<CustomerIOV2Payload> {
@@ -65,10 +98,6 @@ class CustomerIOIntegration extends BatchDestination<
       maxPayloadSize: MAX_BATCH_PAYLOAD,
       wrapBody: (bodies) => ({ batch: bodies }),
     });
-  }
-
-  getInputSchema(): ZodType {
-    return getV2InputSchema();
   }
 }
 

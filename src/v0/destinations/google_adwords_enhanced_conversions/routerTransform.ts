@@ -1,11 +1,11 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 import {
   BatchDestination,
   TransformedEvent,
   ChunkBatchStrategy,
+  makeRouterInputSchema,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 // `process` (from transform.js) builds the single-event delivery request synchronously and is
 // reused here so no transform logic is duplicated.
 import { process as transformSingleEvent } from './transform';
@@ -14,8 +14,22 @@ import { MAX_CONVERSION_ADJUSTMENTS_PER_BATCH } from './config';
 // Each batched item is a single Google Ads conversion adjustment.
 type ConversionAdjustment = Record<string, unknown>;
 
-class GoogleAdwordsEnhancedConversionsIntegration extends BatchDestination<ConversionAdjustment> {
-  transformEvent(input: RouterTransformationRequestData): TransformedEvent<ConversionAdjustment> {
+const gaecInputSchema = makeRouterInputSchema({
+  message: z
+    .object({
+      type: z.string().refine((type) => type.toLowerCase() === 'track', {
+        message: 'Message Type is not supported. Only track events are supported.',
+      }),
+      event: z.string().min(1, 'event is required for track calls'),
+    })
+    .passthrough(),
+});
+
+class GoogleAdwordsEnhancedConversionsIntegration extends BatchDestination<
+  ConversionAdjustment,
+  typeof gaecInputSchema
+> {
+  transformEvent(input: z.infer<typeof gaecInputSchema>): TransformedEvent<ConversionAdjustment> {
     // Reuse the existing per-event transform untouched. It returns a delivery request whose
     // body.JSON is `{ conversionAdjustments: [<single adjustment>], partialFailure: true }`.
     const result = transformSingleEvent(input);
@@ -43,19 +57,8 @@ class GoogleAdwordsEnhancedConversionsIntegration extends BatchDestination<Conve
     });
   }
 
-  getInputSchema(): ZodType {
-    return z
-      .object({
-        message: z
-          .object({
-            type: z.string().refine((type) => type.toLowerCase() === 'track', {
-              message: 'Message Type is not supported. Only track events are supported.',
-            }),
-            event: z.string().min(1, 'event is required for track calls'),
-          })
-          .passthrough(),
-      })
-      .passthrough();
+  getInputSchema() {
+    return gaecInputSchema;
   }
 }
 

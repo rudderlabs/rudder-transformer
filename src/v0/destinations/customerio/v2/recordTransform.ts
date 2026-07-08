@@ -13,7 +13,6 @@ type RecordPayloadContext = {
 
 type RecordPayloadBuilder = {
   getCIOAction: (action: CustomerIOV2RecordMessage['action']) => string;
-  validateAction?: (action: CustomerIOV2RecordMessage['action']) => void;
   getAdditionalFields?: (context: RecordPayloadContext) => Partial<CustomerIOV2Payload>;
   getExcludedAttributeKeys?: () => string[];
 };
@@ -29,13 +28,6 @@ const recordPayloadBuilders: Record<CustomerIORecordObject, RecordPayloadBuilder
   },
   [CUSTOMERIO_RECORD_OBJECTS.event]: {
     getCIOAction: () => 'event',
-    validateAction: (action) => {
-      if (action === EVENT_TYPES.DELETE) {
-        throw new InstrumentationError(
-          'Delete action is not supported for CustomerIO event records',
-        );
-      }
-    },
     getAdditionalFields: ({ rawIdentifiers }) => {
       const name = rawIdentifiers[IDENTIFIERS.NAME];
       if (typeof name !== 'string' || name.length === 0) {
@@ -53,11 +45,7 @@ export const buildRecordEvent = (
 ): CustomerIOV2Payload => {
   const { action, identifiers: rawIdentifiers = {} } = message;
 
-  if (!(action in RECORD_ACTION_MAP)) {
-    throw new InstrumentationError(`Action "${action}" is not supported`);
-  }
   const builder = recordPayloadBuilders[connectionObject];
-  builder.validateAction?.(action);
 
   // Schema guarantees id or email is present; id takes priority over email
   const identifierKey = RECORD_IDENTIFIER_KEYS.find(

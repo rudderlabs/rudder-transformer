@@ -9,7 +9,7 @@ import {
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import { AUTHENTICATION_TYPES, ERROR_MESSAGES } from './constants';
+import { AUTHENTICATION_TYPES } from './constants';
 import type {
   ActionConfig,
   CustomAudienceConnectionDestConfig,
@@ -48,12 +48,6 @@ describe('lookupActionConfig', () => {
     expect(() => lookupActionConfig('delete', baseDestConfig.actions)).toThrow(
       InstrumentationError,
     );
-  });
-
-  it('throws InstrumentationError when actions map is missing', () => {
-    const run = () => lookupActionConfig('insert', undefined);
-    expect(run).toThrow(InstrumentationError);
-    expect(run).toThrow(ERROR_MESSAGES.NO_ACTION_CONFIG('insert'));
   });
 
   const useInsertConfigCases = [

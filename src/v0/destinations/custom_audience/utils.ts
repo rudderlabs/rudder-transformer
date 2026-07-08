@@ -17,9 +17,9 @@ import type {
 
 export const lookupActionConfig = (
   action: Action,
-  actions: CustomAudienceDestConfig['actions'] | undefined,
+  actions: CustomAudienceDestConfig['actions'],
 ): { action: Action; config: ActionConfig } => {
-  const actionConfig = actions?.[action];
+  const actionConfig = actions[action];
   if (!actionConfig) {
     throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG(action));
   }
@@ -27,7 +27,7 @@ export const lookupActionConfig = (
   // and return 'insert' as the resolved action so callers can use it as a
   // batch group key that matches the config actually used.
   if ('useInsertConfig' in actionConfig && actionConfig.useInsertConfig) {
-    const insertConfig = actions?.insert;
+    const insertConfig = actions.insert;
     if (!insertConfig) {
       throw new InstrumentationError(ERROR_MESSAGES.NO_ACTION_CONFIG('insert'));
     }

@@ -1,7 +1,12 @@
 import { XMLBuilder } from 'fast-xml-parser';
 import { groupBy } from 'lodash';
 import { createHash } from 'crypto';
-import { ConfigurationError, InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  PlatformError,
+  isDefined,
+} from '@rudderstack/integrations-lib';
 import { BatchUtils } from '@rudderstack/workflow-engine';
 import jsonpath from 'rs-jsonpath';
 import {
@@ -60,11 +65,27 @@ const enhanceMappings = (mappings: Mapping[]): Mapping[] => {
   return enhancedMappings;
 };
 
-const getCustomMappings = (message: Record<string, unknown>, mapping: Mapping[]) => {
+const getCustomMappings = async (
+  message: Record<string, unknown>,
+  mapping: Mapping[],
+  workspaceId: string,
+) => {
   const enhancedMappings = enhanceMappings(mapping);
+  // TODO(INT-6725): remove this try/catch once the CUSTOM_MAPPINGS_SANDBOX_ENABLED
+  // in-process fallback is removed. The sandbox client already throws typed
+  // ConfigurationError/PlatformError; this wrapping only exists to type the raw
+  // errors from the legacy in-process eval path.
   try {
-    return applyCustomMappings(message, enhancedMappings);
+    // Await inside the try so rejections are caught here; assign-then-return avoids
+    // return-await lint on applyCustomMappings' loosely-typed (JS) return.
+    const mapped = await applyCustomMappings(message, enhancedMappings, workspaceId);
+    return mapped;
   } catch (e: any) {
+    // Preserve transient/platform failures (e.g. sandbox unavailable, fail-closed) so they
+    // stay retryable; only genuine mapping/eval errors become ConfigurationError.
+    if (e instanceof PlatformError) {
+      throw e;
+    }
     throw new ConfigurationError(`Error in custom mappings: ${e.message}`);
   }
 };

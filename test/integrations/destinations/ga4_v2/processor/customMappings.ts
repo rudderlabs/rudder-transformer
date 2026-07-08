@@ -1,5 +1,5 @@
 import { Destination } from '../../../../../src/types';
-import { overrideDestination } from '../../../testUtils';
+import { overrideDestination, generateMetadata } from '../../../testUtils';
 import { defaultMockFns } from '../mocks';
 
 const traits = {
@@ -268,6 +268,7 @@ export const customMappingTestCases = [
               originalTimestamp: '2022-04-28T00:23:09.544Z',
               integrations,
             },
+            metadata: generateMetadata(1),
             destination,
           },
         ],
@@ -340,6 +341,7 @@ export const customMappingTestCases = [
               files: {},
               userId: '',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -371,6 +373,7 @@ export const customMappingTestCases = [
               originalTimestamp: '2022-04-28T00:23:09.544Z',
               integrations,
             },
+            metadata: generateMetadata(1),
             destination,
           },
         ],
@@ -443,6 +446,7 @@ export const customMappingTestCases = [
               files: {},
               userId: '',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
           {
@@ -508,6 +512,7 @@ export const customMappingTestCases = [
               files: {},
               userId: '',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -848,6 +853,75 @@ export const customMappingTestCases = [
               userId: '',
             },
             statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'ga4_v2',
+    id: 'ga4_custom_mapping_security_test',
+    description:
+      'Security regression (INT-6725): an eventProperties mapping attempts to read process.env; the isolated-vm sandbox has no process global, so evaluation throws and the event fails with a ConfigurationError instead of leaking any env content',
+    scenario: 'Security',
+    successCriteria:
+      'The event must fail with a "process is not defined" ConfigurationError and contain no environment variable content',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Product List Viewed',
+              userId: 'root_user',
+              anonymousId: 'root_anonId',
+              context: { device, traits },
+              properties,
+              originalTimestamp: '2022-04-28T00:23:09.544Z',
+              integrations,
+            },
+            metadata: generateMetadata(1),
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                eventsMapping: [
+                  {
+                    rsEventName: 'Product List Viewed',
+                    destEventName: 'view_item_list',
+                    eventProperties: [
+                      { to: '$.events[0].params.leak', from: 'process.env||$.userId' },
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: '[GA4]:: Error in custom mappings: process is not defined',
+            statusCode: 400,
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              destType: 'GA4_V2',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            metadata: generateMetadata(1),
           },
         ],
       },

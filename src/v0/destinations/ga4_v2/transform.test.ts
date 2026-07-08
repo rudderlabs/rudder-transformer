@@ -26,6 +26,7 @@ describe('process', () => {
           type: 'track',
           event: 'test_event',
         },
+        metadata: { workspaceId: 'ws-ga4-test' },
         destination: {
           Config: {
             configData: JSON.stringify({
@@ -76,13 +77,14 @@ describe('process', () => {
 
   test.each(testCases)(
     '$name',
-    ({ input, expectedConfig, shouldCallCustomMappings, shouldCallGa4Process }) => {
-      process(input);
+    async ({ input, expectedConfig, shouldCallCustomMappings, shouldCallGa4Process }) => {
+      await process(input);
 
       if (shouldCallCustomMappings) {
         expect(mockHandleCustomMappings).toHaveBeenCalledWith(
           input.message,
           expect.objectContaining(expectedConfig),
+          input.metadata?.workspaceId,
         );
       } else {
         expect(mockHandleCustomMappings).not.toHaveBeenCalled();
@@ -136,7 +138,7 @@ describe('process', () => {
     },
   ];
 
-  test.each(errorTestCases)('$name', ({ input, expectedError }) => {
-    expect(() => process(input)).toThrow(expectedError);
+  test.each(errorTestCases)('$name', async ({ input, expectedError }) => {
+    await expect(process(input)).rejects.toThrow(expectedError);
   });
 });

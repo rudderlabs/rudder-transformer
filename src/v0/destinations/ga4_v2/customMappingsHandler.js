@@ -15,7 +15,11 @@ const {
   sanitizeUserProperties,
   addSessionDetailsForHybridMode,
 } = require('../ga4/utils');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  PlatformError,
+} = require('@rudderstack/integrations-lib');
 const {
   removeUndefinedAndNullRecurse,
   constructPayload,
@@ -39,7 +43,7 @@ const findGA4Events = (eventsMapping, event) => {
   return validMappings;
 };
 
-const handleCustomMappings = (message, Config) => {
+const handleCustomMappings = async (message, Config, workspaceId) => {
   const { eventsMapping } = Config;
 
   let rsEvent = '';
@@ -103,38 +107,48 @@ const handleCustomMappings = (message, Config) => {
     return buildDeliverablePayload(rawPayload, Config);
   }
 
-  const processedPayloads = validMappings.map((mapping) => {
-    const eventName = mapping.destEventName;
-    // reserved event names are not allowed
-    if (isReservedEventName(eventName)) {
-      throw new InstrumentationError(`[GA4]:: Reserved event name: ${eventName} are not allowed`);
-    }
-    // validation for ga4 event name
-    validateEventName(eventName);
+  const processedPayloads = await Promise.all(
+    validMappings.map(async (mapping) => {
+      const eventName = mapping.destEventName;
+      // reserved event names are not allowed
+      if (isReservedEventName(eventName)) {
+        throw new InstrumentationError(`[GA4]:: Reserved event name: ${eventName} are not allowed`);
+      }
+      // validation for ga4 event name
+      validateEventName(eventName);
 
-    // Add common top level payload
-    let ga4BasicPayload = constructPayload(message, trackCommonConfig);
-    ga4BasicPayload = addClientDetails(ga4BasicPayload, message, Config, 'ga4_v2');
+      // Add common top level payload
+      let ga4BasicPayload = constructPayload(message, trackCommonConfig);
+      ga4BasicPayload = addClientDetails(ga4BasicPayload, message, Config, 'ga4_v2');
 
-    const eventPropertiesMappings = mapping.eventProperties || [];
+      const eventPropertiesMappings = mapping.eventProperties || [];
 
-    let ga4MappedPayload = {};
-    try {
-      ga4MappedPayload = applyCustomMappings(message, eventPropertiesMappings);
-    } catch (e) {
-      throw new ConfigurationError(`[GA4]:: Error in custom mappings: ${e.message}`);
-    }
+      let ga4MappedPayload = {};
+      // TODO(INT-6725): remove this try/catch once the CUSTOM_MAPPINGS_SANDBOX_ENABLED
+      // in-process fallback is removed. The sandbox client already throws typed
+      // ConfigurationError/PlatformError; this wrapping only exists to type the raw
+      // errors from the legacy in-process eval path.
+      try {
+        ga4MappedPayload = await applyCustomMappings(message, eventPropertiesMappings, workspaceId);
+      } catch (e) {
+        // Preserve transient/platform failures (e.g. sandbox unavailable, fail-closed) so they
+        // stay retryable; only genuine mapping/eval errors become ConfigurationError.
+        if (e instanceof PlatformError) {
+          throw e;
+        }
+        throw new ConfigurationError(`[GA4]:: Error in custom mappings: ${e.message}`);
+      }
 
-    removeUndefinedAndNullRecurse(ga4MappedPayload);
+      removeUndefinedAndNullRecurse(ga4MappedPayload);
 
-    boilerplateOperations(ga4MappedPayload, message, Config, eventName);
+      boilerplateOperations(ga4MappedPayload, message, Config, eventName);
 
-    if (isDefinedAndNotNull(ga4BasicPayload)) {
-      return { ...ga4BasicPayload, ...ga4MappedPayload };
-    } else {
+      if (isDefinedAndNotNull(ga4BasicPayload)) {
+        return { ...ga4BasicPayload, ...ga4MappedPayload };
+      }
       return ga4MappedPayload;
-    }
-  });
+    }),
+  );
 
   return processedPayloads.map((processedPayload) =>
     buildDeliverablePayload(processedPayload, Config),

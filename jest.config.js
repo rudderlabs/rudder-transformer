@@ -170,6 +170,8 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
+    // uuid v14+ ships ESM only; transpile it to CommonJS so Jest can require it
+    'node_modules/uuid/.+\\.js$': '<rootDir>/jest.esmTransformer.js',
     '^.+\\.[tj]sx?$': [
       'ts-jest',
       {
@@ -179,9 +181,8 @@ module.exports = {
     ],
   },
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  // uuid v14+ ships ESM in its "node" export, so it must be transformed instead of skipped
+  transformIgnorePatterns: ['/node_modules/(?!(uuid)/)'],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

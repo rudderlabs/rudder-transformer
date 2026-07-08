@@ -1420,6 +1420,123 @@ export const dataV2 = [
   },
   {
     name: 'customerio',
+    description:
+      'v2: Application Installed with missing userId/email or device token falls back to a track event',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              // no userId/email — falls back to a track event identified by anonymous_id
+              message: {
+                anonymousId: '7e32188a4dab669f',
+                channel: 'mobile',
+                context: {
+                  device: {
+                    id: '7e32188a4dab669f',
+                    type: 'android',
+                    token: 'abcxyz',
+                  },
+                },
+                event: 'Application Installed',
+                originalTimestamp: '2020-01-09T10:01:53.558Z',
+                type: 'track',
+                properties: { review_id: 'r1', product_id: 'p1', rating: 2 },
+                sentAt: '2020-01-09T10:02:03.257Z',
+              },
+              metadata: { jobId: 39, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+            {
+              // no device token — falls back to a track event identified by id
+              message: {
+                anonymousId: '7e32188a4dab669f',
+                channel: 'mobile',
+                context: {
+                  device: {
+                    id: '7e32188a4dab669f',
+                    type: 'android',
+                    // no token present
+                  },
+                },
+                event: 'Application Installed',
+                userId: '12345',
+                originalTimestamp: '2020-01-09T10:01:53.558Z',
+                type: 'track',
+                properties: { review_id: 'r1', product_id: 'p1', rating: 2 },
+                sentAt: '2020-01-09T10:02:03.257Z',
+              },
+              metadata: { jobId: 40, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: { anonymous_id: '7e32188a4dab669f' },
+                        name: 'Application Installed',
+                        attributes: { review_id: 'r1', product_id: 'p1', rating: 2 },
+                        timestamp: 1578564113,
+                      },
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: { id: '12345' },
+                        name: 'Application Installed',
+                        attributes: { review_id: 'r1', product_id: 'p1', rating: 2 },
+                        timestamp: 1578564113,
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 39, userId: 'u1', workspaceId: 'ws-cio-v2' },
+                { jobId: 40, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              ],
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'customerio',
     description: 'v2: screen event with anonymousId maps to anonymous_id identifier',
     feature: 'router',
     module: 'destination',

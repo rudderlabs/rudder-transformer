@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.141.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.1...v1.141.2) (2026-07-07)
+
+
+### Bug Fixes
+
+* **customerio:** fall back to track event for device events missing id/token in v2 ([#5341](https://github.com/rudderlabs/rudder-transformer/issues/5341)) ([f9b1bdf](https://github.com/rudderlabs/rudder-transformer/commit/f9b1bdff605458a8944f790c5adb5794de8be11b))
+
 ### [1.141.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.0...v1.141.1) (2026-07-02)
 
 

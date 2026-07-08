@@ -25,6 +25,7 @@ const buildDestination = (
     Config: {},
   },
   Config: {
+    name: 'iterable_audience',
     apiKey: 'test-api-key',
     dataCenter: 'US',
     projectType: 'email-based',

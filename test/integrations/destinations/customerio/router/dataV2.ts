@@ -919,7 +919,7 @@ export const dataV2 = [
               metadata: [{ jobId: 31, userId: 'u1', workspaceId: 'ws-cio-v2' }],
               batched: false,
               statusCode: 400,
-              error: 'apiKey not found in Configs',
+              error: 'destination.Config.apiKey: Required',
               statTags: {
                 destType: 'CUSTOMERIO',
                 errorCategory: 'dataValidation',
@@ -2345,11 +2345,11 @@ export const dataV2 = [
               metadata: [{ jobId: 106, userId: 'u1', workspaceId: 'ws-cio-v2' }],
               batched: false,
               statusCode: 400,
-              error: 'Delete action is not supported for CustomerIO event records',
+              error: '"delete" is not supported for object type "event"',
               statTags: {
                 destType: 'CUSTOMERIO',
                 errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
+                errorType: 'configuration',
                 feature: 'router',
                 implementation: 'native',
                 module: 'destination',

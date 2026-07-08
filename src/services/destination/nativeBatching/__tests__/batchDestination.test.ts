@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
   TransformedEvent,

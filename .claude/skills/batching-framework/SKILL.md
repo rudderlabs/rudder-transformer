@@ -91,6 +91,8 @@ class MyIntegration extends BatchDestination<TBody, TConfig, TConnectionConfig> 
 export const Integration = MyIntegration;
 ```
 
+Build the schema with `makeRouterInputSchema({ message, destinationConfig?, connectionConfig? })` — a single message variant plus optional destination/connection config. Hybrid record + event-stream destinations extend `VDMV2ObjectDestination`, which unions two such schemas for you.
+
 ## TransformedEvent Type
 
 ```typescript

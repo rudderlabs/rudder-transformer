@@ -128,7 +128,8 @@ const processTrackEvent = (
   const { Config } = destination;
   const { event } = message;
   const { listOfConversions, adjustmentType } = Config;
-  const isConfiguredConversion = listOfConversions.some((i) => i.conversions === event);
+  const isConfiguredConversion =
+    Array.isArray(listOfConversions) && listOfConversions.some((i) => i.conversions === event);
   if (!event || !isConfiguredConversion) {
     throw new ConfigurationError(
       `Conversion named "${String(event)}" was not specified in the RudderStack destination configuration`,

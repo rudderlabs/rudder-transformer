@@ -28,7 +28,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 1
 
@@ -86,7 +86,7 @@ jobs:
           repositories: rudder-devops # to access cross-repo
 
       - name: Checkout Devops Repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           repository: rudderlabs/rudder-devops
           token: ${{ steps.generate-token.outputs.token }}
@@ -162,7 +162,7 @@ jobs:
           repositories: rudder-devops # to access cross-repo
 
       - name: Checkout Devops Repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           repository: rudderlabs/rudder-devops
           token: ${{ steps.generate-token.outputs.token }}
@@ -231,7 +231,7 @@ jobs:
           repositories: rudderstack-operator # to access cross-repo
 
       - name: Checkout Operator Repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           repository: rudderlabs/rudderstack-operator
           token: ${{ steps.generate-token.outputs.token }}

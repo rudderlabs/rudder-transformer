@@ -75,7 +75,7 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
       identify: () => this.wrapEventStreamBody(buildIdentify(message)),
       track: () => {
         const evName = get(message, 'event');
-        const deviceAction = deviceActionFor(evName, this.destination);
+        const deviceAction = deviceActionFor(message, evName, this.destination);
         return this.wrapEventStreamBody(
           deviceAction ? buildDevice(message, deviceAction) : buildTrack(message, evName),
         );

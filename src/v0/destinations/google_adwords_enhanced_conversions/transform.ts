@@ -6,10 +6,13 @@ import type {
   GaecConfig,
   GaecPayload,
   GaecDeliveryRequest,
+  GaecInputMessage,
+  GaecProcessInput,
   GaecRouterRequest,
   ConversionAdjustment,
 } from './types';
 import { trackMapping } from './config';
+import type { Metadata } from '../../../types';
 import type { RouterTransformationResponse } from '../../../types/destinationTransformation';
 import {
   constructPayload,
@@ -35,12 +38,6 @@ interface MappingElement {
 const isMappingElement = (value: unknown): value is MappingElement =>
   typeof value === 'object' && value !== null;
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null;
-
-const isGaecPayload = (value: unknown): value is GaecPayload =>
-  isRecord(value) && Array.isArray(value.conversionAdjustments);
-
 /**
  * This function is helping to update the mappingJson.
  * It is removing the metadata field with type "hashToSha256"
@@ -56,7 +53,7 @@ const updateMappingJson = (mapping: unknown[]): unknown[] => {
       element.metadata?.type?.includes('hashToSha256')
     ) {
       // eslint-disable-next-line no-param-reassign -- intentional in-place mutation: this function's purpose is to rewrite metadata.type
-      element.metadata = { ...element.metadata, type: 'toString' };
+      element.metadata.type = 'toString';
     }
     newMapping.push(element);
   });
@@ -64,11 +61,14 @@ const updateMappingJson = (mapping: unknown[]): unknown[] => {
 };
 
 const responseBuilder = (
-  metadata: Record<string, unknown>,
-  message: Record<string, unknown>,
+  metadata: Metadata,
+  message: GaecInputMessage,
   destination: { Config: GaecConfig },
   payload: GaecPayload,
 ): GaecDeliveryRequest => {
+  // cast at construction: the builder starts from empty slots and is mutated in place
+  // into the full request shape below, exactly like the original JS
+  const deliveryRequest = defaultRequestConfig() as GaecDeliveryRequest;
   const { event } = message;
   const { subAccount } = destination.Config;
   let { customerId, loginCustomerId } = destination.Config;
@@ -79,19 +79,20 @@ const responseBuilder = (
   if (!isString(customerId)) {
     throw new InstrumentationError('customerId should be a string or number');
   }
-  const filteredCustomerId: string = removeHyphens(customerId);
+  const filteredCustomerId = removeHyphens(customerId);
 
-  const accessToken: string = getAccessToken(metadata, 'access_token');
-  const headers: GaecDeliveryRequest['headers'] = {
+  deliveryRequest.body.JSON = payload;
+  const accessToken = getAccessToken(metadata, 'access_token');
+  deliveryRequest.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
   };
-  const params: GaecDeliveryRequest['params'] = {
-    // `event` was validated as a configured conversion name (a string) in processTrackEvent.
-    event: typeof event === 'string' ? event : '',
+  const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+  deliveryRequest.params = {
+    event,
     customerId: filteredCustomerId,
     accessToken,
-    loginCustomerId: undefined,
+    loginCustomerId: filteredLoginCustomerId,
     subAccount,
   };
   if (subAccount) {
@@ -101,28 +102,18 @@ const responseBuilder = (
     if (isNumber(loginCustomerId)) {
       loginCustomerId = loginCustomerId.toString();
     }
-    if (!isString(loginCustomerId)) {
+    if (loginCustomerId && !isString(loginCustomerId)) {
       throw new InstrumentationError('loginCustomerId should be a string or number');
     }
-    const filteredLoginCustomerId: string = removeHyphens(loginCustomerId);
-    params.loginCustomerId = filteredLoginCustomerId;
-    headers['login-customer-id'] = filteredLoginCustomerId;
+    deliveryRequest.headers['login-customer-id'] = filteredLoginCustomerId;
   }
 
-  // `defaultRequestConfig()`'s inferred body/params fields are empty objects, so the typed
-  // request is assembled as a literal (spread + override) rather than mutated in place.
-  const baseRequest = defaultRequestConfig();
-  return {
-    ...baseRequest,
-    headers,
-    params,
-    body: { ...baseRequest.body, JSON: payload },
-  };
+  return deliveryRequest;
 };
 
 const processTrackEvent = (
-  metadata: Record<string, unknown>,
-  message: Record<string, unknown>,
+  metadata: Metadata,
+  message: GaecInputMessage,
   destination: { Config: GaecConfig },
 ): GaecDeliveryRequest => {
   const { Config } = destination;
@@ -142,14 +133,14 @@ const processTrackEvent = (
     updatedMapping = updateMappingJson(updatedMapping);
   }
 
-  // `constructPayload` returns null when nothing in the message is mappable; the guard also
-  // narrows its loosely inferred return to the typed payload.
-  const payload = constructPayload(message, updatedMapping);
-  if (!isGaecPayload(payload)) {
-    throw new InstrumentationError('Payload could not be constructed from the message');
-  }
+  // Cast at the production point: `constructPayload` is untyped JS and returns null when
+  // nothing in the message is mappable — a null surfaces as a TypeError on the next line,
+  // exactly like the original JS.
+  const payload = constructPayload(message, updatedMapping) as GaecPayload;
 
   payload.partialFailure = true;
+  // `?.` on [0] is a genuine runtime guard: the array may be empty, and the intended
+  // failure is this InstrumentationError, not a TypeError
   if (!payload.conversionAdjustments[0]?.userIdentifiers) {
     throw new InstrumentationError(
       `Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
@@ -184,8 +175,8 @@ const processTrackEvent = (
 };
 
 const processEvent = (
-  metadata: Record<string, unknown>,
-  message: Record<string, unknown>,
+  metadata: Metadata,
+  message: GaecInputMessage,
   destination: { Config: GaecConfig },
 ): GaecDeliveryRequest => {
   const { type } = message;
@@ -200,20 +191,10 @@ const processEvent = (
   return processTrackEvent(metadata, message, destination);
 };
 
-const isGaecDestination = (value: unknown): value is { Config: GaecConfig } =>
-  isRecord(value) && isRecord(value.Config);
-
-// `event` arrives loosely typed from the Zod passthrough in routerTransform.ts; narrow its
-// fields with type guards before handing them to the strictly typed processEvent.
-const process = (event: Record<string, unknown>): GaecDeliveryRequest => {
-  const { metadata, message, destination } = event;
-  if (!isRecord(metadata) || !isRecord(message) || !isGaecDestination(destination)) {
-    throw new InstrumentationError(
-      'Invalid event. metadata, message and destination must be objects',
-    );
-  }
-  return processEvent(metadata, message, destination);
-};
+// `metadata`/`destination` are statically optional on the envelope (the router-input
+// schema only validates `message`); `!` mirrors the original JS delegate's implicit trust.
+const process = (event: GaecProcessInput): GaecDeliveryRequest =>
+  processEvent(event.metadata!, event.message, event.destination!);
 
 const processRouterDest = async (
   inputs: GaecRouterRequest[],

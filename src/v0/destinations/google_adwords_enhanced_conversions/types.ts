@@ -29,6 +29,29 @@ export type GaecRouterRequest = RouterTransformationRequestData<
   Metadata
 >;
 
+/**
+ * Minimal message shape the GAEC transform reads. Satisfied by both `RudderMessage`
+ * (`type` is the MessageType literal union) and the router path's Zod-validated
+ * message (`type` is a refined plain string).
+ */
+export interface GaecInputMessage {
+  type?: string;
+  event?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * The envelope `process` receives. The router-input schema (routerTransform.ts) only
+ * validates `message` and passes the rest of the envelope through unvalidated, so
+ * `metadata` and `destination` are runtime-present but statically optional — accesses
+ * use `!`, mirroring the original JS delegate's implicit trust.
+ */
+export interface GaecProcessInput {
+  metadata?: Metadata;
+  message: GaecInputMessage;
+  destination?: { Config: GaecConfig };
+}
+
 /** Address component nested inside a UserIdentifier. */
 export interface AddressInfo {
   hashedFirstName?: string;
@@ -68,12 +91,14 @@ export interface ConversionAdjustment {
 
 /**
  * The payload object produced by `constructPayload` and sent to the Google Ads API.
- * Shape is derived from `trackConfig.json` mapping.
+ * Shape is derived from `trackConfig.json` mapping (every destKey nests under
+ * `conversionAdjustments[0]`, so a non-null construction always carries the array).
+ * The type is asserted once where `constructPayload`'s untyped return is produced;
+ * consumers rely on the required field instead of re-asserting.
  */
 export interface GaecPayload {
   conversionAdjustments: ConversionAdjustment[];
   partialFailure?: boolean;
-  [key: string]: unknown;
 }
 
 /**
@@ -86,12 +111,14 @@ export interface GaecDeliveryRequest {
   endpoint: string;
   method: string;
   headers: Record<string, string>;
+  // fields are optional so `defaultRequestConfig()`'s empty `params` object is directly
+  // assignable and the request can be mutated in place, exactly like the original JS
   params: {
-    event: string;
-    customerId: string;
-    accessToken: string;
-    loginCustomerId: string | undefined;
-    subAccount: boolean | undefined;
+    event?: string;
+    customerId?: string;
+    accessToken?: string;
+    loginCustomerId?: string;
+    subAccount?: boolean;
     [key: string]: unknown;
   };
   body: {

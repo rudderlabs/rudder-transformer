@@ -141,8 +141,7 @@ const gaecProxyRequest = async (request: GaecProxyRequest): Promise<SdkResponse>
       customerId: params.customerId,
       // in-flight payloads built by the legacy JS transformer may carry a numeric
       // loginCustomerId; the SDK config field is typed string
-      loginCustomerId:
-        params.subAccount && params.loginCustomerId ? String(params.loginCustomerId) : '',
+      loginCustomerId: params.subAccount ? String(params.loginCustomerId) : '',
       developerToken: getDeveloperToken(),
     },
     {
@@ -150,40 +149,7 @@ const gaecProxyRequest = async (request: GaecProxyRequest): Promise<SdkResponse>
         // `statsClient` was never exported by util/stats, so the legacy `require` destructure
         // always wired `undefined` here; kept explicit to preserve the SDK httpClient shape.
         statsClient: undefined,
-        // logger.js's `requestLog`/`responseLog` destructure their second argument and treat
-        // `metadata` as required, while the SDK's IHttpLogger declares both as optional;
-        // adapt so a no-data or no-metadata call can't crash the logger.
-        logger: {
-          ...logger,
-          requestLog: (message, data) => {
-            if (data) {
-              logger.requestLog(message, {
-                metadata: undefined,
-                ...data,
-                requestDetails: {
-                  url: undefined,
-                  body: undefined,
-                  method: undefined,
-                  ...data.requestDetails,
-                },
-              });
-            }
-          },
-          responseLog: (message, data) => {
-            if (data) {
-              logger.responseLog(message, {
-                metadata: undefined,
-                ...data,
-                responseDetails: {
-                  body: undefined,
-                  status: undefined,
-                  headers: undefined,
-                  ...data.responseDetails,
-                },
-              });
-            }
-          },
-        },
+        logger,
       },
     },
   );

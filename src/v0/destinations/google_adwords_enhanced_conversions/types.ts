@@ -10,7 +10,8 @@ import type { RouterTransformationRequestData } from '../../../types/destination
  * control-plane serialises some numeric IDs as numbers.
  */
 export interface GaecConfig {
-  requireHash: boolean;
+  // Omitted by most control-plane configs; missing means "hash" (only explicit false disables it)
+  requireHash?: boolean;
   customerId: string | number;
   loginCustomerId?: string | number;
   subAccount?: boolean;

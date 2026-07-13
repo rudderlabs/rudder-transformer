@@ -1,3 +1,4 @@
+import sha256 from 'sha256';
 import { authHeader1, secret1 } from '../maskedSecrets';
 
 export const data = [
@@ -162,20 +163,16 @@ export const data = [
                         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                       userIdentifiers: [
                         {
-                          hashedPhoneNumber:
-                            '04387707e6cbed8c4538c81cc570ed9252d579469f36c273839b26d784e4bdbe',
+                          hashedPhoneNumber: sha256('+912382193'),
                         },
                         {
                           addressInfo: {
-                            hashedFirstName:
-                              'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
-                            hashedLastName:
-                              '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
+                            hashedFirstName: sha256('john'),
+                            hashedLastName: sha256('gomes'),
                             state: 'UK',
                             city: 'London',
                             countryCode: 'us',
-                            hashedStreetAddress:
-                              '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                            hashedStreetAddress: sha256('71 cherry court southampton so53 5pd uk'),
                           },
                         },
                       ],
@@ -655,15 +652,14 @@ export const data = [
                       userIdentifiers: [
                         {
                           addressInfo: {
-                            hashedFirstName:
-                              'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
-                            hashedLastName:
-                              '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
+                            hashedFirstName: sha256('john'),
+                            hashedLastName: sha256('gomes'),
                             state: 'UK',
                             city: 'London',
                             countryCode: 'us',
-                            hashedStreetAddress:
-                              'b28c94b2195c8ed259f0b415aaee3f39b0b2920a4537611499fa044956917a21',
+                            // no hashedStreetAddress: the mapping's context.traits.address
+                            // fallback resolves to an object here, which is dropped rather
+                            // than hashed as String(object)
                           },
                         },
                       ],
@@ -1373,20 +1369,16 @@ export const data = [
                         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                       userIdentifiers: [
                         {
-                          hashedPhoneNumber:
-                            '04387707e6cbed8c4538c81cc570ed9252d579469f36c273839b26d784e4bdbe',
+                          hashedPhoneNumber: sha256('+912382193'),
                         },
                         {
                           addressInfo: {
-                            hashedFirstName:
-                              'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
-                            hashedLastName:
-                              '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
+                            hashedFirstName: sha256('john'),
+                            hashedLastName: sha256('gomes'),
                             state: 'UK',
                             city: 'London',
                             countryCode: 'us',
-                            hashedStreetAddress:
-                              '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                            hashedStreetAddress: sha256('71 cherry court southampton so53 5pd uk'),
                           },
                         },
                       ],
@@ -1417,7 +1409,8 @@ export const data = [
   },
   {
     name: 'google_adwords_enhanced_conversions',
-    description: 'Test 9',
+    description:
+      'Test 9: raw (unhashed) phone with requireHash:false aborts with hashing-consistency error',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1531,66 +1524,6 @@ export const data = [
         status: 200,
         body: [
           {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: '',
-              headers: {
-                Authorization: authHeader1,
-                'Content-Type': 'application/json',
-                'login-customer-id': '1234567890',
-              },
-              params: {
-                accessToken: 'google_adwords_enhanced_conversions1',
-                event: 'Page View',
-                customerId: '1234567890',
-                loginCustomerId: '1234567890',
-                subAccount: true,
-              },
-              body: {
-                JSON: {
-                  conversionAdjustments: [
-                    {
-                      gclidDateTimePair: {
-                        gclid: 'gclid1234',
-                        conversionDateTime: '2022-01-01 12:32:45-08:00',
-                      },
-                      restatementValue: {
-                        adjustedValue: 10,
-                        currencyCode: 'INR',
-                      },
-                      orderId: '10000',
-                      adjustmentDateTime: '2022-01-01 12:32:45-08:00',
-                      userAgent:
-                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                      userIdentifiers: [
-                        {
-                          hashedPhoneNumber: '912382193',
-                        },
-                        {
-                          addressInfo: {
-                            hashedFirstName: 'John',
-                            hashedLastName: 'Gomes',
-                            state: 'UK',
-                            city: 'London',
-                            countryCode: 'us',
-                            hashedStreetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
-                          },
-                        },
-                      ],
-                      adjustmentType: 'ENHANCEMENT',
-                    },
-                  ],
-                  partialFailure: true,
-                },
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
-              userId: '',
-            },
             metadata: {
               secret: {
                 access_token: secret1,
@@ -1598,7 +1531,17 @@ export const data = [
                 developer_token: 'ijkl91011',
               },
             },
-            statusCode: 200,
+            statusCode: 400,
+            error:
+              'Hashing is disabled but the value for field hashedPhoneNumber appears to be unhashed. Either enable hashing or send pre-hashed data.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
           },
         ],
       },
@@ -1939,6 +1882,521 @@ export const data = [
               },
               name: 'ApplicationLoaded',
               sentAt: '2019-10-14T11:15:53.296Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: '',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+                'login-customer-id': '1234567890',
+              },
+              params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
+                event: 'Page View',
+                customerId: '1234567890',
+                loginCustomerId: '1234567890',
+                subAccount: true,
+              },
+              body: {
+                JSON: {
+                  conversionAdjustments: [
+                    {
+                      gclidDateTimePair: {
+                        gclid: 'gclid1234',
+                        conversionDateTime: '2022-01-01 12:32:45-08:00',
+                      },
+                      restatementValue: {
+                        adjustedValue: 10,
+                        currencyCode: 'INR',
+                      },
+                      orderId: '10000',
+                      adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                      adjustmentType: 'RESTATEMENT',
+                    },
+                  ],
+                  partialFailure: true,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+              workspaceId: 'workspaceId1',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description:
+      'Test 13: mixed-case identifiers are normalized before hashing (gmail dots/plus-suffix stripped, names lowercased, phone E.164-cleaned)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              hasDynamicConfig: false,
+              Config: {
+                rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                customerId: '1234567890',
+                subAccount: true,
+                loginCustomerId: '11',
+                listOfConversions: [{ conversions: 'Page View' }],
+                authStatus: 'active',
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: ' Alex.Doe+shop@GMAIL.com',
+                  phone: '(91) 238-2193',
+                  firstName: ' MARY ',
+                },
+              },
+              event: 'Page View',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                gclid: 'gclid1234',
+                conversionDateTime: '2022-01-01 12:32:45-08:00',
+                order_id: 10000,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: '',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+                'login-customer-id': '11',
+              },
+              params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
+                event: 'Page View',
+                customerId: '1234567890',
+                loginCustomerId: '11',
+                subAccount: true,
+              },
+              body: {
+                JSON: {
+                  conversionAdjustments: [
+                    {
+                      gclidDateTimePair: {
+                        gclid: 'gclid1234',
+                        conversionDateTime: '2022-01-01 12:32:45-08:00',
+                      },
+                      orderId: '10000',
+                      userIdentifiers: [
+                        {
+                          hashedEmail: sha256('alexdoe@gmail.com'),
+                        },
+                        {
+                          hashedPhoneNumber: sha256('+912382193'),
+                        },
+                        {
+                          addressInfo: {
+                            hashedFirstName: sha256('mary'),
+                          },
+                        },
+                      ],
+                      adjustmentType: 'ENHANCEMENT',
+                    },
+                  ],
+                  partialFailure: true,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description:
+      'Test 14: pre-hashed email with hashing enabled (requireHash not disabled) aborts with a hashing-consistency error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              hasDynamicConfig: false,
+              Config: {
+                rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                customerId: '1234567890',
+                subAccount: true,
+                loginCustomerId: '11',
+                listOfConversions: [{ conversions: 'Page View' }],
+                authStatus: 'active',
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: sha256('alexdoe@gmail.com'),
+                },
+              },
+              event: 'Page View',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                gclid: 'gclid1234',
+                order_id: 10000,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            statusCode: 400,
+            error:
+              'Hashing is enabled but the value for field hashedEmail appears to already be hashed. Either disable hashing or send unhashed data.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description:
+      'Test 15: invalid email is dropped while the valid phone identifier is kept and hashed',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              hasDynamicConfig: false,
+              Config: {
+                rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                customerId: '1234567890',
+                subAccount: true,
+                loginCustomerId: '11',
+                listOfConversions: [{ conversions: 'Page View' }],
+                authStatus: 'active',
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'not-an-email',
+                  phone: '912382193',
+                },
+              },
+              event: 'Page View',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                gclid: 'gclid1234',
+                order_id: 10000,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: '',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+                'login-customer-id': '11',
+              },
+              params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
+                event: 'Page View',
+                customerId: '1234567890',
+                loginCustomerId: '11',
+                subAccount: true,
+              },
+              body: {
+                JSON: {
+                  conversionAdjustments: [
+                    {
+                      gclidDateTimePair: {
+                        gclid: 'gclid1234',
+                      },
+                      orderId: '10000',
+                      userIdentifiers: [
+                        {
+                          hashedPhoneNumber: sha256('+912382193'),
+                        },
+                      ],
+                      adjustmentType: 'ENHANCEMENT',
+                    },
+                  ],
+                  partialFailure: true,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description:
+      'Test 16: event aborts when every identifier is dropped by validation (invalid email only)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              hasDynamicConfig: false,
+              Config: {
+                rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                customerId: '1234567890',
+                subAccount: true,
+                loginCustomerId: '11',
+                listOfConversions: [{ conversions: 'Page View' }],
+                authStatus: 'active',
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'not-an-email',
+                },
+              },
+              event: 'Page View',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                gclid: 'gclid1234',
+                order_id: 10000,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            statusCode: 400,
+            error:
+              'Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description:
+      'Test 17: RESTATEMENT adjustment with pre-hashed identifiers succeeds — identifiers are deleted before the hashing pipeline, so no hashing-consistency error fires',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+              workspaceId: 'workspaceId1',
+            },
+            destination: {
+              hasDynamicConfig: false,
+              Config: {
+                adjustmentType: 'RESTATEMENT',
+                rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                customerId: '123-456-7890',
+                subAccount: true,
+                loginCustomerId: '123-456-7890',
+                listOfConversions: [{ conversions: 'Page View' }],
+                authStatus: 'active',
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  phone: sha256('+912382193'),
+                  firstName: sha256('john'),
+                  lastName: sha256('gomes'),
+                  city: 'London',
+                  state: 'UK',
+                  countryCode: 'us',
+                  streetAddress: sha256('71 cherry court southampton so53 5pd uk'),
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+              },
+              event: 'Page View',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                gclid: 'gclid1234',
+                conversionDateTime: '2022-01-01 12:32:45-08:00',
+                adjustedValue: '10',
+                currency: 'INR',
+                adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                order_id: 10000,
+              },
             },
           },
         ],

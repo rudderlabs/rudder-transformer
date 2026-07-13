@@ -1,5 +1,4 @@
-import get from 'get-value';
-import { cloneDeep, isNumber } from 'lodash';
+import { isNumber } from 'lodash';
 import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
 import isString from 'lodash/isString';
 import type {
@@ -12,6 +11,7 @@ import type {
   ConversionAdjustment,
 } from './types';
 import { trackMapping } from './config';
+import { processUserIdentifiers } from './utils';
 import type { Metadata } from '../../../types';
 import type { RouterTransformationResponse } from '../../../types/destinationTransformation';
 import {
@@ -27,43 +27,13 @@ import { isFeatureEnabled } from '../../../util/featureFlags';
 const ADJUSTMENT_TYPE_ENHANCEMENT = 'ENHANCEMENT';
 const ADJUSTMENT_TYPE_RESTATEMENT = 'RESTATEMENT';
 
-/** Shape of a single element in the mapping JSON (trackConfig.json). */
-interface MappingElement {
-  metadata?: {
-    type?: string | string[];
-  };
-  [key: string]: unknown;
-}
-
-const isMappingElement = (value: unknown): value is MappingElement =>
-  typeof value === 'object' && value !== null;
-
-/**
- * This function is helping to update the mappingJson.
- * It is removing the metadata field with type "hashToSha256"
- * @param mapping -> it is the configMapping.json
- * @returns
- */
-const updateMappingJson = (mapping: unknown[]): unknown[] => {
-  const newMapping: unknown[] = [];
-  mapping.forEach((element) => {
-    if (
-      isMappingElement(element) &&
-      get(element, 'metadata.type') &&
-      element.metadata?.type?.includes('hashToSha256')
-    ) {
-      // eslint-disable-next-line no-param-reassign -- intentional in-place mutation: this function's purpose is to rewrite metadata.type
-      element.metadata.type = 'toString';
-    }
-    newMapping.push(element);
-  });
-  return newMapping;
-};
+const MISSING_IDENTIFIERS_ERROR =
+  'Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.';
 
 const responseBuilder = (
   metadata: Metadata,
   message: GaecInputMessage,
-  destination: { Config: GaecConfig },
+  destination: { Config: GaecConfig; [key: string]: unknown },
   payload: GaecPayload,
 ): GaecDeliveryRequest => {
   // typed at construction: the builder starts from empty slots and is mutated in place
@@ -114,11 +84,11 @@ const responseBuilder = (
 const processTrackEvent = (
   metadata: Metadata,
   message: GaecInputMessage,
-  destination: { Config: GaecConfig },
+  destination: { Config: GaecConfig; [key: string]: unknown },
 ): GaecDeliveryRequest => {
-  const { Config } = destination;
+  const { Config, ID } = destination;
   const { event } = message;
-  const { listOfConversions, adjustmentType } = Config;
+  const { listOfConversions, adjustmentType, requireHash } = Config;
   const isConfiguredConversion =
     Array.isArray(listOfConversions) && listOfConversions.some((i) => i.conversions === event);
   if (event === undefined || event === '' || !isConfiguredConversion) {
@@ -126,25 +96,18 @@ const processTrackEvent = (
       `Conversion named "${String(event)}" was not specified in the RudderStack destination configuration`,
     );
   }
-  const { requireHash } = Config;
-  let updatedMapping = cloneDeep(trackMapping);
 
-  if (requireHash === false) {
-    updatedMapping = updateMappingJson(updatedMapping);
-  }
-
-  // `!` mirrors the original JS's implicit non-null trust in `constructPayload`'s return
-  // (migration guide #6) — a null surfaces as a TypeError on the next access, exactly
-  // like the original JS.
-  const payload: GaecPayload = constructPayload(message, updatedMapping)!;
+  // `!` mirrors the original JS's implicit non-null trust in `constructPayload`'s return —
+  // a null surfaces as a TypeError on the next access, exactly like the original JS.
+  // hashToSha256 has been removed from trackConfig.json; the mapping now extracts raw values
+  // only (trim). processUserIdentifiers handles normalization, consistency-check, and hashing.
+  const payload: GaecPayload = constructPayload(message, trackMapping)!;
 
   payload.partialFailure = true;
   // `?.` on [0] is a genuine runtime guard: the array may be empty, and the intended
   // failure is this InstrumentationError, not a TypeError
   if (!payload.conversionAdjustments![0]?.userIdentifiers) {
-    throw new InstrumentationError(
-      `Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
-    );
+    throw new InstrumentationError(MISSING_IDENTIFIERS_ERROR);
   }
   const firstAdjustment: ConversionAdjustment = payload.conversionAdjustments![0];
   firstAdjustment.adjustmentType = ADJUSTMENT_TYPE_ENHANCEMENT;
@@ -154,15 +117,36 @@ const processTrackEvent = (
   const arr = firstAdjustment.userIdentifiers;
   firstAdjustment.userIdentifiers = arr!.filter((item) => !!item);
 
-  if (
+  const isRestatement =
     isFeatureEnabled('DEST_GAEC_ADJUSTMENT_TYPE_SUPPORTED_WORKSPACE_IDS', metadata.workspaceId) &&
     adjustmentType &&
-    adjustmentType === ADJUSTMENT_TYPE_RESTATEMENT
-  ) {
+    adjustmentType === ADJUSTMENT_TYPE_RESTATEMENT;
+
+  if (isRestatement) {
     firstAdjustment.adjustmentType = ADJUSTMENT_TYPE_RESTATEMENT;
     delete firstAdjustment.userIdentifiers;
     delete firstAdjustment.userAgent;
+  } else {
+    // Run processUserIdentifiers ONLY when identifiers will actually be sent.
+    // Restatement events delete userIdentifiers — running the hash pipeline on them
+    // would throw spurious hash-inconsistency errors.
+    // `destinationId` for metric labels: v0 destination objects carry uppercase `ID`
+    // (same field GARL reads); it comes through the index signature as unknown, so a
+    // string guard + '' fallback is needed
+    const destinationId = typeof ID === 'string' ? ID : '';
+    processUserIdentifiers(payload, {
+      requireHash,
+      workspaceId: metadata.workspaceId,
+      destinationId,
+    });
+
+    // After pruning, re-check: processUserIdentifiers may have dropped all identifiers
+    // (e.g. all were invalid), leaving userIdentifiers empty.
+    if (!firstAdjustment.userIdentifiers || firstAdjustment.userIdentifiers.length === 0) {
+      throw new InstrumentationError(MISSING_IDENTIFIERS_ERROR);
+    }
   }
+
   return responseBuilder(metadata, message, destination, payload);
 };
 

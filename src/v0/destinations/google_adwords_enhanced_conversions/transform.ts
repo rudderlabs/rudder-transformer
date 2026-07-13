@@ -121,7 +121,7 @@ const processTrackEvent = (
   const { listOfConversions, adjustmentType } = Config;
   const isConfiguredConversion =
     Array.isArray(listOfConversions) && listOfConversions.some((i) => i.conversions === event);
-  if (!event || !isConfiguredConversion) {
+  if (event === undefined || event === '' || !isConfiguredConversion) {
     throw new ConfigurationError(
       `Conversion named "${String(event)}" was not specified in the RudderStack destination configuration`,
     );
@@ -149,21 +149,13 @@ const processTrackEvent = (
   const firstAdjustment: ConversionAdjustment = payload.conversionAdjustments![0];
   firstAdjustment.adjustmentType = ADJUSTMENT_TYPE_ENHANCEMENT;
   // Removing the null values from userIdentifier
-  // (truthiness guard rather than `!== undefined`: the vendored src/util/lodash-es-core.js
-  // declares a global `undefined`, which disables `!== undefined` narrowing project-wide)
+  // (`!` is type-only: the throw above guarantees userIdentifiers is present, and the
+  // assignment stays unconditional like the original JS)
   const arr = firstAdjustment.userIdentifiers;
-  if (arr) {
-    firstAdjustment.userIdentifiers = arr.filter((item) => !!item);
-  }
+  firstAdjustment.userIdentifiers = arr!.filter((item) => !!item);
 
-  // `isFeatureEnabled` treats a flag value of 'ALL' as enabled regardless of workspaceId,
-  // so a missing/non-string workspaceId is passed as '' rather than short-circuiting to false.
-  const { workspaceId } = metadata;
   if (
-    isFeatureEnabled(
-      'DEST_GAEC_ADJUSTMENT_TYPE_SUPPORTED_WORKSPACE_IDS',
-      typeof workspaceId === 'string' ? workspaceId : '',
-    ) &&
+    isFeatureEnabled('DEST_GAEC_ADJUSTMENT_TYPE_SUPPORTED_WORKSPACE_IDS', metadata.workspaceId) &&
     adjustmentType &&
     adjustmentType === ADJUSTMENT_TYPE_RESTATEMENT
   ) {

@@ -214,6 +214,20 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       failingJobId: 1,
       errorMatch: /Missing required fields for action "update": externalId/,
     },
+    {
+      name: 'update event with useInsertConfig true but missing insert config',
+      buildInputs: () => {
+        const destination = buildDestination({
+          actions: {
+            update: { useInsertConfig: true },
+            delete: baseDeleteAction,
+          },
+        });
+        return [buildInput(1, 'update', { email: hashedEmail('a@b.com') }, destination)];
+      },
+      failingJobId: 1,
+      errorMatch: /No action configuration found for action: insert/,
+    },
   ];
 
   it.each(errorCases)(
@@ -226,6 +240,25 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       expect(errors[0].error).toMatch(errorMatch);
     },
   );
+
+  it('returns controlled 400 when destination actions config is missing', async () => {
+    const destination = buildDestination();
+    delete (destination.Config as Partial<CustomAudienceDestConfig>).actions;
+    const results = await processBatchedDestination(
+      [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)],
+      Integration,
+      {},
+    );
+
+    expect(results).toHaveLength(1);
+    expect(results[0]).toMatchObject({
+      statusCode: 400,
+      batched: false,
+      metadata: [expect.objectContaining({ jobId: 1 })],
+    });
+    expect(results[0].error).toMatch(/destination\.Config\.actions: Required/);
+    expect(results[0].error).not.toMatch(/Cannot convert undefined or null to object/);
+  });
 
   it('hashes fields when isHashRequired is true', async () => {
     const connection = buildConnection({ isHashRequired: true });

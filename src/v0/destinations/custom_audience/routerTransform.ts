@@ -39,7 +39,7 @@ class CustomAudienceIntegration extends BatchDestination<
 > {
   // Endpoint depends only on action.endpoint + connection (constant per request),
   // so resolve once per configured action — not once per event.
-  private readonly endpointByAction: Partial<Record<Action, string>>;
+  private endpointByAction?: Partial<Record<Action, string>>;
 
   private readonly headers: Record<string, string>;
 
@@ -49,7 +49,6 @@ class CustomAudienceIntegration extends BatchDestination<
       throw new InstrumentationError('Connection config is required for custom_audience');
     }
     this.headers = buildRequestHeaders(this.destination.Config);
-    this.endpointByAction = this.buildEndpointsByAction();
   }
 
   private get connectionConfig() {
@@ -78,6 +77,7 @@ class CustomAudienceIntegration extends BatchDestination<
       action,
       this.destination.Config.actions,
     );
+    this.endpointByAction ??= this.buildEndpointsByAction();
     validateRequiredFields(action, identifiers, actionConfig.fields);
     const fieldsWithCustomMappings = injectCustomMappings(
       identifiers,

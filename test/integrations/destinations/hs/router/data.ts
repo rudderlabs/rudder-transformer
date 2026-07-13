@@ -1,6 +1,7 @@
 import { authHeader1, secret1, authHeader2, authHeader3, secret3, secret2 } from '../maskedSecrets';
 import { destination } from './config';
 import { upsertData } from './upsertData';
+import { errorValidationData } from './errorValidationData';
 export const data = [
   {
     name: 'hs',
@@ -4491,4 +4492,5 @@ export const data = [
     },
   },
   ...upsertData,
+  ...errorValidationData,
 ];

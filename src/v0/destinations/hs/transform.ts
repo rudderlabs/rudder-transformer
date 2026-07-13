@@ -21,7 +21,6 @@ import type {
   HubSpotRouterTransformationOutput,
   HubspotRouterRequest,
   HubspotProcessorTransformationOutput,
-  HubspotProcessorRequest,
   HubSpotBatchProcessingItem,
 } from './types';
 import { isProcessorOutput } from './types';
@@ -61,24 +60,6 @@ const processSingleMessage = async (
   }
 
   return response;
-};
-
-// has been deprecated - using routerTransform for both the versions
-const process = async (
-  event: HubspotProcessorRequest,
-): Promise<HubspotProcessorTransformationOutput | HubspotProcessorTransformationOutput[]> => {
-  const { destination, message, metadata } = event;
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  let events: HubspotProcessorRequest[] = [event];
-  if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
-    // get info about existing objects and splitting accordingly.
-    events = await splitEventsForCreateUpdate(events, destination, metadata);
-  }
-  return processSingleMessage({
-    message: events[0].message,
-    destination,
-    metadata,
-  });
 };
 
 const processBatchRouter = async (
@@ -225,4 +206,4 @@ const processRouterDest = async (
   return [...batchedResponseList, ...errorRespList, ...dontBatchEvents];
 };
 
-export { process, processRouterDest };
+export { processRouterDest };

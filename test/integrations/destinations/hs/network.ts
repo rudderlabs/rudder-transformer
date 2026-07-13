@@ -1671,4 +1671,17 @@ export const networkCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      url: CRM_V3_PROPERTIES_ENDPOINT,
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer hs-access-token',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: { results: [] },
+    },
+  },
 ];

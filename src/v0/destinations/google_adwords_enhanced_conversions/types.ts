@@ -93,11 +93,12 @@ export interface ConversionAdjustment {
  * The payload object produced by `constructPayload` and sent to the Google Ads API.
  * Shape is derived from `trackConfig.json` mapping (every destKey nests under
  * `conversionAdjustments[0]`, so a non-null construction always carries the array).
- * The type is asserted once where `constructPayload`'s untyped return is produced;
- * consumers rely on the required field instead of re-asserting.
+ * `conversionAdjustments` is optional so the untyped `constructPayload` return and
+ * `defaultRequestConfig()`'s empty `JSON` slot assign directly; accesses use `!`
+ * (migration guide #6) to mirror the original JS's implicit non-null trust.
  */
 export interface GaecPayload {
-  conversionAdjustments: ConversionAdjustment[];
+  conversionAdjustments?: ConversionAdjustment[];
   partialFailure?: boolean;
 }
 

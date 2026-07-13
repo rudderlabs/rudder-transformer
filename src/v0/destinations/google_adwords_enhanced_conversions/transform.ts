@@ -66,9 +66,9 @@ const responseBuilder = (
   destination: { Config: GaecConfig },
   payload: GaecPayload,
 ): GaecDeliveryRequest => {
-  // cast at construction: the builder starts from empty slots and is mutated in place
+  // typed at construction: the builder starts from empty slots and is mutated in place
   // into the full request shape below, exactly like the original JS
-  const deliveryRequest = defaultRequestConfig() as GaecDeliveryRequest;
+  const deliveryRequest: GaecDeliveryRequest = defaultRequestConfig();
   const { event } = message;
   const { subAccount } = destination.Config;
   let { customerId, loginCustomerId } = destination.Config;
@@ -133,20 +133,20 @@ const processTrackEvent = (
     updatedMapping = updateMappingJson(updatedMapping);
   }
 
-  // Cast at the production point: `constructPayload` is untyped JS and returns null when
-  // nothing in the message is mappable — a null surfaces as a TypeError on the next line,
-  // exactly like the original JS.
-  const payload = constructPayload(message, updatedMapping) as GaecPayload;
+  // `!` mirrors the original JS's implicit non-null trust in `constructPayload`'s return
+  // (migration guide #6) — a null surfaces as a TypeError on the next access, exactly
+  // like the original JS.
+  const payload: GaecPayload = constructPayload(message, updatedMapping)!;
 
   payload.partialFailure = true;
   // `?.` on [0] is a genuine runtime guard: the array may be empty, and the intended
   // failure is this InstrumentationError, not a TypeError
-  if (!payload.conversionAdjustments[0]?.userIdentifiers) {
+  if (!payload.conversionAdjustments![0]?.userIdentifiers) {
     throw new InstrumentationError(
       `Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
     );
   }
-  const firstAdjustment: ConversionAdjustment = payload.conversionAdjustments[0];
+  const firstAdjustment: ConversionAdjustment = payload.conversionAdjustments![0];
   firstAdjustment.adjustmentType = ADJUSTMENT_TYPE_ENHANCEMENT;
   // Removing the null values from userIdentifier
   // (truthiness guard rather than `!== undefined`: the vendored src/util/lodash-es-core.js

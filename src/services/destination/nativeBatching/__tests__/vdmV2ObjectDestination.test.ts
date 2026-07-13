@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { VDMV2ObjectDestination } from '../vdmV2ObjectDestination';
+import { validateInputs } from '../processBatchedDestination';
 import { makeRouterInputSchema, TransformedEvent, ChunkBatchStrategy } from '../batchDestination';
 import type { BatchStrategy } from '../types';
 import type { Destination, Connection } from '../../../../types/controlPlaneConfig';
@@ -102,6 +103,116 @@ describe('VDMV2ObjectDestination.getInputSchema', () => {
         destination: { Config: { apiKey: 'k' } },
       }).success,
     ).toBe(false);
+  });
+});
+
+// The base class discriminates the variants on `message.type` rather than unioning them.
+// A plain `z.union` collapsed every branch's failure into one opaque `invalid_union` issue
+// with no usable path — so a bad `destination.Config`, which both variants declare, failed
+// both branches and could only be attributed by guesswork. These cases pin the errors that
+// validateInputs now surfaces: each is reported against the one variant the message
+// selected, with its real path.
+describe('VDMV2ObjectDestination input validation', () => {
+  // Deliberately loose/malformed envelopes exercise schema validation, so the cast is
+  // localized here and call sites pass a typed RouterTransformationRequestData.
+  const validationInput = (
+    jobId: number,
+    message: unknown,
+    config: unknown,
+    connection?: unknown,
+  ): RouterTransformationRequestData =>
+    ({
+      message,
+      destination: { Config: config },
+      ...(connection ? { connection } : {}),
+      metadata: { jobId },
+    }) as unknown as RouterTransformationRequestData;
+
+  it('accepts a valid event-stream message', () => {
+    const integration = new TestObjectDestination(mockDestination);
+    const { valid, errors } = validateInputs(
+      [validationInput(1, { type: 'track', userId: 'u1' }, { apiKey: 'k' })],
+      integration,
+    );
+    expect(valid).toHaveLength(1);
+    expect(errors).toHaveLength(0);
+  });
+
+  it('classifies a bad shared Config as CONFIGURATION with a precise path', () => {
+    const integration = new TestObjectDestination(mockDestination);
+    const { errors } = validateInputs(
+      [validationInput(2, { type: 'track', userId: 'u1' }, {})],
+      integration,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0].statTags?.errorType).toBe('configuration');
+    expect(errors[0].error).toBe('destination.Config.apiKey: Required');
+  });
+
+  it('classifies a bad connection on a record as CONFIGURATION', () => {
+    const integration = new TestObjectDestination(mockDestination);
+    const { errors } = validateInputs(
+      [
+        validationInput(
+          3,
+          { type: 'record', action: 'insert', identifiers: { id: 'u1' } },
+          { apiKey: 'k' },
+          { config: { destination: {} } },
+        ),
+      ],
+      integration,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0].statTags?.errorType).toBe('configuration');
+    expect(errors[0].error).toBe('connection.config.destination.object: Required');
+  });
+
+  it('reports a record failure against the record variant only', () => {
+    const integration = new TestObjectDestination(mockDestination);
+    const { errors } = validateInputs(
+      [
+        validationInput(
+          4,
+          { type: 'record', action: 'insert' },
+          { apiKey: 'k' },
+          { config: { destination: { object: 'person' } } },
+        ),
+      ],
+      integration,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0].statTags?.errorType).toBe('instrumentation');
+    // Never the event-stream variant's `userId` rule.
+    expect(errors[0].error).toBe('message.identifiers: Required');
+  });
+
+  it('reports an event-stream failure against the event-stream variant only', () => {
+    const integration = new TestObjectDestination(mockDestination);
+    const { errors } = validateInputs(
+      [validationInput(5, { type: 'track' }, { apiKey: 'k' })],
+      integration,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0].statTags?.errorType).toBe('instrumentation');
+    // Never the record variant's `identifiers` rule.
+    expect(errors[0].error).toBe('message.userId: Required');
+  });
+
+  it('routes a message matching no variant to the event-stream variant', () => {
+    const integration = new TestObjectDestination(mockDestination);
+    const { errors } = validateInputs(
+      [validationInput(6, { type: 'group', groupId: 'g1' }, { apiKey: 'k' })],
+      integration,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0].statTags?.errorType).toBe('instrumentation');
+    // Only `record` selects the record variant, so an unknown type is validated against the
+    // event-stream schema, whose enum names the types it accepts. The internal discriminator
+    // key never appears.
+    expect(errors[0].error).toBe(
+      "message.type: Invalid enum value. Expected 'track' | 'identify', received 'group'; message.userId: Required",
+    );
+    expect(errors[0].error).not.toContain('__variant');
   });
 });
 

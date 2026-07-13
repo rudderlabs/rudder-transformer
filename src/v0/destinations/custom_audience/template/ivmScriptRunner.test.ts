@@ -43,6 +43,15 @@ jest.mock('isolated-vm', () => {
     release() {}
 
     async evalClosure(code: string) {
+      // Test hook: `__THROW__ <kind>` simulates a platform failure inside the
+      // isolate (timeout / OOM / disposed) so execute()'s catch path runs.
+      if (code.includes('__THROW__')) {
+        if (code.includes('timeout')) throw new Error('Script execution timed out.');
+        if (code.includes('memory'))
+          throw new Error('Isolate was disposed during execution due to memory limit');
+        if (code.includes('disposed')) throw new Error('Isolate is disposed');
+        throw new Error('boom');
+      }
       if (code.includes('parseTemplateInSandbox')) {
         return { valid: true, recordFields: ['email'] };
       }
@@ -130,6 +139,7 @@ describe('IvmScriptRunner', () => {
   beforeEach(() => {
     isolateCreateCount = 0;
     mockStats.gauge.mockClear();
+    mockStats.increment.mockClear();
     runner = new IvmScriptRunner({
       bundlePath: BUNDLE_PATH,
       memoryLimitMb: 8,
@@ -213,6 +223,28 @@ describe('IvmScriptRunner', () => {
       const result = await runner.execute('ws-fail', '1+1', []);
       expect(result).toBe('ok');
       expect(callCount).toBe(2);
+    });
+  });
+
+  describe('platform error metrics', () => {
+    it('emits ivm_platform_error tagged with the expression, workspaceId (cacheKey) and cache', async () => {
+      const expression = 'return evaluateTemplateInSandbox($0) /* __THROW__ timeout */';
+
+      await expect(runner.execute('ws-err', expression, [])).rejects.toThrow(
+        'Script execution timed out.',
+      );
+
+      expect(mockStats.increment).toHaveBeenCalledWith('ivm_platform_error', {
+        functionName: expression,
+        workspaceId: 'ws-err',
+        cache: 'custom_audience_ivm',
+      });
+    });
+
+    it('does not emit the platform error metric on success', async () => {
+      await runner.execute('ws-ok', 'return parseTemplateInSandbox($0)', []);
+
+      expect(mockStats.increment).not.toHaveBeenCalledWith('ivm_platform_error', expect.anything());
     });
   });
 

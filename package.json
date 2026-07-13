@@ -28,7 +28,7 @@
     "start:dev": "nodemon",
     "build:start": "npm run build && npm run start",
     "build:ci": "tsc -p tsconfig.json && npm run build:sandboxes",
-    "build:sandboxes": "esbuild src/v0/destinations/custom_audience/template/templateEngineSandbox.ts --bundle --format=iife --platform=neutral --main-fields=main,module --outfile=dist/templateEngineSandbox.bundle.js && esbuild src/util/customMappings/mappingsSandbox.ts --bundle --format=iife --platform=neutral --main-fields=main,module --outfile=dist/mappingsSandbox.bundle.js",
+    "build:sandboxes": "esbuild src/v0/destinations/custom_audience/template/templateEngineSandbox.ts src/util/customMappings/mappingsSandbox.ts --bundle --format=iife --platform=neutral --main-fields=main,module --outdir=dist --entry-names=[name].bundle",
     "build:swagger": "npm run build && npm run setup:swagger",
     "build:test": "tsc -p tsconfig.test.json",
     "build": "npm run build:ci && npm run copy",

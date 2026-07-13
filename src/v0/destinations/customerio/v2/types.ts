@@ -56,10 +56,13 @@ export type CustomerIOV2RecordMessage = z.infer<typeof recordMessageSchema>;
 const eventStreamMessageSchema = z
   .object({
     type: z.enum(['identify', 'track', 'page', 'screen', 'alias', 'group']),
-    userId: z.string().nullish(),
-    anonymousId: z.string().nullish(),
-    previousId: z.string().nullish(),
-    groupId: z.string().nullish(),
+    // CustomerIO accepts identifiers as either a string or a number, so both are passed
+    // through as-is. Any other type is rejected by the API with
+    // `{"field": "primary.id", "message": "must be a string or a number"}`.
+    userId: z.union([z.string(), z.number()]).nullish(),
+    anonymousId: z.union([z.string(), z.number()]).nullish(),
+    previousId: z.union([z.string(), z.number()]).nullish(),
+    groupId: z.union([z.string(), z.number()]).nullish(),
     traits: emailTraitSchema,
     context: z
       .object({

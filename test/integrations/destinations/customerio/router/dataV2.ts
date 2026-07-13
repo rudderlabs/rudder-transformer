@@ -2078,6 +2078,139 @@ export const dataV2 = [
     },
   },
   {
+    name: 'customerio',
+    description:
+      'v2: numeric userId/anonymousId/previousId/groupId are accepted and passed through unstringified',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                type: 'identify',
+                userId: 432,
+                traits: { email: 'numeric-id@rudderstack.com', plan: 'enterprise' },
+              },
+              metadata: { jobId: 45, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+            {
+              message: {
+                channel: 'web',
+                type: 'track',
+                anonymousId: 987654,
+                event: 'Product Viewed',
+                properties: { plan: 'enterprise' },
+              },
+              metadata: { jobId: 46, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+            {
+              message: {
+                channel: 'web',
+                type: 'alias',
+                userId: 432,
+                previousId: 306,
+              },
+              metadata: { jobId: 47, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+            {
+              message: {
+                channel: 'web',
+                type: 'group',
+                userId: 432,
+                groupId: 306,
+                traits: { name: 'numeric group' },
+              },
+              metadata: { jobId: 48, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: { id: 432 },
+                        attributes: {
+                          email: 'numeric-id@rudderstack.com',
+                          plan: 'enterprise',
+                        },
+                      },
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: { anonymous_id: 987654 },
+                        name: 'Product Viewed',
+                        attributes: { plan: 'enterprise' },
+                      },
+                      {
+                        type: 'person',
+                        action: 'merge',
+                        primary: { id: 432 },
+                        secondary: { id: 306 },
+                      },
+                      // group/object ids keep the `toString` mapping coercion, so they are
+                      // emitted as strings while person identifiers stay numeric
+                      {
+                        type: 'object',
+                        action: 'identify',
+                        identifiers: { object_id: '306', object_type_id: '1' },
+                        attributes: { name: 'numeric group' },
+                        cio_relationships: [{ identifiers: { id: '432' } }],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 45, userId: 'u1', workspaceId: 'ws-cio-v2' },
+                { jobId: 46, userId: 'u1', workspaceId: 'ws-cio-v2' },
+                { jobId: 47, userId: 'u1', workspaceId: 'ws-cio-v2' },
+                { jobId: 48, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              ],
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
     id: 'cio-v2-router-record-mirror',
     name: 'customerio',
     description: 'v2: record events (mirror mode) — insert+delete batch into one request',

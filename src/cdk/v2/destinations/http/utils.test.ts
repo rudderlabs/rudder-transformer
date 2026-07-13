@@ -1,13 +1,24 @@
 import {
   enhanceMappings,
+  getCustomMappings,
   prepareEndpoint,
   prepareBody,
   stringifyFirstLevelValues,
   validateHeaders,
 } from './utils';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 
 describe('Utils Functions', () => {
+  describe('getCustomMappings', () => {
+    it('propagates a transient PlatformError instead of collapsing it into ConfigurationError', async () => {
+      // A falsy workspaceId makes the sandbox fail closed with a PlatformError(500).
+      // getCustomMappings must let it propagate so the event stays retryable (not a 400 drop).
+      await expect(
+        getCustomMappings({ userId: 'u1' }, [{ from: '$.userId', to: 'id' }], ''),
+      ).rejects.toBeInstanceOf(PlatformError);
+    });
+  });
+
   describe('prepareEndpoint', () => {
     test('should preserve single trailing slash when pathParams is empty array', () => {
       const message = { id: 123 };

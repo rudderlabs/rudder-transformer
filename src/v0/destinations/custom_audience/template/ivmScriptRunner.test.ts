@@ -135,6 +135,7 @@ describe('IvmScriptRunner', () => {
       memoryLimitMb: 8,
       initTimeoutMs: 5_000,
       execTimeoutMs: 1_000,
+      cacheName: 'custom_audience_ivm',
     });
   });
 
@@ -260,6 +261,7 @@ describe('IvmScriptRunner', () => {
           memoryLimitMb: 8,
           initTimeoutMs: 5_000,
           execTimeoutMs: 1_000,
+          cacheName: 'custom_audience_ivm',
         });
 
         await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
@@ -281,6 +283,7 @@ describe('IvmScriptRunner', () => {
           memoryLimitMb: 8,
           initTimeoutMs: 5_000,
           execTimeoutMs: 1_000,
+          cacheName: 'custom_audience_ivm',
         });
 
         await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
@@ -305,6 +308,7 @@ describe('IvmScriptRunner', () => {
           memoryLimitMb: 8,
           initTimeoutMs: 5_000,
           execTimeoutMs: 1_000,
+          cacheName: 'custom_audience_ivm',
         });
 
         // Fill cache to max (2 entries)

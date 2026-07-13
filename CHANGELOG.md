@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.141.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.2...v1.141.3) (2026-07-13)
+
+
+### Bug Fixes
+
+* **active_campaign:** normalize 2xx error responses to retryable 5xx ([#5350](https://github.com/rudderlabs/rudder-transformer/issues/5350)) ([57689da](https://github.com/rudderlabs/rudder-transformer/commit/57689da39604b97dfab8a05833c5fa73d7421e7f))
+
 ### [1.141.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.1...v1.141.2) (2026-07-07)
 
 

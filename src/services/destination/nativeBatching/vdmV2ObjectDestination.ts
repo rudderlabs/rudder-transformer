@@ -6,6 +6,7 @@ import type { RudderRecordV2 } from '../../../types/rudderEvents';
 import { MappedToDestinationKey } from '../../../constants';
 import { addExternalIdToTraits, adduserIdFromExternalId } from '../../../v0/util';
 import { BatchDestination } from './batchDestination';
+import { makeHybridInputSchema } from './inputSchema';
 import type { TransformedEvent } from './types';
 
 // Record message shape known to the framework after schema validation
@@ -42,14 +43,15 @@ export abstract class VDMV2ObjectDestination<
 
   getInputSchema(): ObjectRouterInput<TRecordSchema, TEventStreamSchema> {
     // The framework calls this once per instance (processBatchedDestination validates the
-    // whole batch in a single validateInputs pass), so the union is built once — no cache
-    // needed. destinationConfig lives inside both variants; a bad Config surfaces as an
-    // `invalid_union` error which processBatchedDestination.resolveIssues classifies as
-    // CONFIGURATION.
-    return z.union([this.recordSchema, this.eventStreamSchema]) as unknown as ObjectRouterInput<
-      TRecordSchema,
-      TEventStreamSchema
-    >;
+    // whole batch in a single validateInputs pass), so the schema is built once — no cache
+    // needed. Discriminating on `message.type` (rather than a plain z.union) means a bad
+    // `destination.Config` — which both variants declare — is reported against the one
+    // branch the message actually selected, with its real path, instead of collapsing into
+    // an opaque `invalid_union`.
+    return makeHybridInputSchema(
+      this.recordSchema,
+      this.eventStreamSchema,
+    ) as unknown as ObjectRouterInput<TRecordSchema, TEventStreamSchema>;
   }
 
   // Returns a map of object type → { action → handler }. Missing object types or actions

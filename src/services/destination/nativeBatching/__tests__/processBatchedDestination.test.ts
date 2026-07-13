@@ -12,6 +12,7 @@ import {
   TransformedEvent,
   ChunkBatchStrategy,
   CustomBatchStrategy,
+  makeHybridInputSchema,
 } from '../batchDestination';
 import type { BatchStrategy, TransformResult } from '../batchDestination';
 import type {
@@ -519,7 +520,9 @@ describe('validateInputs', () => {
     expect(errors).toHaveLength(0);
   });
 
-  // A hybrid (record + event-stream) union schema, mirroring what the object base builds.
+  // A hybrid (record + event-stream) schema, built exactly the way the object base builds
+  // it — discriminated on `message.type`, so a failure is attributed to the one variant the
+  // message selected instead of collapsing into an opaque `invalid_union`.
   const recordVariant = z
     .object({
       message: z
@@ -552,7 +555,7 @@ describe('validateInputs', () => {
       return new ChunkBatchStrategy({ maxItems: 3, wrapBody: (bodies) => ({ events: bodies }) });
     }
     getInputSchema() {
-      return z.union([recordVariant, eventVariant]);
+      return makeHybridInputSchema(recordVariant, eventVariant);
     }
   }
 
@@ -619,5 +622,32 @@ describe('validateInputs', () => {
     );
     expect(errors).toHaveLength(1);
     expect(errors[0].statTags?.errorType).toBe('instrumentation');
+    // Non-record types route to the event-stream variant, whose `type` enum names the
+    // event types it accepts — rather than merging in the record variant's complaints.
+    expect(errors[0].error).toContain('message.type');
+    expect(errors[0].error).not.toContain('identifiers');
+  });
+
+  it('reports a message-level failure against the variant the type selected', () => {
+    const integration = new UnionIntegration(mockDestination);
+    // `track` selects the event variant, whose `userId` is required. Under a plain union
+    // this surfaced merged with the record variant's unrelated complaints.
+    const { errors } = validateInputs(
+      [unionInput(5, { type: 'track' }, { apiKey: 'k' })],
+      integration,
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0].statTags?.errorType).toBe('instrumentation');
+    expect(errors[0].error).toContain('message.userId');
+    expect(errors[0].error).not.toContain('identifiers');
+  });
+
+  it('never leaks the internal discriminator key into a user-facing error', () => {
+    const integration = new UnionIntegration(mockDestination);
+    const { errors } = validateInputs(
+      [unionInput(6, { type: 'track' }, { apiKey: 'k' })],
+      integration,
+    );
+    expect(errors[0].error).not.toContain('__variant');
   });
 });

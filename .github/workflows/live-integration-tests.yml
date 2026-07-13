@@ -1,0 +1,97 @@
+# Live (real-destination) integration tests.
+#
+# Drives transformed events through transform -> deliver against REAL destination
+# accounts. Credentials come from the dev HashiCorp Vault via GitHub-OIDC (JWT auth),
+# so no long-lived secret is stored in GitHub. Runs one matrix job per destination.
+#
+# Vault (KV v2): each destination's full LiveSecret JSON is stored as a field on the shared path
+#   engineering_shared/data/integrations_team/e2e_test/rudder-transformer
+# named after the env var the resolver expects — e.g. field `LIVE_SECRET_HS`.
+
+name: Live Integration Tests
+
+on:
+  pull_request:
+    types: ['opened', 'reopened', 'synchronize']
+  push:
+    branches:
+      - main
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write # required: lets the job mint the GitHub OIDC JWT
+  contents: read # for actions/checkout
+
+jobs:
+  live:
+    name: live (${{ matrix.destination }})
+    # required: puts the job in infra1-us → PrivateLink path to dev Vault
+    runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - destination: hs
+            secretName: LIVE_SECRET_HS
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        # prepare builds isolated-vm's native addon (skipped by ignore-scripts on `npm ci`).
+        run: npm ci && npm run prepare
+
+      - name: Import destination secret from dev Vault (OIDC/JWT)
+        id: vault
+        uses: hashicorp/vault-action@892a26828f195e65540a40b4768ae4571f51ebfc # v4.0.0
+        with:
+          url: https://vault.dev.rudderlabs.com
+          method: jwt
+          path: github-actions # = vault_jwt_auth_backend.path
+          role: rudder-transformer-ci # = vault_jwt_auth_backend_role.role_name
+          jwtGithubAudience: https://vault.dev.rudderlabs.com # MUST match bound_audiences, else auth fails
+          exportToken: false # keep the raw Vault token out of env
+          secrets: |
+            engineering_shared/data/integrations_team/e2e_test/rudder-transformer ${{ matrix.secretName }} | ${{ matrix.secretName }}
+
+      - name: Run live tests
+        # LOG_LEVEL=100 suppresses body logging so tokens can't leak.
+        run: LOG_LEVEL=100 npm run test:live -- --destination=${{ matrix.destination }}
+
+      - name: Notify Slack on failure
+        # Notify on push to main/develop, and on PRs from release/hotfix-release branches only.
+        if: >-
+          ${{ failure() && (github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')))) }}
+        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        continue-on-error: true # a failed notification must not mask the test failure
+        env:
+          CHANNEL_ID: ${{ secrets.SLACK_LIVE_TEST_CHANNEL_ID }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REF_NAME: ${{ github.head_ref || github.ref_name }}
+          ONCALL_MENTION: "${{ format('\nCC: <!subteam^{0}>', secrets.SLACK_ONCALL_GROUP_ID) }}"
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          errors: true
+          retries: rapid
+          payload: |
+            {
+              "channel": "${{ env.CHANNEL_ID }}",
+              "text": ":rotating_light: Live integration tests failed for `${{ matrix.destination }}` on `${{ env.REF_NAME }}` — <${{ env.RUN_URL }}|view run>${{ env.ONCALL_MENTION }}"
+            }

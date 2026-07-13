@@ -158,7 +158,7 @@ jobs:
 
       - name: Create verified commit for staging
         if: steps.check-branch.outputs.exists == 'false'
-        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
+        uses: ryancyq/github-signed-commit@cb9b21ee83578fe8e26a9eda530015aedf0c7c5b # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:

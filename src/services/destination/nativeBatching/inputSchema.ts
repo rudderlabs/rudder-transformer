@@ -1,4 +1,4 @@
-import { z, ZodRawShape, ZodType, ZodTypeAny } from 'zod';
+import { z, ZodRawShape, ZodTypeAny } from 'zod';
 
 // ---------------------------------------------------------------------------
 // Router-input schema builder (single variant)
@@ -61,51 +61,4 @@ export function makeRouterInputSchema(spec: {
     shape.connection = z.object({ config: connectionConfig }).passthrough().optional();
   }
   return z.object(shape).passthrough();
-}
-
-// ---------------------------------------------------------------------------
-// Router-input schema builder (hybrid: record + event-stream)
-// ---------------------------------------------------------------------------
-
-// Zod 3's `discriminatedUnion` only reads a discriminator at the top level of each
-// option, but ours is nested at `message.type`. `preprocess` lifts it to this synthetic
-// key so Zod can pick a branch. It never escapes: the returned schema is typed as the
-// clean variant union, and validateInputs forwards the original input (not Zod's parsed
-// output) to transforms.
-const VARIANT_KEY = '__variant';
-
-/**
- * Assemble the router-input schema for a hybrid (record + event-stream) destination.
- *
- * Validates the variants as a *discriminated* union rather than a plain `z.union`.
- * A plain union collapses every branch's failure into one opaque `invalid_union` issue
- * with no usable path — so a bad `destination.Config`, which both branches declare,
- * fails both, and the caller could only guess which branch was meant. Discriminating on
- * `message.type` makes Zod pick exactly one branch and report only its issues, with real
- * paths (`destination.Config.apiKey`, `connection.config.destination.object`, …).
- */
-export function makeHybridInputSchema<TRecord extends ZodTypeAny, TEventStream extends ZodTypeAny>(
-  recordSchema: TRecord,
-  eventStreamSchema: TEventStream,
-): ZodType<z.infer<TRecord> | z.infer<TEventStream>> {
-  // Both variants come from makeRouterInputSchema, so each is a ZodObject and can carry
-  // the discriminator — not provable from the ZodTypeAny bound, hence the cast.
-  const withVariant = (schema: ZodTypeAny, kind: 'record' | 'eventStream') =>
-    (schema as unknown as z.AnyZodObject).extend({ [VARIANT_KEY]: z.literal(kind) });
-
-  const schema = z.preprocess(
-    (input) => {
-      if (typeof input !== 'object' || input === null) {
-        return input;
-      }
-      const { type } = (input as { message?: { type?: unknown } }).message ?? {};
-      return { ...(input as object), [VARIANT_KEY]: type === 'record' ? 'record' : 'eventStream' };
-    },
-    z.discriminatedUnion(VARIANT_KEY, [
-      withVariant(recordSchema, 'record'),
-      withVariant(eventStreamSchema, 'eventStream'),
-    ]),
-  );
-
-  return schema as unknown as ZodType<z.infer<TRecord> | z.infer<TEventStream>>;
 }

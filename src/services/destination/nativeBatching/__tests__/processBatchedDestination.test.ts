@@ -12,8 +12,9 @@ import {
   TransformedEvent,
   ChunkBatchStrategy,
   CustomBatchStrategy,
-  makeHybridInputSchema,
+  makeRouterInputSchema,
 } from '../batchDestination';
+import { VDMV2ObjectDestination } from '../vdmV2ObjectDestination';
 import type { BatchStrategy, TransformResult } from '../batchDestination';
 import type {
   ProcessorTransformationOutput,
@@ -520,42 +521,44 @@ describe('validateInputs', () => {
     expect(errors).toHaveLength(0);
   });
 
-  // A hybrid (record + event-stream) schema, built exactly the way the object base builds
-  // it — discriminated on `message.type`, so a failure is attributed to the one variant the
-  // message selected instead of collapsing into an opaque `invalid_union`.
-  const recordVariant = z
-    .object({
-      message: z
-        .object({ type: z.literal('record'), identifiers: z.record(z.unknown()) })
-        .passthrough(),
-      destination: z.object({ Config: z.object({ apiKey: z.string() }) }).passthrough(),
-      connection: z
-        .object({ config: z.object({ destination: z.object({ object: z.string() }) }) })
-        .passthrough()
-        .optional(),
-    })
-    .passthrough();
-  const eventVariant = z
-    .object({
-      message: z.object({ type: z.enum(['track', 'identify']), userId: z.string() }).passthrough(),
-      destination: z.object({ Config: z.object({ apiKey: z.string() }) }).passthrough(),
-    })
-    .passthrough();
+  // A hybrid (record + event-stream) destination. The object base owns the union, so this
+  // exercises the schema the framework really builds: discriminated on `message.type`, so a
+  // failure is attributed to the one variant the message selected rather than collapsing
+  // into an opaque `invalid_union`.
+  const unionDestConfig = z.object({ apiKey: z.string() });
+  const recordVariant = makeRouterInputSchema({
+    message: z
+      .object({ type: z.literal('record'), identifiers: z.record(z.unknown()) })
+      .passthrough(),
+    destinationConfig: unionDestConfig,
+    connectionConfig: z.object({ destination: z.object({ object: z.string() }) }).passthrough(),
+  });
+  const eventVariant = makeRouterInputSchema({
+    message: z.object({ type: z.enum(['track', 'identify']), userId: z.string() }).passthrough(),
+    destinationConfig: unionDestConfig,
+  });
 
-  class UnionIntegration extends BatchDestination<TestBody> {
-    transformEvent(): TransformedEvent<TestBody> {
-      return {
+  class UnionIntegration extends VDMV2ObjectDestination<
+    TestBody,
+    typeof recordVariant,
+    typeof eventVariant
+  > {
+    protected readonly recordSchema = recordVariant;
+
+    protected readonly eventStreamSchema = eventVariant;
+
+    transformObjectRecord() {
+      const handler = () => ({
         body: { value: 'x' },
         endpoint: 'https://api.test.com/events',
         endpointPath: '/events',
         method: 'POST',
-      };
+      });
+      return { person: { insert: handler, update: handler, delete: handler } };
     }
+
     getBatchStrategy(): BatchStrategy<TestBody> {
       return new ChunkBatchStrategy({ maxItems: 3, wrapBody: (bodies) => ({ events: bodies }) });
-    }
-    getInputSchema() {
-      return makeHybridInputSchema(recordVariant, eventVariant);
     }
   }
 

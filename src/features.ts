@@ -1,5 +1,6 @@
 import path from 'path';
 import { ConfigurationError } from '@rudderstack/integrations-lib';
+import logger from './logger';
 import { DestHandlerMap } from './constants/destinationCanonicalNames';
 import { getIntegrations } from './routes/utils';
 
@@ -197,6 +198,7 @@ export const getDestinationHandlerName = (destination: string): string => {
   if (process.env.REJECT_UNKNOWN_DESTINATIONS === 'true') {
     throw new ConfigurationError(`Invalid destination: ${destination}`);
   }
+  logger.warn(`Unknown destination encountered: ${String(destination)}`);
   return normalized;
 };
 

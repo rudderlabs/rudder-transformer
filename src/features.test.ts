@@ -7,6 +7,7 @@ import defaultFeaturesConfig, {
 } from './features';
 import { DestHandlerMap } from './constants/destinationCanonicalNames';
 import { getIntegrations } from './routes/utils';
+import logger from './logger';
 
 const getDestinationDirectories = () =>
   ['v0/destinations', 'v1/destinations', 'cdk/v2/destinations'].flatMap((destinationRoot) =>
@@ -66,5 +67,15 @@ describe('destination registry', () => {
     expect(isValidDestination('not_a_destination')).toBe(false);
     expect(isValidDestination('constructor')).toBe(false);
     expect(isValidDestination('__proto__')).toBe(false);
+  });
+
+  it('warns when resolving a handler name for an unknown destination', () => {
+    const warnSpy = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+    try {
+      expect(getDestinationHandlerName('not_a_destination')).toBe('not_a_destination');
+      expect(warnSpy).toHaveBeenCalledWith('Unknown destination encountered: not_a_destination');
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 });

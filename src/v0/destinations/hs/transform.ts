@@ -23,7 +23,6 @@ import type {
   HubspotProcessorTransformationOutput,
   HubSpotBatchProcessingItem,
 } from './types';
-import { isProcessorOutput } from './types';
 
 const processSingleMessage = async (
   { message, destination, metadata }: HubspotRouterRequest,
@@ -108,34 +107,22 @@ const processBatchRouter = async (
   await Promise.all(
     inputs.map(async (input) => {
       try {
-        if (input.message.statusCode && isProcessorOutput(input.message)) {
-          // already transformed event
+        let receivedResponse = await processSingleMessage(
+          { message: input.message, destination, metadata: input.metadata },
+          propertyMap,
+        );
+
+        receivedResponse = Array.isArray(receivedResponse) ? receivedResponse : [receivedResponse];
+
+        // received response can be in array format [{}, {}, {}, ..., {}]
+        // if multiple response is being returned
+        receivedResponse.forEach((element) => {
           successRespList.push({
-            message: input.message,
+            message: element,
             metadata: input.metadata,
             destination,
           });
-        } else {
-          // event is not transformed
-          let receivedResponse = await processSingleMessage(
-            { message: input.message, destination, metadata: input.metadata },
-            propertyMap,
-          );
-
-          receivedResponse = Array.isArray(receivedResponse)
-            ? receivedResponse
-            : [receivedResponse];
-
-          // received response can be in array format [{}, {}, {}, ..., {}]
-          // if multiple response is being returned
-          receivedResponse.forEach((element) => {
-            successRespList.push({
-              message: element,
-              metadata: input.metadata,
-              destination,
-            });
-          });
-        }
+        });
       } catch (error: unknown) {
         const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
         errorRespList.push(errRespEvent);

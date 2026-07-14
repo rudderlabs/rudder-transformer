@@ -282,33 +282,6 @@ export interface HubspotRudderMessage extends Omit<RudderMessage, 'context' | 'e
 }
 
 /**
- * Router input where message may be raw (HubspotRudderMessage) or already transformed (statusCode set)
- */
-export type HubspotRouterInput =
-  | { message: HubspotRudderMessage; metadata: Metadata; destination: HubSpotDestination }
-  | {
-      message: HubspotProcessorTransformationOutput;
-      metadata: Metadata;
-      destination: HubSpotDestination;
-    };
-
-/**
- * Type guard: message has already been transformed (processor output shape)
- */
-export function isProcessorOutput(
-  msg: HubspotRudderMessage | HubspotProcessorTransformationOutput,
-): msg is HubspotProcessorTransformationOutput {
-  return (
-    typeof msg === 'object' &&
-    msg !== null &&
-    'statusCode' in msg &&
-    'body' in msg &&
-    typeof (msg as Record<string, unknown>).statusCode === 'number' &&
-    (msg as Record<string, unknown>).body !== undefined
-  );
-}
-
-/**
  * Type guard: JSON payload has properties as Record (not array) - for create/update contact
  */
 export function hasPropertiesRecord(

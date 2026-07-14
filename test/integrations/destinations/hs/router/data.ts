@@ -598,52 +598,6 @@ export const data = [
             },
             {
               message: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint:
-                  'https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com',
-                headers: { 'Content-Type': 'application/json' },
-                userId: '00000000000000000000000000',
-                params: { hapikey: 'dummy-apikey' },
-                body: {
-                  JSON: {
-                    properties: [
-                      { property: 'email', value: 'testhubspot3@email.com' },
-                      { property: 'firstname', value: 'Test Hubspot3' },
-                    ],
-                  },
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-                statusCode: 200,
-              },
-              metadata: { jobId: 3, userId: 'u1' },
-              destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              message: {
                 channel: 'web',
                 context: {
                   app: {
@@ -774,54 +728,6 @@ export const data = [
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
-              statusCode: 200,
-              destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
-                headers: { 'Content-Type': 'application/json' },
-                params: { hapikey: 'dummy-apikey' },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {
-                    batch: JSON.stringify([
-                      {
-                        email: 'testhubspot3@email.com',
-                        properties: [{ property: 'firstname', value: 'Test Hubspot3' }],
-                      },
-                    ]),
-                  },
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [{ jobId: 3, userId: 'u1' }],
-              batched: true,
               statusCode: 200,
               destination: {
                 Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },

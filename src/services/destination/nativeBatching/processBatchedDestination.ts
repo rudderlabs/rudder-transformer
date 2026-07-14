@@ -1,4 +1,4 @@
-import { ZodError, ZodIssue } from 'zod';
+import { ZodIssue } from 'zod';
 import stableStringify from 'fast-json-stable-stringify';
 import type { Destination } from '../../../types/controlPlaneConfig';
 import type { Metadata } from '../../../types/rudderEvents';
@@ -20,21 +20,6 @@ import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 const isConfigIssue = (issue: ZodIssue): boolean =>
   issue.path[0] === 'destination' || issue.path[0] === 'connection';
 
-// A union failure surfaces as a single top-level `invalid_union` issue (empty path)
-// carrying one ZodError per branch. Resolve to the branch that best represents the
-// input: a branch failing ONLY on destination/connection means the message matched
-// that branch and the sole problem is config (→ precise path + CONFIGURATION);
-// otherwise the input matched no branch and we merge all branches' issues.
-function resolveIssues(error: ZodError): ZodIssue[] {
-  const [first] = error.issues;
-  if (error.issues.length === 1 && first.code === 'invalid_union') {
-    const branches = first.unionErrors;
-    const configBranch = branches.find((branch) => resolveIssues(branch).every(isConfigIssue));
-    return configBranch ? resolveIssues(configBranch) : branches.flatMap(resolveIssues);
-  }
-  return error.issues;
-}
-
 export function validateInputs<TBody extends Record<string, unknown>>(
   inputs: RouterTransformationRequestData[],
   integration: BatchDestination<TBody>,
@@ -47,7 +32,7 @@ export function validateInputs<TBody extends Record<string, unknown>>(
   for (const input of inputs) {
     const parseResult = schema.safeParse(input);
     if (!parseResult.success) {
-      const issues = resolveIssues(parseResult.error);
+      const { issues } = parseResult.error;
       const errorMessage = [
         ...new Set(
           issues.map((issue) => {

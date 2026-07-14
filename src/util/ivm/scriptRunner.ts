@@ -94,9 +94,8 @@ export class IvmScriptRunner {
    * avoiding global mutation and race conditions between concurrent calls.
    */
   async execute<T>(cacheKey: string, expression: string, args: unknown[]): Promise<T> {
-    const entry = await this.getOrCreate(cacheKey);
-
     try {
+      const entry = await this.getOrCreate(cacheKey);
       const result = await entry.context.evalClosure(expression, args, {
         arguments: { copy: true },
         result: { copy: true, promise: true },
@@ -104,8 +103,15 @@ export class IvmScriptRunner {
       });
       return result as T;
     } catch (err: unknown) {
-      // Timeout, OOM, or disposed isolate — evict so next call gets a fresh one
+      // Platform failure: timeout, OOM, disposed isolate, or a failure while
+      // building the isolate. Evict so the next call gets a fresh one, and emit
+      // a metric for observability before rethrowing.
       this.cache.delete(cacheKey);
+      stats.increment('ivm_platform_error', {
+        functionName: expression,
+        workspaceId: cacheKey,
+        cache: this.cache.cacheName,
+      });
       throw err;
     }
   }

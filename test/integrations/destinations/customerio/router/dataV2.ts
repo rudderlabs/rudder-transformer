@@ -2769,4 +2769,168 @@ export const dataV2 = [
       },
     },
   },
+  {
+    name: 'customerio',
+    description:
+      'v2: record and event-stream failures are attributed to the variant the message selected',
+    scenario: 'framework',
+    successCriteria:
+      'each invalid event reports only its own variant’s rule — the record error never mentions userId/email and the event-stream error never mentions identifiers — while the valid events of both variants still batch',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              // valid record
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: { id: 'user-123' },
+              },
+              metadata: { jobId: 200, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { object: 'person', syncMode: 'mirror' } },
+              },
+            },
+            {
+              // valid event-stream event, carrying no connection at all (#5331)
+              message: {
+                channel: 'web',
+                type: 'track',
+                event: 'Order Completed',
+                userId: 'user-789',
+                properties: { total: 42 },
+                originalTimestamp: '2020-01-09T10:01:53.558Z',
+              },
+              metadata: { jobId: 201, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+            {
+              // invalid record: fails the RECORD-only rule (needs a non-empty id/email
+              // identifier). Must not be blamed for the event-stream variant's rules.
+              message: {
+                type: 'record',
+                action: 'update',
+                identifiers: { plan: 'pro' },
+              },
+              metadata: { jobId: 202, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { object: 'person', syncMode: 'mirror' } },
+              },
+            },
+            {
+              // invalid event-stream: fails the EVENT-STREAM-only rule (needs userId /
+              // email / anonymousId). Must not be blamed for the record variant's rules.
+              message: {
+                channel: 'web',
+                type: 'track',
+                event: 'Order Completed',
+                properties: { total: 7 },
+              },
+              metadata: { jobId: 203, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: { id: 'user-123' },
+                      },
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: { id: 'user-789' },
+                        name: 'Order Completed',
+                        attributes: { total: 42 },
+                        timestamp: 1578564113,
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 200, userId: 'u1', workspaceId: 'ws-cio-v2' },
+                { jobId: 201, userId: 'u1', workspaceId: 'ws-cio-v2' },
+              ],
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              batched: true,
+              statusCode: 200,
+            },
+            {
+              metadata: [{ jobId: 202, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              batched: false,
+              statusCode: 400,
+              error: 'message: A non-empty `id` or `email` identifier is required',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+            {
+              metadata: [{ jobId: 203, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              batched: false,
+              statusCode: 400,
+              error: 'message: userId, email or anonymousId is required',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

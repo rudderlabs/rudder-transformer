@@ -1066,6 +1066,12 @@ class Prometheus {
         name: 'memory_fenced_requests',
         help: 'number of requests that were memory fenced',
         type: 'counter',
+        labelNames: ['route'],
+      },
+      {
+        name: 'memory_heap_used_percent',
+        help: 'memory heap used percent',
+        type: 'gauge',
         labelNames: [],
       },
       {

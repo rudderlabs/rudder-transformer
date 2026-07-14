@@ -78,11 +78,9 @@ const app = new Koa();
 app.use(errorHandlerMiddleware()); // Error handling middleware - must be early in stack
 addStatMiddleware(app); // Track request time and status codes
 
-// All three run regardless of whether fencing is enabled. The heap gauges are the leading
-// indicator, so they are most needed on deployments where the fence is off; and the counter must
-// be zero-initialised so that `increase()` can see the 0 -> N step when a fence does fire.
+// Heap reporting is independent of the fence: it is the leading indicator, so it is most needed on
+// deployments where fencing is disabled and it is all we would otherwise have.
 emitMemoryHeapSizeLimit();
-initMemoryFencingMetrics();
 startMemoryUsageReporter(
   parseInt(process.env.MEMORY_USAGE_REPORT_INTERVAL_MS || '10000', 10), // default 10s
 );
@@ -91,6 +89,10 @@ startMemoryUsageReporter(
 // before any other middleware that might allocate memory.
 // It is disabled by default
 if (process.env.MEMORY_FENCING_ENABLED === 'true') {
+  // Zero-initialise the counter so increase() can see the 0 -> N step on the first fence. Only
+  // meaningful where the fence is actually mounted: with it disabled the counter can never be
+  // incremented, so seeding it would export a permanently-zero series per route for nothing.
+  initMemoryFencingMetrics();
   app.use(
     memoryFenceMiddleware({
       thresholdPercent: parseInt(process.env.MEMORY_FENCING_THRESHOLD_PERCENT || '80', 10),

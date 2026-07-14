@@ -1,4 +1,4 @@
-import type { Context, Middleware } from 'koa';
+import type { Middleware } from 'koa';
 import v8 from 'v8';
 import stats from '../util/stats';
 
@@ -16,10 +16,14 @@ interface MemoryFenceOptions {
   statusCode?: number; // default 503
 }
 
-type ContextWithMatchedRoute = Pick<Context, 'path'> & Record<string, unknown>;
-
-const MATCHED_ROUTE_FIELD = '_matchedRoute';
+// `/metrics` is served by a separate Koa app on METRICS_PORT (see src/index.ts), so it can never
+// reach this middleware. It is listed anyway so the set stays correct if the two apps are merged.
 const OPERATIONAL_ENDPOINTS = new Set(['/health', '/metrics', '/features']);
+
+// Anything not matched below is labelled `other`. The label MUST stay bounded: the fence fires
+// precisely when the process is already under memory pressure, and an unbounded label would let a
+// path scanner add a new Prometheus child per request at exactly the wrong moment.
+const OTHER_ROUTE = 'other';
 
 const ROUTE_NORMALIZERS: Array<{ pattern: RegExp; route: string }> = [
   { pattern: /^\/[^/]+\/destinations\/[^/]+$/, route: '/:version/destinations/:destination' },
@@ -40,6 +44,14 @@ const ROUTE_NORMALIZERS: Array<{ pattern: RegExp; route: string }> = [
     pattern: /^\/[^/]+\/sources\/[^/]+\/hydrate$/,
     route: '/:version/sources/:source/hydrate',
   },
+  { pattern: /^\/routerTransform$/, route: '/routerTransform' },
+  { pattern: /^\/batch$/, route: '/batch' },
+  { pattern: /^\/deleteUsers$/, route: '/deleteUsers' },
+  { pattern: /^\/customTransform$/, route: '/customTransform' },
+  {
+    pattern: /^\/workspaces\/[^/]+\/reconcileFunction$/,
+    route: '/workspaces/:wId/reconcileFunction',
+  },
   {
     pattern: /^\/test-router\/custom_audience\/parse-template$/,
     route: '/test-router/custom_audience/parse-template',
@@ -52,6 +64,36 @@ const ROUTE_NORMALIZERS: Array<{ pattern: RegExp; route: string }> = [
   { pattern: /^\/test-router(?:\/[^/]+){2}$/, route: '/test-router/:version/:destination' },
 ];
 
+export const MEMORY_FENCING_ROUTE_LABELS: string[] = [
+  ...ROUTE_NORMALIZERS.map(({ route }) => route),
+  OTHER_ROUTE,
+];
+
+/**
+ * Maps a request path onto the bounded label set above.
+ *
+ * Note this deliberately does not consult `ctx._matchedRoute`: the fence is mounted before
+ * `applicationRoutes(app)` and short-circuits without calling `next()`, so @koa/router has not run
+ * and that field is always undefined here.
+ */
+export function getMemoryFencingRouteLabel(path: string): string {
+  return ROUTE_NORMALIZERS.find(({ pattern }) => pattern.test(path))?.route ?? OTHER_ROUTE;
+}
+
+/**
+ * Creates the `memory_fenced_requests` children up front, at zero.
+ *
+ * A labelled prom-client counter creates its children lazily, so without this the series would not
+ * exist until the first fence. `increase()` cannot see the 0 -> N step on a series that springs
+ * into existence already at N, which would make the burst alert miss short bursts and the
+ * sustained alert fire long before its window is actually satisfied.
+ */
+export function initMemoryFencingMetrics(): void {
+  MEMORY_FENCING_ROUTE_LABELS.forEach((route) => {
+    stats.counter('memory_fenced_requests', 0, { route });
+  });
+}
+
 export function emitMemoryHeapSizeLimit(): number {
   const limit = v8.getHeapStatistics().heap_size_limit;
   if (Number.isFinite(limit) && limit > 0) {
@@ -60,24 +102,36 @@ export function emitMemoryHeapSizeLimit(): number {
   return limit;
 }
 
-export function getMemoryFencingRouteLabel(ctx: ContextWithMatchedRoute): string {
-  const matchedRoute = ctx[MATCHED_ROUTE_FIELD];
-  if (typeof matchedRoute === 'string' && matchedRoute.length > 0) {
-    return matchedRoute;
-  }
+/**
+ * Emits heap usage as a percentage of this worker's V8 heap limit.
+ *
+ * Registered with `aggregator: 'max'` so prom-client reports the hottest cluster worker rather than
+ * summing four workers' percentages together.
+ */
+export function emitMemoryHeapUsedPercent(): number | null {
+  const limit = v8.getHeapStatistics().heap_size_limit;
+  const { heapUsed } = process.memoryUsage();
 
-  const normalizedRoute = ROUTE_NORMALIZERS.find(({ pattern }) => pattern.test(ctx.path));
-  return normalizedRoute?.route ?? ctx.path;
-}
-
-function emitMemoryHeapUsedPercent(heapUsed: number, heapSizeLimit: number): number | null {
-  if (!Number.isFinite(heapSizeLimit) || heapSizeLimit <= 0 || !Number.isFinite(heapUsed)) {
+  if (!Number.isFinite(limit) || limit <= 0 || !Number.isFinite(heapUsed)) {
     return null;
   }
 
-  const usagePercent = (heapUsed / heapSizeLimit) * 100;
+  const usagePercent = (heapUsed / limit) * 100;
   stats.gauge('memory_heap_used_percent', usagePercent);
   return usagePercent;
+}
+
+/**
+ * Reports heap usage on a timer, independently of whether fencing is enabled.
+ *
+ * This is the leading indicator: it has to exist on deployments where fencing is switched off, and
+ * it has to keep updating on an idle pod, which a per-request emission would not.
+ */
+export function startMemoryUsageReporter(intervalMs = 10_000): NodeJS.Timeout {
+  emitMemoryHeapUsedPercent();
+  const timer = setInterval(emitMemoryHeapUsedPercent, intervalMs);
+  timer.unref();
+  return timer;
 }
 
 /**
@@ -102,7 +156,6 @@ export function memoryFenceMiddleware(options?: MemoryFenceOptions): Middleware 
   const limit = v8.getHeapStatistics().heap_size_limit;
   let { heapUsed }: { heapUsed: number } = process.memoryUsage();
   let lastMemoryCheck = Date.now();
-  emitMemoryHeapUsedPercent(heapUsed, limit);
 
   return async (ctx, next) => {
     // Check memory usage periodically
@@ -111,20 +164,21 @@ export function memoryFenceMiddleware(options?: MemoryFenceOptions): Middleware 
       lastMemoryCheck = Date.now();
     }
 
-    const usagePercent = emitMemoryHeapUsedPercent(heapUsed, limit);
-    if (usagePercent !== null && usagePercent > thresholdPercent) {
-      if (OPERATIONAL_ENDPOINTS.has(ctx.path)) {
-        await next();
-        return;
-      }
-
-      stats.counter('memory_fenced_requests', 1, { route: getMemoryFencingRouteLabel(ctx) });
-      ctx.set('X-Rudder-Should-Retry', 'true');
-      ctx.set('X-Rudder-Error-Reason', 'memory_fencing');
-      ctx.status = statusCode;
-      ctx.body = 'Server is under high memory load. Please try again later.';
+    if (!Number.isFinite(limit) || limit <= 0 || !Number.isFinite(heapUsed)) {
+      await next();
       return;
     }
-    await next();
+
+    const usagePercent = (heapUsed / limit) * 100;
+    if (usagePercent <= thresholdPercent || OPERATIONAL_ENDPOINTS.has(ctx.path)) {
+      await next();
+      return;
+    }
+
+    stats.counter('memory_fenced_requests', 1, { route: getMemoryFencingRouteLabel(ctx.path) });
+    ctx.set('X-Rudder-Should-Retry', 'true');
+    ctx.set('X-Rudder-Error-Reason', 'memory_fencing');
+    ctx.status = statusCode;
+    ctx.body = 'Server is under high memory load. Please try again later.';
   };
 }

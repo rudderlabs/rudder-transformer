@@ -19,7 +19,12 @@ import { logProcessInfo } from './util/utils';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
-import { emitMemoryHeapSizeLimit, memoryFenceMiddleware } from './middlewares/memoryFencing';
+import {
+  emitMemoryHeapSizeLimit,
+  initMemoryFencingMetrics,
+  memoryFenceMiddleware,
+  startMemoryUsageReporter,
+} from './middlewares/memoryFencing';
 import { concurrentRequests } from './middlewares/concurrentRequests';
 import { errorHandlerMiddleware } from './middlewares/errorHandler';
 
@@ -73,7 +78,14 @@ const app = new Koa();
 app.use(errorHandlerMiddleware()); // Error handling middleware - must be early in stack
 addStatMiddleware(app); // Track request time and status codes
 
+// All three run regardless of whether fencing is enabled. The heap gauges are the leading
+// indicator, so they are most needed on deployments where the fence is off; and the counter must
+// be zero-initialised so that `increase()` can see the 0 -> N step when a fence does fire.
 emitMemoryHeapSizeLimit();
+initMemoryFencingMetrics();
+startMemoryUsageReporter(
+  parseInt(process.env.MEMORY_USAGE_REPORT_INTERVAL_MS || '10000', 10), // default 10s
+);
 
 // Memory fencing middleware needs to come early in the middleware stack,
 // before any other middleware that might allocate memory.

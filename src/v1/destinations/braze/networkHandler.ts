@@ -10,21 +10,6 @@ import { BrazeResponseHandlerParams } from '../../../v0/destinations/braze/types
 const DESTINATION = 'braze';
 
 /**
- * Typed subset of the Braze REST API response body. The `message` field
- * signals overall success ('success') or failure. The `errors` array is
- * present on both partial failures (message='success') and full application-
- * level errors (message!='success').
- */
-type BrazeApiResponse = {
-  message?: string;
-  errors?: unknown[];
-};
-
-function isBrazeApiResponse(value: unknown): value is BrazeApiResponse {
-  return typeof value === 'object' && value !== null;
-}
-
-/**
  * Maps every job in `rudderJobMetadata` to a `DeliveryJobState` using the
  * same `error` string and the given `statusCode`. The `error` field is the
  * JSON-serialised Braze response body so downstream consumers can inspect it.
@@ -59,10 +44,9 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
     );
   }
 
-  const responseBody: BrazeApiResponse | null = isBrazeApiResponse(response) ? response : null;
-  const errors = responseBody?.errors;
+  const errors = response?.errors;
   const hasErrors = Array.isArray(errors) && errors.length > 0;
-  const brazeMessage = responseBody?.message;
+  const brazeMessage = response?.message;
 
   // Guard 2: partial failure — destination accepted the request but some items
   // within the batch were invalid. Braze signals this with message='success'

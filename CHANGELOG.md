@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.141.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.3...v1.141.4) (2026-07-14)
+
+
+### Bug Fixes
+
+* **custom_audience:** handle missing actions config ([#5344](https://github.com/rudderlabs/rudder-transformer/issues/5344)) ([b17bd30](https://github.com/rudderlabs/rudder-transformer/commit/b17bd304202bd827b7d691813e8b3b810a1a7719))
+* **customerio:** accept numeric identifiers in v2 event stream ([#5358](https://github.com/rudderlabs/rudder-transformer/issues/5358)) ([d57374e](https://github.com/rudderlabs/rudder-transformer/commit/d57374ee1693090653651b02171834173e6f57b7))
+* pr titles ([#5335](https://github.com/rudderlabs/rudder-transformer/issues/5335)) ([0e1d5b4](https://github.com/rudderlabs/rudder-transformer/commit/0e1d5b45aa7021f598439a127ef1bab0fb60b8a7))
+* reject transformation requests for unknown destination names ([#5300](https://github.com/rudderlabs/rudder-transformer/issues/5300)) ([5252bc8](https://github.com/rudderlabs/rudder-transformer/commit/5252bc848559fd2f94f273434d0cd85fda63a9f8))
+* **security:** sandbox tenant-config custom-mapping evaluation in isolated-vm ([#5348](https://github.com/rudderlabs/rudder-transformer/issues/5348)) ([6def3f0](https://github.com/rudderlabs/rudder-transformer/commit/6def3f0a1a774c09ded59632429702b2fec54bdc))
+
 ### [1.141.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.2...v1.141.3) (2026-07-13)
 
 

@@ -133,6 +133,12 @@ const waitForAggregateHeapGauge = async (heapSize: number) => {
   });
 };
 
+const waitForTtlExpiryAndPurge = async (runner: IvmScriptRunner, cacheKey: string) => {
+  await new Promise((r) => setTimeout(r, 150));
+  // Access after TTL makes lru-cache purge stale entries deterministically.
+  (runner as any).cache.get(cacheKey);
+};
+
 describe('IvmScriptRunner', () => {
   let runner: IvmScriptRunner;
 
@@ -284,50 +290,41 @@ describe('IvmScriptRunner', () => {
     });
 
     it('should emit 0 aggregate after TTL expiry', async () => {
-      const savedTtl = process.env.IVM_CACHE_TTL_MS;
-      process.env.IVM_CACHE_TTL_MS = '100';
+      const shortTtlRunner = new IvmScriptRunner({
+        bundlePath: BUNDLE_PATH,
+        memoryLimitMb: 8,
+        initTimeoutMs: 5_000,
+        execTimeoutMs: 1_000,
+        cacheName: 'custom_audience_ivm',
+        ttlMs: 100,
+      });
 
-      try {
-        const shortTtlRunner = new IvmScriptRunner({
-          bundlePath: BUNDLE_PATH,
-          memoryLimitMb: 8,
-          initTimeoutMs: 5_000,
-          execTimeoutMs: 1_000,
-          cacheName: 'custom_audience_ivm',
-        });
+      await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
+      mockStats.gauge.mockClear();
 
-        await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
-        mockStats.gauge.mockClear();
-
-        await waitForAggregateHeapGauge(0);
-      } finally {
-        restoreEnv('IVM_CACHE_TTL_MS', savedTtl);
-      }
+      await waitForTtlExpiryAndPurge(shortTtlRunner, 'ws-ttl');
+      await waitForAggregateHeapGauge(0);
     });
 
     it('should emit 0 aggregate after TTL expiry on second request too', async () => {
-      const savedTtl = process.env.IVM_CACHE_TTL_MS;
-      process.env.IVM_CACHE_TTL_MS = '100';
+      const shortTtlRunner = new IvmScriptRunner({
+        bundlePath: BUNDLE_PATH,
+        memoryLimitMb: 8,
+        initTimeoutMs: 5_000,
+        execTimeoutMs: 1_000,
+        cacheName: 'custom_audience_ivm',
+        ttlMs: 100,
+      });
 
-      try {
-        const shortTtlRunner = new IvmScriptRunner({
-          bundlePath: BUNDLE_PATH,
-          memoryLimitMb: 8,
-          initTimeoutMs: 5_000,
-          execTimeoutMs: 1_000,
-          cacheName: 'custom_audience_ivm',
-        });
+      await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
+      await waitForTtlExpiryAndPurge(shortTtlRunner, 'ws-ttl');
+      await waitForAggregateHeapGauge(0);
 
-        await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
-        await waitForAggregateHeapGauge(0);
+      await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
+      mockStats.gauge.mockClear();
 
-        await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
-        mockStats.gauge.mockClear();
-
-        await waitForAggregateHeapGauge(0);
-      } finally {
-        restoreEnv('IVM_CACHE_TTL_MS', savedTtl);
-      }
+      await waitForTtlExpiryAndPurge(shortTtlRunner, 'ws-ttl');
+      await waitForAggregateHeapGauge(0);
     });
 
     it('should reflect correct aggregate after LRU eviction', async () => {

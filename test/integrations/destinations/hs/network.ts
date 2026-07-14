@@ -1684,4 +1684,19 @@ export const networkCallsData = [
       data: { results: [] },
     },
   },
+  // Failing contacts search for the RETL search-failure coverage case
+  // (coverageData.ts) — keyed to the 'search-fail-token' private-app token.
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer search-fail-token',
+      },
+    },
+    httpRes: {
+      status: 500,
+      data: { message: 'boom' },
+    },
+  },
 ];

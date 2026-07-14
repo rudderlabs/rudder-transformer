@@ -4,7 +4,6 @@ import type {
   BatchedRequestBody,
   RouterTransformationRequestData,
   ProcessorTransformationOutput,
-  ProcessorTransformationRequest,
   BatchedRequest,
 } from '../../../types/destinationTransformation';
 
@@ -384,16 +383,6 @@ export function isHubSpotExternalIdInfo(value: unknown): value is HubSpotExterna
 export function isHubSpotSearchResponse(value: unknown): value is HubSpotSearchResponse {
   return isRecord(value) && ('results' in value || 'total' in value || 'paging' in value);
 }
-
-/**
- * HubSpot Transformed Message (internal)
- */
-export type HubspotProcessorRequest = ProcessorTransformationRequest<
-  HubspotRudderMessage,
-  Metadata,
-  HubSpotDestination,
-  undefined
->;
 
 export type HubspotRouterRequest = RouterTransformationRequestData<
   HubspotRudderMessage,

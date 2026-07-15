@@ -93,6 +93,11 @@ const BRAZE_PARTNER_NAME = 'RudderStack';
 const TRACK_BRAZE_MAX_REQ_COUNT = 75;
 const TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT = 75;
 const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
+
+// Per-item and per-batch byte-size caps enforced during chunking.
+// Ref: https://www.braze.com/docs/user_guide/data/activation/events/recommended_events#event-size-limit
+const TRACK_BRAZE_MAX_ITEM_BYTE_SIZE = 100 * 1024; // 100 KB
+const TRACK_BRAZE_MAX_BATCH_BYTE_SIZE = 4 * 1024 * 1024; // 4 MB
 // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
 
 const ALIAS_BRAZE_MAX_REQ_COUNT = 50;
@@ -136,4 +141,6 @@ export {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
   ALIAS_BRAZE_MAX_REQ_COUNT,
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
+  TRACK_BRAZE_MAX_ITEM_BYTE_SIZE,
+  TRACK_BRAZE_MAX_BATCH_BYTE_SIZE,
 };

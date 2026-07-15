@@ -6,7 +6,7 @@ import {
 } from '../../../types';
 import {
   BatchedRequest,
-  MultiBatchRequestOutput,
+  BatchRequestOutput,
   ProcessorTransformationOutput,
   ProxyMetdata,
   ProxyV1Request,
@@ -154,6 +154,16 @@ export interface BrazeError {
   type: string;
   input_array: string;
   index: number;
+}
+
+// Sidecar populated on the metadata of `/users/track` router outputs so the v1
+// networkHandler can correlate Braze's per-item `errors[]` entries (keyed by
+// input_array + index) back to the originating job. Populated in `processBatch`
+// when the outgoing chunk is assembled.
+export interface BrazeDestInfo {
+  attributesIndex?: number;
+  eventsIndex?: number;
+  purchasesIndexes?: number[];
 }
 
 export interface BrazeResponseHandlerParams {
@@ -308,12 +318,7 @@ export type BrazeTransformedEvent = {
 };
 
 export type BrazeBatchResponse =
-  | MultiBatchRequestOutput<
-      BrazeBatchPayload,
-      BrazeBatchHeaders,
-      BrazeBatchParams,
-      BrazeDestination
-    >
+  | BatchRequestOutput<BrazeBatchPayload, BrazeBatchHeaders, BrazeBatchParams, BrazeDestination>
   | BrazeTransformedEvent;
 
 // Delete user types

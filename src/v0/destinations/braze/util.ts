@@ -18,6 +18,7 @@ import {
 } from '../../util';
 import {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
+  BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT,
   CustomAttributeOperationTypes,
   getTrackEndPoint,
@@ -26,6 +27,8 @@ import {
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
   ALIAS_BRAZE_MAX_REQ_COUNT,
   TRACK_BRAZE_MAX_REQ_COUNT,
+  TRACK_BRAZE_MAX_ITEM_BYTE_SIZE,
+  TRACK_BRAZE_MAX_BATCH_BYTE_SIZE,
   BRAZE_PURCHASE_STANDARD_PROPERTIES,
   DESTINATION,
 } from './config';
@@ -36,7 +39,7 @@ import {
   BrazeBatchHeaders,
   BrazeTransformedEvent,
   BrazeBatchResponse,
-  BrazeBatchRequest,
+  BrazeDestInfo,
   BrazeSubscriptionGroup,
   BrazeAliasToIdentify,
   BrazeUserExportResponse,
@@ -49,13 +52,6 @@ import {
   BrazeMergeUpdate,
 } from './types';
 import type { Metadata } from '../../../types';
-
-type TrackChunk = {
-  attributes: BrazeUserAttributes[];
-  events: BrazeEvent[];
-  purchases: BrazePurchase[];
-  externalIds: Set<string>;
-};
 
 const formatGender = (gender: unknown) => {
   if (typeof gender !== 'string') {
@@ -537,247 +533,239 @@ const processDeduplication = (
   return null;
 };
 
-function prepareGroupAndAliasBatch({
-  arrayChunks,
-  responseArray,
-  destination,
-  type,
-}:
-  | {
-      arrayChunks: BrazeSubscriptionGroup[][];
-      responseArray: unknown[];
-      destination: BrazeDestination;
-      type: 'subscription';
-    }
-  | {
-      arrayChunks: BrazeMergeUpdate[][];
-      responseArray: unknown[];
-      destination: BrazeDestination;
-      type: 'merge';
-    }) {
-  const headers = {
-    'Content-Type': JSON_MIME_TYPE,
-    Accept: JSON_MIME_TYPE,
-    Authorization: `Bearer ${destination.Config.restApiKey}`,
-  };
+// ---------------------------------------------------------------------------
+// Batching data structures
+//
+// The batching pipeline flattens every job's contributions into tagged items,
+// each carrying a back-pointer to its source job (`sourceJobIndex`) plus its
+// pre-computed serialized byte size. A stable sort by (externalId, sourceJob)
+// keeps same-user AND same-job items contiguous so `chunkTaggedItems` can add
+// an entire job's items atomically to a chunk, preventing cross-chunk straddle.
+//
+// Each `TrackChunk` also stores parallel `*SourceJobIndex` arrays so that
+// `processBatch` can build the per-metadata `destInfo.braze` positional map
+// (attributesIndex / eventsIndex / purchasesIndexes) that the v1 networkHandler
+// uses to correlate Braze's per-item warnings back to originating jobs.
+// ---------------------------------------------------------------------------
 
-  // Type narrowing: Check type BEFORE the loop so TypeScript can narrow arrayChunks
-  if (type === 'merge') {
-    // TypeScript now knows arrayChunks is BrazeMergeUpdate[][]
-    for (const chunk of arrayChunks) {
-      const response = defaultRequestConfig();
-      const { endpoint, path } = getAliasMergeEndPoint(getEndpointFromConfig(destination));
-      response.endpoint = endpoint;
-      response.endpointPath = path;
-      response.body.JSON = removeUndefinedAndNullValues({
-        merge_updates: chunk,
-      });
-      responseArray.push({
-        ...response,
-        headers,
-      });
-    }
-  } else {
-    // TypeScript now knows arrayChunks is BrazeSubscriptionGroup[][]
-    for (const chunk of arrayChunks) {
-      const response = defaultRequestConfig();
-      const { endpoint, path } = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
-      response.endpoint = endpoint;
-      response.endpointPath = path;
+type ItemType = 'attributes' | 'events' | 'purchases';
 
-      stats.gauge('braze_batch_subscription_size', chunk.length, {
-        destination_id: destination.ID,
-      });
+type TaggedItem = {
+  data: BrazeUserAttributes | BrazeEvent | BrazePurchase;
+  type: ItemType;
+  externalId?: string;
+  sourceJobIndex: number;
+  byteSize: number;
+};
 
-      // Deduplicate the subscription groups before constructing the response body
-      // No type casting needed - TypeScript knows chunk is BrazeSubscriptionGroup[]
-      const deduplicatedSubscriptionGroups = combineSubscriptionGroups(chunk);
+type TrackChunk = {
+  attributes: BrazeUserAttributes[];
+  attributesSourceJobIndex: number[];
+  events: BrazeEvent[];
+  eventsSourceJobIndex: number[];
+  purchases: BrazePurchase[];
+  purchasesSourceJobIndex: number[];
+  externalIds: Set<string>;
+  sourceJobIndexes: Set<number>;
+  byteSize: number;
+};
 
-      stats.gauge('braze_batch_subscription_combined_size', deduplicatedSubscriptionGroups.length, {
-        destination_id: destination.ID,
-      });
-
-      response.body.JSON = removeUndefinedAndNullValues({
-        subscription_groups: deduplicatedSubscriptionGroups,
-      });
-      responseArray.push({
-        ...response,
-        headers,
-      });
-    }
-  }
-}
+const computeItemByteSize = (item: unknown): number => Buffer.byteLength(JSON.stringify(item));
 
 const createTrackChunk = (): TrackChunk => ({
   attributes: [],
+  attributesSourceJobIndex: [],
   events: [],
+  eventsSourceJobIndex: [],
   purchases: [],
+  purchasesSourceJobIndex: [],
   externalIds: new Set<string>(),
+  sourceJobIndexes: new Set<number>(),
+  byteSize: 0,
 });
 
-type AllItems = {
-  data: BrazeUserAttributes | BrazeEvent | BrazePurchase;
-  type: string;
-  externalId?: string;
+// Build tagged items from raw sub-arrays. Each item is assigned its own
+// sourceJobIndex, so group-preserving chunking degenerates to per-item
+// chunking — matches legacy behavior for the exported wrappers used by tests.
+const buildTaggedItemsFromArrays = (
+  attributesArray: BrazeUserAttributes[],
+  eventsArray: BrazeEvent[],
+  purchasesArray: BrazePurchase[],
+): TaggedItem[] => {
+  const items: TaggedItem[] = [];
+  let idx = 0;
+  attributesArray.filter(isDefinedAndNotNull).forEach((attr) => {
+    items.push({
+      data: attr,
+      type: 'attributes',
+      externalId: attr.external_id,
+      sourceJobIndex: idx,
+      byteSize: computeItemByteSize(attr),
+    });
+    idx += 1;
+  });
+  eventsArray.filter(isDefinedAndNotNull).forEach((evt) => {
+    items.push({
+      data: evt,
+      type: 'events',
+      externalId: evt.external_id,
+      sourceJobIndex: idx,
+      byteSize: computeItemByteSize(evt),
+    });
+    idx += 1;
+  });
+  purchasesArray.filter(isDefinedAndNotNull).forEach((pur) => {
+    items.push({
+      data: pur,
+      type: 'purchases',
+      externalId: pur.external_id,
+      sourceJobIndex: idx,
+      byteSize: computeItemByteSize(pur),
+    });
+    idx += 1;
+  });
+  return items;
+};
+
+// Contiguous same-sourceJobIndex runs in a sorted item list. Because we
+// stable-sort by (externalId, sourceJobIndex), items from the same source job
+// end up adjacent regardless of type.
+const groupBySourceJob = (sortedItems: TaggedItem[]): TaggedItem[][] => {
+  const groups: TaggedItem[][] = [];
+  if (sortedItems.length === 0) {
+    return groups;
+  }
+  let start = 0;
+  for (let i = 1; i <= sortedItems.length; i += 1) {
+    if (
+      i === sortedItems.length ||
+      sortedItems[i].sourceJobIndex !== sortedItems[start].sourceJobIndex
+    ) {
+      groups.push(sortedItems.slice(start, i));
+      start = i;
+    }
+  }
+  return groups;
+};
+
+const addGroupToChunk = (chunk: TrackChunk, group: TaggedItem[]): void => {
+  for (const item of group) {
+    if (item.type === 'attributes') {
+      chunk.attributes.push(item.data as BrazeUserAttributes);
+      chunk.attributesSourceJobIndex.push(item.sourceJobIndex);
+    } else if (item.type === 'events') {
+      chunk.events.push(item.data as BrazeEvent);
+      chunk.eventsSourceJobIndex.push(item.sourceJobIndex);
+    } else {
+      chunk.purchases.push(item.data as BrazePurchase);
+      chunk.purchasesSourceJobIndex.push(item.sourceJobIndex);
+    }
+    if (item.externalId) {
+      chunk.externalIds.add(item.externalId);
+    }
+    chunk.sourceJobIndexes.add(item.sourceJobIndex);
+    chunk.byteSize += item.byteSize;
+  }
+};
+
+// V1 semantics: per-type item cap + externalId cap + byte-size cap.
+const groupFitsV1 = (chunk: TrackChunk, group: TaggedItem[]): boolean => {
+  let addAttrs = 0;
+  let addEvents = 0;
+  let addPurchases = 0;
+  let addByteSize = 0;
+  const newExternalIds = new Set(chunk.externalIds);
+  for (const item of group) {
+    if (item.type === 'attributes') addAttrs += 1;
+    else if (item.type === 'events') addEvents += 1;
+    else addPurchases += 1;
+    if (item.externalId) newExternalIds.add(item.externalId);
+    addByteSize += item.byteSize;
+  }
+  return (
+    chunk.attributes.length + addAttrs <= TRACK_BRAZE_MAX_REQ_COUNT &&
+    chunk.events.length + addEvents <= TRACK_BRAZE_MAX_REQ_COUNT &&
+    chunk.purchases.length + addPurchases <= TRACK_BRAZE_MAX_REQ_COUNT &&
+    newExternalIds.size <= TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT &&
+    chunk.byteSize + addByteSize <= TRACK_BRAZE_MAX_BATCH_BYTE_SIZE
+  );
+};
+
+// V2 (MAU plan) semantics: total-count cap + byte-size cap.
+const groupFitsV2 = (chunk: TrackChunk, group: TaggedItem[]): boolean => {
+  let addByteSize = 0;
+  for (const item of group) {
+    addByteSize += item.byteSize;
+  }
+  return (
+    chunk.attributes.length + chunk.events.length + chunk.purchases.length + group.length <=
+      TRACK_BRAZE_MAX_REQ_COUNT && chunk.byteSize + addByteSize <= TRACK_BRAZE_MAX_BATCH_BYTE_SIZE
+  );
+};
+
+// Group-preserving, size-aware chunking. Callers are responsible for
+// rejecting jobs whose contributions exceed the caps on their own — such a
+// group can never fit into an empty chunk. `processBatch` enforces that
+// pre-check; the exported wrappers below use per-item sourceJobIndex so no
+// group ever exceeds a single item.
+const chunkTaggedItems = (items: TaggedItem[], mode: 'v1' | 'v2'): TrackChunk[] => {
+  const sortedItems = _.orderBy(items, ['externalId', 'sourceJobIndex']);
+  const groups = groupBySourceJob(sortedItems);
+  const chunks: TrackChunk[] = [];
+  let currentChunk = createTrackChunk();
+  const fits = mode === 'v1' ? groupFitsV1 : groupFitsV2;
+  for (const group of groups) {
+    if (currentChunk.sourceJobIndexes.size > 0 && !fits(currentChunk, group)) {
+      chunks.push(currentChunk);
+      currentChunk = createTrackChunk();
+    }
+    addGroupToChunk(currentChunk, group);
+  }
+  if (currentChunk.sourceJobIndexes.size > 0) {
+    chunks.push(currentChunk);
+  }
+  return chunks;
 };
 
 const batchForTrackAPI = (
   attributesArray: BrazeUserAttributes[],
   eventsArray: BrazeEvent[],
   purchasesArray: BrazePurchase[],
-) => {
-  const allItems: AllItems[] = [];
-  const maxLength = Math.max(attributesArray.length, eventsArray.length, purchasesArray.length);
+): TrackChunk[] =>
+  chunkTaggedItems(buildTaggedItemsFromArrays(attributesArray, eventsArray, purchasesArray), 'v1');
 
-  const addItem = (item: AllItems['data'], type: string) => {
-    if (item) {
-      allItems.push({
-        data: item,
-        type,
-        externalId: item.external_id,
-      });
-    }
-  };
-
-  const canAddToChunk = (
-    item: AllItems,
-    chunk: {
-      externalIds: Set<string>;
-      attributes: unknown[];
-      events: unknown[];
-      purchases: unknown[];
-    },
-  ) => {
-    const { type, externalId } = item;
-    return (
-      ((externalId && chunk.externalIds.has(externalId)) ||
-        chunk.externalIds.size < TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT) &&
-      chunk[type].length < TRACK_BRAZE_MAX_REQ_COUNT
-    );
-  };
-
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < maxLength; i++) {
-    addItem(attributesArray[i], 'attributes');
-    addItem(eventsArray[i], 'events');
-    addItem(purchasesArray[i], 'purchases');
-  }
-  const sortedItems = _.sortBy(allItems, 'externalId');
-  let currentChunk = createTrackChunk();
-  const trackChunks: ReturnType<typeof createTrackChunk>[] = [];
-  for (const item of sortedItems) {
-    if (canAddToChunk(item, currentChunk)) {
-      currentChunk[item.type].push(item.data);
-      currentChunk.externalIds.add(item.externalId!);
-    } else {
-      trackChunks.push(currentChunk);
-      currentChunk = createTrackChunk();
-      currentChunk[item.type].push(item.data);
-      currentChunk.externalIds.add(item.externalId!);
-    }
-  }
-  if (currentChunk.externalIds.size > 0) {
-    trackChunks.push(currentChunk);
-  }
-  return trackChunks;
-};
-
-// braze batching as per new MAU plan
 const batchForTrackAPIV2 = (
   attributesArray: BrazeUserAttributes[],
   eventsArray: BrazeEvent[],
   purchasesArray: BrazePurchase[],
-) => {
-  // Collect all items with their types, filtering out null/undefined
-  const allItems: AllItems[] = [
-    ...attributesArray
-      .filter((item) => isDefinedAndNotNull(item))
-      .map((item) => ({
-        data: item,
-        type: 'attributes',
-        externalId: item.external_id,
-      })),
-    ...eventsArray
-      .filter((item) => isDefinedAndNotNull(item))
-      .map((item) => ({ data: item, type: 'events', externalId: item.external_id })),
-    ...purchasesArray
-      .filter((item) => isDefinedAndNotNull(item))
-      .map((item) => ({
-        data: item,
-        type: 'purchases',
-        externalId: item.external_id,
-      })),
-  ];
+): TrackChunk[] =>
+  chunkTaggedItems(buildTaggedItemsFromArrays(attributesArray, eventsArray, purchasesArray), 'v2');
 
-  const sortedItems: AllItems[] = _.sortBy(allItems, 'externalId');
-  const trackChunks: ReturnType<typeof createTrackChunk>[] = [];
-  let currentChunk = createTrackChunk();
-
-  const getChunkSize = (chunk: ReturnType<typeof createTrackChunk>) =>
-    chunk.attributes.length + chunk.events.length + chunk.purchases.length;
-
-  const addItemToChunk = (item: AllItems, chunk: ReturnType<typeof createTrackChunk>) => {
-    chunk[item.type].push(item.data);
-  };
-
-  for (const item of sortedItems) {
-    if (getChunkSize(currentChunk) === TRACK_BRAZE_MAX_REQ_COUNT) {
-      trackChunks.push(currentChunk);
-      currentChunk = createTrackChunk();
-    }
-    addItemToChunk(item, currentChunk);
-  }
-
-  if (getChunkSize(currentChunk) > 0) {
-    trackChunks.push(currentChunk);
-  }
-
-  return trackChunks;
-};
-
-const cleanTrackChunk = (chunk: {
-  attributes: unknown[];
-  events: unknown[];
-  purchases: unknown[];
-}) => {
-  const { attributes, events, purchases } = chunk;
+const cleanTrackChunk = (chunk: TrackChunk) => {
   const cleanChunk: Record<string, unknown> = {};
-  if (attributes.length > 0) {
-    cleanChunk.attributes = attributes;
+  if (chunk.attributes.length > 0) {
+    cleanChunk.attributes = chunk.attributes;
   }
-  if (events.length > 0) {
-    cleanChunk.events = events;
+  if (chunk.events.length > 0) {
+    cleanChunk.events = chunk.events;
   }
-  if (purchases.length > 0) {
-    cleanChunk.purchases = purchases;
+  if (chunk.purchases.length > 0) {
+    cleanChunk.purchases = chunk.purchases;
   }
   return cleanChunk;
 };
 
-const addTrackStats = (
-  chunk: { attributes?: unknown[]; events?: unknown[]; purchases?: unknown[] },
-  destination: BrazeDestination,
-) => {
-  const { attributes, events, purchases } = chunk;
-  let totalCount = 0;
-  if (attributes) {
-    totalCount += attributes.length;
-    stats.histogram('braze_batch_attributes_pack_size', attributes.length, {
-      destination_id: destination.ID,
-    });
-  }
-  if (events) {
-    totalCount += events.length;
-    stats.histogram('braze_batch_events_pack_size', events.length, {
-      destination_id: destination.ID,
-    });
-  }
-  if (purchases) {
-    totalCount += purchases.length;
-    stats.histogram('braze_batch_purchase_pack_size', purchases.length, {
-      destination_id: destination.ID,
-    });
-  }
+const addTrackStats = (chunk: TrackChunk, destination: BrazeDestination) => {
+  const totalCount = chunk.attributes.length + chunk.events.length + chunk.purchases.length;
+  stats.histogram('braze_batch_attributes_pack_size', chunk.attributes.length, {
+    destination_id: destination.ID,
+  });
+  stats.histogram('braze_batch_events_pack_size', chunk.events.length, {
+    destination_id: destination.ID,
+  });
+  stats.histogram('braze_batch_purchase_pack_size', chunk.purchases.length, {
+    destination_id: destination.ID,
+  });
   stats.histogram('braze_batch_total_pack_size', totalCount, {
     destination_id: destination.ID,
   });
@@ -811,111 +799,340 @@ const isWorkspaceOnMauPlan = (workspaceId) => {
   }
 };
 
-const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
-  const { destination, metadata } = transformedEvents[0];
-  const workspaceId = metadata?.[0]?.workspaceId || '';
-  const dest = destination;
-  const attributesArray: BrazeUserAttributes[] = [];
-  const eventsArray: BrazeEvent[] = [];
-  const purchaseArray: BrazePurchase[] = [];
-  const successMetadata: Partial<Metadata>[] = [];
-  const failureResponses: BrazeTransformedEvent[] = [];
-  const filteredResponses: BrazeTransformedEvent[] = [];
-  const subscriptionsArray: BrazeSubscriptionGroup[] = [];
-  const mergeUsersArray: BrazeMergeUpdate[] = [];
-  for (const transformedEvent of transformedEvents) {
-    if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
-      failureResponses.push(transformedEvent);
-    } else if (transformedEvent.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
-      filteredResponses.push(transformedEvent);
-    } else if (transformedEvent.batchedRequest?.body?.JSON) {
-      const { attributes, events, purchases, subscription_groups, merge_updates } =
-        transformedEvent.batchedRequest.body.JSON;
-      if (Array.isArray(attributes)) {
-        attributesArray.push(...attributes);
-      }
-      if (Array.isArray(events)) {
-        eventsArray.push(...events);
-      }
-      if (Array.isArray(purchases)) {
-        purchaseArray.push(...purchases);
-      }
+// Collect tagged /users/track items for a single transformedEvent while
+// enforcing per-item and per-job byte-size caps. Returns null if any cap
+// is breached — caller pushes the event onto failureResponses.
+type TrackCollectionResult =
+  | { items: TaggedItem[]; totalByteSize: number }
+  | { error: InstrumentationError };
 
-      if (Array.isArray(subscription_groups)) {
-        subscriptionsArray.push(...subscription_groups);
-      }
+const collectTrackItemsForJob = (
+  transformedEvent: BrazeTransformedEvent,
+  jobIndex: number,
+): TrackCollectionResult => {
+  const json = transformedEvent.batchedRequest?.body?.JSON as
+    | { attributes?: unknown; events?: unknown; purchases?: unknown }
+    | undefined;
+  const attrArr = Array.isArray(json?.attributes)
+    ? (json!.attributes as BrazeUserAttributes[])
+    : [];
+  const evtArr = Array.isArray(json?.events) ? (json!.events as BrazeEvent[]) : [];
+  const purArr = Array.isArray(json?.purchases) ? (json!.purchases as BrazePurchase[]) : [];
 
-      if (Array.isArray(merge_updates)) {
-        mergeUsersArray.push(...merge_updates);
-      }
+  const items: TaggedItem[] = [];
+  let totalByteSize = 0;
 
-      if (transformedEvent.metadata) {
-        successMetadata.push(...transformedEvent.metadata);
+  const tryAdd = (
+    data: unknown,
+    type: ItemType,
+    externalId?: string,
+  ): InstrumentationError | null => {
+    const byteSize = computeItemByteSize(data);
+    if (byteSize > TRACK_BRAZE_MAX_ITEM_BYTE_SIZE) {
+      return new InstrumentationError(
+        `[Braze] Single ${type} item exceeds ${TRACK_BRAZE_MAX_ITEM_BYTE_SIZE} bytes (got ${byteSize})`,
+      );
+    }
+    items.push({
+      data: data as TaggedItem['data'],
+      type,
+      externalId,
+      sourceJobIndex: jobIndex,
+      byteSize,
+    });
+    totalByteSize += byteSize;
+    return null;
+  };
+
+  for (const attr of attrArr) {
+    if (isDefinedAndNotNull(attr)) {
+      const err = tryAdd(attr, 'attributes', attr.external_id);
+      if (err) return { error: err };
+    }
+  }
+  for (const evt of evtArr) {
+    if (isDefinedAndNotNull(evt)) {
+      const err = tryAdd(evt, 'events', evt.external_id);
+      if (err) return { error: err };
+    }
+  }
+  for (const pur of purArr) {
+    if (isDefinedAndNotNull(pur)) {
+      const err = tryAdd(pur, 'purchases', pur.external_id);
+      if (err) return { error: err };
+    }
+  }
+
+  // A single job's items must all fit into one chunk to preserve
+  // metadata↔chunk ownership (a job can't span two proxy responses). If a
+  // job alone exceeds the per-batch caps, no chunking can accommodate it.
+  if (items.length > TRACK_BRAZE_MAX_REQ_COUNT) {
+    return {
+      error: new InstrumentationError(
+        `[Braze] Single job contributes ${items.length} track items (max ${TRACK_BRAZE_MAX_REQ_COUNT} per batch)`,
+      ),
+    };
+  }
+  if (totalByteSize > TRACK_BRAZE_MAX_BATCH_BYTE_SIZE) {
+    return {
+      error: new InstrumentationError(
+        `[Braze] Single job's track items total ${totalByteSize} bytes (max ${TRACK_BRAZE_MAX_BATCH_BYTE_SIZE} per batch)`,
+      ),
+    };
+  }
+  return { items, totalByteSize };
+};
+
+// Build the per-metadata destInfo.braze positional map for a chunk. Every
+// unique sourceJobIndex in the chunk gets one BrazeDestInfo describing where
+// that job's items landed within this chunk's attributes[]/events[]/purchases[].
+const buildDestInfoByJob = (chunk: TrackChunk): Map<number, BrazeDestInfo> => {
+  const map = new Map<number, BrazeDestInfo>();
+  const ensure = (sji: number): BrazeDestInfo => {
+    let existing = map.get(sji);
+    if (!existing) {
+      existing = {};
+      map.set(sji, existing);
+    }
+    return existing;
+  };
+  chunk.attributesSourceJobIndex.forEach((sji: number, idx: number) => {
+    ensure(sji).attributesIndex = idx;
+  });
+  chunk.eventsSourceJobIndex.forEach((sji: number, idx: number) => {
+    ensure(sji).eventsIndex = idx;
+  });
+  chunk.purchasesSourceJobIndex.forEach((sji: number, idx: number) => {
+    const info = ensure(sji);
+    info.purchasesIndexes = info.purchasesIndexes ?? [];
+    info.purchasesIndexes.push(idx);
+  });
+  return map;
+};
+
+const trackChunkResponse = (
+  chunk: TrackChunk,
+  destination: BrazeDestination,
+  headers: BrazeBatchHeaders,
+  trackEndpoint: string,
+  trackPath: string,
+  jobMetadata: (Partial<Metadata>[] | undefined)[],
+) => {
+  addTrackStats(chunk, destination);
+  const request = defaultRequestConfig();
+  request.endpoint = trackEndpoint;
+  request.endpointPath = trackPath;
+  request.body.JSON = { partner: BRAZE_PARTNER_NAME, ...cleanTrackChunk(chunk) };
+
+  const destInfoByJob = buildDestInfoByJob(chunk);
+  const chunkMetadata: Partial<Metadata>[] = [];
+  // Iterate sourceJobIndexes in insertion order (Set preserves it) so the
+  // metadata slice ordering is deterministic and stable.
+  for (const sji of chunk.sourceJobIndexes) {
+    const jobMeta = jobMetadata[sji];
+    if (jobMeta) {
+      const braze = destInfoByJob.get(sji);
+      for (const m of jobMeta) {
+        chunkMetadata.push({
+          ...m,
+          destInfo: { ...(m.destInfo ?? {}), braze },
+        });
       }
     }
   }
-  const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
-  const trackChunks = isWorkspaceOnMauPlanFlag
-    ? batchForTrackAPIV2(attributesArray, eventsArray, purchaseArray)
-    : batchForTrackAPI(attributesArray, eventsArray, purchaseArray);
-  const subscriptionArrayChunks = _.chunk(subscriptionsArray, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
-  const mergeUsersArrayChunks = _.chunk(mergeUsersArray, ALIAS_BRAZE_MAX_REQ_COUNT);
+  return {
+    batchedRequest: { ...request, headers },
+    metadata: chunkMetadata,
+    batched: true,
+    statusCode: 200,
+    destination,
+  };
+};
 
-  const responseArray: BrazeBatchRequest[] = [];
-  const finalResponse: BrazeBatchResponse[] = [];
+// Collect scoped metadata for a subscription/merge chunk. A single job may
+// contribute multiple entries but must be listed once in the chunk's metadata.
+const scopedMetadataForChunk = <T extends { sourceJobIndex: number }>(
+  chunk: T[],
+  jobMetadata: (Partial<Metadata>[] | undefined)[],
+): Partial<Metadata>[] => {
+  const seen = new Set<number>();
+  const out: Partial<Metadata>[] = [];
+  for (const entry of chunk) {
+    if (!seen.has(entry.sourceJobIndex)) {
+      seen.add(entry.sourceJobIndex);
+      const jobMeta = jobMetadata[entry.sourceJobIndex];
+      if (jobMeta) out.push(...jobMeta);
+    }
+  }
+  return out;
+};
+
+// A run is a contiguous stretch of same-endpoint jobs in the input's insertion
+// order. Walking the input job-by-job and emitting outputs at endpoint
+// boundaries preserves the invariant that jobIds within a user remain
+// monotonically ascending across the emitted outputs — the semantic
+// rudder-server relies on for causal ordering.
+type TrackRun = { type: 'track'; items: TaggedItem[] };
+type SubscriptionRun = {
+  type: 'subscription';
+  entries: Array<{ data: BrazeSubscriptionGroup; sourceJobIndex: number }>;
+};
+type MergeRun = {
+  type: 'merge';
+  entries: Array<{ data: BrazeMergeUpdate; sourceJobIndex: number }>;
+};
+type Run = TrackRun | SubscriptionRun | MergeRun;
+
+const classifyJobRun = (json: Record<string, unknown>): Run['type'] | null => {
+  const hasTrackItems =
+    (Array.isArray(json.attributes) && (json.attributes as unknown[]).length > 0) ||
+    (Array.isArray(json.events) && (json.events as unknown[]).length > 0) ||
+    (Array.isArray(json.purchases) && (json.purchases as unknown[]).length > 0);
+  if (hasTrackItems) return 'track';
+  if (Array.isArray(json.subscription_groups) && (json.subscription_groups as unknown[]).length > 0)
+    return 'subscription';
+  if (Array.isArray(json.merge_updates) && (json.merge_updates as unknown[]).length > 0)
+    return 'merge';
+  return null;
+};
+
+const processBatch = (transformedEvents: BrazeTransformedEvent[]): BrazeBatchResponse[] => {
+  const { destination } = transformedEvents[0];
+  const workspaceId = transformedEvents[0].metadata?.[0]?.workspaceId || '';
+
+  const failureResponses: BrazeTransformedEvent[] = [];
+  const filteredResponses: BrazeTransformedEvent[] = [];
+  const runs: Run[] = [];
+  const jobMetadata: (Partial<Metadata>[] | undefined)[] = new Array(transformedEvents.length);
+
+  const openNewRun = (type: Run['type']): Run => {
+    let run: Run;
+    if (type === 'track') run = { type: 'track', items: [] };
+    else if (type === 'subscription') run = { type: 'subscription', entries: [] };
+    else run = { type: 'merge', entries: [] };
+    runs.push(run);
+    return run;
+  };
+
+  let currentRun: Run | null = null;
+
+  transformedEvents.forEach((transformedEvent, jobIndex) => {
+    if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
+      failureResponses.push(transformedEvent);
+      return;
+    }
+    if (transformedEvent.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
+      filteredResponses.push(transformedEvent);
+      return;
+    }
+    const json = transformedEvent.batchedRequest?.body?.JSON as Record<string, unknown> | undefined;
+    if (!json) return;
+
+    const runType = classifyJobRun(json);
+    if (!runType) return;
+
+    if (!currentRun || currentRun.type !== runType) {
+      currentRun = openNewRun(runType);
+    }
+
+    if (currentRun.type === 'track') {
+      const collection = collectTrackItemsForJob(transformedEvent, jobIndex);
+      if ('error' in collection) {
+        failureResponses.push({
+          ...transformedEvent,
+          statusCode: 400,
+          error: collection.error.message,
+          statTags: { errorType: 'aborted', errorCategory: 'dataValidation' },
+        });
+        return;
+      }
+      currentRun.items.push(...collection.items);
+    } else if (currentRun.type === 'subscription') {
+      for (const sg of json.subscription_groups as BrazeSubscriptionGroup[]) {
+        currentRun.entries.push({ data: sg, sourceJobIndex: jobIndex });
+      }
+    } else {
+      for (const mu of json.merge_updates as BrazeMergeUpdate[]) {
+        currentRun.entries.push({ data: mu, sourceJobIndex: jobIndex });
+      }
+    }
+
+    if (transformedEvent.metadata) {
+      jobMetadata[jobIndex] = transformedEvent.metadata;
+    }
+  });
+
+  const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
   const headers: BrazeBatchHeaders = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    Authorization: `Bearer ${dest.Config.restApiKey}`,
+    Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
+  const { endpoint: trackEndpoint, path: trackPath } = getTrackEndPoint(
+    getEndpointFromConfig(destination),
+  );
+  const { endpoint: subEndpoint, path: subPath } = getSubscriptionGroupEndPoint(
+    getEndpointFromConfig(destination),
+  );
+  const { endpoint: mergeEndpoint, path: mergePath } = getAliasMergeEndPoint(
+    getEndpointFromConfig(destination),
+  );
 
-  const { endpoint, path } = getTrackEndPoint(getEndpointFromConfig(destination));
-  for (const chunk of trackChunks) {
-    const cleanedChunk = cleanTrackChunk(chunk);
-    const { attributes, events, purchases } = cleanedChunk;
-    addTrackStats(chunk, destination);
+  const finalResponse: BrazeBatchResponse[] = [];
 
-    const response = defaultRequestConfig();
-    response.endpoint = endpoint;
-    response.endpointPath = path;
-    response.body.JSON = {
-      partner: 'RudderStack',
-      attributes,
-      events,
-      purchases,
-    };
-    responseArray.push({
-      ...response,
-      headers,
-    });
+  for (const run of runs) {
+    if (run.type === 'track') {
+      const chunks = chunkTaggedItems(run.items, isWorkspaceOnMauPlanFlag ? 'v2' : 'v1');
+      for (const chunk of chunks) {
+        finalResponse.push(
+          trackChunkResponse(chunk, destination, headers, trackEndpoint, trackPath, jobMetadata),
+        );
+      }
+    } else if (run.type === 'subscription') {
+      const chunks = _.chunk(run.entries, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
+      for (const chunk of chunks) {
+        const rawGroups = chunk.map((e) => e.data);
+        stats.gauge('braze_batch_subscription_size', rawGroups.length, {
+          destination_id: destination.ID,
+        });
+        const deduplicated = combineSubscriptionGroups(rawGroups);
+        stats.gauge('braze_batch_subscription_combined_size', deduplicated.length, {
+          destination_id: destination.ID,
+        });
+        const request = defaultRequestConfig();
+        request.endpoint = subEndpoint;
+        request.endpointPath = subPath;
+        request.body.JSON = removeUndefinedAndNullValues({ subscription_groups: deduplicated });
+        finalResponse.push({
+          batchedRequest: { ...request, headers },
+          metadata: scopedMetadataForChunk(chunk, jobMetadata),
+          batched: true,
+          statusCode: 200,
+          destination,
+        });
+      }
+    } else {
+      const chunks = _.chunk(run.entries, ALIAS_BRAZE_MAX_REQ_COUNT);
+      for (const chunk of chunks) {
+        const rawMerges = chunk.map((e) => e.data);
+        const request = defaultRequestConfig();
+        request.endpoint = mergeEndpoint;
+        request.endpointPath = mergePath;
+        request.body.JSON = removeUndefinedAndNullValues({ merge_updates: rawMerges });
+        finalResponse.push({
+          batchedRequest: { ...request, headers },
+          metadata: scopedMetadataForChunk(chunk, jobMetadata),
+          batched: true,
+          statusCode: 200,
+          destination,
+        });
+      }
+    }
   }
 
-  prepareGroupAndAliasBatch({
-    arrayChunks: subscriptionArrayChunks,
-    responseArray,
-    destination,
-    type: 'subscription',
-  });
-  prepareGroupAndAliasBatch({
-    arrayChunks: mergeUsersArrayChunks,
-    responseArray,
-    destination,
-    type: 'merge',
-  });
-
-  if (successMetadata.length > 0) {
-    finalResponse.push({
-      batchedRequest: responseArray,
-      metadata: successMetadata,
-      batched: true,
-      statusCode: 200,
-      destination,
-    });
-  }
   if (failureResponses.length > 0) {
     finalResponse.push(...failureResponses);
   }
-
   if (filteredResponses.length > 0) {
     finalResponse.push(...filteredResponses);
   }

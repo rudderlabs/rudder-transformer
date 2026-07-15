@@ -1,5 +1,6 @@
+import { ZodIssue } from 'zod';
 import stableStringify from 'fast-json-stable-stringify';
-import type { Connection, Destination } from '../../../types/controlPlaneConfig';
+import type { Destination } from '../../../types/controlPlaneConfig';
 import type { Metadata } from '../../../types/rudderEvents';
 import type {
   RouterTransformationRequestData,
@@ -13,20 +14,15 @@ import stats from '../../../util/stats';
 import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 
 // ---------------------------------------------------------------------------
-// Base Zod schema for input validation
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
 
-export function validateInputs<
-  TBody extends Record<string, unknown>,
-  TConfig = Record<string, unknown>,
-  TConnectionConfig = Record<string, unknown>,
->(
+const isConfigIssue = (issue: ZodIssue): boolean =>
+  issue.path[0] === 'destination' || issue.path[0] === 'connection';
+
+export function validateInputs<TBody extends Record<string, unknown>>(
   inputs: RouterTransformationRequestData[],
-  integration: BatchDestination<TBody, TConfig, TConnectionConfig>,
+  integration: BatchDestination<TBody>,
 ): { valid: RouterTransformationRequestData[]; errors: (TransformError & { jobId: number })[] } {
   const schema = integration.getInputSchema();
 
@@ -36,21 +32,25 @@ export function validateInputs<
   for (const input of inputs) {
     const parseResult = schema.safeParse(input);
     if (!parseResult.success) {
+      const { issues } = parseResult.error;
       const errorMessage = [
         ...new Set(
-          parseResult.error.issues.map((issue) => {
+          issues.map((issue) => {
             const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : '';
             return `${path}${issue.message}`;
           }),
         ),
       ].join('; ');
+      const errorType = issues.every(isConfigIssue)
+        ? tags.ERROR_TYPES.CONFIGURATION
+        : tags.ERROR_TYPES.INSTRUMENTATION;
       errors.push({
         jobId: input.metadata.jobId ?? 0,
         error: errorMessage,
         statusCode: 400,
         statTags: {
           errorCategory: tags.ERROR_CATEGORIES.DATA_VALIDATION,
-          errorType: tags.ERROR_TYPES.INSTRUMENTATION,
+          errorType,
         },
       });
     } else {
@@ -200,21 +200,17 @@ function mapErrorPayloadToServerFormat(
 
 export async function processBatchedDestination<
   TBody extends Record<string, unknown> = Record<string, unknown>,
-  TConfig = Record<string, unknown>,
-  TConnectionConfig = Record<string, unknown>,
 >(
   events: RouterTransformationRequestData[],
-  IntegrationClass: BatchDestinationConstructor<TBody, TConfig, TConnectionConfig>,
+  IntegrationClass: BatchDestinationConstructor<TBody>,
   reqMetadata: NonNullable<unknown>,
 ): Promise<RouterTransformationResponse[]> {
   if (events.length === 0) {
     return [];
   }
   const { destination } = events[0];
-  const connection = events.find((event) => event.connection)?.connection as
-    | Connection<TConnectionConfig>
-    | undefined;
-  const integration = new IntegrationClass(destination as Destination<TConfig>, connection);
+  const connection = events.find((event) => event.connection)?.connection;
+  const integration = new IntegrationClass(destination, connection);
   const destType = destination.DestinationDefinition?.Name?.toUpperCase() ?? 'unknown';
   const { workspaceId } = events[0].metadata;
   const metricTags = { destType, workspaceId, destinationId: destination.ID };

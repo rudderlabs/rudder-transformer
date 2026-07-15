@@ -36,7 +36,7 @@ steps:
   - name: buildHeaders
     template: |
       const configAuthHeaders = $.getAuthHeaders(.destination.Config);
-      const additionalConfigHeaders = $.getCustomMappings(.message, .destination.Config.headers);
+      const additionalConfigHeaders = await $.getCustomMappings(.message, .destination.Config.headers, .metadata.workspaceId);
       $.validateHeaders(additionalConfigHeaders);
       const metadataHeaders = $.metadataHeaders($.context.format);
       $.context.headers = {
@@ -47,7 +47,7 @@ steps:
 
   - name: prepareParams
     template: |
-      $.context.params = $.validateQueryParams($.getCustomMappings(.message, .destination.Config.queryParams));
+      $.context.params = $.validateQueryParams(await $.getCustomMappings(.message, .destination.Config.queryParams, .metadata.workspaceId));
 
   - name: deduceEndPoint
     template: |
@@ -56,7 +56,7 @@ steps:
   - name: prepareBody
     template: |
       const propertiesMapping = .destination.Config.isDefaultMapping ? [{"to": "$", "from": "$"}] : .destination.Config.propertiesMapping;
-      const payload = $.getCustomMappings(.message, propertiesMapping);
+      const payload = await $.getCustomMappings(.message, propertiesMapping, .metadata.workspaceId);
       $.context.payload = $.prepareBody(payload, $.context.format, .destination.Config.xmlRootKey);
 
   - name: buildResponseForProcessTransformation

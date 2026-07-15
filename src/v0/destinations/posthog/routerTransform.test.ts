@@ -1,9 +1,10 @@
 import { Integration } from './routerTransform';
 import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/batchDestination';
 import type { Metadata, RudderMessage } from '../../../types/rudderEvents';
-import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import type { PostHogMessage, PostHogDestination } from './types';
 import { MAX_EVENT_SIZE_BYTES } from './config';
+
+type PostHogInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -26,7 +27,7 @@ function makeInput(
   jobId: number,
   type: RudderMessage['type'],
   overrides?: Partial<PostHogMessage>,
-): RouterTransformationRequestData<PostHogMessage, PostHogDestination, undefined, Metadata> {
+): PostHogInput {
   const message: PostHogMessage = {
     type,
     userId: 'uid-1',
@@ -50,7 +51,7 @@ function makeInput(
     destinationType: 'POSTHOG',
     messageId: `msg-${jobId}`,
   };
-  return { message, metadata, destination };
+  return { message, metadata, destination } as unknown as PostHogInput;
 }
 
 // ---------------------------------------------------------------------------

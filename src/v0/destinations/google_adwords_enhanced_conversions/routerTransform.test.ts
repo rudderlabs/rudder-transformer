@@ -1,6 +1,12 @@
 import { Integration } from './routerTransform';
-import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/batchDestination';
+import {
+  ChunkBatchStrategy,
+  type BatchDestinationConstructor,
+} from '../../../services/destination/nativeBatching/batchDestination';
+
+type GAECInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
 import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
+
 import type { Destination } from '../../../types/controlPlaneConfig';
 import type {
   ProcessorTransformationOutput,
@@ -89,7 +95,7 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
 
   describe('transformEvent', () => {
     it('reshapes a single track event into a TransformedEvent carrying one adjustment', () => {
-      const result = integration.transformEvent(makeInput(1));
+      const result = integration.transformEvent(makeInput(1) as unknown as GAECInput);
 
       expect(result.endpoint).toBe('');
       expect(result.method).toBe('POST');
@@ -162,7 +168,11 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
   describe('processBatchedDestination', () => {
     it('batches events with the same conversion name + customer into one request', async () => {
       const inputs = [makeInput(1), makeInput(2), makeInput(3)];
-      const results = await processBatchedDestination(inputs, Integration, {});
+      const results = await processBatchedDestination(
+        inputs,
+        Integration as BatchDestinationConstructor,
+        {},
+      );
 
       expect(results).toHaveLength(1);
       const [batch] = results;
@@ -181,7 +191,11 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
         makeInput(2, { event: 'Product Added' }),
         makeInput(3, { event: 'Page View' }),
       ];
-      const results = await processBatchedDestination(inputs, Integration, {});
+      const results = await processBatchedDestination(
+        inputs,
+        Integration as BatchDestinationConstructor,
+        {},
+      );
 
       expect(results).toHaveLength(2);
       const byEvent: Record<string, RouterTransformationResponse> = Object.fromEntries(
@@ -197,7 +211,11 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
         makeInput(2, { type: 'identify' }), // schema rejects → 400
         makeInput(3, { traits: {} }), // no user identifiers → transform throws → 400
       ];
-      const results = await processBatchedDestination(inputs, Integration, {});
+      const results = await processBatchedDestination(
+        inputs,
+        Integration as BatchDestinationConstructor,
+        {},
+      );
 
       const success = results.filter((r) => r.statusCode === 200);
       const errors = results.filter((r) => r.statusCode === 400);

@@ -2,7 +2,7 @@
  * esbuild entry point — bundled into a single IIFE for use inside isolated-vm.
  *
  * This file is NOT imported by any runtime code directly. It is compiled by:
- *   npm run build:custom-audience-sandbox
+ *   npm run build:sandboxes
  * into dist/templateEngineSandbox.bundle.js, which IvmScriptRunner reads
  * at runtime and loads into an isolate context.
  *

@@ -1,6 +1,151 @@
-import { authHeader1, secret1, authHeader2, authHeader3, secret3, secret2 } from '../maskedSecrets';
+import {
+  authHeader1,
+  secret1,
+  authHeader2,
+  authHeader3,
+  secret3,
+  secret2,
+  secret4,
+} from '../maskedSecrets';
 import { destination } from './config';
 import { upsertData } from './upsertData';
+import { errorValidationData } from './errorValidationData';
+
+/**
+ * Helpers + migrated event-stream / legacy router cases (previously eventStreamData.ts).
+ *
+ * These exercise the contact-lookup create/update path
+ * (`HSTransform-v2.processIdentify` -> `util.searchContacts` -> create or update) plus
+ * the edge/error branches and the legacy (`apiVersion: 'legacyApi'`) v1 endpoints,
+ * restoring the code-path coverage the (removed) processor suite used to provide.
+ *
+ * All HTTP is served by ./network.ts (no per-case mockFns): tokens are chosen so the
+ * pre-existing token-keyed search/properties entries return the response each case
+ * needs (secret1 search=empty -> create, secret2 search=1 hit -> update, secret4=2
+ * hits -> "more than one" abort, search-fail-token=500). `lookupField: 'phone'` is
+ * non-unique in the shared crmV3PropertiesResponse mock, so identify goes through
+ * searchContacts rather than the upsert batch.
+ */
+const enrich = (errorCategory: string, errorType: string, extra: Record<string, string> = {}) => ({
+  destType: 'HS',
+  errorCategory,
+  errorType,
+  ...extra,
+  feature: 'router',
+  implementation: 'native',
+  module: 'destination',
+});
+
+const errCase = (o: {
+  id: string;
+  description: string;
+  message: Record<string, unknown>;
+  config: Record<string, unknown>;
+  statusCode: number;
+  error: string;
+  statTags: Record<string, string>;
+}) => {
+  const dest = { ID: o.id, Config: o.config, Enabled: true };
+  return {
+    name: 'hs',
+    id: o.id,
+    description: o.description,
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [{ message: o.message, destination: dest, metadata: { jobId: 1, userId: 'u1' } }],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [{ jobId: 1, userId: 'u1' }],
+              batched: false,
+              statusCode: o.statusCode,
+              error: o.error,
+              statTags: o.statTags,
+              destination: dest,
+            },
+          ],
+        },
+      },
+    },
+  };
+};
+
+const successCase = (o: {
+  id: string;
+  description: string;
+  message: Record<string, unknown>;
+  config: Record<string, unknown>;
+  batchedRequest: Record<string, unknown>;
+  batched: boolean;
+}) => {
+  const dest = { ID: o.id, Config: o.config, Enabled: true };
+  return {
+    name: 'hs',
+    id: o.id,
+    description: o.description,
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [{ message: o.message, destination: dest, metadata: { jobId: 1, userId: 'u1' } }],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: o.batchedRequest,
+              metadata: [{ jobId: 1, userId: 'u1' }],
+              batched: o.batched,
+              statusCode: 200,
+              destination: dest,
+            },
+          ],
+        },
+      },
+    },
+  };
+};
+
+const esCfg = (accessToken: string, over: Record<string, unknown> = {}) => ({
+  authorizationType: 'newPrivateAppApi',
+  apiVersion: 'newApi',
+  accessToken,
+  lookupField: 'phone',
+  ...over,
+});
+const legacyCfg = (over: Record<string, unknown> = {}) => ({
+  authorizationType: 'legacyApiKey',
+  apiVersion: 'legacyApi',
+  apiKey: 'dummy-apikey',
+  hubID: '123',
+  ...over,
+});
+
+const esIdentifyMessage = {
+  type: 'identify',
+  traits: { phone: '9999999999', firstname: 'CI', lastname: 'ES' },
+  context: { mappedToDestination: false },
+};
 export const data = [
   {
     name: 'hs',
@@ -453,52 +598,6 @@ export const data = [
             },
             {
               message: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint:
-                  'https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com',
-                headers: { 'Content-Type': 'application/json' },
-                userId: '00000000000000000000000000',
-                params: { hapikey: 'dummy-apikey' },
-                body: {
-                  JSON: {
-                    properties: [
-                      { property: 'email', value: 'testhubspot3@email.com' },
-                      { property: 'firstname', value: 'Test Hubspot3' },
-                    ],
-                  },
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-                statusCode: 200,
-              },
-              metadata: { jobId: 3, userId: 'u1' },
-              destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              message: {
                 channel: 'web',
                 context: {
                   app: {
@@ -629,54 +728,6 @@ export const data = [
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
-              statusCode: 200,
-              destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
-                headers: { 'Content-Type': 'application/json' },
-                params: { hapikey: 'dummy-apikey' },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {
-                    batch: JSON.stringify([
-                      {
-                        email: 'testhubspot3@email.com',
-                        properties: [{ property: 'firstname', value: 'Test Hubspot3' }],
-                      },
-                    ]),
-                  },
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [{ jobId: 3, userId: 'u1' }],
-              batched: true,
               statusCode: 200,
               destination: {
                 Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
@@ -4491,4 +4542,262 @@ export const data = [
     },
   },
   ...upsertData,
+  ...errorValidationData,
+  // --- migrated event-stream / legacy router cases (see helpers above) ---
+  // searchContacts create/update happy paths
+  successCase({
+    id: 'hs_router_es_identify_create',
+    description: '(newApi) event-stream identify creates a contact when searchContacts finds none',
+    message: esIdentifyMessage,
+    config: esCfg(secret1),
+    batched: true,
+    batchedRequest: {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+      params: {},
+      body: {
+        JSON: {
+          inputs: [{ properties: { phone: '9999999999', firstname: 'CI', lastname: 'ES' } }],
+        },
+        JSON_ARRAY: {},
+        XML: {},
+        FORM: {},
+      },
+      files: {},
+    },
+  }),
+  successCase({
+    id: 'hs_router_es_identify_update',
+    description: '(newApi) event-stream identify updates an existing contact via searchContacts',
+    message: esIdentifyMessage,
+    config: esCfg(secret2),
+    batched: true,
+    batchedRequest: {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader2 },
+      params: {},
+      body: {
+        JSON: {
+          inputs: [
+            { id: '103604', properties: { phone: '9999999999', firstname: 'CI', lastname: 'ES' } },
+          ],
+        },
+        JSON_ARRAY: {},
+        XML: {},
+        FORM: {},
+      },
+      files: {},
+    },
+  }),
+  // searchContacts edge/error branches
+  errCase({
+    id: 'hs_router_es_multiple_contacts',
+    description: '(newApi) event-stream identify: searchContacts finds >1 contact is aborted',
+    message: {
+      type: 'identify',
+      traits: { phone: '9', firstname: 'A' },
+      context: { mappedToDestination: false },
+    },
+    config: esCfg(secret4),
+    statusCode: 400,
+    error:
+      'Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue',
+    statTags: enrich('network', 'aborted', { meta: 'instrumentation' }),
+  }),
+  errCase({
+    id: 'hs_router_es_invalid_lookup_traits',
+    description: '(newApi) event-stream identify with no traits for lookup is aborted',
+    message: { type: 'identify', context: { mappedToDestination: false } },
+    config: esCfg(secret1),
+    statusCode: 400,
+    error: 'Identify - Invalid traits value for lookup field',
+    statTags: enrich('dataValidation', 'instrumentation'),
+  }),
+  errCase({
+    id: 'hs_router_property_type_mismatch',
+    description: '(newApi) identify with a trait value type mismatching the HS property type',
+    message: { type: 'identify', traits: { phone: '9', days_to_close: 'notnum' } },
+    config: esCfg(secret1),
+    statusCode: 400,
+    error:
+      'Property days_to_close data type string is not matching with Hubspot property data type number',
+    statTags: enrich('dataValidation', 'instrumentation'),
+  }),
+  // track event-config validation
+  errCase({
+    id: 'hs_router_track_no_event_mappings',
+    description: '(newApi) track without Config.hubspotEvents is aborted',
+    message: { type: 'track', event: 'Purchase', properties: {} },
+    config: { authorizationType: 'newPrivateAppApi', apiVersion: 'newApi', accessToken: secret1 },
+    statusCode: 400,
+    error: 'Event and property mappings are required for track call',
+    statTags: enrich('dataValidation', 'instrumentation'),
+  }),
+  errCase({
+    id: 'hs_router_track_event_not_configured',
+    description: '(newApi) track whose event has no hubspotEvents mapping is aborted',
+    message: { type: 'track', event: 'Purchase', properties: {} },
+    config: {
+      authorizationType: 'newPrivateAppApi',
+      apiVersion: 'newApi',
+      accessToken: secret1,
+      hubspotEvents: [{ rsEventName: 'Other', hubspotEventName: 'pe_o', eventProperties: [] }],
+    },
+    statusCode: 400,
+    error: "Event name 'purchase' mappings are not configured in the destination",
+    statTags: enrich('dataValidation', 'configuration'),
+  }),
+  // RETL search failure (mappedToDestination; not event-stream, grouped here with the migrated cases)
+  errCase({
+    id: 'hs_router_retl_search_failure',
+    description: '(newApi) RETL object-record search failure surfaces a retryable error',
+    message: {
+      type: 'identify',
+      context: {
+        mappedToDestination: true,
+        externalId: [{ type: 'HS-contacts', identifierType: 'email', id: 'a@b.com' }],
+      },
+      traits: { email: 'a@b.com' },
+    },
+    config: {
+      authorizationType: 'newPrivateAppApi',
+      apiVersion: 'newApi',
+      accessToken: 'search-fail-token',
+      lookupField: 'email',
+    },
+    statusCode: 500,
+    error:
+      '{"message":"rETL - Error during searching object record. \\"boom\\"","destinationResponse":{"response":{"message":"boom"},"status":500}}',
+    statTags: enrich('network', 'retryable'),
+  }),
+  // legacy (apiVersion 'legacyApi') config validation
+  errCase({
+    id: 'hs_router_legacy_missing_hub_id',
+    // no properties/traits so the batch-level getProperties fetch is skipped and
+    // config validation (which runs inside processSingleMessage) is what aborts.
+    description: '(legacyApiKey) missing hubID in config is aborted',
+    message: { type: 'track', event: 'Purchase' },
+    config: legacyCfg({ hubID: '' }),
+    statusCode: 400,
+    error: 'Hub ID not found. Aborting',
+    statTags: enrich('dataValidation', 'configuration'),
+  }),
+  errCase({
+    id: 'hs_router_legacy_missing_api_key',
+    description: '(legacyApiKey) missing apiKey in config is aborted',
+    message: { type: 'track', event: 'Purchase' },
+    config: legacyCfg({ apiKey: '' }),
+    statusCode: 400,
+    error: 'API Key not found. Aborting',
+    statTags: enrich('dataValidation', 'configuration'),
+  }),
+  errCase({
+    id: 'hs_router_legacy_identify_no_email',
+    description: '(legacyApi) event-stream identify without email is aborted',
+    message: {
+      type: 'identify',
+      traits: { firstname: 'A' },
+      context: { mappedToDestination: false },
+    },
+    config: legacyCfg(),
+    statusCode: 400,
+    error: 'Identify without email is not supported.',
+    statTags: enrich('dataValidation', 'instrumentation'),
+  }),
+  // legacy v1 endpoints (hapikey property lookup + private-app v1 contact/track)
+  successCase({
+    id: 'hs_router_newapi_hapikey_identify',
+    description: '(newApi + legacyApiKey) identify uses hapikey auth for property lookup + create',
+    message: {
+      type: 'identify',
+      traits: { phone: '9', firstname: 'A' },
+      context: { mappedToDestination: false },
+    },
+    config: {
+      authorizationType: 'legacyApiKey',
+      apiVersion: 'newApi',
+      apiKey: 'dummy-apikeysuccess',
+      hubID: '123',
+      lookupField: 'phone',
+    },
+    batched: true,
+    batchedRequest: {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+      headers: { 'Content-Type': 'application/json' },
+      params: { hapikey: 'dummy-apikeysuccess' },
+      body: {
+        JSON: { inputs: [{ properties: { firstname: 'A', phone: '9' } }] },
+        JSON_ARRAY: {},
+        XML: {},
+        FORM: {},
+      },
+      files: {},
+    },
+  }),
+  successCase({
+    id: 'hs_router_v1_identify_private_app',
+    description: '(legacyApi + private-app) identify hits contacts/v1 with Bearer auth',
+    message: {
+      type: 'identify',
+      traits: { email: 'v1@e.com', firstname: 'A' },
+      context: { mappedToDestination: false },
+    },
+    config: {
+      authorizationType: 'newPrivateAppApi',
+      apiVersion: 'legacyApi',
+      accessToken: secret1,
+      hubID: '123',
+      lookupField: 'email',
+    },
+    batched: true,
+    batchedRequest: {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+      params: {},
+      body: {
+        JSON: {},
+        JSON_ARRAY: {
+          batch: '[{"email":"v1@e.com","properties":[{"property":"firstname","value":"A"}]}]',
+        },
+        XML: {},
+        FORM: {},
+      },
+      files: {},
+    },
+  }),
+  successCase({
+    id: 'hs_router_v1_track_private_app',
+    description: '(legacyApi + private-app) track hits track.hubspot.com/v1/event with Bearer auth',
+    message: { type: 'track', event: 'Purchase', properties: { email: 'v1@e.com' } },
+    config: {
+      authorizationType: 'newPrivateAppApi',
+      apiVersion: 'legacyApi',
+      accessToken: secret1,
+      hubID: '123',
+      hubspotEvents: [{ rsEventName: 'Purchase', hubspotEventName: 'pe_p', eventProperties: [] }],
+    },
+    batched: false,
+    batchedRequest: {
+      version: '1',
+      type: 'REST',
+      method: 'GET',
+      endpoint: 'https://track.hubspot.com/v1/event',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+      params: { _a: '123', _n: 'Purchase', email: 'v1@e.com' },
+      body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
+      files: {},
+    },
+  }),
 ];

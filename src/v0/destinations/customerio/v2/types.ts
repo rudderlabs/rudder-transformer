@@ -1,6 +1,7 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
+import { makeRouterInputSchema } from '../../../../services/destination/nativeBatching/batchDestination';
 import { RECORD_IDENTIFIER_KEYS } from './config';
-import { CustomerIOConnectionConfigSchema } from '../types';
+import { CustomerIODestinationConfigSchema, CustomerIOConnectionConfigSchema } from '../types';
 
 export type CustomerIOV2Identifiers = {
   id?: string;
@@ -55,10 +56,13 @@ export type CustomerIOV2RecordMessage = z.infer<typeof recordMessageSchema>;
 const eventStreamMessageSchema = z
   .object({
     type: z.enum(['identify', 'track', 'page', 'screen', 'alias', 'group']),
-    userId: z.string().nullish(),
-    anonymousId: z.string().nullish(),
-    previousId: z.string().nullish(),
-    groupId: z.string().nullish(),
+    // CustomerIO accepts identifiers as either a string or a number, so both are passed
+    // through as-is. Any other type is rejected by the API with
+    // `{"field": "primary.id", "message": "must be a string or a number"}`.
+    userId: z.union([z.string(), z.number()]).nullish(),
+    anonymousId: z.union([z.string(), z.number()]).nullish(),
+    previousId: z.union([z.string(), z.number()]).nullish(),
+    groupId: z.union([z.string(), z.number()]).nullish(),
     traits: emailTraitSchema,
     context: z
       .object({
@@ -88,35 +92,24 @@ const eventStreamMessageSchema = z
     { message: 'userId, email or anonymousId is required' },
   );
 
-export const getV2InputSchema = (): ZodType =>
-  z.union([
-    // Record messages: validate connection.config.destination against the record-specific schema
-    z
-      .object({
-        message: recordMessageSchema,
-        connection: z
-          .object({
-            config: z
-              .object({
-                destination: CustomerIOConnectionConfigSchema,
-              })
-              .passthrough(),
-          })
-          .passthrough()
-          .optional(),
-      })
-      .passthrough(),
-    // Non-record messages: connection config not enforced (record-specific fields like `object` don't apply)
-    z
-      .object({
-        message: eventStreamMessageSchema,
-      })
-      .passthrough(),
-  ]);
+// Hybrid destination: record events validate connection.config.destination against the
+// record-specific schema (which requires `object`); event-stream events may carry a
+// connection lacking those record-only fields, so their connection is not enforced —
+// validating it against the record schema would wrongly reject them (#5331). Both
+// variants carry the shared destinationConfig via CustomerIODestinationConfigSchema.
+export const recordInputSchema = makeRouterInputSchema({
+  message: recordMessageSchema,
+  destinationConfig: CustomerIODestinationConfigSchema,
+  connectionConfig: z.object({ destination: CustomerIOConnectionConfigSchema }).passthrough(),
+});
+
+export const eventStreamInputSchema = makeRouterInputSchema({
+  message: eventStreamMessageSchema,
+  destinationConfig: CustomerIODestinationConfigSchema,
+});
 
 export {
   type CustomerIODestination,
   type CustomerIODestinationConfig,
   type CustomerIOConnectionConfig,
-  CustomerIOConnectionConfigSchema,
 } from '../types';

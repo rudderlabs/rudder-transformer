@@ -45,7 +45,7 @@ jobs:
 
       - name: Checkout (main)
         if: github.event_name != 'workflow_dispatch'
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: refs/heads/main
           fetch-depth: 1
@@ -53,7 +53,7 @@ jobs:
 
       - name: Checkout (dispatch branch)
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ github.ref }}
           fetch-depth: 1
@@ -112,7 +112,7 @@ jobs:
           fi
 
       - name: Clone Ingestion Service Repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           repository: rudderlabs/rudder-ingestion-svc
           token: ${{ steps.generate-token.outputs.token }}
@@ -128,7 +128,7 @@ jobs:
           echo "Go version from ingestion service: $go_version"
 
       - name: Setup Go
-        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
         with:
           go-version: ${{ steps.get_go_version.outputs.go_version }}
 

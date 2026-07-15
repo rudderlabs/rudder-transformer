@@ -1671,4 +1671,32 @@ export const networkCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      url: CRM_V3_PROPERTIES_ENDPOINT,
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer hs-access-token',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: { results: [] },
+    },
+  },
+  // Failing contacts search for the RETL search-failure coverage case
+  // (coverageData.ts) — keyed to the 'search-fail-token' private-app token.
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer search-fail-token',
+      },
+    },
+    httpRes: {
+      status: 500,
+      data: { message: 'boom' },
+    },
+  },
 ];

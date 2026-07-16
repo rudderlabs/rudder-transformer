@@ -104,7 +104,12 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
             message: '[CustomerIO Response Handler] - Batch completed with partial failures',
             response: [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
-              { statusCode: 400, metadata: generateMetadata(2), error: 'invalid attribute' },
+              {
+                statusCode: 400,
+                metadata: generateMetadata(2),
+                error:
+                  'reason: invalid, field: attributes.plan, message: property value cannot be longer than 1000 bytes',
+              },
             ],
           },
         },

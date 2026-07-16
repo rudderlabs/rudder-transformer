@@ -65,6 +65,48 @@ describe('CustomerIO networkHandler', () => {
       expect(result.response[2].statusCode).toBe(200);
     });
 
+    it('combines reason, field and message into the error string', () => {
+      const h = buildHandler();
+      const metadata = [makeMetadata(1), makeMetadata(2), makeMetadata(3)];
+      const response = {
+        errors: [
+          {
+            batch_index: 2,
+            reason: 'invalid',
+            field: 'attributes.delivery_suburb',
+            message: 'property value cannot be longer than 1000 bytes',
+          },
+        ],
+      };
+      const result = h.responseHandler({
+        rudderJobMetadata: metadata,
+        destinationResponse: { response, status: 207 },
+        destinationRequest: {
+          endpoint: 'https://track.customer.io/api/v2/batch',
+          body: { JSON: { batch: makeBatch(3) } },
+        },
+      });
+      expect(result.response[2].statusCode).toBe(400);
+      expect(result.response[2].error).toBe(
+        'reason: invalid, field: attributes.delivery_suburb, message: property value cannot be longer than 1000 bytes',
+      );
+    });
+
+    it('falls back to a default message when the error has no descriptive fields', () => {
+      const h = buildHandler();
+      const metadata = [makeMetadata(1), makeMetadata(2)];
+      const result = h.responseHandler({
+        rudderJobMetadata: metadata,
+        destinationResponse: { response: { errors: [{ batch_index: 0 }] }, status: 207 },
+        destinationRequest: {
+          endpoint: 'https://track.customer.io/api/v2/batch',
+          body: { JSON: { batch: makeBatch(2) } },
+        },
+      });
+      expect(result.response[0].statusCode).toBe(400);
+      expect(result.response[0].error).toBe('Unknown error from CustomerIO');
+    });
+
     it('marks all as 200 when errors array is empty', () => {
       const h = buildHandler();
       const metadata = [makeMetadata(1), makeMetadata(2)];

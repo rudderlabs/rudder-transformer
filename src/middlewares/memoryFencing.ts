@@ -126,8 +126,12 @@ export function emitMemoryHeapUsedPercent(): number | null {
  *
  * This is the leading indicator: it has to exist on deployments where fencing is switched off, and
  * it has to keep updating on an idle pod, which a per-request emission would not.
+ *
+ * It also emits the (constant) heap size limit once up front, so both heap gauges are owned by the
+ * reporter and exist wherever it runs.
  */
 export function startMemoryUsageReporter(intervalMs = 10_000): NodeJS.Timeout {
+  emitMemoryHeapSizeLimit();
   emitMemoryHeapUsedPercent();
   const timer = setInterval(emitMemoryHeapUsedPercent, intervalMs);
   timer.unref();
@@ -152,6 +156,11 @@ export function memoryFenceMiddleware(options?: MemoryFenceOptions): Middleware 
   if (thresholdPercent <= 0 || thresholdPercent >= 100) {
     throw new Error('thresholdPercent must be between 1 and 100');
   }
+
+  // Seed the fenced-requests counter children at zero as the fence is mounted. Keeping this in the
+  // factory (rather than a separate call at the mount site) means the fence can never be mounted
+  // without its counter being seeded, or vice-versa.
+  initMemoryFencingMetrics();
 
   const limit = v8.getHeapStatistics().heap_size_limit;
   let { heapUsed }: { heapUsed: number } = process.memoryUsage();

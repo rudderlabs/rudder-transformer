@@ -61,7 +61,7 @@ describe('memoryFenceMiddleware', () => {
     expect(next).toHaveBeenCalled();
     expect(ctx.status).toBeUndefined();
     expect(ctx.body).toBeUndefined();
-    expect(stats.counter).not.toHaveBeenCalled();
+    expect(stats.counter).not.toHaveBeenCalledWith('memory_fenced_requests', 1, expect.anything());
     expect(ctx.headers['X-Rudder-Should-Retry']).toBeUndefined();
     expect(ctx.headers['X-Rudder-Error-Reason']).toBeUndefined();
   });
@@ -108,6 +108,14 @@ describe('memoryFenceMiddleware', () => {
     expect(() => memoryFenceMiddleware({ thresholdPercent: -5 })).toThrow();
   });
 
+  it('seeds the fenced-requests counter for every bounded route as the fence is mounted', () => {
+    memoryFenceMiddleware({ thresholdPercent: 80 });
+
+    MEMORY_FENCING_ROUTE_LABELS.forEach((route) => {
+      expect(stats.counter).toHaveBeenCalledWith('memory_fenced_requests', 0, { route });
+    });
+  });
+
   it('uses default options if none provided', async () => {
     process.memoryUsage = jest.fn(() => ({
       heapUsed: 900,
@@ -141,7 +149,7 @@ describe('memoryFenceMiddleware', () => {
 
     expect(next).toHaveBeenCalled();
     expect(ctx.status).toBeUndefined();
-    expect(stats.counter).not.toHaveBeenCalled();
+    expect(stats.counter).not.toHaveBeenCalledWith('memory_fenced_requests', 1, expect.anything());
   });
 
   it('does not emit the heap gauge from the request path', async () => {
@@ -191,7 +199,7 @@ describe('memoryFenceMiddleware', () => {
 
     expect(next).toHaveBeenCalled();
     expect(ctx.status).toBeUndefined();
-    expect(stats.counter).not.toHaveBeenCalled();
+    expect(stats.counter).not.toHaveBeenCalledWith('memory_fenced_requests', 1, expect.anything());
   });
 
   it.each([['/health'], ['/metrics'], ['/features']])(
@@ -209,7 +217,11 @@ describe('memoryFenceMiddleware', () => {
       expect(next).toHaveBeenCalled();
       expect(ctx.status).toBeUndefined();
       expect(ctx.body).toBeUndefined();
-      expect(stats.counter).not.toHaveBeenCalled();
+      expect(stats.counter).not.toHaveBeenCalledWith(
+        'memory_fenced_requests',
+        1,
+        expect.anything(),
+      );
       expect(ctx.headers['X-Rudder-Should-Retry']).toBeUndefined();
       expect(ctx.headers['X-Rudder-Error-Reason']).toBeUndefined();
     },
@@ -272,11 +284,14 @@ describe('memory fencing metrics', () => {
 
     const timer = startMemoryUsageReporter(1000);
 
-    expect(stats.gauge).toHaveBeenCalledTimes(1);
+    // The reporter emits the constant heap size limit once, then heap-used-percent up front and on
+    // each tick.
+    expect(stats.gauge).toHaveBeenCalledWith('memory_heap_size_limit', 1000);
     expect(stats.gauge).toHaveBeenCalledWith('memory_heap_used_percent', 30);
+    expect(stats.gauge).toHaveBeenCalledTimes(2);
 
     jest.advanceTimersByTime(2000);
-    expect(stats.gauge).toHaveBeenCalledTimes(3);
+    expect(stats.gauge).toHaveBeenCalledTimes(4);
 
     clearInterval(timer);
     jest.useRealTimers();

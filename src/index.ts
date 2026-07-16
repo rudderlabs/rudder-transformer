@@ -19,12 +19,7 @@ import { logProcessInfo } from './util/utils';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
-import {
-  emitMemoryHeapSizeLimit,
-  initMemoryFencingMetrics,
-  memoryFenceMiddleware,
-  startMemoryUsageReporter,
-} from './middlewares/memoryFencing';
+import { memoryFenceMiddleware, startMemoryUsageReporter } from './middlewares/memoryFencing';
 import { concurrentRequests } from './middlewares/concurrentRequests';
 import { errorHandlerMiddleware } from './middlewares/errorHandler';
 
@@ -79,20 +74,17 @@ app.use(errorHandlerMiddleware()); // Error handling middleware - must be early 
 addStatMiddleware(app); // Track request time and status codes
 
 // Heap reporting is independent of the fence: it is the leading indicator, so it is most needed on
-// deployments where fencing is disabled and it is all we would otherwise have.
-emitMemoryHeapSizeLimit();
+// deployments where fencing is disabled and it is all we would otherwise have. The reporter also
+// emits the (constant) heap size limit once at startup.
 startMemoryUsageReporter(
   parseInt(process.env.MEMORY_USAGE_REPORT_INTERVAL_MS || '10000', 10), // default 10s
 );
 
 // Memory fencing middleware needs to come early in the middleware stack,
 // before any other middleware that might allocate memory.
-// It is disabled by default
+// It is disabled by default. Mounting it also seeds the fenced-requests counter (see
+// memoryFenceMiddleware), so the fence and its seeded counter can never drift apart.
 if (process.env.MEMORY_FENCING_ENABLED === 'true') {
-  // Zero-initialise the counter so increase() can see the 0 -> N step on the first fence. Only
-  // meaningful where the fence is actually mounted: with it disabled the counter can never be
-  // incremented, so seeding it would export a permanently-zero series per route for nothing.
-  initMemoryFencingMetrics();
   app.use(
     memoryFenceMiddleware({
       thresholdPercent: parseInt(process.env.MEMORY_FENCING_THRESHOLD_PERCENT || '80', 10),

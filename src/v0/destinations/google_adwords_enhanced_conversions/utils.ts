@@ -74,8 +74,9 @@ interface ProcessUserIdentifiersContext {
 
 /**
  * Runs the normalize → consistency-check → validate → hash pipeline on the five PII fields
- * in the payload's first conversionAdjustment, then prunes identifier entries that end up
- * empty after field drops.
+ * in the payload's first conversionAdjustment and returns the surviving identifier entries
+ * in mapping order (email, phone, addressInfo). The payload itself is NOT mutated — the
+ * caller owns the result (assign it, count it, throw when empty).
  *
  * The pipeline is fed through processAudienceRecord (audienceUtils.ts) which handles:
  *   1. Hashing-consistency check: throws InstrumentationError when data contradicts requireHash
@@ -83,19 +84,16 @@ interface ProcessUserIdentifiersContext {
  *   3. Validation + field rejection (emits <destType>_invalid_field metric on failure)
  *   4. SHA-256 hashing when isHashRequired=true
  *
- * This function mutates the payload in place, matching the pattern of constructPayload itself.
- *
  * The caller must invoke this AFTER the RESTATEMENT branch, since RESTATEMENT deletes
  * userIdentifiers — calling this on a restatement event would throw spurious hash errors.
  */
 export const processUserIdentifiers = (
   payload: GaecPayload,
   { requireHash, workspaceId, destinationId }: ProcessUserIdentifiersContext,
-): void => {
-  const firstAdjustment = payload.conversionAdjustments?.[0];
-  const userIdentifiers = firstAdjustment?.userIdentifiers;
+): UserIdentifierEntry[] => {
+  const userIdentifiers = payload.conversionAdjustments?.[0]?.userIdentifiers;
   if (!userIdentifiers) {
-    return;
+    return [];
   }
 
   const audienceDest = {
@@ -129,87 +127,83 @@ export const processUserIdentifiers = (
     }
   }
 
+  // The field→container binding, declared once — collection and survivor rebuilding below
+  // both derive from it, so adding or removing a PII field is a one-line change here.
+  const hashableTargets = [
+    { key: 'hashedEmail', container: emailEntry },
+    { key: 'hashedPhoneNumber', container: phoneEntry },
+    { key: 'hashedFirstName', container: addressInfo },
+    { key: 'hashedLastName', container: addressInfo },
+    { key: 'hashedStreetAddress', container: addressInfo },
+  ];
+
   // Collect every present hashable field into ONE record — processAudienceRecord treats each
   // field independently, so a single call is equivalent to per-entry calls and matches how the
   // other integrations (GARL, fb_custom_audience, tiktok_audience) consume it.
   // Only string/number values are usable PII: the mapping can resolve a whole object (e.g.
   // hashedStreetAddress falling back to context.traits.address), and hashing String(object)
-  // would ship a useless sha256("[object Object]") identifier. Non-scalar values are deleted
-  // from the payload so they can't leak through unprocessed.
+  // would ship a useless sha256("[object Object]") identifier. Non-scalars are simply not
+  // collected — the returned identifiers are rebuilt from processed values only, so nothing
+  // unprocessed can leak through.
   const rawFields: Record<string, unknown> = {};
-  const collectHashableField = (entry: Record<string, unknown> | null, key: string): void => {
-    if (!entry) {
-      return;
-    }
-    const value = entry[key];
-    if (!value) {
-      return;
-    }
-    if (typeof value === 'string' || typeof value === 'number') {
+  hashableTargets.forEach(({ key, container }) => {
+    const value = container?.[key];
+    if (value && (typeof value === 'string' || typeof value === 'number')) {
       rawFields[key] = value;
-    } else {
-      // eslint-disable-next-line no-param-reassign -- intentional in-place delete of an unusable non-scalar field
-      delete entry[key];
     }
+  });
+
+  const processed: Record<string, unknown> =
+    Object.keys(rawFields).length > 0
+      ? processAudienceRecord(rawFields, {
+          fieldConfigs: GAEC_FIELD_CONFIG,
+          destination: audienceDest,
+        })
+      : {};
+
+  const survivingValue = (key: string): string | null => {
+    const value = processed[key];
+    return value && typeof value === 'string' ? value : null;
   };
-  collectHashableField(emailEntry, 'hashedEmail');
-  collectHashableField(phoneEntry, 'hashedPhoneNumber');
-  collectHashableField(addressInfo, 'hashedFirstName');
-  collectHashableField(addressInfo, 'hashedLastName');
-  collectHashableField(addressInfo, 'hashedStreetAddress');
 
-  if (Object.keys(rawFields).length > 0) {
-    const processed = processAudienceRecord(rawFields, {
-      fieldConfigs: GAEC_FIELD_CONFIG,
-      destination: audienceDest,
-    });
-
-    // Write each processed field back to the entry it came from, or delete it when the
-    // pipeline dropped it (invalid or empty after normalization).
-    const writeBack = (target: Record<string, unknown>, key: string): void => {
-      if (!rawFields[key]) {
-        return;
-      }
-      const processedValue = processed[key];
-      if (processedValue && typeof processedValue === 'string') {
-        // eslint-disable-next-line no-param-reassign -- intentional in-place write-back into the payload entry
-        target[key] = processedValue;
-      } else {
-        // eslint-disable-next-line no-param-reassign -- intentional in-place delete of a field the pipeline dropped
-        delete target[key];
-      }
-    };
-    if (emailEntry) {
-      writeBack(emailEntry, 'hashedEmail');
+  // Rebuild the identifier entries in mapping order from surviving values only.
+  const survivors: UserIdentifierEntry[] = [];
+  const hashedEmail = survivingValue('hashedEmail');
+  if (hashedEmail) {
+    survivors.push({ hashedEmail });
+  }
+  const hashedPhoneNumber = survivingValue('hashedPhoneNumber');
+  if (hashedPhoneNumber) {
+    survivors.push({ hashedPhoneNumber });
+  }
+  if (addressInfo) {
+    // Non-hashable address fields (city, state, countryCode, postalCode) carry through
+    // untouched; hashed fields appear only when they survived the pipeline. Dropping the
+    // rebuilt object when empty replaces the old in-place addressInfo prune.
+    const rebuiltAddressInfo: AddressInfo = { ...addressInfo };
+    delete rebuiltAddressInfo.hashedFirstName;
+    delete rebuiltAddressInfo.hashedLastName;
+    delete rebuiltAddressInfo.hashedStreetAddress;
+    const hashedFirstName = survivingValue('hashedFirstName');
+    if (hashedFirstName) {
+      rebuiltAddressInfo.hashedFirstName = hashedFirstName;
     }
-    if (phoneEntry) {
-      writeBack(phoneEntry, 'hashedPhoneNumber');
+    const hashedLastName = survivingValue('hashedLastName');
+    if (hashedLastName) {
+      rebuiltAddressInfo.hashedLastName = hashedLastName;
     }
-    if (addressInfo) {
-      writeBack(addressInfo, 'hashedFirstName');
-      writeBack(addressInfo, 'hashedLastName');
-      writeBack(addressInfo, 'hashedStreetAddress');
+    const hashedStreetAddress = survivingValue('hashedStreetAddress');
+    if (hashedStreetAddress) {
+      rebuiltAddressInfo.hashedStreetAddress = hashedStreetAddress;
     }
+    if (Object.keys(rebuiltAddressInfo).length > 0) {
+      survivors.push({ addressInfo: rebuiltAddressInfo });
+    }
+  } else if (addressEntry) {
+    // Non-object addressInfo — unreachable via the mapping (it always builds an object when
+    // any address field is present); carried through unchanged for behavior parity.
+    survivors.push(addressEntry);
   }
 
-  // Prune addressInfo if all hashable fields were dropped AND there are no non-hashable
-  // address fields (city, state, countryCode, postalCode) to preserve.
-  if (addressEntry && addressInfo) {
-    const hasHashableField =
-      addressInfo.hashedFirstName || addressInfo.hashedLastName || addressInfo.hashedStreetAddress;
-    const hasNonHashableField =
-      addressInfo.city || addressInfo.state || addressInfo.countryCode || addressInfo.postalCode;
-
-    if (!hasHashableField && !hasNonHashableField) {
-      delete addressEntry.addressInfo;
-    }
-  }
-
-  // Prune identifier entries that are now empty objects (all fields dropped)
-  firstAdjustment.userIdentifiers = userIdentifiers.filter(
-    (entry): entry is UserIdentifierEntry => {
-      if (!entry) return false;
-      return Object.keys(entry).length > 0;
-    },
-  );
+  return survivors;
 };

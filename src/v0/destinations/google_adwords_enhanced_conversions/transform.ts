@@ -2,7 +2,7 @@ import { isNumber } from 'lodash';
 import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
 import isString from 'lodash/isString';
 import type {
-  GaecConfig,
+  GaecDestination,
   GaecPayload,
   GaecDeliveryRequest,
   GaecInputMessage,
@@ -33,7 +33,7 @@ const MISSING_IDENTIFIERS_ERROR =
 const responseBuilder = (
   metadata: Metadata,
   message: GaecInputMessage,
-  destination: { Config: GaecConfig; [key: string]: unknown },
+  destination: GaecDestination,
   payload: GaecPayload,
 ): GaecDeliveryRequest => {
   // typed at construction: the builder starts from empty slots and is mutated in place
@@ -84,7 +84,7 @@ const responseBuilder = (
 const processTrackEvent = (
   metadata: Metadata,
   message: GaecInputMessage,
-  destination: { Config: GaecConfig; [key: string]: unknown },
+  destination: GaecDestination,
 ): GaecDeliveryRequest => {
   const { Config, ID } = destination;
   const { event } = message;
@@ -130,21 +130,22 @@ const processTrackEvent = (
     // Run processUserIdentifiers ONLY when identifiers will actually be sent.
     // Restatement events delete userIdentifiers — running the hash pipeline on them
     // would throw spurious hash-inconsistency errors.
-    // `destinationId` for metric labels: v0 destination objects carry uppercase `ID`
-    // (same field GARL reads); it comes through the index signature as unknown, so a
-    // string guard + '' fallback is needed
+    // `destinationId` for metric labels: `ID` is typed string on GaecDestination, but the
+    // router envelope isn't runtime-validated (the Zod schema passes `destination` through
+    // unchecked, and fixtures omit `ID`) — the guard + '' fallback covers that gap.
     const destinationId = typeof ID === 'string' ? ID : '';
-    processUserIdentifiers(payload, {
+    const survivingIdentifiers = processUserIdentifiers(payload, {
       requireHash,
       workspaceId: metadata.workspaceId,
       destinationId,
     });
 
-    // After pruning, re-check: processUserIdentifiers may have dropped all identifiers
-    // (e.g. all were invalid), leaving userIdentifiers empty.
-    if (!firstAdjustment.userIdentifiers || firstAdjustment.userIdentifiers.length === 0) {
+    // The pipeline may drop every identifier (all invalid/empty after normalization) —
+    // same error as the pre-transform guard above.
+    if (survivingIdentifiers.length === 0) {
       throw new InstrumentationError(MISSING_IDENTIFIERS_ERROR);
     }
+    firstAdjustment.userIdentifiers = survivingIdentifiers;
   }
 
   return responseBuilder(metadata, message, destination, payload);
@@ -153,7 +154,7 @@ const processTrackEvent = (
 const processEvent = (
   metadata: Metadata,
   message: GaecInputMessage,
-  destination: { Config: GaecConfig },
+  destination: GaecDestination,
 ): GaecDeliveryRequest => {
   const { type } = message;
   if (!type) {

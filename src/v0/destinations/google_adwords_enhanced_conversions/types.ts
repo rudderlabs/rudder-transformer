@@ -50,7 +50,7 @@ export interface GaecInputMessage {
 export interface GaecProcessInput {
   metadata?: Metadata;
   message: GaecInputMessage;
-  destination?: { Config: GaecConfig };
+  destination?: GaecDestination;
 }
 
 /** Address component nested inside a UserIdentifier. */

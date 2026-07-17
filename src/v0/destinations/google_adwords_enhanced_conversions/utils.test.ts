@@ -71,39 +71,40 @@ const makePayload = (overrides: {
 };
 
 describe('processUserIdentifiers', () => {
-  describe('normalize + hash write-back (requireHash: true)', () => {
+  describe('normalize + hash (requireHash: true)', () => {
     it('normalizes and hashes a raw email', () => {
       const payload = makePayload({ hashedEmail: 'TEST@EXAMPLE.COM' });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const entry = payload.conversionAdjustments?.[0]?.userIdentifiers?.[0];
-      expect(entry).toEqual({ hashedEmail: sha256('test@example.com') });
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([{ hashedEmail: sha256('test@example.com') }]);
+      // the input payload is left untouched — the function returns instead of mutating
+      expect(payload.conversionAdjustments?.[0]?.userIdentifiers?.[0]).toEqual({
+        hashedEmail: 'TEST@EXAMPLE.COM',
+      });
     });
 
     it('normalizes gmail email: strips dots and +suffix, then hashes', () => {
       const payload = makePayload({ hashedEmail: 'j.o.h.n+alias@gmail.com' });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const entry = payload.conversionAdjustments?.[0]?.userIdentifiers?.[0];
-      expect(entry).toEqual({ hashedEmail: sha256('john@gmail.com') });
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([{ hashedEmail: sha256('john@gmail.com') }]);
     });
 
     it('normalizes and hashes a raw phone number (prepends +)', () => {
       const payload = makePayload({ hashedPhoneNumber: '912382193' });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const entry = payload.conversionAdjustments?.[0]?.userIdentifiers?.[0];
-      expect(entry).toEqual({ hashedPhoneNumber: sha256('+912382193') });
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([{ hashedPhoneNumber: sha256('+912382193') }]);
     });
 
     it('normalizes (trim+lowercase) and hashes first/last names', () => {
       const payload = makePayload({ hashedFirstName: ' John ', hashedLastName: 'GOMES' });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const firstAdj = payload.conversionAdjustments?.[0];
-      const addressEntry = firstAdj?.userIdentifiers?.[0];
-      expect(addressEntry).toEqual({
-        addressInfo: {
-          hashedFirstName: sha256('john'),
-          hashedLastName: sha256('gomes'),
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([
+        {
+          addressInfo: {
+            hashedFirstName: sha256('john'),
+            hashedLastName: sha256('gomes'),
+          },
         },
-      });
+      ]);
     });
 
     it('normalizes (trim+lowercase) and hashes street address', () => {
@@ -111,23 +112,22 @@ describe('processUserIdentifiers', () => {
         hashedStreetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
         city: 'London',
       });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const firstAdj = payload.conversionAdjustments?.[0];
-      const addressEntry = firstAdj?.userIdentifiers?.[0];
-      expect(addressEntry).toEqual({
-        addressInfo: {
-          hashedStreetAddress: sha256('71 cherry court southampton so53 5pd uk'),
-          city: 'London',
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([
+        {
+          addressInfo: {
+            hashedStreetAddress: sha256('71 cherry court southampton so53 5pd uk'),
+            city: 'London',
+          },
         },
-      });
+      ]);
     });
 
     it('passes pre-hashed values through when requireHash: false', () => {
       const preHashedEmail = sha256('test@example.com');
       const payload = makePayload({ hashedEmail: preHashedEmail });
-      processUserIdentifiers(payload, makeDestCtx(false));
-      const entry = payload.conversionAdjustments?.[0]?.userIdentifiers?.[0];
-      expect(entry).toEqual({ hashedEmail: preHashedEmail });
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(false));
+      expect(identifiers).toEqual([{ hashedEmail: preHashedEmail }]);
     });
   });
 
@@ -158,23 +158,20 @@ describe('processUserIdentifiers', () => {
   describe('invalid / empty field drops', () => {
     it('drops invalid email (not a valid email after normalization)', () => {
       const payload = makePayload({ hashedEmail: 'not-an-email' });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const identifiers = payload.conversionAdjustments?.[0]?.userIdentifiers;
-      // email entry should be pruned since hashedEmail was dropped
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      // email entry does not survive since hashedEmail was dropped
       expect(identifiers).toEqual([]);
     });
 
     it('drops invalid phone number (non-numeric after normalization)', () => {
       const payload = makePayload({ hashedPhoneNumber: 'not-a-phone' });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const identifiers = payload.conversionAdjustments?.[0]?.userIdentifiers;
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
       expect(identifiers).toEqual([]);
     });
 
     it('drops empty/whitespace-only email', () => {
       const payload = makePayload({ hashedEmail: '   ' });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const identifiers = payload.conversionAdjustments?.[0]?.userIdentifiers;
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
       expect(identifiers).toEqual([]);
     });
   });
@@ -187,8 +184,8 @@ describe('processUserIdentifiers', () => {
         city: 'London',
         hashedStreetAddress: { streetAddress: '71 Cherry Court', city: 'London' },
       });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      expect(payload.conversionAdjustments?.[0]?.userIdentifiers).toEqual([
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([
         { addressInfo: { hashedFirstName: sha256('john'), city: 'London' } },
       ]);
     });
@@ -199,78 +196,69 @@ describe('processUserIdentifiers', () => {
         hashedFirstName: preHashedFirstName,
         hashedStreetAddress: { streetAddress: '71 Cherry Court' },
       });
-      processUserIdentifiers(payload, makeDestCtx(false));
-      expect(payload.conversionAdjustments?.[0]?.userIdentifiers).toEqual([
-        { addressInfo: { hashedFirstName: preHashedFirstName } },
-      ]);
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(false));
+      expect(identifiers).toEqual([{ addressInfo: { hashedFirstName: preHashedFirstName } }]);
     });
 
     it('accepts a numeric phone value and hashes its string form', () => {
       const payload = makePayload({ hashedPhoneNumber: 912382193 });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      expect(payload.conversionAdjustments?.[0]?.userIdentifiers).toEqual([
-        { hashedPhoneNumber: sha256('+912382193') },
-      ]);
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([{ hashedPhoneNumber: sha256('+912382193') }]);
     });
   });
 
   describe('requireHash default semantics', () => {
     it('hashes when requireHash is undefined (missing from config)', () => {
       const payload = makePayload({ hashedEmail: 'TEST@EXAMPLE.COM' });
-      processUserIdentifiers(payload, makeDestCtx(undefined));
-      expect(payload.conversionAdjustments?.[0]?.userIdentifiers).toEqual([
-        { hashedEmail: sha256('test@example.com') },
-      ]);
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(undefined));
+      expect(identifiers).toEqual([{ hashedEmail: sha256('test@example.com') }]);
     });
   });
 
-  describe('pruning behavior', () => {
-    it('prunes the email entry when hashedEmail is dropped', () => {
+  describe('surviving-entry rebuilding', () => {
+    it('excludes the email entry when hashedEmail is dropped', () => {
       const payload = makePayload({ hashedEmail: 'invalid' });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const identifiers = payload.conversionAdjustments?.[0]?.userIdentifiers;
-      // No entry with {} should remain
-      expect(identifiers?.some((e) => e && Object.keys(e).length === 0)).toBe(false);
-    });
-
-    it('prunes addressInfo when all hashable fields are dropped but preserves non-hashable fields', () => {
-      // Invalid first/last name but valid city — city should be preserved; address entry kept
-      const payload = makePayload({
-        hashedFirstName: '', // empty → drops
-        hashedLastName: '', // empty → drops
-        city: 'London',
-      });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const identifiers = payload.conversionAdjustments?.[0]?.userIdentifiers;
-      expect(identifiers).toEqual([{ addressInfo: { city: 'London' } }]);
-    });
-
-    it('prunes the entire address entry when all hashable AND non-hashable address fields are absent', () => {
-      // Only firstName provided, it's invalid
-      const payload = makePayload({ hashedFirstName: '' });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const identifiers = payload.conversionAdjustments?.[0]?.userIdentifiers;
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
       expect(identifiers).toEqual([]);
     });
 
-    it('preserves a valid email entry while pruning an invalid phone entry', () => {
+    it('keeps addressInfo without hashable fields when non-hashable fields are present', () => {
+      // Whitespace-only names normalize to '' and are dropped by the pipeline;
+      // the valid city is preserved and the address entry kept
+      const payload = makePayload({
+        hashedFirstName: '   ', // whitespace → normalized to '' → dropped
+        hashedLastName: '   ', // whitespace → normalized to '' → dropped
+        city: 'London',
+      });
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([{ addressInfo: { city: 'London' } }]);
+    });
+
+    it('excludes the address entry when all hashable AND non-hashable address fields are absent', () => {
+      // Only firstName provided; whitespace normalizes to '' and is dropped
+      const payload = makePayload({ hashedFirstName: '   ' });
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([]);
+    });
+
+    it('keeps a valid email entry while excluding an invalid phone entry', () => {
       const payload = makePayload({
         hashedEmail: 'test@example.com',
         hashedPhoneNumber: 'not-a-phone',
       });
-      processUserIdentifiers(payload, makeDestCtx(true));
-      const identifiers = payload.conversionAdjustments?.[0]?.userIdentifiers;
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
       expect(identifiers).toEqual([{ hashedEmail: sha256('test@example.com') }]);
     });
   });
 
   describe('no-op cases', () => {
-    it('returns without mutating when userIdentifiers is absent', () => {
+    it('returns an empty array when userIdentifiers is absent', () => {
       const payload: GaecPayload = {
         conversionAdjustments: [{ adjustmentType: 'RESTATEMENT', orderId: '12345' }],
       };
       // Should not throw
-      processUserIdentifiers(payload, makeDestCtx(true));
+      const identifiers = processUserIdentifiers(payload, makeDestCtx(true));
+      expect(identifiers).toEqual([]);
       expect(payload.conversionAdjustments?.[0]?.userIdentifiers).toBeUndefined();
     });
   });

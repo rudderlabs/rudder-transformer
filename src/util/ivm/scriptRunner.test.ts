@@ -4,6 +4,11 @@ import stats from '../stats';
 // evalClosure is the sandbox entry point; each test controls whether it resolves or throws.
 const evalClosure = jest.fn();
 
+// Fidelity note: these mocks are independent jest.fn()s, but in production `stats.increment`
+// delegates to `stats.counter(name, 1)` (see stats.js). So do NOT assert a total `stats.counter`
+// call count across a path that also errors — the real client would count the increment as a
+// counter call too. Assert seed calls via `('ivm_platform_error', 0, ...)` and error calls via
+// `stats.increment` instead. The 0-seed's non-reset semantics are covered in prometheus.test.js.
 jest.mock('../stats', () => ({
   counter: jest.fn(),
   increment: jest.fn(),
@@ -118,5 +123,48 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
 
     expect(stats.counter).toHaveBeenCalledTimes(1);
     expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
+  });
+
+  it('coalesces concurrent first-callers — one 0-seed and one isolate build for the same key', async () => {
+    evalClosure.mockResolvedValue({ ok: true, value: { id: 'u1' } });
+    const ivm = require('isolated-vm');
+    const runner = makeRunner();
+
+    // Fire two calls for the same key before the first isolate finishes building. getOrCreate
+    // sets pendingCreations synchronously (no await before it returns), so the second caller must
+    // join the in-flight creation rather than seed/build a second time.
+    await Promise.all([
+      runner.execute(WORKSPACE, EXPRESSION, [{}, {}]),
+      runner.execute(WORKSPACE, EXPRESSION, [{}, {}]),
+    ]);
+
+    expect(ivm.Isolate).toHaveBeenCalledTimes(1);
+    expect(stats.counter).toHaveBeenCalledTimes(1);
+    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
+  });
+
+  it('re-seeds 0 and rebuilds after an error evicts the isolate', async () => {
+    const ivm = require('isolated-vm');
+    const runner = makeRunner();
+
+    // First call fails at execution time; the catch path evicts the isolate from the cache.
+    evalClosure.mockRejectedValueOnce(new Error('Script execution timed out'));
+    await expect(runner.execute(WORKSPACE, EXPRESSION, [{}, {}])).rejects.toThrow(
+      'Script execution timed out',
+    );
+
+    // Next call is a fresh cache miss: it must build a new isolate AND re-seed the 0 baseline.
+    evalClosure.mockResolvedValueOnce({ ok: true, value: { id: 'u1' } });
+    await runner.execute(WORKSPACE, EXPRESSION, [{}, {}]);
+
+    // Two build cycles → two 0-seeds. The re-seed is inc(0), which is add-only and never resets
+    // the accumulated count (proven against the real registry in prometheus.test.js).
+    expect(ivm.Isolate).toHaveBeenCalledTimes(2);
+    expect(stats.counter).toHaveBeenCalledTimes(2);
+    expect(stats.counter).toHaveBeenNthCalledWith(1, 'ivm_platform_error', 0, EXPECTED_TAGS);
+    expect(stats.counter).toHaveBeenNthCalledWith(2, 'ivm_platform_error', 0, EXPECTED_TAGS);
+    // The single error from the first call was still recorded, with the matching label set.
+    expect(stats.increment).toHaveBeenCalledTimes(1);
+    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', EXPECTED_TAGS);
   });
 });

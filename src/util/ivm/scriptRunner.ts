@@ -94,6 +94,20 @@ export class IvmScriptRunner {
    * avoiding global mutation and race conditions between concurrent calls.
    */
   async execute<T>(cacheKey: string, expression: string, args: unknown[]): Promise<T> {
+    const platformErrorTags = {
+      functionName: expression,
+      workspaceId: cacheKey,
+      cache: this.cache.cacheName,
+    };
+    // Seed the platform-error counter at 0 for this label set before running anything.
+    // Prometheus only exports a counter after its first increment, and rate()/increase()
+    // anchor on the first sample within their window — so without a 0 baseline, an error
+    // burst that lands on a freshly-seen (workspaceId, functionName, cache) series is
+    // invisible to the ivm-platform-errors alert: increase() can only catch the *second*
+    // increment of an already-established series, missing the first burst entirely. Seeding
+    // 0 on the happy path gives increase() the 0 -> N edge it needs to detect the very first
+    // burst on any workspace that is actively processing.
+    stats.counter('ivm_platform_error', 0, platformErrorTags);
     try {
       const entry = await this.getOrCreate(cacheKey);
       const result = await entry.context.evalClosure(expression, args, {
@@ -107,11 +121,7 @@ export class IvmScriptRunner {
       // building the isolate. Evict so the next call gets a fresh one, and emit
       // a metric for observability before rethrowing.
       this.cache.delete(cacheKey);
-      stats.increment('ivm_platform_error', {
-        functionName: expression,
-        workspaceId: cacheKey,
-        cache: this.cache.cacheName,
-      });
+      stats.increment('ivm_platform_error', platformErrorTags);
       throw err;
     }
   }

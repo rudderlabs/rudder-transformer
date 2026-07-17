@@ -16,6 +16,33 @@ describe('sandboxedApplyCustomMappings', () => {
     expect(out).toEqual({ id: 'u1' });
   });
 
+  it('reuses the compiled engine across events without leaking state between evaluations', async () => {
+    // The engine is compiled once per template and reused; evaluating it against different
+    // events must yield independent results (no per-event state retained on the engine).
+    const mappings = [{ from: '$.userId', to: 'id' }];
+    const first = await sandboxedApplyCustomMappings({ userId: 'u1' }, mappings, WS);
+    const second = await sandboxedApplyCustomMappings({ userId: 'u2' }, mappings, WS);
+    expect(first).toEqual({ id: 'u1' });
+    expect(second).toEqual({ id: 'u2' });
+  });
+
+  it('evaluates distinct mapping templates correctly on the same workspace isolate', async () => {
+    // Guards the content-keyed cache: a second template on the same isolate must not resolve
+    // to the first template's cached engine.
+    const byId = await sandboxedApplyCustomMappings(
+      { userId: 'u1', email: 'a@b.com' },
+      [{ from: '$.userId', to: 'id' }],
+      WS,
+    );
+    const byEmail = await sandboxedApplyCustomMappings(
+      { userId: 'u1', email: 'a@b.com' },
+      [{ from: '$.email', to: 'mail' }],
+      WS,
+    );
+    expect(byId).toEqual({ id: 'u1' });
+    expect(byEmail).toEqual({ mail: 'a@b.com' });
+  });
+
   it('does NOT leak process.env — process is undefined in the isolate, so it throws', async () => {
     process.env.RS_SANDBOX_SECRET = 'top-secret';
     // There is no `process` global inside the isolate, so referencing it throws a

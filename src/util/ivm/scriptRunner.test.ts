@@ -101,8 +101,22 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
       'Isolate was disposed during execution',
     );
 
-    // The seed runs before getOrCreate, so build-time failures are covered too.
+    // The seed runs before the isolate is built, so build-time failures are covered too.
     expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
     expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', EXPECTED_TAGS);
+  });
+
+  it('seeds only once per isolate — warm-isolate calls do not touch the metrics registry', async () => {
+    evalClosure.mockResolvedValue({ ok: true, value: { id: 'u1' } });
+    const runner = makeRunner();
+
+    // First call builds the isolate (cache miss) and seeds; the next two reuse the warm
+    // isolate (cache hits) and must not re-seed — the hot path stays off the registry.
+    await runner.execute(WORKSPACE, EXPRESSION, [{}, {}]);
+    await runner.execute(WORKSPACE, EXPRESSION, [{}, {}]);
+    await runner.execute(WORKSPACE, EXPRESSION, [{}, {}]);
+
+    expect(stats.counter).toHaveBeenCalledTimes(1);
+    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
   });
 });

@@ -64,6 +64,10 @@ export const GAEC_FIELD_CONFIG: Record<string, AudienceField> = Object.fromEntri
   ]),
 );
 
+// The hashed address sub-fields, listed once — used both to collect raw values and to
+// rebuild the surviving addressInfo, so adding/removing one is a single edit.
+const ADDRESS_HASH_KEYS = ['hashedFirstName', 'hashedLastName', 'hashedStreetAddress'] as const;
+
 interface ProcessUserIdentifiersContext {
   // The control plane omits requireHash from most configs, so undefined is a real
   // runtime state — it means "hash" (see the isHashRequired mapping below).
@@ -132,9 +136,7 @@ export const processUserIdentifiers = (
   const hashableTargets = [
     { key: 'hashedEmail', container: emailEntry },
     { key: 'hashedPhoneNumber', container: phoneEntry },
-    { key: 'hashedFirstName', container: addressInfo },
-    { key: 'hashedLastName', container: addressInfo },
-    { key: 'hashedStreetAddress', container: addressInfo },
+    ...ADDRESS_HASH_KEYS.map((key) => ({ key, container: addressInfo })),
   ];
 
   // Collect every present hashable field into ONE record — processAudienceRecord treats each
@@ -178,24 +180,17 @@ export const processUserIdentifiers = (
   }
   if (addressInfo) {
     // Non-hashable address fields (city, state, countryCode, postalCode) carry through
-    // untouched; hashed fields appear only when they survived the pipeline. Dropping the
-    // rebuilt object when empty replaces the old in-place addressInfo prune.
+    // untouched; each hashed sub-field is replaced by its surviving value or dropped.
+    // Dropping the rebuilt object when empty replaces the old in-place addressInfo prune.
     const rebuiltAddressInfo: AddressInfo = { ...addressInfo };
-    delete rebuiltAddressInfo.hashedFirstName;
-    delete rebuiltAddressInfo.hashedLastName;
-    delete rebuiltAddressInfo.hashedStreetAddress;
-    const hashedFirstName = survivingValue('hashedFirstName');
-    if (hashedFirstName) {
-      rebuiltAddressInfo.hashedFirstName = hashedFirstName;
-    }
-    const hashedLastName = survivingValue('hashedLastName');
-    if (hashedLastName) {
-      rebuiltAddressInfo.hashedLastName = hashedLastName;
-    }
-    const hashedStreetAddress = survivingValue('hashedStreetAddress');
-    if (hashedStreetAddress) {
-      rebuiltAddressInfo.hashedStreetAddress = hashedStreetAddress;
-    }
+    ADDRESS_HASH_KEYS.forEach((key) => {
+      const value = survivingValue(key);
+      if (value) {
+        rebuiltAddressInfo[key] = value;
+      } else {
+        delete rebuiltAddressInfo[key];
+      }
+    });
     if (Object.keys(rebuiltAddressInfo).length > 0) {
       survivors.push({ addressInfo: rebuiltAddressInfo });
     }

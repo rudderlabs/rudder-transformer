@@ -327,18 +327,14 @@ const basicRouterTests = [
                   jobId: 1,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      eventsIndex: 0,
-                    },
+                    eventsIndices: [0],
                   },
                 },
                 {
                   jobId: 2,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 0,
-                    },
+                    attributesIndices: [0],
                   },
                 },
               ],
@@ -978,38 +974,30 @@ const basicRouterTests = [
                   jobId: 1,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 0,
-                      eventsIndex: 0,
-                    },
+                    attributesIndices: [0],
+                    eventsIndices: [0],
                   },
                 },
                 {
                   jobId: 2,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 1,
-                      eventsIndex: 1,
-                    },
+                    attributesIndices: [1],
+                    eventsIndices: [1],
                   },
                 },
                 {
                   jobId: 3,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 2,
-                    },
+                    attributesIndices: [2],
                   },
                 },
                 {
                   jobId: 4,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 3,
-                    },
+                    attributesIndices: [3],
                   },
                 },
               ],

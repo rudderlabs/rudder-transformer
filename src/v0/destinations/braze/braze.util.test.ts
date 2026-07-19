@@ -1156,7 +1156,11 @@ describe('processBatch — non-MAU workspace (V1 chunking)', () => {
       expect((s.batchedRequest.body.JSON as any).subscription_groups).toBeDefined();
       // Subscription outputs carry scoped metadata but no destInfo.braze.
       for (const m of s.metadata) {
-        expect(m.destInfo?.braze).toBeUndefined();
+        expect(
+          (m.destInfo as any)?.attributesIndices ??
+            (m.destInfo as any)?.eventsIndices ??
+            (m.destInfo as any)?.purchasesIndices,
+        ).toBeUndefined();
       }
     }
   });
@@ -1196,7 +1200,11 @@ describe('processBatch — non-MAU workspace (V1 chunking)', () => {
     for (const m of merges) {
       expect((m.batchedRequest.body.JSON as any).merge_updates).toBeDefined();
       for (const meta of m.metadata) {
-        expect(meta.destInfo?.braze).toBeUndefined();
+        expect(
+          (meta.destInfo as any)?.attributesIndices ??
+            (meta.destInfo as any)?.eventsIndices ??
+            (meta.destInfo as any)?.purchasesIndices,
+        ).toBeUndefined();
       }
     }
   });
@@ -1377,10 +1385,10 @@ describe('processBatch — MAU workspace (V2 chunking)', () => {
   });
 });
 
-describe('processBatch — destInfo.braze positional map', () => {
+describe('processBatch — destInfo positional map', () => {
   const destination = brazeDestFor();
 
-  test('single track job (attribute + event) → destInfo carries attributesIndex + eventsIndex', () => {
+  test('single track job (attribute + event) → destInfo carries attributesIndices + eventsIndices', () => {
     const transformedEvent: BrazeTransformedEvent = {
       destination,
       statusCode: 200,
@@ -1405,13 +1413,13 @@ describe('processBatch — destInfo.braze positional map', () => {
     const tracks = trackOutputs(result, destination);
     expect(tracks.length).toBe(1);
     expect(tracks[0].metadata.length).toBe(1);
-    const info = (tracks[0].metadata[0] as any).destInfo.braze;
-    expect(info.attributesIndex).toBe(0);
-    expect(info.eventsIndex).toBe(0);
-    expect(info.purchasesIndexes).toBeUndefined();
+    const info = (tracks[0].metadata[0] as any).destInfo;
+    expect(info.attributesIndices).toEqual([0]);
+    expect(info.eventsIndices).toEqual([0]);
+    expect(info.purchasesIndices).toBeUndefined();
   });
 
-  test('order-completed job (attribute + multiple purchases) → destInfo.purchasesIndexes is an array of all indices', () => {
+  test('order-completed job (attribute + multiple purchases) → destInfo.purchasesIndices is an array of all indices', () => {
     const transformedEvent: BrazeTransformedEvent = {
       destination,
       statusCode: 200,
@@ -1460,10 +1468,10 @@ describe('processBatch — destInfo.braze positional map', () => {
     const result = processBatch([transformedEvent]);
     const tracks = trackOutputs(result, destination);
     expect(tracks.length).toBe(1);
-    const info = (tracks[0].metadata[0] as any).destInfo.braze;
-    expect(info.attributesIndex).toBe(0);
-    expect(info.purchasesIndexes).toEqual([0, 1, 2]);
-    expect(info.eventsIndex).toBeUndefined();
+    const info = (tracks[0].metadata[0] as any).destInfo;
+    expect(info.attributesIndices).toEqual([0]);
+    expect(info.purchasesIndices).toEqual([0, 1, 2]);
+    expect(info.eventsIndices).toBeUndefined();
   });
 
   test('mixed batch: each job’s destInfo indices match its actual positions in the chunk', () => {
@@ -1557,19 +1565,17 @@ describe('processBatch — destInfo.braze positional map', () => {
     // externalId matches — this is what the networkHandler will rely on to
     // correlate Braze warnings back to the right jobId.
     for (const m of chunk.metadata) {
-      const info = (m as any).destInfo.braze;
+      const info = (m as any).destInfo;
       const jobId = (m as any).jobId;
       const externalId = `u${jobId}`;
-      if (info.attributesIndex !== undefined) {
-        expect((body.attributes as any)[info.attributesIndex].external_id).toBe(externalId);
+      for (const idx of info.attributesIndices ?? []) {
+        expect((body.attributes as any)[idx].external_id).toBe(externalId);
       }
-      if (info.eventsIndex !== undefined) {
-        expect((body.events as any)[info.eventsIndex].external_id).toBe(externalId);
+      for (const idx of info.eventsIndices ?? []) {
+        expect((body.events as any)[idx].external_id).toBe(externalId);
       }
-      if (info.purchasesIndexes) {
-        for (const idx of info.purchasesIndexes) {
-          expect((body.purchases as any)[idx].external_id).toBe(externalId);
-        }
+      for (const idx of info.purchasesIndices ?? []) {
+        expect((body.purchases as any)[idx].external_id).toBe(externalId);
       }
     }
   });

@@ -179,18 +179,14 @@ export const identityResolution = [
                   jobId: 1,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 0,
-                    },
+                    attributesIndices: [0],
                   },
                 },
                 {
                   jobId: 2,
                   userId: 'u2',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 1,
-                    },
+                    attributesIndices: [1],
                   },
                 },
               ],
@@ -335,9 +331,7 @@ export const identityResolution = [
                   jobId: 1,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 0,
-                    },
+                    attributesIndices: [0],
                   },
                 },
               ],
@@ -542,18 +536,14 @@ export const identityResolution = [
                   jobId: 1,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 0,
-                    },
+                    attributesIndices: [0],
                   },
                 },
                 {
                   jobId: 2,
                   userId: 'u2',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 1,
-                    },
+                    attributesIndices: [1],
                   },
                 },
               ],
@@ -758,18 +748,14 @@ export const identityResolution = [
                   jobId: 1,
                   userId: 'u1',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 0,
-                    },
+                    attributesIndices: [0],
                   },
                 },
                 {
                   jobId: 2,
                   userId: 'u2',
                   destInfo: {
-                    braze: {
-                      attributesIndex: 1,
-                    },
+                    attributesIndices: [1],
                   },
                 },
               ],

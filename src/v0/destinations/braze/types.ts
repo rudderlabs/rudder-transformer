@@ -6,6 +6,7 @@ import {
 } from '../../../types';
 import {
   BatchedRequest,
+  BatchedRequestBody,
   BatchRequestOutput,
   ProcessorTransformationOutput,
   ProxyMetdata,
@@ -156,14 +157,23 @@ export interface BrazeError {
   index: number;
 }
 
-// Sidecar populated on the metadata of `/users/track` router outputs so the v1
+// Populated on the metadata of `/users/track` router outputs so the v1
 // networkHandler can correlate Braze's per-item `errors[]` entries (keyed by
-// input_array + index) back to the originating job. Populated in `processBatch`
+// input_array + index) back to the originating job. Set in `processBatch`
 // when the outgoing chunk is assembled.
+//
+// Design-doc contract (Braze partial-error handling, Option 1, Section 4):
+// - Every index field is an array. Length-1 arrays for the standard single-
+//   contribution case; longer only when a job legitimately contributes
+//   multiple entries to the same sub-array (e.g. order-completed with
+//   multiple purchase items).
+// - Fields live at the top of `destInfo` (no per-destination wrapper) — the
+//   fields are populated only by Braze's router transform and read only by
+//   Braze's network handler within a single destination's request flow.
 export interface BrazeDestInfo {
-  attributesIndex?: number;
-  eventsIndex?: number;
-  purchasesIndexes?: number[];
+  attributesIndices?: number[];
+  eventsIndices?: number[];
+  purchasesIndices?: number[];
 }
 
 export interface BrazeResponseHandlerParams {
@@ -268,7 +278,7 @@ export interface BrazeEndpointDetails {
 
 // Braze Subscription Group request body structure
 export interface BrazeSubscriptionBatchPayload {
-  subscription_groups?: unknown[];
+  subscription_groups?: BrazeSubscriptionGroup[];
 }
 
 // Braze Merge Update Object
@@ -286,7 +296,11 @@ export interface BrazeMergeBatchPayload {
   merge_updates?: BrazeMergeUpdate[];
 }
 
-// Union of all possible Braze batch payload types
+// Union of all possible Braze batch payload types. Each outgoing HTTP request
+// populates fields for exactly one endpoint (`/users/track` OR subscription-
+// groups OR alias-merge), so a body is one of these three shapes at runtime.
+// Consumers reading `body.JSON` must narrow (via `in` guards or a boundary
+// cast to a specific member) before accessing member-specific fields.
 export type BrazeBatchPayload =
   | BrazeTrackRequestBody
   | BrazeSubscriptionBatchPayload
@@ -309,7 +323,9 @@ export type BrazeBatchRequest = BatchedRequest<
 
 export type BrazeTransformedEvent = {
   statusCode: number;
-  batchedRequest?: ProcessorTransformationOutput;
+  batchedRequest?: Omit<ProcessorTransformationOutput, 'body'> & {
+    body?: BatchedRequestBody<BrazeBatchPayload>;
+  };
   metadata?: Partial<Metadata>[];
   destination: BrazeDestination;
   error?: string;

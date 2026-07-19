@@ -34,6 +34,10 @@ import {
 } from './config';
 import { JSON_MIME_TYPE, HTTP_STATUS_CODES } from '../../util/constant';
 import {
+  BrazeBatchPayload,
+  BrazeTrackRequestBody,
+  BrazeSubscriptionBatchPayload,
+  BrazeMergeBatchPayload,
   BrazeDestination,
   BrazeRouterRequest,
   BrazeBatchHeaders,
@@ -543,20 +547,32 @@ const processDeduplication = (
 // an entire job's items atomically to a chunk, preventing cross-chunk straddle.
 //
 // Each `TrackChunk` also stores parallel `*SourceJobIndex` arrays so that
-// `processBatch` can build the per-metadata `destInfo.braze` positional map
-// (attributesIndex / eventsIndex / purchasesIndexes) that the v1 networkHandler
-// uses to correlate Braze's per-item warnings back to originating jobs.
+// `processBatch` can build the per-metadata `destInfo` positional map
+// (attributesIndices / eventsIndices / purchasesIndices) that the v1
+// networkHandler uses to correlate Braze's per-item warnings back to
+// originating jobs.
 // ---------------------------------------------------------------------------
 
-type ItemType = 'attributes' | 'events' | 'purchases';
-
-type TaggedItem = {
-  data: BrazeUserAttributes | BrazeEvent | BrazePurchase;
-  type: ItemType;
+type TaggedItemCommon = {
   externalId?: string;
   sourceJobIndex: number;
   byteSize: number;
 };
+
+// Discriminated union so `item.type === 'attributes'` narrows `item.data` to
+// `BrazeUserAttributes` (etc.) at every read site — no casts.
+type TaggedItem =
+  | (TaggedItemCommon & { type: 'attributes'; data: BrazeUserAttributes })
+  | (TaggedItemCommon & { type: 'events'; data: BrazeEvent })
+  | (TaggedItemCommon & { type: 'purchases'; data: BrazePurchase });
+
+// Contribution shape used by `collectTrackItemsForJob`'s inner helper: the
+// per-item data plus its type discriminant. Callers construct one of these
+// three shapes at the call site, so TS knows `data`'s type without casts.
+type TrackContribution =
+  | { type: 'attributes'; data: BrazeUserAttributes }
+  | { type: 'events'; data: BrazeEvent }
+  | { type: 'purchases'; data: BrazePurchase };
 
 type TrackChunk = {
   attributes: BrazeUserAttributes[];
@@ -651,13 +667,13 @@ const groupBySourceJob = (sortedItems: TaggedItem[]): TaggedItem[][] => {
 const addGroupToChunk = (chunk: TrackChunk, group: TaggedItem[]): void => {
   for (const item of group) {
     if (item.type === 'attributes') {
-      chunk.attributes.push(item.data as BrazeUserAttributes);
+      chunk.attributes.push(item.data);
       chunk.attributesSourceJobIndex.push(item.sourceJobIndex);
     } else if (item.type === 'events') {
-      chunk.events.push(item.data as BrazeEvent);
+      chunk.events.push(item.data);
       chunk.eventsSourceJobIndex.push(item.sourceJobIndex);
     } else {
-      chunk.purchases.push(item.data as BrazePurchase);
+      chunk.purchases.push(item.data);
       chunk.purchasesSourceJobIndex.push(item.sourceJobIndex);
     }
     if (item.externalId) {
@@ -800,43 +816,35 @@ const isWorkspaceOnMauPlan = (workspaceId) => {
 };
 
 // Collect tagged /users/track items for a single transformedEvent while
-// enforcing per-item and per-job byte-size caps. Returns null if any cap
-// is breached — caller pushes the event onto failureResponses.
+// enforcing per-item and per-job byte-size caps. Returns an error result if
+// any cap is breached — caller pushes the event onto failureResponses. The
+// track body is passed in already-narrowed by the caller (typically after
+// `classifyJobRun` returned a `track` classification), so no cast is needed.
 type TrackCollectionResult =
   | { items: TaggedItem[]; totalByteSize: number }
   | { error: InstrumentationError };
 
 const collectTrackItemsForJob = (
-  transformedEvent: BrazeTransformedEvent,
+  body: BrazeTrackRequestBody,
   jobIndex: number,
 ): TrackCollectionResult => {
-  const json = transformedEvent.batchedRequest?.body?.JSON as
-    | { attributes?: unknown; events?: unknown; purchases?: unknown }
-    | undefined;
-  const attrArr = Array.isArray(json?.attributes)
-    ? (json!.attributes as BrazeUserAttributes[])
-    : [];
-  const evtArr = Array.isArray(json?.events) ? (json!.events as BrazeEvent[]) : [];
-  const purArr = Array.isArray(json?.purchases) ? (json!.purchases as BrazePurchase[]) : [];
+  const attrArr = Array.isArray(body.attributes) ? body.attributes : [];
+  const evtArr = Array.isArray(body.events) ? body.events : [];
+  const purArr = Array.isArray(body.purchases) ? body.purchases : [];
 
   const items: TaggedItem[] = [];
   let totalByteSize = 0;
 
-  const tryAdd = (
-    data: unknown,
-    type: ItemType,
-    externalId?: string,
-  ): InstrumentationError | null => {
-    const byteSize = computeItemByteSize(data);
+  const tryAdd = (contribution: TrackContribution): InstrumentationError | null => {
+    const byteSize = computeItemByteSize(contribution.data);
     if (byteSize > TRACK_BRAZE_MAX_ITEM_BYTE_SIZE) {
       return new InstrumentationError(
-        `[Braze] Single ${type} item exceeds ${TRACK_BRAZE_MAX_ITEM_BYTE_SIZE} bytes (got ${byteSize})`,
+        `[Braze] Single ${contribution.type} item exceeds ${TRACK_BRAZE_MAX_ITEM_BYTE_SIZE} bytes (got ${byteSize})`,
       );
     }
     items.push({
-      data: data as TaggedItem['data'],
-      type,
-      externalId,
+      ...contribution,
+      externalId: contribution.data.external_id,
       sourceJobIndex: jobIndex,
       byteSize,
     });
@@ -846,19 +854,19 @@ const collectTrackItemsForJob = (
 
   for (const attr of attrArr) {
     if (isDefinedAndNotNull(attr)) {
-      const err = tryAdd(attr, 'attributes', attr.external_id);
+      const err = tryAdd({ type: 'attributes', data: attr });
       if (err) return { error: err };
     }
   }
   for (const evt of evtArr) {
     if (isDefinedAndNotNull(evt)) {
-      const err = tryAdd(evt, 'events', evt.external_id);
+      const err = tryAdd({ type: 'events', data: evt });
       if (err) return { error: err };
     }
   }
   for (const pur of purArr) {
     if (isDefinedAndNotNull(pur)) {
-      const err = tryAdd(pur, 'purchases', pur.external_id);
+      const err = tryAdd({ type: 'purchases', data: pur });
       if (err) return { error: err };
     }
   }
@@ -883,9 +891,11 @@ const collectTrackItemsForJob = (
   return { items, totalByteSize };
 };
 
-// Build the per-metadata destInfo.braze positional map for a chunk. Every
-// unique sourceJobIndex in the chunk gets one BrazeDestInfo describing where
-// that job's items landed within this chunk's attributes[]/events[]/purchases[].
+// Build the per-metadata destInfo positional map for a chunk. Every unique
+// sourceJobIndex in the chunk gets one BrazeDestInfo describing where that
+// job's items landed within this chunk's attributes[]/events[]/purchases[].
+// All three fields are arrays (length 1 for the standard single-contribution
+// case; longer for e.g. order-completed contributing multiple purchases).
 const buildDestInfoByJob = (chunk: TrackChunk): Map<number, BrazeDestInfo> => {
   const map = new Map<number, BrazeDestInfo>();
   const ensure = (sji: number): BrazeDestInfo => {
@@ -896,16 +906,22 @@ const buildDestInfoByJob = (chunk: TrackChunk): Map<number, BrazeDestInfo> => {
     }
     return existing;
   };
+  const appendIdx = (
+    info: BrazeDestInfo,
+    key: 'attributesIndices' | 'eventsIndices' | 'purchasesIndices',
+    idx: number,
+  ) => {
+    info[key] = info[key] ?? [];
+    info[key]!.push(idx);
+  };
   chunk.attributesSourceJobIndex.forEach((sji: number, idx: number) => {
-    ensure(sji).attributesIndex = idx;
+    appendIdx(ensure(sji), 'attributesIndices', idx);
   });
   chunk.eventsSourceJobIndex.forEach((sji: number, idx: number) => {
-    ensure(sji).eventsIndex = idx;
+    appendIdx(ensure(sji), 'eventsIndices', idx);
   });
   chunk.purchasesSourceJobIndex.forEach((sji: number, idx: number) => {
-    const info = ensure(sji);
-    info.purchasesIndexes = info.purchasesIndexes ?? [];
-    info.purchasesIndexes.push(idx);
+    appendIdx(ensure(sji), 'purchasesIndices', idx);
   });
   return map;
 };
@@ -931,11 +947,13 @@ const trackChunkResponse = (
   for (const sji of chunk.sourceJobIndexes) {
     const jobMeta = jobMetadata[sji];
     if (jobMeta) {
-      const braze = destInfoByJob.get(sji);
+      // destInfo carries top-level index-array fields; no per-destination
+      // wrapper — Braze is the sole producer AND consumer of these fields.
+      const info = destInfoByJob.get(sji) ?? {};
       for (const m of jobMeta) {
         chunkMetadata.push({
           ...m,
-          destInfo: { ...(m.destInfo ?? {}), braze },
+          destInfo: { ...(m.destInfo ?? {}), ...info },
         });
       }
     }
@@ -975,24 +993,47 @@ const scopedMetadataForChunk = <T extends { sourceJobIndex: number }>(
 type TrackRun = { type: 'track'; items: TaggedItem[] };
 type SubscriptionRun = {
   type: 'subscription';
-  entries: Array<{ data: BrazeSubscriptionGroup; sourceJobIndex: number }>;
+  items: Array<{ data: BrazeSubscriptionGroup; sourceJobIndex: number }>;
 };
 type MergeRun = {
   type: 'merge';
-  entries: Array<{ data: BrazeMergeUpdate; sourceJobIndex: number }>;
+  items: Array<{ data: BrazeMergeUpdate; sourceJobIndex: number }>;
 };
 type Run = TrackRun | SubscriptionRun | MergeRun;
 
-const classifyJobRun = (json: Record<string, unknown>): Run['type'] | null => {
-  const hasTrackItems =
-    (Array.isArray(json.attributes) && (json.attributes as unknown[]).length > 0) ||
-    (Array.isArray(json.events) && (json.events as unknown[]).length > 0) ||
-    (Array.isArray(json.purchases) && (json.purchases as unknown[]).length > 0);
-  if (hasTrackItems) return 'track';
-  if (Array.isArray(json.subscription_groups) && (json.subscription_groups as unknown[]).length > 0)
-    return 'subscription';
-  if (Array.isArray(json.merge_updates) && (json.merge_updates as unknown[]).length > 0)
-    return 'merge';
+// Type predicates narrow `BrazeBatchPayload` (a union) to its specific member
+// via `in` narrowing on each shape's distinguishing field. TS uses these to
+// eliminate the boundary casts we'd otherwise need at every read site.
+const isTrackBody = (json: BrazeBatchPayload): json is BrazeTrackRequestBody =>
+  'attributes' in json || 'events' in json || 'purchases' in json;
+const isSubscriptionBody = (json: BrazeBatchPayload): json is BrazeSubscriptionBatchPayload =>
+  'subscription_groups' in json;
+const isMergeBody = (json: BrazeBatchPayload): json is BrazeMergeBatchPayload =>
+  'merge_updates' in json;
+
+// Discriminated classification result: the run type + the narrowed body. The
+// caller can consume `classification.body` without casts.
+type JobClassification =
+  | { type: 'track'; body: BrazeTrackRequestBody }
+  | { type: 'subscription'; body: BrazeSubscriptionBatchPayload }
+  | { type: 'merge'; body: BrazeMergeBatchPayload };
+
+const classifyJobRun = (json: BrazeBatchPayload): JobClassification | null => {
+  if (isTrackBody(json)) {
+    const hasTrackItems =
+      (Array.isArray(json.attributes) && json.attributes.length > 0) ||
+      (Array.isArray(json.events) && json.events.length > 0) ||
+      (Array.isArray(json.purchases) && json.purchases.length > 0);
+    if (hasTrackItems) return { type: 'track', body: json };
+  }
+  if (
+    isSubscriptionBody(json) &&
+    Array.isArray(json.subscription_groups) &&
+    json.subscription_groups.length > 0
+  )
+    return { type: 'subscription', body: json };
+  if (isMergeBody(json) && Array.isArray(json.merge_updates) && json.merge_updates.length > 0)
+    return { type: 'merge', body: json };
   return null;
 };
 
@@ -1008,8 +1049,8 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]): BrazeBatchRes
   const openNewRun = (type: Run['type']): Run => {
     let run: Run;
     if (type === 'track') run = { type: 'track', items: [] };
-    else if (type === 'subscription') run = { type: 'subscription', entries: [] };
-    else run = { type: 'merge', entries: [] };
+    else if (type === 'subscription') run = { type: 'subscription', items: [] };
+    else run = { type: 'merge', items: [] };
     runs.push(run);
     return run;
   };
@@ -1025,18 +1066,18 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]): BrazeBatchRes
       filteredResponses.push(transformedEvent);
       return;
     }
-    const json = transformedEvent.batchedRequest?.body?.JSON as Record<string, unknown> | undefined;
+    const json = transformedEvent.batchedRequest?.body?.JSON;
     if (!json) return;
 
-    const runType = classifyJobRun(json);
-    if (!runType) return;
+    const classification = classifyJobRun(json);
+    if (!classification) return;
 
-    if (!currentRun || currentRun.type !== runType) {
-      currentRun = openNewRun(runType);
+    if (!currentRun || currentRun.type !== classification.type) {
+      currentRun = openNewRun(classification.type);
     }
 
-    if (currentRun.type === 'track') {
-      const collection = collectTrackItemsForJob(transformedEvent, jobIndex);
+    if (currentRun.type === 'track' && classification.type === 'track') {
+      const collection = collectTrackItemsForJob(classification.body, jobIndex);
       if ('error' in collection) {
         failureResponses.push({
           ...transformedEvent,
@@ -1047,13 +1088,13 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]): BrazeBatchRes
         return;
       }
       currentRun.items.push(...collection.items);
-    } else if (currentRun.type === 'subscription') {
-      for (const sg of json.subscription_groups as BrazeSubscriptionGroup[]) {
-        currentRun.entries.push({ data: sg, sourceJobIndex: jobIndex });
+    } else if (currentRun.type === 'subscription' && classification.type === 'subscription') {
+      for (const sg of classification.body.subscription_groups ?? []) {
+        currentRun.items.push({ data: sg, sourceJobIndex: jobIndex });
       }
-    } else {
-      for (const mu of json.merge_updates as BrazeMergeUpdate[]) {
-        currentRun.entries.push({ data: mu, sourceJobIndex: jobIndex });
+    } else if (currentRun.type === 'merge' && classification.type === 'merge') {
+      for (const mu of classification.body.merge_updates ?? []) {
+        currentRun.items.push({ data: mu, sourceJobIndex: jobIndex });
       }
     }
 
@@ -1089,7 +1130,7 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]): BrazeBatchRes
         );
       }
     } else if (run.type === 'subscription') {
-      const chunks = _.chunk(run.entries, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
+      const chunks = _.chunk(run.items, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
       for (const chunk of chunks) {
         const rawGroups = chunk.map((e) => e.data);
         stats.gauge('braze_batch_subscription_size', rawGroups.length, {
@@ -1112,7 +1153,7 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]): BrazeBatchRes
         });
       }
     } else {
-      const chunks = _.chunk(run.entries, ALIAS_BRAZE_MAX_REQ_COUNT);
+      const chunks = _.chunk(run.items, ALIAS_BRAZE_MAX_REQ_COUNT);
       for (const chunk of chunks) {
         const rawMerges = chunk.map((e) => e.data);
         const request = defaultRequestConfig();

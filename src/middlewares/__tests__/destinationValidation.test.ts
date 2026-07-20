@@ -46,8 +46,8 @@ describe('DestinationValidationMiddleware', () => {
     await DestinationValidationMiddleware.bodyDestType(ctx, next);
 
     expect(next).not.toHaveBeenCalled();
-    expect(ctx.status).toBe(400);
-    expect(ctx.body).toEqual({ error: 'Invalid destination: not_a_destination' });
+    expect(ctx.status).toBe(404);
+    expect(ctx.body).toEqual({ error: 'Unknown destination: not_a_destination' });
   });
 
   describe('userDeletionBody', () => {
@@ -70,8 +70,8 @@ describe('DestinationValidationMiddleware', () => {
       await DestinationValidationMiddleware.userDeletionBody(ctx, next);
 
       expect(next).not.toHaveBeenCalled();
-      expect(ctx.status).toBe(400);
-      expect(ctx.body).toEqual({ error: 'Invalid destination: not_a_destination' });
+      expect(ctx.status).toBe(404);
+      expect(ctx.body).toEqual({ error: 'Unknown destination: not_a_destination' });
     });
 
     it('warns for every unknown destination name in warn-only mode', async () => {

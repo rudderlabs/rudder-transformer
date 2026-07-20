@@ -7,6 +7,7 @@ import {
   constructPayload,
   getFieldValueFromMessage,
   isAppleFamily,
+  isObject,
   validateEventName,
 } from '../../../util';
 import { populateSpecedTraits } from '../util';
@@ -50,7 +51,11 @@ const buildTraitAttributes = (message): Record<string, unknown> => {
   populateSpecedTraits(attributes, message);
 
   const pathToTraits = message.traits ? 'traits' : 'context.traits';
-  const traits = getFieldValueFromMessage(message, 'traits') || {};
+  const rawTraits = getFieldValueFromMessage(message, 'traits');
+  // Only plain objects yield named attributes. Arrays/primitives would otherwise
+  // produce index-keyed junk (e.g. ['a','b'] -> { '0': 'a', '1': 'b' }), so they
+  // contribute no free-form attributes instead.
+  const traits = isObject(rawTraits) ? rawTraits : {};
   Object.keys(traits)
     .filter(
       (trait) =>

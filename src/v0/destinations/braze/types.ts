@@ -8,6 +8,7 @@ import {
   BatchedRequest,
   BatchedRequestBody,
   BatchRequestOutput,
+  MultiBatchRequestOutput,
   ProcessorTransformationOutput,
   ProxyMetdata,
   ProxyV1Request,
@@ -333,8 +334,22 @@ export type BrazeTransformedEvent = {
   authErrorCategory?: string;
 };
 
+// `processBatch` emits either shape depending on `BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED`:
+// - OFF (default): a single `MultiBatchRequestOutput` per invocation, its
+//   `batchedRequest` an array of every outgoing HTTP request across track/
+//   subscription/merge, and a flat success-metadata list — matches the
+//   pre-INT-6808 shape callers still expect.
+// - ON: one `BatchRequestOutput` per outgoing HTTP request, each carrying
+//   its scoped metadata slice and (for track chunks) per-metadata `destInfo`
+//   positional maps consumed by the v1 networkHandler.
 export type BrazeBatchResponse =
   | BatchRequestOutput<BrazeBatchPayload, BrazeBatchHeaders, BrazeBatchParams, BrazeDestination>
+  | MultiBatchRequestOutput<
+      BrazeBatchPayload,
+      BrazeBatchHeaders,
+      BrazeBatchParams,
+      BrazeDestination
+    >
   | BrazeTransformedEvent;
 
 // Delete user types

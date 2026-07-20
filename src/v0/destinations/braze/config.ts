@@ -106,6 +106,17 @@ const SUBSCRIPTION_BRAZE_MAX_REQ_COUNT = 25;
 const DEL_MAX_BATCH_SIZE = 50;
 const DESTINATION = 'braze';
 
+// Rollout gate for the per-job delivery-mapping output shape (INT-6808 +
+// INT-6634). When OFF (default), processBatch emits the legacy single
+// MultiBatchRequestOutput with a flat metadata list and no destInfo.
+// When ON, processBatch emits one BatchRequestOutput per outgoing HTTP
+// request, with per-metadata destInfo positional maps used by the v1
+// networkHandler to correlate Braze per-item warnings back to jobs.
+// Read dynamically (not at module load) so tests and rollout can flip the
+// flag between runs without a process restart.
+const isPerJobDeliveryMappingEnabled = () =>
+  process.env.BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED === 'true';
+
 const CustomAttributeOperationTypes = {
   REMOVE: 'remove',
   UPDATE: 'update',
@@ -143,4 +154,5 @@ export {
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
   TRACK_BRAZE_MAX_ITEM_BYTE_SIZE,
   TRACK_BRAZE_MAX_BATCH_BYTE_SIZE,
+  isPerJobDeliveryMappingEnabled,
 };

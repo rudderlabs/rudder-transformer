@@ -95,7 +95,7 @@
     "js-sha1": "^0.6.0",
     "json-diff": "^1.0.3",
     "json-size": "^1.0.0",
-    "jsonata": "^2.0.5",
+    "jsonata": "^2.2.1",
     "jsontoxml": "^1.0.1",
     "koa": "^3.1.2",
     "koa-bodyparser": "^4.4.0",

@@ -92,16 +92,19 @@ describe('Api tests with a mock source/destination', () => {
     {
       name: 'processor path destination',
       request: () => request(server).post('/v0/destinations/not_a_destination').send([]),
+      expectedError: 'Unknown destination: not_a_destination',
     },
     {
       name: 'routerTransform body destType',
       request: () =>
         request(server).post('/routerTransform').send({ input: [], destType: 'not_a_destination' }),
+      expectedError: 'Unknown destination: not_a_destination',
     },
     {
       name: 'batch body destType',
       request: () =>
         request(server).post('/batch').send({ input: [], destType: 'not_a_destination' }),
+      expectedError: 'Unknown destination: not_a_destination',
     },
     {
       name: 'deleteUsers body destType',
@@ -109,6 +112,7 @@ describe('Api tests with a mock source/destination', () => {
         request(server)
           .post('/deleteUsers')
           .send([{ destType: 'not_a_destination' }]),
+      expectedError: 'Unknown destination: not_a_destination',
     },
     {
       name: 'deleteUsers body with later missing destType',
@@ -116,31 +120,37 @@ describe('Api tests with a mock source/destination', () => {
         request(server)
           .post('/deleteUsers')
           .send([{ destType: 'ga' }, { userId: 'user-1' }]),
+      expectedError: 'Unknown destination: undefined',
     },
     {
       name: 'v0 proxy path destination',
       request: () => request(server).post('/v0/destinations/not_a_destination/proxy').send({}),
+      expectedError: 'Unknown destination: not_a_destination',
     },
     {
       name: 'v1 proxy path destination',
       request: () => request(server).post('/v1/destinations/not_a_destination/proxy').send({}),
+      expectedError: 'Unknown destination: not_a_destination',
     },
     {
       name: 'proxyTest path destination',
       request: () => request(server).post('/v0/destinations/not_a_destination/proxyTest').send({}),
+      expectedError: 'Unknown destination: not_a_destination',
     },
     {
       name: 'public test-router path destination',
       request: () => request(server).post('/test-router/v0/not_a_destination').send({ events: [] }),
+      expectedError: 'Unknown destination: not_a_destination',
     },
     {
       name: 'public test-router batch path destination',
       request: () =>
         request(server).post('/test-router/v0/not_a_destination/batch').send({ events: [] }),
+      expectedError: 'Unknown destination: not_a_destination',
     },
   ])(
     'rejects invalid destination before handler lookup: $name',
-    async ({ request: makeRequest }) => {
+    async ({ request: makeRequest, expectedError }) => {
       process.env.REJECT_UNKNOWN_DESTINATIONS = 'true';
       const getDestHandlerSpy = jest.spyOn(FetchHandler, 'getDestHandler');
       const getDeletionHandlerSpy = jest.spyOn(FetchHandler, 'getDeletionHandler');
@@ -150,8 +160,8 @@ describe('Api tests with a mock source/destination', () => {
       try {
         const response = await makeRequest().set('Accept', 'application/json');
 
-        expect(response.status).toEqual(400);
-        expect(JSON.parse(response.text).error).toContain('Invalid destination');
+        expect(response.status).toEqual(404);
+        expect(JSON.parse(response.text).error).toEqual(expectedError);
         expect(getDestHandlerSpy).not.toHaveBeenCalled();
         expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
         expect(getBatchDestinationHandlerSpy).not.toHaveBeenCalled();

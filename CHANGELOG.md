@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.141.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.4...v1.141.5) (2026-07-20)
+
+
+### Bug Fixes
+
+* **customerio:** accept non-object traits and context in v2 ([#5380](https://github.com/rudderlabs/rudder-transformer/issues/5380)) ([5706a69](https://github.com/rudderlabs/rudder-transformer/commit/5706a69e33ac15a658e062e9f6769ebec76cea29))
+
 ### [1.141.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.3...v1.141.4) (2026-07-14)
 
 

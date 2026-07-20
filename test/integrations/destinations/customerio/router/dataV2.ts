@@ -2933,4 +2933,155 @@ export const dataV2 = [
       },
     },
   },
+  {
+    name: 'customerio',
+    description:
+      'v2: track events with non-object traits and context.traits are accepted (schema no longer enforces an object shape)',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                type: 'track',
+                event: 'Clicked Button',
+                userId: 'cio_track_array_traits_user',
+                // traits/context.traits are no longer validated against an object
+                // shape, so non-object values must pass through without error.
+                traits: ['a', 'b'],
+                properties: {
+                  plan: 'enterprise',
+                },
+                sentAt: '2024-01-15T10:00:00.000Z',
+              },
+              metadata: {
+                jobId: 60,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                type: 'track',
+                event: 'Clicked Button',
+                userId: 'cio_track_ctx_traits_user',
+                context: {
+                  traits: ['a', 'b'],
+                },
+                properties: {
+                  plan: 'pro',
+                },
+                sentAt: '2024-01-15T10:00:00.000Z',
+              },
+              metadata: {
+                jobId: 61,
+                userId: 'u1',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: {
+                          id: 'cio_track_array_traits_user',
+                        },
+                        name: 'Clicked Button',
+                        attributes: {
+                          plan: 'enterprise',
+                        },
+                      },
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: {
+                          id: 'cio_track_ctx_traits_user',
+                        },
+                        name: 'Clicked Button',
+                        attributes: {
+                          plan: 'pro',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 60,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+                {
+                  jobId: 61,
+                  userId: 'u1',
+                  workspaceId: 'ws-cio-v2',
+                },
+              ],
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                },
+              },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

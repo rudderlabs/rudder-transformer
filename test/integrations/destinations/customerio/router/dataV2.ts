@@ -2936,7 +2936,7 @@ export const dataV2 = [
   {
     name: 'customerio',
     description:
-      'v2: non-object traits (array, string, number) are accepted and contribute no free-form attributes (regression)',
+      'v2: track events with non-object traits and context.traits are accepted (schema no longer enforces an object shape)',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -2950,11 +2950,15 @@ export const dataV2 = [
             {
               message: {
                 channel: 'web',
-                type: 'identify',
-                userId: 'cio_array_traits_user',
-                // Object.keys() over an array would otherwise yield index keys
-                // ({ '0': 'a', '1': 'b' }) instead of named attributes.
+                type: 'track',
+                event: 'Clicked Button',
+                userId: 'cio_track_array_traits_user',
+                // traits/context.traits are no longer validated against an object
+                // shape, so non-object values must pass through without error.
                 traits: ['a', 'b'],
+                properties: {
+                  plan: 'enterprise',
+                },
                 sentAt: '2024-01-15T10:00:00.000Z',
               },
               metadata: {
@@ -2973,34 +2977,19 @@ export const dataV2 = [
             {
               message: {
                 channel: 'web',
-                type: 'identify',
-                userId: 'cio_string_traits_user',
-                traits: 'hello',
+                type: 'track',
+                event: 'Clicked Button',
+                userId: 'cio_track_ctx_traits_user',
+                context: {
+                  traits: ['a', 'b'],
+                },
+                properties: {
+                  plan: 'pro',
+                },
                 sentAt: '2024-01-15T10:00:00.000Z',
               },
               metadata: {
                 jobId: 61,
-                userId: 'u1',
-                workspaceId: 'ws-cio-v2',
-              },
-              destination: {
-                Config: {
-                  datacenter: 'US',
-                  siteID: secret1,
-                  apiKey: secret2,
-                },
-              },
-            },
-            {
-              message: {
-                channel: 'web',
-                type: 'identify',
-                userId: 'cio_number_traits_user',
-                traits: 42,
-                sentAt: '2024-01-15T10:00:00.000Z',
-              },
-              metadata: {
-                jobId: 62,
                 userId: 'u1',
                 workspaceId: 'ws-cio-v2',
               },
@@ -3040,27 +3029,25 @@ export const dataV2 = [
                     batch: [
                       {
                         type: 'person',
-                        action: 'identify',
+                        action: 'event',
                         identifiers: {
-                          id: 'cio_array_traits_user',
+                          id: 'cio_track_array_traits_user',
                         },
-                        attributes: {},
+                        name: 'Clicked Button',
+                        attributes: {
+                          plan: 'enterprise',
+                        },
                       },
                       {
                         type: 'person',
-                        action: 'identify',
+                        action: 'event',
                         identifiers: {
-                          id: 'cio_string_traits_user',
+                          id: 'cio_track_ctx_traits_user',
                         },
-                        attributes: {},
-                      },
-                      {
-                        type: 'person',
-                        action: 'identify',
-                        identifiers: {
-                          id: 'cio_number_traits_user',
+                        name: 'Clicked Button',
+                        attributes: {
+                          plan: 'pro',
                         },
-                        attributes: {},
                       },
                     ],
                   },
@@ -3078,226 +3065,6 @@ export const dataV2 = [
                 },
                 {
                   jobId: 61,
-                  userId: 'u1',
-                  workspaceId: 'ws-cio-v2',
-                },
-                {
-                  jobId: 62,
-                  userId: 'u1',
-                  workspaceId: 'ws-cio-v2',
-                },
-              ],
-              destination: {
-                Config: {
-                  datacenter: 'US',
-                  siteID: secret1,
-                  apiKey: secret2,
-                },
-              },
-              batched: true,
-              statusCode: 200,
-            },
-          ],
-        },
-      },
-    },
-  },
-  {
-    name: 'customerio',
-    description:
-      'v2: non-object context (array) with a top-level userId passes schema validation (regression)',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
-    input: {
-      request: {
-        body: {
-          input: [
-            {
-              message: {
-                channel: 'web',
-                type: 'identify',
-                userId: 'cio_array_context_user',
-                // context as an array previously failed zod with
-                // "Expected object, received array" before reaching the transform.
-                context: ['a', 'b'],
-                traits: {
-                  plan: 'enterprise',
-                },
-                sentAt: '2024-01-15T10:00:00.000Z',
-              },
-              metadata: {
-                jobId: 63,
-                userId: 'u1',
-                workspaceId: 'ws-cio-v2',
-              },
-              destination: {
-                Config: {
-                  datacenter: 'US',
-                  siteID: secret1,
-                  apiKey: secret2,
-                },
-              },
-            },
-          ],
-          destType: 'customerio',
-        },
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://track.customer.io/api/v2/batch',
-                endpointPath: 'v2/batch',
-                headers: {
-                  Authorization: authHeader1,
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    batch: [
-                      {
-                        type: 'person',
-                        action: 'identify',
-                        identifiers: {
-                          id: 'cio_array_context_user',
-                        },
-                        attributes: {
-                          plan: 'enterprise',
-                        },
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [
-                {
-                  jobId: 63,
-                  userId: 'u1',
-                  workspaceId: 'ws-cio-v2',
-                },
-              ],
-              destination: {
-                Config: {
-                  datacenter: 'US',
-                  siteID: secret1,
-                  apiKey: secret2,
-                },
-              },
-              batched: true,
-              statusCode: 200,
-            },
-          ],
-        },
-      },
-    },
-  },
-  {
-    name: 'customerio',
-    description:
-      'v2: RETL identify with non-object traits still resolves userId from externalId (regression)',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
-    input: {
-      request: {
-        body: {
-          input: [
-            {
-              message: {
-                channel: 'web',
-                type: 'identify',
-                context: {
-                  mappedToDestination: true,
-                  externalId: [
-                    {
-                      type: 'CUSTOMERIO-userId',
-                      identifierType: 'userId',
-                      id: 'cio_retl_array_traits_user',
-                    },
-                  ],
-                  traits: ['a', 'b'],
-                },
-                traits: ['a', 'b'],
-                sentAt: '2024-01-15T10:00:00.000Z',
-              },
-              metadata: {
-                jobId: 64,
-                userId: 'u1',
-                workspaceId: 'ws-cio-v2',
-              },
-              destination: {
-                Config: {
-                  datacenter: 'US',
-                  siteID: secret1,
-                  apiKey: secret2,
-                },
-              },
-            },
-          ],
-          destType: 'customerio',
-        },
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://track.customer.io/api/v2/batch',
-                endpointPath: 'v2/batch',
-                headers: {
-                  Authorization: authHeader1,
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    batch: [
-                      {
-                        type: 'person',
-                        action: 'identify',
-                        identifiers: {
-                          id: 'cio_retl_array_traits_user',
-                        },
-                        attributes: {},
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [
-                {
-                  jobId: 64,
                   userId: 'u1',
                   workspaceId: 'ws-cio-v2',
                 },

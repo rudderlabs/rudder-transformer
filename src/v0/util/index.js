@@ -29,6 +29,7 @@ const {
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
 const { shouldGroupByDestinationConfig } = require('../../util/utils');
+const { sandboxedApplyCustomMappings } = require('../../util/customMappings/sandboxClient');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames } = require('../../constants/destinationCanonicalNames');
@@ -2365,13 +2366,15 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
  * @param {*} mappings The custom mappings to be applied.
  * @returns {object} The transformed event.
  */
-const applyCustomMappings = (event, mappings) =>
-  JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(event);
-
-const applyJSONStringTemplate = (message, template) =>
-  JsonTemplateEngine.createAsSync(template.replace(/{{/g, '${').replace(/}}/g, '}'), {
-    defaultPathType: PathType.JSON,
-  }).evaluate(message);
+const applyCustomMappings = async (event, mappings, workspaceId) => {
+  if (process.env.CUSTOM_MAPPINGS_SANDBOX_ENABLED === 'false') {
+    // Revert path: in-process eval (legacy behavior). Awaited so the signature is stable.
+    return JsonTemplateEngine.createAsSync(mappings, { defaultPathType: PathType.JSON }).evaluate(
+      event,
+    );
+  }
+  return sandboxedApplyCustomMappings(event, mappings, workspaceId);
+};
 
 /**
  * This groups the events by destination ID, source ID, and optionally by destination config.
@@ -2476,7 +2479,6 @@ module.exports = {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   applyCustomMappings,
-  applyJSONStringTemplate,
   base64Convertor,
   batchMultiplexedEvents,
   checkEmptyStringInarray,

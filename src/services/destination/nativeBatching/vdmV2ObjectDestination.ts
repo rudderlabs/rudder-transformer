@@ -1,4 +1,4 @@
-import { z, ZodType } from 'zod';
+import { z, ZodType, ZodTypeAny } from 'zod';
 import get from 'get-value';
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
@@ -28,6 +28,47 @@ type ObjectRouterInput<
   TEventStreamSchema extends ZodType,
 > = z.ZodType<z.infer<TRecordSchema> | z.infer<TEventStreamSchema>>;
 
+// Zod 3's `discriminatedUnion` only reads a discriminator at the top level of each option,
+// but ours is nested at `message.type`. `preprocess` lifts it to this synthetic key so Zod
+// can pick a branch. It never escapes: buildInputSchema types its result as the clean
+// variant union, and validateInputs forwards the original input rather than Zod's output.
+const VARIANT_KEY = '__variant';
+
+/**
+ * Combine the two variant schemas into a *discriminated* union.
+ *
+ * A plain `z.union` collapses every branch's failure into one opaque `invalid_union`
+ * issue with no usable path — so a bad `destination.Config`, which both variants declare,
+ * fails both branches and the caller can only guess which one was meant. Discriminating on
+ * `message.type` makes Zod pick exactly one branch and report only its issues, with real
+ * paths (`destination.Config.apiKey`, `connection.config.destination.object`, …).
+ */
+function buildInputSchema<TRecord extends ZodTypeAny, TEventStream extends ZodTypeAny>(
+  recordSchema: TRecord,
+  eventStreamSchema: TEventStream,
+): ZodType<z.infer<TRecord> | z.infer<TEventStream>> {
+  // Both variants come from makeRouterInputSchema, so each is a ZodObject and can carry the
+  // discriminator — not provable from the ZodTypeAny bound, hence the cast.
+  const withVariant = (schema: ZodTypeAny, kind: 'record' | 'eventStream') =>
+    (schema as unknown as z.AnyZodObject).extend({ [VARIANT_KEY]: z.literal(kind) });
+
+  const schema = z.preprocess(
+    (input) => {
+      if (typeof input !== 'object' || input === null) {
+        return input;
+      }
+      const { type } = (input as { message?: { type?: unknown } }).message ?? {};
+      return { ...(input as object), [VARIANT_KEY]: type === 'record' ? 'record' : 'eventStream' };
+    },
+    z.discriminatedUnion(VARIANT_KEY, [
+      withVariant(recordSchema, 'record'),
+      withVariant(eventStreamSchema, 'eventStream'),
+    ]),
+  );
+
+  return schema as unknown as ZodType<z.infer<TRecord> | z.infer<TEventStream>>;
+}
+
 export abstract class VDMV2ObjectDestination<
   TBody extends Record<string, unknown> = Record<string, unknown>,
   TRecordSchema extends ZodType = ZodType,
@@ -42,14 +83,15 @@ export abstract class VDMV2ObjectDestination<
 
   getInputSchema(): ObjectRouterInput<TRecordSchema, TEventStreamSchema> {
     // The framework calls this once per instance (processBatchedDestination validates the
-    // whole batch in a single validateInputs pass), so the union is built once — no cache
-    // needed. destinationConfig lives inside both variants; a bad Config surfaces as an
-    // `invalid_union` error which processBatchedDestination.resolveIssues classifies as
-    // CONFIGURATION.
-    return z.union([this.recordSchema, this.eventStreamSchema]) as unknown as ObjectRouterInput<
-      TRecordSchema,
-      TEventStreamSchema
-    >;
+    // whole batch in a single validateInputs pass), so the schema is built once — no cache
+    // needed. Discriminating on `message.type` (rather than a plain z.union) means a bad
+    // `destination.Config` — which both variants declare — is reported against the one
+    // branch the message actually selected, with its real path, instead of collapsing into
+    // an opaque `invalid_union`.
+    return buildInputSchema(
+      this.recordSchema,
+      this.eventStreamSchema,
+    ) as unknown as ObjectRouterInput<TRecordSchema, TEventStreamSchema>;
   }
 
   // Returns a map of object type → { action → handler }. Missing object types or actions

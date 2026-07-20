@@ -21,7 +21,16 @@ export const networkCallsData = [
       },
     },
     httpRes: {
-      data: { errors: [{ batch_index: 1, reason: 'invalid attribute' }] },
+      data: {
+        errors: [
+          {
+            batch_index: 1,
+            reason: 'invalid',
+            field: 'attributes.plan',
+            message: 'property value cannot be longer than 1000 bytes',
+          },
+        ],
+      },
       status: 207,
     },
   },

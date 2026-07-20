@@ -4,7 +4,7 @@
  *
  * One isolate per workspaceId serves both operations. The combined bundle at
  * dist/templateEngineSandbox.bundle.js is produced by
- * `npm run build:custom-audience-sandbox`.
+ * `npm run build:sandboxes`.
  */
 import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import logger from '../../../../logger';
@@ -53,10 +53,11 @@ export async function sandboxedEvaluateTemplate(
     );
   } catch (err: unknown) {
     // Timeout, OOM, disposed isolate, or other infrastructure failure —
-    // internal/platform problem, not an issue with the user's template.
+    // internal/platform problem, not an issue with the user's template. Log the detail
+    // internally, but surface a generic message — never leak infra internals to the caller.
     const reason = err instanceof Error ? err.message : String(err);
     logger.error('Template sandbox execute failed', { workspaceId, error: reason });
-    throw new PlatformError(`Template sandbox unavailable: ${reason}`, 500);
+    throw new PlatformError('Template evaluation is temporarily unavailable', 500);
   }
 
   if (!result.ok) {

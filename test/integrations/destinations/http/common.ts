@@ -676,6 +676,36 @@ const destinations: Destination[] = [
     Transformations: [],
     WorkspaceID: 'test-workspace-id',
   },
+  {
+    // Security regression (INT-6725): a malicious header mapping attempting to read
+    // `process.env`. In the isolated-vm sandbox `process` is undefined, so evaluation
+    // throws ("process is not defined") and the event fails with a ConfigurationError.
+    // No env content can leak.
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'noAuth',
+      method: 'POST',
+      format: 'JSON',
+      headers: [
+        {
+          from: 'process.env||$.userId',
+          to: 'X-Leak',
+        },
+      ],
+      propertiesMapping: [],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: {},
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
 ];
 
 const traits = {
@@ -735,6 +765,11 @@ const processorInstrumentationErrorStatTags = {
   workspaceId: 'default-workspaceId',
 };
 
+const processorConfigurationErrorStatTags = {
+  ...processorInstrumentationErrorStatTags,
+  errorType: 'configuration',
+};
+
 const RouterInstrumentationErrorStatTags = {
   ...processorInstrumentationErrorStatTags,
   feature: 'router',
@@ -744,6 +779,7 @@ export {
   destType,
   destinations,
   processorInstrumentationErrorStatTags,
+  processorConfigurationErrorStatTags,
   RouterInstrumentationErrorStatTags,
   traits,
   properties,

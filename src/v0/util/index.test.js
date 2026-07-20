@@ -912,29 +912,6 @@ describe('groupRouterTransformEvents', () => {
   });
 });
 
-describe('applyJSONStringTemplate', () => {
-  it('should apply JSON string template to the payload', () => {
-    const payload = {
-      domain: 'abc',
-    };
-    const template = '`https://{{$.domain}}.com`';
-
-    const result = utilities.applyJSONStringTemplate(payload, template);
-    expect(result).toEqual('https://abc.com');
-  });
-
-  it('should apply JSON string template to the payload multiple times', () => {
-    const payload = {
-      domain: 'abc',
-      subdomain: 'def',
-    };
-    const template = '`https://{{$.subdomain}}.{{$.domain}}.com`';
-
-    const result = utilities.applyJSONStringTemplate(payload, template);
-    expect(result).toEqual('https://def.abc.com');
-  });
-});
-
 describe('get relative path from url', () => {
   test('valid url', () => {
     expect(utilities.getRelativePathFromURL('https://google.com/a/b/c')).toEqual('/a/b/c');
@@ -1533,5 +1510,37 @@ describe('getType', () => {
 
   test.each(testCases)('$description', ({ input, expected }) => {
     expect(utilities.getType(input)).toBe(expected);
+  });
+});
+
+describe('applyCustomMappings (chokepoint)', () => {
+  const WS = 'ws-chokepoint';
+
+  afterEach(() => {
+    delete process.env.RS_CHOKE_SECRET;
+    delete process.env.CUSTOM_MAPPINGS_SANDBOX_ENABLED;
+  });
+
+  it('is async and resolves a valid mapping via the sandbox (flag default on)', async () => {
+    const out = await utilities.applyCustomMappings({ a: 1 }, [{ from: '$.a', to: 'b' }], WS);
+    expect(out).toEqual({ b: 1 });
+  });
+
+  it('does not leak env via the sandbox path', async () => {
+    process.env.RS_CHOKE_SECRET = 'sekret';
+    // process is undefined inside the isolate, so referencing it throws rather than leaking.
+    await expect(
+      utilities.applyCustomMappings(
+        { a: 1 },
+        [{ from: 'process.env.RS_CHOKE_SECRET || $.a', to: 'b' }],
+        WS,
+      ),
+    ).rejects.toThrow(/process is not defined/);
+  });
+
+  it('falls back to in-process eval when flag is disabled', async () => {
+    process.env.CUSTOM_MAPPINGS_SANDBOX_ENABLED = 'false';
+    const out = await utilities.applyCustomMappings({ a: 5 }, [{ from: '$.a', to: 'b' }], WS);
+    expect(out).toEqual({ b: 5 });
   });
 });

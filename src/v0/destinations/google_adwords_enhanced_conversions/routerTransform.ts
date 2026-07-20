@@ -35,7 +35,7 @@ class GoogleAdwordsEnhancedConversionsIntegration extends BatchDestination<
     const result = transformSingleEvent(input);
 
     return {
-      body: result.body.JSON.conversionAdjustments[0],
+      body: result.body.JSON.conversionAdjustments![0],
       endpoint: result.endpoint, // '' — delivery is handled by the networkHandler/proxy
       endpointPath: '/uploadConversionAdjustments',
       method: result.method,

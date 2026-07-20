@@ -7,8 +7,8 @@ const validateDestination = (ctx: Context, destination: unknown): boolean => {
     return true;
   }
   if (process.env.REJECT_UNKNOWN_DESTINATIONS === 'true') {
-    ctx.status = 400;
-    ctx.body = { error: `Invalid destination: ${String(destination)}` };
+    ctx.status = 404;
+    ctx.body = { error: `Unknown destination: ${String(destination)}` };
     return false;
   }
   logger.warn(`Unknown destination encountered: ${String(destination)}`);

@@ -4,8 +4,8 @@ import { handleCustomMappings } from './customMappingsHandler';
 import { processEvents as ga4Process } from '../ga4/transform';
 import { basicConfigvalidaiton } from '../ga4/utils';
 
-export function process(event: ProcessorTransformationRequest) {
-  const { message, destination } = event;
+export async function process(event: ProcessorTransformationRequest) {
+  const { message, destination, metadata } = event;
   const { Config } = destination;
 
   // Create an enhanced config object instead of mutating the original
@@ -50,5 +50,5 @@ export function process(event: ProcessorTransformationRequest) {
   basicConfigvalidaiton(enhancedConfig);
 
   // custom mappings flow
-  return handleCustomMappings(message, enhancedConfig);
+  return handleCustomMappings(message, enhancedConfig, metadata?.workspaceId);
 }

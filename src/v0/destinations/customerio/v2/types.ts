@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import get from 'get-value';
 import { makeRouterInputSchema } from '../../../../services/destination/nativeBatching/batchDestination';
 import { RECORD_IDENTIFIER_KEYS } from './config';
 import { CustomerIODestinationConfigSchema, CustomerIOConnectionConfigSchema } from '../types';
@@ -34,8 +35,6 @@ export type CustomerIOV2Payload = {
   [key: string]: unknown;
 };
 
-const emailTraitSchema = z.object({ email: z.unknown() }).passthrough().nullish();
-
 const recordMessageSchema = z
   .object({
     type: z.literal('record'),
@@ -56,22 +55,21 @@ export type CustomerIOV2RecordMessage = z.infer<typeof recordMessageSchema>;
 const eventStreamMessageSchema = z
   .object({
     type: z.enum(['identify', 'track', 'page', 'screen', 'alias', 'group']),
-    userId: z.string().nullish(),
-    anonymousId: z.string().nullish(),
-    previousId: z.string().nullish(),
-    groupId: z.string().nullish(),
-    traits: emailTraitSchema,
-    context: z
-      .object({
-        // RETL/warehouse sources set mappedToDestination and supply the identifier
-        // via externalId. adduserIdFromExternalId (called in processV2, after this
-        // validation) hydrates userId — so these events must pass the refine even
-        // without a top-level userId/anonymousId/email.
-        mappedToDestination: z.unknown(),
-        traits: emailTraitSchema,
-      })
-      .passthrough()
-      .nullish(),
+    // CustomerIO accepts identifiers as either a string or a number, so both are passed
+    // through as-is. Any other type is rejected by the API with
+    // `{"field": "primary.id", "message": "must be a string or a number"}`.
+    userId: z.union([z.string(), z.number()]).nullish(),
+    anonymousId: z.union([z.string(), z.number()]).nullish(),
+    previousId: z.union([z.string(), z.number()]).nullish(),
+    groupId: z.union([z.string(), z.number()]).nullish(),
+    // traits and context are passed through untyped (not validated here): some
+    // sources send them as a non-object (e.g. an array). RETL/warehouse sources
+    // set context.mappedToDestination and supply the identifier via externalId;
+    // adduserIdFromExternalId (called in processV2, after this validation) hydrates
+    // userId — so those events must pass the refine even without a top-level
+    // userId/anonymousId/email.
+    traits: z.unknown(),
+    context: z.unknown(),
   })
   .passthrough()
   .refine(
@@ -82,8 +80,8 @@ const eventStreamMessageSchema = z
       if (msg.type === 'group') {
         return true;
       }
-      const hasEmail = !!msg.traits?.email || !!msg.context?.traits?.email;
-      const isMappedToDestination = !!msg.context?.mappedToDestination;
+      const hasEmail = !!get(msg, 'traits.email') || !!get(msg, 'context.traits.email');
+      const isMappedToDestination = !!get(msg, 'context.mappedToDestination');
       return !!msg.userId || !!msg.anonymousId || hasEmail || isMappedToDestination;
     },
     { message: 'userId, email or anonymousId is required' },

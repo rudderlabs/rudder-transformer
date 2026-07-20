@@ -1381,4 +1381,81 @@ export const data: ProcessorTestData[] = [
         );
     },
   },
+  {
+    id: 'processor-html-eventtracking-200-contract',
+    name: 'active_campaign',
+    description:
+      'Test 9: Track event where eventTrackingEvents returns 200 HTML must yield a non-2xx error, never a 200 without output',
+    scenario:
+      'Invalid API key: the account serves a 200 HTML login page for both the list (GET) and create (POST) event calls. The processor transform must NOT emit statusCode 200 without an output payload; it must surface a retryable non-2xx error via the shared errorHandler (same code path as the router flow).',
+    successCriteria:
+      'Output item has a non-2xx statusCode and no output payload, satisfying the processor response contract',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Tracking Action',
+              userId: 'u1',
+              anonymousId: 'anon-1',
+              properties: { name: 'Rudder_Event_Track_Test' },
+              context: { traits: { email: 'jamesDoe@gmail.com' } },
+              originalTimestamp: '2019-09-01T15:46:51.693Z',
+            },
+            metadata: baseMetadata,
+            destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'invalidCredsApiToken',
+                apiUrl: 'https://active.campaigns.rudder.com',
+                actid: '476550467',
+                eventKey: 'dummyEventKey',
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: baseMetadata,
+            statusCode: 500,
+            error:
+              '{"message":"Unable to create event. Aborting (undefined,\\"<html>login</html>\\")","destinationResponse":"<html>login</html>"}',
+            statTags: {
+              destType: 'ACTIVE_CAMPAIGN',
+              destinationId: 'default-destination',
+              errorCategory: 'network',
+              errorType: 'retryable',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspace',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

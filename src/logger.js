@@ -147,6 +147,9 @@ const error = (...args) => {
   }
 };
 
+// Type-only JSDoc: consumers (e.g. the Google Ads SDK's IHttpLogger) declare the second
+// argument optional; the runtime contract (callers must pass it) is unchanged.
+/** @type {(identifierMsg?: *, logInfo?: *) => void} */
 const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
   const logger = getLogger();
   const filteredMetadata = getMatchedMetadata(metadata);
@@ -156,6 +159,7 @@ const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, meth
   }
 };
 
+/** @type {(identifierMsg?: *, logInfo?: *) => void} */
 const responseLog = (identifierMsg, { metadata, responseDetails: { body, status, headers } }) => {
   const logger = getLogger();
   const filteredMetadata = getMatchedMetadata(metadata);

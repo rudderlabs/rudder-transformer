@@ -65,11 +65,16 @@ class Prometheus {
     return counter;
   }
 
-  newGaugeStat(name, help, labelNames) {
+  // `aggregator` controls how prom-client merges this gauge across the NUM_PROCS cluster
+  // workers when serving aggregatorRegistry.clusterMetrics(). It defaults to 'sum', which is
+  // right for additive quantities (bytes, counts) but wrong for ratios: summing four workers'
+  // "16%" would export "64%". Pass 'max' for anything that is already a percentage.
+  newGaugeStat(name, help, labelNames, aggregator = 'sum') {
     const gauge = new prometheusClient.Gauge({
       name,
       help,
       labelNames,
+      aggregator,
     });
     this.prometheusRegistry.registerMetric(gauge);
     return gauge;
@@ -1066,7 +1071,16 @@ class Prometheus {
         name: 'memory_fenced_requests',
         help: 'number of requests that were memory fenced',
         type: 'counter',
+        labelNames: ['route'],
+      },
+      {
+        name: 'memory_heap_used_percent',
+        // A percentage is not additive. Without aggregator 'max' prom-client would sum the
+        // four cluster workers' values and export ~4x the real figure.
+        help: 'heap used as a percentage of the V8 heap limit, for the hottest cluster worker',
+        type: 'gauge',
         labelNames: [],
+        aggregator: 'max',
       },
       {
         name: 'http_concurrent_requests',
@@ -1095,7 +1109,7 @@ class Prometheus {
         if (metric.type === 'counter') {
           this.newCounterStat(fullName, metric.help, metric.labelNames);
         } else if (metric.type === 'gauge') {
-          this.newGaugeStat(fullName, metric.help, metric.labelNames);
+          this.newGaugeStat(fullName, metric.help, metric.labelNames, metric.aggregator);
         } else if (metric.type === 'histogram') {
           this.newHistogramStat(fullName, metric.help, metric.labelNames, metric.buckets);
         } else if (metric.type === 'summary') {

@@ -21,10 +21,8 @@ import type {
   HubSpotRouterTransformationOutput,
   HubspotRouterRequest,
   HubspotProcessorTransformationOutput,
-  HubspotProcessorRequest,
   HubSpotBatchProcessingItem,
 } from './types';
-import { isProcessorOutput } from './types';
 
 const processSingleMessage = async (
   { message, destination, metadata }: HubspotRouterRequest,
@@ -61,24 +59,6 @@ const processSingleMessage = async (
   }
 
   return response;
-};
-
-// has been deprecated - using routerTransform for both the versions
-const process = async (
-  event: HubspotProcessorRequest,
-): Promise<HubspotProcessorTransformationOutput | HubspotProcessorTransformationOutput[]> => {
-  const { destination, message, metadata } = event;
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  let events: HubspotProcessorRequest[] = [event];
-  if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
-    // get info about existing objects and splitting accordingly.
-    events = await splitEventsForCreateUpdate(events, destination, metadata);
-  }
-  return processSingleMessage({
-    message: events[0].message,
-    destination,
-    metadata,
-  });
 };
 
 const processBatchRouter = async (
@@ -127,34 +107,22 @@ const processBatchRouter = async (
   await Promise.all(
     inputs.map(async (input) => {
       try {
-        if (input.message.statusCode && isProcessorOutput(input.message)) {
-          // already transformed event
+        let receivedResponse = await processSingleMessage(
+          { message: input.message, destination, metadata: input.metadata },
+          propertyMap,
+        );
+
+        receivedResponse = Array.isArray(receivedResponse) ? receivedResponse : [receivedResponse];
+
+        // received response can be in array format [{}, {}, {}, ..., {}]
+        // if multiple response is being returned
+        receivedResponse.forEach((element) => {
           successRespList.push({
-            message: input.message,
+            message: element,
             metadata: input.metadata,
             destination,
           });
-        } else {
-          // event is not transformed
-          let receivedResponse = await processSingleMessage(
-            { message: input.message, destination, metadata: input.metadata },
-            propertyMap,
-          );
-
-          receivedResponse = Array.isArray(receivedResponse)
-            ? receivedResponse
-            : [receivedResponse];
-
-          // received response can be in array format [{}, {}, {}, ..., {}]
-          // if multiple response is being returned
-          receivedResponse.forEach((element) => {
-            successRespList.push({
-              message: element,
-              metadata: input.metadata,
-              destination,
-            });
-          });
-        }
+        });
       } catch (error: unknown) {
         const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
         errorRespList.push(errRespEvent);
@@ -225,4 +193,4 @@ const processRouterDest = async (
   return [...batchedResponseList, ...errorRespList, ...dontBatchEvents];
 };
 
-export { process, processRouterDest };
+export { processRouterDest };

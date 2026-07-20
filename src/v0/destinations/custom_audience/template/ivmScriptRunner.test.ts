@@ -43,6 +43,15 @@ jest.mock('isolated-vm', () => {
     release() {}
 
     async evalClosure(code: string) {
+      // Test hook: `__THROW__ <kind>` simulates a platform failure inside the
+      // isolate (timeout / OOM / disposed) so execute()'s catch path runs.
+      if (code.includes('__THROW__')) {
+        if (code.includes('timeout')) throw new Error('Script execution timed out.');
+        if (code.includes('memory'))
+          throw new Error('Isolate was disposed during execution due to memory limit');
+        if (code.includes('disposed')) throw new Error('Isolate is disposed');
+        throw new Error('boom');
+      }
       if (code.includes('parseTemplateInSandbox')) {
         return { valid: true, recordFields: ['email'] };
       }
@@ -124,17 +133,25 @@ const waitForAggregateHeapGauge = async (heapSize: number) => {
   });
 };
 
+const waitForTtlExpiryAndPurge = async (runner: IvmScriptRunner, cacheKey: string) => {
+  await new Promise((r) => setTimeout(r, 150));
+  // Access after TTL makes lru-cache purge stale entries deterministically.
+  (runner as any).cache.get(cacheKey);
+};
+
 describe('IvmScriptRunner', () => {
   let runner: IvmScriptRunner;
 
   beforeEach(() => {
     isolateCreateCount = 0;
     mockStats.gauge.mockClear();
+    mockStats.increment.mockClear();
     runner = new IvmScriptRunner({
       bundlePath: BUNDLE_PATH,
       memoryLimitMb: 8,
       initTimeoutMs: 5_000,
       execTimeoutMs: 1_000,
+      cacheName: 'custom_audience_ivm',
     });
   });
 
@@ -215,6 +232,28 @@ describe('IvmScriptRunner', () => {
     });
   });
 
+  describe('platform error metrics', () => {
+    it('emits ivm_platform_error tagged with the expression, workspaceId (cacheKey) and cache', async () => {
+      const expression = 'return evaluateTemplateInSandbox($0) /* __THROW__ timeout */';
+
+      await expect(runner.execute('ws-err', expression, [])).rejects.toThrow(
+        'Script execution timed out.',
+      );
+
+      expect(mockStats.increment).toHaveBeenCalledWith('ivm_platform_error', {
+        functionName: expression,
+        workspaceId: 'ws-err',
+        cache: 'custom_audience_ivm',
+      });
+    });
+
+    it('does not emit the platform error metric on success', async () => {
+      await runner.execute('ws-ok', 'return parseTemplateInSandbox($0)', []);
+
+      expect(mockStats.increment).not.toHaveBeenCalledWith('ivm_platform_error', expect.anything());
+    });
+  });
+
   describe('heap metrics', () => {
     it('should emit aggregate heap gauges on cache mutation (new entry)', async () => {
       await runner.execute('ws-1', 'parseTemplateInSandbox("test")', []);
@@ -251,48 +290,41 @@ describe('IvmScriptRunner', () => {
     });
 
     it('should emit 0 aggregate after TTL expiry', async () => {
-      const savedTtl = process.env.IVM_CACHE_TTL_MS;
-      process.env.IVM_CACHE_TTL_MS = '100';
+      const shortTtlRunner = new IvmScriptRunner({
+        bundlePath: BUNDLE_PATH,
+        memoryLimitMb: 8,
+        initTimeoutMs: 5_000,
+        execTimeoutMs: 1_000,
+        cacheName: 'custom_audience_ivm',
+        ttlMs: 100,
+      });
 
-      try {
-        const shortTtlRunner = new IvmScriptRunner({
-          bundlePath: BUNDLE_PATH,
-          memoryLimitMb: 8,
-          initTimeoutMs: 5_000,
-          execTimeoutMs: 1_000,
-        });
+      await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
+      mockStats.gauge.mockClear();
 
-        await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
-        mockStats.gauge.mockClear();
-
-        await waitForAggregateHeapGauge(0);
-      } finally {
-        restoreEnv('IVM_CACHE_TTL_MS', savedTtl);
-      }
+      await waitForTtlExpiryAndPurge(shortTtlRunner, 'ws-ttl');
+      await waitForAggregateHeapGauge(0);
     });
 
     it('should emit 0 aggregate after TTL expiry on second request too', async () => {
-      const savedTtl = process.env.IVM_CACHE_TTL_MS;
-      process.env.IVM_CACHE_TTL_MS = '100';
+      const shortTtlRunner = new IvmScriptRunner({
+        bundlePath: BUNDLE_PATH,
+        memoryLimitMb: 8,
+        initTimeoutMs: 5_000,
+        execTimeoutMs: 1_000,
+        cacheName: 'custom_audience_ivm',
+        ttlMs: 100,
+      });
 
-      try {
-        const shortTtlRunner = new IvmScriptRunner({
-          bundlePath: BUNDLE_PATH,
-          memoryLimitMb: 8,
-          initTimeoutMs: 5_000,
-          execTimeoutMs: 1_000,
-        });
+      await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
+      await waitForTtlExpiryAndPurge(shortTtlRunner, 'ws-ttl');
+      await waitForAggregateHeapGauge(0);
 
-        await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
-        await waitForAggregateHeapGauge(0);
+      await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
+      mockStats.gauge.mockClear();
 
-        await shortTtlRunner.execute('ws-ttl', 'parseTemplateInSandbox("test")', []);
-        mockStats.gauge.mockClear();
-
-        await waitForAggregateHeapGauge(0);
-      } finally {
-        restoreEnv('IVM_CACHE_TTL_MS', savedTtl);
-      }
+      await waitForTtlExpiryAndPurge(shortTtlRunner, 'ws-ttl');
+      await waitForAggregateHeapGauge(0);
     });
 
     it('should reflect correct aggregate after LRU eviction', async () => {
@@ -305,6 +337,7 @@ describe('IvmScriptRunner', () => {
           memoryLimitMb: 8,
           initTimeoutMs: 5_000,
           execTimeoutMs: 1_000,
+          cacheName: 'custom_audience_ivm',
         });
 
         // Fill cache to max (2 entries)

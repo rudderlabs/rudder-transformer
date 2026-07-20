@@ -7,6 +7,7 @@ import {
   properties,
   traits,
   processorInstrumentationErrorStatTags,
+  processorConfigurationErrorStatTags,
 } from '../common';
 
 export const configuration: ProcessorTestData[] = [
@@ -621,6 +622,49 @@ export const configuration: ProcessorTestData[] = [
               'Header "header_access_token" has a non-string value of type "object": Workflow: procWorkflow, Step: buildHeaders, ChildStep: undefined, OriginalError: Header "header_access_token" has a non-string value of type "object"',
             statusCode: 400,
             statTags: processorInstrumentationErrorStatTags,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'http-configuration-test-13',
+    name: destType,
+    description:
+      'Security regression (INT-6725): header mapping attempts to read process.env; the isolated-vm sandbox has no process global, so evaluation throws and the event fails with a ConfigurationError instead of leaking any env content',
+    scenario: 'Security',
+    successCriteria:
+      'The event must fail with a "process is not defined" ConfigurationError and contain no environment variable content',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[16],
+            message: {
+              type: 'identify',
+              userId: 'userId123',
+              anonymousId: 'anonId123',
+              traits,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Error in custom mappings: process is not defined: Workflow: procWorkflow, Step: buildHeaders, ChildStep: undefined, OriginalError: Error in custom mappings: process is not defined',
+            statusCode: 400,
+            statTags: processorConfigurationErrorStatTags,
             metadata: generateMetadata(1),
           },
         ],

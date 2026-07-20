@@ -30,13 +30,13 @@ const personIdentifiers = (message): CustomerIOV2Identifiers => {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
   const email = getFieldValueFromMessage(message, 'email');
   if (userId) {
-    return { id: String(userId) };
+    return { id: userId };
   }
   if (email) {
     return { email: String(email) };
   }
   if (message.anonymousId) {
-    return { anonymous_id: String(message.anonymousId) };
+    return { anonymous_id: message.anonymousId };
   }
   throw new InstrumentationError('userId, email or anonymousId is required');
 };

@@ -1119,9 +1119,7 @@ const chunkTaggedItems = (items: TaggedItem[], mode: 'v1' | 'v2'): TaggedTrackCh
 // any cap is breached — caller pushes the event onto failureResponses. The
 // track body is passed in already-narrowed by the caller (typically after
 // `classifyJobRun` returned a `track` classification), so no cast is needed.
-type TrackCollectionResult =
-  | { items: TaggedItem[]; totalByteSize: number }
-  | { error: InstrumentationError };
+type TrackCollectionResult = { items: TaggedItem[] } | { error: InstrumentationError };
 
 const collectTrackItemsForJob = (
   body: BrazeTrackRequestBody,
@@ -1187,7 +1185,7 @@ const collectTrackItemsForJob = (
       ),
     };
   }
-  return { items, totalByteSize };
+  return { items };
 };
 
 // Build the per-metadata destInfo positional map for a chunk. Every unique
@@ -1197,31 +1195,18 @@ const collectTrackItemsForJob = (
 // case; longer for e.g. order-completed contributing multiple purchases).
 const buildDestInfoByJob = (chunk: TaggedTrackChunk): Map<number, BrazeDestInfo> => {
   const map = new Map<number, BrazeDestInfo>();
-  const ensure = (sji: number): BrazeDestInfo => {
-    let existing = map.get(sji);
-    if (!existing) {
-      existing = {};
-      map.set(sji, existing);
-    }
-    return existing;
-  };
-  const appendIdx = (
-    info: BrazeDestInfo,
+  const record = (
+    sji: number,
     key: 'attributesIndices' | 'eventsIndices' | 'purchasesIndices',
     idx: number,
   ) => {
-    info[key] = info[key] ?? [];
-    info[key]!.push(idx);
+    const info = map.get(sji) ?? {};
+    (info[key] ??= []).push(idx);
+    map.set(sji, info);
   };
-  chunk.attributesSourceJobIndex.forEach((sji: number, idx: number) => {
-    appendIdx(ensure(sji), 'attributesIndices', idx);
-  });
-  chunk.eventsSourceJobIndex.forEach((sji: number, idx: number) => {
-    appendIdx(ensure(sji), 'eventsIndices', idx);
-  });
-  chunk.purchasesSourceJobIndex.forEach((sji: number, idx: number) => {
-    appendIdx(ensure(sji), 'purchasesIndices', idx);
-  });
+  chunk.attributesSourceJobIndex.forEach((sji, idx) => record(sji, 'attributesIndices', idx));
+  chunk.eventsSourceJobIndex.forEach((sji, idx) => record(sji, 'eventsIndices', idx));
+  chunk.purchasesSourceJobIndex.forEach((sji, idx) => record(sji, 'purchasesIndices', idx));
   return map;
 };
 
@@ -1251,24 +1236,21 @@ const trackChunkResponse = (
   headers: BrazeBatchHeaders,
   trackEndpoint: string,
   trackPath: string,
-  jobMetadata: (Partial<Metadata>[] | undefined)[],
+  jobMetadata: Partial<Metadata>[][],
 ) => {
   const destInfoByJob = buildDestInfoByJob(chunk);
   const chunkMetadata: Partial<Metadata>[] = [];
   // Iterate sourceJobIndexes in insertion order (Set preserves it) so the
   // metadata slice ordering is deterministic and stable.
   for (const sji of chunk.sourceJobIndexes) {
-    const jobMeta = jobMetadata[sji];
-    if (jobMeta) {
-      // destInfo carries top-level index-array fields; no per-destination
-      // wrapper — Braze is the sole producer AND consumer of these fields.
-      const info = destInfoByJob.get(sji) ?? {};
-      for (const m of jobMeta) {
-        chunkMetadata.push({
-          ...m,
-          destInfo: { ...(m.destInfo ?? {}), ...info },
-        });
-      }
+    // destInfo carries top-level index-array fields; no per-destination
+    // wrapper — Braze is the sole producer AND consumer of these fields.
+    const info = destInfoByJob.get(sji) ?? {};
+    for (const m of jobMetadata[sji]) {
+      chunkMetadata.push({
+        ...m,
+        destInfo: { ...(m.destInfo ?? {}), ...info },
+      });
     }
   }
   return {
@@ -1282,12 +1264,11 @@ const trackChunkResponse = (
 
 // Collect scoped metadata for a subscription/merge chunk. A single job may
 // contribute multiple entries but must be listed once in the chunk's metadata.
-// Under the ON path, sub/merge outputs must still carry `destInfo: {}` per the
-// design doc (present-but-empty for correlation-shape uniformity across every
-// chunk); OFF path preserves raw metadata unchanged.
+// Under the ON path, sub/merge outputs still carry `destInfo: {}` (present-
+// but-empty for correlation-shape uniformity across every chunk).
 const scopedMetadataForChunk = <T extends { sourceJobIndex: number }>(
   chunk: T[],
-  jobMetadata: (Partial<Metadata>[] | undefined)[],
+  jobMetadata: Partial<Metadata>[][],
   withEmptyDestInfo: boolean,
 ): Partial<Metadata>[] => {
   const seen = new Set<number>();
@@ -1295,11 +1276,8 @@ const scopedMetadataForChunk = <T extends { sourceJobIndex: number }>(
   for (const entry of chunk) {
     if (!seen.has(entry.sourceJobIndex)) {
       seen.add(entry.sourceJobIndex);
-      const jobMeta = jobMetadata[entry.sourceJobIndex];
-      if (jobMeta) {
-        for (const m of jobMeta) {
-          out.push(withEmptyDestInfo ? { ...m, destInfo: { ...(m.destInfo ?? {}) } } : m);
-        }
+      for (const m of jobMetadata[entry.sourceJobIndex]) {
+        out.push(withEmptyDestInfo ? { ...m, destInfo: { ...(m.destInfo ?? {}) } } : m);
       }
     }
   }
@@ -1342,22 +1320,6 @@ const buildMergeRequest = (
   return { ...request, headers };
 };
 
-// A run is a contiguous stretch of same-endpoint jobs in the input's insertion
-// order. Walking the input job-by-job and emitting outputs at endpoint
-// boundaries preserves the invariant that jobIds within a user remain
-// monotonically ascending across the emitted outputs — the semantic
-// rudder-server relies on for causal ordering.
-type TrackRun = { type: 'track'; items: TaggedItem[] };
-type SubscriptionRun = {
-  type: 'subscription';
-  items: Array<{ data: BrazeSubscriptionGroup; sourceJobIndex: number }>;
-};
-type MergeRun = {
-  type: 'merge';
-  items: Array<{ data: BrazeMergeUpdate; sourceJobIndex: number }>;
-};
-type Run = TrackRun | SubscriptionRun | MergeRun;
-
 // Type predicates narrow an untyped body (whatever `body.JSON` is at runtime)
 // to a specific Braze payload shape via `in` narrowing on each shape's
 // distinguishing field. Consumers can then read member fields without casts.
@@ -1377,23 +1339,16 @@ type JobClassification =
   | { type: 'subscription'; body: BrazeSubscriptionBatchPayload }
   | { type: 'merge'; body: BrazeMergeBatchPayload };
 
-const classifyJobRun = (json: unknown): JobClassification | null => {
-  if (isTrackBody(json)) {
-    const hasTrackItems =
-      (Array.isArray(json.attributes) && json.attributes.length > 0) ||
-      (Array.isArray(json.events) && json.events.length > 0) ||
-      (Array.isArray(json.purchases) && json.purchases.length > 0);
-    if (hasTrackItems) return { type: 'track', body: json };
-  }
-  if (
-    isSubscriptionBody(json) &&
-    Array.isArray(json.subscription_groups) &&
-    json.subscription_groups.length > 0
-  )
-    return { type: 'subscription', body: json };
-  if (isMergeBody(json) && Array.isArray(json.merge_updates) && json.merge_updates.length > 0)
-    return { type: 'merge', body: json };
-  return null;
+// The upstream router transform always produces a body matching one of the
+// three Braze payload shapes, so this classifier is total. If the contract
+// is ever violated we throw rather than silently drop the job.
+const classifyJobRun = (json: unknown): JobClassification => {
+  if (isTrackBody(json)) return { type: 'track', body: json };
+  if (isSubscriptionBody(json)) return { type: 'subscription', body: json };
+  if (isMergeBody(json)) return { type: 'merge', body: json };
+  throw new InstrumentationError(
+    'Braze processBatchWithDeliveryMapping: body is neither track, subscription, nor merge',
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -1421,10 +1376,13 @@ const processBatchWithDeliveryMapping = (
 
   const failureResponses: BrazeTransformedEvent[] = [];
   const filteredResponses: BrazeTransformedEvent[] = [];
-  const runs: Run[] = [];
-  const jobMetadata: (Partial<Metadata>[] | undefined)[] = new Array(transformedEvents.length);
-  let currentRun: Run | null = null;
-
+  const trackItems: TaggedItem[] = [];
+  const subItems: Array<{ data: BrazeSubscriptionGroup; sourceJobIndex: number }> = [];
+  const mergeItems: Array<{ data: BrazeMergeUpdate; sourceJobIndex: number }> = [];
+  const jobMetadata: Partial<Metadata>[][] = Array.from(
+    { length: transformedEvents.length },
+    () => [],
+  );
   transformedEvents.forEach((transformedEvent, jobIndex) => {
     if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
       failureResponses.push(transformedEvent);
@@ -1434,21 +1392,9 @@ const processBatchWithDeliveryMapping = (
       filteredResponses.push(transformedEvent);
       return;
     }
-    const json = transformedEvent.batchedRequest?.body?.JSON;
-    if (!json) return;
+    const classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
 
-    const classification = classifyJobRun(json);
-    if (!classification) return;
-
-    if (!currentRun || currentRun.type !== classification.type) {
-      if (classification.type === 'track') currentRun = { type: 'track', items: [] };
-      else if (classification.type === 'subscription')
-        currentRun = { type: 'subscription', items: [] };
-      else currentRun = { type: 'merge', items: [] };
-      runs.push(currentRun);
-    }
-
-    if (currentRun.type === 'track' && classification.type === 'track') {
+    if (classification.type === 'track') {
       const collection = collectTrackItemsForJob(classification.body, jobIndex);
       if ('error' in collection) {
         failureResponses.push({
@@ -1459,14 +1405,14 @@ const processBatchWithDeliveryMapping = (
         });
         return;
       }
-      currentRun.items.push(...collection.items);
-    } else if (currentRun.type === 'subscription' && classification.type === 'subscription') {
+      trackItems.push(...collection.items);
+    } else if (classification.type === 'subscription') {
       for (const sg of classification.body.subscription_groups ?? []) {
-        currentRun.items.push({ data: sg, sourceJobIndex: jobIndex });
+        subItems.push({ data: sg, sourceJobIndex: jobIndex });
       }
-    } else if (currentRun.type === 'merge' && classification.type === 'merge') {
+    } else {
       for (const mu of classification.body.merge_updates ?? []) {
-        currentRun.items.push({ data: mu, sourceJobIndex: jobIndex });
+        mergeItems.push({ data: mu, sourceJobIndex: jobIndex });
       }
     }
 
@@ -1492,43 +1438,31 @@ const processBatchWithDeliveryMapping = (
   );
 
   const finalResponse: BrazeBatchResponse[] = [];
-  for (const run of runs) {
-    if (run.type === 'track') {
-      const chunks = chunkTaggedItems(run.items, isWorkspaceOnMauPlanFlag ? 'v2' : 'v1');
-      for (const chunk of chunks) {
-        finalResponse.push(
-          trackChunkResponse(chunk, destination, headers, trackEndpoint, trackPath, jobMetadata),
-        );
-      }
-    } else if (run.type === 'subscription') {
-      const chunks = _.chunk(run.items, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
-      for (const chunk of chunks) {
-        finalResponse.push({
-          batchedRequest: buildSubscriptionRequest(
-            chunk,
-            destination,
-            headers,
-            subEndpoint,
-            subPath,
-          ),
-          metadata: scopedMetadataForChunk(chunk, jobMetadata, true),
-          batched: true,
-          statusCode: 200,
-          destination,
-        });
-      }
-    } else {
-      const chunks = _.chunk(run.items, ALIAS_BRAZE_MAX_REQ_COUNT);
-      for (const chunk of chunks) {
-        finalResponse.push({
-          batchedRequest: buildMergeRequest(chunk, headers, mergeEndpoint, mergePath),
-          metadata: scopedMetadataForChunk(chunk, jobMetadata, true),
-          batched: true,
-          statusCode: 200,
-          destination,
-        });
-      }
-    }
+  const trackChunks = chunkTaggedItems(trackItems, isWorkspaceOnMauPlanFlag ? 'v2' : 'v1');
+  for (const chunk of trackChunks) {
+    finalResponse.push(
+      trackChunkResponse(chunk, destination, headers, trackEndpoint, trackPath, jobMetadata),
+    );
+  }
+  const subChunks = _.chunk(subItems, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
+  for (const chunk of subChunks) {
+    finalResponse.push({
+      batchedRequest: buildSubscriptionRequest(chunk, destination, headers, subEndpoint, subPath),
+      metadata: scopedMetadataForChunk(chunk, jobMetadata, true),
+      batched: true,
+      statusCode: 200,
+      destination,
+    });
+  }
+  const mergeChunks = _.chunk(mergeItems, ALIAS_BRAZE_MAX_REQ_COUNT);
+  for (const chunk of mergeChunks) {
+    finalResponse.push({
+      batchedRequest: buildMergeRequest(chunk, headers, mergeEndpoint, mergePath),
+      metadata: scopedMetadataForChunk(chunk, jobMetadata, true),
+      batched: true,
+      statusCode: 200,
+      destination,
+    });
   }
 
   if (failureResponses.length > 0) finalResponse.push(...failureResponses);

@@ -1,3 +1,4 @@
+import { generateMetadata } from '../../amazon_audience/common';
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { identityResolution } from './identityResolution';
 
@@ -1148,19 +1149,22 @@ const basicRouterTestsWithBatchIdentityResolutionEnabled = basicRouterTests.map(
 });
 
 // ---------------------------------------------------------------------------
-// Per-job delivery-mapping (INT-6808 + INT-6634) — ON path.
+// Per-job delivery-mapping — ON path.
 // When `BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true`, processBatch emits one
 // BatchRequestOutput per outgoing HTTP request (instead of one
-// MultiBatchRequestOutput with batchedRequest[]), preserves insertion-order
-// runs across endpoints, and attaches per-metadata `destInfo` positional
-// indices (populated for /users/track chunks; present-but-empty for sub/merge
-// chunks).
+// MultiBatchRequestOutput with batchedRequest[]). Items are coalesced by
+// endpoint type across the entire input — insertion-order runs are NOT
+// preserved — so a batch that mixes track, subscription, and merge jobs
+// produces exactly one output per endpoint (subject to chunk-size caps).
+// Track outputs carry per-metadata `destInfo.attributesIndices` /
+// `.eventsIndices` / `.purchasesIndices`; sub/merge outputs carry
+// `destInfo: {}` for correlation-shape uniformity.
 // ---------------------------------------------------------------------------
 const perJobDeliveryMappingOnTests = [
   {
     name: 'braze',
     description:
-      'per-job delivery mapping ON — mixed track + subscription + merge preserves insertion-order runs and emits destInfo positional maps',
+      'per-job delivery mapping ON — mixed track + subscription + merge coalesces items per endpoint into one output each',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1228,7 +1232,7 @@ const perJobDeliveryMappingOnTests = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: { jobId: 2, userId: 'u2' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 channel: 'web',
@@ -1271,7 +1275,7 @@ const perJobDeliveryMappingOnTests = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: { jobId: 3, userId: 'u1' },
+              metadata: { jobId: 3, userId: 'u3' },
               message: {
                 anonymousId: '56yrtsdfgbgxcb-22b4-401d-aae5-1b994be9a969',
                 groupId: 'c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1',
@@ -1300,7 +1304,7 @@ const perJobDeliveryMappingOnTests = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: { jobId: 4, userId: 'u1' },
+              metadata: { jobId: 4, userId: 'u4' },
               message: {
                 anonymousId: 'dfgdfgdfg-22b4-401d-aae5-1b994be9a969',
                 groupId: '58d0a278-b55b-4f10-b7d2-98d1c5dd4c30',
@@ -1329,7 +1333,7 @@ const perJobDeliveryMappingOnTests = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: { jobId: 5, userId: 'u1' },
+              metadata: { jobId: 5, userId: 'u5' },
               message: { type: 'alias', previousId: 'adsfsaf', userId: 'dsafsdf' },
             },
             {
@@ -1352,7 +1356,7 @@ const perJobDeliveryMappingOnTests = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: { jobId: 6, userId: 'u1' },
+              metadata: { jobId: 6, userId: 'u6' },
               message: { type: 'alias', previousId: 'adsfsaf2', userId: 'dsafsdf2' },
             },
             {
@@ -1375,7 +1379,7 @@ const perJobDeliveryMappingOnTests = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: { jobId: 7, userId: 'u1' },
+              metadata: { jobId: 7, userId: 'u7' },
               message: {
                 anonymousId: '56yrtsdfgbgxcb-22b4-401d-aae5-1b994be9afdf',
                 groupId: 'c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1',
@@ -1453,7 +1457,7 @@ const perJobDeliveryMappingOnTests = [
               },
               metadata: [
                 { jobId: 1, userId: 'u1', destInfo: { eventsIndices: [0] } },
-                { jobId: 2, userId: 'u1', destInfo: { attributesIndices: [0] } },
+                { jobId: 2, userId: 'u2', destInfo: { attributesIndices: [0] } },
               ],
               batched: true,
               statusCode: 200,
@@ -1476,12 +1480,12 @@ const perJobDeliveryMappingOnTests = [
                 Transformations: [],
               },
             },
-            // Output 2 — first subscription run (jobs 3, 4). One
-            // /v2/subscription/status/set HTTP request. Note that job 7
-            // (also a subscription with the same group_id as job 3) does NOT
-            // merge in here — insertion-order runs put job 7 into a
-            // SEPARATE run after the merge run. Sub metadata carries
-            // `destInfo: {}` (present-but-empty).
+            // Output 2 — subscription-groups (jobs 3, 4, 7 coalesced). Items
+            // from all subscription-shaped jobs across the batch are combined
+            // into a single output regardless of their position in the input,
+            // then `combineSubscriptionGroups` merges the two `c90f0fd2` rows
+            // (job 3's user123 + job 7's user12345) into one entry. Sub
+            // metadata carries `destInfo: {}` (present-but-empty).
             {
               batchedRequest: {
                 version: '1',
@@ -1499,7 +1503,7 @@ const perJobDeliveryMappingOnTests = [
                   JSON: {
                     subscription_groups: [
                       {
-                        external_ids: ['user123'],
+                        external_ids: ['user123', 'user12345'],
                         phones: ['5055077683'],
                         subscription_group_id: 'c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1',
                         subscription_state: 'subscribed',
@@ -1519,8 +1523,9 @@ const perJobDeliveryMappingOnTests = [
                 files: {},
               },
               metadata: [
-                { jobId: 3, userId: 'u1', destInfo: {} },
-                { jobId: 4, userId: 'u1', destInfo: {} },
+                { jobId: 3, userId: 'u3', destInfo: {} },
+                { jobId: 4, userId: 'u4', destInfo: {} },
+                { jobId: 7, userId: 'u7', destInfo: {} },
               ],
               batched: true,
               statusCode: 200,
@@ -1543,8 +1548,8 @@ const perJobDeliveryMappingOnTests = [
                 Transformations: [],
               },
             },
-            // Output 3 — merge run (jobs 5, 6). One /users/merge HTTP request.
-            // Merge metadata carries `destInfo: {}` (present-but-empty).
+            // Output 3 — alias-merge (jobs 5, 6 coalesced). One /users/merge
+            // HTTP request. Merge metadata carries `destInfo: {}`.
             {
               batchedRequest: {
                 version: '1',
@@ -1578,65 +1583,9 @@ const perJobDeliveryMappingOnTests = [
                 files: {},
               },
               metadata: [
-                { jobId: 5, userId: 'u1', destInfo: {} },
-                { jobId: 6, userId: 'u1', destInfo: {} },
+                { jobId: 5, userId: 'u5', destInfo: {} },
+                { jobId: 6, userId: 'u6', destInfo: {} },
               ],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                hasDynamicConfig: false,
-                Config: {
-                  restApiKey: secret1,
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  dataCenter: 'eu-01',
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Braze',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'BRAZE',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Braze',
-                Transformations: [],
-              },
-            },
-            // Output 4 — second subscription run (job 7 alone). Because the
-            // merge run split the two subscription groups apart in insertion
-            // order, job 7 gets its OWN /v2/subscription/status/set HTTP
-            // request — this is the key run-preserving-shape guarantee.
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
-                endpointPath: 'v2/subscription/status/set',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                  Authorization: authHeader1,
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    subscription_groups: [
-                      {
-                        external_ids: ['user12345'],
-                        phones: ['5055077683'],
-                        subscription_group_id: 'c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1',
-                        subscription_state: 'subscribed',
-                      },
-                    ],
-                  },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [{ jobId: 7, userId: 'u1', destInfo: {} }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1735,7 +1684,7 @@ const perJobDeliveryMappingOnTests = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: { jobId: 101, userId: 'u1' },
+              metadata: generateMetadata(101, 'u1'),
               message: {
                 anonymousId: 'a2',
                 channel: 'web',
@@ -1833,6 +1782,7 @@ const perJobDeliveryMappingOnTests = [
               metadata: [
                 { jobId: 100, userId: 'u1', destInfo: { attributesIndices: [0] } },
                 {
+                  ...generateMetadata(101, 'u1'),
                   jobId: 101,
                   userId: 'u1',
                   destInfo: { attributesIndices: [1], purchasesIndices: [0, 1, 2] },

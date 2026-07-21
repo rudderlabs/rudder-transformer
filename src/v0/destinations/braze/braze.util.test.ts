@@ -1627,10 +1627,23 @@ describe('processBatchWithDeliveryMapping', () => {
       subJob(7),
     ]);
 
-    // Expect 4 outputs: track [1,2], sub [3,4], merge [5,6], sub [7]
-    expect(result.length).toBe(4);
-    const jobIdsPerOutput = result.map((r: any) => r.metadata.map((m: any) => m.jobId));
-    expect(jobIdsPerOutput).toEqual([[1, 2], [3, 4], [5, 6], [7]]);
+    // Items are coalesced globally per endpoint type — insertion-order runs
+    // are NOT preserved. Expect 3 outputs: track [1, 2], sub [3, 4, 7],
+    // merge [5, 6]. Within each output, jobIds accumulate in the order jobs
+    // appear in the input (subscription/merge use plain _.chunk), so they
+    // remain monotonically ascending inside each output.
+    expect(result.length).toBe(3);
+    const tracks = onTrackOutputs(result, dest);
+    const subs = onSubOutputs(result, dest);
+    const merges = onMergeOutputs(result, dest);
+    expect(tracks.length).toBe(1);
+    expect(subs.length).toBe(1);
+    expect(merges.length).toBe(1);
+    expect(
+      tracks[0].metadata.map((m: any) => m.jobId).sort((a: number, b: number) => a - b),
+    ).toEqual([1, 2]);
+    expect(subs[0].metadata.map((m: any) => m.jobId)).toEqual([3, 4, 7]);
+    expect(merges[0].metadata.map((m: any) => m.jobId)).toEqual([5, 6]);
   });
 
   test('single track job (attribute + event) → destInfo has attributesIndices + eventsIndices; purchasesIndices absent', () => {

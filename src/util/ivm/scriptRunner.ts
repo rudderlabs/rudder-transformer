@@ -94,8 +94,24 @@ export class IvmScriptRunner {
    * avoiding global mutation and race conditions between concurrent calls.
    */
   async execute<T>(cacheKey: string, expression: string, args: unknown[]): Promise<T> {
+    const platformErrorTags = {
+      functionName: expression,
+      workspaceId: cacheKey,
+      cache: this.cache.cacheName,
+    };
     try {
-      const entry = await this.getOrCreate(cacheKey);
+      // Seed the platform-error counter at 0 when a fresh isolate is built for this label set
+      // (once per isolate, not per call — warm-isolate calls never touch the registry).
+      // Prometheus only exports a counter after its first increment, and rate()/increase()
+      // anchor on the first sample within their window — so without a 0 baseline, an error
+      // burst that lands on a freshly-seen (workspaceId, functionName, cache) series is
+      // invisible to the ivm-platform-errors alert: increase() can only catch the *second*
+      // increment of an already-established series, missing the first burst entirely. A
+      // workspace's first call is always a cache miss, so the 0 is materialised before any
+      // error can occur, giving increase() the 0 -> N edge it needs to detect the first burst.
+      const entry = await this.getOrCreate(cacheKey, () =>
+        stats.counter('ivm_platform_error', 0, platformErrorTags),
+      );
       const result = await entry.context.evalClosure(expression, args, {
         arguments: { copy: true },
         result: { copy: true, promise: true },
@@ -107,11 +123,7 @@ export class IvmScriptRunner {
       // building the isolate. Evict so the next call gets a fresh one, and emit
       // a metric for observability before rethrowing.
       this.cache.delete(cacheKey);
-      stats.increment('ivm_platform_error', {
-        functionName: expression,
-        workspaceId: cacheKey,
-        cache: this.cache.cacheName,
-      });
+      stats.increment('ivm_platform_error', platformErrorTags);
       throw err;
     }
   }
@@ -154,7 +166,7 @@ export class IvmScriptRunner {
     }
   }
 
-  private async getOrCreate(cacheKey: string) {
+  private async getOrCreate(cacheKey: string, onCreate: () => void) {
     const cached = this.cache.get(cacheKey);
     if (cached) {
       return cached;
@@ -170,6 +182,10 @@ export class IvmScriptRunner {
     // the map empty and re-opening the race window.
     let pending = this.pendingCreations.get(cacheKey);
     if (!pending) {
+      // First build for this key — seed the error counter's 0 baseline before the isolate
+      // (and any error it could raise) exists. Concurrent first callers coalesce below, so
+      // this runs once per isolate creation.
+      onCreate();
       pending = this.createEntry()
         .then((entry) => {
           this.cache.set(cacheKey, entry);

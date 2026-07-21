@@ -30,6 +30,7 @@ jest.mock('../../../../logger', () => ({
 }));
 
 const mockStats = {
+  counter: jest.fn(),
   increment: jest.fn(),
   gauge: jest.fn(),
 };

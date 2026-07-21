@@ -6,7 +6,6 @@ import {
 } from '../../../types';
 import {
   BatchedRequest,
-  BatchedRequestBody,
   BatchRequestOutput,
   MultiBatchRequestOutput,
   ProcessorTransformationOutput,
@@ -324,9 +323,7 @@ export type BrazeBatchRequest = BatchedRequest<
 
 export type BrazeTransformedEvent = {
   statusCode: number;
-  batchedRequest?: Omit<ProcessorTransformationOutput, 'body'> & {
-    body?: BatchedRequestBody<BrazeBatchPayload>;
-  };
+  batchedRequest?: ProcessorTransformationOutput;
   metadata?: Partial<Metadata>[];
   destination: BrazeDestination;
   error?: string;

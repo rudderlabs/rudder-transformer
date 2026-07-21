@@ -10,6 +10,7 @@ import {
   combineSubscriptionGroups,
   getEndpointFromConfig,
   processBatch,
+  processBatchWithDeliveryMapping,
 } from './util';
 import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
 import { generateRandomString } from '@rudderstack/integrations-lib';
@@ -1397,185 +1398,17 @@ describe('processBatch — OFF path (default) — MAU workspace (V2 chunking)', 
   });
 });
 
-describe('processBatch — OFF path (default) — size + oversized-job rejection', () => {
-  const destination = brazeDestFor();
-
-  test('single item exceeding TRACK_BRAZE_MAX_ITEM_BYTE_SIZE (100 KB) is rejected with InstrumentationError', () => {
-    const big = 'x'.repeat(150 * 1024);
-    const transformedEvent: BrazeTransformedEvent = {
-      destination,
-      statusCode: 200,
-      batchedRequest: {
-        version: '1',
-        type: 'REST',
-        method: 'POST',
-        endpoint: '',
-        headers: {},
-        params: {},
-        body: {
-          JSON: {
-            events: [{ external_id: 'u1', name: 'BigEvent', time: 't', properties: { blob: big } }],
-          },
-        },
-        files: {},
-      } as any,
-      metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
-    };
-    const result = processBatch([transformedEvent]);
-    const failures = result.filter((r) => (r as any).statusCode === 400);
-    expect(failures.length).toBe(1);
-    expect((failures[0] as any).error).toMatch(/exceeds .* bytes/);
-    // No successful output when the only job was rejected.
-    expect(offMulti(result)).toBeUndefined();
-  });
-
-  test('single job contributing > 75 track items is rejected — no chunking can accommodate it without straddle', () => {
-    const attributes = Array.from({ length: 40 }, (_, i) => ({ external_id: 'u1', id: i }));
-    const events = Array.from({ length: 40 }, (_, i) => ({ external_id: 'u1', id: i, event: 'e' }));
-    const transformedEvent: BrazeTransformedEvent = {
-      destination,
-      statusCode: 200,
-      batchedRequest: {
-        version: '1',
-        type: 'REST',
-        method: 'POST',
-        endpoint: '',
-        headers: {},
-        params: {},
-        body: { JSON: { attributes, events } },
-        files: {},
-      } as any,
-      metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
-    };
-    const result = processBatch([transformedEvent]);
-    const failures = result.filter((r) => (r as any).statusCode === 400);
-    expect(failures.length).toBe(1);
-    expect((failures[0] as any).error).toMatch(/max .* per batch/);
-  });
-
-  test('oversized job is rejected without affecting other jobs in the same batch', () => {
-    const big = 'x'.repeat(150 * 1024);
-    const good = {
-      destination,
-      statusCode: 200,
-      batchedRequest: {
-        version: '1',
-        type: 'REST',
-        method: 'POST',
-        endpoint: '',
-        headers: {},
-        params: {},
-        body: { JSON: { events: [{ external_id: 'ok', name: 'Small', time: 't' }] } },
-        files: {},
-      } as any,
-      metadata: [{ jobId: 100, workspaceId: 'workspace-non-mau' }],
-    } as BrazeTransformedEvent;
-    const bad = {
-      destination,
-      statusCode: 200,
-      batchedRequest: {
-        version: '1',
-        type: 'REST',
-        method: 'POST',
-        endpoint: '',
-        headers: {},
-        params: {},
-        body: {
-          JSON: {
-            events: [{ external_id: 'bad', name: 'Big', time: 't', properties: { blob: big } }],
-          },
-        },
-        files: {},
-      } as any,
-      metadata: [{ jobId: 200, workspaceId: 'workspace-non-mau' }],
-    } as BrazeTransformedEvent;
-    const result = processBatch([good, bad]);
-    const failures = result.filter((r) => (r as any).statusCode === 400);
-    expect(failures.length).toBe(1);
-    expect(failures[0].metadata?.[0]).toMatchObject({ jobId: 200 });
-    const tracks = offTrackRequests(result, destination);
-    expect(tracks.length).toBe(1);
-    expect((tracks[0].body.JSON as BrazeTrackRequestBody).events?.length).toBe(1);
-  });
-});
-
-describe('processBatch — OFF path (default) — straddle prevention', () => {
-  const destination = brazeDestFor();
-
-  const buildOrderCompletedJob = (i: number, numProducts: number): BrazeTransformedEvent => ({
-    destination,
-    statusCode: 200,
-    batchedRequest: {
-      version: '1',
-      type: 'REST',
-      method: 'POST',
-      endpoint: '',
-      headers: {},
-      params: {},
-      body: {
-        JSON: {
-          attributes: [{ external_id: `u${i}`, name: 'A' }],
-          purchases: Array.from({ length: numProducts }, (_, k) => ({
-            external_id: `u${i}`,
-            product_id: `p${i}-${k}`,
-            price: 1,
-            currency: 'USD',
-            quantity: 1,
-            time: 't',
-          })),
-        },
-      },
-      files: {},
-    } as any,
-    metadata: [{ jobId: i, workspaceId: 'workspace-mau' }],
-  });
-
-  test('every track chunk stays within V2 total-count cap (75) — no single job straddles', () => {
-    // Group-preserving chunking keeps a job's contributions whole even in OFF
-    // path (kept as an INT-6808 improvement). We can't verify per-jobId
-    // occurrence without destInfo, but we CAN verify no chunk breaches the
-    // cap AND every job's user_id ends up in some chunk.
-    const jobs: BrazeTransformedEvent[] = [];
-    for (let i = 0; i < 24; i += 1) jobs.push(buildOrderCompletedJob(i, 3));
-    jobs.push(buildOrderCompletedJob(24, 6));
-
-    const result = processBatch(jobs);
-    const tracks = offTrackRequests(result, destination);
-    for (const t of tracks) {
-      const b = t.body.JSON as BrazeTrackRequestBody;
-      const total =
-        (b.attributes?.length ?? 0) + (b.events?.length ?? 0) + (b.purchases?.length ?? 0);
-      expect(total).toBeLessThanOrEqual(75);
-    }
-    // Every source-job's user_id (u0..u24) must appear somewhere in the
-    // concatenated payloads (25 unique externalIds across 25 jobs).
-    const allExternalIds = new Set<string>();
-    for (const t of tracks) {
-      const b = t.body.JSON as BrazeTrackRequestBody;
-      for (const a of b.attributes ?? []) allExternalIds.add(a.external_id as string);
-      for (const p of b.purchases ?? []) allExternalIds.add(p.external_id as string);
-    }
-    expect(allExternalIds.size).toBe(25);
-  });
-});
-
 // ---------------------------------------------------------------------------
-// ON path — BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true. processBatch emits
-// one BatchRequestOutput per outgoing HTTP request, with insertion-order-
-// preserving runs. Track outputs carry per-metadata `destInfo` positional
-// maps; sub/merge outputs carry `destInfo: {}` for correlation-shape
-// uniformity. The flag is read dynamically inside processBatch, so a plain
-// env swap is sufficient.
+// `processBatchWithDeliveryMapping` — invoked directly (no env-var gating in
+// util.ts; the flag is read only by `transform.ts` at the call site).
+// Emits one BatchRequestOutput per outgoing HTTP request, preserves insertion-
+// order runs, attaches per-metadata `destInfo` positional maps on track
+// outputs, and carries `destInfo: {}` on sub/merge outputs for correlation-
+// shape uniformity. Applies group-preserving chunking, byte-size caps, and
+// oversized-job rejection which do not exist on the OFF path.
 // ---------------------------------------------------------------------------
 
-describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)', () => {
-  beforeEach(() => {
-    process.env.BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED = 'true';
-  });
-  afterEach(() => {
-    delete process.env.BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED;
-  });
-
+describe('processBatchWithDeliveryMapping', () => {
   const destination = brazeDestFor();
 
   const buildTrackEvent = (
@@ -1614,7 +1447,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
 
   test('every output is a single BatchRequestOutput (no MultiBatchRequestOutput anywhere)', () => {
     const transformedEvents = Array.from({ length: 20 }, (_, i) => buildTrackEvent(i));
-    const result = processBatch(transformedEvents);
+    const result = processBatchWithDeliveryMapping(transformedEvents);
     for (const out of result) {
       expect(Array.isArray((out as any).batchedRequest)).toBe(false);
       expect((out as any).batched).toBe(true);
@@ -1623,7 +1456,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
 
   test('V1 chunks track outputs by per-type caps (75); every job has a destInfo positional map', () => {
     const transformedEvents = Array.from({ length: 100 }, (_, i) => buildTrackEvent(i));
-    const result = processBatch(transformedEvents);
+    const result = processBatchWithDeliveryMapping(transformedEvents);
     const tracks = onTrackOutputs(result, destination);
     expect(tracks.length).toBeGreaterThanOrEqual(2);
     expect(onTotalInSubArray(tracks, 'attributes')).toBe(100);
@@ -1667,7 +1500,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
         metadata: [{ jobId: i, workspaceId: 'workspace-non-mau' }],
       });
     }
-    const result = processBatch(transformedEvents);
+    const result = processBatchWithDeliveryMapping(transformedEvents);
     const subs = onSubOutputs(result, dest);
     expect(subs.length).toBe(Math.ceil(30 / 25));
     for (const s of subs) {
@@ -1710,7 +1543,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
         metadata: [{ jobId: i, workspaceId: 'workspace-non-mau' }],
       });
     }
-    const result = processBatch(transformedEvents);
+    const result = processBatchWithDeliveryMapping(transformedEvents);
     const merges = onMergeOutputs(result, dest);
     expect(merges.length).toBe(Math.ceil(60 / 50));
     for (const m of merges) {
@@ -1784,7 +1617,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
       metadata: [{ jobId: i, workspaceId: 'workspace-non-mau', userId: 'shared' }],
     });
 
-    const result = processBatch([
+    const result = processBatchWithDeliveryMapping([
       trackJob(1),
       trackJob(2),
       subJob(3),
@@ -1821,7 +1654,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
       } as any,
       metadata: [{ jobId: 42, workspaceId: 'workspace-non-mau' }],
     };
-    const result = processBatch([transformedEvent]);
+    const result = processBatchWithDeliveryMapping([transformedEvent]);
     const tracks = onTrackOutputs(result, destination);
     expect(tracks.length).toBe(1);
     expect(tracks[0].metadata.length).toBe(1);
@@ -1877,7 +1710,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
       } as any,
       metadata: [{ jobId: 42, workspaceId: 'workspace-non-mau' }],
     };
-    const result = processBatch([transformedEvent]);
+    const result = processBatchWithDeliveryMapping([transformedEvent]);
     const tracks = onTrackOutputs(result, destination);
     expect(tracks.length).toBe(1);
     const info = (tracks[0].metadata[0] as any).destInfo;
@@ -1961,7 +1794,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
         metadata: [{ jobId: 3, workspaceId: 'workspace-non-mau' }],
       },
     ];
-    const result = processBatch(jobs);
+    const result = processBatchWithDeliveryMapping(jobs);
     const tracks = onTrackOutputs(result, destination);
     expect(tracks.length).toBe(1);
     const chunk = tracks[0];
@@ -2018,7 +1851,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
     for (let i = 0; i < 24; i += 1) jobs.push(buildOrderCompletedJob(i, 3));
     jobs.push(buildOrderCompletedJob(24, 6));
 
-    const result = processBatch(jobs);
+    const result = processBatchWithDeliveryMapping(jobs);
     const tracks = onTrackOutputs(result, destination);
 
     for (const job of jobs) {
@@ -2058,7 +1891,7 @@ describe('processBatch — ON path (BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true)
       } as any,
       metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
     };
-    const result = processBatch([transformedEvent]);
+    const result = processBatchWithDeliveryMapping([transformedEvent]);
     const failures = result.filter((r) => (r as any).statusCode === 400);
     expect(failures.length).toBe(1);
     expect((failures[0] as any).error).toMatch(/exceeds .* bytes/);

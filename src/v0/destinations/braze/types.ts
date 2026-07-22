@@ -150,7 +150,7 @@ export interface BrazeSubscriptionGroup {
 // handler correlates each entry back to an originating job by looking up
 // `input_array` + `index` against the per-metadata `destInfo` positional
 // map populated on the router-transform side.
-export interface BrazeErrorEntry {
+export interface BrazeError {
   type: string;
   input_array: string;
   index: number;
@@ -160,7 +160,7 @@ export interface BrazeResponseHandlerParams {
   destinationResponse: {
     response?: {
       message?: string;
-      errors?: BrazeErrorEntry[];
+      errors?: BrazeError[];
     };
     status: number;
   };

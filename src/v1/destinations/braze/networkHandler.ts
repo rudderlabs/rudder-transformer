@@ -3,6 +3,7 @@ import { getDynamicErrorType, processAxiosResponse } from '../../../adapters/uti
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { TAG_NAMES } from '../../../v0/util/tags';
 import { isHttpStatusSuccess } from '../../../v0/util/index';
+import { HTTP_STATUS_CODES } from '../../../v0/util/constant';
 import stats from '../../../util/stats';
 import type {
   DeliveryJobState,
@@ -10,16 +11,13 @@ import type {
   ProxyMetdata,
   ProxyV1Request,
 } from '../../../types';
-import { BrazeErrorEntry, BrazeResponseHandlerParams } from '../../../v0/destinations/braze/types';
+import { BrazeError, BrazeResponseHandlerParams } from '../../../v0/destinations/braze/types';
 
 const DESTINATION = 'braze';
 
-// HTTP 296 — "Delivered with Warning". Emitted per originating job when Braze
-// returns a 2xx with `message: "success"` + a non-empty `errors[]` that
-// identifies specific per-item failures inside a /users/track call.
-// Contract: rudder-server treats 296 as a delivered-but-warned outcome for
-// alerting; the batch itself remains a success at the transport level.
-const HTTP_STATUS_DELIVERED_WITH_WARNING = 296;
+const SUCCESS_MESSAGE = `Request for ${DESTINATION} Processed Successfully`;
+const failureMessage = (status: number): string =>
+  `Request failed for ${DESTINATION} with status: ${status}`;
 
 // Braze's `endpointPath` value for the /users/track endpoint — the only
 // endpoint whose response carries per-entry `errors[]` correlatable back to
@@ -33,9 +31,10 @@ const TRACK_ENDPOINT_PATH = 'users/track';
 // the `destInfo` field name populated by the router transform.
 const TRACK_INPUT_ARRAYS = ['events', 'attributes', 'purchases'] as const;
 type TrackInputArray = (typeof TRACK_INPUT_ARRAYS)[number];
+const TRACK_INPUT_ARRAY_SET = new Set<string>(TRACK_INPUT_ARRAYS);
 
 const isTrackInputArray = (value: string): value is TrackInputArray =>
-  (TRACK_INPUT_ARRAYS as readonly string[]).includes(value);
+  TRACK_INPUT_ARRAY_SET.has(value);
 
 // `destInfo` field name for each track input_array. Kept as a plain lookup
 // so both the correlation logic and any future validation stay consistent.
@@ -71,6 +70,9 @@ const buildJobStates = (
     error: JSON.stringify(response) ?? '',
   }));
 
+const isNumberArray = (value: unknown): value is number[] =>
+  Array.isArray(value) && value.every((n) => typeof n === 'number');
+
 // Read a metadata's per-track-input-array index array. Returns undefined when
 // destInfo is missing OR the field isn't a number array — either signals we
 // can't correlate this job against warned indices.
@@ -78,11 +80,8 @@ const readIndicesFor = (
   metadata: ProxyMetdata,
   inputArray: TrackInputArray,
 ): number[] | undefined => {
-  const info = metadata.destInfo;
-  if (!info) return undefined;
-  const raw = info[DEST_INFO_KEY[inputArray]];
-  if (!Array.isArray(raw)) return undefined;
-  return raw.every((n) => typeof n === 'number') ? (raw as number[]) : undefined;
+  const raw = metadata.destInfo?.[DEST_INFO_KEY[inputArray]];
+  return isNumberArray(raw) ? raw : undefined;
 };
 
 // Build per-input-array maps from Braze `errors[]` → { index → error.type }.
@@ -90,9 +89,7 @@ const readIndicesFor = (
 // pair; when a job spans multiple warned positions, only the first hit's
 // type is surfaced verbatim.
 type WarnedIndexMap = Map<number, string>;
-const buildWarnedIndexMaps = (
-  errors: BrazeErrorEntry[],
-): Record<TrackInputArray, WarnedIndexMap> => {
+const buildWarnedIndexMaps = (errors: BrazeError[]): Record<TrackInputArray, WarnedIndexMap> => {
   const maps: Record<TrackInputArray, WarnedIndexMap> = {
     events: new Map(),
     attributes: new Map(),
@@ -105,11 +102,6 @@ const buildWarnedIndexMaps = (
   }
   return maps;
 };
-
-// True when every metadata in the batch carries a `destInfo` (present, but
-// possibly empty).
-const allMetadataHaveDestInfo = (rudderJobMetadata: ProxyMetdata[]): boolean =>
-  rudderJobMetadata.every((m) => m.destInfo !== undefined);
 
 // Correlate a single metadata against the warned index maps. Returns every
 // matching Braze `error.type` (verbatim) across the job's contributions to
@@ -126,7 +118,7 @@ const collectMatchingErrorTypes = (
     if (indices) {
       for (const idx of indices) {
         const errorType = warned[inputArray].get(idx);
-        if (typeof errorType === 'string') hits.push(errorType);
+        if (errorType) hits.push(errorType);
       }
     }
   }
@@ -140,29 +132,25 @@ const ERROR_TYPE_JOIN = '; ';
 // Map every metadata to its DeliveryJobState. Jobs that intersect at least
 // one warned index get 296 with all matching Braze error.type strings
 // concatenated (separated by `; `); others get 200 with the full response
-// body (matching the happy-path shape).
+// body (matching the happy-path shape). Pure — the caller aggregates and
+// emits the delivered-with-warning metric after inspecting the result.
 const buildTrackPartialFailureStates = (
   response: unknown,
   rudderJobMetadata: ProxyMetdata[],
   warned: Record<TrackInputArray, WarnedIndexMap>,
-  destinationId: string,
 ): DeliveryJobState[] => {
   const successBody = JSON.stringify(response) ?? '';
-  const states: DeliveryJobState[] = [];
-  for (const metadata of rudderJobMetadata) {
+  return rudderJobMetadata.map((metadata) => {
     const errorTypes = collectMatchingErrorTypes(metadata, warned);
     if (errorTypes.length > 0) {
-      stats.increment('braze_delivered_with_warning', { destination_id: destinationId });
-      states.push({
-        statusCode: HTTP_STATUS_DELIVERED_WITH_WARNING,
+      return {
+        statusCode: HTTP_STATUS_CODES.DELIVERED_WITH_WARNING,
         metadata,
         error: errorTypes.join(ERROR_TYPE_JOIN),
-      });
-    } else {
-      states.push({ statusCode: 200, metadata, error: successBody });
+      };
     }
-  }
-  return states;
+    return { statusCode: 200, metadata, error: successBody };
+  });
 };
 
 const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response => {
@@ -172,7 +160,7 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
   // Guard 1: non-2xx HTTP status — destination rejected the request entirely
   if (!isHttpStatusSuccess(status)) {
     throw new TransformerProxyError(
-      `Request failed for ${DESTINATION} with status: ${status}`,
+      failureMessage(status),
       status,
       { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status) },
       destinationResponse,
@@ -185,12 +173,14 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
   const hasErrors = Array.isArray(errors) && errors.length > 0;
   const brazeMessage = response?.message;
 
-  // Guard 2: application-level error — destination returned 2xx but with an
-  // error message (message!='success') and errors, meaning the entire request
-  // was rejected at the application layer despite the transport succeeding.
-  if (brazeMessage !== 'success' && hasErrors) {
+  // Guard 2: application-level error — destination returned 2xx but the
+  // Braze body did not carry `message: "success"`, meaning the entire
+  // request was rejected at the application layer despite the transport
+  // succeeding. This covers both `message: "failure"` responses (with or
+  // without an `errors[]` array) and responses missing the field entirely.
+  if (brazeMessage !== 'success') {
     throw new TransformerProxyError(
-      `Request failed for ${DESTINATION} with status: ${status}`,
+      failureMessage(status),
       status,
       { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status) },
       destinationResponse,
@@ -201,10 +191,15 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
 
   // Guard 3: partial failure — destination accepted the request but some items
   // within the batch were invalid. Braze signals this with message='success'
-  // and a non-empty errors array.
-  if (brazeMessage === 'success' && hasErrors) {
-    stats.increment('braze_partial_failure');
+  // and a non-empty errors array. (Guard 2 above already ensured
+  // brazeMessage === 'success' on this code path.)
+  if (hasErrors) {
     const destinationId = rudderJobMetadata[0]?.destinationId ?? '';
+    const workspaceId = rudderJobMetadata[0]?.workspaceId ?? '';
+    stats.increment('braze_partial_failure', {
+      destination_id: destinationId,
+      workspace_id: workspaceId,
+    });
 
     // Only /users/track responses carry per-item errors correlatable back to
     // originating jobs. Subscription-groups and alias-merge responses surface
@@ -212,29 +207,29 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
     // for those, every job gets 200. We dispatch on the outgoing endpoint
     // (via destinationRequest.endpointPath) rather than inspecting
     // error.input_array values so that if Braze ever adds a new sub-array on
-    // /users/track, correlation still runs.
-    if (isTrackEndpoint(destinationRequest) && allMetadataHaveDestInfo(rudderJobMetadata)) {
+    // /users/track, correlation still runs. Jobs whose metadata is missing
+    // destInfo default to 200 inside the builder (nothing to correlate).
+    if (isTrackEndpoint(destinationRequest)) {
       const warned = buildWarnedIndexMaps(errors);
-      return {
-        status,
-        message: `Request for ${DESTINATION} Processed Successfully`,
-        response: buildTrackPartialFailureStates(
-          response,
-          rudderJobMetadata,
-          warned,
-          destinationId,
-        ),
-      };
+      const states = buildTrackPartialFailureStates(response, rudderJobMetadata, warned);
+      const warnedCount = states.filter(
+        (s) => s.statusCode === HTTP_STATUS_CODES.DELIVERED_WITH_WARNING,
+      ).length;
+      if (warnedCount > 0) {
+        stats.counter('braze_delivered_with_warning', warnedCount, {
+          destination_id: destinationId,
+          workspace_id: workspaceId,
+        });
+      }
+      return { status, message: SUCCESS_MESSAGE, response: states };
     }
-    // Defensive fallback: at least one metadata is missing destInfo (an
-    // in-flight payload produced when per-job delivery-mapping was OFF at
-    // the router-transform side) OR the request targeted a sub/merge
-    // endpoint. Fall through to the uniform-200 behavior below.
+    // Non-track endpoint (sub/merge) — fall through to the uniform-200
+    // behavior below.
   }
 
   return {
     status,
-    message: `Request for ${DESTINATION} Processed Successfully`,
+    message: SUCCESS_MESSAGE,
     response: buildJobStates(response, status, rudderJobMetadata),
   };
 };

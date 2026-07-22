@@ -1,5 +1,6 @@
 jest.mock('../../../util/stats', () => ({
   increment: jest.fn(),
+  counter: jest.fn(),
   gauge: jest.fn(),
 }));
 
@@ -78,11 +79,10 @@ describe('Braze v1 networkHandler responseHandler', () => {
   });
 
   describe('partial failure — 2xx, message=success, errors present (defensive fallback)', () => {
-    it('when NO metadata carries destInfo (in-flight payload with delivery-mapping OFF), falls back to uniform-200 and increments braze_partial_failure', () => {
-      // A /users/track request completes with a partial failure, but the
-      // batch's metadata has no destInfo — the defensive check must apply
-      // the response uniformly to every metadata rather than mis-attribute
-      // the warned index to a random job.
+    it('when NO metadata carries destInfo, correlation runs but yields no hits — every job stays 200 and only braze_partial_failure is emitted', () => {
+      // A /users/track request completes with a partial failure. No job
+      // carries destInfo, so the per-job correlation finds nothing to
+      // attribute; every job defaults to 200 (the response body verbatim).
       const response = {
         message: 'success',
         events_processed: 1,
@@ -106,23 +106,29 @@ describe('Braze v1 networkHandler responseHandler', () => {
           { statusCode: 200, metadata: createMetadata(20), error: JSON.stringify(response) },
         ],
       });
-      expect(mockStats.increment).toHaveBeenCalledWith('braze_partial_failure');
-      // No 296 metric emitted on the fallback path.
-      expect(mockStats.increment).not.toHaveBeenCalledWith(
+      expect(mockStats.increment).toHaveBeenCalledWith('braze_partial_failure', {
+        destination_id: 'dest-1',
+        workspace_id: 'workspace-1',
+      });
+      // No warnings correlated → braze_delivered_with_warning counter never fires.
+      expect(mockStats.counter).not.toHaveBeenCalledWith(
         'braze_delivered_with_warning',
+        expect.anything(),
         expect.anything(),
       );
     });
 
-    it('when SOME metadata lack destInfo (mixed-version in-flight), still falls back to uniform-200', () => {
+    it('when SOME metadata lack destInfo (mixed batch), correlated jobs get 296 and uncorrelated jobs get 200', () => {
+      // Job 10 has destInfo intersecting the warned index → 296.
+      // Job 20 lacks destInfo → nothing to correlate → defaults to 200.
+      // Under today's per-job semantics we surface the warning we can
+      // attribute instead of losing it for the whole batch.
       const response = {
         message: 'success',
         events_processed: 1,
         errors: [{ type: "'external_id' is required", input_array: 'events', index: 0 }],
       };
       const destinationResponse = { response, status: 200 };
-      // Job 10 has destInfo, job 20 does not — the "all metadata have
-      // destInfo" gate must fail, forcing the whole batch to fall back.
       const rudderJobMetadata = [createMetadata(10, { eventsIndices: [0] }), createMetadata(20)];
       const destinationRequest = trackRequestFor(rudderJobMetadata);
 
@@ -132,13 +138,20 @@ describe('Braze v1 networkHandler responseHandler', () => {
         destinationRequest,
       });
 
-      for (const state of result.response) {
-        expect(state.statusCode).toBe(200);
-      }
-      expect(mockStats.increment).not.toHaveBeenCalledWith(
-        'braze_delivered_with_warning',
-        expect.anything(),
-      );
+      expect(result.response[0]).toEqual({
+        statusCode: 296,
+        metadata: rudderJobMetadata[0],
+        error: "'external_id' is required",
+      });
+      expect(result.response[1]).toEqual({
+        statusCode: 200,
+        metadata: rudderJobMetadata[1],
+        error: JSON.stringify(response),
+      });
+      expect(mockStats.counter).toHaveBeenCalledWith('braze_delivered_with_warning', 1, {
+        destination_id: 'dest-1',
+        workspace_id: 'workspace-1',
+      });
     });
 
     it('when the delivery endpoint is NOT /users/track (e.g. alias-merge), falls back to uniform-200 without inspecting destInfo', () => {
@@ -164,9 +177,13 @@ describe('Braze v1 networkHandler responseHandler', () => {
       for (const state of result.response) {
         expect(state.statusCode).toBe(200);
       }
-      expect(mockStats.increment).toHaveBeenCalledWith('braze_partial_failure');
-      expect(mockStats.increment).not.toHaveBeenCalledWith(
+      expect(mockStats.increment).toHaveBeenCalledWith('braze_partial_failure', {
+        destination_id: 'dest-1',
+        workspace_id: 'workspace-1',
+      });
+      expect(mockStats.counter).not.toHaveBeenCalledWith(
         'braze_delivered_with_warning',
+        expect.anything(),
         expect.anything(),
       );
     });
@@ -182,8 +199,9 @@ describe('Braze v1 networkHandler responseHandler', () => {
       const result = responseHandler({ destinationResponse, rudderJobMetadata });
 
       expect(result.response[0].statusCode).toBe(200);
-      expect(mockStats.increment).not.toHaveBeenCalledWith(
+      expect(mockStats.counter).not.toHaveBeenCalledWith(
         'braze_delivered_with_warning',
+        expect.anything(),
         expect.anything(),
       );
     });
@@ -215,9 +233,13 @@ describe('Braze v1 networkHandler responseHandler', () => {
         { statusCode: 200, metadata: rudderJobMetadata[0], error: JSON.stringify(response) },
         { statusCode: 296, metadata: rudderJobMetadata[1], error: "'external_id' is required" },
       ]);
-      expect(mockStats.increment).toHaveBeenCalledWith('braze_partial_failure');
-      expect(mockStats.increment).toHaveBeenCalledWith('braze_delivered_with_warning', {
+      expect(mockStats.increment).toHaveBeenCalledWith('braze_partial_failure', {
         destination_id: 'dest-1',
+        workspace_id: 'workspace-1',
+      });
+      expect(mockStats.counter).toHaveBeenCalledWith('braze_delivered_with_warning', 1, {
+        destination_id: 'dest-1',
+        workspace_id: 'workspace-1',
       });
     });
 
@@ -401,7 +423,33 @@ describe('Braze v1 networkHandler responseHandler', () => {
     });
   });
 
-  describe('application-level error — 2xx, message!=success, errors present', () => {
+  describe('application-level error — 2xx, message!=success', () => {
+    it('throws when Braze returns 2xx with message="failure" and no errors[] array', () => {
+      // Regression guard: a bare `message: 'failure'` (no errors) at 2xx
+      // used to fall through as a success. Now surfaces as an application
+      // error so downstream sees the failure instead of a silent 200.
+      const response = { message: 'failure' };
+      const destinationResponse = { response, status: 200 };
+      const rudderJobMetadata = [createMetadata(10)];
+
+      expect(() => responseHandler({ destinationResponse, rudderJobMetadata })).toThrow(
+        TransformerProxyError,
+      );
+    });
+
+    it('throws when Braze returns 2xx with no message field at all', () => {
+      // A 2xx that omits `message` entirely is treated as a failure — the
+      // v1 contract requires `message: "success"` to consider the batch
+      // delivered.
+      const response = {};
+      const destinationResponse = { response, status: 200 };
+      const rudderJobMetadata = [createMetadata(10)];
+
+      expect(() => responseHandler({ destinationResponse, rudderJobMetadata })).toThrow(
+        TransformerProxyError,
+      );
+    });
+
     it('throws TransformerProxyError with per-job entries at the 2xx HTTP status', () => {
       const response = {
         message: "Valid data must be provided in the 'attributes' field.",

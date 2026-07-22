@@ -194,10 +194,7 @@ export const getDestinationHandlerName = (destination: string): string => {
   if (hasDestination(normalized)) {
     return destinationRegistry[normalized];
   }
-  if (process.env.REJECT_UNKNOWN_DESTINATIONS === 'true') {
-    throw new ConfigurationError(`Invalid destination: ${destination}`);
-  }
-  return normalized;
+  throw new ConfigurationError(`Invalid destination: ${destination}`);
 };
 
 // ---------------------------------------------------------------------------

@@ -151,29 +151,24 @@ describe('Api tests with a mock source/destination', () => {
   ])(
     'rejects invalid destination before handler lookup: $name',
     async ({ request: makeRequest, expectedError }) => {
-      process.env.REJECT_UNKNOWN_DESTINATIONS = 'true';
       const getDestHandlerSpy = jest.spyOn(FetchHandler, 'getDestHandler');
       const getDeletionHandlerSpy = jest.spyOn(FetchHandler, 'getDeletionHandler');
       const getBatchDestinationHandlerSpy = jest.spyOn(FetchHandler, 'getBatchDestinationHandler');
       const getNetworkHandlerSpy = jest.spyOn(networkHandlerFactory, 'getNetworkHandler');
 
-      try {
-        const response = await makeRequest().set('Accept', 'application/json');
+      const response = await makeRequest().set('Accept', 'application/json');
 
-        expect(response.status).toEqual(404);
-        expect(JSON.parse(response.text).error).toEqual(expectedError);
-        expect(getDestHandlerSpy).not.toHaveBeenCalled();
-        expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
-        expect(getBatchDestinationHandlerSpy).not.toHaveBeenCalled();
-        expect(getNetworkHandlerSpy).not.toHaveBeenCalled();
-      } finally {
-        delete process.env.REJECT_UNKNOWN_DESTINATIONS;
-      }
+      expect(response.status).toEqual(404);
+      expect(JSON.parse(response.text).error).toEqual(expectedError);
+      expect(getDestHandlerSpy).not.toHaveBeenCalled();
+      expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
+      expect(getBatchDestinationHandlerSpy).not.toHaveBeenCalled();
+      expect(getNetworkHandlerSpy).not.toHaveBeenCalled();
     },
   );
 
   test('(mock destination) Processor transformation scenario with single event', async () => {
-    const destType = '__rudder_test__';
+    const destType = 'rudder_test';
     const version = 'v0';
 
     const getInputData = () => {
@@ -210,7 +205,7 @@ describe('Api tests with a mock source/destination', () => {
     ];
 
     const response = await request(server)
-      .post('/v0/destinations/__rudder_test__')
+      .post('/v0/destinations/rudder_test')
       .set('Accept', 'application/json')
       .send(getInputData());
 
@@ -220,7 +215,7 @@ describe('Api tests with a mock source/destination', () => {
   });
 
   test('(mock destination) Batching', async () => {
-    const destType = '__rudder_test__';
+    const destType = 'rudder_test';
     const version = 'v0';
 
     const getBatchInputData = () => {
@@ -263,7 +258,7 @@ describe('Api tests with a mock source/destination', () => {
   });
 
   test('(mock destination) Router transformation', async () => {
-    const destType = '__rudder_test__';
+    const destType = 'rudder_test';
     const version = 'v0';
 
     const getRouterTransformInputData = () => {
@@ -306,7 +301,7 @@ describe('Api tests with a mock source/destination', () => {
   });
 
   test('(mock destination) v0 proxy', async () => {
-    const destType = '__rudder_test__';
+    const destType = 'rudder_test';
     const version = 'v0';
 
     const getData = () => {
@@ -349,7 +344,7 @@ describe('Api tests with a mock source/destination', () => {
       });
 
     const response = await request(server)
-      .post('/v0/destinations/__rudder_test__/proxy')
+      .post('/v0/destinations/rudder_test/proxy')
       .set('Accept', 'application/json')
       .send(getData());
 
@@ -361,7 +356,7 @@ describe('Api tests with a mock source/destination', () => {
   });
 
   test('(mock destination) v1 proxy', async () => {
-    const destType = '__rudder_test__';
+    const destType = 'rudder_test';
     const version = 'v1';
 
     const getData = () => {
@@ -410,7 +405,7 @@ describe('Api tests with a mock source/destination', () => {
       });
 
     const response = await request(server)
-      .post('/v1/destinations/__rudder_test__/proxy')
+      .post('/v1/destinations/rudder_test/proxy')
       .set('Accept', 'application/json')
       .send(getData());
 

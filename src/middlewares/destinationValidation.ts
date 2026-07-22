@@ -1,18 +1,13 @@
 import { Context, Next } from 'koa';
-import logger from '../logger';
 import { isValidDestination } from '../features';
 
 const validateDestination = (ctx: Context, destination: unknown): boolean => {
   if (isValidDestination(destination)) {
     return true;
   }
-  if (process.env.REJECT_UNKNOWN_DESTINATIONS === 'true') {
-    ctx.status = 404;
-    ctx.body = { error: `Unknown destination: ${String(destination)}` };
-    return false;
-  }
-  logger.warn(`Unknown destination encountered: ${String(destination)}`);
-  return true;
+  ctx.status = 404;
+  ctx.body = { error: `Unknown destination: ${String(destination)}` };
+  return false;
 };
 
 export class DestinationValidationMiddleware {

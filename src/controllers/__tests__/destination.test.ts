@@ -44,7 +44,7 @@ const getRouterTransformInputData = () => {
       { message: { a: 'b1' }, destination: {}, metadata: { jobId: 1 } },
       { message: { a: 'b2' }, destination: {}, metadata: { jobId: 2 } },
     ],
-    destType: '__rudder_test__',
+    destType: 'rudder_test',
   };
 };
 
@@ -69,7 +69,7 @@ describe('Destination controller tests', () => {
         .fn()
         .mockImplementation((events, destinationType, version, requestMetadata) => {
           expect(events).toEqual(expectedOutput);
-          expect(destinationType).toEqual('__rudder_test__');
+          expect(destinationType).toEqual('rudder_test');
           expect(version).toEqual('v0');
 
           return events;
@@ -85,7 +85,7 @@ describe('Destination controller tests', () => {
       });
 
       const response = await request(server)
-        .post('/v0/destinations/__rudder_test__')
+        .post('/v0/destinations/rudder_test')
         .set('Accept', 'application/json')
         .send(getData());
 
@@ -117,7 +117,7 @@ describe('Destination controller tests', () => {
       mockDestinationService.doProcessorTransformation = jest
         .fn()
         .mockImplementation((events, destinationType, version, requestMetadata) => {
-          expect(destinationType).toEqual('__rudder_test__');
+          expect(destinationType).toEqual('rudder_test');
           expect(version).toEqual('v0');
 
           throw new Error('Processor transformation failed');
@@ -133,7 +133,7 @@ describe('Destination controller tests', () => {
       });
 
       const response = await request(server)
-        .post('/v0/destinations/__rudder_test__')
+        .post('/v0/destinations/rudder_test')
         .set('Accept', 'application/json')
         .send(getData());
 
@@ -170,7 +170,7 @@ describe('Destination controller tests', () => {
         .fn()
         .mockImplementation((events, destinationType, version, requestMetadata) => {
           expect(events).toEqual(expectedOutput);
-          expect(destinationType).toEqual('__rudder_test__');
+          expect(destinationType).toEqual('rudder_test');
           expect(version).toEqual('v0');
 
           return events;
@@ -264,7 +264,7 @@ describe('Destination controller tests', () => {
         .fn()
         .mockImplementation((events, destinationType, version, requestMetadata) => {
           expect(events).toEqual(expectedOutput);
-          expect(destinationType).toEqual('__rudder_test__');
+          expect(destinationType).toEqual('rudder_test');
           expect(version).toEqual('v0');
 
           return events;

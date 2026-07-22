@@ -9,6 +9,7 @@ import {
   MultiBatchRequestOutput,
   ProcessorTransformationOutput,
   ProxyMetdata,
+  ProxyV1Request,
 } from '../../../types/destinationTransformation';
 
 // Braze User Alias Object
@@ -143,15 +144,35 @@ export interface BrazeSubscriptionGroup {
   phones?: string[];
 }
 
+// Single entry in Braze's per-item partial-failure array. Braze surfaces
+// per-item validation failures inside an otherwise-2xx `/users/track`
+// response as `errors[i] = { type, input_array, index }` — the network
+// handler correlates each entry back to an originating job by looking up
+// `input_array` + `index` against the per-metadata `destInfo` positional
+// map populated on the router-transform side.
+export interface BrazeError {
+  type: string;
+  input_array: string;
+  index: number;
+}
+
 export interface BrazeResponseHandlerParams {
   destinationResponse: {
     response?: {
       message?: string;
-      errors?: unknown[];
+      errors?: BrazeError[];
     };
     status: number;
   };
   rudderJobMetadata: ProxyMetdata[];
+  // The framework's `deliver` step (nativeIntegration.ts) always forwards the
+  // original ProxyV1Request as `destinationRequest`. The v1 networkHandler
+  // uses its `endpointPath` (e.g. `'users/track'`) to decide whether to run
+  // the 296 per-item correlation logic — Braze's `/users/track` is the only
+  // endpoint that returns per-entry `errors[]`. Optional so unit-test call
+  // sites that don't need endpoint-dispatch can omit it; when absent the
+  // handler skips correlation and falls back to uniform per-job outcomes.
+  destinationRequest?: ProxyV1Request;
 }
 
 export interface BrazeUser extends BrazeUserAttributes {

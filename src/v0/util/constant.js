@@ -30,6 +30,9 @@ const HTTP_STATUS_CODES = {
   RESET_CONTENT: 205,
   PARTIAL_CONTENT: 206,
   MULTI_STATUS: 207,
+  // Rudder-server-recognized: 2xx transport success, but the destination
+  // response indicated a per-item warning worth surfacing to alerting.
+  DELIVERED_WITH_WARNING: 296,
   FILTER_EVENTS: 298,
   SUPPRESS_EVENTS: 299,
 

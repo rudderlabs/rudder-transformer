@@ -1,5 +1,10 @@
 import { Context, Next } from 'koa';
 import { DestinationValidationMiddleware } from '../destinationValidation';
+import logger from '../../logger';
+
+jest.mock('../../logger', () => ({
+  error: jest.fn(),
+}));
 
 const mockCtx = (body: unknown) =>
   ({
@@ -11,6 +16,12 @@ const mockCtx = (body: unknown) =>
 const mockNext = () => jest.fn(async () => undefined) as jest.MockedFunction<Next>;
 
 describe('DestinationValidationMiddleware', () => {
+  const mockLogger = logger as jest.Mocked<typeof logger>;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('lets malformed router payloads without destType use existing request validation', async () => {
     const ctx = mockCtx({ input: {} });
     const next = mockNext();
@@ -29,6 +40,9 @@ describe('DestinationValidationMiddleware', () => {
     await DestinationValidationMiddleware.bodyDestType(ctx, next);
 
     expect(next).not.toHaveBeenCalled();
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      'Unknown destination encountered: not_a_destination',
+    );
     expect(ctx.status).toBe(404);
     expect(ctx.body).toEqual({ error: 'Unknown destination: not_a_destination' });
   });
@@ -52,6 +66,9 @@ describe('DestinationValidationMiddleware', () => {
       await DestinationValidationMiddleware.userDeletionBody(ctx, next);
 
       expect(next).not.toHaveBeenCalled();
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Unknown destination encountered: not_a_destination',
+      );
       expect(ctx.status).toBe(404);
       expect(ctx.body).toEqual({ error: 'Unknown destination: not_a_destination' });
     });

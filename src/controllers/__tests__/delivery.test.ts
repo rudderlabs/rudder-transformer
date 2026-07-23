@@ -46,7 +46,7 @@ describe('Delivery controller tests', () => {
         .fn()
         .mockImplementation((event, destinationType, requestMetadata, version) => {
           expect(event).toEqual(getData());
-          expect(destinationType).toEqual('__rudder_test__');
+          expect(destinationType).toEqual('rudder_test');
           expect(version).toEqual('v0');
           return testOutput;
         });
@@ -57,7 +57,7 @@ describe('Delivery controller tests', () => {
         });
 
       const response = await request(server)
-        .post('/v0/destinations/__rudder_test__/proxy')
+        .post('/v0/destinations/rudder_test/proxy')
         .set('Accept', 'application/json')
         .send(getData());
 
@@ -76,7 +76,7 @@ describe('Delivery controller tests', () => {
         .fn()
         .mockImplementation((event, destinationType, requestMetadata, version) => {
           expect(event).toEqual(getData());
-          expect(destinationType).toEqual('__rudder_test__');
+          expect(destinationType).toEqual('rudder_test');
           expect(version).toEqual('v0');
           throw new Error('test error');
         });
@@ -87,7 +87,7 @@ describe('Delivery controller tests', () => {
         });
 
       const response = await request(server)
-        .post('/v0/destinations/__rudder_test__/proxy')
+        .post('/v0/destinations/rudder_test/proxy')
         .set('Accept', 'application/json')
         .send(getData());
 
@@ -119,7 +119,7 @@ describe('Delivery controller tests', () => {
         .fn()
         .mockImplementation((event, destinationType, requestMetadata, version) => {
           expect(event).toEqual(getData());
-          expect(destinationType).toEqual('__rudder_test__');
+          expect(destinationType).toEqual('rudder_test');
           expect(version).toEqual('v1');
           return testOutput;
         });
@@ -130,7 +130,7 @@ describe('Delivery controller tests', () => {
         });
 
       const response = await request(server)
-        .post('/v1/destinations/__rudder_test__/proxy')
+        .post('/v1/destinations/rudder_test/proxy')
         .set('Accept', 'application/json')
         .send(getData());
 
@@ -149,7 +149,7 @@ describe('Delivery controller tests', () => {
         .fn()
         .mockImplementation((event, destinationType, requestMetadata, version) => {
           expect(event).toEqual(getData());
-          expect(destinationType).toEqual('__rudder_test__');
+          expect(destinationType).toEqual('rudder_test');
           expect(version).toEqual('v1');
           throw new Error('test error');
         });
@@ -160,7 +160,7 @@ describe('Delivery controller tests', () => {
         });
 
       const response = await request(server)
-        .post('/v1/destinations/__rudder_test__/proxy')
+        .post('/v1/destinations/rudder_test/proxy')
         .set('Accept', 'application/json')
         .send(getData());
 

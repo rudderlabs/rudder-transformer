@@ -12,6 +12,7 @@ import {
   processBatch,
   processBatchWithDeliveryMapping,
 } from './util';
+import { isPerJobDeliveryMappingEnabled } from './config';
 import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
 import { generateRandomString } from '@rudderstack/integrations-lib';
 import {
@@ -1081,7 +1082,7 @@ const onTotalInSubArray = (outs: any[], key: 'attributes' | 'events' | 'purchase
   outs.reduce((acc, o) => acc + (o.batchedRequest.body.JSON[key]?.length ?? 0), 0);
 
 // ---------------------------------------------------------------------------
-// OFF path (default) — BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED is unset.
+// OFF path (default) — BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS is unset.
 // processBatch emits a single MultiBatchRequestOutput whose `batchedRequest`
 // is an array of every outgoing HTTP request, with a flat metadata list and
 // no `destInfo`. Group-preserving chunking, byte-size caps, and oversized-job
@@ -2781,5 +2782,51 @@ describe('formatGender', () => {
     expect(formatGender(123)).toBeNull();
     expect(formatGender({})).toBeNull();
     expect(formatGender([])).toBeNull();
+  });
+});
+
+describe('isPerJobDeliveryMappingEnabled — per-workspace rollout gate', () => {
+  const ENV_KEY = 'BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS';
+  const original = process.env[ENV_KEY];
+
+  const setEnv = (value?: string) => {
+    if (typeof value === 'string') {
+      process.env[ENV_KEY] = value;
+    } else {
+      delete process.env[ENV_KEY];
+    }
+  };
+
+  afterEach(() => setEnv(original));
+
+  it('is OFF for every workspace when unset', () => {
+    setEnv(undefined);
+    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(false);
+  });
+
+  it('is OFF for empty string and for NONE', () => {
+    setEnv('');
+    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(false);
+    setEnv('NONE');
+    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(false);
+  });
+
+  it('is ON for every workspace when ALL', () => {
+    setEnv('ALL');
+    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(true);
+    expect(isPerJobDeliveryMappingEnabled('anything')).toBe(true);
+  });
+
+  it('is ON only for the listed workspaceIds', () => {
+    setEnv('ws1,ws2');
+    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(true);
+    expect(isPerJobDeliveryMappingEnabled('ws2')).toBe(true);
+    expect(isPerJobDeliveryMappingEnabled('ws3')).toBe(false);
+  });
+
+  it('trims whitespace around the listed workspaceIds', () => {
+    setEnv('  ws1 ,  ws2  ');
+    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(true);
+    expect(isPerJobDeliveryMappingEnabled('ws2')).toBe(true);
   });
 });

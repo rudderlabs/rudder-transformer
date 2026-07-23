@@ -947,7 +947,7 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
  */
 // ===========================================================================
 // ON-path helpers & processBatchWithDeliveryMapping
-// Selected by transform.ts when BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED='true'.
+// Selected by transform.ts when BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS enables the workspace.
 // Everything above this section is bit-identical to develop.
 // ===========================================================================
 
@@ -1365,8 +1365,8 @@ const classifyJobRun = (json: unknown): JobClassification => {
 // byte-size caps per item (100 KB) and per batch (4 MB), and up-front
 // oversized-job rejection.
 //
-// Selected by `transform.ts` when `BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED`
-// is set to `'true'`.
+// Selected by `transform.ts` when `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS`
+// enables the invocation's workspace.
 // ---------------------------------------------------------------------------
 const processBatchWithDeliveryMapping = (
   transformedEvents: BrazeTransformedEvent[],

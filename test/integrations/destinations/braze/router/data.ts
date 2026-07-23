@@ -1150,7 +1150,8 @@ const basicRouterTestsWithBatchIdentityResolutionEnabled = basicRouterTests.map(
 
 // ---------------------------------------------------------------------------
 // Per-job delivery-mapping — ON path.
-// When `BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED=true`, processBatch emits one
+// When `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS` enables the workspace,
+// processBatch emits one
 // BatchRequestOutput per outgoing HTTP request (instead of one
 // MultiBatchRequestOutput with batchedRequest[]). Items are coalesced by
 // endpoint type across the entire input — insertion-order runs are NOT
@@ -1612,7 +1613,7 @@ const perJobDeliveryMappingOnTests = [
       },
     },
     envOverrides: {
-      BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED: 'true',
+      BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS: 'ALL',
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
     },
   },
@@ -1814,7 +1815,7 @@ const perJobDeliveryMappingOnTests = [
       },
     },
     envOverrides: {
-      BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED: 'true',
+      BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS: 'ALL',
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
     },
   },

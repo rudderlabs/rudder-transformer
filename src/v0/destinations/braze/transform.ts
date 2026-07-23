@@ -666,7 +666,7 @@ const processRouterDest = async (
   // `destInfo` positional map (consumed by the v1 networkHandler's 296
   // correlation). Default (OFF) preserves the legacy single
   // MultiBatchRequestOutput shape.
-  return isPerJobDeliveryMappingEnabled()
+  return isPerJobDeliveryMappingEnabled(destination.WorkspaceID)
     ? processBatchWithDeliveryMapping(allTransfomredEvents)
     : processBatch(allTransfomredEvents);
 };

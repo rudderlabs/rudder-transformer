@@ -1,4 +1,5 @@
 import { getMappingConfig } from '../../util';
+import { isFeatureEnabled } from '../../../util/featureFlags';
 import type { BrazeEndpointDetails } from './types';
 
 const ConfigCategory = {
@@ -106,16 +107,25 @@ const SUBSCRIPTION_BRAZE_MAX_REQ_COUNT = 25;
 const DEL_MAX_BATCH_SIZE = 50;
 const DESTINATION = 'braze';
 
-// Rollout gate for the per-job delivery-mapping output shape (INT-6808 +
-// INT-6634). When OFF (default), processBatch emits the legacy single
-// MultiBatchRequestOutput with a flat metadata list and no destInfo.
+// Per-workspace rollout gate for the per-job delivery-mapping output shape
+// (INT-6808 + INT-6634). When OFF (default), processBatch emits the legacy
+// single MultiBatchRequestOutput with a flat metadata list and no destInfo.
 // When ON, processBatch emits one BatchRequestOutput per outgoing HTTP
 // request, with per-metadata destInfo positional maps used by the v1
 // networkHandler to correlate Braze per-item warnings back to jobs.
-// Read dynamically (not at module load) so tests and rollout can flip the
-// flag between runs without a process restart.
-const isPerJobDeliveryMappingEnabled = () =>
-  process.env.BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED === 'true';
+//
+// Delegates to the shared per-workspace feature-flag reader, with
+// BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS as an ENABLE (allow) list so the
+// ON path can be rolled out to a subset of workspaces:
+//   - unset (default): OFF for every workspace
+//   - 'ALL':           ON for every workspace
+//   - 'ws1,ws2,…':     ON only for the listed workspaceIds
+//   - any other value: OFF (not ALL, not a listed id)
+// isFeatureEnabled reads process.env dynamically (not cached at module load) so
+// the component-test envOverrides and a rollout config change take effect
+// without a process restart.
+const isPerJobDeliveryMappingEnabled = (workspaceId: string): boolean =>
+  isFeatureEnabled('BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS', workspaceId);
 
 const CustomAttributeOperationTypes = {
   REMOVE: 'remove',

@@ -331,7 +331,7 @@ export type BrazeTransformedEvent = {
   authErrorCategory?: string;
 };
 
-// `processBatch` emits either shape depending on `BRAZE_PER_JOB_DELIVERY_MAPPING_ENABLED`:
+// `processBatch` emits either shape depending on `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS`:
 // - OFF (default): a single `MultiBatchRequestOutput` per invocation, its
 //   `batchedRequest` an array of every outgoing HTTP request across track/
 //   subscription/merge, and a flat success-metadata list — matches the

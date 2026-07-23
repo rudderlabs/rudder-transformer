@@ -1,6 +1,6 @@
 name: Commitlint
 
-on: [push]
+on: [push, pull_request]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
@@ -41,6 +41,10 @@ jobs:
           npm --version
           npx commitlint --version
 
-      - name: Lint commits
-        run: |
-          npx --no-install commitlint --from=HEAD~1 --to=HEAD --verbose
+      - name: Validate current commit (last commit) with commitlint
+        if: github.event_name == 'push'
+        run: npx --no-install commitlint --last --verbose
+
+      - name: Validate PR commits with commitlint
+        if: github.event_name == 'pull_request'
+        run: npx --no-install commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose

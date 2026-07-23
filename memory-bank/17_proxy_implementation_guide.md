@@ -903,6 +903,27 @@ const getResponseStrategy = (endpoint, response) => {
 };
 ```
 
+### 4. networkHandler present but transformerProxy not enabled
+
+**Problem**: A destination has a `networkHandler` (delivery proxy), but `transformerProxy` is not enabled for it in the rudder-server config. rudder-server then delivers directly and bypasses the networkHandler, so any request-building or delivery logic that lives only in the handler never executes — deliveries fail. This most often bites **open-source / self-hosted** users, who (unlike managed/SaaS deployments) are usually unaware of the `transformerProxy` flag and never set it.
+
+**Example**: GAEC (`google_adwords_enhanced_conversions`) builds the actual Google Ads API URL and performs delivery inside its networkHandler (via the Google Ads SDK) — the transform's `deliveryRequest` sets only `params`, `headers`, and `body`, and leaves `endpoint` empty on purpose. When `transformerProxy` is not enabled, rudder-server attempts direct delivery using that empty `endpoint`, producing an error like:
+
+```json
+{
+  "response": "504 Unable to make \"POST\" request for URL : \"\". Error: Post \"?accessToken=xxx&customerId=1225016906&developerToken=xxxx&event=Contact+%28Copy+Test%29&loginCustomerId=&subAccount=false\": unsupported protocol scheme \"\"",
+  "routerSubStage": "router_dest_delivery",
+  "payloadStage": "router_input"
+}
+```
+
+The tell-tale signs: an **empty URL** (everything after `?` is just the serialized `params`), `unsupported protocol scheme ""`, and `routerSubStage: "router_dest_delivery"` (direct delivery, not the proxy). The fix is to set `transformerProxy: true` for the destination so rudder-server routes delivery through the networkHandler, which then constructs the real endpoint.
+
+**Solution**:
+
+- Whenever you add or change a `networkHandler` for a destination, enable `transformerProxy: true` for that destination in the rudder-server Router config (`Router.<DEST_UPPERCASE>.transformerProxy`).
+- Call this out in the PR description and release notes so **self-hosted users know to enable the flag** on upgrade.
+
 ## Migrating from Proxy v0 to Proxy v1
 
 Migrating a destination from proxy v0 to proxy v1 involves creating a new network handler that supports the v1 response format and handles partial batch failures. Here's a step-by-step guide for migrating:

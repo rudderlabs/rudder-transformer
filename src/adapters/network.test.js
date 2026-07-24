@@ -1,5 +1,6 @@
 const mockLoggerInstance = {
   info: jest.fn(),
+  warn: jest.fn(),
   error: jest.fn(),
 };
 const {
@@ -561,6 +562,7 @@ describe('fireHTTPStats tests', () => {
 describe('logging in http methods', () => {
   beforeEach(() => {
     mockLoggerInstance.info.mockClear();
+    mockLoggerInstance.warn.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
   });
   test('post - when proper metadata(object) is sent should call logger without error', async () => {
@@ -591,9 +593,17 @@ describe('logging in http methods', () => {
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.info).not.toHaveBeenCalledWith(
+      ' [DT] /m/n/o request',
+      expect.objectContaining({ body: {} }),
+    );
+    expect(mockLoggerInstance.info).not.toHaveBeenCalledWith(
+      ' [DT] /m/n/o response',
+      expect.objectContaining({ body: { a: 1, b: 2, c: 'abc' } }),
+    );
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: {},
       destType: 'DT',
       destinationId: 'd1',
@@ -603,7 +613,7 @@ describe('logging in http methods', () => {
       method: 'post',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
@@ -639,7 +649,7 @@ describe('logging in http methods', () => {
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(0);
   });
 
   test('post - when metadata is string should call logger without error', async () => {
@@ -665,7 +675,7 @@ describe('logging in http methods', () => {
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(0);
   });
 
   test('post - when proper metadata(Array) is sent should call logger without error', async () => {
@@ -714,10 +724,10 @@ describe('logging in http methods', () => {
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(metadata.length * 2);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(metadata.length * 2);
 
     [1, 2, 3].forEach((i) => {
-      expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(i, ' [DT] /m/n/o request', {
+      expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(i, ' [DT] /m/n/o request', {
         body: {},
         destType: 'DT',
         destinationId: 'd1',
@@ -727,7 +737,7 @@ describe('logging in http methods', () => {
         method: 'post',
       });
 
-      expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(
+      expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(
         i + metadata.length,
         ' [DT] /m/n/o response',
         {
@@ -776,7 +786,7 @@ describe('logging in http methods', () => {
       expect.objectContaining({}),
     );
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(0);
   });
 
   test('get - when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
@@ -806,7 +816,7 @@ describe('logging in http methods', () => {
       expect.objectContaining({}),
     );
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(0);
   });
 
   test('constructor - when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
@@ -840,13 +850,14 @@ describe('logging in http methods', () => {
       }),
     );
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(0);
   });
 });
 
 describe('httpDELETE tests', () => {
   beforeEach(() => {
     mockLoggerInstance.info.mockClear();
+    mockLoggerInstance.warn.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
     axios.delete.mockClear();
   });
@@ -879,9 +890,9 @@ describe('httpDELETE tests', () => {
       Error,
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: undefined,
       destType: 'DT',
       destinationId: 'd1',
@@ -891,7 +902,7 @@ describe('httpDELETE tests', () => {
       method: 'delete',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
@@ -909,6 +920,7 @@ describe('httpDELETE tests', () => {
 describe('httpPUT tests', () => {
   beforeEach(() => {
     mockLoggerInstance.info.mockClear();
+    mockLoggerInstance.warn.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
     axios.put.mockClear();
   });
@@ -941,9 +953,9 @@ describe('httpPUT tests', () => {
       Error,
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: {},
       destType: 'DT',
       destinationId: 'd1',
@@ -953,7 +965,7 @@ describe('httpPUT tests', () => {
       method: 'put',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
@@ -971,6 +983,7 @@ describe('httpPUT tests', () => {
 describe('httpPATCH tests', () => {
   beforeEach(() => {
     mockLoggerInstance.info.mockClear();
+    mockLoggerInstance.warn.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
     axios.patch.mockClear();
   });
@@ -1003,9 +1016,9 @@ describe('httpPATCH tests', () => {
       Error,
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.warn).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: {},
       destType: 'DT',
       destinationId: 'd1',
@@ -1015,7 +1028,7 @@ describe('httpPATCH tests', () => {
       method: 'patch',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.warn).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',

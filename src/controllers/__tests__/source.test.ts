@@ -102,7 +102,7 @@ describe('Source controller tests', () => {
       mockSourceService.sourceTransformRoutine = jest.fn().mockResolvedValue([
         {
           output: {
-            batch: [{ event: 'missing required type' }],
+            batch: 'not-an-array',
           },
         },
       ]);

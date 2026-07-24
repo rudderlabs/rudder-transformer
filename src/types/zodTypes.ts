@@ -4,6 +4,14 @@ import { isHttpStatusSuccess } from '../v0/util';
 import { HTTP_CUSTOM_STATUS_CODES } from '../constants';
 import { RudderMessageSchema } from './rudderEvents';
 
+const DestinationRequestBodySchema = z.object({
+  JSON: z.unknown().optional(),
+  JSON_ARRAY: z.unknown().optional(),
+  XML: z.unknown().optional(),
+  FORM: z.unknown().optional(),
+  GZIP: z.unknown().optional(),
+});
+
 const ProcessorTransformationOutputSchema = z.object({
   version: z.string(),
   type: z.string(),
@@ -13,24 +21,23 @@ const ProcessorTransformationOutputSchema = z.object({
   userId: z.string().optional(),
   headers: z.record(z.unknown()).optional(),
   params: z.record(z.unknown()).optional(),
-  body: z
-    .object({
-      JSON: z.record(z.unknown()).optional(),
-      JSON_ARRAY: z.record(z.unknown()).optional(),
-      XML: z.record(z.unknown()).optional(),
-      FORM: z.record(z.unknown()).optional(),
-      GZIP: z.record(z.unknown()).optional(),
-    })
-    .optional(),
+  body: DestinationRequestBodySchema.optional(),
   files: z.record(z.unknown()).optional(),
 });
 
 const STAT_TAGS_ERROR_MESSAGE = "statTags and error can't be empty when status is not a 2XX";
+const DELIVERY_STAT_TAGS_ERROR_MESSAGE = "statTags can't be empty when status is not a 2XX";
 const OUTPUT_REQUIRED_FOR_SUCCESS_MESSAGE = "output can't be empty when status is 2XX";
+
+const isFilteredResponse = (statusCode: number | undefined) =>
+  statusCode === HTTP_CUSTOM_STATUS_CODES.FILTERED;
+
+const isSuccessfulResponseWithPayload = (statusCode: number | undefined) =>
+  statusCode !== undefined && isHttpStatusSuccess(statusCode) && !isFilteredResponse(statusCode);
 
 const commonProcessorSchema = z.object({
   output: ProcessorTransformationOutputSchema.optional(),
-  metadata: z.record(z.unknown()),
+  metadata: z.record(z.unknown()).optional(),
   statusCode: z.number(),
   error: z.string().optional(),
   statTags: z.record(z.unknown()).optional(),
@@ -58,7 +65,7 @@ export const ProcessorTransformationResponseSchema = commonProcessorSchema
   )
   .refine(
     (data) => {
-      if (isHttpStatusSuccess(data.statusCode)) {
+      if (isSuccessfulResponseWithPayload(data.statusCode)) {
         return isDefinedAndNotNullAndNotEmpty(data.output);
       }
       return true;
@@ -74,11 +81,8 @@ export const ProcessorTransformationResponseListSchema = z.array(
 );
 
 const commonRouterSchema = z.object({
-  batchedRequest: z
-    .array(ProcessorTransformationOutputSchema)
-    .or(ProcessorTransformationOutputSchema)
-    .optional(),
-  metadata: z.array(z.record(z.unknown())), // array of metadata
+  batchedRequest: z.unknown().optional(),
+  metadata: z.array(z.unknown()).optional(), // array of metadata
   destination: z.record(z.unknown()).optional(),
   batched: z.boolean().optional(),
   statusCode: z.number().optional(),
@@ -104,7 +108,7 @@ export const RouterTransformationResponseSchema = commonRouterSchema
   )
   .refine(
     (data) => {
-      if (data.statusCode === undefined || isHttpStatusSuccess(data.statusCode)) {
+      if (data.statusCode === undefined || isSuccessfulResponseWithPayload(data.statusCode)) {
         return isDefinedAndNotNullAndNotEmpty(data.batchedRequest);
       }
       return true;
@@ -139,15 +143,7 @@ export const ProxyV0RequestSchema = z.object({
   userId: z.string(),
   headers: z.record(z.unknown()).optional(),
   params: z.record(z.unknown()).optional(),
-  body: z
-    .object({
-      JSON: z.record(z.unknown()).optional(),
-      JSON_ARRAY: z.record(z.unknown()).optional(),
-      XML: z.record(z.unknown()).optional(),
-      FORM: z.record(z.unknown()).optional(),
-      GZIP: z.record(z.unknown()).optional(),
-    })
-    .optional(),
+  body: DestinationRequestBodySchema.optional(),
   files: z.record(z.unknown()).optional(),
   metadata: ProxyMetadataSchema,
   destinationConfig: z.record(z.unknown()),
@@ -162,14 +158,7 @@ export const ProxyV1RequestSchema = z.object({
   userId: z.string(),
   headers: z.record(z.unknown()).optional(),
   params: z.record(z.unknown()).optional(),
-  body: z
-    .object({
-      JSON: z.record(z.unknown()).optional(),
-      JSON_ARRAY: z.record(z.unknown()).optional(),
-      XML: z.record(z.unknown()).optional(),
-      FORM: z.record(z.unknown()).optional(),
-    })
-    .optional(),
+  body: DestinationRequestBodySchema.optional(),
   files: z.record(z.unknown()).optional(),
   metadata: z.array(ProxyMetadataSchema),
   destinationConfig: z.record(z.unknown()),
@@ -207,12 +196,7 @@ export const DeliveryV0ResponseSchema = z
       message: "destinationResponse can't be empty when status is 2XX",
       path: ['destinationResponse'],
     },
-  )
-  .refine(validateStatTags, {
-    // eslint-disable-next-line sonarjs/no-duplicate-string
-    message: "statTags can't be empty when status is not a 2XX",
-    path: ['statTags'], // Pointing out which field is invalid
-  });
+  );
 
 export const DeliveryV0ResponseSchemaForOauth = z
   .object({
@@ -230,7 +214,7 @@ export const DeliveryV0ResponseSchemaForOauth = z
     },
   )
   .refine(validateStatTags, {
-    message: "statTags can't be empty when status is not a 2XX",
+    message: DELIVERY_STAT_TAGS_ERROR_MESSAGE,
     path: ['statTags'], // Pointing out which field is invalid
   })
   .refine(validateAuthErrorCategory, {
@@ -241,21 +225,16 @@ export const DeliveryV0ResponseSchemaForOauth = z
 const DeliveryJobStateSchema = z.object({
   error: z.string(),
   statusCode: z.number(),
-  metadata: ProxyMetadataSchema,
+  metadata: z.record(z.unknown()),
 });
 
-export const DeliveryV1ResponseSchema = z
-  .object({
-    status: z.number(),
-    message: z.string(),
-    statTags: z.record(z.unknown()).optional(),
-    authErrorCategory: z.string().optional(),
-    response: z.array(DeliveryJobStateSchema),
-  })
-  .refine(validateStatTags, {
-    message: "statTags can't be empty when status is not a 2XX",
-    path: ['statTags'], // Pointing out which field is invalid
-  });
+export const DeliveryV1ResponseSchema = z.object({
+  status: z.number(),
+  message: z.string(),
+  statTags: z.record(z.unknown()).optional(),
+  authErrorCategory: z.string().optional(),
+  response: z.array(DeliveryJobStateSchema),
+});
 
 export const DeliveryV1ResponseSchemaForOauth = z
   .object({
@@ -266,7 +245,7 @@ export const DeliveryV1ResponseSchemaForOauth = z
     response: z.array(DeliveryJobStateSchema),
   })
   .refine(validateStatTags, {
-    message: "statTags can't be empty when status is not a 2XX",
+    message: DELIVERY_STAT_TAGS_ERROR_MESSAGE,
     path: ['statTags'], // Pointing out which field is invalid
   })
   .refine(validateAuthErrorCategory, {
@@ -295,7 +274,7 @@ export const ProcessorStreamingResponseSchema = commonProcessorSchema
   )
   .refine(
     (data) => {
-      if (isHttpStatusSuccess(data.statusCode)) {
+      if (isSuccessfulResponseWithPayload(data.statusCode)) {
         return isDefinedAndNotNullAndNotEmpty(data.output);
       }
       return true;
@@ -329,7 +308,7 @@ export const RouterStreamingResponseSchema = commonRouterSchema
   )
   .refine(
     (data) => {
-      if (data.statusCode === undefined || isHttpStatusSuccess(data.statusCode)) {
+      if (data.statusCode === undefined || isSuccessfulResponseWithPayload(data.statusCode)) {
         return isDefinedAndNotNullAndNotEmpty(data.batchedRequest);
       }
       return true;
@@ -361,7 +340,7 @@ export const RouterTransformationResponseOutputSchema = z.object({
 });
 
 const SourceTransformationOutputSchema = z.object({
-  batch: z.array(RudderMessageSchema),
+  batch: z.array(z.record(z.unknown())),
 });
 
 export const SourceTransformationSuccessResponseSchema = z

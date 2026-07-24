@@ -15,12 +15,15 @@ steps:
         "message type " + .message.type + " is not supported");
   - name: setMessageType
     template: |
-      $.context.messageType = .message.type.toLowerCase()
+      $.context.messageType = .message.type.toLowerCase();
+      $.context.endpointHost = .destination.Config.dataResidency === 'eu' ?
+        'https://c.eu.heap-api.com' :
+        'https://heapanalytics.com';
   - name: identifyPayload
     condition: $.context.messageType === {{$.EventType.IDENTIFY}}
     template: |
       $.assert(.message.traits ?? .message.context.traits, "traits are required");
-      $.context.endpoint = 'https://heapanalytics.com/api/add_user_properties';
+      $.context.endpoint = $.context.endpointHost + '/api/add_user_properties';
       $.context.payload = .message.({
         identity: {{{{$.getGenericPaths("userId", "||")}}}},
         properties: $.flattenJson(.traits ?? .context.traits){~["idempotencyKey"]},
@@ -30,7 +33,7 @@ steps:
     condition: $.context.messageType === {{$.EventType.TRACK}}
     template: |
       $.assert(.message.event, "event is required");
-      $.context.endpoint = 'https://heapanalytics.com/api/track';
+      $.context.endpoint = $.context.endpointHost + '/api/track';
       $.context.payload = .message.({
         identity: {{{{$.getGenericPaths("userId", "||")}}}},
         properties: $.flattenJson(.properties){~["idempotencyKey"]},

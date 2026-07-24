@@ -3,7 +3,6 @@ const SqlString = require('sqlstring');
 const isString = require('lodash/isString');
 const { get, set, cloneDeep } = require('lodash');
 const {
-  AbortedError,
   ConfigurationError,
   InstrumentationError,
   NetworkError,
@@ -72,23 +71,6 @@ const validateDestinationConfig = ({ Config }) => {
 };
 
 /**
- * Determines whether to use batch fetching for conversion metadata.
- *
- * When enabled (true):
- * - Conversion action IDs and custom variables are fetched in batches
- *   during the transformation phase
- * - Reduces API calls and improves performance
- * - Data is cached and reused across events
- *
- * When disabled (false):
- * - Legacy flow: fetches conversion data per-request in network handler
- * - One API call per event (slower but battle-tested)
- *
- * @returns {boolean} true to enable batch fetching, false for legacy per-request flow
- */
-const isClickCallBatchingEnabled = () => process.env.GAOC_ENABLE_BATCH_FETCHING === 'true';
-
-/**
  * Constructs HTTP request headers for Google Ads API calls
  *
  * This function builds the required headers for authenticating and routing requests to the Google Ads API.
@@ -131,60 +113,6 @@ const getReqHeaders = (Config, metadata, passToken = false) => {
   }
 
   return headers;
-};
-
-/**
- * get conversionAction using the conversion name using searchStream endpoint
- * @param {*} customerId
- * @param {*} event
- * @param {*} headers
- * @returns
- */
-const getConversionActionId = async ({ headers, params, metadata }) => {
-  const conversionActionIdKey = sha256(params.customerId + params.event).toString();
-  return conversionActionIdCache.get(conversionActionIdKey, async () => {
-    const queryString = SqlString.format(
-      'SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = ?',
-      [params.event],
-    );
-    const data = {
-      query: queryString,
-    };
-    const endpoint = SEARCH_STREAM.replace(CUSTOMER_ID_PARAM, params.customerId);
-    const requestOptions = {
-      headers,
-    };
-    let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
-      destType: 'google_adwords_offline_conversions',
-      feature: 'transformation',
-      endpointPath: `/googleAds:searchStream`,
-      requestMethod: 'POST',
-      module: 'dataDelivery',
-      metadata,
-    });
-    searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    const { response, status } = searchStreamResponse;
-    if (!isHttpStatusSuccess(status)) {
-      throw new AbortedError(
-        `[Google Ads Offline Conversions]:: ${JSON.stringify(
-          response,
-        )} during google_ads_offline_conversions response transformation`,
-        status,
-        response,
-        getAuthErrCategory(searchStreamResponse),
-      );
-    }
-    const conversionAction = get(
-      searchStreamResponse,
-      'response.0.results.0.conversionAction.resourceName',
-    );
-    if (!conversionAction) {
-      throw new AbortedError(
-        `Unable to find conversionActionId for conversion:${params.event}. Most probably the conversion name in Google dashboard and Rudderstack dashboard are not same.`,
-      );
-    }
-    return conversionAction;
-  });
 };
 
 const generateItemListFromProducts = (products) => {
@@ -307,7 +235,7 @@ const getCallConversionPayload = (
   filteredCustomerId,
   eventLevelConsentsData,
   conversionActionId,
-  customVariableList,
+  customVariableList = [],
 ) => {
   const payload = constructPayload(message, trackCallConversionsMapping);
   const endpointDetails = {
@@ -315,12 +243,11 @@ const getCallConversionPayload = (
     path: CALL_CONVERSION_ENDPOINT_PATH,
   };
 
-  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
-  if (shouldBatchClickCallConversionEvents) {
+  if (isDefinedAndNotNullAndNotEmpty(conversionActionId)) {
     set(payload, 'conversions[0].conversionAction', conversionActionId);
-    if (customVariableList.length > 0) {
-      set(payload, 'conversions.0.customVariables', customVariableList);
-    }
+  }
+  if (customVariableList.length > 0) {
+    set(payload, 'conversions.0.customVariables', customVariableList);
   }
   // here conversions[0] should be present because there are some mandatory properties mapped in the mapping json.
   payload.conversions[0].consent = finaliseConsent(consentConfigMap, eventLevelConsentsData);
@@ -354,9 +281,8 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData, conver
     payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000
   }`;
 
-  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
   // add convertion conversion_action to transaction_attribute
-  if (shouldBatchClickCallConversionEvents) {
+  if (isDefinedAndNotNullAndNotEmpty(conversionActionId)) {
     payload.operations.create.transaction_attribute.conversion_action = conversionActionId;
   }
 
@@ -483,7 +409,7 @@ const getClickConversionPayloadAndEndpoint = (
   filteredCustomerId,
   eventLevelConsent,
   conversionActionId,
-  customVariableList,
+  customVariableList = [],
 ) => {
   const email = getFieldValueFromMessage(message, 'emailOnly');
   const phone = getFieldValueFromMessage(message, 'phone');
@@ -518,12 +444,11 @@ const getClickConversionPayloadAndEndpoint = (
     set(payload, 'conversions[0].cartData.items', itemList);
   }
 
-  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
-  if (shouldBatchClickCallConversionEvents) {
+  if (isDefinedAndNotNullAndNotEmpty(conversionActionId)) {
     set(payload, 'conversions[0].conversionAction', conversionActionId);
-    if (customVariableList.length > 0) {
-      set(payload, 'conversions[0].customVariables', customVariableList);
-    }
+  }
+  if (customVariableList.length > 0) {
+    set(payload, 'conversions[0].customVariables', customVariableList);
   }
 
   payload = populateUserIdentifier({ email, phone, properties, payload, UserIdentifierSource });
@@ -858,7 +783,6 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
 module.exports = {
   validateDestinationConfig,
   generateItemListFromProducts,
-  getConversionActionId,
   removeHashToSha256TypeFromMappingJson,
   getStoreConversionPayload,
   requestBuilder,
@@ -870,7 +794,6 @@ module.exports = {
   updateConversion,
   getAddConversionPayload,
   getListCustomVariable,
-  isClickCallBatchingEnabled,
   getConversionActionIds,
   getConversionCustomVariables,
 };

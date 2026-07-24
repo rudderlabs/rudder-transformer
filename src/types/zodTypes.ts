@@ -19,6 +19,7 @@ const ProcessorTransformationOutputSchema = z.object({
       JSON_ARRAY: z.record(z.unknown()).optional(),
       XML: z.record(z.unknown()).optional(),
       FORM: z.record(z.unknown()).optional(),
+      GZIP: z.record(z.unknown()).optional(),
     })
     .optional(),
   files: z.record(z.unknown()).optional(),
@@ -79,8 +80,8 @@ const commonRouterSchema = z.object({
     .optional(),
   metadata: z.array(z.record(z.unknown())), // array of metadata
   destination: z.record(z.unknown()).optional(),
-  batched: z.boolean(),
-  statusCode: z.number(),
+  batched: z.boolean().optional(),
+  statusCode: z.number().optional(),
   error: z.string().optional(),
   statTags: z.record(z.unknown()).optional(),
 });
@@ -88,7 +89,7 @@ const commonRouterSchema = z.object({
 export const RouterTransformationResponseSchema = commonRouterSchema
   .refine(
     (data) => {
-      if (!isHttpStatusSuccess(data.statusCode)) {
+      if (data.statusCode !== undefined && !isHttpStatusSuccess(data.statusCode)) {
         return (
           isDefinedAndNotNullAndNotEmpty(data.statTags) ||
           isDefinedAndNotNullAndNotEmpty(data.error)
@@ -103,7 +104,7 @@ export const RouterTransformationResponseSchema = commonRouterSchema
   )
   .refine(
     (data) => {
-      if (isHttpStatusSuccess(data.statusCode)) {
+      if (data.statusCode === undefined || isHttpStatusSuccess(data.statusCode)) {
         return isDefinedAndNotNullAndNotEmpty(data.batchedRequest);
       }
       return true;
@@ -111,18 +112,6 @@ export const RouterTransformationResponseSchema = commonRouterSchema
     {
       message: "batchedRequest can't be empty when status is 2XX",
       path: ['batchedRequest'], // Pointing out which field is invalid
-    },
-  )
-  .refine(
-    (data) => {
-      if (isHttpStatusSuccess(data.statusCode)) {
-        return isDefinedAndNotNullAndNotEmpty(data.destination);
-      }
-      return true;
-    },
-    {
-      message: "destination can't be empty when status is 2XX",
-      path: ['destination'],
     },
   );
 
@@ -156,6 +145,7 @@ export const ProxyV0RequestSchema = z.object({
       JSON_ARRAY: z.record(z.unknown()).optional(),
       XML: z.record(z.unknown()).optional(),
       FORM: z.record(z.unknown()).optional(),
+      GZIP: z.record(z.unknown()).optional(),
     })
     .optional(),
   files: z.record(z.unknown()).optional(),
@@ -324,7 +314,7 @@ export const RouterStreamingResponseSchema = commonRouterSchema
   })
   .refine(
     (data) => {
-      if (!isHttpStatusSuccess(data.statusCode)) {
+      if (data.statusCode !== undefined && !isHttpStatusSuccess(data.statusCode)) {
         return (
           isDefinedAndNotNullAndNotEmpty(data.statTags) ||
           isDefinedAndNotNullAndNotEmpty(data.error)
@@ -339,7 +329,7 @@ export const RouterStreamingResponseSchema = commonRouterSchema
   )
   .refine(
     (data) => {
-      if (isHttpStatusSuccess(data.statusCode)) {
+      if (data.statusCode === undefined || isHttpStatusSuccess(data.statusCode)) {
         return isDefinedAndNotNullAndNotEmpty(data.batchedRequest);
       }
       return true;
@@ -347,18 +337,6 @@ export const RouterStreamingResponseSchema = commonRouterSchema
     {
       message: "batchedRequest can't be empty when status is 2XX",
       path: ['batchedRequest'], // Pointing out which field is invalid
-    },
-  )
-  .refine(
-    (data) => {
-      if (isHttpStatusSuccess(data.statusCode)) {
-        return isDefinedAndNotNullAndNotEmpty(data.destination);
-      }
-      return true;
-    },
-    {
-      message: "destination can't be empty when status is 2XX",
-      path: ['destination'],
     },
   );
 

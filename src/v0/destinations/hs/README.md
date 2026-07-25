@@ -282,7 +282,7 @@ The HubSpot destination uniquely supports two API versions with automatic routin
   - Endpoints: `/contacts/v1/*`, `https://track.hubspot.com/v1/event`
 
 - **New API (v3)**: Current CRM API with enhanced features
-  - File: `HSTransform-v2.js`
+  - File: `HSTransform-v3.ts`
   - Best for: New integrations, custom objects, rETL
   - Endpoints: `/crm/v3/*`, `/events/v3/send`
 

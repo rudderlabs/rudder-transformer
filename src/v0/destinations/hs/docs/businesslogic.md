@@ -141,7 +141,7 @@ This document details the business logic, field mappings, and transformation flo
 └─────────────────────┘          └─────────────────────┘
 ```
 
-**Code Reference**: [HSTransform-v2.js:75-193](../HSTransform-v2.js#L75-L193)
+**Code Reference**: [HSTransform-v3.ts:75-193](../HSTransform-v3.ts#L75-L193)
 
 ### rETL Flow (Both APIs)
 
@@ -357,7 +357,7 @@ HubSpot accepts empty string to clear property values:
 └─────────────────────────────────────────────────────────┘
 ```
 
-**Code Reference**: [HSTransform-v2.js:202-246](../HSTransform-v2.js#L202-L246)
+**Code Reference**: [HSTransform-v3.ts:202-246](../HSTransform-v3.ts#L202-L246)
 
 ## Track Field Mappings
 
@@ -553,7 +553,7 @@ Update Contacts:
 }
 ```
 
-**Code Reference**: [HSTransform-v2.js:373-505](../HSTransform-v2.js#L373-L505)
+**Code Reference**: [HSTransform-v3.ts:373-505](../HSTransform-v3.ts#L373-L505)
 
 ### Track Batching
 
@@ -750,9 +750,9 @@ Update Contacts:
 - [util.js:48-63](../util.js#L48-L63)
 - [util.js:334-347](../util.js#L334-L347)
 - [util.js:167-195](../util.js#L167-L195)
-- [HSTransform-v2.js:80-82](../HSTransform-v2.js#L80-L82)
-- [HSTransform-v2.js:143-145](../HSTransform-v2.js#L143-L145)
-- [HSTransform-v2.js:217-222](../HSTransform-v2.js#L217-L222)
+- [HSTransform-v3.ts:80-82](../HSTransform-v3.ts#L80-L82)
+- [HSTransform-v3.ts:143-145](../HSTransform-v3.ts#L143-L145)
+- [HSTransform-v3.ts:217-222](../HSTransform-v3.ts#L217-L222)
 
 ## Use Cases
 
@@ -1113,7 +1113,7 @@ Only fetch properties when needed:
   - `processLegacyTrack()` - Track transformation
   - `legacyBatchEvents()` - Batch handler
 
-- **HSTransform-v2.js**: New API (v3)
+- **HSTransform-v3.ts**: New API (v3)
   - `processIdentify()` - Identify transformation
   - `processTrack()` - Track transformation
   - `batchEvents()` - Batch handler with deduplication

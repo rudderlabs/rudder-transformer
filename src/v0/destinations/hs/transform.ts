@@ -7,8 +7,8 @@ import {
   groupEventsByType,
 } from '../../util';
 import { API_VERSION } from './config';
-import { processLegacyIdentify, processLegacyTrack, legacyBatchEvents } from './HSTransform-v1';
-import { processIdentify, processTrack, batchEvents } from './HSTransform-v3';
+import { processLegacyIdentify, processLegacyTrack, legacyBatchEvents } from './es-retl-v1';
+import { processIdentify, processTrack, batchEvents } from './es-retl-v3';
 import {
   splitEventsForCreateUpdate,
   fetchFinalSetOfTraits,

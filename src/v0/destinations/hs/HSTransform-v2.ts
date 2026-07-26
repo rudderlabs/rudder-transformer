@@ -36,8 +36,15 @@ import {
   CRM_CREATE_UPDATE_ALL_OBJECTS,
   MAX_BATCH_SIZE_CRM_OBJECT,
   CRM_ASSOCIATION_V3,
+  OBJECT_TYPE_PLACEHOLDER,
   RETL_CREATE_ASSOCIATION_OPERATION,
   RETL_SOURCE,
+  BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT_PATH,
+  BATCH_IDENTIFY_CRM_UPDATE_CONTACT_PATH,
+  BATCH_IDENTIFY_CRM_UPSERT_CONTACT_PATH,
+  TRACK_CRM_ENDPOINT_PATH,
+  CRM_CREATE_UPDATE_ALL_OBJECTS_PATH,
+  CRM_ASSOCIATION_V3_PATH,
 } from './config';
 import {
   getTransformedJSON,
@@ -115,6 +122,7 @@ const processUpsertIdentify = async (
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = BATCH_IDENTIFY_CRM_UPSERT_CONTACT;
+  response.endpointPath = BATCH_IDENTIFY_CRM_UPSERT_CONTACT_PATH;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -154,6 +162,7 @@ const processIdentify = async (
   const objectType = externalIdInfo?.objectType;
   // build response
   let endpoint: string | undefined;
+  let endpointPath: string | undefined;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
 
@@ -170,6 +179,10 @@ const processIdentify = async (
       ':toObjectType',
       toObjectType,
     );
+    response.endpointPath = CRM_ASSOCIATION_V3_PATH.replace(
+      ':fromObjectType',
+      fromObjectType,
+    ).replace(':toObjectType', toObjectType);
     response.body.JSON = {
       ...traits,
       type: associationTypeId,
@@ -193,13 +206,21 @@ const processIdentify = async (
     }
     if (operation === 'createObject') {
       addExternalIdToHSTraits(message);
-      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
+      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(OBJECT_TYPE_PLACEHOLDER, objectType);
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_PATH.replace(
+        OBJECT_TYPE_PLACEHOLDER,
+        objectType,
+      );
     } else if (operation === 'updateObject' && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
       endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
-        ':objectType',
+        OBJECT_TYPE_PLACEHOLDER,
         objectType,
       )}/${hsSearchId}`;
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_PATH.replace(
+        OBJECT_TYPE_PLACEHOLDER,
+        objectType,
+      );
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
@@ -249,6 +270,7 @@ const processIdentify = async (
   }
 
   response.endpoint = endpoint!;
+  response.endpointPath = endpointPath;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -337,6 +359,7 @@ const batchIdentify = (
 
     if (batchOperation === 'createObject') {
       batchEventResponse.batchedRequest.endpoint = `${message.endpoint}/batch/create`;
+      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}/batch/create`;
 
       // create operation
       chunk.forEach((ev) => {
@@ -350,6 +373,7 @@ const batchIdentify = (
         0,
         message.endpoint.lastIndexOf('/'),
       )}/batch/update`;
+      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}/batch/update`;
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
@@ -414,6 +438,7 @@ const batchIdentify = (
     } else if (batchOperation === 'createAssociations') {
       chunk.forEach((ev) => {
         batchEventResponse.batchedRequest.endpoint = ev.message.endpoint;
+        batchEventResponse.batchedRequest.endpointPath = ev.message.endpointPath;
         if (!hasAssociationShape(ev.message.body.JSON)) {
           throw new TransformationError('rETL - Invalid payload for createAssociations batch');
         }
@@ -451,6 +476,7 @@ const batchIdentify = (
         metadata.push(ev.metadata);
       });
       batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint;
+      batchEventResponse.batchedRequest.endpointPath = chunk[0].message.endpointPath;
     } else {
       throw new TransformationError('Unknown hubspot operation', 400);
     }
@@ -461,8 +487,10 @@ const batchIdentify = (
 
     if (batchOperation === 'createContacts') {
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
+      batchEventResponse.batchedRequest.endpointPath = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT_PATH;
     } else if (batchOperation === 'updateContacts') {
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_CONTACT;
+      batchEventResponse.batchedRequest.endpointPath = BATCH_IDENTIFY_CRM_UPDATE_CONTACT_PATH;
     }
 
     batchEventResponse.batchedRequest.headers = message.headers!;
@@ -513,6 +541,7 @@ const batchEvents = (
       const batchedResponse: HubSpotBatchRequestOutput = defaultBatchRequestConfig();
       batchedResponse.batchedRequest.headers = message.headers!;
       batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.endpointPath = TRACK_CRM_ENDPOINT_PATH;
       batchedResponse.batchedRequest.body = message.body;
       batchedResponse.batchedRequest.params = message.params!;
       batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;

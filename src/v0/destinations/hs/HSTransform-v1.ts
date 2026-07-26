@@ -27,8 +27,12 @@ import {
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
   CRM_CREATE_UPDATE_ALL_OBJECTS,
+  OBJECT_TYPE_PLACEHOLDER,
   MAX_BATCH_SIZE_CRM_OBJECT,
   MAX_BATCH_SIZE_CRM_CONTACT,
+  CRM_CREATE_UPDATE_ALL_OBJECTS_PATH,
+  BATCH_CONTACT_ENDPOINT_PATH,
+  TRACK_ENDPOINT_PATH,
 } from './config';
 import {
   getTransformedJSON,
@@ -74,6 +78,7 @@ const processLegacyIdentify = async (
   // if mappedToDestination is set true, then add externalId to traits
   // rETL source
   let endpoint: string = '';
+  let endpointPath: string = '';
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   if (
@@ -88,13 +93,21 @@ const processLegacyIdentify = async (
       throw new InstrumentationError('objectType not found');
     }
     if (operation === 'createObject') {
-      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
+      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(OBJECT_TYPE_PLACEHOLDER, objectType);
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_PATH.replace(
+        OBJECT_TYPE_PLACEHOLDER,
+        objectType,
+      );
     } else if (operation === 'updateObject' && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
       endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
-        ':objectType',
+        OBJECT_TYPE_PLACEHOLDER,
         objectType,
       )}/${hsSearchId}`;
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_PATH.replace(
+        OBJECT_TYPE_PLACEHOLDER,
+        objectType,
+      );
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
@@ -125,6 +138,7 @@ const processLegacyIdentify = async (
   }
 
   response.endpoint = endpoint;
+  response.endpointPath = endpointPath;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -222,6 +236,7 @@ const batchIdentifyForrETL = (
           ...ev.message.body.JSON,
         });
         batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}/batch/create`;
 
         metadata.push(ev.metadata);
       });
@@ -237,6 +252,7 @@ const batchIdentifyForrETL = (
           0,
           updateEndpoint.lastIndexOf('/'),
         )}/batch/update`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}/batch/update`;
 
         metadata.push(ev.metadata);
       });
@@ -286,6 +302,7 @@ const legacyBatchEvents = (
       const batchedResponse: HubSpotBatchRequestOutput = defaultBatchRequestConfig();
       batchedResponse.batchedRequest.headers = message.headers!;
       batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.endpointPath = TRACK_ENDPOINT_PATH;
       batchedResponse.batchedRequest.body = message.body;
       batchedResponse.batchedRequest.params = message.params!;
       batchedResponse.batchedRequest.method = defaultGetRequestConfig.requestMethod;
@@ -365,6 +382,7 @@ const legacyBatchEvents = (
           inputs: identifyResponseList,
         };
         batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}/batch/create`;
         metadata.push(ev.metadata);
       } else {
         const bodyJSON = ev.message.body.JSON;
@@ -392,6 +410,7 @@ const legacyBatchEvents = (
           batch: JSON.stringify(identifyResponseList),
         };
         batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
+        batchEventResponse.batchedRequest.endpointPath = BATCH_CONTACT_ENDPOINT_PATH;
       }
     });
 

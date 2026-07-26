@@ -76,6 +76,7 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -187,6 +188,7 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -358,6 +360,7 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -497,6 +500,7 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -637,6 +641,7 @@ export const upsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,

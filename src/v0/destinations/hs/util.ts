@@ -160,7 +160,7 @@ const getProperties = async (
       },
     };
     hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
-      destType: 'hs',
+      destType: DESTINATION,
       feature: 'transformation',
       endpointPath: `/properties/v1/contacts/properties`,
       requestMethod: 'GET',
@@ -175,7 +175,7 @@ const getProperties = async (
       url,
       {},
       {
-        destType: 'hs',
+        destType: DESTINATION,
         feature: 'transformation',
         endpointPath: `/properties/v1/contacts/properties?hapikey`,
         requestMethod: 'GET',
@@ -467,7 +467,7 @@ const searchContacts = async (
       requestData,
       requestOptions,
       {
-        destType: 'hs',
+        destType: DESTINATION,
         feature: 'transformation',
         endpointPath,
         requestMethod: 'POST',
@@ -480,7 +480,7 @@ const searchContacts = async (
     // API Key
     const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
     searchContactsResponse = await httpPOST(url, requestData, {
-      destType: 'hs',
+      destType: DESTINATION,
       feature: 'transformation',
       endpointPath,
       requestMethod: 'POST',
@@ -659,7 +659,7 @@ const performHubSpotSearch = async (
 
   while (checkAfter) {
     const httpResponse = await httpPOST(url, requestData, requestOptions, {
-      destType: 'hs',
+      destType: DESTINATION,
       feature: 'transformation',
       endpointPath,
       requestMethod: 'POST',

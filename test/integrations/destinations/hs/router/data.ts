@@ -10,6 +10,7 @@ import {
 import { destination } from './config';
 import { upsertData } from './upsertData';
 import { errorValidationData } from './errorValidationData';
+import { withRetlSplitCases } from './retlSplitData';
 
 /**
  * Helpers + migrated event-stream / legacy router cases (previously eventStreamData.ts).
@@ -146,7 +147,7 @@ const esIdentifyMessage = {
   traits: { phone: '9999999999', firstname: 'CI', lastname: 'ES' },
   context: { mappedToDestination: false },
 };
-export const data = [
+const baseData = [
   {
     name: 'hs',
     description: 'router associated retl test',
@@ -4801,3 +4802,6 @@ export const data = [
     },
   }),
 ];
+
+// Each rETL fixture is followed by its gated split-path duplicate (see retlSplitData.ts).
+export const data = withRetlSplitCases(baseData as Record<string, any>[]);

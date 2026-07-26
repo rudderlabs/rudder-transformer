@@ -15,6 +15,7 @@ import {
   getProperties,
   validateDestinationConfig,
 } from './util';
+import { processBatchRouterRetl, shouldUseHsRetlSplitPath } from './retl-transform';
 import type {
   HubSpotPropertyMap,
   HubSpotBatchRouterResult,
@@ -65,6 +66,15 @@ const processBatchRouter = async (
   inputs: HubspotRouterRequest[],
   reqMetadata: NonNullable<unknown>,
 ): Promise<HubSpotBatchRouterResult> => {
+  // Workspace-gated rETL/event-stream split. A router call is homogeneous per
+  // workspace/source, so allow-listed workspaces' rETL (mappedToDestination)
+  // batches are handled by the dedicated rETL code path. Everything else - and
+  // every workspace not in the allow-list - keeps using the existing logic
+  // below, unchanged.
+  if (inputs.length > 0 && shouldUseHsRetlSplitPath(inputs[0])) {
+    return processBatchRouterRetl(inputs, reqMetadata);
+  }
+
   let tempInputs = inputs;
   // using the first destination config for transforming the batch
   const { destination, metadata } = tempInputs[0];

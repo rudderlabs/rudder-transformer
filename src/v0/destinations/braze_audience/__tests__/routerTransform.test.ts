@@ -154,6 +154,46 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
     ]);
   });
 
+  it('soft-bounces non-string/non-number external_id (no object coercion)', async () => {
+    const results = await processBatchedDestination(
+      [
+        buildInput(1, 'insert', { external_id: { nested: true } }),
+        buildInput(2, 'insert', { external_id: 'ok' }),
+      ],
+      Integration,
+      {},
+    );
+    const failed = results.find((r) => r.statusCode === 400);
+    const ok = results.find((r) => r.statusCode === 200);
+    expect(failed?.error).toMatch(/external_id is missing or empty/);
+    expect(getJsonBody(ok!).attributes).toEqual([
+      { external_id: 'ok', rs_audience_high_intent: true },
+    ]);
+  });
+
+  it('accepts numeric external_id', async () => {
+    const results = await processBatchedDestination(
+      [buildInput(1, 'insert', { external_id: 42 })],
+      Integration,
+      {},
+    );
+    expect(results[0].statusCode).toBe(200);
+    expect(getJsonBody(results[0]).attributes).toEqual([
+      { external_id: '42', rs_audience_high_intent: true },
+    ]);
+  });
+
+  it('rejects customAttributeName reserved as external_id', async () => {
+    const connection = buildConnection({ customAttributeName: 'external_id' });
+    const results = await processBatchedDestination(
+      [buildInput(1, 'insert', { external_id: 'u1' }, buildDestination(), connection)],
+      Integration,
+      {},
+    );
+    expect(results[0].statusCode).toBe(400);
+    expect(results[0].error).toMatch(/customAttributeName cannot be external_id/);
+  });
+
   it('rejects missing customAttributeName via Zod', async () => {
     const connection = buildConnection({ customAttributeName: '' as unknown as string });
     const results = await processBatchedDestination(

@@ -25,7 +25,10 @@ export const BrazeAudienceConnectionConfigSchema = z
       .string()
       .min(1)
       .max(255)
-      .regex(/^\w+$/, 'customAttributeName must be alphanumeric or underscore'),
+      .regex(/^\w+$/, 'customAttributeName must be alphanumeric or underscore')
+      .refine((value) => value !== 'external_id', {
+        message: 'customAttributeName cannot be external_id',
+      }),
     syncMode: z.literal('mirror').optional(),
     identifierMappings: z.array(IdentifierMappingSchema).optional(),
     schemaVersion: z.string().optional(),

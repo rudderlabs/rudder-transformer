@@ -18,9 +18,14 @@ export const buildBulkBody = (
   attributes: BrazeAudienceAttributePayload[],
 ): { attributes: BrazeAudienceAttributePayload[] } => ({ attributes });
 
-/** Trim and require a non-empty external_id (sources already key identifiers by destination field). */
+/**
+ * Trim and require a non-empty external_id.
+ * Accept only string/number — do not coerce objects/arrays/booleans (e.g. "[object Object]").
+ */
 export const normalizeExternalId = (raw: unknown): string | null => {
-  if (raw === null || raw === undefined) return null;
+  if (typeof raw !== 'string' && typeof raw !== 'number') return null;
+  // Reject non-finite numbers (NaN / ±Infinity) — String(NaN) is "NaN", not a real id.
+  if (typeof raw === 'number' && !Number.isFinite(raw)) return null;
   const value = String(raw).trim();
   return value.length > 0 ? value : null;
 };

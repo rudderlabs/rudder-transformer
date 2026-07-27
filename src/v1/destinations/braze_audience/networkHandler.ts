@@ -9,6 +9,15 @@ const stats = require('../../../util/stats');
 
 const DEST = 'BRAZE_AUDIENCE';
 
+/**
+ * Permanent Braze `/users/track` identity error `type` enums (docs).
+ * Only these map to hard-bounce 400 — unknown types soft-bounce for retry.
+ */
+const HARD_BOUNCE_IDENTITY_TYPES = new Set([
+  'BLACKLISTED_EXTERNAL_USER_ID',
+  'EXTERNAL_USER_ID_TOO_LARGE',
+]);
+
 type BrazeAudienceProxyParams = {
   destinationResponse: {
     response?: {
@@ -88,24 +97,39 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
   });
 
   const failedByIndex = new Map<number, { type?: string; message: string }>();
+  let hasUnindexedError = false;
+  let unindexedMessage = 'braze_partial_error_unindexed';
   for (const err of errors) {
     if (typeof err.index === 'number') {
       failedByIndex.set(err.index, {
         type: err.type,
         message: err.type || 'braze_partial_error',
       });
+    } else {
+      hasUnindexedError = true;
+      if (typeof err.type === 'string' && err.type.length > 0) {
+        unindexedMessage = err.type;
+      }
     }
   }
 
   const jobStates: DeliveryJobState[] = rudderJobMetadata.map((metadata, idx) => {
     const fail = failedByIndex.get(idx);
     if (!fail) {
+      // Unindexed Braze errors cannot be correlated — soft-bounce unmapped jobs
+      // so we never report success for a batch Braze flagged as partially failed.
+      if (hasUnindexedError) {
+        stats.increment('braze_audience_soft_bounce', {
+          destinationId,
+          workspaceId,
+          reason: 'partial_unindexed',
+        });
+        return { statusCode: 500, metadata, error: unindexedMessage };
+      }
       return { statusCode: 200, metadata, error: 'success' };
     }
 
-    const isIdentity =
-      typeof fail.type === 'string' &&
-      /external_id|invalid.*(user|id)|user.?not.?found/i.test(fail.type);
+    const isIdentity = typeof fail.type === 'string' && HARD_BOUNCE_IDENTITY_TYPES.has(fail.type);
 
     if (isIdentity) {
       stats.increment('braze_audience_hard_bounce', {

@@ -21,16 +21,15 @@ import {
   sortBatchesByMinJobId,
 } from '../../util';
 import {
-  BATCH_CONTACT_ENDPOINT,
+  BASE_ENDPOINT,
+  TRACK_BASE_ENDPOINT,
   MAX_BATCH_SIZE,
-  TRACK_ENDPOINT,
-  IDENTIFY_CREATE_UPDATE_CONTACT,
-  IDENTIFY_CREATE_NEW_CONTACT,
-  CRM_CREATE_UPDATE_ALL_OBJECTS,
+  IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH,
+  IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH,
   OBJECT_TYPE_PLACEHOLDER,
   MAX_BATCH_SIZE_CRM_OBJECT,
   MAX_BATCH_SIZE_CRM_CONTACT,
-  CRM_CREATE_UPDATE_ALL_OBJECTS_PATH,
+  CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
   BATCH_CONTACT_ENDPOINT_PATH,
   TRACK_ENDPOINT_PATH,
 } from './config';
@@ -93,21 +92,18 @@ const processLegacyIdentify = async (
       throw new InstrumentationError('objectType not found');
     }
     if (operation === 'createObject') {
-      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(OBJECT_TYPE_PLACEHOLDER, objectType);
-      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_PATH.replace(
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
         OBJECT_TYPE_PLACEHOLDER,
         objectType,
       );
+      endpoint = `${BASE_ENDPOINT}${endpointPath}`;
     } else if (operation === 'updateObject' && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
-      endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
-        OBJECT_TYPE_PLACEHOLDER,
-        objectType,
-      )}/${hsSearchId}`;
-      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_PATH.replace(
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
         OBJECT_TYPE_PLACEHOLDER,
         objectType,
       );
+      endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
@@ -130,9 +126,12 @@ const processLegacyIdentify = async (
     };
 
     if (email) {
-      endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(':contact_email', email);
+      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH.replace(
+        ':contact_email',
+        email,
+      )}`;
     } else {
-      endpoint = IDENTIFY_CREATE_NEW_CONTACT;
+      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
   }
@@ -192,7 +191,7 @@ const processLegacyTrack = async (
   const params = removeUndefinedAndNullValues(payload);
 
   const response = defaultRequestConfig();
-  response.endpoint = TRACK_ENDPOINT;
+  response.endpoint = `${TRACK_BASE_ENDPOINT}${TRACK_ENDPOINT_PATH}`;
   response.method = defaultGetRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
@@ -409,7 +408,7 @@ const legacyBatchEvents = (
         batchEventResponse.batchedRequest.body.JSON_ARRAY = {
           batch: JSON.stringify(identifyResponseList),
         };
-        batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
+        batchEventResponse.batchedRequest.endpoint = `${BASE_ENDPOINT}${BATCH_CONTACT_ENDPOINT_PATH}`;
         batchEventResponse.batchedRequest.endpointPath = BATCH_CONTACT_ENDPOINT_PATH;
       }
     });

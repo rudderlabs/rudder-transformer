@@ -302,44 +302,28 @@ const createBatchedResponseForClickCall = async (events) => {
   );
 };
 
-const getClickCallBatchGroupKey = (event) => {
-  const { message, destination } = event;
-  const { endpointPath, endpoint, params = {}, headers = {} } = message;
-  const destinationKey =
-    destination?.ID || destination?.id || JSON.stringify(destination?.Config || {});
-
-  return JSON.stringify({
-    endpointPath,
-    endpoint,
-    customerId: params.customerId,
-    authorization: headers.Authorization || headers.authorization,
-    loginCustomerId: headers['login-customer-id'],
-    destinationKey,
-  });
-};
-
 /**
  * Batch click/call conversion events
  * Batches up to MAX_CONVERSIONS_PER_BATCH (2000) conversions per request
- * Groups by request/account/auth boundary
+ * Groups by endpoint (click vs call) and customerId
  * @param {Array} clickCallEvents - Array of click/call conversion events
  * @returns {Array} Array of batched events
  */
 const batchClickCallEvents = async (clickCallEvents) => {
   const batchedResponses = [];
 
-  // Group events that can share the same Google Ads request safely.
+  // Group events by endpoint and customerId
   const eventGroups = {};
 
   for (const event of clickCallEvents) {
-    const groupKey = getClickCallBatchGroupKey(event);
-    if (!eventGroups[groupKey]) {
-      eventGroups[groupKey] = [];
+    const { endpointPath } = event.message;
+    if (!eventGroups[endpointPath]) {
+      eventGroups[endpointPath] = [];
     }
-    eventGroups[groupKey].push(event);
+    eventGroups[endpointPath].push(event);
   }
 
-  // Process each group (each group has same request/account/auth boundary)
+  // Process each group (each group has same endpoint and customerId)
   // eslint-disable-next-line no-restricted-syntax
   for (const groupKey of Object.keys(eventGroups)) {
     const events = eventGroups[groupKey];

@@ -67,16 +67,12 @@ jobs:
       - name: Import destination secret from dev Vault (OIDC/JWT)
         id: vault
         uses: hashicorp/vault-action@892a26828f195e65540a40b4768ae4571f51ebfc # v4.0.0
-        env:
-          VAULT_ADDR: https://vault.dev.rudderlabs.com
-          VAULT_JWT_AUTH_PATH: github-actions
-          VAULT_JWT_ROLE: rudder-transformer-ci
         with:
-          url: ${{ env.VAULT_ADDR }}
+          url: ${{ vars.VAULT_ADDR }}
           method: jwt
-          path: ${{ env.VAULT_JWT_AUTH_PATH }} # = vault_jwt_auth_backend.path
+          path: ${{ vars.VAULT_JWT_AUTH_PATH }} # = vault_jwt_auth_backend.path
           role: ${{ env.VAULT_JWT_ROLE }} # = vault_jwt_auth_backend_role.role_name
-          jwtGithubAudience: ${{ env.VAULT_ADDR }} # MUST match bound_audiences, else auth fails
+          jwtGithubAudience: ${{ vars.VAULT_ADDR }} # MUST match bound_audiences, else auth fails
           exportToken: false # keep the raw Vault token out of env
           secrets: |
             engineering_shared/data/integrations_team/e2e_test/rudder-transformer ${{ steps.secret.outputs.name }} | ${{ steps.secret.outputs.name }}

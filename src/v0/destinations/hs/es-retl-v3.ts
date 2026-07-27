@@ -40,6 +40,8 @@ import {
   TRACK_CRM_ENDPOINT_PATH,
   CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
   CRM_ASSOCIATION_V3_ENDPOINT_PATH,
+  BATCH_CREATE_PATH_SUFFIX,
+  BATCH_UPDATE_PATH_SUFFIX,
 } from './config';
 import {
   getTransformedJSON,
@@ -251,12 +253,14 @@ const processIdentify = async (
         ':contactId',
         contactId,
       )}`;
+      endpointPath = IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH;
       response.operation = 'updateContacts';
       response.method = defaultPatchRequestConfig.requestMethod;
     } else {
       // contact do not exist
       // create
       endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
+      endpointPath = IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH;
       response.operation = 'createContacts';
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -307,6 +311,7 @@ const processTrack = async ({
 
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${TRACK_CRM_ENDPOINT_PATH}`;
+  response.endpointPath = TRACK_CRM_ENDPOINT_PATH;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
@@ -351,8 +356,8 @@ const batchIdentify = (
     let batchEventResponse: HubSpotBatchRequestOutput = defaultBatchRequestConfig();
 
     if (batchOperation === 'createObject') {
-      batchEventResponse.batchedRequest.endpoint = `${message.endpoint}/batch/create`;
-      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}/batch/create`;
+      batchEventResponse.batchedRequest.endpoint = `${message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
+      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
 
       // create operation
       chunk.forEach((ev) => {
@@ -365,8 +370,8 @@ const batchIdentify = (
       batchEventResponse.batchedRequest.endpoint = `${message.endpoint.substr(
         0,
         message.endpoint.lastIndexOf('/'),
-      )}/batch/update`;
-      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}/batch/update`;
+      )}${BATCH_UPDATE_PATH_SUFFIX}`;
+      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}${BATCH_UPDATE_PATH_SUFFIX}`;
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;

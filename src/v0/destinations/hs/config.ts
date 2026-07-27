@@ -48,6 +48,10 @@ const BATCH_IDENTIFY_CRM_UPSERT_CONTACT_ENDPOINT_PATH = '/crm/v3/objects/contact
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
 const MAX_BATCH_SIZE_CRM_CONTACT = 100;
 
+// Path fragments appended to an object's base endpoint/path when batching create/update requests.
+const BATCH_CREATE_PATH_SUFFIX = '/batch/create';
+const BATCH_UPDATE_PATH_SUFFIX = '/batch/update';
+
 // Track
 // Ref - https://developers.hubspot.com/docs/api/analytics/events
 const TRACK_CRM_ENDPOINT_PATH = '/events/v3/send';
@@ -118,6 +122,8 @@ export {
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH,
   BATCH_IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH,
   BATCH_IDENTIFY_CRM_UPSERT_CONTACT_ENDPOINT_PATH,
+  BATCH_CREATE_PATH_SUFFIX,
+  BATCH_UPDATE_PATH_SUFFIX,
   MAX_BATCH_SIZE_CRM_CONTACT,
   TRACK_CRM_ENDPOINT_PATH,
   CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,

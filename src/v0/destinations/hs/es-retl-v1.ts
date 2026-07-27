@@ -32,6 +32,8 @@ import {
   CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
   BATCH_CONTACT_ENDPOINT_PATH,
   TRACK_ENDPOINT_PATH,
+  BATCH_CREATE_PATH_SUFFIX,
+  BATCH_UPDATE_PATH_SUFFIX,
 } from './config';
 import {
   getTransformedJSON,
@@ -130,8 +132,10 @@ const processLegacyIdentify = async (
         ':contact_email',
         email,
       )}`;
+      endpointPath = IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH;
     } else {
       endpoint = `${BASE_ENDPOINT}${IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
+      endpointPath = IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH;
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
   }
@@ -192,6 +196,7 @@ const processLegacyTrack = async (
 
   const response = defaultRequestConfig();
   response.endpoint = `${TRACK_BASE_ENDPOINT}${TRACK_ENDPOINT_PATH}`;
+  response.endpointPath = TRACK_ENDPOINT_PATH;
   response.method = defaultGetRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
@@ -234,8 +239,8 @@ const batchIdentifyForrETL = (
         identifyResponseList.push({
           ...ev.message.body.JSON,
         });
-        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
-        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}/batch/create`;
+        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
 
         metadata.push(ev.metadata);
       });
@@ -250,8 +255,8 @@ const batchIdentifyForrETL = (
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
           0,
           updateEndpoint.lastIndexOf('/'),
-        )}/batch/update`;
-        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}/batch/update`;
+        )}${BATCH_UPDATE_PATH_SUFFIX}`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_UPDATE_PATH_SUFFIX}`;
 
         metadata.push(ev.metadata);
       });
@@ -380,8 +385,8 @@ const legacyBatchEvents = (
         batchEventResponse.batchedRequest.body.JSON = {
           inputs: identifyResponseList,
         };
-        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
-        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}/batch/create`;
+        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
         metadata.push(ev.metadata);
       } else {
         const bodyJSON = ev.message.body.JSON;

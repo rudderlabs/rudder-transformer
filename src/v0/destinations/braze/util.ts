@@ -1371,8 +1371,8 @@ const classifyJobRun = (json: unknown): JobClassification => {
 const processBatchWithDeliveryMapping = (
   transformedEvents: BrazeTransformedEvent[],
 ): BrazeBatchResponse[] => {
-  const { destination } = transformedEvents[0];
-  const workspaceId = transformedEvents[0].metadata?.[0]?.workspaceId || '';
+  const { destination, metadata } = transformedEvents[0];
+  const workspaceId = metadata?.[0]?.workspaceId || '';
 
   const failureResponses: BrazeTransformedEvent[] = [];
   const filteredResponses: BrazeTransformedEvent[] = [];

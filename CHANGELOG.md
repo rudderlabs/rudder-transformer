@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.142.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.5...v1.142.0) (2026-07-24)
+
+
+### Features
+
+* **heap:** support EU data residency endpoints ([#5391](https://github.com/rudderlabs/rudder-transformer/issues/5391)) ([4268afb](https://github.com/rudderlabs/rudder-transformer/commit/4268afbae1e33ea684cc75d65a56769e035bdf1e))
+
 ### [1.141.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.141.4...v1.141.5) (2026-07-20)
 
 

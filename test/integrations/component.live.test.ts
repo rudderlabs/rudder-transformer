@@ -10,6 +10,7 @@ import { getEnrolledDestinations } from './live/registry';
 import { SecretResolver } from './live/secretResolver';
 import { RunContextImpl } from './live/runContext';
 import { runPipelineStep } from './live/runPipelineStep';
+import { retryUntilPasses } from './live/poll';
 import { LiveSecret, EnrolledDestination } from './live/types';
 
 describe('Live Integration Test Suite', () => {
@@ -46,11 +47,18 @@ describe('Live Integration Test Suite', () => {
   const agent = () => request(server as unknown as Parameters<typeof request>[0]);
 
   const enrolledDestinations: EnrolledDestination[] = getEnrolledDestinations(opts.destination);
+  // eslint-disable-next-line no-console
+  console.log(
+    `[live] resolved ${enrolledDestinations.length} destination(s): ` +
+      `${enrolledDestinations.map((d) => d.destination).join(', ') || '(none)'}`,
+  );
   if (enrolledDestinations.length === 0) {
     test.skip('No enrolled destinations matched. Skipping live suite.', () => {});
     return;
   }
 
+  // One describe per enrolled destination: resolve its credentials and base config, then run its
+  // enabled scenarios. A missing/invalid secret throws here (fail-closed), failing the destination.
   describe.each(enrolledDestinations)('$destination', ({ destination, spec }) => {
     const liveSecret: LiveSecret = resolver.resolve(destination);
     const destinationConfig = spec.resolveConfig(liveSecret);
@@ -61,6 +69,8 @@ describe('Live Integration Test Suite', () => {
       return;
     }
 
+    // One describe per scenario, each with its own RunContext (isolated identities) and optional
+    // per-scenario Config override.
     describe.each(activeScenarios)('scenario: $id', (scenario) => {
       const ctx = new RunContextImpl({ liveSecret });
       const scenarioConfig = scenario.configOverride?.(destinationConfig) ?? destinationConfig;
@@ -79,6 +89,8 @@ describe('Live Integration Test Suite', () => {
       test.each(scenario.steps)(
         'step: $name',
         async (step) => {
+          // Steps run in declared order; dispatch by discriminant — action = direct API side
+          // effect, verify = read-back assertion, pipeline = seed -> transform -> deliver -> assert.
           switch (step.stepType) {
             case 'action':
               await step.run(ctx);
@@ -104,6 +116,15 @@ describe('Live Integration Test Suite', () => {
         },
         60000,
       );
+
+      // The scenario's common trailing read-back: framework owns the polling, retrying the
+      // assertion on a thrown matcher error with backoff (see LiveScenario.verify).
+      if (scenario.verify) {
+        const { check, attempts, delayMs } = scenario.verify;
+        test('verify: scenario read-back', async () => {
+          await retryUntilPasses(() => check(ctx), { attempts, delayMs });
+        }, 60000);
+      }
     });
   });
 });

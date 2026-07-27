@@ -12,11 +12,12 @@ The mocked suite is untouched and remains the merge gate. This suite is additive
 
 - **Sibling runner** — `component.live.test.ts` + `jest.config.live.js` boot the real
   Koa app **without** `MockAxiosAdapter`, so outbound HTTP reaches real APIs.
-- **`routerProxyRequests.ts`** (`live/routerProxyRequests.ts`) — `buildRouterTransformBody()`
-  assembles the `/routerTransform` request body from a seeded event, and
-  `routerOutputToProxyRequests()` ports the small piece of rudder-server that maps each
-  `/routerTransform` `output[]` item to the `ProxyV1Request`(s) for
-  `/v1/destinations/<dest>/proxy`.
+- **`routerTransformRequest.ts`** — `buildRouterTransformBody()` assembles the `/routerTransform`
+  request body from a seeded event (the request half of the chaining).
+- **`routerProxyRequests.ts`** — `routerOutputToProxyRequests()` ports the small piece of
+  rudder-server that maps each `/routerTransform` `output[]` item to the `ProxyV1Request`(s) for
+  `/v1/destinations/<dest>/proxy` (the response/delivery half); `coerce.ts` holds the runtime
+  coercions both halves share.
 - **Harness core** (`live/`): `SecretResolver` (env-var based), `RunContext`
   (`runId` + memoised `identity`/`email`/`now`/`register`), `registry.ts`,
   `runPipelineStep.ts` (transform → deliver → assert delivered), and `poll.ts` —
@@ -45,6 +46,11 @@ Vault-backed `SecretResolver`, GitHub OIDC → Vault auth, the `rudder-auth` con
 for OAuth destinations, the CI workflow, and impact-based PR subsetting. The interfaces
 here (`SecretResolver.resolve()`, `LiveSpec`) are shaped so those layer on without
 rewrites.
+
+**Scope — transform path.** The harness drives only `/routerTransform → /proxy`. rudder-server
+also runs the processor transform (`/v0/destinations/<dest>`) ahead of delivery, whose response
+shape differs; that chaining is not exercised here (INT-NNNN). **GZIP** proxy bodies are likewise
+unmapped (INT-NNNN) — see `routerProxyRequests.ts`.
 
 ## Running it locally
 
@@ -125,10 +131,17 @@ scenario-level `cleanup`. There are no lifecycle hooks. Each step declares a req
   confirms a batch write: a batch endpoint can return `207` (which counts as delivered) even when an
   item fails, so the delivery verdict alone is not proof the write landed.
 
+The **common trailing read-back** is better declared as a scenario-level `verify` the way
+`cleanup` is: `verify: { check: (ctx) => …, attempts?, delayMs? }`. The framework runs `check`
+after the steps and retries it on a thrown matcher error with backoff (default 4 attempts,
+`1000 * 2 ** attempt`), rethrowing the last error on exhaustion — so destination code is just the
+assertion and the poll boilerplate lives in the runner. Use a `verify` **step** in `steps` only for
+ordering cases (verify-after-setup, mid-scenario). See `destinations/hs/live/verify.ts`.
+
 Teardown is the scenario's `cleanup: (ctx) => …`, armed at scenario start and drained
 after the steps finish (LIFO, best-effort) — no trailing cleanup step.
 
-Typical order: `[setup?, ...pipeline, verify?]`, with `cleanup` on the scenario.
+Typical order: `[setup?, ...pipeline]`, with `verify` and `cleanup` on the scenario.
 
 - `metadataOverride` merges into the `/routerTransform` input metadata (e.g.
   `{ dontBatch: true }`).

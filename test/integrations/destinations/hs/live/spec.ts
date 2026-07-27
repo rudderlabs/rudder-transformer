@@ -58,8 +58,8 @@ export const live: LiveSpec = {
             integrations: { All: true },
           }),
         },
-        verifyContactProperties(esContactCreateTraits),
       ],
+      verify: { check: verifyContactProperties(esContactCreateTraits) },
     },
     {
       id: 'hs-es-contacts-update-v3',
@@ -78,8 +78,8 @@ export const live: LiveSpec = {
             integrations: { All: true },
           }),
         },
-        verifyContactProperties(esContactUpdateTraits),
       ],
+      verify: { check: verifyContactProperties(esContactUpdateTraits) },
     },
     {
       id: 'hs-es-contacts-create-v1',
@@ -96,8 +96,8 @@ export const live: LiveSpec = {
             traits: { email: ctx.email(), ...esContactCreateV1Traits(ctx) },
           }),
         },
-        verifyContactProperties(esContactCreateV1Traits),
       ],
+      verify: { check: verifyContactProperties(esContactCreateV1Traits) },
     },
     {
       id: 'hs-es-contacts-update-v1',
@@ -116,8 +116,8 @@ export const live: LiveSpec = {
             traits: { email: ctx.email(), ...esContactUpdateV1Traits(ctx) },
           }),
         },
-        verifyContactProperties(esContactUpdateV1Traits),
       ],
+      verify: { check: verifyContactProperties(esContactUpdateV1Traits) },
     },
     {
       id: 'hs-es-contacts-dontbatch-v3',
@@ -136,8 +136,8 @@ export const live: LiveSpec = {
             integrations: { All: true },
           }),
         },
-        verifyContactProperties(esDontBatchV3Traits),
       ],
+      verify: { check: verifyContactProperties(esDontBatchV3Traits) },
     },
     {
       id: 'hs-es-contacts-dontbatch-v1',
@@ -155,8 +155,8 @@ export const live: LiveSpec = {
             traits: { email: ctx.email(), ...esDontBatchV1Traits(ctx) },
           }),
         },
-        verifyContactProperties(esDontBatchV1Traits),
       ],
+      verify: { check: verifyContactProperties(esDontBatchV1Traits) },
     },
     {
       id: 'hs-es-contacts-by-hscontactid-v3',
@@ -178,8 +178,8 @@ export const live: LiveSpec = {
             integrations: { All: true },
           }),
         },
-        verifyContactProperties(esByHsContactIdTraits),
       ],
+      verify: { check: verifyContactProperties(esByHsContactIdTraits) },
     },
     {
       id: 'hs-es-contacts-nonunique-lookup-v3',
@@ -199,8 +199,8 @@ export const live: LiveSpec = {
             integrations: { All: true },
           }),
         },
-        verifyContactProperties(esNonUniqueCreateTraits),
       ],
+      verify: { check: verifyContactProperties(esNonUniqueCreateTraits) },
     },
     {
       id: 'hs-es-contacts-nonunique-lookup-existing-v3',
@@ -221,8 +221,8 @@ export const live: LiveSpec = {
             integrations: { All: true },
           }),
         },
-        verifyContactProperties(esNonUniqueUpdateTraits),
       ],
+      verify: { check: verifyContactProperties(esNonUniqueUpdateTraits) },
     },
     {
       id: 'hs-retl-contacts-create-v3',
@@ -240,8 +240,8 @@ export const live: LiveSpec = {
             traits: { email: ctx.email(), ...retlContactCreateTraits(ctx) },
           }),
         },
-        verifyContactProperties(retlContactCreateTraits),
       ],
+      verify: { check: verifyContactProperties(retlContactCreateTraits) },
     },
     {
       id: 'hs-retl-contacts-update-v3',
@@ -264,8 +264,8 @@ export const live: LiveSpec = {
             traits: { email: ctx.email(), ...retlContactUpdateTraits(ctx) },
           }),
         },
-        verifyContactProperties(retlContactUpdateTraits),
       ],
+      verify: { check: verifyContactProperties(retlContactUpdateTraits) },
     },
     {
       id: 'hs-retl-contacts-create-v1',
@@ -284,8 +284,8 @@ export const live: LiveSpec = {
             traits: { email: ctx.email(), ...retlContactCreateV1Traits(ctx) },
           }),
         },
-        verifyContactProperties(retlContactCreateV1Traits),
       ],
+      verify: { check: verifyContactProperties(retlContactCreateV1Traits) },
     },
     {
       id: 'hs-retl-contacts-update-v1',
@@ -309,8 +309,8 @@ export const live: LiveSpec = {
             traits: { email: ctx.email(), ...retlContactUpdateV1Traits(ctx) },
           }),
         },
-        verifyContactProperties(retlContactUpdateV1Traits),
       ],
+      verify: { check: verifyContactProperties(retlContactUpdateV1Traits) },
     },
     {
       id: 'hs-retl-associations-v3',
@@ -344,8 +344,8 @@ export const live: LiveSpec = {
             },
           }),
         },
-        verifyAssociationExists,
       ],
+      verify: { check: verifyAssociationExists },
     },
   ],
 };

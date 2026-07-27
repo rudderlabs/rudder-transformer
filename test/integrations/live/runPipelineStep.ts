@@ -1,20 +1,12 @@
-// Runs one pipeline step: seed -> /routerTransform -> /proxy, asserting delivery.
-
 import { HttpStatusCode } from 'axios';
 import { randomInt } from 'crypto';
 import {
-  buildRouterTransformBody,
   parseDeliveryOutput,
   parseSuccessfulRouterOutputs,
   routerOutputToProxyRequests,
 } from './routerProxyRequests';
-import { PipelineStep, RunContext } from './types';
-
-type LiveHttpResponse = { status: number; body: unknown };
-/** Minimal HTTP client; wraps SuperTest so the helper stays free of its types. */
-type LiveHttpClient = {
-  post: (url: string, body: unknown) => Promise<LiveHttpResponse>;
-};
+import { buildRouterTransformBody } from './routerTransformRequest';
+import { DeliveryFailure, RunPipelineStepParams } from './types';
 
 const isDelivered = (status: number): boolean =>
   (status >= HttpStatusCode.Ok && status < HttpStatusCode.MultipleChoices) ||
@@ -25,27 +17,21 @@ const sleep = (ms: number): Promise<void> =>
     setTimeout(resolve, ms);
   });
 
-type RunPipelineStepParams = {
-  destination: string;
-  scenarioId: string;
-  step: PipelineStep;
-  ctx: RunContext;
-  config: Record<string, unknown>;
-  http: LiveHttpClient;
-};
-
-// One seed -> transform -> deliver attempt. Returns a failure message if the event wasn't
-// delivered, or undefined on success. Structural problems (transform non-200, no outputs) throw.
+// One seed -> transform -> deliver attempt. Returns a structured failure if the event wasn't
+// delivered, or undefined on success. Structural problems (transform non-200, wrong output count)
+// throw.
 const attemptDelivery = async ({
   destination,
-  scenarioId,
   step,
   ctx,
   config,
   http,
-}: RunPipelineStepParams): Promise<string | undefined> => {
+}: RunPipelineStepParams): Promise<DeliveryFailure | undefined> => {
   const jobId = randomInt(1, 2_147_483_647);
   const message = step.seed(ctx);
+  // TODO: this drives only the /routerTransform -> /proxy path. rudder-server also runs
+  // the processor transform (/v0/destinations/<dest>) ahead of delivery, whose response shape
+  // differs — that chaining is not exercised here (see live/README.md "Deferred").
   const routerBody = buildRouterTransformBody(destination, message, config, jobId, {
     secret: ctx.liveSecret.secret,
     metadataOverride: step.metadataOverride,
@@ -55,12 +41,24 @@ const attemptDelivery = async ({
   expect(routerResponse.status).toEqual(HttpStatusCode.Ok);
 
   const routerOutputs = parseSuccessfulRouterOutputs(routerResponse.body);
-  expect(routerOutputs.length).toBeGreaterThan(0);
+  if (step.expectedOutputs !== undefined) {
+    expect(routerOutputs).toHaveLength(step.expectedOutputs);
+  } else {
+    expect(routerOutputs.length).toBeGreaterThan(0);
+  }
 
-  for (const routerOutput of routerOutputs) {
-    const proxyRequests = routerOutputToProxyRequests(routerOutput);
-    expect(proxyRequests.length).toBeGreaterThan(0);
+  // Build every proxy request up front so count assertions run before delivery — a batching /
+  // dontBatch regression that still delivers 2xx is otherwise waved through silently.
+  const proxyRequestsPerOutput = routerOutputs.map((o) => routerOutputToProxyRequests(o));
+  proxyRequestsPerOutput.forEach((proxyRequests) =>
+    expect(proxyRequests.length).toBeGreaterThan(0),
+  );
+  if (step.expectedProxyRequests !== undefined) {
+    const total = proxyRequestsPerOutput.reduce((n, proxyRequests) => n + proxyRequests.length, 0);
+    expect(total).toEqual(step.expectedProxyRequests);
+  }
 
+  for (const proxyRequests of proxyRequestsPerOutput) {
     for (const proxyRequest of proxyRequests) {
       // eslint-disable-next-line no-await-in-loop -- deliver sequentially; order matches transform output
       const deliveryResponse = await http.post(
@@ -79,12 +77,12 @@ const attemptDelivery = async ({
           ...js,
           metadata: { ...js.metadata, secret: '[redacted]' },
         }));
-        return (
-          `[live:${destination}:${scenarioId}:${step.name}] not delivered — ` +
-          `proxy HTTP ${deliveryResponse.status}, verdict.status ${deliveryOutput.status}, ` +
-          `message: ${deliveryOutput.message}\n` +
-          `job states: ${JSON.stringify(redactedJobStates, null, 2)}`
-        );
+        return {
+          proxyStatus: deliveryResponse.status,
+          verdictStatus: deliveryOutput.status,
+          message: deliveryOutput.message,
+          jobStates: redactedJobStates,
+        };
       }
     }
   }
@@ -94,8 +92,9 @@ const attemptDelivery = async ({
 // Run the step once, then up to `step.retries` more times with exponential backoff if delivery
 // failed — covers routes whose transform reads an eventually-consistent index (see PipelineStep).
 export const runPipelineStep = async (params: RunPipelineStepParams): Promise<void> => {
-  const maxAttempts = (params.step.retries ?? 0) + 1;
-  let failure: string | undefined;
+  const { destination, scenarioId, step } = params;
+  const maxAttempts = (step.retries ?? 0) + 1;
+  let failure: DeliveryFailure | undefined;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     // eslint-disable-next-line no-await-in-loop -- attempts are inherently sequential with backoff
     failure = await attemptDelivery(params);
@@ -107,5 +106,14 @@ export const runPipelineStep = async (params: RunPipelineStepParams): Promise<vo
       await sleep(1000 * 2 ** attempt);
     }
   }
-  throw new Error(failure);
+  if (!failure) {
+    return;
+  }
+  // maxAttempts >= 1, so the loop always ran and `failure` is set once we reach here.
+  throw new Error(
+    `[live:${destination}:${scenarioId}:${step.name}] not delivered — ` +
+      `proxy HTTP ${failure.proxyStatus}, verdict.status ${failure.verdictStatus}, ` +
+      `message: ${failure.message}\n` +
+      `job states: ${JSON.stringify(failure.jobStates, null, 2)}`,
+  );
 };

@@ -12,6 +12,9 @@ name: Live Integration Tests
 
 on:
   pull_request:
+    branches:
+      - main
+      - develop
     types: ['opened', 'reopened', 'synchronize']
   push:
     branches:
@@ -23,7 +26,6 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  id-token: write # required: lets the job mint the GitHub OIDC JWT
   contents: read # for actions/checkout
 
 jobs:
@@ -32,12 +34,13 @@ jobs:
     # required: puts the job in infra1-us → PrivateLink path to dev Vault
     runs-on: [self-hosted, Linux, X64]
     timeout-minutes: 30
+    permissions:
+      id-token: write # required: lets the job mint the GitHub OIDC JWT
+      contents: read # for actions/checkout
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - destination: hs
-            secretName: LIVE_SECRET_HS
+        destination: [hs]
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
@@ -57,18 +60,26 @@ jobs:
         # prepare builds isolated-vm's native addon (skipped by ignore-scripts on `npm ci`).
         run: npm ci && npm run prepare
 
+      - name: Resolve secret name
+        id: secret
+        run: echo "name=LIVE_SECRET_$(echo '${{ matrix.destination }}' | tr 'a-z' 'A-Z')" >> "$GITHUB_OUTPUT"
+
       - name: Import destination secret from dev Vault (OIDC/JWT)
         id: vault
         uses: hashicorp/vault-action@892a26828f195e65540a40b4768ae4571f51ebfc # v4.0.0
+        env:
+          VAULT_ADDR: https://vault.dev.rudderlabs.com
+          VAULT_JWT_AUTH_PATH: github-actions
+          VAULT_JWT_ROLE: rudder-transformer-ci
         with:
-          url: https://vault.dev.rudderlabs.com
+          url: ${{ env.VAULT_ADDR }}
           method: jwt
-          path: github-actions # = vault_jwt_auth_backend.path
-          role: rudder-transformer-ci # = vault_jwt_auth_backend_role.role_name
-          jwtGithubAudience: https://vault.dev.rudderlabs.com # MUST match bound_audiences, else auth fails
+          path: ${{ env.VAULT_JWT_AUTH_PATH }} # = vault_jwt_auth_backend.path
+          role: ${{ env.VAULT_JWT_ROLE }} # = vault_jwt_auth_backend_role.role_name
+          jwtGithubAudience: ${{ env.VAULT_ADDR }} # MUST match bound_audiences, else auth fails
           exportToken: false # keep the raw Vault token out of env
           secrets: |
-            engineering_shared/data/integrations_team/e2e_test/rudder-transformer ${{ matrix.secretName }} | ${{ matrix.secretName }}
+            engineering_shared/data/integrations_team/e2e_test/rudder-transformer ${{ steps.secret.outputs.name }} | ${{ steps.secret.outputs.name }}
 
       - name: Run live tests
         # LOG_LEVEL=100 suppresses body logging so tokens can't leak.

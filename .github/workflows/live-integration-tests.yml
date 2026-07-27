@@ -71,7 +71,7 @@ jobs:
           url: ${{ vars.VAULT_ADDR }}
           method: jwt
           path: ${{ vars.VAULT_JWT_AUTH_PATH }} # = vault_jwt_auth_backend.path
-          role: ${{ env.VAULT_JWT_ROLE }} # = vault_jwt_auth_backend_role.role_name
+          role: ${{ vars.VAULT_JWT_ROLE }} # = vault_jwt_auth_backend_role.role_name
           jwtGithubAudience: ${{ vars.VAULT_ADDR }} # MUST match bound_audiences, else auth fails
           exportToken: false # keep the raw Vault token out of env
           secrets: |

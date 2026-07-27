@@ -57,6 +57,23 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
     });
   });
 
+  it('maps live Braze human external_id length message to hard-bounce 400', () => {
+    const rudderJobMetadata = [createMetadata(10), createMetadata(20), createMetadata(30)];
+    const result = responseHandler({
+      destinationResponse: {
+        status: 201,
+        response: {
+          message: 'success',
+          errors: [{ type: "'external_id' must be fewer than 988 bytes", index: 1 }],
+        },
+      },
+      rudderJobMetadata,
+      destinationRequest,
+    });
+
+    expect(result.response.map((r) => r.statusCode)).toEqual([200, 400, 200]);
+  });
+
   it('maps BLACKLISTED_EXTERNAL_USER_ID to hard-bounce 400', () => {
     const rudderJobMetadata = [createMetadata(1)];
     const result = responseHandler({

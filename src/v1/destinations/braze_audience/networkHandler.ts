@@ -10,13 +10,25 @@ const stats = require('../../../util/stats');
 const DEST = 'BRAZE_AUDIENCE';
 
 /**
- * Permanent Braze `/users/track` identity error `type` enums (docs).
- * Only these map to hard-bounce 400 — unknown types soft-bounce for retry.
+ * Permanent Braze `/users/track` identity error `type` values.
+ * Docs list uppercase enums; live `/users/track/bulk` often returns human
+ * messages (e.g. "'external_id' must be fewer than 988 bytes") instead.
  */
 const HARD_BOUNCE_IDENTITY_TYPES = new Set([
   'BLACKLISTED_EXTERNAL_USER_ID',
   'EXTERNAL_USER_ID_TOO_LARGE',
 ]);
+
+const isIdentityHardBounce = (type?: string): boolean => {
+  if (!type) return false;
+  if (HARD_BOUNCE_IDENTITY_TYPES.has(type)) return true;
+  // Live Braze message forms for permanent identity failures (not retryable).
+  return (
+    /external_user_id_too_large|blacklisted_external_user_id/i.test(type) ||
+    /external_id.*(?:fewer|bytes|too\s*large|blacklist)/i.test(type) ||
+    /blacklist(?:ed)?.*external_id/i.test(type)
+  );
+};
 
 type BrazeAudienceProxyParams = {
   destinationResponse: {
@@ -129,7 +141,7 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
       return { statusCode: 200, metadata, error: 'success' };
     }
 
-    const isIdentity = typeof fail.type === 'string' && HARD_BOUNCE_IDENTITY_TYPES.has(fail.type);
+    const isIdentity = isIdentityHardBounce(fail.type);
 
     if (isIdentity) {
       stats.increment('braze_audience_hard_bounce', {

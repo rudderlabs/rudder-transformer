@@ -1162,4 +1162,196 @@ export const data = [
       },
     },
   },
+
+  {
+    name: 'heap',
+    description: 'EU data residency identify request uses the EU Heap API endpoint',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                appId: '<app id>',
+                dataResidency: 'eu',
+              },
+              DestinationDefinition: {
+                Config: {},
+                DisplayName: 'Heap.io',
+                ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
+                Name: 'HEAP',
+              },
+              Enabled: true,
+              ID: '1WTcDSEOE437e4ePH10BJNELXmE',
+              Name: 'heap test',
+              Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            message: {
+              anonymousId: 'sampath',
+              channel: 'web',
+              context: {},
+              integrations: {
+                All: true,
+              },
+              traits: {
+                email: 'sampath@gmail.com',
+                plan: 'Growth',
+              },
+              messageId: 'fca2e71a-5d30-48e1-ba45-761c16e3820f',
+              originalTimestamp: '2020-01-16T13:21:59.076Z',
+              receivedAt: '2020-01-16T18:52:03.871+05:30',
+              sentAt: '2020-01-16T13:22:03.85Z',
+              timestamp: '2020-01-16T18:51:59.097+05:30',
+              type: 'identify',
+              userId: 'sampath',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://c.eu.heap-api.com/api/add_user_properties',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  identity: 'sampath',
+                  properties: {
+                    email: 'sampath@gmail.com',
+                    plan: 'Growth',
+                  },
+                  app_id: '<app id>',
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'sampath',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'heap',
+    description: 'EU data residency track request uses the EU Heap API endpoint',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                appId: '<app id>',
+                dataResidency: 'eu',
+              },
+              DestinationDefinition: {
+                Config: {},
+                DisplayName: 'Heap.io',
+                ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
+                Name: 'HEAP',
+              },
+              Enabled: true,
+              ID: '1WTcDSEOE437e4ePH10BJNELXmE',
+              Name: 'heap test',
+              Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            message: {
+              anonymousId: 'sampath',
+              channel: 'web',
+              context: {},
+              event: 'Send Transactional Email',
+              integrations: {
+                All: true,
+              },
+              messageId: 'c0c5b892-0d54-449f-b85f-ebb39ff04e67',
+              originalTimestamp: '2020-01-16T13:23:20.844Z',
+              properties: {
+                subject: 'Welcome to My App!',
+                variation: 'A',
+              },
+              receivedAt: '2020-01-16T18:53:23.804+05:30',
+              sentAt: '2020-01-16T13:23:23.782Z',
+              timestamp: '2020-01-16T18:53:20.866+05:30',
+              type: 'track',
+              userId: 'sampath',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://c.eu.heap-api.com/api/track',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  identity: 'sampath',
+                  event: 'Send Transactional Email',
+                  properties: {
+                    subject: 'Welcome to My App!',
+                    variation: 'A',
+                  },
+                  app_id: '<app id>',
+                  timestamp: '2020-01-16T18:53:20.866+05:30',
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'sampath',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

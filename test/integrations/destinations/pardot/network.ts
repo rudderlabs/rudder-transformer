@@ -407,4 +407,17 @@ export const networkCallsData = [
       statusText: 'Invalid action',
     },
   },
+  {
+    httpReq: {
+      url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/missing_attributes@test.com',
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        message: 'Accepted but missing Pardot attributes',
+      },
+      status: 202,
+      statusText: 'Accepted',
+    },
+  },
 ];

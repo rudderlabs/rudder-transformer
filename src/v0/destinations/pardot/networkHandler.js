@@ -6,6 +6,7 @@ const {
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util/index');
+const { HTTP_STATUS_CODES } = require('../../util/constant');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const tags = require('../../util/tags');
 
@@ -47,13 +48,16 @@ const pardotRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
   const respAttributes = response['@attributes'];
 
-  // to handle errors like service unavilable, wrong url, no response
+  // to handle errors like service unavailable, wrong url, no response
   if (!respAttributes) {
+    const errorStatus = isHttpStatusSuccess(status)
+      ? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
+      : status;
     throw new NetworkError(
       `${JSON.stringify(response)} ${stageMsg}`,
-      status,
+      errorStatus,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
       },
       response,
     );

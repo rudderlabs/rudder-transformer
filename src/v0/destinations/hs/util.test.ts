@@ -330,7 +330,7 @@ describe('isLookupFieldUnique utility test cases', () => {
     const result = await isLookupFieldUnique(mockDestination as any, 'email', mockMetadata as any);
 
     expect(result).toBe(true);
-    expect(mockCacheGet).toHaveBeenCalledWith('dest-123');
+    expect(mockCacheGet).toHaveBeenCalledWith('dest-123:contacts');
     expect(httpGET).not.toHaveBeenCalled();
   });
 
@@ -363,7 +363,7 @@ describe('isLookupFieldUnique utility test cases', () => {
     expect(result).toBe(true);
     expect(httpGET).toHaveBeenCalled();
     expect(mockCacheSet).toHaveBeenCalledWith(
-      'dest-123',
+      'dest-123:contacts',
       expect.objectContaining({ email: true, new_custom_field: true }),
     );
   });
@@ -386,7 +386,7 @@ describe('isLookupFieldUnique utility test cases', () => {
     expect(httpGET).toHaveBeenCalled();
     expect((httpGET as jest.Mock).mock.calls[0][0]).toContain('/crm/v3/properties/contacts');
     expect(mockCacheSet).toHaveBeenCalledWith(
-      'dest-123',
+      'dest-123:contacts',
       expect.objectContaining({ email: true, hs_object_id: true }),
     );
   });

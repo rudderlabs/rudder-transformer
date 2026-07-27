@@ -322,6 +322,34 @@ export const live: LiveSpec = {
       ],
     },
     {
+      // Exercises the gated rETL upsert path (crm/v3/objects/:objectType/batch/upsert):
+      // the contact is created upfront (like the other update scenarios), then a gated
+      // rETL identify updates it by its unique identifier (email) with no prior search.
+      // When the identifier is a unique property in the account the write lands via the
+      // batch/upsert endpoint; otherwise it falls back to create/update — the read-back
+      // assertion holds either way.
+      id: 'hs-retl-contacts-upsert-v3-split',
+      cleanup: deleteContactByEmail,
+      description:
+        'RETL mappedToDestination identify upserts (updates) an existing contact via crm/v3 batch/upsert by unique identifier (gated rETL split path)',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createContactAndWaitSearchable },
+        {
+          name: 'retl upsert contact (update by unique identifier)',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_WORKSPACE_ID },
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-upsert-update'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContext(ctx),
+            traits: { email: ctx.email(), ...retlContactUpdateTraits(ctx) },
+          }),
+        },
+        verifyContactProperties(retlContactUpdateTraits),
+      ],
+    },
+    {
       id: 'hs-retl-contacts-create-v1',
       cleanup: deleteContactByEmail,
       description: 'RETL mappedToDestination identify creates a contact via the v1 transform',

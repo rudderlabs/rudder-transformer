@@ -18,6 +18,7 @@ import stats from '../../../util/stats';
 import {
   MAX_BATCH_SIZE_CRM_CONTACT,
   CRM_CREATE_UPDATE_ALL_OBJECTS,
+  CRM_UPSERT_ALL_OBJECTS,
   MAX_BATCH_SIZE_CRM_OBJECT,
   CRM_ASSOCIATION_V3,
   RETL_CREATE_ASSOCIATION_OPERATION,
@@ -42,8 +43,12 @@ import type {
   HubspotRudderMessage,
   HubSpotBatchProcessingItem,
   HubSpotBatchRequestOutput,
+  HubSpotUpsertPayload,
 } from './types';
-import { hasAssociationShape } from './types';
+import { hasAssociationShape, hasUpsertPayloadShape } from './types';
+
+// Placeholder token substituted into the object-type endpoint templates.
+const OBJECT_TYPE_PLACEHOLDER = ':objectType';
 
 /**
  * rETL (new/v3 API) identify handler.
@@ -100,19 +105,57 @@ const processRetlIdentify = async (
     return addHsAuthentication(response, Config);
   }
 
-  // rETL object create/update — associations return above; objects require a resolved operation.
+  // rETL object create/update/upsert — associations return above; objects require a resolved operation.
   if (!operation) {
     throw new InstrumentationError('operation not found');
   }
   if (!objectType) {
     throw new InstrumentationError('objectType not found');
   }
+
+  // rETL upsert — when the identifierType is a unique property we can use the v3
+  // batch upsert endpoint directly (no Search chain). This mirrors
+  // `processUpsertIdentify` for contacts, mapping identifierType -> idProperty and
+  // destinationExternalId -> id.
+  if (operation === 'upsertObject') {
+    const identifierType = externalIdInfo?.identifierType;
+    const destinationExternalId = externalIdInfo?.destinationExternalId;
+    if (!identifierType || !destinationExternalId) {
+      throw new InstrumentationError(
+        'rETL - identifierType or destinationExternalId not found for upsert',
+      );
+    }
+
+    let properties = await populateTraits(propertyMap, traits, destination, metadata);
+    properties = removeHubSpotSystemField(properties);
+
+    // Ref: https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
+    const upsertPayload = {
+      id: destinationExternalId,
+      idProperty: identifierType,
+      properties,
+      // objectWriteTraceId is used to correlate results in 207 multi-status responses
+      objectWriteTraceId: metadata?.jobId?.toString(),
+    };
+
+    // endpoint is the full v3 batch upsert endpoint; the batcher uses it as-is.
+    response.endpoint = CRM_UPSERT_ALL_OBJECTS.replace(OBJECT_TYPE_PLACEHOLDER, objectType);
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.body.JSON = removeUndefinedAndNullValues(upsertPayload);
+    response.source = RETL_SOURCE;
+    response.operation = 'upsertObject';
+    response.headers = {
+      'Content-Type': JSON_MIME_TYPE,
+    };
+    return addHsAuthentication(response, Config);
+  }
+
   if (operation === 'createObject') {
     addExternalIdToHSTraits(message);
-    endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
+    endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(OBJECT_TYPE_PLACEHOLDER, objectType);
   } else if (operation === 'updateObject' && getHsSearchId(message)) {
     const { hsSearchId } = getHsSearchId(message);
-    endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType)}/${hsSearchId}`;
+    endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(OBJECT_TYPE_PLACEHOLDER, objectType)}/${hsSearchId}`;
     response.method = defaultPatchRequestConfig.requestMethod;
   }
 
@@ -183,6 +226,37 @@ const batchIdentifyRetl = (
         identifyResponseList.push(ev.message.body.JSON);
         metadata.push(ev.metadata);
       });
+    } else if (batchOperation === 'upsertObject') {
+      // Upsert operation for the v3 batch upsert endpoint.
+      // Each event already carries the complete upsert payload structure:
+      // { id, idProperty, properties, objectWriteTraceId }
+      chunk.forEach((ev) => {
+        const json = ev.message.body.JSON;
+
+        if (!hasUpsertPayloadShape(json)) {
+          throw new TransformationError('rETL - Invalid payload for upsertObject batch');
+        }
+        const { id, idProperty, properties } = json;
+
+        // Deduplicate by id + idProperty (lookup value) - hubspot fails the batch
+        // upsert request if the same id appears more than once.
+        const existing = identifyResponseList.find(
+          (data): data is HubSpotUpsertPayload =>
+            hasUpsertPayloadShape(data) && data.id === id && data.idProperty === idProperty,
+        );
+        if (existing) {
+          // Merge latest properties with existing properties
+          existing.properties = { ...existing.properties, ...properties };
+          // Track duplicate objectWriteTraceId for monitoring
+          stats.increment('hs_upsert_duplicate_trace_id', {
+            destination_id: destinationId,
+          });
+        } else {
+          identifyResponseList.push(json);
+        }
+        metadata.push(ev.metadata);
+      });
+      batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint;
     } else {
       throw new TransformationError('Unknown hubspot operation', 400);
     }
@@ -227,6 +301,7 @@ const batchRetlEvents = (
   // rETL specific chunk
   const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
   const updateAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
+  const upsertAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
   const associationObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
   let maxBatchSize: number = MAX_BATCH_SIZE_CRM_OBJECT;
 
@@ -241,6 +316,9 @@ const batchRetlEvents = (
         createAllObjectsEventChunk.push(event);
       } else if (operation === 'updateObject') {
         updateAllObjectsEventChunk.push(event);
+      } else if (operation === 'upsertObject') {
+        // Identify: chunks for handling upsert (v3 batch upsert) events
+        upsertAllObjectsEventChunk.push(event);
       } else if (operation === RETL_CREATE_ASSOCIATION_OPERATION) {
         // Identify: chunks for handling association events
         associationObjectsEventChunk.push(event);
@@ -252,6 +330,7 @@ const batchRetlEvents = (
 
   const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, maxBatchSize);
   const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, maxBatchSize);
+  const arrayChunksIdentifyUpsertObjects = lodash.chunk(upsertAllObjectsEventChunk, maxBatchSize);
   const arrayChunksIdentifyCreateAssociations = lodash.chunk(
     associationObjectsEventChunk,
     MAX_BATCH_SIZE_CRM_OBJECT,
@@ -272,6 +351,15 @@ const batchRetlEvents = (
       arrayChunksIdentifyUpdateObjects,
       batchedResponseList,
       'updateObject',
+    );
+  }
+
+  // batching up 'upsert' all objects endpoint chunks (v3 batch upsert)
+  if (arrayChunksIdentifyUpsertObjects.length > 0) {
+    batchedResponseList = batchIdentifyRetl(
+      arrayChunksIdentifyUpsertObjects,
+      batchedResponseList,
+      'upsertObject',
     );
   }
 

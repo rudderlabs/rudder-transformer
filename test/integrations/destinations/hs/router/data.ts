@@ -15,7 +15,7 @@ import { errorValidationData } from './errorValidationData';
  * Helpers + migrated event-stream / legacy router cases (previously eventStreamData.ts).
  *
  * These exercise the contact-lookup create/update path
- * (`HSTransform-v2.processIdentify` -> `util.searchContacts` -> create or update) plus
+ * (`es-retl-v3.processIdentify` -> `util.searchContacts` -> create or update) plus
  * the edge/error branches and the legacy (`apiVersion: 'legacyApi'`) v1 endpoints,
  * restoring the code-path coverage the (removed) processor suite used to provide.
  *

@@ -149,7 +149,7 @@ const esIdentifyMessage = {
   context: { mappedToDestination: false },
 };
 
-const baseData = [
+const baseData: Record<string, unknown>[] = [
   {
     name: 'hs',
     description: 'router associated retl test',
@@ -4840,7 +4840,4 @@ const baseData = [
 // Each rETL fixture is followed by its gated split-path duplicate (see retlSplitData.ts).
 // Dedicated rETL upsert fixtures are appended afterwards so they are NOT auto-derived
 // as behaviour-preservation split cases (see retlUpsertData.ts).
-export const data = [
-  ...withRetlSplitCases(baseData as Record<string, any>[]),
-  ...(retlUpsertData as Record<string, any>[]),
-];
+export const data = [...withRetlSplitCases(baseData), ...retlUpsertData];

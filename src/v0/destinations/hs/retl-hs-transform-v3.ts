@@ -81,6 +81,9 @@ const processRetlIdentify = async (
   const externalIdObj = getDestinationExternalIDObjectForRetl(message, 'HS');
   const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'HS');
   const objectType = externalIdInfo?.objectType;
+  if (!objectType) {
+    throw new InstrumentationError('objectType not found');
+  }
 
   // build response
   let endpoint: string | undefined;
@@ -89,7 +92,7 @@ const processRetlIdentify = async (
   response.method = defaultPostRequestConfig.requestMethod;
 
   // Handle hubspot association events sent from retl source
-  if (objectType && String(objectType).toLowerCase() === 'association' && externalIdObj) {
+  if (String(objectType).toLowerCase() === 'association' && externalIdObj) {
     const { associationTypeId, fromObjectType, toObjectType } = externalIdObj;
     const associationEndpointPath = CRM_ASSOCIATION_V3_ENDPOINT_PATH.replace(
       ':fromObjectType',
@@ -113,9 +116,6 @@ const processRetlIdentify = async (
   // rETL object create/update/upsert — associations return above; objects require a resolved operation.
   if (!operation) {
     throw new InstrumentationError('operation not found');
-  }
-  if (!objectType) {
-    throw new InstrumentationError('objectType not found');
   }
 
   // rETL upsert — when the identifierType is a unique property we can use the v3

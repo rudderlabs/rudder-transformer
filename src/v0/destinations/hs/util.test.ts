@@ -406,6 +406,52 @@ describe('isLookupFieldUnique utility test cases', () => {
 
     expect(result).toBe(false);
   });
+
+  it('should use companies-scoped cache key and properties endpoint when objectType is companies', async () => {
+    mockCacheGet.mockResolvedValue(undefined);
+
+    (httpGET as jest.Mock).mockResolvedValue(
+      createV3ApiResponse([{ name: 'domain', hasUniqueValue: true }]),
+    );
+
+    const result = await isLookupFieldUnique(
+      mockDestination as any,
+      'domain',
+      mockMetadata as any,
+      'companies',
+    );
+
+    expect(result).toBe(true);
+    expect(mockCacheGet).toHaveBeenCalledWith('dest-123:companies');
+    expect((httpGET as jest.Mock).mock.calls[0][0]).toContain('/crm/v3/properties/companies');
+    expect(mockCacheSet).toHaveBeenCalledWith(
+      'dest-123:companies',
+      expect.objectContaining({ domain: true }),
+    );
+  });
+
+  it('should use contacts-scoped cache key and properties endpoint when objectType is explicitly contacts', async () => {
+    mockCacheGet.mockResolvedValue(undefined);
+
+    (httpGET as jest.Mock).mockResolvedValue(
+      createV3ApiResponse([{ name: 'email', hasUniqueValue: true }]),
+    );
+
+    const result = await isLookupFieldUnique(
+      mockDestination as any,
+      'email',
+      mockMetadata as any,
+      'contacts',
+    );
+
+    expect(result).toBe(true);
+    expect(mockCacheGet).toHaveBeenCalledWith('dest-123:contacts');
+    expect((httpGET as jest.Mock).mock.calls[0][0]).toContain('/crm/v3/properties/contacts');
+    expect(mockCacheSet).toHaveBeenCalledWith(
+      'dest-123:contacts',
+      expect.objectContaining({ email: true }),
+    );
+  });
 });
 
 describe('getUTCMidnightTimeStampValue', () => {

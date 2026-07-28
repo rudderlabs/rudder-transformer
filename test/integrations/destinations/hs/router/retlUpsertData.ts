@@ -1,4 +1,4 @@
-import { authHeader1, secret1 } from '../maskedSecrets';
+import { authHeader1, authHeader3, secret1, secret3 } from '../maskedSecrets';
 import { HS_RETL_SPLIT_TEST_WORKSPACE_ID } from './retlSplitData';
 
 /**
@@ -20,6 +20,10 @@ import { HS_RETL_SPLIT_TEST_WORKSPACE_ID } from './retlSplitData';
  *   `/crm/v3/properties/contacts` mock reports as `hasUniqueValue: true`, so the
  *   gate resolves to upsert. The identifier lives in `externalId.id` and is NOT
  *   copied into `properties` (mirrors event-stream `processUpsertIdentify`).
+ * - A dedicated fallback fixture below uses `secret3`, whose shared
+ *   `/crm/v3/properties/contacts` mock reports `email.hasUniqueValue = false`; that
+ *   proves the gated path falls back to `splitEventsForCreateUpdate` and the normal
+ *   create/update routing instead of the upsert endpoint.
  */
 
 const retlDestination = {
@@ -27,6 +31,16 @@ const retlDestination = {
   Config: {
     authorizationType: 'newPrivateAppApi',
     accessToken: secret1,
+    apiVersion: 'newApi',
+    lookupField: 'email',
+  },
+};
+
+const retlNonUniqueDestination = {
+  ID: 'hs-retl-non-unique-dest',
+  Config: {
+    authorizationType: 'newPrivateAppApi',
+    accessToken: secret3,
     apiVersion: 'newApi',
     lookupField: 'email',
   },
@@ -57,7 +71,7 @@ const identifyMessage = (email: string, traits: Record<string, unknown>) => ({
 const UPSERT_ENDPOINT = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert';
 const UPSERT_ENDPOINT_PATH = '/crm/v3/objects/contacts/batch/upsert';
 
-export const retlUpsertData = [
+export const retlUpsertData: Record<string, unknown>[] = [
   {
     name: 'hs',
     description:
@@ -329,6 +343,87 @@ export const retlUpsertData = [
               batched: true,
               statusCode: 200,
               destination: retlDestination,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: {},
+  },
+  {
+    name: 'hs',
+    description:
+      'rETL (gated split, v3): non-unique identifierType falls back to search-driven update flow instead of batch upsert',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: retlNonUniqueDestination,
+              message: identifyMessage('secondary@email.com', {
+                firstname: 'Karen',
+                lastname: 'Peñarete',
+              }),
+              metadata: {
+                jobId: 5006,
+                userId: 'u1',
+                workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
+              },
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+                endpointPath: '/crm/v3/objects/contacts/batch/update',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader3,
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    inputs: [
+                      {
+                        id: '103689',
+                        properties: {
+                          firstname: 'Karen',
+                          lastname: 'Peñarete',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 5006,
+                  userId: 'u1',
+                  workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: retlNonUniqueDestination,
             },
           ],
         },

@@ -3,9 +3,9 @@ const { fetchWithProxy } = require('./fetch');
 const logger = require('../logger');
 const { responseStatusHandler } = require('./utils');
 const stats = require('./stats');
+const { CONFIG_BACKEND_URL, configBackendHeaders } = require('./configBackend');
 
 const tpCache = new NodeCache({ useClones: false });
-const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const TRACKING_PLAN_URL = `${CONFIG_BACKEND_URL}/workspaces`;
 
 /**
@@ -25,7 +25,7 @@ async function getTrackingPlan(tpId, version, workspaceId) {
   try {
     const url = `${TRACKING_PLAN_URL}/${workspaceId}/tracking-plans/${tpId}?version=${version}`;
     const startTime = new Date();
-    const response = await fetchWithProxy(url);
+    const response = await fetchWithProxy(url, { headers: configBackendHeaders() });
 
     responseStatusHandler(response.status, 'Tracking plan', tpId, url);
 

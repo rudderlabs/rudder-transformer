@@ -28,6 +28,14 @@ const getRunner = (): IvmScriptRunner => {
       cacheName: 'custom_mappings_ivm',
       maxSize: Number.parseInt(process.env.CUSTOM_MAPPINGS_IVM_CACHE_MAX_SIZE || '20', 10),
       ttlMs: Number.parseInt(process.env.CUSTOM_MAPPINGS_IVM_CACHE_TTL_MS || '300000', 10),
+      // A workspace's evals all share one fixed-size isolate heap. Left ungated, a burst piles
+      // every in-flight eval onto that heap until V8 disposes the isolate and fails all of them
+      // at once — the amplification behind INT-6832. Excess evals queue instead; the queue is
+      // unbounded, so a burst costs latency rather than dropped events.
+      maxConcurrentExecutions: Number.parseInt(
+        process.env.CUSTOM_MAPPINGS_IVM_MAX_CONCURRENT_EXECUTIONS || '100',
+        10,
+      ),
     });
   }
   return runner;

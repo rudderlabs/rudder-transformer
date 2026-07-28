@@ -190,10 +190,6 @@ const batchIdentifyForRetl = (
 const batchRetlLegacyEvents = (
   destEvents: HubSpotBatchProcessingItem[],
 ): HubSpotRouterTransformationOutput[] => {
-  if (!destEvents.every((event) => event.message.source === 'rETL')) {
-    return legacyBatchEvents(destEvents);
-  }
-
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
   const updateAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];

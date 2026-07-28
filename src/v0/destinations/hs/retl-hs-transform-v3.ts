@@ -238,10 +238,6 @@ const batchIdentifyRetl = (
 const batchRetlEvents = (
   destEvents: HubSpotBatchProcessingItem[],
 ): HubSpotRouterTransformationOutput[] => {
-  if (!destEvents.every((event) => event.message.source === 'rETL')) {
-    return batchEvents(destEvents);
-  }
-
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   // rETL specific chunk
   const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];

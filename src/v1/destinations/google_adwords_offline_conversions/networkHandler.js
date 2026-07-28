@@ -1,40 +1,10 @@
-const set = require('set-value');
-const get = require('get-value');
-const sha256 = require('sha256');
-const {
-  AbortedError,
-  NetworkInstrumentationError,
-  NetworkError,
-} = require('@rudderstack/integrations-lib');
+const { AbortedError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, httpPOST, handleHttpRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getHashFromArray,
-  isDefinedAndNotNullAndNotEmpty,
-  isEmptyObject,
-} = require('../../../v0/util');
-const {
-  getConversionActionId,
-  isClickCallBatchingEnabled,
-} = require('../../../v0/destinations/google_adwords_offline_conversions/utils');
-const Cache = require('../../../v0/util/cache');
-const {
-  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
-  SEARCH_STREAM,
-  destType,
-} = require('../../../v0/destinations/google_adwords_offline_conversions/config');
+const { isHttpStatusSuccess, isEmptyObject } = require('../../../v0/util');
+const { destType } = require('../../../v0/destinations/google_adwords_offline_conversions/config');
 const { getDeveloperToken, getAuthErrCategory } = require('../../../v0/util/googleUtils');
-const {
-  processAxiosResponse,
-  getDynamicErrorType,
-} = require('../../../adapters/utils/networkUtils');
-const tags = require('../../../v0/util/tags');
+const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { CommonUtils } = require('../../../util/common');
-
-const conversionCustomVariableCache = new Cache(
-  'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS_CUSTOM_VARIABLE',
-  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
-);
 
 /**
  * Extracts the full error detail from a Google Ads API error response.
@@ -124,114 +94,15 @@ const runTheJob = async ({ endpoint, headers, payload, jobId, metadata }) => {
 };
 
 /**
- * get all the custom variable for a customerID i.e created
- * in Google Ads using searchStream endpoint
- * @param {*} customerId
- * @param {*} event
- * @param {*} headers
- * @returns
- */
-const getConversionCustomVariable = async ({ headers, params, metadata }) => {
-  const conversionCustomVariableKey = sha256(params.customerId).toString();
-  return conversionCustomVariableCache.get(conversionCustomVariableKey, async () => {
-    const data = {
-      query: `SELECT conversion_custom_variable.name FROM conversion_custom_variable`,
-    };
-    const endpoint = SEARCH_STREAM.replace(':customerId', params.customerId);
-    const requestOptions = {
-      headers,
-    };
-    let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
-      destType: 'google_adwords_offline_conversions',
-      feature: 'proxy',
-      endpointPath: `/searchStream`,
-      requestMethod: 'POST',
-      module: 'dataDelivery',
-      metadata,
-    });
-    searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    const { response, status } = searchStreamResponse;
-    if (!isHttpStatusSuccess(status)) {
-      throw new NetworkError(
-        `[Google Ads Offline Conversions]:: ${getGoogleAdsError(response)} during google_ads_offline_conversions response transformation`,
-        status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-        },
-        response || searchStreamResponse,
-        getAuthErrCategory(searchStreamResponse),
-      );
-    }
-    const conversionCustomVariable = get(searchStreamResponse, 'response.0.results');
-    if (!conversionCustomVariable) {
-      throw new NetworkInstrumentationError(
-        `[Google Ads Offline Conversions]:: Conversion Custom Variable has not been created yet in Google Ads`,
-      );
-    }
-    return conversionCustomVariable;
-  });
-};
-
-/**
- * convert it into hashMap
- *
- * input:
- * [
- *  {
- *    "conversionCustomVariable": {
- *    "resourceName": "customers/9625812972/conversionCustomVariables/19131634",
- *    "name": "revenue"
- *     }
- *   },
- * ]
- *
- * Output:
- * {
- *  revenue: "customers/9625812972/conversionCustomVariables/19131634"
- * }
- * @param {*} arrays
- * @returns
- */
-const getConversionCustomVariableHashMap = (arrays) => {
-  const hashMap = {};
-  if (Array.isArray(arrays)) {
-    for (const element of arrays) {
-      hashMap[element.conversionCustomVariable.name] =
-        element.conversionCustomVariable.resourceName;
-    }
-  }
-  return hashMap;
-};
-
-/**
- * Validates custom variable
- * @param {*} customVariables
- * @returns
- */
-const isValidCustomVariables = (customVariables) => {
-  if (
-    isDefinedAndNotNullAndNotEmpty(customVariables) &&
-    Array.isArray(customVariables) &&
-    customVariables.length > 0
-  ) {
-    return customVariables.some(
-      (customVariable) => !!(customVariable.from !== '' && customVariable.to !== ''),
-    );
-  }
-  return false;
-};
-
-/**
- * collect conversionActionId for conversionAction parameter
+ * Delivers enriched Google Ads Offline Conversions requests.
  * @param {*} request
  * @returns
  */
 const ProxyRequest = async (request) => {
-  const { method, endpoint, headers, params, body, metadata } = request;
+  const { method, endpoint, headers, body, metadata } = request;
 
   headers['developer-token'] = getDeveloperToken();
 
-  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({
       endpoint,
@@ -240,15 +111,6 @@ const ProxyRequest = async (request) => {
       metadata,
     });
     const addPayload = body.JSON.addConversionPayload;
-    // Mapping Conversion Action
-    if (!shouldBatchClickCallConversionEvents) {
-      const conversionId = await getConversionActionId({ headers, params, metadata });
-      if (Array.isArray(addPayload.operations)) {
-        for (const operation of addPayload.operations) {
-          set(operation, 'create.transaction_attribute.conversion_action', conversionId);
-        }
-      }
-    }
 
     await addConversionToJob({
       endpoint,
@@ -265,45 +127,6 @@ const ProxyRequest = async (request) => {
       metadata,
     });
     return thirdResponse;
-  }
-  // fetch conversionAction
-  // httpPOST -> myAxios.post()
-  if (!shouldBatchClickCallConversionEvents) {
-    if (params?.event) {
-      const conversionActionId = await getConversionActionId({ headers, params, metadata });
-      set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
-    }
-    // customVariables would be undefined in case of Store Conversions
-    if (isValidCustomVariables(params.customVariables)) {
-      // fetch all conversion custom variable in google ads
-      let conversionCustomVariable = await getConversionCustomVariable({
-        headers,
-        params,
-        metadata,
-      });
-
-      // convert it into hashMap
-      conversionCustomVariable = getConversionCustomVariableHashMap(conversionCustomVariable);
-
-      const { properties } = params;
-      let { customVariables } = params;
-      const resultantCustomVariables = [];
-      customVariables = getHashFromArray(customVariables, 'from', 'to', false);
-      for (const key of Object.keys(customVariables)) {
-        if (properties[key] && conversionCustomVariable[customVariables[key]]) {
-          // 1. set custom variable name
-          // 2. set custom variable value
-          resultantCustomVariables.push({
-            conversionCustomVariable: conversionCustomVariable[customVariables[key]],
-            value: String(properties[key]),
-          });
-        }
-      }
-
-      if (resultantCustomVariables) {
-        set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);
-      }
-    }
   }
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
   const { httpResponse } = await handleHttpRequest(

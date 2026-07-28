@@ -16,13 +16,17 @@ import {
 } from '../../util';
 import stats from '../../../util/stats';
 import {
+  BASE_ENDPOINT,
+  OBJECT_TYPE_PLACEHOLDER,
   MAX_BATCH_SIZE_CRM_CONTACT,
-  CRM_CREATE_UPDATE_ALL_OBJECTS,
-  CRM_UPSERT_ALL_OBJECTS,
+  CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
+  CRM_UPSERT_ALL_OBJECTS_ENDPOINT_PATH,
   MAX_BATCH_SIZE_CRM_OBJECT,
-  CRM_ASSOCIATION_V3,
+  CRM_ASSOCIATION_V3_ENDPOINT_PATH,
   RETL_CREATE_ASSOCIATION_OPERATION,
   RETL_SOURCE,
+  BATCH_CREATE_PATH_SUFFIX,
+  BATCH_UPDATE_PATH_SUFFIX,
 } from './config';
 import {
   populateTraits,
@@ -31,7 +35,7 @@ import {
   getHsSearchId,
   addHsAuthentication,
 } from './util';
-import { batchEvents } from './HSTransform-v2';
+import { batchEvents } from './es-retl-v3';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
 import type {
@@ -46,9 +50,6 @@ import type {
   HubSpotUpsertPayload,
 } from './types';
 import { hasAssociationShape, hasUpsertPayloadShape } from './types';
-
-// Placeholder token substituted into the object-type endpoint templates.
-const OBJECT_TYPE_PLACEHOLDER = ':objectType';
 
 /**
  * rETL (new/v3 API) identify handler.
@@ -83,16 +84,19 @@ const processRetlIdentify = async (
 
   // build response
   let endpoint: string | undefined;
+  let endpointPath: string | undefined;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
 
   // Handle hubspot association events sent from retl source
   if (objectType && String(objectType).toLowerCase() === 'association' && externalIdObj) {
     const { associationTypeId, fromObjectType, toObjectType } = externalIdObj;
-    response.endpoint = CRM_ASSOCIATION_V3.replace(':fromObjectType', fromObjectType).replace(
-      ':toObjectType',
-      toObjectType,
-    );
+    const associationEndpointPath = CRM_ASSOCIATION_V3_ENDPOINT_PATH.replace(
+      ':fromObjectType',
+      fromObjectType,
+    ).replace(':toObjectType', toObjectType);
+    response.endpoint = `${BASE_ENDPOINT}${associationEndpointPath}`;
+    response.endpointPath = associationEndpointPath;
     response.body.JSON = {
       ...traits,
       type: associationTypeId,
@@ -139,7 +143,12 @@ const processRetlIdentify = async (
     };
 
     // endpoint is the full v3 batch upsert endpoint; the batcher uses it as-is.
-    response.endpoint = CRM_UPSERT_ALL_OBJECTS.replace(OBJECT_TYPE_PLACEHOLDER, objectType);
+    const upsertEndpointPath = CRM_UPSERT_ALL_OBJECTS_ENDPOINT_PATH.replace(
+      OBJECT_TYPE_PLACEHOLDER,
+      objectType,
+    );
+    response.endpoint = `${BASE_ENDPOINT}${upsertEndpointPath}`;
+    response.endpointPath = upsertEndpointPath;
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullValues(upsertPayload);
     response.source = RETL_SOURCE;
@@ -152,10 +161,18 @@ const processRetlIdentify = async (
 
   if (operation === 'createObject') {
     addExternalIdToHSTraits(message);
-    endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(OBJECT_TYPE_PLACEHOLDER, objectType);
+    endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
+      OBJECT_TYPE_PLACEHOLDER,
+      objectType,
+    );
+    endpoint = `${BASE_ENDPOINT}${endpointPath}`;
   } else if (operation === 'updateObject' && getHsSearchId(message)) {
     const { hsSearchId } = getHsSearchId(message);
-    endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(OBJECT_TYPE_PLACEHOLDER, objectType)}/${hsSearchId}`;
+    endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
+      OBJECT_TYPE_PLACEHOLDER,
+      objectType,
+    );
+    endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
     response.method = defaultPatchRequestConfig.requestMethod;
   }
 
@@ -166,6 +183,7 @@ const processRetlIdentify = async (
   response.operation = operation;
 
   response.endpoint = endpoint!;
+  response.endpointPath = endpointPath;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -193,7 +211,8 @@ const batchIdentifyRetl = (
     let batchEventResponse: HubSpotBatchRequestOutput = defaultBatchRequestConfig();
 
     if (batchOperation === 'createObject') {
-      batchEventResponse.batchedRequest.endpoint = `${message.endpoint}/batch/create`;
+      batchEventResponse.batchedRequest.endpoint = `${message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
+      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
 
       // create operation
       chunk.forEach((ev) => {
@@ -206,7 +225,8 @@ const batchIdentifyRetl = (
       batchEventResponse.batchedRequest.endpoint = `${message.endpoint.substr(
         0,
         message.endpoint.lastIndexOf('/'),
-      )}/batch/update`;
+      )}${BATCH_UPDATE_PATH_SUFFIX}`;
+      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}${BATCH_UPDATE_PATH_SUFFIX}`;
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
@@ -220,6 +240,7 @@ const batchIdentifyRetl = (
     } else if (batchOperation === 'createAssociations') {
       chunk.forEach((ev) => {
         batchEventResponse.batchedRequest.endpoint = ev.message.endpoint;
+        batchEventResponse.batchedRequest.endpointPath = ev.message.endpointPath;
         if (!hasAssociationShape(ev.message.body.JSON)) {
           throw new TransformationError('rETL - Invalid payload for createAssociations batch');
         }
@@ -257,6 +278,7 @@ const batchIdentifyRetl = (
         metadata.push(ev.metadata);
       });
       batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint;
+      batchEventResponse.batchedRequest.endpointPath = chunk[0].message.endpointPath;
     } else {
       throw new TransformationError('Unknown hubspot operation', 400);
     }
@@ -293,10 +315,6 @@ const batchIdentifyRetl = (
 const batchRetlEvents = (
   destEvents: HubSpotBatchProcessingItem[],
 ): HubSpotRouterTransformationOutput[] => {
-  if (!destEvents.every((event) => event.message.source === 'rETL')) {
-    return batchEvents(destEvents);
-  }
-
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   // rETL specific chunk
   const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];

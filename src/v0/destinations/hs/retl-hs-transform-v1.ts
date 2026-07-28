@@ -14,12 +14,16 @@ import {
   sortBatchesByMinJobId,
 } from '../../util';
 import {
-  CRM_CREATE_UPDATE_ALL_OBJECTS,
+  BASE_ENDPOINT,
+  CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
   MAX_BATCH_SIZE_CRM_OBJECT,
   MAX_BATCH_SIZE_CRM_CONTACT,
+  OBJECT_TYPE_PLACEHOLDER,
+  BATCH_CREATE_PATH_SUFFIX,
+  BATCH_UPDATE_PATH_SUFFIX,
 } from './config';
 import { populateTraits, removeHubSpotSystemField, getHsSearchId } from './util';
-import { legacyBatchEvents } from './HSTransform-v1';
+import { legacyBatchEvents } from './es-retl-v1';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
 import type {
@@ -53,6 +57,7 @@ const processRetlLegacyIdentify = async (
   }
 
   let endpoint: string = '';
+  let endpointPath: string = '';
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
 
@@ -63,13 +68,19 @@ const processRetlLegacyIdentify = async (
     throw new InstrumentationError('objectType not found');
   }
   if (operation === 'createObject') {
-    endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
+    endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
+      OBJECT_TYPE_PLACEHOLDER,
+      objectType,
+    );
+    endpoint = `${BASE_ENDPOINT}${endpointPath}`;
   } else if (operation === 'updateObject' && getHsSearchId(message)) {
     const { hsSearchId } = getHsSearchId(message);
-    endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType)}/${hsSearchId}`;
+    endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
+      OBJECT_TYPE_PLACEHOLDER,
+      objectType,
+    );
+    endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
     response.method = defaultPatchRequestConfig.requestMethod;
-  } else {
-    throw new InstrumentationError('unknown operation');
   }
 
   traits = await populateTraits(propertyMap, traits, destination, metadata);
@@ -79,6 +90,7 @@ const processRetlLegacyIdentify = async (
   response.operation = operation;
 
   response.endpoint = endpoint;
+  response.endpointPath = endpointPath;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -121,7 +133,8 @@ const batchIdentifyForRetl = (
         identifyResponseList.push({
           ...ev.message.body.JSON,
         });
-        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
+        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
 
         metadata.push(ev.metadata);
       });
@@ -136,7 +149,8 @@ const batchIdentifyForRetl = (
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
           0,
           updateEndpoint.lastIndexOf('/'),
-        )}/batch/update`;
+        )}${BATCH_UPDATE_PATH_SUFFIX}`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_UPDATE_PATH_SUFFIX}`;
 
         metadata.push(ev.metadata);
       });
@@ -176,10 +190,6 @@ const batchIdentifyForRetl = (
 const batchRetlLegacyEvents = (
   destEvents: HubSpotBatchProcessingItem[],
 ): HubSpotRouterTransformationOutput[] => {
-  if (!destEvents.every((event) => event.message.source === 'rETL')) {
-    return legacyBatchEvents(destEvents);
-  }
-
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
   const updateAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];

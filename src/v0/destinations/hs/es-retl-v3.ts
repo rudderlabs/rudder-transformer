@@ -24,20 +24,24 @@ import {
 } from '../../util';
 import stats from '../../../util/stats';
 import {
-  IDENTIFY_CRM_UPDATE_CONTACT,
-  IDENTIFY_CRM_CREATE_NEW_CONTACT,
+  BASE_ENDPOINT,
+  IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH,
+  IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH,
   MAX_BATCH_SIZE_CRM_CONTACT,
-  BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
-  BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
-  BATCH_IDENTIFY_CRM_UPSERT_CONTACT,
   mappingConfig,
   ConfigCategory,
-  TRACK_CRM_ENDPOINT,
-  CRM_CREATE_UPDATE_ALL_OBJECTS,
   MAX_BATCH_SIZE_CRM_OBJECT,
-  CRM_ASSOCIATION_V3,
+  OBJECT_TYPE_PLACEHOLDER,
   RETL_CREATE_ASSOCIATION_OPERATION,
   RETL_SOURCE,
+  BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH,
+  BATCH_IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH,
+  BATCH_IDENTIFY_CRM_UPSERT_CONTACT_ENDPOINT_PATH,
+  TRACK_CRM_ENDPOINT_PATH,
+  CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
+  CRM_ASSOCIATION_V3_ENDPOINT_PATH,
+  BATCH_CREATE_PATH_SUFFIX,
+  BATCH_UPDATE_PATH_SUFFIX,
 } from './config';
 import {
   getTransformedJSON,
@@ -114,7 +118,8 @@ const processUpsertIdentify = async (
   // Build response
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = BATCH_IDENTIFY_CRM_UPSERT_CONTACT;
+  response.endpoint = `${BASE_ENDPOINT}${BATCH_IDENTIFY_CRM_UPSERT_CONTACT_ENDPOINT_PATH}`;
+  response.endpointPath = BATCH_IDENTIFY_CRM_UPSERT_CONTACT_ENDPOINT_PATH;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -154,6 +159,7 @@ const processIdentify = async (
   const objectType = externalIdInfo?.objectType;
   // build response
   let endpoint: string | undefined;
+  let endpointPath: string | undefined;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
 
@@ -166,10 +172,12 @@ const processIdentify = async (
     externalIdObj
   ) {
     const { associationTypeId, fromObjectType, toObjectType } = externalIdObj;
-    response.endpoint = CRM_ASSOCIATION_V3.replace(':fromObjectType', fromObjectType).replace(
-      ':toObjectType',
-      toObjectType,
-    );
+    const associationEndpointPath = CRM_ASSOCIATION_V3_ENDPOINT_PATH.replace(
+      ':fromObjectType',
+      fromObjectType,
+    ).replace(':toObjectType', toObjectType);
+    response.endpoint = `${BASE_ENDPOINT}${associationEndpointPath}`;
+    response.endpointPath = associationEndpointPath;
     response.body.JSON = {
       ...traits,
       type: associationTypeId,
@@ -193,13 +201,18 @@ const processIdentify = async (
     }
     if (operation === 'createObject') {
       addExternalIdToHSTraits(message);
-      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
+        OBJECT_TYPE_PLACEHOLDER,
+        objectType,
+      );
+      endpoint = `${BASE_ENDPOINT}${endpointPath}`;
     } else if (operation === 'updateObject' && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
-      endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
-        ':objectType',
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
+        OBJECT_TYPE_PLACEHOLDER,
         objectType,
-      )}/${hsSearchId}`;
+      );
+      endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
@@ -236,19 +249,25 @@ const processIdentify = async (
     if (contactId) {
       // contact exists
       // update
-      endpoint = IDENTIFY_CRM_UPDATE_CONTACT.replace(':contactId', contactId);
+      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH.replace(
+        ':contactId',
+        contactId,
+      )}`;
+      endpointPath = IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH;
       response.operation = 'updateContacts';
       response.method = defaultPatchRequestConfig.requestMethod;
     } else {
       // contact do not exist
       // create
-      endpoint = IDENTIFY_CRM_CREATE_NEW_CONTACT;
+      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
+      endpointPath = IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH;
       response.operation = 'createContacts';
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
   }
 
   response.endpoint = endpoint!;
+  response.endpointPath = endpointPath;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -291,7 +310,8 @@ const processTrack = async ({
   }
 
   const response = defaultRequestConfig();
-  response.endpoint = TRACK_CRM_ENDPOINT;
+  response.endpoint = `${BASE_ENDPOINT}${TRACK_CRM_ENDPOINT_PATH}`;
+  response.endpointPath = TRACK_CRM_ENDPOINT_PATH;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
@@ -309,7 +329,7 @@ const processTrack = async ({
     };
   } else {
     // using legacyApiKey
-    response.endpoint = `${TRACK_CRM_ENDPOINT}?hapikey=${Config.apiKey}`;
+    response.endpoint = `${BASE_ENDPOINT}${TRACK_CRM_ENDPOINT_PATH}?hapikey=${Config.apiKey}`;
   }
 
   return response;
@@ -336,7 +356,8 @@ const batchIdentify = (
     let batchEventResponse: HubSpotBatchRequestOutput = defaultBatchRequestConfig();
 
     if (batchOperation === 'createObject') {
-      batchEventResponse.batchedRequest.endpoint = `${message.endpoint}/batch/create`;
+      batchEventResponse.batchedRequest.endpoint = `${message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
+      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
 
       // create operation
       chunk.forEach((ev) => {
@@ -349,7 +370,8 @@ const batchIdentify = (
       batchEventResponse.batchedRequest.endpoint = `${message.endpoint.substr(
         0,
         message.endpoint.lastIndexOf('/'),
-      )}/batch/update`;
+      )}${BATCH_UPDATE_PATH_SUFFIX}`;
+      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}${BATCH_UPDATE_PATH_SUFFIX}`;
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
@@ -414,6 +436,7 @@ const batchIdentify = (
     } else if (batchOperation === 'createAssociations') {
       chunk.forEach((ev) => {
         batchEventResponse.batchedRequest.endpoint = ev.message.endpoint;
+        batchEventResponse.batchedRequest.endpointPath = ev.message.endpointPath;
         if (!hasAssociationShape(ev.message.body.JSON)) {
           throw new TransformationError('rETL - Invalid payload for createAssociations batch');
         }
@@ -451,6 +474,7 @@ const batchIdentify = (
         metadata.push(ev.metadata);
       });
       batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint;
+      batchEventResponse.batchedRequest.endpointPath = chunk[0].message.endpointPath;
     } else {
       throw new TransformationError('Unknown hubspot operation', 400);
     }
@@ -460,9 +484,13 @@ const batchIdentify = (
     };
 
     if (batchOperation === 'createContacts') {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
+      batchEventResponse.batchedRequest.endpoint = `${BASE_ENDPOINT}${BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
+      batchEventResponse.batchedRequest.endpointPath =
+        BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH;
     } else if (batchOperation === 'updateContacts') {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_CONTACT;
+      batchEventResponse.batchedRequest.endpoint = `${BASE_ENDPOINT}${BATCH_IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH}`;
+      batchEventResponse.batchedRequest.endpointPath =
+        BATCH_IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH;
     }
 
     batchEventResponse.batchedRequest.headers = message.headers!;
@@ -513,6 +541,7 @@ const batchEvents = (
       const batchedResponse: HubSpotBatchRequestOutput = defaultBatchRequestConfig();
       batchedResponse.batchedRequest.headers = message.headers!;
       batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.endpointPath = TRACK_CRM_ENDPOINT_PATH;
       batchedResponse.batchedRequest.body = message.body;
       batchedResponse.batchedRequest.params = message.params!;
       batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;

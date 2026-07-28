@@ -208,8 +208,8 @@ The `externalId` array contains crucial information for object identification:
 └─────────────────────┘          └─────────────────────┘
 ```
 
-**Code Reference (Legacy API)**: [HSTransform-v1.js:183-245](../HSTransform-v1.js#L183-L245)
-**Code Reference (New API)**: [HSTransform-v2.js:248-371](../HSTransform-v2.js#L248-L371)
+**Code Reference (Legacy API)**: [es-retl-v1.ts:183-245](../es-retl-v1.ts#L183-L245)
+**Code Reference (New API)**: [es-retl-v3.ts:248-371](../es-retl-v3.ts#L248-L371)
 
 ## Property Handling
 
@@ -401,7 +401,7 @@ Common association type IDs:
 └─────────────────────────────────────────────────────────┘
 ```
 
-**Code Reference**: [transform.js:89](../transform.js#L89), [HSTransform-v2.js:93-114](../HSTransform-v2.js#L93-L114)
+**Code Reference**: [transform.js:89](../transform.js#L89), [es-retl-v3.ts:93-114](../es-retl-v3.ts#L93-L114)
 
 ## Batch Size Limits
 
@@ -457,7 +457,7 @@ Common association type IDs:
 - Ensures batch succeeds even with duplicates
 - Last value wins for duplicate identifiers
 
-**Code Reference**: [HSTransform-v2.js:287-308](../HSTransform-v2.js#L287-L308), [HSTransform-v2.js:309-333](../HSTransform-v2.js#L309-L333)
+**Code Reference**: [es-retl-v3.ts:287-308](../es-retl-v3.ts#L287-L308), [es-retl-v3.ts:309-333](../es-retl-v3.ts#L309-L333)
 
 ## Error Handling
 
@@ -471,7 +471,7 @@ Error: Email "invalid-email" is invalid
 
 **Solution**: Validate email format before syncing
 
-**Code Reference**: [HSTransform-v2.js:80-82](../HSTransform-v2.js#L80-L82)
+**Code Reference**: [es-retl-v3.ts:80-82](../es-retl-v3.ts#L80-L82)
 
 #### 2. Property Type Mismatch
 
@@ -502,7 +502,7 @@ Error: objectType not found
 
 **Solution**: Include `objectType` in `externalId` array
 
-**Code Reference**: [HSTransform-v2.js:122-124](../HSTransform-v2.js#L122-L124)
+**Code Reference**: [es-retl-v3.ts:122-124](../es-retl-v3.ts#L122-L124)
 
 #### 5. System Fields Error
 
@@ -677,24 +677,24 @@ The HubSpot destination does **not** support the `record` event type required fo
 ### Key Files
 
 - **transform.js**: Main entry point, batch orchestration, split logic
-- **HSTransform-v1.js**: Legacy API implementation
-- **HSTransform-v2.js**: New API implementation
+- **es-retl-v1.ts**: Legacy API implementation
+- **es-retl-v3.ts**: New API implementation
 - **util.js**: Utility functions including search, property handling, formatting
 - **config.js**: Endpoints, constants, batch size limits
 
 ### Key Functions
 
-| Function                     | File                  | Purpose                                 |
-| ---------------------------- | --------------------- | --------------------------------------- |
-| `splitEventsForCreateUpdate` | util.js:740           | Bulk search and create/update splitting |
-| `getExistingContactsData`    | util.js:668           | Perform bulk search for objects         |
-| `performHubSpotSearch`       | util.js:533           | Execute paginated search API calls      |
-| `setHsSearchId`              | util.js:710           | Store HubSpot ID in externalId          |
-| `addExternalIdToHSTraits`    | util.js:837           | Add identifier to traits for create     |
-| `populateTraits`             | util.js:818           | Convert property types (dates, etc.)    |
-| `removeHubSpotSystemField`   | util.js:887           | Remove system fields from payload       |
-| `batchIdentify` (v2)         | HSTransform-v2.js:248 | Batch logic for New API                 |
-| `batchIdentifyForrETL` (v1)  | HSTransform-v1.js:183 | Batch logic for Legacy API              |
+| Function                     | File              | Purpose                                 |
+| ---------------------------- | ----------------- | --------------------------------------- |
+| `splitEventsForCreateUpdate` | util.js:740       | Bulk search and create/update splitting |
+| `getExistingContactsData`    | util.js:668       | Perform bulk search for objects         |
+| `performHubSpotSearch`       | util.js:533       | Execute paginated search API calls      |
+| `setHsSearchId`              | util.js:710       | Store HubSpot ID in externalId          |
+| `addExternalIdToHSTraits`    | util.js:837       | Add identifier to traits for create     |
+| `populateTraits`             | util.js:818       | Convert property types (dates, etc.)    |
+| `removeHubSpotSystemField`   | util.js:887       | Remove system fields from payload       |
+| `batchIdentify` (v3)         | es-retl-v3.ts:248 | Batch logic for New API                 |
+| `batchIdentifyForrETL` (v1)  | es-retl-v1.ts:183 | Batch logic for Legacy API              |
 
 ---
 

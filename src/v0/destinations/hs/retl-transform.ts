@@ -2,6 +2,7 @@ import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { EventType, MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } from '../../util';
+import { isFeatureEnabled } from '../../../util/featureFlags';
 import { API_VERSION } from './config';
 import { processRetlLegacyIdentify, batchRetlLegacyEvents } from './retl-hs-transform-v1';
 import { processRetlIdentify, batchRetlEvents } from './retl-hs-transform-v3';
@@ -24,28 +25,12 @@ import type {
 const HS_RETL_SPLIT_WORKSPACE_IDS_ENV = 'DEST_HS_RETL_SPLIT_WORKSPACE_IDS';
 
 /**
- * Parse a comma-separated list of workspace ids from an env var value.
- * Mirrors the convention used by other destinations (e.g. Salesforce, Braze).
- */
-const parseWorkspaceIdList = (envVar?: string): string[] =>
-  envVar
-    ?.split(',')
-    ?.map((s) => s?.trim())
-    ?.filter((s): s is string => Boolean(s)) ?? [];
-
-/**
- * The rETL/event-stream split is opt-in per workspace. It is enabled only when
- * the event's workspaceId is present in DEST_HS_RETL_SPLIT_WORKSPACE_IDS.
- * When the list is empty/unset, the split is off for everyone and the existing
+ * The rETL/event-stream split is opt-in per workspace via the rollout flag above.
+ * When the flag is unset the split is off for everyone and the existing
  * (unchanged) code path is used.
  */
-const isHsRetlSplitEnabledForWorkspace = (workspaceId?: string): boolean => {
-  const enabledList = parseWorkspaceIdList(process.env[HS_RETL_SPLIT_WORKSPACE_IDS_ENV]);
-  if (enabledList.length === 0) {
-    return false;
-  }
-  return enabledList.includes((workspaceId ?? '').trim());
-};
+const isHsRetlSplitEnabledForWorkspace = (workspaceId: string): boolean =>
+  isFeatureEnabled(HS_RETL_SPLIT_WORKSPACE_IDS_ENV, workspaceId);
 
 // An event is rETL when it is mapped-to-destination (reverse-ETL/VDM source).
 const isRetlMappedEvent = (message: HubspotRudderMessage): boolean => {
@@ -59,8 +44,13 @@ const isRetlMappedEvent = (message: HubspotRudderMessage): boolean => {
  * Decides whether a single router input should be handled by the new, dedicated
  * rETL code path. True only for allow-listed workspaces AND rETL-mapped events.
  */
-const shouldUseHsRetlSplitPath = (input: HubspotRouterRequest): boolean =>
-  isHsRetlSplitEnabledForWorkspace(input.metadata?.workspaceId) && isRetlMappedEvent(input.message);
+const shouldUseHsRetlSplitPath = (input: HubspotRouterRequest): boolean => {
+  const workspaceId = input.metadata?.workspaceId;
+  if (!workspaceId) {
+    return false;
+  }
+  return isHsRetlSplitEnabledForWorkspace(workspaceId) && isRetlMappedEvent(input.message);
+};
 
 const processSingleMessageRetl = async (
   { message, destination, metadata }: HubspotRouterRequest,
@@ -151,6 +141,8 @@ const processBatchRouterRetl = async (
 
         receivedResponse = Array.isArray(receivedResponse) ? receivedResponse : [receivedResponse];
 
+        // received response can be in array format [{}, {}, {}, ..., {}]
+        // if multiple response is being returned
         receivedResponse.forEach((element) => {
           successRespList.push({
             message: element,
@@ -206,5 +198,4 @@ export {
   shouldUseHsRetlSplitPath,
   isHsRetlSplitEnabledForWorkspace,
   isRetlMappedEvent,
-  parseWorkspaceIdList,
 };

@@ -243,9 +243,7 @@ const getCallConversionPayload = (
     path: CALL_CONVERSION_ENDPOINT_PATH,
   };
 
-  if (isDefinedAndNotNullAndNotEmpty(conversionActionId)) {
-    set(payload, 'conversions[0].conversionAction', conversionActionId);
-  }
+  set(payload, 'conversions[0].conversionAction', conversionActionId);
   if (customVariableList.length > 0) {
     set(payload, 'conversions.0.customVariables', customVariableList);
   }
@@ -282,9 +280,7 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData, conver
   }`;
 
   // add convertion conversion_action to transaction_attribute
-  if (isDefinedAndNotNullAndNotEmpty(conversionActionId)) {
-    payload.operations.create.transaction_attribute.conversion_action = conversionActionId;
-  }
+  payload.operations.create.transaction_attribute.conversion_action = conversionActionId;
 
   // userIdentifierSource
   // if userIdentifierSource doesn't exist in properties
@@ -444,9 +440,7 @@ const getClickConversionPayloadAndEndpoint = (
     set(payload, 'conversions[0].cartData.items', itemList);
   }
 
-  if (isDefinedAndNotNullAndNotEmpty(conversionActionId)) {
-    set(payload, 'conversions[0].conversionAction', conversionActionId);
-  }
+  set(payload, 'conversions[0].conversionAction', conversionActionId);
   if (customVariableList.length > 0) {
     set(payload, 'conversions[0].customVariables', customVariableList);
   }

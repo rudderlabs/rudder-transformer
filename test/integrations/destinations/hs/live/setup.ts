@@ -83,3 +83,19 @@ export const createAssociationObjects = async (ctx: RunContext): Promise<void> =
   });
   ctx.register({ type: ASSOC_TO_TYPE, id: toId });
 };
+
+// Additional-email upsert scenario: create a contact whose primary email is the run email and whose
+// hs_additional_emails carries a second address, register its id, and wait until it is stably
+// searchable so the subsequent upserts resolve against a settled record.
+export const createContactWithAdditionalEmail = async (ctx: RunContext): Promise<void> => {
+  const email = ctx.email();
+  const additionalEmail = ctx.email('additional');
+  const id = await createCrmObject(ctx, 'contacts', {
+    email,
+    hs_additional_emails: additionalEmail,
+    firstname: 'CI-Upsert-AddlEmail',
+    lastname: ctx.runId,
+  });
+  ctx.register({ type: 'contacts', id });
+  await waitUntilSearchable(`contact ${email}`, () => findContactIdByEmail(ctx, email));
+};

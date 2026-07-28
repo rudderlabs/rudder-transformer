@@ -5,6 +5,7 @@ import {
   ASSOC_TO_TYPE,
   deleteAssociationObjects,
   deleteContactByEmail,
+  deleteUpsertAdditionalEmailContacts,
   registeredId,
 } from './api';
 import {
@@ -20,18 +21,27 @@ import {
   esNonUniqueCreateTraits,
   esNonUniqueUpdateTraits,
   retlContactContext,
+  retlContactContextForEmail,
   retlContactCreateTraits,
   retlContactCreateV1Traits,
   retlContactUpdateTraits,
   retlContactUpdateV1Traits,
+  retlUpsertCombinedTraits,
+  retlUpsertPrimaryTraits,
+  retlUpsertSecondaryTraits,
 } from './profiles';
 import {
   createAssociationObjects,
   createContactAndRegisterId,
   createContactAndWaitSearchable,
   createContactSearchableByFirstname,
+  createContactWithAdditionalEmail,
 } from './setup';
-import { verifyAssociationExists, verifyContactProperties } from './verify';
+import {
+  verifyAssociationExists,
+  verifyContactProperties,
+  verifyUpsertResolvesToSameContact,
+} from './verify';
 
 export const live: LiveSpec = {
   enabled: true,
@@ -295,6 +305,46 @@ export const live: LiveSpec = {
         },
       ],
       verify: { check: verifyContactProperties(retlContactUpdateTraits) },
+    },
+    {
+      // Additional-email resolution: HubSpot treats hs_additional_emails as aliases of a contact, so
+      // an upsert keyed by the primary email and a later upsert keyed by the additional email must
+      // land on the SAME contact id. We seed one contact carrying both addresses, upsert disjoint
+      // traits by each email, then assert that single contact ends up with both sets.
+      id: 'hs-retl-contacts-upsert-additional-email-v3-split',
+      cleanup: deleteUpsertAdditionalEmailContacts,
+      description:
+        'RETL upsert by primary then by additional email resolves to the same contact via crm/v3 batch/upsert (gated rETL split path)',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createContactWithAdditionalEmail },
+        {
+          name: 'upsert by primary email',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          retries: 3,
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-upsert-primary'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContextForEmail(ctx.email()),
+            traits: retlUpsertPrimaryTraits(ctx),
+          }),
+        },
+        {
+          name: 'upsert by additional email',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          retries: 3,
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-upsert-additional'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContextForEmail(ctx.email('additional')),
+            traits: retlUpsertSecondaryTraits(ctx),
+          }),
+        },
+      ],
+      verify: { check: verifyUpsertResolvesToSameContact(retlUpsertCombinedTraits) },
     },
     {
       id: 'hs-retl-contacts-create-v1',

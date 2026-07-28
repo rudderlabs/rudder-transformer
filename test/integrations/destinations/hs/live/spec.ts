@@ -81,6 +81,7 @@ export const live: LiveSpec = {
         {
           name: 'identify existing contact',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-contacts-update'),
             type: 'identify',
@@ -121,6 +122,7 @@ export const live: LiveSpec = {
         {
           name: 'identify existing contact (v1)',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-contacts-update-v1'),
             type: 'identify',
@@ -178,6 +180,7 @@ export const live: LiveSpec = {
         {
           name: 'identify by hsContactId',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-hscontactid'),
             type: 'identify',
@@ -224,6 +227,7 @@ export const live: LiveSpec = {
         {
           name: 'identify existing via non-unique lookup (search -> update)',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-nonunique-existing'),
             type: 'identify',
@@ -243,6 +247,7 @@ export const live: LiveSpec = {
         {
           name: 'retl create contact',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-contacts'),
             type: 'identify',
@@ -295,6 +300,7 @@ export const live: LiveSpec = {
           name: 'retl upsert contact (update by unique identifier)',
           stepType: 'pipeline',
           metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-upsert-update'),
             type: 'identify',

@@ -34,6 +34,7 @@ import {
   removeHubSpotSystemField,
   getHsSearchId,
   addHsAuthentication,
+  recordTransformFlow,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -105,6 +106,7 @@ const processRetlIdentify = async (
     };
     response.operation = RETL_CREATE_ASSOCIATION_OPERATION;
     response.source = RETL_SOURCE;
+    recordTransformFlow(destination, 'retl', 'retl', 'association');
     return addHsAuthentication(response, Config);
   }
 
@@ -155,6 +157,7 @@ const processRetlIdentify = async (
     response.headers = {
       'Content-Type': JSON_MIME_TYPE,
     };
+    recordTransformFlow(destination, 'retl', 'retl', 'upsert');
     return addHsAuthentication(response, Config);
   }
 
@@ -165,6 +168,7 @@ const processRetlIdentify = async (
       objectType,
     );
     endpoint = `${BASE_ENDPOINT}${endpointPath}`;
+    recordTransformFlow(destination, 'retl', 'retl', 'create');
   } else if (operation === 'updateObject' && getHsSearchId(message)) {
     const { hsSearchId } = getHsSearchId(message);
     endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
@@ -173,6 +177,7 @@ const processRetlIdentify = async (
     );
     endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
     response.method = defaultPatchRequestConfig.requestMethod;
+    recordTransformFlow(destination, 'retl', 'retl', 'update');
   }
 
   traits = await populateTraits(propertyMap, traits, destination, metadata);

@@ -38,10 +38,12 @@ import {
   HUBSPOT_SYSTEM_FIELDS,
   CONTACT_PROPERTIES_CACHE_TTL,
   CRM_V3_PROPERTIES_ENDPOINT_PATH,
+  API_VERSION,
 } from './config';
 
 import Cache from '../../util/cache';
 import tags from '../../util/tags';
+import stats from '../../../util/stats';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
 import type {
@@ -1089,6 +1091,32 @@ const isLookupFieldUnique = async (
   return propertiesMap[lookupField] ?? false;
 };
 
+/**
+ * Emit a per-event flow counter so HubSpot traffic can be sliced by pipeline during rollout.
+ * Called statically from each terminal branch, so flow / code_path / operation are known literals:
+ *   flow         event_stream | retl
+ *   code_path    retl (dedicated gated rETL pipeline) | es_retl (shared es-retl pipeline)
+ *   operation    create | update | upsert | association | track
+ *   api_version  v1 (legacyApi) | v3 (newApi)                       [from Config]
+ *   auth_type    private_app (newPrivateAppApi) | api_key (legacy)  [from Config]
+ */
+const recordTransformFlow = (
+  destination: HubSpotDestination,
+  flow: 'event_stream' | 'retl',
+  codePath: 'retl' | 'es_retl',
+  operation: 'create' | 'update' | 'upsert' | 'association' | 'track',
+): void => {
+  const { Config, ID } = destination;
+  stats.increment('hs_transform_flow', {
+    flow,
+    code_path: codePath,
+    operation,
+    api_version: Config?.apiVersion === API_VERSION.v3 ? 'v3' : 'v1',
+    auth_type: Config?.authorizationType === 'newPrivateAppApi' ? 'private_app' : 'api_key',
+    destination_id: ID,
+  });
+};
+
 export {
   validateDestinationConfig,
   addHsAuthentication,
@@ -1112,4 +1140,5 @@ export {
   removeHubSpotSystemField,
   getLookupFieldValue,
   isLookupFieldUnique,
+  recordTransformFlow,
 };

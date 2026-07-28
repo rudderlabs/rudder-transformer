@@ -22,7 +22,12 @@ import {
   BATCH_CREATE_PATH_SUFFIX,
   BATCH_UPDATE_PATH_SUFFIX,
 } from './config';
-import { populateTraits, removeHubSpotSystemField, getHsSearchId } from './util';
+import {
+  populateTraits,
+  removeHubSpotSystemField,
+  getHsSearchId,
+  recordTransformFlow,
+} from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
 import type {
@@ -72,6 +77,7 @@ const processRetlLegacyIdentify = async (
       objectType,
     );
     endpoint = `${BASE_ENDPOINT}${endpointPath}`;
+    recordTransformFlow(destination, 'retl', 'retl', 'create');
   } else if (operation === 'updateObject' && getHsSearchId(message)) {
     const { hsSearchId } = getHsSearchId(message);
     endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
@@ -80,6 +86,7 @@ const processRetlLegacyIdentify = async (
     );
     endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
     response.method = defaultPatchRequestConfig.requestMethod;
+    recordTransformFlow(destination, 'retl', 'retl', 'update');
   }
 
   traits = await populateTraits(propertyMap, traits, destination, metadata);

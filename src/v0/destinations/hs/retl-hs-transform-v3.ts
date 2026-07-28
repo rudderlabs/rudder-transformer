@@ -34,7 +34,6 @@ import {
   getHsSearchId,
   addHsAuthentication,
 } from './util';
-import { batchEvents } from './es-retl-v3';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
 import type {

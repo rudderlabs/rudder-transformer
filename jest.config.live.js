@@ -9,12 +9,7 @@ module.exports = {
   collectCoverage: false,
   coverageDirectory: 'reports/live-coverage',
   coverageReporters: ['text', 'text-summary', 'lcov', 'html'],
-  collectCoverageFrom: [
-    'src/**/*.{ts,js}',
-    'test/integrations/live/**/*.ts',
-    'test/integrations/destinations/**/live.ts',
-    '!src/**/*.d.ts',
-  ],
+  collectCoverageFrom: ['src/**/*.{ts,js}', '!src/**/*.d.ts'],
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'ts', 'node'],
   modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/dist-test/'],

@@ -136,22 +136,48 @@ and is validated for shape only. Prefer piloting `apiKey`/`basic` destinations f
 
 1. **Read** the sources above for `<dest>`; enumerate the distinct behaviors its component cases
    cover (dedupe error-only ones).
-2. **Choose** `authType`.
+2. **Choose** `authType`. **If the destination is OAuth, stop here:** the `rudder-auth` container
+   that services OAuth refresh is deferred (not in the pilot), so park the spec with
+   `enabled: false` and say so in the output — don't generate a spec that can't run yet. Pilot
+   `apiKey`/`basic` destinations first.
 3. **Write `resolveConfig`** from the component `destination.Config` — keep the non-secret fields as
    fixed defaults, spread `s.config` last for the real credentials.
-4. **For each behavior**, add a scenario: a pipeline step whose `seed(ctx)` reproduces the component
-   `message` with ctx-based identities; a `configOverride` for config-dependent variants; and
-   `setup`/`verify`/`cleanup` steps for stateful ones. For create/update behaviors, factor the
-   asserted fields into a `(ctx) => ({ ... })` profile shared by the seed and a field-level verify
-   so the two stay in lockstep.
-5. **Enroll**: `enabled: true` (registry auto-discovers `destinations/*/live.ts`; no registration).
+4. **Emit a credential template.** `resolveConfig` names the destination's config fields, so print a
+   filled `LIVE_SECRET_<DEST>` skeleton the developer can paste and fill in — the one thing they
+   can't derive from the repo. Placeholders for the secret values, real keys for everything else,
+   e.g.:
+   `LIVE_SECRET_HS={"authType":"apiKey","config":{"accessToken":"<private-app-token>"},"readback":{"accessToken":"<private-app-token>"}}`
+   Include `readback` only if the destination has `verify` steps; add `resourceIds`/`oauthRefresh`
+   when the config needs them.
+5. **For each behavior**, add a scenario: a pipeline step whose `seed(ctx)` reproduces the component
+   `message` with ctx-based identities; a `configOverride` for config-dependent variants; and a
+   `setup` step plus a scenario-level `verify`/`cleanup` for stateful ones. For create/update
+   behaviors, factor the asserted fields into a `(ctx) => ({ ... })` profile shared by the seed and
+   the field-level verify so the two stay in lockstep.
+6. **Enroll**: `enabled: true` (registry auto-discovers `destinations/*/live.ts`; no registration).
    Use `enabled: false` to park it (e.g. OAuth destinations, until rudder-auth lands).
-6. **Verify**:
+7. **Add the CI matrix entry.** Enrollment isn't complete until the destination runs in CI: add its
+   code to the `destination` matrix in `.github/workflows/live-integration-tests.yml`
+   (`destination: [hs, <dest>]`). The secret name is derived from the code (`LIVE_SECRET_<DEST>`),
+   so that's the only workflow edit.
+8. **Verify**:
    `npx tsc --noEmit -p tsconfig.test.json`
    then, with real credentials:
    `LIVE_SECRET_<DEST>='{...}' LOG_LEVEL=silent npm run test:live -- --destination=<dest>`.
    (Run with `LOG_LEVEL=silent` until secret masking in `network.js` logs is verified — see the
    README security note.)
+
+## After the spec — onboarding checklist
+
+Generating `live.ts` is only the in-repo half. Enrolling a destination end-to-end also touches
+systems outside the repo — print this checklist at the end so the developer knows what's left:
+
+- **Vault**: add the `LIVE_SECRET_<DEST>` field (the full `LiveSecret` JSON) under
+  `engineering_shared/data/integrations_team/e2e_test/rudder-transformer`.
+- **GitHub**: any Actions vars/secrets the run needs — the workflow reads `VAULT_ADDR`,
+  `VAULT_JWT_AUTH_PATH`, and `VAULT_JWT_ROLE`; add destination-specific ones if required.
+- **Sandbox account**: who owns it, what a run creates, and what cleanup is expected to remove — a
+  live run writes to a real account.
 
 ## Skeleton — `test/integrations/destinations/<dest>/live.ts`
 

@@ -25,10 +25,11 @@ import {
   isHttpStatusSuccess,
 } from '../../util';
 import {
-  CONTACT_PROPERTY_MAP_ENDPOINT,
-  CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
-  IDENTIFY_CRM_SEARCH_CONTACT,
-  IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
+  BASE_ENDPOINT,
+  CONTACT_PROPERTY_MAP_ENDPOINT_PATH,
+  CRM_V3_CONTACT_PROPERTIES_ENDPOINT_PATH,
+  IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH,
+  IDENTIFY_CRM_SEARCH_ALL_OBJECTS_ENDPOINT_PATH,
   SEARCH_LIMIT_VALUE,
   hsCommonConfigJson,
   primaryToSecondaryFields,
@@ -159,23 +160,27 @@ const getProperties = async (
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
-    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
-      destType: 'hs',
-      feature: 'transformation',
-      endpointPath: `/properties/v1/contacts/properties`,
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
-    });
+    hubspotPropertyMapResponse = await httpGET(
+      `${BASE_ENDPOINT}${CONTACT_PROPERTY_MAP_ENDPOINT_PATH}`,
+      requestOptions,
+      {
+        destType: DESTINATION,
+        feature: 'transformation',
+        endpointPath: CONTACT_PROPERTY_MAP_ENDPOINT_PATH,
+        requestMethod: 'GET',
+        module: 'router',
+        metadata,
+      },
+    );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
     // API Key (hapikey)
-    const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
+    const url = `${BASE_ENDPOINT}${CONTACT_PROPERTY_MAP_ENDPOINT_PATH}?hapikey=${Config.apiKey}`;
     hubspotPropertyMapResponse = await httpGET(
       url,
       {},
       {
-        destType: 'hs',
+        destType: DESTINATION,
         feature: 'transformation',
         endpointPath: `/properties/v1/contacts/properties?hapikey`,
         requestMethod: 'GET',
@@ -463,11 +468,11 @@ const searchContacts = async (
       },
     };
     searchContactsResponse = await httpPOST(
-      IDENTIFY_CRM_SEARCH_CONTACT,
+      `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH}`,
       requestData,
       requestOptions,
       {
-        destType: 'hs',
+        destType: DESTINATION,
         feature: 'transformation',
         endpointPath,
         requestMethod: 'POST',
@@ -478,9 +483,9 @@ const searchContacts = async (
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   } else {
     // API Key
-    const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
+    const url = `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH}?hapikey=${Config.apiKey}`;
     searchContactsResponse = await httpPOST(url, requestData, {
-      destType: 'hs',
+      destType: DESTINATION,
       feature: 'transformation',
       endpointPath,
       requestMethod: 'POST',
@@ -642,7 +647,10 @@ const performHubSpotSearch = async (
   const requestData = reqdata;
   const { Config } = destination;
 
-  const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
+  const endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_ALL_OBJECTS_ENDPOINT_PATH.replace(
+    ':objectType',
+    objectType,
+  )}`;
   const endpointPath = `objects/:objectType/search`;
 
   const url =
@@ -659,7 +667,7 @@ const performHubSpotSearch = async (
 
   while (checkAfter) {
     const httpResponse = await httpPOST(url, requestData, requestOptions, {
-      destType: 'hs',
+      destType: DESTINATION,
       feature: 'transformation',
       endpointPath,
       requestMethod: 'POST',
@@ -1012,7 +1020,11 @@ const fetchContactPropertiesV3 = async (
     metadata,
   };
   const authenticationInfo = addHsAuthentication({}, Config);
-  const response = await httpGET(CRM_V3_CONTACT_PROPERTIES_ENDPOINT, authenticationInfo, statTags);
+  const response = await httpGET(
+    `${BASE_ENDPOINT}${CRM_V3_CONTACT_PROPERTIES_ENDPOINT_PATH}`,
+    authenticationInfo,
+    statTags,
+  );
 
   const processedResponse = processAxiosResponse(response);
   if (processedResponse.status !== 200) {

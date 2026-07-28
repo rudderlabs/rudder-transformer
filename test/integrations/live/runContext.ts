@@ -1,5 +1,3 @@
-// RunContext implementation: one instance per scenario run; memoises identities.
-
 import { randomUUID } from 'crypto';
 import { LiveResource, LiveSecret, RunContext } from './types';
 

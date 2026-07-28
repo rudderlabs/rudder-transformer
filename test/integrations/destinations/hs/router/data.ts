@@ -16,7 +16,7 @@ import { withRetlSplitCases } from './retlSplitData';
  * Helpers + migrated event-stream / legacy router cases (previously eventStreamData.ts).
  *
  * These exercise the contact-lookup create/update path
- * (`HSTransform-v2.processIdentify` -> `util.searchContacts` -> create or update) plus
+ * (`es-retl-v3.processIdentify` -> `util.searchContacts` -> create or update) plus
  * the edge/error branches and the legacy (`apiVersion: 'legacyApi'`) v1 endpoints,
  * restoring the code-path coverage the (removed) processor suite used to provide.
  *
@@ -222,6 +222,7 @@ const baseData = [
                 method: 'POST',
                 endpoint:
                   'https://api.hubapi.com/crm/v3/associations/companies/contacts/batch/create',
+                endpointPath: '/crm/v3/associations/companies/contacts/batch/create',
                 headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
                 params: {},
                 body: {
@@ -374,6 +375,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
+                endpointPath: '/crm/v3/objects/lead/batch/update',
                 headers: { 'Content-Type': 'application/json' },
                 params: { hapikey: 'dummy-apikey' },
                 body: {
@@ -427,6 +429,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
+                endpointPath: '/crm/v3/objects/lead/batch/create',
                 headers: { 'Content-Type': 'application/json' },
                 params: { hapikey: 'dummy-apikey' },
                 body: {
@@ -669,6 +672,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+                endpointPath: '/contacts/v1/contact/batch/',
                 headers: { 'Content-Type': 'application/json' },
                 params: { hapikey: 'dummy-apikey' },
                 body: {
@@ -717,6 +721,7 @@ const baseData = [
                 type: 'REST',
                 method: 'GET',
                 endpoint: 'https://track.hubspot.com/v1/event',
+                endpointPath: '/v1/event',
                 headers: { 'Content-Type': 'application/json' },
                 params: {
                   _a: 'dummy-hubId',
@@ -758,6 +763,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+                endpointPath: '/contacts/v1/contact/batch/',
                 headers: { 'Content-Type': 'application/json' },
                 params: { hapikey: 'dummy-apikey' },
                 body: {
@@ -1079,6 +1085,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
+                endpointPath: '/crm/v3/objects/lead/batch/update',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -1162,6 +1169,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
+                endpointPath: '/crm/v3/objects/lead/batch/create',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -1685,6 +1693,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: 'Bearer hs1',
@@ -1798,6 +1807,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/events/v3/send',
+                endpointPath: '/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: 'Bearer hs1',
@@ -1901,6 +1911,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: 'Bearer hs1',
@@ -2096,6 +2107,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+                endpointPath: '/crm/v3/objects/contacts/batch/update',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader3,
@@ -2514,6 +2526,7 @@ const baseData = [
                   XML: {},
                 },
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader1,
@@ -2610,6 +2623,7 @@ const baseData = [
                   XML: {},
                 },
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader1,
@@ -2697,6 +2711,7 @@ const baseData = [
                   XML: {},
                 },
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader1,
@@ -2975,6 +2990,7 @@ const baseData = [
                   XML: {},
                 },
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader1,
@@ -3323,6 +3339,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -3377,6 +3394,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/events/v3/send',
+                endpointPath: '/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -3413,6 +3431,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/events/v3/send',
+                endpointPath: '/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -3446,6 +3465,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/events/v3/send',
+                endpointPath: '/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -3479,6 +3499,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/events/v3/send',
+                endpointPath: '/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -3512,6 +3533,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/events/v3/send',
+                endpointPath: '/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -3545,6 +3567,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -4124,6 +4147,7 @@ const baseData = [
                   XML: {},
                 },
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader2,
@@ -4336,6 +4360,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
+                endpointPath: '/crm/v3/objects/lead/batch/create',
                 headers: { 'Content-Type': 'application/json' },
                 params: { hapikey: 'dummy-apikey' },
                 body: {
@@ -4394,6 +4419,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
+                endpointPath: '/crm/v3/objects/lead/batch/update',
                 headers: { 'Content-Type': 'application/json' },
                 params: { hapikey: 'dummy-apikey' },
                 body: {
@@ -4506,6 +4532,7 @@ const baseData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/events/v3/send',
+                endpointPath: '/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -4557,6 +4584,7 @@ const baseData = [
       type: 'REST',
       method: 'POST',
       endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+      endpointPath: '/crm/v3/objects/contacts/batch/create',
       headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
       params: {},
       body: {
@@ -4581,6 +4609,7 @@ const baseData = [
       type: 'REST',
       method: 'POST',
       endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      endpointPath: '/crm/v3/objects/contacts/batch/update',
       headers: { 'Content-Type': 'application/json', Authorization: authHeader2 },
       params: {},
       body: {
@@ -4733,6 +4762,7 @@ const baseData = [
       type: 'REST',
       method: 'POST',
       endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+      endpointPath: '/crm/v3/objects/contacts/batch/create',
       headers: { 'Content-Type': 'application/json' },
       params: { hapikey: 'dummy-apikeysuccess' },
       body: {
@@ -4765,6 +4795,7 @@ const baseData = [
       type: 'REST',
       method: 'POST',
       endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+      endpointPath: '/contacts/v1/contact/batch/',
       headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
       params: {},
       body: {
@@ -4795,6 +4826,7 @@ const baseData = [
       type: 'REST',
       method: 'GET',
       endpoint: 'https://track.hubspot.com/v1/event',
+      endpointPath: '/v1/event',
       headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
       params: { _a: '123', _n: 'Purchase', email: 'v1@e.com' },
       body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },

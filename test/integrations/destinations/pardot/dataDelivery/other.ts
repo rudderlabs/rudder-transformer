@@ -202,4 +202,45 @@ export const otherScenariosV1: ProxyV1TestData[] = [
       },
     },
   },
+  {
+    id: 'pardot_v1_other_scenario_6',
+    name: 'pardot',
+    description:
+      '[Proxy v1 API] :: Scenario for testing successful destination status with malformed body',
+    successCriteria: 'Should return retryable 500 status code with error message',
+    scenario: 'Framework',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          endpoint:
+            'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/missing_attributes@test.com',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            response: [
+              {
+                error:
+                  '{"message":"Accepted but missing Pardot attributes"} during Pardot response transformation',
+                statusCode: 500,
+                metadata: generateMetadata(1),
+              },
+            ],
+            statTags: expectedStatTags,
+            status: 500,
+            message:
+              '{"message":"Accepted but missing Pardot attributes"} during Pardot response transformation',
+          },
+        },
+      },
+    },
+  },
 ];

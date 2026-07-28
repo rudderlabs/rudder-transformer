@@ -1,25 +1,9 @@
-// Shared poll helper for eventually-consistent destination read-backs.
+import { PollCheckResult, PollUntilOptions, RetryUntilPassesOptions } from './types';
 
 const sleep = (ms: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
-
-export type PollCheckResult<T> = { done: boolean; value: T };
-
-export type PollUntilOptions = {
-  label: string;
-  attempts: number;
-  /** Delay before the next attempt; `attempt` is 0-based (after the first check). */
-  delayMs: (attempt: number) => number;
-  /** Extra wait after a successful check (e.g. search-index settle). */
-  settleMs?: number;
-  /**
-   * When true, return the last observed value on exhaustion instead of throwing — useful for
-   * verify steps that want a jest `expect` diff of the final read-back.
-   */
-  soft?: boolean;
-};
 
 /**
  * Poll `check` until it returns `{ done: true }` or attempts are exhausted.
@@ -70,4 +54,33 @@ export async function pollUntil<T>(
     `pollUntil: ${options.label} not satisfied after ${options.attempts} attempts` +
       (lastError instanceof Error ? ` (last error: ${lastError.message})` : ''),
   );
+}
+
+/**
+ * Run `assert` until it passes (resolves without throwing) or attempts are exhausted, rethrowing
+ * the last error on exhaustion. The retry-on-throw sibling of `pollUntil`, for a jest read-back
+ * assertion the framework owns — a matcher error on the final attempt surfaces a real diff, the
+ * same quality `soft: true` gives today. Backs the scenario-level `verify` block (see types.ts).
+ */
+export async function retryUntilPasses(
+  assert: () => Promise<void>,
+  options?: RetryUntilPassesOptions,
+): Promise<void> {
+  const attempts = options?.attempts ?? 4;
+  const delayMs = options?.delayMs ?? ((attempt) => 1000 * 2 ** attempt);
+  let lastError: unknown;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await assert();
+      return;
+    } catch (err) {
+      lastError = err;
+      if (attempt < attempts - 1) {
+        // eslint-disable-next-line no-await-in-loop
+        await sleep(delayMs(attempt));
+      }
+    }
+  }
+  throw lastError;
 }

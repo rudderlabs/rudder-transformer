@@ -24,7 +24,6 @@ const {
   getConversionActionIds,
   getConversionCustomVariables,
   getListCustomVariable,
-  isClickCallBatchingEnabled,
 } = require('./utils');
 const { MAX_CONVERSIONS_PER_BATCH } = require('./config');
 const helper = require('./helper');
@@ -140,52 +139,44 @@ const trackResponseBuilder = async (message, metadata, destination) => {
   }
 
   const conversionName = eventsToConversionsNamesMapping[event];
-  let conversionActionId;
-  let customVariableList = [];
-  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
-  if (shouldBatchClickCallConversionEvents) {
-    const { customerId } = destination.Config;
-    const filteredCustomerId = removeHyphens(customerId);
+  const { customerId } = destination.Config;
+  const filteredCustomerId = removeHyphens(customerId);
 
-    // Batch fetch conversion action IDs (deduplicate conversion names)
-    const uniqueConversionNames = [...new Set(Object.values(eventsToConversionsNamesMapping))];
-    const conversionActionIdsMap = await getConversionActionIds({
-      Config: destination.Config,
-      metadata,
-      customerId: filteredCustomerId,
-      conversionNames: uniqueConversionNames,
-    });
-    conversionActionId = conversionActionIdsMap[conversionName];
-    if (!conversionActionId) {
-      throw new ConfigurationError(
-        `Unable to find conversionActionId for conversion:${conversionName}. Most probably the conversion name in Google dashboard and Rudderstack dashboard are not same.`,
-      );
-    }
-
-    // Batch fetch conversion variable name (deduplicate variable names)
-    const { customVariables: customVariablesConfig } = destination.Config;
-    const customVariablesMap = getHashFromArray(customVariablesConfig, 'from', 'to', false);
-    // Extract variable names that we need to fetch
-    const listOfVariableToFetch = [
-      ...new Set(
-        Object.values(customVariablesMap).filter(
-          (variableName) => variableName && variableName !== '',
-        ),
-      ),
-    ];
-    const conversionCustomVariableMap = await getConversionCustomVariables({
-      Config: destination.Config,
-      metadata,
-      customerId: filteredCustomerId,
-      variableNames: listOfVariableToFetch,
-    });
-    const { properties } = message;
-    customVariableList = getListCustomVariable({
-      properties,
-      conversionCustomVariableMap,
-      customVariables: customVariablesMap,
-    });
+  const uniqueConversionNames = [...new Set(Object.values(eventsToConversionsNamesMapping))];
+  const conversionActionIdsMap = await getConversionActionIds({
+    Config: destination.Config,
+    metadata,
+    customerId: filteredCustomerId,
+    conversionNames: uniqueConversionNames,
+  });
+  const conversionActionId = conversionActionIdsMap[conversionName];
+  if (!conversionActionId) {
+    throw new ConfigurationError(
+      `Unable to find conversionActionId for conversion:${conversionName}. Most probably the conversion name in Google dashboard and Rudderstack dashboard are not same.`,
+    );
   }
+
+  const { customVariables: customVariablesConfig } = destination.Config;
+  const customVariablesMap = getHashFromArray(customVariablesConfig, 'from', 'to', false);
+  const listOfVariableToFetch = [
+    ...new Set(
+      Object.values(customVariablesMap).filter(
+        (variableName) => variableName && variableName !== '',
+      ),
+    ),
+  ];
+  const conversionCustomVariableMap = await getConversionCustomVariables({
+    Config: destination.Config,
+    metadata,
+    customerId: filteredCustomerId,
+    variableNames: listOfVariableToFetch,
+  });
+  const { properties } = message;
+  const customVariableList = getListCustomVariable({
+    properties,
+    conversionCustomVariableMap,
+    customVariables: customVariablesMap,
+  });
 
   const conversionTypes = Array.from(eventsToOfflineConversionsTypeMapping[event]);
   conversionTypes.forEach((conversionType) => {
@@ -225,17 +216,12 @@ const process = async (event) => {
 
 const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
   const { message, metadata, destination } = event;
-  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
   // eslint-disable-next-line @typescript-eslint/no-shadow
   message.forEach((message) => {
     if (message.body.JSON?.isStoreConversion) {
       storeSalesEvents.push({ message, metadata, destination });
-    } else if (shouldBatchClickCallConversionEvents) {
-      // When batching is enabled, keep the full event structure for batching
-      clickCallEvents.push({ message, metadata, destination });
     } else {
-      // Legacy flow: return as success response immediately
-      clickCallEvents.push(getSuccessRespEvents(message, [metadata], destination));
+      clickCallEvents.push({ message, metadata, destination });
     }
   });
   return { storeSalesEvents, clickCallEvents };
@@ -358,7 +344,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const storeSalesEvents = []; // list containing store sales events in batched format
   const clickCallEvents = []; // list containing click and call events in batched format
   const errorRespList = [];
-  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
 
   await forEachInBatches(inputs, async (event) => {
     try {
@@ -390,8 +375,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     storeSalesEventsBatchedResponseList = await batchEvents(storeSalesEvents);
   }
 
-  // Batch click/call conversions when feature flag is enabled
-  if (shouldBatchClickCallConversionEvents && clickCallEvents.length > 0) {
+  if (clickCallEvents.length > 0) {
     clickCallEventsBatchedResponseList = await batchClickCallEvents(clickCallEvents);
   }
 
@@ -399,9 +383,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // appending all kinds of batches
   batchedResponseList = batchedResponseList
     .concat(storeSalesEventsBatchedResponseList)
-    .concat(
-      shouldBatchClickCallConversionEvents ? clickCallEventsBatchedResponseList : clickCallEvents,
-    )
+    .concat(clickCallEventsBatchedResponseList)
     .concat(errorRespList);
   return combineBatchRequestsWithSameJobIds(batchedResponseList);
 };

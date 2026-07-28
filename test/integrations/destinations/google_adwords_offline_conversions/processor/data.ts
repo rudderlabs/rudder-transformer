@@ -1,19 +1,9 @@
-/**
- * GAOC (Google Ads Offline Conversions) - Processor Tests (Standard Behavior)
- *
- * These tests validate the processor transformation with batch fetching DISABLED (default).
- * For tests with batch fetching enabled (GAOC_ENABLE_BATCH_FETCHING=true),
- * see batch-fetching-data.ts in the same directory.
- */
-
-import { authHeader1, secret1 } from '../maskedSecrets';
+import { authHeader1, secret1, secret401Test } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
-import { newData as batchFetchingData } from './batch-fetching-data';
 
 const API_VERSION = 'v23';
 
 export const data = [
-  ...batchFetchingData,
   {
     name: 'google_adwords_offline_conversions',
     description: 'Test 0',
@@ -278,6 +268,14 @@ export const data = [
                         adPersonalization: 'UNSPECIFIED',
                         adUserData: 'UNSPECIFIED',
                       },
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -393,6 +391,7 @@ export const data = [
                 conversionValue: '1',
                 currency: 'GBP',
                 orderId: 'PL-123QR',
+                total: 3456,
               },
               integrations: {
                 All: true,
@@ -527,6 +526,7 @@ export const data = [
                   conversionValue: '1',
                   currency: 'GBP',
                   orderId: 'PL-123QR',
+                  total: 3456,
                 },
               },
               body: {
@@ -567,6 +567,19 @@ export const data = [
                       conversionValue: 1,
                       currencyCode: 'GBP',
                       orderId: 'PL-123QR',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19134062',
+                          value: '3456',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -855,6 +868,19 @@ export const data = [
                         },
                       ],
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: '10',
+                        },
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19134062',
+                          value: '555',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -1118,6 +1144,14 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionValue: 1,
                       currencyCode: 'GBP',
+                      conversionAction: 'customers/9625812972/conversionActions/444555666',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -2100,6 +2134,14 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionValue: 1,
                       currencyCode: 'GBP',
+                      conversionAction: 'customers/9625812972/conversionActions/111222333',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -2188,6 +2230,14 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionValue: 1,
                       currencyCode: 'GBP',
+                      conversionAction: 'customers/9625812972/conversionActions/111222333',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -2389,6 +2439,7 @@ export const data = [
                         },
                       ],
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -2579,6 +2630,7 @@ export const data = [
                       callerId: 'callerId',
                       callStartDateTime: '2022-08-28 15:01:30+05:30',
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
+                      conversionAction: 'customers/9625812972/conversionActions/444555666',
                     },
                   ],
                   partialFailure: true,
@@ -2839,6 +2891,14 @@ export const data = [
                       conversionDateTime: '2022-09-20 08:50:04+05:30',
                       conversionValue: 1,
                       currencyCode: 'GBP',
+                      conversionAction: 'customers/9625812972/conversionActions/444555666',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -3037,6 +3097,7 @@ export const data = [
                         },
                       ],
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -3551,6 +3612,7 @@ export const data = [
                         },
                       ],
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -3706,7 +3768,6 @@ export const data = [
             metadata: {
               secret: {
                 access_token: secret1,
-
                 refresh_token: 'efgh5678',
               },
             },
@@ -3731,6 +3792,7 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionEnvironment: 'WEB',
                       gclid: 'gclid',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -3761,6 +3823,7 @@ export const data = [
                 ],
                 customerId: '9625812972',
                 event: 'Sign-up - click',
+
                 properties: {
                   conversionDateTime: '2022-01-01 12:32:45-08:00',
                   gclid: 'gclid',
@@ -3958,6 +4021,7 @@ export const data = [
                       gclid: 'gclid',
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -4143,6 +4207,7 @@ export const data = [
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
                           CUSTOM_KEY: 'CUSTOM_VALUE',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -4473,6 +4538,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -4670,6 +4736,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2023-02-06 19:44:25+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -4870,6 +4937,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -5032,6 +5100,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -5190,6 +5259,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2022-01-01 18:02:45+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -5346,6 +5416,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [{}],
                       },
@@ -5380,7 +5451,7 @@ export const data = [
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 27 : store conversion consent mapped through integrations object',
+    description: 'Test 26 : store conversion consent mapped through integrations object',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -5535,6 +5606,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [{}],
                       },
@@ -5569,7 +5641,7 @@ export const data = [
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 28 : when both gbraid and wbraid are available',
+    description: 'Test 27 : when both gbraid and wbraid are available',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -5761,7 +5833,7 @@ export const data = [
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 29 : store conversion which has value less than 0, should throw error',
+    description: 'Test 28 : store conversion which has value less than 0, should throw error',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -5859,6 +5931,104 @@ export const data = [
               module: 'destination',
             },
             statusCode: 400,
+          },
+        ],
+      },
+    },
+    mockFns: timestampMock,
+  },
+  {
+    id: 'gaoc_processor_test_searchstream_401_error',
+    name: 'google_adwords_offline_conversions',
+    description:
+      'Test searchStream API returns 401 error (expired access token) during batch fetching - should trigger retry',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'test@rudderstack.com',
+                  phone: '+1234567890',
+                },
+              },
+              event: 'Product Purchased',
+              type: 'track',
+              messageId: 'test-message-id-401',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+              anonymousId: 'test-anon-id-401',
+              userId: 'test-user-401',
+              properties: {
+                gclid: 'test-gclid-401',
+                conversionValue: 99.99,
+                currency: 'USD',
+                orderId: 'ORDER-401-TEST',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            metadata: {
+              secret: {
+                access_token: secret401Test,
+                refresh_token: 'refresh_token_401',
+              },
+            },
+            destination: {
+              Config: {
+                customerId: '999-888-7777',
+                subAccount: true,
+                loginCustomerId: 'login-customer-id-401',
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Product Purchased',
+                    to: 'click',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Product Purchased',
+                    to: 'Purchase Conversion',
+                  },
+                ],
+                hashUserIdentifier: false,
+                defaultUserIdentifier: 'email',
+                validateOnly: false,
+                rudderAccountId: 'test-account-id',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '{\"message\":\"[Google Ads Offline Conversions]:: Unable to fetch conversions action - Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\",\"destinationResponse\":[{\"error\":{\"code\":401,\"message\":\"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\",\"status\":\"UNAUTHENTICATED\"}}]}',
+            metadata: {
+              secret: {
+                access_token: secret401Test,
+                refresh_token: 'refresh_token_401',
+              },
+            },
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 401,
           },
         ],
       },

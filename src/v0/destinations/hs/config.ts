@@ -64,10 +64,6 @@ const CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH = '/crm/v3/objects/:objectType
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
 const CRM_UPSERT_ALL_OBJECTS_ENDPOINT_PATH = '/crm/v3/objects/:objectType/batch/upsert';
 
-// Batch create for custom Objects
-// Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-const BATCH_CREATE_CUSTOM_OBJECTS_ENDPOINT_PATH = '/crm/v3/objects/:objectType/batch/create';
-
 /* CRM Association v3 */
 // Ref - https://developers.hubspot.com/docs/api/crm/associations
 const CRM_ASSOCIATION_V3_ENDPOINT_PATH =
@@ -136,7 +132,6 @@ export {
   TRACK_CRM_ENDPOINT_PATH,
   CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
   CRM_UPSERT_ALL_OBJECTS_ENDPOINT_PATH,
-  BATCH_CREATE_CUSTOM_OBJECTS_ENDPOINT_PATH,
   CRM_ASSOCIATION_V3_ENDPOINT_PATH,
   MAX_BATCH_SIZE_CRM_OBJECT,
   API_VERSION,

@@ -148,6 +148,7 @@ const esIdentifyMessage = {
   traits: { phone: '9999999999', firstname: 'CI', lastname: 'ES' },
   context: { mappedToDestination: false },
 };
+
 const baseData = [
   {
     name: 'hs',

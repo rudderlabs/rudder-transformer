@@ -276,7 +276,7 @@ export interface HubSpotBatchRequestOutput {
 export interface HubspotRudderMessage extends Omit<RudderMessage, 'context' | 'event'> {
   context: RudderMessage['context'] & {
     externalId: HubSpotExternalIdObject[];
-    hubspotOperation: 'createObject' | 'updateObject';
+    hubspotOperation: 'createObject' | 'updateObject' | 'upsertObject';
   };
   event: string;
 }
@@ -370,6 +370,7 @@ export interface HubspotProcessorTransformationOutput
   operation?:
     | 'createObject'
     | 'updateObject'
+    | 'upsertObject'
     | 'createContacts'
     | 'updateContacts'
     | 'upsertContacts'

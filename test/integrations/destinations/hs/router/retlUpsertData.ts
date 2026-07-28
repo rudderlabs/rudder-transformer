@@ -55,6 +55,7 @@ const identifyMessage = (email: string, traits: Record<string, unknown>) => ({
 });
 
 const UPSERT_ENDPOINT = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert';
+const UPSERT_ENDPOINT_PATH = '/crm/v3/objects/contacts/batch/upsert';
 
 export const retlUpsertData = [
   {
@@ -97,6 +98,7 @@ export const retlUpsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: UPSERT_ENDPOINT,
+                endpointPath: UPSERT_ENDPOINT_PATH,
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -185,6 +187,7 @@ export const retlUpsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: UPSERT_ENDPOINT,
+                endpointPath: UPSERT_ENDPOINT_PATH,
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -284,6 +287,7 @@ export const retlUpsertData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: UPSERT_ENDPOINT,
+                endpointPath: UPSERT_ENDPOINT_PATH,
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,

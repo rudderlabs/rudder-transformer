@@ -41,7 +41,8 @@ const RecordMessageSchema = z
     action: z.nativeEnum(RecordAction),
     identifiers: z
       .object({
-        external_id: z.union([z.string(), z.number()]).optional(),
+        // Allow non-primitive IDs through so normalizeExternalId can soft-bounce per record.
+        external_id: z.unknown().optional(),
       })
       .passthrough()
       .optional(),

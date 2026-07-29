@@ -154,7 +154,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
     ]);
   });
 
-  it('rejects non-string/non-number external_id at schema validation', async () => {
+  it('soft-bounces object-valued external_id per record', async () => {
     const results = await processBatchedDestination(
       [
         buildInput(1, 'insert', { external_id: { nested: true } }),
@@ -165,7 +165,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
     );
     const failed = results.find((r) => r.statusCode === 400);
     const ok = results.find((r) => r.statusCode === 200);
-    expect(failed?.error).toMatch(/message\.identifiers\.external_id/);
+    expect(failed?.error).toMatch(/external_id is missing or empty after trim/);
     expect(getJsonBody(ok!).attributes).toEqual([
       { external_id: 'ok', rs_audience_high_intent: true },
     ]);

@@ -29,9 +29,7 @@ export const BrazeAudienceConnectionConfigSchema = z
       .refine((value) => value !== 'external_id', {
         message: 'customAttributeName cannot be external_id',
       }),
-    syncMode: z.literal('mirror').optional(),
     identifierMappings: z.array(IdentifierMappingSchema).optional(),
-    schemaVersion: z.string().optional(),
   })
   .passthrough();
 
@@ -47,7 +45,6 @@ const RecordMessageSchema = z
       })
       .passthrough()
       .optional(),
-    fields: z.record(z.unknown()).optional(),
   })
   .passthrough();
 

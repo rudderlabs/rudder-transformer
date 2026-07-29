@@ -3,9 +3,8 @@ import { proxyRequest, prepareProxyRequest } from '../../../adapters/network';
 import { getDynamicErrorType, processAxiosResponse } from '../../../adapters/utils/networkUtils';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import tags from '../../../v0/util/tags';
+import stats from '../../../util/stats';
 import type { DeliveryJobState, DeliveryV1Response, ProxyMetdata } from '../../../types';
-
-const stats = require('../../../util/stats');
 
 const DEST = 'BRAZE_AUDIENCE';
 

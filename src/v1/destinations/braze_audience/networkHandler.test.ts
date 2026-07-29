@@ -53,7 +53,6 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
     expect(mockStats.increment).toHaveBeenCalledWith('braze_audience_aborted', {
       destinationId: 'dest-1',
       workspaceId: 'workspace-1',
-      reason: 'identity',
     });
   });
 

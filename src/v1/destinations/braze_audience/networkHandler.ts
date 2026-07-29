@@ -122,7 +122,6 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
       stats.increment('braze_audience_aborted', {
         destinationId,
         workspaceId,
-        reason: 'identity',
       });
       return { statusCode: 400, metadata, error: fail.message };
     }

@@ -47,7 +47,7 @@ type BrazeAudienceProxyParams = {
  * Destination-scoped partial-failure metric (do not share untagged braze_partial_failure).
  */
 const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Response => {
-  const { destinationResponse, rudderJobMetadata, destinationRequest } = responseParams;
+  const { destinationResponse, rudderJobMetadata } = responseParams;
   const { response, status } = destinationResponse;
   const destinationId = rudderJobMetadata[0]?.destinationId ?? '';
   const workspaceId = rudderJobMetadata[0]?.workspaceId ?? '';
@@ -60,25 +60,8 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
       error: errorMessage,
     }));
 
-    if (status === 401) {
-      stats.increment('braze_audience_aborted', {
-        destinationId,
-        workspaceId,
-        reason: 'unauthorized',
-      });
-      stats.increment('braze_audience_sync_disabled', {
-        destinationId,
-        workspaceId,
-        reason: 'unauthorized',
-      });
-    } else if (status === 429 || status >= 500) {
-      stats.increment('braze_audience_retryable', {
-        destinationId,
-        workspaceId,
-        status: String(status),
-      });
-    }
-
+    // HTTP status classification/throughput: use framework metrics
+    // (outgoing_request_count, getDynamicErrorType) — don't re-count here.
     throw new TransformerProxyError(
       `${DEST}: Error during response transformation. ${errorMessage}`,
       status,
@@ -89,7 +72,6 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
     );
   }
 
-  const attributes = destinationRequest?.body?.JSON?.attributes ?? [];
   const errors = response?.errors ?? [];
 
   if (errors.length > 0) {
@@ -100,12 +82,6 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
       workspaceId,
     });
   }
-
-  stats.increment('braze_audience_batch_sent', {
-    destinationId,
-    workspaceId,
-    items: String(attributes.length > 0 ? attributes.length : rudderJobMetadata.length),
-  });
 
   const failedByIndex = new Map<number, { type?: string; message: string }>();
   let hasUnindexedError = false;

@@ -125,7 +125,12 @@ const processRetlIdentify = async (
   if (operation === 'upsertObject') {
     const identifierType = externalIdInfo?.identifierType;
     const destinationExternalId = externalIdInfo?.destinationExternalId;
-    if (!identifierType || !destinationExternalId) {
+    if (
+      !identifierType ||
+      destinationExternalId === undefined ||
+      destinationExternalId === null ||
+      destinationExternalId === ''
+    ) {
       throw new InstrumentationError(
         'rETL - identifierType or destinationExternalId not found for upsert',
       );
@@ -136,7 +141,7 @@ const processRetlIdentify = async (
 
     // Ref: https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
     const upsertPayload = {
-      id: destinationExternalId,
+      id: String(destinationExternalId),
       idProperty: identifierType,
       properties,
       // objectWriteTraceId is used to correlate results in 207 multi-status responses

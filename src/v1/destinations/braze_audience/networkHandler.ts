@@ -44,7 +44,7 @@ type BrazeAudienceProxyParams = {
 
 /**
  * Classify Braze `/users/track/bulk` responses into per-record outcomes.
- * Destination-scoped partial-failure metric (do not share untagged braze_partial_failure).
+ * Uses destination-scoped `braze_audience_partial_failure` (not shared `braze_partial_failure`).
  */
 const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Response => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
@@ -75,9 +75,8 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
   const errors = response?.errors ?? [];
 
   if (errors.length > 0) {
-    // Destination-tagged — never the untagged event-stream braze_partial_failure.
-    stats.increment('braze_partial_failure', {
-      destination: DEST,
+    // Own metric — do not reuse event-stream `braze_partial_failure` (pre-registered untagged).
+    stats.increment('braze_audience_partial_failure', {
       destinationId,
       workspaceId,
     });

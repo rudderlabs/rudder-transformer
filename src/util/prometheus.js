@@ -633,6 +633,24 @@ class Prometheus {
         labelNames: [],
       },
       {
+        name: 'braze_audience_partial_failure',
+        help: 'braze_audience_partial_failure',
+        type: 'counter',
+        labelNames: ['destinationId', 'workspaceId'],
+      },
+      {
+        name: 'braze_audience_aborted',
+        help: 'braze_audience_aborted',
+        type: 'counter',
+        labelNames: ['destinationId', 'workspaceId'],
+      },
+      {
+        name: 'braze_audience_retryable',
+        help: 'braze_audience_retryable',
+        type: 'counter',
+        labelNames: ['destinationId', 'workspaceId', 'reason'],
+      },
+      {
         name: 'braze_deduped_users_count',
         help: 'braze deduped users count',
         type: 'counter',

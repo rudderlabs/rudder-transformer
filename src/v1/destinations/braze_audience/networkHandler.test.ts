@@ -50,6 +50,10 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
 
     expect(result.response.map((r) => r.statusCode)).toEqual([200, 400, 200]);
     expect(result.response[1].error).toBe('EXTERNAL_USER_ID_TOO_LARGE');
+    expect(mockStats.increment).toHaveBeenCalledWith('braze_audience_partial_failure', {
+      destinationId: 'dest-1',
+      workspaceId: 'workspace-1',
+    });
     expect(mockStats.increment).toHaveBeenCalledWith('braze_audience_aborted', {
       destinationId: 'dest-1',
       workspaceId: 'workspace-1',

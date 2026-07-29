@@ -6,7 +6,7 @@ import {
   type TransformedEvent,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import { ACTION_ATTR_VALUE, DESTINATION_TYPE, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
+import { ACTION_ATTR_VALUE, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
 import { buildBulkBody, getBulkTrackEndpoint, normalizeExternalId } from './utils';
 import {
   BrazeAudienceRouterRequestSchema,
@@ -23,7 +23,9 @@ class BrazeAudienceIntegration extends BatchDestination<
   constructor(...args: ConstructorParameters<typeof BatchDestination>) {
     super(...args);
     if (!this.connection) {
-      throw new InstrumentationError(`Connection config is required for ${DESTINATION_TYPE}`);
+      throw new InstrumentationError(
+        `Connection config is required for ${this.destination.DestinationDefinition.Name}`,
+      );
     }
 
     this.headers = {

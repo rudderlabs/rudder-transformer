@@ -1,7 +1,5 @@
 import { RecordAction } from '../../../types/rudderEvents';
 
-export const DESTINATION_TYPE = 'braze_audience';
-
 export const MAX_BATCH_SIZE = 1000;
 /** Braze `/users/track/bulk` documented ~2 MB cap; leave headroom for JSON overhead. */
 export const MAX_PAYLOAD_SIZE = '1.8mb';

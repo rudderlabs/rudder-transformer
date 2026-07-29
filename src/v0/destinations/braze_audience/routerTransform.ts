@@ -40,15 +40,7 @@ class BrazeAudienceIntegration extends BatchDestination<
     input: z.infer<typeof BrazeAudienceRouterRequestSchema>,
   ): TransformedEvent<BrazeAudienceAttributePayload> {
     const { message } = input;
-    const messageAction = message.action;
-    if (!messageAction) {
-      throw new InstrumentationError('record event is missing action');
-    }
-
-    const attrValue = ACTION_ATTR_VALUE[messageAction];
-    if (typeof attrValue !== 'boolean') {
-      throw new InstrumentationError(`Unsupported record action: ${messageAction}`);
-    }
+    const attrValue = ACTION_ATTR_VALUE[message.action];
 
     const { customAttributeName } = this.connectionConfig;
     if (!customAttributeName) {

@@ -1,4 +1,4 @@
-import { EVENT_TYPES } from '../../util/recordUtils';
+import { RecordAction } from '../../../types/rudderEvents';
 
 export const DESTINATION_TYPE = 'braze_audience';
 
@@ -26,8 +26,8 @@ export const DATA_CENTERS = [
 export type DataCenter = (typeof DATA_CENTERS)[number];
 
 /** INSERT/UPDATE → membership true; DELETE → false (keep key queryable). */
-export const ACTION_ATTR_VALUE: Record<string, boolean | undefined> = {
-  [EVENT_TYPES.INSERT]: true,
-  [EVENT_TYPES.UPDATE]: true,
-  [EVENT_TYPES.DELETE]: false,
+export const ACTION_ATTR_VALUE: Record<RecordAction, boolean> = {
+  [RecordAction.INSERT]: true,
+  [RecordAction.UPDATE]: true,
+  [RecordAction.DELETE]: false,
 };

@@ -41,7 +41,12 @@ const RecordMessageSchema = z
   .object({
     type: z.literal('record'),
     action: z.nativeEnum(RecordAction),
-    identifiers: z.record(z.unknown()).optional(),
+    identifiers: z
+      .object({
+        external_id: z.union([z.string(), z.number()]).optional(),
+      })
+      .passthrough()
+      .optional(),
     fields: z.record(z.unknown()).optional(),
   })
   .passthrough();

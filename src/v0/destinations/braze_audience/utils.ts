@@ -20,10 +20,10 @@ export const buildBulkBody = (
 
 /**
  * Trim and require a non-empty external_id.
- * Accept only string/number — do not coerce objects/arrays/booleans (e.g. "[object Object]").
+ * Wire shape is already `string | number` at Zod; this rejects empty / non-finite.
  */
-export const normalizeExternalId = (raw: unknown): string | null => {
-  if (typeof raw !== 'string' && typeof raw !== 'number') return null;
+export const normalizeExternalId = (raw: string | number | undefined): string | null => {
+  if (raw === undefined) return null;
   // Reject non-finite numbers (NaN / ±Infinity) — String(NaN) is "NaN", not a real id.
   if (typeof raw === 'number' && !Number.isFinite(raw)) return null;
   const value = String(raw).trim();

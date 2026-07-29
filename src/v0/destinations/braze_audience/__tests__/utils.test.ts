@@ -11,16 +11,12 @@ describe('normalizeExternalId', () => {
   });
 
   it.each([
-    ['null', null],
     ['undefined', undefined],
     ['empty string', ''],
     ['whitespace', '   '],
-    ['object', { id: 'x' }],
-    ['array', ['x']],
-    ['boolean', true],
     ['NaN', Number.NaN],
     ['Infinity', Number.POSITIVE_INFINITY],
-  ])('rejects %s', (_label, raw) => {
+  ] as const)('rejects %s', (_label, raw) => {
     expect(normalizeExternalId(raw)).toBeNull();
   });
 });

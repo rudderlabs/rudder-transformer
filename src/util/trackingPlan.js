@@ -3,7 +3,7 @@ const { fetchWithProxy } = require('./fetch');
 const logger = require('../logger');
 const { responseStatusHandler } = require('./utils');
 const stats = require('./stats');
-const { CONFIG_BACKEND_URL, configBackendHeaders } = require('./configBackend');
+const { CONFIG_BACKEND_URL, configBackendRequestOptions } = require('./configBackend');
 
 const tpCache = new NodeCache({ useClones: false });
 const TRACKING_PLAN_URL = `${CONFIG_BACKEND_URL}/workspaces`;
@@ -25,7 +25,7 @@ async function getTrackingPlan(tpId, version, workspaceId) {
   try {
     const url = `${TRACKING_PLAN_URL}/${workspaceId}/tracking-plans/${tpId}?version=${version}`;
     const startTime = new Date();
-    const response = await fetchWithProxy(url, { headers: configBackendHeaders() });
+    const response = await fetchWithProxy(url, configBackendRequestOptions());
 
     responseStatusHandler(response.status, 'Tracking plan', tpId, url);
 

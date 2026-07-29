@@ -2,7 +2,7 @@ const { fetchWithProxy } = require('./fetch');
 const logger = require('../logger');
 const { responseStatusHandler } = require('./utils');
 const stats = require('./stats');
-const { CONFIG_BACKEND_URL, configBackendHeaders } = require('./configBackend');
+const { CONFIG_BACKEND_URL, configBackendRequestOptions } = require('./configBackend');
 
 const transformationCache = {};
 const libraryCache = {};
@@ -20,7 +20,7 @@ async function getTransformationCodeV1(versionId) {
   if (transformation) return transformation;
   try {
     const url = `${getTransformationURL}?versionId=${versionId}`;
-    const response = await fetchWithProxy(url, { headers: configBackendHeaders() });
+    const response = await fetchWithProxy(url, configBackendRequestOptions());
 
     responseStatusHandler(response.status, 'Transformation', versionId, url);
     const myJson = await response.json();
@@ -40,7 +40,7 @@ async function getLibraryCodeV1(versionId) {
   if (library) return library;
   try {
     const url = `${getLibrariesUrl}?versionId=${versionId}`;
-    const response = await fetchWithProxy(url, { headers: configBackendHeaders() });
+    const response = await fetchWithProxy(url, configBackendRequestOptions());
 
     responseStatusHandler(response.status, 'Transformation Library', versionId, url);
     const myJson = await response.json();
@@ -58,7 +58,7 @@ async function getRudderLibByImportName(importName) {
   try {
     const [name, version] = importName.split('/').slice(-2);
     const url = `${getRudderLibrariesUrl}/${name}?version=${version}`;
-    const response = await fetchWithProxy(url, { headers: configBackendHeaders() });
+    const response = await fetchWithProxy(url, configBackendRequestOptions());
 
     responseStatusHandler(response.status, 'Rudder Library', importName, url);
     const myJson = await response.json();

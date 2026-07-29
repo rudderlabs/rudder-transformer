@@ -2,7 +2,7 @@ const NodeCache = require('node-cache');
 const { fetchWithProxy } = require('./fetch');
 const logger = require('../logger');
 const { responseStatusHandler } = require('./utils');
-const { CONFIG_BACKEND_URL, configBackendHeaders } = require('./configBackend');
+const { CONFIG_BACKEND_URL, configBackendRequestOptions } = require('./configBackend');
 
 const myCache = new NodeCache({ stdTTL: 60 * 60 * 24 * 1 });
 
@@ -16,7 +16,7 @@ async function getTransformationCode(versionId) {
   if (transformation) return transformation;
   try {
     const url = `${getTransformationURL}?versionId=${versionId}`;
-    const response = await fetchWithProxy(url, { headers: configBackendHeaders() });
+    const response = await fetchWithProxy(url, configBackendRequestOptions());
 
     responseStatusHandler(response.status, 'Transformation', versionId, url);
     const myJson = await response.json();

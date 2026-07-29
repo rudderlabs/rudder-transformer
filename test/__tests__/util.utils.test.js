@@ -1,4 +1,37 @@
-const { constructValidationErrors } = require("../../src/util/utils");
+const { constructValidationErrors, responseStatusHandler } = require("../../src/util/utils");
+
+describe('responseStatusHandler', () => {
+  it('does not throw on 200', () => {
+    expect(() => responseStatusHandler(200, 'Transformation', 'v1', 'url')).not.toThrow();
+  });
+
+  it('throws a retriable 809 on 401 (config backend auth failure), so the event is retried not dropped', () => {
+    try {
+      responseStatusHandler(401, 'Transformation', 'v1', 'url');
+      throw new Error('expected to throw');
+    } catch (err) {
+      expect(err.statusCode).toBe(809);
+    }
+  });
+
+  it('throws a retriable 809 on 5xx', () => {
+    try {
+      responseStatusHandler(503, 'Transformation', 'v1', 'url');
+      throw new Error('expected to throw');
+    } catch (err) {
+      expect(err.statusCode).toBe(809);
+    }
+  });
+
+  it('passes other non-200 statuses through terminally (e.g. 404)', () => {
+    try {
+      responseStatusHandler(404, 'Transformation', 'v1', 'url');
+      throw new Error('expected to throw');
+    } catch (err) {
+      expect(err.statusCode).toBe(404);
+    }
+  });
+});
 
 describe('constructValidationErrors', () => {
   const validationErrorsInput = [

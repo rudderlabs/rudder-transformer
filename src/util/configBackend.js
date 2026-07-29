@@ -1,13 +1,13 @@
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 
-// Sent to the config backend when it requires authentication (basic auth, secret as username).
-// Unset for self-hosted config backends that serve these routes without auth, so no header is added.
-const { CONFIG_BACKEND_HOSTED_SECRET } = process.env;
-
-// Empty when unset, so fetchWithProxy keeps the call unauthenticated (self-hosted).
+// Basic-auth request options for the config backend, with the hosted secret as the username.
+// The secret is read at call time (so rotation needs no restart) and trimmed, since a k8s secret
+// file commonly appends a trailing newline that would otherwise 401 every fetch. Returns {} when the
+// secret is unset or blank, so self-hosted config backends stay unauthenticated.
 function configBackendRequestOptions() {
-  if (!CONFIG_BACKEND_HOSTED_SECRET) return {};
-  const encoded = Buffer.from(`${CONFIG_BACKEND_HOSTED_SECRET}:`).toString('base64');
+  const secret = process.env.CONFIG_BACKEND_HOSTED_SECRET?.trim();
+  if (!secret) return {};
+  const encoded = Buffer.from(`${secret}:`).toString('base64');
   return { headers: { Authorization: `Basic ${encoded}` } };
 }
 

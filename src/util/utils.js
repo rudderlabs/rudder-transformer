@@ -278,7 +278,10 @@ class RetryRequestError extends RespStatusError {
 }
 
 const responseStatusHandler = (status, entity, id, url) => {
-  if (status >= 500) {
+  // A 401 means the config backend secret is missing, wrong, or mid-rotation — a transient
+  // operational issue, not a bad event. Surface it as the retriable 809 (rudder-server retries and
+  // alerts on it) instead of a terminal error that would silently drop the event.
+  if (status >= 500 || status === 401) {
     throw new RetryRequestError(`Error occurred while fetching ${entity} :: ${id}`);
   } else if (status !== 200) {
     throw new RespStatusError(`${entity} not found at ${url}`, status);

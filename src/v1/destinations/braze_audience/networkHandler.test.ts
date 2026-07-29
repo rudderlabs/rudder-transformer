@@ -34,7 +34,7 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
     jest.clearAllMocks();
   });
 
-  it('maps indexed EXTERNAL_USER_ID_TOO_LARGE to hard-bounce 400', () => {
+  it('maps indexed EXTERNAL_USER_ID_TOO_LARGE to aborted 400', () => {
     const rudderJobMetadata = [createMetadata(10), createMetadata(20), createMetadata(30)];
     const result = responseHandler({
       destinationResponse: {
@@ -50,14 +50,14 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
 
     expect(result.response.map((r) => r.statusCode)).toEqual([200, 400, 200]);
     expect(result.response[1].error).toBe('EXTERNAL_USER_ID_TOO_LARGE');
-    expect(mockStats.increment).toHaveBeenCalledWith('braze_audience_hard_bounce', {
+    expect(mockStats.increment).toHaveBeenCalledWith('braze_audience_aborted', {
       destinationId: 'dest-1',
       workspaceId: 'workspace-1',
       reason: 'identity',
     });
   });
 
-  it('maps live Braze human external_id length message to hard-bounce 400', () => {
+  it('maps live Braze human external_id length message to aborted 400', () => {
     const rudderJobMetadata = [createMetadata(10), createMetadata(20), createMetadata(30)];
     const result = responseHandler({
       destinationResponse: {
@@ -74,7 +74,7 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
     expect(result.response.map((r) => r.statusCode)).toEqual([200, 400, 200]);
   });
 
-  it('maps BLACKLISTED_EXTERNAL_USER_ID to hard-bounce 400', () => {
+  it('maps BLACKLISTED_EXTERNAL_USER_ID to aborted 400', () => {
     const rudderJobMetadata = [createMetadata(1)];
     const result = responseHandler({
       destinationResponse: {
@@ -91,7 +91,7 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
     expect(result.response[0].statusCode).toBe(400);
   });
 
-  it('soft-bounces unknown indexed error types (not hard-bounce)', () => {
+  it('marks unknown indexed error types retryable (not aborted)', () => {
     const rudderJobMetadata = [createMetadata(1), createMetadata(2)];
     const result = responseHandler({
       destinationResponse: {
@@ -106,15 +106,15 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
     });
 
     expect(result.response.map((r) => r.statusCode)).toEqual([500, 200]);
-    expect(mockStats.increment).toHaveBeenCalledWith('braze_audience_soft_bounce', {
+    expect(mockStats.increment).toHaveBeenCalledWith('braze_audience_retryable', {
       destinationId: 'dest-1',
       workspaceId: 'workspace-1',
       reason: 'partial',
     });
   });
 
-  it('does not hard-bounce when type looks like legacy regex but is not an allowlisted enum', () => {
-    // Old regex matched /external_id|user.?not.?found/i — must not hard-bounce now.
+  it('does not abort when type looks like legacy regex but is not an allowlisted enum', () => {
+    // Old regex matched /external_id|user.?not.?found/i — must not abort now.
     const rudderJobMetadata = [createMetadata(1)];
     const result = responseHandler({
       destinationResponse: {
@@ -131,7 +131,7 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
     expect(result.response[0].statusCode).toBe(500);
   });
 
-  it('soft-bounces all unmapped jobs when Braze returns an unindexed error', () => {
+  it('marks all unmapped jobs retryable when Braze returns an unindexed error', () => {
     const rudderJobMetadata = [createMetadata(10), createMetadata(20), createMetadata(30)];
     const result = responseHandler({
       destinationResponse: {
@@ -147,14 +147,14 @@ describe('BRAZE_AUDIENCE networkHandler responseHandler', () => {
 
     expect(result.response.map((r) => r.statusCode)).toEqual([500, 500, 500]);
     expect(result.response[0].error).toBe('UNINDEXED_FAILURE');
-    expect(mockStats.increment).toHaveBeenCalledWith('braze_audience_soft_bounce', {
+    expect(mockStats.increment).toHaveBeenCalledWith('braze_audience_retryable', {
       destinationId: 'dest-1',
       workspaceId: 'workspace-1',
       reason: 'partial_unindexed',
     });
   });
 
-  it('keeps indexed hard-bounce and soft-bounces remaining jobs when mix includes unindexed', () => {
+  it('keeps indexed aborted and marks remaining jobs retryable when mix includes unindexed', () => {
     const rudderJobMetadata = [createMetadata(10), createMetadata(20), createMetadata(30)];
     const result = responseHandler({
       destinationResponse: {

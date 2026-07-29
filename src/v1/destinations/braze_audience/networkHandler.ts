@@ -14,14 +14,14 @@ const DEST = 'BRAZE_AUDIENCE';
  * Docs list uppercase enums; live `/users/track/bulk` often returns human
  * messages (e.g. "'external_id' must be fewer than 988 bytes") instead.
  */
-const HARD_BOUNCE_IDENTITY_TYPES = new Set([
+const ABORTED_IDENTITY_TYPES = new Set([
   'BLACKLISTED_EXTERNAL_USER_ID',
   'EXTERNAL_USER_ID_TOO_LARGE',
 ]);
 
-const isIdentityHardBounce = (type?: string): boolean => {
+const isIdentityAborted = (type?: string): boolean => {
   if (!type) return false;
-  if (HARD_BOUNCE_IDENTITY_TYPES.has(type)) return true;
+  if (ABORTED_IDENTITY_TYPES.has(type)) return true;
   // Live Braze message forms for permanent identity failures (not retryable).
   return (
     /external_user_id_too_large|blacklisted_external_user_id/i.test(type) ||
@@ -62,7 +62,7 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
     }));
 
     if (status === 401) {
-      stats.increment('braze_audience_hard_bounce', {
+      stats.increment('braze_audience_aborted', {
         destinationId,
         workspaceId,
         reason: 'unauthorized',
@@ -73,7 +73,7 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
         reason: 'unauthorized',
       });
     } else if (status === 429 || status >= 500) {
-      stats.increment('braze_audience_soft_bounce', {
+      stats.increment('braze_audience_retryable', {
         destinationId,
         workspaceId,
         status: String(status),
@@ -128,10 +128,10 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
   const jobStates: DeliveryJobState[] = rudderJobMetadata.map((metadata, idx) => {
     const fail = failedByIndex.get(idx);
     if (!fail) {
-      // Unindexed Braze errors cannot be correlated — soft-bounce unmapped jobs
+      // Unindexed Braze errors cannot be correlated — mark unmapped jobs retryable
       // so we never report success for a batch Braze flagged as partially failed.
       if (hasUnindexedError) {
-        stats.increment('braze_audience_soft_bounce', {
+        stats.increment('braze_audience_retryable', {
           destinationId,
           workspaceId,
           reason: 'partial_unindexed',
@@ -141,10 +141,10 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
       return { statusCode: 200, metadata, error: 'success' };
     }
 
-    const isIdentity = isIdentityHardBounce(fail.type);
+    const isIdentity = isIdentityAborted(fail.type);
 
     if (isIdentity) {
-      stats.increment('braze_audience_hard_bounce', {
+      stats.increment('braze_audience_aborted', {
         destinationId,
         workspaceId,
         reason: 'identity',
@@ -152,12 +152,12 @@ const responseHandler = (responseParams: BrazeAudienceProxyParams): DeliveryV1Re
       return { statusCode: 400, metadata, error: fail.message };
     }
 
-    stats.increment('braze_audience_soft_bounce', {
+    stats.increment('braze_audience_retryable', {
       destinationId,
       workspaceId,
       reason: 'partial',
     });
-    // Soft partials: retryable status so the platform can retry the record.
+    // Retryable partials: status so the platform can retry the record.
     return { statusCode: 500, metadata, error: fail.message };
   });
 

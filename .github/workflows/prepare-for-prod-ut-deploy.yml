@@ -28,7 +28,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
 
@@ -94,7 +94,7 @@ jobs:
           repositories: rudder-devops # to access cross-repo
 
       - name: Checkout Devops Repo
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: rudderlabs/rudder-devops
           token: ${{ steps.generate-token.outputs.token }}
@@ -135,7 +135,7 @@ jobs:
 
       - name: Create verified commit for shared user-transformers
         if: steps.diff.outputs.changed == 'true'
-        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
+        uses: ryancyq/github-signed-commit@cb9b21ee83578fe8e26a9eda530015aedf0c7c5b # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
@@ -200,7 +200,7 @@ jobs:
           repositories: rudder-devops # to access cross-repo
 
       - name: Checkout Devops Repo
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: rudderlabs/rudder-devops
           token: ${{ steps.generate-token.outputs.token }}
@@ -237,7 +237,7 @@ jobs:
 
       - name: Create verified commit for hosted user-transformer
         if: steps.diff.outputs.changed == 'true'
-        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
+        uses: ryancyq/github-signed-commit@cb9b21ee83578fe8e26a9eda530015aedf0c7c5b # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
@@ -299,7 +299,7 @@ jobs:
           repositories: rudder-devops # to access cross-repo
 
       - name: Checkout Devops Repo
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: rudderlabs/rudder-devops
           token: ${{ steps.generate-token.outputs.token }}
@@ -371,7 +371,7 @@ jobs:
 
       - name: Create verified commit for dedicated user-transformers
         if: steps.diff.outputs.changed == 'true'
-        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
+        uses: ryancyq/github-signed-commit@cb9b21ee83578fe8e26a9eda530015aedf0c7c5b # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
@@ -416,7 +416,7 @@ jobs:
           egress-policy: audit
 
       - name: Notify Control Plane Team
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
         continue-on-error: true
         with:
           method: chat.postMessage

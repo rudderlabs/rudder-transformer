@@ -35,8 +35,8 @@ afterEach(() => {
 
 const getDeletionData = () => {
   return [
-    { userAttributes: [{ a: 'b1' }], destType: '__rudder_test__' },
-    { userAttributes: [{ a: 'b1' }], destType: '__rudder_test__' },
+    { userAttributes: [{ a: 'b1' }], destType: 'rudder_test' },
+    { userAttributes: [{ a: 'b1' }], destType: 'rudder_test' },
   ];
 };
 

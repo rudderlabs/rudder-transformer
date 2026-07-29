@@ -1,62 +1,73 @@
 import { getMappingConfig } from '../../util';
 
 const BASE_ENDPOINT = 'https://api.hubapi.com';
+// Legacy analytics events are sent to a different host than the rest of the HubSpot APIs.
+const TRACK_BASE_ENDPOINT = 'https://track.hubspot.com';
+// Placeholder replaced with the real object type when building object endpoints/paths.
+const OBJECT_TYPE_PLACEHOLDER = ':objectType';
 
 // For fetching properties from HubSpot
-const CONTACT_PROPERTY_MAP_ENDPOINT = `${BASE_ENDPOINT}/properties/v1/contacts/properties`;
+const CONTACT_PROPERTY_MAP_ENDPOINT_PATH = '/properties/v1/contacts/properties';
 // Ref - https://developers.hubspot.com/docs/api-reference/crm-properties-v3/core/get-crm-v3-properties-objectType
-const CRM_V3_CONTACT_PROPERTIES_ENDPOINT = `${BASE_ENDPOINT}/crm/v3/properties/contacts`;
+// Generic across object types (contacts, companies, deals, custom objects) for rETL upsert support.
+const CRM_V3_PROPERTIES_ENDPOINT_PATH = '/crm/v3/properties/:objectType';
 
 /*
  * Legacy API
  */
 // Identify
 // Ref - https://legacydocs.hubspot.com/docs/methods/contacts/create_contact
-const IDENTIFY_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact`;
+const IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH = '/contacts/v1/contact';
 // Ref - https://legacydocs.hubspot.com/docs/methods/contacts/create_or_update
-const IDENTIFY_CREATE_UPDATE_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact/createOrUpdate/email/:contact_email`;
+const IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH =
+  '/contacts/v1/contact/createOrUpdate/email/:contact_email';
 
 // Identify Batch
 // Ref - https://legacydocs.hubspot.com/docs/methods/contacts/batch_create_or_update
-const BATCH_CONTACT_ENDPOINT = `${BASE_ENDPOINT}/contacts/v1/contact/batch/`;
+const BATCH_CONTACT_ENDPOINT_PATH = '/contacts/v1/contact/batch/';
 const MAX_BATCH_SIZE = 1000;
 
 // Track
 // Ref - https://legacydocs.hubspot.com/docs/methods/enterprise_events/http_api
-const TRACK_ENDPOINT = 'https://track.hubspot.com/v1/event';
+const TRACK_ENDPOINT_PATH = '/v1/event';
 
 /*
  * NEW API
  */
 // Identify
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
-const IDENTIFY_CRM_SEARCH_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/search`;
-const IDENTIFY_CRM_SEARCH_ALL_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType/search`;
-const IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts`;
-const IDENTIFY_CRM_UPDATE_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/:contactId`;
+const IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH = '/crm/v3/objects/contacts/search';
+const IDENTIFY_CRM_SEARCH_ALL_OBJECTS_ENDPOINT_PATH = '/crm/v3/objects/:objectType/search';
+const IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH = '/crm/v3/objects/contacts';
+const IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH = '/crm/v3/objects/contacts/:contactId';
 
 // Identify Batch
-const BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/create`;
-const BATCH_IDENTIFY_CRM_UPDATE_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/update`;
+const BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH = '/crm/v3/objects/contacts/batch/create';
+const BATCH_IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH = '/crm/v3/objects/contacts/batch/update';
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
-const BATCH_IDENTIFY_CRM_UPSERT_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/upsert`;
+const BATCH_IDENTIFY_CRM_UPSERT_CONTACT_ENDPOINT_PATH = '/crm/v3/objects/contacts/batch/upsert';
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
 const MAX_BATCH_SIZE_CRM_CONTACT = 100;
 
+// Path fragments appended to an object's base endpoint/path when batching create/update requests.
+const BATCH_CREATE_PATH_SUFFIX = '/batch/create';
+const BATCH_UPDATE_PATH_SUFFIX = '/batch/update';
+
 // Track
 // Ref - https://developers.hubspot.com/docs/api/analytics/events
-const TRACK_CRM_ENDPOINT = `${BASE_ENDPOINT}/events/v3/send`;
+const TRACK_CRM_ENDPOINT_PATH = '/events/v3/send';
 
 /* CRM ALL Objects */
-const CRM_CREATE_UPDATE_ALL_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType`;
+const CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH = '/crm/v3/objects/:objectType';
 
-// Batch for custom Objects
-// Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-const BATCH_CREATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType/batch/create`;
+// Batch upsert for any object type (create-or-update via a unique idProperty)
+// Ref - https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
+const CRM_UPSERT_ALL_OBJECTS_ENDPOINT_PATH = '/crm/v3/objects/:objectType/batch/upsert';
 
 /* CRM Association v3 */
 // Ref - https://developers.hubspot.com/docs/api/crm/associations
-const CRM_ASSOCIATION_V3 = `${BASE_ENDPOINT}/crm/v3/associations/:fromObjectType/:toObjectType/batch/create`;
+const CRM_ASSOCIATION_V3_ENDPOINT_PATH =
+  '/crm/v3/associations/:fromObjectType/:toObjectType/batch/create';
 
 // Ref - https://developers.hubspot.com/docs/api/crm/understanding-the-crm
 const MAX_BATCH_SIZE_CRM_OBJECT = 100;
@@ -100,25 +111,28 @@ const CONTACT_PROPERTIES_CACHE_TTL = 60 * 60 * 24; // 24 hours
 
 export {
   BASE_ENDPOINT,
-  CONTACT_PROPERTY_MAP_ENDPOINT,
-  CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
-  TRACK_ENDPOINT,
-  IDENTIFY_CREATE_UPDATE_CONTACT,
-  IDENTIFY_CREATE_NEW_CONTACT,
-  BATCH_CONTACT_ENDPOINT,
+  TRACK_BASE_ENDPOINT,
+  OBJECT_TYPE_PLACEHOLDER,
+  CONTACT_PROPERTY_MAP_ENDPOINT_PATH,
+  IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH,
+  IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH,
+  BATCH_CONTACT_ENDPOINT_PATH,
   MAX_BATCH_SIZE,
-  IDENTIFY_CRM_SEARCH_CONTACT,
-  IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
-  IDENTIFY_CRM_CREATE_NEW_CONTACT,
-  IDENTIFY_CRM_UPDATE_CONTACT,
-  BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
-  BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
-  BATCH_IDENTIFY_CRM_UPSERT_CONTACT,
+  TRACK_ENDPOINT_PATH,
+  IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH,
+  IDENTIFY_CRM_SEARCH_ALL_OBJECTS_ENDPOINT_PATH,
+  IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH,
+  IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH,
+  BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH,
+  BATCH_IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH,
+  BATCH_IDENTIFY_CRM_UPSERT_CONTACT_ENDPOINT_PATH,
+  BATCH_CREATE_PATH_SUFFIX,
+  BATCH_UPDATE_PATH_SUFFIX,
   MAX_BATCH_SIZE_CRM_CONTACT,
-  TRACK_CRM_ENDPOINT,
-  CRM_CREATE_UPDATE_ALL_OBJECTS,
-  BATCH_CREATE_CUSTOM_OBJECTS,
-  CRM_ASSOCIATION_V3,
+  TRACK_CRM_ENDPOINT_PATH,
+  CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
+  CRM_UPSERT_ALL_OBJECTS_ENDPOINT_PATH,
+  CRM_ASSOCIATION_V3_ENDPOINT_PATH,
   MAX_BATCH_SIZE_CRM_OBJECT,
   API_VERSION,
   ConfigCategory,
@@ -132,4 +146,5 @@ export {
   DESTINATION,
   HUBSPOT_SYSTEM_FIELDS,
   CONTACT_PROPERTIES_CACHE_TTL,
+  CRM_V3_PROPERTIES_ENDPOINT_PATH,
 };

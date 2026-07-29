@@ -159,4 +159,28 @@ export const errorValidationData = [
     error: 'rETL - external Id not found.',
     errorType: 'instrumentation',
   }),
+  buildCase({
+    id: 'hs_router_retl_invalid_email',
+    description: '(newApi) RETL identify with an invalid email trait is aborted',
+    message: {
+      type: 'identify',
+      traits: { to: { id: 1 }, from: { id: 9405415215 }, email: 'not-an-email' },
+      context: {
+        mappedToDestination: true,
+        externalId: [
+          {
+            id: 1,
+            type: 'HS-association',
+            toObjectType: 'contacts',
+            fromObjectType: 'companies',
+            identifierType: 'id',
+            associationTypeId: 'engineer',
+          },
+        ],
+      },
+    },
+    config: newApiConfig(),
+    error: 'Email "not-an-email" is invalid',
+    errorType: 'instrumentation',
+  }),
 ];

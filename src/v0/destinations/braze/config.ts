@@ -1,4 +1,5 @@
 import { getMappingConfig } from '../../util';
+import { isFeatureEnabled } from '../../../util/featureFlags';
 import type { BrazeEndpointDetails } from './types';
 
 const ConfigCategory = {
@@ -93,6 +94,11 @@ const BRAZE_PARTNER_NAME = 'RudderStack';
 const TRACK_BRAZE_MAX_REQ_COUNT = 75;
 const TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT = 75;
 const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
+
+// Per-item and per-batch byte-size caps enforced during chunking.
+// Ref: https://www.braze.com/docs/user_guide/data/activation/events/recommended_events#event-size-limit
+const TRACK_BRAZE_MAX_ITEM_BYTE_SIZE = 100 * 1024; // 100 KB
+const TRACK_BRAZE_MAX_BATCH_BYTE_SIZE = 4 * 1024 * 1024; // 4 MB
 // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
 
 const ALIAS_BRAZE_MAX_REQ_COUNT = 50;
@@ -100,6 +106,26 @@ const SUBSCRIPTION_BRAZE_MAX_REQ_COUNT = 25;
 
 const DEL_MAX_BATCH_SIZE = 50;
 const DESTINATION = 'braze';
+
+// Per-workspace rollout gate for the per-job delivery-mapping output shape
+// (INT-6808 + INT-6634). When OFF (default), processBatch emits the legacy
+// single MultiBatchRequestOutput with a flat metadata list and no destInfo.
+// When ON, processBatch emits one BatchRequestOutput per outgoing HTTP
+// request, with per-metadata destInfo positional maps used by the v1
+// networkHandler to correlate Braze per-item warnings back to jobs.
+//
+// Delegates to the shared per-workspace feature-flag reader, with
+// BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS as an ENABLE (allow) list so the
+// ON path can be rolled out to a subset of workspaces:
+//   - unset (default): OFF for every workspace
+//   - 'ALL':           ON for every workspace
+//   - 'ws1,ws2,…':     ON only for the listed workspaceIds
+//   - any other value: OFF (not ALL, not a listed id)
+// isFeatureEnabled reads process.env dynamically (not cached at module load) so
+// the component-test envOverrides and a rollout config change take effect
+// without a process restart.
+const isPerJobDeliveryMappingEnabled = (workspaceId: string): boolean =>
+  isFeatureEnabled('BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS', workspaceId);
 
 const CustomAttributeOperationTypes = {
   REMOVE: 'remove',
@@ -136,4 +162,7 @@ export {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
   ALIAS_BRAZE_MAX_REQ_COUNT,
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
+  TRACK_BRAZE_MAX_ITEM_BYTE_SIZE,
+  TRACK_BRAZE_MAX_BATCH_BYTE_SIZE,
+  isPerJobDeliveryMappingEnabled,
 };

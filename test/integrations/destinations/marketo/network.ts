@@ -104,6 +104,32 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
+      url: 'https://mktId.mktorest.com/rest/v1/leads.json/test_too_many_results',
+      data: {
+        action: 'createOrUpdate',
+        input: [userObject],
+        lookupField: 'id',
+      },
+      headers: headerObject,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        requestId: '1003#17daea5968a',
+        success: false,
+        errors: [
+          {
+            code: '1003',
+            message: 'Too many results match the filter',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test4',
       data: {
         action: 'createOrUpdate',

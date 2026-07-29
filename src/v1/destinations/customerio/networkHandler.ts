@@ -13,10 +13,22 @@ import tags from '../../../v0/util/tags';
 type CustomerIOError = {
   batch_index: number;
   reason?: string;
+  field?: string;
+  message?: string;
 };
 
 type CustomerIO207Response = {
   errors?: CustomerIOError[];
+};
+
+const buildErrorMessage = (error: CustomerIOError): string => {
+  const parts = [
+    error.reason ? `reason: ${error.reason}` : undefined,
+    error.field ? `field: ${error.field}` : undefined,
+    error.message ? `message: ${error.message}` : undefined,
+  ].filter(Boolean);
+
+  return parts.length > 0 ? parts.join(', ') : 'Unknown error from CustomerIO';
 };
 
 const handle207MultiStatus = (
@@ -26,7 +38,7 @@ const handle207MultiStatus = (
   const errors = Array.isArray(response.errors) ? response.errors : [];
   const failedByIndex = new Map<number, string>();
   errors.forEach((e) => {
-    failedByIndex.set(e.batch_index, e.reason ?? 'Unknown error from CustomerIO');
+    failedByIndex.set(e.batch_index, buildErrorMessage(e));
   });
 
   const responseWithIndividualEvents: DeliveryJobState[] = rudderJobMetadata.map(

@@ -14,6 +14,7 @@ import {
   isValidPhoneNumber,
   type AudienceField,
 } from '../../util/audienceUtils';
+import { normalizeEmail, normalizePhone } from '../../util/googleUtils/userDataNormalization';
 import logger from '../../../logger';
 import { MappedToDestinationKey } from '../../../constants';
 import { JSON_MIME_TYPE } from '../../util/constant';
@@ -30,27 +31,6 @@ import type { GARLDestinationConfig } from './types';
 import { HashingType } from '../../util/audienceUtils';
 
 const COUNTRY_CODE_REGEX = /^[A-Za-z]{2,3}$/;
-const GMAIL_DOMAINS = new Set(['gmail.com', 'googlemail.com']);
-
-const normalizeEmail = (v: string): string => {
-  const trimmed = v.trim().toLowerCase();
-  const atIdx = trimmed.indexOf('@');
-  if (atIdx === -1) return trimmed;
-  const domain = trimmed.slice(atIdx + 1);
-  if (GMAIL_DOMAINS.has(domain)) {
-    const username = trimmed.slice(0, atIdx).replace(/\./g, '').replace(/\+.*$/, '');
-    return `${username}@${domain}`;
-  }
-  return trimmed;
-};
-
-const normalizePhone = (v: string): string => {
-  const stripped = v.replace(/[\s().-]/g, '');
-  if (!stripped) {
-    return '';
-  }
-  return stripped.startsWith('+') ? stripped : `+${stripped}`;
-};
 
 /**
  * Per-field normalization and validation rules for GARL.

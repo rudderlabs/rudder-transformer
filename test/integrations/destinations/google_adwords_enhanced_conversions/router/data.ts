@@ -1,3 +1,4 @@
+import sha256 from 'sha256';
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { newData as batchingData } from './batching-data';
 
@@ -636,18 +637,16 @@ export const data = [
                           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                         userIdentifiers: [
                           {
-                            hashedPhoneNumber:
-                              '04387707e6cbed8c4538c81cc570ed9252d579469f36c273839b26d784e4bdbe',
+                            hashedPhoneNumber: sha256('+912382193'),
                           },
                           {
                             addressInfo: {
                               city: 'London',
-                              hashedFirstName:
-                                'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
-                              hashedLastName:
-                                '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
-                              hashedStreetAddress:
-                                '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                              hashedFirstName: sha256('john'),
+                              hashedLastName: sha256('gomes'),
+                              hashedStreetAddress: sha256(
+                                '71 cherry court southampton so53 5pd uk',
+                              ),
                               state: 'UK',
                             },
                           },
@@ -812,18 +811,16 @@ export const data = [
                           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                         userIdentifiers: [
                           {
-                            hashedPhoneNumber:
-                              '04387707e6cbed8c4538c81cc570ed9252d579469f36c273839b26d784e4bdbe',
+                            hashedPhoneNumber: sha256('+912382193'),
                           },
                           {
                             addressInfo: {
                               city: 'London',
-                              hashedFirstName:
-                                'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
-                              hashedLastName:
-                                '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
-                              hashedStreetAddress:
-                                '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                              hashedFirstName: sha256('john'),
+                              hashedLastName: sha256('gomes'),
+                              hashedStreetAddress: sha256(
+                                '71 cherry court southampton so53 5pd uk',
+                              ),
                               state: 'UK',
                             },
                           },
@@ -907,18 +904,16 @@ export const data = [
                           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                         userIdentifiers: [
                           {
-                            hashedPhoneNumber:
-                              '04387707e6cbed8c4538c81cc570ed9252d579469f36c273839b26d784e4bdbe',
+                            hashedPhoneNumber: sha256('+912382193'),
                           },
                           {
                             addressInfo: {
                               city: 'London',
-                              hashedFirstName:
-                                'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
-                              hashedLastName:
-                                '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
-                              hashedStreetAddress:
-                                '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                              hashedFirstName: sha256('john'),
+                              hashedLastName: sha256('gomes'),
+                              hashedStreetAddress: sha256(
+                                '71 cherry court southampton so53 5pd uk',
+                              ),
                               state: 'UK',
                             },
                           },

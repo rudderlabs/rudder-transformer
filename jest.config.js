@@ -152,7 +152,8 @@ module.exports = {
   testMatch: ['**/*.test.[tj]s?(x)'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: ['/node_modules/'],
+  // component.live.test.ts is the live suite (jest.config.live.js) — exclude from the mocked run.
+  testPathIgnorePatterns: ['/node_modules/', 'component.live.test.ts'],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

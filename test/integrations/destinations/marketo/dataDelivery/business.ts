@@ -222,6 +222,57 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     },
   },
   {
+    id: 'marketo_v1_scenario_1003_abortable',
+    name: 'marketo',
+    description: '[Proxy v1 API] :: Test for too many results matching the filter scenario',
+    successCriteria:
+      'Should return a 400 status code with message Too many results match the filter',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            headers: {
+              Authorization: authHeader1,
+              'Content-Type': 'application/json',
+            },
+            endpoint: 'https://mktId.mktorest.com/rest/v1/leads.json/test_too_many_results',
+          },
+          reqMetadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            statTags: statTags.aborted,
+            message:
+              'Request Failed for marketo, Too many results match the filter (Aborted).during Marketo Response Handling',
+            response: [
+              {
+                error: JSON.stringify({
+                  requestId: '1003#17daea5968a',
+                  success: false,
+                  errors: [{ code: '1003', message: 'Too many results match the filter' }],
+                }),
+                metadata: proxyMetdata,
+                statusCode: 400,
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
     id: 'marketo_v1_scenario_4',
     name: 'marketo',
     description: '[Proxy v1 API] :: Test for Unknown error with empty response',

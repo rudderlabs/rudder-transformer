@@ -65,11 +65,16 @@ class Prometheus {
     return counter;
   }
 
-  newGaugeStat(name, help, labelNames) {
+  // `aggregator` controls how prom-client merges this gauge across the NUM_PROCS cluster
+  // workers when serving aggregatorRegistry.clusterMetrics(). It defaults to 'sum', which is
+  // right for additive quantities (bytes, counts) but wrong for ratios: summing four workers'
+  // "16%" would export "64%". Pass 'max' for anything that is already a percentage.
+  newGaugeStat(name, help, labelNames, aggregator = 'sum') {
     const gauge = new prometheusClient.Gauge({
       name,
       help,
       labelNames,
+      aggregator,
     });
     this.prometheusRegistry.registerMetric(gauge);
     return gauge;
@@ -976,6 +981,20 @@ class Prometheus {
         labelNames: ['cache'],
       },
       {
+        name: 'ivm_execution_queue_wait',
+        help: 'Time an evaluation waited for a free isolate concurrency slot (seconds)',
+        type: 'histogram',
+        labelNames: ['functionName', 'workspaceId', 'cache'],
+        // Declared explicitly because the default bucket set starts at 5ms, and a gated
+        // isolate drains far faster than that: measured locally, 99.45% of 312k waits landed
+        // in that single first bucket, which makes histogram_quantile() interpolate inside it
+        // and report nothing useful. These start at 0.5ms so a healthy sub-millisecond wait is
+        // distinguishable from a degraded one, and extend to 10s so a real backlog (queue depth
+        // growing behind timed-out executions) stays on-scale instead of pinning p99 at the top
+        // finite bucket.
+        buckets: [0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+      },
+      {
         name: 'fetchV2_call_duration',
         help: 'fetchV2_call_duration',
         type: 'histogram',
@@ -1066,7 +1085,16 @@ class Prometheus {
         name: 'memory_fenced_requests',
         help: 'number of requests that were memory fenced',
         type: 'counter',
+        labelNames: ['route'],
+      },
+      {
+        name: 'memory_heap_used_percent',
+        // A percentage is not additive. Without aggregator 'max' prom-client would sum the
+        // four cluster workers' values and export ~4x the real figure.
+        help: 'heap used as a percentage of the V8 heap limit, for the hottest cluster worker',
+        type: 'gauge',
         labelNames: [],
+        aggregator: 'max',
       },
       {
         name: 'http_concurrent_requests',
@@ -1095,7 +1123,7 @@ class Prometheus {
         if (metric.type === 'counter') {
           this.newCounterStat(fullName, metric.help, metric.labelNames);
         } else if (metric.type === 'gauge') {
-          this.newGaugeStat(fullName, metric.help, metric.labelNames);
+          this.newGaugeStat(fullName, metric.help, metric.labelNames, metric.aggregator);
         } else if (metric.type === 'histogram') {
           this.newHistogramStat(fullName, metric.help, metric.labelNames, metric.buckets);
         } else if (metric.type === 'summary') {

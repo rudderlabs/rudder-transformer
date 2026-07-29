@@ -21,14 +21,19 @@ import {
   sortBatchesByMinJobId,
 } from '../../util';
 import {
-  BATCH_CONTACT_ENDPOINT,
+  BASE_ENDPOINT,
+  TRACK_BASE_ENDPOINT,
   MAX_BATCH_SIZE,
-  TRACK_ENDPOINT,
-  IDENTIFY_CREATE_UPDATE_CONTACT,
-  IDENTIFY_CREATE_NEW_CONTACT,
-  CRM_CREATE_UPDATE_ALL_OBJECTS,
+  IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH,
+  IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH,
+  OBJECT_TYPE_PLACEHOLDER,
   MAX_BATCH_SIZE_CRM_OBJECT,
   MAX_BATCH_SIZE_CRM_CONTACT,
+  CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
+  BATCH_CONTACT_ENDPOINT_PATH,
+  TRACK_ENDPOINT_PATH,
+  BATCH_CREATE_PATH_SUFFIX,
+  BATCH_UPDATE_PATH_SUFFIX,
 } from './config';
 import {
   getTransformedJSON,
@@ -37,6 +42,7 @@ import {
   getHsSearchId,
   populateTraits,
   removeHubSpotSystemField,
+  recordTransformFlow,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -74,6 +80,7 @@ const processLegacyIdentify = async (
   // if mappedToDestination is set true, then add externalId to traits
   // rETL source
   let endpoint: string = '';
+  let endpointPath: string = '';
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   if (
@@ -88,14 +95,21 @@ const processLegacyIdentify = async (
       throw new InstrumentationError('objectType not found');
     }
     if (operation === 'createObject') {
-      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
+        OBJECT_TYPE_PLACEHOLDER,
+        objectType,
+      );
+      endpoint = `${BASE_ENDPOINT}${endpointPath}`;
+      recordTransformFlow(destination, 'retl', 'es_retl', 'create');
     } else if (operation === 'updateObject' && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
-      endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
-        ':objectType',
+      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
+        OBJECT_TYPE_PLACEHOLDER,
         objectType,
-      )}/${hsSearchId}`;
+      );
+      endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
+      recordTransformFlow(destination, 'retl', 'es_retl', 'update');
     }
 
     traits = await populateTraits(propertyMap, traits, destination, metadata);
@@ -117,14 +131,21 @@ const processLegacyIdentify = async (
     };
 
     if (email) {
-      endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(':contact_email', email);
+      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH.replace(
+        ':contact_email',
+        email,
+      )}`;
+      endpointPath = IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH;
     } else {
-      endpoint = IDENTIFY_CREATE_NEW_CONTACT;
+      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
+      endpointPath = IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH;
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
+    recordTransformFlow(destination, 'event_stream', 'es_retl', 'upsert');
   }
 
   response.endpoint = endpoint;
+  response.endpointPath = endpointPath;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -178,12 +199,14 @@ const processLegacyTrack = async (
   const params = removeUndefinedAndNullValues(payload);
 
   const response = defaultRequestConfig();
-  response.endpoint = TRACK_ENDPOINT;
+  response.endpoint = `${TRACK_BASE_ENDPOINT}${TRACK_ENDPOINT_PATH}`;
+  response.endpointPath = TRACK_ENDPOINT_PATH;
   response.method = defaultGetRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
   response.messageType = 'track';
+  recordTransformFlow(destination, 'event_stream', 'es_retl', 'track');
 
   // choosing API Type
   if (Config.authorizationType === 'newPrivateAppApi') {
@@ -221,7 +244,8 @@ const batchIdentifyForrETL = (
         identifyResponseList.push({
           ...ev.message.body.JSON,
         });
-        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
+        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
 
         metadata.push(ev.metadata);
       });
@@ -236,7 +260,8 @@ const batchIdentifyForrETL = (
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
           0,
           updateEndpoint.lastIndexOf('/'),
-        )}/batch/update`;
+        )}${BATCH_UPDATE_PATH_SUFFIX}`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_UPDATE_PATH_SUFFIX}`;
 
         metadata.push(ev.metadata);
       });
@@ -286,6 +311,7 @@ const legacyBatchEvents = (
       const batchedResponse: HubSpotBatchRequestOutput = defaultBatchRequestConfig();
       batchedResponse.batchedRequest.headers = message.headers!;
       batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.endpointPath = TRACK_ENDPOINT_PATH;
       batchedResponse.batchedRequest.body = message.body;
       batchedResponse.batchedRequest.params = message.params!;
       batchedResponse.batchedRequest.method = defaultGetRequestConfig.requestMethod;
@@ -364,7 +390,8 @@ const legacyBatchEvents = (
         batchEventResponse.batchedRequest.body.JSON = {
           inputs: identifyResponseList,
         };
-        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
+        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
+        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
         metadata.push(ev.metadata);
       } else {
         const bodyJSON = ev.message.body.JSON;
@@ -391,7 +418,8 @@ const legacyBatchEvents = (
         batchEventResponse.batchedRequest.body.JSON_ARRAY = {
           batch: JSON.stringify(identifyResponseList),
         };
-        batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
+        batchEventResponse.batchedRequest.endpoint = `${BASE_ENDPOINT}${BATCH_CONTACT_ENDPOINT_PATH}`;
+        batchEventResponse.batchedRequest.endpointPath = BATCH_CONTACT_ENDPOINT_PATH;
       }
     });
 

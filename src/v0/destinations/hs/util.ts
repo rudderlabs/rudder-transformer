@@ -25,10 +25,11 @@ import {
   isHttpStatusSuccess,
 } from '../../util';
 import {
-  CONTACT_PROPERTY_MAP_ENDPOINT,
-  CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
-  IDENTIFY_CRM_SEARCH_CONTACT,
-  IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
+  BASE_ENDPOINT,
+  OBJECT_TYPE_PLACEHOLDER,
+  CONTACT_PROPERTY_MAP_ENDPOINT_PATH,
+  IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH,
+  IDENTIFY_CRM_SEARCH_ALL_OBJECTS_ENDPOINT_PATH,
   SEARCH_LIMIT_VALUE,
   hsCommonConfigJson,
   primaryToSecondaryFields,
@@ -36,10 +37,13 @@ import {
   MAX_CONTACTS_PER_REQUEST,
   HUBSPOT_SYSTEM_FIELDS,
   CONTACT_PROPERTIES_CACHE_TTL,
+  CRM_V3_PROPERTIES_ENDPOINT_PATH,
+  API_VERSION,
 } from './config';
 
 import Cache from '../../util/cache';
 import tags from '../../util/tags';
+import stats from '../../../util/stats';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
 import type {
@@ -159,23 +163,27 @@ const getProperties = async (
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
-    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
-      destType: 'hs',
-      feature: 'transformation',
-      endpointPath: `/properties/v1/contacts/properties`,
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
-    });
+    hubspotPropertyMapResponse = await httpGET(
+      `${BASE_ENDPOINT}${CONTACT_PROPERTY_MAP_ENDPOINT_PATH}`,
+      requestOptions,
+      {
+        destType: DESTINATION,
+        feature: 'transformation',
+        endpointPath: CONTACT_PROPERTY_MAP_ENDPOINT_PATH,
+        requestMethod: 'GET',
+        module: 'router',
+        metadata,
+      },
+    );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
     // API Key (hapikey)
-    const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
+    const url = `${BASE_ENDPOINT}${CONTACT_PROPERTY_MAP_ENDPOINT_PATH}?hapikey=${Config.apiKey}`;
     hubspotPropertyMapResponse = await httpGET(
       url,
       {},
       {
-        destType: 'hs',
+        destType: DESTINATION,
         feature: 'transformation',
         endpointPath: `/properties/v1/contacts/properties?hapikey`,
         requestMethod: 'GET',
@@ -463,11 +471,11 @@ const searchContacts = async (
       },
     };
     searchContactsResponse = await httpPOST(
-      IDENTIFY_CRM_SEARCH_CONTACT,
+      `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH}`,
       requestData,
       requestOptions,
       {
-        destType: 'hs',
+        destType: DESTINATION,
         feature: 'transformation',
         endpointPath,
         requestMethod: 'POST',
@@ -478,9 +486,9 @@ const searchContacts = async (
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   } else {
     // API Key
-    const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
+    const url = `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH}?hapikey=${Config.apiKey}`;
     searchContactsResponse = await httpPOST(url, requestData, {
-      destType: 'hs',
+      destType: DESTINATION,
       feature: 'transformation',
       endpointPath,
       requestMethod: 'POST',
@@ -642,7 +650,10 @@ const performHubSpotSearch = async (
   const requestData = reqdata;
   const { Config } = destination;
 
-  const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
+  const endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_ALL_OBJECTS_ENDPOINT_PATH.replace(
+    ':objectType',
+    objectType,
+  )}`;
   const endpointPath = `objects/:objectType/search`;
 
   const url =
@@ -659,7 +670,7 @@ const performHubSpotSearch = async (
 
   while (checkAfter) {
     const httpResponse = await httpPOST(url, requestData, requestOptions, {
-      destType: 'hs',
+      destType: DESTINATION,
       feature: 'transformation',
       endpointPath,
       requestMethod: 'POST',
@@ -980,10 +991,11 @@ const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {
 const removeHubSpotSystemField = (properties: Record<string, unknown>): Record<string, unknown> =>
   omit(properties, HUBSPOT_SYSTEM_FIELDS);
 
-// Cache for HubSpot contact properties (V3 API) - stores hasUniqueValue per property
+// Cache for HubSpot object properties (V3 API) - stores hasUniqueValue per property.
+// Keyed by `${destination.ID}:${objectType}` so each object type is cached independently.
 // TTL: 1 hour - property definitions rarely change
-const uniqueContactPropertiesCache = new Cache(
-  'HS_CONTACT_PROPERTIES_V3',
+const uniqueObjectPropertiesCache = new Cache(
+  'HS_OBJECT_PROPERTIES_V3',
   CONTACT_PROPERTIES_CACHE_TTL,
   {
     destType: DESTINATION,
@@ -991,33 +1003,38 @@ const uniqueContactPropertiesCache = new Cache(
 );
 
 /**
- * Fetches contact properties from HubSpot CRM V3 API.
+ * Fetches properties for a given object type from HubSpot CRM V3 API.
  * Ref - https://developers.hubspot.com/docs/api-reference/crm-properties-v3/core/get-crm-v3-properties-objectType
  *
  * @param destination - HubSpot destination config
+ * @param objectType - The CRM object type (e.g. contacts, companies, deals, custom object)
  * @param metadata - Request metadata
  * @returns Map of property name -> hasUniqueValue
  */
-const fetchContactPropertiesV3 = async (
+const fetchObjectPropertiesV3 = async (
   destination: HubSpotDestination,
+  objectType: string,
   metadata: Metadata,
 ): Promise<Record<string, boolean>> => {
   const { Config } = destination;
+  const endpointPath = CRM_V3_PROPERTIES_ENDPOINT_PATH.replace(OBJECT_TYPE_PLACEHOLDER, objectType);
   const statTags = {
     destType: DESTINATION,
     feature: 'transformation',
-    endpointPath: '/crm/v3/properties/contacts',
+    endpointPath,
     requestMethod: 'GET',
     module: 'router',
     metadata,
   };
   const authenticationInfo = addHsAuthentication({}, Config);
-  const response = await httpGET(CRM_V3_CONTACT_PROPERTIES_ENDPOINT, authenticationInfo, statTags);
+  const response = await httpGET(`${BASE_ENDPOINT}${endpointPath}`, authenticationInfo, statTags);
 
   const processedResponse = processAxiosResponse(response);
   if (processedResponse.status !== 200) {
     throw new NetworkError(
-      `Failed to fetch HubSpot contact properties: ${JSON.stringify(processedResponse.response)}`,
+      `Failed to fetch HubSpot ${objectType} properties: ${JSON.stringify(
+        processedResponse.response,
+      )}`,
       processedResponse.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
@@ -1036,39 +1053,68 @@ const fetchContactPropertiesV3 = async (
 };
 
 /**
- * Checks if the lookup field has unique value constraint in HubSpot.
- * Uses in-memory cache to avoid repeated API calls.
- * Refetches when lookup field is not in cache (handles new custom fields added after cache).
- * Upsert endpoint requires hasUniqueValue=true for the lookup field.
+ * Checks if the lookup field has a unique value constraint in HubSpot for the
+ * given object type. Uses an in-memory cache (keyed by `destination:objectType`)
+ * to avoid repeated API calls. Refetches when the lookup field is not in the
+ * cache (handles new custom fields added after cache). The upsert endpoint
+ * requires hasUniqueValue=true for the lookup/identifier field.
  *
  * @param destination - HubSpot destination config
- * @param lookupField - The configured lookup field (e.g. email, hs_object_id)
+ * @param lookupField - The configured lookup/identifier field (e.g. email, hs_object_id)
  * @param metadata - Request metadata
+ * @param objectType - The CRM object type to check (defaults to 'contacts')
  * @returns true if lookupField has hasUniqueValue=true, false otherwise
  */
 const isLookupFieldUnique = async (
   destination: HubSpotDestination,
   lookupField: string,
   metadata: Metadata,
+  objectType = 'contacts',
 ): Promise<boolean> => {
-  const cacheKey = destination.ID;
+  const cacheKey = `${destination.ID}:${objectType}`;
 
   const isFieldInMap = (map: Record<string, boolean>) => lookupField in map;
 
-  let propertiesMap = (await uniqueContactPropertiesCache.get(cacheKey)) as
+  let propertiesMap = (await uniqueObjectPropertiesCache.get(cacheKey)) as
     | Record<string, boolean>
     | undefined;
 
   // Refetch if cache miss OR lookup field not in cached data (e.g. new custom field added)
   if (!propertiesMap || !isFieldInMap(propertiesMap)) {
-    propertiesMap = await fetchContactPropertiesV3(destination, metadata);
+    propertiesMap = await fetchObjectPropertiesV3(destination, objectType, metadata);
     if (propertiesMap) {
-      uniqueContactPropertiesCache.set(cacheKey, propertiesMap);
+      uniqueObjectPropertiesCache.set(cacheKey, propertiesMap);
     }
   }
 
   if (!propertiesMap) return false;
   return propertiesMap[lookupField] ?? false;
+};
+
+/**
+ * Emit a per-event flow counter so HubSpot traffic can be sliced by pipeline during rollout.
+ * Called statically from each terminal branch, so flow / code_path / operation are known literals:
+ *   flow         event_stream | retl
+ *   code_path    retl (dedicated gated rETL pipeline) | es_retl (shared es-retl pipeline)
+ *   operation    create | update | upsert | association | track
+ *   api_version  v1 (legacyApi) | v3 (newApi)                       [from Config]
+ *   auth_type    private_app (newPrivateAppApi) | api_key (legacy)  [from Config]
+ */
+const recordTransformFlow = (
+  destination: HubSpotDestination,
+  flow: 'event_stream' | 'retl',
+  codePath: 'retl' | 'es_retl',
+  operation: 'create' | 'update' | 'upsert' | 'association' | 'track',
+): void => {
+  const { Config, ID } = destination;
+  stats.increment('hs_transform_flow', {
+    flow,
+    code_path: codePath,
+    operation,
+    api_version: Config?.apiVersion === API_VERSION.v3 ? 'v3' : 'v1',
+    auth_type: Config?.authorizationType === 'newPrivateAppApi' ? 'private_app' : 'api_key',
+    destination_id: ID,
+  });
 };
 
 export {
@@ -1094,4 +1140,5 @@ export {
   removeHubSpotSystemField,
   getLookupFieldValue,
   isLookupFieldUnique,
+  recordTransformFlow,
 };

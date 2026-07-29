@@ -51,7 +51,7 @@ class BrazeAudienceIntegration extends BatchDestination<
 
     const externalId = normalizeExternalId(message.identifiers?.external_id);
     if (!externalId) {
-      // Soft-bounce this record (BatchDestination maps InstrumentationError per-item).
+      // Abort this record (BatchDestination maps InstrumentationError → 400 per-item).
       throw new InstrumentationError('external_id is missing or empty after trim');
     }
 

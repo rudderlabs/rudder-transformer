@@ -136,7 +136,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
     expect(getEndpoint(results[0])).toBe('https://rest.au-01.braze.com/users/track/bulk');
   });
 
-  it('soft-bounces empty external_id per record', async () => {
+  it('aborts empty external_id per record', async () => {
     const results = await processBatchedDestination(
       [
         buildInput(1, 'insert', { external_id: '  ' }),

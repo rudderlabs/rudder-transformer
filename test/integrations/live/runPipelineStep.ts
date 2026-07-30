@@ -25,6 +25,7 @@ const attemptDelivery = async ({
   step,
   ctx,
   config,
+  connection,
   http,
 }: RunPipelineStepParams): Promise<DeliveryFailure | undefined> => {
   const jobId = randomInt(1, 2_147_483_647);
@@ -35,6 +36,7 @@ const attemptDelivery = async ({
   const routerBody = buildRouterTransformBody(destination, message, config, jobId, {
     secret: ctx.liveSecret.secret,
     metadataOverride: step.metadataOverride,
+    connection,
   });
 
   const routerResponse = await http.post('/routerTransform', routerBody);
@@ -94,6 +96,11 @@ const attemptDelivery = async ({
 export const runPipelineStep = async (params: RunPipelineStepParams): Promise<void> => {
   const { destination, scenarioId, step } = params;
   const maxAttempts = (step.retries ?? 0) + 1;
+  // Optional settle before the first attempt — lets an eventually-consistent index catch up with a
+  // record the preceding setup step just created (see PipelineStep.delayBeforeMs).
+  if (step.delayBeforeMs) {
+    await sleep(step.delayBeforeMs);
+  }
   let failure: DeliveryFailure | undefined;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     // eslint-disable-next-line no-await-in-loop -- attempts are inherently sequential with backoff
@@ -103,7 +110,8 @@ export const runPipelineStep = async (params: RunPipelineStepParams): Promise<vo
     }
     if (attempt < maxAttempts - 1) {
       // eslint-disable-next-line no-await-in-loop -- back off before retrying
-      await sleep(1000 * 2 ** attempt);
+      // Cap the exponential backoff so a higher retry count still fits the per-step timeout.
+      await sleep(Math.min(1000 * 2 ** attempt, 5000));
     }
   }
   if (!failure) {

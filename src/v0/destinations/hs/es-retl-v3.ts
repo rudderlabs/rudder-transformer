@@ -109,7 +109,7 @@ const processUpsertIdentify = async (
   // Build upsert payload
   // Ref: https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
   const upsertPayload = {
-    id: lookupFieldInfo.value,
+    id: String(lookupFieldInfo.value),
     idProperty: lookupFieldInfo.fieldName,
     properties,
     // objectWriteTraceId is used to correlate results in 207 multi-status responses

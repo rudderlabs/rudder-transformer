@@ -46,9 +46,9 @@ const retlNonUniqueDestination = {
   },
 };
 
-const retlContext = (email: string) => ({
+const retlContext = (identifierValue: string | number, identifierType = 'email') => ({
   mappedToDestination: true,
-  externalId: [{ identifierType: 'email', id: email, type: 'HS-contacts' }],
+  externalId: [{ identifierType, id: identifierValue, type: 'HS-contacts' }],
   sources: {
     job_id: 'retl-upsert-job',
     task_id: 'retl-upsert-task',
@@ -56,13 +56,17 @@ const retlContext = (email: string) => ({
   },
 });
 
-const identifyMessage = (email: string, traits: Record<string, unknown>) => ({
+const identifyMessage = (
+  identifierValue: string | number,
+  traits: Record<string, unknown>,
+  identifierType = 'email',
+) => ({
   type: 'identify',
   channel: 'web',
-  context: retlContext(email),
+  context: retlContext(identifierValue, identifierType),
   traits,
   userId: '12345',
-  messageId: `msg-${email}`,
+  messageId: `msg-${identifierValue}`,
   originalTimestamp: '2024-01-15T10:00:00.000Z',
   sentAt: '2024-01-15T10:00:00.000Z',
   integrations: { All: true },
@@ -141,6 +145,84 @@ export const retlUpsertData: Record<string, unknown>[] = [
               metadata: [
                 {
                   jobId: 5001,
+                  userId: 'u1',
+                  workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: retlDestination,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: {},
+  },
+  {
+    name: 'hs',
+    id: 'hs-retl-upsert-numeric-external-id',
+    description:
+      'rETL (gated split, v3): numeric external id is stringified for batch upsert payload id',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: retlDestination,
+              message: identifyMessage(9868, { firstname: 'Numeric' }, 'user_id'),
+              metadata: {
+                jobId: 5007,
+                userId: 'u1',
+                workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
+              },
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: UPSERT_ENDPOINT,
+                endpointPath: UPSERT_ENDPOINT_PATH,
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader1,
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    inputs: [
+                      {
+                        id: '9868',
+                        idProperty: 'user_id',
+                        properties: { firstname: 'Numeric' },
+                        objectWriteTraceId: '5007',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 5007,
                   userId: 'u1',
                   workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
                 },

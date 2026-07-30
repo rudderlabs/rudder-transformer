@@ -62,6 +62,11 @@ interface PipelineStep extends Step {
   // freshly set-up record can be missed on the first try and 409, then found on a retry. Only use
   // where a failed attempt persists nothing (e.g. a 409-on-create), so a retry is safe to repeat.
   retries?: number;
+  // Sleep this long before the first delivery attempt. For an update scenario whose setup just
+  // created the record, this gives HubSpot's eventually-consistent Search index extra time to
+  // reflect it before the transform's create-vs-update search runs — so the event resolves to an
+  // update instead of being misrouted to a create (which 409s on the duplicate).
+  delayBeforeMs?: number;
 }
 
 // An action step: a direct destination-API side effect (seed/mutate/delete state), run in order.
@@ -111,6 +116,9 @@ type LiveSpec = {
   // Map the resolved secret into the destination.Config the transform expects (merge non-secret
   // defaults with the credentials in `s.config`).
   resolveConfig: (s: LiveSecret) => Record<string, unknown>;
+  // Optional: map secret → connection.config (must include `destination` for VDM audience dests).
+  // When set, the harness wraps this as a full connection on each /routerTransform input.
+  resolveConnection?: (s: LiveSecret) => Record<string, unknown>;
   scenarios: LiveScenario[];
 };
 
@@ -158,6 +166,9 @@ type BatchedRequest = z.infer<typeof LiveProcessorOutputSchema>;
 type BuildRouterTransformBodyOptions = {
   secret?: Record<string, string>;
   metadataOverride?: Record<string, unknown>;
+  // Full connection object for RETL / audience destinations that read connection.config
+  // (e.g. customAttributeName). Absent for event-stream destinations that don't need it.
+  connection?: Record<string, unknown>;
 };
 
 // Minimal HTTP client the pipeline runner drives; wraps SuperTest so the runner stays free of its types.
@@ -183,6 +194,8 @@ type RunPipelineStepParams = {
   ctx: RunContext;
   config: Record<string, unknown>;
   http: LiveHttpClient;
+  // Optional connection for destinations that require it at transform time (audience / VDM).
+  connection?: Record<string, unknown>;
 };
 
 // ─── Poll helpers (poll.ts) ───

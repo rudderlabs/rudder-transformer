@@ -2850,7 +2850,6 @@ export const data = [
         body: [
           {
             destination: overrideDestination(sampleDestination, {
-              apiSecret: 'some_api_secret',
               dataResidency: 'eu',
             }),
             message: {
@@ -3230,7 +3229,6 @@ export const data = [
         body: [
           {
             destination: overrideDestination(sampleDestination, {
-              apiSecret: 'some_api_secret',
               dataResidency: 'eu',
             }),
             message: {
@@ -4678,7 +4676,6 @@ export const data = [
         body: [
           {
             destination: overrideDestination(sampleDestination, {
-              apiSecret: 'some_api_secret',
               dataResidency: 'eu',
             }),
             message: {
@@ -4803,9 +4800,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: overrideDestination(sampleDestination, {
-              apiSecret: 'some_api_secret',
-            }),
+            destination: overrideDestination(sampleDestination, {}),
             message: {
               channel: 'web',
               context: {
@@ -4884,9 +4879,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: overrideDestination(sampleDestination, {
-              apiSecret: 'some_api_secret',
-            }),
+            destination: overrideDestination(sampleDestination, {}),
             message: {
               channel: 'web',
               context: {
@@ -5521,7 +5514,6 @@ export const data = [
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
             destination: overrideDestination(sampleDestination, {
-              apiSecret: secret3,
               useNewMapping: true,
             }),
           },
@@ -5642,7 +5634,6 @@ export const data = [
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
             destination: overrideDestination(sampleDestination, {
-              apiSecret: secret3,
               useNewMapping: true,
             }),
           },
@@ -6876,7 +6867,6 @@ export const data = [
             destination: overrideDestination(sampleDestination, {
               apiKey: secret3,
               token: secret2,
-              apiSecret: secret3,
               useNewMapping: true,
             }),
           },
@@ -7033,7 +7023,6 @@ export const data = [
             destination: overrideDestination(sampleDestination, {
               apiKey: secret3,
               token: secret2,
-              apiSecret: secret3,
               useNewMapping: true,
             }),
           },
@@ -7153,7 +7142,6 @@ export const data = [
             destination: overrideDestination(sampleDestination, {
               apiKey: secret3,
               token: secret2,
-              apiSecret: 'some_api_secret',
               dataResidency: 'eu',
               strictMode: true,
             }),

@@ -5,12 +5,13 @@ describe('responseStatusHandler', () => {
     expect(() => responseStatusHandler(200, 'Transformation', 'v1', 'url')).not.toThrow();
   });
 
-  it('throws a retriable 809 on 401 (config backend auth failure), so the event is retried not dropped', () => {
+  it('throws a retriable 503 config-backend-auth error on 401, so the request is retried not dropped', () => {
     try {
       responseStatusHandler(401, 'Transformation', 'v1', 'url');
       throw new Error('expected to throw');
     } catch (err) {
-      expect(err.statusCode).toBe(809);
+      expect(err.statusCode).toBe(503);
+      expect(err.retryReason).toBe('config_backend_auth_failed');
     }
   });
 

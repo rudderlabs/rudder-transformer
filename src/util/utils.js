@@ -277,11 +277,22 @@ class RetryRequestError extends RespStatusError {
   }
 }
 
+// Transient config backend auth failure (missing/wrong/rotated secret). 503 + retry header so
+// rudder-server retries instead of dropping events; distinct from 809 (control plane down).
+class ConfigBackendAuthError extends RespStatusError {
+  constructor(message) {
+    super(message, 503);
+    this.retryReason = 'config_backend_auth_failed';
+  }
+}
+
 const responseStatusHandler = (status, entity, id, url) => {
-  // A 401 means the config backend secret is missing, wrong, or mid-rotation — a transient
-  // operational issue, not a bad event. Surface it as the retriable 809 (rudder-server retries and
-  // alerts on it) instead of a terminal error that would silently drop the event.
-  if (status >= 500 || status === 401) {
+  if (status === 401) {
+    throw new ConfigBackendAuthError(
+      `Config backend authentication failed while fetching ${entity} :: ${id}`,
+    );
+  }
+  if (status >= 500) {
     throw new RetryRequestError(`Error occurred while fetching ${entity} :: ${id}`);
   } else if (status !== 200) {
     throw new RespStatusError(`${entity} not found at ${url}`, status);
@@ -418,6 +429,7 @@ function validateIp(ip) {
 module.exports = {
   RespStatusError,
   RetryRequestError,
+  ConfigBackendAuthError,
   responseStatusHandler,
   getIntegrationVersion,
   getDestinationVersion,

@@ -1,5 +1,10 @@
 import logger from '../logger';
-import { RetryRequestError, RespStatusError, constructValidationErrors } from '../util/utils';
+import {
+  RetryRequestError,
+  RespStatusError,
+  ConfigBackendAuthError,
+  constructValidationErrors,
+} from '../util/utils';
 import { getMetadata, getTrackingPlanMetadata } from '../v0/util';
 import eventValidator from '../util/eventValidation';
 import stats from '../util/stats';
@@ -44,6 +49,11 @@ export class TrackingPlanservice {
         );
 
         exceptionOccured = true;
+        // Shared-secret auth failure breaks every fetch: fail the whole request so it is retried
+        // with a 503 + X-Rudder-Should-Retry, rather than a per-event error the batch swallows.
+        if (error instanceof ConfigBackendAuthError) {
+          throw error;
+        }
         // no need to process further if
         // we have error of retry request error
         if (error instanceof RetryRequestError) {
@@ -64,7 +74,7 @@ export class TrackingPlanservice {
         stats.timing('tp_event_validation_latency', eventStartTime, {
           ...metaTags,
           ...tpTags,
-          status: eventValidationResponse.statusCode,
+          status: eventValidationResponse?.statusCode,
           exception: exceptionOccured,
         });
       }

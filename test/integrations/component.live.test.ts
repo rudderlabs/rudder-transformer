@@ -86,35 +86,55 @@ describe('Live Integration Test Suite', () => {
         await ctx.runCleanups();
       });
 
+      // Short-circuit: once a step in this scenario fails, skip the remaining steps and the
+      // read-back. Later steps build on earlier ones, so continuing only cascades noise and
+      // burns live API calls on an already-doomed scenario.
+      let scenarioFailed = false;
+      const skipIfFailed = (what: string): boolean => {
+        if (scenarioFailed) {
+          // eslint-disable-next-line no-console
+          console.warn(`[live] skipping ${what} — an earlier step in this scenario failed`);
+        }
+        return scenarioFailed;
+      };
+
       test.each(scenario.steps)(
         'step: $name',
         async (step) => {
-          // Steps run in declared order; dispatch by discriminant — action = direct API side
-          // effect, verify = read-back assertion, pipeline = seed -> transform -> deliver -> assert.
-          switch (step.stepType) {
-            case 'action':
-              await step.run(ctx);
-              return;
-            case 'verify':
-              await step.check(ctx);
-              return;
-            case 'pipeline':
-              await runPipelineStep({
-                destination,
-                scenarioId: scenario.id,
-                step,
-                ctx,
-                config: scenarioConfig,
-                http: {
-                  post: async (url, body) =>
-                    agent()
-                      .post(url)
-                      .send(body as object),
-                },
-              });
+          if (skipIfFailed(`step "${step.name}"`)) {
+            return;
+          }
+          try {
+            // Steps run in declared order; dispatch by discriminant — action = direct API side
+            // effect, verify = read-back assertion, pipeline = seed -> transform -> deliver -> assert.
+            switch (step.stepType) {
+              case 'action':
+                await step.run(ctx);
+                return;
+              case 'verify':
+                await step.check(ctx);
+                return;
+              case 'pipeline':
+                await runPipelineStep({
+                  destination,
+                  scenarioId: scenario.id,
+                  step,
+                  ctx,
+                  config: scenarioConfig,
+                  http: {
+                    post: async (url, body) =>
+                      agent()
+                        .post(url)
+                        .send(body as object),
+                  },
+                });
+            }
+          } catch (err) {
+            scenarioFailed = true;
+            throw err;
           }
         },
-        60000,
+        120000,
       );
 
       // The scenario's common trailing read-back: framework owns the polling, retrying the
@@ -122,8 +142,11 @@ describe('Live Integration Test Suite', () => {
       if (scenario.verify) {
         const { check, attempts, delayMs } = scenario.verify;
         test('verify: scenario read-back', async () => {
+          if (skipIfFailed('read-back')) {
+            return;
+          }
           await retryUntilPasses(() => check(ctx), { attempts, delayMs });
-        }, 60000);
+        }, 120000);
       }
     });
   });

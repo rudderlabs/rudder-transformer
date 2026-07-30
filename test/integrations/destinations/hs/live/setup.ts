@@ -12,10 +12,10 @@ import {
 // The CRM Search index is eventually consistent — a fresh contact can drop out of the next
 // search, so a first-hit poll leaves the transform's own search racing to create and 409-ing on
 // the duplicate. Requiring several CONSECUTIVE hits plus a settle delay closes that window.
-const REQUIRED_CONSECUTIVE_HITS = 3;
+const REQUIRED_CONSECUTIVE_HITS = 5;
 const SEARCH_POLL_INTERVAL_MS = 2000;
 const SEARCH_MAX_POLLS = 25; // ~50s ceiling, within the scenario setup's 60s timeout
-const SEARCH_SETTLE_MS = 3000;
+const SEARCH_SETTLE_MS = 8000;
 
 const waitUntilSearchable = async (
   label: string,

@@ -11,7 +11,7 @@ import type { TransformError } from './types';
 import { BodyFormat } from './types';
 import tags from '../../../v0/util/tags';
 import stats from '../../../util/stats';
-import { combineBatchRequestsWithSameJobIds, sortBatchesByMinJobId } from '../../../v0/util';
+import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 
 // ---------------------------------------------------------------------------
 // Validation
@@ -307,8 +307,5 @@ export async function processBatchedDestination<
 
   // 9. Merge success responses that share jobIds (multiplexed events across groups)
 
-  return sortBatchesByMinJobId([
-    ...combineBatchRequestsWithSameJobIds(successResponses),
-    ...errorResponses,
-  ]);
+  return [...combineBatchRequestsWithSameJobIds(successResponses), ...errorResponses];
 }

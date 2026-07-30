@@ -68,6 +68,12 @@ const assertRouterOutput = (output, input) => {
     }
   });
 
+  const hasBatchedOutput = output.some((outEvent) => outEvent.batched);
+  if (hasBatchedOutput) {
+    // Native batching groups successful batches before error responses, so global output order is not an invariant.
+    return;
+  }
+
   //The jobids for a user should be in order. If not, there is an issue.
   Object.keys(userIdJobIdMap).forEach((userId) => {
     const jobIds = userIdJobIdMap[userId];

@@ -495,105 +495,6 @@ const events = [
   },
 ];
 
-const secret = {
-  access_token: secret1,
-  refresh_token: 'efgh5678',
-  developer_token: 'ijkl91011',
-};
-
-const resolvedDestination = {
-  hasDynamicConfig: false,
-  Config: {
-    rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
-    customerId: '1234567890',
-    subAccount: true,
-    loginCustomerId: '11',
-    listOfConversions: [{ conversions: 'Page View' }, { conversions: 'Product Added' }],
-    authStatus: 'active',
-  },
-};
-
-const enhancementAdjustment = {
-  gclidDateTimePair: {
-    gclid: 'gclid1234',
-    conversionDateTime: '2022-01-01 12:32:45-08:00',
-  },
-  restatementValue: {
-    adjustedValue: 10,
-    currencyCode: 'INR',
-  },
-  orderId: '10000',
-  adjustmentDateTime: '2022-01-01 12:32:45-08:00',
-  userAgent:
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-  userIdentifiers: [
-    {
-      hashedPhoneNumber: sha256('+912382193'),
-    },
-    {
-      addressInfo: {
-        hashedFirstName: sha256('john'),
-        hashedLastName: sha256('gomes'),
-        state: 'UK',
-        city: 'London',
-        hashedStreetAddress: sha256('71 cherry court southampton so53 5pd uk'),
-      },
-    },
-  ],
-  adjustmentType: 'ENHANCEMENT',
-};
-
-const statTags = {
-  destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
-  module: 'destination',
-  implementation: 'native',
-  feature: 'router',
-};
-
-const metadata = (jobId: number, metadataSecret: Record<string, string> = secret) => ({
-  secret: metadataSecret,
-  jobId,
-  userId: 'u1',
-});
-
-const pageViewBatchedRequest = (
-  conversionAdjustments: Array<typeof enhancementAdjustment>,
-  useTemplateConfig = false,
-) => {
-  const customerId = useTemplateConfig ? '{{event.context.customerID || "" }}' : '1234567890';
-  const loginCustomerId = useTemplateConfig ? '{{event.context.subaccountID || "" }}' : '11';
-
-  return {
-    version: '1',
-    type: 'REST',
-    method: 'POST',
-    endpoint: '',
-    endpointPath: '/uploadConversionAdjustments',
-    headers: {
-      Authorization: authHeader1,
-      'Content-Type': 'application/json',
-      'login-customer-id': loginCustomerId,
-    },
-    params: {
-      event: 'Page View',
-      customerId,
-      accessToken: 'google_adwords_enhanced_conversions1',
-      loginCustomerId,
-      subAccount: true,
-    },
-    body: {
-      JSON: {
-        conversionAdjustments,
-        partialFailure: true,
-      },
-      JSON_ARRAY: {},
-      XML: {},
-      FORM: {},
-    },
-    files: {},
-  };
-};
-
 const invalidRtTfCases = [
   {
     name: 'google_adwords_enhanced_conversions',
@@ -714,70 +615,397 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: pageViewBatchedRequest([enhancementAdjustment]),
-              metadata: [metadata(1)],
-              destination: resolvedDestination,
               batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    conversionAdjustments: [
+                      {
+                        adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                        adjustmentType: 'ENHANCEMENT',
+                        gclidDateTimePair: {
+                          conversionDateTime: '2022-01-01 12:32:45-08:00',
+                          gclid: 'gclid1234',
+                        },
+                        orderId: '10000',
+                        restatementValue: {
+                          adjustedValue: 10,
+                          currencyCode: 'INR',
+                        },
+                        userAgent:
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                        userIdentifiers: [
+                          {
+                            hashedPhoneNumber: sha256('+912382193'),
+                          },
+                          {
+                            addressInfo: {
+                              city: 'London',
+                              hashedFirstName: sha256('john'),
+                              hashedLastName: sha256('gomes'),
+                              hashedStreetAddress: sha256(
+                                '71 cherry court southampton so53 5pd uk',
+                              ),
+                              state: 'UK',
+                            },
+                          },
+                        ],
+                      },
+                    ],
+                    partialFailure: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: '',
+                endpointPath: '/uploadConversionAdjustments',
+                files: {},
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                  'login-customer-id': '11',
+                },
+                method: 'POST',
+                params: {
+                  accessToken: 'google_adwords_enhanced_conversions1',
+                  customerId: '1234567890',
+                  event: 'Page View',
+                  loginCustomerId: '11',
+                  subAccount: true,
+                },
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  authStatus: 'active',
+                  customerId: '1234567890',
+                  listOfConversions: [
+                    {
+                      conversions: 'Page View',
+                    },
+                    {
+                      conversions: 'Product Added',
+                    },
+                  ],
+                  loginCustomerId: '11',
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  subAccount: true,
+                },
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  secret: {
+                    access_token: secret1,
+                    developer_token: 'ijkl91011',
+                    refresh_token: 'efgh5678',
+                  },
+                  userId: 'u1',
+                },
+              ],
               statusCode: 200,
             },
             {
-              metadata: [metadata(2)],
-              destination: resolvedDestination,
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    conversionAdjustments: [
+                      {
+                        adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                        adjustmentType: 'ENHANCEMENT',
+                        gclidDateTimePair: {
+                          conversionDateTime: '2022-01-01 12:32:45-08:00',
+                          gclid: 'gclid1234',
+                        },
+                        orderId: '10000',
+                        restatementValue: {
+                          adjustedValue: 10,
+                          currencyCode: 'INR',
+                        },
+                        userAgent:
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                        userIdentifiers: [
+                          {
+                            hashedPhoneNumber: sha256('+912382193'),
+                          },
+                          {
+                            addressInfo: {
+                              city: 'London',
+                              hashedFirstName: sha256('john'),
+                              hashedLastName: sha256('gomes'),
+                              hashedStreetAddress: sha256(
+                                '71 cherry court southampton so53 5pd uk',
+                              ),
+                              state: 'UK',
+                            },
+                          },
+                        ],
+                      },
+                      {
+                        adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                        adjustmentType: 'ENHANCEMENT',
+                        gclidDateTimePair: {
+                          conversionDateTime: '2022-01-01 12:32:45-08:00',
+                          gclid: 'gclid1234',
+                        },
+                        orderId: '10000',
+                        restatementValue: {
+                          adjustedValue: 10,
+                          currencyCode: 'INR',
+                        },
+                        userAgent:
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                        userIdentifiers: [
+                          {
+                            hashedPhoneNumber: sha256('+912382193'),
+                          },
+                          {
+                            addressInfo: {
+                              city: 'London',
+                              hashedFirstName: sha256('john'),
+                              hashedLastName: sha256('gomes'),
+                              hashedStreetAddress: sha256(
+                                '71 cherry court southampton so53 5pd uk',
+                              ),
+                              state: 'UK',
+                            },
+                          },
+                        ],
+                      },
+                    ],
+                    partialFailure: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: '',
+                endpointPath: '/uploadConversionAdjustments',
+                files: {},
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                  'login-customer-id': '{{event.context.subaccountID || "" }}',
+                },
+                method: 'POST',
+                params: {
+                  accessToken: 'google_adwords_enhanced_conversions1',
+                  customerId: '{{event.context.customerID || "" }}',
+                  event: 'Page View',
+                  loginCustomerId: '{{event.context.subaccountID || "" }}',
+                  subAccount: true,
+                },
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  authStatus: 'active',
+                  customerId: '1234567890',
+                  listOfConversions: [
+                    {
+                      conversions: 'Page View',
+                    },
+                    {
+                      conversions: 'Product Added',
+                    },
+                  ],
+                  loginCustomerId: '11',
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  subAccount: true,
+                },
+              },
+              metadata: [
+                {
+                  jobId: 4,
+                  secret: {
+                    access_token: secret1,
+                    developer_token: 'ijkl91011',
+                    refresh_token: 'efgh5678',
+                  },
+                  userId: 'u1',
+                },
+                {
+                  jobId: 5,
+                  secret: {
+                    access_token: secret1,
+                    developer_token: 'ijkl91011',
+                    refresh_token: 'efgh5678',
+                  },
+                  userId: 'u1',
+                },
+              ],
+              statusCode: 200,
+            },
+            {
               batched: false,
-              statusCode: 400,
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  authStatus: 'active',
+                  customerId: '1234567890',
+                  listOfConversions: [
+                    {
+                      conversions: 'Page View',
+                    },
+                    {
+                      conversions: 'Product Added',
+                    },
+                  ],
+                  loginCustomerId: '11',
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  subAccount: true,
+                },
+              },
               error:
                 'message.type: Message Type is not supported. Only track events are supported.; message.event: Required',
+              metadata: [
+                {
+                  jobId: 2,
+                  secret: {
+                    access_token: secret1,
+                    developer_token: 'ijkl91011',
+                    refresh_token: 'efgh5678',
+                  },
+                  userId: 'u1',
+                },
+              ],
               statTags: {
-                ...statTags,
+                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
               },
+              statusCode: 400,
             },
             {
-              metadata: [metadata(3, {})],
-              destination: resolvedDestination,
               batched: false,
-              statusCode: 500,
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  authStatus: 'active',
+                  customerId: '1234567890',
+                  listOfConversions: [
+                    {
+                      conversions: 'Page View',
+                    },
+                    {
+                      conversions: 'Product Added',
+                    },
+                  ],
+                  loginCustomerId: '11',
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  subAccount: true,
+                },
+              },
               error:
                 'Failed to get access token for authentication. This might be a platform issue. Please contact RudderStack support for assistance.',
+              metadata: [
+                {
+                  jobId: 3,
+                  secret: {},
+                  userId: 'u1',
+                },
+              ],
               statTags: {
-                ...statTags,
+                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
                 errorCategory: 'platform',
                 errorType: 'oAuthSecret',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
               },
+              statusCode: 500,
             },
             {
-              batchedRequest: pageViewBatchedRequest(
-                [enhancementAdjustment, enhancementAdjustment],
-                true,
-              ),
-              metadata: [metadata(4), metadata(5)],
-              destination: resolvedDestination,
-              batched: true,
-              statusCode: 200,
-            },
-            {
-              metadata: [metadata(7)],
-              destination: resolvedDestination,
               batched: false,
-              statusCode: 400,
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  authStatus: 'active',
+                  customerId: '1234567890',
+                  listOfConversions: [
+                    {
+                      conversions: 'Page View',
+                    },
+                    {
+                      conversions: 'Product Added',
+                    },
+                  ],
+                  loginCustomerId: '11',
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  subAccount: true,
+                },
+              },
               error: 'loginCustomerId should be a string or number',
+              metadata: [
+                {
+                  jobId: 7,
+                  secret: {
+                    access_token: secret1,
+                    developer_token: 'ijkl91011',
+                    refresh_token: 'efgh5678',
+                  },
+                  userId: 'u1',
+                },
+              ],
               statTags: {
-                ...statTags,
+                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
               },
+              statusCode: 400,
             },
             {
-              metadata: [metadata(8)],
-              destination: resolvedDestination,
               batched: false,
               statusCode: 400,
               error: 'loginCustomerId is required as subAccount is true.',
               statTags: {
-                ...statTags,
+                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              metadata: [
+                {
+                  secret: {
+                    access_token: secret1,
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 8,
+                  userId: 'u1',
+                },
+              ],
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  authStatus: 'active',
+                  customerId: '1234567890',
+                  listOfConversions: [
+                    {
+                      conversions: 'Page View',
+                    },
+                    {
+                      conversions: 'Product Added',
+                    },
+                  ],
+                  loginCustomerId: '11',
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  subAccount: true,
+                },
               },
             },
           ],

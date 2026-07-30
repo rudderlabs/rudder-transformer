@@ -271,7 +271,10 @@ export const live: LiveSpec = {
           stepType: 'pipeline',
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: 10,
+          // Settle before the pipeline runs so HubSpot's Search index reflects the contact the
+          // setup step just created; without it the create-vs-update split can miss it and 409.
+          delayBeforeMs: 5000,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update'),
             type: 'identify',
@@ -385,7 +388,10 @@ export const live: LiveSpec = {
           stepType: 'pipeline',
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: 10,
+          // Settle before the pipeline runs so HubSpot's Search index reflects the contact the
+          // setup step just created; without it the create-vs-update split can miss it and 409.
+          delayBeforeMs: 5000,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update-v1'),
             type: 'identify',
@@ -472,7 +478,10 @@ export const live: LiveSpec = {
           metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: 10,
+          // Settle before the pipeline runs so HubSpot's Search index reflects the contact the
+          // setup step just created; without it the create-vs-update split can miss it and 409.
+          delayBeforeMs: 5000,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update-split'),
             type: 'identify',
@@ -520,7 +529,10 @@ export const live: LiveSpec = {
           metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: 10,
+          // Settle before the pipeline runs so HubSpot's Search index reflects the contact the
+          // setup step just created; without it the create-vs-update split can miss it and 409.
+          delayBeforeMs: 5000,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update-v1-split'),
             type: 'identify',

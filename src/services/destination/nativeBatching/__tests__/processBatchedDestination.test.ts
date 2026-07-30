@@ -73,6 +73,9 @@ class SimpleIntegration extends BatchDestination<TestBody> {
 class MultiEndpointIntegration extends BatchDestination<TestBody> {
   transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
     const { message } = input;
+    if (message.shouldFail) {
+      throw new Error('Transform failed');
+    }
     return {
       body: { value: message.data ?? '' },
       endpoint:
@@ -333,6 +336,21 @@ describe('processBatchedDestination', () => {
       expect(errors).toHaveLength(1);
       expect(errors[0].error).toBe('Transform failed');
       expect(errors[0].metadata[0].jobId).toBe(2);
+    });
+
+    it('keeps error responses ordered with success response groups', async () => {
+      const inputs = [
+        makeInput(1, 'track', { type: 'track' }),
+        makeInput(2, 'fail', { type: 'track', shouldFail: true }),
+        makeInput(3, 'identify', { type: 'identify' }),
+      ];
+
+      const results = await processBatchedDestination(inputs, MultiEndpointIntegration, {});
+
+      const minJobIds = results.map((result) =>
+        Math.min(...result.metadata.map((metadata) => metadata.jobId!)),
+      );
+      expect(minJobIds).toEqual([1, 2, 3]);
     });
   });
 

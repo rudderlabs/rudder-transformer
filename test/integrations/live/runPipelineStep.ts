@@ -25,6 +25,7 @@ const attemptDelivery = async ({
   step,
   ctx,
   config,
+  connection,
   http,
 }: RunPipelineStepParams): Promise<DeliveryFailure | undefined> => {
   const jobId = randomInt(1, 2_147_483_647);
@@ -35,6 +36,7 @@ const attemptDelivery = async ({
   const routerBody = buildRouterTransformBody(destination, message, config, jobId, {
     secret: ctx.liveSecret.secret,
     metadataOverride: step.metadataOverride,
+    connection,
   });
 
   const routerResponse = await http.post('/routerTransform', routerBody);

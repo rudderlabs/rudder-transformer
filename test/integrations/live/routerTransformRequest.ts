@@ -12,6 +12,7 @@ export const buildRouterTransformBody = (
     {
       message,
       destination: { ID: `live-${destination}`, Config: config, Enabled: true },
+      ...(options?.connection ? { connection: options.connection } : {}),
       metadata: {
         jobId,
         attemptNum: 0,

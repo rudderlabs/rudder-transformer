@@ -29,6 +29,7 @@ describe('features destination capabilities', () => {
       POSTHOG: true,
       CUSTOM_AUDIENCE: true,
       ITERABLE_AUDIENCE: true,
+      BRAZE_AUDIENCE: true,
       TEST_DESTINATION: true,
     });
   });

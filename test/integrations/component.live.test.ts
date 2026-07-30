@@ -62,6 +62,16 @@ describe('Live Integration Test Suite', () => {
   describe.each(enrolledDestinations)('$destination', ({ destination, spec }) => {
     const liveSecret: LiveSecret = resolver.resolve(destination);
     const destinationConfig = spec.resolveConfig(liveSecret);
+    // Audience / VDM destinations require connection.config on /routerTransform input.
+    const connectionConfig = spec.resolveConnection?.(liveSecret);
+    const connection = connectionConfig
+      ? {
+          sourceId: 'live-sourceId',
+          destinationId: `live-${destination}`,
+          enabled: true,
+          config: connectionConfig,
+        }
+      : undefined;
 
     const activeScenarios = spec.scenarios.filter((s) => s.enabled !== false);
     if (activeScenarios.length === 0) {
@@ -121,6 +131,7 @@ describe('Live Integration Test Suite', () => {
                   step,
                   ctx,
                   config: scenarioConfig,
+                  connection,
                   http: {
                     post: async (url, body) =>
                       agent()

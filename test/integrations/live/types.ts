@@ -116,6 +116,9 @@ type LiveSpec = {
   // Map the resolved secret into the destination.Config the transform expects (merge non-secret
   // defaults with the credentials in `s.config`).
   resolveConfig: (s: LiveSecret) => Record<string, unknown>;
+  // Optional: map secret → connection.config (must include `destination` for VDM audience dests).
+  // When set, the harness wraps this as a full connection on each /routerTransform input.
+  resolveConnection?: (s: LiveSecret) => Record<string, unknown>;
   scenarios: LiveScenario[];
 };
 
@@ -163,6 +166,9 @@ type BatchedRequest = z.infer<typeof LiveProcessorOutputSchema>;
 type BuildRouterTransformBodyOptions = {
   secret?: Record<string, string>;
   metadataOverride?: Record<string, unknown>;
+  // Full connection object for RETL / audience destinations that read connection.config
+  // (e.g. customAttributeName). Absent for event-stream destinations that don't need it.
+  connection?: Record<string, unknown>;
 };
 
 // Minimal HTTP client the pipeline runner drives; wraps SuperTest so the runner stays free of its types.
@@ -188,6 +194,8 @@ type RunPipelineStepParams = {
   ctx: RunContext;
   config: Record<string, unknown>;
   http: LiveHttpClient;
+  // Optional connection for destinations that require it at transform time (audience / VDM).
+  connection?: Record<string, unknown>;
 };
 
 // ─── Poll helpers (poll.ts) ───

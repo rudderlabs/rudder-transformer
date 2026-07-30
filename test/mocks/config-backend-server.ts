@@ -24,6 +24,7 @@ interface MockConfigBackendOptions {
   transformationMocks?: Record<string, any>;
   libraryMocks?: Record<string, any>;
   rudderLibraryMocks?: Record<string, any>;
+  trackingPlanMocks?: Record<string, any>;
 }
 
 class MockConfigBackend {
@@ -35,6 +36,7 @@ class MockConfigBackend {
   private transformationMocks: Record<string, any>;
   private libraryMocks: Record<string, any>;
   private rudderLibraryMocks: Record<string, any>;
+  private trackingPlanMocks: Record<string, any>;
 
   constructor(options: MockConfigBackendOptions = {}) {
     this.app = new Koa();
@@ -45,6 +47,7 @@ class MockConfigBackend {
     this.transformationMocks = options.transformationMocks || {};
     this.libraryMocks = options.libraryMocks || {};
     this.rudderLibraryMocks = options.rudderLibraryMocks || {};
+    this.trackingPlanMocks = options.trackingPlanMocks || {};
     this.setupRoutes();
   }
 
@@ -137,6 +140,23 @@ class MockConfigBackend {
       ctx.body = mockData;
     });
 
+    // Mock tracking-plan endpoint
+    this.router.get('/workspaces/:workspaceId/tracking-plans/:id', async (ctx) => {
+      const { workspaceId, id } = ctx.params;
+      const { version } = ctx.query;
+
+      const key = version ? `${id}::${version}` : id;
+      const mockData = this.trackingPlanMocks[key] || this.trackingPlanMocks[id];
+      if (!mockData) {
+        ctx.status = 404;
+        ctx.body = { error: `Tracking plan not found: ${id} (workspace ${workspaceId})` };
+        return;
+      }
+
+      console.log(`[MockConfigBackend] Returning tracking plan: ${key}`);
+      ctx.body = mockData;
+    });
+
     // Health check endpoint
     this.router.get('/health', async (ctx) => {
       ctx.body = { status: 'ok', port: this.port };
@@ -198,6 +218,10 @@ class MockConfigBackend {
 
   addRudderLibraryMock(name: string, mockData: any): void {
     this.rudderLibraryMocks[name] = mockData;
+  }
+
+  addTrackingPlanMock(key: string, mockData: any): void {
+    this.trackingPlanMocks[key] = mockData;
   }
 }
 

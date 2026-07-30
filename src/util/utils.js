@@ -277,19 +277,22 @@ class RetryRequestError extends RespStatusError {
   }
 }
 
-// Transient config backend auth failure (missing/wrong/rotated secret). 503 + retry header so
-// rudder-server retries instead of dropping events; distinct from 809 (control plane down).
+// A config backend 401/403 is our own misconfig (wrong/rotated secret, or the public route blocked
+// before this pod moved to the internal gateway). 503 + retry header so rudder-server retries and
+// alerts instead of dropping events; distinct from 809 (control plane actually down).
 class ConfigBackendAuthError extends RespStatusError {
-  constructor(message) {
+  constructor(message, retryReason) {
     super(message, 503);
-    this.retryReason = 'config_backend_auth_failed';
+    this.retryReason = retryReason;
   }
 }
 
 const responseStatusHandler = (status, entity, id, url) => {
-  if (status === 401) {
+  if (status === 401 || status === 403) {
+    const retryReason = status === 401 ? 'config_backend_auth_failed' : 'config_backend_forbidden';
     throw new ConfigBackendAuthError(
-      `Config backend authentication failed while fetching ${entity} :: ${id}`,
+      `Config backend returned ${status} while fetching ${entity} :: ${id}`,
+      retryReason,
     );
   }
   if (status >= 500) {

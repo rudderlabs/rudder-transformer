@@ -46,7 +46,9 @@ describe('errorHandlerMiddleware', () => {
 
   it('returns a retriable 503 with retry headers for a ConfigBackendAuthError', async () => {
     const ctx = mockCtx();
-    const next = jest.fn().mockRejectedValue(new ConfigBackendAuthError('auth failed'));
+    const next = jest
+      .fn()
+      .mockRejectedValue(new ConfigBackendAuthError('auth failed', 'config_backend_auth_failed'));
 
     await errorHandlerMiddleware()(ctx, next);
 

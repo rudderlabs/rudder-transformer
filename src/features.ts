@@ -26,7 +26,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   GAINSIGHT: { routerTransform: true },
   GAINSIGHT_PX: { routerTransform: true },
   GOOGLESHEETS: { routerTransform: true },
-  GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: { routerTransform: true },
+  GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: { routerTransform: true, batching: true },
   GOOGLE_ADWORDS_REMARKETING_LISTS: { routerTransform: true },
   GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: { routerTransform: true },
   HS: { routerTransform: true },

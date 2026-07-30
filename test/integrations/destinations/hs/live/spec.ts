@@ -43,6 +43,8 @@ import {
   verifyUpsertResolvesToSameContact,
 } from './verify';
 
+const HS_RETL_SEARCH_DELIVERY_RETRIES = 5;
+
 export const live: LiveSpec = {
   enabled: true,
   authType: 'apiKey',
@@ -271,7 +273,7 @@ export const live: LiveSpec = {
           stepType: 'pipeline',
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: HS_RETL_SEARCH_DELIVERY_RETRIES,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update'),
             type: 'identify',
@@ -385,7 +387,7 @@ export const live: LiveSpec = {
           stepType: 'pipeline',
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: HS_RETL_SEARCH_DELIVERY_RETRIES,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update-v1'),
             type: 'identify',
@@ -472,7 +474,7 @@ export const live: LiveSpec = {
           metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: HS_RETL_SEARCH_DELIVERY_RETRIES,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update-split'),
             type: 'identify',
@@ -520,7 +522,7 @@ export const live: LiveSpec = {
           metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: HS_RETL_SEARCH_DELIVERY_RETRIES,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update-v1-split'),
             type: 'identify',

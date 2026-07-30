@@ -12,10 +12,10 @@ import {
 // The CRM Search index is eventually consistent — a fresh contact can drop out of the next
 // search, so a first-hit poll leaves the transform's own search racing to create and 409-ing on
 // the duplicate. Requiring several CONSECUTIVE hits plus a settle delay closes that window.
-const REQUIRED_CONSECUTIVE_HITS = 3;
+const REQUIRED_CONSECUTIVE_HITS = 5;
 const SEARCH_POLL_INTERVAL_MS = 2000;
 const SEARCH_MAX_POLLS = 25; // ~50s ceiling, within the scenario setup's 60s timeout
-const SEARCH_SETTLE_MS = 3000;
+const SEARCH_SETTLE_MS = 8000;
 
 const waitUntilSearchable = async (
   label: string,
@@ -82,4 +82,20 @@ export const createAssociationObjects = async (ctx: RunContext): Promise<void> =
     lastname: ctx.runId,
   });
   ctx.register({ type: ASSOC_TO_TYPE, id: toId });
+};
+
+// Additional-email upsert scenario: create a contact whose primary email is the run email and whose
+// hs_additional_emails carries a second address, register its id, and wait until it is stably
+// searchable so the subsequent upserts resolve against a settled record.
+export const createContactWithAdditionalEmail = async (ctx: RunContext): Promise<void> => {
+  const email = ctx.email();
+  const additionalEmail = ctx.email('additional');
+  const id = await createCrmObject(ctx, 'contacts', {
+    email,
+    hs_additional_emails: additionalEmail,
+    firstname: 'CI-Upsert-AddlEmail',
+    lastname: ctx.runId,
+  });
+  ctx.register({ type: 'contacts', id });
+  await waitUntilSearchable(`contact ${email}`, () => findContactIdByEmail(ctx, email));
 };

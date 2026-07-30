@@ -62,6 +62,11 @@ interface PipelineStep extends Step {
   // freshly set-up record can be missed on the first try and 409, then found on a retry. Only use
   // where a failed attempt persists nothing (e.g. a 409-on-create), so a retry is safe to repeat.
   retries?: number;
+  // Sleep this long before the first delivery attempt. For an update scenario whose setup just
+  // created the record, this gives HubSpot's eventually-consistent Search index extra time to
+  // reflect it before the transform's create-vs-update search runs — so the event resolves to an
+  // update instead of being misrouted to a create (which 409s on the duplicate).
+  delayBeforeMs?: number;
 }
 
 // An action step: a direct destination-API side effect (seed/mutate/delete state), run in order.

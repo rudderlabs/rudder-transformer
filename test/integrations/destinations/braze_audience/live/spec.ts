@@ -1,7 +1,12 @@
 import { LiveSpec, RunContext } from '../../../live/types';
-import { LIVE_MEMBERSHIP_ATTR, clearMembership, externalId } from './api';
-import { seedMembershipTrue } from './setup';
-import { verifyMembership } from './verify';
+import { pollUntil } from '../../../live/poll';
+import {
+  clearMembership,
+  customAttributeNameFromSecret,
+  externalId,
+  fetchMembership,
+  setMembership,
+} from './api';
 
 const recordSeed =
   (action: 'insert' | 'update' | 'delete') =>
@@ -22,6 +27,30 @@ const recordSeed =
     identifiers: { external_id: externalId(ctx) },
   });
 
+/** Seed membership=true and wait until export/ids can see it (leave scenario precondition). */
+const seedMembershipTrue = async (ctx: RunContext): Promise<void> => {
+  await setMembership(ctx, true);
+  await pollUntil(
+    async () => {
+      const value = await fetchMembership(ctx);
+      return { done: value === true, value };
+    },
+    {
+      label: 'Braze membership seeded true',
+      attempts: 8,
+      delayMs: (attempt) => 1000 * 2 ** Math.min(attempt, 3),
+    },
+  );
+};
+
+/** Assert export/ids shows the expected boolean membership custom attribute. */
+const verifyMembership =
+  (expected: boolean) =>
+  async (ctx: RunContext): Promise<void> => {
+    const value = await fetchMembership(ctx);
+    expect(value).toBe(expected);
+  };
+
 export const live: LiveSpec = {
   enabled: true,
   authType: 'apiKey',
@@ -31,7 +60,7 @@ export const live: LiveSpec = {
   }),
   resolveConnection: (s) => ({
     destination: {
-      customAttributeName: s.resourceIds?.customAttributeName || LIVE_MEMBERSHIP_ATTR,
+      customAttributeName: customAttributeNameFromSecret(s),
       syncMode: 'mirror',
       identifierMappings: [{ from: 'user_id', to: 'external_id' }],
     },

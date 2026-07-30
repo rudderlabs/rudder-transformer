@@ -94,16 +94,19 @@ export const createCrmObject = async (
   return String(id);
 };
 
-export const deleteContactByEmail = async (ctx: RunContext): Promise<void> => {
-  const id = await findContactIdByEmail(ctx, ctx.email());
-  if (!id) {
-    return;
-  }
+export const deleteContactById = async (ctx: RunContext, id: string): Promise<void> => {
   await axios.delete(`${HS_BASE}/crm/v3/objects/contacts/${id}`, {
     headers: authHeaders(ctx),
     httpsAgent: hsAgent,
     timeout: 15000,
   });
+};
+
+export const deleteContactByEmail = async (ctx: RunContext): Promise<void> => {
+  const id = await findContactIdByEmail(ctx, ctx.email());
+  if (id) {
+    await deleteContactById(ctx, id);
+  }
 };
 
 export const getAssociatedIds = async (
@@ -149,4 +152,35 @@ export const registeredId = (ctx: RunContext, type: string): string => {
     throw new Error(`association setup did not register a ${type} id`);
   }
   return id;
+};
+
+export const fetchContactPropsById = async (
+  ctx: RunContext,
+  id: string,
+  propertyNames: string[],
+): Promise<Record<string, string> | null> => {
+  const res = await axios.get(`${HS_BASE}/crm/v3/objects/contacts/${id}`, {
+    params: { properties: propertyNames.join(',') },
+    headers: authHeaders(ctx),
+    httpsAgent: hsAgent,
+    timeout: 15000,
+  });
+  return res.data?.properties ?? null;
+};
+
+// Delete any contact reachable by the run's primary or additional email. On the happy path only the
+// single set-up contact (found via its primary email) exists; if the additional-email upsert ever
+// forked a second contact, this also removes that stray so runs stay isolated.
+export const deleteUpsertAdditionalEmailContacts = async (ctx: RunContext): Promise<void> => {
+  const seen = new Set<string>();
+  for (const email of [ctx.email(), ctx.email('additional')]) {
+    // eslint-disable-next-line no-await-in-loop
+    const id = await findContactIdByEmail(ctx, email);
+    if (!id || seen.has(id)) {
+      continue;
+    }
+    seen.add(id);
+    // eslint-disable-next-line no-await-in-loop
+    await deleteContactById(ctx, id);
+  }
 };

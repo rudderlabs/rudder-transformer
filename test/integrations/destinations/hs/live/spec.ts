@@ -1,9 +1,11 @@
 import { LiveSpec } from '../../../live/types';
+import { HS_RETL_SPLIT_TEST_WORKSPACE_ID } from '../router/retlSplitData';
 import {
   ASSOC_FROM_TYPE,
   ASSOC_TO_TYPE,
   deleteAssociationObjects,
   deleteContactByEmail,
+  deleteUpsertAdditionalEmailContacts,
   registeredId,
 } from './api';
 import {
@@ -19,18 +21,27 @@ import {
   esNonUniqueCreateTraits,
   esNonUniqueUpdateTraits,
   retlContactContext,
+  retlContactContextForEmail,
   retlContactCreateTraits,
   retlContactCreateV1Traits,
   retlContactUpdateTraits,
   retlContactUpdateV1Traits,
+  retlUpsertCombinedTraits,
+  retlUpsertPrimaryTraits,
+  retlUpsertSecondaryTraits,
 } from './profiles';
 import {
   createAssociationObjects,
   createContactAndRegisterId,
   createContactAndWaitSearchable,
   createContactSearchableByFirstname,
+  createContactWithAdditionalEmail,
 } from './setup';
-import { verifyAssociationExists, verifyContactProperties } from './verify';
+import {
+  verifyAssociationExists,
+  verifyContactProperties,
+  verifyUpsertResolvesToSameContact,
+} from './verify';
 
 export const live: LiveSpec = {
   enabled: true,
@@ -70,6 +81,7 @@ export const live: LiveSpec = {
         {
           name: 'identify existing contact',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-contacts-update'),
             type: 'identify',
@@ -110,6 +122,7 @@ export const live: LiveSpec = {
         {
           name: 'identify existing contact (v1)',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-contacts-update-v1'),
             type: 'identify',
@@ -167,6 +180,7 @@ export const live: LiveSpec = {
         {
           name: 'identify by hsContactId',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-hscontactid'),
             type: 'identify',
@@ -213,6 +227,7 @@ export const live: LiveSpec = {
         {
           name: 'identify existing via non-unique lookup (search -> update)',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-nonunique-existing'),
             type: 'identify',
@@ -232,6 +247,7 @@ export const live: LiveSpec = {
         {
           name: 'retl create contact',
           stepType: 'pipeline',
+          retries: 3,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-contacts'),
             type: 'identify',
@@ -255,7 +271,10 @@ export const live: LiveSpec = {
           stepType: 'pipeline',
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: 10,
+          // Settle before the pipeline runs so HubSpot's Search index reflects the contact the
+          // setup step just created; without it the create-vs-update split can miss it and 409.
+          delayBeforeMs: 5000,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update'),
             type: 'identify',
@@ -266,6 +285,75 @@ export const live: LiveSpec = {
         },
       ],
       verify: { check: verifyContactProperties(retlContactUpdateTraits) },
+    },
+    {
+      // Exercises the gated rETL upsert path (crm/v3/objects/:objectType/batch/upsert):
+      // the contact is created upfront (like the other update scenarios), then a gated
+      // rETL identify updates it by its unique identifier (email) with no prior search.
+      // When the identifier is a unique property in the account the write lands via the
+      // batch/upsert endpoint; otherwise it falls back to create/update — the read-back
+      // assertion holds either way.
+      id: 'hs-retl-contacts-upsert-v3-split',
+      cleanup: deleteContactByEmail,
+      description:
+        'RETL mappedToDestination identify upserts (updates) an existing contact via crm/v3 batch/upsert by unique identifier (gated rETL split path)',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createContactAndWaitSearchable },
+        {
+          name: 'retl upsert contact (update by unique identifier)',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          retries: 3,
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-upsert-update'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContext(ctx),
+            traits: { email: ctx.email(), ...retlContactUpdateTraits(ctx) },
+          }),
+        },
+      ],
+      verify: { check: verifyContactProperties(retlContactUpdateTraits) },
+    },
+    {
+      // Additional-email resolution: HubSpot treats hs_additional_emails as aliases of a contact, so
+      // an upsert keyed by the primary email and a later upsert keyed by the additional email must
+      // land on the SAME contact id. We seed one contact carrying both addresses, upsert disjoint
+      // traits by each email, then assert that single contact ends up with both sets.
+      id: 'hs-retl-contacts-upsert-additional-email-v3-split',
+      cleanup: deleteUpsertAdditionalEmailContacts,
+      description:
+        'RETL upsert by primary then by additional email resolves to the same contact via crm/v3 batch/upsert (gated rETL split path)',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createContactWithAdditionalEmail },
+        {
+          name: 'upsert by primary email',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          retries: 3,
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-upsert-primary'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContextForEmail(ctx.email()),
+            traits: retlUpsertPrimaryTraits(ctx),
+          }),
+        },
+        {
+          name: 'upsert by additional email',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          retries: 3,
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-upsert-additional'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContextForEmail(ctx.email('additional')),
+            traits: retlUpsertSecondaryTraits(ctx),
+          }),
+        },
+      ],
+      verify: { check: verifyUpsertResolvesToSameContact(retlUpsertCombinedTraits) },
     },
     {
       id: 'hs-retl-contacts-create-v1',
@@ -300,7 +388,10 @@ export const live: LiveSpec = {
           stepType: 'pipeline',
           // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
           // just-created contact that the first search misses (409) is found and updated.
-          retries: 3,
+          retries: 10,
+          // Settle before the pipeline runs so HubSpot's Search index reflects the contact the
+          // setup step just created; without it the create-vs-update split can miss it and 409.
+          delayBeforeMs: 5000,
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-update-v1'),
             type: 'identify',
@@ -323,6 +414,149 @@ export const live: LiveSpec = {
           stepType: 'pipeline',
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'retl-assoc'),
+            type: 'identify',
+            recordId: ctx.runId,
+            traits: {
+              to: { id: registeredId(ctx, ASSOC_TO_TYPE) },
+              from: { id: registeredId(ctx, ASSOC_FROM_TYPE) },
+            },
+            context: {
+              mappedToDestination: true,
+              externalId: [
+                {
+                  id: registeredId(ctx, ASSOC_FROM_TYPE),
+                  type: 'HS-association',
+                  toObjectType: ASSOC_TO_TYPE,
+                  fromObjectType: ASSOC_FROM_TYPE,
+                  identifierType: 'id',
+                  associationTypeId: 'company_to_contact',
+                },
+              ],
+            },
+          }),
+        },
+      ],
+      verify: { check: verifyAssociationExists },
+    },
+
+    // ─── Gated rETL split-path duplicates ───
+    // Same rETL scenarios, re-run with the allow-listed workspaceId
+    // (DEST_HS_RETL_SPLIT_WORKSPACE_IDS, set in test/setup.ts) so
+    // shouldUseHsRetlSplitPath routes them through retl-transform. Delivery must
+    // be identical to the ungated scenarios above.
+    {
+      id: 'hs-retl-contacts-create-v3-retl-split',
+      cleanup: deleteContactByEmail,
+      description:
+        'RETL mappedToDestination identify creates a contact (crm/v3 batch/create) (gated rETL split path)',
+      steps: [
+        {
+          name: 'retl create contact',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-contacts-split'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContext(ctx),
+            traits: { email: ctx.email(), ...retlContactCreateTraits(ctx) },
+          }),
+        },
+      ],
+      verify: { check: verifyContactProperties(retlContactCreateTraits) },
+    },
+    {
+      id: 'hs-retl-contacts-update-v3-retl-split',
+      cleanup: deleteContactByEmail,
+      description:
+        'RETL mappedToDestination identify updates an existing contact (crm/v3 batch/update) (gated rETL split path)',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createContactAndWaitSearchable },
+        {
+          name: 'retl update contact',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
+          // just-created contact that the first search misses (409) is found and updated.
+          retries: 10,
+          // Settle before the pipeline runs so HubSpot's Search index reflects the contact the
+          // setup step just created; without it the create-vs-update split can miss it and 409.
+          delayBeforeMs: 5000,
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-update-split'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContext(ctx),
+            traits: { email: ctx.email(), ...retlContactUpdateTraits(ctx) },
+          }),
+        },
+      ],
+      verify: { check: verifyContactProperties(retlContactUpdateTraits) },
+    },
+    {
+      id: 'hs-retl-contacts-create-v1-retl-split',
+      cleanup: deleteContactByEmail,
+      description:
+        'RETL mappedToDestination identify creates a contact via the v1 transform (gated rETL split path)',
+      configOverride: (base) => ({ ...base, apiVersion: 'legacyApi' }),
+      steps: [
+        {
+          name: 'retl create contact (v1 transform)',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-contacts-v1-split'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContext(ctx),
+            traits: { email: ctx.email(), ...retlContactCreateV1Traits(ctx) },
+          }),
+        },
+      ],
+      verify: { check: verifyContactProperties(retlContactCreateV1Traits) },
+    },
+    {
+      id: 'hs-retl-contacts-update-v1-retl-split',
+      cleanup: deleteContactByEmail,
+      description:
+        'RETL mappedToDestination identify updates an existing contact via the v1 transform (gated rETL split path)',
+      configOverride: (base) => ({ ...base, apiVersion: 'legacyApi' }),
+      steps: [
+        { stepType: 'action', name: 'setup', run: createContactAndWaitSearchable },
+        {
+          name: 'retl update contact (v1 transform)',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          // RETL splits create-vs-update via HubSpot's eventually-consistent search; retry so a
+          // just-created contact that the first search misses (409) is found and updated.
+          retries: 10,
+          // Settle before the pipeline runs so HubSpot's Search index reflects the contact the
+          // setup step just created; without it the create-vs-update split can miss it and 409.
+          delayBeforeMs: 5000,
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-update-v1-split'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlContactContext(ctx),
+            traits: { email: ctx.email(), ...retlContactUpdateV1Traits(ctx) },
+          }),
+        },
+      ],
+      verify: { check: verifyContactProperties(retlContactUpdateV1Traits) },
+    },
+    {
+      id: 'hs-retl-associations-v3-retl-split',
+      description:
+        'RETL association between two objects (crm/v3/associations) (gated rETL split path)',
+      cleanup: deleteAssociationObjects,
+      steps: [
+        { stepType: 'action', name: 'setup', run: createAssociationObjects },
+        {
+          name: 'retl associate',
+          stepType: 'pipeline',
+          metadataOverride: { workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID },
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-assoc-split'),
             type: 'identify',
             recordId: ctx.runId,
             traits: {

@@ -1,10 +1,7 @@
 import axios from 'axios';
 import { Agent } from 'https';
 import { getEndpointFromConfig } from '../../../../../src/v0/destinations/braze/util';
-import { RunContext } from '../../../live/types';
-
-// Dedicated boolean custom attribute for live membership assertions (not a Braze catalog list).
-export const LIVE_MEMBERSHIP_ATTR = 'rs_rudder_live_membership';
+import { LiveSecret, RunContext } from '../../../live/types';
 
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles when the suite finishes.
 const brazeAgent = new Agent({ keepAlive: false });
@@ -16,23 +13,16 @@ const readString = (value: unknown, label: string): string => {
   return value;
 };
 
-export const customAttributeName = (ctx: RunContext): string => {
-  const fromResource = ctx.liveSecret.resourceIds?.customAttributeName;
-  if (typeof fromResource === 'string' && fromResource.trim().length > 0) {
-    return fromResource;
-  }
-  return LIVE_MEMBERSHIP_ATTR;
-};
+export const customAttributeNameFromSecret = (secret: LiveSecret): string =>
+  readString(secret.resourceIds?.customAttributeName, 'resourceIds.customAttributeName');
+
+export const customAttributeName = (ctx: RunContext): string =>
+  customAttributeNameFromSecret(ctx.liveSecret);
 
 export const externalId = (ctx: RunContext): string => ctx.identity('user');
 
-const restApiKey = (ctx: RunContext): string => {
-  const fromReadback = ctx.liveSecret.readback?.restApiKey;
-  if (typeof fromReadback === 'string' && fromReadback.trim().length > 0) {
-    return fromReadback;
-  }
-  return readString(ctx.liveSecret.config?.restApiKey, 'config.restApiKey');
-};
+const restApiKey = (ctx: RunContext): string =>
+  readString(ctx.liveSecret.config?.restApiKey, 'config.restApiKey');
 
 const dataCenter = (ctx: RunContext): string =>
   readString(ctx.liveSecret.config?.dataCenter, 'config.dataCenter');

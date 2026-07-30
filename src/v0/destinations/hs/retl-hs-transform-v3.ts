@@ -125,12 +125,7 @@ const processRetlIdentify = async (
   if (operation === 'upsertObject') {
     const identifierType = externalIdInfo?.identifierType;
     const destinationExternalId = externalIdInfo?.destinationExternalId;
-    if (
-      !identifierType ||
-      destinationExternalId === undefined ||
-      destinationExternalId === null ||
-      destinationExternalId === ''
-    ) {
+    if (!identifierType || !destinationExternalId) {
       throw new InstrumentationError(
         'rETL - identifierType or destinationExternalId not found for upsert',
       );

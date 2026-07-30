@@ -73,7 +73,7 @@ export interface HubSpotLookupFieldInfo {
  * HubSpot External ID Info for rETL
  */
 export interface HubSpotExternalIdInfo {
-  destinationExternalId: string | number | null;
+  destinationExternalId: string | null;
   objectType: string | null;
   identifierType: string | null;
 }

@@ -28,8 +28,23 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { groupRouterTransformEvents } from '../../v0/util';
-import { isBatchingFrameworkEnabled } from '../../constants/batchedDestinationsMap';
+import {
+  isBatchingFrameworkDeliveryEnabled,
+  isBatchingFrameworkEnabled,
+} from '../../constants/batchedDestinationsMap';
 import { processBatchedDestination } from './nativeBatching/processBatchedDestination';
+import { toDeliveryV1Response } from './nativeBatching/delivery';
+import type { DeliveryContext } from './nativeBatching/delivery';
+
+/**
+ * Discriminates the two proxy request shapes on the only field that differs: v1 carries one
+ * metadata entry per job, v0 carries a single object. Preferred over `ProxyV1RequestSchema` here —
+ * that schema requires `secret` and `dontBatch` on every entry, so a real payload omitting either
+ * would fail validation and silently fall through to the legacy handler, which is a worse failure
+ * than the cast it replaces.
+ */
+const isProxyV1Request = (request: ProxyRequest): request is ProxyV1Request =>
+  Array.isArray(request.metadata);
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -214,6 +229,60 @@ export class NativeIntegrationDestinationService implements DestinationService {
       );
       const rawProxyResponse = await networkHandler.proxy(deliveryRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
+
+      // Opt-in per workspace, off by default: `handlerVersion` is deliberately ignored here, and
+      // so is the v0->v1 adaptation below — the framework produces a v1 response natively, and
+      // that adaptation would collapse the metadata array to its first entry.
+      //
+      // The guard is `isProxyV1Request`, not `version === 'v1'`, because the array-ness of
+      // `metadata` is the thing this branch actually depends on: it indexes it, hands it to
+      // `handleResponse` as the job list, and returns a `DeliveryV1Response` shaped to it.
+      // `version` is the API route rudder-server called ('v0'/'v1' are literals passed by the two
+      // controller entry points), so it only tells us which shape to *expect*; narrowing on the
+      // shape itself both proves it and removes the cast.
+      if (
+        isProxyV1Request(deliveryRequest) &&
+        isBatchingFrameworkDeliveryEnabled(
+          destinationType,
+          deliveryRequest.metadata[0]?.workspaceId,
+        )
+      ) {
+        const ctx: DeliveryContext = {
+          status: processedProxyResponse.status,
+          response: processedProxyResponse.response,
+          jobs: deliveryRequest.metadata,
+          request: deliveryRequest,
+          destinationConfig: deliveryRequest.destinationConfig,
+        };
+        const IntegrationClass = FetchHandler.getBatchDestinationHandler(destinationType);
+        // Uppercased to match `statTags.destType`, which is what every other destination tag in a
+        // delivery response and in the stats emitted alongside it uses.
+        const frameworkResponse = toDeliveryV1Response(
+          IntegrationClass.handleResponse(ctx),
+          ctx,
+          destinationType.toUpperCase(),
+        );
+
+        // The bridge sets `statTags` only for a uniform whole-response failure, and only the
+        // error-describing half of it. Enrich it with the same identifying tags
+        // `handlevV1DeliveriesFailureEvents` merges for a thrown error, so a returned failure and a
+        // thrown one produce the same tag set on `integration.failure_detailed` — a counter carrying
+        // just `errorType` could not be attributed to a destination or workspace.
+        if (frameworkResponse.statTags) {
+          const deliveryMetaTO = this.getTags(
+            destinationType,
+            ctx.jobs[0]?.destinationId,
+            ctx.jobs[0]?.workspaceId,
+            tags.FEATURES.DATA_DELIVERY,
+          );
+          frameworkResponse.statTags = {
+            ...frameworkResponse.statTags,
+            ...deliveryMetaTO.errorDetails,
+          };
+        }
+        return frameworkResponse;
+      }
+
       let rudderJobMetadata =
         version.toLowerCase() === 'v1'
           ? (deliveryRequest as ProxyV1Request).metadata

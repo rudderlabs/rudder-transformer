@@ -10,6 +10,7 @@ import type { BatchStrategy } from '../../../services/destination/nativeBatching
 // reused here so no transform logic is duplicated.
 import { process as transformSingleEvent } from './transform';
 import { MAX_CONVERSION_ADJUSTMENTS_PER_BATCH } from './config';
+import { extractGaecErrorMessage, gaecStatusOverrides } from './delivery';
 
 // Each batched item is a single Google Ads conversion adjustment.
 type ConversionAdjustment = Record<string, unknown>;
@@ -29,6 +30,13 @@ class GoogleAdwordsEnhancedConversionsIntegration extends BatchDestination<
   ConversionAdjustment,
   typeof gaecInputSchema
 > {
+  // Delivery: partial failure on a 2xx, plus body-derived auth categories; see ./delivery.
+  static readonly statusOverrides = gaecStatusOverrides;
+
+  static extractErrorMessage(response: unknown): string {
+    return extractGaecErrorMessage(response);
+  }
+
   transformEvent(input: z.infer<typeof gaecInputSchema>): TransformedEvent<ConversionAdjustment> {
     // Reuse the existing per-event transform untouched. It returns a delivery request whose
     // body.JSON is `{ conversionAdjustments: [<single adjustment>], partialFailure: true }`.

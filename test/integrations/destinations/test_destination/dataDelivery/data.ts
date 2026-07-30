@@ -16,7 +16,7 @@ const v1ProxyPayload = (destinationVersion?: number) => ({
   destinationVersion,
 });
 
-export const data: ProxyV1TestData[] = [
+const scenarios: ProxyV1TestData[] = [
   {
     id: 'test_destination-delivery-v1',
     name: 'test_destination',
@@ -33,11 +33,12 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message:
-              '[Generic Response Handler] Request for destination: test_destination Processed Successfully',
+            message: '[TEST_DESTINATION] Request processed successfully',
             response: [
               {
-                error: JSON.stringify({ success: true }),
+                // The framework reports a succeeded job as 'success' rather than echoing the
+                // destination body, which the v0->v1 adaptation used to stuff into every job.
+                error: 'success',
                 statusCode: 200,
                 metadata: generateMetadata(1),
               },
@@ -79,3 +80,15 @@ export const data: ProxyV1TestData[] = [
     },
   },
 ];
+
+/**
+ * TEST_DESTINATION is already GA for the batching-framework transform, so only the delivery flag is
+ * needed to move these scenarios onto the framework response path.
+ */
+export const data = scenarios.map((scenario) => ({
+  ...scenario,
+  envOverrides: {
+    ...scenario.envOverrides,
+    TEST_DESTINATION_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+  },
+}));

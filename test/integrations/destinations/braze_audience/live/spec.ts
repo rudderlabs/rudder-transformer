@@ -54,6 +54,12 @@ const verifyMembership =
 export const live: LiveSpec = {
   enabled: true,
   authType: 'apiKey',
+  // braze_audience is GA for the batching-framework transform, so only delivery needs naming.
+  // Without this the live run would deliver through v1/destinations/braze_audience/networkHandler
+  // and prove nothing about the path this destination is moving to.
+  envOverrides: {
+    BRAZE_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+  },
   resolveConfig: (s) => ({
     // Account: REST key + data center (US-01…08 / EU-01…03 / AU-01).
     ...s.config,

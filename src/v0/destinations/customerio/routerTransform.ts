@@ -24,6 +24,7 @@ import {
   buildRequestMeta,
 } from './v2/util';
 import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from './types';
+import { customerIOStatusOverrides } from './v2/delivery';
 
 class CustomerIOIntegration extends VDMV2ObjectDestination<
   CustomerIOV2Payload,
@@ -33,6 +34,9 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
   protected readonly recordSchema = recordInputSchema;
 
   protected readonly eventStreamSchema = eventStreamInputSchema;
+
+  // Delivery: only the 207 multi-status needs handling; see ./v2/delivery.
+  static readonly statusOverrides = customerIOStatusOverrides;
 
   private assertObjectSize(body: unknown): void {
     const size = Buffer.byteLength(JSON.stringify(body), 'utf8');

@@ -135,8 +135,12 @@ export const deleteUsers = async (ctx: RunContext, selector: ExportSelector): Pr
       timeout: 15000,
     });
   } catch (err) {
+    const status = (err as { response?: { status?: number } })?.response?.status;
     // eslint-disable-next-line no-console
-    console.error('[live:braze] teardown (users/delete) failed', err);
+    console.error(
+      `[live:braze] teardown (users/delete) failed${status ? ` (status ${status})` : ''}:`,
+      err instanceof Error ? err.message : String(err),
+    );
   }
 };
 

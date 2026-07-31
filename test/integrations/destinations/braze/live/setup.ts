@@ -1,21 +1,16 @@
 import { RunContext } from '../../../live/types';
 import { pollUntil } from '../../../live/poll';
 import { createUserWithAttributes, exportUserByExternalId } from './api';
-import { dedupExistingInitialAttrs, mergeSourceMarker } from './profiles';
+import { dedupExistingInitialAttrs } from './profiles';
 
-// Alias-merge collapses two existing external_id profiles into one. Seed both up front: the "keep"
-// profile (userId) and the "merge" profile (previousId) carrying a marker attribute that, after the
-// merge, must surface on the kept profile — proving data actually moved rather than the call just 2xx-ing.
+// Alias-merge collapses two existing external_id profiles into one. Seed both up front — the "keep"
+// profile (userId) and the "merge" profile (previousId) — so the merge request has real targets. The
+// scenario is delivery-only (Braze merges asynchronously), so no marker attribute / read-back is used.
 export const createMergeUsers = async (ctx: RunContext): Promise<void> => {
   const keepId = ctx.identity('user');
   const mergeId = ctx.identity('merge-user');
   await createUserWithAttributes(ctx, keepId, { first_name: 'CI-Merge-Keep' });
-  await createUserWithAttributes(ctx, mergeId, {
-    first_name: 'CI-Merge-Source',
-    ...mergeSourceMarker(ctx),
-  });
-  ctx.register({ type: 'braze-user', id: keepId });
-  ctx.register({ type: 'braze-user', id: mergeId });
+  await createUserWithAttributes(ctx, mergeId, { first_name: 'CI-Merge-Source' });
 };
 
 // Subscription-status set attaches to an existing external_id profile; create it first so the group

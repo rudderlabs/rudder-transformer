@@ -9,7 +9,7 @@ import {
 } from './api';
 
 // Each check here is a SINGLE-SHOT assertion. The scenario-level `verify` block owns the
-// retry/backoff for Braze's eventually-consistent export (see READBACK/MERGE_READBACK in spec.ts),
+// retry/backoff for Braze's eventually-consistent export (see READBACK in spec.ts),
 // so a check must NOT also poll internally — nesting the two compounds the waits and blows past the
 // runner's 60s per-scenario timeout (that's what wedged braze-identity-resolution).
 
@@ -61,16 +61,6 @@ export const verifyGroupAttribute = async (ctx: RunContext): Promise<void> => {
   const profile = await exportUserByExternalId(ctx, ctx.identity('user'));
   expect(profile).not.toBeNull();
   expect(profile?.custom_attributes ?? {}).toMatchObject({ [key]: true });
-};
-
-// Alias merge: after /users/merge collapses the source (previousId) into the kept (userId) profile,
-// the source-only marker attribute must surface on the kept profile. Braze processes merges
-// asynchronously, so the scenario gives this a wider retry window (MERGE_READBACK in spec.ts).
-export const verifyMerge = async (ctx: RunContext): Promise<void> => {
-  const want = ctx.identity('merge-user');
-  const profile = await exportUserByExternalId(ctx, ctx.identity('user'));
-  expect(profile).not.toBeNull();
-  expect(profile?.custom_attributes ?? {}).toMatchObject({ merged_from: want });
 };
 
 // Subscription group: the user's status for the target group must read back as subscribed.

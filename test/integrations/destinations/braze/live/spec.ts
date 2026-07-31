@@ -355,8 +355,8 @@ export const live: LiveSpec = {
 
     // ─── alias → /users/merge ───
     // Distinct endpoint. Setup creates the kept (userId) and source (previousId) profiles; the alias
-    // merges the source into the kept, and the read-back asserts the source-only marker attribute
-    // surfaced on the kept profile (Braze merges asynchronously — the verify polls a wide window).
+    // merges the source into the kept. Delivery-only — Braze processes merges asynchronously with no
+    // read-back SLA (see the note on the scenario below).
     {
       id: 'braze-alias-merge',
       description: 'An alias call merges the previousId profile into the userId profile',
@@ -379,8 +379,7 @@ export const live: LiveSpec = {
       // No read-back verify: Braze processes /users/merge ASYNCHRONOUSLY with no tight SLA, so the
       // merge effect (source attributes copied to the kept profile) isn't observable within the
       // runner's 60s window. The pipeline step already asserts the real API accepted the merge
-      // request (2xx) — that's the contract this scenario verifies. verifyMerge (in verify.ts) can be
-      // wired back as a scenario `verify` if your account merges quickly enough to read back.
+      // request (2xx) — that's the contract this scenario verifies.
     },
 
     // ─── group subscription → /v2/subscription/status/set ───

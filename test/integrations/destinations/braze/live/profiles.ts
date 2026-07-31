@@ -83,13 +83,6 @@ export const ecomCartUpdatedTraits = (ctx: RunContext): Record<string, string> =
   tier: `ci-${ctx.runId}-ecom-cart-updated`,
 });
 
-// ─── alias / merge ───
-// A custom attribute set ONLY on the merge-source profile; after /users/merge it must appear on the
-// kept profile. `merged_from` carries the source external_id so the read-back is uniquely asserted.
-export const mergeSourceMarker = (ctx: RunContext): Record<string, string> => ({
-  merged_from: ctx.identity('merge-user'),
-});
-
 // ─── subscription group ───
 export const subscriptionTraits = (ctx: RunContext): Record<string, string> => ({
   email: ctx.email(),

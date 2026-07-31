@@ -51,6 +51,8 @@ const assertRouterOutput = (output, input) => {
     inputJobids[jobId] = true;
   });
 
+  // Router output order is intentionally not asserted here. Rudder Server sorts destinationJobs
+  // by MinJobID() before the send loop, so batch send order is guaranteed server-side.
   expect(returnedJobids).toEqual(inputJobids);
 
 };

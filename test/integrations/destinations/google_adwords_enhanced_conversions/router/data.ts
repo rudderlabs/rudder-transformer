@@ -493,6 +493,99 @@ const events = [
       },
     },
   },
+  {
+    metadata: {
+      secret: {
+        access_token: secret1,
+        refresh_token: 'efgh5678',
+        developer_token: 'ijkl91011',
+      },
+      jobId: 9,
+      userId: 'u2',
+    },
+    destination: {
+      hasDynamicConfig: false,
+      Config: {
+        rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+        customerId: '1234567890',
+        subAccount: true,
+        loginCustomerId: '11',
+        listOfConversions: [{ conversions: 'Page View' }, { conversions: 'Product Added' }],
+        authStatus: 'active',
+      },
+    },
+    message: {
+      channel: 'web',
+      context: {
+        app: {
+          build: '1.0.0',
+          name: 'RudderLabs JavaScript SDK',
+          namespace: 'com.rudderlabs.javascript',
+          version: '1.0.0',
+        },
+        traits: {
+          phone: '912382193',
+          firstName: 'John',
+          lastName: 'Gomes',
+          city: 'London',
+          state: 'UK',
+          streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
+        },
+        library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+        locale: 'en-US',
+        ip: '0.0.0.0',
+        os: { name: '', version: '' },
+        screen: { density: 2 },
+      },
+      event: 'Page View',
+      type: 'track',
+      messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea72',
+      originalTimestamp: '2019-10-14T11:15:18.299Z',
+      anonymousId: '00000000000000000000000001',
+      userId: '67890',
+      properties: {
+        gclid: 'gclid1234',
+        conversionDateTime: '2022-01-01 12:32:45-08:00',
+        adjustedValue: '10',
+        currency: 'INR',
+        adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+        partialFailure: true,
+        campaignId: '1',
+        templateId: '0',
+        order_id: 10000,
+        total: 1000,
+        products: [
+          {
+            product_id: '507f1f77bcf86cd799439011',
+            sku: '45790-32',
+            name: 'Monopoly: 3rd Edition',
+            price: '19',
+            position: '1',
+            category: 'cars',
+            url: 'https://www.example.com/product/path',
+            image_url: 'https://www.example.com/product/path.jpg',
+            quantity: '2',
+          },
+          {
+            product_id: '507f1f77bcf86cd7994390112',
+            sku: '45790-322',
+            name: 'Monopoly: 3rd Edition2',
+            price: '192',
+            quantity: 22,
+            position: '12',
+            category: 'Cars2',
+            url: 'https://www.example.com/product/path2',
+            image_url: 'https://www.example.com/product/path.jpg2',
+          },
+        ],
+      },
+      integrations: { All: true },
+      name: 'ApplicationLoaded',
+      sentAt: '2019-10-14T11:15:53.296Z',
+    },
+  },
 ];
 
 const invalidRtTfCases = [
@@ -603,7 +696,7 @@ export const data = [
     input: {
       request: {
         body: {
-          input: [events[0]],
+          input: [events[0], events[7]],
           destType: 'google_adwords_enhanced_conversions',
         },
         method: 'POST',
@@ -621,6 +714,37 @@ export const data = [
                   FORM: {},
                   JSON: {
                     conversionAdjustments: [
+                      {
+                        adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                        adjustmentType: 'ENHANCEMENT',
+                        gclidDateTimePair: {
+                          conversionDateTime: '2022-01-01 12:32:45-08:00',
+                          gclid: 'gclid1234',
+                        },
+                        orderId: '10000',
+                        restatementValue: {
+                          adjustedValue: 10,
+                          currencyCode: 'INR',
+                        },
+                        userAgent:
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                        userIdentifiers: [
+                          {
+                            hashedPhoneNumber: sha256('+912382193'),
+                          },
+                          {
+                            addressInfo: {
+                              city: 'London',
+                              hashedFirstName: sha256('john'),
+                              hashedLastName: sha256('gomes'),
+                              hashedStreetAddress: sha256(
+                                '71 cherry court southampton so53 5pd uk',
+                              ),
+                              state: 'UK',
+                            },
+                          },
+                        ],
+                      },
                       {
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         adjustmentType: 'ENHANCEMENT',
@@ -704,6 +828,15 @@ export const data = [
                     refresh_token: 'efgh5678',
                   },
                   userId: 'u1',
+                },
+                {
+                  jobId: 9,
+                  secret: {
+                    access_token: secret1,
+                    developer_token: 'ijkl91011',
+                    refresh_token: 'efgh5678',
+                  },
+                  userId: 'u2',
                 },
               ],
               statusCode: 200,

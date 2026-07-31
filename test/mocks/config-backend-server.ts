@@ -25,6 +25,8 @@ interface MockConfigBackendOptions {
   libraryMocks?: Record<string, any>;
   rudderLibraryMocks?: Record<string, any>;
   trackingPlanMocks?: Record<string, any>;
+  // When set, every route (except /health) requires Basic auth with this secret as the username.
+  authSecret?: string;
 }
 
 class MockConfigBackend {
@@ -37,6 +39,7 @@ class MockConfigBackend {
   private libraryMocks: Record<string, any>;
   private rudderLibraryMocks: Record<string, any>;
   private trackingPlanMocks: Record<string, any>;
+  private authSecret: string | null;
 
   constructor(options: MockConfigBackendOptions = {}) {
     this.app = new Koa();
@@ -48,6 +51,7 @@ class MockConfigBackend {
     this.libraryMocks = options.libraryMocks || {};
     this.rudderLibraryMocks = options.rudderLibraryMocks || {};
     this.trackingPlanMocks = options.trackingPlanMocks || {};
+    this.authSecret = options.authSecret || null;
     this.setupRoutes();
   }
 
@@ -60,6 +64,19 @@ class MockConfigBackend {
     this.app.use(bodyParser());
     this.app.use(async (ctx, next) => {
       console.log('[MockConfigBackend] %s %s - Query:', ctx.method, ctx.url, ctx.query);
+      await next();
+    });
+
+    // Optional Basic-auth gate so a dropped Authorization header surfaces as a 401, not silently.
+    this.app.use(async (ctx, next) => {
+      if (this.authSecret && ctx.path !== '/health') {
+        const expected = `Basic ${Buffer.from(`${this.authSecret}:`).toString('base64')}`;
+        if (ctx.headers.authorization !== expected) {
+          ctx.status = 401;
+          ctx.body = { error: 'Unauthorized: missing or invalid config backend secret' };
+          return;
+        }
+      }
       await next();
     });
 

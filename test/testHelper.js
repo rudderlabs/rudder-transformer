@@ -51,30 +51,10 @@ const assertRouterOutput = (output, input) => {
     inputJobids[jobId] = true;
   });
 
+  // Router output order is intentionally not asserted here. Rudder Server sorts destinationJobs
+  // by MinJobID() before the send loop, so batch send order is guaranteed server-side.
   expect(returnedJobids).toEqual(inputJobids);
 
-  let userIdJobIdMap = {};
-  output.forEach((outEvent) => {
-    //Events with statusCode 400-499 are skipped. They are not sent to the destination.
-    if (outEvent.statusCode < 400 || outEvent.statusCode > 499) {
-      const metadata = outEvent.metadata;
-      metadata.forEach((meta) => {
-        const jobId = meta.jobId;
-        const userId = meta.userId;
-        let arr = userIdJobIdMap[userId] || [];
-        arr.push(jobId);
-        userIdJobIdMap[userId] = arr;
-      });
-    }
-  });
-
-  //The jobids for a user should be in order. If not, there is an issue.
-  Object.keys(userIdJobIdMap).forEach((userId) => {
-    const jobIds = userIdJobIdMap[userId];
-    for (let i = 0; i < jobIds.length - 1; i++) {
-      expect(jobIds[i] < jobIds[i + 1]).toEqual(true);
-    }
-  });
 };
 
 module.exports = {

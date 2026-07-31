@@ -596,14 +596,14 @@ const invalidRtTfCases = [
 export const data = [
   {
     name: 'google_adwords_enhanced_conversions',
-    description: 'Test 0',
+    description: 'Test 0 - valid static config batches a Page View event',
     feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
         body: {
-          input: events,
+          input: [events[0]],
           destType: 'google_adwords_enhanced_conversions',
         },
         method: 'POST',
@@ -708,6 +708,163 @@ export const data = [
               ],
               statusCode: 200,
             },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description: 'Test 0 - identify events fail input validation',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [events[1]],
+          destType: 'google_adwords_enhanced_conversions',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  authStatus: 'active',
+                  customerId: '1234567890',
+                  listOfConversions: [
+                    {
+                      conversions: 'Page View',
+                    },
+                    {
+                      conversions: 'Product Added',
+                    },
+                  ],
+                  loginCustomerId: '',
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  subAccount: true,
+                },
+              },
+              error:
+                'message.type: Message Type is not supported. Only track events are supported.; message.event: Required',
+              metadata: [
+                {
+                  jobId: 2,
+                  secret: {
+                    access_token: secret1,
+                    developer_token: 'ijkl91011',
+                    refresh_token: 'efgh5678',
+                  },
+                  userId: 'u1',
+                },
+              ],
+              statTags: {
+                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description: 'Test 0 - missing OAuth secret fails authentication',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [events[2]],
+          destType: 'google_adwords_enhanced_conversions',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  authStatus: 'active',
+                  customerId: '1234567890',
+                  listOfConversions: [
+                    {
+                      conversions: 'Page View',
+                    },
+                    {
+                      conversions: 'Product Added',
+                    },
+                  ],
+                  loginCustomerId: '11',
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  subAccount: true,
+                },
+              },
+              error:
+                'Failed to get access token for authentication. This might be a platform issue. Please contact RudderStack support for assistance.',
+              metadata: [
+                {
+                  jobId: 3,
+                  secret: {},
+                  userId: 'u1',
+                },
+              ],
+              statTags: {
+                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+                errorCategory: 'platform',
+                errorType: 'oAuthSecret',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              statusCode: 500,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description: 'Test 0 - templated static config events batch together',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [events[3], events[4]],
+          destType: 'google_adwords_enhanced_conversions',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
             {
               batched: true,
               batchedRequest: {
@@ -806,7 +963,7 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   authStatus: 'active',
-                  customerId: '1234567890',
+                  customerId: '{{event.context.customerID || "" }}',
                   listOfConversions: [
                     {
                       conversions: 'Page View',
@@ -815,7 +972,7 @@ export const data = [
                       conversions: 'Product Added',
                     },
                   ],
-                  loginCustomerId: '11',
+                  loginCustomerId: '{{event.context.subaccountID || "" }}',
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                   subAccount: true,
                 },
@@ -842,6 +999,31 @@ export const data = [
               ],
               statusCode: 200,
             },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description: 'Test 0 - object loginCustomerId fails config validation',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [events[5]],
+          destType: 'google_adwords_enhanced_conversions',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
             {
               batched: false,
               destination: {
@@ -857,90 +1039,9 @@ export const data = [
                       conversions: 'Product Added',
                     },
                   ],
-                  loginCustomerId: '11',
-                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
-                  subAccount: true,
-                },
-              },
-              error:
-                'message.type: Message Type is not supported. Only track events are supported.; message.event: Required',
-              metadata: [
-                {
-                  jobId: 2,
-                  secret: {
-                    access_token: secret1,
-                    developer_token: 'ijkl91011',
-                    refresh_token: 'efgh5678',
+                  loginCustomerId: {
+                    id: '1234567890',
                   },
-                  userId: 'u1',
-                },
-              ],
-              statTags: {
-                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              statusCode: 400,
-            },
-            {
-              batched: false,
-              destination: {
-                hasDynamicConfig: false,
-                Config: {
-                  authStatus: 'active',
-                  customerId: '1234567890',
-                  listOfConversions: [
-                    {
-                      conversions: 'Page View',
-                    },
-                    {
-                      conversions: 'Product Added',
-                    },
-                  ],
-                  loginCustomerId: '11',
-                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
-                  subAccount: true,
-                },
-              },
-              error:
-                'Failed to get access token for authentication. This might be a platform issue. Please contact RudderStack support for assistance.',
-              metadata: [
-                {
-                  jobId: 3,
-                  secret: {},
-                  userId: 'u1',
-                },
-              ],
-              statTags: {
-                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
-                errorCategory: 'platform',
-                errorType: 'oAuthSecret',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              statusCode: 500,
-            },
-            {
-              batched: false,
-              destination: {
-                hasDynamicConfig: false,
-                Config: {
-                  authStatus: 'active',
-                  customerId: '1234567890',
-                  listOfConversions: [
-                    {
-                      conversions: 'Page View',
-                    },
-                    {
-                      conversions: 'Product Added',
-                    },
-                  ],
-                  loginCustomerId: '11',
-                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                   subAccount: true,
                 },
               },
@@ -966,6 +1067,31 @@ export const data = [
               },
               statusCode: 400,
             },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description: 'Test 0 - missing loginCustomerId fails sub-account config validation',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [events[6]],
+          destType: 'google_adwords_enhanced_conversions',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
             {
               batched: false,
               statusCode: 400,
@@ -1002,8 +1128,6 @@ export const data = [
                       conversions: 'Product Added',
                     },
                   ],
-                  loginCustomerId: '11',
-                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                   subAccount: true,
                 },
               },

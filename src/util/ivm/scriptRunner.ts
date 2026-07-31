@@ -139,16 +139,24 @@ export class IvmScriptRunner {
    * unbounded concurrent evaluations onto one fixed-size heap.
    */
   async execute<T>(cacheKey: string, expression: string, args: unknown[]): Promise<T> {
+    // Pool-level labels, carried by the always-on execution-duration histogram. Deliberately
+    // *without* workspaceId: the gate metrics below can afford that label because they only fire
+    // when a pool saturates, which the cap makes rare, whereas this one fires on every
+    // execution — a per-workspace histogram would mint 16 series (14 buckets + _sum + _count)
+    // per workspace per pod for as long as the process lives. Pool-level is also what the metric
+    // is *for*: service rate is a property of the isolate, not the tenant, and it is what the
+    // concurrency cap has to be sized against.
+    const durationTags = { functionName: expression, cache: this.cache.cacheName };
     // One label set for every metric this call can emit — the platform-error counter and both
     // gate metrics — so they can be joined on (workspaceId, functionName, cache) in a query.
-    const metricTags = {
-      functionName: expression,
-      workspaceId: cacheKey,
-      cache: this.cache.cacheName,
-    };
+    // Built from `durationTags` so the shared labels cannot drift between the two.
+    const metricTags = { ...durationTags, workspaceId: cacheKey };
     // Outside the try so `releaseSlot` is in scope for the finally. Waiting for a slot is
     // not a failure mode — acquireSlot never rejects, it only ever admits or queues.
     const releaseSlot = await this.acquireSlot(cacheKey, metricTags);
+    // Set once the isolate exists and evaluation is about to begin, so the `finally` can tell
+    // "never evaluated" (isolate build failed — nothing to time) from "evaluated and threw".
+    let evalStartedAt: Date | undefined;
     try {
       // Seed the platform-error counter at 0 when a fresh isolate is built for this label set
       // (once per isolate, not per call — warm-isolate calls never touch the registry).
@@ -162,6 +170,7 @@ export class IvmScriptRunner {
       const entry = await this.getOrCreate(cacheKey, () =>
         stats.counter('ivm_platform_error', 0, metricTags),
       );
+      evalStartedAt = new Date();
       const result = await entry.context.evalClosure(expression, args, {
         arguments: { copy: true },
         result: { copy: true, promise: true },
@@ -176,7 +185,18 @@ export class IvmScriptRunner {
       stats.increment('ivm_platform_error', metricTags);
       throw err;
     } finally {
+      // Released before the metric, not after: `releaseSlot` hands the slot to the next waiter,
+      // and a throwing metric must not be able to strand it — the same ordering rule the two
+      // gate metrics in `acquireSlot` follow.
       releaseSlot();
+      if (evalStartedAt) {
+        // Timed on the failure path too. This measures how long the call held its concurrency
+        // slot, and a call that runs to `execTimeoutMs` and throws holds it just as long as one
+        // that succeeds — so excluding failures would understate exactly the drain rate the
+        // queue depends on. Skipped only when evaluation never started (isolate build failed),
+        // where there is no evaluation to attribute the time to.
+        stats.timing('ivm_execution_duration', evalStartedAt, durationTags);
+      }
     }
   }
 

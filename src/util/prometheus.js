@@ -8,6 +8,22 @@ const instanceID = process.env.INSTANCE_ID || 'localhost';
 const prefix = 'transformer';
 const defaultLabels = { instanceName: instanceID };
 
+// Shared by the two IVM execution histograms (queue wait and evaluation duration). Declared
+// explicitly because prom-client's default bucket set starts at 5ms, and both of these are
+// routinely sub-millisecond: measured locally, 99.45% of 312k queue waits landed in that single
+// first default bucket, which makes histogram_quantile() interpolate inside it and report
+// nothing useful. These start at 0.5ms so a healthy sub-millisecond sample is distinguishable
+// from a degraded one, and extend to 10s so a real backlog (queue depth growing behind
+// timed-out executions) stays on-scale instead of pinning p99 at the top finite bucket.
+//
+// One constant rather than two copies because the two metrics are meant to be read against each
+// other — "is a caller's latency dominated by waiting for a slot or by the evaluation itself"
+// is only answerable on a shared scale, and separate literals would let them drift apart
+// silently the first time one is tuned.
+const IVM_EXECUTION_BUCKETS = [
+  0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10,
+];
+
 function appendPrefix(name) {
   return `${prefix}_${name}`;
 }
@@ -1003,14 +1019,22 @@ class Prometheus {
         help: 'Time an evaluation waited for a free isolate concurrency slot (seconds)',
         type: 'histogram',
         labelNames: ['functionName', 'workspaceId', 'cache'],
-        // Declared explicitly because the default bucket set starts at 5ms, and a gated
-        // isolate drains far faster than that: measured locally, 99.45% of 312k waits landed
-        // in that single first bucket, which makes histogram_quantile() interpolate inside it
-        // and report nothing useful. These start at 0.5ms so a healthy sub-millisecond wait is
-        // distinguishable from a degraded one, and extend to 10s so a real backlog (queue depth
-        // growing behind timed-out executions) stays on-scale instead of pinning p99 at the top
-        // finite bucket.
-        buckets: [0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+        buckets: IVM_EXECUTION_BUCKETS,
+      },
+      {
+        name: 'ivm_execution_duration',
+        help: 'Time spent evaluating a closure inside a cached isolate (seconds)',
+        type: 'histogram',
+        // No workspaceId, unlike ivm_execution_queue_wait: that one only fires when a pool
+        // saturates, this one fires on every execution. See the note in IvmScriptRunner.execute.
+        labelNames: ['functionName', 'cache'],
+        // A V8 isolate evaluates one script at a time, so for a gated pool this is the service
+        // time that sets the queue's drain rate, and it is what the concurrency cap
+        // (e.g. CUSTOM_MAPPINGS_IVM_MAX_CONCURRENT_EXECUTIONS) has to be sized against. Emitted
+        // for ungated pools too, where it is simply evaluation cost with no slot to hold.
+        // Includes calls that run to execTimeoutMs and throw, which occupy the isolate for
+        // their full duration and so belong in the same distribution.
+        buckets: IVM_EXECUTION_BUCKETS,
       },
       {
         name: 'fetchV2_call_duration',

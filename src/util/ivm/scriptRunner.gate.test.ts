@@ -24,6 +24,9 @@ interface MockPendingExecution {
 let mockPendingExecutions: MockPendingExecution[] = [];
 let mockRunningNow = 0;
 let mockPeakRunning = 0;
+// When set, isolate construction fails, so execute() never reaches evalClosure. Lets a test
+// separate "evaluation ran and threw" from "evaluation never started". Reset in beforeEach.
+let mockIsolateBuildError: Error | undefined;
 
 // --- Mocks ---
 
@@ -76,6 +79,9 @@ jest.mock('isolated-vm', () => {
 
   class MockIsolate {
     async createContext() {
+      if (mockIsolateBuildError) {
+        throw mockIsolateBuildError;
+      }
       return new MockContext();
     }
 
@@ -140,14 +146,20 @@ const gatesOf = (runner: IvmScriptRunner): Map<string, unknown> =>
 const queuedCount = () =>
   mockStats.increment.mock.calls.filter(([name]) => name === 'ivm_execution_queued').length;
 
+/** Every `ivm_execution_duration` observation recorded so far, as [name, startedAt, tags]. */
+const durationTimings = () =>
+  mockStats.timing.mock.calls.filter(([name]) => name === 'ivm_execution_duration');
+
 describe('IvmScriptRunner execution gate', () => {
   beforeEach(() => {
     mockPendingExecutions = [];
     mockRunningNow = 0;
     mockPeakRunning = 0;
+    mockIsolateBuildError = undefined;
     mockStats.increment.mockClear();
     mockStats.gauge.mockClear();
     mockStats.timing.mockClear();
+    mockStats.timing.mockImplementation(() => undefined);
   });
 
   describe('concurrency cap', () => {
@@ -340,6 +352,93 @@ describe('IvmScriptRunner execution gate', () => {
       });
       finishOldest();
       await expect(Promise.all([running, queued])).resolves.toEqual(['ok', 'ok']);
+    });
+  });
+
+  describe('execution duration metric', () => {
+    it('should record how long an evaluation held its slot, tagged per pool', async () => {
+      const runner = buildRunner({ maxConcurrentExecutions: 2 });
+
+      const call = runner.execute('ws-1', 'mapping-call', []);
+      await waitForRunning(1);
+      // Nothing recorded while the evaluation is still in flight — the observation is the
+      // slot-hold time, so it can only be taken once the call settles.
+      expect(durationTimings()).toHaveLength(0);
+
+      finishOldest();
+      await expect(call).resolves.toBe('ok');
+
+      // Deliberately no workspaceId: this fires on every execution, unlike the gate metrics.
+      expect(durationTimings()).toEqual([
+        [
+          'ivm_execution_duration',
+          expect.any(Date),
+          { functionName: 'mapping-call', cache: 'test_ivm' },
+        ],
+      ]);
+    });
+
+    it('should record a duration for an evaluation that threw', async () => {
+      const runner = buildRunner({ maxConcurrentExecutions: 2 });
+
+      const call = runner.execute('ws-1', 'doomed-call', []);
+      await waitForRunning(1);
+      failOldest(new Error('Script execution timed out'));
+
+      await expect(call).rejects.toThrow('Script execution timed out');
+      // A call that runs to execTimeoutMs and throws holds its slot for the full duration, so
+      // excluding it would understate the drain rate the queue is bounded by.
+      expect(durationTimings()).toEqual([
+        [
+          'ivm_execution_duration',
+          expect.any(Date),
+          { functionName: 'doomed-call', cache: 'test_ivm' },
+        ],
+      ]);
+      expect(mockStats.increment).toHaveBeenCalledWith('ivm_platform_error', {
+        functionName: 'doomed-call',
+        workspaceId: 'ws-1',
+        cache: 'test_ivm',
+      });
+    });
+
+    it('should not record a duration when the isolate never built', async () => {
+      const runner = buildRunner({ maxConcurrentExecutions: 2 });
+      mockIsolateBuildError = new Error('isolate build failed');
+
+      await expect(runner.execute('ws-1', 'never-ran', [])).rejects.toThrow('isolate build failed');
+
+      // The failure is real, but there was no evaluation to attribute time to — folding it in
+      // would put isolate-construction cost into the service-time distribution.
+      expect(durationTimings()).toHaveLength(0);
+      expect(mockStats.increment).toHaveBeenCalledWith('ivm_platform_error', {
+        functionName: 'never-ran',
+        workspaceId: 'ws-1',
+        cache: 'test_ivm',
+      });
+    });
+
+    it('should hand the slot on even if recording the duration throws', async () => {
+      const runner = buildRunner({ maxConcurrentExecutions: 1 });
+      mockStats.timing.mockImplementation((name: string) => {
+        if (name === 'ivm_execution_duration') {
+          throw new Error('metrics registry unavailable');
+        }
+      });
+
+      const running = runner.execute('ws-1', 'first', []);
+      const queued = runner.execute('ws-1', 'second', []);
+      await waitForRunning(1);
+
+      // The slot is released before the metric is emitted, so a throwing registry cannot wedge
+      // the gate: the queued caller must still be admitted once the first one settles.
+      finishOldest();
+      await expect(running).rejects.toThrow('metrics registry unavailable');
+      await waitForRunning(1);
+
+      finishOldest();
+      await expect(queued).rejects.toThrow('metrics registry unavailable');
+      expect(gatesOf(runner).size).toBe(0);
     });
   });
 });

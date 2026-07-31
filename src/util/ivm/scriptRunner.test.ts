@@ -13,6 +13,8 @@ jest.mock('../stats', () => ({
   counter: jest.fn(),
   increment: jest.fn(),
   gauge: jest.fn(),
+  // execute() records ivm_execution_duration on every settled evaluation, success or failure.
+  timing: jest.fn(),
 }));
 
 // Avoid reading a real bundle from disk — the runner only feeds this into compileScript, which is mocked.

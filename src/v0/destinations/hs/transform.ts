@@ -1,20 +1,10 @@
-import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { EventType, MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
-import {
-  handleRtTfSingleEventError,
-  getDestinationExternalIDInfoForRetl,
-  groupEventsByType,
-} from '../../util';
+import { EventType } from '../../../constants';
+import { handleRtTfSingleEventError, groupEventsByType } from '../../util';
 import { API_VERSION } from './config';
 import { processLegacyIdentify, processLegacyTrack, legacyBatchEvents } from './es-retl-v1';
 import { processIdentify, processTrack, batchEvents } from './es-retl-v3';
-import {
-  splitEventsForCreateUpdate,
-  fetchFinalSetOfTraits,
-  getProperties,
-  validateDestinationConfig,
-} from './util';
+import { fetchFinalSetOfTraits, getProperties, validateDestinationConfig } from './util';
 import { processBatchRouterRetl, shouldUseHsRetlSplitPath } from './retl-transform';
 import type {
   HubSpotPropertyMap,
@@ -66,42 +56,28 @@ const processBatchRouter = async (
   inputs: HubspotRouterRequest[],
   reqMetadata: NonNullable<unknown>,
 ): Promise<HubSpotBatchRouterResult> => {
-  // Workspace-gated rETL/event-stream split. A router call is homogeneous per
-  // workspace/source, so allow-listed workspaces' rETL (mappedToDestination)
-  // batches are handled by the dedicated rETL code path. Everything else - and
-  // every workspace not in the allow-list - keeps using the existing logic
-  // below, unchanged.
+  // rETL (mappedToDestination) batches are handled by the dedicated rETL code
+  // path. A router call is homogeneous per source, so the remaining logic below
+  // only ever runs for event-stream batches.
   if (inputs.length > 0 && shouldUseHsRetlSplitPath(inputs[0])) {
     return processBatchRouterRetl(inputs, reqMetadata);
   }
 
-  let tempInputs = inputs;
+  const tempInputs = inputs;
   // using the first destination config for transforming the batch
   const { destination, metadata } = tempInputs[0];
   let propertyMap: HubSpotPropertyMap | undefined;
-  const mappedToDestination = get(tempInputs[0].message, MappedToDestinationKey);
-  const externalIdInfo = getDestinationExternalIDInfoForRetl(tempInputs[0].message, 'HS');
-  const objectType = externalIdInfo?.objectType;
   const successRespList: HubSpotBatchProcessingItem[] = [];
   const errorRespList: HubSpotRouterTransformationOutput[] = [];
   // batch implementation
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   try {
-    if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
-      // skip splitting the batches to inserts and updates if object it is an association
-      if (!objectType || String(objectType).toLowerCase() !== 'association') {
-        propertyMap = await getProperties(destination, metadata);
-        // get info about existing objects and splitting accordingly.
-        tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);
-      }
-    } else {
-      // reduce the no. of calls for properties endpoint
-      const traitsFound = tempInputs.some(
-        (input) => fetchFinalSetOfTraits(input.message) !== undefined,
-      );
-      if (traitsFound) {
-        propertyMap = await getProperties(destination, metadata);
-      }
+    // reduce the no. of calls for properties endpoint
+    const traitsFound = tempInputs.some(
+      (input) => fetchFinalSetOfTraits(input.message) !== undefined,
+    );
+    if (traitsFound) {
+      propertyMap = await getProperties(destination, metadata);
     }
   } catch (error: unknown) {
     // Any error thrown from the above try block applies to all the events

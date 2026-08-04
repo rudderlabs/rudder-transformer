@@ -12,6 +12,10 @@ permissions:
 jobs:
   commitlint:
     runs-on: ubuntu-latest
+    # Release branches are assembled by automation from commits already linted on
+    # their way into develop. Re-linting the accumulated range adds no coverage and
+    # fails on historical bot commits whose footers exceed footer-max-line-length.
+    if: ${{ !startsWith(github.head_ref, 'release/') && !startsWith(github.head_ref, 'hotfix-release/') }}
     permissions:
       contents: read # to checkout repository code with full history (actions/checkout)
     steps:

@@ -242,6 +242,118 @@ export const upsertData = [
   },
   {
     name: 'hs',
+    id: 'hs-upsert-numeric-lookup-field',
+    description: 'Test: Upsert with numeric custom lookupField value casts id to string',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                ID: 'destIdNumericLookup',
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  apiVersion: 'newApi',
+                  lookupField: 'user_id',
+                },
+              },
+              message: {
+                type: 'identify',
+                sentAt: '2024-01-15T10:00:00.000Z',
+                traits: {
+                  email: 'numeric-lookup@example.com',
+                  user_id: 9868,
+                  firstname: 'Numeric',
+                  lastname: 'Lookup',
+                },
+                userId: 'userNumericLookup',
+                channel: 'web',
+                context: {},
+                messageId: 'msg-numeric-lookup',
+                timestamp: '2024-01-15T10:00:00.000Z',
+                originalTimestamp: '2024-01-15T10:00:00.000Z',
+              },
+              metadata: {
+                jobId: 1003,
+                userId: 'userNumericLookup',
+                workspaceId: 'ws-upsert-enabled',
+              },
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+                endpointPath: '/crm/v3/objects/contacts/batch/upsert',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader1,
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    inputs: [
+                      {
+                        id: '9868',
+                        idProperty: 'user_id',
+                        properties: {
+                          email: 'numeric-lookup@example.com',
+                          firstname: 'Numeric',
+                          lastname: 'Lookup',
+                        },
+                        objectWriteTraceId: '1003',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 1003,
+                  userId: 'userNumericLookup',
+                  workspaceId: 'ws-upsert-enabled',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                ID: 'destIdNumericLookup',
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  apiVersion: 'newApi',
+                  lookupField: 'user_id',
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: {},
+  },
+  {
+    name: 'hs',
     description: 'Test: Batch upsert with multiple identify events',
     feature: 'router',
     module: 'destination',

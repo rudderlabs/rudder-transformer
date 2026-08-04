@@ -9,7 +9,8 @@ const OBJECT_TYPE_PLACEHOLDER = ':objectType';
 // For fetching properties from HubSpot
 const CONTACT_PROPERTY_MAP_ENDPOINT_PATH = '/properties/v1/contacts/properties';
 // Ref - https://developers.hubspot.com/docs/api-reference/crm-properties-v3/core/get-crm-v3-properties-objectType
-const CRM_V3_CONTACT_PROPERTIES_ENDPOINT_PATH = '/crm/v3/properties/contacts';
+// Generic across object types (contacts, companies, deals, custom objects) for rETL upsert support.
+const CRM_V3_PROPERTIES_ENDPOINT_PATH = '/crm/v3/properties/:objectType';
 
 /*
  * Legacy API
@@ -58,6 +59,10 @@ const TRACK_CRM_ENDPOINT_PATH = '/events/v3/send';
 
 /* CRM ALL Objects */
 const CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH = '/crm/v3/objects/:objectType';
+
+// Batch upsert for any object type (create-or-update via a unique idProperty)
+// Ref - https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
+const CRM_UPSERT_ALL_OBJECTS_ENDPOINT_PATH = '/crm/v3/objects/:objectType/batch/upsert';
 
 /* CRM Association v3 */
 // Ref - https://developers.hubspot.com/docs/api/crm/associations
@@ -109,7 +114,6 @@ export {
   TRACK_BASE_ENDPOINT,
   OBJECT_TYPE_PLACEHOLDER,
   CONTACT_PROPERTY_MAP_ENDPOINT_PATH,
-  CRM_V3_CONTACT_PROPERTIES_ENDPOINT_PATH,
   IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH,
   IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH,
   BATCH_CONTACT_ENDPOINT_PATH,
@@ -127,6 +131,7 @@ export {
   MAX_BATCH_SIZE_CRM_CONTACT,
   TRACK_CRM_ENDPOINT_PATH,
   CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
+  CRM_UPSERT_ALL_OBJECTS_ENDPOINT_PATH,
   CRM_ASSOCIATION_V3_ENDPOINT_PATH,
   MAX_BATCH_SIZE_CRM_OBJECT,
   API_VERSION,
@@ -141,4 +146,5 @@ export {
   DESTINATION,
   HUBSPOT_SYSTEM_FIELDS,
   CONTACT_PROPERTIES_CACHE_TTL,
+  CRM_V3_PROPERTIES_ENDPOINT_PATH,
 };

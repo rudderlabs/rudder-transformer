@@ -26,7 +26,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   GAINSIGHT: { routerTransform: true },
   GAINSIGHT_PX: { routerTransform: true },
   GOOGLESHEETS: { routerTransform: true },
-  GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: { routerTransform: true },
+  GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: { routerTransform: true, batching: true },
   GOOGLE_ADWORDS_REMARKETING_LISTS: { routerTransform: true },
   GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: { routerTransform: true },
   HS: { routerTransform: true },
@@ -108,6 +108,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   POSTHOG: { routerTransform: true, batching: true },
   CUSTOM_AUDIENCE: { routerTransform: true, batching: true },
   ITERABLE_AUDIENCE: { routerTransform: true, batching: true },
+  BRAZE_AUDIENCE: { routerTransform: true, batching: true },
   SURVICATE: { routerTransform: true },
   // dev-only fixture — see src/v0/destinations/test_destination/config.ts
   TEST_DESTINATION: { routerTransform: true, batching: true },

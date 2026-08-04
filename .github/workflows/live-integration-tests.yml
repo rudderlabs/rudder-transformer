@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        destination: [hs]
+        destination: [hs, braze_audience, braze]
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
@@ -90,7 +90,9 @@ jobs:
         env:
           CHANNEL_ID: ${{ secrets.SLACK_LIVE_TEST_CHANNEL_ID }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPO_URL: https://github.com/${{ github.repository }}
           REF_NAME: ${{ github.head_ref || github.ref_name }}
+          BRANCH_URL: https://github.com/${{ github.repository }}/tree/${{ github.head_ref || github.ref_name }}
           ONCALL_MENTION: "${{ format('\nCC: <!subteam^{0}>', secrets.SLACK_ONCALL_GROUP_ID) }}"
         with:
           method: chat.postMessage
@@ -100,5 +102,5 @@ jobs:
           payload: |
             {
               "channel": "${{ env.CHANNEL_ID }}",
-              "text": ":rotating_light: Live integration tests failed for `${{ matrix.destination }}` on `${{ env.REF_NAME }}` — <${{ env.RUN_URL }}|view run>${{ env.ONCALL_MENTION }}"
+              "text": ":rotating_light: Live integration tests failed in <${{ env.REPO_URL }}|${{ github.repository }}>\n• Destination: `${{ matrix.destination }}`\n• Branch: <${{ env.BRANCH_URL }}|${{ env.REF_NAME }}>\n• Run: <${{ env.RUN_URL }}|view workflow run>${{ env.ONCALL_MENTION }}"
             }

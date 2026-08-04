@@ -11,6 +11,7 @@ import { destination } from './config';
 import { upsertData } from './upsertData';
 import { errorValidationData } from './errorValidationData';
 import { withRetlSplitCases } from './retlSplitData';
+import { retlUpsertData } from './retlUpsertData';
 
 /**
  * Helpers + migrated event-stream / legacy router cases (previously eventStreamData.ts).
@@ -147,7 +148,8 @@ const esIdentifyMessage = {
   traits: { phone: '9999999999', firstname: 'CI', lastname: 'ES' },
   context: { mappedToDestination: false },
 };
-const baseData = [
+
+const baseData: Record<string, unknown>[] = [
   {
     name: 'hs',
     description: 'router associated retl test',
@@ -2071,7 +2073,7 @@ const baseData = [
                   hubspotEvents: [],
                 },
                 secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                ID: 'hs-router-retl-dedup-dest',
                 name: 'Hubspot',
                 enabled: true,
                 workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
@@ -2142,7 +2144,7 @@ const baseData = [
                   hubspotEvents: [],
                 },
                 secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                ID: 'hs-router-retl-dedup-dest',
                 name: 'Hubspot',
                 enabled: true,
                 workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
@@ -4836,4 +4838,6 @@ const baseData = [
 ];
 
 // Each rETL fixture is followed by its gated split-path duplicate (see retlSplitData.ts).
-export const data = withRetlSplitCases(baseData as Record<string, any>[]);
+// Dedicated rETL upsert fixtures are appended afterwards so they are NOT auto-derived
+// as behaviour-preservation split cases (see retlUpsertData.ts).
+export const data = [...withRetlSplitCases(baseData), ...retlUpsertData];

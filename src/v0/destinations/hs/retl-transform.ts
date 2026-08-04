@@ -6,7 +6,12 @@ import { isFeatureEnabled } from '../../../util/featureFlags';
 import { API_VERSION } from './config';
 import { processRetlLegacyIdentify, batchRetlLegacyEvents } from './retl-hs-transform-v1';
 import { processRetlIdentify, batchRetlEvents } from './retl-hs-transform-v3';
-import { splitEventsForCreateUpdate, getProperties, validateDestinationConfig } from './util';
+import {
+  splitEventsForCreateUpdate,
+  getProperties,
+  validateDestinationConfig,
+  isLookupFieldUnique,
+} from './util';
 import type {
   HubSpotPropertyMap,
   HubSpotBatchRouterResult,
@@ -79,6 +84,7 @@ const processBatchRouterRetl = async (
   let propertyMap: HubSpotPropertyMap | undefined;
   const externalIdInfo = getDestinationExternalIDInfoForRetl(tempInputs[0].message, 'HS');
   const objectType = externalIdInfo?.objectType;
+  const identifierType = externalIdInfo?.identifierType;
   const successRespList: HubSpotBatchProcessingItem[] = [];
   const errorRespList: HubSpotRouterTransformationOutput[] = [];
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
@@ -87,8 +93,32 @@ const processBatchRouterRetl = async (
     // skip splitting the batches to inserts and updates if the object is an association
     if (!objectType || String(objectType).toLowerCase() !== 'association') {
       propertyMap = await getProperties(destination, metadata);
-      // get info about existing objects and split accordingly.
-      tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);
+
+      // Upsert is only implemented for the v3 endpoint (retl-hs-transform-v3); the
+      // legacy (v1) handler has no upsert branch, so never tag v1 events for upsert.
+      // When apiVersion is v3 AND the identifierType is a unique property for this
+      // objectType we use the v3 batch upsert endpoint directly: tag every event for
+      // upsert and skip `splitEventsForCreateUpdate` (and its Search chain).
+      // Otherwise, unchanged.
+      const canUpsert =
+        destination.Config.apiVersion === API_VERSION.v3 &&
+        objectType &&
+        identifierType &&
+        (await isLookupFieldUnique(destination, identifierType, metadata, objectType));
+
+      if (canUpsert) {
+        tempInputs = tempInputs.map((input) => {
+          const taggedInput = input;
+          taggedInput.message.context = {
+            ...input.message.context,
+            hubspotOperation: 'upsertObject',
+          };
+          return taggedInput;
+        });
+      } else {
+        // get info about existing objects and split accordingly.
+        tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);
+      }
     }
   } catch (error: unknown) {
     // Any error thrown from the above try block applies to all the events

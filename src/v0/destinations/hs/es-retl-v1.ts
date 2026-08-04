@@ -42,6 +42,7 @@ import {
   getHsSearchId,
   populateTraits,
   removeHubSpotSystemField,
+  recordTransformFlow,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -99,6 +100,7 @@ const processLegacyIdentify = async (
         objectType,
       );
       endpoint = `${BASE_ENDPOINT}${endpointPath}`;
+      recordTransformFlow(destination, 'retl', 'es_retl', 'create');
     } else if (operation === 'updateObject' && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
       endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
@@ -107,6 +109,7 @@ const processLegacyIdentify = async (
       );
       endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
+      recordTransformFlow(destination, 'retl', 'es_retl', 'update');
     }
 
     traits = await populateTraits(propertyMap, traits, destination, metadata);
@@ -138,6 +141,7 @@ const processLegacyIdentify = async (
       endpointPath = IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH;
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
+    recordTransformFlow(destination, 'event_stream', 'es_retl', 'upsert');
   }
 
   response.endpoint = endpoint;
@@ -202,6 +206,7 @@ const processLegacyTrack = async (
     'Content-Type': JSON_MIME_TYPE,
   };
   response.messageType = 'track';
+  recordTransformFlow(destination, 'event_stream', 'es_retl', 'track');
 
   // choosing API Type
   if (Config.authorizationType === 'newPrivateAppApi') {

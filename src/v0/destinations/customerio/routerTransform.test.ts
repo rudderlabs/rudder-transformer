@@ -42,6 +42,106 @@ const eventConnection = {
   config: { destination: { object: 'event' } },
 } as CustomerIORouterRequest['connection'];
 
+const makeEventStreamInput = (message: Record<string, unknown>): CIOInput =>
+  ({
+    message,
+    metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
+    destination: baseDestination,
+  }) as unknown as CIOInput;
+
+describe('CustomerIOIntegration — event-stream person identifiers', () => {
+  const emailUserIdCases = [
+    {
+      name: 'identify',
+      message: {
+        type: 'identify',
+        userId: 'alice@example.com',
+        traits: { email: 'alice@example.com', plan: 'pro' },
+      },
+    },
+    {
+      name: 'track',
+      message: {
+        type: 'track',
+        userId: 'alice@example.com',
+        event: 'Order Completed',
+        properties: { orderId: 'abc-123' },
+      },
+    },
+    {
+      name: 'page',
+      message: {
+        type: 'page',
+        userId: 'alice@example.com',
+        name: 'Checkout',
+        properties: { url: '/checkout' },
+      },
+    },
+    {
+      name: 'screen',
+      message: {
+        type: 'screen',
+        userId: 'alice@example.com',
+        event: 'Checkout',
+        properties: { step: 2 },
+      },
+    },
+    {
+      name: 'device',
+      message: {
+        type: 'track',
+        userId: 'alice@example.com',
+        event: 'Application Installed',
+        context: { device: { token: 'device-token', type: 'ios' } },
+      },
+    },
+  ];
+
+  const regressionCases = [
+    {
+      name: 'non-email userId stays an id identifier',
+      message: { type: 'track', userId: 'user-123', event: 'Signed Up' },
+      expectedIdentifiers: { id: 'user-123' },
+    },
+    {
+      name: 'email fallback is still used when userId is empty',
+      message: {
+        type: 'track',
+        userId: '',
+        context: { traits: { email: 'fallback@example.com' } },
+        event: 'Signed Up',
+      },
+      expectedIdentifiers: { email: 'fallback@example.com' },
+    },
+    {
+      name: 'anonymous-only event keeps anonymous_id identifier',
+      message: { type: 'track', anonymousId: 'anon-123', event: 'Signed Up' },
+      expectedIdentifiers: { anonymous_id: 'anon-123' },
+    },
+  ];
+
+  it.each(emailUserIdCases)(
+    'classifies email userId as email identifier for $name',
+    async ({ message }) => {
+      const integration = new Integration(baseDestination);
+      const { successPayloads } = await integration.transformEvents([
+        makeEventStreamInput(message),
+      ]);
+
+      expect(successPayloads).toHaveLength(1);
+      expect(successPayloads[0].body.identifiers).toEqual({ email: 'alice@example.com' });
+    },
+  );
+
+  it.each(regressionCases)('$name', async ({ message, expectedIdentifiers }) => {
+    const integration = new Integration(baseDestination);
+    const { successPayloads } = await integration.transformEvents([makeEventStreamInput(message)]);
+
+    expect(successPayloads).toHaveLength(1);
+    expect(successPayloads[0].body.identifiers).toEqual(expectedIdentifiers);
+  });
+});
+
 describe('CustomerIOIntegration — record event routing', () => {
   it('transforms insert record into identify person payload', async () => {
     const integration = new Integration(baseDestination, baseConnection);

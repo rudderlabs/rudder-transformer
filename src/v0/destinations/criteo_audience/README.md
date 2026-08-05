@@ -67,7 +67,7 @@ Where `[op]` can be either `add` or `remove` to specify the operation type.
 
 ### Endpoints
 
-- **Audience Management**: `https://api.criteo.com/2025-10/audiences/{audienceId}/contactlist` - HTTP Method: PATCH
+- **Audience Management**: `https://api.criteo.com/2026-07/audiences/{audienceId}/contactlist` - HTTP Method: PATCH
 
 ### Authentication
 
@@ -78,8 +78,8 @@ Where `[op]` can be either `add` or `remove` to specify the operation type.
 ### Rate Limits
 
 - **Rate Limiting**: 429 status code indicates rate limit exceeded
-- **RudderStack uses Authorization Code apps** – 10 calls/min per account per consent granter (baseline; auto-scales with number of accounts). See [Criteo Authorization Code Setup](https://developers.criteo.com/marketing-solutions/docs/authorization-code-setup) and [Rate Limits](https://developers.criteo.com/marketing-solutions/v2025.10/docs/rate-limits).
-- **Client Credentials apps**: 250 calls/min (app-level, unchanged in 2025-10)
+- **RudderStack uses Authorization Code apps** – 10 calls/min per account per consent granter (baseline; auto-scales with number of accounts). See [Criteo Authorization Code Setup](https://developers.criteo.com/marketing-solutions/docs/authorization-code-setup) and [Rate Limits](https://developers.criteo.com/marketing-solutions/v2026.07/docs/rate-limits).
+- **Client Credentials apps**: 250 calls/min (app-level, unchanged in 2026-07)
 - **Response Headers**:
   - `x-ratelimit-limit`: Number of calls your App can perform
   - `x-ratelimit-remaining`: Number of calls remaining (reset value varies by app type)

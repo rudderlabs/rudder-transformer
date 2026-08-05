@@ -44,12 +44,36 @@ interface Step {
   name: string;
 }
 
+// Fields of the /routerTransform input `metadata` a scenario may override (the harness always sets
+// jobId/attemptNum/userId/sourceId/destinationId/workspaceId/secret). Kept explicit — not a loose
+// Record — so a step can only set fields transforms actually read: dontBatch (un-batched delivery)
+// and workspaceId (per-workspace feature-flag gating on metadata.workspaceId, e.g. HubSpot's rETL
+// split). Add fields here as new needs arise. NOTE: destination.Config is NOT here — per-scenario
+// config is owned by resolveConfig + the scenario's configOverride.
+type MetadataOverride = {
+  workspaceId?: string;
+  dontBatch?: boolean;
+};
+
+// Top-level fields of the /routerTransform input `destination` a scenario may override (the harness
+// always sets ID/Config/Enabled). Kept explicit — not a loose Record — so a step can only override
+// fields transforms actually read. Currently just WorkspaceID, for per-workspace feature-flag gating
+// on destination.WorkspaceID (e.g. Braze's per-job delivery mapping). Config is deliberately absent —
+// it's owned by resolveConfig + configOverride, so there's one clear source for per-scenario config.
+// Add fields here as new gating needs arise.
+type DestinationOverride = {
+  WorkspaceID?: string;
+};
+
 // A pipeline step: seed -> /routerTransform -> /proxy, asserting the event is delivered.
 interface PipelineStep extends Step {
   stepType: 'pipeline';
   seed: (ctx: RunContext) => Record<string, unknown>;
   // Merged into the /routerTransform input metadata, overriding defaults — e.g. { dontBatch: true }.
-  metadataOverride?: Record<string, unknown>;
+  metadataOverride?: MetadataOverride;
+  // Merged into the /routerTransform input `destination` object, overriding defaults — e.g.
+  // { WorkspaceID: '...' } to exercise a transform gated on destination.WorkspaceID.
+  destinationOverride?: DestinationOverride;
   // Exact number of /routerTransform outputs this step expects. The step knows what it seeded, so
   // pin the count when set — a batching regression that collapses/fans out events is otherwise
   // waved through by the default `> 0` check. Omit to keep the loose `> 0` assertion.
@@ -165,7 +189,8 @@ type BatchedRequest = z.infer<typeof LiveProcessorOutputSchema>;
 // Options for buildRouterTransformBody (routerTransformRequest.ts).
 type BuildRouterTransformBodyOptions = {
   secret?: Record<string, string>;
-  metadataOverride?: Record<string, unknown>;
+  metadataOverride?: MetadataOverride;
+  destinationOverride?: DestinationOverride;
   // Full connection object for RETL / audience destinations that read connection.config
   // (e.g. customAttributeName). Absent for event-stream destinations that don't need it.
   connection?: Record<string, unknown>;
@@ -231,6 +256,8 @@ export {
   LiveScenario,
   LiveSpec,
   EnrolledDestination,
+  MetadataOverride,
+  DestinationOverride,
   PipelineStep,
   ActionStep,
   VerifyStep,

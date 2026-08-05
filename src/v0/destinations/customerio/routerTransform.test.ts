@@ -50,54 +50,56 @@ const makeEventStreamInput = (message: Record<string, unknown>): CIOInput =>
   }) as unknown as CIOInput;
 
 describe('CustomerIOIntegration — event-stream person identifiers', () => {
-  const emailUserIdCases = [
+  const testCases = [
     {
-      name: 'identify',
+      name: 'classifies email userId as email identifier for identify',
       message: {
         type: 'identify',
         userId: 'alice@example.com',
         traits: { email: 'alice@example.com', plan: 'pro' },
       },
+      expectedIdentifiers: { email: 'alice@example.com' },
     },
     {
-      name: 'track',
+      name: 'classifies email userId as email identifier for track',
       message: {
         type: 'track',
         userId: 'alice@example.com',
         event: 'Order Completed',
         properties: { orderId: 'abc-123' },
       },
+      expectedIdentifiers: { email: 'alice@example.com' },
     },
     {
-      name: 'page',
+      name: 'classifies email userId as email identifier for page',
       message: {
         type: 'page',
         userId: 'alice@example.com',
         name: 'Checkout',
         properties: { url: '/checkout' },
       },
+      expectedIdentifiers: { email: 'alice@example.com' },
     },
     {
-      name: 'screen',
+      name: 'classifies email userId as email identifier for screen',
       message: {
         type: 'screen',
         userId: 'alice@example.com',
         event: 'Checkout',
         properties: { step: 2 },
       },
+      expectedIdentifiers: { email: 'alice@example.com' },
     },
     {
-      name: 'device',
+      name: 'classifies email userId as email identifier for device',
       message: {
         type: 'track',
         userId: 'alice@example.com',
         event: 'Application Installed',
         context: { device: { token: 'device-token', type: 'ios' } },
       },
+      expectedIdentifiers: { email: 'alice@example.com' },
     },
-  ];
-
-  const regressionCases = [
     {
       name: 'non-email userId stays an id identifier',
       message: { type: 'track', userId: 'user-123', event: 'Signed Up' },
@@ -120,20 +122,7 @@ describe('CustomerIOIntegration — event-stream person identifiers', () => {
     },
   ];
 
-  it.each(emailUserIdCases)(
-    'classifies email userId as email identifier for $name',
-    async ({ message }) => {
-      const integration = new Integration(baseDestination);
-      const { successPayloads } = await integration.transformEvents([
-        makeEventStreamInput(message),
-      ]);
-
-      expect(successPayloads).toHaveLength(1);
-      expect(successPayloads[0].body.identifiers).toEqual({ email: 'alice@example.com' });
-    },
-  );
-
-  it.each(regressionCases)('$name', async ({ message, expectedIdentifiers }) => {
+  it.each(testCases)('$name', async ({ message, expectedIdentifiers }) => {
     const integration = new Integration(baseDestination);
     const { successPayloads } = await integration.transformEvents([makeEventStreamInput(message)]);
 

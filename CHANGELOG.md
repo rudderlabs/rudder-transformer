@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.145.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.144.0...v1.145.0) (2026-08-05)
+
+
+### Features
+
+* **braze:** add live integration test suite ([#5424](https://github.com/rudderlabs/rudder-transformer/issues/5424)) ([9bbc21a](https://github.com/rudderlabs/rudder-transformer/commit/9bbc21aa9964ea3511e6df1a1d1627e1d3cedfc6))
+* **google_adwords_enhanced_conversions:** enable GA batching framework ([#5423](https://github.com/rudderlabs/rudder-transformer/issues/5423)) ([c1dcb1d](https://github.com/rudderlabs/rudder-transformer/commit/c1dcb1d919f1623828359ed54b7451a99ce2a121))
+
+
+### Bug Fixes
+
+* **criteo_audience:** bump API version to 2026-07 ([#5412](https://github.com/rudderlabs/rudder-transformer/issues/5412)) ([259b362](https://github.com/rudderlabs/rudder-transformer/commit/259b362eb33921ae3a96b94166c37b05f61bd6a4))
+
 ## [1.144.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.143.0...v1.144.0) (2026-07-30)
 
 

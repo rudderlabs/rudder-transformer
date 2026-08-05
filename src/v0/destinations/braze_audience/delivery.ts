@@ -33,7 +33,6 @@ import {
   success,
   type ItemVerdict,
   type StatusOverrideMap,
-  messageFromResponse,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import { isIdentityAborted } from './utils';
 
@@ -41,8 +40,19 @@ const stats = require('../../../util/stats');
 
 type BrazeAudienceError = { type?: string; index?: number };
 
-export const extractBrazeAudienceErrorMessage = (response: unknown): string =>
-  messageFromResponse(response, ['message']);
+/**
+ * Braze puts its failure text on `message`; a body without one is handed back whole.
+ *
+ * Mirrors the legacy handler (`v1/destinations/braze_audience/networkHandler.ts`), with one
+ * deliberate difference: a string is returned bare rather than JSON-quoted. The per-job `error`
+ * is what live events display and what error reporting groups on, so `Invalid API key` beats
+ * `"Invalid API key"`.
+ */
+export const extractBrazeAudienceErrorMessage = (response: unknown): string => {
+  const message = (response as { message?: unknown } | undefined)?.message ?? response;
+  if (typeof message === 'string') return message || 'unknown error';
+  return JSON.stringify(message) ?? 'unknown error';
+};
 
 export const brazeAudienceStatusOverrides: StatusOverrideMap = {
   '2xx': (ctx, fallback) => {

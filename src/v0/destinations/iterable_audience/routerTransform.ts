@@ -4,6 +4,7 @@ import {
   BatchDestination,
   ChunkBatchStrategy,
   type TransformedEvent,
+  type DeliveryContext,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { processAudienceRecord } from '../../util/audienceUtils';
@@ -34,8 +35,8 @@ class IterableAudienceIntegration extends BatchDestination<
   // Delivery: partial failure arrives on a 2xx keyed by identity; see ./delivery.
   static readonly statusOverrides = iterableAudienceStatusOverrides;
 
-  static extractErrorMessage(response: unknown): string {
-    return extractIterableAudienceErrorMessage(response);
+  static failureReason(ctx: DeliveryContext): string {
+    return extractIterableAudienceErrorMessage(ctx.response);
   }
 
   // Headers are constant per (destination + connection) — build once.

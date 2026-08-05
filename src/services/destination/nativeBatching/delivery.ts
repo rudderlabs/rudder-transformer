@@ -170,58 +170,21 @@ export function resolveStatusOverrides(klass: unknown): StatusOverrideMap {
 // Error messages
 // ---------------------------------------------------------------------------
 
-/** Keys destinations commonly put a human-readable failure message under. */
-const DEFAULT_MESSAGE_KEYS = ['message', 'msg', 'error', 'description'] as const;
-
-const asMessage = (value: unknown): string | undefined => {
-  if (typeof value === 'string') return value.trim() || undefined;
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
-  return undefined;
-};
-
 /**
- * A human-readable failure message for a destination response body.
+ * The framework's default failure reason.
  *
- * The per-job `error` this ends up in is the field rudder-server actually keeps: the v1 adapter
- * stores it as the job's response body (`transformer_proxy_adapter.go:169`), which is what live
- * events show and what the error-reporting extractor groups on. `JSON.stringify(wholeBody)` — the
- * old default, and what the legacy handlers did by hand — makes that a blob to read and a poor
- * grouping key, and for a body that is already a bare string it just adds quotes.
+ * Deliberately does not look at the response body. `genericNetworkHandler` — the fallback every
+ * destination without its own handler already gets — builds exactly this kind of status-only
+ * string and leaves the body to travel separately in `destinationResponse`
+ * (`adapters/networkhandler/genericNetworkHandler.js`). There is no shared body-parsing
+ * convention on the legacy path to inherit: every destination that wants a message out of its
+ * body writes that itself, against the shape its own API returns.
  *
- * So: return a string as-is, look one level down for the usual message fields, and only stringify
- * when the body genuinely carries no message.
+ * So the framework stays out of it, and an integration that wants better reads its own body in
+ * its own `statusOverrides`.
  */
-export const messageFromResponse = (
-  response: unknown,
-  keys: readonly string[] = DEFAULT_MESSAGE_KEYS,
-): string => {
-  const direct = asMessage(response);
-  if (direct) return direct;
-
-  if (response && typeof response === 'object') {
-    const body = response as Record<string, unknown>;
-    for (const key of keys) {
-      if (key in body) {
-        const value = body[key];
-
-        const flat = asMessage(value);
-        if (flat) return flat;
-
-        if (value && typeof value === 'object') {
-          // One level of nesting covers `{ error: { message } }`, the other common shape.
-          const nested = asMessage((value as Record<string, unknown>).message);
-          if (nested) return nested;
-          // A named field holding structured detail and no message of its own — iterable's
-          // `params` is the example. That field is still the most specific thing on offer, so
-          // serialise it rather than widening back out to the entire body.
-          return JSON.stringify(value) || 'unknown error';
-        }
-      }
-    }
-  }
-
-  return JSON.stringify(response) || 'unknown error';
-};
+export const defaultFailureReason = (status: number): string =>
+  `[Generic Response Handler] Request failed with status: ${status}`;
 
 /** The framework's own status classification. Mirrors genericNetworkHandler's responseHandler. */
 export const classifyByStatus = (status: number, reason: string): Verdict => {

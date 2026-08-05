@@ -4,6 +4,7 @@ import {
   BatchDestination,
   ChunkBatchStrategy,
   type TransformedEvent,
+  type DeliveryContext,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { ACTION_ATTR_VALUE, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
@@ -22,8 +23,8 @@ class BrazeAudienceIntegration extends BatchDestination<
   // Delivery: partial failure arrives on a 2xx keyed by index into `attributes`; see ./delivery.
   static readonly statusOverrides = brazeAudienceStatusOverrides;
 
-  static extractErrorMessage(response: unknown): string {
-    return extractBrazeAudienceErrorMessage(response);
+  static failureReason(ctx: DeliveryContext): string {
+    return extractBrazeAudienceErrorMessage(ctx.response);
   }
 
   private readonly headers: Record<string, string>;

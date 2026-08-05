@@ -11,7 +11,7 @@ import type {
 import type { DeliveryContext, HandleResponseResult, StatusOverrideMap, Verdict } from './delivery';
 import {
   classifyByStatus,
-  messageFromResponse,
+  defaultFailureReason,
   resolveStatusOverrides,
   statusClassOf,
 } from './delivery';
@@ -48,7 +48,7 @@ export {
   authRevoked,
   perItem,
   reasonOf,
-  messageFromResponse,
+  defaultFailureReason,
 } from './delivery';
 
 // ---------------------------------------------------------------------------
@@ -64,7 +64,7 @@ export type BatchDestinationConstructor<
   TBody extends Record<string, unknown> = Record<string, unknown>,
 > = (new (destination: Destination, connection?: Connection) => BatchDestination<TBody>) & {
   handleResponse(ctx: DeliveryContext): HandleResponseResult;
-  extractErrorMessage(response: unknown): string;
+  failureReason(ctx: DeliveryContext): string;
   readonly statusOverrides: StatusOverrideMap;
 };
 
@@ -87,14 +87,21 @@ export abstract class BatchDestination<
    */
   static readonly statusOverrides: StatusOverrideMap = {};
 
-  /** Pull a human-readable error out of the destination's response body. */
-  static extractErrorMessage(response: unknown): string {
-    return messageFromResponse(response);
+  /**
+   * The reason carried by a failure verdict.
+   *
+   * The default is status-only and never reads the body: the framework has no general way to
+   * find a message in an arbitrary destination's response, and guessing at common field names
+   * generalises one destination's shape onto every other. An integration whose API returns
+   * usable error text overrides this with an extractor written against that API.
+   */
+  static failureReason(ctx: DeliveryContext): string {
+    return defaultFailureReason(ctx.status);
   }
 
   /** The framework's classification for this response. Passed to overrides as `fallback`. */
   static defaultVerdict(ctx: DeliveryContext): Verdict {
-    return classifyByStatus(ctx.status, this.extractErrorMessage(ctx.response));
+    return classifyByStatus(ctx.status, this.failureReason(ctx));
   }
 
   /**

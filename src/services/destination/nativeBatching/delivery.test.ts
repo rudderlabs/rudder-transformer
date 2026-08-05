@@ -179,8 +179,15 @@ describe('BatchDestination.handleResponse', () => {
   it('classifies itself when no entry matches at all', () => {
     expect(Dest.handleResponse(ctxFor(500, { e: 1 }))).toEqual({
       kind: 'retry',
-      reason: '{"e":1}',
+      reason: '[Generic Response Handler] Request failed with status: 500',
     });
+  });
+
+  it('does not read the response body for the default reason', () => {
+    // The framework has no general way to find a message in an arbitrary destination's body.
+    // A destination that wants its API's error text overrides `failureReason`.
+    const withMessage = Dest.handleResponse(ctxFor(500, { message: 'destination said this' }));
+    expect(withMessage).toEqual(Dest.handleResponse(ctxFor(500, { totally: 'different' })));
   });
 
   it('passes a fallback that produces the framework classification', () => {
@@ -191,16 +198,16 @@ describe('BatchDestination.handleResponse', () => {
     }
     expect(Declining.handleResponse(ctxFor(400, { e: 2 }))).toEqual({
       kind: 'abort',
-      reason: '{"e":2}',
+      reason: '[Generic Response Handler] Request failed with status: 400',
     });
   });
 
-  it('uses an overridden extractErrorMessage for the reason', () => {
+  it('uses an overridden failureReason for the reason', () => {
     class Custom extends Dest {
       static readonly statusOverrides: StatusOverrideMap = {};
 
-      static extractErrorMessage(response: unknown): string {
-        return (response as { msg: string }).msg;
+      static failureReason(ctx: DeliveryContext): string {
+        return (ctx.response as { msg: string }).msg;
       }
     }
     expect(Custom.handleResponse(ctxFor(400, { msg: 'nice message' }))).toEqual({

@@ -318,21 +318,50 @@ describe('braze_audience delivery — partial failure on a 2xx', () => {
 });
 
 describe('braze_audience delivery — error message extraction', () => {
+  const reasonFor = (response: unknown) =>
+    BrazeAudienceIntegration.failureReason({ ...ctxFor(500, {}, 1), response });
+
   it('prefers the response message over the whole body, unquoted', () => {
-    expect(BrazeAudienceIntegration.extractErrorMessage({ message: 'nope' })).toBe('nope');
+    expect(reasonFor({ message: 'nope' })).toBe('nope');
   });
 
   it('returns a bare string body as-is', () => {
-    expect(BrazeAudienceIntegration.extractErrorMessage('Invalid API key')).toBe('Invalid API key');
+    expect(reasonFor('Invalid API key')).toBe('Invalid API key');
   });
 
   it('falls back to the whole body when there is no message field', () => {
-    expect(BrazeAudienceIntegration.extractErrorMessage({ detail: 'down' })).toBe(
-      '{"detail":"down"}',
-    );
+    expect(reasonFor({ detail: 'down' })).toBe('{"detail":"down"}');
   });
 
   it('never returns an empty string', () => {
-    expect(BrazeAudienceIntegration.extractErrorMessage(undefined)).toBe('unknown error');
+    expect(reasonFor(undefined)).toBe('unknown error');
+  });
+
+  // The legacy handler (`v1/destinations/braze_audience/networkHandler.ts`) is
+  // `JSON.stringify(response?.message ?? response)`, which quotes a string message. Dropping
+  // the quotes is the one deliberate divergence; the selection itself is unchanged.
+  it('matches the legacy selection, minus the quoting', () => {
+    type BrazeErrorBody = Record<string, unknown> | null;
+
+    const legacy = (response: BrazeErrorBody): string =>
+      JSON.stringify(response?.message ?? response) || 'unknown error';
+
+    // Parsing rather than stripping quotes textually keeps escapes intact.
+    const unquote = (json: string): string => {
+      const parsed: unknown = JSON.parse(json);
+      return typeof parsed === 'string' ? parsed : json;
+    };
+
+    const bodies: BrazeErrorBody[] = [
+      { message: 'nope' },
+      { message: 'he said "hi"' },
+      { message: { a: 1 } },
+      { detail: 'down' },
+      null,
+    ];
+
+    for (const body of bodies) {
+      expect(reasonFor(body)).toBe(unquote(legacy(body)));
+    }
   });
 });

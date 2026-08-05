@@ -170,7 +170,7 @@ static handleResponse(ctx: DeliveryContext): HandleResponseResult {
 /** Framework-internal classification. Not an extension point. */
 private static defaultVerdict(ctx: DeliveryContext): Verdict {
   if (isHttpStatusSuccess(ctx.status)) return success();
-  const reason = this.extractErrorMessage(ctx.response);
+  const reason = this.failureReason(ctx);
   if (ctx.status === 429) return throttled(reason);
   if (isHttpStatusRetryable(ctx.status)) return retry(reason);
   return abort(reason);
@@ -183,7 +183,7 @@ private static defaultVerdict(ctx: DeliveryContext): Verdict {
 
 ```ts
 static readonly statusOverrides = {
-  422: (ctx) => retry(MyIntegration.extractErrorMessage(ctx.response)),
+  422: (ctx) => retry(MyIntegration.failureReason(ctx)),
 } as const;
 ```
 
@@ -194,7 +194,7 @@ This departs from `getAuthErrCategoryFromStCode` (`src/v0/util/index.js:2175-218
 ```ts
 static readonly statusOverrides = {
   401: (ctx, fallback) => {
-    const msg = MyIntegration.extractErrorMessage(ctx.response);
+    const msg = MyIntegration.failureReason(ctx);
     return /token (expired|invalid)/i.test(msg) ? authExpired(msg) : fallback();
   },
 } as const;
@@ -204,22 +204,22 @@ static readonly statusOverrides = {
 
 **The framework merges the map down the prototype chain.** Static properties are inherited, and lookup does walk the chain — but it resolves to a single object, the nearest one, and never merges keys across levels. So a subclass declaring `statusOverrides` would otherwise silently drop every entry an ancestor declared, with no type error and no runtime error. `resolveStatusOverrides` therefore collects each own-`statusOverrides` up the chain and merges child-over-parent, so a family-level map on `VDMV2ObjectDestination` keeps working when a concrete destination adds an entry of its own. The cost is that an inherited entry cannot be _removed_, only replaced — no destination in the migration set has reason to, and losing an entry silently is much worse than being unable to delete one.
 
-#### Locating the error message: `extractErrorMessage`
+#### Locating the error message: `failureReason`
 
 A verdict class is not enough on its own — the useful text is inside the destination's response body, and every destination buries it somewhere different. Today handlers dig it out by hand: `response?.params ?? response?.msg ?? response?.message` (`iterable_audience/strategies/audience-list.ts:124`), or fall back to `JSON.stringify` of the whole body (`postTransformation.ts:212`).
 
-Rather than have the classification path overridden purely to supply better wording, the extractor is its own overridable member:
+Rather than have the classification path overridden purely to supply better wording, the reason is its own overridable member:
 
 ```ts
-/** Pull a human-readable error out of the destination's response body. */
-static extractErrorMessage(response: unknown): string;
+/** The reason carried by a failure verdict. Default is status-only. */
+static failureReason(ctx: DeliveryContext): string;
 ```
 
-The framework calls it wherever it needs failure text — the top-level `message` and the per-job `error`. The default (§3.4) is `JSON.stringify(response)`, matching what `postTransformation.ts:212` produces today.
+The framework's `defaultVerdict` (§3.1) calls `this.failureReason`, so `this` resolves to the subclass and the override is picked up polymorphically — a destination whose only special need is error-text extraction overrides **one three-line method** and declares no `statusOverrides` at all.
 
-Splitting it out means a destination whose only special need is error-text extraction overrides **one three-line method** and declares no `statusOverrides` at all — the framework's own classification calls `this.extractErrorMessage`, so it picks the override up polymorphically:
+**The default does not read the response body.** It returns `[Generic Response Handler] Request failed with status: <n>`, which is what `genericNetworkHandler` — the fallback every unmigrated destination already gets — produces today; the body travels separately in `destinationResponse`.
 
-The framework's `defaultVerdict` (§3.1) calls `this.extractErrorMessage`, so `this` resolves to the subclass and the override is picked up without the destination declaring anything else.
+> **Amended after review.** The original design had this member as `extractErrorMessage(response)`, defaulting to a shared `messageFromResponse` helper that searched the body for `message`, then `msg`, then `error`, then `description`. That was withdrawn. Surveying the legacy path shows **there is no shared body-parsing convention to generalise**: customerio joins `reason`/`field`/`message` from its own `errors[]` (`v1/customerio/networkHandler.ts:24-31`), gaec reads `error.message` (`:103`), braze_audience does `JSON.stringify(response?.message ?? response)` (`:56`), iterable_audience uses the `??` chain above, and `genericNetworkHandler` reads nothing at all. A generic key-ordered search looks like it unifies those four but does not — it imposes one destination's field order on every other, and any quirk added for one leaks into all of them. Concretely, Iterable's `params`-before-`msg` precedence, encoded as a key list, meant an object-valued early key silently masked a good message on a later key **for every destination on the default list**. So body parsing moved into each integration's own `delivery.ts`, and the framework kept only the status-only default.
 
 No HTTP codes, no `statTags`, no `authErrorCategory`, no `destinationResponse` echo, no throwing, no v0-vs-v1 branching. That is problem 1.2 addressed.
 
@@ -284,26 +284,26 @@ TypeScript has no `abstract static`, and statics cannot reference class type par
 
 The legacy path already has a fallback handler — `src/adapters/networkhandler/genericNetworkHandler.js`, used whenever a destination has no handler of its own (`networkHandlerFactory.js:41`). The batching framework has the same property: a destination that needs no special delivery logic writes nothing.
 
-The framework's `handleResponse` and `defaultVerdict` are given in §3.1. The only other default is the error-text extractor:
+The framework's `handleResponse` and `defaultVerdict` are given in §3.1. The only other default is the failure reason:
 
 ```ts
 abstract class BatchDestination<TBody, TInputSchema> {
-  static extractErrorMessage(response: unknown): string {
-    return JSON.stringify(response);
+  static failureReason(ctx: DeliveryContext): string {
+    return `[Generic Response Handler] Request failed with status: ${ctx.status}`;
   }
 }
 ```
 
-`defaultVerdict` mirrors `genericNetworkHandler`'s `responseHandler` one-for-one: success passes the status through, failure classifies by status. The only difference is that the generic handler throws `NetworkError` while the bridge (§3.7) throws `TransformerProxyError` — both reach the same `generateErrorObject` path in `postTransformation.ts`.
+`defaultVerdict` mirrors `genericNetworkHandler`'s `responseHandler` one-for-one: success passes the status through, failure classifies by status, and the reason is the same status-only string the generic handler builds — neither reads the response body. The only difference is that the generic handler throws `NetworkError` while the bridge (§3.7) throws `TransformerProxyError` — both reach the same `generateErrorObject` path in `postTransformation.ts`.
 
 That leaves a destination exactly two things it can declare:
 
-| declare               | when                                                                   | cost             |
-| --------------------- | ---------------------------------------------------------------------- | ---------------- |
-| `extractErrorMessage` | the error text is buried somewhere specific                            | a few lines      |
-| `statusOverrides[s]`  | that status needs the response body read, or a different verdict class | a small function |
+| declare              | when                                                                   | cost             |
+| -------------------- | ---------------------------------------------------------------------- | ---------------- |
+| `failureReason`      | the error text is buried somewhere specific in the body                | a few lines      |
+| `statusOverrides[s]` | that status needs the response body read, or a different verdict class | a small function |
 
-Only `statusOverrides` needs the builders, and only it cannot be defaulted — there is nothing sensible to default when parsing a `batch_index` array. Statics are inherited, so `VDMV2ObjectDestination` and the audience base classes can supply a family-level `extractErrorMessage`, subject to the `statusOverrides` shadowing caveat in §3.1.
+Only `statusOverrides` needs the builders, and only it cannot be defaulted — there is nothing sensible to default when parsing a `batch_index` array. Statics are inherited, so `VDMV2ObjectDestination` and the audience base classes can supply a family-level `failureReason`, subject to the `statusOverrides` shadowing caveat in §3.1.
 
 ### 3.5 Item→job mapping: explicitly out of scope
 
@@ -414,7 +414,7 @@ Status derivation:
 
   The `ctx.status` non-2xx condition is load-bearing, not defensive. A destination can return **HTTP 200 with a failure in the body** — mixpanel's Engage and Groups APIs do exactly that (`src/v1/destinations/mp/utils.ts:154-165`: success status, `response.error` present, all jobs marked 400). Without the condition, a uniform `abort` on a 200 would echo `200` into every job's `statusCode`, and `isSuccessStatus(200)` in rudder-server (`router/misc.go:19-21`) would mark genuinely failed events as delivered — silent data loss. The condition costs nothing for customerio, whose failure branches always carry a non-2xx status (§5 rows 2–3 are unaffected).
 
-- **Per-job `error`** — uniform failure → `extractErrorMessage(ctx.response)`, whose default is the `JSON.stringify` that `postTransformation.ts:212` produces today. Mixed → that item's verdict `reason`, or `'success'`.
+- **Per-job `error`** — uniform failure → the verdict `reason`, which is `failureReason(ctx)` unless a `statusOverride` supplied its own. Mixed → that item's verdict `reason`, or `'success'`.
 - **`dontBatch`** — `retry(reason, { dontBatch: true })` sets `metadata.dontBatch = true` on that job state.
 
 The "uniform failure echoes `ctx.status` per job" rule is not an artifact of customerio. `iterable_audience` does the same by hand — `rudderJobMetadata.map((metadata) => ({ statusCode: status, … }))` (`audience-list.ts:127-131`) — so the rule generalises to the next destination migrated.
@@ -488,7 +488,7 @@ static readonly statusOverrides = {
 
 - **That is customerio's entire delivery contract** — one map entry. Plain success and every failure status are handled by the framework, so there is no `handleResponse` override, no `super` call, no `isHttpStatusSuccess` check, and no hardcoded reason string. Compare the 105-line `networkHandler.ts` it replaces.
 - The 207 loop is driven from the **request body**, not `ctx.jobs` — reading `batch_index` against the array it actually indexes. For customerio the two have equal length; this is simply the correct reading of the API.
-- **customerio declares no other override and does not touch `extractErrorMessage`.** It inherits `JSON.stringify(response)`, byte-identical to what `postTransformation.ts:212` produces today, so per-job `error` text does not change, and §5's parity table holds unchanged.
+- **customerio declares no other override and does not touch `failureReason`.** Its per-job `error` on a whole-batch failure is produced by `postTransformation.ts:212` from the thrown error's `destinationResponse`, not by `failureReason`, so it stays byte-identical and §5's parity table holds unchanged. Only the batch-level `message` moves — see behaviour change 1.
 
 #### Behaviour change 1: the top-level `message` text
 
@@ -502,7 +502,7 @@ The framework generates the top-level `message`, so the three current strings ch
 
 `message` is human-facing diagnostic text, not part of the delivery contract — no per-job field derives from it. Adding a `message` override to every builder to preserve three strings would put API noise into exactly the surface this design exists to simplify. So: accept the drift and update the expectations in `test/integrations/destinations/customerio/dataDelivery/data.ts` and `src/v1/destinations/customerio/networkHandler.test.ts`.
 
-The governing rule is that framework-generated text may change while destination-specific error text may not — which is why customerio inherits the default `extractErrorMessage` and per-job `error` stays byte-identical.
+The governing rule is that framework-generated text may change while destination-specific error text may not — which is why customerio inherits the default `failureReason` and per-job `error` stays byte-identical.
 
 #### Behaviour change 2: customerio stops emitting `authErrorCategory`
 
@@ -530,8 +530,8 @@ each subscriber in the request body is tested against those identity sets.
 ```ts
 static readonly statusOverrides = iterableAudienceStatusOverrides; // { '2xx': handleSuccessStatus }
 
-static extractErrorMessage(response: unknown): string {
-  return extractIterableAudienceErrorMessage(response); // params ?? msg ?? message
+static failureReason(ctx: DeliveryContext): string {
+  return extractIterableAudienceErrorMessage(ctx.response); // params ?? msg ?? message
 }
 ```
 
@@ -539,7 +539,7 @@ Four things to note:
 
 - **`'2xx'`, not `200`.** Its dispatch today is `!isHttpStatusSuccess(status)` (`src/v1/destinations/iterable/strategies/base.ts:10`), so the class key is what preserves the contract.
 - Two branches deliberately report **success** where a naive reading would abort, and both carry over verbatim: a GDPR-forgotten user is counted and accepted rather than aborted (`audience-list.ts:88-98`), and `notFound` on an unsubscribe is a no-op success (`:100-103`). The `stats.counter` call sits inside the handler, which the contract permits (§2, conclusion 2), and the constraint on never tagging the identifier value carries over as a comment.
-- `extractErrorMessage` carries over `handleError`'s `response?.params ?? response?.msg ?? response?.message` chain (`audience-list.ts:124-125`), which is exactly what that declaration point exists for.
+- `failureReason` carries over `handleError`'s `response?.params ?? response?.msg ?? response?.message` chain (`audience-list.ts:124-125`), which is exactly what that declaration point exists for. `params` beating `msg` when both are present is that chain's behaviour, kept deliberately and pinned by a test.
 - The non-2xx path needs **no override**. `defaultVerdict` already aborts a 401 and retries a 500 with no auth inference (§3.1), which is what the legacy handler's empty `authErrorCategory` was expressing — Iterable list APIs are Api-Key authenticated, not OAuth (`audience-list.ts:138-140`).
 
 `BaseStrategy`, `AudienceListStrategy` and the 18-line `networkHandler.ts` are deleted once the framework owns delivery for this destination.
@@ -563,15 +563,15 @@ static readonly statusOverrides = {
   // Google Ads is a genuine OAuth destination: auth category comes from the body.
   '4xx': (ctx: DeliveryContext, fallback) => {
     const category = getAuthErrCategory({ response: ctx.response, status: ctx.status });
-    const msg = GaecIntegration.extractErrorMessage(ctx.response);
+    const msg = GaecIntegration.failureReason(ctx);
     if (category === REFRESH_TOKEN) return authExpired(msg);
     if (category === AUTH_STATUS_INACTIVE) return authRevoked(msg);
     return fallback();
   },
 } as const;
 
-static extractErrorMessage(response: unknown): string {
-  return (response as any)?.error?.message || '';
+static failureReason(ctx: DeliveryContext): string {
+  return (ctx.response as any)?.error?.message || 'unknown error';
 }
 ```
 
@@ -588,8 +588,8 @@ Braze answers `/users/track/bulk` with a **2xx** even when individual records we
 ```ts
 static readonly statusOverrides = brazeAudienceStatusOverrides; // { '2xx': ... }
 
-static extractErrorMessage(response: unknown): string {
-  return extractBrazeAudienceErrorMessage(response); // JSON.stringify(message ?? response)
+static failureReason(ctx: DeliveryContext): string {
+  return extractBrazeAudienceErrorMessage(ctx.response); // message ?? response, unquoted
 }
 ```
 
@@ -738,7 +738,7 @@ The success-path per-job `error` changes because §3.6 rule 3 stops running the 
 
 ## 6. Scope
 
-**In:** `delivery.ts` (the `Verdict` type, builders, `DeliveryContext`, the bridge); the framework-owned `handleResponse` / `defaultVerdict` on `BatchDestination` plus the two declaration points, `statusOverrides` and `extractErrorMessage`; the `isBatchingFrameworkDeliveryEnabled` flag and the branch it gates in `deliver()`; **`statusOverrides` for the four destinations that need them (§4.1-4.4); `test_destination` needs none (§4.5)**; unit tests for the bridge, override precedence and `fallback`, the status derivation, and the `perItem` bounds guard; **enabling `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS` via `envOverrides` on all five destinations' `dataDelivery` component tests, and regenerating their expectations** so the framework path is what CI actually exercises rather than dead code behind an off flag.
+**In:** `delivery.ts` (the `Verdict` type, builders, `DeliveryContext`, the bridge); the framework-owned `handleResponse` / `defaultVerdict` on `BatchDestination` plus the two declaration points, `statusOverrides` and `failureReason`; the `isBatchingFrameworkDeliveryEnabled` flag and the branch it gates in `deliver()`; **`statusOverrides` for the four destinations that need them (§4.1-4.4); `test_destination` needs none (§4.5)**; unit tests for the bridge, override precedence and `fallback`, the status derivation, and the `perItem` bounds guard; **enabling `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS` via `envOverrides` on all five destinations' `dataDelivery` component tests, and regenerating their expectations** so the framework path is what CI actually exercises rather than dead code behind an off flag.
 
 **Out, and deliberately so:**
 

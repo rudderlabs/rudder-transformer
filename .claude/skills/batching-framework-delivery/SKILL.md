@@ -47,8 +47,8 @@ export const myStatusOverrides: StatusOverrideMap = {
 class MyIntegration extends BatchDestination<TBody> {
   static readonly statusOverrides = myStatusOverrides;
 
-  // Optional: pull a human-readable message out of the destination's error body.
-  static extractErrorMessage(response: unknown): string { ... }
+  // Optional: the reason on a failure verdict. Default is status-only and never reads the body.
+  static failureReason(ctx: DeliveryContext): string { ... }
 }
 ```
 
@@ -58,6 +58,14 @@ class MyIntegration extends BatchDestination<TBody> {
 - `handleResponse` is **framework-owned**. Never override it or call `super`.
 
 `DeliveryContext` carries `status`, `response` (parsed body), `jobs` (one `ProxyMetdata` per job, in order), `request` (what was sent) and `destinationConfig`.
+
+## Error messages belong to the integration
+
+`failureReason`'s default is status-only — `[Generic Response Handler] Request failed with status: <n>` — and **never inspects the response body**. That mirrors `genericNetworkHandler`, the fallback every unmigrated destination already gets, which likewise leaves the body to travel in `destinationResponse`.
+
+Do not add body-parsing to the framework. There is no shared convention to generalise: on the legacy path every destination extracts its message itself, against the shape its own API returns (`buildErrorMessage` joining `reason`/`field`/`message` for customerio, `error.message` for gaec, `params ?? msg ?? message` for iterable_audience). A generic "look for `message`, then `msg`, then `error`" helper looks like it unifies them but does not — it just imposes one destination's field order on every other, and any quirk added for one leaks into all of them.
+
+So: if your destination's errors are worth reading, write the extractor in your own `delivery.ts` and point `failureReason` at it. Return the string **bare** — the per-job `error` is what live events display and what error reporting groups on, so `Invalid API key` beats `"Invalid API key"`.
 
 ## Verdicts
 

@@ -159,7 +159,7 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
               destinationId: 'default-destinationId',
               workspaceId: 'default-workspaceId',
             },
-            message: '[CUSTOMERIO] Bad Request',
+            message: '[CUSTOMERIO] [Generic Response Handler] Request failed with status: 400',
             response: [
               {
                 error: JSON.stringify({ message: 'Bad Request' }),
@@ -216,7 +216,7 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
               destinationId: 'default-destinationId',
               workspaceId: 'default-workspaceId',
             },
-            message: '[CUSTOMERIO] Unauthorized',
+            message: '[CUSTOMERIO] [Generic Response Handler] Request failed with status: 401',
             response: [
               {
                 error: JSON.stringify({ message: 'Unauthorized' }),

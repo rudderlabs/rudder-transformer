@@ -193,7 +193,20 @@ describe('iterable_audience delivery — the two deliberate successes', () => {
   });
 });
 
-describe('iterable_audience delivery — extractErrorMessage', () => {
+describe('iterable_audience delivery — failureReason', () => {
+  const reasonFor = (response: unknown) =>
+    IterableAudienceIntegration.failureReason({ ...ctxFor(500, {}, []), response });
+
+  /**
+   * The legacy handler JSON-quoted everything it returned; the framework returns a string bare.
+   * Undoing just the quoting keeps the comparison about which field was *selected*, not how it
+   * was formatted. Parsing rather than stripping quotes textually keeps escapes intact.
+   */
+  const unquote = (json: string): string => {
+    const parsed: unknown = JSON.parse(json);
+    return typeof parsed === 'string' ? parsed : json;
+  };
+
   const cases = [
     // Structured `params` has no message of its own, so it is serialised — as the legacy handler
     // did. A plain string is returned as-is rather than JSON-quoted.
@@ -207,6 +220,21 @@ describe('iterable_audience delivery — extractErrorMessage', () => {
   ];
 
   it.each(cases)('reads $name', ({ response, expected }) => {
-    expect(IterableAudienceIntegration.extractErrorMessage(response)).toBe(expected);
+    expect(reasonFor(response)).toBe(expected);
+  });
+
+  // Iterable's real envelope is `{ msg, code, params }` — both fields present at once. The legacy
+  // handler's `??` chain (`v1/destinations/iterable_audience/strategies/audience-list.ts`) takes
+  // `params` whenever it is non-null, including when it is empty. Pinned so the precedence
+  // cannot drift silently.
+  type IterableErrorBody = { msg?: string; message?: string; params?: unknown };
+
+  it.each<{ name: string; response: IterableErrorBody }>([
+    { name: 'populated params beats msg', response: { msg: 'generic', params: { bad: 'x' } } },
+    { name: 'even empty params beats msg', response: { msg: 'generic', params: {} } },
+    { name: 'null params yields to msg', response: { msg: 'generic', params: null } },
+  ])('$name', ({ response }) => {
+    const legacy = JSON.stringify(response.params ?? response.msg ?? response.message);
+    expect(reasonFor(response)).toBe(unquote(legacy));
   });
 });

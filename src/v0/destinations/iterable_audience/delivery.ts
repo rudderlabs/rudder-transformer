@@ -28,7 +28,6 @@ import {
   success,
   type ItemVerdict,
   type StatusOverrideMap,
-  messageFromResponse,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import { createBatchErrorChecker } from '../../../v1/destinations/iterable/utils';
 import type { IterableSubscriber } from '../../../v1/destinations/iterable_audience/types';
@@ -52,8 +51,23 @@ const matchesIdentifier = (subscriber: IterableSubscriber, lookups: IdentifierLo
   (subscriber.email ? lookups.emails.has(subscriber.email.toLowerCase()) : false) ||
   (subscriber.userId ? lookups.userIds.has(subscriber.userId) : false);
 
-export const extractIterableAudienceErrorMessage = (response: unknown): string =>
-  messageFromResponse(response, ['params', 'msg', 'message']);
+/**
+ * Iterable's error envelope is `{ msg, code, params }`.
+ *
+ * `params` wins over `msg` even when both are present — the structured detail names the offending
+ * identifiers, where `msg` is a generic summary. That precedence is the legacy handler's `??`
+ * chain (`v1/destinations/iterable_audience/strategies/audience-list.ts`), kept deliberately.
+ *
+ * One difference from that handler: a string is returned bare rather than JSON-quoted.
+ */
+export const extractIterableAudienceErrorMessage = (response: unknown): string => {
+  const body = response as { params?: unknown; msg?: unknown; message?: unknown } | undefined;
+  // The trailing `?? response` is the framework default the legacy handler lacked: a body with
+  // none of these fields is shown whole rather than replaced by a placeholder that says nothing.
+  const message = body?.params ?? body?.msg ?? body?.message ?? response;
+  if (typeof message === 'string') return message || 'unknown error format';
+  return JSON.stringify(message) ?? 'unknown error format';
+};
 
 export const iterableAudienceStatusOverrides: StatusOverrideMap = {
   '2xx': (ctx) => {

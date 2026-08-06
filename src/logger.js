@@ -155,7 +155,7 @@ const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, meth
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {
     const reqLogArgs = [identifierMsg, { metadata: filteredMetadata, url, body, method }];
-    log(logger.info, reqLogArgs);
+    log(logger.warn, reqLogArgs);
   }
 };
 
@@ -165,7 +165,7 @@ const responseLog = (identifierMsg, { metadata, responseDetails: { body, status,
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {
     const resLogArgs = [identifierMsg, { metadata: filteredMetadata, body, status, headers }];
-    log(logger.info, resLogArgs);
+    log(logger.warn, resLogArgs);
   }
 };
 

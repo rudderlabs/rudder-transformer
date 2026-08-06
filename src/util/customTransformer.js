@@ -2,7 +2,7 @@ const ivm = require('isolated-vm');
 const { compileUserLibrary } = require('../util/ivmFactory');
 const { validateIp } = require('./utils');
 const fetch = require('node-fetch');
-const { getTransformationCode } = require('./customTransforrmationsStore');
+const { getTransformationCode } = require('./customTransformationsStore');
 const { userTransformHandlerV1 } = require('./customTransformer-v1');
 const { parserForImport } = require('./parser');
 const stats = require('./stats');
@@ -335,7 +335,7 @@ async function userTransformHandler(
     const res = testMode ? trRevCode : await getTransformationCode(versionId);
     if (res) {
       // Events contain message and destination. We take the message part of event and run transformation on it.
-      // And put back the destination after transforrmation
+      // And put back the destination after transformation
       const eventMessages = events.map((event) => event.message);
       const eventsMetadata = {};
       for (const ev of events) {

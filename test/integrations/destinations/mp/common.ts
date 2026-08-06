@@ -28,7 +28,6 @@ const sampleDestination: Destination = {
 const destinationWithSetOnceProperty = {
   hasDynamicConfig: false,
   Config: {
-    apiSecret: secret1,
     dataResidency: 'us',
     identityMergeApi: 'simplified',
     setOnceProperties: [

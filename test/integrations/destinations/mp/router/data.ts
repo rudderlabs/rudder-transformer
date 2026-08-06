@@ -1,6 +1,6 @@
 import { overrideDestination } from '../../../testUtils';
 import { sampleDestination } from '../common';
-import { authHeader2, secret1, secret2, secret3 } from '../maskedSecrets';
+import { authHeader2, secret1, secret2 } from '../maskedSecrets';
 
 export const data = [
   {
@@ -16,7 +16,6 @@ export const data = [
             {
               description: 'Page call',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 useOldMapping: true,
                 strictMode: true,
@@ -77,7 +76,6 @@ export const data = [
               description:
                 'Track: set device id and user id when simplified id merge api is selected',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 identityMergeApi: 'simplified',
                 strictMode: true,
@@ -125,7 +123,6 @@ export const data = [
             {
               description: 'Identify call to create anonymous user profile',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 useOldMapping: true,
                 strictMode: true,
@@ -190,7 +187,6 @@ export const data = [
               description:
                 'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 identityMergeApi: 'simplified',
                 strictMode: true,
@@ -255,7 +251,6 @@ export const data = [
             {
               description: 'Merge call with strict mode enabled',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 strictMode: true,
               }),
@@ -301,7 +296,6 @@ export const data = [
             {
               description: 'Group call',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 groupKeySettings: [
                   {
@@ -364,7 +358,6 @@ export const data = [
             {
               description: 'Group key not present in traits',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 groupKeySettings: [
                   {
@@ -489,7 +482,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
@@ -600,7 +592,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   identityMergeApi: 'simplified',
@@ -741,7 +732,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
@@ -825,7 +815,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   groupKeySettings: [{ groupKey: 'company' }],
@@ -863,7 +852,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
@@ -901,7 +889,6 @@ export const data = [
             {
               description: 'Page call',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 useOldMapping: true,
                 strictMode: true,
               }),
@@ -961,7 +948,6 @@ export const data = [
               description:
                 'Track: set device id and user id when simplified id merge api is selected',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 identityMergeApi: 'simplified',
                 strictMode: true,
@@ -1009,7 +995,6 @@ export const data = [
             {
               description: 'Identify call to create anonymous user profile',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 useOldMapping: true,
                 strictMode: true,
@@ -1074,7 +1059,6 @@ export const data = [
               description:
                 'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 identityMergeApi: 'simplified',
                 strictMode: true,
@@ -1139,7 +1123,6 @@ export const data = [
             {
               description: 'Merge call with strict mode enabled',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 strictMode: true,
               }),
@@ -1185,7 +1168,6 @@ export const data = [
             {
               description: 'Group call',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 groupKeySettings: [
                   {
@@ -1248,7 +1230,6 @@ export const data = [
             {
               description: 'Group key not present in traits',
               destination: overrideDestination(sampleDestination, {
-                apiSecret: secret3,
                 token: secret2,
                 groupKeySettings: [
                   {
@@ -1371,7 +1352,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
@@ -1481,7 +1461,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   identityMergeApi: 'simplified',
@@ -1621,7 +1600,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,
@@ -1705,7 +1683,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   groupKeySettings: [{ groupKey: 'company' }],
@@ -1743,7 +1720,6 @@ export const data = [
                 hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
-                  apiSecret: secret3,
                   token: secret2,
                   prefixProperties: true,
                   useNativeSDK: false,

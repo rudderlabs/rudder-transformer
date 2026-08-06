@@ -26,10 +26,16 @@ import { CustomerIOV2Payload, CustomerIOV2Identifiers, CustomerIODestination } f
 export const toUnixSeconds = (v: unknown): number =>
   Math.floor(new Date(v as string).getTime() / 1000);
 
+const personIdentifierKey = (identifier: unknown): 'email' | 'id' =>
+  validator.isEmail(String(identifier)) ? 'email' : 'id';
+
 const personIdentifiers = (message): CustomerIOV2Identifiers => {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
   const email = getFieldValueFromMessage(message, 'email');
   if (userId) {
+    if (personIdentifierKey(userId) === 'email') {
+      return { email: String(userId) };
+    }
     return { id: userId };
   }
   if (email) {
@@ -142,8 +148,8 @@ export const buildScreen = (message, action: 'screen', evName): CustomerIOV2Payl
 
 export const buildMerge = (message): CustomerIOV2Payload => {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
-  const primaryKey = validator.isEmail(String(userId)) ? 'email' : 'id';
-  const secondaryKey = validator.isEmail(String(message.previousId)) ? 'email' : 'id';
+  const primaryKey = personIdentifierKey(userId);
+  const secondaryKey = personIdentifierKey(message.previousId);
   return {
     type: 'person',
     action: 'merge',
@@ -160,9 +166,7 @@ export const buildObject = (message): CustomerIOV2Payload => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.OBJECT_EVENTS.name],
   )!;
   const id = mapped.userId || mapped.email;
-  const cioRelationships = id
-    ? [{ identifiers: { [validator.isEmail(String(id)) ? 'email' : 'id']: id } }]
-    : [];
+  const cioRelationships = id ? [{ identifiers: { [personIdentifierKey(id)]: id } }] : [];
   return {
     type: 'object',
     action:

@@ -7,7 +7,6 @@ dist/
 dist-test/
 **/warehouse/
 **/lambda/
-**/openfaas/
 *.md
 *.test.js
 *.test.ts

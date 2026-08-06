@@ -1,7 +1,7 @@
 jest.mock('../../src/util/fetch', () => ({ fetchWithProxy: jest.fn() }));
 
 const { fetchWithProxy } = require('../../src/util/fetch');
-const { getTransformationCode } = require('../../src/util/customTransforrmationsStore');
+const { getTransformationCode } = require('../../src/util/customTransformationsStore');
 const { getTrackingPlan } = require('../../src/util/trackingPlan');
 
 const okResponse = (body) => ({ status: 200, json: async () => body });

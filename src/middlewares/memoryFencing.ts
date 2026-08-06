@@ -49,10 +49,6 @@ const ROUTE_NORMALIZERS: Array<{ pattern: RegExp; route: string }> = [
   { pattern: /^\/deleteUsers$/, route: '/deleteUsers' },
   { pattern: /^\/customTransform$/, route: '/customTransform' },
   {
-    pattern: /^\/workspaces\/[^/]+\/reconcileFunction$/,
-    route: '/workspaces/:wId/reconcileFunction',
-  },
-  {
     pattern: /^\/test-router\/custom_audience\/parse-template$/,
     route: '/test-router/custom_audience/parse-template',
   },

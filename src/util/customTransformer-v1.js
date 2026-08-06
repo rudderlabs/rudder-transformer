@@ -127,11 +127,6 @@ async function userTransformHandlerV1(
   return { transformedEvents, logs };
 }
 
-async function setUserTransformHandlerV1() {
-  return { success: true };
-}
-
 module.exports = {
   userTransformHandlerV1,
-  setUserTransformHandlerV1,
 };

@@ -1092,10 +1092,10 @@ const isLookupFieldUnique = async (
 };
 
 /**
- * Emit a per-event flow counter so HubSpot traffic can be sliced by pipeline during rollout.
+ * Emit a per-event flow counter so HubSpot traffic can be sliced by pipeline.
  * Called statically from each terminal branch, so flow / code_path / operation are known literals:
  *   flow         event_stream | retl
- *   code_path    retl (dedicated gated rETL pipeline) | es_retl (shared es-retl pipeline)
+ *   code_path    retl (dedicated rETL pipeline) | es_retl (shared es-retl pipeline)
  *   operation    create | update | upsert | association | track
  *   api_version  v1 (legacyApi) | v3 (newApi)                       [from Config]
  *   auth_type    private_app (newPrivateAppApi) | api_key (legacy)  [from Config]

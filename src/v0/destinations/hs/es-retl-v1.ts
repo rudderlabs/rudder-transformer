@@ -5,19 +5,15 @@ import {
   ConfigurationError,
   TransformationError,
 } from '@rudderstack/integrations-lib';
-import { MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  defaultPatchRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  addExternalIdToTraits,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
   getDestinationExternalID,
-  getDestinationExternalIDInfoForRetl,
   sortBatchesByMinJobId,
 } from '../../util';
 import {
@@ -26,21 +22,13 @@ import {
   MAX_BATCH_SIZE,
   IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH,
   IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH,
-  OBJECT_TYPE_PLACEHOLDER,
-  MAX_BATCH_SIZE_CRM_OBJECT,
-  MAX_BATCH_SIZE_CRM_CONTACT,
-  CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
   BATCH_CONTACT_ENDPOINT_PATH,
   TRACK_ENDPOINT_PATH,
-  BATCH_CREATE_PATH_SUFFIX,
-  BATCH_UPDATE_PATH_SUFFIX,
 } from './config';
 import {
   getTransformedJSON,
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
-  getHsSearchId,
-  populateTraits,
   removeHubSpotSystemField,
   recordTransformFlow,
 } from './util';
@@ -74,75 +62,35 @@ const processLegacyIdentify = async (
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
   const { Config } = destination;
-  let traits = getFieldValueFromMessage(message, 'traits');
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  const operation = get(message, 'context.hubspotOperation');
-  // if mappedToDestination is set true, then add externalId to traits
-  // rETL source
+  const traits = getFieldValueFromMessage(message, 'traits');
   let endpoint: string = '';
   let endpointPath: string = '';
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  if (
-    mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString()) &&
-    operation
-  ) {
-    addExternalIdToTraits(message);
-    const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'HS');
-    const objectType = externalIdInfo?.objectType;
-    if (!objectType) {
-      throw new InstrumentationError('objectType not found');
-    }
-    if (operation === 'createObject') {
-      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
-        OBJECT_TYPE_PLACEHOLDER,
-        objectType,
-      );
-      endpoint = `${BASE_ENDPOINT}${endpointPath}`;
-      recordTransformFlow(destination, 'retl', 'es_retl', 'create');
-    } else if (operation === 'updateObject' && getHsSearchId(message)) {
-      const { hsSearchId } = getHsSearchId(message);
-      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
-        OBJECT_TYPE_PLACEHOLDER,
-        objectType,
-      );
-      endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
-      response.method = defaultPatchRequestConfig.requestMethod;
-      recordTransformFlow(destination, 'retl', 'es_retl', 'update');
-    }
-
-    traits = await populateTraits(propertyMap, traits, destination, metadata);
-    traits = removeHubSpotSystemField(traits);
-    response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
-    response.source = 'rETL';
-    response.operation = operation;
-  } else {
-    if (!traits || !traits.email) {
-      throw new InstrumentationError('Identify without email is not supported.');
-    }
-    const { email } = traits;
-
-    let userProperties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
-    userProperties = removeHubSpotSystemField(userProperties);
-
-    const payload = {
-      properties: formatPropertyValueForIdentify(userProperties),
-    };
-
-    if (email) {
-      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH.replace(
-        ':contact_email',
-        email,
-      )}`;
-      endpointPath = IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH;
-    } else {
-      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
-      endpointPath = IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH;
-    }
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-    recordTransformFlow(destination, 'event_stream', 'es_retl', 'upsert');
+  if (!traits || !traits.email) {
+    throw new InstrumentationError('Identify without email is not supported.');
   }
+  const { email } = traits;
+
+  let userProperties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
+  userProperties = removeHubSpotSystemField(userProperties);
+
+  const payload = {
+    properties: formatPropertyValueForIdentify(userProperties),
+  };
+
+  if (email) {
+    endpoint = `${BASE_ENDPOINT}${IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH.replace(
+      ':contact_email',
+      email,
+    )}`;
+    endpointPath = IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH;
+  } else {
+    endpoint = `${BASE_ENDPOINT}${IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
+    endpointPath = IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH;
+  }
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  recordTransformFlow(destination, 'event_stream', 'es_retl', 'upsert');
 
   response.endpoint = endpoint;
   response.endpointPath = endpointPath;
@@ -220,88 +168,12 @@ const processLegacyTrack = async (
   return response;
 };
 
-// Seggregating update and create calls for retl sources
-const batchIdentifyForrETL = (
-  arrayChunksIdentify: HubSpotBatchProcessingItem[][],
-  batchedResponseList: HubSpotRouterTransformationOutput[],
-  batchOperation: string,
-): HubSpotRouterTransformationOutput[] => {
-  // list of chunks [ [..], [..] ]
-  arrayChunksIdentify.forEach((chunk) => {
-    const identifyResponseList: Record<string, unknown>[] = [];
-    const metadata: Metadata[] = [];
-
-    // extracting message, destination value
-    // from the first event in a batch
-    const { message, destination } = chunk[0];
-
-    let batchEventResponse = defaultBatchRequestConfig();
-
-    if (batchOperation === 'createObject') {
-      // create operation
-      chunk.forEach((ev) => {
-        // if source is of rETL
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-        });
-        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
-        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
-
-        metadata.push(ev.metadata);
-      });
-    } else if (batchOperation === 'updateObject') {
-      // update operation
-      chunk.forEach((ev) => {
-        const updateEndpoint = ev.message.endpoint;
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-          id: updateEndpoint.split('/').pop(),
-        });
-        batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
-          0,
-          updateEndpoint.lastIndexOf('/'),
-        )}${BATCH_UPDATE_PATH_SUFFIX}`;
-        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_UPDATE_PATH_SUFFIX}`;
-
-        metadata.push(ev.metadata);
-      });
-    } else {
-      throw new TransformationError('rETL -  Unknow hubspot operation');
-    }
-
-    batchEventResponse.batchedRequest.body.JSON = {
-      inputs: identifyResponseList,
-    };
-
-    batchEventResponse.batchedRequest.headers = message.headers!;
-    batchEventResponse.batchedRequest.params = message.params!;
-
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata,
-      destination,
-    };
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true,
-      ),
-    );
-  });
-  return batchedResponseList;
-};
-
 const legacyBatchEvents = (
   destEvents: HubSpotBatchProcessingItem[],
 ): HubSpotRouterTransformationOutput[] => {
-  let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
+  const batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   const trackResponseList: HubSpotRouterTransformationOutput[] = [];
   const eventsChunk: HubSpotBatchProcessingItem[] = [];
-  const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
-  const updateAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
-  let maxBatchSize: number | undefined;
   destEvents.forEach((event) => {
     // handler for track call
     if (event.message.messageType === 'track') {
@@ -325,47 +197,11 @@ const legacyBatchEvents = (
           batchedResponse.destination,
         ),
       );
-    } else if (event.message.source && event.message.source === 'rETL') {
-      const { endpoint } = event.message;
-      maxBatchSize = endpoint.includes('contact')
-        ? MAX_BATCH_SIZE_CRM_CONTACT
-        : MAX_BATCH_SIZE_CRM_OBJECT;
-      const { operation } = event.message;
-      if (operation) {
-        if (operation === 'createObject') {
-          createAllObjectsEventChunk.push(event);
-        } else if (operation === 'updateObject') {
-          updateAllObjectsEventChunk.push(event);
-        }
-      } else {
-        throw new TransformationError('rETL -  Error in getting operation');
-      }
     } else {
       // making chunks for identify
       eventsChunk.push(event);
     }
   });
-  const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, maxBatchSize);
-
-  const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, maxBatchSize);
-  // batching up 'create' all objects endpoint chunks
-  if (arrayChunksIdentifyCreateObjects.length > 0) {
-    batchedResponseList = batchIdentifyForrETL(
-      arrayChunksIdentifyCreateObjects,
-      batchedResponseList,
-      'createObject',
-    );
-  }
-
-  // batching up 'update' all objects endpoint chunks
-  if (arrayChunksIdentifyUpdateObjects.length > 0) {
-    batchedResponseList = batchIdentifyForrETL(
-      arrayChunksIdentifyUpdateObjects,
-      batchedResponseList,
-      'updateObject',
-    );
-  }
-
   // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   const arrayChunksIdentify = lodash.chunk(eventsChunk, MAX_BATCH_SIZE);
 
@@ -382,45 +218,32 @@ const legacyBatchEvents = (
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach((ev) => {
-      // if source is of rETL
-      if (ev.message.source === 'rETL') {
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-        });
-        batchEventResponse.batchedRequest.body.JSON = {
-          inputs: identifyResponseList,
-        };
-        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
-        batchEventResponse.batchedRequest.endpointPath = `${ev.message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
-        metadata.push(ev.metadata);
-      } else {
-        const bodyJSON = ev.message.body.JSON;
+      const bodyJSON = ev.message.body.JSON;
 
-        if (
-          !bodyJSON ||
-          Array.isArray(bodyJSON) ||
-          !('properties' in bodyJSON) ||
-          !Array.isArray(bodyJSON.properties)
-        ) {
-          throw new TransformationError(
-            'Legacy identify batch: invalid payload (expected object with properties array)',
-          );
-        }
-
-        const { email, updatedProperties } = getEmailAndUpdatedProps(bodyJSON.properties);
-        // eslint-disable-next-line no-param-reassign
-        bodyJSON.properties = updatedProperties;
-        identifyResponseList.push({
-          email,
-          properties: bodyJSON.properties,
-        });
-        metadata.push(ev.metadata);
-        batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-          batch: JSON.stringify(identifyResponseList),
-        };
-        batchEventResponse.batchedRequest.endpoint = `${BASE_ENDPOINT}${BATCH_CONTACT_ENDPOINT_PATH}`;
-        batchEventResponse.batchedRequest.endpointPath = BATCH_CONTACT_ENDPOINT_PATH;
+      if (
+        !bodyJSON ||
+        Array.isArray(bodyJSON) ||
+        !('properties' in bodyJSON) ||
+        !Array.isArray(bodyJSON.properties)
+      ) {
+        throw new TransformationError(
+          'Legacy identify batch: invalid payload (expected object with properties array)',
+        );
       }
+
+      const { email, updatedProperties } = getEmailAndUpdatedProps(bodyJSON.properties);
+      // eslint-disable-next-line no-param-reassign
+      bodyJSON.properties = updatedProperties;
+      identifyResponseList.push({
+        email,
+        properties: bodyJSON.properties,
+      });
+      metadata.push(ev.metadata);
+      batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+        batch: JSON.stringify(identifyResponseList),
+      };
+      batchEventResponse.batchedRequest.endpoint = `${BASE_ENDPOINT}${BATCH_CONTACT_ENDPOINT_PATH}`;
+      batchEventResponse.batchedRequest.endpointPath = BATCH_CONTACT_ENDPOINT_PATH;
     });
 
     batchEventResponse.batchedRequest.headers = {

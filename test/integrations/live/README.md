@@ -40,12 +40,39 @@ For anything beyond a couple of scenarios, split the spec into a `live/` folder 
 - **`live/profiles.ts`** — trait profiles + shared `(ctx) => ({ ... })` factories used by both
   seeds and verifies.
 
+### OAuth destinations (`authType: 'oauth'`)
+
+OAuth destinations don't ship a long-lived access token in their secret - one is minted at run
+time. When any enrolled destination is `authType: 'oauth'`, a suite-level `beforeAll` starts the
+**rudder-auth** container via testcontainers (`RudderAuthContainer`, `live/rudderAuthContainer.ts`)
+and returns its base URL. `OAuthTokenResolver` (`live/oauthTokenResolver.ts`), built from that URL,
+posts `{ refreshToken }` (from `LIVE_SECRET_<DEST>.oauthRefresh`) to
+`/tokens/destination/<dest>/refresh` for each OAuth destination and injects the returned token into
+`metadata.secret.accessToken`. This mirrors production, where rudder-server delegates token refresh
+to rudder-auth rather than the transformer holding credentials.
+
+The image is pulled from ECR (`422074288268.dkr.ecr.us-east-1.amazonaws.com/rudderstack/rudder-auth:develop`),
+so Docker must be running and logged in to that ECR registry. The image ships default OAuth app credentials for each integration, and the container also
+forwards credential-shaped env vars (any `*_CLIENT_ID`/`*_CLIENT_SECRET`), which override those
+defaults. So the refresh token must be issued by whichever app rudder-auth ends up using - the
+image default, or the `*_CLIENT_ID`/`*_CLIENT_SECRET` you set in `.env`.
+
+Authenticate with the AWS profile/SSO session that has ECR pull access to the account (set
+`AWS_PROFILE`, or pass `--profile`), then run:
+
+```bash
+AWS_PROFILE=<profile> aws ecr get-login-password --region us-east-1 \
+  | docker login --username AWS --password-stdin 422074288268.dkr.ecr.us-east-1.amazonaws.com
+
+LIVE_SECRET_CRITEO_AUDIENCE='{...}' LOG_LEVEL=silent \
+  npm run test:live -- --destination=criteo_audience
+```
+
 ### Deferred (not in the pilot)
 
-Vault-backed `SecretResolver`, GitHub OIDC → Vault auth, the `rudder-auth` container
-for OAuth destinations, the CI workflow, and impact-based PR subsetting. The interfaces
-here (`SecretResolver.resolve()`, `LiveSpec`) are shaped so those layer on without
-rewrites.
+Vault-backed `SecretResolver`, GitHub OIDC → Vault auth, the CI workflow, and impact-based PR
+subsetting. The interfaces here (`SecretResolver.resolve()`, `LiveSpec`) are shaped so those
+layer on without rewrites.
 
 **Scope — transform path.** The harness drives only `/routerTransform → /proxy`. rudder-server
 also runs the processor transform (`/v0/destinations/<dest>`) ahead of delivery, whose response

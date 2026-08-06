@@ -48,6 +48,18 @@
         "NODE_OPTIONS": "--no-node-snapshot",
         "LOG_LEVEL": "silent"
       }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Jest Live",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+      "args": ["-c", "jest.config.live.js", "--runInBand", "--destination=criteo_audience"],
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": ["--no-node-snapshot"],
+      "env": { "NODE_ENV": "test" },
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

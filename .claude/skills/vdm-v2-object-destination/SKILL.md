@@ -29,7 +29,10 @@ Read these files before implementing:
   - `types.ts` -- Zod schemas for connection config (with `object` field), destination config, router request type
   - `v2/recordTransform.ts` -- record payload builder (no action validation)
   - `v2/types.ts` -- Zod schemas for record and event-stream messages, input schema factory
+  - `v2/delivery.ts` -- `statusOverrides` for the 207 multi-status batch response
+  - `v2/delivery.test.ts` -- parity test driving both the framework and the legacy handler
 - **Batching framework** -- `.claude/skills/batching-framework/SKILL.md`
+- **Delivery contract** -- `.claude/skills/batching-framework-delivery/SKILL.md`
 
 ## File Structure
 
@@ -38,6 +41,8 @@ src/v0/destinations/<dest_name>/
   routerTransform.ts        # VDMV2ObjectDestination subclass (exported as Integration)
   routerTransform.test.ts   # Unit tests for the Integration class
   types.ts                  # Zod schemas, TypeScript types, connection config
+  delivery.ts               # (Optional) statusOverrides — only if response handling
+                            #            differs from the framework default
 ```
 
 Additional files (config, payload builders, utils) depend on the destination's complexity. See the CustomerIO reference for one way to organize them.
@@ -63,6 +68,10 @@ Framework groups by composite key, chunks, wraps
     |
 RouterTransformationResponse[]
 ```
+
+Delivery runs as a separate service call over the same class. Most destinations need no overrides;
+add them when the API reports per-record failures, as CustomerIO does with its 207 multi-status body
+(`v2/delivery.ts`). See `.claude/skills/batching-framework-delivery/SKILL.md`.
 
 ## Key Conventions
 
@@ -102,6 +111,8 @@ Object destinations declare both `recordSchema` and `eventStreamSchema`. Overrid
 
 Register in `src/constants/batchedDestinationsMap.ts` and update `src/features.ts` under `defaultFeaturesConfig` with the destination definition name.
 
+Delivery is gated separately -- see `.claude/skills/batching-framework-delivery/SKILL.md`.
+
 ## Steps
 
 1. Read the reference files listed above
@@ -113,9 +124,11 @@ Register in `src/constants/batchedDestinationsMap.ts` and update `src/features.t
    - (Optional) `transformEventStream(input)` -- handle non-record events
    - Export as `Integration`
 4. Register in `src/constants/batchedDestinationsMap.ts` and `src/features.ts`
-5. Create `src/v0/destinations/<dest_name>/routerTransform.test.ts` -- unit tests
-6. Create `test/integrations/destinations/<dest_name>/router/` -- integration test cases
-7. Verify:
+5. (Optional) Create `delivery.ts` -- `statusOverrides`, only if the API reports failures the
+   framework default cannot read; add a `delivery.test.ts` that compares it against the legacy handler
+6. Create `src/v0/destinations/<dest_name>/routerTransform.test.ts` -- unit tests
+7. Create `test/integrations/destinations/<dest_name>/router/` -- integration test cases
+8. Verify:
    ```bash
    npm run lint
    npm test -- --testPathPattern="<dest_name>" --no-coverage

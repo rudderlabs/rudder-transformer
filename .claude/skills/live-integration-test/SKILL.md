@@ -155,7 +155,11 @@ and is validated for shape only. Prefer piloting `apiKey`/`basic` destinations f
    behaviors, factor the asserted fields into a `(ctx) => ({ ... })` profile shared by the seed and
    the field-level verify so the two stay in lockstep.
 6. **Enroll**: `enabled: true` (registry auto-discovers `destinations/*/live.ts`; no registration).
-   Use `enabled: false` to park it (e.g. OAuth destinations, until rudder-auth lands).
+   Use `enabled: false` to park it (e.g. OAuth destinations, until rudder-auth lands). If the
+   destination sits behind a rollout flag, name it in `envOverrides` — a live run exercises the real
+   transform and delivery paths, so without it the suite tests the legacy path and proves nothing
+   about the one the destination is moving to. See
+   `.claude/skills/batching-framework-delivery/SKILL.md` for the batching-framework flags.
 7. **Add the CI matrix entry.** Enrollment isn't complete until the destination runs in CI: add its
    code to the `destination` matrix in `.github/workflows/live-integration-tests.yml`
    (`destination: [hs, <dest>]`). The secret name is derived from the code (`LIVE_SECRET_<DEST>`),
@@ -229,6 +233,9 @@ const agent = new Agent({ keepAlive: false });
 export const live: LiveSpec = {
   enabled: true, // OAuth destinations: false until rudder-auth lands (see Credentials)
   authType: 'apiKey', // apiKey | oauth | basic | serviceAccount | custom
+  // Optional: env applied around this destination's scenarios and restored after. Name any rollout
+  // flag the destination is behind, or the run silently exercises the legacy path instead.
+  envOverrides: { <DEST>_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL' },
   // Non-secret Config defaults from the component test's destination.Config; real creds via s.config.
   resolveConfig: (s) => ({ ...s.config }),
   scenarios: [

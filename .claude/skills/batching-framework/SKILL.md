@@ -12,6 +12,7 @@ description: Native batching framework for destination transformations. Extend B
 - `src/v0/destinations/posthog/routerTransform.ts` — `ChunkBatchStrategy` with `maxPayloadSize`
 - `src/v0/destinations/custom_audience/routerTransform.ts` — `CustomBatchStrategy` with template evaluation
 - `src/services/destination/nativeBatching/` — Framework source code
+- `.claude/skills/batching-framework-delivery/SKILL.md` — Delivery (response handling) contract
 
 ## Architecture
 
@@ -32,6 +33,21 @@ BatchStrategy.batch()                [chunking/wrapping]
 RouterTransformationResponse[]
 ```
 
+Delivery is a separate service call, over the same class:
+
+```
+deliver()                            [nativeIntegration, behind the delivery flag]
+    |
+BatchDestination.handleResponse()    [framework-owned]
+    |--- statusOverrides[status] ?? statusOverrides[class] ?? defaultVerdict
+    |
+Verdict | perItem(ItemVerdict[])     [what should happen to the batch]
+    |
+toDeliveryV1Response()               [derives per-job codes, statTags, message]
+    |
+DeliveryV1Response
+```
+
 ## File Structure
 
 ```
@@ -40,6 +56,9 @@ src/v0/destinations/<dest_name>/
 ├── types.ts                  # Zod schemas, TypeScript types
 ├── config.ts                 # Constants, endpoints, action maps
 ├── utils.ts                  # (Optional) Field processing, API helpers
+├── delivery.ts               # (Optional) statusOverrides — only if response handling
+│                             #            differs from the framework default
+├── delivery.test.ts          # (Optional) Parity test vs the legacy handler
 └── routerTransform.test.ts   # Unit tests
 ```
 
@@ -209,25 +228,36 @@ When enabled, the platform routes events through `processBatchedDestination()` i
 For gradual rollout before GA, use the env var pattern:
 `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or `ALL`).
 
-## Proxy / networkHandler destinations
+Delivery is gated **separately** by `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS`
+— see `.claude/skills/batching-framework-delivery/SKILL.md`.
 
-Some destinations deliver through a custom `networkHandler` that builds the actual HTTP request
-(URL, SDK call) at delivery time rather than from the transformed payload. When that's the case,
-`transformEvent`'s `endpoint` is typically left empty/placeholder and unused — the handler derives
-the real URL from `params` (and sometimes details unknown at transform time, e.g. the API version).
-If instead the handler reads the endpoint from the payload, set it normally. Two things to watch
-when the handler owns delivery:
+## Delivery (response handling)
 
-- **Audit the network handler for single-item assumptions.** Pre-batching it received one item per
-  request and often hard-codes index `0` (e.g. `set(body.JSON, 'items[0].field', ...)`). Once
-  batched, `items` is an array of N — change it to iterate the whole array. The single-item case
-  collapses to an array of one, so legacy traffic is unaffected (a safe, ungated change).
+The framework owns delivery too, over the same class: an integration declares a static
+`statusOverrides` map and never builds a `DeliveryV1Response`, picks a status code, or throws.
+
+**Most destinations need nothing** — the default reproduces `genericNetworkHandler`. `posthog` and
+`custom_audience` declare no overrides at all.
+
+**See `.claude/skills/batching-framework-delivery/SKILL.md`** for the contract, the verdict builders,
+the `perItem` rules and the delivery flag.
+
+### If you just batched a destination that had a network handler
+
+Only *response handling* moves onto the class; transport (`proxy` / `prepareProxy` /
+`processAxiosResponse`) stays in `networkHandler.ts`. When the handler builds the request at delivery
+time, `transformEvent`'s `endpoint` is typically an unused placeholder — the handler derives the real
+URL from `params`. If instead it reads the endpoint from the payload, set it normally.
+
+- **Audit the transport for single-item assumptions.** Pre-batching it received one item per request
+  and often hard-codes index `0` (e.g. `set(body.JSON, 'items[0].field', ...)`). Once batched,
+  `items` is an array of N — iterate the whole array. The single-item case collapses to an array of
+  one, so legacy traffic is unaffected (a safe, ungated change).
 - The proxy layer runs in a later service call than the transform and **does not see the workspace
-  batching flag**, so don't try to gate network-handler changes on it; make them
-  unconditionally-correct for both 1 and N items instead.
+  batching flag**, so don't gate transport changes on it; make them correct for both 1 and N items.
 
-Cover this with a focused unit test that mocks the delivery SDK/client and asserts the per-item
-field is set on **every** item (cheaper and more direct than a full dataDelivery mock).
+Cover this with a focused unit test that mocks the delivery SDK/client and asserts the per-item field
+is set on **every** item (cheaper and more direct than a full dataDelivery mock).
 
 ## Testing
 

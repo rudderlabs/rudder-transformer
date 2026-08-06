@@ -26,7 +26,9 @@ src/v0/destinations/<dest_name>/
 ├── types.ts                  # Zod schemas + TypeScript types for record events
 ├── config.ts                 # Constants: endpoints, action maps, batch sizes, identifier configs
 ├── utils.ts                  # (Optional) Normalization, hashing, field processing, API helpers
-├── networkHandler.ts         # (Optional) Custom network/delivery handler
+├── delivery.ts               # (Optional) statusOverrides — only if response handling
+│                             #            differs from the framework default
+├── networkHandler.ts         # (Optional) Transport only (SDK/proxy/processAxiosResponse)
 ├── routerTransform.test.ts   # Unit tests for router transform
 └── utils.test.ts             # (Optional) Unit tests for utilities
 ```
@@ -472,17 +474,30 @@ headers: { 'x-api-key': apiKey };
 
 ---
 
-## networkHandler.ts — Custom Network Handler (Optional)
+## Delivery — response handling (Optional)
 
-Some audience destinations need custom network/delivery handling. If the destination API returns errors in a non-standard format, create a custom network handler:
+Response handling lives on your `BatchDestination` class as a static `statusOverrides` map, not in a
+`networkHandler.ts`. **Most audience destinations need nothing** — the framework default reproduces
+`genericNetworkHandler`.
+
+**See `.claude/skills/batching-framework-delivery/SKILL.md`** for the contract, verdicts and flag.
+
+What is audience-specific: these APIs commonly report failures by **identity** rather than index —
+a `failedUpdates` object naming the emails/userIds that failed, with no positional information.
+`iterable_audience` is the reference for that shape. It matches each posted subscriber against the
+returned identity sets, and keeps two deliberate successes: a GDPR-forgotten user is accepted rather
+than aborted, and `notFound` on an unsubscribe is a no-op success. Reproduce that kind of
+destination-specific semantics in `statusOverrides`, or the default will abort them as plain failures.
+
+`networkHandler.ts` remains the place for **transport** — a shared platform proxy, custom
+`processAxiosResponse`, SDK-based delivery:
 
 ```typescript
 export { networkHandler, errorResponseHandler } from '../../util/<platform>Utils/networkHandler';
 ```
 
-For destinations with standard REST error responses, no custom network handler is needed.
-
-**Reference:** `src/v0/destinations/fb_custom_audience/networkHandler.ts` — Re-exports shared Facebook network handler
+**Reference:** `src/v0/destinations/iterable_audience/delivery.ts` (identity-keyed),
+`src/v0/destinations/fb_custom_audience/networkHandler.ts` (transport re-export)
 
 ---
 
@@ -525,14 +540,10 @@ Errors thrown in `transformEvent()` are automatically caught by the framework an
 | Batch strategy error (wrapBody failure)        | Caught in batch strategy | Fails all events in group |
 | Hashing consistency violation (strict mode)    | `InstrumentationError`   | Fails single event        |
 
-For destinations with custom network handlers at delivery time:
-
-| Scenario                          | Error Type                   | Effect                          |
-| --------------------------------- | ---------------------------- | ------------------------------- |
-| Token expired / invalid (401/190) | Retryable with token refresh | Triggers OAuth re-authorization |
-| Rate limited (429)                | Network error with backoff   | Retries                         |
-| Permission denied (294/403)       | Abortable error              | Permanent failure               |
-| Server error (5xx)                | Network error                | Retries                         |
+At delivery time, failures are expressed as verdicts (`authExpired`, `throttled`, `authRevoked`,
+`retry`, `perItem`) rather than hand-built responses — see
+`.claude/skills/batching-framework-delivery/SKILL.md`. The framework default already covers plain
+4xx/5xx/429; declare an override only for signals that have to be read out of the response body.
 
 ---
 
@@ -759,7 +770,7 @@ export const data = [
    - `getInputSchema()` — return the Zod schema for input validation
    - Export the class as `Integration`
 5. Register in `src/constants/batchedDestinationsMap.ts` — add `<DEST_NAME_UPPER>: true`
-6. Create `networkHandler.ts` (optional) — only if the destination API returns errors in a non-standard format requiring custom parsing
+6. Create `delivery.ts` (optional) — only if the API reports failures the framework default cannot read (partial failures, identity-keyed errors); `networkHandler.ts` only if transport itself is custom
 7. Create `routerTransform.test.ts` — unit tests using `processBatchedDestination(inputs, Integration, {})` covering: valid insert/update/delete, invalid identifiers, null identifiers, hashing on/off, batch overflow, mixed actions, missing auth
 8. Create `test/integrations/destinations/<dest_name>/router/data.ts` — integration test cases covering: successful operations, validation errors, unsupported types, batching, audience subtypes, pre-hashed values
 9. Run verification:

@@ -4,10 +4,12 @@ import {
   BatchDestination,
   ChunkBatchStrategy,
   type TransformedEvent,
+  type DeliveryContext,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { ACTION_ATTR_VALUE, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
 import { buildBulkBody, getBulkTrackEndpoint, normalizeExternalId } from './utils';
+import { brazeAudienceStatusOverrides, extractBrazeAudienceErrorMessage } from './delivery';
 import {
   BrazeAudienceRouterRequestSchema,
   type BrazeAudienceAttributePayload,
@@ -18,6 +20,13 @@ class BrazeAudienceIntegration extends BatchDestination<
   BrazeAudienceAttributePayload,
   typeof BrazeAudienceRouterRequestSchema
 > {
+  // Delivery: partial failure arrives on a 2xx keyed by index into `attributes`; see ./delivery.
+  static readonly statusOverrides = brazeAudienceStatusOverrides;
+
+  static failureReason(ctx: DeliveryContext): string {
+    return extractBrazeAudienceErrorMessage(ctx.response);
+  }
+
   private readonly headers: Record<string, string>;
 
   constructor(...args: ConstructorParameters<typeof BatchDestination>) {

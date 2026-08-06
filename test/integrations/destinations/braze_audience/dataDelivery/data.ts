@@ -19,7 +19,11 @@ import {
   serverErrorResponse,
 } from './network';
 
-const SUCCESS_MESSAGE = '[BRAZE_AUDIENCE Response Handler] - Request Processed Successfully';
+// Messages produced by the batching framework's delivery bridge, which owns response handling for
+// this destination once BRAZE_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS is set.
+const FRAMEWORK_SUCCESS_MESSAGE = '[BRAZE_AUDIENCE] Request processed successfully';
+// A mixed batch keeps Braze's own status (201) and reports the first real failure reason.
+const frameworkFailure = (reason: string) => `[BRAZE_AUDIENCE] ${reason}`;
 
 const proxyPayload = (
   JSON: Record<string, unknown>,
@@ -35,7 +39,7 @@ const proxyPayload = (
     metadata,
   );
 
-export const data: ProxyV1TestData[] = [
+const scenarios: ProxyV1TestData[] = [
   {
     id: 'braze_audience_v1_bulk_full_success',
     name: destType,
@@ -57,8 +61,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 201,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 201, response: successResponse },
+            message: FRAMEWORK_SUCCESS_MESSAGE,
             response: [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
               { statusCode: 200, metadata: generateMetadata(2), error: 'success' },
@@ -93,8 +96,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 201,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 201, response: partialIdentityResponse },
+            message: frameworkFailure('EXTERNAL_USER_ID_TOO_LARGE'),
             response: [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
               {
@@ -130,8 +132,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 201,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 201, response: partialRetryableResponse },
+            message: frameworkFailure('SOME_TRANSIENT_ATTR_ERROR'),
             response: [
               {
                 statusCode: 500,
@@ -166,7 +167,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 401,
-            message: 'BRAZE_AUDIENCE: Error during response transformation. "Invalid API key"',
+            message: frameworkFailure('Invalid API key'),
             statTags: {
               destType: 'BRAZE_AUDIENCE',
               errorCategory: 'network',
@@ -210,7 +211,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 429,
-            message: 'BRAZE_AUDIENCE: Error during response transformation. "Rate limited"',
+            message: frameworkFailure('Rate limited'),
             statTags: {
               destType: 'BRAZE_AUDIENCE',
               errorCategory: 'network',
@@ -254,8 +255,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 500,
-            message:
-              'BRAZE_AUDIENCE: Error during response transformation. "Internal server error"',
+            message: frameworkFailure('Internal server error'),
             statTags: {
               destType: 'BRAZE_AUDIENCE',
               errorCategory: 'network',
@@ -284,3 +284,15 @@ export const data: ProxyV1TestData[] = [
     },
   },
 ];
+
+/**
+ * BRAZE_AUDIENCE is already GA for the batching-framework transform, so only the delivery flag is
+ * needed to move these scenarios onto the framework response path.
+ */
+export const data = scenarios.map((scenario) => ({
+  ...scenario,
+  envOverrides: {
+    ...scenario.envOverrides,
+    BRAZE_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+  },
+}));

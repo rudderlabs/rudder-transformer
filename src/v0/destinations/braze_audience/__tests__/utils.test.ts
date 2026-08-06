@@ -1,4 +1,4 @@
-import { normalizeExternalId } from '../utils';
+import { isIdentityAborted, normalizeExternalId } from '../utils';
 
 describe('normalizeExternalId', () => {
   it.each([
@@ -18,5 +18,29 @@ describe('normalizeExternalId', () => {
     ['Infinity', Number.POSITIVE_INFINITY],
   ] as const)('rejects %s', (_label, raw) => {
     expect(normalizeExternalId(raw)).toBeNull();
+  });
+});
+
+// Shared by the legacy network handler and the batching-framework delivery path, so it is tested
+// where it lives rather than only through each caller.
+describe('isIdentityAborted', () => {
+  it.each([
+    ['documented enum', 'EXTERNAL_USER_ID_TOO_LARGE'],
+    ['blacklist enum', 'BLACKLISTED_EXTERNAL_USER_ID'],
+    ['lowercased enum form', 'external_user_id_too_large'],
+    ['live length message', "'external_id' must be fewer than 988 bytes"],
+    ['live blacklist message', 'external_id is blacklisted'],
+  ])('aborts on %s', (_label, type) => {
+    expect(isIdentityAborted(type)).toBe(true);
+  });
+
+  it.each([
+    ['undefined', undefined],
+    ['empty string', ''],
+    ['an unrelated attribute error', 'SOME_TRANSIENT_ATTR_ERROR'],
+    // The pre-#5408 regex matched this; a missing user is retryable, not a permanent identity fault.
+    ['a not-found message mentioning external_id', 'user not found for external_id'],
+  ])('does not abort on %s', (_label, type) => {
+    expect(isIdentityAborted(type)).toBe(false);
   });
 });

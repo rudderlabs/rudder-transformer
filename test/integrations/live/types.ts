@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { EnvOverride } from '../envUtils';
 
 type AuthType = 'apiKey' | 'oauth' | 'basic' | 'serviceAccount' | 'custom';
 type AccountDefinition = { type: string; category: string; name: string };
@@ -137,6 +138,10 @@ type LiveScenario = {
 type LiveSpec = {
   enabled: boolean; // false parks the whole destination — the registry skips it
   authType: AuthType;
+  // Environment variables set for the duration of this destination's scenarios and restored after.
+  // Live runs exercise the real transform and delivery paths, so a destination behind a rollout
+  // flag has to name it here or the suite silently tests the legacy path instead.
+  envOverrides?: EnvOverride;
   // Map the resolved secret into the destination.Config the transform expects (merge non-secret
   // defaults with the credentials in `s.config`).
   resolveConfig: (s: LiveSecret) => Record<string, unknown>;

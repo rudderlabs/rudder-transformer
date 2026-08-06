@@ -7,6 +7,7 @@ import { NativeIntegrationSourceService } from '../../services/source/nativeInte
 import { ServiceSelector } from '../../helpers/serviceSelector';
 import { BaseError } from '@rudderstack/integrations-lib';
 import { SourceHydrationOutput, SourceHydrationRequest } from '../../types';
+import { errorHandlerMiddleware } from '../../middlewares/errorHandler';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -14,6 +15,7 @@ const OLD_ENV = process.env;
 beforeAll(async () => {
   process.env = { ...OLD_ENV }; // Make a copy
   const app = new Koa();
+  app.use(errorHandlerMiddleware());
   app.use(
     bodyParser({
       jsonLimit: '200mb',
@@ -42,11 +44,29 @@ const getV2Data = () => {
   ];
 };
 
+const expectResponseValidationError = (response: any, endpoint: string) => {
+  expect(response.status).toEqual(500);
+  expect(response.body.error).toEqual('Internal Server Error');
+  expect(response.body.message).toContain(`Response schema validation failed for ${endpoint}`);
+};
+
 describe('Source controller tests', () => {
   describe('V2 Source transform tests', () => {
     test('successful source transform', async () => {
       const sourceType = '__rudder_test__';
-      const testOutput = [{ event: { a: 'b' }, source: { id: 'id' } }];
+      const testOutput = [
+        {
+          output: {
+            batch: [
+              {
+                type: 'track',
+                event: 'test event',
+                anonymousId: 'anon-id',
+              },
+            ],
+          },
+        },
+      ];
 
       const mockSourceService = new NativeIntegrationSourceService();
       mockSourceService.sourceTransformRoutine = jest
@@ -74,6 +94,33 @@ describe('Source controller tests', () => {
 
       expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
       expect(mockSourceService.sourceTransformRoutine).toHaveBeenCalledTimes(1);
+    });
+
+    test('rejects invalid source transform response schema', async () => {
+      const sourceType = '__rudder_test__';
+      const mockSourceService = new NativeIntegrationSourceService();
+      mockSourceService.sourceTransformRoutine = jest.fn().mockResolvedValue([
+        {
+          output: {
+            batch: 'not-an-array',
+          },
+        },
+      ]);
+      jest.spyOn(ServiceSelector, 'getNativeSourceService').mockImplementation(() => {
+        return mockSourceService;
+      });
+
+      const response = await request(server)
+        .post('/v2/sources/__rudder_test__')
+        .set('Accept', 'application/json')
+        .send(getV2Data());
+
+      expectResponseValidationError(response, 'source transform');
+      expect(mockSourceService.sourceTransformRoutine).toHaveBeenCalledWith(
+        getV2Data(),
+        sourceType,
+        expect.any(Object),
+      );
     });
 
     test('failing source transform', async () => {

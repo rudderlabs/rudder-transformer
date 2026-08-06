@@ -3,8 +3,15 @@ import { UserTransformController } from '../controllers/userTransform';
 import { FeatureFlagMiddleware } from '../middlewares/featureFlag';
 import { RouteActivationMiddleware } from '../middlewares/routeActivation';
 import { StatsMiddleware } from '../middlewares/stats';
+import { responseSchemaValidationMiddleware } from '../middlewares/responseSchemaValidation';
+import { UserTransformationResponseListSchema } from '../types/zodTypes';
 
 const router = new Router();
+
+const validateCustomTransformResponse = responseSchemaValidationMiddleware({
+  endpoint: 'custom transform',
+  schema: UserTransformationResponseListSchema,
+});
 
 router.post(
   '/workspaces/:wId/reconcileFunction',
@@ -17,6 +24,7 @@ router.post(
   RouteActivationMiddleware.isUserTransformRouteActive,
   FeatureFlagMiddleware.handle,
   StatsMiddleware.executionStats,
+  validateCustomTransformResponse,
   UserTransformController.transform,
 );
 router.post(

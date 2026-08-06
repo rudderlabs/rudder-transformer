@@ -358,11 +358,21 @@ describe('Api tests with a mock source/destination', () => {
   test('(mock destination) v1 proxy', async () => {
     const destType = 'rudder_test';
     const version = 'v1';
+    const metadata = {
+      jobId: 1,
+      attemptNum: 1,
+      userId: 'user-1',
+      sourceId: 'source-1',
+      destinationId: 'destination-1',
+      workspaceId: 'workspace-1',
+      secret: {},
+      dontBatch: false,
+    };
 
     const getData = () => {
       return {
         body: { JSON: { a: 'b' } },
-        metadata: [{ a1: 'b1' }],
+        metadata: [metadata],
         destinationConfig: { a2: 'b2' },
       };
     };
@@ -372,7 +382,7 @@ describe('Api tests with a mock source/destination', () => {
       status: 200,
       message: 'response',
       destinationResponse: 'response',
-      response: [{ statusCode: 200, metadata: { a1: 'b1' } }],
+      response: [{ statusCode: 200, metadata, error: 'success' }],
     };
 
     const mockNetworkHandler = {
@@ -387,7 +397,7 @@ describe('Api tests with a mock source/destination', () => {
       }),
       responseHandler: jest.fn((o, d) => {
         expect(o.destinationResponse).toEqual({ response: 'response', status: 200 });
-        expect(o.rudderJobMetadata).toEqual([{ a1: 'b1' }]);
+        expect(o.rudderJobMetadata).toEqual([metadata]);
         expect(o.destType).toEqual(destType);
         return respHandlerResponse;
       }),

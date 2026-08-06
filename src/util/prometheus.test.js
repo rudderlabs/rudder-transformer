@@ -37,4 +37,54 @@ describe('Prometheus platform-error zero-seed semantics', () => {
     // inc(0) is add-only, so the second seed must leave the series at 1, not reset it to 0.
     expect(await valueFor(tags)).toBe(1);
   });
+
+  // The two IVM execution histograms are meant to be read against each other: queue wait and
+  // evaluation duration answer "is this caller's latency waiting for a slot, or the work itself",
+  // which only holds on a shared bucket scale. They share one IVM_EXECUTION_BUCKETS constant for
+  // that reason, and this pins the property rather than the constant — the assertion still fails
+  // if someone reintroduces a second literal that drifts.
+  describe('IVM execution histograms', () => {
+    const bucketsFor = async (name) => {
+      const metrics = await client.prometheusRegistry.getMetricsAsJSON();
+      const metric = metrics.find((m) => m.name === name);
+      expect(metric).toBeDefined();
+      // Bucket boundaries are exposed as the `le` label on the generated _bucket series.
+      return [...new Set(metric.values.map((v) => v.labels.le).filter((le) => le !== undefined))];
+    };
+
+    it('records execution duration on the same scale as queue wait', async () => {
+      // Observe once on each so prom-client materialises their bucket series.
+      client.timing('ivm_execution_queue_wait', new Date(), {
+        functionName: 'fn',
+        workspaceId: 'ws-hist',
+        cache: 'custom_mappings_ivm',
+      });
+      client.timing('ivm_execution_duration', new Date(), {
+        functionName: 'fn',
+        cache: 'custom_mappings_ivm',
+      });
+
+      const wait = await bucketsFor('transformer_ivm_execution_queue_wait');
+      const duration = await bucketsFor('transformer_ivm_execution_duration');
+
+      expect(duration).toEqual(wait);
+      // Sub-millisecond floor: prom-client's default set starts at 5ms, which is coarser than
+      // either metric and collapses healthy samples into one bucket.
+      expect(duration).toContain(0.0005);
+    });
+
+    it('keeps execution duration free of workspaceId', async () => {
+      client.timing('ivm_execution_duration', new Date(), {
+        functionName: 'fn',
+        cache: 'custom_mappings_ivm',
+      });
+
+      const metrics = await client.prometheusRegistry.getMetricsAsJSON();
+      const metric = metrics.find((m) => m.name === 'transformer_ivm_execution_duration');
+
+      // Unlike the gate metrics, this one fires on every execution — a per-workspace histogram
+      // would mint a full bucket set per workspace per pod for the life of the process.
+      expect(metric.values.every((v) => v.labels.workspaceId === undefined)).toBe(true);
+    });
+  });
 });

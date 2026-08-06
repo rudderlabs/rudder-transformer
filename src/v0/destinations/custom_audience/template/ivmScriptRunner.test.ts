@@ -33,6 +33,8 @@ const mockStats = {
   counter: jest.fn(),
   increment: jest.fn(),
   gauge: jest.fn(),
+  // execute() records ivm_execution_duration on every settled evaluation, success or failure.
+  timing: jest.fn(),
 };
 jest.mock('../../../../util/stats', () => mockStats);
 

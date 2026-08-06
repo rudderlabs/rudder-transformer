@@ -53,14 +53,7 @@ async function createIvm(
   const librariesMap = {};
   if (code && libraries) {
     const extractedLibraries = Object.keys(
-      await require('./customTransformer').extractLibraries(
-        code,
-        null,
-        false,
-        [],
-        'javascript',
-        testMode,
-      ),
+      await require('./customTransformer').extractLibraries(code, 'javascript'),
     );
 
     for (const library of libraries) {

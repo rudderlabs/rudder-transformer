@@ -3,8 +3,7 @@ const { compileUserLibrary } = require('../util/ivmFactory');
 const { validateIp } = require('./utils');
 const fetch = require('node-fetch');
 const { getTransformationCode } = require('./customTransforrmationsStore');
-const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
-const { UserTransformHandlerFactory } = require('./customTransformerFactory');
+const { userTransformHandlerV1 } = require('./customTransformer-v1');
 const { parserForImport } = require('./parser');
 const stats = require('./stats');
 const logger = require('../logger');
@@ -345,11 +344,7 @@ async function userTransformHandler(
       let userTransformedEvents = [];
       let result;
       if (res.codeVersion && res.codeVersion === '1') {
-        result = await UserTransformHandlerFactory(res).runUserTransfrom(
-          events,
-          testMode,
-          libraryVersionIDs,
-        );
+        result = await userTransformHandlerV1(events, res, libraryVersionIDs, testMode);
 
         if (result.error) {
           throw new Error(result.error);
@@ -392,48 +387,19 @@ async function userTransformHandler(
   return events;
 }
 
-async function setupUserTransformHandler(libraryVersionIDs, trRevCode = {}) {
-  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(libraryVersionIDs);
-  return resp;
-}
-
 async function validateCode(code, language) {
-  if (language === 'javascript') {
-    return compileUserLibrary(code);
+  if (language !== 'javascript') {
+    throw new Error(`Unsupported language ${language}`);
   }
-  if (language === 'python' || language === 'pythonfaas') {
-    return parserForImport(code, true, [], language);
-  }
-
-  throw new Error('Unsupported language');
+  return compileUserLibrary(code);
 }
 
-async function extractLibraries(
-  code,
-  versionId,
-  validateImports,
-  additionalLibs,
-  language = 'javascript',
-  testMode = false,
-) {
-  if (language === 'javascript') return parserForImport(code);
-
-  let transformation;
-
-  if (versionId && !testMode) {
-    transformation = await getTransformationCodeV1(versionId);
-  }
-
-  if (!transformation?.imports) {
-    return parserForImport(code || transformation?.code, validateImports, additionalLibs, language);
-  }
-
-  return transformation.imports;
+async function extractLibraries(code, language = 'javascript') {
+  return parserForImport(code, language);
 }
 
 module.exports = {
   userTransformHandler,
-  setupUserTransformHandler,
   validateCode,
   extractLibraries,
 };

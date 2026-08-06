@@ -137,11 +137,6 @@ The repository uses GitHub Actions for CI/CD with the following key workflows:
    - Runs on pull request creation and updates
    - Ensures PR titles follow conventional commit format
 
-4. **Tests** (`ut-tests.yml`):
-   - Runs on pull requests
-   - Sets up test environment with Kubernetes and OpenFaaS
-   - Runs user transformation integration tests
-
 #### Build and Release Workflows
 
 1. **Build Docker Image** (`build-push-docker-image.yml`):

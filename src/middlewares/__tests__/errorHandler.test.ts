@@ -1,5 +1,6 @@
 import { errorHandlerMiddleware } from '../errorHandler';
 import logger from '../../logger';
+import { ConfigBackendAuthError } from '../../util/utils';
 
 jest.mock('../../logger', () => ({
   error: jest.fn(),
@@ -41,6 +42,20 @@ describe('errorHandlerMiddleware', () => {
     expect(mockLogger.error).not.toHaveBeenCalled();
     expect(ctx.status).toBe(200);
     expect(ctx.body).toBeUndefined();
+  });
+
+  it('returns a retriable 503 with retry headers for a ConfigBackendAuthError', async () => {
+    const ctx = mockCtx();
+    const next = jest
+      .fn()
+      .mockRejectedValue(new ConfigBackendAuthError('auth failed', 'config_backend_auth_failed'));
+
+    await errorHandlerMiddleware()(ctx, next);
+
+    expect(ctx.status).toBe(503);
+    expect(ctx.headers['X-Rudder-Should-Retry']).toBe('true');
+    expect(ctx.headers['X-Rudder-Error-Reason']).toBe('config_backend_auth_failed');
+    expect(ctx.app.emit).not.toHaveBeenCalled();
   });
 
   it('handles Error objects and logs with context', async () => {

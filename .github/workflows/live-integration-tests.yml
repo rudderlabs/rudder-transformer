@@ -45,8 +45,8 @@ jobs:
           - destination: braze_audience
           - destination: criteo_audience
             appSecrets: |
-              control-plane/data/external-services CRITEO_AUDIENCE_CLIENT_ID_DESTINATION
-              control-plane/data/external-services CRITEO_AUDIENCE_CLIENT_SECRET_DESTINATION
+              control-plane/data/external-services CRITEO_AUDIENCE_CLIENT_ID_DESTINATION ;
+              control-plane/data/external-services CRITEO_AUDIENCE_CLIENT_SECRET_DESTINATION ;
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
@@ -81,7 +81,7 @@ jobs:
           jwtGithubAudience: ${{ vars.VAULT_ADDR }} # MUST match bound_audiences, else auth fails
           exportToken: false # keep the raw Vault token out of env
           secrets: |
-            engineering_shared/data/integrations_team/e2e_test/rudder-transformer ${{ steps.secret.outputs.name }} | ${{ steps.secret.outputs.name }}
+            engineering_shared/data/integrations_team/e2e_test/rudder-transformer ${{ steps.secret.outputs.name }} | ${{ steps.secret.outputs.name }} ;
             ${{ matrix.appSecrets }}
 
       - name: Configure AWS credentials for ECR (OIDC)

@@ -2,10 +2,9 @@ import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { EventType, MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } from '../../util';
-import { isFeatureEnabled } from '../../../util/featureFlags';
 import { API_VERSION } from './config';
-import { processRetlLegacyIdentify, batchRetlLegacyEvents } from './retl-hs-transform-v1';
-import { processRetlIdentify, batchRetlEvents } from './retl-hs-transform-v3';
+import { processRetlLegacyIdentify, batchRetlLegacyEvents } from './retl-v1';
+import { processRetlIdentify, batchRetlEvents } from './retl-v3';
 import {
   splitEventsForCreateUpdate,
   getProperties,
@@ -22,16 +21,6 @@ import type {
   HubSpotBatchProcessingItem,
 } from './types';
 
-const HS_RETL_SPLIT_WORKSPACE_IDS_ENV = 'DEST_HS_RETL_SPLIT_WORKSPACE_IDS';
-
-/**
- * The rETL/event-stream split is opt-in per workspace via the rollout flag above.
- * When the flag is unset the split is off for everyone and the existing
- * (unchanged) code path is used.
- */
-const isHsRetlSplitEnabledForWorkspace = (workspaceId: string): boolean =>
-  isFeatureEnabled(HS_RETL_SPLIT_WORKSPACE_IDS_ENV, workspaceId);
-
 // An event is rETL when it is mapped-to-destination (reverse-ETL/VDM source).
 const isRetlMappedEvent = (message: HubspotRudderMessage): boolean => {
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -41,16 +30,11 @@ const isRetlMappedEvent = (message: HubspotRudderMessage): boolean => {
 };
 
 /**
- * Decides whether a single router input should be handled by the new, dedicated
- * rETL code path. True only for allow-listed workspaces AND rETL-mapped events.
+ * Decides whether a single router input should be handled by the dedicated rETL
+ * code path. True for rETL-mapped (reverse-ETL/VDM) events.
  */
-const shouldUseHsRetlSplitPath = (input: HubspotRouterRequest): boolean => {
-  const workspaceId = input.metadata?.workspaceId;
-  if (!workspaceId) {
-    return false;
-  }
-  return isHsRetlSplitEnabledForWorkspace(workspaceId) && isRetlMappedEvent(input.message);
-};
+const shouldUseHsRetlSplitPath = (input: HubspotRouterRequest): boolean =>
+  isRetlMappedEvent(input.message);
 
 const processSingleMessageRetl = async (
   { message, destination, metadata }: HubspotRouterRequest,
@@ -94,7 +78,7 @@ const processBatchRouterRetl = async (
     if (!objectType || String(objectType).toLowerCase() !== 'association') {
       propertyMap = await getProperties(destination, metadata);
 
-      // Upsert is only implemented for the v3 endpoint (retl-hs-transform-v3); the
+      // Upsert is only implemented for the v3 endpoint (retl-v3); the
       // legacy (v1) handler has no upsert branch, so never tag v1 events for upsert.
       // When apiVersion is v3 AND the identifierType is a unique property for this
       // objectType we use the v3 batch upsert endpoint directly: tag every event for
@@ -193,9 +177,4 @@ const processBatchRouterRetl = async (
   };
 };
 
-export {
-  processBatchRouterRetl,
-  shouldUseHsRetlSplitPath,
-  isHsRetlSplitEnabledForWorkspace,
-  isRetlMappedEvent,
-};
+export { processBatchRouterRetl, shouldUseHsRetlSplitPath, isRetlMappedEvent };

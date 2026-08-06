@@ -1,5 +1,6 @@
 import { Middleware } from 'koa';
 import logger from '../logger';
+import { ConfigBackendAuthError } from '../util/utils';
 
 /**
  * Determines if an error should be ignored (not logged)
@@ -31,6 +32,15 @@ export function errorHandlerMiddleware(): Middleware {
         // Set appropriate response for aborted requests
         ctx.status = 400;
         ctx.body = { error: 'Request aborted' };
+        return;
+      }
+
+      // Transient config backend auth failure: tell rudder-server to retry and tag the reason.
+      if (error instanceof ConfigBackendAuthError) {
+        ctx.set('X-Rudder-Should-Retry', 'true');
+        ctx.set('X-Rudder-Error-Reason', error.retryReason);
+        ctx.status = error.statusCode;
+        ctx.body = { error: error.message };
         return;
       }
 

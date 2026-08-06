@@ -37,6 +37,7 @@ const attemptDelivery = async ({
     secret: ctx.liveSecret.secret,
     metadataOverride: step.metadataOverride,
     connection,
+    destinationOverride: step.destinationOverride,
   });
 
   const routerResponse = await http.post('/routerTransform', routerBody);

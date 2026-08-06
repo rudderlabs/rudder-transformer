@@ -31,4 +31,5 @@ scripts/create-github-release.js
 Dockerfile*
 *.properties
 *.go
+*.env
 CODEOWNERS

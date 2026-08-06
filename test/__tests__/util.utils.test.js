@@ -1,4 +1,48 @@
-const { constructValidationErrors } = require("../../src/util/utils");
+const { constructValidationErrors, responseStatusHandler } = require("../../src/util/utils");
+
+describe('responseStatusHandler', () => {
+  it('does not throw on 200', () => {
+    expect(() => responseStatusHandler(200, 'Transformation', 'v1', 'url')).not.toThrow();
+  });
+
+  it('throws a retriable 503 with config_backend_auth_failed on 401, so the request is retried not dropped', () => {
+    try {
+      responseStatusHandler(401, 'Transformation', 'v1', 'url');
+      throw new Error('expected to throw');
+    } catch (err) {
+      expect(err.statusCode).toBe(503);
+      expect(err.retryReason).toBe('config_backend_auth_failed');
+    }
+  });
+
+  it('throws a retriable 503 with config_backend_forbidden on 403 (blocked public route), not dropped', () => {
+    try {
+      responseStatusHandler(403, 'Transformation', 'v1', 'url');
+      throw new Error('expected to throw');
+    } catch (err) {
+      expect(err.statusCode).toBe(503);
+      expect(err.retryReason).toBe('config_backend_forbidden');
+    }
+  });
+
+  it('throws a retriable 809 on 5xx', () => {
+    try {
+      responseStatusHandler(503, 'Transformation', 'v1', 'url');
+      throw new Error('expected to throw');
+    } catch (err) {
+      expect(err.statusCode).toBe(809);
+    }
+  });
+
+  it('passes other non-200 statuses through terminally (e.g. 404)', () => {
+    try {
+      responseStatusHandler(404, 'Transformation', 'v1', 'url');
+      throw new Error('expected to throw');
+    } catch (err) {
+      expect(err.statusCode).toBe(404);
+    }
+  });
+});
 
 describe('constructValidationErrors', () => {
   const validationErrorsInput = [

@@ -17,6 +17,7 @@ import {
 import {
   RespStatusError,
   RetryRequestError,
+  ConfigBackendAuthError,
   extractStackTraceUptoLastSubstringMatch,
 } from '../util/utils';
 import { getMetadata, getTransformationMetadata, isNonFuncObject } from '../v0/util';
@@ -164,6 +165,11 @@ export class UserTransformService {
 
           transformedEvents.push(...transformedEventsWithMetadata);
         } catch (error: CatchErr) {
+          // Shared-secret auth failure breaks every fetch, not one event: fail the whole request so
+          // the handler returns a retriable 503 instead of degrading to per-event errors.
+          if (error instanceof ConfigBackendAuthError) {
+            throw error;
+          }
           logger.error(error);
           let status = 400;
           const errorString = error.toString();

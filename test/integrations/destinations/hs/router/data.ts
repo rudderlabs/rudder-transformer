@@ -10,7 +10,6 @@ import {
 import { destination } from './config';
 import { upsertData } from './upsertData';
 import { errorValidationData } from './errorValidationData';
-import { withRetlSplitCases } from './retlSplitData';
 import { retlUpsertData } from './retlUpsertData';
 
 /**
@@ -4837,7 +4836,5 @@ const baseData: Record<string, unknown>[] = [
   }),
 ];
 
-// Each rETL fixture is followed by its gated split-path duplicate (see retlSplitData.ts).
-// Dedicated rETL upsert fixtures are appended afterwards so they are NOT auto-derived
-// as behaviour-preservation split cases (see retlUpsertData.ts).
-export const data = [...withRetlSplitCases(baseData), ...retlUpsertData];
+// Dedicated rETL upsert fixtures are appended after the base fixtures.
+export const data = [...baseData, ...retlUpsertData];

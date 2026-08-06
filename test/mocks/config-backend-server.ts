@@ -24,6 +24,9 @@ interface MockConfigBackendOptions {
   transformationMocks?: Record<string, any>;
   libraryMocks?: Record<string, any>;
   rudderLibraryMocks?: Record<string, any>;
+  trackingPlanMocks?: Record<string, any>;
+  // When set, every route (except /health) requires Basic auth with this secret as the username.
+  authSecret?: string;
 }
 
 class MockConfigBackend {
@@ -35,6 +38,8 @@ class MockConfigBackend {
   private transformationMocks: Record<string, any>;
   private libraryMocks: Record<string, any>;
   private rudderLibraryMocks: Record<string, any>;
+  private trackingPlanMocks: Record<string, any>;
+  private authSecret: string | null;
 
   constructor(options: MockConfigBackendOptions = {}) {
     this.app = new Koa();
@@ -45,6 +50,8 @@ class MockConfigBackend {
     this.transformationMocks = options.transformationMocks || {};
     this.libraryMocks = options.libraryMocks || {};
     this.rudderLibraryMocks = options.rudderLibraryMocks || {};
+    this.trackingPlanMocks = options.trackingPlanMocks || {};
+    this.authSecret = options.authSecret || null;
     this.setupRoutes();
   }
 
@@ -57,6 +64,19 @@ class MockConfigBackend {
     this.app.use(bodyParser());
     this.app.use(async (ctx, next) => {
       console.log('[MockConfigBackend] %s %s - Query:', ctx.method, ctx.url, ctx.query);
+      await next();
+    });
+
+    // Optional Basic-auth gate so a dropped Authorization header surfaces as a 401, not silently.
+    this.app.use(async (ctx, next) => {
+      if (this.authSecret && ctx.path !== '/health') {
+        const expected = `Basic ${Buffer.from(`${this.authSecret}:`).toString('base64')}`;
+        if (ctx.headers.authorization !== expected) {
+          ctx.status = 401;
+          ctx.body = { error: 'Unauthorized: missing or invalid config backend secret' };
+          return;
+        }
+      }
       await next();
     });
 
@@ -137,6 +157,23 @@ class MockConfigBackend {
       ctx.body = mockData;
     });
 
+    // Mock tracking-plan endpoint
+    this.router.get('/workspaces/:workspaceId/tracking-plans/:id', async (ctx) => {
+      const { workspaceId, id } = ctx.params;
+      const { version } = ctx.query;
+
+      const key = version ? `${id}::${version}` : id;
+      const mockData = this.trackingPlanMocks[key] || this.trackingPlanMocks[id];
+      if (!mockData) {
+        ctx.status = 404;
+        ctx.body = { error: `Tracking plan not found: ${id} (workspace ${workspaceId})` };
+        return;
+      }
+
+      console.log(`[MockConfigBackend] Returning tracking plan: ${key}`);
+      ctx.body = mockData;
+    });
+
     // Health check endpoint
     this.router.get('/health', async (ctx) => {
       ctx.body = { status: 'ok', port: this.port };
@@ -198,6 +235,10 @@ class MockConfigBackend {
 
   addRudderLibraryMock(name: string, mockData: any): void {
     this.rudderLibraryMocks[name] = mockData;
+  }
+
+  addTrackingPlanMock(key: string, mockData: any): void {
+    this.trackingPlanMocks[key] = mockData;
   }
 }
 

@@ -218,11 +218,11 @@ export const networkCallsData = [
     },
   },
   // ---------------------------------------------------------------------------
-  // Object-type property mocks for the gated rETL split uniqueness gate.
-  // These report the identifier as NON-unique so the gated path falls back to
-  // create/update (or the search chain) exactly like the ungated path, keeping
-  // the behaviour-preservation split fixtures green. (The dedicated rETL upsert
-  // fixtures use objectType `contacts` with authHeader1, where email IS unique.)
+  // Object-type property mocks for the rETL uniqueness gate.
+  // These report the identifier as NON-unique so rETL events for these object
+  // types fall back to create/update (or the search chain) instead of the batch
+  // upsert endpoint. (The dedicated rETL upsert fixtures use objectType
+  // `contacts` with authHeader1, where email IS unique.)
   // ---------------------------------------------------------------------------
   // objectType `lead`: email is not a unique property.
   {

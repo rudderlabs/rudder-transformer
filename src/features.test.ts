@@ -26,9 +26,11 @@ describe('features destination capabilities', () => {
       expect.arrayContaining(['BRAZE', 'AM', 'INTERCOM', 'CLEVERTAP']),
     );
     expect(getBatchingFrameworkGaDestinations()).toEqual({
+      GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: true,
       POSTHOG: true,
       CUSTOM_AUDIENCE: true,
       ITERABLE_AUDIENCE: true,
+      BRAZE_AUDIENCE: true,
       TEST_DESTINATION: true,
     });
   });

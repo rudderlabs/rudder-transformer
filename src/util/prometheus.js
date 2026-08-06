@@ -633,6 +633,24 @@ class Prometheus {
         labelNames: [],
       },
       {
+        name: 'braze_audience_partial_failure',
+        help: 'braze_audience_partial_failure',
+        type: 'counter',
+        labelNames: ['destinationId', 'workspaceId'],
+      },
+      {
+        name: 'braze_audience_aborted',
+        help: 'braze_audience_aborted',
+        type: 'counter',
+        labelNames: ['destinationId', 'workspaceId'],
+      },
+      {
+        name: 'braze_audience_retryable',
+        help: 'braze_audience_retryable',
+        type: 'counter',
+        labelNames: ['destinationId', 'workspaceId', 'reason'],
+      },
+      {
         name: 'braze_deduped_users_count',
         help: 'braze deduped users count',
         type: 'counter',
@@ -979,6 +997,20 @@ class Prometheus {
         help: 'Sum of V8 total_heap_size across all cached isolates (bytes)',
         type: 'gauge',
         labelNames: ['cache'],
+      },
+      {
+        name: 'ivm_execution_queue_wait',
+        help: 'Time an evaluation waited for a free isolate concurrency slot (seconds)',
+        type: 'histogram',
+        labelNames: ['functionName', 'workspaceId', 'cache'],
+        // Declared explicitly because the default bucket set starts at 5ms, and a gated
+        // isolate drains far faster than that: measured locally, 99.45% of 312k waits landed
+        // in that single first bucket, which makes histogram_quantile() interpolate inside it
+        // and report nothing useful. These start at 0.5ms so a healthy sub-millisecond wait is
+        // distinguishable from a degraded one, and extend to 10s so a real backlog (queue depth
+        // growing behind timed-out executions) stays on-scale instead of pinning p99 at the top
+        // finite bucket.
+        buckets: [0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
       },
       {
         name: 'fetchV2_call_duration',

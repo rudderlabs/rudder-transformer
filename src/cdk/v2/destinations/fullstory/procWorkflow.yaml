@@ -72,7 +72,7 @@ steps:
     condition: $.context.messageType == "track"
     template: |
       $.context.payload.session = {
-        "id": .message.properties.sessionId,
+        "id": .message.properties.sessionId ?? .message.context.sessionId,
         "use_most_recent": .message.properties.useMostRecent,
       };
       $.context.payload.user = {

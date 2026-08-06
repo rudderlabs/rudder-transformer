@@ -217,6 +217,62 @@ export const networkCallsData = [
       data: crmV3PropertiesResponse,
     },
   },
+  // ---------------------------------------------------------------------------
+  // Object-type property mocks for the gated rETL split uniqueness gate.
+  // These report the identifier as NON-unique so the gated path falls back to
+  // create/update (or the search chain) exactly like the ungated path, keeping
+  // the behaviour-preservation split fixtures green. (The dedicated rETL upsert
+  // fixtures use objectType `contacts` with authHeader1, where email IS unique.)
+  // ---------------------------------------------------------------------------
+  // objectType `lead`: email is not a unique property.
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/properties/lead',
+      method: 'GET',
+      headers: { Authorization: authHeader1 },
+    },
+    httpRes: {
+      status: 200,
+      data: { results: [{ name: 'email', hasUniqueValue: false }] },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/properties/lead',
+      method: 'GET',
+      params: { hapikey: 'dummy-apikey' },
+    },
+    httpRes: {
+      status: 200,
+      data: { results: [{ name: 'email', hasUniqueValue: false }] },
+    },
+  },
+  // objectType `contacts`, secret3 (idx: duplicate records for secondary property):
+  // email non-unique so it stays on the update path.
+  {
+    httpReq: {
+      url: CRM_V3_PROPERTIES_ENDPOINT,
+      method: 'GET',
+      headers: { Authorization: authHeader3 },
+    },
+    httpRes: {
+      status: 200,
+      data: { results: [{ name: 'email', hasUniqueValue: false }] },
+    },
+  },
+  // objectType `contacts`, search-fail-token: email non-unique so the gate falls
+  // through to the (failing) search chain the fixture is asserting.
+  {
+    httpReq: {
+      url: CRM_V3_PROPERTIES_ENDPOINT,
+      method: 'GET',
+      headers: { Authorization: 'Bearer search-fail-token' },
+    },
+    httpRes: {
+      status: 200,
+      data: { results: [{ name: 'email', hasUniqueValue: false }] },
+    },
+  },
   // 207 Multi-Status response mocks for upsert endpoint
   {
     httpReq: {

@@ -54,6 +54,7 @@ import {
   isLookupFieldUnique,
   getLookupFieldValue,
   addHsAuthentication,
+  recordTransformFlow,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -108,7 +109,7 @@ const processUpsertIdentify = async (
   // Build upsert payload
   // Ref: https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
   const upsertPayload = {
-    id: lookupFieldInfo.value,
+    id: String(lookupFieldInfo.value),
     idProperty: lookupFieldInfo.fieldName,
     properties,
     // objectWriteTraceId is used to correlate results in 207 multi-status responses
@@ -126,6 +127,7 @@ const processUpsertIdentify = async (
   response.body.JSON = removeUndefinedAndNullValues(upsertPayload);
   response.operation = 'upsertContacts';
 
+  recordTransformFlow(destination, 'event_stream', 'es_retl', 'upsert');
   return addHsAuthentication(response, Config);
 };
 
@@ -187,6 +189,7 @@ const processIdentify = async (
     };
     response.operation = RETL_CREATE_ASSOCIATION_OPERATION;
     response.source = RETL_SOURCE;
+    recordTransformFlow(destination, 'retl', 'es_retl', 'association');
     return addHsAuthentication(response, Config);
   }
 
@@ -206,6 +209,7 @@ const processIdentify = async (
         objectType,
       );
       endpoint = `${BASE_ENDPOINT}${endpointPath}`;
+      recordTransformFlow(destination, 'retl', 'es_retl', 'create');
     } else if (operation === 'updateObject' && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
       endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
@@ -214,6 +218,7 @@ const processIdentify = async (
       );
       endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
+      recordTransformFlow(destination, 'retl', 'es_retl', 'update');
     }
 
     traits = await populateTraits(propertyMap, traits, destination, metadata);
@@ -256,12 +261,14 @@ const processIdentify = async (
       endpointPath = IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH;
       response.operation = 'updateContacts';
       response.method = defaultPatchRequestConfig.requestMethod;
+      recordTransformFlow(destination, 'event_stream', 'es_retl', 'update');
     } else {
       // contact do not exist
       // create
       endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
       endpointPath = IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH;
       response.operation = 'createContacts';
+      recordTransformFlow(destination, 'event_stream', 'es_retl', 'create');
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
   }
@@ -318,6 +325,7 @@ const processTrack = async ({
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.messageType = 'track';
+  recordTransformFlow(destination, 'event_stream', 'es_retl', 'track');
 
   // choosing API Type
   if (Config.authorizationType === 'newPrivateAppApi') {

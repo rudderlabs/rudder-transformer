@@ -10,7 +10,6 @@ type LiveSecret = {
   secret?: Record<string, string>; // merged into metadata.secret
   resourceIds?: Record<string, string>; // account-scoped: listId, pixelId, measurementId, etc.
   oauthRefresh?: {
-    // if authType is oauth, sent to rudder-auth /auth/v1/refresh
     refreshToken: string; // the long-lived token: the only oauth secret stored
     accountDefinition: AccountDefinition;
     providerFields?: Record<string, string>; // e.g. Salesforce instance_url, Google Cloud project ID, etc.
@@ -93,7 +92,7 @@ type LiveScenario = {
 
   enabled?: boolean; // default true; set false to keep the scenario in the tree without running it
   // Run this scenario against a modified destination.Config (derived from the spec's base config).
-  configOverride?: (base: Record<string, unknown>) => Record<string, unknown>;
+  configOverride?: (base: Record<string, unknown>, secret: LiveSecret) => Record<string, unknown>;
   // The common trailing read-back, declared on the scenario the way `cleanup` is: the framework
   // runs `check` after the steps and retries it on a thrown matcher error (jest `expect`) with
   // backoff, rethrowing the last error on exhaustion — so destination code shrinks to the

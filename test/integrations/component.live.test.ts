@@ -11,6 +11,8 @@ import { SecretResolver } from './live/secretResolver';
 import { RunContextImpl } from './live/runContext';
 import { runPipelineStep } from './live/runPipelineStep';
 import { retryUntilPasses } from './live/poll';
+import { OAuthTokenResolver } from './live/oauthTokenResolver';
+import { RudderAuthContainer } from './live/rudderAuthContainer';
 import { LiveSecret, EnrolledDestination } from './live/types';
 
 describe('Live Integration Test Suite', () => {
@@ -44,7 +46,9 @@ describe('Live Integration Test Suite', () => {
   });
 
   const resolver = new SecretResolver();
+  const authContainer = new RudderAuthContainer();
   const agent = () => request(server as unknown as Parameters<typeof request>[0]);
+  let tokenResolver: OAuthTokenResolver | undefined;
 
   const enrolledDestinations: EnrolledDestination[] = getEnrolledDestinations(opts.destination);
   // eslint-disable-next-line no-console
@@ -57,10 +61,33 @@ describe('Live Integration Test Suite', () => {
     return;
   }
 
+  // Manage the rudder-auth container when an OAuth destination is enrolled.
+  const hasOAuthDestination = enrolledDestinations.some((d) => d.spec.authType === 'oauth');
+  beforeAll(async () => {
+    if (hasOAuthDestination) {
+      const rudderAuthUrl = await authContainer.start();
+      tokenResolver = new OAuthTokenResolver(rudderAuthUrl);
+    }
+  }, 900000);
+  afterAll(async () => {
+    if (hasOAuthDestination) {
+      await authContainer.stop();
+    }
+  });
+
   // One describe per enrolled destination: resolve its credentials and base config, then run its
   // enabled scenarios. A missing/invalid secret throws here (fail-closed), failing the destination.
   describe.each(enrolledDestinations)('$destination', ({ destination, spec }) => {
     const liveSecret: LiveSecret = resolver.resolve(destination);
+
+    // OAuth: mint an access token via rudder-auth and inject it into metadata.secret.accessToken.
+    beforeAll(async () => {
+      if (spec.authType === 'oauth') {
+        const accessToken = await tokenResolver!.resolveAccessToken(destination, liveSecret);
+        liveSecret.secret = { ...(liveSecret.secret ?? {}), accessToken };
+      }
+    });
+
     const destinationConfig = spec.resolveConfig(liveSecret);
     // Audience / VDM destinations require connection.config on /routerTransform input.
     const connectionConfig = spec.resolveConnection?.(liveSecret);
@@ -83,7 +110,8 @@ describe('Live Integration Test Suite', () => {
     // per-scenario Config override.
     describe.each(activeScenarios)('scenario: $id', (scenario) => {
       const ctx = new RunContextImpl({ liveSecret });
-      const scenarioConfig = scenario.configOverride?.(destinationConfig) ?? destinationConfig;
+      const scenarioConfig =
+        scenario.configOverride?.(destinationConfig, liveSecret) ?? destinationConfig;
 
       beforeAll(() => {
         // Arm scenario cleanup if present; drained after steps (LIFO, best-effort).

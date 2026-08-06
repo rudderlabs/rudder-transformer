@@ -229,6 +229,61 @@ when the handler owns delivery:
 Cover this with a focused unit test that mocks the delivery SDK/client and asserts the per-item
 field is set on **every** item (cheaper and more direct than a full dataDelivery mock).
 
+## Partners that reject the whole batch
+
+Some APIs are **all-or-nothing**: one invalid event fails the entire request (OpenAI Ads,
+Reddit, Amplitude). For these, transform-time validation is **not sufficient on its own** —
+it only covers the rules you knew about when you wrote it. A partner that adds a validation
+rule, or one whose docs are incomplete, will reject a batch of N on one event you believed
+was fine, and the retry re-sends the same batch and fails again.
+
+The fallback belongs in the **networkHandler**, where the partner's actual rejection is
+visible. On a 4xx **when more than one event was sent**, mark every job `dontBatch: true` and
+return **500** so the router re-delivers them individually; the offending event then fails
+alone and the rest succeed.
+
+```ts
+const populateResponseWithDontBatch = (rudderJobMetadata, errorMessage) =>
+  rudderJobMetadata.map((metadata) => ({
+    // already retried as a singleton and still failing → abort instead of looping
+    statusCode: metadata.dontBatch ? 400 : 500,
+    metadata: { ...metadata, dontBatch: true },
+    error: errorMessage,
+  }));
+
+// in responseHandler, on a non-2xx:
+if (!isHttpStatusSuccess(status) && rudderJobMetadata.length > 1) {
+  throw new TransformerProxyError(
+    '<DEST>: error during response transformation',
+    500,
+    { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500) },
+    destinationResponse,
+    '',
+    populateResponseWithDontBatch(rudderJobMetadata, JSON.stringify(response)),
+  );
+}
+```
+
+Two rules that are easy to get wrong:
+
+- **Guard on `rudderJobMetadata.length > 1`.** Without it a genuine single-event failure is
+  converted into a retry, and the event never aborts.
+- **Terminate with `metadata.dontBatch ? 400 : 500`.** An event that already came back as a
+  `dontBatch` singleton and failed again must return the real 4xx. Returning 500
+  unconditionally retries a permanently-bad event forever.
+
+References: `src/v1/destinations/am/networkHandler.ts` (has the termination rule),
+`src/v1/destinations/reddit/networkHandler.js` (has the `length > 1` guard but returns 500
+unconditionally — copy Amplitude's version), `src/v1/destinations/algolia/networkHandler.js`.
+
+Network handlers live at `src/v1/destinations/<dest>/networkHandler.{ts,js}` and are
+auto-discovered by `src/adapters/networkHandlerFactory.js` from the directory name — export
+them as `networkHandler` or `NetworkHandler`; no registration step.
+
+Whether you need this: if the partner documents a per-item result array (partial success),
+you don't — parse it and mark only the failed items. If one bad item fails the request, you
+do.
+
 ## Testing
 
 Test via the framework's `processBatchedDestination` function — pass the `Integration` class (not an instance):
@@ -284,9 +339,20 @@ The framework handles error wrapping automatically:
 
 Use `InstrumentationError` for bad input data (no retry), `ConfigurationError` for bad config (no retry).
 
+Validating in `transformEvent()` is what keeps a known-bad event out of a batch in the first
+place — it fails one job while the rest of the batch still ships. For partners that reject the
+whole request on one bad item, pair it with the networkHandler fallback above; transform-time
+checks cannot cover rules the partner has and you don't.
+
 ## Metrics
 
 The framework emits these metrics automatically:
 
 - `dont_batch_events` — count of events with `dontBatch` flag
 - `output_batch_size` — histogram of events per output batch
+
+Don't add a destination-specific batch-composition counter; these already carry the
+destination tags. A climbing `dont_batch_events` rate on an all-or-nothing partner is the
+signature of a validation rule they enforce and `transformEvent()` doesn't — the preserved
+`destinationResponse` on the failed singleton names the field, and that rule then belongs in
+`transformEvent()` so it stops costing a delivery round-trip.

@@ -378,7 +378,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Event name is required for track call',
+            error: 'Event is a required field and should be a string',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

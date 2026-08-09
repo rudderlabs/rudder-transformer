@@ -2,32 +2,11 @@ import axios from 'axios';
 import { Agent } from 'https';
 import { LiveSpec, RunContext } from '../../live/types';
 
-// ─── Vero live spec ───
-//
-// Vero's Track API (api.getvero.com/api/v2) — the surface this destination writes to — is
-// WRITE-ONLY: there is no GET/read-back endpoint for user profiles, tags or subscription state. So
-// every scenario here is DELIVERY-ONLY: the pipeline step asserts the real Vero API accepted the
-// transformed payload (2xx via /routerTransform -> /proxy), which is the contract we can verify —
-// the same shape as the framework's other delivery-only scenarios (e.g. Braze's async merge). No
-// scenario declares a `verify` read-back because none is possible against this API.
-//
-// Setup (action) steps still create real prerequisite users via /users/track so that alias,
-// tags/edit and (un)subscribe operate on a real record rather than silently no-oping, and cleanup
-// removes created users via /users/delete (best-effort hygiene, not asserted).
-
-// ─── Direct Vero API helpers (setup + cleanup) ───
-
-// Vero's public API base. Matches src/v0/destinations/vero/config.js BASE_URL so the setup/cleanup
-// helpers hit the exact host the transform delivers to.
 const BASE_URL = 'https://api.getvero.com/api/v2';
-
-// keepAlive:false so setup/cleanup sockets don't linger as open handles when the suite finishes.
 const veroAgent = new Agent({ keepAlive: false });
 const apiHeaders = { 'Content-Type': 'application/json', Connection: 'close' as const };
 
-// Vero authenticates every call with `auth_token` in the JSON body (see responseBuilderSimple in
-// the transform). It's the same account token the transform reads from destination.Config.authToken,
-// supplied here via LIVE_SECRET_VERO.config.authToken.
+// Same account token the transform reads from destination.Config.authToken; Vero sends it in-body.
 const authToken = (ctx: RunContext): string => {
   const config = (ctx.liveSecret.config ?? {}) as Record<string, unknown>;
   const token = config.authToken as string | undefined;
@@ -37,9 +16,7 @@ const authToken = (ctx: RunContext): string => {
   return token;
 };
 
-// POST /users/track — create/update a user profile directly. Vero upserts by `id`, so this both
-// seeds prerequisite state (the source user an alias re-identifies, the user a tags/(un)subscribe
-// call acts on) and is safe to call for an id that doesn't exist yet.
+// Vero upserts by `id`, so this seeds prerequisite state and is safe for an id that doesn't exist yet.
 const createUser = async (
   ctx: RunContext,
   id: string,
@@ -52,8 +29,7 @@ const createUser = async (
   );
 };
 
-// POST /users/delete — teardown. Best-effort: logs and swallows so one failure can't strand
-// sibling cleanups. Vero has no read-back API, so this is fire-and-forget hygiene, not verified.
+// Best-effort teardown: logs and swallows so one failure can't strand sibling cleanups.
 const deleteUser = async (ctx: RunContext, id: string): Promise<void> => {
   try {
     await axios.post(
@@ -71,43 +47,31 @@ const deleteUser = async (ctx: RunContext, id: string): Promise<void> => {
   }
 };
 
-// Cleanup for the default single-user scenarios: removes the run's primary user.
 const deletePrimaryUser = (ctx: RunContext): Promise<void> => deleteUser(ctx, ctx.identity('user'));
+const deleteAnonymousUser = (ctx: RunContext): Promise<void> =>
+  deleteUser(ctx, ctx.identity('anon'));
 
-// Cleanup for the anonymous identify scenario: the profile is keyed by the anonymousId.
-const deleteAnonymousUser = (ctx: RunContext): Promise<void> => deleteUser(ctx, ctx.identity('anon'));
-
-// Cleanup for the alias scenario: the reidentify re-keys the source (previous) profile to the new
-// id, so remove both ids (in parallel) regardless of which one Vero kept.
+// reidentify re-keys the source profile to the new id, so remove both ids.
 const deleteAliasUsers = async (ctx: RunContext): Promise<void> => {
-  await Promise.all([deleteUser(ctx, ctx.identity('user')), deleteUser(ctx, ctx.identity('previous'))]);
+  await Promise.all([
+    deleteUser(ctx, ctx.identity('user')),
+    deleteUser(ctx, ctx.identity('previous')),
+  ]);
 };
 
-// alias → /users/reidentify re-keys an EXISTING profile from previousId to userId. Seed the source
-// (previousId) profile first so the reidentify has a real record to move.
 const createAliasSourceUser = (ctx: RunContext): Promise<void> =>
   createUser(ctx, ctx.identity('previous'), { firstName: 'CI-Alias-Source', ciRun: ctx.runId });
 
-// tags/edit, unsubscribe and resubscribe all act on an existing user. Seed the primary user first so
-// the operation targets a real profile (Vero would otherwise silently no-op on an unknown id).
 const createPrimaryUser = (ctx: RunContext): Promise<void> =>
   createUser(ctx, ctx.identity('user'), { firstName: 'CI-Primary', ciRun: ctx.runId });
 
-// ─── Seed builders ───
-// Vero has no read-back API, so these markers aren't asserted against a read — they simply give each
-// run a uniquely-valued payload so records are identifiable in the Vero UI and never collide
-// (identities are already namespaced by runId).
-
-// The lowercase integrations key the transform reads tags from (getIntegrationsObj(message, 'vero')).
 const VERO_INTEGRATION_KEY = 'vero';
 
-// The JS-SDK-style context every seeded event carries (mirrors the component fixtures).
 const veroLibraryContext = {
   library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
   locale: 'en-GB',
 };
 
-// Common envelope fields shared by every seed, built from ctx so each run is isolated.
 const baseEvent = (ctx: RunContext, suffix: string) => ({
   channel: 'web',
   messageId: `${ctx.runId}-${suffix}`,
@@ -117,24 +81,21 @@ const baseEvent = (ctx: RunContext, suffix: string) => ({
   integrations: { All: true },
 });
 
-// identify traits. `email` maps to the top-level `email` field (excluded from `data`); every other
-// trait lands in `data`.
+// `email` maps to the top-level `email` field (excluded from `data`); other traits land in `data`.
 const identifyTraits = (ctx: RunContext): Record<string, string> => ({
   email: ctx.email(),
   firstName: 'CI-Identify',
   ciRun: ctx.runId,
 });
 
-// Anonymous identify: keyed by anonymousId, so no top-level email is required, but we still carry one.
 const anonymousTraits = (ctx: RunContext): Record<string, string> => ({
   email: ctx.email('anon'),
   firstName: 'CI-Anon',
   ciRun: ctx.runId,
 });
 
-// Push-channel identify: the transform builds `channels` from context.os.name (platform) +
-// context.device.token (address) + context.device.name (device). Both platform and address must be
-// present or the transform drops the whole channels block.
+// The transform drops the whole `channels` block unless both platform (os.name) and address
+// (device.token) are present.
 const pushChannelContext = (ctx: RunContext) => ({
   ...veroLibraryContext,
   traits: { email: ctx.email(), firstName: 'CI-Push', ciRun: ctx.runId },
@@ -142,7 +103,6 @@ const pushChannelContext = (ctx: RunContext) => ({
   device: { token: `tok-${ctx.runId}`, name: 'Pixel-CI' },
 });
 
-// track / page / screen properties → mapped to `data` on /events/track.
 const trackProperties = (ctx: RunContext): Record<string, unknown> => ({
   plan: 'enterprise',
   source: 'live-integration-test',
@@ -154,11 +114,9 @@ const pageProperties = (ctx: RunContext): Record<string, unknown> => ({
   ciRun: ctx.runId,
 });
 
-// Tag names are run-unique so parallel/re-run tag edits don't step on each other.
 const tagsToAdd = (ctx: RunContext): string[] => [`ci-add-${ctx.runId}`];
 const tagsToRemove = (ctx: RunContext): string[] => [`ci-remove-${ctx.runId}`];
 
-// integrations block that carries the tag add/remove instruction the transform reads.
 const veroTagsIntegration = (
   ctx: RunContext,
   opts: { add?: boolean; remove?: boolean } = { add: true },
@@ -172,16 +130,11 @@ const veroTagsIntegration = (
   },
 });
 
-// ─── Spec ───
-
 export const live: LiveSpec = {
   enabled: true,
   authType: 'apiKey',
-  // authToken is the only account-scoped credential; it comes from LIVE_SECRET_VERO.config and is
-  // merged into destination.Config, where the transform reads it (Config.authToken).
   resolveConfig: (s) => ({ ...s.config }),
   scenarios: [
-    // ─── identify → /users/track ───
     {
       id: 'vero-identify',
       description: 'A basic identify creates/updates a Vero user profile via /users/track',
@@ -202,7 +155,6 @@ export const live: LiveSpec = {
       ],
     },
     {
-      // No userId → the transform keys the profile by anonymousId (id = anonymousId).
       id: 'vero-identify-anonymous',
       description: 'An anonymous identify keys the /users/track profile by anonymousId',
       cleanup: deleteAnonymousUser,
@@ -222,8 +174,6 @@ export const live: LiveSpec = {
       ],
     },
     {
-      // context.os.name + context.device.token/name → the transform attaches a push `channels`
-      // block (platform/address/device/type). Exercises the channels branch of the identify path.
       id: 'vero-identify-push-channels',
       description: 'identify with os + device info delivers a push channels block on /users/track',
       cleanup: deletePrimaryUser,
@@ -243,8 +193,7 @@ export const live: LiveSpec = {
       ],
     },
     {
-      // dontBatch=true — the proxy-request count is pinned so a batching regression that
-      // collapses/fans out delivery is caught even though it still 2xxs.
+      // Pinned proxy count catches a batching regression that still 2xxs.
       id: 'vero-identify-dontbatch',
       description: 'identify with dontBatch=true delivers un-batched (single proxy request)',
       cleanup: deletePrimaryUser,
@@ -264,12 +213,9 @@ export const live: LiveSpec = {
         },
       ],
     },
-
-    // ─── identify + tags → /users/track AND /users/tags/edit ───
-    // integrations.vero.tags appends a second request (tags/edit) to the identify output. One router
-    // output carries a 2-entry batchedRequest, so expect 1 output / 2 proxy requests — a regression
-    // dropping the tags call is exactly what the pinned count catches.
     {
+      // tags append a second request (tags/edit) → 1 output, 2 proxy requests. The pinned count
+      // catches a regression that drops the tags call.
       id: 'vero-identify-with-tags',
       description: 'identify with integrations.vero.tags.add fires /users/track + /users/tags/edit',
       cleanup: deletePrimaryUser,
@@ -290,7 +236,6 @@ export const live: LiveSpec = {
       ],
     },
     {
-      // Both add and remove present → a single tags/edit carrying both lists.
       id: 'vero-identify-tags-add-remove',
       description: 'identify with tags add + remove delivers a combined /users/tags/edit',
       cleanup: deletePrimaryUser,
@@ -310,8 +255,6 @@ export const live: LiveSpec = {
         },
       ],
     },
-
-    // ─── track → /events/track ───
     {
       id: 'vero-track',
       description: 'A custom track event is delivered to Vero via /events/track',
@@ -334,10 +277,9 @@ export const live: LiveSpec = {
       ],
     },
     {
-      // track + tags → /events/track + /users/tags/edit. Seed the user first so the tags edit acts
-      // on a real profile.
       id: 'vero-track-with-tags',
-      description: 'A track event with integrations.vero.tags fires /events/track + /users/tags/edit',
+      description:
+        'A track event with integrations.vero.tags fires /events/track + /users/tags/edit',
       cleanup: deletePrimaryUser,
       steps: [
         { stepType: 'action', name: 'setup: create user', run: createPrimaryUser },
@@ -358,8 +300,6 @@ export const live: LiveSpec = {
         },
       ],
     },
-
-    // ─── page / screen → /events/track (event name derived by the transform) ───
     {
       id: 'vero-page',
       description: 'A page call is delivered to Vero as a "Viewed <name> Page" event',
@@ -402,12 +342,10 @@ export const live: LiveSpec = {
         },
       ],
     },
-
-    // ─── alias → /users/reidentify ───
-    // Setup creates the source (previousId) profile; the alias re-keys it to the new userId.
     {
       id: 'vero-alias',
-      description: 'An alias re-identifies an existing user (previousId → userId) via /users/reidentify',
+      description:
+        'An alias re-identifies an existing user (previousId → userId) via /users/reidentify',
       cleanup: deleteAliasUsers,
       steps: [
         { stepType: 'action', name: 'setup: create source user', run: createAliasSourceUser },
@@ -425,10 +363,6 @@ export const live: LiveSpec = {
         },
       ],
     },
-
-    // ─── track "unsubscribe" / "resubscribe" → dedicated endpoints ───
-    // The transform special-cases these event names ahead of the generic track path. Seed the user
-    // first so the (un)subscribe acts on a real profile.
     {
       id: 'vero-unsubscribe',
       description: 'A track event named "unsubscribe" is delivered to /users/unsubscribe',

@@ -152,7 +152,8 @@ const handleCommonProperties = (message, event, shopifyTopic) => {
   // attaching cart, checkout and order tokens in context object
   message.setProperty(`context.cart_token`, event.cart_token);
   message.setProperty(`context.checkout_token`, event.checkout_token);
-  // raw shopify payload passed inside context object under shopifyDetails
+  // Raw Shopify payload is passed through as-is. Attribution/navigation fields such as
+  // landing_site and referring_site may be null, empty, absent, or redacted by Shopify.
   message.setProperty('context.shopifyDetails', event);
   if (shopifyTopic === 'orders_updated') {
     message.setProperty(`context.order_token`, event.token);

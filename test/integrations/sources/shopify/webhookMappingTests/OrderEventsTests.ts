@@ -1201,9 +1201,9 @@ export const newWebhookOrderEventsTestScenarios = [
   {
     id: 'os004',
     name: 'shopify',
-    description: 'Track Call -> generic Order paid event from Pixel app',
+    description:
+      'Track Call -> generic Order paid event from Pixel app with populated attribution fields',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -1239,7 +1239,8 @@ export const newWebhookOrderEventsTestScenarios = [
                 presentment_currency: 'USD',
                 processed_at: '2024-11-05T21:54:48-05:00',
                 reference: '4d92cf60cc24a1bd95929e17ead9845f',
-                referring_site: '',
+                landing_site: '/products/the-collection-snowboard-hydrogen?utm_source=google',
+                referring_site: 'https://www.google.com/',
                 source_identifier: '4d92cf60cc24a1bd95929e17ead9845f',
                 subtotal_price: '600.00',
                 subtotal_price_set: {
@@ -1468,7 +1469,8 @@ export const newWebhookOrderEventsTestScenarios = [
                       presentment_currency: 'USD',
                       processed_at: '2024-11-05T21:54:48-05:00',
                       reference: '4d92cf60cc24a1bd95929e17ead9845f',
-                      referring_site: '',
+                      landing_site: '/products/the-collection-snowboard-hydrogen?utm_source=google',
+                      referring_site: 'https://www.google.com/',
                       source_identifier: '4d92cf60cc24a1bd95929e17ead9845f',
                       subtotal_price: '600.00',
                       subtotal_price_set: {

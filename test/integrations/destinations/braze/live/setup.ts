@@ -1,4 +1,4 @@
-import { RunContext } from '../../../live/types';
+import type { RunContext } from '../../../live/types';
 import { pollUntil } from '../../../live/poll';
 import { createUserWithAttributes, exportUserByExternalId } from './api';
 import { dedupExistingInitialAttrs } from './profiles';

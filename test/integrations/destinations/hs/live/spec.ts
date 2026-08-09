@@ -1,4 +1,4 @@
-import { LiveSpec } from '../../../live/types';
+import type { LiveSpec } from '../../../live/types';
 import {
   ASSOC_FROM_TYPE,
   ASSOC_TO_TYPE,
@@ -42,7 +42,7 @@ import {
   verifyUpsertResolvesToSameContact,
 } from './verify';
 
-export const live: LiveSpec = {
+export const live = {
   enabled: true,
   authType: 'apiKey',
   resolveConfig: (s) => ({
@@ -435,6 +435,6 @@ export const live: LiveSpec = {
       verify: { check: verifyAssociationExists },
     },
   ],
-};
+} satisfies LiveSpec;
 
 export default live;

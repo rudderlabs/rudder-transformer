@@ -1,4 +1,4 @@
-import { RunContext } from '../../../live/types';
+import type { RunContext } from '../../../live/types';
 import {
   ASSOC_FROM_TYPE,
   ASSOC_TO_TYPE,

@@ -1,12 +1,11 @@
 import axios from 'axios';
 import { Agent } from 'https';
-import { RunContext } from '../../../live/types';
+import type { RunContext } from '../../../live/types';
 import { RUDDER_ALIAS_LABEL } from './profiles';
 
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles when the suite finishes.
 const brazeAgent = new Agent({ keepAlive: false });
 
-// Fields the read-back requests from Braze's export endpoint.
 const FIELDS_TO_EXPORT = [
   'external_id',
   'email',
@@ -20,9 +19,9 @@ const FIELDS_TO_EXPORT = [
 // transform authenticates with — the key just needs users.export.ids + users.delete (+ subscription
 // scopes) in addition to the delivery scopes.
 const apiCreds = (ctx: RunContext): { restApiKey: string; dataCenter: string } => {
-  const config = (ctx.liveSecret.config ?? {}) as Record<string, unknown>;
-  const restApiKey = config.restApiKey as string | undefined;
-  const dataCenter = config.dataCenter as string | undefined;
+  const config = ctx.liveSecret.config;
+  const restApiKey = typeof config.restApiKey === 'string' ? config.restApiKey : undefined;
+  const dataCenter = typeof config.dataCenter === 'string' ? config.dataCenter : undefined;
   if (!restApiKey) {
     throw new Error('Braze restApiKey missing from LIVE_SECRET_BRAZE.config');
   }
@@ -55,19 +54,23 @@ const authHeaders = (restApiKey: string) => ({
   Connection: 'close' as const,
 });
 
-export type BrazeUserProfile = {
+export interface BrazeUserProfile {
   external_id?: string;
   email?: string;
   first_name?: string;
   last_name?: string;
   custom_attributes?: Record<string, unknown>;
   user_aliases?: Array<{ alias_name: string; alias_label: string }>;
-};
+}
 
-type ExportSelector = {
+interface BrazeExportResponse {
+  users?: BrazeUserProfile[];
+}
+
+interface ExportSelector {
   externalIds?: string[];
   userAliases?: Array<{ alias_name: string; alias_label?: string }>;
-};
+}
 
 // POST /users/export/ids — the read-back. Returns the matched user profiles (empty array if none).
 export const exportUsers = async (
@@ -85,12 +88,16 @@ export const exportUsers = async (
       alias_label: a.alias_label ?? RUDDER_ALIAS_LABEL,
     }));
   }
-  const res = await axios.post(`${restEndpoint(dataCenter)}/users/export/ids`, body, {
-    headers: authHeaders(restApiKey),
-    httpsAgent: brazeAgent,
-    timeout: 15000,
-  });
-  return (res.data?.users ?? []) as BrazeUserProfile[];
+  const res = await axios.post<BrazeExportResponse>(
+    `${restEndpoint(dataCenter)}/users/export/ids`,
+    body,
+    {
+      headers: authHeaders(restApiKey),
+      httpsAgent: brazeAgent,
+      timeout: 15000,
+    },
+  );
+  return res.data.users ?? [];
 };
 
 export const exportUserByExternalId = async (
@@ -135,11 +142,11 @@ export const deleteUsers = async (ctx: RunContext, selector: ExportSelector): Pr
       timeout: 15000,
     });
   } catch (err) {
-    const status = (err as { response?: { status?: number } })?.response?.status;
+    const status = axios.isAxiosError(err) ? err.response?.status : undefined;
     // eslint-disable-next-line no-console
     console.error(
       `[live:braze] teardown (users/delete) failed${status ? ` (status ${status})` : ''}:`,
-      err instanceof Error ? err.message : String(err),
+      err instanceof Error ? err.message : 'unknown error',
     );
   }
 };
@@ -169,12 +176,16 @@ export const createUserWithAttributes = async (
   );
 };
 
-export type BrazeSubscriptionGroup = {
+export interface BrazeSubscriptionGroup {
   id?: string;
   name?: string;
   channel?: string;
   status?: string;
-};
+}
+
+interface BrazeSubscriptionStatusResponse {
+  users?: Array<{ subscription_groups?: BrazeSubscriptionGroup[] }>;
+}
 
 // GET /subscription/user/status — read a user's subscription-group statuses back for the
 // /v2/subscription/status/set verify.
@@ -183,13 +194,16 @@ export const getSubscriptionGroups = async (
   externalId: string,
 ): Promise<BrazeSubscriptionGroup[]> => {
   const { restApiKey, dataCenter } = apiCreds(ctx);
-  const res = await axios.get(`${restEndpoint(dataCenter)}/subscription/user/status`, {
-    params: { external_id: externalId },
-    headers: authHeaders(restApiKey),
-    httpsAgent: brazeAgent,
-    timeout: 15000,
-  });
-  return (res.data?.users?.[0]?.subscription_groups ?? []) as BrazeSubscriptionGroup[];
+  const res = await axios.get<BrazeSubscriptionStatusResponse>(
+    `${restEndpoint(dataCenter)}/subscription/user/status`,
+    {
+      params: { external_id: externalId },
+      headers: authHeaders(restApiKey),
+      httpsAgent: brazeAgent,
+      timeout: 15000,
+    },
+  );
+  return res.data.users?.[0]?.subscription_groups ?? [];
 };
 
 // The subscription_group_id must come from the real Braze account (account-scoped), supplied via

@@ -6,7 +6,7 @@ import {
   routerOutputToProxyRequests,
 } from './routerProxyRequests';
 import { buildRouterTransformBody } from './routerTransformRequest';
-import { DeliveryFailure, RunPipelineStepParams } from './types';
+import type { DeliveryFailure, RunPipelineStepParams } from './types';
 
 const isDelivered = (status: number): boolean =>
   (status >= HttpStatusCode.Ok && status < HttpStatusCode.MultipleChoices) ||
@@ -44,8 +44,9 @@ const attemptDelivery = async ({
   expect(routerResponse.status).toEqual(HttpStatusCode.Ok);
 
   const routerOutputs = parseSuccessfulRouterOutputs(routerResponse.body);
-  if (step.expectedOutputs !== undefined) {
-    expect(routerOutputs).toHaveLength(step.expectedOutputs);
+  const { expectedOutputs, expectedProxyRequests } = step;
+  if (expectedOutputs !== undefined) {
+    expect(routerOutputs).toHaveLength(expectedOutputs);
   } else {
     expect(routerOutputs.length).toBeGreaterThan(0);
   }
@@ -56,9 +57,9 @@ const attemptDelivery = async ({
   proxyRequestsPerOutput.forEach((proxyRequests) =>
     expect(proxyRequests.length).toBeGreaterThan(0),
   );
-  if (step.expectedProxyRequests !== undefined) {
+  if (expectedProxyRequests !== undefined) {
     const total = proxyRequestsPerOutput.reduce((n, proxyRequests) => n + proxyRequests.length, 0);
-    expect(total).toEqual(step.expectedProxyRequests);
+    expect(total).toEqual(expectedProxyRequests);
   }
 
   for (const proxyRequests of proxyRequestsPerOutput) {

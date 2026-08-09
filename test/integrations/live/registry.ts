@@ -1,6 +1,6 @@
 import { existsSync, readdirSync } from 'fs';
 import { join } from 'path';
-import { EnrolledDestination, LiveSpec } from './types';
+import type { EnrolledDestination, LiveSpec } from './types';
 
 const DESTINATIONS_DIR = join(__dirname, '..', 'destinations');
 
@@ -12,7 +12,10 @@ function loadSpec(destination: string): LiveSpec | undefined {
     return undefined;
   }
   // eslint-disable-next-line global-require, import/no-dynamic-require
-  const mod = require(join(DESTINATIONS_DIR, destination, 'live'));
+  const mod = require(join(DESTINATIONS_DIR, destination, 'live')) as {
+    live?: LiveSpec;
+    default?: LiveSpec;
+  };
   const spec: LiveSpec | undefined = mod.live || mod.default;
   return spec && spec.enabled ? spec : undefined;
 }

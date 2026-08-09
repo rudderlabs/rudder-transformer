@@ -1,4 +1,4 @@
-import { LiveSpec, RunContext } from '../../../live/types';
+import type { LiveSpec, RunContext } from '../../../live/types';
 import {
   deleteAnonymousUser,
   deleteUserByExternalId,
@@ -61,7 +61,7 @@ const READBACK = { attempts: 6, delayMs: (n: number) => 1000 * 2 ** n };
 // (the ON path); every other scenario stays on the default processBatch path.
 const BRAZE_PER_JOB_DELIVERY_TEST_WORKSPACE_ID = 'braze-pjdm-ws';
 
-export const live: LiveSpec = {
+export const live = {
   enabled: true,
   authType: 'apiKey',
   // restApiKey + dataCenter are account-scoped and come from LIVE_SECRET_BRAZE.config; the rest are
@@ -894,6 +894,6 @@ export const live: LiveSpec = {
       },
     },
   ],
-};
+} satisfies LiveSpec;
 
 export default live;

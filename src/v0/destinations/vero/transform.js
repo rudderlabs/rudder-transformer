@@ -9,6 +9,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty,
   simpleProcessRouterDest,
+  validateEventName,
 } = require('../../util');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
@@ -86,10 +87,7 @@ const identifyResponseBuilder = (message, category, destination) => {
 // This function handles track requests as well as addition-removal of tags.
 // Track Ref - https://developers.getvero.com/?bash#events-track
 const trackResponseBuilder = (message, category, destination) => {
-  if (!message.event || typeof message.event !== 'string') {
-    throw new InstrumentationError('Event name is required for track call');
-  }
-
+  validateEventName(message.event);
   const event = message.event.toLowerCase();
   if (event === 'unsubscribe' || event === 'resubscribe') {
     const eventCategory = CONFIG_CATEGORIES[message.event.toUpperCase()];

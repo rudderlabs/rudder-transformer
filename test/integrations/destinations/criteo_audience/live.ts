@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Agent } from 'https';
 import { BASE_ENDPOINT } from '../../../../src/v0/destinations/criteo_audience/config';
-import { LiveScenario, LiveSpec, RunContext } from '../../live/types';
+import type { LiveScenario, LiveSpec, RunContext } from '../../live/types';
 
 const criteoAgent = new Agent({ keepAlive: false });
 
@@ -85,7 +85,7 @@ const audienceListSeed = (
   properties: { listData },
 });
 
-const scenarios: LiveScenario[] = [
+const scenarios = [
   {
     id: 'criteo-audience-add-email',
     description: 'Event-stream audiencelist adds email identifiers to the email audience (add)',
@@ -185,9 +185,9 @@ const scenarios: LiveScenario[] = [
       },
     ],
   },
-];
+] satisfies LiveScenario[];
 
-export const live: LiveSpec = {
+export const live = {
   enabled: true,
   authType: 'oauth',
   resolveConfig: (s) => ({
@@ -196,6 +196,6 @@ export const live: LiveSpec = {
     ...s.config,
   }),
   scenarios,
-};
+} satisfies LiveSpec;
 
 export default live;

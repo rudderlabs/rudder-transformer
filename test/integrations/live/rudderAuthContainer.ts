@@ -20,17 +20,16 @@ export class RudderAuthContainer {
   private credentialEnv(): Record<string, string> {
     const env: Record<string, string> = {};
     for (const [key, value] of Object.entries(this.env)) {
-      if (
-        value !== undefined &&
-        /(CLIENT_ID|CLIENT_SECRET|CONSUMER_KEY|CONSUMER_SECRET)/.test(key)
-      ) {
+      if (value === undefined) {
+        continue;
+      }
+      if (/(CLIENT_ID|CLIENT_SECRET|CONSUMER_KEY|CONSUMER_SECRET)/.test(key)) {
         env[key] = value;
       }
     }
     return env;
   }
 
-  // Start the container and return its base URL.
   async start(): Promise<string> {
     try {
       // eslint-disable-next-line no-console
@@ -49,7 +48,9 @@ export class RudderAuthContainer {
       return url;
     } catch (err) {
       throw new Error(
-        `[live] failed to start the rudder-auth container from ${IMAGE}: ${String(err)}.`,
+        `[live] failed to start the rudder-auth container from ${IMAGE}: ${
+          err instanceof Error ? err.message : 'unknown error'
+        }.`,
       );
     }
   }
@@ -62,7 +63,11 @@ export class RudderAuthContainer {
       await this.container.stop();
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.warn(`[live] rudder-auth container teardown failed (ignored): ${String(err)}`);
+      console.warn(
+        `[live] rudder-auth container teardown failed (ignored): ${
+          err instanceof Error ? err.message : 'unknown error'
+        }`,
+      );
     } finally {
       this.container = undefined;
     }

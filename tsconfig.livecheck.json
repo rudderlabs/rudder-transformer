@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "dist"],
+  "include": [
+    "test/integrations/live/**/*.ts",
+    "test/integrations/destinations/braze/live/**/*.ts",
+    "test/integrations/destinations/criteo_audience/live.ts"
+  ]
+}

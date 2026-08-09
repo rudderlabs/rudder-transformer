@@ -1,4 +1,4 @@
-import { LiveSpec, RunContext } from '../../../live/types';
+import type { LiveSpec, RunContext } from '../../../live/types';
 import { pollUntil } from '../../../live/poll';
 import {
   clearMembership,
@@ -51,7 +51,7 @@ const verifyMembership =
     expect(value).toBe(expected);
   };
 
-export const live: LiveSpec = {
+export const live = {
   enabled: true,
   authType: 'apiKey',
   resolveConfig: (s) => ({
@@ -126,6 +126,6 @@ export const live: LiveSpec = {
       },
     },
   ],
-};
+} satisfies LiveSpec;
 
 export default live;

@@ -1,4 +1,4 @@
-import { RunContext } from '../../../live/types';
+import type { RunContext } from '../../../live/types';
 
 // Firstname used as the non-unique lookupField value (must match between setup and seed/verify).
 export const lookupFirstname = (ctx: RunContext): string => `ci-${ctx.runId}`;

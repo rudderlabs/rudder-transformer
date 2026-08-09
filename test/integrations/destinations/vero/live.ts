@@ -75,12 +75,16 @@ const deleteUser = async (ctx: RunContext, id: string): Promise<void> => {
 const deletePrimaryUser = (ctx: RunContext): Promise<void> => deleteUser(ctx, ctx.identity('user'));
 
 // Cleanup for the anonymous identify scenario: the profile is keyed by the anonymousId.
-const deleteAnonymousUser = (ctx: RunContext): Promise<void> => deleteUser(ctx, ctx.identity('anon'));
+const deleteAnonymousUser = (ctx: RunContext): Promise<void> =>
+  deleteUser(ctx, ctx.identity('anon'));
 
 // Cleanup for the alias scenario: the reidentify re-keys the source (previous) profile to the new
 // id, so remove both ids (in parallel) regardless of which one Vero kept.
 const deleteAliasUsers = async (ctx: RunContext): Promise<void> => {
-  await Promise.all([deleteUser(ctx, ctx.identity('user')), deleteUser(ctx, ctx.identity('previous'))]);
+  await Promise.all([
+    deleteUser(ctx, ctx.identity('user')),
+    deleteUser(ctx, ctx.identity('previous')),
+  ]);
 };
 
 // alias → /users/reidentify re-keys an EXISTING profile from previousId to userId. Seed the source
@@ -337,7 +341,8 @@ export const live: LiveSpec = {
       // track + tags → /events/track + /users/tags/edit. Seed the user first so the tags edit acts
       // on a real profile.
       id: 'vero-track-with-tags',
-      description: 'A track event with integrations.vero.tags fires /events/track + /users/tags/edit',
+      description:
+        'A track event with integrations.vero.tags fires /events/track + /users/tags/edit',
       cleanup: deletePrimaryUser,
       steps: [
         { stepType: 'action', name: 'setup: create user', run: createPrimaryUser },
@@ -407,7 +412,8 @@ export const live: LiveSpec = {
     // Setup creates the source (previousId) profile; the alias re-keys it to the new userId.
     {
       id: 'vero-alias',
-      description: 'An alias re-identifies an existing user (previousId → userId) via /users/reidentify',
+      description:
+        'An alias re-identifies an existing user (previousId → userId) via /users/reidentify',
       cleanup: deleteAliasUsers,
       steps: [
         { stepType: 'action', name: 'setup: create source user', run: createAliasSourceUser },

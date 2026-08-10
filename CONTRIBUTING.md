@@ -98,6 +98,27 @@ Before starting to work on your first RudderStack integration, it is highly reco
 * When developing a **destination integration**, you'll be parsing the event data according to this event spec and transforming it to your destination's data spec.
 
 
+### Read the repo's skills first
+
+Most conventions in this repo live in `.claude/skills/`, not in this file — they are kept
+short, scoped, and current, and they say which approach is the *current* one. **Read the
+relevant ones before writing code.** Copying the nearest existing destination is the common
+failure: most files here predate the current convention, so pattern-matching reproduces the
+old way with no signal that anything is wrong.
+
+Each skill's `description` says when it applies, so listing them here would only go stale —
+read them from the tree instead:
+
+```bash
+head -n 4 .claude/skills/*/SKILL.md   # name + description of every skill
+```
+
+Skim that, then read in full the ones that cover what you're touching. Anything that sends
+more than one event per request, and anything writing a `networkHandler`, is worth checking
+before you start rather than after.
+
+Where a skill and this file disagree, **the skill is current** — please fix this file.
+
 ### Overview of integration development journey
 
 
@@ -129,7 +150,10 @@ Understand the code structure
 
 * `src/v0/destinations` - Destination integrations
 * `src/v1/destinations` - Destination integrations (used for network handlers)
-* `src/cdk/v2/destinations` - Destination Integrations that are written in CDK (no longer being developed now)
+* `src/cdk/v2/destinations` - Destination Integrations written in CDK v2 (YAML workflows).
+  **Deprecated — do not add new destinations here, and do not use an existing one as a
+  template.** New destinations go in `src/v0/destinations` as TypeScript; see the
+  `batching-framework` skill for the current router-transform shape.
 * `src/sources` - Source integrations
 * `test/integrations/sources` - Integration tests for source integrations
 * `test/integrations/destinations` - Integration tests for destination integrations
@@ -454,7 +478,10 @@ Understand the code structure
 
 * `src/v0/destinations` - Destination integrations
 * `src/v1/destinations` - Destination integrations (used for network handlers)
-* `src/cdk/v2/destinations` - Destination Integrations that are written in CDK (no longer being developed now)
+* `src/cdk/v2/destinations` - Destination Integrations written in CDK v2 (YAML workflows).
+  **Deprecated — do not add new destinations here, and do not use an existing one as a
+  template.** New destinations go in `src/v0/destinations` as TypeScript; see the
+  `batching-framework` skill for the current router-transform shape.
 * `src/sources` - Source integrations
 * `test/integrations/sources` - Integration tests for source integrations
 * `test/integrations/destinations` - Integration tests for destination integrations

@@ -125,6 +125,59 @@ export const v1OtherScenarios: ProxyV1TestData[] = [
     },
   },
   {
+    id: 'tiktok_ads_other_3',
+    name: 'tiktok_ads',
+    description: '[Other]:: Test for tiktok_ads when request failed due to redis timeout',
+    feature: 'dataDelivery',
+    scenario: 'other',
+    successCriteria: 'Should return 500 status code after successfully sending the request',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            params,
+            endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
+            headers: { ...commonHeaderPart, 'test-dest-response-key': 'redisTimeoutResponse' },
+            JSON: {
+              ...commonParts,
+              properties: commonProperties,
+            },
+          },
+          [generateMetadata(1234)],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 500,
+            message: 'Request failed with status: 40700',
+            response: [
+              {
+                error: JSON.stringify({
+                  code: 40700,
+                  message:
+                    'redis error: Timeout occurred while waiting for a slot to become available',
+                }),
+                statusCode: 500,
+                metadata: generateMetadata(1234),
+              },
+            ],
+            statTags: {
+              ...statTags,
+              errorType: 'retryable',
+            },
+          },
+        },
+      },
+    },
+  },
+  {
     id: 'tiktok_ads_other_2',
     name: 'tiktok_ads',
     description:

@@ -34,9 +34,29 @@ import {
 
 const subscribeEndpoint = 'https://api.iterable.com/api/lists/subscribe';
 const unsubscribeEndpoint = 'https://api.iterable.com/api/lists/unsubscribe';
-const SUCCESS_MESSAGE = '[ITERABLE_AUDIENCE Response Handler] - Request Processed Successfully';
+// Messages produced by the batching framework's delivery bridge, which owns response handling
+// for this destination once ITERABLE_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS
+// is set. A batch where every job succeeded keeps the destination's own status; a mixed batch is
+// reported as 207 with per-job detail.
+const FRAMEWORK_SUCCESS_MESSAGE = '[ITERABLE_AUDIENCE] Request processed successfully';
+// A mixed batch keeps Iterable's own status (200) and reports the first real failure reason.
+const frameworkFailure = (reason: string) => `[ITERABLE_AUDIENCE] ${reason}`;
 
-export const data: ProxyV1TestData[] = [
+// A batch in which every subscriber failed the same way is a whole-response failure, so it carries
+// the same tag set a thrown error would — `integration.failure_detailed` needs the identifying
+// fields, not just errorType.
+const abortedStatTags = {
+  destType: 'ITERABLE_AUDIENCE',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+};
+
+const scenarios: ProxyV1TestData[] = [
   {
     id: 'iterable_audience_v1_subscribe_full_success',
     name: 'iterable_audience',
@@ -66,8 +86,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeSuccessResponse },
+            message: FRAMEWORK_SUCCESS_MESSAGE,
             response: [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
               { statusCode: 200, metadata: generateMetadata(2), error: 'success' },
@@ -106,8 +125,9 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeInvalidEmailResponse },
+            message: frameworkFailure(
+              'email error:"bad@example.com" in "failedUpdates.invalidEmails".',
+            ),
             response: [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
               {
@@ -150,8 +170,10 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeConflictUserIdResponse },
+            message: frameworkFailure(
+              'userId error:"conflict_user" in "failedUpdates.conflictUserIds".',
+            ),
+            statTags: abortedStatTags,
             response: [
               {
                 statusCode: 400,
@@ -193,8 +215,10 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeNotFoundResponse },
+            message: frameworkFailure(
+              'email error:"missing@example.com" in "failedUpdates.notFoundEmails".',
+            ),
+            statTags: abortedStatTags,
             response: [
               {
                 statusCode: 400,
@@ -236,8 +260,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeForgottenResponse },
+            message: FRAMEWORK_SUCCESS_MESSAGE,
             response: [{ statusCode: 200, metadata: generateMetadata(1), error: 'success' }],
           },
         },
@@ -273,8 +296,10 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeEmailCaseResponse },
+            message: frameworkFailure(
+              'email error:"mixedcase@example.com" in "failedUpdates.invalidEmails".',
+            ),
+            statTags: abortedStatTags,
             response: [
               {
                 statusCode: 400,
@@ -316,8 +341,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeUserIdCaseResponse },
+            message: FRAMEWORK_SUCCESS_MESSAGE,
             response: [{ statusCode: 200, metadata: generateMetadata(1), error: 'success' }],
           },
         },
@@ -359,8 +383,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeMixedResponse },
+            message: frameworkFailure('2 of 5 events failed; see per-event errors'),
             response: [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
               {
@@ -410,8 +433,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: unsubscribeNotFoundEmailResponse },
+            message: FRAMEWORK_SUCCESS_MESSAGE,
             response: [{ statusCode: 200, metadata: generateMetadata(1), error: 'success' }],
           },
         },
@@ -447,8 +469,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: unsubscribeNotFoundUserIdResponse },
+            message: FRAMEWORK_SUCCESS_MESSAGE,
             response: [{ statusCode: 200, metadata: generateMetadata(1), error: 'success' }],
           },
         },
@@ -484,8 +505,10 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeInvalidDataResponse },
+            message: frameworkFailure(
+              'email error:"baddata@example.com" in "failedUpdates.invalidDataEmails".',
+            ),
+            statTags: abortedStatTags,
             response: [
               {
                 statusCode: 400,
@@ -529,8 +552,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: SUCCESS_MESSAGE,
-            destinationResponse: { status: 200, response: subscribeBothForgottenResponse },
+            message: FRAMEWORK_SUCCESS_MESSAGE,
             response: [{ statusCode: 200, metadata: generateMetadata(1), error: 'success' }],
           },
         },
@@ -567,8 +589,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 401,
-            message:
-              'ITERABLE_AUDIENCE: Error transformer proxy during ITERABLE_AUDIENCE response transformation. "Invalid API key"',
+            message: frameworkFailure('Invalid API key'),
             statTags: {
               destType: 'ITERABLE_AUDIENCE',
               errorCategory: 'network',
@@ -620,8 +641,7 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 500,
-            message:
-              'ITERABLE_AUDIENCE: Error transformer proxy during ITERABLE_AUDIENCE response transformation. "Internal server error"',
+            message: frameworkFailure('Internal server error'),
             statTags: {
               destType: 'ITERABLE_AUDIENCE',
               errorCategory: 'network',
@@ -650,3 +670,15 @@ export const data: ProxyV1TestData[] = [
     },
   },
 ];
+
+/**
+ * ITERABLE_AUDIENCE is already GA for the batching-framework transform, so only the delivery flag is
+ * needed to move these scenarios onto the framework response path.
+ */
+export const data = scenarios.map((scenario) => ({
+  ...scenario,
+  envOverrides: {
+    ...scenario.envOverrides,
+    ITERABLE_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+  },
+}));

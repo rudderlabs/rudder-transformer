@@ -49,7 +49,7 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message: '[CustomerIO Response Handler] - Request Processed Successfully',
+            message: '[CUSTOMERIO] Request processed successfully',
             response: [{ statusCode: 200, metadata: generateMetadata(1), error: 'success' }],
           },
         },
@@ -101,7 +101,8 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
         body: {
           output: {
             status: 207,
-            message: '[CustomerIO Response Handler] - Batch completed with partial failures',
+            message:
+              '[CUSTOMERIO] reason: invalid, field: attributes.plan, message: property value cannot be longer than 1000 bytes',
             response: [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
               {
@@ -158,8 +159,7 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
               destinationId: 'default-destinationId',
               workspaceId: 'default-workspaceId',
             },
-            message:
-              '[CustomerIO Response Handler] - Error in transformer proxy during CustomerIO response transformation',
+            message: '[CUSTOMERIO] [Generic Response Handler] Request failed with status: 400',
             response: [
               {
                 error: JSON.stringify({ message: 'Bad Request' }),
@@ -175,10 +175,10 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
   {
     id: 'customerio_dataDelivery_401',
     name: 'customerio',
-    description: '[401] Auth failure — TransformerProxyError with REFRESH_TOKEN',
+    description: '[401] Auth failure — TransformerProxyError, no auth error category',
     feature: 'dataDelivery',
     scenario: 'business',
-    successCriteria: 'Should surface 401 with REFRESH_TOKEN auth error category',
+    successCriteria: 'Should surface the 401 per job, with no authErrorCategory',
     module: 'destination',
     version: 'v1',
     input: {
@@ -200,11 +200,12 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
     },
     output: {
       response: {
-        status: 401,
+        // 200, not 401: the controller only propagates the delivery status to the HTTP response
+        // when authErrorCategory is set, and the framework no longer infers one from a 401.
+        status: 200,
         body: {
           output: {
             status: 401,
-            authErrorCategory: 'REFRESH_TOKEN',
             statTags: {
               destType: 'CUSTOMERIO',
               errorCategory: 'network',
@@ -215,8 +216,7 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
               destinationId: 'default-destinationId',
               workspaceId: 'default-workspaceId',
             },
-            message:
-              '[CustomerIO Response Handler] - Error in transformer proxy during CustomerIO response transformation',
+            message: '[CUSTOMERIO] [Generic Response Handler] Request failed with status: 401',
             response: [
               {
                 error: JSON.stringify({ message: 'Unauthorized' }),
@@ -231,4 +231,18 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
   },
 ];
 
-export const data = [...v1BusinessTestScenarios];
+/**
+ * These scenarios run through the batching framework's delivery path rather than
+ * `v1/destinations/customerio/networkHandler`. The transform flag is required because
+ * `isBatchingFrameworkDeliveryEnabled` refuses to enable delivery without it, and customerio is
+ * not yet GA for batching so it does not get that flag implicitly.
+ */
+const batchingFrameworkDelivery = {
+  CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+  CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+};
+
+export const data = v1BusinessTestScenarios.map((scenario) => ({
+  ...scenario,
+  envOverrides: { ...scenario.envOverrides, ...batchingFrameworkDelivery },
+}));

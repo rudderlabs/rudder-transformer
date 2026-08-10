@@ -31,6 +31,7 @@ import {
 } from './v2/util';
 import { process as v1ProcessEventStream } from './transform';
 import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from './types';
+import { customerIODelivery } from './v2/delivery';
 
 class CustomerIOIntegration extends VDMV2ObjectDestination<
   CustomerIOV2Payload,
@@ -40,6 +41,9 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
   protected readonly recordSchema = recordInputSchema;
 
   protected readonly eventStreamSchema = eventStreamInputSchema;
+
+  // Only the 207 multi-status needs handling; see ./v2/delivery.
+  static readonly delivery = customerIODelivery;
 
   private assertObjectSize(body: unknown): void {
     const size = Buffer.byteLength(JSON.stringify(body), 'utf8');

@@ -191,7 +191,7 @@ describe('filterFieldsBySchema (via buildAudienceMemberFromProcessedFields)', ()
           userIdentifiers: [
             { emailAddress: 'hashed_email' },
             { phoneNumber: 'hashed_phone' },
-            { addressInfo: fullAddress },
+            { address: fullAddress },
           ],
         },
       },
@@ -205,7 +205,7 @@ describe('filterFieldsBySchema (via buildAudienceMemberFromProcessedFields)', ()
           userIdentifiers: [
             { emailAddress: 'hashed_email' },
             { phoneNumber: 'hashed_phone' },
-            { addressInfo: fullAddress },
+            { address: fullAddress },
           ],
         },
       },
@@ -226,7 +226,7 @@ describe('filterFieldsBySchema (via buildAudienceMemberFromProcessedFields)', ()
       description: "userSchema ['addressInfo'] → only address identifier",
       fields: allFields,
       userSchema: ['addressInfo'],
-      expected: { userData: { userIdentifiers: [{ addressInfo: fullAddress }] } },
+      expected: { userData: { userIdentifiers: [{ address: fullAddress }] } },
     },
     {
       description: "userSchema ['email', 'phone'] → email and phone, no address",
@@ -244,7 +244,7 @@ describe('filterFieldsBySchema (via buildAudienceMemberFromProcessedFields)', ()
       userSchema: ['email', 'addressInfo'],
       expected: {
         userData: {
-          userIdentifiers: [{ emailAddress: 'hashed_email' }, { addressInfo: fullAddress }],
+          userIdentifiers: [{ emailAddress: 'hashed_email' }, { address: fullAddress }],
         },
       },
     },
@@ -253,7 +253,7 @@ describe('filterFieldsBySchema (via buildAudienceMemberFromProcessedFields)', ()
         "individual address field in userSchema (e.g. ['firstName']) triggers needsAddress → all address fields included, email/phone excluded",
       fields: allFields,
       userSchema: ['firstName'],
-      expected: { userData: { userIdentifiers: [{ addressInfo: fullAddress }] } },
+      expected: { userData: { userIdentifiers: [{ address: fullAddress }] } },
     },
     {
       description: 'empty userSchema → all fields filtered out → null',

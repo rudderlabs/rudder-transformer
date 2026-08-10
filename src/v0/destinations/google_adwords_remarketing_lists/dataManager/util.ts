@@ -139,7 +139,9 @@ export const buildAudienceMemberFromProcessedFields = (
       // AddressInfo requires all 4 fields per Google DM API spec
       const { givenName, familyName, regionCode, postalCode } = mapped.addressInfo;
       if (givenName && familyName && regionCode && postalCode) {
-        userIdentifiers.push({ addressInfo: { givenName, familyName, regionCode, postalCode } });
+        // Data Manager API UserIdentifier uses `address` (the legacy Google Ads API used
+        // `addressInfo`); sub-fields stay givenName/familyName/regionCode/postalCode.
+        userIdentifiers.push({ address: { givenName, familyName, regionCode, postalCode } });
       }
     }
 

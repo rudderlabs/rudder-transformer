@@ -69,7 +69,7 @@ const testMemberFullAddress = {
       { emailAddress: EMAIL_HASH_TEST },
       { phoneNumber: PHONE_HASH },
       {
-        addressInfo: {
+        address: {
           givenName: GIVEN_TEST,
           familyName: FAMILY_RUDDERLABS,
           regionCode: 'US',
@@ -94,7 +94,7 @@ const ghiMemberWithAddress = {
       { emailAddress: EMAIL_HASH_GHI },
       { phoneNumber: PHONE_HASH },
       {
-        addressInfo: {
+        address: {
           givenName: GIVEN_GHI,
           familyName: FAMILY_JKL,
           regionCode: 'US',

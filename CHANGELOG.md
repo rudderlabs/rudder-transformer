@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.145.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.145.0...v1.145.1) (2026-08-10)
+
+
+### Bug Fixes
+
+* garl data manager address info ([#5452](https://github.com/rudderlabs/rudder-transformer/issues/5452)) ([6fd6cd2](https://github.com/rudderlabs/rudder-transformer/commit/6fd6cd275fe443434b571dd6c5693dba9a79f6ec))
+
 ## [1.145.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.144.0...v1.145.0) (2026-08-05)
 
 

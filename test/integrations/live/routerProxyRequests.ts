@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { formatZodError } from '@rudderstack/integrations-lib';
 import { DeliveryV1ResponseSchema, ProxyMetdata, ProxyV1Request } from '../../../src/types';
 import { isRecord, readBoolean, readNumber, readString } from './coerce';
 import { BatchedRequest, LiveRouterOutputSchema, RouterOutput } from './types';
@@ -57,13 +58,25 @@ const ProxyDeliveryHttpBodySchema = z.object({
 
 /** Parse `/routerTransform` HTTP body; returns only successful (2xx) outputs. */
 export const parseSuccessfulRouterOutputs = (body: unknown): RouterOutput[] => {
-  const { output } = RouterTransformHttpBodySchema.parse(body);
-  return output.filter((o) => o.statusCode >= 200 && o.statusCode < 300);
+  const result = RouterTransformHttpBodySchema.safeParse(body);
+  if (!result.success) {
+    throw new Error(
+      `/routerTransform response did not match the expected shape: ${formatZodError(result.error)}`,
+    );
+  }
+  return result.data.output.filter((o) => o.statusCode >= 200 && o.statusCode < 300);
 };
 
 /** Parse `/v1/destinations/<dest>/proxy` HTTP body to the delivery verdict. */
-export const parseDeliveryOutput = (body: unknown) =>
-  ProxyDeliveryHttpBodySchema.parse(body).output;
+export const parseDeliveryOutput = (body: unknown): z.infer<typeof DeliveryV1ResponseSchema> => {
+  const result = ProxyDeliveryHttpBodySchema.safeParse(body);
+  if (!result.success) {
+    throw new Error(
+      `/proxy response did not match the expected delivery shape: ${formatZodError(result.error)}`,
+    );
+  }
+  return result.data.output;
+};
 
 // Maps one router-transform output item to one or more ProxyV1Requests (array batchedRequests fan out).
 export const routerOutputToProxyRequests = (item: RouterOutput): ProxyV1Request[] => {

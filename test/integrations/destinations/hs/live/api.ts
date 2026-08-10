@@ -1,8 +1,21 @@
 import axios from 'axios';
 import { Agent } from 'https';
-import { RunContext } from '../../../live/types';
+import type { RunContext } from '../../../live/types';
 
 export const HS_BASE = 'https://api.hubapi.com';
+
+interface HsSearchResponse {
+  results?: Array<{ id?: string; properties?: Record<string, string> }>;
+}
+interface HsCreateResponse {
+  id?: string | number;
+}
+interface HsAssociationsResponse {
+  results?: Array<{ toObjectId: string | number }>;
+}
+interface HsContactResponse {
+  properties?: Record<string, string>;
+}
 
 // An association links two existing objects; scenarios register these types in setup.
 export const ASSOC_FROM_TYPE = 'companies';
@@ -12,8 +25,8 @@ export const ASSOC_TO_TYPE = 'contacts';
 const hsAgent = new Agent({ keepAlive: false });
 
 const bearer = (ctx: RunContext): string => {
-  const token = ctx.liveSecret.config?.accessToken;
-  if (!token) {
+  const token = ctx.liveSecret.config.accessToken;
+  if (typeof token !== 'string' || token.length === 0) {
     throw new Error('HubSpot access token missing from resolved secret');
   }
   return `Bearer ${token}`;
@@ -34,7 +47,7 @@ export const findContactIdByProperty = async (
   propertyName: string,
   value: string,
 ): Promise<string | null> => {
-  const res = await axios.post(
+  const res = await axios.post<HsSearchResponse>(
     `${HS_BASE}/crm/v3/objects/contacts/search`,
     {
       filterGroups: [{ filters: [{ propertyName, operator: 'EQ', value }] }],
@@ -47,7 +60,7 @@ export const findContactIdByProperty = async (
       timeout: 15000,
     },
   );
-  return res.data?.results?.[0]?.id ?? null;
+  return res.data.results?.[0]?.id ?? null;
 };
 
 export const findContactIdByEmail = (ctx: RunContext, email: string): Promise<string | null> =>
@@ -57,7 +70,7 @@ export const fetchContactByEmail = async (
   ctx: RunContext,
   propertyNames: string[],
 ): Promise<Record<string, string> | null> => {
-  const res = await axios.post(
+  const res = await axios.post<HsSearchResponse>(
     `${HS_BASE}/crm/v3/objects/contacts/search`,
     {
       filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: ctx.email() }] }],
@@ -70,7 +83,7 @@ export const fetchContactByEmail = async (
       timeout: 15000,
     },
   );
-  return res.data?.results?.[0]?.properties ?? null;
+  return res.data.results?.[0]?.properties ?? null;
 };
 
 export const createCrmObject = async (
@@ -78,7 +91,7 @@ export const createCrmObject = async (
   objectType: string,
   properties: Record<string, unknown>,
 ): Promise<string> => {
-  const res = await axios.post(
+  const res = await axios.post<HsCreateResponse>(
     `${HS_BASE}/crm/v3/objects/${objectType}`,
     { properties },
     {
@@ -87,7 +100,7 @@ export const createCrmObject = async (
       timeout: 15000,
     },
   );
-  const id = res.data?.id;
+  const id = res.data.id;
   if (!id) {
     throw new Error(`Setup: failed to create ${objectType} (no id in response)`);
   }
@@ -115,7 +128,7 @@ export const getAssociatedIds = async (
   fromId: string,
   toType: string,
 ): Promise<string[]> => {
-  const res = await axios.get(
+  const res = await axios.get<HsAssociationsResponse>(
     `${HS_BASE}/crm/v4/objects/${fromType}/${fromId}/associations/${toType}`,
     {
       headers: authHeaders(ctx),
@@ -123,7 +136,7 @@ export const getAssociatedIds = async (
       timeout: 15000,
     },
   );
-  return (res.data?.results ?? []).map((r: { toObjectId: unknown }) => String(r.toObjectId));
+  return (res.data.results ?? []).map((r) => String(r.toObjectId));
 };
 
 export const deleteAssociationObjects = async (ctx: RunContext): Promise<void> => {
@@ -159,13 +172,13 @@ export const fetchContactPropsById = async (
   id: string,
   propertyNames: string[],
 ): Promise<Record<string, string> | null> => {
-  const res = await axios.get(`${HS_BASE}/crm/v3/objects/contacts/${id}`, {
+  const res = await axios.get<HsContactResponse>(`${HS_BASE}/crm/v3/objects/contacts/${id}`, {
     params: { properties: propertyNames.join(',') },
     headers: authHeaders(ctx),
     httpsAgent: hsAgent,
     timeout: 15000,
   });
-  return res.data?.properties ?? null;
+  return res.data.properties ?? null;
 };
 
 // Delete any contact reachable by the run's primary or additional email. On the happy path only the

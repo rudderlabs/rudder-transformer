@@ -3,7 +3,7 @@ import bodyParser from 'koa-bodyparser';
 import request from 'supertest';
 import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
-import { Server } from 'http';
+import type { Server } from 'http';
 import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
 import { applicationRoutes } from '../../src/routes/index';
 import { getEnrolledDestinations } from './live/registry';
@@ -11,7 +11,9 @@ import { SecretResolver } from './live/secretResolver';
 import { RunContextImpl } from './live/runContext';
 import { runPipelineStep } from './live/runPipelineStep';
 import { retryUntilPasses } from './live/poll';
-import { LiveSecret, EnrolledDestination } from './live/types';
+import { OAuthTokenResolver } from './live/oauthTokenResolver';
+import { RudderAuthContainer } from './live/rudderAuthContainer';
+import type { LiveSecret, EnrolledDestination } from './live/types';
 
 describe('Live Integration Test Suite', () => {
   // npm run test:live
@@ -44,7 +46,8 @@ describe('Live Integration Test Suite', () => {
   });
 
   const resolver = new SecretResolver();
-  const agent = () => request(server as unknown as Parameters<typeof request>[0]);
+  const agent = () => request(server);
+  let tokenResolver: OAuthTokenResolver | undefined;
 
   const enrolledDestinations: EnrolledDestination[] = getEnrolledDestinations(opts.destination);
   // eslint-disable-next-line no-console
@@ -57,10 +60,48 @@ describe('Live Integration Test Suite', () => {
     return;
   }
 
+  // Manage the rudder-auth container when an OAuth destination is enrolled; it forwards only the
+  // enrolled OAuth destinations' credentials (see RudderAuthContainer).
+  const oauthDestinations = enrolledDestinations
+    .filter((d) => d.spec.authType === 'oauth')
+    .map((d) => d.destination);
+  const hasOAuthDestination = oauthDestinations.length > 0;
+  const authContainer = new RudderAuthContainer(oauthDestinations);
+  beforeAll(async () => {
+    if (hasOAuthDestination) {
+      const rudderAuthUrl = await authContainer.start();
+      tokenResolver = new OAuthTokenResolver(rudderAuthUrl);
+    }
+  }, 900000);
+  afterAll(async () => {
+    if (hasOAuthDestination) {
+      await authContainer.stop();
+    }
+  });
+
   // One describe per enrolled destination: resolve its credentials and base config, then run its
   // enabled scenarios. A missing/invalid secret throws here (fail-closed), failing the destination.
   describe.each(enrolledDestinations)('$destination', ({ destination, spec }) => {
     const liveSecret: LiveSecret = resolver.resolve(destination);
+
+    beforeAll(async () => {
+      if (spec.authType === 'oauth') {
+        if (!tokenResolver) {
+          throw new Error(
+            '[live] OAuth destination enrolled but rudder-auth token resolver is not ready',
+          );
+        }
+        // Merge rudder-auth's refreshed secret wholesale (mirroring rudder-server) so each
+        // transform finds its token under whatever key it reads (accessToken | access_token).
+        const secret = await tokenResolver.resolveSecret(
+          destination,
+          liveSecret,
+          spec.oauthVersion ?? 'v0',
+        );
+        liveSecret.secret = { ...(liveSecret.secret ?? {}), ...secret };
+      }
+    });
+
     const destinationConfig = spec.resolveConfig(liveSecret);
     // Audience / VDM destinations require connection.config on /routerTransform input.
     const connectionConfig = spec.resolveConnection?.(liveSecret);
@@ -79,11 +120,10 @@ describe('Live Integration Test Suite', () => {
       return;
     }
 
-    // One describe per scenario, each with its own RunContext (isolated identities) and optional
-    // per-scenario Config override.
     describe.each(activeScenarios)('scenario: $id', (scenario) => {
       const ctx = new RunContextImpl({ liveSecret });
-      const scenarioConfig = scenario.configOverride?.(destinationConfig) ?? destinationConfig;
+      const scenarioConfig =
+        scenario.configOverride?.(destinationConfig, liveSecret) ?? destinationConfig;
 
       beforeAll(() => {
         // Arm scenario cleanup if present; drained after steps (LIFO, best-effort).
@@ -133,12 +173,16 @@ describe('Live Integration Test Suite', () => {
                   config: scenarioConfig,
                   connection,
                   http: {
-                    post: async (url, body) =>
-                      agent()
-                        .post(url)
-                        .send(body as object),
+                    post: async (url, body) => agent().post(url).send(body),
                   },
                 });
+                return;
+              default: {
+                // Exhaustive discriminated-union check: adding a new step type without a case here
+                // becomes a compile error rather than a silent no-op.
+                const exhaustive: never = step;
+                throw new Error(`[live] unknown step type: ${JSON.stringify(exhaustive)}`);
+              }
             }
           } catch (err) {
             scenarioFailed = true;

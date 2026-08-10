@@ -1,4 +1,4 @@
-import { RunContext } from '../../../live/types';
+import type { RunContext } from '../../../live/types';
 
 // Braze's user-alias label used by the transform for the anonymousId alias.
 export const RUDDER_ALIAS_LABEL = 'rudder_id';

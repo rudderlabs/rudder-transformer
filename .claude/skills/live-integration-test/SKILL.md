@@ -126,20 +126,26 @@ runs against the previous attempt's state.
 `resolveConfig(s)` maps `s.config` (plus fixed non-secret defaults taken from the component
 `destination.Config`) into the real `destination.Config`.
 
-**OAuth destinations** (`authType: 'oauth'`): supply `oauthRefresh` (the long-lived refresh token +
-`accountDefinition` + any `providerFields` like Salesforce `instance_url`). Note the harness README
-lists the `rudder-auth` container that services OAuth refresh as **deferred (not in the pilot)** — so
-until that layer lands, an OAuth destination's spec typically goes in with `enabled: false` (parked)
-and is validated for shape only. Prefer piloting `apiKey`/`basic` destinations first.
+**OAuth destinations** (`authType: 'oauth'`): supply `oauthRefresh` — the long-lived `refreshToken`,
+the `accountDefinition` (for rudder-auth's v1 route), and any `providerFields` (e.g. Salesforce
+`instance_url`) — and set `oauthVersion` to the route rudder-auth uses: `'v0'` (legacy
+`/tokens/destination/<dest>/refresh`, the default) or `'v1'` (`/auth/v1/refresh`). At run time the
+suite starts the **rudder-auth** container (testcontainers, ECR image) and `OAuthTokenResolver` calls
+exactly that one route — no fallback — then merges the whole returned secret into `metadata.secret`,
+so the transform reads its token under whatever key rudder-auth returns (`accessToken` |
+`access_token`). The OAuth **app** creds come from Vault: the CI job wildcard-imports
+`control-plane/data/external-services` and the container forwards only the enrolled destinations'
+`<DEST>_…` base/`_DESTINATION` creds (never `_SOURCE`); locally set `*_CLIENT_ID`/`*_CLIENT_SECRET` in
+`.env`. The image ships working defaults per integration. `criteo_audience` is the reference OAuth
+spec.
 
 ## Steps
 
 1. **Read** the sources above for `<dest>`; enumerate the distinct behaviors its component cases
    cover (dedupe error-only ones).
-2. **Choose** `authType`. **If the destination is OAuth, stop here:** the `rudder-auth` container
-   that services OAuth refresh is deferred (not in the pilot), so park the spec with
-   `enabled: false` and say so in the output — don't generate a spec that can't run yet. Pilot
-   `apiKey`/`basic` destinations first.
+2. **Choose** `authType`. For **OAuth**, set `authType: 'oauth'` and require `oauthRefresh` in the
+   secret; the rudder-auth container handles refresh at run time (see Credentials).
+   `criteo_audience` is the reference OAuth spec. `apiKey`/`basic` destinations need no refresh layer.
 3. **Write `resolveConfig`** from the component `destination.Config` — keep the non-secret fields as
    fixed defaults, spread `s.config` last for the real credentials.
 4. **Emit a credential template.** `resolveConfig` names the destination's config fields, so print a
@@ -155,11 +161,13 @@ and is validated for shape only. Prefer piloting `apiKey`/`basic` destinations f
    behaviors, factor the asserted fields into a `(ctx) => ({ ... })` profile shared by the seed and
    the field-level verify so the two stay in lockstep.
 6. **Enroll**: `enabled: true` (registry auto-discovers `destinations/*/live.ts`; no registration).
-   Use `enabled: false` to park it (e.g. OAuth destinations, until rudder-auth lands).
-7. **Add the CI matrix entry.** Enrollment isn't complete until the destination runs in CI: add its
-   code to the `destination` matrix in `.github/workflows/live-integration-tests.yml`
-   (`destination: [hs, <dest>]`). The secret name is derived from the code (`LIVE_SECRET_<DEST>`),
-   so that's the only workflow edit.
+   Use `enabled: false` to park a spec in the tree without running it.
+7. **CI is automatic.** The `discover` job builds the workflow matrix from `destinations/*/live.ts`,
+   so a new spec runs in CI with no workflow edit. `LIVE_SECRET_<DEST>` is derived from the
+   destination code; an **OAuth** spec (`authType: 'oauth'`) additionally wildcard-imports the whole
+   `control-plane/data/external-services` cred set and starts rudder-auth (the container forwards only
+   the enrolled destinations' `<DEST>_…` base/`_DESTINATION` creds), while apiKey destinations do
+   neither. See `.github/scripts/live-test-matrix.js`.
 8. **Verify**:
    `npx tsc --noEmit -p tsconfig.test.json`
    then, with real credentials:
@@ -172,10 +180,16 @@ and is validated for shape only. Prefer piloting `apiKey`/`basic` destinations f
 Generating `live.ts` is only the in-repo half. Enrolling a destination end-to-end also touches
 systems outside the repo — print this checklist at the end so the developer knows what's left:
 
-- **Vault**: add the `LIVE_SECRET_<DEST>` field (the full `LiveSecret` JSON) under
-  `engineering_shared/data/integrations_team/e2e_test/rudder-transformer`.
+- **Vault**: add the `LIVE_SECRET_<DEST>` field (the full `LiveSecret` JSON, stored as **single-line**
+  JSON — a multi-line value breaks the CI secret import) under
+  `engineering_shared/data/integrations_team/e2e_test/rudder-transformer`. For OAuth destinations, also
+  ensure the app creds exist under `control-plane/data/external-services` with the names rudder-auth
+  expects (e.g. `<DEST>_CLIENT_ID_DESTINATION`) — the OAuth job wildcard-imports that whole set and the
+  container forwards this destination's `<DEST>_…` base/`_DESTINATION` creds, so nothing in the
+  workflow needs to know the exact field names.
 - **GitHub**: any Actions vars/secrets the run needs — the workflow reads `VAULT_ADDR`,
-  `VAULT_JWT_AUTH_PATH`, and `VAULT_JWT_ROLE`; add destination-specific ones if required.
+  `VAULT_JWT_AUTH_PATH`, `VAULT_JWT_ROLE` (and, for OAuth, `AWS_ECR_IAM_ROLE_ARN` for the rudder-auth
+  image pull); add destination-specific ones if required.
 - **Sandbox account**: who owns it, what a run creates, and what cleanup is expected to remove — a
   live run writes to a real account.
 
@@ -193,7 +207,7 @@ event with `properties` for a conversion, or an audience membership event), swap
 ```ts
 import axios from 'axios';
 import { Agent } from 'https';
-import { LiveSpec, RunContext } from '../../live/types';
+import type { LiveSpec, RunContext } from '../../live/types';
 import { pollUntil } from '../../live/poll';
 
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles.
@@ -226,8 +240,8 @@ const agent = new Agent({ keepAlive: false });
 //   },
 // });
 
-export const live: LiveSpec = {
-  enabled: true, // OAuth destinations: false until rudder-auth lands (see Credentials)
+export const live = {
+  enabled: true,
   authType: 'apiKey', // apiKey | oauth | basic | serviceAccount | custom
   // Non-secret Config defaults from the component test's destination.Config; real creds via s.config.
   resolveConfig: (s) => ({ ...s.config }),
@@ -267,7 +281,7 @@ export const live: LiveSpec = {
     // },
     // { id: '<dest>-variant', description: 'config-driven variant', configOverride: (base) => ({ ...base }), steps: [ ... ] },
   ],
-};
+} satisfies LiveSpec;
 
 export default live;
 ```

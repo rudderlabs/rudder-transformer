@@ -12,7 +12,7 @@ module.exports = {
   collectCoverageFrom: ['src/**/*.{ts,js}', '!src/**/*.d.ts'],
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'ts', 'node'],
-  modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/dist-test/'],
+  modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/dist-test/', '<rootDir>/.worktrees/'],
   setupFiles: ['<rootDir>/test/setup.ts'],
   testMatch: ['<rootDir>/test/integrations/component.live.test.ts'],
   testPathIgnorePatterns: ['/node_modules/'],

@@ -40,12 +40,55 @@ For anything beyond a couple of scenarios, split the spec into a `live/` folder 
 - **`live/profiles.ts`** — trait profiles + shared `(ctx) => ({ ... })` factories used by both
   seeds and verifies.
 
+### OAuth destinations (`authType: 'oauth'`)
+
+OAuth destinations don't ship a long-lived access token in their secret — one is minted at run
+time. When any enrolled destination is `authType: 'oauth'`, a suite-level `beforeAll` starts the
+**rudder-auth** container via testcontainers (`RudderAuthContainer`, `live/rudderAuthContainer.ts`)
+and returns its base URL. `OAuthTokenResolver` (`live/oauthTokenResolver.ts`), built from that URL,
+refreshes each OAuth destination's secret and merges the result into `metadata.secret`. This mirrors
+production, where rudder-server delegates token refresh to rudder-auth rather than the transformer
+holding credentials.
+
+`OAuthTokenResolver` calls exactly the rudder-auth route the spec's `oauthVersion` declares — **v0**
+(legacy `POST /tokens/destination/<dest>/refresh` with `{ refreshToken }`, the default) or **v1**
+(`POST /auth/v1/refresh` with `{ accountDefinition, account: { secret: { refreshToken }, options } }`).
+There is no fallback between them, so a leftover legacy route can't be hit by accident. rudder-auth
+returns each integration's own secret shape with no normalization (`criteo_audience`/`zoho` →
+`{ accessToken, refreshToken }`, `google_adwords` → `{ access_token }`), so the resolver merges the
+**whole** returned secret into `metadata.secret` rather than a single hardcoded key, and each
+transform reads its own key via `getAccessToken(metadata, 'accessToken' | 'access_token')`. On failure
+it throws with the HTTP status (via `axios.isAxiosError`) — never the response body, so a token can't
+leak. Supply the token via `LIVE_SECRET_<DEST>.oauthRefresh` (`refreshToken`, plus `accountDefinition`
+for v1 and any `providerFields`).
+
+The image is pulled from ECR (`422074288268.dkr.ecr.us-east-1.amazonaws.com/rudderstack/rudder-auth:develop`),
+so Docker must be running and logged in to that ECR registry. The image ships default OAuth app
+credentials for each integration; the container also forwards credential-shaped env vars
+(`*_CLIENT_ID`/`*_CLIENT_SECRET`/`*_CONSUMER_KEY`/`*_CONSUMER_SECRET`/`*_DEVELOPER_TOKEN`), which
+override those defaults — so the refresh token must be issued by whichever app rudder-auth ends up
+using (the image default, or the creds you supply). In CI those app creds come from Vault: an OAuth
+job imports the whole `control-plane/data/external-services` set in one wildcard read, and the
+container (`rudderAuthContainer.ts`) forwards only the **enrolled** destinations' destination-flow
+creds — scoped to `<DEST>_…` and to base/`_DESTINATION` names, never `_SOURCE` — keeping every other
+secret in the job env out of the container. Locally, set them in `.env`.
+
+Authenticate with the AWS profile/SSO session that has ECR pull access to the account (set
+`AWS_PROFILE`, or pass `--profile`), then run:
+
+```bash
+AWS_PROFILE=<profile> aws ecr get-login-password --region us-east-1 \
+  | docker login --username AWS --password-stdin 422074288268.dkr.ecr.us-east-1.amazonaws.com
+
+LIVE_SECRET_CRITEO_AUDIENCE='{...}' LOG_LEVEL=silent \
+  npm run test:live -- --destination=criteo_audience
+```
+
 ### Deferred (not in the pilot)
 
-Vault-backed `SecretResolver`, GitHub OIDC → Vault auth, the `rudder-auth` container
-for OAuth destinations, the CI workflow, and impact-based PR subsetting. The interfaces
-here (`SecretResolver.resolve()`, `LiveSpec`) are shaped so those layer on without
-rewrites.
+Impact-based PR subsetting (running only the destinations a PR touches). Vault-backed secrets,
+GitHub-OIDC → Vault auth, and the CI workflow are now implemented — see
+`.github/workflows/live-integration-tests.yml`.
 
 **Scope — transform path.** The harness drives only `/routerTransform → /proxy`. rudder-server
 also runs the processor transform (`/v0/destinations/<dest>`) ahead of delivery, whose response
@@ -76,11 +119,13 @@ blob matching the `LiveSecret` shape:
 
 - `config` — merged into `destination.Config` (auth for header-based destinations lives here).
 - `secret` — merged into `metadata.secret` (for destinations that read the token there).
-- `resourceIds`, `oauthRefresh`, `readback` — optional; account ids, OAuth refresh token,
-  and read-back credentials for `verify` steps.
+- `resourceIds`, `oauthRefresh`, `readback` — optional; account-scoped ids, the OAuth refresh
+  token (`oauthRefresh.refreshToken` + `accountDefinition` for the rudder-auth V1 route), and
+  read-back credentials for `verify` steps.
 
-In production these come from Vault (one path per destination); the resolver interface
-stays the same.
+`SecretResolver` validates the blob against a zod schema (`LiveSecretSchema`) and throws a
+path-scoped error if it doesn't match. In production the blob comes from Vault (one path per
+destination, stored as single-line JSON); the resolver interface stays the same.
 
 `LIVE_TEST_EMAIL_DOMAIN` overrides the sink domain used for generated test emails.
 
@@ -89,14 +134,14 @@ stays the same.
 Add `test/integrations/destinations/<dest>/live.ts` exporting a `LiveSpec`:
 
 ```ts
-export const live: LiveSpec = {
+export const live = {
   enabled: true,
   authType: 'apiKey',
   resolveConfig: (s) => ({ ...s.config }), // -> destination.Config
   scenarios: [
     /* ... */
   ],
-};
+} satisfies LiveSpec;
 ```
 
 The registry discovers it automatically. Set `enabled: false` to keep it in the tree

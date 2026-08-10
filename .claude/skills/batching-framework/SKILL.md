@@ -251,8 +251,16 @@ const populateResponseWithDontBatch = (rudderJobMetadata, errorMessage) =>
     error: errorMessage,
   }));
 
-// in responseHandler, on a non-2xx:
-if (!isHttpStatusSuccess(status) && rudderJobMetadata.length > 1) {
+// in responseHandler — order matters; the retryable and throttled cases must be
+// handled BEFORE the split, or a transient failure gets split up permanently:
+if (isHttpStatusRetryable(status)) {
+  throw new RetryableError(/* … */); // 5xx — retry the batch as a batch
+}
+if (isHttpStatusThrottled(status)) {
+  throw new ThrottledError(/* … */); // 429 — back off, don't split
+}
+// only now: a genuine 4xx rejection of the whole batch
+if (rudderJobMetadata.length > 1) {
   throw new TransformerProxyError(
     '<DEST>: error during response transformation',
     500,
@@ -264,17 +272,26 @@ if (!isHttpStatusSuccess(status) && rudderJobMetadata.length > 1) {
 }
 ```
 
-Two rules that are easy to get wrong:
+Three rules that are easy to get wrong:
 
+- **Split only on a 4xx.** A `!isHttpStatusSuccess(status)` guard also catches 429 and 5xx,
+  which turns a rate-limit or a partner outage — transient, and a whole-batch problem — into
+  a permanent `dontBatch` on every job plus N individual redeliveries. Handle retryable and
+  throttled first, as above, or test for 4xx explicitly.
 - **Guard on `rudderJobMetadata.length > 1`.** Without it a genuine single-event failure is
   converted into a retry, and the event never aborts.
 - **Terminate with `metadata.dontBatch ? 400 : 500`.** An event that already came back as a
   `dontBatch` singleton and failed again must return the real 4xx. Returning 500
   unconditionally retries a permanently-bad event forever.
 
-References: `src/v1/destinations/am/networkHandler.ts` (has the termination rule),
-`src/v1/destinations/reddit/networkHandler.js` (has the `length > 1` guard but returns 500
-unconditionally — copy Amplitude's version), `src/v1/destinations/algolia/networkHandler.js`.
+References: `src/v1/destinations/am/networkHandler.ts` — the closest thing to a complete
+reference: it orders the checks as above (`isHttpStatusRetryable` → `isHttpStatusThrottled` →
+split) and has the `dontBatch ? 400 : 500` termination rule. It *returns* a
+`DeliveryV1Response` for the split rather than throwing `TransformerProxyError`; both shapes
+work, pick one. `src/v1/destinations/reddit/networkHandler.js` has the `length > 1` guard and
+correctly narrows to `status === 400`, but its `populateResponseWithDontBatch` returns 500
+unconditionally — take Amplitude's version of that line. Also
+`src/v1/destinations/algolia/networkHandler.js`.
 
 Network handlers live at `src/v1/destinations/<dest>/networkHandler.{ts,js}` and are
 auto-discovered by `src/adapters/networkHandlerFactory.js` from the directory name — export

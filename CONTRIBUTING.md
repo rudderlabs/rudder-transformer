@@ -106,19 +106,16 @@ relevant ones before writing code.** Copying the nearest existing destination is
 failure: most files here predate the current convention, so pattern-matching reproduces the
 old way with no signal that anything is wrong.
 
+Each skill's `description` says when it applies, so listing them here would only go stale —
+read them from the tree instead:
+
 ```bash
-ls .claude/skills/          # one line per skill; read the frontmatter `description` of each
+head -n 4 .claude/skills/*/SKILL.md   # name + description of every skill
 ```
 
-The ones that most often matter when adding or changing a destination:
-
-| Skill | Read it when |
-|---|---|
-| `batching-framework` | Any destination that sends more than one event per request — this is how router transforms are written now, including all-or-nothing partners and `networkHandler` fallbacks |
-| `deprecate-processor-transform` | Anything touching `transform.ts` / `process` — new destinations are router-only |
-| `live-integration-test` | Enrolling a destination in the real-account test suite (`test/integrations/live/`) |
-| `destination-payload-conventions` | Monetary values, config-vs-`integrations` overrides, PII hashing |
-| `code-structure`, `typescript-guidelines`, `writing-tests` | Applied to all code in this repo |
+Skim that, then read in full the ones that cover what you're touching. Anything that sends
+more than one event per request, and anything writing a `networkHandler`, is worth checking
+before you start rather than after.
 
 Where a skill and this file disagree, **the skill is current** — please fix this file.
 

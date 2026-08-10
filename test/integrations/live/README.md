@@ -50,26 +50,28 @@ refreshes each OAuth destination's secret and merges the result into `metadata.s
 production, where rudder-server delegates token refresh to rudder-auth rather than the transformer
 holding credentials.
 
-`OAuthTokenResolver` tries rudder-auth's **V1** route first — `POST /auth/v1/refresh` with
-`{ accountDefinition, account: { secret: { refreshToken }, options } }` — and falls back to the
-**legacy** per-destination route, `POST /tokens/destination/<dest>/refresh` with `{ refreshToken }`.
-rudder-auth returns each integration's own secret shape with no normalization (`criteo_audience`/
-`zoho` → `{ accessToken, refreshToken }`, `google_adwords` → `{ access_token }`), so the resolver
-merges the **whole** returned secret into `metadata.secret` rather than a single hardcoded key, and
-each transform reads its own key via `getAccessToken(metadata, 'accessToken' | 'access_token')`. If
-both routes fail it throws with each route's status/body (token-shaped fields redacted). Supply the
-token via `LIVE_SECRET_<DEST>.oauthRefresh` (`refreshToken`, plus `accountDefinition` for V1 and any
-`providerFields`).
+`OAuthTokenResolver` calls exactly the rudder-auth route the spec's `oauthVersion` declares — **v0**
+(legacy `POST /tokens/destination/<dest>/refresh` with `{ refreshToken }`, the default) or **v1**
+(`POST /auth/v1/refresh` with `{ accountDefinition, account: { secret: { refreshToken }, options } }`).
+There is no fallback between them, so a leftover legacy route can't be hit by accident. rudder-auth
+returns each integration's own secret shape with no normalization (`criteo_audience`/`zoho` →
+`{ accessToken, refreshToken }`, `google_adwords` → `{ access_token }`), so the resolver merges the
+**whole** returned secret into `metadata.secret` rather than a single hardcoded key, and each
+transform reads its own key via `getAccessToken(metadata, 'accessToken' | 'access_token')`. On failure
+it throws with the HTTP status (via `axios.isAxiosError`) — never the response body, so a token can't
+leak. Supply the token via `LIVE_SECRET_<DEST>.oauthRefresh` (`refreshToken`, plus `accountDefinition`
+for v1 and any `providerFields`).
 
 The image is pulled from ECR (`422074288268.dkr.ecr.us-east-1.amazonaws.com/rudderstack/rudder-auth:develop`),
 so Docker must be running and logged in to that ECR registry. The image ships default OAuth app
-credentials for each integration; the container also forwards credential-shaped env vars (any
-`*_CLIENT_ID`/`*_CLIENT_SECRET`/`*_CONSUMER_KEY`/`*_CONSUMER_SECRET`), which override those defaults —
-so the refresh token must be issued by whichever app rudder-auth ends up using (the image default,
-or the creds you supply). In CI those app creds come from Vault: an OAuth job imports the whole
-`control-plane/data/external-services` set in one wildcard read, and the container forwards only the
-credential-shaped vars — so rudder-auth gets whatever it needs by its own config names, with no
-per-destination secret list in the workflow. Locally, set them in `.env`.
+credentials for each integration; the container also forwards credential-shaped env vars
+(`*_CLIENT_ID`/`*_CLIENT_SECRET`/`*_CONSUMER_KEY`/`*_CONSUMER_SECRET`/`*_DEVELOPER_TOKEN`), which
+override those defaults — so the refresh token must be issued by whichever app rudder-auth ends up
+using (the image default, or the creds you supply). In CI those app creds come from Vault: an OAuth
+job imports the whole `control-plane/data/external-services` set in one wildcard read, and the
+container (`rudderAuthContainer.ts`) forwards only the **enrolled** destinations' destination-flow
+creds — scoped to `<DEST>_…` and to base/`_DESTINATION` names, never `_SOURCE` — keeping every other
+secret in the job env out of the container. Locally, set them in `.env`.
 
 Authenticate with the AWS profile/SSO session that has ECR pull access to the account (set
 `AWS_PROFILE`, or pass `--profile`), then run:

@@ -127,14 +127,17 @@ runs against the previous attempt's state.
 `destination.Config`) into the real `destination.Config`.
 
 **OAuth destinations** (`authType: 'oauth'`): supply `oauthRefresh` — the long-lived `refreshToken`,
-the `accountDefinition` (for rudder-auth's V1 route), and any `providerFields` (e.g. Salesforce
-`instance_url`). At run time the suite starts the **rudder-auth** container (testcontainers, ECR
-image) and `OAuthTokenResolver` refreshes the secret — trying V1 (`/auth/v1/refresh`) then the
-legacy route (`/tokens/destination/<dest>/refresh`) — then merges the whole returned secret into
-`metadata.secret`, so the transform reads its token under whatever key rudder-auth returns
-(`accessToken` | `access_token`). The OAuth **app** creds (client id/secret) come from the CI matrix
-`oauth:` Vault path (or `*_CLIENT_ID`/`*_CLIENT_SECRET` in `.env` locally); the image ships working
-defaults per integration. `criteo_audience` is the reference OAuth spec.
+the `accountDefinition` (for rudder-auth's v1 route), and any `providerFields` (e.g. Salesforce
+`instance_url`) — and set `oauthVersion` to the route rudder-auth uses: `'v0'` (legacy
+`/tokens/destination/<dest>/refresh`, the default) or `'v1'` (`/auth/v1/refresh`). At run time the
+suite starts the **rudder-auth** container (testcontainers, ECR image) and `OAuthTokenResolver` calls
+exactly that one route — no fallback — then merges the whole returned secret into `metadata.secret`,
+so the transform reads its token under whatever key rudder-auth returns (`accessToken` |
+`access_token`). The OAuth **app** creds come from Vault: the CI job wildcard-imports
+`control-plane/data/external-services` and the container forwards only the enrolled destinations'
+`<DEST>_…` base/`_DESTINATION` creds (never `_SOURCE`); locally set `*_CLIENT_ID`/`*_CLIENT_SECRET` in
+`.env`. The image ships working defaults per integration. `criteo_audience` is the reference OAuth
+spec.
 
 ## Steps
 
@@ -163,8 +166,8 @@ defaults per integration. `criteo_audience` is the reference OAuth spec.
    so a new spec runs in CI with no workflow edit. `LIVE_SECRET_<DEST>` is derived from the
    destination code; an **OAuth** spec (`authType: 'oauth'`) additionally wildcard-imports the whole
    `control-plane/data/external-services` cred set and starts rudder-auth (the container forwards only
-   the credential-shaped vars), while apiKey destinations do neither. See
-   `.github/scripts/live-test-matrix.js`.
+   the enrolled destinations' `<DEST>_…` base/`_DESTINATION` creds), while apiKey destinations do
+   neither. See `.github/scripts/live-test-matrix.js`.
 8. **Verify**:
    `npx tsc --noEmit -p tsconfig.test.json`
    then, with real credentials:
@@ -181,8 +184,9 @@ systems outside the repo — print this checklist at the end so the developer kn
   JSON — a multi-line value breaks the CI secret import) under
   `engineering_shared/data/integrations_team/e2e_test/rudder-transformer`. For OAuth destinations, also
   ensure the app creds exist under `control-plane/data/external-services` with the names rudder-auth
-  expects (e.g. `<DEST>_CLIENT_ID_DESTINATION`) — the OAuth job imports that whole set and rudder-auth
-  picks the ones it needs, so nothing in the workflow needs to know the exact field names.
+  expects (e.g. `<DEST>_CLIENT_ID_DESTINATION`) — the OAuth job wildcard-imports that whole set and the
+  container forwards this destination's `<DEST>_…` base/`_DESTINATION` creds, so nothing in the
+  workflow needs to know the exact field names.
 - **GitHub**: any Actions vars/secrets the run needs — the workflow reads `VAULT_ADDR`,
   `VAULT_JWT_AUTH_PATH`, `VAULT_JWT_ROLE` (and, for OAuth, `AWS_ECR_IAM_ROLE_ARN` for the rudder-auth
   image pull); add destination-specific ones if required.

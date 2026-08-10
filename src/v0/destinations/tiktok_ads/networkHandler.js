@@ -27,6 +27,17 @@ const responseHandler = (responseParams) => {
     throw new ThrottledError(`Request failed with status: ${code}`, destinationResponse);
   }
 
+  if (code === 40700) {
+    throw new NetworkError(
+      `Request failed with status: ${code}`,
+      HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      {
+        [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR),
+      },
+      destinationResponse,
+    );
+  }
+
   if (code === 40002 || code === 40001) {
     throw new AbortedError(`Request failed with status: ${code}`, null, destinationResponse);
   }

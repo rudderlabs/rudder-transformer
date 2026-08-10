@@ -94,7 +94,7 @@ describe('Live Integration Test Suite', () => {
 
       afterAll(async () => {
         await ctx.runCleanups();
-      });
+      }, 120000);
 
       // Short-circuit: once a step in this scenario fails, skip the remaining steps and the
       // read-back. Later steps build on earlier ones, so continuing only cascades noise and

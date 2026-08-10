@@ -66,8 +66,10 @@ so Docker must be running and logged in to that ECR registry. The image ships de
 credentials for each integration; the container also forwards credential-shaped env vars (any
 `*_CLIENT_ID`/`*_CLIENT_SECRET`/`*_CONSUMER_KEY`/`*_CONSUMER_SECRET`), which override those defaults —
 so the refresh token must be issued by whichever app rudder-auth ends up using (the image default,
-or the creds you supply). In CI those app creds come from Vault via the destination's matrix `oauth:`
-path (see the workflow); locally, set them in `.env`.
+or the creds you supply). In CI those app creds come from Vault: an OAuth job imports the whole
+`control-plane/data/external-services` set in one wildcard read, and the container forwards only the
+credential-shaped vars — so rudder-auth gets whatever it needs by its own config names, with no
+per-destination secret list in the workflow. Locally, set them in `.env`.
 
 Authenticate with the AWS profile/SSO session that has ECR pull access to the account (set
 `AWS_PROFILE`, or pass `--profile`), then run:

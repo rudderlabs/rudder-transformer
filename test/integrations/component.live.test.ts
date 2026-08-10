@@ -46,7 +46,6 @@ describe('Live Integration Test Suite', () => {
   });
 
   const resolver = new SecretResolver();
-  const authContainer = new RudderAuthContainer();
   const agent = () => request(server);
   let tokenResolver: OAuthTokenResolver | undefined;
 
@@ -61,8 +60,13 @@ describe('Live Integration Test Suite', () => {
     return;
   }
 
-  // Manage the rudder-auth container when an OAuth destination is enrolled.
-  const hasOAuthDestination = enrolledDestinations.some((d) => d.spec.authType === 'oauth');
+  // Manage the rudder-auth container when an OAuth destination is enrolled; it forwards only the
+  // enrolled OAuth destinations' credentials (see RudderAuthContainer).
+  const oauthDestinations = enrolledDestinations
+    .filter((d) => d.spec.authType === 'oauth')
+    .map((d) => d.destination);
+  const hasOAuthDestination = oauthDestinations.length > 0;
+  const authContainer = new RudderAuthContainer(oauthDestinations);
   beforeAll(async () => {
     if (hasOAuthDestination) {
       const rudderAuthUrl = await authContainer.start();
@@ -89,7 +93,11 @@ describe('Live Integration Test Suite', () => {
         }
         // Merge rudder-auth's refreshed secret wholesale (mirroring rudder-server) so each
         // transform finds its token under whatever key it reads (accessToken | access_token).
-        const secret = await tokenResolver.resolveSecret(destination, liveSecret);
+        const secret = await tokenResolver.resolveSecret(
+          destination,
+          liveSecret,
+          spec.oauthVersion ?? 'v0',
+        );
         liveSecret.secret = { ...(liveSecret.secret ?? {}), ...secret };
       }
     });

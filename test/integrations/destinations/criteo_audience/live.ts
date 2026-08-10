@@ -190,6 +190,7 @@ const scenarios = [
 export const live = {
   enabled: true,
   authType: 'oauth',
+  oauthVersion: 'v0',
   resolveConfig: (s) => ({
     audienceType: 'email',
     audienceId: s.resourceIds?.[AUDIENCE_ID_KEY.email],

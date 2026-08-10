@@ -28,6 +28,7 @@ const LiveSecretSchema = z.object({
 });
 type LiveSecret = z.infer<typeof LiveSecretSchema>;
 type AuthType = LiveSecret['authType'];
+type OAuthVersion = 'v0' | 'v1';
 
 interface LiveResource {
   type: string;
@@ -151,6 +152,7 @@ interface LiveScenario {
 interface LiveSpec {
   enabled: boolean; // false parks the whole destination — the registry skips it
   authType: AuthType;
+  oauthVersion?: OAuthVersion;
   // Map the resolved secret into the destination.Config the transform expects (merge non-secret
   // defaults with the credentials in `s.config`).
   resolveConfig: (s: LiveSecret) => Record<string, unknown>;
@@ -298,6 +300,7 @@ export {
   AccountDefinition,
   AccountDefinitionSchema,
   AuthType,
+  OAuthVersion,
   LiveSecret,
   LiveSecretSchema,
   RunContext,

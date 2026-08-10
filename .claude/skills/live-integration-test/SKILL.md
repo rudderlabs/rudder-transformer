@@ -159,11 +159,12 @@ defaults per integration. `criteo_audience` is the reference OAuth spec.
    the field-level verify so the two stay in lockstep.
 6. **Enroll**: `enabled: true` (registry auto-discovers `destinations/*/live.ts`; no registration).
    Use `enabled: false` to park a spec in the tree without running it.
-7. **Add the CI matrix entry.** Enrollment isn't complete until the destination runs in CI: add an
-   entry to `matrix.include` in `.github/workflows/live-integration-tests.yml`. The
-   `LIVE_SECRET_<DEST>` name is derived from the destination code. For an **OAuth** destination, also
-   set its `oauth:` field to the Vault path holding its app creds — the workflow gates the rudder-auth
-   ECR pull + app-cred fetch on that field; apiKey destinations omit it.
+7. **CI is automatic.** The `discover` job builds the workflow matrix from `destinations/*/live.ts`,
+   so a new spec runs in CI with no workflow edit. `LIVE_SECRET_<DEST>` is derived from the
+   destination code; an **OAuth** spec (`authType: 'oauth'`) additionally wildcard-imports the whole
+   `control-plane/data/external-services` cred set and starts rudder-auth (the container forwards only
+   the credential-shaped vars), while apiKey destinations do neither. See
+   `.github/scripts/live-test-matrix.js`.
 8. **Verify**:
    `npx tsc --noEmit -p tsconfig.test.json`
    then, with real credentials:
@@ -179,7 +180,9 @@ systems outside the repo — print this checklist at the end so the developer kn
 - **Vault**: add the `LIVE_SECRET_<DEST>` field (the full `LiveSecret` JSON, stored as **single-line**
   JSON — a multi-line value breaks the CI secret import) under
   `engineering_shared/data/integrations_team/e2e_test/rudder-transformer`. For OAuth destinations, also
-  ensure the app creds (client id/secret) exist at the Vault path referenced by the matrix `oauth:` field.
+  ensure the app creds exist under `control-plane/data/external-services` with the names rudder-auth
+  expects (e.g. `<DEST>_CLIENT_ID_DESTINATION`) — the OAuth job imports that whole set and rudder-auth
+  picks the ones it needs, so nothing in the workflow needs to know the exact field names.
 - **GitHub**: any Actions vars/secrets the run needs — the workflow reads `VAULT_ADDR`,
   `VAULT_JWT_AUTH_PATH`, `VAULT_JWT_ROLE` (and, for OAuth, `AWS_ECR_IAM_ROLE_ARN` for the rudder-auth
   image pull); add destination-specific ones if required.

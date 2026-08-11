@@ -1,4 +1,4 @@
-import { RunContext } from '../../../live/types';
+import type { RunContext } from '../../../live/types';
 import { NESTED_ARRAY_ATTR, groupAttributeKey, nestedArrayMarker } from './profiles';
 import {
   BrazeUserProfile,

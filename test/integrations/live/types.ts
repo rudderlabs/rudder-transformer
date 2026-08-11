@@ -1,24 +1,39 @@
 import { z } from 'zod';
 
-type AuthType = 'apiKey' | 'oauth' | 'basic' | 'serviceAccount' | 'custom';
-type AccountDefinition = { type: string; category: string; name: string };
+// Account definition rudder-auth uses to describe an OAuth account.
+const AccountDefinitionSchema = z.object({
+  type: z.string(),
+  category: z.string(),
+  name: z.string(),
+});
+type AccountDefinition = z.infer<typeof AccountDefinitionSchema>;
 
-// Resolved credentials for one destination.
-type LiveSecret = {
-  authType: AuthType;
-  config: Record<string, unknown>; // merged into destination.Config
-  secret?: Record<string, string>; // merged into metadata.secret
-  resourceIds?: Record<string, string>; // account-scoped: listId, pixelId, measurementId, etc.
-  oauthRefresh?: {
-    // if authType is oauth, sent to rudder-auth /auth/v1/refresh
-    refreshToken: string; // the long-lived token: the only oauth secret stored
-    accountDefinition: AccountDefinition;
-    providerFields?: Record<string, string>; // e.g. Salesforce instance_url, Google Cloud project ID, etc.
-  };
-  readback?: Record<string, unknown>; // credentials for the optional verify() hook, e.g. API key, etc.
-};
+// Resolved credentials for one destination, validated at the LIVE_SECRET_<DEST> boundary by
+// SecretResolver. The type is inferred from the schema (z.infer) so it can never drift from what
+// is actually validated — one source of truth for the secret shape. Unknown keys are stripped;
+// unset `authType`/`config` fall back to their defaults.
+const LiveSecretSchema = z.object({
+  authType: z.enum(['apiKey', 'oauth', 'basic', 'serviceAccount', 'custom']).default('apiKey'),
+  config: z.record(z.unknown()).default({}), // merged into destination.Config
+  secret: z.record(z.string()).optional(), // merged into metadata.secret
+  resourceIds: z.record(z.string()).optional(), // account-scoped: listId, pixelId, audience ids, etc.
+  oauthRefresh: z
+    .object({
+      refreshToken: z.string(), // the long-lived token: the only oauth secret stored
+      accountDefinition: AccountDefinitionSchema.optional(),
+      providerFields: z.record(z.string()).optional(), // e.g. Salesforce instance_url, GCP project id
+    })
+    .optional(),
+  readback: z.record(z.unknown()).optional(), // credentials for the optional verify() hook
+});
+type LiveSecret = z.infer<typeof LiveSecretSchema>;
+type AuthType = LiveSecret['authType'];
+type OAuthVersion = 'v0' | 'v1';
 
-type LiveResource = { type: string; id: string };
+interface LiveResource {
+  type: string;
+  id: string;
+}
 
 // Run-scoped context threaded through every step of a scenario. Build data from these — never
 // from string literals — so each run is isolated and repeatable.
@@ -50,10 +65,10 @@ interface Step {
 // and workspaceId (per-workspace feature-flag gating on metadata.workspaceId, e.g. HubSpot's rETL
 // split). Add fields here as new needs arise. NOTE: destination.Config is NOT here — per-scenario
 // config is owned by resolveConfig + the scenario's configOverride.
-type MetadataOverride = {
+interface MetadataOverride {
   workspaceId?: string;
   dontBatch?: boolean;
-};
+}
 
 // Top-level fields of the /routerTransform input `destination` a scenario may override (the harness
 // always sets ID/Config/Enabled). Kept explicit — not a loose Record — so a step can only override
@@ -61,9 +76,9 @@ type MetadataOverride = {
 // on destination.WorkspaceID (e.g. Braze's per-job delivery mapping). Config is deliberately absent —
 // it's owned by resolveConfig + configOverride, so there's one clear source for per-scenario config.
 // Add fields here as new gating needs arise.
-type DestinationOverride = {
+interface DestinationOverride {
   WorkspaceID?: string;
-};
+}
 
 // A pipeline step: seed -> /routerTransform -> /proxy, asserting the event is delivered.
 interface PipelineStep extends Step {
@@ -110,14 +125,14 @@ type LiveStep = PipelineStep | ActionStep | VerifyStep;
 
 // A scenario is an ordered list of steps (pipeline | action | verify) sharing one RunContext.
 // Setup, teardown and read-back are expressed as action/verify steps — no lifecycle hooks.
-type LiveScenario = {
+interface LiveScenario {
   id: string; // stable identifier, shown in test output and used to select scenarios
   description: string; // one-line summary of the behavior under test
-  steps: LiveStep[];
+  steps: readonly LiveStep[];
 
   enabled?: boolean; // default true; set false to keep the scenario in the tree without running it
   // Run this scenario against a modified destination.Config (derived from the spec's base config).
-  configOverride?: (base: Record<string, unknown>) => Record<string, unknown>;
+  configOverride?: (base: Record<string, unknown>, secret: LiveSecret) => Record<string, unknown>;
   // The common trailing read-back, declared on the scenario the way `cleanup` is: the framework
   // runs `check` after the steps and retries it on a thrown matcher error (jest `expect`) with
   // backoff, rethrowing the last error on exhaustion — so destination code shrinks to the
@@ -131,23 +146,27 @@ type LiveScenario = {
   // Scenario teardown: armed at scenario start, drained after its steps finish (LIFO, best-effort),
   // and run even if a step failed. Prefer this over a trailing cleanup step.
   cleanup?: (ctx: RunContext) => void | Promise<void>;
-};
+}
 
 // Per-destination contract at test/integrations/destinations/<dest>/live.ts, loaded by the registry.
-type LiveSpec = {
+interface LiveSpec {
   enabled: boolean; // false parks the whole destination — the registry skips it
   authType: AuthType;
+  oauthVersion?: OAuthVersion;
   // Map the resolved secret into the destination.Config the transform expects (merge non-secret
   // defaults with the credentials in `s.config`).
   resolveConfig: (s: LiveSecret) => Record<string, unknown>;
   // Optional: map secret → connection.config (must include `destination` for VDM audience dests).
   // When set, the harness wraps this as a full connection on each /routerTransform input.
   resolveConnection?: (s: LiveSecret) => Record<string, unknown>;
-  scenarios: LiveScenario[];
-};
+  scenarios: readonly LiveScenario[];
+}
 
 // A destination enrolled to run, paired with its spec.
-type EnrolledDestination = { destination: string; spec: LiveSpec };
+interface EnrolledDestination {
+  destination: string;
+  spec: LiveSpec;
+}
 
 // Live-local wire schemas: include `endpointPath` (stripped by the shared
 // ProcessorTransformationOutputSchema) and keep destination/metadata loose so we don't require
@@ -187,32 +206,60 @@ type RouterOutput = z.infer<typeof LiveRouterOutputSchema>;
 type BatchedRequest = z.infer<typeof LiveProcessorOutputSchema>;
 
 // Options for buildRouterTransformBody (routerTransformRequest.ts).
-type BuildRouterTransformBodyOptions = {
+interface BuildRouterTransformBodyOptions {
   secret?: Record<string, string>;
   metadataOverride?: MetadataOverride;
   destinationOverride?: DestinationOverride;
   // Full connection object for RETL / audience destinations that read connection.config
   // (e.g. customAttributeName). Absent for event-stream destinations that don't need it.
   connection?: Record<string, unknown>;
-};
+}
+
+// The /routerTransform request body the harness builds (see routerTransformRequest.ts). Declared
+// explicitly so the wire contract is a single documented type rather than an inferred literal.
+interface RouterTransformInput {
+  message: Record<string, unknown>;
+  destination: {
+    ID: string;
+    Config: Record<string, unknown>;
+    Enabled: boolean;
+  } & DestinationOverride;
+  connection?: Record<string, unknown>;
+  metadata: {
+    jobId: number;
+    attemptNum: number;
+    userId: string;
+    sourceId: string;
+    destinationId: string;
+    workspaceId: string;
+    secret: Record<string, string>;
+  } & MetadataOverride;
+}
+interface RouterTransformRequestBody {
+  input: RouterTransformInput[];
+  destType: string;
+}
 
 // Minimal HTTP client the pipeline runner drives; wraps SuperTest so the runner stays free of its types.
-type LiveHttpResponse = { status: number; body: unknown };
-type LiveHttpClient = {
-  post: (url: string, body: unknown) => Promise<LiveHttpResponse>;
-};
+interface LiveHttpResponse {
+  status: number;
+  body: unknown;
+}
+interface LiveHttpClient {
+  post: (url: string, body: object) => Promise<LiveHttpResponse>;
+}
 
 // Structured delivery failure — the retry loop and the throw site both consume this, so the
 // human-readable message is assembled once, at the throw (see runPipelineStep).
-type DeliveryFailure = {
+interface DeliveryFailure {
   proxyStatus: number;
   verdictStatus: number;
   message: string;
   jobStates: unknown[];
-};
+}
 
 // Arguments threaded into a single pipeline-step run.
-type RunPipelineStepParams = {
+interface RunPipelineStepParams {
   destination: string;
   scenarioId: string;
   step: PipelineStep;
@@ -221,13 +268,16 @@ type RunPipelineStepParams = {
   http: LiveHttpClient;
   // Optional connection for destinations that require it at transform time (audience / VDM).
   connection?: Record<string, unknown>;
-};
+}
 
 // ─── Poll helpers (poll.ts) ───
 
-type PollCheckResult<T> = { done: boolean; value: T };
+interface PollCheckResult<T> {
+  done: boolean;
+  value: T;
+}
 
-type PollUntilOptions = {
+interface PollUntilOptions {
   label: string;
   attempts: number;
   /** Delay before the next attempt; `attempt` is 0-based (after the first check). */
@@ -239,17 +289,20 @@ type PollUntilOptions = {
    * verify steps that want a jest `expect` diff of the final read-back.
    */
   soft?: boolean;
-};
+}
 
-type RetryUntilPassesOptions = {
+interface RetryUntilPassesOptions {
   attempts?: number; // default 4
   delayMs?: (attempt: number) => number; // default 1000 * 2 ** attempt
-};
+}
 
 export {
   AccountDefinition,
+  AccountDefinitionSchema,
   AuthType,
+  OAuthVersion,
   LiveSecret,
+  LiveSecretSchema,
   RunContext,
   LiveResource,
   LiveStep,
@@ -266,6 +319,8 @@ export {
   RouterOutput,
   BatchedRequest,
   BuildRouterTransformBodyOptions,
+  RouterTransformInput,
+  RouterTransformRequestBody,
   LiveHttpResponse,
   LiveHttpClient,
   DeliveryFailure,

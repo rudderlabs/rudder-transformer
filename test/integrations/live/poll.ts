@@ -1,4 +1,4 @@
-import { PollCheckResult, PollUntilOptions, RetryUntilPassesOptions } from './types';
+import type { PollCheckResult, PollUntilOptions, RetryUntilPassesOptions } from './types';
 
 const sleep = (ms: number): Promise<void> =>
   new Promise((resolve) => {

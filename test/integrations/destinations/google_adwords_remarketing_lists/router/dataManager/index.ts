@@ -77,7 +77,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -174,7 +174,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -272,7 +272,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -350,7 +350,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -423,7 +423,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -481,7 +481,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -575,7 +575,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -648,7 +648,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -675,7 +675,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -763,7 +763,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -888,7 +888,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -1212,7 +1212,7 @@ export const dmRouterData = [
                                   '249c99278be4d0470583fd6d232247e8befeccc5f086a488f245d712d9d0078b',
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -1359,7 +1359,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -1432,7 +1432,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -1459,7 +1459,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:
@@ -1547,7 +1547,7 @@ export const dmRouterData = [
                                 phoneNumber: sha256('+09876543210'),
                               },
                               {
-                                addressInfo: {
+                                address: {
                                   givenName:
                                     '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                                   familyName:

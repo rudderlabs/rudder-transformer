@@ -50,7 +50,7 @@ export interface AddressInfo {
 export interface UserIdentifier {
   emailAddress?: string;
   phoneNumber?: string;
-  addressInfo?: AddressInfo;
+  address?: AddressInfo;
 }
 
 export interface UserData {

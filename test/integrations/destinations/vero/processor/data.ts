@@ -348,6 +348,52 @@ export const data = [
   },
   {
     name: 'vero',
+    description: 'Track call without event name',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                authToken: 'testAuthToken',
+              },
+            },
+            message: {
+              properties: {
+                email: 'eventIdn01@sample.com',
+              },
+              type: 'track',
+              userId: 'eventIdn01',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error: 'Event is a required field and should be a string',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'VERO',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'vero',
     description: 'Test 5',
     feature: 'processor',
     module: 'destination',

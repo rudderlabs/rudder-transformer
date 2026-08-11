@@ -1,5 +1,5 @@
 import { readString } from './coerce';
-import { BuildRouterTransformBodyOptions } from './types';
+import type { BuildRouterTransformBodyOptions, RouterTransformRequestBody } from './types';
 
 export const buildRouterTransformBody = (
   destination: string,
@@ -7,7 +7,7 @@ export const buildRouterTransformBody = (
   config: Record<string, unknown>,
   jobId: number,
   options?: BuildRouterTransformBodyOptions,
-) => ({
+): RouterTransformRequestBody => ({
   input: [
     {
       message,

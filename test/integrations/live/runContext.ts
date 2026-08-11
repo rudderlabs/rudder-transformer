@@ -1,10 +1,16 @@
 import { randomUUID } from 'crypto';
-import { LiveResource, LiveSecret, RunContext } from './types';
+import type { LiveResource, LiveSecret, RunContext } from './types';
 
 const EMAIL_DOMAIN = process.env.LIVE_TEST_EMAIL_DOMAIN || 'ci.rudderstack-test.com';
 
 // Parses a relative time offset like '-3h' / '+1d' into milliseconds (empty -> 0).
 const OFFSET_RE = /^([+-])(\d+)([smhd])$/;
+const UNIT_MS: Record<string, number> = {
+  s: 1000,
+  m: 60 * 1000,
+  h: 60 * 60 * 1000,
+  d: 24 * 60 * 60 * 1000,
+};
 const offsetToMs = (offset?: string): number => {
   if (!offset) {
     return 0;
@@ -14,13 +20,7 @@ const offsetToMs = (offset?: string): number => {
     throw new Error(`Invalid time offset: "${offset}"`);
   }
   const [, sign, rawAmount, unit] = m;
-  const unitMs: Record<string, number> = {
-    s: 1000,
-    m: 60 * 1000,
-    h: 60 * 60 * 1000,
-    d: 24 * 60 * 60 * 1000,
-  };
-  return (sign === '-' ? -1 : 1) * Number(rawAmount) * unitMs[unit];
+  return (sign === '-' ? -1 : 1) * Number(rawAmount) * UNIT_MS[unit];
 };
 
 export class RunContextImpl implements RunContext {

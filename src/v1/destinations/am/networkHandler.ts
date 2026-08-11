@@ -84,7 +84,6 @@ const responseHandler = (responseParams: {
     );
   }
   if (
-    !isHttpStatusSuccess(status) &&
     Array.isArray(rudderJobMetadata) &&
     rudderJobMetadata.length > 1 &&
     isNonRecoverableAmplitudeError(errorMessage)
@@ -100,11 +99,7 @@ const responseHandler = (responseParams: {
       ),
     };
   }
-  if (
-    !isHttpStatusSuccess(status) &&
-    Array.isArray(rudderJobMetadata) &&
-    rudderJobMetadata.length > 1
-  ) {
+  if (Array.isArray(rudderJobMetadata) && rudderJobMetadata.length > 1) {
     return {
       status, // this status is not used by server, server uses the status of response
       message: `Request failed for a batch of events during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage} (Retryable)`,

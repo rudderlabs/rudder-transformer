@@ -662,6 +662,115 @@ const proxyV1TestData: ProxyV1TestData[] = [
     },
   },
   {
+    id: '10',
+    name: 'am',
+    description:
+      'Test 19: for batch endpoint invalid API key failure scenario with multiple events and dontBatch is false',
+    scenario: 'Business',
+    successCriteria:
+      'Events should be aborted immediately with status code 400 without setting dontBatch to true',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    skip: false,
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            JSON: {
+              events: [
+                {
+                  ip: '[::1]',
+                  time: 1603132712347,
+                  os_name: '',
+                  user_id: '1',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132719505,
+                  os_name: '',
+                  user_id: '2',
+                },
+              ],
+              api_key: 'dummy-invalid-api-key-batch',
+            },
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            endpoint: 'https://api2.amplitude.com/batch',
+            endpointPath: 'batch',
+            params: {
+              destination: 'am',
+            },
+          },
+          [generateMetadata(1), generateMetadata(2)],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            destinationResponse: {
+              status: 400,
+              response: {
+                code: 400,
+                error: 'Invalid API key',
+              },
+            },
+            message:
+              'Request failed for a batch of events during amplitude response transformation: with status "400" due to "Invalid API key" (Aborted)',
+            response: [
+              {
+                error: '"Invalid API key"',
+                metadata: generateMetadata(1),
+                statusCode: 400,
+              },
+              {
+                error: '"Invalid API key"',
+                metadata: generateMetadata(2),
+                statusCode: 400,
+              },
+            ],
+            status: 400,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/batch', {
+          asymmetricMatch: (actual) => {
+            const expected = {
+              events: [
+                {
+                  ip: '[::1]',
+                  time: 1603132712347,
+                  os_name: '',
+                  user_id: '1',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132719505,
+                  os_name: '',
+                  user_id: '2',
+                },
+              ],
+              api_key: 'dummy-invalid-api-key-batch',
+            };
+            const isMatched = isMatch(actual, expected);
+            return isMatched;
+          },
+        })
+        .replyOnce(400, {
+          code: 400,
+          error: 'Invalid API key',
+        });
+    },
+  },
+  {
     id: '7',
     name: 'am',
     description:

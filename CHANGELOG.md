@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.146.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.145.1...v1.146.0) (2026-08-12)
+
+
+### Features
+
+* live integrations tests for criteo audience ([#5449](https://github.com/rudderlabs/rudder-transformer/issues/5449)) ([27892b1](https://github.com/rudderlabs/rudder-transformer/commit/27892b17e314a5d04eacdbda634f35487d3403b9))
+* send optional auth header on config backend fetches ([#5410](https://github.com/rudderlabs/rudder-transformer/issues/5410)) ([c98d160](https://github.com/rudderlabs/rudder-transformer/commit/c98d160cfaddc5fe5ddee7891c4f4a23014b9aa8))
+
+
+### Bug Fixes
+
+* **am:** abort invalid api key batch failures ([#5455](https://github.com/rudderlabs/rudder-transformer/issues/5455)) ([72c13e7](https://github.com/rudderlabs/rudder-transformer/commit/72c13e78803e89af7a759d3a02ecbe55424ccc77))
+* **tiktok_ads:** retry redis timeout business errors ([#5451](https://github.com/rudderlabs/rudder-transformer/issues/5451)) ([4b41c23](https://github.com/rudderlabs/rudder-transformer/commit/4b41c2322366319bc88ae490497067dd62992f51))
+* **vero:** validate track event names ([#5448](https://github.com/rudderlabs/rudder-transformer/issues/5448)) ([6f3d780](https://github.com/rudderlabs/rudder-transformer/commit/6f3d780bf72a94f5974a2de358bc40fde38144ab))
+
 ### [1.145.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.145.0...v1.145.1) (2026-08-10)
 
 

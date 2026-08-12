@@ -57,12 +57,11 @@ export const extractBrazeAudienceErrorMessage = (response: unknown): string => {
 
 const brazeAudienceStatusOverrides: StatusOverrideMap = {
   '2xx': (ctx, fallback) => {
-    const rawErrors = (ctx.response as { errors?: unknown } | undefined)?.errors;
+    const { response, destinationId, workspaceId, request, jobs } = ctx;
+    const rawErrors = (response as { errors?: unknown } | undefined)?.errors;
     const errors: BrazeAudienceError[] = Array.isArray(rawErrors) ? rawErrors : [];
     if (errors.length === 0) return fallback();
 
-    const destinationId = ctx.jobs[0]?.destinationId ?? '';
-    const workspaceId = ctx.jobs[0]?.workspaceId ?? '';
     // Destination-scoped, deliberately not the shared event-stream `braze_partial_failure`.
     stats.increment('braze_audience_partial_failure', { destinationId, workspaceId });
 
@@ -82,13 +81,12 @@ const brazeAudienceStatusOverrides: StatusOverrideMap = {
     }
 
     // `errors[].index` indexes the posted `attributes` array, so that is what the loop is driven
-    // from. It falls back to `ctx.jobs` — which the framework builds 1:1 with `attributes` — when
+    // from. It falls back to `jobs` — which the framework builds 1:1 with `attributes` — when
     // the body cannot be read, so that per-record verdicts survive. Without it the bridge sees a
     // length mismatch and retries the whole batch, which would keep redelivering an identity
     // failure that can never succeed instead of aborting it.
-    const attributes = (ctx.request.body?.JSON as { attributes?: unknown } | undefined)?.attributes;
-    const items: unknown[] =
-      Array.isArray(attributes) && attributes.length > 0 ? attributes : ctx.jobs;
+    const attributes = (request.body?.JSON as { attributes?: unknown } | undefined)?.attributes;
+    const items: unknown[] = Array.isArray(attributes) && attributes.length > 0 ? attributes : jobs;
 
     const verdicts: ItemVerdict[] = items.map((_item, index) => {
       if (!failedByIndex.has(index)) {

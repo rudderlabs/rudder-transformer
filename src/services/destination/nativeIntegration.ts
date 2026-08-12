@@ -33,7 +33,11 @@ import {
   isBatchingFrameworkEnabled,
 } from '../../constants/batchedDestinationsMap';
 import { processBatchedDestination } from './nativeBatching/processBatchedDestination';
-import { handleDeliveryResponse, toDeliveryV1Response } from './nativeBatching/delivery';
+import {
+  handleDeliveryResponse,
+  toDeliveryV1Response,
+  firstJobIdentity,
+} from './nativeBatching/delivery';
 import type { DeliveryContext } from './nativeBatching/delivery';
 
 /**
@@ -253,6 +257,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
           jobs: deliveryRequest.metadata,
           request: deliveryRequest,
           destinationConfig: deliveryRequest.destinationConfig,
+          ...firstJobIdentity(deliveryRequest.metadata),
         };
         const IntegrationClass = FetchHandler.getBatchDestinationHandler(destinationType);
         // Uppercased to match `statTags.destType`, which is what every other destination tag in a
@@ -271,8 +276,8 @@ export class NativeIntegrationDestinationService implements DestinationService {
         if (frameworkResponse.statTags) {
           const deliveryMetaTO = this.getTags(
             destinationType,
-            ctx.jobs[0]?.destinationId,
-            ctx.jobs[0]?.workspaceId,
+            ctx.destinationId,
+            ctx.workspaceId,
             tags.FEATURES.DATA_DELIVERY,
           );
           frameworkResponse.statTags = {

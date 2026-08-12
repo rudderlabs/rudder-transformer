@@ -1,5 +1,6 @@
 import { Integration as GaecIntegration } from './routerTransform';
 import {
+  firstJobIdentity,
   handleDeliveryResponse,
   toDeliveryV1Response,
 } from '../../../services/destination/nativeBatching/delivery';
@@ -30,16 +31,20 @@ const ctxFor = (
   response: unknown,
   jobCount = 2,
   adjustments: unknown = Array.from({ length: jobCount }, (_, i) => ({ adjustment: i })),
-): DeliveryContext => ({
-  status,
-  response,
-  jobs: Array.from({ length: jobCount }, (_, i) => job(i + 1)),
-  request: {
-    body: { JSON: { conversionAdjustments: adjustments, partialFailure: true } },
-    endpoint: '',
-  } as unknown as ProxyV1Request,
-  destinationConfig: {},
-});
+): DeliveryContext => {
+  const jobs = Array.from({ length: jobCount }, (_, i) => job(i + 1));
+  return {
+    status,
+    response,
+    jobs,
+    request: {
+      body: { JSON: { conversionAdjustments: adjustments, partialFailure: true } },
+      endpoint: '',
+    } as unknown as ProxyV1Request,
+    destinationConfig: {},
+    ...firstJobIdentity(jobs),
+  };
+};
 
 const viaFramework = (ctx: DeliveryContext) => {
   try {
@@ -118,6 +123,10 @@ describe('gaec delivery — parity with the existing response handler', () => {
     { name: '403 access denied', status: 403, response: { error: { message: 'denied' } } },
     { name: '401 stale token', status: 401, response: { error: { message: 'unauthorized' } } },
     { name: '401 two-step not enrolled', status: 401, response: twoStepAuthError },
+    // Non-object 2xx bodies: `body?.partialFailureError` reads as undefined without needing the
+    // v0 handler's explicit `isPartialFailureBody` guard, so these are read as plain success.
+    { name: '2xx, empty string body', status: 200, response: '' },
+    { name: '2xx, null body', status: 200, response: null },
   ];
 
   it.each(parityCases)('per-job codes match: $name', ({ status, response }) => {

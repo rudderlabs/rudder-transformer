@@ -1,5 +1,6 @@
 import { Integration as CustomerIOIntegration } from '../routerTransform';
 import {
+  firstJobIdentity,
   handleDeliveryResponse,
   toDeliveryV1Response,
 } from '../../../../services/destination/nativeBatching/delivery';
@@ -30,16 +31,20 @@ const job = (jobId: number): ProxyMetdata =>
     dontBatch: false,
   }) as ProxyMetdata;
 
-const ctxFor = (status: number, response: unknown, itemCount: number): DeliveryContext => ({
-  status,
-  response,
-  jobs: Array.from({ length: itemCount }, (_, i) => job(i + 1)),
-  request: {
-    body: { JSON: { batch: Array.from({ length: itemCount }, (_, i) => ({ event: `e${i}` })) } },
-    endpoint: 'https://track.customer.io/api/v2/batch',
-  } as unknown as ProxyV1Request,
-  destinationConfig: {},
-});
+const ctxFor = (status: number, response: unknown, itemCount: number): DeliveryContext => {
+  const jobs = Array.from({ length: itemCount }, (_, i) => job(i + 1));
+  return {
+    status,
+    response,
+    jobs,
+    request: {
+      body: { JSON: { batch: Array.from({ length: itemCount }, (_, i) => ({ event: `e${i}` })) } },
+      endpoint: 'https://track.customer.io/api/v2/batch',
+    } as unknown as ProxyV1Request,
+    destinationConfig: {},
+    ...firstJobIdentity(jobs),
+  };
+};
 
 /** Run the new path end to end, normalising the throw into a comparable shape. */
 const viaFramework = (ctx: DeliveryContext) => {

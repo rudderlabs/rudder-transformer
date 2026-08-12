@@ -6,6 +6,7 @@
 // the day one of them fails rather than the day delivery quietly changes.
 import { Integration as TestDestinationIntegration } from './routerTransform';
 import {
+  firstJobIdentity,
   handleDeliveryResponse,
   resolveDeliverySpec,
   toDeliveryV1Response,
@@ -28,13 +29,17 @@ const job = (jobId: number): ProxyMetdata =>
     dontBatch: false,
   }) as ProxyMetdata;
 
-const ctxFor = (status: number, response: unknown): DeliveryContext => ({
-  status,
-  response,
-  jobs: [job(1), job(2)],
-  request: { body: { JSON: {} }, endpoint: 'https://example.test/v1' } as ProxyV1Request,
-  destinationConfig: {},
-});
+const ctxFor = (status: number, response: unknown): DeliveryContext => {
+  const jobs = [job(1), job(2)];
+  return {
+    status,
+    response,
+    jobs,
+    request: { body: { JSON: {} }, endpoint: 'https://example.test/v1' } as ProxyV1Request,
+    destinationConfig: {},
+    ...firstJobIdentity(jobs),
+  };
+};
 
 /** The part of the receiver `genericNetworkHandler.call(...)` populates that this test drives. */
 type GenericHandler = {

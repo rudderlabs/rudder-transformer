@@ -10,17 +10,16 @@ import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { isHttpStatusSuccess, isHttpStatusRetryable } from '../../../v0/util';
 import tags from '../../../v0/util/tags';
 import stats from '../../../util/stats';
+import {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} from '../../../adapters/networkhandler/authConstants';
 import type {
   DeliveryJobState,
   DeliveryV1Response,
   ProxyMetdata,
   ProxyV1Request,
 } from '../../../types';
-
-const {
-  REFRESH_TOKEN,
-  AUTH_STATUS_INACTIVE,
-} = require('../../../adapters/networkhandler/authConstants');
 
 // ---------------------------------------------------------------------------
 // Verdicts
@@ -116,7 +115,22 @@ export type DeliveryContext = {
   /** The request that was sent — for correlating response items back to what was posted. */
   request: ProxyV1Request;
   destinationConfig: Record<string, unknown>;
+  /**
+   * `jobs[0]`'s destinationId/workspaceId, empty string if there is no first job. Set once where
+   * the context is built, so a spec that needs them — for a stat tag, say — reads them here
+   * instead of re-deriving from `jobs[0]` itself.
+   */
+  destinationId: string;
+  workspaceId: string;
 };
+
+/** `DeliveryContext`'s `destinationId`/`workspaceId`, derived from its first job. */
+export const firstJobIdentity = (
+  jobs: ProxyMetdata[],
+): Pick<DeliveryContext, 'destinationId' | 'workspaceId'> => ({
+  destinationId: jobs[0]?.destinationId ?? '',
+  workspaceId: jobs[0]?.workspaceId ?? '',
+});
 
 /**
  * Behaviour for one status (or status class). Return a verdict, or per-item verdicts, or call
@@ -309,8 +323,8 @@ export function toDeliveryV1Response(
     // whole-batch verdict instead, and make the mismatch visible.
     stats.counter('batch_delivery_per_item_mismatch', 1, {
       destType,
-      destinationId: ctx.jobs[0]?.destinationId ?? '',
-      workspaceId: ctx.jobs[0]?.workspaceId ?? '',
+      destinationId: ctx.destinationId,
+      workspaceId: ctx.workspaceId,
       items: String(result.verdicts.length),
       jobs: String(ctx.jobs.length),
     });

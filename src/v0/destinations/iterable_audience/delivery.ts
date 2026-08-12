@@ -101,8 +101,8 @@ const iterableAudienceStatusOverrides: StatusOverrideMap = {
       if (matchesIdentifier(subscriber, forgotten)) {
         stats.counter('iterable_forgotten_user_violations', 1, {
           destType: 'ITERABLE_AUDIENCE',
-          destinationId: ctx.jobs[0]?.destinationId ?? '',
-          workspaceId: ctx.jobs[0]?.workspaceId ?? '',
+          destinationId: ctx.destinationId,
+          workspaceId: ctx.workspaceId,
           identifierType: subscriber.email ? 'email' : 'userId',
           // NEVER tag the identifier VALUE — it is GDPR-protected.
         });

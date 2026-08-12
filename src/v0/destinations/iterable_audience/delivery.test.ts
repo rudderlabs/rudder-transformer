@@ -1,5 +1,6 @@
 import { Integration as IterableAudienceIntegration } from './routerTransform';
 import {
+  firstJobIdentity,
   handleDeliveryResponse,
   resolveDeliverySpec,
   toDeliveryV1Response,
@@ -31,16 +32,20 @@ const ctxFor = (
   response: unknown,
   subscribers: Subscriber[],
   endpoint = SUBSCRIBE,
-): DeliveryContext => ({
-  status,
-  response,
-  jobs: subscribers.map((_s, i) => job(i + 1)),
-  request: {
-    body: { JSON: { listId: 42, subscribers } },
-    endpoint,
-  } as unknown as ProxyV1Request,
-  destinationConfig: {},
-});
+): DeliveryContext => {
+  const jobs = subscribers.map((_s, i) => job(i + 1));
+  return {
+    status,
+    response,
+    jobs,
+    request: {
+      body: { JSON: { listId: 42, subscribers } },
+      endpoint,
+    } as unknown as ProxyV1Request,
+    destinationConfig: {},
+    ...firstJobIdentity(jobs),
+  };
+};
 
 const viaFramework = (ctx: DeliveryContext) => {
   try {

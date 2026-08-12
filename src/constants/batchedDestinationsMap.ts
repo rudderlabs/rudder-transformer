@@ -4,12 +4,15 @@ import { getBatchingFrameworkGaDestinations } from '../features';
 // Once a destination is added here, it always uses the new path regardless of env var.
 export const batchedDestinationsMap: Record<string, true> = getBatchingFrameworkGaDestinations();
 
-// Per-destination env var: {DEST}_{SUFFIX}
+// Per-destination env var: {DEST}_{FEATURE}_ENABLED_WORKSPACE_IDS
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces
 // Example: POSTHOG_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS="ws-1,ws-2" or "ALL"
 // If not set or empty → disabled for that destination (legacy path)
-const getEnabledWorkspaceIds = (destType: string, suffix: string): string[] => {
-  const envKey = `${destType.toUpperCase()}_${suffix}`;
+const getEnabledWorkspaceIds = (
+  destType: string,
+  feature: 'BATCHING_FRAMEWORK' | 'BATCHING_FRAMEWORK_DELIVERY',
+): string[] => {
+  const envKey = `${destType.toUpperCase()}_${feature}_ENABLED_WORKSPACE_IDS`;
   return (
     process.env[envKey]
       ?.split(',')
@@ -40,10 +43,7 @@ export const isBatchingFrameworkEnabled = (destType: string, workspaceId: string
   }
 
   // Pre-GA: check per-destination env var
-  return matchesWorkspace(
-    getEnabledWorkspaceIds(upperDestType, 'BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS'),
-    workspaceId,
-  );
+  return matchesWorkspace(getEnabledWorkspaceIds(upperDestType, 'BATCHING_FRAMEWORK'), workspaceId);
 };
 
 /**
@@ -71,7 +71,7 @@ export const isBatchingFrameworkDeliveryEnabled = (
     return false;
   }
   return matchesWorkspace(
-    getEnabledWorkspaceIds(destType, 'BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS'),
+    getEnabledWorkspaceIds(destType, 'BATCHING_FRAMEWORK_DELIVERY'),
     workspaceId,
   );
 };

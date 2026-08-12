@@ -3,6 +3,7 @@ import {
   authExpired,
   authRevoked,
   classifyByStatus,
+  firstJobIdentity,
   handleDeliveryResponse,
   perItem,
   resolveDeliverySpec,
@@ -37,13 +38,17 @@ const ctxFor = (
   response: unknown,
   jobCount = 2,
   body: Record<string, unknown> = {},
-): DeliveryContext => ({
-  status,
-  response,
-  jobs: Array.from({ length: jobCount }, (_, i) => job(i + 1)),
-  request: { body: { JSON: body }, endpoint: 'https://example.test/batch' } as ProxyV1Request,
-  destinationConfig: {},
-});
+): DeliveryContext => {
+  const jobs = Array.from({ length: jobCount }, (_, i) => job(i + 1));
+  return {
+    status,
+    response,
+    jobs,
+    request: { body: { JSON: body }, endpoint: 'https://example.test/batch' } as ProxyV1Request,
+    destinationConfig: {},
+    ...firstJobIdentity(jobs),
+  };
+};
 
 /** The fields `TransformerProxyError` carries that the bridge is responsible for populating. */
 type ThrownProxyError = {

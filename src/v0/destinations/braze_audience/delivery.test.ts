@@ -7,6 +7,7 @@ jest.mock('../../../util/stats', () => ({
 import stats from '../../../util/stats';
 import { Integration as BrazeAudienceIntegration } from './routerTransform';
 import {
+  firstJobIdentity,
   handleDeliveryResponse,
   resolveDeliverySpec,
   toDeliveryV1Response,
@@ -46,16 +47,20 @@ const ctxFor = (
     external_id: `u${i}`,
     audience_x: true,
   })),
-): DeliveryContext => ({
-  status,
-  response,
-  jobs: Array.from({ length: itemCount }, (_, i) => job(i + 1)),
-  request: {
-    body: { JSON: { attributes } },
-    endpoint: 'https://rest.iad-03.braze.com/users/track/bulk',
-  } as unknown as ProxyV1Request,
-  destinationConfig: {},
-});
+): DeliveryContext => {
+  const jobs = Array.from({ length: itemCount }, (_, i) => job(i + 1));
+  return {
+    status,
+    response,
+    jobs,
+    request: {
+      body: { JSON: { attributes } },
+      endpoint: 'https://rest.iad-03.braze.com/users/track/bulk',
+    } as unknown as ProxyV1Request,
+    destinationConfig: {},
+    ...firstJobIdentity(jobs),
+  };
+};
 
 /** Run the new path end to end, normalising the throw into a comparable shape. */
 const viaFramework = (ctx: DeliveryContext) => {

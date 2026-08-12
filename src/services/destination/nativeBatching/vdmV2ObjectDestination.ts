@@ -6,6 +6,7 @@ import type { RudderRecordV2 } from '../../../types/rudderEvents';
 import { MappedToDestinationKey } from '../../../constants';
 import { addExternalIdToTraits, adduserIdFromExternalId } from '../../../v0/util';
 import { BatchDestination } from './batchDestination';
+import type { DeliverySpec } from './delivery';
 import type { TransformedEvent } from './types';
 
 // Record message shape known to the framework after schema validation
@@ -74,6 +75,16 @@ export abstract class VDMV2ObjectDestination<
   TRecordSchema extends ZodType = ZodType,
   TEventStreamSchema extends ZodType = ZodType,
 > extends BatchDestination<TBody, ObjectRouterInput<TRecordSchema, TEventStreamSchema>> {
+  /**
+   * Deliberately empty — `BatchDestination.delivery` already defaults to `{}`, so this adds no
+   * behaviour on its own. It exists so a concern shared across *VDM V2 object destinations as a
+   * family* (not one destination's particular API shape) has a declaration site between the
+   * framework root and a leaf like `CustomerIOIntegration`, and so `resolveDeliverySpec`'s
+   * prototype walk has a real family-level entry to merge rather than jumping straight from the
+   * leaf to the root default.
+   */
+  static readonly delivery: DeliverySpec = {};
+
   // Subclasses declare the two variant schemas (built via makeRouterInputSchema, each
   // carrying the shared destinationConfig via a common constant). The framework owns the
   // union — subclasses do not implement getInputSchema.

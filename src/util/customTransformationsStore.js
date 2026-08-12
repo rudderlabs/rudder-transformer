@@ -6,7 +6,10 @@ const { CONFIG_BACKEND_URL, configBackendRequestOptions } = require('./configBac
 
 const DEFAULT_CACHE_TTL_SECONDS = 60 * 60 * 24 * 1;
 // Set to 0 to disable expiry entirely.
-const CACHE_TTL_SECONDS = DEFAULT_CACHE_TTL_SECONDS;
+const CACHE_TTL_SECONDS = Number.parseInt(
+  process.env.TRANSFORMATION_STORE_CACHE_TTL_SECONDS || `${DEFAULT_CACHE_TTL_SECONDS}`,
+  10,
+);
 
 // A cache per entity rather than one shared instance: transformations and libraries are both
 // keyed by versionId, so a single cache would let them collide.

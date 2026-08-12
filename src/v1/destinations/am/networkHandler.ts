@@ -10,6 +10,11 @@ import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
 import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
 
 const DESTINATION = 'amplitude';
+const NON_RECOVERABLE_ERROR_PATTERNS = [/invalid api key/i];
+
+const isNonRecoverableAmplitudeError = (errorMessage: string) =>
+  NON_RECOVERABLE_ERROR_PATTERNS.some((pattern) => pattern.test(errorMessage));
+
 const populateResponseWithDontBatch = (rudderJobMetadata: ProxyMetdata[], errorMessage: string) => {
   const responseWithIndividualEvents: DeliveryJobState[] = [];
 
@@ -67,10 +72,22 @@ const responseHandler = (responseParams: {
     );
   }
   if (
-    !isHttpStatusSuccess(status) &&
     Array.isArray(rudderJobMetadata) &&
-    rudderJobMetadata.length > 1
+    rudderJobMetadata.length > 1 &&
+    isNonRecoverableAmplitudeError(errorMessage)
   ) {
+    return {
+      status,
+      message: `Request failed for a batch of events during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage} (Aborted)`,
+      destinationResponse,
+      response: rudderJobMetadata.map((metadata) => ({
+        statusCode: 400,
+        metadata,
+        error: errorMessage,
+      })),
+    };
+  }
+  if (Array.isArray(rudderJobMetadata) && rudderJobMetadata.length > 1) {
     return {
       status, // this status is not used by server, server uses the status of response
       message: `Request failed for a batch of events during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage} (Retryable)`,

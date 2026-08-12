@@ -15,6 +15,7 @@ const {
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { ErrorDetailsExtractorBuilder } = require('../../../util/error-extractor');
 const { isHtmlFormat } = require('./index');
+const { isHttpStatusSuccess } = require('../index');
 
 /**
  * Only under below mentioned scenario(s), add the errorCodes, subCodes etc,. to this map
@@ -270,10 +271,22 @@ const addErrorCodeSuffix = (errorMessage, code, subCode) => {
 };
 
 const errorResponseHandler = (destResponse) => {
-  const { response } = destResponse;
+  const { response, status: destStatus } = destResponse;
   if (!response.error) {
-    // successful response from facebook pixel api
-    return;
+    if (isHttpStatusSuccess(destStatus)) {
+      // successful response from facebook pixel api
+      return;
+    }
+    // Facebook returned a failure status without the usual `{ error: {...} }` shape
+    // (e.g. an empty/malformed body on a transient upstream 5xx). Treating this as
+    // success leaves the proxy response without a per-job output, which the router
+    // can't parse and reports as "missing output".
+    throw new NetworkError(
+      `Facebook responded with status ${destStatus} and no error details in the response body`,
+      destStatus,
+      { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(destStatus) },
+      { ...response, status: destStatus },
+    );
   }
   const { error } = response;
   const { code: fbErrorCode, error_subcode: fbErrorSubCode, message: fbErrorMessage } = error;
@@ -291,7 +304,7 @@ const errorResponseHandler = (destResponse) => {
         fbErrorCode,
         fbErrorSubCode,
       ),
-      { ...response, status: destResponse.status },
+      { ...response, status: destStatus },
     );
   }
   throw new NetworkError(
@@ -305,7 +318,7 @@ const errorResponseHandler = (destResponse) => {
       ...errorStatTags,
       [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
-    { ...response, status: destResponse.status },
+    { ...response, status: destStatus },
   );
 };
 

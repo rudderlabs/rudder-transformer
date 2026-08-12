@@ -16,29 +16,38 @@ const responseHandler = (responseParams) => {
     status,
   } = destinationResponse;
 
-  if (code === 0 || code === 20001) {
-    return {
-      status: HTTP_STATUS_CODES.OK,
-      message: msg,
-      destinationResponse,
-    };
+  switch (code) {
+    case 0:
+    case 20001:
+      return {
+        status: HTTP_STATUS_CODES.OK,
+        message: msg,
+        destinationResponse,
+      };
+    case 40100:
+      throw new ThrottledError(`Request failed with status: ${code}`, destinationResponse);
+    case 40700:
+      throw new NetworkError(
+        `Request failed with status: ${code}`,
+        HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+        {
+          [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR),
+        },
+        destinationResponse,
+      );
+    case 40002:
+    case 40001:
+      throw new AbortedError(`Request failed with status: ${code}`, null, destinationResponse);
+    default:
+      throw new NetworkError(
+        `Request failed with status: ${status}`,
+        status,
+        {
+          [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+        },
+        destinationResponse,
+      );
   }
-  if (code === 40100) {
-    throw new ThrottledError(`Request failed with status: ${code}`, destinationResponse);
-  }
-
-  if (code === 40002 || code === 40001) {
-    throw new AbortedError(`Request failed with status: ${code}`, null, destinationResponse);
-  }
-
-  throw new NetworkError(
-    `Request failed with status: ${status}`,
-    status,
-    {
-      [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-    },
-    destinationResponse,
-  );
 };
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

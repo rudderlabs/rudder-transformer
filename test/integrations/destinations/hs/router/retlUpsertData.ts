@@ -1,28 +1,26 @@
 import { authHeader1, authHeader3, secret1, secret3 } from '../maskedSecrets';
-import { HS_RETL_SPLIT_TEST_WORKSPACE_ID } from './retlSplitData';
 
 /**
- * Component coverage for the gated rETL upsert path (v3 endpoint).
+ * Component coverage for the rETL upsert path (v3 endpoint).
  *
- * These are self-contained fixtures appended AFTER `withRetlSplitCases(...)` in
- * data.ts, so they are NOT auto-duplicated as behaviour-preservation split cases.
+ * These are self-contained fixtures appended after the base fixtures in data.ts.
  *
  * Flow exercised: `retl-transform.processBatchRouterRetl` -> uniqueness gate
  * (`util.isLookupFieldUnique`, objectType-aware) -> tag `upsertObject` and SKIP
  * `splitEventsForCreateUpdate` (no Search chain) ->
- * `retl-hs-transform-v3.processRetlIdentify` (upsert payload) ->
- * `retl-hs-transform-v3.batchRetlEvents` (upsert bucket, dedup by id+idProperty).
+ * `retl-v3.processRetlIdentify` (upsert payload) ->
+ * `retl-v3.batchRetlEvents` (upsert bucket, dedup by id+idProperty).
  *
  * Preconditions provided by the shared mocks:
- * - `metadata.workspaceId = HS_RETL_SPLIT_TEST_WORKSPACE_ID` -> gated split path is on
- *   (DEST_HS_RETL_SPLIT_WORKSPACE_IDS is set in test/setup.ts).
+ * - rETL (mappedToDestination) identify events, which route to the dedicated rETL
+ *   code path.
  * - objectType `contacts` + identifierType `email`, which the shared
  *   `/crm/v3/properties/contacts` mock reports as `hasUniqueValue: true`, so the
  *   gate resolves to upsert. The identifier lives in `externalId.id` and is NOT
  *   copied into `properties` (mirrors event-stream `processUpsertIdentify`).
  * - A dedicated fallback fixture below uses `secret3`, whose shared
  *   `/crm/v3/properties/contacts` mock reports `email.hasUniqueValue = false`; that
- *   proves the gated path falls back to `splitEventsForCreateUpdate` and the normal
+ *   proves the path falls back to `splitEventsForCreateUpdate` and the normal
  *   create/update routing instead of the upsert endpoint.
  */
 
@@ -78,8 +76,7 @@ const UPSERT_ENDPOINT_PATH = '/crm/v3/objects/contacts/batch/upsert';
 export const retlUpsertData: Record<string, unknown>[] = [
   {
     name: 'hs',
-    description:
-      'rETL (gated split, v3): unique identifierType -> batch upsert for objectType (single event)',
+    description: 'rETL (v3): unique identifierType -> batch upsert for objectType (single event)',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -96,7 +93,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
               metadata: {
                 jobId: 5001,
                 userId: 'u1',
-                workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
               },
             },
           ],
@@ -146,7 +142,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
                 {
                   jobId: 5001,
                   userId: 'u1',
-                  workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
                 },
               ],
               batched: true,
@@ -162,8 +157,7 @@ export const retlUpsertData: Record<string, unknown>[] = [
   {
     name: 'hs',
     id: 'hs-retl-upsert-numeric-external-id',
-    description:
-      'rETL (gated split, v3): numeric external id is stringified for batch upsert payload id',
+    description: 'rETL (v3): numeric external id is stringified for batch upsert payload id',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -177,7 +171,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
               metadata: {
                 jobId: 5007,
                 userId: 'u1',
-                workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
               },
             },
           ],
@@ -224,7 +217,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
                 {
                   jobId: 5007,
                   userId: 'u1',
-                  workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
                 },
               ],
               batched: true,
@@ -239,8 +231,7 @@ export const retlUpsertData: Record<string, unknown>[] = [
   },
   {
     name: 'hs',
-    description:
-      'rETL (gated split, v3): unique identifierType -> single batch upsert with multiple events',
+    description: 'rETL (v3): unique identifierType -> single batch upsert with multiple events',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -254,7 +245,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
               metadata: {
                 jobId: 5002,
                 userId: 'u1',
-                workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
               },
             },
             {
@@ -263,7 +253,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
               metadata: {
                 jobId: 5003,
                 userId: 'u2',
-                workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
               },
             },
           ],
@@ -316,12 +305,10 @@ export const retlUpsertData: Record<string, unknown>[] = [
                 {
                   jobId: 5002,
                   userId: 'u1',
-                  workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
                 },
                 {
                   jobId: 5003,
                   userId: 'u2',
-                  workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
                 },
               ],
               batched: true,
@@ -337,7 +324,7 @@ export const retlUpsertData: Record<string, unknown>[] = [
   {
     name: 'hs',
     description:
-      'rETL (gated split, v3): duplicate id in batch is deduplicated (properties merged, first jobId kept as objectWriteTraceId)',
+      'rETL (v3): duplicate id in batch is deduplicated (properties merged, first jobId kept as objectWriteTraceId)',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -354,7 +341,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
               metadata: {
                 jobId: 5004,
                 userId: 'u1',
-                workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
               },
             },
             {
@@ -363,7 +349,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
               metadata: {
                 jobId: 5005,
                 userId: 'u2',
-                workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
               },
             },
           ],
@@ -414,12 +399,10 @@ export const retlUpsertData: Record<string, unknown>[] = [
                 {
                   jobId: 5004,
                   userId: 'u1',
-                  workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
                 },
                 {
                   jobId: 5005,
                   userId: 'u2',
-                  workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
                 },
               ],
               batched: true,
@@ -435,7 +418,7 @@ export const retlUpsertData: Record<string, unknown>[] = [
   {
     name: 'hs',
     description:
-      'rETL (gated split, v3): non-unique identifierType falls back to search-driven update flow instead of batch upsert',
+      'rETL (v3): non-unique identifierType falls back to search-driven update flow instead of batch upsert',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -452,7 +435,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
               metadata: {
                 jobId: 5006,
                 userId: 'u1',
-                workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
               },
             },
           ],
@@ -500,7 +482,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
                 {
                   jobId: 5006,
                   userId: 'u1',
-                  workspaceId: HS_RETL_SPLIT_TEST_WORKSPACE_ID,
                 },
               ],
               batched: true,

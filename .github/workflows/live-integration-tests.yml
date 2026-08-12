@@ -29,7 +29,26 @@ permissions:
   contents: read # for actions/checkout
 
 jobs:
+  discover:
+    name: discover live destinations
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Build matrix from live specs
+        id: gen
+        run: node .github/scripts/live-test-matrix.js >> "$GITHUB_OUTPUT"
+
   live:
+    needs: discover
     name: live (${{ matrix.destination }})
     # required: puts the job in infra1-us → PrivateLink path to dev Vault
     runs-on: [self-hosted, Linux, X64]
@@ -39,8 +58,7 @@ jobs:
       contents: read # for actions/checkout
     strategy:
       fail-fast: false
-      matrix:
-        destination: [hs, braze_audience, braze]
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
@@ -64,7 +82,7 @@ jobs:
         id: secret
         run: echo "name=LIVE_SECRET_$(echo '${{ matrix.destination }}' | tr 'a-z' 'A-Z')" >> "$GITHUB_OUTPUT"
 
-      - name: Import destination secret from dev Vault (OIDC/JWT)
+      - name: Import secrets from dev Vault (OIDC/JWT)
         id: vault
         uses: hashicorp/vault-action@892a26828f195e65540a40b4768ae4571f51ebfc # v4.0.0
         with:
@@ -75,7 +93,23 @@ jobs:
           jwtGithubAudience: ${{ vars.VAULT_ADDR }} # MUST match bound_audiences, else auth fails
           exportToken: false # keep the raw Vault token out of env
           secrets: |
-            engineering_shared/data/integrations_team/e2e_test/rudder-transformer ${{ steps.secret.outputs.name }} | ${{ steps.secret.outputs.name }}
+            engineering_shared/data/integrations_team/e2e_test/rudder-transformer ${{ steps.secret.outputs.name }} | ${{ steps.secret.outputs.name }} ;
+            ${{ matrix.oauth && 'control-plane/data/external-services *' || '' }}
+
+      - name: Configure AWS credentials for ECR (OIDC)
+        if: matrix.oauth
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
+        with:
+          role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Log in to Amazon ECR
+        if: matrix.oauth
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # 2.1.6
+
+      - name: Pre-pull rudder-auth image (surface ECR/pull errors before the test run)
+        if: matrix.oauth
+        run: docker pull 422074288268.dkr.ecr.us-east-1.amazonaws.com/rudderstack/rudder-auth:develop
 
       - name: Run live tests
         # LOG_LEVEL=100 suppresses body logging so tokens can't leak.

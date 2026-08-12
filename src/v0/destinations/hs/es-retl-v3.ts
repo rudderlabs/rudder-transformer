@@ -6,7 +6,6 @@ import {
   InstrumentationError,
 } from '@rudderstack/integrations-lib';
 import validator from 'validator';
-import { MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import {
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -18,8 +17,6 @@ import {
   getDestinationExternalID,
   constructPayload,
   isDefinedAndNotNullAndNotEmpty,
-  getDestinationExternalIDInfoForRetl,
-  getDestinationExternalIDObjectForRetl,
   sortBatchesByMinJobId,
 } from '../../util';
 import stats from '../../../util/stats';
@@ -30,26 +27,15 @@ import {
   MAX_BATCH_SIZE_CRM_CONTACT,
   mappingConfig,
   ConfigCategory,
-  MAX_BATCH_SIZE_CRM_OBJECT,
-  OBJECT_TYPE_PLACEHOLDER,
-  RETL_CREATE_ASSOCIATION_OPERATION,
-  RETL_SOURCE,
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH,
   BATCH_IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH,
   BATCH_IDENTIFY_CRM_UPSERT_CONTACT_ENDPOINT_PATH,
   TRACK_CRM_ENDPOINT_PATH,
-  CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH,
-  CRM_ASSOCIATION_V3_ENDPOINT_PATH,
-  BATCH_CREATE_PATH_SUFFIX,
-  BATCH_UPDATE_PATH_SUFFIX,
 } from './config';
 import {
   getTransformedJSON,
   searchContacts,
   getEventAndPropertiesFromConfig,
-  getHsSearchId,
-  populateTraits,
-  addExternalIdToHSTraits,
   removeHubSpotSystemField,
   isLookupFieldUnique,
   getLookupFieldValue,
@@ -71,7 +57,7 @@ import type {
   HubSpotBatchRequestOutput,
   HubSpotUpsertPayload,
 } from './types';
-import { hasPropertiesRecord, hasAssociationShape, hasUpsertPayloadShape } from './types';
+import { hasPropertiesRecord, hasUpsertPayloadShape } from './types';
 
 /**
  * Process identify event for HubSpot V3 Upsert API.
@@ -148,130 +134,62 @@ const processIdentify = async (
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
   const { Config } = destination;
-  let traits: Record<string, unknown> = getFieldValueFromMessage(message, 'traits');
+  const traits: Record<string, unknown> = getFieldValueFromMessage(message, 'traits');
   // since hubspot does not allow invalid emails, we need to
   // validate the email before sending it to hubspot
   if (traits?.email && !validator.isEmail(traits.email)) {
     throw new InstrumentationError(`Email "${traits.email}" is invalid`);
   }
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  const operation = get(message, 'context.hubspotOperation');
-  const externalIdObj = getDestinationExternalIDObjectForRetl(message, 'HS');
-  const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'HS');
-  const objectType = externalIdInfo?.objectType;
   // build response
   let endpoint: string | undefined;
   let endpointPath: string | undefined;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
 
-  // Handle hubspot association events sent from retl source
-  if (
-    objectType &&
-    String(objectType).toLowerCase() === 'association' &&
-    mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString()) &&
-    externalIdObj
-  ) {
-    const { associationTypeId, fromObjectType, toObjectType } = externalIdObj;
-    const associationEndpointPath = CRM_ASSOCIATION_V3_ENDPOINT_PATH.replace(
-      ':fromObjectType',
-      fromObjectType,
-    ).replace(':toObjectType', toObjectType);
-    response.endpoint = `${BASE_ENDPOINT}${associationEndpointPath}`;
-    response.endpointPath = associationEndpointPath;
-    response.body.JSON = {
-      ...traits,
-      type: associationTypeId,
-    };
-    response.headers = {
-      'Content-Type': JSON_MIME_TYPE,
-    };
-    response.operation = RETL_CREATE_ASSOCIATION_OPERATION;
-    response.source = RETL_SOURCE;
-    recordTransformFlow(destination, 'retl', 'es_retl', 'association');
-    return addHsAuthentication(response, Config);
+  if (!Config.lookupField) {
+    throw new ConfigurationError('lookupField is a required field in webapp config');
   }
 
-  // if mappedToDestination is set true, then add externalId to traits
-  if (
-    mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString()) &&
-    operation
-  ) {
-    if (!objectType) {
-      throw new InstrumentationError('objectType not found');
-    }
-    if (operation === 'createObject') {
-      addExternalIdToHSTraits(message);
-      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
-        OBJECT_TYPE_PLACEHOLDER,
-        objectType,
-      );
-      endpoint = `${BASE_ENDPOINT}${endpointPath}`;
-      recordTransformFlow(destination, 'retl', 'es_retl', 'create');
-    } else if (operation === 'updateObject' && getHsSearchId(message)) {
-      const { hsSearchId } = getHsSearchId(message);
-      endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
-        OBJECT_TYPE_PLACEHOLDER,
-        objectType,
-      );
-      endpoint = `${BASE_ENDPOINT}${endpointPath}/${hsSearchId}`;
-      response.method = defaultPatchRequestConfig.requestMethod;
-      recordTransformFlow(destination, 'retl', 'es_retl', 'update');
-    }
+  let contactId = getDestinationExternalID(message, 'hsContactId');
 
-    traits = await populateTraits(propertyMap, traits, destination, metadata);
-    traits = removeHubSpotSystemField(traits);
-    response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
-    response.source = 'rETL';
-    response.operation = operation;
+  // We can't use contactId for upsert, as it is a non-unique field.
+  // This skips the searchContacts call and uses the batch upsert endpoint
+  if (!contactId && (await isLookupFieldUnique(destination, Config.lookupField!, metadata))) {
+    return processUpsertIdentify({ message, destination, metadata }, propertyMap);
+  }
+
+  // Legacy flow: search for contact if contactId is not provided
+  if (!contactId) {
+    contactId = await searchContacts(message, destination, metadata);
+  }
+
+  let properties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
+  properties = removeHubSpotSystemField(properties);
+
+  const payload = {
+    properties,
+  };
+
+  if (contactId) {
+    // contact exists
+    // update
+    endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH.replace(
+      ':contactId',
+      contactId,
+    )}`;
+    endpointPath = IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH;
+    response.operation = 'updateContacts';
+    response.method = defaultPatchRequestConfig.requestMethod;
+    recordTransformFlow(destination, 'event_stream', 'es_retl', 'update');
   } else {
-    if (!Config.lookupField) {
-      throw new ConfigurationError('lookupField is a required field in webapp config');
-    }
-
-    let contactId = getDestinationExternalID(message, 'hsContactId');
-
-    // We can't use contactId for upsert, as it is a non-unique field.
-    // This skips the searchContacts call and uses the batch upsert endpoint
-    if (!contactId && (await isLookupFieldUnique(destination, Config.lookupField!, metadata))) {
-      return processUpsertIdentify({ message, destination, metadata }, propertyMap);
-    }
-
-    // Legacy flow: search for contact if contactId is not provided
-    if (!contactId) {
-      contactId = await searchContacts(message, destination, metadata);
-    }
-
-    let properties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
-    properties = removeHubSpotSystemField(properties);
-
-    const payload = {
-      properties,
-    };
-
-    if (contactId) {
-      // contact exists
-      // update
-      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH.replace(
-        ':contactId',
-        contactId,
-      )}`;
-      endpointPath = IDENTIFY_CRM_UPDATE_CONTACT_ENDPOINT_PATH;
-      response.operation = 'updateContacts';
-      response.method = defaultPatchRequestConfig.requestMethod;
-      recordTransformFlow(destination, 'event_stream', 'es_retl', 'update');
-    } else {
-      // contact do not exist
-      // create
-      endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
-      endpointPath = IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH;
-      response.operation = 'createContacts';
-      recordTransformFlow(destination, 'event_stream', 'es_retl', 'create');
-    }
-    response.body.JSON = removeUndefinedAndNullValues(payload);
+    // contact do not exist
+    // create
+    endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH}`;
+    endpointPath = IDENTIFY_CRM_CREATE_NEW_CONTACT_ENDPOINT_PATH;
+    response.operation = 'createContacts';
+    recordTransformFlow(destination, 'event_stream', 'es_retl', 'create');
   }
+  response.body.JSON = removeUndefinedAndNullValues(payload);
 
   response.endpoint = endpoint!;
   response.endpointPath = endpointPath;
@@ -363,34 +281,7 @@ const batchIdentify = (
 
     let batchEventResponse: HubSpotBatchRequestOutput = defaultBatchRequestConfig();
 
-    if (batchOperation === 'createObject') {
-      batchEventResponse.batchedRequest.endpoint = `${message.endpoint}${BATCH_CREATE_PATH_SUFFIX}`;
-      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}${BATCH_CREATE_PATH_SUFFIX}`;
-
-      // create operation
-      chunk.forEach((ev) => {
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-        });
-        metadata.push(ev.metadata);
-      });
-    } else if (batchOperation === 'updateObject') {
-      batchEventResponse.batchedRequest.endpoint = `${message.endpoint.substr(
-        0,
-        message.endpoint.lastIndexOf('/'),
-      )}${BATCH_UPDATE_PATH_SUFFIX}`;
-      batchEventResponse.batchedRequest.endpointPath = `${message.endpointPath}${BATCH_UPDATE_PATH_SUFFIX}`;
-      // update operation
-      chunk.forEach((ev) => {
-        const updateEndpoint = ev.message.endpoint;
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-          id: updateEndpoint.split('/').pop(),
-        });
-
-        metadata.push(ev.metadata);
-      });
-    } else if (batchOperation === 'createContacts') {
+    if (batchOperation === 'createContacts') {
       // create operation
       chunk.forEach((ev) => {
         // duplicate email can cause issue with create in batch
@@ -439,16 +330,6 @@ const batchIdentify = (
             });
           }
         }
-        metadata.push(ev.metadata);
-      });
-    } else if (batchOperation === 'createAssociations') {
-      chunk.forEach((ev) => {
-        batchEventResponse.batchedRequest.endpoint = ev.message.endpoint;
-        batchEventResponse.batchedRequest.endpointPath = ev.message.endpointPath;
-        if (!hasAssociationShape(ev.message.body.JSON)) {
-          throw new TransformationError('rETL - Invalid payload for createAssociations batch');
-        }
-        identifyResponseList.push(ev.message.body.JSON);
         metadata.push(ev.metadata);
       });
     } else if (batchOperation === 'upsertContacts') {
@@ -532,16 +413,10 @@ const batchEvents = (
   const updateContactEventsChunk: HubSpotBatchProcessingItem[] = [];
   // upsert contact chunk (V3 batch upsert)
   const upsertContactEventsChunk: HubSpotBatchProcessingItem[] = [];
-  // rETL specific chunk
-  const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
-  const updateAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
-  const associationObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
-  let maxBatchSize: number = MAX_BATCH_SIZE_CRM_OBJECT;
-
   destEvents.forEach((event) => {
     // handler for track call
     // track call does not have batch endpoint
-    const { operation, messageType, source } = event.message;
+    const { operation, messageType } = event.message;
     if (messageType === 'track') {
       const { message, metadata, destination } = event;
       const endpoint = get(message, 'endpoint');
@@ -563,23 +438,6 @@ const batchEvents = (
           batchedResponse.destination,
         ),
       );
-    } else if (source && source === 'rETL') {
-      const { endpoint } = event.message;
-      maxBatchSize = endpoint.includes('contact')
-        ? MAX_BATCH_SIZE_CRM_CONTACT
-        : MAX_BATCH_SIZE_CRM_OBJECT;
-      if (operation) {
-        if (operation === 'createObject') {
-          createAllObjectsEventChunk.push(event);
-        } else if (operation === 'updateObject') {
-          updateAllObjectsEventChunk.push(event);
-        } else if (operation === RETL_CREATE_ASSOCIATION_OPERATION) {
-          // Identify: chunks for handling association events
-          associationObjectsEventChunk.push(event);
-        }
-      } else {
-        throw new TransformationError('rETL -  Error in getting operation');
-      }
     } else if (operation === 'createContacts') {
       // Identify: making chunks for CRM create contact endpoint
       createContactEventsChunk.push(event);
@@ -593,10 +451,6 @@ const batchEvents = (
       throw new TransformationError('rETL - Not a valid operation');
     }
   });
-
-  const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, maxBatchSize);
-
-  const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, maxBatchSize);
 
   // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // CRM create contact endpoint chunks
@@ -615,29 +469,6 @@ const batchEvents = (
     upsertContactEventsChunk,
     MAX_BATCH_SIZE_CRM_CONTACT,
   );
-
-  const arrayChunksIdentifyCreateAssociations = lodash.chunk(
-    associationObjectsEventChunk,
-    MAX_BATCH_SIZE_CRM_OBJECT,
-  );
-
-  // batching up 'create' all objects endpoint chunks
-  if (arrayChunksIdentifyCreateObjects.length > 0) {
-    batchedResponseList = batchIdentify(
-      arrayChunksIdentifyCreateObjects,
-      batchedResponseList,
-      'createObject',
-    );
-  }
-
-  // batching up 'update' all objects endpoint chunks
-  if (arrayChunksIdentifyUpdateObjects.length > 0) {
-    batchedResponseList = batchIdentify(
-      arrayChunksIdentifyUpdateObjects,
-      batchedResponseList,
-      'updateObject',
-    );
-  }
 
   // batching up 'create' contact endpoint chunks
   if (arrayChunksIdentifyCreateContact.length > 0) {
@@ -663,15 +494,6 @@ const batchEvents = (
       arrayChunksIdentifyUpsertContact,
       batchedResponseList,
       'upsertContacts',
-    );
-  }
-
-  // batching association events
-  if (arrayChunksIdentifyCreateAssociations.length > 0) {
-    batchedResponseList = batchIdentify(
-      arrayChunksIdentifyCreateAssociations,
-      batchedResponseList,
-      'createAssociations',
     );
   }
 

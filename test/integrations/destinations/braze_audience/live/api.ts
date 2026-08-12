@@ -1,10 +1,14 @@
 import axios from 'axios';
 import { Agent } from 'https';
 import { getEndpointFromConfig } from '../../../../../src/v0/destinations/braze/util';
-import { LiveSecret, RunContext } from '../../../live/types';
+import type { LiveSecret, RunContext } from '../../../live/types';
 
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles when the suite finishes.
 const brazeAgent = new Agent({ keepAlive: false });
+
+interface BrazeAudienceExportResponse {
+  users?: Array<{ custom_attributes?: Record<string, unknown> }>;
+}
 
 const readString = (value: unknown, label: string): string => {
   if (typeof value !== 'string' || value.trim().length === 0) {
@@ -22,10 +26,10 @@ export const customAttributeName = (ctx: RunContext): string =>
 export const externalId = (ctx: RunContext): string => ctx.identity('user');
 
 const restApiKey = (ctx: RunContext): string =>
-  readString(ctx.liveSecret.config?.restApiKey, 'config.restApiKey');
+  readString(ctx.liveSecret.config.restApiKey, 'config.restApiKey');
 
 const dataCenter = (ctx: RunContext): string =>
-  readString(ctx.liveSecret.config?.dataCenter, 'config.dataCenter');
+  readString(ctx.liveSecret.config.dataCenter, 'config.dataCenter');
 
 export const restBaseUrl = (ctx: RunContext): string =>
   getEndpointFromConfig({
@@ -70,7 +74,7 @@ export const setMembership = async (ctx: RunContext, value: boolean): Promise<vo
  */
 export const fetchMembership = async (ctx: RunContext): Promise<boolean | undefined> => {
   const attr = customAttributeName(ctx);
-  const res = await axios.post(
+  const res = await axios.post<BrazeAudienceExportResponse>(
     `${restBaseUrl(ctx)}/users/export/ids`,
     {
       external_ids: [externalId(ctx)],
@@ -88,7 +92,7 @@ export const fetchMembership = async (ctx: RunContext): Promise<boolean | undefi
       `Braze export/ids failed: status=${res.status} body=${JSON.stringify(res.data)}`,
     );
   }
-  const users = res.data?.users;
+  const users = res.data.users;
   if (!Array.isArray(users) || users.length === 0) {
     return undefined;
   }

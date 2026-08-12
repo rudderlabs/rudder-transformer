@@ -143,14 +143,36 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
     expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
   });
 
-  it('re-seeds 0 and rebuilds after an error evicts the isolate', async () => {
+  it('does not re-seed or rebuild after a timeout error keeps the isolate cached', async () => {
     const ivm = require('isolated-vm');
     const runner = makeRunner();
 
-    // First call fails at execution time; the catch path evicts the isolate from the cache.
-    evalClosure.mockRejectedValueOnce(new Error('Script execution timed out'));
+    // Timeout matching is case-insensitive; a timeout does not corrupt the isolate.
+    evalClosure.mockRejectedValueOnce(new Error('SCRIPT EXECUTION TIMED OUT'));
     await expect(runner.execute(WORKSPACE, EXPRESSION, [{}, {}])).rejects.toThrow(
-      'Script execution timed out',
+      'SCRIPT EXECUTION TIMED OUT',
+    );
+
+    // Next call should reuse the warm isolate and avoid re-seeding the 0 baseline.
+    evalClosure.mockResolvedValueOnce({ ok: true, value: { id: 'u1' } });
+    await runner.execute(WORKSPACE, EXPRESSION, [{}, {}]);
+
+    expect(ivm.Isolate).toHaveBeenCalledTimes(1);
+    expect(stats.counter).toHaveBeenCalledTimes(1);
+    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
+    // The timeout is still recorded and rethrown with the matching label set.
+    expect(stats.increment).toHaveBeenCalledTimes(1);
+    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', EXPECTED_TAGS);
+  });
+
+  it('re-seeds 0 and rebuilds after a non-timeout error evicts the isolate', async () => {
+    const ivm = require('isolated-vm');
+    const runner = makeRunner();
+
+    // A disposed-isolate platform error indicates the cached isolate is no longer usable.
+    evalClosure.mockRejectedValueOnce(new Error('Isolate was disposed during execution'));
+    await expect(runner.execute(WORKSPACE, EXPRESSION, [{}, {}])).rejects.toThrow(
+      'Isolate was disposed during execution',
     );
 
     // Next call is a fresh cache miss: it must build a new isolate AND re-seed the 0 baseline.

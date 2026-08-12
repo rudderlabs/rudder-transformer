@@ -66,6 +66,9 @@ interface ExecutionGate {
 /** Slot release for the ungated path — nothing was reserved, so nothing to hand back. */
 const NOOP_RELEASE = () => {};
 
+// isolated-vm timeout errors include this message when evalClosure exceeds its timeout option.
+const SCRIPT_EXECUTION_TIMEOUT_MESSAGE = 'script execution timed out';
+
 function releaseIvmResources(context?: ivm.Context, isolate?: ivm.Isolate) {
   try {
     context?.release();
@@ -169,10 +172,15 @@ export class IvmScriptRunner {
       });
       return result as T;
     } catch (err: unknown) {
-      // Platform failure: timeout, OOM, disposed isolate, or a failure while
-      // building the isolate. Evict so the next call gets a fresh one, and emit
-      // a metric for observability before rethrowing.
-      this.cache.delete(cacheKey);
+      // Platform failures are still observed and rethrown. Execution timeouts do not
+      // corrupt the isolate, so keep it cached; OOM, disposed-isolate, and build
+      // failures still evict so the next call gets a fresh isolate.
+      const isTimeout =
+        err instanceof Error &&
+        err.message.toLowerCase().includes(SCRIPT_EXECUTION_TIMEOUT_MESSAGE);
+      if (!isTimeout) {
+        this.cache.delete(cacheKey);
+      }
       stats.increment('ivm_platform_error', metricTags);
       throw err;
     } finally {

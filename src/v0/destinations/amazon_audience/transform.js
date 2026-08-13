@@ -30,7 +30,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespList = []; // list of error
   const { destination } = inputs[0];
   const { Config } = destination;
-  inputs.map(async (event) => {
+  await Promise.all(inputs.map(async (event) => {
     try {
       if (event.message.statusCode) {
         // already transformed event
@@ -47,7 +47,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
       errorRespList.push(errRespEvent);
     }
-  });
+  }));
   let batchedResponseList = [];
   if (responseList.length > 0) {
     batchedResponseList = batchEvents(responseList, destination);

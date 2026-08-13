@@ -104,6 +104,7 @@ export const track = [
                       },
                       locale: 'en-US',
                       page: {
+                        query: {},
                         path: '/signup',
                         referrer: 'https://rudderstack.medium.com/',
                         search: '?type=freetrial',
@@ -196,6 +197,93 @@ export const track = [
               module: 'destination',
             },
             statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'ninetailed-test-track-success-2',
+    name: 'ninetailed',
+    description: 'Track call whose context.page is missing fields Ninetailed requires',
+    scenario: 'Buisness',
+    successCriteria:
+      'Missing page fields should be backfilled with empty defaults so one partial page does not fail the whole batch',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              context: {
+                page: {
+                  path: '/to/ohtefCKH',
+                  referrer: 'https://www.tiktok.com/',
+                  title: 'Mental Health First Aid',
+                  url: 'https://koko-ai.pro.typeform.com/to/ohtefCKH',
+                },
+              },
+              type: 'track',
+              event: 'form viewed',
+              channel: 'web',
+              messageId: 'dummy_msg_id',
+              anonymousId: 'anon_123',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2021-01-25T15:32:56.409Z',
+            },
+            metadata,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'dummyDestId',
+            },
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint:
+                'https://experience.ninetailed.co/v2/organizations/dummyOrganisationId/environments/main/events',
+              JSON: {
+                events: [
+                  {
+                    context: {
+                      library: {
+                        name: 'Rudderstack Ninetailed Destination',
+                        version: '1',
+                      },
+                      location: {},
+                      page: {
+                        path: '/to/ohtefCKH',
+                        query: {},
+                        referrer: 'https://www.tiktok.com/',
+                        search: '',
+                        title: 'Mental Health First Aid',
+                        url: 'https://koko-ai.pro.typeform.com/to/ohtefCKH',
+                      },
+                    },
+                    type: 'track',
+                    event: 'form viewed',
+                    channel: 'web',
+                    messageId: 'dummy_msg_id',
+                    properties: {},
+                    anonymousId: 'anon_123',
+                    originalTimestamp: '2021-01-25T15:32:56.409Z',
+                  },
+                ],
+              },
+              userId: '',
+            }),
+            statusCode: 200,
           },
         ],
       },

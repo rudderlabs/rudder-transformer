@@ -115,10 +115,20 @@ export const commonInput = {
   originalTimestamp: '2021-01-25T15:32:56.409Z',
 };
 
+// The transformer backfills the page fields Ninetailed requires, so the delivered
+// context carries a `query` that the input context does not have.
+export const expectedContext = {
+  ...context,
+  page: {
+    ...context.page,
+    query: {},
+  },
+};
+
 export const commonOutput = {
   anonymousId: 'anon_123',
   messageId: 'dummy_msg_id',
-  context,
+  context: expectedContext,
   channel: 'web',
   originalTimestamp: '2021-01-25T15:32:56.409Z',
 };

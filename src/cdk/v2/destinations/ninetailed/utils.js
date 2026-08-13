@@ -1,6 +1,38 @@
 const { BatchUtils } = require('@rudderstack/workflow-engine');
+const lodash = require('lodash');
 const config = require('./config');
-const { constructPayload } = require('../../../../v0/util');
+const { constructPayload, isDefinedAndNotNull } = require('../../../../v0/util');
+
+// Ninetailed validates context.page against a schema where every one of these is a
+// required string. A single event with a partial page object gets the whole batch
+// (up to MAX_BATCH_SIZE events) rejected, so the gaps are filled with empty strings.
+const PAGE_REQUIRED_STRING_FIELDS = ['path', 'referrer', 'search', 'url'];
+
+/**
+ * Fills in the page fields Ninetailed requires but the source may not have sent.
+ *
+ * Note this cannot be expressed as `defaultValue` in contextMapping.json: an empty
+ * string default is falsy, so `handleMetadataForValue` returns the original undefined
+ * and `constructPayload` skips the assignment entirely. Both would silently no-op.
+ *
+ * @param {*} page the mapped context.page value
+ * @returns page with all required fields present, or the input untouched if it is not an object
+ */
+const normalizePageContext = (page) => {
+  if (!lodash.isPlainObject(page)) {
+    return page;
+  }
+  const normalizedPage = { ...page };
+  PAGE_REQUIRED_STRING_FIELDS.forEach((field) => {
+    if (typeof normalizedPage[field] !== 'string') {
+      normalizedPage[field] = '';
+    }
+  });
+  if (!lodash.isPlainObject(normalizedPage.query)) {
+    normalizedPage.query = {};
+  }
+  return normalizedPage;
+};
 
 /**
  * This fucntion constructs payloads based upon mappingConfig for all calls
@@ -34,6 +66,11 @@ const constructFullPayload = (message) => {
       break;
     default:
       break;
+  }
+  // Only normalize a page the source actually sent; do not invent one for events
+  // (server-side track calls, for instance) that legitimately carry no page context.
+  if (isDefinedAndNotNull(context.page)) {
+    context.page = normalizePageContext(context.page);
   }
   payload.context = context;
   return { ...payload, ...typeSpecifcPayload }; // merge base and type-specific payloads;
@@ -101,4 +138,9 @@ const batchResponseBuilder = (events) => {
   return response;
 };
 
-module.exports = { constructFullPayload, getEndpoint, batchResponseBuilder };
+module.exports = {
+  constructFullPayload,
+  getEndpoint,
+  batchResponseBuilder,
+  normalizePageContext,
+};

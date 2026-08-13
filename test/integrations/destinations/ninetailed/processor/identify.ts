@@ -68,6 +68,7 @@ export const identify = [
                       },
                       locale: 'en-US',
                       page: {
+                        query: {},
                         path: '/signup',
                         referrer: 'https://rudderstack.medium.com/',
                         search: '?type=freetrial',
@@ -166,6 +167,7 @@ export const identify = [
                       },
                       locale: 'en-US',
                       page: {
+                        query: {},
                         path: '/signup',
                         referrer: 'https://rudderstack.medium.com/',
                         search: '?type=freetrial',
@@ -254,6 +256,7 @@ export const identify = [
                       },
                       locale: 'en-US',
                       page: {
+                        query: {},
                         path: '/signup',
                         referrer: 'https://rudderstack.medium.com/',
                         search: '?type=freetrial',

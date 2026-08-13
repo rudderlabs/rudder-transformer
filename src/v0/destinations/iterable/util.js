@@ -252,7 +252,13 @@ const prepareItemsPayload = (message) => {
     }
 
     itemPayload.price = parseFloat(itemPayload.price);
+    if (Number.isNaN(itemPayload.price)) {
+      throw new InstrumentationError('Product price must be a valid number');
+    }
     itemPayload.quantity = parseInt(itemPayload.quantity, 10);
+    if (Number.isNaN(itemPayload.quantity)) {
+      throw new InstrumentationError('Product quantity must be a valid integer');
+    }
     return { ...itemPayload };
   });
 };
@@ -276,6 +282,9 @@ const purchaseEventPayloadBuilder = (message, category, config) => {
   validateMandatoryField(rawPayload.user);
 
   rawPayload.total = parseFloat(rawPayload.total);
+  if (Number.isNaN(rawPayload.total)) {
+    throw new InstrumentationError('Revenue (total) must be a valid number');
+  }
   rawPayload.items = prepareItemsPayload(message);
   rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
   rawPayload.id = rawPayload.id ? rawPayload.id.toString() : undefined;

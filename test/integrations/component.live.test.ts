@@ -77,7 +77,7 @@ describe('Live Integration Test Suite', () => {
     if (hasOAuthDestination) {
       await authContainer.stop();
     }
-  });
+  }, 900000);
 
   // One describe per enrolled destination: resolve its credentials and base config, then run its
   // enabled scenarios. A missing/invalid secret throws here (fail-closed), failing the destination.

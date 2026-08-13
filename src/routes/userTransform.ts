@@ -7,12 +7,6 @@ import { StatsMiddleware } from '../middlewares/stats';
 const router = new Router();
 
 router.post(
-  '/workspaces/:wId/reconcileFunction',
-  RouteActivationMiddleware.isUserTransformRouteActive,
-  UserTransformController.reconcileFunction,
-);
-
-router.post(
   '/customTransform',
   RouteActivationMiddleware.isUserTransformRouteActive,
   FeatureFlagMiddleware.handle,
@@ -33,11 +27,6 @@ router.post(
   '/transformationLibrary/test',
   RouteActivationMiddleware.isUserTransformTestRouteActive,
   UserTransformController.testTransformLibrary,
-);
-router.post(
-  '/transformation/sethandle',
-  RouteActivationMiddleware.isUserTransformTestRouteActive,
-  UserTransformController.testTransformSethandle,
 );
 router.post(
   '/extractLibs',

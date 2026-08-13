@@ -324,10 +324,6 @@ describe('memory fencing metrics', () => {
     { path: '/batch', expectedRoute: '/batch' },
     { path: '/deleteUsers', expectedRoute: '/deleteUsers' },
     { path: '/customTransform', expectedRoute: '/customTransform' },
-    {
-      path: '/workspaces/2abc/reconcileFunction',
-      expectedRoute: '/workspaces/:wId/reconcileFunction',
-    },
     { path: '/test-router/v0/ga/batch', expectedRoute: '/test-router/:version/:destination/batch' },
     { path: '/test-router/v0/ga', expectedRoute: '/test-router/:version/:destination' },
     { path: '/test-router/v0/health', expectedRoute: '/test-router/:version/health' },
@@ -345,7 +341,7 @@ describe('memory fencing metrics', () => {
     ['/env'],
     ['/v0/destinations/'],
     ['/wp-admin/setup-config.php'],
-    ['/workspaces/2abc/reconcileFunction/extra'],
+    ['/workspaces/2abc/reconcileFunction'],
   ])('labels unknown path %s as "other" rather than echoing it back', (path) => {
     // The fence fires exactly when the process is already under memory pressure. Echoing the raw
     // path would let a path scanner add a new Prometheus child per request at the worst moment.

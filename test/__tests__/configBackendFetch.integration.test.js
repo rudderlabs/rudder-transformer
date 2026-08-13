@@ -17,7 +17,7 @@ describe('config backend fetch e2e (mock enforces auth)', () => {
     process.env.CONFIG_BACKEND_URL = mock.getBaseUrl();
     // The store builds its URL from CONFIG_BACKEND_URL at load, so require it fresh with the mock URL.
     jest.isolateModules(() => {
-      ({ getTransformationCode } = require('../../src/util/customTransforrmationsStore'));
+      ({ getTransformationCode } = require('../../src/util/customTransformationsStore'));
     });
   });
 

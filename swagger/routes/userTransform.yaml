@@ -100,7 +100,7 @@
               language:
                 type: string
                 example: javascript
-                enum: [javascript, python, pythonfaas]
+                enum: [javascript]
     responses:
       200:
         description: Success
@@ -109,56 +109,6 @@
             schema:
               type: boolean
               example: true
-      400:
-        description: Failure
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-
-/transformation/sethandle:
-  post:
-    tags:
-      - User Transform
-    summary: Set transformation handler
-    requestBody:
-      description: Request Body
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              trRevCode:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  language:
-                    type: string
-                  testName:
-                    type: string
-                  versionId:
-                    type: string
-              libraryVersionIDs:
-                type: array
-                items:
-                  type: string
-                example: []
-    responses:
-      200:
-        description: Success
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                success:
-                  type: boolean
-                  example: true
       400:
         description: Failure
         content:
@@ -184,22 +134,10 @@
             properties:
               code:
                 type: string
-              versionId:
-                type: string
-              validateImports:
-                type: boolean
-                example: false
-              additionalLibraries:
-                type: array
-                items:
-                  type: string
-                example: []
               language:
                 type: string
                 example: javascript
-              testMode:
-                type: boolean
-                example: false
+                enum: [javascript]
     responses:
       200:
         description: Success

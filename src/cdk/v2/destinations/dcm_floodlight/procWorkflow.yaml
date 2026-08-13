@@ -73,12 +73,10 @@ steps:
       conversionEvent.eventName.trim().toLowerCase() === $.context.event
       });
       $.assert(conversionEvent, $.context.messageType + ":: Conversion event not found");
-      (!$.isEmpty(conversionEvent.floodlightActivityTag) && 
-        !$.isEmpty(conversionEvent.floodlightGroupTag)) ?
-        (
-          $.context.payload.cat = conversionEvent.floodlightActivityTag.trim();
-          $.context.payload.type = conversionEvent.floodlightGroupTag.trim();
-        );
+      !$.isEmpty(conversionEvent.floodlightActivityTag) ?
+        $.context.payload.cat = conversionEvent.floodlightActivityTag.trim();
+      !$.isEmpty(conversionEvent.floodlightGroupTag) ?
+        $.context.payload.type = conversionEvent.floodlightGroupTag.trim();
       $.context.payload = Object.assign(
         $.context.payload,
         $.transformCustomVariable(conversionEvent.customVariables || [], .message)

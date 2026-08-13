@@ -59,6 +59,7 @@ jobs:
             echo "affected=$1" >> "$GITHUB_OUTPUT"
           }
 
+          # Preserve the previous run-all behavior for protected branch pushes and release PRs.
           if [ "$EVENT_NAME" = "push" ]; then
             set_affected all
             exit 0
@@ -69,11 +70,13 @@ jobs:
             exit 0
           fi
 
+          # PR diff metadata should be present; if not, fail safe to the full live suite.
           if [[ -z "$BASE_SHA" || -z "$HEAD_SHA" ]]; then
             set_affected all
             exit 0
           fi
 
+          # Make sure both commits exist locally before diffing. If fetch/diff fails, run all.
           if ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
             git fetch --no-tags --depth=1 origin "$BASE_SHA" || true
           fi

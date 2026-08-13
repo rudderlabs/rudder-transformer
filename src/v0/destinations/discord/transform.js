@@ -105,7 +105,7 @@ const processIdentify = (message, destination) => {
 };
 
 const processTrack = (message, destination) => {
-  const eventTemplateConfig = destination.Config.eventTemplateSettings;
+  const eventTemplateConfig = destination.Config.eventTemplateSettings ?? [];
 
   if (!message.event) {
     throw new InstrumentationError('Event name is required');

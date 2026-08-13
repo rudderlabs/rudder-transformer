@@ -240,4 +240,106 @@ export const data: ProcessorTestData[] = [
       return {};
     },
   },
+,
+  {
+    id: 'slack-track-missing-template-settings',
+    name: 'slack',
+    description: 'Track: missing eventTemplateSettings and eventChannelSettings falls back to default template and webhook',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    scenario: 'Config migration left eventTemplateSettings undefined',
+    successCriteria: 'Should not throw TypeError and should use the default template with the global webhook',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            destination: {
+              ID: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              Name: 'test-slack',
+              DestinationDefinition: {
+                ID: '1ZQUiJVMlmF7lfsdfXg7KXQnlLV',
+                Name: 'SLACK',
+                DisplayName: 'Slack',
+                Config: { excludeKeys: [], includeKeys: [] },
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+              WorkspaceID: 'test-workspace-id',
+              Config: {
+                // eventTemplateSettings and eventChannelSettings intentionally absent
+                webhookUrl: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
+                whitelistedTraitsSettings: [],
+              },
+            },
+            message: {
+              anonymousId: '4de817fb-7f8e-4e23-b9be-f6736dbda20f',
+              channel: 'web',
+              context: { traits: { name: 'Test User' } },
+              event: 'Product Added',
+              integrations: { All: true },
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
+              originalTimestamp: '2024-01-01T00:00:00.000Z',
+              properties: { product_id: 'p123' },
+              type: 'track',
+              userId: 'u1',
+            },
+            metadata: {
+              jobId: 2,
+              userId: 'u1',
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
+              destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              destinationType: 'SLACK',
+              workspaceId: 'test-workspace-id',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  payload: JSON.stringify({
+                    text: 'Test User did Product Added with {"product_id":"p123"}',
+                    username: 'RudderStack',
+                    icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                  }),
+                },
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              jobId: 2,
+              userId: 'u1',
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
+              destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              destinationType: 'SLACK',
+              workspaceId: 'test-workspace-id',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: () => {
+      return {};
+    },
+  },
 ];

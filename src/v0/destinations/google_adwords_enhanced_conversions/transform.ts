@@ -10,7 +10,7 @@ import type {
   GaecRouterRequest,
   ConversionAdjustment,
 } from './types';
-import { consentConfigMap, trackMapping } from './config';
+import { trackMapping } from './config';
 import { processUserIdentifiers } from './utils';
 import type { Metadata } from '../../../types';
 import type { RouterTransformationResponse } from '../../../types/destinationTransformation';
@@ -152,7 +152,7 @@ const processTrackEvent = (
 
   const integrationObj = getIntegrationsObj(message, 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS') || {};
   const eventLevelConsentsData = integrationObj.consents || {};
-  firstAdjustment.consent = finaliseConsent(consentConfigMap, eventLevelConsentsData);
+  firstAdjustment.consent = finaliseConsent(eventLevelConsentsData);
 
   return responseBuilder(metadata, message, destination, payload);
 };

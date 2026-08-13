@@ -21,16 +21,10 @@ const destType = 'google_adwords_enhanced_conversions';
 
 const trackMapping: unknown[] = MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_CONFIG.name];
 
-const consentConfigMap: Record<string, string> = {
-  personalizationConsent: 'adPersonalization',
-  userDataConsent: 'adUserData',
-};
-
 export {
   trackMapping,
   hashAttributes,
   CONVERSION_ACTION_ID_CACHE_TTL,
   MAX_CONVERSION_ADJUSTMENTS_PER_BATCH,
   destType,
-  consentConfigMap,
 };

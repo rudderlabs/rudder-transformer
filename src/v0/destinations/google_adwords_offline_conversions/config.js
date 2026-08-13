@@ -52,11 +52,6 @@ const CONVERSION_CUSTOM_VARIABLE_CACHE_TTL = process.env.CONVERSION_CUSTOM_VARIA
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
-const consentConfigMap = {
-  personalizationConsent: 'adPersonalization',
-  userDataConsent: 'adUserData',
-};
-
 module.exports = {
   destType: 'google_adwords_offline_conversions',
   trackClickConversionsMapping:
@@ -79,7 +74,6 @@ module.exports = {
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_CONVERSION_CONFIG_ADD_CONVERSION.name],
   trackAddStoreAddressConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
-  consentConfigMap,
   API_VERSION,
   MAX_CONVERSIONS_PER_BATCH,
 };

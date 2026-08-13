@@ -30,7 +30,6 @@ const {
   trackClickConversionsMapping,
   CLICK_CONVERSION,
   trackCallConversionsMapping,
-  consentConfigMap,
   STORE_CONVERSION_CONFIG,
   CALL_CONVERSION,
   CUSTOMER_ID_PARAM,
@@ -248,7 +247,7 @@ const getCallConversionPayload = (
     set(payload, 'conversions.0.customVariables', customVariableList);
   }
   // here conversions[0] should be present because there are some mandatory properties mapped in the mapping json.
-  payload.conversions[0].consent = finaliseConsent(consentConfigMap, eventLevelConsentsData);
+  payload.conversions[0].consent = finaliseConsent(eventLevelConsentsData);
   return { payload, endpointDetails };
 };
 
@@ -319,7 +318,7 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData, conver
     }
   }
   // add consent support for store conversions. Note: No event level consent supported.
-  const consentObject = finaliseConsent(consentConfigMap, eventLevelConsentsData);
+  const consentObject = finaliseConsent(eventLevelConsentsData);
   // create property should be present because there are some mandatory properties mapped in the mapping json.
   set(payload, 'operations.create.consent', consentObject);
   return payload;
@@ -483,7 +482,7 @@ const getClickConversionPayloadAndEndpoint = (
   }
 
   // add consent support for click conversions
-  const consentObject = finaliseConsent(consentConfigMap, eventLevelConsent);
+  const consentObject = finaliseConsent(eventLevelConsent);
   // here conversions[0] is expected to be present there are some mandatory properties mapped in the mapping json.
   set(payload, 'conversions[0].consent', consentObject);
   payload.conversions[0] = updateConversion(payload.conversions[0]);

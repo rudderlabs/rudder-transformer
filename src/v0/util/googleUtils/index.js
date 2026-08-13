@@ -3,6 +3,13 @@ const GA4_ALLOWED_CONSENT_STATUS = ['GRANTED', 'DENIED'];
 
 const UNSPECIFIED_CONSENT = 'UNSPECIFIED';
 const UNKNOWN_CONSENT = 'UNKNOWN';
+
+// Shared by every Google Ads conversion destination (Offline Conversions, Enhanced
+// Conversions, ...) so their consent field names can't drift out of sync with each other.
+const GOOGLE_ADS_CONSENT_CONFIG_MAP = {
+  personalizationConsent: 'adPersonalization',
+  userDataConsent: 'adUserData',
+};
 const get = require('get-value');
 const { PlatformError } = require('@rudderstack/integrations-lib');
 const {
@@ -37,9 +44,9 @@ const populateConsentFromConfig = (config, consentConfigMap) => {
 };
 
 /**
- * Generates the final consent object based on the provided consent configuration map, event-level consent, and destination configuration.
+ * Generates the final consent object for Google Ads conversion destinations (Offline
+ * Conversions, Enhanced Conversions, ...), keyed by GOOGLE_ADS_CONSENT_CONFIG_MAP.
  *
- * @param {Object} consentConfigMap - The map of consent configuration keys and their corresponding consent types.
  * @param {Object} [eventLevelConsent={}] - The event-level consent object.
  * @param {Object} [destConfig={}] - The destination configuration object.
  * @returns {Object} The final consent object.
@@ -54,25 +61,25 @@ const populateConsentFromConfig = (config, consentConfigMap) => {
  *  a) https://developers.google.com/google-ads/api/reference/rpc/v16/UserData
  *  b) https://developers.google.com/google-ads/api/reference/rpc/v16/UserData#consent
  */
-const finaliseConsent = (consentConfigMap, eventLevelConsent = {}, destConfig = {}) => {
-  // Initialize defaultConsentBlock with unspecified consent for all keys defined in consentConfigMap
-  const defaultConsentBlock = Object.keys(consentConfigMap).reduce((acc, key) => {
-    const consentType = consentConfigMap[key];
+const finaliseConsent = (eventLevelConsent = {}, destConfig = {}) => {
+  // Initialize defaultConsentBlock with unspecified consent for all keys defined in GOOGLE_ADS_CONSENT_CONFIG_MAP
+  const defaultConsentBlock = Object.keys(GOOGLE_ADS_CONSENT_CONFIG_MAP).reduce((acc, key) => {
+    const consentType = GOOGLE_ADS_CONSENT_CONFIG_MAP[key];
     acc[consentType] = UNSPECIFIED_CONSENT;
     return acc;
   }, {});
 
   // If destConfig is provided, update defaultConsentBlock based on it using populateConsentFromConfig
   if (Object.keys(destConfig).length > 0) {
-    const populatedConsent = populateConsentFromConfig(destConfig, consentConfigMap);
+    const populatedConsent = populateConsentFromConfig(destConfig, GOOGLE_ADS_CONSENT_CONFIG_MAP);
     Object.assign(defaultConsentBlock, populatedConsent);
   }
 
   const consentObj = {};
 
-  // Iterate through each key in consentConfigMap to determine the final consent
-  Object.keys(consentConfigMap).forEach((configKey) => {
-    const consentKey = consentConfigMap[configKey]; // e.g., 'adUserData'
+  // Iterate through each key in GOOGLE_ADS_CONSENT_CONFIG_MAP to determine the final consent
+  Object.keys(GOOGLE_ADS_CONSENT_CONFIG_MAP).forEach((configKey) => {
+    const consentKey = GOOGLE_ADS_CONSENT_CONFIG_MAP[configKey]; // e.g., 'adUserData'
 
     // Prioritize event-level consent if available
     if (eventLevelConsent && eventLevelConsent.hasOwnProperty(consentKey)) {

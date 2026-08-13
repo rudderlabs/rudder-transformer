@@ -10,7 +10,7 @@ import type {
   GaecRouterRequest,
   ConversionAdjustment,
 } from './types';
-import { trackMapping } from './config';
+import { consentConfigMap, trackMapping } from './config';
 import { processUserIdentifiers } from './utils';
 import type { Metadata } from '../../../types';
 import type { RouterTransformationResponse } from '../../../types/destinationTransformation';
@@ -20,8 +20,10 @@ import {
   removeHyphens,
   simpleProcessRouterDest,
   getAccessToken,
+  getIntegrationsObj,
 } from '../../util';
 import { JSON_MIME_TYPE } from '../../util/constant';
+import { finaliseConsent } from '../../util/googleUtils';
 import { isFeatureEnabled } from '../../../util/featureFlags';
 
 const ADJUSTMENT_TYPE_ENHANCEMENT = 'ENHANCEMENT';
@@ -147,6 +149,10 @@ const processTrackEvent = (
     }
     firstAdjustment.userIdentifiers = survivingIdentifiers;
   }
+
+  const integrationObj = getIntegrationsObj(message, 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS') || {};
+  const eventLevelConsentsData = integrationObj.consents || {};
+  firstAdjustment.consent = finaliseConsent(consentConfigMap, eventLevelConsentsData);
 
   return responseBuilder(metadata, message, destination, payload);
 };

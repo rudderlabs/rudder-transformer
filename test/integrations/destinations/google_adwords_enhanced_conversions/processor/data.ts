@@ -1,6 +1,11 @@
 import sha256 from 'sha256';
 import { authHeader1, secret1 } from '../maskedSecrets';
 
+const defaultConsent = {
+  adPersonalization: 'UNSPECIFIED',
+  adUserData: 'UNSPECIFIED',
+};
+
 export const data = [
   {
     name: 'google_adwords_enhanced_conversions',
@@ -177,6 +182,7 @@ export const data = [
                         },
                       ],
                       adjustmentType: 'ENHANCEMENT',
+                      consent: defaultConsent,
                     },
                   ],
                   partialFailure: true,
@@ -664,6 +670,7 @@ export const data = [
                         },
                       ],
                       adjustmentType: 'ENHANCEMENT',
+                      consent: defaultConsent,
                     },
                   ],
                   partialFailure: true,
@@ -1383,6 +1390,7 @@ export const data = [
                         },
                       ],
                       adjustmentType: 'ENHANCEMENT',
+                      consent: defaultConsent,
                     },
                   ],
                   partialFailure: true,
@@ -1924,6 +1932,7 @@ export const data = [
                       orderId: '10000',
                       adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                       adjustmentType: 'RESTATEMENT',
+                      consent: defaultConsent,
                     },
                   ],
                   partialFailure: true,
@@ -2047,6 +2056,7 @@ export const data = [
                         },
                       ],
                       adjustmentType: 'ENHANCEMENT',
+                      consent: defaultConsent,
                     },
                   ],
                   partialFailure: true,
@@ -2236,6 +2246,7 @@ export const data = [
                         },
                       ],
                       adjustmentType: 'ENHANCEMENT',
+                      consent: defaultConsent,
                     },
                   ],
                   partialFailure: true,
@@ -2439,6 +2450,7 @@ export const data = [
                       orderId: '10000',
                       adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                       adjustmentType: 'RESTATEMENT',
+                      consent: defaultConsent,
                     },
                   ],
                   partialFailure: true,

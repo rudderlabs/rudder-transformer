@@ -57,9 +57,15 @@ const secret = {
   developer_token: 'ijkl91011',
 };
 
+const defaultConsent = {
+  adPersonalization: 'UNSPECIFIED',
+  adUserData: 'UNSPECIFIED',
+};
+
 const enhancementAdjustment = {
   adjustmentDateTime: '2022-01-01 12:32:45-08:00',
   adjustmentType: 'ENHANCEMENT',
+  consent: defaultConsent,
   gclidDateTimePair: {
     conversionDateTime: '2022-01-01 12:32:45-08:00',
     gclid: 'gclid1234',

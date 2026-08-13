@@ -39,7 +39,12 @@ const destination: Destination = {
   Transformations: [],
 };
 
-type EventOverrides = { event?: string; type?: string; traits?: Record<string, unknown> };
+type EventOverrides = {
+  event?: string;
+  type?: string;
+  traits?: Record<string, unknown>;
+  integrations?: Record<string, unknown>;
+};
 
 function makeInput(jobId: number, overrides?: EventOverrides): RouterTransformationRequestData {
   const message = {
@@ -55,6 +60,7 @@ function makeInput(jobId: number, overrides?: EventOverrides): RouterTransformat
       order_id: 10000,
       total: 1000,
     },
+    integrations: overrides?.integrations,
   };
   const metadata = {
     jobId,
@@ -115,6 +121,38 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       expect(result.body).toHaveProperty('adjustmentType', 'ENHANCEMENT');
       expect(result.body).toHaveProperty('userIdentifiers');
       expect(result.body).not.toHaveProperty('conversionAdjustments');
+    });
+
+    it.each([
+      {
+        name: 'uses event-level consent from the integrations object',
+        integrations: {
+          GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: {
+            consents: { adUserData: 'GRANTED', adPersonalization: 'DENIED' },
+          },
+        },
+        expectedConsent: { adUserData: 'GRANTED', adPersonalization: 'DENIED' },
+      },
+      {
+        name: 'defaults missing consent to UNSPECIFIED',
+        integrations: undefined,
+        expectedConsent: { adUserData: 'UNSPECIFIED', adPersonalization: 'UNSPECIFIED' },
+      },
+      {
+        name: 'maps invalid consent values to UNKNOWN',
+        integrations: {
+          GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: {
+            consents: { adUserData: 'YES', adPersonalization: 'NO' },
+          },
+        },
+        expectedConsent: { adUserData: 'UNKNOWN', adPersonalization: 'UNKNOWN' },
+      },
+    ])('$name', ({ integrations, expectedConsent }) => {
+      const result = integration.transformEvent(
+        makeInput(1, { integrations }) as unknown as GAECInput,
+      );
+
+      expect(result.body).toHaveProperty('consent', expectedConsent);
     });
   });
 

@@ -2,6 +2,16 @@ import sha256 from 'sha256';
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { newData as batchingData } from './batching-data';
 
+const defaultConsent = {
+  adPersonalization: 'UNSPECIFIED',
+  adUserData: 'UNSPECIFIED',
+};
+
+const eventConsent = {
+  adPersonalization: 'DENIED',
+  adUserData: 'GRANTED',
+};
+
 const events = [
   {
     metadata: {
@@ -91,7 +101,12 @@ const events = [
           },
         ],
       },
-      integrations: { All: true },
+      integrations: {
+        All: true,
+        GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: {
+          consents: { adUserData: 'GRANTED', adPersonalization: 'DENIED' },
+        },
+      },
       name: 'ApplicationLoaded',
       sentAt: '2019-10-14T11:15:53.296Z',
     },
@@ -717,6 +732,7 @@ export const data = [
                       {
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         adjustmentType: 'ENHANCEMENT',
+                        consent: eventConsent,
                         gclidDateTimePair: {
                           conversionDateTime: '2022-01-01 12:32:45-08:00',
                           gclid: 'gclid1234',
@@ -748,6 +764,7 @@ export const data = [
                       {
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         adjustmentType: 'ENHANCEMENT',
+                        consent: defaultConsent,
                         gclidDateTimePair: {
                           conversionDateTime: '2022-01-01 12:32:45-08:00',
                           gclid: 'gclid1234',
@@ -1008,6 +1025,7 @@ export const data = [
                       {
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         adjustmentType: 'ENHANCEMENT',
+                        consent: defaultConsent,
                         gclidDateTimePair: {
                           conversionDateTime: '2022-01-01 12:32:45-08:00',
                           gclid: 'gclid1234',
@@ -1039,6 +1057,7 @@ export const data = [
                       {
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         adjustmentType: 'ENHANCEMENT',
+                        consent: defaultConsent,
                         gclidDateTimePair: {
                           conversionDateTime: '2022-01-01 12:32:45-08:00',
                           gclid: 'gclid1234',

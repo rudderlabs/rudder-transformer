@@ -174,6 +174,12 @@ const DestCanonicalNames = {
     'Google Adwords Offline Conversions',
     'google adwords offline conversions',
   ],
+  GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: [
+    'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+    'google_adwords_enhanced_conversions',
+    'Google Adwords Enhanced Conversions',
+    'google adwords enhanced conversions',
+  ],
   koala: ['Koala', 'koala', 'KOALA'],
   bloomreach: ['Bloomreach', 'bloomreach', 'BLOOMREACH'],
   KLAVIYO_BULK_UPLOAD: [

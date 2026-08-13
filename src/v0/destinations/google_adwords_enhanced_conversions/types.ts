@@ -87,6 +87,7 @@ export interface ConversionAdjustment {
   userIdentifiers?: Array<UserIdentifierEntry | null>;
   gclidDateTimePair?: { gclid?: string; conversionDateTime?: string };
   restatementValue?: { adjustedValue?: number; currencyCode?: string };
+  consent?: { adUserData?: string; adPersonalization?: string };
   [key: string]: unknown;
 }
 

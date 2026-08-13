@@ -928,4 +928,77 @@ export const customMappingTestCases = [
     },
     mockFns: defaultMockFns,
   },
+,
+  {
+    name: 'ga4_v2',
+    id: 'ga4_custom_mapping_allsettled_all_fail',
+    description:
+      'All custom mappings fail (both use reserved event names): first error is thrown and not short-circuited by Promise.all',
+    scenario: 'All custom mappings invalid',
+    successCriteria:
+      'Should surface an InstrumentationError for the first reserved event name, not a generic Promise rejection',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Purchase',
+              userId: 'root_user',
+              anonymousId: 'root_anonId',
+              context: { device, traits },
+              properties,
+              originalTimestamp: '2022-04-28T00:23:09.544Z',
+              integrations,
+            },
+            metadata: generateMetadata(1),
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                eventsMapping: [
+                  {
+                    rsEventName: 'Purchase',
+                    destEventName: 'first_open',
+                    eventProperties: [],
+                  },
+                  {
+                    rsEventName: 'Purchase',
+                    destEventName: 'app_update',
+                    eventProperties: [],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: '[GA4]:: Reserved event name: first_open are not allowed',
+            statusCode: 400,
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'GA4_V2',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
 ];

@@ -107,7 +107,7 @@ const handleCustomMappings = async (message, Config, workspaceId) => {
     return buildDeliverablePayload(rawPayload, Config);
   }
 
-  const processedPayloads = await Promise.all(
+  const settled = await Promise.allSettled(
     validMappings.map(async (mapping) => {
       const eventName = mapping.destEventName;
       // reserved event names are not allowed
@@ -149,6 +149,22 @@ const handleCustomMappings = async (message, Config, workspaceId) => {
       return ga4MappedPayload;
     }),
   );
+
+  const processedPayloads = [];
+  for (const result of settled) {
+    if (result.status === 'fulfilled') {
+      processedPayloads.push(result.value);
+    } else if (result.reason instanceof PlatformError) {
+      throw result.reason;
+    }
+  }
+
+  if (processedPayloads.length === 0 && settled.length > 0) {
+    const firstRejected = settled.find((r) => r.status === 'rejected');
+    if (firstRejected) {
+      throw firstRejected.reason;
+    }
+  }
 
   return processedPayloads.map((processedPayload) =>
     buildDeliverablePayload(processedPayload, Config),

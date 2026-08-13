@@ -818,6 +818,45 @@ const isWorkspaceOnMauPlan = (workspaceId) => {
   }
 };
 
+// ---------------------------------------------------------------------------
+// Router job accounting invariant
+//
+// rudder-server validates every router-transform response by comparing the set
+// of input jobIds against the jobIds carried by the returned destination jobs
+// (router/transformer/transformer.go). When the counts differ it throws away
+// the whole transformer response, marks EVERY job in the batch 500 and retries,
+// emitting `router_transformer_invalid_response{reason="in out mismatch"}` —
+// with no log line and no payload. So a job that reaches neither a batched
+// request nor a failure/filtered response is not merely "skipped": it poisons
+// the entire batch, invisibly.
+//
+// Therefore any job we cannot turn into a Braze payload must still be emitted,
+// as an explicit aborted response.
+// ---------------------------------------------------------------------------
+const UNPROCESSABLE_JOB_ERROR =
+  '[Braze] Transformed event produced no Braze payload; aborting this event rather than dropping it (dropping desynchronises router job accounting)';
+
+// `reason` is a stats tag, so it must stay a fixed, low-cardinality enum —
+// free-form detail belongs in `detail`, which only reaches the job's error text.
+type UnprocessableReason = 'missing_body_json' | 'unclassifiable_body' | 'no_items_to_send';
+
+const buildUnprocessableResponse = (
+  transformedEvent: BrazeTransformedEvent,
+  reason: UnprocessableReason,
+  detail?: string,
+): BrazeTransformedEvent => {
+  stats.increment('braze_unprocessable_job', {
+    destination_id: transformedEvent.destination?.ID,
+    reason,
+  });
+  return {
+    ...transformedEvent,
+    statusCode: 400,
+    error: `${UNPROCESSABLE_JOB_ERROR} (reason: ${reason}${detail ? `; ${detail}` : ''})`,
+    statTags: { errorType: 'aborted', errorCategory: 'dataValidation' },
+  };
+};
+
 const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
   const { destination, metadata } = transformedEvents[0];
   const workspaceId = metadata?.[0]?.workspaceId || '';
@@ -859,6 +898,12 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
       if (transformedEvent.metadata) {
         successMetadata.push(...transformedEvent.metadata);
       }
+    } else {
+      // Successful status but no Braze payload to batch (e.g. `simpleProcessRouterDest`
+      // short-circuits and passes the raw message straight through when the incoming
+      // message already carries a `statusCode`, so `batchedRequest` is the message
+      // itself and has no `body.JSON`). Emitting it keeps in === out.
+      failureResponses.push(buildUnprocessableResponse(transformedEvent, 'missing_body_json'));
     }
   }
   const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
@@ -1383,16 +1428,44 @@ const processBatchWithDeliveryMapping = (
     { length: transformedEvents.length },
     () => [],
   );
+  // Every job must end up in exactly one emitted output — see the "Router job
+  // accounting invariant" note above `processBatch`. A job is accounted for once
+  // it is a failure, is filtered, or contributes at least one item to a chunk
+  // (a job contributing zero items would never appear in any chunk's metadata).
+  const accountedJobIndexes = new Set<number>();
+
   transformedEvents.forEach((transformedEvent, jobIndex) => {
+    if (transformedEvent.metadata) {
+      jobMetadata[jobIndex] = transformedEvent.metadata;
+    }
     if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
       failureResponses.push(transformedEvent);
+      accountedJobIndexes.add(jobIndex);
       return;
     }
     if (transformedEvent.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
       filteredResponses.push(transformedEvent);
+      accountedJobIndexes.add(jobIndex);
       return;
     }
-    const classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
+
+    // `classifyJobRun` throws when the body matches none of the three Braze
+    // shapes. Letting that escape would fail the whole router-transform request
+    // rather than just this job, so contain it per job.
+    let classification: JobClassification;
+    try {
+      classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
+    } catch (error: any) {
+      failureResponses.push(
+        buildUnprocessableResponse(
+          transformedEvent,
+          'unclassifiable_body',
+          error?.message ?? String(error),
+        ),
+      );
+      accountedJobIndexes.add(jobIndex);
+      return;
+    }
 
     if (classification.type === 'track') {
       const collection = collectTrackItemsForJob(classification.body, jobIndex);
@@ -1403,21 +1476,32 @@ const processBatchWithDeliveryMapping = (
           error: collection.error.message,
           statTags: { errorType: 'aborted', errorCategory: 'dataValidation' },
         });
+        accountedJobIndexes.add(jobIndex);
         return;
       }
       trackItems.push(...collection.items);
+      if (collection.items.length > 0) {
+        accountedJobIndexes.add(jobIndex);
+      }
     } else if (classification.type === 'subscription') {
       for (const sg of classification.body.subscription_groups ?? []) {
         subItems.push({ data: sg, sourceJobIndex: jobIndex });
+        accountedJobIndexes.add(jobIndex);
       }
     } else {
       for (const mu of classification.body.merge_updates ?? []) {
         mergeItems.push({ data: mu, sourceJobIndex: jobIndex });
+        accountedJobIndexes.add(jobIndex);
       }
     }
+  });
 
-    if (transformedEvent.metadata) {
-      jobMetadata[jobIndex] = transformedEvent.metadata;
+  // Jobs whose payload carried no items at all (e.g. `attributes: []`,
+  // `subscription_groups: []`, `merge_updates: []`) contribute to no chunk and
+  // would otherwise vanish from the response.
+  transformedEvents.forEach((transformedEvent, jobIndex) => {
+    if (!accountedJobIndexes.has(jobIndex)) {
+      failureResponses.push(buildUnprocessableResponse(transformedEvent, 'no_items_to_send'));
     }
   });
 

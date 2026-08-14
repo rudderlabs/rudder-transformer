@@ -3,13 +3,21 @@ const sha256 = require('sha256');
 const AmazonAdsFormatter = require('amazon-dsp-formatter');
 const lodash = require('lodash');
 const { ConfigurationError, OAuthSecretError } = require('@rudderstack/integrations-lib');
+const stats = require('../../../util/stats');
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getSuccessRespEvents,
+  getErrorRespEvents,
   removeUndefinedAndNullAndEmptyValues,
   getAccessToken,
 } = require('../../util');
+const {
+  UNBATCHABLE_EVENT_ERROR,
+  UNBATCHABLE_EVENT_REASON,
+  UNBATCHABLE_EVENT_STAT,
+  VALID_OPERATIONS,
+} = require('./config');
 
 const buildResponseWithUsers = (users, action, config, jobIdList, secret) => {
   const { audienceId } = config;
@@ -60,8 +68,27 @@ const buildResponseWithUsers = (users, action, config, jobIdList, secret) => {
  * @returns object
  */
 const groupResponsesUsingOperation = (respList) => {
-  const eventGroups = lodash.groupBy(respList, (item) => item.message.action);
+  const eventGroups = lodash.groupBy(respList, (item) => item.message?.action);
   return eventGroups;
+};
+
+const isBatchableEvent = (event) =>
+  VALID_OPERATIONS.includes(event.message?.action) &&
+  Object.prototype.hasOwnProperty.call(event.message, 'user') &&
+  !Object.prototype.hasOwnProperty.call(event.message, 'statusCode');
+
+const buildUnbatchableEventResponse = (event, destination) => {
+  stats.increment(UNBATCHABLE_EVENT_STAT, { reason: UNBATCHABLE_EVENT_REASON });
+  return {
+    ...getErrorRespEvents(
+      [event.metadata],
+      400,
+      UNBATCHABLE_EVENT_ERROR,
+      { errorType: 'aborted', errorCategory: 'dataValidation' },
+      false,
+    ),
+    destination,
+  };
 };
 
 /**
@@ -74,39 +101,54 @@ const groupResponsesUsingOperation = (respList) => {
   metadata,
   destination,
 }]
- * @param {*} responseList 
+ * @param {*} responseList
  */
 const batchEvents = (responseList, destination) => {
-  const { secret } = responseList[0].metadata;
   const eventGroups = groupResponsesUsingOperation(responseList);
   const respList = [];
-  const opList = ['remove', 'add'];
-  opList.forEach((op) => {
+  VALID_OPERATIONS.forEach((op) => {
     if (eventGroups?.[op]) {
-      const { userList, jobIdList, metadataList } = eventGroups[op].reduce(
-        (acc, event) => ({
-          userList: acc.userList.concat(event.message.user),
-          jobIdList: acc.jobIdList.concat(event.metadata.jobId),
-          metadataList: acc.metadataList.concat(event.metadata),
-        }),
-        { userList: [], metadataList: [], jobIdList: [] },
-      );
-      respList.push(
-        getSuccessRespEvents(
-          buildResponseWithUsers(
-            userList,
-            op,
-            destination.config || destination.Config,
-            jobIdList,
-            secret,
+      const batchableEvents = eventGroups[op].filter(isBatchableEvent);
+      const unbatchableEvents = eventGroups[op].filter((event) => !isBatchableEvent(event));
+      if (batchableEvents.length > 0) {
+        const { userList, jobIdList, metadataList, secret } = batchableEvents.reduce(
+          (acc, event) => ({
+            userList: acc.userList.concat(event.message.user),
+            jobIdList: acc.jobIdList.concat(event.metadata.jobId),
+            metadataList: acc.metadataList.concat(event.metadata),
+            secret: acc.secret || event.metadata.secret,
+          }),
+          { userList: [], metadataList: [], jobIdList: [], secret: undefined },
+        );
+        respList.push(
+          getSuccessRespEvents(
+            buildResponseWithUsers(
+              userList,
+              op,
+              destination.config || destination.Config,
+              jobIdList,
+              secret,
+            ),
+            metadataList,
+            destination,
+            true,
           ),
-          metadataList,
-          destination,
-          true,
-        ),
-      );
+        );
+      }
+      unbatchableEvents.forEach((event) => {
+        respList.push(buildUnbatchableEventResponse(event, destination));
+      });
     }
   });
+
+  Object.keys(eventGroups).forEach((op) => {
+    if (!VALID_OPERATIONS.includes(op)) {
+      eventGroups[op].forEach((event) => {
+        respList.push(buildUnbatchableEventResponse(event, destination));
+      });
+    }
+  });
+
   return respList;
 };
 

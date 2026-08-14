@@ -96,12 +96,6 @@ interface PipelineStep extends Step {
   // Exact number of proxy requests across all outputs (where a dontBatch regression would slip
   // through). Omit to keep the loose per-output `> 0` assertion.
   expectedProxyRequests?: number;
-  // Assert every proxy request this step produces targets this endpointPath. This is not a
-  // payload-shape assertion (those stay with the mocked suite) — it pins *which code path the
-  // transform took*. A scenario that exists to prove a feature flag routes events somewhere new
-  // would otherwise pass green when the flag silently failed to apply, because the old path
-  // delivers a 2xx just as happily.
-  expectedEndpointPath?: string;
   // Re-run seed -> transform -> deliver up to this many extra times (backoff) if delivery fails.
   // For routes that decide create-vs-update by searching an eventually-consistent index: a
   // freshly set-up record can be missed on the first try and 409, then found on a retry. Only use

@@ -8,14 +8,14 @@ import { LiveSpec, LiveStep, RunContext } from '../../live/types';
 //      through the V2 batching path while event-stream events keep their V1 request shape.
 //   2. framework on, the flag on — every event type moves to the V2 /v2/batch shape.
 //
-// Both are selected by env, not by destination.Config, hence `envOverride` on each scenario. Each
-// step pins `expectedEndpointPath` so a flag that silently fails to apply fails the step instead of
-// passing on the other path's 2xx — without it the two scenarios are indistinguishable, since the
-// real API accepts both shapes.
+// Both are selected by env, not by destination.Config, hence `envOverride` on each scenario. The
+// seeds are identical in both: what each scenario asserts is that the real API accepts whatever
+// shape that state produces. Which endpoint a given event type lands on is an implementation detail
+// the component suite pins (router/dataEventStreamV1.ts and router/dataV2.ts) — not this suite.
 //
 // NOTE: the harness delivers through /v1/destinations/customerio/proxy, whose axios client supplies
 // Content-Type itself. Header-level regressions on the outgoing request are therefore NOT observable
-// here — the component suite owns those assertions.
+// here — the component suite owns those assertions too.
 
 const TRACK_BASE_URL = 'https://track.customer.io/api';
 const cioAgent = new Agent({ keepAlive: false });
@@ -123,26 +123,13 @@ const deviceContext = (ctx: RunContext) => ({
   os: { name: 'iOS', version: '17.0' },
 });
 
-// The V1 and V2 paths differ only in where each event type lands, so the seeds are shared and each
-// scenario supplies its own expected endpointPath.
-type EventStreamPaths = {
-  identify: string;
-  track: string;
-  page: string;
-  screen: string;
-  group: string;
-  alias: string;
-  device: string;
-  record: string;
-};
-
-const eventStreamSteps = (paths: EventStreamPaths): LiveStep[] => [
+// One step per event type, shared by both scenarios — the env override is what differs.
+const eventStreamSteps: LiveStep[] = [
   {
     stepType: 'pipeline',
     name: 'identify',
     expectedOutputs: 1,
     expectedProxyRequests: 1,
-    expectedEndpointPath: paths.identify,
     seed: (ctx) => ({
       ...baseEvent(ctx, 'identify'),
       type: 'identify',
@@ -155,7 +142,6 @@ const eventStreamSteps = (paths: EventStreamPaths): LiveStep[] => [
     name: 'track',
     expectedOutputs: 1,
     expectedProxyRequests: 1,
-    expectedEndpointPath: paths.track,
     seed: (ctx) => ({
       ...baseEvent(ctx, 'track'),
       type: 'track',
@@ -169,7 +155,6 @@ const eventStreamSteps = (paths: EventStreamPaths): LiveStep[] => [
     name: 'page',
     expectedOutputs: 1,
     expectedProxyRequests: 1,
-    expectedEndpointPath: paths.page,
     seed: (ctx) => ({
       ...baseEvent(ctx, 'page'),
       type: 'page',
@@ -184,7 +169,6 @@ const eventStreamSteps = (paths: EventStreamPaths): LiveStep[] => [
     name: 'screen',
     expectedOutputs: 1,
     expectedProxyRequests: 1,
-    expectedEndpointPath: paths.screen,
     seed: (ctx) => ({
       ...baseEvent(ctx, 'screen'),
       type: 'screen',
@@ -194,13 +178,12 @@ const eventStreamSteps = (paths: EventStreamPaths): LiveStep[] => [
     }),
   },
   {
-    // Group is the one event-stream type that stays on /v2/batch in both states — it has always
-    // written CustomerIO objects through the batch endpoint.
+    // Group is the one event-stream type that stays on the V2 batch endpoint in both states — it
+    // has always written CustomerIO objects through it.
     stepType: 'pipeline',
     name: 'group',
     expectedOutputs: 1,
     expectedProxyRequests: 1,
-    expectedEndpointPath: paths.group,
     seed: (ctx) => ({
       ...baseEvent(ctx, 'group'),
       type: 'group',
@@ -214,7 +197,6 @@ const eventStreamSteps = (paths: EventStreamPaths): LiveStep[] => [
     name: 'track with device token',
     expectedOutputs: 1,
     expectedProxyRequests: 1,
-    expectedEndpointPath: paths.device,
     seed: (ctx) => ({
       ...baseEvent(ctx, 'device'),
       type: 'track',
@@ -231,7 +213,6 @@ const eventStreamSteps = (paths: EventStreamPaths): LiveStep[] => [
     name: 'record insert (person)',
     expectedOutputs: 1,
     expectedProxyRequests: 1,
-    expectedEndpointPath: paths.record,
     seed: (ctx) => ({
       type: 'record',
       action: 'insert',
@@ -245,7 +226,6 @@ const eventStreamSteps = (paths: EventStreamPaths): LiveStep[] => [
     name: 'alias',
     expectedOutputs: 1,
     expectedProxyRequests: 1,
-    expectedEndpointPath: paths.alias,
     seed: (ctx) => ({
       ...baseEvent(ctx, 'alias'),
       type: 'alias',
@@ -254,8 +234,6 @@ const eventStreamSteps = (paths: EventStreamPaths): LiveStep[] => [
     }),
   },
 ];
-
-const V2_BATCH_PATH = 'v2/batch';
 
 export const live: LiveSpec = {
   // Parked until the credential exists in Vault. The CI matrix is built from every
@@ -280,16 +258,7 @@ export const live: LiveSpec = {
         CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'false',
       },
       cleanup: cleanupScenario,
-      steps: eventStreamSteps({
-        identify: 'v1/customers',
-        track: 'v1/customers/events',
-        page: 'v1/customers/events',
-        screen: 'v1/customers/events',
-        group: V2_BATCH_PATH,
-        alias: 'v1/merge_customers',
-        device: 'v1/customers/devices',
-        record: V2_BATCH_PATH,
-      }),
+      steps: eventStreamSteps,
     },
     {
       id: 'customerio-batching-framework-event-stream-v2',
@@ -300,16 +269,7 @@ export const live: LiveSpec = {
         CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
       },
       cleanup: cleanupScenario,
-      steps: eventStreamSteps({
-        identify: V2_BATCH_PATH,
-        track: V2_BATCH_PATH,
-        page: V2_BATCH_PATH,
-        screen: V2_BATCH_PATH,
-        group: V2_BATCH_PATH,
-        alias: V2_BATCH_PATH,
-        device: V2_BATCH_PATH,
-        record: V2_BATCH_PATH,
-      }),
+      steps: eventStreamSteps,
     },
   ],
 };

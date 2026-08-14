@@ -66,6 +66,33 @@ interface ExecutionGate {
 /** Slot release for the ungated path — nothing was reserved, so nothing to hand back. */
 const NOOP_RELEASE = () => {};
 
+// isolated-vm timeout errors include this message when evalClosure exceeds its timeout option.
+// Used only to label `ivm_platform_error` for observability — the cache-eviction decision is
+// driven by `isolate.isDisposed`, not by this message.
+const SCRIPT_EXECUTION_TIMEOUT_MESSAGE = 'script execution timed out';
+
+/** `ivm_platform_error` breakdown: timeout storms and disposed-isolate/OOM should be distinguishable. */
+type IvmPlatformErrorType = 'timeout' | 'disposed' | 'other';
+const IVM_PLATFORM_ERROR_TYPES: IvmPlatformErrorType[] = ['timeout', 'disposed', 'other'];
+
+/**
+ * Classify a platform error for the `ivm_platform_error` errorType tag. Disposal is the
+ * authoritative signal (see the eviction check in `execute()`); the timeout message only
+ * breaks the non-disposed remainder into "timeout" vs "other".
+ */
+function classifyPlatformError(err: unknown, isDisposed: boolean): IvmPlatformErrorType {
+  if (isDisposed) {
+    return 'disposed';
+  }
+  if (
+    err instanceof Error &&
+    err.message.toLowerCase().includes(SCRIPT_EXECUTION_TIMEOUT_MESSAGE)
+  ) {
+    return 'timeout';
+  }
+  return 'other';
+}
+
 function releaseIvmResources(context?: ivm.Context, isolate?: ivm.Isolate) {
   try {
     context?.release();
@@ -155,17 +182,20 @@ export class IvmScriptRunner {
     // and double-count a cache hit for every erroring call.
     let entry: CacheEntry | undefined;
     try {
-      // Seed the platform-error counter at 0 when a fresh isolate is built for this label set
-      // (once per isolate, not per call — warm-isolate calls never touch the registry).
-      // Prometheus only exports a counter after its first increment, and rate()/increase()
-      // anchor on the first sample within their window — so without a 0 baseline, an error
-      // burst that lands on a freshly-seen (workspaceId, functionName, cache) series is
-      // invisible to the ivm-platform-errors alert: increase() can only catch the *second*
-      // increment of an already-established series, missing the first burst entirely. A
-      // workspace's first call is always a cache miss, so the 0 is materialised before any
-      // error can occur, giving increase() the 0 -> N edge it needs to detect the first burst.
+      // Seed the platform-error counter at 0, per errorType, when a fresh isolate is built for
+      // this label set (once per isolate, not per call — warm-isolate calls never touch the
+      // registry). Prometheus only exports a counter after its first increment, and
+      // rate()/increase() anchor on the first sample within their window — so without a 0
+      // baseline, an error burst that lands on a freshly-seen (workspaceId, functionName,
+      // cache, errorType) series is invisible to the ivm-platform-errors alert: increase() can
+      // only catch the *second* increment of an already-established series, missing the first
+      // burst entirely. A workspace's first call is always a cache miss, so all three errorType
+      // baselines are materialised before any error can occur, giving increase() the 0 -> N
+      // edge it needs regardless of which errorType the first burst turns out to be.
       entry = (await this.getOrCreate(cacheKey, () =>
-        stats.counter('ivm_platform_error', 0, metricTags),
+        IVM_PLATFORM_ERROR_TYPES.forEach((errorType) =>
+          stats.counter('ivm_platform_error', 0, { ...metricTags, errorType }),
+        ),
       )) as CacheEntry;
       const result = await entry.context.evalClosure(expression, args, {
         arguments: { copy: true },
@@ -174,17 +204,20 @@ export class IvmScriptRunner {
       });
       return result as T;
     } catch (err: unknown) {
-      // Platform failures are still observed and rethrown. Only evict when the isolate is
-      // actually disposed: a timeout interrupts the running script via V8's
-      // TerminateExecution() but never calls dispose(), so the isolate stays usable and is
-      // kept cached. OOM and explicit disposal do call dispose() (synchronously, before the
-      // error is thrown), so isDisposed is already true here and the isolate is evicted so the
-      // next call gets a fresh one. A missing cache entry (e.g. isolate build itself failed)
-      // defaults to evict, which is a harmless no-op delete on an unset key.
-      if (entry?.isolate.isDisposed ?? true) {
+      // Only evict when the isolate is actually disposed: a timeout interrupts the running
+      // script via V8's TerminateExecution() but never calls dispose(), so the isolate stays
+      // usable and is kept cached. OOM and explicit disposal do call dispose() (synchronously,
+      // before the error is thrown), so isDisposed is already true here and the isolate is
+      // evicted so the next call gets a fresh one. A missing cache entry (e.g. isolate build
+      // itself failed) defaults to evict, which is a harmless no-op delete on an unset key.
+      const isDisposed = entry?.isolate.isDisposed ?? true;
+      if (isDisposed) {
         this.cache.delete(cacheKey);
       }
-      stats.increment('ivm_platform_error', metricTags);
+      // Platform failures are still observed and rethrown, tagged with errorType so timeout
+      // storms and disposed-isolate/OOM incidents are distinguishable in the same metric.
+      const errorType = classifyPlatformError(err, isDisposed);
+      stats.increment('ivm_platform_error', { ...metricTags, errorType });
       throw err;
     } finally {
       releaseSlot();

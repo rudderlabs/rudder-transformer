@@ -69,31 +69,52 @@ const EXPECTED_TAGS = {
   workspaceId: WORKSPACE,
   cache: 'custom_mappings_ivm',
 };
+// One 0-seed is materialised per errorType per isolate build, so the alert has a baseline no
+// matter which errorType the first burst turns out to be.
+const ERROR_TYPES = ['timeout', 'disposed', 'other'] as const;
+const tagsFor = (errorType: (typeof ERROR_TYPES)[number]) => ({ ...EXPECTED_TAGS, errorType });
+const expectSeeded = () =>
+  ERROR_TYPES.forEach((errorType) =>
+    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, tagsFor(errorType)),
+  );
 
 describe('IvmScriptRunner.execute platform-error counter', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it('seeds the platform-error counter at 0 on the happy path so increase() has a baseline', async () => {
+  it('seeds the platform-error counter at 0 per errorType on the happy path', async () => {
     evalClosure.mockResolvedValue({ ok: true, value: { id: 'u1' } });
 
     await makeRunner().execute(WORKSPACE, EXPRESSION, [{}, {}]);
 
-    // The 0-seed creates the series before any error can, giving rate()/increase() a 0 -> N edge.
-    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
+    // All three errorType series exist before any error can, giving rate()/increase() a 0 -> N
+    // edge regardless of which errorType the first burst turns out to be.
+    expect(stats.counter).toHaveBeenCalledTimes(ERROR_TYPES.length);
+    expectSeeded();
     // A successful run must not record an error.
     expect(stats.increment).not.toHaveBeenCalledWith('ivm_platform_error', expect.anything());
   });
 
-  it('seeds 0 before running and increments on a platform failure, with matching label sets', async () => {
+  it('seeds 0 before running and increments with errorType "timeout" on a timeout', async () => {
     evalClosure.mockRejectedValue(new Error('Script execution timed out'));
 
     await expect(makeRunner().execute(WORKSPACE, EXPRESSION, [{}, {}])).rejects.toThrow(
       'Script execution timed out',
     );
 
-    // Both the seed and the error increment use the identical label set, so they land on one series.
-    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
-    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', EXPECTED_TAGS);
+    expectSeeded();
+    // The isolate was never disposed, so this is classified as a timeout, not "disposed".
+    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', tagsFor('timeout'));
+  });
+
+  it('increments with errorType "other" for a non-timeout error that leaves the isolate alive', async () => {
+    evalClosure.mockRejectedValue(new Error('some sandboxed script exception'));
+
+    await expect(makeRunner().execute(WORKSPACE, EXPRESSION, [{}, {}])).rejects.toThrow(
+      'some sandboxed script exception',
+    );
+
+    expectSeeded();
+    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', tagsFor('other'));
   });
 
   it('seeds 0 even when isolate creation itself fails (build-time platform error)', async () => {
@@ -111,9 +132,10 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
       'Isolate was disposed during execution',
     );
 
-    // The seed runs before the isolate is built, so build-time failures are covered too.
-    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
-    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', EXPECTED_TAGS);
+    // The seed runs before the isolate is built, so build-time failures are covered too. No
+    // entry was ever created, so the eviction check's default-to-disposed kicks in.
+    expectSeeded();
+    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', tagsFor('disposed'));
   });
 
   it('seeds only once per isolate — warm-isolate calls do not touch the metrics registry', async () => {
@@ -126,11 +148,11 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
     await runner.execute(WORKSPACE, EXPRESSION, [{}, {}]);
     await runner.execute(WORKSPACE, EXPRESSION, [{}, {}]);
 
-    expect(stats.counter).toHaveBeenCalledTimes(1);
-    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
+    expect(stats.counter).toHaveBeenCalledTimes(ERROR_TYPES.length);
+    expectSeeded();
   });
 
-  it('coalesces concurrent first-callers — one 0-seed and one isolate build for the same key', async () => {
+  it('coalesces concurrent first-callers — one set of 0-seeds and one isolate build for the same key', async () => {
     evalClosure.mockResolvedValue({ ok: true, value: { id: 'u1' } });
     const ivm = require('isolated-vm');
     const runner = makeRunner();
@@ -144,8 +166,8 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
     ]);
 
     expect(ivm.Isolate).toHaveBeenCalledTimes(1);
-    expect(stats.counter).toHaveBeenCalledTimes(1);
-    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
+    expect(stats.counter).toHaveBeenCalledTimes(ERROR_TYPES.length);
+    expectSeeded();
   });
 
   it('does not re-seed or rebuild after an error that leaves the isolate undisposed', async () => {
@@ -164,11 +186,11 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
     await runner.execute(WORKSPACE, EXPRESSION, [{}, {}]);
 
     expect(ivm.Isolate).toHaveBeenCalledTimes(1);
-    expect(stats.counter).toHaveBeenCalledTimes(1);
-    expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
-    // The error is still recorded and rethrown with the matching label set.
+    expect(stats.counter).toHaveBeenCalledTimes(ERROR_TYPES.length);
+    expectSeeded();
+    // The error is still recorded and rethrown, tagged as a timeout.
     expect(stats.increment).toHaveBeenCalledTimes(1);
-    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', EXPECTED_TAGS);
+    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', tagsFor('timeout'));
   });
 
   it('re-seeds 0 and rebuilds once the isolate is actually disposed', async () => {
@@ -185,18 +207,18 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
       'Isolate was disposed during execution',
     );
 
-    // Next call is a fresh cache miss: it must build a new isolate AND re-seed the 0 baseline.
+    // Next call is a fresh cache miss: it must build a new isolate AND re-seed all three
+    // errorType baselines.
     evalClosure.mockResolvedValueOnce({ ok: true, value: { id: 'u1' } });
     await runner.execute(WORKSPACE, EXPRESSION, [{}, {}]);
 
-    // Two build cycles → two 0-seeds. The re-seed is inc(0), which is add-only and never resets
-    // the accumulated count (proven against the real registry in prometheus.test.js).
+    // Two build cycles → two sets of 0-seeds. The re-seed is inc(0), which is add-only and
+    // never resets the accumulated count (proven against the real registry in prometheus.test.js).
     expect(ivm.Isolate).toHaveBeenCalledTimes(2);
-    expect(stats.counter).toHaveBeenCalledTimes(2);
-    expect(stats.counter).toHaveBeenNthCalledWith(1, 'ivm_platform_error', 0, EXPECTED_TAGS);
-    expect(stats.counter).toHaveBeenNthCalledWith(2, 'ivm_platform_error', 0, EXPECTED_TAGS);
-    // The single error from the first call was still recorded, with the matching label set.
+    expect(stats.counter).toHaveBeenCalledTimes(2 * ERROR_TYPES.length);
+    expectSeeded();
+    // The single error from the first call was still recorded, tagged as disposed.
     expect(stats.increment).toHaveBeenCalledTimes(1);
-    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', EXPECTED_TAGS);
+    expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', tagsFor('disposed'));
   });
 });

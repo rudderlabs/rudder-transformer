@@ -434,6 +434,7 @@ module.exports = {
   RetryRequestError,
   ConfigBackendAuthError,
   responseStatusHandler,
+  parseEnvInt,
   getIntegrationVersion,
   getDestinationVersion,
   constructValidationErrors,

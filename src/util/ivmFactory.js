@@ -3,7 +3,7 @@ const { validateIp } = require('./utils');
 const fetch = require('node-fetch');
 const { isNil, isObject, camelCase } = require('lodash');
 
-const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransformationsStore-v1');
+const { getLibraryCode, getRudderLibByImportName } = require('./customTransformationsStore');
 const { extractStackTraceUptoLastSubstringMatch } = require('./utils');
 const logger = require('../logger');
 const stats = require('./stats');
@@ -48,7 +48,7 @@ async function createIvm(
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
-    libraryVersionIds.map(async (libraryVersionId) => await getLibraryCodeV1(libraryVersionId)),
+    libraryVersionIds.map(async (libraryVersionId) => await getLibraryCode(libraryVersionId)),
   );
   const librariesMap = {};
   if (code && libraries) {

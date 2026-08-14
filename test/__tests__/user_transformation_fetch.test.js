@@ -14,6 +14,8 @@ jest.mock("dns", () => {
 // Mock the transformation store modules
 jest.mock("../../src/util/customTransformationsStore", () => ({
   getTransformationCode: jest.fn(),
+  getLibraryCode: jest.fn(),
+  getRudderLibByImportName: jest.fn(),
   CONFIG_BACKEND_URL: 'https://api.rudderlabs.com'
 }));
 

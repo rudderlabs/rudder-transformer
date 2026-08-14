@@ -4973,4 +4973,428 @@ export const data = [
       },
     },
   },
+  {
+    name: 'dcm_floodlight',
+    description: 'Per-event activity tag overrides global while group tag falls back to global',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                advertiserId: '12345678',
+                activityTag: 'globalActivity',
+                groupTag: 'globalGroup',
+                conversionEvents: [
+                  {
+                    customVariables: [],
+                    eventName: 'Activity Override Only',
+                    floodlightActivityTag: 'eventActivity',
+                    floodlightGroupTag: '',
+                    salesTag: false,
+                  },
+                ],
+              },
+              DestinationDefinition: {
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
+              },
+            },
+            message: {
+              anonymousId: 'dcm-fallback-anonymous-id',
+              userId: 'dcm-fallback-user-id',
+              type: 'track',
+              channel: 'web',
+              context: {
+                device: {
+                  adTrackingEnabled: 'true',
+                  advertisingId: 'fallback-advertising-id',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              event: 'Activity Override Only',
+              properties: {
+                orderId: 111,
+                quantity: 2,
+                revenue: 800,
+              },
+              integrations: {
+                All: true,
+                'DCM Floodlight': {
+                  COPPA: 'false',
+                  GDPR: '1',
+                  npa: true,
+                },
+              },
+              messageId: 'activity-override-message-id',
+              originalTimestamp: '2020-01-17T04:53:51.185Z',
+              receivedAt: '2020-01-17T10:23:52.688+05:30',
+              sentAt: '2020-01-17T04:53:52.667Z',
+              timestamp: '2020-01-17T10:23:51.206+05:30',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'GET',
+              endpoint:
+                'https://ad.doubleclick.net/ddm/activity/src=12345678;cat=eventActivity;type=globalGroup;dc_rdid=fallback-advertising-id;ord=activity-override-message-id;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1',
+              headers: {
+                'User-Agent':
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'dcm_floodlight',
+    description: 'Per-event group tag overrides global while activity tag falls back to global',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                advertiserId: '12345678',
+                activityTag: 'globalActivity',
+                groupTag: 'globalGroup',
+                conversionEvents: [
+                  {
+                    customVariables: [],
+                    eventName: 'Group Override Only',
+                    floodlightActivityTag: '',
+                    floodlightGroupTag: 'eventGroup',
+                    salesTag: false,
+                  },
+                ],
+              },
+              DestinationDefinition: {
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
+              },
+            },
+            message: {
+              anonymousId: 'dcm-fallback-anonymous-id',
+              userId: 'dcm-fallback-user-id',
+              type: 'track',
+              channel: 'web',
+              context: {
+                device: {
+                  adTrackingEnabled: 'true',
+                  advertisingId: 'fallback-advertising-id',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              event: 'Group Override Only',
+              properties: {
+                orderId: 111,
+                quantity: 2,
+                revenue: 800,
+              },
+              integrations: {
+                All: true,
+                'DCM Floodlight': {
+                  COPPA: 'false',
+                  GDPR: '1',
+                  npa: true,
+                },
+              },
+              messageId: 'group-override-message-id',
+              originalTimestamp: '2020-01-17T04:53:51.185Z',
+              receivedAt: '2020-01-17T10:23:52.688+05:30',
+              sentAt: '2020-01-17T04:53:52.667Z',
+              timestamp: '2020-01-17T10:23:51.206+05:30',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'GET',
+              endpoint:
+                'https://ad.doubleclick.net/ddm/activity/src=12345678;cat=globalActivity;type=eventGroup;dc_rdid=fallback-advertising-id;ord=group-override-message-id;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1',
+              headers: {
+                'User-Agent':
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'dcm_floodlight',
+    description: 'Blank per-event tags fall back to global activity and group tags',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                advertiserId: '12345678',
+                activityTag: 'globalActivity',
+                groupTag: 'globalGroup',
+                conversionEvents: [
+                  {
+                    customVariables: [],
+                    eventName: 'Both Tags Blank',
+                    floodlightActivityTag: '',
+                    floodlightGroupTag: '',
+                    salesTag: false,
+                  },
+                ],
+              },
+              DestinationDefinition: {
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
+              },
+            },
+            message: {
+              anonymousId: 'dcm-fallback-anonymous-id',
+              userId: 'dcm-fallback-user-id',
+              type: 'track',
+              channel: 'web',
+              context: {
+                device: {
+                  adTrackingEnabled: 'true',
+                  advertisingId: 'fallback-advertising-id',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              event: 'Both Tags Blank',
+              properties: {
+                orderId: 111,
+                quantity: 2,
+                revenue: 800,
+              },
+              integrations: {
+                All: true,
+                'DCM Floodlight': {
+                  COPPA: 'false',
+                  GDPR: '1',
+                  npa: true,
+                },
+              },
+              messageId: 'both-blank-message-id',
+              originalTimestamp: '2020-01-17T04:53:51.185Z',
+              receivedAt: '2020-01-17T10:23:52.688+05:30',
+              sentAt: '2020-01-17T04:53:52.667Z',
+              timestamp: '2020-01-17T10:23:51.206+05:30',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'GET',
+              endpoint:
+                'https://ad.doubleclick.net/ddm/activity/src=12345678;cat=globalActivity;type=globalGroup;dc_rdid=fallback-advertising-id;ord=both-blank-message-id;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1',
+              headers: {
+                'User-Agent':
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'dcm_floodlight',
+    description: 'Per-event activity and group tags override their global tags',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                advertiserId: '12345678',
+                activityTag: 'globalActivity',
+                groupTag: 'globalGroup',
+                conversionEvents: [
+                  {
+                    customVariables: [],
+                    eventName: 'Both Tags Override',
+                    floodlightActivityTag: 'eventActivity',
+                    floodlightGroupTag: 'eventGroup',
+                    salesTag: false,
+                  },
+                ],
+              },
+              DestinationDefinition: {
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
+              },
+            },
+            message: {
+              anonymousId: 'dcm-fallback-anonymous-id',
+              userId: 'dcm-fallback-user-id',
+              type: 'track',
+              channel: 'web',
+              context: {
+                device: {
+                  adTrackingEnabled: 'true',
+                  advertisingId: 'fallback-advertising-id',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              event: 'Both Tags Override',
+              properties: {
+                orderId: 111,
+                quantity: 2,
+                revenue: 800,
+              },
+              integrations: {
+                All: true,
+                'DCM Floodlight': {
+                  COPPA: 'false',
+                  GDPR: '1',
+                  npa: true,
+                },
+              },
+              messageId: 'both-override-message-id',
+              originalTimestamp: '2020-01-17T04:53:51.185Z',
+              receivedAt: '2020-01-17T10:23:52.688+05:30',
+              sentAt: '2020-01-17T04:53:52.667Z',
+              timestamp: '2020-01-17T10:23:51.206+05:30',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'GET',
+              endpoint:
+                'https://ad.doubleclick.net/ddm/activity/src=12345678;cat=eventActivity;type=eventGroup;dc_rdid=fallback-advertising-id;ord=both-override-message-id;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1',
+              headers: {
+                'User-Agent':
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

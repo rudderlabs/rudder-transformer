@@ -236,14 +236,12 @@ const eventStreamSteps: LiveStep[] = [
 ];
 
 export const live: LiveSpec = {
-  // Parked until the credential exists in Vault. The CI matrix is built from every
-  // destinations/*/live.ts, and the workflow's vault-action step imports LIVE_SECRET_CUSTOMERIO
-  // from engineering_shared/data/integrations_team/e2e_test/rudder-transformer — with the field
-  // absent that step fails, so flipping this to true before the secret lands reds the
-  // `live (customerio)` job on every PR to develop/main. Add the field (single-line LiveSecret
-  // JSON: {"authType":"basic","config":{"siteID":"<site-id>","apiKey":"<track-api-key>"}}), then
-  // set this to true. Verified green locally against a real account — see the PR description.
-  enabled: false,
+  // Credentials come from the LIVE_SECRET_CUSTOMERIO field on
+  // engineering_shared/data/integrations_team/e2e_test/rudder-transformer (single-line LiveSecret
+  // JSON: {"authType":"basic","config":{"siteID":"<site-id>","apiKey":"<track-api-key>"}}). Every
+  // run writes to that real workspace — each scenario creates a person, a group object and a
+  // record profile, removed best-effort by `cleanup`.
+  enabled: true,
   authType: 'basic',
   resolveConfig: (s) => ({ datacenter: 'US', ...s.config }),
   // Record events dispatch on connection.config.destination.object.

@@ -1014,25 +1014,27 @@ const createTaggedTrackChunk = (): TaggedTrackChunk => ({
   byteSize: 0,
 });
 
-// Contiguous same-sourceJobIndex runs in a sorted item list. Because we
-// stable-sort by (externalId, sourceJobIndex), items from the same source job
-// end up adjacent regardless of type.
-const groupBySourceJob = (sortedItems: TaggedItem[]): TaggedItem[][] => {
-  const groups: TaggedItem[][] = [];
-  if (sortedItems.length === 0) {
-    return groups;
-  }
-  let start = 0;
-  for (let i = 1; i <= sortedItems.length; i += 1) {
-    if (
-      i === sortedItems.length ||
-      sortedItems[i].sourceJobIndex !== sortedItems[start].sourceJobIndex
-    ) {
-      groups.push(sortedItems.slice(start, i));
-      start = i;
+// All items belonging to one source job, as a single group. Keyed on
+// sourceJobIndex rather than derived from contiguous runs of a sorted list: a
+// job's items are NOT guaranteed to share one externalId, so sorting by
+// externalId can scatter them. A message with no userId but an `external_id`
+// trait, for instance, keeps that trait on its attributes item while its
+// events item falls back to `user_alias` and carries no external_id at all
+// (see setExternalIdOrAliasObject). Splitting such a job across two chunks
+// makes its jobId surface in two router outputs, which rudder-server counts
+// as an in/out mismatch and punishes by retrying the whole batch as a 500.
+// Insertion order is preserved so grouping stays deterministic.
+const groupBySourceJob = (items: TaggedItem[]): TaggedItem[][] => {
+  const groups = new Map<number, TaggedItem[]>();
+  for (const item of items) {
+    const group = groups.get(item.sourceJobIndex);
+    if (group) {
+      group.push(item);
+    } else {
+      groups.set(item.sourceJobIndex, [item]);
     }
   }
-  return groups;
+  return [...groups.values()];
 };
 
 const addGroupToChunk = (chunk: TaggedTrackChunk, group: TaggedItem[]): void => {
@@ -1096,8 +1098,15 @@ const groupFitsV2 = (chunk: TaggedTrackChunk, group: TaggedItem[]): boolean => {
 // pre-check; the exported wrappers below use per-item sourceJobIndex so no
 // group ever exceeds a single item.
 const chunkTaggedItems = (items: TaggedItem[], mode: 'v1' | 'v2'): TaggedTrackChunk[] => {
-  const sortedItems = _.orderBy(items, ['externalId', 'sourceJobIndex']);
-  const groups = groupBySourceJob(sortedItems);
+  // Group first, then order whole groups by their leading externalId. Ordering
+  // groups rather than items keeps same-user jobs adjacent (so the V1
+  // per-chunk externalId cap still bites late) while making it impossible for
+  // one job's items to land in two chunks.
+  const groups = _.orderBy(
+    groupBySourceJob(items),
+    [(group) => group[0].externalId ?? '', (group) => group[0].sourceJobIndex],
+    ['asc', 'asc'],
+  );
   const chunks: TaggedTrackChunk[] = [];
   let currentChunk = createTaggedTrackChunk();
   const fits = mode === 'v1' ? groupFitsV1 : groupFitsV2;

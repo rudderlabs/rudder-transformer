@@ -2830,3 +2830,84 @@ describe('isPerJobDeliveryMappingEnabled — per-workspace rollout gate', () => 
     expect(isPerJobDeliveryMappingEnabled('ws2')).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Router in/out job accounting — rudder-server discards the whole transformer
+// response and retries the entire batch as 500 when the number of jobIds it
+// gets back differs from the number it sent (`router_transformer_invalid_response`,
+// reason `in out mismatch`). `in` is a set of input jobIds; `out` is appended
+// once per (output element x distinct jobId in that element), so a jobId that
+// surfaces in two outputs inflates `out` even though nothing was lost.
+// ---------------------------------------------------------------------------
+
+describe('router in/out job accounting (ON path)', () => {
+  const destination = brazeDestFor();
+
+  // Mirrors rudder-server's check in router/transformer/transformer.go: `in` is a
+  // deduped set of input jobIds, `out` appends one entry per (output x distinct
+  // jobId), so cross-output duplicates make len(out) > len(in).
+  const outJobIdCount = (result: any[]): number =>
+    result.reduce((acc, r) => acc + new Set((r.metadata ?? []).map((m: any) => m.jobId)).size, 0);
+
+  const trackJob = (
+    jobId: number,
+    attributesExternalId: string | undefined,
+    eventsExternalId: string | undefined,
+  ): BrazeTransformedEvent => ({
+    destination,
+    statusCode: 200,
+    batchedRequest: {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: '',
+      headers: {},
+      params: {},
+      body: {
+        JSON: {
+          attributes: [
+            attributesExternalId === undefined
+              ? { name: `n${jobId}` }
+              : { external_id: attributesExternalId, name: `n${jobId}` },
+          ],
+          events: [
+            eventsExternalId === undefined
+              ? { name: 'e', time: 't' }
+              : { external_id: eventsExternalId, name: 'e', time: 't' },
+          ],
+        },
+      },
+      files: {},
+    } as any,
+    metadata: [{ jobId, workspaceId: 'workspace-non-mau' }],
+  });
+
+  test('a job whose items carry different external_ids is not emitted in two chunks', () => {
+    // 80 ordinary jobs force more than one chunk (V1 cap is 75 attributes).
+    const jobs: BrazeTransformedEvent[] = Array.from({ length: 80 }, (_, i) =>
+      trackJob(i, `u${String(i).padStart(3, '0')}`, `u${String(i).padStart(3, '0')}`),
+    );
+    // One anonymous job: traits carried an `external_id`, but the message had no
+    // userId, so setExternalIdOrAliasObject took the alias branch and left the
+    // events item without an `external_id`. Its two items therefore sort to
+    // opposite ends of the batch.
+    jobs.push(trackJob(999, 'a-anonymous-user', undefined));
+
+    const result = processBatchWithDeliveryMapping(jobs);
+    const tracks = onTrackOutputs(result, destination);
+    expect(tracks.length).toBeGreaterThanOrEqual(2);
+
+    const occurrences = tracks.filter((t) => t.metadata.some((m: any) => m.jobId === 999)).length;
+    expect(occurrences).toBe(1);
+  });
+
+  test('out jobId count equals in jobId count for a mixed-external_id batch', () => {
+    const jobs: BrazeTransformedEvent[] = Array.from({ length: 80 }, (_, i) =>
+      trackJob(i, `u${String(i).padStart(3, '0')}`, `u${String(i).padStart(3, '0')}`),
+    );
+    jobs.push(trackJob(999, 'a-anonymous-user', undefined));
+
+    const result = processBatchWithDeliveryMapping(jobs);
+    expect(outJobIdCount(result)).toBe(jobs.length);
+  });
+});

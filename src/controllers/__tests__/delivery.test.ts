@@ -109,6 +109,40 @@ describe('Delivery controller tests', () => {
       expect(getNativeDestinationServiceSpy).toHaveBeenCalledTimes(1);
       expect(mockDestinationService.deliver).toHaveBeenCalledTimes(1);
     });
+
+    test('response too large to serialize falls back to a small, bounded error body', async () => {
+      // Simulates a destination response too large for JSON.stringify (RangeError: Invalid
+      // string length), via `toJSON`, without needing to allocate hundreds of MB in the test.
+      const tooLargeOutput = {
+        status: 200,
+        message: 'success',
+        destinationResponse: {
+          toJSON() {
+            throw new RangeError('Invalid string length');
+          },
+        },
+      };
+      const mockDestinationService = new NativeIntegrationDestinationService();
+      mockDestinationService.deliver = jest.fn().mockResolvedValue(tooLargeOutput);
+      jest.spyOn(ServiceSelector, 'getNativeDestinationService').mockImplementation(() => {
+        return mockDestinationService;
+      });
+
+      const response = await request(server)
+        .post('/v0/destinations/rudder_test/proxy')
+        .set('Accept', 'application/json')
+        .send(getData());
+
+      expect(response.status).toEqual(500);
+      expect(response.body).toEqual({
+        output: {
+          status: 500,
+          message: 'Destination response payload was too large to serialize',
+          destinationResponse: 'Destination response payload was too large to serialize',
+          statTags: {},
+        },
+      });
+    });
   });
 
   describe('Delivery V1 tests', () => {
@@ -181,6 +215,51 @@ describe('Delivery controller tests', () => {
 
       expect(getNativeDestinationServiceSpy).toHaveBeenCalledTimes(1);
       expect(mockDestinationService.deliver).toHaveBeenCalledTimes(1);
+    });
+
+    test('response too large to serialize falls back to a small, bounded per-job error body', async () => {
+      // This is the mechanism behind the real INT-6978 incident: a batched v1 response whose
+      // per-job entries duplicate a large destination response can exceed JSON.stringify's
+      // limit. Simulated here via `toJSON` rather than an actual multi-hundred-MB payload.
+      const tooLargeOutput = {
+        status: 200,
+        message: 'success',
+        response: [
+          {
+            error: 'ok',
+            statusCode: 200,
+            metadata: { a1: 'b1' },
+            toJSON() {
+              throw new RangeError('Invalid string length');
+            },
+          },
+        ],
+      };
+      const mockDestinationService = new NativeIntegrationDestinationService();
+      mockDestinationService.deliver = jest.fn().mockResolvedValue(tooLargeOutput);
+      jest.spyOn(ServiceSelector, 'getNativeDestinationService').mockImplementation(() => {
+        return mockDestinationService;
+      });
+
+      const response = await request(server)
+        .post('/v1/destinations/rudder_test/proxy')
+        .set('Accept', 'application/json')
+        .send(getData());
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({
+        output: {
+          status: 500,
+          message: 'Destination response payload was too large to serialize',
+          response: [
+            {
+              error: 'Destination response payload was too large to serialize',
+              statusCode: 500,
+              metadata: { a1: 'b1' },
+            },
+          ],
+        },
+      });
     });
   });
 });

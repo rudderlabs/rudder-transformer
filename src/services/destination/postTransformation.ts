@@ -10,6 +10,7 @@ import {
   ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyMetdata,
   RouterTransformationResponse,
   UserDeletionResponse,
   FixMe,
@@ -20,6 +21,14 @@ import { DeleteUsersError } from '../../v0/util/errorTypes/deleteUsersError';
 import tags from '../../v0/util/tags';
 import { ErrorReportingService } from '../errorReporting';
 import logger from '../../logger';
+
+// Node/V8 cannot JSON.stringify a string longer than roughly 512MB (RangeError: Invalid
+// string length). A proxy delivery response that hits this - typically a large destination
+// response duplicated once per job in a big batch - would otherwise crash mid-serialization
+// and reach rudder-server as a bodyless response it can't parse. This bounded fallback is
+// built purely from the request's own (always-small) metadata, never from the oversized
+// response that triggered it.
+const RESPONSE_TOO_LARGE_MESSAGE = 'Destination response payload was too large to serialize';
 
 const defaultErrorMessages = {
   router: '[Router Transform] Error occurred while processing the payload.',
@@ -229,6 +238,32 @@ export class DestinationPostTransformationService {
     } as DeliveryV1Response;
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
+  }
+
+  public static buildResponseTooLargeFallbackV0(): DeliveryV0Response {
+    stats.increment('proxy_response_too_large_to_serialize', { version: 'v0' });
+    return {
+      status: 500,
+      message: RESPONSE_TOO_LARGE_MESSAGE,
+      destinationResponse: RESPONSE_TOO_LARGE_MESSAGE,
+      statTags: {},
+    };
+  }
+
+  public static buildResponseTooLargeFallbackV1(metadataArray: ProxyMetdata[]): DeliveryV1Response {
+    stats.increment('proxy_response_too_large_to_serialize', { version: 'v1' });
+    return {
+      status: 500,
+      message: RESPONSE_TOO_LARGE_MESSAGE,
+      response: metadataArray.map(
+        (metadata) =>
+          ({
+            error: RESPONSE_TOO_LARGE_MESSAGE,
+            statusCode: 500,
+            metadata,
+          }) as DeliveryJobState,
+      ),
+    };
   }
 
   public static handleUserDeletionFailureEvents(

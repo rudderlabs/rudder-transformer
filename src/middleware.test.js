@@ -4,11 +4,15 @@ const request = require('supertest');
 const { addStatMiddleware, addRequestSizeMiddleware } = require('./middleware');
 
 const stats = require('./util/stats');
+const logger = require('./logger');
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 
 jest.mock('./util/stats', () => ({
   timing: jest.fn(),
   histogram: jest.fn(),
+}));
+jest.mock('./logger', () => ({
+  error: jest.fn(),
 }));
 jest.mock('@rudderstack/integrations-lib', () => ({
   getDestTypeFromContext: jest.fn(),
@@ -132,5 +136,48 @@ describe('requestSizeMiddleware', () => {
       code: 200,
       route: '/test',
     });
+  });
+
+  it('should replace a response body that fails to JSON.stringify with a small error body instead of crashing', async () => {
+    // Simulates the RangeError: Invalid string length that a genuinely oversized (e.g.
+    // ~512MB+) body throws from JSON.stringify - via `toJSON`, so the test stays fast and
+    // doesn't need to allocate hundreds of MB of memory.
+    const tooLarge = {
+      toJSON() {
+        throw new RangeError('Invalid string length');
+      },
+    };
+
+    const app = new Koa();
+    app.use(bodyParser({ jsonLimit: '200mb' }));
+    addRequestSizeMiddleware(app);
+    app.use(async (ctx) => {
+      ctx.status = 200;
+      ctx.body = tooLarge;
+    });
+
+    const res = await request(app.callback()).get('/test');
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({
+      error: 'ResponseTooLarge',
+      message: 'Response payload was too large to serialize',
+    });
+
+    expect(logger.error).toHaveBeenCalledWith(
+      '[Middleware] Response body too large to serialize',
+      expect.objectContaining({ error: 'Invalid string length', route: '/test', method: 'GET' }),
+    );
+
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'http_response_size',
+      Buffer.byteLength(
+        JSON.stringify({
+          error: 'ResponseTooLarge',
+          message: 'Response payload was too large to serialize',
+        }),
+      ),
+      { method: 'GET', code: 500, route: '/test' },
+    );
   });
 });

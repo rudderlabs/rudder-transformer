@@ -15,9 +15,26 @@ import {
   FixMe,
 } from '../types';
 import tags from '../v0/util/tags';
+import logger from '../logger';
 import { ControllerUtility } from './util';
 
 const NON_DETERMINABLE = 'Non-determinable';
+
+// A response too large for JSON.stringify (RangeError: Invalid string length) would otherwise
+// crash later - uncaught - inside Koa's own response-sending code, with no chance for any
+// middleware to recover it into a well-formed body. Catch it here instead, where we still have
+// the request's own (always-small) metadata to build a proper, retryable per-job fallback from.
+function ensureSerializable<T>(deliveryResponse: T, buildFallback: () => T): T {
+  try {
+    JSON.stringify(deliveryResponse);
+    return deliveryResponse;
+  } catch (error: unknown) {
+    logger.error('[DeliveryController] Response body too large to serialize', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return buildFallback();
+  }
+}
 
 export class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
@@ -47,6 +64,9 @@ export class DeliveryController {
         metaTO,
       );
     }
+    deliveryResponse = ensureSerializable(deliveryResponse, () =>
+      DestinationPostTransformationService.buildResponseTooLargeFallbackV0(),
+    );
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
@@ -80,6 +100,11 @@ export class DeliveryController {
         metaTO,
       );
     }
+    deliveryResponse = ensureSerializable(deliveryResponse, () =>
+      DestinationPostTransformationService.buildResponseTooLargeFallbackV1(
+        deliveryRequest.metadata,
+      ),
+    );
     ctx.body = { output: deliveryResponse };
     if (isDefinedAndNotNullAndNotEmpty(deliveryResponse.authErrorCategory)) {
       ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);

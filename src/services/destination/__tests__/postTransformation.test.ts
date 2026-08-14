@@ -19,4 +19,31 @@ describe('PostTransformation Service', () => {
 
     expect(resp).toEqual(expected);
   });
+
+  test('buildResponseTooLargeFallbackV0 returns a small, bounded v0 error response', () => {
+    const resp = DestinationPostTransformationService.buildResponseTooLargeFallbackV0();
+
+    expect(resp).toEqual({
+      status: 500,
+      message: 'Destination response payload was too large to serialize',
+      destinationResponse: 'Destination response payload was too large to serialize',
+      statTags: {},
+    });
+  });
+
+  test('buildResponseTooLargeFallbackV1 maps every job to its own bounded error entry', () => {
+    const metadata = [{ jobId: 1 } as any, { jobId: 2 } as any, { jobId: 3 } as any];
+
+    const resp = DestinationPostTransformationService.buildResponseTooLargeFallbackV1(metadata);
+
+    expect(resp).toEqual({
+      status: 500,
+      message: 'Destination response payload was too large to serialize',
+      response: metadata.map((m) => ({
+        error: 'Destination response payload was too large to serialize',
+        statusCode: 500,
+        metadata: m,
+      })),
+    });
+  });
 });

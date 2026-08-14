@@ -2,6 +2,7 @@ const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { wrapWithLabels } = require('@pyroscope/nodejs');
 const stats = require('./util/stats');
+const logger = require('./logger');
 
 function durationMiddleware() {
   return async (ctx, next) => {
@@ -44,7 +45,29 @@ function addRequestSizeMiddleware(app) {
 
     const inputLength = ctx.request?.rawBody ? Buffer.byteLength(ctx.request.rawBody) : 0;
     stats.histogram('http_request_size', inputLength, labels);
-    const outputLength = ctx.response?.length || 0;
+
+    let outputLength = 0;
+    try {
+      // For an object body, Koa's `length` getter JSON.stringifies it to compute this. A body
+      // over ~512MB throws RangeError: Invalid string length here - and Koa's own respond()
+      // would hit the identical error immediately after this middleware returns, with no
+      // middleware left to catch it, sending back a bare non-JSON 500. Replace the body now so
+      // respond() serializes something small and valid instead.
+      outputLength = ctx.response?.length || 0;
+    } catch (err) {
+      logger.error('[Middleware] Response body too large to serialize', {
+        error: err.message,
+        route: ctx.request.url,
+        method: ctx.method,
+      });
+      ctx.status = 500;
+      ctx.body = {
+        error: 'ResponseTooLarge',
+        message: 'Response payload was too large to serialize',
+      };
+      labels.code = ctx.status;
+      outputLength = Buffer.byteLength(JSON.stringify(ctx.body));
+    }
     stats.histogram('http_response_size', outputLength, labels);
   });
 }

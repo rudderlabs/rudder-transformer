@@ -128,6 +128,22 @@ const collectMatchingErrorTypes = (
 // Separator for concatenating multiple warned error.type strings on a single
 // 296 job — chosen for readability when the field is logged verbatim.
 const ERROR_TYPE_JOIN = '; ';
+const APPLICATION_ERROR_STATUS_CODE = HTTP_STATUS_CODES.BAD_REQUEST;
+
+type BrazeResponseBody = {
+  message?: unknown;
+  errors?: unknown;
+};
+
+const isBrazeResponseBody = (response: unknown): response is BrazeResponseBody =>
+  typeof response === 'object' && response !== null;
+
+const isBrazeError = (error: unknown): error is BrazeError =>
+  typeof error === 'object' &&
+  error !== null &&
+  typeof (error as BrazeError).type === 'string' &&
+  typeof (error as BrazeError).input_array === 'string' &&
+  typeof (error as BrazeError).index === 'number';
 
 // Map every metadata to its DeliveryJobState. Jobs that intersect at least
 // one warned index get 296 with all matching Braze error.type strings
@@ -169,23 +185,27 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
     );
   }
 
-  const errors = response?.errors;
-  const hasErrors = Array.isArray(errors) && errors.length > 0;
-  const brazeMessage = response?.message;
+  const responseBody = isBrazeResponseBody(response) ? response : {};
+  const rawErrors = Array.isArray(responseBody.errors) ? responseBody.errors : [];
+  const errors = rawErrors.filter(isBrazeError);
+  const hasErrors = rawErrors.length > 0;
+  const brazeMessage = responseBody.message;
 
   // Guard 2: application-level error — destination returned 2xx but the
   // Braze body did not carry `message: "success"`, meaning the entire
   // request was rejected at the application layer despite the transport
-  // succeeding. This covers both `message: "failure"` responses (with or
-  // without an `errors[]` array) and responses missing the field entirely.
+  // succeeding. Rudder-server classifies per-job states, so surface this as a
+  // per-job 400 even though Braze transported it as 2xx. This avoids 2xx
+  // TransformerProxyError normalization turning true application failures into
+  // unexpected abort-style outcomes with statusCode 200.
   if (brazeMessage !== 'success') {
     throw new TransformerProxyError(
-      failureMessage(status),
-      status,
-      { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status) },
+      failureMessage(APPLICATION_ERROR_STATUS_CODE),
+      APPLICATION_ERROR_STATUS_CODE,
+      { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(APPLICATION_ERROR_STATUS_CODE) },
       destinationResponse,
       '',
-      buildJobStates(response, status, rudderJobMetadata),
+      buildJobStates(response, APPLICATION_ERROR_STATUS_CODE, rudderJobMetadata),
     );
   }
 

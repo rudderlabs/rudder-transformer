@@ -450,7 +450,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       );
     });
 
-    it('throws TransformerProxyError with per-job entries at the 2xx HTTP status', () => {
+    it('throws TransformerProxyError with per-job 400 entries for 2xx application failures', () => {
       const response = {
         message: "Valid data must be provided in the 'attributes' field.",
         errors: [{ type: "'external_id' is required", input_array: 'events', index: 0 }],
@@ -467,10 +467,10 @@ describe('Braze v1 networkHandler responseHandler', () => {
       } catch (thrown: unknown) {
         expect(thrown).toBeInstanceOf(TransformerProxyError);
         if (thrown instanceof TransformerProxyError) {
-          expect(thrown.message).toContain('Request failed for braze with status: 200');
-          expect(thrown.status).toBe(200);
+          expect(thrown.message).toContain('Request failed for braze with status: 400');
+          expect(thrown.status).toBe(400);
           expect(thrown.response).toEqual([
-            { statusCode: 200, metadata: createMetadata(10), error: JSON.stringify(response) },
+            { statusCode: 400, metadata: createMetadata(10), error: JSON.stringify(response) },
           ]);
         }
       }

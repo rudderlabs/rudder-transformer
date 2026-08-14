@@ -178,10 +178,7 @@ export interface BrazeDestInfo {
 
 export interface BrazeResponseHandlerParams {
   destinationResponse: {
-    response?: {
-      message?: string;
-      errors?: BrazeError[];
-    };
+    response?: any;
     status: number;
   };
   rudderJobMetadata: ProxyMetdata[];

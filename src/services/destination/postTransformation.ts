@@ -206,17 +206,19 @@ export class DestinationPostTransformationService {
       // Panic
       throw new PlatformError('Proxy v1 endpoint error : metadataArray is not an array');
     }
-    const responses = metadataArray.map((metadata) => {
-      const resp = {
-        error:
-          JSON.stringify(error.destinationResponse?.response) ||
-          errObj.message ||
-          defaultErrorMessages.delivery,
-        statusCode: errObj.status,
-        metadata,
-      } as DeliveryJobState;
-      return resp;
-    });
+    const responses = Array.isArray(error.response)
+      ? (error.response as DeliveryJobState[])
+      : metadataArray.map((metadata) => {
+          const resp = {
+            error:
+              JSON.stringify(error.destinationResponse?.response) ||
+              errObj.message ||
+              defaultErrorMessages.delivery,
+            statusCode: errObj.status,
+            metadata,
+          } as DeliveryJobState;
+          return resp;
+        });
 
     const resp = {
       response: responses,

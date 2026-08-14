@@ -127,6 +127,11 @@ const BrazePurchaseEvent = {
 };
 
 const metadataArray = [generateMetadata(1), generateMetadata(2), generateMetadata(3)];
+const metadataArrayWithDestInfo = [
+  { ...generateMetadata(1), destInfo: { eventsIndices: [0] } },
+  { ...generateMetadata(2), destInfo: { eventsIndices: [1] } },
+  { ...generateMetadata(3), destInfo: { purchasesIndices: [0] } },
+];
 
 const errorMessages = {
   message_1: JSON.stringify({ events_processed: 2, purchases_processed: 1, message: 'success' }),
@@ -225,8 +230,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             },
             headers,
             endpoint: `${BRAZE_USERS_TRACK_ENDPOINT}/invalid_scenario1`,
+            endpointPath: 'users/track',
           },
-          metadataArray,
+          metadataArrayWithDestInfo,
         ),
         method: 'POST',
       },
@@ -240,17 +246,17 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 error: errorMessages.message_2,
                 statusCode: 200,
-                metadata: generateMetadata(1),
+                metadata: metadataArrayWithDestInfo[0],
               },
               {
-                error: errorMessages.message_2,
-                statusCode: 200,
-                metadata: generateMetadata(2),
+                error: "'external_id', 'braze_id', 'user_alias', 'email' or 'phone' is required",
+                statusCode: 296,
+                metadata: metadataArrayWithDestInfo[1],
               },
               {
-                error: errorMessages.message_2,
-                statusCode: 200,
-                metadata: generateMetadata(3),
+                error: "'quantity' is not valid",
+                statusCode: 296,
+                metadata: metadataArrayWithDestInfo[2],
               },
             ],
             status: 200,

@@ -46,8 +46,8 @@ const RUDDER_LIBRARY_URL = `${CONFIG_BACKEND_URL}/rudderstackTransformationLibra
 // Returns the cached entry, or fetches and caches it. Failures are never cached, so a transient
 // config backend outage does not poison the entry for the rest of the TTL.
 async function fetchAndCache(store, { key, url, entity, logContext }) {
-  // `has` rather than a truthiness check, so a legitimately falsy cached body is still a hit.
-  if (store.cache.has(key)) return store.cache.get(key);
+  const cached = store.cache.get(key);
+  if (cached !== undefined) return cached;
 
   const pending = store.inFlight.get(key);
   if (pending) return pending;

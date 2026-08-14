@@ -66,9 +66,6 @@ interface ExecutionGate {
 /** Slot release for the ungated path — nothing was reserved, so nothing to hand back. */
 const NOOP_RELEASE = () => {};
 
-// isolated-vm timeout errors include this message when evalClosure exceeds its timeout option.
-const SCRIPT_EXECUTION_TIMEOUT_MESSAGE = 'script execution timed out';
-
 function releaseIvmResources(context?: ivm.Context, isolate?: ivm.Isolate) {
   try {
     context?.release();
@@ -152,6 +149,11 @@ export class IvmScriptRunner {
     // Outside the try so `releaseSlot` is in scope for the finally. Waiting for a slot is
     // not a failure mode — acquireSlot never rejects, it only ever admits or queues.
     const releaseSlot = await this.acquireSlot(cacheKey, metricTags);
+    // Hoisted so the catch block can inspect the isolate that actually failed, without a
+    // second `this.cache.get()` — DisposableCache's underlying LRU has `updateAgeOnGet: true`
+    // and emits its own hit/miss metrics, so re-querying it here would refresh the entry's TTL
+    // and double-count a cache hit for every erroring call.
+    let entry: CacheEntry | undefined;
     try {
       // Seed the platform-error counter at 0 when a fresh isolate is built for this label set
       // (once per isolate, not per call — warm-isolate calls never touch the registry).
@@ -162,9 +164,9 @@ export class IvmScriptRunner {
       // increment of an already-established series, missing the first burst entirely. A
       // workspace's first call is always a cache miss, so the 0 is materialised before any
       // error can occur, giving increase() the 0 -> N edge it needs to detect the first burst.
-      const entry = await this.getOrCreate(cacheKey, () =>
+      entry = (await this.getOrCreate(cacheKey, () =>
         stats.counter('ivm_platform_error', 0, metricTags),
-      );
+      )) as CacheEntry;
       const result = await entry.context.evalClosure(expression, args, {
         arguments: { copy: true },
         result: { copy: true, promise: true },
@@ -172,13 +174,14 @@ export class IvmScriptRunner {
       });
       return result as T;
     } catch (err: unknown) {
-      // Platform failures are still observed and rethrown. Execution timeouts do not
-      // corrupt the isolate, so keep it cached; OOM, disposed-isolate, and build
-      // failures still evict so the next call gets a fresh isolate.
-      const isTimeout =
-        err instanceof Error &&
-        err.message.toLowerCase().includes(SCRIPT_EXECUTION_TIMEOUT_MESSAGE);
-      if (!isTimeout) {
+      // Platform failures are still observed and rethrown. Only evict when the isolate is
+      // actually disposed: a timeout interrupts the running script via V8's
+      // TerminateExecution() but never calls dispose(), so the isolate stays usable and is
+      // kept cached. OOM and explicit disposal do call dispose() (synchronously, before the
+      // error is thrown), so isDisposed is already true here and the isolate is evicted so the
+      // next call gets a fresh one. A missing cache entry (e.g. isolate build itself failed)
+      // defaults to evict, which is a harmless no-op delete on an unset key.
+      if (entry?.isolate.isDisposed ?? true) {
         this.cache.delete(cacheKey);
       }
       stats.increment('ivm_platform_error', metricTags);

@@ -23,7 +23,12 @@ jest.mock('fs', () => ({
 
 // Replace isolated-vm with a lightweight fake: no real isolate is built, and evalClosure is our hook.
 jest.mock('isolated-vm', () => ({
+  // isDisposed starts false, like a real isolate — it only flips to true when the real
+  // isolated-vm terminates the isolate (explicit dispose(), or a memory-limit breach), never
+  // on a plain execution timeout. Tests that simulate a real disposal flip it explicitly via
+  // `ivm.Isolate.mock.results[0].value.isDisposed = true` before rejecting.
   Isolate: jest.fn().mockImplementation(() => ({
+    isDisposed: false,
     createContext: jest.fn().mockResolvedValue({
       evalClosure: (...callArgs: unknown[]) => evalClosure(...callArgs),
       release: jest.fn(),
@@ -143,14 +148,15 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
     expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
   });
 
-  it('does not re-seed or rebuild after a timeout error keeps the isolate cached', async () => {
+  it('does not re-seed or rebuild after an error that leaves the isolate undisposed', async () => {
     const ivm = require('isolated-vm');
     const runner = makeRunner();
 
-    // Timeout matching is case-insensitive; a timeout does not corrupt the isolate.
-    evalClosure.mockRejectedValueOnce(new Error('SCRIPT EXECUTION TIMED OUT'));
+    // A timeout only interrupts the running script — isolated-vm never calls dispose() for it,
+    // so isDisposed (mocked default: false) stays false and the isolate is kept cached.
+    evalClosure.mockRejectedValueOnce(new Error('Script execution timed out.'));
     await expect(runner.execute(WORKSPACE, EXPRESSION, [{}, {}])).rejects.toThrow(
-      'SCRIPT EXECUTION TIMED OUT',
+      'Script execution timed out.',
     );
 
     // Next call should reuse the warm isolate and avoid re-seeding the 0 baseline.
@@ -160,17 +166,21 @@ describe('IvmScriptRunner.execute platform-error counter', () => {
     expect(ivm.Isolate).toHaveBeenCalledTimes(1);
     expect(stats.counter).toHaveBeenCalledTimes(1);
     expect(stats.counter).toHaveBeenCalledWith('ivm_platform_error', 0, EXPECTED_TAGS);
-    // The timeout is still recorded and rethrown with the matching label set.
+    // The error is still recorded and rethrown with the matching label set.
     expect(stats.increment).toHaveBeenCalledTimes(1);
     expect(stats.increment).toHaveBeenCalledWith('ivm_platform_error', EXPECTED_TAGS);
   });
 
-  it('re-seeds 0 and rebuilds after a non-timeout error evicts the isolate', async () => {
+  it('re-seeds 0 and rebuilds once the isolate is actually disposed', async () => {
     const ivm = require('isolated-vm');
     const runner = makeRunner();
 
-    // A disposed-isolate platform error indicates the cached isolate is no longer usable.
-    evalClosure.mockRejectedValueOnce(new Error('Isolate was disposed during execution'));
+    // Real isolated-vm calls Terminate() — which flips isDisposed — synchronously before this
+    // error is thrown (e.g. on a memory-limit breach), so the mock mirrors that ordering.
+    evalClosure.mockImplementationOnce(() => {
+      ivm.Isolate.mock.results[0].value.isDisposed = true;
+      return Promise.reject(new Error('Isolate was disposed during execution'));
+    });
     await expect(runner.execute(WORKSPACE, EXPRESSION, [{}, {}])).rejects.toThrow(
       'Isolate was disposed during execution',
     );

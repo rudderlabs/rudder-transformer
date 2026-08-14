@@ -61,6 +61,15 @@ const attemptDelivery = async ({
     const total = proxyRequestsPerOutput.reduce((n, proxyRequests) => n + proxyRequests.length, 0);
     expect(total).toEqual(expectedProxyRequests);
   }
+  // Pin the code path the transform took — see PipelineStep.expectedEndpointPath. Checked before
+  // delivery so a flag that failed to apply fails here rather than passing on the old path's 2xx.
+  if (step.expectedEndpointPath !== undefined) {
+    proxyRequestsPerOutput
+      .flat()
+      .forEach((proxyRequest) =>
+        expect(proxyRequest.endpointPath).toEqual(step.expectedEndpointPath),
+      );
+  }
 
   for (const proxyRequests of proxyRequestsPerOutput) {
     for (const proxyRequest of proxyRequests) {

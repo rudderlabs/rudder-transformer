@@ -13,6 +13,7 @@ import { runPipelineStep } from './live/runPipelineStep';
 import { retryUntilPasses } from './live/poll';
 import { OAuthTokenResolver } from './live/oauthTokenResolver';
 import { RudderAuthContainer } from './live/rudderAuthContainer';
+import { EnvManager } from './envUtils';
 import type { LiveSecret, EnrolledDestination } from './live/types';
 
 describe('Live Integration Test Suite', () => {
@@ -125,7 +126,16 @@ describe('Live Integration Test Suite', () => {
       const scenarioConfig =
         scenario.configOverride?.(destinationConfig, liveSecret) ?? destinationConfig;
 
+      const envManager = new EnvManager();
+
       beforeAll(() => {
+        // Env-gated transforms: apply this scenario's overrides before any step runs, and restore
+        // them once it's done (see LiveScenario.envOverride). Scenarios run sequentially, so the
+        // snapshot/restore pair keeps each one's flags to itself.
+        if (scenario.envOverride) {
+          envManager.takeSnapshot(scenario.id, Object.keys(scenario.envOverride));
+          envManager.applyOverrides(scenario.envOverride);
+        }
         // Arm scenario cleanup if present; drained after steps (LIFO, best-effort).
         if (scenario.cleanup) {
           ctx.addCleanup(() => scenario.cleanup!(ctx));
@@ -135,6 +145,13 @@ describe('Live Integration Test Suite', () => {
       afterAll(async () => {
         await ctx.runCleanups();
       }, 120000);
+
+      // Registered after the cleanup hook so teardown still sees the scenario's env.
+      afterAll(() => {
+        if (scenario.envOverride) {
+          envManager.restoreSnapshot(scenario.id);
+        }
+      });
 
       // Short-circuit: once a step in this scenario fails, skip the remaining steps and the
       // read-back. Later steps build on earlier ones, so continuing only cascades noise and

@@ -96,6 +96,12 @@ interface PipelineStep extends Step {
   // Exact number of proxy requests across all outputs (where a dontBatch regression would slip
   // through). Omit to keep the loose per-output `> 0` assertion.
   expectedProxyRequests?: number;
+  // Assert every proxy request this step produces targets this endpointPath. This is not a
+  // payload-shape assertion (those stay with the mocked suite) — it pins *which code path the
+  // transform took*. A scenario that exists to prove a feature flag routes events somewhere new
+  // would otherwise pass green when the flag silently failed to apply, because the old path
+  // delivers a 2xx just as happily.
+  expectedEndpointPath?: string;
   // Re-run seed -> transform -> deliver up to this many extra times (backoff) if delivery fails.
   // For routes that decide create-vs-update by searching an eventually-consistent index: a
   // freshly set-up record can be missed on the first try and 409, then found on a retry. Only use
@@ -131,6 +137,12 @@ interface LiveScenario {
   steps: readonly LiveStep[];
 
   enabled?: boolean; // default true; set false to keep the scenario in the tree without running it
+  // Process env applied before this scenario's steps and restored after — the live analogue of the
+  // component suite's `envOverrides`. For transforms whose behaviour is selected by an env feature
+  // flag rather than by destination.Config (e.g. CustomerIO's batching-framework and event-stream
+  // V2 rollout switches), which is otherwise unreachable from a spec. Scenarios run sequentially,
+  // so one scenario's env never leaks into the next. `undefined` unsets a variable.
+  envOverride?: Record<string, string | undefined>;
   // Run this scenario against a modified destination.Config (derived from the spec's base config).
   configOverride?: (base: Record<string, unknown>, secret: LiveSecret) => Record<string, unknown>;
   // The common trailing read-back, declared on the scenario the way `cleanup` is: the framework

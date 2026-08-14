@@ -26,6 +26,14 @@ const defaultErrorMessages = {
   delivery: '[Delivery] Error occured while processing payload',
 } as const;
 
+type DeliveryFailureError = FixMe & {
+  preserveDeliveryResponse?: boolean;
+  response?: unknown;
+};
+
+const shouldPreserveDeliveryResponse = (error: DeliveryFailureError): boolean =>
+  error.preserveDeliveryResponse === true && Array.isArray(error.response);
+
 export class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
     event: ProcessorTransformationRequest,
@@ -206,7 +214,7 @@ export class DestinationPostTransformationService {
       // Panic
       throw new PlatformError('Proxy v1 endpoint error : metadataArray is not an array');
     }
-    const responses = Array.isArray(error.response)
+    const responses = shouldPreserveDeliveryResponse(error)
       ? (error.response as DeliveryJobState[])
       : metadataArray.map((metadata) => {
           const resp = {

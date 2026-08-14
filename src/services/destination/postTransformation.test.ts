@@ -33,7 +33,7 @@ const buildMetaTransferObject = (metadatas: ProxyMetdata[]): MetaTransferObject 
 });
 
 describe('DestinationPostTransformationService.handlevV1DeliveriesFailureEvents', () => {
-  it('preserves destination-provided per-job response states when a TransformerProxyError carries them', () => {
+  it('preserves destination-provided per-job response states when a TransformerProxyError opts in', () => {
     const metadatas = [metadata(1), metadata(2)];
     const perJobResponse: DeliveryJobState[] = [
       { statusCode: 200, metadata: metadatas[0], error: '{"message":"success"}' },
@@ -44,7 +44,8 @@ describe('DestinationPostTransformationService.handlevV1DeliveriesFailureEvents'
       400,
       { errorCategory: 'network', errorType: 'aborted' },
       { response: { message: 'success' }, status: 200 } as unknown as string,
-    ) as BaseError & { response: DeliveryJobState[] };
+    ) as BaseError & { preserveDeliveryResponse: boolean; response: DeliveryJobState[] };
+    error.preserveDeliveryResponse = true;
     error.response = perJobResponse;
 
     const result = DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(
@@ -67,5 +68,41 @@ describe('DestinationPostTransformationService.handlevV1DeliveriesFailureEvents'
       message: 'Request failed for braze with status: 400',
       status: 400,
     });
+  });
+
+  it('falls back to the raw destination response for unmarked per-job error responses', () => {
+    const metadatas = [metadata(1), metadata(2)];
+    const perJobResponse: DeliveryJobState[] = [
+      { statusCode: 401, metadata: metadatas[0], error: 'Invalid access token' },
+      { statusCode: 401, metadata: metadatas[1], error: 'Invalid access token' },
+    ];
+    const destinationResponse = {
+      response: {
+        status: 401,
+        message: 'Invalid access token',
+        request_id: 'request-1',
+      },
+      status: 401,
+    };
+    const error = new BaseError(
+      'Request failed with status: 401',
+      401,
+      { errorCategory: 'network', errorType: 'aborted' },
+      destinationResponse as unknown as string,
+    ) as BaseError & { response: DeliveryJobState[] };
+    error.response = perJobResponse;
+
+    const result = DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(
+      error,
+      buildMetaTransferObject(metadatas),
+    );
+
+    expect(result.response).toEqual(
+      metadatas.map((metadataItem) => ({
+        error: JSON.stringify(destinationResponse.response),
+        statusCode: 401,
+        metadata: metadataItem,
+      })),
+    );
   });
 });

@@ -8,6 +8,7 @@ import stats from '../../../util/stats';
 import type {
   DeliveryJobState,
   DeliveryV1Response,
+  FixMe,
   ProxyMetdata,
   ProxyV1Request,
 } from '../../../types';
@@ -69,6 +70,27 @@ const buildJobStates = (
     metadata,
     error: JSON.stringify(response) ?? '',
   }));
+
+const buildPerJobTransformerProxyError = (
+  message: string,
+  statusCode: number,
+  statTags: Record<string, string>,
+  destinationResponse: BrazeResponseHandlerParams['destinationResponse'],
+  response: DeliveryJobState[],
+) => {
+  const error = new TransformerProxyError(
+    message,
+    statusCode,
+    statTags,
+    destinationResponse,
+    '',
+    response,
+  );
+  Object.defineProperty(error as FixMe, 'preserveDeliveryResponse', {
+    value: true,
+  });
+  return error;
+};
 
 const isNumberArray = (value: unknown): value is number[] =>
   Array.isArray(value) && value.every((n) => typeof n === 'number');
@@ -175,12 +197,11 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
 
   // Guard 1: non-2xx HTTP status — destination rejected the request entirely
   if (!isHttpStatusSuccess(status)) {
-    throw new TransformerProxyError(
+    throw buildPerJobTransformerProxyError(
       failureMessage(status),
       status,
       { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status) },
       destinationResponse,
-      '',
       buildJobStates(response, status, rudderJobMetadata),
     );
   }
@@ -199,12 +220,11 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
   // TransformerProxyError normalization turning true application failures into
   // unexpected abort-style outcomes with statusCode 200.
   if (brazeMessage !== 'success') {
-    throw new TransformerProxyError(
+    throw buildPerJobTransformerProxyError(
       failureMessage(APPLICATION_ERROR_STATUS_CODE),
       APPLICATION_ERROR_STATUS_CODE,
       { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(APPLICATION_ERROR_STATUS_CODE) },
       destinationResponse,
-      '',
       buildJobStates(response, APPLICATION_ERROR_STATUS_CODE, rudderJobMetadata),
     );
   }

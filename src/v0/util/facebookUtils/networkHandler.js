@@ -272,11 +272,7 @@ const addErrorCodeSuffix = (errorMessage, code, subCode) => {
 
 const errorResponseHandler = (destResponse) => {
   const { response, status: destStatus } = destResponse;
-  if (!response.error) {
-    if (isHttpStatusSuccess(destStatus)) {
-      // successful response from facebook pixel api
-      return;
-    }
+  if (!isHttpStatusSuccess(destStatus) && !response.error) {
     // Facebook returned a failure status without the usual `{ error: {...} }` shape
     // (e.g. an empty/malformed body on a transient upstream 5xx). Treating this as
     // success leaves the proxy response without a per-job output, which the router
@@ -287,6 +283,10 @@ const errorResponseHandler = (destResponse) => {
       { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(destStatus) },
       { ...response, status: destStatus },
     );
+  }
+  if (!response.error) {
+    // successful response from facebook pixel api
+    return;
   }
   const { error } = response;
   const { code: fbErrorCode, error_subcode: fbErrorSubCode, message: fbErrorMessage } = error;

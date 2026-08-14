@@ -4,12 +4,18 @@ import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   TransformedEvent,
   ChunkBatchStrategy,
+  CustomBatchStrategy,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import { VDMV2ObjectDestination } from '../../../services/destination/nativeBatching/vdmV2ObjectDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { removeUndefinedValues } from '../../util';
 import { recordInputSchema, eventStreamInputSchema, CustomerIOV2Payload } from './v2/types';
-import { MAX_OBJECT_SIZE_BYTES, MAX_BATCH_PAYLOAD } from './v2/config';
+import {
+  MAX_OBJECT_SIZE_BYTES,
+  MAX_BATCH_PAYLOAD,
+  getV2Endpoint,
+  isEventStreamBatchingFrameworkEnabled,
+} from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
 import {
@@ -23,6 +29,7 @@ import {
   deviceActionFor,
   buildRequestMeta,
 } from './v2/util';
+import { process as legacyProcessEventStream } from './transform';
 import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from './types';
 
 class CustomerIOIntegration extends VDMV2ObjectDestination<
@@ -68,9 +75,45 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
     return { body, ...buildRequestMeta(this.destination) };
   }
 
+  // Reuses processRouterDest's own per-event builder (transform.ts) so event-stream events
+  // keep shipping in their legacy (V1) request shape when isEventStreamBatchingFrameworkEnabled
+  // is off. That builder dispatches on message.type itself, so one call handles every
+  // event-stream type.
+  private buildLegacyEventStreamEvent(message: unknown): TransformedEvent<CustomerIOV2Payload> {
+    const legacyResponse = legacyProcessEventStream({
+      message,
+      destination: this.destination,
+    });
+    return {
+      // Legacy payload shapes (e.g. `{ data, name, type: 'event', ... }`) don't conform to
+      // CustomerIOV2Payload's `type`/`action` fields — this path exists only to ship them
+      // through unchanged.
+      body: legacyResponse.body.JSON as unknown as CustomerIOV2Payload,
+      endpoint: legacyResponse.endpoint,
+      endpointPath: legacyResponse.endpointPath,
+      method: legacyResponse.method,
+      headers: legacyResponse.headers,
+    };
+  }
+
   transformEventStream(input: z.infer<typeof eventStreamInputSchema>) {
-    validateConfigFields(this.destination);
     const { message } = input;
+
+    if (!isEventStreamBatchingFrameworkEnabled()) {
+      // buildLegacyEventStreamEvent (via processSingleMessage) already validates config
+      // fields, so skip the redundant check below.
+      const legacyHandler = () => this.buildLegacyEventStreamEvent(message);
+      return {
+        identify: legacyHandler,
+        track: legacyHandler,
+        page: legacyHandler,
+        screen: legacyHandler,
+        group: legacyHandler,
+        alias: legacyHandler,
+      };
+    }
+
+    validateConfigFields(this.destination);
     return {
       identify: () => this.wrapEventStreamBody(buildIdentify(message)),
       track: () => {
@@ -93,11 +136,19 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
     };
   }
 
-  getBatchStrategy(): BatchStrategy<CustomerIOV2Payload> {
-    return new ChunkBatchStrategy<CustomerIOV2Payload>({
-      maxPayloadSize: MAX_BATCH_PAYLOAD,
-      wrapBody: (bodies) => ({ batch: bodies }),
-    });
+  getBatchStrategy(endpoint: string): BatchStrategy<CustomerIOV2Payload> {
+    if (endpoint === getV2Endpoint(this.destination.Config.datacenter)) {
+      return new ChunkBatchStrategy<CustomerIOV2Payload>({
+        maxPayloadSize: MAX_BATCH_PAYLOAD,
+        wrapBody: (bodies) => ({ batch: bodies }),
+      });
+    }
+    // Legacy (V1) endpoints — used for event-stream events when
+    // isEventStreamBatchingFrameworkEnabled is off — don't support batching; each event
+    // ships as its own request, matching processRouterDest's behaviour.
+    return new CustomBatchStrategy<CustomerIOV2Payload>((payloads) =>
+      payloads.map((payload) => ({ body: payload.body, jobIds: new Set([payload.jobId]) })),
+    );
   }
 }
 

@@ -40,6 +40,17 @@ const RECORD_ACTION_MAP = {
 // Ordered by priority: cio_id > id > email
 const RECORD_IDENTIFIER_KEYS = ['cio_id', 'id', 'email'] as const;
 
+// Enabling the batching framework for CustomerIO (isBatchingFrameworkEnabled) is what's
+// needed to unlock record-event support, since the legacy processRouterDest has no concept
+// of record events. But it also moves event-stream events (identify/track/page/screen/group/
+// alias) onto this V2 code path, which changes their request shape/endpoint — a breaking
+// change for existing customers. This flag lets event-stream events opt into the V2 path
+// independently: while disabled (the default), they keep using the legacy
+// processRouterDest's request shape even when the batching framework is on for the
+// workspace. See routerTransform.ts's transformEventStream/getBatchStrategy.
+const isEventStreamBatchingFrameworkEnabled = (): boolean =>
+  process.env.CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED === 'true';
+
 export {
   getV2Endpoint,
   V2_BATCH_PATH,
@@ -53,4 +64,5 @@ export {
   MAPPING_CONFIG,
   RECORD_ACTION_MAP,
   RECORD_IDENTIFIER_KEYS,
+  isEventStreamBatchingFrameworkEnabled,
 };

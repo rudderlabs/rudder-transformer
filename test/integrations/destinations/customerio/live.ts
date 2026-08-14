@@ -263,10 +263,8 @@ export const live: LiveSpec = {
   // from engineering_shared/data/integrations_team/e2e_test/rudder-transformer — with the field
   // absent that step fails, so flipping this to true before the secret lands reds the
   // `live (customerio)` job on every PR to develop/main. Add the field (single-line LiveSecret
-  // JSON: {"config":{"siteID":"<site-id>","apiKey":"<track-api-key>"}}), then set this to true.
-  // No `authType` in the blob: the auth mechanism is declared by this spec's `authType` below,
-  // which is what the runner and the CI matrix actually read — the secret's copy is never
-  // consumed. Verified green locally against a real account — see the PR description.
+  // JSON: {"authType":"basic","config":{"siteID":"<site-id>","apiKey":"<track-api-key>"}}), then
+  // set this to true. Verified green locally against a real account — see the PR description.
   enabled: false,
   authType: 'basic',
   resolveConfig: (s) => ({ datacenter: 'US', ...s.config }),

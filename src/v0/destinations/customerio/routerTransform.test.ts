@@ -184,7 +184,7 @@ describe('CustomerIOIntegration — record event routing', () => {
 });
 
 describe('CustomerIOIntegration — event-stream event routing', () => {
-  const envKey = 'CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED';
+  const envKey = 'CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED';
   const originalEnvValue = process.env[envKey];
 
   afterEach(() => {

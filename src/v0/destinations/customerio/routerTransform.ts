@@ -14,7 +14,7 @@ import {
   MAX_OBJECT_SIZE_BYTES,
   MAX_BATCH_PAYLOAD,
   getV2Endpoint,
-  isEventStreamBatchingFrameworkEnabled,
+  isEventStreamV2APIEnabled,
 } from './v2/config';
 import { buildRecordEvent } from './v2/recordTransform';
 import { validateConfigFields } from './util';
@@ -29,7 +29,7 @@ import {
   deviceActionFor,
   buildRequestMeta,
 } from './v2/util';
-import { process as legacyProcessEventStream } from './transform';
+import { process as v1ProcessEventStream } from './transform';
 import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from './types';
 
 class CustomerIOIntegration extends VDMV2ObjectDestination<
@@ -76,40 +76,39 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
   }
 
   // Reuses processRouterDest's own per-event builder (transform.ts) so event-stream events
-  // keep shipping in their legacy (V1) request shape when isEventStreamBatchingFrameworkEnabled
-  // is off. That builder dispatches on message.type itself, so one call handles every
-  // event-stream type.
-  private buildLegacyEventStreamEvent(message: unknown): TransformedEvent<CustomerIOV2Payload> {
-    const legacyResponse = legacyProcessEventStream({
+  // keep shipping in their V1 request shape when isEventStreamV2APIEnabled is off. That
+  // builder dispatches on message.type itself, so one call handles every event-stream type.
+  private buildV1EventStreamEvent(message: unknown): TransformedEvent<CustomerIOV2Payload> {
+    const v1Response = v1ProcessEventStream({
       message,
       destination: this.destination,
     });
     return {
-      // Legacy payload shapes (e.g. `{ data, name, type: 'event', ... }`) don't conform to
+      // V1 payload shapes (e.g. `{ data, name, type: 'event', ... }`) don't conform to
       // CustomerIOV2Payload's `type`/`action` fields — this path exists only to ship them
       // through unchanged.
-      body: legacyResponse.body.JSON as unknown as CustomerIOV2Payload,
-      endpoint: legacyResponse.endpoint,
-      endpointPath: legacyResponse.endpointPath,
-      method: legacyResponse.method,
-      headers: legacyResponse.headers,
+      body: v1Response.body.JSON as unknown as CustomerIOV2Payload,
+      endpoint: v1Response.endpoint,
+      endpointPath: v1Response.endpointPath,
+      method: v1Response.method,
+      headers: v1Response.headers,
     };
   }
 
   transformEventStream(input: z.infer<typeof eventStreamInputSchema>) {
     const { message } = input;
 
-    if (!isEventStreamBatchingFrameworkEnabled()) {
-      // buildLegacyEventStreamEvent (via processSingleMessage) already validates config
+    if (!isEventStreamV2APIEnabled()) {
+      // buildV1EventStreamEvent (via processSingleMessage) already validates config
       // fields, so skip the redundant check below.
-      const legacyHandler = () => this.buildLegacyEventStreamEvent(message);
+      const v1Handler = () => this.buildV1EventStreamEvent(message);
       return {
-        identify: legacyHandler,
-        track: legacyHandler,
-        page: legacyHandler,
-        screen: legacyHandler,
-        group: legacyHandler,
-        alias: legacyHandler,
+        identify: v1Handler,
+        track: v1Handler,
+        page: v1Handler,
+        screen: v1Handler,
+        group: v1Handler,
+        alias: v1Handler,
       };
     }
 
@@ -143,9 +142,9 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
         wrapBody: (bodies) => ({ batch: bodies }),
       });
     }
-    // Legacy (V1) endpoints — used for event-stream events when
-    // isEventStreamBatchingFrameworkEnabled is off — don't support batching; each event
-    // ships as its own request, matching processRouterDest's behaviour.
+    // V1 endpoints — used for event-stream events when isEventStreamV2APIEnabled is off —
+    // don't support batching; each event ships as its own request, matching
+    // processRouterDest's behaviour.
     return new CustomBatchStrategy<CustomerIOV2Payload>((payloads) =>
       payloads.map((payload) => ({ body: payload.body, jobIds: new Set([payload.jobId]) })),
     );

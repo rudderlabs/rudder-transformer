@@ -21,7 +21,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -418,7 +418,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -701,7 +701,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -817,7 +817,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -891,7 +891,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -949,7 +949,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1006,7 +1006,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1094,7 +1094,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1171,7 +1171,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1278,7 +1278,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1371,7 +1371,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1438,7 +1438,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1555,7 +1555,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1631,7 +1631,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1733,7 +1733,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1815,7 +1815,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1897,7 +1897,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -1977,7 +1977,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2033,7 +2033,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2105,7 +2105,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2242,7 +2242,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2344,7 +2344,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2465,7 +2465,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2531,7 +2531,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2617,7 +2617,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2727,7 +2727,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2807,7 +2807,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {
@@ -2969,7 +2969,7 @@ export const dataV2 = [
     version: 'v0',
     envOverrides: {
       CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-      CUSTOMERIO_EVENT_STREAM_BATCHING_FRAMEWORK_ENABLED: 'true',
+      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
     },
     input: {
       request: {

@@ -3,6 +3,7 @@ import _ from 'lodash';
 import get from 'get-value';
 import { InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
 import stats from '../../../util/stats';
+import logger from '../../../logger';
 import { handleHttpRequest } from '../../../adapters/network';
 import {
   getDestinationExternalID,
@@ -902,15 +903,44 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
       if (transformedEvent.metadata) {
         successMetadata.push(...transformedEvent.metadata);
       }
+    } else {
+      // NOTE: this legacy branch still drops a job with a successful status but no
+      // `body.JSON` (see routerJobAccounting.test.ts history for the repro). Left
+      // unfixed deliberately: `processBatch` is the OFF path of
+      // `isPerJobDeliveryMappingEnabled` and is slated for deprecation once
+      // `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS` goes GA (env=ALL everywhere),
+      // at which point this function becomes unreachable. Hardening dead code isn't
+      // worth the maintenance surface — the fix below targets
+      // `processBatchWithDeliveryMapping` only.
+      //
+      // What IS worth the surface: making the drop observable. This exact condition
+      // (statusCode success, no batchedRequest.body.JSON) is what desyncs
+      // rudder-server's in/out job accounting and fires
+      // `router_transformer_invalid_response{reason="in out mismatch"}` — an alert
+      // that carries no payload and no log line on rudder-server's side (see
+      // INT-6993). Without this, root-causing which job/destination triggered it
+      // means reconstructing everything from the reporting DB after the fact, as
+      // happened here. `reason` reuses the same low-cardinality
+      // `braze_unprocessable_job` metric emitted by processBatchWithDeliveryMapping
+      // for the equivalent condition, so a single dashboard/alert covers both paths.
+      const jobIds = (transformedEvent.metadata ?? [])
+        .map((m) => m?.jobId)
+        .filter((jobId) => jobId !== undefined);
+      stats.increment('braze_unprocessable_job', {
+        destination_id: transformedEvent.destination?.ID,
+        reason: 'missing_body_json',
+      });
+      logger.warn(
+        '[Braze] processBatch: dropping job(s) with successful status but no batchedRequest.body.JSON',
+        {
+          destinationId: transformedEvent.destination?.ID,
+          workspaceId,
+          jobIds,
+          hasBatchedRequest: Boolean(transformedEvent.batchedRequest),
+          hasBody: Boolean(transformedEvent.batchedRequest?.body),
+        },
+      );
     }
-    // NOTE: this legacy branch still drops a job with a successful status but no
-    // `body.JSON` (see routerJobAccounting.test.ts history for the repro). Left
-    // unfixed deliberately: `processBatch` is the OFF path of
-    // `isPerJobDeliveryMappingEnabled` and is slated for deprecation once
-    // `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS` goes GA (env=ALL everywhere),
-    // at which point this function becomes unreachable. Hardening dead code isn't
-    // worth the maintenance surface — the fix below targets
-    // `processBatchWithDeliveryMapping` only.
   }
   const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
   const trackChunks = isWorkspaceOnMauPlanFlag

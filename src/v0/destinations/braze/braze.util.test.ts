@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import stats from '../../../util/stats';
+import logger from '../../../logger';
 import { handleHttpRequest } from '../../../adapters/network';
 import {
   BrazeDedupUtility,
@@ -1344,6 +1346,40 @@ describe('processBatch — OFF path (default) — non-MAU workspace (V1 chunking
     expect((failures[0] as any).error).toBe('Random Error');
     const tracks = offTrackRequests(result, destination);
     expect(offTotalIn(tracks, 'events')).toBe(10);
+  });
+
+  test('instruments (stat + log) the silent drop of a job with no batchedRequest.body.JSON', () => {
+    // Regression coverage for the observability added after INT-6993: this
+    // condition is Braze's only silent-drop path on the OFF (default) side, and
+    // rudder-server's own `in out mismatch` check logs nothing when it fires.
+    const statsSpy = jest.spyOn(stats, 'increment').mockImplementation(() => {});
+    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined as any);
+
+    const droppedEvent: BrazeTransformedEvent = {
+      destination,
+      statusCode: 200,
+      batchedRequest: { userId: 'user-1', type: 'track' } as any, // no `.body.JSON`
+      metadata: [{ jobId: 999, workspaceId: 'workspace-non-mau' }],
+    } as BrazeTransformedEvent;
+
+    processBatch([droppedEvent]);
+
+    expect(statsSpy).toHaveBeenCalledWith('braze_unprocessable_job', {
+      destination_id: destination.ID,
+      reason: 'missing_body_json',
+    });
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.stringContaining('processBatch: dropping job(s)'),
+      expect.objectContaining({
+        destinationId: destination.ID,
+        jobIds: [999],
+        hasBatchedRequest: true,
+        hasBody: false,
+      }),
+    );
+
+    statsSpy.mockRestore();
+    loggerSpy.mockRestore();
   });
 });
 

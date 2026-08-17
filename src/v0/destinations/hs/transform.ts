@@ -72,6 +72,7 @@ const processBatchRouter = async (
   // batch implementation
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   try {
+    validateDestinationConfig(destination);
     // reduce the no. of calls for properties endpoint
     const traitsFound = tempInputs.some(
       (input) => fetchFinalSetOfTraits(input.message) !== undefined,

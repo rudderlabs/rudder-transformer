@@ -30,6 +30,7 @@ import {
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
   removeHubSpotSystemField,
+  addHsAuthentication,
   recordTransformFlow,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
@@ -98,19 +99,7 @@ const processLegacyIdentify = async (
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
-  }
-
-  return response;
+  return addHsAuthentication(response, Config);
 };
 
 /**
@@ -156,13 +145,7 @@ const processLegacyTrack = async (
   response.messageType = 'track';
   recordTransformFlow(destination, 'event_stream', 'es_retl', 'track');
 
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  }
+  addHsAuthentication(response, Config);
   response.params = params;
 
   return response;
@@ -250,17 +233,7 @@ const legacyBatchEvents = (
       'Content-Type': JSON_MIME_TYPE,
     };
 
-    // choosing API Type
-    if (Config.authorizationType === 'newPrivateAppApi') {
-      // Private Apps
-      batchEventResponse.batchedRequest.headers = {
-        ...batchEventResponse.batchedRequest.headers,
-        Authorization: `Bearer ${Config.accessToken}`,
-      };
-    } else {
-      // API Key
-      batchEventResponse.batchedRequest.params = { hapikey: Config.apiKey };
-    }
+    addHsAuthentication(batchEventResponse.batchedRequest, Config);
 
     batchEventResponse = {
       ...batchEventResponse,

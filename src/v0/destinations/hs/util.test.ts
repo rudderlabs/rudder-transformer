@@ -17,6 +17,7 @@ import {
   removeHubSpotSystemField,
   isLookupFieldUnique,
   getUTCMidnightTimeStampValue,
+  validateDestinationConfig,
 } from './util';
 import { primaryToSecondaryFields } from './config';
 import { HubspotRudderMessage } from './types';
@@ -30,6 +31,48 @@ const propertyMap: Record<string, string> = {
   isPaidPlan: 'bool',
   address: 'enumeration',
 };
+
+describe('validateDestinationConfig utility function test cases', () => {
+  const baseDestination = {
+    ID: 'dest-123',
+    Config: {
+      authorizationType: 'newPrivateAppApi' as const,
+      accessToken: 'test-token',
+    },
+  };
+
+  const invalidCases = [
+    {
+      description: 'legacy API key auth is selected',
+      Config: { authorizationType: 'legacyApiKey', apiKey: 'api-key', hubID: 'hub-id' },
+      error:
+        'HubSpot API Key authorization is no longer supported. Use Private Apps authorization instead.',
+    },
+    {
+      description: 'authorization type is missing',
+      Config: { accessToken: 'test-token' },
+      error: 'Authorization Type not found or unsupported. Aborting',
+    },
+    {
+      description: 'authorization type is unknown',
+      Config: { authorizationType: 'unknownAuth', accessToken: 'test-token' },
+      error: 'Authorization Type not found or unsupported. Aborting',
+    },
+    {
+      description: 'private app access token is missing',
+      Config: { authorizationType: 'newPrivateAppApi', accessToken: '' },
+      error: 'Access Token not found. Aborting',
+    },
+  ];
+
+  it('should accept private app auth with an access token', () => {
+    expect(() => validateDestinationConfig(baseDestination as any)).not.toThrow();
+  });
+
+  it.each(invalidCases)('should reject when $description', ({ Config, error }) => {
+    expect(() => validateDestinationConfig({ ...baseDestination, Config } as any)).toThrow(error);
+  });
+});
 
 describe('Validate payload data types utility function test cases', () => {
   it('Should validate payload data type and return it', () => {

@@ -74,6 +74,7 @@ const processBatchRouterRetl = async (
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
 
   try {
+    validateDestinationConfig(destination);
     // skip splitting the batches to inserts and updates if the object is an association
     if (!objectType || String(objectType).toLowerCase() !== 'association') {
       propertyMap = await getProperties(destination, metadata);

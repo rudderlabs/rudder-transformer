@@ -6,9 +6,8 @@ Implementation in **JavaScript**
 
 ### Required Settings
 
-- **Authorization Type**: Choose between legacy API Key authentication or new Private App API authentication
+- **Authorization Type**: Private App API authentication
 
-  - `legacyApiKey`: Use legacy API Key (hapikey) for authentication
   - `newPrivateAppApi`: Use Private App access token for authentication
 
 - **API Version**: Choose the HubSpot API version to use
@@ -17,14 +16,10 @@ Implementation in **JavaScript**
 
 ### Required Based on Authorization Type
 
-#### Legacy API Key (`legacyApiKey`)
-
-- **Hub ID**: Required for legacy API authentication and track events
-- **API Key**: Required legacy API key (hapikey) for authentication
-
 #### Private App API (`newPrivateAppApi`)
 
 - **Access Token**: Required Private App access token for authentication
+- Persisted `legacyApiKey` configurations are rejected because HubSpot sunset API keys in 2022.
 
 ### Required Based on API Version
 
@@ -260,14 +255,9 @@ For implementation details, see the [Proxy Implementation Guide](../../../../../
 ### OAuth Support
 
 - **Supported**: No
-- **Auth Type**: API Key or Private App Access Token only
+- **Auth Type**: Private App Access Token only
 
-> HubSpot destination uses either:
->
-> - Legacy API Key (hapikey) authentication
-> - Private App Access Token authentication
->
-> OAuth flow is not currently implemented.
+> HubSpot destination uses Private App Access Token authentication. OAuth flow is not currently implemented.
 
 ### Additional Functionalities
 
@@ -278,7 +268,7 @@ The HubSpot destination uniquely supports two API versions with automatic routin
 - **Legacy API (v1)**: Older contacts and events API
 
   - File: `es-retl-v1.ts`
-  - Best for: Existing integrations using legacy authentication
+  - Best for: Existing integrations that still use legacy endpoint shapes with Private App authentication
   - Endpoints: `/contacts/v1/*`, `https://track.hubspot.com/v1/event`
 
 - **New API (v3)**: Current CRM API with enhanced features
@@ -395,8 +385,8 @@ When using email as the identifier type for rETL sources, the destination also c
 
 #### General Validations
 
-- **Authorization**: Either API Key (legacy) or Access Token (new) must be provided
-- **Hub ID**: Required for legacy API authentication
+- **Authorization**: Private App Access Token must be provided
+- **Hub ID**: Required for legacy API track events
 - **API Version**: Must be either `legacyApi` or `newApi`
 - **Message Type**: Only `identify` and `track` supported for cloud mode
 - **Property Data Types**: Validates that payload property types match HubSpot property types

@@ -11,12 +11,20 @@ import type {
 // Destination Configuration Types
 // ============================================================================
 
+export const HUBSPOT_AUTHORIZATION_TYPES = {
+  PRIVATE_APP: 'newPrivateAppApi',
+  LEGACY_API_KEY: 'legacyApiKey',
+} as const;
+
+export type HubSpotAuthorizationType =
+  (typeof HUBSPOT_AUTHORIZATION_TYPES)[keyof typeof HUBSPOT_AUTHORIZATION_TYPES];
+
 /**
  * HubSpot Destination Configuration
  * Ref: https://developers.hubspot.com/docs/api/crm/contacts
  */
 export interface HubSpotDestinationConfig {
-  authorizationType: 'newPrivateAppApi' | 'legacyApiKey';
+  authorizationType?: string;
   accessToken?: string;
   apiKey?: string;
   hubID?: string;

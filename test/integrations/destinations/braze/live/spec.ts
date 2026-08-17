@@ -5,7 +5,12 @@ import {
   deleteUsers,
   subscriptionGroupId,
 } from './api';
-import { createDedupUserAndWait, createMergeUsers, createSubscriptionUser } from './setup';
+import {
+  createDedupUserAndWait,
+  createGroupUserAndWait,
+  createMergeUsers,
+  createSubscriptionUser,
+} from './setup';
 import {
   baseEvent,
   brazeExternalIdTraits,
@@ -204,6 +209,11 @@ export const live = {
         'A group call sets the ab_rudder_group_<groupId> custom attribute on the profile',
       cleanup: deleteUserByExternalId,
       steps: [
+        {
+          stepType: 'action',
+          name: 'setup: create + settle group user',
+          run: createGroupUserAndWait,
+        },
         {
           stepType: 'pipeline',
           name: 'group membership attribute',

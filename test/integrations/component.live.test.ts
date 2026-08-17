@@ -153,24 +153,28 @@ describe('Live Integration Test Suite', () => {
         }
       });
 
-      // Short-circuit: once a step in this scenario fails, skip the remaining steps and the
-      // read-back. Later steps build on earlier ones, so continuing only cascades noise and
-      // burns live API calls on an already-doomed scenario.
+      // Short-circuit: once a step in this scenario fails, don't run the remaining steps or the
+      // read-back. Later steps build on earlier ones, so continuing only cascades noise and burns
+      // live API calls on an already-doomed scenario.
+      //
+      // They are reported as FAILURES, not passes. Returning early would make jest record a green
+      // tick for an assertion that never executed — a read-back that silently "passes" is the exact
+      // failure mode this suite exists to remove. The message says why, so the cascade is still
+      // trivially distinguishable from the one real failure at the top of the scenario.
       let scenarioFailed = false;
-      const skipIfFailed = (what: string): boolean => {
+      const failIfSkipped = (what: string): void => {
         if (scenarioFailed) {
-          // eslint-disable-next-line no-console
-          console.warn(`[live] skipping ${what} — an earlier step in this scenario failed`);
+          throw new Error(
+            `[live] ${what} did not run — an earlier step in this scenario failed. ` +
+              'This is not an independent failure: fix the first failing step in this scenario.',
+          );
         }
-        return scenarioFailed;
       };
 
       test.each(scenario.steps)(
         'step: $name',
         async (step) => {
-          if (skipIfFailed(`step "${step.name}"`)) {
-            return;
-          }
+          failIfSkipped(`step "${step.name}"`);
           try {
             // Steps run in declared order; dispatch by discriminant — action = direct API side
             // effect, verify = read-back assertion, pipeline = seed -> transform -> deliver -> assert.
@@ -214,9 +218,7 @@ describe('Live Integration Test Suite', () => {
       if (scenario.verify) {
         const { check, attempts, delayMs } = scenario.verify;
         test('verify: scenario read-back', async () => {
-          if (skipIfFailed('read-back')) {
-            return;
-          }
+          failIfSkipped('scenario read-back');
           await retryUntilPasses(() => check(ctx), { attempts, delayMs });
         }, 120000);
       }

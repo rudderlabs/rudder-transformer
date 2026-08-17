@@ -48,6 +48,11 @@ function responseBuilder(message, evType, evName, destination, messageType) {
   response.userId = userId || message.anonymousId;
   response.headers = {
     Authorization: `Basic ${btoa(`${destination.Config.siteID}:${destination.Config.apiKey}`)}`,
+    // Group events post to the shared /v2/batch endpoint, which CustomerIO rejects with a 400
+    // unless Content-Type is application/json. processRouterDest assembles the batch itself and
+    // adds the header there (see batchEvents), but the native batching framework batches these
+    // responses on its own, so the header has to travel on the per-event response too.
+    ...(evType === EventType.GROUP ? { 'Content-Type': JSON_MIME_TYPE } : {}),
   };
 
   switch (evType) {

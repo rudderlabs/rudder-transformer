@@ -12,8 +12,10 @@ jest.mock("dns", () => {
 });
 
 // Mock the transformation store modules
-jest.mock("../../src/util/customTransforrmationsStore", () => ({
+jest.mock("../../src/util/customTransformationsStore", () => ({
   getTransformationCode: jest.fn(),
+  getLibraryCode: jest.fn(),
+  getRudderLibByImportName: jest.fn(),
   CONFIG_BACKEND_URL: 'https://api.rudderlabs.com'
 }));
 
@@ -21,7 +23,7 @@ const {
   userTransformHandler,
 } = require("../../src/util/customTransformer");
 
-const customTransformStore = require("../../src/util/customTransforrmationsStore");
+const customTransformStore = require("../../src/util/customTransformationsStore");
 const ivmCacheManager = require("../../src/util/ivmCache/manager");
 const integration = "user_transformation";
 const name = "User Transformations";

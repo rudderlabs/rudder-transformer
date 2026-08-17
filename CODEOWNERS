@@ -1,4 +1,4 @@
-* @rudderlabs/integrations
+* @rudderlabs/integrations @rudderlabs/server_team
 __tests__/ @rudderlabs/integrations @rudderlabs/data-management @rudderlabs/server_team
 src/util/ @rudderlabs/integrations @rudderlabs/data-management @rudderlabs/server_team
 **/trackingPlan.ts @rudderlabs/data-management

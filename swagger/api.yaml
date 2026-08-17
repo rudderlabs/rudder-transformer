@@ -73,8 +73,6 @@ paths:
     $ref: './routes/userTransform.yaml#/~1transformation~1test'
   /transformationLibrary/test:
     $ref: './routes/userTransform.yaml#/~1transformationLibrary~1test'
-  /transformation/sethandle:
-    $ref: './routes/userTransform.yaml#/~1transformation~1sethandle'
   /extractLibs:
     $ref: './routes/userTransform.yaml#/~1extractLibs'
 

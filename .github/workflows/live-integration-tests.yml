@@ -59,6 +59,32 @@ jobs:
             echo "affected=$1" >> "$GITHUB_OUTPUT"
           }
 
+          is_irrelevant_path() {
+            case "$1" in
+              .github/workflows/live-integration-tests.yml|.github/scripts/live-test-matrix.js)
+                return 1
+                ;;
+              docs/*|memory-bank/*|prompts/*|swagger/*)
+                return 0
+                ;;
+              *.md|README*|CHANGELOG*|CONTRIBUTING*|LICENSE|CODEOWNERS|RUDDER_TEST_DESTINATION_PLAN.md)
+                return 0
+                ;;
+              .claude/*|.cursor/*|.github/*|.vscode/*)
+                return 0
+                ;;
+              .dockerignore|.eslintignore|.eslintrc.json|.gitignore|.prettierignore|.prettierrc|.truffleignore|.versionrc)
+                return 0
+                ;;
+              codecov.yml|commitlint.config.js|sonar-project.properties)
+                return 0
+                ;;
+              *)
+                return 1
+                ;;
+            esac
+          }
+
           # Preserve the previous run-all behavior for protected branch pushes and release PRs.
           if [ "$EVENT_NAME" = "push" ]; then
             set_affected all
@@ -107,6 +133,8 @@ jobs:
               destinations+=("${BASH_REMATCH[1]}")
             elif [[ "$file" =~ ^test/integrations/destinations/([^/]+)/ ]]; then
               destinations+=("${BASH_REMATCH[1]}")
+            elif is_irrelevant_path "$file"; then
+              continue
             else
               set_affected all
               exit 0

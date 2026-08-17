@@ -6,6 +6,8 @@ import {
   RouterTransformationRequestData,
   RudderMessage,
 } from '../../types';
+import Koa from 'koa';
+import request from 'supertest';
 import { ControllerUtility } from './index';
 import lodash from 'lodash';
 
@@ -412,4 +414,35 @@ describe('controller utility tests -- handleTimestampInEvents for retl connectio
       expect(actualEvents).toStrictEqual(outputEvents);
     },
   );
+});
+
+describe('ControllerUtility.setJsonBody', () => {
+  // Regression guard for INT-7004: assigning a plain object to ctx.body made koa
+  // serialise the response twice - once when addRequestSizeMiddleware reads
+  // ctx.response.length, and again in koa's respond() when writing it.
+  it('serialises the payload once even when the response length is read first', async () => {
+    const payload = { output: [{ statusCode: 200, metadata: { jobId: 1 } }] };
+    const app = new Koa();
+    let observedLength: number | undefined;
+
+    // mirrors addRequestSizeMiddleware, which reads ctx.response.length after next()
+    app.use(async (ctx, next) => {
+      await next();
+      observedLength = ctx.response.length;
+    });
+    app.use((ctx) => {
+      ControllerUtility.setJsonBody(ctx, payload);
+    });
+
+    const stringifySpy = jest.spyOn(JSON, 'stringify');
+    const res = await request(app.callback()).get('/');
+    const payloadSerialisations = stringifySpy.mock.calls.filter(([arg]) => arg === payload).length;
+    stringifySpy.mockRestore();
+
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toBe('application/json; charset=utf-8');
+    expect(res.body).toEqual(payload);
+    expect(observedLength).toBe(Buffer.byteLength(JSON.stringify(payload)));
+    expect(payloadSerialisations).toBe(1);
+  });
 });

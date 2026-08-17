@@ -47,7 +47,7 @@ export class DeliveryController {
         metaTO,
       );
     }
-    ctx.body = { output: deliveryResponse };
+    ControllerUtility.setJsonBody(ctx, { output: deliveryResponse });
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
     return ctx;
@@ -80,7 +80,7 @@ export class DeliveryController {
         metaTO,
       );
     }
-    ctx.body = { output: deliveryResponse };
+    ControllerUtility.setJsonBody(ctx, { output: deliveryResponse });
     if (isDefinedAndNotNullAndNotEmpty(deliveryResponse.authErrorCategory)) {
       ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
     } else {
@@ -106,7 +106,7 @@ export class DeliveryController {
       deliveryPayload,
       version,
     );
-    ctx.body = { output: response };
+    ControllerUtility.setJsonBody(ctx, { output: response });
     ControllerUtility.postProcess(ctx);
     return ctx;
   }

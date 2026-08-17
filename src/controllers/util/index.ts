@@ -27,6 +27,27 @@ export class ControllerUtility {
     return getCompatibleStatusCode(status);
   }
 
+  /**
+   * Serialises `payload` once and assigns it to `ctx.body` as a Buffer.
+   *
+   * Assigning a plain object to `ctx.body` makes koa serialise it twice: once in
+   * `addRequestSizeMiddleware`, which reads `ctx.response.length` and therefore hits
+   * koa's `get length` -> `Buffer.byteLength(JSON.stringify(body))`, and again in
+   * koa's `respond()` when writing the response. Both passes are synchronous and
+   * block the event loop, which matters for the delivery proxy where bodies can be
+   * several MB.
+   *
+   * Setting the Content-Type *before* the body keeps koa from overriding it with
+   * `application/octet-stream` (koa only infers the type when Content-Type is unset),
+   * so the response is byte-for-byte what an object body would have produced. koa's
+   * body setter also records Content-Length for a Buffer, so the later
+   * `ctx.response.length` read is an O(1) header lookup instead of a re-serialisation.
+   */
+  public static setJsonBody(ctx: Context, payload: unknown) {
+    ctx.type = 'application/json';
+    ctx.body = Buffer.from(JSON.stringify(payload));
+  }
+
   public static postProcess(ctx: Context, status = 200) {
     ctx.set('apiVersion', API_VERSION);
     ctx.status = status;

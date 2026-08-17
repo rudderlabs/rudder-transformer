@@ -19,6 +19,12 @@
  *
  * These tests assert Braze never drops a job: every input jobId appears exactly
  * once across the outputs, whatever the payload looks like.
+ *
+ * Scoped to `processBatchWithDeliveryMapping` (selected when
+ * `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS` enables the workspace).
+ * `processBatch` — the OFF path — has the same drop hazard but is intentionally
+ * left unfixed: it is slated for deprecation once that flag goes GA, at which
+ * point it becomes unreachable, so it isn't covered here.
  */
 
 // `isolated-vm` is a native addon pulled in transitively via the user-transformation
@@ -29,7 +35,7 @@ jest.mock('isolated-vm', () => ({
   Isolate: class {},
 }));
 
-import { processBatch, processBatchWithDeliveryMapping } from './util';
+import { processBatchWithDeliveryMapping } from './util';
 import { processRouterDest } from './transform';
 
 type AnyRec = Record<string, any>;
@@ -68,7 +74,7 @@ const expectNoMismatch = (inputJobIds: number[], outputs: AnyRec[]) => {
   expect(result).toMatchObject({ in: result.out, dropped: [], duplicated: [] });
 };
 
-/** A already-transformed event as `processBatch` receives it. */
+/** A already-transformed event as `processBatchWithDeliveryMapping` receives it. */
 const transformedEvent = (jobId: number, json: unknown): AnyRec => ({
   batchedRequest: json === undefined ? undefined : { body: { JSON: json } },
   metadata: [{ jobId, workspaceId: 'ws-1' }],
@@ -83,36 +89,6 @@ const VALID_TRACK = {
 };
 
 describe('braze router job accounting — no job may be dropped', () => {
-  describe('processBatch (legacy path, default for every workspace)', () => {
-    it.each([
-      ['a payload with no body.JSON at all', undefined],
-      ['an empty body.JSON object', {}],
-      ['a body.JSON with only the partner key', { partner: 'RudderStack' }],
-      ['a body.JSON with empty arrays', { partner: 'RudderStack', attributes: [], events: [] }],
-    ])('accounts for a job carrying %s', (_label, json) => {
-      const outputs = processBatch([
-        transformedEvent(1, VALID_TRACK),
-        transformedEvent(2, json),
-      ] as any);
-      expectNoMismatch([1, 2], outputs as any);
-    });
-
-    it('aborts the unusable job explicitly instead of silently dropping it', () => {
-      const outputs = processBatch([
-        transformedEvent(1, VALID_TRACK),
-        transformedEvent(2, undefined),
-      ] as any) as any[];
-
-      const aborted = outputs.find((o) => o.metadata?.[0]?.jobId === 2 && o.statusCode === 400);
-      expect(aborted).toBeDefined();
-      expect(aborted.statTags).toEqual({
-        errorType: 'aborted',
-        errorCategory: 'dataValidation',
-      });
-      expect(aborted.error).toMatch(/produced no Braze payload/);
-    });
-  });
-
   describe('processBatchWithDeliveryMapping (per-job delivery-mapping path)', () => {
     it.each([
       ['a track body yielding zero items', { partner: 'RudderStack', attributes: [] }],
@@ -138,7 +114,18 @@ describe('braze router job accounting — no job may be dropped', () => {
     });
   });
 
-  describe('end-to-end through processRouterDest', () => {
+  describe('end-to-end through processRouterDest (delivery-mapping enabled)', () => {
+    // Simulates BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS at GA (env=ALL), so
+    // processRouterDest routes through processBatchWithDeliveryMapping rather
+    // than the deprecated processBatch.
+    const originalFlag = process.env.BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS;
+    beforeAll(() => {
+      process.env.BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS = 'ALL';
+    });
+    afterAll(() => {
+      process.env.BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS = originalFlag;
+    });
+
     const routerInput = (jobId: number, message: AnyRec) => ({
       destination: DESTINATION,
       metadata: { jobId, userId: `u${jobId}`, workspaceId: 'ws-1', destinationId: 'dest-1' },

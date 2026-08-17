@@ -832,13 +832,17 @@ const isWorkspaceOnMauPlan = (workspaceId) => {
 //
 // Therefore any job we cannot turn into a Braze payload must still be emitted,
 // as an explicit aborted response.
+//
+// Scoped to `processBatchWithDeliveryMapping` only. `processBatch` (the OFF path
+// of `isPerJobDeliveryMappingEnabled`) has the same drop hazard but is
+// deliberately left unfixed — see the NOTE at its `else` branch below.
 // ---------------------------------------------------------------------------
 const UNPROCESSABLE_JOB_ERROR =
   '[Braze] Transformed event produced no Braze payload; aborting this event rather than dropping it (dropping desynchronises router job accounting)';
 
 // `reason` is a stats tag, so it must stay a fixed, low-cardinality enum —
 // free-form detail belongs in `detail`, which only reaches the job's error text.
-type UnprocessableReason = 'missing_body_json' | 'unclassifiable_body' | 'no_items_to_send';
+type UnprocessableReason = 'unclassifiable_body' | 'no_items_to_send';
 
 const buildUnprocessableResponse = (
   transformedEvent: BrazeTransformedEvent,
@@ -898,13 +902,15 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
       if (transformedEvent.metadata) {
         successMetadata.push(...transformedEvent.metadata);
       }
-    } else {
-      // Successful status but no Braze payload to batch (e.g. `simpleProcessRouterDest`
-      // short-circuits and passes the raw message straight through when the incoming
-      // message already carries a `statusCode`, so `batchedRequest` is the message
-      // itself and has no `body.JSON`). Emitting it keeps in === out.
-      failureResponses.push(buildUnprocessableResponse(transformedEvent, 'missing_body_json'));
     }
+    // NOTE: this legacy branch still drops a job with a successful status but no
+    // `body.JSON` (see routerJobAccounting.test.ts history for the repro). Left
+    // unfixed deliberately: `processBatch` is the OFF path of
+    // `isPerJobDeliveryMappingEnabled` and is slated for deprecation once
+    // `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS` goes GA (env=ALL everywhere),
+    // at which point this function becomes unreachable. Hardening dead code isn't
+    // worth the maintenance surface — the fix below targets
+    // `processBatchWithDeliveryMapping` only.
   }
   const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
   const trackChunks = isWorkspaceOnMauPlanFlag

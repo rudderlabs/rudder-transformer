@@ -441,6 +441,7 @@ describe('ControllerUtility.setJsonBody', () => {
 
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toBe('application/json; charset=utf-8');
+    expect(res.headers['x-content-type-options']).toBe('nosniff');
     expect(res.body).toEqual(payload);
     expect(observedLength).toBe(Buffer.byteLength(JSON.stringify(payload)));
     expect(payloadSerialisations).toBe(1);

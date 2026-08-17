@@ -42,8 +42,16 @@ export class ControllerUtility {
    * so the response is byte-for-byte what an object body would have produced. koa's
    * body setter also records Content-Length for a Buffer, so the later
    * `ctx.response.length` read is an O(1) header lookup instead of a re-serialisation.
+   *
+   * `X-Content-Type-Options: nosniff` is set because the payload echoes caller-supplied
+   * data (destination responses, job metadata) and `JSON.stringify` does not escape
+   * `<`, `>` or `/`. The declared Content-Type already makes a browser treat this as
+   * JSON; nosniff removes the residual content-sniffing path by which a response could
+   * be re-interpreted as HTML. It is a constant-cost header, so it does not reintroduce
+   * the per-payload scan this method exists to avoid.
    */
   public static setJsonBody(ctx: Context, payload: unknown) {
+    ctx.set('X-Content-Type-Options', 'nosniff');
     ctx.type = 'application/json';
     ctx.body = Buffer.from(JSON.stringify(payload));
   }

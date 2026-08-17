@@ -170,8 +170,15 @@ const eventStreamSteps = (scenarioId: string): LiveStep[] => [
   {
     // Last: the merge collapses the 'user' profile into 'alias', so it must not precede the steps
     // that write to 'user' or the read-backs above.
+    //
+    // delayBeforeMs: CustomerIO ingests asynchronously, and a merge whose PRIMARY has not
+    // materialised yet is silently dropped — the profile survives carrying only its own traits, with
+    // a 2xx on the merge either way. The preceding step creates that primary ~250ms earlier, so
+    // without a settle this races and the merge is a no-op. Probed: 8s is enough for the primary to
+    // be resolvable; 10s leaves headroom.
     stepType: 'pipeline',
     name: 'alias',
+    delayBeforeMs: 10000,
     expectedOutputs: 1,
     expectedProxyRequests: 1,
     seed: (ctx) => ({

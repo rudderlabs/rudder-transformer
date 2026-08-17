@@ -11,7 +11,7 @@ import {
   getEndpointFromConfig,
   processBatch,
   processBatchWithDeliveryMapping,
-  validateDestinationConfig,
+  getAuthHeader,
 } from './util';
 import { isPerJobDeliveryMappingEnabled } from './config';
 import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
@@ -2747,7 +2747,7 @@ describe('getEndpointFromConfig', () => {
   });
 });
 
-describe('validateDestinationConfig', () => {
+describe('getAuthHeader', () => {
   const missingKeyCases = [
     { name: 'restApiKey is absent', config: { dataCenter: 'US-03' } },
     { name: 'restApiKey is an empty string', config: { dataCenter: 'US-03', restApiKey: '' } },
@@ -2757,17 +2757,25 @@ describe('validateDestinationConfig', () => {
 
   it.each(missingKeyCases)('throws when $name', ({ config }) => {
     const destination = { Config: config } as unknown as BrazeDestination;
-    expect(() => validateDestinationConfig(destination)).toThrow(ConfigurationError);
-    expect(() => validateDestinationConfig(destination)).toThrow(
-      'Rest API Key not found. Aborting',
-    );
+    expect(() => getAuthHeader(destination)).toThrow(ConfigurationError);
+    expect(() => getAuthHeader(destination)).toThrow('Rest API Key not found. Aborting');
   });
 
-  it('does not throw when restApiKey is present', () => {
+  it('never emits the literal "Bearer undefined"', () => {
+    const destination = { Config: {} } as unknown as BrazeDestination;
+    expect(() => getAuthHeader(destination)).toThrow();
+    try {
+      getAuthHeader(destination);
+    } catch (error: any) {
+      expect(error.message).not.toContain('undefined');
+    }
+  });
+
+  it('returns the bearer header when restApiKey is present', () => {
     const destination = {
       Config: { dataCenter: 'US-03', restApiKey: 'dummy-rest-api-key' },
     } as unknown as BrazeDestination;
-    expect(() => validateDestinationConfig(destination)).not.toThrow();
+    expect(getAuthHeader(destination)).toBe('Bearer dummy-rest-api-key');
   });
 });
 

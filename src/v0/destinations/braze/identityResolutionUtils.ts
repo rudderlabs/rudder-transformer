@@ -3,7 +3,7 @@ import { NetworkError, BaseError, mapInBatches } from '@rudderstack/integrations
 import { handleHttpRequest } from '../../../adapters/network';
 import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import { isHttpStatusSuccess } from '../../util';
-import { collectStatsForAliasFailure, getEndpointFromConfig } from './util';
+import { collectStatsForAliasFailure, getAuthHeader, getEndpointFromConfig } from './util';
 import { getIdentifyEndpoint, IDENTIFY_BRAZE_MAX_REQ_COUNT } from './config';
 import * as stats from '../../../util/stats';
 import * as tags from '../../util/tags';
@@ -58,7 +58,7 @@ async function processSingleBatch(
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: `Bearer ${destination.Config.restApiKey}`,
+          Authorization: getAuthHeader(destination),
         },
       },
       {

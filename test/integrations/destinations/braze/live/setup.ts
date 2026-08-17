@@ -33,6 +33,6 @@ export const createDedupUserAndWait = async (ctx: RunContext): Promise<void> => 
       const p = await exportUserByExternalId(ctx, externalId);
       return { done: Boolean(p?.email), value: p };
     },
-    { label: 'dedup user searchable', attempts: 6, delayMs: (n) => 1000 * 2 ** n },
+    { label: 'dedup user searchable', attempts: 7, delayMs: (n) => 1000 * 2 ** n },
   );
 };

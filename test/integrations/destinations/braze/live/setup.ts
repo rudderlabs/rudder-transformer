@@ -22,6 +22,24 @@ export const createSubscriptionUser = async (ctx: RunContext): Promise<void> => 
   });
 };
 
+// Group membership attributes attach to an existing external_id profile. Create and settle it first
+// so the group scenario verifies the transform's attribute write instead of depending on implicit
+// profile creation timing in Braze.
+export const createGroupUserAndWait = async (ctx: RunContext): Promise<void> => {
+  const externalId = ctx.identity('user');
+  await createUserWithAttributes(ctx, externalId, {
+    first_name: 'CI-Group',
+    email: ctx.email(),
+  });
+  await pollUntil(
+    async () => {
+      const p = await exportUserByExternalId(ctx, externalId);
+      return { done: Boolean(p?.email), value: p };
+    },
+    { label: 'group user searchable', attempts: 7, delayMs: (n) => 1000 * 2 ** n },
+  );
+};
+
 // supportDedup existing-user scenario: create the user AND wait until it's returned by the export
 // endpoint, so the transform's BrazeDedupUtility.doLookup (same /users/export/ids) reliably finds it
 // in the store and takes the real dedup-reduce branch (rather than treating it as a fresh user).
@@ -33,6 +51,6 @@ export const createDedupUserAndWait = async (ctx: RunContext): Promise<void> => 
       const p = await exportUserByExternalId(ctx, externalId);
       return { done: Boolean(p?.email), value: p };
     },
-    { label: 'dedup user searchable', attempts: 6, delayMs: (n) => 1000 * 2 ** n },
+    { label: 'dedup user searchable', attempts: 7, delayMs: (n) => 1000 * 2 ** n },
   );
 };

@@ -1402,6 +1402,82 @@ const classifyJobRun = (json: unknown): JobClassification => {
   );
 };
 
+type DeliveryMappingAccumulators = {
+  failureResponses: BrazeTransformedEvent[];
+  filteredResponses: BrazeTransformedEvent[];
+  trackItems: TaggedItem[];
+  subItems: Array<{ data: BrazeSubscriptionGroup; sourceJobIndex: number }>;
+  mergeItems: Array<{ data: BrazeMergeUpdate; sourceJobIndex: number }>;
+};
+
+// Routes a single job to the right accumulator and reports whether it is
+// "accounted for" — i.e. guaranteed to surface in the response, either as a
+// failure/filtered response or as a chunk-contributing item. The explicit
+// `boolean` return type is load-bearing: every branch MUST return a value, so
+// adding a new branch without deciding its accounting outcome is a compile
+// error rather than a silent drop. This is the ONLY place that decides
+// accounting — callers must not special-case it further.
+const routeJobForDeliveryMapping = (
+  transformedEvent: BrazeTransformedEvent,
+  jobIndex: number,
+  acc: DeliveryMappingAccumulators,
+): boolean => {
+  if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
+    acc.failureResponses.push(transformedEvent);
+    return true;
+  }
+  if (transformedEvent.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
+    acc.filteredResponses.push(transformedEvent);
+    return true;
+  }
+
+  // `classifyJobRun` throws when the body matches none of the three Braze
+  // shapes. Letting that escape would fail the whole router-transform request
+  // rather than just this job, so contain it per job.
+  let classification: JobClassification;
+  try {
+    classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
+  } catch (error: any) {
+    acc.failureResponses.push(
+      buildUnprocessableResponse(
+        transformedEvent,
+        'unclassifiable_body',
+        error?.message ?? String(error),
+      ),
+    );
+    return true;
+  }
+
+  if (classification.type === 'track') {
+    const collection = collectTrackItemsForJob(classification.body, jobIndex);
+    if ('error' in collection) {
+      acc.failureResponses.push({
+        ...transformedEvent,
+        statusCode: 400,
+        error: collection.error.message,
+        statTags: { errorType: 'aborted', errorCategory: 'dataValidation' },
+      });
+      return true;
+    }
+    acc.trackItems.push(...collection.items);
+    return collection.items.length > 0;
+  }
+
+  if (classification.type === 'subscription') {
+    const groups = classification.body.subscription_groups ?? [];
+    for (const sg of groups) {
+      acc.subItems.push({ data: sg, sourceJobIndex: jobIndex });
+    }
+    return groups.length > 0;
+  }
+
+  const updates = classification.body.merge_updates ?? [];
+  for (const mu of updates) {
+    acc.mergeItems.push({ data: mu, sourceJobIndex: jobIndex });
+  }
+  return updates.length > 0;
+};
+
 // ---------------------------------------------------------------------------
 // `processBatchWithDeliveryMapping` (ON path).
 //
@@ -1425,80 +1501,29 @@ const processBatchWithDeliveryMapping = (
   const { destination, metadata } = transformedEvents[0];
   const workspaceId = metadata?.[0]?.workspaceId || '';
 
-  const failureResponses: BrazeTransformedEvent[] = [];
-  const filteredResponses: BrazeTransformedEvent[] = [];
-  const trackItems: TaggedItem[] = [];
-  const subItems: Array<{ data: BrazeSubscriptionGroup; sourceJobIndex: number }> = [];
-  const mergeItems: Array<{ data: BrazeMergeUpdate; sourceJobIndex: number }> = [];
+  const acc: DeliveryMappingAccumulators = {
+    failureResponses: [],
+    filteredResponses: [],
+    trackItems: [],
+    subItems: [],
+    mergeItems: [],
+  };
+  const { failureResponses, filteredResponses, trackItems, subItems, mergeItems } = acc;
   const jobMetadata: Partial<Metadata>[][] = Array.from(
     { length: transformedEvents.length },
     () => [],
   );
   // Every job must end up in exactly one emitted output — see the "Router job
-  // accounting invariant" note above `processBatch`. A job is accounted for once
-  // it is a failure, is filtered, or contributes at least one item to a chunk
-  // (a job contributing zero items would never appear in any chunk's metadata).
+  // accounting invariant" note above `processBatch`. `routeJobForDeliveryMapping`
+  // is the single source of truth for whether a job counts as accounted for.
   const accountedJobIndexes = new Set<number>();
 
   transformedEvents.forEach((transformedEvent, jobIndex) => {
     if (transformedEvent.metadata) {
       jobMetadata[jobIndex] = transformedEvent.metadata;
     }
-    if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
-      failureResponses.push(transformedEvent);
+    if (routeJobForDeliveryMapping(transformedEvent, jobIndex, acc)) {
       accountedJobIndexes.add(jobIndex);
-      return;
-    }
-    if (transformedEvent.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
-      filteredResponses.push(transformedEvent);
-      accountedJobIndexes.add(jobIndex);
-      return;
-    }
-
-    // `classifyJobRun` throws when the body matches none of the three Braze
-    // shapes. Letting that escape would fail the whole router-transform request
-    // rather than just this job, so contain it per job.
-    let classification: JobClassification;
-    try {
-      classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
-    } catch (error: any) {
-      failureResponses.push(
-        buildUnprocessableResponse(
-          transformedEvent,
-          'unclassifiable_body',
-          error?.message ?? String(error),
-        ),
-      );
-      accountedJobIndexes.add(jobIndex);
-      return;
-    }
-
-    if (classification.type === 'track') {
-      const collection = collectTrackItemsForJob(classification.body, jobIndex);
-      if ('error' in collection) {
-        failureResponses.push({
-          ...transformedEvent,
-          statusCode: 400,
-          error: collection.error.message,
-          statTags: { errorType: 'aborted', errorCategory: 'dataValidation' },
-        });
-        accountedJobIndexes.add(jobIndex);
-        return;
-      }
-      trackItems.push(...collection.items);
-      if (collection.items.length > 0) {
-        accountedJobIndexes.add(jobIndex);
-      }
-    } else if (classification.type === 'subscription') {
-      for (const sg of classification.body.subscription_groups ?? []) {
-        subItems.push({ data: sg, sourceJobIndex: jobIndex });
-        accountedJobIndexes.add(jobIndex);
-      }
-    } else {
-      for (const mu of classification.body.merge_updates ?? []) {
-        mergeItems.push({ data: mu, sourceJobIndex: jobIndex });
-        accountedJobIndexes.add(jobIndex);
-      }
     }
   });
 

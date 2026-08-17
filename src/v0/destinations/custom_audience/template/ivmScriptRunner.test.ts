@@ -41,6 +41,8 @@ jest.mock('../../../../util/stats', () => mockStats);
 // all 5 concurrent callers to enter getOrCreate() before the first one resolves.
 jest.mock('isolated-vm', () => {
   class MockContext {
+    constructor(private readonly isolate: { isDisposed: boolean }) {}
+
     release() {}
 
     async evalClosure(code: string) {
@@ -48,9 +50,14 @@ jest.mock('isolated-vm', () => {
       // isolate (timeout / OOM / disposed) so execute()'s catch path runs.
       if (code.includes('__THROW__')) {
         if (code.includes('timeout')) throw new Error('Script execution timed out.');
-        if (code.includes('memory'))
+        if (code.includes('memory')) {
+          this.isolate.isDisposed = true;
           throw new Error('Isolate was disposed during execution due to memory limit');
-        if (code.includes('disposed')) throw new Error('Isolate is disposed');
+        }
+        if (code.includes('disposed')) {
+          this.isolate.isDisposed = true;
+          throw new Error('Isolate is disposed');
+        }
         throw new Error('boom');
       }
       if (code.includes('parseTemplateInSandbox')) {
@@ -67,7 +74,7 @@ jest.mock('isolated-vm', () => {
   }
 
   class MockIsolate {
-    private disposed = false;
+    isDisposed = false;
 
     constructor() {
       isolateCreateCount++;
@@ -81,7 +88,7 @@ jest.mock('isolated-vm', () => {
       // With coalescing: they find the pending promise in the map and await it.
       // Without coalescing: they each start their own createEntry().
       await new Promise((r) => setTimeout(r, 50));
-      return new MockContext();
+      return new MockContext(this);
     }
 
     async compileScript() {
@@ -89,12 +96,12 @@ jest.mock('isolated-vm', () => {
     }
 
     getHeapStatisticsSync() {
-      if (this.disposed) throw new Error('Isolate is disposed');
+      if (this.isDisposed) throw new Error('Isolate is disposed');
       return { used_heap_size: 1024, total_heap_size: 2048 };
     }
 
     dispose() {
-      this.disposed = true;
+      this.isDisposed = true;
     }
   }
 
@@ -234,7 +241,7 @@ describe('IvmScriptRunner', () => {
   });
 
   describe('platform error metrics', () => {
-    it('emits ivm_platform_error tagged with the expression, workspaceId (cacheKey) and cache', async () => {
+    it('emits ivm_platform_error tagged with the expression, workspaceId (cacheKey), cache and errorType', async () => {
       const expression = 'return evaluateTemplateInSandbox($0) /* __THROW__ timeout */';
 
       await expect(runner.execute('ws-err', expression, [])).rejects.toThrow(
@@ -245,6 +252,7 @@ describe('IvmScriptRunner', () => {
         functionName: expression,
         workspaceId: 'ws-err',
         cache: 'custom_audience_ivm',
+        errorType: 'timeout',
       });
     });
 

@@ -9,7 +9,7 @@ describe('config backend fetch e2e (mock enforces auth)', () => {
   let mock;
   let getTransformationCode;
   const savedUrl = process.env.CONFIG_BACKEND_URL;
-  const savedSecret = process.env.CONFIG_BACKEND_HOSTED_SECRET;
+  const savedSecret = process.env.CONFIG_BACKEND_TRANSFORMER_SERVICE_SECRET;
 
   beforeAll(async () => {
     mock = new MockConfigBackend({ authSecret: SECRET, transformationMocks: { 'v-e2e': TRANSFORMATION } });
@@ -25,18 +25,18 @@ describe('config backend fetch e2e (mock enforces auth)', () => {
     await mock.stop();
     if (savedUrl === undefined) delete process.env.CONFIG_BACKEND_URL;
     else process.env.CONFIG_BACKEND_URL = savedUrl;
-    if (savedSecret === undefined) delete process.env.CONFIG_BACKEND_HOSTED_SECRET;
-    else process.env.CONFIG_BACKEND_HOSTED_SECRET = savedSecret;
+    if (savedSecret === undefined) delete process.env.CONFIG_BACKEND_TRANSFORMER_SERVICE_SECRET;
+    else process.env.CONFIG_BACKEND_TRANSFORMER_SERVICE_SECRET = savedSecret;
   });
 
   it('fetches successfully when the correct secret is sent, proving the header reaches the wire', async () => {
-    process.env.CONFIG_BACKEND_HOSTED_SECRET = SECRET;
+    process.env.CONFIG_BACKEND_TRANSFORMER_SERVICE_SECRET = SECRET;
     const res = await getTransformationCode('v-e2e');
     expect(res.versionId).toBe('v-e2e');
   });
 
   it('gets a 401 from the mock when the header is missing, surfaced as a retriable 503', async () => {
-    delete process.env.CONFIG_BACKEND_HOSTED_SECRET;
+    delete process.env.CONFIG_BACKEND_TRANSFORMER_SERVICE_SECRET;
     await expect(getTransformationCode('v-missing')).rejects.toMatchObject({
       statusCode: 503,
       retryReason: 'config_backend_auth_failed',

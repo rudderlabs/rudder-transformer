@@ -15,10 +15,12 @@ import {
 import { isPerJobDeliveryMappingEnabled } from './config';
 import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
 import { generateRandomString } from '@rudderstack/integrations-lib';
+import type { Metadata } from '../../../types';
 import {
   BrazeDestination,
   BrazeRouterRequest,
   BrazeTransformedEvent,
+  BrazeBatchResponse,
   BrazeTrackRequestBody,
   BrazeSubscriptionBatchPayload,
   BrazeMergeBatchPayload,
@@ -2840,14 +2842,27 @@ describe('isPerJobDeliveryMappingEnabled — per-workspace rollout gate', () => 
 // surfaces in two outputs inflates `out` even though nothing was lost.
 // ---------------------------------------------------------------------------
 
+// Structural view of the ON-path track outputs the tests below assert on. The
+// shared on*/off* helpers further up predate strict typing and return `any[]`;
+// annotating once at the call site keeps every assertion properly typed.
+type OnTrackOutput = {
+  batchedRequest: { body: { JSON: BrazeTrackRequestBody } };
+  metadata: Partial<Metadata>[];
+};
+
+const jobIdsOf = (out: BrazeBatchResponse): number[] =>
+  (out.metadata ?? [])
+    .map((meta) => meta.jobId)
+    .filter((jobId): jobId is number => jobId !== undefined);
+
 describe('router in/out job accounting (ON path)', () => {
   const destination = brazeDestFor();
 
   // Mirrors rudder-server's check in router/transformer/transformer.go: `in` is a
   // deduped set of input jobIds, `out` appends one entry per (output x distinct
   // jobId), so cross-output duplicates make len(out) > len(in).
-  const outJobIdCount = (result: any[]): number =>
-    result.reduce((acc, r) => acc + new Set((r.metadata ?? []).map((m: any) => m.jobId)).size, 0);
+  const outJobIdCount = (result: BrazeBatchResponse[]): number =>
+    result.reduce((acc, out) => acc + new Set(jobIdsOf(out)).size, 0);
 
   const trackJob = (
     jobId: number,
@@ -2878,7 +2893,7 @@ describe('router in/out job accounting (ON path)', () => {
         },
       },
       files: {},
-    } as any,
+    },
     metadata: [{ jobId, workspaceId: 'workspace-non-mau' }],
   });
 
@@ -2894,10 +2909,12 @@ describe('router in/out job accounting (ON path)', () => {
     jobs.push(trackJob(999, 'a-anonymous-user', undefined));
 
     const result = processBatchWithDeliveryMapping(jobs);
-    const tracks = onTrackOutputs(result, destination);
+    const tracks: OnTrackOutput[] = onTrackOutputs(result, destination);
     expect(tracks.length).toBeGreaterThanOrEqual(2);
 
-    const occurrences = tracks.filter((t) => t.metadata.some((m: any) => m.jobId === 999)).length;
+    const occurrences = tracks.filter((track) =>
+      track.metadata.some((meta) => meta.jobId === 999),
+    ).length;
     expect(occurrences).toBe(1);
   });
 
@@ -2924,16 +2941,18 @@ describe('chunk boundaries never split a source job', () => {
   type ItemSpec = { type: 'attributes' | 'events' | 'purchases'; externalId?: string };
 
   const jobFromSpecs = (jobId: number, specs: ItemSpec[]): BrazeTransformedEvent => {
-    const bucket: Record<string, any[]> = { attributes: [], events: [], purchases: [] };
+    const attributes: Record<string, unknown>[] = [];
+    const events: Record<string, unknown>[] = [];
+    const purchases: Record<string, unknown>[] = [];
     specs.forEach((spec, k) => {
       const base: Record<string, unknown> = { tag: `${jobId}-${k}` };
       if (spec.externalId !== undefined) {
         base.external_id = spec.externalId;
       }
       if (spec.type === 'events') {
-        bucket.events.push({ ...base, name: 'e', time: 't' });
+        events.push({ ...base, name: 'e', time: 't' });
       } else if (spec.type === 'purchases') {
-        bucket.purchases.push({
+        purchases.push({
           ...base,
           product_id: `p${jobId}-${k}`,
           price: 1,
@@ -2942,7 +2961,7 @@ describe('chunk boundaries never split a source job', () => {
           time: 't',
         });
       } else {
-        bucket.attributes.push(base);
+        attributes.push(base);
       }
     });
     return {
@@ -2955,24 +2974,18 @@ describe('chunk boundaries never split a source job', () => {
         endpoint: '',
         headers: {},
         params: {},
-        body: {
-          JSON: {
-            attributes: bucket.attributes,
-            events: bucket.events,
-            purchases: bucket.purchases,
-          },
-        },
+        body: { JSON: { attributes, events, purchases } },
         files: {},
-      } as any,
+      },
       metadata: [{ jobId, workspaceId: 'workspace-non-mau' }],
     };
   };
 
-  const jobIdOccurrences = (result: any[]): Map<number, number> => {
+  const jobIdOccurrences = (result: BrazeBatchResponse[]): Map<number, number> => {
     const counts = new Map<number, number>();
     for (const out of result) {
-      for (const jobId of new Set((out.metadata ?? []).map((m: any) => m.jobId))) {
-        counts.set(jobId as number, (counts.get(jobId as number) ?? 0) + 1);
+      for (const jobId of new Set(jobIdsOf(out))) {
+        counts.set(jobId, (counts.get(jobId) ?? 0) + 1);
       }
     }
     return counts;
@@ -2993,10 +3006,12 @@ describe('chunk boundaries never split a source job', () => {
     );
 
     const result = processBatchWithDeliveryMapping(jobs);
-    const tracks = onTrackOutputs(result, destination);
+    const tracks: OnTrackOutput[] = onTrackOutputs(result, destination);
 
     // The overflowing job is not split: no chunk carries 75 attributes.
-    expect(tracks.some((t) => t.batchedRequest.body.JSON.attributes.length === 75)).toBe(false);
+    expect(
+      tracks.some((track) => (track.batchedRequest.body.JSON.attributes ?? []).length === 75),
+    ).toBe(false);
     for (const [, occurrences] of jobIdOccurrences(result)) {
       expect(occurrences).toBe(1);
     }
@@ -3027,7 +3042,7 @@ describe('chunk boundaries never split a source job', () => {
     });
 
     const result = processBatchWithDeliveryMapping(jobs);
-    const tracks = onTrackOutputs(result, destination);
+    const tracks: OnTrackOutput[] = onTrackOutputs(result, destination);
     expect(tracks.length).toBeGreaterThanOrEqual(2);
 
     const counts = jobIdOccurrences(result);

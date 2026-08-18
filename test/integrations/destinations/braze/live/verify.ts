@@ -10,8 +10,8 @@ import {
 
 // Each check here is a SINGLE-SHOT assertion. The scenario-level `verify` block owns the
 // retry/backoff for Braze's eventually-consistent export (see READBACK in spec.ts),
-// so a check must NOT also poll internally — nesting the two compounds the waits and blows past the
-// runner's 60s per-scenario timeout (that's what wedged braze-identity-resolution).
+// so a check must NOT also poll internally — nesting the two compounds the waits and can blow past
+// the runner's per-test timeout (that's what wedged braze-identity-resolution).
 
 // Map the traits we seed to the profile fields Braze returns. `firstName`/`lastName`/`email` are
 // reserved (stored as first_name/last_name/email); every other trait lands in custom_attributes.

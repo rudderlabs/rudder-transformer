@@ -1,5 +1,6 @@
 import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 import { dataV2 } from './dataV2';
+import { dataEventStreamV1 } from './dataEventStreamV1';
 const dataV1 = [
   {
     name: 'customerio',
@@ -345,4 +346,4 @@ const dataV1 = [
   },
 ];
 
-export const data = [...dataV1, ...dataV2];
+export const data = [...dataV1, ...dataV2, ...dataEventStreamV1];

@@ -501,4 +501,100 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       },
     },
   },
+  {
+    // Regression test for INT-6978: a batched (v1) proxy call where Facebook returns a
+    // non-2xx status with no `error` field. Before the fix, `errorResponseHandler` silently
+    // treated this as success for every job in the batch (as it did for all 6000 jobs in the
+    // real incident); each job must instead come back as an explicit, bounded failure.
+    id: 'fbca_v1_scenario_batch_infra_failure',
+    name: 'fb_custom_audience',
+    description:
+      'batched proxy call fails when Facebook returns a non-2xx status with no error field',
+    successCriteria:
+      'Every job in the batch is marked failed with status 500, not silently succeeded',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            method: 'POST',
+            endpoint: 'https://graph.facebook.com/v25.0/aud-batch/users',
+            headers: {
+              'test-dest-response-key': 'infraFailureNoErrorField',
+            },
+            params: testParams1,
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['EMAIL'],
+                data: [['batch@abc.com']],
+              },
+            },
+          },
+          [
+            generateMetadata(101),
+            generateMetadata(102),
+            generateMetadata(103),
+            generateMetadata(104),
+            generateMetadata(105),
+          ],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 500,
+            message: 'Facebook responded with status 500 and no error details in the response body',
+            statTags: {
+              ...statTags,
+              errorCategory: 'network',
+              errorType: 'retryable',
+            },
+            response: [
+              {
+                error:
+                  'Facebook responded with status 500 and no error details in the response body',
+                statusCode: 500,
+                metadata: generateMetadata(101),
+              },
+              {
+                error:
+                  'Facebook responded with status 500 and no error details in the response body',
+                statusCode: 500,
+                metadata: generateMetadata(102),
+              },
+              {
+                error:
+                  'Facebook responded with status 500 and no error details in the response body',
+                statusCode: 500,
+                metadata: generateMetadata(103),
+              },
+              {
+                error:
+                  'Facebook responded with status 500 and no error details in the response body',
+                statusCode: 500,
+                metadata: generateMetadata(104),
+              },
+              {
+                error:
+                  'Facebook responded with status 500 and no error details in the response body',
+                statusCode: 500,
+                metadata: generateMetadata(105),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
 ];

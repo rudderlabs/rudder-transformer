@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign, @typescript-eslint/naming-convention */
 import _ from 'lodash';
 import get from 'get-value';
-import { InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
+import { ConfigurationError, InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
 import stats from '../../../util/stats';
 import { handleHttpRequest } from '../../../adapters/network';
 import {
@@ -85,6 +85,20 @@ const formatGender = (gender: unknown) => {
   }
 
   return null;
+};
+
+/**
+ * Every Braze request authenticates with `Bearer ${Config.restApiKey}`. When the key is
+ * absent that template stringifies to the literal `Bearer undefined`, and Braze answers
+ * `401 {"message":"Invalid API key: undefined"}` -- an error that reads like a rotated or
+ * revoked customer credential rather than a missing config. 4xx is terminal in the router,
+ * so every event in flight is aborted with no retry. Fail fast with an actionable error
+ * instead of putting an empty credential on the wire.
+ */
+const validateDestinationConfig = (destination: BrazeDestination) => {
+  if (!destination.Config?.restApiKey) {
+    throw new ConfigurationError('Rest API Key not found. Aborting');
+  }
 };
 
 const getEndpointFromConfig = (destination: BrazeDestination) => {
@@ -1714,6 +1728,7 @@ export {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
   getEndpointFromConfig,
+  validateDestinationConfig,
   processDeduplication,
   processBatch,
   processBatchWithDeliveryMapping,

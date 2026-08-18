@@ -7081,6 +7081,7 @@ const v1data = [
               endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
+                'Content-Type': 'application/json',
               },
               params: {},
               body: {
@@ -7234,6 +7235,7 @@ const v1data = [
               endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
+                'Content-Type': 'application/json',
               },
               params: {},
               body: {
@@ -7390,6 +7392,7 @@ const v1data = [
               endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
+                'Content-Type': 'application/json',
               },
               params: {},
               body: {
@@ -7546,6 +7549,7 @@ const v1data = [
               endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
+                'Content-Type': 'application/json',
               },
               params: {},
               body: {
@@ -7702,6 +7706,7 @@ const v1data = [
               endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
+                'Content-Type': 'application/json',
               },
               params: {},
               body: {
@@ -7872,6 +7877,7 @@ const v1data = [
               endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
+                'Content-Type': 'application/json',
               },
               params: {},
               body: {
@@ -8042,6 +8048,7 @@ const v1data = [
               endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
+                'Content-Type': 'application/json',
               },
               params: {},
               body: {

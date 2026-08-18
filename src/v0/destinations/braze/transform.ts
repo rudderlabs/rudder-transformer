@@ -19,6 +19,7 @@ import {
   handleReservedProperties,
   getEndpointFromConfig,
   formatGender,
+  validateDestinationConfig,
 } from './util';
 import type {
   BrazeDestination,
@@ -534,6 +535,7 @@ async function process(
 ): Promise<ProcessorTransformationOutput> {
   let response;
   const { message, destination } = event;
+  validateDestinationConfig(destination);
   const messageType = message.type.toLowerCase();
 
   let category = ConfigCategory.DEFAULT;
@@ -618,6 +620,9 @@ const processRouterDest = async (
   const userStore = new Map<string, BrazeUser>();
   let failedLookupIdentifiers = new Set<string>();
   const { destination } = inputs[0];
+  // Checked before the dedup lookup below, which would otherwise spend a Braze
+  // round trip on a request that cannot authenticate.
+  validateDestinationConfig(destination);
   if (destination.Config.supportDedup) {
     let lookupResult: { users: BrazeUser[]; failedIdentifiers: Set<string> } | undefined;
     try {

@@ -11,10 +11,11 @@ import {
   getEndpointFromConfig,
   processBatch,
   processBatchWithDeliveryMapping,
+  validateDestinationConfig,
 } from './util';
 import { isPerJobDeliveryMappingEnabled } from './config';
 import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
-import { generateRandomString } from '@rudderstack/integrations-lib';
+import { ConfigurationError, generateRandomString } from '@rudderstack/integrations-lib';
 import type { Metadata } from '../../../types';
 import {
   BrazeDestination,
@@ -2745,6 +2746,30 @@ describe('getEndpointFromConfig', () => {
         expect(getEndpointFromConfig(input)).toBe(expected);
       }
     });
+  });
+});
+
+describe('validateDestinationConfig', () => {
+  const missingKeyCases = [
+    { name: 'restApiKey is absent', config: { dataCenter: 'US-03' } },
+    { name: 'restApiKey is an empty string', config: { dataCenter: 'US-03', restApiKey: '' } },
+    { name: 'restApiKey is undefined', config: { dataCenter: 'US-03', restApiKey: undefined } },
+    { name: 'Config itself is absent', config: undefined },
+  ];
+
+  it.each(missingKeyCases)('throws when $name', ({ config }) => {
+    const destination = { Config: config } as unknown as BrazeDestination;
+    expect(() => validateDestinationConfig(destination)).toThrow(ConfigurationError);
+    expect(() => validateDestinationConfig(destination)).toThrow(
+      'Rest API Key not found. Aborting',
+    );
+  });
+
+  it('does not throw when restApiKey is present', () => {
+    const destination = {
+      Config: { dataCenter: 'US-03', restApiKey: 'dummy-rest-api-key' },
+    } as unknown as BrazeDestination;
+    expect(() => validateDestinationConfig(destination)).not.toThrow();
   });
 });
 

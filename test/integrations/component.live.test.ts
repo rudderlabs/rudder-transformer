@@ -13,6 +13,7 @@ import { runPipelineStep } from './live/runPipelineStep';
 import { retryUntilPasses } from './live/poll';
 import { OAuthTokenResolver } from './live/oauthTokenResolver';
 import { RudderAuthContainer } from './live/rudderAuthContainer';
+import { EnvManager } from './envUtils';
 import type { LiveSecret, EnrolledDestination } from './live/types';
 
 describe('Live Integration Test Suite', () => {
@@ -77,7 +78,7 @@ describe('Live Integration Test Suite', () => {
     if (hasOAuthDestination) {
       await authContainer.stop();
     }
-  });
+  }, 120000);
 
   // One describe per enrolled destination: resolve its credentials and base config, then run its
   // enabled scenarios. A missing/invalid secret throws here (fail-closed), failing the destination.
@@ -125,7 +126,16 @@ describe('Live Integration Test Suite', () => {
       const scenarioConfig =
         scenario.configOverride?.(destinationConfig, liveSecret) ?? destinationConfig;
 
+      const envManager = new EnvManager();
+
       beforeAll(() => {
+        // Env-gated transforms: apply this scenario's overrides before any step runs, and restore
+        // them once it's done (see LiveScenario.envOverride). Scenarios run sequentially, so the
+        // snapshot/restore pair keeps each one's flags to itself.
+        if (scenario.envOverride) {
+          envManager.takeSnapshot(scenario.id, Object.keys(scenario.envOverride));
+          envManager.applyOverrides(scenario.envOverride);
+        }
         // Arm scenario cleanup if present; drained after steps (LIFO, best-effort).
         if (scenario.cleanup) {
           ctx.addCleanup(() => scenario.cleanup!(ctx));
@@ -136,24 +146,35 @@ describe('Live Integration Test Suite', () => {
         await ctx.runCleanups();
       }, 120000);
 
-      // Short-circuit: once a step in this scenario fails, skip the remaining steps and the
-      // read-back. Later steps build on earlier ones, so continuing only cascades noise and
-      // burns live API calls on an already-doomed scenario.
-      let scenarioFailed = false;
-      const skipIfFailed = (what: string): boolean => {
-        if (scenarioFailed) {
-          // eslint-disable-next-line no-console
-          console.warn(`[live] skipping ${what} — an earlier step in this scenario failed`);
+      // Registered after the cleanup hook so teardown still sees the scenario's env.
+      afterAll(() => {
+        if (scenario.envOverride) {
+          envManager.restoreSnapshot(scenario.id);
         }
-        return scenarioFailed;
+      });
+
+      // Short-circuit: once a step in this scenario fails, don't run the remaining steps or the
+      // read-back. Later steps build on earlier ones, so continuing only cascades noise and burns
+      // live API calls on an already-doomed scenario.
+      //
+      // They are reported as FAILURES, not passes. Returning early would make jest record a green
+      // tick for an assertion that never executed — a read-back that silently "passes" is the exact
+      // failure mode this suite exists to remove. The message says why, so the cascade is still
+      // trivially distinguishable from the one real failure at the top of the scenario.
+      let scenarioFailed = false;
+      const failIfSkipped = (what: string): void => {
+        if (scenarioFailed) {
+          throw new Error(
+            `[live] ${what} did not run — an earlier step in this scenario failed. ` +
+              'This is not an independent failure: fix the first failing step in this scenario.',
+          );
+        }
       };
 
       test.each(scenario.steps)(
         'step: $name',
         async (step) => {
-          if (skipIfFailed(`step "${step.name}"`)) {
-            return;
-          }
+          failIfSkipped(`step "${step.name}"`);
           try {
             // Steps run in declared order; dispatch by discriminant — action = direct API side
             // effect, verify = read-back assertion, pipeline = seed -> transform -> deliver -> assert.
@@ -197,9 +218,7 @@ describe('Live Integration Test Suite', () => {
       if (scenario.verify) {
         const { check, attempts, delayMs } = scenario.verify;
         test('verify: scenario read-back', async () => {
-          if (skipIfFailed('read-back')) {
-            return;
-          }
+          failIfSkipped('scenario read-back');
           await retryUntilPasses(() => check(ctx), { attempts, delayMs });
         }, 120000);
       }

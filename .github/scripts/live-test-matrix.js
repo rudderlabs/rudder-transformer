@@ -4,8 +4,12 @@
 // (authType: 'oauth'); the workflow uses it to wildcard-import the rudder-auth app credentials and
 // to start rudder-auth, so no per-destination secret names live here.
 //
-// Emits `matrix=<json>` on stdout for "$GITHUB_OUTPUT"; the value is { include: [{ destination,
-// oauth }] }.
+// AFFECTED_DESTINATIONS optionally narrows the discovered live destinations for feature PRs:
+// unset/empty/all => every live destination, none => empty matrix, comma-list => live destinations
+// present in that list.
+//
+// Emits `matrix=<json>` and `has_work=<true|false>` on stdout for "$GITHUB_OUTPUT"; the matrix value
+// is { include: [{ destination, oauth }] }.
 const { readdirSync, readFileSync, existsSync } = require('fs');
 const { join } = require('path');
 
@@ -29,4 +33,21 @@ if (include.length === 0) {
   throw new Error(`No live specs found under ${DEST_DIR}/*/live.ts`);
 }
 
-process.stdout.write(`matrix=${JSON.stringify({ include })}\n`);
+const affectedDestinations = (process.env.AFFECTED_DESTINATIONS || '').trim();
+const affectedMode = affectedDestinations.toLowerCase();
+
+let filteredInclude = include;
+if (affectedMode === 'none') {
+  filteredInclude = [];
+} else if (affectedDestinations && affectedMode !== 'all') {
+  const affectedSet = new Set(
+    affectedDestinations
+      .split(',')
+      .map((destination) => destination.trim())
+      .filter(Boolean),
+  );
+  filteredInclude = include.filter(({ destination }) => affectedSet.has(destination));
+}
+
+process.stdout.write(`matrix=${JSON.stringify({ include: filteredInclude })}\n`);
+process.stdout.write(`has_work=${filteredInclude.length > 0}\n`);

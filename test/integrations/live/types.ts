@@ -131,6 +131,12 @@ interface LiveScenario {
   steps: readonly LiveStep[];
 
   enabled?: boolean; // default true; set false to keep the scenario in the tree without running it
+  // Process env applied before this scenario's steps and restored after — the live analogue of the
+  // component suite's `envOverrides`. For transforms whose behaviour is selected by an env feature
+  // flag rather than by destination.Config (e.g. CustomerIO's batching-framework and event-stream
+  // V2 rollout switches), which is otherwise unreachable from a spec. Scenarios run sequentially,
+  // so one scenario's env never leaks into the next. `undefined` unsets a variable.
+  envOverride?: Record<string, string | undefined>;
   // Run this scenario against a modified destination.Config (derived from the spec's base config).
   configOverride?: (base: Record<string, unknown>, secret: LiveSecret) => Record<string, unknown>;
   // The common trailing read-back, declared on the scenario the way `cleanup` is: the framework

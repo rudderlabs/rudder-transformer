@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.147.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.146.0...v1.147.0) (2026-08-17)
+
+
+### Features
+
+* **customerio:** env flag to gate event-stream events on the V2 batching path ([#5482](https://github.com/rudderlabs/rudder-transformer/issues/5482)) ([d4c00a2](https://github.com/rudderlabs/rudder-transformer/commit/d4c00a2f1b838d41f52029e86bb6c15955a21655))
+* **transformation:** use dedicated secret for config backend fetch auth ([#5456](https://github.com/rudderlabs/rudder-transformer/issues/5456)) ([d00246e](https://github.com/rudderlabs/rudder-transformer/commit/d00246e50a4022f762b2a583f35f0ebc925bd58d))
+
+
+### Bug Fixes
+
+* **dcm_floodlight:** decouple floodlight tag fallbacks ([#5439](https://github.com/rudderlabs/rudder-transformer/issues/5439)) ([3cc9704](https://github.com/rudderlabs/rudder-transformer/commit/3cc9704e2e1179b927341479d1b82e1f005cc504))
+* **ivm:** keep cached isolate on script timeout ([#5458](https://github.com/rudderlabs/rudder-transformer/issues/5458)) ([be2f85b](https://github.com/rudderlabs/rudder-transformer/commit/be2f85bfe2e53a28a7dc3424c82362f1451c68e2))
+
 ## [1.146.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.145.1...v1.146.0) (2026-08-12)
 
 

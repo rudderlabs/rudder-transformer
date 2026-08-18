@@ -29,11 +29,133 @@ permissions:
   contents: read # for actions/checkout
 
 jobs:
+  detect-affected:
+    name: detect affected destinations
+    runs-on: ubuntu-latest
+    outputs:
+      affected: ${{ steps.detect.outputs.affected }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Detect affected destinations
+        id: detect
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref || '' }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+
+          set_affected() {
+            echo "affected=$1" >> "$GITHUB_OUTPUT"
+          }
+
+          is_irrelevant_path() {
+            case "$1" in
+              .github/workflows/live-integration-tests.yml|.github/scripts/live-test-matrix.js)
+                return 1
+                ;;
+              docs/*|memory-bank/*|prompts/*|swagger/*)
+                return 0
+                ;;
+              *.md|README*|CHANGELOG*|CONTRIBUTING*|LICENSE|CODEOWNERS|RUDDER_TEST_DESTINATION_PLAN.md)
+                return 0
+                ;;
+              .claude/*|.cursor/*|.github/*|.vscode/*)
+                return 0
+                ;;
+              .dockerignore|.eslintignore|.eslintrc.json|.gitignore|.prettierignore|.prettierrc|.truffleignore|.versionrc)
+                return 0
+                ;;
+              codecov.yml|commitlint.config.js|sonar-project.properties)
+                return 0
+                ;;
+              *)
+                return 1
+                ;;
+            esac
+          }
+
+          # Preserve the previous run-all behavior for protected branch pushes and release PRs.
+          if [ "$EVENT_NAME" = "push" ]; then
+            set_affected all
+            exit 0
+          fi
+
+          if [[ "$PR_HEAD_REF" == release/* || "$PR_HEAD_REF" == hotfix-release/* ]]; then
+            set_affected all
+            exit 0
+          fi
+
+          # PR diff metadata should be present; if not, fail safe to the full live suite.
+          if [[ -z "$BASE_SHA" || -z "$HEAD_SHA" ]]; then
+            set_affected all
+            exit 0
+          fi
+
+          # Make sure both commits exist locally before diffing. If fetch/diff fails, run all.
+          if ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            git fetch --no-tags --depth=1 origin "$BASE_SHA" || true
+          fi
+
+          if ! git cat-file -e "${HEAD_SHA}^{commit}" 2>/dev/null; then
+            git fetch --no-tags --depth=1 origin "$HEAD_SHA" || true
+          fi
+
+          if ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null || ! git cat-file -e "${HEAD_SHA}^{commit}" 2>/dev/null; then
+            set_affected all
+            exit 0
+          fi
+
+          if ! changed_files=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA"); then
+            set_affected all
+            exit 0
+          fi
+
+          destinations=()
+          changed_count=0
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            changed_count=$((changed_count + 1))
+
+            if [[ "$file" =~ ^src/v0/destinations/([^/]+)/ ]]; then
+              destinations+=("${BASH_REMATCH[1]}")
+            elif [[ "$file" =~ ^src/v1/destinations/([^/]+)/ ]]; then
+              destinations+=("${BASH_REMATCH[1]}")
+            elif [[ "$file" =~ ^test/integrations/destinations/([^/]+)/ ]]; then
+              destinations+=("${BASH_REMATCH[1]}")
+            elif is_irrelevant_path "$file"; then
+              continue
+            else
+              set_affected all
+              exit 0
+            fi
+          done <<< "$changed_files"
+
+          if [ "$changed_count" -eq 0 ] || [ "${#destinations[@]}" -eq 0 ]; then
+            set_affected none
+            exit 0
+          fi
+
+          affected=$(printf '%s\n' "${destinations[@]}" | sort -u | paste -sd, -)
+          set_affected "$affected"
+
   discover:
+    needs: detect-affected
     name: discover live destinations
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.gen.outputs.matrix }}
+      has_work: ${{ steps.gen.outputs.has_work }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
@@ -45,10 +167,15 @@ jobs:
 
       - name: Build matrix from live specs
         id: gen
+        # Feature PRs run changed live-enabled destinations only; pushes, release/hotfix-release PRs,
+        # and shared/infrastructure changes use `all` to preserve full live coverage.
+        env:
+          AFFECTED_DESTINATIONS: ${{ needs.detect-affected.outputs.affected }}
         run: node .github/scripts/live-test-matrix.js >> "$GITHUB_OUTPUT"
 
   live:
     needs: discover
+    if: needs.discover.outputs.has_work == 'true'
     name: live (${{ matrix.destination }})
     # required: puts the job in infra1-us → PrivateLink path to dev Vault
     runs-on: [self-hosted, Linux, X64]

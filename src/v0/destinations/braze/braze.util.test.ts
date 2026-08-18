@@ -1372,7 +1372,6 @@ describe('processBatch — OFF path (default) — non-MAU workspace (V1 chunking
       expect.stringContaining('processBatch: dropping job(s)'),
       expect.objectContaining({
         destinationId: destination.ID,
-        jobIds: [999],
         hasBatchedRequest: true,
         hasBody: false,
       }),
@@ -1946,6 +1945,74 @@ describe('processBatchWithDeliveryMapping', () => {
     expect(failures.length).toBe(1);
     expect((failures[0] as any).error).toMatch(/exceeds .* bytes/);
     expect(onTrackOutputs(result, destination).length).toBe(0);
+  });
+
+  test('instruments (stat + log) an unclassifiable body before re-throwing', () => {
+    const statsSpy = jest.spyOn(stats, 'increment').mockImplementation(() => {});
+    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined as any);
+
+    const unclassifiable: BrazeTransformedEvent = {
+      destination,
+      statusCode: 200,
+      batchedRequest: { userId: 'user-1', type: 'track' } as any, // no `.body.JSON`
+      metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
+    } as BrazeTransformedEvent;
+
+    // Still throws — this is observability only, not a behavior fix.
+    expect(() => processBatchWithDeliveryMapping([unclassifiable])).toThrow();
+
+    expect(statsSpy).toHaveBeenCalledWith('braze_unprocessable_job', {
+      destination_id: destination.ID,
+      reason: 'unclassifiable_body',
+    });
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.stringContaining('unclassifiable batchedRequest.body.JSON'),
+      expect.objectContaining({
+        destinationId: destination.ID,
+        hasBatchedRequest: true,
+        hasBody: false,
+      }),
+    );
+
+    statsSpy.mockRestore();
+    loggerSpy.mockRestore();
+  });
+
+  test('instruments (stat + log) a classified body that contributes zero items', () => {
+    const statsSpy = jest.spyOn(stats, 'increment').mockImplementation(() => {});
+    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined as any);
+
+    const zeroItems: BrazeTransformedEvent = {
+      destination,
+      statusCode: 200,
+      batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
+        body: { JSON: { attributes: [] } },
+        files: {},
+      } as any,
+      metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
+    } as BrazeTransformedEvent;
+
+    const result = processBatchWithDeliveryMapping([zeroItems]);
+
+    expect(statsSpy).toHaveBeenCalledWith('braze_unprocessable_job', {
+      destination_id: destination.ID,
+      reason: 'no_items_to_send',
+    });
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.stringContaining('contributed zero items'),
+      expect.objectContaining({ destinationId: destination.ID }),
+    );
+    // Still silently drops the job today — observability only.
+    expect(onTrackOutputs(result, destination).length).toBe(0);
+
+    statsSpy.mockRestore();
+    loggerSpy.mockRestore();
   });
 });
 describe('addAppId', () => {

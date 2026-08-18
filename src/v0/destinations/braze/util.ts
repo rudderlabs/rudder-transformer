@@ -872,9 +872,8 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
       // Not fixed here — see INT-6993 discussion on why turning this into an
       // aborted response is a bigger, separate decision — but instrumented so
       // the next occurrence is a one-query lookup instead of a multi-day trace.
-      const jobIds = (transformedEvent.metadata ?? [])
-        .map((m) => m?.jobId)
-        .filter((jobId) => jobId !== undefined);
+      // jobIds intentionally omitted — destinationId + workspaceId + this log's
+      // timestamp are enough to pull the affected job(s) from the reporting DB.
       stats.increment('braze_unprocessable_job', {
         destination_id: transformedEvent.destination?.ID,
         reason: 'missing_body_json',
@@ -884,7 +883,6 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
         {
           destinationId: transformedEvent.destination?.ID,
           workspaceId,
-          jobIds,
           hasBatchedRequest: Boolean(transformedEvent.batchedRequest),
           hasBody: Boolean(transformedEvent.batchedRequest?.body),
         },
@@ -1422,8 +1420,53 @@ const processBatchWithDeliveryMapping = (
       filteredResponses.push(transformedEvent);
       return;
     }
-    const classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
+    let classification: JobClassification;
+    try {
+      classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
+    } catch (error) {
+      // Same underlying trigger as processBatch's drop (see the NOTE there) —
+      // batchedRequest.body.JSON doesn't match any Braze payload shape, most
+      // often because it's missing entirely. The difference here is severity:
+      // this throw escapes processBatchWithDeliveryMapping uncaught, so
+      // nativeIntegration.ts's catch aborts the ENTIRE destination batch (every
+      // job in the group, not just this one) at statusCode 400 — and because
+      // that single response carries every input jobId, in==out, so
+      // `router_transformer_invalid_response{reason="in out mismatch"}` never
+      // fires for this path. Not fixed here (see PR discussion); logged so an
+      // otherwise-silent full-batch abort is diagnosable without a code audit.
+      stats.increment('braze_unprocessable_job', {
+        destination_id: transformedEvent.destination?.ID,
+        reason: 'unclassifiable_body',
+      });
+      logger.warn(
+        '[Braze] processBatchWithDeliveryMapping: unclassifiable batchedRequest.body.JSON — this throw aborts the entire destination batch',
+        {
+          destinationId: transformedEvent.destination?.ID,
+          workspaceId,
+          hasBatchedRequest: Boolean(transformedEvent.batchedRequest),
+          hasBody: Boolean(transformedEvent.batchedRequest?.body),
+        },
+      );
+      throw error;
+    }
 
+    // A job whose body classifies fine but contributes zero items (e.g.
+    // `attributes: []`) never lands in any output array below — the same class
+    // of silent drop as the classifyJobRun throw above, just without a throw to
+    // catch. Not known to be reachable through this repo's own `process()`
+    // transform today (every legitimate output either throws upstream or
+    // contributes ≥1 item), but logged cheaply here in case that contract is
+    // ever violated by a future change.
+    const logZeroItems = () => {
+      stats.increment('braze_unprocessable_job', {
+        destination_id: transformedEvent.destination?.ID,
+        reason: 'no_items_to_send',
+      });
+      logger.warn(
+        '[Braze] processBatchWithDeliveryMapping: classified body contributed zero items — job silently dropped from the response',
+        { destinationId: transformedEvent.destination?.ID, workspaceId },
+      );
+    };
     if (classification.type === 'track') {
       const collection = collectTrackItemsForJob(classification.body, jobIndex);
       if ('error' in collection) {
@@ -1435,13 +1478,18 @@ const processBatchWithDeliveryMapping = (
         });
         return;
       }
+      if (collection.items.length === 0) logZeroItems();
       trackItems.push(...collection.items);
     } else if (classification.type === 'subscription') {
-      for (const sg of classification.body.subscription_groups ?? []) {
+      const groups = classification.body.subscription_groups ?? [];
+      if (groups.length === 0) logZeroItems();
+      for (const sg of groups) {
         subItems.push({ data: sg, sourceJobIndex: jobIndex });
       }
     } else {
-      for (const mu of classification.body.merge_updates ?? []) {
+      const updates = classification.body.merge_updates ?? [];
+      if (updates.length === 0) logZeroItems();
+      for (const mu of updates) {
         mergeItems.push({ data: mu, sourceJobIndex: jobIndex });
       }
     }

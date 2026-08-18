@@ -451,8 +451,17 @@ describe('Facebook Lead Ads Hydration', () => {
     expect(result.batch[1].errorMessage).toBe('{"message":"Lead not found"}');
   });
 
-  describe('errorResponseHandler does not throw', () => {
-    it('should throw and log schema when response has no error property', async () => {
+  describe('errorResponseHandler on a non-OK response with no `error` field', () => {
+    // Facebook's edge/infra layer can return a non-2xx status without the usual
+    // `{ error: {...} }` envelope (empty/malformed body on a transient upstream 5xx).
+    // errorResponseHandler (src/v0/util/facebookUtils/networkHandler.js) now throws a
+    // NetworkError for this case (see PR #5459 / INT-6978) instead of silently treating it
+    // as success, so hydrate's defensive "did not throw" canary below is correctly never
+    // reached and each of these resolves with a per-job error entry instead of rejecting.
+    const expectedErrorMessage =
+      'Facebook responded with status 500 and no error details in the response body';
+
+    it('should return a batch error entry when response has no error property', async () => {
       // Simulates a 500 from Facebook with no `error` in the body
       mockHttpGET.mockResolvedValue({
         success: false,
@@ -464,26 +473,15 @@ describe('Facebook Lead Ads Hydration', () => {
 
       const input = createValidInput(['123456']);
 
-      await expect(hydrate(input)).rejects.toThrow(
-        'Unexpected: errorResponseHandler did not throw for non-OK response',
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        '[facebook_lead_ads_native] Non-OK response from Facebook API',
-        {
-          status: 500,
-          responseSchema: JSON.stringify({
-            type: 'object',
-            properties: {
-              response: { type: 'object', properties: { some_field: { type: 'string' } } },
-              status: { type: 'number' },
-            },
-          }),
-          response: { some_field: 'some_value' },
-        },
-      );
+      const result = (await hydrate(input)) as SuccessResponse;
+
+      expect(result.batch).toHaveLength(1);
+      expect(result.batch[0].statusCode).toBe(500);
+      expect(result.batch[0].errorMessage).toBe(expectedErrorMessage);
+      expect(logger.error).not.toHaveBeenCalled();
     });
 
-    it('should throw and log schema when response body is an empty object', async () => {
+    it('should return a batch error entry when response body is an empty object', async () => {
       mockHttpGET.mockResolvedValue({
         success: false,
         response: {
@@ -494,26 +492,15 @@ describe('Facebook Lead Ads Hydration', () => {
 
       const input = createValidInput(['123456']);
 
-      await expect(hydrate(input)).rejects.toThrow(
-        'Unexpected: errorResponseHandler did not throw for non-OK response',
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        '[facebook_lead_ads_native] Non-OK response from Facebook API',
-        {
-          status: 500,
-          responseSchema: JSON.stringify({
-            type: 'object',
-            properties: {
-              response: { type: 'object', properties: {} },
-              status: { type: 'number' },
-            },
-          }),
-          response: {},
-        },
-      );
+      const result = (await hydrate(input)) as SuccessResponse;
+
+      expect(result.batch).toHaveLength(1);
+      expect(result.batch[0].statusCode).toBe(500);
+      expect(result.batch[0].errorMessage).toBe(expectedErrorMessage);
+      expect(logger.error).not.toHaveBeenCalled();
     });
 
-    it('should throw and log schema when response body is a string', async () => {
+    it('should return a batch error entry when response body is a string', async () => {
       mockHttpGET.mockResolvedValue({
         success: false,
         response: {
@@ -524,26 +511,15 @@ describe('Facebook Lead Ads Hydration', () => {
 
       const input = createValidInput(['123456']);
 
-      await expect(hydrate(input)).rejects.toThrow(
-        'Unexpected: errorResponseHandler did not throw for non-OK response',
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        '[facebook_lead_ads_native] Non-OK response from Facebook API',
-        {
-          status: 500,
-          responseSchema: JSON.stringify({
-            type: 'object',
-            properties: {
-              response: { type: 'string' },
-              status: { type: 'number' },
-            },
-          }),
-          response: 'Internal Server Error',
-        },
-      );
+      const result = (await hydrate(input)) as SuccessResponse;
+
+      expect(result.batch).toHaveLength(1);
+      expect(result.batch[0].statusCode).toBe(500);
+      expect(result.batch[0].errorMessage).toBe(expectedErrorMessage);
+      expect(logger.error).not.toHaveBeenCalled();
     });
 
-    it('should throw and log schema when response error is null', async () => {
+    it('should return a batch error entry when response error is null', async () => {
       mockHttpGET.mockResolvedValue({
         success: false,
         response: {
@@ -554,23 +530,12 @@ describe('Facebook Lead Ads Hydration', () => {
 
       const input = createValidInput(['123456']);
 
-      await expect(hydrate(input)).rejects.toThrow(
-        'Unexpected: errorResponseHandler did not throw for non-OK response',
-      );
-      expect(logger.error).toHaveBeenCalledWith(
-        '[facebook_lead_ads_native] Non-OK response from Facebook API',
-        {
-          status: 500,
-          responseSchema: JSON.stringify({
-            type: 'object',
-            properties: {
-              response: { type: 'object', properties: { error: { type: 'null' } } },
-              status: { type: 'number' },
-            },
-          }),
-          response: { error: null },
-        },
-      );
+      const result = (await hydrate(input)) as SuccessResponse;
+
+      expect(result.batch).toHaveLength(1);
+      expect(result.batch[0].statusCode).toBe(500);
+      expect(result.batch[0].errorMessage).toBe(expectedErrorMessage);
+      expect(logger.error).not.toHaveBeenCalled();
     });
   });
 

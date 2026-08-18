@@ -122,6 +122,30 @@ export const buildProcessorInput = (message: Record<string, unknown>) => ({
 });
 
 /**
+ * Destination whose `restApiKey` never made it into the config the data plane received.
+ * Reproduces the state that put `Authorization: Bearer undefined` on the wire and drew a
+ * `401 {"message":"Invalid API key: undefined"}` from Braze, aborting every event.
+ */
+export const missingRestApiKeyDestination = {
+  hasDynamicConfig: false,
+  Config: {
+    prefixProperties: true,
+    useNativeSDK: false,
+    dataCenter: 'us-01',
+  },
+  DestinationDefinition: {
+    DisplayName: 'Braze',
+    ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+    Name: 'BRAZE',
+  },
+  Enabled: true,
+  ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+  Name: 'Braze',
+  WorkspaceID: 'workspace_test_001',
+  Transformations: [],
+};
+
+/**
  * Shared fixtures for the v1 proxy (dataDelivery) scenarios that exercise the
  * networkHandler's per-item correlation on /users/track. The response bodies
  * live here so the network mock and the expected `error` strings in

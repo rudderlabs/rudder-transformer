@@ -2911,3 +2911,129 @@ describe('router in/out job accounting (ON path)', () => {
     expect(outJobIdCount(result)).toBe(jobs.length);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Chunk-boundary invariant: chunking packs whole source-job groups, never
+// individual items, so a boundary can only fall between two jobs. A chunk may
+// therefore close under the per-type cap rather than split a job.
+// ---------------------------------------------------------------------------
+
+describe('chunk boundaries never split a source job', () => {
+  const destination = brazeDestFor();
+
+  type ItemSpec = { type: 'attributes' | 'events' | 'purchases'; externalId?: string };
+
+  const jobFromSpecs = (jobId: number, specs: ItemSpec[]): BrazeTransformedEvent => {
+    const bucket: Record<string, any[]> = { attributes: [], events: [], purchases: [] };
+    specs.forEach((spec, k) => {
+      const base: Record<string, unknown> = { tag: `${jobId}-${k}` };
+      if (spec.externalId !== undefined) {
+        base.external_id = spec.externalId;
+      }
+      if (spec.type === 'events') {
+        bucket.events.push({ ...base, name: 'e', time: 't' });
+      } else if (spec.type === 'purchases') {
+        bucket.purchases.push({
+          ...base,
+          product_id: `p${jobId}-${k}`,
+          price: 1,
+          currency: 'USD',
+          quantity: 1,
+          time: 't',
+        });
+      } else {
+        bucket.attributes.push(base);
+      }
+    });
+    return {
+      destination,
+      statusCode: 200,
+      batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
+        body: {
+          JSON: {
+            attributes: bucket.attributes,
+            events: bucket.events,
+            purchases: bucket.purchases,
+          },
+        },
+        files: {},
+      } as any,
+      metadata: [{ jobId, workspaceId: 'workspace-non-mau' }],
+    };
+  };
+
+  const jobIdOccurrences = (result: any[]): Map<number, number> => {
+    const counts = new Map<number, number>();
+    for (const out of result) {
+      for (const jobId of new Set((out.metadata ?? []).map((m: any) => m.jobId))) {
+        counts.set(jobId as number, (counts.get(jobId as number) ?? 0) + 1);
+      }
+    }
+    return counts;
+  };
+
+  test('closes a chunk under the per-type cap rather than splitting the job that overflows it', () => {
+    // 37 two-attribute jobs fill 74 of the 75 attribute slots. The 38th job also
+    // contributes two attributes, and its two items carry different external_ids
+    // — the shape that used to be scattered by the item-level sort.
+    const jobs = Array.from({ length: 37 }, (_, i) =>
+      jobFromSpecs(i, [
+        { type: 'attributes', externalId: `u${String(i).padStart(3, '0')}` },
+        { type: 'attributes', externalId: `u${String(i).padStart(3, '0')}` },
+      ]),
+    );
+    jobs.push(
+      jobFromSpecs(37, [{ type: 'attributes', externalId: 'aaa' }, { type: 'attributes' }]),
+    );
+
+    const result = processBatchWithDeliveryMapping(jobs);
+    const tracks = onTrackOutputs(result, destination);
+
+    // The overflowing job is not split: no chunk carries 75 attributes.
+    expect(tracks.some((t) => t.batchedRequest.body.JSON.attributes.length === 75)).toBe(false);
+    for (const [, occurrences] of jobIdOccurrences(result)) {
+      expect(occurrences).toBe(1);
+    }
+  });
+
+  test('no jobId is ever emitted twice across randomised mixed-external_id batches', () => {
+    // Deterministic LCG — reproducible, no test flakiness.
+    let seed = 0x2f6e2b1;
+    const rand = (n: number) => {
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      return seed % n;
+    };
+    const types: ItemSpec['type'][] = ['attributes', 'events', 'purchases'];
+    const pool = ['e0', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7'];
+
+    const jobs = Array.from({ length: 120 }, (_, i) => {
+      const specs: ItemSpec[] = [{ type: 'attributes', externalId: pool[rand(pool.length)] }];
+      const extra = rand(4);
+      for (let k = 0; k < extra; k += 1) {
+        const pick = rand(pool.length + 1);
+        specs.push({
+          type: types[rand(types.length)],
+          // pool.length means "no external_id at all" — the alias-branch shape.
+          externalId: pick === pool.length ? undefined : pool[pick],
+        });
+      }
+      return jobFromSpecs(i, specs);
+    });
+
+    const result = processBatchWithDeliveryMapping(jobs);
+    const tracks = onTrackOutputs(result, destination);
+    expect(tracks.length).toBeGreaterThanOrEqual(2);
+
+    const counts = jobIdOccurrences(result);
+    expect(counts.size).toBe(jobs.length);
+    for (const [, occurrences] of counts) {
+      expect(occurrences).toBe(1);
+    }
+  });
+});

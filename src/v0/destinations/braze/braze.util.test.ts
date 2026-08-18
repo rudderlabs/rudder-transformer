@@ -1947,10 +1947,11 @@ describe('processBatchWithDeliveryMapping', () => {
     expect(onTrackOutputs(result, destination).length).toBe(0);
   });
 
-  test('instruments (stat + log) an unclassifiable body before re-throwing', () => {
-    const statsSpy = jest.spyOn(stats, 'increment').mockImplementation(() => {});
-    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined as any);
-
+  test('an unclassifiable body still throws, uninstrumented (out of scope — see NOTE in util.ts)', () => {
+    // classifyJobRun's throw escapes to a full-batch abort with in==out, so it
+    // structurally cannot produce the "in out mismatch" alert this PR targets.
+    // Deliberately NOT instrumented — asserting the (unchanged) throw behavior
+    // here so a future change to that doesn't silently start swallowing it.
     const unclassifiable: BrazeTransformedEvent = {
       destination,
       statusCode: 200,
@@ -1958,24 +1959,7 @@ describe('processBatchWithDeliveryMapping', () => {
       metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
     } as BrazeTransformedEvent;
 
-    // Still throws — this is observability only, not a behavior fix.
     expect(() => processBatchWithDeliveryMapping([unclassifiable])).toThrow();
-
-    expect(statsSpy).toHaveBeenCalledWith('braze_unprocessable_job', {
-      destination_id: destination.ID,
-      reason: 'unclassifiable_body',
-    });
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.stringContaining('unclassifiable batchedRequest.body.JSON'),
-      expect.objectContaining({
-        destinationId: destination.ID,
-        hasBatchedRequest: true,
-        hasBody: false,
-      }),
-    );
-
-    statsSpy.mockRestore();
-    loggerSpy.mockRestore();
   });
 
   test('instruments (stat + log) a classified body that contributes zero items', () => {

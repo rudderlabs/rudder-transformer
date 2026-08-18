@@ -1420,39 +1420,18 @@ const processBatchWithDeliveryMapping = (
       filteredResponses.push(transformedEvent);
       return;
     }
-    let classification: JobClassification;
-    try {
-      classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
-    } catch (error) {
-      // Same underlying trigger as processBatch's drop (see the NOTE there) —
-      // batchedRequest.body.JSON doesn't match any Braze payload shape, most
-      // often because it's missing entirely. The difference here is severity:
-      // this throw escapes processBatchWithDeliveryMapping uncaught, so
-      // nativeIntegration.ts's catch aborts the ENTIRE destination batch (every
-      // job in the group, not just this one) at statusCode 400 — and because
-      // that single response carries every input jobId, in==out, so
-      // `router_transformer_invalid_response{reason="in out mismatch"}` never
-      // fires for this path. Not fixed here (see PR discussion); logged so an
-      // otherwise-silent full-batch abort is diagnosable without a code audit.
-      stats.increment('braze_unprocessable_job', {
-        destination_id: transformedEvent.destination?.ID,
-        reason: 'unclassifiable_body',
-      });
-      logger.warn(
-        '[Braze] processBatchWithDeliveryMapping: unclassifiable batchedRequest.body.JSON — this throw aborts the entire destination batch',
-        {
-          destinationId: transformedEvent.destination?.ID,
-          workspaceId,
-          hasBatchedRequest: Boolean(transformedEvent.batchedRequest),
-          hasBody: Boolean(transformedEvent.batchedRequest?.body),
-        },
-      );
-      throw error;
-    }
+    // Note: classifyJobRun (below) can throw when batchedRequest.body.JSON
+    // doesn't match any Braze payload shape. That throw is NOT instrumented
+    // here — it escapes uncaught and is turned into a single balanced
+    // full-batch-abort response by nativeIntegration.ts's catch (in==out), so
+    // it structurally cannot produce the "in out mismatch" symptom this PR is
+    // about. Out of scope here; a full-batch abort is a real but different
+    // problem.
+    const classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
 
     // A job whose body classifies fine but contributes zero items (e.g.
-    // `attributes: []`) never lands in any output array below — the same class
-    // of silent drop as the classifyJobRun throw above, just without a throw to
+    // `attributes: []`) never lands in any output array below — this DOES match
+    // the same "in out mismatch" symptom as processBatch's drop, without a throw to
     // catch. Not known to be reachable through this repo's own `process()`
     // transform today (every legitimate output either throws upstream or
     // contributes ≥1 item), but logged cheaply here in case that contract is

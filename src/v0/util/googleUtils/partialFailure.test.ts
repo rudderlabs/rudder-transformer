@@ -1,14 +1,14 @@
-import {
-  formatGoogleAdsErrors,
-  getErrorCodeLabel,
-  getFieldPath,
-  getOperationIndex,
-  parsePartialFailure,
-  GoogleAdsError,
-  PartialFailureError,
-} from './partialFailure';
+import { formatGoogleAdsErrors, parsePartialFailure } from './partialFailure';
 
-const failureWith = (errors: GoogleAdsError[], requestId?: string): PartialFailureError => ({
+// Shapes are declared locally rather than imported: the module exports only the two functions
+// under test, and nothing should be exported purely to give this file a handle on it.
+type TestError = {
+  errorCode?: Record<string, string>;
+  message?: string;
+  location?: { fieldPathElements?: { fieldName?: string; index?: number }[] };
+};
+
+const failureWith = (errors: TestError[], requestId?: string) => ({
   code: 3,
   message: 'summary message',
   details: [
@@ -20,76 +20,48 @@ const failureWith = (errors: GoogleAdsError[], requestId?: string): PartialFailu
   ],
 });
 
-describe('getErrorCodeLabel', () => {
-  it('flattens the errorCode oneof into a label', () => {
-    expect(getErrorCodeLabel({ errorCode: { internalError: 'INTERNAL_ERROR' } })).toBe(
-      'internalError: INTERNAL_ERROR',
-    );
-  });
+/** Which conversion an error gets attributed to, observed through the public parser. */
+const attributedIndex = (error: TestError): number | undefined => {
+  const { errorsByIndex, unindexedErrors } = parsePartialFailure(failureWith([error]));
+  return unindexedErrors.length > 0 ? undefined : [...errorsByIndex.keys()][0];
+};
 
-  it('returns undefined when errorCode is absent or not an object', () => {
-    expect(getErrorCodeLabel({})).toBeUndefined();
-    expect(getErrorCodeLabel({ errorCode: 'INTERNAL_ERROR' } as never)).toBeUndefined();
-  });
+const locatedAt = (fieldPathElements: { fieldName?: string; index?: number }[]): TestError => ({
+  location: { fieldPathElements },
 });
 
-describe('getOperationIndex', () => {
+describe('attributing an error to its conversion', () => {
   it('reads the index of the named operation field', () => {
-    const error = {
-      location: { fieldPathElements: [{ fieldName: 'conversions', index: 3 }] },
-    };
-    expect(getOperationIndex(error, 'conversions')).toBe(3);
+    expect(attributedIndex(locatedAt([{ fieldName: 'conversions', index: 3 }]))).toBe(3);
   });
 
   it('resolves index 0, which is the most common case', () => {
-    const error = {
-      location: { fieldPathElements: [{ fieldName: 'conversions', index: 0 }] },
-    };
-    expect(getOperationIndex(error, 'conversions')).toBe(0);
+    expect(attributedIndex(locatedAt([{ fieldName: 'conversions', index: 0 }]))).toBe(0);
   });
 
   it('resolves nested paths where the leaf element carries no index', () => {
-    const error = {
-      location: {
-        fieldPathElements: [
-          { fieldName: 'conversions', index: 1 },
-          { fieldName: 'conversion_action' },
-        ],
-      },
-    };
-    expect(getOperationIndex(error, 'conversions')).toBe(1);
-  });
-
-  it('falls back to the first indexed element when the field name does not match', () => {
-    const error = {
-      location: { fieldPathElements: [{ fieldName: 'conversion_adjustments', index: 2 }] },
-    };
-    expect(getOperationIndex(error, 'conversions')).toBe(2);
-  });
-
-  it('returns undefined when there is no location or no index', () => {
-    expect(getOperationIndex({}, 'conversions')).toBeUndefined();
     expect(
-      getOperationIndex(
-        { location: { fieldPathElements: [{ fieldName: 'conversion_action' }] } },
-        'conversions',
+      attributedIndex(
+        locatedAt([{ fieldName: 'conversions', index: 1 }, { fieldName: 'conversion_action' }]),
       ),
-    ).toBeUndefined();
+    ).toBe(1);
+  });
+
+  it('falls back to the outermost element when the field name does not match', () => {
+    // Keeps the util usable for conversion_adjustments (GAEC) without a second code path.
+    expect(attributedIndex(locatedAt([{ fieldName: 'conversion_adjustments', index: 2 }]))).toBe(2);
+  });
+
+  it('leaves an error request-wide when there is no location or no index', () => {
+    expect(attributedIndex({})).toBeUndefined();
+    expect(attributedIndex(locatedAt([{ fieldName: 'conversion_action' }]))).toBeUndefined();
   });
 
   it('ignores an index on a nested repeated field', () => {
     // conversions.user_identifiers[2] is identifier 2 of ONE conversion, not conversion 2.
     expect(
-      getOperationIndex(
-        {
-          location: {
-            fieldPathElements: [
-              { fieldName: 'conversions' },
-              { fieldName: 'user_identifiers', index: 2 },
-            ],
-          },
-        },
-        'conversions',
+      attributedIndex(
+        locatedAt([{ fieldName: 'conversions' }, { fieldName: 'user_identifiers', index: 2 }]),
       ),
     ).toBeUndefined();
   });
@@ -153,31 +125,11 @@ describe('parsePartialFailure', () => {
 
   it('returns empty results for malformed or missing input', () => {
     [undefined, {}, { details: 'nope' }, { details: [{}] }].forEach((input) => {
-      const parsed = parsePartialFailure(input as PartialFailureError);
+      const parsed = parsePartialFailure(input as never);
       expect(parsed.errorsByIndex.size).toBe(0);
       expect(parsed.unindexedErrors).toEqual([]);
       expect(parsed.requestId).toBeUndefined();
     });
-  });
-});
-
-describe('getFieldPath', () => {
-  it('renders indexed and scalar elements as a readable path', () => {
-    expect(
-      getFieldPath({
-        location: {
-          fieldPathElements: [
-            { fieldName: 'conversions', index: 1 },
-            { fieldName: 'conversion_action' },
-          ],
-        },
-      }),
-    ).toBe('conversions[1].conversion_action');
-  });
-
-  it('returns undefined when there is no usable location', () => {
-    expect(getFieldPath({})).toBeUndefined();
-    expect(getFieldPath({ location: { fieldPathElements: [] } })).toBeUndefined();
   });
 });
 
@@ -217,6 +169,23 @@ describe('formatGoogleAdsErrors', () => {
     ).toBe(
       'The conversion action cannot be found. [conversionUploadError: NO_CONVERSION_ACTION_FOUND] at conversions[1].conversion_action',
     );
+  });
+
+  it('omits the path and the code when Google reported neither', () => {
+    expect(formatGoogleAdsErrors([{ message: 'plain' }], 'fallback')).toBe('plain');
+    expect(
+      formatGoogleAdsErrors(
+        [{ message: 'plain', location: { fieldPathElements: [] } }],
+        'fallback',
+      ),
+    ).toBe('plain');
+    // An errorCode that is not the expected oneof object contributes nothing.
+    expect(
+      formatGoogleAdsErrors(
+        [{ message: 'plain', errorCode: 'INTERNAL_ERROR' } as never],
+        'fallback',
+      ),
+    ).toBe('plain');
   });
 
   it('joins multiple errors for the same event', () => {

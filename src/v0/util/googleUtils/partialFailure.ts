@@ -21,13 +21,13 @@
  * - https://github.com/googleapis/googleapis/blob/master/google/ads/googleads/v23/errors/errors.proto
  */
 
-export type FieldPathElement = {
+type FieldPathElement = {
   fieldName?: string;
   /** Only set for repeated fields; absent for leaf scalars such as `conversion_action`. */
   index?: number;
 };
 
-export type GoogleAdsError = {
+type GoogleAdsError = {
   /** A oneof, so exactly one key is set, e.g. `{ internalError: 'INTERNAL_ERROR' }`. */
   errorCode?: Record<string, string>;
   message?: string;
@@ -36,20 +36,20 @@ export type GoogleAdsError = {
   };
 };
 
-export type GoogleAdsFailure = {
+type GoogleAdsFailure = {
   /** e.g. `type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure` */
   '@type'?: string;
   errors?: GoogleAdsError[];
   requestId?: string;
 };
 
-export type PartialFailureError = {
+type PartialFailureError = {
   code?: number;
   message?: string;
   details?: GoogleAdsFailure[];
 };
 
-export type ParsedPartialFailure = {
+type ParsedPartialFailure = {
   /** Errors keyed by the 0-based index of the operation they belong to. */
   errorsByIndex: Map<number, GoogleAdsError[]>;
   /** Errors carrying no operation index, so they apply to the request as a whole. */
@@ -60,7 +60,7 @@ export type ParsedPartialFailure = {
 /**
  * Flattens the `errorCode` oneof into an `internalError: INTERNAL_ERROR` label.
  */
-export const getErrorCodeLabel = (error: GoogleAdsError): string | undefined => {
+const getErrorCodeLabel = (error: GoogleAdsError): string | undefined => {
   const { errorCode } = error ?? {};
   if (!errorCode || typeof errorCode !== 'object') {
     return undefined;
@@ -78,10 +78,7 @@ export const getErrorCodeLabel = (error: GoogleAdsError): string | undefined => 
  * element carries no index but whose nested one does — `conversions.user_identifiers[2]` would
  * otherwise be read as operation 2.
  */
-export const getOperationIndex = (
-  error: GoogleAdsError,
-  operationField: string,
-): number | undefined => {
+const getOperationIndex = (error: GoogleAdsError, operationField: string): number | undefined => {
   const elements = error?.location?.fieldPathElements;
   if (!Array.isArray(elements)) {
     return undefined;
@@ -97,7 +94,7 @@ export const getOperationIndex = (
  * Renders the location as a readable field path, e.g. `conversions[1].conversion_action`, so the
  * offending field survives alongside the error code.
  */
-export const getFieldPath = (error: GoogleAdsError): string | undefined => {
+const getFieldPath = (error: GoogleAdsError): string | undefined => {
   const elements = error?.location?.fieldPathElements;
   if (!Array.isArray(elements)) {
     return undefined;
@@ -151,8 +148,8 @@ export const parsePartialFailure = (
  * would otherwise be rendered once per event — O(events x errors). These caps keep the size of
  * what we emit independent of what the destination returns.
  */
-export const MAX_ERRORS_PER_EVENT = 3;
-export const MAX_ERROR_LENGTH = 1024;
+const MAX_ERRORS_PER_EVENT = 3;
+const MAX_ERROR_LENGTH = 1024;
 
 const describeError = (error: GoogleAdsError, fallbackMessage: string): string => {
   const code = getErrorCodeLabel(error);

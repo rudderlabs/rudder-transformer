@@ -134,6 +134,8 @@ const esCfg = (accessToken: string, over: Record<string, unknown> = {}) => ({
   lookupField: 'phone',
   ...over,
 });
+const unsupportedLegacyAuthError =
+  'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.';
 const legacyCfg = (over: Record<string, unknown> = {}) => ({
   authorizationType: 'legacyApiKey',
   apiVersion: 'legacyApi',
@@ -288,7 +290,11 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -337,7 +343,11 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -377,8 +387,8 @@ const baseData: Record<string, unknown>[] = [
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
                 endpointPath: '/crm/v3/objects/lead/batch/update',
-                headers: { 'Content-Type': 'application/json' },
-                params: { hapikey: 'dummy-apikey' },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+                params: {},
                 body: {
                   JSON: {
                     inputs: [
@@ -403,7 +413,11 @@ const baseData: Record<string, unknown>[] = [
               batched: true,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -431,8 +445,8 @@ const baseData: Record<string, unknown>[] = [
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
                 endpointPath: '/crm/v3/objects/lead/batch/create',
-                headers: { 'Content-Type': 'application/json' },
-                params: { hapikey: 'dummy-apikey' },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+                params: {},
                 body: {
                   JSON: {
                     inputs: [
@@ -456,7 +470,11 @@ const baseData: Record<string, unknown>[] = [
               batched: true,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -526,7 +544,11 @@ const baseData: Record<string, unknown>[] = [
               },
               metadata: { jobId: 1, userId: 'u1' },
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -580,7 +602,11 @@ const baseData: Record<string, unknown>[] = [
               },
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -635,7 +661,11 @@ const baseData: Record<string, unknown>[] = [
               },
               metadata: { jobId: 4, userId: 'u1' },
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -674,8 +704,8 @@ const baseData: Record<string, unknown>[] = [
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
                 endpointPath: '/contacts/v1/contact/batch/',
-                headers: { 'Content-Type': 'application/json' },
-                params: { hapikey: 'dummy-apikey' },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+                params: {},
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
@@ -695,7 +725,11 @@ const baseData: Record<string, unknown>[] = [
               batched: true,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -723,7 +757,7 @@ const baseData: Record<string, unknown>[] = [
                 method: 'GET',
                 endpoint: 'https://track.hubspot.com/v1/event',
                 endpointPath: '/v1/event',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
                 params: {
                   _a: 'dummy-hubId',
                   _n: 'test track event HS',
@@ -737,7 +771,11 @@ const baseData: Record<string, unknown>[] = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -765,8 +803,8 @@ const baseData: Record<string, unknown>[] = [
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
                 endpointPath: '/contacts/v1/contact/batch/',
-                headers: { 'Content-Type': 'application/json' },
-                params: { hapikey: 'dummy-apikey' },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+                params: {},
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
@@ -786,7 +824,11 @@ const baseData: Record<string, unknown>[] = [
               batched: true,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -3686,7 +3728,11 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: { apiKey: 'invalid-api-key', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: 'invalid-api-key',
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -3735,7 +3781,11 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: { apiKey: 'invalid-api-key', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: 'invalid-api-key',
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -3772,7 +3822,8 @@ const baseData: Record<string, unknown>[] = [
               batched: false,
               destination: {
                 Config: {
-                  apiKey: 'invalid-api-key',
+                  accessToken: 'invalid-api-key',
+                  authorizationType: 'newPrivateAppApi',
                   hubID: 'dummy-hubId',
                 },
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -3796,17 +3847,14 @@ const baseData: Record<string, unknown>[] = [
               },
               error: JSON.stringify({
                 message:
-                  'Failed to get hubspot properties: {"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"correlation-id","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}}',
+                  'Failed to get hubspot properties: {"status":"error","message":"The access token provided is invalid.","correlationId":"correlation-id","category":"INVALID_AUTHENTICATION","links":{}}',
                 destinationResponse: {
                   response: {
                     status: 'error',
-                    message:
-                      'The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/',
+                    message: 'The access token provided is invalid.',
                     correlationId: 'correlation-id',
                     category: 'INVALID_AUTHENTICATION',
-                    links: {
-                      'api key': 'https://app.hubspot.com/l/api-key/',
-                    },
+                    links: {},
                   },
                   status: 401,
                 },
@@ -3831,7 +3879,8 @@ const baseData: Record<string, unknown>[] = [
               batched: false,
               destination: {
                 Config: {
-                  apiKey: 'invalid-api-key',
+                  accessToken: 'invalid-api-key',
+                  authorizationType: 'newPrivateAppApi',
                   hubID: 'dummy-hubId',
                 },
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -3855,17 +3904,14 @@ const baseData: Record<string, unknown>[] = [
               },
               error: JSON.stringify({
                 message:
-                  'Failed to get hubspot properties: {"status":"error","message":"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/","correlationId":"correlation-id","category":"INVALID_AUTHENTICATION","links":{"api key":"https://app.hubspot.com/l/api-key/"}}',
+                  'Failed to get hubspot properties: {"status":"error","message":"The access token provided is invalid.","correlationId":"correlation-id","category":"INVALID_AUTHENTICATION","links":{}}',
                 destinationResponse: {
                   response: {
                     status: 'error',
-                    message:
-                      'The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/',
+                    message: 'The access token provided is invalid.',
                     correlationId: 'correlation-id',
                     category: 'INVALID_AUTHENTICATION',
-                    links: {
-                      'api key': 'https://app.hubspot.com/l/api-key/',
-                    },
+                    links: {},
                   },
                   status: 401,
                 },
@@ -4262,7 +4308,11 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2024-05-23T16:49:57.461+05:30',
               },
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -4318,7 +4368,11 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2024-05-23T16:49:57.461+05:30',
               },
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -4362,8 +4416,8 @@ const baseData: Record<string, unknown>[] = [
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
                 endpointPath: '/crm/v3/objects/lead/batch/create',
-                headers: { 'Content-Type': 'application/json' },
-                params: { hapikey: 'dummy-apikey' },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+                params: {},
                 body: {
                   JSON: {
                     inputs: [
@@ -4393,7 +4447,11 @@ const baseData: Record<string, unknown>[] = [
               batched: true,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -4421,8 +4479,8 @@ const baseData: Record<string, unknown>[] = [
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
                 endpointPath: '/crm/v3/objects/lead/batch/update',
-                headers: { 'Content-Type': 'application/json' },
-                params: { hapikey: 'dummy-apikey' },
+                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+                params: {},
                 body: {
                   JSON: {
                     inputs: [
@@ -4453,7 +4511,11 @@ const baseData: Record<string, unknown>[] = [
               batched: true,
               statusCode: 200,
               destination: {
-                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -4707,74 +4769,62 @@ const baseData: Record<string, unknown>[] = [
       '{"message":"rETL - Error during searching object record. \\"boom\\"","destinationResponse":{"response":{"message":"boom"},"status":500}}',
     statTags: enrich('network', 'retryable'),
   }),
-  // legacy (apiVersion 'legacyApi') config validation
+  // legacy API-key auth is no longer supported, regardless of API version or flow.
   errCase({
-    id: 'hs_router_legacy_missing_hub_id',
-    // no properties/traits so the batch-level getProperties fetch is skipped and
-    // config validation (which runs inside processSingleMessage) is what aborts.
-    description: '(legacyApiKey) missing hubID in config is aborted',
-    message: { type: 'track', event: 'Purchase' },
-    config: legacyCfg({ hubID: '' }),
-    statusCode: 400,
-    error: 'Hub ID not found. Aborting',
-    statTags: enrich('dataValidation', 'configuration'),
-  }),
-  errCase({
-    id: 'hs_router_legacy_missing_api_key',
-    description: '(legacyApiKey) missing apiKey in config is aborted',
-    message: { type: 'track', event: 'Purchase' },
-    config: legacyCfg({ apiKey: '' }),
-    statusCode: 400,
-    error: 'API Key not found. Aborting',
-    statTags: enrich('dataValidation', 'configuration'),
-  }),
-  errCase({
-    id: 'hs_router_legacy_identify_no_email',
-    description: '(legacyApi) event-stream identify without email is aborted',
-    message: {
-      type: 'identify',
-      traits: { firstname: 'A' },
-      context: { mappedToDestination: false },
-    },
-    config: legacyCfg(),
-    statusCode: 400,
-    error: 'Identify without email is not supported.',
-    statTags: enrich('dataValidation', 'instrumentation'),
-  }),
-  // legacy v1 endpoints (hapikey property lookup + private-app v1 contact/track)
-  successCase({
-    id: 'hs_router_newapi_hapikey_identify',
-    description: '(newApi + legacyApiKey) identify uses hapikey auth for property lookup + create',
+    id: 'hs_router_legacy_auth_newapi_identify_rejected',
+    description: '(newApi + legacyApiKey) event-stream identify is rejected before property lookup',
     message: {
       type: 'identify',
       traits: { phone: '9', firstname: 'A' },
       context: { mappedToDestination: false },
     },
-    config: {
-      authorizationType: 'legacyApiKey',
-      apiVersion: 'newApi',
-      apiKey: 'dummy-apikeysuccess',
-      hubID: '123',
-      lookupField: 'phone',
-    },
-    batched: true,
-    batchedRequest: {
-      version: '1',
-      type: 'REST',
-      method: 'POST',
-      endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
-      endpointPath: '/crm/v3/objects/contacts/batch/create',
-      headers: { 'Content-Type': 'application/json' },
-      params: { hapikey: 'dummy-apikeysuccess' },
-      body: {
-        JSON: { inputs: [{ properties: { firstname: 'A', phone: '9' } }] },
-        JSON_ARRAY: {},
-        XML: {},
-        FORM: {},
-      },
-      files: {},
-    },
+    config: legacyCfg({ apiVersion: 'newApi', lookupField: 'phone' }),
+    statusCode: 400,
+    error: unsupportedLegacyAuthError,
+    statTags: enrich('dataValidation', 'configuration'),
   }),
+  errCase({
+    id: 'hs_router_legacy_auth_legacyapi_track_rejected',
+    description: '(legacyApi + legacyApiKey) event-stream track is rejected',
+    message: { type: 'track', event: 'Purchase' },
+    config: legacyCfg(),
+    statusCode: 400,
+    error: unsupportedLegacyAuthError,
+    statTags: enrich('dataValidation', 'configuration'),
+  }),
+  errCase({
+    id: 'hs_router_retl_legacy_auth_newapi_identify_rejected',
+    description: '(newApi + legacyApiKey) rETL identify is rejected before lookup/search',
+    message: {
+      type: 'identify',
+      context: {
+        mappedToDestination: true,
+        externalId: [{ type: 'HS-contacts', identifierType: 'email', id: 'legacy@example.com' }],
+      },
+      traits: { email: 'legacy@example.com', firstname: 'Legacy' },
+    },
+    config: legacyCfg({ apiVersion: 'newApi', lookupField: 'email' }),
+    statusCode: 400,
+    error: unsupportedLegacyAuthError,
+    statTags: enrich('dataValidation', 'configuration'),
+  }),
+  errCase({
+    id: 'hs_router_retl_legacy_auth_legacyapi_identify_rejected',
+    description: '(legacyApi + legacyApiKey) rETL identify is rejected before lookup/search',
+    message: {
+      type: 'identify',
+      context: {
+        mappedToDestination: true,
+        externalId: [{ type: 'HS-lead', identifierType: 'email', id: 'legacy-v1@example.com' }],
+      },
+      traits: { email: 'legacy-v1@example.com', firstname: 'Legacy V1' },
+    },
+    config: legacyCfg(),
+    statusCode: 400,
+    error: unsupportedLegacyAuthError,
+    statTags: enrich('dataValidation', 'configuration'),
+  }),
+  // legacy v1 endpoints with private-app auth
   successCase({
     id: 'hs_router_v1_identify_private_app',
     description: '(legacyApi + private-app) identify hits contacts/v1 with Bearer auth',

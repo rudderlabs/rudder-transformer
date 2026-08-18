@@ -17,6 +17,7 @@ import {
   removeHubSpotSystemField,
   isLookupFieldUnique,
   getUTCMidnightTimeStampValue,
+  validateDestinationConfig,
 } from './util';
 import { primaryToSecondaryFields } from './config';
 import { HubspotRudderMessage } from './types';
@@ -30,6 +31,27 @@ const propertyMap: Record<string, string> = {
   isPaidPlan: 'bool',
   address: 'enumeration',
 };
+
+const unsupportedLegacyAuthError =
+  'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.';
+
+describe('Validate destination config utility function test cases', () => {
+  it('should reject unsupported legacy API key authentication before checking legacy fields', () => {
+    expect(() =>
+      validateDestinationConfig({
+        Config: { authorizationType: 'legacyApiKey' },
+      } as any),
+    ).toThrow(unsupportedLegacyAuthError);
+  });
+
+  it('should require accessToken for Private Apps authentication', () => {
+    expect(() =>
+      validateDestinationConfig({
+        Config: { authorizationType: 'newPrivateAppApi' },
+      } as any),
+    ).toThrow('Access Token not found. Aborting');
+  });
+});
 
 describe('Validate payload data types utility function test cases', () => {
   it('Should validate payload data type and return it', () => {

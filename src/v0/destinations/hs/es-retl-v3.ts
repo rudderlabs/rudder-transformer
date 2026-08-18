@@ -41,6 +41,7 @@ import {
   getLookupFieldValue,
   addHsAuthentication,
   recordTransformFlow,
+  validateDestinationConfig,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -78,6 +79,7 @@ const processUpsertIdentify = async (
   }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
+  validateDestinationConfig(destination);
   const { Config } = destination;
 
   // Get lookup info for upsert (id and idProperty)
@@ -133,6 +135,7 @@ const processIdentify = async (
   }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
+  validateDestinationConfig(destination);
   const { Config } = destination;
   const traits: Record<string, unknown> = getFieldValueFromMessage(message, 'traits');
   // since hubspot does not allow invalid emails, we need to
@@ -211,6 +214,7 @@ const processTrack = async ({
   message,
   destination,
 }: HubspotRouterRequest): Promise<HubspotProcessorTransformationOutput> => {
+  validateDestinationConfig(destination);
   const { Config } = destination;
 
   let payload: HubSpotTrackEventRequest = constructPayload(
@@ -245,20 +249,7 @@ const processTrack = async ({
   response.messageType = 'track';
   recordTransformFlow(destination, 'event_stream', 'es_retl', 'track');
 
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // remove hubId
-    // eslint-disable-next-line no-underscore-dangle
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // using legacyApiKey
-    response.endpoint = `${BASE_ENDPOINT}${TRACK_CRM_ENDPOINT_PATH}?hapikey=${Config.apiKey}`;
-  }
-
-  return response;
+  return addHsAuthentication(response, Config);
 };
 
 const batchIdentify = (

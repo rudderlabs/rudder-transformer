@@ -31,6 +31,8 @@ import {
   formatPropertyValueForIdentify,
   removeHubSpotSystemField,
   recordTransformFlow,
+  addHsAuthentication,
+  validateDestinationConfig,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -61,6 +63,7 @@ const processLegacyIdentify = async (
   { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
+  validateDestinationConfig(destination);
   const { Config } = destination;
   const traits = getFieldValueFromMessage(message, 'traits');
   let endpoint: string = '';
@@ -98,19 +101,7 @@ const processLegacyIdentify = async (
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
-  }
-
-  return response;
+  return addHsAuthentication(response, Config);
 };
 
 /**
@@ -125,6 +116,7 @@ const processLegacyTrack = async (
   { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
+  validateDestinationConfig(destination);
   const { Config } = destination;
 
   if (!Config.hubID) {
@@ -156,16 +148,9 @@ const processLegacyTrack = async (
   response.messageType = 'track';
   recordTransformFlow(destination, 'event_stream', 'es_retl', 'track');
 
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  }
   response.params = params;
 
-  return response;
+  return addHsAuthentication(response, Config);
 };
 
 const legacyBatchEvents = (
@@ -210,7 +195,7 @@ const legacyBatchEvents = (
     const identifyResponseList: Record<string, unknown>[] = [];
     const metadata: Metadata[] = [];
 
-    // extracting destination, apiKey value
+    // extracting destination config
     // from the first event in a batch
     const { destination } = chunk[0];
     const { Config } = destination;
@@ -250,17 +235,7 @@ const legacyBatchEvents = (
       'Content-Type': JSON_MIME_TYPE,
     };
 
-    // choosing API Type
-    if (Config.authorizationType === 'newPrivateAppApi') {
-      // Private Apps
-      batchEventResponse.batchedRequest.headers = {
-        ...batchEventResponse.batchedRequest.headers,
-        Authorization: `Bearer ${Config.accessToken}`,
-      };
-    } else {
-      // API Key
-      batchEventResponse.batchedRequest.params = { hapikey: Config.apiKey };
-    }
+    addHsAuthentication(batchEventResponse.batchedRequest, Config);
 
     batchEventResponse = {
       ...batchEventResponse,

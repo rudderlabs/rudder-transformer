@@ -35,6 +35,7 @@ import {
   getHsSearchId,
   addHsAuthentication,
   recordTransformFlow,
+  validateDestinationConfig,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -69,6 +70,7 @@ const processRetlIdentify = async (
   }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
+  validateDestinationConfig(destination);
   const { Config } = destination;
   let traits: Record<string, unknown> = getFieldValueFromMessage(message, 'traits');
   // since hubspot does not allow invalid emails, we need to

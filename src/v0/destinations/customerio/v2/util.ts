@@ -26,9 +26,16 @@ import { CustomerIOV2Payload, CustomerIOV2Identifiers, CustomerIODestination } f
 export const toUnixSeconds = (v: unknown): number =>
   Math.floor(new Date(v as string).getTime() / 1000);
 
-const personIdentifiers = (message): CustomerIOV2Identifiers => {
+const personIdentifiers = (
+  message,
+  destination: CustomerIODestination,
+): CustomerIOV2Identifiers => {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
   const email = getFieldValueFromMessage(message, 'email');
+  const { userIdMapping } = destination.Config;
+  if (userIdMapping && userId) {
+    return { [userIdMapping]: userId };
+  }
   if (userId) {
     return { id: userId };
   }
@@ -71,7 +78,7 @@ const buildTraitAttributes = (message): Record<string, unknown> => {
   return attributes;
 };
 
-export const buildIdentify = (message): CustomerIOV2Payload => {
+export const buildIdentify = (message, destination: CustomerIODestination): CustomerIOV2Payload => {
   const id =
     getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email');
   if (!id) {
@@ -88,7 +95,7 @@ export const buildIdentify = (message): CustomerIOV2Payload => {
   return {
     type: 'person',
     action: 'identify',
-    identifiers: personIdentifiers(message),
+    identifiers: personIdentifiers(message, destination),
     attributes,
   };
 };
@@ -100,40 +107,54 @@ const historicalTimestamp = (message): { timestamp?: number } => {
   return hist ? { timestamp: toUnixSeconds(hist) } : {};
 };
 
-export const buildTrack = (message, evName): CustomerIOV2Payload => {
+export const buildTrack = (
+  message,
+  evName,
+  destination: CustomerIODestination,
+): CustomerIOV2Payload => {
   validateEventName(message.event);
   return {
     type: 'person',
     action: 'event',
-    identifiers: personIdentifiers(message),
+    identifiers: personIdentifiers(message, destination),
     name: String(evName),
     attributes: message.properties || {},
     ...historicalTimestamp(message),
   };
 };
 
-export const buildPage = (message, action: 'page', evName): CustomerIOV2Payload => {
+export const buildPage = (
+  message,
+  action: 'page',
+  evName,
+  destination: CustomerIODestination,
+): CustomerIOV2Payload => {
   if (typeof evName !== 'string') {
     throw new InstrumentationError('Event Name type should be a string');
   }
   return {
     type: 'person',
     action,
-    identifiers: personIdentifiers(message),
+    identifiers: personIdentifiers(message, destination),
     name: evName,
     attributes: message.properties || {},
     ...historicalTimestamp(message),
   };
 };
 
-export const buildScreen = (message, action: 'screen', evName): CustomerIOV2Payload => {
+export const buildScreen = (
+  message,
+  action: 'screen',
+  evName,
+  destination: CustomerIODestination,
+): CustomerIOV2Payload => {
   if (typeof evName !== 'string') {
     throw new InstrumentationError('Event Name type should be a string');
   }
   return {
     type: 'person',
     action,
-    identifiers: personIdentifiers(message),
+    identifiers: personIdentifiers(message, destination),
     name: `Viewed ${evName} Screen`,
     attributes: message.properties || {},
     ...historicalTimestamp(message),
@@ -185,12 +206,13 @@ const getDeviceCredentials = (message): { id: unknown; token: unknown } => ({
 export const buildDevice = (
   message,
   action: 'add_device' | 'delete_device',
+  destination: CustomerIODestination,
 ): CustomerIOV2Payload => {
   const { id, token } = getDeviceCredentials(message);
   if (!id || !token) {
     throw new InstrumentationError('userId/email or device_token not present');
   }
-  const identifiers = personIdentifiers(message);
+  const identifiers = personIdentifiers(message, destination);
   if (action === 'delete_device') {
     return { type: 'person', action, identifiers, device: { token } };
   }

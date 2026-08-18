@@ -7,6 +7,7 @@ import { CustomerIODestinationConfigSchema, CustomerIOConnectionConfigSchema } f
 export type CustomerIOV2Identifiers = {
   id?: string;
   email?: string;
+  phone?: string;
   cio_id?: string;
   anonymous_id?: string;
   object_id?: unknown;

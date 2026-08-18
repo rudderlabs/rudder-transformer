@@ -184,26 +184,24 @@ describe('CustomerIOIntegration — record event routing', () => {
 });
 
 describe('CustomerIOIntegration — event-stream event routing', () => {
-  const envKey = 'CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED';
-  const originalEnvValue = process.env[envKey];
-
-  afterEach(() => {
-    if (originalEnvValue === undefined) {
-      delete process.env[envKey];
-    } else {
-      process.env[envKey] = originalEnvValue;
-    }
+  const makeV2Destination = (
+    config: Partial<CustomerIORouterRequest['destination']['Config']> = {},
+  ): CustomerIORouterRequest['destination'] => ({
+    ...baseDestination,
+    Config: { ...baseDestination.Config, apiVersion: 'v2', userIdMapping: 'id', ...config },
   });
 
-  const makeEventStreamInput = (message: Record<string, unknown>): CIOInput =>
+  const makeEventStreamInput = (
+    message: Record<string, unknown>,
+    destination = baseDestination,
+  ): CIOInput =>
     ({
       message,
       metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
-      destination: baseDestination,
+      destination,
     }) as unknown as CIOInput;
 
   it('uses the legacy (V1) request shape by default', async () => {
-    delete process.env[envKey];
     const integration = new Integration(baseDestination);
     const input = makeEventStreamInput({
       type: 'identify',
@@ -219,14 +217,39 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
     expect((result.body as CustomerIOV2Payload).type).toBeUndefined();
   });
 
-  it('uses the new V2 request shape when the env var is enabled', async () => {
-    process.env[envKey] = 'true';
-    const integration = new Integration(baseDestination);
-    const input = makeEventStreamInput({
-      type: 'identify',
-      userId: 'user-1',
-      traits: { plan: 'pro' },
-    });
+  it('uses the legacy (V1) request shape when apiVersion is v1', async () => {
+    const v1Destination: CustomerIORouterRequest['destination'] = {
+      ...baseDestination,
+      Config: { ...baseDestination.Config, apiVersion: 'v1' },
+    };
+    const integration = new Integration(v1Destination);
+    const input = makeEventStreamInput(
+      {
+        type: 'identify',
+        userId: 'user-1',
+        traits: { plan: 'pro' },
+      },
+      v1Destination,
+    );
+    const { successPayloads } = await integration.transformEvents([input]);
+    expect(successPayloads).toHaveLength(1);
+    const result = successPayloads[0];
+    expect(result.method).toBe('PUT');
+    expect(result.endpoint).toMatch(/track\.customer\.io\/api\/v1\/customers\/user-1/);
+    expect((result.body as CustomerIOV2Payload).type).toBeUndefined();
+  });
+
+  it('uses the new V2 request shape when destination apiVersion is v2', async () => {
+    const v2Destination = makeV2Destination();
+    const integration = new Integration(v2Destination);
+    const input = makeEventStreamInput(
+      {
+        type: 'identify',
+        userId: 'user-1',
+        traits: { plan: 'pro' },
+      },
+      v2Destination,
+    );
     const { successPayloads } = await integration.transformEvents([input]);
     expect(successPayloads).toHaveLength(1);
     const result = successPayloads[0];
@@ -240,8 +263,67 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
     });
   });
 
+  it.each([
+    { userIdMapping: 'id' as const, expectedIdentifiers: { id: 'user-1' } },
+    { userIdMapping: 'email' as const, expectedIdentifiers: { email: 'user-1' } },
+    { userIdMapping: 'phone' as const, expectedIdentifiers: { phone: 'user-1' } },
+    { userIdMapping: 'cio_id' as const, expectedIdentifiers: { cio_id: 'user-1' } },
+  ])(
+    'maps userId to $userIdMapping for V2 person event identifiers',
+    async ({ userIdMapping, expectedIdentifiers }) => {
+      const v2Destination = makeV2Destination({ userIdMapping });
+      const integration = new Integration(v2Destination);
+      const personEvents = [
+        { type: 'identify', userId: 'user-1', traits: { plan: 'pro' } },
+        { type: 'track', event: 'Order Completed', userId: 'user-1', properties: {} },
+        { type: 'page', name: 'Docs', userId: 'user-1', properties: {} },
+        { type: 'screen', event: 'Home', userId: 'user-1', properties: {} },
+        {
+          type: 'track',
+          event: 'Application Installed',
+          userId: 'user-1',
+          properties: {},
+          context: { device: { token: 'device-token', type: 'ios' } },
+        },
+      ].map((message) => makeEventStreamInput(message, v2Destination));
+
+      const { successPayloads } = await integration.transformEvents(personEvents);
+      expect(successPayloads).toHaveLength(personEvents.length);
+      successPayloads.forEach((payload) =>
+        expect(payload.body).toMatchObject({ identifiers: expectedIdentifiers }),
+      );
+    },
+  );
+
+  it.each([
+    {
+      name: 'userId maps to id',
+      message: { type: 'identify', userId: 'user-1', traits: { plan: 'pro' } },
+      expectedIdentifiers: { id: 'user-1' },
+    },
+    {
+      name: 'email maps to email when userId is absent',
+      message: { type: 'identify', traits: { email: 'test@example.com', plan: 'pro' } },
+      expectedIdentifiers: { email: 'test@example.com' },
+    },
+    {
+      name: 'anonymousId maps to anonymous_id when userId and email are absent',
+      message: { type: 'track', event: 'Anonymous Event', anonymousId: 'anon-1', properties: {} },
+      expectedIdentifiers: { anonymous_id: 'anon-1' },
+    },
+  ])(
+    'falls back to legacy auto-detection for V2 identifiers without userIdMapping — $name',
+    async ({ message, expectedIdentifiers }) => {
+      const v2Destination = makeV2Destination({ userIdMapping: undefined });
+      const integration = new Integration(v2Destination);
+      const input = makeEventStreamInput(message, v2Destination);
+      const { successPayloads } = await integration.transformEvents([input]);
+      expect(successPayloads).toHaveLength(1);
+      expect(successPayloads[0].body).toMatchObject({ identifiers: expectedIdentifiers });
+    },
+  );
+
   it('does not batch legacy (V1) event-stream requests — one request per event', async () => {
-    delete process.env[envKey];
     const integration = new Integration(baseDestination);
     const input1 = makeEventStreamInput({ type: 'identify', userId: 'user-1', traits: {} });
     const input2 = makeEventStreamInput({ type: 'identify', userId: 'user-1', traits: {} });
@@ -255,7 +337,6 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
   });
 
   it('still batches legacy group events via the shared V2 batch endpoint', async () => {
-    delete process.env[envKey];
     const integration = new Integration(baseDestination);
     const input1 = makeEventStreamInput({
       type: 'group',

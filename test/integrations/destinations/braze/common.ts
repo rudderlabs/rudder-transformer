@@ -120,3 +120,44 @@ export const buildProcessorInput = (message: Record<string, unknown>) => ({
     body: [{ destination: ecommerceDestination, message }],
   },
 });
+
+/**
+ * Shared fixtures for the v1 proxy (dataDelivery) scenarios that exercise the
+ * networkHandler's per-item correlation on /users/track. The response bodies
+ * live here so the network mock and the expected `error` strings in
+ * dataDelivery/business.ts are built from the same object — key order matters,
+ * since an uncorrelated job echoes `JSON.stringify(response)` verbatim.
+ */
+
+// Verbatim Braze error types. Only a schema rejection (prefixed with the failing
+// item's JSON pointer) of a recommended-ecommerce event in `events[]` yields a
+// 296; every other correlated failure aborts its job.
+export const BRAZE_ECOMMERCE_SCHEMA_ERROR =
+  "The property '#/' did not contain a required property of 'product_id'";
+export const BRAZE_PURCHASE_ERROR = "'quantity' is not valid";
+export const BRAZE_IDENTIFIER_ERROR =
+  "'external_id', 'braze_id', 'user_alias', 'email' or 'phone' is required";
+
+// A schema rejection of an ecommerce event alongside an unrelated purchase failure.
+export const ecommerceMixedResponse = {
+  message: 'success',
+  events_processed: 1,
+  errors: [
+    { type: BRAZE_ECOMMERCE_SCHEMA_ERROR, input_array: 'events', index: 0 },
+    { type: BRAZE_PURCHASE_ERROR, input_array: 'purchases', index: 0 },
+  ],
+};
+
+// The same schema rejection, but the item at events[0] is a legacy custom event.
+export const legacyEventSchemaResponse = {
+  message: 'success',
+  events_processed: 0,
+  errors: [{ type: BRAZE_ECOMMERCE_SCHEMA_ERROR, input_array: 'events', index: 0 }],
+};
+
+// A non-schema failure on a recommended-ecommerce event.
+export const ecommerceNonSchemaResponse = {
+  message: 'success',
+  events_processed: 0,
+  errors: [{ type: BRAZE_IDENTIFIER_ERROR, input_array: 'events', index: 0 }],
+};

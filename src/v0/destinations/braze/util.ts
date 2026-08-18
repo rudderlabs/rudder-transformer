@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign, @typescript-eslint/naming-convention */
 import _ from 'lodash';
 import get from 'get-value';
+import validator from 'validator';
 import { ConfigurationError, InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
 import stats from '../../../util/stats';
 import logger from '../../../logger';
@@ -86,6 +87,38 @@ const formatGender = (gender: unknown) => {
   }
 
   return null;
+};
+
+/**
+ * Normalises and validates the `email` user attribute.
+ *
+ * Braze rejects malformed addresses at delivery time with "The value provided for the email
+ * field is not a valid email.", which surfaces as a delivery failure rather than something the
+ * customer can spot in their event stream. Validating here turns it into an instrumentation
+ * error at transform time, so the bad event never reaches delivery.
+ *
+ * `null` is passed through untouched — Braze reads an explicit null as "unset this field".
+ * The offending address is deliberately kept out of the error message; the full payload is
+ * already visible alongside the error in Live Events, and the message itself ends up in logs
+ * and metrics where the PII does not belong.
+ */
+const formatEmail = (email: unknown) => {
+  if (email === null) {
+    return null;
+  }
+
+  if (typeof email !== 'string') {
+    throw new InstrumentationError('Invalid email, email must be a valid string');
+  }
+
+  const formattedEmail = email.toLowerCase();
+  if (!validator.isEmail(formattedEmail)) {
+    throw new InstrumentationError(
+      'Invalid email, the email provided is not a valid email address',
+    );
+  }
+
+  return formattedEmail;
 };
 
 /**
@@ -1782,6 +1815,7 @@ export {
   processBatchWithDeliveryMapping,
   addAppId,
   formatGender,
+  formatEmail,
   getPurchaseObjs,
   setExternalIdOrAliasObject,
   setExternalId,

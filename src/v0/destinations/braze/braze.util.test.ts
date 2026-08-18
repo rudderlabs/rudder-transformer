@@ -6,6 +6,7 @@ import {
   BrazeDedupUtility,
   addAppId,
   formatGender,
+  formatEmail,
   getPurchaseObjs,
   setAliasObject,
   handleReservedProperties,
@@ -17,7 +18,11 @@ import {
 } from './util';
 import { isPerJobDeliveryMappingEnabled } from './config';
 import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
-import { ConfigurationError, generateRandomString } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  generateRandomString,
+} from '@rudderstack/integrations-lib';
 import {
   BrazeDestination,
   BrazeRouterRequest,
@@ -2901,6 +2906,67 @@ describe('formatGender', () => {
     expect(formatGender(123)).toBeNull();
     expect(formatGender({})).toBeNull();
     expect(formatGender([])).toBeNull();
+  });
+});
+
+describe('formatEmail', () => {
+  const validEmails = [
+    { name: 'a plain address', input: 'user@example.com', expected: 'user@example.com' },
+    { name: 'an uppercase address', input: 'USER@EXAMPLE.COM', expected: 'user@example.com' },
+    {
+      name: 'a plus-addressed alias',
+      input: 'user+tag@example.com',
+      expected: 'user+tag@example.com',
+    },
+    { name: 'a subdomain', input: 'user@mail.example.co.uk', expected: 'user@mail.example.co.uk' },
+    {
+      name: 'dots in the local part',
+      input: 'first.last@example.com',
+      expected: 'first.last@example.com',
+    },
+    { name: 'a hyphenated domain', input: 'user@my-example.com', expected: 'user@my-example.com' },
+  ];
+
+  const invalidEmails = [
+    { name: 'no @ sign', input: 'not-an-email' },
+    { name: 'no domain', input: 'user@' },
+    { name: 'no local part', input: '@example.com' },
+    { name: 'a bare domain with no TLD', input: 'user@example' },
+    { name: 'an internal space', input: 'user name@example.com' },
+    { name: 'leading whitespace', input: ' user@example.com' },
+    { name: 'trailing whitespace', input: 'user@example.com ' },
+    { name: 'two @ signs', input: 'user@@example.com' },
+    { name: 'an empty string after trimming', input: '   ' },
+  ];
+
+  const nonStringValues = [
+    { name: 'a number', input: 123 },
+    { name: 'a boolean', input: true },
+    { name: 'an object', input: { address: 'user@example.com' } },
+    { name: 'an array', input: ['user@example.com'] },
+  ];
+
+  it.each(validEmails)('should lowercase and accept $name', ({ input, expected }) => {
+    expect(formatEmail(input)).toBe(expected);
+  });
+
+  it.each(invalidEmails)('should throw an InstrumentationError for $name', ({ input }) => {
+    expect(() => formatEmail(input)).toThrow(InstrumentationError);
+    expect(() => formatEmail(input)).toThrow('Invalid email');
+  });
+
+  it.each(nonStringValues)('should throw an InstrumentationError for $name', ({ input }) => {
+    expect(() => formatEmail(input)).toThrow(InstrumentationError);
+    expect(() => formatEmail(input)).toThrow('email must be a valid string');
+  });
+
+  // Braze treats an explicit null as "unset this field", so it must survive validation.
+  it('should pass null through untouched', () => {
+    expect(formatEmail(null)).toBeNull();
+  });
+
+  it('should not leak the offending address into the error message', () => {
+    expect(() => formatEmail('leaky-address@@example.com')).not.toThrow(/leaky-address/);
   });
 });
 

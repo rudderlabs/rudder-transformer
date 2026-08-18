@@ -160,18 +160,14 @@ const readSentEvents = (destinationRequest: BrazeProxyV1Request | undefined): Br
   return Array.isArray(events) ? events : [];
 };
 
-// True when the item we sent at `index` was built by the recommended-ecommerce
-// path, identified by its Braze event name — only that path emits those names,
-// so it separates ecommerce events from the legacy custom events that share the
-// same `events[]` array after chunking.
-const isEcommerceEventAt = (sentEvents: BrazeEvent[], index: number): boolean =>
-  isBrazeEcommerceEventName(sentEvents[index]?.name);
-
 // A hit is delivered-with-warning only when it is a schema rejection of a
-// recommended-ecommerce event. Every other correlated failure aborts its job.
+// recommended-ecommerce event. The item is identified by its Braze event name:
+// only the recommended-ecommerce path emits those names, so it separates them
+// from the legacy custom events sharing the same `events[]` after chunking.
+// Every other correlated failure aborts its job.
 const isEcommerceSchemaWarning = (hit: WarnedHit, sentEvents: BrazeEvent[]): boolean =>
   hit.inputArray === 'events' &&
-  isEcommerceEventAt(sentEvents, hit.index) &&
+  isBrazeEcommerceEventName(sentEvents[hit.index]?.name) &&
   ECOMMERCE_SCHEMA_ERROR_TYPE.test(hit.type);
 
 // Separator for concatenating multiple warned error.type strings on a single

@@ -88,23 +88,17 @@ const formatGender = (gender: unknown) => {
 };
 
 /**
- * Builds the Authorization header for every Braze call, and is the single place the
- * REST API key is read.
- *
- * Interpolating the key directly turns a missing value into the literal
- * `Bearer undefined`, which Braze answers with
+ * Every Braze request authenticates with `Bearer ${Config.restApiKey}`. When the key is
+ * absent that template stringifies to the literal `Bearer undefined`, and Braze answers
  * `401 {"message":"Invalid API key: undefined"}` -- an error that reads like a rotated or
  * revoked customer credential rather than a missing config. 4xx is terminal in the router,
- * so every event in flight is aborted with no retry. Validating here rather than at the
- * transform entry points keeps the check attached to the consumption site, so a new
- * caller cannot reintroduce the bug by skipping a pre-flight validator.
+ * so every event in flight is aborted with no retry. Fail fast with an actionable error
+ * instead of putting an empty credential on the wire.
  */
-const getAuthHeader = (destination: BrazeDestination): string => {
-  const restApiKey = destination.Config?.restApiKey;
-  if (!restApiKey) {
+const validateDestinationConfig = (destination: BrazeDestination) => {
+  if (!destination.Config?.restApiKey) {
     throw new ConfigurationError('Rest API Key not found. Aborting');
   }
-  return `Bearer ${restApiKey}`;
 };
 
 const getEndpointFromConfig = (destination: BrazeDestination) => {
@@ -318,7 +312,7 @@ const BrazeDedupUtility = {
           },
           {
             headers: {
-              Authorization: getAuthHeader(destination),
+              Authorization: `Bearer ${destination.Config.restApiKey}`,
             },
             timeout: 10 * 1000,
           },
@@ -585,7 +579,7 @@ function prepareGroupAndAliasBatch({
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    Authorization: getAuthHeader(destination),
+    Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
 
   // Type narrowing: Check type BEFORE the loop so TypeScript can narrow arrayChunks
@@ -893,7 +887,7 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
   const headers: BrazeBatchHeaders = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    Authorization: getAuthHeader(dest),
+    Authorization: `Bearer ${dest.Config.restApiKey}`,
   };
 
   const { endpoint, path } = getTrackEndPoint(getEndpointFromConfig(destination));
@@ -1445,7 +1439,7 @@ const processBatchWithDeliveryMapping = (
   const headers: BrazeBatchHeaders = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    Authorization: getAuthHeader(destination),
+    Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
   const { endpoint: trackEndpoint, path: trackPath } = getTrackEndPoint(
     getEndpointFromConfig(destination),
@@ -1725,7 +1719,7 @@ export {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
   getEndpointFromConfig,
-  getAuthHeader,
+  validateDestinationConfig,
   processDeduplication,
   processBatch,
   processBatchWithDeliveryMapping,

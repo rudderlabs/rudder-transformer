@@ -2,7 +2,7 @@ import { NetworkError, BaseError } from '@rudderstack/integrations-lib';
 import { handleHttpRequest } from '../../../adapters/network';
 import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import { isHttpStatusSuccess } from '../../util';
-import { collectStatsForAliasFailure, getAuthHeader, getEndpointFromConfig } from './util';
+import { collectStatsForAliasFailure, getEndpointFromConfig } from './util';
 import { getIdentifyEndpoint, IDENTIFY_BRAZE_MAX_REQ_COUNT } from './config';
 import * as stats from '../../../util/stats';
 import * as logger from '../../../logger';
@@ -43,7 +43,6 @@ const mockedCollectStatsForAliasFailure = collectStatsForAliasFailure as jest.Mo
 const mockedGetEndpointFromConfig = getEndpointFromConfig as jest.MockedFunction<
   typeof getEndpointFromConfig
 >;
-const mockedGetAuthHeader = getAuthHeader as jest.MockedFunction<typeof getAuthHeader>;
 const mockedGetIdentifyEndpoint = getIdentifyEndpoint as jest.MockedFunction<
   typeof getIdentifyEndpoint
 >;
@@ -146,9 +145,6 @@ describe('identityResolutionUtils', () => {
 
     // Default mock implementations
     mockedGetEndpointFromConfig.mockReturnValue('https://rest.iad-03.braze.com');
-    mockedGetAuthHeader.mockImplementation(
-      (destination) => `Bearer ${destination.Config.restApiKey}`,
-    );
     mockedGetIdentifyEndpoint.mockReturnValue({
       endpoint: 'https://rest.iad-03.braze.com/users/identify',
       path: 'users/identify',

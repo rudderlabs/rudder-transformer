@@ -819,49 +819,6 @@ const isWorkspaceOnMauPlan = (workspaceId) => {
   }
 };
 
-// ---------------------------------------------------------------------------
-// Router job accounting invariant
-//
-// rudder-server validates every router-transform response by comparing the set
-// of input jobIds against the jobIds carried by the returned destination jobs
-// (router/transformer/transformer.go). When the counts differ it throws away
-// the whole transformer response, marks EVERY job in the batch 500 and retries,
-// emitting `router_transformer_invalid_response{reason="in out mismatch"}` —
-// with no log line and no payload. So a job that reaches neither a batched
-// request nor a failure/filtered response is not merely "skipped": it poisons
-// the entire batch, invisibly.
-//
-// Therefore any job we cannot turn into a Braze payload must still be emitted,
-// as an explicit aborted response.
-//
-// Scoped to `processBatchWithDeliveryMapping` only. `processBatch` (the OFF path
-// of `isPerJobDeliveryMappingEnabled`) has the same drop hazard but is
-// deliberately left unfixed — see the NOTE at its `else` branch below.
-// ---------------------------------------------------------------------------
-const UNPROCESSABLE_JOB_ERROR =
-  '[Braze] Transformed event produced no Braze payload; aborting this event rather than dropping it (dropping desynchronises router job accounting)';
-
-// `reason` is a stats tag, so it must stay a fixed, low-cardinality enum —
-// free-form detail belongs in `detail`, which only reaches the job's error text.
-type UnprocessableReason = 'unclassifiable_body' | 'no_items_to_send';
-
-const buildUnprocessableResponse = (
-  transformedEvent: BrazeTransformedEvent,
-  reason: UnprocessableReason,
-  detail?: string,
-): BrazeTransformedEvent => {
-  stats.increment('braze_unprocessable_job', {
-    destination_id: transformedEvent.destination?.ID,
-    reason,
-  });
-  return {
-    ...transformedEvent,
-    statusCode: 400,
-    error: `${UNPROCESSABLE_JOB_ERROR} (reason: ${reason}${detail ? `; ${detail}` : ''})`,
-    statTags: { errorType: 'aborted', errorCategory: 'dataValidation' },
-  };
-};
-
 const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
   const { destination, metadata } = transformedEvents[0];
   const workspaceId = metadata?.[0]?.workspaceId || '';
@@ -904,25 +861,17 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
         successMetadata.push(...transformedEvent.metadata);
       }
     } else {
-      // NOTE: this legacy branch still drops a job with a successful status but no
-      // `body.JSON` (see routerJobAccounting.test.ts history for the repro). Left
-      // unfixed deliberately: `processBatch` is the OFF path of
-      // `isPerJobDeliveryMappingEnabled` and is slated for deprecation once
-      // `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS` goes GA (env=ALL everywhere),
-      // at which point this function becomes unreachable. Hardening dead code isn't
-      // worth the maintenance surface — the fix below targets
-      // `processBatchWithDeliveryMapping` only.
-      //
-      // What IS worth the surface: making the drop observable. This exact condition
-      // (statusCode success, no batchedRequest.body.JSON) is what desyncs
-      // rudder-server's in/out job accounting and fires
-      // `router_transformer_invalid_response{reason="in out mismatch"}` — an alert
-      // that carries no payload and no log line on rudder-server's side (see
-      // INT-6993). Without this, root-causing which job/destination triggered it
-      // means reconstructing everything from the reporting DB after the fact, as
-      // happened here. `reason` reuses the same low-cardinality
-      // `braze_unprocessable_job` metric emitted by processBatchWithDeliveryMapping
-      // for the equivalent condition, so a single dashboard/alert covers both paths.
+      // This is the only way processBatch silently drops a job: a successful
+      // status with no batchedRequest.body.JSON (e.g. simpleProcessRouterDest's
+      // `if (!input.message.statusCode)` short-circuit passing a raw message
+      // through with no `.body` at all). This desyncs rudder-server's in/out job
+      // accounting and fires router_transformer_invalid_response{reason="in out
+      // mismatch"} — an alert that carries no payload and no log line on
+      // rudder-server's side (see INT-6993, where root-causing this required
+      // reconstructing the incident from the reporting DB after the fact).
+      // Not fixed here — see INT-6993 discussion on why turning this into an
+      // aborted response is a bigger, separate decision — but instrumented so
+      // the next occurrence is a one-query lookup instead of a multi-day trace.
       const jobIds = (transformedEvent.metadata ?? [])
         .map((m) => m?.jobId)
         .filter((jobId) => jobId !== undefined);
@@ -1432,82 +1381,6 @@ const classifyJobRun = (json: unknown): JobClassification => {
   );
 };
 
-type DeliveryMappingAccumulators = {
-  failureResponses: BrazeTransformedEvent[];
-  filteredResponses: BrazeTransformedEvent[];
-  trackItems: TaggedItem[];
-  subItems: Array<{ data: BrazeSubscriptionGroup; sourceJobIndex: number }>;
-  mergeItems: Array<{ data: BrazeMergeUpdate; sourceJobIndex: number }>;
-};
-
-// Routes a single job to the right accumulator and reports whether it is
-// "accounted for" — i.e. guaranteed to surface in the response, either as a
-// failure/filtered response or as a chunk-contributing item. The explicit
-// `boolean` return type is load-bearing: every branch MUST return a value, so
-// adding a new branch without deciding its accounting outcome is a compile
-// error rather than a silent drop. This is the ONLY place that decides
-// accounting — callers must not special-case it further.
-const routeJobForDeliveryMapping = (
-  transformedEvent: BrazeTransformedEvent,
-  jobIndex: number,
-  acc: DeliveryMappingAccumulators,
-): boolean => {
-  if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
-    acc.failureResponses.push(transformedEvent);
-    return true;
-  }
-  if (transformedEvent.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
-    acc.filteredResponses.push(transformedEvent);
-    return true;
-  }
-
-  // `classifyJobRun` throws when the body matches none of the three Braze
-  // shapes. Letting that escape would fail the whole router-transform request
-  // rather than just this job, so contain it per job.
-  let classification: JobClassification;
-  try {
-    classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
-  } catch (error: any) {
-    acc.failureResponses.push(
-      buildUnprocessableResponse(
-        transformedEvent,
-        'unclassifiable_body',
-        error?.message ?? String(error),
-      ),
-    );
-    return true;
-  }
-
-  if (classification.type === 'track') {
-    const collection = collectTrackItemsForJob(classification.body, jobIndex);
-    if ('error' in collection) {
-      acc.failureResponses.push({
-        ...transformedEvent,
-        statusCode: 400,
-        error: collection.error.message,
-        statTags: { errorType: 'aborted', errorCategory: 'dataValidation' },
-      });
-      return true;
-    }
-    acc.trackItems.push(...collection.items);
-    return collection.items.length > 0;
-  }
-
-  if (classification.type === 'subscription') {
-    const groups = classification.body.subscription_groups ?? [];
-    for (const sg of groups) {
-      acc.subItems.push({ data: sg, sourceJobIndex: jobIndex });
-    }
-    return groups.length > 0;
-  }
-
-  const updates = classification.body.merge_updates ?? [];
-  for (const mu of updates) {
-    acc.mergeItems.push({ data: mu, sourceJobIndex: jobIndex });
-  }
-  return updates.length > 0;
-};
-
 // ---------------------------------------------------------------------------
 // `processBatchWithDeliveryMapping` (ON path).
 //
@@ -1531,38 +1404,50 @@ const processBatchWithDeliveryMapping = (
   const { destination, metadata } = transformedEvents[0];
   const workspaceId = metadata?.[0]?.workspaceId || '';
 
-  const acc: DeliveryMappingAccumulators = {
-    failureResponses: [],
-    filteredResponses: [],
-    trackItems: [],
-    subItems: [],
-    mergeItems: [],
-  };
-  const { failureResponses, filteredResponses, trackItems, subItems, mergeItems } = acc;
+  const failureResponses: BrazeTransformedEvent[] = [];
+  const filteredResponses: BrazeTransformedEvent[] = [];
+  const trackItems: TaggedItem[] = [];
+  const subItems: Array<{ data: BrazeSubscriptionGroup; sourceJobIndex: number }> = [];
+  const mergeItems: Array<{ data: BrazeMergeUpdate; sourceJobIndex: number }> = [];
   const jobMetadata: Partial<Metadata>[][] = Array.from(
     { length: transformedEvents.length },
     () => [],
   );
-  // Every job must end up in exactly one emitted output — see the "Router job
-  // accounting invariant" note above `processBatch`. `routeJobForDeliveryMapping`
-  // is the single source of truth for whether a job counts as accounted for.
-  const accountedJobIndexes = new Set<number>();
-
   transformedEvents.forEach((transformedEvent, jobIndex) => {
+    if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
+      failureResponses.push(transformedEvent);
+      return;
+    }
+    if (transformedEvent.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
+      filteredResponses.push(transformedEvent);
+      return;
+    }
+    const classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
+
+    if (classification.type === 'track') {
+      const collection = collectTrackItemsForJob(classification.body, jobIndex);
+      if ('error' in collection) {
+        failureResponses.push({
+          ...transformedEvent,
+          statusCode: 400,
+          error: collection.error.message,
+          statTags: { errorType: 'aborted', errorCategory: 'dataValidation' },
+        });
+        return;
+      }
+      trackItems.push(...collection.items);
+    } else if (classification.type === 'subscription') {
+      for (const sg of classification.body.subscription_groups ?? []) {
+        subItems.push({ data: sg, sourceJobIndex: jobIndex });
+      }
+    } else {
+      for (const mu of classification.body.merge_updates ?? []) {
+        mergeItems.push({ data: mu, sourceJobIndex: jobIndex });
+      }
+    }
+
     if (transformedEvent.metadata) {
       jobMetadata[jobIndex] = transformedEvent.metadata;
-    }
-    if (routeJobForDeliveryMapping(transformedEvent, jobIndex, acc)) {
-      accountedJobIndexes.add(jobIndex);
-    }
-  });
-
-  // Jobs whose payload carried no items at all (e.g. `attributes: []`,
-  // `subscription_groups: []`, `merge_updates: []`) contribute to no chunk and
-  // would otherwise vanish from the response.
-  transformedEvents.forEach((transformedEvent, jobIndex) => {
-    if (!accountedJobIndexes.has(jobIndex)) {
-      failureResponses.push(buildUnprocessableResponse(transformedEvent, 'no_items_to_send'));
     }
   });
 

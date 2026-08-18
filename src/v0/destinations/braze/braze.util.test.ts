@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import stats from '../../../util/stats';
+import logger from '../../../logger';
 import { handleHttpRequest } from '../../../adapters/network';
 import {
   BrazeDedupUtility,
@@ -28,6 +30,7 @@ import {
   BrazeDestinationConfig,
   RudderBrazeMessage,
 } from './types';
+import { ProcessorTransformationOutput } from '../../../types/destinationTransformation';
 
 // Mock the handleHttpRequest function
 jest.mock('../../../adapters/network');
@@ -1346,6 +1349,42 @@ describe('processBatch — OFF path (default) — non-MAU workspace (V1 chunking
     const tracks = offTrackRequests(result, destination);
     expect(offTotalIn(tracks, 'events')).toBe(10);
   });
+
+  test('instruments (stat + log) the silent drop of a job with no batchedRequest.body.JSON', () => {
+    // Regression coverage for the observability added after INT-6993: this
+    // condition is Braze's only silent-drop path on the OFF (default) side, and
+    // rudder-server's own `in out mismatch` check logs nothing when it fires.
+    const statsSpy = jest.spyOn(stats, 'increment').mockImplementation(() => {});
+    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined);
+
+    const droppedEvent: BrazeTransformedEvent = {
+      destination,
+      statusCode: 200,
+      batchedRequest: {
+        userId: 'user-1',
+        type: 'track',
+      } as unknown as ProcessorTransformationOutput, // no `.body.JSON`
+      metadata: [{ jobId: 999, workspaceId: 'workspace-non-mau' }],
+    } as BrazeTransformedEvent;
+
+    processBatch([droppedEvent]);
+
+    expect(statsSpy).toHaveBeenCalledWith('braze_unprocessable_job', {
+      destination_id: destination.ID,
+      reason: 'missing_body_json',
+    });
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.stringContaining('processBatch: dropping job(s)'),
+      expect.objectContaining({
+        destinationId: destination.ID,
+        hasBatchedRequest: true,
+        hasBody: false,
+      }),
+    );
+
+    statsSpy.mockRestore();
+    loggerSpy.mockRestore();
+  });
 });
 
 describe('processBatch — OFF path (default) — MAU workspace (V2 chunking)', () => {
@@ -1911,6 +1950,61 @@ describe('processBatchWithDeliveryMapping', () => {
     expect(failures.length).toBe(1);
     expect((failures[0] as any).error).toMatch(/exceeds .* bytes/);
     expect(onTrackOutputs(result, destination).length).toBe(0);
+  });
+
+  test('an unclassifiable body still throws, uninstrumented (out of scope — see NOTE in util.ts)', () => {
+    // classifyJobRun's throw escapes to a full-batch abort with in==out, so it
+    // structurally cannot produce the "in out mismatch" alert this PR targets.
+    // Deliberately NOT instrumented — asserting the (unchanged) throw behavior
+    // here so a future change to that doesn't silently start swallowing it.
+    const unclassifiable: BrazeTransformedEvent = {
+      destination,
+      statusCode: 200,
+      batchedRequest: {
+        userId: 'user-1',
+        type: 'track',
+      } as unknown as ProcessorTransformationOutput, // no `.body.JSON`
+      metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
+    } as BrazeTransformedEvent;
+
+    expect(() => processBatchWithDeliveryMapping([unclassifiable])).toThrow();
+  });
+
+  test('instruments (stat + log) a classified body that contributes zero items', () => {
+    const statsSpy = jest.spyOn(stats, 'increment').mockImplementation(() => {});
+    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined);
+
+    const zeroItems: BrazeTransformedEvent = {
+      destination,
+      statusCode: 200,
+      batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
+        body: { JSON: { attributes: [] } },
+        files: {},
+      },
+      metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
+    };
+
+    const result = processBatchWithDeliveryMapping([zeroItems]);
+
+    expect(statsSpy).toHaveBeenCalledWith('braze_unprocessable_job', {
+      destination_id: destination.ID,
+      reason: 'no_items_to_send',
+    });
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.stringContaining('contributed zero items'),
+      expect.objectContaining({ destinationId: destination.ID }),
+    );
+    // Still silently drops the job today — observability only.
+    expect(onTrackOutputs(result, destination).length).toBe(0);
+
+    statsSpy.mockRestore();
+    loggerSpy.mockRestore();
   });
 });
 describe('addAppId', () => {

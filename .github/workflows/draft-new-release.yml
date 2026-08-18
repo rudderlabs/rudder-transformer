@@ -6,19 +6,9 @@ permissions:
   contents: read
 
 jobs:
-  validate-actor:
-    permissions:
-      contents: read # to call reusable workflow (validate-actor.yml)
-    uses: ./.github/workflows/validate-actor.yml
-    with:
-      team_names: 'integrations,data-management'
-    secrets:
-      RELEASE_PRIVATE_KEY: ${{ secrets.RELEASE_PRIVATE_KEY }}
-
   draft-new-release:
     name: Draft New Release
     runs-on: ubuntu-latest
-    needs: validate-actor
 
     permissions:
       contents: read # to checkout repository code; writes use app token (create-github-app-token)

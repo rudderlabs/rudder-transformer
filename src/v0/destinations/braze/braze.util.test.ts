@@ -29,6 +29,7 @@ import {
   BrazeDestinationConfig,
   RudderBrazeMessage,
 } from './types';
+import { ProcessorTransformationOutput } from '../../../types/destinationTransformation';
 
 // Mock the handleHttpRequest function
 jest.mock('../../../adapters/network');
@@ -1353,12 +1354,15 @@ describe('processBatch — OFF path (default) — non-MAU workspace (V1 chunking
     // condition is Braze's only silent-drop path on the OFF (default) side, and
     // rudder-server's own `in out mismatch` check logs nothing when it fires.
     const statsSpy = jest.spyOn(stats, 'increment').mockImplementation(() => {});
-    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined as any);
+    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined);
 
     const droppedEvent: BrazeTransformedEvent = {
       destination,
       statusCode: 200,
-      batchedRequest: { userId: 'user-1', type: 'track' } as any, // no `.body.JSON`
+      batchedRequest: {
+        userId: 'user-1',
+        type: 'track',
+      } as unknown as ProcessorTransformationOutput, // no `.body.JSON`
       metadata: [{ jobId: 999, workspaceId: 'workspace-non-mau' }],
     } as BrazeTransformedEvent;
 
@@ -1955,7 +1959,10 @@ describe('processBatchWithDeliveryMapping', () => {
     const unclassifiable: BrazeTransformedEvent = {
       destination,
       statusCode: 200,
-      batchedRequest: { userId: 'user-1', type: 'track' } as any, // no `.body.JSON`
+      batchedRequest: {
+        userId: 'user-1',
+        type: 'track',
+      } as unknown as ProcessorTransformationOutput, // no `.body.JSON`
       metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
     } as BrazeTransformedEvent;
 
@@ -1964,7 +1971,7 @@ describe('processBatchWithDeliveryMapping', () => {
 
   test('instruments (stat + log) a classified body that contributes zero items', () => {
     const statsSpy = jest.spyOn(stats, 'increment').mockImplementation(() => {});
-    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined as any);
+    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined);
 
     const zeroItems: BrazeTransformedEvent = {
       destination,
@@ -1978,9 +1985,9 @@ describe('processBatchWithDeliveryMapping', () => {
         params: {},
         body: { JSON: { attributes: [] } },
         files: {},
-      } as any,
+      },
       metadata: [{ jobId: 1, workspaceId: 'workspace-non-mau' }],
-    } as BrazeTransformedEvent;
+    };
 
     const result = processBatchWithDeliveryMapping([zeroItems]);
 

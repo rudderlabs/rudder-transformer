@@ -1,8 +1,9 @@
 /* eslint-disable no-param-reassign, @typescript-eslint/naming-convention */
 import _ from 'lodash';
 import get from 'get-value';
-import { InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
+import { ConfigurationError, InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
 import stats from '../../../util/stats';
+import logger from '../../../logger';
 import { handleHttpRequest } from '../../../adapters/network';
 import {
   getDestinationExternalID,
@@ -85,6 +86,20 @@ const formatGender = (gender: unknown) => {
   }
 
   return null;
+};
+
+/**
+ * Every Braze request authenticates with `Bearer ${Config.restApiKey}`. When the key is
+ * absent that template stringifies to the literal `Bearer undefined`, and Braze answers
+ * `401 {"message":"Invalid API key: undefined"}` -- an error that reads like a rotated or
+ * revoked customer credential rather than a missing config. 4xx is terminal in the router,
+ * so every event in flight is aborted with no retry. Fail fast with an actionable error
+ * instead of putting an empty credential on the wire.
+ */
+const validateDestinationConfig = (destination: BrazeDestination) => {
+  if (!destination.Config?.restApiKey) {
+    throw new ConfigurationError('Rest API Key not found. Aborting');
+  }
 };
 
 const getEndpointFromConfig = (destination: BrazeDestination) => {
@@ -859,6 +874,33 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
       if (transformedEvent.metadata) {
         successMetadata.push(...transformedEvent.metadata);
       }
+    } else {
+      // This is the only way processBatch silently drops a job: a successful
+      // status with no batchedRequest.body.JSON (e.g. simpleProcessRouterDest's
+      // `if (!input.message.statusCode)` short-circuit passing a raw message
+      // through with no `.body` at all). This desyncs rudder-server's in/out job
+      // accounting and fires router_transformer_invalid_response{reason="in out
+      // mismatch"} — an alert that carries no payload and no log line on
+      // rudder-server's side (see INT-6993, where root-causing this required
+      // reconstructing the incident from the reporting DB after the fact).
+      // Not fixed here — see INT-6993 discussion on why turning this into an
+      // aborted response is a bigger, separate decision — but instrumented so
+      // the next occurrence is a one-query lookup instead of a multi-day trace.
+      // jobIds intentionally omitted — destinationId + workspaceId + this log's
+      // timestamp are enough to pull the affected job(s) from the reporting DB.
+      stats.increment('braze_unprocessable_job', {
+        destination_id: transformedEvent.destination?.ID,
+        reason: 'missing_body_json',
+      });
+      logger.warn(
+        '[Braze] processBatch: dropping job(s) with successful status but no batchedRequest.body.JSON',
+        {
+          destinationId: transformedEvent.destination?.ID,
+          workspaceId,
+          hasBatchedRequest: Boolean(transformedEvent.batchedRequest),
+          hasBody: Boolean(transformedEvent.batchedRequest?.body),
+        },
+      );
     }
   }
   const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
@@ -1014,25 +1056,27 @@ const createTaggedTrackChunk = (): TaggedTrackChunk => ({
   byteSize: 0,
 });
 
-// Contiguous same-sourceJobIndex runs in a sorted item list. Because we
-// stable-sort by (externalId, sourceJobIndex), items from the same source job
-// end up adjacent regardless of type.
-const groupBySourceJob = (sortedItems: TaggedItem[]): TaggedItem[][] => {
-  const groups: TaggedItem[][] = [];
-  if (sortedItems.length === 0) {
-    return groups;
-  }
-  let start = 0;
-  for (let i = 1; i <= sortedItems.length; i += 1) {
-    if (
-      i === sortedItems.length ||
-      sortedItems[i].sourceJobIndex !== sortedItems[start].sourceJobIndex
-    ) {
-      groups.push(sortedItems.slice(start, i));
-      start = i;
+// All items belonging to one source job, as a single group. Keyed on
+// sourceJobIndex rather than derived from contiguous runs of a sorted list: a
+// job's items are NOT guaranteed to share one externalId, so sorting by
+// externalId can scatter them. A message with no userId but an `external_id`
+// trait, for instance, keeps that trait on its attributes item while its
+// events item falls back to `user_alias` and carries no external_id at all
+// (see setExternalIdOrAliasObject). Splitting such a job across two chunks
+// makes its jobId surface in two router outputs, which rudder-server counts
+// as an in/out mismatch and punishes by retrying the whole batch as a 500.
+// Insertion order is preserved so grouping stays deterministic.
+const groupBySourceJob = (items: TaggedItem[]): TaggedItem[][] => {
+  const groups = new Map<number, TaggedItem[]>();
+  for (const item of items) {
+    const group = groups.get(item.sourceJobIndex);
+    if (group) {
+      group.push(item);
+    } else {
+      groups.set(item.sourceJobIndex, [item]);
     }
   }
-  return groups;
+  return [...groups.values()];
 };
 
 const addGroupToChunk = (chunk: TaggedTrackChunk, group: TaggedItem[]): void => {
@@ -1096,8 +1140,15 @@ const groupFitsV2 = (chunk: TaggedTrackChunk, group: TaggedItem[]): boolean => {
 // pre-check; the exported wrappers below use per-item sourceJobIndex so no
 // group ever exceeds a single item.
 const chunkTaggedItems = (items: TaggedItem[], mode: 'v1' | 'v2'): TaggedTrackChunk[] => {
-  const sortedItems = _.orderBy(items, ['externalId', 'sourceJobIndex']);
-  const groups = groupBySourceJob(sortedItems);
+  // Group first, then order whole groups by their leading externalId. Ordering
+  // groups rather than items keeps same-user jobs adjacent (so the V1
+  // per-chunk externalId cap still bites late) while making it impossible for
+  // one job's items to land in two chunks.
+  const groups = _.orderBy(
+    groupBySourceJob(items),
+    [(group) => group[0].externalId ?? '', (group) => group[0].sourceJobIndex],
+    ['asc', 'asc'],
+  );
   const chunks: TaggedTrackChunk[] = [];
   let currentChunk = createTaggedTrackChunk();
   const fits = mode === 'v1' ? groupFitsV1 : groupFitsV2;
@@ -1392,8 +1443,32 @@ const processBatchWithDeliveryMapping = (
       filteredResponses.push(transformedEvent);
       return;
     }
+    // Note: classifyJobRun (below) can throw when batchedRequest.body.JSON
+    // doesn't match any Braze payload shape. That throw is NOT instrumented
+    // here — it escapes uncaught and is turned into a single balanced
+    // full-batch-abort response by nativeIntegration.ts's catch (in==out), so
+    // it structurally cannot produce the "in out mismatch" symptom this PR is
+    // about. Out of scope here; a full-batch abort is a real but different
+    // problem.
     const classification = classifyJobRun(transformedEvent.batchedRequest?.body?.JSON);
 
+    // A job whose body classifies fine but contributes zero items (e.g.
+    // `attributes: []`) never lands in any output array below — this DOES match
+    // the same "in out mismatch" symptom as processBatch's drop, without a throw to
+    // catch. Not known to be reachable through this repo's own `process()`
+    // transform today (every legitimate output either throws upstream or
+    // contributes ≥1 item), but logged cheaply here in case that contract is
+    // ever violated by a future change.
+    const logZeroItems = () => {
+      stats.increment('braze_unprocessable_job', {
+        destination_id: transformedEvent.destination?.ID,
+        reason: 'no_items_to_send',
+      });
+      logger.warn(
+        '[Braze] processBatchWithDeliveryMapping: classified body contributed zero items — job silently dropped from the response',
+        { destinationId: transformedEvent.destination?.ID, workspaceId },
+      );
+    };
     if (classification.type === 'track') {
       const collection = collectTrackItemsForJob(classification.body, jobIndex);
       if ('error' in collection) {
@@ -1405,13 +1480,18 @@ const processBatchWithDeliveryMapping = (
         });
         return;
       }
+      if (collection.items.length === 0) logZeroItems();
       trackItems.push(...collection.items);
     } else if (classification.type === 'subscription') {
-      for (const sg of classification.body.subscription_groups ?? []) {
+      const groups = classification.body.subscription_groups ?? [];
+      if (groups.length === 0) logZeroItems();
+      for (const sg of groups) {
         subItems.push({ data: sg, sourceJobIndex: jobIndex });
       }
     } else {
-      for (const mu of classification.body.merge_updates ?? []) {
+      const updates = classification.body.merge_updates ?? [];
+      if (updates.length === 0) logZeroItems();
+      for (const mu of updates) {
         mergeItems.push({ data: mu, sourceJobIndex: jobIndex });
       }
     }
@@ -1705,6 +1785,7 @@ export {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
   getEndpointFromConfig,
+  validateDestinationConfig,
   processDeduplication,
   processBatch,
   processBatchWithDeliveryMapping,

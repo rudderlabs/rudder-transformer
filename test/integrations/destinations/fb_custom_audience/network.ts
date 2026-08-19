@@ -720,4 +720,41 @@ export const networkCallsData = [
       status: 400,
     },
   },
+  {
+    // Reproduces the shape observed in the INT-6978 incident: a non-2xx status from
+    // Facebook's edge/infra layer with no `{ error: {...} }` envelope (empty body).
+    httpReq: {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://graph.facebook.com/v25.0/aud-batch/users',
+      headers: {
+        'test-dest-response-key': 'infraFailureNoErrorField',
+      },
+      params: {
+        access_token: 'ABC',
+      },
+      userId: '',
+      body: {
+        JSON: {
+          payload: {
+            is_raw: true,
+            data_source: {
+              sub_type: 'ANYTHING',
+            },
+            schema: ['EMAIL'],
+            data: [['batch@abc.com']],
+          },
+        },
+        XML: {},
+        JSON_ARRAY: {},
+        FORM: {},
+      },
+      files: {},
+    },
+    httpRes: {
+      data: '',
+      status: 500,
+    },
+  },
 ];

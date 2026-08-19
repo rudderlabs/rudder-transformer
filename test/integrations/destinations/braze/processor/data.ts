@@ -1,5 +1,10 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
-import { buildProcessorInput, expectedEcommerceOutput, trackMessage } from '../common';
+import {
+  buildProcessorInput,
+  expectedEcommerceOutput,
+  missingRestApiKeyDestination,
+  trackMessage,
+} from '../common';
 export const data = [
   {
     name: 'braze',
@@ -4962,6 +4967,43 @@ export const data = [
               },
             ],
           }),
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      'Destination config is missing restApiKey: abort with a configuration error instead of sending "Bearer undefined" to Braze',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: missingRestApiKeyDestination,
+            message: trackMessage('Product Viewed', { product_id: 'p-1' }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error: 'Rest API Key not found. Aborting',
+            statTags: {
+              destType: 'BRAZE',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+          },
         ],
       },
     },

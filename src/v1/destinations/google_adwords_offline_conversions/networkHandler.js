@@ -4,6 +4,10 @@ const { isHttpStatusSuccess, isEmptyObject } = require('../../../v0/util');
 const { destType } = require('../../../v0/destinations/google_adwords_offline_conversions/config');
 const { getDeveloperToken, getAuthErrCategory } = require('../../../v0/util/googleUtils');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
+const {
+  parsePartialFailure,
+  formatGoogleAdsErrors,
+} = require('../../../v0/util/googleUtils/partialFailure');
 const { CommonUtils } = require('../../../util/common');
 
 /**
@@ -169,13 +173,33 @@ const responseHandler = (responseParams) => {
   // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
   if (partialFailureError && partialFailureError.code !== 0) {
     const errorMessage = partialFailureError.message || 'unknown error format';
+    // partialFailureError.message only summarises the first error. Google reports the cause of
+    // each individual conversion in details[].errors[], keyed by location.fieldPathElements, so
+    // resolve every failed event to its own error code and message instead of repeating the
+    // summary. Ref - https://developers.google.com/google-ads/api/docs/best-practices/partial-failures
+    const { errorsByIndex, unindexedErrors, requestId } = parsePartialFailure(partialFailureError);
+    // Google indexes its errors against the conversions array of the request it answered, which is
+    // not always this metadata array: combineBatchRequestsWithSameJobIds can merge two differently
+    // sized requests under one metadata array, and removeDuplicateMetadata sorts that metadata by
+    // jobId while the conversions keep router order.
+    // This length check catches the size mismatch only -- it cannot detect a pure reordering, so
+    // treat it as a floor on correctness rather than a guarantee. When it trips we fall back to the
+    // request-wide errors, which carry no positional claim.
+    const isIndexAligned = Array.isArray(results) && results.length === metaDataArray.length;
     const responseWithIndividualEvents = metaDataArray.map((metadata, i) => {
       const eventResponse = results?.[i] ?? {};
       const isEventFailed = isEmptyObject(eventResponse);
+      // Errors without an index apply to the request as a whole, so they stand in for events
+      // Google did not attribute individually.
+      const eventErrors = isIndexAligned
+        ? (errorsByIndex.get(i) ?? unindexedErrors)
+        : unindexedErrors;
       return {
         statusCode: isEventFailed ? 400 : 200,
         metadata,
-        error: isEventFailed ? errorMessage : 'success',
+        error: isEventFailed
+          ? formatGoogleAdsErrors(eventErrors, errorMessage, requestId)
+          : 'success',
       };
     });
 

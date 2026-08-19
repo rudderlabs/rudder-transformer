@@ -8,8 +8,13 @@ type CommonErrorType = {
 
 describe('errorResponseHandler', () => {
   it('should return successfully when there is no error in the response', () => {
-    const destResponse = { response: { error: null } };
+    const destResponse = { response: { error: null }, status: 200 };
     expect(() => errorResponseHandler(destResponse)).not.toThrow();
+  });
+
+  it('should throw a NetworkError when status is a failure but the response has no `error` field', () => {
+    const destResponse = { response: '', status: 500 };
+    expect(() => errorResponseHandler(destResponse)).toThrow(NetworkError);
   });
 
   const testCases: Array<{

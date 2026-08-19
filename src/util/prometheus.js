@@ -630,7 +630,7 @@ class Prometheus {
         name: 'braze_partial_failure',
         help: 'braze_partial_failure',
         type: 'counter',
-        labelNames: [],
+        labelNames: ['destinationId', 'workspaceId'],
       },
       {
         name: 'braze_audience_partial_failure',

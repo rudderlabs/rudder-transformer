@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.148.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.147.0...v1.148.0) (2026-08-19)
+
+
+### Features
+
+* **braze:** instrument silent router-job drops (INT-6993) ([#5465](https://github.com/rudderlabs/rudder-transformer/issues/5465)) ([f757224](https://github.com/rudderlabs/rudder-transformer/commit/f757224c23ab4d11935cf5a52a6c95cb1e6b21f9))
+* **google_adwords_offline_conversions:** surface per-conversion partial-failure details ([#5492](https://github.com/rudderlabs/rudder-transformer/issues/5492)) ([b6fa1e9](https://github.com/rudderlabs/rudder-transformer/commit/b6fa1e975a2cf0b7d2377e8bf5e9129df9456e15))
+
+
+### Bug Fixes
+
+* **braze:** fail fast when restApiKey is missing instead of sending Bearer undefined ([#5488](https://github.com/rudderlabs/rudder-transformer/issues/5488)) ([67fd72d](https://github.com/rudderlabs/rudder-transformer/commit/67fd72deeb98183b59edaaa334154b30a074987b))
+* **braze:** scope 296 to ecommerce schema rejections on /users/track ([#5490](https://github.com/rudderlabs/rudder-transformer/issues/5490)) ([46078ba](https://github.com/rudderlabs/rudder-transformer/commit/46078ba824fc27aad877389c42c7f98efe0cf9a7))
+* **braze:** stop router in/out mismatch from duplicated job metadata ([#5483](https://github.com/rudderlabs/rudder-transformer/issues/5483)) ([54d2b8a](https://github.com/rudderlabs/rudder-transformer/commit/54d2b8a85ddb3e36679c7313189120630943c27c))
+* **fb_custom_audience:** treat non-2xx proxy responses without an error body as failures ([#5459](https://github.com/rudderlabs/rudder-transformer/issues/5459)) ([3a71723](https://github.com/rudderlabs/rudder-transformer/commit/3a71723dd49cef491b9c0bb414dca83f52253704))
+* **release:** remove draft release actor gate ([#5491](https://github.com/rudderlabs/rudder-transformer/issues/5491)) ([1f96daa](https://github.com/rudderlabs/rudder-transformer/commit/1f96daacea8c51ec18a5e4cd5c731045e41f6615))
+
 ## [1.147.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.146.0...v1.147.0) (2026-08-17)
 
 

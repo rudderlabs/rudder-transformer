@@ -1523,6 +1523,406 @@ export const data = [
       },
     },
   },
+  {
+    name: 'braze',
+    description: 'denylisted event type is dropped, the rest of the batch is kept',
+    module: 'source',
+    version: 'v2',
+    skipGo: 'Custom source config',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                events: [
+                  {
+                    event_type: 'users.messages.email.Open',
+                    properties: { device_model: 'samsung' },
+                    user: { user_id: 'user_id', external_user_id: 'externalUserId' },
+                  },
+                  {
+                    event_type: 'users.behaviors.Purchase',
+                    properties: { device_model: 'pixel' },
+                    user: { user_id: 'user_id_2', external_user_id: 'externalUserId2' },
+                  },
+                ],
+              }),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                eventFilteringOption: 'blacklistedEvents',
+                blacklistedEvents: [{ eventName: 'users.messages.email.Open' }],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  anonymousId: 'user_id_2',
+                  context: {
+                    device: { model: 'pixel' },
+                    integration: { name: 'Braze' },
+                    library: { name: 'unknown', version: 'unknown' },
+                  },
+                  event: 'users.behaviors.Purchase',
+                  integrations: { Braze: false },
+                  type: 'track',
+                  userId: 'externalUserId2',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'allowlist keeps only the listed event types',
+    module: 'source',
+    version: 'v2',
+    skipGo: 'Custom source config',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                events: [
+                  {
+                    event_type: 'users.messages.email.Open',
+                    properties: { device_model: 'samsung' },
+                    user: { user_id: 'user_id', external_user_id: 'externalUserId' },
+                  },
+                  {
+                    event_type: 'users.behaviors.Purchase',
+                    properties: { device_model: 'pixel' },
+                    user: { user_id: 'user_id_2', external_user_id: 'externalUserId2' },
+                  },
+                ],
+              }),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                eventFilteringOption: 'whitelistedEvents',
+                whitelistedEvents: [{ eventName: 'users.behaviors.Purchase' }],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  anonymousId: 'user_id_2',
+                  context: {
+                    device: { model: 'pixel' },
+                    integration: { name: 'Braze' },
+                    library: { name: 'unknown', version: 'unknown' },
+                  },
+                  event: 'users.behaviors.Purchase',
+                  integrations: { Braze: false },
+                  type: 'track',
+                  userId: 'externalUserId2',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'batch filtered out entirely is acknowledged instead of failing',
+    module: 'source',
+    version: 'v2',
+    skipGo: 'Custom source config',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                events: [
+                  {
+                    event_type: 'users.messages.email.Open',
+                    properties: { device_model: 'samsung' },
+                    user: { user_id: 'user_id', external_user_id: 'externalUserId' },
+                  },
+                  {
+                    event_type: 'users.behaviors.subscriptiongroup.StateChange',
+                    properties: { device_model: 'pixel' },
+                    user: { user_id: 'user_id_2', external_user_id: 'externalUserId2' },
+                  },
+                ],
+              }),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                eventFilteringOption: 'blacklistedEvents',
+                blacklistedEvents: [
+                  { eventName: 'users.messages.email.Open' },
+                  { eventName: 'users.behaviors.subscriptiongroup.StateChange' },
+                ],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            outputToSource: { body: 'T0s=', contentType: 'text/plain' },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'allowlist selected but left empty does not drop anything',
+    module: 'source',
+    version: 'v2',
+    skipGo: 'Custom source config',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                events: [
+                  {
+                    event_type: 'users.messages.email.Open',
+                    properties: { device_model: 'samsung' },
+                    user: { user_id: 'user_id', external_user_id: 'externalUserId' },
+                  },
+                ],
+              }),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                eventFilteringOption: 'whitelistedEvents',
+                whitelistedEvents: [{ eventName: '' }],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  anonymousId: 'user_id',
+                  context: {
+                    device: { model: 'samsung' },
+                    integration: { name: 'Braze' },
+                    library: { name: 'unknown', version: 'unknown' },
+                  },
+                  event: 'users.messages.email.Open',
+                  integrations: { Braze: false },
+                  type: 'track',
+                  userId: 'externalUserId',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'filtering explicitly disabled lets every event through',
+    module: 'source',
+    version: 'v2',
+    skipGo: 'Custom source config',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                events: [
+                  {
+                    event_type: 'users.messages.email.Open',
+                    properties: { device_model: 'samsung' },
+                    user: { user_id: 'user_id', external_user_id: 'externalUserId' },
+                  },
+                ],
+              }),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                eventFilteringOption: 'disable',
+                blacklistedEvents: [{ eventName: 'users.messages.email.Open' }],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  anonymousId: 'user_id',
+                  context: {
+                    device: { model: 'samsung' },
+                    integration: { name: 'Braze' },
+                    library: { name: 'unknown', version: 'unknown' },
+                  },
+                  event: 'users.messages.email.Open',
+                  integrations: { Braze: false },
+                  type: 'track',
+                  userId: 'externalUserId',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'denylist matches the raw event_type even when customMapping renames it',
+    module: 'source',
+    version: 'v2',
+    skipGo: 'Custom source config',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                events: [
+                  {
+                    event_type: 'users.messages.email.Open',
+                    properties: { device_model: 'samsung' },
+                    user: { user_id: 'user_id', external_user_id: 'externalUserId' },
+                  },
+                  {
+                    event_type: 'users.behaviors.Purchase',
+                    properties: { device_model: 'pixel' },
+                    user: { user_id: 'user_id_2', external_user_id: 'externalUserId2' },
+                  },
+                ],
+              }),
+            },
+            source: {
+              ID: '2hgvYyU5TYaFvVzBge6tF2UKoeG',
+              OriginalID: '',
+              Name: 'Braze source',
+              SourceDefinition: commonSourceDefinition,
+              Config: {
+                customMapping: [{ from: 'users.messages.email.Open', to: 'Email Opened' }],
+                eventFilteringOption: 'blacklistedEvents',
+                blacklistedEvents: [{ eventName: 'users.messages.email.Open' }],
+              },
+              ...commonSourceConfigProperties,
+            },
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  anonymousId: 'user_id_2',
+                  context: {
+                    device: { model: 'pixel' },
+                    integration: { name: 'Braze' },
+                    library: { name: 'unknown', version: 'unknown' },
+                  },
+                  event: 'users.behaviors.Purchase',
+                  integrations: { Braze: false },
+                  type: 'track',
+                  userId: 'externalUserId2',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: () => {

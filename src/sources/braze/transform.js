@@ -10,6 +10,7 @@ const {
   getBodyFromV2SpecPayload,
 } = require('../../v0/util');
 const Message = require('../message');
+const { NO_OPERATION_SUCCESS, isEventAllowed } = require('./util');
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
@@ -70,9 +71,11 @@ const processEvent = (event, eventMapping) => {
 const process = (payload) => {
   const event = getBodyFromV2SpecPayload(payload);
   const { source } = payload;
-  const { customMapping } = source.Config;
+  const config = source.Config || {};
+  const { customMapping } = config;
   const eventMapping = getHashFromArray(customMapping, 'from', 'to', false);
   const responses = [];
+  let filteredCount = 0;
 
   // Ref: Custom Currents Connector Partner Dev Documentation.pdf
   const eventList = Array.isArray(event) && event.length > 0 ? event[0]?.events : event?.events;
@@ -80,6 +83,11 @@ const process = (payload) => {
     throw new TransformationError('eventList should be an array');
   }
   eventList.forEach((singleEvent) => {
+    // filter on the raw braze event_type, before customMapping is applied
+    if (!isEventAllowed(singleEvent?.event_type, config)) {
+      filteredCount += 1;
+      return;
+    }
     try {
       const resp = processEvent(singleEvent, eventMapping);
       if (resp) {
@@ -94,6 +102,11 @@ const process = (payload) => {
     }
   });
   if (responses.length === 0) {
+    // every event was intentionally filtered out by the source config, so
+    // acknowledge braze with a 200 rather than reporting a batch failure
+    if (filteredCount > 0 && filteredCount === eventList.length) {
+      return NO_OPERATION_SUCCESS;
+    }
     throw new TransformationError('All requests in the batch failed');
   } else {
     return responses;

@@ -1,0 +1,51 @@
+{
+  "name": "braze",
+  "description": "denylisted event type is dropped, the rest of the batch is kept",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"events\":[{\"event_type\":\"users.messages.email.Open\",\"properties\":{\"device_model\":\"samsung\"},\"user\":{\"user_id\":\"user_id\",\"external_user_id\":\"externalUserId\"}},{\"event_type\":\"users.behaviors.Purchase\",\"properties\":{\"device_model\":\"pixel\"},\"user\":{\"user_id\":\"user_id_2\",\"external_user_id\":\"externalUserId2\"}}]}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{\"eventFilteringOption\":\"blacklistedEvents\",\"blacklistedEvents\":[{\"eventName\":\"users.messages.email.Open\"}]}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "user_id_2",
+        "context": {
+          "device": {
+            "model": "pixel"
+          },
+          "integration": {
+            "name": "Braze"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          }
+        },
+        "event": "users.behaviors.Purchase",
+        "integrations": {
+          "Braze": false
+        },
+        "type": "track",
+        "userId": "externalUserId2",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  },
+  "skip": "Custom source config"
+}

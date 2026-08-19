@@ -1,0 +1,26 @@
+{
+  "name": "braze",
+  "description": "batch filtered out entirely is acknowledged instead of failing",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"events\":[{\"event_type\":\"users.messages.email.Open\",\"properties\":{\"device_model\":\"samsung\"},\"user\":{\"user_id\":\"user_id\",\"external_user_id\":\"externalUserId\"}},{\"event_type\":\"users.behaviors.subscriptiongroup.StateChange\",\"properties\":{\"device_model\":\"pixel\"},\"user\":{\"user_id\":\"user_id_2\",\"external_user_id\":\"externalUserId2\"}}]}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{\"eventFilteringOption\":\"blacklistedEvents\",\"blacklistedEvents\":[{\"eventName\":\"users.messages.email.Open\"},{\"eventName\":\"users.behaviors.subscriptiongroup.StateChange\"}]}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [],
+    "errQueue": []
+  },
+  "skip": "Custom source config"
+}

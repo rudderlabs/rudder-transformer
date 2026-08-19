@@ -6,6 +6,7 @@
  * Integrations never build a `DeliveryV1Response`, never choose an HTTP status code, and never
  * throw. See docs/superpowers/specs/2026-07-30-network-handler-abstraction-design.md.
  */
+import { PlatformError } from '@rudderstack/integrations-lib';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { isHttpStatusSuccess, isHttpStatusRetryable } from '../../../v0/util';
 import tags from '../../../v0/util/tags';
@@ -254,8 +255,24 @@ const statusOnlyFailureReason = (ctx: DeliveryContext): string => defaultFailure
  * `failureReason` resolves to the nearest declaration — which is what a plain static override
  * would have done. Not cached: the walk is three levels of small objects, nothing next to the HTTP
  * call it accompanies, and a cache would go stale whenever a test swaps a spec.
+ *
+ * Throws when handed anything that is not a class. `MiscService.getBatchDestinationHandler` is
+ * `require(...).Integration`, so a missing or renamed export arrives here as `undefined`, and
+ * walking from `undefined` resolves to the empty spec — which is a *valid* configuration meaning
+ * "classify on status alone". Every destination that reports partial failures on a 2xx
+ * (braze_audience, customerio, iterable_audience) would then answer each rejected record with
+ * `statusCode: 200, error: 'success'`: dropped with no throw, no log and no metric. The transform
+ * path already refuses the same mistake loudly, so this does too.
  */
 export function resolveDeliverySpec(klass: unknown): ResolvedDeliverySpec {
+  if (typeof klass !== 'function') {
+    throw new PlatformError(
+      'Delivery spec resolution: expected a BatchDestination class, got ' +
+        `${klass === null ? 'null' : typeof klass}. The destination's routerTransform module ` +
+        'likely does not export `Integration`.',
+    );
+  }
+
   // Leaf-first.
   const chain: DeliverySpec[] = [];
   let current: unknown = klass;
@@ -465,13 +482,28 @@ export function toDeliveryV1Response(
   // `TransformerProxyError`. The identifying half — destType, destinationId, workspaceId, module,
   // implementation, feature — is merged in by the caller from the same `getTags` metadata that
   // `postTransformation` merges for a thrown error, so both paths emit one tag set from one source.
+  //
+  // A non-2xx `status` forces the tag set on regardless. `DeliveryV1ResponseSchema` refines on
+  // `validateStatTags` (`zodTypes.ts:169-174,228`), which rejects a non-2xx response carrying no
+  // `statTags` — so without this a part-failed per-item list on a 400, the very case the
+  // `perItemPreserved` exclusion above exists to serve, would fail the component and live harnesses
+  // that parse it. Nothing reaches it today: every current override is 2xx-keyed except gaec's
+  // `4xx`, which returns whole-batch verdicts.
+  //
+  // Tagging it is honest rather than a workaround. The status being passed through already tells
+  // rudder-server the response failed as a whole; a tag set describing that agrees with the status
+  // instead of contradicting it. The rule above still governs which errorType is chosen — where the
+  // failures do not agree, it comes from a failing verdict rather than from `first`, which may be a
+  // success on a mixed batch.
   const allFailed = failures.length === verdicts.length && failures.length > 0;
+  const describesOneFailure = uniform && allFailed;
+  const taggedVerdict = describesOneFailure ? first : (failures[0] ?? first);
   const statTags =
-    uniform && allFailed
+    describesOneFailure || !isHttpStatusSuccess(ctx.status)
       ? {
           statTags: {
             [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK,
-            [tags.TAG_NAMES.ERROR_TYPE]: errorTypeOf(first),
+            [tags.TAG_NAMES.ERROR_TYPE]: errorTypeOf(taggedVerdict),
           },
         }
       : undefined;

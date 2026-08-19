@@ -182,6 +182,18 @@ describe('resolveDeliverySpec', () => {
       '[Generic Response Handler] Request failed with status: 503',
     );
   });
+
+  it.each([
+    ['undefined', undefined],
+    ['null', null],
+    ['a plain object', {}],
+  ])('throws rather than degrading to the empty spec for %s', (_name, notAClass) => {
+    // `MiscService.getBatchDestinationHandler` is `require(...).Integration`, so a renamed or
+    // missing export lands here as undefined. Resolving that to `{}` is indistinguishable from a
+    // destination that genuinely classifies on status alone — every partial failure reported on a
+    // 2xx would come back `statusCode: 200, error: 'success'`, dropped with no throw and no metric.
+    expect(() => resolveDeliverySpec(notAClass)).toThrow(/does not export `Integration`/);
+  });
 });
 
 describe('handleDeliveryResponse', () => {
@@ -483,6 +495,40 @@ describe('toDeliveryV1Response — per-item detail survives a non-2xx', () => {
       DEST,
     );
     expect(result.response.map((r) => r.statusCode)).toEqual([500, 500]);
+  });
+
+  it('still carries statTags when only some items failed on a non-2xx', () => {
+    // `validateStatTags` rejects a non-2xx response with empty statTags, so the "one failure only"
+    // rule cannot apply here without the response failing the harness that parses it — and this is
+    // the case the perItemPreserved exclusion above exists to let through.
+    const result = toDeliveryV1Response(
+      perItem([success(), abort('bad id')]),
+      ctxFor(400, { failed: true }, 2),
+      DEST,
+    );
+    expect(result.status).toBe(400);
+    expect(result.statTags).toEqual({ errorCategory: 'network', errorType: 'aborted' });
+    expect(result.response.map((r) => r.statusCode)).toEqual([200, 400]);
+  });
+
+  it('takes the errorType from a failing verdict, not from a leading success', () => {
+    const result = toDeliveryV1Response(
+      perItem([success(), retry('try later')]),
+      ctxFor(503, { failed: true }, 2),
+      DEST,
+    );
+    expect(result.statTags).toEqual({ errorCategory: 'network', errorType: 'retryable' });
+  });
+
+  it('leaves statTags off a partially-failed 2xx', () => {
+    // Unchanged by the floor: a 2xx is not rejected for missing statTags, and tagging a batch that
+    // partly delivered as a whole-batch abort is what gaec's legacy handler got wrong.
+    const result = toDeliveryV1Response(
+      perItem([success(), abort('bad id')]),
+      ctxFor(200, {}, 2),
+      DEST,
+    );
+    expect(result.statTags).toBeUndefined();
   });
 });
 

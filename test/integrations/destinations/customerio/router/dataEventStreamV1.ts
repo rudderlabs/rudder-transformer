@@ -14,9 +14,6 @@ export const dataEventStreamV1 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -84,9 +81,6 @@ export const dataEventStreamV1 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -108,8 +102,8 @@ export const dataEventStreamV1 = [
               },
             },
             {
-              // event-stream event — V1 shape while the flag is off, even though the
-              // batching framework is on for this workspace
+              // event-stream event — V1 shape while the event-stream V2 API flag is off,
+              // even though the batching framework is GA-enabled
               message: {
                 channel: 'web',
                 type: 'track',

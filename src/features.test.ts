@@ -32,6 +32,7 @@ describe('features destination capabilities', () => {
       ITERABLE_AUDIENCE: true,
       BRAZE_AUDIENCE: true,
       TEST_DESTINATION: true,
+      CUSTOMERIO: true,
     });
   });
 

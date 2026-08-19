@@ -228,11 +228,9 @@ const dataV1 = [
                   FORM: {},
                 },
                 files: {},
-                userId: '123456',
-                statusCode: 200,
               },
               metadata: [{ jobId: 1, userId: 'u1' }],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 Config: {
@@ -268,11 +266,9 @@ const dataV1 = [
                   FORM: {},
                 },
                 files: {},
-                userId: '12345',
-                statusCode: 200,
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 Config: {
@@ -330,7 +326,7 @@ const dataV1 = [
                 { jobId: 3, userId: 'u1' },
                 { jobId: 4, userId: 'u1' },
               ],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 Config: {

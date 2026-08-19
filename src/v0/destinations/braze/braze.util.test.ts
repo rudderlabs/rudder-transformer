@@ -2939,6 +2939,11 @@ describe('formatEmail', () => {
     { name: 'trailing whitespace', input: 'user@example.com ' },
     { name: 'two @ signs', input: 'user@@example.com' },
     { name: 'an empty string after trimming', input: '   ' },
+    // RFC-legal quoted local parts, which Braze rejects: the local part "cannot contain
+    // double quotes".
+    { name: 'a quoted local part with a space', input: '"user name"@example.com' },
+    { name: 'a quoted local part', input: '"user"@example.com' },
+    { name: 'a quoted local part with an @ inside', input: '"user@internal"@example.com' },
   ];
 
   const nonStringValues = [

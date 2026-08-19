@@ -102,6 +102,17 @@ const formatGender = (gender: unknown) => {
  * The offending address is deliberately kept out of the error message; the full payload is
  * already visible alongside the error in Live Events, and the message itself ends up in logs
  * and metrics where the PII does not belong.
+ *
+ * `blacklisted_chars: '"'` narrows `isEmail` to Braze's rule that the local part "cannot
+ * contain double quotes" -- `"` is absent from the character set in Braze's own published
+ * validation regex. RFC-legal quoted addresses such as `"user name"@example.com` pass
+ * `isEmail`'s default options, but Braze rejects them.
+ *
+ * The option only ever rejects addresses Braze also rejects: `isEmail` admits `"` in the
+ * local part solely via its fully-quoted branch, and a local part opening with `"` can never
+ * match Braze's regex. Note Braze validates only the segment preceding `+`, so widening the
+ * blacklist further would over-reject -- e.g. Braze accepts `user+{tag}@example.com`.
+ * https://www.braze.com/docs/user_guide/channels/email/email_setup/email_validation
  */
 const formatEmail = (email: unknown) => {
   if (!isDefinedAndNotNull(email)) {
@@ -113,7 +124,7 @@ const formatEmail = (email: unknown) => {
   }
 
   const formattedEmail = email.toLowerCase();
-  if (!validator.isEmail(formattedEmail)) {
+  if (!validator.isEmail(formattedEmail, { blacklisted_chars: '"' })) {
     throw new InstrumentationError(
       'Invalid email, the email provided is not a valid email address',
     );

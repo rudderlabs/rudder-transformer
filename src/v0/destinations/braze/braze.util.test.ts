@@ -18,10 +18,12 @@ import {
 import { isPerJobDeliveryMappingEnabled } from './config';
 import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
 import { ConfigurationError, generateRandomString } from '@rudderstack/integrations-lib';
+import type { Metadata } from '../../../types';
 import {
   BrazeDestination,
   BrazeRouterRequest,
   BrazeTransformedEvent,
+  BrazeBatchResponse,
   BrazeTrackRequestBody,
   BrazeSubscriptionBatchPayload,
   BrazeMergeBatchPayload,
@@ -2947,5 +2949,225 @@ describe('isPerJobDeliveryMappingEnabled — per-workspace rollout gate', () => 
     setEnv('  ws1 ,  ws2  ');
     expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(true);
     expect(isPerJobDeliveryMappingEnabled('ws2')).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Router in/out job accounting — rudder-server discards the whole transformer
+// response and retries the entire batch as 500 when the number of jobIds it
+// gets back differs from the number it sent (`router_transformer_invalid_response`,
+// reason `in out mismatch`). `in` is a set of input jobIds; `out` is appended
+// once per (output element x distinct jobId in that element), so a jobId that
+// surfaces in two outputs inflates `out` even though nothing was lost.
+// ---------------------------------------------------------------------------
+
+// Structural view of the ON-path track outputs the tests below assert on. The
+// shared on*/off* helpers further up predate strict typing and return `any[]`;
+// annotating once at the call site keeps every assertion properly typed.
+type OnTrackOutput = {
+  batchedRequest: { body: { JSON: BrazeTrackRequestBody } };
+  metadata: Partial<Metadata>[];
+};
+
+const jobIdsOf = (out: BrazeBatchResponse): number[] =>
+  (out.metadata ?? [])
+    .map((meta) => meta.jobId)
+    .filter((jobId): jobId is number => jobId !== undefined);
+
+describe('router in/out job accounting (ON path)', () => {
+  const destination = brazeDestFor();
+
+  // Mirrors rudder-server's check in router/transformer/transformer.go: `in` is a
+  // deduped set of input jobIds, `out` appends one entry per (output x distinct
+  // jobId), so cross-output duplicates make len(out) > len(in).
+  const outJobIdCount = (result: BrazeBatchResponse[]): number =>
+    result.reduce((acc, out) => acc + new Set(jobIdsOf(out)).size, 0);
+
+  const trackJob = (
+    jobId: number,
+    attributesExternalId: string | undefined,
+    eventsExternalId: string | undefined,
+  ): BrazeTransformedEvent => ({
+    destination,
+    statusCode: 200,
+    batchedRequest: {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: '',
+      headers: {},
+      params: {},
+      body: {
+        JSON: {
+          attributes: [
+            attributesExternalId === undefined
+              ? { name: `n${jobId}` }
+              : { external_id: attributesExternalId, name: `n${jobId}` },
+          ],
+          events: [
+            eventsExternalId === undefined
+              ? { name: 'e', time: 't' }
+              : { external_id: eventsExternalId, name: 'e', time: 't' },
+          ],
+        },
+      },
+      files: {},
+    },
+    metadata: [{ jobId, workspaceId: 'workspace-non-mau' }],
+  });
+
+  test('a job whose items carry different external_ids is not emitted in two chunks', () => {
+    // 80 ordinary jobs force more than one chunk (V1 cap is 75 attributes).
+    const jobs: BrazeTransformedEvent[] = Array.from({ length: 80 }, (_, i) =>
+      trackJob(i, `u${String(i).padStart(3, '0')}`, `u${String(i).padStart(3, '0')}`),
+    );
+    // One anonymous job: traits carried an `external_id`, but the message had no
+    // userId, so setExternalIdOrAliasObject took the alias branch and left the
+    // events item without an `external_id`. Its two items therefore sort to
+    // opposite ends of the batch.
+    jobs.push(trackJob(999, 'a-anonymous-user', undefined));
+
+    const result = processBatchWithDeliveryMapping(jobs);
+    const tracks: OnTrackOutput[] = onTrackOutputs(result, destination);
+    expect(tracks.length).toBeGreaterThanOrEqual(2);
+
+    const occurrences = tracks.filter((track) =>
+      track.metadata.some((meta) => meta.jobId === 999),
+    ).length;
+    expect(occurrences).toBe(1);
+  });
+
+  test('out jobId count equals in jobId count for a mixed-external_id batch', () => {
+    const jobs: BrazeTransformedEvent[] = Array.from({ length: 80 }, (_, i) =>
+      trackJob(i, `u${String(i).padStart(3, '0')}`, `u${String(i).padStart(3, '0')}`),
+    );
+    jobs.push(trackJob(999, 'a-anonymous-user', undefined));
+
+    const result = processBatchWithDeliveryMapping(jobs);
+    expect(outJobIdCount(result)).toBe(jobs.length);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Chunk-boundary invariant: chunking packs whole source-job groups, never
+// individual items, so a boundary can only fall between two jobs. A chunk may
+// therefore close under the per-type cap rather than split a job.
+// ---------------------------------------------------------------------------
+
+describe('chunk boundaries never split a source job', () => {
+  const destination = brazeDestFor();
+
+  type ItemSpec = { type: 'attributes' | 'events' | 'purchases'; externalId?: string };
+
+  const jobFromSpecs = (jobId: number, specs: ItemSpec[]): BrazeTransformedEvent => {
+    const attributes: Record<string, unknown>[] = [];
+    const events: Record<string, unknown>[] = [];
+    const purchases: Record<string, unknown>[] = [];
+    specs.forEach((spec, k) => {
+      const base: Record<string, unknown> = { tag: `${jobId}-${k}` };
+      if (spec.externalId !== undefined) {
+        base.external_id = spec.externalId;
+      }
+      if (spec.type === 'events') {
+        events.push({ ...base, name: 'e', time: 't' });
+      } else if (spec.type === 'purchases') {
+        purchases.push({
+          ...base,
+          product_id: `p${jobId}-${k}`,
+          price: 1,
+          currency: 'USD',
+          quantity: 1,
+          time: 't',
+        });
+      } else {
+        attributes.push(base);
+      }
+    });
+    return {
+      destination,
+      statusCode: 200,
+      batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
+        body: { JSON: { attributes, events, purchases } },
+        files: {},
+      },
+      metadata: [{ jobId, workspaceId: 'workspace-non-mau' }],
+    };
+  };
+
+  const jobIdOccurrences = (result: BrazeBatchResponse[]): Map<number, number> => {
+    const counts = new Map<number, number>();
+    for (const out of result) {
+      for (const jobId of new Set(jobIdsOf(out))) {
+        counts.set(jobId, (counts.get(jobId) ?? 0) + 1);
+      }
+    }
+    return counts;
+  };
+
+  test('closes a chunk under the per-type cap rather than splitting the job that overflows it', () => {
+    // 37 two-attribute jobs fill 74 of the 75 attribute slots. The 38th job also
+    // contributes two attributes, and its two items carry different external_ids
+    // — the shape that used to be scattered by the item-level sort.
+    const jobs = Array.from({ length: 37 }, (_, i) =>
+      jobFromSpecs(i, [
+        { type: 'attributes', externalId: `u${String(i).padStart(3, '0')}` },
+        { type: 'attributes', externalId: `u${String(i).padStart(3, '0')}` },
+      ]),
+    );
+    jobs.push(
+      jobFromSpecs(37, [{ type: 'attributes', externalId: 'aaa' }, { type: 'attributes' }]),
+    );
+
+    const result = processBatchWithDeliveryMapping(jobs);
+    const tracks: OnTrackOutput[] = onTrackOutputs(result, destination);
+
+    // The overflowing job is not split: no chunk carries 75 attributes.
+    expect(
+      tracks.some((track) => (track.batchedRequest.body.JSON.attributes ?? []).length === 75),
+    ).toBe(false);
+    for (const [, occurrences] of jobIdOccurrences(result)) {
+      expect(occurrences).toBe(1);
+    }
+  });
+
+  test('no jobId is ever emitted twice across randomised mixed-external_id batches', () => {
+    // Deterministic LCG — reproducible, no test flakiness.
+    let seed = 0x2f6e2b1;
+    const rand = (n: number) => {
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      return seed % n;
+    };
+    const types: ItemSpec['type'][] = ['attributes', 'events', 'purchases'];
+    const pool = ['e0', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7'];
+
+    const jobs = Array.from({ length: 120 }, (_, i) => {
+      const specs: ItemSpec[] = [{ type: 'attributes', externalId: pool[rand(pool.length)] }];
+      const extra = rand(4);
+      for (let k = 0; k < extra; k += 1) {
+        const pick = rand(pool.length + 1);
+        specs.push({
+          type: types[rand(types.length)],
+          // pool.length means "no external_id at all" — the alias-branch shape.
+          externalId: pick === pool.length ? undefined : pool[pick],
+        });
+      }
+      return jobFromSpecs(i, specs);
+    });
+
+    const result = processBatchWithDeliveryMapping(jobs);
+    const tracks: OnTrackOutput[] = onTrackOutputs(result, destination);
+    expect(tracks.length).toBeGreaterThanOrEqual(2);
+
+    const counts = jobIdOccurrences(result);
+    expect(counts.size).toBe(jobs.length);
+    for (const [, occurrences] of counts) {
+      expect(occurrences).toBe(1);
+    }
   });
 });

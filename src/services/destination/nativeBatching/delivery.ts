@@ -482,37 +482,30 @@ export function toDeliveryV1Response(
   // `TransformerProxyError`. The identifying half — destType, destinationId, workspaceId, module,
   // implementation, feature — is merged in by the caller from the same `getTags` metadata that
   // `postTransformation` merges for a thrown error, so both paths emit one tag set from one source.
-  //
-  // A non-2xx `status` forces the tag set on regardless. `DeliveryV1ResponseSchema` refines on
-  // `validateStatTags` (`zodTypes.ts:169-174,228`), which rejects a non-2xx response carrying no
-  // `statTags` — so without this a part-failed per-item list on a 400, the very case the
-  // `perItemPreserved` exclusion above exists to serve, would fail the component and live harnesses
-  // that parse it. Nothing reaches it today: every current override is 2xx-keyed except gaec's
-  // `4xx`, which returns whole-batch verdicts.
-  //
-  // Tagging it is honest rather than a workaround. The status being passed through already tells
-  // rudder-server the response failed as a whole; a tag set describing that agrees with the status
-  // instead of contradicting it. The rule above still governs which errorType is chosen — where the
-  // failures do not agree, it comes from a failing verdict rather than from `first`, which may be a
-  // success on a mixed batch.
   const allFailed = failures.length === verdicts.length && failures.length > 0;
-  const describesOneFailure = uniform && allFailed;
-  const taggedVerdict = describesOneFailure ? first : (failures[0] ?? first);
   const statTags =
-    describesOneFailure || !isHttpStatusSuccess(ctx.status)
+    uniform && allFailed
       ? {
           statTags: {
             [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK,
-            [tags.TAG_NAMES.ERROR_TYPE]: errorTypeOf(taggedVerdict),
+            [tags.TAG_NAMES.ERROR_TYPE]: errorTypeOf(first),
           },
         }
       : undefined;
 
   return {
     // The destination's own status, always. `ProxyResponseV1` has no `status` field
-    // (`router/transformer/transformer_proxy_adapter.go:40-44`), so rudder-server takes disposition
-    // from each job state and never reads this; substituting 207 for a status the destination did
-    // not send would invent a difference from the legacy handler that nothing benefits from.
+    // (`router/transformer/transformer_proxy_adapter.go:41-45` — only `message`, `response` and
+    // `authErrorCategory`), so rudder-server takes disposition from each job state and never reads
+    // this; substituting 207 for a status the destination did not send would invent a difference
+    // from the legacy handler that nothing benefits from.
+    //
+    // It is not dead, though, and it is not the status rudder-server sees on the wire. The v1
+    // controller returns HTTP 200 for this response unless `authErrorCategory` is set, in which
+    // case it derives the wire status from this field (`controllers/delivery.ts`). The framework
+    // never sets `authErrorCategory` on a *returned* response — whole-batch auth verdicts go down
+    // the throw path above — so for everything built here the field is carried but not read. The
+    // shared `DeliveryV1Response` type and its zod schema both require it regardless.
     status: ctx.status,
     message,
     ...statTags,

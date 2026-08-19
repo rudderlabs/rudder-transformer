@@ -17,6 +17,7 @@ import {
   type ItemVerdict,
 } from './delivery';
 import { BatchDestination } from './batchDestination';
+import stats from '../../../util/stats';
 import type { ProxyMetdata, ProxyV1Request } from '../../../types';
 
 const DEST = 'TEST_DEST';
@@ -101,9 +102,20 @@ describe('classifyByStatus', () => {
   ];
 
   it.each(cases)('classifies $status as $kind ($as)', ({ status, kind, as }) => {
-    const verdict = classifyByStatus(status, 'boom') as { kind: string; as?: string };
+    const verdict = classifyByStatus(status, () => 'boom') as { kind: string; as?: string };
     expect(verdict.kind).toBe(kind);
     expect(verdict.as).toBe(as);
+  });
+
+  it('does not evaluate the reason on a success', () => {
+    // The success path is every plain 2xx, and a destination's extractor can be expensive — braze's
+    // falls through to JSON.stringify over the whole response body.
+    const reason = jest.fn(() => 'boom');
+    classifyByStatus(200, reason);
+    expect(reason).not.toHaveBeenCalled();
+
+    classifyByStatus(500, reason);
+    expect(reason).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -418,6 +430,23 @@ describe('toDeliveryV1Response — perItem bounds guard', () => {
   it('names the mismatch in the per-job error so it is diagnosable from live events', () => {
     const result = toDeliveryV1Response(perItem([success()]), ctxFor(200, {}, 2), DEST);
     expect(result.response[0].error).toBe(`[${DEST}] per-item verdicts (1) do not match jobs (2)`);
+  });
+
+  it('keeps the two counts out of the metric labels', () => {
+    // MAX_BATCH_SIZE is 1000 for braze_audience and iterable_audience, so tagging both counts would
+    // open a 1000x1000 label space per (destType, destinationId, workspaceId) — and this counter
+    // fires exactly when a destination is stuck in the mismatch/retry loop.
+    const counter = jest.spyOn(stats, 'counter').mockImplementation(() => {});
+    try {
+      toDeliveryV1Response(perItem([success()]), ctxFor(200, {}, 2), DEST);
+      expect(counter).toHaveBeenCalledWith('batch_delivery_per_item_mismatch', 1, {
+        destType: DEST,
+        destinationId: 'd1',
+        workspaceId: 'w1',
+      });
+    } finally {
+      counter.mockRestore();
+    }
   });
 });
 

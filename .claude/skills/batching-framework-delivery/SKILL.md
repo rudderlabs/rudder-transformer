@@ -101,6 +101,12 @@ So: if your destination's errors are worth reading, write the extractor in your 
 
 `gaec` originally indexed off the response's `results` and hit exactly this: whenever Google omitted `results`, an abort became a batch retry that could never converge, since re-uploading accepted adjustments returns duplicate-enhancement failures on every attempt.
 
+**`ctx.request.body?.JSON` only holds the batch on `BodyFormat.JSON`.** `mapSuccessPayloadToServerFormat` writes the batch to `body[strategy.bodyFormat]` and hard-sets the other three to `{}` (`processBatchedDestination.ts`), so a destination on `JSON_ARRAY`, `FORM` or `XML` reading `body.JSON` gets nothing on every response — success included — and the mismatch guard answers each one with an N-job 500. Read the key your `getBatchStrategy` actually returns. All six spec'd destinations are on `JSON` today, which is why no test catches this for you.
+
+**Decide what an unreadable posted array should mean before you write the loop.** `perItem([])` is a length mismatch, so the bridge retries the whole batch — and that retry reposts the same body and mismatches again, which never converges. `braze_audience` avoids it by falling back to `ctx.jobs`, which the framework builds 1:1 with the posted array. Taking the `fallback` parameter and returning a whole-batch verdict is the other option.
+
+**A delivery spec and an array-returning `transformEvent` are mutually exclusive.** `ctx.jobs` carries one entry per job, so a job contributing two body items puts the two lengths permanently out of step and the batch retries forever. `batchDestination.ts` and the VDM V2 dispatch table both permit `transformEvent` to return an array; a destination that does must not call `perItem`.
+
 ### Never infer auth from a status code
 
 A 401 from an API-key destination is a bad key, not a refreshable token, and guessing costs a real control-plane token refresh. Derive the category from the **response body** — `gaec` does, via `getAuthErrCategory` — or leave it alone. `getAuthErrCategoryFromStCode`'s unconditional 401→`REFRESH_TOKEN` is the anti-pattern this replaces.

@@ -41,14 +41,28 @@ import {
 import type { DeliveryContext } from './nativeBatching/delivery';
 
 /**
- * Discriminates the two proxy request shapes on the only field that differs: v1 carries one
- * metadata entry per job, v0 carries a single object. Preferred over `ProxyV1RequestSchema` here —
- * that schema requires `secret` and `dontBatch` on every entry, so a real payload omitting either
- * would fail validation and silently fall through to the legacy handler, which is a worse failure
- * than the cast it replaces.
+ * Whether the framework's delivery branch may answer this request — the route rudder-server called
+ * *and* the shape it sent, because neither alone is sufficient.
+ *
+ * The route alone does not prove the shape: the branch indexes `metadata`, hands it to
+ * `handleDeliveryResponse` as the job list, and returns a `DeliveryV1Response` shaped to it.
+ * Narrowing on the array both proves that and removes the cast.
+ *
+ * The shape alone does not prove the route: a v0 payload carrying an array is not a v1 request, and
+ * answering it with a `DeliveryV1Response` gives rudder-server a body its v0 reader cannot parse.
+ * `intercom_v2`'s `INTERCOM_V2_v0_oauth_scenario_1` is exactly that request — a `version: 'v0'`
+ * scenario whose body comes from `generateProxyV1Payload`.
+ *
+ * Requiring both also keeps this branch strictly narrower than the `version === 'v1'` test the catch
+ * below uses, so any request this accepts is one the catch also treats as v1. A single call can
+ * therefore never answer with a v1 body when the destination succeeds and a v0 body when it fails.
+ *
+ * Preferred over `ProxyV1RequestSchema` for the shape half — that schema requires `secret` and
+ * `dontBatch` on every entry, so a real payload omitting either would fail validation and silently
+ * fall through to the legacy handler, which is a worse failure than the cast it replaces.
  */
-const isProxyV1Request = (request: ProxyRequest): request is ProxyV1Request =>
-  Array.isArray(request.metadata);
+const isProxyV1Request = (request: ProxyRequest, version: string): request is ProxyV1Request =>
+  version.toLowerCase() === 'v1' && Array.isArray(request.metadata);
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -238,14 +252,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
       // so is the v0->v1 adaptation below — the framework produces a v1 response natively, and
       // that adaptation would collapse the metadata array to its first entry.
       //
-      // The guard is `isProxyV1Request`, not `version === 'v1'`, because the array-ness of
-      // `metadata` is the thing this branch actually depends on: it indexes it, hands it to
-      // `handleDeliveryResponse` as the job list, and returns a `DeliveryV1Response` shaped to it.
-      // `version` is the API route rudder-server called ('v0'/'v1' are literals passed by the two
-      // controller entry points), so it only tells us which shape to *expect*; narrowing on the
-      // shape itself both proves it and removes the cast.
+      // The guard is `isProxyV1Request`, which requires the v1 route *and* an array `metadata`;
+      // see its declaration for why neither half alone is enough.
       if (
-        isProxyV1Request(deliveryRequest) &&
+        isProxyV1Request(deliveryRequest, version) &&
         isBatchingFrameworkDeliveryEnabled(
           destinationType,
           deliveryRequest.metadata[0]?.workspaceId,
@@ -285,6 +295,13 @@ export class NativeIntegrationDestinationService implements DestinationService {
             ...deliveryMetaTO.errorDetails,
           };
         }
+        // `ErrorReportingService.reportError` is deliberately not called for a *returned* failure,
+        // and that matches the legacy path rather than diverging from it: `deliver` returns
+        // `networkHandler.responseHandler(...)` straight through, and no network handler reports
+        // either — reporting fires only from `postTransformation`, i.e. only on the throw path,
+        // for both. A returned per-job failure is a delivery outcome the router acts on, not a
+        // transformer error, and routing every partial batch failure into error reporting would be
+        // a new behaviour for the 20 v1 handlers this replaces, not parity with them.
         return frameworkResponse;
       }
 

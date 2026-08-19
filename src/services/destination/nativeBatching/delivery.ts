@@ -10,6 +10,7 @@ import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { isHttpStatusSuccess, isHttpStatusRetryable } from '../../../v0/util';
 import tags from '../../../v0/util/tags';
 import stats from '../../../util/stats';
+import logger from '../../../logger';
 import {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -41,10 +42,16 @@ export type Verdict = SuccessVerdict | AbortVerdict | RetryVerdict;
  * The subset of verdicts expressible per item. The auth refinements are absent deliberately:
  * rudder-server overwrites the status code of *every* job in a batch whenever an
  * `authErrorCategory` is present, so a per-item auth verdict cannot be represented.
+ *
+ * Both refinements are excluded by construction, not by omission. `as?: 'throttled'` already makes
+ * `authExpired()` a type error, but a plain `{ kind: 'abort'; reason: string }` would *accept*
+ * `authRevoked()` — a returned value gets no excess-property check, so the extra `auth: 'revoked'`
+ * would be silently dropped and the record would abort as an ordinary 400. `auth?: never` closes
+ * that, so both builders fail at the call site rather than one of them degrading quietly.
  */
 export type ItemVerdict =
   | SuccessVerdict
-  | { kind: 'abort'; reason: string }
+  | { kind: 'abort'; reason: string; auth?: never }
   | { kind: 'retry'; reason: string; as?: 'throttled'; dontBatch?: boolean };
 
 export const success = (): SuccessVerdict => ({ kind: 'success' });
@@ -93,6 +100,13 @@ export type PerItemVerdicts = { kind: 'perItem'; verdicts: ItemVerdict[] };
  * One verdict per **request body item**, in the order they were sent. Positional and 1:1 — the
  * framework carries no item→job map, so this is only correct when each job contributed exactly
  * one body item. A length mismatch degrades to a whole-batch verdict rather than misattributing.
+ *
+ * That makes a delivery spec and an **array-returning `transformEvent`** mutually exclusive.
+ * `ctx.jobs` is one entry per job (`processBatchedDestination` builds it from a `Set<number>` of
+ * job ids), so one job contributing two body items puts the two lengths permanently out of step:
+ * the guard retries the batch, the retry reproduces the same mismatch, and it never converges.
+ * `batchDestination.ts`'s `transformEvent` and the VDM V2 dispatch table both permit an array, so
+ * a destination that returns one must not declare `statusOverrides` that call `perItem`.
  */
 export const perItem = (verdicts: ItemVerdict[]): PerItemVerdicts => ({
   kind: 'perItem',
@@ -174,12 +188,20 @@ export const statusClassOf = (status: number): StatusKey | undefined => {
 export const defaultFailureReason = (status: number): string =>
   `[Generic Response Handler] Request failed with status: ${status}`;
 
-/** The framework's own status classification. Mirrors genericNetworkHandler's responseHandler. */
-export const classifyByStatus = (status: number, reason: string): Verdict => {
+/**
+ * The framework's own status classification. Mirrors genericNetworkHandler's responseHandler.
+ *
+ * `reason` is a thunk so the success path costs nothing. `fallback()` is called for every response
+ * with no override — including every plain 2xx — and an eagerly-evaluated reason would run the
+ * destination's extractor over the whole body just to discard the result. `braze_audience`'s falls
+ * through to `JSON.stringify(response)` when there is no `message`, which on a large batch response
+ * is the expensive kind of nothing.
+ */
+export const classifyByStatus = (status: number, reason: () => string): Verdict => {
   if (isHttpStatusSuccess(status)) return success();
-  if (status === 429) return throttled(reason);
-  if (isHttpStatusRetryable(status)) return retry(reason);
-  return abort(reason);
+  if (status === 429) return throttled(reason());
+  if (isHttpStatusRetryable(status)) return retry(reason());
+  return abort(reason());
 };
 
 // ---------------------------------------------------------------------------
@@ -271,7 +293,7 @@ export function handleDeliveryResponse(klass: unknown, ctx: DeliveryContext): Ha
   const statusClass = statusClassOf(ctx.status);
   const override =
     statusOverrides[ctx.status] ?? (statusClass ? statusOverrides[statusClass] : undefined);
-  const fallback = () => classifyByStatus(ctx.status, failureReason(ctx));
+  const fallback = () => classifyByStatus(ctx.status, () => failureReason(ctx));
   return override ? override(ctx, fallback) : fallback();
 }
 
@@ -321,12 +343,23 @@ export function toDeliveryV1Response(
     // Never index past the end — that is how a job state with `metadata: undefined` gets emitted,
     // which rudder-server reports as a non-fatal in/out breach and then redelivers. Degrade to a
     // whole-batch verdict instead, and make the mismatch visible.
+    //
+    // The two counts stay out of the label set and go in the log line instead. They are unbounded
+    // in practice — MAX_BATCH_SIZE is 1000 for both braze_audience and iterable_audience, so tagging
+    // both would open a 1000x1000 label space per (destType, destinationId, workspaceId). This
+    // counter fires precisely when a destination is stuck in the mismatch/retry loop, so the guard
+    // that surfaces the problem would be the thing that takes the metrics backend down with it.
     stats.counter('batch_delivery_per_item_mismatch', 1, {
       destType,
       destinationId: ctx.destinationId,
       workspaceId: ctx.workspaceId,
-      items: String(result.verdicts.length),
-      jobs: String(ctx.jobs.length),
+    });
+    logger.error('Batching framework delivery: per-item verdicts do not match the job list', {
+      destType,
+      destinationId: ctx.destinationId,
+      workspaceId: ctx.workspaceId,
+      items: result.verdicts.length,
+      jobs: ctx.jobs.length,
     });
     // Retry the batch rather than guess at it. Folding the verdicts into a worst-of would report
     // *success* whenever the ones that are present happen to be clean — including the empty-list

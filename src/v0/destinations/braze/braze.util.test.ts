@@ -2965,6 +2965,10 @@ describe('formatEmail', () => {
     expect(formatEmail(null)).toBeNull();
   });
 
+  it('should pass undefined through untouched', () => {
+    expect(formatEmail(undefined)).toBeUndefined();
+  });
+
   it('should not leak the offending address into the error message', () => {
     expect(() => formatEmail('leaky-address@@example.com')).not.toThrow(/leaky-address/);
   });

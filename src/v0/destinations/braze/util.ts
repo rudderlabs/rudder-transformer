@@ -97,14 +97,15 @@ const formatGender = (gender: unknown) => {
  * customer can spot in their event stream. Validating here turns it into an instrumentation
  * error at transform time, so the bad event never reaches delivery.
  *
- * `null` is passed through untouched — Braze reads an explicit null as "unset this field".
+ * `null`/`undefined` pass through untouched — Braze reads an explicit null as "unset this
+ * field", and the caller's own guard already decides which of the two reach here.
  * The offending address is deliberately kept out of the error message; the full payload is
  * already visible alongside the error in Live Events, and the message itself ends up in logs
  * and metrics where the PII does not belong.
  */
 const formatEmail = (email: unknown) => {
-  if (email === null) {
-    return null;
+  if (!isDefinedAndNotNull(email)) {
+    return email;
   }
 
   if (typeof email !== 'string') {

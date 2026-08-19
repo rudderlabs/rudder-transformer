@@ -144,6 +144,73 @@ export const parsePartialFailure = (
 };
 
 /**
+ * Google Ads error codes whose own proto documentation states the failure is transient, i.e. the
+ * identical request can succeed on a later attempt. Keyed by the `errorCode` oneof field.
+ *
+ * A Map rather than an object literal so a destination-supplied key such as `constructor` or
+ * `__proto__` cannot resolve to something inherited from Object.prototype.
+ *
+ * Ref - https://github.com/googleapis/googleapis/tree/master/google/ads/googleads/v23/errors
+ */
+const RETRYABLE_ERROR_CODES: ReadonlyMap<string, ReadonlySet<string>> = new Map([
+  [
+    'internalError',
+    // "unexpected internal error" / "The user should retry their request in these cases." /
+    // "The request took longer than a deadline."
+    new Set(['INTERNAL_ERROR', 'TRANSIENT_ERROR', 'DEADLINE_EXCEEDED']),
+  ],
+  [
+    'quotaError',
+    // "Too many requests." / "Too many requests in a short amount of time." The upload itself is
+    // fine, the account is over its rate limit right now.
+    new Set(['RESOURCE_EXHAUSTED', 'RESOURCE_TEMPORARILY_EXHAUSTED']),
+  ],
+  [
+    'databaseError',
+    // "Multiple requests were attempting to modify the same resource at once. Retry the request."
+    new Set(['CONCURRENT_MODIFICATION']),
+  ],
+]);
+
+/**
+ * Whether Google considers this individual error worth retrying.
+ *
+ * Codes absent from the map are treated as permanent, so an unrecognised or newly introduced code
+ * keeps the existing abort rather than being retried on a guess.
+ */
+export const isRetryableGoogleAdsError = (error: GoogleAdsError): boolean => {
+  const { errorCode } = error ?? {};
+  if (!errorCode || typeof errorCode !== 'object') {
+    return false;
+  }
+  return Object.entries(errorCode).some(
+    ([key, value]) => typeof value === 'string' && RETRYABLE_ERROR_CODES.get(key)?.has(value),
+  );
+};
+
+/**
+ * Picks the delivery status for a conversion Google rejected.
+ *
+ * Retry only when Google attributed at least one error to the event and *every* one of them is
+ * transient:
+ * - no attributed error is no evidence of a transient fault, and these are also the events hit by
+ *   the index-alignment fallback, so retrying them would replay events Google may well have
+ *   accepted;
+ * - a permanent cause alongside a transient one will reject the conversion on every attempt, so
+ *   retrying only burns the 24h TTL before the event dies anyway.
+ *
+ * 500 rather than 429 even for quota errors: rudder-server treats both as non-terminal, and a
+ * single status keeps the batch-level errorType honest without implying we parsed a Retry-After.
+ */
+export const getFailedEventStatusCode = (errors: GoogleAdsError[] | undefined): number => {
+  const all = errors ?? [];
+  if (all.length === 0) {
+    return 400;
+  }
+  return all.every(isRetryableGoogleAdsError) ? 500 : 400;
+};
+
+/**
  * Request-wide errors are replayed onto every failed event, so a response carrying many of them
  * would otherwise be rendered once per event — O(events x errors). These caps keep the size of
  * what we emit independent of what the destination returns.

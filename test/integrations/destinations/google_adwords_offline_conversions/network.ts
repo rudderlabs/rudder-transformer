@@ -32,6 +32,130 @@ const commonResponse = {
 
 export const networkCallsData = [
   {
+    // Two conversions, one rejected with a transient INTERNAL_ERROR and one with a permanent
+    // NO_CONVERSION_ACTION_FOUND, so a single batch has to produce both dispositions.
+    httpReq: {
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567895:uploadClickConversions`,
+      data: {
+        conversions: [
+          {
+            gbraid: 'gbraid',
+            wbraid: 'wbraid',
+            externalAttributionData: {
+              externalAttributionCredit: 10,
+              externalAttributionModel: 'externalAttributionModel',
+            },
+            cartData: {
+              merchantId: 9876,
+              feedCountryCode: 'feedCountryCode',
+              feedLanguageCode: 'feedLanguageCode',
+              localTransactionCost: 20,
+              items: [{ productId: '507f1f77bcf86cd799439011', quantity: 2, unitPrice: 50 }],
+            },
+            userIdentifiers: [
+              {
+                userIdentifierSource: 'FIRST_PARTY',
+                hashedPhoneNumber:
+                  '04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd',
+              },
+            ],
+            conversionEnvironment: 'APP',
+            gclid: 'gclid',
+            conversionDateTime: '2022-01-01 12:32:45-08:00',
+            conversionValue: 1,
+            currencyCode: 'GBP',
+            orderId: 'PL-123QR',
+            conversionAction: 'customers/1234567891/conversionActions/848898416',
+            customVariables: [
+              {
+                conversionCustomVariable: 'customers/1234567891/conversionCustomVariables/19131634',
+                value: 'value',
+              },
+            ],
+          },
+          {
+            gbraid: 'gbraid',
+            wbraid: 'wbraid',
+            externalAttributionData: {
+              externalAttributionCredit: 10,
+              externalAttributionModel: 'externalAttributionModel',
+            },
+            cartData: {
+              merchantId: 9876,
+              feedCountryCode: 'feedCountryCode',
+              feedLanguageCode: 'feedLanguageCode',
+              localTransactionCost: 20,
+              items: [{ productId: '507f1f77bcf86cd799439011', quantity: 2, unitPrice: 50 }],
+            },
+            userIdentifiers: [
+              {
+                userIdentifierSource: 'FIRST_PARTY',
+                hashedPhoneNumber:
+                  '04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd',
+              },
+            ],
+            conversionEnvironment: 'APP',
+            gclid: 'gclid',
+            conversionDateTime: '2022-01-01 12:32:45-08:00',
+            conversionValue: 1,
+            currencyCode: 'GBP',
+            orderId: 'PL-123QS',
+            conversionAction: 'customers/1234567891/conversionActions/848898416',
+            customVariables: [
+              {
+                conversionCustomVariable: 'customers/1234567891/conversionCustomVariables/19131634',
+                value: 'value',
+              },
+            ],
+          },
+        ],
+        partialFailure: true,
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
+      },
+      method: 'POST',
+      params: { destination: 'google_adwords_offline_conversion' },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        partialFailureError: {
+          code: 3,
+          message:
+            "Multiple errors in 'details'. First error: An internal error has occurred., at conversions[0]",
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
+              errors: [
+                {
+                  errorCode: { internalError: 'INTERNAL_ERROR' },
+                  message: 'An internal error has occurred.',
+                  location: { fieldPathElements: [{ fieldName: 'conversions', index: 0 }] },
+                },
+                {
+                  errorCode: { conversionUploadError: 'NO_CONVERSION_ACTION_FOUND' },
+                  message:
+                    "The conversion action specified in the upload request cannot be found. Make sure it's available in this account.",
+                  location: {
+                    fieldPathElements: [
+                      { fieldName: 'conversions', index: 1 },
+                      { fieldName: 'conversion_action' },
+                    ],
+                  },
+                },
+              ],
+              requestId: 'FM1CP_W1g5PqesNL1oJtYQ',
+            },
+          ],
+        },
+        results: [{}, {}],
+      },
+    },
+  },
+  {
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/11122233331/offlineUserDataJobs:create`,
       data: {

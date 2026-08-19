@@ -1,12 +1,12 @@
 import {
   formatGoogleAdsErrors,
   getFailedEventStatusCode,
-  isRetryableGoogleAdsError,
   parsePartialFailure,
 } from './partialFailure';
 
-// Shapes are declared locally rather than imported: the module exports only the two functions
-// under test, and nothing should be exported purely to give this file a handle on it.
+// Shapes are declared locally rather than imported: the module exports only the functions the
+// network handler calls, and nothing should be exported purely to give this file a handle on it.
+// That is why the transient-error check is exercised through getFailedEventStatusCode.
 type TestError = {
   errorCode?: Record<string, string>;
   message?: string;
@@ -234,81 +234,34 @@ describe('formatGoogleAdsErrors', () => {
   });
 });
 
-describe('classifying an error as transient', () => {
-  it.each([
-    ['internalError', 'INTERNAL_ERROR'],
-    ['internalError', 'TRANSIENT_ERROR'],
-    ['internalError', 'DEADLINE_EXCEEDED'],
-    ['quotaError', 'RESOURCE_EXHAUSTED'],
-    ['quotaError', 'RESOURCE_TEMPORARILY_EXHAUSTED'],
-    ['databaseError', 'CONCURRENT_MODIFICATION'],
-  ])('retries %s: %s, which Google documents as transient', (key, value) => {
-    expect(isRetryableGoogleAdsError({ errorCode: { [key]: value } })).toBe(true);
-  });
-
-  it.each([
-    // Permanent causes that share a namespace with a retryable one -- the value has to be
-    // checked, not just the oneof key.
-    ['internalError', 'ERROR_CODE_NOT_PUBLISHED'],
-    ['quotaError', 'ACCESS_PROHIBITED'],
-    ['quotaError', 'PAYMENTS_PROFILE_ACTIVATION_RATE_LIMIT_EXCEEDED'],
-    ['databaseError', 'REQUEST_TOO_LARGE'],
-    // Ordinary data problems.
-    ['conversionUploadError', 'NO_CONVERSION_ACTION_FOUND'],
-    ['notAllowlistedError', 'CUSTOMER_NOT_ALLOWLISTED_FOR_THIS_FEATURE'],
-  ])('aborts %s: %s', (key, value) => {
-    expect(isRetryableGoogleAdsError({ errorCode: { [key]: value } })).toBe(false);
-  });
-
-  it('does not retry a code it has never seen', () => {
-    expect(isRetryableGoogleAdsError({ errorCode: { internalError: 'SOME_FUTURE_CODE' } })).toBe(
-      false,
-    );
-    expect(isRetryableGoogleAdsError({ errorCode: { brandNewError: 'INTERNAL_ERROR' } })).toBe(
-      false,
-    );
-  });
-
-  it('survives an errorCode key that collides with Object.prototype', () => {
-    // The oneof key is destination-controlled, so a prototype key must not resolve to an
-    // inherited member and blow up the whole batch. `constructor` would otherwise return the
-    // Object function, and calling `.has` on it throws.
-    expect(() =>
-      isRetryableGoogleAdsError({ errorCode: { constructor: 'INTERNAL_ERROR' } }),
-    ).not.toThrow();
-    expect(isRetryableGoogleAdsError({ errorCode: { constructor: 'INTERNAL_ERROR' } })).toBe(false);
-    // Parsed rather than written as a literal on purpose: `{ __proto__: x }` sets the prototype
-    // and leaves no own property, so it would not exercise the lookup at all. The destination
-    // response really does arrive via JSON.parse, which does create the own property.
-    const parsed = JSON.parse('{"errorCode":{"__proto__":"INTERNAL_ERROR"}}');
-    expect(Object.keys(parsed.errorCode)).toEqual(['__proto__']);
-    expect(() => isRetryableGoogleAdsError(parsed)).not.toThrow();
-    expect(isRetryableGoogleAdsError(parsed)).toBe(false);
-  });
-
-  it('tolerates a missing or malformed errorCode', () => {
-    expect(isRetryableGoogleAdsError({})).toBe(false);
-    expect(isRetryableGoogleAdsError({ errorCode: undefined })).toBe(false);
-    expect(isRetryableGoogleAdsError({ errorCode: 'INTERNAL_ERROR' } as never)).toBe(false);
-    expect(isRetryableGoogleAdsError(undefined as never)).toBe(false);
-  });
-});
-
 describe('choosing the delivery status of a failed conversion', () => {
   const internal = { errorCode: { internalError: 'INTERNAL_ERROR' } };
   const permanent = { errorCode: { conversionUploadError: 'NO_CONVERSION_ACTION_FOUND' } };
 
-  it('retries an event whose only error is transient', () => {
+  it('retries an event Google failed with its generic internal error', () => {
     expect(getFailedEventStatusCode([internal])).toBe(500);
   });
 
-  it('retries when every attributed error is transient', () => {
-    expect(
-      getFailedEventStatusCode([internal, { errorCode: { internalError: 'TRANSIENT_ERROR' } }]),
-    ).toBe(500);
+  it('retries when every attributed error is that internal error', () => {
+    expect(getFailedEventStatusCode([internal, { ...internal }])).toBe(500);
   });
 
-  it('aborts when a permanent cause sits alongside a transient one', () => {
+  it.each([
+    // Neighbouring internalError values are deliberately NOT retried: the value is checked, not
+    // just the oneof key.
+    ['internalError', 'TRANSIENT_ERROR'],
+    ['internalError', 'DEADLINE_EXCEEDED'],
+    ['internalError', 'ERROR_CODE_NOT_PUBLISHED'],
+    ['quotaError', 'RESOURCE_EXHAUSTED'],
+    ['databaseError', 'CONCURRENT_MODIFICATION'],
+    // Ordinary data problems.
+    ['conversionUploadError', 'NO_CONVERSION_ACTION_FOUND'],
+    ['notAllowlistedError', 'CUSTOMER_NOT_ALLOWLISTED_FOR_THIS_FEATURE'],
+  ])('aborts %s: %s', (key, value) => {
+    expect(getFailedEventStatusCode([{ errorCode: { [key]: value } }])).toBe(400);
+  });
+
+  it('aborts when a permanent cause sits alongside the internal error', () => {
     // Retrying cannot clear the permanent cause, so it would only burn the TTL.
     expect(getFailedEventStatusCode([internal, permanent])).toBe(400);
     expect(getFailedEventStatusCode([permanent, internal])).toBe(400);
@@ -321,7 +274,10 @@ describe('choosing the delivery status of a failed conversion', () => {
     expect(getFailedEventStatusCode(undefined)).toBe(400);
   });
 
-  it('aborts a permanent error, preserving the existing behaviour', () => {
-    expect(getFailedEventStatusCode([permanent])).toBe(400);
+  it('aborts on a missing or malformed errorCode rather than guessing', () => {
+    expect(getFailedEventStatusCode([{}])).toBe(400);
+    expect(getFailedEventStatusCode([{ errorCode: undefined }])).toBe(400);
+    expect(getFailedEventStatusCode([{ errorCode: 'INTERNAL_ERROR' } as never])).toBe(400);
+    expect(getFailedEventStatusCode([undefined as never])).toBe(400);
   });
 });

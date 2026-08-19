@@ -237,7 +237,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            message: 'Request Processed Successfully',
+            message: '[GOOGLE_ADWORDS_ENHANCED_CONVERSIONS] Request processed successfully',
             response: [
               {
                 error: 'success',
@@ -286,36 +286,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
+            status: 200,
             message:
-              '[Google Ads Enhanced Conversions]:: Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
-            destinationResponse: {
-              response: {
-                partialFailureError: {
-                  code: 3,
-                  message:
-                    'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
-                  details: [
-                    {
-                      '@type':
-                        'type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure',
-                      errors: [
-                        {
-                          errorCode: {
-                            conversionAdjustmentUploadError: 'CONVERSION_ALREADY_ENHANCED',
-                          },
-                          message:
-                            'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.',
-                          location: {
-                            fieldPathElements: [{ fieldName: 'conversion_adjustments', index: 0 }],
-                          },
-                        },
-                      ],
-                    },
-                  ],
-                },
-              },
-              status: 200,
-            },
+              '[GOOGLE_ADWORDS_ENHANCED_CONVERSIONS] Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[0]',
+            // Every adjustment in this batch failed, the same way, so the response still carries
+            // the whole-response tag set for `integration.failure_detailed` — byte-identical to
+            // what the legacy handler emitted.
+            statTags: expectedStatTags,
             response: [
               {
                 error:
@@ -324,8 +301,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 statusCode: 400,
               },
             ],
-            statTags: expectedStatTags,
-            status: 400,
           },
         },
       },
@@ -431,12 +406,20 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             authErrorCategory: 'REFRESH_TOKEN',
+            // The framework surfaces the destination's own error message rather than appending
+            // ' during <destType> response transformation' to it.
             message:
-              'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during Google_adwords_enhanced_conversions response transformation',
+              '[GOOGLE_ADWORDS_ENHANCED_CONVERSIONS] Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
             response: [
               {
-                error:
-                  'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during Google_adwords_enhanced_conversions response transformation',
+                error: JSON.stringify({
+                  error: {
+                    code: 401,
+                    message:
+                      'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+                    status: 'UNAUTHENTICATED',
+                  },
+                }),
                 metadata: {
                   attemptNum: 1,
                   destinationId: 'default-destinationId',
@@ -452,7 +435,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 statusCode: 401,
               },
             ],
-            statTags: expectedStatTags,
+            // REFRESH_TOKEN asks rudder-server to refresh and redeliver, so the framework derives
+            // 'retryable' from the verdict. The legacy handler tagged the same response 'aborted'.
+            statTags: { ...expectedStatTags, errorType: 'retryable' },
             status: 401,
           },
         },
@@ -551,45 +536,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
+            status: 200,
             message:
-              '[Google Ads Enhanced Conversions]:: Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[1]',
-            destinationResponse: {
-              response: {
-                partialFailureError: {
-                  code: 3,
-                  message:
-                    'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[1]',
-                  details: [
-                    {
-                      '@type':
-                        'type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure',
-                      errors: [
-                        {
-                          errorCode: {
-                            conversionAdjustmentUploadError: 'CONVERSION_ALREADY_ENHANCED',
-                          },
-                          message:
-                            'Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again.',
-                          location: {
-                            fieldPathElements: [{ fieldName: 'conversion_adjustments', index: 1 }],
-                          },
-                        },
-                      ],
-                    },
-                  ],
-                },
-                results: [
-                  {
-                    adjustmentType: 'ENHANCEMENT',
-                    conversionAction: 'customers/1234567777/conversionActions/123434350',
-                    adjustmentDateTime: '2022-01-01 12:32:45-08:00',
-                    orderId: '10000',
-                  },
-                  {},
-                ],
-              },
-              status: 200,
-            },
+              '[GOOGLE_ADWORDS_ENHANCED_CONVERSIONS] Conversion already has enhancements with the same Order ID and conversion action. Make sure your data is correctly configured and try again., at conversion_adjustments[1]',
             response: [
               {
                 error: 'success',
@@ -603,8 +552,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 statusCode: 400,
               },
             ],
-            statTags: expectedStatTags,
-            status: 400,
           },
         },
       },

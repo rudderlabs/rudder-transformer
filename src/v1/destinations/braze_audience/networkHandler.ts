@@ -5,31 +5,11 @@ import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import tags from '../../../v0/util/tags';
 import stats from '../../../util/stats';
 import type { DeliveryJobState, DeliveryV1Response, ProxyMetdata } from '../../../types';
+import { isIdentityAborted } from '../../../v0/destinations/braze_audience/utils';
 
 const DEST = 'BRAZE_AUDIENCE';
 
-/**
- * Permanent Braze `/users/track` identity error `type` values.
- * Docs list uppercase enums; live `/users/track/bulk` often returns human
- * messages (e.g. "'external_id' must be fewer than 988 bytes") instead.
- */
-const ABORTED_IDENTITY_TYPES = new Set([
-  'BLACKLISTED_EXTERNAL_USER_ID',
-  'EXTERNAL_USER_ID_TOO_LARGE',
-]);
-
-const isIdentityAborted = (type?: string): boolean => {
-  if (!type) return false;
-  if (ABORTED_IDENTITY_TYPES.has(type)) return true;
-  // Live Braze message forms for permanent identity failures (not retryable).
-  return (
-    /external_user_id_too_large|blacklisted_external_user_id/i.test(type) ||
-    /external_id.*(?:fewer|bytes|too\s*large|blacklist)/i.test(type) ||
-    /blacklist(?:ed)?.*external_id/i.test(type)
-  );
-};
-
-type BrazeAudienceProxyParams = {
+export type BrazeAudienceProxyParams = {
   destinationResponse: {
     response?: {
       message?: string;

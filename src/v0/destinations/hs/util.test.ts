@@ -47,9 +47,17 @@ describe('Validate destination config utility function test cases', () => {
   it('should require accessToken for Private Apps authentication', () => {
     expect(() =>
       validateDestinationConfig({
-        Config: { authorizationType: 'newPrivateAppApi' },
+        Config: {},
       } as any),
     ).toThrow('Access Token not found. Aborting');
+  });
+
+  it('should accept access token authentication without authorizationType', () => {
+    expect(() =>
+      validateDestinationConfig({
+        Config: { accessToken: 'test-token' },
+      } as any),
+    ).not.toThrow();
   });
 });
 

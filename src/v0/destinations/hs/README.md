@@ -6,19 +6,13 @@ Implementation in **JavaScript**
 
 ### Required Settings
 
-- **Authorization Type**: Private App API authentication
-
-  - `newPrivateAppApi`: Use Private App access token for authentication
+- **Access Token**: Required Private App access token for authentication
 
 - **API Version**: Choose the HubSpot API version to use
+
   - `legacyApi` (v1): Legacy API for contacts and events
   - `newApi` (v3): Current CRM API v3 for contacts, custom objects, and behavioral events
 
-### Required Based on Authorization Type
-
-#### Private App API (`newPrivateAppApi`)
-
-- **Access Token**: Required Private App access token for authentication
 - **Hub ID**: Required for legacy API-version track events
 
 ### Required Based on API Version

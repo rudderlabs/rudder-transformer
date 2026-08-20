@@ -24,7 +24,7 @@ This document details the business logic, field mappings, and transformation flo
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Validate Destination Config                         │
-│     - Check authorizationType                           │
+│     - Reject legacy API-key auth                        │
 │     - Verify accessToken                                │
 └─────────────────────────────────────────────────────────┘
                            ↓
@@ -70,7 +70,7 @@ This document details the business logic, field mappings, and transformation flo
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Validate Destination Config                         │
-│     - Check authorizationType                           │
+│     - Reject legacy API-key auth                        │
 │     - Verify accessToken                                │
 │     - Verify lookupField configuration                  │
 └─────────────────────────────────────────────────────────┘
@@ -271,7 +271,7 @@ HubSpot accepts empty string to clear property values:
 ┌─────────────────────────────────────────────────────────┐
 │  1. Validate Destination Config                         │
 │     - Verify Hub ID exists                              │
-│     - Check authorizationType                           │
+│     - Reject legacy API-key auth                        │
 └─────────────────────────────────────────────────────────┘
                            ↓
 ┌─────────────────────────────────────────────────────────┐
@@ -317,7 +317,7 @@ HubSpot accepts empty string to clear property values:
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Validate Destination Config                         │
-│     - Check authorizationType                           │
+│     - Reject legacy API-key auth                        │
 │     - Verify event mappings configured (hubspotEvents)  │
 └─────────────────────────────────────────────────────────┘
                            ↓

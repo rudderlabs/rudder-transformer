@@ -1,7 +1,12 @@
-import { formatGoogleAdsErrors, parsePartialFailure } from './partialFailure';
+import {
+  formatGoogleAdsErrors,
+  getFailedEventStatusCode,
+  parsePartialFailure,
+} from './partialFailure';
 
-// Shapes are declared locally rather than imported: the module exports only the two functions
-// under test, and nothing should be exported purely to give this file a handle on it.
+// Shapes are declared locally rather than imported: the module exports only the functions the
+// network handler calls, and nothing should be exported purely to give this file a handle on it.
+// That is why the transient-error check is exercised through getFailedEventStatusCode.
 type TestError = {
   errorCode?: Record<string, string>;
   message?: string;
@@ -226,5 +231,53 @@ describe('formatGoogleAdsErrors', () => {
       message: 'An internal error has occurred.',
     }));
     expect(formatGoogleAdsErrors(errors, 'fallback').length).toBeLessThan(200);
+  });
+});
+
+describe('choosing the delivery status of a failed conversion', () => {
+  const internal = { errorCode: { internalError: 'INTERNAL_ERROR' } };
+  const permanent = { errorCode: { conversionUploadError: 'NO_CONVERSION_ACTION_FOUND' } };
+
+  it('retries an event Google failed with its generic internal error', () => {
+    expect(getFailedEventStatusCode([internal])).toBe(500);
+  });
+
+  it('retries when every attributed error is that internal error', () => {
+    expect(getFailedEventStatusCode([internal, { ...internal }])).toBe(500);
+  });
+
+  it.each([
+    // Neighbouring internalError values are deliberately NOT retried: the value is checked, not
+    // just the oneof key.
+    ['internalError', 'TRANSIENT_ERROR'],
+    ['internalError', 'DEADLINE_EXCEEDED'],
+    ['internalError', 'ERROR_CODE_NOT_PUBLISHED'],
+    ['quotaError', 'RESOURCE_EXHAUSTED'],
+    ['databaseError', 'CONCURRENT_MODIFICATION'],
+    // Ordinary data problems.
+    ['conversionUploadError', 'NO_CONVERSION_ACTION_FOUND'],
+    ['notAllowlistedError', 'CUSTOMER_NOT_ALLOWLISTED_FOR_THIS_FEATURE'],
+  ])('aborts %s: %s', (key, value) => {
+    expect(getFailedEventStatusCode([{ errorCode: { [key]: value } }])).toBe(400);
+  });
+
+  it('aborts when a permanent cause sits alongside the internal error', () => {
+    // Retrying cannot clear the permanent cause, so it would only burn the TTL.
+    expect(getFailedEventStatusCode([internal, permanent])).toBe(400);
+    expect(getFailedEventStatusCode([permanent, internal])).toBe(400);
+  });
+
+  it('aborts an event Google did not attribute any error to', () => {
+    // No attributed error is no evidence of a transient fault. This is also the index-alignment
+    // fallback, where retrying could replay events Google actually accepted.
+    expect(getFailedEventStatusCode([])).toBe(400);
+    expect(getFailedEventStatusCode(undefined)).toBe(400);
+  });
+
+  it('aborts on a missing or malformed errorCode rather than guessing', () => {
+    expect(getFailedEventStatusCode([{}])).toBe(400);
+    expect(getFailedEventStatusCode([{ errorCode: undefined }])).toBe(400);
+    expect(getFailedEventStatusCode([{ errorCode: 'INTERNAL_ERROR' } as never])).toBe(400);
+    expect(getFailedEventStatusCode([undefined as never])).toBe(400);
   });
 });

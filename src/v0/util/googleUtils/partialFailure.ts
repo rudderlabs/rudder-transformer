@@ -144,6 +144,40 @@ export const parsePartialFailure = (
 };
 
 /**
+ * `internalError: INTERNAL_ERROR` is Google's "Google Ads API encountered unexpected internal
+ * error" — a fault on their side that the identical conversion can clear on a later attempt.
+ *
+ * This is deliberately the ONLY code treated as transient. Other codes documented as retryable
+ * (TRANSIENT_ERROR, DEADLINE_EXCEEDED, quota and database errors) keep the existing abort: they
+ * are not what we actually observe on this destination, and widening the set is a behaviour
+ * change for events that are being delivered fine today.
+ *
+ * Ref - https://github.com/googleapis/googleapis/blob/master/google/ads/googleads/v23/errors/internal_error.proto
+ */
+const isTransientError = (error: GoogleAdsError): boolean =>
+  error?.errorCode?.internalError === 'INTERNAL_ERROR';
+
+/**
+ * Picks the delivery status for a conversion Google rejected: 500 so rudder-server retries the
+ * job, 400 so it aborts.
+ *
+ * Retry only when Google attributed at least one error to the event and *every* one of them is
+ * transient:
+ * - no attributed error is no evidence of a transient fault, and these are also the events hit by
+ *   the index-alignment fallback, so retrying them would replay events Google may well have
+ *   accepted;
+ * - a permanent cause alongside a transient one will reject the conversion on every attempt, so
+ *   retrying only burns the 24h TTL before the event dies anyway.
+ */
+export const getFailedEventStatusCode = (errors: GoogleAdsError[] | undefined): number => {
+  const all = errors ?? [];
+  if (all.length === 0) {
+    return 400;
+  }
+  return all.every(isTransientError) ? 500 : 400;
+};
+
+/**
  * Request-wide errors are replayed onto every failed event, so a response carrying many of them
  * would otherwise be rendered once per event — O(events x errors). These caps keep the size of
  * what we emit independent of what the destination returns.

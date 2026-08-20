@@ -1,6 +1,6 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { EventType } from '../../../constants';
-import { handleRtTfSingleEventError, groupEventsByType } from '../../util';
+import { getSuccessRespEvents, handleRtTfSingleEventError, groupEventsByType } from '../../util';
 import { API_VERSION } from './config';
 import { processLegacyIdentify, processLegacyTrack, legacyBatchEvents } from './es-retl-v1';
 import { processIdentify, processTrack, batchEvents } from './es-retl-v3';
@@ -137,15 +137,17 @@ const processBatchRouter = async (
     }
   }
 
-  // For dontBatch=true events, route them through the same batching logic
-  // as individual single-event batches so they get proper endpoint rewriting
-  // and { inputs: [...] } wrapping via batchIdentify().
+  // V3 identify requests need the batcher to build the upsert/create/update
+  // envelope. Legacy API requests already have single-request endpoints, so
+  // dontBatch=true must preserve that unbatched request.
   let dontBatchEvents: HubSpotRouterTransformationOutput[] = [];
   if (dontBatchTrueResponses.length > 0) {
     if (destination.Config.apiVersion === API_VERSION.v3) {
       dontBatchEvents = dontBatchTrueResponses.flatMap((event) => batchEvents([event]));
     } else {
-      dontBatchEvents = dontBatchTrueResponses.flatMap((event) => legacyBatchEvents([event]));
+      dontBatchEvents = dontBatchTrueResponses.map((event) =>
+        getSuccessRespEvents(event.message, [event.metadata], event.destination),
+      );
     }
   }
 

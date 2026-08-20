@@ -37,8 +37,8 @@ const enrich = (errorCategory: string, errorType: string, extra: Record<string, 
   module: 'destination',
 });
 
-const legacyApiKeyDestination = {
-  Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+const legacyApiKeyDestination = (apiKey = 'dummy-apikey') => ({
+  Config: { apiKey, hubID: 'dummy-hubId' },
   secretConfig: {},
   ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
   name: 'Hubspot',
@@ -57,15 +57,15 @@ const legacyApiKeyDestination = {
   transformations: [],
   isConnectionEnabled: true,
   isProcessorEnabled: true,
-};
+});
 
-const legacyApiKeyMissingAccessTokenOutput = (jobId: number) => ({
+const legacyApiKeyMissingAccessTokenOutput = (jobId: number, apiKey?: string) => ({
   metadata: [{ jobId, userId: 'u1' }],
   batched: false,
   statusCode: 400,
   error: 'Access Token not found. Aborting',
   statTags: enrich('dataValidation', 'configuration'),
-  destination: legacyApiKeyDestination,
+  destination: legacyApiKeyDestination(apiKey),
 });
 
 const errCase = (o: {
@@ -3477,11 +3477,7 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: 'invalid-api-key',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'invalid-api-key', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -3530,11 +3526,7 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: 'invalid-api-key',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'invalid-api-key', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -3567,120 +3559,8 @@ const baseData: Record<string, unknown>[] = [
         status: 200,
         body: {
           output: [
-            {
-              batched: false,
-              destination: {
-                Config: {
-                  accessToken: 'invalid-api-key',
-                  authorizationType: 'newPrivateAppApi',
-                  hubID: 'dummy-hubId',
-                },
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                createdAt: '2020-12-30T08:39:32.005Z',
-                deleted: false,
-                destinationDefinition: {
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  displayName: 'Hubspot',
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                enabled: true,
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-                name: 'Hubspot',
-                secretConfig: {},
-                transformations: [],
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-              },
-              error: JSON.stringify({
-                message:
-                  'Failed to get hubspot properties: {"status":"error","message":"The access token provided is invalid.","correlationId":"correlation-id","category":"INVALID_AUTHENTICATION","links":{}}',
-                destinationResponse: {
-                  response: {
-                    status: 'error',
-                    message: 'The access token provided is invalid.',
-                    correlationId: 'correlation-id',
-                    category: 'INVALID_AUTHENTICATION',
-                    links: {},
-                  },
-                  status: 401,
-                },
-              }),
-              metadata: [
-                {
-                  jobId: 2,
-                  userId: 'u1',
-                },
-              ],
-              statTags: {
-                destType: 'HS',
-                errorCategory: 'network',
-                errorType: 'aborted',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              statusCode: 401,
-            },
-            {
-              batched: false,
-              destination: {
-                Config: {
-                  accessToken: 'invalid-api-key',
-                  authorizationType: 'newPrivateAppApi',
-                  hubID: 'dummy-hubId',
-                },
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                createdAt: '2020-12-30T08:39:32.005Z',
-                deleted: false,
-                destinationDefinition: {
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  displayName: 'Hubspot',
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                enabled: true,
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-                name: 'Hubspot',
-                secretConfig: {},
-                transformations: [],
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-              },
-              error: JSON.stringify({
-                message:
-                  'Failed to get hubspot properties: {"status":"error","message":"The access token provided is invalid.","correlationId":"correlation-id","category":"INVALID_AUTHENTICATION","links":{}}',
-                destinationResponse: {
-                  response: {
-                    status: 'error',
-                    message: 'The access token provided is invalid.',
-                    correlationId: 'correlation-id',
-                    category: 'INVALID_AUTHENTICATION',
-                    links: {},
-                  },
-                  status: 401,
-                },
-              }),
-              metadata: [
-                {
-                  jobId: 3,
-                  userId: 'u1',
-                },
-              ],
-              statTags: {
-                destType: 'HS',
-                errorCategory: 'network',
-                errorType: 'aborted',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              statusCode: 401,
-            },
+            legacyApiKeyMissingAccessTokenOutput(2, 'invalid-api-key'),
+            legacyApiKeyMissingAccessTokenOutput(3, 'invalid-api-key'),
           ],
         },
       },

@@ -7,6 +7,7 @@ const { processAxiosResponse } = require('../../../adapters/utils/networkUtils')
 const {
   parsePartialFailure,
   formatGoogleAdsErrors,
+  getFailedEventStatusCode,
 } = require('../../../v0/util/googleUtils/partialFailure');
 const { CommonUtils } = require('../../../util/common');
 
@@ -194,8 +195,11 @@ const responseHandler = (responseParams) => {
       const eventErrors = isIndexAligned
         ? (errorsByIndex.get(i) ?? unindexedErrors)
         : unindexedErrors;
+      // Google documents several of these codes as transient. Aborting them drops the event
+      // permanently on a fault a later attempt would clear, so let the per-event status decide
+      // retry vs abort -- rudder-server reads this array, not the batch status, per job.
       return {
-        statusCode: isEventFailed ? 400 : 200,
+        statusCode: isEventFailed ? getFailedEventStatusCode(eventErrors) : 200,
         metadata,
         error: isEventFailed
           ? formatGoogleAdsErrors(eventErrors, errorMessage, requestId)
@@ -203,13 +207,17 @@ const responseHandler = (responseParams) => {
       };
     });
 
+    // Keep the batch-level classification consistent with what the events actually did, so
+    // dataDelivery error stats don't report a retry as a permanent drop.
+    const hasRetryableEvent = responseWithIndividualEvents.some((event) => event.statusCode >= 500);
+
     const data = {
-      status: 400,
+      status: hasRetryableEvent ? 500 : 400,
       message: `[Google Ads Offline Conversions]:: ${errorMessage}`,
       destinationResponse,
       statTags: {
         errorCategory: 'network',
-        errorType: 'aborted',
+        errorType: hasRetryableEvent ? 'retryable' : 'aborted',
         destType: destType && typeof destType === 'string' ? destType.toUpperCase() : '',
         module: 'destination',
         implementation: 'native',

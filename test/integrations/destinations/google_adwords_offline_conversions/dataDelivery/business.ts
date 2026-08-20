@@ -99,6 +99,7 @@ const params = {
   },
   param3: {},
   param4: {},
+  param5: {},
 };
 
 params['param3'] = { ...params.param2, customVariables: [] };
@@ -109,6 +110,8 @@ params['param4'] = {
   conversionEnvironment: 'APP',
   conversionActionId: 'customers/1234567893/conversionActions/848898417',
 };
+
+params['param5'] = { ...params.param4, customerId: '1234567895' };
 
 const validRequestPayload1 = {
   addConversionPayload: {
@@ -217,6 +220,15 @@ const notAllowedToAccessFeatureRequestPayload = {
       ...validRequestPayload2.conversions[0],
       conversionEnvironment: 'APP',
     },
+  ],
+};
+
+// One conversion Google rejects transiently, one it rejects permanently.
+const mixedPartialFailureRequestPayload = {
+  ...validRequestPayload2,
+  conversions: [
+    { ...validRequestPayload2.conversions[0], conversionEnvironment: 'APP' },
+    { ...validRequestPayload2.conversions[0], conversionEnvironment: 'APP', orderId: 'PL-123QS' },
   ],
 };
 
@@ -671,6 +683,97 @@ export const testScenariosForV1API = [
             ],
             statTags: expectedStatTags,
             status: 400,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'gaoc_v1_scenario_7',
+    name: 'google_adwords_offline_conversions',
+    description:
+      '[Proxy v1 API] :: Partial failure mixing a transient INTERNAL_ERROR with a permanent upload error',
+    successCriteria:
+      'Should retry only the conversion Google failed transiently and abort the permanently failed one',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            headers: headers.header2,
+            params: params.param5,
+            JSON: mixedPartialFailureRequestPayload,
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567895:uploadClickConversions`,
+          },
+          [generateMetadata(1), generateMetadata(2)],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              "[Google Ads Offline Conversions]:: Multiple errors in 'details'. First error: An internal error has occurred., at conversions[0]",
+            destinationResponse: {
+              response: {
+                partialFailureError: {
+                  code: 3,
+                  message:
+                    "Multiple errors in 'details'. First error: An internal error has occurred., at conversions[0]",
+                  details: [
+                    {
+                      '@type':
+                        'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
+                      errors: [
+                        {
+                          errorCode: { internalError: 'INTERNAL_ERROR' },
+                          message: 'An internal error has occurred.',
+                          location: {
+                            fieldPathElements: [{ fieldName: 'conversions', index: 0 }],
+                          },
+                        },
+                        {
+                          errorCode: { conversionUploadError: 'NO_CONVERSION_ACTION_FOUND' },
+                          message:
+                            "The conversion action specified in the upload request cannot be found. Make sure it's available in this account.",
+                          location: {
+                            fieldPathElements: [
+                              { fieldName: 'conversions', index: 1 },
+                              { fieldName: 'conversion_action' },
+                            ],
+                          },
+                        },
+                      ],
+                      requestId: 'FM1CP_W1g5PqesNL1oJtYQ',
+                    },
+                  ],
+                },
+                results: [{}, {}],
+              },
+              status: 200,
+            },
+            response: [
+              {
+                error:
+                  'An internal error has occurred. [internalError: INTERNAL_ERROR] at conversions[0] (requestId: FM1CP_W1g5PqesNL1oJtYQ)',
+                metadata: generateMetadata(1),
+                statusCode: 500,
+              },
+              {
+                error:
+                  "The conversion action specified in the upload request cannot be found. Make sure it's available in this account. [conversionUploadError: NO_CONVERSION_ACTION_FOUND] at conversions[1].conversion_action (requestId: FM1CP_W1g5PqesNL1oJtYQ)",
+                metadata: generateMetadata(2),
+                statusCode: 400,
+              },
+            ],
+            statTags: { ...expectedStatTags, errorType: 'retryable' },
+            status: 500,
           },
         },
       },

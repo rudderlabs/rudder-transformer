@@ -169,6 +169,12 @@ const esCfg = (accessToken: string, over: Record<string, unknown> = {}) => ({
   lookupField: 'phone',
   ...over,
 });
+const esAccessTokenOnlyCfg = (accessToken: string, over: Record<string, unknown> = {}) => ({
+  apiVersion: 'newApi',
+  accessToken,
+  lookupField: 'phone',
+  ...over,
+});
 const unsupportedLegacyAuthError =
   'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.';
 const legacyCfg = (over: Record<string, unknown> = {}) => ({
@@ -4188,6 +4194,32 @@ const baseData: Record<string, unknown>[] = [
       files: {},
     },
   }),
+  successCase({
+    id: 'hs_router_es_identify_create_access_token_only',
+    description:
+      '(newApi + accessToken only) event-stream identify creates a contact without authorizationType',
+    message: esIdentifyMessage,
+    config: esAccessTokenOnlyCfg(secret1),
+    batched: true,
+    batchedRequest: {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+      endpointPath: '/crm/v3/objects/contacts/batch/create',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+      params: {},
+      body: {
+        JSON: {
+          inputs: [{ properties: { phone: '9999999999', firstname: 'CI', lastname: 'ES' } }],
+        },
+        JSON_ARRAY: {},
+        XML: {},
+        FORM: {},
+      },
+      files: {},
+    },
+  }),
   // searchContacts edge/error branches
   errCase({
     id: 'hs_router_es_multiple_contacts',
@@ -4340,6 +4372,36 @@ const baseData: Record<string, unknown>[] = [
       hubID: '123',
       lookupField: 'email',
     },
+    batched: true,
+    batchedRequest: {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
+      endpointPath: '/contacts/v1/contact/batch/',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+      params: {},
+      body: {
+        JSON: {},
+        JSON_ARRAY: {
+          batch: '[{"email":"v1@e.com","properties":[{"property":"firstname","value":"A"}]}]',
+        },
+        XML: {},
+        FORM: {},
+      },
+      files: {},
+    },
+  }),
+  successCase({
+    id: 'hs_router_v1_identify_access_token_only',
+    description:
+      '(legacyApi + accessToken only) identify hits contacts/v1 without authorizationType',
+    message: {
+      type: 'identify',
+      traits: { email: 'v1@e.com', firstname: 'A' },
+      context: { mappedToDestination: false },
+    },
+    config: esAccessTokenOnlyCfg(secret1, { apiVersion: 'legacyApi', lookupField: 'email' }),
     batched: true,
     batchedRequest: {
       version: '1',

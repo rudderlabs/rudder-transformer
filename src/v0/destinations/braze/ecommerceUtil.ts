@@ -65,6 +65,18 @@ const ECOMMERCE_ROUTED_ENTRIES: readonly EcommerceRoutedEntry[] = Object.values(
   ConfigCategory,
 ).filter((entry): entry is EcommerceRoutedCategory => 'brazeEvent' in entry);
 
+// Braze event names emitted by the recommended-ecommerce path. Derived from
+// ECOMMERCE_ROUTED_ENTRIES so a new ConfigCategory entry extends this for free.
+const BRAZE_ECOMMERCE_EVENT_NAMES: ReadonlySet<string> = new Set(
+  ECOMMERCE_ROUTED_ENTRIES.map((entry) => entry.brazeEvent),
+);
+
+// True when `name` is one of those event names. Read by the v1 networkHandler to
+// tell a recommended-ecommerce event apart from a legacy custom event sharing the
+// same `/users/track` `events[]` array.
+export const isBrazeEcommerceEventName = (name: unknown): boolean =>
+  typeof name === 'string' && BRAZE_ECOMMERCE_EVENT_NAMES.has(name);
+
 // Case-insensitive RS event name (lowercased, trimmed) → Braze mapping.
 const EVENT_NAME_TO_BRAZE: Record<string, EcommerceMapping> = Object.fromEntries(
   ECOMMERCE_ROUTED_ENTRIES.flatMap((entry) =>

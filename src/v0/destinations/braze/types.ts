@@ -176,6 +176,18 @@ export interface BrazeDestInfo {
   purchasesIndices?: number[];
 }
 
+// The proxy request as Braze's own handler reads it: a ProxyV1Request whose
+// JSON body is narrowed to the /users/track chunk this destination built, so
+// the network handler can reach `events[]` without re-describing the shape.
+// `Omit<..., 'JSON'>` keeps the sibling body formats in sync with the base type.
+// The value still arrives unvalidated over the wire, so the handler keeps its
+// runtime guards rather than trusting this declaration.
+export interface BrazeProxyV1Request extends Omit<ProxyV1Request, 'body'> {
+  body?: Omit<NonNullable<ProxyV1Request['body']>, 'JSON'> & {
+    JSON?: BrazeTrackRequestBody;
+  };
+}
+
 export interface BrazeResponseHandlerParams {
   destinationResponse: {
     response?: {
@@ -186,13 +198,14 @@ export interface BrazeResponseHandlerParams {
   };
   rudderJobMetadata: ProxyMetdata[];
   // The framework's `deliver` step (nativeIntegration.ts) always forwards the
-  // original ProxyV1Request as `destinationRequest`. The v1 networkHandler
-  // uses its `endpointPath` (e.g. `'users/track'`) to decide whether to run
-  // the 296 per-item correlation logic — Braze's `/users/track` is the only
-  // endpoint that returns per-entry `errors[]`. Optional so unit-test call
-  // sites that don't need endpoint-dispatch can omit it; when absent the
+  // original proxy request as `destinationRequest`. The v1 networkHandler uses
+  // its `endpointPath` (e.g. `'users/track'`) to decide whether to run the
+  // per-item correlation logic — Braze's `/users/track` is the only endpoint
+  // that returns per-entry `errors[]` — and its `body.JSON.events` to tell
+  // recommended-ecommerce events apart from legacy custom ones. Optional so
+  // unit-test call sites that need neither can omit it; when absent the
   // handler skips correlation and falls back to uniform per-job outcomes.
-  destinationRequest?: ProxyV1Request;
+  destinationRequest?: BrazeProxyV1Request;
 }
 
 export interface BrazeUser extends BrazeUserAttributes {

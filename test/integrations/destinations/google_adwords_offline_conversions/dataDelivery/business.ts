@@ -521,7 +521,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error:
-                  'Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+                  'Customer is not allowlisted for accessing this feature. [notAllowlistedError: CUSTOMER_NOT_ALLOWLISTED_FOR_THIS_FEATURE] at conversions[0].conversion_environment (requestId: dummyRequestId)',
                 metadata: generateMetadata(1),
                 statusCode: 400,
               },
@@ -664,7 +664,7 @@ export const testScenariosForV1API = [
               },
               {
                 error:
-                  "The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
+                  "The conversion action specified in the upload request cannot be found. Make sure it's available in this account. [conversionUploadError: NO_CONVERSION_ACTION_FOUND] at conversions[1].conversion_action (requestId: f4J_sjHfhbgNieU4pkBOqg)",
                 metadata: generateMetadata(2),
                 statusCode: 400,
               },

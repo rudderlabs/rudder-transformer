@@ -37,6 +37,37 @@ const enrich = (errorCategory: string, errorType: string, extra: Record<string, 
   module: 'destination',
 });
 
+const legacyApiKeyDestination = {
+  Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+  secretConfig: {},
+  ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+  name: 'Hubspot',
+  enabled: true,
+  workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+  deleted: false,
+  createdAt: '2020-12-30T08:39:32.005Z',
+  updatedAt: '2021-02-03T16:22:31.374Z',
+  destinationDefinition: {
+    id: '1aIXqM806xAVm92nx07YwKbRrO9',
+    name: 'HS',
+    displayName: 'Hubspot',
+    createdAt: '2020-04-09T09:24:31.794Z',
+    updatedAt: '2021-01-11T11:03:28.103Z',
+  },
+  transformations: [],
+  isConnectionEnabled: true,
+  isProcessorEnabled: true,
+};
+
+const legacyApiKeyMissingAccessTokenOutput = (jobId: number) => ({
+  metadata: [{ jobId, userId: 'u1' }],
+  batched: false,
+  statusCode: 400,
+  error: 'Access Token not found. Aborting',
+  statTags: enrich('dataValidation', 'configuration'),
+  destination: legacyApiKeyDestination,
+});
+
 const errCase = (o: {
   id: string;
   description: string;
@@ -288,11 +319,7 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -341,11 +368,7 @@ const baseData: Record<string, unknown>[] = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -378,121 +401,8 @@ const baseData: Record<string, unknown>[] = [
         status: 200,
         body: {
           output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
-                endpointPath: '/crm/v3/objects/lead/batch/update',
-                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
-                params: {},
-                body: {
-                  JSON: {
-                    inputs: [
-                      {
-                        properties: {
-                          firstname: 'Test Hubspot',
-                          anonymousId: '12345',
-                          country: 'India',
-                          email: 'testhubspot2@email.com',
-                        },
-                        id: '103605',
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [{ jobId: 2, userId: 'u1' }],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
-                endpointPath: '/crm/v3/objects/lead/batch/create',
-                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
-                params: {},
-                body: {
-                  JSON: {
-                    inputs: [
-                      {
-                        properties: {
-                          firstname: 'Test Hubspot 1',
-                          anonymousId: '123451',
-                          country: 'India 1',
-                          email: 'testhubspot@email.com',
-                        },
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [{ jobId: 3, userId: 'u1' }],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
+            legacyApiKeyMissingAccessTokenOutput(2),
+            legacyApiKeyMissingAccessTokenOutput(3),
           ],
         },
       },
@@ -542,11 +452,7 @@ const baseData: Record<string, unknown>[] = [
               },
               metadata: { jobId: 1, userId: 'u1' },
               destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -600,11 +506,7 @@ const baseData: Record<string, unknown>[] = [
               },
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -659,11 +561,7 @@ const baseData: Record<string, unknown>[] = [
               },
               metadata: { jobId: 4, userId: 'u1' },
               destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -695,158 +593,9 @@ const baseData: Record<string, unknown>[] = [
         status: 200,
         body: {
           output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
-                endpointPath: '/contacts/v1/contact/batch/',
-                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
-                params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {
-                    batch: JSON.stringify([
-                      {
-                        email: 'testhubspot1@email.com',
-                        properties: [{ property: 'firstname', value: 'Test Hubspot1' }],
-                      },
-                    ]),
-                  },
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [{ jobId: 1, userId: 'u1' }],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'GET',
-                endpoint: 'https://track.hubspot.com/v1/event',
-                endpointPath: '/v1/event',
-                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
-                params: {
-                  _a: 'dummy-hubId',
-                  _n: 'test track event HS',
-                  email: 'testhubspot2@email.com',
-                  firstname: 'Test Hubspot2',
-                },
-                body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
-                files: {},
-              },
-              metadata: [{ jobId: 2, userId: 'u1' }],
-              batched: false,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
-                endpointPath: '/contacts/v1/contact/batch/',
-                headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
-                params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {
-                    batch: JSON.stringify([
-                      {
-                        email: 'testhubspot4@email.com',
-                        properties: [{ property: 'firstname', value: 'Test Hubspot4' }],
-                      },
-                    ]),
-                  },
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [{ jobId: 4, userId: 'u1' }],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
+            legacyApiKeyMissingAccessTokenOutput(1),
+            legacyApiKeyMissingAccessTokenOutput(2),
+            legacyApiKeyMissingAccessTokenOutput(4),
           ],
         },
       },

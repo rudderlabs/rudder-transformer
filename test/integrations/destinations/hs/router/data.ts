@@ -4303,23 +4303,53 @@ const baseData: Record<string, unknown>[] = [
   }),
   // legacy API-key auth is no longer supported, regardless of API version or flow.
   errCase({
-    id: 'hs_router_legacy_auth_newapi_identify_rejected',
-    description: '(newApi + legacyApiKey) event-stream identify is rejected before property lookup',
-    message: {
-      type: 'identify',
-      traits: { phone: '9', firstname: 'A' },
-      context: { mappedToDestination: false },
-    },
-    config: legacyCfg({ apiVersion: 'newApi', lookupField: 'phone' }),
+    id: 'hs_router_legacy_missing_hub_id',
+    // no properties/traits so the batch-level getProperties fetch is skipped and
+    // config validation (which runs inside processSingleMessage) is what aborts.
+    description: '(legacyApiKey) missing hubID in config is aborted',
+    message: { type: 'track', event: 'Purchase' },
+    config: legacyCfg({ hubID: '' }),
     statusCode: 400,
     error: unsupportedLegacyAuthError,
     statTags: enrich('dataValidation', 'configuration'),
   }),
   errCase({
-    id: 'hs_router_legacy_auth_legacyapi_track_rejected',
-    description: '(legacyApi + legacyApiKey) event-stream track is rejected',
+    id: 'hs_router_legacy_missing_api_key',
+    description: '(legacyApiKey) missing apiKey in config is aborted',
     message: { type: 'track', event: 'Purchase' },
+    config: legacyCfg({ apiKey: '' }),
+    statusCode: 400,
+    error: unsupportedLegacyAuthError,
+    statTags: enrich('dataValidation', 'configuration'),
+  }),
+  errCase({
+    id: 'hs_router_legacy_identify_no_email',
+    description: '(legacyApi) event-stream identify without email is aborted',
+    message: {
+      type: 'identify',
+      traits: { firstname: 'A' },
+      context: { mappedToDestination: false },
+    },
     config: legacyCfg(),
+    statusCode: 400,
+    error: unsupportedLegacyAuthError,
+    statTags: enrich('dataValidation', 'configuration'),
+  }),
+  errCase({
+    id: 'hs_router_newapi_hapikey_identify',
+    description: '(newApi + legacyApiKey) identify uses hapikey auth for property lookup + create',
+    message: {
+      type: 'identify',
+      traits: { phone: '9', firstname: 'A' },
+      context: { mappedToDestination: false },
+    },
+    config: {
+      authorizationType: 'legacyApiKey',
+      apiVersion: 'newApi',
+      apiKey: 'dummy-apikeysuccess',
+      hubID: '123',
+      lookupField: 'phone',
+    },
     statusCode: 400,
     error: unsupportedLegacyAuthError,
     statTags: enrich('dataValidation', 'configuration'),

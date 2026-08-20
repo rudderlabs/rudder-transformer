@@ -92,16 +92,14 @@ const processBatchRouterRetl = async (
         (await isLookupFieldUnique(destination, identifierType, metadata, objectType));
 
       if (canUpsert) {
-        tempInputs = tempInputs.map((input) => ({
-          ...input,
-          message: {
-            ...input.message,
-            context: {
-              ...input.message.context,
-              hubspotOperation: 'upsertObject',
-            },
-          },
-        }));
+        tempInputs = tempInputs.map((input) => {
+          const taggedInput = input;
+          taggedInput.message.context = {
+            ...input.message.context,
+            hubspotOperation: 'upsertObject',
+          };
+          return taggedInput;
+        });
       } else {
         // get info about existing objects and split accordingly.
         tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);
@@ -119,7 +117,7 @@ const processBatchRouterRetl = async (
   }
 
   await Promise.all(
-    tempInputs.map(async (input) => {
+    inputs.map(async (input) => {
       try {
         let receivedResponse = await processSingleMessageRetl(
           { message: input.message, destination, metadata: input.metadata },

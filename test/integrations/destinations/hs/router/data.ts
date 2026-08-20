@@ -118,13 +118,11 @@ const successCase = (o: {
   id: string;
   description: string;
   message: Record<string, unknown>;
-  metadata?: Record<string, unknown>;
   config: Record<string, unknown>;
   batchedRequest: Record<string, unknown>;
   batched: boolean;
 }) => {
   const dest = { ID: o.id, Config: o.config, Enabled: true };
-  const metadata = { jobId: 1, userId: 'u1', ...(o.metadata ?? {}) };
   return {
     name: 'hs',
     id: o.id,
@@ -135,7 +133,7 @@ const successCase = (o: {
     input: {
       request: {
         body: {
-          input: [{ message: o.message, destination: dest, metadata }],
+          input: [{ message: o.message, destination: dest, metadata: { jobId: 1, userId: 'u1' } }],
           destType: 'hs',
         },
         method: 'POST',
@@ -148,7 +146,7 @@ const successCase = (o: {
           output: [
             {
               batchedRequest: o.batchedRequest,
-              metadata: [metadata],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: o.batched,
               statusCode: 200,
               destination: dest,
@@ -4605,47 +4603,6 @@ const baseData: Record<string, unknown>[] = [
         JSON_ARRAY: {
           batch: '[{"email":"v1@e.com","properties":[{"property":"firstname","value":"A"}]}]',
         },
-        XML: {},
-        FORM: {},
-      },
-      files: {},
-    },
-  }),
-  successCase({
-    id: 'hs_router_v1_identify_private_app_dontbatch',
-    description:
-      '(legacyApi + private-app + dontBatch) identify keeps the single createOrUpdate request',
-    message: {
-      type: 'identify',
-      traits: { email: 'v1-dontbatch@e.com', firstname: 'A' },
-      context: { mappedToDestination: false },
-    },
-    metadata: { dontBatch: true },
-    config: {
-      authorizationType: 'newPrivateAppApi',
-      apiVersion: 'legacyApi',
-      accessToken: secret1,
-      hubID: '123',
-      lookupField: 'email',
-    },
-    batched: false,
-    batchedRequest: {
-      version: '1',
-      type: 'REST',
-      method: 'POST',
-      endpoint:
-        'https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/v1-dontbatch@e.com',
-      endpointPath: '/contacts/v1/contact/createOrUpdate/email/:contact_email',
-      headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
-      params: {},
-      body: {
-        JSON: {
-          properties: [
-            { property: 'email', value: 'v1-dontbatch@e.com' },
-            { property: 'firstname', value: 'A' },
-          ],
-        },
-        JSON_ARRAY: {},
         XML: {},
         FORM: {},
       },

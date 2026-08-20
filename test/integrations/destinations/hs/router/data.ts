@@ -172,6 +172,8 @@ const unsupportedLegacyAuthError =
 const legacyCfg = (over: Record<string, unknown> = {}) => ({
   authorizationType: 'legacyApiKey',
   apiVersion: 'legacyApi',
+  apiKey: 'dummy-apikey',
+  hubID: '123',
   ...over,
 });
 

@@ -179,6 +179,7 @@ describe('Delivery controller tests', () => {
       expect(incrementSpy).toHaveBeenCalledWith('proxy_response_serialization_failure', {
         version: 'v0',
         reason: 'tooLarge',
+        destType: 'RUDDER_TEST',
       });
     });
 
@@ -214,6 +215,7 @@ describe('Delivery controller tests', () => {
       expect(incrementSpy).toHaveBeenCalledWith('proxy_response_serialization_failure', {
         version: 'v0',
         reason: 'unserializable',
+        destType: 'RUDDER_TEST',
       });
     });
   });
@@ -334,6 +336,7 @@ describe('Delivery controller tests', () => {
       expect(incrementSpy).toHaveBeenCalledWith('proxy_response_serialization_failure', {
         version: 'v1',
         reason: 'tooLarge',
+        destType: 'RUDDER_TEST',
       });
     });
 
@@ -368,6 +371,7 @@ describe('Delivery controller tests', () => {
       expect(incrementSpy).toHaveBeenCalledWith('proxy_response_serialization_failure', {
         version: 'v1',
         reason: 'unserializable',
+        destType: 'RUDDER_TEST',
       });
     });
   });

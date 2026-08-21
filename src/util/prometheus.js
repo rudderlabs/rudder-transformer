@@ -330,6 +330,12 @@ class Prometheus {
         labelNames: ['destination'],
       },
       {
+        name: 'proxy_response_serialization_failure',
+        help: 'proxy_response_serialization_failure',
+        type: 'counter',
+        labelNames: ['version', 'reason', 'destType'],
+      },
+      {
         name: 'source_transform_errors',
         help: 'source_transform_errors',
         type: 'counter',

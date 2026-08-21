@@ -9,6 +9,7 @@ import { MiscService } from '../services/misc';
 import {
   DeliveryV0Response,
   DeliveryV1Response,
+  MetaTransferObject,
   ProcessorTransformationOutput,
   ProxyV0Request,
   ProxyV1Request,
@@ -42,6 +43,7 @@ function writeDeliveryResponse<T>(
   deliveryResponse: T,
   buildFallback: (reason: SerializationFailureReason) => T,
   version: 'v0' | 'v1',
+  metaTO: MetaTransferObject,
 ): T {
   let response = deliveryResponse;
   let body: string;
@@ -50,12 +52,19 @@ function writeDeliveryResponse<T>(
   } catch (error: unknown) {
     const reason: SerializationFailureReason =
       error instanceof RangeError ? 'tooLarge' : 'unserializable';
+    // The counter is the only signal for this failure class, so it carries destType - without it
+    // the metric can say that a response blew up but not which destination did it. destinationId
+    // and workspaceId stay out of the labels (unbounded cardinality) and go to the log instead.
+    const destType = metaTO.errorDetails.destType ?? NON_DETERMINABLE;
     logger.error('[DeliveryController] Delivery response could not be serialized', {
       reason,
       version,
+      destType,
+      destinationId: metaTO.errorDetails.destinationId,
+      workspaceId: metaTO.errorDetails.workspaceId,
       error: error instanceof Error ? error.message : String(error),
     });
-    stats.increment('proxy_response_serialization_failure', { version, reason });
+    stats.increment('proxy_response_serialization_failure', { version, reason, destType });
     response = buildFallback(reason);
     body = JSON.stringify({ output: response });
   }
@@ -100,6 +109,7 @@ export class DeliveryController {
       deliveryResponse,
       (reason) => DestinationPostTransformationService.buildSerializationFallbackV0(metaTO, reason),
       'v0',
+      metaTO,
     );
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
@@ -139,6 +149,7 @@ export class DeliveryController {
       (reason) =>
         DestinationPostTransformationService.buildSerializationFallbackV1(metadata, metaTO, reason),
       'v1',
+      metaTO,
     );
     if (isDefinedAndNotNullAndNotEmpty(deliveryResponse.authErrorCategory)) {
       ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);

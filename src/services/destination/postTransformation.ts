@@ -22,13 +22,32 @@ import tags from '../../v0/util/tags';
 import { ErrorReportingService } from '../errorReporting';
 import logger from '../../logger';
 
-// Node/V8 cannot JSON.stringify a string longer than roughly 512MB (RangeError: Invalid
-// string length). A proxy delivery response that hits this - typically a large destination
-// response duplicated once per job in a big batch - would otherwise crash mid-serialization
-// and reach rudder-server as a bodyless response it can't parse. This bounded fallback is
-// built purely from the request's own (always-small) metadata, never from the oversized
-// response that triggered it.
-const RESPONSE_TOO_LARGE_MESSAGE = 'Destination response payload was too large to serialize';
+// A proxy delivery response can fail to serialize in two distinct ways, and conflating them
+// sends whoever is looking at the metric down the wrong path:
+//  - `tooLarge`: V8 cannot JSON.stringify a string longer than roughly 512MB, and throws
+//    RangeError: Invalid string length. Typically a large destination response duplicated once
+//    per job in a big batch.
+//  - `unserializable`: anything else JSON.stringify rejects, in practice a circular structure
+//    (`TypeError: Converting circular structure to JSON`) - an axios error object carrying
+//    `config.httpsAgent._sessionCache` back-references is the usual source, and has nothing to
+//    do with size.
+// Either way the response would otherwise crash mid-serialization and reach rudder-server as a
+// body it can't parse. These bounded fallbacks are built purely from the request's own
+// (always-small) metadata, never from the response that triggered the failure.
+export type SerializationFailureReason = 'tooLarge' | 'unserializable';
+
+const SERIALIZATION_FAILURE_MESSAGES: Record<SerializationFailureReason, string> = {
+  tooLarge: 'Destination response payload was too large to serialize',
+  unserializable: 'Destination response payload could not be serialized',
+};
+
+// Mirrors the shape `generateErrorObject` produces for every other delivery failure, so this
+// class of failure is categorised (and retried) like the rest instead of landing untagged.
+const buildSerializationFailureStatTags = (metaTO: MetaTransferObject): object => ({
+  ...metaTO.errorDetails,
+  [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.PLATFORM,
+  [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.RETRYABLE,
+});
 
 const defaultErrorMessages = {
   router: '[Router Transform] Error occurred while processing the payload.',
@@ -240,25 +259,33 @@ export class DestinationPostTransformationService {
     return resp;
   }
 
-  public static buildResponseTooLargeFallbackV0(): DeliveryV0Response {
-    stats.increment('proxy_response_too_large_to_serialize', { version: 'v0' });
+  public static buildSerializationFallbackV0(
+    metaTo: MetaTransferObject,
+    reason: SerializationFailureReason,
+  ): DeliveryV0Response {
+    const message = SERIALIZATION_FAILURE_MESSAGES[reason];
     return {
       status: 500,
-      message: RESPONSE_TOO_LARGE_MESSAGE,
-      destinationResponse: RESPONSE_TOO_LARGE_MESSAGE,
-      statTags: {},
+      message,
+      destinationResponse: message,
+      statTags: buildSerializationFailureStatTags(metaTo),
     };
   }
 
-  public static buildResponseTooLargeFallbackV1(metadataArray: ProxyMetdata[]): DeliveryV1Response {
-    stats.increment('proxy_response_too_large_to_serialize', { version: 'v1' });
+  public static buildSerializationFallbackV1(
+    metadataArray: ProxyMetdata[],
+    metaTo: MetaTransferObject,
+    reason: SerializationFailureReason,
+  ): DeliveryV1Response {
+    const message = SERIALIZATION_FAILURE_MESSAGES[reason];
     return {
       status: 500,
-      message: RESPONSE_TOO_LARGE_MESSAGE,
+      message,
+      statTags: buildSerializationFailureStatTags(metaTo),
       response: metadataArray.map(
         (metadata) =>
           ({
-            error: RESPONSE_TOO_LARGE_MESSAGE,
+            error: message,
             statusCode: 500,
             metadata,
           }) as DeliveryJobState,

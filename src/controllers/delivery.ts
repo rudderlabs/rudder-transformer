@@ -4,7 +4,10 @@ import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DeliveryTestService } from '../services/delivertTest/deliveryTest';
-import { DestinationPostTransformationService } from '../services/destination/postTransformation';
+import {
+  DestinationPostTransformationService,
+  SerializationFailureReason,
+} from '../services/destination/postTransformation';
 import { MiscService } from '../services/misc';
 import {
   DeliveryV0Response,
@@ -15,25 +18,50 @@ import {
   FixMe,
 } from '../types';
 import tags from '../v0/util/tags';
+import stats from '../util/stats';
 import logger from '../logger';
 import { ControllerUtility } from './util';
 
 const NON_DETERMINABLE = 'Non-determinable';
 
-// A response too large for JSON.stringify (RangeError: Invalid string length) would otherwise
-// crash later - uncaught - inside Koa's own response-sending code, with no chance for any
-// middleware to recover it into a well-formed body. Catch it here instead, where we still have
-// the request's own (always-small) metadata to build a proper, retryable per-job fallback from.
-function ensureSerializable<T>(deliveryResponse: T, buildFallback: () => T): T {
+// A delivery response that JSON.stringify rejects - over V8's ~512MB string ceiling, or
+// circular - would otherwise crash later, uncaught, inside Koa's own response-sending code,
+// leaving rudder-server with a body it can't parse. Serialize it here instead, where we still
+// have the request's own (always-small) metadata to build a proper, retryable per-job fallback
+// from.
+//
+// The serialized string is what gets handed to Koa, deliberately: assigning an object body
+// means the payload is stringified three times over (once here, once by `ctx.response.length`
+// in the request-size middleware, once by Koa's `respond()`). At the sizes this guard exists
+// for that is three transient half-gigabyte strings, which risks tripping the memory fence and
+// killing the process - a worse outcome than the RangeError being guarded against. A string
+// body is passed straight through by both later steps, so the payload is serialized exactly
+// once.
+function serializeDeliveryResponse<T>(
+  deliveryResponse: T,
+  buildFallback: (reason: SerializationFailureReason) => T,
+  version: 'v0' | 'v1',
+): { response: T; body: string } {
   try {
-    JSON.stringify(deliveryResponse);
-    return deliveryResponse;
+    return { response: deliveryResponse, body: JSON.stringify({ output: deliveryResponse }) };
   } catch (error: unknown) {
-    logger.error('[DeliveryController] Response body too large to serialize', {
+    const reason: SerializationFailureReason =
+      error instanceof RangeError ? 'tooLarge' : 'unserializable';
+    logger.error('[DeliveryController] Delivery response could not be serialized', {
+      reason,
+      version,
       error: error instanceof Error ? error.message : String(error),
     });
-    return buildFallback();
+    stats.increment('proxy_response_serialization_failure', { version, reason });
+    const fallback = buildFallback(reason);
+    return { response: fallback, body: JSON.stringify({ output: fallback }) };
   }
+}
+
+// Koa's body setter tags a string body as `text/plain`; delivery responses must stay JSON.
+function setSerializedBody(ctx: Context, body: string) {
+  ctx.body = body;
+  ctx.type = 'json';
 }
 
 export class DeliveryController {
@@ -43,6 +71,14 @@ export class DeliveryController {
     const deliveryRequest = ctx.request.body as ProxyV0Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
+    const { metadata } = deliveryRequest;
+    const metaTO = integrationService.getTags(
+      destination,
+      metadata?.destinationId || NON_DETERMINABLE,
+      metadata?.workspaceId || NON_DETERMINABLE,
+      tags.FEATURES.DATA_DELIVERY,
+    );
+    metaTO.metadata = metadata;
     try {
       deliveryResponse = (await integrationService.deliver(
         deliveryRequest,
@@ -51,24 +87,18 @@ export class DeliveryController {
         'v0',
       )) as DeliveryV0Response;
     } catch (error: any) {
-      const { metadata } = deliveryRequest;
-      const metaTO = integrationService.getTags(
-        destination,
-        metadata?.destinationId || NON_DETERMINABLE,
-        metadata?.workspaceId || NON_DETERMINABLE,
-        tags.FEATURES.DATA_DELIVERY,
-      );
-      metaTO.metadata = metadata;
       deliveryResponse = DestinationPostTransformationService.handleDeliveryFailureEvents(
         error,
         metaTO,
       );
     }
-    deliveryResponse = ensureSerializable(deliveryResponse, () =>
-      DestinationPostTransformationService.buildResponseTooLargeFallbackV0(),
+    const { response, body } = serializeDeliveryResponse(
+      deliveryResponse,
+      (reason) => DestinationPostTransformationService.buildSerializationFallbackV0(metaTO, reason),
+      'v0',
     );
-    ctx.body = { output: deliveryResponse };
-    ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
+    setSerializedBody(ctx, body);
+    ControllerUtility.deliveryPostProcess(ctx, response.status);
 
     return ctx;
   }
@@ -79,6 +109,14 @@ export class DeliveryController {
     const deliveryRequest = ctx.request.body as ProxyV1Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
+    const { metadata } = deliveryRequest;
+    const metaTO = integrationService.getTags(
+      destination,
+      metadata?.[0]?.destinationId || NON_DETERMINABLE,
+      metadata?.[0]?.workspaceId || NON_DETERMINABLE,
+      tags.FEATURES.DATA_DELIVERY,
+    );
+    metaTO.metadatas = metadata;
     try {
       deliveryResponse = (await integrationService.deliver(
         deliveryRequest,
@@ -87,27 +125,20 @@ export class DeliveryController {
         'v1',
       )) as DeliveryV1Response;
     } catch (error: any) {
-      const { metadata } = deliveryRequest;
-      const metaTO = integrationService.getTags(
-        destination,
-        metadata[0].destinationId || NON_DETERMINABLE,
-        metadata[0].workspaceId || NON_DETERMINABLE,
-        tags.FEATURES.DATA_DELIVERY,
-      );
-      metaTO.metadatas = metadata;
       deliveryResponse = DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(
         error,
         metaTO,
       );
     }
-    deliveryResponse = ensureSerializable(deliveryResponse, () =>
-      DestinationPostTransformationService.buildResponseTooLargeFallbackV1(
-        deliveryRequest.metadata,
-      ),
+    const { response, body } = serializeDeliveryResponse(
+      deliveryResponse,
+      (reason) =>
+        DestinationPostTransformationService.buildSerializationFallbackV1(metadata, metaTO, reason),
+      'v1',
     );
-    ctx.body = { output: deliveryResponse };
-    if (isDefinedAndNotNullAndNotEmpty(deliveryResponse.authErrorCategory)) {
-      ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
+    setSerializedBody(ctx, body);
+    if (isDefinedAndNotNullAndNotEmpty(response.authErrorCategory)) {
+      ControllerUtility.deliveryPostProcess(ctx, response.status);
     } else {
       ControllerUtility.deliveryPostProcess(ctx);
     }

@@ -20,30 +20,91 @@ describe('PostTransformation Service', () => {
     expect(resp).toEqual(expected);
   });
 
-  test('buildResponseTooLargeFallbackV0 returns a small, bounded v0 error response', () => {
-    const resp = DestinationPostTransformationService.buildResponseTooLargeFallbackV0();
+  describe('serialization fallbacks', () => {
+    const metaTo = {
+      errorDetails: {
+        destType: 'FB_CUSTOM_AUDIENCE',
+        module: 'destination',
+        implementation: 'native',
+        feature: 'dataDelivery',
+        destinationId: 'dest-1',
+        workspaceId: 'ws-1',
+      },
+    } as MetaTransferObject;
 
-    expect(resp).toEqual({
-      status: 500,
-      message: 'Destination response payload was too large to serialize',
-      destinationResponse: 'Destination response payload was too large to serialize',
-      statTags: {},
+    // Every other delivery failure carries these, and rudder-server categorises off them - a
+    // fallback without them lands uncategorised in the dashboards used to spot this failure.
+    const expectedStatTags = {
+      destType: 'FB_CUSTOM_AUDIENCE',
+      module: 'destination',
+      implementation: 'native',
+      feature: 'dataDelivery',
+      destinationId: 'dest-1',
+      workspaceId: 'ws-1',
+      errorCategory: 'platform',
+      errorType: 'retryable',
+    };
+
+    test('buildSerializationFallbackV0 returns a small, bounded, categorised v0 error response', () => {
+      const resp = DestinationPostTransformationService.buildSerializationFallbackV0(
+        metaTo,
+        'tooLarge',
+      );
+
+      expect(resp).toEqual({
+        status: 500,
+        message: 'Destination response payload was too large to serialize',
+        destinationResponse: 'Destination response payload was too large to serialize',
+        statTags: expectedStatTags,
+      });
     });
-  });
 
-  test('buildResponseTooLargeFallbackV1 maps every job to its own bounded error entry', () => {
-    const metadata = [{ jobId: 1 } as any, { jobId: 2 } as any, { jobId: 3 } as any];
+    test('buildSerializationFallbackV0 reports a non-size failure as unserializable', () => {
+      const resp = DestinationPostTransformationService.buildSerializationFallbackV0(
+        metaTo,
+        'unserializable',
+      );
 
-    const resp = DestinationPostTransformationService.buildResponseTooLargeFallbackV1(metadata);
+      expect(resp.message).toEqual('Destination response payload could not be serialized');
+      expect(resp.destinationResponse).toEqual(
+        'Destination response payload could not be serialized',
+      );
+    });
 
-    expect(resp).toEqual({
-      status: 500,
-      message: 'Destination response payload was too large to serialize',
-      response: metadata.map((m) => ({
-        error: 'Destination response payload was too large to serialize',
-        statusCode: 500,
-        metadata: m,
-      })),
+    test('buildSerializationFallbackV1 maps every job to its own bounded error entry', () => {
+      const metadata = [{ jobId: 1 } as any, { jobId: 2 } as any, { jobId: 3 } as any];
+
+      const resp = DestinationPostTransformationService.buildSerializationFallbackV1(
+        metadata,
+        metaTo,
+        'tooLarge',
+      );
+
+      expect(resp).toEqual({
+        status: 500,
+        message: 'Destination response payload was too large to serialize',
+        statTags: expectedStatTags,
+        response: metadata.map((m) => ({
+          error: 'Destination response payload was too large to serialize',
+          statusCode: 500,
+          metadata: m,
+        })),
+      });
+    });
+
+    test('buildSerializationFallbackV1 reports a non-size failure as unserializable', () => {
+      const metadata = [{ jobId: 1 } as any];
+
+      const resp = DestinationPostTransformationService.buildSerializationFallbackV1(
+        metadata,
+        metaTo,
+        'unserializable',
+      );
+
+      expect(resp.message).toEqual('Destination response payload could not be serialized');
+      expect(resp.response[0].error).toEqual(
+        'Destination response payload could not be serialized',
+      );
     });
   });
 });

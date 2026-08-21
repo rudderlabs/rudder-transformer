@@ -233,12 +233,10 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
 
 /**
  * These scenarios run through the batching framework's delivery path rather than
- * `v1/destinations/customerio/networkHandler`. The transform flag is required because
- * `isBatchingFrameworkDeliveryEnabled` refuses to enable delivery without it, and customerio is
- * not yet GA for batching so it does not get that flag implicitly.
+ * `v1/destinations/customerio/networkHandler`. The delivery flag remains a separate opt-in even
+ * though the transform path is GA-enabled for CustomerIO.
  */
 const batchingFrameworkDelivery = {
-  CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
   CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
 };
 

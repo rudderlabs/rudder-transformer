@@ -71,7 +71,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   MP: { routerTransform: true, regulations: true },
   TIKTOK_ADS_OFFLINE_EVENTS: { routerTransform: true },
   CRITEO_AUDIENCE: { routerTransform: true },
-  CUSTOMERIO: { routerTransform: true },
+  CUSTOMERIO: { routerTransform: true, batching: true },
   BRAZE: { routerTransform: true, regulations: true },
   OPTIMIZELY_FULLSTACK: { routerTransform: true, cdkV2: true },
   TWITTER_ADS: { routerTransform: true },

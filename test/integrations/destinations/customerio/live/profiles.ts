@@ -54,7 +54,7 @@ export const deviceContext = (ctx: RunContext) => ({
   os: { name: 'iOS', version: '17.0' },
 });
 
-// Event names as CustomerIO records them. Both rollout states must agree on every one of these —
+// Event names as CustomerIO records them. Both event-stream API states must agree on every one of these —
 // that agreement is currently accidental, and these constants are what pin it:
 //   track  — V1 transform.ts `evName = message.event`; V2 buildTrack(message, message.event).
 //   page   — V1 `message.name || properties.url`; V2 buildPage(..., name || properties.url).

@@ -62,7 +62,7 @@ const snapshots = new Map<string, PersonSnapshot>();
 // identity() and email() both embed runId, so scrubbing it normalises every run-scoped value.
 const scrub = (value: string, runId: string): string => value.split(runId).join('<runId>');
 
-// The ONE state difference between the two rollout paths that this parity check tolerates.
+// The ONE state difference between the two event-stream API paths that this parity check tolerates.
 //
 // Screen events change CustomerIO activity type when the flag flips: V1 records a screen as an
 // `event` (transform.ts:107 sets evType = 'event' for EventType.SCREEN), V2 records it as a
@@ -126,7 +126,7 @@ export const verifyPersonState =
     // CustomerIO does NOT retain a page event's name: `page` activities come back with `data` only.
     // The App API documents `name` as "the name of the event, for `event` and `screen` activities",
     // and a live probe confirms it is absent on page activities. A page's name is therefore not
-    // observable at the destination on either rollout path — what IS assertable is that exactly one
+    // observable at the destination on either event-stream API path — what IS assertable is that exactly one
     // page activity landed, carrying the right properties.
     await eventually(async () => {
       const pages = await getActivities(ctx, userId, { type: 'page' });
@@ -135,7 +135,7 @@ export const verifyPersonState =
     });
 
     // Deliberately path-agnostic about the activity TYPE: this asserts only that the screen event
-    // landed under the right name with the right properties. The two rollout paths disagree on the
+    // landed under the right name with the right properties. The two event-stream API paths disagree on the
     // type (V1 records a screen as an `event` — transform.ts:107; V2 as a `screen` — v2/util.ts:129),
     // and surfacing that disagreement is verifyFlagParity's job, where it shows up as a real diff
     // rather than as an ambiguous "not found" here.
@@ -232,7 +232,7 @@ export const verifyMerge = async (ctx: RunContext): Promise<void> => {
 };
 
 /**
- * The assertion that makes the two rollout scenarios mean different things.
+ * The assertion that makes the two event-stream API scenarios mean different things.
  *
  * Both scenarios seed identical events; only CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED differs. The
  * pipeline steps alone cannot tell them apart — both just get 2xx. This asserts that the observable
@@ -251,7 +251,7 @@ export const verifyFlagParity =
       // eslint-disable-next-line no-console
       console.warn(
         `[live:customerio] parity check skipped: no snapshot for baseline scenario ` +
-          `'${baselineScenarioId}'. Run the full spec to compare the two rollout states.`,
+          `'${baselineScenarioId}'. Run the full spec to compare the two event-stream API states.`,
       );
       return;
     }

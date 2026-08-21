@@ -2927,6 +2927,10 @@ describe('formatEmail', () => {
       expected: 'first.last@example.com',
     },
     { name: 'a hyphenated domain', input: 'user@my-example.com', expected: 'user@my-example.com' },
+    // Braze's general local-part regex carries `+` in its leading character class, so this is
+    // a valid address everywhere except the Microsoft domains. Pinned so the `startsWith('+')`
+    // guard -- which would reject it -- does not get added back.
+    { name: 'a leading plus', input: '+user@example.com', expected: '+user@example.com' },
   ];
 
   const invalidEmails = [

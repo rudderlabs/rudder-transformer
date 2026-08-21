@@ -110,8 +110,16 @@ const formatGender = (gender: unknown) => {
  *
  * The option only ever rejects addresses Braze also rejects: `isEmail` admits `"` in the
  * local part solely via its fully-quoted branch, and a local part opening with `"` can never
- * match Braze's regex. Note Braze validates only the segment preceding `+`, so widening the
- * blacklist further would over-reject -- e.g. Braze accepts `user+{tag}@example.com`.
+ * match Braze's regex.
+ *
+ * Deliberately *not* rejecting a leading `+` (e.g. `+user@example.com`), even though Braze
+ * bounces `+user@outlook.com`. That bounce is the Microsoft-domain rule, not a general one:
+ * for domains containing msn/hotmail/outlook/live, Braze matches the segment preceding the
+ * `+` against `/\A\w[\-\w]*(?:\.[\-\w]+)*\z/i`, and a leading `+` leaves that segment empty.
+ * The *general* regex carries `+` in its leading character class, so `+user@example.com` is
+ * valid at every other domain and a blanket `startsWith('+')` guard would drop good events.
+ * Scoping the guard to Microsoft domains is not obviously safe either -- "containing" would
+ * also catch `olive.com`/`transmission.com`, and Braze's matching there is untested.
  * https://www.braze.com/docs/user_guide/channels/email/email_setup/email_validation
  */
 const formatEmail = (email: unknown) => {

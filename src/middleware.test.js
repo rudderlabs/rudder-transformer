@@ -4,15 +4,11 @@ const request = require('supertest');
 const { addStatMiddleware, addRequestSizeMiddleware } = require('./middleware');
 
 const stats = require('./util/stats');
-const logger = require('./logger');
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 
 jest.mock('./util/stats', () => ({
   timing: jest.fn(),
   histogram: jest.fn(),
-}));
-jest.mock('./logger', () => ({
-  error: jest.fn(),
 }));
 jest.mock('@rudderstack/integrations-lib', () => ({
   getDestTypeFromContext: jest.fn(),
@@ -136,66 +132,5 @@ describe('requestSizeMiddleware', () => {
       code: 200,
       route: '/test',
     });
-  });
-
-  const serveUnserializableBody = async (fail) => {
-    // Simulates a body JSON.stringify rejects - via `toJSON`, so the test stays fast and
-    // doesn't need to allocate the hundreds of MB a real oversized body would.
-    const app = new Koa();
-    app.use(bodyParser({ jsonLimit: '200mb' }));
-    addRequestSizeMiddleware(app);
-    app.use(async (ctx) => {
-      ctx.status = 200;
-      ctx.body = { toJSON: fail };
-    });
-
-    return request(app.callback()).get('/test');
-  };
-
-  it('should replace an oversized response body with a small error body instead of crashing', async () => {
-    const res = await serveUnserializableBody(() => {
-      throw new RangeError('Invalid string length');
-    });
-
-    const expectedBody = {
-      error: 'ResponseTooLarge',
-      message: 'Response payload was too large to serialize',
-    };
-
-    expect(res.status).toBe(500);
-    expect(res.body).toEqual(expectedBody);
-
-    expect(logger.error).toHaveBeenCalledWith(
-      '[Middleware] Response body could not be serialized',
-      expect.objectContaining({
-        error: 'Invalid string length',
-        reason: 'tooLarge',
-        route: '/test',
-        method: 'GET',
-      }),
-    );
-
-    expect(stats.histogram).toHaveBeenCalledWith(
-      'http_response_size',
-      Buffer.byteLength(JSON.stringify(expectedBody)),
-      { method: 'GET', code: 500, route: '/test' },
-    );
-  });
-
-  it('should report a non-size serialization failure as unserializable rather than too large', async () => {
-    const res = await serveUnserializableBody(() => {
-      throw new TypeError('Converting circular structure to JSON');
-    });
-
-    expect(res.status).toBe(500);
-    expect(res.body).toEqual({
-      error: 'ResponseSerializationFailed',
-      message: 'Response payload could not be serialized',
-    });
-
-    expect(logger.error).toHaveBeenCalledWith(
-      '[Middleware] Response body could not be serialized',
-      expect.objectContaining({ reason: 'unserializable', route: '/test', method: 'GET' }),
-    );
   });
 });

@@ -31,8 +31,7 @@ import {
   formatPropertyValueForIdentify,
   removeHubSpotSystemField,
   recordTransformFlow,
-  addHsAuthentication,
-  validateDestinationConfig,
+  addHsAuthorisationHeader,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -63,7 +62,6 @@ const processLegacyIdentify = async (
   { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
-  validateDestinationConfig(destination);
   const { Config } = destination;
   const traits = getFieldValueFromMessage(message, 'traits');
   let endpoint: string = '';
@@ -101,7 +99,7 @@ const processLegacyIdentify = async (
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  return addHsAuthentication(response, Config);
+  return addHsAuthorisationHeader(response, Config);
 };
 
 /**
@@ -116,7 +114,6 @@ const processLegacyTrack = async (
   { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
-  validateDestinationConfig(destination);
   const { Config } = destination;
 
   if (!Config.hubID) {
@@ -150,7 +147,7 @@ const processLegacyTrack = async (
 
   response.params = params;
 
-  return addHsAuthentication(response, Config);
+  return addHsAuthorisationHeader(response, Config);
 };
 
 const legacyBatchEvents = (
@@ -235,7 +232,7 @@ const legacyBatchEvents = (
       'Content-Type': JSON_MIME_TYPE,
     };
 
-    addHsAuthentication(batchEventResponse.batchedRequest, Config);
+    addHsAuthorisationHeader(batchEventResponse.batchedRequest, Config);
 
     batchEventResponse = {
       ...batchEventResponse,

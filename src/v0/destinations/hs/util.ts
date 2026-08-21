@@ -84,9 +84,9 @@ const validateDestinationConfig = ({ Config }: HubSpotDestination): Configuratio
 };
 
 /**
- * Adds HubSpot Private Apps authentication details to a response-like object.
+ * Adds HubSpot Private Apps authorization header to a response-like object.
  */
-const addHsAuthentication = <T extends { headers?: Record<string, unknown> }>(
+const addHsAuthorisationHeader = <T extends { headers?: Record<string, unknown> }>(
   response: T,
   Config: HubSpotDestination['Config'],
 ): T => {
@@ -135,15 +135,16 @@ const getProperties = async (
   destination: HubSpotDestination,
   metadata: Metadata,
 ): Promise<HubSpotPropertyMap> => {
-  validateDestinationConfig(destination);
   let hubspotPropertyMap: HubSpotPropertyMap = {};
   const { Config } = destination;
-  const requestOptions = {
-    headers: {
-      'Content-Type': JSON_MIME_TYPE,
-      Authorization: `Bearer ${Config.accessToken}`,
+  const requestOptions = addHsAuthorisationHeader(
+    {
+      headers: {
+        'Content-Type': JSON_MIME_TYPE,
+      },
     },
-  };
+    Config,
+  );
   const hubspotPropertyMapHttpResponse = await httpGET(
     `${BASE_ENDPOINT}${CONTACT_PROPERTY_MAP_ENDPOINT_PATH}`,
     requestOptions,
@@ -394,7 +395,6 @@ const searchContacts = async (
   destination: HubSpotDestination,
   metadata: Metadata,
 ): Promise<string | null> => {
-  validateDestinationConfig(destination);
   const { Config } = destination;
   let searchContactsResponse;
   let contactId: string | null;
@@ -427,12 +427,14 @@ const searchContacts = async (
   };
 
   const endpointPath = '/contacts/search';
-  const requestOptions = {
-    headers: {
-      'Content-Type': JSON_MIME_TYPE,
-      Authorization: `Bearer ${Config.accessToken}`,
+  const requestOptions = addHsAuthorisationHeader(
+    {
+      headers: {
+        'Content-Type': JSON_MIME_TYPE,
+      },
     },
-  };
+    Config,
+  );
   searchContactsResponse = await httpPOST(
     `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH}`,
     requestData,
@@ -595,7 +597,6 @@ const performHubSpotSearch = async (
   destination: HubSpotDestination,
   metadata: Metadata,
 ): Promise<HubSpotContactRecord[]> => {
-  validateDestinationConfig(destination);
   let checkAfter: number | string = 1;
   const searchResults: HubSpotContactRecord[] = [];
   const requestData = reqdata;
@@ -739,12 +740,14 @@ const getExistingContactsData = async (
 
   const values = extractIDsForSearchAPI(inputs);
   const chunkValues = chunk(values, MAX_CONTACTS_PER_REQUEST);
-  const requestOptions = {
-    headers: {
-      'Content-Type': JSON_MIME_TYPE,
-      Authorization: `Bearer ${Config.accessToken}`,
+  const requestOptions = addHsAuthorisationHeader(
+    {
+      headers: {
+        'Content-Type': JSON_MIME_TYPE,
+      },
     },
-  };
+    Config,
+  );
   for (const chunkValue of chunkValues) {
     const requestData = getRequestData(identifierType, chunkValue);
     const searchResults = await performHubSpotSearch(
@@ -970,7 +973,7 @@ const fetchObjectPropertiesV3 = async (
     module: 'router',
     metadata,
   };
-  const authenticationInfo = addHsAuthentication({}, Config);
+  const authenticationInfo = addHsAuthorisationHeader({}, Config);
   const response = await httpGET(`${BASE_ENDPOINT}${endpointPath}`, authenticationInfo, statTags);
 
   const processedResponse = processAxiosResponse(response);
@@ -1063,7 +1066,7 @@ const recordTransformFlow = (
 
 export {
   validateDestinationConfig,
-  addHsAuthentication,
+  addHsAuthorisationHeader,
   addExternalIdToHSTraits,
   formatKey,
   fetchFinalSetOfTraits,

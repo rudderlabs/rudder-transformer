@@ -27,8 +27,7 @@ import {
   removeHubSpotSystemField,
   getHsSearchId,
   recordTransformFlow,
-  addHsAuthentication,
-  validateDestinationConfig,
+  addHsAuthorisationHeader,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -55,7 +54,6 @@ const processRetlLegacyIdentify = async (
   { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
-  validateDestinationConfig(destination);
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
   const operation = get(message, 'context.hubspotOperation');
@@ -104,7 +102,7 @@ const processRetlLegacyIdentify = async (
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  return addHsAuthentication(response, Config);
+  return addHsAuthorisationHeader(response, Config);
 };
 
 // Segregating create and update calls for rETL sources (legacy API).

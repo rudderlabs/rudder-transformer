@@ -39,9 +39,8 @@ import {
   removeHubSpotSystemField,
   isLookupFieldUnique,
   getLookupFieldValue,
-  addHsAuthentication,
+  addHsAuthorisationHeader,
   recordTransformFlow,
-  validateDestinationConfig,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -79,7 +78,6 @@ const processUpsertIdentify = async (
   }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
-  validateDestinationConfig(destination);
   const { Config } = destination;
 
   // Get lookup info for upsert (id and idProperty)
@@ -116,7 +114,7 @@ const processUpsertIdentify = async (
   response.operation = 'upsertContacts';
 
   recordTransformFlow(destination, 'event_stream', 'es_retl', 'upsert');
-  return addHsAuthentication(response, Config);
+  return addHsAuthorisationHeader(response, Config);
 };
 
 /**
@@ -135,7 +133,6 @@ const processIdentify = async (
   }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
-  validateDestinationConfig(destination);
   const { Config } = destination;
   const traits: Record<string, unknown> = getFieldValueFromMessage(message, 'traits');
   // since hubspot does not allow invalid emails, we need to
@@ -200,7 +197,7 @@ const processIdentify = async (
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  return addHsAuthentication(response, Config);
+  return addHsAuthorisationHeader(response, Config);
 };
 
 /**
@@ -214,7 +211,6 @@ const processTrack = async ({
   message,
   destination,
 }: HubspotRouterRequest): Promise<HubspotProcessorTransformationOutput> => {
-  validateDestinationConfig(destination);
   const { Config } = destination;
 
   let payload: HubSpotTrackEventRequest = constructPayload(
@@ -249,7 +245,7 @@ const processTrack = async ({
   response.messageType = 'track';
   recordTransformFlow(destination, 'event_stream', 'es_retl', 'track');
 
-  return addHsAuthentication(response, Config);
+  return addHsAuthorisationHeader(response, Config);
 };
 
 const batchIdentify = (

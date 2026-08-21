@@ -44,9 +44,6 @@ const processSingleMessageRetl = async (
     throw new InstrumentationError('Message type is not present. Aborting message.');
   }
 
-  // Config Validation
-  validateDestinationConfig(destination);
-
   // rETL sources only emit identify (object/association) events.
   if (message.type !== EventType.IDENTIFY) {
     throw new InstrumentationError(`Message type ${message.type} is not supported`);

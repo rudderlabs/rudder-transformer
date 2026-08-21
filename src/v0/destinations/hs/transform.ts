@@ -23,9 +23,6 @@ const processSingleMessage = async (
     throw new InstrumentationError('Message type is not present. Aborting message.');
   }
 
-  // Config Validation
-  validateDestinationConfig(destination);
-
   let response: HubspotProcessorTransformationOutput | HubspotProcessorTransformationOutput[];
   switch (message.type) {
     case EventType.IDENTIFY: {

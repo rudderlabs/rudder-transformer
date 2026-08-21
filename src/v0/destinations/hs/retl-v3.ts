@@ -33,9 +33,8 @@ import {
   addExternalIdToHSTraits,
   removeHubSpotSystemField,
   getHsSearchId,
-  addHsAuthentication,
+  addHsAuthorisationHeader,
   recordTransformFlow,
-  validateDestinationConfig,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -70,7 +69,6 @@ const processRetlIdentify = async (
   }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
   propertyMap?: HubSpotPropertyMap,
 ): Promise<HubspotProcessorTransformationOutput> => {
-  validateDestinationConfig(destination);
   const { Config } = destination;
   let traits: Record<string, unknown> = getFieldValueFromMessage(message, 'traits');
   // since hubspot does not allow invalid emails, we need to
@@ -112,7 +110,7 @@ const processRetlIdentify = async (
     response.operation = RETL_CREATE_ASSOCIATION_OPERATION;
     response.source = RETL_SOURCE;
     recordTransformFlow(destination, 'retl', 'retl', 'association');
-    return addHsAuthentication(response, Config);
+    return addHsAuthorisationHeader(response, Config);
   }
 
   // rETL object create/update/upsert — associations return above; objects require a resolved operation.
@@ -160,7 +158,7 @@ const processRetlIdentify = async (
       'Content-Type': JSON_MIME_TYPE,
     };
     recordTransformFlow(destination, 'retl', 'retl', 'upsert');
-    return addHsAuthentication(response, Config);
+    return addHsAuthorisationHeader(response, Config);
   }
 
   if (operation === 'createObject') {
@@ -193,7 +191,7 @@ const processRetlIdentify = async (
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
-  return addHsAuthentication(response, Config);
+  return addHsAuthorisationHeader(response, Config);
 };
 
 const batchIdentifyRetl = (

@@ -359,44 +359,51 @@ const getZippedPayload = (payload) =>
       throw new PlatformError(`Failed to do GZIP compression: ${err}`, 400);
     });
 
+// Single source of truth for the delivery payload formats:
+//  - `extract`   -> the value handed to the HTTP client (a gzip Buffer for GZIP).
+//  - `rawString` -> the uncompressed serialized string, used only to size the body for the
+//                   pre-compression delivery-size metric (INT-7033).
+const PAYLOAD_FORMAT_HANDLERS = {
+  JSON_ARRAY: { extract: (payload) => payload?.batch, rawString: (payload) => payload?.batch },
+  JSON: { extract: (payload) => payload, rawString: (payload) => JSON.stringify(payload) },
+  XML: { extract: (payload) => payload?.payload, rawString: (payload) => payload?.payload },
+  FORM: {
+    extract: (payload) => getFormData(payload),
+    rawString: (payload) => getFormData(payload).toString(),
+  },
+  GZIP: {
+    extract: (payload) => getZippedPayload(payload?.payload),
+    rawString: (payload) => payload?.payload,
+  },
+};
+
 const extractPayloadForFormat = (payload, format) => {
   if (!payload) {
     return undefined;
   }
-
-  const extractors = {
-    JSON_ARRAY: () => payload?.batch,
-    JSON: () => payload,
-    XML: () => payload?.payload,
-    FORM: () => getFormData(payload),
-    GZIP: () => getZippedPayload(payload?.payload),
-  };
-
-  const extractor = extractors[format];
-  if (!extractor) {
+  const handler = PAYLOAD_FORMAT_HANDLERS[format];
+  if (!handler) {
     logger.debug(`Unknown payload format: ${format}`);
     return undefined;
   }
-
-  return extractor();
+  return handler.extract(payload);
 };
 
-// INT-7033: uncompressed (pre-compression) byte size of the delivery body, per payload format.
-// Mirrors extractPayloadForFormat but returns the raw serialized length BEFORE any GZIP, so the
-// GZIP branch reports the pre-compression size (the compressed/wire size is Phase 1, INT-6923).
+// INT-7033: uncompressed (pre-compression) byte size of the delivery body. Guarded on purpose --
+// a size metric must never be able to fail a delivery, so a serialization error (e.g. a body that
+// JSON.stringify rejects) yields no observation instead of throwing on the delivery hot path.
 const getUncompressedPayloadSize = (payload, format) => {
-  if (!payload) {
+  const handler = PAYLOAD_FORMAT_HANDLERS[format];
+  if (!payload || !handler) {
     return undefined;
   }
-  const serializers = {
-    JSON_ARRAY: () => payload?.batch,
-    JSON: () => JSON.stringify(payload),
-    XML: () => payload?.payload,
-    FORM: () => getFormData(payload).toString(),
-    GZIP: () => payload?.payload,
-  };
-  const serialized = serializers[format]?.();
-  return typeof serialized === 'string' ? Buffer.byteLength(serialized) : undefined;
+  try {
+    const raw = handler.rawString(payload);
+    return typeof raw === 'string' ? Buffer.byteLength(raw) : undefined;
+  } catch (err) {
+    logger.debug(`delivery_payload_size_bytes: failed to size ${format} payload: ${err}`);
+    return undefined;
+  }
 };
 
 /**
@@ -410,24 +417,11 @@ const prepareProxyRequest = async (request) => {
     method,
     params,
     endpoint,
-    endpointPath,
-    metadata,
     headers: incomingHeaders = {},
     destinationConfig: config,
   } = request;
   const headers = { ...incomingHeaders };
   const { payload, payloadFormat } = getPayloadData(body);
-  // INT-7033: baseline pre-compression delivery payload size, keyed by destination / endpoint /
-  // workspace. Emitted for every proxy delivery independent of the rollout flag; `compressed`
-  // records whether this delivery ships gzipped (true today only for endpoints already on GZIP).
-  const uncompressedSize = getUncompressedPayloadSize(payload, payloadFormat);
-  if (uncompressedSize !== undefined) {
-    stats.histogram('delivery_payload_size_bytes', uncompressedSize, {
-      ...logger.getLogMetadata(metadata),
-      endpointPath: endpointPath ?? '',
-      compressed: payloadFormat === 'GZIP',
-    });
-  }
   if (payloadFormat && payloadFormat === 'GZIP') {
     headers['Content-Encoding'] = 'gzip';
   }
@@ -485,6 +479,26 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
   return { httpResponse, processedResponse };
 };
 
+// INT-7033: baseline distribution of uncompressed delivery-body sizes, keyed by
+// destType / endpointPath / workspace. Fired from proxyRequest (the live proxy-delivery path)
+// rather than prepareProxyRequest, so it carries the authoritative destType (the proxy arg), sees
+// the request's endpointPath and per-job metadata, and never fires for the /proxyTest payload-
+// comparison route (which calls prepareProxy directly and never delivers). `compressed` marks
+// deliveries already on the GZIP format.
+const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }) => {
+  const { payload, payloadFormat } = getPayloadData(body);
+  const size = getUncompressedPayloadSize(payload, payloadFormat);
+  if (size === undefined) {
+    return;
+  }
+  stats.histogram('delivery_payload_size_bytes', size, {
+    ...logger.getLogMetadata(metadata),
+    destType,
+    endpointPath: endpointPath ?? '',
+    compressed: payloadFormat === 'GZIP',
+  });
+};
+
 /**
  * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
  * note: needed for test api
@@ -492,8 +506,9 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
  * @returns
  */
 const proxyRequest = async (request, destType) => {
-  const { metadata } = request;
+  const { metadata, endpointPath, body } = request;
   const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
+  fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
   const requestOptions = {
     url: endpoint,
     data,

@@ -782,10 +782,13 @@ class Prometheus {
           'implementation',
           'compressed',
         ],
-        // Small-end-weighted so sub-1KB payloads are legible; the default Prometheus buckets are
-        // latency-scaled and collapse everything under 1KB into a single bucket.
+        // Small-end-weighted so sub-1KB payloads are legible (default Prometheus buckets are
+        // latency-scaled and collapse everything under 1KB), extended to 50MB so the large-batch
+        // tail this metric exists to size (destination body limits run to tens of MB) is not lost
+        // in a single +Inf bucket.
         buckets: [
           64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304,
+          16777216, 52428800,
         ],
       },
 

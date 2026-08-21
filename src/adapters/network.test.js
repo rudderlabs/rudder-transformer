@@ -1312,3 +1312,79 @@ describe('proxyRequest tests', () => {
     });
   });
 });
+
+describe('prepareProxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
+  beforeEach(() => {
+    stats.histogram.mockClear();
+  });
+
+  it('emits the uncompressed JSON body size with compressed=false and per-destination labels', async () => {
+    const jsonBody = { api_key: 'k', events: [{ event_type: 'Login', prop: 'x'.repeat(50) }] };
+    const request = {
+      body: { JSON: jsonBody },
+      endpoint: 'https://api2.amplitude.com/2/httpapi',
+      endpointPath: '/2/httpapi',
+      method: 'POST',
+      headers: {},
+      metadata: {
+        destinationId: 'dest-1',
+        workspaceId: 'ws-1',
+        destinationType: 'AM',
+        sourceId: 'src-1',
+      },
+    };
+
+    await prepareProxyRequest(request);
+
+    expect(stats.histogram).toHaveBeenCalledTimes(1);
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_payload_size_bytes',
+      Buffer.byteLength(JSON.stringify(jsonBody)),
+      {
+        destType: 'AM',
+        destinationId: 'dest-1',
+        workspaceId: 'ws-1',
+        sourceId: 'src-1',
+        endpointPath: '/2/httpapi',
+        compressed: false,
+      },
+    );
+  });
+
+  it('reports the pre-compression size with compressed=true for a GZIP body', async () => {
+    const rawArray = JSON.stringify([{ $token: 't', $distinct_id: 'd', $set: { plan: 'pro' } }]);
+    const request = {
+      body: { GZIP: { payload: rawArray } },
+      endpoint: 'https://api.mixpanel.com/engage',
+      endpointPath: '/engage',
+      method: 'POST',
+      headers: {},
+      metadata: { destinationId: 'dest-2', workspaceId: 'ws-2', destinationType: 'MP' },
+    };
+
+    await prepareProxyRequest(request);
+
+    expect(stats.histogram).toHaveBeenCalledTimes(1);
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_payload_size_bytes',
+      Buffer.byteLength(rawArray),
+      expect.objectContaining({
+        endpointPath: '/engage',
+        compressed: true,
+        destType: 'MP',
+        workspaceId: 'ws-2',
+      }),
+    );
+  });
+
+  it('does not emit when the body has no non-empty payload format', async () => {
+    await prepareProxyRequest({
+      body: {},
+      endpoint: 'https://example.com',
+      method: 'GET',
+      headers: {},
+    });
+
+    expect(stats.histogram).not.toHaveBeenCalled();
+  });
+});

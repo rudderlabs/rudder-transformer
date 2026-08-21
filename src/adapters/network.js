@@ -381,6 +381,24 @@ const extractPayloadForFormat = (payload, format) => {
   return extractor();
 };
 
+// INT-7033: uncompressed (pre-compression) byte size of the delivery body, per payload format.
+// Mirrors extractPayloadForFormat but returns the raw serialized length BEFORE any GZIP, so the
+// GZIP branch reports the pre-compression size (the compressed/wire size is Phase 1, INT-6923).
+const getUncompressedPayloadSize = (payload, format) => {
+  if (!payload) {
+    return undefined;
+  }
+  const serializers = {
+    JSON_ARRAY: () => payload?.batch,
+    JSON: () => JSON.stringify(payload),
+    XML: () => payload?.payload,
+    FORM: () => getFormData(payload).toString(),
+    GZIP: () => payload?.payload,
+  };
+  const serialized = serializers[format]?.();
+  return typeof serialized === 'string' ? Buffer.byteLength(serialized) : undefined;
+};
+
 /**
  * Prepares the proxy request
  * @param {*} request
@@ -392,11 +410,24 @@ const prepareProxyRequest = async (request) => {
     method,
     params,
     endpoint,
+    endpointPath,
+    metadata,
     headers: incomingHeaders = {},
     destinationConfig: config,
   } = request;
   const headers = { ...incomingHeaders };
   const { payload, payloadFormat } = getPayloadData(body);
+  // INT-7033: baseline pre-compression delivery payload size, keyed by destination / endpoint /
+  // workspace. Emitted for every proxy delivery independent of the rollout flag; `compressed`
+  // records whether this delivery ships gzipped (true today only for endpoints already on GZIP).
+  const uncompressedSize = getUncompressedPayloadSize(payload, payloadFormat);
+  if (uncompressedSize !== undefined) {
+    stats.histogram('delivery_payload_size_bytes', uncompressedSize, {
+      ...logger.getLogMetadata(metadata),
+      endpointPath: endpointPath ?? '',
+      compressed: payloadFormat === 'GZIP',
+    });
+  }
   if (payloadFormat && payloadFormat === 'GZIP') {
     headers['Content-Encoding'] = 'gzip';
   }

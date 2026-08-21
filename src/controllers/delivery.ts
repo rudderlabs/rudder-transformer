@@ -35,13 +35,18 @@ const NON_DETERMINABLE = 'Non-determinable';
 // killing the process - a worse outcome than the RangeError being guarded against. A string
 // body is passed straight through by both later steps, so the payload is serialized exactly
 // once.
-function serializeDeliveryResponse<T>(
+// Returns the response that was actually written, which is the fallback when the original could
+// not be serialized - callers need it to decide the HTTP status.
+function writeDeliveryResponse<T>(
+  ctx: Context,
   deliveryResponse: T,
   buildFallback: (reason: SerializationFailureReason) => T,
   version: 'v0' | 'v1',
-): { response: T; body: string } {
+): T {
+  let response = deliveryResponse;
+  let body: string;
   try {
-    return { response: deliveryResponse, body: JSON.stringify({ output: deliveryResponse }) };
+    body = JSON.stringify({ output: response });
   } catch (error: unknown) {
     const reason: SerializationFailureReason =
       error instanceof RangeError ? 'tooLarge' : 'unserializable';
@@ -51,15 +56,15 @@ function serializeDeliveryResponse<T>(
       error: error instanceof Error ? error.message : String(error),
     });
     stats.increment('proxy_response_serialization_failure', { version, reason });
-    const fallback = buildFallback(reason);
-    return { response: fallback, body: JSON.stringify({ output: fallback }) };
+    response = buildFallback(reason);
+    body = JSON.stringify({ output: response });
   }
-}
-
-// Koa's body setter tags a string body as `text/plain`; delivery responses must stay JSON.
-function setSerializedBody(ctx: Context, body: string) {
   ctx.body = body;
+  // Koa's body setter tags a string body as `text/plain`; delivery responses must stay JSON.
+  // This has to stay welded to the assignment above - a string body without it is a silent
+  // content-type regression on every proxy response.
   ctx.type = 'json';
+  return response;
 }
 
 export class DeliveryController {
@@ -90,13 +95,13 @@ export class DeliveryController {
         metaTO,
       );
     }
-    const { response, body } = serializeDeliveryResponse(
+    deliveryResponse = writeDeliveryResponse(
+      ctx,
       deliveryResponse,
       (reason) => DestinationPostTransformationService.buildSerializationFallbackV0(metaTO, reason),
       'v0',
     );
-    setSerializedBody(ctx, body);
-    ControllerUtility.deliveryPostProcess(ctx, response.status);
+    ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
     return ctx;
   }
@@ -128,15 +133,15 @@ export class DeliveryController {
         metaTO,
       );
     }
-    const { response, body } = serializeDeliveryResponse(
+    deliveryResponse = writeDeliveryResponse(
+      ctx,
       deliveryResponse,
       (reason) =>
         DestinationPostTransformationService.buildSerializationFallbackV1(metadata, metaTO, reason),
       'v1',
     );
-    setSerializedBody(ctx, body);
-    if (isDefinedAndNotNullAndNotEmpty(response.authErrorCategory)) {
-      ControllerUtility.deliveryPostProcess(ctx, response.status);
+    if (isDefinedAndNotNullAndNotEmpty(deliveryResponse.authErrorCategory)) {
+      ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
     } else {
       ControllerUtility.deliveryPostProcess(ctx);
     }

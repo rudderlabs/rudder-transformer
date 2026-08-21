@@ -264,24 +264,37 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
   });
 
   it.each([
-    { userIdMapping: 'id' as const, expectedIdentifiers: { id: 'user-1' } },
-    { userIdMapping: 'email' as const, expectedIdentifiers: { email: 'user-1' } },
-    { userIdMapping: 'phone' as const, expectedIdentifiers: { phone: 'user-1' } },
-    { userIdMapping: 'cio_id' as const, expectedIdentifiers: { cio_id: 'user-1' } },
+    { userIdMapping: 'id' as const, userId: 'user-1', expectedIdentifiers: { id: 'user-1' } },
+    {
+      userIdMapping: 'email' as const,
+      userId: 'user-1',
+      expectedIdentifiers: { email: 'user-1' },
+    },
+    // phone mapping is E.164-validated, so this case needs a real phone number
+    {
+      userIdMapping: 'phone' as const,
+      userId: '+15551234567',
+      expectedIdentifiers: { phone: '+15551234567' },
+    },
+    {
+      userIdMapping: 'cio_id' as const,
+      userId: 'user-1',
+      expectedIdentifiers: { cio_id: 'user-1' },
+    },
   ])(
     'maps userId to $userIdMapping for V2 person event identifiers',
-    async ({ userIdMapping, expectedIdentifiers }) => {
+    async ({ userIdMapping, userId, expectedIdentifiers }) => {
       const v2Destination = makeV2Destination({ userIdMapping });
       const integration = new Integration(v2Destination);
       const personEvents = [
-        { type: 'identify', userId: 'user-1', traits: { plan: 'pro' } },
-        { type: 'track', event: 'Order Completed', userId: 'user-1', properties: {} },
-        { type: 'page', name: 'Docs', userId: 'user-1', properties: {} },
-        { type: 'screen', event: 'Home', userId: 'user-1', properties: {} },
+        { type: 'identify', userId, traits: { plan: 'pro' } },
+        { type: 'track', event: 'Order Completed', userId, properties: {} },
+        { type: 'page', name: 'Docs', userId, properties: {} },
+        { type: 'screen', event: 'Home', userId, properties: {} },
         {
           type: 'track',
           event: 'Application Installed',
-          userId: 'user-1',
+          userId,
           properties: {},
           context: { device: { token: 'device-token', type: 'ios' } },
         },
@@ -296,30 +309,127 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
   );
 
   it.each([
+    { case: 'whitespace only', userId: '   ' },
+    { case: 'boolean', userId: true },
+    { case: 'object', userId: { id: 'user-1' } },
+  ])('fails a V2 person event when userId is a $case', async ({ userId }) => {
+    const v2Destination = makeV2Destination({ userIdMapping: 'id' });
+    const integration = new Integration(v2Destination);
+    const input = makeEventStreamInput(
+      { type: 'identify', userId, traits: { plan: 'pro' } },
+      v2Destination,
+    );
+
+    const { successPayloads, errorPayloads } = await integration.transformEvents([input]);
+    expect(successPayloads).toHaveLength(0);
+    expect(errorPayloads).toHaveLength(1);
+    expect(errorPayloads[0].error).toMatch(
+      /a non-empty string or number userId is required when userId mapping is configured/,
+    );
+  });
+
+  // CustomerIO accepts a numeric identifier, so it is forwarded unchanged (not stringified).
+  it('accepts a numeric userId for a V2 person event', async () => {
+    const v2Destination = makeV2Destination({ userIdMapping: 'id' });
+    const integration = new Integration(v2Destination);
+    const input = makeEventStreamInput(
+      { type: 'identify', userId: 12345, traits: { plan: 'pro' } },
+      v2Destination,
+    );
+
+    const { successPayloads } = await integration.transformEvents([input]);
+    expect(successPayloads).toHaveLength(1);
+    expect(successPayloads[0].body).toMatchObject({ identifiers: { id: 12345 } });
+  });
+
+  // Strict userId mapping: when userIdMapping is configured the userId is the only
+  // accepted identifier — email/anonymousId no longer act as fallbacks.
+  it.each(['id', 'email', 'phone', 'cio_id'] as const)(
+    'fails a V2 person event with no userId when userIdMapping is %s',
+    async (userIdMapping) => {
+      const v2Destination = makeV2Destination({ userIdMapping });
+      const integration = new Integration(v2Destination);
+      const input = makeEventStreamInput(
+        {
+          type: 'identify',
+          anonymousId: 'anon-1',
+          traits: { email: 'alice@example.com', plan: 'pro' },
+        },
+        v2Destination,
+      );
+
+      const { successPayloads, errorPayloads } = await integration.transformEvents([input]);
+      expect(successPayloads).toHaveLength(0);
+      expect(errorPayloads).toHaveLength(1);
+      expect(errorPayloads[0].error).toMatch(
+        /a non-empty string or number userId is required when userId mapping is configured/,
+      );
+    },
+  );
+
+  it.each([
+    { case: 'no country code', userId: '5551234567' },
+    { case: 'not a parseable number', userId: 'user-1' },
+    { case: 'unknown country code', userId: '+999999999999999' },
+  ])(
+    'fails a V2 person event when phone-mapped userId is not E.164 ($case)',
+    async ({ userId }) => {
+      const v2Destination = makeV2Destination({ userIdMapping: 'phone' });
+      const integration = new Integration(v2Destination);
+      const input = makeEventStreamInput(
+        { type: 'identify', userId, traits: { plan: 'pro' } },
+        v2Destination,
+      );
+
+      const { successPayloads, errorPayloads } = await integration.transformEvents([input]);
+      expect(successPayloads).toHaveLength(0);
+      expect(errorPayloads).toHaveLength(1);
+      expect(errorPayloads[0].error).toMatch(/Phone number is not in E.164 format/);
+    },
+  );
+
+  it('accepts a phone-mapped userId written with separators', async () => {
+    const v2Destination = makeV2Destination({ userIdMapping: 'phone' });
+    const integration = new Integration(v2Destination);
+    const input = makeEventStreamInput(
+      { type: 'identify', userId: '+1 (555) 123-4567', traits: { plan: 'pro' } },
+      v2Destination,
+    );
+
+    const { successPayloads } = await integration.transformEvents([input]);
+    expect(successPayloads).toHaveLength(1);
+    // The identifier is passed through as authored; only validation strips separators.
+    expect(successPayloads[0].body).toMatchObject({
+      identifiers: { phone: '+1 (555) 123-4567' },
+    });
+  });
+
+  // There is no legacy auto-detection any more: userIdMapping is required config for v2,
+  // so without it the event fails rather than guessing id/email/anonymous_id.
+  it.each([
     {
-      name: 'userId maps to id',
+      name: 'userId is present',
       message: { type: 'identify', userId: 'user-1', traits: { plan: 'pro' } },
-      expectedIdentifiers: { id: 'user-1' },
     },
     {
-      name: 'email maps to email when userId is absent',
+      name: 'only email is present',
       message: { type: 'identify', traits: { email: 'test@example.com', plan: 'pro' } },
-      expectedIdentifiers: { email: 'test@example.com' },
     },
     {
-      name: 'anonymousId maps to anonymous_id when userId and email are absent',
+      name: 'only anonymousId is present',
       message: { type: 'track', event: 'Anonymous Event', anonymousId: 'anon-1', properties: {} },
-      expectedIdentifiers: { anonymous_id: 'anon-1' },
     },
   ])(
-    'falls back to legacy auto-detection for V2 identifiers without userIdMapping — $name',
-    async ({ message, expectedIdentifiers }) => {
+    'fails a V2 person event when userIdMapping is not configured — $name',
+    async ({ message }) => {
       const v2Destination = makeV2Destination({ userIdMapping: undefined });
       const integration = new Integration(v2Destination);
       const input = makeEventStreamInput(message, v2Destination);
-      const { successPayloads } = await integration.transformEvents([input]);
-      expect(successPayloads).toHaveLength(1);
-      expect(successPayloads[0].body).toMatchObject({ identifiers: expectedIdentifiers });
+
+      const { successPayloads, errorPayloads } = await integration.transformEvents([input]);
+      expect(successPayloads).toHaveLength(0);
+      expect(errorPayloads).toHaveLength(1);
+      expect(errorPayloads[0].error).toMatch(/userIdMapping not found in Configs/);
     },
   );
 

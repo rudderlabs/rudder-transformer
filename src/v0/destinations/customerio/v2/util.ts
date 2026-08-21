@@ -2,11 +2,16 @@ import get from 'get-value';
 import set from 'set-value';
 import validator from 'validator';
 import btoa from 'btoa';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  isDefinedNotNullNotEmpty,
+} from '@rudderstack/integrations-lib';
 import {
   constructPayload,
   getFieldValueFromMessage,
   isAppleFamily,
+  isValidE164PhoneNumber,
   validateEventName,
 } from '../../../util';
 import { populateSpecedTraits } from '../util';
@@ -31,21 +36,31 @@ const personIdentifiers = (
   destination: CustomerIODestination,
 ): CustomerIOV2Identifiers => {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
-  const email = getFieldValueFromMessage(message, 'email');
   const { userIdMapping } = destination.Config;
-  if (userIdMapping && userId) {
-    return { [userIdMapping]: userId };
+
+  // Strict mapping: the userId is the only accepted identifier and it always lands on
+  // the configured key. There is deliberately no email/anonymousId fallback — silently
+  // identifying a person by a different key than the one configured would point the
+  // event at the wrong Customer.io profile. userIdMapping is required config for v2 (the
+  // destination schema enforces it conditionally on apiVersion), so a missing value is a
+  // misconfiguration rather than a bad event.
+  if (!userIdMapping) {
+    throw new ConfigurationError('userIdMapping not found in Configs');
   }
-  if (userId) {
-    return { id: userId };
+  // CustomerIO accepts an identifier as a string or a number, so both pass through as-is;
+  // anything else (or a blank/whitespace-only string) is no use as a lookup key.
+  if (
+    !(typeof userId === 'string' || typeof userId === 'number') ||
+    !isDefinedNotNullNotEmpty(userId)
+  ) {
+    throw new InstrumentationError(
+      `a non-empty string or number userId is required when userId mapping is configured as \`${userIdMapping}\``,
+    );
   }
-  if (email) {
-    return { email: String(email) };
+  if (userIdMapping === 'phone' && !isValidE164PhoneNumber(String(userId))) {
+    throw new InstrumentationError('Phone number is not in E.164 format.');
   }
-  if (message.anonymousId) {
-    return { anonymous_id: message.anonymousId };
-  }
-  throw new InstrumentationError('userId, email or anonymousId is required');
+  return { [userIdMapping]: userId };
 };
 
 // Build the attributes object from speced + free-form traits. Reuses v1's

@@ -28,6 +28,7 @@ const {
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
+const { parsePhoneNumberFromString } = require('libphonenumber-js');
 const { shouldGroupByDestinationConfig } = require('../../util/utils');
 const { sandboxedApplyCustomMappings } = require('../../util/customMappings/sandboxClient');
 const logger = require('../../logger');
@@ -1948,6 +1949,27 @@ const validatePhoneWithCountryCode = (phone) => {
 };
 
 /**
+ * Checks whether a phone number is in E.164 format, using libphonenumber-js to parse it.
+ * Non-numeric separators (spaces, hyphens, parentheses) are stripped before parsing, so the
+ * number must otherwise already carry a leading `+` and a valid country code.
+ * @param {*} phoneNumber
+ * @returns {boolean} true when the sanitized number round-trips to itself in E.164
+ */
+const isValidE164PhoneNumber = (phoneNumber) => {
+  try {
+    // Remove all non-numeric characters from the phone number like spaces, hyphens, etc.
+    const sanitizedPhoneNumber = String(phoneNumber).replace(/[^\d+]/g, '');
+    const parsedNumber = parsePhoneNumberFromString(sanitizedPhoneNumber);
+    // Check if the number is valid and properly formatted in E.164.
+    return !!parsedNumber && parsedNumber.format('E.164') === sanitizedPhoneNumber;
+  } catch (error) {
+    // If parsing fails, it's not a valid E.164 number, i.e doesn't start with '+' and country code
+    logger.debug('Error parsing phone number', error);
+    return false;
+  }
+};
+
+/**
  * checks for hybrid mode
  * @param {*} Config
  * @returns
@@ -2575,6 +2597,7 @@ module.exports = {
   refinePayload,
   validateEventName,
   validatePhoneWithCountryCode,
+  isValidE164PhoneNumber,
   getEventReqMetadata,
   isHybridModeEnabled,
   getEventType,

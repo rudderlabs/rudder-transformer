@@ -1174,7 +1174,7 @@ export const dataV2 = [
   },
   {
     name: 'customerio',
-    description: 'v2: track event falls back to email identifier when userId is empty',
+    description: 'v2: track event with an empty userId is rejected (no email fallback)',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1219,34 +1219,20 @@ export const dataV2 = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://track.customer.io/api/v2/batch',
-                endpointPath: 'v2/batch',
-                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
-                params: {},
-                body: {
-                  JSON: {
-                    batch: [
-                      {
-                        type: 'person',
-                        action: 'event',
-                        identifiers: { email: 'test@rudderstack.com' },
-                        name: 'test track event',
-                        attributes: { user_actual_role: 'system_admin' },
-                        timestamp: 1571051718,
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
               metadata: [{ jobId: 34, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              batched: false,
+              statusCode: 400,
+              error:
+                'a non-empty string or number userId is required when userId mapping is configured as `id`',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
               destination: {
                 Config: {
                   datacenter: 'US',
@@ -1256,8 +1242,6 @@ export const dataV2 = [
                   userIdMapping: 'id',
                 },
               },
-              batched: true,
-              statusCode: 200,
             },
           ],
         },
@@ -1578,7 +1562,7 @@ export const dataV2 = [
   {
     name: 'customerio',
     description:
-      'v2: Application Installed with missing userId/email or device token falls back to a track event',
+      'v2: Application Installed without a userId is rejected; without a device token it falls back to a track event',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1590,7 +1574,7 @@ export const dataV2 = [
         body: {
           input: [
             {
-              // no userId/email — falls back to a track event identified by anonymous_id
+              // no userId — rejected: anonymousId is no longer a fallback identifier
               message: {
                 anonymousId: '7e32188a4dab669f',
                 channel: 'mobile',
@@ -1674,14 +1658,6 @@ export const dataV2 = [
                       {
                         type: 'person',
                         action: 'event',
-                        identifiers: { anonymous_id: '7e32188a4dab669f' },
-                        name: 'Application Installed',
-                        attributes: { review_id: 'r1', product_id: 'p1', rating: 2 },
-                        timestamp: 1578564113,
-                      },
-                      {
-                        type: 'person',
-                        action: 'event',
                         identifiers: { id: '12345' },
                         name: 'Application Installed',
                         attributes: { review_id: 'r1', product_id: 'p1', rating: 2 },
@@ -1695,10 +1671,7 @@ export const dataV2 = [
                 },
                 files: {},
               },
-              metadata: [
-                { jobId: 39, userId: 'u1', workspaceId: 'ws-cio-v2' },
-                { jobId: 40, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              ],
+              metadata: [{ jobId: 40, userId: 'u1', workspaceId: 'ws-cio-v2' }],
               destination: {
                 Config: {
                   datacenter: 'US',
@@ -1711,6 +1684,31 @@ export const dataV2 = [
               batched: true,
               statusCode: 200,
             },
+            {
+              metadata: [{ jobId: 39, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              batched: false,
+              statusCode: 400,
+              error:
+                'a non-empty string or number userId is required when userId mapping is configured as `id`',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdMapping: 'id',
+                },
+              },
+            },
           ],
         },
       },
@@ -1718,7 +1716,7 @@ export const dataV2 = [
   },
   {
     name: 'customerio',
-    description: 'v2: screen event with anonymousId maps to anonymous_id identifier',
+    description: 'v2: screen event with only an anonymousId is rejected (no anonymous_id fallback)',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1762,34 +1760,19 @@ export const dataV2 = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://track.customer.io/api/v2/batch',
-                endpointPath: 'v2/batch',
-                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
-                params: {},
-                body: {
-                  JSON: {
-                    batch: [
-                      {
-                        type: 'person',
-                        action: 'screen',
-                        identifiers: { anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1' },
-                        name: 'Viewed Home Screen Screen',
-                        attributes: { plan: 'enterprise' },
-                        timestamp: 1571051718,
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
               metadata: [{ jobId: 38, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              statusCode: 400,
+              error:
+                'a non-empty string or number userId is required when userId mapping is configured as `id`',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
               destination: {
                 Config: {
                   datacenter: 'US',
@@ -1799,8 +1782,7 @@ export const dataV2 = [
                   userIdMapping: 'id',
                 },
               },
-              batched: true,
-              statusCode: 200,
+              batched: false,
             },
           ],
         },
@@ -2371,7 +2353,7 @@ export const dataV2 = [
   {
     name: 'customerio',
     description:
-      'v2: numeric userId/anonymousId/previousId/groupId are accepted and passed through unstringified',
+      'v2: numeric userId/previousId/groupId are accepted and passed through unstringified',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -2490,13 +2472,6 @@ export const dataV2 = [
                       },
                       {
                         type: 'person',
-                        action: 'event',
-                        identifiers: { anonymous_id: 987654 },
-                        name: 'Product Viewed',
-                        attributes: { plan: 'enterprise' },
-                      },
-                      {
-                        type: 'person',
                         action: 'merge',
                         primary: { id: 432 },
                         secondary: { id: 306 },
@@ -2520,7 +2495,6 @@ export const dataV2 = [
               },
               metadata: [
                 { jobId: 45, userId: 'u1', workspaceId: 'ws-cio-v2' },
-                { jobId: 46, userId: 'u1', workspaceId: 'ws-cio-v2' },
                 { jobId: 47, userId: 'u1', workspaceId: 'ws-cio-v2' },
                 { jobId: 48, userId: 'u1', workspaceId: 'ws-cio-v2' },
               ],
@@ -2535,6 +2509,32 @@ export const dataV2 = [
               },
               batched: true,
               statusCode: 200,
+            },
+            {
+              // anonymousId-only: rejected, since only userId feeds the mapped identifier
+              metadata: [{ jobId: 46, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              batched: false,
+              statusCode: 400,
+              error:
+                'a non-empty string or number userId is required when userId mapping is configured as `id`',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdMapping: 'id',
+                },
+              },
             },
           ],
         },

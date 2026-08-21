@@ -2,9 +2,24 @@ import { authHeader1, secret1 } from '../maskedSecrets';
 import {
   buildProcessorInput,
   expectedEcommerceOutput,
+  identifyMessage,
   missingRestApiKeyDestination,
   trackMessage,
 } from '../common';
+
+/**
+ * Braze answers a malformed address with "The value provided for the email field is not a valid
+ * email." at delivery time. These cases pin the check to transform time so the event is aborted
+ * with an instrumentation error and never reaches delivery.
+ */
+const invalidEmailStatTags = {
+  destType: 'BRAZE',
+  errorCategory: 'dataValidation',
+  errorType: 'instrumentation',
+  feature: 'processor',
+  implementation: 'native',
+  module: 'destination',
+};
 export const data = [
   {
     name: 'braze',
@@ -5002,6 +5017,103 @@ export const data = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      'identify with a malformed email trait: abort at transform time instead of letting Braze reject the address on delivery',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(
+      identifyMessage({ email: 'not-an-email', firstName: 'Mickey', userId: 'user-001' }),
+    ),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error: 'Invalid email, the email provided is not a valid email address',
+            statTags: invalidEmailStatTags,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      'track with a malformed email trait: the user-attributes path is validated too, not just identify',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput({
+      ...trackMessage('Product Viewed', { product_id: 'p-1' }),
+      context: {
+        library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
+        traits: { email: 'mickey@disney@com', firstName: 'Mickey' },
+      },
+    }),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error: 'Invalid email, the email provided is not a valid email address',
+            statTags: invalidEmailStatTags,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description:
+      'identify with a valid uppercase email: still accepted and lowercased, so the new check does not over-reject',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: buildProcessorInput(identifyMessage({ email: 'MICKEY+news@Disney.com' })),
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpointPath: 'users/track',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: authHeader1,
+              },
+              params: {},
+              body: {
+                JSON: {
+                  attributes: [
+                    {
+                      email: 'mickey+news@disney.com',
+                      external_id: 'user-001',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'user-001',
             },
           },
         ],

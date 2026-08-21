@@ -55,7 +55,6 @@ describe('deliver() — batching-framework delivery flag', () => {
   beforeEach(() => {
     jest.restoreAllMocks();
     process.env = { ...ORIGINAL_ENV };
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS = WORKSPACE;
     delete process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS;
   });
 

@@ -19,6 +19,7 @@ import {
   handleReservedProperties,
   getEndpointFromConfig,
   formatGender,
+  formatEmail,
   validateDestinationConfig,
 } from './util';
 import type {
@@ -176,11 +177,7 @@ function getUserAttributesObject(
           value = formatGender(value);
           break;
         case 'email':
-          if (typeof value === 'string') {
-            value = value.toLowerCase();
-          } else if (isDefinedAndNotNull(value)) {
-            throw new InstrumentationError('Invalid email, email must be a valid string');
-          }
+          value = formatEmail(value);
           break;
         default:
           break;

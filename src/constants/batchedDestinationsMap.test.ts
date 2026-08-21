@@ -13,9 +13,10 @@ describe('isBatchingFrameworkDeliveryEnabled', () => {
 
   beforeEach(() => {
     process.env = { ...ORIGINAL_ENV };
-    delete process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS;
     delete process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS;
     delete process.env.ITERABLE_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS;
+    delete process.env.NON_GA_DESTINATION_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS;
+    delete process.env.NON_GA_DESTINATION_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS;
   });
 
   afterAll(() => {
@@ -35,39 +36,35 @@ describe('isBatchingFrameworkDeliveryEnabled', () => {
     expect(isBatchingFrameworkDeliveryEnabled('iterable_audience', 'ws-1')).toBe(false);
   });
 
-  it('enables delivery for a named workspace once both flags are set', () => {
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS = 'ws-1,ws-2';
+  it('enables delivery for a named workspace once the delivery flag is set', () => {
     process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = 'ws-1';
     const { isBatchingFrameworkDeliveryEnabled } = load();
     expect(isBatchingFrameworkDeliveryEnabled('customerio', 'ws-1')).toBe(true);
-    // ws-2 is on the framework transform but has not opted delivery in.
+    // CustomerIO is GA for the framework transform, but ws-2 has not opted delivery in.
     expect(isBatchingFrameworkDeliveryEnabled('customerio', 'ws-2')).toBe(false);
   });
 
   it('refuses delivery when the workspace is not on the batching-framework transform', () => {
     // The dangerous case: delivery on, transform off. The payload would have been built by the
     // legacy processRouterDest, so the framework must not interpret its response.
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = 'ALL';
+    process.env.NON_GA_DESTINATION_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = 'ALL';
     const { isBatchingFrameworkDeliveryEnabled } = load();
-    expect(isBatchingFrameworkDeliveryEnabled('customerio', 'ws-1')).toBe(false);
+    expect(isBatchingFrameworkDeliveryEnabled('non_ga_destination', 'ws-1')).toBe(false);
   });
 
-  it("honours 'ALL' on both flags", () => {
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS = 'ALL';
+  it("honours 'ALL' on the delivery flag", () => {
     process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = 'ALL';
     const { isBatchingFrameworkDeliveryEnabled } = load();
     expect(isBatchingFrameworkDeliveryEnabled('customerio', 'any-workspace')).toBe(true);
   });
 
   it('is case-insensitive on destType and trims workspace ids', () => {
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS = 'ws-1';
     process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = ' ws-1 , ws-9 ';
     const { isBatchingFrameworkDeliveryEnabled } = load();
     expect(isBatchingFrameworkDeliveryEnabled('CUSTOMERIO', ' ws-1 ')).toBe(true);
   });
 
   it('treats an empty env var as off', () => {
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS = 'ALL';
     process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = '  ,  ';
     const { isBatchingFrameworkDeliveryEnabled } = load();
     expect(isBatchingFrameworkDeliveryEnabled('customerio', 'ws-1')).toBe(false);

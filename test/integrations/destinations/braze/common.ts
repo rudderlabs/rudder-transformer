@@ -61,6 +61,25 @@ export const trackMessage = (event: string, properties: Record<string, unknown>)
   properties,
 });
 
+/** Identified web identify event carrying the given traits. */
+export const identifyMessage = (traits: Record<string, unknown>) => ({
+  anonymousId: ANON_ID,
+  channel: 'web',
+  context: {
+    library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
+    traits,
+  },
+  integrations: { All: true },
+  messageId: 'msg-identify-001',
+  originalTimestamp: TIMESTAMP,
+  receivedAt: TIMESTAMP,
+  sentAt: TIMESTAMP,
+  timestamp: TIMESTAMP,
+  type: 'identify',
+  userId: 'user-001',
+  traits,
+});
+
 const STANDARD_HEADERS = {
   'Content-Type': 'application/json',
   Accept: 'application/json',

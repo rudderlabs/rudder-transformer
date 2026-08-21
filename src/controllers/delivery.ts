@@ -4,10 +4,7 @@ import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DeliveryTestService } from '../services/delivertTest/deliveryTest';
-import {
-  DestinationPostTransformationService,
-  SerializationFailureReason,
-} from '../services/destination/postTransformation';
+import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import { MiscService } from '../services/misc';
 import {
   DeliveryV0Response,
@@ -15,6 +12,7 @@ import {
   ProcessorTransformationOutput,
   ProxyV0Request,
   ProxyV1Request,
+  SerializationFailureReason,
   FixMe,
 } from '../types';
 import tags from '../v0/util/tags';

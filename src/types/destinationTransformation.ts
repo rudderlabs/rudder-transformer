@@ -260,6 +260,13 @@ export type DeliveryV1Response = {
 };
 
 /**
+ * Why a delivery response could not be handed to JSON.stringify.
+ * `tooLarge` is a RangeError past V8's ~512MB string ceiling; `unserializable` is anything
+ * else it rejects, in practice a circular structure.
+ */
+export type SerializationFailureReason = 'tooLarge' | 'unserializable';
+
+/**
  * Interface for response parameters in network handlers
  */
 export interface ResponseHandlerParams {

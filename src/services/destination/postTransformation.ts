@@ -12,6 +12,7 @@ import {
   ProcessorTransformationResponse,
   ProxyMetdata,
   RouterTransformationResponse,
+  SerializationFailureReason,
   UserDeletionResponse,
   FixMe,
 } from '../../types';
@@ -34,8 +35,6 @@ import logger from '../../logger';
 // Either way the response would otherwise crash mid-serialization and reach rudder-server as a
 // body it can't parse. These bounded fallbacks are built purely from the request's own
 // (always-small) metadata, never from the response that triggered the failure.
-export type SerializationFailureReason = 'tooLarge' | 'unserializable';
-
 const SERIALIZATION_FAILURE_MESSAGES: Record<SerializationFailureReason, string> = {
   tooLarge: 'Destination response payload was too large to serialize',
   unserializable: 'Destination response payload could not be serialized',

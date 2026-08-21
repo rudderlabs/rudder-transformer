@@ -1312,3 +1312,89 @@ describe('proxyRequest tests', () => {
     });
   });
 });
+
+describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
+  beforeEach(() => {
+    axios.mockClear();
+    stats.histogram.mockClear();
+    axios.mockResolvedValue({ status: 200, data: {} });
+  });
+
+  it('emits the uncompressed JSON body size, with destType from the proxy arg (not metadata)', async () => {
+    const jsonBody = { api_key: 'k', events: [{ event_type: 'Login', prop: 'x'.repeat(50) }] };
+    const request = {
+      body: { JSON: jsonBody },
+      endpoint: 'https://api2.amplitude.com/2/httpapi',
+      endpointPath: '/2/httpapi',
+      method: 'POST',
+      headers: {},
+      // No destType/destinationType in metadata: destType must come from the proxyRequest arg.
+      metadata: { destinationId: 'dest-1', workspaceId: 'ws-1', sourceId: 'src-1' },
+    };
+
+    await proxyRequest(request, 'AM');
+
+    expect(stats.histogram).toHaveBeenCalledTimes(1);
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_payload_size_bytes',
+      Buffer.byteLength(JSON.stringify(jsonBody)),
+      {
+        destType: 'AM',
+        destinationId: 'dest-1',
+        workspaceId: 'ws-1',
+        sourceId: 'src-1',
+        endpointPath: '/2/httpapi',
+        compressed: false,
+      },
+    );
+  });
+
+  it('reports the pre-compression size with compressed=true for a GZIP body', async () => {
+    const rawArray = JSON.stringify([{ $token: 't', $distinct_id: 'd', $set: { plan: 'pro' } }]);
+    const request = {
+      body: { GZIP: { payload: rawArray } },
+      endpoint: 'https://api.mixpanel.com/engage',
+      endpointPath: '/engage',
+      method: 'POST',
+      headers: {},
+      metadata: { destinationId: 'dest-2', workspaceId: 'ws-2' },
+    };
+
+    await proxyRequest(request, 'MP');
+
+    expect(stats.histogram).toHaveBeenCalledTimes(1);
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_payload_size_bytes',
+      Buffer.byteLength(rawArray),
+      expect.objectContaining({
+        destType: 'MP',
+        endpointPath: '/engage',
+        compressed: true,
+        workspaceId: 'ws-2',
+      }),
+    );
+  });
+
+  it('does not fire from prepareProxyRequest (the /proxyTest path never delivers)', async () => {
+    await prepareProxyRequest({
+      body: { JSON: { a: 1 } },
+      endpoint: 'https://example.com',
+      endpointPath: '/x',
+      method: 'POST',
+      headers: {},
+      metadata: { workspaceId: 'ws-1' },
+    });
+
+    expect(stats.histogram).not.toHaveBeenCalled();
+  });
+
+  it('does not emit or throw when the body has no non-empty payload format', async () => {
+    const response = await proxyRequest(
+      { body: {}, endpoint: 'https://example.com', method: 'POST', headers: {} },
+      'AM',
+    );
+
+    expect(response).toBeDefined();
+    expect(stats.histogram).not.toHaveBeenCalled();
+  });
+});

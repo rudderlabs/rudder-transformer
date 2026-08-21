@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.148.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.148.0...v1.148.1) (2026-08-20)
+
+
+### Bug Fixes
+
+* **google_adwords_offline_conversions:** retry transient partial-failure conversions ([#5499](https://github.com/rudderlabs/rudder-transformer/issues/5499)) ([2632402](https://github.com/rudderlabs/rudder-transformer/commit/2632402b8b5a1f06ee2b19ac8036246fd215753c))
+
 ## [1.148.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.147.0...v1.148.0) (2026-08-19)
 
 

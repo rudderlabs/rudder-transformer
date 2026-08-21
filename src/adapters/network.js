@@ -299,12 +299,14 @@ const httpPATCH = async (url, data, options, statTags = {}, disableMetrics = fal
 const getPayloadData = (body) => {
   let payload;
   let payloadFormat;
-  Object.entries(body).forEach(([key, value]) => {
+  // for...of (not forEach) so static analysis sees payloadFormat as a string, not just its
+  // initial undefined — an assignment inside a forEach callback is invisible to that inference.
+  for (const [key, value] of Object.entries(body)) {
     if (!lodash.isEmpty(value)) {
       payload = value;
       payloadFormat = key;
     }
-  });
+  }
   return { payload, payloadFormat };
 };
 

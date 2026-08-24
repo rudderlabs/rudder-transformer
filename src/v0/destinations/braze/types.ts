@@ -5,9 +5,7 @@ import {
   Metadata,
 } from '../../../types';
 import {
-  BatchedRequest,
   BatchRequestOutput,
-  MultiBatchRequestOutput,
   ProcessorTransformationOutput,
   ProxyMetdata,
   ProxyV1Request,
@@ -159,8 +157,8 @@ export interface BrazeError {
 
 // Populated on the metadata of `/users/track` router outputs so the v1
 // networkHandler can correlate Braze's per-item `errors[]` entries (keyed by
-// input_array + index) back to the originating job. Set in `processBatch`
-// when the outgoing chunk is assembled.
+// input_array + index) back to the originating job. Set when the outgoing
+// chunk is assembled.
 //
 // Design-doc contract (Braze partial-error handling, Option 1, Section 4):
 // - Every index field is an array. Length-1 arrays for the standard single-
@@ -328,12 +326,6 @@ export type BrazeBatchHeaders = {
 
 type BrazeBatchParams = Record<string, unknown>;
 
-export type BrazeBatchRequest = BatchedRequest<
-  BrazeBatchPayload,
-  BrazeBatchHeaders,
-  BrazeBatchParams
->;
-
 export type BrazeTransformedEvent = {
   statusCode: number;
   batchedRequest?: ProcessorTransformationOutput;
@@ -344,22 +336,12 @@ export type BrazeTransformedEvent = {
   authErrorCategory?: string;
 };
 
-// `processBatch` emits either shape depending on `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS`:
-// - OFF (default): a single `MultiBatchRequestOutput` per invocation, its
-//   `batchedRequest` an array of every outgoing HTTP request across track/
-//   subscription/merge, and a flat success-metadata list — matches the
-//   pre-INT-6808 shape callers still expect.
-// - ON: one `BatchRequestOutput` per outgoing HTTP request, each carrying
-//   its scoped metadata slice and (for track chunks) per-metadata `destInfo`
-//   positional maps consumed by the v1 networkHandler.
+// Braze emits one `BatchRequestOutput` per outgoing HTTP request. Track
+// outputs carry scoped metadata with per-metadata `destInfo` positional maps
+// consumed by the v1 networkHandler; failures and filtered events pass through
+// as `BrazeTransformedEvent`.
 export type BrazeBatchResponse =
   | BatchRequestOutput<BrazeBatchPayload, BrazeBatchHeaders, BrazeBatchParams, BrazeDestination>
-  | MultiBatchRequestOutput<
-      BrazeBatchPayload,
-      BrazeBatchHeaders,
-      BrazeBatchParams,
-      BrazeDestination
-    >
   | BrazeTransformedEvent;
 
 // Delete user types

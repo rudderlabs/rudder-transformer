@@ -1,4 +1,4 @@
-import { authHeader1, secret1 } from '../maskedSecrets';
+import { secret1 } from '../maskedSecrets';
 import {
   mockSuccessfulBatchedIdentify,
   mockFnsWithBatchedIdentifyDisabled,
@@ -138,54 +138,64 @@ export const identityResolution = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      attributes: [
-                        {
-                          external_id: 'user123',
-                          email: 'test@example.com',
-                          first_name: 'John',
-                          last_name: 'Doe',
-                        },
-                        {
-                          external_id: 'user456',
-                          email: 'test2@example.com',
-                          first_name: 'Jane',
-                          last_name: 'Smith',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: 'Bearer braze1',
                 },
-              ],
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        email: 'test@example.com',
+                        first_name: 'John',
+                        last_name: 'Doe',
+                        external_id: 'user123',
+                      },
+                      {
+                        email: 'test2@example.com',
+                        first_name: 'Jane',
+                        last_name: 'Smith',
+                        external_id: 'user456',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                endpointPath: 'users/track',
+              },
               metadata: [
-                { jobId: 1, userId: 'u1' },
-                { jobId: 2, userId: 'u2' },
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  destInfo: {
+                    attributesIndices: [0],
+                  },
+                },
+                {
+                  jobId: 2,
+                  userId: 'u2',
+                  destInfo: {
+                    attributesIndices: [1],
+                  },
+                },
               ],
               batched: true,
               statusCode: 200,
               destination: {
                 hasDynamicConfig: false,
                 Config: {
-                  restApiKey: secret1,
+                  restApiKey: 'braze1',
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'eu-01',
@@ -286,45 +296,51 @@ export const identityResolution = [
         body: {
           output: [
             {
-              batchedRequest: [
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: 'Bearer braze1',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        email: 'test@example.com',
+                        first_name: 'John',
+                        last_name: 'Doe',
+                        external_id: 'user123',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                endpointPath: 'users/track',
+              },
+              metadata: [
                 {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
+                  jobId: 1,
+                  userId: 'u1',
+                  destInfo: {
+                    attributesIndices: [0],
                   },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      attributes: [
-                        {
-                          external_id: 'user123',
-                          email: 'test@example.com',
-                          first_name: 'John',
-                          last_name: 'Doe',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
                 },
               ],
-              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
                 hasDynamicConfig: false,
                 Config: {
-                  restApiKey: secret1,
+                  restApiKey: 'braze1',
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'eu-01',
@@ -479,54 +495,64 @@ export const identityResolution = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      attributes: [
-                        {
-                          external_id: 'user123',
-                          email: 'test@example.com',
-                          first_name: 'John',
-                          last_name: 'Doe',
-                        },
-                        {
-                          external_id: 'user456',
-                          email: 'test2@example.com',
-                          first_name: 'Jane',
-                          last_name: 'Smith',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: 'Bearer braze1',
                 },
-              ],
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        email: 'test@example.com',
+                        first_name: 'John',
+                        last_name: 'Doe',
+                        external_id: 'user123',
+                      },
+                      {
+                        email: 'test2@example.com',
+                        first_name: 'Jane',
+                        last_name: 'Smith',
+                        external_id: 'user456',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                endpointPath: 'users/track',
+              },
               metadata: [
-                { jobId: 1, userId: 'u1' },
-                { jobId: 2, userId: 'u2' },
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  destInfo: {
+                    attributesIndices: [0],
+                  },
+                },
+                {
+                  jobId: 2,
+                  userId: 'u2',
+                  destInfo: {
+                    attributesIndices: [1],
+                  },
+                },
               ],
               batched: true,
               statusCode: 200,
               destination: {
                 hasDynamicConfig: false,
                 Config: {
-                  restApiKey: secret1,
+                  restApiKey: 'braze1',
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'eu-01',
@@ -681,54 +707,64 @@ export const identityResolution = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      attributes: [
-                        {
-                          external_id: 'user123',
-                          email: 'test@example.com',
-                          first_name: 'John',
-                          last_name: 'Doe',
-                        },
-                        {
-                          external_id: 'user456',
-                          email: 'test2@example.com',
-                          first_name: 'Jane',
-                          last_name: 'Smith',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: 'Bearer braze1',
                 },
-              ],
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        email: 'test@example.com',
+                        first_name: 'John',
+                        last_name: 'Doe',
+                        external_id: 'user123',
+                      },
+                      {
+                        email: 'test2@example.com',
+                        first_name: 'Jane',
+                        last_name: 'Smith',
+                        external_id: 'user456',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                endpointPath: 'users/track',
+              },
               metadata: [
-                { jobId: 1, userId: 'u1' },
-                { jobId: 2, userId: 'u2' },
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  destInfo: {
+                    attributesIndices: [0],
+                  },
+                },
+                {
+                  jobId: 2,
+                  userId: 'u2',
+                  destInfo: {
+                    attributesIndices: [1],
+                  },
+                },
               ],
               batched: true,
               statusCode: 200,
               destination: {
                 hasDynamicConfig: false,
                 Config: {
-                  restApiKey: secret1,
+                  restApiKey: 'braze1',
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'eu-01',

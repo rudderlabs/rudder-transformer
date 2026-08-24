@@ -65,50 +65,35 @@ import type {
 } from './types';
 import { isDateLike, isHubSpotExternalIdInfo, isHubSpotSearchResponse } from './types';
 
+const UNSUPPORTED_LEGACY_AUTH_ERROR =
+  'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.';
+
 /**
  * validate destination config and check for existence of data
  * @param {*} param0
  */
 const validateDestinationConfig = ({ Config }: HubSpotDestination): ConfigurationError | void => {
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // NEW API
-    if (!Config.accessToken) {
-      throw new ConfigurationError('Access Token not found. Aborting');
-    }
-  } else {
-    // Legacy API
-    if (!Config.hubID) {
-      throw new ConfigurationError('Hub ID not found. Aborting');
-    }
-    if (!Config.apiKey) {
-      throw new ConfigurationError('API Key not found. Aborting');
-    }
+  const { authorizationType } = Config as { authorizationType?: string };
+  if (authorizationType === 'legacyApiKey') {
+    throw new ConfigurationError(UNSUPPORTED_LEGACY_AUTH_ERROR);
+  }
+
+  if (!Config.accessToken) {
+    throw new ConfigurationError('Access Token not found. Aborting');
   }
 };
 
 /**
- * Adds HubSpot authentication details (headers/params) to a response-like object.
- * Works for both Private Apps (access token) and legacy API key auth.
+ * Adds HubSpot Private Apps authorization header to a response-like object.
  */
-const addHsAuthentication = <
-  T extends { headers?: Record<string, unknown>; params?: Record<string, unknown> },
->(
+const addHsAuthorisationHeader = <T extends { headers?: Record<string, unknown> }>(
   response: T,
   Config: HubSpotDestination['Config'],
 ): T => {
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...(response.headers || {}),
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // Legacy API Key
-    response.params = {
-      ...(response.params || {}),
-      hapikey: Config.apiKey,
-    };
-  }
+  response.headers = {
+    ...(response.headers || {}),
+    Authorization: `Bearer ${Config.accessToken}`,
+  };
   return response;
 };
 
@@ -151,48 +136,28 @@ const getProperties = async (
   metadata: Metadata,
 ): Promise<HubSpotPropertyMap> => {
   let hubspotPropertyMap: HubSpotPropertyMap = {};
-  let hubspotPropertyMapResponse;
   const { Config } = destination;
-
-  // select API authorization type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    const requestOptions = {
+  const requestOptions = addHsAuthorisationHeader(
+    {
       headers: {
         'Content-Type': JSON_MIME_TYPE,
-        Authorization: `Bearer ${Config.accessToken}`,
       },
-    };
-    hubspotPropertyMapResponse = await httpGET(
-      `${BASE_ENDPOINT}${CONTACT_PROPERTY_MAP_ENDPOINT_PATH}`,
-      requestOptions,
-      {
-        destType: DESTINATION,
-        feature: 'transformation',
-        endpointPath: CONTACT_PROPERTY_MAP_ENDPOINT_PATH,
-        requestMethod: 'GET',
-        module: 'router',
-        metadata,
-      },
-    );
-    hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
-  } else {
-    // API Key (hapikey)
-    const url = `${BASE_ENDPOINT}${CONTACT_PROPERTY_MAP_ENDPOINT_PATH}?hapikey=${Config.apiKey}`;
-    hubspotPropertyMapResponse = await httpGET(
-      url,
-      {},
-      {
-        destType: DESTINATION,
-        feature: 'transformation',
-        endpointPath: `/properties/v1/contacts/properties?hapikey`,
-        requestMethod: 'GET',
-        module: 'router',
-        metadata,
-      },
-    );
-    hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
-  }
+    },
+    Config,
+  );
+  const hubspotPropertyMapHttpResponse = await httpGET(
+    `${BASE_ENDPOINT}${CONTACT_PROPERTY_MAP_ENDPOINT_PATH}`,
+    requestOptions,
+    {
+      destType: DESTINATION,
+      feature: 'transformation',
+      endpointPath: CONTACT_PROPERTY_MAP_ENDPOINT_PATH,
+      requestMethod: 'GET',
+      module: 'router',
+      metadata,
+    },
+  );
+  const hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapHttpResponse);
 
   if (hubspotPropertyMapResponse.status !== 200) {
     throw new NetworkError(
@@ -462,41 +427,28 @@ const searchContacts = async (
   };
 
   const endpointPath = '/contacts/search';
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    const requestOptions = {
+  const requestOptions = addHsAuthorisationHeader(
+    {
       headers: {
         'Content-Type': JSON_MIME_TYPE,
-        Authorization: `Bearer ${Config.accessToken}`,
       },
-    };
-    searchContactsResponse = await httpPOST(
-      `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH}`,
-      requestData,
-      requestOptions,
-      {
-        destType: DESTINATION,
-        feature: 'transformation',
-        endpointPath,
-        requestMethod: 'POST',
-        module: 'router',
-        metadata,
-      },
-    );
-    searchContactsResponse = processAxiosResponse(searchContactsResponse);
-  } else {
-    // API Key
-    const url = `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH}?hapikey=${Config.apiKey}`;
-    searchContactsResponse = await httpPOST(url, requestData, {
+    },
+    Config,
+  );
+  searchContactsResponse = await httpPOST(
+    `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_CONTACT_ENDPOINT_PATH}`,
+    requestData,
+    requestOptions,
+    {
       destType: DESTINATION,
       feature: 'transformation',
       endpointPath,
       requestMethod: 'POST',
       module: 'router',
       metadata,
-    });
-    searchContactsResponse = processAxiosResponse(searchContactsResponse);
-  }
+    },
+  );
+  searchContactsResponse = processAxiosResponse(searchContactsResponse);
 
   if (searchContactsResponse.status !== 200) {
     throw new NetworkError(
@@ -648,20 +600,13 @@ const performHubSpotSearch = async (
   let checkAfter: number | string = 1;
   const searchResults: HubSpotContactRecord[] = [];
   const requestData = reqdata;
-  const { Config } = destination;
 
-  const endpoint = `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_ALL_OBJECTS_ENDPOINT_PATH.replace(
+  const url = `${BASE_ENDPOINT}${IDENTIFY_CRM_SEARCH_ALL_OBJECTS_ENDPOINT_PATH.replace(
     ':objectType',
     objectType,
   )}`;
   const endpointPath = `objects/:objectType/search`;
-
-  const url =
-    Config.authorizationType === 'newPrivateAppApi'
-      ? endpoint
-      : `${endpoint}?hapikey=${Config.apiKey}`;
-
-  const requestOptions = Config.authorizationType === 'newPrivateAppApi' ? reqOptions : {};
+  const requestOptions = reqOptions;
 
   /* *
    * This is needed for processing paginated response when searching hubspot.
@@ -795,12 +740,14 @@ const getExistingContactsData = async (
 
   const values = extractIDsForSearchAPI(inputs);
   const chunkValues = chunk(values, MAX_CONTACTS_PER_REQUEST);
-  const requestOptions = {
-    headers: {
-      'Content-Type': JSON_MIME_TYPE,
-      Authorization: `Bearer ${Config.accessToken}`,
+  const requestOptions = addHsAuthorisationHeader(
+    {
+      headers: {
+        'Content-Type': JSON_MIME_TYPE,
+      },
     },
-  };
+    Config,
+  );
   for (const chunkValue of chunkValues) {
     const requestData = getRequestData(identifierType, chunkValue);
     const searchResults = await performHubSpotSearch(
@@ -1026,7 +973,7 @@ const fetchObjectPropertiesV3 = async (
     module: 'router',
     metadata,
   };
-  const authenticationInfo = addHsAuthentication({}, Config);
+  const authenticationInfo = addHsAuthorisationHeader({}, Config);
   const response = await httpGET(`${BASE_ENDPOINT}${endpointPath}`, authenticationInfo, statTags);
 
   const processedResponse = processAxiosResponse(response);
@@ -1098,7 +1045,7 @@ const isLookupFieldUnique = async (
  *   code_path    retl (dedicated rETL pipeline) | es_retl (shared es-retl pipeline)
  *   operation    create | update | upsert | association | track
  *   api_version  v1 (legacyApi) | v3 (newApi)                       [from Config]
- *   auth_type    private_app (newPrivateAppApi) | api_key (legacy)  [from Config]
+ *   auth_type    private_app                                      [from Config]
  */
 const recordTransformFlow = (
   destination: HubSpotDestination,
@@ -1112,14 +1059,14 @@ const recordTransformFlow = (
     code_path: codePath,
     operation,
     api_version: Config?.apiVersion === API_VERSION.v3 ? 'v3' : 'v1',
-    auth_type: Config?.authorizationType === 'newPrivateAppApi' ? 'private_app' : 'api_key',
+    auth_type: 'private_app',
     destination_id: ID,
   });
 };
 
 export {
   validateDestinationConfig,
-  addHsAuthentication,
+  addHsAuthorisationHeader,
   addExternalIdToHSTraits,
   formatKey,
   fetchFinalSetOfTraits,

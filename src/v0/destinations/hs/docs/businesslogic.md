@@ -24,8 +24,8 @@ This document details the business logic, field mappings, and transformation flo
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Validate Destination Config                         │
-│     - Check authorizationType                           │
-│     - Verify apiKey + hubID OR accessToken              │
+│     - Reject legacy API-key auth                        │
+│     - Verify accessToken                                │
 └─────────────────────────────────────────────────────────┘
                            ↓
 ┌─────────────────────────────────────────────────────────┐
@@ -59,7 +59,7 @@ This document details the business logic, field mappings, and transformation flo
 │     - Endpoint: /contacts/v1/contact/createOrUpdate/    │
 │                 email/:contact_email                    │
 │     - Method: POST                                      │
-│     - Auth: hapikey param OR Bearer token               │
+│     - Auth: Bearer token                                │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -70,8 +70,8 @@ This document details the business logic, field mappings, and transformation flo
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Validate Destination Config                         │
-│     - Check authorizationType                           │
-│     - Verify apiKey + hubID OR accessToken              │
+│     - Reject legacy API-key auth                        │
+│     - Verify accessToken                                │
 │     - Verify lookupField configuration                  │
 └─────────────────────────────────────────────────────────┘
                            ↓
@@ -271,7 +271,7 @@ HubSpot accepts empty string to clear property values:
 ┌─────────────────────────────────────────────────────────┐
 │  1. Validate Destination Config                         │
 │     - Verify Hub ID exists                              │
-│     - Check authorizationType                           │
+│     - Reject legacy API-key auth                        │
 └─────────────────────────────────────────────────────────┘
                            ↓
 ┌─────────────────────────────────────────────────────────┐
@@ -300,7 +300,7 @@ HubSpot accepts empty string to clear property values:
 │  5. Build Request                                       │
 │     - Endpoint: https://track.hubspot.com/v1/event      │
 │     - Method: GET (with query parameters)               │
-│     - Auth: hapikey param OR Bearer token               │
+│     - Auth: Bearer token                                │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -317,7 +317,7 @@ HubSpot accepts empty string to clear property values:
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Validate Destination Config                         │
-│     - Check authorizationType                           │
+│     - Reject legacy API-key auth                        │
 │     - Verify event mappings configured (hubspotEvents)  │
 └─────────────────────────────────────────────────────────┘
                            ↓
@@ -352,7 +352,7 @@ HubSpot accepts empty string to clear property values:
 │  6. Build Request                                       │
 │     - Endpoint: /events/v3/send                         │
 │     - Method: POST                                      │
-│     - Auth: hapikey param OR Bearer token               │
+│     - Auth: Bearer token                                │
 │     - Body: { eventName, properties, occurredAt, ... }  │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -589,15 +589,11 @@ Update Contacts:
 3. **Authorization**:
 
    ```javascript
-   // Legacy API
-   if (!Config.hubID) {
-     throw new ConfigurationError('Hub ID not found. Aborting');
+   if (Config.authorizationType === 'legacyApiKey') {
+     throw new ConfigurationError(
+       'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.',
+     );
    }
-   if (!Config.apiKey) {
-     throw new ConfigurationError('API Key not found. Aborting');
-   }
-
-   // New Private App API
    if (!Config.accessToken) {
      throw new ConfigurationError('Access Token not found. Aborting');
    }

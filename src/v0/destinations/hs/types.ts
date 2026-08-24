@@ -16,7 +16,7 @@ import type {
  * Ref: https://developers.hubspot.com/docs/api/crm/contacts
  */
 export interface HubSpotDestinationConfig {
-  authorizationType?: string;
+  authorizationType?: 'newPrivateAppApi' | 'legacyApiKey';
   accessToken?: string;
   hubID?: string;
   apiVersion?: 'legacyApi' | 'newApi';

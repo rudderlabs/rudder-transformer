@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign, @typescript-eslint/naming-convention */
 import _ from 'lodash';
 import get from 'get-value';
+import validator from 'validator';
 import { ConfigurationError, InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
 import stats from '../../../util/stats';
 import logger from '../../../logger';
@@ -86,6 +87,50 @@ const formatGender = (gender: unknown) => {
   }
 
   return null;
+};
+
+/**
+ * Normalises and validates the `email` user attribute.
+ *
+ * Braze rejects malformed addresses at delivery time with "The value provided for the email
+ * field is not a valid email.", which surfaces as a delivery failure rather than something the
+ * customer can spot in their event stream. Validating here turns it into an instrumentation
+ * error at transform time, so the bad event never reaches delivery.
+ *
+ * `null`/`undefined` pass through untouched — Braze reads an explicit null as "unset this
+ * field", and the caller's own guard already decides which of the two reach here.
+ * The offending address is deliberately kept out of the error message; the full payload is
+ * already visible alongside the error in Live Events, and the message itself ends up in logs
+ * and metrics where the PII does not belong.
+ *
+ * `blacklisted_chars: '"'` narrows `isEmail` to Braze's rule that the local part "cannot
+ * contain double quotes" -- `"` is absent from the character set in Braze's own published
+ * validation regex. RFC-legal quoted addresses such as `"user name"@example.com` pass
+ * `isEmail`'s default options, but Braze rejects them.
+ *
+ * The option only ever rejects addresses Braze also rejects: `isEmail` admits `"` in the
+ * local part solely via its fully-quoted branch, and a local part opening with `"` can never
+ * match Braze's regex. Note Braze validates only the segment preceding `+`, so widening the
+ * blacklist further would over-reject -- e.g. Braze accepts `user+{tag}@example.com`.
+ * https://www.braze.com/docs/user_guide/channels/email/email_setup/email_validation
+ */
+const formatEmail = (email: unknown) => {
+  if (!isDefinedAndNotNull(email)) {
+    return email;
+  }
+
+  if (typeof email !== 'string') {
+    throw new InstrumentationError('Invalid email, email must be a valid string');
+  }
+
+  const formattedEmail = email.toLowerCase();
+  if (!validator.isEmail(formattedEmail, { blacklisted_chars: '"' })) {
+    throw new InstrumentationError(
+      'Invalid email, the email provided is not a valid email address',
+    );
+  }
+
+  return formattedEmail;
 };
 
 /**
@@ -1791,6 +1836,7 @@ export {
   processBatchWithDeliveryMapping,
   addAppId,
   formatGender,
+  formatEmail,
   getPurchaseObjs,
   setExternalIdOrAliasObject,
   setExternalId,

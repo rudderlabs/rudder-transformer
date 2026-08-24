@@ -8,6 +8,7 @@ import {
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { ACTION_ATTR_VALUE, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
 import { buildBulkBody, getBulkTrackEndpoint, normalizeExternalId } from './utils';
+import { brazeAudienceDelivery } from './delivery';
 import {
   BrazeAudienceRouterRequestSchema,
   type BrazeAudienceAttributePayload,
@@ -18,6 +19,9 @@ class BrazeAudienceIntegration extends BatchDestination<
   BrazeAudienceAttributePayload,
   typeof BrazeAudienceRouterRequestSchema
 > {
+  // Partial failure arrives on a 2xx keyed by index into `attributes`; see ./delivery.
+  static readonly delivery = brazeAudienceDelivery;
+
   private readonly headers: Record<string, string>;
 
   constructor(...args: ConstructorParameters<typeof BatchDestination>) {

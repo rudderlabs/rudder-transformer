@@ -83,6 +83,22 @@ describe('Live Integration Test Suite', () => {
   // One describe per enrolled destination: resolve its credentials and base config, then run its
   // enabled scenarios. A missing/invalid secret throws here (fail-closed), failing the destination.
   describe.each(enrolledDestinations)('$destination', ({ destination, spec }) => {
+    // Applied around the whole destination rather than per scenario: the flags a live spec names
+    // gate the transform and delivery paths themselves, so every scenario has to run under them.
+    const envManager = new EnvManager();
+    beforeAll(() => {
+      if (spec.envOverrides) {
+        envManager.takeSnapshot(destination, Object.keys(spec.envOverrides));
+        envManager.applyOverrides(spec.envOverrides);
+      }
+    });
+    afterAll(() => {
+      if (spec.envOverrides) {
+        envManager.restoreSnapshot(destination);
+      }
+      envManager.cleanup();
+    });
+
     const liveSecret: LiveSecret = resolver.resolve(destination);
 
     beforeAll(async () => {

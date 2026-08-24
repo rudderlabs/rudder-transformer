@@ -14,14 +14,14 @@ import {
 } from './profiles';
 import { verifyFlagParity, verifyMerge, verifyPersonState, verifyRecordProfile } from './verify';
 
-// The two scenarios below cover the rollout states of the CustomerIO batching framework:
+// The two scenarios below cover CustomerIO batching with each event-stream API flag state:
 //
-//   1. framework on, CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED off (the default) — record events go
-//      through the V2 batching path while event-stream events keep their V1 request shape.
-//   2. framework on, the flag on — every event type moves to the V2 /v2/batch shape.
+//   1. CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED off (the default) — record events go through the V2
+//      batching path while event-stream events keep their V1 request shape.
+//   2. CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED on — every event type moves to the V2 /v2/batch shape.
 //
-// Both are selected by env, not by destination.Config, hence `envOverride` on each scenario. The
-// seeds are identical in both. Which endpoint a given event type lands on is an implementation
+// The event-stream API shape is selected by env, not by destination.Config, hence `envOverride` on
+// each scenario. The seeds are identical in both. Which endpoint a given event type lands on is an implementation
 // detail the component suite pins (router/dataEventStreamV1.ts and router/dataV2.ts) — what THIS
 // suite asserts is that the resulting state inside CustomerIO is the same either way (see
 // verifyFlagParity), which no mocked suite can check.
@@ -211,7 +211,6 @@ export const live: LiveSpec = {
       description:
         'batching framework on, event-stream V2 API off — event-stream events deliver in their V1 request shape while record events batch on /v2/batch',
       envOverride: {
-        CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
         CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'false',
       },
       cleanup: cleanupScenario,
@@ -224,7 +223,6 @@ export const live: LiveSpec = {
       description:
         'batching framework on, event-stream V2 API on — every event type delivers through the V2 /v2/batch shape, producing the same CustomerIO state as the V1 shape',
       envOverride: {
-        CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
         CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
       },
       cleanup: cleanupScenario,

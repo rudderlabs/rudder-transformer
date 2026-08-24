@@ -4,3 +4,4 @@
 image-metadata:history*:created-by
 node_modules/
 /usr/lib/aarch64-linux-gnu/
+/usr/bin/perl

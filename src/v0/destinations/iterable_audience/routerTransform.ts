@@ -20,6 +20,7 @@ import {
   buildUnsubscribeBody,
   selectIdentifierForRow,
 } from './utils';
+import { iterableAudienceDelivery } from './delivery';
 import {
   IterableAudienceRouterRequestSchema,
   type IterableAudiencePayload,
@@ -30,6 +31,9 @@ class IterableAudienceIntegration extends BatchDestination<
   IterableAudiencePayload,
   typeof IterableAudienceRouterRequestSchema
 > {
+  // Partial failure arrives on a 2xx keyed by identity; see ./delivery.
+  static readonly delivery = iterableAudienceDelivery;
+
   // Headers are constant per (destination + connection) — build once.
   private readonly headers: Record<string, string>;
 

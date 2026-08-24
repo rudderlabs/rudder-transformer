@@ -7,7 +7,7 @@ import { GROUP_OBJECT_TYPE_ID } from './profiles';
 //   Track API (track.customer.io, Basic siteID:apiKey) — WRITE only. This is what the transform
 //     delivers to, and all it can tell us is that a payload was accepted.
 //   App  API (api.customer.io, Bearer app API key)     — READ back. The only way to assert that a
-//     write actually landed, and the only thing that can tell the two rollout states apart.
+//     write actually landed, and the only thing that can tell the two event-stream API states apart.
 // The Track credentials cannot read, so read-back needs its own key under `readback.appApiKey`.
 const TRACK_BASE_URL = 'https://track.customer.io/api';
 const TRACK_BASE_URL_EU = 'https://track-eu.customer.io/api';

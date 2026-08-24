@@ -767,6 +767,30 @@ class Prometheus {
         ],
         buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
+      {
+        name: 'delivery_payload_size_bytes',
+        help: 'Uncompressed (pre-compression) size in bytes of the outbound delivery request body',
+        type: 'histogram',
+        labelNames: [
+          'destType',
+          'endpointPath',
+          'destinationId',
+          'workspaceId',
+          'sourceId',
+          'feature',
+          'module',
+          'implementation',
+          'compressed',
+        ],
+        // Small-end-weighted so sub-1KB payloads are legible (default Prometheus buckets are
+        // latency-scaled and collapse everything under 1KB), extended to 50MB so the large-batch
+        // tail this metric exists to size (destination body limits run to tens of MB) is not lost
+        // in a single +Inf bucket.
+        buckets: [
+          64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304,
+          16777216, 52428800,
+        ],
+      },
 
       // tracking plan metrics:
       // counter

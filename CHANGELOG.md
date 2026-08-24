@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.149.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.148.1...v1.149.0) (2026-08-24)
+
+
+### Features
+
+* **customerio:** promote batching framework to GA ([#5500](https://github.com/rudderlabs/rudder-transformer/issues/5500)) ([be10872](https://github.com/rudderlabs/rudder-transformer/commit/be1087233f77fa8ea74ba20fa545eecfeada98bb))
+* **nativeBatching:** fold NetworkHandler into the BatchDestination class ([#5418](https://github.com/rudderlabs/rudder-transformer/issues/5418)) ([b127953](https://github.com/rudderlabs/rudder-transformer/commit/b12795372385ab7b3240936f97c5a4ce34f0b51d))
+* **network:** emit pre-compression delivery payload size metric (INT-7033) ([#5503](https://github.com/rudderlabs/rudder-transformer/issues/5503)) ([6c181ba](https://github.com/rudderlabs/rudder-transformer/commit/6c181ba92d715a1df8fcc2709bd44217b11a2786)), closes [rudderlabs/rudder-specs#94](https://github.com/rudderlabs/rudder-specs/issues/94)
+
+
+### Bug Fixes
+
+* **braze:** reject malformed email at transform time ([#5495](https://github.com/rudderlabs/rudder-transformer/issues/5495)) ([7b28f04](https://github.com/rudderlabs/rudder-transformer/commit/7b28f04b43c3473de20442d4efc1ec226de6ee53))
+* **hs:** reject legacy api key auth ([#5494](https://github.com/rudderlabs/rudder-transformer/issues/5494)) ([9389e24](https://github.com/rudderlabs/rudder-transformer/commit/9389e24de6207bb797dd0da2ff57a7f5b08934a9))
+
 ### [1.148.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.148.0...v1.148.1) (2026-08-20)
 
 

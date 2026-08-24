@@ -388,7 +388,7 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
     },
   );
 
-  it('accepts a phone-mapped userId written with separators', async () => {
+  it('normalises a phone-mapped userId written with separators to E.164', async () => {
     const v2Destination = makeV2Destination({ userIdMapping: 'phone' });
     const integration = new Integration(v2Destination);
     const input = makeEventStreamInput(
@@ -398,10 +398,44 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
 
     const { successPayloads } = await integration.transformEvents([input]);
     expect(successPayloads).toHaveLength(1);
-    // The identifier is passed through as authored; only validation strips separators.
+    // We send the form we validated: separators are stripped before the number goes out,
+    // so `+1 (555) 123-4567` and `+15551234567` resolve to the same CustomerIO profile.
     expect(successPayloads[0].body).toMatchObject({
-      identifiers: { phone: '+1 (555) 123-4567' },
+      identifiers: { phone: '+15551234567' },
     });
+  });
+
+  it('writes every person identifier under the configured mapping key', async () => {
+    const v2Destination = makeV2Destination({ userIdMapping: 'cio_id' });
+    const integration = new Integration(v2Destination);
+    const inputs = [
+      makeEventStreamInput(
+        { type: 'alias', userId: 'cio_abc123', previousId: 'cio_old456' },
+        v2Destination,
+      ),
+      makeEventStreamInput(
+        { type: 'group', userId: 'cio_abc123', groupId: 'group-1', traits: { name: 'rs' } },
+        v2Destination,
+      ),
+    ];
+
+    const { successPayloads } = await integration.transformEvents(inputs);
+    const bodies = successPayloads.flatMap((p) => p.body.batch ?? [p.body]);
+    // A merge's primary/secondary and an object's relationship person side are person
+    // identifiers, so they use cio_id like identify/track — not an auto-detected id/email.
+    expect(bodies).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          action: 'merge',
+          primary: { cio_id: 'cio_abc123' },
+          secondary: { cio_id: 'cio_old456' },
+        }),
+        expect.objectContaining({
+          type: 'object',
+          cio_relationships: [{ identifiers: { cio_id: 'cio_abc123' } }],
+        }),
+      ]),
+    );
   });
 
   // There is no legacy auto-detection any more: userIdMapping is required config for v2,

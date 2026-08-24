@@ -20,9 +20,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -426,9 +423,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -724,9 +718,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -843,9 +834,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -932,9 +920,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1003,9 +988,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1075,9 +1057,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1178,9 +1157,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1254,9 +1230,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1376,9 +1349,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1484,9 +1454,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1566,9 +1533,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1720,9 +1684,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1795,9 +1756,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -1910,9 +1868,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -2007,9 +1962,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -2104,9 +2056,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -2199,9 +2148,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -2270,9 +2216,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -2357,9 +2300,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -2551,9 +2491,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -2676,9 +2613,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -2820,9 +2754,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -2901,9 +2832,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -3002,9 +2930,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -3143,9 +3068,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -3238,9 +3160,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {
@@ -3455,9 +3374,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    },
     input: {
       request: {
         body: {

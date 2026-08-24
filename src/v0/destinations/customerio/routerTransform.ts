@@ -146,8 +146,8 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
             this.destination,
           ),
         ),
-      group: () => this.wrapEventStreamBody(buildObject(message)),
-      alias: () => this.wrapEventStreamBody(buildMerge(message)),
+      group: () => this.wrapEventStreamBody(buildObject(message, this.destination)),
+      alias: () => this.wrapEventStreamBody(buildMerge(message, this.destination)),
     };
   }
 

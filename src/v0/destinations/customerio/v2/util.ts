@@ -1,6 +1,5 @@
 import get from 'get-value';
 import set from 'set-value';
-import validator from 'validator';
 import btoa from 'btoa';
 import {
   ConfigurationError,
@@ -11,7 +10,7 @@ import {
   constructPayload,
   getFieldValueFromMessage,
   isAppleFamily,
-  isValidE164PhoneNumber,
+  getValidE164PhoneNumber,
   validateEventName,
 } from '../../../util';
 import { populateSpecedTraits } from '../util';
@@ -31,11 +30,17 @@ import { CustomerIOV2Payload, CustomerIOV2Identifiers, CustomerIODestination } f
 export const toUnixSeconds = (v: unknown): number =>
   Math.floor(new Date(v as string).getTime() / 1000);
 
-const personIdentifiers = (
-  message,
+// Resolve one person identifier under the destination's configured userIdMapping key.
+// Every person-side identifier in the v2 payload — `identifiers`, a merge's
+// primary/secondary, and an object's cio_relationships person side — goes through here so
+// a destination has exactly one identifier policy. Auto-detecting the key per call site
+// (e.g. `isEmail(id) ? 'email' : 'id'`) would address a different Customer.io profile than
+// the rest of the destination's traffic whenever userIdMapping is `phone` or `cio_id`.
+const personIdentifierFor = (
+  value: unknown,
   destination: CustomerIODestination,
+  fieldName = 'userId',
 ): CustomerIOV2Identifiers => {
-  const userId = getFieldValueFromMessage(message, 'userIdOnly');
   const { userIdMapping } = destination.Config;
 
   // Strict mapping: the userId is the only accepted identifier and it always lands on
@@ -50,18 +55,29 @@ const personIdentifiers = (
   // CustomerIO accepts an identifier as a string or a number, so both pass through as-is;
   // anything else (or a blank/whitespace-only string) is no use as a lookup key.
   if (
-    !(typeof userId === 'string' || typeof userId === 'number') ||
-    !isDefinedNotNullNotEmpty(userId)
+    !(typeof value === 'string' || typeof value === 'number') ||
+    !isDefinedNotNullNotEmpty(value)
   ) {
     throw new InstrumentationError(
-      `a non-empty string or number userId is required when userId mapping is configured as \`${userIdMapping}\``,
+      `a non-empty string or number ${fieldName} is required when userId mapping is configured as \`${userIdMapping}\``,
     );
   }
-  if (userIdMapping === 'phone' && !isValidE164PhoneNumber(String(userId))) {
-    throw new InstrumentationError('Phone number is not in E.164 format.');
+  if (userIdMapping === 'phone') {
+    // Send the same form we validated. getValidE164PhoneNumber strips separators before
+    // parsing, so `+1 (555) 123-4567` passes on the strength of `+15551234567`; shipping
+    // the authored spelling would gate on a value we never transmit and let two spellings
+    // of one number resolve to two different profiles.
+    const e164 = getValidE164PhoneNumber(String(value));
+    if (!e164) {
+      throw new InstrumentationError('Phone number is not in E.164 format.');
+    }
+    return { [userIdMapping]: e164 };
   }
-  return { [userIdMapping]: userId };
+  return { [userIdMapping]: value };
 };
+
+const personIdentifiers = (message, destination: CustomerIODestination): CustomerIOV2Identifiers =>
+  personIdentifierFor(getFieldValueFromMessage(message, 'userIdOnly'), destination);
 
 // Build the attributes object from speced + free-form traits. Reuses v1's
 // populateSpecedTraits and set() (which apply dot-path nesting / escaping) on a
@@ -176,28 +192,26 @@ export const buildScreen = (
   };
 };
 
-export const buildMerge = (message): CustomerIOV2Payload => {
-  const userId = getFieldValueFromMessage(message, 'userIdOnly');
-  const primaryKey = validator.isEmail(String(userId)) ? 'email' : 'id';
-  const secondaryKey = validator.isEmail(String(message.previousId)) ? 'email' : 'id';
-  return {
-    type: 'person',
-    action: 'merge',
-    primary: { [primaryKey]: userId },
-    secondary: { [secondaryKey]: message.previousId },
-  };
-};
+export const buildMerge = (message, destination: CustomerIODestination): CustomerIOV2Payload => ({
+  type: 'person',
+  action: 'merge',
+  // Both sides of a merge are person identifiers, so they use the destination's
+  // configured mapping — the same key identify/track write the profile under.
+  primary: personIdentifierFor(getFieldValueFromMessage(message, 'userIdOnly'), destination),
+  secondary: personIdentifierFor(message.previousId, destination, 'previousId'),
+});
 
-export const buildObject = (message): CustomerIOV2Payload => {
+export const buildObject = (message, destination: CustomerIODestination): CustomerIOV2Payload => {
   // constructPayload's `excludes` deletes keys (e.g. traits.action) from the
   // source object. Clone first so the caller's message is never mutated.
   const mapped = constructPayload(
     structuredClone(message),
     MAPPING_CONFIG[CONFIG_CATEGORIES.OBJECT_EVENTS.name],
   )!;
-  const id = mapped.userId || mapped.email;
-  const cioRelationships = id
-    ? [{ identifiers: { [validator.isEmail(String(id)) ? 'email' : 'id']: id } }]
+  // The relationship's person side is a person identifier too, so it uses the
+  // destination's configured mapping rather than detecting email-vs-id per event.
+  const cioRelationships = isDefinedNotNullNotEmpty(mapped.userId)
+    ? [{ identifiers: personIdentifierFor(mapped.userId, destination) }]
     : [];
   return {
     type: 'object',

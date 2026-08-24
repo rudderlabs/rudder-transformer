@@ -1949,25 +1949,39 @@ const validatePhoneWithCountryCode = (phone) => {
 };
 
 /**
- * Checks whether a phone number is in E.164 format, using libphonenumber-js to parse it.
- * Non-numeric separators (spaces, hyphens, parentheses) are stripped before parsing, so the
- * number must otherwise already carry a leading `+` and a valid country code.
+ * Parses a phone number and returns its canonical E.164 form, or null when it is not valid
+ * E.164. Non-numeric separators (spaces, hyphens, parentheses) are stripped before parsing,
+ * so the number must otherwise already carry a leading `+` and a valid country code.
+ *
+ * Callers that need the value they validated should use this rather than validating and
+ * sanitizing separately: the sanitization here and the validation are one step, so the
+ * returned string is always exactly the form that passed.
  * @param {*} phoneNumber
- * @returns {boolean} true when the sanitized number round-trips to itself in E.164
+ * @returns {string|null} the sanitized E.164 number, or null when invalid
  */
-const isValidE164PhoneNumber = (phoneNumber) => {
+const getValidE164PhoneNumber = (phoneNumber) => {
   try {
     // Remove all non-numeric characters from the phone number like spaces, hyphens, etc.
     const sanitizedPhoneNumber = String(phoneNumber).replace(/[^\d+]/g, '');
     const parsedNumber = parsePhoneNumberFromString(sanitizedPhoneNumber);
     // Check if the number is valid and properly formatted in E.164.
-    return !!parsedNumber && parsedNumber.format('E.164') === sanitizedPhoneNumber;
+    return parsedNumber && parsedNumber.format('E.164') === sanitizedPhoneNumber
+      ? sanitizedPhoneNumber
+      : null;
   } catch (error) {
     // If parsing fails, it's not a valid E.164 number, i.e doesn't start with '+' and country code
     logger.debug('Error parsing phone number', error);
-    return false;
+    return null;
   }
 };
+
+/**
+ * Checks whether a phone number is in E.164 format. For callers that only need a yes/no
+ * answer; use `getValidE164PhoneNumber` when the sanitized number itself is needed.
+ * @param {*} phoneNumber
+ * @returns {boolean} true when the sanitized number round-trips to itself in E.164
+ */
+const isValidE164PhoneNumber = (phoneNumber) => getValidE164PhoneNumber(phoneNumber) !== null;
 
 /**
  * checks for hybrid mode
@@ -2598,6 +2612,7 @@ module.exports = {
   validateEventName,
   validatePhoneWithCountryCode,
   isValidE164PhoneNumber,
+  getValidE164PhoneNumber,
   getEventReqMetadata,
   isHybridModeEnabled,
   getEventType,

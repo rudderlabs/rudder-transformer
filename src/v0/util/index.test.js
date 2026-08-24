@@ -1544,3 +1544,47 @@ describe('applyCustomMappings (chokepoint)', () => {
     expect(out).toEqual({ b: 5 });
   });
 });
+
+describe('E.164 phone number helpers', () => {
+  const { getValidE164PhoneNumber, isValidE164PhoneNumber } = utilities;
+
+  // Separators are stripped before parsing, so an authored spelling validates on the
+  // strength of its sanitized form and getValidE164PhoneNumber returns that form.
+  const validCases = [
+    ['+15551234567', '+15551234567'],
+    ['+1 (555) 123-4567', '+15551234567'],
+    ['+44 20 7183 8750', '+442071838750'],
+    ['+91-9876543210', '+919876543210'],
+  ];
+
+  const invalidCases = [
+    ['missing leading +', '15551234567'],
+    ['not a number', 'abcdef'],
+    ['empty string', ''],
+    ['invalid country code', '+00000000000'],
+    ['null', null],
+    ['undefined', undefined],
+  ];
+
+  it.each(validCases)('returns the sanitized E.164 form for %s', (input, expected) => {
+    expect(getValidE164PhoneNumber(input)).toBe(expected);
+    expect(isValidE164PhoneNumber(input)).toBe(true);
+  });
+
+  it.each(invalidCases)('returns null for %s', (_label, input) => {
+    expect(getValidE164PhoneNumber(input)).toBeNull();
+    expect(isValidE164PhoneNumber(input)).toBe(false);
+  });
+
+  // The pair must not drift: the boolean is derived from the value-returning function, so
+  // anything that validates has a sanitized form to send, and vice versa.
+  it('keeps the two helpers in agreement', () => {
+    const inputs = [
+      ...validCases.map(([input]) => input),
+      ...invalidCases.map(([, input]) => input),
+    ];
+    inputs.forEach((input) => {
+      expect(isValidE164PhoneNumber(input)).toBe(getValidE164PhoneNumber(input) !== null);
+    });
+  });
+});

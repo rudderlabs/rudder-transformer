@@ -1,3 +1,5 @@
+import { existsSync } from 'fs';
+import { join } from 'path';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import request from 'supertest';
@@ -5,6 +7,7 @@ import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
 import type { Server } from 'http';
 import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
+import { getDestinationHandlerName } from '../../src/features';
 import { applicationRoutes } from '../../src/routes/index';
 import { getEnrolledDestinations } from './live/registry';
 import { SecretResolver } from './live/secretResolver';
@@ -13,8 +16,63 @@ import { runPipelineStep } from './live/runPipelineStep';
 import { retryUntilPasses } from './live/poll';
 import { OAuthTokenResolver } from './live/oauthTokenResolver';
 import { RudderAuthContainer } from './live/rudderAuthContainer';
-import { EnvManager } from './envUtils';
+import { EnvManager, type EnvOverride } from './envUtils';
 import type { LiveSecret, EnrolledDestination } from './live/types';
+
+const V0_DESTINATIONS_DIR = join(__dirname, '..', '..', 'src', 'v0', 'destinations');
+const BATCHING_FRAMEWORK_ENV_SUFFIXES = [
+  'BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS',
+  'BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS',
+] as const;
+
+const batchingFrameworkEnvKeys = (destination: string): string[] =>
+  BATCHING_FRAMEWORK_ENV_SUFFIXES.map((suffix) => `${destination.toUpperCase()}_${suffix}`);
+
+const hasRouterTransformModule = (handlerName: string): boolean =>
+  existsSync(join(V0_DESTINATIONS_DIR, handlerName, 'routerTransform.ts'));
+
+const isBatchingFrameworkEligible = (destination: string): boolean => {
+  let handlerName: string;
+  try {
+    handlerName = getDestinationHandlerName(destination);
+  } catch {
+    return false;
+  }
+
+  if (!hasRouterTransformModule(handlerName)) {
+    return false;
+  }
+
+  // Mirrors FetchHandler.getBatchDestinationHandler(destination): production resolves the class from
+  // src/v0/destinations/<handlerName>/routerTransform.Integration.
+  // eslint-disable-next-line global-require, import/no-dynamic-require
+  const mod = require(join(V0_DESTINATIONS_DIR, handlerName, 'routerTransform')) as {
+    Integration?: unknown;
+  };
+  return Boolean(mod.Integration);
+};
+
+const batchingFrameworkEnvOverrides = (destination: string): EnvOverride =>
+  Object.fromEntries(batchingFrameworkEnvKeys(destination).map((key) => [key, 'ALL']));
+
+const assertNoReservedBatchingFrameworkEnvOverrides = (
+  destination: string,
+  scope: string,
+  envOverrides: EnvOverride | undefined,
+): void => {
+  if (!envOverrides) {
+    return;
+  }
+
+  const reservedKeys = batchingFrameworkEnvKeys(destination);
+  const declaredReservedKeys = reservedKeys.filter((key) => key in envOverrides);
+  if (declaredReservedKeys.length > 0) {
+    throw new Error(
+      `[live:${destination}] batching-framework env vars are owned by the live harness. ` +
+        `Remove from ${scope}: ${declaredReservedKeys.join(', ')}`,
+    );
+  }
+};
 
 describe('Live Integration Test Suite', () => {
   // npm run test:live
@@ -83,17 +141,29 @@ describe('Live Integration Test Suite', () => {
   // One describe per enrolled destination: resolve its credentials and base config, then run its
   // enabled scenarios. A missing/invalid secret throws here (fail-closed), failing the destination.
   describe.each(enrolledDestinations)('$destination', ({ destination, spec }) => {
-    // Applied around the whole destination rather than per scenario: the flags a live spec names
+    // Applied around the whole destination rather than per scenario: destination-level rollout flags
     // gate the transform and delivery paths themselves, so every scenario has to run under them.
     const envManager = new EnvManager();
+    const harnessEnvOverrides = isBatchingFrameworkEligible(destination)
+      ? batchingFrameworkEnvOverrides(destination)
+      : undefined;
+    if (harnessEnvOverrides) {
+      assertNoReservedBatchingFrameworkEnvOverrides(
+        destination,
+        'LiveSpec.envOverrides',
+        spec.envOverrides,
+      );
+    }
+    const destinationEnvOverrides = { ...spec.envOverrides, ...harnessEnvOverrides };
+    const destinationEnvOverrideKeys = Object.keys(destinationEnvOverrides);
     beforeAll(() => {
-      if (spec.envOverrides) {
-        envManager.takeSnapshot(destination, Object.keys(spec.envOverrides));
-        envManager.applyOverrides(spec.envOverrides);
+      if (destinationEnvOverrideKeys.length > 0) {
+        envManager.takeSnapshot(destination, destinationEnvOverrideKeys);
+        envManager.applyOverrides(destinationEnvOverrides);
       }
     });
     afterAll(() => {
-      if (spec.envOverrides) {
+      if (destinationEnvOverrideKeys.length > 0) {
         envManager.restoreSnapshot(destination);
       }
       envManager.cleanup();
@@ -143,6 +213,13 @@ describe('Live Integration Test Suite', () => {
         scenario.configOverride?.(destinationConfig, liveSecret) ?? destinationConfig;
 
       const envManager = new EnvManager();
+      if (harnessEnvOverrides) {
+        assertNoReservedBatchingFrameworkEnvOverrides(
+          destination,
+          'LiveScenario.envOverride',
+          scenario.envOverride,
+        );
+      }
 
       beforeAll(() => {
         // Env-gated transforms: apply this scenario's overrides before any step runs, and restore

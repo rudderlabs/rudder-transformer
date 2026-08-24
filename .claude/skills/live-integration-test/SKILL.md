@@ -162,10 +162,12 @@ spec.
    the field-level verify so the two stay in lockstep.
 6. **Enroll**: `enabled: true` (registry auto-discovers `destinations/*/live.ts`; no registration).
    Use `enabled: false` to park a spec in the tree without running it. If the destination sits
-   behind a rollout flag, name it in `envOverrides` — a live run exercises the real transform and
-   delivery paths, so without it the suite tests the legacy path and proves nothing about the one
-   the destination is moving to. See `.claude/skills/batching-framework-delivery/SKILL.md` for the
-   batching-framework flags.
+   behind a destination-specific rollout flag, name it in `envOverrides`. Do **not** add
+   `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` or
+   `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS`: for destinations whose
+   `routerTransform.ts` exports `Integration`, the live harness owns those keys and automatically
+   sets both to `ALL` so transform and delivery run through the batching framework. Destinations
+   without an `Integration` export remain on their network handlers.
 7. **CI is automatic.** The `discover` job builds the workflow matrix from `destinations/*/live.ts`,
    so a new spec runs in CI with no workflow edit. `LIVE_SECRET_<DEST>` is derived from the
    destination code; an **OAuth** spec (`authType: 'oauth'`) additionally wildcard-imports the whole
@@ -247,9 +249,9 @@ const agent = new Agent({ keepAlive: false });
 export const live = {
   enabled: true,
   authType: 'apiKey', // apiKey | oauth | basic | serviceAccount | custom
-  // Optional: env applied around this destination's scenarios and restored after. Name any rollout
-  // flag the destination is behind, or the run silently exercises the legacy path instead.
-  envOverrides: { <DEST>_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL' },
+  // Optional: env applied around this destination's scenarios and restored after. Use only for
+  // destination-specific switches; batching-framework rollout env vars are harness-owned.
+  // envOverrides: { <DEST>_SOME_DESTINATION_FLAG: 'true' },
   // Non-secret Config defaults from the component test's destination.Config; real creds via s.config.
   resolveConfig: (s) => ({ ...s.config }),
   scenarios: [

@@ -147,6 +147,13 @@ export const live = {
 The registry discovers it automatically. Set `enabled: false` to keep it in the tree
 without running it.
 
+For destinations whose `src/v0/destinations/<dest>/routerTransform.ts` exports `Integration`,
+the harness automatically sets both batching-framework transform and delivery rollout env vars to
+`ALL` for the duration of that destination's run. Do not add
+`{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` or
+`{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS` to `live.ts`; those keys are reserved for
+the harness. Destinations without an `Integration` export remain on their existing network handlers.
+
 ### Scenarios and steps
 
 A scenario is an ordered list of `steps` sharing one `RunContext`, plus an optional

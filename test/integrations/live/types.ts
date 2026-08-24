@@ -161,9 +161,10 @@ interface LiveSpec {
   authType: AuthType;
   oauthVersion?: OAuthVersion;
   // Environment variables set for the duration of this destination's scenarios and restored after.
-  // Use this only for destination/scenario-specific switches. Batching-framework transform/delivery
-  // rollout env vars are reserved for the harness: when routerTransform.ts exports Integration, live
-  // runs automatically set both to ALL so the real framework path is exercised.
+  // Use this for destination/scenario-specific switches, including the temporary
+  // batching-framework delivery rollout flag when a live spec must exercise framework delivery.
+  // Do not set the batching-framework transform rollout flag for destinations already marked
+  // batching-GA in features.ts.
   envOverrides?: EnvOverride;
   // Map the resolved secret into the destination.Config the transform expects (merge non-secret
   // defaults with the credentials in `s.config`).

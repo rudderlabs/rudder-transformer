@@ -202,6 +202,11 @@ export const live: LiveSpec = {
   // record profile, removed best-effort by `cleanup`.
   enabled: true,
   authType: 'basic',
+  // customerio is GA for the batching-framework transform, so only delivery needs naming.
+  // Without this the live run would deliver through v1/destinations/customerio/networkHandler.
+  envOverrides: {
+    CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+  },
   resolveConfig: (s) => ({ datacenter: 'US', ...s.config }),
   // Record events dispatch on connection.config.destination.object.
   resolveConnection: () => ({ destination: { object: 'person', syncMode: 'upsert' } }),

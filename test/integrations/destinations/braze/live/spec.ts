@@ -57,9 +57,9 @@ const deleteMergeUsers = (ctx: RunContext): Promise<void> =>
 
 // Retry budget for the scenario-level read-backs. The runner wraps `verify.check` in
 // retryUntilPasses(check, { attempts, delayMs }); the checks are single-shot, so this is the ONLY
-// backoff layer. 7 attempts (waits 1,2,4,8,16,32s → reads at ~0,1,3,7,15,31,63s)
-// covers slower Braze export lag while staying under the runner's 120s per-test timeout.
-const READBACK = { attempts: 7, delayMs: (n: number) => 1000 * 2 ** n };
+// backoff layer. Braze export can take slightly more than a minute for fresh profiles, so keep
+// polling past the old ~63s boundary while capping later waits to stay under the 120s test timeout.
+const READBACK = { attempts: 9, delayMs: (n: number) => Math.min(1000 * 2 ** n, 16000) };
 
 export const live = {
   enabled: true,

@@ -22,6 +22,7 @@ jest.mock('node-fetch', () => jest.fn());
 
 // Mock isolated-vm
 jest.mock('isolated-vm', () => ({
+  Callback: jest.fn().mockImplementation((fn) => fn),
   Reference: jest.fn().mockImplementation((fn) => ({
     applyIgnored: jest.fn(),
     callback: fn, // Store the callback for testing
@@ -117,7 +118,7 @@ describe('Context Reset Utilities', () => {
 
       expect(mockCachedIsolate.isolate.createContext).toHaveBeenCalled();
       expect(mockJail.set).toHaveBeenCalledWith('global', {});
-      expect(mockCachedIsolate.bootstrap.run).toHaveBeenCalledWith(mockNewContext);
+      expect(mockCachedIsolate.bootstrap.run).toHaveBeenCalledWith(mockNewContext, { reference: true });
       expect(mockCachedIsolate.isolate.compileModule).toHaveBeenCalledWith(
         mockCachedIsolate.moduleSource.codeWithWrapper,
         { filename: mockCachedIsolate.moduleSource.transformationName }
@@ -154,20 +155,20 @@ describe('Context Reset Utilities', () => {
 
       await createNewContext(mockCachedIsolate, credentials, false);
 
-      // Verify _getCredential was injected
-      expect(mockJail.set).toHaveBeenCalledWith('_getCredential', expect.any(Function));
+      // Verify getCredential host reference was injected for bootstrap wiring
+      expect(mockJail.set).toHaveBeenCalledWith('_getCredentialRef', expect.any(Object));
     });
 
     test('should handle test mode correctly', async () => {
       await createNewContext(mockCachedIsolate, {});
 
-      // Verify all required APIs were injected (no testMode parameter anymore)
-      expect(mockJail.set).toHaveBeenCalledWith('_ivm', expect.any(Object));
-      expect(mockJail.set).toHaveBeenCalledWith('_fetch', expect.any(Object));
-      expect(mockJail.set).toHaveBeenCalledWith('_fetchV2', expect.any(Object));
-      expect(mockJail.set).toHaveBeenCalledWith('_geolocation', expect.any(Object));
-      expect(mockJail.set).toHaveBeenCalledWith('_getCredential', expect.any(Function));
-      expect(mockJail.set).toHaveBeenCalledWith('extractStackTrace', expect.any(Function));
+      // Verify all required host references are injected without exposing isolated-vm internals
+      expect(mockJail.set).not.toHaveBeenCalledWith('_ivm', expect.any(Object));
+      expect(mockJail.set).toHaveBeenCalledWith('_fetchRef', expect.any(Object));
+      expect(mockJail.set).toHaveBeenCalledWith('_fetchV2Ref', expect.any(Object));
+      expect(mockJail.set).toHaveBeenCalledWith('_geolocationRef', expect.any(Object));
+      expect(mockJail.set).toHaveBeenCalledWith('_getCredentialRef', expect.any(Object));
+      expect(mockJail.set).toHaveBeenCalledWith('_extractStackTraceRef', expect.any(Object));
     });
 
     test('should inject all required APIs', async () => {
@@ -175,12 +176,12 @@ describe('Context Reset Utilities', () => {
 
       const expectedApiCalls = [
         ['global', {}],
-        ['_ivm', require('isolated-vm')],
-        ['_fetch', expect.any(Object)],
-        ['_fetchV2', expect.any(Object)],
-        ['_geolocation', expect.any(Object)],
-        ['_getCredential', expect.any(Function)],
-        ['extractStackTrace', expect.any(Function)],
+        ['_fetchRef', expect.any(Object)],
+        ['_fetchV2Ref', expect.any(Object)],
+        ['_geolocationRef', expect.any(Object)],
+        ['_getCredentialRef', expect.any(Object)],
+        ['_logRef', expect.any(Object)],
+        ['_extractStackTraceRef', expect.any(Object)],
       ];
 
       expectedApiCalls.forEach(([key, value]) => {
@@ -271,14 +272,14 @@ describe('Context Reset Utilities', () => {
       // Extract the injected functions from the jail.set calls
       injectedFunctions = {};
       mockJail.set.mock.calls.forEach(([key, value]) => {
-        if (typeof value === 'function') {
-          injectedFunctions[key] = value;
+        if (value?.callback) {
+          injectedFunctions[key] = value.callback;
         }
       });
     });
 
     test('should inject working getCredential function', () => {
-      const getCredential = injectedFunctions._getCredential;
+      const getCredential = injectedFunctions._getCredentialRef;
       expect(getCredential).toBeDefined();
       
       const result = getCredential('testKey');
@@ -289,7 +290,7 @@ describe('Context Reset Utilities', () => {
     });
 
     test('should inject working extractStackTrace function', () => {
-      const extractStackTrace = injectedFunctions.extractStackTrace;
+      const extractStackTrace = injectedFunctions._extractStackTraceRef;
       expect(extractStackTrace).toBeDefined();
       
       const trace = 'Error: test\n  at function1\n  at function2';
@@ -302,7 +303,7 @@ describe('Context Reset Utilities', () => {
       jest.clearAllMocks();
       await createNewContext(mockCachedIsolate, null);
       
-      const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredential')[1];
+      const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredentialRef')[1].callback;
       const result = getCredential('anyKey');
       expect(result).toBeUndefined();
     });
@@ -312,23 +313,20 @@ describe('Context Reset Utilities', () => {
       jest.clearAllMocks();
       await createNewContext(mockCachedIsolate, 'invalid');
       
-      const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredential')[1];
+      const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredentialRef')[1].callback;
       const result = getCredential('anyKey');
       expect(result).toBeUndefined();
     });
   });
 
 
-  describe('_fetch API injection', () => {
+  describe('fetch API injection', () => {
     let fetchCallback;
     const mockFetchWithDnsWrapper = require('../../../src/util/utils').fetchWithDnsWrapper;
-    const mockReference = require('isolated-vm').Reference;
 
     beforeEach(async () => {
-      mockReference.mockClear();
       await createNewContext(mockCachedIsolate);
-      // Extract the callback function from the mocked Reference constructor
-      fetchCallback = mockReference.mock.calls.find(call => call[0].toString().includes('fetchWithDnsWrapper'))?.[0];
+      fetchCallback = mockJail.set.mock.calls.find(([key]) => key === '_fetchRef')[1].callback;
     });
 
     test('should handle successful fetch call', async () => {
@@ -337,11 +335,7 @@ describe('Context Reset Utilities', () => {
       };
       mockFetchWithDnsWrapper.mockResolvedValue(mockResponse);
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-
-      await fetchCallback(mockResolve, 'https://example.com');
+      const result = await fetchCallback('https://example.com');
 
       expect(mockFetchWithDnsWrapper).toHaveBeenCalledWith(
         {
@@ -351,25 +345,13 @@ describe('Context Reset Utilities', () => {
         },
         'https://example.com'
       );
-      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.any(Object)] // ExternalCopy data
-      );
+      expect(result).toEqual({ success: true, data: 'test' });
     });
 
     test('should handle fetch error', async () => {
       mockFetchWithDnsWrapper.mockRejectedValue(new Error('Network error'));
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-
-      await fetchCallback(mockResolve, 'https://example.com');
-
-      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        ["ERROR"] // ERROR string
-      );
+      await expect(fetchCallback('https://example.com')).resolves.toBe('ERROR');
     });
 
     test('should handle JSON parsing error', async () => {
@@ -378,29 +360,17 @@ describe('Context Reset Utilities', () => {
       };
       mockFetchWithDnsWrapper.mockResolvedValue(mockResponse);
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-
-      await fetchCallback(mockResolve, 'https://example.com');
-
-      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        ["ERROR"] // ERROR string
-      );
+      await expect(fetchCallback('https://example.com')).resolves.toBe('ERROR');
     });
   });
 
-  describe('_fetchV2 API injection', () => {
+  describe('fetchV2 API injection', () => {
     let fetchV2Callback;
     const mockFetchWithDnsWrapper = require('../../../src/util/utils').fetchWithDnsWrapper;
-    const mockReference = require('isolated-vm').Reference;
 
     beforeEach(async () => {
-      mockReference.mockClear();
       await createNewContext(mockCachedIsolate);
-      // Extract the fetchV2 callback (should be the second call with resolve/reject params)
-      fetchV2Callback = mockReference.mock.calls.find(call => call[0].toString().includes('resolve') && call[0].toString().includes('reject') && call[0].toString().includes('fetchWithDnsWrapper'))?.[0];
+      fetchV2Callback = mockJail.set.mock.calls.find(([key]) => key === '_fetchV2Ref')[1].callback;
     });
 
     test('should handle successful fetchV2 call with JSON response', async () => {
@@ -416,19 +386,17 @@ describe('Context Reset Utilities', () => {
       };
       mockFetchWithDnsWrapper.mockResolvedValue(mockResponse);
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-      const mockReject = {
-        applyIgnored: jest.fn(),
-      };
-
-      await fetchV2Callback(mockResolve, mockReject, 'https://example.com');
-
-      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.any(Object)] // ExternalCopy data
-      );
+      await expect(fetchV2Callback('https://example.com')).resolves.toEqual({
+        value: {
+          url: 'https://example.com',
+          status: 200,
+          headers: {
+            'content-type': 'application/json',
+            'x-custom': 'test-value',
+          },
+          body: { success: true },
+        },
+      });
     });
 
     test('should handle successful fetchV2 call with text response', async () => {
@@ -441,19 +409,14 @@ describe('Context Reset Utilities', () => {
       };
       mockFetchWithDnsWrapper.mockResolvedValue(mockResponse);
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-      const mockReject = {
-        applyIgnored: jest.fn(),
-      };
-
-      await fetchV2Callback(mockResolve, mockReject, 'https://example.com');
-
-      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.any(Object)] // ExternalCopy data
-      );
+      await expect(fetchV2Callback('https://example.com')).resolves.toEqual({
+        value: {
+          url: 'https://example.com',
+          status: 200,
+          headers: { 'content-type': 'text/plain' },
+          body: 'plain text response',
+        },
+      });
     });
 
     test('should handle fetchV2 error', async () => {
@@ -461,32 +424,22 @@ describe('Context Reset Utilities', () => {
       error.code = 'ECONNREFUSED';
       mockFetchWithDnsWrapper.mockRejectedValue(error);
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-      const mockReject = {
-        applyIgnored: jest.fn(),
-      };
-
-      await fetchV2Callback(mockResolve, mockReject, 'https://example.com');
-
-      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.any(Object)] // ExternalCopy error
-      );
+      await expect(fetchV2Callback('https://example.com')).resolves.toEqual({
+        error: expect.objectContaining({
+          message: 'Network error',
+          code: 'ECONNREFUSED',
+        }),
+      });
     });
   });
 
-  describe('_geolocation API injection', () => {
+  describe('geolocation API injection', () => {
     let geolocationCallback;
     const mockFetch = require('node-fetch');
-    const mockReference = require('isolated-vm').Reference;
 
     beforeEach(async () => {
-      mockReference.mockClear();
       await createNewContext(mockCachedIsolate);
-      // Extract the geolocation callback
-      geolocationCallback = mockReference.mock.calls.find(call => call[0].toString().includes('GEOLOCATION_URL'))?.[0];
+      geolocationCallback = mockJail.set.mock.calls.find(([key]) => key === '_geolocationRef')[1].callback;
     });
 
     test('should handle successful geolocation call', async () => {
@@ -502,74 +455,34 @@ describe('Context Reset Utilities', () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-      const mockReject = {
-        applyIgnored: jest.fn(),
-      };
+      const result = await geolocationCallback('1.2.3.4');
 
-      await geolocationCallback(mockResolve, mockReject, '1.2.3.4');
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        'http://geo.example.com/geoip/1.2.3.4',
-        { timeout: 1000 }
-      );
-      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.any(Object)] // ExternalCopy data
-      );
+      expect(mockFetch).toHaveBeenCalledWith('http://geo.example.com/geoip/1.2.3.4', {
+        timeout: 1000,
+      });
+      expect(result).toEqual({ value: mockGeoData });
     });
 
     test('should handle missing IP address', async () => {
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-      const mockReject = {
-        applyIgnored: jest.fn(),
-      };
-
-      await geolocationCallback(mockResolve, mockReject);
-
-      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.any(Object)] // ExternalCopy error
-      );
+      await expect(geolocationCallback()).resolves.toEqual({
+        error: expect.objectContaining({ message: 'ip address is required' }),
+      });
     });
 
     test('should reject invalid IP address', async () => {
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-      const mockReject = {
-        applyIgnored: jest.fn(),
-      };
-
-      await geolocationCallback(mockResolve, mockReject, '../../metrics');
+      await expect(geolocationCallback('../../metrics')).resolves.toEqual({
+        error: expect.objectContaining({ message: 'invalid ip address' }),
+      });
 
       expect(mockFetch).not.toHaveBeenCalled();
-      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.objectContaining({ message: 'invalid ip address' })]
-      );
     });
 
     test('should handle missing GEOLOCATION_URL environment variable', async () => {
       delete process.env.GEOLOCATION_URL;
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-      const mockReject = {
-        applyIgnored: jest.fn(),
-      };
-
-      await geolocationCallback(mockResolve, mockReject, '1.2.3.4');
-
-      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.any(Object)] // ExternalCopy error
-      );
+      await expect(geolocationCallback('1.2.3.4')).resolves.toEqual({
+        error: expect.objectContaining({ message: 'geolocation is not available right now' }),
+      });
     });
 
     test('should handle non-200 geolocation response', async () => {
@@ -578,38 +491,20 @@ describe('Context Reset Utilities', () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-      const mockReject = {
-        applyIgnored: jest.fn(),
-      };
-
-      await geolocationCallback(mockResolve, mockReject, '1.2.3.4');
-
-      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.any(Object)] // ExternalCopy error
-      );
+      await expect(geolocationCallback('1.2.3.4')).resolves.toEqual({
+        error: expect.objectContaining({
+          message: 'request to fetch geolocation failed with status code: 404',
+        }),
+      });
     });
 
     test('should handle geolocation network error', async () => {
       const error = new Error('Network timeout');
       mockFetch.mockRejectedValue(error);
 
-      const mockResolve = {
-        applyIgnored: jest.fn(),
-      };
-      const mockReject = {
-        applyIgnored: jest.fn(),
-      };
-
-      await geolocationCallback(mockResolve, mockReject, '1.2.3.4');
-
-      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
-        undefined,
-        [expect.any(Object)] // ExternalCopy error
-      );
+      await expect(geolocationCallback('1.2.3.4')).resolves.toEqual({
+        error: expect.objectContaining({ message: 'Network timeout' }),
+      });
     });
   });
 
@@ -672,13 +567,10 @@ describe('Context Reset Utilities', () => {
         json: jest.fn().mockResolvedValue({ data: 'test' }),
       });
 
-      const mockReference = require('isolated-vm').Reference;
-      mockReference.mockClear();
       await createNewContext(mockCachedIsolate);
-      const fetchCallback = mockReference.mock.calls.find(call => call[0].toString().includes('fetchWithDnsWrapper'))?.[0];
+      const fetchCallback = mockJail.set.mock.calls.find(([key]) => key === '_fetchRef')[1].callback;
 
-      const mockResolve = { applyIgnored: jest.fn() };
-      await fetchCallback(mockResolve, 'https://example.com');
+      await fetchCallback('https://example.com');
 
       expect(mockStats.timing).toHaveBeenCalledWith(
         'fetch_call_duration',
@@ -694,7 +586,7 @@ describe('Context Reset Utilities', () => {
 
     test('should call stats increment for credential errors', async () => {
       await createNewContext(mockCachedIsolate, null);
-      const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredential')[1];
+      const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredentialRef')[1].callback;
 
       getCredential('someKey');
 
@@ -776,7 +668,7 @@ describe('Context Reset Utilities', () => {
       await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
       
       // Should default to 1000ms when invalid
-      const geolocationReference = mockJail.set.mock.calls.find(([key]) => key === '_geolocation')[1];
+      const geolocationReference = mockJail.set.mock.calls.find(([key]) => key === '_geolocationRef')[1];
       expect(geolocationReference).toBeDefined();
     });
 
@@ -786,7 +678,7 @@ describe('Context Reset Utilities', () => {
       await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
       
       // Should default to 1000ms when missing
-      const geolocationReference = mockJail.set.mock.calls.find(([key]) => key === '_geolocation')[1];
+      const geolocationReference = mockJail.set.mock.calls.find(([key]) => key === '_geolocationRef')[1];
       expect(geolocationReference).toBeDefined();
     });
   });

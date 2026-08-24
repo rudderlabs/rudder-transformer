@@ -133,10 +133,9 @@ The V1 user transformation system provides a secure, isolated environment for ex
              ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 6. Copy Data into Isolate                                   │
-│    sharedPayload = new ivm.ExternalCopy(payload)            │
-│                       .copyInto({ transferIn: true })       │
+│    sharedPayload = new ivm.ExternalCopy(payload).copyInto() │
 │    - Deep copy of data into isolate memory                  │
-│    - transferIn: true = transfer ownership, no double mem   │
+│    - No transfer list or isolated-vm module is exposed      │
 └────────────┬────────────────────────────────────────────────┘
              │
              ▼
@@ -269,7 +268,7 @@ await jail.set('global', jail.derefInto()); // Make global accessible to user co
 #### ExternalCopy - Serialization and Transfer
 
 ```javascript
-const sharedPayload = new ivm.ExternalCopy(transformationPayload).copyInto({ transferIn: true });
+const sharedPayload = new ivm.ExternalCopy(transformationPayload).copyInto();
 ```
 
 **How It Works:**
@@ -285,28 +284,13 @@ const sharedPayload = new ivm.ExternalCopy(transformationPayload).copyInto({ tra
 2. **Transfer (copyInto)**
    - Deserializes data into target isolate
    - Creates new objects in target isolate's heap
-   - **`transferIn: true`** - Transfers ownership, invalidating source
-   - **`transferIn: false`** (default) - Keeps original, duplicates memory
-
-**Memory Efficiency:**
-
-| Method                           | Memory Usage         | Source Valid After? | Use Case                |
-| -------------------------------- | -------------------- | ------------------- | ----------------------- |
-| `copyInto()`                     | 2x (source + target) | Yes                 | Need to reuse data      |
-| `copyInto({ transferIn: true })` | 1x (target only)     | No                  | One-time use (our case) |
+   - Uses the default copy semantics so no transfer-list primitive is reachable from user code
 
 **Example:**
 
 ```javascript
 const data = { events: [1000 event objects], meta: {...} };
-
-// Without transferIn
-const copy1 = new ivm.ExternalCopy(data).copyInto();
-// Memory: data (10MB) + copy1 (10MB) = 20MB
-
-// With transferIn
-const copy2 = new ivm.ExternalCopy(data).copyInto({ transferIn: true });
-// Memory: copy2 (10MB) only, data is invalidated
+const copy = new ivm.ExternalCopy(data).copyInto();
 ```
 
 ---
@@ -389,17 +373,14 @@ fetch('http://api.com')
         ├─ Marshal call via ivm.Reference
         │
         ▼
-                              _fetch Reference receives:
-                              - resolve callback
+                              Host-owned fetch reference receives:
                               - ...args (url, options)
 
                               Execute actual HTTP request:
                               await fetchWithDnsWrapper(...)
 
-                              Copy response into isolate:
-                              resolve.applyIgnored(undefined, [
-                                new ivm.ExternalCopy(data).copyInto()
-                              ])
+                              Return copied result via Reference.apply
+                              result: { copy: true, promise: true }
         ▼
 receive response
 continue execution
@@ -408,12 +389,8 @@ continue execution
 ### 1. fetch() - Basic HTTP
 
 ```javascript
-await jail.set(
-  '_fetch',
-  new ivm.Reference(async (resolve, ...args) => {
-    ...
-  }),
-);
+await jail.set('_fetchRef', new ivm.Reference(async (...args) => { ... }));
+// Bootstrap exposes global.fetch as a plain function and deletes _fetchRef before user code runs.
 ```
 
 **Characteristics:**
@@ -426,12 +403,8 @@ await jail.set(
 ### 2. fetchV2() - Enhanced HTTP
 
 ```javascript
-await jail.set(
-  '_fetchV2',
-  new ivm.Reference(async (resolve, reject, ...args) => {
-    ...
-  }),
-);
+await jail.set('_fetchV2Ref', new ivm.Reference(async (...args) => { ... }));
+// Bootstrap unwraps the copied host result and rejects with the same public error shape.
 ```
 
 **Characteristics:**
@@ -468,12 +441,8 @@ async function transformEvent(event, metadata) {
 ### 3. geolocation() - IP Lookup
 
 ```javascript
-await jail.set(
-  '_geolocation',
-  new ivm.Reference(async (resolve, reject, ...args) => {
-    ...
-  }),
-);
+await jail.set('_geolocationRef', new ivm.Reference(async (...args) => { ... }));
+// Bootstrap exposes global.geolocation as a plain Promise-returning function.
 ```
 
 **Characteristics:**
@@ -486,9 +455,8 @@ await jail.set(
 ### 4. getCredential() - Credential Access
 
 ```javascript
-await jail.set('_getCredential', function (key) {
-  ...
-});
+await jail.set('_getCredentialRef', new ivm.Reference((key) => { ... }));
+// Bootstrap exposes global.getCredential as a plain function.
 ```
 
 **Characteristics:**

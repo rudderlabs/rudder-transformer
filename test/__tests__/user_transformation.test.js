@@ -977,6 +977,80 @@ describe("User transformation", () => {
     expect(output).toEqual(expectedData);
   });
 
+  describe("isolated-vm capability isolation", () => {
+    const dangerousGlobalsExpectation = {
+      globalIvm: "undefined",
+      globalModule: "undefined",
+      reference: "undefined",
+      externalCopy: "undefined",
+      callback: "undefined",
+      directIvm: "undefined",
+      directExternalCopy: "undefined",
+    };
+
+    it("does not expose isolated-vm constructors to code version 0 transformations", async () => {
+      const inputData = require(`./data/${integration}_input.json`);
+      const trRevCode = {
+        codeVersion: "0",
+        name,
+        code: `
+          function transform(events) {
+            return events.map(event => {
+              const globalObj = Function('return this')();
+              event.sandboxGlobals = {
+                globalIvm: typeof globalObj._ivm,
+                globalModule: typeof globalObj.ivm,
+                reference: typeof globalObj.Reference,
+                externalCopy: typeof globalObj.ExternalCopy,
+                callback: typeof globalObj.Callback,
+                directIvm: typeof ivm,
+                directExternalCopy: typeof ExternalCopy,
+              };
+              return event;
+            });
+          }
+        `,
+        versionId: "testVersionId"
+      };
+
+      const output = await userTransformHandler(inputData, trRevCode.versionId, [], trRevCode, true);
+
+      output.transformedEvents.forEach(event => {
+        expect(event.sandboxGlobals).toEqual(dangerousGlobalsExpectation);
+      });
+    });
+
+    it("does not expose isolated-vm constructors to code version 1 transformations", async () => {
+      const inputData = require(`./data/${integration}_input.json`);
+      const trRevCode = {
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event) {
+            const globalObj = Function('return this')();
+            event.sandboxGlobals = {
+              globalIvm: typeof globalObj._ivm,
+              globalModule: typeof globalObj.ivm,
+              reference: typeof globalObj.Reference,
+              externalCopy: typeof globalObj.ExternalCopy,
+              callback: typeof globalObj.Callback,
+              directIvm: typeof ivm,
+              directExternalCopy: typeof ExternalCopy,
+            };
+            return event;
+          }
+        `,
+        versionId: "testVersionId"
+      };
+
+      const output = await userTransformHandler(inputData, trRevCode.versionId, [], trRevCode, true);
+
+      output.transformedEvents.forEach(event => {
+        expect(event.sandboxGlobals).toEqual(dangerousGlobalsExpectation);
+      });
+    });
+  });
+
   describe("UserTransformation With Credentials for code version 1", () => {
     it(`successfully executes transformation with credential lookup with valid key`, async () => {
       const versionId = randomID();
@@ -1270,6 +1344,50 @@ describe("User transformation with IVM cache", () => {
     if (ivmCacheManager && ivmCacheManager.clear) {
       ivmCacheManager.clear().catch(() => {}); // Clear cache but don't fail tests
     }
+  });
+
+  it("does not expose isolated-vm constructors when reusing cached V1 isolates", async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const respBody = {
+      versionId,
+      codeVersion: "1",
+      name,
+      code: `
+        export function transformEvent(event) {
+          const globalObj = Function('return this')();
+          event.sandboxGlobals = {
+            globalIvm: typeof globalObj._ivm,
+            globalModule: typeof globalObj.ivm,
+            reference: typeof globalObj.Reference,
+            externalCopy: typeof globalObj.ExternalCopy,
+            callback: typeof globalObj.Callback,
+            directIvm: typeof ivm,
+            directExternalCopy: typeof ExternalCopy,
+          };
+          return event;
+        }
+      `,
+    };
+    fetch.mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    const outputCached = await userTransformHandler(inputData, versionId, []);
+
+    [...output, ...outputCached].forEach(event => {
+      expect(event.transformedEvent.sandboxGlobals).toEqual({
+        globalIvm: "undefined",
+        globalModule: "undefined",
+        reference: "undefined",
+        externalCopy: "undefined",
+        callback: "undefined",
+        directIvm: "undefined",
+        directExternalCopy: "undefined",
+      });
+    });
   });
 
   it(`Simple ${name} async fetchV2 test for V1 transformation - transformEvent`, async () => {

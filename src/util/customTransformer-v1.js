@@ -14,9 +14,7 @@ async function transform(isolatevm, events) {
   transformationPayload.events = events;
   transformationPayload.transformationType = isolatevm.fName;
   const executionPromise = new Promise(async (resolve, reject) => {
-    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
-      transferIn: true,
-    });
+    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto();
     try {
       await isolatevm.bootstrapScriptResult.apply(
         undefined,

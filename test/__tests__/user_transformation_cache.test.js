@@ -1,39 +1,15 @@
 const ivmCacheManager = require("../../src/util/ivmCache/manager");
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const ivm = require('isolated-vm');
+const {
+  injectV1SandboxApis,
+  V1_FORWARD_MAIN_PROMISE_SOURCE,
+} = require('../../src/util/ivm/sandboxBridge');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 const ivmExecutionTimeout = parseInt(process.env.IVM_EXECUTION_TIMEOUT || '4000', 10);
 
-const bootstrapCode = 'new ' +
-              `
-                function() {
-                // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
-                // only place in the context with a reference to the module. The 'ivm' module is very powerful
-                // so you should not put it in the hands of untrusted code.
-                let ivm = _ivm;
-                delete _ivm;
-                return new ivm.Reference(function forwardMainPromise(
-                    fnRef,
-                    resolve,
-                    reject,
-                    events
-                    ){
-                    const derefMainFunc = fnRef.deref();
-                    Promise.resolve(derefMainFunc(events))
-                    .then(value => {
-                        resolve.applyIgnored(undefined, [
-                        new ivm.ExternalCopy(value).copyInto()
-                        ]);
-                    })
-                    .catch(error => {
-                        reject.applyIgnored(undefined, [
-                        new ivm.ExternalCopy(error.message).copyInto()
-                        ]);
-                    });
-                    });
-                }
-`
+const bootstrapCode = V1_FORWARD_MAIN_PROMISE_SOURCE;
 
 const wrapperCode = `
         export async function transformWrapper(transformationPayload) {
@@ -94,9 +70,7 @@ async function transform(isolatevm, events) {
     const transformationPayload = {};
     transformationPayload.events = events;
     transformationPayload.transformationType = isolatevm.fName;
-    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
-      transferIn: true,
-    });
+    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto();
     
     const executionPromise = new Promise((resolve, reject) => {
       isolatevm.bootstrapScriptResult.apply(
@@ -170,9 +144,17 @@ describe("User transformation Cache", () => {
         const context = await isolate.createContext();
         const jail = context.global;
         await jail.set('global', jail.derefInto());
-        await jail.set('_ivm', ivm);
+        await injectV1SandboxApis({
+          jail,
+          trTags: { identifier: 'V1', transformationId, workspaceId },
+          logs: [],
+          testMode: false,
+          credentials: {},
+          transformationId,
+          workspaceId,
+        });
         const bootstrap = await isolate.compileScript(bootstrapCode);
-        const bootstrapScriptResult = await bootstrap.run(context);
+        const bootstrapScriptResult = await bootstrap.run(context, { reference: true });
         const codeWithWrapper = code + wrapperCode;
         const compiledModules = {}; 
         const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, {

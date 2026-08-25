@@ -234,3 +234,100 @@ describe('processTiktokAudienceRecords tiktok_audience record edge cases', () =>
     expect(id).toBe(md5('abcdef'));
   });
 });
+
+describe('processTiktokAudienceRecords batch_data / id_schema positional alignment', () => {
+  type BatchedJSON = {
+    batchedRequest: {
+      body: {
+        JSON: {
+          batch_data: ({ id: string; audience_ids: string[] } | Record<string, never>)[][];
+          id_schema: string[];
+        };
+      };
+    };
+  };
+
+  const readPayload = (response: RouterTransformationResponse) =>
+    (response as unknown as BatchedJSON).batchedRequest.body.JSON;
+
+  it('null identifiers are sent as {} placeholders so each slot lines up with id_schema', () => {
+    const event = buildBaseEvent({
+      identifiers: {
+        AAID_SHA256: null,
+        EMAIL_SHA256: 'user@example.com',
+        IDFA_SHA256: null,
+        PHONE_SHA256: null,
+      },
+    });
+
+    const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
+    expect(failedResponses).toHaveLength(0);
+    expect(successfulResponses).toHaveLength(1);
+
+    const { batch_data: batchData, id_schema: idSchema } = readPayload(successfulResponses[0]);
+    expect(idSchema).toEqual(['AAID_SHA256', 'EMAIL_SHA256', 'IDFA_SHA256', 'PHONE_SHA256']);
+    expect(batchData[0]).toHaveLength(idSchema.length);
+    expect(batchData[0]).toEqual([
+      {},
+      { id: sha256('user@example.com'), audience_ids: ['23856594064540489'] },
+      {},
+      {},
+    ]);
+  });
+
+  it('identifiers supplied out of alphabetical order are re-ordered to match id_schema', () => {
+    const event = buildBaseEvent({
+      identifiers: {
+        PHONE_SHA256: '+15551234567',
+        EMAIL_SHA256: 'user@example.com',
+        AAID_SHA256: 'AAID-VALUE',
+      },
+    });
+
+    const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
+    expect(failedResponses).toHaveLength(0);
+    expect(successfulResponses).toHaveLength(1);
+
+    const { batch_data: batchData, id_schema: idSchema } = readPayload(successfulResponses[0]);
+    expect(idSchema).toEqual(['AAID_SHA256', 'EMAIL_SHA256', 'PHONE_SHA256']);
+    expect(batchData[0]).toEqual([
+      { id: sha256('aaid-value'), audience_ids: ['23856594064540489'] },
+      { id: sha256('user@example.com'), audience_ids: ['23856594064540489'] },
+      { id: sha256('+15551234567'), audience_ids: ['23856594064540489'] },
+    ]);
+  });
+
+  it('every row in a batch has one entry per id_schema slot', () => {
+    const events = [
+      buildBaseEvent({
+        identifiers: { AAID_SHA256: null, EMAIL_SHA256: 'a@example.com', PHONE_SHA256: null },
+      }),
+      buildBaseEvent({
+        identifiers: {
+          AAID_SHA256: 'aaid-b',
+          EMAIL_SHA256: 'b@example.com',
+          PHONE_SHA256: '+15550000002',
+        },
+      }),
+      buildBaseEvent({
+        identifiers: { AAID_SHA256: null, EMAIL_SHA256: null, PHONE_SHA256: '+15550000003' },
+      }),
+    ];
+
+    const { failedResponses, successfulResponses } = processTiktokAudienceRecords(events);
+    expect(failedResponses).toHaveLength(0);
+    expect(successfulResponses).toHaveLength(1);
+
+    const { batch_data: batchData, id_schema: idSchema } = readPayload(successfulResponses[0]);
+    expect(batchData).toHaveLength(3);
+    batchData.forEach((row) => expect(row).toHaveLength(idSchema.length));
+
+    // The phone-only user must land in the PHONE_SHA256 slot, not the AAID_SHA256 slot.
+    const phoneSlot = idSchema.indexOf('PHONE_SHA256');
+    expect(batchData[2][phoneSlot]).toEqual({
+      id: sha256('+15550000003'),
+      audience_ids: ['23856594064540489'],
+    });
+    expect(batchData[2][idSchema.indexOf('AAID_SHA256')]).toEqual({});
+  });
+});

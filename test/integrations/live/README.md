@@ -147,6 +147,14 @@ export const live = {
 The registry discovers it automatically. Set `enabled: false` to keep it in the tree
 without running it.
 
+`envOverrides` is a static literal, so it can't carry a credential. When a transform or an SDK
+reads one from `process.env` rather than from `destination.Config` or `metadata.secret` — e.g.
+Google Ads' shared `GOOGLE_ADS_DEVELOPER_TOKEN` — declare `resolveEnv: (s) => ({ ... })` on the
+spec instead. It is applied and restored alongside `envOverrides` (and wins on a key collision),
+which keeps every live credential inside the one `LIVE_SECRET_<DEST>` blob. Note that
+`test/setup.ts` seeds placeholder values for a few such variables, so a spec that needs the real
+one must name it here or the placeholder is what reaches the destination.
+
 Batching-framework delivery is still behind a temporary per-destination flag. For live specs that
 need to exercise framework delivery, explicitly set
 `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL'` in `envOverrides`. Do not set
@@ -161,7 +169,25 @@ scenario-level `cleanup`. There are no lifecycle hooks. Each step declares a req
 
 - **pipeline**: `{ stepType: 'pipeline', name, seed, metadataOverride?, retries? }` —
   `seed(ctx)` builds the raw event; the runner transforms, delivers, and asserts it was
-  delivered. `retries` re-runs seed → transform → deliver with backoff when delivery fails — for
+  delivered. Return an **array** of events instead of one to put them all in a single
+  `/routerTransform` call (one `input[]` entry each) — the only way to exercise router-level
+  batching live: whether N events collapse into one delivery request, and whether a batch response
+  is attributed back to every job. Pin the outcome with `expectedOutputs`/`expectedProxyRequests`,
+  since a grouping regression that fans events out still delivers 2xx on each.
+  The runner fails the step on any output that failed to _transform_ (a non-2xx entry in
+  `output[]`) rather than counting only the survivors, and on any seeded job that comes back with
+  no delivery verdict at all.
+  `expectedFailure` declares that the step is expected to fail, and how — one field for every
+  kind of failure rather than a flag per error class. `items` names seed indices whose jobs must
+  come back NOT delivered (omit for a whole-batch failure); `category` asserts the error category
+  the delivery reported. A step declaring it no longer requires the batch's top-level status to be
+  2xx. Both halves matter: for a partial failure, naming the index asserts **which** job the
+  destination blamed — blaming the wrong one still yields one success and one failure — and for a
+  credential failure, asserting the category is what separates a specific branch from the generic
+  one, since both abort the job. To reach a credential branch live, `metadataOverride.secret`
+  replaces the resolved secret for that step, because a real account's grant cannot be revoked on
+  demand.
+  `retries` re-runs seed → transform → deliver with backoff when delivery fails — for
   routes that decide create-vs-update via an eventually-consistent search (a just-created record
   can be missed and 409 on the first try). Only use it where a failed attempt persists nothing, so
   repeating is safe.

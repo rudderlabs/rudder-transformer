@@ -56,15 +56,23 @@ const ProxyDeliveryHttpBodySchema = z.object({
   output: DeliveryV1ResponseSchema,
 });
 
-/** Parse `/routerTransform` HTTP body; returns only successful (2xx) outputs. */
-export const parseSuccessfulRouterOutputs = (body: unknown): RouterOutput[] => {
+/**
+ * Parse a `/routerTransform` HTTP body into its outputs, successful and failed alike.
+ *
+ * Failed outputs are deliberately NOT filtered out here. /routerTransform answers 200 with a
+ * per-event verdict, so a transform error is just another entry in `output[]`; dropping those
+ * silently would let a multi-event step whose events partly failed to transform still satisfy an
+ * `expectedOutputs` count built from the survivors. The caller separates them and fails on any
+ * non-2xx (see runPipelineStep).
+ */
+export const parseRouterOutputs = (body: unknown): RouterOutput[] => {
   const result = RouterTransformHttpBodySchema.safeParse(body);
   if (!result.success) {
     throw new Error(
       `/routerTransform response did not match the expected shape: ${formatZodError(result.error)}`,
     );
   }
-  return result.data.output.filter((o) => o.statusCode >= 200 && o.statusCode < 300);
+  return result.data.output;
 };
 
 /** Parse `/v1/destinations/<dest>/proxy` HTTP body to the delivery verdict. */

@@ -52,6 +52,16 @@ merge gate; this suite is additive and asserts on the genuine delivery verdict.
 | mocked network via `network.ts` / `MockAxiosAdapter` | **no mock** — the runner boots the real app and hits real APIs |
 | a `data.ts` case = one input `message` + `destination.Config` + expected `output` | a **scenario** with a pipeline step whose `seed(ctx)` rebuilds that `message` |
 | hardcoded PII/ids in the message (email, userId, externalId, recordId, list/audience id) | `ctx.email()`, `ctx.identity(entity)`, `ctx.runId`, `ctx.now(offset?)`, `ctx.liveSecret.resourceIds`, or an id registered by a setup step — never a literal |
+
+**What that rule is and isn't about.** It targets values that must be *unique per run* or that are
+*sensitive*: identities, PII, and ids of records the run creates. It is not a ban on constants. A
+name that is fixed **configuration of the sandbox account** — a conversion action name, a list
+name — is neither secret nor run-scoped, and it must match the account character for character, so
+a literal next to the code that uses it beats a Vault key that can be forgotten. Prefer
+`resourceIds` when the value is an opaque id you'd have to look up anyway, or genuinely varies by
+environment; prefer a named constant in the spec when it's a stable label a reader can sanity-check
+against the account. Either way the failure should name the thing: a missing `resourceIds` key
+fails at collection, a wrong constant fails at the destination's own lookup.
 | config variants across cases (api version, list/object type, mapping) | a base `resolveConfig` + per-scenario `configOverride(base)` |
 | a case that asserts a specific transformed request shape | a scenario asserting the event is **delivered** (verdict 2xx / 207); the shape is the transform's job, already covered by the mocked suite |
 
@@ -64,6 +74,32 @@ the *code paths* that matter live — these differ by destination category:
 - **Conversion / event destinations**: the distinct event types and property mappings; enhanced /
   offline conversion variants.
 - **Cross-cutting** (any category): batched vs `dontBatch`; config-driven variants.
+
+**Batching is a scenario, not a side effect.** A pipeline step whose `seed` returns one event can
+never show that N events group into one delivery request. Return an ARRAY from `seed` for that
+— every event goes into a single `/routerTransform` call — and pin the result with
+`expectedOutputs`/`expectedProxyRequests`, since a grouping regression that fans events out still
+delivers 2xx on each. Worth a scenario per batching-key dimension the destination has: events that
+should group (same key), events that should fan out (different key), and `metadataOverride:
+{ dontBatch: true }`.
+
+**Partial failure is where a delivery spec earns its keep.** If the destination reports per-item
+results inside a 2xx (or a batch endpoint that 207s), add a scenario seeding one valid item next to
+one the DESTINATION rejects — not one your transform rejects, which never reaches delivery — and
+declare `expectedFailure: { items: [<seed index>] }`. The step then asserts which job was blamed,
+which is the positional mapping delivery specs implement and the thing that breaks silently. Find a field the
+transform passes through unvalidated (gaec uses a malformed `adjustmentDateTime`) so the item
+survives transform and fails at the API.
+
+**Credential branches need a bad credential, not a broken account.** For a spec's `authExpired` /
+`authRevoked` handling, use `metadataOverride: { secret: { ... } }` to hand one step a credential
+the destination rejects, and assert `expectedFailure: { category: '...' }` — the category, not
+merely that delivery failed, since a generic abort looks identical otherwise. Watch for transforms that call the
+destination BEFORE the delivery request (gaec resolves its conversion action by name first): those
+calls use the same credential and throw from inside `networkHandler.proxy()`, which the framework
+catches as a legacy-path error and never routes through the delivery spec. Where that applies, have
+the scenario perform one valid delivery first so any such lookup is cached, then fail the next
+step — and keep that warm-up inside the scenario so it does not depend on scenario order.
 
 Give each a stable `id` and a one-line `description`.
 
@@ -125,6 +161,14 @@ runs against the previous attempt's state.
 (listId, pixelId, measurementId, …); `readback` holds credentials for `verify` steps.
 `resolveConfig(s)` maps `s.config` (plus fixed non-secret defaults taken from the component
 `destination.Config`) into the real `destination.Config`.
+
+**Credentials an SDK reads from `process.env`** (not from `destination.Config` or
+`metadata.secret`) — e.g. Google Ads' shared `GOOGLE_ADS_DEVELOPER_TOKEN`: put the value in the
+secret and map it with `resolveEnv: (s) => ({ VAR: s.secret?.field })` on the spec. `envOverrides`
+is a static literal and cannot carry a secret. `resolveEnv` is applied and restored alongside
+`envOverrides` and wins on a key collision. Check `test/setup.ts` first — it seeds placeholders for
+a few such variables, and a spec that doesn't override one silently ships the placeholder to the
+real destination.
 
 **OAuth destinations** (`authType: 'oauth'`): supply `oauthRefresh` — the long-lived `refreshToken`,
 the `accountDefinition` (for rudder-auth's v1 route), and any `providerFields` (e.g. Salesforce

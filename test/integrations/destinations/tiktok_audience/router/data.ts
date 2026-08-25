@@ -2706,10 +2706,14 @@ export const data = [
                   JSON: {
                     batch_data: [
                       [
+                        // AAID_SHA256 was null: an empty object holds the slot open so the
+                        // hashes below are read against EMAIL_SHA256 and PHONE_SHA256.
+                        {},
                         {
                           id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
                           audience_ids: ['23856594064540489'],
                         },
+                        {},
                         {
                           id: 'c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646',
                           audience_ids: ['23856594064540489'],

@@ -71,16 +71,24 @@ export type Identifier = {
   audience_ids: string[];
 };
 
+/**
+ * Placeholder for an id_schema slot this user has no value for. It keeps the row the same
+ * length as id_schema so TikTok reads every remaining id against the right identifier type.
+ */
+export type IdentifierPlaceholder = Record<string, never>;
+
+export type BatchIdentifier = Identifier | IdentifierPlaceholder;
+
 export type IdentifiersPayload = {
   event: TiktokAudienceRecordRequest;
-  batchIdentifiers: Identifier[];
+  batchIdentifiers: BatchIdentifier[];
   idSchema: string[];
   advertiserId: string;
   action: string;
 };
 
 export type SegmentMappingPayload = {
-  batch_data: Identifier[][];
+  batch_data: BatchIdentifier[][];
   id_schema: string[];
   advertiser_ids: string[];
   action: string;

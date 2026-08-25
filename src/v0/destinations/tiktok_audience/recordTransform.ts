@@ -4,7 +4,7 @@ import validator from 'validator';
 import type {
   TiktokAudienceRecordRequest,
   IdentifiersPayload,
-  Identifier,
+  BatchIdentifier,
   SegmentMappingPayload,
   ProcessTiktokAudienceRecordsResponse,
 } from './recordTypes';
@@ -73,11 +73,22 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Identifi
     throw new Error(`Invalid hashing method for identifier key ${fieldName} for TikTok Audience.`);
   };
 
-  const identifiersList: Identifier[] = [];
-  for (const [fieldName, value] of Object.entries(identifiers)) {
+  // TikTok reads each batch_data row positionally against id_schema, so a row must hold one
+  // entry per schema slot. Walk the schema itself rather than the identifiers object: its key
+  // order is not guaranteed to be sorted, and slots the user has no usable value for must still
+  // be occupied — by an empty object, which is how TikTok expects "this user has no such id".
+  const idSchema = Object.keys(identifiers).sort();
+  const identifiersList: BatchIdentifier[] = [];
+  let populatedIdentifiers = 0;
+
+  for (const fieldName of idSchema) {
     if (!TRAITS_SET.has(fieldName)) {
       throw new Error(`Invalid identifier key ${fieldName} for TikTok Audience.`);
     }
+
+    const value = identifiers[fieldName];
+    let identifier: BatchIdentifier = {};
+
     if (value) {
       let hashingType: HashingType = HashingType.NONE;
       if (SHA256_TRAITS.includes(fieldName)) {
@@ -101,27 +112,34 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Identifi
       if (isHashRequired) {
         const normalizedFieldValue = normalizedValue(fieldName, value);
         if (isDefinedAndNotNullAndNotEmpty(normalizedFieldValue)) {
-          identifiersList.push({
+          identifier = {
             id: hashIdentifier(fieldName, normalizedFieldValue),
             audience_ids: [audienceId],
-          });
+          };
         }
       } else {
-        identifiersList.push({
+        identifier = {
           id: value,
           audience_ids: [audienceId],
-        });
+        };
       }
     }
+
+    identifiersList.push(identifier);
+    if ('id' in identifier) {
+      populatedIdentifiers += 1;
+    }
   }
-  if (identifiersList.length === 0) {
+
+  // A row of nothing but placeholders identifies no one, so it is still an aborted event.
+  if (populatedIdentifiers === 0) {
     throw new InstrumentationError('No identifiers found, aborting event.');
   }
 
   const payload: IdentifiersPayload = {
     event,
     batchIdentifiers: identifiersList,
-    idSchema: Object.keys(identifiers).sort(),
+    idSchema,
     advertiserId,
     action: ACTION_RECORD_MAP[action],
   };

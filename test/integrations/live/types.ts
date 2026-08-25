@@ -134,9 +134,9 @@ interface LiveScenario {
   enabled?: boolean; // default true; set false to keep the scenario in the tree without running it
   // Process env applied before this scenario's steps and restored after — the live analogue of the
   // component suite's `envOverrides`. For transforms whose behaviour is selected by an env feature
-  // flag rather than by destination.Config (e.g. CustomerIO's batching-framework and event-stream
-  // V2 rollout switches), which is otherwise unreachable from a spec. Scenarios run sequentially,
-  // so one scenario's env never leaks into the next. `undefined` unsets a variable.
+  // flag rather than by destination.Config (e.g. CustomerIO's event-stream V2 rollout switch), which
+  // is otherwise unreachable from a spec. Scenarios run sequentially, so one scenario's env never
+  // leaks into the next. `undefined` unsets a variable.
   envOverride?: Record<string, string | undefined>;
   // Run this scenario against a modified destination.Config (derived from the spec's base config).
   configOverride?: (base: Record<string, unknown>, secret: LiveSecret) => Record<string, unknown>;
@@ -161,8 +161,10 @@ interface LiveSpec {
   authType: AuthType;
   oauthVersion?: OAuthVersion;
   // Environment variables set for the duration of this destination's scenarios and restored after.
-  // Live runs exercise the real transform and delivery paths, so a destination behind a rollout
-  // flag has to name it here or the suite silently tests the legacy path instead.
+  // Use this for destination/scenario-specific switches, including the temporary
+  // batching-framework delivery rollout flag when a live spec must exercise framework delivery.
+  // Do not set the batching-framework transform rollout flag for destinations already marked
+  // batching-GA in features.ts.
   envOverrides?: EnvOverride;
   // Map the resolved secret into the destination.Config the transform expects (merge non-secret
   // defaults with the credentials in `s.config`).

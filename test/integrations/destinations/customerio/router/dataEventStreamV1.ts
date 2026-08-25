@@ -1,16 +1,15 @@
 import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 
 // Covers the hybrid state: the batching framework is enabled (unlocking record events),
-// but CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED is left at its default (disabled) — so
-// event-stream events keep shipping via the V1 request shape while record events still
-// go through the V2 batching path. Compare with dataV2.ts, which sets
-// CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true' and asserts the V2 shape for the same
-// kind of event-stream events.
+// but destination.Config.apiVersion is absent (default v1) — so event-stream events keep
+// shipping via the V1 request shape while record events still go through the V2 batching
+// path. Compare with dataV2.ts, which sets apiVersion: 'v2' and asserts the V2 shape for
+// the same kind of event-stream events.
 export const dataEventStreamV1 = [
   {
     name: 'customerio',
     description:
-      'hybrid: batching framework on, event-stream V2 API off — identify event ships in the V1 shape',
+      'hybrid: batching framework on, apiVersion default v1 — identify event ships in the V1 shape',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -74,10 +73,10 @@ export const dataEventStreamV1 = [
   {
     name: 'customerio',
     description:
-      'hybrid: batching framework on, event-stream V2 API off — record event still batches on /v2/batch while the event-stream event ships separately in the V1 shape',
+      'hybrid: batching framework on, apiVersion default v1 — record event still batches on /v2/batch while the event-stream event ships separately in the V1 shape',
     scenario: 'framework',
     successCriteria:
-      'the record event batches onto the V2 endpoint exactly as it does when the flag is enabled, while the event-stream event ships unbatched against its V1 endpoint instead of joining the V2 batch',
+      'the record event batches onto the V2 endpoint exactly as it does when apiVersion is v2, while the event-stream event ships unbatched against its V1 endpoint instead of joining the V2 batch',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -86,7 +85,7 @@ export const dataEventStreamV1 = [
         body: {
           input: [
             {
-              // record event — always goes through the V2 batching path, flag or no flag
+              // record event — always goes through the V2 batching path, regardless of apiVersion
               message: {
                 type: 'record',
                 action: 'insert',
@@ -102,8 +101,8 @@ export const dataEventStreamV1 = [
               },
             },
             {
-              // event-stream event — V1 shape while the event-stream V2 API flag is off,
-              // even though the batching framework is GA-enabled
+              // event-stream event — V1 shape while apiVersion is default v1, even though the
+              // batching framework is on for this workspace
               message: {
                 channel: 'web',
                 type: 'track',

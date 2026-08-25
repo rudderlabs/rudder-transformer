@@ -44,9 +44,6 @@ const processSingleMessageRetl = async (
     throw new InstrumentationError('Message type is not present. Aborting message.');
   }
 
-  // Config Validation
-  validateDestinationConfig(destination);
-
   // rETL sources only emit identify (object/association) events.
   if (message.type !== EventType.IDENTIFY) {
     throw new InstrumentationError(`Message type ${message.type} is not supported`);
@@ -74,6 +71,7 @@ const processBatchRouterRetl = async (
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
 
   try {
+    validateDestinationConfig(destination);
     // skip splitting the batches to inserts and updates if the object is an association
     if (!objectType || String(objectType).toLowerCase() !== 'association') {
       propertyMap = await getProperties(destination, metadata);

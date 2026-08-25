@@ -42,6 +42,11 @@ import {
   verifyUpsertResolvesToSameContact,
 } from './verify';
 
+const withoutAuthorizationType = (base: Record<string, unknown>): Record<string, unknown> => {
+  const { authorizationType: _authorizationType, ...config } = base;
+  return config;
+};
+
 export const live = {
   enabled: true,
   authType: 'apiKey',
@@ -62,6 +67,27 @@ export const live = {
           stepType: 'pipeline',
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-contacts-create'),
+            type: 'identify',
+            context: esLibrary,
+            traits: { email: ctx.email(), ...esContactCreateTraits(ctx) },
+            integrations: { All: true },
+          }),
+        },
+      ],
+      verify: { check: verifyContactProperties(esContactCreateTraits) },
+    },
+    {
+      id: 'hs-es-contacts-create-v3-access-token-only',
+      cleanup: deleteContactByEmail,
+      description:
+        'Event-stream identify creates a new CRM contact with accessToken and no authorizationType (newApi)',
+      configOverride: (base) => withoutAuthorizationType(base),
+      steps: [
+        {
+          name: 'identify new contact (accessToken only, newApi)',
+          stepType: 'pipeline',
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'es-contacts-create-access-token-only'),
             type: 'identify',
             context: esLibrary,
             traits: { email: ctx.email(), ...esContactCreateTraits(ctx) },
@@ -103,6 +129,25 @@ export const live = {
           stepType: 'pipeline',
           seed: (ctx) => ({
             ...baseTimestamps(ctx, 'es-contacts-create-v1'),
+            type: 'identify',
+            traits: { email: ctx.email(), ...esContactCreateV1Traits(ctx) },
+          }),
+        },
+      ],
+      verify: { check: verifyContactProperties(esContactCreateV1Traits) },
+    },
+    {
+      id: 'hs-es-contacts-create-v1-access-token-only',
+      cleanup: deleteContactByEmail,
+      description:
+        'Event-stream identify creates a new contact with accessToken and no authorizationType (legacyApi)',
+      configOverride: (base) => withoutAuthorizationType({ ...base, apiVersion: 'legacyApi' }),
+      steps: [
+        {
+          name: 'identify new contact (accessToken only, legacyApi)',
+          stepType: 'pipeline',
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'es-contacts-create-v1-access-token-only'),
             type: 'identify',
             traits: { email: ctx.email(), ...esContactCreateV1Traits(ctx) },
           }),

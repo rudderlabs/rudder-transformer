@@ -39,7 +39,7 @@ import {
   removeHubSpotSystemField,
   isLookupFieldUnique,
   getLookupFieldValue,
-  addHsAuthentication,
+  addHsAuthorisationHeader,
   recordTransformFlow,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
@@ -114,7 +114,7 @@ const processUpsertIdentify = async (
   response.operation = 'upsertContacts';
 
   recordTransformFlow(destination, 'event_stream', 'es_retl', 'upsert');
-  return addHsAuthentication(response, Config);
+  return addHsAuthorisationHeader(response, Config);
 };
 
 /**
@@ -197,7 +197,7 @@ const processIdentify = async (
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  return addHsAuthentication(response, Config);
+  return addHsAuthorisationHeader(response, Config);
 };
 
 /**
@@ -245,20 +245,7 @@ const processTrack = async ({
   response.messageType = 'track';
   recordTransformFlow(destination, 'event_stream', 'es_retl', 'track');
 
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // remove hubId
-    // eslint-disable-next-line no-underscore-dangle
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // using legacyApiKey
-    response.endpoint = `${BASE_ENDPOINT}${TRACK_CRM_ENDPOINT_PATH}?hapikey=${Config.apiKey}`;
-  }
-
-  return response;
+  return addHsAuthorisationHeader(response, Config);
 };
 
 const batchIdentify = (

@@ -80,8 +80,8 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
   }
 
   // Reuses processRouterDest's own per-event builder (transform.ts) so event-stream events
-  // keep shipping in their V1 request shape when isEventStreamV2APIEnabled is off. That
-  // builder dispatches on message.type itself, so one call handles every event-stream type.
+  // keep shipping in their V1 request shape unless destination.Config.apiVersion opts into v2.
+  // That builder dispatches on message.type itself, so one call handles every event-stream type.
   private buildV1EventStreamEvent(message: unknown): TransformedEvent<CustomerIOV2Payload> {
     const v1Response = v1ProcessEventStream({
       message,
@@ -102,7 +102,7 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
   transformEventStream(input: z.infer<typeof eventStreamInputSchema>) {
     const { message } = input;
 
-    if (!isEventStreamV2APIEnabled()) {
+    if (!isEventStreamV2APIEnabled(this.destination)) {
       // buildV1EventStreamEvent (via processSingleMessage) already validates config
       // fields, so skip the redundant check below.
       const v1Handler = () => this.buildV1EventStreamEvent(message);
@@ -118,24 +118,36 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
 
     validateConfigFields(this.destination);
     return {
-      identify: () => this.wrapEventStreamBody(buildIdentify(message)),
+      identify: () => this.wrapEventStreamBody(buildIdentify(message, this.destination)),
       track: () => {
         const evName = get(message, 'event');
         const deviceAction = deviceActionFor(message, evName, this.destination);
         return this.wrapEventStreamBody(
-          deviceAction ? buildDevice(message, deviceAction) : buildTrack(message, evName),
+          deviceAction
+            ? buildDevice(message, deviceAction, this.destination)
+            : buildTrack(message, evName, this.destination),
         );
       },
       page: () =>
         this.wrapEventStreamBody(
-          buildPage(message, 'page', get(message, 'name') || get(message, 'properties.url')),
+          buildPage(
+            message,
+            'page',
+            get(message, 'name') || get(message, 'properties.url'),
+            this.destination,
+          ),
         ),
       screen: () =>
         this.wrapEventStreamBody(
-          buildScreen(message, 'screen', get(message, 'event') || get(message, 'properties.name')),
+          buildScreen(
+            message,
+            'screen',
+            get(message, 'event') || get(message, 'properties.name'),
+            this.destination,
+          ),
         ),
-      group: () => this.wrapEventStreamBody(buildObject(message)),
-      alias: () => this.wrapEventStreamBody(buildMerge(message)),
+      group: () => this.wrapEventStreamBody(buildObject(message, this.destination)),
+      alias: () => this.wrapEventStreamBody(buildMerge(message, this.destination)),
     };
   }
 
@@ -146,7 +158,7 @@ class CustomerIOIntegration extends VDMV2ObjectDestination<
         wrapBody: (bodies) => ({ batch: bodies }),
       });
     }
-    // V1 endpoints — used for event-stream events when isEventStreamV2APIEnabled is off —
+    // V1 endpoints — used for event-stream events unless destination.Config.apiVersion is v2 —
     // don't support batching; each event ships as its own request, matching
     // processRouterDest's behaviour.
     return new CustomBatchStrategy<CustomerIOV2Payload>((payloads) =>

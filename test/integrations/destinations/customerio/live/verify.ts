@@ -64,12 +64,12 @@ const scrub = (value: string, runId: string): string => value.split(runId).join(
 
 // The ONE state difference between the two event-stream API paths that this parity check tolerates.
 //
-// Screen events change CustomerIO activity type when the flag flips: V1 records a screen as an
-// `event` (transform.ts:107 sets evType = 'event' for EventType.SCREEN), V2 records it as a
-// `screen` (v2/util.ts:137, action: 'screen'). Confirmed live — with the flag off the profile has
-// no `screen` activity at all; with it on, it does.
+// Screen events change CustomerIO activity type when apiVersion switches: V1 records a screen as
+// an `event` (transform.ts:107 sets evType = 'event' for EventType.SCREEN), V2 records it as a
+// `screen` (v2/util.ts:137, action: 'screen'). Confirmed live — with apiVersion v1/default the
+// profile has no `screen` activity at all; with apiVersion v2, it does.
 //
-// This is a migration hazard rather than a transport detail: for a customer enabling the flag, any
+// This is a migration hazard rather than a transport detail: for a customer enabling apiVersion v2, any
 // CustomerIO segment, campaign trigger or report that matches "Viewed X Screen" as an event stops
 // matching (and vice versa). It is normalised here rather than left to fail so that the check stays
 // useful — every OTHER difference between the two paths still fails this assertion.
@@ -92,7 +92,7 @@ const comparable = (snapshot: PersonSnapshot): PersonSnapshot => ({
  *
  * Must run BEFORE the alias step, which merges 'user' into 'alias'.
  *
- * Also records the scenario's parity snapshot (see verifyFlagParity).
+ * Also records the scenario's parity snapshot (see verifyApiVersionParity).
  */
 export const verifyPersonState =
   (scenarioId: string) =>
@@ -137,7 +137,7 @@ export const verifyPersonState =
     // Deliberately path-agnostic about the activity TYPE: this asserts only that the screen event
     // landed under the right name with the right properties. The two event-stream API paths disagree on the
     // type (V1 records a screen as an `event` — transform.ts:107; V2 as a `screen` — v2/util.ts:129),
-    // and surfacing that disagreement is verifyFlagParity's job, where it shows up as a real diff
+    // and surfacing that disagreement is verifyApiVersionParity's job, where it shows up as a real diff
     // rather than as an ambiguous "not found" here.
     await eventually(async () => {
       const [events, screens] = await Promise.all([
@@ -234,13 +234,14 @@ export const verifyMerge = async (ctx: RunContext): Promise<void> => {
 /**
  * The assertion that makes the two event-stream API scenarios mean different things.
  *
- * Both scenarios seed identical events; only CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED differs. The
- * pipeline steps alone cannot tell them apart — both just get 2xx. This asserts that the observable
- * CustomerIO state is byte-identical across the flag flip: same attributes, same activity types and
- * names, same device, same object link. That is precisely the claim the flag makes, and it is not
- * checkable by the component suite, which sees request shapes rather than destination state.
+ * Both scenarios seed identical events; only destination.Config.apiVersion differs. The pipeline
+ * steps alone cannot tell them apart — both just get 2xx. This asserts that the observable
+ * CustomerIO state is byte-identical across the API version switch: same attributes, same activity
+ * types and names, same device, same object link. That is precisely the claim the API version config
+ * makes, and it is not checkable by the component suite, which sees request shapes rather than
+ * destination state.
  */
-export const verifyFlagParity =
+export const verifyApiVersionParity =
   (scenarioId: string, baselineScenarioId: string) => async (): Promise<void> => {
     const own = snapshots.get(scenarioId);
     expect(own).toBeDefined();

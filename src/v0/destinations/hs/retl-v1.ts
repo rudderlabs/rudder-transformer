@@ -27,6 +27,7 @@ import {
   removeHubSpotSystemField,
   getHsSearchId,
   recordTransformFlow,
+  addHsAuthorisationHeader,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -101,19 +102,7 @@ const processRetlLegacyIdentify = async (
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
-  }
-
-  return response;
+  return addHsAuthorisationHeader(response, Config);
 };
 
 // Segregating create and update calls for rETL sources (legacy API).

@@ -62,4 +62,6 @@ VDM V2 is not supported because:
 
 - RETL events are processed individually; Sprig event-stream batching is not implemented.
 - Track `properties` are not mapped into the Sprig payload by the current workflow, so RETL mappings that need event details beyond the event name and timestamp must account for that limitation before delivery.
+- Sprig limits a user to 100 attribute values. Warehouse Identify mappings that project a wide column set into `context.traits` can breach this cap, since the workflow forwards `context.traits` without trimming.
+- Track event names sourced from a warehouse must already be registered and approved in Sprig; the API rejects event names it does not already track.
 - Replays from warehouse sources should preserve chronological order for Identify payloads to avoid stale attributes overwriting newer values in Sprig.

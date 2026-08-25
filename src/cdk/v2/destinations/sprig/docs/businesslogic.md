@@ -21,6 +21,14 @@ authorization: API-Key <apiKey>
 
 The request body is built in `src/cdk/v2/destinations/sprig/procWorkflow.yaml` and placed in `response.body.JSON`.
 
+Sprig acknowledges this endpoint with `202 Accepted` and processes the payload asynchronously, so a successful delivery means the payload was queued rather than already applied. Sprig-side constraints on the body:
+
+- `attributes` is limited to 100 values total per user.
+- `events[].event` must name an event already tracked (and approved) in Sprig.
+- `events[].timestamp` must be a Unix timestamp in milliseconds.
+- `emailAddress`, when present, must be a valid email address.
+- Users must be upserted individually; there is no bulk-user endpoint.
+
 ### Request flow
 
 1. Read `message.type` and lower-case it.
@@ -182,7 +190,7 @@ Authorization: API-Key <apiKey>
 1. Read `userAttributes` and destination `config` from the delete-users request.
 2. Run common regulation API validations with `executeCommonValidations(userAttributes)`.
 3. Validate `config.apiKey`; missing API key raises `ConfigurationError('Api Key is required for user deletion')`.
-4. Split `userAttributes` into batches of 100 user IDs via `getUserIdBatches(userAttributes, 100)`.
+4. Split `userAttributes` into batches of 100 user IDs via `getUserIdBatches(userAttributes, 100)`. Sprig limits this endpoint to 100 visitor deletions per request, so 100 is the API-enforced maximum rather than a tuning choice.
 5. For each batch, send `POST https://api.sprig.com/v2/purge/visitors` with `{ "userIds": [...] }`.
 6. Treat any 2xx response as success.
 7. Treat HTTP 400 as non-fatal because Sprig can return 400 when the requested users are not present for deletion.
@@ -195,6 +203,8 @@ Authorization: API-Key <apiKey>
   "userIds": ["1", "2", "3"]
 }
 ```
+
+Sprig's purge endpoint also accepts `emails` and `visitorIds` identifier arrays and an optional `delaySeconds` field, and requires at least one identifier array to be non-empty. RudderStack sends only `userIds` and omits `delaySeconds`, so Sprig's default 10-day purge delay applies.
 
 ### Example successful deletion response from Sprig
 
@@ -251,6 +261,16 @@ Common validation messages:
 ### Delivery errors
 
 Sprig does not define a custom proxy `networkHandler` in this repository. Non-2xx delivery responses for event-stream requests are handled by the default RudderStack delivery behavior.
+
+Documented statuses for `POST /v2/users`:
+
+| Status | Meaning                                                   |
+| ------ | --------------------------------------------------------- |
+| `202`  | Accepted; processed asynchronously.                       |
+| `400`  | Bad Request. Response body carries a JSON `error` string. |
+| `422`  | Unprocessable Entity.                                     |
+| `429`  | Rate limited against the account-level QPS ceiling.       |
+| `500`  | Sprig-side server error.                                  |
 
 ### Deletion errors
 

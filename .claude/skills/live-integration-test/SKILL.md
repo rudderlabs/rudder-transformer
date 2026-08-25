@@ -52,6 +52,8 @@ merge gate; this suite is additive and asserts on the genuine delivery verdict.
 | mocked network via `network.ts` / `MockAxiosAdapter` | **no mock** — the runner boots the real app and hits real APIs |
 | a `data.ts` case = one input `message` + `destination.Config` + expected `output` | a **scenario** with a pipeline step whose `seed(ctx)` rebuilds that `message` |
 | hardcoded PII/ids in the message (email, userId, externalId, recordId, list/audience id) | `ctx.email()`, `ctx.identity(entity)`, `ctx.runId`, `ctx.now(offset?)`, `ctx.liveSecret.resourceIds`, or an id registered by a setup step — never a literal |
+| config variants across cases (api version, list/object type, mapping) | a base `resolveConfig` + per-scenario `configOverride(base)` |
+| a case that asserts a specific transformed request shape | a scenario asserting the event is **delivered** (verdict 2xx / 207); the shape is the transform's job, already covered by the mocked suite |
 
 **What that rule is and isn't about.** It targets values that must be *unique per run* or that are
 *sensitive*: identities, PII, and ids of records the run creates. It is not a ban on constants. A
@@ -62,8 +64,6 @@ a literal next to the code that uses it beats a Vault key that can be forgotten.
 environment; prefer a named constant in the spec when it's a stable label a reader can sanity-check
 against the account. Either way the failure should name the thing: a missing `resourceIds` key
 fails at collection, a wrong constant fails at the destination's own lookup.
-| config variants across cases (api version, list/object type, mapping) | a base `resolveConfig` + per-scenario `configOverride(base)` |
-| a case that asserts a specific transformed request shape | a scenario asserting the event is **delivered** (verdict 2xx / 207); the shape is the transform's job, already covered by the mocked suite |
 
 **One scenario per distinct behavior, not per component case.** Collapse the many mocked cases into
 the *code paths* that matter live — these differ by destination category:
@@ -170,10 +170,17 @@ is a static literal and cannot carry a secret. `resolveEnv` is applied and resto
 a few such variables, and a spec that doesn't override one silently ships the placeholder to the
 real destination.
 
-**OAuth destinations** (`authType: 'oauth'`): supply `oauthRefresh` — the long-lived `refreshToken`,
-the `accountDefinition` (for rudder-auth's v1 route), and any `providerFields` (e.g. Salesforce
-`instance_url`) — and set `oauthVersion` to the route rudder-auth uses: `'v0'` (legacy
-`/tokens/destination/<dest>/refresh`, the default) or `'v1'` (`/auth/v1/refresh`). At run time the
+**OAuth destinations** (`authType: 'oauth'`): supply `oauthRefresh` — the long-lived `refreshToken`
+and any `providerFields` (e.g. Salesforce `instance_url`) — and set `oauthVersion` to the route
+rudder-auth uses: `'v0'` (legacy
+`/tokens/destination/<dest>/refresh`, the default) or `'v1'` (`/auth/v1/refresh`). A `'v1'`
+spec must also declare `accountDefinition: { type, name }` — public metadata mirroring the control
+plane's `accounts/<dest>_oauth/db-config.json`, so it belongs on the spec, not in the secret.
+`name` is what rudder-auth lowercases to choose an implementation; `category` is always
+`'destination'` and the resolver supplies it. Nothing is derived from the destination name: the
+`DESTINATION_<DEST>_OAUTH` convention does not hold everywhere
+(`google_adwords_remarketing_lists` has a separate `_DM_OAUTH` definition), and a guess that is
+usually right surfaces as an opaque refresh failure instead of a missing declaration. At run time the
 suite starts the **rudder-auth** container (testcontainers, ECR image) and `OAuthTokenResolver` calls
 exactly that one route — no fallback — then merges the whole returned secret into `metadata.secret`,
 so the transform reads its token under whatever key rudder-auth returns (`accessToken` |

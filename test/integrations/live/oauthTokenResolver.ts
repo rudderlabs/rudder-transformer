@@ -2,17 +2,16 @@ import axios from 'axios';
 import { z } from 'zod';
 import type { AccountDefinition, LiveSecret, OAuthVersion } from './types';
 
-// The account-definition shape the control plane uses for a destination with a single OAuth
-// account: rudder-integrations-config stores it under
-// `destinations/<dest>/accounts/<dest>_oauth/db-config.json` as
-// `{ name: 'DESTINATION_<DEST>_OAUTH', type: '<dest>', category: 'destination' }`, and rudder-auth
-// resolves its implementation from `name.toLowerCase()`. Deriving it keeps the common case free of
-// boilerplate; a spec can still declare its own for a destination with more than one variant.
-const defaultAccountDefinition = (destination: string): AccountDefinition => ({
-  type: destination,
-  category: 'destination',
-  name: `DESTINATION_${destination.toUpperCase()}_OAUTH`,
-});
+// Every account definition this suite sends is a destination's. rudder-integrations-config stores
+// them under `destinations/<dest>/accounts/<dest>_oauth/db-config.json`, and the live registry only
+// ever enrols destinations — there is no source-side live spec and no way for one to reach here. So
+// `category` is the framework's to supply, not a constant for each spec to repeat and get wrong.
+//
+// `type` and `name` are the spec's, because only the spec knows them: `name` is what rudder-auth
+// lowercases to pick an implementation, and the `DESTINATION_<DEST>_OAUTH` convention that would
+// let us guess it does not hold everywhere (google_adwords_remarketing_lists has both a legacy and
+// a `_DM_OAUTH` definition).
+const ACCOUNT_CATEGORY = 'destination';
 
 const SecretSchema = z.record(z.unknown());
 
@@ -94,9 +93,19 @@ export class OAuthTokenResolver {
   ): Promise<RefreshResult> {
     const { refreshToken, providerFields } = secret.oauthRefresh ?? {};
     // An account definition is public metadata, never a credential, so it is not read from the
-    // secret at all: a spec declares it, or the convention below is derived. That keeps
-    // LIVE_SECRET_<DEST> to credentials only.
-    const accountDefinition = specAccountDefinition ?? defaultAccountDefinition(destination);
+    // secret at all — the spec declares it, which keeps LIVE_SECRET_<DEST> to credentials only.
+    // Missing is a spec bug, and saying so beats posting a half-built definition and reading back
+    // whatever rudder-auth makes of it.
+    if (!specAccountDefinition) {
+      return {
+        ok: false,
+        detail:
+          `no accountDefinition on the live spec for '${destination}' — a v1 refresh needs ` +
+          `{ type, name }, where name is the control plane's account definition (usually ` +
+          `DESTINATION_${destination.toUpperCase()}_OAUTH)`,
+      };
+    }
+    const accountDefinition = { ...specAccountDefinition, category: ACCOUNT_CATEGORY };
     // `account.secret` is handed to the resolved implementation verbatim — the v1 route does no key
     // mapping — and implementations disagree on the casing they destructure: rudder-auth's Google
     // implementation reads `refresh_token`, others read `refreshToken`. Sending both spellings of

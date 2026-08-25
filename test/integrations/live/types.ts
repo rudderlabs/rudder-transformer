@@ -1,13 +1,18 @@
 import { z } from 'zod';
 import { EnvOverride } from '../envUtils';
 
-// Account definition rudder-auth uses to describe an OAuth account.
-const AccountDefinitionSchema = z.object({
-  type: z.string(),
-  category: z.string(),
-  name: z.string(),
-});
-type AccountDefinition = z.infer<typeof AccountDefinitionSchema>;
+// The part of rudder-auth's account definition an integration has to state for itself: the
+// destination `type` and the account-definition `name` rudder-auth resolves its implementation
+// from (`name.toLowerCase()`). `category` is not here — it is 'destination' for every live spec,
+// so the resolver supplies it rather than making each spec repeat a constant it cannot vary.
+//
+// A plain type, not a zod schema: this is declared in TypeScript by the spec, so the compiler
+// already checks it. Zod earns its place at the LIVE_SECRET_<DEST> boundary, where the input is
+// untrusted JSON — this is not that.
+interface AccountDefinition {
+  type: string;
+  name: string;
+}
 
 // Resolved credentials for one destination, validated at the LIVE_SECRET_<DEST> boundary by
 // SecretResolver. The type is inferred from the schema (z.infer) so it can never drift from what
@@ -191,12 +196,16 @@ interface LiveSpec {
   authType: AuthType;
   oauthVersion?: OAuthVersion;
   // The rudder-auth account definition for a `v1` refresh, which resolves the implementation from
-  // `name.toLowerCase()`. This is static, public metadata (it mirrors the control plane's
-  // `accounts/<dest>_oauth/db-config.json`), NOT a credential — so it is declared here rather than
-  // stored in LIVE_SECRET_<DEST>. Optional: when omitted the resolver derives the conventional
-  // `DESTINATION_<DEST>_OAUTH` shape, which is right for every destination with a single OAuth
-  // account definition. Set it only where that convention doesn't hold — e.g. a destination with
-  // more than one variant, like google_adwords_remarketing_lists' legacy vs `_DM_OAUTH` accounts.
+  // `name.toLowerCase()`. Static, public metadata mirroring the control plane's
+  // `accounts/<dest>_oauth/db-config.json`, NOT a credential — hence declared here rather than
+  // stored in LIVE_SECRET_<DEST>.
+  //
+  // Required for `oauthVersion: 'v1'` and stated outright, never derived from the destination name.
+  // The `DESTINATION_<DEST>_OAUTH` convention holds for most destinations but not all — see
+  // google_adwords_remarketing_lists, which has both a legacy and a `_DM_OAUTH` definition — and a
+  // derivation that is usually right is worse than none: where it guesses wrong it sends a
+  // plausible name that rudder-auth resolves to nothing, and the failure surfaces as a refresh
+  // error rather than as the missing declaration it actually is.
   accountDefinition?: AccountDefinition;
   // Environment variables set for the duration of this destination's scenarios and restored after.
   // Use this for destination/scenario-specific switches, including the temporary
@@ -362,7 +371,6 @@ interface RetryUntilPassesOptions {
 
 export {
   AccountDefinition,
-  AccountDefinitionSchema,
   AuthType,
   OAuthVersion,
   LiveSecret,

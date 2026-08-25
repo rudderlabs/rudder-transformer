@@ -202,10 +202,18 @@ export const live = {
   // adjustments simply fail to match any conversion and are discarded on Google's side.
   enabled: true,
   authType: 'oauth',
-  // rudder-auth's v1 route, keyed by the account definition the control plane declares for this
-  // destination (rudder-integrations-config .../accounts/google_adwords_enhanced_conversions_oauth).
-  // It answers with `{ access_token }`, which is the key transform.ts reads via getAccessToken.
+  // rudder-auth's v1 route. It answers with `{ access_token }`, which is the key transform.ts reads
+  // via getAccessToken.
   oauthVersion: 'v1',
+  // Mirrors rudder-integrations-config
+  // `destinations/google_adwords_enhanced_conversions/accounts/google_adwords_enhanced_conversions_oauth/db-config.json`.
+  // `name` is what rudder-auth lowercases to pick its implementation, so it has to match that file
+  // exactly. `category` is not declared here — it is 'destination' for every live spec and the
+  // resolver supplies it.
+  accountDefinition: {
+    type: 'google_adwords_enhanced_conversions',
+    name: 'DESTINATION_GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_OAUTH',
+  },
   envOverrides: {
     // Batching-framework delivery is still behind a temporary per-destination flag; without it the
     // run would exercise the legacy networkHandler instead of delivery.ts. The transform-side flag

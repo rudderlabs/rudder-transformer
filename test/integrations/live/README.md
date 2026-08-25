@@ -59,8 +59,15 @@ returns each integration's own secret shape with no normalization (`criteo_audie
 **whole** returned secret into `metadata.secret` rather than a single hardcoded key, and each
 transform reads its own key via `getAccessToken(metadata, 'accessToken' | 'access_token')`. On failure
 it throws with the HTTP status (via `axios.isAxiosError`) — never the response body, so a token can't
-leak. Supply the token via `LIVE_SECRET_<DEST>.oauthRefresh` (`refreshToken`, plus `accountDefinition`
-for v1 and any `providerFields`).
+leak. Supply the token via `LIVE_SECRET_<DEST>.oauthRefresh` (`refreshToken` and any
+`providerFields`). The **v1** route also needs an `accountDefinition`, which is declared on the
+SPEC, not in the secret — it is public metadata, not a credential. State `{ type, name }`, where
+`name` is the control plane's account-definition name that rudder-auth lowercases to pick its
+implementation (`accounts/<dest>_oauth/db-config.json`); `category` is always `'destination'` and
+the resolver adds it. Nothing is derived from the destination name: the
+`DESTINATION_<DEST>_OAUTH` convention holds for most destinations but not all
+(`google_adwords_remarketing_lists` has a separate `_DM_OAUTH` definition), and a guess that is
+usually right fails as an opaque refresh error rather than as the missing declaration it is.
 
 The image is pulled from ECR (`422074288268.dkr.ecr.us-east-1.amazonaws.com/rudderstack/rudder-auth:develop`),
 so Docker must be running and logged in to that ECR registry. The image ships default OAuth app
@@ -120,8 +127,8 @@ blob matching the `LiveSecret` shape:
 - `config` — merged into `destination.Config` (auth for header-based destinations lives here).
 - `secret` — merged into `metadata.secret` (for destinations that read the token there).
 - `resourceIds`, `oauthRefresh`, `readback` — optional; account-scoped ids, the OAuth refresh
-  token (`oauthRefresh.refreshToken` + `accountDefinition` for the rudder-auth V1 route), and
-  read-back credentials for `verify` steps.
+  token (`oauthRefresh.refreshToken`), and read-back credentials for `verify` steps. The V1
+  route's `accountDefinition` is NOT here — it lives on the spec (see above).
 
 `SecretResolver` validates the blob against a zod schema (`LiveSecretSchema`) and throws a
 path-scoped error if it doesn't match. In production the blob comes from Vault (one path per

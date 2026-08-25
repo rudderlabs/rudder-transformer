@@ -5,11 +5,14 @@ import type { LiveSecret } from './types';
 jest.mock('axios');
 const mockedPost = axios.post as jest.MockedFunction<typeof axios.post>;
 
-const ACCOUNT_DEFINITION = {
+// What a spec declares: type + name, no category.
+const SPEC_DEFINITION = {
   type: 'google_adwords_enhanced_conversions',
-  category: 'destination',
   name: 'DESTINATION_GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_OAUTH',
 };
+
+// What should reach rudder-auth: the same, with the framework's category filled in.
+const ACCOUNT_DEFINITION = { ...SPEC_DEFINITION, category: 'destination' };
 
 const oauthSecret = (overrides: Partial<LiveSecret['oauthRefresh']> = {}): LiveSecret => ({
   authType: 'oauth',
@@ -36,6 +39,7 @@ describe('OAuthTokenResolver — v1', () => {
       'google_adwords_enhanced_conversions',
       oauthSecret(),
       'v1',
+      SPEC_DEFINITION,
     );
 
     expect(secret).toEqual({
@@ -53,7 +57,12 @@ describe('OAuthTokenResolver — v1', () => {
       data: { secret: { access_token: 'at' } },
     } as never);
 
-    await resolver.resolveSecret('google_adwords_enhanced_conversions', oauthSecret(), 'v1');
+    await resolver.resolveSecret(
+      'google_adwords_enhanced_conversions',
+      oauthSecret(),
+      'v1',
+      SPEC_DEFINITION,
+    );
 
     expect(lastBody().account.secret).toMatchObject({
       refreshToken: 'rt-123',
@@ -72,43 +81,58 @@ describe('OAuthTokenResolver — v1', () => {
       'google_adwords_enhanced_conversions',
       oauthSecret({ providerFields: { instance_url: 'https://x.test' } }),
       'v1',
+      SPEC_DEFINITION,
     );
 
     expect(lastBody().account.secret.instance_url).toEqual('https://x.test');
   });
 
-  // An account definition is public metadata, not a credential, so it is never read from the
-  // secret. With no spec declaration either, the resolver derives the control plane's convention.
-  it('derives the conventional account definition when the spec does not declare one', async () => {
+  // `category` is 'destination' for every live spec, so the framework supplies it rather than
+  // making each spec repeat a constant it cannot vary. The spec states only type + name.
+  it('fills in the destination category the spec does not declare', async () => {
     mockedPost.mockResolvedValue({
       status: 200,
       data: { secret: { access_token: 'at' } },
     } as never);
 
-    await resolver.resolveSecret('google_adwords_enhanced_conversions', oauthSecret(), 'v1');
+    await resolver.resolveSecret(
+      'google_adwords_enhanced_conversions',
+      oauthSecret(),
+      'v1',
+      SPEC_DEFINITION,
+    );
 
     expect(lastBody().accountDefinition).toEqual(ACCOUNT_DEFINITION);
   });
 
-  it('prefers the spec-declared account definition over the derived one', async () => {
+  // Nothing is derived from the destination name. google_adwords_remarketing_lists is the case that
+  // makes derivation wrong: its DM account definition is not DESTINATION_<DEST>_OAUTH, so a guess
+  // would send a plausible name that rudder-auth resolves to nothing.
+  it('sends a non-conventional name through untouched', async () => {
     mockedPost.mockResolvedValue({
       status: 200,
       data: { secret: { access_token: 'at' } },
     } as never);
-    const specDefinition = {
+
+    await resolver.resolveSecret('google_adwords_remarketing_lists', oauthSecret(), 'v1', {
+      type: 'google_adwords_remarketing_lists',
+      name: 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_DM_OAUTH',
+    });
+
+    expect(lastBody().accountDefinition).toEqual({
       type: 'google_adwords_remarketing_lists',
       category: 'destination',
       name: 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_DM_OAUTH',
-    };
+    });
+  });
 
-    await resolver.resolveSecret(
-      'google_adwords_remarketing_lists',
-      oauthSecret(),
-      'v1',
-      specDefinition,
-    );
-
-    expect(lastBody().accountDefinition).toEqual(specDefinition);
+  // A v1 spec with no accountDefinition is a spec bug. Say that, rather than posting a definition
+  // with a missing name and reporting back whatever rudder-auth makes of it.
+  it('refuses a v1 refresh with no spec-declared account definition, without calling out', async () => {
+    await expect(
+      resolver.resolveSecret('google_adwords_enhanced_conversions', oauthSecret(), 'v1'),
+    ).rejects.toThrow('no accountDefinition on the live spec');
+    expect(mockedPost).not.toHaveBeenCalled();
   });
 });
 
@@ -150,7 +174,12 @@ describe('OAuthTokenResolver — failures', () => {
     } as never);
 
     await expect(
-      resolver.resolveSecret('google_adwords_enhanced_conversions', oauthSecret(), 'v1'),
+      resolver.resolveSecret(
+        'google_adwords_enhanced_conversions',
+        oauthSecret(),
+        'v1',
+        SPEC_DEFINITION,
+      ),
     ).rejects.toThrow('no access token in response');
   });
 
@@ -163,7 +192,12 @@ describe('OAuthTokenResolver — failures', () => {
     mockedPost.mockRejectedValue(err);
 
     await expect(
-      resolver.resolveSecret('google_adwords_enhanced_conversions', oauthSecret(), 'v1'),
+      resolver.resolveSecret(
+        'google_adwords_enhanced_conversions',
+        oauthSecret(),
+        'v1',
+        SPEC_DEFINITION,
+      ),
     ).rejects.toThrow(
       expect.objectContaining({
         message: expect.not.stringContaining('LEAKED'),

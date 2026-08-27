@@ -1,5 +1,6 @@
 import { getMappingConfig } from '../../../util';
 import { EVENT_TYPES } from '../../../util/recordUtils';
+import type { CustomerIODestination } from '../types';
 
 const V2_HOST = 'track.customer.io';
 const V2_HOST_EU = 'track-eu.customer.io';
@@ -42,14 +43,14 @@ const RECORD_IDENTIFIER_KEYS = ['cio_id', 'id', 'email'] as const;
 
 // Enabling the batching framework for CustomerIO (isBatchingFrameworkEnabled) is what's
 // needed to unlock record-event support, since the V1 processRouterDest has no concept of
-// record events. But it also moves event-stream events (identify/track/page/screen/group/
+// record events. But it can also move event-stream events (identify/track/page/screen/group/
 // alias) onto this V2 code path, which changes their request shape/endpoint — a breaking
-// change for existing customers. This flag lets event-stream events opt into the V2 path
-// independently: while disabled (the default), they keep using the V1 processRouterDest's
-// request shape even when the batching framework is on for the workspace. See
-// routerTransform.ts's transformEventStream/getBatchStrategy.
-const isEventStreamV2APIEnabled = (): boolean =>
-  process.env.CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED === 'true';
+// change for existing customers. The per-destination apiVersion config lets event-stream
+// events opt into the V2 path independently: when absent or set to v1 (the default), they
+// keep using the V1 processRouterDest's request shape even when the batching framework is on
+// for the workspace. See routerTransform.ts's transformEventStream/getBatchStrategy.
+const isEventStreamV2APIEnabled = (destination: CustomerIODestination): boolean =>
+  destination.Config.apiVersion === 'v2';
 
 export {
   getV2Endpoint,

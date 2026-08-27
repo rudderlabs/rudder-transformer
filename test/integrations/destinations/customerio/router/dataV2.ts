@@ -11,7 +11,8 @@ import {
 } from '../maskedSecrets';
 
 // Generated from the exact v1 router input (see captureV2.ts / genV2data.ts) with
-// the event-stream V2 API enabled, asserting the Track API v2 batched output.
+// the batching framework enabled and destination apiVersion v2, asserting the Track API v2
+// batched output.
 export const dataV2 = [
   {
     name: 'customerio',
@@ -19,9 +20,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -100,6 +98,8 @@ export const dataV2 = [
                 Config: {
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -160,6 +160,8 @@ export const dataV2 = [
                 Config: {
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -211,6 +213,8 @@ export const dataV2 = [
                 Config: {
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -262,6 +266,8 @@ export const dataV2 = [
                 Config: {
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -399,6 +405,8 @@ export const dataV2 = [
                 Config: {
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
               batched: true,
@@ -415,9 +423,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -444,6 +449,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -468,6 +475,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -489,6 +498,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -512,6 +523,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -532,6 +545,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -624,6 +639,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
               batched: true,
@@ -654,6 +671,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -682,6 +701,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -697,9 +718,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -736,6 +754,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -795,6 +815,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
               batched: true,
@@ -812,9 +834,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -829,7 +848,15 @@ export const dataV2 = [
                 sentAt: '2023-05-14T09:03:22.563Z',
               },
               metadata: { jobId: 30, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -870,7 +897,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 30, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -885,9 +920,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -902,7 +934,14 @@ export const dataV2 = [
               },
               metadata: { jobId: 31, userId: 'u1', workspaceId: 'ws-cio-v2' },
               // apiKey intentionally omitted
-              destination: { Config: { datacenter: 'US', siteID: secret1 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -929,7 +968,14 @@ export const dataV2 = [
                 module: 'destination',
                 workspaceId: 'ws-cio-v2',
               },
-              destination: { Config: { datacenter: 'US', siteID: secret1 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -942,9 +988,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -958,7 +1001,15 @@ export const dataV2 = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               metadata: { jobId: 32, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -985,7 +1036,15 @@ export const dataV2 = [
                 module: 'destination',
                 workspaceId: 'ws-cio-v2',
               },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -998,9 +1057,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1022,7 +1078,15 @@ export const dataV2 = [
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
               metadata: { jobId: 33, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1070,7 +1134,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 33, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -1081,13 +1153,10 @@ export const dataV2 = [
   },
   {
     name: 'customerio',
-    description: 'v2: track event falls back to email identifier when userId is empty',
+    description: 'v2: track event with an empty userId is rejected (no email fallback)',
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1104,7 +1173,15 @@ export const dataV2 = [
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
               metadata: { jobId: 34, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1118,37 +1195,29 @@ export const dataV2 = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://track.customer.io/api/v2/batch',
-                endpointPath: 'v2/batch',
-                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
-                params: {},
-                body: {
-                  JSON: {
-                    batch: [
-                      {
-                        type: 'person',
-                        action: 'event',
-                        identifiers: { email: 'test@rudderstack.com' },
-                        name: 'test track event',
-                        attributes: { user_actual_role: 'system_admin' },
-                        timestamp: 1571051718,
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
               metadata: [{ jobId: 34, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
-              batched: true,
-              statusCode: 200,
+              batched: false,
+              statusCode: 400,
+              error:
+                'a non-empty string or number userId is required when the userId identifier type is configured as `id`',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -1161,9 +1230,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1199,7 +1265,15 @@ export const dataV2 = [
                 sentAt: '2020-01-09T10:02:03.257Z',
               },
               metadata: { jobId: 35, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1252,7 +1326,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 35, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -1267,9 +1349,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1304,7 +1383,15 @@ export const dataV2 = [
                 sentAt: '2020-01-09T10:02:03.257Z',
               },
               metadata: { jobId: 36, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1344,7 +1431,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 36, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -1359,9 +1454,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1384,7 +1476,15 @@ export const dataV2 = [
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
               metadata: { jobId: 37, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1411,7 +1511,15 @@ export const dataV2 = [
                 module: 'destination',
                 workspaceId: 'ws-cio-v2',
               },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -1421,19 +1529,16 @@ export const dataV2 = [
   {
     name: 'customerio',
     description:
-      'v2: Application Installed with missing userId/email or device token falls back to a track event',
+      'v2: Application Installed without a userId is rejected; without a device token it falls back to a track event',
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
           input: [
             {
-              // no userId/email — falls back to a track event identified by anonymous_id
+              // no userId — rejected: anonymousId is no longer a fallback identifier
               message: {
                 anonymousId: '7e32188a4dab669f',
                 channel: 'mobile',
@@ -1451,7 +1556,15 @@ export const dataV2 = [
                 sentAt: '2020-01-09T10:02:03.257Z',
               },
               metadata: { jobId: 39, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
             {
               // no device token — falls back to a track event identified by id
@@ -1473,7 +1586,15 @@ export const dataV2 = [
                 sentAt: '2020-01-09T10:02:03.257Z',
               },
               metadata: { jobId: 40, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1498,14 +1619,6 @@ export const dataV2 = [
                 body: {
                   JSON: {
                     batch: [
-                      {
-                        type: 'person',
-                        action: 'event',
-                        identifiers: { anonymous_id: '7e32188a4dab669f' },
-                        name: 'Application Installed',
-                        attributes: { review_id: 'r1', product_id: 'p1', rating: 2 },
-                        timestamp: 1578564113,
-                      },
                       {
                         type: 'person',
                         action: 'event',
@@ -1522,13 +1635,43 @@ export const dataV2 = [
                 },
                 files: {},
               },
-              metadata: [
-                { jobId: 39, userId: 'u1', workspaceId: 'ws-cio-v2' },
-                { jobId: 40, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              ],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              metadata: [{ jobId: 40, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
+            },
+            {
+              metadata: [{ jobId: 39, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              batched: false,
+              statusCode: 400,
+              error:
+                'a non-empty string or number userId is required when the userId identifier type is configured as `id`',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -1537,13 +1680,10 @@ export const dataV2 = [
   },
   {
     name: 'customerio',
-    description: 'v2: screen event with anonymousId maps to anonymous_id identifier',
+    description: 'v2: screen event with only an anonymousId is rejected (no anonymous_id fallback)',
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1559,7 +1699,15 @@ export const dataV2 = [
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
               metadata: { jobId: 38, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1573,37 +1721,29 @@ export const dataV2 = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://track.customer.io/api/v2/batch',
-                endpointPath: 'v2/batch',
-                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
-                params: {},
-                body: {
-                  JSON: {
-                    batch: [
-                      {
-                        type: 'person',
-                        action: 'screen',
-                        identifiers: { anonymous_id: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1' },
-                        name: 'Viewed Home Screen Screen',
-                        attributes: { plan: 'enterprise' },
-                        timestamp: 1571051718,
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
               metadata: [{ jobId: 38, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
-              batched: true,
-              statusCode: 200,
+              statusCode: 400,
+              error:
+                'a non-empty string or number userId is required when the userId identifier type is configured as `id`',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
+              batched: false,
             },
           ],
         },
@@ -1616,9 +1756,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1650,7 +1787,13 @@ export const dataV2 = [
               },
               metadata: { jobId: 39, userId: 'u1', workspaceId: 'ws-cio-v2' },
               destination: {
-                Config: { datacenter: 'US', siteID: secret5, apiKey: secret6 },
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret5,
+                  apiKey: secret6,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
               },
             },
           ],
@@ -1702,7 +1845,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 39, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret5, apiKey: secret6 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret5,
+                  apiKey: secret6,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -1717,9 +1868,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1738,7 +1886,15 @@ export const dataV2 = [
                 },
               },
               metadata: { jobId: 40, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret7, apiKey: secret8 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret7,
+                  apiKey: secret8,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1783,7 +1939,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 40, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret7, apiKey: secret8 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret7,
+                  apiKey: secret8,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -1798,9 +1962,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1819,7 +1980,15 @@ export const dataV2 = [
                 },
               },
               metadata: { jobId: 41, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret7, apiKey: secret8 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret7,
+                  apiKey: secret8,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1864,7 +2033,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 41, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret7, apiKey: secret8 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret7,
+                  apiKey: secret8,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -1879,9 +2056,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1902,7 +2076,15 @@ export const dataV2 = [
                 sentAt: '2023-03-28T09:36:49.882Z',
               },
               metadata: { jobId: 42, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'EU', siteID: secret7, apiKey: secret8 } },
+              destination: {
+                Config: {
+                  datacenter: 'EU',
+                  siteID: secret7,
+                  apiKey: secret8,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -1943,7 +2125,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 42, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'EU', siteID: secret7, apiKey: secret8 } },
+              destination: {
+                Config: {
+                  datacenter: 'EU',
+                  siteID: secret7,
+                  apiKey: secret8,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -1958,9 +2148,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -1973,7 +2160,15 @@ export const dataV2 = [
                 // no name, no properties.url
               },
               metadata: { jobId: 43, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -2000,7 +2195,15 @@ export const dataV2 = [
                 module: 'destination',
                 workspaceId: 'ws-cio-v2',
               },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -2013,9 +2216,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2028,7 +2228,15 @@ export const dataV2 = [
                 previousId: 'cio_v2_2',
               },
               metadata: { jobId: 44, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -2068,7 +2276,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 44, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -2080,13 +2296,10 @@ export const dataV2 = [
   {
     name: 'customerio',
     description:
-      'v2: numeric userId/anonymousId/previousId/groupId are accepted and passed through unstringified',
+      'v2: numeric userId/previousId/groupId are accepted and passed through unstringified',
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2099,7 +2312,15 @@ export const dataV2 = [
                 traits: { email: 'numeric-id@rudderstack.com', plan: 'enterprise' },
               },
               metadata: { jobId: 45, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
             {
               message: {
@@ -2110,7 +2331,15 @@ export const dataV2 = [
                 properties: { plan: 'enterprise' },
               },
               metadata: { jobId: 46, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
             {
               message: {
@@ -2120,7 +2349,15 @@ export const dataV2 = [
                 previousId: 306,
               },
               metadata: { jobId: 47, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
             {
               message: {
@@ -2131,7 +2368,15 @@ export const dataV2 = [
                 traits: { name: 'numeric group' },
               },
               metadata: { jobId: 48, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -2167,13 +2412,6 @@ export const dataV2 = [
                       },
                       {
                         type: 'person',
-                        action: 'event',
-                        identifiers: { anonymous_id: 987654 },
-                        name: 'Product Viewed',
-                        attributes: { plan: 'enterprise' },
-                      },
-                      {
-                        type: 'person',
                         action: 'merge',
                         primary: { id: 432 },
                         secondary: { id: 306 },
@@ -2197,13 +2435,46 @@ export const dataV2 = [
               },
               metadata: [
                 { jobId: 45, userId: 'u1', workspaceId: 'ws-cio-v2' },
-                { jobId: 46, userId: 'u1', workspaceId: 'ws-cio-v2' },
                 { jobId: 47, userId: 'u1', workspaceId: 'ws-cio-v2' },
                 { jobId: 48, userId: 'u1', workspaceId: 'ws-cio-v2' },
               ],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
+            },
+            {
+              // anonymousId-only: rejected, since only userId feeds the mapped identifier
+              metadata: [{ jobId: 46, userId: 'u1', workspaceId: 'ws-cio-v2' }],
+              batched: false,
+              statusCode: 400,
+              error:
+                'a non-empty string or number userId is required when the userId identifier type is configured as `id`',
+              statTags: {
+                destType: 'CUSTOMERIO',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'ws-cio-v2',
+              },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -2220,9 +2491,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2234,7 +2502,15 @@ export const dataV2 = [
                 identifiers: { id: 'user-123', plan: 'pro', age: 30 },
               },
               metadata: { jobId: 100, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2249,7 +2525,15 @@ export const dataV2 = [
                 identifiers: { id: 'user-456' },
               },
               metadata: { jobId: 101, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2303,7 +2587,15 @@ export const dataV2 = [
                 { jobId: 100, userId: 'u1', workspaceId: 'ws-cio-v2' },
                 { jobId: 101, userId: 'u1', workspaceId: 'ws-cio-v2' },
               ],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -2321,9 +2613,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2340,7 +2629,15 @@ export const dataV2 = [
                 },
               },
               metadata: { jobId: 104, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2360,7 +2657,15 @@ export const dataV2 = [
                 },
               },
               metadata: { jobId: 105, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2423,7 +2728,15 @@ export const dataV2 = [
                 { jobId: 104, userId: 'u1', workspaceId: 'ws-cio-v2' },
                 { jobId: 105, userId: 'u1', workspaceId: 'ws-cio-v2' },
               ],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -2441,9 +2754,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2455,7 +2765,15 @@ export const dataV2 = [
                 identifiers: { id: 'user-123', event: 'Order Completed' },
               },
               metadata: { jobId: 106, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2488,7 +2806,15 @@ export const dataV2 = [
                 module: 'destination',
                 workspaceId: 'ws-cio-v2',
               },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -2506,9 +2832,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2525,7 +2848,15 @@ export const dataV2 = [
                 },
               },
               metadata: { jobId: 103, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2571,7 +2902,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 103, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -2591,9 +2930,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2605,7 +2941,15 @@ export const dataV2 = [
                 identifiers: { id: 'user-100', plan: 'pro' },
               },
               metadata: { jobId: 200, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2620,7 +2964,15 @@ export const dataV2 = [
                 identifiers: {},
               },
               metadata: { jobId: 201, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2666,7 +3018,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 200, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -2684,7 +3044,15 @@ export const dataV2 = [
                 module: 'destination',
                 workspaceId: 'ws-cio-v2',
               },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -2700,9 +3068,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2714,7 +3079,15 @@ export const dataV2 = [
                 identifiers: { email: 'user@example.com', plan: 'enterprise' },
               },
               metadata: { jobId: 102, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2760,7 +3133,15 @@ export const dataV2 = [
                 files: {},
               },
               metadata: [{ jobId: 102, userId: 'u1', workspaceId: 'ws-cio-v2' }],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -2779,9 +3160,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2794,7 +3172,15 @@ export const dataV2 = [
                 identifiers: { id: 'user-123' },
               },
               metadata: { jobId: 200, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2813,7 +3199,15 @@ export const dataV2 = [
                 originalTimestamp: '2020-01-09T10:01:53.558Z',
               },
               metadata: { jobId: 201, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
             {
               // invalid record: fails the RECORD-only rule (needs a non-empty id/email
@@ -2824,7 +3218,15 @@ export const dataV2 = [
                 identifiers: { plan: 'pro' },
               },
               metadata: { jobId: 202, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               connection: {
                 sourceId: 'src-1',
                 destinationId: 'dest-1',
@@ -2842,7 +3244,15 @@ export const dataV2 = [
                 properties: { total: 7 },
               },
               metadata: { jobId: 203, userId: 'u1', workspaceId: 'ws-cio-v2' },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
           destType: 'customerio',
@@ -2892,7 +3302,15 @@ export const dataV2 = [
                 { jobId: 200, userId: 'u1', workspaceId: 'ws-cio-v2' },
                 { jobId: 201, userId: 'u1', workspaceId: 'ws-cio-v2' },
               ],
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
               batched: true,
               statusCode: 200,
             },
@@ -2910,7 +3328,15 @@ export const dataV2 = [
                 module: 'destination',
                 workspaceId: 'ws-cio-v2',
               },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
             {
               metadata: [{ jobId: 203, userId: 'u1', workspaceId: 'ws-cio-v2' }],
@@ -2926,7 +3352,15 @@ export const dataV2 = [
                 module: 'destination',
                 workspaceId: 'ws-cio-v2',
               },
-              destination: { Config: { datacenter: 'US', siteID: secret1, apiKey: secret2 } },
+              destination: {
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
             },
           ],
         },
@@ -2940,9 +3374,6 @@ export const dataV2 = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    envOverrides: {
-      CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-    },
     input: {
       request: {
         body: {
@@ -2971,6 +3402,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -2998,6 +3431,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
             },
@@ -3074,6 +3509,8 @@ export const dataV2 = [
                   datacenter: 'US',
                   siteID: secret1,
                   apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
                 },
               },
               batched: true,

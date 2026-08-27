@@ -4,11 +4,14 @@ import { makeRouterInputSchema } from '../../../../services/destination/nativeBa
 import { RECORD_IDENTIFIER_KEYS } from './config';
 import { CustomerIODestinationConfigSchema, CustomerIOConnectionConfigSchema } from '../types';
 
+// CustomerIO accepts a person identifier as either a string or a number, and both are
+// passed through as authored, so the value type mirrors that rather than narrowing to string.
 export type CustomerIOV2Identifiers = {
-  id?: string;
-  email?: string;
-  cio_id?: string;
-  anonymous_id?: string;
+  id?: string | number;
+  email?: string | number;
+  phone?: string | number;
+  cio_id?: string | number;
+  anonymous_id?: string | number;
   object_id?: unknown;
   object_type_id?: unknown;
 };
@@ -29,8 +32,10 @@ export type CustomerIOV2Payload = {
   timestamp?: number;
   cio_relationships?: { identifiers: Record<string, unknown> }[];
   device?: CustomerIOV2Device;
-  primary?: { id?: string; email?: string };
-  secondary?: { id?: string; email?: string };
+  // A merge's two sides are person identifiers, so they carry whatever key the
+  // destination's userIdIdentifierType selects — not just id/email.
+  primary?: CustomerIOV2Identifiers;
+  secondary?: CustomerIOV2Identifiers;
   anonymous_id?: string;
   [key: string]: unknown;
 };

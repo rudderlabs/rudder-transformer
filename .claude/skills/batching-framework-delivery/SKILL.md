@@ -134,7 +134,9 @@ Only *response handling* moves. A destination that builds its HTTP request at de
 - There is **no GA map** for it — being in `batchedDestinationsMap` does not enable framework delivery. It stays on the legacy handler everywhere until a workspace is named.
 - It **requires the transform flag** for the same workspace and returns false without it. The delivery path interprets a payload built by the matching transform path; an unenrolled workspace's events are still built by `processRouterDest`, and pairing those with framework response handling would misread them.
 
-Set both in your `dataDelivery` component tests via `envOverrides` (and in `live.ts` via the `envOverrides` field on `LiveSpec`), or CI keeps exercising the legacy handler.
+Set the delivery flag in your `dataDelivery` component tests and relevant `live.ts` specs via
+`envOverrides`, or CI keeps exercising the legacy handler. The transform flag is not needed for
+destinations already marked batching-GA in `features.ts`.
 
 ## Testing
 

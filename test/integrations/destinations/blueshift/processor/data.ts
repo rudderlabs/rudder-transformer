@@ -674,7 +674,7 @@ export const data = [
   },
   {
     name: 'blueshift',
-    description: 'Test 6',
+    description: 'Test 6 - identify with only customer_id succeeds',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -739,16 +739,29 @@ export const data = [
         status: 200,
         body: [
           {
-            statusCode: 400,
-            error: 'Missing required value from "emailOnly"',
-            statTags: {
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              destType: 'BLUESHIFT',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'processor',
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.getblueshift.com/api/v1/customers',
+              headers: {
+                Authorization: authHeader2,
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  customer_id: 'sampleRudderstack9',
+                  event: 'Product_purchased',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
             },
+            statusCode: 200,
           },
         ],
       },
@@ -1013,7 +1026,7 @@ export const data = [
   },
   {
     name: 'blueshift',
-    description: 'Test 9',
+    description: 'Test 9 - identify with email and customer_id succeeds',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1095,6 +1108,111 @@ export const data = [
               userId: '',
             },
             statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'blueshift',
+    description: 'Identify with only email succeeds',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                usersApiKey: secret2,
+                dataCenter: 'standard',
+              },
+            },
+            message: {
+              type: 'identify',
+              traits: {
+                email: 'email-only@companyname.com',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.getblueshift.com/api/v1/customers',
+              headers: {
+                Authorization: authHeader2,
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  email: 'email-only@companyname.com',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'blueshift',
+    description: 'Identify without email or customer_id fails',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                usersApiKey: secret2,
+                dataCenter: 'standard',
+              },
+            },
+            message: {
+              type: 'identify',
+              traits: {
+                name: 'Missing Identifier',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'At least one of `userId`, `anonymousId`, `traits.email`, `context.traits.email`, or `properties.email` is required',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'BLUESHIFT',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
           },
         ],
       },

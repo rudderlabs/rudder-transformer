@@ -12,26 +12,35 @@ import {
   recordIdentifiers,
   trackProperties,
 } from './profiles';
-import { verifyFlagParity, verifyMerge, verifyPersonState, verifyRecordProfile } from './verify';
+import {
+  verifyApiVersionParity,
+  verifyMerge,
+  verifyPersonState,
+  verifyRecordProfile,
+} from './verify';
 
-// The two scenarios below cover CustomerIO batching with each event-stream API flag state:
+// The two scenarios below cover the CustomerIO event-stream API versions:
 //
-//   1. CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED off (the default) — record events go through the V2
-//      batching path while event-stream events keep their V1 request shape.
-//   2. CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED on — every event type moves to the V2 /v2/batch shape.
+//   1. apiVersion absent/default v1 — record events go through the V2 batching path while
+//      event-stream events keep their V1 request shape.
+//   2. apiVersion v2 — every event type moves to the V2 /v2/batch shape.
 //
-// The event-stream API shape is selected by env, not by destination.Config, hence `envOverride` on
-// each scenario. The seeds are identical in both. Which endpoint a given event type lands on is an implementation
-// detail the component suite pins (router/dataEventStreamV1.ts and router/dataV2.ts) — what THIS
-// suite asserts is that the resulting state inside CustomerIO is the same either way (see
-// verifyFlagParity), which no mocked suite can check.
+// CustomerIO is GA on the batching framework (features.ts marks it `batching: true`), so
+// isBatchingFrameworkEnabled short-circuits to true and both scenarios run through it
+// unconditionally — there is no env var to set.
+//
+// Scenario config selects the event-stream API version. The seeds are identical in both. Which
+// endpoint a given event type lands on is an implementation detail the component suite pins
+// (router/dataEventStreamV1.ts and router/dataV2.ts) — what THIS suite asserts is that the resulting
+// state inside CustomerIO is the same either way (see verifyApiVersionParity), which no mocked suite
+// can check.
 //
 // NOTE: the harness delivers through /v1/destinations/customerio/proxy, whose axios client supplies
 // Content-Type itself. Header-level regressions on the outgoing request are therefore NOT observable
 // here — the component suite owns those assertions too.
 
-const SCENARIO_V1 = 'customerio-batching-framework-event-stream-v1';
-const SCENARIO_V2 = 'customerio-batching-framework-event-stream-v2';
+const SCENARIO_V1 = 'customerio-event-stream-v1';
+const SCENARIO_V2 = 'customerio-event-stream-v2';
 
 const baseEvent = (ctx: RunContext, suffix: string) => ({
   channel: 'web',
@@ -42,8 +51,8 @@ const baseEvent = (ctx: RunContext, suffix: string) => ({
   integrations: { All: true },
 });
 
-// One step list per scenario — the env override is what differs. Parameterised by scenarioId so
-// each scenario records its own parity snapshot.
+// One step list per scenario — the destination config is what differs. Parameterised by scenarioId
+// so each scenario records its own parity snapshot.
 const eventStreamSteps = (scenarioId: string): LiveStep[] => [
   {
     stepType: 'pipeline',
@@ -202,6 +211,11 @@ export const live: LiveSpec = {
   // record profile, removed best-effort by `cleanup`.
   enabled: true,
   authType: 'basic',
+  // customerio is GA for the batching-framework transform, so only delivery needs naming.
+  // Without this the live run would deliver through v1/destinations/customerio/networkHandler.
+  envOverrides: {
+    CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+  },
   resolveConfig: (s) => ({ datacenter: 'US', ...s.config }),
   // Record events dispatch on connection.config.destination.object.
   resolveConnection: () => ({ destination: { object: 'person', syncMode: 'upsert' } }),
@@ -209,10 +223,7 @@ export const live: LiveSpec = {
     {
       id: SCENARIO_V1,
       description:
-        'batching framework on, event-stream V2 API off — event-stream events deliver in their V1 request shape while record events batch on /v2/batch',
-      envOverride: {
-        CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'false',
-      },
+        'apiVersion default v1 — event-stream events deliver in their V1 request shape while record events batch on /v2/batch',
       cleanup: cleanupScenario,
       steps: eventStreamSteps(SCENARIO_V1),
       // Runs after the alias step: the merge is only assertable once it has happened.
@@ -221,16 +232,14 @@ export const live: LiveSpec = {
     {
       id: SCENARIO_V2,
       description:
-        'batching framework on, event-stream V2 API on — every event type delivers through the V2 /v2/batch shape, producing the same CustomerIO state as the V1 shape',
-      envOverride: {
-        CUSTOMERIO_EVENT_STREAM_V2_API_ENABLED: 'true',
-      },
+        'apiVersion v2 — every event type delivers through the V2 /v2/batch shape, producing the same CustomerIO state as the V1 shape',
+      configOverride: (base) => ({ ...base, apiVersion: 'v2', userIdIdentifierType: 'id' }),
       cleanup: cleanupScenario,
       steps: eventStreamSteps(SCENARIO_V2),
       verify: {
         check: async (ctx) => {
           await verifyMerge(ctx);
-          await verifyFlagParity(SCENARIO_V2, SCENARIO_V1)();
+          await verifyApiVersionParity(SCENARIO_V2, SCENARIO_V1)();
         },
       },
     },

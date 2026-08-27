@@ -1,6 +1,5 @@
 import set from 'set-value';
 import lodash from 'lodash';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { NetworkError, InstrumentationError } from '@rudderstack/integrations-lib';
 import { WhiteListedTraits } from '../../../constants';
 import {
@@ -17,6 +16,7 @@ import {
   getDestinationExternalID,
   getIntegrationsObj,
   defaultRequestConfig,
+  isValidE164PhoneNumber,
 } from '../../util';
 import tags from '../../util/tags';
 import { handleHttpRequest } from '../../../adapters/network';
@@ -33,31 +33,11 @@ import {
   getKlaviyoVersionConfig,
   getKlaviyoRevision,
 } from './config';
-import logger from '../../../logger';
 
 const KLAVIYO_MARKETING_CHANNELS = {
   EMAIL: 'email',
   SMS: 'sms',
 };
-
-/**
- * This function is used to check if the phone number is in E.164 format. It uses libphonenumber-js library to parse the phone number
- * @param {*} phoneNumber
- * @returns boolean
- */
-function isValidE164PhoneNumber(phoneNumber) {
-  try {
-    // Remove all non-numeric characters from the phone number like spaces, hyphens, etc.
-    const sanitizedPhoneNumber = phoneNumber.replace(/[^\d+]/g, '');
-    const parsedNumber = parsePhoneNumberFromString(sanitizedPhoneNumber);
-    // Check if the number is valid and properly formatted in E.164.
-    return parsedNumber && parsedNumber.format('E.164') === sanitizedPhoneNumber;
-  } catch (error) {
-    // If parsing fails, it's not a valid E.164 number, i.e doesn't start with '+' and country code
-    logger.debug('Error parsing phone number', error);
-    return false;
-  }
-}
 
 /**
  * This function calls the create user endpoint ref: https://developers.klaviyo.com/en/reference/create_profile

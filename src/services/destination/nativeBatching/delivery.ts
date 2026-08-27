@@ -345,11 +345,11 @@ export function toDeliveryV1Response(
 ): DeliveryV1Response {
   // `perItemPreserved` tracks whether we actually ended up with per-item detail: false for a
   // whole-batch verdict, and false when a per-item list had to be discarded.
-  // `attributionLost` is the second of those — a per-item list whose length did not match the job
-  // list, so nothing in it can be tied to a job.
+  // `verdictsAttributable` is false only when a per-item list had to be discarded and the framework
+  // synthesized a retry list instead.
   let verdicts: Verdict[];
   let perItemPreserved = false;
-  let attributionLost = false;
+  let verdictsAttributable = true;
 
   if (result.kind !== 'perItem') {
     verdicts = ctx.jobs.map(() => result);
@@ -384,12 +384,32 @@ export function toDeliveryV1Response(
     // them to. A job with no verdict has an unknown outcome, and the only honest reading of an
     // unknown outcome is that it must be redelivered; re-sending items that already succeeded is
     // the accepted cost under the platform's at-least-once contract.
-    attributionLost = true;
+    verdictsAttributable = false;
     verdicts = ctx.jobs.map(() =>
       retry(
         `[${destType}] per-item verdicts (${result.verdicts.length}) do not match jobs (${ctx.jobs.length})`,
       ),
     );
+  }
+
+  // Sampled before the rewrite below, which erases the `dontBatch` marker by turning the verdict
+  // into an abort. Computed after, the single-job case would fall through to the throw.
+  const dontBatchRequested = verdicts.some((v) => v.kind === 'retry' && v.dontBatch === true);
+
+  let dontBatchAbortCount = 0;
+  verdicts = verdicts.map((verdict) => {
+    if (verdict.kind === 'retry' && verdict.dontBatch === true && ctx.jobs.length === 1) {
+      dontBatchAbortCount += 1;
+      return abort(verdict.reason);
+    }
+    return verdict;
+  });
+  if (dontBatchAbortCount > 0) {
+    stats.counter('batch_delivery_dont_batch_aborted', dontBatchAbortCount, {
+      destType,
+      destinationId: ctx.destinationId,
+      workspaceId: ctx.workspaceId,
+    });
   }
 
   const first = verdicts[0] ?? success();
@@ -404,7 +424,7 @@ export function toDeliveryV1Response(
   );
   const allSucceeded = uniform && first.kind === 'success';
 
-  // The classic whole-batch error. Four deliberate exclusions, all of them cases where the throw
+  // The classic whole-batch error. Five deliberate exclusions, all of them cases where the throw
   // would lose or contradict something the per-job path carries correctly:
   //
   //  - a 2xx status, because postTransformation echoes the thrown status into every job's
@@ -416,14 +436,16 @@ export function toDeliveryV1Response(
   //    derived from the verdict, so on a 4xx rudder-server's isJobTerminated would abort the very
   //    batch we just decided to retry. The per-job path derives 500 from the verdict;
   //  - a `dontBatch` retry, because that flag only exists as a metadata stamp on a job state and
-  //    the throw has no job states to stamp.
-  const carriesDontBatch = first.kind === 'retry' && first.dontBatch === true;
+  //    the throw has no job states to stamp;
+  //  - a `dontBatch` retry rewritten to an abort, because the throw carries `ctx.status` rather than a
+  //    status derived from the verdict, so on a 5xx rudder-server would retry the very event we just
+  //    decided to abort. The per-job path derives 400 from the rewritten verdict.
   if (
     uniform &&
     !allSucceeded &&
     !perItemPreserved &&
-    !attributionLost &&
-    !carriesDontBatch &&
+    !dontBatchRequested &&
+    verdictsAttributable &&
     !isHttpStatusSuccess(ctx.status)
   ) {
     let authErrorCategory = '';

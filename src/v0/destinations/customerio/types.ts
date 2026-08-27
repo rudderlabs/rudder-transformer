@@ -28,7 +28,7 @@ export const CustomerIODestinationConfigSchema = z
     datacenter: z.enum(['US', 'EU']).optional(),
     deviceTokenEventName: z.string().optional(),
     apiVersion: z.enum(['v1', 'v2']).optional(),
-    userIdMapping: z.enum(['id', 'email', 'phone', 'cio_id']).optional(),
+    userIdIdentifierType: z.enum(['id', 'email', 'phone', 'cio_id']).optional(),
   })
   .passthrough();
 

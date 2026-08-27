@@ -30,27 +30,27 @@ import { CustomerIOV2Payload, CustomerIOV2Identifiers, CustomerIODestination } f
 export const toUnixSeconds = (v: unknown): number =>
   Math.floor(new Date(v as string).getTime() / 1000);
 
-// Resolve one person identifier under the destination's configured userIdMapping key.
+// Resolve one person identifier under the destination's configured userIdIdentifierType key.
 // Every person-side identifier in the v2 payload — `identifiers`, a merge's
 // primary/secondary, and an object's cio_relationships person side — goes through here so
 // a destination has exactly one identifier policy. Auto-detecting the key per call site
 // (e.g. `isEmail(id) ? 'email' : 'id'`) would address a different Customer.io profile than
-// the rest of the destination's traffic whenever userIdMapping is `phone` or `cio_id`.
+// the rest of the destination's traffic whenever userIdIdentifierType is `phone` or `cio_id`.
 const personIdentifierFor = (
   value: unknown,
   destination: CustomerIODestination,
   fieldName = 'userId',
 ): CustomerIOV2Identifiers => {
-  const { userIdMapping } = destination.Config;
+  const { userIdIdentifierType } = destination.Config;
 
   // Strict mapping: the userId is the only accepted identifier and it always lands on
   // the configured key. There is deliberately no email/anonymousId fallback — silently
   // identifying a person by a different key than the one configured would point the
-  // event at the wrong Customer.io profile. userIdMapping is required config for v2 (the
+  // event at the wrong Customer.io profile. userIdIdentifierType is required config for v2 (the
   // destination schema enforces it conditionally on apiVersion), so a missing value is a
   // misconfiguration rather than a bad event.
-  if (!userIdMapping) {
-    throw new ConfigurationError('userIdMapping not found in Configs');
+  if (!userIdIdentifierType) {
+    throw new ConfigurationError('userIdIdentifierType not found in Configs');
   }
   // CustomerIO accepts an identifier as a string or a number, so both pass through as-is;
   // anything else (or a blank/whitespace-only string) is no use as a lookup key.
@@ -59,10 +59,10 @@ const personIdentifierFor = (
     !isDefinedNotNullNotEmpty(value)
   ) {
     throw new InstrumentationError(
-      `a non-empty string or number ${fieldName} is required when userId mapping is configured as \`${userIdMapping}\``,
+      `a non-empty string or number ${fieldName} is required when the userId identifier type is configured as \`${userIdIdentifierType}\``,
     );
   }
-  if (userIdMapping === 'phone') {
+  if (userIdIdentifierType === 'phone') {
     // Send the same form we validated. getValidE164PhoneNumber strips separators before
     // parsing, so `+1 (555) 123-4567` passes on the strength of `+15551234567`; shipping
     // the authored spelling would gate on a value we never transmit and let two spellings
@@ -71,9 +71,9 @@ const personIdentifierFor = (
     if (!e164) {
       throw new InstrumentationError('Phone number is not in E.164 format.');
     }
-    return { [userIdMapping]: e164 };
+    return { [userIdIdentifierType]: e164 };
   }
-  return { [userIdMapping]: value };
+  return { [userIdIdentifierType]: value };
 };
 
 const personIdentifiers = (message, destination: CustomerIODestination): CustomerIOV2Identifiers =>

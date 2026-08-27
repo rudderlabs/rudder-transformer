@@ -10,6 +10,7 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getValueFromMessage,
+  getFieldValueFromMessage,
   isDefinedAndNotNull,
   extractCustomFields,
   simpleProcessRouterDest,
@@ -85,6 +86,16 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   if (!Config.usersApiKey) {
     throw new ConfigurationError('[BLUESHIFT] User API Key required for Authentication.');
   }
+
+  if (
+    !getFieldValueFromMessage(message, 'userId') &&
+    !getFieldValueFromMessage(message, 'emailOnly')
+  ) {
+    throw new InstrumentationError(
+      'At least one of `userId`, `anonymousId`, `traits.email`, `context.traits.email`, or `properties.email` is required',
+    );
+  }
+
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
@@ -98,6 +109,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     ['traits', 'context.traits'],
     BLUESHIFT_IDENTIFY_EXCLUSION,
   );
+
   const response = defaultRequestConfig();
   const baseURL = getBaseURL(Config);
   response.endpoint = `${baseURL}/api/v1/customers`;

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.150.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.149.1...v1.150.0) (2026-08-27)
+
+
+### Features
+
+* **customerio:** select event-stream api version from config ([#5493](https://github.com/rudderlabs/rudder-transformer/issues/5493)) ([8a096a5](https://github.com/rudderlabs/rudder-transformer/commit/8a096a58262d62c5a18412233bf172e21b16af9f))
+
+
+### Bug Fixes
+
+* **blueshift:** require one identify identifier ([#5526](https://github.com/rudderlabs/rudder-transformer/issues/5526)) ([d31fb64](https://github.com/rudderlabs/rudder-transformer/commit/d31fb64ac26f3459e2fb977937c81980b6e153f0))
+* **customerio:** read userIdIdentifierType from config ([#5529](https://github.com/rudderlabs/rudder-transformer/issues/5529)) ([2d457f2](https://github.com/rudderlabs/rudder-transformer/commit/2d457f20096f1ece800f7a6f1b9745f34bb56703))
+* **live-tests:** enable CustomerIO framework delivery ([#5513](https://github.com/rudderlabs/rudder-transformer/issues/5513)) ([49ff567](https://github.com/rudderlabs/rudder-transformer/commit/49ff56761f2c1d61754087bd7c4b7afddfe7cf84))
+
 ### [1.149.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.149.0...v1.149.1) (2026-08-25)
 
 

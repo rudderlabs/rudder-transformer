@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.149.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.149.0...v1.149.1) (2026-08-25)
+
+
+### Bug Fixes
+
+* **tiktok_audience:** keep batch_data aligned with id_schema ([88a4290](https://github.com/rudderlabs/rudder-transformer/commit/88a42900e97f05e8cd1bcc3e4c021184cfdd7ee8))
+* **tiktok_audience:** keep batch_data aligned with id_schema ([#5520](https://github.com/rudderlabs/rudder-transformer/issues/5520)) ([002ae64](https://github.com/rudderlabs/rudder-transformer/commit/002ae646afea939a326e5f133a028f0339102ee4)), closes [#5519](https://github.com/rudderlabs/rudder-transformer/issues/5519) [#2](https://github.com/rudderlabs/rudder-transformer/issues/2)
+
 ## [1.149.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.148.1...v1.149.0) (2026-08-24)
 
 

@@ -92,12 +92,19 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
+  if (!payload.customer_id && !payload.email) {
+    throw new InstrumentationError(
+      '[Blueshift] One of customer_id or email is required for identify call',
+    );
+  }
+
   payload = extractCustomFields(
     message,
     payload,
     ['traits', 'context.traits'],
     BLUESHIFT_IDENTIFY_EXCLUSION,
   );
+
   const response = defaultRequestConfig();
   const baseURL = getBaseURL(Config);
   response.endpoint = `${baseURL}/api/v1/customers`;

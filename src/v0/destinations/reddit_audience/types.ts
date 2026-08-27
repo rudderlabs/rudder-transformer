@@ -10,13 +10,17 @@ import type { ActionType, RedditColumn } from './config';
 // OAuth: no secret lives on the destination config. The access token arrives on
 // `metadata.secret.accessToken`, minted and refreshed by the platform against
 // the DESTINATION_REDDIT_AUDIENCE_OAUTH account definition.
+// `adAccountId` is deliberately NOT declared here. It is discovery-only — the
+// sync wizard uses it to list/create audiences via integrations-info, and it is
+// optional on the destination (present only for the agentic/MCP path). The
+// transform never reads it: the endpoint is keyed on `audienceId` alone. Making
+// it required here rejected every record from a wizard-configured destination
+// with `destination.Config.adAccountId: Required`, which the component tests
+// missed because their fixtures happened to set it. `.passthrough()` still lets
+// it flow through when present.
 export const RedditAudienceDestinationConfigSchema = z
   .object({
     rudderAccountId: z.string().min(1),
-    // Reddit ad account that owns the custom audience — "a2_" prefixed.
-    // Used by integrations-info to list/create audiences; carried here so the
-    // destination is self-describing and so validation fails fast on a typo.
-    adAccountId: z.string().min(1),
   })
   .passthrough();
 

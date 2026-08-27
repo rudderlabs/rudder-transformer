@@ -404,3 +404,33 @@ describe('misaligned-batch guard', () => {
     });
   });
 });
+
+describe('destination config shape', () => {
+  // Regression: adAccountId is discovery-only and optional on the destination
+  // (the sync wizard supplies it, the transform never reads it). Requiring it in
+  // the zod schema rejected every record from a wizard-configured destination
+  // with "destination.Config.adAccountId: Required". The component fixtures all
+  // set it, so only an end-to-end /routerTransform call caught it.
+  it('transforms a destination that carries NO adAccountId', async () => {
+    const dest = buildDestination();
+    delete (dest.Config as Record<string, unknown>).adAccountId;
+    const results = await processBatchedDestination(
+      [buildInput(1, 'insert', { EMAIL_SHA256: 'alice@example.com' }, dest)],
+      Integration,
+      {},
+    );
+    expect(results.filter((r) => r.statusCode !== 200)).toHaveLength(0);
+    expect(body(successes(results)[0]).data.user_data).toEqual([
+      ['ff8d9819fc0e12bf0d24892e45987e249a28dce836a85cad60e28eaaa8c6d976'],
+    ]);
+  });
+
+  it('still accepts a destination that does carry adAccountId (agentic/MCP path)', async () => {
+    const results = await processBatchedDestination(
+      [buildInput(1, 'insert', { EMAIL_SHA256: 'alice@example.com' })],
+      Integration,
+      {},
+    );
+    expect(results.filter((r) => r.statusCode !== 200)).toHaveLength(0);
+  });
+});

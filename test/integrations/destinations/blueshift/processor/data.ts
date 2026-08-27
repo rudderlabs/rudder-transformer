@@ -1203,7 +1203,8 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: '[Blueshift] One of customer_id or email is required for identify call',
+            error:
+              'At least one of `userId`, `anonymousId`, `traits.email`, `context.traits.email`, or `properties.email` is required',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

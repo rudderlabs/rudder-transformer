@@ -10,6 +10,7 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getValueFromMessage,
+  getFieldValueFromMessage,
   isDefinedAndNotNull,
   extractCustomFields,
   simpleProcessRouterDest,
@@ -85,17 +86,21 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   if (!Config.usersApiKey) {
     throw new ConfigurationError('[BLUESHIFT] User API Key required for Authentication.');
   }
+
+  if (
+    !getFieldValueFromMessage(message, 'userId') &&
+    !getFieldValueFromMessage(message, 'emailOnly')
+  ) {
+    throw new InstrumentationError(
+      'At least one of `userId`, `anonymousId`, `traits.email`, `context.traits.email`, or `properties.email` is required',
+    );
+  }
+
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
-  }
-
-  if (!payload.customer_id && !payload.email) {
-    throw new InstrumentationError(
-      '[Blueshift] One of customer_id or email is required for identify call',
-    );
   }
 
   payload = extractCustomFields(

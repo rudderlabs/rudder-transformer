@@ -81,10 +81,19 @@ describe('reddit_audience delivery', () => {
       });
     });
 
-    it('does NOT burn a token refresh on an unrecognised 401 body', () => {
-      // batching-framework-delivery: never infer auth from the status alone.
+    it('retries an unrecognised 401 body instead of dropping the batch', () => {
+      // Regression: falling through to the framework default lands on abort(),
+      // which permanently drops up to 2500 members and never refreshes. The
+      // event-stream Reddit handler always retries a 401; so must this.
       const v = verdict(401, { error: { code: 401, message: 'account suspended' } });
-      expect(v.kind).toBe('abort');
+      expect(v.kind).toBe('retry');
+    });
+
+    it('does NOT burn a token refresh on an unrecognised 401 body', () => {
+      // Still no auth inference from the status alone: retry, but without the
+      // authExpired refinement that would trigger a control-plane refresh.
+      const v = verdict(401, { error: { code: 401, message: 'account suspended' } });
+      expect(v).not.toMatchObject({ as: 'authExpired' });
     });
   });
 
@@ -127,5 +136,54 @@ describe('extractRedditAudienceErrorMessage', () => {
   it('falls back to the raw body when the envelope is missing', () => {
     expect(extractRedditAudienceErrorMessage({ weird: 1 })).toBe('{"weird":1}');
     expect(extractRedditAudienceErrorMessage(undefined)).toBe('unknown error format');
+  });
+});
+
+describe('legacy networkHandler ↔ framework delivery parity', () => {
+  // Framework delivery is flag-gated with no GA map, so until GA the LEGACY
+  // handler is what actually ships. These must not drift: a difference means
+  // one code path silently behaves differently in production than in CI.
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { responseHandler } = require('../../../v1/destinations/reddit_audience/networkHandler');
+
+  const CASES: [number, unknown, 'success' | 'retry' | 'throttled' | 'abort'][] = [
+    [204, '', 'success'],
+    [400, { error: { code: 400, message: 'Bad request.' } }, 'abort'],
+    [401, { error: { code: 401, reason: 'UNAUTHORIZED', message: 'bad token' } }, 'retry'],
+    [401, { error: { code: 401, message: 'account suspended' } }, 'retry'],
+    [403, { error: { code: 403, message: 'Insufficient authentication scopes.' } }, 'abort'],
+    [404, { error: { code: 404, message: 'Not found.' } }, 'abort'],
+    [429, { error: { code: 429, message: 'Too many requests.' } }, 'throttled'],
+    [500, { error: { code: 500, message: 'Server error.' } }, 'retry'],
+  ];
+
+  const legacyKind = (status: number, response: unknown) => {
+    try {
+      responseHandler({ destinationResponse: { status, response }, destType: 'REDDIT_AUDIENCE' });
+      return 'success';
+    } catch (e) {
+      const err = e as { constructor: { name: string } };
+      const n = err.constructor.name;
+      if (n === 'ThrottledError') return 'throttled';
+      if (n === 'RetryableError') return 'retry';
+      return 'abort';
+    }
+  };
+
+  it.each(CASES)('status %i classifies the same on both paths', (status, response, expected) => {
+    const framework = verdict(status, response);
+    const frameworkKind =
+      framework.kind === 'retry' && framework.as === 'throttled' ? 'throttled' : framework.kind;
+    expect(frameworkKind).toBe(expected);
+    expect(legacyKind(status, response)).toBe(expected);
+  });
+
+  it('both paths request a token refresh only for a recognised auth body', () => {
+    expect(verdict(401, { error: { reason: 'UNAUTHORIZED' } })).toMatchObject({
+      as: 'authExpired',
+    });
+    expect(verdict(401, { error: { message: 'account suspended' } })).not.toMatchObject({
+      as: 'authExpired',
+    });
   });
 });

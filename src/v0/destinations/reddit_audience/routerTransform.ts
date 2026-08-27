@@ -110,13 +110,32 @@ class RedditAudienceIntegration extends BatchDestination<
       // endpoint — neither is told the action or the columns. Reading them off
       // bodies[0] is safe because `internalGroupKey` makes every body in a
       // group carry the same pair.
-      wrapBody: (bodies): RedditAudienceRequestBody => ({
-        data: {
-          action_type: bodies[0].actionType,
-          column_order: bodies[0].columnOrder,
-          user_data: bodies.map((b) => b.row),
-        },
-      }),
+      wrapBody: (bodies): RedditAudienceRequestBody => {
+        const { actionType, columnOrder } = bodies[0];
+
+        // Reddit does NOT validate row arity against `column_order` — verified
+        // live against the API: a 2-value row under a 1-column order, and a
+        // 1-value row under a 2-column order, are BOTH answered 204 rather than
+        // 400. A misaligned matrix is therefore accepted, silently shifting
+        // every value into the wrong column and matching nobody, with no error
+        // anywhere to trace. Grouping already guarantees alignment, so a
+        // mismatch here is a bug in this file, not bad customer data — fail
+        // loudly instead of shipping garbage Reddit will happily accept.
+        const misaligned = bodies.find((b) => b.row.length !== columnOrder.length);
+        if (misaligned) {
+          throw new InstrumentationError(
+            `reddit_audience built a misaligned batch: a row has ${misaligned.row.length} value(s) but column_order declares ${columnOrder.length} (${columnOrder.join(', ')})`,
+          );
+        }
+
+        return {
+          data: {
+            action_type: actionType,
+            column_order: columnOrder,
+            user_data: bodies.map((b) => b.row),
+          },
+        };
+      },
     });
   }
 

@@ -353,3 +353,54 @@ describe('reddit_audience router transform', () => {
     );
   });
 });
+
+describe('misaligned-batch guard', () => {
+  // Reddit answers 204 to a row whose length disagrees with column_order
+  // (verified live), so nothing downstream would ever surface this. The guard
+  // is the only thing standing between a regression here and a silent
+  // zero-match sync, so assert it fires rather than trusting it exists.
+  const strategyFor = () => {
+    const integration = new (Integration as any)(buildDestination(), buildConnection());
+    return integration.getBatchStrategy();
+  };
+
+  it('throws when a row has fewer values than column_order declares', () => {
+    const strategy = strategyFor();
+    expect(() =>
+      strategy.wrapBody([
+        { actionType: 'ADD', columnOrder: ['EMAIL_SHA256', 'MAID_SHA256'], row: ['only-one'] },
+      ]),
+    ).toThrow(/misaligned batch/);
+  });
+
+  it('throws when a row has more values than column_order declares', () => {
+    const strategy = strategyFor();
+    expect(() =>
+      strategy.wrapBody([{ actionType: 'ADD', columnOrder: ['EMAIL_SHA256'], row: ['a', 'b'] }]),
+    ).toThrow(/misaligned batch/);
+  });
+
+  it('names the declared columns so the failure is diagnosable', () => {
+    const strategy = strategyFor();
+    expect(() =>
+      strategy.wrapBody([
+        { actionType: 'ADD', columnOrder: ['EMAIL_SHA256', 'MAID_SHA256'], row: ['x'] },
+      ]),
+    ).toThrow(/EMAIL_SHA256, MAID_SHA256/);
+  });
+
+  it('accepts a correctly aligned batch', () => {
+    const strategy = strategyFor();
+    expect(
+      strategy.wrapBody([
+        { actionType: 'ADD', columnOrder: ['EMAIL_SHA256'], row: ['a'.repeat(64)] },
+      ]),
+    ).toEqual({
+      data: {
+        action_type: 'ADD',
+        column_order: ['EMAIL_SHA256'],
+        user_data: [['a'.repeat(64)]],
+      },
+    });
+  });
+});

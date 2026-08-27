@@ -154,3 +154,28 @@ describe('column ordering', () => {
     );
   });
 });
+
+describe('row/column arity (Reddit does not enforce it — we must)', () => {
+  // Verified live against the Reddit API: a row whose length disagrees with
+  // column_order is answered 204, NOT 400. So a misalignment ships silently and
+  // matches nobody. These guard the invariant that makes that impossible.
+  it('always produces a row with exactly one value per declared column', () => {
+    const cases: Record<string, unknown>[] = [
+      { EMAIL_SHA256: 'e' },
+      { MAID_SHA256: 'm' },
+      { EMAIL_SHA256: 'e', MAID_SHA256: 'm' },
+      { MAID_SHA256: 'm', EMAIL_SHA256: 'e' },
+      { EMAIL_SHA256: 'e', unsupported: 'x' },
+    ];
+    cases.forEach((processed) => {
+      const columns = columnsFor(processed);
+      expect(buildRow(processed, columns)).toHaveLength(columns.length);
+    });
+  });
+
+  it('never emits an empty cell for a column it declared', () => {
+    const processed = { EMAIL_SHA256: 'e', MAID_SHA256: 'm' };
+    const row = buildRow(processed, columnsFor(processed));
+    row.forEach((cell) => expect(cell).toBeTruthy());
+  });
+});

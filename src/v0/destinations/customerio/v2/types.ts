@@ -33,7 +33,7 @@ export type CustomerIOV2Payload = {
   cio_relationships?: { identifiers: Record<string, unknown> }[];
   device?: CustomerIOV2Device;
   // A merge's two sides are person identifiers, so they carry whatever key the
-  // destination's userIdMapping selects — not just id/email.
+  // destination's userIdIdentifierType selects — not just id/email.
   primary?: CustomerIOV2Identifiers;
   secondary?: CustomerIOV2Identifiers;
   anonymous_id?: string;

@@ -188,7 +188,7 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
     config: Partial<CustomerIORouterRequest['destination']['Config']> = {},
   ): CustomerIORouterRequest['destination'] => ({
     ...baseDestination,
-    Config: { ...baseDestination.Config, apiVersion: 'v2', userIdMapping: 'id', ...config },
+    Config: { ...baseDestination.Config, apiVersion: 'v2', userIdIdentifierType: 'id', ...config },
   });
 
   const makeEventStreamInput = (
@@ -264,27 +264,31 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
   });
 
   it.each([
-    { userIdMapping: 'id' as const, userId: 'user-1', expectedIdentifiers: { id: 'user-1' } },
     {
-      userIdMapping: 'email' as const,
+      userIdIdentifierType: 'id' as const,
+      userId: 'user-1',
+      expectedIdentifiers: { id: 'user-1' },
+    },
+    {
+      userIdIdentifierType: 'email' as const,
       userId: 'user-1',
       expectedIdentifiers: { email: 'user-1' },
     },
     // phone mapping is E.164-validated, so this case needs a real phone number
     {
-      userIdMapping: 'phone' as const,
+      userIdIdentifierType: 'phone' as const,
       userId: '+15551234567',
       expectedIdentifiers: { phone: '+15551234567' },
     },
     {
-      userIdMapping: 'cio_id' as const,
+      userIdIdentifierType: 'cio_id' as const,
       userId: 'user-1',
       expectedIdentifiers: { cio_id: 'user-1' },
     },
   ])(
-    'maps userId to $userIdMapping for V2 person event identifiers',
-    async ({ userIdMapping, userId, expectedIdentifiers }) => {
-      const v2Destination = makeV2Destination({ userIdMapping });
+    'maps userId to $userIdIdentifierType for V2 person event identifiers',
+    async ({ userIdIdentifierType, userId, expectedIdentifiers }) => {
+      const v2Destination = makeV2Destination({ userIdIdentifierType });
       const integration = new Integration(v2Destination);
       const personEvents = [
         { type: 'identify', userId, traits: { plan: 'pro' } },
@@ -313,7 +317,7 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
     { case: 'boolean', userId: true },
     { case: 'object', userId: { id: 'user-1' } },
   ])('fails a V2 person event when userId is a $case', async ({ userId }) => {
-    const v2Destination = makeV2Destination({ userIdMapping: 'id' });
+    const v2Destination = makeV2Destination({ userIdIdentifierType: 'id' });
     const integration = new Integration(v2Destination);
     const input = makeEventStreamInput(
       { type: 'identify', userId, traits: { plan: 'pro' } },
@@ -324,13 +328,13 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
     expect(successPayloads).toHaveLength(0);
     expect(errorPayloads).toHaveLength(1);
     expect(errorPayloads[0].error).toMatch(
-      /a non-empty string or number userId is required when userId mapping is configured/,
+      /a non-empty string or number userId is required when the userId identifier type is configured/,
     );
   });
 
   // CustomerIO accepts a numeric identifier, so it is forwarded unchanged (not stringified).
   it('accepts a numeric userId for a V2 person event', async () => {
-    const v2Destination = makeV2Destination({ userIdMapping: 'id' });
+    const v2Destination = makeV2Destination({ userIdIdentifierType: 'id' });
     const integration = new Integration(v2Destination);
     const input = makeEventStreamInput(
       { type: 'identify', userId: 12345, traits: { plan: 'pro' } },
@@ -342,12 +346,12 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
     expect(successPayloads[0].body).toMatchObject({ identifiers: { id: 12345 } });
   });
 
-  // Strict userId mapping: when userIdMapping is configured the userId is the only
+  // Strict userId mapping: when userIdIdentifierType is configured the userId is the only
   // accepted identifier — email/anonymousId no longer act as fallbacks.
   it.each(['id', 'email', 'phone', 'cio_id'] as const)(
-    'fails a V2 person event with no userId when userIdMapping is %s',
-    async (userIdMapping) => {
-      const v2Destination = makeV2Destination({ userIdMapping });
+    'fails a V2 person event with no userId when userIdIdentifierType is %s',
+    async (userIdIdentifierType) => {
+      const v2Destination = makeV2Destination({ userIdIdentifierType });
       const integration = new Integration(v2Destination);
       const input = makeEventStreamInput(
         {
@@ -362,7 +366,7 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
       expect(successPayloads).toHaveLength(0);
       expect(errorPayloads).toHaveLength(1);
       expect(errorPayloads[0].error).toMatch(
-        /a non-empty string or number userId is required when userId mapping is configured/,
+        /a non-empty string or number userId is required when the userId identifier type is configured/,
       );
     },
   );
@@ -374,7 +378,7 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
   ])(
     'fails a V2 person event when phone-mapped userId is not E.164 ($case)',
     async ({ userId }) => {
-      const v2Destination = makeV2Destination({ userIdMapping: 'phone' });
+      const v2Destination = makeV2Destination({ userIdIdentifierType: 'phone' });
       const integration = new Integration(v2Destination);
       const input = makeEventStreamInput(
         { type: 'identify', userId, traits: { plan: 'pro' } },
@@ -389,7 +393,7 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
   );
 
   it('normalises a phone-mapped userId written with separators to E.164', async () => {
-    const v2Destination = makeV2Destination({ userIdMapping: 'phone' });
+    const v2Destination = makeV2Destination({ userIdIdentifierType: 'phone' });
     const integration = new Integration(v2Destination);
     const input = makeEventStreamInput(
       { type: 'identify', userId: '+1 (555) 123-4567', traits: { plan: 'pro' } },
@@ -406,7 +410,7 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
   });
 
   it('writes every person identifier under the configured mapping key', async () => {
-    const v2Destination = makeV2Destination({ userIdMapping: 'cio_id' });
+    const v2Destination = makeV2Destination({ userIdIdentifierType: 'cio_id' });
     const integration = new Integration(v2Destination);
     const inputs = [
       makeEventStreamInput(
@@ -438,7 +442,7 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
     );
   });
 
-  // There is no legacy auto-detection any more: userIdMapping is required config for v2,
+  // There is no legacy auto-detection any more: userIdIdentifierType is required config for v2,
   // so without it the event fails rather than guessing id/email/anonymous_id.
   it.each([
     {
@@ -454,16 +458,16 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
       message: { type: 'track', event: 'Anonymous Event', anonymousId: 'anon-1', properties: {} },
     },
   ])(
-    'fails a V2 person event when userIdMapping is not configured — $name',
+    'fails a V2 person event when userIdIdentifierType is not configured — $name',
     async ({ message }) => {
-      const v2Destination = makeV2Destination({ userIdMapping: undefined });
+      const v2Destination = makeV2Destination({ userIdIdentifierType: undefined });
       const integration = new Integration(v2Destination);
       const input = makeEventStreamInput(message, v2Destination);
 
       const { successPayloads, errorPayloads } = await integration.transformEvents([input]);
       expect(successPayloads).toHaveLength(0);
       expect(errorPayloads).toHaveLength(1);
-      expect(errorPayloads[0].error).toMatch(/userIdMapping not found in Configs/);
+      expect(errorPayloads[0].error).toMatch(/userIdIdentifierType not found in Configs/);
     },
   );
 

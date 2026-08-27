@@ -233,7 +233,7 @@ export const live: LiveSpec = {
       id: SCENARIO_V2,
       description:
         'apiVersion v2 — every event type delivers through the V2 /v2/batch shape, producing the same CustomerIO state as the V1 shape',
-      configOverride: (base) => ({ ...base, apiVersion: 'v2', userIdMapping: 'id' }),
+      configOverride: (base) => ({ ...base, apiVersion: 'v2', userIdIdentifierType: 'id' }),
       cleanup: cleanupScenario,
       steps: eventStreamSteps(SCENARIO_V2),
       verify: {

@@ -7,7 +7,6 @@ import {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
   processDeduplication,
-  processBatch,
   processBatchWithDeliveryMapping,
   addAppId,
   setExternalIdOrAliasObject,
@@ -60,7 +59,6 @@ import {
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
   DESTINATION,
-  isPerJobDeliveryMappingEnabled,
 } from './config';
 import { buildEcommerceEventProperties, getEcommerceMapping } from './ecommerceUtil';
 
@@ -663,14 +661,7 @@ const processRouterDest = async (
   }
 
   const allTransfomredEvents = lodash.flatMap(output);
-  // Rollout gate: when the per-job delivery-mapping flag is ON, emit one
-  // BatchRequestOutput per outgoing HTTP request with a per-metadata
-  // `destInfo` positional map (consumed by the v1 networkHandler's 296
-  // correlation). Default (OFF) preserves the legacy single
-  // MultiBatchRequestOutput shape.
-  return isPerJobDeliveryMappingEnabled(destination.WorkspaceID)
-    ? processBatchWithDeliveryMapping(allTransfomredEvents)
-    : processBatch(allTransfomredEvents);
+  return processBatchWithDeliveryMapping(allTransfomredEvents);
 };
 
 export { process, processRouterDest };

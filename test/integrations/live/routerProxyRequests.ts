@@ -14,6 +14,8 @@ const toProxyMetadata = (m: Record<string, unknown>, destinationId: string): Pro
   destinationId: readString(m.destinationId, destinationId),
   workspaceId: readString(m.workspaceId, 'live-workspaceId'),
   secret: isRecord(m.secret) ? m.secret : {},
+  destInfo: isRecord(m.destInfo) ? m.destInfo : {},
+  omitempty: isRecord(m.omitempty) ? m.omitempty : {},
   dontBatch: readBoolean(m.dontBatch, false),
 });
 

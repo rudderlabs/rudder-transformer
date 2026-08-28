@@ -57,14 +57,9 @@ const deleteMergeUsers = (ctx: RunContext): Promise<void> =>
 
 // Retry budget for the scenario-level read-backs. The runner wraps `verify.check` in
 // retryUntilPasses(check, { attempts, delayMs }); the checks are single-shot, so this is the ONLY
-// backoff layer. 7 attempts (waits 1,2,4,8,16,32s → reads at ~0,1,3,7,15,31,63s)
-// covers slower Braze export lag while staying under the runner's 120s per-test timeout.
-const READBACK = { attempts: 7, delayMs: (n: number) => 1000 * 2 ** n };
-
-// Must match BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS set in test/setup.ts. A scenario setting
-// this as its step's destinationOverride.WorkspaceID routes through processBatchWithDeliveryMapping
-// (the ON path); every other scenario stays on the default processBatch path.
-const BRAZE_PER_JOB_DELIVERY_TEST_WORKSPACE_ID = 'braze-pjdm-ws';
+// backoff layer. Braze export can take slightly more than a minute for fresh profiles, so keep
+// polling past the old ~63s boundary while capping later waits to stay under the 120s test timeout.
+const READBACK = { attempts: 9, delayMs: (n: number) => Math.min(1000 * 2 ** n, 16000) };
 
 export const live = {
   enabled: true,
@@ -452,21 +447,18 @@ export const live = {
       verify: { check: verifyNestedArrayAttribute, ...READBACK },
     },
 
-    // ─── per-job delivery mapping (BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS) ───
-    // Same create path as braze-identify-create, but tagged with the allow-listed workspaceId so
-    // processRouterDest routes it through processBatchWithDeliveryMapping (one BatchRequestOutput per
-    // HTTP request + per-metadata destInfo). For a single event the delivery must be IDENTICAL to the
-    // default path — same 1 output / 1 proxy request, same profile written.
+    // ─── per-job delivery mapping ───
+    // Same create path as braze-identify-create, using the standard Braze batching path
+    // (one BatchRequestOutput per HTTP request + per-metadata destInfo). For a single event
+    // delivery must remain 1 output / 1 proxy request with the same profile written.
     {
       id: 'braze-per-job-delivery-mapping',
-      description:
-        'identify delivered under the per-job delivery-mapping flag (ON path) lands identically',
+      description: 'identify delivered with per-job delivery mapping lands identically',
       cleanup: deleteUserByExternalId,
       steps: [
         {
           stepType: 'pipeline',
           name: 'identify (per-job delivery mapping)',
-          destinationOverride: { WorkspaceID: BRAZE_PER_JOB_DELIVERY_TEST_WORKSPACE_ID },
           expectedOutputs: 1,
           expectedProxyRequests: 1,
           seed: (ctx) => ({
@@ -838,19 +830,18 @@ export const live = {
     },
 
     // ─── per-job delivery mapping: MERGE branch ───
-    // The per-job-delivery scenario covers the track branch; this routes an alias merge through the ON
+    // The per-job-delivery scenario covers the track branch; this covers the alias merge
     // path (buildMergeRequest / scopedMetadataForChunk). Delivery-only (merge is async, like
     // braze-alias-merge).
     {
       id: 'braze-per-job-delivery-merge',
-      description: 'alias merge under the per-job delivery-mapping flag (ON-path merge branch)',
+      description: 'alias merge with per-job delivery mapping covers the merge branch',
       cleanup: deleteMergeUsers,
       steps: [
         { stepType: 'action', name: 'setup: create keep + source users', run: createMergeUsers },
         {
           stepType: 'pipeline',
           name: 'alias merge (per-job delivery mapping)',
-          destinationOverride: { WorkspaceID: BRAZE_PER_JOB_DELIVERY_TEST_WORKSPACE_ID },
           expectedOutputs: 1,
           expectedProxyRequests: 1,
           seed: (ctx) => ({

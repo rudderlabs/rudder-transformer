@@ -4,6 +4,19 @@ import stats from '../../../util/stats';
 
 const TRUNCATION_MARKER = '[truncated:';
 const METRIC = 'proxy_destination_response_truncated';
+const ENV_KEY = 'PROXY_DESTINATION_RESPONSE_MAX_BYTES';
+
+// Captured rather than deleted on the way out: the suite must not strip a value the surrounding
+// environment set, and `undefined` here restores "unset" just as faithfully.
+const ORIGINAL_MAX_BYTES = process.env[ENV_KEY];
+
+const setEnvMaxBytes = (value?: string) => {
+  if (value === undefined) {
+    delete process.env[ENV_KEY];
+  } else {
+    process.env[ENV_KEY] = value;
+  }
+};
 
 let counterSpy: jest.SpyInstance;
 
@@ -12,6 +25,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  setEnvMaxBytes(ORIGINAL_MAX_BYTES);
   jest.restoreAllMocks();
 });
 
@@ -100,7 +114,15 @@ describe('capDeliveryV1Errors - over the cap', () => {
 });
 
 describe('capDeliveryV1Errors - across a batch', () => {
-  const DEFAULT_MAX_BYTES = 50 * 1024;
+  // These exercise the batch walk and the memo, neither of which depends on how large the body is,
+  // so the cap is lowered through its env var and a body that clears it is 4KB rather than the 2MB
+  // the 50KB default would require. The default itself is covered in `configured limit` below.
+  const MAX_BYTES = 1024;
+  const OVERSIZED = 'x'.repeat(4 * 1024);
+
+  beforeEach(() => {
+    setEnvMaxBytes(String(MAX_BYTES));
+  });
 
   it('leaves a response within the cap untouched and reports nothing', () => {
     const error = JSON.stringify({ errors: [{ code: 190 }] });
@@ -113,12 +135,12 @@ describe('capDeliveryV1Errors - across a batch', () => {
   });
 
   it('caps every entry and counts one truncation per job state', () => {
-    const response = jobStates('x'.repeat(2 * 1024 * 1024), 300);
+    const response = jobStates(OVERSIZED, 300);
 
     capDeliveryV1Errors(response, 'FB_CUSTOM_AUDIENCE');
 
     response.forEach((jobState) => {
-      expect(Buffer.byteLength(jobState.error)).toBeLessThanOrEqual(DEFAULT_MAX_BYTES);
+      expect(Buffer.byteLength(jobState.error)).toBeLessThanOrEqual(MAX_BYTES);
       expect(jobState.error).toContain(TRUNCATION_MARKER);
     });
     // One `counter` call carrying the job count, not 300 `increment` calls.
@@ -129,10 +151,10 @@ describe('capDeliveryV1Errors - across a batch', () => {
   it('allocates one capped string for a shared error, not one per job', () => {
     // The memo, and the reason it exists. Every producer builds one error string and shares it
     // across the batch, so truncating each entry independently would allocate `batchSize` distinct
-    // copies - re-creating the amplification this module removes, at 50KB a job instead of 2MB.
-    // Asserted by call count: `toBe` is `Object.is`, and separately-allocated equal strings are
-    // still the same value, so identity alone cannot distinguish them.
-    const response = jobStates('x'.repeat(2 * 1024 * 1024), 300);
+    // copies - re-creating the amplification this module removes, at the cap a job instead of the
+    // whole body. Asserted by call count: `toBe` is `Object.is`, and separately-allocated equal
+    // strings are still the same value, so identity alone cannot distinguish them.
+    const response = jobStates(OVERSIZED, 300);
     const sliceSpy = jest.spyOn(String.prototype, 'slice');
 
     try {
@@ -149,7 +171,10 @@ describe('capDeliveryV1Errors - across a batch', () => {
     // so the entries are equal by value but separately allocated. `!==` compares strings by value,
     // so the memo still collapses them.
     const response = Array.from({ length: 100 }, (_, i) => ({
-      error: `${'x'.repeat(2 * 1024 * 1024)}`,
+      // Built per entry rather than hoisted to a shared binding. Whether V8 hands back one string
+      // or 100 is not observable from JS - `===` on strings compares by value - so what this pins
+      // down is the memo surviving a producer that does not share a reference by construction.
+      error: 'x'.repeat(4 * 1024),
       statusCode: 500,
       metadata: { jobId: i + 1 },
     })) as DeliveryJobState[];
@@ -166,7 +191,7 @@ describe('capDeliveryV1Errors - across a batch', () => {
   it('counts only the entries it actually cut', () => {
     const response = [
       ...jobStates('small', 2),
-      ...jobStates('x'.repeat(2 * 1024 * 1024), 3),
+      ...jobStates(OVERSIZED, 3),
       ...jobStates('also small', 1),
     ];
 
@@ -181,41 +206,27 @@ describe('capDeliveryV1Errors - across a batch', () => {
     expect(() => capDeliveryV1Errors(undefined, 'BRAZE')).not.toThrow();
     expect(() => capDeliveryV1Errors([], 'BRAZE')).not.toThrow();
 
-    const response = jobStates('x'.repeat(5 * 1024 * 1024), 1);
+    const response = jobStates(OVERSIZED, 1);
     capDeliveryV1Errors(response, undefined);
     expect(counterSpy).toHaveBeenCalledWith(METRIC, 1, { destType: undefined });
   });
 });
 
 describe('capDeliveryV1Errors - configured limit', () => {
-  const ENV_KEY = 'PROXY_DESTINATION_RESPONSE_MAX_BYTES';
-  const OLD_ENV = process.env;
   // The module's default; not exported, so the expectation is stated here.
   const DEFAULT_MAX_BYTES = 50 * 1024;
 
   // The limit is module-private, so it is asserted through the behaviour it drives rather than by
-  // reading the constant.
+  // reading the constant. It is read per call, so setting the env var is enough on its own - no
+  // `jest.resetModules()` and re-`require` to rebind a module constant.
   const loadWith = (value?: string) => {
-    jest.resetModules();
-    process.env = { ...OLD_ENV };
-    if (value === undefined) {
-      delete process.env[ENV_KEY];
-    } else {
-      process.env[ENV_KEY] = value;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
-    const { capDeliveryV1Errors: capWithEnv } = require('../deliveryResponseCap');
+    setEnvMaxBytes(value);
     return (error: string): string => {
       const response = jobStates(error, 1);
-      capWithEnv(response, 'BRAZE');
+      capDeliveryV1Errors(response, 'BRAZE');
       return response[0].error;
     };
   };
-
-  afterEach(() => {
-    process.env = OLD_ENV;
-    jest.resetModules();
-  });
 
   it('defaults to 50 KB', () => {
     const capWithEnv = loadWith(undefined);

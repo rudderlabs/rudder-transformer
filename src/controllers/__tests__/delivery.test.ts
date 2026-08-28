@@ -211,10 +211,23 @@ describe('Delivery controller tests', () => {
   // `response[].error` is proven to reach that one call - the coverage argument that previously had
   // to be re-made at every `deliver` return.
   describe('destination response cap (INT-6978)', () => {
-    const MAX_ERROR_BYTES = 50 * 1024;
+    // The cap is lowered through the env var it already reads rather than left at the 50KB default,
+    // so a payload that clears it is 4KB instead of the 2MB the default would demand. What is under
+    // test is the amplification - one body copied once per job - and that is a property of the job
+    // count, not of the body size: at 50 jobs the default made every one of these tests allocate
+    // ~100MB, which is what starved the CI runner the docker image build runs on.
+    const MAX_ERROR_BYTES = 1024;
     const METRIC = 'proxy_destination_response_truncated';
     const JOBS = 50;
-    const OVERSIZED = 'x'.repeat(2 * 1024 * 1024);
+    const OVERSIZED = 'x'.repeat(4 * 1024);
+
+    beforeEach(() => {
+      process.env.PROXY_DESTINATION_RESPONSE_MAX_BYTES = String(MAX_ERROR_BYTES);
+    });
+
+    afterEach(() => {
+      delete process.env.PROXY_DESTINATION_RESPONSE_MAX_BYTES;
+    });
 
     const v1Body = (jobCount: number) => ({
       body: { JSON: { a: 'b' } },

@@ -35,7 +35,7 @@ import { parseEnvInt } from '../../util/utils';
 /**
  * 50KB, chosen against the batch size rather than picked for readability.
  *
- * The cap is per job, so what the response serializes to is still `batchSize x MAX_BYTES` — the cap
+ * The cap is per job, so what the response serializes to is still `batchSize x cap` — the cap
  * lowers the ceiling, it does not remove the multiplication. That ceiling has to stay under V8's
  * ~512MB maximum string length at the largest batch the proxy is asked to deliver, and the batch
  * that produced INT-6978 was 6000 jobs:
@@ -48,7 +48,21 @@ import { parseEnvInt } from '../../util/utils';
  * under 6000; a guarantee independent of batch size would need an aggregate budget divided across
  * `response[]` rather than a per-job limit.
  */
-const MAX_BYTES = parseEnvInt(process.env.PROXY_DESTINATION_RESPONSE_MAX_BYTES, 50 * 1024);
+const DEFAULT_MAX_BYTES = 50 * 1024;
+
+/**
+ * Read per call rather than bound at import.
+ *
+ * A limit captured in a module constant is fixed for the life of the process, so the only way to
+ * exercise a different one is to reload the module - which is why the tests used to reach for
+ * `jest.resetModules()`, and why anything driving the cap through the real route had to clear the
+ * 50KB default with a multi-MB payload. Reading here lets the env var set the limit at the point it
+ * is used, so a test can lower the cap to a few hundred bytes and prove the same behaviour with a
+ * few KB. Cost is one `Number.parseInt` per delivery response - not per job - against a function
+ * that already walks the whole batch.
+ */
+const maxBytesFromEnv = (): number =>
+  parseEnvInt(process.env.PROXY_DESTINATION_RESPONSE_MAX_BYTES, DEFAULT_MAX_BYTES);
 
 /**
  * Cap one `error` string to at most `maxBytes` UTF-8 **bytes**.
@@ -113,7 +127,9 @@ export const capDeliveryV1Errors = (
   // Optional to match `ErrorDetailer.destType`, which the delivery failure paths already pass
   // straight through to stats.
   destType: string | undefined,
-  maxBytes: number = MAX_BYTES,
+  // Default arguments are evaluated per call, so this picks up the env var as it stands when the
+  // response is capped rather than as it stood when the module was first required.
+  maxBytes: number = maxBytesFromEnv(),
 ): void => {
   if (!Array.isArray(response)) return;
 

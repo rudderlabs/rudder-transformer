@@ -4,6 +4,7 @@ import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DeliveryTestService } from '../services/delivertTest/deliveryTest';
+import { capDeliveryV1Errors } from '../services/destination/deliveryResponseCap';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import { MiscService } from '../services/misc';
 import {
@@ -80,6 +81,15 @@ export class DeliveryController {
         metaTO,
       );
     }
+    // The one place the destination's echoed response is capped (INT-6978). Every v1 response
+    // arrives here — the batching framework, the v0->v1 adaptation, a native v1 handler, `deliver`'s
+    // catch, and the catch just above, which nothing inside `deliver` can see. `response[].error`
+    // repeats that echo once per job, so an uncapped multi-MB body serializes past V8's ~512MB
+    // string limit and Koa answers with no `output` field at all.
+    //
+    // Immediately before `ctx.body` on purpose: this is the last point before serialization, so no
+    // producer can be added later that forgets to cap. Uppercased to match `statTags.destType`.
+    capDeliveryV1Errors(deliveryResponse.response, destination.toUpperCase());
     ctx.body = { output: deliveryResponse };
     if (isDefinedAndNotNullAndNotEmpty(deliveryResponse.authErrorCategory)) {
       ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);

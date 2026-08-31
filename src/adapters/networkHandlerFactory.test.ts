@@ -8,12 +8,6 @@ describe('Network Handler Tests', () => {
     expect(networkHandler).toEqual(new cmProxy());
   });
 
-  it('Should return v0 networkhandler braze', () => {
-    const { networkHandler } = getNetworkHandler('braze', 'v0');
-    const brazeProxy = require('../v0/destinations/braze/networkHandler').networkHandler;
-    expect(networkHandler).toEqual(new brazeProxy());
-  });
-
   it('Should return v1 networkhandler', () => {
     const { networkHandler } = getNetworkHandler('campaign_manager', 'v1');
     const cmProxy = require('../v1/destinations/campaign_manager/networkHandler').networkHandler;

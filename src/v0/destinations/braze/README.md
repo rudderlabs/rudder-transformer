@@ -207,7 +207,7 @@ function setAliasObject(payload: Record<string, unknown>, message: RudderBrazeMe
 ### Proxy Delivery
 
 - **Supported**: Yes
-- **Source Code Path**: `src/v0/destinations/braze/networkHandler.ts`
+- **Source Code Path**: `src/v1/destinations/braze/networkHandler.ts`
 
 ### User Deletion
 

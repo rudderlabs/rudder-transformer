@@ -12,11 +12,9 @@ import {
   handleReservedProperties,
   combineSubscriptionGroups,
   getEndpointFromConfig,
-  processBatch,
   processBatchWithDeliveryMapping,
   validateDestinationConfig,
 } from './util';
-import { isPerJobDeliveryMappingEnabled } from './config';
 import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
 import {
   ConfigurationError,
@@ -1016,7 +1014,7 @@ describe('dedup utility tests', () => {
 });
 
 // ---------------------------------------------------------------------------
-// processBatch shared helpers
+// processBatchWithDeliveryMapping shared helpers
 // ---------------------------------------------------------------------------
 
 const brazeDestFor = (extras: Partial<BrazeDestinationConfig> = {}): BrazeDestination => ({
@@ -1045,31 +1043,8 @@ const subEndpointOf = (destination: BrazeDestination) =>
 const mergeEndpointOf = (destination: BrazeDestination) =>
   getEndpointFromConfig(destination) + '/users/merge';
 
-// ---- OFF-path (default) helpers ------------------------------------------
-// The OFF path emits a single MultiBatchRequestOutput whose `batchedRequest`
-// is an array of every outgoing HTTP request. These helpers reach into that
-// array; individual requests are filtered by endpoint.
-const offMulti = (result: any[]): any | undefined =>
-  result.find((r) => r?.batchedRequest && Array.isArray(r.batchedRequest));
-
-const offRequests = (result: any[], destination: BrazeDestination, endpoint: string): any[] => {
-  const multi = offMulti(result);
-  if (!multi) return [];
-  return (multi.batchedRequest as any[]).filter((br) => br.endpoint === endpoint);
-};
-
-const offTrackRequests = (result: any[], destination: BrazeDestination): any[] =>
-  offRequests(result, destination, trackEndpointOf(destination));
-const offSubRequests = (result: any[], destination: BrazeDestination): any[] =>
-  offRequests(result, destination, subEndpointOf(destination));
-const offMergeRequests = (result: any[], destination: BrazeDestination): any[] =>
-  offRequests(result, destination, mergeEndpointOf(destination));
-
-const offTotalIn = (requests: any[], key: 'attributes' | 'events' | 'purchases'): number =>
-  requests.reduce((acc, r) => acc + (r.body.JSON[key]?.length ?? 0), 0);
-
-// ---- ON-path helpers -----------------------------------------------------
-// The ON path emits one BatchRequestOutput per outgoing HTTP request; each
+// ---- Batch-output helpers -------------------------------------------------
+// The batching path emits one BatchRequestOutput per outgoing HTTP request; each
 // carries a single non-array `batchedRequest`. Helpers filter by endpoint.
 const isOnBatchedOutput = (out: any): boolean =>
   Boolean(out?.batchedRequest && !Array.isArray(out.batchedRequest));
@@ -1093,367 +1068,12 @@ const onTotalInSubArray = (outs: any[], key: 'attributes' | 'events' | 'purchase
   outs.reduce((acc, o) => acc + (o.batchedRequest.body.JSON[key]?.length ?? 0), 0);
 
 // ---------------------------------------------------------------------------
-// OFF path (default) — BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS is unset.
-// processBatch emits a single MultiBatchRequestOutput whose `batchedRequest`
-// is an array of every outgoing HTTP request, with a flat metadata list and
-// no `destInfo`. Group-preserving chunking, byte-size caps, and oversized-job
-// rejection are still active.
-// ---------------------------------------------------------------------------
-
-describe('processBatch — OFF path (default) — non-MAU workspace (V1 chunking)', () => {
-  const destination = brazeDestFor();
-
-  const buildTrackEvent = (
-    i: number,
-    workspaceId = 'workspace-non-mau',
-  ): BrazeTransformedEvent => ({
-    destination,
-    statusCode: 200,
-    batchedRequest: {
-      version: '1',
-      type: 'REST',
-      method: 'POST',
-      endpoint: '',
-      headers: {},
-      params: {},
-      body: {
-        JSON: {
-          attributes: [{ external_id: `u${i}`, id: i, name: 'n', xyz: 'a' }],
-          events: [{ external_id: `u${i}`, id: i, event: 'e' }],
-          purchases: [
-            {
-              external_id: `u${i}`,
-              product_id: `p${i}`,
-              price: 1,
-              currency: 'USD',
-              quantity: 1,
-              time: 't',
-            },
-          ],
-        },
-      },
-      files: {},
-    } as any,
-    metadata: [{ jobId: i, workspaceId }],
-  });
-
-  test('emits a single MultiBatchRequestOutput with batchedRequest[] and flat metadata', () => {
-    const transformedEvents = Array.from({ length: 20 }, (_, i) => buildTrackEvent(i));
-    const result = processBatch(transformedEvents);
-    // Exactly one successful output (no failures/filters in this input).
-    expect(result.length).toBe(1);
-    const multi = result[0] as any;
-    expect(Array.isArray(multi.batchedRequest)).toBe(true);
-    expect(multi.batched).toBe(true);
-    expect(multi.statusCode).toBe(200);
-    expect(multi.metadata.length).toBe(20);
-    // No destInfo on any metadata entry in OFF path.
-    for (const m of multi.metadata) {
-      expect((m as any).destInfo).toBeUndefined();
-    }
-  });
-
-  test('splits track chunks by V1 per-type caps (75)', () => {
-    const transformedEvents = Array.from({ length: 100 }, (_, i) => buildTrackEvent(i));
-    const result = processBatch(transformedEvents);
-
-    const tracks = offTrackRequests(result, destination);
-    expect(tracks.length).toBeGreaterThanOrEqual(2);
-    expect(offTotalIn(tracks, 'attributes')).toBe(100);
-    expect(offTotalIn(tracks, 'events')).toBe(100);
-    expect(offTotalIn(tracks, 'purchases')).toBe(100);
-    for (const t of tracks) {
-      const body = t.body.JSON as BrazeTrackRequestBody;
-      expect(body.partner).toBe('RudderStack');
-      expect(body.attributes?.length ?? 0).toBeLessThanOrEqual(75);
-      expect(body.events?.length ?? 0).toBeLessThanOrEqual(75);
-      expect(body.purchases?.length ?? 0).toBeLessThanOrEqual(75);
-    }
-  });
-
-  test('subscription-group jobs are chunked (25 per) inside the same MultiBatchRequestOutput', () => {
-    const dest = brazeDestFor({ enableSubscriptionGroupInGroupCall: true });
-    const transformedEvents: BrazeTransformedEvent[] = [];
-    for (let i = 0; i < 100; i += 1) {
-      transformedEvents.push({
-        destination: dest,
-        statusCode: 200,
-        batchedRequest: {
-          version: '1',
-          type: 'REST',
-          method: 'POST',
-          endpoint: '',
-          headers: {},
-          params: {},
-          body: {
-            JSON: {
-              subscription_groups: [
-                { subscription_group_id: `s${i}`, subscription_state: 'subscribed' },
-              ],
-            },
-          },
-          files: {},
-        } as any,
-        metadata: [{ jobId: i, workspaceId: 'workspace-non-mau' }],
-      });
-    }
-    const result = processBatch(transformedEvents);
-    expect(result.length).toBe(1);
-    const subs = offSubRequests(result, dest);
-    expect(subs.length).toBe(Math.ceil(100 / 25));
-    for (const s of subs) {
-      expect((s.body.JSON as any).subscription_groups).toBeDefined();
-    }
-    // OFF path: no destInfo on flat metadata list.
-    for (const m of (result[0] as any).metadata) {
-      expect((m as any).destInfo).toBeUndefined();
-    }
-  });
-
-  test('alias-merge jobs are chunked (50 per) inside the same MultiBatchRequestOutput', () => {
-    const dest = brazeDestFor();
-    const transformedEvents: BrazeTransformedEvent[] = [];
-    for (let i = 0; i < 100; i += 1) {
-      transformedEvents.push({
-        destination: dest,
-        statusCode: 200,
-        batchedRequest: {
-          version: '1',
-          type: 'REST',
-          method: 'POST',
-          endpoint: '',
-          headers: {},
-          params: {},
-          body: {
-            JSON: {
-              merge_updates: [
-                {
-                  identifier_to_merge: { external_id: `a${i}` },
-                  identifier_to_keep: { external_id: `b${i}` },
-                },
-              ],
-            },
-          },
-          files: {},
-        } as any,
-        metadata: [{ jobId: i, workspaceId: 'workspace-non-mau' }],
-      });
-    }
-    const result = processBatch(transformedEvents);
-    expect(result.length).toBe(1);
-    const merges = offMergeRequests(result, dest);
-    expect(merges.length).toBe(Math.ceil(100 / 50));
-    for (const m of merges) {
-      expect((m.body.JSON as any).merge_updates).toBeDefined();
-    }
-    for (const meta of (result[0] as any).metadata) {
-      expect((meta as any).destInfo).toBeUndefined();
-    }
-  });
-
-  test('interleaved input types produce a single MultiBatchRequestOutput with all requests globally concatenated', () => {
-    // OFF path concatenates all track items → chunked → track requests; then
-    // all sub items; then all merges. Insertion-order-run preservation is an
-    // ON-only guarantee.
-    const dest = brazeDestFor({ enableSubscriptionGroupInGroupCall: true });
-    const trackJob = (i: number): BrazeTransformedEvent => ({
-      destination: dest,
-      statusCode: 200,
-      batchedRequest: {
-        version: '1',
-        type: 'REST',
-        method: 'POST',
-        endpoint: '',
-        headers: {},
-        params: {},
-        body: { JSON: { attributes: [{ external_id: `u${i}` }] } },
-        files: {},
-      } as any,
-      metadata: [{ jobId: i, workspaceId: 'workspace-non-mau', userId: 'shared' }],
-    });
-    const subJob = (i: number): BrazeTransformedEvent => ({
-      destination: dest,
-      statusCode: 200,
-      batchedRequest: {
-        version: '1',
-        type: 'REST',
-        method: 'POST',
-        endpoint: '',
-        headers: {},
-        params: {},
-        body: {
-          JSON: {
-            subscription_groups: [
-              { subscription_group_id: `s${i}`, subscription_state: 'subscribed' },
-            ],
-          },
-        },
-        files: {},
-      } as any,
-      metadata: [{ jobId: i, workspaceId: 'workspace-non-mau', userId: 'shared' }],
-    });
-    const mergeJob = (i: number): BrazeTransformedEvent => ({
-      destination: dest,
-      statusCode: 200,
-      batchedRequest: {
-        version: '1',
-        type: 'REST',
-        method: 'POST',
-        endpoint: '',
-        headers: {},
-        params: {},
-        body: {
-          JSON: {
-            merge_updates: [
-              {
-                identifier_to_merge: { external_id: `a${i}` },
-                identifier_to_keep: { external_id: `b${i}` },
-              },
-            ],
-          },
-        },
-        files: {},
-      } as any,
-      metadata: [{ jobId: i, workspaceId: 'workspace-non-mau', userId: 'shared' }],
-    });
-
-    const result = processBatch([
-      trackJob(1),
-      trackJob(2),
-      subJob(3),
-      subJob(4),
-      mergeJob(5),
-      mergeJob(6),
-      subJob(7),
-    ]);
-
-    // Single output. Track requests: 1 chunk of 2. Sub requests: 1 chunk of 3.
-    // Merge requests: 1 chunk of 2. Total inner requests = 3.
-    expect(result.length).toBe(1);
-    const multi = result[0] as any;
-    expect(Array.isArray(multi.batchedRequest)).toBe(true);
-    expect(offTrackRequests(result, dest).length).toBe(1);
-    expect(offSubRequests(result, dest).length).toBe(1);
-    expect(offMergeRequests(result, dest).length).toBe(1);
-    // Flat metadata preserves original job insertion order.
-    expect(multi.metadata.map((m: any) => m.jobId)).toEqual([1, 2, 3, 4, 5, 6, 7]);
-  });
-
-  test('preserves failure and filtered responses alongside the single successful output', () => {
-    const transformedEvents: BrazeTransformedEvent[] = [
-      ...Array.from({ length: 10 }, (_, i) => buildTrackEvent(i)),
-      {
-        destination,
-        statusCode: 400,
-        metadata: [{ jobId: 500, workspaceId: 'workspace-non-mau' }],
-        error: 'Random Error',
-      } as BrazeTransformedEvent,
-    ];
-    const result = processBatch(transformedEvents);
-    const failures = result.filter((r) => (r as any).statusCode === 400);
-    expect(failures.length).toBe(1);
-    expect((failures[0] as any).error).toBe('Random Error');
-    const tracks = offTrackRequests(result, destination);
-    expect(offTotalIn(tracks, 'events')).toBe(10);
-  });
-
-  test('instruments (stat + log) the silent drop of a job with no batchedRequest.body.JSON', () => {
-    // Regression coverage for the observability added after INT-6993: this
-    // condition is Braze's only silent-drop path on the OFF (default) side, and
-    // rudder-server's own `in out mismatch` check logs nothing when it fires.
-    const statsSpy = jest.spyOn(stats, 'increment').mockImplementation(() => {});
-    const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined);
-
-    const droppedEvent: BrazeTransformedEvent = {
-      destination,
-      statusCode: 200,
-      batchedRequest: {
-        userId: 'user-1',
-        type: 'track',
-      } as unknown as ProcessorTransformationOutput, // no `.body.JSON`
-      metadata: [{ jobId: 999, workspaceId: 'workspace-non-mau' }],
-    } as BrazeTransformedEvent;
-
-    processBatch([droppedEvent]);
-
-    expect(statsSpy).toHaveBeenCalledWith('braze_unprocessable_job', {
-      destination_id: destination.ID,
-      reason: 'missing_body_json',
-    });
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.stringContaining('processBatch: dropping job(s)'),
-      expect.objectContaining({
-        destinationId: destination.ID,
-        hasBatchedRequest: true,
-        hasBody: false,
-      }),
-    );
-
-    statsSpy.mockRestore();
-    loggerSpy.mockRestore();
-  });
-});
-
-describe('processBatch — OFF path (default) — MAU workspace (V2 chunking)', () => {
-  const destination = brazeDestFor();
-
-  const buildTrackEvent = (i: number): BrazeTransformedEvent => ({
-    destination,
-    statusCode: 200,
-    batchedRequest: {
-      version: '1',
-      type: 'REST',
-      method: 'POST',
-      endpoint: '',
-      headers: {},
-      params: {},
-      body: {
-        JSON: {
-          attributes: [{ external_id: `u${i}`, id: i, name: 'n' }],
-          events: [{ external_id: `u${i}`, id: i, event: 'e' }],
-          purchases: [
-            {
-              external_id: `u${i}`,
-              product_id: `p${i}`,
-              price: 1,
-              currency: 'USD',
-              quantity: 1,
-              time: 't',
-            },
-          ],
-        },
-      },
-      files: {},
-    } as any,
-    metadata: [{ jobId: i, workspaceId: 'workspace-mau' }],
-  });
-
-  test('V2 chunks by total-count cap (75) across sub-arrays', () => {
-    const transformedEvents = Array.from({ length: 100 }, (_, i) => buildTrackEvent(i));
-    const result = processBatch(transformedEvents);
-    expect(result.length).toBe(1);
-    const tracks = offTrackRequests(result, destination);
-    expect(tracks.length).toBe(4);
-    expect(offTotalIn(tracks, 'attributes')).toBe(100);
-    expect(offTotalIn(tracks, 'events')).toBe(100);
-    expect(offTotalIn(tracks, 'purchases')).toBe(100);
-    for (const t of tracks) {
-      const body = t.body.JSON as BrazeTrackRequestBody;
-      const total =
-        (body.attributes?.length ?? 0) + (body.events?.length ?? 0) + (body.purchases?.length ?? 0);
-      expect(total).toBeLessThanOrEqual(75);
-    }
-  });
-});
-
-// ---------------------------------------------------------------------------
-// `processBatchWithDeliveryMapping` — invoked directly (no env-var gating in
-// util.ts; the flag is read only by `transform.ts` at the call site).
-// Emits one BatchRequestOutput per outgoing HTTP request, preserves insertion-
-// order runs, attaches per-metadata `destInfo` positional maps on track
+// `processBatchWithDeliveryMapping` is the only Braze batching path.
+// Emits one BatchRequestOutput per outgoing HTTP request, attaches
+// per-metadata `destInfo` positional maps on track
 // outputs, and carries `destInfo: {}` on sub/merge outputs for correlation-
 // shape uniformity. Applies group-preserving chunking, byte-size caps, and
-// oversized-job rejection which do not exist on the OFF path.
+// oversized-job rejection.
 // ---------------------------------------------------------------------------
 
 describe('processBatchWithDeliveryMapping', () => {
@@ -1879,7 +1499,7 @@ describe('processBatchWithDeliveryMapping', () => {
     }
   });
 
-  test('a single job’s items never straddle chunk boundaries (ON path preserves group-preserving chunking)', () => {
+  test('a single job’s items never straddle chunk boundaries', () => {
     const buildOrderCompletedJob = (i: number, numProducts: number): BrazeTransformedEvent => ({
       destination,
       statusCode: 200,
@@ -2981,52 +2601,6 @@ describe('formatEmail', () => {
   });
 });
 
-describe('isPerJobDeliveryMappingEnabled — per-workspace rollout gate', () => {
-  const ENV_KEY = 'BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS';
-  const original = process.env[ENV_KEY];
-
-  const setEnv = (value?: string) => {
-    if (typeof value === 'string') {
-      process.env[ENV_KEY] = value;
-    } else {
-      delete process.env[ENV_KEY];
-    }
-  };
-
-  afterEach(() => setEnv(original));
-
-  it('is OFF for every workspace when unset', () => {
-    setEnv(undefined);
-    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(false);
-  });
-
-  it('is OFF for empty string and for NONE', () => {
-    setEnv('');
-    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(false);
-    setEnv('NONE');
-    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(false);
-  });
-
-  it('is ON for every workspace when ALL', () => {
-    setEnv('ALL');
-    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(true);
-    expect(isPerJobDeliveryMappingEnabled('anything')).toBe(true);
-  });
-
-  it('is ON only for the listed workspaceIds', () => {
-    setEnv('ws1,ws2');
-    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(true);
-    expect(isPerJobDeliveryMappingEnabled('ws2')).toBe(true);
-    expect(isPerJobDeliveryMappingEnabled('ws3')).toBe(false);
-  });
-
-  it('trims whitespace around the listed workspaceIds', () => {
-    setEnv('  ws1 ,  ws2  ');
-    expect(isPerJobDeliveryMappingEnabled('ws1')).toBe(true);
-    expect(isPerJobDeliveryMappingEnabled('ws2')).toBe(true);
-  });
-});
-
 // ---------------------------------------------------------------------------
 // Router in/out job accounting — rudder-server discards the whole transformer
 // response and retries the entire batch as 500 when the number of jobIds it
@@ -3036,7 +2610,7 @@ describe('isPerJobDeliveryMappingEnabled — per-workspace rollout gate', () => 
 // surfaces in two outputs inflates `out` even though nothing was lost.
 // ---------------------------------------------------------------------------
 
-// Structural view of the ON-path track outputs the tests below assert on. The
+// Structural view of the track outputs the tests below assert on. The
 // shared on*/off* helpers further up predate strict typing and return `any[]`;
 // annotating once at the call site keeps every assertion properly typed.
 type OnTrackOutput = {
@@ -3049,7 +2623,7 @@ const jobIdsOf = (out: BrazeBatchResponse): number[] =>
     .map((meta) => meta.jobId)
     .filter((jobId): jobId is number => jobId !== undefined);
 
-describe('router in/out job accounting (ON path)', () => {
+describe('router in/out job accounting', () => {
   const destination = brazeDestFor();
 
   // Mirrors rudder-server's check in router/transformer/transformer.go: `in` is a

@@ -87,13 +87,19 @@ So: if your destination's errors are worth reading, write the extractor in your 
 | --- | --- | --- |
 | `success()` | delivered | per-job `200` |
 | `abort(reason)` | permanent failure | per-job `400` |
-| `retry(reason, { dontBatch })` | transient failure | per-job `500` |
+| `retry(reason, { dontBatch })` | transient failure; with `dontBatch`, try a batch-shaped permanent failure once alone first | per-job `500`, or per-job `400` when isolation is impossible |
 | `throttled(reason)` | rate limited | per-job `429` |
 | `authExpired(reason)` | token stale but recoverable | `REFRESH_TOKEN` → refresh + retry |
 | `authRevoked(reason)` | grant gone | `AUTH_STATUS_INACTIVE` → abort |
 | `perItem([...])` | one verdict per request-body item | per-job, positionally |
 
 `ItemVerdict` (what `perItem` accepts) deliberately excludes the two auth refinements: rudder-server overwrites the status code of *every* job in a batch when an `authErrorCategory` is present, so a per-item auth verdict cannot be represented.
+
+### `dontBatch` softens an abort; it never hardens a retry
+
+Use `retry(reason, { dontBatch: true })` only for a permanent whole-batch rejection where one bad event may be poisoning the batch. The flag means: return a retryable job state now so rudder-server redelivers each event once alone; if the event is already alone, the framework rewrites the verdict to `abort(reason)`, emits a terminal per-job `400` with the reason unchanged, and increments `batch_delivery_dont_batch_aborted`.
+
+Do **not** pair `dontBatch` with transient/retryable statuses such as 5xx. On a single-event batch there is nothing to isolate, so `retry(reason, { dontBatch: true })` becomes an immediate abort with no retry. Transient destination failures must use plain `retry(reason)` (or `throttled(reason)` for 429) so normal retry semantics are preserved.
 
 ### `perItem` is positional and 1:1
 

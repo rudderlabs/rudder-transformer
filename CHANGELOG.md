@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.151.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.150.0...v1.151.0) (2026-08-31)
+
+
+### Features
+
+* **reddit_audience:** add Reddit Custom Audiences destination ([f13a907](https://github.com/rudderlabs/rudder-transformer/commit/f13a90791fba4127dcf76c32f4aba3327eb56c6a))
+* **reddit_audience:** add Reddit Custom Audiences destination ([#5532](https://github.com/rudderlabs/rudder-transformer/issues/5532)) ([64729f9](https://github.com/rudderlabs/rudder-transformer/commit/64729f94350a8b613320166a832bb3ef69a953fe)), closes [rudderlabs/rudder-specs#148](https://github.com/rudderlabs/rudder-specs/issues/148) [rudderlabs/rudder-integrations-config#2694](https://github.com/rudderlabs/rudder-integrations-config/issues/2694)
+
+
+### Bug Fixes
+
+* **delivery:** cap the destination response the proxy echoes back (INT-6978) ([#5506](https://github.com/rudderlabs/rudder-transformer/issues/5506)) ([b70b4c1](https://github.com/rudderlabs/rudder-transformer/commit/b70b4c10faa594442e6b5c29854275314cd71068)), closes [#5481](https://github.com/rudderlabs/rudder-transformer/issues/5481) [#5481](https://github.com/rudderlabs/rudder-transformer/issues/5481) [#5481](https://github.com/rudderlabs/rudder-transformer/issues/5481) [#5481](https://github.com/rudderlabs/rudder-transformer/issues/5481)
+* **native-batching:** abort exhausted dontBatch retries ([#5523](https://github.com/rudderlabs/rudder-transformer/issues/5523)) ([3dc42e3](https://github.com/rudderlabs/rudder-transformer/commit/3dc42e3dffb684ec0f65f2c15d1270f3e9223302))
+* **reddit_audience:** guard against a misaligned positional matrix ([b30a9e6](https://github.com/rudderlabs/rudder-transformer/commit/b30a9e6c03109adfec1d403a3f57f735899b985e))
+* **reddit_audience:** never abort on 401, and keep a legacy handler until GA ([819d270](https://github.com/rudderlabs/rudder-transformer/commit/819d270892620b52620632c3c1aeed7c8eb1ce5f))
+* **reddit_audience:** stop requiring adAccountId on destination config ([ed98a2e](https://github.com/rudderlabs/rudder-transformer/commit/ed98a2e85a45d02f6ff2b6ce7c25127a71ff2046))
+
 ## [1.150.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.149.1...v1.150.0) (2026-08-27)
 
 

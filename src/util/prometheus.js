@@ -330,6 +330,12 @@ class Prometheus {
         labelNames: ['destination'],
       },
       {
+        name: 'proxy_destination_response_truncated',
+        help: 'Delivery response errors truncated for exceeding the size cap',
+        type: 'counter',
+        labelNames: ['destType'],
+      },
+      {
         name: 'source_transform_errors',
         help: 'source_transform_errors',
         type: 'counter',

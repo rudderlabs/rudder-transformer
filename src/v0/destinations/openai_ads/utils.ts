@@ -149,7 +149,7 @@ const normalizeName = (value: string): string | undefined =>
 const normalizeExternalId = (value: string): string | undefined =>
   value.trim().toLowerCase() || undefined;
 const normalizeDateOfBirth = (value: string): string | undefined => {
-  const normalized = value.trim().replace(/[.\s/-]/g, '');
+  const normalized = value.trim().replace(/[\s./-]/g, '');
   return /^\d{4,8}$/.test(normalized) ? normalized : undefined;
 };
 const normalizeLocationText = (value: string): string | undefined =>

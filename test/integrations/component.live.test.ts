@@ -13,7 +13,7 @@ import { runPipelineStep } from './live/runPipelineStep';
 import { retryUntilPasses } from './live/poll';
 import { OAuthTokenResolver } from './live/oauthTokenResolver';
 import { RudderAuthContainer } from './live/rudderAuthContainer';
-import { EnvManager } from './envUtils';
+import { EnvManager, EnvOverride } from './envUtils';
 import type { LiveSecret, EnrolledDestination } from './live/types';
 
 describe('Live Integration Test Suite', () => {
@@ -81,25 +81,46 @@ describe('Live Integration Test Suite', () => {
   }, 120000);
 
   // One describe per enrolled destination: resolve its credentials and base config, then run its
-  // enabled scenarios. A missing/invalid secret throws here (fail-closed), failing the destination.
+  // enabled scenarios.
+  //
+  // A missing or invalid secret throws here (fail-closed) — and note that "here" is the describe
+  // body, which jest evaluates at COLLECTION time, so the throw fails the whole suite file ("Test
+  // suite failed to run", zero tests) rather than only the destination at fault. That is fine as
+  // things stand, because CI runs one destination per matrix job (see .github/scripts/
+  // live-test-matrix.js), so a file is a destination. Anything that starts running several
+  // destinations in one jest process would need this moved into a beforeAll to keep one
+  // unprovisioned secret from taking the others down with it.
   describe.each(enrolledDestinations)('$destination', ({ destination, spec }) => {
+    const liveSecret: LiveSecret = resolver.resolve(destination);
+
     // Applied around the whole destination rather than per scenario: the flags a live spec names
     // gate the transform and delivery paths themselves, so every scenario has to run under them.
+    // `resolveEnv` contributes the secret-derived variables (a credential something reads from
+    // process.env) and is merged last, so it wins on a key collision with the static literal.
+    //
+    // A resolveEnv value is required to be non-empty, and a violation fails here at the credential
+    // boundary. Letting an empty one through would DELETE the variable (EnvOverride's semantics for
+    // undefined) and the run would fail later, once per scenario, as whatever error the consuming
+    // code raises for a missing credential — far from the secret field that is actually at fault.
     const envManager = new EnvManager();
-    beforeAll(() => {
-      if (spec.envOverrides) {
-        envManager.takeSnapshot(destination, Object.keys(spec.envOverrides));
-        envManager.applyOverrides(spec.envOverrides);
+    const resolvedEnv = spec.resolveEnv?.(liveSecret) ?? {};
+    Object.entries(resolvedEnv).forEach(([key, value]) => {
+      if (!value) {
+        throw new Error(
+          `[live:${destination}] resolveEnv returned an empty value for ${key} — the secret field ` +
+            `it maps is missing from LIVE_SECRET_${destination.toUpperCase()}.`,
+        );
       }
+    });
+    const destinationEnv: EnvOverride = { ...spec.envOverrides, ...resolvedEnv };
+    beforeAll(() => {
+      envManager.takeSnapshot(destination, Object.keys(destinationEnv));
+      envManager.applyOverrides(destinationEnv);
     });
     afterAll(() => {
-      if (spec.envOverrides) {
-        envManager.restoreSnapshot(destination);
-      }
+      envManager.restoreSnapshot(destination);
       envManager.cleanup();
     });
-
-    const liveSecret: LiveSecret = resolver.resolve(destination);
 
     beforeAll(async () => {
       if (spec.authType === 'oauth') {
@@ -114,6 +135,7 @@ describe('Live Integration Test Suite', () => {
           destination,
           liveSecret,
           spec.oauthVersion ?? 'v0',
+          spec.accountDefinition,
         );
         liveSecret.secret = { ...(liveSecret.secret ?? {}), ...secret };
       }

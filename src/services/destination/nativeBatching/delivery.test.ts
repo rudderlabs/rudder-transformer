@@ -22,17 +22,23 @@ import type { ProxyMetdata, ProxyV1Request } from '../../../types';
 
 const DEST = 'TEST_DEST';
 
+const baseJob = (jobId: number) => ({
+  jobId,
+  attemptNum: 0,
+  userId: `u${jobId}`,
+  sourceId: 's1',
+  destinationId: 'd1',
+  workspaceId: 'w1',
+  secret: {},
+});
+
 const job = (jobId: number): ProxyMetdata =>
   ({
-    jobId,
-    attemptNum: 0,
-    userId: `u${jobId}`,
-    sourceId: 's1',
-    destinationId: 'd1',
-    workspaceId: 'w1',
-    secret: {},
+    ...baseJob(jobId),
     dontBatch: false,
   }) as ProxyMetdata;
+
+const jobWithoutDontBatch = (jobId: number): ProxyMetdata => baseJob(jobId) as ProxyMetdata;
 
 const ctxFor = (
   status: number,
@@ -50,6 +56,20 @@ const ctxFor = (
     ...firstJobIdentity(jobs),
   };
 };
+
+const ctxForJobs = (
+  status: number,
+  response: unknown,
+  jobs: ProxyMetdata[],
+  body: Record<string, unknown> = {},
+): DeliveryContext => ({
+  status,
+  response,
+  jobs,
+  request: { body: { JSON: body }, endpoint: 'https://example.test/batch' } as ProxyV1Request,
+  destinationConfig: {},
+  ...firstJobIdentity(jobs),
+});
 
 /** The fields `TransformerProxyError` carries that the bridge is responsible for populating. */
 type ThrownProxyError = {
@@ -498,8 +518,37 @@ describe('toDeliveryV1Response — per-item detail survives a non-2xx', () => {
   });
 });
 
-describe('toDeliveryV1Response — dontBatch on a whole-batch retry', () => {
-  it('returns a response rather than throwing, so the flag survives', () => {
+describe('toDeliveryV1Response — dontBatch retry aborts', () => {
+  const singletonAbortCases = [
+    {
+      name: 'never-batched single event with no incoming flag',
+      ctx: () => ctxForJobs(400, { detail: 'x' }, [jobWithoutDontBatch(1)]),
+      expectedMetadata: jobWithoutDontBatch(1),
+    },
+    {
+      name: 'single event that already carries the incoming flag',
+      ctx: () => ctxForJobs(400, { detail: 'x' }, [{ ...job(1), dontBatch: true }]),
+      expectedMetadata: { ...job(1), dontBatch: true },
+    },
+  ];
+
+  it.each(singletonAbortCases)(
+    '$name -> aborts with the spec reason verbatim',
+    ({ ctx, expectedMetadata }) => {
+      const result = toDeliveryV1Response(
+        retry('batch too large', { dontBatch: true }),
+        ctx(),
+        DEST,
+      );
+      expect(result.response).toEqual([
+        { statusCode: 400, metadata: expectedMetadata, error: 'batch too large' },
+      ]);
+      expect(result.message).toBe(`[${DEST}] batch too large`);
+      expect(result.statTags).toEqual({ errorCategory: 'network', errorType: 'aborted' });
+    },
+  );
+
+  it('keeps a multi-job dontBatch retry as a retry and stamps every job', () => {
     // dontBatch exists only as a stamp on a job state's metadata. The throw path rebuilds job
     // states from the request metadata in postTransformation and has nowhere to put it.
     const result = toDeliveryV1Response(
@@ -507,13 +556,71 @@ describe('toDeliveryV1Response — dontBatch on a whole-batch retry', () => {
       ctxFor(400, { detail: 'x' }, 2),
       DEST,
     );
-    expect(result.response.map((r) => r.statusCode)).toEqual([500, 500]);
-    expect(result.response.every((r) => r.metadata.dontBatch === true)).toBe(true);
+    expect(result.response).toEqual([
+      { statusCode: 500, metadata: { ...job(1), dontBatch: true }, error: 'batch too large' },
+      { statusCode: 500, metadata: { ...job(2), dontBatch: true }, error: 'batch too large' },
+    ]);
+    expect(result.statTags).toEqual({ errorCategory: 'network', errorType: 'retryable' });
   });
 
-  it('still throws for a whole-batch retry that does not ask for dontBatch', () => {
-    expect(() => toDeliveryV1Response(retry('server down'), ctxFor(500, {}, 2), DEST)).toThrow(
-      'server down',
+  it('returns per-job 400 on a single-event 5xx instead of throwing the destination status', () => {
+    const result = toDeliveryV1Response(
+      retry('destination 503 but splitting cannot help', { dontBatch: true }),
+      ctxForJobs(503, { detail: 'x' }, [jobWithoutDontBatch(1)]),
+      DEST,
     );
+    expect(result.status).toBe(503);
+    expect(result.response).toEqual([
+      {
+        statusCode: 400,
+        metadata: jobWithoutDontBatch(1),
+        error: 'destination 503 but splitting cannot help',
+      },
+    ]);
+    expect(result.statTags).toEqual({ errorCategory: 'network', errorType: 'aborted' });
+  });
+
+  it('emits a bounded counter when a dontBatch retry aborts', () => {
+    const counter = jest.spyOn(stats, 'counter').mockImplementation(() => {});
+    try {
+      toDeliveryV1Response(
+        retry('batch too large', { dontBatch: true }),
+        ctxForJobs(400, { detail: 'x' }, [jobWithoutDontBatch(1)]),
+        DEST,
+      );
+      expect(counter).toHaveBeenCalledWith('batch_delivery_dont_batch_aborted', 1, {
+        destType: DEST,
+        destinationId: 'd1',
+        workspaceId: 'w1',
+      });
+    } finally {
+      counter.mockRestore();
+    }
+  });
+
+  it('keeps plain retry on a single-event batch retryable', () => {
+    const result = toDeliveryV1Response(
+      perItem([retry('server down')]),
+      ctxFor(503, { detail: 'x' }, 1),
+      DEST,
+    );
+    expect(result.response).toEqual([{ statusCode: 500, metadata: job(1), error: 'server down' }]);
+    expect(result.statTags).toEqual({ errorCategory: 'network', errorType: 'retryable' });
+  });
+
+  it('keeps throttled and success verdicts unchanged on single-event batches', () => {
+    const throttledResult = toDeliveryV1Response(
+      perItem([throttled('slow down')]),
+      ctxFor(429, { detail: 'x' }, 1),
+      DEST,
+    );
+    expect(throttledResult.response).toEqual([
+      { statusCode: 429, metadata: job(1), error: 'slow down' },
+    ]);
+
+    const successResult = toDeliveryV1Response(success(), ctxFor(200, { ok: true }, 1), DEST);
+    expect(successResult.response).toEqual([
+      { statusCode: 200, metadata: job(1), error: 'success' },
+    ]);
   });
 });

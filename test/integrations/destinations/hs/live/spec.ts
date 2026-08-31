@@ -47,6 +47,13 @@ const withoutAuthorizationType = (base: Record<string, unknown>): Record<string,
   return config;
 };
 
+// HubSpot's CRM search index is eventually consistent. Most reads settle quickly, but legacy
+// contacts/v1 writes can surface just beyond the framework's default ~7s retry boundary.
+const CONTACT_READBACK = {
+  attempts: 6,
+  delayMs: (attempt: number) => Math.min(1000 * 2 ** attempt, 8000),
+};
+
 export const live = {
   enabled: true,
   authType: 'apiKey',
@@ -74,7 +81,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esContactCreateTraits) },
+      verify: { check: verifyContactProperties(esContactCreateTraits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-create-v3-access-token-only',
@@ -95,7 +102,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esContactCreateTraits) },
+      verify: { check: verifyContactProperties(esContactCreateTraits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-update-v3',
@@ -116,7 +123,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esContactUpdateTraits) },
+      verify: { check: verifyContactProperties(esContactUpdateTraits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-create-v1',
@@ -134,7 +141,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esContactCreateV1Traits) },
+      verify: { check: verifyContactProperties(esContactCreateV1Traits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-create-v1-access-token-only',
@@ -153,7 +160,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esContactCreateV1Traits) },
+      verify: { check: verifyContactProperties(esContactCreateV1Traits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-update-v1',
@@ -174,7 +181,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esContactUpdateV1Traits) },
+      verify: { check: verifyContactProperties(esContactUpdateV1Traits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-dontbatch-v3',
@@ -194,7 +201,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esDontBatchV3Traits) },
+      verify: { check: verifyContactProperties(esDontBatchV3Traits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-dontbatch-v1',
@@ -213,7 +220,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esDontBatchV1Traits) },
+      verify: { check: verifyContactProperties(esDontBatchV1Traits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-by-hscontactid-v3',
@@ -237,7 +244,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esByHsContactIdTraits) },
+      verify: { check: verifyContactProperties(esByHsContactIdTraits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-nonunique-lookup-v3',
@@ -258,7 +265,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esNonUniqueCreateTraits) },
+      verify: { check: verifyContactProperties(esNonUniqueCreateTraits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-es-contacts-nonunique-lookup-existing-v3',
@@ -281,7 +288,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(esNonUniqueUpdateTraits) },
+      verify: { check: verifyContactProperties(esNonUniqueUpdateTraits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-retl-contacts-create-v3',
@@ -301,7 +308,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(retlContactCreateTraits) },
+      verify: { check: verifyContactProperties(retlContactCreateTraits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-retl-contacts-update-v3',
@@ -328,7 +335,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(retlContactUpdateTraits) },
+      verify: { check: verifyContactProperties(retlContactUpdateTraits), ...CONTACT_READBACK },
     },
     {
       // Exercises the rETL upsert path (crm/v3/objects/:objectType/batch/upsert):
@@ -356,7 +363,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(retlContactUpdateTraits) },
+      verify: { check: verifyContactProperties(retlContactUpdateTraits), ...CONTACT_READBACK },
     },
     {
       // Additional-email resolution: HubSpot treats hs_additional_emails as aliases of a contact, so
@@ -414,7 +421,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(retlContactCreateV1Traits) },
+      verify: { check: verifyContactProperties(retlContactCreateV1Traits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-retl-contacts-update-v1',
@@ -442,7 +449,7 @@ export const live = {
           }),
         },
       ],
-      verify: { check: verifyContactProperties(retlContactUpdateV1Traits) },
+      verify: { check: verifyContactProperties(retlContactUpdateV1Traits), ...CONTACT_READBACK },
     },
     {
       id: 'hs-retl-associations-v3',

@@ -1,13 +1,18 @@
 import { z } from 'zod';
 import { EnvOverride } from '../envUtils';
 
-// Account definition rudder-auth uses to describe an OAuth account.
-const AccountDefinitionSchema = z.object({
-  type: z.string(),
-  category: z.string(),
-  name: z.string(),
-});
-type AccountDefinition = z.infer<typeof AccountDefinitionSchema>;
+// The part of rudder-auth's account definition an integration has to state for itself: the
+// destination `type` and the account-definition `name` rudder-auth resolves its implementation
+// from (`name.toLowerCase()`). `category` is not here — it is 'destination' for every live spec,
+// so the resolver supplies it rather than making each spec repeat a constant it cannot vary.
+//
+// A plain type, not a zod schema: this is declared in TypeScript by the spec, so the compiler
+// already checks it. Zod earns its place at the LIVE_SECRET_<DEST> boundary, where the input is
+// untrusted JSON — this is not that.
+interface AccountDefinition {
+  type: string;
+  name: string;
+}
 
 // Resolved credentials for one destination, validated at the LIVE_SECRET_<DEST> boundary by
 // SecretResolver. The type is inferred from the schema (z.infer) so it can never drift from what
@@ -21,7 +26,6 @@ const LiveSecretSchema = z.object({
   oauthRefresh: z
     .object({
       refreshToken: z.string(), // the long-lived token: the only oauth secret stored
-      accountDefinition: AccountDefinitionSchema.optional(),
       providerFields: z.record(z.string()).optional(), // e.g. Salesforce instance_url, GCP project id
     })
     .optional(),
@@ -69,6 +73,12 @@ interface Step {
 interface MetadataOverride {
   workspaceId?: string;
   dontBatch?: boolean;
+  // Replaces the secret the harness would otherwise pass (the resolved credentials, refreshed by
+  // rudder-auth for OAuth destinations). Its purpose is negative testing: handing a transform a
+  // credential the destination will reject is the only way to reach a delivery spec's auth branch
+  // live, since a real account's grant cannot be revoked on demand without breaking every other
+  // scenario. Pair it with `expectedFailure.category`.
+  secret?: Record<string, string>;
 }
 
 // Top-level fields of the /routerTransform input `destination` a scenario may override (the harness
@@ -81,10 +91,15 @@ interface DestinationOverride {
   WorkspaceID?: string;
 }
 
-// A pipeline step: seed -> /routerTransform -> /proxy, asserting the event is delivered.
+// A pipeline step: seed -> /routerTransform -> /proxy, asserting the events are delivered.
 interface PipelineStep extends Step {
   stepType: 'pipeline';
-  seed: (ctx: RunContext) => Record<string, unknown>;
+  // The event to drive through the pipeline — or SEVERAL, returned as an array, which the runner
+  // puts in a single /routerTransform call as one `input[]` entry each. The array form is the only
+  // way to exercise router-level batching live: whether N events collapse into one delivery request
+  // (pin it with expectedOutputs/expectedProxyRequests — a grouping regression that fans them out
+  // still delivers 2xx on each) and whether every job comes back with a delivery verdict.
+  seed: (ctx: RunContext) => Record<string, unknown> | Record<string, unknown>[];
   // Merged into the /routerTransform input metadata, overriding defaults — e.g. { dontBatch: true }.
   metadataOverride?: MetadataOverride;
   // Merged into the /routerTransform input `destination` object, overriding defaults — e.g.
@@ -97,6 +112,26 @@ interface PipelineStep extends Step {
   // Exact number of proxy requests across all outputs (where a dontBatch regression would slip
   // through). Omit to keep the loose per-output `> 0` assertion.
   expectedProxyRequests?: number;
+  // Declares that this step is expected to fail, and how. One field for every kind of failure —
+  // a rejected item, a bad credential, a throttled batch — so the step API does not grow a
+  // separate flag per error class.
+  //
+  //   items    seed indices whose jobs must come back NOT delivered; every other seeded job must
+  //            be delivered. Omit to mean the whole batch — an EMPTY array is rejected, since it
+  //            would otherwise read as "declared a failure, expect none" and pass silently.
+  //            Naming the index is the point for a partial failure: it asserts WHICH job the
+  //            destination's delivery spec blamed, and blaming the wrong one still yields one
+  //            success and one failure.
+  //   category the error category the delivery reported, when it reports one (rudder-server reads
+  //            it to decide whether a credential is worth refreshing). Asserting it is what
+  //            separates a specific failure branch from the generic one — both abort the job.
+  //
+  // A step declaring this no longer requires the batch's top-level status to be 2xx, because a
+  // partial or auth failure legitimately isn't.
+  expectedFailure?: {
+    items?: readonly number[];
+    category?: string;
+  };
   // Re-run seed -> transform -> deliver up to this many extra times (backoff) if delivery fails.
   // For routes that decide create-vs-update by searching an eventually-consistent index: a
   // freshly set-up record can be missed on the first try and 409, then found on a retry. Only use
@@ -160,12 +195,30 @@ interface LiveSpec {
   enabled: boolean; // false parks the whole destination — the registry skips it
   authType: AuthType;
   oauthVersion?: OAuthVersion;
+  // The rudder-auth account definition for a `v1` refresh, which resolves the implementation from
+  // `name.toLowerCase()`. Static, public metadata mirroring the control plane's
+  // `accounts/<dest>_oauth/db-config.json`, NOT a credential — hence declared here rather than
+  // stored in LIVE_SECRET_<DEST>.
+  //
+  // Required for `oauthVersion: 'v1'` and stated outright, never derived from the destination name.
+  // The `DESTINATION_<DEST>_OAUTH` convention holds for most destinations but not all — see
+  // google_adwords_remarketing_lists, which has both a legacy and a `_DM_OAUTH` definition — and a
+  // derivation that is usually right is worse than none: where it guesses wrong it sends a
+  // plausible name that rudder-auth resolves to nothing, and the failure surfaces as a refresh
+  // error rather than as the missing declaration it actually is.
+  accountDefinition?: AccountDefinition;
   // Environment variables set for the duration of this destination's scenarios and restored after.
   // Use this for destination/scenario-specific switches, including the temporary
   // batching-framework delivery rollout flag when a live spec must exercise framework delivery.
   // Do not set the batching-framework transform rollout flag for destinations already marked
   // batching-GA in features.ts.
   envOverrides?: EnvOverride;
+  // Secret-derived environment variables, applied and restored alongside `envOverrides` (and
+  // winning over them on a key collision). For transforms or SDKs that read a *credential* from
+  // process.env rather than from destination.Config or metadata.secret — e.g. Google Ads' shared
+  // `GOOGLE_ADS_DEVELOPER_TOKEN`. `envOverrides` is a static literal and so can't carry a secret;
+  // this keeps every live credential inside the one LIVE_SECRET_<DEST> blob.
+  resolveEnv?: (s: LiveSecret) => EnvOverride;
   // Map the resolved secret into the destination.Config the transform expects (merge non-secret
   // defaults with the credentials in `s.config`).
   resolveConfig: (s: LiveSecret) => Record<string, unknown>;
@@ -253,6 +306,13 @@ interface RouterTransformRequestBody {
   destType: string;
 }
 
+// One seeded event paired with the jobId its /routerTransform input carries. Built by the runner so
+// jobIds are unique across a multi-event step and stay stable for the whole call.
+interface SeededEvent {
+  message: Record<string, unknown>;
+  jobId: number;
+}
+
 // Minimal HTTP client the pipeline runner drives; wraps SuperTest so the runner stays free of its types.
 interface LiveHttpResponse {
   status: number;
@@ -311,7 +371,6 @@ interface RetryUntilPassesOptions {
 
 export {
   AccountDefinition,
-  AccountDefinitionSchema,
   AuthType,
   OAuthVersion,
   LiveSecret,
@@ -334,6 +393,7 @@ export {
   BuildRouterTransformBodyOptions,
   RouterTransformInput,
   RouterTransformRequestBody,
+  SeededEvent,
   LiveHttpResponse,
   LiveHttpClient,
   DeliveryFailure,

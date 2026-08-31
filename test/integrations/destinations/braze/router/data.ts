@@ -270,142 +270,228 @@ const basicRouterTests = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      events: [
-                        {
-                          name: 'Page Viewed',
-                          time: '2020-01-24T11:59:02.402+05:30',
-                          properties: {
-                            path: '/tests/html/index2.html',
-                            referrer: '',
-                            search: '',
-                            title: '',
-                            url: 'http://localhost/tests/html/index2.html',
-                          },
-                          _update_existing_only: false,
-                          user_alias: {
-                            alias_name: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
-                            alias_label: 'rudder_id',
-                          },
-                        },
-                      ],
-                      attributes: [
-                        {
-                          email: 'mickey@disney.com',
-                          city: 'Disney',
-                          country: 'USA',
-                          firstname: 'Mickey',
-                          _update_existing_only: false,
-                          user_alias: {
-                            alias_name: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
-                            alias_label: 'rudder_id',
-                          },
-                        },
-                      ],
-                    },
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: 'Bearer braze1',
                 },
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
-                  endpointPath: 'v2/subscription/status/set',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      subscription_groups: [
-                        {
-                          external_ids: ['user123', 'user12345'],
-                          phones: ['5055077683'],
-                          subscription_group_id: 'c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1',
-                          subscription_state: 'subscribed',
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        email: 'mickey@disney.com',
+                        city: 'Disney',
+                        country: 'USA',
+                        firstname: 'Mickey',
+                        _update_existing_only: false,
+                        user_alias: {
+                          alias_name: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+                          alias_label: 'rudder_id',
                         },
-                        {
-                          external_ids: ['user877'],
-                          phones: ['5055077683'],
-                          subscription_group_id: '58d0a278-b55b-4f10-b7d2-98d1c5dd4c30',
-                          subscription_state: 'subscribed',
+                      },
+                    ],
+                    events: [
+                      {
+                        name: 'Page Viewed',
+                        time: '2020-01-24T11:59:02.402+05:30',
+                        properties: {
+                          path: '/tests/html/index2.html',
+                          referrer: '',
+                          search: '',
+                          title: '',
+                          url: 'http://localhost/tests/html/index2.html',
                         },
-                      ],
-                    },
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
+                        _update_existing_only: false,
+                        user_alias: {
+                          alias_name: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+                          alias_label: 'rudder_id',
+                        },
+                      },
+                    ],
                   },
-                  files: {},
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
                 },
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/merge',
-                  endpointPath: 'users/merge',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      merge_updates: [
-                        {
-                          identifier_to_keep: { external_id: 'dsafsdf' },
-                          identifier_to_merge: { external_id: 'adsfsaf' },
-                        },
-                        {
-                          identifier_to_keep: { external_id: 'dsafsdf2' },
-                          identifier_to_merge: { external_id: 'adsfsaf2' },
-                        },
-                      ],
-                    },
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-              ],
+                files: {},
+                endpointPath: 'users/track',
+              },
               metadata: [
-                { jobId: 1, userId: 'u1' },
-                { jobId: 2, userId: 'u1' },
-                { jobId: 3, userId: 'u1' },
-                { jobId: 4, userId: 'u1' },
-                { jobId: 5, userId: 'u1' },
-                { jobId: 6, userId: 'u1' },
-                { jobId: 7, userId: 'u1' },
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  destInfo: {
+                    eventsIndices: [0],
+                  },
+                },
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  destInfo: {
+                    attributesIndices: [0],
+                  },
+                },
               ],
               batched: true,
               statusCode: 200,
               destination: {
                 hasDynamicConfig: false,
                 Config: {
-                  restApiKey: secret1,
+                  restApiKey: 'braze1',
+                  prefixProperties: true,
+                  useNativeSDK: false,
+                  dataCenter: 'eu-01',
+                },
+                DestinationDefinition: {
+                  DisplayName: 'Braze',
+                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                  Name: 'BRAZE',
+                },
+                Enabled: true,
+                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+                Name: 'Braze',
+                Transformations: [],
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: 'Bearer braze1',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    subscription_groups: [
+                      {
+                        subscription_group_id: 'c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1',
+                        subscription_state: 'subscribed',
+                        phones: ['5055077683'],
+                        external_ids: ['user123', 'user12345'],
+                      },
+                      {
+                        subscription_group_id: '58d0a278-b55b-4f10-b7d2-98d1c5dd4c30',
+                        subscription_state: 'subscribed',
+                        phones: ['5055077683'],
+                        external_ids: ['user877'],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                endpointPath: 'v2/subscription/status/set',
+              },
+              metadata: [
+                {
+                  jobId: 3,
+                  userId: 'u1',
+                  destInfo: {},
+                },
+                {
+                  jobId: 4,
+                  userId: 'u1',
+                  destInfo: {},
+                },
+                {
+                  jobId: 7,
+                  userId: 'u1',
+                  destInfo: {},
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  restApiKey: 'braze1',
+                  prefixProperties: true,
+                  useNativeSDK: false,
+                  dataCenter: 'eu-01',
+                },
+                DestinationDefinition: {
+                  DisplayName: 'Braze',
+                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                  Name: 'BRAZE',
+                },
+                Enabled: true,
+                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+                Name: 'Braze',
+                Transformations: [],
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/merge',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: 'Bearer braze1',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    merge_updates: [
+                      {
+                        identifier_to_merge: {
+                          external_id: 'adsfsaf',
+                        },
+                        identifier_to_keep: {
+                          external_id: 'dsafsdf',
+                        },
+                      },
+                      {
+                        identifier_to_merge: {
+                          external_id: 'adsfsaf2',
+                        },
+                        identifier_to_keep: {
+                          external_id: 'dsafsdf2',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                endpointPath: 'users/merge',
+              },
+              metadata: [
+                {
+                  jobId: 5,
+                  userId: 'u1',
+                  destInfo: {},
+                },
+                {
+                  jobId: 6,
+                  userId: 'u1',
+                  destInfo: {},
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  restApiKey: 'braze1',
                   prefixProperties: true,
                   useNativeSDK: false,
                   dataCenter: 'eu-01',
@@ -752,93 +838,121 @@ const basicRouterTests = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.iad-03.braze.com/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      attributes: [
-                        {
-                          first_name: 'Spencer',
-                          subscribe_once: true,
-                          pwa: true,
-                          external_id: 'braze_test_user',
-                          custom_obj_attr: { key1: 'value1', key2: 'value2', key4: 'value4' },
-                        },
-                        {
-                          last_name: 'Miranda 2',
-                          is_pickup_selected: 'true',
-                          external_id: 'braze_test_user',
-                          custom_arr: ['1', '2', 'str1'],
-                        },
-                        {
-                          city: 'Disney',
-                          country: 'USA',
-                          email: 'mickey@disney.com',
-                          external_id: 'user@50',
-                          first_name: 'Mickey',
-                        },
-                        {
-                          country: 'USA',
-                          external_id: 'user@50',
-                        },
-                      ],
-                      events: [
-                        {
-                          name: 'Sign In Completed',
-                          time: '2023-03-10T18:36:05.028Z',
-                          properties: {
-                            cause: '/redirector',
-                            method: 'GOOGLE',
-                            region: 'ON',
-                            orderId: '6179367977099',
-                            order_id: '6179367977099',
-                            webhookurl: 'https://my.test.com',
-                            countingMethod: 'standard',
-                            is_first_time_signin: false,
-                          },
-                          external_id: 'braze_test_user',
-                        },
-                        {
-                          name: 'Sign In Completed',
-                          time: '2023-03-10T18:36:05.028Z',
-                          properties: {
-                            cause: '/redirector',
-                            method: 'GOOGLE',
-                            region: 'ON',
-                            orderId: '6179367977099',
-                            order_id: '6179367977099',
-                            webhookurl: 'https://my.test.com',
-                            countingMethod: 'standard',
-                            is_first_time_signin: false,
-                          },
-                          external_id: 'braze_test_user',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.iad-03.braze.com/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: 'Bearer braze1',
                 },
-              ],
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        first_name: 'Spencer',
+                        subscribe_once: true,
+                        pwa: true,
+                        custom_obj_attr: {
+                          key1: 'value1',
+                          key2: 'value2',
+                          key4: 'value4',
+                        },
+                        external_id: 'braze_test_user',
+                      },
+                      {
+                        last_name: 'Miranda 2',
+                        is_pickup_selected: 'true',
+                        custom_arr: ['1', '2', 'str1'],
+                        external_id: 'braze_test_user',
+                      },
+                      {
+                        email: 'mickey@disney.com',
+                        first_name: 'Mickey',
+                        city: 'Disney',
+                        country: 'USA',
+                        external_id: 'user@50',
+                      },
+                      {
+                        country: 'USA',
+                        external_id: 'user@50',
+                      },
+                    ],
+                    events: [
+                      {
+                        name: 'Sign In Completed',
+                        time: '2023-03-10T18:36:05.028Z',
+                        properties: {
+                          cause: '/redirector',
+                          method: 'GOOGLE',
+                          region: 'ON',
+                          orderId: '6179367977099',
+                          order_id: '6179367977099',
+                          webhookurl: 'https://my.test.com',
+                          countingMethod: 'standard',
+                          is_first_time_signin: false,
+                        },
+                        external_id: 'braze_test_user',
+                      },
+                      {
+                        name: 'Sign In Completed',
+                        time: '2023-03-10T18:36:05.028Z',
+                        properties: {
+                          cause: '/redirector',
+                          method: 'GOOGLE',
+                          region: 'ON',
+                          orderId: '6179367977099',
+                          order_id: '6179367977099',
+                          webhookurl: 'https://my.test.com',
+                          countingMethod: 'standard',
+                          is_first_time_signin: false,
+                        },
+                        external_id: 'braze_test_user',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                endpointPath: 'users/track',
+              },
               metadata: [
-                { jobId: 1, userId: 'u1' },
-                { jobId: 2, userId: 'u1' },
-                { jobId: 3, userId: 'u1' },
-                { jobId: 4, userId: 'u1' },
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  destInfo: {
+                    attributesIndices: [0],
+                    eventsIndices: [0],
+                  },
+                },
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  destInfo: {
+                    attributesIndices: [1],
+                    eventsIndices: [1],
+                  },
+                },
+                {
+                  jobId: 3,
+                  userId: 'u1',
+                  destInfo: {
+                    attributesIndices: [2],
+                  },
+                },
+                {
+                  jobId: 4,
+                  userId: 'u1',
+                  destInfo: {
+                    attributesIndices: [3],
+                  },
+                },
               ],
               batched: true,
               statusCode: 200,
@@ -853,7 +967,7 @@ const basicRouterTests = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: secret1,
+                  restApiKey: 'braze1',
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -866,18 +980,23 @@ const basicRouterTests = [
               },
             },
             {
+              metadata: [
+                {
+                  jobId: 5,
+                  userId: 'u1',
+                },
+              ],
+              batched: false,
+              statusCode: 400,
               error: '[Braze Deduplication]: Duplicate user detected, the user is dropped',
               statTags: {
-                destType: 'BRAZE',
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
+                destType: 'BRAZE',
                 module: 'destination',
+                implementation: 'native',
+                feature: 'router',
               },
-              statusCode: 400,
-              batched: false,
-              metadata: [{ jobId: 5, userId: 'u1' }],
               destination: {
                 hasDynamicConfig: false,
                 ID: '2N9UakqKF0D35wfzSeofIxPdL8X',
@@ -889,7 +1008,7 @@ const basicRouterTests = [
                   enableNestedArrayOperations: false,
                   enableSubscriptionGroupInGroupCall: false,
                   eventFilteringOption: 'disable',
-                  restApiKey: secret1,
+                  restApiKey: 'braze1',
                   supportDedup: true,
                   trackAnonymousUser: true,
                   whitelistedEvents: [],
@@ -1073,39 +1192,45 @@ const basicRouterTests = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
-                  endpointPath: 'v2/subscription/status/set',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: 'Bearer secret1',
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      subscription_groups: [
-                        {
-                          subscription_group_id: '1234',
-                          subscription_state: 'unsubscribed',
-                          emails: ['abc@test.com', 'abc1@test.com'],
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: 'Bearer secret1',
                 },
-              ],
+                params: {},
+                body: {
+                  JSON: {
+                    subscription_groups: [
+                      {
+                        subscription_group_id: '1234',
+                        subscription_state: 'unsubscribed',
+                        emails: ['abc@test.com', 'abc1@test.com'],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                endpointPath: 'v2/subscription/status/set',
+              },
               metadata: [
-                { jobId: 1, userId: 'u1' },
-                { jobId: 2, userId: 'u2' },
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  destInfo: {},
+                },
+                {
+                  jobId: 2,
+                  userId: 'u2',
+                  destInfo: {},
+                },
               ],
               batched: true,
               statusCode: 200,
@@ -1149,9 +1274,8 @@ const basicRouterTestsWithBatchIdentityResolutionEnabled = basicRouterTests.map(
 });
 
 // ---------------------------------------------------------------------------
-// Per-job delivery-mapping — ON path.
-// When `BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS` enables the workspace,
-// processBatch emits one
+// Per-job delivery mapping.
+// Braze batching emits one
 // BatchRequestOutput per outgoing HTTP request (instead of one
 // MultiBatchRequestOutput with batchedRequest[]). Items are coalesced by
 // endpoint type across the entire input — insertion-order runs are NOT
@@ -1161,11 +1285,11 @@ const basicRouterTestsWithBatchIdentityResolutionEnabled = basicRouterTests.map(
 // `.eventsIndices` / `.purchasesIndices`; sub/merge outputs carry
 // `destInfo: {}` for correlation-shape uniformity.
 // ---------------------------------------------------------------------------
-const perJobDeliveryMappingOnTests = [
+const perJobDeliveryMappingTests = [
   {
     name: 'braze',
     description:
-      'per-job delivery mapping ON — mixed track + subscription + merge coalesces items per endpoint into one output each',
+      'per-job delivery mapping — mixed track + subscription + merge coalesces items per endpoint into one output each',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1613,14 +1737,13 @@ const perJobDeliveryMappingOnTests = [
       },
     },
     envOverrides: {
-      BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS: 'ALL',
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
     },
   },
   {
     name: 'braze',
     description:
-      'per-job delivery mapping ON — order-completed with multiple products yields destInfo.purchasesIndices spanning all product indices',
+      'per-job delivery mapping — order-completed with multiple products yields destInfo.purchasesIndices spanning all product indices',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1815,7 +1938,6 @@ const perJobDeliveryMappingOnTests = [
       },
     },
     envOverrides: {
-      BRAZE_PER_JOB_DELIVERY_MAPPING_WORKSPACE_IDS: 'ALL',
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
     },
   },
@@ -1824,6 +1946,6 @@ const perJobDeliveryMappingOnTests = [
 export const data = [
   ...basicRouterTests,
   ...basicRouterTestsWithBatchIdentityResolutionEnabled,
-  ...perJobDeliveryMappingOnTests,
+  ...perJobDeliveryMappingTests,
   ...identityResolution,
 ];

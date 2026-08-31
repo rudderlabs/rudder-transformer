@@ -1,4 +1,4 @@
-import { getBatchingFrameworkGaDestinations } from '../features';
+import { defaultWorkspaceFeatureFlags, getBatchingFrameworkGaDestinations } from '../features';
 
 // Destinations that have completed GA for the batching framework.
 // Once a destination is added here, it always uses the new path regardless of env var.
@@ -14,7 +14,7 @@ const getEnabledWorkspaceIds = (
 ): string[] => {
   const envKey = `${destType.toUpperCase()}_${feature}_ENABLED_WORKSPACE_IDS`;
   return (
-    process.env[envKey]
+    (process.env[envKey] ?? defaultWorkspaceFeatureFlags[envKey])
       ?.split(',')
       ?.map((s) => s.trim())
       ?.filter((s) => s) ?? []

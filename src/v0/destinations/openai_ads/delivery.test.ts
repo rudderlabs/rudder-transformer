@@ -1,0 +1,54 @@
+import {
+  firstJobIdentity,
+  handleDeliveryResponse,
+  toDeliveryV1Response,
+} from '../../../services/destination/nativeBatching/delivery';
+import type { DeliveryContext } from '../../../services/destination/nativeBatching/delivery';
+import type { ProxyMetdata, ProxyV1Request } from '../../../types';
+import { Integration } from './routerTransform';
+
+const job = (jobId: number, dontBatch = false): ProxyMetdata =>
+  ({
+    jobId,
+    attemptNum: 1,
+    userId: `u${jobId}`,
+    sourceId: 'src-1',
+    destinationId: 'dest-1',
+    workspaceId: 'ws-1',
+    secret: {},
+    dontBatch,
+  }) as ProxyMetdata;
+
+const ctxFor = (status: number, jobs: ProxyMetdata[]): DeliveryContext => ({
+  status,
+  response: { error: { message: 'invalid payload' } },
+  jobs,
+  request: {
+    body: { JSON: { events: jobs.map((metadata) => ({ id: metadata.jobId })) } },
+  } as unknown as ProxyV1Request,
+  destinationConfig: {},
+  ...firstJobIdentity(jobs),
+});
+
+const viaFramework = (ctx: DeliveryContext) =>
+  toDeliveryV1Response(handleDeliveryResponse(Integration, ctx), ctx, 'OPENAI_ADS');
+
+describe('OpenAI Ads delivery', () => {
+  it('marks multi-job 400/422 responses for dontBatch singleton retry', () => {
+    const response = viaFramework(ctxFor(400, [job(1), job(2)]));
+
+    expect(response.response).toEqual([
+      { statusCode: 500, metadata: { ...job(1), dontBatch: true }, error: 'invalid payload' },
+      { statusCode: 500, metadata: { ...job(2), dontBatch: true }, error: 'invalid payload' },
+    ]);
+  });
+
+  it('terminates singleton 400 when dontBatch isolation already happened', () => {
+    expect(() => viaFramework(ctxFor(422, [job(1, true)]))).toThrow(/invalid payload/);
+  });
+
+  it('keeps 429 throttled and 5xx retryable without dontBatch', () => {
+    expect(() => viaFramework(ctxFor(429, [job(1), job(2)]))).toThrow(/invalid payload/);
+    expect(() => viaFramework(ctxFor(500, [job(1), job(2)]))).toThrow(/invalid payload/);
+  });
+});

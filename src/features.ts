@@ -37,6 +37,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   MAILMODO: { routerTransform: true },
   MARKETO: { routerTransform: true },
   OMETRIA: { routerTransform: true },
+  OPENAI_ADS: { routerTransform: true, batching: true },
   PARDOT: { routerTransform: true },
   PINTEREST_TAG: { routerTransform: true, cdkV2: true },
   PROFITWELL: { routerTransform: true },
@@ -214,6 +215,11 @@ export const getBatchingFrameworkGaDestinations = (): Record<string, true> =>
 
 export const isDestinationCdkV2Enabled = (destination: string): boolean =>
   Boolean(destinationCapabilities[destination.trim().toUpperCase()]?.cdkV2);
+
+export const defaultWorkspaceFeatureFlags: Record<string, string> = {
+  OPENAI_ADS_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
+  OPENAI_ADS_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+};
 
 // ---------------------------------------------------------------------------
 // Features config

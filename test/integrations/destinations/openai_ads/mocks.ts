@@ -1,0 +1,1 @@
+export { networkCallsData } from './network';

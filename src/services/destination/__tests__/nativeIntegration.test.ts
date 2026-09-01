@@ -129,41 +129,6 @@ describe('NativeIntegration Service', () => {
       destination,
     } as unknown as RouterTransformationRequestData;
 
-    it('falls back to processor transform when handler does not implement processRouterDest', async () => {
-      const transformedPayload = {
-        version: '1',
-        type: 'REST',
-        method: 'POST',
-        endpoint: 'https://api.example.com/fallback',
-        headers: {},
-        params: {},
-        body: { JSON: { id: 'user-1' }, JSON_ARRAY: {}, XML: {}, FORM: {} },
-        files: {},
-      } as ProcessorTransformationOutput;
-      const process = jest.fn().mockResolvedValue(transformedPayload);
-
-      FetchHandler.getDestHandler = jest.fn().mockReturnValue({ process });
-
-      const service = new NativeIntegrationDestinationService();
-      const resp = await service.doRouterTransformation(
-        [event],
-        destType,
-        version,
-        requestMetadata,
-      );
-
-      expect(process).toHaveBeenCalledWith(event, undefined, requestMetadata);
-      expect(resp).toEqual([
-        {
-          batchedRequest: transformedPayload,
-          metadata: [metadata],
-          batched: false,
-          statusCode: 200,
-          destination,
-        },
-      ]);
-    });
-
     it('uses processRouterDest when handler implements router transform', async () => {
       const routerResponse = [
         {
@@ -199,28 +164,6 @@ describe('NativeIntegration Service', () => {
       expect(processRouterDest).toHaveBeenCalledWith([event], requestMetadata);
       expect(process).not.toHaveBeenCalled();
       expect(resp).toEqual(routerResponse);
-    });
-
-    it('returns router failure response when handler implements neither router nor processor transform', async () => {
-      FetchHandler.getDestHandler = jest.fn().mockReturnValue({});
-
-      const service = new NativeIntegrationDestinationService();
-      const resp = await service.doRouterTransformation(
-        [event],
-        destType,
-        version,
-        requestMetadata,
-      );
-
-      expect(resp).toEqual([
-        {
-          metadata: [metadata],
-          batched: false,
-          statusCode: 500,
-          error: `${destType} does not implement processRouterDest or process`,
-          statTags: { errorCategory: 'transformation' },
-        },
-      ]);
     });
   });
 });

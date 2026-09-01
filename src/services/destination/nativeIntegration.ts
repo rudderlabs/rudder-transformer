@@ -27,7 +27,7 @@ import {
 import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
-import { groupRouterTransformEvents, simpleProcessRouterDest } from '../../v0/util';
+import { groupRouterTransformEvents } from '../../v0/util';
 import {
   isBatchingFrameworkDeliveryEnabled,
   isBatchingFrameworkEnabled,
@@ -167,24 +167,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
             );
           } else {
             destHandler = FetchHandler.getDestHandler(destinationType, version);
-            if (typeof destHandler?.processRouterDest === 'function') {
-              transformedResponse = await destHandler.processRouterDest(
-                destInputArray,
-                requestMetadata,
-              );
-            } else {
-              if (typeof destHandler?.process !== 'function') {
-                throw new Error(
-                  `${destinationType} does not implement processRouterDest or process`,
-                );
-              }
-              transformedResponse = await simpleProcessRouterDest(
-                destInputArray,
-                destHandler.process.bind(destHandler),
-                requestMetadata,
-                undefined,
-              );
-            }
+            transformedResponse = await destHandler.processRouterDest(
+              destInputArray,
+              requestMetadata,
+            );
           }
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             transformedResponse,

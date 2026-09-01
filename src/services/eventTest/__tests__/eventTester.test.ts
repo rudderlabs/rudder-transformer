@@ -559,6 +559,9 @@ describe('EventTesterService.runDestTransform', () => {
   });
 
   it('delegates to NativeIntegrationDestinationService.doRouterTransformation', async () => {
+    jest
+      .spyOn(FetchHandler, 'getDestHandler')
+      .mockReturnValue({ processRouterDest: jest.fn(), process: jest.fn() });
     const doRouterSpy = jest
       .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
       .mockResolvedValue([
@@ -579,13 +582,13 @@ describe('EventTesterService.runDestTransform', () => {
         }),
       ],
       'v0',
-      'custom_audience',
+      '__event_tester_router__',
     );
 
     expect(doRouterSpy).toHaveBeenCalledTimes(1);
     expect(doRouterSpy).toHaveBeenCalledWith(
       [expect.objectContaining({ metadata: expect.objectContaining({ workspaceId: 'ws-1' }) })],
-      'custom_audience',
+      '__event_tester_router__',
       'v0',
       {},
     );
@@ -595,6 +598,10 @@ describe('EventTesterService.runDestTransform', () => {
   it('falls back through processor transform for destinations without processRouterDest', async () => {
     const process = jest.fn().mockResolvedValue(sampleOutput);
     jest.spyOn(FetchHandler, 'getDestHandler').mockReturnValue({ process });
+    const doRouterSpy = jest.spyOn(
+      NativeIntegrationDestinationService.prototype,
+      'doRouterTransformation',
+    );
 
     const result = await EventTesterService.testEvent(
       [
@@ -622,6 +629,7 @@ describe('EventTesterService.runDestTransform', () => {
       '__event_tester_no_router__',
     );
 
+    expect(doRouterSpy).not.toHaveBeenCalled();
     expect(process).toHaveBeenCalledWith(
       expect.objectContaining({
         message: { type: 'track', event: 'Product Viewed', userId: 'user-1' },
@@ -632,10 +640,9 @@ describe('EventTesterService.runDestTransform', () => {
           WorkspaceId: 'ws-1',
         }),
       }),
-      undefined,
       {},
     );
-    expect(result).toEqual([{ dest_transformed_payload: [sampleOutput] }]);
+    expect(result).toEqual([{ dest_transformed_payload: [{ ...sampleOutput, userId: '' }] }]);
   });
 
   it('flattens array-valued batchedRequest entries to a uniform level', async () => {

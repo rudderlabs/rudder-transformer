@@ -104,7 +104,8 @@ export const missingPidRequest = {
 };
 export const missingPidResponse = {
   error: {
-    message: "[{'type': 'missing', 'loc': ('query', 'pid'), 'msg': 'Field required', 'input': None}]",
+    message:
+      "[{'type': 'missing', 'loc': ('query', 'pid'), 'msg': 'Field required', 'input': None}]",
     type: 'invalid_request_error',
     param: null,
     code: null,

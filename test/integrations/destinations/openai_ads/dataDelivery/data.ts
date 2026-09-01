@@ -45,12 +45,7 @@ const proxyMetadata = (jobId: number, dontBatch = false): ProxyMetdata => {
     dontBatch,
   } as unknown as ProxyMetdata;
 };
-const failedJob = (
-  jobId: number,
-  statusCode: number,
-  error: string,
-  dontBatch = false,
-) => ({
+const failedJob = (jobId: number, statusCode: number, error: string, dontBatch = false) => ({
   error,
   metadata: proxyMetadata(jobId, dontBatch),
   statusCode,

@@ -177,7 +177,7 @@ export const data: RouterTestData[] = [
                         timestamp_ms: 1704067200000,
                         opt_out: true,
                         action_source: 'web',
-                        source_url: 'https://example.com/path',
+                        source_url: 'https://example.com/path?secret=1#hash',
                         oppref: 'property-oppref',
                         user: {
                           obref: 'obref-value',

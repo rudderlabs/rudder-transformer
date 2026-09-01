@@ -75,7 +75,7 @@ const audienceDestination = {
   config: { isHashRequired: true },
 };
 
-const trimString = (value: unknown): string | undefined => {
+const normalizeHashString = (value: unknown): string | undefined => {
   if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean') {
     return undefined;
   }
@@ -90,9 +90,13 @@ const isScalar = (value: unknown): value is string | number | boolean =>
   ['string', 'number', 'boolean'].includes(typeof value);
 
 const firstScalar = (value: unknown): unknown => (Array.isArray(value) ? value[0] : value);
+const hasValue = (value: unknown): boolean =>
+  value !== undefined && value !== null && value !== '';
+const stringifyScalar = (value: unknown): string | undefined =>
+  isScalar(value) ? String(value) : undefined;
 
 const getFirstValue = (message: RudderMessage, paths: string[]): unknown =>
-  paths.map((path) => get(message, path)).find((value) => trimString(firstScalar(value)));
+  paths.map((path) => get(message, path)).find((value) => hasValue(firstScalar(value)));
 
 const getFirstDefinedValue = (message: RudderMessage, paths: string[]): unknown =>
   paths.map((path) => get(message, path)).find((value) => value !== undefined && value !== null);
@@ -100,37 +104,37 @@ const getFirstDefinedValue = (message: RudderMessage, paths: string[]): unknown 
 const valuesFromPaths = (message: RudderMessage, paths: string[]): unknown[] => {
   for (const path of paths) {
     const value = get(message, path);
-    if (Array.isArray(value) && value.some((item) => trimString(item))) return value;
-    if (trimString(value)) return [value];
+    if (Array.isArray(value) && value.some(hasValue)) return value;
+    if (hasValue(value)) return [value];
   }
   return [];
 };
 
 const rawValues = (message: RudderMessage, paths: string[]): string[] | undefined => {
   const values = valuesFromPaths(message, paths)
-    .map(trimString)
+    .map(stringifyScalar)
     .filter((value): value is string => Boolean(value));
   return values.length > 0 ? [...new Set(values)] : undefined;
 };
 
 const rawScalar = (message: RudderMessage, paths: string[]): string | undefined =>
-  trimString(firstScalar(getFirstValue(message, paths)));
+  stringifyScalar(firstScalar(getFirstValue(message, paths)));
 
 const normalizeEmail = (value: unknown): string | undefined => {
-  const normalized = trimString(value)?.toLowerCase();
+  const normalized = normalizeHashString(value)?.toLowerCase();
   return normalized && validator.isEmail(normalized) ? normalized : undefined;
 };
 
 const normalizePhone = (value: unknown): string | undefined => {
-  const normalized = trimString(value)?.replace(/\D/g, '').replace(/^0+/g, '');
+  const normalized = normalizeHashString(value)?.replace(/\D/g, '').replace(/^0+/g, '');
   return normalized && isValidPhoneNumber(normalized) ? normalized : undefined;
 };
 
 const normalizeName = (value: unknown): string | undefined =>
-  trimString(value)?.toLowerCase().replace(PUNCTUATION_REGEX, '') || undefined;
+  normalizeHashString(value)?.toLowerCase().replace(PUNCTUATION_REGEX, '') || undefined;
 
 const normalizeExternalId = (value: unknown): string | undefined =>
-  trimString(value)?.toLowerCase();
+  normalizeHashString(value)?.toLowerCase();
 
 const HASH_FIELD_CONFIGS: Record<HashMatchField, AudienceField> = {
   emails_sha256: {
@@ -161,7 +165,7 @@ const hashValues = (
   field: HashMatchField,
 ): string[] | undefined => {
   const hashed = valuesFromPaths(message, paths)
-    .map(trimString)
+    .map(stringifyScalar)
     .filter((value): value is string => Boolean(value))
     .map(
       (value) =>
@@ -202,17 +206,17 @@ const RESERVED_CUSTOM_KEYS = new Set<string>([
 
 const getSourceKey = (message: RudderMessage): string => {
   if (message.type === 'track') {
-    const event = trimString(message.event);
+    const event = typeof message.event === 'string' ? message.event : undefined;
     if (!event)
       throw new InstrumentationError('OpenAI Ads source event name is required for track events');
     return event;
   }
-  const name = trimString(get(message, 'name'));
+  const name = get(message, 'name');
   if (!name)
     throw new InstrumentationError(
       `OpenAI Ads source event name is required for ${message.type} events`,
     );
-  return name;
+  return String(name);
 };
 
 const resolveEventMapping = (
@@ -220,51 +224,26 @@ const resolveEventMapping = (
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsEventMapping => {
   const sourceKey = getSourceKey(message);
-  const normalizedSourceKey = sourceKey.trim().toLowerCase();
+  const normalizedSourceKey = sourceKey.toLowerCase();
   const mapping = (config.eventMapping ?? []).find(
-    (candidate) => candidate.from.trim().toLowerCase() === normalizedSourceKey,
+    (candidate) => candidate.from.toLowerCase() === normalizedSourceKey,
   );
   if (!mapping) {
     throw new InstrumentationError(`OpenAI Ads event mapping not found for ${sourceKey}`);
   }
-  if (mapping.to === CUSTOM_EVENT_SENTINEL && !trimString(mapping.customEventName)) {
+  if (mapping.to === CUSTOM_EVENT_SENTINEL && !mapping.customEventName) {
     throw new InstrumentationError('OpenAI Ads custom event mapping requires customEventName');
   }
   return mapping;
 };
 
-const resolveDotPath = (message: RudderMessage, path: string | undefined): string | undefined => {
-  const trimmedPath = trimString(path);
-  if (!trimmedPath) return undefined;
-  if (
-    trimmedPath.startsWith('$.') ||
-    trimmedPath.startsWith('.') ||
-    trimmedPath.endsWith('.') ||
-    trimmedPath.includes('..') ||
-    /[*?[\]]/.test(trimmedPath)
-  ) {
-    throw new InstrumentationError('OpenAI Ads deduplicationKey must be a simple dot path');
-  }
-  const value = get(message, trimmedPath);
-  return isScalar(value) ? trimString(value) : undefined;
-};
-
-const resolveEventId = (message: RudderMessage, mapping?: OpenAIAdsEventMapping): string => {
-  const id = resolveDotPath(message, mapping?.deduplicationKey) ?? trimString(message.messageId);
-  if (!id) throw new InstrumentationError('OpenAI Ads event id is required');
-  return id;
-};
+const resolveDotPath = (message: RudderMessage, path: string | undefined): unknown =>
+  path ? get(message, path) : undefined;
 
 const resolveTimestampMs = (message: RudderMessage): number => {
   const timestamp =
-    trimString(message.timestamp) ??
-    trimString(message.originalTimestamp) ??
-    trimString(message.sentAt) ??
-    trimString(get(message, 'receivedAt'));
-  const parsed = timestamp ? Date.parse(timestamp) : NaN;
-  if (!Number.isFinite(parsed))
-    throw new InstrumentationError('OpenAI Ads timestamp_ms is required');
-  return parsed;
+    message.timestamp ?? message.originalTimestamp ?? message.sentAt ?? get(message, 'receivedAt');
+  return Date.parse(timestamp as string);
 };
 
 const resolveActionSource = (
@@ -272,8 +251,8 @@ const resolveActionSource = (
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsActionSource | undefined => {
   const raw =
-    trimString(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.actionSourcePaths)) ??
-    trimString(config.defaultActionSource);
+    stringifyScalar(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.actionSourcePaths)) ??
+    config.defaultActionSource;
   if (!raw) return undefined;
   if (!ACTION_SOURCE_SET.has(raw))
     throw new InstrumentationError(`Unsupported OpenAI Ads action_source: ${raw}`);
@@ -281,23 +260,13 @@ const resolveActionSource = (
 };
 
 const resolveSourceUrl = (message: RudderMessage, actionSource?: string): string | undefined => {
-  const rawUrl = trimString(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.sourceUrlPaths));
+  const rawUrl = stringifyScalar(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.sourceUrlPaths));
   if (!rawUrl) {
     if (actionSource === 'web')
       throw new InstrumentationError('OpenAI Ads source_url is required for web action_source');
     return undefined;
   }
-  try {
-    const url = new URL(rawUrl);
-    if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('invalid protocol');
-    url.search = '';
-    url.hash = '';
-    return url.toString();
-  } catch {
-    if (actionSource === 'web')
-      throw new InstrumentationError('OpenAI Ads source_url must be a valid HTTP(S) URL');
-    return undefined;
-  }
+  return rawUrl;
 };
 
 const resolveOptOut = (message: RudderMessage): boolean | undefined => {
@@ -308,7 +277,7 @@ const resolveOptOut = (message: RudderMessage): boolean | undefined => {
 };
 
 const getOppref = (message: RudderMessage): string | undefined =>
-  trimString(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.opprefPaths));
+  stringifyScalar(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.opprefPaths));
 
 const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
   const user: OpenAIAdsUser = {};
@@ -385,24 +354,7 @@ const getFirstFieldValue = (item: Record<string, unknown>, paths: string[]): unk
     .find((value) => value !== undefined && value !== null && value !== '');
 
 const getStringField = (item: Record<string, unknown>, paths: string[]): string | undefined =>
-  trimString(getFirstFieldValue(item, paths));
-
-const sanitizeCustomValue = (value: unknown): unknown => {
-  if (value === undefined || value === null || value === '') return undefined;
-  if (typeof value === 'number') return Number.isFinite(value) ? value : undefined;
-  if (typeof value === 'string' || typeof value === 'boolean') return value;
-  if (Array.isArray(value)) {
-    const arr = value.map(sanitizeCustomValue).filter((item) => item !== undefined);
-    return arr.length > 0 ? arr : undefined;
-  }
-  if (isRecord(value)) {
-    const entries = Object.entries(value)
-      .map(([key, item]) => [key, sanitizeCustomValue(item)] as const)
-      .filter(([, item]) => item !== undefined);
-    return entries.length > 0 ? Object.fromEntries(entries) : undefined;
-  }
-  return undefined;
-};
+  stringifyScalar(getFirstFieldValue(item, paths));
 
 const mapContentItem = (
   item: Record<string, unknown>,
@@ -418,8 +370,9 @@ const mapContentItem = (
   if (contentType) content.content_type = contentType;
   const groupId = getStringField(item, OPENAI_ADS_MAPPING_CONFIG.contentFields.group_id);
   if (groupId) content.group_id = groupId;
-  const variantDict = sanitizeCustomValue(
-    getFirstFieldValue(item, OPENAI_ADS_MAPPING_CONFIG.contentFields.variant_dict),
+  const variantDict = getFirstFieldValue(
+    item,
+    OPENAI_ADS_MAPPING_CONFIG.contentFields.variant_dict,
   );
   if (isRecord(variantDict)) content.variant_dict = variantDict;
 
@@ -470,10 +423,7 @@ const buildContents = (
 
 const buildCustomExtras = (properties: Record<string, unknown>): Record<string, unknown> =>
   Object.fromEntries(
-    Object.entries(properties)
-      .filter(([key]) => !RESERVED_CUSTOM_KEYS.has(key))
-      .map(([key, value]) => [key, sanitizeCustomValue(value)] as const)
-      .filter(([, value]) => value !== undefined),
+    Object.entries(properties).filter(([key]) => !RESERVED_CUSTOM_KEYS.has(key)),
   );
 
 const buildEventData = (
@@ -522,7 +472,7 @@ export const buildOpenAIEvent = (
   const mapping = resolveEventMapping(message, config);
   const eventType = mapping.to;
   const customEventName =
-    mapping.to === CUSTOM_EVENT_SENTINEL ? trimString(mapping.customEventName) : undefined;
+    mapping.to === CUSTOM_EVENT_SENTINEL ? mapping.customEventName : undefined;
   const actionSource = resolveActionSource(message, config);
   const sourceUrl = resolveSourceUrl(message, actionSource);
   const oppref = getOppref(message);
@@ -530,9 +480,9 @@ export const buildOpenAIEvent = (
   const optOut = resolveOptOut(message);
 
   return {
-    id: resolveEventId(message, mapping),
+    id: (resolveDotPath(message, mapping.deduplicationKey) ?? message.messageId) as string,
     type: eventType,
-    ...(customEventName ? { custom_event_name: customEventName } : {}),
+    ...(customEventName !== undefined ? { custom_event_name: customEventName } : {}),
     timestamp_ms: resolveTimestampMs(message),
     ...(optOut !== undefined ? { opt_out: optOut } : {}),
     ...(actionSource ? { action_source: actionSource } : {}),

@@ -21,7 +21,7 @@ const destination: OpenAIAdsDestination = {
   Config: {
     eventMapping: [
       { from: 'Product Viewed', to: 'contents_viewed' },
-      { from: 'Docs Page', to: 'page_viewed', conversionIdentifier: 'properties.pageId' },
+      { from: 'Docs Page', to: 'page_viewed', deduplicationKey: 'properties.pageId' },
       { from: 'Trial Started', to: 'custom', customEventName: 'Trial Started' },
     ],
     defaultCurrency: 'USD',
@@ -125,7 +125,7 @@ describe('OpenAI Ads processEvent', () => {
     expect(JSON.stringify(result.body.JSON)).not.toContain('New York');
     expect(JSON.stringify(result.body.JSON)).not.toContain('12345');
   });
-  it('supports custom mappings and page conversionIdentifier', () => {
+  it('supports custom mappings and page deduplicationKey', () => {
     const custom = processEvent(
       buildEvent({
         message: {

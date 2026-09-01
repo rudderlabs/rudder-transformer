@@ -14,7 +14,6 @@ export const OpenAIAdsEventMappingSchema = z
     from: z.string().min(1),
     to: z.union([z.enum(STANDARD_EVENTS), z.literal('custom')]),
     customEventName: z.string().optional(),
-    conversionIdentifier: z.string().optional(),
     deduplicationKey: z.string().optional(),
   })
   .passthrough();

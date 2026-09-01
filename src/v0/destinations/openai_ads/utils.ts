@@ -218,11 +218,7 @@ export const resolveEventMapping = (
   }
   throw new InstrumentationError(`OpenAI Ads event mapping not found for ${sourceKey}`);
 };
-const resolveDotPath = (
-  message: RudderMessage,
-  path: string | undefined,
-  label = 'deduplicationKey',
-): string | undefined => {
+const resolveDotPath = (message: RudderMessage, path: string | undefined): string | undefined => {
   const trimmedPath = trimString(path);
   if (!trimmedPath) return undefined;
   if (
@@ -232,15 +228,12 @@ const resolveDotPath = (
     trimmedPath.includes('..') ||
     /[*?[\]]/.test(trimmedPath)
   )
-    throw new InstrumentationError(`OpenAI Ads ${label} must be a simple dot path`);
+    throw new InstrumentationError('OpenAI Ads deduplicationKey must be a simple dot path');
   const value = get(message, trimmedPath);
   return isScalar(value) ? trimString(value) : undefined;
 };
 export const resolveEventId = (message: RudderMessage, mapping?: OpenAIAdsEventMapping): string => {
-  const id =
-    resolveDotPath(message, mapping?.conversionIdentifier, 'conversionIdentifier') ??
-    resolveDotPath(message, mapping?.deduplicationKey) ??
-    trimString(message.messageId);
+  const id = resolveDotPath(message, mapping?.deduplicationKey) ?? trimString(message.messageId);
   if (!id) throw new InstrumentationError('OpenAI Ads event id is required');
   return id;
 };

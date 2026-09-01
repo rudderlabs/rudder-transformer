@@ -2,7 +2,7 @@ import { isIP } from 'net';
 import get from 'get-value';
 import validator from 'validator';
 import currencyCodes from 'currency-codes';
-import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import type { RudderMessage } from '../../../types';
 import {
   HashingType,
@@ -12,7 +12,9 @@ import {
 } from '../../util/audienceUtils';
 import {
   ACTION_SOURCES,
+  CONTENTS_DATA_TYPE,
   CUSTOM_EVENT_SENTINEL,
+  PLAN_ENROLLMENT_DATA_TYPE,
   DESTINATION,
   STANDARD_EVENT_DATA_TYPES,
 } from './config';
@@ -43,6 +45,9 @@ type UserFieldsConfig = {
 type OpenAIAdsMappingConfig = {
   userFields: UserFieldsConfig;
   clickIdPaths: string[];
+  actionSourcePaths: string[];
+  sourceUrlPaths: string[];
+  opprefPaths: string[];
   currencyPaths: string[];
   amountPaths: string[];
   contentSourcePaths: string[];
@@ -62,8 +67,6 @@ type OpenAIAdsMappingConfig = {
 };
 
 const OPENAI_ADS_MAPPING_CONFIG = mappingConfig as OpenAIAdsMappingConfig;
-
-type AccountConfig = { apiKey: string; pixelId: string };
 
 const audienceDestination = {
   workspaceId: '',
@@ -181,6 +184,9 @@ const collectConfiguredPathLeafs = (paths: string[]): string[] =>
 const RESERVED_CUSTOM_KEYS = new Set<string>([
   ...OPENAI_ADS_MAPPING_CONFIG.customReservedKeys,
   ...collectConfiguredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.clickIdPaths),
+  ...collectConfiguredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.actionSourcePaths),
+  ...collectConfiguredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.sourceUrlPaths),
+  ...collectConfiguredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.opprefPaths),
   ...collectConfiguredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.currencyPaths),
   ...collectConfiguredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.amountPaths),
   ...collectConfiguredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.contentSourcePaths),
@@ -266,8 +272,7 @@ const resolveActionSource = (
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsActionSource | undefined => {
   const raw =
-    trimString(get(message, 'properties.action_source')) ??
-    trimString(get(message, 'properties.actionSource')) ??
+    trimString(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.actionSourcePaths)) ??
     trimString(config.defaultActionSource);
   if (!raw) return undefined;
   if (!ACTION_SOURCE_SET.has(raw))
@@ -276,10 +281,7 @@ const resolveActionSource = (
 };
 
 const resolveSourceUrl = (message: RudderMessage, actionSource?: string): string | undefined => {
-  const rawUrl =
-    trimString(get(message, 'properties.source_url')) ??
-    trimString(get(message, 'properties.sourceUrl')) ??
-    trimString(get(message, 'context.page.url'));
+  const rawUrl = trimString(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.sourceUrlPaths));
   if (!rawUrl) {
     if (actionSource === 'web')
       throw new InstrumentationError('OpenAI Ads source_url is required for web action_source');
@@ -302,14 +304,11 @@ const resolveOptOut = (message: RudderMessage): boolean | undefined => {
   const value = getFirstDefinedValue(message, OPENAI_ADS_MAPPING_CONFIG.optOutPaths);
   if (value === undefined || value === null || value === '') return undefined;
   if (typeof value === 'boolean') return value;
-  const text = trimString(value)?.toLowerCase();
-  if (text === 'true') return true;
-  if (text === 'false') return false;
   throw new InstrumentationError('OpenAI Ads opt_out must be a boolean');
 };
 
 const getOppref = (message: RudderMessage): string | undefined =>
-  trimString(get(message, 'properties.oppref'));
+  trimString(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.opprefPaths));
 
 const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
   const user: OpenAIAdsUser = {};
@@ -480,11 +479,11 @@ const buildCustomExtras = (properties: Record<string, unknown>): Record<string, 
 const buildEventData = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
-  eventType: OpenAIAdsStandardEvent | 'custom',
+  eventType: OpenAIAdsStandardEvent | typeof CUSTOM_EVENT_SENTINEL,
 ): OpenAIAdsEventData => {
   const dataType =
-    eventType === 'custom'
-      ? 'custom'
+    eventType === CUSTOM_EVENT_SENTINEL
+      ? CUSTOM_EVENT_SENTINEL
       : STANDARD_EVENT_DATA_TYPES[eventType as OpenAIAdsStandardEvent];
   if (!dataType) {
     throw new InstrumentationError(`OpenAI Ads data type is not configured for ${eventType}`);
@@ -501,27 +500,19 @@ const buildEventData = (
     data.currency = currency;
   }
 
-  if (dataType === 'contents' || dataType === 'custom') {
+  if (
+    dataType === CONTENTS_DATA_TYPE ||
+    dataType === PLAN_ENROLLMENT_DATA_TYPE ||
+    dataType === CUSTOM_EVENT_SENTINEL
+  ) {
     const contents = buildContents(message, config);
     if (contents) data.contents = contents;
   }
 
-  if (dataType === 'custom') {
+  if (dataType === CUSTOM_EVENT_SENTINEL) {
     Object.assign(data, buildCustomExtras(isRecord(message.properties) ? message.properties : {}));
   }
   return data;
-};
-
-export const resolveAccountConfig = (config: OpenAIAdsDestinationConfig): AccountConfig => {
-  const pixelId = trimString(config.pixelId);
-  const apiKey = trimString(config.apiKey);
-  if (!pixelId) {
-    throw new ConfigurationError('OpenAI Ads pixelId is required for cloud CAPI delivery');
-  }
-  if (!apiKey) {
-    throw new ConfigurationError('OpenAI Ads apiKey is required for cloud CAPI delivery');
-  }
-  return { apiKey, pixelId };
 };
 
 export const buildOpenAIEvent = (
@@ -529,7 +520,7 @@ export const buildOpenAIEvent = (
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsEventPayload => {
   const mapping = resolveEventMapping(message, config);
-  const eventType = mapping.to === CUSTOM_EVENT_SENTINEL ? CUSTOM_EVENT_SENTINEL : mapping.to;
+  const eventType = mapping.to;
   const customEventName =
     mapping.to === CUSTOM_EVENT_SENTINEL ? trimString(mapping.customEventName) : undefined;
   const actionSource = resolveActionSource(message, config);

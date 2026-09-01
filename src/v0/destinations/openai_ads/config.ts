@@ -5,19 +5,28 @@ export const ENDPOINT = `${BASE_URL}${ENDPOINT_PATH}`;
 export const MAX_BATCH_SIZE = 1000;
 export const MAX_PAYLOAD_SIZE = '4MB';
 export const CUSTOM_EVENT_SENTINEL = 'custom';
+export const CONTENTS_DATA_TYPE = 'contents';
+export const CUSTOMER_ACTION_DATA_TYPE = 'customer_action';
+export const PLAN_ENROLLMENT_DATA_TYPE = 'plan_enrollment';
+export const EVENT_DATA_TYPES = [
+  CONTENTS_DATA_TYPE,
+  CUSTOMER_ACTION_DATA_TYPE,
+  PLAN_ENROLLMENT_DATA_TYPE,
+  CUSTOM_EVENT_SENTINEL,
+] as const;
 export const STANDARD_EVENT_DATA_TYPES = {
-  app_installed: 'customer_action',
-  app_opened: 'customer_action',
-  appointment_scheduled: 'customer_action',
-  checkout_started: 'contents',
-  contents_viewed: 'contents',
-  items_added: 'contents',
-  lead_created: 'customer_action',
-  order_created: 'contents',
-  page_viewed: 'contents',
-  registration_completed: 'customer_action',
-  subscription_created: 'plan_enrollment',
-  trial_started: 'plan_enrollment',
+  app_installed: CUSTOMER_ACTION_DATA_TYPE,
+  app_opened: CUSTOMER_ACTION_DATA_TYPE,
+  appointment_scheduled: CUSTOMER_ACTION_DATA_TYPE,
+  checkout_started: CONTENTS_DATA_TYPE,
+  contents_viewed: CONTENTS_DATA_TYPE,
+  items_added: CONTENTS_DATA_TYPE,
+  lead_created: CUSTOMER_ACTION_DATA_TYPE,
+  order_created: CONTENTS_DATA_TYPE,
+  page_viewed: CONTENTS_DATA_TYPE,
+  registration_completed: CUSTOMER_ACTION_DATA_TYPE,
+  subscription_created: PLAN_ENROLLMENT_DATA_TYPE,
+  trial_started: PLAN_ENROLLMENT_DATA_TYPE,
 } as const;
 export const STANDARD_EVENTS = Object.keys(STANDARD_EVENT_DATA_TYPES) as [
   keyof typeof STANDARD_EVENT_DATA_TYPES,

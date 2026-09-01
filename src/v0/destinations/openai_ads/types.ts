@@ -1,9 +1,11 @@
 import { z } from 'zod';
 import {
   ACTION_SOURCES,
+  EVENT_DATA_TYPES,
   HASHED_MATCH_FIELDS,
   STANDARD_EVENTS,
   STANDARD_EVENT_DATA_TYPES,
+  CUSTOM_EVENT_SENTINEL,
 } from './config';
 
 const OpenAIAdsEventMappingSchema = z
@@ -56,7 +58,7 @@ export type OpenAIAdsContent = {
   currency?: string;
 };
 export type OpenAIAdsEventData = {
-  type: 'contents' | 'customer_action' | 'plan_enrollment' | 'custom';
+  type: (typeof EVENT_DATA_TYPES)[number];
   currency?: string;
   amount?: number;
   contents?: OpenAIAdsContent[];
@@ -64,7 +66,7 @@ export type OpenAIAdsEventData = {
 };
 export type OpenAIAdsEventPayload = {
   id: string;
-  type: OpenAIAdsStandardEvent | 'custom';
+  type: OpenAIAdsStandardEvent | typeof CUSTOM_EVENT_SENTINEL;
   custom_event_name?: string;
   timestamp_ms: number;
   opt_out?: boolean;

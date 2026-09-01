@@ -75,6 +75,42 @@ export const staleTimestampResponse = {
   },
 };
 
+export const invalidApiKeyRequest = {
+  events: [{ ...staleTimestampRequest.events[0], id: 'invalid-api-key' }],
+};
+export const invalidApiKeyResponse = {
+  error: {
+    message: 'Unauthorized',
+    type: 'invalid_request_error',
+    param: null,
+    code: null,
+  },
+};
+
+export const invalidPixelIdRequest = {
+  events: [{ ...staleTimestampRequest.events[0], id: 'invalid-pixel-id' }],
+};
+export const invalidPixelIdResponse = {
+  error: {
+    message: '403: unknown pid',
+    type: 'server_error',
+    param: null,
+    code: null,
+  },
+};
+
+export const missingPidRequest = {
+  events: [{ ...staleTimestampRequest.events[0], id: 'missing-pid' }],
+};
+export const missingPidResponse = {
+  error: {
+    message: "[{'type': 'missing', 'loc': ('query', 'pid'), 'msg': 'Field required', 'input': None}]",
+    type: 'invalid_request_error',
+    param: null,
+    code: null,
+  },
+};
+
 const headers = { Authorization: 'Bearer test-api-key', 'Content-Type': 'application/json' };
 const params = { pid: 'pixel-123' };
 
@@ -100,5 +136,38 @@ export const networkCallsData = [
       data: staleTimestampRequest,
     },
     httpRes: { data: staleTimestampResponse, status: 422 },
+  },
+  {
+    description: 'OpenAI Ads invalid apiKey',
+    httpReq: {
+      method: 'POST',
+      url: endpoint,
+      headers: { ...headers, Authorization: 'Bearer invalid-api-key' },
+      params,
+      data: invalidApiKeyRequest,
+    },
+    httpRes: { data: invalidApiKeyResponse, status: 401 },
+  },
+  {
+    description: 'OpenAI Ads invalid pixelId',
+    httpReq: {
+      method: 'POST',
+      url: endpoint,
+      headers,
+      params: { pid: 'invalid-pixel' },
+      data: invalidPixelIdRequest,
+    },
+    httpRes: { data: invalidPixelIdResponse, status: 403 },
+  },
+  {
+    description: 'OpenAI Ads missing pid',
+    httpReq: {
+      method: 'POST',
+      url: endpoint,
+      headers,
+      params: {},
+      data: missingPidRequest,
+    },
+    httpRes: { data: missingPidResponse, status: 400 },
   },
 ];

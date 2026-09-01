@@ -20,6 +20,7 @@ const destination: Destination = {
       { from: 'Lead Created', to: 'lead_created' },
       { from: 'Docs Page', to: 'page_viewed', deduplicationKey: 'properties.pageId' },
       { from: 'Trial Started', to: 'custom', customEventName: 'Trial Started' },
+      { from: 'Subscription Created', to: 'subscription_created' },
     ],
     defaultCurrency: 'USD',
     defaultActionSource: 'offline',
@@ -223,6 +224,34 @@ describe('OpenAIAdsIntegration', () => {
     expect(page).toMatchObject({ id: 'page-dedupe', type: 'page_viewed' });
   });
 
+  it('maps plan enrollment events with contents', () => {
+    const event = transform({
+      ...makeInput(1),
+      message: {
+        type: 'track',
+        event: 'Subscription Created',
+        messageId: 'msg-subscription',
+        timestamp: '2024-01-01T00:00:00.000Z',
+        properties: {
+          amount: '25.00',
+          currency: 'USD',
+          contents: [{ id: 'plan-pro', name: 'Pro plan', quantity: 1 }],
+        },
+      },
+    } as RouterTransformationRequestData).body;
+
+    expect(event).toMatchObject({
+      id: 'msg-subscription',
+      type: 'subscription_created',
+      data: {
+        type: 'plan_enrollment',
+        amount: 2500,
+        currency: 'USD',
+        contents: [{ id: 'plan-pro', name: 'Pro plan', quantity: 1 }],
+      },
+    });
+  });
+
   it('rejects exact standard event names when mapping is empty', () => {
     expect(() =>
       transform(
@@ -377,11 +406,11 @@ describe('OpenAIAdsIntegration', () => {
       error: 'already be hashed',
     },
     {
-      input: makeInput(1, 'Product Viewed', {
-        ...destination,
-        Config: { ...destination.Config, apiKey: undefined },
+      input: makeInput(1, 'Product Viewed', destination, {
+        optOut: 'true',
+        source_url: 'https://example.com/item',
       }),
-      error: 'apiKey is required',
+      error: 'opt_out must be a boolean',
     },
   ])('throws deterministic validation errors', ({ input, error }) => {
     expect(() => transform(input as RouterTransformationRequestData)).toThrow(error);

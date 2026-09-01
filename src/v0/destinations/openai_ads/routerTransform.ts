@@ -15,7 +15,7 @@ import {
   OpenAIAdsMessageSchema,
   type OpenAIAdsEventPayload,
 } from './types';
-import { buildOpenAIEvent, resolveAccountConfig } from './utils';
+import { buildOpenAIEvent } from './utils';
 
 const openAIAdsInputSchema = makeRouterInputSchema({
   destinationConfig: OpenAIAdsDestinationConfigSchema,
@@ -34,7 +34,7 @@ class OpenAIAdsIntegration extends BatchDestination<
     if (!['track', 'page', 'screen'].includes(input.message?.type)) {
       throw new InstrumentationError(`Event type ${input.message?.type} is not supported`);
     }
-    const { apiKey, pixelId } = resolveAccountConfig(this.destination.Config);
+    const { apiKey, pixelId } = this.destination.Config;
     return {
       body: buildOpenAIEvent(input.message, this.destination.Config),
       endpoint: ENDPOINT,

@@ -176,9 +176,7 @@ const hashValues = (
 };
 
 const collectConfiguredPathLeafs = (paths: string[]): string[] =>
-  paths
-    .map((path) => path.split('.').pop())
-    .filter((path): path is string => Boolean(path));
+  paths.map((path) => path.split('.').pop()).filter((path): path is string => Boolean(path));
 
 const RESERVED_CUSTOM_KEYS = new Set<string>([
   ...OPENAI_ADS_MAPPING_CONFIG.customReservedKeys,
@@ -191,7 +189,9 @@ const RESERVED_CUSTOM_KEYS = new Set<string>([
   ...Object.values(OPENAI_ADS_MAPPING_CONFIG.userFields.rawArrays).flatMap(
     collectConfiguredPathLeafs,
   ),
-  ...Object.values(OPENAI_ADS_MAPPING_CONFIG.userFields.scalars).flatMap(collectConfiguredPathLeafs),
+  ...Object.values(OPENAI_ADS_MAPPING_CONFIG.userFields.scalars).flatMap(
+    collectConfiguredPathLeafs,
+  ),
 ]);
 
 const getSourceKey = (message: RudderMessage): string => {
@@ -359,9 +359,7 @@ const toMinorUnits = (amount: unknown, currency: string): number => {
   const metadata = currencyCodes.code(normalizedCurrency);
   if (!metadata) throw new InstrumentationError(`Unsupported currency code: ${normalizedCurrency}`);
   if (fraction.length > metadata.digits) {
-    throw new InstrumentationError(
-      `Amount has more precision than ${normalizedCurrency} supports`,
-    );
+    throw new InstrumentationError(`Amount has more precision than ${normalizedCurrency} supports`);
   }
   const minorUnits =
     BigInt(whole) * 10n ** BigInt(metadata.digits) +

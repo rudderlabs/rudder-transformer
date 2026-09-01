@@ -49,17 +49,25 @@
       "sourceFromGenericMap": true
     },
     {
-      "sourceKeys": "zipcode",
-      "destKey": "postal_codes",
-      "sourceFromGenericMap": true
+      "sourceKeys": [
+        "traits.postalCodes",
+        "context.traits.postalCodes",
+        "traits.postal_codes",
+        "context.traits.postal_codes",
+        "traits.postalCode",
+        "context.traits.postalCode",
+        "traits.postal_code",
+        "context.traits.postal_code"
+      ],
+      "destKey": "postal_codes"
     },
     {
-      "sourceKeys": "city",
-      "destKey": "cities",
-      "sourceFromGenericMap": true
-    },
-    {
-      "sourceKeys": ["traits.city", "context.traits.city"],
+      "sourceKeys": [
+        "traits.address.city",
+        "context.traits.address.city",
+        "traits.city",
+        "context.traits.city"
+      ],
       "destKey": "cities"
     },
     {

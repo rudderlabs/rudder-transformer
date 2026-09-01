@@ -235,7 +235,7 @@ describe('OpenAIAdsIntegration', () => {
         properties: {
           amount: '25.00',
           currency: 'USD',
-          contents: [{ id: 'plan-pro', name: 'Pro plan', quantity: 1 }],
+          contents: [{ id: 'plan-pro', name: 'Pro plan', quantity: 1, variantDict: 'blue' }],
         },
       },
     } as RouterTransformationRequestData).body;
@@ -250,6 +250,9 @@ describe('OpenAIAdsIntegration', () => {
         contents: [{ id: 'plan-pro', name: 'Pro plan', quantity: 1 }],
       },
     });
+    expect((event.data.contents as Array<Record<string, unknown>>)[0]).not.toHaveProperty(
+      'variant_dict',
+    );
   });
 
   it('rejects exact standard event names when mapping is empty', () => {

@@ -362,6 +362,8 @@ const mapContentItem = (
 ): OpenAIAdsContent | undefined => {
   const content = (constructPayload(item, OPENAI_ADS_MAPPING_CONFIG.contentMappings) ??
     {}) as OpenAIAdsContent;
+  const variantDict = (content as Record<string, unknown>).variant_dict;
+  if (variantDict !== undefined && !isRecord(variantDict)) delete content.variant_dict;
 
   const quantityValue = getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentQuantityPaths);
   if (quantityValue !== undefined && quantityValue !== null) {

@@ -1,6 +1,8 @@
+import crypto from 'crypto';
 import { RouterTestData } from '../../../testTypes';
 import { destination, endpoint, metadata } from '../common';
 
+const sha256 = (value: string) => crypto.createHash('sha256').update(value).digest('hex');
 const batchedRequest = {
   version: '1',
   type: 'REST',
@@ -86,6 +88,125 @@ export const data: RouterTestData[] = [
             {
               batchedRequest,
               metadata: [metadata(1), metadata(2)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'openai-ads-router-standard-pii-payload',
+    name: 'openai_ads',
+    description: 'Mapped track event builds an OpenAI event with hashed PII and raw match fields',
+    scenario: 'Native batching cloud CAPI',
+    successCriteria: 'User matching fields follow OpenAI hashing/plaintext rules',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                event: 'Product Viewed',
+                messageId: 'msg-4',
+                userId: 'User-4',
+                timestamp: '2024-01-01T00:00:00.000Z',
+                context: {
+                  ip: '203.0.113.10',
+                  userAgent: 'Mozilla/5.0',
+                  traits: {
+                    email: ' USER@EXAMPLE.COM ',
+                    phone: '001 (555) 123-4567',
+                    firstName: 'Jöhn!',
+                    lastName: "O'Connor",
+                    dateOfBirth: '1990-01-02',
+                    city: 'New York',
+                    state: 'NY',
+                    zip: '12345',
+                    country: 'US',
+                    obref: 'obref-value',
+                  },
+                  page: { url: 'https://example.com/path?secret=1#hash' },
+                },
+                properties: {
+                  amount: '12.50',
+                  currency: 'EUR',
+                  action_source: 'web',
+                  oppref: 'property-oppref',
+                  products: [
+                    { product_id: 'sku-1', name: 'Sample Product', price: '10.25', quantity: 2 },
+                  ],
+                },
+              },
+              metadata: metadata(4),
+              destination,
+            },
+          ],
+          destType: 'openai_ads',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                ...batchedRequest,
+                body: {
+                  ...batchedRequest.body,
+                  JSON: {
+                    events: [
+                      {
+                        id: 'msg-4',
+                        type: 'contents_viewed',
+                        timestamp_ms: 1704067200000,
+                        action_source: 'web',
+                        source_url: 'https://example.com/path',
+                        oppref: 'property-oppref',
+                        user: {
+                          obref: 'obref-value',
+                          emails_sha256: [sha256('user@example.com')],
+                          phone_numbers_sha256: [sha256('15551234567')],
+                          external_ids_sha256: [sha256('user-4')],
+                          first_names_sha256: [sha256('jöhn')],
+                          last_names_sha256: [sha256('oconnor')],
+                          date_of_births: ['1990-01-02'],
+                          regions: ['NY'],
+                          postal_codes: ['12345'],
+                          cities: ['New York'],
+                          countries: ['US'],
+                          ip_address: '203.0.113.10',
+                          user_agent: 'Mozilla/5.0',
+                        },
+                        data: {
+                          type: 'contents',
+                          amount: 1250,
+                          currency: 'EUR',
+                          contents: [
+                            {
+                              id: 'sku-1',
+                              name: 'Sample Product',
+                              quantity: 2,
+                              amount: 1025,
+                              currency: 'EUR',
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+              metadata: [metadata(4)],
               batched: true,
               statusCode: 200,
               destination,

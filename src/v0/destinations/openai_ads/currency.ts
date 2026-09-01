@@ -1,38 +1,23 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
+import currencyCodes from 'currency-codes';
 
-const ZERO_DECIMAL = new Set([
-  'BIF',
-  'CLP',
-  'DJF',
-  'GNF',
-  'ISK',
-  'JPY',
-  'KMF',
-  'KRW',
-  'PYG',
-  'RWF',
-  'UGX',
-  'VND',
-  'VUV',
-  'XAF',
-  'XOF',
-  'XPF',
-]);
-const THREE_DECIMAL = new Set(['BHD', 'IQD', 'JOD', 'KWD', 'LYD', 'OMR', 'TND']);
 const CURRENCY_RE = /^[A-Z]{3}$/;
+
 export const normalizeCurrency = (currency: unknown): string | undefined => {
   if (typeof currency !== 'string' && typeof currency !== 'number') return undefined;
   const normalized = String(currency).trim().toUpperCase();
   if (!normalized) return undefined;
-  if (!CURRENCY_RE.test(normalized))
+  if (!CURRENCY_RE.test(normalized) || !currencyCodes.code(normalized))
     throw new InstrumentationError(`Unsupported currency code: ${normalized}`);
   return normalized;
 };
+
 const exponent = (currency: string) => {
-  if (ZERO_DECIMAL.has(currency)) return 0;
-  if (THREE_DECIMAL.has(currency)) return 3;
-  return 2;
+  const metadata = currencyCodes.code(currency);
+  if (!metadata) throw new InstrumentationError(`Unsupported currency code: ${currency}`);
+  return metadata.digits;
 };
+
 export const toMinorUnits = (amount: unknown, currency: string): number => {
   const normalizedCurrency = normalizeCurrency(currency);
   if (!normalizedCurrency)

@@ -1,0 +1,152 @@
+{
+  "eventDataTypes": {
+    "contents": [
+      "checkout_started",
+      "contents_viewed",
+      "items_added",
+      "order_created",
+      "page_viewed"
+    ],
+    "customer_action": [
+      "app_installed",
+      "app_opened",
+      "appointment_scheduled",
+      "lead_created",
+      "registration_completed"
+    ],
+    "plan_enrollment": ["subscription_created", "trial_started"]
+  },
+  "userFields": {
+    "hashed": {
+      "emails_sha256": [
+        "traits.emails",
+        "context.traits.emails",
+        "traits.email",
+        "context.traits.email"
+      ],
+      "phone_numbers_sha256": [
+        "traits.phoneNumbers",
+        "context.traits.phoneNumbers",
+        "traits.phone_numbers",
+        "context.traits.phone_numbers",
+        "traits.phones",
+        "context.traits.phones",
+        "traits.phone",
+        "context.traits.phone"
+      ],
+      "external_ids_sha256": [
+        "traits.externalIds",
+        "context.traits.externalIds",
+        "traits.external_ids",
+        "context.traits.external_ids",
+        "traits.externalId",
+        "context.traits.externalId",
+        "traits.external_id",
+        "context.traits.external_id",
+        "userId"
+      ],
+      "first_names_sha256": [
+        "traits.firstNames",
+        "context.traits.firstNames",
+        "traits.first_names",
+        "context.traits.first_names",
+        "traits.firstName",
+        "context.traits.firstName",
+        "traits.first_name",
+        "context.traits.first_name"
+      ],
+      "last_names_sha256": [
+        "traits.lastNames",
+        "context.traits.lastNames",
+        "traits.last_names",
+        "context.traits.last_names",
+        "traits.lastName",
+        "context.traits.lastName",
+        "traits.last_name",
+        "context.traits.last_name"
+      ]
+    },
+    "rawArrays": {
+      "date_of_births": [
+        "traits.dateOfBirths",
+        "context.traits.dateOfBirths",
+        "traits.date_of_births",
+        "context.traits.date_of_births",
+        "traits.dateOfBirth",
+        "context.traits.dateOfBirth",
+        "traits.date_of_birth",
+        "context.traits.date_of_birth",
+        "traits.dobs",
+        "context.traits.dobs",
+        "traits.dob",
+        "context.traits.dob"
+      ],
+      "regions": [
+        "traits.regions",
+        "context.traits.regions",
+        "traits.region",
+        "context.traits.region",
+        "traits.states",
+        "context.traits.states",
+        "traits.state",
+        "context.traits.state"
+      ],
+      "postal_codes": [
+        "traits.postalCodes",
+        "context.traits.postalCodes",
+        "traits.postal_codes",
+        "context.traits.postal_codes",
+        "traits.postalCode",
+        "context.traits.postalCode",
+        "traits.postal_code",
+        "context.traits.postal_code",
+        "traits.zips",
+        "context.traits.zips",
+        "traits.zip",
+        "context.traits.zip"
+      ],
+      "cities": ["traits.cities", "context.traits.cities", "traits.city", "context.traits.city"],
+      "countries": [
+        "traits.countries",
+        "context.traits.countries",
+        "traits.country",
+        "context.traits.country",
+        "traits.countryCodes",
+        "context.traits.countryCodes",
+        "traits.countryCode",
+        "context.traits.countryCode"
+      ]
+    },
+    "scalars": {
+      "obref": ["traits.obref", "context.traits.obref"],
+      "android_advertising_id": [
+        "traits.android_advertising_id",
+        "context.traits.android_advertising_id",
+        "traits.androidAdvertisingId",
+        "context.traits.androidAdvertisingId",
+        "context.device.advertisingId"
+      ],
+      "ip_address": ["context.ip", "request_ip"],
+      "user_agent": ["context.userAgent", "context.user_agent"]
+    }
+  },
+  "clickIdPaths": [
+    "properties.click_id",
+    "properties.clickId",
+    "context.traits.click_id",
+    "context.traits.clickId",
+    "traits.click_id",
+    "traits.clickId"
+  ],
+  "currencyPaths": ["properties.currency"],
+  "amountPaths": ["properties.amount", "properties.value", "properties.revenue"],
+  "contentSourcePaths": ["properties.contents", "properties.products"],
+  "contentFields": {
+    "id": ["id", "content_id", "contentId", "item_id", "itemId", "product_id", "productId", "sku"],
+    "name": ["name", "title", "product_name", "productName"],
+    "content_type": ["content_type", "contentType", "type", "category", "product_category"],
+    "quantity": ["quantity", "count"],
+    "amount": ["amount", "value", "price"],
+    "currency": ["currency", "currency_code", "currencyCode"]
+  }
+}

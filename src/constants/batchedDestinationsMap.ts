@@ -1,8 +1,13 @@
-import { defaultWorkspaceFeatureFlags, getBatchingFrameworkGaDestinations } from '../features';
+import {
+  getBatchingFrameworkDeliveryGaDestinations,
+  getBatchingFrameworkGaDestinations,
+} from '../features';
 
 // Destinations that have completed GA for the batching framework.
 // Once a destination is added here, it always uses the new path regardless of env var.
 export const batchedDestinationsMap: Record<string, true> = getBatchingFrameworkGaDestinations();
+export const batchingFrameworkDeliveryDestinationsMap: Record<string, true> =
+  getBatchingFrameworkDeliveryGaDestinations();
 
 // Per-destination env var: {DEST}_{FEATURE}_ENABLED_WORKSPACE_IDS
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces
@@ -14,7 +19,7 @@ const getEnabledWorkspaceIds = (
 ): string[] => {
   const envKey = `${destType.toUpperCase()}_${feature}_ENABLED_WORKSPACE_IDS`;
   return (
-    (process.env[envKey] ?? defaultWorkspaceFeatureFlags[envKey])
+    process.env[envKey]
       ?.split(',')
       ?.map((s) => s.trim())
       ?.filter((s) => s) ?? []
@@ -50,13 +55,12 @@ export const isBatchingFrameworkEnabled = (destType: string, workspaceId: string
  * Whether the batching framework also owns *delivery* (response handling) for this destination and
  * workspace, rather than the destination's own networkHandler.
  *
- * Per-destination env var: {DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS
- * Values: comma-separated workspace IDs, or 'ALL'. Unset or empty → the legacy networkHandler.
+ * Destinations in the GA delivery map use framework delivery everywhere. Other destinations can
+ * use the per-destination env var for workspace-level rollout:
+ * {DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS.
  *
  * Two deliberate properties:
  *
- *  - **No GA map.** Unlike the transform flag there is no destination list that force-enables this,
- *    so delivery stays on the legacy handler everywhere until a workspace is named explicitly.
  *  - **Requires the transform flag.** The delivery path has to interpret a payload built by the
  *    matching transform path — an unenrolled workspace's events are still built by the legacy
  *    `processRouterDest`, and its response must be read by the legacy handler. Enabling delivery
@@ -69,6 +73,9 @@ export const isBatchingFrameworkDeliveryEnabled = (
 ): boolean => {
   if (!isBatchingFrameworkEnabled(destType, workspaceId)) {
     return false;
+  }
+  if (batchingFrameworkDeliveryDestinationsMap[destType.toUpperCase()]) {
+    return true;
   }
   return matchesWorkspace(
     getEnabledWorkspaceIds(destType, 'BATCHING_FRAMEWORK_DELIVERY'),

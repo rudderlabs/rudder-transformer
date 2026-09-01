@@ -30,10 +30,16 @@ describe('isBatchingFrameworkDeliveryEnabled', () => {
 
   it('stays off for a GA destination that never opts delivery in', () => {
     // iterable_audience has batching: true, so the *transform* flag is unconditionally on. The
-    // delivery flag has no GA map, so it must still be off.
+    // delivery flag has not gone GA for it, so it must still be off.
     const { isBatchingFrameworkEnabled, isBatchingFrameworkDeliveryEnabled } = load();
     expect(isBatchingFrameworkEnabled('iterable_audience', 'ws-1')).toBe(true);
     expect(isBatchingFrameworkDeliveryEnabled('iterable_audience', 'ws-1')).toBe(false);
+  });
+
+  it('enables delivery unconditionally for destinations in the delivery GA map', () => {
+    const { isBatchingFrameworkEnabled, isBatchingFrameworkDeliveryEnabled } = load();
+    expect(isBatchingFrameworkEnabled('openai_ads', 'ws-1')).toBe(true);
+    expect(isBatchingFrameworkDeliveryEnabled('openai_ads', 'ws-1')).toBe(true);
   });
 
   it('enables delivery for a named workspace once the delivery flag is set', () => {

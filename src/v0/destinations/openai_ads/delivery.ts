@@ -30,11 +30,8 @@ const responseToMessage = (response: unknown): string => {
   return 'OpenAI Ads request failed';
 };
 
-const isolateBatchValidationFailure = (
-  ctx: DeliveryContext,
-  fallback: () => HandleResponseResult,
-): HandleResponseResult =>
-  ctx.jobs.length > 1 ? retry(responseToMessage(ctx.response), { dontBatch: true }) : fallback();
+const isolateBatchValidationFailure = (ctx: DeliveryContext): HandleResponseResult =>
+  retry(responseToMessage(ctx.response), { dontBatch: true });
 
 const statusOverrides: StatusOverrideMap = {
   400: isolateBatchValidationFailure,

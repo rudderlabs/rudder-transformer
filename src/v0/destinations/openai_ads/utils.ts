@@ -4,17 +4,11 @@ import get from 'get-value';
 import validator from 'validator';
 import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
 import type { RudderMessage } from '../../../types';
-import {
-  ACTION_SOURCES,
-  CONTENT_DATA_EVENTS,
-  CUSTOMER_ACTION_EVENTS,
-  CUSTOM_EVENT_SENTINEL,
-  MAX_BATCH_SIZE,
-  MAX_PAYLOAD_SIZE,
-  PLAN_ENROLLMENT_EVENTS,
-} from './config';
+import { ACTION_SOURCES, CUSTOM_EVENT_SENTINEL } from './config';
 import { normalizeCurrency, toMinorUnits } from './currency';
+import mappingConfig from './data/OPENAI_ADSConfig.json';
 import type {
+  HashMatchField,
   OpenAIAdsActionSource,
   OpenAIAdsContent,
   OpenAIAdsDestination,
@@ -24,12 +18,46 @@ import type {
   OpenAIAdsEventPayload,
   OpenAIAdsStandardEvent,
   OpenAIAdsUser,
+  PlainMatchField,
 } from './types';
 
 const SHA256_REGEX = /^[\da-f]{64}$/i;
 const PUNCTUATION_REGEX = /[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/g;
-const COUNTRY_CODE_REGEX = /^[a-z]{2}$/;
 const ACTION_SOURCE_SET = new Set<string>(ACTION_SOURCES);
+type OpenAIAdsMappingConfig = {
+  eventDataTypes: {
+    contents: string[];
+    customer_action: string[];
+    plan_enrollment: string[];
+  };
+  userFields: {
+    hashed: Record<HashMatchField, string[]>;
+    rawArrays: Record<PlainMatchField, string[]>;
+    scalars: {
+      obref: string[];
+      android_advertising_id: string[];
+      ip_address: string[];
+      user_agent: string[];
+    };
+  };
+  clickIdPaths: string[];
+  currencyPaths: string[];
+  amountPaths: string[];
+  contentSourcePaths: string[];
+  contentFields: Record<
+    'id' | 'name' | 'content_type' | 'quantity' | 'amount' | 'currency',
+    string[]
+  >;
+};
+const OPENAI_ADS_MAPPING_CONFIG = mappingConfig as OpenAIAdsMappingConfig;
+// Mirrors the OpenAI Ads spec's standard-event -> `data.type` discriminator table.
+const CONTENT_DATA_EVENTS = new Set<string>(OPENAI_ADS_MAPPING_CONFIG.eventDataTypes.contents);
+const CUSTOMER_ACTION_EVENTS = new Set<string>(
+  OPENAI_ADS_MAPPING_CONFIG.eventDataTypes.customer_action,
+);
+const PLAN_ENROLLMENT_EVENTS = new Set<string>(
+  OPENAI_ADS_MAPPING_CONFIG.eventDataTypes.plan_enrollment,
+);
 const RESERVED_CUSTOM_KEYS = new Set([
   'action_source',
   'actionSource',
@@ -121,6 +149,8 @@ const isScalar = (value: unknown): value is string | number | boolean =>
 const firstScalar = (value: unknown): unknown => (Array.isArray(value) ? value[0] : value);
 const getFirstValue = (message: RudderMessage, paths: string[]): unknown =>
   paths.map((path) => get(message, path)).find((value) => trimString(firstScalar(value)));
+const getFirstDefinedValue = (message: RudderMessage, paths: string[]): unknown =>
+  paths.map((path) => get(message, path)).find((value) => value !== undefined && value !== null);
 const valuesFromPaths = (message: RudderMessage, paths: string[]): unknown[] => {
   for (const path of paths) {
     const value = get(message, path);
@@ -148,22 +178,6 @@ const normalizeName = (value: string): string | undefined =>
   value.trim().toLowerCase().replace(PUNCTUATION_REGEX, '') || undefined;
 const normalizeExternalId = (value: string): string | undefined =>
   value.trim().toLowerCase() || undefined;
-const normalizeDateOfBirth = (value: string): string | undefined => {
-  const normalized = value.trim().replace(/[\s./-]/g, '');
-  return /^\d{4,8}$/.test(normalized) ? normalized : undefined;
-};
-const normalizeLocationText = (value: string): string | undefined =>
-  value
-    .trim()
-    .replace(/[^ A-Za-z]/g, '')
-    .replace(/\s/g, '')
-    .toLowerCase() || undefined;
-const normalizeZip = (value: string): string | undefined =>
-  value.trim().replace(/[\s-]/g, '').toLowerCase() || undefined;
-const normalizeCountry = (value: string): string | undefined => {
-  const normalized = value.trim().toLowerCase();
-  return COUNTRY_CODE_REGEX.test(normalized) ? normalized : undefined;
-};
 const hashValues = (
   message: RudderMessage,
   paths: string[],
@@ -180,6 +194,12 @@ const hashValues = (
     .filter((value): value is string => Boolean(value))
     .map(sha256);
   return hashed.length > 0 ? [...new Set(hashed)] : undefined;
+};
+const rawValues = (message: RudderMessage, paths: string[]): string[] | undefined => {
+  const values = valuesFromPaths(message, paths)
+    .map(trimString)
+    .filter((value): value is string => Boolean(value));
+  return values.length > 0 ? [...new Set(values)] : undefined;
 };
 const rawScalar = (message: RudderMessage, paths: string[]): string | undefined =>
   trimString(firstScalar(getFirstValue(message, paths)));
@@ -251,13 +271,11 @@ export const resolveTimestampMs = (message: RudderMessage): number => {
 export const resolveActionSource = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
-  eventType: string,
 ): OpenAIAdsActionSource | undefined => {
   const raw =
     trimString(get(message, 'properties.action_source')) ??
     trimString(get(message, 'properties.actionSource')) ??
-    trimString(config.defaultActionSource) ??
-    (eventType === 'app_installed' || eventType === 'app_opened' ? 'mobile_app' : undefined);
+    trimString(config.defaultActionSource);
   if (!raw) return undefined;
   if (!ACTION_SOURCE_SET.has(raw))
     throw new InstrumentationError(`Unsupported OpenAI Ads action_source: ${raw}`);
@@ -291,205 +309,41 @@ export const resolveSourceUrl = (
 export const getOppref = (message: RudderMessage): string | undefined =>
   trimString(get(message, 'properties.oppref'));
 export const getClickIdPresenceGroup = (message: RudderMessage): string =>
-  rawScalar(message, [
-    'properties.click_id',
-    'properties.clickId',
-    'context.traits.click_id',
-    'context.traits.clickId',
-    'traits.click_id',
-    'traits.clickId',
-  ])
+  rawScalar(message, OPENAI_ADS_MAPPING_CONFIG.clickIdPaths)
     ? 'click_id_present'
     : 'click_id_absent';
 export const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
   const user: OpenAIAdsUser = {};
-  const addArray = (key: keyof OpenAIAdsUser, value: string[] | undefined) => {
+  const addArray = (key: HashMatchField | PlainMatchField, value: string[] | undefined) => {
     if (value?.length) (user as Record<string, unknown>)[String(key)] = value;
   };
-  const obref = rawScalar(message, ['traits.obref', 'context.traits.obref']);
+  const obref = rawScalar(message, OPENAI_ADS_MAPPING_CONFIG.userFields.scalars.obref);
   if (obref) user.obref = obref;
-  addArray(
-    'emails_sha256',
-    hashValues(
-      message,
-      ['traits.emails', 'context.traits.emails', 'traits.email', 'context.traits.email'],
-      'email',
-      normalizeEmail,
-    ),
+  const hashedNormalizers: Record<
+    HashMatchField,
+    { field: string; normalize: (value: string) => string | undefined }
+  > = {
+    emails_sha256: { field: 'email', normalize: normalizeEmail },
+    phone_numbers_sha256: { field: 'phone', normalize: normalizePhone },
+    external_ids_sha256: { field: 'external_id', normalize: normalizeExternalId },
+    first_names_sha256: { field: 'first_name', normalize: normalizeName },
+    last_names_sha256: { field: 'last_name', normalize: normalizeName },
+  };
+  Object.entries(OPENAI_ADS_MAPPING_CONFIG.userFields.hashed).forEach(([key, paths]) => {
+    const { field, normalize } = hashedNormalizers[key as HashMatchField];
+    addArray(key as HashMatchField, hashValues(message, paths, field, normalize));
+  });
+  Object.entries(OPENAI_ADS_MAPPING_CONFIG.userFields.rawArrays).forEach(([key, paths]) => {
+    addArray(key as PlainMatchField, rawValues(message, paths));
+  });
+  const advertisingId = rawScalar(
+    message,
+    OPENAI_ADS_MAPPING_CONFIG.userFields.scalars.android_advertising_id,
   );
-  addArray(
-    'phone_numbers_sha256',
-    hashValues(
-      message,
-      [
-        'traits.phoneNumbers',
-        'context.traits.phoneNumbers',
-        'traits.phone_numbers',
-        'context.traits.phone_numbers',
-        'traits.phones',
-        'context.traits.phones',
-        'traits.phone',
-        'context.traits.phone',
-      ],
-      'phone',
-      normalizePhone,
-    ),
-  );
-  addArray(
-    'external_ids_sha256',
-    hashValues(
-      message,
-      [
-        'traits.externalIds',
-        'context.traits.externalIds',
-        'traits.external_ids',
-        'context.traits.external_ids',
-        'traits.externalId',
-        'context.traits.externalId',
-        'traits.external_id',
-        'context.traits.external_id',
-        'userId',
-      ],
-      'external_id',
-      normalizeExternalId,
-    ),
-  );
-  addArray(
-    'first_names_sha256',
-    hashValues(
-      message,
-      [
-        'traits.firstNames',
-        'context.traits.firstNames',
-        'traits.first_names',
-        'context.traits.first_names',
-        'traits.firstName',
-        'context.traits.firstName',
-        'traits.first_name',
-        'context.traits.first_name',
-      ],
-      'first_name',
-      normalizeName,
-    ),
-  );
-  addArray(
-    'last_names_sha256',
-    hashValues(
-      message,
-      [
-        'traits.lastNames',
-        'context.traits.lastNames',
-        'traits.last_names',
-        'context.traits.last_names',
-        'traits.lastName',
-        'context.traits.lastName',
-        'traits.last_name',
-        'context.traits.last_name',
-      ],
-      'last_name',
-      normalizeName,
-    ),
-  );
-  addArray(
-    'date_of_births_sha256',
-    hashValues(
-      message,
-      [
-        'traits.dateOfBirths',
-        'context.traits.dateOfBirths',
-        'traits.date_of_births',
-        'context.traits.date_of_births',
-        'traits.dateOfBirth',
-        'context.traits.dateOfBirth',
-        'traits.date_of_birth',
-        'context.traits.date_of_birth',
-        'traits.dobs',
-        'context.traits.dobs',
-        'traits.dob',
-        'context.traits.dob',
-      ],
-      'date_of_birth',
-      normalizeDateOfBirth,
-    ),
-  );
-  addArray(
-    'regions_sha256',
-    hashValues(
-      message,
-      [
-        'traits.regions',
-        'context.traits.regions',
-        'traits.region',
-        'context.traits.region',
-        'traits.states',
-        'context.traits.states',
-        'traits.state',
-        'context.traits.state',
-      ],
-      'state',
-      normalizeLocationText,
-    ),
-  );
-  addArray(
-    'postal_codes_sha256',
-    hashValues(
-      message,
-      [
-        'traits.postalCodes',
-        'context.traits.postalCodes',
-        'traits.postal_codes',
-        'context.traits.postal_codes',
-        'traits.postalCode',
-        'context.traits.postalCode',
-        'traits.postal_code',
-        'context.traits.postal_code',
-        'traits.zips',
-        'context.traits.zips',
-        'traits.zip',
-        'context.traits.zip',
-      ],
-      'zip',
-      normalizeZip,
-    ),
-  );
-  addArray(
-    'cities_sha256',
-    hashValues(
-      message,
-      ['traits.cities', 'context.traits.cities', 'traits.city', 'context.traits.city'],
-      'city',
-      normalizeLocationText,
-    ),
-  );
-  addArray(
-    'countries_sha256',
-    hashValues(
-      message,
-      [
-        'traits.countries',
-        'context.traits.countries',
-        'traits.country',
-        'context.traits.country',
-        'traits.countryCodes',
-        'context.traits.countryCodes',
-        'traits.countryCode',
-        'context.traits.countryCode',
-      ],
-      'country',
-      normalizeCountry,
-    ),
-  );
-  const advertisingId = rawScalar(message, [
-    'traits.android_advertising_id',
-    'context.traits.android_advertising_id',
-    'traits.androidAdvertisingId',
-    'context.traits.androidAdvertisingId',
-    'context.device.advertisingId',
-  ]);
   if (advertisingId) user.android_advertising_id = advertisingId;
-  const ipAddress = rawScalar(message, ['context.ip', 'request_ip']);
+  const ipAddress = rawScalar(message, OPENAI_ADS_MAPPING_CONFIG.userFields.scalars.ip_address);
   if (ipAddress && isIP(ipAddress)) user.ip_address = ipAddress;
-  const userAgent = rawScalar(message, ['context.userAgent', 'context.user_agent']);
+  const userAgent = rawScalar(message, OPENAI_ADS_MAPPING_CONFIG.userFields.scalars.user_agent);
   if (userAgent) user.user_agent = userAgent;
   return Object.keys(user).length > 0 ? user : undefined;
 };
@@ -497,54 +351,40 @@ const resolveCurrency = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
 ): string | undefined =>
-  normalizeCurrency(getFirstValue(message, ['properties.currency'])) ??
+  normalizeCurrency(getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.currencyPaths)) ??
   normalizeCurrency(config.defaultCurrency);
 const resolveAmount = (message: RudderMessage): unknown =>
-  getFirstValue(message, ['properties.amount', 'properties.value', 'properties.revenue']);
-const getStringField = (item: Record<string, unknown>, paths: string[]): string | undefined =>
+  getFirstValue(message, OPENAI_ADS_MAPPING_CONFIG.amountPaths);
+const getFirstFieldValue = (item: Record<string, unknown>, paths: string[]): unknown =>
   paths
     .map((path) => get(item, path))
-    .map(trimString)
-    .find(Boolean);
+    .find((value) => value !== undefined && value !== null && value !== '');
+const getStringField = (item: Record<string, unknown>, paths: string[]): string | undefined =>
+  trimString(getFirstFieldValue(item, paths));
 const mapContentItem = (
   item: Record<string, unknown>,
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsContent | undefined => {
   const content: OpenAIAdsContent = {};
-  const id = getStringField(item, [
-    'id',
-    'content_id',
-    'contentId',
-    'item_id',
-    'itemId',
-    'product_id',
-    'productId',
-    'sku',
-  ]);
+  const id = getStringField(item, OPENAI_ADS_MAPPING_CONFIG.contentFields.id);
   if (id) content.id = id;
-  const name = getStringField(item, ['name', 'title', 'product_name', 'productName']);
+  const name = getStringField(item, OPENAI_ADS_MAPPING_CONFIG.contentFields.name);
   if (name) content.name = name;
-  const contentType = getStringField(item, [
-    'content_type',
-    'contentType',
-    'type',
-    'category',
-    'product_category',
-  ]);
+  const contentType = getStringField(item, OPENAI_ADS_MAPPING_CONFIG.contentFields.content_type);
   if (contentType) content.content_type = contentType;
-  const quantityValue = get(item, 'quantity') ?? get(item, 'count');
+  const quantityValue = getFirstFieldValue(item, OPENAI_ADS_MAPPING_CONFIG.contentFields.quantity);
   if (quantityValue !== undefined && quantityValue !== null && quantityValue !== '') {
     const quantity = Number(quantityValue);
     if (!Number.isInteger(quantity) || quantity <= 0)
       throw new InstrumentationError('OpenAI Ads content quantity must be a positive integer');
     content.quantity = quantity;
   }
-  const amountValue = get(item, 'amount') ?? get(item, 'value') ?? get(item, 'price');
+  const amountValue = getFirstFieldValue(item, OPENAI_ADS_MAPPING_CONFIG.contentFields.amount);
   if (amountValue !== undefined && amountValue !== null && amountValue !== '') {
     const itemCurrency =
       normalizeCurrency(
-        get(item, 'currency') ?? get(item, 'currency_code') ?? get(item, 'currencyCode'),
+        getFirstFieldValue(item, OPENAI_ADS_MAPPING_CONFIG.contentFields.currency),
       ) ?? resolveCurrency(message, config);
     if (!itemCurrency)
       throw new InstrumentationError(
@@ -559,7 +399,7 @@ const buildContents = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsContent[] | undefined => {
-  const rawContents = get(message, 'properties.contents') ?? get(message, 'properties.products');
+  const rawContents = getFirstDefinedValue(message, OPENAI_ADS_MAPPING_CONFIG.contentSourcePaths);
   if (rawContents === undefined || rawContents === null) return undefined;
   const items = Array.isArray(rawContents) ? rawContents : [rawContents];
   if (!items.every(isRecord))
@@ -645,7 +485,7 @@ export const buildOpenAIEvent = (
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsEventPayload => {
   const mapping = resolveEventMapping(message, config);
-  const actionSource = resolveActionSource(message, config, mapping.type);
+  const actionSource = resolveActionSource(message, config);
   const sourceUrl = resolveSourceUrl(message, actionSource);
   const oppref = getOppref(message);
   const user = buildUser(message);
@@ -661,9 +501,3 @@ export const buildOpenAIEvent = (
     data: buildEventData(message, config, mapping.type),
   };
 };
-export const getMaxBatchSize = (config: OpenAIAdsDestinationConfig): number =>
-  typeof config.maxBatchSize === 'number' && config.maxBatchSize > 0
-    ? Math.min(config.maxBatchSize, MAX_BATCH_SIZE)
-    : MAX_BATCH_SIZE;
-export const getMaxPayloadSize = (config: OpenAIAdsDestinationConfig): string =>
-  trimString(config.maxPayloadSize) ?? MAX_PAYLOAD_SIZE;

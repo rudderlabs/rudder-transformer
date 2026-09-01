@@ -1,5 +1,6 @@
 import path from 'path';
 import defaultFeaturesConfig, {
+  getBatchingFrameworkDeliveryGaDestinations,
   getBatchingFrameworkGaDestinations,
   getDestinationHandlerName,
   isDestinationCdkV2Enabled,
@@ -35,6 +36,9 @@ describe('features destination capabilities', () => {
       OPENAI_ADS: true,
       TEST_DESTINATION: true,
       CUSTOMERIO: true,
+    });
+    expect(getBatchingFrameworkDeliveryGaDestinations()).toEqual({
+      OPENAI_ADS: true,
     });
   });
 

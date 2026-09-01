@@ -1,6 +1,6 @@
 import { Destination, Metadata } from '../../../../src/types';
 
-export const endpoint = 'https://api.openai.com/v1/events';
+export const endpoint = 'https://bzr.openai.com/v1/events';
 export const deliveryAccount = {
   id: 'openai-account-1',
   options: { pixelId: 'pixel-123' },
@@ -18,10 +18,15 @@ export const destination: Destination = {
     Config: {},
   },
   Config: {
+    apiKey: 'test-api-key',
+    pixelId: 'pixel-123',
     eventMapping: [
       { from: 'Product Viewed', to: 'contents_viewed' },
       { from: 'Lead Created', to: 'lead_created' },
+      { from: 'Order Created', to: 'order_created' },
+      { from: 'Custom Checkout Data', to: 'custom', customEventName: 'ccd' },
     ],
+    defaultCurrency: 'USD',
     defaultActionSource: 'offline',
   },
   deliveryAccount,

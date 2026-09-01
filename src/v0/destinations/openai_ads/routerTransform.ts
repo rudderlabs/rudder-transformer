@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
   ChunkBatchStrategy,
@@ -6,15 +7,16 @@ import {
   type TransformedEvent,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import { ENDPOINT, ENDPOINT_PATH, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
 import { openAIAdsDelivery } from './delivery';
-import { processEvent } from './transform';
 import {
   OpenAIAdsDestinationConfigSchema,
   OpenAIAdsMessageSchema,
+  type OpenAIAdsDestination,
   type OpenAIAdsEventPayload,
-  type OpenAIAdsProcessorRequest,
 } from './types';
-import { getClickIdPresenceGroup, getMaxBatchSize, getMaxPayloadSize } from './utils';
+import { buildOpenAIEvent, getClickIdPresenceGroup, resolveAccountConfig } from './utils';
 
 const openAIAdsInputSchema = makeRouterInputSchema({
   destinationConfig: OpenAIAdsDestinationConfigSchema,
@@ -30,25 +32,26 @@ class OpenAIAdsIntegration extends BatchDestination<
   transformEvent(
     input: z.infer<typeof openAIAdsInputSchema>,
   ): TransformedEvent<OpenAIAdsEventPayload> {
-    const result = processEvent(input as unknown as OpenAIAdsProcessorRequest);
-    const [eventBody] = result.body.JSON.events as OpenAIAdsEventPayload[];
+    if (!['track', 'page', 'screen'].includes(input.message?.type)) {
+      throw new InstrumentationError(`Event type ${input.message?.type} is not supported`);
+    }
+    const destination = this.destination as OpenAIAdsDestination;
+    const { apiKey, pixelId } = resolveAccountConfig(destination);
     return {
-      body: eventBody,
-      endpoint: result.endpoint,
-      endpointPath: result.endpointPath ?? '/v1/events',
-      method: result.method,
-      headers: result.headers,
-      params: result.params,
-      internalGroupKey: getClickIdPresenceGroup(
-        input.message as OpenAIAdsProcessorRequest['message'],
-      ),
+      body: buildOpenAIEvent(input.message, destination.Config),
+      endpoint: ENDPOINT,
+      endpointPath: ENDPOINT_PATH,
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': JSON_MIME_TYPE },
+      params: { pid: pixelId },
+      internalGroupKey: getClickIdPresenceGroup(input.message),
     };
   }
 
   getBatchStrategy(): BatchStrategy<OpenAIAdsEventPayload> {
     return new ChunkBatchStrategy<OpenAIAdsEventPayload>({
-      maxItems: getMaxBatchSize(this.destination.Config),
-      maxPayloadSize: getMaxPayloadSize(this.destination.Config),
+      maxItems: MAX_BATCH_SIZE,
+      maxPayloadSize: MAX_PAYLOAD_SIZE,
       wrapBody: (bodies) => ({ events: bodies }),
     });
   }

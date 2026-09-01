@@ -44,7 +44,9 @@ describe('OpenAI Ads delivery', () => {
   });
 
   it('terminates singleton 400 when dontBatch isolation already happened', () => {
-    expect(() => viaFramework(ctxFor(422, [job(1, true)]))).toThrow(/invalid payload/);
+    expect(viaFramework(ctxFor(422, [job(1, true)])).response).toEqual([
+      { statusCode: 400, metadata: job(1, true), error: 'invalid payload' },
+    ]);
   });
 
   it('keeps 429 throttled and 5xx retryable without dontBatch', () => {

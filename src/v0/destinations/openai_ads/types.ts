@@ -20,12 +20,10 @@ export const OpenAIAdsEventMappingSchema = z
 export const OpenAIAdsDestinationConfigSchema = z
   .object({
     apiKey: z.string().optional(),
-    pixelId: z.string().optional(),
+    pixelId: z.string(),
     defaultCurrency: z.string().optional(),
     defaultActionSource: z.enum(ACTION_SOURCES).optional(),
     eventMapping: z.array(OpenAIAdsEventMappingSchema).optional(),
-    maxBatchSize: z.number().int().positive().optional(),
-    maxPayloadSize: z.string().optional(),
   })
   .passthrough();
 export const OpenAIAdsMessageSchema = z
@@ -53,7 +51,13 @@ export type OpenAIAdsRouterRequest = RouterTransformationRequestData<
   Metadata
 >;
 export type HashMatchField = (typeof HASHED_MATCH_FIELDS)[number];
-export type OpenAIAdsUser = Partial<Record<HashMatchField, string[]>> & {
+export type PlainMatchField =
+  | 'date_of_births'
+  | 'regions'
+  | 'postal_codes'
+  | 'cities'
+  | 'countries';
+export type OpenAIAdsUser = Partial<Record<HashMatchField | PlainMatchField, string[]>> & {
   obref?: string;
   android_advertising_id?: string;
   ip_address?: string;

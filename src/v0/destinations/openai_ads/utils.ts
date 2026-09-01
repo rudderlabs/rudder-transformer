@@ -90,8 +90,7 @@ const isScalar = (value: unknown): value is string | number | boolean =>
   ['string', 'number', 'boolean'].includes(typeof value);
 
 const firstScalar = (value: unknown): unknown => (Array.isArray(value) ? value[0] : value);
-const hasValue = (value: unknown): boolean =>
-  value !== undefined && value !== null && value !== '';
+const hasValue = (value: unknown): boolean => value !== undefined && value !== null && value !== '';
 const stringifyScalar = (value: unknown): string | undefined =>
   isScalar(value) ? String(value) : undefined;
 
@@ -422,9 +421,7 @@ const buildContents = (
 };
 
 const buildCustomExtras = (properties: Record<string, unknown>): Record<string, unknown> =>
-  Object.fromEntries(
-    Object.entries(properties).filter(([key]) => !RESERVED_CUSTOM_KEYS.has(key)),
-  );
+  Object.fromEntries(Object.entries(properties).filter(([key]) => !RESERVED_CUSTOM_KEYS.has(key)));
 
 const buildEventData = (
   message: RudderMessage,

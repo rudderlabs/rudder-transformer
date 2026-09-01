@@ -284,9 +284,9 @@ const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
     {
       mappings: OPENAI_ADS_MAPPING_CONFIG.hashedUserMappings,
       transform: (payload) => {
-        Object.entries(hashUserPayload(payload as Partial<Record<HashMatchField, unknown>>)).forEach(
-          ([key, values]) => addArray(key as HashMatchField, values),
-        );
+        Object.entries(
+          hashUserPayload(payload as Partial<Record<HashMatchField, unknown>>),
+        ).forEach(([key, values]) => addArray(key as HashMatchField, values));
       },
     },
     {

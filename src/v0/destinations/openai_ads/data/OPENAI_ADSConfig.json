@@ -1,23 +1,24 @@
 {
-  "userFields": {
-    "hashed": {
-      "emails_sha256": [
-        "traits.emails",
-        "context.traits.emails",
-        "traits.email",
-        "context.traits.email"
-      ],
-      "phone_numbers_sha256": [
-        "traits.phoneNumbers",
-        "context.traits.phoneNumbers",
-        "traits.phone_numbers",
-        "context.traits.phone_numbers",
-        "traits.phones",
-        "context.traits.phones",
-        "traits.phone",
-        "context.traits.phone"
-      ],
-      "external_ids_sha256": [
+  "eventMappings": [
+    {
+      "sourceKeys": ["timestamp", "originalTimestamp", "sentAt", "receivedAt"],
+      "destKey": "timestamp_ms",
+      "metadata": { "type": "timestamp" }
+    }
+  ],
+  "hashedUserMappings": [
+    {
+      "sourceKeys": "email",
+      "destKey": "emails_sha256",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "phone",
+      "destKey": "phone_numbers_sha256",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": [
         "traits.externalIds",
         "context.traits.externalIds",
         "traits.external_ids",
@@ -28,65 +29,113 @@
         "context.traits.external_id",
         "userId"
       ],
-      "first_names_sha256": [
-        "traits.firstNames",
-        "context.traits.firstNames",
-        "traits.first_names",
-        "context.traits.first_names",
-        "traits.firstName",
-        "context.traits.firstName",
-        "traits.first_name",
-        "context.traits.first_name"
-      ],
-      "last_names_sha256": [
-        "traits.lastNames",
-        "context.traits.lastNames",
-        "traits.last_names",
-        "context.traits.last_names",
-        "traits.lastName",
-        "context.traits.lastName",
-        "traits.last_name",
-        "context.traits.last_name"
-      ]
+      "destKey": "external_ids_sha256"
     },
-    "rawArrays": {
-      "regions": [
-        "traits.regions",
-        "context.traits.regions",
-        "traits.region",
-        "context.traits.region"
-      ],
-      "postal_codes": [
-        "traits.postalCodes",
-        "context.traits.postalCodes",
-        "traits.postal_codes",
-        "context.traits.postal_codes",
-        "traits.postalCode",
-        "context.traits.postalCode",
-        "traits.postal_code",
-        "context.traits.postal_code"
-      ],
-      "cities": ["traits.cities", "context.traits.cities", "traits.city", "context.traits.city"],
-      "countries": [
-        "traits.countries",
-        "context.traits.countries",
-        "traits.country",
-        "context.traits.country"
-      ]
+    {
+      "sourceKeys": "firstName",
+      "destKey": "first_names_sha256",
+      "sourceFromGenericMap": true
     },
-    "scalars": {
-      "obref": ["traits.obref", "context.traits.obref"],
-      "android_advertising_id": [
+    {
+      "sourceKeys": "lastName",
+      "destKey": "last_names_sha256",
+      "sourceFromGenericMap": true
+    }
+  ],
+  "plainArrayUserMappings": [
+    {
+      "sourceKeys": "region",
+      "destKey": "regions",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "zipcode",
+      "destKey": "postal_codes",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "city",
+      "destKey": "cities",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": ["traits.city", "context.traits.city"],
+      "destKey": "cities"
+    },
+    {
+      "sourceKeys": "country",
+      "destKey": "countries",
+      "sourceFromGenericMap": true
+    }
+  ],
+  "plainScalarUserMappings": [
+    {
+      "sourceKeys": ["traits.obref", "context.traits.obref"],
+      "destKey": "obref"
+    },
+    {
+      "sourceKeys": [
         "traits.android_advertising_id",
         "context.traits.android_advertising_id",
         "traits.androidAdvertisingId",
         "context.traits.androidAdvertisingId",
         "context.device.advertisingId"
       ],
-      "ip_address": ["context.ip", "request_ip"],
-      "user_agent": ["context.userAgent", "context.user_agent"]
+      "destKey": "android_advertising_id"
+    },
+    {
+      "sourceKeys": ["context.ip", "request_ip"],
+      "destKey": "ip_address"
+    },
+    {
+      "sourceKeys": ["context.userAgent", "context.user_agent"],
+      "destKey": "user_agent"
     }
-  },
+  ],
+  "topLevelMappings": [
+    {
+      "sourceKeys": ["properties.action_source", "properties.actionSource"],
+      "destKey": "action_source"
+    },
+    {
+      "sourceKeys": ["properties.source_url", "properties.sourceUrl", "context.page.url"],
+      "destKey": "source_url"
+    },
+    {
+      "sourceKeys": "properties.oppref",
+      "destKey": "oppref"
+    },
+    {
+      "sourceKeys": ["properties.optOut", "properties.opt_out"],
+      "destKey": "opt_out"
+    }
+  ],
+  "contentMappings": [
+    {
+      "sourceKeys": ["id", "content_id", "contentId", "item_id", "itemId", "product_id", "productId", "sku"],
+      "destKey": "id",
+      "metadata": { "type": "toString" }
+    },
+    {
+      "sourceKeys": ["name", "title", "product_name", "productName"],
+      "destKey": "name",
+      "metadata": { "type": "toString" }
+    },
+    {
+      "sourceKeys": ["content_type", "contentType", "type", "category", "product_category"],
+      "destKey": "content_type",
+      "metadata": { "type": "toString" }
+    },
+    {
+      "sourceKeys": ["group_id", "groupId"],
+      "destKey": "group_id",
+      "metadata": { "type": "toString" }
+    },
+    {
+      "sourceKeys": ["variant_dict", "variantDict"],
+      "destKey": "variant_dict"
+    }
+  ],
   "clickIdPaths": [
     "properties.click_id",
     "properties.clickId",
@@ -95,22 +144,11 @@
     "traits.click_id",
     "traits.clickId"
   ],
-  "actionSourcePaths": ["properties.action_source", "properties.actionSource"],
-  "sourceUrlPaths": ["properties.source_url", "properties.sourceUrl", "context.page.url"],
-  "opprefPaths": ["properties.oppref"],
-  "currencyPaths": ["properties.currency"],
+  "currencyPaths": "properties.currency",
   "amountPaths": ["properties.amount", "properties.value", "properties.revenue"],
   "contentSourcePaths": ["properties.contents", "properties.products"],
-  "optOutPaths": ["properties.optOut", "properties.opt_out"],
-  "customReservedKeys": ["apiKey", "pixelId", "rudderAccountId"],
-  "contentFields": {
-    "id": ["id", "content_id", "contentId", "item_id", "itemId", "product_id", "productId", "sku"],
-    "name": ["name", "title", "product_name", "productName"],
-    "content_type": ["content_type", "contentType", "type", "category", "product_category"],
-    "group_id": ["group_id", "groupId"],
-    "variant_dict": ["variant_dict", "variantDict"],
-    "quantity": ["quantity", "count"],
-    "amount": ["amount", "value", "price"],
-    "currency": ["currency", "currency_code", "currencyCode"]
-  }
+  "contentQuantityPaths": ["quantity", "count"],
+  "contentAmountPaths": ["amount", "value", "price"],
+  "contentCurrencyPaths": ["currency", "currency_code", "currencyCode"],
+  "customReservedKeys": ["apiKey", "pixelId", "rudderAccountId"]
 }

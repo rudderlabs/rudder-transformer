@@ -12,6 +12,9 @@ const eventBase = (ctx: RunContext, suffix: string) => ({
 export const live: LiveSpec = {
   enabled: true,
   authType: 'apiKey',
+  envOverrides: {
+    OPENAI_ADS_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+  },
   resolveConfig: (s) => ({
     eventMapping: [
       { from: 'Live Order Created', to: 'order_created' },

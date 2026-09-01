@@ -1,12 +1,6 @@
 import { Destination, Metadata } from '../../../../src/types';
 
 export const endpoint = 'https://bzr.openai.com/v1/events';
-export const deliveryAccount = {
-  id: 'openai-account-1',
-  options: { pixelId: 'pixel-123' },
-  secret: { apiKey: 'test-api-key' },
-  accountDefinitionName: 'DESTINATION_OPENAI_ADS_API_KEY',
-};
 
 export const destination: Destination = {
   ID: 'openai-ads-dest-1',
@@ -29,7 +23,6 @@ export const destination: Destination = {
     defaultCurrency: 'USD',
     defaultActionSource: 'offline',
   },
-  deliveryAccount,
   Enabled: true,
   WorkspaceID: 'ws-1',
   Transformations: [],

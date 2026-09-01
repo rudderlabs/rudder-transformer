@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import sha256 from 'sha256';
 import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
 import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchDestinationConstructor } from '../../../services/destination/nativeBatching/batchDestination';
@@ -7,17 +7,10 @@ import type {
   RouterTransformationRequestData,
   RouterTransformationResponse,
 } from '../../../types/destinationTransformation';
-import type { OpenAIAdsDestination, OpenAIAdsEventPayload } from './types';
+import type { Destination } from '../../../types';
+import type { OpenAIAdsEventPayload } from './types';
 import { Integration } from './routerTransform';
-
-const sha256 = (value: string) => crypto.createHash('sha256').update(value).digest('hex');
-const deliveryAccount = {
-  id: 'acct-1',
-  options: { pixelId: 'pixel-123' },
-  secret: { apiKey: 'test-api-key' },
-  accountDefinitionName: 'DESTINATION_OPENAI_ADS_API_KEY',
-};
-const destination: OpenAIAdsDestination = {
+const destination: Destination = {
   ID: 'openai-ads-dest-1',
   Config: {
     apiKey: 'test-api-key',
@@ -31,7 +24,6 @@ const destination: OpenAIAdsDestination = {
     defaultCurrency: 'USD',
     defaultActionSource: 'offline',
   },
-  deliveryAccount,
   DestinationDefinition: {
     ID: 'openai-ads-def-1',
     Name: 'OPENAI_ADS',
@@ -46,7 +38,7 @@ const destination: OpenAIAdsDestination = {
 const makeInput = (
   jobId: number,
   event = 'Product Viewed',
-  destinationOverride: OpenAIAdsDestination = destination,
+  destinationOverride = destination,
   properties: Record<string, unknown> = {},
 ): RouterTransformationRequestData => ({
   message: {
@@ -85,7 +77,7 @@ const payload = (
 ): OpenAIAdsEventPayload => ({ id, type, timestamp_ms: Number(id), data: { type: dataType } });
 const transform = (
   input: RouterTransformationRequestData = makeInput(1),
-  integration = new Integration(input.destination as OpenAIAdsDestination),
+  integration = new Integration(input.destination),
 ) =>
   integration.transformEvent(
     input as unknown as Parameters<InstanceType<typeof Integration>['transformEvent']>[0],
@@ -104,7 +96,6 @@ describe('OpenAIAdsIntegration', () => {
       headers: { Authorization: 'Bearer test-api-key', 'Content-Type': 'application/json' },
       params: { pid: 'pixel-123' },
       body: expect.objectContaining({ id: 'msg-1', type: 'contents_viewed' }),
-      internalGroupKey: 'click_id_absent',
     });
   });
 
@@ -125,10 +116,9 @@ describe('OpenAIAdsIntegration', () => {
             phone: '001 (555) 123-4567',
             firstName: 'Jöhn!',
             lastName: "O'Connor",
-            dateOfBirth: '1990-01-02',
             city: 'New York',
-            state: 'NY',
-            zip: '12345',
+            region: 'NY',
+            postalCode: '12345',
             country: 'US',
             obref: 'obref-value',
           },
@@ -138,8 +128,18 @@ describe('OpenAIAdsIntegration', () => {
           amount: '12.50',
           currency: 'EUR',
           action_source: 'web',
+          optOut: true,
           oppref: 'property-oppref',
-          products: [{ product_id: 'sku-1', name: 'Sample Product', price: '10.25', quantity: 2 }],
+          products: [
+            {
+              product_id: 'sku-1',
+              name: 'Sample Product',
+              groupId: 'bundle-1',
+              variantDict: { color: 'red' },
+              price: '10.25',
+              quantity: 2,
+            },
+          ],
         },
       },
     } as RouterTransformationRequestData).body;
@@ -148,6 +148,7 @@ describe('OpenAIAdsIntegration', () => {
       id: 'msg-1',
       type: 'contents_viewed',
       timestamp_ms: 1704067200000,
+      opt_out: true,
       action_source: 'web',
       source_url: 'https://example.com/path',
       oppref: 'property-oppref',
@@ -158,7 +159,6 @@ describe('OpenAIAdsIntegration', () => {
         external_ids_sha256: [sha256('user-1')],
         first_names_sha256: [sha256('jöhn')],
         last_names_sha256: [sha256('oconnor')],
-        date_of_births: ['1990-01-02'],
         regions: ['NY'],
         postal_codes: ['12345'],
         cities: ['New York'],
@@ -171,7 +171,15 @@ describe('OpenAIAdsIntegration', () => {
         currency: 'EUR',
         amount: 1250,
         contents: [
-          { id: 'sku-1', name: 'Sample Product', quantity: 2, amount: 1025, currency: 'EUR' },
+          {
+            id: 'sku-1',
+            name: 'Sample Product',
+            group_id: 'bundle-1',
+            variant_dict: { color: 'red' },
+            quantity: 2,
+            amount: 1025,
+            currency: 'EUR',
+          },
         ],
       },
     });
@@ -220,19 +228,21 @@ describe('OpenAIAdsIntegration', () => {
       transform(
         makeInput(1, 'order_created', {
           ...destination,
-          Config: { pixelId: 'pixel-123', defaultActionSource: 'offline' },
-          deliveryAccount,
+          Config: {
+            apiKey: 'test-api-key',
+            pixelId: 'pixel-123',
+            defaultActionSource: 'offline',
+          },
         }),
       ),
     ).toThrow('OpenAI Ads event mapping not found for order_created');
   });
 
-  it('falls back to destination.Config credentials when no delivery account is present', () => {
+  it('uses destination.Config credentials', () => {
     const transformed = transform(
       makeInput(1, 'Product Viewed', {
         ...destination,
         Config: { ...destination.Config, apiKey: 'config-key', pixelId: 'config-pixel' },
-        deliveryAccount: null,
       }),
     );
 
@@ -270,7 +280,7 @@ describe('OpenAIAdsIntegration', () => {
     });
   });
 
-  it('batches events by request-level endpoint, auth, pixel id, and click_id presence', async () => {
+  it('batches events by request-level endpoint, auth, and pixel id', async () => {
     const results = await processBatchedDestination(
       [
         makeInput(1),
@@ -280,15 +290,9 @@ describe('OpenAIAdsIntegration', () => {
       Integration as BatchDestinationConstructor,
       {},
     );
-    expect(results).toHaveLength(2);
-    expect(results.map((result) => result.metadata.map((metadata) => metadata.jobId))).toEqual([
-      [1, 3],
-      [2],
-    ]);
-    expect(results.map(eventTypes)).toEqual([
-      ['contents_viewed', 'contents_viewed'],
-      ['lead_created'],
-    ]);
+    expect(results).toHaveLength(1);
+    expect(results[0].metadata.map((metadata) => metadata.jobId)).toEqual([1, 2, 3]);
+    expect(eventTypes(results[0])).toEqual(['contents_viewed', 'lead_created', 'contents_viewed']);
   });
 
   it('splits batches by the fixed maxBatchSize', async () => {
@@ -341,10 +345,10 @@ describe('OpenAIAdsIntegration', () => {
         {
           ...destination,
           Config: {
+            apiKey: 'test-api-key',
             pixelId: 'pixel-123',
             eventMapping: [{ from: 'Product Viewed', to: 'contents_viewed' }],
           },
-          deliveryAccount,
         },
         { amount: 12, currency: undefined },
       ),
@@ -370,13 +374,12 @@ describe('OpenAIAdsIntegration', () => {
           properties: { source_url: 'https://example.com/item' },
         },
       },
-      error: 'already be SHA-256 hashed',
+      error: 'already be hashed',
     },
     {
       input: makeInput(1, 'Product Viewed', {
         ...destination,
         Config: { ...destination.Config, apiKey: undefined },
-        deliveryAccount: { ...deliveryAccount, secret: {} },
       }),
       error: 'apiKey is required',
     },

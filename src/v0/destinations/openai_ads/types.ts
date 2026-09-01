@@ -1,15 +1,12 @@
 import { z } from 'zod';
-import type {
-  Account,
-  Destination,
-  Metadata,
-  ProcessorTransformationRequest,
-  RudderMessage,
-  RouterTransformationRequestData,
-} from '../../../types';
-import { ACTION_SOURCES, HASHED_MATCH_FIELDS, STANDARD_EVENTS } from './config';
+import {
+  ACTION_SOURCES,
+  HASHED_MATCH_FIELDS,
+  STANDARD_EVENTS,
+  STANDARD_EVENT_DATA_TYPES,
+} from './config';
 
-export const OpenAIAdsEventMappingSchema = z
+const OpenAIAdsEventMappingSchema = z
   .object({
     from: z.string().min(1),
     to: z.union([z.enum(STANDARD_EVENTS), z.literal('custom')]),
@@ -19,7 +16,7 @@ export const OpenAIAdsEventMappingSchema = z
   .passthrough();
 export const OpenAIAdsDestinationConfigSchema = z
   .object({
-    apiKey: z.string().optional(),
+    apiKey: z.string(),
     pixelId: z.string(),
     defaultCurrency: z.string().optional(),
     defaultActionSource: z.enum(ACTION_SOURCES).optional(),
@@ -33,40 +30,27 @@ export const OpenAIAdsMessageSchema = z
     }),
   })
   .passthrough();
-export type OpenAIAdsStandardEvent = (typeof STANDARD_EVENTS)[number];
+export type OpenAIAdsStandardEvent = keyof typeof STANDARD_EVENT_DATA_TYPES;
 export type OpenAIAdsActionSource = (typeof ACTION_SOURCES)[number];
 export type OpenAIAdsEventMapping = z.infer<typeof OpenAIAdsEventMappingSchema>;
 export type OpenAIAdsDestinationConfig = z.infer<typeof OpenAIAdsDestinationConfigSchema>;
-export type OpenAIAdsAccount = Account<{ pixelId?: string }, { apiKey?: string }>;
-export type OpenAIAdsDestination = Destination<OpenAIAdsDestinationConfig, OpenAIAdsAccount | null>;
-export type OpenAIAdsProcessorRequest = ProcessorTransformationRequest<
-  RudderMessage,
-  Metadata,
-  OpenAIAdsDestination
->;
-export type OpenAIAdsRouterRequest = RouterTransformationRequestData<
-  RudderMessage,
-  OpenAIAdsDestination,
-  undefined,
-  Metadata
->;
 export type HashMatchField = (typeof HASHED_MATCH_FIELDS)[number];
 export type PlainMatchField =
-  | 'date_of_births'
   | 'regions'
   | 'postal_codes'
   | 'cities'
-  | 'countries';
-export type OpenAIAdsUser = Partial<Record<HashMatchField | PlainMatchField, string[]>> & {
-  obref?: string;
-  android_advertising_id?: string;
-  ip_address?: string;
-  user_agent?: string;
-};
+  | 'countries'
+  | 'obref'
+  | 'android_advertising_id'
+  | 'ip_address'
+  | 'user_agent';
+export type OpenAIAdsUser = Partial<Record<HashMatchField | PlainMatchField, string | string[]>>;
 export type OpenAIAdsContent = {
   id?: string;
   name?: string;
   content_type?: string;
+  group_id?: string;
+  variant_dict?: Record<string, unknown>;
   quantity?: number;
   amount?: number;
   currency?: string;
@@ -83,10 +67,10 @@ export type OpenAIAdsEventPayload = {
   type: OpenAIAdsStandardEvent | 'custom';
   custom_event_name?: string;
   timestamp_ms: number;
+  opt_out?: boolean;
   action_source?: OpenAIAdsActionSource;
   source_url?: string;
   oppref?: string;
   user?: OpenAIAdsUser;
   data: OpenAIAdsEventData;
 };
-export type OpenAIAdsRequestBody = { events: OpenAIAdsEventPayload[] };

@@ -13,10 +13,9 @@ import { openAIAdsDelivery } from './delivery';
 import {
   OpenAIAdsDestinationConfigSchema,
   OpenAIAdsMessageSchema,
-  type OpenAIAdsDestination,
   type OpenAIAdsEventPayload,
 } from './types';
-import { buildOpenAIEvent, getClickIdPresenceGroup, resolveAccountConfig } from './utils';
+import { buildOpenAIEvent, resolveAccountConfig } from './utils';
 
 const openAIAdsInputSchema = makeRouterInputSchema({
   destinationConfig: OpenAIAdsDestinationConfigSchema,
@@ -35,16 +34,14 @@ class OpenAIAdsIntegration extends BatchDestination<
     if (!['track', 'page', 'screen'].includes(input.message?.type)) {
       throw new InstrumentationError(`Event type ${input.message?.type} is not supported`);
     }
-    const destination = this.destination as OpenAIAdsDestination;
-    const { apiKey, pixelId } = resolveAccountConfig(destination);
+    const { apiKey, pixelId } = resolveAccountConfig(this.destination.Config);
     return {
-      body: buildOpenAIEvent(input.message, destination.Config),
+      body: buildOpenAIEvent(input.message, this.destination.Config),
       endpoint: ENDPOINT,
       endpointPath: ENDPOINT_PATH,
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': JSON_MIME_TYPE },
       params: { pid: pixelId },
-      internalGroupKey: getClickIdPresenceGroup(input.message),
     };
   }
 

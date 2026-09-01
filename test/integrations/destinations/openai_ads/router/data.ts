@@ -1,8 +1,7 @@
-import crypto from 'crypto';
+import sha256 from 'sha256';
 import { RouterTestData } from '../../../testTypes';
 import { destination, endpoint, metadata } from '../common';
 
-const sha256 = (value: string) => crypto.createHash('sha256').update(value).digest('hex');
 const batchedRequest = {
   version: '1',
   type: 'REST',
@@ -126,10 +125,9 @@ export const data: RouterTestData[] = [
                     phone: '001 (555) 123-4567',
                     firstName: 'Jöhn!',
                     lastName: "O'Connor",
-                    dateOfBirth: '1990-01-02',
                     city: 'New York',
-                    state: 'NY',
-                    zip: '12345',
+                    region: 'NY',
+                    postalCode: '12345',
                     country: 'US',
                     obref: 'obref-value',
                   },
@@ -139,9 +137,17 @@ export const data: RouterTestData[] = [
                   amount: '12.50',
                   currency: 'EUR',
                   action_source: 'web',
+                  opt_out: true,
                   oppref: 'property-oppref',
                   products: [
-                    { product_id: 'sku-1', name: 'Sample Product', price: '10.25', quantity: 2 },
+                    {
+                      product_id: 'sku-1',
+                      name: 'Sample Product',
+                      group_id: 'bundle-1',
+                      variant_dict: { color: 'red' },
+                      price: '10.25',
+                      quantity: 2,
+                    },
                   ],
                 },
               },
@@ -169,6 +175,7 @@ export const data: RouterTestData[] = [
                         id: 'msg-4',
                         type: 'contents_viewed',
                         timestamp_ms: 1704067200000,
+                        opt_out: true,
                         action_source: 'web',
                         source_url: 'https://example.com/path',
                         oppref: 'property-oppref',
@@ -179,7 +186,6 @@ export const data: RouterTestData[] = [
                           external_ids_sha256: [sha256('user-4')],
                           first_names_sha256: [sha256('jöhn')],
                           last_names_sha256: [sha256('oconnor')],
-                          date_of_births: ['1990-01-02'],
                           regions: ['NY'],
                           postal_codes: ['12345'],
                           cities: ['New York'],
@@ -195,6 +201,8 @@ export const data: RouterTestData[] = [
                             {
                               id: 'sku-1',
                               name: 'Sample Product',
+                              group_id: 'bundle-1',
+                              variant_dict: { color: 'red' },
                               quantity: 2,
                               amount: 1025,
                               currency: 'EUR',

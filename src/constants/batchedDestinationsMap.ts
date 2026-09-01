@@ -1,13 +1,8 @@
-import {
-  getBatchingFrameworkDeliveryGaDestinations,
-  getBatchingFrameworkGaDestinations,
-} from '../features';
+import { getBatchingFrameworkGaDestinations } from '../features';
 
 // Destinations that have completed GA for the batching framework.
 // Once a destination is added here, it always uses the new path regardless of env var.
 export const batchedDestinationsMap: Record<string, true> = getBatchingFrameworkGaDestinations();
-export const batchingFrameworkDeliveryDestinationsMap: Record<string, true> =
-  getBatchingFrameworkDeliveryGaDestinations();
 
 // Per-destination env var: {DEST}_{FEATURE}_ENABLED_WORKSPACE_IDS
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces
@@ -55,9 +50,8 @@ export const isBatchingFrameworkEnabled = (destType: string, workspaceId: string
  * Whether the batching framework also owns *delivery* (response handling) for this destination and
  * workspace, rather than the destination's own networkHandler.
  *
- * Destinations in the GA delivery map use framework delivery everywhere. Other destinations can
- * use the per-destination env var for workspace-level rollout:
- * {DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS.
+ * Per-destination env var: {DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS.
+ * Values: comma-separated workspace IDs, or 'ALL'. Unset or empty -> the legacy networkHandler.
  *
  * Two deliberate properties:
  *
@@ -73,9 +67,6 @@ export const isBatchingFrameworkDeliveryEnabled = (
 ): boolean => {
   if (!isBatchingFrameworkEnabled(destType, workspaceId)) {
     return false;
-  }
-  if (batchingFrameworkDeliveryDestinationsMap[destType.toUpperCase()]) {
-    return true;
   }
   return matchesWorkspace(
     getEnabledWorkspaceIds(destType, 'BATCHING_FRAMEWORK_DELIVERY'),

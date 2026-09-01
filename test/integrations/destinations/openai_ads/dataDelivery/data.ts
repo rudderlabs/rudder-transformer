@@ -15,6 +15,16 @@ const statTags = {
   destinationId: 'openai-ads-dest-1',
   workspaceId: 'ws-1',
 };
+const partialBatchValidationMessage =
+  'Invalid event at events[1]. See errors for details. ' +
+  '(code: invalid_event, param: events[1]) | ' +
+  'events[1].data.type must be a supported data type. ' +
+  '(code: missing_event_data_type, param: events[1].data.type)';
+const staleTimestampMessage =
+  'event_timestamp_ms must be within the last 7 days. ' +
+  '(code: event_timestamp_too_old, param: events[0].timestamp_ms) | ' +
+  'event_timestamp_ms must be within the last 7 days. ' +
+  '(code: event_timestamp_too_old, param: events[0].timestamp_ms)';
 const proxyMetadata = (jobId: number, dontBatch = false): ProxyMetdata => {
   const base = metadata(jobId) as Record<string, unknown>;
   return {
@@ -26,7 +36,7 @@ const proxyMetadata = (jobId: number, dontBatch = false): ProxyMetdata => {
   } as unknown as ProxyMetdata;
 };
 
-export const data: ProxyV1TestData[] = [
+const scenarios: ProxyV1TestData[] = [
   {
     id: 'openai-ads-delivery-partial-batch-validation-failure',
     name: 'openai_ads',
@@ -59,15 +69,15 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: '[OPENAI_ADS] Invalid event at events[1]. See errors for details.',
+            message: `[OPENAI_ADS] ${partialBatchValidationMessage}`,
             response: [
               {
-                error: 'Invalid event at events[1]. See errors for details.',
+                error: partialBatchValidationMessage,
                 metadata: proxyMetadata(1, true),
                 statusCode: 500,
               },
               {
-                error: 'Invalid event at events[1]. See errors for details.',
+                error: partialBatchValidationMessage,
                 metadata: proxyMetadata(2, true),
                 statusCode: 500,
               },
@@ -110,10 +120,10 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 422,
-            message: '[OPENAI_ADS] event_timestamp_ms must be within the last 7 days.',
+            message: `[OPENAI_ADS] ${staleTimestampMessage}`,
             response: [
               {
-                error: 'event_timestamp_ms must be within the last 7 days.',
+                error: staleTimestampMessage,
                 metadata: proxyMetadata(3),
                 statusCode: 400,
               },
@@ -125,3 +135,11 @@ export const data: ProxyV1TestData[] = [
     },
   },
 ];
+
+export const data = scenarios.map((scenario) => ({
+  ...scenario,
+  envOverrides: {
+    ...scenario.envOverrides,
+    OPENAI_ADS_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
+  },
+}));

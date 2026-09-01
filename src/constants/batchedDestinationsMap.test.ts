@@ -36,12 +36,6 @@ describe('isBatchingFrameworkDeliveryEnabled', () => {
     expect(isBatchingFrameworkDeliveryEnabled('iterable_audience', 'ws-1')).toBe(false);
   });
 
-  it('enables delivery unconditionally for destinations in the delivery GA map', () => {
-    const { isBatchingFrameworkEnabled, isBatchingFrameworkDeliveryEnabled } = load();
-    expect(isBatchingFrameworkEnabled('openai_ads', 'ws-1')).toBe(true);
-    expect(isBatchingFrameworkDeliveryEnabled('openai_ads', 'ws-1')).toBe(true);
-  });
-
   it('enables delivery for a named workspace once the delivery flag is set', () => {
     process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = 'ws-1';
     const { isBatchingFrameworkDeliveryEnabled } = load();

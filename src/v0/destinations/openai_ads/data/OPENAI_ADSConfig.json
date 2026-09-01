@@ -1,21 +1,4 @@
 {
-  "eventDataTypes": {
-    "contents": [
-      "checkout_started",
-      "contents_viewed",
-      "items_added",
-      "order_created",
-      "page_viewed"
-    ],
-    "customer_action": [
-      "app_installed",
-      "app_opened",
-      "appointment_scheduled",
-      "lead_created",
-      "registration_completed"
-    ],
-    "plan_enrollment": ["subscription_created", "trial_started"]
-  },
   "userFields": {
     "hashed": {
       "emails_sha256": [
@@ -67,29 +50,11 @@
       ]
     },
     "rawArrays": {
-      "date_of_births": [
-        "traits.dateOfBirths",
-        "context.traits.dateOfBirths",
-        "traits.date_of_births",
-        "context.traits.date_of_births",
-        "traits.dateOfBirth",
-        "context.traits.dateOfBirth",
-        "traits.date_of_birth",
-        "context.traits.date_of_birth",
-        "traits.dobs",
-        "context.traits.dobs",
-        "traits.dob",
-        "context.traits.dob"
-      ],
       "regions": [
         "traits.regions",
         "context.traits.regions",
         "traits.region",
-        "context.traits.region",
-        "traits.states",
-        "context.traits.states",
-        "traits.state",
-        "context.traits.state"
+        "context.traits.region"
       ],
       "postal_codes": [
         "traits.postalCodes",
@@ -99,22 +64,14 @@
         "traits.postalCode",
         "context.traits.postalCode",
         "traits.postal_code",
-        "context.traits.postal_code",
-        "traits.zips",
-        "context.traits.zips",
-        "traits.zip",
-        "context.traits.zip"
+        "context.traits.postal_code"
       ],
       "cities": ["traits.cities", "context.traits.cities", "traits.city", "context.traits.city"],
       "countries": [
         "traits.countries",
         "context.traits.countries",
         "traits.country",
-        "context.traits.country",
-        "traits.countryCodes",
-        "context.traits.countryCodes",
-        "traits.countryCode",
-        "context.traits.countryCode"
+        "context.traits.country"
       ]
     },
     "scalars": {
@@ -141,10 +98,63 @@
   "currencyPaths": ["properties.currency"],
   "amountPaths": ["properties.amount", "properties.value", "properties.revenue"],
   "contentSourcePaths": ["properties.contents", "properties.products"],
+  "optOutPaths": ["properties.optOut", "properties.opt_out"],
+  "customReservedKeys": [
+    "action_source",
+    "actionSource",
+    "source_url",
+    "sourceUrl",
+    "url",
+    "oppref",
+    "obref",
+    "optOut",
+    "opt_out",
+    "email",
+    "emails",
+    "phone",
+    "phones",
+    "phoneNumber",
+    "phoneNumbers",
+    "phone_number",
+    "phone_numbers",
+    "firstName",
+    "firstNames",
+    "first_name",
+    "first_names",
+    "lastName",
+    "lastNames",
+    "last_name",
+    "last_names",
+    "dateOfBirth",
+    "dateOfBirths",
+    "date_of_birth",
+    "date_of_births",
+    "dob",
+    "dobs",
+    "birthday",
+    "birthdays",
+    "externalId",
+    "externalIds",
+    "external_id",
+    "external_ids",
+    "state",
+    "states",
+    "zip",
+    "zips",
+    "zipCode",
+    "zipCodes",
+    "countryCode",
+    "countryCodes",
+    "apiKey",
+    "pixelId",
+    "rudderAccountId"
+  ],
   "contentFields": {
     "id": ["id", "content_id", "contentId", "item_id", "itemId", "product_id", "productId", "sku"],
     "name": ["name", "title", "product_name", "productName"],
     "content_type": ["content_type", "contentType", "type", "category", "product_category"],
+    "group_id": ["group_id", "groupId"],
+    "variant_dict": ["variant_dict", "variantDict"],
     "quantity": ["quantity", "count"],
     "amount": ["amount", "value", "price"],
     "currency": ["currency", "currency_code", "currencyCode"]

@@ -559,9 +559,6 @@ describe('EventTesterService.runDestTransform', () => {
   });
 
   it('delegates to NativeIntegrationDestinationService.doRouterTransformation', async () => {
-    jest
-      .spyOn(FetchHandler, 'getDestHandler')
-      .mockReturnValue({ processRouterDest: jest.fn(), process: jest.fn() });
     const doRouterSpy = jest
       .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
       .mockResolvedValue([
@@ -582,20 +579,20 @@ describe('EventTesterService.runDestTransform', () => {
         }),
       ],
       'v0',
-      '__event_tester_router__',
+      'custom_audience',
     );
 
     expect(doRouterSpy).toHaveBeenCalledTimes(1);
     expect(doRouterSpy).toHaveBeenCalledWith(
       [expect.objectContaining({ metadata: expect.objectContaining({ workspaceId: 'ws-1' }) })],
-      '__event_tester_router__',
+      'custom_audience',
       'v0',
       {},
     );
     expect(result).toEqual([{ dest_transformed_payload: [sampleOutput] }]);
   });
 
-  it('falls back through processor transform for destinations without processRouterDest', async () => {
+  it('falls back through processor transform for destinations without routerTransform capability', async () => {
     const process = jest.fn().mockResolvedValue(sampleOutput);
     jest.spyOn(FetchHandler, 'getDestHandler').mockReturnValue({ process });
     const doRouterSpy = jest.spyOn(

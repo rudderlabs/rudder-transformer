@@ -1,7 +1,6 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 import { FixMe } from '../../types';
-import { isBatchingFrameworkEnabled } from '../../constants/batchedDestinationsMap';
-import { FetchHandler } from '../../helpers/fetchHandlers';
+import { isDestinationRouterTransformEnabled } from '../../features';
 import { NativeIntegrationDestinationService } from '../destination/nativeIntegration';
 import type { Destination, Connection } from '../../types/controlPlaneConfig';
 import type { Metadata, RudderMessage } from '../../types/rudderEvents';
@@ -69,10 +68,7 @@ export class EventTesterService {
     }));
 
     const service = new NativeIntegrationDestinationService();
-    const useRouterTransform =
-      isBatchingFrameworkEnabled(dest, workspaceId) ||
-      typeof FetchHandler.getDestHandler(dest, version)?.processRouterDest === 'function';
-    const responses = useRouterTransform
+    const responses = isDestinationRouterTransformEnabled(dest)
       ? await service.doRouterTransformation(inputs, dest, version, {})
       : await service.doProcessorTransformation(
           inputs as ProcessorTransformationRequest[],

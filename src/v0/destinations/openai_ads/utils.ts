@@ -160,12 +160,16 @@ const hashUserPayload = (
     values.forEach((rawValue, index) => {
       const recordKey = values.length === 1 ? field : `${field}.${index}`;
       record[recordKey] = rawValue;
-      if (recordKey !== field) fieldConfigs[recordKey] = HASH_FIELD_CONFIGS[field as HashMatchField];
+      if (recordKey !== field)
+        fieldConfigs[recordKey] = HASH_FIELD_CONFIGS[field as HashMatchField];
       fieldByRecordKey[recordKey] = field as HashMatchField;
     });
   });
 
-  const processed = processAudienceRecord(record, { fieldConfigs, destination: audienceDestination });
+  const processed = processAudienceRecord(record, {
+    fieldConfigs,
+    destination: audienceDestination,
+  });
   return Object.entries(processed).reduce<Partial<Record<HashMatchField, string[]>>>(
     (acc, [recordKey, value]) => {
       const field = fieldByRecordKey[recordKey];
@@ -371,8 +375,9 @@ const mapContentItem = (
   const amountValue = getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentAmountPaths);
   if (amountValue !== undefined && amountValue !== null) {
     const itemCurrency =
-      normalizeCurrency(getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentCurrencyPaths)) ??
-      resolveCurrency(message, config);
+      normalizeCurrency(
+        getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentCurrencyPaths),
+      ) ?? resolveCurrency(message, config);
     if (!itemCurrency) {
       throw new InstrumentationError(
         'OpenAI Ads content currency is required when amount is present',

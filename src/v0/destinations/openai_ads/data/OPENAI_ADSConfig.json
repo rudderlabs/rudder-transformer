@@ -112,7 +112,16 @@
   ],
   "contentMappings": [
     {
-      "sourceKeys": ["id", "content_id", "contentId", "item_id", "itemId", "product_id", "productId", "sku"],
+      "sourceKeys": [
+        "id",
+        "content_id",
+        "contentId",
+        "item_id",
+        "itemId",
+        "product_id",
+        "productId",
+        "sku"
+      ],
       "destKey": "id",
       "metadata": { "type": "toString" }
     },

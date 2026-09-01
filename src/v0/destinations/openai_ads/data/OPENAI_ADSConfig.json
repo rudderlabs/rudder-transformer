@@ -1,14 +1,29 @@
 {
   "hashedUserMappings": [
     {
-      "sourceKeys": "email",
-      "destKey": "emails_sha256",
-      "sourceFromGenericMap": true
+      "sourceKeys": [
+        "traits.emails",
+        "context.traits.emails",
+        "traits.email",
+        "context.traits.email",
+        "properties.email",
+        "context.externalId.0.id"
+      ],
+      "destKey": "emails_sha256"
     },
     {
-      "sourceKeys": "phone",
-      "destKey": "phone_numbers_sha256",
-      "sourceFromGenericMap": true
+      "sourceKeys": [
+        "traits.phoneNumbers",
+        "context.traits.phoneNumbers",
+        "traits.phone_numbers",
+        "context.traits.phone_numbers",
+        "traits.phones",
+        "context.traits.phones",
+        "traits.phone",
+        "context.traits.phone",
+        "properties.phone"
+      ],
+      "destKey": "phone_numbers_sha256"
     },
     {
       "sourceKeys": [
@@ -25,21 +40,45 @@
       "destKey": "external_ids_sha256"
     },
     {
-      "sourceKeys": "firstName",
-      "destKey": "first_names_sha256",
-      "sourceFromGenericMap": true
+      "sourceKeys": [
+        "traits.firstNames",
+        "context.traits.firstNames",
+        "traits.first_names",
+        "context.traits.first_names",
+        "traits.firstName",
+        "traits.firstname",
+        "traits.first_name",
+        "context.traits.firstName",
+        "context.traits.firstname",
+        "context.traits.first_name"
+      ],
+      "destKey": "first_names_sha256"
     },
     {
-      "sourceKeys": "lastName",
-      "destKey": "last_names_sha256",
-      "sourceFromGenericMap": true
+      "sourceKeys": [
+        "traits.lastNames",
+        "context.traits.lastNames",
+        "traits.last_names",
+        "context.traits.last_names",
+        "traits.lastName",
+        "traits.lastname",
+        "traits.last_name",
+        "context.traits.lastName",
+        "context.traits.lastname",
+        "context.traits.last_name"
+      ],
+      "destKey": "last_names_sha256"
     }
   ],
   "plainArrayUserMappings": [
     {
-      "sourceKeys": "region",
-      "destKey": "regions",
-      "sourceFromGenericMap": true
+      "sourceKeys": [
+        "traits.regions",
+        "context.traits.regions",
+        "traits.region",
+        "context.traits.region"
+      ],
+      "destKey": "regions"
     },
     {
       "sourceKeys": [
@@ -56,6 +95,8 @@
     },
     {
       "sourceKeys": [
+        "traits.cities",
+        "context.traits.cities",
         "traits.address.city",
         "context.traits.address.city",
         "traits.city",
@@ -64,9 +105,13 @@
       "destKey": "cities"
     },
     {
-      "sourceKeys": "country",
-      "destKey": "countries",
-      "sourceFromGenericMap": true
+      "sourceKeys": [
+        "traits.countries",
+        "context.traits.countries",
+        "traits.country",
+        "context.traits.country"
+      ],
+      "destKey": "countries"
     }
   ],
   "plainScalarUserMappings": [
@@ -151,19 +196,10 @@
       "destKey": "variant_dict"
     }
   ],
-  "clickIdPaths": [
-    "properties.click_id",
-    "properties.clickId",
-    "context.traits.click_id",
-    "context.traits.clickId",
-    "traits.click_id",
-    "traits.clickId"
-  ],
   "currencyPaths": "properties.currency",
   "amountPaths": ["properties.amount", "properties.value", "properties.revenue"],
   "contentSourcePaths": ["properties.contents", "properties.products"],
   "contentQuantityPaths": ["quantity", "count"],
   "contentAmountPaths": ["amount", "value", "price"],
-  "contentCurrencyPaths": ["currency", "currency_code", "currencyCode"],
-  "customReservedKeys": ["apiKey", "pixelId", "rudderAccountId"]
+  "contentCurrencyPaths": ["currency", "currency_code", "currencyCode"]
 }

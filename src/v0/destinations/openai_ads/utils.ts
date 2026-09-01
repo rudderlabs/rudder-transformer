@@ -46,14 +46,12 @@ type OpenAIAdsMappingConfig = {
   plainScalarUserMappings: MappingEntry[];
   topLevelMappings: MappingEntry[];
   contentMappings: MappingEntry[];
-  clickIdPaths: string[];
   currencyPaths: string | string[];
   amountPaths: string | string[];
   contentSourcePaths: string | string[];
   contentQuantityPaths: string | string[];
   contentAmountPaths: string | string[];
   contentCurrencyPaths: string | string[];
-  customReservedKeys: string[];
 };
 
 const OPENAI_ADS_MAPPING_CONFIG = mappingConfig as OpenAIAdsMappingConfig;
@@ -204,8 +202,7 @@ const isMappingEntry = (value: unknown): value is MappingEntry =>
   isRecord(value) && 'destKey' in value && 'sourceKeys' in value;
 
 const RESERVED_CUSTOM_KEYS = new Set<string>(
-  Object.entries(OPENAI_ADS_MAPPING_CONFIG).flatMap<string>(([key, value]): string[] => {
-    if (key === 'customReservedKeys' && Array.isArray(value)) return value as string[];
+  Object.values(OPENAI_ADS_MAPPING_CONFIG).flatMap<string>((value): string[] => {
     if (Array.isArray(value) && value.every(isMappingEntry)) return mappingPathLeafs(value);
     if (typeof value === 'string' || (Array.isArray(value) && value.every(isScalarValue))) {
       return configuredPathLeafs(value as string | string[]);
@@ -360,10 +357,11 @@ const resolveAmount = (message: RudderMessage): unknown =>
 
 const buildAmountAndCurrency = (
   amount: unknown,
-  currency: CurrencyMetadata | undefined,
+  resolveCurrencyMetadata: () => CurrencyMetadata | undefined,
   missingCurrencyMessage: string,
 ): { amount?: number; currency?: string } => {
   if (!isPresent(amount)) return {};
+  const currency = resolveCurrencyMetadata();
   if (!currency) throw new InstrumentationError(missingCurrencyMessage);
   return {
     amount: toMinorUnits(amount, currency),
@@ -391,14 +389,14 @@ const mapContentItem = (
   }
 
   const amountValue = getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentAmountPaths);
-  const itemCurrency =
-    normalizeCurrency(getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentCurrencyPaths)) ??
-    resolveCurrency(message, config);
   Object.assign(
     content,
     buildAmountAndCurrency(
       amountValue,
-      itemCurrency,
+      () =>
+        normalizeCurrency(
+          getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentCurrencyPaths),
+        ) ?? resolveCurrency(message, config),
       'OpenAI Ads content currency is required when amount is present',
     ),
   );
@@ -434,11 +432,12 @@ const buildEventData = (
 ): OpenAIAdsEventData => {
   const dataType = EVENT_DATA_TYPE_BY_EVENT[eventType];
   const data: OpenAIAdsEventData = { type: dataType };
+  const currency = resolveCurrency(message, config);
   Object.assign(
     data,
     buildAmountAndCurrency(
       resolveAmount(message),
-      resolveCurrency(message, config),
+      () => currency,
       'OpenAI Ads currency is required when amount is present',
     ),
   );

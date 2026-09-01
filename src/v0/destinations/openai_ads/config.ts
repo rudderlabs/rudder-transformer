@@ -5,9 +5,9 @@ export const ENDPOINT = `${BASE_URL}${ENDPOINT_PATH}`;
 export const MAX_BATCH_SIZE = 1000;
 export const MAX_PAYLOAD_SIZE = '4MB';
 export const CUSTOM_EVENT_SENTINEL = 'custom';
-export const CONTENTS_DATA_TYPE = 'contents';
+const CONTENTS_DATA_TYPE = 'contents';
 export const CUSTOMER_ACTION_DATA_TYPE = 'customer_action';
-export const PLAN_ENROLLMENT_DATA_TYPE = 'plan_enrollment';
+const PLAN_ENROLLMENT_DATA_TYPE = 'plan_enrollment';
 export const EVENT_DATA_TYPES = [
   CONTENTS_DATA_TYPE,
   CUSTOMER_ACTION_DATA_TYPE,

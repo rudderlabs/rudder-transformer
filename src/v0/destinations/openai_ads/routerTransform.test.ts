@@ -140,6 +140,10 @@ describe('OpenAIAdsIntegration', () => {
               price: '10.25',
               quantity: 2,
             },
+            {
+              product_id: 'sku-no-amount',
+              currency: 'US',
+            },
           ],
         },
       },
@@ -181,6 +185,9 @@ describe('OpenAIAdsIntegration', () => {
             amount: 1025,
             currency: 'EUR',
           },
+          {
+            id: 'sku-no-amount',
+          },
         ],
       },
     });
@@ -200,6 +207,7 @@ describe('OpenAIAdsIntegration', () => {
           source_url: 'https://example.com/custom',
           plan: 'pro',
           email: 'drop@example.com',
+          click_id: 'click-123',
         },
       },
     } as RouterTransformationRequestData).body;
@@ -207,7 +215,7 @@ describe('OpenAIAdsIntegration', () => {
       id: 'msg-custom',
       type: 'custom',
       custom_event_name: 'Trial Started',
-      data: { type: 'custom', amount: 100, currency: 'USD', plan: 'pro' },
+      data: { type: 'custom', amount: 100, currency: 'USD', plan: 'pro', click_id: 'click-123' },
     });
     expect(custom.data).not.toHaveProperty('email');
 

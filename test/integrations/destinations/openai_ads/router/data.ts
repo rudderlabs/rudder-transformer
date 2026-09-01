@@ -148,6 +148,10 @@ export const data: RouterTestData[] = [
                       price: '10.25',
                       quantity: 2,
                     },
+                    {
+                      product_id: 'sku-no-amount',
+                      currency: 'US',
+                    },
                   ],
                 },
               },
@@ -206,6 +210,9 @@ export const data: RouterTestData[] = [
                               quantity: 2,
                               amount: 1025,
                               currency: 'EUR',
+                            },
+                            {
+                              id: 'sku-no-amount',
                             },
                           ],
                         },

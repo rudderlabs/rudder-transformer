@@ -4,7 +4,7 @@ import validator from 'validator';
 import currencyCodes from 'currency-codes';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import type { RudderMessage } from '../../../types';
-import { constructPayload, getValueFromMessage } from '../../util';
+import { constructPayload, getValueFromMessage, removeUndefinedAndNullValues } from '../../util';
 import {
   HashingType,
   isValidPhoneNumber,
@@ -13,9 +13,8 @@ import {
 } from '../../util/audienceUtils';
 import {
   ACTION_SOURCES,
-  CONTENTS_DATA_TYPE,
+  CUSTOMER_ACTION_DATA_TYPE,
   CUSTOM_EVENT_SENTINEL,
-  PLAN_ENROLLMENT_DATA_TYPE,
   DESTINATION,
   STANDARD_EVENT_DATA_TYPES,
 } from './config';
@@ -36,9 +35,12 @@ import type {
 const ACTION_SOURCE_SET = new Set<string>(ACTION_SOURCES);
 const CURRENCY_RE = /^[A-Z]{3}$/;
 const PUNCTUATION_REGEX = /[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/g;
+const EVENT_DATA_TYPE_BY_EVENT = {
+  ...STANDARD_EVENT_DATA_TYPES,
+  [CUSTOM_EVENT_SENTINEL]: CUSTOM_EVENT_SENTINEL,
+} as const;
 
 type OpenAIAdsMappingConfig = {
-  eventMappings: MappingEntry[];
   hashedUserMappings: MappingEntry[];
   plainArrayUserMappings: MappingEntry[];
   plainScalarUserMappings: MappingEntry[];
@@ -72,6 +74,13 @@ type EventBasePayload = {
   opt_out?: unknown;
 };
 
+type CurrencyMetadata = {
+  code: string;
+  digits: number;
+};
+
+type UserPayload = Partial<Record<HashMatchField | PlainMatchField, unknown>>;
+
 const audienceDestination = {
   workspaceId: '',
   id: '',
@@ -93,9 +102,12 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const isScalarValue = (value: unknown): value is string | number | boolean =>
   ['string', 'number', 'boolean'].includes(typeof value);
 
+const isPresent = (value: unknown): boolean =>
+  value !== undefined && value !== null && value !== '';
+
 const toValueArray = (value: unknown): unknown[] => {
   if (Array.isArray(value)) return value;
-  if (value || value === false || value === 0) return [value];
+  if (isPresent(value)) return [value];
   return [];
 };
 
@@ -152,16 +164,14 @@ const hashUserPayload = (
   payload: Partial<Record<HashMatchField, unknown>>,
 ): Partial<Record<HashMatchField, string[]>> => {
   const record: Record<string, unknown> = {};
-  const fieldConfigs: Record<string, AudienceField> = { ...HASH_FIELD_CONFIGS };
+  const fieldConfigs: Record<string, AudienceField> = {};
   const fieldByRecordKey: Record<string, HashMatchField> = {};
 
   Object.entries(payload).forEach(([field, value]) => {
-    const values = toStringArray(value);
-    values.forEach((rawValue, index) => {
-      const recordKey = values.length === 1 ? field : `${field}.${index}`;
+    toStringArray(value).forEach((rawValue, index) => {
+      const recordKey = `${field}.${index}`;
       record[recordKey] = rawValue;
-      if (recordKey !== field)
-        fieldConfigs[recordKey] = HASH_FIELD_CONFIGS[field as HashMatchField];
+      fieldConfigs[recordKey] = HASH_FIELD_CONFIGS[field as HashMatchField];
       fieldByRecordKey[recordKey] = field as HashMatchField;
     });
   });
@@ -190,36 +200,27 @@ const configuredPathLeafs = (sourceKeys: string | string[]): string[] =>
 const mappingPathLeafs = (mappings: MappingEntry[]): string[] =>
   mappings.flatMap((mapping) => configuredPathLeafs(mapping.sourceKeys));
 
-const RESERVED_CUSTOM_KEYS = new Set<string>([
-  ...OPENAI_ADS_MAPPING_CONFIG.customReservedKeys,
-  ...mappingPathLeafs(OPENAI_ADS_MAPPING_CONFIG.eventMappings),
-  ...mappingPathLeafs(OPENAI_ADS_MAPPING_CONFIG.hashedUserMappings),
-  ...mappingPathLeafs(OPENAI_ADS_MAPPING_CONFIG.plainArrayUserMappings),
-  ...mappingPathLeafs(OPENAI_ADS_MAPPING_CONFIG.plainScalarUserMappings),
-  ...mappingPathLeafs(OPENAI_ADS_MAPPING_CONFIG.topLevelMappings),
-  ...mappingPathLeafs(OPENAI_ADS_MAPPING_CONFIG.contentMappings),
-  ...configuredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.clickIdPaths),
-  ...configuredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.currencyPaths),
-  ...configuredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.amountPaths),
-  ...configuredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.contentSourcePaths),
-  ...configuredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.contentQuantityPaths),
-  ...configuredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.contentAmountPaths),
-  ...configuredPathLeafs(OPENAI_ADS_MAPPING_CONFIG.contentCurrencyPaths),
-]);
+const isMappingEntry = (value: unknown): value is MappingEntry =>
+  isRecord(value) && 'destKey' in value && 'sourceKeys' in value;
+
+const RESERVED_CUSTOM_KEYS = new Set<string>(
+  Object.entries(OPENAI_ADS_MAPPING_CONFIG).flatMap<string>(([key, value]): string[] => {
+    if (key === 'customReservedKeys' && Array.isArray(value)) return value as string[];
+    if (Array.isArray(value) && value.every(isMappingEntry)) return mappingPathLeafs(value);
+    if (typeof value === 'string' || (Array.isArray(value) && value.every(isScalarValue))) {
+      return configuredPathLeafs(value as string | string[]);
+    }
+    return [];
+  }),
+);
 
 const getSourceKey = (message: RudderMessage): string => {
-  if (message.type === 'track') {
-    const event = typeof message.event === 'string' ? message.event : undefined;
-    if (!event)
-      throw new InstrumentationError('OpenAI Ads source event name is required for track events');
-    return event;
-  }
-  const name = get(message, 'name');
-  if (!name)
+  const sourceName = message.type === 'track' ? message.event : get(message, 'name');
+  if (!sourceName)
     throw new InstrumentationError(
       `OpenAI Ads source event name is required for ${message.type} events`,
     );
-  return String(name);
+  return String(sourceName);
 };
 
 const resolveEventMapping = (
@@ -266,63 +267,67 @@ const resolveSourceUrl = (payload: EventBasePayload, actionSource?: string): str
 
 const resolveOptOut = (payload: EventBasePayload): boolean | undefined => {
   const value = payload.opt_out;
-  if (value === undefined || value === null) return undefined;
+  if (!isPresent(value)) return undefined;
   if (typeof value === 'boolean') return value;
   throw new InstrumentationError('OpenAI Ads opt_out must be a boolean');
 };
-
-const getOppref = (payload: EventBasePayload): string | undefined =>
-  firstStringValue(payload.oppref);
 
 const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
   const user: OpenAIAdsUser = {};
   const addArray = (key: PlainMatchField | HashMatchField, value: string[] | undefined) => {
     if (value?.length) user[key] = value;
   };
-  const hashedPayload = constructPayload(
-    message,
-    OPENAI_ADS_MAPPING_CONFIG.hashedUserMappings,
-  ) as Partial<Record<HashMatchField, unknown>>;
-  const plainArrayPayload = constructPayload(
-    message,
-    OPENAI_ADS_MAPPING_CONFIG.plainArrayUserMappings,
-  ) as Partial<Record<PlainMatchField, unknown>>;
-  const plainScalarPayload = constructPayload(
-    message,
-    OPENAI_ADS_MAPPING_CONFIG.plainScalarUserMappings,
-  ) as Partial<Record<PlainMatchField, unknown>>;
+  const fieldGroups: Array<{
+    mappings: MappingEntry[];
+    transform: (payload: UserPayload) => void;
+  }> = [
+    {
+      mappings: OPENAI_ADS_MAPPING_CONFIG.hashedUserMappings,
+      transform: (payload) => {
+        Object.entries(hashUserPayload(payload as Partial<Record<HashMatchField, unknown>>)).forEach(
+          ([key, values]) => addArray(key as HashMatchField, values),
+        );
+      },
+    },
+    {
+      mappings: OPENAI_ADS_MAPPING_CONFIG.plainArrayUserMappings,
+      transform: (payload) => {
+        Object.entries(payload).forEach(([key, value]) => {
+          addArray(key as PlainMatchField, toStringArray(value));
+        });
+      },
+    },
+    {
+      mappings: OPENAI_ADS_MAPPING_CONFIG.plainScalarUserMappings,
+      transform: (payload) => {
+        Object.entries(payload).forEach(([key, rawValue]) => {
+          const value = firstStringValue(rawValue);
+          if (!value || (key === 'ip_address' && !isIP(value))) return;
+          user[key as PlainMatchField] = value;
+        });
+      },
+    },
+  ];
 
-  Object.entries(hashUserPayload(hashedPayload)).forEach(([key, values]) => {
-    addArray(key as HashMatchField, values);
-  });
-
-  Object.entries(plainArrayPayload).forEach(([key, value]) => {
-    addArray(key as PlainMatchField, toStringArray(value));
-  });
-
-  Object.entries(plainScalarPayload).forEach(([key, rawValue]) => {
-    const value = firstStringValue(rawValue);
-    if (!value || (key === 'ip_address' && !isIP(value))) return;
-    user[key as PlainMatchField] = value;
+  fieldGroups.forEach(({ mappings, transform }) => {
+    transform((constructPayload(message, mappings) ?? {}) as UserPayload);
   });
 
   return Object.keys(user).length > 0 ? user : undefined;
 };
 
-const normalizeCurrency = (currency: unknown): string | undefined => {
+const normalizeCurrency = (currency: unknown): CurrencyMetadata | undefined => {
   if (typeof currency !== 'string' && typeof currency !== 'number') return undefined;
   const normalized = String(currency).toUpperCase();
   if (!normalized) return undefined;
-  if (!CURRENCY_RE.test(normalized) || !currencyCodes.code(normalized)) {
+  const metadata = CURRENCY_RE.test(normalized) ? currencyCodes.code(normalized) : undefined;
+  if (!metadata) {
     throw new InstrumentationError(`Unsupported currency code: ${normalized}`);
   }
-  return normalized;
+  return { code: normalized, digits: metadata.digits };
 };
 
-const toMinorUnits = (amount: unknown, currency: string): number => {
-  const normalizedCurrency = normalizeCurrency(currency);
-  if (!normalizedCurrency)
-    throw new InstrumentationError('Currency is required when amount is present');
+const toMinorUnits = (amount: unknown, currency: CurrencyMetadata): number => {
   if (typeof amount !== 'string' && typeof amount !== 'number') {
     throw new InstrumentationError('Amount must be a number or numeric string');
   }
@@ -331,14 +336,12 @@ const toMinorUnits = (amount: unknown, currency: string): number => {
     throw new InstrumentationError('Amount must be a finite decimal value');
   }
   const [whole, fraction = ''] = raw.split('.');
-  const metadata = currencyCodes.code(normalizedCurrency);
-  if (!metadata) throw new InstrumentationError(`Unsupported currency code: ${normalizedCurrency}`);
-  if (fraction.length > metadata.digits) {
-    throw new InstrumentationError(`Amount has more precision than ${normalizedCurrency} supports`);
+  if (fraction.length > currency.digits) {
+    throw new InstrumentationError(`Amount has more precision than ${currency.code} supports`);
   }
   const minorUnits =
-    BigInt(whole) * 10n ** BigInt(metadata.digits) +
-    BigInt(fraction.padEnd(metadata.digits, '0') || '0');
+    BigInt(whole) * 10n ** BigInt(currency.digits) +
+    BigInt(fraction.padEnd(currency.digits, '0') || '0');
   if (minorUnits > BigInt(Number.MAX_SAFE_INTEGER)) {
     throw new InstrumentationError('Amount exceeds the maximum safe integer after conversion');
   }
@@ -348,12 +351,25 @@ const toMinorUnits = (amount: unknown, currency: string): number => {
 const resolveCurrency = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
-): string | undefined =>
+): CurrencyMetadata | undefined =>
   normalizeCurrency(getValueFromMessage(message, OPENAI_ADS_MAPPING_CONFIG.currencyPaths)) ??
   normalizeCurrency(config.defaultCurrency);
 
 const resolveAmount = (message: RudderMessage): unknown =>
   getValueFromMessage(message, OPENAI_ADS_MAPPING_CONFIG.amountPaths);
+
+const buildAmountAndCurrency = (
+  amount: unknown,
+  currency: CurrencyMetadata | undefined,
+  missingCurrencyMessage: string,
+): { amount?: number; currency?: string } => {
+  if (!isPresent(amount)) return {};
+  if (!currency) throw new InstrumentationError(missingCurrencyMessage);
+  return {
+    amount: toMinorUnits(amount, currency),
+    currency: currency.code,
+  };
+};
 
 const mapContentItem = (
   item: Record<string, unknown>,
@@ -366,7 +382,7 @@ const mapContentItem = (
   if (variantDict !== undefined && !isRecord(variantDict)) delete content.variant_dict;
 
   const quantityValue = getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentQuantityPaths);
-  if (quantityValue !== undefined && quantityValue !== null) {
+  if (isPresent(quantityValue)) {
     const quantity = Number(quantityValue);
     if (!Number.isInteger(quantity) || quantity <= 0) {
       throw new InstrumentationError('OpenAI Ads content quantity must be a positive integer');
@@ -375,19 +391,17 @@ const mapContentItem = (
   }
 
   const amountValue = getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentAmountPaths);
-  if (amountValue !== undefined && amountValue !== null) {
-    const itemCurrency =
-      normalizeCurrency(
-        getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentCurrencyPaths),
-      ) ?? resolveCurrency(message, config);
-    if (!itemCurrency) {
-      throw new InstrumentationError(
-        'OpenAI Ads content currency is required when amount is present',
-      );
-    }
-    content.amount = toMinorUnits(amountValue, itemCurrency);
-    content.currency = itemCurrency;
-  }
+  const itemCurrency =
+    normalizeCurrency(getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentCurrencyPaths)) ??
+    resolveCurrency(message, config);
+  Object.assign(
+    content,
+    buildAmountAndCurrency(
+      amountValue,
+      itemCurrency,
+      'OpenAI Ads content currency is required when amount is present',
+    ),
+  );
   return Object.keys(content).length > 0 ? content : undefined;
 };
 
@@ -396,7 +410,7 @@ const buildContents = (
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsContent[] | undefined => {
   const rawContents = getValueFromMessage(message, OPENAI_ADS_MAPPING_CONFIG.contentSourcePaths);
-  if (rawContents === undefined || rawContents === null) return undefined;
+  if (!isPresent(rawContents)) return undefined;
   const items = Array.isArray(rawContents) ? rawContents : [rawContents];
   if (!items.every(isRecord)) {
     throw new InstrumentationError('OpenAI Ads contents must be an object or array of objects');
@@ -418,30 +432,18 @@ const buildEventData = (
   config: OpenAIAdsDestinationConfig,
   eventType: OpenAIAdsStandardEvent | typeof CUSTOM_EVENT_SENTINEL,
 ): OpenAIAdsEventData => {
-  const dataType =
-    eventType === CUSTOM_EVENT_SENTINEL
-      ? CUSTOM_EVENT_SENTINEL
-      : STANDARD_EVENT_DATA_TYPES[eventType as OpenAIAdsStandardEvent];
-  if (!dataType) {
-    throw new InstrumentationError(`OpenAI Ads data type is not configured for ${eventType}`);
-  }
-
+  const dataType = EVENT_DATA_TYPE_BY_EVENT[eventType];
   const data: OpenAIAdsEventData = { type: dataType };
-  const amountValue = resolveAmount(message);
-  const currency = resolveCurrency(message, config);
-  if (amountValue !== undefined && amountValue !== null && amountValue !== '') {
-    if (!currency) {
-      throw new InstrumentationError('OpenAI Ads currency is required when amount is present');
-    }
-    data.amount = toMinorUnits(amountValue, currency);
-    data.currency = currency;
-  }
+  Object.assign(
+    data,
+    buildAmountAndCurrency(
+      resolveAmount(message),
+      resolveCurrency(message, config),
+      'OpenAI Ads currency is required when amount is present',
+    ),
+  );
 
-  if (
-    dataType === CONTENTS_DATA_TYPE ||
-    dataType === PLAN_ENROLLMENT_DATA_TYPE ||
-    dataType === CUSTOM_EVENT_SENTINEL
-  ) {
+  if (dataType !== CUSTOMER_ACTION_DATA_TYPE) {
     const contents = buildContents(message, config);
     if (contents) data.contents = contents;
   }
@@ -460,30 +462,25 @@ export const buildOpenAIEvent = (
   const eventType = mapping.to;
   const customEventName =
     mapping.to === CUSTOM_EVENT_SENTINEL ? mapping.customEventName : undefined;
-  const eventPayload = constructPayload(
-    message,
-    OPENAI_ADS_MAPPING_CONFIG.eventMappings,
-  ) as EventBasePayload;
   const topLevelPayload = constructPayload(
     message,
     OPENAI_ADS_MAPPING_CONFIG.topLevelMappings,
   ) as EventBasePayload;
   const actionSource = resolveActionSource(topLevelPayload, config);
   const sourceUrl = resolveSourceUrl(topLevelPayload, actionSource);
-  const oppref = getOppref(topLevelPayload);
   const user = buildUser(message);
   const optOut = resolveOptOut(topLevelPayload);
 
-  return {
+  return removeUndefinedAndNullValues({
     id: (resolveDotPath(message, mapping.deduplicationKey) ?? message.messageId) as string,
     type: eventType,
-    ...(customEventName !== undefined ? { custom_event_name: customEventName } : {}),
-    timestamp_ms: eventPayload.timestamp_ms as number,
-    ...(optOut !== undefined ? { opt_out: optOut } : {}),
-    ...(actionSource ? { action_source: actionSource } : {}),
-    ...(sourceUrl ? { source_url: sourceUrl } : {}),
-    ...(oppref ? { oppref } : {}),
-    ...(user ? { user } : {}),
+    custom_event_name: customEventName,
+    timestamp_ms: topLevelPayload.timestamp_ms as number,
+    opt_out: optOut,
+    action_source: actionSource,
+    source_url: sourceUrl,
+    oppref: firstStringValue(topLevelPayload.oppref),
+    user,
     data: buildEventData(message, config, eventType),
-  };
+  }) as OpenAIAdsEventPayload;
 };

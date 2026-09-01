@@ -1,11 +1,4 @@
 {
-  "eventMappings": [
-    {
-      "sourceKeys": ["timestamp", "originalTimestamp", "sentAt", "receivedAt"],
-      "destKey": "timestamp_ms",
-      "metadata": { "type": "timestamp" }
-    }
-  ],
   "hashedUserMappings": [
     {
       "sourceKeys": "email",
@@ -101,6 +94,11 @@
     }
   ],
   "topLevelMappings": [
+    {
+      "sourceKeys": ["timestamp", "originalTimestamp", "sentAt", "receivedAt"],
+      "destKey": "timestamp_ms",
+      "metadata": { "type": "timestamp" }
+    },
     {
       "sourceKeys": ["properties.action_source", "properties.actionSource"],
       "destKey": "action_source"

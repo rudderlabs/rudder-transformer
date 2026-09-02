@@ -188,6 +188,19 @@
     "semver-regex": "3.1.4",
     "cacheable-request@2.1.4": {
       "http-cache-semantics": "4.1.1"
+    },
+    "websocket-driver": "0.7.5",
+    "fast-uri": "3.1.6",
+    "minimatch@^9.0.0": "9.0.9",
+    "minimatch@^5.0.0": "5.1.9",
+    "minimatch@^3.0.0": "3.1.5",
+    "brace-expansion@^2.0.0": "2.1.4",
+    "brace-expansion@^1.0.0": "1.1.18",
+    "@shopify/jest-koa-mocks": {
+      "koa": "2.16.4"
+    },
+    "rs-jsonpath": {
+      "underscore": "1.13.8"
     }
   },
   "lint-staged": {

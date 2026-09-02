@@ -233,14 +233,7 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
 
 /**
  * These scenarios run through the batching framework's delivery path rather than
- * `v1/destinations/customerio/networkHandler`. The delivery flag remains a separate opt-in even
- * though the transform path is GA-enabled for CustomerIO.
+ * `v1/destinations/customerio/networkHandler`, because CUSTOMERIO declares `batching: true` in
+ * features.ts — the same declaration that owns the transform path. No env var is involved.
  */
-const batchingFrameworkDelivery = {
-  CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
-};
-
-export const data = v1BusinessTestScenarios.map((scenario) => ({
-  ...scenario,
-  envOverrides: { ...scenario.envOverrides, ...batchingFrameworkDelivery },
-}));
+export const data = v1BusinessTestScenarios;

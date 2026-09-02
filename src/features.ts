@@ -216,6 +216,9 @@ export const getBatchingFrameworkGaDestinations = (): Record<string, true> =>
 export const isDestinationCdkV2Enabled = (destination: string): boolean =>
   Boolean(destinationCapabilities[destination.trim().toUpperCase()]?.cdkV2);
 
+export const isDestinationRouterTransformEnabled = (destination: string): boolean =>
+  Boolean(destinationCapabilities[destination.trim().toUpperCase()]?.routerTransform);
+
 // ---------------------------------------------------------------------------
 // Features config
 // ---------------------------------------------------------------------------

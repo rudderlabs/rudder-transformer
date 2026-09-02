@@ -366,6 +366,15 @@ currently unused anywhere, and it marks `secret` and `dontBatch` **required** on
 entry, so a real payload omitting either would fail validation and fall through to the legacy
 handler silently — a worse failure than the cast it replaces.
 
+> **Superseded.** The separate delivery flag described below was removed once the rollout it
+> existed for was complete. There is no `isBatchingFrameworkDeliveryEnabled` any more: `deliver()`
+> calls the _same_ `isBatchingFrameworkEnabled(destType, workspaceId)` that
+> `doRouterTransformation` uses, so whichever half built the request is the half that reads its
+> response. The property this section's flag enforced by checking — delivery can never be enabled
+> without the transform — now holds by construction, and it extends to the pre-GA workspace
+> allowlist, which moves both halves together. The rest of this section is kept for the reasoning
+> that produced the design, not as a description of current behaviour.
+
 **Resolution is gated on `isBatchingFrameworkDeliveryEnabled`** — its own flag, separate from the transform's, defaulting to **off** for every destination and workspace:
 
 - Per-destination env var `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS`, comma-separated workspace IDs or `ALL`.

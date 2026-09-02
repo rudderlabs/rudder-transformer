@@ -48,31 +48,14 @@ const stubTransport = (status: number, response: unknown) => {
   return legacyResponseHandler;
 };
 
-describe('deliver() — batching-framework delivery flag', () => {
-  const ORIGINAL_ENV = process.env;
+describe('deliver() — batching-framework delivery', () => {
   const service = new NativeIntegrationDestinationService();
 
   beforeEach(() => {
     jest.restoreAllMocks();
-    process.env = { ...ORIGINAL_ENV };
-    delete process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS;
   });
 
-  afterAll(() => {
-    process.env = ORIGINAL_ENV;
-  });
-
-  it('uses the legacy networkHandler when the flag is unset', async () => {
-    const legacy = stubTransport(207, { errors: [{ batch_index: 1, reason: 'invalid' }] });
-
-    const result = await service.deliver(proxyRequest(), DEST, {}, 'v1');
-
-    expect(legacy).toHaveBeenCalledTimes(1);
-    expect((result as DeliveryV1Response).message).toBe('from the legacy handler');
-  });
-
-  it('uses the framework when the flag names the workspace', async () => {
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = WORKSPACE;
+  it('uses the framework for a destination declaring batching in features.ts', async () => {
     const legacy = stubTransport(207, {
       errors: [{ batch_index: 1, reason: 'invalid', field: 'email' }],
     });
@@ -86,18 +69,19 @@ describe('deliver() — batching-framework delivery flag', () => {
     expect(result.response.map((r) => r.metadata.jobId)).toEqual([1, 2]);
   });
 
-  it('stays on the legacy handler for a workspace the flag does not name', async () => {
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = 'some-other-ws';
-    const legacy = stubTransport(200, { ok: true });
+  it('stays on the legacy networkHandler for a destination that has not declared batching', async () => {
+    // No `batching: true` in features.ts → the destination keeps its own handler, and the
+    // workspace has no say in it.
+    const legacy = stubTransport(207, { errors: [{ batch_index: 1, reason: 'invalid' }] });
 
-    await service.deliver(proxyRequest(), DEST, {}, 'v1');
+    const result = await service.deliver(proxyRequest(), 'klaviyo', {}, 'v1');
 
     expect(legacy).toHaveBeenCalledTimes(1);
+    expect((result as DeliveryV1Response).message).toBe('from the legacy handler');
   });
 
-  it('stays on the legacy handler for a v0 proxy request even with the flag on', async () => {
+  it('stays on the legacy handler for a v0 proxy request', async () => {
     // The bridge only produces a v1 response, so v0 delivery must not take the new path.
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = WORKSPACE;
     const legacy = stubTransport(200, { ok: true });
     const v0Request = { ...proxyRequest(), metadata: job(1) } as never;
 
@@ -107,7 +91,6 @@ describe('deliver() — batching-framework delivery flag', () => {
   });
 
   it('emits the same statTags for a returned failure as for a thrown one', async () => {
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = WORKSPACE;
     // A 207 where every posted item failed: a uniform whole-response failure that is *returned*
     // (2xx status, so the throw path is excluded) rather than thrown.
     stubTransport(207, {
@@ -141,7 +124,6 @@ describe('deliver() — batching-framework delivery flag', () => {
   });
 
   it('leaves statTags off a partially-succeeded batch', async () => {
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = WORKSPACE;
     stubTransport(207, { errors: [{ batch_index: 1, reason: 'invalid' }] });
 
     const result = (await service.deliver(proxyRequest(), DEST, {}, 'v1')) as DeliveryV1Response;
@@ -151,7 +133,6 @@ describe('deliver() — batching-framework delivery flag', () => {
   });
 
   it('routes a whole-batch failure through the framework error path', async () => {
-    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS = WORKSPACE;
     stubTransport(400, { msg: 'bad request' });
 
     const result = (await service.deliver(proxyRequest(), DEST, {}, 'v1')) as DeliveryV1Response;

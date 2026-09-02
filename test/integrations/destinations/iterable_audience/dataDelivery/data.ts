@@ -35,9 +35,9 @@ import {
 const subscribeEndpoint = 'https://api.iterable.com/api/lists/subscribe';
 const unsubscribeEndpoint = 'https://api.iterable.com/api/lists/unsubscribe';
 // Messages produced by the batching framework's delivery bridge, which owns response handling
-// for this destination once ITERABLE_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS
-// is set. A batch where every job succeeded keeps the destination's own status; a mixed batch is
-// reported as 207 with per-job detail.
+// for this destination because it declares `batching: true` in features.ts. A batch where every
+// job succeeded keeps the destination's own status; a mixed batch is reported as 207 with per-job
+// detail.
 const FRAMEWORK_SUCCESS_MESSAGE = '[ITERABLE_AUDIENCE] Request processed successfully';
 // A mixed batch keeps Iterable's own status (200) and reports the first real failure reason.
 const frameworkFailure = (reason: string) => `[ITERABLE_AUDIENCE] ${reason}`;
@@ -672,13 +672,7 @@ const scenarios: ProxyV1TestData[] = [
 ];
 
 /**
- * ITERABLE_AUDIENCE is already GA for the batching-framework transform, so only the delivery flag is
- * needed to move these scenarios onto the framework response path.
+ * ITERABLE_AUDIENCE declares `batching: true` in features.ts, which puts these scenarios on the
+ * framework's transform *and* delivery paths with no env var involved.
  */
-export const data = scenarios.map((scenario) => ({
-  ...scenario,
-  envOverrides: {
-    ...scenario.envOverrides,
-    ITERABLE_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
-  },
-}));
+export const data = scenarios;

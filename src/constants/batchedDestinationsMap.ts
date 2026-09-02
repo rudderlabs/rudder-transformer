@@ -4,15 +4,12 @@ import { getBatchingFrameworkGaDestinations } from '../features';
 // Once a destination is added here, it always uses the new path regardless of env var.
 export const batchedDestinationsMap: Record<string, true> = getBatchingFrameworkGaDestinations();
 
-// Per-destination env var: {DEST}_{FEATURE}_ENABLED_WORKSPACE_IDS
+// Per-destination env var: {DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces
 // Example: POSTHOG_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS="ws-1,ws-2" or "ALL"
 // If not set or empty → disabled for that destination (legacy path)
-const getEnabledWorkspaceIds = (
-  destType: string,
-  feature: 'BATCHING_FRAMEWORK' | 'BATCHING_FRAMEWORK_DELIVERY',
-): string[] => {
-  const envKey = `${destType.toUpperCase()}_${feature}_ENABLED_WORKSPACE_IDS`;
+const getEnabledWorkspaceIds = (destType: string): string[] => {
+  const envKey = `${destType.toUpperCase()}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS`;
   return (
     process.env[envKey]
       ?.split(',')
@@ -43,35 +40,31 @@ export const isBatchingFrameworkEnabled = (destType: string, workspaceId: string
   }
 
   // Pre-GA: check per-destination env var
-  return matchesWorkspace(getEnabledWorkspaceIds(upperDestType, 'BATCHING_FRAMEWORK'), workspaceId);
+  return matchesWorkspace(getEnabledWorkspaceIds(upperDestType), workspaceId);
 };
 
 /**
- * Whether the batching framework also owns *delivery* (response handling) for this destination and
- * workspace, rather than the destination's own networkHandler.
+ * Whether the batching framework also owns *delivery* (response handling) for this destination,
+ * rather than the destination's own networkHandler.
  *
- * Per-destination env var: {DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS
- * Values: comma-separated workspace IDs, or 'ALL'. Unset or empty → the legacy networkHandler.
+ * Driven by `batching: true` in `features.ts` — the same declaration that puts the destination on
+ * the framework's transform path — and by nothing else. There is deliberately no env var and no
+ * workspace argument:
  *
- * Two deliberate properties:
- *
- *  - **No GA map.** Unlike the transform flag there is no destination list that force-enables this,
- *    so delivery stays on the legacy handler everywhere until a workspace is named explicitly.
- *  - **Requires the transform flag.** The delivery path has to interpret a payload built by the
- *    matching transform path — an unenrolled workspace's events are still built by the legacy
- *    `processRouterDest`, and its response must be read by the legacy handler. Enabling delivery
- *    for a workspace that is not on the batching-framework transform would pair the two halves
- *    incorrectly, so this returns false regardless of the delivery env var.
+ *  - **Delivery cannot lag transform.** The delivery path interprets a payload built by the
+ *    matching transform path: a `processBatchedDestination` request whose response is read by the
+ *    legacy networkHandler, or the reverse, pairs the two halves incorrectly. Reading both halves
+ *    off one declaration makes that state unrepresentable, where a separate delivery flag made it
+ *    a configuration mistake anyone could make — and made "transform migrated, delivery still
+ *    generic" the *default*, which for an OAuth destination silently costs the token refresh
+ *    (`genericNetworkHandler` throws with no `authErrorCategory`).
+ *  - **Delivery cannot be per-workspace.** Only the GA half of `isBatchingFrameworkEnabled` is
+ *    consulted, never the pre-GA `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` allowlist. A
+ *    workspace-level transform rollout is a rehearsal for a destination that has not declared GA
+ *    yet, and such a destination has usually not written a `DeliverySpec`; taking over delivery
+ *    there would silently swap its networkHandler for the framework's status-only classification.
+ *    Those workspaces keep the legacy handler until the destination is declared GA in features.ts,
+ *    which is the reviewed moment to check that its `delivery` spec exists.
  */
-export const isBatchingFrameworkDeliveryEnabled = (
-  destType: string,
-  workspaceId: string,
-): boolean => {
-  if (!isBatchingFrameworkEnabled(destType, workspaceId)) {
-    return false;
-  }
-  return matchesWorkspace(
-    getEnabledWorkspaceIds(destType, 'BATCHING_FRAMEWORK_DELIVERY'),
-    workspaceId,
-  );
-};
+export const isBatchingFrameworkDeliveryEnabled = (destType: string): boolean =>
+  Boolean(batchedDestinationsMap[destType.toUpperCase()]);

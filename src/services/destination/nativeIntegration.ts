@@ -248,18 +248,16 @@ export class NativeIntegrationDestinationService implements DestinationService {
       const rawProxyResponse = await networkHandler.proxy(deliveryRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
 
-      // Opt-in per workspace, off by default: `handlerVersion` is deliberately ignored here, and
-      // so is the v0->v1 adaptation below — the framework produces a v1 response natively, and
-      // that adaptation would collapse the metadata array to its first entry.
+      // On for every destination declaring `batching: true` in features.ts: `handlerVersion` is
+      // deliberately ignored here, and so is the v0->v1 adaptation below — the framework produces
+      // a v1 response natively, and that adaptation would collapse the metadata array to its first
+      // entry.
       //
       // The guard is `isProxyV1Request`, which requires the v1 route *and* an array `metadata`;
       // see its declaration for why neither half alone is enough.
       if (
         isProxyV1Request(deliveryRequest, version) &&
-        isBatchingFrameworkDeliveryEnabled(
-          destinationType,
-          deliveryRequest.metadata[0]?.workspaceId,
-        )
+        isBatchingFrameworkDeliveryEnabled(destinationType)
       ) {
         const ctx: DeliveryContext = {
           status: processedProxyResponse.status,

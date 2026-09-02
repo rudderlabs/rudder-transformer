@@ -276,16 +276,7 @@ const scenarios: ProxyV1TestData[] = [
 ];
 
 /**
- * REDDIT_AUDIENCE is GA for the batching-framework transform via features.ts, so
- * only the delivery flag is needed to move these scenarios onto the framework
- * response path. Without it CI would keep exercising the legacy handler — which
- * this destination deliberately does not have.
+ * REDDIT_AUDIENCE declares `batching: true` in features.ts, which puts these scenarios on the
+ * framework's transform *and* delivery paths with no env var involved.
  */
-export const data = scenarios.map((scenario) => ({
-  ...scenario,
-  envOverrides: {
-    ...scenario.envOverrides,
-    REDDIT_AUDIENCE_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-    REDDIT_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
-  },
-}));
+export const data = scenarios;

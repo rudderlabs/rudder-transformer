@@ -162,11 +162,12 @@ which keeps every live credential inside the one `LIVE_SECRET_<DEST>` blob. Note
 `test/setup.ts` seeds placeholder values for a few such variables, so a spec that needs the real
 one must name it here or the placeholder is what reaches the destination.
 
-Batching-framework delivery is still behind a temporary per-destination flag. For live specs that
-need to exercise framework delivery, explicitly set
-`{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL'` in `envOverrides`. Do not set
-`{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` for destinations that are already batching-GA; the
-transform side is enabled by `features.ts`.
+Batching-framework delivery needs no `envOverrides` at all: it is driven by `batching: true` in
+`features.ts`, the same declaration that owns the transform side. A live spec for a batching-GA
+destination exercises framework delivery automatically, and setting
+`{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` for one does nothing. That env var is only for
+rehearsing the _transform_ path of a destination that has not declared `batching` yet — such a
+destination keeps its own networkHandler for delivery.
 
 ### Scenarios and steps
 

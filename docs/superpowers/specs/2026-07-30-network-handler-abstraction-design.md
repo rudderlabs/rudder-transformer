@@ -366,6 +366,14 @@ currently unused anywhere, and it marks `secret` and `dontBatch` **required** on
 entry, so a real payload omitting either would fail validation and fall through to the legacy
 handler silently — a worse failure than the cast it replaces.
 
+> **Superseded.** The separate delivery flag described below was removed once the rollout it
+> existed for was complete. `isBatchingFrameworkDeliveryEnabled(destType)` now reads `batching:
+true` in `features.ts` and nothing else — no env var, no workspace argument — so a destination
+> declaring GA gets the framework's transform and delivery halves together. The two properties the
+> flag enforced still hold, now by construction rather than by check: delivery cannot be enabled
+> without the transform, and it cannot be enabled per workspace. The rest of this section is kept
+> for the reasoning that produced the design, not as a description of current behaviour.
+
 **Resolution is gated on `isBatchingFrameworkDeliveryEnabled`** — its own flag, separate from the transform's, defaulting to **off** for every destination and workspace:
 
 - Per-destination env var `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS`, comma-separated workspace IDs or `ALL`.

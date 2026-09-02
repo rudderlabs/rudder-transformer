@@ -1,14 +1,13 @@
 /**
  * ONE classification of a Reddit response, shared by both delivery paths.
  *
- * `delivery.ts` (the batching framework's `DeliverySpec`) only runs when
- * `REDDIT_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS` names the
- * workspace — and that flag has no GA map, so it is OFF by default. Every other
- * framework destination survives that gap by keeping a legacy networkHandler
- * until GA; for an API-key destination the fallback is merely worse errors, but
- * for an OAuth one it is fatal: `genericNetworkHandler` throws a bare
- * NetworkError with no `authErrorCategory`, so a 401 aborts the batch and no
- * token refresh is ever requested. Reddit tokens expire in an hour.
+ * `delivery.ts` (the batching framework's `DeliverySpec`) owns every **v1**
+ * proxy response, because reddit_audience declares `batching: true` in
+ * features.ts. `networkHandler.ts` owns the **v0** ones, which `isProxyV1Request`
+ * keeps off the framework branch. The legacy half is not optional for an OAuth
+ * destination: without it those requests fall to `genericNetworkHandler`, which
+ * throws a bare NetworkError with no `authErrorCategory`, so a 401 aborts the
+ * batch and no token refresh is ever requested. Reddit tokens expire in an hour.
  *
  * Both paths therefore import this module, so the two cannot drift — the same
  * reason `iterable_audience` shares one checker between its halves.

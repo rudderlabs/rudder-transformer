@@ -9,7 +9,7 @@ description: Create the transformation logic for a new VDM V2 object-based desti
 
 ## When to use
 
-Use `VDMV2ObjectIntegration` when the destination:
+Use `VDMV2ObjectDestination` when the destination:
 
 - Receives **record events** (insert/update/delete) targeting specific **object types** (person, event, contact, lead, etc.)
 - Object type comes from **connection config** (`connection.config.destination.object`)
@@ -22,9 +22,9 @@ For audience destinations (add/remove users from segments), use the `vdm-next-au
 
 Read these files before implementing:
 
-- **Framework source** -- `src/services/destination/destinationIntegration/vdmV2ObjectIntegration.ts` -- `VDMV2ObjectIntegration` abstract class, `RecordInput`/`RecordMessage` types, `isRecordInput` type guard, dispatch logic
+- **Framework source** -- `src/services/destination/destinationIntegration/vdmV2ObjectDestination.ts` -- `VDMV2ObjectDestination` abstract class, `RecordInput`/`RecordMessage` types, `isRecordInput` type guard, dispatch logic
 - **CustomerIO** (`src/v0/destinations/customerio/`) -- canonical implementation with record + event-stream support
-  - `routerTransform.ts` -- `VDMV2ObjectIntegration` subclass with handler map, batch strategy, input schema
+  - `routerTransform.ts` -- `VDMV2ObjectDestination` subclass with handler map, batch strategy, input schema
   - `routerTransform.test.ts` -- unit tests instantiating the Integration class directly
   - `types.ts` -- Zod schemas for connection config (with `object` field), destination config, router request type
   - `v2/recordTransform.ts` -- record payload builder (no action validation)
@@ -38,7 +38,7 @@ Read these files before implementing:
 
 ```
 src/v0/destinations/<dest_name>/
-  routerTransform.ts        # VDMV2ObjectIntegration subclass (exported as Integration)
+  routerTransform.ts        # VDMV2ObjectDestination subclass (exported as Integration)
   routerTransform.test.ts   # Unit tests for the Integration class
   types.ts                  # Zod schemas, TypeScript types, connection config
   delivery.ts               # (Optional) the `delivery` spec — only if response handling
@@ -54,7 +54,7 @@ RouterTransformationRequestData[]
     |
 processDestinationIntegration()          [framework orchestrator]
     |
-VDMV2ObjectIntegration<TBody, TRecordSchema, TEventStreamSchema>  [your integration class]
+VDMV2ObjectDestination<TBody, TRecordSchema, TEventStreamSchema>  [your integration class]
     |--- getInputSchema()                -> [framework] z.union(recordSchema, eventStreamSchema)
     |--- transformEvent()                -> [inherited] dispatches to:
     |       |--- isRecordInput()?
@@ -117,7 +117,7 @@ Delivery is gated by the same predicate -- see `.claude/skills/batching-framewor
 
 1. Read the reference files listed above
 2. Create `src/v0/destinations/<dest_name>/types.ts` -- Zod schemas for connection config (with `object` field), record message, and event-stream message; derive TypeScript types
-3. Create `src/v0/destinations/<dest_name>/routerTransform.ts` -- extend `VDMV2ObjectIntegration<TBody, typeof recordInputSchema, typeof eventStreamInputSchema>`:
+3. Create `src/v0/destinations/<dest_name>/routerTransform.ts` -- extend `VDMV2ObjectDestination<TBody, typeof recordInputSchema, typeof eventStreamInputSchema>`:
    - `recordSchema` / `eventStreamSchema` -- `readonly` properties set to the two `makeRouterInputSchema` schemas (shared `destinationConfig` constant)
    - `transformObjectRecord(input)` -- return handler map with object type -> action -> handler
    - `getBatchStrategy()` -- return `ChunkBatchStrategy` with `maxPayloadSize`/`maxItems` and `wrapBody`

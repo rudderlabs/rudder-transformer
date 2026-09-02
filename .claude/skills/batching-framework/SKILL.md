@@ -110,7 +110,7 @@ class MyIntegration extends DestinationIntegration<TBody, TConfig, TConnectionCo
 export const Integration = MyIntegration;
 ```
 
-Build the schema with `makeRouterInputSchema({ message, destinationConfig?, connectionConfig? })` — a single message variant plus optional destination/connection config. Hybrid record + event-stream destinations extend `VDMV2ObjectIntegration`, which unions two such schemas for you.
+Build the schema with `makeRouterInputSchema({ message, destinationConfig?, connectionConfig? })` — a single message variant plus optional destination/connection config. Hybrid record + event-stream destinations extend `VDMV2ObjectDestination`, which unions two such schemas for you.
 
 ## TransformedEvent Type
 

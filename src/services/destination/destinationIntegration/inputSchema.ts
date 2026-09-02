@@ -34,7 +34,7 @@ export type SingleRouterInput<
  * A destination declares the message schema, an optional `destinationConfig`
  * (→ `destination.Config`) and an optional `connectionConfig` (→ `connection.config`,
  * kept optional). Hybrid (record + event-stream) destinations build one schema per
- * variant and let `VDMV2ObjectIntegration` union them.
+ * variant and let `VDMV2ObjectDestination` union them.
  *
  * Typed via an overload so callers get a precisely-inferred schema without a cast.
  */

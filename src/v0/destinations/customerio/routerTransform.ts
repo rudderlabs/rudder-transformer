@@ -6,7 +6,7 @@ import {
   ChunkBatchStrategy,
   CustomBatchStrategy,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { VDMV2ObjectIntegration } from '../../../services/destination/destinationIntegration/vdmV2ObjectIntegration';
+import { VDMV2ObjectDestination } from '../../../services/destination/destinationIntegration/vdmV2ObjectDestination';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { removeUndefinedValues } from '../../util';
 import { recordInputSchema, eventStreamInputSchema, CustomerIOV2Payload } from './v2/types';
@@ -33,7 +33,7 @@ import { process as v1ProcessEventStream } from './transform';
 import { CUSTOMERIO_RECORD_OBJECTS, type CustomerIORecordObject } from './types';
 import { customerIODelivery } from './v2/delivery';
 
-class CustomerIOIntegration extends VDMV2ObjectIntegration<
+class CustomerIOIntegration extends VDMV2ObjectDestination<
   CustomerIOV2Payload,
   typeof recordInputSchema,
   typeof eventStreamInputSchema

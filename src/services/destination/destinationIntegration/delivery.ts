@@ -251,7 +251,7 @@ const statusOnlyFailureReason = (ctx: DeliveryContext): string => defaultFailure
  * Static properties are inherited but *shadowed*, not merged: a subclass declaring its own
  * `delivery` would otherwise silently drop everything an ancestor declared, with no type or
  * runtime error. `statusOverrides` is therefore merged key-by-key, so a family-level map on e.g.
- * VDMV2ObjectIntegration keeps working when a concrete destination adds an entry of its own, and
+ * VDMV2ObjectDestination keeps working when a concrete destination adds an entry of its own, and
  * `failureReason` resolves to the nearest declaration — which is what a plain static override
  * would have done. Not cached: the walk is three levels of small objects, nothing next to the HTTP
  * call it accompanies, and a cache would go stale whenever a test swaps a spec.

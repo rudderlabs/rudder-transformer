@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { VDMV2ObjectIntegration } from '../vdmV2ObjectIntegration';
+import { VDMV2ObjectDestination } from '../vdmV2ObjectDestination';
 import { validateInputs } from '../processDestinationIntegration';
 import {
   makeRouterInputSchema,
@@ -42,7 +42,7 @@ const eventStreamInputSchema = makeRouterInputSchema({
   destinationConfig: destConfig,
 });
 
-class TestObjectIntegration extends VDMV2ObjectIntegration<
+class TestObjectDestination extends VDMV2ObjectDestination<
   Body,
   typeof recordInputSchema,
   typeof eventStreamInputSchema
@@ -78,8 +78,8 @@ const mockDestination: Destination = {
   Transformations: [],
 };
 
-describe('VDMV2ObjectIntegration.getInputSchema', () => {
-  const schema = new TestObjectIntegration(mockDestination).getInputSchema();
+describe('VDMV2ObjectDestination.getInputSchema', () => {
+  const schema = new TestObjectDestination(mockDestination).getInputSchema();
 
   it('accepts a record input', () => {
     expect(
@@ -116,7 +116,7 @@ describe('VDMV2ObjectIntegration.getInputSchema', () => {
 // both branches and could only be attributed by guesswork. These cases pin the errors that
 // validateInputs now surfaces: each is reported against the one variant the message
 // selected, with its real path.
-describe('VDMV2ObjectIntegration input validation', () => {
+describe('VDMV2ObjectDestination input validation', () => {
   // Deliberately loose/malformed envelopes exercise schema validation, so the cast is
   // localized here and call sites pass a typed RouterTransformationRequestData.
   const validationInput = (
@@ -133,7 +133,7 @@ describe('VDMV2ObjectIntegration input validation', () => {
     }) as unknown as RouterTransformationRequestData;
 
   it('accepts a valid event-stream message', () => {
-    const integration = new TestObjectIntegration(mockDestination);
+    const integration = new TestObjectDestination(mockDestination);
     const { valid, errors } = validateInputs(
       [validationInput(1, { type: 'track', userId: 'u1' }, { apiKey: 'k' })],
       integration,
@@ -143,7 +143,7 @@ describe('VDMV2ObjectIntegration input validation', () => {
   });
 
   it('classifies a bad shared Config as CONFIGURATION with a precise path', () => {
-    const integration = new TestObjectIntegration(mockDestination);
+    const integration = new TestObjectDestination(mockDestination);
     const { errors } = validateInputs(
       [validationInput(2, { type: 'track', userId: 'u1' }, {})],
       integration,
@@ -154,7 +154,7 @@ describe('VDMV2ObjectIntegration input validation', () => {
   });
 
   it('classifies a bad connection on a record as CONFIGURATION', () => {
-    const integration = new TestObjectIntegration(mockDestination);
+    const integration = new TestObjectDestination(mockDestination);
     const { errors } = validateInputs(
       [
         validationInput(
@@ -172,7 +172,7 @@ describe('VDMV2ObjectIntegration input validation', () => {
   });
 
   it('reports a record failure against the record variant only', () => {
-    const integration = new TestObjectIntegration(mockDestination);
+    const integration = new TestObjectDestination(mockDestination);
     const { errors } = validateInputs(
       [
         validationInput(
@@ -191,7 +191,7 @@ describe('VDMV2ObjectIntegration input validation', () => {
   });
 
   it('reports an event-stream failure against the event-stream variant only', () => {
-    const integration = new TestObjectIntegration(mockDestination);
+    const integration = new TestObjectDestination(mockDestination);
     const { errors } = validateInputs(
       [validationInput(5, { type: 'track' }, { apiKey: 'k' })],
       integration,
@@ -203,7 +203,7 @@ describe('VDMV2ObjectIntegration input validation', () => {
   });
 
   it('routes a message matching no variant to the event-stream variant', () => {
-    const integration = new TestObjectIntegration(mockDestination);
+    const integration = new TestObjectDestination(mockDestination);
     const { errors } = validateInputs(
       [validationInput(6, { type: 'group', groupId: 'g1' }, { apiKey: 'k' })],
       integration,
@@ -222,7 +222,7 @@ describe('VDMV2ObjectIntegration input validation', () => {
 
 type TestConnectionConfig = { destination: { object: string } };
 
-class RecordIntegration extends VDMV2ObjectIntegration<Body> {
+class RecordIntegration extends VDMV2ObjectDestination<Body> {
   protected readonly recordSchema = z.object({}).passthrough();
 
   protected readonly eventStreamSchema = z.object({}).passthrough();
@@ -323,7 +323,7 @@ function makeInput(jobId: number, data: string): RouterTransformationRequestData
   return { message, metadata, destination: mockDestination };
 }
 
-describe('VDMV2ObjectIntegration — record dispatch', () => {
+describe('VDMV2ObjectDestination — record dispatch', () => {
   it('dispatches record events via handler map', async () => {
     const integration = new RecordIntegration(mockDestination, mockConnection);
     const input = makeRecordInput(1, 'insert', { id: 'u1' });
@@ -370,7 +370,7 @@ describe('VDMV2ObjectIntegration — record dispatch', () => {
 
   it('passes standard input to handler', async () => {
     // Create an integration that echoes message fields into the body for assertion
-    class EchoIntegration extends VDMV2ObjectIntegration<Record<string, unknown>> {
+    class EchoIntegration extends VDMV2ObjectDestination<Record<string, unknown>> {
       protected readonly recordSchema = z.object({}).passthrough();
 
       protected readonly eventStreamSchema = z.object({}).passthrough();

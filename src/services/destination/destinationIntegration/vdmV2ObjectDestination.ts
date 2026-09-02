@@ -70,7 +70,7 @@ function buildInputSchema<TRecord extends ZodTypeAny, TEventStream extends ZodTy
   return schema as unknown as ZodType<z.infer<TRecord> | z.infer<TEventStream>>;
 }
 
-export abstract class VDMV2ObjectIntegration<
+export abstract class VDMV2ObjectDestination<
   TBody extends Record<string, unknown> = Record<string, unknown>,
   TRecordSchema extends ZodType = ZodType,
   TEventStreamSchema extends ZodType = ZodType,

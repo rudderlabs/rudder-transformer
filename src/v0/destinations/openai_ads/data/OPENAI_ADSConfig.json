@@ -5,9 +5,7 @@
         "traits.emails",
         "context.traits.emails",
         "traits.email",
-        "context.traits.email",
-        "properties.email",
-        "context.externalId.0.id"
+        "context.traits.email"
       ],
       "destKey": "emails_sha256"
     },
@@ -20,8 +18,7 @@
         "traits.phones",
         "context.traits.phones",
         "traits.phone",
-        "context.traits.phone",
-        "properties.phone"
+        "context.traits.phone"
       ],
       "destKey": "phone_numbers_sha256"
     },
@@ -46,10 +43,8 @@
         "traits.first_names",
         "context.traits.first_names",
         "traits.firstName",
-        "traits.firstname",
         "traits.first_name",
         "context.traits.firstName",
-        "context.traits.firstname",
         "context.traits.first_name"
       ],
       "destKey": "first_names_sha256"
@@ -61,10 +56,8 @@
         "traits.last_names",
         "context.traits.last_names",
         "traits.lastName",
-        "traits.lastname",
         "traits.last_name",
         "context.traits.lastName",
-        "context.traits.lastname",
         "context.traits.last_name"
       ],
       "destKey": "last_names_sha256"

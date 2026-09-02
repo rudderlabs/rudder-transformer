@@ -232,6 +232,81 @@ export const data: RouterTestData[] = [
     },
   },
   {
+    id: 'openai-ads-router-custom-extras',
+    name: 'openai_ads',
+    description: 'Mapped custom event preserves unmapped custom properties',
+    scenario: 'Native batching cloud CAPI',
+    successCriteria: 'Custom event properties id and name are not over-reserved',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                event: 'Custom Checkout Data',
+                messageId: 'msg-5',
+                timestamp: '2024-01-01T00:00:00.000Z',
+                properties: {
+                  id: 'custom-id',
+                  name: 'Custom Name',
+                  click_id: 'click-123',
+                  source_url: 'https://example.com/custom',
+                },
+              },
+              metadata: metadata(5),
+              destination,
+            },
+          ],
+          destType: 'openai_ads',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                ...batchedRequest,
+                body: {
+                  ...batchedRequest.body,
+                  JSON: {
+                    events: [
+                      {
+                        id: 'msg-5',
+                        type: 'custom',
+                        custom_event_name: 'ccd',
+                        timestamp_ms: 1704067200000,
+                        action_source: 'offline',
+                        source_url: 'https://example.com/custom',
+                        data: {
+                          type: 'custom',
+                          id: 'custom-id',
+                          name: 'Custom Name',
+                          click_id: 'click-123',
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+              metadata: [metadata(5)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
     id: 'openai-ads-router-unmapped',
     name: 'openai_ads',
     description: 'Unmapped non-standard events fail before delivery',

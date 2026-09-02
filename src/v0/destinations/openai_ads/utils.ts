@@ -190,25 +190,29 @@ const hashUserPayload = (
   );
 };
 
-const configuredPathLeafs = (sourceKeys: string | string[]): string[] =>
-  (Array.isArray(sourceKeys) ? sourceKeys : [sourceKeys])
-    .map((path) => path.split('.').pop())
-    .filter((path): path is string => Boolean(path));
-
-const mappingPathLeafs = (mappings: MappingEntry[]): string[] =>
-  mappings.flatMap((mapping) => configuredPathLeafs(mapping.sourceKeys));
-
 const isMappingEntry = (value: unknown): value is MappingEntry =>
   isRecord(value) && 'destKey' in value && 'sourceKeys' in value;
 
+const PROPERTIES_PREFIX = 'properties.';
+
+const propertyKeys = (sourceKeys: string | string[]): string[] =>
+  (Array.isArray(sourceKeys) ? sourceKeys : [sourceKeys])
+    .filter((path) => path.startsWith(PROPERTIES_PREFIX))
+    // Reserve the direct child because buildCustomExtras filters direct children of message.properties.
+    .map((path) => path.slice(PROPERTIES_PREFIX.length).split('.')[0]);
+
+const sourceKeysOf = (value: unknown): Array<string | string[]> => {
+  if (Array.isArray(value) && value.every(isMappingEntry)) {
+    return value.map((entry) => entry.sourceKeys);
+  }
+  if (typeof value === 'string' || (Array.isArray(value) && value.every(isScalarValue))) {
+    return [value as string | string[]];
+  }
+  return [];
+};
+
 const RESERVED_CUSTOM_KEYS = new Set<string>(
-  Object.values(OPENAI_ADS_MAPPING_CONFIG).flatMap<string>((value): string[] => {
-    if (Array.isArray(value) && value.every(isMappingEntry)) return mappingPathLeafs(value);
-    if (typeof value === 'string' || (Array.isArray(value) && value.every(isScalarValue))) {
-      return configuredPathLeafs(value as string | string[]);
-    }
-    return [];
-  }),
+  Object.values(OPENAI_ADS_MAPPING_CONFIG).flatMap(sourceKeysOf).flatMap(propertyKeys),
 );
 
 const getSourceKey = (message: RudderMessage): string => {

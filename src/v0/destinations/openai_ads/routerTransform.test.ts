@@ -206,7 +206,8 @@ describe('OpenAIAdsIntegration', () => {
           value: 1,
           source_url: 'https://example.com/custom',
           plan: 'pro',
-          email: 'drop@example.com',
+          id: 'custom-id',
+          name: 'Custom Name',
           click_id: 'click-123',
         },
       },
@@ -215,9 +216,17 @@ describe('OpenAIAdsIntegration', () => {
       id: 'msg-custom',
       type: 'custom',
       custom_event_name: 'Trial Started',
-      data: { type: 'custom', amount: 100, currency: 'USD', plan: 'pro', click_id: 'click-123' },
+      data: {
+        type: 'custom',
+        amount: 100,
+        currency: 'USD',
+        plan: 'pro',
+        id: 'custom-id',
+        name: 'Custom Name',
+        click_id: 'click-123',
+      },
     });
-    expect(custom.data).not.toHaveProperty('email');
+    expect(custom.data).not.toHaveProperty('source_url');
 
     const page = transform({
       ...makeInput(2),

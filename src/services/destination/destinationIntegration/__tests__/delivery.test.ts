@@ -15,10 +15,10 @@ import {
   type DeliveryContext,
   type DeliverySpec,
   type ItemVerdict,
-} from './delivery';
-import { DestinationIntegration } from './destinationIntegration';
-import stats from '../../../util/stats';
-import type { ProxyMetdata, ProxyV1Request } from '../../../types';
+} from '../delivery';
+import { DestinationIntegration } from '../destinationIntegration';
+import stats from '../../../../util/stats';
+import type { ProxyMetdata, ProxyV1Request } from '../../../../types';
 
 const DEST = 'TEST_DEST';
 

@@ -367,12 +367,13 @@ entry, so a real payload omitting either would fail validation and fall through 
 handler silently — a worse failure than the cast it replaces.
 
 > **Superseded.** The separate delivery flag described below was removed once the rollout it
-> existed for was complete. `isBatchingFrameworkDeliveryEnabled(destType)` now reads `batching:
-true` in `features.ts` and nothing else — no env var, no workspace argument — so a destination
-> declaring GA gets the framework's transform and delivery halves together. The two properties the
-> flag enforced still hold, now by construction rather than by check: delivery cannot be enabled
-> without the transform, and it cannot be enabled per workspace. The rest of this section is kept
-> for the reasoning that produced the design, not as a description of current behaviour.
+> existed for was complete. There is no `isBatchingFrameworkDeliveryEnabled` any more: `deliver()`
+> calls the _same_ `isBatchingFrameworkEnabled(destType, workspaceId)` that
+> `doRouterTransformation` uses, so whichever half built the request is the half that reads its
+> response. The property this section's flag enforced by checking — delivery can never be enabled
+> without the transform — now holds by construction, and it extends to the pre-GA workspace
+> allowlist, which moves both halves together. The rest of this section is kept for the reasoning
+> that produced the design, not as a description of current behaviour.
 
 **Resolution is gated on `isBatchingFrameworkDeliveryEnabled`** — its own flag, separate from the transform's, defaulting to **off** for every destination and workspace:
 

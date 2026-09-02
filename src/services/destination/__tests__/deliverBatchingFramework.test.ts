@@ -1,5 +1,6 @@
 import networkHandlerFactory from '../../../adapters/networkHandlerFactory';
 import { NativeIntegrationDestinationService } from '../nativeIntegration';
+import { batchedDestinationsMap } from '../../../constants/batchedDestinationsMap';
 import type { DeliveryV1Response, ProxyV1Request } from '../../../types';
 
 const DEST = 'customerio';
@@ -78,6 +79,40 @@ describe('deliver() — batching-framework delivery', () => {
 
     expect(legacy).toHaveBeenCalledTimes(1);
     expect((result as DeliveryV1Response).message).toBe('from the legacy handler');
+  });
+
+  it('follows a pre-GA workspace rollout onto the framework', async () => {
+    // Delivery is gated on the same predicate as the transform, so a workspace enrolled by the
+    // env var gets both halves. Drop customerio out of the GA map to reach the pre-GA branch.
+    delete batchedDestinationsMap.CUSTOMERIO;
+    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS = WORKSPACE;
+    try {
+      const legacy = stubTransport(207, { errors: [{ batch_index: 1, reason: 'invalid' }] });
+
+      const result = (await service.deliver(proxyRequest(), DEST, {}, 'v1')) as DeliveryV1Response;
+
+      expect(legacy).not.toHaveBeenCalled();
+      expect(result.response.map((r) => r.statusCode)).toEqual([200, 400]);
+    } finally {
+      delete process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS;
+      batchedDestinationsMap.CUSTOMERIO = true;
+    }
+  });
+
+  it('stays on the legacy handler for a workspace outside a pre-GA rollout', async () => {
+    delete batchedDestinationsMap.CUSTOMERIO;
+    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS = 'some-other-ws';
+    try {
+      const legacy = stubTransport(207, { errors: [{ batch_index: 1, reason: 'invalid' }] });
+
+      const result = await service.deliver(proxyRequest(), DEST, {}, 'v1');
+
+      expect(legacy).toHaveBeenCalledTimes(1);
+      expect((result as DeliveryV1Response).message).toBe('from the legacy handler');
+    } finally {
+      delete process.env.CUSTOMERIO_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS;
+      batchedDestinationsMap.CUSTOMERIO = true;
+    }
   });
 
   it('stays on the legacy handler for a v0 proxy request', async () => {

@@ -9,14 +9,19 @@ import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import stats from '../../util/stats';
 
-// The batching framework's delivery branch is opt-in per workspace and returns before the rest of
-// `deliver` runs, so it is reached by flipping the gate rather than by configuration. Inert for
-// every other test in this file, which leaves it false.
-let frameworkDeliveryEnabled = false;
-jest.mock('../../constants/batchedDestinationsMap', () => ({
-  ...jest.requireActual('../../constants/batchedDestinationsMap'),
-  isBatchingFrameworkDeliveryEnabled: () => frameworkDeliveryEnabled,
-}));
+// The batching framework's delivery branch returns before the rest of `deliver` runs, so it is
+// reached by forcing the gate rather than by configuration. `null` delegates to the real predicate,
+// which is what every other test in this file gets: they post to `rudder_test`, which declares no
+// `batching` and names no workspace, so the real answer is already false.
+let frameworkDeliveryEnabled: boolean | null = null;
+jest.mock('../../constants/batchedDestinationsMap', () => {
+  const actual = jest.requireActual('../../constants/batchedDestinationsMap');
+  return {
+    ...actual,
+    isBatchingFrameworkEnabled: (destType: string, workspaceId: string) =>
+      frameworkDeliveryEnabled ?? actual.isBatchingFrameworkEnabled(destType, workspaceId),
+  };
+});
 
 // Only the handler's verdicts are faked; `toDeliveryV1Response` - the thing that builds the job
 // states under test - stays real.
@@ -50,7 +55,7 @@ afterAll(async () => {
 });
 
 afterEach(() => {
-  frameworkDeliveryEnabled = false;
+  frameworkDeliveryEnabled = null;
   jest.restoreAllMocks();
   jest.clearAllMocks();
 });

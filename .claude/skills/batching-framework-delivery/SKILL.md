@@ -129,9 +129,56 @@ Don't set these yourself:
 
 ## Transport stays in `networkHandler.ts`
 
-Only *response handling* moves. A destination that builds its HTTP request at delivery time (SDK call, URL derived from `params`, custom `processAxiosResponse`) keeps `proxy` / `prepareProxy` / `processAxiosResponse` in its handler.
+Only *response handling* moves. A destination that **already has** a handler building its HTTP request at delivery time (SDK call, URL derived from `params`, custom `processAxiosResponse`) keeps `proxy` / `prepareProxy` / `processAxiosResponse` there — `deliver()` in `src/services/destination/nativeIntegration.ts` resolves the network handler and calls `proxy()` / `processAxiosResponse()` *before* it consults `isDestinationIntegrationEnabled`, and `DestinationIntegration` exposes no transport hook to move that into.
 
-**Keep the legacy `networkHandler.ts` until GA.** Workspaces not yet enrolled still transform through `processRouterDest` and are delivered by that handler; both are deleted together at GA.
+This whole section is about **migrations**. For a destination being built new, see "A new destination gets no `networkHandler.ts`" below — the answer there is always no.
+
+### Keeping the legacy handler
+
+**Keep the legacy `networkHandler.ts` until nothing routes to it.** `batching: true` is not the
+cutoff on its own; two things still send traffic through it:
+
+- **Pre-GA workspaces.** A workspace not named in
+  `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` transforms through `processRouterDest` *and*
+  is delivered by that handler — the two move together, so this is one condition, not two.
+- **v0 proxy requests.** `deliver()` reaches the framework branch only via `isProxyV1Request`,
+  which requires the v1 route *and* an array `metadata`. A v0 request stays on the handler even
+  for a batching-GA destination, because the framework answers with a `DeliveryV1Response` that
+  a v0 caller cannot parse.
+
+`customerio`, `braze_audience`, `iterable_audience`, `google_adwords_enhanced_conversions` and
+`reddit_audience` are all batching-GA today and still carry both a `delivery.ts` and a
+`src/v1/destinations/<dest>/networkHandler.ts` (gaec keeps a v0 one too) — now for the **second**
+reason only. The handler is deletable once v0 proxy traffic is confirmed dead for the destination.
+
+### A new destination gets no `networkHandler.ts`
+
+**Do not write one.** A destination built new on the framework has no legacy transform and no
+unenrolled workspaces, so nothing above applies to it. Build it framework-native:
+
+- **No `networkHandler.ts`, for transport or for response handling.** `posthog` and
+  `custom_audience` have neither a `networkHandler.ts` nor a `delivery.ts` — they take the
+  framework default, which reproduces `genericNetworkHandler`. That is the shape to copy.
+- **Add a `delivery.ts` only to override the default verdicts** (see the verdict builders above).
+- Mark it `batching: true` in `src/features.ts` from the start — a new destination is GA on day
+  one, so the `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` rollout flag is for migrations and
+  is not needed. That single entry turns on transform *and* delivery; there is nothing else to set.
+
+**If it looks like you need one, that is a framework gap — raise it, don't fork around it.** Two
+cases come up, and neither is a licence to hand-write a handler:
+
+- **Transport the framework cannot express** — an SDK call, a URL derived from `params`. Framework
+  delivery replaces response *interpretation* only, and `deliver()` runs transport before it
+  consults the predicate at all, so a handler written here would sit on the delivery path forever.
+- **OAuth on the v0 proxy path.** A v0 request bypasses `delivery.ts`, and `genericNetworkHandler`
+  throws a bare `NetworkError` with no `authErrorCategory`, so a 401 there aborts the batch without
+  requesting a token refresh. This is a **known gap in the framework**, not a reason to grow a
+  second copy of response handling — writing a handler re-forks classification across two files,
+  which is the exact thing this framework exists to remove.
+
+`reddit_audience` does ship `src/v1/destinations/reddit_audience/networkHandler.ts` despite being
+new and `batching: true` from the start. It predates this guidance and is **not a template** — if
+you are citing it to justify a handler on a new destination, raise the gap instead.
 
 ## Enabling it
 
@@ -140,11 +187,13 @@ Delivery has **no flag of its own**. It is gated on `isDestinationIntegrationEna
 - **GA:** the destination is marked `batching: true` in `features.ts` (surfaced as `destinationIntegrationsMap`), which enables both halves everywhere.
 - **Pre-GA:** the workspace is named in `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or `ALL`).
 
-One predicate for both halves is deliberate. The delivery path interprets a payload built by the matching transform path; an unenrolled workspace's events are still built by `processRouterDest`, and pairing those with framework response handling would misread them. Deciding both from one call makes that mismatch unrepresentable.
+One predicate for both halves is deliberate. The delivery path interprets a payload built by the matching transform path; an unenrolled workspace's events are still built by `processRouterDest`, and pairing those with framework response handling would misread them. Deciding both from one call makes that mismatch unrepresentable. See `.claude/skills/batching-framework/SKILL.md#one-gate-both-halves` for the predicate and the v0-proxy carve-out.
 
 Nothing extra is needed in your `dataDelivery` component tests or `live.ts` specs for a destination
 already marked batching-GA in `features.ts`; a pre-GA destination needs the transform flag set via
-`envOverrides`, or CI keeps exercising the legacy handler.
+`envOverrides`, or CI keeps exercising the legacy handler. If you are reading an older spec that
+still sets `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS`, that flag no longer exists —
+delete the override rather than porting it.
 
 ## Testing
 

@@ -217,7 +217,7 @@ spec.
    delivery has no flag of its own — it is gated on the same predicate as the transform, so a
    pre-GA destination only needs `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL'`. Do not
    add it for destinations already marked batching-GA in `features.ts`; both sides are enabled
-   there.
+   there. See `.claude/skills/batching-framework/SKILL.md#one-gate-both-halves`.
 7. **CI is automatic.** The `discover` job builds the workflow matrix from `destinations/*/live.ts`,
    so a new spec runs in CI with no workflow edit. `LIVE_SECRET_<DEST>` is derived from the
    destination code; an **OAuth** spec (`authType: 'oauth'`) additionally wildcard-imports the whole
@@ -299,7 +299,8 @@ const agent = new Agent({ keepAlive: false });
 export const live = {
   enabled: true,
   authType: 'apiKey', // apiKey | oauth | basic | serviceAccount | custom
-  // Optional: env applied around this destination's scenarios and restored after.
+  // Optional: env applied around this destination's scenarios and restored after. Only needed for a
+  // destination-specific rollout flag, e.g. a pre-GA batching enrolment:
   // envOverrides: { <DEST>_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL' },
   // Non-secret Config defaults from the component test's destination.Config; real creds via s.config.
   resolveConfig: (s) => ({ ...s.config }),

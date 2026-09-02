@@ -41,7 +41,7 @@ Provide a **generic batching framework** that:
 | **getBatchStrategy**           | Returns a `BatchStrategy` (`chunk` or `customBatch`) for a given endpoint                                               |
 | **TransformedPayload**         | One transformed event payload with endpoint, method, headers, and body                                                  |
 | **BatchStrategy**              | Describes how to combine payloads within a group — either `chunk(...)` or `customBatch(...)`                            |
-| **destinationIntegrationsMap** | Registry (`src/constants/destinationIntegrationsMap.ts`) that opts a destination into the framework                     |
+| **destinationIntegrationsMap** | Derived map of batching-GA destinations, built from `batching: true` in `src/features.ts` — not hand-authored           |
 
 ## Architecture — Block Diagram
 
@@ -56,10 +56,13 @@ Provide a **generic batching framework** that:
                           └──────────────┬───────────────┘
                                          │
                      ┌───────────────────┴────────────────────┐
-                     │  destinationIntegrationsMap lookup     │
+                     │ isDestinationIntegrationEnabled(       │
+                     │   destType, workspaceId)               │
+                     │ = batching-GA OR env-var rollout       │
+                     │ (same predicate gates deliver())       │
                      └──────────┬──────────────────┬──────────┘
                                 │                  │
-                     dest IS in map          dest NOT in map
+                              true               false
                                 │                  │
                  ┌──────────────▼───────────┐  ┌───▼───────────────┐
                  │ NEW FRAMEWORK PATH       │  │ LEGACY PATH       │
@@ -131,7 +134,8 @@ Provide a **generic batching framework** that:
 
 A destination opts in by:
 
-1. Marking itself `batching: true` in `src/features.ts`
+1. Adding `batching: true` to its `destinationCapabilities` entry in `src/features.ts` — which
+   enables the framework's **transform and delivery together**, there being one predicate for both
 2. Creating `src/v0/destinations/{dest}/routerTransform.ts` that exports `Integration` (the class, not an instance)
 
 ```typescript
@@ -141,7 +145,10 @@ const destinationCapabilities = {
 };
 ```
 
-`destinationIntegrationsMap` (`src/constants/destinationIntegrationsMap.ts`) is derived from that capability via `getGaDestinationIntegrations()`; it is not hand-edited.
+`destinationIntegrationsMap` (`src/constants/destinationIntegrationsMap.ts`) is **derived** from
+that capability via `getGaDestinationIntegrations()` and must not be hand-edited. The registration
+mechanics, the pre-GA rollout env var and the v0-proxy carve-out are documented once, in
+`.claude/skills/batching-framework/SKILL.md#enabling-the-framework` — not repeated here.
 
 The framework caches the **constructor** (not an instance) in `FetchHandler.destinationIntegrationHandlerMap` and creates a **new instance per request** to avoid race conditions with mutable instance state.
 
@@ -150,7 +157,7 @@ The framework caches the **constructor** (not an instance) in `FetchHandler.dest
 ```
 doRouterTransformation(events, destType, version, reqMetadata)
   │
-  ├─ if isDestinationIntegrationEnabled(destType, workspaceId):
+  ├─ if isDestinationIntegrationEnabled(destType, workspaceId):   // GA map OR per-workspace env var
   │    IntegrationClass = FetchHandler.getDestinationIntegrationHandler(destType)
   │    results = processDestinationIntegration(events, IntegrationClass, reqMetadata)
   │    return handleRouterTransformSuccessEvents(results, ...)

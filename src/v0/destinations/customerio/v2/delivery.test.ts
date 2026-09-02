@@ -3,8 +3,8 @@ import {
   firstJobIdentity,
   handleDeliveryResponse,
   toDeliveryV1Response,
-} from '../../../../services/destination/nativeBatching/delivery';
-import type { DeliveryContext } from '../../../../services/destination/nativeBatching/delivery';
+} from '../../../../services/destination/destinationIntegration/delivery';
+import type { DeliveryContext } from '../../../../services/destination/destinationIntegration/delivery';
 import { networkHandler as legacyNetworkHandler } from '../../../../v1/destinations/customerio/networkHandler';
 import type { DeliveryV1Response, ProxyMetdata, ProxyV1Request } from '../../../../types';
 

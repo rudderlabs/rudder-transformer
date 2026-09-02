@@ -26,7 +26,7 @@ import {
 //   2. apiVersion v2 — every event type moves to the V2 /v2/batch shape.
 //
 // CustomerIO is GA on the batching framework (features.ts marks it `batching: true`), so
-// isBatchingFrameworkEnabled short-circuits to true and both scenarios run through it
+// isDestinationIntegrationEnabled short-circuits to true and both scenarios run through it
 // unconditionally — there is no env var to set.
 //
 // Scenario config selects the event-stream API version. The seeds are identical in both. Which

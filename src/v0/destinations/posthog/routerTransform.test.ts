@@ -1,5 +1,5 @@
 import { Integration } from './routerTransform';
-import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/batchDestination';
+import { ChunkBatchStrategy } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { Metadata, RudderMessage } from '../../../types/rudderEvents';
 import type { PostHogMessage, PostHogDestination } from './types';
 import { MAX_EVENT_SIZE_BYTES } from './config';

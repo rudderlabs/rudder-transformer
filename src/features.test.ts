@@ -1,6 +1,6 @@
 import path from 'path';
 import defaultFeaturesConfig, {
-  getBatchingFrameworkGaDestinations,
+  getGaDestinationIntegrations,
   getDestinationHandlerName,
   isDestinationCdkV2Enabled,
   isValidDestination,
@@ -25,7 +25,7 @@ describe('features destination capabilities', () => {
     expect(defaultFeaturesConfig.regulations).toEqual(
       expect.arrayContaining(['BRAZE', 'AM', 'INTERCOM', 'CLEVERTAP']),
     );
-    expect(getBatchingFrameworkGaDestinations()).toEqual({
+    expect(getGaDestinationIntegrations()).toEqual({
       GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: true,
       POSTHOG: true,
       CUSTOM_AUDIENCE: true,

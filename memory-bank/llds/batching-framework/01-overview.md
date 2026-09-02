@@ -33,15 +33,15 @@ Provide a **generic batching framework** that:
 
 ## Terminology
 
-| Term                       | Definition                                                                                                              |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **RouterIntegration**      | Abstract class a destination extends to opt into the framework                                                          |
-| **transformEvent**         | Per-event method: transforms one input into one or more `TransformedPayload`s                                           |
-| **batchTransform**         | Framework-provided default that iterates inputs and calls `transformEvent()`; overridable for pre-batch bulk operations |
-| **getBatchStrategy**       | Returns a `BatchStrategy` (`chunk` or `customBatch`) for a given endpoint                                               |
-| **TransformedPayload**     | One transformed event payload with endpoint, method, headers, and body                                                  |
-| **BatchStrategy**          | Describes how to combine payloads within a group — either `chunk(...)` or `customBatch(...)`                            |
-| **batchedDestinationsMap** | Registry (`src/constants/batchedDestinationsMap.ts`) that opts a destination into the framework                         |
+| Term                           | Definition                                                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **DestinationIntegration**     | Abstract class a destination extends to opt into the framework                                                          |
+| **transformEvent**             | Per-event method: transforms one input into one or more `TransformedPayload`s                                           |
+| **batchTransform**             | Framework-provided default that iterates inputs and calls `transformEvent()`; overridable for pre-batch bulk operations |
+| **getBatchStrategy**           | Returns a `BatchStrategy` (`chunk` or `customBatch`) for a given endpoint                                               |
+| **TransformedPayload**         | One transformed event payload with endpoint, method, headers, and body                                                  |
+| **BatchStrategy**              | Describes how to combine payloads within a group — either `chunk(...)` or `customBatch(...)`                            |
+| **destinationIntegrationsMap** | Registry (`src/constants/destinationIntegrationsMap.ts`) that opts a destination into the framework                     |
 
 ## Architecture — Block Diagram
 
@@ -55,16 +55,16 @@ Provide a **generic batching framework** that:
                           │   .doRouterTransformation()  │
                           └──────────────┬───────────────┘
                                          │
-                       ┌─────────────────┴─────────────────┐
-                       │  batchedDestinationsMap lookup    │
-                       └────────┬──────────────────┬───────┘
+                     ┌───────────────────┴────────────────────┐
+                     │  destinationIntegrationsMap lookup     │
+                     └──────────┬──────────────────┬──────────┘
                                 │                  │
                      dest IS in map          dest NOT in map
                                 │                  │
-                   ┌────────────▼──────────┐  ┌────▼──────────────┐
-                   │ NEW FRAMEWORK PATH    │  │ LEGACY PATH       │
-                   │ processBatchedDest()  │  │ processRouterDest │
-                   └────────────┬──────────┘  └───────────────────┘
+                 ┌──────────────▼───────────┐  ┌───▼───────────────┐
+                 │ NEW FRAMEWORK PATH       │  │ LEGACY PATH       │
+                 │ processDestIntegration() │  │ processRouterDest │
+                 └──────────────┬───────────┘  └───────────────────┘
                                 │
               ┌─────────────────▼─────────────────┐
               │  1. Build metadataMap (jobId→Meta) │
@@ -131,27 +131,28 @@ Provide a **generic batching framework** that:
 
 A destination opts in by:
 
-1. Adding its key to `src/constants/batchedDestinationsMap.ts`
+1. Marking itself `batching: true` in `src/features.ts`
 2. Creating `src/v0/destinations/{dest}/routerTransform.ts` that exports `Integration` (the class, not an instance)
 
 ```typescript
-// src/constants/batchedDestinationsMap.ts
-export const batchedDestinationsMap: Record<string, true> = {
-  POSTHOG: true,
-  BRAZE: true,
+// src/features.ts
+const destinationCapabilities = {
+  POSTHOG: { routerTransform: true, batching: true },
 };
 ```
 
-The framework caches the **constructor** (not an instance) in `FetchHandler.routerTransformHandlerMap` and creates a **new instance per request** to avoid race conditions with mutable instance state.
+`destinationIntegrationsMap` (`src/constants/destinationIntegrationsMap.ts`) is derived from that capability via `getGaDestinationIntegrations()`; it is not hand-edited.
+
+The framework caches the **constructor** (not an instance) in `FetchHandler.destinationIntegrationHandlerMap` and creates a **new instance per request** to avoid race conditions with mutable instance state.
 
 ## Entry Point Flow
 
 ```
 doRouterTransformation(events, destType, version, reqMetadata)
   │
-  ├─ if batchedDestinationsMap[destType]:
-  │    IntegrationClass = FetchHandler.getRouterTransformHandler(destType)
-  │    results = processBatchedDestination(events, IntegrationClass, reqMetadata)
+  ├─ if isDestinationIntegrationEnabled(destType, workspaceId):
+  │    IntegrationClass = FetchHandler.getDestinationIntegrationHandler(destType)
+  │    results = processDestinationIntegration(events, IntegrationClass, reqMetadata)
   │    return handleRouterTransformSuccessEvents(results, ...)
   │
   └─ else:

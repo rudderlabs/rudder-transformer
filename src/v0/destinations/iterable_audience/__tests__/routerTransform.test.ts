@@ -1,5 +1,5 @@
 import { Integration } from '../routerTransform';
-import { processBatchedDestination } from '../../../../services/destination/nativeBatching/processBatchedDestination';
+import { processDestinationIntegration } from '../../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Connection, Destination } from '../../../../types/controlPlaneConfig';
@@ -126,7 +126,7 @@ describe('IterableAudienceIntegration happy paths', () => {
     const connection = buildConnection(123, emailMappings);
     const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getJsonBody(success)).toEqual({
       listId: 123,
@@ -140,7 +140,7 @@ describe('IterableAudienceIntegration happy paths', () => {
     const connection = buildConnection(123, emailMappings);
     const inputs = [buildInput(1, 'update', { email: 'a@b.com' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getJsonBody(success)).toEqual({
       listId: 123,
@@ -154,7 +154,7 @@ describe('IterableAudienceIntegration happy paths', () => {
     const connection = buildConnection(123, emailMappings);
     const inputs = [buildInput(1, 'delete', { email: 'a@b.com' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getJsonBody(success)).toEqual({
       listId: 123,
@@ -169,7 +169,7 @@ describe('IterableAudienceIntegration happy paths', () => {
     const connection = buildConnection(123, userIdMappings);
     const inputs = [buildInput(1, 'insert', { userId: 'u-1' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getJsonBody(success)).toEqual({
       listId: 123,
@@ -182,7 +182,7 @@ describe('IterableAudienceIntegration happy paths', () => {
     const connection = buildConnection(123, userIdMappings);
     const inputs = [buildInput(1, 'delete', { userId: 'u-1' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getJsonBody(success)).toEqual({
       listId: 123,
@@ -209,7 +209,7 @@ describe('IterableAudienceIntegration hybrid project', () => {
       buildInput(1, 'insert', { email: 'a@b.com', userId: 'u-1' }, destination, connection),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getJsonBody(success)).toEqual({
       listId: 123,
@@ -222,7 +222,7 @@ describe('IterableAudienceIntegration hybrid project', () => {
     const connection = buildConnection(123, hybridMappings);
     const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getJsonBody(success)).toEqual({
       listId: 123,
@@ -246,7 +246,7 @@ describe('IterableAudienceIntegration batching', () => {
       );
     }
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const successes = results.filter((r) => r.statusCode === 200);
     expect(successes).toHaveLength(2);
 
@@ -271,7 +271,7 @@ describe('IterableAudienceIntegration batching', () => {
       buildInput(2, 'delete', { email: 'c@d.com' }, destination, connection),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const successes = results.filter((r) => r.statusCode === 200);
     expect(successes).toHaveLength(2);
 
@@ -297,7 +297,7 @@ describe('IterableAudienceIntegration batching', () => {
       buildInput(2, 'delete', { email: 'c@d.com' }, destination, connection),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const successes = results.filter((r) => r.statusCode === 200);
     expect(successes).toHaveLength(2);
 
@@ -340,7 +340,7 @@ describe('IterableAudienceIntegration batching', () => {
       buildInput(5, 'delete', { userId: 'u-5' }, destination, connection),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const successes = results.filter((r) => r.statusCode === 200);
     expect(successes).toHaveLength(2);
 
@@ -376,7 +376,7 @@ describe('IterableAudienceIntegration per-row errors', () => {
       buildInput(2, 'insert', { email: '' }, destination, connection),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const successes = results.filter((r) => r.statusCode === 200);
     const errors = results.filter((r) => r.statusCode === 400);
 
@@ -399,7 +399,7 @@ describe('IterableAudienceIntegration per-row errors', () => {
         buildInput(2, 'insert', { email: 'not-an-email' }, destination, connection),
       ];
 
-      const results = await processBatchedDestination(inputs, Integration, {});
+      const results = await processDestinationIntegration(inputs, Integration, {});
       const errors = results.filter((r) => r.statusCode === 400);
       const successes = results.filter((r) => r.statusCode === 200);
 
@@ -430,7 +430,7 @@ describe('IterableAudienceIntegration identifier selection errors', () => {
     const connection = buildConnection(123, emailMappings);
     const inputs = [buildInput(1, 'insert', { userId: 'u-1' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const errors = results.filter((r) => r.statusCode === 400);
     expect(errors).toHaveLength(1);
     expect(errors[0].metadata[0].jobId).toBe(1);
@@ -441,7 +441,7 @@ describe('IterableAudienceIntegration identifier selection errors', () => {
     const connection = buildConnection(123, userIdMappings);
     const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const errors = results.filter((r) => r.statusCode === 400);
     expect(errors).toHaveLength(1);
     expect(errors[0].metadata[0].jobId).toBe(1);
@@ -458,7 +458,7 @@ describe('IterableAudienceIntegration datacenter + auth', () => {
     const connection = buildConnection(123, emailMappings);
     const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getEndpoint(success)).toBe('https://api.eu.iterable.com/api/lists/subscribe');
   });
@@ -471,7 +471,7 @@ describe('IterableAudienceIntegration datacenter + auth', () => {
       buildInput(2, 'insert', { email: 'BOB@example.COM' }, destination, connection),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     expect(getJsonBody(success)).toEqual({
       listId: 123,
@@ -487,7 +487,7 @@ describe('IterableAudienceIntegration datacenter + auth', () => {
     const connection = buildConnection(123, emailMappings);
     const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination, connection)];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const success = results.find((r) => r.statusCode === 200)!;
     const headers = getHeaders(success);
     expect(headers['Api-Key']).toBe('super-secret');

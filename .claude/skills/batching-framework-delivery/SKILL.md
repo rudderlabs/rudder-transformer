@@ -1,6 +1,6 @@
 ---
 name: batching-framework-delivery
-description: Delivery (response handling) for batching-framework destinations. Declare a static delivery spec on the BatchDestination class instead of writing a networkHandler responseHandler — the framework derives status codes, statTags and the response shape.
+description: Delivery (response handling) for batching-framework destinations. Declare a static delivery spec on the DestinationIntegration class instead of writing a networkHandler responseHandler — the framework derives status codes, statTags and the response shape.
 ---
 
 # Batching Framework — Delivery
@@ -22,7 +22,7 @@ Add a `delivery.ts` only when the destination's response handling genuinely diff
 
 ## Reference
 
-- `src/services/destination/nativeBatching/delivery.ts` — verdicts, `DeliverySpec`, the bridge
+- `src/services/destination/destinationIntegration/delivery.ts` — verdicts, `DeliverySpec`, the bridge
 - `src/v0/destinations/customerio/v2/delivery.ts` — 207 multi-status, positional index
 - `src/v0/destinations/braze_audience/delivery.ts` — partial failure on a 2xx, positional index
 - `src/v0/destinations/iterable_audience/delivery.ts` — failures keyed by identity, not index
@@ -33,7 +33,7 @@ Add a `delivery.ts` only when the destination's response handling genuinely diff
 
 Everything an integration says about delivery lives in **one object**, exported from its
 `delivery.ts` and attached to the class as `static readonly delivery`. Grouping it is the point: a
-`BatchDestination`'s other members are all about transforming an event, and a bare `statusOverrides`
+`DestinationIntegration`'s other members are all about transforming an event, and a bare `statusOverrides`
 or `failureReason` beside them reads as more of the same.
 
 ```typescript
@@ -41,7 +41,7 @@ or `failureReason` beside them reads as more of the same.
 import {
   abort, perItem, success, retry, throttled, authExpired, authRevoked,
   type DeliverySpec, type StatusOverrideMap,
-} from '../../../services/destination/nativeBatching/batchDestination';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
 
 const myStatusOverrides: StatusOverrideMap = {
   207: (ctx) => perItem(items.map((item, i) => (failed(i) ? abort(reason) : success()))),
@@ -55,7 +55,7 @@ export const myDelivery: DeliverySpec = {
 };
 
 // routerTransform.ts
-class MyIntegration extends BatchDestination<TBody> {
+class MyIntegration extends DestinationIntegration<TBody> {
   static readonly delivery = myDelivery;
 }
 ```
@@ -107,11 +107,11 @@ Do **not** pair `dontBatch` with transient/retryable statuses such as 5xx. On a 
 
 `gaec` originally indexed off the response's `results` and hit exactly this: whenever Google omitted `results`, an abort became a batch retry that could never converge, since re-uploading accepted adjustments returns duplicate-enhancement failures on every attempt.
 
-**`ctx.request.body?.JSON` only holds the batch on `BodyFormat.JSON`.** `mapSuccessPayloadToServerFormat` writes the batch to `body[strategy.bodyFormat]` and hard-sets the other three to `{}` (`processBatchedDestination.ts`), so a destination on `JSON_ARRAY`, `FORM` or `XML` reading `body.JSON` gets nothing on every response — success included — and the mismatch guard answers each one with an N-job 500. Read the key your `getBatchStrategy` actually returns. All six spec'd destinations are on `JSON` today, which is why no test catches this for you.
+**`ctx.request.body?.JSON` only holds the batch on `BodyFormat.JSON`.** `mapSuccessPayloadToServerFormat` writes the batch to `body[strategy.bodyFormat]` and hard-sets the other three to `{}` (`processDestinationIntegration.ts`), so a destination on `JSON_ARRAY`, `FORM` or `XML` reading `body.JSON` gets nothing on every response — success included — and the mismatch guard answers each one with an N-job 500. Read the key your `getBatchStrategy` actually returns. All six spec'd destinations are on `JSON` today, which is why no test catches this for you.
 
 **Decide what an unreadable posted array should mean before you write the loop.** `perItem([])` is a length mismatch, so the bridge retries the whole batch — and that retry reposts the same body and mismatches again, which never converges. `braze_audience` avoids it by falling back to `ctx.jobs`, which the framework builds 1:1 with the posted array. Taking the `fallback` parameter and returning a whole-batch verdict is the other option.
 
-**A delivery spec and an array-returning `transformEvent` are mutually exclusive.** `ctx.jobs` carries one entry per job, so a job contributing two body items puts the two lengths permanently out of step and the batch retries forever. `batchDestination.ts` and the VDM V2 dispatch table both permit `transformEvent` to return an array; a destination that does must not call `perItem`.
+**A delivery spec and an array-returning `transformEvent` are mutually exclusive.** `ctx.jobs` carries one entry per job, so a job contributing two body items puts the two lengths permanently out of step and the batch retries forever. `destinationIntegration.ts` and the VDM V2 dispatch table both permit `transformEvent` to return an array; a destination that does must not call `perItem`.
 
 ### Never infer auth from a status code
 
@@ -135,14 +135,16 @@ Only *response handling* moves. A destination that builds its HTTP request at de
 
 ## Enabling it
 
-`{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS` — comma-separated workspace IDs or `ALL`. Two things to know:
+Delivery has **no flag of its own**. It is gated on `isDestinationIntegrationEnabled(destType, workspaceId)` — the same predicate as the router transform:
 
-- There is **no GA map** for it — being in `batchedDestinationsMap` does not enable framework delivery. It stays on the legacy handler everywhere until a workspace is named.
-- It **requires the transform flag** for the same workspace and returns false without it. The delivery path interprets a payload built by the matching transform path; an unenrolled workspace's events are still built by `processRouterDest`, and pairing those with framework response handling would misread them.
+- **GA:** the destination is marked `batching: true` in `features.ts` (surfaced as `destinationIntegrationsMap`), which enables both halves everywhere.
+- **Pre-GA:** the workspace is named in `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or `ALL`).
 
-Set the delivery flag in your `dataDelivery` component tests and relevant `live.ts` specs via
-`envOverrides`, or CI keeps exercising the legacy handler. The transform flag is not needed for
-destinations already marked batching-GA in `features.ts`.
+One predicate for both halves is deliberate. The delivery path interprets a payload built by the matching transform path; an unenrolled workspace's events are still built by `processRouterDest`, and pairing those with framework response handling would misread them. Deciding both from one call makes that mismatch unrepresentable.
+
+Nothing extra is needed in your `dataDelivery` component tests or `live.ts` specs for a destination
+already marked batching-GA in `features.ts`; a pre-GA destination needs the transform flag set via
+`envOverrides`, or CI keeps exercising the legacy handler.
 
 ## Testing
 

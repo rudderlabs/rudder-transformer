@@ -9,7 +9,7 @@ to Iterable list **subscribe** / **unsubscribe** calls and delivered in batches.
 
 Implementation spans two layers:
 
-- **v0 transform** (`src/v0/destinations/iterable_audience/`) — turns record events into batched HTTP requests via the native `BatchDestination` framework.
+- **v0 transform** (`src/v0/destinations/iterable_audience/`) — turns record events into batched HTTP requests via the native `DestinationIntegration` framework.
 - **v1 delivery** (`src/v1/destinations/iterable_audience/`) — proxies the requests and classifies the per-subscriber outcomes from Iterable's bulk response.
 
 ## Features

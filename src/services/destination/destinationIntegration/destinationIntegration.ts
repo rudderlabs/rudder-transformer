@@ -50,21 +50,21 @@ export {
 } from './delivery';
 
 // ---------------------------------------------------------------------------
-// Abstract class: BatchDestination<TBody, TInputSchema>
+// Abstract class: DestinationIntegration<TBody, TInputSchema>
 // ---------------------------------------------------------------------------
 
-// Constructor type for BatchDestination subclasses — used by the framework to instantiate per request.
+// Constructor type for DestinationIntegration subclasses — used by the framework to instantiate per request.
 // Only TBody is needed; TInputSchema is an internal concern of the concrete class.
 // The delivery spec is part of the contract, so the constructor type carries it: the delivery path
 // resolves a class through this type and reads `delivery` off it without ever instantiating (the
 // proxy payload has no `destination` or `connection` to construct one with).
-export type BatchDestinationConstructor<
+export type DestinationIntegrationConstructor<
   TBody extends Record<string, unknown> = Record<string, unknown>,
-> = (new (destination: Destination, connection?: Connection) => BatchDestination<TBody>) & {
+> = (new (destination: Destination, connection?: Connection) => DestinationIntegration<TBody>) & {
   readonly delivery: DeliverySpec;
 };
 
-export abstract class BatchDestination<
+export abstract class DestinationIntegration<
   TBody extends Record<string, unknown> = Record<string, unknown>,
   TInputSchema extends ZodType = ZodType<Record<string, unknown>>,
 > {

@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import {
-  BatchDestination,
+  DestinationIntegration,
   CustomBatchStrategy,
   TransformedEvent,
   makeRouterInputSchema,
-} from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
+import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { RecordAction } from '../../../types/rudderEvents';
 import { sandboxedEvaluateTemplate } from './template/templateSandboxClient';
 import {
@@ -33,7 +33,7 @@ const customAudienceInputSchema = makeRouterInputSchema({
   connectionConfig: z.object({ destination: CustomAudienceConnectionDestConfigSchema }),
 });
 
-class CustomAudienceIntegration extends BatchDestination<
+class CustomAudienceIntegration extends DestinationIntegration<
   Record<string, unknown>,
   typeof customAudienceInputSchema
 > {
@@ -43,7 +43,7 @@ class CustomAudienceIntegration extends BatchDestination<
 
   private readonly headers: Record<string, string>;
 
-  constructor(...args: ConstructorParameters<typeof BatchDestination>) {
+  constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
     super(...args);
     if (!this.connection) {
       throw new InstrumentationError('Connection config is required for custom_audience');

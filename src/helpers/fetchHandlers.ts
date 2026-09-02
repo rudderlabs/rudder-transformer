@@ -1,4 +1,4 @@
-import { BatchDestinationConstructor } from '../services/destination/nativeBatching/batchDestination';
+import { DestinationIntegrationConstructor } from '../services/destination/destinationIntegration/destinationIntegration';
 import { Hydrator, MiscService } from '../services/misc';
 
 export class FetchHandler {
@@ -10,7 +10,8 @@ export class FetchHandler {
 
   private static deletionHandlerMap: Map<string, any> = new Map();
 
-  private static batchDestinationHandlerMap: Map<string, BatchDestinationConstructor> = new Map();
+  private static destinationIntegrationHandlerMap: Map<string, DestinationIntegrationConstructor> =
+    new Map();
 
   public static getDestHandler(dest: string, version: string) {
     let destinationHandler: any;
@@ -44,14 +45,14 @@ export class FetchHandler {
     return newSourceHydrateHandler;
   }
 
-  public static getBatchDestinationHandler(dest: string): BatchDestinationConstructor {
+  public static getDestinationIntegrationHandler(dest: string): DestinationIntegrationConstructor {
     const key = dest.toLowerCase();
-    const routerTransformHandler = this.batchDestinationHandlerMap.get(key);
+    const routerTransformHandler = this.destinationIntegrationHandlerMap.get(key);
     if (routerTransformHandler) {
       return routerTransformHandler;
     }
-    const handler = MiscService.getBatchDestinationHandler(key);
-    this.batchDestinationHandlerMap.set(key, handler);
+    const handler = MiscService.getDestinationIntegrationHandler(key);
+    this.destinationIntegrationHandlerMap.set(key, handler);
     return handler;
   }
 

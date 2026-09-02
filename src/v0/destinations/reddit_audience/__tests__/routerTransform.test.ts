@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
 import { Integration } from '../routerTransform';
-import { processBatchedDestination } from '../../../../services/destination/nativeBatching/processBatchedDestination';
+import { processDestinationIntegration } from '../../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Connection, Destination } from '../../../../types/controlPlaneConfig';
@@ -97,7 +97,7 @@ const jobIds = (r: any) =>
 
 describe('reddit_audience router transform', () => {
   it('builds the documented positional-matrix payload', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { EMAIL_SHA256: 'alice@example.com' })],
       Integration,
       {},
@@ -117,7 +117,7 @@ describe('reddit_audience router transform', () => {
 
   it('sends the bearer token and a non-generic User-Agent', async () => {
     // Reddit maps a missing/generic user agent to 403 (Blocked) and 429.
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { EMAIL_SHA256: 'alice@example.com' })],
       Integration,
       {},
@@ -129,7 +129,7 @@ describe('reddit_audience router transform', () => {
   });
 
   it('maps insert and update to ADD, and batches them together', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(1, 'insert', { EMAIL_SHA256: 'a@example.com' }),
         buildInput(2, 'update', { EMAIL_SHA256: 'b@example.com' }),
@@ -148,7 +148,7 @@ describe('reddit_audience router transform', () => {
     // iterable_audience (distinct URLs per action) the composite grouping key
     // would otherwise merge ADD and REMOVE into one request and silently send
     // removals under action_type ADD.
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(1, 'insert', { EMAIL_SHA256: 'a@example.com' }),
         buildInput(2, 'delete', { EMAIL_SHA256: 'b@example.com' }),
@@ -168,7 +168,7 @@ describe('reddit_audience router transform', () => {
   it('SPLITS rows whose identifier sets differ, so column_order always aligns', async () => {
     // Reddit requires every user_data row to match column_order positionally.
     // An email-only row cannot ride in a request declaring two columns.
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(1, 'insert', { EMAIL_SHA256: 'a@example.com' }),
         buildInput(2, 'insert', { MAID_SHA256: 'EA7583CD-A667-48BC-B806-42ECB2B48606' }),
@@ -198,7 +198,7 @@ describe('reddit_audience router transform', () => {
   });
 
   it('puts email before MAID in a two-column row', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(1, 'insert', {
           // deliberately reversed key order in the source object
@@ -221,7 +221,7 @@ describe('reddit_audience router transform', () => {
     const inputs = Array.from({ length: 2501 }, (_, i) =>
       buildInput(i + 1, 'insert', { EMAIL_SHA256: `user${i}@example.com` }),
     );
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const ok = successes(results);
     expect(ok).toHaveLength(2);
     const sizes = ok.map((r) => body(r).data.user_data.length).sort((a, b) => b - a);
@@ -229,7 +229,7 @@ describe('reddit_audience router transform', () => {
   });
 
   it('aborts only the identifier-less record and still delivers its siblings', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(1, 'insert', { EMAIL_SHA256: 'a@example.com' }),
         buildInput(2, 'insert', {}),
@@ -248,7 +248,7 @@ describe('reddit_audience router transform', () => {
   });
 
   it('drops identifiers Reddit does not accept without failing the record', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { EMAIL_SHA256: 'a@example.com', phone: '+15554441234' })],
       Integration,
       {},
@@ -259,7 +259,7 @@ describe('reddit_audience router transform', () => {
   });
 
   it('aborts a record whose only identifier is unmappable', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { phone: '+15554441234' })],
       Integration,
       {},
@@ -269,7 +269,7 @@ describe('reddit_audience router transform', () => {
 
   it('passes pre-hashed values through when isHashRequired is false', async () => {
     const pre = sha256('alice@example.com');
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(
           1,
@@ -286,7 +286,7 @@ describe('reddit_audience router transform', () => {
   });
 
   it('rejects the record when hashing is off but the value is not hashed', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(
           1,
@@ -305,25 +305,25 @@ describe('reddit_audience router transform', () => {
   it('rejects a non-record message type via the input schema', async () => {
     const input = buildInput(1, 'insert', { EMAIL_SHA256: 'a@example.com' });
     (input.message as any).type = 'track';
-    const results = await processBatchedDestination([input], Integration, {});
+    const results = await processDestinationIntegration([input], Integration, {});
     expect(results.filter((r) => r.statusCode === 400)).toHaveLength(1);
   });
 
   it('fails as a configuration error when the access token is missing', async () => {
     const input = buildInput(1, 'insert', { EMAIL_SHA256: 'a@example.com' });
     delete (input.metadata as any).secret;
-    const results = await processBatchedDestination([input], Integration, {});
+    const results = await processDestinationIntegration([input], Integration, {});
     const failed = results.filter((r) => r.statusCode !== 200);
     expect(failed).toHaveLength(1);
   });
 
   it("builds the endpoint from the connection's audienceId", async () => {
-    // `processBatchedDestination` is scoped to ONE destination + connection per
+    // `processDestinationIntegration` is scoped to ONE destination + connection per
     // call (`events[0].destination`, first non-null `connection`), so a router
     // call never spans two audiences — rudder-server groups by connection
     // upstream. The audience therefore comes from connection config, exactly as
     // braze_audience reads customAttributeName and iterable_audience reads listId.
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(
           1,
@@ -348,7 +348,7 @@ describe('reddit_audience router transform', () => {
     // destination cannot function at all without connection config.
     const input = buildInput(1, 'insert', { EMAIL_SHA256: 'a@example.com' });
     delete (input as any).connection;
-    await expect(processBatchedDestination([input], Integration, {})).rejects.toThrow(
+    await expect(processDestinationIntegration([input], Integration, {})).rejects.toThrow(
       'Connection config is required for reddit_audience',
     );
   });
@@ -414,7 +414,7 @@ describe('destination config shape', () => {
   it('transforms a destination that carries NO adAccountId', async () => {
     const dest = buildDestination();
     delete (dest.Config as Record<string, unknown>).adAccountId;
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { EMAIL_SHA256: 'alice@example.com' }, dest)],
       Integration,
       {},
@@ -426,7 +426,7 @@ describe('destination config shape', () => {
   });
 
   it('still accepts a destination that does carry adAccountId (agentic/MCP path)', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { EMAIL_SHA256: 'alice@example.com' })],
       Integration,
       {},

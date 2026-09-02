@@ -103,10 +103,10 @@ export type PerItemVerdicts = { kind: 'perItem'; verdicts: ItemVerdict[] };
  * one body item. A length mismatch degrades to a whole-batch verdict rather than misattributing.
  *
  * That makes a delivery spec and an **array-returning `transformEvent`** mutually exclusive.
- * `ctx.jobs` is one entry per job (`processBatchedDestination` builds it from a `Set<number>` of
+ * `ctx.jobs` is one entry per job (`processDestinationIntegration` builds it from a `Set<number>` of
  * job ids), so one job contributing two body items puts the two lengths permanently out of step:
  * the guard retries the batch, the retry reproduces the same mismatch, and it never converges.
- * `batchDestination.ts`'s `transformEvent` and the VDM V2 dispatch table both permit an array, so
+ * `destinationIntegration.ts`'s `transformEvent` and the VDM V2 dispatch table both permit an array, so
  * a destination that returns one must not declare `statusOverrides` that call `perItem`.
  */
 export const perItem = (verdicts: ItemVerdict[]): PerItemVerdicts => ({
@@ -212,7 +212,7 @@ export const classifyByStatus = (status: number, reason: () => string): Verdict 
 /**
  * Everything an integration declares about **delivery**, in one object.
  *
- * It is grouped rather than spread across loose statics because a `BatchDestination` is otherwise
+ * It is grouped rather than spread across loose statics because a `DestinationIntegration` is otherwise
  * entirely about *transformation* — `transformEvent`, `getBatchStrategy`, `getInputSchema` — and a
  * bare `statusOverrides` or `failureReason` sitting beside them reads as more of the same. Behind
  * `static readonly delivery`, the scope is stated at the declaration site: these describe what to
@@ -251,12 +251,12 @@ const statusOnlyFailureReason = (ctx: DeliveryContext): string => defaultFailure
  * Static properties are inherited but *shadowed*, not merged: a subclass declaring its own
  * `delivery` would otherwise silently drop everything an ancestor declared, with no type or
  * runtime error. `statusOverrides` is therefore merged key-by-key, so a family-level map on e.g.
- * VDMV2ObjectDestination keeps working when a concrete destination adds an entry of its own, and
+ * VDMV2ObjectIntegration keeps working when a concrete destination adds an entry of its own, and
  * `failureReason` resolves to the nearest declaration — which is what a plain static override
  * would have done. Not cached: the walk is three levels of small objects, nothing next to the HTTP
  * call it accompanies, and a cache would go stale whenever a test swaps a spec.
  *
- * Throws when handed anything that is not a class. `MiscService.getBatchDestinationHandler` is
+ * Throws when handed anything that is not a class. `MiscService.getDestinationIntegrationHandler` is
  * `require(...).Integration`, so a missing or renamed export arrives here as `undefined`, and
  * walking from `undefined` resolves to the empty spec — which is a *valid* configuration meaning
  * "classify on status alone". Every destination that reports partial failures on a 2xx
@@ -267,7 +267,7 @@ const statusOnlyFailureReason = (ctx: DeliveryContext): string => defaultFailure
 export function resolveDeliverySpec(klass: unknown): ResolvedDeliverySpec {
   if (typeof klass !== 'function') {
     throw new PlatformError(
-      'Delivery spec resolution: expected a BatchDestination class, got ' +
+      'Delivery spec resolution: expected a DestinationIntegration class, got ' +
         `${klass === null ? 'null' : typeof klass}. The destination's routerTransform module ` +
         'likely does not export `Integration`.',
     );

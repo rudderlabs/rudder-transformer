@@ -16,7 +16,7 @@ import {
   type DeliverySpec,
   type ItemVerdict,
 } from './delivery';
-import { BatchDestination } from './batchDestination';
+import { DestinationIntegration } from './destinationIntegration';
 import stats from '../../../util/stats';
 import type { ProxyMetdata, ProxyV1Request } from '../../../types';
 
@@ -196,7 +196,7 @@ describe('resolveDeliverySpec', () => {
   });
 
   it('returns the framework defaults for a class declaring nothing anywhere', () => {
-    const spec = resolveDeliverySpec(BatchDestination);
+    const spec = resolveDeliverySpec(DestinationIntegration);
     expect(spec.statusOverrides).toEqual({});
     expect(spec.failureReason(ctxFor(503, { msg: 'ignored' }))).toBe(
       '[Generic Response Handler] Request failed with status: 503',
@@ -208,7 +208,7 @@ describe('resolveDeliverySpec', () => {
     ['null', null],
     ['a plain object', {}],
   ])('throws rather than degrading to the empty spec for %s', (_name, notAClass) => {
-    // `MiscService.getBatchDestinationHandler` is `require(...).Integration`, so a renamed or
+    // `MiscService.getDestinationIntegrationHandler` is `require(...).Integration`, so a renamed or
     // missing export lands here as undefined. Resolving that to `{}` is indistinguishable from a
     // destination that genuinely classifies on status alone — every partial failure reported on a
     // 2xx would come back `statusCode: 200, error: 'success'`, dropped with no throw and no metric.
@@ -220,7 +220,7 @@ describe('handleDeliveryResponse', () => {
   const exact = jest.fn(() => success());
   const klass = jest.fn(() => abort('from class key'));
 
-  class Dest extends BatchDestination<Record<string, unknown>> {
+  class Dest extends DestinationIntegration<Record<string, unknown>> {
     static readonly delivery: DeliverySpec = { statusOverrides: { 207: exact, '2xx': klass } };
 
     transformEvent() {
@@ -390,7 +390,7 @@ describe('toDeliveryV1Response — responses returned directly', () => {
     // single honest label. This response is returned rather than thrown because ctx.status is 2xx.
     // The bridge sets only the error-describing half; nativeIntegration merges the identifying
     // tags (destType, destinationId, workspaceId, …) from the same getTags metadata the thrown
-    // path uses — asserted end to end in deliverBatchingFramework.test.ts.
+    // path uses — asserted end to end in deliverDestinationIntegration.test.ts.
     const uniformFailure = toDeliveryV1Response(abort('all bad'), ctxFor(200, {}), DEST);
     expect(uniformFailure.statTags).toEqual({ errorCategory: 'network', errorType: 'aborted' });
 

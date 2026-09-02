@@ -9,7 +9,7 @@ description: Create the transformation logic for a new VDM V2 object-based desti
 
 ## When to use
 
-Use `VDMV2ObjectDestination` when the destination:
+Use `VDMV2ObjectIntegration` when the destination:
 
 - Receives **record events** (insert/update/delete) targeting specific **object types** (person, event, contact, lead, etc.)
 - Object type comes from **connection config** (`connection.config.destination.object`)
@@ -22,9 +22,9 @@ For audience destinations (add/remove users from segments), use the `vdm-next-au
 
 Read these files before implementing:
 
-- **Framework source** -- `src/services/destination/nativeBatching/vdmV2ObjectDestination.ts` -- `VDMV2ObjectDestination` abstract class, `RecordInput`/`RecordMessage` types, `isRecordInput` type guard, dispatch logic
+- **Framework source** -- `src/services/destination/destinationIntegration/vdmV2ObjectIntegration.ts` -- `VDMV2ObjectIntegration` abstract class, `RecordInput`/`RecordMessage` types, `isRecordInput` type guard, dispatch logic
 - **CustomerIO** (`src/v0/destinations/customerio/`) -- canonical implementation with record + event-stream support
-  - `routerTransform.ts` -- `VDMV2ObjectDestination` subclass with handler map, batch strategy, input schema
+  - `routerTransform.ts` -- `VDMV2ObjectIntegration` subclass with handler map, batch strategy, input schema
   - `routerTransform.test.ts` -- unit tests instantiating the Integration class directly
   - `types.ts` -- Zod schemas for connection config (with `object` field), destination config, router request type
   - `v2/recordTransform.ts` -- record payload builder (no action validation)
@@ -38,7 +38,7 @@ Read these files before implementing:
 
 ```
 src/v0/destinations/<dest_name>/
-  routerTransform.ts        # VDMV2ObjectDestination subclass (exported as Integration)
+  routerTransform.ts        # VDMV2ObjectIntegration subclass (exported as Integration)
   routerTransform.test.ts   # Unit tests for the Integration class
   types.ts                  # Zod schemas, TypeScript types, connection config
   delivery.ts               # (Optional) the `delivery` spec — only if response handling
@@ -52,9 +52,9 @@ Additional files (config, payload builders, utils) depend on the destination's c
 ```
 RouterTransformationRequestData[]
     |
-processBatchedDestination()              [framework orchestrator]
+processDestinationIntegration()          [framework orchestrator]
     |
-VDMV2ObjectDestination<TBody, TRecordSchema, TEventStreamSchema>  [your integration class]
+VDMV2ObjectIntegration<TBody, TRecordSchema, TEventStreamSchema>  [your integration class]
     |--- getInputSchema()                -> [framework] z.union(recordSchema, eventStreamSchema)
     |--- transformEvent()                -> [inherited] dispatches to:
     |       |--- isRecordInput()?
@@ -109,21 +109,21 @@ Object destinations declare both `recordSchema` and `eventStreamSchema`. Overrid
 
 ## Enabling the Framework
 
-Register in `src/constants/batchedDestinationsMap.ts` and update `src/features.ts` under `defaultFeaturesConfig` with the destination definition name.
+Mark the destination `batching: true` in `src/features.ts` (and `routerTransform: true`). `destinationIntegrationsMap` is derived from this — nothing to hand-edit there.
 
-Delivery is gated separately -- see `.claude/skills/batching-framework-delivery/SKILL.md`.
+Delivery is gated by the same predicate -- see `.claude/skills/batching-framework-delivery/SKILL.md`.
 
 ## Steps
 
 1. Read the reference files listed above
 2. Create `src/v0/destinations/<dest_name>/types.ts` -- Zod schemas for connection config (with `object` field), record message, and event-stream message; derive TypeScript types
-3. Create `src/v0/destinations/<dest_name>/routerTransform.ts` -- extend `VDMV2ObjectDestination<TBody, typeof recordInputSchema, typeof eventStreamInputSchema>`:
+3. Create `src/v0/destinations/<dest_name>/routerTransform.ts` -- extend `VDMV2ObjectIntegration<TBody, typeof recordInputSchema, typeof eventStreamInputSchema>`:
    - `recordSchema` / `eventStreamSchema` -- `readonly` properties set to the two `makeRouterInputSchema` schemas (shared `destinationConfig` constant)
    - `transformObjectRecord(input)` -- return handler map with object type -> action -> handler
    - `getBatchStrategy()` -- return `ChunkBatchStrategy` with `maxPayloadSize`/`maxItems` and `wrapBody`
    - (Optional) `transformEventStream(input)` -- handle non-record events
    - Export as `Integration`
-4. Register in `src/constants/batchedDestinationsMap.ts` and `src/features.ts`
+4. Mark `batching: true` in `src/features.ts`
 5. (Optional) Create `delivery.ts` -- the `delivery` spec, only if the API reports failures the
    framework default cannot read; add a `delivery.test.ts` that compares it against the legacy handler
 6. Create `src/v0/destinations/<dest_name>/routerTransform.test.ts` -- unit tests

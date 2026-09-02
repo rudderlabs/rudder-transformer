@@ -209,7 +209,7 @@ const getCapabilityEntries = (capability: keyof DestinationCapabilities) =>
 const getCapabilityMap = (capability: keyof DestinationCapabilities): Record<string, true> =>
   Object.fromEntries(getCapabilityEntries(capability).map(([destination]) => [destination, true]));
 
-export const getBatchingFrameworkGaDestinations = (): Record<string, true> =>
+export const getGaDestinationIntegrations = (): Record<string, true> =>
   getCapabilityMap('batching');
 
 export const isDestinationCdkV2Enabled = (destination: string): boolean =>

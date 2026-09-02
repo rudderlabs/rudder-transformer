@@ -22,7 +22,7 @@ Audience destinations share these traits:
 
 ```
 src/v0/destinations/<dest_name>/
-├── routerTransform.ts        # BatchDestination subclass (exported as Integration)
+├── routerTransform.ts        # DestinationIntegration subclass (exported as Integration)
 ├── types.ts                  # Zod schemas + TypeScript types for record events
 ├── config.ts                 # Constants: endpoints, action maps, batch sizes, identifier configs
 ├── utils.ts                  # (Optional) Normalization, hashing, field processing, API helpers
@@ -44,7 +44,7 @@ test/integrations/destinations/<dest_name>/
 
 **Primary reference** — uses the batching framework (the only pattern for new destinations):
 
-- **Custom Audience** (`src/v0/destinations/custom_audience/`) — `BatchDestination` subclass with `CustomBatchStrategy`, field processing, hashing, auth headers. **Read this first.**
+- **Custom Audience** (`src/v0/destinations/custom_audience/`) — `DestinationIntegration` subclass with `CustomBatchStrategy`, field processing, hashing, auth headers. **Read this first.**
 
 For audience-specific domain patterns (identifier schemas, hashing configs, payload formats):
 
@@ -267,19 +267,19 @@ Raw value → Null check → Hashing consistency check → Normalization → Val
 
 ---
 
-## routerTransform.ts — BatchDestination Implementation
+## routerTransform.ts — DestinationIntegration Implementation
 
-All new audience destinations use the native batching framework. Extend `BatchDestination` and implement three methods. For full framework documentation, see `.claude/skills/batching-framework/SKILL.md`.
+All new audience destinations use the native batching framework. Extend `DestinationIntegration` and implement three methods. For full framework documentation, see `.claude/skills/batching-framework/SKILL.md`.
 
 ```typescript
 import { ZodType } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { BatchDestination } from '../../../services/destination/nativeBatching/batchDestination';
-import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/chunkBatchStrategy';
+import { DestinationIntegration } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import { ChunkBatchStrategy } from '../../../services/destination/destinationIntegration/chunkBatchStrategy';
 import type {
   TransformedEvent,
   BatchStrategy,
-} from '../../../services/destination/nativeBatching/types';
+} from '../../../services/destination/destinationIntegration/types';
 import type { RouterTransformationRequestData } from '../../../types';
 import { processAudienceRecord } from '../../util/audienceUtils';
 import { RecordRouterRequestSchema, type RecordRequest } from './types';
@@ -298,7 +298,7 @@ type AudienceEventPayload = {
   fields: Record<string, string | null>;
 };
 
-class AudienceIntegration extends BatchDestination<AudienceEventPayload> {
+class AudienceIntegration extends DestinationIntegration<AudienceEventPayload> {
   // Transform a single event into the intermediate payload
   transformEvent(input: RouterTransformationRequestData): TransformedEvent<AudienceEventPayload> {
     const event = input as unknown as RecordRequest;
@@ -390,10 +390,10 @@ export const Integration = AudienceIntegration;
 
 ### Enabling the Batching Framework
 
-Register the destination in `src/constants/batchedDestinationsMap.ts`:
+Register the destination in `src/constants/destinationIntegrationsMap.ts`:
 
 ```typescript
-export const batchedDestinationsMap: Record<string, true> = {
+export const destinationIntegrationsMap: Record<string, true> = {
   POSTHOG: true,
   CUSTOM_AUDIENCE: true,
   <DEST_NAME_UPPER>: true,  // Add your destination here
@@ -402,8 +402,8 @@ export const batchedDestinationsMap: Record<string, true> = {
 
 **Reference:**
 
-- `src/v0/destinations/custom_audience/routerTransform.ts` — Complete `BatchDestination` implementation with `CustomBatchStrategy`, field processing, auth headers
-- `.claude/skills/batching-framework/SKILL.md` — `BatchDestination` abstract class, `ChunkBatchStrategy`, `CustomBatchStrategy`, `TransformedEvent` type, `internalGroupKey` pattern
+- `src/v0/destinations/custom_audience/routerTransform.ts` — Complete `DestinationIntegration` implementation with `CustomBatchStrategy`, field processing, auth headers
+- `.claude/skills/batching-framework/SKILL.md` — `DestinationIntegration` abstract class, `ChunkBatchStrategy`, `CustomBatchStrategy`, `TransformedEvent` type, `internalGroupKey` pattern
 
 ---
 
@@ -476,7 +476,7 @@ headers: { 'x-api-key': apiKey };
 
 ## Delivery — response handling (Optional)
 
-Response handling lives on your `BatchDestination` class as a static `delivery` spec, not in a
+Response handling lives on your `DestinationIntegration` class as a static `delivery` spec, not in a
 `networkHandler.ts`. **Most audience destinations need nothing** — the framework default reproduces
 `genericNetworkHandler`.
 
@@ -554,10 +554,10 @@ At delivery time, failures are expressed as verdicts (`authExpired`, `throttled`
 
 ### Unit Tests (co-located)
 
-**routerTransform.test.ts** — Test the `Integration` class via the framework's `processBatchedDestination` function.
+**routerTransform.test.ts** — Test the `Integration` class via the framework's `processDestinationIntegration` function.
 
 ```typescript
-import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
+import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { Integration } from './routerTransform';
 
 const buildDestination = (overrides = {}) => ({
@@ -589,10 +589,10 @@ const buildInput = (jobId: number, messageOverrides = {}, connectionOverrides = 
   connection: buildConnection(connectionOverrides),
 });
 
-describe('AudienceIntegration via processBatchedDestination', () => {
+describe('AudienceIntegration via processDestinationIntegration', () => {
   it('valid insert -> successful batched response with hashed identifiers', async () => {
     const inputs = [buildInput(1), buildInput(2)];
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const successes = results.filter((r) => r.statusCode === 200);
     expect(successes).toHaveLength(1);
     expect(successes[0].batched).toBe(true);
@@ -606,21 +606,21 @@ describe('AudienceIntegration via processBatchedDestination', () => {
       buildInput(2, { action: 'insert' }),
       buildInput(3, { action: 'delete' }),
     ];
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const successes = results.filter((r) => r.statusCode === 200);
     expect(successes).toHaveLength(2); // One ADD batch, one REMOVE batch
   });
 
   it('invalid identifier key -> per-event error response', async () => {
     const inputs = [buildInput(1, { identifiers: { UNKNOWN_KEY: 'value' } })];
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     expect(results[0].statusCode).toBe(400);
   });
 
   it('missing access token -> Zod validation error', async () => {
     const input = buildInput(1);
     delete (input.metadata as any).secret;
-    const results = await processBatchedDestination([input], Integration, {});
+    const results = await processDestinationIntegration([input], Integration, {});
     expect(results[0].statusCode).toBe(400);
   });
 
@@ -629,7 +629,7 @@ describe('AudienceIntegration via processBatchedDestination', () => {
     const inputs = [
       buildInput(1, { identifiers: { email: hashedEmail } }, { isHashRequired: false }),
     ];
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const successes = results.filter((r) => r.statusCode === 200);
     expect(successes).toHaveLength(1);
     // Verify value passed through unchanged
@@ -639,7 +639,7 @@ describe('AudienceIntegration via processBatchedDestination', () => {
 
 **Reference:**
 
-- `src/v0/destinations/custom_audience/routerTransform.test.ts` — Complete test suite with `processBatchedDestination`, helper factories, action grouping, hashing, auth, and error cases
+- `src/v0/destinations/custom_audience/routerTransform.test.ts` — Complete test suite with `processDestinationIntegration`, helper factories, action grouping, hashing, auth, and error cases
 
 ### Integration Tests
 
@@ -765,14 +765,14 @@ export const data = [
 1. Create `src/v0/destinations/<dest_name>/` folder
 2. Create `config.ts` — action maps (`insert/update -> ADD`, `delete -> REMOVE`), endpoint constants or functions, batch sizes, identifier field configs (`AudienceField` objects with `hashingType`, `normalize`, `validate`), API version constants
 3. Create `types.ts` — Zod schemas for message, destination, connection (with `audienceId`, `isHashRequired`, and any audience-type fields), metadata (with `secret.accessToken`); derive TypeScript types with `z.infer<>`; add destination-specific payload types
-4. Create `routerTransform.ts` — extend `BatchDestination` with three methods:
+4. Create `routerTransform.ts` — extend `DestinationIntegration` with three methods:
    - `transformEvent()` — validate identifiers, process via `processAudienceRecord`, map action, return `TransformedEvent` with endpoint, method, headers, `internalGroupKey` (action)
    - `getBatchStrategy()` — return `ChunkBatchStrategy` with `maxItems`/`maxPayloadSize` and `wrapBody` that builds the destination-specific request body
    - `getInputSchema()` — return the Zod schema for input validation
    - Export the class as `Integration`
-5. Register in `src/constants/batchedDestinationsMap.ts` — add `<DEST_NAME_UPPER>: true`
+5. Register in `src/constants/destinationIntegrationsMap.ts` — add `<DEST_NAME_UPPER>: true`
 6. Create `delivery.ts` (optional) — only if the API reports failures the framework default cannot read (partial failures, identity-keyed errors); `networkHandler.ts` only if transport itself is custom
-7. Create `routerTransform.test.ts` — unit tests using `processBatchedDestination(inputs, Integration, {})` covering: valid insert/update/delete, invalid identifiers, null identifiers, hashing on/off, batch overflow, mixed actions, missing auth
+7. Create `routerTransform.test.ts` — unit tests using `processDestinationIntegration(inputs, Integration, {})` covering: valid insert/update/delete, invalid identifiers, null identifiers, hashing on/off, batch overflow, mixed actions, missing auth
 8. Create `test/integrations/destinations/<dest_name>/router/data.ts` — integration test cases covering: successful operations, validation errors, unsupported types, batching, audience subtypes, pre-hashed values
 9. Run verification:
    ```bash

@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  BatchDestination,
+  DestinationIntegration,
   TransformedEvent,
   ChunkBatchStrategy,
   CustomBatchStrategy,
   parseSizeToBytes,
-} from '../batchDestination';
-import type { BatchStrategy } from '../batchDestination';
+} from '../destinationIntegration';
+import type { BatchStrategy } from '../destinationIntegration';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Destination } from '../../../../types/controlPlaneConfig';
 import type { Metadata, RudderMessage } from '../../../../types/rudderEvents';
@@ -37,7 +37,7 @@ const mockDestination: Destination = {
   Transformations: [],
 };
 
-class TestIntegration extends BatchDestination<TestBody> {
+class TestIntegration extends DestinationIntegration<TestBody> {
   transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
     return {
       body: { value: input.message.data ?? '' },
@@ -60,7 +60,7 @@ class TestIntegration extends BatchDestination<TestBody> {
   }
 }
 
-class FailingIntegration extends BatchDestination<TestBody> {
+class FailingIntegration extends DestinationIntegration<TestBody> {
   transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
     if (input.message.shouldFail) {
       throw new Error('Transform failed');
@@ -121,7 +121,7 @@ describe('parseSizeToBytes', () => {
   });
 });
 
-describe('BatchDestination.transformEvents', () => {
+describe('DestinationIntegration.transformEvents', () => {
   it('iterates inputs and calls transformEvent', async () => {
     const integration = new TestIntegration(mockDestination);
     const inputs = [makeInput(1, 'hello'), makeInput(2, 'world')];

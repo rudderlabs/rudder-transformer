@@ -1,11 +1,11 @@
 import { Integration } from './routerTransform';
 import {
   ChunkBatchStrategy,
-  type BatchDestinationConstructor,
-} from '../../../services/destination/nativeBatching/batchDestination';
+  type DestinationIntegrationConstructor,
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
 
 type GAECInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
-import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
+import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 
 import type { Destination } from '../../../types/controlPlaneConfig';
 import type {
@@ -165,12 +165,12 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
     });
   });
 
-  describe('processBatchedDestination', () => {
+  describe('processDestinationIntegration', () => {
     it('batches events with the same conversion name + customer into one request', async () => {
       const inputs = [makeInput(1), makeInput(2), makeInput(3)];
-      const results = await processBatchedDestination(
+      const results = await processDestinationIntegration(
         inputs,
-        Integration as BatchDestinationConstructor,
+        Integration as DestinationIntegrationConstructor,
         {},
       );
 
@@ -191,9 +191,9 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
         makeInput(2, { event: 'Product Added' }),
         makeInput(3, { event: 'Page View' }),
       ];
-      const results = await processBatchedDestination(
+      const results = await processDestinationIntegration(
         inputs,
-        Integration as BatchDestinationConstructor,
+        Integration as DestinationIntegrationConstructor,
         {},
       );
 
@@ -211,9 +211,9 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
         makeInput(2, { type: 'identify' }), // schema rejects → 400
         makeInput(3, { traits: {} }), // no user identifiers → transform throws → 400
       ];
-      const results = await processBatchedDestination(
+      const results = await processDestinationIntegration(
         inputs,
-        Integration as BatchDestinationConstructor,
+        Integration as DestinationIntegrationConstructor,
         {},
       );
 

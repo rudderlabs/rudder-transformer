@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { RecordAction } from '../../../types/rudderEvents';
-import { makeRouterInputSchema } from '../../../services/destination/nativeBatching/batchDestination';
+import { makeRouterInputSchema } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { PROJECT_TYPES } from './config';
 
 // ---------------------------------------------------------------------------

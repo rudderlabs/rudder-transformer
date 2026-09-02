@@ -1,11 +1,11 @@
 import type { z } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  BatchDestination,
+  DestinationIntegration,
   ChunkBatchStrategy,
   type TransformedEvent,
-} from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { ACTION_ATTR_VALUE, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
 import { buildBulkBody, getBulkTrackEndpoint, normalizeExternalId } from './utils';
 import { brazeAudienceDelivery } from './delivery';
@@ -15,7 +15,7 @@ import {
   type BrazeAudienceConnectionConfig,
 } from './types';
 
-class BrazeAudienceIntegration extends BatchDestination<
+class BrazeAudienceIntegration extends DestinationIntegration<
   BrazeAudienceAttributePayload,
   typeof BrazeAudienceRouterRequestSchema
 > {
@@ -24,7 +24,7 @@ class BrazeAudienceIntegration extends BatchDestination<
 
   private readonly headers: Record<string, string>;
 
-  constructor(...args: ConstructorParameters<typeof BatchDestination>) {
+  constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
     super(...args);
     if (!this.connection) {
       throw new InstrumentationError(
@@ -55,7 +55,7 @@ class BrazeAudienceIntegration extends BatchDestination<
 
     const externalId = normalizeExternalId(message.identifiers?.external_id);
     if (!externalId) {
-      // Abort this record (BatchDestination maps InstrumentationError → 400 per-item).
+      // Abort this record (DestinationIntegration maps InstrumentationError → 400 per-item).
       throw new InstrumentationError('external_id is missing or empty after trim');
     }
 

@@ -28,7 +28,7 @@ type PostHogEvent = {
 ### Full Implementation
 
 ```typescript
-class PostHogIntegration extends RouterIntegration<PostHogEvent> {
+class PostHogIntegration extends DestinationIntegration<PostHogEvent> {
   transformEvent(input: RouterTransformationRequestData): TransformedPayload<PostHogEvent> {
     return {
       body: buildPostHogEventPayload(input.message, input.destination),
@@ -253,7 +253,7 @@ getIntegrationSchema() {
 
 ### Why Per-Call Instantiation Matters Here
 
-Braze stores dedup state in `this.userStore` and `this.failedLookupIdentifiers`. If multiple concurrent requests shared a singleton instance, they would corrupt each other's lookup results. The framework creates a new `BrazeIntegration()` per `processBatchedDestination` call, isolating state.
+Braze stores dedup state in `this.userStore` and `this.failedLookupIdentifiers`. If multiple concurrent requests shared a singleton instance, they would corrupt each other's lookup results. The framework creates a new `BrazeIntegration()` per `processDestinationIntegration` call, isolating state.
 
 ---
 
@@ -276,5 +276,5 @@ To migrate a destination to the framework:
    - Call `super.batchTransform()` to delegate iteration
 7. **Add Zod schema** via `getIntegrationSchema` for destination-specific rules
 8. **Export `const Integration = YourClass`** (class, not instance)
-9. **Add destination to `batchedDestinationsMap`**
+9. **Add destination to `destinationIntegrationsMap`**
 10. **Update/add component tests** — output format changes from legacy to framework envelope

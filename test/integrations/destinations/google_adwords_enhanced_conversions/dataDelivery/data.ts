@@ -5,7 +5,7 @@ import { testScenariosForV0API, testScenariosForV1API } from './business';
  * No env var enrols any of these.
  *
  * gaec declares `{ routerTransform: true, batching: true }` in `features.ts`, and `deliver()` gates
- * on the same `isBatchingFrameworkEnabled` that chose the transform half. So every scenario below
+ * on the same `isDestinationIntegrationEnabled` that chose the transform half. So every scenario below
  * reaches the framework's delivery path on its own — except where one of two guards keeps it on the
  * legacy handler, and each of those exceptions is itself worth asserting:
  *

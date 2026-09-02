@@ -3,11 +3,11 @@
 // framework purely as a worked reference for the recommended router-transform pattern.
 import { z, ZodType } from 'zod';
 import {
-  BatchDestination,
+  DestinationIntegration,
   TransformedEvent,
   ChunkBatchStrategy,
-} from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { process as transformEvent } from './transform';
 import type {
   TestDestinationProcessorRequest,
@@ -15,7 +15,7 @@ import type {
   TestDestinationV1Payload,
 } from './type';
 
-class TestDestinationIntegration extends BatchDestination<TestDestinationV1Payload> {
+class TestDestinationIntegration extends DestinationIntegration<TestDestinationV1Payload> {
   transformEvent(input: TestDestinationRouterRequest): TransformedEvent<TestDestinationV1Payload> {
     // Reuse the version-dispatching per-event transform (throws ConfigurationError on v2); the
     // framework wraps that throw into a per-event error response.

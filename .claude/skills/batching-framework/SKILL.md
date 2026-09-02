@@ -1,17 +1,17 @@
 ---
 name: batching-framework
-description: Native batching framework for destination transformations. Extend BatchDestination to implement per-event transforms with automatic grouping, chunking, and response formatting.
+description: Native batching framework for destination transformations. Extend DestinationIntegration to implement per-event transforms with automatic grouping, chunking, and response formatting.
 ---
 
 # Native Batching Framework
 
-**Objective:** Use the batching framework to implement destination router transforms. Instead of writing manual grouping/batching logic, extend the `BatchDestination` abstract class — the framework handles validation, grouping, chunking, error wrapping, and response formatting.
+**Objective:** Use the batching framework to implement destination router transforms. Instead of writing manual grouping/batching logic, extend the `DestinationIntegration` abstract class — the framework handles validation, grouping, chunking, error wrapping, and response formatting.
 
 ## Reference
 
 - `src/v0/destinations/posthog/routerTransform.ts` — `ChunkBatchStrategy` with `maxPayloadSize`
 - `src/v0/destinations/custom_audience/routerTransform.ts` — `CustomBatchStrategy` with template evaluation
-- `src/services/destination/nativeBatching/` — Framework source code
+- `src/services/destination/destinationIntegration/` — Framework source code
 - `.claude/skills/batching-framework-delivery/SKILL.md` — Delivery (response handling) contract
 
 ## Architecture
@@ -19,9 +19,9 @@ description: Native batching framework for destination transformations. Extend B
 ```
 RouterTransformationRequestData[]
     |
-processBatchedDestination()          [framework orchestrator]
+processDestinationIntegration()      [framework orchestrator]
     |
-BatchDestination<TBody>              [your integration class]
+DestinationIntegration<TBody>        [your integration class]
     |--- getInputSchema()            → Zod schema for upfront validation
     |--- transformEvent()            → per-event transform → TransformedEvent<TBody>
     |--- getBatchStrategy()          → batch strategy factory
@@ -36,7 +36,7 @@ RouterTransformationResponse[]
 Delivery is a separate service call, over the same class:
 
 ```
-deliver()                            [nativeIntegration, behind the delivery flag]
+deliver()                            [nativeIntegration, same predicate as transform]
     |
 handleDeliveryResponse(Class, ctx)   [framework-owned]
     |--- delivery.statusOverrides[status] ?? [class] ?? classify by status
@@ -52,7 +52,7 @@ DeliveryV1Response
 
 ```
 src/v0/destinations/<dest_name>/
-├── routerTransform.ts        # BatchDestination subclass (exported as Integration)
+├── routerTransform.ts        # DestinationIntegration subclass (exported as Integration)
 ├── types.ts                  # Zod schemas, TypeScript types
 ├── config.ts                 # Constants, endpoints, action maps
 ├── utils.ts                  # (Optional) Field processing, API helpers
@@ -78,17 +78,17 @@ transform, **reuse it — do not reimplement the payload logic in `routerTransfo
 - **Keep the legacy `processRouterDest` exported.** During pre-GA env-var rollout the destination
   falls back to it for workspaces not yet enabled, so it must stay functional.
 
-## BatchDestination Abstract Class
+## DestinationIntegration Abstract Class
 
 ```typescript
-import { BatchDestination } from '../../../services/destination/nativeBatching/batchDestination';
+import { DestinationIntegration } from '../../../services/destination/destinationIntegration/destinationIntegration';
 
 // Type parameters:
 //   TBody         — shape of each item in the batch (your per-event payload)
 //   TConfig       — destination config type (from destination.Config)
 //   TConnectionConfig — connection config type (from connection.config)
 
-class MyIntegration extends BatchDestination<TBody, TConfig, TConnectionConfig> {
+class MyIntegration extends DestinationIntegration<TBody, TConfig, TConnectionConfig> {
   // MUST implement these three methods:
 
   transformEvent(
@@ -97,7 +97,7 @@ class MyIntegration extends BatchDestination<TBody, TConfig, TConnectionConfig> 
   // Transform a single input event into one or more intermediate payloads.
   // Throw InstrumentationError for bad input — framework wraps it into error response.
   // MUST be synchronous — the framework calls transformEvent WITHOUT awaiting it
-  // (see transformEvents in batchDestination.ts). Never make it async / return a Promise;
+  // (see transformEvents in destinationIntegration.ts). Never make it async / return a Promise;
   // an async transformEvent would push a Promise as the payload and silently corrupt the batch.
 
   getBatchStrategy(endpoint: string): BatchStrategy<TBody>;
@@ -152,7 +152,7 @@ return {
 Standard chunking by item count and/or payload size:
 
 ```typescript
-import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/chunkBatchStrategy';
+import { ChunkBatchStrategy } from '../../../services/destination/destinationIntegration/chunkBatchStrategy';
 
 getBatchStrategy(): BatchStrategy<TBody> {
   return new ChunkBatchStrategy<TBody>({
@@ -179,8 +179,8 @@ The `wrapBody` function:
 Full control over how events are grouped and wrapped:
 
 ```typescript
-import { CustomBatchStrategy } from '../../../services/destination/nativeBatching/customBatchStrategy';
-import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
+import { CustomBatchStrategy } from '../../../services/destination/destinationIntegration/customBatchStrategy';
+import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 
 getBatchStrategy(): BatchStrategy<TBody> {
   return new CustomBatchStrategy<TBody>(async (payloads) => {
@@ -211,24 +211,25 @@ type BatchGroup = {
 
 ## Enabling the Framework
 
-Register the destination in `src/constants/batchedDestinationsMap.ts`:
+Mark the destination `batching: true` in `src/features.ts`:
 
 ```typescript
-export const batchedDestinationsMap: Record<string, true> = {
-  POSTHOG: true,
-  CUSTOM_AUDIENCE: true,
-  <DEST_NAME_UPPER>: true,  // Add your destination here
+const destinationCapabilities = {
+  <DEST_NAME_UPPER>: { routerTransform: true, batching: true }, // Add your destination here
 };
 ```
 
+`destinationIntegrationsMap` (`src/constants/destinationIntegrationsMap.ts`) is **derived** from this
+via `getGaDestinationIntegrations()` — there is nothing to hand-edit there.
+
 To enable destination on routerTransform, feature.ts also needs to be updated with definitionName under defaultFeaturesConfig `src/features.ts`
 
-When enabled, the platform routes events through `processBatchedDestination()` instead of the legacy `processRouterDest()`.
+When enabled, the platform routes events through `processDestinationIntegration()` instead of the legacy `processRouterDest()`.
 
 For gradual rollout before GA, use the env var pattern:
 `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or `ALL`).
 
-Delivery is gated **separately** by `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS`
+Delivery is gated by the **same** predicate — there is no separate delivery flag
 — see `.claude/skills/batching-framework-delivery/SKILL.md`.
 
 ## Delivery (response handling)
@@ -335,10 +336,10 @@ do.
 
 ## Testing
 
-Test via the framework's `processBatchedDestination` function — pass the `Integration` class (not an instance):
+Test via the framework's `processDestinationIntegration` function — pass the `Integration` class (not an instance):
 
 ```typescript
-import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
+import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { Integration } from './routerTransform';
 
 const buildDestination = (overrides = {}) => ({
@@ -357,20 +358,20 @@ const buildInput = (jobId: number, overrides = {}) => ({
   connection: buildConnection(),
 });
 
-describe('Integration via processBatchedDestination', () => {
+describe('Integration via processDestinationIntegration', () => {
   it('batches events by action', async () => {
     const inputs = [
       buildInput(1, { action: 'insert' }),
       buildInput(2, { action: 'insert' }),
       buildInput(3, { action: 'delete' }),
     ];
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     // Assert batch structure, grouping, metadata
   });
 
   it('returns error for invalid input', async () => {
     const inputs = [buildInput(1, { type: 'track' })]; // wrong type
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     expect(results[0].statusCode).toBe(400);
   });
 });

@@ -1,8 +1,8 @@
-import { getBatchingFrameworkGaDestinations } from '../features';
+import { getGaDestinationIntegrations } from '../features';
 
 // Destinations that have completed GA for the batching framework.
 // Once a destination is added here, it always uses the new path regardless of env var.
-export const batchedDestinationsMap: Record<string, true> = getBatchingFrameworkGaDestinations();
+export const destinationIntegrationsMap: Record<string, true> = getGaDestinationIntegrations();
 
 // Per-destination env var: {DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces
@@ -30,15 +30,15 @@ const matchesWorkspace = (enabledWorkspaceIds: string[], workspaceId: string): b
 
 /**
  * Whether the batching framework owns this destination and workspace — **both** the router
- * transform (`processBatchedDestination` rather than `processRouterDest`) and delivery
+ * transform (`processDestinationIntegration` rather than `processRouterDest`) and delivery
  * (`delivery.ts` rather than the destination's own networkHandler).
  *
  * OR logic:
- * - If destination is in batchedDestinationsMap → always enabled (GA)
+ * - If destination is in destinationIntegrationsMap → always enabled (GA)
  * - Else check per-destination env var for workspace-level rollout (pre-GA)
  *
  * One predicate for both halves, deliberately. The delivery path interprets a payload built by the
- * matching transform path: a `processBatchedDestination` request whose response is read by the
+ * matching transform path: a `processDestinationIntegration` request whose response is read by the
  * legacy networkHandler, or the reverse, pairs the two halves incorrectly. Deciding both from one
  * call makes that mismatch unrepresentable — where a separate delivery flag made it a configuration
  * mistake anyone could make, and made "transform migrated, delivery still generic" the *default*,
@@ -51,11 +51,11 @@ const matchesWorkspace = (enabledWorkspaceIds: string[], workspaceId: string): b
  * `delivery` spec is still valid and gets the framework's status-only classification, which
  * reproduces `genericNetworkHandler`.
  */
-export const isBatchingFrameworkEnabled = (destType: string, workspaceId: string): boolean => {
+export const isDestinationIntegrationEnabled = (destType: string, workspaceId: string): boolean => {
   const upperDestType = destType.toUpperCase();
 
   // GA: destination is fully migrated
-  if (batchedDestinationsMap[upperDestType]) {
+  if (destinationIntegrationsMap[upperDestType]) {
     return true;
   }
 

@@ -6,7 +6,11 @@ import type {
   RouterTransformationRequestData,
   RouterTransformationResponse,
 } from '../../../types/destinationTransformation';
-import { BatchDestination, BatchDestinationConstructor, TransformResult } from './batchDestination';
+import {
+  DestinationIntegration,
+  DestinationIntegrationConstructor,
+  TransformResult,
+} from './destinationIntegration';
 import type { TransformError } from './types';
 import { BodyFormat } from './types';
 import tags from '../../../v0/util/tags';
@@ -22,7 +26,7 @@ const isConfigIssue = (issue: ZodIssue): boolean =>
 
 export function validateInputs<TBody extends Record<string, unknown>>(
   inputs: RouterTransformationRequestData[],
-  integration: BatchDestination<TBody>,
+  integration: DestinationIntegration<TBody>,
 ): { valid: RouterTransformationRequestData[]; errors: (TransformError & { jobId: number })[] } {
   const schema = integration.getInputSchema();
 
@@ -198,11 +202,11 @@ function mapErrorPayloadToServerFormat(
 // Main orchestration function
 // ---------------------------------------------------------------------------
 
-export async function processBatchedDestination<
+export async function processDestinationIntegration<
   TBody extends Record<string, unknown> = Record<string, unknown>,
 >(
   events: RouterTransformationRequestData[],
-  IntegrationClass: BatchDestinationConstructor<TBody>,
+  IntegrationClass: DestinationIntegrationConstructor<TBody>,
   reqMetadata: NonNullable<unknown>,
 ): Promise<RouterTransformationResponse[]> {
   if (events.length === 0) {

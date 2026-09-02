@@ -311,7 +311,7 @@ type Action = (typeof ACTIONS)[keyof typeof ACTIONS];
 
 ## Don't Re-Validate Inputs That Zod Has Already Validated
 
-If a function is reachable only through a Zod-guarded entry point (`getInputSchema()` in a `BatchDestination`, a controller's `safeParse()`, etc.), helpers downstream should treat the validated fields as guaranteed. Don't re-check enum membership, presence, or shape — let the type system carry that contract.
+If a function is reachable only through a Zod-guarded entry point (`getInputSchema()` in a `DestinationIntegration`, a controller's `safeParse()`, etc.), helpers downstream should treat the validated fields as guaranteed. Don't re-check enum membership, presence, or shape — let the type system carry that contract.
 
 ```ts
 // Good — Zod validated `action`; the helper only handles its real job (lookup)

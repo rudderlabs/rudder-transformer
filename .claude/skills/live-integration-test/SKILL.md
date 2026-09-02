@@ -213,11 +213,11 @@ spec.
    the field-level verify so the two stay in lockstep.
 6. **Enroll**: `enabled: true` (registry auto-discovers `destinations/*/live.ts`; no registration).
    Use `enabled: false` to park a spec in the tree without running it. If the destination sits
-   behind a destination-specific rollout flag, name it in `envOverrides`. For batching-framework
-   delivery, add `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL'` explicitly in
-   `envOverrides` until that temporary delivery flag is removed. Do not add
-   `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` for destinations already marked batching-GA in
-   `features.ts`; the transform side is enabled there.
+   behind a destination-specific rollout flag, name it in `envOverrides`. Batching-framework
+   delivery has no flag of its own — it is gated on the same predicate as the transform, so a
+   pre-GA destination only needs `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL'`. Do not
+   add it for destinations already marked batching-GA in `features.ts`; both sides are enabled
+   there.
 7. **CI is automatic.** The `discover` job builds the workflow matrix from `destinations/*/live.ts`,
    so a new spec runs in CI with no workflow edit. `LIVE_SECRET_<DEST>` is derived from the
    destination code; an **OAuth** spec (`authType: 'oauth'`) additionally wildcard-imports the whole
@@ -300,7 +300,7 @@ export const live = {
   enabled: true,
   authType: 'apiKey', // apiKey | oauth | basic | serviceAccount | custom
   // Optional: env applied around this destination's scenarios and restored after.
-  // envOverrides: { <DEST>_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL' },
+  // envOverrides: { <DEST>_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL' },
   // Non-secret Config defaults from the component test's destination.Config; real creds via s.config.
   resolveConfig: (s) => ({ ...s.config }),
   scenarios: [

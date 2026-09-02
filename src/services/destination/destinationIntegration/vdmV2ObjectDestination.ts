@@ -5,7 +5,7 @@ import type { RouterTransformationRequestData } from '../../../types/destination
 import type { RudderRecordV2 } from '../../../types/rudderEvents';
 import { MappedToDestinationKey } from '../../../constants';
 import { addExternalIdToTraits, adduserIdFromExternalId } from '../../../v0/util';
-import { BatchDestination } from './batchDestination';
+import { DestinationIntegration } from './destinationIntegration';
 import type { DeliverySpec } from './delivery';
 import type { TransformedEvent } from './types';
 
@@ -74,9 +74,9 @@ export abstract class VDMV2ObjectDestination<
   TBody extends Record<string, unknown> = Record<string, unknown>,
   TRecordSchema extends ZodType = ZodType,
   TEventStreamSchema extends ZodType = ZodType,
-> extends BatchDestination<TBody, ObjectRouterInput<TRecordSchema, TEventStreamSchema>> {
+> extends DestinationIntegration<TBody, ObjectRouterInput<TRecordSchema, TEventStreamSchema>> {
   /**
-   * Deliberately empty — `BatchDestination.delivery` already defaults to `{}`, so this adds no
+   * Deliberately empty — `DestinationIntegration.delivery` already defaults to `{}`, so this adds no
    * behaviour on its own. It exists so a concern shared across *VDM V2 object destinations as a
    * family* (not one destination's particular API shape) has a declaration site between the
    * framework root and a leaf like `CustomerIOIntegration`, and so `resolveDeliverySpec`'s
@@ -93,7 +93,7 @@ export abstract class VDMV2ObjectDestination<
   protected abstract readonly eventStreamSchema: TEventStreamSchema;
 
   getInputSchema(): ObjectRouterInput<TRecordSchema, TEventStreamSchema> {
-    // The framework calls this once per instance (processBatchedDestination validates the
+    // The framework calls this once per instance (processDestinationIntegration validates the
     // whole batch in a single validateInputs pass), so the schema is built once — no cache
     // needed. Discriminating on `message.type` (rather than a plain z.union) means a bad
     // `destination.Config` — which both variants declare — is reported against the one

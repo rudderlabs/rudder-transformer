@@ -1,19 +1,19 @@
 import { z } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  processBatchedDestination,
+  processDestinationIntegration,
   validateInputs,
   groupByDontBatchDirective,
   resolveMetadata,
   groupPayloadsByCompositeKey,
-} from '../processBatchedDestination';
+} from '../processDestinationIntegration';
 import {
-  BatchDestination,
+  DestinationIntegration,
   TransformedEvent,
   ChunkBatchStrategy,
   CustomBatchStrategy,
-} from '../batchDestination';
-import type { BatchStrategy, TransformResult } from '../batchDestination';
+} from '../destinationIntegration';
+import type { BatchStrategy, TransformResult } from '../destinationIntegration';
 import type {
   ProcessorTransformationOutput,
   RouterTransformationRequestData,
@@ -46,7 +46,7 @@ const mockDestination: Destination = {
   Transformations: [],
 };
 
-class SimpleIntegration extends BatchDestination<TestBody> {
+class SimpleIntegration extends DestinationIntegration<TestBody> {
   transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
     const { message } = input;
     return {
@@ -70,7 +70,7 @@ class SimpleIntegration extends BatchDestination<TestBody> {
   }
 }
 
-class MultiEndpointIntegration extends BatchDestination<TestBody> {
+class MultiEndpointIntegration extends DestinationIntegration<TestBody> {
   transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
     const { message } = input;
     return {
@@ -94,7 +94,7 @@ class MultiEndpointIntegration extends BatchDestination<TestBody> {
   }
 }
 
-class PartialFailIntegration extends BatchDestination<TestBody> {
+class PartialFailIntegration extends DestinationIntegration<TestBody> {
   transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
     const { message } = input;
     if (message.shouldFail) {
@@ -117,7 +117,7 @@ class PartialFailIntegration extends BatchDestination<TestBody> {
   }
 }
 
-class CustomBatchIntegration extends BatchDestination<TestBody> {
+class CustomBatchIntegration extends DestinationIntegration<TestBody> {
   transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
     const { message } = input;
     return {
@@ -145,7 +145,7 @@ class CustomBatchIntegration extends BatchDestination<TestBody> {
   }
 }
 
-class TypedErrorIntegration extends BatchDestination<TestBody> {
+class TypedErrorIntegration extends DestinationIntegration<TestBody> {
   transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
     const { message } = input;
     if (message.shouldFail) {
@@ -217,7 +217,7 @@ function getBatchedRequestEndpoint(result: {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('processBatchedDestination', () => {
+describe('processDestinationIntegration', () => {
   describe('chunk strategy', () => {
     it('batches events into chunks respecting maxItems', async () => {
       const inputs = [
@@ -228,7 +228,7 @@ describe('processBatchedDestination', () => {
         makeInput(5, 'e'),
       ];
 
-      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
+      const results = await processDestinationIntegration(inputs, SimpleIntegration, {});
 
       // maxItems=3 → 2 chunks: [a,b,c] and [d,e]
       expect(results).toHaveLength(2);
@@ -246,7 +246,7 @@ describe('processBatchedDestination', () => {
 
     it('produces correct server format envelope', async () => {
       const inputs = [makeInput(1, 'hello')];
-      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
+      const results = await processDestinationIntegration(inputs, SimpleIntegration, {});
 
       expect(results).toHaveLength(1);
       const resp = results[0];
@@ -275,7 +275,7 @@ describe('processBatchedDestination', () => {
         makeInput(5, 'e', { type: 'track' }),
       ];
 
-      const results = await processBatchedDestination(inputs, MultiEndpointIntegration, {});
+      const results = await processDestinationIntegration(inputs, MultiEndpointIntegration, {});
 
       // track: 3 events, maxItems=2 → 2 chunks
       // identify: 2 events, maxItems=2 → 1 chunk
@@ -294,7 +294,7 @@ describe('processBatchedDestination', () => {
   describe('customBatch strategy', () => {
     it('uses custom batch function for merging', async () => {
       const inputs = [makeInput(1, 'a'), makeInput(2, 'b'), makeInput(3, 'c')];
-      const results = await processBatchedDestination(inputs, CustomBatchIntegration, {});
+      const results = await processDestinationIntegration(inputs, CustomBatchIntegration, {});
 
       expect(results).toHaveLength(1);
       expect(getBatchedRequestBody(results[0])).toEqual({ merged: 'a,b,c' });
@@ -306,7 +306,7 @@ describe('processBatchedDestination', () => {
     it('processes dontBatch events individually', async () => {
       const inputs = [makeInput(1, 'a'), makeInput(2, 'b', { dontBatch: true }), makeInput(3, 'c')];
 
-      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
+      const results = await processDestinationIntegration(inputs, SimpleIntegration, {});
 
       const allJobIds = results.flatMap((r) => r.metadata.map((m) => m.jobId));
       expect(allJobIds).toContain(1);
@@ -324,7 +324,7 @@ describe('processBatchedDestination', () => {
         makeInput(3, 'ok2'),
       ];
 
-      const results = await processBatchedDestination(inputs, PartialFailIntegration, {});
+      const results = await processDestinationIntegration(inputs, PartialFailIntegration, {});
 
       const successes = results.filter((r) => r.statusCode === 200);
       const errors = results.filter((r) => r.statusCode !== 200);
@@ -339,7 +339,7 @@ describe('processBatchedDestination', () => {
   describe('metadata resolution', () => {
     it('resolves correct metadata for each chunk', async () => {
       const inputs = [makeInput(10, 'a'), makeInput(20, 'b')];
-      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
+      const results = await processDestinationIntegration(inputs, SimpleIntegration, {});
 
       expect(results).toHaveLength(1);
       const jobIds = results[0].metadata.map((m) => m.jobId);
@@ -349,7 +349,7 @@ describe('processBatchedDestination', () => {
 
   describe('empty input', () => {
     it('returns empty array for no events', async () => {
-      const results = await processBatchedDestination([], SimpleIntegration, {});
+      const results = await processDestinationIntegration([], SimpleIntegration, {});
       expect(results).toEqual([]);
     });
   });
@@ -357,7 +357,7 @@ describe('processBatchedDestination', () => {
   describe('error taxonomy with typed errors', () => {
     it('produces proper statTags from InstrumentationError via generateErrorObject', async () => {
       const inputs = [makeInput(1, 'ok'), makeInput(2, 'fail', { shouldFail: true })];
-      const results = await processBatchedDestination(inputs, TypedErrorIntegration, {});
+      const results = await processDestinationIntegration(inputs, TypedErrorIntegration, {});
 
       const errors = results.filter((r) => r.statusCode !== 200);
       expect(errors).toHaveLength(1);
@@ -378,7 +378,7 @@ describe('processBatchedDestination', () => {
         makeInput(3, 'ok2'),
       ];
 
-      const results = await processBatchedDestination(inputs, PartialFailIntegration, {});
+      const results = await processDestinationIntegration(inputs, PartialFailIntegration, {});
 
       const successes = results.filter((r) => r.statusCode === 200);
       const errors = results.filter((r) => r.statusCode !== 200);
@@ -395,7 +395,7 @@ describe('processBatchedDestination', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Helper function tests (moved from batchDestination.test.ts)
+// Helper function tests (moved from destinationIntegration.test.ts)
 // ---------------------------------------------------------------------------
 
 function makeMetadataMap(

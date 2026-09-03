@@ -10,6 +10,7 @@ const {
   defaultPostRequestConfig,
   getValueFromMessage,
   isAppleFamily,
+  safeSetValue,
   simpleProcessRouterDest,
 } = require('../../util');
 
@@ -239,7 +240,8 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           );
         }
       } else {
-        set(updatedEvent.custom_events[0], processedKey, properties[k]);
+        // property key is customer-supplied and may be one set-value refuses to write
+        safeSetValue(updatedEvent.custom_events[0], processedKey, properties[k]);
       }
     });
   }

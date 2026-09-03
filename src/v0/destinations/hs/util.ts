@@ -1,7 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import chunk from 'lodash/chunk';
 import omit from 'lodash/omit';
-import set from 'set-value';
 import get from 'get-value';
 import {
   NetworkInstrumentationError,
@@ -11,6 +10,7 @@ import {
   isDefinedNotNullNotEmpty,
 } from '@rudderstack/integrations-lib';
 import { AxiosRequestConfig } from 'axios';
+import { safeSetValue } from '../../util/safeSetValue';
 import { httpGET, httpPOST } from '../../../adapters/network';
 import { processAxiosResponse, getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import {
@@ -931,7 +931,12 @@ const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {
      */
     return;
   }
-  set(getFieldValueFromMessage(message, 'traits'), externalIdObj.identifierType, externalIdObj.id);
+  // identifierType comes from the customer-supplied externalId
+  safeSetValue(
+    getFieldValueFromMessage(message, 'traits'),
+    externalIdObj.identifierType,
+    externalIdObj.id,
+  );
 };
 
 // remove system fields from the properties because they are not allowed to be updated

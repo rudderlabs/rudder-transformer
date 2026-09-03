@@ -11,9 +11,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const lodash = require('lodash');
 const { setValue: set, groupByInBatches, mapInBatches } = require('@rudderstack/integrations-lib');
-// Distinct from `set` above: this is the `set-value` package that destinations require
-// directly. Only used here to mirror its path-splitting rules in `isUnsafeSetValuePath`.
-const setValuePkg = require('set-value');
 const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
@@ -32,6 +29,7 @@ const {
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
 const { parsePhoneNumberFromString } = require('libphonenumber-js');
+const { safeSetValue } = require('./safeSetValue');
 const { shouldGroupByDestinationConfig } = require('../../util/utils');
 const { sandboxedApplyCustomMappings } = require('../../util/customMappings/sandboxClient');
 const logger = require('../../logger');
@@ -1366,41 +1364,6 @@ const generateExclusionList = (mappingConfig) =>
     Array.isArray(mapping.sourceKeys) ? [...mapping.sourceKeys] : [mapping.sourceKeys],
   );
 
-// NOTE: the `set` used throughout this file is `setValue` from @rudderstack/integrations-lib,
-// which treats the whole path as one literal key and never throws. The helper below is about
-// the *other* one — the `set-value` package that many destinations require directly, which
-// splits on '.' and throws `Cannot set unsafe key: "<key>"` for these keys. Event payloads
-// carry arbitrary user-supplied keys, so a destination building a `set-value` path out of a
-// message key must filter them out first or the transformation blows up with a retryable 500
-// for a payload that can never succeed.
-const PROTOTYPE_RESERVED_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
-
-/**
- * Reports whether the `set-value` package would throw for this path.
- *
- * Delegates the path splitting to `set-value` itself rather than splitting on '.' by hand,
- * because it validates *every* segment (`address.constructor` throws too) and unescapes as
- * it goes (`con\structor` resolves to `constructor` and throws, while `a\.constructor` is a
- * single safe literal key). `setValuePkg.split` memoizes on the exact same cache key the
- * subsequent `set` call uses, so passing the full path adds no extra cache entries.
- *
- * @param {string} setPath set-value path that is about to be written
- * @returns {boolean} true when the write must be skipped
- */
-const isUnsafeSetValuePath = (setPath) => {
-  if (typeof setPath !== 'string') {
-    return false;
-  }
-  // set-value validates the whole path string before splitting it, so an exact match is
-  // rejected up front and has to be handled here — otherwise `split` throws. Handling it
-  // first also means `split` cannot throw for a string input, so no catch is needed and a
-  // genuine failure surfaces instead of being mistaken for an unsafe key.
-  if (PROTOTYPE_RESERVED_KEYS.has(setPath)) {
-    return true;
-  }
-  return setValuePkg.split(setPath).some((segment) => PROTOTYPE_RESERVED_KEYS.has(segment));
-};
-
 /**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
@@ -2568,7 +2531,7 @@ module.exports = {
   deleteObjectProperty,
   generateExclusionList,
   extractCustomFields,
-  isUnsafeSetValuePath,
+  safeSetValue,
   flattenJson,
   flattenMap,
   flattenMultilevelPayload,

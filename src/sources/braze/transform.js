@@ -1,4 +1,3 @@
-const set = require('set-value');
 const get = require('get-value');
 const path = require('path');
 const fs = require('fs');
@@ -8,6 +7,7 @@ const {
   removeUndefinedAndNullValues,
   getHashFromArray,
   getBodyFromV2SpecPayload,
+  safeSetValue,
 } = require('../../v0/util');
 const Message = require('../message');
 
@@ -51,7 +51,8 @@ const processEvent = (event, eventMapping) => {
       Object.keys(event.properties).forEach((key) => {
         if (!ignoredProperties.includes(key)) {
           // the property is not ignored
-          set(message, `properties.${key}`, get(event, `properties.${key}`));
+          // property name comes from the inbound webhook payload
+          safeSetValue(message, `properties.${key}`, get(event, `properties.${key}`));
         }
       });
     }

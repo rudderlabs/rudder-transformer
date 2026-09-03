@@ -1,11 +1,11 @@
 import get from 'get-value';
-import set from 'set-value';
 import btoa from 'btoa';
 import {
   ConfigurationError,
   InstrumentationError,
   isDefinedNotNullNotEmpty,
 } from '@rudderstack/integrations-lib';
+import { safeSetValue } from '../../../util/safeSetValue';
 import {
   constructPayload,
   getFieldValueFromMessage,
@@ -99,7 +99,9 @@ const buildTraitAttributes = (message): Record<string, unknown> => {
     )
     .forEach((trait) => {
       // Escape backslashes first, then dots, so keys remain flat and unambiguous for set-value path parsing
-      set(
+      // trait name is customer-supplied; escaping dots does not help for a bare
+      // reserved key such as `constructor`, which set-value still refuses to write
+      safeSetValue(
         attributes,
         trait.replace(/\\/g, '\\\\').replace(/\./g, '\\.'),
         get(message, `${pathToTraits}.${trait}`),

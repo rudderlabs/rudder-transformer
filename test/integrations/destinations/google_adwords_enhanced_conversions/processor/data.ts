@@ -1766,7 +1766,8 @@ export const data = [
   },
   {
     name: 'google_adwords_enhanced_conversions',
-    description: 'Test 12: Custom adjustment type supported',
+    description:
+      'Test 12: RESTATEMENT adjustment type is supported by config without workspace allowlist or user identifiers',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1810,21 +1811,10 @@ export const data = [
                   namespace: 'com.rudderlabs.javascript',
                   version: '1.0.0',
                 },
-                traits: {
-                  phone: '912382193',
-                  firstName: 'John',
-                  lastName: 'Gomes',
-                  city: 'London',
-                  state: 'UK',
-                  countryCode: 'us',
-                  streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
-                },
                 library: {
                   name: 'RudderLabs JavaScript SDK',
                   version: '1.0.0',
                 },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                 locale: 'en-US',
                 ip: '0.0.0.0',
                 os: {
@@ -2341,7 +2331,7 @@ export const data = [
   {
     name: 'google_adwords_enhanced_conversions',
     description:
-      'Test 17: RESTATEMENT adjustment with pre-hashed identifiers succeeds — identifiers are deleted before the hashing pipeline, so no hashing-consistency error fires',
+      'Test 17: RESTATEMENT adjustment with pre-hashed identifiers succeeds without workspace allowlist — identifiers are deleted before the hashing pipeline, so no hashing-consistency error fires',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

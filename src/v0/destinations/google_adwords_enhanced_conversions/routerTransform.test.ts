@@ -39,21 +39,28 @@ const destination: Destination = {
   Transformations: [],
 };
 
-type EventOverrides = { event?: string; type?: string; traits?: Record<string, unknown> };
+type EventOverrides = {
+  event?: string;
+  type?: string;
+  traits?: Record<string, unknown>;
+  omitTraits?: boolean;
+  properties?: Record<string, unknown>;
+};
 
 function makeInput(jobId: number, overrides?: EventOverrides): RouterTransformationRequestData {
   const message = {
     type: overrides?.type ?? 'track',
     event: overrides?.event ?? 'Page View',
     userId: '12345',
-    context: {
-      traits: overrides?.traits ?? { email: 'user@testmail.com' },
-    },
+    context: overrides?.omitTraits
+      ? {}
+      : { traits: overrides?.traits ?? { email: 'user@testmail.com' } },
     properties: {
       gclid: 'gclid1234',
       conversionDateTime: '2022-01-01 12:32:45-08:00',
       order_id: 10000,
       total: 1000,
+      ...overrides?.properties,
     },
   };
   const metadata = {
@@ -115,6 +122,44 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       expect(result.body).toHaveProperty('adjustmentType', 'ENHANCEMENT');
       expect(result.body).toHaveProperty('userIdentifiers');
       expect(result.body).not.toHaveProperty('conversionAdjustments');
+    });
+
+    it('honors RESTATEMENT adjustment type without a workspace allowlist env override or user identifiers', () => {
+      const restatementDestination = {
+        ...destination,
+        Config: {
+          ...destination.Config,
+          adjustmentType: 'RESTATEMENT',
+        },
+      };
+      const restatementIntegration = new Integration(restatementDestination);
+
+      const result = restatementIntegration.transformEvent({
+        ...makeInput(1, {
+          omitTraits: true,
+          properties: {
+            adjustedValue: '123.45',
+            currency: 'USD',
+            adjustmentDateTime: '2024-01-02 03:04:05-08:00',
+            order_id: 'order-123',
+          },
+        }),
+        destination: restatementDestination,
+      } as unknown as GAECInput);
+
+      expect(result.body).toEqual({
+        gclidDateTimePair: {
+          gclid: 'gclid1234',
+          conversionDateTime: '2022-01-01 12:32:45-08:00',
+        },
+        restatementValue: {
+          adjustedValue: 123.45,
+          currencyCode: 'USD',
+        },
+        orderId: 'order-123',
+        adjustmentDateTime: '2024-01-02 03:04:05-08:00',
+        adjustmentType: 'RESTATEMENT',
+      });
     });
   });
 
@@ -224,6 +269,53 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       expect(batchBody(success[0]).conversionAdjustments).toHaveLength(1);
       expect(success[0].metadata.map((m) => m.jobId)).toEqual([1]);
       expect(errors.map((e) => e.metadata[0].jobId).sort()).toEqual([2, 3]);
+    });
+
+    it('batches RESTATEMENT adjustments without requiring or sending user identifiers or user agent', async () => {
+      const restatementDestination = {
+        ...destination,
+        Config: {
+          ...destination.Config,
+          adjustmentType: 'RESTATEMENT',
+        },
+      };
+      const inputs = [
+        {
+          ...makeInput(1, {
+            omitTraits: true,
+            properties: {
+              adjustedValue: '123.45',
+              currency: 'USD',
+              adjustmentDateTime: '2024-01-02 03:04:05-08:00',
+              order_id: 'order-123',
+            },
+          }),
+          destination: restatementDestination,
+        },
+      ];
+      const results = await processDestinationIntegration(
+        inputs,
+        Integration as DestinationIntegrationConstructor,
+        {},
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].statusCode).toBe(200);
+      expect(batchBody(results[0]).conversionAdjustments).toEqual([
+        {
+          gclidDateTimePair: {
+            gclid: 'gclid1234',
+            conversionDateTime: '2022-01-01 12:32:45-08:00',
+          },
+          restatementValue: {
+            adjustedValue: 123.45,
+            currencyCode: 'USD',
+          },
+          orderId: 'order-123',
+          adjustmentDateTime: '2024-01-02 03:04:05-08:00',
+          adjustmentType: 'RESTATEMENT',
+        },
+      ]);
     });
   });
 });

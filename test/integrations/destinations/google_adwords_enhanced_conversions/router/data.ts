@@ -586,6 +586,47 @@ const events = [
       sentAt: '2019-10-14T11:15:53.296Z',
     },
   },
+  {
+    metadata: {
+      secret: {
+        access_token: secret1,
+        refresh_token: 'efgh5678',
+        developer_token: 'ijkl91011',
+      },
+      jobId: 10,
+      userId: 'u3',
+      workspaceId: 'unlisted-workspace',
+    },
+    destination: {
+      hasDynamicConfig: false,
+      Config: {
+        adjustmentType: 'RESTATEMENT',
+        rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+        customerId: '1234567890',
+        subAccount: true,
+        loginCustomerId: '11',
+        listOfConversions: [{ conversions: 'Page View' }, { conversions: 'Product Added' }],
+        authStatus: 'active',
+      },
+    },
+    message: {
+      channel: 'web',
+      context: {},
+      event: 'Page View',
+      type: 'track',
+      messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea73',
+      anonymousId: '00000000000000000000000002',
+      userId: '24680',
+      properties: {
+        gclid: 'gclid1234',
+        conversionDateTime: '2022-01-01 12:32:45-08:00',
+        adjustedValue: '123.45',
+        currency: 'USD',
+        adjustmentDateTime: '2024-01-02 03:04:05-08:00',
+        order_id: 'order-123',
+      },
+    },
+  },
 ];
 
 const invalidRtTfCases = [
@@ -1264,6 +1305,110 @@ export const data = [
                   subAccount: true,
                 },
               },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description:
+      'Test 0 - RESTATEMENT adjustment type is supported without workspace allowlist or user identifiers',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [events[8]],
+          destType: 'google_adwords_enhanced_conversions',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    conversionAdjustments: [
+                      {
+                        adjustmentDateTime: '2024-01-02 03:04:05-08:00',
+                        adjustmentType: 'RESTATEMENT',
+                        gclidDateTimePair: {
+                          conversionDateTime: '2022-01-01 12:32:45-08:00',
+                          gclid: 'gclid1234',
+                        },
+                        orderId: 'order-123',
+                        restatementValue: {
+                          adjustedValue: 123.45,
+                          currencyCode: 'USD',
+                        },
+                      },
+                    ],
+                    partialFailure: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: '',
+                endpointPath: '/uploadConversionAdjustments',
+                files: {},
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                  'login-customer-id': '11',
+                },
+                method: 'POST',
+                params: {
+                  accessToken: 'google_adwords_enhanced_conversions1',
+                  customerId: '1234567890',
+                  event: 'Page View',
+                  loginCustomerId: '11',
+                  subAccount: true,
+                },
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  adjustmentType: 'RESTATEMENT',
+                  authStatus: 'active',
+                  customerId: '1234567890',
+                  listOfConversions: [
+                    {
+                      conversions: 'Page View',
+                    },
+                    {
+                      conversions: 'Product Added',
+                    },
+                  ],
+                  loginCustomerId: '11',
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                  subAccount: true,
+                },
+              },
+              metadata: [
+                {
+                  jobId: 10,
+                  secret: {
+                    access_token: secret1,
+                    developer_token: 'ijkl91011',
+                    refresh_token: 'efgh5678',
+                  },
+                  userId: 'u3',
+                  workspaceId: 'unlisted-workspace',
+                },
+              ],
+              statusCode: 200,
             },
           ],
         },

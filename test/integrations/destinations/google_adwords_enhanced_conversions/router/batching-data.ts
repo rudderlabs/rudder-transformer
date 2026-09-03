@@ -21,6 +21,11 @@ const sharedConfig = {
   authStatus: 'active',
 };
 
+const restatementConfig = {
+  ...sharedConfig,
+  adjustmentType: 'RESTATEMENT',
+};
+
 const trackMessage = (event: string) => ({
   channel: 'web',
   context: {
@@ -85,6 +90,20 @@ const enhancementAdjustment = {
       },
     },
   ],
+};
+
+const restatementAdjustment = {
+  adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+  adjustmentType: 'RESTATEMENT',
+  gclidDateTimePair: {
+    conversionDateTime: '2022-01-01 12:32:45-08:00',
+    gclid: 'gclid1234',
+  },
+  orderId: '10000',
+  restatementValue: {
+    adjustedValue: 10,
+    currencyCode: 'INR',
+  },
 };
 
 const envOverrides = {
@@ -159,6 +178,74 @@ export const newData = [
                 { secret, jobId: 2, userId: 'u1', workspaceId: 'ws-1' },
               ],
               destination: { hasDynamicConfig: false, Config: sharedConfig },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides,
+  },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description:
+      'Batching Framework: RESTATEMENT adjustment type is supported without workspace allowlist or user identifiers',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              metadata: { secret, jobId: 3, userId: 'u1', workspaceId: 'unlisted-workspace' },
+              destination: { hasDynamicConfig: false, Config: restatementConfig },
+              message: { ...trackMessage('Page View'), context: {} },
+            },
+          ],
+          destType: 'google_adwords_enhanced_conversions',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: '',
+                endpointPath: '/uploadConversionAdjustments',
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                  'login-customer-id': '11',
+                },
+                params: {
+                  accessToken: 'google_adwords_enhanced_conversions1',
+                  customerId: '1234567890',
+                  event: 'Page View',
+                  loginCustomerId: '11',
+                  subAccount: true,
+                },
+                body: {
+                  JSON: {
+                    conversionAdjustments: [restatementAdjustment],
+                    partialFailure: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ secret, jobId: 3, userId: 'u1', workspaceId: 'unlisted-workspace' }],
+              destination: { hasDynamicConfig: false, Config: restatementConfig },
               batched: true,
               statusCode: 200,
             },

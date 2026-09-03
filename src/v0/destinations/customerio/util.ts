@@ -3,7 +3,6 @@ import set from 'set-value';
 import truncate from 'truncate-utf8-bytes';
 import validator from 'validator';
 import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
-import { safeSetValue } from '../../util/safeSetValue';
 import {
   MAX_BATCH_SIZE,
   configFieldsToCheck,
@@ -20,6 +19,7 @@ import {
   getFieldValueFromMessage,
   defaultDeleteRequestConfig,
   isAppleFamily,
+  setValueForUntrustedPath,
 } from '../../util';
 
 import { EventType, SpecedTraits, TraitsMapping } from '../../../constants';
@@ -151,7 +151,11 @@ const identifyResponseBuilder = (userId, message): ResponseDetails => {
       ) {
         const dotEscapedTrait = trait.replace('.', '\\.');
         // trait name is customer-supplied and may be a key set-value refuses to write
-        safeSetValue(rawPayload, dotEscapedTrait, get(message, `${pathToTraits}.${trait}`));
+        setValueForUntrustedPath(
+          rawPayload,
+          dotEscapedTrait,
+          get(message, `${pathToTraits}.${trait}`),
+        );
       }
     });
   }
@@ -162,7 +166,7 @@ const identifyResponseBuilder = (userId, message): ResponseDetails => {
     userProps.forEach((prop) => {
       const val = get(message, `user_properties.${prop}`);
       // prop is customer-supplied and may be a key set-value refuses to write
-      safeSetValue(rawPayload, prop, val);
+      setValueForUntrustedPath(rawPayload, prop, val);
     });
   }
 

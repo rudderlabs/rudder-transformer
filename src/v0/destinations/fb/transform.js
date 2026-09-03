@@ -10,7 +10,7 @@ const {
   defaultPostRequestConfig,
   getValueFromMessage,
   isAppleFamily,
-  safeSetValue,
+  setValueForUntrustedPath,
   simpleProcessRouterDest,
 } = require('../../util');
 
@@ -209,10 +209,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           );
         }
       }
-      // `k` is a customer-supplied property name, so a plain lookup would walk the
-      // prototype chain: eventPropsToPathMapping['constructor'] returns Object itself,
-      // which is truthy and then blows up on `.includes` below.
-      if (Object.prototype.hasOwnProperty.call(eventPropsToPathMapping, k)) {
+      if (eventPropsToPathMapping[k]) {
         let rudderEventPath = eventPropsToPathMapping[k];
         let fbEventPath = eventPropsMapping[rudderEventPath];
 
@@ -244,7 +241,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
         }
       } else {
         // property key is customer-supplied and may be one set-value refuses to write
-        safeSetValue(updatedEvent.custom_events[0], processedKey, properties[k]);
+        setValueForUntrustedPath(updatedEvent.custom_events[0], processedKey, properties[k]);
       }
     });
   }

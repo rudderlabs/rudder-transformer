@@ -29,7 +29,7 @@ const {
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
   isValidInteger,
-  safeSetValue,
+  setValueForUntrustedPath,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   getSuccessRespEvents,
@@ -311,7 +311,7 @@ const userPropertiesHandler = (message, destination, rawPayload) => {
         });
       } else {
         // trait name is customer-supplied and may be a key set-value refuses to write
-        safeSetValue(rawPayload, `user_properties.${trait}`, get(traits, trait));
+        setValueForUntrustedPath(rawPayload, `user_properties.${trait}`, get(traits, trait));
       }
     });
   }
@@ -372,7 +372,7 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
         groups = {};
         groups[groupInfo.group_type] = groupInfo.group_value;
         // group_type is customer-supplied
-        safeSetValue(
+        setValueForUntrustedPath(
           rawPayload,
           `user_properties.${[groupInfo.group_type]}`,
           groupInfo.group_value,

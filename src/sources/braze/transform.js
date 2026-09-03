@@ -7,7 +7,7 @@ const {
   removeUndefinedAndNullValues,
   getHashFromArray,
   getBodyFromV2SpecPayload,
-  safeSetValue,
+  setValueForUntrustedPath,
 } = require('../../v0/util');
 const Message = require('../message');
 
@@ -52,7 +52,7 @@ const processEvent = (event, eventMapping) => {
         if (!ignoredProperties.includes(key)) {
           // the property is not ignored
           // property name comes from the inbound webhook payload
-          safeSetValue(message, `properties.${key}`, get(event, `properties.${key}`));
+          setValueForUntrustedPath(message, `properties.${key}`, get(event, `properties.${key}`));
         }
       });
     }

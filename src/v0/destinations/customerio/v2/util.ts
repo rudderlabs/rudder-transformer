@@ -5,13 +5,13 @@ import {
   InstrumentationError,
   isDefinedNotNullNotEmpty,
 } from '@rudderstack/integrations-lib';
-import { safeSetValue } from '../../../util/safeSetValue';
 import {
   constructPayload,
   getFieldValueFromMessage,
   isAppleFamily,
   getValidE164PhoneNumber,
   validateEventName,
+  setValueForUntrustedPath,
 } from '../../../util';
 import { populateSpecedTraits } from '../util';
 import { SpecedTraits } from '../../../../constants';
@@ -101,7 +101,7 @@ const buildTraitAttributes = (message): Record<string, unknown> => {
       // Escape backslashes first, then dots, so keys remain flat and unambiguous for set-value path parsing
       // trait name is customer-supplied; escaping dots does not help for a bare
       // reserved key such as `constructor`, which set-value still refuses to write
-      safeSetValue(
+      setValueForUntrustedPath(
         attributes,
         trait.replace(/\\/g, '\\\\').replace(/\./g, '\\.'),
         get(message, `${pathToTraits}.${trait}`),

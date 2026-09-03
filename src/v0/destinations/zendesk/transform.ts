@@ -1,7 +1,6 @@
 import { NetworkError, NetworkInstrumentationError } from '@rudderstack/integrations-lib';
 import { handleHttpRequest } from '../../../adapters/network';
 import { isHttpStatusSuccess } from '../../util';
-import { safeSetValue } from '../../util/safeSetValue';
 
 const get = require('get-value');
 const set = require('set-value');
@@ -31,6 +30,7 @@ const {
   getEventType,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
+  setValueForUntrustedPath,
 } = require('../../util');
 const {
   getSourceName,
@@ -316,7 +316,7 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
   );
   for (const field of userFields) {
     // field name is customer-supplied and may be a key set-value refuses to write
-    safeSetValue(payload, `user.user_fields.${field}`, get(traits, field));
+    setValueForUntrustedPath(payload, `user.user_fields.${field}`, get(traits, field));
   }
 
   payload.user = removeUndefinedValues(payload.user);
@@ -492,7 +492,7 @@ async function createOrganization(
 
   for (const field of organizationFields) {
     // field name is customer-supplied and may be a key set-value refuses to write
-    safeSetValue(
+    setValueForUntrustedPath(
       payload,
       `organization.organization_fields.${field}`,
       get(message, `traits.${field}`),

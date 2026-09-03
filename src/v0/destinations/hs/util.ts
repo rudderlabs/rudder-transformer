@@ -10,7 +10,6 @@ import {
   isDefinedNotNullNotEmpty,
 } from '@rudderstack/integrations-lib';
 import { AxiosRequestConfig } from 'axios';
-import { safeSetValue } from '../../util/safeSetValue';
 import { httpGET, httpPOST } from '../../../adapters/network';
 import { processAxiosResponse, getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import {
@@ -23,6 +22,7 @@ import {
   isNull,
   validateEventName,
   isHttpStatusSuccess,
+  setValueForUntrustedPath,
 } from '../../util';
 import {
   BASE_ENDPOINT,
@@ -932,7 +932,7 @@ const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {
     return;
   }
   // identifierType comes from the customer-supplied externalId
-  safeSetValue(
+  setValueForUntrustedPath(
     getFieldValueFromMessage(message, 'traits'),
     externalIdObj.identifierType,
     externalIdObj.id,

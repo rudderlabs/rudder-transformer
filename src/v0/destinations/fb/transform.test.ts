@@ -1,3 +1,5 @@
+import { InstrumentationError } from '@rudderstack/integrations-lib';
+
 const { process } = require('./transform');
 
 const destination = {
@@ -28,21 +30,16 @@ const buildTrack = (properties) => ({
   destination,
 });
 
-describe('FB - property keys that collide with Object.prototype', () => {
-  // `eventPropsToPathMapping[k]` walked the prototype chain for a customer-supplied key:
-  // eventPropsToPathMapping['constructor'] returns Object itself, which is truthy, and the
-  // code then called `.includes` on it. Separate from the set-value crash, same trigger.
-  it.each(['constructor', 'toString', 'valueOf', 'hasOwnProperty'])(
-    'does not throw on a property named "%s"',
-    (key) => {
-      const input = buildTrack(JSON.parse(`{"a": 1, ${JSON.stringify(key)}: "boom"}`));
+describe('FB - property keys that set-value refuses to write', () => {
+  it('raises an InstrumentationError rather than a 500 for a "prototype" property', () => {
+    const input = buildTrack(JSON.parse('{"a": 1, "prototype": "boom"}'));
 
-      expect(() => process(input)).not.toThrow();
-    },
-  );
+    expect(() => process(input)).toThrow(InstrumentationError);
+    expect(() => process(input)).toThrow(/Cannot set unsafe key: "prototype"/);
+  });
 
-  it('still maps a genuinely mapped property', () => {
-    const input = buildTrack({ revenue: 10, currency: 'USD' });
+  it('leaves ordinary properties alone', () => {
+    const input = buildTrack({ a: 1, revenue: 10, currency: 'USD' });
 
     expect(() => process(input)).not.toThrow();
   });

@@ -29,7 +29,9 @@ const {
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
 const { parsePhoneNumberFromString } = require('libphonenumber-js');
-const { safeSetValue } = require('./safeSetValue');
+// Distinct from `set` above (integrations-lib's setValue, which never splits paths and
+// never throws): this is the `set-value` package that destinations require directly.
+const setValuePkg = require('set-value');
 const { shouldGroupByDestinationConfig } = require('../../util/utils');
 const { sandboxedApplyCustomMappings } = require('../../util/customMappings/sandboxClient');
 const logger = require('../../logger');
@@ -1365,6 +1367,53 @@ const generateExclusionList = (mappingConfig) =>
   );
 
 /**
+ * `set-value` write for a path built out of untrusted event data.
+ *
+ * `set-value` refuses to write keys that would corrupt the prototype chain and throws
+ * `Cannot set unsafe key: "<key>"`. It validates *every* segment of the path, so
+ * `address.constructor` is rejected just like `constructor`. That throw is a plain `Error`,
+ * which `generateErrorObject` classifies as a 500 — a *retryable* status for a payload that
+ * can never succeed, so the job is retried until its TTL instead of failing once.
+ *
+ * A key the customer chose is their input, not our defect, so this re-raises it as an
+ * InstrumentationError (4xx): the event aborts immediately and shows up in the errors table
+ * with an actionable message. Call sites whose path comes from our own mapping config should
+ * keep using plain `set`, where a throw really is a 5xx-worthy bug on our side.
+ *
+ * Which keys count as unsafe is deliberately NOT duplicated here. `set-value` enforces that
+ * policy but never exposes it — no option relaxes it and no predicate is exported — so on
+ * failure we ask it the same question again against a throwaway target. If it still refuses,
+ * the path is what it objected to; otherwise the failure came from the target object (frozen,
+ * exotic setter, ...) and the original error is re-thrown untouched. That stays correct for
+ * free if the library's rules ever change, and the happy path pays nothing because the probe
+ * only runs after a write has already failed.
+ *
+ * @param {object} target object to write into
+ * @param {string|symbol|Array|undefined|null} setPath set-value path. As in `set-value`
+ *   itself, a falsy path is a no-op rather than an error — several callers rely on that for
+ *   optional keys.
+ * @param {*} value value to write
+ * @param {object} [options] set-value options, forwarded as-is
+ * @returns {object} target
+ * @throws {InstrumentationError} when set-value rejects the path itself
+ */
+const setValueForUntrustedPath = (target, setPath, value, options) => {
+  try {
+    return setValuePkg(target, setPath, value, options);
+  } catch (error) {
+    try {
+      setValuePkg({}, setPath, value, options);
+    } catch {
+      // set-value objects to the path itself, not to `target`
+      throw new InstrumentationError(
+        `Invalid key in event payload at "${String(setPath)}": ${error.message}`,
+      );
+    }
+    throw error;
+  }
+};
+
+/**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
  * exclusion fields to exlude and the payload to map into
@@ -2531,7 +2580,7 @@ module.exports = {
   deleteObjectProperty,
   generateExclusionList,
   extractCustomFields,
-  safeSetValue,
+  setValueForUntrustedPath,
   flattenJson,
   flattenMap,
   flattenMultilevelPayload,

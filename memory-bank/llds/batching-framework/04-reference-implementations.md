@@ -276,5 +276,5 @@ To migrate a destination to the framework:
    - Call `super.batchTransform()` to delegate iteration
 7. **Add Zod schema** via `getIntegrationSchema` for destination-specific rules
 8. **Export `const Integration = YourClass`** (class, not instance)
-9. **Add destination to `destinationIntegrationsMap`**
+9. **Add `batching: true` to the destination's entry in `destinationCapabilities`** (`src/features.ts`) — see `.claude/skills/batching-framework/SKILL.md#enabling-the-framework`
 10. **Update/add component tests** — output format changes from legacy to framework envelope

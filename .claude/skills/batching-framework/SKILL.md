@@ -36,7 +36,7 @@ RouterTransformationResponse[]
 Delivery is a separate service call, over the same class:
 
 ```
-deliver()                            [nativeIntegration, same predicate as transform]
+deliver()                            [nativeIntegration; isProxyV1Request && same predicate as transform]
     |
 handleDeliveryResponse(Class, ctx)   [framework-owned]
     |--- delivery.statusOverrides[status] ?? [class] ?? classify by status
@@ -211,26 +211,55 @@ type BatchGroup = {
 
 ## Enabling the Framework
 
-Mark the destination `batching: true` in `src/features.ts`:
+**`src/features.ts` is the only registration surface. Do not hand-edit
+`src/constants/destinationIntegrationsMap.ts`** — it is derived, not authored:
 
 ```typescript
-const destinationCapabilities = {
-  <DEST_NAME_UPPER>: { routerTransform: true, batching: true }, // Add your destination here
+// src/constants/destinationIntegrationsMap.ts
+export const destinationIntegrationsMap: Record<string, true> = getGaDestinationIntegrations();
+```
+
+`getGaDestinationIntegrations()` filters `destinationCapabilities` in `src/features.ts`
+on `batching: true`, so adding an entry to that map by hand is either a no-op or a conflict.
+
+Register the destination by adding the `batching` capability alongside `routerTransform`:
+
+```typescript
+// src/features.ts — destinationCapabilities
+const destinationCapabilities: Record<string, DestinationCapabilities> = {
+  POSTHOG: { routerTransform: true, batching: true },
+  CUSTOM_AUDIENCE: { routerTransform: true, batching: true },
+  <DEST_NAME_UPPER>: { routerTransform: true, batching: true },  // Add your destination here
 };
 ```
 
-`destinationIntegrationsMap` (`src/constants/destinationIntegrationsMap.ts`) is **derived** from this
-via `getGaDestinationIntegrations()` — there is nothing to hand-edit there.
+`routerTransform: true` puts the destination on the router-transform path at all;
+`batching: true` marks it **batching-GA**. For the current roster, grep `batching: true` in
+`src/features.ts` — it changes as destinations migrate, so a list copied into a doc goes stale.
 
-To enable destination on routerTransform, feature.ts also needs to be updated with definitionName under defaultFeaturesConfig `src/features.ts`
+### One gate, both halves
 
-When enabled, the platform routes events through `processDestinationIntegration()` instead of the legacy `processRouterDest()`.
+`isDestinationIntegrationEnabled(destType, workspaceId)`
+(`src/constants/destinationIntegrationsMap.ts`) is the **only** predicate, and it answers for the
+router transform *and* delivery:
 
-For gradual rollout before GA, use the env var pattern:
-`{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or `ALL`).
+- **batching-GA** (`batching: true` in `features.ts`) → true for every workspace, always.
+- **otherwise** → true only for a workspace named in
+  `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or
+  `ALL`) — the pre-GA rollout knob.
 
-Delivery is gated by the **same** predicate — there is no separate delivery flag
-— see `.claude/skills/batching-framework-delivery/SKILL.md`.
+`doRouterTransformation` calls it to route events through `processDestinationIntegration()` instead
+of the legacy `processRouterDest()`; `deliver()` calls it to read the response through the
+framework's delivery bridge instead of the destination's `networkHandler`.
+
+There is **no separate delivery flag.** The delivery path interprets a payload built by the matching
+transform path, so deciding both from one call makes the mismatch unrepresentable — where a separate
+flag made it a configuration mistake anyone could make. Enrolling a workspace moves both halves
+together, and so does going GA. See `.claude/skills/batching-framework-delivery/SKILL.md`.
+
+One thing is *not* gated on the predicate: a **v0 proxy request** stays on the legacy handler
+whatever it returns, because the framework produces a `DeliveryV1Response` natively and a v0 caller
+cannot parse one. See `isProxyV1Request` in `src/services/destination/nativeIntegration.ts`.
 
 ## Delivery (response handling)
 
@@ -242,8 +271,9 @@ throws.
 **Most destinations need nothing** — the default reproduces `genericNetworkHandler`. `posthog` and
 `custom_audience` declare no overrides at all.
 
-**See `.claude/skills/batching-framework-delivery/SKILL.md`** for the contract, the verdict builders,
-the `perItem` rules and the delivery flag.
+**See `.claude/skills/batching-framework-delivery/SKILL.md`** for the contract, the verdict builders
+and the `perItem` rules. Enabling it is not separate — it rides on the same registration and the
+same predicate as the transform, per "One gate, both halves" above.
 
 ### If you just batched a destination that had a network handler
 
@@ -256,8 +286,10 @@ URL from `params`. If instead it reads the endpoint from the payload, set it nor
   and often hard-codes index `0` (e.g. `set(body.JSON, 'items[0].field', ...)`). Once batched,
   `items` is an array of N — iterate the whole array. The single-item case collapses to an array of
   one, so legacy traffic is unaffected (a safe, ungated change).
-- The proxy layer runs in a later service call than the transform and **does not see the workspace
-  batching flag**, so don't gate transport changes on it; make them correct for both 1 and N items.
+- **Don't gate transport changes on the batching predicate**; make them correct for both 1 and N
+  items. `deliver()` does read `isDestinationIntegrationEnabled`, but only *after* `proxy()` and
+  `processAxiosResponse()` have already run — transport is chosen by `networkHandlerFactory`, not by
+  the predicate — and the same handler still serves v0 proxy requests and any pre-GA workspace.
 
 Cover this with a focused unit test that mocks the delivery SDK/client and asserts the per-item field
 is set on **every** item (cheaper and more direct than a full dataDelivery mock).
@@ -270,10 +302,40 @@ it only covers the rules you knew about when you wrote it. A partner that adds a
 rule, or one whose docs are incomplete, will reject a batch of N on one event you believed
 was fine, and the retry re-sends the same batch and fails again.
 
-The fallback belongs in the **networkHandler**, where the partner's actual rejection is
-visible. On a 4xx **when more than one event was sent**, mark every job `dontBatch: true` and
-return **500** so the router re-delivers them individually; the offending event then fails
+Whether you need this at all: if the partner documents a per-item result array (partial
+success), you don't — parse it and mark only the failed items. If one bad item fails the
+request, you do.
+
+The fallback: on a 4xx **when more than one event was sent**, mark every job `dontBatch: true`
+and return **500** so the router re-delivers them individually; the offending event then fails
 alone and the rest succeed.
+
+**On the framework this is a `delivery.ts` verdict, not a `networkHandler`.** Return
+`retry(..., { dontBatch: true })` from a `'4xx'` status override:
+
+```ts
+static delivery = {
+  statusOverrides: {
+    // Exact keys win over the class key. Without this, '4xx' would also swallow 429 and turn a
+    // rate limit — transient, and a whole-batch problem — into a permanent per-job dontBatch.
+    429: (ctx, fallback) => fallback(),
+    '4xx': (ctx, fallback) => retry(reasonOf(fallback()), { dontBatch: true }),
+  },
+};
+```
+
+The framework then applies the three rules below for you: a `retry` verdict yields **500** and
+stamps `dontBatch: true` on every job's metadata; when the batch is already a **single** job it
+rewrites that verdict to an **abort** (400), so a permanently-bad event terminates instead of
+looping; and retryable 5xx never reaches a `'4xx'` override at all. See `retry` and the
+`dontBatchAbortCount` rewrite in `src/services/destination/destinationIntegration/delivery.ts`, and
+`.claude/skills/batching-framework-delivery/SKILL.md#dontbatch-softens-an-abort-it-never-hardens-a-retry`
+for why `dontBatch` must never be paired with a transient status.
+
+### The legacy shape — non-framework destinations only
+
+A destination **not** on the framework does this in its `networkHandler`, where the partner's
+actual rejection is visible. Do not write this for a new destination:
 
 ```ts
 const populateResponseWithDontBatch = (rudderJobMetadata, errorMessage) =>
@@ -329,10 +391,6 @@ unconditionally — take Amplitude's version of that line. Also
 Network handlers live at `src/v1/destinations/<dest>/networkHandler.{ts,js}` and are
 auto-discovered by `src/adapters/networkHandlerFactory.js` from the directory name — export
 them as `networkHandler` or `NetworkHandler`; no registration step.
-
-Whether you need this: if the partner documents a per-item result array (partial success),
-you don't — parse it and mark only the failed items. If one bad item fails the request, you
-do.
 
 ## Testing
 

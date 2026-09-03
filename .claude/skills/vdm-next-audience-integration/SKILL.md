@@ -28,7 +28,6 @@ src/v0/destinations/<dest_name>/
 ├── utils.ts                  # (Optional) Normalization, hashing, field processing, API helpers
 ├── delivery.ts               # (Optional) the `delivery` spec — only if response handling
 │                             #            differs from the framework default
-├── networkHandler.ts         # (Optional) Transport only (SDK/proxy/processAxiosResponse)
 ├── routerTransform.test.ts   # Unit tests for router transform
 └── utils.test.ts             # (Optional) Unit tests for utilities
 ```
@@ -390,15 +389,12 @@ export const Integration = AudienceIntegration;
 
 ### Enabling the Batching Framework
 
-Register the destination in `src/constants/destinationIntegrationsMap.ts`:
+Add `<DEST_NAME_UPPER>: { routerTransform: true, batching: true }` to `destinationCapabilities` in
+`src/features.ts`. That one entry enables the framework transform *and* delivery.
 
-```typescript
-export const destinationIntegrationsMap: Record<string, true> = {
-  POSTHOG: true,
-  CUSTOM_AUDIENCE: true,
-  <DEST_NAME_UPPER>: true,  // Add your destination here
-};
-```
+**See `.claude/skills/batching-framework/SKILL.md#enabling-the-framework`** for why
+`src/constants/destinationIntegrationsMap.ts` must not be hand-edited, and for the pre-GA rollout
+flag.
 
 **Reference:**
 
@@ -480,7 +476,8 @@ Response handling lives on your `DestinationIntegration` class as a static `deli
 `networkHandler.ts`. **Most audience destinations need nothing** — the framework default reproduces
 `genericNetworkHandler`.
 
-**See `.claude/skills/batching-framework-delivery/SKILL.md`** for the contract, verdicts and flag.
+**See `.claude/skills/batching-framework-delivery/SKILL.md`** for the contract, the verdict builders
+and the `perItem` rules. There is no delivery flag — it rides on the same predicate as the transform.
 
 What is audience-specific: these APIs commonly report failures by **identity** rather than index —
 a `failedUpdates` object naming the emails/userIds that failed, with no positional information.
@@ -490,15 +487,13 @@ than aborted, and `notFound` on an unsubscribe is a no-op success. Reproduce tha
 destination-specific semantics in `delivery.statusOverrides`, or the default will abort them as
 plain failures.
 
-`networkHandler.ts` remains the place for **transport** — a shared platform proxy, custom
-`processAxiosResponse`, SDK-based delivery:
+**Do not add a `networkHandler.ts`.** A new audience destination is framework-native: transport
+comes from the framework default and response handling from `delivery.ts`. If the destination
+appears to need transport the framework cannot express, or OAuth refresh on the v0 proxy path,
+that is a gap in the framework — raise it rather than hand-writing a handler. See
+`.claude/skills/batching-framework-delivery/SKILL.md#a-new-destination-gets-no-networkhandlerts`.
 
-```typescript
-export { networkHandler, errorResponseHandler } from '../../util/<platform>Utils/networkHandler';
-```
-
-**Reference:** `src/v0/destinations/iterable_audience/delivery.ts` (identity-keyed),
-`src/v0/destinations/fb_custom_audience/networkHandler.ts` (transport re-export)
+**Reference:** `src/v0/destinations/iterable_audience/delivery.ts` (identity-keyed)
 
 ---
 
@@ -770,8 +765,8 @@ export const data = [
    - `getBatchStrategy()` — return `ChunkBatchStrategy` with `maxItems`/`maxPayloadSize` and `wrapBody` that builds the destination-specific request body
    - `getInputSchema()` — return the Zod schema for input validation
    - Export the class as `Integration`
-5. Register in `src/constants/destinationIntegrationsMap.ts` — add `<DEST_NAME_UPPER>: true`
-6. Create `delivery.ts` (optional) — only if the API reports failures the framework default cannot read (partial failures, identity-keyed errors); `networkHandler.ts` only if transport itself is custom
+5. Register in `src/features.ts` — see "Enabling the Batching Framework" above
+6. Handle delivery (optional) — see "Delivery — response handling" above; the framework default covers most audience destinations
 7. Create `routerTransform.test.ts` — unit tests using `processDestinationIntegration(inputs, Integration, {})` covering: valid insert/update/delete, invalid identifiers, null identifiers, hashing on/off, batch overflow, mixed actions, missing auth
 8. Create `test/integrations/destinations/<dest_name>/router/data.ts` — integration test cases covering: successful operations, validation errors, unsupported types, batching, audience subtypes, pre-hashed values
 9. Run verification:

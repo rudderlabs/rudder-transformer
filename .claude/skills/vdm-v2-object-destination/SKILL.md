@@ -109,9 +109,13 @@ Object destinations declare both `recordSchema` and `eventStreamSchema`. Overrid
 
 ## Enabling the Framework
 
-Mark the destination `batching: true` in `src/features.ts` (and `routerTransform: true`). `destinationIntegrationsMap` is derived from this — nothing to hand-edit there.
+Add `<DEST_NAME_UPPER>: { routerTransform: true, batching: true }` to `destinationCapabilities` in
+`src/features.ts`. That one entry enables the framework transform *and* delivery — there is no
+separate delivery flag.
 
-Delivery is gated by the same predicate -- see `.claude/skills/batching-framework-delivery/SKILL.md`.
+**See `.claude/skills/batching-framework/SKILL.md#enabling-the-framework`** for why
+`src/constants/destinationIntegrationsMap.ts` must not be hand-edited, and for the pre-GA rollout
+flag. For the delivery *contract*, see `.claude/skills/batching-framework-delivery/SKILL.md`.
 
 ## Steps
 
@@ -123,7 +127,7 @@ Delivery is gated by the same predicate -- see `.claude/skills/batching-framewor
    - `getBatchStrategy()` -- return `ChunkBatchStrategy` with `maxPayloadSize`/`maxItems` and `wrapBody`
    - (Optional) `transformEventStream(input)` -- handle non-record events
    - Export as `Integration`
-4. Mark `batching: true` in `src/features.ts`
+4. Register in `src/features.ts` -- see "Enabling the Framework" above
 5. (Optional) Create `delivery.ts` -- the `delivery` spec, only if the API reports failures the
    framework default cannot read; add a `delivery.test.ts` that compares it against the legacy handler
 6. Create `src/v0/destinations/<dest_name>/routerTransform.test.ts` -- unit tests

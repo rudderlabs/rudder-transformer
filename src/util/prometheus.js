@@ -153,7 +153,7 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Summary metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newSummaryStat(fullName, name, Object.keys(tags));
@@ -169,7 +169,7 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Timing metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newHistogramStat(fullName, name, Object.keys(tags));
@@ -185,7 +185,7 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: summary metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newSummaryStat(fullName, name, Object.keys(tags));
@@ -201,7 +201,7 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Histogram metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newHistogramStat(fullName, name, Object.keys(tags));
@@ -221,7 +221,7 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Counter metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newCounterStat(fullName, name, Object.keys(tags));
@@ -239,7 +239,7 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Gauge metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newGaugeStat(fullName, name, Object.keys(tags));

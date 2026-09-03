@@ -19,7 +19,11 @@ import { logProcessInfo } from './util/utils';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
-import { memoryFenceMiddleware, startMemoryUsageReporter } from './middlewares/memoryFencing';
+import {
+  isMemoryFencingEnabled,
+  memoryFenceMiddleware,
+  startMemoryUsageReporter,
+} from './middlewares/memoryFencing';
 import { concurrentRequests } from './middlewares/concurrentRequests';
 import { errorHandlerMiddleware } from './middlewares/errorHandler';
 
@@ -82,9 +86,10 @@ startMemoryUsageReporter(
 
 // Memory fencing middleware needs to come early in the middleware stack,
 // before any other middleware that might allocate memory.
-// It is disabled by default. Mounting it also seeds the fenced-requests counter (see
-// memoryFenceMiddleware), so the fence and its seeded counter can never drift apart.
-if (process.env.MEMORY_FENCING_ENABLED === 'true') {
+// It is enabled by default and can be disabled only with MEMORY_FENCING_ENABLED=false.
+// Mounting it also seeds the fenced-requests counter (see memoryFenceMiddleware), so the
+// fence and its seeded counter can never drift apart.
+if (isMemoryFencingEnabled()) {
   app.use(
     memoryFenceMiddleware({
       thresholdPercent: parseInt(process.env.MEMORY_FENCING_THRESHOLD_PERCENT || '80', 10),

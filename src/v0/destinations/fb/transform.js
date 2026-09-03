@@ -209,7 +209,10 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           );
         }
       }
-      if (eventPropsToPathMapping[k]) {
+      // `k` is a customer-supplied property name, so a plain lookup would walk the
+      // prototype chain: eventPropsToPathMapping['constructor'] returns Object itself,
+      // which is truthy and then blows up on `.includes` below.
+      if (Object.prototype.hasOwnProperty.call(eventPropsToPathMapping, k)) {
         let rudderEventPath = eventPropsToPathMapping[k];
         let fbEventPath = eventPropsMapping[rudderEventPath];
 

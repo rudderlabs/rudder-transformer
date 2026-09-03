@@ -29,6 +29,7 @@ const {
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
   isValidInteger,
+  isUnsafeSetValuePath,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   getSuccessRespEvents,
@@ -298,6 +299,12 @@ const userPropertiesHandler = (message, destination, rawPayload) => {
   };
   if (traits) {
     Object.keys(traits).forEach((trait) => {
+      // `set` (set-value) refuses to write prototype-reserved keys and throws, which would
+      // surface as a retryable 500 for a payload that can never succeed. Drop the trait instead.
+      if (isUnsafeSetValuePath(`user_properties.${trait}`)) {
+        logger.info(`Amplitude: dropping user property with reserved key "${trait}"`);
+        return;
+      }
       if (SpecedTraits.includes(trait)) {
         const mapping = TraitsMapping[trait];
         Object.keys(mapping).forEach((key) => {
@@ -369,7 +376,11 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
       if (groupInfo?.group_type && groupInfo?.group_value) {
         groups = {};
         groups[groupInfo.group_type] = groupInfo.group_value;
-        set(rawPayload, `user_properties.${[groupInfo.group_type]}`, groupInfo.group_value);
+        // `groups` is a plain assignment and is safe, but mirroring the group into
+        // user_properties goes through `set` which rejects prototype-reserved keys.
+        if (!isUnsafeSetValuePath(`user_properties.${[groupInfo.group_type]}`)) {
+          set(rawPayload, `user_properties.${[groupInfo.group_type]}`, groupInfo.group_value);
+        }
       }
       break;
     case EventType.ALIAS:

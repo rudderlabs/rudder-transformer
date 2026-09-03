@@ -1,4 +1,5 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const set = require('set-value');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
@@ -513,6 +514,69 @@ describe('validateEventAndLowerCaseConversion Tests', () => {
     expect(() => {
       validateEventAndLowerCaseConversion(false, false, false);
     }).toThrow(InstrumentationError);
+  });
+});
+
+describe('isUnsafeSetValuePath', () => {
+  const { isUnsafeSetValuePath } = utilities;
+
+  it.each(['__proto__', 'constructor', 'prototype'])('flags "%s"', (key) => {
+    expect(isUnsafeSetValuePath(key)).toBe(true);
+  });
+
+  // set-value validates every path segment, not just the leaf
+  it.each(['address.constructor', 'constructor.foo', 'a.b.__proto__'])(
+    'flags nested key "%s"',
+    (key) => {
+      expect(isUnsafeSetValuePath(key)).toBe(true);
+    },
+  );
+
+  it.each(['email', 'myConstructor', 'prototypeVersion', 'address.city', ''])(
+    'does not flag "%s"',
+    (key) => {
+      expect(isUnsafeSetValuePath(key)).toBe(false);
+    },
+  );
+
+  it.each([undefined, null, 42, {}])('does not flag non-string %p', (key) => {
+    expect(isUnsafeSetValuePath(key)).toBe(false);
+  });
+
+  // set-value unescapes while splitting, so the check has to agree with it in both
+  // directions rather than naively splitting on '.'
+  it('flags a backslash-escaped key that set-value resolves to a reserved one', () => {
+    expect(isUnsafeSetValuePath('con\\structor')).toBe(true);
+    expect(() => set({}, 'con\\structor', 1)).toThrow('Cannot set unsafe key: "constructor"');
+  });
+
+  it('does not flag an escaped dot, which set-value treats as one safe literal key', () => {
+    expect(isUnsafeSetValuePath('a\\.constructor')).toBe(false);
+    expect(() => set({}, 'a\\.constructor', 1)).not.toThrow();
+  });
+
+  it('agrees with set-value for every path it is asked about', () => {
+    const paths = [
+      'email',
+      'constructor',
+      'user_properties.constructor',
+      'user_properties.email',
+      'address.__proto__',
+      'con\\structor',
+      'a\\.constructor',
+      'a/constructor',
+      'CONSTRUCTOR',
+    ];
+
+    paths.forEach((path) => {
+      let setThrew = false;
+      try {
+        set({}, path, 1);
+      } catch {
+        setThrew = true;
+      }
+      expect(isUnsafeSetValuePath(path)).toBe(setThrew);
+    });
   });
 });
 

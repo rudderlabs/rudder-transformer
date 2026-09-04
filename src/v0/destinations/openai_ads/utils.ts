@@ -19,6 +19,8 @@ import {
   CUSTOMER_ACTION_DATA_TYPE,
   CUSTOM_EVENT_SENTINEL,
   DESTINATION,
+  EVENT_DATA_TYPES,
+  STANDARD_EVENTS,
   STANDARD_EVENT_DATA_TYPES,
 } from './config';
 import mappingConfig from './data/OPENAI_ADSConfig.json';
@@ -38,10 +40,12 @@ import type {
 const ACTION_SOURCE_SET = new Set<string>(ACTION_SOURCES);
 const CURRENCY_RE = /^[A-Z]{3}$/;
 const PUNCTUATION_REGEX = /[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/g;
-const EVENT_DATA_TYPE_BY_EVENT = {
-  ...STANDARD_EVENT_DATA_TYPES,
+// Null-prototype so an event type of `constructor` or `toString` misses instead of resolving to
+// something off Object.prototype. The zod schema already rejects those before they reach the
+// lookup, but the invariant should not depend on a validation layer two files away staying put.
+const EVENT_DATA_TYPE_BY_EVENT = Object.assign(Object.create(null), STANDARD_EVENT_DATA_TYPES, {
   [CUSTOM_EVENT_SENTINEL]: CUSTOM_EVENT_SENTINEL,
-} as const;
+}) as Record<string, (typeof EVENT_DATA_TYPES)[number]>;
 
 type OpenAIAdsMappingConfig = {
   hashedUserMappings: MappingEntry[];
@@ -227,16 +231,48 @@ const getSourceKey = (message: RudderMessage): string => {
   return String(sourceName);
 };
 
+const STANDARD_EVENT_SET = new Set<string>(STANDARD_EVENTS);
+
+const isStandardEvent = (name: string): name is OpenAIAdsStandardEvent =>
+  STANDARD_EVENT_SET.has(name);
+
+/**
+ * Fold a source event name onto OpenAI's own naming. OpenAI's names are snake_case
+ * (`order_created`) while the RudderStack convention is title case (`Order Created`), so casing is
+ * dropped and runs of whitespace or hyphens collapse to the underscore they stand in for. An
+ * underscore already present is left alone. Nothing fuzzier: this bridges spelling, not meaning.
+ */
+const normalizeEventName = (name: string): string =>
+  name
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, '_');
+
 const resolveEventMapping = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsEventMapping => {
   const sourceKey = getSourceKey(message);
   const normalizedSourceKey = sourceKey.toLowerCase();
-  const mapping = (config.eventMapping ?? []).find(
+  const eventMapping = config.eventMapping ?? [];
+  const mapping = eventMapping.find(
     (candidate) => candidate.from.toLowerCase() === normalizedSourceKey,
   );
   if (!mapping) {
+    // Only when nothing is configured at all. Once a destination has any mapping rows, that table
+    // is its allowlist — an event missing from it was filtered on purpose, and this is the only
+    // gate that applies in cloud mode (the `eventFilteringOption` fields in the destination
+    // definition sit under `destConfig.web` and are enforced SDK-side, never on the router path).
+    // Falling back on a partially-mapped destination would silently start delivering events the
+    // customer had excluded, which for a conversions API means billing and optimising on them.
+    //
+    // With nothing configured there is no intent to contradict, and an event already named after a
+    // standard OpenAI event needs no configuration to be understood — so rather than dropping 100%
+    // of the destination's traffic, take the name at face value.
+    const standardEventName = normalizeEventName(sourceKey);
+    if (eventMapping.length === 0 && isStandardEvent(standardEventName)) {
+      return { from: sourceKey, to: standardEventName };
+    }
     throw new InstrumentationError(`OpenAI Ads event mapping not found for ${sourceKey}`);
   }
   if (mapping.to === CUSTOM_EVENT_SENTINEL && !mapping.customEventName) {

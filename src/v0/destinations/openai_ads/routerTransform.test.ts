@@ -9,6 +9,7 @@ import type {
 } from '../../../types/destinationTransformation';
 import type { Destination } from '../../../types';
 import type { OpenAIAdsEventPayload } from './types';
+import { STANDARD_EVENTS, STANDARD_EVENT_DATA_TYPES } from './config';
 import { Integration } from './routerTransform';
 const destination: Destination = {
   ID: 'openai-ads-dest-1',
@@ -272,19 +273,77 @@ describe('OpenAIAdsIntegration', () => {
     );
   });
 
-  it('rejects exact standard event names when mapping is empty', () => {
+  const unmappedDestination = {
+    ...destination,
+    Config: {
+      apiKey: 'test-api-key',
+      pixelId: 'pixel-123',
+      defaultActionSource: 'offline',
+    },
+  };
+
+  it.each(STANDARD_EVENTS)(
+    'resolves standard event %s with no mapping configured',
+    (standardEvent) => {
+      const body = transform(makeInput(1, standardEvent, unmappedDestination)).body;
+
+      expect(body.type).toBe(standardEvent);
+      expect(body.data.type).toBe(STANDARD_EVENT_DATA_TYPES[standardEvent]);
+      expect(body.custom_event_name).toBeUndefined();
+    },
+  );
+
+  it.each([
+    { label: 'title case', event: 'Order Created' },
+    { label: 'upper case', event: 'ORDER CREATED' },
+    { label: 'hyphenated', event: 'Order-Created' },
+    { label: 'surrounding whitespace', event: '  Order Created  ' },
+    { label: 'repeated separators', event: 'Order   Created' },
+  ])('folds $label onto the standard name', ({ event }) => {
+    expect(transform(makeInput(1, event, unmappedDestination)).body.type).toBe('order_created');
+  });
+
+  it.each([
+    'Some Bespoke Event',
+    // Names that resolve up Object.prototype if the event-type table is a plain object.
+    'constructor',
+    '__proto__',
+    'toString',
+  ])('rejects non-standard event %s when no mapping is configured', (event) => {
+    expect(() => transform(makeInput(1, event, unmappedDestination))).toThrow(
+      `OpenAI Ads event mapping not found for ${event}`,
+    );
+  });
+
+  it('does not fall back once any mapping row is configured', () => {
+    // The mapping table is the allowlist: a standard-named event absent from a non-empty table was
+    // filtered deliberately, so it must still abort rather than deliver itself.
     expect(() =>
       transform(
         makeInput(1, 'order_created', {
           ...destination,
           Config: {
-            apiKey: 'test-api-key',
-            pixelId: 'pixel-123',
-            defaultActionSource: 'offline',
+            ...unmappedDestination.Config,
+            eventMapping: [{ from: 'Something Else', to: 'lead_created' }],
           },
         }),
       ),
     ).toThrow('OpenAI Ads event mapping not found for order_created');
+  });
+
+  it('prefers an explicit mapping over the standard name', () => {
+    const body = transform(
+      makeInput(1, 'order_created', {
+        ...destination,
+        Config: {
+          ...unmappedDestination.Config,
+          eventMapping: [{ from: 'order_created', to: 'custom', customEventName: 'renamed' }],
+        },
+      }),
+    ).body;
+
+    expect(body.type).toBe('custom');
+    expect(body.custom_event_name).toBe('renamed');
   });
 
   it('uses destination.Config credentials', () => {

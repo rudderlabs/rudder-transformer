@@ -470,7 +470,7 @@ const resolveEventId = (message: RudderMessage, mapping: OpenAIAdsEventMapping):
   if (isPresent(dedupValue)) {
     if (!isScalarValue(dedupValue)) {
       throw new InstrumentationError(
-        `OpenAI Ads deduplication key "${mapping.deduplicationKey}" must resolve to a string, number, or boolean`,
+        `OpenAI Ads deduplication key "${mapping.deduplicationKey}" must resolve to a string`,
       );
     }
     return String(dedupValue);

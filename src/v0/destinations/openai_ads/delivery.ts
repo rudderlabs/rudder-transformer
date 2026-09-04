@@ -4,7 +4,7 @@ import {
   type DeliverySpec,
   type HandleResponseResult,
   type StatusOverrideMap,
-} from '../../../services/destination/nativeBatching/batchDestination';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
 
 const DEFAULT_ERROR_MESSAGE = 'OpenAI Ads request failed';
 

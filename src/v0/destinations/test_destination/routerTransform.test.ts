@@ -1,6 +1,6 @@
 import { Integration } from './routerTransform';
-import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/batchDestination';
-import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
+import { ChunkBatchStrategy } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { TestDestination, TestDestinationRouterRequest } from './type';
 
 const destinationDefinition = {
@@ -62,7 +62,7 @@ describe('test_destination batching framework Integration', () => {
   });
 
   it('batches v1 + no-version events (same endpoint/headers) into one request', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, destinationV1), buildInput(2, destinationNoVersion)],
       Integration,
       {},
@@ -75,7 +75,7 @@ describe('test_destination batching framework Integration', () => {
   });
 
   it('rejects a v2 event with a 400 — only v1 is implemented', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(3, destinationV2)],
       Integration,
       {},

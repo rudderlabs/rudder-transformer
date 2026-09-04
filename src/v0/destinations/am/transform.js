@@ -29,6 +29,7 @@ const {
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
   isValidInteger,
+  setValueForUntrustedPath,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   getSuccessRespEvents,
@@ -309,7 +310,8 @@ const userPropertiesHandler = (message, destination, rawPayload) => {
           }
         });
       } else {
-        set(rawPayload, `user_properties.${trait}`, get(traits, trait));
+        // trait name is customer-supplied and may be a key set-value refuses to write
+        setValueForUntrustedPath(rawPayload, `user_properties.${trait}`, get(traits, trait));
       }
     });
   }
@@ -369,7 +371,12 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
       if (groupInfo?.group_type && groupInfo?.group_value) {
         groups = {};
         groups[groupInfo.group_type] = groupInfo.group_value;
-        set(rawPayload, `user_properties.${[groupInfo.group_type]}`, groupInfo.group_value);
+        // group_type is customer-supplied
+        setValueForUntrustedPath(
+          rawPayload,
+          `user_properties.${[groupInfo.group_type]}`,
+          groupInfo.group_value,
+        );
       }
       break;
     case EventType.ALIAS:

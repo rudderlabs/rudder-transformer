@@ -1,7 +1,11 @@
 import { z } from 'zod';
 import { VDMV2ObjectDestination } from '../vdmV2ObjectDestination';
-import { validateInputs } from '../processBatchedDestination';
-import { makeRouterInputSchema, TransformedEvent, ChunkBatchStrategy } from '../batchDestination';
+import { validateInputs } from '../processDestinationIntegration';
+import {
+  makeRouterInputSchema,
+  TransformedEvent,
+  ChunkBatchStrategy,
+} from '../destinationIntegration';
 import type { BatchStrategy } from '../types';
 import type { Destination, Connection } from '../../../../types/controlPlaneConfig';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';

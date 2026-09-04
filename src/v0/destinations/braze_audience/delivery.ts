@@ -34,7 +34,7 @@ import {
   type DeliverySpec,
   type ItemVerdict,
   type StatusOverrideMap,
-} from '../../../services/destination/nativeBatching/batchDestination';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { isIdentityAborted } from './utils';
 
 const stats = require('../../../util/stats');

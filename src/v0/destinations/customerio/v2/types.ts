@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import get from 'get-value';
-import { makeRouterInputSchema } from '../../../../services/destination/nativeBatching/batchDestination';
+import { makeRouterInputSchema } from '../../../../services/destination/destinationIntegration/destinationIntegration';
 import { RECORD_IDENTIFIER_KEYS } from './config';
 import { CustomerIODestinationConfigSchema, CustomerIOConnectionConfigSchema } from '../types';
 

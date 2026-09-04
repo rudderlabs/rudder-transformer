@@ -5,9 +5,9 @@ import {
   TransformedEvent,
   ChunkBatchStrategy,
   CustomBatchStrategy,
-} from '../../../services/destination/nativeBatching/batchDestination';
-import { VDMV2ObjectDestination } from '../../../services/destination/nativeBatching/vdmV2ObjectDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
+import { VDMV2ObjectDestination } from '../../../services/destination/destinationIntegration/vdmV2ObjectDestination';
+import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { removeUndefinedValues } from '../../util';
 import { recordInputSchema, eventStreamInputSchema, CustomerIOV2Payload } from './v2/types';
 import {

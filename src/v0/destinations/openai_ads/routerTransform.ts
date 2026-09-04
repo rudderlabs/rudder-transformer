@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import {
-  BatchDestination,
+  DestinationIntegration,
   ChunkBatchStrategy,
   makeRouterInputSchema,
   type TransformedEvent,
-} from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import { ENDPOINT, ENDPOINT_PATH, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
 import { openAIAdsDelivery } from './delivery';
@@ -21,7 +21,7 @@ const openAIAdsInputSchema = makeRouterInputSchema({
   message: OpenAIAdsMessageSchema,
 });
 
-class OpenAIAdsIntegration extends BatchDestination<
+class OpenAIAdsIntegration extends DestinationIntegration<
   OpenAIAdsEventPayload,
   typeof openAIAdsInputSchema
 > {

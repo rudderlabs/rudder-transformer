@@ -4,8 +4,8 @@ import {
   handleDeliveryResponse,
   resolveDeliverySpec,
   toDeliveryV1Response,
-} from '../../../services/destination/nativeBatching/delivery';
-import type { DeliveryContext } from '../../../services/destination/nativeBatching/delivery';
+} from '../../../services/destination/destinationIntegration/delivery';
+import type { DeliveryContext } from '../../../services/destination/destinationIntegration/delivery';
 import { AudienceListStrategy } from '../../../v1/destinations/iterable_audience/strategies/audience-list';
 import type { DeliveryV1Response, ProxyMetdata, ProxyV1Request } from '../../../types';
 

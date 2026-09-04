@@ -1,7 +1,7 @@
 const set = require('set-value');
 const get = require('get-value');
 
-const { getValueFromMessage } = require('../v0/util');
+const { getValueFromMessage, setValueForUntrustedPath } = require('../v0/util');
 
 const context = (integration) => ({
   library: {
@@ -30,7 +30,11 @@ class Message {
   }
 
   setProperty(name, value) {
-    set(this, name, value);
+    // callers pass paths built from inbound payloads (e.g. `properties.${key}` in the
+    // shopify and braze source transformations), so the key may be one set-value refuses
+    // to write. setProperties/setPropertiesV2 below stay on plain `set` because their
+    // destination keys come from our own mapping.json.
+    setValueForUntrustedPath(this, name, value);
   }
 
   setProperties(event, mapping) {

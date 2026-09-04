@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { InstrumentationError, OAuthSecretError } from '@rudderstack/integrations-lib';
 import {
-  BatchDestination,
+  DestinationIntegration,
   ChunkBatchStrategy,
   type TransformedEvent,
-} from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { processAudienceRecord } from '../../util/audienceUtils';
 import {
   ACTION_RECORD_MAP,
@@ -25,7 +25,7 @@ import {
   type RedditAudienceRouterInput,
 } from './types';
 
-class RedditAudienceIntegration extends BatchDestination<
+class RedditAudienceIntegration extends DestinationIntegration<
   RedditAudiencePayload,
   typeof RedditAudienceRouterRequestSchema
 > {
@@ -33,7 +33,7 @@ class RedditAudienceIntegration extends BatchDestination<
   // spec exists only to refine auth and to surface Reddit's error shape.
   static readonly delivery = redditAudienceDelivery;
 
-  constructor(...args: ConstructorParameters<typeof BatchDestination>) {
+  constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
     super(...args);
     if (!this.connection) {
       throw new InstrumentationError('Connection config is required for reddit_audience');

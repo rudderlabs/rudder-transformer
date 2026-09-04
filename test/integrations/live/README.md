@@ -163,7 +163,7 @@ which keeps every live credential inside the one `LIVE_SECRET_<DEST>` blob. Note
 one must name it here or the placeholder is what reaches the destination.
 
 Batching-framework delivery needs no `envOverrides` at all: it is gated on the same
-`isBatchingFrameworkEnabled` predicate as the router transform, so a live spec for a batching-GA
+`isDestinationIntegrationEnabled` predicate as the router transform, so a live spec for a batching-GA
 destination exercises framework delivery automatically and setting
 `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` for one does nothing. That env var is only for
 rehearsing a destination that has not declared `batching` yet, and it moves both halves together.

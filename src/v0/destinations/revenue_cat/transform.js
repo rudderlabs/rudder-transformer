@@ -10,6 +10,7 @@ const {
   ErrorMessage,
   defaultPostRequestConfig,
   extractCustomFields,
+  setValueForUntrustedPath,
   defaultGetRequestConfig,
   getFieldValueFromMessage,
   defaultRequestConfig,
@@ -99,7 +100,8 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   );
 
   Object.entries(customPayload).forEach(([key, value]) => {
-    set(payload, `${key}.value`, value.toString());
+    // key is a customer-supplied trait name and may be one set-value refuses to write
+    setValueForUntrustedPath(payload, `${key}.value`, value.toString());
   });
 
   const responseGet = defaultRequestConfig();

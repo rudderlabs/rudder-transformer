@@ -1,7 +1,7 @@
 import sha256 from 'sha256';
-import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
-import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchDestinationConstructor } from '../../../services/destination/nativeBatching/batchDestination';
+import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
+import { ChunkBatchStrategy } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { DestinationIntegrationConstructor } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type {
   ProcessorTransformationOutput,
   RouterTransformationRequestData,
@@ -330,13 +330,13 @@ describe('OpenAIAdsIntegration', () => {
   });
 
   it('batches events by request-level endpoint, auth, and pixel id', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         makeInput(1),
         makeInput(2, 'Lead Created', destination, { click_id: ' click-123 ' }),
         makeInput(3),
       ],
-      Integration as BatchDestinationConstructor,
+      Integration as DestinationIntegrationConstructor,
       {},
     );
     expect(results).toHaveLength(1);
@@ -348,18 +348,18 @@ describe('OpenAIAdsIntegration', () => {
     const inputs = Array.from({ length: 1001 }, (_, index) =>
       makeInput(index + 1, 'Product Viewed', destination, { amount: undefined }),
     );
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       inputs,
-      Integration as BatchDestinationConstructor,
+      Integration as DestinationIntegrationConstructor,
       {},
     );
     expect(results).toHaveLength(2);
   });
 
   it('isolates per-event transform errors', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [makeInput(1), makeInput(2, 'Unmapped')],
-      Integration as BatchDestinationConstructor,
+      Integration as DestinationIntegrationConstructor,
       {},
     );
     expect(results.find((response) => response.statusCode === 400)?.error).toContain(

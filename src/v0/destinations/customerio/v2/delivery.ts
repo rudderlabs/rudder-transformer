@@ -18,7 +18,7 @@ import {
   success,
   type DeliverySpec,
   type StatusOverrideMap,
-} from '../../../../services/destination/nativeBatching/batchDestination';
+} from '../../../../services/destination/destinationIntegration/destinationIntegration';
 
 type CustomerIOError = {
   batch_index: number;

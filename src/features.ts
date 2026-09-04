@@ -42,6 +42,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   MAILMODO: { routerTransform: true },
   MARKETO: { routerTransform: true, transformerProxy: true },
   OMETRIA: { routerTransform: true },
+  OPENAI_ADS: { routerTransform: true, batching: true },
   PARDOT: { routerTransform: true, transformerProxy: true },
   PINTEREST_TAG: { routerTransform: true, cdkV2: true },
   PROFITWELL: { routerTransform: true },

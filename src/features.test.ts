@@ -33,6 +33,7 @@ describe('features destination capabilities', () => {
       ITERABLE_AUDIENCE: true,
       BRAZE_AUDIENCE: true,
       REDDIT_AUDIENCE: true,
+      OPENAI_ADS: true,
       TEST_DESTINATION: true,
       CUSTOMERIO: true,
     });

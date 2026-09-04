@@ -404,14 +404,6 @@ describe('OpenAIAdsIntegration', () => {
       error: 'currency is required when amount is present',
     },
     {
-      input: makeInput(1, 'Product Viewed', destination, {
-        amount: '1.234',
-        currency: 'USD',
-        source_url: 'https://example.com/item',
-      }),
-      error: 'more precision than USD supports',
-    },
-    {
       input: {
         ...makeInput(1),
         message: {
@@ -434,5 +426,121 @@ describe('OpenAIAdsIntegration', () => {
     },
   ])('throws deterministic validation errors', ({ input, error }) => {
     expect(() => transform(input as RouterTransformationRequestData)).toThrow(error);
+  });
+
+  it.each([
+    { label: 'a negative refund amount', amount: '-25.99', currency: 'USD', expected: -2599 },
+    { label: 'a negative whole amount', amount: -10, currency: 'USD', expected: -1000 },
+    { label: 'zero', amount: '0.00', currency: 'USD', expected: 0 },
+    { label: 'sub-unit precision rounded up', amount: '1.235', currency: 'USD', expected: 124 },
+    { label: 'sub-unit precision rounded down', amount: '1.234', currency: 'USD', expected: 123 },
+    {
+      label: 'a negative amount rounded away from zero',
+      amount: '-1.235',
+      currency: 'USD',
+      expected: -124,
+    },
+    { label: 'a zero-decimal currency', amount: '1500', currency: 'JPY', expected: 1500 },
+    { label: 'a zero-decimal currency rounded', amount: '1500.6', currency: 'JPY', expected: 1501 },
+    // A fraction shorter than the currency's precision exercises the padEnd side of the scaling.
+    {
+      label: 'a fraction shorter than the precision',
+      amount: '1.5',
+      currency: 'USD',
+      expected: 150,
+    },
+    // BHD has 3 decimal digits, CLF has 4 — the widest scaling currency-codes yields.
+    { label: 'a 3-decimal currency rounded up', amount: '1.2345', currency: 'BHD', expected: 1235 },
+    {
+      label: 'a 3-decimal currency rounded down',
+      amount: '1.2344',
+      currency: 'BHD',
+      expected: 1234,
+    },
+    {
+      label: 'a 3-decimal currency short fraction',
+      amount: '1.5',
+      currency: 'BHD',
+      expected: 1500,
+    },
+    { label: 'a 4-decimal currency', amount: '1.00005', currency: 'CLF', expected: 10001 },
+    // Rounding happens before the safe-integer guard, so this lands exactly on the boundary.
+    {
+      label: 'the largest safely representable amount',
+      amount: '90071992547409.905',
+      currency: 'USD',
+      expected: Number.MAX_SAFE_INTEGER,
+    },
+    {
+      label: 'the negative safe-integer floor',
+      amount: '-90071992547409.905',
+      currency: 'USD',
+      expected: -Number.MAX_SAFE_INTEGER,
+    },
+    // BigInt has no negative zero, so a negative amount that rounds to nothing stays +0.
+    { label: 'a negative amount rounding to zero', amount: '-0.001', currency: 'USD', expected: 0 },
+  ])('converts $label to minor units', ({ amount, currency, expected }) => {
+    const body = transform(
+      makeInput(1, 'Product Viewed', destination, {
+        amount,
+        currency,
+        source_url: 'https://example.com/item',
+      }),
+    ).body;
+
+    expect(body.data.amount).toBe(expected);
+  });
+
+  it.each([
+    { label: 'zero', quantity: 0 },
+    { label: 'a negative return line', quantity: -2 },
+  ])('accepts a content quantity of $label', ({ quantity }) => {
+    const body = transform(
+      makeInput(1, 'Product Viewed', destination, {
+        source_url: 'https://example.com/item',
+        products: [{ id: 'sku-1', quantity }],
+      }),
+    ).body;
+
+    expect((body.data.contents as Array<Record<string, unknown>>)[0].quantity).toBe(quantity);
+  });
+
+  it.each([
+    { label: 'a fractional value', quantity: 2.5 },
+    // Number(false) / Number([]) / Number('  ') are all 0, so without a type guard these would
+    // ship as `quantity: 0` now that the positive-only bound is gone.
+    { label: 'a boolean', quantity: false },
+    { label: 'an array', quantity: [] },
+    { label: 'a blank string', quantity: '  ' },
+  ])('rejects a content quantity that is $label', ({ quantity }) => {
+    expect(() =>
+      transform(
+        makeInput(1, 'Product Viewed', destination, {
+          source_url: 'https://example.com/item',
+          products: [{ id: 'sku-1', quantity }],
+        }),
+      ),
+    ).toThrow('content quantity must be an integer');
+  });
+
+  it.each([
+    { label: 'is not numeric', amount: 'abc', error: 'finite decimal value' },
+    { label: 'is a boolean', amount: true, error: 'number or numeric string' },
+    { label: 'is absurdly long', amount: '9'.repeat(64), error: 'finite decimal value' },
+    {
+      label: 'overflows the safe integer range after conversion',
+      amount: '90071992547409.92',
+      error: 'exceeds the maximum safe integer',
+    },
+  ])('rejects an amount that $label', ({ amount, error }) => {
+    expect(() =>
+      transform(
+        makeInput(1, 'Product Viewed', destination, {
+          amount,
+          currency: 'USD',
+          source_url: 'https://example.com/item',
+        }),
+      ),
+    ).toThrow(error);
   });
 });

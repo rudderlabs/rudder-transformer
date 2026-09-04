@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
 const Handlebars = require('handlebars');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
 const {
@@ -104,6 +104,14 @@ const processIdentify = (message, destination) => {
   return buildResponse(response, destination);
 };
 
+const buildSafeRegex = (pattern, flags) => {
+  try {
+    return new RegExp(pattern, flags);
+  } catch (e) {
+    throw new ConfigurationError(`Invalid regex pattern in event name config: ${e.message}`);
+  }
+};
+
 const processTrack = (message, destination) => {
   const eventTemplateConfig = destination.Config.eventTemplateSettings;
 
@@ -133,8 +141,8 @@ const processTrack = (message, destination) => {
     if (configEventName && configEventTemplate) {
       if (templateConfig.eventRegex) {
         if (
-          eventName.match(new RegExp(configEventName, 'g')) &&
-          eventName.match(new RegExp(configEventName, 'g')).length > 0
+          eventName.match(buildSafeRegex(configEventName, 'g')) &&
+          eventName.match(buildSafeRegex(configEventName, 'g')).length > 0
         ) {
           templateListForThisEvent.add(configEventTemplate);
         }

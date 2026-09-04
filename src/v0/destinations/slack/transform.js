@@ -103,6 +103,14 @@ const processIdentify = (message, destination) => {
   return buildResponse({ text: resultText }, message, destination);
 };
 
+const buildSafeRegex = (pattern, flags) => {
+  try {
+    return new RegExp(pattern, flags);
+  } catch (e) {
+    throw new ConfigurationError(`Invalid regex pattern in event name config: ${e.message}`);
+  }
+};
+
 const isEventNameMatchesRegex = (eventName, regex) => eventName.match(regex)?.length > 0;
 
 const getChannelForEventName = (eventChannelSettings, eventName) => {
@@ -119,9 +127,9 @@ const getChannelForEventName = (eventChannelSettings, eventName) => {
           'match:: ',
           configEventName,
           eventName,
-          eventName.match(new RegExp(configEventName, 'g')),
+          eventName.match(buildSafeRegex(configEventName, 'g')),
         );
-        if (isEventNameMatchesRegex(eventName, new RegExp(configEventName, 'g'))) {
+        if (isEventNameMatchesRegex(eventName, buildSafeRegex(configEventName, 'g'))) {
           return channelWebhook;
         }
       } else if (channelConfig.eventName === eventName) {
@@ -144,9 +152,9 @@ const getChannelNameForEvent = (eventChannelSettings, eventName) => {
           'match:: ',
           configEventName,
           eventName,
-          eventName.match(new RegExp(configEventName, 'g')),
+          eventName.match(buildSafeRegex(configEventName, 'g')),
         );
-        if (isEventNameMatchesRegex(eventName, new RegExp(configEventName, 'g'))) {
+        if (isEventNameMatchesRegex(eventName, buildSafeRegex(configEventName, 'g'))) {
           return configEventChannel;
         }
       } else if (configEventName === eventName) {
@@ -168,7 +176,7 @@ const buildtemplateList = (templateListForThisEvent, eventTemplateSettings, even
       : undefined;
     if (configEventName && configEventTemplate) {
       if (templateConfig.eventRegex) {
-        if (isEventNameMatchesRegex(eventName, new RegExp(configEventName, 'g'))) {
+        if (isEventNameMatchesRegex(eventName, buildSafeRegex(configEventName, 'g'))) {
           templateListForThisEvent.add(configEventTemplate);
         }
       } else if (configEventName === eventName) {

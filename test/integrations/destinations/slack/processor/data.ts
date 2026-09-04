@@ -240,4 +240,102 @@ export const data: ProcessorTestData[] = [
       return {};
     },
   },
+,
+  {
+    id: 'slack-track-invalid-regex-config-error',
+    name: 'slack',
+    description: 'Track: invalid regex in eventChannelSettings.eventName throws ConfigurationError not SyntaxError',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    scenario: 'User enters an invalid regex pattern in the event routing config',
+    successCriteria: 'Should return a 400 ConfigurationError, not a 500 SyntaxError',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            destination: {
+              ID: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              Name: 'test-slack',
+              DestinationDefinition: {
+                ID: '1ZQUiJVMlmF7lfsdfXg7KXQnlLV',
+                Name: 'SLACK',
+                DisplayName: 'Slack',
+                Config: { excludeKeys: [], includeKeys: [] },
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+              WorkspaceID: 'test-workspace-id',
+              Config: {
+                webhookUrl: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
+                whitelistedTraitsSettings: [],
+                eventChannelSettings: [
+                  {
+                    eventName: '(',
+                    eventRegex: true,
+                    eventChannel: '#general',
+                    webhookUrl: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
+                  },
+                ],
+              },
+            },
+            message: {
+              anonymousId: '4de817fb-7f8e-4e23-b9be-f6736dbda20f',
+              channel: 'web',
+              context: { traits: { name: 'Test User' } },
+              event: 'Product Added',
+              integrations: { All: true },
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6782',
+              originalTimestamp: '2024-01-01T00:00:00.000Z',
+              properties: { product_id: 'p123' },
+              type: 'track',
+              userId: 'u1',
+            },
+            metadata: {
+              jobId: 3,
+              userId: 'u1',
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6782',
+              destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              destinationType: 'SLACK',
+              workspaceId: 'test-workspace-id',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              jobId: 3,
+              userId: 'u1',
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6782',
+              destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              destinationType: 'SLACK',
+              workspaceId: 'test-workspace-id',
+            },
+            statusCode: 400,
+            error: 'Invalid regex pattern in event name config: Invalid regular expression: /(/g: Unterminated group',
+            statTags: {
+              errorCategory: 'dataValidation',
+              destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              errorType: 'configuration',
+              destType: 'SLACK',
+              module: 'destination',
+              implementation: 'native',
+              workspaceId: 'test-workspace-id',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+    mockFns: () => {
+      return {};
+    },
+  },
 ];

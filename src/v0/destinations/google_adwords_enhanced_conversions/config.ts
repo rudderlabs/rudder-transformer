@@ -12,6 +12,18 @@ const hashAttributes: string[] = ['email', 'phone', 'firstName', 'lastName', 'st
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
+const API_VERSION = 'v23';
+
+const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers`;
+
+const UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH = 'uploadConversionAdjustments';
+
+const getUploadConversionAdjustmentsEndpoint = (customerId: string): string =>
+  `${BASE_ENDPOINT}/${customerId}:${UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH}`;
+
+const getUploadConversionAdjustmentsEndpointPath = (customerId: string): string =>
+  `/${customerId}:${UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH}`;
+
 // Google Ads API caps UploadConversionAdjustments at 2000 conversion adjustments per
 // request; exceeding it is rejected with TOO_MANY_ADJUSTMENTS_IN_REQUEST.
 // Ref - https://developers.google.com/google-ads/api/docs/best-practices/quotas
@@ -25,6 +37,9 @@ export {
   trackMapping,
   hashAttributes,
   CONVERSION_ACTION_ID_CACHE_TTL,
+  API_VERSION,
+  getUploadConversionAdjustmentsEndpoint,
+  getUploadConversionAdjustmentsEndpointPath,
   MAX_CONVERSION_ADJUSTMENTS_PER_BATCH,
   destType,
 };

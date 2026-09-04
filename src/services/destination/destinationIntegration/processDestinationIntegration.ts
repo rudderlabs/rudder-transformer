@@ -195,6 +195,9 @@ function mapErrorPayloadToServerFormat(
     statusCode: err.statusCode,
     error: err.error,
     statTags: err.statTags,
+    // Only present on OAuth failures; omitted entirely otherwise so non-auth errors are not
+    // tagged with an empty category.
+    ...(err.authErrorCategory ? { authErrorCategory: err.authErrorCategory } : {}),
   }));
 }
 

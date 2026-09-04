@@ -21,6 +21,15 @@ const sharedConfig = {
   authStatus: 'active',
 };
 
+// The conversion-action cache is keyed on (conversion name, customerId) and is shared by the
+// transform-time and delivery-time lookups, so it outlives a single component test case. The
+// transport test gets a customerId of its own: on the shared one it would either warm the entry
+// another case expects to miss, or read one that case had already warmed.
+const transportConfig = {
+  ...sharedConfig,
+  customerId: '1234567892',
+};
+
 const trackMessage = (event: string) => ({
   channel: 'web',
   context: {
@@ -91,7 +100,93 @@ const envOverrides = {
   GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
 };
 
+const transportEnvOverrides = {
+  ...envOverrides,
+  GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS: 'ALL',
+  GOOGLE_ADS_DEVELOPER_TOKEN: 'test-developer-token-12345',
+};
+
 export const newData = [
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description:
+      'Batching Framework Transport: events with different conversion names share one upload request after transform-time lookup',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              metadata: { secret, jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
+              destination: { hasDynamicConfig: false, Config: transportConfig },
+              message: trackMessage('Page View'),
+            },
+            {
+              metadata: { secret, jobId: 2, userId: 'u1', workspaceId: 'ws-1' },
+              destination: { hasDynamicConfig: false, Config: transportConfig },
+              message: trackMessage('Product Added'),
+            },
+          ],
+          destType: 'google_adwords_enhanced_conversions',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://googleads.googleapis.com/v23/customers/1234567892:uploadConversionAdjustments',
+                endpointPath: '/1234567892:uploadConversionAdjustments',
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                  'login-customer-id': '11',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    conversionAdjustments: [
+                      {
+                        ...enhancementAdjustment,
+                        conversionAction: 'customers/1234567892/conversionActions/123000001',
+                      },
+                      {
+                        ...enhancementAdjustment,
+                        conversionAction: 'customers/1234567892/conversionActions/123000002',
+                      },
+                    ],
+                    partialFailure: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                { secret, jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
+                { secret, jobId: 2, userId: 'u1', workspaceId: 'ws-1' },
+              ],
+              destination: { hasDynamicConfig: false, Config: transportConfig },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: transportEnvOverrides,
+  },
   {
     name: 'google_adwords_enhanced_conversions',
     description:

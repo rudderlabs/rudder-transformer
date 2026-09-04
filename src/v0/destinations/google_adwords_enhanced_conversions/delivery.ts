@@ -10,8 +10,8 @@
  *    body (2SV-not-enrolled and CUSTOMER_NOT_FOUND mean the grant is gone, not that the token is
  *    stale). The framework never infers auth from a status, so this is declared explicitly.
  *
- * Transport — the SDK-based proxy, the conversionActionId cache and processAxiosResponse — stays
- * in ./networkHandler, which the framework continues to use.
+ * With the transport flag enabled, the framework sends the prepared request directly and this spec
+ * injects the developer token at delivery time so it never appears in persisted router output.
  */
 import { isEmptyObject } from '../../util';
 import {
@@ -24,7 +24,7 @@ import {
   type StatusOverrideMap,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 
-const { getAuthErrCategory } = require('../../util/googleUtils');
+const { getAuthErrCategory, getDeveloperToken } = require('../../util/googleUtils');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -80,4 +80,8 @@ const gaecStatusOverrides: StatusOverrideMap = {
 export const gaecDelivery: DeliverySpec = {
   statusOverrides: gaecStatusOverrides,
   failureReason: (ctx) => extractGaecErrorMessage(ctx.response),
+  prepareRequest: (request) => ({
+    ...request,
+    headers: { ...request.headers, 'developer-token': getDeveloperToken() },
+  }),
 };

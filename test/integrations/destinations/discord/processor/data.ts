@@ -908,4 +908,98 @@ export const data = [
       },
     },
   },
+,
+  {
+    name: 'discord',
+    description: 'Track: missing eventTemplateSettings in config does not throw TypeError',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ID: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              Name: 'test-Discord',
+              DestinationDefinition: {
+                ID: '1ZQUiJVMlmF7lfsdfXg7KXQnlLV',
+                Name: 'DISCORD',
+                DisplayName: 'Discord',
+                Config: {
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
+              Config: {
+                // eventTemplateSettings intentionally absent to reproduce the bug
+                webhookUrl: 'https://discord.com/api/webhooks/dummy/token',
+                whitelistedTraitsSettings: [],
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+            message: {
+              anonymousId: '4de817fb-7f8e-4e23-b9be-f6736dbda20f',
+              channel: 'web',
+              context: {
+                traits: {
+                  name: 'Test User',
+                },
+              },
+              event: 'Product Added',
+              integrations: { All: true },
+              messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
+              originalTimestamp: '2024-01-01T00:00:00.000Z',
+              properties: { product_id: 'p123', price: 9.99 },
+              type: 'track',
+            },
+            metadata: {
+              jobId: 1,
+              userId: 'u1',
+              destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              destinationType: 'DISCORD',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://discord.com/api/webhooks/dummy/token',
+              headers: { 'Content-Type': 'application/json' },
+              params: {},
+              body: {
+                JSON: {
+                  content: 'Test User did Product Added with {"product_id":"p123","price":9.99}',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              jobId: 1,
+              userId: 'u1',
+              destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+              destinationType: 'DISCORD',
+              workspaceId: 'w1',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

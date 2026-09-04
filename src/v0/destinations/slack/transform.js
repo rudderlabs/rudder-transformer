@@ -181,8 +181,9 @@ const buildtemplateList = (templateListForThisEvent, eventTemplateSettings, even
 const processTrack = (message, destination) => {
   // logger.debug(JSON.stringify(destination));
   const { Config } = destination;
-  const { eventChannelSettings, eventTemplateSettings, incomingWebhooksType, denyListOfEvents } =
-    Config;
+  const eventChannelSettings = Config.eventChannelSettings ?? [];
+  const eventTemplateSettings = Config.eventTemplateSettings ?? [];
+  const { incomingWebhooksType, denyListOfEvents } = Config;
   const eventName = message.event;
 
   if (!eventName) {

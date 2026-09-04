@@ -1,5 +1,4 @@
 import get from 'get-value';
-import set from 'set-value';
 import btoa from 'btoa';
 import {
   ConfigurationError,
@@ -12,6 +11,7 @@ import {
   isAppleFamily,
   getValidE164PhoneNumber,
   validateEventName,
+  setValueForUntrustedPath,
 } from '../../../util';
 import { populateSpecedTraits } from '../util';
 import { SpecedTraits } from '../../../../constants';
@@ -99,7 +99,9 @@ const buildTraitAttributes = (message): Record<string, unknown> => {
     )
     .forEach((trait) => {
       // Escape backslashes first, then dots, so keys remain flat and unambiguous for set-value path parsing
-      set(
+      // trait name is customer-supplied; escaping dots does not help for a bare
+      // reserved key such as `constructor`, which set-value still refuses to write
+      setValueForUntrustedPath(
         attributes,
         trait.replace(/\\/g, '\\\\').replace(/\./g, '\\.'),
         get(message, `${pathToTraits}.${trait}`),

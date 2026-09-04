@@ -2,7 +2,10 @@ import { isIP } from 'net';
 import get from 'get-value';
 import validator from 'validator';
 import currencyCodes from 'currency-codes';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  InstrumentationError,
+  isDefinedAndNotNullAndNotEmpty,
+} from '@rudderstack/integrations-lib';
 import type { RudderMessage } from '../../../types';
 import { constructPayload, getValueFromMessage, removeUndefinedAndNullValues } from '../../util';
 import {
@@ -249,7 +252,8 @@ const resolveActionSource = (
   payload: EventBasePayload,
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsActionSource | undefined => {
-  const raw = firstStringValue(payload.action_source) ?? config.defaultActionSource;
+  const raw =
+    firstStringValue(payload.action_source)?.trim().toLowerCase() || config.defaultActionSource;
   if (!raw) return undefined;
   if (!ACTION_SOURCE_SET.has(raw))
     throw new InstrumentationError(`Unsupported OpenAI Ads action_source: ${raw}`);
@@ -318,8 +322,8 @@ const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
 };
 
 const normalizeCurrency = (currency: unknown): CurrencyMetadata | undefined => {
-  if (typeof currency !== 'string' && typeof currency !== 'number') return undefined;
-  const normalized = String(currency).toUpperCase();
+  if (typeof currency !== 'string') return undefined;
+  const normalized = currency.trim().toUpperCase();
   if (!normalized) return undefined;
   const metadata = CURRENCY_RE.test(normalized) ? currencyCodes.code(normalized) : undefined;
   if (!metadata) {
@@ -384,6 +388,7 @@ const mapContentItem = (
   if (variantDict !== undefined && !isRecord(variantDict)) delete content.variant_dict;
 
   const quantityValue = getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentQuantityPaths);
+  // isDefinedAndNotNullAndNotEmpty is unusable here: lodash isEmpty treats every number as empty.
   if (isPresent(quantityValue)) {
     const quantity = Number(quantityValue);
     if (!Number.isInteger(quantity) || quantity <= 0) {
@@ -412,7 +417,7 @@ const buildContents = (
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsContent[] | undefined => {
   const rawContents = getValueFromMessage(message, OPENAI_ADS_MAPPING_CONFIG.contentSourcePaths);
-  if (!isPresent(rawContents)) return undefined;
+  if (!isDefinedAndNotNullAndNotEmpty(rawContents)) return undefined;
   const items = Array.isArray(rawContents) ? rawContents : [rawContents];
   if (!items.every(isRecord)) {
     throw new InstrumentationError('OpenAI Ads contents must be an object or array of objects');
@@ -435,7 +440,14 @@ const buildEventData = (
   eventType: OpenAIAdsStandardEvent | typeof CUSTOM_EVENT_SENTINEL,
 ): OpenAIAdsEventData => {
   const dataType = EVENT_DATA_TYPE_BY_EVENT[eventType];
-  const data: OpenAIAdsEventData = { type: dataType };
+  // Custom extras are spread first so the payload's own fields (type, amount, ...) always win,
+  // even for extras keys not sourced from properties.* and hence absent from RESERVED_CUSTOM_KEYS.
+  const data: OpenAIAdsEventData = {
+    ...(dataType === CUSTOM_EVENT_SENTINEL
+      ? buildCustomExtras(isRecord(message.properties) ? message.properties : {})
+      : {}),
+    type: dataType,
+  };
   const currency = resolveCurrency(message, config);
   Object.assign(
     data,
@@ -450,11 +462,20 @@ const buildEventData = (
     const contents = buildContents(message, config);
     if (contents) data.contents = contents;
   }
-
-  if (dataType === CUSTOM_EVENT_SENTINEL) {
-    Object.assign(data, buildCustomExtras(isRecord(message.properties) ? message.properties : {}));
-  }
   return data;
+};
+
+const resolveEventId = (message: RudderMessage, mapping: OpenAIAdsEventMapping): string => {
+  const dedupValue = resolveDotPath(message, mapping.deduplicationKey);
+  if (isPresent(dedupValue)) {
+    if (!isScalarValue(dedupValue)) {
+      throw new InstrumentationError(
+        `OpenAI Ads deduplication key "${mapping.deduplicationKey}" must resolve to a string, number, or boolean`,
+      );
+    }
+    return String(dedupValue);
+  }
+  return message.messageId as string;
 };
 
 export const buildOpenAIEvent = (
@@ -475,7 +496,7 @@ export const buildOpenAIEvent = (
   const optOut = resolveOptOut(topLevelPayload);
 
   return removeUndefinedAndNullValues({
-    id: (resolveDotPath(message, mapping.deduplicationKey) ?? message.messageId) as string,
+    id: resolveEventId(message, mapping),
     type: eventType,
     custom_event_name: customEventName,
     timestamp_ms: topLevelPayload.timestamp_ms as number,

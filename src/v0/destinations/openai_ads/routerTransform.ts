@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
   ChunkBatchStrategy,
@@ -31,9 +30,6 @@ class OpenAIAdsIntegration extends BatchDestination<
   transformEvent(
     input: z.infer<typeof openAIAdsInputSchema>,
   ): TransformedEvent<OpenAIAdsEventPayload> {
-    if (!['track', 'page', 'screen'].includes(input.message?.type)) {
-      throw new InstrumentationError(`Event type ${input.message?.type} is not supported`);
-    }
     const { apiKey, pixelId } = this.destination.Config;
     return {
       body: buildOpenAIEvent(input.message, this.destination.Config),

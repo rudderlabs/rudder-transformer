@@ -135,6 +135,7 @@
     {
       "sourceKeys": ["timestamp", "originalTimestamp", "sentAt", "receivedAt"],
       "destKey": "timestamp_ms",
+      "required": true,
       "metadata": { "type": "timestamp" }
     },
     {

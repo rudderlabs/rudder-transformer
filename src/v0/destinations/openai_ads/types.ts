@@ -18,8 +18,8 @@ const OpenAIAdsEventMappingSchema = z
   .passthrough();
 export const OpenAIAdsDestinationConfigSchema = z
   .object({
-    apiKey: z.string(),
-    pixelId: z.string(),
+    apiKey: z.string().min(1),
+    pixelId: z.string().min(1),
     defaultCurrency: z.string().optional(),
     defaultActionSource: z.enum(ACTION_SOURCES).optional(),
     eventMapping: z.array(OpenAIAdsEventMappingSchema).optional(),

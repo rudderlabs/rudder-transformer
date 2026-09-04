@@ -257,10 +257,4 @@ const scenarios: ProxyV1TestData[] = [
   },
 ];
 
-export const data = scenarios.map((scenario) => ({
-  ...scenario,
-  envOverrides: {
-    ...scenario.envOverrides,
-    OPENAI_ADS_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
-  },
-}));
+export const data = scenarios;

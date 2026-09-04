@@ -19,6 +19,9 @@ import {
   CUSTOMER_ACTION_DATA_TYPE,
   CUSTOM_EVENT_SENTINEL,
   DESTINATION,
+  EVENT_AGE_SAFETY_MARGIN_MS,
+  MAX_EVENT_AGE_MS,
+  MAX_EVENT_FUTURE_SKEW_MS,
   STANDARD_EVENT_DATA_TYPES,
 } from './config';
 import mappingConfig from './data/OPENAI_ADSConfig.json';
@@ -270,6 +273,27 @@ const resolveSourceUrl = (payload: EventBasePayload, actionSource?: string): str
   return rawUrl;
 };
 
+const resolveTimestampMs = (payload: EventBasePayload): number => {
+  const timestampMs = payload.timestamp_ms;
+  // Narrowing only. `constructPayload` declares this mapping `required` and rejects a missing or
+  // unparseable timestamp before we get here, so this branch is not reachable in practice.
+  if (typeof timestampMs !== 'number' || !Number.isFinite(timestampMs)) {
+    throw new InstrumentationError('OpenAI Ads timestamp is required and must be a valid date');
+  }
+  const now = Date.now();
+  if (timestampMs > now + MAX_EVENT_FUTURE_SKEW_MS) {
+    throw new InstrumentationError(
+      `OpenAI Ads timestamp must not be more than ${MAX_EVENT_FUTURE_SKEW_MS / 1000} seconds in the future`,
+    );
+  }
+  if (timestampMs < now - MAX_EVENT_AGE_MS + EVENT_AGE_SAFETY_MARGIN_MS) {
+    throw new InstrumentationError(
+      `OpenAI Ads timestamp must be within the last ${MAX_EVENT_AGE_MS / (24 * 60 * 60 * 1000)} days`,
+    );
+  }
+  return timestampMs;
+};
+
 const resolveOptOut = (payload: EventBasePayload): boolean | undefined => {
   const value = payload.opt_out;
   if (!isPresent(value)) return undefined;
@@ -490,6 +514,9 @@ export const buildOpenAIEvent = (
     message,
     OPENAI_ADS_MAPPING_CONFIG.topLevelMappings,
   ) as EventBasePayload;
+  // Resolved before buildUser so an out-of-window event fails without first SHA-256-hashing every
+  // identifier on it — a stale backfill would otherwise pay that cost per event, batch-wide.
+  const timestampMs = resolveTimestampMs(topLevelPayload);
   const actionSource = resolveActionSource(topLevelPayload, config);
   const sourceUrl = resolveSourceUrl(topLevelPayload, actionSource);
   const user = buildUser(message);
@@ -499,7 +526,7 @@ export const buildOpenAIEvent = (
     id: resolveEventId(message, mapping),
     type: eventType,
     custom_event_name: customEventName,
-    timestamp_ms: topLevelPayload.timestamp_ms as number,
+    timestamp_ms: timestampMs,
     opt_out: optOut,
     action_source: actionSource,
     source_url: sourceUrl,

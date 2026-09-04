@@ -25,6 +25,9 @@ const OPERATIONAL_ENDPOINTS = new Set(['/health', '/metrics', '/features']);
 // path scanner add a new Prometheus child per request at exactly the wrong moment.
 const OTHER_ROUTE = 'other';
 
+// `MEMORY_FENCING_ENABLED=false` is the explicit opt-out value.
+const MEMORY_FENCING_DISABLED_VALUE = 'false';
+
 const ROUTE_NORMALIZERS: Array<{ pattern: RegExp; route: string }> = [
   { pattern: /^\/[^/]+\/destinations\/[^/]+$/, route: '/:version/destinations/:destination' },
   {
@@ -64,6 +67,17 @@ export const MEMORY_FENCING_ROUTE_LABELS: string[] = [
   ...ROUTE_NORMALIZERS.map(({ route }) => route),
   OTHER_ROUTE,
 ];
+
+/**
+ * Returns whether memory fencing should be mounted.
+ *
+ * Memory fencing is enabled by default; only the exact lowercase value `false` disables it.
+ */
+export function isMemoryFencingEnabled(
+  value: string | undefined = process.env.MEMORY_FENCING_ENABLED,
+): boolean {
+  return value !== MEMORY_FENCING_DISABLED_VALUE;
+}
 
 /**
  * Maps a request path onto the bounded label set above.

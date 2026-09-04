@@ -1446,4 +1446,186 @@ export const trackTestData: ProcessorTestData[] = [
       },
     },
   },
+,
+  {
+    id: 'iterable-track-nan-total',
+    name: 'iterable',
+    description: 'Order Completed: non-numeric revenue throws InstrumentationError instead of sending null to Iterable API',
+    scenario: 'Business',
+    successCriteria: 'Should return 400 InstrumentationError for non-numeric revenue',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              type: 'track',
+              userId: 'userId',
+              anonymousId: 'anonId',
+              event: 'order completed',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+              properties: {
+                orderId: 99999,
+                total: 'free',
+                products: [
+                  {
+                    product_id: 'p1',
+                    name: 'Widget',
+                    price: 10,
+                    quantity: 1,
+                  },
+                ],
+              },
+              context: {
+                traits: { email: 'test@example.com' },
+              },
+            },
+            metadata: baseMetadata,
+            destination: {
+              hasDynamicConfig: false,
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Revenue (total) must be a valid number',
+            statusCode: 400,
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'ITERABLE',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            metadata: baseMetadata,
+          },
+        ],
+      },
+    },
+  },
+,
+  {
+    id: 'iterable-track-nan-price',
+    name: 'iterable',
+    description: 'Order Completed: non-numeric product price throws InstrumentationError instead of sending null to Iterable API',
+    scenario: 'Business',
+    successCriteria: 'Should return 400 InstrumentationError for non-numeric product price',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              type: 'track',
+              userId: 'userId',
+              anonymousId: 'anonId',
+              event: 'order completed',
+              originalTimestamp: '2020-08-28T16:26:06.468Z',
+              properties: {
+                orderId: 88888,
+                total: 100,
+                products: [
+                  {
+                    product_id: 'p2',
+                    name: 'Widget Pro',
+                    price: 'free',
+                    quantity: 1,
+                  },
+                ],
+              },
+              context: {
+                traits: { email: 'test@example.com' },
+              },
+            },
+            metadata: baseMetadata,
+            destination: {
+              hasDynamicConfig: false,
+              ID: '123',
+              Name: 'iterable',
+              DestinationDefinition: {
+                ID: '123',
+                Name: 'iterable',
+                DisplayName: 'Iterable',
+                Config: {},
+              },
+              Config: {
+                apiKey: 'testApiKey',
+                dataCenter: 'USDC',
+                preferUserId: false,
+                trackAllPages: true,
+                trackNamedPages: false,
+                mapToSingleEvent: false,
+                trackCategorisedPages: false,
+              },
+              Enabled: true,
+              WorkspaceID: '123',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Product price must be a valid number',
+            statusCode: 400,
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'ITERABLE',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            metadata: baseMetadata,
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -157,6 +157,67 @@ const v18NetworkCallsData = [
 
 // Generate v19 API mocks for all the existing relative URL mocks
 const v19NetworkCallsData = [
+  // Framework-transport path: the conversion action is resolved during router transform, one
+  // lookup per distinct conversion name, so that events with different names still batch into a
+  // single upload request.
+  {
+    httpReq: {
+      url: `https://googleads.googleapis.com/v23/customers/1234567892/googleAds:searchStream`,
+      data: {
+        query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Page View'`,
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
+        'login-customer-id': '11',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: [
+        {
+          results: [
+            {
+              conversionAction: {
+                resourceName: 'customers/1234567892/conversionActions/123000001',
+              },
+            },
+          ],
+        },
+      ],
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: `https://googleads.googleapis.com/v23/customers/1234567892/googleAds:searchStream`,
+      data: {
+        query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
+        'login-customer-id': '11',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: [
+        {
+          results: [
+            {
+              conversionAction: {
+                resourceName: 'customers/1234567892/conversionActions/123000002',
+              },
+            },
+          ],
+        },
+      ],
+      status: 200,
+    },
+  },
   {
     httpReq: {
       url: `https://googleads.googleapis.com/v23/customers/1234567890/googleAds:searchStream`,

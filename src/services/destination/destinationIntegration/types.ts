@@ -40,6 +40,13 @@ export type TransformError = {
   error: string;
   statusCode: number;
   statTags?: Record<string, unknown>;
+  /**
+   * Set when the failure was an OAuth one, so rudder-server refreshes the token and retries this
+   * job rather than treating the 401 as terminal. Load-bearing for a `transformEvent` that does a
+   * token-authenticated lookup: without it an expired token would surface as a plain failure and
+   * the grant would never be refreshed.
+   */
+  authErrorCategory?: string;
 };
 
 export type TransformResult<TBody extends Record<string, unknown> = Record<string, unknown>> = {

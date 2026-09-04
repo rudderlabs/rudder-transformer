@@ -20,6 +20,7 @@ import type {
   DeliveryJobState,
   DeliveryV1Response,
   ProxyMetdata,
+  ProxyRequest,
   ProxyV1Request,
 } from '../../../types';
 
@@ -120,15 +121,11 @@ export type HandleResponseResult = Verdict | PerItemVerdicts;
 // Context and overrides
 // ---------------------------------------------------------------------------
 
-export type DeliveryContext = {
-  /** HTTP status from the destination, after processAxiosResponse. */
-  status: number;
-  /** Parsed destination response body. */
-  response: unknown;
+export type DeliveryRequestContext = {
   /** One entry per job in this batch, in the order the framework built them. */
   jobs: ProxyMetdata[];
-  /** The request that was sent — for correlating response items back to what was posted. */
-  request: ProxyV1Request;
+  /** The request about to be sent — for shaping transport-only fields. */
+  request: ProxyRequest;
   destinationConfig: Record<string, unknown>;
   /**
    * `jobs[0]`'s destinationId/workspaceId, empty string if there is no first job. Set once where
@@ -139,10 +136,19 @@ export type DeliveryContext = {
   workspaceId: string;
 };
 
+export type DeliveryContext = DeliveryRequestContext & {
+  /** HTTP status from the destination, after processAxiosResponse. */
+  status: number;
+  /** Parsed destination response body. */
+  response: unknown;
+  /** The request that was sent — for correlating response items back to what was posted. */
+  request: ProxyV1Request;
+};
+
 /** `DeliveryContext`'s `destinationId`/`workspaceId`, derived from its first job. */
 export const firstJobIdentity = (
   jobs: ProxyMetdata[],
-): Pick<DeliveryContext, 'destinationId' | 'workspaceId'> => ({
+): Pick<DeliveryRequestContext, 'destinationId' | 'workspaceId'> => ({
   destinationId: jobs[0]?.destinationId ?? '',
   workspaceId: jobs[0]?.workspaceId ?? '',
 });
@@ -237,10 +243,20 @@ export type DeliverySpec = {
    * error text supplies an extractor written against that API.
    */
   failureReason?: (ctx: DeliveryContext) => string;
+
+  /**
+   * Last chance to modify the outgoing request before it is sent. Whatever this adds is used for
+   * the call and never persisted on the job — the place for secrets the destination needs but
+   * that must not appear in live events.
+   */
+  prepareRequest?: (request: ProxyRequest, ctx: DeliveryRequestContext) => ProxyRequest;
 };
 
-/** A spec with both members filled in — what the framework actually runs against. */
-export type ResolvedDeliverySpec = Required<DeliverySpec>;
+/** A spec with response members filled in — what the framework actually runs against. */
+export type ResolvedDeliverySpec = Required<
+  Pick<DeliverySpec, 'statusOverrides' | 'failureReason'>
+> &
+  Pick<DeliverySpec, 'prepareRequest'>;
 
 /** Hoisted so resolving a spec that declares no `failureReason` allocates nothing per request. */
 const statusOnlyFailureReason = (ctx: DeliveryContext): string => defaultFailureReason(ctx.status);
@@ -294,6 +310,7 @@ export function resolveDeliverySpec(klass: unknown): ResolvedDeliverySpec {
     ) as StatusOverrideMap,
     failureReason:
       chain.find((spec) => spec.failureReason)?.failureReason ?? statusOnlyFailureReason,
+    prepareRequest: chain.find((spec) => spec.prepareRequest)?.prepareRequest,
   };
 }
 

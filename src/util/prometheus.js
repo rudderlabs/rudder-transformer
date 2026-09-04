@@ -12,6 +12,32 @@ function appendPrefix(name) {
   return `${prefix}_${name}`;
 }
 
+function getSupportedMetricTags(metric, tags, fullName) {
+  // prom-client labelNames are immutable after registration; record known labels and ignore extras
+  // rather than dropping the metric by throwing on an unsupported label key.
+  const labelNames = new Set(metric.labelNames || []);
+  const supportedTags = {};
+  const unsupportedTagNames = [];
+
+  Object.entries(tags).forEach(([tagName, tagValue]) => {
+    if (labelNames.has(tagName)) {
+      supportedTags[tagName] = tagValue;
+    } else {
+      unsupportedTagNames.push(tagName);
+    }
+  });
+
+  if (unsupportedTagNames.length > 0) {
+    logger.warn(
+      `Prometheus: Metric ${fullName} received unsupported labels: ${unsupportedTagNames.join(
+        ', ',
+      )}. Ignoring unsupported labels`,
+    );
+  }
+
+  return supportedTags;
+}
+
 class Prometheus {
   constructor(enableSummaryMetrics = true) {
     if (clusterEnabled && useMetricsAggregator) {
@@ -127,12 +153,12 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Summary metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newSummaryStat(fullName, name, Object.keys(tags));
       }
-      metric.observe(tags, value);
+      metric.observe(getSupportedMetricTags(metric, tags, fullName), value);
     } catch (e) {
       logger.error(`Prometheus: Summary metric ${fullName} failed with error ${e}`);
     }
@@ -143,12 +169,12 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Timing metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newHistogramStat(fullName, name, Object.keys(tags));
       }
-      metric.observe(tags, (Date.now() - start) / 1000);
+      metric.observe(getSupportedMetricTags(metric, tags, fullName), (Date.now() - start) / 1000);
     } catch (e) {
       logger.error(`Prometheus: Timing metric ${fullName} failed with error ${e}`);
     }
@@ -159,12 +185,12 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: summary metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newSummaryStat(fullName, name, Object.keys(tags));
       }
-      metric.observe(tags, (Date.now() - start) / 1000);
+      metric.observe(getSupportedMetricTags(metric, tags, fullName), (Date.now() - start) / 1000);
     } catch (e) {
       logger.error(`Prometheus: Summary metric ${fullName} failed with error ${e}`);
     }
@@ -175,12 +201,12 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Histogram metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newHistogramStat(fullName, name, Object.keys(tags));
       }
-      metric.observe(tags, value);
+      metric.observe(getSupportedMetricTags(metric, tags, fullName), value);
     } catch (e) {
       logger.error(`Prometheus: Histogram metric ${fullName} failed with error ${e}`);
     }
@@ -195,12 +221,12 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Counter metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newCounterStat(fullName, name, Object.keys(tags));
       }
-      metric.inc(tags, delta);
+      metric.inc(getSupportedMetricTags(metric, tags, fullName), delta);
     } catch (e) {
       logger.error(
         `Prometheus: Counter metric ${fullName} failed with error ${e}. Value: ${delta}`,
@@ -213,12 +239,12 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(fullName);
       if (!metric) {
-        logger.warn(
+        logger.info(
           `Prometheus: Gauge metric ${fullName} not found in the registry. Creating a new one`,
         );
         metric = this.newGaugeStat(fullName, name, Object.keys(tags));
       }
-      metric.set(tags, value);
+      metric.set(getSupportedMetricTags(metric, tags, fullName), value);
     } catch (e) {
       logger.error(`Prometheus: Gauge metric ${fullName} failed with error ${e}. Value: ${value}`);
     }

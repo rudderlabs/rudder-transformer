@@ -2,6 +2,13 @@ import sha256 from 'sha256';
 import { RouterTestData } from '../../../testTypes';
 import { destination, endpoint, metadata } from '../common';
 
+// OpenAI only ingests events from the last 7 days, so these are stamped relative to now rather
+// than at a fixed date that would age out of the window.
+const EVENT_TIMESTAMP = new Date(Date.now() - 60_000).toISOString();
+const EVENT_TIMESTAMP_MS = new Date(EVENT_TIMESTAMP).getTime();
+const EVENT_TIMESTAMP_NEXT = new Date(EVENT_TIMESTAMP_MS + 1000).toISOString();
+const EVENT_TIMESTAMP_NEXT_MS = EVENT_TIMESTAMP_MS + 1000;
+
 const batchedRequest = {
   version: '1',
   type: 'REST',
@@ -16,14 +23,14 @@ const batchedRequest = {
         {
           id: 'msg-1',
           type: 'contents_viewed',
-          timestamp_ms: 1704067200000,
+          timestamp_ms: EVENT_TIMESTAMP_MS,
           action_source: 'offline',
           data: { type: 'contents' },
         },
         {
           id: 'msg-2',
           type: 'lead_created',
-          timestamp_ms: 1704067201000,
+          timestamp_ms: EVENT_TIMESTAMP_NEXT_MS,
           action_source: 'offline',
           data: { type: 'customer_action' },
         },
@@ -57,7 +64,7 @@ export const data: RouterTestData[] = [
                 type: 'track',
                 event: 'Product Viewed',
                 messageId: 'msg-1',
-                timestamp: '2024-01-01T00:00:00.000Z',
+                timestamp: EVENT_TIMESTAMP,
                 properties: {},
               },
               metadata: metadata(1),
@@ -68,7 +75,7 @@ export const data: RouterTestData[] = [
                 type: 'track',
                 event: 'Lead Created',
                 messageId: 'msg-2',
-                timestamp: '2024-01-01T00:00:01.000Z',
+                timestamp: EVENT_TIMESTAMP_NEXT,
                 properties: {},
               },
               metadata: metadata(2),
@@ -116,7 +123,7 @@ export const data: RouterTestData[] = [
                 event: 'Product Viewed',
                 messageId: 'msg-4',
                 userId: 'User-4',
-                timestamp: '2024-01-01T00:00:00.000Z',
+                timestamp: EVENT_TIMESTAMP,
                 context: {
                   ip: '203.0.113.10',
                   userAgent: 'Mozilla/5.0',
@@ -178,7 +185,7 @@ export const data: RouterTestData[] = [
                       {
                         id: 'msg-4',
                         type: 'contents_viewed',
-                        timestamp_ms: 1704067200000,
+                        timestamp_ms: EVENT_TIMESTAMP_MS,
                         opt_out: true,
                         action_source: 'web',
                         source_url: 'https://example.com/path?secret=1#hash',
@@ -250,7 +257,7 @@ export const data: RouterTestData[] = [
                 type: 'track',
                 event: 'Custom Checkout Data',
                 messageId: 'msg-5',
-                timestamp: '2024-01-01T00:00:00.000Z',
+                timestamp: EVENT_TIMESTAMP,
                 properties: {
                   id: 'custom-id',
                   name: 'Custom Name',
@@ -282,7 +289,7 @@ export const data: RouterTestData[] = [
                         id: 'msg-5',
                         type: 'custom',
                         custom_event_name: 'ccd',
-                        timestamp_ms: 1704067200000,
+                        timestamp_ms: EVENT_TIMESTAMP_MS,
                         action_source: 'offline',
                         source_url: 'https://example.com/custom',
                         data: {
@@ -325,7 +332,7 @@ export const data: RouterTestData[] = [
                 type: 'track',
                 event: 'Unknown Event',
                 messageId: 'msg-3',
-                timestamp: '2024-01-01T00:00:00.000Z',
+                timestamp: EVENT_TIMESTAMP,
                 properties: {},
               },
               metadata: metadata(3),

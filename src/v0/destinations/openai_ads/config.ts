@@ -4,6 +4,20 @@ export const ENDPOINT_PATH = '/v1/events';
 export const ENDPOINT = `${BASE_URL}${ENDPOINT_PATH}`;
 export const MAX_BATCH_SIZE = 1000;
 export const MAX_PAYLOAD_SIZE = '4MB';
+// OpenAI rejects the *whole batch* when any event falls outside these bounds, and — unlike its
+// 400s — the 422 it answers with carries no event index, so the batch can only be split blindly
+// one event at a time. Checking here keeps a single stale event from costing a full isolation
+// cycle.
+//
+// Both bounds are OpenAI's own, quoted back by its 422s: `event_timestamp_ms must be within the
+// last 7 days` (recorded in test/integrations/destinations/openai_ads/network.ts) and
+// `event_timestamp_ms must not be more than 600 seconds in the future`.
+export const MAX_EVENT_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+export const MAX_EVENT_FUTURE_SKEW_MS = 600 * 1000;
+// OpenAI re-evaluates the window when it *receives* the batch, which is later than when we build
+// the event by the batch-assembly and network delay. Without a margin an event at 6d23h59m59s
+// passes here and still 422s the whole batch — exactly what this check exists to prevent.
+export const EVENT_AGE_SAFETY_MARGIN_MS = 60 * 1000;
 export const CUSTOM_EVENT_SENTINEL = 'custom';
 const CONTENTS_DATA_TYPE = 'contents';
 export const CUSTOMER_ACTION_DATA_TYPE = 'customer_action';

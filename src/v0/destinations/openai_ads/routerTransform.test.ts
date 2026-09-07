@@ -11,6 +11,10 @@ import type { Destination } from '../../../types';
 import type { OpenAIAdsEventPayload } from './types';
 import { STANDARD_EVENTS, STANDARD_EVENT_DATA_TYPES } from './config';
 import { Integration } from './routerTransform';
+// OpenAI only ingests events from the last 7 days, so fixtures are stamped relative to now
+// rather than at a fixed date that would age out of the window.
+const EVENT_TIMESTAMP = new Date(Date.now() - 60_000).toISOString();
+const EVENT_TIMESTAMP_MS = new Date(EVENT_TIMESTAMP).getTime();
 const destination: Destination = {
   ID: 'openai-ads-dest-1',
   Config: {
@@ -48,7 +52,7 @@ const makeInput = (
     event,
     messageId: `msg-${jobId}`,
     userId: `User-${jobId}`,
-    timestamp: '2024-01-01T00:00:00.000Z',
+    timestamp: EVENT_TIMESTAMP,
     properties: { amount: jobId, currency: 'USD', ...properties },
   },
   metadata: {
@@ -109,7 +113,7 @@ describe('OpenAIAdsIntegration', () => {
         event: 'Product Viewed',
         messageId: 'msg-1',
         userId: 'User-1',
-        timestamp: '2024-01-01T00:00:00.000Z',
+        timestamp: EVENT_TIMESTAMP,
         context: {
           ip: '203.0.113.10',
           userAgent: 'Mozilla/5.0',
@@ -153,7 +157,7 @@ describe('OpenAIAdsIntegration', () => {
     expect(event).toEqual({
       id: 'msg-1',
       type: 'contents_viewed',
-      timestamp_ms: 1704067200000,
+      timestamp_ms: EVENT_TIMESTAMP_MS,
       opt_out: true,
       action_source: 'web',
       source_url: 'https://example.com/path?secret=1#hash',
@@ -202,7 +206,7 @@ describe('OpenAIAdsIntegration', () => {
         type: 'track',
         event: 'Trial Started',
         messageId: 'msg-custom',
-        timestamp: '2024-01-01T00:00:00.000Z',
+        timestamp: EVENT_TIMESTAMP,
         properties: {
           value: 1,
           source_url: 'https://example.com/custom',
@@ -235,7 +239,7 @@ describe('OpenAIAdsIntegration', () => {
         type: 'page',
         name: 'Docs Page',
         messageId: 'msg-page',
-        timestamp: '2024-01-01T00:00:00.000Z',
+        timestamp: EVENT_TIMESTAMP,
         properties: { pageId: 'page-dedupe', source_url: 'https://example.com/docs' },
       },
     } as RouterTransformationRequestData).body;
@@ -249,7 +253,7 @@ describe('OpenAIAdsIntegration', () => {
         type: 'track',
         event: 'Subscription Created',
         messageId: 'msg-subscription',
-        timestamp: '2024-01-01T00:00:00.000Z',
+        timestamp: EVENT_TIMESTAMP,
         properties: {
           amount: '25.00',
           currency: 'USD',
@@ -457,7 +461,7 @@ describe('OpenAIAdsIntegration', () => {
           type: 'track',
           event: 'Signup',
           messageId: 'msg-err',
-          timestamp: '2024-01-01T00:00:00.000Z',
+          timestamp: EVENT_TIMESTAMP,
         },
       },
       error: 'event mapping not found',
@@ -465,7 +469,7 @@ describe('OpenAIAdsIntegration', () => {
     {
       input: {
         ...makeInput(1),
-        message: { type: 'page', messageId: 'msg-err', timestamp: '2024-01-01T00:00:00.000Z' },
+        message: { type: 'page', messageId: 'msg-err', timestamp: EVENT_TIMESTAMP },
       },
       error: 'source event name is required for page events',
     },
@@ -486,21 +490,13 @@ describe('OpenAIAdsIntegration', () => {
       error: 'currency is required when amount is present',
     },
     {
-      input: makeInput(1, 'Product Viewed', destination, {
-        amount: '1.234',
-        currency: 'USD',
-        source_url: 'https://example.com/item',
-      }),
-      error: 'more precision than USD supports',
-    },
-    {
       input: {
         ...makeInput(1),
         message: {
           type: 'track',
           event: 'Product Viewed',
           messageId: 'msg-err',
-          timestamp: '2024-01-01T00:00:00.000Z',
+          timestamp: EVENT_TIMESTAMP,
           context: { traits: { email: sha256('user@example.com') } },
           properties: { source_url: 'https://example.com/item' },
         },
@@ -514,7 +510,181 @@ describe('OpenAIAdsIntegration', () => {
       }),
       error: 'opt_out must be a boolean',
     },
+    {
+      input: {
+        ...makeInput(1),
+        message: {
+          type: 'track',
+          event: 'Product Viewed',
+          messageId: 'msg-err',
+          timestamp: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+      },
+      error: 'timestamp must be within the last 7 days',
+    },
   ])('throws deterministic validation errors', ({ input, error }) => {
     expect(() => transform(input as RouterTransformationRequestData)).toThrow(error);
+  });
+
+  // The window edge is read off Date.now() inside the transform, so it is pinned with a fake
+  // clock rather than by leaving slack in a wall-clock offset.
+  describe('ingest window edges', () => {
+    const NOW = Date.parse('2026-09-04T12:00:00.000Z');
+    const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+    const TEN_MINUTES_MS = 10 * 60 * 1000;
+
+    beforeAll(() => {
+      jest.useFakeTimers().setSystemTime(NOW);
+    });
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
+    const transformAt = (timestampMs: number) =>
+      transform({
+        ...makeInput(1),
+        message: {
+          type: 'track',
+          event: 'Product Viewed',
+          messageId: 'msg-window',
+          timestamp: new Date(timestampMs).toISOString(),
+        },
+      } as RouterTransformationRequestData);
+
+    it.each([
+      { label: 'the oldest accepted instant', timestampMs: NOW - SEVEN_DAYS_MS },
+      { label: 'now', timestampMs: NOW },
+      { label: 'the furthest accepted future instant', timestampMs: NOW + TEN_MINUTES_MS },
+    ])('accepts $label', ({ timestampMs }) => {
+      expect(transformAt(timestampMs).body.timestamp_ms).toBe(timestampMs);
+    });
+
+    it('rejects a timestamp one millisecond older than the window', () => {
+      expect(() => transformAt(NOW - SEVEN_DAYS_MS - 1)).toThrow(
+        'timestamp must be within the last 7 days',
+      );
+    });
+
+    it('rejects a timestamp one millisecond beyond the accepted future skew', () => {
+      expect(() => transformAt(NOW + TEN_MINUTES_MS + 1)).toThrow(
+        'timestamp must not be more than 10 minutes in the future',
+      );
+    });
+  });
+
+  it.each([
+    { label: 'a negative refund amount', amount: '-25.99', currency: 'USD', expected: -2599 },
+    { label: 'a negative whole amount', amount: -10, currency: 'USD', expected: -1000 },
+    { label: 'zero', amount: '0.00', currency: 'USD', expected: 0 },
+    { label: 'sub-unit precision rounded up', amount: '1.235', currency: 'USD', expected: 124 },
+    { label: 'sub-unit precision rounded down', amount: '1.234', currency: 'USD', expected: 123 },
+    {
+      label: 'a negative amount rounded away from zero',
+      amount: '-1.235',
+      currency: 'USD',
+      expected: -124,
+    },
+    { label: 'a zero-decimal currency', amount: '1500', currency: 'JPY', expected: 1500 },
+    { label: 'a zero-decimal currency rounded', amount: '1500.6', currency: 'JPY', expected: 1501 },
+    // A fraction shorter than the currency's precision exercises the padEnd side of the scaling.
+    {
+      label: 'a fraction shorter than the precision',
+      amount: '1.5',
+      currency: 'USD',
+      expected: 150,
+    },
+    // BHD has 3 decimal digits, CLF has 4 — the widest scaling currency-codes yields.
+    { label: 'a 3-decimal currency rounded up', amount: '1.2345', currency: 'BHD', expected: 1235 },
+    {
+      label: 'a 3-decimal currency rounded down',
+      amount: '1.2344',
+      currency: 'BHD',
+      expected: 1234,
+    },
+    {
+      label: 'a 3-decimal currency short fraction',
+      amount: '1.5',
+      currency: 'BHD',
+      expected: 1500,
+    },
+    { label: 'a 4-decimal currency', amount: '1.00005', currency: 'CLF', expected: 10001 },
+    // Rounding happens before the safe-integer guard, so this lands exactly on the boundary.
+    {
+      label: 'the largest safely representable amount',
+      amount: '90071992547409.905',
+      currency: 'USD',
+      expected: Number.MAX_SAFE_INTEGER,
+    },
+    {
+      label: 'the negative safe-integer floor',
+      amount: '-90071992547409.905',
+      currency: 'USD',
+      expected: -Number.MAX_SAFE_INTEGER,
+    },
+    // BigInt has no negative zero, so a negative amount that rounds to nothing stays +0.
+    { label: 'a negative amount rounding to zero', amount: '-0.001', currency: 'USD', expected: 0 },
+  ])('converts $label to minor units', ({ amount, currency, expected }) => {
+    const body = transform(
+      makeInput(1, 'Product Viewed', destination, {
+        amount,
+        currency,
+        source_url: 'https://example.com/item',
+      }),
+    ).body;
+
+    expect(body.data.amount).toBe(expected);
+  });
+
+  it.each([
+    { label: 'zero', quantity: 0 },
+    { label: 'a negative return line', quantity: -2 },
+  ])('accepts a content quantity of $label', ({ quantity }) => {
+    const body = transform(
+      makeInput(1, 'Product Viewed', destination, {
+        source_url: 'https://example.com/item',
+        products: [{ id: 'sku-1', quantity }],
+      }),
+    ).body;
+
+    expect((body.data.contents as Array<Record<string, unknown>>)[0].quantity).toBe(quantity);
+  });
+
+  it.each([
+    { label: 'a fractional value', quantity: 2.5 },
+    // Number(false) / Number([]) / Number('  ') are all 0, so without a type guard these would
+    // ship as `quantity: 0` now that the positive-only bound is gone.
+    { label: 'a boolean', quantity: false },
+    { label: 'an array', quantity: [] },
+    { label: 'a blank string', quantity: '  ' },
+  ])('rejects a content quantity that is $label', ({ quantity }) => {
+    expect(() =>
+      transform(
+        makeInput(1, 'Product Viewed', destination, {
+          source_url: 'https://example.com/item',
+          products: [{ id: 'sku-1', quantity }],
+        }),
+      ),
+    ).toThrow('content quantity must be an integer');
+  });
+
+  it.each([
+    { label: 'is not numeric', amount: 'abc', error: 'finite decimal value' },
+    { label: 'is a boolean', amount: true, error: 'number or numeric string' },
+    { label: 'is absurdly long', amount: '9'.repeat(64), error: 'finite decimal value' },
+    {
+      label: 'overflows the safe integer range after conversion',
+      amount: '90071992547409.92',
+      error: 'exceeds the maximum safe integer',
+    },
+  ])('rejects an amount that $label', ({ amount, error }) => {
+    expect(() =>
+      transform(
+        makeInput(1, 'Product Viewed', destination, {
+          amount,
+          currency: 'USD',
+          source_url: 'https://example.com/item',
+        }),
+      ),
+    ).toThrow(error);
   });
 });

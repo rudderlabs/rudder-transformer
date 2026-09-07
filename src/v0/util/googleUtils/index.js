@@ -113,6 +113,23 @@ const finaliseAnalyticsConsents = (consentConfigMap, eventLevelConsent = {}) => 
   return consentObj;
 };
 
+// Google AuthenticationError codes that no amount of token refreshing can clear: the grant or the
+// authorising identity itself is the problem, so a fresh token gets rejected exactly like the last
+// one. Anything not listed here stays REFRESH_TOKEN, which is the genuinely recoverable case (an
+// expired or invalidated access token).
+// Ref - https://developers.google.com/google-ads/api/reference/rpc/v23/AuthenticationErrorEnum.AuthenticationError
+const TERMINAL_AUTHENTICATION_ERRORS = [
+  // https://developers.google.com/google-ads/api/docs/oauth/2sv
+  'TWO_STEP_VERIFICATION_NOT_ENROLLED',
+  // https://developers.google.com/google-ads/api/docs/common-errors#:~:text=this%20for%20you.-,CUSTOMER_NOT_FOUND,-Summary
+  'CUSTOMER_NOT_FOUND',
+  // The authorising Google account is not associated with ANY Ads account. Treating this as
+  // REFRESH_TOKEN made rudder-server refresh and retry indefinitely (the refresh itself succeeds),
+  // minting a new access token per delivery attempt until the OAuth success circuit breaker
+  // tripped. INT-7101.
+  'NOT_ADS_USER',
+];
+
 const getAuthErrCategory = ({ response, status }) => {
   if (status === 401) {
     let respArr = response;
@@ -122,12 +139,7 @@ const getAuthErrCategory = ({ response, status }) => {
     const authenticationError = respArr.map((resp) =>
       get(resp, 'error.details.0.errors.0.errorCode.authenticationError'),
     );
-    if (
-      // https://developers.google.com/google-ads/api/docs/oauth/2sv
-      authenticationError.includes('TWO_STEP_VERIFICATION_NOT_ENROLLED') ||
-      // https://developers.google.com/google-ads/api/docs/common-errors#:~:text=this%20for%20you.-,CUSTOMER_NOT_FOUND,-Summary
-      authenticationError.includes('CUSTOMER_NOT_FOUND')
-    ) {
+    if (authenticationError.some((errCode) => TERMINAL_AUTHENTICATION_ERRORS.includes(errCode))) {
       return AUTH_STATUS_INACTIVE;
     }
     return REFRESH_TOKEN;

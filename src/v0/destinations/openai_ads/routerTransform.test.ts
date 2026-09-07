@@ -304,6 +304,9 @@ describe('OpenAIAdsIntegration', () => {
     'Some Bespoke Event',
     // Not in OpenAI's naming, so it needs a mapping row like any other bespoke name.
     'Order Created',
+    // The custom sentinel is not a standard event. If the fallback ever resolved it, it would
+    // return to: 'custom' without the customEventName that only the mapped branch enforces.
+    'custom',
     // Names that resolve up Object.prototype if the event-type table is a plain object.
     'constructor',
     '__proto__',
@@ -312,6 +315,12 @@ describe('OpenAIAdsIntegration', () => {
     expect(() => transform(makeInput(1, event, unmappedDestination))).toThrow(
       `OpenAI Ads event mapping not found for ${event}`,
     );
+  });
+
+  it('keeps the custom sentinel out of the standard event list', () => {
+    // The fallback resolves any name in STANDARD_EVENTS onto itself and bypasses the
+    // customEventName guard, so 'custom' leaking into that list would emit a malformed payload.
+    expect(STANDARD_EVENTS as readonly string[]).not.toContain('custom');
   });
 
   it('resolves a standard name absent from a non-empty mapping table', () => {

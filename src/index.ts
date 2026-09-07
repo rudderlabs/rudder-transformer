@@ -19,11 +19,7 @@ import { logProcessInfo } from './util/utils';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
-import {
-  isMemoryFencingEnabled,
-  memoryFenceMiddleware,
-  startMemoryUsageReporter,
-} from './middlewares/memoryFencing';
+import { memoryFenceMiddleware, startMemoryUsageReporter } from './middlewares/memoryFencing';
 import { concurrentRequests } from './middlewares/concurrentRequests';
 import { errorHandlerMiddleware } from './middlewares/errorHandler';
 
@@ -77,8 +73,8 @@ const app = new Koa();
 app.use(errorHandlerMiddleware()); // Error handling middleware - must be early in stack
 addStatMiddleware(app); // Track request time and status codes
 
-// Heap reporting is independent of the fence: it is the leading indicator, so it is most needed on
-// deployments where fencing is disabled and it is all we would otherwise have. The reporter also
+// Heap reporting is independent of the fence: it is the leading indicator and keeps updating
+// on idle pods even when no request passes through the middleware. The reporter also
 // emits the (constant) heap size limit once at startup.
 startMemoryUsageReporter(
   parseInt(process.env.MEMORY_USAGE_REPORT_INTERVAL_MS || '10000', 10), // default 10s
@@ -86,21 +82,18 @@ startMemoryUsageReporter(
 
 // Memory fencing middleware needs to come early in the middleware stack,
 // before any other middleware that might allocate memory.
-// It is enabled by default and can be disabled only with MEMORY_FENCING_ENABLED=false.
 // Mounting it also seeds the fenced-requests counter (see memoryFenceMiddleware), so the
 // fence and its seeded counter can never drift apart.
-if (isMemoryFencingEnabled()) {
-  app.use(
-    memoryFenceMiddleware({
-      thresholdPercent: parseInt(process.env.MEMORY_FENCING_THRESHOLD_PERCENT || '80', 10),
-      statusCode: parseInt(process.env.MEMORY_FENCING_STATUS_CODE || '503', 10),
-      memoryUsageRefreshPeriod: parseInt(
-        process.env.MEMORY_FENCING_MEMORY_USAGE_REFRESH_PERIOD || '100',
-        10,
-      ), // default 100ms
-    }),
-  );
-}
+app.use(
+  memoryFenceMiddleware({
+    thresholdPercent: parseInt(process.env.MEMORY_FENCING_THRESHOLD_PERCENT || '80', 10),
+    statusCode: parseInt(process.env.MEMORY_FENCING_STATUS_CODE || '503', 10),
+    memoryUsageRefreshPeriod: parseInt(
+      process.env.MEMORY_FENCING_MEMORY_USAGE_REFRESH_PERIOD || '100',
+      10,
+    ), // default 100ms
+  }),
+);
 app.use(concurrentRequests()); // Track concurrent requests
 
 const metricsApp = new Koa();

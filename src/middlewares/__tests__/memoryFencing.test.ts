@@ -4,7 +4,6 @@ import {
   emitMemoryHeapUsedPercent,
   getMemoryFencingRouteLabel,
   initMemoryFencingMetrics,
-  isMemoryFencingEnabled,
   memoryFenceMiddleware,
   startMemoryUsageReporter,
 } from '../memoryFencing';
@@ -21,19 +20,6 @@ jest.mock('v8', () => ({
     heap_size_limit: 1000,
   })),
 }));
-
-describe('memory fencing mount policy', () => {
-  it.each([
-    { value: undefined, expectedEnabled: true },
-    { value: 'true', expectedEnabled: true },
-    { value: 'false', expectedEnabled: false },
-    { value: 'FALSE', expectedEnabled: true },
-    { value: '0', expectedEnabled: true },
-  ])('returns $expectedEnabled for MEMORY_FENCING_ENABLED=$value', ({ value, expectedEnabled }) => {
-    // The opt-out is intentionally exact: typo/nonstandard values keep the default protection on.
-    expect(isMemoryFencingEnabled(value)).toBe(expectedEnabled);
-  });
-});
 
 describe('memoryFenceMiddleware', () => {
   const originalMemoryUsage = process.memoryUsage;
@@ -276,8 +262,8 @@ describe('memory fencing metrics', () => {
   });
 
   it('emits heap used percent independently of the fencing middleware', () => {
-    // The leading indicator has to exist when fencing is explicitly disabled and has to keep
-    // updating on idle pods even when no request passes through the middleware.
+    // The leading indicator has to keep updating on idle pods even when no request passes
+    // through the middleware.
     process.memoryUsage = jest.fn(() => ({ heapUsed: 250 })) as any;
 
     expect(emitMemoryHeapUsedPercent()).toBe(25);

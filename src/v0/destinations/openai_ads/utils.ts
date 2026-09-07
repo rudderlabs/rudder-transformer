@@ -19,8 +19,10 @@ import {
   CUSTOMER_ACTION_DATA_TYPE,
   CUSTOM_EVENT_SENTINEL,
   DESTINATION,
+  EVENT_DATA_TYPES,
   MAX_EVENT_AGE_MS,
   MAX_EVENT_FUTURE_SKEW_MS,
+  STANDARD_EVENTS,
   STANDARD_EVENT_DATA_TYPES,
 } from './config';
 import mappingConfig from './data/OPENAI_ADSConfig.json';
@@ -42,10 +44,12 @@ const ACTION_SOURCE_SET = new Set<string>(ACTION_SOURCES);
 const MAX_AMOUNT_LENGTH = 40;
 const CURRENCY_RE = /^[A-Z]{3}$/;
 const PUNCTUATION_REGEX = /[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/g;
-const EVENT_DATA_TYPE_BY_EVENT = {
-  ...STANDARD_EVENT_DATA_TYPES,
+// Null-prototype so an event type of `constructor` or `toString` misses instead of resolving to
+// something off Object.prototype. The zod schema already rejects those before they reach the
+// lookup, but the invariant should not depend on a validation layer two files away staying put.
+const EVENT_DATA_TYPE_BY_EVENT = Object.assign(Object.create(null), STANDARD_EVENT_DATA_TYPES, {
   [CUSTOM_EVENT_SENTINEL]: CUSTOM_EVENT_SENTINEL,
-} as const;
+}) as Record<string, (typeof EVENT_DATA_TYPES)[number]>;
 
 type OpenAIAdsMappingConfig = {
   hashedUserMappings: MappingEntry[];
@@ -231,6 +235,11 @@ const getSourceKey = (message: RudderMessage): string => {
   return String(sourceName);
 };
 
+const STANDARD_EVENT_SET = new Set<string>(STANDARD_EVENTS);
+
+const isStandardEvent = (name: string): name is OpenAIAdsStandardEvent =>
+  STANDARD_EVENT_SET.has(name);
+
 const resolveEventMapping = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
@@ -241,6 +250,13 @@ const resolveEventMapping = (
     (candidate) => candidate.from.toLowerCase() === normalizedSourceKey,
   );
   if (!mapping) {
+    // An event already named after a standard OpenAI event carries its own mapping, so take the
+    // name at face value instead of dropping the event. This holds whatever else is configured: a
+    // mapping table translates the names that need translating, and an event that is already in
+    // OpenAI's naming needs no row — its absence is not a decision to exclude it.
+    if (isStandardEvent(normalizedSourceKey)) {
+      return { from: sourceKey, to: normalizedSourceKey };
+    }
     throw new InstrumentationError(`OpenAI Ads event mapping not found for ${sourceKey}`);
   }
   if (mapping.to === CUSTOM_EVENT_SENTINEL && !mapping.customEventName) {

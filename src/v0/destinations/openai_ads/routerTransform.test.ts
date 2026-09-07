@@ -9,6 +9,7 @@ import type {
 } from '../../../types/destinationTransformation';
 import type { Destination } from '../../../types';
 import type { OpenAIAdsEventPayload } from './types';
+import { STANDARD_EVENTS, STANDARD_EVENT_DATA_TYPES } from './config';
 import { Integration } from './routerTransform';
 // OpenAI only ingests events from the last 7 days, so fixtures are stamped relative to now
 // rather than at a fixed date that would age out of the window.
@@ -276,19 +277,100 @@ describe('OpenAIAdsIntegration', () => {
     );
   });
 
-  it('rejects exact standard event names when mapping is empty', () => {
+  const unmappedDestination = {
+    ...destination,
+    Config: {
+      apiKey: 'test-api-key',
+      pixelId: 'pixel-123',
+      defaultActionSource: 'offline',
+    },
+  };
+
+  it.each(STANDARD_EVENTS)(
+    'resolves standard event %s with no mapping configured',
+    (standardEvent) => {
+      const body = transform(makeInput(1, standardEvent, unmappedDestination)).body;
+
+      expect(body.type).toBe(standardEvent);
+      expect(body.data.type).toBe(STANDARD_EVENT_DATA_TYPES[standardEvent]);
+      expect(body.custom_event_name).toBeUndefined();
+    },
+  );
+
+  it.each(['ORDER_CREATED', 'Order_Created'])(
+    'matches the standard name case-insensitively for %s',
+    (event) => {
+      expect(transform(makeInput(1, event, unmappedDestination)).body.type).toBe('order_created');
+    },
+  );
+
+  it.each([
+    'Some Bespoke Event',
+    // Not in OpenAI's naming, so it needs a mapping row like any other bespoke name.
+    'Order Created',
+    // The custom sentinel is not a standard event. If the fallback ever resolved it, it would
+    // return to: 'custom' without the customEventName that only the mapped branch enforces.
+    'custom',
+    // Names that resolve up Object.prototype if the event-type table is a plain object.
+    'constructor',
+    '__proto__',
+    'toString',
+  ])('rejects non-standard event %s when no mapping is configured', (event) => {
+    expect(() => transform(makeInput(1, event, unmappedDestination))).toThrow(
+      `OpenAI Ads event mapping not found for ${event}`,
+    );
+  });
+
+  it('keeps the custom sentinel out of the standard event list', () => {
+    // The fallback resolves any name in STANDARD_EVENTS onto itself and bypasses the
+    // customEventName guard, so 'custom' leaking into that list would emit a malformed payload.
+    expect(STANDARD_EVENTS as readonly string[]).not.toContain('custom');
+  });
+
+  it('resolves a standard name absent from a non-empty mapping table', () => {
+    // A mapping table translates the names that need translating. An event already in OpenAI's
+    // naming needs no row, so its absence from the table is not a decision to exclude it.
+    const body = transform(
+      makeInput(1, 'order_created', {
+        ...destination,
+        Config: {
+          ...unmappedDestination.Config,
+          eventMapping: [{ from: 'Something Else', to: 'lead_created' }],
+        },
+      }),
+    ).body;
+
+    expect(body.type).toBe('order_created');
+    expect(body.data.type).toBe(STANDARD_EVENT_DATA_TYPES.order_created);
+  });
+
+  it('rejects a non-standard name absent from a non-empty mapping table', () => {
     expect(() =>
       transform(
-        makeInput(1, 'order_created', {
+        makeInput(1, 'Some Bespoke Event', {
           ...destination,
           Config: {
-            apiKey: 'test-api-key',
-            pixelId: 'pixel-123',
-            defaultActionSource: 'offline',
+            ...unmappedDestination.Config,
+            eventMapping: [{ from: 'Something Else', to: 'lead_created' }],
           },
         }),
       ),
-    ).toThrow('OpenAI Ads event mapping not found for order_created');
+    ).toThrow('OpenAI Ads event mapping not found for Some Bespoke Event');
+  });
+
+  it('prefers an explicit mapping over the standard name', () => {
+    const body = transform(
+      makeInput(1, 'order_created', {
+        ...destination,
+        Config: {
+          ...unmappedDestination.Config,
+          eventMapping: [{ from: 'order_created', to: 'custom', customEventName: 'renamed' }],
+        },
+      }),
+    ).body;
+
+    expect(body.type).toBe('custom');
+    expect(body.custom_event_name).toBe('renamed');
   });
 
   it('uses destination.Config credentials', () => {

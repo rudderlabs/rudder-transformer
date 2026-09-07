@@ -458,24 +458,3 @@ genuinely shared. This applies to types, Zod schemas and `const` helpers alike.
 
 Re-check after a refactor: when a change makes a previously-shared constant local, the `export`
 keyword usually survives it.
-
-## Moving a Check Behind a Function Boundary Changes When It Runs
-
-Extracting a shared helper is usually safe, but a guard that used to sit inside an `if` can end
-up in an argument position — and arguments are evaluated **before** the callee's early return.
-The refactor looks behaviour-preserving and is not.
-
-```ts
-// Bad — normalizeCurrency() throws for an invalid code, and it runs even for items
-// with no amount, because arguments evaluate before the callee's `if (!isPresent(amount))`.
-// A content item `{ id: 'sku_1', currency: 'US' }` now aborts the whole event.
-buildAmountAndCurrency(item.amount, normalizeCurrency(item.currency));
-
-// Good — pass a resolver so the callee decides whether to run it
-buildAmountAndCurrency(item.amount, () => normalizeCurrency(item.currency));
-```
-
-The same applies in reverse to *derived* values: when a set is computed from a config object
-and you delete one of its inputs, keys that set used to contain silently disappear. That is a
-real behaviour change — confirm it is what you want and cover it with a test, rather than
-letting it ride along with an unrelated cleanup.

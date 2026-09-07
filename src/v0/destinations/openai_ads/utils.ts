@@ -36,6 +36,8 @@ import type {
 } from './types';
 
 const ACTION_SOURCE_SET = new Set<string>(ACTION_SOURCES);
+// Comfortably past any real monetary value, and short enough that BigInt parsing stays free.
+const MAX_AMOUNT_LENGTH = 40;
 const CURRENCY_RE = /^[A-Z]{3}$/;
 const PUNCTUATION_REGEX = /[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/g;
 const EVENT_DATA_TYPE_BY_EVENT = {
@@ -337,20 +339,33 @@ const toMinorUnits = (amount: unknown, currency: CurrencyMetadata): number => {
     throw new InstrumentationError('Amount must be a number or numeric string');
   }
   const raw = String(amount);
-  if (!/^\d+(?:\.\d+)?$/.test(raw)) {
+  // Bound the input before BigInt sees it: the digit string is customer-controlled, and BigInt
+  // parses an arbitrarily long one on the event loop (~50ms at a million digits) before throwing a
+  // bare SyntaxError — not an InstrumentationError — somewhere past 2^30 bits.
+  if (raw.length > MAX_AMOUNT_LENGTH || !/^-?\d+(?:\.\d+)?$/.test(raw)) {
     throw new InstrumentationError('Amount must be a finite decimal value');
   }
-  const [whole, fraction = ''] = raw.split('.');
-  if (fraction.length > currency.digits) {
-    throw new InstrumentationError(`Amount has more precision than ${currency.code} supports`);
-  }
-  const minorUnits =
-    BigInt(whole) * 10n ** BigInt(currency.digits) +
-    BigInt(fraction.padEnd(currency.digits, '0') || '0');
+  // Negatives are OpenAI-legal and carry real meaning — a refund or a return is a conversion with a
+  // negative value — so the sign is split off here and reapplied at the end rather than rejected.
+  const negative = raw.startsWith('-');
+  const [whole, fraction = ''] = (negative ? raw.slice(1) : raw).split('.');
+  // OpenAI only accepts integer minor units, so precision finer than the currency supports is
+  // rounded half-away-from-zero instead of aborting the event: dropping a conversion over a
+  // fraction of a cent loses more than the rounding does.
+  //
+  // padEnd guarantees at least `digits + 1` characters, so the slice is exactly `digits` wide and
+  // concatenating it onto the whole part is the scaling — no multiply, and no empty-string case.
+  const scaled = fraction.padEnd(currency.digits + 1, '0');
+  let minorUnits = BigInt(whole + scaled.slice(0, currency.digits));
+  if (Number(scaled[currency.digits]) >= 5) minorUnits += 1n;
+  // After the increment, so a value cannot round up across the boundary undetected. The magnitude
+  // is what is tested; MIN_SAFE_INTEGER is exactly -MAX_SAFE_INTEGER, so the negative side is
+  // representable wherever the positive side is.
   if (minorUnits > BigInt(Number.MAX_SAFE_INTEGER)) {
     throw new InstrumentationError('Amount exceeds the maximum safe integer after conversion');
   }
-  return Number(minorUnits);
+  // Negate as a BigInt: BigInt has no negative zero, so '-0.001' yields 0 rather than -0.
+  return Number(negative ? -minorUnits : minorUnits);
 };
 
 const resolveCurrency = (
@@ -390,9 +405,17 @@ const mapContentItem = (
   const quantityValue = getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentQuantityPaths);
   // isDefinedAndNotNullAndNotEmpty is unusable here: lodash isEmpty treats every number as empty.
   if (isPresent(quantityValue)) {
-    const quantity = Number(quantityValue);
-    if (!Number.isInteger(quantity) || quantity <= 0) {
-      throw new InstrumentationError('OpenAI Ads content quantity must be a positive integer');
+    // OpenAI requires an integer but places no bound on it — zero and negative quantities are
+    // accepted, and a return line is legitimately negative — so only the integer-ness is enforced.
+    // Coercion is deliberately narrow rather than a bare Number(): Number(false), Number([]) and
+    // Number('  ') are all 0, so with the positive-only bound gone they would otherwise ship as
+    // `quantity: 0` instead of failing.
+    const quantity =
+      typeof quantityValue === 'string' && /^-?\d+$/.test(quantityValue.trim())
+        ? Number(quantityValue)
+        : quantityValue;
+    if (typeof quantity !== 'number' || !Number.isInteger(quantity)) {
+      throw new InstrumentationError('OpenAI Ads content quantity must be an integer');
     }
     content.quantity = quantity;
   }

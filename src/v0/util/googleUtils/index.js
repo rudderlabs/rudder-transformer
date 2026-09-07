@@ -126,7 +126,13 @@ const getAuthErrCategory = ({ response, status }) => {
       // https://developers.google.com/google-ads/api/docs/oauth/2sv
       authenticationError.includes('TWO_STEP_VERIFICATION_NOT_ENROLLED') ||
       // https://developers.google.com/google-ads/api/docs/common-errors#:~:text=this%20for%20you.-,CUSTOMER_NOT_FOUND,-Summary
-      authenticationError.includes('CUSTOMER_NOT_FOUND')
+      authenticationError.includes('CUSTOMER_NOT_FOUND') ||
+      // The authorising Google account is not associated with ANY Ads account, so no token minted
+      // for that identity can ever be accepted. Classifying it as REFRESH_TOKEN made rudder-server
+      // refresh and retry indefinitely (the refresh itself succeeds), which minted a new access
+      // token per delivery attempt and tripped the OAuth success circuit breaker. INT-7101.
+      // https://developers.google.com/google-ads/api/reference/rpc/v23/AuthenticationErrorEnum.AuthenticationError#not_ads_user
+      authenticationError.includes('NOT_ADS_USER')
     ) {
       return AUTH_STATUS_INACTIVE;
     }

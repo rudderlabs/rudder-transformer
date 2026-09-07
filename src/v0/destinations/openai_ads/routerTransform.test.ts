@@ -448,28 +448,15 @@ describe('OpenAIAdsIntegration', () => {
       },
       error: 'timestamp must be within the last 7 days',
     },
-    {
-      input: {
-        ...makeInput(1),
-        message: {
-          type: 'track',
-          event: 'Product Viewed',
-          messageId: 'msg-err',
-          timestamp: new Date(Date.now() + 20 * 60 * 1000).toISOString(),
-        },
-      },
-      error: 'timestamp must not be more than 600 seconds in the future',
-    },
   ])('throws deterministic validation errors', ({ input, error }) => {
     expect(() => transform(input as RouterTransformationRequestData)).toThrow(error);
   });
 
-  // The window edges are read off Date.now() inside the transform, so they are pinned with a fake
+  // The window edge is read off Date.now() inside the transform, so it is pinned with a fake
   // clock rather than by leaving slack in a wall-clock offset.
   describe('ingest window edges', () => {
     const NOW = Date.parse('2026-09-04T12:00:00.000Z');
     const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
-    const MARGIN_MS = 60 * 1000;
 
     beforeAll(() => {
       jest.useFakeTimers().setSystemTime(NOW);
@@ -490,26 +477,18 @@ describe('OpenAIAdsIntegration', () => {
       } as RouterTransformationRequestData);
 
     it.each([
-      { label: 'the oldest accepted instant', timestampMs: NOW - SEVEN_DAYS_MS + MARGIN_MS },
-      { label: 'the furthest accepted future instant', timestampMs: NOW + 600 * 1000 },
+      { label: 'the oldest accepted instant', timestampMs: NOW - SEVEN_DAYS_MS },
       { label: 'now', timestampMs: NOW },
+      // Only the age bound is enforced here — a future timestamp is left for OpenAI to judge.
+      { label: 'a future instant', timestampMs: NOW + 20 * 60 * 1000 },
     ])('accepts $label', ({ timestampMs }) => {
       expect(transformAt(timestampMs).body.timestamp_ms).toBe(timestampMs);
     });
 
-    it.each([
-      {
-        label: 'one millisecond older than the margin allows',
-        timestampMs: NOW - SEVEN_DAYS_MS + MARGIN_MS - 1,
-        error: 'timestamp must be within the last 7 days',
-      },
-      {
-        label: 'one millisecond beyond the future skew',
-        timestampMs: NOW + 600 * 1000 + 1,
-        error: 'timestamp must not be more than 600 seconds in the future',
-      },
-    ])('rejects a timestamp $label', ({ timestampMs, error }) => {
-      expect(() => transformAt(timestampMs)).toThrow(error);
+    it('rejects a timestamp one millisecond older than the window', () => {
+      expect(() => transformAt(NOW - SEVEN_DAYS_MS - 1)).toThrow(
+        'timestamp must be within the last 7 days',
+      );
     });
   });
 });

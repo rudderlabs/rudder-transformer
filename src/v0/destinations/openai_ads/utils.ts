@@ -20,6 +20,7 @@ import {
   CUSTOM_EVENT_SENTINEL,
   DESTINATION,
   MAX_EVENT_AGE_MS,
+  MAX_EVENT_FUTURE_SKEW_MS,
   STANDARD_EVENT_DATA_TYPES,
 } from './config';
 import mappingConfig from './data/OPENAI_ADSConfig.json';
@@ -278,9 +279,16 @@ const resolveTimestampMs = (payload: EventBasePayload): number => {
   if (typeof timestampMs !== 'number' || !Number.isFinite(timestampMs)) {
     throw new InstrumentationError('OpenAI Ads timestamp is required and must be a valid date');
   }
-  if (timestampMs < Date.now() - MAX_EVENT_AGE_MS) {
+  // One clock read for both bounds, so the accepted window cannot straddle a tick.
+  const now = Date.now();
+  if (timestampMs < now - MAX_EVENT_AGE_MS) {
     throw new InstrumentationError(
       `OpenAI Ads timestamp must be within the last ${MAX_EVENT_AGE_MS / (24 * 60 * 60 * 1000)} days`,
+    );
+  }
+  if (timestampMs > now + MAX_EVENT_FUTURE_SKEW_MS) {
+    throw new InstrumentationError(
+      `OpenAI Ads timestamp must not be more than ${MAX_EVENT_FUTURE_SKEW_MS / (60 * 1000)} minutes in the future`,
     );
   }
   return timestampMs;

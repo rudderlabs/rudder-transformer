@@ -457,6 +457,7 @@ describe('OpenAIAdsIntegration', () => {
   describe('ingest window edges', () => {
     const NOW = Date.parse('2026-09-04T12:00:00.000Z');
     const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+    const TEN_MINUTES_MS = 10 * 60 * 1000;
 
     beforeAll(() => {
       jest.useFakeTimers().setSystemTime(NOW);
@@ -479,8 +480,7 @@ describe('OpenAIAdsIntegration', () => {
     it.each([
       { label: 'the oldest accepted instant', timestampMs: NOW - SEVEN_DAYS_MS },
       { label: 'now', timestampMs: NOW },
-      // Only the age bound is enforced here — a future timestamp is left for OpenAI to judge.
-      { label: 'a future instant', timestampMs: NOW + 20 * 60 * 1000 },
+      { label: 'the furthest accepted future instant', timestampMs: NOW + TEN_MINUTES_MS },
     ])('accepts $label', ({ timestampMs }) => {
       expect(transformAt(timestampMs).body.timestamp_ms).toBe(timestampMs);
     });
@@ -488,6 +488,12 @@ describe('OpenAIAdsIntegration', () => {
     it('rejects a timestamp one millisecond older than the window', () => {
       expect(() => transformAt(NOW - SEVEN_DAYS_MS - 1)).toThrow(
         'timestamp must be within the last 7 days',
+      );
+    });
+
+    it('rejects a timestamp one millisecond beyond the accepted future skew', () => {
+      expect(() => transformAt(NOW + TEN_MINUTES_MS + 1)).toThrow(
+        'timestamp must not be more than 10 minutes in the future',
       );
     });
   });

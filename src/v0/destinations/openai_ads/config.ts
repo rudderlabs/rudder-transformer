@@ -4,6 +4,17 @@ export const ENDPOINT_PATH = '/v1/events';
 export const ENDPOINT = `${BASE_URL}${ENDPOINT_PATH}`;
 export const MAX_BATCH_SIZE = 1000;
 export const MAX_PAYLOAD_SIZE = '4MB';
+// OpenAI's ingest window, both bounds quoted from its Conversions API reference: "The timestamp
+// must be within the last 7 days and no more than 10 minutes in the future."
+//
+// OpenAI enforces the window per batch, atomically — one violating event 422s the entire request
+// (see `staleTimestampResponse` in test/integrations/destinations/openai_ads/network.ts). The
+// delivery spec cannot attribute that 422 to a single job: it maps 400 and 422 alike to
+// `retry({ dontBatch: true })`, which re-sends every job in the batch on its own. At
+// MAX_BATCH_SIZE = 1000, one bad event turns a single request into 1001 — and is aborted at the
+// end of that anyway. Checking here costs one InstrumentationError against the one bad event.
+export const MAX_EVENT_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+export const MAX_EVENT_FUTURE_SKEW_MS = 10 * 60 * 1000;
 export const CUSTOM_EVENT_SENTINEL = 'custom';
 const CONTENTS_DATA_TYPE = 'contents';
 export const CUSTOMER_ACTION_DATA_TYPE = 'customer_action';

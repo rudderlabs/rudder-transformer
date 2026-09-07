@@ -10,6 +10,10 @@ import type {
 import type { Destination } from '../../../types';
 import type { OpenAIAdsEventPayload } from './types';
 import { Integration } from './routerTransform';
+// OpenAI only ingests events from the last 7 days, so fixtures are stamped relative to now
+// rather than at a fixed date that would age out of the window.
+const EVENT_TIMESTAMP = new Date(Date.now() - 60_000).toISOString();
+const EVENT_TIMESTAMP_MS = new Date(EVENT_TIMESTAMP).getTime();
 const destination: Destination = {
   ID: 'openai-ads-dest-1',
   Config: {
@@ -47,7 +51,7 @@ const makeInput = (
     event,
     messageId: `msg-${jobId}`,
     userId: `User-${jobId}`,
-    timestamp: '2024-01-01T00:00:00.000Z',
+    timestamp: EVENT_TIMESTAMP,
     properties: { amount: jobId, currency: 'USD', ...properties },
   },
   metadata: {
@@ -108,7 +112,7 @@ describe('OpenAIAdsIntegration', () => {
         event: 'Product Viewed',
         messageId: 'msg-1',
         userId: 'User-1',
-        timestamp: '2024-01-01T00:00:00.000Z',
+        timestamp: EVENT_TIMESTAMP,
         context: {
           ip: '203.0.113.10',
           userAgent: 'Mozilla/5.0',
@@ -152,7 +156,7 @@ describe('OpenAIAdsIntegration', () => {
     expect(event).toEqual({
       id: 'msg-1',
       type: 'contents_viewed',
-      timestamp_ms: 1704067200000,
+      timestamp_ms: EVENT_TIMESTAMP_MS,
       opt_out: true,
       action_source: 'web',
       source_url: 'https://example.com/path?secret=1#hash',
@@ -201,7 +205,7 @@ describe('OpenAIAdsIntegration', () => {
         type: 'track',
         event: 'Trial Started',
         messageId: 'msg-custom',
-        timestamp: '2024-01-01T00:00:00.000Z',
+        timestamp: EVENT_TIMESTAMP,
         properties: {
           value: 1,
           source_url: 'https://example.com/custom',
@@ -234,7 +238,7 @@ describe('OpenAIAdsIntegration', () => {
         type: 'page',
         name: 'Docs Page',
         messageId: 'msg-page',
-        timestamp: '2024-01-01T00:00:00.000Z',
+        timestamp: EVENT_TIMESTAMP,
         properties: { pageId: 'page-dedupe', source_url: 'https://example.com/docs' },
       },
     } as RouterTransformationRequestData).body;
@@ -248,7 +252,7 @@ describe('OpenAIAdsIntegration', () => {
         type: 'track',
         event: 'Subscription Created',
         messageId: 'msg-subscription',
-        timestamp: '2024-01-01T00:00:00.000Z',
+        timestamp: EVENT_TIMESTAMP,
         properties: {
           amount: '25.00',
           currency: 'USD',
@@ -375,7 +379,7 @@ describe('OpenAIAdsIntegration', () => {
           type: 'track',
           event: 'Signup',
           messageId: 'msg-err',
-          timestamp: '2024-01-01T00:00:00.000Z',
+          timestamp: EVENT_TIMESTAMP,
         },
       },
       error: 'event mapping not found',
@@ -383,7 +387,7 @@ describe('OpenAIAdsIntegration', () => {
     {
       input: {
         ...makeInput(1),
-        message: { type: 'page', messageId: 'msg-err', timestamp: '2024-01-01T00:00:00.000Z' },
+        message: { type: 'page', messageId: 'msg-err', timestamp: EVENT_TIMESTAMP },
       },
       error: 'source event name is required for page events',
     },
@@ -410,7 +414,7 @@ describe('OpenAIAdsIntegration', () => {
           type: 'track',
           event: 'Product Viewed',
           messageId: 'msg-err',
-          timestamp: '2024-01-01T00:00:00.000Z',
+          timestamp: EVENT_TIMESTAMP,
           context: { traits: { email: sha256('user@example.com') } },
           properties: { source_url: 'https://example.com/item' },
         },
@@ -424,8 +428,66 @@ describe('OpenAIAdsIntegration', () => {
       }),
       error: 'opt_out must be a boolean',
     },
+    {
+      input: {
+        ...makeInput(1),
+        message: {
+          type: 'track',
+          event: 'Product Viewed',
+          messageId: 'msg-err',
+          timestamp: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+      },
+      error: 'timestamp must be within the last 7 days',
+    },
   ])('throws deterministic validation errors', ({ input, error }) => {
     expect(() => transform(input as RouterTransformationRequestData)).toThrow(error);
+  });
+
+  // The window edge is read off Date.now() inside the transform, so it is pinned with a fake
+  // clock rather than by leaving slack in a wall-clock offset.
+  describe('ingest window edges', () => {
+    const NOW = Date.parse('2026-09-04T12:00:00.000Z');
+    const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+    const TEN_MINUTES_MS = 10 * 60 * 1000;
+
+    beforeAll(() => {
+      jest.useFakeTimers().setSystemTime(NOW);
+    });
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
+    const transformAt = (timestampMs: number) =>
+      transform({
+        ...makeInput(1),
+        message: {
+          type: 'track',
+          event: 'Product Viewed',
+          messageId: 'msg-window',
+          timestamp: new Date(timestampMs).toISOString(),
+        },
+      } as RouterTransformationRequestData);
+
+    it.each([
+      { label: 'the oldest accepted instant', timestampMs: NOW - SEVEN_DAYS_MS },
+      { label: 'now', timestampMs: NOW },
+      { label: 'the furthest accepted future instant', timestampMs: NOW + TEN_MINUTES_MS },
+    ])('accepts $label', ({ timestampMs }) => {
+      expect(transformAt(timestampMs).body.timestamp_ms).toBe(timestampMs);
+    });
+
+    it('rejects a timestamp one millisecond older than the window', () => {
+      expect(() => transformAt(NOW - SEVEN_DAYS_MS - 1)).toThrow(
+        'timestamp must be within the last 7 days',
+      );
+    });
+
+    it('rejects a timestamp one millisecond beyond the accepted future skew', () => {
+      expect(() => transformAt(NOW + TEN_MINUTES_MS + 1)).toThrow(
+        'timestamp must not be more than 10 minutes in the future',
+      );
+    });
   });
 
   it.each([

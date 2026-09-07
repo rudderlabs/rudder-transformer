@@ -110,6 +110,20 @@ const buildOptionalArrayConfigTestCases = (): ProcessorTestData[] => [
     'Track call on the modern incoming-webhooks path where eventChannelSettings is absent',
     { incomingWebhooksType: 'modern', eventChannelSettings: undefined },
   ),
+  // Mirrors the exact config of the destination that produced the reported 500:
+  // only `webhookUrl` and `eventTemplateSettings` are set. `incomingWebhooksType`
+  // is absent too, so the legacy branch runs and `getChannelNameForEvent` is the
+  // function that throws — matching the reported stack trace.
+  buildOptionalArrayConfigTestCase(
+    'slack-track-production-config-shape',
+    'Track call with only webhookUrl and eventTemplateSettings set, as in the reported incident',
+    {
+      eventChannelSettings: undefined,
+      whitelistedTraitsSettings: undefined,
+      denyListOfEvents: undefined,
+      incomingWebhooksType: undefined,
+    },
+  ),
 ];
 
 export const data: ProcessorTestData[] = [

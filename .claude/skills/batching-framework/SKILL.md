@@ -145,6 +145,16 @@ return {
 };
 ```
 
+**Every split needs a reason the partner's API forces.** `internalGroupKey` halves batch
+efficiency in exchange for correctness, so the justification has to be that the API would
+reject or mis-handle the mixed batch — a different endpoint, a different action verb, an
+incompatible schema.
+
+Splitting on the *presence of an optional field* is the anti-pattern. If the API accepts mixed
+events in one array, grouping by "has a click id" / "has no click id" doubles the request count
+and buys nothing. When in doubt, don't set the key — and if you do set it, say in a comment
+which API constraint requires it.
+
 ## Batch Strategies
 
 ### ChunkBatchStrategy (default for most destinations)
@@ -167,6 +177,15 @@ getBatchStrategy(): BatchStrategy<TBody> {
 ```
 
 Size strings support: `'10MB'`, `'512KB'`, `'4MB'`, `'1GB'` — parsed via `parseSizeToBytes()`.
+
+**Batch limits are constants from the partner's docs, not destination-config fields.** Declare
+`MAX_BATCH_SIZE` / `MAX_PAYLOAD_SIZE` in the destination's `config.ts` and use them directly.
+Do not add them to the destination's Zod config schema, and do not write
+`getMaxBatchSize(config)` helpers that fall back to a constant — the control plane does not
+surface these, so every call resolves to the fallback. They are an unused knob that has to be
+read, documented and tested, and a customer-supplied value above the partner's real ceiling
+would produce rejected requests rather than smaller ones. (See `code-structure` → "Drop Config
+Knobs Without Varying Callers".)
 
 The `wrapBody` function:
 

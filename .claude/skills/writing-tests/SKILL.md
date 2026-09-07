@@ -232,3 +232,56 @@ jest.mock('../../../../util/ivmCache/index', () => {
   };
 });
 ```
+
+## Network Mocks Are Captured, Not Invented
+
+Entries in `test/integrations/destinations/<destination>/network.ts` must be **real responses
+from the partner**, copied from a live call or the partner's published API reference. An
+invented error envelope tests your guess at the API, and the delivery code written against it
+inherits the same guess.
+
+An empty `networkMocks` array in a new destination means no partner response is exercised at
+all — the `dataDelivery` suite is asserting nothing.
+
+Cover, at minimum:
+
+- **The success shape.**
+- **A validation failure** — ideally a *partial* one (some records rejected inside an otherwise
+  well-formed request), because that is what drives per-item verdicts and `dontBatch`.
+- **The auth and configuration failures**: an invalid API key (401), an invalid account/pixel
+  identifier, and a missing required query parameter. These are the responses customers
+  actually hit, and they are usually the ones with no coverage.
+
+Watch for **shape variants within the same error envelope**. Many APIs return
+`{ error: { message, type, param, code, errors[] } }` for a validation failure but `param`,
+`code` as `null` with no `errors[]` for an auth failure. Those are two distinct code paths
+through your error formatter — mock both.
+
+## Handle Only Response Shapes the API Actually Returns
+
+Response-handling code should branch on exactly the shapes covered by `network.ts`. A formatter
+that also handles a bare string body, a string `error`, a top-level `message` and three
+fallback spellings is untested speculation: the branches cannot be exercised, they suggest to
+the next reader that the API is more variable than it is, and they turn a genuine shape change
+into a silent fallback instead of a visible failure.
+
+If a shape is real, mock it. If you cannot produce a mock for it, delete the branch.
+
+## Every New Destination Gets `live.ts`
+
+A new destination ships with `test/integrations/destinations/<destination>/live.ts` covering at
+least one positive scenario per event shape it supports. Component tests assert against mocks,
+so they cannot catch a payload the partner rejects — an endpoint typo, a field the API renamed,
+a required parameter nobody sent. See the `live-integration-test` skill for the harness and
+credential setup.
+
+## A Test Env Override That No Code Reads Is a Lie
+
+Before setting a feature-flag env var in a fixture, grep for the exact string in `src/` and
+confirm something reads it. An override for a flag that no longer exists does not fail — the
+test passes for an unrelated reason and reads as proof of a gate that isn't there.
+
+The specific trap: `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` is the only per-destination
+batching flag (`src/constants/destinationIntegrationsMap.ts:12`). There is no separate
+`..._DELIVERY_ENABLED_WORKSPACE_IDS`; a fixture setting one is a no-op, and the suite is
+actually passing because `features.ts` marks the destination batching-GA.

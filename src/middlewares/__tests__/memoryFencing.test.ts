@@ -262,8 +262,8 @@ describe('memory fencing metrics', () => {
   });
 
   it('emits heap used percent independently of the fencing middleware', () => {
-    // This is the whole point of extracting the helper: the leading indicator has to exist on
-    // deployments where MEMORY_FENCING_ENABLED is unset and the middleware is never mounted.
+    // The leading indicator has to keep updating on idle pods even when no request passes
+    // through the middleware.
     process.memoryUsage = jest.fn(() => ({ heapUsed: 250 })) as any;
 
     expect(emitMemoryHeapUsedPercent()).toBe(25);

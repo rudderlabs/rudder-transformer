@@ -7,6 +7,7 @@ const {
   getName,
   getWhiteListedTraits,
   buildDefaultTraitTemplate,
+  toArray,
 } = require('./util');
 const logger = require('../../../logger');
 
@@ -106,7 +107,7 @@ const processIdentify = (message, destination) => {
 const isEventNameMatchesRegex = (eventName, regex) => eventName.match(regex)?.length > 0;
 
 const getChannelForEventName = (eventChannelSettings, eventName) => {
-  for (const channelConfig of eventChannelSettings) {
+  for (const channelConfig of toArray(eventChannelSettings)) {
     const configEventName =
       channelConfig?.eventName?.trim()?.length > 0 ? channelConfig.eventName : null;
     const channelWebhook =
@@ -132,7 +133,7 @@ const getChannelForEventName = (eventChannelSettings, eventName) => {
   return null;
 };
 const getChannelNameForEvent = (eventChannelSettings, eventName) => {
-  for (const channelConfig of eventChannelSettings) {
+  for (const channelConfig of toArray(eventChannelSettings)) {
     const configEventName =
       channelConfig?.eventName?.trim()?.length > 0 ? channelConfig.eventName : null;
     const configEventChannel =
@@ -158,10 +159,10 @@ const getChannelNameForEvent = (eventChannelSettings, eventName) => {
 };
 
 const buildtemplateList = (templateListForThisEvent, eventTemplateSettings, eventName) => {
-  eventTemplateSettings.forEach((templateConfig) => {
+  toArray(eventTemplateSettings).forEach((templateConfig) => {
     const configEventName =
       templateConfig?.eventName?.trim()?.length > 0 ? templateConfig.eventName : undefined;
-    const configEventTemplate = templateConfig.eventTemplate
+    const configEventTemplate = templateConfig?.eventTemplate
       ? templateConfig.eventTemplate.trim()?.length > 0
         ? templateConfig.eventTemplate
         : undefined
@@ -188,11 +189,9 @@ const processTrack = (message, destination) => {
   if (!eventName) {
     throw new InstrumentationError('Event name is required');
   }
-  if (denyListOfEvents?.length > 0) {
-    const denyListofEvents = denyListOfEvents.map((item) => item.eventName);
-    if (denyListofEvents.includes(eventName)) {
-      throw new ConfigurationError('Event is denied. Please check configuration.');
-    }
+  const denyListofEvents = toArray(denyListOfEvents).map((item) => item?.eventName);
+  if (denyListofEvents.includes(eventName)) {
+    throw new ConfigurationError('Event is denied. Please check configuration.');
   }
 
   const templateListForThisEvent = new Set();

@@ -32,22 +32,29 @@ const getName = (message) => {
 };
 
 /**
+ * Every array-shaped setting in the Slack config is optional (the config schema only
+ * requires `webhookUrl`), so it can reach us absent, null or otherwise malformed.
+ * Normalise to an array so callers can iterate unconditionally.
+ * @param {*} value value read from destination.Config
+ * @returns the value when it is an array, an empty array otherwise
+ */
+const toArray = (value) => (Array.isArray(value) ? value : []);
+
+/**
  * To get whitelisted traits from config
  * @param {*} destination
  * @param {*} traitsList map the whitelisted traits to this list
  */
 const getWhiteListedTraits = (destination) => {
   const traitsList = [];
-  if (destination?.Config?.whitelistedTraitsSettings) {
-    destination.Config.whitelistedTraitsSettings.forEach((whiteListTrait) => {
-      if (whiteListTrait.trait) {
-        const tmpWhitelistTrait = whiteListTrait.trait.trim();
-        if (tmpWhitelistTrait.trim().length > 0) {
-          traitsList.push(tmpWhitelistTrait);
-        }
+  toArray(destination?.Config?.whitelistedTraitsSettings).forEach((whiteListTrait) => {
+    if (whiteListTrait?.trait) {
+      const tmpWhitelistTrait = whiteListTrait.trait.trim();
+      if (tmpWhitelistTrait.trim().length > 0) {
+        traitsList.push(tmpWhitelistTrait);
       }
-    });
-  }
+    }
+  });
   return traitsList;
 };
 
@@ -96,4 +103,5 @@ module.exports = {
   getName,
   getWhiteListedTraits,
   buildDefaultTraitTemplate,
+  toArray,
 };

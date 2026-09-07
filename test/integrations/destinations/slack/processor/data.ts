@@ -6,6 +6,112 @@ import {
   generateCommonMetadata,
 } from '../common';
 
+/**
+ * The Slack config schema marks only `webhookUrl` as required, so every array-shaped
+ * setting (`eventChannelSettings`, `eventTemplateSettings`, `whitelistedTraitsSettings`,
+ * `denyListOfEvents`) may legitimately arrive absent, null or malformed. The transform
+ * must fall back to the default behaviour instead of throwing a 500.
+ */
+const buildOptionalArrayConfigTestCase = (
+  id: string,
+  scenario: string,
+  configOverrides: Record<string, any>,
+): ProcessorTestData => ({
+  id,
+  name: 'slack',
+  description: scenario,
+  feature: 'processor',
+  module: 'destination',
+  version: 'v0',
+  scenario,
+  successCriteria:
+    'The track call falls back to the default template and the base webhook URL instead of throwing',
+  input: {
+    request: {
+      method: 'POST',
+      body: [
+        {
+          destination: overrideDestination(baseDestination, configOverrides),
+          message: generateCommonMessage(
+            'track',
+            '12345',
+            '4de817fb-7f8e-4e23-b9be-f6736dbda20f',
+            '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
+            { event: 'so.wtf' },
+          ),
+          metadata: generateCommonMetadata(901, '12345', '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780'),
+        },
+      ],
+    },
+  },
+  output: {
+    response: {
+      status: 200,
+      body: [
+        {
+          output: {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            params: {},
+            body: {
+              JSON: {},
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {
+                payload: JSON.stringify({
+                  text: 'my-name did so.wtf',
+                  username: 'RudderStack',
+                  icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                }),
+              },
+            },
+            files: {},
+            userId: '12345',
+          },
+          metadata: generateCommonMetadata(901, '12345', '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780'),
+          statusCode: 200,
+        },
+      ],
+    },
+  },
+  mockFns: () => {
+    return {};
+  },
+});
+
+const buildOptionalArrayConfigTestCases = (): ProcessorTestData[] => [
+  buildOptionalArrayConfigTestCase(
+    'slack-track-missing-event-channel-settings',
+    'Track call where eventChannelSettings is absent from the destination config',
+    { eventChannelSettings: undefined },
+  ),
+  buildOptionalArrayConfigTestCase(
+    'slack-track-null-event-channel-settings',
+    'Track call where eventChannelSettings is null',
+    { eventChannelSettings: null },
+  ),
+  buildOptionalArrayConfigTestCase(
+    'slack-track-non-array-optional-settings',
+    'Track call where the optional array settings are non-array objects',
+    {
+      eventChannelSettings: {},
+      eventTemplateSettings: {},
+      whitelistedTraitsSettings: {},
+      denyListOfEvents: {},
+    },
+  ),
+  buildOptionalArrayConfigTestCase(
+    'slack-track-modern-webhooks-missing-event-channel-settings',
+    'Track call on the modern incoming-webhooks path where eventChannelSettings is absent',
+    { incomingWebhooksType: 'modern', eventChannelSettings: undefined },
+  ),
+];
+
 export const data: ProcessorTestData[] = [
   {
     id: 'slack-identify-default-template',
@@ -240,4 +346,5 @@ export const data: ProcessorTestData[] = [
       return {};
     },
   },
+  ...buildOptionalArrayConfigTestCases(),
 ];

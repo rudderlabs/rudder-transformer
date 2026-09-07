@@ -1,6 +1,6 @@
 ---
 name: destination-payload-conventions
-description: Conventions for building destination payloads — monetary values and ISO-4217 minor units. Applied automatically — not user-invocable.
+description: Conventions for building destination payloads — monetary values and ISO-4217 minor units, preserving customer data, and merge order for passthrough extras. Applied automatically — not user-invocable.
 ---
 
 # Destination Payload Conventions
@@ -57,3 +57,68 @@ Notes:
 
 Deliberately not fixing the call sites above in one pass: each needs its own regression
 testing against the partner. Do it when you touch the destination.
+
+## Never silently rewrite or drop customer data
+
+A transformer's job is to map the customer's event onto the partner's schema, not to clean it
+up. When you normalize, reformat or discard a value the customer deliberately sent, the change
+is invisible: nothing fails, no error reaches Live Events, and the partner receives something
+the customer never sent. Pass values through and let the partner's API validate them.
+
+Three shapes this takes, all of them easy to add and hard to notice:
+
+- **Trimming everywhere.** Trim belongs *only* inside hash normalizers, where a stray space
+  changes the digest. Applying a `trimString` helper to event names, dot-path values, URLs and
+  content fields rewrites customer data at every call site — and, because the helper doubles as
+  a truthiness check, makes the value-resolution path harder to follow than a plain lookup.
+- **Re-serialising URLs.** Parsing a customer's URL through `new URL()` just to strip
+  `search`/`hash` and re-serialise also lowercases the host, adds a trailing slash and drops a
+  default port. Return the raw value.
+- **"Sanitising" custom properties.** A recursive walk that drops empty strings, non-finite
+  numbers, empty arrays/objects and anything non-plain deletes data the customer chose to send.
+
+The exception is a documented partner requirement — hashing, minor-unit conversion, or an enum
+the API rejects otherwise. Those are transformations you can point at a spec for.
+
+```ts
+// Good — resolve, then hand it over untouched
+const sourceUrl = getValueFromMessage(message, MAPPING.sourceUrlPaths);
+
+// Bad — silently normalizes the customer's URL
+const sourceUrl = (() => {
+  try {
+    const u = new URL(raw);
+    u.search = '';
+    u.hash = '';
+    return u.toString();
+  } catch {
+    return undefined;
+  }
+})();
+```
+
+Where the partner *does* require a normalized form, apply it **consistently**. If a file trims
+and lowercases one enum before comparing it, every other enum comparison in that file should do
+the same — an `action_source` matched case-sensitively rejects a perfectly ordinary `'Web'` and
+drops the event, purely because it was the one string nobody normalized.
+
+## Passthrough extras must not overwrite payload-owned fields
+
+When a destination forwards unmapped properties as custom data, the merge order decides who
+wins. `Object.assign(payload, extras)` after setting a payload-owned field lets a customer
+property silently replace it — and a discriminator like `data.type` is exactly the field that
+breaks the request when it changes.
+
+Assign extras **first** and the payload's own fields **last**, so ownership is structural
+rather than dependent on a reserved-key list staying complete. A reserved-key set is still
+worth having (see the `mapping-config` skill for deriving one), but it should not be the only
+thing standing between `properties.type` and the payload's `type`.
+
+```ts
+// Good — the payload's own fields always win
+const data = { ...buildCustomExtras(message), type: dataType, amount, currency };
+
+// Bad — a customer's `properties.type` clobbers the discriminator
+const data = { type: dataType, amount, currency };
+Object.assign(data, buildCustomExtras(message));
+```

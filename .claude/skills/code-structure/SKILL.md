@@ -434,66 +434,6 @@ const process = (event) => {
 
 Escalate the v2 branch to a sibling module (`transformV2.ts` — the existing repo convention) only on large divergence; prefer that over `./v1` / `./v2` subdirs (none exist today), though subdirs aren't strictly banned for a major large enough to warrant its own tree. Branch `routerTransform` / `deleteUsers` / the proxy `networkHandler` (which reads top-level `destinationVersion`) only when a major actually changes them. Full reference: CONTRIBUTING.md → "Dispatching on the integration major".
 
-## Never Silently Rewrite or Drop Customer Data
-
-A transformer's job is to map the customer's event onto the partner's schema, not to clean it
-up. When you normalize, reformat or discard a value the customer deliberately sent, the change
-is invisible: nothing fails, no error reaches Live Events, and the partner receives something
-the customer never sent. Pass values through and let the partner's API validate them.
-
-Three shapes this takes, all of them easy to add and hard to notice:
-
-- **Trimming everywhere.** Trim belongs *only* inside hash normalizers, where a stray space
-  changes the digest. Applying a `trimString` helper to event names, dot-path values, URLs and
-  content fields rewrites customer data at every call site — and, because the helper doubles as
-  a truthiness check, makes the value-resolution path harder to follow than a plain lookup.
-- **Re-serialising URLs.** Parsing a customer's URL through `new URL()` just to strip
-  `search`/`hash` and re-serialise also lowercases the host, adds a trailing slash and drops a
-  default port. Return the raw value.
-- **"Sanitising" custom properties.** A recursive walk that drops empty strings, non-finite
-  numbers, empty arrays/objects and anything non-plain deletes data the customer chose to send.
-
-The exception is a documented partner requirement (hashing, minor-unit conversion, an enum the
-API rejects otherwise) — those are transformations you can point at a spec for.
-
-```ts
-// Good — resolve, then hand it over untouched
-const sourceUrl = getValueFromMessage(message, MAPPING.sourceUrlPaths);
-
-// Bad — silently normalizes the customer's URL
-const sourceUrl = (() => {
-  try {
-    const u = new URL(raw);
-    u.search = '';
-    u.hash = '';
-    return u.toString();
-  } catch {
-    return undefined;
-  }
-})();
-```
-
-## Passthrough Extras Must Not Overwrite Payload-Owned Fields
-
-When a destination forwards unmapped properties as custom data, the merge order decides who
-wins. `Object.assign(payload, extras)` after setting a payload-owned field lets a customer
-property silently replace it — and a discriminator like `data.type` is exactly the field that
-breaks the request when it changes.
-
-Assign extras **first** and the payload's own fields **last**, so ownership is structural
-rather than dependent on a reserved-key list staying complete. A reserved-key set is still
-worth having, but it should not be the only thing standing between `properties.type` and the
-payload's `type`.
-
-```ts
-// Good — the payload's own fields always win
-const data = { ...buildCustomExtras(message), type: dataType, amount, currency };
-
-// Bad — a customer's `properties.type` clobbers the discriminator
-const data = { type: dataType, amount, currency };
-Object.assign(data, buildCustomExtras(message));
-```
-
 ## No Re-Export Shims, No Empty Placeholder Files
 
 A module whose entire body re-exports symbols defined elsewhere is an indirection layer with no

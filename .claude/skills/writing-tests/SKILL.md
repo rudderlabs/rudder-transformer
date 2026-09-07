@@ -257,16 +257,6 @@ Watch for **shape variants within the same error envelope**. Many APIs return
 `code` as `null` with no `errors[]` for an auth failure. Those are two distinct code paths
 through your error formatter — mock both.
 
-## Handle Only Response Shapes the API Actually Returns
-
-Response-handling code should branch on exactly the shapes covered by `network.ts`. A formatter
-that also handles a bare string body, a string `error`, a top-level `message` and three
-fallback spellings is untested speculation: the branches cannot be exercised, they suggest to
-the next reader that the API is more variable than it is, and they turn a genuine shape change
-into a silent fallback instead of a visible failure.
-
-If a shape is real, mock it. If you cannot produce a mock for it, delete the branch.
-
 ## Every New Destination Gets `live.ts`
 
 A new destination ships with `test/integrations/destinations/<destination>/live.ts` covering at
@@ -274,14 +264,3 @@ least one positive scenario per event shape it supports. Component tests assert 
 so they cannot catch a payload the partner rejects — an endpoint typo, a field the API renamed,
 a required parameter nobody sent. See the `live-integration-test` skill for the harness and
 credential setup.
-
-## A Test Env Override That No Code Reads Is a Lie
-
-Before setting a feature-flag env var in a fixture, grep for the exact string in `src/` and
-confirm something reads it. An override for a flag that no longer exists does not fail — the
-test passes for an unrelated reason and reads as proof of a gate that isn't there.
-
-The specific trap: `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` is the only per-destination
-batching flag (`src/constants/destinationIntegrationsMap.ts:12`). There is no separate
-`..._DELIVERY_ENABLED_WORKSPACE_IDS`; a fixture setting one is a no-op, and the suite is
-actually passing because `features.ts` marks the destination batching-GA.

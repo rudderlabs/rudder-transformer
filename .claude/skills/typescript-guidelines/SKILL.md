@@ -128,54 +128,6 @@ pending = this.createEntry()
   });
 ```
 
-## Required Config Is `z.string().min(1)`, Not `z.string()`
-
-`z.string()` accepts `''`. For a credential or an account identifier that means an
-unconfigured destination passes schema validation and the emptiness surfaces on the wire —
-`Authorization: Bearer ` or `?pid=` — as a 401/400 from the partner at delivery time, long
-after the point where it could have been reported as a configuration error.
-
-Push required-ness into the schema, and the downstream runtime check becomes deletable (see
-`code-structure` → "Don't Re-Validate Inputs That Zod Has Already Validated"). The two rules
-work together: the schema is the single place the requirement is expressed.
-
-```ts
-// Good — fails at transform time with a clear error
-const DestinationConfigSchema = z.object({
-  apiKey: z.string().min(1),
-  pixelId: z.string().min(1),
-});
-
-// Bad — `''` passes, and a `resolveAccountConfig()` helper re-checks it at runtime
-const DestinationConfigSchema = z.object({
-  apiKey: z.string().optional(),
-  pixelId: z.string().optional(),
-});
-```
-
-## `??` Does Not Catch Throws
-
-A nullish-coalescing fallback only fires on `undefined` or `null`. If the left-hand expression
-*throws* — because it validates its input — the throw propagates and the fallback never runs.
-A resolver that both validates and participates in a `??` chain defeats its own default.
-
-Decide which one it is: either the resolver returns `undefined` for unusable input and the
-fallback handles it, or it throws and there is no fallback to write.
-
-```ts
-// Bad — a whitespace-padded currency throws, so `defaultCurrency` is never reached
-const currency = normalizeCurrency(getValueFromMessage(message, paths)) ?? config.defaultCurrency;
-
-// Good — unusable input returns undefined; genuinely invalid input still throws
-const raw = getValueFromMessage(message, paths);
-const currency = normalizeCurrency(raw) ?? normalizeCurrency(config.defaultCurrency);
-```
-
-Normalize consistently while you are here. If a file trims and lowercases one enum before
-comparing it, every other enum comparison in that file should do the same — an
-`action_source` matched case-sensitively rejects a perfectly ordinary `'Web'` and drops the
-event, purely because it was the one string nobody normalized.
-
 ## No Bare `as string` Over a Dot-Path Value
 
 `get(message, path)` returns `any`. Casting the result to `string` because the payload type
@@ -195,11 +147,3 @@ const id = isPresent(raw) ? String(raw) : message.messageId;
 // Bad — a lie about two untyped sources
 const id = (get(message, mapping.deduplicationKey) ?? message.messageId) as string;
 ```
-
-## Non-Auth Destinations Read Credentials From `Config`
-
-When a destination's credentials live in the destination config rather than the accounts
-framework, read them from `destination.Config` directly. Don't model an `Account` shape for
-them, and don't cast the destination to get there — a `DestinationIntegration` subclass already
-carries a typed `destination`, so `this.destination as MyDestination` is a sign the generic
-parameter is wrong rather than that a cast is needed.

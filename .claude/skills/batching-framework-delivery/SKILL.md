@@ -88,10 +88,20 @@ the batch failed. Lifting only `error.message` produces
 `[DEST] event_timestamp_ms must be within the last 7 days.` — true, but it doesn't say which of
 the 200 events was stale. Fold `code`, `param` and the per-item entries into the string.
 
-Keep the extractor to the shapes `network.ts` actually mocks (see `writing-tests` →
-"Handle Only Response Shapes the API Actually Returns"), and remember that the auth-failure
-variant often returns `param` and `code` as `null` with no `errors[]` — handle the null case
-without inventing branches for shapes the API never sends.
+### Handle only the response shapes the API actually returns
+
+The extractor should branch on exactly the shapes covered by the destination's `network.ts`
+mocks. A formatter that also handles a bare string body, a string `error`, a top-level
+`message` and three fallback spellings is untested speculation: the branches cannot be
+exercised, they suggest to the next reader that the API is more variable than it is, and they
+turn a genuine shape change into a silent fallback instead of a visible failure.
+
+If a shape is real, mock it. If you cannot produce a mock for it, delete the branch.
+
+Do account for **variants within the envelope you do handle** — the same API commonly returns
+`{ error: { message, type, param, code, errors[] } }` for a validation failure but `param` and
+`code` as `null` with no `errors[]` for an auth failure. Those are two paths through your
+formatter, not two different APIs.
 
 ## Verdicts
 

@@ -293,18 +293,17 @@ describe('OpenAIAdsIntegration', () => {
     },
   );
 
-  it.each([
-    { label: 'title case', event: 'Order Created' },
-    { label: 'upper case', event: 'ORDER CREATED' },
-    { label: 'hyphenated', event: 'Order-Created' },
-    { label: 'surrounding whitespace', event: '  Order Created  ' },
-    { label: 'repeated separators', event: 'Order   Created' },
-  ])('folds $label onto the standard name', ({ event }) => {
-    expect(transform(makeInput(1, event, unmappedDestination)).body.type).toBe('order_created');
-  });
+  it.each(['ORDER_CREATED', 'Order_Created'])(
+    'matches the standard name case-insensitively for %s',
+    (event) => {
+      expect(transform(makeInput(1, event, unmappedDestination)).body.type).toBe('order_created');
+    },
+  );
 
   it.each([
     'Some Bespoke Event',
+    // Not in OpenAI's naming, so it needs a mapping row like any other bespoke name.
+    'Order Created',
     // Names that resolve up Object.prototype if the event-type table is a plain object.
     'constructor',
     '__proto__',
@@ -315,12 +314,27 @@ describe('OpenAIAdsIntegration', () => {
     );
   });
 
-  it('does not fall back once any mapping row is configured', () => {
-    // The mapping table is the allowlist: a standard-named event absent from a non-empty table was
-    // filtered deliberately, so it must still abort rather than deliver itself.
+  it('resolves a standard name absent from a non-empty mapping table', () => {
+    // A mapping table translates the names that need translating. An event already in OpenAI's
+    // naming needs no row, so its absence from the table is not a decision to exclude it.
+    const body = transform(
+      makeInput(1, 'order_created', {
+        ...destination,
+        Config: {
+          ...unmappedDestination.Config,
+          eventMapping: [{ from: 'Something Else', to: 'lead_created' }],
+        },
+      }),
+    ).body;
+
+    expect(body.type).toBe('order_created');
+    expect(body.data.type).toBe(STANDARD_EVENT_DATA_TYPES.order_created);
+  });
+
+  it('rejects a non-standard name absent from a non-empty mapping table', () => {
     expect(() =>
       transform(
-        makeInput(1, 'order_created', {
+        makeInput(1, 'Some Bespoke Event', {
           ...destination,
           Config: {
             ...unmappedDestination.Config,
@@ -328,7 +342,7 @@ describe('OpenAIAdsIntegration', () => {
           },
         }),
       ),
-    ).toThrow('OpenAI Ads event mapping not found for order_created');
+    ).toThrow('OpenAI Ads event mapping not found for Some Bespoke Event');
   });
 
   it('prefers an explicit mapping over the standard name', () => {

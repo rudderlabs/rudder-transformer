@@ -236,42 +236,22 @@ const STANDARD_EVENT_SET = new Set<string>(STANDARD_EVENTS);
 const isStandardEvent = (name: string): name is OpenAIAdsStandardEvent =>
   STANDARD_EVENT_SET.has(name);
 
-/**
- * Fold a source event name onto OpenAI's own naming. OpenAI's names are snake_case
- * (`order_created`) while the RudderStack convention is title case (`Order Created`), so casing is
- * dropped and runs of whitespace or hyphens collapse to the underscore they stand in for. An
- * underscore already present is left alone. Nothing fuzzier: this bridges spelling, not meaning.
- */
-const normalizeEventName = (name: string): string =>
-  name
-    .trim()
-    .toLowerCase()
-    .replace(/[\s-]+/g, '_');
-
 const resolveEventMapping = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsEventMapping => {
   const sourceKey = getSourceKey(message);
   const normalizedSourceKey = sourceKey.toLowerCase();
-  const eventMapping = config.eventMapping ?? [];
-  const mapping = eventMapping.find(
+  const mapping = (config.eventMapping ?? []).find(
     (candidate) => candidate.from.toLowerCase() === normalizedSourceKey,
   );
   if (!mapping) {
-    // Only when nothing is configured at all. Once a destination has any mapping rows, that table
-    // is its allowlist — an event missing from it was filtered on purpose, and this is the only
-    // gate that applies in cloud mode (the `eventFilteringOption` fields in the destination
-    // definition sit under `destConfig.web` and are enforced SDK-side, never on the router path).
-    // Falling back on a partially-mapped destination would silently start delivering events the
-    // customer had excluded, which for a conversions API means billing and optimising on them.
-    //
-    // With nothing configured there is no intent to contradict, and an event already named after a
-    // standard OpenAI event needs no configuration to be understood — so rather than dropping 100%
-    // of the destination's traffic, take the name at face value.
-    const standardEventName = normalizeEventName(sourceKey);
-    if (eventMapping.length === 0 && isStandardEvent(standardEventName)) {
-      return { from: sourceKey, to: standardEventName };
+    // An event already named after a standard OpenAI event carries its own mapping, so take the
+    // name at face value instead of dropping the event. This holds whatever else is configured: a
+    // mapping table translates the names that need translating, and an event that is already in
+    // OpenAI's naming needs no row — its absence is not a decision to exclude it.
+    if (isStandardEvent(normalizedSourceKey)) {
+      return { from: sourceKey, to: normalizedSourceKey };
     }
     throw new InstrumentationError(`OpenAI Ads event mapping not found for ${sourceKey}`);
   }

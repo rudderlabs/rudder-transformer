@@ -248,6 +248,11 @@ export type DeliverySpec = {
    * Last chance to modify the outgoing request before it is sent. Whatever this adds is used for
    * the call and never persisted on the job — the place for secrets the destination needs but
    * that must not appear in live events.
+   *
+   * Throwing here rejects the request instead of sending it, and the throw is handled exactly like
+   * any other delivery failure. That makes this the place for a precondition the destination can
+   * decide before the call — a payload shape it must refuse to post — which `statusOverrides`
+   * cannot express, since those are keyed on the status of a response that would not exist.
    */
   prepareRequest?: (request: ProxyRequest, ctx: DeliveryRequestContext) => ProxyRequest;
 };

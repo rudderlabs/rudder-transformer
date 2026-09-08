@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
-import { mapInBatches, NetworkError } from '@rudderstack/integrations-lib';
+import { mapInBatches } from '@rudderstack/integrations-lib';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { proxyRequest } from '../../adapters/network';
 import { processAxiosResponse } from '../../adapters/utils/networkUtils';
@@ -273,20 +273,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
       let sentDeliveryRequest = deliveryRequest;
       let processedProxyResponse;
       if (frameworkOwnsTransport) {
-        if (!deliveryRequest.endpoint) {
-          const error = new NetworkError(
-            '[Google Ads Enhanced Conversions] old-shape payload reached framework transport after transport flag flip',
-            500,
-            {
-              [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.RETRYABLE,
-            },
-            { status: 500, response: 'old-shape payload reached framework transport' },
-          );
-          error.statTags[tags.TAG_NAMES.META] =
-            'gaec_transport_flag_shape_mismatch_old_to_framework';
-          throw error;
-        }
         const spec = resolveDeliverySpec(IntegrationClass);
+        // `prepareRequest` is also where a destination rejects a request it must not send — GAEC
+        // uses it to catch legacy-shape payloads left over from a transport flag flip. Throwing
+        // from it lands in this method's catch, same as any other delivery failure.
         sentDeliveryRequest = spec.prepareRequest?.(deliveryRequest, reqCtx!) ?? deliveryRequest;
         // The framework sent this request, so the framework reads the reply: the shared axios
         // normalizer, not `networkHandler.processAxiosResponse`. A destination overrides that hook

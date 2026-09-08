@@ -1,0 +1,199 @@
+{
+  "hashedUserMappings": [
+    {
+      "sourceKeys": [
+        "traits.emails",
+        "context.traits.emails",
+        "traits.email",
+        "context.traits.email"
+      ],
+      "destKey": "emails_sha256"
+    },
+    {
+      "sourceKeys": [
+        "traits.phoneNumbers",
+        "context.traits.phoneNumbers",
+        "traits.phone_numbers",
+        "context.traits.phone_numbers",
+        "traits.phones",
+        "context.traits.phones",
+        "traits.phone",
+        "context.traits.phone"
+      ],
+      "destKey": "phone_numbers_sha256"
+    },
+    {
+      "sourceKeys": [
+        "traits.externalIds",
+        "context.traits.externalIds",
+        "traits.external_ids",
+        "context.traits.external_ids",
+        "traits.externalId",
+        "context.traits.externalId",
+        "traits.external_id",
+        "context.traits.external_id",
+        "userId"
+      ],
+      "destKey": "external_ids_sha256"
+    },
+    {
+      "sourceKeys": [
+        "traits.firstNames",
+        "context.traits.firstNames",
+        "traits.first_names",
+        "context.traits.first_names",
+        "traits.firstName",
+        "traits.first_name",
+        "context.traits.firstName",
+        "context.traits.first_name"
+      ],
+      "destKey": "first_names_sha256"
+    },
+    {
+      "sourceKeys": [
+        "traits.lastNames",
+        "context.traits.lastNames",
+        "traits.last_names",
+        "context.traits.last_names",
+        "traits.lastName",
+        "traits.last_name",
+        "context.traits.lastName",
+        "context.traits.last_name"
+      ],
+      "destKey": "last_names_sha256"
+    }
+  ],
+  "plainArrayUserMappings": [
+    {
+      "sourceKeys": [
+        "traits.regions",
+        "context.traits.regions",
+        "traits.region",
+        "context.traits.region"
+      ],
+      "destKey": "regions"
+    },
+    {
+      "sourceKeys": [
+        "traits.postalCodes",
+        "context.traits.postalCodes",
+        "traits.postal_codes",
+        "context.traits.postal_codes",
+        "traits.postalCode",
+        "context.traits.postalCode",
+        "traits.postal_code",
+        "context.traits.postal_code"
+      ],
+      "destKey": "postal_codes"
+    },
+    {
+      "sourceKeys": [
+        "traits.cities",
+        "context.traits.cities",
+        "traits.address.city",
+        "context.traits.address.city",
+        "traits.city",
+        "context.traits.city"
+      ],
+      "destKey": "cities"
+    },
+    {
+      "sourceKeys": [
+        "traits.countries",
+        "context.traits.countries",
+        "traits.country",
+        "context.traits.country"
+      ],
+      "destKey": "countries"
+    }
+  ],
+  "plainScalarUserMappings": [
+    {
+      "sourceKeys": ["traits.obref", "context.traits.obref"],
+      "destKey": "obref"
+    },
+    {
+      "sourceKeys": [
+        "traits.android_advertising_id",
+        "context.traits.android_advertising_id",
+        "traits.androidAdvertisingId",
+        "context.traits.androidAdvertisingId",
+        "context.device.advertisingId"
+      ],
+      "destKey": "android_advertising_id"
+    },
+    {
+      "sourceKeys": ["context.ip", "request_ip"],
+      "destKey": "ip_address"
+    },
+    {
+      "sourceKeys": ["context.userAgent", "context.user_agent"],
+      "destKey": "user_agent"
+    }
+  ],
+  "topLevelMappings": [
+    {
+      "sourceKeys": ["timestamp", "originalTimestamp", "sentAt", "receivedAt"],
+      "destKey": "timestamp_ms",
+      "required": true,
+      "metadata": { "type": "timestamp" }
+    },
+    {
+      "sourceKeys": ["properties.action_source", "properties.actionSource"],
+      "destKey": "action_source"
+    },
+    {
+      "sourceKeys": ["properties.source_url", "properties.sourceUrl", "context.page.url"],
+      "destKey": "source_url"
+    },
+    {
+      "sourceKeys": "properties.oppref",
+      "destKey": "oppref"
+    },
+    {
+      "sourceKeys": ["properties.optOut", "properties.opt_out"],
+      "destKey": "opt_out"
+    }
+  ],
+  "contentMappings": [
+    {
+      "sourceKeys": [
+        "id",
+        "content_id",
+        "contentId",
+        "item_id",
+        "itemId",
+        "product_id",
+        "productId",
+        "sku"
+      ],
+      "destKey": "id",
+      "metadata": { "type": "toString" }
+    },
+    {
+      "sourceKeys": ["name", "title", "product_name", "productName"],
+      "destKey": "name",
+      "metadata": { "type": "toString" }
+    },
+    {
+      "sourceKeys": ["content_type", "contentType", "type", "category", "product_category"],
+      "destKey": "content_type",
+      "metadata": { "type": "toString" }
+    },
+    {
+      "sourceKeys": ["group_id", "groupId"],
+      "destKey": "group_id",
+      "metadata": { "type": "toString" }
+    },
+    {
+      "sourceKeys": ["variant_dict", "variantDict"],
+      "destKey": "variant_dict"
+    }
+  ],
+  "currencyPaths": "properties.currency",
+  "amountPaths": ["properties.amount", "properties.value", "properties.revenue"],
+  "contentSourcePaths": ["properties.contents", "properties.products"],
+  "contentQuantityPaths": ["quantity", "count"],
+  "contentAmountPaths": ["amount", "value", "price"],
+  "contentCurrencyPaths": ["currency", "currency_code", "currencyCode"]
+}

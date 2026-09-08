@@ -1,8 +1,10 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 import { FixMe } from '../../types';
+import { isDestinationRouterTransformEnabled } from '../../features';
 import { NativeIntegrationDestinationService } from '../destination/nativeIntegration';
 import type { Destination, Connection } from '../../types/controlPlaneConfig';
 import type { Metadata, RudderMessage } from '../../types/rudderEvents';
+import type { ProcessorTransformationRequest, RouterTransformationRequestData } from '../../types';
 
 type DestTransformInput = {
   message: Record<string, unknown>;
@@ -56,7 +58,7 @@ export class EventTesterService {
       return [{ error: 'destination.WorkspaceId is required' }];
     }
 
-    const inputs = events.map((event, idx) => ({
+    const inputs: RouterTransformationRequestData[] = events.map((event, idx) => ({
       message: event.message as RudderMessage,
       // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
       // jobId must be unique per event so the batching framework can track per-event failures.
@@ -66,14 +68,22 @@ export class EventTesterService {
     }));
 
     const service = new NativeIntegrationDestinationService();
-    const responses = await service.doRouterTransformation(inputs, dest, version, {});
+    const responses = isDestinationRouterTransformEnabled(dest)
+      ? await service.doRouterTransformation(inputs, dest, version, {})
+      : await service.doProcessorTransformation(
+          inputs as ProcessorTransformationRequest[],
+          dest,
+          version,
+          {},
+        );
 
     const results: DestTransformEntry[] = [];
     for (const r of responses) {
       if (r.error) {
         results.push({ error: r.error });
       } else {
-        const payloads = Array.isArray(r.batchedRequest) ? r.batchedRequest : [r.batchedRequest];
+        const output = 'batched' in r ? r.batchedRequest : r.output;
+        const payloads = Array.isArray(output) ? output : [output];
         for (const p of payloads) {
           results.push({ payload: p });
         }

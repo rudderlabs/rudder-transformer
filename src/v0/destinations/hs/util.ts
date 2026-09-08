@@ -1,7 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import chunk from 'lodash/chunk';
 import omit from 'lodash/omit';
-import set from 'set-value';
 import get from 'get-value';
 import {
   NetworkInstrumentationError,
@@ -23,6 +22,7 @@ import {
   isNull,
   validateEventName,
   isHttpStatusSuccess,
+  setValueForUntrustedPath,
 } from '../../util';
 import {
   BASE_ENDPOINT,
@@ -931,7 +931,12 @@ const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {
      */
     return;
   }
-  set(getFieldValueFromMessage(message, 'traits'), externalIdObj.identifierType, externalIdObj.id);
+  // identifierType comes from the customer-supplied externalId
+  setValueForUntrustedPath(
+    getFieldValueFromMessage(message, 'traits'),
+    externalIdObj.identifierType,
+    externalIdObj.id,
+  );
 };
 
 // remove system fields from the properties because they are not allowed to be updated

@@ -1,16 +1,17 @@
 /**
  * Legacy delivery handler for reddit_audience.
  *
- * This exists because framework delivery is flag-gated with NO GA map: unless
- * `REDDIT_AUDIENCE_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS` names the
- * workspace, `delivery.ts` never runs and `genericNetworkHandler` owns the
- * response — and that handler throws a bare NetworkError with no
- * `authErrorCategory`. For an API-key destination that just means worse error
- * messages; for an OAuth one it means a 401 aborts the batch and no refresh is
- * ever requested, so the destination dies at the first token expiry.
+ * reddit_audience declares `batching: true` in features.ts, so `delivery.ts`
+ * owns every **v1** proxy response. This handler covers what the framework
+ * branch does not reach: a **v0** proxy request, which `isProxyV1Request`
+ * excludes because the bridge only produces a v1 response. Without it that
+ * request would fall to `genericNetworkHandler`, which throws a bare
+ * NetworkError with no `authErrorCategory` — for an API-key destination merely
+ * worse error messages, but for an OAuth one a 401 aborts the batch and no
+ * refresh is ever requested, so the destination dies at the first token expiry.
  *
  * Both halves classify through `../../v0/destinations/reddit_audience/classify`
- * so they cannot drift. Delete this file together with the flag at GA.
+ * so they cannot drift.
  */
 import {
   NetworkError,

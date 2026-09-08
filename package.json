@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.151.0",
+  "version": "1.152.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -76,6 +76,7 @@
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
     "crypto-js": "^4.2.0",
+    "currency-codes": "^2.2.0",
     "dotenv": "^16.0.3",
     "fast-json-stable-stringify": "^2.1.0",
     "fast-xml-parser": "^5.5.7",
@@ -187,6 +188,19 @@
     "semver-regex": "3.1.4",
     "cacheable-request@2.1.4": {
       "http-cache-semantics": "4.1.1"
+    },
+    "websocket-driver": "0.7.5",
+    "fast-uri": "3.1.6",
+    "minimatch@^9.0.0": "9.0.9",
+    "minimatch@^5.0.0": "5.1.9",
+    "minimatch@^3.0.0": "3.1.5",
+    "brace-expansion@^2.0.0": "2.1.4",
+    "brace-expansion@^1.0.0": "1.1.18",
+    "@shopify/jest-koa-mocks": {
+      "koa": "2.16.4"
+    },
+    "rs-jsonpath": {
+      "underscore": "1.13.8"
     }
   },
   "lint-staged": {

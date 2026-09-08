@@ -22,7 +22,7 @@ For audience destinations (add/remove users from segments), use the `vdm-next-au
 
 Read these files before implementing:
 
-- **Framework source** -- `src/services/destination/nativeBatching/vdmV2ObjectDestination.ts` -- `VDMV2ObjectDestination` abstract class, `RecordInput`/`RecordMessage` types, `isRecordInput` type guard, dispatch logic
+- **Framework source** -- `src/services/destination/destinationIntegration/vdmV2ObjectDestination.ts` -- `VDMV2ObjectDestination` abstract class, `RecordInput`/`RecordMessage` types, `isRecordInput` type guard, dispatch logic
 - **CustomerIO** (`src/v0/destinations/customerio/`) -- canonical implementation with record + event-stream support
   - `routerTransform.ts` -- `VDMV2ObjectDestination` subclass with handler map, batch strategy, input schema
   - `routerTransform.test.ts` -- unit tests instantiating the Integration class directly
@@ -52,7 +52,7 @@ Additional files (config, payload builders, utils) depend on the destination's c
 ```
 RouterTransformationRequestData[]
     |
-processBatchedDestination()              [framework orchestrator]
+processDestinationIntegration()          [framework orchestrator]
     |
 VDMV2ObjectDestination<TBody, TRecordSchema, TEventStreamSchema>  [your integration class]
     |--- getInputSchema()                -> [framework] z.union(recordSchema, eventStreamSchema)
@@ -109,9 +109,13 @@ Object destinations declare both `recordSchema` and `eventStreamSchema`. Overrid
 
 ## Enabling the Framework
 
-Register in `src/constants/batchedDestinationsMap.ts` and update `src/features.ts` under `defaultFeaturesConfig` with the destination definition name.
+Add `<DEST_NAME_UPPER>: { routerTransform: true, batching: true }` to `destinationCapabilities` in
+`src/features.ts`. That one entry enables the framework transform *and* delivery — there is no
+separate delivery flag.
 
-Delivery is gated separately -- see `.claude/skills/batching-framework-delivery/SKILL.md`.
+**See `.claude/skills/batching-framework/SKILL.md#enabling-the-framework`** for why
+`src/constants/destinationIntegrationsMap.ts` must not be hand-edited, and for the pre-GA rollout
+flag. For the delivery *contract*, see `.claude/skills/batching-framework-delivery/SKILL.md`.
 
 ## Steps
 
@@ -123,7 +127,7 @@ Delivery is gated separately -- see `.claude/skills/batching-framework-delivery/
    - `getBatchStrategy()` -- return `ChunkBatchStrategy` with `maxPayloadSize`/`maxItems` and `wrapBody`
    - (Optional) `transformEventStream(input)` -- handle non-record events
    - Export as `Integration`
-4. Register in `src/constants/batchedDestinationsMap.ts` and `src/features.ts`
+4. Register in `src/features.ts` -- see "Enabling the Framework" above
 5. (Optional) Create `delivery.ts` -- the `delivery` spec, only if the API reports failures the
    framework default cannot read; add a `delivery.test.ts` that compares it against the legacy handler
 6. Create `src/v0/destinations/<dest_name>/routerTransform.test.ts` -- unit tests

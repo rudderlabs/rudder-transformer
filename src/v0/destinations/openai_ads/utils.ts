@@ -1,0 +1,576 @@
+import { isIP } from 'net';
+import get from 'get-value';
+import validator from 'validator';
+import currencyCodes from 'currency-codes';
+import {
+  InstrumentationError,
+  isDefinedAndNotNullAndNotEmpty,
+} from '@rudderstack/integrations-lib';
+import type { RudderMessage } from '../../../types';
+import { constructPayload, getValueFromMessage, removeUndefinedAndNullValues } from '../../util';
+import {
+  HashingType,
+  isValidPhoneNumber,
+  processAudienceRecord,
+  type AudienceField,
+} from '../../util/audienceUtils';
+import {
+  ACTION_SOURCES,
+  CUSTOMER_ACTION_DATA_TYPE,
+  CUSTOM_EVENT_SENTINEL,
+  DESTINATION,
+  EVENT_DATA_TYPES,
+  MAX_EVENT_AGE_MS,
+  MAX_EVENT_FUTURE_SKEW_MS,
+  STANDARD_EVENTS,
+  STANDARD_EVENT_DATA_TYPES,
+} from './config';
+import mappingConfig from './data/OPENAI_ADSConfig.json';
+import type {
+  HashMatchField,
+  OpenAIAdsActionSource,
+  OpenAIAdsContent,
+  OpenAIAdsDestinationConfig,
+  OpenAIAdsEventData,
+  OpenAIAdsEventMapping,
+  OpenAIAdsEventPayload,
+  OpenAIAdsStandardEvent,
+  OpenAIAdsUser,
+  PlainMatchField,
+} from './types';
+
+const ACTION_SOURCE_SET = new Set<string>(ACTION_SOURCES);
+// Comfortably past any real monetary value, and short enough that BigInt parsing stays free.
+const MAX_AMOUNT_LENGTH = 40;
+const CURRENCY_RE = /^[A-Z]{3}$/;
+const PUNCTUATION_REGEX = /[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/g;
+// Null-prototype so an event type of `constructor` or `toString` misses instead of resolving to
+// something off Object.prototype. The zod schema already rejects those before they reach the
+// lookup, but the invariant should not depend on a validation layer two files away staying put.
+const EVENT_DATA_TYPE_BY_EVENT = Object.assign(Object.create(null), STANDARD_EVENT_DATA_TYPES, {
+  [CUSTOM_EVENT_SENTINEL]: CUSTOM_EVENT_SENTINEL,
+}) as Record<string, (typeof EVENT_DATA_TYPES)[number]>;
+
+type OpenAIAdsMappingConfig = {
+  hashedUserMappings: MappingEntry[];
+  plainArrayUserMappings: MappingEntry[];
+  plainScalarUserMappings: MappingEntry[];
+  topLevelMappings: MappingEntry[];
+  contentMappings: MappingEntry[];
+  currencyPaths: string | string[];
+  amountPaths: string | string[];
+  contentSourcePaths: string | string[];
+  contentQuantityPaths: string | string[];
+  contentAmountPaths: string | string[];
+  contentCurrencyPaths: string | string[];
+};
+
+const OPENAI_ADS_MAPPING_CONFIG = mappingConfig as OpenAIAdsMappingConfig;
+
+type MappingEntry = {
+  sourceKeys: string | string[];
+  destKey: string;
+  required?: boolean;
+  sourceFromGenericMap?: boolean;
+  metadata?: Record<string, unknown>;
+};
+
+type EventBasePayload = {
+  timestamp_ms?: number;
+  action_source?: unknown;
+  source_url?: unknown;
+  oppref?: unknown;
+  opt_out?: unknown;
+};
+
+type CurrencyMetadata = {
+  code: string;
+  digits: number;
+};
+
+type UserPayload = Partial<Record<HashMatchField | PlainMatchField, unknown>>;
+
+const audienceDestination = {
+  workspaceId: '',
+  id: '',
+  type: DESTINATION,
+  config: { isHashRequired: true },
+};
+
+const normalizeHashString = (value: unknown): string | undefined => {
+  if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean') {
+    return undefined;
+  }
+  const trimmed = String(value).trim();
+  return trimmed || undefined;
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const isScalarValue = (value: unknown): value is string | number | boolean =>
+  ['string', 'number', 'boolean'].includes(typeof value);
+
+const isPresent = (value: unknown): boolean =>
+  value !== undefined && value !== null && value !== '';
+
+const toValueArray = (value: unknown): unknown[] => {
+  if (Array.isArray(value)) return value;
+  if (isPresent(value)) return [value];
+  return [];
+};
+
+const toStringArray = (value: unknown): string[] => [
+  ...new Set(
+    toValueArray(value)
+      .filter(isScalarValue)
+      .map((item) => String(item)),
+  ),
+];
+
+const firstStringValue = (value: unknown): string | undefined => toStringArray(value)[0];
+
+const normalizeEmail = (value: unknown): string | undefined => {
+  const normalized = normalizeHashString(value)?.toLowerCase();
+  return normalized && validator.isEmail(normalized) ? normalized : undefined;
+};
+
+const normalizePhone = (value: unknown): string | undefined => {
+  const normalized = normalizeHashString(value)?.replace(/\D/g, '').replace(/^0+/g, '');
+  return normalized && isValidPhoneNumber(normalized) ? normalized : undefined;
+};
+
+const normalizeName = (value: unknown): string | undefined =>
+  normalizeHashString(value)?.toLowerCase().replace(PUNCTUATION_REGEX, '') || undefined;
+
+const normalizeExternalId = (value: unknown): string | undefined =>
+  normalizeHashString(value)?.toLowerCase();
+
+const HASH_FIELD_CONFIGS: Record<HashMatchField, AudienceField> = {
+  emails_sha256: {
+    hashingType: HashingType.SHA256,
+    normalize: normalizeEmail,
+  },
+  phone_numbers_sha256: {
+    hashingType: HashingType.SHA256,
+    normalize: normalizePhone,
+  },
+  external_ids_sha256: {
+    hashingType: HashingType.SHA256,
+    normalize: normalizeExternalId,
+  },
+  first_names_sha256: {
+    hashingType: HashingType.SHA256,
+    normalize: normalizeName,
+  },
+  last_names_sha256: {
+    hashingType: HashingType.SHA256,
+    normalize: normalizeName,
+  },
+};
+
+const hashUserPayload = (
+  payload: Partial<Record<HashMatchField, unknown>>,
+): Partial<Record<HashMatchField, string[]>> => {
+  const record: Record<string, unknown> = {};
+  const fieldConfigs: Record<string, AudienceField> = {};
+  const fieldByRecordKey: Record<string, HashMatchField> = {};
+
+  Object.entries(payload).forEach(([field, value]) => {
+    toStringArray(value).forEach((rawValue, index) => {
+      const recordKey = `${field}.${index}`;
+      record[recordKey] = rawValue;
+      fieldConfigs[recordKey] = HASH_FIELD_CONFIGS[field as HashMatchField];
+      fieldByRecordKey[recordKey] = field as HashMatchField;
+    });
+  });
+
+  const processed = processAudienceRecord(record, {
+    fieldConfigs,
+    destination: audienceDestination,
+  });
+  return Object.entries(processed).reduce<Partial<Record<HashMatchField, string[]>>>(
+    (acc, [recordKey, value]) => {
+      const field = fieldByRecordKey[recordKey];
+      if (field && typeof value === 'string') {
+        acc[field] = [...(acc[field] ?? []), value];
+      }
+      return acc;
+    },
+    {},
+  );
+};
+
+const isMappingEntry = (value: unknown): value is MappingEntry =>
+  isRecord(value) && 'destKey' in value && 'sourceKeys' in value;
+
+const PROPERTIES_PREFIX = 'properties.';
+
+const propertyKeys = (sourceKeys: string | string[]): string[] =>
+  (Array.isArray(sourceKeys) ? sourceKeys : [sourceKeys])
+    .filter((path) => path.startsWith(PROPERTIES_PREFIX))
+    // Reserve the direct child because buildCustomExtras filters direct children of message.properties.
+    .map((path) => path.slice(PROPERTIES_PREFIX.length).split('.')[0]);
+
+const sourceKeysOf = (value: unknown): Array<string | string[]> => {
+  if (Array.isArray(value) && value.every(isMappingEntry)) {
+    return value.map((entry) => entry.sourceKeys);
+  }
+  if (typeof value === 'string' || (Array.isArray(value) && value.every(isScalarValue))) {
+    return [value as string | string[]];
+  }
+  return [];
+};
+
+const RESERVED_CUSTOM_KEYS = new Set<string>(
+  Object.values(OPENAI_ADS_MAPPING_CONFIG).flatMap(sourceKeysOf).flatMap(propertyKeys),
+);
+
+const getSourceKey = (message: RudderMessage): string => {
+  const sourceName = message.type === 'track' ? message.event : get(message, 'name');
+  if (!sourceName)
+    throw new InstrumentationError(
+      `OpenAI Ads source event name is required for ${message.type} events`,
+    );
+  return String(sourceName);
+};
+
+const STANDARD_EVENT_SET = new Set<string>(STANDARD_EVENTS);
+
+const isStandardEvent = (name: string): name is OpenAIAdsStandardEvent =>
+  STANDARD_EVENT_SET.has(name);
+
+const resolveEventMapping = (
+  message: RudderMessage,
+  config: OpenAIAdsDestinationConfig,
+): OpenAIAdsEventMapping => {
+  const sourceKey = getSourceKey(message);
+  const normalizedSourceKey = sourceKey.toLowerCase();
+  const mapping = (config.eventMapping ?? []).find(
+    (candidate) => candidate.from.toLowerCase() === normalizedSourceKey,
+  );
+  if (!mapping) {
+    // An event already named after a standard OpenAI event carries its own mapping, so take the
+    // name at face value instead of dropping the event. This holds whatever else is configured: a
+    // mapping table translates the names that need translating, and an event that is already in
+    // OpenAI's naming needs no row — its absence is not a decision to exclude it.
+    if (isStandardEvent(normalizedSourceKey)) {
+      return { from: sourceKey, to: normalizedSourceKey };
+    }
+    throw new InstrumentationError(`OpenAI Ads event mapping not found for ${sourceKey}`);
+  }
+  if (mapping.to === CUSTOM_EVENT_SENTINEL && !mapping.customEventName) {
+    throw new InstrumentationError('OpenAI Ads custom event mapping requires customEventName');
+  }
+  return mapping;
+};
+
+const resolveDotPath = (message: RudderMessage, path: string | undefined): unknown =>
+  path ? get(message, path) : undefined;
+
+const resolveActionSource = (
+  payload: EventBasePayload,
+  config: OpenAIAdsDestinationConfig,
+): OpenAIAdsActionSource | undefined => {
+  const raw =
+    firstStringValue(payload.action_source)?.trim().toLowerCase() || config.defaultActionSource;
+  if (!raw) return undefined;
+  if (!ACTION_SOURCE_SET.has(raw))
+    throw new InstrumentationError(`Unsupported OpenAI Ads action_source: ${raw}`);
+  return raw as OpenAIAdsActionSource;
+};
+
+const resolveSourceUrl = (payload: EventBasePayload, actionSource?: string): string | undefined => {
+  const rawUrl = firstStringValue(payload.source_url);
+  if (!rawUrl) {
+    if (actionSource === 'web')
+      throw new InstrumentationError('OpenAI Ads source_url is required for web action_source');
+    return undefined;
+  }
+  return rawUrl;
+};
+
+const resolveTimestampMs = (payload: EventBasePayload): number => {
+  const timestampMs = payload.timestamp_ms;
+  // Narrowing only. `constructPayload` declares this mapping `required` and rejects a missing or
+  // unparseable timestamp before we get here, so this branch is not reachable in practice.
+  if (typeof timestampMs !== 'number' || !Number.isFinite(timestampMs)) {
+    throw new InstrumentationError('OpenAI Ads timestamp is required and must be a valid date');
+  }
+  // One clock read for both bounds, so the accepted window cannot straddle a tick.
+  const now = Date.now();
+  if (timestampMs < now - MAX_EVENT_AGE_MS) {
+    throw new InstrumentationError(
+      `OpenAI Ads timestamp must be within the last ${MAX_EVENT_AGE_MS / (24 * 60 * 60 * 1000)} days`,
+    );
+  }
+  if (timestampMs > now + MAX_EVENT_FUTURE_SKEW_MS) {
+    throw new InstrumentationError(
+      `OpenAI Ads timestamp must not be more than ${MAX_EVENT_FUTURE_SKEW_MS / (60 * 1000)} minutes in the future`,
+    );
+  }
+  return timestampMs;
+};
+
+const resolveOptOut = (payload: EventBasePayload): boolean | undefined => {
+  const value = payload.opt_out;
+  if (!isPresent(value)) return undefined;
+  if (typeof value === 'boolean') return value;
+  throw new InstrumentationError('OpenAI Ads opt_out must be a boolean');
+};
+
+const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
+  const user: OpenAIAdsUser = {};
+  const addArray = (key: PlainMatchField | HashMatchField, value: string[] | undefined) => {
+    if (value?.length) user[key] = value;
+  };
+  const fieldGroups: Array<{
+    mappings: MappingEntry[];
+    transform: (payload: UserPayload) => void;
+  }> = [
+    {
+      mappings: OPENAI_ADS_MAPPING_CONFIG.hashedUserMappings,
+      transform: (payload) => {
+        Object.entries(
+          hashUserPayload(payload as Partial<Record<HashMatchField, unknown>>),
+        ).forEach(([key, values]) => addArray(key as HashMatchField, values));
+      },
+    },
+    {
+      mappings: OPENAI_ADS_MAPPING_CONFIG.plainArrayUserMappings,
+      transform: (payload) => {
+        Object.entries(payload).forEach(([key, value]) => {
+          addArray(key as PlainMatchField, toStringArray(value));
+        });
+      },
+    },
+    {
+      mappings: OPENAI_ADS_MAPPING_CONFIG.plainScalarUserMappings,
+      transform: (payload) => {
+        Object.entries(payload).forEach(([key, rawValue]) => {
+          const value = firstStringValue(rawValue);
+          if (!value || (key === 'ip_address' && !isIP(value))) return;
+          user[key as PlainMatchField] = value;
+        });
+      },
+    },
+  ];
+
+  fieldGroups.forEach(({ mappings, transform }) => {
+    transform((constructPayload(message, mappings) ?? {}) as UserPayload);
+  });
+
+  return Object.keys(user).length > 0 ? user : undefined;
+};
+
+const normalizeCurrency = (currency: unknown): CurrencyMetadata | undefined => {
+  if (typeof currency !== 'string') return undefined;
+  const normalized = currency.trim().toUpperCase();
+  if (!normalized) return undefined;
+  const metadata = CURRENCY_RE.test(normalized) ? currencyCodes.code(normalized) : undefined;
+  if (!metadata) {
+    throw new InstrumentationError(`Unsupported currency code: ${normalized}`);
+  }
+  return { code: normalized, digits: metadata.digits };
+};
+
+const toMinorUnits = (amount: unknown, currency: CurrencyMetadata): number => {
+  if (typeof amount !== 'string' && typeof amount !== 'number') {
+    throw new InstrumentationError('Amount must be a number or numeric string');
+  }
+  const raw = String(amount);
+  // Bound the input before BigInt sees it: the digit string is customer-controlled, and BigInt
+  // parses an arbitrarily long one on the event loop (~50ms at a million digits) before throwing a
+  // bare SyntaxError — not an InstrumentationError — somewhere past 2^30 bits.
+  if (raw.length > MAX_AMOUNT_LENGTH || !/^-?\d+(?:\.\d+)?$/.test(raw)) {
+    throw new InstrumentationError('Amount must be a finite decimal value');
+  }
+  // Negatives are OpenAI-legal and carry real meaning — a refund or a return is a conversion with a
+  // negative value — so the sign is split off here and reapplied at the end rather than rejected.
+  const negative = raw.startsWith('-');
+  const [whole, fraction = ''] = (negative ? raw.slice(1) : raw).split('.');
+  // OpenAI only accepts integer minor units, so precision finer than the currency supports is
+  // rounded half-away-from-zero instead of aborting the event: dropping a conversion over a
+  // fraction of a cent loses more than the rounding does.
+  //
+  // padEnd guarantees at least `digits + 1` characters, so the slice is exactly `digits` wide and
+  // concatenating it onto the whole part is the scaling — no multiply, and no empty-string case.
+  const scaled = fraction.padEnd(currency.digits + 1, '0');
+  let minorUnits = BigInt(whole + scaled.slice(0, currency.digits));
+  if (Number(scaled[currency.digits]) >= 5) minorUnits += 1n;
+  // After the increment, so a value cannot round up across the boundary undetected. The magnitude
+  // is what is tested; MIN_SAFE_INTEGER is exactly -MAX_SAFE_INTEGER, so the negative side is
+  // representable wherever the positive side is.
+  if (minorUnits > BigInt(Number.MAX_SAFE_INTEGER)) {
+    throw new InstrumentationError('Amount exceeds the maximum safe integer after conversion');
+  }
+  // Negate as a BigInt: BigInt has no negative zero, so '-0.001' yields 0 rather than -0.
+  return Number(negative ? -minorUnits : minorUnits);
+};
+
+const resolveCurrency = (
+  message: RudderMessage,
+  config: OpenAIAdsDestinationConfig,
+): CurrencyMetadata | undefined =>
+  normalizeCurrency(getValueFromMessage(message, OPENAI_ADS_MAPPING_CONFIG.currencyPaths)) ??
+  normalizeCurrency(config.defaultCurrency);
+
+const resolveAmount = (message: RudderMessage): unknown =>
+  getValueFromMessage(message, OPENAI_ADS_MAPPING_CONFIG.amountPaths);
+
+const buildAmountAndCurrency = (
+  amount: unknown,
+  resolveCurrencyMetadata: () => CurrencyMetadata | undefined,
+  missingCurrencyMessage: string,
+): { amount?: number; currency?: string } => {
+  if (!isPresent(amount)) return {};
+  const currency = resolveCurrencyMetadata();
+  if (!currency) throw new InstrumentationError(missingCurrencyMessage);
+  return {
+    amount: toMinorUnits(amount, currency),
+    currency: currency.code,
+  };
+};
+
+const mapContentItem = (
+  item: Record<string, unknown>,
+  message: RudderMessage,
+  config: OpenAIAdsDestinationConfig,
+): OpenAIAdsContent | undefined => {
+  const content = (constructPayload(item, OPENAI_ADS_MAPPING_CONFIG.contentMappings) ??
+    {}) as OpenAIAdsContent;
+  const variantDict = (content as Record<string, unknown>).variant_dict;
+  if (variantDict !== undefined && !isRecord(variantDict)) delete content.variant_dict;
+
+  const quantityValue = getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentQuantityPaths);
+  // isDefinedAndNotNullAndNotEmpty is unusable here: lodash isEmpty treats every number as empty.
+  if (isPresent(quantityValue)) {
+    // OpenAI requires an integer but places no bound on it — zero and negative quantities are
+    // accepted, and a return line is legitimately negative — so only the integer-ness is enforced.
+    // Coercion is deliberately narrow rather than a bare Number(): Number(false), Number([]) and
+    // Number('  ') are all 0, so with the positive-only bound gone they would otherwise ship as
+    // `quantity: 0` instead of failing.
+    const quantity =
+      typeof quantityValue === 'string' && /^-?\d+$/.test(quantityValue.trim())
+        ? Number(quantityValue)
+        : quantityValue;
+    if (typeof quantity !== 'number' || !Number.isInteger(quantity)) {
+      throw new InstrumentationError('OpenAI Ads content quantity must be an integer');
+    }
+    content.quantity = quantity;
+  }
+
+  const amountValue = getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentAmountPaths);
+  Object.assign(
+    content,
+    buildAmountAndCurrency(
+      amountValue,
+      () =>
+        normalizeCurrency(
+          getValueFromMessage(item, OPENAI_ADS_MAPPING_CONFIG.contentCurrencyPaths),
+        ) ?? resolveCurrency(message, config),
+      'OpenAI Ads content currency is required when amount is present',
+    ),
+  );
+  return Object.keys(content).length > 0 ? content : undefined;
+};
+
+const buildContents = (
+  message: RudderMessage,
+  config: OpenAIAdsDestinationConfig,
+): OpenAIAdsContent[] | undefined => {
+  const rawContents = getValueFromMessage(message, OPENAI_ADS_MAPPING_CONFIG.contentSourcePaths);
+  if (!isDefinedAndNotNullAndNotEmpty(rawContents)) return undefined;
+  const items = Array.isArray(rawContents) ? rawContents : [rawContents];
+  if (!items.every(isRecord)) {
+    throw new InstrumentationError('OpenAI Ads contents must be an object or array of objects');
+  }
+  const contents = items
+    .map((item) => mapContentItem(item, message, config))
+    .filter((item): item is OpenAIAdsContent => Boolean(item));
+  if (contents.length === 0) {
+    throw new InstrumentationError('OpenAI Ads contents must include at least one supported field');
+  }
+  return contents;
+};
+
+const buildCustomExtras = (properties: Record<string, unknown>): Record<string, unknown> =>
+  Object.fromEntries(Object.entries(properties).filter(([key]) => !RESERVED_CUSTOM_KEYS.has(key)));
+
+const buildEventData = (
+  message: RudderMessage,
+  config: OpenAIAdsDestinationConfig,
+  eventType: OpenAIAdsStandardEvent | typeof CUSTOM_EVENT_SENTINEL,
+): OpenAIAdsEventData => {
+  const dataType = EVENT_DATA_TYPE_BY_EVENT[eventType];
+  // Custom extras are spread first so the payload's own fields (type, amount, ...) always win,
+  // even for extras keys not sourced from properties.* and hence absent from RESERVED_CUSTOM_KEYS.
+  const data: OpenAIAdsEventData = {
+    ...(dataType === CUSTOM_EVENT_SENTINEL
+      ? buildCustomExtras(isRecord(message.properties) ? message.properties : {})
+      : {}),
+    type: dataType,
+  };
+  const currency = resolveCurrency(message, config);
+  Object.assign(
+    data,
+    buildAmountAndCurrency(
+      resolveAmount(message),
+      () => currency,
+      'OpenAI Ads currency is required when amount is present',
+    ),
+  );
+
+  if (dataType !== CUSTOMER_ACTION_DATA_TYPE) {
+    const contents = buildContents(message, config);
+    if (contents) data.contents = contents;
+  }
+  return data;
+};
+
+const resolveEventId = (message: RudderMessage, mapping: OpenAIAdsEventMapping): string => {
+  const dedupValue = resolveDotPath(message, mapping.deduplicationKey);
+  if (isPresent(dedupValue)) {
+    if (!isScalarValue(dedupValue)) {
+      throw new InstrumentationError(
+        `OpenAI Ads deduplication key "${mapping.deduplicationKey}" must resolve to a string`,
+      );
+    }
+    return String(dedupValue);
+  }
+  return message.messageId as string;
+};
+
+export const buildOpenAIEvent = (
+  message: RudderMessage,
+  config: OpenAIAdsDestinationConfig,
+): OpenAIAdsEventPayload => {
+  const mapping = resolveEventMapping(message, config);
+  const eventType = mapping.to;
+  const customEventName =
+    mapping.to === CUSTOM_EVENT_SENTINEL ? mapping.customEventName : undefined;
+  const topLevelPayload = constructPayload(
+    message,
+    OPENAI_ADS_MAPPING_CONFIG.topLevelMappings,
+  ) as EventBasePayload;
+  // Resolved before buildUser so an out-of-window event fails without first SHA-256-hashing every
+  // identifier on it — a stale backfill would otherwise pay that cost per event, batch-wide.
+  const timestampMs = resolveTimestampMs(topLevelPayload);
+  const actionSource = resolveActionSource(topLevelPayload, config);
+  const sourceUrl = resolveSourceUrl(topLevelPayload, actionSource);
+  const user = buildUser(message);
+  const optOut = resolveOptOut(topLevelPayload);
+
+  return removeUndefinedAndNullValues({
+    id: resolveEventId(message, mapping),
+    type: eventType,
+    custom_event_name: customEventName,
+    timestamp_ms: timestampMs,
+    opt_out: optOut,
+    action_source: actionSource,
+    source_url: sourceUrl,
+    oppref: firstStringValue(topLevelPayload.oppref),
+    user,
+    data: buildEventData(message, config, eventType),
+  }) as OpenAIAdsEventPayload;
+};

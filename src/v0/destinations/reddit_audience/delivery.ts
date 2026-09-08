@@ -20,7 +20,7 @@ import {
   success,
   type DeliverySpec,
   type StatusOverrideMap,
-} from '../../../services/destination/nativeBatching/batchDestination';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { classifyRedditResponse, extractRedditAudienceErrorMessage } from './classify';
 
 export { extractRedditAudienceErrorMessage } from './classify';

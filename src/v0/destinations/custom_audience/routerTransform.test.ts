@@ -1,7 +1,7 @@
 import sha256 from 'sha256';
 import { HashingType } from '../../util/audienceUtils';
 import { Integration } from './routerTransform';
-import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
+import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { AUTHENTICATION_TYPES } from './constants';
@@ -105,7 +105,7 @@ const buildInput = (
     connection,
   }) as unknown as RouterTransformationRequestData;
 
-describe('CustomAudienceIntegration via processBatchedDestination', () => {
+describe('CustomAudienceIntegration via processDestinationIntegration', () => {
   it('groups events by action and chunks by batchSize', async () => {
     const inputs = [
       buildInput(1, 'insert', { email: hashedEmail('a@b.com') }),
@@ -114,7 +114,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       buildInput(4, 'delete', { email: hashedEmail('g@h.com') }),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
 
     const successResults = results.filter((r) => r.statusCode === 200);
     // 3 inserts → 2 chunks of batchSize=2; 1 delete → 1 chunk. Total 3 success batches.
@@ -233,7 +233,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
   it.each(errorCases)(
     'returns 400 for: $name',
     async ({ buildInputs, failingJobId, errorMatch }) => {
-      const results = await processBatchedDestination(buildInputs(), Integration, {});
+      const results = await processDestinationIntegration(buildInputs(), Integration, {});
       const errors = results.filter((r) => r.statusCode === 400);
       expect(errors).toHaveLength(1);
       expect(errors[0].metadata[0].jobId).toBe(failingJobId);
@@ -244,7 +244,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
   it('returns controlled 400 when destination actions config is missing', async () => {
     const destination = buildDestination();
     delete (destination.Config as Partial<CustomAudienceDestConfig>).actions;
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)],
       Integration,
       {},
@@ -267,7 +267,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       buildInput(2, 'insert', { email: 'c@d.com' }, buildDestination(), connection),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
 
     const success = results.find((r) => r.statusCode === 200);
     const batched = success?.batchedRequest;
@@ -283,7 +283,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, buildDestination(), connection),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
 
     const success = results.find((r) => r.statusCode === 200);
     const batched = success?.batchedRequest;
@@ -320,7 +320,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       const destination = buildDestination(overrides);
       const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
 
-      const results = await processBatchedDestination(inputs, Integration, {});
+      const results = await processDestinationIntegration(inputs, Integration, {});
 
       const success = results.find((r) => r.statusCode === 200);
       const batched = success?.batchedRequest;
@@ -340,7 +340,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
 
     const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
 
-    await expect(processBatchedDestination(inputs, Integration, {})).rejects.toThrow();
+    await expect(processDestinationIntegration(inputs, Integration, {})).rejects.toThrow();
   });
 
   it('batches insert and update events together when update uses insert config', async () => {
@@ -364,7 +364,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       buildInput(2, 'update', { email: hashedEmail('a@b.com') }, destination),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
 
     const success = results.filter((r) => r.statusCode === 200);
     expect(success).toHaveLength(1);
@@ -395,7 +395,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
       buildInput(2, 'update', { email: hashedEmail('c@d.com') }, destination),
     ];
 
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
 
     const success = results.filter((r) => r.statusCode === 200);
     expect(success).toHaveLength(2);

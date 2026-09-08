@@ -153,7 +153,10 @@ describe('Api tests with a mock source/destination', () => {
     async ({ request: makeRequest, expectedError }) => {
       const getDestHandlerSpy = jest.spyOn(FetchHandler, 'getDestHandler');
       const getDeletionHandlerSpy = jest.spyOn(FetchHandler, 'getDeletionHandler');
-      const getBatchDestinationHandlerSpy = jest.spyOn(FetchHandler, 'getBatchDestinationHandler');
+      const getDestinationIntegrationHandlerSpy = jest.spyOn(
+        FetchHandler,
+        'getDestinationIntegrationHandler',
+      );
       const getNetworkHandlerSpy = jest.spyOn(networkHandlerFactory, 'getNetworkHandler');
 
       const response = await makeRequest().set('Accept', 'application/json');
@@ -162,7 +165,7 @@ describe('Api tests with a mock source/destination', () => {
       expect(JSON.parse(response.text).error).toEqual(expectedError);
       expect(getDestHandlerSpy).not.toHaveBeenCalled();
       expect(getDeletionHandlerSpy).not.toHaveBeenCalled();
-      expect(getBatchDestinationHandlerSpy).not.toHaveBeenCalled();
+      expect(getDestinationIntegrationHandlerSpy).not.toHaveBeenCalled();
       expect(getNetworkHandlerSpy).not.toHaveBeenCalled();
     },
   );

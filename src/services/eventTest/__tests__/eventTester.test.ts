@@ -1,6 +1,7 @@
 import { EventTesterService } from '../eventTester';
 import { NativeIntegrationDestinationService } from '../../destination/nativeIntegration';
 import { userTransformHandler } from '../../../routerUtils';
+import { FetchHandler } from '../../../helpers/fetchHandlers';
 
 jest.mock('../../../routerUtils', () => ({
   ...jest.requireActual('../../../routerUtils'),
@@ -589,6 +590,56 @@ describe('EventTesterService.runDestTransform', () => {
       {},
     );
     expect(result).toEqual([{ dest_transformed_payload: [sampleOutput] }]);
+  });
+
+  it('falls back through processor transform for destinations without routerTransform capability', async () => {
+    const process = jest.fn().mockResolvedValue(sampleOutput);
+    jest.spyOn(FetchHandler, 'getDestHandler').mockReturnValue({ process });
+    const doRouterSpy = jest.spyOn(
+      NativeIntegrationDestinationService.prototype,
+      'doRouterTransformation',
+    );
+
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          message: { type: 'track', event: 'Product Viewed', userId: 'user-1' },
+          stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+          destination: {
+            id: 'dest-id',
+            name: 'Test Destination',
+            workspaceId: 'ws-1',
+            destinationDefinition: {
+              id: 'dest-def-id',
+              name: '__event_tester_no_router__',
+              displayName: 'Test Destination',
+              config: {},
+            },
+            config: {},
+            enabled: true,
+            transformations: [],
+            hasDynamicConfig: false,
+          },
+        }),
+      ],
+      'v0',
+      '__event_tester_no_router__',
+    );
+
+    expect(doRouterSpy).not.toHaveBeenCalled();
+    expect(process).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: { type: 'track', event: 'Product Viewed', userId: 'user-1' },
+        metadata: expect.objectContaining({ workspaceId: 'ws-1', jobId: 1 }),
+        destination: expect.objectContaining({
+          ID: 'dest-id',
+          Name: 'Test Destination',
+          WorkspaceId: 'ws-1',
+        }),
+      }),
+      {},
+    );
+    expect(result).toEqual([{ dest_transformed_payload: [{ ...sampleOutput, userId: '' }] }]);
   });
 
   it('flattens array-valued batchedRequest entries to a uniform level', async () => {

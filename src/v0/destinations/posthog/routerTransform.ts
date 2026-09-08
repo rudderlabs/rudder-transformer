@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  BatchDestination,
+  DestinationIntegration,
   TransformedEvent,
   ChunkBatchStrategy,
   makeRouterInputSchema,
-} from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { processEvent } from './transform';
 import type { PostHogPayload } from './types';
 import { PostHogDestinationConfigSchema } from './types';
@@ -27,7 +27,7 @@ const postHogInputSchema = makeRouterInputSchema({
     }),
 });
 
-class PostHogIntegration extends BatchDestination<PostHogPayload, typeof postHogInputSchema> {
+class PostHogIntegration extends DestinationIntegration<PostHogPayload, typeof postHogInputSchema> {
   transformEvent(input: z.infer<typeof postHogInputSchema>): TransformedEvent<PostHogPayload> {
     // Schema-inferred message type is narrower than RudderMessage (e.g. userId
     // includes number|null from the Zod union). The runtime object is a full

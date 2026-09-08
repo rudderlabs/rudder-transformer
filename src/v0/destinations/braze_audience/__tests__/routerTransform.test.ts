@@ -1,5 +1,5 @@
 import { Integration } from '../routerTransform';
-import { processBatchedDestination } from '../../../../services/destination/nativeBatching/processBatchedDestination';
+import { processDestinationIntegration } from '../../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Connection, Destination } from '../../../../types/controlPlaneConfig';
@@ -95,14 +95,14 @@ const getEndpoint = (response: any): string => {
   return batchedRequest.endpoint;
 };
 
-describe('BrazeAudienceIntegration via processBatchedDestination', () => {
+describe('BrazeAudienceIntegration via processDestinationIntegration', () => {
   it('INSERT/UPDATE → membership true; DELETE → false in one bulk batch', async () => {
     const inputs = [
       buildInput(1, 'insert', { external_id: 'u1' }),
       buildInput(2, 'update', { external_id: 'u2' }),
       buildInput(3, 'delete', { external_id: 'u3' }),
     ];
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     const successes = results.filter((r) => r.statusCode === 200);
     expect(successes).toHaveLength(1);
     expect(successes[0].batched).toBe(true);
@@ -118,7 +118,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
 
   it('maps EU data center to fra host', async () => {
     const dest = buildDestination({ dataCenter: 'EU-01' });
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { external_id: 'eu-user' }, dest)],
       Integration,
       {},
@@ -128,7 +128,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
 
   it('maps AU data center to au host', async () => {
     const dest = buildDestination({ dataCenter: 'AU-01' });
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { external_id: 'au-user' }, dest)],
       Integration,
       {},
@@ -137,7 +137,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
   });
 
   it('aborts empty external_id per record', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(1, 'insert', { external_id: '  ' }),
         buildInput(2, 'insert', { external_id: 'ok' }),
@@ -155,7 +155,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
   });
 
   it('rejects non-string/non-number external_id at schema validation', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [
         buildInput(1, 'insert', { external_id: { nested: true } }),
         buildInput(2, 'insert', { external_id: 'ok' }),
@@ -172,7 +172,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
   });
 
   it('accepts numeric external_id', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { external_id: 42 })],
       Integration,
       {},
@@ -185,7 +185,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
 
   it('rejects customAttributeName reserved as external_id', async () => {
     const connection = buildConnection({ customAttributeName: 'external_id' });
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { external_id: 'u1' }, buildDestination(), connection)],
       Integration,
       {},
@@ -196,7 +196,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
 
   it('rejects missing customAttributeName via Zod', async () => {
     const connection = buildConnection({ customAttributeName: '' as unknown as string });
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { external_id: 'u1' }, buildDestination(), connection)],
       Integration,
       {},
@@ -205,7 +205,7 @@ describe('BrazeAudienceIntegration via processBatchedDestination', () => {
   });
 
   it('sends Bearer auth header from restApiKey', async () => {
-    const results = await processBatchedDestination(
+    const results = await processDestinationIntegration(
       [buildInput(1, 'insert', { external_id: 'u1' })],
       Integration,
       {},

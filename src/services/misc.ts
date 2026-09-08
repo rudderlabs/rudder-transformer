@@ -2,7 +2,7 @@
 import { Context } from 'koa';
 import defaultFeaturesConfig, { getDestinationHandlerName } from '../features';
 import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
-import { BatchDestinationConstructor } from './destination/nativeBatching/batchDestination';
+import { DestinationIntegrationConstructor } from './destination/destinationIntegration/destinationIntegration';
 
 export interface Hydrator {
   hydrate(input: SourceHydrationRequest): Promise<SourceHydrationOutput>;
@@ -27,7 +27,7 @@ export class MiscService {
     return require(`../${version}/destinations/${handlerName}/deleteUsers`);
   }
 
-  public static getBatchDestinationHandler(dest: string): BatchDestinationConstructor {
+  public static getDestinationIntegrationHandler(dest: string): DestinationIntegrationConstructor {
     const handlerName = getDestinationHandlerName(dest);
     return require(`../v0/destinations/${handlerName}/routerTransform`).Integration;
   }

@@ -29,7 +29,7 @@ import {
   type DeliverySpec,
   type ItemVerdict,
   type StatusOverrideMap,
-} from '../../../services/destination/nativeBatching/batchDestination';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { createBatchErrorChecker } from '../../../v1/destinations/iterable/utils';
 import type { IterableSubscriber } from '../../../v1/destinations/iterable_audience/types';
 import { UNSUBSCRIBE_CATEGORY } from './config';

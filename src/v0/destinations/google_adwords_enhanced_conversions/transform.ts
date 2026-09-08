@@ -22,7 +22,6 @@ import {
   getAccessToken,
 } from '../../util';
 import { JSON_MIME_TYPE } from '../../util/constant';
-import { isFeatureEnabled } from '../../../util/featureFlags';
 
 const ADJUSTMENT_TYPE_ENHANCEMENT = 'ENHANCEMENT';
 const ADJUSTMENT_TYPE_RESTATEMENT = 'RESTATEMENT';
@@ -110,20 +109,19 @@ const processTrackEvent = (
     throw new InstrumentationError(MISSING_IDENTIFIERS_ERROR);
   }
   const firstAdjustment: ConversionAdjustment = payload.conversionAdjustments![0];
-  firstAdjustment.adjustmentType = ADJUSTMENT_TYPE_ENHANCEMENT;
   // Removing the null values from userIdentifier
   // (`!` is type-only: the throw above guarantees userIdentifiers is present, and the
   // assignment stays unconditional like the original JS)
   const arr = firstAdjustment.userIdentifiers;
   firstAdjustment.userIdentifiers = arr!.filter((item) => !!item);
 
-  const isRestatement =
-    isFeatureEnabled('DEST_GAEC_ADJUSTMENT_TYPE_SUPPORTED_WORKSPACE_IDS', metadata.workspaceId) &&
-    adjustmentType &&
-    adjustmentType === ADJUSTMENT_TYPE_RESTATEMENT;
+  // Default to ENHANCEMENT; honour RESTATEMENT only when explicitly configured.
+  const isRestatement = adjustmentType === ADJUSTMENT_TYPE_RESTATEMENT;
+  firstAdjustment.adjustmentType = isRestatement
+    ? ADJUSTMENT_TYPE_RESTATEMENT
+    : ADJUSTMENT_TYPE_ENHANCEMENT;
 
   if (isRestatement) {
-    firstAdjustment.adjustmentType = ADJUSTMENT_TYPE_RESTATEMENT;
     delete firstAdjustment.userIdentifiers;
     delete firstAdjustment.userAgent;
   } else {

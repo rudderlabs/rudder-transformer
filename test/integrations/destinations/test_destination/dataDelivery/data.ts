@@ -82,13 +82,7 @@ const scenarios: ProxyV1TestData[] = [
 ];
 
 /**
- * TEST_DESTINATION is already GA for the batching-framework transform, so only the delivery flag is
- * needed to move these scenarios onto the framework response path.
+ * TEST_DESTINATION declares `batching: true` in features.ts, which puts these scenarios on the
+ * framework's transform *and* delivery paths with no env var involved.
  */
-export const data = scenarios.map((scenario) => ({
-  ...scenario,
-  envOverrides: {
-    ...scenario.envOverrides,
-    TEST_DESTINATION_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
-  },
-}));
+export const data = scenarios;

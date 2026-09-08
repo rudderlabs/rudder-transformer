@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import {
-  BatchDestination,
+  DestinationIntegration,
   TransformedEvent,
   ChunkBatchStrategy,
   makeRouterInputSchema,
-} from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 // `process` (from transform.js) builds the single-event delivery request synchronously and is
 // reused here so no transform logic is duplicated.
 import { process as transformSingleEvent } from './transform';
@@ -26,7 +26,7 @@ const gaecInputSchema = makeRouterInputSchema({
     .passthrough(),
 });
 
-class GoogleAdwordsEnhancedConversionsIntegration extends BatchDestination<
+class GoogleAdwordsEnhancedConversionsIntegration extends DestinationIntegration<
   ConversionAdjustment,
   typeof gaecInputSchema
 > {

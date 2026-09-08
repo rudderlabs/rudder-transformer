@@ -3,8 +3,8 @@ import {
   firstJobIdentity,
   handleDeliveryResponse,
   toDeliveryV1Response,
-} from '../../../services/destination/nativeBatching/delivery';
-import type { DeliveryContext } from '../../../services/destination/nativeBatching/delivery';
+} from '../../../services/destination/destinationIntegration/delivery';
+import type { DeliveryContext } from '../../../services/destination/destinationIntegration/delivery';
 import { gaecResponseHandler } from '../../../v1/destinations/google_adwords_enhanced_conversions/networkHandler';
 import type { ProxyMetdata, ProxyV1Request } from '../../../types';
 

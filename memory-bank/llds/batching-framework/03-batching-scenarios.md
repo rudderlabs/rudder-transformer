@@ -29,7 +29,7 @@ This document catalogues the 4 batching formats found across 50+ destinations in
 **Example**:
 
 ```typescript
-class ExampleIntegration extends RouterIntegration<ExampleBody> {
+class ExampleIntegration extends DestinationIntegration<ExampleBody> {
   transformEvent(input: RouterTransformationRequestData): TransformedPayload<ExampleBody> {
     return {
       body: buildEventPayload(input.message),
@@ -117,7 +117,7 @@ POST /import  → { data: [...import payloads] }
 **Example (Mixpanel)**:
 
 ```typescript
-class MixpanelIntegration extends RouterIntegration<MixpanelBody> {
+class MixpanelIntegration extends DestinationIntegration<MixpanelBody> {
   transformEvent(input): TransformedPayload<MixpanelBody>[] {
     const results = CommonUtils.toArray(process(input));
     return results.map((result) => ({

@@ -2,7 +2,7 @@ import {
   handleDeliveryResponse,
   type DeliveryContext,
   type HandleResponseResult,
-} from '../../../services/destination/nativeBatching/delivery';
+} from '../../../services/destination/destinationIntegration/delivery';
 import { Integration } from './routerTransform';
 import { extractRedditAudienceErrorMessage } from './delivery';
 

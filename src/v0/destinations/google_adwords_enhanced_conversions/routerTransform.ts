@@ -12,7 +12,7 @@ import { process as transformSingleEvent } from './transform';
 import {
   destType,
   getUploadConversionAdjustmentsEndpoint,
-  getUploadConversionAdjustmentsEndpointPath,
+  UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH,
   MAX_CONVERSION_ADJUSTMENTS_PER_BATCH,
 } from './config';
 import { gaecDelivery } from './delivery';
@@ -83,7 +83,7 @@ class GoogleAdwordsEnhancedConversionsIntegration extends DestinationIntegration
     return {
       body: { ...result.body.JSON.conversionAdjustments![0], conversionAction },
       endpoint: getUploadConversionAdjustmentsEndpoint(customerId),
-      endpointPath: getUploadConversionAdjustmentsEndpointPath(customerId),
+      endpointPath: UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH,
       method: result.method,
       headers: result.headers,
       params: {},

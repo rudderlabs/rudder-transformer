@@ -195,7 +195,7 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       expect(result.endpoint).toBe(
         'https://googleads.googleapis.com/v23/customers/1234567890:uploadConversionAdjustments',
       );
-      expect(result.endpointPath).toBe('/1234567890:uploadConversionAdjustments');
+      expect(result.endpointPath).toBe('/uploadConversionAdjustments');
       expect(result.params).toEqual({});
       // The developer token is delivery-only; it must never reach persisted router output.
       expect(result.headers).not.toHaveProperty('developer-token');
@@ -337,7 +337,7 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       expect(request.endpoint).toBe(
         'https://googleads.googleapis.com/v23/customers/1234567890:uploadConversionAdjustments',
       );
-      expect(request.endpointPath).toBe('/1234567890:uploadConversionAdjustments');
+      expect(request.endpointPath).toBe('/uploadConversionAdjustments');
       expect(request.params).toEqual({});
       expect(request.headers).not.toHaveProperty('developer-token');
       expect(batchBody(results[0]).conversionAdjustments).toEqual([

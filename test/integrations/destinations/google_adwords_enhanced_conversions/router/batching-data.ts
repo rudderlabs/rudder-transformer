@@ -146,7 +146,7 @@ export const newData = [
                 method: 'POST',
                 endpoint:
                   'https://googleads.googleapis.com/v23/customers/1234567892:uploadConversionAdjustments',
-                endpointPath: '/1234567892:uploadConversionAdjustments',
+                endpointPath: '/uploadConversionAdjustments',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',

@@ -16,13 +16,12 @@ const API_VERSION = 'v23';
 
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers`;
 
-const UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH = 'uploadConversionAdjustments';
+// `endpointPath` is a stat-tag label, so it stays free of customerId — templating an account id
+// into it would make the label unbounded.
+const UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH = '/uploadConversionAdjustments';
 
 const getUploadConversionAdjustmentsEndpoint = (customerId: string): string =>
-  `${BASE_ENDPOINT}/${customerId}:${UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH}`;
-
-const getUploadConversionAdjustmentsEndpointPath = (customerId: string): string =>
-  `/${customerId}:${UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH}`;
+  `${BASE_ENDPOINT}/${customerId}:uploadConversionAdjustments`;
 
 // Google Ads API caps UploadConversionAdjustments at 2000 conversion adjustments per
 // request; exceeding it is rejected with TOO_MANY_ADJUSTMENTS_IN_REQUEST.
@@ -39,7 +38,7 @@ export {
   CONVERSION_ACTION_ID_CACHE_TTL,
   API_VERSION,
   getUploadConversionAdjustmentsEndpoint,
-  getUploadConversionAdjustmentsEndpointPath,
+  UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH,
   MAX_CONVERSION_ADJUSTMENTS_PER_BATCH,
   destType,
 };

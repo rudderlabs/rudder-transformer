@@ -1100,6 +1100,50 @@ const deleteNwData = [
   {
     httpReq: {
       method: 'post',
+      url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
+      data: {
+        distinct_ids: ['rudderAlreadyDeleted'],
+        compliance_type: 'CCPA',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader4,
+      },
+    },
+    httpRes: {
+      status: 409,
+      statusText: 'Conflict',
+      data: {
+        status: 'error',
+        error: 'a deletion task for this distinct_id already exists',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
+      data: {
+        distinct_ids: ['rudderAlreadyDeleted', 'rudderNotDeleted'],
+        compliance_type: 'CCPA',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader4,
+      },
+    },
+    httpRes: {
+      status: 409,
+      statusText: 'Conflict',
+      data: {
+        status: 'error',
+        error: 'a deletion task for this distinct_id already exists',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
 
       url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
       data: {

@@ -65,6 +65,9 @@ const MAX_PAYLOAD_SIZE_BYTES = 1024 * 1024; // 1MB
 // Delete user
 const DEL_MAX_BATCH_SIZE = 1000;
 const DISTINCT_ID_MAX_BATCH_SIZE = 1999;
+// Returned by the create deletion task api when a deletion task already exists for one or more of
+// the requested distinct_ids.
+const DELETION_TASK_ALREADY_EXISTS_STATUS = 409;
 
 const DESTINATION = 'MP';
 
@@ -77,6 +80,7 @@ module.exports = {
   GEO_SOURCE_ALLOWED_VALUES,
   MP_IDENTIFY_EXCLUSION_LIST,
   DISTINCT_ID_MAX_BATCH_SIZE,
+  DELETION_TASK_ALREADY_EXISTS_STATUS,
   IMPORT_MAX_BATCH_SIZE,
   ENGAGE_MAX_BATCH_SIZE,
   GROUPS_MAX_BATCH_SIZE,

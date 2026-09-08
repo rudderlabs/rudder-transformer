@@ -3245,6 +3245,89 @@ export const data = [
   },
   {
     name: 'mp',
+    description:
+      'Test 6.1: a 409 from the create deletion task api means Mixpanel already has a deletion task for these distinct_ids, so the job is treated as successful rather than retried',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destType: 'MP',
+            userAttributes: [
+              {
+                userId: 'rudderAlreadyDeleted',
+              },
+            ],
+            config: {
+              token: secret4,
+              prefixProperties: true,
+              useNativeSDK: false,
+              userDeletionApi: 'task',
+              gdprApiToken: secret4,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            status: 'successful',
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description:
+      'Test 6.2: a 409 on a multi distinct_id create deletion task request still fails, because a conflict on one id does not prove the others were scheduled for deletion',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destType: 'MP',
+            userAttributes: [
+              {
+                userId: 'rudderAlreadyDeleted',
+              },
+              {
+                userId: 'rudderNotDeleted',
+              },
+            ],
+            config: {
+              token: secret4,
+              prefixProperties: true,
+              useNativeSDK: false,
+              userDeletionApi: 'task',
+              gdprApiToken: secret4,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 409,
+        body: [
+          {
+            statusCode: 409,
+            error: 'User deletion request failed for `create deletion task` api',
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'mp',
     description: 'Test 6',
     feature: 'userDeletion',
     module: 'destination',

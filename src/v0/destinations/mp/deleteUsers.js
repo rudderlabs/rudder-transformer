@@ -2,7 +2,11 @@ const lodash = require('lodash');
 const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
-const { DEL_MAX_BATCH_SIZE, DISTINCT_ID_MAX_BATCH_SIZE } = require('./config');
+const {
+  DEL_MAX_BATCH_SIZE,
+  DISTINCT_ID_MAX_BATCH_SIZE,
+  DELETION_TASK_ALREADY_EXISTS_STATUS,
+} = require('./config');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
@@ -105,7 +109,23 @@ const createDeletionTask = async (userAttributes, config) => {
           module: 'deletion',
         },
       );
-      if (!isHttpStatusSuccess(handledDelResponse.status)) {
+      // Mixpanel answers 409 Conflict when a deletion task already exists for a requested
+      // distinct_id. For a single-id request that is unambiguous: this user is already scheduled
+      // for deletion on their side, so the request has achieved what it was for. Retrying can only
+      // ever return 409 again, so treating it as a failure burns every regulation-worker attempt
+      // and aborts the job — the deletion is recorded as failed even though Mixpanel is deleting
+      // the user. This mirrors the 404 ("nothing left to delete") handling in the
+      // custify/intercom/iterable handlers.
+      //
+      // We deliberately do NOT extend this to multi-id requests. Mixpanel does not document 409,
+      // so we cannot tell whether a conflict rejects the whole request or only the conflicting id.
+      // If it rejects the whole request, swallowing it would mark every other user in the batch as
+      // deleted when none of them were — a silent compliance gap. Failing the batch is the safe
+      // side of that unknown.
+      const alreadyDeletionScheduled =
+        handledDelResponse.status === DELETION_TASK_ALREADY_EXISTS_STATUS &&
+        batchEvent.length === 1;
+      if (!isHttpStatusSuccess(handledDelResponse.status) && !alreadyDeletionScheduled) {
         throw new NetworkError(
           'User deletion request failed for `create deletion task` api',
           handledDelResponse.status,

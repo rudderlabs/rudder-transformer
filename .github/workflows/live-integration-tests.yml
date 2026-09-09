@@ -246,7 +246,7 @@ jobs:
         # Notify on push to main/develop, and on PRs from release/hotfix-release branches only.
         if: >-
           ${{ failure() && (github.event_name == 'push' || (github.event_name == 'pull_request' && (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')))) }}
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
         continue-on-error: true # a failed notification must not mask the test failure
         env:
           CHANNEL_ID: ${{ secrets.SLACK_LIVE_TEST_CHANNEL_ID }}

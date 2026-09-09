@@ -1,0 +1,44 @@
+import { Destination, Metadata } from '../../../../src/types';
+
+export const endpoint = 'https://bzr.openai.com/v1/events';
+
+export const destination: Destination = {
+  ID: 'openai-ads-dest-1',
+  Name: 'OPENAI_ADS',
+  DestinationDefinition: {
+    ID: 'openai-ads-def-1',
+    Name: 'OPENAI_ADS',
+    DisplayName: 'OpenAI Ads',
+    Config: {},
+  },
+  Config: {
+    apiKey: 'test-api-key',
+    pixelId: 'pixel-123',
+    eventMapping: [
+      { from: 'Product Viewed', to: 'contents_viewed' },
+      { from: 'Lead Created', to: 'lead_created' },
+      { from: 'Order Created', to: 'order_created' },
+      { from: 'Custom Checkout Data', to: 'custom', customEventName: 'ccd' },
+    ],
+    defaultCurrency: 'USD',
+    defaultActionSource: 'offline',
+  },
+  Enabled: true,
+  WorkspaceID: 'ws-1',
+  Transformations: [],
+};
+
+export const metadata = (jobId: number): Metadata => ({
+  jobId,
+  attemptNum: 1,
+  userId: `u${jobId}`,
+  sourceId: 'src-1',
+  destinationId: 'openai-ads-dest-1',
+  workspaceId: 'ws-1',
+  sourceType: 'web',
+  sourceCategory: 'cloud',
+  destinationType: 'OPENAI_ADS',
+  messageId: `msg-${jobId}`,
+  secret: {},
+  dontBatch: false,
+});

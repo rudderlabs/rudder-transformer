@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  BatchDestination,
+  DestinationIntegration,
   ChunkBatchStrategy,
   type TransformedEvent,
-} from '../../../services/destination/nativeBatching/batchDestination';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+} from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { processAudienceRecord } from '../../util/audienceUtils';
 import {
   ACTION_RECORD_MAP,
@@ -27,7 +27,7 @@ import {
   type IterableConnectionConfig,
 } from './types';
 
-class IterableAudienceIntegration extends BatchDestination<
+class IterableAudienceIntegration extends DestinationIntegration<
   IterableAudiencePayload,
   typeof IterableAudienceRouterRequestSchema
 > {
@@ -37,7 +37,7 @@ class IterableAudienceIntegration extends BatchDestination<
   // Headers are constant per (destination + connection) — build once.
   private readonly headers: Record<string, string>;
 
-  constructor(...args: ConstructorParameters<typeof BatchDestination>) {
+  constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
     super(...args);
     if (!this.connection) {
       throw new InstrumentationError('Connection config is required for iterable_audience');

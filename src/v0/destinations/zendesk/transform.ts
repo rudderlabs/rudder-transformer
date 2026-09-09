@@ -30,6 +30,7 @@ const {
   getEventType,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
+  setValueForUntrustedPath,
 } = require('../../util');
 const {
   getSourceName,
@@ -314,7 +315,8 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
     (trait) => !(sourceKeys.includes(trait) || typeof traits[trait] === 'object'),
   );
   for (const field of userFields) {
-    set(payload, `user.user_fields.${field}`, get(traits, field));
+    // field name is customer-supplied and may be a key set-value refuses to write
+    setValueForUntrustedPath(payload, `user.user_fields.${field}`, get(traits, field));
   }
 
   payload.user = removeUndefinedValues(payload.user);
@@ -489,7 +491,12 @@ async function createOrganization(
   );
 
   for (const field of organizationFields) {
-    set(payload, `organization.organization_fields.${field}`, get(message, `traits.${field}`));
+    // field name is customer-supplied and may be a key set-value refuses to write
+    setValueForUntrustedPath(
+      payload,
+      `organization.organization_fields.${field}`,
+      get(message, `traits.${field}`),
+    );
   }
 
   payload.organization = removeUndefinedValues(payload.organization);

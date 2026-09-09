@@ -1,17 +1,17 @@
 ---
 name: batching-framework
-description: Native batching framework for destination transformations. Extend BatchDestination to implement per-event transforms with automatic grouping, chunking, and response formatting.
+description: Native batching framework for destination transformations. Extend DestinationIntegration to implement per-event transforms with automatic grouping, chunking, and response formatting.
 ---
 
 # Native Batching Framework
 
-**Objective:** Use the batching framework to implement destination router transforms. Instead of writing manual grouping/batching logic, extend the `BatchDestination` abstract class — the framework handles validation, grouping, chunking, error wrapping, and response formatting.
+**Objective:** Use the batching framework to implement destination router transforms. Instead of writing manual grouping/batching logic, extend the `DestinationIntegration` abstract class — the framework handles validation, grouping, chunking, error wrapping, and response formatting.
 
 ## Reference
 
 - `src/v0/destinations/posthog/routerTransform.ts` — `ChunkBatchStrategy` with `maxPayloadSize`
 - `src/v0/destinations/custom_audience/routerTransform.ts` — `CustomBatchStrategy` with template evaluation
-- `src/services/destination/nativeBatching/` — Framework source code
+- `src/services/destination/destinationIntegration/` — Framework source code
 - `.claude/skills/batching-framework-delivery/SKILL.md` — Delivery (response handling) contract
 
 ## Architecture
@@ -19,9 +19,9 @@ description: Native batching framework for destination transformations. Extend B
 ```
 RouterTransformationRequestData[]
     |
-processBatchedDestination()          [framework orchestrator]
+processDestinationIntegration()      [framework orchestrator]
     |
-BatchDestination<TBody>              [your integration class]
+DestinationIntegration<TBody>        [your integration class]
     |--- getInputSchema()            → Zod schema for upfront validation
     |--- transformEvent()            → per-event transform → TransformedEvent<TBody>
     |--- getBatchStrategy()          → batch strategy factory
@@ -36,7 +36,7 @@ RouterTransformationResponse[]
 Delivery is a separate service call, over the same class:
 
 ```
-deliver()                            [nativeIntegration, behind the delivery flag]
+deliver()                            [nativeIntegration; isProxyV1Request && same predicate as transform]
     |
 handleDeliveryResponse(Class, ctx)   [framework-owned]
     |--- delivery.statusOverrides[status] ?? [class] ?? classify by status
@@ -52,7 +52,7 @@ DeliveryV1Response
 
 ```
 src/v0/destinations/<dest_name>/
-├── routerTransform.ts        # BatchDestination subclass (exported as Integration)
+├── routerTransform.ts        # DestinationIntegration subclass (exported as Integration)
 ├── types.ts                  # Zod schemas, TypeScript types
 ├── config.ts                 # Constants, endpoints, action maps
 ├── utils.ts                  # (Optional) Field processing, API helpers
@@ -78,17 +78,17 @@ transform, **reuse it — do not reimplement the payload logic in `routerTransfo
 - **Keep the legacy `processRouterDest` exported.** During pre-GA env-var rollout the destination
   falls back to it for workspaces not yet enabled, so it must stay functional.
 
-## BatchDestination Abstract Class
+## DestinationIntegration Abstract Class
 
 ```typescript
-import { BatchDestination } from '../../../services/destination/nativeBatching/batchDestination';
+import { DestinationIntegration } from '../../../services/destination/destinationIntegration/destinationIntegration';
 
 // Type parameters:
 //   TBody         — shape of each item in the batch (your per-event payload)
 //   TConfig       — destination config type (from destination.Config)
 //   TConnectionConfig — connection config type (from connection.config)
 
-class MyIntegration extends BatchDestination<TBody, TConfig, TConnectionConfig> {
+class MyIntegration extends DestinationIntegration<TBody, TConfig, TConnectionConfig> {
   // MUST implement these three methods:
 
   transformEvent(
@@ -97,7 +97,7 @@ class MyIntegration extends BatchDestination<TBody, TConfig, TConnectionConfig> 
   // Transform a single input event into one or more intermediate payloads.
   // Throw InstrumentationError for bad input — framework wraps it into error response.
   // MUST be synchronous — the framework calls transformEvent WITHOUT awaiting it
-  // (see transformEvents in batchDestination.ts). Never make it async / return a Promise;
+  // (see transformEvents in destinationIntegration.ts). Never make it async / return a Promise;
   // an async transformEvent would push a Promise as the payload and silently corrupt the batch.
 
   getBatchStrategy(endpoint: string): BatchStrategy<TBody>;
@@ -111,6 +111,45 @@ export const Integration = MyIntegration;
 ```
 
 Build the schema with `makeRouterInputSchema({ message, destinationConfig?, connectionConfig? })` — a single message variant plus optional destination/connection config. Hybrid record + event-stream destinations extend `VDMV2ObjectDestination`, which unions two such schemas for you.
+
+### Required config fields are `z.string().min(1)`
+
+`z.string()` accepts `''`. For a credential or an account identifier that means an unconfigured
+destination passes schema validation and the emptiness surfaces on the wire — an empty bearer
+token, or an empty required query parameter — as a 401/400 from the partner at delivery time,
+long after the point where it could have been reported as a configuration error.
+
+Put the requirement in the schema and the downstream runtime check becomes deletable (see
+`code-structure` → "Don't Re-Validate Inputs That Zod Has Already Validated"). The two rules
+work together: the schema is the single place the requirement is expressed.
+
+```typescript
+// Good — fails at transform time with a clear error
+const DestinationConfigSchema = z.object({
+  apiKey: z.string().min(1),
+  pixelId: z.string().min(1),
+});
+
+// Bad — `''` passes, and a resolveAccountConfig() helper re-checks it at runtime
+const DestinationConfigSchema = z.object({
+  apiKey: z.string().optional(),
+  pixelId: z.string().optional(),
+});
+```
+
+### Read credentials off `this.destination.Config`, without a cast
+
+`DestinationIntegration` declares `protected destination: Destination<ExtractDestinationConfig<z.infer<TInputSchema>>>` (`destinationIntegration.ts:86`), so the destination is **already typed** from the input schema's generic parameter. `this.destination as MyDestination` means the generic is wrong, not that a cast is needed.
+
+When a destination's credentials live in the destination config rather than the accounts framework, read them from `this.destination.Config` directly — don't model an `Account` shape for them.
+
+```typescript
+// Good
+const { apiKey, pixelId } = this.destination.Config;
+
+// Bad — cast, plus an Account type that models config fields
+const { apiKey, pixelId } = resolveAccountConfig(this.destination as MyDestination);
+```
 
 ## TransformedEvent Type
 
@@ -145,6 +184,16 @@ return {
 };
 ```
 
+**Every split needs a reason the partner's API forces.** `internalGroupKey` halves batch
+efficiency in exchange for correctness, so the justification has to be that the API would
+reject or mis-handle the mixed batch — a different endpoint, a different action verb, an
+incompatible schema.
+
+Splitting on the *presence of an optional field* is the anti-pattern. If the API accepts mixed
+events in one array, grouping by "has a click id" / "has no click id" doubles the request count
+and buys nothing. When in doubt, don't set the key — and if you do set it, say in a comment
+which API constraint requires it.
+
 ## Batch Strategies
 
 ### ChunkBatchStrategy (default for most destinations)
@@ -152,7 +201,7 @@ return {
 Standard chunking by item count and/or payload size:
 
 ```typescript
-import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/chunkBatchStrategy';
+import { ChunkBatchStrategy } from '../../../services/destination/destinationIntegration/chunkBatchStrategy';
 
 getBatchStrategy(): BatchStrategy<TBody> {
   return new ChunkBatchStrategy<TBody>({
@@ -168,6 +217,15 @@ getBatchStrategy(): BatchStrategy<TBody> {
 
 Size strings support: `'10MB'`, `'512KB'`, `'4MB'`, `'1GB'` — parsed via `parseSizeToBytes()`.
 
+**Batch limits are constants from the partner's docs, not destination-config fields.** Declare
+`MAX_BATCH_SIZE` / `MAX_PAYLOAD_SIZE` in the destination's `config.ts` and use them directly.
+Do not add them to the destination's Zod config schema, and do not write
+`getMaxBatchSize(config)` helpers that fall back to a constant — the control plane does not
+surface these, so every call resolves to the fallback. They are an unused knob that has to be
+read, documented and tested, and a customer-supplied value above the partner's real ceiling
+would produce rejected requests rather than smaller ones. (See `code-structure` → "Drop Config
+Knobs Without Varying Callers".)
+
 The `wrapBody` function:
 
 - Receives an array of `TBody` objects (the individual event payloads)
@@ -179,8 +237,8 @@ The `wrapBody` function:
 Full control over how events are grouped and wrapped:
 
 ```typescript
-import { CustomBatchStrategy } from '../../../services/destination/nativeBatching/customBatchStrategy';
-import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
+import { CustomBatchStrategy } from '../../../services/destination/destinationIntegration/customBatchStrategy';
+import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 
 getBatchStrategy(): BatchStrategy<TBody> {
   return new CustomBatchStrategy<TBody>(async (payloads) => {
@@ -211,25 +269,55 @@ type BatchGroup = {
 
 ## Enabling the Framework
 
-Register the destination in `src/constants/batchedDestinationsMap.ts`:
+**`src/features.ts` is the only registration surface. Do not hand-edit
+`src/constants/destinationIntegrationsMap.ts`** — it is derived, not authored:
 
 ```typescript
-export const batchedDestinationsMap: Record<string, true> = {
-  POSTHOG: true,
-  CUSTOM_AUDIENCE: true,
-  <DEST_NAME_UPPER>: true,  // Add your destination here
+// src/constants/destinationIntegrationsMap.ts
+export const destinationIntegrationsMap: Record<string, true> = getGaDestinationIntegrations();
+```
+
+`getGaDestinationIntegrations()` filters `destinationCapabilities` in `src/features.ts`
+on `batching: true`, so adding an entry to that map by hand is either a no-op or a conflict.
+
+Register the destination by adding the `batching` capability alongside `routerTransform`:
+
+```typescript
+// src/features.ts — destinationCapabilities
+const destinationCapabilities: Record<string, DestinationCapabilities> = {
+  POSTHOG: { routerTransform: true, batching: true },
+  CUSTOM_AUDIENCE: { routerTransform: true, batching: true },
+  <DEST_NAME_UPPER>: { routerTransform: true, batching: true },  // Add your destination here
 };
 ```
 
-To enable destination on routerTransform, feature.ts also needs to be updated with definitionName under defaultFeaturesConfig `src/features.ts`
+`routerTransform: true` puts the destination on the router-transform path at all;
+`batching: true` marks it **batching-GA**. For the current roster, grep `batching: true` in
+`src/features.ts` — it changes as destinations migrate, so a list copied into a doc goes stale.
 
-When enabled, the platform routes events through `processBatchedDestination()` instead of the legacy `processRouterDest()`.
+### One gate, both halves
 
-For gradual rollout before GA, use the env var pattern:
-`{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or `ALL`).
+`isDestinationIntegrationEnabled(destType, workspaceId)`
+(`src/constants/destinationIntegrationsMap.ts`) is the **only** predicate, and it answers for the
+router transform *and* delivery:
 
-Delivery is gated **separately** by `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS`
-— see `.claude/skills/batching-framework-delivery/SKILL.md`.
+- **batching-GA** (`batching: true` in `features.ts`) → true for every workspace, always.
+- **otherwise** → true only for a workspace named in
+  `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or
+  `ALL`) — the pre-GA rollout knob.
+
+`doRouterTransformation` calls it to route events through `processDestinationIntegration()` instead
+of the legacy `processRouterDest()`; `deliver()` calls it to read the response through the
+framework's delivery bridge instead of the destination's `networkHandler`.
+
+There is **no separate delivery flag.** The delivery path interprets a payload built by the matching
+transform path, so deciding both from one call makes the mismatch unrepresentable — where a separate
+flag made it a configuration mistake anyone could make. Enrolling a workspace moves both halves
+together, and so does going GA. See `.claude/skills/batching-framework-delivery/SKILL.md`.
+
+One thing is *not* gated on the predicate: a **v0 proxy request** stays on the legacy handler
+whatever it returns, because the framework produces a `DeliveryV1Response` natively and a v0 caller
+cannot parse one. See `isProxyV1Request` in `src/services/destination/nativeIntegration.ts`.
 
 ## Delivery (response handling)
 
@@ -241,8 +329,9 @@ throws.
 **Most destinations need nothing** — the default reproduces `genericNetworkHandler`. `posthog` and
 `custom_audience` declare no overrides at all.
 
-**See `.claude/skills/batching-framework-delivery/SKILL.md`** for the contract, the verdict builders,
-the `perItem` rules and the delivery flag.
+**See `.claude/skills/batching-framework-delivery/SKILL.md`** for the contract, the verdict builders
+and the `perItem` rules. Enabling it is not separate — it rides on the same registration and the
+same predicate as the transform, per "One gate, both halves" above.
 
 ### If you just batched a destination that had a network handler
 
@@ -255,8 +344,10 @@ URL from `params`. If instead it reads the endpoint from the payload, set it nor
   and often hard-codes index `0` (e.g. `set(body.JSON, 'items[0].field', ...)`). Once batched,
   `items` is an array of N — iterate the whole array. The single-item case collapses to an array of
   one, so legacy traffic is unaffected (a safe, ungated change).
-- The proxy layer runs in a later service call than the transform and **does not see the workspace
-  batching flag**, so don't gate transport changes on it; make them correct for both 1 and N items.
+- **Don't gate transport changes on the batching predicate**; make them correct for both 1 and N
+  items. `deliver()` does read `isDestinationIntegrationEnabled`, but only *after* `proxy()` and
+  `processAxiosResponse()` have already run — transport is chosen by `networkHandlerFactory`, not by
+  the predicate — and the same handler still serves v0 proxy requests and any pre-GA workspace.
 
 Cover this with a focused unit test that mocks the delivery SDK/client and asserts the per-item field
 is set on **every** item (cheaper and more direct than a full dataDelivery mock).
@@ -269,10 +360,40 @@ it only covers the rules you knew about when you wrote it. A partner that adds a
 rule, or one whose docs are incomplete, will reject a batch of N on one event you believed
 was fine, and the retry re-sends the same batch and fails again.
 
-The fallback belongs in the **networkHandler**, where the partner's actual rejection is
-visible. On a 4xx **when more than one event was sent**, mark every job `dontBatch: true` and
-return **500** so the router re-delivers them individually; the offending event then fails
+Whether you need this at all: if the partner documents a per-item result array (partial
+success), you don't — parse it and mark only the failed items. If one bad item fails the
+request, you do.
+
+The fallback: on a 4xx **when more than one event was sent**, mark every job `dontBatch: true`
+and return **500** so the router re-delivers them individually; the offending event then fails
 alone and the rest succeed.
+
+**On the framework this is a `delivery.ts` verdict, not a `networkHandler`.** Return
+`retry(..., { dontBatch: true })` from a `'4xx'` status override:
+
+```ts
+static delivery = {
+  statusOverrides: {
+    // Exact keys win over the class key. Without this, '4xx' would also swallow 429 and turn a
+    // rate limit — transient, and a whole-batch problem — into a permanent per-job dontBatch.
+    429: (ctx, fallback) => fallback(),
+    '4xx': (ctx, fallback) => retry(reasonOf(fallback()), { dontBatch: true }),
+  },
+};
+```
+
+The framework then applies the three rules below for you: a `retry` verdict yields **500** and
+stamps `dontBatch: true` on every job's metadata; when the batch is already a **single** job it
+rewrites that verdict to an **abort** (400), so a permanently-bad event terminates instead of
+looping; and retryable 5xx never reaches a `'4xx'` override at all. See `retry` and the
+`dontBatchAbortCount` rewrite in `src/services/destination/destinationIntegration/delivery.ts`, and
+`.claude/skills/batching-framework-delivery/SKILL.md#dontbatch-softens-an-abort-it-never-hardens-a-retry`
+for why `dontBatch` must never be paired with a transient status.
+
+### The legacy shape — non-framework destinations only
+
+A destination **not** on the framework does this in its `networkHandler`, where the partner's
+actual rejection is visible. Do not write this for a new destination:
 
 ```ts
 const populateResponseWithDontBatch = (rudderJobMetadata, errorMessage) =>
@@ -329,16 +450,12 @@ Network handlers live at `src/v1/destinations/<dest>/networkHandler.{ts,js}` and
 auto-discovered by `src/adapters/networkHandlerFactory.js` from the directory name — export
 them as `networkHandler` or `NetworkHandler`; no registration step.
 
-Whether you need this: if the partner documents a per-item result array (partial success),
-you don't — parse it and mark only the failed items. If one bad item fails the request, you
-do.
-
 ## Testing
 
-Test via the framework's `processBatchedDestination` function — pass the `Integration` class (not an instance):
+Test via the framework's `processDestinationIntegration` function — pass the `Integration` class (not an instance):
 
 ```typescript
-import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
+import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { Integration } from './routerTransform';
 
 const buildDestination = (overrides = {}) => ({
@@ -357,20 +474,20 @@ const buildInput = (jobId: number, overrides = {}) => ({
   connection: buildConnection(),
 });
 
-describe('Integration via processBatchedDestination', () => {
+describe('Integration via processDestinationIntegration', () => {
   it('batches events by action', async () => {
     const inputs = [
       buildInput(1, { action: 'insert' }),
       buildInput(2, { action: 'insert' }),
       buildInput(3, { action: 'delete' }),
     ];
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     // Assert batch structure, grouping, metadata
   });
 
   it('returns error for invalid input', async () => {
     const inputs = [buildInput(1, { type: 'track' })]; // wrong type
-    const results = await processBatchedDestination(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
     expect(results[0].statusCode).toBe(400);
   });
 });

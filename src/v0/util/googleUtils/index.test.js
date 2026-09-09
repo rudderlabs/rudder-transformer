@@ -2,7 +2,12 @@ const {
   finaliseConsent,
   populateConsentFromConfig,
   finaliseAnalyticsConsents,
+  getAuthErrCategory,
 } = require('./index');
+const {
+  AUTH_STATUS_INACTIVE,
+  REFRESH_TOKEN,
+} = require('../../../adapters/networkhandler/authConstants');
 
 describe('unit test for populateConsentFromConfig', () => {
   const consentConfigMap = {
@@ -291,5 +296,68 @@ describe('unit test for finaliseAnalyticsConsents', () => {
       personalizationConsent: 'RANDOM',
     });
     expect(result).toEqual({});
+  });
+});
+
+describe('unit test for getAuthErrCategory', () => {
+  // Google states the machine-readable cause in details[].errors[].errorCode.authenticationError.
+  // error.message is a generic string Google reuses across unrelated 401s (a valid token against a
+  // customer it cannot see produces the same "Request is missing required authentication
+  // credential" text as a request with no Authorization header at all), so it is never the thing to
+  // branch on. Bodies below mirror what Google Ads v23 actually returns.
+  const buildGoogleAuthError = (authenticationError) => ({
+    error: {
+      code: 401,
+      message:
+        'Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential.',
+      status: 'UNAUTHENTICATED',
+      ...(authenticationError && {
+        details: [
+          {
+            '@type': 'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
+            errors: [{ errorCode: { authenticationError }, message: 'some message' }],
+            requestId: 'some-request-id',
+          },
+        ],
+      }),
+    },
+  });
+
+  it.each([
+    // Refreshing cannot fix an identity that is not an Ads user at all, so this must abort rather
+    // than drive the refresh loop. Regression guard for INT-7101.
+    ['NOT_ADS_USER', AUTH_STATUS_INACTIVE],
+    ['CUSTOMER_NOT_FOUND', AUTH_STATUS_INACTIVE],
+    ['TWO_STEP_VERIFICATION_NOT_ENROLLED', AUTH_STATUS_INACTIVE],
+    // A genuinely expired token is what the refresh path exists for - keep it refreshable.
+    ['OAUTH_TOKEN_EXPIRED', REFRESH_TOKEN],
+  ])('should map a 401 with authenticationError %s to %s', (authenticationError, expected) => {
+    expect(
+      getAuthErrCategory({ response: buildGoogleAuthError(authenticationError), status: 401 }),
+    ).toEqual(expected);
+  });
+
+  it('should map a terminal 401 to AUTH_STATUS_INACTIVE when the response is an array', () => {
+    // googleAds:searchStream answers with a top-level array; uploadClickConversions with an object.
+    expect(
+      getAuthErrCategory({ response: [buildGoogleAuthError('NOT_ADS_USER')], status: 401 }),
+    ).toEqual(AUTH_STATUS_INACTIVE);
+  });
+
+  it('should map an expired or invalid token 401 to REFRESH_TOKEN', () => {
+    // No details[] at all - this is the genuinely refreshable case.
+    expect(getAuthErrCategory({ response: buildGoogleAuthError(null), status: 401 })).toEqual(
+      REFRESH_TOKEN,
+    );
+  });
+
+  it('should map a 403 to AUTH_STATUS_INACTIVE', () => {
+    expect(getAuthErrCategory({ response: { error: { code: 403 } }, status: 403 })).toEqual(
+      AUTH_STATUS_INACTIVE,
+    );
+  });
+
+  it('should return an empty category for non-auth statuses', () => {
+    expect(getAuthErrCategory({ response: { error: { code: 400 } }, status: 400 })).toEqual('');
   });
 });

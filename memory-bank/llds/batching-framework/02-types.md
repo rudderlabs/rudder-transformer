@@ -1,6 +1,6 @@
 # Batching Framework — Types & Abstract Class Contract
 
-All types are defined in `src/services/destination/routerIntegration.ts`.
+All types are re-exported from `src/services/destination/destinationIntegration/destinationIntegration.ts` (defined in `destinationIntegration/types.ts`).
 
 ## Framework Types
 
@@ -86,10 +86,12 @@ function customBatch<TBody>(
 ): CustomBatchStrategy<TBody>;
 ```
 
-## Abstract Class: RouterIntegration\<TBody\>
+## Abstract Class: DestinationIntegration\<TBody\>
 
 ```typescript
-abstract class RouterIntegration<TBody extends Record<string, unknown> = Record<string, unknown>> {
+abstract class DestinationIntegration<
+  TBody extends Record<string, unknown> = Record<string, unknown>,
+> {
   // ─── MUST implement ────────────────────────────────────────────────
 
   /**
@@ -237,4 +239,4 @@ export const Integration = PostHogIntegration;
 // export const integration = new PostHogIntegration();
 ```
 
-The framework caches the constructor in `FetchHandler` and creates a fresh instance per `processBatchedDestination` call.
+The framework caches the constructor in `FetchHandler` and creates a fresh instance per `processDestinationIntegration` call.

@@ -1,6 +1,9 @@
-import { batchedDestinationsMap, isBatchingFrameworkEnabled } from '../batchedDestinationsMap';
+import {
+  destinationIntegrationsMap,
+  isDestinationIntegrationEnabled,
+} from '../destinationIntegrationsMap';
 
-describe('isBatchingFrameworkEnabled', () => {
+describe('isDestinationIntegrationEnabled', () => {
   const envKey = 'TEST_DEST_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS';
   const originalEnv = process.env[envKey];
 
@@ -10,7 +13,7 @@ describe('isBatchingFrameworkEnabled', () => {
     } else {
       process.env[envKey] = originalEnv;
     }
-    delete batchedDestinationsMap['TEST_DEST'];
+    delete destinationIntegrationsMap['TEST_DEST'];
   });
 
   describe('pre-GA: env var based rollout', () => {
@@ -77,11 +80,11 @@ describe('isBatchingFrameworkEnabled', () => {
       } else {
         process.env[envKey] = envValue;
       }
-      expect(isBatchingFrameworkEnabled(destType, workspaceId)).toBe(expected);
+      expect(isDestinationIntegrationEnabled(destType, workspaceId)).toBe(expected);
     });
   });
 
-  describe('GA: batchedDestinationsMap based', () => {
+  describe('GA: destinationIntegrationsMap based', () => {
     it.each([
       {
         description: 'returns true when destination is in map regardless of env var',
@@ -99,10 +102,10 @@ describe('isBatchingFrameworkEnabled', () => {
       },
     ])('$description', ({ inMap, destType, workspaceId, expected }) => {
       if (inMap) {
-        batchedDestinationsMap['TEST_DEST'] = true;
+        destinationIntegrationsMap['TEST_DEST'] = true;
       }
       delete process.env[envKey];
-      expect(isBatchingFrameworkEnabled(destType, workspaceId)).toBe(expected);
+      expect(isDestinationIntegrationEnabled(destType, workspaceId)).toBe(expected);
     });
   });
 });

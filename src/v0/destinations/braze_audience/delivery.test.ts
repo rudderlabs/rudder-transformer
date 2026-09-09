@@ -11,8 +11,8 @@ import {
   handleDeliveryResponse,
   resolveDeliverySpec,
   toDeliveryV1Response,
-} from '../../../services/destination/nativeBatching/delivery';
-import type { DeliveryContext } from '../../../services/destination/nativeBatching/delivery';
+} from '../../../services/destination/destinationIntegration/delivery';
+import type { DeliveryContext } from '../../../services/destination/destinationIntegration/delivery';
 import {
   responseHandler as legacyResponseHandler,
   type BrazeAudienceProxyParams,

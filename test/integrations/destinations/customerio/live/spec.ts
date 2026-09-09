@@ -26,7 +26,7 @@ import {
 //   2. apiVersion v2 — every event type moves to the V2 /v2/batch shape.
 //
 // CustomerIO is GA on the batching framework (features.ts marks it `batching: true`), so
-// isBatchingFrameworkEnabled short-circuits to true and both scenarios run through it
+// isDestinationIntegrationEnabled short-circuits to true and both scenarios run through it
 // unconditionally — there is no env var to set.
 //
 // Scenario config selects the event-stream API version. The seeds are identical in both. Which
@@ -211,11 +211,6 @@ export const live: LiveSpec = {
   // record profile, removed best-effort by `cleanup`.
   enabled: true,
   authType: 'basic',
-  // customerio is GA for the batching-framework transform, so only delivery needs naming.
-  // Without this the live run would deliver through v1/destinations/customerio/networkHandler.
-  envOverrides: {
-    CUSTOMERIO_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
-  },
   resolveConfig: (s) => ({ datacenter: 'US', ...s.config }),
   // Record events dispatch on connection.config.destination.object.
   resolveConnection: () => ({ destination: { object: 'person', syncMode: 'upsert' } }),

@@ -41,7 +41,7 @@ const RECORD_ACTION_MAP = {
 // Ordered by priority: cio_id > id > email
 const RECORD_IDENTIFIER_KEYS = ['cio_id', 'id', 'email'] as const;
 
-// Enabling the batching framework for CustomerIO (isBatchingFrameworkEnabled) is what's
+// Enabling the batching framework for CustomerIO (isDestinationIntegrationEnabled) is what's
 // needed to unlock record-event support, since the V1 processRouterDest has no concept of
 // record events. But it can also move event-stream events (identify/track/page/screen/group/
 // alias) onto this V2 code path, which changes their request shape/endpoint — a breaking

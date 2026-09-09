@@ -311,7 +311,7 @@ type Action = (typeof ACTIONS)[keyof typeof ACTIONS];
 
 ## Don't Re-Validate Inputs That Zod Has Already Validated
 
-If a function is reachable only through a Zod-guarded entry point (`getInputSchema()` in a `BatchDestination`, a controller's `safeParse()`, etc.), helpers downstream should treat the validated fields as guaranteed. Don't re-check enum membership, presence, or shape — let the type system carry that contract.
+If a function is reachable only through a Zod-guarded entry point (`getInputSchema()` in a `DestinationIntegration`, a controller's `safeParse()`, etc.), helpers downstream should treat the validated fields as guaranteed. Don't re-check enum membership, presence, or shape — let the type system carry that contract.
 
 ```ts
 // Good — Zod validated `action`; the helper only handles its real job (lookup)
@@ -433,3 +433,28 @@ const process = (event) => {
 ```
 
 Escalate the v2 branch to a sibling module (`transformV2.ts` — the existing repo convention) only on large divergence; prefer that over `./v1` / `./v2` subdirs (none exist today), though subdirs aren't strictly banned for a major large enough to warrant its own tree. Branch `routerTransform` / `deleteUsers` / the proxy `networkHandler` (which reads top-level `destinationVersion`) only when a major actually changes them. Full reference: CONTRIBUTING.md → "Dispatching on the integration major".
+
+## No Re-Export Shims, No Empty Placeholder Files
+
+A module whose entire body re-exports symbols defined elsewhere is an indirection layer with no
+owner — it makes imports point at a file that explains nothing and adds a hop for every reader.
+Import from the module that actually defines the symbol.
+
+Equally, don't commit an empty file to reserve a slot in a conventional directory layout. Either
+the destination needs `dataDelivery/data.ts` and it has fixtures, or it doesn't need it yet.
+
+```ts
+// Bad — batch.ts, whose entire content is:
+export { MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
+export { getMaxBatchSize, getMaxPayloadSize } from './utils';
+export type { Integration } from './routerTransform';
+```
+
+## Export Only What Crosses a File Boundary
+
+Default to module-local. `export` is a claim that another file consumes the symbol; exporting
+everything makes the module's surface look larger than it is and hides which few symbols are
+genuinely shared. This applies to types, Zod schemas and `const` helpers alike.
+
+Re-check after a refactor: when a change makes a previously-shared constant local, the `export`
+keyword usually survives it.

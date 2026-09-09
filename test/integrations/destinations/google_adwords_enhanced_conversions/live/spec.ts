@@ -214,12 +214,6 @@ export const live = {
     type: 'google_adwords_enhanced_conversions',
     name: 'DESTINATION_GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_OAUTH',
   },
-  envOverrides: {
-    // Batching-framework delivery is still behind a temporary per-destination flag; without it the
-    // run would exercise the legacy networkHandler instead of delivery.ts. The transform-side flag
-    // is deliberately absent — GAEC is already batching-GA in features.ts.
-    GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS: 'ALL',
-  },
   // The Google Ads SDK reads the developer token from process.env (googleUtils.getDeveloperToken),
   // not from destination.Config or metadata.secret — it is a deployment-wide credential rather than
   // a per-workspace one — so it can't travel through resolveConfig.

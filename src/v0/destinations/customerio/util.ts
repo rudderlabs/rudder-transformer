@@ -19,6 +19,7 @@ import {
   getFieldValueFromMessage,
   defaultDeleteRequestConfig,
   isAppleFamily,
+  setValueForUntrustedPath,
 } from '../../util';
 
 import { EventType, SpecedTraits, TraitsMapping } from '../../../constants';
@@ -149,7 +150,12 @@ const identifyResponseBuilder = (userId, message): ResponseDetails => {
         trait !== 'anonymousId'
       ) {
         const dotEscapedTrait = trait.replace('.', '\\.');
-        set(rawPayload, dotEscapedTrait, get(message, `${pathToTraits}.${trait}`));
+        // trait name is customer-supplied and may be a key set-value refuses to write
+        setValueForUntrustedPath(
+          rawPayload,
+          dotEscapedTrait,
+          get(message, `${pathToTraits}.${trait}`),
+        );
       }
     });
   }
@@ -159,7 +165,8 @@ const identifyResponseBuilder = (userId, message): ResponseDetails => {
     const userProps = Object.keys(message.user_properties);
     userProps.forEach((prop) => {
       const val = get(message, `user_properties.${prop}`);
-      set(rawPayload, prop, val);
+      // prop is customer-supplied and may be a key set-value refuses to write
+      setValueForUntrustedPath(rawPayload, prop, val);
     });
   }
 

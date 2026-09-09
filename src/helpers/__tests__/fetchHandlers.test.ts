@@ -6,7 +6,7 @@ beforeEach(() => {
   FetchHandler['sourceHydrateHandlerMap'].clear();
   FetchHandler['destHandlerMap'].clear();
   FetchHandler['deletionHandlerMap'].clear();
-  FetchHandler['batchDestinationHandlerMap'].clear();
+  FetchHandler['destinationIntegrationHandlerMap'].clear();
 });
 
 afterEach(() => {
@@ -43,16 +43,16 @@ describe('FetchHandlers Service', () => {
     const getDeletionHandlerSpy = jest
       .spyOn(MiscService, 'getDeletionHandler')
       .mockImplementation(() => ({}));
-    const getBatchDestinationHandlerSpy = jest
-      .spyOn(MiscService, 'getBatchDestinationHandler')
+    const getDestinationIntegrationHandlerSpy = jest
+      .spyOn(MiscService, 'getDestinationIntegrationHandler')
       .mockReturnValue({} as never);
 
     expect(() => FetchHandler.getDestHandler('../dest', 'v0')).not.toThrow();
     expect(() => FetchHandler.getDeletionHandler('../dest', 'v0')).not.toThrow();
-    expect(() => FetchHandler.getBatchDestinationHandler('../dest')).not.toThrow();
+    expect(() => FetchHandler.getDestinationIntegrationHandler('../dest')).not.toThrow();
 
     expect(getDestHandlerSpy).toHaveBeenCalledWith('../dest', 'v0');
     expect(getDeletionHandlerSpy).toHaveBeenCalledWith('../dest', 'v0');
-    expect(getBatchDestinationHandlerSpy).toHaveBeenCalledWith('../dest');
+    expect(getDestinationIntegrationHandlerSpy).toHaveBeenCalledWith('../dest');
   });
 });

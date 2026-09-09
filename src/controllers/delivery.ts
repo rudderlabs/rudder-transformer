@@ -3,8 +3,8 @@
 import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
-import { DeliveryTestService } from '../services/delivertTest/deliveryTest';
 import { capDeliveryV1Errors } from '../services/destination/deliveryResponseCap';
+import { DeliveryTestService } from '../services/destination/deliveryTest';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import { MiscService } from '../services/misc';
 import {

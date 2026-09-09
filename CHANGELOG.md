@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.152.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.151.0...v1.152.0) (2026-09-08)
+
+
+### Features
+
+* **features:** declare transformerProxy capability for GA destinations ([#5546](https://github.com/rudderlabs/rudder-transformer/issues/5546)) ([255a02b](https://github.com/rudderlabs/rudder-transformer/commit/255a02b5350ebfa287264571ce59863597a92a74))
+* **openai_ads:** add cloud CAPI transform and batching ([#5538](https://github.com/rudderlabs/rudder-transformer/issues/5538)) ([38e2d51](https://github.com/rudderlabs/rudder-transformer/commit/38e2d51a9d708f96acf8107872f021d7100c3207))
+
+
+### Bug Fixes
+
+* **gaec:** remove adjustment type workspace allowlist ([#5544](https://github.com/rudderlabs/rudder-transformer/issues/5544)) ([560e156](https://github.com/rudderlabs/rudder-transformer/commit/560e156a819182a50f7025171244c9b0c6448b1b))
+* **google_adwords:** treat NOT_ADS_USER 401 as terminal, not refreshable ([#5555](https://github.com/rudderlabs/rudder-transformer/issues/5555)) ([46f4cd7](https://github.com/rudderlabs/rudder-transformer/commit/46f4cd7d51e22922fc606ad425206a6f771f5134))
+* **memory-fencing:** enable middleware by default ([#5547](https://github.com/rudderlabs/rudder-transformer/issues/5547)) ([a161edc](https://github.com/rudderlabs/rudder-transformer/commit/a161edcec1fa458fd6749284ec10584c2c2bc12e))
+* **native-integration:** fallback for processor-only router transforms ([#5539](https://github.com/rudderlabs/rudder-transformer/issues/5539)) ([947f352](https://github.com/rudderlabs/rudder-transformer/commit/947f352568730f32e511816bfb92943a0559926d))
+* **openai_ads:** reject events older than OpenAI's ingest window ([#5551](https://github.com/rudderlabs/rudder-transformer/issues/5551)) ([8a46f6f](https://github.com/rudderlabs/rudder-transformer/commit/8a46f6ff791f5cb7cbaa43033d72a1b10c4696d6))
+* **openai_ads:** resolve standard event names without a mapping row ([#5553](https://github.com/rudderlabs/rudder-transformer/issues/5553)) ([b5753ce](https://github.com/rudderlabs/rudder-transformer/commit/b5753cef504da2b3711a30b246419890fec39acd))
+* **openai_ads:** stop rejecting values OpenAI accepts ([#5552](https://github.com/rudderlabs/rudder-transformer/issues/5552)) ([60b3da1](https://github.com/rudderlabs/rudder-transformer/commit/60b3da10c34a4d1c9457b336a846bbecdeda4682))
+* raise 4xx instead of 500 for untrusted set-value paths ([#5550](https://github.com/rudderlabs/rudder-transformer/issues/5550)) ([0173567](https://github.com/rudderlabs/rudder-transformer/commit/01735674b58a269c1ebd3f376385146f2eb9fdaa))
+* **security:** override transitive deps to resolve critical/high vulnerabilities ([#5540](https://github.com/rudderlabs/rudder-transformer/issues/5540)) ([a214622](https://github.com/rudderlabs/rudder-transformer/commit/a214622e039f4d474ca314bcb4ff39a69fe294d3))
+
+## [1.151.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.150.0...v1.151.0) (2026-08-31)
+
+
+### Features
+
+* **reddit_audience:** add Reddit Custom Audiences destination ([f13a907](https://github.com/rudderlabs/rudder-transformer/commit/f13a90791fba4127dcf76c32f4aba3327eb56c6a))
+* **reddit_audience:** add Reddit Custom Audiences destination ([#5532](https://github.com/rudderlabs/rudder-transformer/issues/5532)) ([64729f9](https://github.com/rudderlabs/rudder-transformer/commit/64729f94350a8b613320166a832bb3ef69a953fe)), closes [rudderlabs/rudder-specs#148](https://github.com/rudderlabs/rudder-specs/issues/148) [rudderlabs/rudder-integrations-config#2694](https://github.com/rudderlabs/rudder-integrations-config/issues/2694)
+
+
+### Bug Fixes
+
+* **delivery:** cap the destination response the proxy echoes back (INT-6978) ([#5506](https://github.com/rudderlabs/rudder-transformer/issues/5506)) ([b70b4c1](https://github.com/rudderlabs/rudder-transformer/commit/b70b4c10faa594442e6b5c29854275314cd71068)), closes [#5481](https://github.com/rudderlabs/rudder-transformer/issues/5481) [#5481](https://github.com/rudderlabs/rudder-transformer/issues/5481) [#5481](https://github.com/rudderlabs/rudder-transformer/issues/5481) [#5481](https://github.com/rudderlabs/rudder-transformer/issues/5481)
+* **native-batching:** abort exhausted dontBatch retries ([#5523](https://github.com/rudderlabs/rudder-transformer/issues/5523)) ([3dc42e3](https://github.com/rudderlabs/rudder-transformer/commit/3dc42e3dffb684ec0f65f2c15d1270f3e9223302))
+* **reddit_audience:** guard against a misaligned positional matrix ([b30a9e6](https://github.com/rudderlabs/rudder-transformer/commit/b30a9e6c03109adfec1d403a3f57f735899b985e))
+* **reddit_audience:** never abort on 401, and keep a legacy handler until GA ([819d270](https://github.com/rudderlabs/rudder-transformer/commit/819d270892620b52620632c3c1aeed7c8eb1ce5f))
+* **reddit_audience:** stop requiring adAccountId on destination config ([ed98a2e](https://github.com/rudderlabs/rudder-transformer/commit/ed98a2e85a45d02f6ff2b6ce7c25127a71ff2046))
+
 ## [1.150.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.149.1...v1.150.0) (2026-08-27)
 
 

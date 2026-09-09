@@ -9,20 +9,25 @@ import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import stats from '../../util/stats';
 
-// The batching framework's delivery branch is opt-in per workspace and returns before the rest of
-// `deliver` runs, so it is reached by flipping the gate rather than by configuration. Inert for
-// every other test in this file, which leaves it false.
-let frameworkDeliveryEnabled = false;
-jest.mock('../../constants/batchedDestinationsMap', () => ({
-  ...jest.requireActual('../../constants/batchedDestinationsMap'),
-  isBatchingFrameworkDeliveryEnabled: () => frameworkDeliveryEnabled,
-}));
+// The batching framework's delivery branch returns before the rest of `deliver` runs, so it is
+// reached by forcing the gate rather than by configuration. `null` delegates to the real predicate,
+// which is what every other test in this file gets: they post to `rudder_test`, which declares no
+// `batching` and names no workspace, so the real answer is already false.
+let frameworkDeliveryEnabled: boolean | null = null;
+jest.mock('../../constants/destinationIntegrationsMap', () => {
+  const actual = jest.requireActual('../../constants/destinationIntegrationsMap');
+  return {
+    ...actual,
+    isDestinationIntegrationEnabled: (destType: string, workspaceId: string) =>
+      frameworkDeliveryEnabled ?? actual.isDestinationIntegrationEnabled(destType, workspaceId),
+  };
+});
 
 // Only the handler's verdicts are faked; `toDeliveryV1Response` - the thing that builds the job
 // states under test - stays real.
 const handleDeliveryResponseMock = jest.fn();
-jest.mock('../../services/destination/nativeBatching/delivery', () => ({
-  ...jest.requireActual('../../services/destination/nativeBatching/delivery'),
+jest.mock('../../services/destination/destinationIntegration/delivery', () => ({
+  ...jest.requireActual('../../services/destination/destinationIntegration/delivery'),
   handleDeliveryResponse: (...args: unknown[]) => handleDeliveryResponseMock(...args),
 }));
 
@@ -50,7 +55,7 @@ afterAll(async () => {
 });
 
 afterEach(() => {
-  frameworkDeliveryEnabled = false;
+  frameworkDeliveryEnabled = null;
   jest.restoreAllMocks();
   jest.clearAllMocks();
 });
@@ -307,7 +312,7 @@ describe('Delivery controller tests', () => {
       // its own return. An integration's `failureReason` can be the whole destination body -
       // `braze_audience` falls through to `JSON.stringify(response)`.
       frameworkDeliveryEnabled = true;
-      jest.spyOn(FetchHandler, 'getBatchDestinationHandler').mockReturnValue({} as never);
+      jest.spyOn(FetchHandler, 'getDestinationIntegrationHandler').mockReturnValue({} as never);
       handleDeliveryResponseMock.mockReturnValue({
         kind: 'perItem',
         verdicts: Array.from({ length: JOBS }, () => ({

@@ -1,3 +1,4 @@
+const prometheusClient = require('prom-client');
 const prometheus = require('../../src/util/prometheus');
 
 function parseMetrics(text) {
@@ -23,6 +24,7 @@ describe('Prometheus class', () => {
   let prom;
 
   beforeEach(async () => {
+    prometheusClient.register.clear();
     prom = new prometheus.Prometheus();
   })
 
@@ -66,6 +68,43 @@ describe('Prometheus class', () => {
     expect(metricMap.get('transformer_event_transform_status')).toEqual({
       value: 1,
       tagMap: { destType: 'testDestType', module: 'testModule', destinationId: 'testDestinationId', workspaceId: 'testWorkspaceId', feature: 'testFeature', implementation: 'testImplementation', newTag: 'test', instanceName: 'localhost', },
+    });
+  })
+
+  it('ignores unsupported tags for pre-registered metrics without dropping the metric', async () => {
+    prom.gauge('v0_transformation_time', 1, {
+      destType: 'testDestType',
+      feature: 'testFeature',
+      newTag: 'test',
+    });
+    prom.counter('event_transform_success', 1, {
+      destType: 'testDestType',
+      module: 'testModule',
+      destinationId: 'testDestinationId',
+      workspaceId: 'testWorkspaceId',
+      feature: 'testFeature',
+      implementation: 'testImplementation',
+      newTag: 'test',
+    });
+
+    const metrics = await prom.prometheusRegistry.metrics();
+    const metricMap = parseMetrics(metrics);
+
+    expect(metricMap.get('transformer_v0_transformation_time')).toEqual({
+      value: 1,
+      tagMap: { destType: 'testDestType', feature: 'testFeature', instanceName: 'localhost' },
+    });
+    expect(metricMap.get('transformer_event_transform_success')).toEqual({
+      value: 1,
+      tagMap: {
+        destType: 'testDestType',
+        module: 'testModule',
+        destinationId: 'testDestinationId',
+        workspaceId: 'testWorkspaceId',
+        feature: 'testFeature',
+        implementation: 'testImplementation',
+        instanceName: 'localhost',
+      },
     });
   })
 

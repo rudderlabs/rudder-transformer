@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.150.0",
+  "version": "1.152.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -64,7 +64,7 @@
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
     "@pyroscope/nodejs": "^0.4.5",
-    "@rudderstack/integrations-lib": "^0.2.74",
+    "@rudderstack/integrations-lib": "^0.2.75",
     "@rudderstack/json-template-engine": "^0.19.5",
     "@rudderstack/workflow-engine": "^0.9.1",
     "@shopify/jest-koa-mocks": "^5.1.1",
@@ -76,6 +76,7 @@
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
     "crypto-js": "^4.2.0",
+    "currency-codes": "^2.2.0",
     "dotenv": "^16.0.3",
     "fast-json-stable-stringify": "^2.1.0",
     "fast-xml-parser": "^5.5.7",
@@ -130,7 +131,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-personalize": "^3.894.0",
-    "@aws-sdk/credential-providers": "^3.894.0",
+    "@aws-sdk/credential-providers": "^3.1127.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.1",
     "@linear/sdk": "^68.0.0",
@@ -154,7 +155,7 @@
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^18.0.0",
-    "eslint-config-prettier": "^8.10.0",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -187,6 +188,19 @@
     "semver-regex": "3.1.4",
     "cacheable-request@2.1.4": {
       "http-cache-semantics": "4.1.1"
+    },
+    "websocket-driver": "0.7.5",
+    "fast-uri": "3.1.6",
+    "minimatch@^9.0.0": "9.0.9",
+    "minimatch@^5.0.0": "5.1.9",
+    "minimatch@^3.0.0": "3.1.5",
+    "brace-expansion@^2.0.0": "2.1.4",
+    "brace-expansion@^1.0.0": "1.1.18",
+    "@shopify/jest-koa-mocks": {
+      "koa": "2.16.4"
+    },
+    "rs-jsonpath": {
+      "underscore": "1.13.8"
     }
   },
   "lint-staged": {

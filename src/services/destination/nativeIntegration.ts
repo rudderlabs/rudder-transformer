@@ -28,17 +28,14 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { groupRouterTransformEvents } from '../../v0/util';
-import {
-  isBatchingFrameworkDeliveryEnabled,
-  isBatchingFrameworkEnabled,
-} from '../../constants/batchedDestinationsMap';
-import { processBatchedDestination } from './nativeBatching/processBatchedDestination';
+import { isDestinationIntegrationEnabled } from '../../constants/destinationIntegrationsMap';
+import { processDestinationIntegration } from './destinationIntegration/processDestinationIntegration';
 import {
   handleDeliveryResponse,
   toDeliveryV1Response,
   firstJobIdentity,
-} from './nativeBatching/delivery';
-import type { DeliveryContext } from './nativeBatching/delivery';
+} from './destinationIntegration/delivery';
+import type { DeliveryContext } from './destinationIntegration/delivery';
 
 /**
  * Whether the framework's delivery branch may answer this request — the route rudder-server called
@@ -144,7 +141,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
       groupedEvents,
       async (destInputArray: RouterTransformationRequestData[]) => {
         const { workspaceId } = destInputArray[0].metadata;
-        const useBatchingFramework = isBatchingFrameworkEnabled(destinationType, workspaceId);
+        const useDestinationIntegration = isDestinationIntegrationEnabled(
+          destinationType,
+          workspaceId,
+        );
 
         const metaTO = this.getTags(
           destinationType,
@@ -158,9 +158,9 @@ export class NativeIntegrationDestinationService implements DestinationService {
           // destHandler is null for the batching framework path — handleRouterTransformSuccessEvents
           // handles this safely via optional chaining on destHandler?.processMetadataForRouter
           let destHandler: any = null;
-          if (useBatchingFramework) {
-            const IntegrationClass = FetchHandler.getBatchDestinationHandler(destinationType);
-            transformedResponse = await processBatchedDestination(
+          if (useDestinationIntegration) {
+            const IntegrationClass = FetchHandler.getDestinationIntegrationHandler(destinationType);
+            transformedResponse = await processDestinationIntegration(
               destInputArray,
               IntegrationClass,
               requestMetadata,
@@ -248,18 +248,16 @@ export class NativeIntegrationDestinationService implements DestinationService {
       const rawProxyResponse = await networkHandler.proxy(deliveryRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
 
-      // Opt-in per workspace, off by default: `handlerVersion` is deliberately ignored here, and
-      // so is the v0->v1 adaptation below — the framework produces a v1 response natively, and
-      // that adaptation would collapse the metadata array to its first entry.
+      // The same predicate that chose `processDestinationIntegration` in `doRouterTransformation`, so
+      // the response is read by whichever half built the request. `handlerVersion` is deliberately
+      // ignored here, and so is the v0->v1 adaptation below — the framework produces a v1 response
+      // natively, and that adaptation would collapse the metadata array to its first entry.
       //
       // The guard is `isProxyV1Request`, which requires the v1 route *and* an array `metadata`;
       // see its declaration for why neither half alone is enough.
       if (
         isProxyV1Request(deliveryRequest, version) &&
-        isBatchingFrameworkDeliveryEnabled(
-          destinationType,
-          deliveryRequest.metadata[0]?.workspaceId,
-        )
+        isDestinationIntegrationEnabled(destinationType, deliveryRequest.metadata[0]?.workspaceId)
       ) {
         const ctx: DeliveryContext = {
           status: processedProxyResponse.status,
@@ -269,7 +267,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
           destinationConfig: deliveryRequest.destinationConfig,
           ...firstJobIdentity(deliveryRequest.metadata),
         };
-        const IntegrationClass = FetchHandler.getBatchDestinationHandler(destinationType);
+        const IntegrationClass = FetchHandler.getDestinationIntegrationHandler(destinationType);
         // Uppercased to match `statTags.destType`, which is what every other destination tag in a
         // delivery response and in the stats emitted alongside it uses.
         const frameworkResponse = toDeliveryV1Response(

@@ -516,6 +516,94 @@ describe('validateEventAndLowerCaseConversion Tests', () => {
   });
 });
 
+describe('setValueForUntrustedPath', () => {
+  const setValuePkg = require('set-value');
+  const { setValueForUntrustedPath } = utilities;
+
+  describe('paths set-value accepts behave exactly like set-value', () => {
+    it.each([
+      ['flat key', 'email', 'a@b.com'],
+      ['nested path', 'user.address.city', 'Berlin'],
+      ['escaped dot is one literal key', 'a\\.constructor', 1],
+      ['key merely containing a reserved word', 'myConstructor', 1],
+      ['reserved word differing in case', 'CONSTRUCTOR', 1],
+    ])('%s', (_name, path, value) => {
+      expect(setValueForUntrustedPath({}, path, value)).toEqual(setValuePkg({}, path, value));
+    });
+
+    it('returns the target it was given', () => {
+      const target = {};
+      expect(setValueForUntrustedPath(target, 'email', 'a@b.com')).toBe(target);
+    });
+  });
+
+  describe('paths set-value rejects become a 4xx instead of a 500', () => {
+    // These are exactly the paths that produced `Cannot set unsafe key: "constructor"` in
+    // production. Asserting set-value still throws keeps this suite honest if the library's
+    // rules ever change — setValueForUntrustedPath deliberately keeps no copy of them.
+    it.each([
+      'constructor',
+      '__proto__',
+      'prototype',
+      'user_properties.constructor',
+      'a.__proto__',
+    ])('raises an InstrumentationError for "%s"', (path) => {
+      expect(() => setValuePkg({}, path, 'boom')).toThrow(/Cannot set unsafe key/);
+
+      expect(() => setValueForUntrustedPath({}, path, 'boom')).toThrow(InstrumentationError);
+    });
+
+    it('reports a 400 status so the event aborts instead of being retried', () => {
+      let status;
+      try {
+        setValueForUntrustedPath({}, 'user_properties.constructor', 'boom');
+      } catch (error) {
+        status = utilities.getErrorStatusCode(error);
+      }
+      expect(status).toBe(400);
+    });
+
+    it('names the offending path and keeps the library message', () => {
+      expect(() => setValueForUntrustedPath({}, 'user_properties.constructor', 'boom')).toThrow(
+        'Invalid key in event payload at "user_properties.constructor": Cannot set unsafe key: "constructor"',
+      );
+    });
+
+    it('leaves Object.prototype alone', () => {
+      expect(() => setValueForUntrustedPath({}, '__proto__.polluted', 'yes')).toThrow(
+        InstrumentationError,
+      );
+      expect(() => setValueForUntrustedPath({}, 'constructor.prototype.polluted', 'yes')).toThrow(
+        InstrumentationError,
+      );
+      expect({}.polluted).toBeUndefined();
+    });
+  });
+
+  describe('failures that are not about the path still surface unchanged', () => {
+    it('rethrows the target error rather than reclassifying it', () => {
+      const target = {};
+      Object.defineProperty(target, 'email', {
+        set() {
+          throw new TypeError('target rejected email');
+        },
+      });
+
+      expect(() => setValueForUntrustedPath(target, 'email', 'a@b.com')).toThrow(
+        'target rejected email',
+      );
+      expect(() => setValueForUntrustedPath(target, 'email', 'a@b.com')).not.toThrow(
+        InstrumentationError,
+      );
+    });
+
+    it('is a no-op for a falsy path, as set-value itself is', () => {
+      expect(setValueForUntrustedPath({ a: 1 }, undefined, 'x')).toEqual({ a: 1 });
+      expect(setValueForUntrustedPath({ a: 1 }, '', 'x')).toEqual({ a: 1 });
+    });
+  });
+});
+
 describe('extractCustomFields', () => {
   // Handle reserved words in message keys
   it('should handle reserved word "prototype" in message keys when keys are provided', () => {

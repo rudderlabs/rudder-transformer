@@ -23,17 +23,7 @@
       "destKey": "phone_numbers_sha256"
     },
     {
-      "sourceKeys": [
-        "traits.externalIds",
-        "context.traits.externalIds",
-        "traits.external_ids",
-        "context.traits.external_ids",
-        "traits.externalId",
-        "context.traits.externalId",
-        "traits.external_id",
-        "context.traits.external_id",
-        "userId"
-      ],
+      "sourceKeys": ["userId", "anonymousId"],
       "destKey": "external_ids_sha256"
     },
     {

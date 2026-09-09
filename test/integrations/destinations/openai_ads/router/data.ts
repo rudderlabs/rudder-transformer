@@ -239,6 +239,146 @@ export const data: RouterTestData[] = [
     },
   },
   {
+    id: 'openai-ads-router-anonymous-id-fallback',
+    name: 'openai_ads',
+    description: 'Mapped track event uses anonymousId as external_ids_sha256 fallback',
+    scenario: 'Native batching cloud CAPI',
+    successCriteria: 'external_ids_sha256 is hashed from anonymousId when userId is absent',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                event: 'Product Viewed',
+                messageId: 'msg-6',
+                anonymousId: 'Anon-Only-6',
+                timestamp: EVENT_TIMESTAMP,
+                properties: {},
+              },
+              metadata: metadata(6),
+              destination,
+            },
+          ],
+          destType: 'openai_ads',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                ...batchedRequest,
+                body: {
+                  ...batchedRequest.body,
+                  JSON: {
+                    events: [
+                      {
+                        id: 'msg-6',
+                        type: 'contents_viewed',
+                        timestamp_ms: EVENT_TIMESTAMP_MS,
+                        action_source: 'offline',
+                        user: {
+                          external_ids_sha256: [sha256('anon-only-6')],
+                        },
+                        data: { type: 'contents' },
+                      },
+                    ],
+                  },
+                },
+              },
+              metadata: [metadata(6)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'openai-ads-router-no-external-id-source',
+    name: 'openai_ads',
+    description: 'Mapped track event ignores trait external IDs for external_ids_sha256',
+    scenario: 'Native batching cloud CAPI',
+    successCriteria: 'external_ids_sha256 is omitted unless userId or anonymousId is present',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                event: 'Product Viewed',
+                messageId: 'msg-7',
+                timestamp: EVENT_TIMESTAMP,
+                context: {
+                  traits: {
+                    email: 'match@example.com',
+                    externalId: 'Trait-External-7',
+                    external_ids: ['Trait-External-Ids-7'],
+                  },
+                },
+                properties: {},
+              },
+              metadata: metadata(7),
+              destination,
+            },
+          ],
+          destType: 'openai_ads',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                ...batchedRequest,
+                body: {
+                  ...batchedRequest.body,
+                  JSON: {
+                    events: [
+                      {
+                        id: 'msg-7',
+                        type: 'contents_viewed',
+                        timestamp_ms: EVENT_TIMESTAMP_MS,
+                        action_source: 'offline',
+                        user: {
+                          emails_sha256: [sha256('match@example.com')],
+                        },
+                        data: { type: 'contents' },
+                      },
+                    ],
+                  },
+                },
+              },
+              metadata: [metadata(7)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
     id: 'openai-ads-router-custom-extras',
     name: 'openai_ads',
     description: 'Mapped custom event preserves unmapped custom properties',

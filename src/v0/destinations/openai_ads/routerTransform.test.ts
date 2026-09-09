@@ -199,6 +199,97 @@ describe('OpenAIAdsIntegration', () => {
     expect(JSON.stringify(event)).not.toContain('USER@EXAMPLE.COM');
   });
 
+  it.each([
+    {
+      label: 'prefers userId over anonymousId',
+      message: {
+        type: 'track',
+        event: 'Product Viewed',
+        messageId: 'msg-external-user',
+        userId: 'User-Preferred',
+        anonymousId: 'Anon-Fallback',
+        timestamp: EVENT_TIMESTAMP,
+        context: {
+          traits: {
+            email: 'match@example.com',
+            externalId: 'Trait-External',
+          },
+        },
+        properties: {},
+      },
+      expectedExternalIds: [sha256('user-preferred')],
+    },
+    {
+      label: 'falls back to anonymousId when userId is absent',
+      message: {
+        type: 'track',
+        event: 'Product Viewed',
+        messageId: 'msg-external-anonymous',
+        anonymousId: 'Anon-Only',
+        timestamp: EVENT_TIMESTAMP,
+        context: { traits: { email: 'match@example.com' } },
+        properties: {},
+      },
+      expectedExternalIds: [sha256('anon-only')],
+    },
+  ])('maps external_ids_sha256 from $label', ({ message, expectedExternalIds }) => {
+    const event = transform({
+      ...makeInput(1),
+      message,
+    } as RouterTransformationRequestData).body;
+
+    expect(event.user).toEqual({
+      emails_sha256: [sha256('match@example.com')],
+      external_ids_sha256: expectedExternalIds,
+    });
+  });
+
+  it.each([
+    {
+      label: 'neither userId nor anonymousId is present',
+      message: {
+        type: 'track',
+        event: 'Product Viewed',
+        messageId: 'msg-external-none',
+        timestamp: EVENT_TIMESTAMP,
+        context: { traits: { email: 'match@example.com' } },
+        properties: {},
+      },
+    },
+    {
+      label: 'only trait external-id fields are present',
+      message: {
+        type: 'track',
+        event: 'Product Viewed',
+        messageId: 'msg-external-traits',
+        timestamp: EVENT_TIMESTAMP,
+        traits: {
+          externalIds: ['Trait-ExternalIds'],
+          external_ids: ['Trait-External-Ids'],
+          externalId: 'Trait-ExternalId',
+          external_id: 'Trait-External-Id',
+        },
+        context: {
+          traits: {
+            email: 'match@example.com',
+            externalIds: ['Context-Trait-ExternalIds'],
+            external_ids: ['Context-Trait-External-Ids'],
+            externalId: 'Context-Trait-ExternalId',
+            external_id: 'Context-Trait-External-Id',
+          },
+        },
+        properties: {},
+      },
+    },
+  ])('does not map external_ids_sha256 when $label', ({ message }) => {
+    const event = transform({
+      ...makeInput(1),
+      message,
+    } as RouterTransformationRequestData).body;
+
+    expect(event.user).toEqual({ emails_sha256: [sha256('match@example.com')] });
+  });
+
   it('supports custom mappings and page deduplicationKey', () => {
     const custom = transform({
       ...makeInput(1),

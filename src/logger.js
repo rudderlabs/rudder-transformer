@@ -8,7 +8,7 @@ const { getMatchedMetadata } = require('./util/logger');
 // LOGGER_IMPL can be `console` or `winston`
 const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
 
-let logLevel = (process.env.LOG_LEVEL ?? 'warn').toLowerCase();
+let logLevel = (process.env.LOG_LEVEL ?? 'info').toLowerCase();
 
 const logger = structuredLogger({
   level: logLevel,
@@ -119,6 +119,14 @@ const log = (logMethod, logArgs) => {
   logMethod(message);
 };
 
+const event = (...args) => {
+  const logger = getLogger();
+  if (LOGLEVELS.event <= LOGLEVELS[logLevel]) {
+    // the console impl has no event method; fall back to debug
+    log(logger.event ?? logger.debug, args);
+  }
+};
+
 const debug = (...args) => {
   const logger = getLogger();
   if (LOGLEVELS.debug <= LOGLEVELS[logLevel]) {
@@ -151,25 +159,22 @@ const error = (...args) => {
 // argument optional; the runtime contract (callers must pass it) is unchanged.
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
 const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
-  const logger = getLogger();
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {
-    const reqLogArgs = [identifierMsg, { metadata: filteredMetadata, url, body, method }];
-    log(logger.info, reqLogArgs);
+    event(identifierMsg, { metadata: filteredMetadata, url, body, method });
   }
 };
 
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
 const responseLog = (identifierMsg, { metadata, responseDetails: { body, status, headers } }) => {
-  const logger = getLogger();
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {
-    const resLogArgs = [identifierMsg, { metadata: filteredMetadata, body, status, headers }];
-    log(logger.info, resLogArgs);
+    event(identifierMsg, { metadata: filteredMetadata, body, status, headers });
   }
 };
 
 module.exports = {
+  event,
   debug,
   info,
   warn,

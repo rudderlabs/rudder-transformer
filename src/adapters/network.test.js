@@ -1,6 +1,10 @@
 const mockLoggerInstance = {
+  event: jest.fn(),
+  debug: jest.fn(),
   info: jest.fn(),
+  warn: jest.fn(),
   error: jest.fn(),
+  setLogLevel: jest.fn(),
 };
 const {
   getFormData,
@@ -31,6 +35,8 @@ const stats = require('../util/stats');
 jest.mock('@rudderstack/integrations-lib', () => {
   return {
     ...jest.requireActual('@rudderstack/integrations-lib'),
+    // mirrors the lib's LOGLEVELS including the `event` level; keep in sync
+    LOGLEVELS: { event: 4, debug: 3, info: 2, warn: 1, error: 0, none: -1 },
     structuredLogger: jest.fn().mockReturnValue(mockLoggerInstance),
   };
 });
@@ -60,6 +66,10 @@ jest.mock('../util/logger', () => ({
 }));
 
 const loggerUtil = require('../util/logger');
+
+const logger = require('../logger');
+// request/response diagnostics are only emitted at the event level
+logger.setLogLevel('event');
 
 axios.post = jest.fn();
 axios.get = jest.fn();
@@ -560,7 +570,7 @@ describe('fireHTTPStats tests', () => {
 
 describe('logging in http methods', () => {
   beforeEach(() => {
-    mockLoggerInstance.info.mockClear();
+    mockLoggerInstance.event.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
   });
   test('post - when proper metadata(object) is sent should call logger without error', async () => {
@@ -591,9 +601,9 @@ describe('logging in http methods', () => {
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: {},
       destType: 'DT',
       destinationId: 'd1',
@@ -603,7 +613,7 @@ describe('logging in http methods', () => {
       method: 'post',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
@@ -639,7 +649,7 @@ describe('logging in http methods', () => {
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(0);
   });
 
   test('post - when metadata is string should call logger without error', async () => {
@@ -665,7 +675,7 @@ describe('logging in http methods', () => {
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(0);
   });
 
   test('post - when proper metadata(Array) is sent should call logger without error', async () => {
@@ -714,10 +724,10 @@ describe('logging in http methods', () => {
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(metadata.length * 2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(metadata.length * 2);
 
     [1, 2, 3].forEach((i) => {
-      expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(i, ' [DT] /m/n/o request', {
+      expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(i, ' [DT] /m/n/o request', {
         body: {},
         destType: 'DT',
         destinationId: 'd1',
@@ -727,7 +737,7 @@ describe('logging in http methods', () => {
         method: 'post',
       });
 
-      expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(
+      expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(
         i + metadata.length,
         ' [DT] /m/n/o response',
         {
@@ -776,7 +786,7 @@ describe('logging in http methods', () => {
       expect.objectContaining({}),
     );
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(0);
   });
 
   test('get - when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
@@ -806,7 +816,7 @@ describe('logging in http methods', () => {
       expect.objectContaining({}),
     );
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(0);
   });
 
   test('constructor - when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
@@ -840,13 +850,13 @@ describe('logging in http methods', () => {
       }),
     );
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(0);
   });
 });
 
 describe('httpDELETE tests', () => {
   beforeEach(() => {
-    mockLoggerInstance.info.mockClear();
+    mockLoggerInstance.event.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
     axios.delete.mockClear();
   });
@@ -879,9 +889,9 @@ describe('httpDELETE tests', () => {
       Error,
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: undefined,
       destType: 'DT',
       destinationId: 'd1',
@@ -891,7 +901,7 @@ describe('httpDELETE tests', () => {
       method: 'delete',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
@@ -908,7 +918,7 @@ describe('httpDELETE tests', () => {
 
 describe('httpPUT tests', () => {
   beforeEach(() => {
-    mockLoggerInstance.info.mockClear();
+    mockLoggerInstance.event.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
     axios.put.mockClear();
   });
@@ -941,9 +951,9 @@ describe('httpPUT tests', () => {
       Error,
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: {},
       destType: 'DT',
       destinationId: 'd1',
@@ -953,7 +963,7 @@ describe('httpPUT tests', () => {
       method: 'put',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
@@ -970,7 +980,7 @@ describe('httpPUT tests', () => {
 
 describe('httpPATCH tests', () => {
   beforeEach(() => {
-    mockLoggerInstance.info.mockClear();
+    mockLoggerInstance.event.mockClear();
     loggerUtil.getMatchedMetadata.mockClear();
     axios.patch.mockClear();
   });
@@ -1003,9 +1013,9 @@ describe('httpPATCH tests', () => {
       Error,
     );
     expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: {},
       destType: 'DT',
       destinationId: 'd1',
@@ -1015,7 +1025,7 @@ describe('httpPATCH tests', () => {
       method: 'patch',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',

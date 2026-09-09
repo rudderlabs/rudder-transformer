@@ -257,7 +257,7 @@ const isIdentifierEvent = (event) =>
 const processIdentifierEvent = async (event, metricMetadata) => {
   const cartToken =
     typeof event.cartToken === 'string' ? event.cartToken.split('?')[0] : event.cartToken;
-  logger.info(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
+  logger.debug(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
     type: 'set',
     source: metricMetadata.source,
     writeKey: metricMetadata.writeKey,

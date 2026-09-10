@@ -228,11 +228,11 @@ const RESERVED_CUSTOM_KEYS = new Set<string>(
 
 const getSourceKey = (message: RudderMessage): string => {
   const sourceName = message.type === 'track' ? message.event : get(message, 'name');
-  if (!sourceName)
-    throw new InstrumentationError(
-      `OpenAI Ads source event name is required for ${message.type} events`,
-    );
-  return String(sourceName);
+  if (sourceName) return String(sourceName);
+  if (message.type === 'page' || message.type === 'screen') return message.type;
+  throw new InstrumentationError(
+    `OpenAI Ads source event name is required for ${message.type} events`,
+  );
 };
 
 const STANDARD_EVENT_SET = new Set<string>(STANDARD_EVENTS);
@@ -244,6 +244,10 @@ const resolveEventMapping = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsEventMapping => {
+  if ((message.type === 'page' || message.type === 'screen') && !get(message, 'name')) {
+    return { from: message.type, to: 'page_viewed' };
+  }
+
   const sourceKey = getSourceKey(message);
   const normalizedSourceKey = sourceKey.toLowerCase();
   const mapping = (config.eventMapping ?? []).find(
@@ -256,6 +260,9 @@ const resolveEventMapping = (
     // OpenAI's naming needs no row — its absence is not a decision to exclude it.
     if (isStandardEvent(normalizedSourceKey)) {
       return { from: sourceKey, to: normalizedSourceKey };
+    }
+    if (message.type === 'page' || message.type === 'screen') {
+      return { from: sourceKey || message.type, to: 'page_viewed' };
     }
     throw new InstrumentationError(`OpenAI Ads event mapping not found for ${sourceKey}`);
   }

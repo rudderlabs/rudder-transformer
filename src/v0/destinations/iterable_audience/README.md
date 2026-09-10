@@ -7,10 +7,11 @@ Iterable Audience is a VDM Next (record-event) destination that keeps an Iterabl
 in sync with a RudderStack audience. Records emitted by rudder-sources are mapped
 to Iterable list **subscribe** / **unsubscribe** calls and delivered in batches.
 
-Implementation spans two layers:
+Both halves live under `src/v0/destinations/iterable_audience/` and run on the native
+`DestinationIntegration` framework:
 
-- **v0 transform** (`src/v0/destinations/iterable_audience/`) — turns record events into batched HTTP requests via the native `DestinationIntegration` framework.
-- **v1 delivery** (`src/v1/destinations/iterable_audience/`) — proxies the requests and classifies the per-subscriber outcomes from Iterable's bulk response.
+- **transform** (`routerTransform.ts`) — turns record events into batched HTTP requests.
+- **delivery** (`delivery.ts`) — classifies the per-subscriber outcomes from Iterable's bulk response.
 
 ## Features
 

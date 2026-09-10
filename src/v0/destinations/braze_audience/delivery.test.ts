@@ -13,10 +13,6 @@ import {
   toDeliveryV1Response,
 } from '../../../services/destination/destinationIntegration/delivery';
 import type { DeliveryContext } from '../../../services/destination/destinationIntegration/delivery';
-import {
-  responseHandler as legacyResponseHandler,
-  type BrazeAudienceProxyParams,
-} from '../../../v1/destinations/braze_audience/networkHandler';
 import type { ProxyMetdata, ProxyV1Request } from '../../../types';
 
 const DEST = 'BRAZE_AUDIENCE';
@@ -83,160 +79,161 @@ const viaFramework = (ctx: DeliveryContext) => {
   }
 };
 
-type LegacyResponseBody = BrazeAudienceProxyParams['destinationResponse']['response'];
-type LegacyRequestBody = NonNullable<
-  NonNullable<BrazeAudienceProxyParams['destinationRequest']>['body']
->['JSON'];
-
-/** Run the retained legacy handler the same way, for parity comparison. */
-const viaLegacy = (ctx: DeliveryContext) => {
-  try {
-    const response = legacyResponseHandler({
-      rudderJobMetadata: ctx.jobs,
-      destinationResponse: { status: ctx.status, response: ctx.response as LegacyResponseBody },
-      destinationRequest: { body: { JSON: ctx.request.body?.JSON as LegacyRequestBody } },
-    });
-    return {
-      threw: false,
-      status: response.status,
-      codes: response.response.map((r) => r.statusCode),
-      errors: response.response.map((r) => r.error),
-    };
-  } catch (e: any) {
-    return {
-      threw: true,
-      status: e.status,
-      errorType: e.statTags?.errorType,
-      authErrorCategory: e.authErrorCategory,
-    };
-  }
-};
-
-describe('braze_audience delivery — parity with the retained legacy handler', () => {
+describe('braze_audience delivery — per-job outcomes by response shape', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  const parityCases = [
-    { name: '2xx, no errors field', status: 201, response: { message: 'success' }, items: 2 },
+  // A 2xx always yields per-job verdicts: Braze reports rejected records inside a successful
+  // response, so `codes`/`errors` are the whole outcome.
+  const successCases = [
     {
-      name: '2xx, empty errors array',
-      status: 201,
+      name: 'no errors field',
+      response: { message: 'success' },
+      items: 2,
+      codes: [200, 200],
+      errors: ['success', 'success'],
+    },
+    {
+      name: 'empty errors array',
       response: { message: 'success', errors: [] },
       items: 2,
+      codes: [200, 200],
+      errors: ['success', 'success'],
     },
     {
-      name: '2xx, indexed identity failure (enum)',
-      status: 201,
+      name: 'indexed identity failure (enum) aborts just that record',
       response: { message: 'success', errors: [{ type: 'EXTERNAL_USER_ID_TOO_LARGE', index: 1 }] },
       items: 3,
+      codes: [200, 400, 200],
+      errors: ['success', 'EXTERNAL_USER_ID_TOO_LARGE', 'success'],
     },
     {
-      name: '2xx, indexed identity failure (live message form)',
-      status: 201,
+      name: 'indexed identity failure (live message form) aborts too',
       response: {
         message: 'success',
         errors: [{ type: "'external_id' must be fewer than 988 bytes", index: 1 }],
       },
       items: 3,
+      codes: [200, 400, 200],
+      errors: ['success', "'external_id' must be fewer than 988 bytes", 'success'],
     },
     {
-      name: '2xx, indexed blacklisted id',
-      status: 201,
+      name: 'indexed blacklisted id',
       response: {
         message: 'success',
         errors: [{ type: 'BLACKLISTED_EXTERNAL_USER_ID', index: 0 }],
       },
       items: 1,
+      codes: [400],
+      errors: ['BLACKLISTED_EXTERNAL_USER_ID'],
     },
     {
-      name: '2xx, indexed unknown type stays retryable',
-      status: 201,
+      name: 'indexed unknown type stays retryable',
       response: { message: 'success', errors: [{ type: 'SOME_TRANSIENT_ATTR_ERROR', index: 0 }] },
       items: 2,
+      codes: [500, 200],
+      errors: ['SOME_TRANSIENT_ATTR_ERROR', 'success'],
     },
     {
-      name: '2xx, indexed error with no type',
-      status: 201,
+      name: 'indexed error with no type is retryable under a placeholder reason',
       response: { message: 'success', errors: [{ index: 0 }] },
       items: 2,
+      codes: [500, 200],
+      errors: ['braze_partial_error', 'success'],
     },
     {
-      name: '2xx, unindexed error marks every unmapped record retryable',
-      status: 201,
+      name: 'unindexed error marks every unmapped record retryable',
       response: { message: 'success', errors: [{ type: 'UNINDEXED_FAILURE' }] },
       items: 3,
+      codes: [500, 500, 500],
+      errors: ['UNINDEXED_FAILURE', 'UNINDEXED_FAILURE', 'UNINDEXED_FAILURE'],
     },
     {
-      name: '2xx, indexed abort mixed with an unindexed error',
-      status: 201,
+      name: 'indexed abort mixed with an unindexed error',
       response: {
         message: 'success',
         errors: [{ type: 'EXTERNAL_USER_ID_TOO_LARGE', index: 0 }, { type: 'ORPHAN_ERROR' }],
       },
       items: 3,
+      codes: [400, 500, 500],
+      errors: ['EXTERNAL_USER_ID_TOO_LARGE', 'ORPHAN_ERROR', 'ORPHAN_ERROR'],
     },
     {
       name: 'unindexed error with no type falls back to a placeholder reason',
-      status: 201,
       response: { message: 'success', errors: [{}] },
       items: 2,
+      codes: [500, 500],
+      errors: ['braze_partial_error_unindexed', 'braze_partial_error_unindexed'],
     },
-    { name: 'non-2xx, 400', status: 400, response: { message: 'invalid api key' }, items: 2 },
-    { name: 'non-2xx, 401', status: 401, response: { message: 'unauthorized' }, items: 2 },
-    { name: 'non-2xx, 429', status: 429, response: { message: 'rate limited' }, items: 2 },
-    { name: 'non-2xx, 500', status: 500, response: { message: 'server error' }, items: 2 },
-    { name: 'non-2xx with no message field', status: 503, response: { detail: 'down' }, items: 2 },
   ];
 
-  it.each(parityCases)('per-job codes and errors match: $name', ({ status, response, items }) => {
-    const ctx = ctxFor(status, response, items);
-    const next = viaFramework(ctx);
-    const prev = viaLegacy(ctx);
+  it.each(successCases)(
+    'reports per-job codes and errors on a 2xx: $name',
+    ({ response, items, codes, errors }) => {
+      const result = viaFramework(ctxFor(201, response, items));
 
-    expect(next.threw).toBe(prev.threw);
-    if (prev.threw) {
-      // Whole-batch failure: postTransformation rebuilds the per-job states from this error, so
-      // matching status + errorType + authErrorCategory is matching the delivered response.
-      expect(next.status).toBe(prev.status);
-      expect(next.errorType).toBe(prev.errorType);
-      expect(next.authErrorCategory ?? '').toBe(prev.authErrorCategory ?? '');
-      return;
-    }
-    expect(next.codes).toEqual(prev.codes);
-    expect(next.errors).toEqual(prev.errors);
+      expect(result.threw).toBe(false);
+      expect(result.status).toBe(201);
+      expect(result.codes).toEqual(codes);
+      expect(result.errors).toEqual(errors);
+    },
+  );
+
+  // Braze is REST-API-key authenticated, not OAuth, so no status carries an auth refinement —
+  // every non-2xx is one whole-batch throw with an empty authErrorCategory.
+  it.each([
+    { name: '400', status: 400, response: { message: 'invalid api key' }, errorType: 'aborted' },
+    { name: '401', status: 401, response: { message: 'unauthorized' }, errorType: 'aborted' },
+    { name: '429', status: 429, response: { message: 'rate limited' }, errorType: 'throttled' },
+    { name: '500', status: 500, response: { message: 'server error' }, errorType: 'retryable' },
+    {
+      name: '503 with no message field',
+      status: 503,
+      response: { detail: 'down' },
+      errorType: 'retryable',
+    },
+  ])('throws for the whole batch on a $name', ({ status, response, errorType }) => {
+    const result = viaFramework(ctxFor(status, response, 2));
+
+    expect(result.threw).toBe(true);
+    expect(result.status).toBe(status);
+    expect(result.errorType).toBe(errorType);
+    expect(result.authErrorCategory ?? '').toBe('');
   });
 
-  it('keeps authErrorCategory empty on a 401, as the legacy handler did', () => {
-    // Braze is REST-API-key authenticated, so there is no auth category to infer either way.
-    const ctx = ctxFor(401, { message: 'unauthorized' }, 2);
-    expect(viaLegacy(ctx).authErrorCategory).toBe('');
-    expect(viaFramework(ctx).authErrorCategory).toBe('');
-  });
+  const tags = { destinationId: 'dest-1', workspaceId: 'workspace-1' };
 
   it.each([
     {
-      name: 'partial failure and abort counters',
+      name: 'an indexed identity failure counts a partial failure and an abort',
       response: { errors: [{ type: 'EXTERNAL_USER_ID_TOO_LARGE', index: 0 }] },
+      expected: [
+        ['braze_audience_partial_failure', tags],
+        ['braze_audience_aborted', tags],
+      ],
     },
     {
-      name: 'partial failure and retryable counters',
+      name: 'an indexed transient failure counts a partial failure and a retryable',
       response: { errors: [{ type: 'SOME_TRANSIENT_ATTR_ERROR', index: 0 }] },
+      expected: [
+        ['braze_audience_partial_failure', tags],
+        ['braze_audience_retryable', { ...tags, reason: 'partial' }],
+      ],
     },
     {
-      name: 'unindexed retryable counter',
+      name: 'an unindexed failure counts a retryable for every unmapped record',
       response: { errors: [{ type: 'UNINDEXED_FAILURE' }] },
+      expected: [
+        ['braze_audience_partial_failure', tags],
+        ['braze_audience_retryable', { ...tags, reason: 'partial_unindexed' }],
+        ['braze_audience_retryable', { ...tags, reason: 'partial_unindexed' }],
+      ],
     },
-  ])('emits the same metrics as the legacy handler: $name', ({ response }) => {
-    const ctx = ctxFor(201, response, 2);
+  ])('emits destination-scoped metrics: $name', ({ response, expected }) => {
+    viaFramework(ctxFor(201, response, 2));
 
-    viaFramework(ctx);
-    // Copied, not aliased — `clearAllMocks` must not be able to empty what is being compared.
-    const nextCalls = [...mockStats.increment.mock.calls];
-    jest.clearAllMocks();
-
-    viaLegacy(ctx);
-    expect(nextCalls).toEqual(mockStats.increment.mock.calls);
+    expect(mockStats.increment.mock.calls).toEqual(expected);
   });
 });
 
@@ -373,13 +370,12 @@ describe('braze_audience delivery — error message extraction', () => {
     expect(reasonFor(undefined)).toBe('unknown error');
   });
 
-  // The legacy handler (`v1/destinations/braze_audience/networkHandler.ts`) is
-  // `JSON.stringify(response?.message ?? response)`, which quotes a string message. Dropping
-  // the quotes is the one deliberate divergence; the selection itself is unchanged.
-  it('matches the legacy selection, minus the quoting', () => {
+  // The selection is `response?.message ?? response`; only the quoting differs from a plain
+  // `JSON.stringify` of it, and only for a string. Pinned so neither half can drift silently.
+  it('selects message over the body, returning a string unquoted', () => {
     type BrazeErrorBody = Record<string, unknown> | null;
 
-    const legacy = (response: BrazeErrorBody): string =>
+    const selected = (response: BrazeErrorBody): string =>
       JSON.stringify(response?.message ?? response) || 'unknown error';
 
     // Parsing rather than stripping quotes textually keeps escapes intact.
@@ -397,7 +393,7 @@ describe('braze_audience delivery — error message extraction', () => {
     ];
 
     for (const body of bodies) {
-      expect(reasonFor(body)).toBe(unquote(legacy(body)));
+      expect(reasonFor(body)).toBe(unquote(selected(body)));
     }
   });
 });

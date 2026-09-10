@@ -54,13 +54,22 @@ describe('features destination capabilities', () => {
   });
 
   // A destination may only declare transformerProxy if it implements the proxy itself: either a
-  // networkHandler that exports a handler class (the shape networkHandlerFactory looks for) or a
-  // batching-framework delivery spec. src/v0/destinations/ga/networkHandler.js is the cautionary
+  // batching-framework delivery spec or a networkHandler that exports a handler class (the shape
+  // networkHandlerFactory looks for). src/v0/destinations/ga/networkHandler.js is the cautionary
   // case — the file exists but exports only a deletion-API response parser, so GA falls through to
   // genericNetworkHandler. This asserts the export shape from source rather than requiring the
   // factory, which would pull the whole v0/util runtime into this suite.
   it('declares transformerProxy only for destinations that implement the proxy themselves', () => {
+    const gaDestinationIntegrations = getGaDestinationIntegrations();
+
     const implementsProxy = (destination: string) => {
+      // `batching: true` means the framework owns delivery outright — `isDestinationIntegrationEnabled`
+      // gates the transform and the proxy response together — so the destination implements the
+      // proxy however its `delivery` spec is laid out. Checked before the filesystem because that
+      // spec need not live at `<destination>/delivery.ts`: customerio's is under `v2/`, and a
+      // destination needing no per-status behaviour declares none at all.
+      if (gaDestinationIntegrations[destination]) return true;
+
       const handlerName = getDestinationHandlerName(destination);
       return ['v0', 'v1'].some((version) => {
         const destinationRoot = path.join(__dirname, version, 'destinations', handlerName);

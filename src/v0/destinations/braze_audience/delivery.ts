@@ -5,9 +5,9 @@
  * listing them in `errors[]`. Each entry carries `index` — a position in the posted `attributes`
  * array — so correlation is positional, and without this entry the framework would read a
  * partially-failed batch as a plain success. Keyed on '2xx' rather than 201 because the check it
- * replaces is `isHttpStatusSuccess(status)` (`v1/destinations/braze_audience/networkHandler.ts`).
+ * replaced is `isHttpStatusSuccess(status)`.
  *
- * Three branches carry over from the legacy handler:
+ * Three branches carry over from the legacy handler this replaced:
  *
  *  - an indexed error naming a permanent identity problem aborts that record — no retry can fix an
  *    id Braze has blacklisted or that exceeds its length cap;
@@ -20,11 +20,6 @@
  * The non-2xx path needs no override: the framework's own classification already aborts a 400 and
  * retries a 500 with no auth inference, which is what the legacy handler's empty
  * `authErrorCategory` was expressing — Braze is REST-API-key authenticated, not OAuth.
- *
- * NOTE: `src/v1/destinations/braze_audience/networkHandler.ts` keeps this logic while delivery is
- * still resolved through networkHandlerFactory; both are deleted together when the framework owns
- * delivery for this destination. The identity classifier itself is shared (`./utils`) rather than
- * copied, so the two cannot drift.
  */
 import {
   abort,
@@ -44,10 +39,9 @@ type BrazeAudienceError = { type?: string; index?: number };
 /**
  * Braze puts its failure text on `message`; a body without one is handed back whole.
  *
- * Mirrors the legacy handler (`v1/destinations/braze_audience/networkHandler.ts`), with one
- * deliberate difference: a string is returned bare rather than JSON-quoted. The per-job `error`
- * is what live events display and what error reporting groups on, so `Invalid API key` beats
- * `"Invalid API key"`.
+ * Mirrors the legacy handler this replaced, with one deliberate difference: a string is returned
+ * bare rather than JSON-quoted. The per-job `error` is what live events display and what error
+ * reporting groups on, so `Invalid API key` beats `"Invalid API key"`.
  */
 export const extractBrazeAudienceErrorMessage = (response: unknown): string => {
   const message = (response as { message?: unknown } | undefined)?.message ?? response;

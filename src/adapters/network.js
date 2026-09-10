@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
 const { gzip } = require('node:zlib');
+const { randomUUID } = require('node:crypto');
 const lodash = require('lodash');
 const http = require('http');
 const https = require('https');
@@ -155,6 +156,8 @@ const commonHandler = async (
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
+  // correlates this delivery's request and response capture records
+  const requestId = randomUUID();
 
   logger.requestLog(`${commonMsg} request`, {
     metadata: statTags?.metadata,
@@ -163,6 +166,7 @@ const commonHandler = async (
       body: data || requestOptions?.data,
       method,
     },
+    requestId,
   });
   const startTime = new Date();
   try {
@@ -174,6 +178,7 @@ const commonHandler = async (
     logger.responseLog(`${commonMsg} response`, {
       metadata: statTags?.metadata,
       responseDetails: getResponseDetails(clientResponse),
+      requestId,
     });
     if (!disableMetrics) {
       fireHTTPStats(clientResponse, startTime, statTags);

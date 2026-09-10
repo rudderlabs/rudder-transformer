@@ -158,18 +158,42 @@ const error = (...args) => {
 // Type-only JSDoc: consumers (e.g. the Google Ads SDK's IHttpLogger) declare the second
 // argument optional; the runtime contract (callers must pass it) is unchanged.
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
-const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
+const requestLog = (
+  identifierMsg,
+  { metadata, requestDetails: { url, body, method }, requestId },
+) => {
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {
     event(identifierMsg, { metadata: filteredMetadata, url, body, method });
+    // lazy require to avoid a logger → payloadCapture → stats → logger require cycle
+    const { payloadCapture } = require('./util/payloadCapture');
+    payloadCapture.write({
+      kind: 'request',
+      identifierMsg,
+      metadata: filteredMetadata,
+      details: { url, body, method },
+      requestId,
+    });
   }
 };
 
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
-const responseLog = (identifierMsg, { metadata, responseDetails: { body, status, headers } }) => {
+const responseLog = (
+  identifierMsg,
+  { metadata, responseDetails: { body, status, headers }, requestId },
+) => {
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {
     event(identifierMsg, { metadata: filteredMetadata, body, status, headers });
+    // lazy require to avoid a logger → payloadCapture → stats → logger require cycle
+    const { payloadCapture } = require('./util/payloadCapture');
+    payloadCapture.write({
+      kind: 'response',
+      identifierMsg,
+      metadata: filteredMetadata,
+      details: { body, status, headers },
+      requestId,
+    });
   }
 };
 

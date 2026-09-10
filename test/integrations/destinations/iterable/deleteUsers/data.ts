@@ -72,7 +72,7 @@ export const data = [
   },
   {
     name: destType,
-    description: 'Test 2: should fail when one of the user-deletion requests fails',
+    description: 'Test 2: should pass when Iterable reports one user does not exist',
     feature: 'userDeletion',
     module: 'destination',
     version: 'v0',
@@ -98,12 +98,11 @@ export const data = [
     },
     output: {
       response: {
-        status: 400,
+        status: 200,
         body: [
           {
-            statusCode: 400,
-            error:
-              'User deletion request failed for userIds : [{"userId":"rudder2","Reason":"User does not exist. Email:  UserId: rudder2"}]',
+            statusCode: 200,
+            status: 'successful',
           },
         ],
       },

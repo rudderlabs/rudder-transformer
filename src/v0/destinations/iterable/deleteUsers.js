@@ -13,6 +13,14 @@ const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { constructEndpoint } = require('./config');
 
+// Iterable returns absent users as HTTP 400 with msg like "User does not exist. Email:  UserId: <id>".
+const USER_DOES_NOT_EXIST_MESSAGE = 'User does not exist';
+
+const isAbsentUserResponse = (handledDelResponse) =>
+  handledDelResponse.status === 400 &&
+  typeof handledDelResponse.response?.msg === 'string' &&
+  handledDelResponse.response.msg.includes(USER_DOES_NOT_EXIST_MESSAGE);
+
 // Ref-> https://support.iterable.com/hc/en-us/articles/360032290032-Deleting-Users
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
@@ -49,7 +57,11 @@ const userDeletionHandler = async (userAttributes, config) => {
         module: 'deletion',
       });
       const handledDelResponse = processAxiosResponse(resp);
-      if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {
+      if (
+        !isHttpStatusSuccess(handledDelResponse.status) &&
+        handledDelResponse.status !== 404 &&
+        !isAbsentUserResponse(handledDelResponse)
+      ) {
         if (handledDelResponse.status !== 400) {
           // Generic errors such as invalid api key
           throw new NetworkError(
@@ -62,7 +74,7 @@ const userDeletionHandler = async (userAttributes, config) => {
             handledDelResponse,
           );
         } else {
-          // Specific errors such as user is not found
+          // Specific 400 errors from Iterable such as invalid request parameters
           failedUserDeletions.push({ userId: uId, Reason: handledDelResponse.response.msg });
         }
       }

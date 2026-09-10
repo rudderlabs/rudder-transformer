@@ -22,6 +22,7 @@ import {
   EVENT_DATA_TYPES,
   MAX_EVENT_AGE_MS,
   MAX_EVENT_FUTURE_SKEW_MS,
+  PAGE_VIEWED_EVENT,
   STANDARD_EVENTS,
   STANDARD_EVENT_DATA_TYPES,
 } from './config';
@@ -225,11 +226,15 @@ const sourceKeysOf = (value: unknown): Array<string | string[]> => {
 const RESERVED_CUSTOM_KEYS = new Set<string>(
   Object.values(OPENAI_ADS_MAPPING_CONFIG).flatMap(sourceKeysOf).flatMap(propertyKeys),
 );
+const PAGE_VIEWED_FALLBACK_MESSAGE_TYPES = new Set(['page', 'screen']);
 
-const getSourceKey = (message: RudderMessage): string => {
+const defaultsToPageViewed = (message: RudderMessage): boolean =>
+  PAGE_VIEWED_FALLBACK_MESSAGE_TYPES.has(message.type);
+
+const getSourceKey = (message: RudderMessage, allowMissingName = false): string | undefined => {
   const sourceName = message.type === 'track' ? message.event : get(message, 'name');
   if (sourceName) return String(sourceName);
-  if (message.type === 'page' || message.type === 'screen') return message.type;
+  if (allowMissingName) return undefined;
   throw new InstrumentationError(
     `OpenAI Ads source event name is required for ${message.type} events`,
   );
@@ -244,25 +249,24 @@ const resolveEventMapping = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
 ): OpenAIAdsEventMapping => {
-  if ((message.type === 'page' || message.type === 'screen') && !get(message, 'name')) {
-    return { from: message.type, to: 'page_viewed' };
-  }
-
-  const sourceKey = getSourceKey(message);
-  const normalizedSourceKey = sourceKey.toLowerCase();
-  const mapping = (config.eventMapping ?? []).find(
-    (candidate) => candidate.from.toLowerCase() === normalizedSourceKey,
-  );
+  const shouldDefaultToPageViewed = defaultsToPageViewed(message);
+  const sourceKey = getSourceKey(message, shouldDefaultToPageViewed);
+  const normalizedSourceKey = sourceKey?.toLowerCase();
+  const mapping = normalizedSourceKey
+    ? (config.eventMapping ?? []).find(
+        (candidate) => candidate.from.toLowerCase() === normalizedSourceKey,
+      )
+    : undefined;
   if (!mapping) {
     // An event already named after a standard OpenAI event carries its own mapping, so take the
     // name at face value instead of dropping the event. This holds whatever else is configured: a
     // mapping table translates the names that need translating, and an event that is already in
     // OpenAI's naming needs no row — its absence is not a decision to exclude it.
-    if (isStandardEvent(normalizedSourceKey)) {
+    if (sourceKey && normalizedSourceKey && isStandardEvent(normalizedSourceKey)) {
       return { from: sourceKey, to: normalizedSourceKey };
     }
-    if (message.type === 'page' || message.type === 'screen') {
-      return { from: sourceKey || message.type, to: 'page_viewed' };
+    if (shouldDefaultToPageViewed) {
+      return { from: sourceKey || message.type, to: PAGE_VIEWED_EVENT };
     }
     throw new InstrumentationError(`OpenAI Ads event mapping not found for ${sourceKey}`);
   }

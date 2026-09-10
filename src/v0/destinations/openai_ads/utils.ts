@@ -245,10 +245,15 @@ const STANDARD_EVENT_SET = new Set<string>(STANDARD_EVENTS);
 const isStandardEvent = (name: string): name is OpenAIAdsStandardEvent =>
   STANDARD_EVENT_SET.has(name);
 
+type ResolvedOpenAIAdsEventMapping = Pick<
+  OpenAIAdsEventMapping,
+  'customEventName' | 'deduplicationKey' | 'to'
+>;
+
 const resolveEventMapping = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
-): OpenAIAdsEventMapping => {
+): ResolvedOpenAIAdsEventMapping => {
   const shouldDefaultToPageViewed = defaultsToPageViewed(message);
   const sourceKey = getSourceKey(message, shouldDefaultToPageViewed);
   const normalizedSourceKey = sourceKey?.toLowerCase();
@@ -263,10 +268,10 @@ const resolveEventMapping = (
     // mapping table translates the names that need translating, and an event that is already in
     // OpenAI's naming needs no row — its absence is not a decision to exclude it.
     if (sourceKey && normalizedSourceKey && isStandardEvent(normalizedSourceKey)) {
-      return { from: sourceKey, to: normalizedSourceKey };
+      return { to: normalizedSourceKey };
     }
     if (shouldDefaultToPageViewed) {
-      return { from: sourceKey || message.type, to: PAGE_VIEWED_EVENT };
+      return { to: PAGE_VIEWED_EVENT };
     }
     throw new InstrumentationError(`OpenAI Ads event mapping not found for ${sourceKey}`);
   }
@@ -539,7 +544,7 @@ const buildEventData = (
   return data;
 };
 
-const resolveEventId = (message: RudderMessage, mapping: OpenAIAdsEventMapping): string => {
+const resolveEventId = (message: RudderMessage, mapping: ResolvedOpenAIAdsEventMapping): string => {
   const dedupValue = resolveDotPath(message, mapping.deduplicationKey);
   if (isPresent(dedupValue)) {
     if (!isScalarValue(dedupValue)) {

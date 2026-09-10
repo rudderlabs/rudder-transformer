@@ -60,12 +60,17 @@ export class FileWriter {
 
   private stagedBytes = 0;
 
+  // disambiguates filenames when a pair rotates and reopens within one ms
+  private fileSeq = 0;
+
   constructor(private readonly opts: FileWriterOptions) {
     this.workerDir = path.join(opts.dir, String(process.pid));
   }
 
   init(): void {
-    fs.mkdirSync(this.workerDir, { recursive: true });
+    // captured payloads are PII: owner-only permissions throughout
+    fs.mkdirSync(this.workerDir, { recursive: true, mode: 0o700 });
+    fs.chmodSync(this.workerDir, 0o700);
     this.adoptDeadWorkerDirs();
     // own leftovers (pid reuse after a crash): make .open files uploadable
     for (const name of fs.readdirSync(this.workerDir)) {
@@ -169,6 +174,7 @@ export class FileWriter {
       );
       try {
         fs.renameSync(from, to);
+        fs.chmodSync(to, 0o600);
       } catch (err) {
         if (errnoCode(err) !== 'ENOENT') {
           throw err;
@@ -190,10 +196,11 @@ export class FileWriter {
         this.rotate(oldestKey);
       }
     }
-    const fileName = `${pairKey}__${this.opts.instanceId}-${process.pid}-${Date.now()}${ROTATED_EXT}${OPEN_SUFFIX}`;
+    this.fileSeq += 1;
+    const fileName = `${pairKey}__${this.opts.instanceId}-${process.pid}-${Date.now()}-${this.fileSeq}${ROTATED_EXT}${OPEN_SUFFIX}`;
     const filePath = path.join(this.workerDir, fileName);
     const opened: OpenFile = {
-      fd: fs.openSync(filePath, 'a'),
+      fd: fs.openSync(filePath, 'a', 0o600),
       filePath,
       bytes: 0,
       openedAt: Date.now(),

@@ -88,6 +88,15 @@ describe('FileWriter', () => {
     expect(writer.listRotated()).toHaveLength(1);
   });
 
+  test('same-millisecond rotations never clobber a previously rotated file', () => {
+    const dir = makeTmpDir();
+    const writer = new FileWriter(writerOpts(dir, { maxFileBytes: 1 }));
+    writer.init();
+    writer.append('w1__d1', '{"a":1}\n'); // rotates immediately
+    writer.append('w1__d1', '{"b":2}\n'); // same ms: must get a distinct filename
+    expect(writer.listRotated()).toHaveLength(2);
+  });
+
   test('drops records once the disk cap is reached', () => {
     const dir = makeTmpDir();
     const writer = new FileWriter(writerOpts(dir, { maxDiskBytes: 10 }));
@@ -310,6 +319,7 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
         // a real AxiosHeaders instance — production headers are never plain objects
         headers: new AxiosHeaders({
           'set-cookie': 'session=abc',
+          'x-access-token': 'tok123',
           'content-type': 'application/json',
         }),
       },
@@ -329,8 +339,114 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
     expect((responseBody.preview as string).length).toBe(256 * 1024);
     expect(lines[1].headers).toEqual({
       'set-cookie': '***',
+      'x-access-token': '***',
       'content-type': 'application/json',
     });
+  });
+
+  test('body cap is measured in UTF-8 bytes, not string length', () => {
+    const dir = makeTmpDir();
+    const { payloadCapture } = loadModule(dir, true);
+    payloadCapture.write({
+      kind: 'request',
+      identifierMsg: 'DT proxy request',
+      metadata: [{ workspaceId: 'w1', destinationId: 'd1' }],
+      // 120k chars but ~360KB of UTF-8 — over the 256KB byte cap
+      details: { body: '€'.repeat(120_000), method: 'POST' },
+      requestId: 'r-utf8',
+    });
+    const [line] = readStagedLines(dir);
+    const body = line.body as Record<string, unknown>;
+    expect(body.truncated).toBe(true);
+    expect(Buffer.byteLength(body.preview as string, 'utf8')).toBeLessThanOrEqual(256 * 1024);
+    expect((body.preview as string).endsWith('�')).toBe(false);
+  });
+
+  test('a multi-pair batch only pairs the response for pairs whose request was captured', () => {
+    const dir = makeTmpDir();
+    const { payloadCapture } = loadModule(dir, true);
+    // exhaust d2's sampling budget first
+    payloadCapture.write({
+      kind: 'request',
+      identifierMsg: 'DT proxy request',
+      metadata: [{ workspaceId: 'w1', destinationId: 'd2' }],
+      details: { body: { seed: true }, method: 'POST' },
+      requestId: 'r0',
+    });
+    // mixed batch: d1 wins its token, d2 is sampled out
+    const mixed = [
+      { workspaceId: 'w1', destinationId: 'd1' },
+      { workspaceId: 'w1', destinationId: 'd2' },
+    ];
+    payloadCapture.write({
+      kind: 'request',
+      identifierMsg: 'DT proxy request',
+      metadata: mixed,
+      details: { body: { n: 1 }, method: 'POST' },
+      requestId: 'r1',
+    });
+    payloadCapture.write({
+      kind: 'response',
+      identifierMsg: 'DT proxy response',
+      metadata: mixed,
+      details: { status: 200 },
+      requestId: 'r1',
+    });
+    const lines = readStagedLines(dir);
+    const byKind = (kind: string) => lines.filter((l) => l.kind === kind);
+    expect(byKind('response')).toHaveLength(1);
+    expect(byKind('response')[0]).toMatchObject({ destinationId: 'd1', requestId: 'r1' });
+    // d2 got the seed request and was sampled out of the mixed one
+    expect(
+      byKind('request')
+        .map((l) => l.destinationId)
+        .sort(),
+    ).toEqual(['d1', 'd2']);
+  });
+
+  test('sanitized IDs cannot collide and staging files are owner-only', () => {
+    const dir = makeTmpDir();
+    const { payloadCapture } = loadModule(dir, true);
+    const write = (destinationId: string) =>
+      payloadCapture.write({
+        kind: 'request',
+        identifierMsg: 'DT proxy request',
+        metadata: [{ workspaceId: 'w1', destinationId }],
+        details: { body: { d: destinationId }, method: 'POST' },
+      });
+    write('a/b');
+    write('a-b'); // sanitizes to the same base — must stay a distinct pair
+    const names = fs.readdirSync(workerDirOf(dir));
+    expect(names).toHaveLength(2);
+    expect(names.some((n) => /^w1__a-b-[0-9a-f]{8}__/.test(n))).toBe(true);
+    expect(names.some((n) => n.startsWith('w1__a-b__'))).toBe(true);
+    // eslint-disable-next-line no-bitwise
+    expect(fs.statSync(workerDirOf(dir)).mode & 0o777).toBe(0o700);
+    for (const name of names) {
+      // eslint-disable-next-line no-bitwise
+      expect(fs.statSync(path.join(workerDirOf(dir), name)).mode & 0o777).toBe(0o600);
+    }
+  });
+
+  test('a failed upload keeps the file and labels the failure metric', async () => {
+    const dir = makeTmpDir();
+    const { payloadCapture, freshS3Mock, freshPutObjectCommand, freshStats } = loadModule(
+      dir,
+      true,
+    );
+    freshS3Mock.on(freshPutObjectCommand).rejects(new Error('bucket gone'));
+    payloadCapture.write({
+      kind: 'request',
+      identifierMsg: 'DT proxy request',
+      metadata: [{ workspaceId: 'w1', destinationId: 'd1' }],
+      details: { body: { a: 1 }, method: 'POST' },
+      requestId: 'r1',
+    });
+    await payloadCapture.shutdown();
+    expect(freshStats.increment).toHaveBeenCalledWith('payload_capture_upload_failure', {
+      reason: 'Error',
+    });
+    expect(fs.readdirSync(workerDirOf(dir)).filter((f) => f.endsWith('.jsonl'))).toHaveLength(1);
   });
 
   test('captures a request, pairs its response, samples out the next delivery', async () => {

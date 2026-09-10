@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import stats from '../stats';
 import { getCaptureConfig } from './config';
 import { FileWriter } from './fileWriter';
@@ -10,16 +11,10 @@ import type { S3Uploader, S3UploaderOptions } from './s3Uploader';
 const INSTANCE_ID = process.env.INSTANCE_ID || 'localhost';
 const MAX_BODY_BYTES = 256 * 1024;
 const WARN_INTERVAL_MS = 5 * 60_000;
-const SENSITIVE_HEADERS = new Set([
-  'authorization',
-  'proxy-authorization',
-  'cookie',
-  'set-cookie',
-  'x-api-key',
-  'x-auth-token',
-  'api-key',
-  'access-token',
-]);
+// header NAMES matching this are masked — covers authorization/authentication,
+// x-access-token, x-api-secret, set-cookie and the other auth-shaped variants
+const SENSITIVE_HEADER_PATTERN =
+  /auth|token|secret|passw|pwd|cookie|session|signature|credential|(^|[_-])key($|[_-])/i;
 // query-param KEYS matching this are masked; other params often carry the
 // event itself for GET-style destinations and must stay debuggable
 const SENSITIVE_PARAM_PATTERN =
@@ -42,11 +37,12 @@ let flushTimer: NodeJS.Timeout | undefined;
 let flushPromise: Promise<void> | undefined;
 const warnedErrors = new Map<string, number>();
 
-// requestIds of captured requests whose response should be captured too.
+// requestId → the (workspace, destination) pairKeys whose request record was
+// captured, so only those pairs' response records are captured too.
 // Self-cleaning: every delivery emits a response (responseLog runs in a
 // finally block), so entries only linger after a crash — the cap bounds that.
 const INFLIGHT_CAP = 1000;
-const inflightRequestIds = new Set<string>();
+const inflightRequestIds = new Map<string, Set<string>>();
 
 interface ErrorLike {
   name?: unknown;
@@ -84,31 +80,49 @@ const warnRateLimited = (context: string, err: unknown): void => {
   logger.warn(`payload capture ${context} failed: [${reason}] ${message}`);
 };
 
-const rememberInflight = (requestId: string): void => {
+const rememberInflight = (requestId: string, pairKey: string): void => {
+  const existing = inflightRequestIds.get(requestId);
+  if (existing) {
+    existing.add(pairKey);
+    return;
+  }
   if (inflightRequestIds.size >= INFLIGHT_CAP) {
-    const oldest = inflightRequestIds.values().next().value;
+    const oldest = inflightRequestIds.keys().next().value;
     if (typeof oldest === 'string') {
       inflightRequestIds.delete(oldest);
     }
   }
-  inflightRequestIds.add(requestId);
+  inflightRequestIds.set(requestId, new Set([pairKey]));
 };
 
 const shouldCapture = (record: { kind: string; requestId?: string }, pairKey: string): boolean => {
   if (record.kind === 'request') {
     return sampler?.allow(pairKey) === true;
   }
-  // a response is captured iff its request was captured (paired by requestId);
-  // id-less callers fall back to a sampling budget of their own
+  // a paired response reaches here only after its (requestId, pairKey)
+  // membership was verified by the caller; id-less callers fall back to a
+  // sampling budget of their own
   if (record.requestId) {
-    return inflightRequestIds.has(record.requestId);
+    return true;
   }
   return sampler?.allow(`${pairKey}__response`) === true;
 };
 
-/** IDs land in filenames and S3 keys; the `__` delimiter must stay unambiguous. */
-const sanitizeId = (value: string | undefined): string =>
-  (value || 'unknown').replace(/[^\dA-Za-z-]/g, '-');
+/**
+ * IDs land in filenames and S3 keys; the `__` delimiter must stay unambiguous.
+ * When sanitization alters the value, a short digest of the original is
+ * appended so distinct raw IDs can never collide onto one key (`a/b` vs `a-b`).
+ * Normal alphanumeric IDs pass through untouched.
+ */
+const sanitizeId = (value: string | undefined): string => {
+  const raw = value || 'unknown';
+  const sanitized = raw.replace(/[^\dA-Za-z-]/g, '-');
+  if (sanitized === raw) {
+    return sanitized;
+  }
+  const digest = createHash('sha256').update(raw).digest('hex').slice(0, 8);
+  return `${sanitized}-${digest}`;
+};
 
 const isPlainObjectOrArray = (value: object): boolean => {
   if (Array.isArray(value)) {
@@ -123,14 +137,22 @@ const isPlainObjectOrArray = (value: object): boolean => {
  * arrays are stored (a FormData or stream body serialises uselessly or
  * throws), and anything over MAX_BODY_BYTES is cut down to a preview.
  */
+// the cap is in UTF-8 BYTES (string.length counts UTF-16 units and
+// under-counts non-ASCII); truncation keeps the preview valid UTF-8
+const truncateUtf8 = (value: string): { truncated: true; preview: string } => ({
+  truncated: true,
+  preview: Buffer.from(value, 'utf8')
+    .subarray(0, MAX_BODY_BYTES)
+    .toString('utf8')
+    .replace(/�+$/, ''),
+});
+
 const safeBody = (body: unknown): unknown => {
   if (body === null || body === undefined) {
     return body;
   }
   if (typeof body === 'string') {
-    return body.length > MAX_BODY_BYTES
-      ? { truncated: true, preview: body.slice(0, MAX_BODY_BYTES) }
-      : body;
+    return Buffer.byteLength(body, 'utf8') > MAX_BODY_BYTES ? truncateUtf8(body) : body;
   }
   if (typeof body === 'number' || typeof body === 'boolean') {
     return body;
@@ -145,9 +167,7 @@ const safeBody = (body: unknown): unknown => {
     if (typeof json !== 'string') {
       return { unserializable: true };
     }
-    return json.length > MAX_BODY_BYTES
-      ? { truncated: true, preview: json.slice(0, MAX_BODY_BYTES) }
-      : body;
+    return Buffer.byteLength(json, 'utf8') > MAX_BODY_BYTES ? truncateUtf8(json) : body;
   }
   return { unserializable: body?.constructor?.name || typeof body };
 };
@@ -177,7 +197,7 @@ const redactHeaders = (headers: unknown): unknown => {
   }
   const redacted: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(headers)) {
-    redacted[key] = SENSITIVE_HEADERS.has(key.toLowerCase()) ? '***' : value;
+    redacted[key] = SENSITIVE_HEADER_PATTERN.test(key) ? '***' : value;
   }
   return redacted;
 };
@@ -286,15 +306,18 @@ export const payloadCapture = {
           uniquePairs.set(pairKey, entry);
         }
       }
-      // a paired response of an uncaptured request is the normal case: skip
-      // it before the capacity check so it never inflates the disk_cap counter
-      const pairedResponseSkipped =
-        record.kind === 'response' &&
-        typeof record.requestId === 'string' &&
-        !inflightRequestIds.has(record.requestId);
-      const pairsToProcess = pairedResponseSkipped ? [] : [...uniquePairs];
-      for (const [pairKey, entry] of pairsToProcess) {
-        if (!writer?.hasCapacity()) {
+      // for a paired response, only the pairs whose request record was
+      // actually captured are eligible; the rest are skipped silently before
+      // the capacity check so they never inflate the disk_cap counter
+      const pairedId = record.kind === 'response' ? record.requestId : undefined;
+      const inflightPairs =
+        typeof pairedId === 'string' ? inflightRequestIds.get(pairedId) : undefined;
+      for (const [pairKey, entry] of uniquePairs) {
+        const pairedSkip = typeof pairedId === 'string' && inflightPairs?.has(pairKey) !== true;
+        if (pairedSkip) {
+          // silent: response of a pair whose request was not captured — the
+          // normal case
+        } else if (!writer?.hasCapacity()) {
           // full disk: don't burn the sampling window on a record we can't keep
           stats.increment('payload_capture_dropped', { reason: 'disk_cap' });
         } else if (!shouldCapture(record, pairKey)) {
@@ -317,15 +340,19 @@ export const payloadCapture = {
           if (writer?.append(pairKey, line)) {
             stats.increment('payload_capture_written');
             if (record.kind === 'request' && record.requestId) {
-              rememberInflight(record.requestId);
+              rememberInflight(record.requestId, pairKey);
             }
           } else {
             stats.increment('payload_capture_dropped', { reason: 'disk_cap' });
           }
         }
+        // each pair's pairing token is single-use
+        if (typeof pairedId === 'string') {
+          inflightPairs?.delete(pairKey);
+        }
       }
-      if (record.kind === 'response' && record.requestId) {
-        inflightRequestIds.delete(record.requestId);
+      if (typeof pairedId === 'string' && inflightPairs?.size === 0) {
+        inflightRequestIds.delete(pairedId);
       }
     } catch (err) {
       warnRateLimited('write', err);

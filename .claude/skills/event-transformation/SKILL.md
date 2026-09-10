@@ -373,15 +373,6 @@ destinations — both have identity models that these two rules would actively b
 The names collide; the concepts are unrelated. Establish which one you are looking at *before*
 writing the mapping.
 
-- **RudderStack's `externalId`** is a destination-maintained *profile* ID. It arrives at
-  `context.externalId` as an array of `{ id, type }` objects and is read with
-  `getDestinationExternalID` (`src/v0/util/index.js:1169`). It lives under `context`, not
-  `traits`, precisely because one event fans out to many destinations, each holding a different
-  profile ID. It belongs to CRM-shaped destinations that create a profile and hand an ID back.
-- **An ads partner's `external_id`** is just that partner's name for "the advertiser's own user
-  identifier", sitting alongside email and phone as one more match key. Nothing generates it and
-  nothing hands it back.
-
 For an ads destination, map the partner's identifier field from top-level **`userId`, falling
 back to `anonymousId`** — and nothing else
 (`src/v0/destinations/openai_ads/data/OPENAI_ADSConfig.json:26-27`):
@@ -389,18 +380,6 @@ back to `anonymousId`** — and nothing else
 ```json
 { "sourceKeys": ["userId", "anonymousId"], "destKey": "external_ids_sha256" }
 ```
-
-Two things follow, and both have been real review findings:
-
-- **Don't add `traits.*` / `context.traits.*` lookups for it.** `userId` is a top-level field on
-  every RudderStack event, so `traits.userId`, `traits.id`, `context.traits.userId` and
-  `context.traits.id` are redundant — and because `sourceKeys` is a precedence chain, listing
-  them ahead of `userId` silently prefers a stale or mismatched value whenever a customer
-  happens to set `traits.id` to something else.
-- **Don't expose an externalId input in the destination config for it.** In an event-stream
-  connection the customer has no partner-generated ID to send; they have their own login
-  identifier, which is already `userId`. The case for mapping an arbitrary partner-side ID
-  exists in RETL, where VDM gives the customer that flexibility. It does not exist here.
 
 **Precedent that is not the pattern:** `facebook_conversions` maps `external_id` from
 `["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id",

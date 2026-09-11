@@ -1,17 +1,25 @@
 import {
   destinationIntegrationsMap,
   isDestinationIntegrationEnabled,
+  isBatchingFrameworkTransportEnabled,
 } from '../destinationIntegrationsMap';
 
 describe('isDestinationIntegrationEnabled', () => {
   const envKey = 'TEST_DEST_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS';
+  const transportEnvKey = 'TEST_DEST_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS';
   const originalEnv = process.env[envKey];
+  const originalTransportEnv = process.env[transportEnvKey];
 
   afterEach(() => {
     if (originalEnv === undefined) {
       delete process.env[envKey];
     } else {
       process.env[envKey] = originalEnv;
+    }
+    if (originalTransportEnv === undefined) {
+      delete process.env[transportEnvKey];
+    } else {
+      process.env[transportEnvKey] = originalTransportEnv;
     }
     delete destinationIntegrationsMap['TEST_DEST'];
   });
@@ -106,6 +114,23 @@ describe('isDestinationIntegrationEnabled', () => {
       }
       delete process.env[envKey];
       expect(isDestinationIntegrationEnabled(destType, workspaceId)).toBe(expected);
+    });
+  });
+
+  describe('transport rollout', () => {
+    it('returns false when the batching framework transform is disabled even if transport env is set', () => {
+      delete process.env[envKey];
+      process.env[transportEnvKey] = 'ALL';
+
+      expect(isBatchingFrameworkTransportEnabled('TEST_DEST', 'ws-1')).toBe(false);
+    });
+
+    it('returns true only when both transform and transport rollout match the workspace', () => {
+      process.env[envKey] = 'ALL';
+      process.env[transportEnvKey] = 'ws-1';
+
+      expect(isBatchingFrameworkTransportEnabled('TEST_DEST', 'ws-1')).toBe(true);
+      expect(isBatchingFrameworkTransportEnabled('TEST_DEST', 'ws-2')).toBe(false);
     });
   });
 });

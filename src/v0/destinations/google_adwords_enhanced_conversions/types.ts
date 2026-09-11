@@ -136,3 +136,11 @@ export interface GaecDeliveryRequest {
   type?: string;
   [key: string]: unknown;
 }
+
+/** Shape of the SDK response from `googleAds.addConversionAdjustMent`. */
+export interface GaecSdkResponse {
+  statusCode: number;
+  // absent on the SDK's client-error responses
+  responseBody?: unknown;
+  headers?: Record<string, unknown>;
+}

@@ -16,8 +16,10 @@ const DEST = 'google_adwords_enhanced_conversions';
 //
 //   1. rudder-auth mints an access token from the stored refresh token (authType 'oauth'),
 //   2. the batching-framework transform builds the conversion adjustments,
-//   3. the SDK resolves the conversion action by NAME via `googleAds:searchStream`, and
-//   4. uploads to `customers/<id>:uploadConversionAdjustments` on Google Ads v23.
+//   3. the post-transform hook resolves conversion actions by NAME via `googleAds:searchStream`,
+//      and
+//   4. framework-owned transport uploads to `customers/<id>:uploadConversionAdjustments` on
+//      Google Ads v23.
 //
 // There is deliberately no read-back `verify`. Google Ads exposes no API for reading an uploaded
 // conversion adjustment, and matching against the underlying conversion is asynchronous (hours), so
@@ -121,15 +123,15 @@ const scenarios = [
     ],
   },
   {
-    id: 'gaec-grouping-fan-out',
+    id: 'gaec-different-conversions-batch',
     description:
-      'Two events on DIFFERENT conversion actions fan out to two uploads — the conversion name is part of the batching key, and each resolves its own conversionActionId',
+      'Two events on DIFFERENT conversion actions batch into one upload because conversionAction is resolved onto each adjustment before grouping',
     steps: [
       {
         stepType: 'pipeline',
-        name: 'two different-conversion events fan out to two uploads',
-        expectedOutputs: 2,
-        expectedProxyRequests: 2,
+        name: 'two different-conversion events batch into one upload',
+        expectedOutputs: 1,
+        expectedProxyRequests: 1,
         seed: (ctx) => [
           enhancementEvent(ctx, 'fanout-primary', PRIMARY_CONVERSION, emailPhoneTraits(ctx)),
           enhancementEvent(ctx, 'fanout-secondary', SECONDARY_CONVERSION, emailPhoneTraits(ctx)),
@@ -144,11 +146,10 @@ const scenarios = [
     steps: [
       // Deliberately two steps, and the order is load-bearing.
       //
-      // networkHandler resolves the conversion action by NAME before uploading, and that lookup
-      // uses the same access token. With a bad token the LOOKUP fails first, and it fails by
-      // THROWING from inside networkHandler.proxy() — which the framework's try/catch turns into a
-      // legacy-path error, never reaching the delivery spec's 4xx override. The test would go red
-      // for the right-looking reason while proving nothing about delivery.ts.
+      // The post-transform hook resolves the conversion action by NAME before uploading, and that
+      // lookup uses the same access token. With a bad token the LOOKUP fails first, and it fails by
+      // throwing before delivery, never reaching the delivery spec's 4xx override. The test would
+      // go red for the right-looking reason while proving nothing about delivery.ts.
       //
       // The lookup is memoised per (conversion name, customerId), so a valid delivery first warms
       // that cache; the bad-token step then skips the lookup and fails on the upload, which IS a
@@ -205,6 +206,10 @@ export const live = {
   // rudder-auth's v1 route. It answers with `{ access_token }`, which is the key transform.ts reads
   // via getAccessToken.
   oauthVersion: 'v1',
+  envOverrides: {
+    GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS:
+      'live-workspaceId',
+  },
   // Mirrors rudder-integrations-config
   // `destinations/google_adwords_enhanced_conversions/accounts/google_adwords_enhanced_conversions_oauth/db-config.json`.
   // `name` is what rudder-auth lowercases to pick its implementation, so it has to match that file

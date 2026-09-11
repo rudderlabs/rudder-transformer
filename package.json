@@ -126,7 +126,7 @@
     "unset-value": "^2.0.1",
     "uuid": "^11.1.0",
     "valid-url": "^1.0.9",
-    "validator": "^13.15.22",
+    "validator": "^13.15.35",
     "zod": "^3.22.4"
   },
   "devDependencies": {

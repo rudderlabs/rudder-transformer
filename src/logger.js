@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 const {
   LOGLEVELS,
   structuredLogger,

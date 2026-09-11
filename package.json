@@ -42,7 +42,7 @@
     "test:js": "NODE_OPTIONS='--no-node-snapshot' jest -c jest.default.config.js --detectOpenHandles",
     "test:js:silent": "export LOG_LEVEL=silent && npm run test:js -- --silent",
     "test:js:ci": "npm run test:js -- --coverage --expand --maxWorkers=50%",
-    "test:ts": "npm run build:sandboxes && NODE_OPTIONS='--no-node-snapshot' jest -c jest.config.typescript.js --detectOpenHandles",
+    "test:ts": "rm -rf ./allure-results && npm run build:sandboxes && NODE_OPTIONS='--no-node-snapshot' jest -c jest.config.typescript.js --detectOpenHandles",
     "test:ts:component:generateNwMocks": "npm run test:ts -- component --generate=true",
     "test:ts:component:rudder_test": "npm run test:ts -- component --destination=rudder_test",
     "test:live": "NODE_OPTIONS='--no-node-snapshot' jest -c jest.config.live.js",

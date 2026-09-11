@@ -1,6 +1,6 @@
 ---
 name: event-transformation
-description: Business logic for turning one RudderStack event into one destination payload — the standard mapping JSON shape and constructPayload, resolving source values, ISO-4217 minor units, preserving customer data, and assembling the payload. Applied automatically — not user-invocable.
+description: Business logic for turning one RudderStack event into one destination payload — the standard mapping JSON shape and constructPayload, resolving source values, ISO-4217 minor units, preserving customer data, and assembling the payload, plus category conventions for ads destinations (identity match fields, deduplication keys). Applied automatically — not user-invocable.
 ---
 
 # Event Transformation
@@ -17,6 +17,11 @@ conversion, partner-specific validation — is written as TypeScript.
 `src/v0/destinations/openai_ads/` is the current worked example: mapping JSON in
 `data/OPENAI_ADSConfig.json`, `constructPayload` in `utils.ts`, and only the hashing,
 amount/currency and content-item validation left in code.
+
+Everything up to **Category Conventions** applies to every destination. That last section
+holds rules that bind only one class of destination — read the subsection for what you are
+building and skip the rest. A rule sits there because it is wrong or meaningless outside its
+category, not because it is optional inside it.
 
 ## The Standard Mapping Shape
 
@@ -223,18 +228,25 @@ const toMinorUnits = (value: number, currency?: string) =>
   Math.round(value * 10 ** exponent(currency));
 ```
 
-**`currency-codes` is not currently a dependency of this repo** — the first destination that
-needs this has to add it to `package.json`. If you'd rather not take the dependency, a local
-constant listing only the non-2 exponents (≈39 codes, defaulting everything else to 2) is a
-reasonable substitute; either way the exponent must come from a table, not a literal. Both
-carry the same caveat: the ISO-4217 list is static and needs refreshing when a currency
-redenominates.
+**`currency-codes` is a dependency of this repo** (`package.json:79`, `^2.2.0`) — `openai_ads`
+added it, so no new dependency is needed. The ISO-4217 list is static and needs refreshing
+when a currency redenominates.
+
+That snippet is the minimum shape. The worked reference is
+`src/v0/destinations/openai_ads/utils.ts:377` (`toMinorUnits`), which scales the decimal string
+with `BigInt` rather than multiplying a float — worth copying when the partner accepts only an
+exact integer, since `value * 10 ** exponent` inherits float error. It also bounds the input
+length before `BigInt` parses a customer-controlled digit string, rounds half-away-from-zero
+instead of dropping the event over a fraction of a cent, and keeps negative amounts (a refund
+is a conversion with a negative value).
 
 Notes:
 
 - `cc.code()` returns `undefined` for an unrecognised code, so you still choose the fallback.
   Default to 2 **and log once per unrecognised currency** — a code the library doesn't know is
-  either a customer typo or a currency it predates, and both are worth seeing.
+  either a customer typo or a currency it predates, and both are worth seeing. `openai_ads`
+  makes the opposite call and throws an `InstrumentationError`; either is defensible, but
+  decide it deliberately rather than by omission.
 - Decide explicitly what happens when a value resolves but a currency doesn't. Silently
   assuming one misattributes revenue; failing the single event surfaces it in Live Events.
 - If the partner uses "micros" (currency unit × 10⁶ regardless of decimals, e.g. Google Ads),
@@ -341,3 +353,78 @@ Restructuring the JSON to separate message-relative paths from item-level keys d
 this on its own — `context.externalId.0.id` is message-domain and still contributes an `id`
 leaf. The prefix filter is what fixes it. Cover it with a component-test fixture: a custom
 event carrying `properties.id` / `properties.name` must pass them through.
+
+## Category Conventions
+
+Everything above applies to every destination. What follows does not.
+
+### Ads Destinations
+
+Scope: conversion / offline-event APIs where we send server-side events for ad attribution —
+`openai_ads`, `facebook_conversions`, `pinterest_tag`, `linkedin_ads`, `snapchat_conversion`,
+`reddit`, the Google Ads conversion destinations. **Not** CRMs or marketing platforms that
+maintain user profiles (Braze, HubSpot, Customer.io), and **not** audience/RETL sync
+destinations — both have identity models that these two rules would actively break.
+
+`src/v0/destinations/openai_ads/` is the reference implementation for both.
+
+#### A partner field named `external_id` is not RudderStack's `externalId`
+
+The names collide; the concepts are unrelated. Establish which one you are looking at *before*
+writing the mapping.
+
+For an ads destination, map the partner's identifier field from top-level **`userId`, falling
+back to `anonymousId`** — and nothing else
+(`src/v0/destinations/openai_ads/data/OPENAI_ADSConfig.json:26-27`):
+
+```json
+{ "sourceKeys": ["userId", "anonymousId"], "destKey": "external_ids_sha256" }
+```
+
+**Precedent that is not the pattern:** `facebook_conversions` maps `external_id` from
+`["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id",
+"anonymousId"]` (`src/v0/destinations/facebook_conversions/data/FBCUserDataConfig.json:2-16`).
+It is an older integration with a deliberately broad fallback chain. Don't copy it into a new
+destination.
+
+#### `deduplicationKey` goes on the event-mapping row, not the destination config
+
+The config key is spelled **`deduplicationKey`** — not `eventId`, `conversionId`, or a new
+spelling. That much matches `rudder-integrations-config/CONVENTIONS.md`. What follows is about
+*where the field lives*, which that document does not cover.
+
+**If the destination config has an event-mapping table, `deduplicationKey` is a field on each
+row.** Ads partners dedupe server events against a browser pixel per conversion type, and the
+field carrying the shared id differs per event — an order dedupes on `properties.orderId`, a
+signup on something else. One global key forces every event through a single path, so it
+resolves for one event type and silently falls back to `messageId` for the rest, which never
+matches the pixel. A global key is right only when the destination has no event-mapping table.
+
+**It is optional, and absent-or-unresolved means `messageId`.** Never required, never validated
+as non-empty.
+
+`openai_ads` implements exactly this:
+
+- `deduplicationKey: z.string().optional()` inside `OpenAIAdsEventMappingSchema`, alongside
+  `from`, `to` and `customEventName` (`src/v0/destinations/openai_ads/types.ts:16`).
+- `resolveEventId` resolves the row's dot path against the message and falls back to
+  `message.messageId` when the key is unset or the path yields nothing
+  (`src/v0/destinations/openai_ads/utils.ts:531-542`).
+- In `integrations-config`, a `textInput` inside the event-mapping row with
+  `"configKey": "deduplicationKey"`, no `required`, and a regex admitting the empty string
+  (`^$|^[A-Za-z_]…`) so clearing it stays valid.
+
+A resolved-but-non-scalar value throws an `InstrumentationError` there rather than falling back
+silently: a customer pointing the key at an object is a misconfiguration worth surfacing, not
+worth papering over with `messageId`.
+
+**Precedent that is not the pattern:** `pinterest_tag` and `snapchat_conversion` both have
+event-mapping tables (`eventsMapping`, `rudderEventsToSnapEvents`) *and* keep
+`deduplicationKey` global — that is the shape this rule moves away from, not an exception to
+it. `linkedin_ads` has no event-mapping table, so its global key
+(`src/cdk/v2/destinations/linkedin_ads/procWorkflow.yaml:47`) is fine as it stands.
+
+Watch the fallback shape if you copy from the older ones. `pinterest_tag` and `linkedin_ads`
+use `getOneByPaths(…) ?? .messageId`, which falls back when the config is unset *or* no path
+resolves. `snapchat_conversion` uses `deduplicationKey || 'messageId'`, so a set-but-
+unresolvable path yields no id at all rather than `messageId`. Prefer the first.

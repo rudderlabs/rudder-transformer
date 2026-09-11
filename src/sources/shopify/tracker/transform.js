@@ -257,11 +257,6 @@ const isIdentifierEvent = (event) =>
 const processIdentifierEvent = async (event, metricMetadata) => {
   const cartToken =
     typeof event.cartToken === 'string' ? event.cartToken.split('?')[0] : event.cartToken;
-  logger.debug(`{{SHOPIFY::}} writeKey: ${metricMetadata.writeKey}, cartToken: ${cartToken}`, {
-    type: 'set',
-    source: metricMetadata.source,
-    writeKey: metricMetadata.writeKey,
-  });
   let value;
   let field;
   if (event.event === 'rudderIdentifier') {

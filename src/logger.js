@@ -4,7 +4,6 @@ const {
   structuredLogger,
   isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
-const { getMatchedMetadata } = require('./util/logger');
 // LOGGER_IMPL can be `console` or `winston`
 const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
 
@@ -159,18 +158,13 @@ const error = (...args) => {
 // argument optional; the runtime contract (callers must pass it) is unchanged.
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
 const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
-  const filteredMetadata = getMatchedMetadata(metadata);
-  if (filteredMetadata.length > 0) {
-    event(identifierMsg, { metadata: filteredMetadata, url, body, method });
-  }
+  // no allowlist dependency: LOG_LEVEL=event is the only gate
+  event(identifierMsg, { metadata, url, body, method });
 };
 
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
 const responseLog = (identifierMsg, { metadata, responseDetails: { body, status, headers } }) => {
-  const filteredMetadata = getMatchedMetadata(metadata);
-  if (filteredMetadata.length > 0) {
-    event(identifierMsg, { metadata: filteredMetadata, body, status, headers });
-  }
+  event(identifierMsg, { metadata, body, status, headers });
 };
 
 module.exports = {

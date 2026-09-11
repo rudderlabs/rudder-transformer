@@ -162,9 +162,11 @@ const requestLog = (
   identifierMsg,
   { metadata, requestDetails: { url, body, method }, requestId },
 ) => {
+  // the event log has no allowlist dependency: LOG_LEVEL=event is the only gate
+  event(identifierMsg, { metadata, url, body, method });
+  // the allowlist gates only the durable S3 capture
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {
-    event(identifierMsg, { metadata: filteredMetadata, url, body, method });
     // lazy require to avoid a logger → payloadCapture → stats → logger require cycle
     const { payloadCapture } = require('./util/payloadCapture');
     payloadCapture.write({
@@ -182,9 +184,9 @@ const responseLog = (
   identifierMsg,
   { metadata, responseDetails: { body, status, headers }, requestId },
 ) => {
+  event(identifierMsg, { metadata, body, status, headers });
   const filteredMetadata = getMatchedMetadata(metadata);
   if (filteredMetadata.length > 0) {
-    event(identifierMsg, { metadata: filteredMetadata, body, status, headers });
     // lazy require to avoid a logger → payloadCapture → stats → logger require cycle
     const { payloadCapture } = require('./util/payloadCapture');
     payloadCapture.write({

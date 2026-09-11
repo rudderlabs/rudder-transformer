@@ -14,11 +14,6 @@ jest.mock('@rudderstack/integrations-lib', () => ({
   structuredLogger: () => mockLoggerInstance,
 }));
 
-jest.mock('./util/logger', () => ({
-  getMatchedMetadata: jest.fn(),
-}));
-
-const { getMatchedMetadata } = require('./util/logger');
 const logger = require('./logger');
 
 const metadata = { destinationId: 'd1', workspaceId: 'w1', destType: 'BRAZE' };
@@ -68,15 +63,7 @@ describe('event level gating', () => {
 });
 
 describe('requestLog / responseLog', () => {
-  test('does not log when no metadata matches', () => {
-    getMatchedMetadata.mockReturnValue([]);
-    logger.setLogLevel('event');
-    logger.requestLog('BRAZE proxy request', { metadata, requestDetails });
-    expect(mockLoggerInstance.event).not.toHaveBeenCalled();
-  });
-
-  test('does not log payloads at info level even for matching metadata', () => {
-    getMatchedMetadata.mockReturnValue([metadata]);
+  test('does not log payloads at info level', () => {
     logger.setLogLevel('info');
     logger.requestLog('BRAZE proxy request', { metadata, requestDetails });
     logger.responseLog('BRAZE proxy response', { metadata, responseDetails });
@@ -85,8 +72,7 @@ describe('requestLog / responseLog', () => {
     expect(mockLoggerInstance.warn).not.toHaveBeenCalled();
   });
 
-  test('logs request payload at event level for matching metadata', () => {
-    getMatchedMetadata.mockReturnValue([metadata]);
+  test('logs request payload at event level with no allowlist dependency', () => {
     logger.setLogLevel('event');
     logger.requestLog('BRAZE proxy request', { metadata, requestDetails });
     expect(mockLoggerInstance.event).toHaveBeenCalledTimes(1);
@@ -101,8 +87,7 @@ describe('requestLog / responseLog', () => {
     expect(mockLoggerInstance.info).not.toHaveBeenCalled();
   });
 
-  test('logs response payload at event level for matching metadata', () => {
-    getMatchedMetadata.mockReturnValue([metadata]);
+  test('logs response payload at event level with no allowlist dependency', () => {
     logger.setLogLevel('event');
     logger.responseLog('BRAZE proxy response', { metadata, responseDetails });
     expect(mockLoggerInstance.event).toHaveBeenCalledTimes(1);

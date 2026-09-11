@@ -435,6 +435,70 @@ describe('OpenAIAdsIntegration', () => {
     expect(body.data.type).toBe(STANDARD_EVENT_DATA_TYPES.order_created);
   });
 
+  it.each([
+    {
+      label: 'mapped page name',
+      message: {
+        type: 'page',
+        name: 'Product Viewed',
+        messageId: 'msg-page',
+        timestamp: EVENT_TIMESTAMP,
+      },
+      expectedType: 'contents_viewed',
+      expectedDataType: 'contents',
+    },
+    {
+      label: 'unmapped page name',
+      message: { type: 'page', name: 'Docs', messageId: 'msg-page', timestamp: EVENT_TIMESTAMP },
+      expectedType: 'page_viewed',
+      expectedDataType: 'contents',
+    },
+    {
+      label: 'unnamed screen',
+      message: { type: 'screen', messageId: 'msg-screen', timestamp: EVENT_TIMESTAMP },
+      expectedType: 'page_viewed',
+      expectedDataType: 'contents',
+    },
+    {
+      label: 'standard screen name',
+      message: {
+        type: 'screen',
+        name: 'lead_created',
+        messageId: 'msg-screen',
+        timestamp: EVENT_TIMESTAMP,
+      },
+      expectedType: 'lead_created',
+      expectedDataType: 'customer_action',
+    },
+  ])('resolves $label', ({ message, expectedType, expectedDataType }) => {
+    const body = transform({ ...makeInput(1), message } as RouterTransformationRequestData).body;
+
+    expect(body.type).toBe(expectedType);
+    expect(body.data.type).toBe(expectedDataType);
+  });
+
+  it.each([
+    {
+      label: 'unnamed page',
+      message: { type: 'page', messageId: 'msg-page', timestamp: EVENT_TIMESTAMP },
+      eventMapping: [{ from: 'page', to: 'lead_created' }],
+    },
+    {
+      label: 'unnamed screen',
+      message: { type: 'screen', messageId: 'msg-screen', timestamp: EVENT_TIMESTAMP },
+      eventMapping: [{ from: 'screen', to: 'order_created' }],
+    },
+  ])('falls back for $label even when a type-name mapping exists', ({ message, eventMapping }) => {
+    const body = transform({
+      ...makeInput(1),
+      message,
+      destination: { ...destination, Config: { ...destination.Config, eventMapping } },
+    } as RouterTransformationRequestData).body;
+
+    expect(body.type).toBe('page_viewed');
+    expect(body.data.type).toBe('contents');
+  });
+
   it('rejects a non-standard name absent from a non-empty mapping table', () => {
     expect(() =>
       transform(
@@ -556,13 +620,6 @@ describe('OpenAIAdsIntegration', () => {
         },
       },
       error: 'event mapping not found',
-    },
-    {
-      input: {
-        ...makeInput(1),
-        message: { type: 'page', messageId: 'msg-err', timestamp: EVENT_TIMESTAMP },
-      },
-      error: 'source event name is required for page events',
     },
     {
       input: makeInput(

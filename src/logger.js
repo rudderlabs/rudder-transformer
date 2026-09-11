@@ -4,9 +4,6 @@ const {
   structuredLogger,
   isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
-// LOGGER_IMPL can be `console` or `winston`
-const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
-
 let logLevel = (process.env.LOG_LEVEL ?? 'info').toLowerCase();
 
 const logger = structuredLogger({
@@ -23,19 +20,9 @@ const logger = structuredLogger({
   ],
 });
 
-const getLogger = () => {
-  switch (loggerImpl) {
-    case 'winston':
-      return logger;
-    case 'console':
-      return console;
-  }
-};
-
 const setLogLevel = (level) => {
-  const logger = getLogger();
   logLevel = level || logLevel;
-  logger?.setLogLevel(logLevel);
+  logger.setLogLevel(logLevel);
 };
 
 /**
@@ -119,36 +106,30 @@ const log = (logMethod, logArgs) => {
 };
 
 const event = (...args) => {
-  const logger = getLogger();
   if (LOGLEVELS.event <= LOGLEVELS[logLevel]) {
-    // the console impl has no event method; fall back to debug
-    log(logger.event ?? logger.debug, args);
+    log(logger.event, args);
   }
 };
 
 const debug = (...args) => {
-  const logger = getLogger();
   if (LOGLEVELS.debug <= LOGLEVELS[logLevel]) {
     log(logger.debug, args);
   }
 };
 
 const info = (...args) => {
-  const logger = getLogger();
   if (LOGLEVELS.info <= LOGLEVELS[logLevel]) {
     log(logger.info, args);
   }
 };
 
 const warn = (...args) => {
-  const logger = getLogger();
   if (LOGLEVELS.warn <= LOGLEVELS[logLevel]) {
     log(logger.warn, args);
   }
 };
 
 const error = (...args) => {
-  const logger = getLogger();
   if (LOGLEVELS.error <= LOGLEVELS[logLevel]) {
     log(logger.error, args);
   }

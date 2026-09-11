@@ -51,15 +51,6 @@ describe('event level gating', () => {
     logger.event('some event');
     expect(mockLoggerInstance.event).toHaveBeenCalledWith(' some event');
   });
-
-  test('falls back to debug when the logger has no event method', () => {
-    logger.setLogLevel('event');
-    const eventFn = mockLoggerInstance.event;
-    delete mockLoggerInstance.event;
-    logger.event('fallback check');
-    mockLoggerInstance.event = eventFn;
-    expect(mockLoggerInstance.debug).toHaveBeenCalledWith(' fallback check');
-  });
 });
 
 describe('requestLog / responseLog', () => {

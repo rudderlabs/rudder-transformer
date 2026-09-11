@@ -28,6 +28,17 @@ export const destination: Destination = {
   Transformations: [],
 };
 
+export const pageScreenTypeMappingDestination: Destination = {
+  ...destination,
+  Config: {
+    ...destination.Config,
+    eventMapping: [
+      { from: 'page', to: 'lead_created' },
+      { from: 'screen', to: 'order_created' },
+    ],
+  },
+};
+
 export const metadata = (jobId: number): Metadata => ({
   jobId,
   attemptNum: 1,

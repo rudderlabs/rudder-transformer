@@ -232,3 +232,35 @@ jest.mock('../../../../util/ivmCache/index', () => {
   };
 });
 ```
+
+## Network Mocks Are Captured, Not Invented
+
+Entries in `test/integrations/destinations/<destination>/network.ts` must be **real responses
+from the partner**, copied from a live call or the partner's published API reference. An
+invented error envelope tests your guess at the API, and the delivery code written against it
+inherits the same guess.
+
+An empty `networkMocks` array in a new destination means no partner response is exercised at
+all — the `dataDelivery` suite is asserting nothing.
+
+Cover, at minimum:
+
+- **The success shape.**
+- **A validation failure** — ideally a *partial* one (some records rejected inside an otherwise
+  well-formed request), because that is what drives per-item verdicts and `dontBatch`.
+- **The auth and configuration failures**: an invalid API key (401), an invalid account/pixel
+  identifier, and a missing required query parameter. These are the responses customers
+  actually hit, and they are usually the ones with no coverage.
+
+Watch for **shape variants within the same error envelope**. Many APIs return
+`{ error: { message, type, param, code, errors[] } }` for a validation failure but `param`,
+`code` as `null` with no `errors[]` for an auth failure. Those are two distinct code paths
+through your error formatter — mock both.
+
+## Every New Destination Gets `live.ts`
+
+A new destination ships with `test/integrations/destinations/<destination>/live.ts` covering at
+least one positive scenario per event shape it supports. Component tests assert against mocks,
+so they cannot catch a payload the partner rejects — an endpoint typo, a field the API renamed,
+a required parameter nobody sent. See the `live-integration-test` skill for the harness and
+credential setup.

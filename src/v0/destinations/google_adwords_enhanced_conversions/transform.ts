@@ -103,17 +103,7 @@ const processTrackEvent = (
   const payload: GaecPayload = constructPayload(message, trackMapping)!;
 
   payload.partialFailure = true;
-  // `?.` on [0] is a genuine runtime guard: the array may be empty, and the intended
-  // failure is this InstrumentationError, not a TypeError
-  if (!payload.conversionAdjustments![0]?.userIdentifiers) {
-    throw new InstrumentationError(MISSING_IDENTIFIERS_ERROR);
-  }
   const firstAdjustment: ConversionAdjustment = payload.conversionAdjustments![0];
-  // Removing the null values from userIdentifier
-  // (`!` is type-only: the throw above guarantees userIdentifiers is present, and the
-  // assignment stays unconditional like the original JS)
-  const arr = firstAdjustment.userIdentifiers;
-  firstAdjustment.userIdentifiers = arr!.filter((item) => !!item);
 
   // Default to ENHANCEMENT; honour RESTATEMENT only when explicitly configured.
   const isRestatement = adjustmentType === ADJUSTMENT_TYPE_RESTATEMENT;
@@ -122,9 +112,30 @@ const processTrackEvent = (
     : ADJUSTMENT_TYPE_ENHANCEMENT;
 
   if (isRestatement) {
+    const adjustedValue = firstAdjustment.restatementValue?.adjustedValue;
+    if (
+      typeof adjustedValue !== 'number' ||
+      Number.isNaN(adjustedValue) ||
+      !firstAdjustment.restatementValue?.currencyCode
+    ) {
+      throw new InstrumentationError(
+        'adjustedValue and currencyCode (or currency) are required for RESTATEMENT adjustment type.',
+      );
+    }
+    if (!firstAdjustment.adjustmentDateTime) {
+      throw new InstrumentationError(
+        'adjustmentDateTime is required for RESTATEMENT adjustment type.',
+      );
+    }
     delete firstAdjustment.userIdentifiers;
     delete firstAdjustment.userAgent;
   } else {
+    if (!firstAdjustment.userIdentifiers) {
+      throw new InstrumentationError(MISSING_IDENTIFIERS_ERROR);
+    }
+    // Removing the null values from userIdentifier
+    firstAdjustment.userIdentifiers = firstAdjustment.userIdentifiers.filter((item) => !!item);
+
     // Run processUserIdentifiers ONLY when identifiers will actually be sent.
     // Restatement events delete userIdentifiers — running the hash pipeline on them
     // would throw spurious hash-inconsistency errors.
@@ -138,8 +149,7 @@ const processTrackEvent = (
       destinationId,
     });
 
-    // The pipeline may drop every identifier (all invalid/empty after normalization) —
-    // same error as the pre-transform guard above.
+    // The pipeline may drop every identifier (all invalid/empty after normalization).
     if (survivingIdentifiers.length === 0) {
       throw new InstrumentationError(MISSING_IDENTIFIERS_ERROR);
     }

@@ -3,8 +3,6 @@ import {
   ChunkBatchStrategy,
   type DestinationIntegrationConstructor,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
-
-type GAECInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 
 import type { Destination } from '../../../types/controlPlaneConfig';
@@ -13,6 +11,8 @@ import type {
   RouterTransformationRequestData,
   RouterTransformationResponse,
 } from '../../../types/destinationTransformation';
+
+type GAECInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -39,21 +39,40 @@ const destination: Destination = {
   Transformations: [],
 };
 
-type EventOverrides = { event?: string; type?: string; traits?: Record<string, unknown> };
+type EventOverrides = {
+  event?: string;
+  type?: string;
+  traits?: Record<string, unknown>;
+  userAgent?: string;
+  properties?: Record<string, unknown>;
+};
+type DestinationConfigOverrides = Record<string, unknown>;
 
-function makeInput(jobId: number, overrides?: EventOverrides): RouterTransformationRequestData {
+const LEGACY_GAEC_ADJUSTMENT_TYPE_WORKSPACES_ENV = [
+  'DEST_GAEC',
+  'ADJUSTMENT_TYPE',
+  'SUPPORTED_WORKSPACE_IDS',
+].join('_');
+
+function makeInput(
+  jobId: number,
+  overrides?: EventOverrides,
+  destinationConfigOverrides: DestinationConfigOverrides = {},
+): RouterTransformationRequestData {
   const message = {
     type: overrides?.type ?? 'track',
     event: overrides?.event ?? 'Page View',
     userId: '12345',
     context: {
       traits: overrides?.traits ?? { email: 'user@testmail.com' },
+      userAgent: overrides?.userAgent,
     },
     properties: {
       gclid: 'gclid1234',
       conversionDateTime: '2022-01-01 12:32:45-08:00',
       order_id: 10000,
       total: 1000,
+      ...overrides?.properties,
     },
   };
   const metadata = {
@@ -68,7 +87,18 @@ function makeInput(jobId: number, overrides?: EventOverrides): RouterTransformat
       developer_token: 'dummy-developer-token',
     },
   };
-  return { message, metadata, destination } as unknown as RouterTransformationRequestData;
+  const inputDestination = {
+    ...destination,
+    Config: {
+      ...destination.Config,
+      ...destinationConfigOverrides,
+    },
+  };
+  return {
+    message,
+    metadata,
+    destination: inputDestination,
+  } as unknown as RouterTransformationRequestData;
 }
 
 // The framework returns batchedRequest as a single output, an array, or undefined. For this
@@ -115,6 +145,49 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       expect(result.body).toHaveProperty('adjustmentType', 'ENHANCEMENT');
       expect(result.body).toHaveProperty('userIdentifiers');
       expect(result.body).not.toHaveProperty('conversionAdjustments');
+    });
+
+    it('honours RESTATEMENT adjustment type without the legacy workspace env gate', () => {
+      const previousSupportedWorkspaces = process.env[LEGACY_GAEC_ADJUSTMENT_TYPE_WORKSPACES_ENV];
+      delete process.env[LEGACY_GAEC_ADJUSTMENT_TYPE_WORKSPACES_ENV];
+
+      try {
+        const result = integration.transformEvent(
+          makeInput(
+            1,
+            {
+              traits: {},
+              userAgent: 'Mozilla/5.0 regression test',
+              properties: {
+                adjustedValue: '10',
+                currency: 'INR',
+                adjustmentDateTime: '2022-01-01 12:33:45-08:00',
+              },
+            },
+            { adjustmentType: 'RESTATEMENT' },
+          ) as unknown as GAECInput,
+        );
+
+        expect(result.body).toEqual({
+          gclidDateTimePair: {
+            gclid: 'gclid1234',
+            conversionDateTime: '2022-01-01 12:32:45-08:00',
+          },
+          restatementValue: {
+            adjustedValue: 10,
+            currencyCode: 'INR',
+          },
+          orderId: '10000',
+          adjustmentDateTime: '2022-01-01 12:33:45-08:00',
+          adjustmentType: 'RESTATEMENT',
+        });
+      } finally {
+        if (previousSupportedWorkspaces === undefined) {
+          delete process.env[LEGACY_GAEC_ADJUSTMENT_TYPE_WORKSPACES_ENV];
+        } else {
+          process.env[LEGACY_GAEC_ADJUSTMENT_TYPE_WORKSPACES_ENV] = previousSupportedWorkspaces;
+        }
+      }
     });
   });
 

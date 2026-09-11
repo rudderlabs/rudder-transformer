@@ -4,11 +4,7 @@ const {
   structuredLogger,
   isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
-const { getMatchedMetadata } = require('./util/logger');
-// LOGGER_IMPL can be `console` or `winston`
-const loggerImpl = process.env.LOGGER_IMPL ?? 'winston';
-
-let logLevel = (process.env.LOG_LEVEL ?? 'warn').toLowerCase();
+let logLevel = (process.env.LOG_LEVEL ?? 'info').toLowerCase();
 
 const logger = structuredLogger({
   level: logLevel,
@@ -24,19 +20,9 @@ const logger = structuredLogger({
   ],
 });
 
-const getLogger = () => {
-  switch (loggerImpl) {
-    case 'winston':
-      return logger;
-    case 'console':
-      return console;
-  }
-};
-
 const setLogLevel = (level) => {
-  const logger = getLogger();
   logLevel = level || logLevel;
-  logger?.setLogLevel(logLevel);
+  logger.setLogLevel(logLevel);
 };
 
 /**
@@ -119,29 +105,31 @@ const log = (logMethod, logArgs) => {
   logMethod(message);
 };
 
+const event = (...args) => {
+  if (LOGLEVELS.event <= LOGLEVELS[logLevel]) {
+    log(logger.event, args);
+  }
+};
+
 const debug = (...args) => {
-  const logger = getLogger();
   if (LOGLEVELS.debug <= LOGLEVELS[logLevel]) {
     log(logger.debug, args);
   }
 };
 
 const info = (...args) => {
-  const logger = getLogger();
   if (LOGLEVELS.info <= LOGLEVELS[logLevel]) {
     log(logger.info, args);
   }
 };
 
 const warn = (...args) => {
-  const logger = getLogger();
   if (LOGLEVELS.warn <= LOGLEVELS[logLevel]) {
     log(logger.warn, args);
   }
 };
 
 const error = (...args) => {
-  const logger = getLogger();
   if (LOGLEVELS.error <= LOGLEVELS[logLevel]) {
     log(logger.error, args);
   }
@@ -151,25 +139,17 @@ const error = (...args) => {
 // argument optional; the runtime contract (callers must pass it) is unchanged.
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
 const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
-  const logger = getLogger();
-  const filteredMetadata = getMatchedMetadata(metadata);
-  if (filteredMetadata.length > 0) {
-    const reqLogArgs = [identifierMsg, { metadata: filteredMetadata, url, body, method }];
-    log(logger.info, reqLogArgs);
-  }
+  // no allowlist dependency: LOG_LEVEL=event is the only gate
+  event(identifierMsg, { metadata, url, body, method });
 };
 
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
 const responseLog = (identifierMsg, { metadata, responseDetails: { body, status, headers } }) => {
-  const logger = getLogger();
-  const filteredMetadata = getMatchedMetadata(metadata);
-  if (filteredMetadata.length > 0) {
-    const resLogArgs = [identifierMsg, { metadata: filteredMetadata, body, status, headers }];
-    log(logger.info, resLogArgs);
-  }
+  event(identifierMsg, { metadata, body, status, headers });
 };
 
 module.exports = {
+  event,
   debug,
   info,
   warn,

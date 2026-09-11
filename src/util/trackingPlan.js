@@ -76,7 +76,7 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
     }
     return eventSchema;
   } catch (error) {
-    logger.info(`Failed during eventSchema fetch : ${JSON.stringify(error)}`);
+    logger.info(`Failed during eventSchema fetch : ${error.message}`);
     stats.increment('get_eventSchema_error');
     throw error;
   }

@@ -1,6 +1,10 @@
 const mockLoggerInstance = {
+  event: jest.fn(),
+  debug: jest.fn(),
   info: jest.fn(),
+  warn: jest.fn(),
   error: jest.fn(),
+  setLogLevel: jest.fn(),
 };
 const {
   getFormData,
@@ -31,6 +35,8 @@ const stats = require('../util/stats');
 jest.mock('@rudderstack/integrations-lib', () => {
   return {
     ...jest.requireActual('@rudderstack/integrations-lib'),
+    // mirrors the lib's LOGLEVELS including the `event` level; keep in sync
+    LOGLEVELS: { event: 4, debug: 3, info: 2, warn: 1, error: 0, none: -1 },
     structuredLogger: jest.fn().mockReturnValue(mockLoggerInstance),
   };
 });
@@ -54,12 +60,9 @@ jest.mock('axios', () => {
 
 const axios = require('axios');
 
-jest.mock('../util/logger', () => ({
-  ...jest.requireActual('../util/logger'),
-  getMatchedMetadata: jest.fn(),
-}));
-
-const loggerUtil = require('../util/logger');
+const logger = require('../logger');
+// request/response diagnostics are only emitted at the event level
+logger.setLogLevel('event');
 
 axios.post = jest.fn();
 axios.get = jest.fn();
@@ -560,8 +563,7 @@ describe('fireHTTPStats tests', () => {
 
 describe('logging in http methods', () => {
   beforeEach(() => {
-    mockLoggerInstance.info.mockClear();
-    loggerUtil.getMatchedMetadata.mockClear();
+    mockLoggerInstance.event.mockClear();
   });
   test('post - when proper metadata(object) is sent should call logger without error', async () => {
     const statTags = {
@@ -576,7 +578,6 @@ describe('logging in http methods', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'post',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
 
     axios.post.mockResolvedValueOnce({
       status: 200,
@@ -589,11 +590,10 @@ describe('logging in http methods', () => {
     await expect(httpPOST('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
       Error,
     );
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: {},
       destType: 'DT',
       destinationId: 'd1',
@@ -603,7 +603,7 @@ describe('logging in http methods', () => {
       method: 'post',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
@@ -624,7 +624,6 @@ describe('logging in http methods', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'post',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue([]);
 
     axios.post.mockResolvedValueOnce({
       status: 200,
@@ -637,9 +636,23 @@ describe('logging in http methods', () => {
     await expect(httpPOST('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
       Error,
     );
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    // the event log no longer depends on the allowlist: it fires with empty
+    // log metadata when none is provided
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+      body: {},
+      url: 'https://some.web.com/m/n/o',
+      method: 'post',
+    });
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+      body: { a: 1, b: 2, c: 'abc' },
+      status: 200,
+      headers: {
+        'Content-Type': 'apllication/json',
+        'X-Some-Header': 'headsome',
+      },
+    });
   });
 
   test('post - when metadata is string should call logger without error', async () => {
@@ -650,7 +663,6 @@ describe('logging in http methods', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'post',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
 
     axios.post.mockResolvedValueOnce({
       status: 200,
@@ -663,9 +675,14 @@ describe('logging in http methods', () => {
     await expect(httpPOST('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
       Error,
     );
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    // string metadata carries no log-metadata fields but the event log still fires
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+      body: {},
+      url: 'https://some.web.com/m/n/o',
+      method: 'post',
+    });
   });
 
   test('post - when proper metadata(Array) is sent should call logger without error', async () => {
@@ -699,7 +716,6 @@ describe('logging in http methods', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'post',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue(statTags.metadata);
 
     axios.post.mockResolvedValueOnce({
       status: 200,
@@ -712,12 +728,11 @@ describe('logging in http methods', () => {
     await expect(httpPOST('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
       Error,
     );
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(metadata.length * 2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(metadata.length * 2);
 
     [1, 2, 3].forEach((i) => {
-      expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(i, ' [DT] /m/n/o request', {
+      expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(i, ' [DT] /m/n/o request', {
         body: {},
         destType: 'DT',
         destinationId: 'd1',
@@ -727,7 +742,7 @@ describe('logging in http methods', () => {
         method: 'post',
       });
 
-      expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(
+      expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(
         i + metadata.length,
         ' [DT] /m/n/o response',
         {
@@ -755,7 +770,6 @@ describe('logging in http methods', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'post',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue(statTags.metadata);
 
     axios.post.mockResolvedValueOnce({
       status: 200,
@@ -768,7 +782,6 @@ describe('logging in http methods', () => {
     await expect(httpPOST('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
       Error,
     );
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
     expect(axios.post).toHaveBeenCalledWith(
       'https://some.web.com/m/n/o',
@@ -776,7 +789,7 @@ describe('logging in http methods', () => {
       expect.objectContaining({}),
     );
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(0);
   });
 
   test('get - when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
@@ -788,7 +801,6 @@ describe('logging in http methods', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'post',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue(statTags.metadata);
 
     axios.get.mockResolvedValueOnce({
       status: 200,
@@ -799,14 +811,13 @@ describe('logging in http methods', () => {
       },
     });
     await expect(httpGET('https://some.web.com/m/n/o', {}, statTags)).resolves.not.toThrow(Error);
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
     expect(axios.get).toHaveBeenCalledWith(
       'https://some.web.com/m/n/o',
       expect.objectContaining({}),
     );
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(0);
   });
 
   test('constructor - when proper metadata(Array of strings,numbers) is sent should call logger without error', async () => {
@@ -818,7 +829,6 @@ describe('logging in http methods', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'post',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue(statTags.metadata);
 
     axios.mockResolvedValueOnce({
       status: 200,
@@ -831,7 +841,6 @@ describe('logging in http methods', () => {
     await expect(
       httpSend({ url: 'https://some.web.com/m/n/o', method: 'get' }, statTags),
     ).resolves.not.toThrow(Error);
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
 
     expect(axios).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -840,14 +849,13 @@ describe('logging in http methods', () => {
       }),
     );
 
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(0);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(0);
   });
 });
 
 describe('httpDELETE tests', () => {
   beforeEach(() => {
-    mockLoggerInstance.info.mockClear();
-    loggerUtil.getMatchedMetadata.mockClear();
+    mockLoggerInstance.event.mockClear();
     axios.delete.mockClear();
   });
 
@@ -864,7 +872,6 @@ describe('httpDELETE tests', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'delete',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
 
     axios.delete.mockResolvedValueOnce({
       status: 200,
@@ -878,10 +885,9 @@ describe('httpDELETE tests', () => {
     await expect(httpDELETE('https://some.web.com/m/n/o', {}, statTags)).resolves.not.toThrow(
       Error,
     );
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: undefined,
       destType: 'DT',
       destinationId: 'd1',
@@ -891,7 +897,7 @@ describe('httpDELETE tests', () => {
       method: 'delete',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
@@ -908,8 +914,7 @@ describe('httpDELETE tests', () => {
 
 describe('httpPUT tests', () => {
   beforeEach(() => {
-    mockLoggerInstance.info.mockClear();
-    loggerUtil.getMatchedMetadata.mockClear();
+    mockLoggerInstance.event.mockClear();
     axios.put.mockClear();
   });
 
@@ -926,7 +931,6 @@ describe('httpPUT tests', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'put',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
 
     axios.put.mockResolvedValueOnce({
       status: 200,
@@ -940,10 +944,9 @@ describe('httpPUT tests', () => {
     await expect(httpPUT('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
       Error,
     );
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: {},
       destType: 'DT',
       destinationId: 'd1',
@@ -953,7 +956,7 @@ describe('httpPUT tests', () => {
       method: 'put',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
@@ -970,8 +973,7 @@ describe('httpPUT tests', () => {
 
 describe('httpPATCH tests', () => {
   beforeEach(() => {
-    mockLoggerInstance.info.mockClear();
-    loggerUtil.getMatchedMetadata.mockClear();
+    mockLoggerInstance.event.mockClear();
     axios.patch.mockClear();
   });
 
@@ -988,7 +990,6 @@ describe('httpPATCH tests', () => {
       endpointPath: '/m/n/o',
       requestMethod: 'patch',
     };
-    loggerUtil.getMatchedMetadata.mockReturnValue([statTags.metadata]);
 
     axios.patch.mockResolvedValueOnce({
       status: 200,
@@ -1002,10 +1003,9 @@ describe('httpPATCH tests', () => {
     await expect(httpPATCH('https://some.web.com/m/n/o', {}, {}, statTags)).resolves.not.toThrow(
       Error,
     );
-    expect(loggerUtil.getMatchedMetadata).toHaveBeenCalledTimes(2);
-    expect(mockLoggerInstance.info).toHaveBeenCalledTimes(2);
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(1, ' [DT] /m/n/o request', {
       body: {},
       destType: 'DT',
       destinationId: 'd1',
@@ -1015,7 +1015,7 @@ describe('httpPATCH tests', () => {
       method: 'patch',
     });
 
-    expect(mockLoggerInstance.info).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
+    expect(mockLoggerInstance.event).toHaveBeenNthCalledWith(2, ' [DT] /m/n/o response', {
       destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',

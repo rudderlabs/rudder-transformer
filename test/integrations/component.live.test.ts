@@ -10,6 +10,7 @@ import { getEnrolledDestinations } from './live/registry';
 import { SecretResolver } from './live/secretResolver';
 import { RunContextImpl } from './live/runContext';
 import { runPipelineStep } from './live/runPipelineStep';
+import { runDeleteUsersStep } from './live/runDeleteUsersStep';
 import { retryUntilPasses } from './live/poll';
 import { OAuthTokenResolver } from './live/oauthTokenResolver';
 import { RudderAuthContainer } from './live/rudderAuthContainer';
@@ -215,7 +216,8 @@ describe('Live Integration Test Suite', () => {
           failIfSkipped(`step "${step.name}"`);
           try {
             // Steps run in declared order; dispatch by discriminant — action = direct API side
-            // effect, verify = read-back assertion, pipeline = seed -> transform -> deliver -> assert.
+            // effect, verify = read-back assertion, pipeline = seed -> transform -> deliver -> assert,
+            // deleteUsers = one regulation-worker job -> /deleteUsers -> assert successful.
             switch (step.stepType) {
               case 'action':
                 await step.run(ctx);
@@ -231,6 +233,17 @@ describe('Live Integration Test Suite', () => {
                   ctx,
                   config: scenarioConfig,
                   connection,
+                  http: {
+                    post: async (url, body) => agent().post(url).send(body),
+                  },
+                });
+                return;
+              case 'deleteUsers':
+                await runDeleteUsersStep({
+                  destination,
+                  step,
+                  ctx,
+                  config: scenarioConfig,
                   http: {
                     post: async (url, body) => agent().post(url).send(body),
                   },

@@ -157,7 +157,17 @@ interface VerifyStep extends Step {
   check: (ctx: RunContext) => Promise<void>;
 }
 
-type LiveStep = PipelineStep | ActionStep | VerifyStep;
+// A deleteUsers step: the regulation-worker's user-deletion call, POST /deleteUsers with the
+// scenario's destination config, asserting the job comes back successful.
+interface DeleteUsersStep extends Step {
+  stepType: 'deleteUsers';
+  // The users to delete, as the regulation-worker sends them: one { userId, ...attributes } each.
+  userAttributes: (ctx: RunContext) => Record<string, string>[];
+  // Sleep this long before the call, for destinations whose deletion API is rate limited.
+  delayBeforeMs?: number;
+}
+
+type LiveStep = PipelineStep | ActionStep | VerifyStep | DeleteUsersStep;
 
 // A scenario is an ordered list of steps (pipeline | action | verify) sharing one RunContext.
 // Setup, teardown and read-back are expressed as action/verify steps — no lifecycle hooks.
@@ -369,6 +379,15 @@ interface RetryUntilPassesOptions {
   delayMs?: (attempt: number) => number; // default 1000 * 2 ** attempt
 }
 
+// Arguments threaded into a single deleteUsers-step run.
+interface RunDeleteUsersStepParams {
+  destination: string;
+  step: DeleteUsersStep;
+  ctx: RunContext;
+  config: Record<string, unknown>;
+  http: LiveHttpClient;
+}
+
 export {
   AccountDefinition,
   AuthType,
@@ -386,6 +405,7 @@ export {
   PipelineStep,
   ActionStep,
   VerifyStep,
+  DeleteUsersStep,
   LiveProcessorOutputSchema,
   LiveRouterOutputSchema,
   RouterOutput,
@@ -398,6 +418,7 @@ export {
   LiveHttpClient,
   DeliveryFailure,
   RunPipelineStepParams,
+  RunDeleteUsersStepParams,
   PollCheckResult,
   PollUntilOptions,
   RetryUntilPassesOptions,

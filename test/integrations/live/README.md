@@ -97,7 +97,8 @@ Impact-based PR subsetting (running only the destinations a PR touches). Vault-b
 GitHub-OIDC → Vault auth, and the CI workflow are now implemented — see
 `.github/workflows/live-integration-tests.yml`.
 
-**Scope — transform path.** The harness drives only `/routerTransform → /proxy`. rudder-server
+**Scope — transform and user-deletion paths.** The harness drives `/routerTransform → /proxy`,
+and `/deleteUsers` through `deleteUsers` steps (see "Scenarios and steps"). rudder-server
 also runs the processor transform (`/v0/destinations/<dest>`) ahead of delivery, whose response
 shape differs; that chaining is not exercised here (INT-NNNN). **GZIP** proxy bodies are likewise
 unmapped (INT-NNNN) — see `routerProxyRequests.ts`.
@@ -214,6 +215,12 @@ scenario-level `cleanup`. There are no lifecycle hooks. Each step declares a req
   `expect(...)` prints a real diff instead of a bare timeout. This read-back is also what actually
   confirms a batch write: a batch endpoint can return `207` (which counts as delivered) even when an
   item fails, so the delivery verdict alone is not proof the write landed.
+- **deleteUsers**: `{ stepType: 'deleteUsers', name, userAttributes, delayBeforeMs? }` — the
+  regulation-worker's user-deletion call. `userAttributes(ctx)` returns the users to delete
+  (`[{ userId, ...attributes }]`); the runner posts them as one job to `/deleteUsers` with the
+  scenario's `destination.Config` and asserts the job comes back successful. Set `delayBeforeMs`
+  for a rate-limited deletion API — see `destinations/mp/live.ts`, whose read-back re-requests the
+  deletion directly and expects the vendor's conflict response.
 
 The **common trailing read-back** is better declared as a scenario-level `verify` the way
 `cleanup` is: `verify: { check: (ctx) => …, attempts?, delayMs? }`. The framework runs `check`

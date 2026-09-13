@@ -15,11 +15,37 @@ const { constructEndpoint } = require('./config');
 
 // Iterable returns absent users as HTTP 400 with msg like "User does not exist. Email:  UserId: <id>".
 const USER_DOES_NOT_EXIST_MESSAGE = 'User does not exist';
+const NOT_FOUND_USER_IDS_FIELD = 'notFoundUserIds';
 
-const isAbsentUserResponse = (handledDelResponse) =>
-  handledDelResponse.status === 400 &&
-  typeof handledDelResponse.response?.msg === 'string' &&
-  handledDelResponse.response.msg.includes(USER_DOES_NOT_EXIST_MESSAGE);
+const hasNotFoundUserIds = (value) => {
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+  return Boolean(value);
+};
+
+const isAbsentUserResponse = (handledDelResponse) => {
+  if (handledDelResponse.status !== 400) {
+    return false;
+  }
+
+  const resp = handledDelResponse.response;
+  if (typeof resp?.msg === 'string' && resp.msg.includes(USER_DOES_NOT_EXIST_MESSAGE)) {
+    return true;
+  }
+
+  if (typeof resp === 'string') {
+    return resp.includes(NOT_FOUND_USER_IDS_FIELD);
+  }
+
+  // invalidUserIds alone can mean malformed IDs; require notFoundUserIds absent-user evidence.
+  return (
+    hasNotFoundUserIds(resp?.notFoundUserIds) ||
+    hasNotFoundUserIds(resp?.failedUpdates?.notFoundUserIds) ||
+    hasNotFoundUserIds(resp?.params?.notFoundUserIds) ||
+    hasNotFoundUserIds(resp?.params?.failedUpdates?.notFoundUserIds)
+  );
+};
 
 // Ref-> https://support.iterable.com/hc/en-us/articles/360032290032-Deleting-Users
 const userDeletionHandler = async (userAttributes, config) => {

@@ -220,4 +220,76 @@ export const data = [
       },
     },
   },
+  {
+    name: destType,
+    description:
+      'Test 6: should pass when Iterable reports user not found via notFoundUserIds 400 shape',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destType: destType.toUpperCase(),
+            userAttributes: [
+              {
+                userId: 'rudder8',
+              },
+            ],
+            config: {
+              apiKey: defaultApiKey,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            status: 'successful',
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: destType,
+    description:
+      'Test 7: should pass when Iterable reports user not found via root failedUpdates.notFoundUserIds 400 shape',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destType: destType.toUpperCase(),
+            userAttributes: [
+              {
+                userId: 'rudder9',
+              },
+            ],
+            config: {
+              apiKey: defaultApiKey,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            status: 'successful',
+          },
+        ],
+      },
+    },
+  },
 ];

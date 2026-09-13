@@ -124,5 +124,47 @@ const deleteNwData = [
       status: 200,
     },
   },
+  {
+    httpReq: {
+      method: 'delete',
+      url: 'https://api.iterable.com/api/users/byUserId/rudder8',
+      headers: {
+        api_key: defaultApiKey,
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'userId error:"1fecdc2a-753f-11f0-a449-de2ce5e1501f"',
+        code: 'BadParams',
+        params: {
+          invalidUserIds: ['1fecdc2a-753f-11f0-a449-de2ce5e1501f'],
+          failedUpdates: {
+            notFoundUserIds: ['1fecdc2a-753f-11f0-a449-de2ce5e1501f'],
+          },
+        },
+      },
+      status: 400,
+    },
+  },
+  {
+    httpReq: {
+      method: 'delete',
+      url: 'https://api.iterable.com/api/users/byUserId/rudder9',
+      headers: {
+        api_key: defaultApiKey,
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'userId error:"2fecdc2a-753f-11f0-a449-de2ce5e1501f"',
+        code: 'BadParams',
+        invalidUserIds: ['2fecdc2a-753f-11f0-a449-de2ce5e1501f'],
+        failedUpdates: {
+          notFoundUserIds: ['2fecdc2a-753f-11f0-a449-de2ce5e1501f'],
+        },
+      },
+      status: 400,
+    },
+  },
 ];
 export const networkCallsData = [...deleteNwData];

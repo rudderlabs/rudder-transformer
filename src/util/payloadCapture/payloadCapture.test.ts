@@ -350,7 +350,7 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
       identifierMsg: 'DT proxy request',
       metadata: [{ workspaceId: 'w1', destinationId: 'd1' }],
       details: {
-        url: 'https://api.example.com/track?apiKey=secret123&type=track&pwd=x&keyword=cars',
+        url: 'https://api.example.com/track?apiKey=secret123&type=track&pwd=x&keyword=cars&passKey=p1&clientKey=c1',
         body: new FakeFormData(),
         method: 'POST',
       },
@@ -381,7 +381,7 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
     expect(lines[0]).toMatchObject({
       kind: 'request',
       // secret-looking keys masked, the rest stays debuggable
-      url: 'https://api.example.com/track?apiKey=***&type=track&pwd=***&keyword=cars',
+      url: 'https://api.example.com/track?apiKey=***&type=track&pwd=***&keyword=cars&passKey=***&clientKey=***',
       body: { unserializable: 'FakeFormData' },
     });
     const responseBody = lines[1].body as Record<string, unknown>;

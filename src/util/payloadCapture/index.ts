@@ -17,9 +17,10 @@ const WARN_INTERVAL_MS = 5 * 60_000;
 const SENSITIVE_HEADER_PATTERN =
   /auth|token|secret|passw|pwd|cookie|session|signature|credential|key($|[_-])/i;
 // query-param KEYS matching this are masked; other params often carry the
-// event itself for GET-style destinations and must stay debuggable
+// event itself for GET-style destinations and must stay debuggable. A trailing
+// `key` covers the camel-case forms too (passKey, clientKey, accessKey).
 const SENSITIVE_PARAM_PATTERN =
-  /(^|[_-])(api)?key$|token|secret|auth|sig(nature)?$|passw|pwd|credential|session/i;
+  /key$|token|secret|auth|sig(nature)?$|passw|pwd|credential|session/i;
 
 const config = getCaptureConfig();
 

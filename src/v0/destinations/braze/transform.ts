@@ -130,7 +130,10 @@ function populateCustomAttributesWithOperation(
         });
     }
   } catch (exp: any) {
-    logger.info('Failure occurred during custom attributes operations', exp);
+    logger.debug(
+      'Failure occurred during custom attributes operations',
+      exp?.message ?? String(exp),
+    );
   }
 }
 

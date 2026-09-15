@@ -232,8 +232,8 @@ export const v1BusinessTestScenarios: ProxyV1TestData[] = [
 ];
 
 /**
- * These scenarios run through the batching framework's delivery path rather than
- * `v1/destinations/customerio/networkHandler`, because CUSTOMERIO declares `batching: true` in
- * features.ts — the same declaration that owns the transform path. No env var is involved.
+ * These scenarios run through the batching framework's delivery path, because CUSTOMERIO declares
+ * `batching: true` in features.ts — the same declaration that owns the transform path. No env var
+ * is involved, and the destination ships no networkHandler of its own.
  */
 export const data = v1BusinessTestScenarios;

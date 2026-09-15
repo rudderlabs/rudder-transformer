@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  NetworkError,
+} from '@rudderstack/integrations-lib';
 import {
   processDestinationIntegration,
   validateInputs,
@@ -47,7 +51,11 @@ const mockDestination: Destination = {
 };
 
 class SimpleIntegration extends DestinationIntegration<TestBody> {
-  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+  // Declared as the sync-or-async union so subclasses below can override it with an async
+  // implementation; TypeScript will not let an async override narrow a sync base signature.
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody> | Promise<TransformedEvent<TestBody>> {
     const { message } = input;
     return {
       body: { value: message.data ?? '' },
@@ -114,6 +122,29 @@ class PartialFailIntegration extends DestinationIntegration<TestBody> {
 
   getInputSchema() {
     return z.object({}).passthrough();
+  }
+}
+
+class AsyncEnrichFailIntegration extends SimpleIntegration {
+  async transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): Promise<TransformedEvent<TestBody>> {
+    if (input.metadata.jobId === 1) {
+      throw new ConfigurationError('enrichment lookup failed');
+    }
+    return super.transformEvent(input);
+  }
+}
+
+class AsyncAuthFailIntegration extends SimpleIntegration {
+  async transformEvent(): Promise<TransformedEvent<TestBody>> {
+    throw new NetworkError(
+      'lookup auth failed',
+      401,
+      {},
+      { error: { message: 'expired' } },
+      'REFRESH_TOKEN',
+    );
   }
 }
 
@@ -317,6 +348,51 @@ describe('processDestinationIntegration', () => {
   });
 
   describe('error handling', () => {
+    it('turns an async transformEvent rejection into a per-job failure and batches the rest', async () => {
+      const inputs = [makeInput(1, 'a'), makeInput(2, 'b')];
+
+      const results = await processDestinationIntegration(inputs, AsyncEnrichFailIntegration, {});
+
+      const successes = results.filter((r) => r.statusCode === 200);
+      const errors = results.filter((r) => r.statusCode !== 200);
+      expect(successes).toHaveLength(1);
+      expect(errors).toEqual([
+        expect.objectContaining({
+          statusCode: 400,
+          error: 'enrichment lookup failed',
+          metadata: [expect.objectContaining({ jobId: 1 })],
+        }),
+      ]);
+      expect(getBatchedRequestBody(successes[0])).toEqual({ events: [{ value: 'b' }] });
+    });
+
+    it('surfaces authErrorCategory on the failed job so the token still gets refreshed', async () => {
+      const results = await processDestinationIntegration(
+        [makeInput(1, 'a')],
+        AsyncAuthFailIntegration,
+        {},
+      );
+
+      expect(results).toEqual([
+        expect.objectContaining({
+          statusCode: 401,
+          authErrorCategory: 'REFRESH_TOKEN',
+          metadata: [expect.objectContaining({ jobId: 1 })],
+        }),
+      ]);
+    });
+
+    it('leaves authErrorCategory off non-auth failures', async () => {
+      const results = await processDestinationIntegration(
+        [makeInput(1, 'a'), makeInput(2, 'b')],
+        AsyncEnrichFailIntegration,
+        {},
+      );
+
+      const failure = results.find((r) => r.statusCode !== 200)!;
+      expect(failure).not.toHaveProperty('authErrorCategory');
+    });
+
     it('collects transform errors alongside successes', async () => {
       const inputs = [
         makeInput(1, 'ok'),

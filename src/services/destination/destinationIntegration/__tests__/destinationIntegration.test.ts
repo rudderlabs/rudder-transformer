@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError, NetworkError } from '@rudderstack/integrations-lib';
 import {
   DestinationIntegration,
   TransformedEvent,
@@ -7,7 +7,7 @@ import {
   CustomBatchStrategy,
   parseSizeToBytes,
 } from '../destinationIntegration';
-import type { BatchStrategy } from '../destinationIntegration';
+import type { BatchStrategy, TransformResult } from '../destinationIntegration';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Destination } from '../../../../types/controlPlaneConfig';
 import type { Metadata, RudderMessage } from '../../../../types/rudderEvents';
@@ -38,7 +38,11 @@ const mockDestination: Destination = {
 };
 
 class TestIntegration extends DestinationIntegration<TestBody> {
-  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+  // Declared as the sync-or-async union so subclasses below can override it with an async
+  // implementation; TypeScript will not let an async override narrow a sync base signature.
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody> | Promise<TransformedEvent<TestBody>> {
     return {
       body: { value: input.message.data ?? '' },
       endpoint: 'https://api.test.com/events',
@@ -57,6 +61,31 @@ class TestIntegration extends DestinationIntegration<TestBody> {
 
   getInputSchema() {
     return z.object({}).passthrough();
+  }
+}
+
+class AsyncTransformIntegration extends TestIntegration {
+  readonly seen: { input: unknown; reqMetadata?: NonNullable<unknown> }[] = [];
+
+  async transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+    reqMetadata?: NonNullable<unknown>,
+  ): Promise<TransformedEvent<TestBody>> {
+    this.seen.push({ input, reqMetadata });
+    const base = await super.transformEvent(input);
+    return { ...base, body: { value: `${base.body.value}-enriched` } };
+  }
+}
+
+class RejectingTransformIntegration extends TestIntegration {
+  async transformEvent(): Promise<TransformedEvent<TestBody>> {
+    throw new NetworkError(
+      'refresh me',
+      401,
+      {},
+      { error: { message: 'expired' } },
+      'REFRESH_TOKEN',
+    );
   }
 }
 
@@ -131,6 +160,66 @@ describe('DestinationIntegration.transformEvents', () => {
     expect(result.successPayloads[0].body.value).toBe('hello');
     expect(result.successPayloads[0].jobId).toBe(1);
     expect(result.successPayloads[1].jobId).toBe(2);
+  });
+
+  it('awaits an async transformEvent and passes each input with the request metadata', async () => {
+    const integration = new AsyncTransformIntegration(mockDestination);
+    const inputs = [makeInput(1, 'hello'), makeInput(2, 'world')];
+    const reqMetadata = { requestId: 'req-1' };
+
+    const result = await integration.transformEvents(inputs, reqMetadata);
+
+    expect(integration.seen).toEqual([
+      { input: inputs[0], reqMetadata },
+      { input: inputs[1], reqMetadata },
+    ]);
+    expect(result).toEqual({
+      successPayloads: [
+        expect.objectContaining({ jobId: 1, body: { value: 'hello-enriched' } }),
+        expect.objectContaining({ jobId: 2, body: { value: 'world-enriched' } }),
+      ],
+      errorPayloads: [],
+    });
+  });
+
+  it('runs async transformEvent calls sequentially so a cache-backed lookup is not raced', async () => {
+    const order: string[] = [];
+    class OrderedIntegration extends TestIntegration {
+      async transformEvent(
+        input: RouterTransformationRequestData<TestMessage>,
+      ): Promise<TransformedEvent<TestBody>> {
+        order.push(`start-${input.metadata.jobId}`);
+        await new Promise((resolve) => {
+          setTimeout(resolve, 0);
+        });
+        order.push(`end-${input.metadata.jobId}`);
+        return super.transformEvent(input);
+      }
+    }
+
+    await new OrderedIntegration(mockDestination).transformEvents(
+      [makeInput(1, 'a'), makeInput(2, 'b')],
+      {},
+    );
+
+    expect(order).toEqual(['start-1', 'end-1', 'start-2', 'end-2']);
+  });
+
+  it('records an async transformEvent rejection against that job instead of failing the call', async () => {
+    const integration = new RejectingTransformIntegration(mockDestination);
+
+    const result = await integration.transformEvents([makeInput(1, 'hello')], {});
+
+    expect(result.successPayloads).toHaveLength(0);
+    expect(result.errorPayloads).toEqual([
+      expect.objectContaining({
+        jobId: 1,
+        error: expect.stringContaining('refresh me'),
+        statusCode: 401,
+        // Carried off the rejection so rudder-server still refreshes the token for this job.
+        authErrorCategory: 'REFRESH_TOKEN',
+      }),
+    ]);
   });
 
   it('catches errors and adds to errorPayloads', async () => {

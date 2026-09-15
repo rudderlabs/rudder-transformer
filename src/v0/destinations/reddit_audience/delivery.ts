@@ -7,10 +7,8 @@
  * to build and no positional correlation to get wrong. Every failure is a plain
  * HTTP status applying to the whole request.
  *
- * All classification lives in `./classify`, shared with
- * `src/v1/destinations/reddit_audience/networkHandler.ts`. That handler is what
- * actually runs until framework delivery is flagged on for a workspace, so the
- * two must agree by construction rather than by review.
+ * All classification lives in `./classify`, which this spec is the only caller
+ * of now that REDDIT_AUDIENCE is GA on the batching framework.
  */
 import {
   abort,

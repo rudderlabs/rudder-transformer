@@ -199,6 +199,97 @@ describe('OpenAIAdsIntegration', () => {
     expect(JSON.stringify(event)).not.toContain('USER@EXAMPLE.COM');
   });
 
+  it.each([
+    {
+      label: 'prefers userId over anonymousId',
+      message: {
+        type: 'track',
+        event: 'Product Viewed',
+        messageId: 'msg-external-user',
+        userId: 'User-Preferred',
+        anonymousId: 'Anon-Fallback',
+        timestamp: EVENT_TIMESTAMP,
+        context: {
+          traits: {
+            email: 'match@example.com',
+            externalId: 'Trait-External',
+          },
+        },
+        properties: {},
+      },
+      expectedExternalIds: [sha256('user-preferred')],
+    },
+    {
+      label: 'falls back to anonymousId when userId is absent',
+      message: {
+        type: 'track',
+        event: 'Product Viewed',
+        messageId: 'msg-external-anonymous',
+        anonymousId: 'Anon-Only',
+        timestamp: EVENT_TIMESTAMP,
+        context: { traits: { email: 'match@example.com' } },
+        properties: {},
+      },
+      expectedExternalIds: [sha256('anon-only')],
+    },
+  ])('maps external_ids_sha256 from $label', ({ message, expectedExternalIds }) => {
+    const event = transform({
+      ...makeInput(1),
+      message,
+    } as RouterTransformationRequestData).body;
+
+    expect(event.user).toEqual({
+      emails_sha256: [sha256('match@example.com')],
+      external_ids_sha256: expectedExternalIds,
+    });
+  });
+
+  it.each([
+    {
+      label: 'neither userId nor anonymousId is present',
+      message: {
+        type: 'track',
+        event: 'Product Viewed',
+        messageId: 'msg-external-none',
+        timestamp: EVENT_TIMESTAMP,
+        context: { traits: { email: 'match@example.com' } },
+        properties: {},
+      },
+    },
+    {
+      label: 'only trait external-id fields are present',
+      message: {
+        type: 'track',
+        event: 'Product Viewed',
+        messageId: 'msg-external-traits',
+        timestamp: EVENT_TIMESTAMP,
+        traits: {
+          externalIds: ['Trait-ExternalIds'],
+          external_ids: ['Trait-External-Ids'],
+          externalId: 'Trait-ExternalId',
+          external_id: 'Trait-External-Id',
+        },
+        context: {
+          traits: {
+            email: 'match@example.com',
+            externalIds: ['Context-Trait-ExternalIds'],
+            external_ids: ['Context-Trait-External-Ids'],
+            externalId: 'Context-Trait-ExternalId',
+            external_id: 'Context-Trait-External-Id',
+          },
+        },
+        properties: {},
+      },
+    },
+  ])('does not map external_ids_sha256 when $label', ({ message }) => {
+    const event = transform({
+      ...makeInput(1),
+      message,
+    } as RouterTransformationRequestData).body;
+
+    expect(event.user).toEqual({ emails_sha256: [sha256('match@example.com')] });
+  });
+
   it('supports custom mappings and page deduplicationKey', () => {
     const custom = transform({
       ...makeInput(1),
@@ -344,6 +435,70 @@ describe('OpenAIAdsIntegration', () => {
     expect(body.data.type).toBe(STANDARD_EVENT_DATA_TYPES.order_created);
   });
 
+  it.each([
+    {
+      label: 'mapped page name',
+      message: {
+        type: 'page',
+        name: 'Product Viewed',
+        messageId: 'msg-page',
+        timestamp: EVENT_TIMESTAMP,
+      },
+      expectedType: 'contents_viewed',
+      expectedDataType: 'contents',
+    },
+    {
+      label: 'unmapped page name',
+      message: { type: 'page', name: 'Docs', messageId: 'msg-page', timestamp: EVENT_TIMESTAMP },
+      expectedType: 'page_viewed',
+      expectedDataType: 'contents',
+    },
+    {
+      label: 'unnamed screen',
+      message: { type: 'screen', messageId: 'msg-screen', timestamp: EVENT_TIMESTAMP },
+      expectedType: 'page_viewed',
+      expectedDataType: 'contents',
+    },
+    {
+      label: 'standard screen name',
+      message: {
+        type: 'screen',
+        name: 'lead_created',
+        messageId: 'msg-screen',
+        timestamp: EVENT_TIMESTAMP,
+      },
+      expectedType: 'lead_created',
+      expectedDataType: 'customer_action',
+    },
+  ])('resolves $label', ({ message, expectedType, expectedDataType }) => {
+    const body = transform({ ...makeInput(1), message } as RouterTransformationRequestData).body;
+
+    expect(body.type).toBe(expectedType);
+    expect(body.data.type).toBe(expectedDataType);
+  });
+
+  it.each([
+    {
+      label: 'unnamed page',
+      message: { type: 'page', messageId: 'msg-page', timestamp: EVENT_TIMESTAMP },
+      eventMapping: [{ from: 'page', to: 'lead_created' }],
+    },
+    {
+      label: 'unnamed screen',
+      message: { type: 'screen', messageId: 'msg-screen', timestamp: EVENT_TIMESTAMP },
+      eventMapping: [{ from: 'screen', to: 'order_created' }],
+    },
+  ])('falls back for $label even when a type-name mapping exists', ({ message, eventMapping }) => {
+    const body = transform({
+      ...makeInput(1),
+      message,
+      destination: { ...destination, Config: { ...destination.Config, eventMapping } },
+    } as RouterTransformationRequestData).body;
+
+    expect(body.type).toBe('page_viewed');
+    expect(body.data.type).toBe('contents');
+  });
+
   it('rejects a non-standard name absent from a non-empty mapping table', () => {
     expect(() =>
       transform(
@@ -465,13 +620,6 @@ describe('OpenAIAdsIntegration', () => {
         },
       },
       error: 'event mapping not found',
-    },
-    {
-      input: {
-        ...makeInput(1),
-        message: { type: 'page', messageId: 'msg-err', timestamp: EVENT_TIMESTAMP },
-      },
-      error: 'source event name is required for page events',
     },
     {
       input: makeInput(

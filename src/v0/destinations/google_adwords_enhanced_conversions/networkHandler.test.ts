@@ -32,6 +32,29 @@ describe('google adwords enhanced conversions - proxy', () => {
       .mockResolvedValue({ statusCode: 200, responseBody: {} });
   });
 
+  it('throws a retryable 500 when a new-shape framework transport payload reaches the legacy proxy', async () => {
+    const request = {
+      body: {
+        JSON: {
+          partialFailure: true,
+          conversionAdjustments: [{ adjustmentType: 'ENHANCEMENT' }],
+        },
+      },
+      params: {},
+    };
+
+    await expect(proxy(request as never)).rejects.toMatchObject({
+      status: 500,
+      message: expect.stringContaining('new-shape payload reached legacy proxy'),
+      statTags: expect.objectContaining({
+        errorType: 'retryable',
+        meta: 'gaec_transport_flag_shape_mismatch_new_to_legacy',
+      }),
+    });
+    expect(mockGetConversionActionId).not.toHaveBeenCalled();
+    expect(mockAddConversionAdjustMent).not.toHaveBeenCalled();
+  });
+
   it('sets the resolved conversionAction on every adjustment in a batched request', async () => {
     const request = {
       body: {

@@ -5,6 +5,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
 import { mapInBatches } from '@rudderstack/integrations-lib';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
+import { proxyRequest } from '../../adapters/network';
+import { processAxiosResponse } from '../../adapters/utils/networkUtils';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import { DestinationService } from '../../interfaces/DestinationService';
 import {
@@ -28,14 +30,18 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { groupRouterTransformEvents } from '../../v0/util';
-import { isDestinationIntegrationEnabled } from '../../constants/destinationIntegrationsMap';
+import {
+  isDestinationIntegrationEnabled,
+  isBatchingFrameworkTransportEnabled,
+} from '../../constants/destinationIntegrationsMap';
 import { processDestinationIntegration } from './destinationIntegration/processDestinationIntegration';
 import {
   handleDeliveryResponse,
   toDeliveryV1Response,
   firstJobIdentity,
+  resolveDeliverySpec,
 } from './destinationIntegration/delivery';
-import type { DeliveryContext } from './destinationIntegration/delivery';
+import type { DeliveryContext, DeliveryRequestContext } from './destinationIntegration/delivery';
 
 /**
  * Whether the framework's delivery branch may answer this request — the route rudder-server called
@@ -245,8 +251,47 @@ export class NativeIntegrationDestinationService implements DestinationService {
         originalDestName,
         version,
       );
-      const rawProxyResponse = await networkHandler.proxy(deliveryRequest, destinationType);
-      const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
+      const frameworkRequest = isProxyV1Request(deliveryRequest, version);
+      const workspaceId = frameworkRequest ? deliveryRequest.metadata[0]?.workspaceId : '';
+      const frameworkOwnsTransport =
+        frameworkRequest && isBatchingFrameworkTransportEnabled(destinationType, workspaceId);
+      const frameworkOwnsResponse =
+        frameworkRequest && isDestinationIntegrationEnabled(destinationType, workspaceId);
+      const IntegrationClass =
+        frameworkOwnsTransport || frameworkOwnsResponse
+          ? FetchHandler.getDestinationIntegrationHandler(destinationType)
+          : undefined;
+      const reqCtx: DeliveryRequestContext | undefined = frameworkRequest
+        ? {
+            jobs: deliveryRequest.metadata,
+            request: deliveryRequest,
+            destinationConfig: deliveryRequest.destinationConfig,
+            ...firstJobIdentity(deliveryRequest.metadata),
+          }
+        : undefined;
+
+      let sentDeliveryRequest = deliveryRequest;
+      let processedProxyResponse;
+      if (frameworkOwnsTransport) {
+        const spec = resolveDeliverySpec(IntegrationClass);
+        // `prepareRequest` is also where a destination rejects a request it must not send — GAEC
+        // uses it to catch legacy-shape payloads left over from a transport flag flip. Throwing
+        // from it lands in this method's catch, same as any other delivery failure.
+        sentDeliveryRequest = spec.prepareRequest?.(deliveryRequest, reqCtx!) ?? deliveryRequest;
+        // The framework sent this request, so the framework reads the reply: the shared axios
+        // normalizer, not `networkHandler.processAxiosResponse`. A destination overrides that hook
+        // to adapt *its own* transport — GAEC's, for one, exists solely to unwrap the Google Ads
+        // SDK's `{ statusCode, responseBody }` — and none of that applies to a response this
+        // request never went through the destination to get. Destination-specific reading of a
+        // framework-sent response belongs in `DeliverySpec` (`statusOverrides`/`failureReason`).
+        processedProxyResponse = processAxiosResponse(
+          await proxyRequest(sentDeliveryRequest, destinationType),
+        );
+      } else {
+        processedProxyResponse = networkHandler.processAxiosResponse(
+          await networkHandler.proxy(deliveryRequest, destinationType),
+        );
+      }
 
       // The same predicate that chose `processDestinationIntegration` in `doRouterTransformation`, so
       // the response is read by whichever half built the request. `handlerVersion` is deliberately
@@ -255,19 +300,15 @@ export class NativeIntegrationDestinationService implements DestinationService {
       //
       // The guard is `isProxyV1Request`, which requires the v1 route *and* an array `metadata`;
       // see its declaration for why neither half alone is enough.
-      if (
-        isProxyV1Request(deliveryRequest, version) &&
-        isDestinationIntegrationEnabled(destinationType, deliveryRequest.metadata[0]?.workspaceId)
-      ) {
+      if (frameworkRequest && frameworkOwnsResponse) {
         const ctx: DeliveryContext = {
           status: processedProxyResponse.status,
           response: processedProxyResponse.response,
           jobs: deliveryRequest.metadata,
-          request: deliveryRequest,
+          request: sentDeliveryRequest as ProxyV1Request,
           destinationConfig: deliveryRequest.destinationConfig,
           ...firstJobIdentity(deliveryRequest.metadata),
         };
-        const IntegrationClass = FetchHandler.getDestinationIntegrationHandler(destinationType);
         // Uppercased to match `statTags.destType`, which is what every other destination tag in a
         // delivery response and in the stats emitted alongside it uses.
         const frameworkResponse = toDeliveryV1Response(

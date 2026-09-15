@@ -112,6 +112,45 @@ export const Integration = MyIntegration;
 
 Build the schema with `makeRouterInputSchema({ message, destinationConfig?, connectionConfig? })` — a single message variant plus optional destination/connection config. Hybrid record + event-stream destinations extend `VDMV2ObjectDestination`, which unions two such schemas for you.
 
+### Required config fields are `z.string().min(1)`
+
+`z.string()` accepts `''`. For a credential or an account identifier that means an unconfigured
+destination passes schema validation and the emptiness surfaces on the wire — an empty bearer
+token, or an empty required query parameter — as a 401/400 from the partner at delivery time,
+long after the point where it could have been reported as a configuration error.
+
+Put the requirement in the schema and the downstream runtime check becomes deletable (see
+`code-structure` → "Don't Re-Validate Inputs That Zod Has Already Validated"). The two rules
+work together: the schema is the single place the requirement is expressed.
+
+```typescript
+// Good — fails at transform time with a clear error
+const DestinationConfigSchema = z.object({
+  apiKey: z.string().min(1),
+  pixelId: z.string().min(1),
+});
+
+// Bad — `''` passes, and a resolveAccountConfig() helper re-checks it at runtime
+const DestinationConfigSchema = z.object({
+  apiKey: z.string().optional(),
+  pixelId: z.string().optional(),
+});
+```
+
+### Read credentials off `this.destination.Config`, without a cast
+
+`DestinationIntegration` declares `protected destination: Destination<ExtractDestinationConfig<z.infer<TInputSchema>>>` (`destinationIntegration.ts:86`), so the destination is **already typed** from the input schema's generic parameter. `this.destination as MyDestination` means the generic is wrong, not that a cast is needed.
+
+When a destination's credentials live in the destination config rather than the accounts framework, read them from `this.destination.Config` directly — don't model an `Account` shape for them.
+
+```typescript
+// Good
+const { apiKey, pixelId } = this.destination.Config;
+
+// Bad — cast, plus an Account type that models config fields
+const { apiKey, pixelId } = resolveAccountConfig(this.destination as MyDestination);
+```
+
 ## TransformedEvent Type
 
 ```typescript
@@ -145,6 +184,16 @@ return {
 };
 ```
 
+**Every split needs a reason the partner's API forces.** `internalGroupKey` halves batch
+efficiency in exchange for correctness, so the justification has to be that the API would
+reject or mis-handle the mixed batch — a different endpoint, a different action verb, an
+incompatible schema.
+
+Splitting on the *presence of an optional field* is the anti-pattern. If the API accepts mixed
+events in one array, grouping by "has a click id" / "has no click id" doubles the request count
+and buys nothing. When in doubt, don't set the key — and if you do set it, say in a comment
+which API constraint requires it.
+
 ## Batch Strategies
 
 ### ChunkBatchStrategy (default for most destinations)
@@ -167,6 +216,15 @@ getBatchStrategy(): BatchStrategy<TBody> {
 ```
 
 Size strings support: `'10MB'`, `'512KB'`, `'4MB'`, `'1GB'` — parsed via `parseSizeToBytes()`.
+
+**Batch limits are constants from the partner's docs, not destination-config fields.** Declare
+`MAX_BATCH_SIZE` / `MAX_PAYLOAD_SIZE` in the destination's `config.ts` and use them directly.
+Do not add them to the destination's Zod config schema, and do not write
+`getMaxBatchSize(config)` helpers that fall back to a constant — the control plane does not
+surface these, so every call resolves to the fallback. They are an unused knob that has to be
+read, documented and tested, and a customer-supplied value above the partner's real ceiling
+would produce rejected requests rather than smaller ones. (See `code-structure` → "Drop Config
+Knobs Without Varying Callers".)
 
 The `wrapBody` function:
 

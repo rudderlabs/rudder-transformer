@@ -6,11 +6,6 @@
  * the job list. 207 is a 2xx, so without this entry the framework would read a partially-failed
  * batch as a plain success. Keyed on the exact status rather than '2xx' because only 207 carries
  * `errors`. Everything else — plain success, every failure status — is left to the framework.
- *
- * NOTE: `src/v1/destinations/customerio/networkHandler.ts` keeps its own copy of this logic while
- * customerio is pre-GA, because workspaces not enrolled in the batching framework still transform
- * through the legacy `processRouterDest` and are delivered by that handler. Both are deleted
- * together when customerio reaches GA.
  */
 import {
   abort,
@@ -62,8 +57,8 @@ const customerIOStatusOverrides: StatusOverrideMap = {
 };
 
 // No `failureReason`: the per-job `error` on a whole-batch failure comes from the thrown error's
-// `destinationResponse` (postTransformation.ts), not from here, so the framework default is what
-// keeps it byte-identical to the legacy handler's.
+// `destinationResponse` (postTransformation.ts), not from here, so the framework default is all
+// that is needed.
 export const customerIODelivery: DeliverySpec = {
   statusOverrides: customerIOStatusOverrides,
 };

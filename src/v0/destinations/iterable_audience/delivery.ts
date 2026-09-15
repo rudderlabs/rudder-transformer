@@ -17,10 +17,6 @@
  * classification already aborts a 401 and retries a 500, with no auth inference — which is what
  * the legacy handler's empty `authErrorCategory` was expressing, Iterable list APIs being
  * Api-Key authenticated rather than OAuth.
- *
- * NOTE: `src/v1/destinations/iterable_audience/` keeps its strategy while the delivery path is
- * still resolved through networkHandlerFactory. Both are deleted together when the framework owns
- * delivery for this destination.
  */
 import {
   abort,
@@ -31,7 +27,7 @@ import {
   type StatusOverrideMap,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { createBatchErrorChecker } from '../../../v1/destinations/iterable/utils';
-import type { IterableSubscriber } from '../../../v1/destinations/iterable_audience/types';
+import type { IterableSubscriber } from './types';
 import { UNSUBSCRIBE_CATEGORY } from './config';
 
 const stats = require('../../../util/stats');
@@ -56,15 +52,13 @@ const matchesIdentifier = (subscriber: IterableSubscriber, lookups: IdentifierLo
  * Iterable's error envelope is `{ msg, code, params }`.
  *
  * `params` wins over `msg` even when both are present — the structured detail names the offending
- * identifiers, where `msg` is a generic summary. That precedence is the legacy handler's `??`
- * chain (`v1/destinations/iterable_audience/strategies/audience-list.ts`), kept deliberately.
- *
- * One difference from that handler: a string is returned bare rather than JSON-quoted.
+ * identifiers, where `msg` is a generic summary. That precedence carried over from the legacy
+ * handler's `??` chain and is kept deliberately; a string is returned bare rather than JSON-quoted.
  */
 export const extractIterableAudienceErrorMessage = (response: unknown): string => {
   const body = response as { params?: unknown; msg?: unknown; message?: unknown } | undefined;
-  // The trailing `?? response` is the framework default the legacy handler lacked: a body with
-  // none of these fields is shown whole rather than replaced by a placeholder that says nothing.
+  // The trailing `?? response` means a body carrying none of these fields is shown whole rather
+  // than replaced by a placeholder that says nothing.
   const message = body?.params ?? body?.msg ?? body?.message ?? response;
   if (typeof message === 'string') return message || 'unknown error format';
   return JSON.stringify(message) ?? 'unknown error format';

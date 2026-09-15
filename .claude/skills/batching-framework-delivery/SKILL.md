@@ -81,6 +81,28 @@ Do not add body-parsing to the framework. There is no shared convention to gener
 
 So: if your destination's errors are worth reading, write the extractor in your own `delivery.ts` and point `delivery.failureReason` at it. Return the string **bare** — the per-job `error` is what live events display and what error reporting groups on, so `Invalid API key` beats `"Invalid API key"`.
 
+**Extract the whole envelope, not just `message`.** Most partner errors carry more than a
+sentence, and the extra fields are what make the failure actionable: a `code` the customer can
+look up, a `param` naming the offending field, and a nested `errors[]` saying *which* event in
+the batch failed. Lifting only `error.message` produces
+`[DEST] event_timestamp_ms must be within the last 7 days.` — true, but it doesn't say which of
+the 200 events was stale. Fold `code`, `param` and the per-item entries into the string.
+
+### Handle only the response shapes the API actually returns
+
+The extractor should branch on exactly the shapes covered by the destination's `network.ts`
+mocks. A formatter that also handles a bare string body, a string `error`, a top-level
+`message` and three fallback spellings is untested speculation: the branches cannot be
+exercised, they suggest to the next reader that the API is more variable than it is, and they
+turn a genuine shape change into a silent fallback instead of a visible failure.
+
+If a shape is real, mock it. If you cannot produce a mock for it, delete the branch.
+
+Do account for **variants within the envelope you do handle** — the same API commonly returns
+`{ error: { message, type, param, code, errors[] } }` for a validation failure but `param` and
+`code` as `null` with no `errors[]` for an auth failure. Those are two paths through your
+formatter, not two different APIs.
+
 ## Verdicts
 
 | Builder | Meaning | Result |
@@ -100,6 +122,21 @@ So: if your destination's errors are worth reading, write the extractor in your 
 Use `retry(reason, { dontBatch: true })` only for a permanent whole-batch rejection where one bad event may be poisoning the batch. The flag means: return a retryable job state now so rudder-server redelivers each event once alone; if the event is already alone, the framework rewrites the verdict to `abort(reason)`, emits a terminal per-job `400` with the reason unchanged, and increments `batch_delivery_dont_batch_aborted`.
 
 Do **not** pair `dontBatch` with transient/retryable statuses such as 5xx. On a single-event batch there is nothing to isolate, so `retry(reason, { dontBatch: true })` becomes an immediate abort with no retry. Transient destination failures must use plain `retry(reason)` (or `throttled(reason)` for 429) so normal retry semantics are preserved.
+
+**Don't guard the flag on batch size yourself.** The rewrite above is the framework's job (`destinationIntegration/delivery.ts:401`), so a `ctx.jobs.length > 1` check around `dontBatch` is redundant — and it is subtly worse than redundant, because the single-job branch it adds returns a plain `retry` where the framework would have produced a terminal `abort`, converting a permanent rejection into an infinite retry.
+
+```ts
+// Good
+statusOverrides: { 400: (ctx) => retry(responseToMessage(ctx.response), { dontBatch: true }) }
+
+// Bad — the framework already handles the singleton case
+statusOverrides: {
+  400: (ctx) =>
+    ctx.jobs.length > 1
+      ? retry(responseToMessage(ctx.response), { dontBatch: true })
+      : retry(responseToMessage(ctx.response)),
+}
+```
 
 ### `perItem` is positional and 1:1
 

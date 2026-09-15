@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.153.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.152.0...v1.153.0) (2026-09-15)
+
+
+### Features
+
+* **logger:** gate request/response payload logs behind event level ([#5567](https://github.com/rudderlabs/rudder-transformer/issues/5567)) ([6617913](https://github.com/rudderlabs/rudder-transformer/commit/6617913da302edea110590140c4f8a4ce8669322))
+
+
+### Bug Fixes
+
+* **deps:** bump form-data from 4.0.5 to 4.0.6 (security) [Snyk] ([#5576](https://github.com/rudderlabs/rudder-transformer/issues/5576)) ([3bb9519](https://github.com/rudderlabs/rudder-transformer/commit/3bb9519787d85ea4428ca72073e4ed761ad12414))
+* **gaec:** resolve conversion actions before framework transport batching ([#5545](https://github.com/rudderlabs/rudder-transformer/issues/5545)) ([cceb8a8](https://github.com/rudderlabs/rudder-transformer/commit/cceb8a8605e453d429a4cc6d87ecc1bc67348c2c))
+* **iterable:** treat missing deleteUsers targets as success ([#5570](https://github.com/rudderlabs/rudder-transformer/issues/5570)) ([5bd669d](https://github.com/rudderlabs/rudder-transformer/commit/5bd669d6067c6130415323f62580cadcc36161d2))
+* **openai_ads:** default unmapped page and screen events to page_viewed ([#5573](https://github.com/rudderlabs/rudder-transformer/issues/5573)) ([a3b7a35](https://github.com/rudderlabs/rudder-transformer/commit/a3b7a3569461c783fe1db4d88f69db3c5e7691f8))
+* **openai_ads:** simplify external id mapping ([#5568](https://github.com/rudderlabs/rudder-transformer/issues/5568)) ([4a9edd2](https://github.com/rudderlabs/rudder-transformer/commit/4a9edd21c941b2d715bf3b26a170cba4a8446522))
+* **prometheus:** ignore unsupported labels for registered metrics ([#5394](https://github.com/rudderlabs/rudder-transformer/issues/5394)) ([f694d7e](https://github.com/rudderlabs/rudder-transformer/commit/f694d7e2868e5a104f8b41ddd110150bcd9f8159))
+
 ## [1.152.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.151.0...v1.152.0) (2026-09-08)
 
 

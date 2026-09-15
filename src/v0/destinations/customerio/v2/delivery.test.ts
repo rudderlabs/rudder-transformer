@@ -5,19 +5,9 @@ import {
   toDeliveryV1Response,
 } from '../../../../services/destination/destinationIntegration/delivery';
 import type { DeliveryContext } from '../../../../services/destination/destinationIntegration/delivery';
-import { networkHandler as legacyNetworkHandler } from '../../../../v1/destinations/customerio/networkHandler';
-import type { DeliveryV1Response, ProxyMetdata, ProxyV1Request } from '../../../../types';
+import type { ProxyMetdata, ProxyV1Request } from '../../../../types';
 
 const DEST = 'CUSTOMERIO';
-
-/** The shape `networkHandler.call(...)` installs on its receiver — the part this test drives. */
-type LegacyV1Handler = {
-  responseHandler: (params: {
-    rudderJobMetadata: ProxyMetdata[];
-    destinationResponse: { response: unknown; status: number };
-    destinationRequest: ProxyV1Request;
-  }) => DeliveryV1Response;
-};
 
 const job = (jobId: number): ProxyMetdata =>
   ({
@@ -67,81 +57,72 @@ const viaFramework = (ctx: DeliveryContext) => {
   }
 };
 
-/** Run the retained legacy handler the same way, for parity comparison. */
-const viaLegacy = (ctx: DeliveryContext) => {
-  const handler = {} as LegacyV1Handler;
-  legacyNetworkHandler.call(handler);
-  try {
-    const response = handler.responseHandler({
-      rudderJobMetadata: ctx.jobs,
-      destinationResponse: { status: ctx.status, response: ctx.response },
-      destinationRequest: ctx.request,
-    });
-    return {
-      threw: false,
-      status: response.status,
-      codes: response.response.map((r) => r.statusCode),
-      errors: response.response.map((r) => r.error),
-    };
-  } catch (e: any) {
-    return {
-      threw: true,
-      status: e.status,
-      errorType: e.statTags?.errorType,
-      authErrorCategory: e.authErrorCategory,
-    };
-  }
-};
-
-describe('customerio delivery — parity with the retained legacy handler', () => {
+describe('customerio delivery — outcomes by status', () => {
   const partialFailure = {
     errors: [{ batch_index: 1, reason: 'invalid', field: 'email', message: 'bad email' }],
   };
 
-  const parityCases = [
-    { name: 'non-207 success (200)', status: 200, response: { ok: true }, items: 2 },
-    { name: 'non-207 failure (400)', status: 400, response: { msg: 'bad' }, items: 2 },
-    { name: 'non-207 failure (500)', status: 500, response: { msg: 'oops' }, items: 2 },
-    { name: '207 with a failed item', status: 207, response: partialFailure, items: 3 },
-    { name: '207 with an empty errors array', status: 207, response: { errors: [] }, items: 2 },
-  ];
+  it.each([
+    {
+      name: 'non-207 success (200)',
+      status: 200,
+      response: { ok: true },
+      items: 2,
+      codes: [200, 200],
+      errors: ['success', 'success'],
+    },
+    {
+      name: '207 with a failed item',
+      status: 207,
+      response: partialFailure,
+      items: 3,
+      codes: [200, 400, 200],
+      errors: ['success', 'reason: invalid, field: email, message: bad email', 'success'],
+    },
+    {
+      name: '207 with an empty errors array',
+      status: 207,
+      response: { errors: [] },
+      items: 2,
+      codes: [200, 200],
+      errors: ['success', 'success'],
+    },
+  ])('reports per-job codes and errors: $name', ({ status, response, items, codes, errors }) => {
+    const result = viaFramework(ctxFor(status, response, items));
 
-  it.each(parityCases)('per-job codes and errors match: $name', ({ status, response, items }) => {
-    const ctx = ctxFor(status, response, items);
-    const next = viaFramework(ctx);
-    const prev = viaLegacy(ctx);
-
-    expect(next.threw).toBe(prev.threw);
-    if (prev.threw) {
-      // Whole-batch failure: postTransformation rebuilds the per-job states from this error, so
-      // matching status + errorType + authErrorCategory is matching the delivered response.
-      expect(next.status).toBe(prev.status);
-      expect(next.errorType).toBe(prev.errorType);
-      expect(next.authErrorCategory ?? '').toBe(prev.authErrorCategory ?? '');
-      return;
-    }
-    expect(next.codes).toEqual(prev.codes);
-    expect(next.errors).toEqual(prev.errors);
+    expect(result.threw).toBe(false);
+    expect(result.status).toBe(status);
+    expect(result.codes).toEqual(codes);
+    expect(result.errors).toEqual(errors);
   });
 
   it.each([
-    { status: 401, category: 'REFRESH_TOKEN' },
-    { status: 403, category: 'AUTH_STATUS_INACTIVE' },
-  ])(
-    'drops the status-inferred authErrorCategory $category on a $status',
-    ({ status, category }) => {
-      // The legacy handler ran every non-2xx through `getAuthErrCategoryFromStCode`. customerio
-      // authenticates the v2 batch API with Basic auth over siteID:apiKey, and rudder-server's
-      // OAuth transport returns before reading the field for a non-OAuth destination
+    { name: '400', status: 400, response: { msg: 'bad' }, errorType: 'aborted' },
+    { name: '500', status: 500, response: { msg: 'oops' }, errorType: 'retryable' },
+  ])('throws for the whole batch on a non-207 $name', ({ status, response, errorType }) => {
+    const result = viaFramework(ctxFor(status, response, 2));
+
+    expect(result.threw).toBe(true);
+    expect(result.status).toBe(status);
+    expect(result.errorType).toBe(errorType);
+  });
+
+  it.each([{ status: 401 }, { status: 403 }])(
+    'infers no authErrorCategory on a $status',
+    ({ status }) => {
+      // The legacy handler ran every non-2xx through `getAuthErrCategoryFromStCode`, yielding
+      // REFRESH_TOKEN on a 401 and AUTH_STATUS_INACTIVE on a 403. customerio authenticates the v2
+      // batch API with Basic auth over siteID:apiKey, and rudder-server's OAuth transport returns
+      // before reading the field for a non-OAuth destination
       // (`services/oauth/v2/http/transport.go`, `if !isOauthDestination`), so neither the refresh
       // nor the 401->500 rewrite it implies was ever reachable. The framework does not infer auth
-      // from a status code and customerio does not declare one, so the field goes.
-      const ctx = ctxFor(status, { msg: 'auth' }, 2);
-      expect(viaLegacy(ctx).authErrorCategory).toBe(category);
-      expect(viaFramework(ctx).authErrorCategory).toBe('');
+      // from a status code and customerio declares none, so the field stays empty.
+      const result = viaFramework(ctxFor(status, { msg: 'auth' }, 2));
+
+      expect(result.authErrorCategory ?? '').toBe('');
       // The job outcome is what it always was: a 4xx is terminal either way.
-      expect(viaFramework(ctx).status).toBe(status);
-      expect(viaFramework(ctx).errorType).toBe('aborted');
+      expect(result.status).toBe(status);
+      expect(result.errorType).toBe('aborted');
     },
   );
 });

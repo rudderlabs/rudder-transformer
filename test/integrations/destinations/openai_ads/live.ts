@@ -43,7 +43,6 @@ export const live: LiveSpec = {
                   email: ctx.email('buyer'),
                   firstName: 'OpenAI',
                   lastName: 'Ads',
-                  externalId: ctx.identity('buyer'),
                 },
               },
               properties: {

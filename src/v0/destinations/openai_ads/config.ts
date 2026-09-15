@@ -19,6 +19,7 @@ export const CUSTOM_EVENT_SENTINEL = 'custom';
 const CONTENTS_DATA_TYPE = 'contents';
 export const CUSTOMER_ACTION_DATA_TYPE = 'customer_action';
 const PLAN_ENROLLMENT_DATA_TYPE = 'plan_enrollment';
+export const PAGE_VIEWED_EVENT = 'page_viewed';
 export const EVENT_DATA_TYPES = [
   CONTENTS_DATA_TYPE,
   CUSTOMER_ACTION_DATA_TYPE,
@@ -34,7 +35,7 @@ export const STANDARD_EVENT_DATA_TYPES = {
   items_added: CONTENTS_DATA_TYPE,
   lead_created: CUSTOMER_ACTION_DATA_TYPE,
   order_created: CONTENTS_DATA_TYPE,
-  page_viewed: CONTENTS_DATA_TYPE,
+  [PAGE_VIEWED_EVENT]: CONTENTS_DATA_TYPE,
   registration_completed: CUSTOMER_ACTION_DATA_TYPE,
   subscription_created: PLAN_ENROLLMENT_DATA_TYPE,
   trial_started: PLAN_ENROLLMENT_DATA_TYPE,

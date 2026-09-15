@@ -1,49 +1,20 @@
 import { get, set } from 'lodash';
-import sha256 from 'sha256';
 import {
   NetworkError,
   // NetworkInstrumentationError,
-  GoogleAdsSDK,
-  InstrumentationError,
   isDefinedAndNotNullAndNotEmpty,
 } from '@rudderstack/integrations-lib';
-import type { GaecPayload } from './types';
+import type { GaecPayload, GaecSdkResponse } from './types';
 // import SqlString from 'sqlstring';
 import { prepareProxyRequest } from '../../../adapters/network';
-import { isHttpStatusSuccess } from '../../util/index';
-import { CONVERSION_ACTION_ID_CACHE_TTL } from './config';
-import { getDeveloperToken, getAuthErrCategory } from '../../util/googleUtils';
-import CacheClass from '../../util/cache';
 import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
+import { isHttpStatusSuccess } from '../../util/index';
+import { getAuthErrCategory } from '../../util/googleUtils';
+// The SDK client builder, the conversion action lookup and its cache live in ./utils because
+// routerTransform needs the lookup too when the framework transport is enabled; both paths must
+// share the one cache.
+import { buildGoogleAdsClient, getConversionActionId, isObject } from './utils';
 import tags from '../../util/tags';
-import logger from '../../../logger';
-
-/** Minimal interface for the Cache utility (`src/v0/util/cache.js`). */
-interface CacheInstance {
-  get(key: string, storeFunction: () => Promise<string | undefined>): Promise<string | undefined>;
-}
-
-/** Shape of the SDK response from `googleAds.addConversionAdjustMent`. */
-interface SdkResponse {
-  statusCode: number;
-  // absent on the SDK's client-error responses
-  responseBody?: unknown;
-  headers?: Record<string, unknown>;
-}
-
-/** Shape of a client-error or application-error response from `googleAds.getConversionActionId`. */
-interface SdkErrorResponse {
-  type: string;
-  statusCode: number;
-  message?: string;
-  responseBody?: unknown;
-}
-
-const isObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
-
-const isSdkErrorResponse = (value: unknown): value is SdkErrorResponse =>
-  isObject(value) && typeof value.type === 'string';
 
 /** Shape of `destinationResponse.response` when a partial failure is present. */
 interface PartialFailureBody {
@@ -51,66 +22,6 @@ interface PartialFailureBody {
 }
 
 const isPartialFailureBody = (value: unknown): value is PartialFailureBody => isObject(value);
-
-const conversionActionIdCache: CacheInstance = new CacheClass(
-  'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_ACTION_ID',
-  CONVERSION_ACTION_ID_CACHE_TTL,
-);
-
-/**
- * This function is used for collecting the conversionActionId using the conversion name
- */
-const getConversionActionId = async ({
-  params,
-  googleAds,
-}: {
-  params: { event: string; customerId: string };
-  googleAds: { getConversionActionId: (event: string) => Promise<unknown> };
-}): Promise<string | undefined> => {
-  const conversionActionIdKey = sha256(params.event + params.customerId).toString();
-  return conversionActionIdCache.get(conversionActionIdKey, async () => {
-    const resp: unknown = await googleAds.getConversionActionId(params.event);
-    if (typeof resp === 'string') {
-      return resp;
-    }
-    if (resp === null) {
-      throw new InstrumentationError(
-        'Conversion Action not found, make sure the event name provided on the dashboard is exactly same as the conversion action name in Google Ads',
-      );
-    }
-    if (isSdkErrorResponse(resp) && resp.type === 'client-error') {
-      throw new NetworkError(
-        `"${String(resp.message)} during Google_adwords_enhanced_conversions response transformation[client-error]"`,
-        resp.statusCode,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.statusCode),
-        },
-        resp,
-        getAuthErrCategory({ response: resp, status: resp.statusCode }),
-      );
-    }
-
-    if (isSdkErrorResponse(resp) && resp.type === 'application-error') {
-      throw new NetworkError(
-        `"${JSON.stringify(resp.responseBody)} during Google_adwords_enhanced_conversions response transformation"`,
-        resp.statusCode,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.statusCode),
-        },
-        resp.responseBody,
-        getAuthErrCategory({ response: resp.responseBody, status: resp.statusCode }),
-      );
-    }
-    throw new NetworkError(
-      `"${JSON.stringify(resp)} during Google_adwords_enhanced_conversions response transformation"`,
-      500,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
-      },
-      resp,
-    );
-  });
-};
 
 interface GaecProxyRequest {
   body: { JSON: GaecPayload };
@@ -127,35 +38,33 @@ interface GaecProxyRequest {
  * This function is responsible for collecting the conversionActionId
  * and calling the enhanced conversion.
  */
-const gaecProxyRequest = async (request: GaecProxyRequest): Promise<SdkResponse> => {
+const gaecProxyRequest = async (request: GaecProxyRequest): Promise<GaecSdkResponse> => {
   const { body, params } = request;
-  // Method syntax (not arrow-function properties) is deliberate: it keeps parameter checks
-  // bivariant, so the SDK instance stays assignable to this minimal boundary interface even
-  // though the SDK declares stricter payload types than the loosely typed proxy payload.
-  const googleAds: {
-    getConversionActionId(event: string): Promise<unknown>;
-    addConversionAdjustMent(payload: GaecPayload): Promise<SdkResponse>;
-  } = new GoogleAdsSDK.GoogleAds(
-    {
-      accessToken: params.accessToken,
-      customerId: params.customerId,
-      // in-flight payloads built by the legacy JS transformer may carry a numeric
-      // loginCustomerId; the SDK config field is typed string
-      loginCustomerId: params.subAccount ? String(params.loginCustomerId) : '',
-      developerToken: getDeveloperToken(),
-    },
-    {
-      httpClient: {
-        // `statsClient` was never exported by util/stats, so the legacy `require` destructure
-        // always wired `undefined` here; kept explicit to preserve the SDK httpClient shape.
-        statsClient: undefined,
-        logger,
+  if (!params?.event) {
+    const error = new NetworkError(
+      '[Google Ads Enhanced Conversions] new-shape payload reached legacy proxy after transport flag flip',
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.RETRYABLE,
       },
-    },
-  );
+      { status: 500, response: 'new-shape payload reached legacy proxy' },
+    );
+    error.statTags[tags.TAG_NAMES.META] = 'gaec_transport_flag_shape_mismatch_new_to_legacy';
+    throw error;
+  }
+  // in-flight payloads built by the legacy JS transformer may carry a numeric
+  // loginCustomerId; the SDK config field is typed string
+  const loginCustomerId = params.subAccount ? String(params.loginCustomerId) : '';
+  const googleAds = buildGoogleAdsClient({
+    accessToken: params.accessToken,
+    customerId: params.customerId,
+    loginCustomerId,
+  });
   const conversionActionId = await getConversionActionId({
-    params,
-    googleAds,
+    event: params.event,
+    customerId: params.customerId,
+    loginCustomerId,
+    accessToken: params.accessToken,
   });
 
   // A request may carry multiple conversion adjustments when events are batched. They all
@@ -187,8 +96,14 @@ interface GaecV0HandlerResult {
   destinationResponse: GaecDestinationResponse;
 }
 
+/**
+ * Adapts the Google Ads SDK's `{ statusCode, responseBody }` to the `{ status, response }` the
+ * delivery path expects. Only ever sees an SDK response: when the framework owns the transport it
+ * sends the request itself and normalizes the reply with the shared `processAxiosResponse`,
+ * without going through this handler at all.
+ */
 const gaecProcessAxiosResponse = (
-  sdkResponse: SdkResponse,
+  sdkResponse: GaecSdkResponse,
 ): { response: unknown; status: number; headers?: Record<string, unknown> } => ({
   response: sdkResponse.responseBody,
   status: sdkResponse.statusCode,

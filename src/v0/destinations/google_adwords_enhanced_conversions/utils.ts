@@ -1,4 +1,6 @@
+import sha256 from 'sha256';
 import validator from 'validator';
+import { NetworkError, GoogleAdsSDK, InstrumentationError } from '@rudderstack/integrations-lib';
 import { processAudienceRecord, isValidPhoneNumber, HashingType } from '../../util/audienceUtils';
 import type { AudienceField } from '../../util/audienceUtils';
 import {
@@ -6,8 +8,151 @@ import {
   normalizePhone,
   normalizeName,
 } from '../../util/googleUtils/userDataNormalization';
-import type { GaecPayload, UserIdentifierEntry, AddressInfo } from './types';
-import { destType } from './config';
+import type { GaecPayload, GaecSdkResponse, UserIdentifierEntry, AddressInfo } from './types';
+import { destType, CONVERSION_ACTION_ID_CACHE_TTL } from './config';
+import { getDeveloperToken, getAuthErrCategory } from '../../util/googleUtils';
+import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
+import CacheClass from '../../util/cache';
+import tags from '../../util/tags';
+import logger from '../../../logger';
+
+// ---------------------------------------------------------------------------
+// Conversion action resolution
+//
+// Shared by both paths: the legacy networkHandler resolves at delivery time, and — when the
+// framework transport is enabled — routerTransform resolves during transform so that events with
+// different conversion names can land in one batch. Both go through the one cache below; a second
+// CacheClass with the same name would double the memory and split the hit rate.
+// ---------------------------------------------------------------------------
+
+/** Minimal interface for the Cache utility (`src/v0/util/cache.js`). */
+interface CacheInstance {
+  get(key: string, storeFunction: () => Promise<string | undefined>): Promise<string | undefined>;
+}
+
+/** Shape of a client-error or application-error response from `googleAds.getConversionActionId`. */
+interface SdkErrorResponse {
+  type: string;
+  statusCode: number;
+  message?: string;
+  responseBody?: unknown;
+}
+
+export const isObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const isSdkErrorResponse = (value: unknown): value is SdkErrorResponse =>
+  isObject(value) && typeof value.type === 'string';
+
+const conversionActionIdCache: CacheInstance = new CacheClass(
+  'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_ACTION_ID',
+  CONVERSION_ACTION_ID_CACHE_TTL,
+);
+
+/**
+ * The SDK surface these two paths use: the lookup from either path, and the upload from the
+ * legacy proxy.
+ *
+ * Method syntax (not arrow-function properties) is deliberate: it keeps parameter checks
+ * bivariant, so the SDK instance stays assignable to this minimal boundary interface even
+ * though the SDK declares stricter payload types than the loosely typed proxy payload.
+ */
+export interface GoogleAdsClient {
+  getConversionActionId(event: string): Promise<unknown>;
+  addConversionAdjustMent(payload: GaecPayload): Promise<GaecSdkResponse>;
+}
+
+export const buildGoogleAdsClient = ({
+  accessToken,
+  customerId,
+  loginCustomerId,
+}: {
+  accessToken: string;
+  customerId: string;
+  loginCustomerId: string;
+}): GoogleAdsClient =>
+  new GoogleAdsSDK.GoogleAds(
+    {
+      accessToken,
+      customerId,
+      loginCustomerId,
+      developerToken: getDeveloperToken(),
+    },
+    {
+      httpClient: {
+        // `statsClient` was never exported by util/stats, so the legacy `require` destructure
+        // always wired `undefined` here; kept explicit to preserve the SDK httpClient shape.
+        statsClient: undefined,
+        logger,
+      },
+    },
+  );
+
+/**
+ * Resolves a conversion action *resource name* (`customers/<id>/conversionActions/<id>`) from the
+ * conversion name configured on the dashboard. Despite the SDK method's name it returns the
+ * resource name, which is what `conversionAction` on an adjustment expects.
+ *
+ * The SDK client is built inside the store function so a cache hit — the overwhelmingly common
+ * case, since a batch carries a handful of distinct names across thousands of jobs — costs
+ * nothing beyond the lookup.
+ */
+export const getConversionActionId = async ({
+  event,
+  customerId,
+  loginCustomerId,
+  accessToken,
+}: {
+  event: string;
+  customerId: string;
+  loginCustomerId: string;
+  accessToken: string;
+}): Promise<string | undefined> => {
+  const conversionActionIdKey = sha256(event + customerId).toString();
+  return conversionActionIdCache.get(conversionActionIdKey, async () => {
+    const googleAds = buildGoogleAdsClient({ accessToken, customerId, loginCustomerId });
+    const resp: unknown = await googleAds.getConversionActionId(event);
+    if (typeof resp === 'string') {
+      return resp;
+    }
+    if (resp === null) {
+      throw new InstrumentationError(
+        'Conversion Action not found, make sure the event name provided on the dashboard is exactly same as the conversion action name in Google Ads',
+      );
+    }
+    if (isSdkErrorResponse(resp) && resp.type === 'client-error') {
+      throw new NetworkError(
+        `"${String(resp.message)} during Google_adwords_enhanced_conversions response transformation[client-error]"`,
+        resp.statusCode,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.statusCode),
+        },
+        resp,
+        getAuthErrCategory({ response: resp, status: resp.statusCode }),
+      );
+    }
+
+    if (isSdkErrorResponse(resp) && resp.type === 'application-error') {
+      throw new NetworkError(
+        `"${JSON.stringify(resp.responseBody)} during Google_adwords_enhanced_conversions response transformation"`,
+        resp.statusCode,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.statusCode),
+        },
+        resp.responseBody,
+        getAuthErrCategory({ response: resp.responseBody, status: resp.statusCode }),
+      );
+    }
+    throw new NetworkError(
+      `"${JSON.stringify(resp)} during Google_adwords_enhanced_conversions response transformation"`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
+      },
+      resp,
+    );
+  });
+};
 
 /**
  * Per-field normalization and validation rules for GAEC user identifiers.

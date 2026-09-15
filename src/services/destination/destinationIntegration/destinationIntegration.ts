@@ -29,6 +29,7 @@ export type {
   PerItemVerdicts,
   HandleResponseResult,
   DeliveryContext,
+  DeliveryRequestContext,
   DeliverySpec,
   ResolvedDeliverySpec,
   StatusOverride,
@@ -99,16 +100,29 @@ export abstract class DestinationIntegration<
 
   // --- MUST implement ---
 
+  /**
+   * Builds the delivery request for one input. May be sync or async — the framework awaits the
+   * result either way, so a destination that needs no I/O keeps returning a plain object and is
+   * unaffected.
+   *
+   * Async is for enrichment the payload cannot be built without: a lookup whose result belongs in
+   * the body. It runs once per input, so any I/O here MUST be cache-backed — an uncached call per
+   * event turns a single router transform into one request per job.
+   *
+   * Throwing fails only this input: the caller records it against this jobId and the rest of the
+   * batch is unaffected.
+   */
   abstract transformEvent(
     input: z.infer<TInputSchema>,
     reqMetadata?: NonNullable<unknown>,
-  ): TransformedEvent<TBody> | TransformedEvent<TBody>[];
+  ):
+    | TransformedEvent<TBody>
+    | TransformedEvent<TBody>[]
+    | Promise<TransformedEvent<TBody> | TransformedEvent<TBody>[]>;
 
   abstract getBatchStrategy(endpoint: string): BatchStrategy<TBody>;
 
   abstract getInputSchema(): TInputSchema;
-
-  // --- MAY override ---
 
   async transformEvents(
     inputs: z.infer<TInputSchema>[],
@@ -120,7 +134,12 @@ export abstract class DestinationIntegration<
     for (const input of inputs) {
       const jobId = input.metadata?.jobId;
       try {
-        const transformedPayload = this.transformEvent(input, reqMetadata);
+        // Sequential on purpose. When transformEvent does a cache-backed lookup, running the
+        // inputs in order lets the first event for a given key pay the miss and populate the
+        // cache that the rest of the batch then hits; running them concurrently would have every
+        // event race the same miss.
+        // eslint-disable-next-line no-await-in-loop
+        const transformedPayload = await this.transformEvent(input, reqMetadata);
         const results = Array.isArray(transformedPayload)
           ? transformedPayload
           : [transformedPayload];
@@ -134,6 +153,9 @@ export abstract class DestinationIntegration<
           statusCode: errObj.status,
           jobId,
           statTags: errObj.statTags,
+          // Carried so an OAuth failure inside an async transformEvent still asks rudder-server
+          // for a token refresh; see TransformError.authErrorCategory.
+          authErrorCategory: errObj.authErrorCategory,
         });
       }
     }

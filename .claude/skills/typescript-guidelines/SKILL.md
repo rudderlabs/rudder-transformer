@@ -127,3 +127,23 @@ pending = this.createEntry()
     throw err;
   });
 ```
+
+## No Bare `as string` Over a Dot-Path Value
+
+`get(message, path)` returns `any`. Casting the result to `string` because the payload type
+says `string` asserts something nothing checked: the customer's field may be a number, and the
+path may not resolve at all. Both failures are silent — a JSON number reaches an API expecting
+a string, or the field is `undefined` and gets stripped by `removeUndefinedAndNullValues`, so
+the request goes out missing a **required** field instead of failing with an actionable error.
+
+```ts
+// Good — validate the type, stringify, and fail loudly when a required value is absent
+const raw = get(message, mapping.deduplicationKey);
+if (isPresent(raw) && !['string', 'number', 'boolean'].includes(typeof raw)) {
+  throw new InstrumentationError(`deduplicationKey "${mapping.deduplicationKey}" is not a scalar`);
+}
+const id = isPresent(raw) ? String(raw) : message.messageId;
+
+// Bad — a lie about two untyped sources
+const id = (get(message, mapping.deduplicationKey) ?? message.messageId) as string;
+```

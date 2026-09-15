@@ -1,10 +1,20 @@
+import { proxyRequest as frameworkProxyRequest } from '../../../adapters/network';
 import networkHandlerFactory from '../../../adapters/networkHandlerFactory';
 import { NativeIntegrationDestinationService } from '../nativeIntegration';
-import { destinationIntegrationsMap } from '../../../constants/destinationIntegrationsMap';
+import {
+  destinationIntegrationsMap,
+  isBatchingFrameworkTransportEnabled,
+} from '../../../constants/destinationIntegrationsMap';
 import type { DeliveryV1Response, ProxyV1Request } from '../../../types';
+
+jest.mock('../../../adapters/network', () => ({
+  ...jest.requireActual('../../../adapters/network'),
+  proxyRequest: jest.fn(),
+}));
 
 const DEST = 'customerio';
 const WORKSPACE = 'ws-1';
+const GAEC_DEST = 'google_adwords_enhanced_conversions';
 
 const job = (jobId: number) =>
   ({
@@ -30,6 +40,29 @@ const proxyRequest = (): ProxyV1Request =>
     destinationConfig: {},
   }) as unknown as ProxyV1Request;
 
+const gaecProxyRequest = (
+  endpoint = 'https://googleads.googleapis.com/v23/customers/123:uploadConversionAdjustments',
+): ProxyV1Request =>
+  ({
+    ...proxyRequest(),
+    endpoint,
+    endpointPath: '/123:uploadConversionAdjustments',
+    headers: { Authorization: 'Bearer token', 'Content-Type': 'application/json' },
+    params: {},
+    body: {
+      JSON: {
+        conversionAdjustments: [{ conversionAction: 'customers/123/conversionActions/456' }],
+        partialFailure: true,
+      },
+    },
+    metadata: [job(1)],
+    destinationConfig: {},
+  }) as unknown as ProxyV1Request;
+
+const mockedFrameworkProxyRequest = frameworkProxyRequest as jest.MockedFunction<
+  typeof frameworkProxyRequest
+>;
+
 /** Stub transport so no HTTP happens; the destination "responds" with `status` and `response`. */
 const stubTransport = (status: number, response: unknown) => {
   const legacyResponseHandler = jest.fn(() => ({
@@ -37,16 +70,37 @@ const stubTransport = (status: number, response: unknown) => {
     message: 'from the legacy handler',
     response: [],
   }));
+  const legacyProxy = jest.fn().mockResolvedValue({ success: true });
+  const legacyProcessAxiosResponse = jest.fn().mockReturnValue({ status, response });
+  Object.assign(legacyResponseHandler, {
+    proxy: legacyProxy,
+    processAxiosResponse: legacyProcessAxiosResponse,
+  });
   jest.spyOn(networkHandlerFactory, 'getNetworkHandler').mockReturnValue({
     networkHandler: {
-      proxy: jest.fn().mockResolvedValue({ success: true }),
-      processAxiosResponse: jest.fn().mockReturnValue({ status, response }),
+      proxy: legacyProxy,
+      processAxiosResponse: legacyProcessAxiosResponse,
       responseHandler: legacyResponseHandler,
       prepareProxy: jest.fn(),
     },
     handlerVersion: 'v1',
   } as never);
-  return legacyResponseHandler;
+  return legacyResponseHandler as typeof legacyResponseHandler & {
+    proxy: jest.Mock;
+    processAxiosResponse: jest.Mock;
+  };
+};
+
+/**
+ * Stub the framework's *own* transport. The status has to be driven through the axios-shaped reply
+ * `proxyRequest` returns, because the framework path normalizes with the shared
+ * `processAxiosResponse` rather than the destination's handler.
+ */
+const stubFrameworkTransport = (status: number, data: unknown = {}) => {
+  mockedFrameworkProxyRequest.mockResolvedValue({
+    success: true,
+    response: { status, data },
+  } as never);
 };
 
 describe('deliver() — batching-framework delivery', () => {
@@ -54,6 +108,88 @@ describe('deliver() — batching-framework delivery', () => {
 
   beforeEach(() => {
     jest.restoreAllMocks();
+    mockedFrameworkProxyRequest
+      .mockReset()
+      .mockResolvedValue({ success: true, response: {} } as never);
+    process.env.GOOGLE_ADS_DEVELOPER_TOKEN = 'dummy-developer-token';
+  });
+
+  afterEach(() => {
+    delete process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
+    delete process.env
+      .GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS;
+  });
+
+  it('uses framework transport with the prepared request without mutating the persisted job request', async () => {
+    process.env.GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS =
+      WORKSPACE;
+    const legacy = stubTransport(200, {});
+    stubFrameworkTransport(200);
+    const request = gaecProxyRequest();
+
+    const result = (await service.deliver(request, GAEC_DEST, {}, 'v1')) as DeliveryV1Response;
+
+    expect(legacy).not.toHaveBeenCalled();
+    // The framework sent the request, so it also read the reply — the destination's handler is
+    // bypassed end to end, not just for the send.
+    expect(legacy.processAxiosResponse).not.toHaveBeenCalled();
+    expect(mockedFrameworkProxyRequest).toHaveBeenCalledTimes(1);
+    const [sentRequest, sentDestType] = mockedFrameworkProxyRequest.mock.calls[0];
+    expect(sentDestType).toBe(GAEC_DEST);
+    expect(sentRequest.headers).toMatchObject({
+      Authorization: 'Bearer token',
+      'Content-Type': 'application/json',
+      'developer-token': 'dummy-developer-token',
+    });
+    expect(request.headers).not.toHaveProperty('developer-token');
+    expect(result.response.map((r) => r.statusCode)).toEqual([200]);
+  });
+
+  it('falls back to the legacy proxy when the transport flag is disabled', async () => {
+    const legacy = stubTransport(200, {});
+
+    await service.deliver(gaecProxyRequest(), GAEC_DEST, {}, 'v1');
+
+    expect((legacy as typeof legacy & { proxy: jest.Mock }).proxy).toHaveBeenCalledTimes(1);
+    expect(mockedFrameworkProxyRequest).not.toHaveBeenCalled();
+  });
+
+  it('does not enable transport unless the batching framework transform is enabled', async () => {
+    delete destinationIntegrationsMap.CUSTOMERIO;
+    process.env.CUSTOMERIO_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS = WORKSPACE;
+    try {
+      expect(isBatchingFrameworkTransportEnabled('customerio', WORKSPACE)).toBe(false);
+      const legacy = stubTransport(200, {});
+
+      await service.deliver(proxyRequest(), DEST, {}, 'v1');
+
+      expect(legacy).toHaveBeenCalledTimes(1);
+      expect(mockedFrameworkProxyRequest).not.toHaveBeenCalled();
+    } finally {
+      delete process.env.CUSTOMERIO_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS;
+      destinationIntegrationsMap.CUSTOMERIO = true;
+    }
+  });
+
+  it('returns a retryable shape-mismatch failure before posting an old-shape payload to framework transport', async () => {
+    process.env.GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS =
+      WORKSPACE;
+    stubTransport(200, {});
+
+    const result = (await service.deliver(
+      gaecProxyRequest(''),
+      GAEC_DEST,
+      {},
+      'v1',
+    )) as DeliveryV1Response;
+
+    expect(mockedFrameworkProxyRequest).not.toHaveBeenCalled();
+    expect(result.status).toBe(500);
+    expect(result.message).toContain('old-shape payload reached framework transport');
+    expect(result.statTags).toMatchObject({
+      errorType: 'retryable',
+      meta: 'gaec_transport_flag_shape_mismatch_old_to_framework',
+    });
   });
 
   it('uses the framework for a destination declaring batching in features.ts', async () => {

@@ -139,13 +139,7 @@ describe('extractRedditAudienceErrorMessage', () => {
   });
 });
 
-describe('legacy networkHandler ↔ framework delivery parity', () => {
-  // Framework delivery is flag-gated with no GA map, so until GA the LEGACY
-  // handler is what actually ships. These must not drift: a difference means
-  // one code path silently behaves differently in production than in CI.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { responseHandler } = require('../../../v1/destinations/reddit_audience/networkHandler');
-
+describe('status classification', () => {
   const CASES: [number, unknown, 'success' | 'retry' | 'throttled' | 'abort'][] = [
     [204, '', 'success'],
     [400, { error: { code: 400, message: 'Bad request.' } }, 'abort'],
@@ -157,28 +151,14 @@ describe('legacy networkHandler ↔ framework delivery parity', () => {
     [500, { error: { code: 500, message: 'Server error.' } }, 'retry'],
   ];
 
-  const legacyKind = (status: number, response: unknown) => {
-    try {
-      responseHandler({ destinationResponse: { status, response }, destType: 'REDDIT_AUDIENCE' });
-      return 'success';
-    } catch (e) {
-      const err = e as { constructor: { name: string } };
-      const n = err.constructor.name;
-      if (n === 'ThrottledError') return 'throttled';
-      if (n === 'RetryableError') return 'retry';
-      return 'abort';
-    }
-  };
-
-  it.each(CASES)('status %i classifies the same on both paths', (status, response, expected) => {
+  it.each(CASES)('status %i classifies as the expected verdict', (status, response, expected) => {
     const framework = verdict(status, response);
     const frameworkKind =
       framework.kind === 'retry' && framework.as === 'throttled' ? 'throttled' : framework.kind;
     expect(frameworkKind).toBe(expected);
-    expect(legacyKind(status, response)).toBe(expected);
   });
 
-  it('both paths request a token refresh only for a recognised auth body', () => {
+  it('requests a token refresh only for a recognised auth body', () => {
     expect(verdict(401, { error: { reason: 'UNAUTHORIZED' } })).toMatchObject({
       as: 'authExpired',
     });

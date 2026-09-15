@@ -12,9 +12,10 @@ const INSTANCE_ID = process.env.INSTANCE_ID || 'localhost';
 const MAX_BODY_BYTES = 256 * 1024;
 const WARN_INTERVAL_MS = 5 * 60_000;
 // header NAMES matching this are masked — covers authorization/authentication,
-// x-access-token, x-api-secret, set-cookie and the other auth-shaped variants
+// x-access-token, x-api-secret, set-cookie and the other auth-shaped variants;
+// a trailing `key` (apikey, passKey, x-api-key) is a credential in header names
 const SENSITIVE_HEADER_PATTERN =
-  /auth|token|secret|passw|pwd|cookie|session|signature|credential|(^|[_-])key($|[_-])/i;
+  /auth|token|secret|passw|pwd|cookie|session|signature|credential|key($|[_-])/i;
 // query-param KEYS matching this are masked; other params often carry the
 // event itself for GET-style destinations and must stay debuggable
 const SENSITIVE_PARAM_PATTERN =
@@ -250,7 +251,8 @@ const ensureStarted = (): boolean => {
       dir: config.dir,
       maxFileBytes: config.maxFileBytes,
       maxDiskBytes: config.maxDiskBytes,
-      instanceId: INSTANCE_ID,
+      // env-sourced, and it lands in the filename: same path-safety rule as the pair key
+      instanceId: sanitizeId(INSTANCE_ID),
     });
     newWriter.init();
     const S3UploaderImpl = EagerUploaderClass ?? loadUploaderClass();

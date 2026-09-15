@@ -71,7 +71,6 @@ export class FileWriter {
     // captured payloads are PII: owner-only permissions throughout
     fs.mkdirSync(this.workerDir, { recursive: true, mode: 0o700 });
     fs.chmodSync(this.workerDir, 0o700);
-    this.adoptDeadWorkerDirs();
     // own leftovers (pid reuse after a crash): make .open files uploadable
     for (const name of fs.readdirSync(this.workerDir)) {
       if (name.endsWith(OPEN_SUFFIX)) {
@@ -83,6 +82,8 @@ export class FileWriter {
       (total, filePath) => total + fs.statSync(filePath).size,
       0,
     );
+    // adoption counts against the cap, so own files must be tallied first
+    this.adoptDeadWorkerDirs();
   }
 
   /** Cheap pre-check so callers can avoid burning a sampling token on a full disk. */
@@ -140,7 +141,11 @@ export class FileWriter {
     this.stagedBytes = Math.max(0, this.stagedBytes - sizeBytes);
   }
 
-  /** Moves rotated files of dead pids into this worker's dir and removes their dirs. */
+  /**
+   * Moves rotated files of dead pids into this worker's dir, up to the disk
+   * cap; whatever does not fit stays behind for a later init with room. A
+   * dead dir is removed only once it is empty.
+   */
   private adoptDeadWorkerDirs(): void {
     const deadDirEntries = fs
       .readdirSync(this.opts.dir, { withFileTypes: true })
@@ -172,16 +177,34 @@ export class FileWriter {
         this.workerDir,
         name.endsWith(OPEN_SUFFIX) ? name.slice(0, -OPEN_SUFFIX.length) : name,
       );
-      try {
-        fs.renameSync(from, to);
-        fs.chmodSync(to, 0o600);
-      } catch (err) {
-        if (errnoCode(err) !== 'ENOENT') {
-          throw err;
-        }
+      this.adoptOneFile(from, to);
+    }
+    try {
+      // non-recursive on purpose: files left behind (cap, or a sibling mid-move) must survive
+      fs.rmdirSync(deadDir);
+    } catch (err) {
+      const code = errnoCode(err);
+      if (code !== 'ENOENT' && code !== 'ENOTEMPTY') {
+        throw err;
       }
     }
-    fs.rmSync(deadDir, { recursive: true, force: true });
+  }
+
+  /** Moves one dead-pid file in if it fits under the cap; ENOENT means a sibling took it. */
+  private adoptOneFile(from: string, to: string): void {
+    try {
+      const sizeBytes = fs.statSync(from).size;
+      if (this.stagedBytes + sizeBytes > this.opts.maxDiskBytes) {
+        return;
+      }
+      fs.renameSync(from, to);
+      fs.chmodSync(to, 0o600);
+      this.stagedBytes += sizeBytes;
+    } catch (err) {
+      if (errnoCode(err) !== 'ENOENT') {
+        throw err;
+      }
+    }
   }
 
   private getOrOpen(pairKey: string): OpenFile {

@@ -142,14 +142,41 @@ describe('FileWriter', () => {
     fs.mkdirSync(deadDir, { recursive: true });
     fs.writeFileSync(path.join(deadDir, 'w1__d1__dead-1.jsonl'), '{"dead":1}\n');
     fs.writeFileSync(path.join(deadDir, 'w1__d2__dead-2.jsonl'), '{"dead":2}\n');
-    // simulate the race: the first rename finds the file already moved away
-    const spy = jest.spyOn(fs, 'renameSync').mockImplementationOnce(() => {
+    // simulate the race: the sibling moved the first file between our readdir and rename
+    const spy = jest.spyOn(fs, 'renameSync').mockImplementationOnce((from) => {
+      fs.rmSync(from);
       throw Object.assign(new Error('ENOENT: no such file or directory'), { code: 'ENOENT' });
     });
     const writer = new FileWriter(writerOpts(dir));
     expect(() => writer.init()).not.toThrow();
     spy.mockRestore();
     expect(writer.listRotated().map((f) => path.basename(f))).toEqual(['w1__d2__dead-2.jsonl']);
+    expect(fs.existsSync(deadDir)).toBe(false);
+  });
+
+  test('adoption stops at the disk cap and leaves the rest for a later adoption', () => {
+    const dir = makeTmpDir();
+    const deadDir = path.join(dir, '999999');
+    fs.mkdirSync(deadDir, { recursive: true });
+    fs.writeFileSync(path.join(deadDir, 'w1__d1__dead-1.jsonl'), '{"dead":1}\n'); // 11 bytes
+    fs.writeFileSync(path.join(deadDir, 'w1__d2__dead-2.jsonl'), '{"dead":2}\n'); // 11 bytes
+
+    // room for one file only: the second stays behind and the dead dir survives
+    const capped = new FileWriter(writerOpts(dir, { maxDiskBytes: 15 }));
+    capped.init();
+    expect(capped.listRotated().map((f) => path.basename(f))).toEqual(['w1__d1__dead-1.jsonl']);
+    expect(capped.hasCapacity()).toBe(true);
+    expect(fs.readdirSync(deadDir)).toEqual(['w1__d2__dead-2.jsonl']);
+
+    // a later init with room adopts the remainder and removes the dead dir
+    const roomy = new FileWriter(writerOpts(dir, { maxDiskBytes: 100 }));
+    roomy.init();
+    expect(
+      roomy
+        .listRotated()
+        .map((f) => path.basename(f))
+        .sort(),
+    ).toEqual(['w1__d1__dead-1.jsonl', 'w1__d2__dead-2.jsonl']);
     expect(fs.existsSync(deadDir)).toBe(false);
   });
 
@@ -190,6 +217,25 @@ describe('S3Uploader', () => {
       /^req-res-logs\/w1\/d1\/\d{4}-\d{2}-\d{2}\/w1__d1__test-instance-123-456\.jsonl\.gz$/,
     );
     expect(gunzipBody(putArgs.Body)).toBe('{"a":1}\n');
+  });
+
+  test('the key date comes from the filename epoch, so a retry lands on the same object', async () => {
+    const dir = makeTmpDir();
+    // 2026-03-01T23:59:00Z in ms; the instance id carries dashes like a real pod name
+    const filePath = path.join(dir, 'w1__d1__transformer-7d9f-abc12-4242-1772409540000-3.jsonl');
+    fs.writeFileSync(filePath, '{"a":1}\n');
+    s3Mock.on(PutObjectCommand).rejectsOnce(new Error('timeout')).resolves({});
+
+    const uploader = new S3Uploader({ bucket: 'test-bucket', prefix: 'req-res-logs' });
+    await expect(uploader.uploadFile(filePath)).rejects.toThrow('timeout');
+    await uploader.uploadFile(filePath);
+
+    const keys = s3Mock.commandCalls(PutObjectCommand).map((c) => c.args[0].input.Key);
+    expect(keys).toHaveLength(2);
+    expect(keys[0]).toBe(
+      'req-res-logs/w1/d1/2026-03-01/w1__d1__transformer-7d9f-abc12-4242-1772409540000-3.jsonl.gz',
+    );
+    expect(keys[1]).toBe(keys[0]);
   });
 
   test('keeps the local file when the upload fails', async () => {
@@ -240,6 +286,7 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
     delete process.env.REQ_RES_CAPTURE_S3_BUCKET;
     delete process.env.REQ_RES_CAPTURE_SAMPLE_INTERVAL_S;
     delete process.env.REQ_RES_CAPTURE_SHUTDOWN_BUDGET_S;
+    delete process.env.INSTANCE_ID;
   });
 
   test('write is a no-op when the feature is disabled', () => {
@@ -320,6 +367,9 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
         headers: new AxiosHeaders({
           'set-cookie': 'session=abc',
           'x-access-token': 'tok123',
+          apiKey: 'k1',
+          passKey: 'k2',
+          'x-keyspace': 'ks1',
           'content-type': 'application/json',
         }),
       },
@@ -340,6 +390,9 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
     expect(lines[1].headers).toEqual({
       'set-cookie': '***',
       'x-access-token': '***',
+      apiKey: '***',
+      passKey: '***',
+      'x-keyspace': 'ks1',
       'content-type': 'application/json',
     });
   });
@@ -406,6 +459,8 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
 
   test('sanitized IDs cannot collide and staging files are owner-only', () => {
     const dir = makeTmpDir();
+    // env-sourced and part of the filename: must not escape the worker dir
+    process.env.INSTANCE_ID = '../../evil';
     const { payloadCapture } = loadModule(dir, true);
     const write = (destinationId: string) =>
       payloadCapture.write({
@@ -420,6 +475,9 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
     expect(names).toHaveLength(2);
     expect(names.some((n) => /^w1__a-b-[0-9a-f]{8}__/.test(n))).toBe(true);
     expect(names.some((n) => n.startsWith('w1__a-b__'))).toBe(true);
+    // the instance id was sanitized into the name; nothing landed outside the worker dir
+    expect(names.every((n) => /__-+evil-[0-9a-f]{8}-/.test(n))).toBe(true);
+    expect(fs.readdirSync(dir)).toEqual([String(process.pid)]);
     // eslint-disable-next-line no-bitwise
     expect(fs.statSync(workerDirOf(dir)).mode & 0o777).toBe(0o700);
     for (const name of names) {
@@ -595,6 +653,32 @@ describe('payloadCapture.write end to end (mocked S3)', () => {
     });
     await Promise.all([payloadCapture.shutdown(), payloadCapture.shutdown()]);
     expect(freshS3Mock.commandCalls(freshPutObjectCommand)).toHaveLength(1);
+    expect(fs.readdirSync(workerDirOf(dir))).toHaveLength(0);
+  });
+
+  test('a file rotated while a flush is in flight is still uploaded by shutdown', async () => {
+    const dir = makeTmpDir();
+    const { payloadCapture, freshS3Mock, freshPutObjectCommand } = loadModule(dir, true);
+    freshS3Mock.on(freshPutObjectCommand).callsFake(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => resolve({}), 100);
+        }),
+    );
+    const write = (destinationId: string) =>
+      payloadCapture.write({
+        kind: 'request',
+        identifierMsg: 'DT proxy request',
+        metadata: [{ workspaceId: 'w1', destinationId }],
+        details: { url: 'https://api.example.com', body: { d: destinationId }, method: 'POST' },
+      });
+    write('d1');
+    // first shutdown starts a flush that has already listed d1's file...
+    const firstShutdown = payloadCapture.shutdown();
+    // ...while a second pair's file is staged and only rotates during the next shutdown
+    write('d2');
+    await Promise.all([firstShutdown, payloadCapture.shutdown()]);
+    expect(freshS3Mock.commandCalls(freshPutObjectCommand)).toHaveLength(2);
     expect(fs.readdirSync(workerDirOf(dir))).toHaveLength(0);
   });
 

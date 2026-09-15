@@ -14,6 +14,21 @@ export interface S3UploaderOptions {
 }
 
 /**
+ * The staging filename is `<ws>__<dest>__<instanceId>-<pid>-<epochMs>-<seq>.jsonl`.
+ * The date is taken from that epoch, not from the clock, so the S3 key is a
+ * pure function of the filename: a retry after a timed-out PutObject (even
+ * across UTC midnight) overwrites the same object instead of adding a sibling.
+ * The instance id may itself contain dashes, hence anchoring from the end.
+ */
+const dateFromFileName = (fileName: string): string => {
+  const [, , suffix = ''] = fileName.split('__');
+  const segments = suffix.replace(/\.jsonl$/, '').split('-');
+  const epochMs = Number(segments[segments.length - 2]);
+  const openedAt = Number.isFinite(epochMs) && epochMs > 0 ? new Date(epochMs) : new Date();
+  return openedAt.toISOString().slice(0, 10);
+};
+
+/**
  * Upload-only S3 interface (no list/download/delete of remote objects).
  * Credentials are intentionally not configured here: the SDK default chain
  * resolves pod-level identity (IRSA) in production and AWS_* env keys when
@@ -32,8 +47,7 @@ export class S3Uploader {
   async uploadFile(filePath: string): Promise<number> {
     const fileName = path.basename(filePath);
     const [workspaceId = 'unknown', destinationId = 'unknown'] = fileName.split('__');
-    const date = new Date().toISOString().slice(0, 10);
-    const key = `${this.opts.prefix}/${workspaceId}/${destinationId}/${date}/${fileName}.gz`;
+    const key = `${this.opts.prefix}/${workspaceId}/${destinationId}/${dateFromFileName(fileName)}/${fileName}.gz`;
 
     const contents = await fs.promises.readFile(filePath);
     const sizeBytes = contents.byteLength;

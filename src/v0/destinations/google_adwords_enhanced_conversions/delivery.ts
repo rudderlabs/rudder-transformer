@@ -10,10 +10,12 @@
  *    body (2SV-not-enrolled and CUSTOMER_NOT_FOUND mean the grant is gone, not that the token is
  *    stale). The framework never infers auth from a status, so this is declared explicitly.
  *
- * Transport — the SDK-based proxy, the conversionActionId cache and processAxiosResponse — stays
- * in ./networkHandler, which the framework continues to use.
+ * With the transport flag enabled, the framework sends the prepared request directly and this spec
+ * injects the developer token at delivery time so it never appears in persisted router output.
  */
+import { NetworkError } from '@rudderstack/integrations-lib';
 import { isEmptyObject } from '../../util';
+import tags from '../../util/tags';
 import {
   abort,
   authExpired,
@@ -24,7 +26,7 @@ import {
   type StatusOverrideMap,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 
-const { getAuthErrCategory } = require('../../util/googleUtils');
+const { getAuthErrCategory, getDeveloperToken } = require('../../util/googleUtils');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -80,4 +82,24 @@ const gaecStatusOverrides: StatusOverrideMap = {
 export const gaecDelivery: DeliverySpec = {
   statusOverrides: gaecStatusOverrides,
   failureReason: (ctx) => extractGaecErrorMessage(ctx.response),
+  prepareRequest: (request) => {
+    // An empty endpoint means legacy, params-based router output reached the framework transport
+    // because the transport flag flipped on while these jobs were queued — sending it would POST
+    // to ''. Retryable, so the job re-transforms into the new shape and succeeds on the retry.
+    // The mirror of this guard, new shape reaching the legacy proxy, lives in ./networkHandler.
+    if (!request.endpoint) {
+      const error = new NetworkError(
+        '[Google Ads Enhanced Conversions] old-shape payload reached framework transport after transport flag flip',
+        500,
+        { [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.RETRYABLE },
+        { status: 500, response: 'old-shape payload reached framework transport' },
+      );
+      error.statTags[tags.TAG_NAMES.META] = 'gaec_transport_flag_shape_mismatch_old_to_framework';
+      throw error;
+    }
+    return {
+      ...request,
+      headers: { ...request.headers, 'developer-token': getDeveloperToken() },
+    };
+  },
 };

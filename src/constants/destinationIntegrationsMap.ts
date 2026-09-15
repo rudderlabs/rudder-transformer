@@ -4,12 +4,17 @@ import { getGaDestinationIntegrations } from '../features';
 // Once a destination is added here, it always uses the new path regardless of env var.
 export const destinationIntegrationsMap: Record<string, true> = getGaDestinationIntegrations();
 
-// Per-destination env var: {DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS
+type BatchingFrameworkFeature = 'BATCHING_FRAMEWORK' | 'BATCHING_FRAMEWORK_TRANSPORT';
+
+// Per-destination env var: {DEST}_{FEATURE}_ENABLED_WORKSPACE_IDS
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces
 // Example: POSTHOG_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS="ws-1,ws-2" or "ALL"
 // If not set or empty → disabled for that destination (legacy path)
-const getEnabledWorkspaceIds = (destType: string): string[] => {
-  const envKey = `${destType.toUpperCase()}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS`;
+export const getEnabledWorkspaceIds = (
+  destType: string,
+  feature: BatchingFrameworkFeature = 'BATCHING_FRAMEWORK',
+): string[] => {
+  const envKey = `${destType.toUpperCase()}_${feature}_ENABLED_WORKSPACE_IDS`;
   return (
     process.env[envKey]
       ?.split(',')
@@ -18,7 +23,7 @@ const getEnabledWorkspaceIds = (destType: string): string[] => {
   );
 };
 
-const matchesWorkspace = (enabledWorkspaceIds: string[], workspaceId: string): boolean => {
+export const matchesWorkspace = (enabledWorkspaceIds: string[], workspaceId: string): boolean => {
   if (enabledWorkspaceIds.length === 0) {
     return false;
   }
@@ -61,4 +66,18 @@ export const isDestinationIntegrationEnabled = (destType: string, workspaceId: s
 
   // Pre-GA: check per-destination env var
   return matchesWorkspace(getEnabledWorkspaceIds(upperDestType), workspaceId);
+};
+
+export const isBatchingFrameworkTransportEnabled = (
+  destType: string,
+  workspaceId: string,
+): boolean => {
+  const upperDestType = destType.toUpperCase();
+  if (!isDestinationIntegrationEnabled(upperDestType, workspaceId)) {
+    return false;
+  }
+  return matchesWorkspace(
+    getEnabledWorkspaceIds(upperDestType, 'BATCHING_FRAMEWORK_TRANSPORT'),
+    workspaceId,
+  );
 };

@@ -120,7 +120,6 @@
     "sha256": "^0.2.0",
     "sqlstring": "^2.3.3",
     "stacktrace-parser": "^0.1.10",
-    "testcontainers": "^12.0.4",
     "truncate-utf8-bytes": "^1.0.2",
     "ua-parser-js": "^1.0.37",
     "unset-value": "^2.0.1",
@@ -130,6 +129,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "testcontainers": "^12.1.0",
     "@aws-sdk/client-personalize": "^3.894.0",
     "@aws-sdk/credential-providers": "^3.1127.0",
     "@commitlint/config-conventional": "^19.8.0",

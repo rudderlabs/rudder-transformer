@@ -129,7 +129,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "testcontainers": "^12.1.0",
     "@aws-sdk/client-personalize": "^3.894.0",
     "@aws-sdk/credential-providers": "^3.1127.0",
     "@commitlint/config-conventional": "^19.8.0",
@@ -179,6 +178,7 @@
     "standard-version": "^9.5.0",
     "supertest": "^7.1.4",
     "swagger-cli": "^4.0.4",
+    "testcontainers": "^12.1.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.0.4"
   },

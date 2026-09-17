@@ -35,6 +35,16 @@ const baseDeleteAction: ActionConfig = {
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
 
+// Templates that never read the connection's audienceId. A connection driving
+// only these has no use for the field, which is why it is optional.
+const audienceIdFreeInsertAction: ActionConfig = {
+  endpoint: '/members',
+  method: 'POST',
+  requestBody: '{ "users": [$$.records.{ "email": email }] }',
+  batchSize: 2,
+  fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
+};
+
 const buildDestination = (
   configOverrides: Partial<CustomAudienceDestConfig> = {},
 ): CustomAudienceDestination => ({
@@ -70,6 +80,15 @@ const buildConnection = (
       ...destinationOverrides,
     },
   },
+});
+
+// buildConnection always sets audienceId, and a partial override cannot remove
+// a key — so an omitting connection gets its own builder.
+const buildConnectionWithoutAudienceId = (): CustomAudienceConnection => ({
+  sourceId: 'src-1',
+  destinationId: 'dest-1',
+  enabled: true,
+  config: { destination: { isHashRequired: false } },
 });
 
 const buildMetadata = (jobId: number): Metadata =>
@@ -136,6 +155,27 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
     expect(deleteJobIds).toEqual([4]);
   });
 
+  it('delivers when no template references audienceId and the connection omits it', async () => {
+    const destination = buildDestination({ actions: { insert: audienceIdFreeInsertAction } });
+    const inputs = [
+      buildInput(
+        1,
+        'insert',
+        { email: hashedEmail('a@b.com') },
+        destination,
+        buildConnectionWithoutAudienceId(),
+      ),
+    ];
+
+    const results = await processDestinationIntegration(inputs, Integration, {});
+
+    expect(results.filter((r) => r.statusCode !== 200)).toHaveLength(0);
+    const [batch] = results;
+    expect(!Array.isArray(batch.batchedRequest) && batch.batchedRequest?.endpoint).toBe(
+      'https://api.example.com/members',
+    );
+  });
+
   const errorCases = [
     {
       name: 'event with action that has no matching config',
@@ -179,6 +219,21 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       },
       failingJobId: 1,
       errorMatch: /Custom mapping "from" value must be non-empty/,
+    },
+    {
+      name: 'connection omitting audienceId while the endpoint references it',
+      buildInputs: () => [
+        buildInput(
+          1,
+          'insert',
+          { email: hashedEmail('a@b.com') },
+          buildDestination(),
+          buildConnectionWithoutAudienceId(),
+        ),
+      ],
+      failingJobId: 1,
+      errorMatch:
+        /Endpoint template references \{\{connection\.audienceId\}\}, but the connection does not set it/,
     },
     {
       name: 'event missing required fields for action',

@@ -74,7 +74,13 @@ export type CustomMapping = z.infer<typeof customMappingSchema>;
 
 export const CustomAudienceConnectionDestConfigSchema = z
   .object({
-    audienceId: z.string(),
+    // Optional on purpose. A connection only needs an audienceId when the
+    // destination's action templates actually reference it — an endpoint
+    // carrying `{{connection.audienceId}}`, or a requestBody reading
+    // `$$.connection.audienceId`. Templates that never reference it would
+    // otherwise have to carry a placeholder value to pass validation.
+    // resolveEndpoint raises the error when an endpoint does reference it.
+    audienceId: z.string().optional(),
     isHashRequired: z.boolean(),
     customMappings: z.array(customMappingSchema).optional(),
   })

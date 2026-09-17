@@ -101,6 +101,12 @@ describe('lookupActionConfig', () => {
 });
 
 describe('resolveEndpoint', () => {
+  // audienceId is optional on the connection schema, so an endpoint template
+  // referencing it is the only thing that makes it mandatory in practice.
+  const connectionWithoutAudienceId: CustomAudienceConnectionDestConfig = {
+    isHashRequired: false,
+  };
+
   const cases = [
     {
       name: 'interpolates connection fields and prepends baseUrl',
@@ -128,18 +134,44 @@ describe('resolveEndpoint', () => {
     },
   ];
 
+  const unresolvedCases = [
+    {
+      name: 'the connection omits audienceId but the endpoint references it',
+      endpoint: '/audiences/{{connection.audienceId}}/members',
+      connection: connectionWithoutAudienceId,
+      expectedMessage:
+        'Endpoint template references {{connection.audienceId}}, but the connection does not set it.',
+    },
+    {
+      name: 'the connection stores audienceId as an empty string',
+      endpoint: '/audiences/{{connection.audienceId}}/members',
+      connection: { audienceId: '', isHashRequired: false },
+      expectedMessage:
+        'Endpoint template references {{connection.audienceId}}, but the connection does not set it.',
+    },
+    {
+      name: 'the placeholder references a field that does not exist',
+      endpoint: '/audiences/{{connection.nonExistent}}/members',
+      connection: baseConnection,
+      expectedMessage:
+        'Endpoint template references {{connection.nonExistent}}, but the connection does not set it.',
+    },
+  ];
+
   it.each(cases)('$name', ({ endpoint, baseUrl, expected }) => {
     expect(resolveEndpoint(endpoint, baseUrl, baseConnection)).toBe(expected);
   });
 
-  it('throws InstrumentationError when placeholder references a missing connection field', () => {
-    expect(() =>
-      resolveEndpoint(
-        '/audiences/{{connection.nonExistent}}/members',
-        'https://api.example.com',
-        baseConnection,
-      ),
-    ).toThrow(InstrumentationError);
+  it('resolves an endpoint that does not reference audienceId when the connection omits it', () => {
+    expect(
+      resolveEndpoint('/v1/members', 'https://api.example.com', connectionWithoutAudienceId),
+    ).toBe('https://api.example.com/v1/members');
+  });
+
+  it.each(unresolvedCases)('throws when $name', ({ endpoint, connection, expectedMessage }) => {
+    const resolve = () => resolveEndpoint(endpoint, 'https://api.example.com', connection);
+    expect(resolve).toThrow(InstrumentationError);
+    expect(resolve).toThrow(expectedMessage);
   });
 });
 

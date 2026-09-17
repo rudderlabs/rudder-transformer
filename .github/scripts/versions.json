@@ -85,24 +85,31 @@
   },
   {
     "Destination": "FB App Events",
-    "Version currently referred in CloudMode Services": "/v24.0/:appID/activities",
+    "Version currently referred in CloudMode Services": "/v25.0/:appID/activities",
     "Link to check Versions documentation": "https://developers.facebook.com/docs/graph-api/changelog/versions",
-    "Latest Version rolled out": "v24.0",
-    "Sunset Date Current Version used in backend": "@September 24, 2026"
+    "Latest Version rolled out": "v25.0",
+    "Sunset Date Current Version used in backend": "No sunset date announced for v25.0; currently active"
   },
   {
     "Destination": "Facebook Conversions",
-    "Version currently referred in CloudMode Services": "/v24.0/:pixelId/events",
+    "Version currently referred in CloudMode Services": "/v25.0/:pixelId/events",
     "Link to check Versions documentation": "https://developers.facebook.com/docs/marketing-api/marketing-api-changelog",
-    "Latest Version rolled out": "v24.0",
-    "Sunset Date Current Version used in backend": "TBD but they are keeping them for ~11 months or so.\nExpected deprecation time ~ December 2025"
+    "Latest Version rolled out": "v25.0",
+    "Sunset Date Current Version used in backend": "No sunset date announced for v25.0; currently active"
   },
   {
     "Destination": "Facebook Custom Audience",
-    "Version currently referred in CloudMode Services": "/v23.0/:audienceId/users",
+    "Version currently referred in CloudMode Services": "/v25.0/:audienceId/users",
     "Link to check Versions documentation": "https://developers.facebook.com/docs/marketing-api/marketing-api-changelog",
-    "Latest Version rolled out": "v23.0",
-    "Sunset Date Current Version used in backend": "@May 6, 2025"
+    "Latest Version rolled out": "v25.0",
+    "Sunset Date Current Version used in backend": "No sunset date announced for v25.0; currently active"
+  },
+  {
+    "Destination": "Facebook Lead Ads Native",
+    "Version currently referred in CloudMode Services": "/v25.0/:leadgenId",
+    "Link to check Versions documentation": "https://developers.facebook.com/docs/graph-api/changelog/versions",
+    "Latest Version rolled out": "v25.0",
+    "Sunset Date Current Version used in backend": "No sunset date announced for v25.0; currently active"
   },
   {
     "Destination": "Facebook Pixel",

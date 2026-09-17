@@ -59,6 +59,8 @@ const commonRequestParameters = {
   JSON: validRequestPaylod,
 };
 
+// GoogleAdsFailure @type versions below are copied from captured partner error payloads;
+// response handling asserts the error content, not the historical protobuf package version.
 const expectedStatTags = {
   destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
   destinationId: 'default-destinationId',

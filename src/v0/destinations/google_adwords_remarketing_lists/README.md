@@ -243,7 +243,7 @@ The destination processes operations in batches, and Google Ads applies the fina
 - Typically maintains 3-4 versions simultaneously
 - Older versions are deprecated approximately 12 months after new version release
 - **Current Status**: v23 is the latest stable version (released January 28, 2026)
-- **Sunset Window**: v22 is tentatively scheduled to sunset in October 2026
+- **Sunset Window**: v23 is expected to sunset in February 2027
 - **Upgrade Path**: When new versions are released, update the `API_VERSION` constant in `config.ts`
 
 ### Breaking Changes

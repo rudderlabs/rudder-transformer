@@ -1,9 +1,12 @@
 import { authHeader1 } from './maskedSecrets';
 
-const v18NetworkCallsData = [
+// These legacy fixtures are exported to the mock set but are not paired with any current
+// request scenario; keep their endpoint URLs on the runtime API version so a future match
+// exercises the same v23 code path as production.
+const legacyNetworkCallsData = [
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v18/customers/1234567891/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/v23/customers/1234567891/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -33,7 +36,7 @@ const v18NetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v18/customers/1234567891:uploadConversionAdjustments`,
+      url: `https://googleads.googleapis.com/v23/customers/1234567891:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -94,7 +97,7 @@ const v18NetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v18/customers/1234567891:uploadClickConversions`,
+      url: `https://googleads.googleapis.com/v23/customers/1234567891:uploadClickConversions`,
       data: {
         conversionAdjustments: [
           {
@@ -155,8 +158,7 @@ const v18NetworkCallsData = [
   },
 ];
 
-// Generate v19 API mocks for all the existing relative URL mocks
-const v19NetworkCallsData = [
+const currentNetworkCallsData = [
   // Framework-transport path: the conversion action is resolved during router transform, one
   // lookup per distinct conversion name, so that events with different names still batch into a
   // single upload request.
@@ -417,6 +419,8 @@ const v19NetworkCallsData = [
     httpRes: {
       status: 200,
       data: {
+        // GoogleAdsFailure @type versions are copied from captured partner error payloads;
+        // the version is incidental to the partial-failure assertions.
         partialFailureError: {
           code: 3,
           message:
@@ -691,6 +695,8 @@ const v19NetworkCallsData = [
     httpRes: {
       status: 200,
       data: {
+        // GoogleAdsFailure @type versions are copied from captured partner error payloads;
+        // the version is incidental to the partial-failure assertions.
         partialFailureError: {
           code: 3,
           message:
@@ -932,6 +938,8 @@ export const networkCallsData = [
     httpRes: {
       status: 200,
       data: {
+        // GoogleAdsFailure @type versions are copied from captured partner error payloads;
+        // the version is incidental to the partial-failure assertions.
         partialFailureError: {
           code: 3,
           message:
@@ -1101,6 +1109,6 @@ export const networkCallsData = [
       },
     },
   },
-  ...v18NetworkCallsData,
-  ...v19NetworkCallsData,
+  ...legacyNetworkCallsData,
+  ...currentNetworkCallsData,
 ];

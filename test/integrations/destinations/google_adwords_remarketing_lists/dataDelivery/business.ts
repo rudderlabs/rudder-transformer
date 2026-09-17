@@ -391,7 +391,7 @@ export const testScenariosForV1API = [
             params: { ...commonParams, customerId: 'wrongCustomerId' },
             JSON: validRequestPayload2,
             endpoint:
-              'https://googleads.googleapis.com/v15/customers/wrongCustomerId/offlineUserDataJobs',
+              'https://googleads.googleapis.com/v23/customers/wrongCustomerId/offlineUserDataJobs',
           },
           metadataArray,
         ),

@@ -9,6 +9,7 @@
  * same grouping key) are combined into a single request with multiple conversionAdjustments.
  */
 
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
 import sha256 from 'sha256';
 import { authHeader1, secret1 } from '../maskedSecrets';
 
@@ -144,8 +145,7 @@ export const newData = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint:
-                  'https://googleads.googleapis.com/v23/customers/1234567892:uploadConversionAdjustments',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567892:uploadConversionAdjustments`,
                 endpointPath: '/uploadConversionAdjustments',
                 headers: {
                   Authorization: authHeader1,

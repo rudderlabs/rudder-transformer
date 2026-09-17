@@ -1,11 +1,10 @@
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_offline_conversions/config';
 import { authHeader1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
-
-const API_VERSION = 'v23';
 
 const transactionAttribute = {
   CUSTOM_KEY: 'CUSTOM_VALUE',
@@ -621,7 +620,7 @@ export const testScenariosForV1API = [
                   details: [
                     {
                       '@type':
-                        'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
+                        'type.googleapis.com/google.ads.googleads.v25.errors.GoogleAdsFailure',
                       errors: [
                         {
                           errorCode: {
@@ -729,7 +728,7 @@ export const testScenariosForV1API = [
                   details: [
                     {
                       '@type':
-                        'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
+                        'type.googleapis.com/google.ads.googleads.v25.errors.GoogleAdsFailure',
                       errors: [
                         {
                           errorCode: { internalError: 'INTERNAL_ERROR' },

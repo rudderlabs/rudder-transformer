@@ -1,7 +1,6 @@
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_offline_conversions/config';
 import { authHeader1, secret1, secret3, secret401Test } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
-
-const API_VERSION = 'v23';
 
 export const data = [
   {
@@ -1015,8 +1014,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v23/customers/7693729833/offlineUserDataJobs',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
                   headers: {
                     Authorization: 'Bearer google_adwords_offline_conversions1',
                     'Content-Type': 'application/json',
@@ -1131,8 +1129,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint:
-                    'https://googleads.googleapis.com/v23/customers/7693729833:uploadCallConversions',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833:uploadCallConversions`,
                   headers: {
                     Authorization: 'Bearer google_adwords_offline_conversions1',
                     'Content-Type': 'application/json',

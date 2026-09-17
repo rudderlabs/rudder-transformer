@@ -1,4 +1,5 @@
 import { GoogleAdsSDK } from '@rudderstack/integrations-lib';
+import { API_VERSION } from './config';
 import { Integration } from './routerTransform';
 import {
   ChunkBatchStrategy,
@@ -193,7 +194,7 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       );
 
       expect(result.endpoint).toBe(
-        'https://googleads.googleapis.com/v23/customers/1234567890:uploadConversionAdjustments',
+        `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
       );
       expect(result.endpointPath).toBe('/uploadConversionAdjustments');
       expect(result.params).toEqual({});
@@ -335,7 +336,7 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       });
       const request = singleBatch(results[0]);
       expect(request.endpoint).toBe(
-        'https://googleads.googleapis.com/v23/customers/1234567890:uploadConversionAdjustments',
+        `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
       );
       expect(request.endpointPath).toBe('/uploadConversionAdjustments');
       expect(request.params).toEqual({});

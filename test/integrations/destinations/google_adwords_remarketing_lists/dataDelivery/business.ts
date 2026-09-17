@@ -1,11 +1,10 @@
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 import { authHeader1, secret3 } from '../maskedSecrets';
 import {
   generateGoogleOAuthMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
-
-const API_VERSION = 'v23';
 
 export const commonHeaders = {
   Authorization: authHeader1,
@@ -390,8 +389,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: { ...commonParams, customerId: 'wrongCustomerId' },
             JSON: validRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v23/customers/wrongCustomerId/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/wrongCustomerId/offlineUserDataJobs`,
           },
           metadataArray,
         ),

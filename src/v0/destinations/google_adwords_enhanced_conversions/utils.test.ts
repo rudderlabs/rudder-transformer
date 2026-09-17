@@ -1,8 +1,12 @@
 import sha256 from 'sha256';
-import { processUserIdentifiers, GAEC_FIELD_CONFIG } from './utils';
+import { HttpClientFactory } from '@rudderstack/integrations-lib';
+import { API_VERSION } from './config';
+import { processUserIdentifiers, GAEC_FIELD_CONFIG, buildGoogleAdsClient } from './utils';
 import type { GaecPayload } from './types';
 
 // Shared destination context for tests (undefined requireHash models configs that omit it)
+const makePostSpy = () => jest.fn().mockResolvedValue({ statusCode: 200, responseBody: [] });
+
 const makeDestCtx = (
   requireHash: boolean | undefined,
   workspaceId = 'ws1',
@@ -69,6 +73,85 @@ const makePayload = (overrides: {
     ],
   };
 };
+
+describe('buildGoogleAdsClient', () => {
+  const originalDeveloperToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
+
+  afterEach(() => {
+    process.env.GOOGLE_ADS_DEVELOPER_TOKEN = originalDeveloperToken;
+    jest.restoreAllMocks();
+  });
+
+  it('builds SDK lookup and upload requests with the local Google Ads API version', async () => {
+    process.env.GOOGLE_ADS_DEVELOPER_TOKEN = 'dummy-developer-token';
+    const post = makePostSpy()
+      .mockResolvedValueOnce({
+        type: 'success',
+        statusCode: 200,
+        responseBody: [
+          {
+            results: [
+              {
+                conversionAction: {
+                  resourceName: 'customers/1234567890/conversionActions/111',
+                },
+              },
+            ],
+          },
+        ],
+      })
+      .mockResolvedValueOnce({ statusCode: 200, responseBody: {} });
+    jest.spyOn(HttpClientFactory, 'getHttpClientWithMetrics').mockReturnValue({
+      post,
+      get: jest.fn(),
+      put: jest.fn(),
+      patch: jest.fn(),
+      delete: jest.fn(),
+    });
+
+    const client = buildGoogleAdsClient({
+      accessToken: 'dummy-access-token',
+      customerId: '1234567890',
+      loginCustomerId: '0987654321',
+    });
+
+    await client.getConversionActionId('Purchase');
+    await client.addConversionAdjustMent({
+      partialFailure: true,
+      conversionAdjustments: [{ adjustmentType: 'ENHANCEMENT' }],
+    });
+
+    expect(post).toHaveBeenNthCalledWith(
+      1,
+      `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890/googleAds:searchStream`,
+      {
+        query:
+          "SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Purchase'",
+      },
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: 'Bearer dummy-access-token',
+          'developer-token': 'dummy-developer-token',
+          'login-customer-id': '0987654321',
+        }),
+        statTags: expect.objectContaining({ endpointPath: '/<customerId>/googleAds:search' }),
+      }),
+    );
+    expect(post).toHaveBeenNthCalledWith(
+      2,
+      `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
+      {
+        partialFailure: true,
+        conversionAdjustments: [{ adjustmentType: 'ENHANCEMENT' }],
+      },
+      expect.objectContaining({
+        statTags: expect.objectContaining({
+          endpointPath: '/<customerId>:uploadConversionAdjustments',
+        }),
+      }),
+    );
+  });
+});
 
 describe('processUserIdentifiers', () => {
   describe('normalize + hash (requireHash: true)', () => {

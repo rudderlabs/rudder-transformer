@@ -1,8 +1,7 @@
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 import sha256 from 'sha256';
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { dataManagerData } from './dataManager';
-
-const API_VERSION = 'v23';
 
 const deliveryAccount = {
   accountDefinitionName: 'DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_OAUTH',

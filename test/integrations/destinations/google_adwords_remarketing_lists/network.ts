@@ -1,5 +1,5 @@
+import { API_VERSION } from '../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 import { authHeader1, authHeader2, authHeader4, secret2 } from './maskedSecrets';
-const API_VERSION = 'v23';
 
 export const networkCallsData = [
   {

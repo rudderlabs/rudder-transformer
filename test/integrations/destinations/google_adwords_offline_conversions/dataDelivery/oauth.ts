@@ -1,3 +1,4 @@
+import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_offline_conversions/config';
 import { authHeader1, authHeader2 } from '../maskedSecrets';
 import {
   generateMetadata,
@@ -5,8 +6,6 @@ import {
   generateProxyV0Payload,
 } from '../../../testUtils';
 import { defaultAccessToken } from '../../../common/secrets';
-
-const API_VERSION = 'v23';
 
 const commonHeaders = {
   Authorization: authHeader1,

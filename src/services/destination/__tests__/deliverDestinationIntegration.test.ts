@@ -1,3 +1,4 @@
+import { API_VERSION } from '../../../v0/destinations/google_adwords_enhanced_conversions/config';
 import { proxyRequest as frameworkProxyRequest } from '../../../adapters/network';
 import networkHandlerFactory from '../../../adapters/networkHandlerFactory';
 import { NativeIntegrationDestinationService } from '../nativeIntegration';
@@ -41,7 +42,7 @@ const proxyRequest = (): ProxyV1Request =>
   }) as unknown as ProxyV1Request;
 
 const gaecProxyRequest = (
-  endpoint = 'https://googleads.googleapis.com/v23/customers/123:uploadConversionAdjustments',
+  endpoint = `https://googleads.googleapis.com/${API_VERSION}/customers/123:uploadConversionAdjustments`,
 ): ProxyV1Request =>
   ({
     ...proxyRequest(),

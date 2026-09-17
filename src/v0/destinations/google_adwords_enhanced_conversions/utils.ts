@@ -9,7 +9,7 @@ import {
   normalizeName,
 } from '../../util/googleUtils/userDataNormalization';
 import type { GaecPayload, GaecSdkResponse, UserIdentifierEntry, AddressInfo } from './types';
-import { API_VERSION, destType, CONVERSION_ACTION_ID_CACHE_TTL } from './config';
+import { destType, CONVERSION_ACTION_ID_CACHE_TTL } from './config';
 import { getDeveloperToken, getAuthErrCategory } from '../../util/googleUtils';
 import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import CacheClass from '../../util/cache';
@@ -62,15 +62,6 @@ export interface GoogleAdsClient {
   addConversionAdjustMent(payload: GaecPayload): Promise<GaecSdkResponse>;
 }
 
-class VersionedGoogleAds extends GoogleAdsSDK.GoogleAds {
-  private readonly baseEndpoint = `https://googleads.googleapis.com/${API_VERSION}/customers`;
-
-  protected buildRequestUrl(endpoint: string): string {
-    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    return `${this.baseEndpoint}${cleanEndpoint}`;
-  }
-}
-
 export const buildGoogleAdsClient = ({
   accessToken,
   customerId,
@@ -80,7 +71,7 @@ export const buildGoogleAdsClient = ({
   customerId: string;
   loginCustomerId: string;
 }): GoogleAdsClient =>
-  new VersionedGoogleAds(
+  new GoogleAdsSDK.GoogleAds(
     {
       accessToken,
       customerId,

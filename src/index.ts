@@ -19,6 +19,7 @@ import { logProcessInfo } from './util/utils';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
+import { payloadCapture } from './util/payloadCapture';
 import { memoryFenceMiddleware, startMemoryUsageReporter } from './middlewares/memoryFencing';
 import { concurrentRequests } from './middlewares/concurrentRequests';
 import { errorHandlerMiddleware } from './middlewares/errorHandler';
@@ -182,6 +183,7 @@ if (clusterEnabled) {
     finally: finalFunction,
     onShutdown: async (signal) => {
       logger.info(`Graceful shutdown initiated by signal: ${signal}`);
+      await payloadCapture.shutdown();
     },
   });
 

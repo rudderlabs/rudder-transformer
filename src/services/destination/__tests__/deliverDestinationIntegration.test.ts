@@ -1,4 +1,3 @@
-import { API_VERSION } from '../../../v0/destinations/google_adwords_enhanced_conversions/config';
 import { proxyRequest as frameworkProxyRequest } from '../../../adapters/network';
 import networkHandlerFactory from '../../../adapters/networkHandlerFactory';
 import { NativeIntegrationDestinationService } from '../nativeIntegration';
@@ -16,6 +15,7 @@ jest.mock('../../../adapters/network', () => ({
 const DEST = 'customerio';
 const WORKSPACE = 'ws-1';
 const GAEC_DEST = 'google_adwords_enhanced_conversions';
+const API_VERSION = 'v25';
 
 const job = (jobId: number) =>
   ({

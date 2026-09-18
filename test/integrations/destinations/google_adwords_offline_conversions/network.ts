@@ -1,5 +1,6 @@
 import { authHeader1, authHeader2, authHeader401Test, secret3 } from './maskedSecrets';
-const API_VERSION = 'v23';
+
+const API_VERSION = 'v25';
 
 const commonResponse = {
   status: 401,
@@ -128,7 +129,7 @@ export const networkCallsData = [
             "Multiple errors in 'details'. First error: An internal error has occurred., at conversions[0]",
           details: [
             {
-              '@type': 'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
+              '@type': 'type.googleapis.com/google.ads.googleads.v25.errors.GoogleAdsFailure',
               errors: [
                 {
                   errorCode: { internalError: 'INTERNAL_ERROR' },
@@ -1513,7 +1514,7 @@ export const networkCallsData = [
             "The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
           details: [
             {
-              '@type': 'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
+              '@type': 'type.googleapis.com/google.ads.googleads.v25.errors.GoogleAdsFailure',
               errors: [
                 {
                   errorCode: {

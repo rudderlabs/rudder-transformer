@@ -117,7 +117,7 @@ const finaliseAnalyticsConsents = (consentConfigMap, eventLevelConsent = {}) => 
 // authorising identity itself is the problem, so a fresh token gets rejected exactly like the last
 // one. Anything not listed here stays REFRESH_TOKEN, which is the genuinely recoverable case (an
 // expired or invalidated access token).
-// Ref - https://developers.google.com/google-ads/api/reference/rpc/v23/AuthenticationErrorEnum.AuthenticationError
+// Ref - https://developers.google.com/google-ads/api/reference/rpc/v25/AuthenticationErrorEnum.AuthenticationError
 const TERMINAL_AUTHENTICATION_ERRORS = [
   // https://developers.google.com/google-ads/api/docs/oauth/2sv
   'TWO_STEP_VERIFICATION_NOT_ENROLLED',

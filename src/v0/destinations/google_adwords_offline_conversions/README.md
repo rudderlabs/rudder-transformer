@@ -297,21 +297,21 @@ According to Google Ads documentation: "Each conversion upload is treated as a s
 
 ### Current Version
 
-- **Google Ads API Version**: v23 (in use by this destination)
-- **Endpoint Base**: `https://googleads.googleapis.com/v23/customers/{customerId}`
-- **Latest Available Version**: v23 (released January 2026)
+- **Google Ads API Version**: v25 (in use by this destination)
+- **Endpoint Base**: `https://googleads.googleapis.com/v25/customers/{customerId}`
+- **Latest Available Version**: v25 (released July 22, 2026)
 
 ### Version Deprecation
 
 Google Ads API follows a regular deprecation schedule:
 
-- **v23**: Current version used by this destination, with sunset expected in **February 2027**
+- **v25**: Current version used by this destination, with sunset expected in **August 2027**
 - **Support period**: Each version is supported for approximately 12 months
 - **Deprecation notice**: Google Ads API publishes sunset dates and release notes for migration planning
 
 ### Available Versions
 
-Google Ads API maintains multiple versions simultaneously. The destination currently uses v23, which is also the latest available version. Check the [Google Ads API versioning documentation](https://developers.google.com/google-ads/api/docs/concepts/versioning), [sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates), and [release notes](https://developers.google.com/google-ads/api/docs/release-notes) for the latest version information and migration guides.
+Google Ads API maintains multiple versions simultaneously. The destination currently uses v25, which is also the latest available version. Check the [Google Ads API versioning documentation](https://developers.google.com/google-ads/api/docs/concepts/versioning), [sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates), and [release notes](https://developers.google.com/google-ads/api/docs/release-notes) for the latest version information and migration guides.
 
 ## Documentation Links
 
@@ -319,8 +319,8 @@ Google Ads API maintains multiple versions simultaneously. The destination curre
 
 - [Google Ads API Overview](https://developers.google.com/google-ads/api/docs/start)
 - [Offline Conversions Management](https://developers.google.com/google-ads/api/docs/conversions/upload-offline)
-- [Click Conversions Upload (v23 - current)](https://developers.google.com/google-ads/api/rest/reference/rest/v23/customers/uploadClickConversions)
-- [Call Conversions Upload (v23 - current)](https://developers.google.com/google-ads/api/rest/reference/rest/v23/customers/uploadCallConversions)
+- [Click Conversions Upload (v25 - current)](https://developers.google.com/google-ads/api/rest/reference/rest/v25/customers/uploadClickConversions)
+- [Call Conversions Upload (v25 - current)](https://developers.google.com/google-ads/api/rest/reference/rest/v25/customers/uploadCallConversions)
 - [Store Sales Conversions](https://developers.google.com/google-ads/api/docs/conversions/upload-store-sales-transactions)
 - [Rate Limits and Quotas](https://developers.google.com/google-ads/api/docs/productionize/rate-limits)
 - [API Versioning and Migration](https://developers.google.com/google-ads/api/docs/concepts/versioning)

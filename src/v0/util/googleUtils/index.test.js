@@ -304,7 +304,7 @@ describe('unit test for getAuthErrCategory', () => {
   // error.message is a generic string Google reuses across unrelated 401s (a valid token against a
   // customer it cannot see produces the same "Request is missing required authentication
   // credential" text as a request with no Authorization header at all), so it is never the thing to
-  // branch on. Bodies below mirror what Google Ads v23 actually returns.
+  // branch on. Bodies below mirror what Google Ads API responses return.
   const buildGoogleAuthError = (authenticationError) => ({
     error: {
       code: 401,
@@ -314,7 +314,7 @@ describe('unit test for getAuthErrCategory', () => {
       ...(authenticationError && {
         details: [
           {
-            '@type': 'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
+            '@type': 'type.googleapis.com/google.ads.googleads.v25.errors.GoogleAdsFailure',
             errors: [{ errorCode: { authenticationError }, message: 'some message' }],
             requestId: 'some-request-id',
           },

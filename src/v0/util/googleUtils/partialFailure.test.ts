@@ -18,7 +18,7 @@ const failureWith = (errors: TestError[], requestId?: string) => ({
   message: 'summary message',
   details: [
     {
-      '@type': 'type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure',
+      '@type': 'type.googleapis.com/google.ads.googleads.v25.errors.GoogleAdsFailure',
       errors,
       ...(requestId ? { requestId } : {}),
     },

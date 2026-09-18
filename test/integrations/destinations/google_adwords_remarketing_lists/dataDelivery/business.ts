@@ -5,7 +5,7 @@ import {
   generateProxyV1Payload,
 } from '../../../testUtils';
 
-const API_VERSION = 'v23';
+const API_VERSION = 'v25';
 
 export const commonHeaders = {
   Authorization: authHeader1,
@@ -390,8 +390,7 @@ export const testScenariosForV1API = [
             headers: commonHeaders,
             params: { ...commonParams, customerId: 'wrongCustomerId' },
             JSON: validRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v23/customers/wrongCustomerId/offlineUserDataJobs',
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/wrongCustomerId/offlineUserDataJobs`,
           },
           metadataArray,
         ),

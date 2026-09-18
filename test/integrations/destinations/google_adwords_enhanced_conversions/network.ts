@@ -1,12 +1,14 @@
 import { authHeader1 } from './maskedSecrets';
 
+const API_VERSION = 'v25';
+
 // These legacy fixtures are exported to the mock set but are not paired with any current
 // request scenario; keep their endpoint URLs on the runtime API version so a future match
-// exercises the same v23 code path as production.
+// exercises the same v25 code path as production.
 const legacyNetworkCallsData = [
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567891/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -36,7 +38,7 @@ const legacyNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567891:uploadConversionAdjustments`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -97,7 +99,7 @@ const legacyNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567891:uploadClickConversions`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadClickConversions`,
       data: {
         conversionAdjustments: [
           {
@@ -164,7 +166,7 @@ const currentNetworkCallsData = [
   // single upload request.
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567892/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567892/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Page View'`,
       },
@@ -193,7 +195,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567892/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567892/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -222,7 +224,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567890/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -250,7 +252,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567899/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -281,7 +283,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567899:uploadConversionAdjustments`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567899:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -345,7 +347,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567888/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -375,7 +377,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567888:uploadConversionAdjustments`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -453,7 +455,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567910/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567910/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -488,7 +490,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/validCustomerId/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/validCustomerId/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Invalid Conversion'`,
       },
@@ -507,7 +509,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567888/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Wrong Conversion'`,
       },
@@ -537,7 +539,7 @@ const currentNetworkCallsData = [
   },
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567888:uploadConversionAdjustments`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567888:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {
@@ -593,7 +595,7 @@ const currentNetworkCallsData = [
   // Multi-event batch: searchStream to resolve conversionActionId for customerId 1234567777
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567777/googleAds:searchStream`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567777/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
       },
@@ -624,7 +626,7 @@ const currentNetworkCallsData = [
   // Multi-event batch: uploadConversionAdjustments with 2 events → partial failure (event 0 ok, event 1 failed)
   {
     httpReq: {
-      url: `https://googleads.googleapis.com/v23/customers/1234567777:uploadConversionAdjustments`,
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567777:uploadConversionAdjustments`,
       data: {
         conversionAdjustments: [
           {

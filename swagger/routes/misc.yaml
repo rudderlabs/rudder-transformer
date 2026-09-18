@@ -16,14 +16,14 @@
   get:
     tags:
       - Miscellaneous
-    summary: Gets features json describing destination eligible for router transform
+    summary: Gets the features json - transformer capabilities and per-destination data
     responses:
       200:
         description: Success
         content:
           application/json:
             schema:
-              type: 'object'
+              $ref: '../components/schemas/features.yaml'
       500:
         description: Fetch Features Failed
 /transformerBuildVersion:

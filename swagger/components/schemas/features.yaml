@@ -1,0 +1,105 @@
+title: Features
+type: object
+description: >
+  Capabilities and per-destination data describing what this transformer build supports.
+  Polled by the data plane; every field reflects the build currently serving it.
+properties:
+  routerTransform:
+    type: object
+    description: destType -> true for destinations with a router transform.
+    additionalProperties:
+      type: boolean
+  transformerProxy:
+    type: object
+    description: destType -> true for destinations delivered via the transformer proxy.
+    additionalProperties:
+      type: boolean
+  regulations:
+    type: array
+    description: destTypes supporting user-deletion regulations.
+    items:
+      type: string
+  supportSourceTransformV1:
+    type: boolean
+  supportTransformerProxyV1:
+    type: boolean
+  upgradedToSourceTransformV2:
+    type: boolean
+  supportDestTransformCompactedPayloadV1:
+    type: boolean
+  secretPaths:
+    type: object
+    description: >
+      destType -> the paths to mask. Authoritative and complete, with exactly three cases: a
+      list of paths, an empty list meaning there is nothing to mask, and `null` meaning mask
+      everything maskable. A destType absent from this map is the same case as `null`.
+
+      An empty list follows the destination definition's `secretKeys`, which is the source of
+      truth for what counts as a credential: a destination declaring none has none. Coverage is
+      widened by populating `secretKeys` in rudder-integrations-config, not by the consumer
+      applying its own judgement here.
+
+      `null` is the fail-closed case: the derivation could not establish where this destination's
+      credentials land, so nothing maskable may be shown. Handle it before iterating - a `for`
+      over `null` is the difference between masking everything and masking nothing, on exactly
+      the destinations we are least confident about.
+
+      `null` rather than a sentinel path such as `["*"]` deliberately. A path-shaped spelling
+      invites being passed to sjson.Set, and `*` is a gjson wildcard: setting it replaces the
+      first top-level key of the payload and returns no error, masking nothing while destroying
+      the body. `null` cannot be iterated by accident, and it makes "absent" and "uncomputable"
+      the same case, which is what they always were.
+
+      `null` covers every header and param value and the body. It does NOT cover `endpoint`,
+      which is excluded from masking everywhere - see below - so a URL stays readable even for a
+      destination that failed closed.
+
+      Key segments are escaped for gjson/sjson: a `.`, `*` or `?` inside a key name arrives
+      backslash-escaped, e.g. `headers.X-Api\.Key`. Pass the path through unmodified; an
+      unescaped dot would address a different, non-existent field and silently mask nothing.
+
+      Paths address the transformer's `batchedRequest` in gjson/sjson dot notation and are
+      applied with sjson.Set. The first segment is any top-level field of the request object -
+      usually `headers`, `params` or `body`, but not only those: MOVABLE_INK sends
+      its credentials as top-level `accessKey`/`accessSecret` fields. Do not whitelist roots.
+
+      `#` matches every element of an array. sjson.Set handles it natively, so
+      `body.JSON.messages.#.from` masks every message in the batch whatever its length -
+      verified against sjson v1.2.5. Array lengths vary per request, which is why a fixed index
+      is never emitted.
+
+      A bracketed or numeric segment NOT preceded by `#` is a literal key name: `params.bd[0]`
+      is a param literally called `bd[0]`, and sjson.Set addresses it as such.
+
+      IMPORTANT: sjson.Set CREATES a path that is absent, so looping blindly over these paths
+      would fabricate fields - adding an `Authorization` header to a request that never carried
+      one, which then reads as though the data plane sent credentials it did not. Check
+      gjson.Get(payload, path).Exists() before setting. Paths are the union across every
+      fixture, so a destination legitimately has paths that only some of its requests contain.
+
+      `endpoint` is never emitted. The URL is excluded from masking by decision: it is already
+      visible outside our control - to proxies, to TLS SNI, and in the provider's own access logs
+      - so masking it protects little while removing the single most useful field for diagnosing
+      a delivery failure. Most endpoints that look secret-carrying only do so because `secretKeys`
+      declares an identifier that happens to sit in the host or path, such as a subdomain or an
+      account id, which is not a credential.
+
+      Two consequences a consumer should know about. A handful of destinations are webhooks whose
+      URL *is* the shared secret, with no separable parameter - those are knowingly unmasked. And
+      a credential passed as a query parameter is masked under `params`, which is where the
+      transformer is meant to emit it; a destination that concatenates one into the endpoint
+      string instead is not masked. The generator reports both sets rather than dropping them
+      silently, so the second can be fixed at the source.
+    additionalProperties:
+      type: array
+      nullable: true
+      items:
+        type: string
+    example:
+      KLAVIYO: ['headers.Authorization']
+      GA4: ['params.api_secret']
+      FB_CUSTOM_AUDIENCE: ['params.access_token', 'params.appsecret_proof']
+      ONE_SIGNAL: ['body.JSON.app_id']
+      CLICKSEND: ['body.JSON.messages.#.from', 'headers.Authorization']
+      MOVABLE_INK: ['accessKey', 'accessSecret', 'headers.Authorization']
+      AM: null

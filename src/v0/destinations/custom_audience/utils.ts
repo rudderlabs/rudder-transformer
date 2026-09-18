@@ -55,8 +55,12 @@ export const resolveEndpoint = (
       },
       { connection },
     );
-    if (value === undefined || value === null) {
-      throw new InstrumentationError(ERROR_MESSAGES.ENDPOINT_RESOLUTION_FAILED(`{{${path}}}`));
+    // An empty string counts as unset. A blank audienceId can reach us as ''
+    // rather than undefined (older connections persisted the empty form field),
+    // and interpolating it would quietly yield "/audiences//members" instead of
+    // surfacing the misconfiguration.
+    if (value === undefined || value === null || value === '') {
+      throw new InstrumentationError(ERROR_MESSAGES.ENDPOINT_RESOLUTION_FAILED(path));
     }
     return String(value);
   });

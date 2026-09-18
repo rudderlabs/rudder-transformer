@@ -1,10 +1,11 @@
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 import { authHeader1, secret3 } from '../maskedSecrets';
 import {
   generateGoogleOAuthMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
+
+const API_VERSION = 'v25';
 
 export const commonHeaders = {
   Authorization: authHeader1,

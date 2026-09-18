@@ -1,10 +1,11 @@
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_offline_conversions/config';
 import { authHeader1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
+
+const API_VERSION = 'v25';
 
 const transactionAttribute = {
   CUSTOM_KEY: 'CUSTOM_VALUE',

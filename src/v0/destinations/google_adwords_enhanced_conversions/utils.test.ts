@@ -1,8 +1,9 @@
 import sha256 from 'sha256';
 import { HttpClientFactory } from '@rudderstack/integrations-lib';
-import { API_VERSION } from './config';
 import { processUserIdentifiers, GAEC_FIELD_CONFIG, buildGoogleAdsClient } from './utils';
 import type { GaecPayload } from './types';
+
+const API_VERSION = 'v25';
 
 // Shared destination context for tests (undefined requireHash models configs that omit it)
 const makePostSpy = () => jest.fn().mockResolvedValue({ statusCode: 200, responseBody: [] });

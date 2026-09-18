@@ -14,11 +14,9 @@ const {
   getAddConversionPayload,
   getConversionActionIds,
 } = require('./utils');
-const {
-  CLICK_CONVERSION_ENDPOINT_PATH,
-  CALL_CONVERSION_ENDPOINT_PATH,
-  API_VERSION,
-} = require('./config');
+const { CLICK_CONVERSION_ENDPOINT_PATH, CALL_CONVERSION_ENDPOINT_PATH } = require('./config');
+
+const API_VERSION = 'v25';
 
 const getTestMessage = () => {
   let message = {

@@ -1,5 +1,4 @@
 import { GoogleAdsSDK } from '@rudderstack/integrations-lib';
-import { API_VERSION } from './config';
 import { Integration } from './routerTransform';
 import {
   ChunkBatchStrategy,
@@ -14,6 +13,8 @@ import type {
   RouterTransformationRequestData,
   RouterTransformationResponse,
 } from '../../../types/destinationTransformation';
+
+const API_VERSION = 'v25';
 
 type GAECInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
 

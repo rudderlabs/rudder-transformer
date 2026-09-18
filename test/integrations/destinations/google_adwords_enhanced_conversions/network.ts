@@ -1,5 +1,6 @@
-import { API_VERSION } from '../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
 import { authHeader1 } from './maskedSecrets';
+
+const API_VERSION = 'v25';
 
 // These legacy fixtures are exported to the mock set but are not paired with any current
 // request scenario; keep their endpoint URLs on the runtime API version so a future match

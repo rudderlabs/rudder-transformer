@@ -1,4 +1,3 @@
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_remarketing_lists/config';
 import sha256 from 'sha256';
 import { authHeader3, secret3 } from '../maskedSecrets';
 import { rETLAudienceRouterRequest } from './audience';
@@ -15,6 +14,8 @@ import {
   allFieldsInvalidRequest,
 } from './record';
 import { dmRouterData } from './dataManager';
+
+const API_VERSION = 'v25';
 
 const deliveryAccount = {
   id: '',

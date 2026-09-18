@@ -1,6 +1,7 @@
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_offline_conversions/config';
 import { authHeader1, secret1, secret401Test } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
+
+const API_VERSION = 'v25';
 
 export const data = [
   {

@@ -1,5 +1,6 @@
-import { API_VERSION } from '../../../../src/v0/destinations/google_adwords_offline_conversions/config';
 import { authHeader1, authHeader2, authHeader401Test, secret3 } from './maskedSecrets';
+
+const API_VERSION = 'v25';
 
 const commonResponse = {
   status: 401,

@@ -9,9 +9,10 @@
  * same grouping key) are combined into a single request with multiple conversionAdjustments.
  */
 
-import { API_VERSION } from '../../../../../src/v0/destinations/google_adwords_enhanced_conversions/config';
 import sha256 from 'sha256';
 import { authHeader1, secret1 } from '../maskedSecrets';
+
+const API_VERSION = 'v25';
 
 const sharedConfig = {
   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',

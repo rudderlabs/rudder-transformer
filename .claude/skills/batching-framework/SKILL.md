@@ -1,14 +1,48 @@
 ---
 name: batching-framework
-description: Native batching framework for destination transformations. Extend DestinationIntegration to implement per-event transforms with automatic grouping, chunking, and response formatting.
+description: The transform path for every new destination, batched or not — extend DestinationIntegration to implement per-event transforms with automatic validation, grouping, chunking, and response formatting. Read this before writing any new destination's transform, including one whose API takes a single event per request.
 ---
 
 # Native Batching Framework
 
 **Objective:** Use the batching framework to implement destination router transforms. Instead of writing manual grouping/batching logic, extend the `DestinationIntegration` abstract class — the framework handles validation, grouping, chunking, error wrapping, and response formatting.
 
+## Every new destination starts here
+
+**"Batching" names the framework, not its scope.** It is the transform path for a net-new
+destination whether or not the partner's API accepts more than one event per request — a
+single-event API is just a batch strategy with `maxItems: 1`. Don't read the name and conclude
+this skill is for high-volume destinations only; there is no second, simpler path to fall back
+to, and the v0 shapes you will find by opening an older destination are all legacy.
+
+A new destination is:
+
+- **Router-only.** `routerTransform.ts` exporting `Integration`, a `DestinationIntegration`
+  subclass. No `transform.js`, and no `process` / processor transform — see
+  `.claude/skills/deprecate-processor-transform/SKILL.md` for why the ones that exist are being
+  removed rather than copied.
+- **Without a `networkHandler.ts`**, for transport or for response handling. Take the framework
+  default, and add a `delivery.ts` only to override specific verdicts. This is not a
+  judgement call: see
+  `.claude/skills/batching-framework-delivery/SKILL.md#a-new-destination-gets-no-networkhandlerts`,
+  including what to do when it looks like you need one.
+- **Registered `{ routerTransform: true, batching: true }` in `src/features.ts`** from day one.
+  A new destination is GA on the framework immediately, so the
+  `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` rollout flag — which exists for migrating an
+  existing destination — does not apply.
+- **`transformAtV1: router`** in its `rudder-integrations-config` definition. The framework only
+  runs on the router path; a definition left on `processor` silently never reaches it.
+
+`src/v0/destinations/openai_ads/` is the canonical shape — `routerTransform.ts`, `delivery.ts`,
+`types.ts`, `config.ts`, `utils.ts` and nothing else. `posthog` and `custom_audience` are the same
+shape without a `delivery.ts`.
+
+The rest of this skill assumes that starting point. The `networkHandler` material below is about
+**migrating** an existing destination and is marked as such.
+
 ## Reference
 
+- `src/v0/destinations/openai_ads/` — a net-new destination built framework-native, start to finish
 - `src/v0/destinations/posthog/routerTransform.ts` — `ChunkBatchStrategy` with `maxPayloadSize`
 - `src/v0/destinations/custom_audience/routerTransform.ts` — `CustomBatchStrategy` with template evaluation
 - `src/services/destination/destinationIntegration/` — Framework source code

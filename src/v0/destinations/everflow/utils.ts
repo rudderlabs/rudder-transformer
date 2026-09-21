@@ -1,7 +1,23 @@
-import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
-import { getValueFromMessage, isAppleFamily, isAndroidFamily } from '../../util';
-import { POSTBACK_URL_PATTERN, SOURCE_PATHS } from './config';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { constructPayload, getValueFromMessage, isAppleFamily, isAndroidFamily } from '../../util';
+import mappingConfig from './data/EVERFLOWConfig.json';
 import type { EverflowDestinationConfig, EverflowMessage, EverflowPostbackParams } from './types';
+
+type MappingEntry = {
+  sourceKeys: string | string[];
+  destKey: string;
+  required?: boolean;
+  metadata?: Record<string, unknown>;
+};
+
+type EverflowMappingConfig = {
+  standardMappings: MappingEntry[];
+  amountPaths: string | string[];
+  currencyPath: string;
+  timestampPaths: string | string[];
+};
+
+const EVERFLOW_MAPPING_CONFIG = mappingConfig as EverflowMappingConfig;
 
 const isPresent = (value: unknown): boolean =>
   value !== undefined && value !== null && value !== '';
@@ -12,7 +28,7 @@ const optionalValue = (message: EverflowMessage, paths: string | readonly string
 };
 
 const resolveAmount = (message: EverflowMessage): number | undefined => {
-  const rawAmount = optionalValue(message, SOURCE_PATHS.amount);
+  const rawAmount = optionalValue(message, EVERFLOW_MAPPING_CONFIG.amountPaths);
   if (rawAmount === undefined) {
     return undefined;
   }
@@ -32,7 +48,7 @@ const resolveAmount = (message: EverflowMessage): number | undefined => {
 };
 
 const resolveCurrency = (message: EverflowMessage): string | undefined => {
-  const rawCurrency = optionalValue(message, SOURCE_PATHS.currency);
+  const rawCurrency = optionalValue(message, EVERFLOW_MAPPING_CONFIG.currencyPath);
   if (typeof rawCurrency !== 'string') {
     return undefined;
   }
@@ -41,7 +57,7 @@ const resolveCurrency = (message: EverflowMessage): string | undefined => {
 };
 
 const resolveTimestamp = (message: EverflowMessage): number | undefined => {
-  const rawTimestamp = optionalValue(message, SOURCE_PATHS.timestamp);
+  const rawTimestamp = optionalValue(message, EVERFLOW_MAPPING_CONFIG.timestampPaths);
   if (typeof rawTimestamp !== 'string' && typeof rawTimestamp !== 'number') {
     return undefined;
   }
@@ -49,7 +65,10 @@ const resolveTimestamp = (message: EverflowMessage): number | undefined => {
   return Number.isNaN(milliseconds) ? undefined : Math.floor(milliseconds / 1000);
 };
 
-const resolveMobileParams = (message: EverflowMessage): Partial<EverflowPostbackParams> => {
+const resolveMobileParams = (
+  message: EverflowMessage,
+  explicitAndroidId: unknown,
+): Partial<EverflowPostbackParams> => {
   const deviceType = optionalValue(message, 'context.device.type');
   const advertisingId = optionalValue(message, 'context.device.advertisingId');
   const androidDeviceId = optionalValue(message, 'context.device.id');
@@ -58,32 +77,20 @@ const resolveMobileParams = (message: EverflowMessage): Partial<EverflowPostback
 
   return {
     idfa: appleDevice ? advertisingId : undefined,
-    idfa_md5: optionalValue(message, SOURCE_PATHS.idfaMd5),
-    idfa_sha1: optionalValue(message, SOURCE_PATHS.idfaSha1),
     google_aid: androidDevice ? advertisingId : undefined,
-    google_aid_md5: optionalValue(message, SOURCE_PATHS.googleAidMd5),
-    google_aid_sha1: optionalValue(message, SOURCE_PATHS.googleAidSha1),
-    android_id:
-      optionalValue(message, SOURCE_PATHS.androidId) ??
-      (androidDevice ? androidDeviceId : undefined),
-    app_id: optionalValue(message, 'context.app.namespace'),
+    android_id: explicitAndroidId ?? (androidDevice ? androidDeviceId : undefined),
   };
-};
-
-export const validatePostbackUrl = (postbackUrl: string): void => {
-  if (!POSTBACK_URL_PATTERN.test(postbackUrl)) {
-    throw new ConfigurationError(
-      'Invalid Everflow postbackUrl. Paste only the base Global Postback URL and remove everything from ? onward.',
-    );
-  }
 };
 
 export const buildEverflowParams = (
   message: EverflowMessage,
   config: Pick<EverflowDestinationConfig, 'networkId' | 'verificationToken'>,
 ): EverflowPostbackParams => {
-  const transactionId = optionalValue(message, SOURCE_PATHS.transactionId);
-  if (transactionId === undefined) {
+  const mappedParams = constructPayload(
+    message,
+    EVERFLOW_MAPPING_CONFIG.standardMappings,
+  ) as Partial<EverflowPostbackParams>;
+  if (mappedParams.transaction_id === undefined) {
     throw new InstrumentationError(
       'Everflow transaction_id is required in properties.transactionId, properties.transaction_id, or properties.tid.',
     );
@@ -91,25 +98,14 @@ export const buildEverflowParams = (
 
   const params: EverflowPostbackParams = {
     nid: config.networkId,
-    transaction_id: transactionId,
-  };
+    ...mappedParams,
+  } as EverflowPostbackParams;
   const optionalParams: Partial<EverflowPostbackParams> = {
     verification_token: isPresent(config.verificationToken) ? config.verificationToken : undefined,
     amount: resolveAmount(message),
     currency: resolveCurrency(message),
-    coupon_code: optionalValue(message, SOURCE_PATHS.couponCode),
-    event_id: optionalValue(message, SOURCE_PATHS.eventId),
-    adv_event_id: optionalValue(message, SOURCE_PATHS.advertiserEventId),
-    event_name: optionalValue(message, 'event'),
-    order_id: optionalValue(message, SOURCE_PATHS.orderId),
-    email: optionalValue(message, SOURCE_PATHS.email),
-    user_id: optionalValue(message, 'userId'),
-    user_ip: optionalValue(message, SOURCE_PATHS.userIp),
-    user_agent: optionalValue(message, 'context.userAgent'),
     timestamp: resolveTimestamp(message),
-    oid: optionalValue(message, SOURCE_PATHS.offerId),
-    affid: optionalValue(message, SOURCE_PATHS.affiliateId),
-    ...resolveMobileParams(message),
+    ...resolveMobileParams(message, mappedParams.android_id),
   };
 
   Object.entries(optionalParams).forEach(([key, value]) => {
@@ -117,13 +113,5 @@ export const buildEverflowParams = (
       params[key] = value;
     }
   });
-
-  for (let index = 1; index <= 10; index += 1) {
-    const value = optionalValue(message, `properties.adv${index}`);
-    if (value !== undefined) {
-      params[`adv${index}`] = String(value);
-    }
-  }
-
   return params;
 };

@@ -67,16 +67,14 @@ describe('Everflow delivery', () => {
       status: 400,
       response: '  rejected conversion  ',
       reason: 'rejected conversion',
-      statusCode: 400,
-      errorType: 'aborted',
+      verdict: { kind: 'abort' },
     },
     {
       name: 'non-empty object',
       status: 400,
       response: { code: 12, error: 'invalid transaction' },
       reason: '{"code":12,"error":"invalid transaction"}',
-      statusCode: 400,
-      errorType: 'aborted',
+      verdict: { kind: 'abort' },
     },
     {
       name: 'empty object',
@@ -84,8 +82,7 @@ describe('Everflow delivery', () => {
       response: {},
       reason:
         'Everflow rejected the conversion (status 400); no error detail returned. Check the Everflow conversion report.',
-      statusCode: 400,
-      errorType: 'aborted',
+      verdict: { kind: 'abort' },
     },
     {
       name: 'empty string',
@@ -93,16 +90,14 @@ describe('Everflow delivery', () => {
       response: '   ',
       reason:
         'Everflow rejected the conversion (status 400); no error detail returned. Check the Everflow conversion report.',
-      statusCode: 400,
-      errorType: 'aborted',
+      verdict: { kind: 'abort' },
     },
     {
       name: 'rate limit',
       status: 429,
       response: 'Rate limited',
       reason: 'Rate limited',
-      statusCode: 429,
-      errorType: 'throttled',
+      verdict: { kind: 'retry', as: 'throttled' },
     },
     {
       name: 'server error',
@@ -110,20 +105,14 @@ describe('Everflow delivery', () => {
       response: '',
       reason:
         'Everflow rejected the conversion (status 500); no error detail returned. Check the Everflow conversion report.',
-      statusCode: 500,
-      errorType: 'retryable',
+      verdict: { kind: 'retry' },
     },
   ])(
-    'uses the complete $name response as the per-job failure reason',
-    ({ status, response, reason, statusCode, errorType }) => {
-      expect(deliver(status, response)).toEqual({
-        status,
-        message: `[EVERFLOW] ${reason}`,
-        response: [{ statusCode, metadata, error: reason }],
-        statTags: {
-          errorCategory: 'network',
-          errorType,
-        },
+    'uses the complete $name response with the default status classification',
+    ({ status, response, reason, verdict }) => {
+      expect(handleDeliveryResponse(Integration, context(status, response))).toEqual({
+        ...verdict,
+        reason,
       });
     },
   );

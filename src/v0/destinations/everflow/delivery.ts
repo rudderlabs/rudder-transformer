@@ -1,8 +1,6 @@
 import {
   abort,
   perItem,
-  retry,
-  throttled,
   type DeliveryContext,
   type DeliverySpec,
   type ItemVerdict,
@@ -32,9 +30,6 @@ const allJobs = (ctx: DeliveryContext, verdict: ItemVerdict) =>
 
 const statusOverrides: StatusOverrideMap = {
   204: (ctx) => allJobs(ctx, abort(everflowFailureReason(ctx))),
-  429: (ctx) => allJobs(ctx, throttled(everflowFailureReason(ctx))),
-  '4xx': (ctx) => allJobs(ctx, abort(everflowFailureReason(ctx))),
-  '5xx': (ctx) => allJobs(ctx, retry(everflowFailureReason(ctx))),
 };
 
 export const everflowDelivery: DeliverySpec = {

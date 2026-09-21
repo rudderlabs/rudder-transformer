@@ -9,7 +9,7 @@ const payload = (transactionId: string) =>
   generateProxyV1Payload(
     {
       endpoint,
-      endpointPath: '/everflow/postback',
+      endpointPath: '',
       method: 'GET',
       params: params(transactionId),
       JSON: {},
@@ -99,7 +99,7 @@ const scenarios: ProxyV1TestData[] = [
           output: {
             status: 400,
             message: '[EVERFLOW] Invalid transaction ID',
-            response: [failedJob('Invalid transaction ID')],
+            response: [failedJob('"Invalid transaction ID"')],
             statTags,
           },
         },
@@ -149,11 +149,7 @@ const scenarios: ProxyV1TestData[] = [
             status: 400,
             message:
               '[EVERFLOW] Everflow rejected the conversion (status 400); no error detail returned. Check the Everflow conversion report.',
-            response: [
-              failedJob(
-                'Everflow rejected the conversion (status 400); no error detail returned. Check the Everflow conversion report.',
-              ),
-            ],
+            response: [failedJob('""')],
             statTags,
           },
         },

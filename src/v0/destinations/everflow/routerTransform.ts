@@ -13,7 +13,7 @@ import {
   EverflowMessageSchema,
   type EverflowPostbackPayload,
 } from './types';
-import { buildEverflowParams, validatePostbackUrl } from './utils';
+import { buildEverflowParams } from './utils';
 
 const everflowInputSchema = makeRouterInputSchema({
   destinationConfig: EverflowDestinationConfigSchema,
@@ -30,12 +30,11 @@ class EverflowIntegration extends DestinationIntegration<
     input: z.infer<typeof everflowInputSchema>,
   ): TransformedEvent<EverflowPostbackPayload> {
     const { postbackUrl, networkId, verificationToken } = this.destination.Config;
-    validatePostbackUrl(postbackUrl);
 
     return {
       body: {},
       endpoint: postbackUrl,
-      endpointPath: new URL(postbackUrl).pathname,
+      endpointPath: '',
       method: HTTP_METHOD,
       params: buildEverflowParams(input.message, { networkId, verificationToken }),
     };

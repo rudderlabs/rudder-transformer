@@ -1,13 +1,8 @@
-import {
-  getGaBatchingFrameworkTransportIntegrations,
-  getGaDestinationIntegrations,
-} from '../features';
+import { getGaDestinationIntegrations } from '../features';
 
 // Destinations that have completed GA for the batching framework.
 // Once a destination is added here, it always uses the new path regardless of env var.
 export const destinationIntegrationsMap: Record<string, true> = getGaDestinationIntegrations();
-export const batchingFrameworkTransportMap: Record<string, true> =
-  getGaBatchingFrameworkTransportIntegrations();
 
 type BatchingFrameworkFeature = 'BATCHING_FRAMEWORK' | 'BATCHING_FRAMEWORK_TRANSPORT';
 
@@ -80,9 +75,6 @@ export const isBatchingFrameworkTransportEnabled = (
   const upperDestType = destType.toUpperCase();
   if (!isDestinationIntegrationEnabled(upperDestType, workspaceId)) {
     return false;
-  }
-  if (batchingFrameworkTransportMap[upperDestType]) {
-    return true;
   }
   return matchesWorkspace(
     getEnabledWorkspaceIds(upperDestType, 'BATCHING_FRAMEWORK_TRANSPORT'),

@@ -13,7 +13,6 @@ interface DestinationCapabilities {
   batching?: true;
   cdkV2?: true;
   transformerProxy?: true;
-  batchingFrameworkTransport?: true;
 }
 
 const destinationCapabilities: Record<string, DestinationCapabilities> = {
@@ -47,7 +46,6 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
     routerTransform: true,
     batching: true,
     transformerProxy: true,
-    batchingFrameworkTransport: true,
   },
   OPENAI_ADS: { routerTransform: true, batching: true },
   PARDOT: { routerTransform: true, transformerProxy: true },
@@ -230,9 +228,6 @@ const getCapabilityMap = (capability: keyof DestinationCapabilities): Record<str
 
 export const getGaDestinationIntegrations = (): Record<string, true> =>
   getCapabilityMap('batching');
-
-export const getGaBatchingFrameworkTransportIntegrations = (): Record<string, true> =>
-  getCapabilityMap('batchingFrameworkTransport');
 
 export const isDestinationCdkV2Enabled = (destination: string): boolean =>
   Boolean(destinationCapabilities[destination.trim().toUpperCase()]?.cdkV2);

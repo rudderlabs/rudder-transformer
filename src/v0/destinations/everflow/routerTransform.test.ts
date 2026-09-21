@@ -90,7 +90,7 @@ describe('EverflowIntegration', () => {
     ).toEqual({
       body: {},
       endpoint: 'https://www.example.com/postback',
-      endpointPath: '/postback',
+      endpointPath: '',
       method: 'GET',
       params: {
         nid: 'network-1',
@@ -154,7 +154,7 @@ describe('EverflowIntegration', () => {
     ).toEqual({
       body: {},
       endpoint: 'https://www.example.com/postback',
-      endpointPath: '/postback',
+      endpointPath: '',
       method: 'GET',
       params: {
         nid: 'network-1',
@@ -240,18 +240,21 @@ describe('EverflowIntegration', () => {
     'https://localhost/postback?nid=1',
     'https://sub.LOCALHOST/postback',
     'https://example.NGROK.IO/postback',
-  ])('rejects unsafe or non-base postback URL %s at runtime', (postbackUrl) => {
+  ])('rejects unsafe or non-base postback URL %s at runtime', async (postbackUrl) => {
     const unsafeDestination = {
       ...destination,
       Config: { ...destination.Config, postbackUrl },
     };
-    expect(() =>
-      new Integration(unsafeDestination).transformEvent(
-        input(track()) as unknown as Parameters<
-          InstanceType<typeof Integration>['transformEvent']
-        >[0],
-      ),
-    ).toThrow('Paste only the base Global Postback URL');
+    const [result] = await processDestinationIntegration(
+      [{ ...input(track()), destination: unsafeDestination }],
+      Integration,
+      {},
+    );
+    expect(result).toMatchObject({
+      statusCode: 400,
+      error: expect.stringContaining('Paste only the base Global Postback URL'),
+      statTags: expect.objectContaining({ errorType: 'configuration' }),
+    });
   });
 
   it('rejects every non-track message type through input validation', async () => {

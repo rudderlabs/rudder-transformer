@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { POSTBACK_URL_ERROR, POSTBACK_URL_PATTERN } from './config';
 
 export const EverflowDestinationConfigSchema = z
   .object({
-    postbackUrl: z.string().min(1),
+    postbackUrl: z.string().regex(POSTBACK_URL_PATTERN, POSTBACK_URL_ERROR),
     networkId: z.string().min(1),
     verificationToken: z.string().optional(),
   })

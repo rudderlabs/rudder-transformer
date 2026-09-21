@@ -1,6 +1,5 @@
 import path from 'path';
 import defaultFeaturesConfig, {
-  getGaBatchingFrameworkTransportIntegrations,
   getGaDestinationIntegrations,
   getDestinationHandlerName,
   isDestinationCdkV2Enabled,
@@ -41,9 +40,6 @@ describe('features destination capabilities', () => {
       OPENAI_ADS: true,
       TEST_DESTINATION: true,
       CUSTOMERIO: true,
-    });
-    expect(getGaBatchingFrameworkTransportIntegrations()).toEqual({
-      EVERFLOW: true,
     });
   });
 

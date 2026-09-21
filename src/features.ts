@@ -13,6 +13,7 @@ interface DestinationCapabilities {
   batching?: true;
   cdkV2?: true;
   transformerProxy?: true;
+  batchingFrameworkTransport?: true;
 }
 
 const destinationCapabilities: Record<string, DestinationCapabilities> = {
@@ -42,6 +43,12 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   MAILMODO: { routerTransform: true },
   MARKETO: { routerTransform: true, transformerProxy: true },
   OMETRIA: { routerTransform: true },
+  EVERFLOW: {
+    routerTransform: true,
+    batching: true,
+    transformerProxy: true,
+    batchingFrameworkTransport: true,
+  },
   OPENAI_ADS: { routerTransform: true, batching: true },
   PARDOT: { routerTransform: true, transformerProxy: true },
   PINTEREST_TAG: { routerTransform: true, cdkV2: true },
@@ -223,6 +230,9 @@ const getCapabilityMap = (capability: keyof DestinationCapabilities): Record<str
 
 export const getGaDestinationIntegrations = (): Record<string, true> =>
   getCapabilityMap('batching');
+
+export const getGaBatchingFrameworkTransportIntegrations = (): Record<string, true> =>
+  getCapabilityMap('batchingFrameworkTransport');
 
 export const isDestinationCdkV2Enabled = (destination: string): boolean =>
   Boolean(destinationCapabilities[destination.trim().toUpperCase()]?.cdkV2);

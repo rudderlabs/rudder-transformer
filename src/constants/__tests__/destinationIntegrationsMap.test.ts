@@ -1,4 +1,5 @@
 import {
+  batchingFrameworkTransportMap,
   destinationIntegrationsMap,
   isDestinationIntegrationEnabled,
   isBatchingFrameworkTransportEnabled,
@@ -22,6 +23,7 @@ describe('isDestinationIntegrationEnabled', () => {
       process.env[transportEnvKey] = originalTransportEnv;
     }
     delete destinationIntegrationsMap['TEST_DEST'];
+    delete batchingFrameworkTransportMap['TEST_DEST'];
   });
 
   describe('pre-GA: env var based rollout', () => {
@@ -118,11 +120,23 @@ describe('isDestinationIntegrationEnabled', () => {
   });
 
   describe('transport rollout', () => {
+    it('enables framework transport by default for Everflow', () => {
+      expect(isBatchingFrameworkTransportEnabled('EVERFLOW', 'ws-1')).toBe(true);
+    });
+
     it('returns false when the batching framework transform is disabled even if transport env is set', () => {
       delete process.env[envKey];
       process.env[transportEnvKey] = 'ALL';
 
       expect(isBatchingFrameworkTransportEnabled('TEST_DEST', 'ws-1')).toBe(false);
+    });
+
+    it('returns true for destinations that declare framework transport GA', () => {
+      destinationIntegrationsMap['TEST_DEST'] = true;
+      batchingFrameworkTransportMap['TEST_DEST'] = true;
+      delete process.env[transportEnvKey];
+
+      expect(isBatchingFrameworkTransportEnabled('TEST_DEST', 'ws-1')).toBe(true);
     });
 
     it('returns true only when both transform and transport rollout match the workspace', () => {

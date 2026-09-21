@@ -1,5 +1,6 @@
 import path from 'path';
 import defaultFeaturesConfig, {
+  getGaBatchingFrameworkTransportIntegrations,
   getGaDestinationIntegrations,
   getDestinationHandlerName,
   isDestinationCdkV2Enabled,
@@ -26,6 +27,9 @@ describe('features destination capabilities', () => {
     expect(defaultFeaturesConfig.regulations).toEqual(
       expect.arrayContaining(['BRAZE', 'AM', 'INTERCOM', 'CLEVERTAP']),
     );
+    expect(defaultFeaturesConfig.transformerProxy).toMatchObject({
+      EVERFLOW: true,
+    });
     expect(getGaDestinationIntegrations()).toEqual({
       GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: true,
       POSTHOG: true,
@@ -33,9 +37,13 @@ describe('features destination capabilities', () => {
       ITERABLE_AUDIENCE: true,
       BRAZE_AUDIENCE: true,
       REDDIT_AUDIENCE: true,
+      EVERFLOW: true,
       OPENAI_ADS: true,
       TEST_DESTINATION: true,
       CUSTOMERIO: true,
+    });
+    expect(getGaBatchingFrameworkTransportIntegrations()).toEqual({
+      EVERFLOW: true,
     });
   });
 

@@ -362,6 +362,9 @@ async function getSalesforceIdForRecordUsingSdk(
   if (!SOQL_FIELD_NAME_REGEX.test(identifierType)) {
     throw new InstrumentationError(`Invalid identifierType for SOQL query: ${identifierType}`);
   }
+  if (!SOQL_FIELD_NAME_REGEX.test(objectType)) {
+    throw new InstrumentationError(`Invalid objectType for SOQL query: ${objectType}`);
+  }
   let queryResponse;
   try {
     queryResponse = await salesforceSdk.query(
@@ -454,7 +457,8 @@ async function getSalesforceIdForLeadUsingSdk(salesforceSdk, email, destination)
   let queryResponse;
   try {
     queryResponse = await salesforceSdk.query(
-      `SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = '${email}'`,
+      // Email is a text field, so a numeric value must stay quoted.
+      `SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = ${soqlEscapeValue(String(email))}`,
     );
   } catch (error) {
     // check if the error message contains 'session expired'

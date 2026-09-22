@@ -18,18 +18,10 @@ const trackEvent = (ctx: RunContext, id: string, suffix: string) => ({
   properties: { transactionId: id },
 });
 
-const basePostbackUrl = (value: unknown): unknown =>
-  typeof value === 'string' ? value.split(/[?#]/, 1)[0] : value;
-
 export const live = {
   enabled: true,
   authType: 'apiKey',
-  resolveConfig: (secret) => ({
-    ...secret.config,
-    // Everflow's copied Global Postback URL includes nid in the query string. Destination config
-    // intentionally accepts only the base URL because the transformer appends nid itself.
-    postbackUrl: basePostbackUrl(secret.config.postbackUrl),
-  }),
+  resolveConfig: (secret) => ({ ...secret.config }),
   scenarios: [
     {
       id: 'everflow-track-conversion',

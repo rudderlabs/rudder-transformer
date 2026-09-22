@@ -34,7 +34,7 @@ class EverflowIntegration extends DestinationIntegration<
     return {
       body: {},
       endpoint: postbackUrl,
-      endpointPath: '',
+      endpointPath: 'postback',
       method: HTTP_METHOD,
       params: buildEverflowParams(input.message, { networkId, verificationToken }),
     };

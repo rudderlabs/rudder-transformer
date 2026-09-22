@@ -9,7 +9,7 @@ const payload = (transactionId: string) =>
   generateProxyV1Payload(
     {
       endpoint,
-      endpointPath: '',
+      endpointPath: 'postback',
       method: 'GET',
       params: params(transactionId),
       JSON: {},

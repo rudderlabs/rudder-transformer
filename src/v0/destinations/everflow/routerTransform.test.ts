@@ -90,7 +90,7 @@ describe('EverflowIntegration', () => {
     ).toEqual({
       body: {},
       endpoint: 'https://www.example.com/postback',
-      endpointPath: '',
+      endpointPath: 'postback',
       method: 'GET',
       params: {
         nid: 'network-1',
@@ -154,7 +154,7 @@ describe('EverflowIntegration', () => {
     ).toEqual({
       body: {},
       endpoint: 'https://www.example.com/postback',
-      endpointPath: '',
+      endpointPath: 'postback',
       method: 'GET',
       params: {
         nid: 'network-1',

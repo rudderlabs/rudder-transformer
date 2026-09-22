@@ -7,7 +7,7 @@ const request = (params: Record<string, unknown>) => ({
     type: 'REST',
     method: 'GET',
     endpoint,
-    endpointPath: '',
+    endpointPath: 'postback',
     headers: {},
     params,
     body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },

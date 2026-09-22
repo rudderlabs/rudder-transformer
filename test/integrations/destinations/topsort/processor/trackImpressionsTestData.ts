@@ -6,7 +6,6 @@ import {
   generateSimplifiedTrackPayload,
   transformResultBuilder,
 } from '../../../testUtils';
-import { defaultMockFns } from '../mocks';
 
 const destination: Destination = {
   ID: '123',
@@ -148,7 +147,6 @@ export const trackImpressionsTestData: ProcessorTestData[] = [
         ],
       },
     },
-    mockFns: defaultMockFns,
   },
   {
     id: 'Test 1',
@@ -252,7 +250,7 @@ export const trackImpressionsTestData: ProcessorTestData[] = [
                       position: 1,
                       productId: '622c6f5d5cf86a4c77358033',
                     },
-                    id: 'test-id-123-123-123',
+                    id: 'test-msg-id-0',
                   },
                   {
                     occurredAt: '2024-11-05T15:19:08+00:00',
@@ -273,7 +271,7 @@ export const trackImpressionsTestData: ProcessorTestData[] = [
                       position: 2,
                       productId: '577c6f5d5cf86a4c7735ba03',
                     },
-                    id: 'test-id-123-123-123',
+                    id: 'test-msg-id-1',
                   },
                 ],
                 clicks: [],
@@ -289,7 +287,6 @@ export const trackImpressionsTestData: ProcessorTestData[] = [
         ],
       },
     },
-    mockFns: defaultMockFns,
   },
   {
     id: 'Test 2',
@@ -380,6 +377,5 @@ export const trackImpressionsTestData: ProcessorTestData[] = [
         ],
       },
     },
-    mockFns: defaultMockFns,
   },
 ];

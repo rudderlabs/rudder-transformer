@@ -6,7 +6,6 @@ import {
   generateSimplifiedTrackPayload,
   transformResultBuilder,
 } from '../../../testUtils';
-import { defaultMockFns } from '../mocks';
 
 const destination: Destination = {
   ID: '123',
@@ -148,7 +147,6 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
         ],
       },
     },
-    mockFns: defaultMockFns,
   },
   {
     id: 'Test 1',
@@ -255,7 +253,7 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
                         unitPrice: 5,
                       },
                     ],
-                    id: 'test-id-123-123-123',
+                    id: 'test-msg-id',
                   },
                 ],
                 clicks: [],
@@ -271,7 +269,6 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
         ],
       },
     },
-    mockFns: defaultMockFns,
   },
   {
     id: 'Test 2',
@@ -456,6 +453,5 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
         ],
       },
     },
-    mockFns: defaultMockFns,
   },
 ];

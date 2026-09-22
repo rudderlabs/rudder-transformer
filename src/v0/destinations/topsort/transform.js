@@ -21,19 +21,21 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const { processPurchaseEventUtility } = require('./purchase');
 const { processImpressionsAndClicksUtility } = require('./impressions-and-clicks');
 
-const processTopsortEvents = (message, { Config }, finalPayloads) => {
+/**
+ * Turn one RudderStack message into the Topsort events it maps to.
+ *
+ * Returns `[{ event, topsortPayload }]` — one entry per Topsort event, since an
+ * impression or click carrying a `products` array fans out to one event per product.
+ * `event` is the destination array the payload belongs in: impressions, clicks or
+ * purchases.
+ */
+const buildTopsortEvents = (message, { Config }) => {
   const { topsortEvents } = Config;
   const { event, properties } = message;
   const { products } = properties;
 
   // Parse Topsort event mappings
-  const mappedEventName = getMappedEventName(getHashFromArray(topsortEvents), event);
-
-  if (!mappedEventName) {
-    throw new InstrumentationError("Event not mapped in 'topsortEvents'. Dropping the event.");
-  }
-
-  const topsortEventName = mappedEventName;
+  const topsortEventName = getMappedEventName(getHashFromArray(topsortEvents), event);
 
   // Construct base and placement payloads
   const basePayload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
@@ -41,7 +43,6 @@ const processTopsortEvents = (message, { Config }, finalPayloads) => {
   const commonArgs = {
     basePayload,
     topsortEventName,
-    finalPayloads,
     products,
     message,
     isProductArrayAvailable:
@@ -54,22 +55,18 @@ const processTopsortEvents = (message, { Config }, finalPayloads) => {
       message,
       mappingConfig[ConfigCategory.PLACEMENT.name],
     );
-    processImpressionsAndClicksUtility.processImpressionsAndClicks({
+    return processImpressionsAndClicksUtility.processImpressionsAndClicks({
       ...commonArgs,
       placementPayload, // Only pass placementPayload for impressions and clicks
     });
-  } else if (topsortEventName === 'purchases') {
-    processPurchaseEventUtility.processPurchaseEvent({
-      ...commonArgs,
-    });
-  } else {
-    throw new InstrumentationError(`Event not mapped: ${topsortEventName}`);
   }
-
-  return finalPayloads;
+  if (topsortEventName === 'purchases') {
+    return processPurchaseEventUtility.processPurchaseEvent(commonArgs);
+  }
+  throw new InstrumentationError(`Event not mapped: ${topsortEventName}`);
 };
 
-const processEvent = (message, destination, finalPayloads) => {
+const validateEvent = (message, destination) => {
   // Check for missing API Key or missing Advertiser ID
   if (!destination.Config.apiKey) {
     throw new ConfigurationError('API Key is missing. Aborting message.', 400);
@@ -84,8 +81,14 @@ const processEvent = (message, destination, finalPayloads) => {
   if (messageType !== 'track') {
     throw new InstrumentationError('Only "track" events are supported. Dropping event.', 400);
   }
+};
 
-  processTopsortEvents(message, destination, finalPayloads);
+const processEvent = (message, destination, finalPayloads) => {
+  validateEvent(message, destination);
+
+  buildTopsortEvents(message, destination).forEach(({ event, topsortPayload }) => {
+    finalPayloads[event].push(topsortPayload);
+  });
 };
 
 // Process function that is called per event
@@ -155,4 +158,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return [successResponses, ...failureResponses];
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest, buildTopsortEvents, validateEvent };

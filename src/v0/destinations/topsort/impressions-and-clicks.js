@@ -1,10 +1,10 @@
 const { ConfigCategory, mappingConfig } = require('./config');
-const { getItemPayloads, addFinalPayload } = require('./utils');
-const { constructPayload, generateUUID } = require('../../util');
+const { getItemPayloads } = require('./utils');
+const { constructPayload } = require('../../util');
 
 const processImpressionsAndClicksUtility = {
   // Create event data object
-  createEventData(basePayload, placementPayload, itemPayload, event) {
+  createEventData(basePayload, placementPayload, itemPayload, event, id) {
     return {
       topsortPayload: {
         ...basePayload,
@@ -12,83 +12,68 @@ const processImpressionsAndClicksUtility = {
           ...placementPayload,
           ...itemPayload,
         },
-        id: generateUUID(),
+        id,
       },
       event,
     };
   },
 
   // Process events with a product array
-  processProductArray({
-    products,
-    basePayload,
-    placementPayload,
-    topsortEventName,
-    finalPayloads,
-  }) {
+  processProductArray({ products, basePayload, placementPayload, topsortEventName, message }) {
     const itemPayloads = getItemPayloads(products, mappingConfig[ConfigCategory.ITEM.name]);
-    itemPayloads.forEach((itemPayload) => {
-      const eventData = this.createEventData(
+    // One message fans out to one event per product, so the messageId alone would
+    // repeat across them. Topsort dedupes on `id`, so suffix with the product's
+    // index to keep each event distinct while staying stable across retries.
+    return itemPayloads.map((itemPayload, index) =>
+      this.createEventData(
         basePayload,
         placementPayload,
         itemPayload,
         topsortEventName,
-      );
-      addFinalPayload(eventData, finalPayloads);
-    });
+        `${message.messageId}-${index}`,
+      ),
+    );
   },
 
   // Process events with a single product
-  processSingleProduct({
-    basePayload,
-    placementPayload,
-    message,
-    topsortEventName,
-    finalPayloads,
-  }) {
+  processSingleProduct({ basePayload, placementPayload, message, topsortEventName }) {
     const itemPayload = constructPayload(message, mappingConfig[ConfigCategory.ITEM.name]);
-    const eventData = this.createEventData(
-      basePayload,
-      placementPayload,
-      itemPayload,
-      topsortEventName,
-    );
-
-    // Ensure messageId is used instead of generating a UUID for single product events
-    eventData.topsortPayload.id = message.messageId;
-
-    // Add final payload with appropriate ID and other headers
-    addFinalPayload(eventData, finalPayloads);
+    return [
+      this.createEventData(
+        basePayload,
+        placementPayload,
+        itemPayload,
+        topsortEventName,
+        message.messageId,
+      ),
+    ];
   },
 
   processImpressionsAndClicks({
     isProductArrayAvailable,
     basePayload,
     topsortEventName,
-    finalPayloads,
     products,
     message,
     placementPayload,
   }) {
     if (isProductArrayAvailable) {
       // If product array is available, process the event with multiple products
-      this.processProductArray({
+      return this.processProductArray({
         basePayload,
         topsortEventName,
-        finalPayloads,
         products,
-        placementPayload,
-      });
-    } else {
-      // Otherwise, process the event with a single product
-      this.processSingleProduct({
-        basePayload,
-        topsortEventName,
-        finalPayloads,
         message,
         placementPayload,
       });
     }
+    // Otherwise, process the event with a single product
+    return this.processSingleProduct({
+      basePayload,
+      topsortEventName,
+      message,
+      placementPayload,
+    });
   },
 };
 

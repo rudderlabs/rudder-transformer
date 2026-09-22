@@ -23,8 +23,9 @@
       "destKey": "order_id"
     },
     {
-      "sourceKeys": ["context.traits.email", "traits.email", "properties.email"],
-      "destKey": "email"
+      "sourceKeys": "emailOnly",
+      "destKey": "email",
+      "sourceFromGenericMap": true
     },
     { "sourceKeys": "userId", "destKey": "user_id" },
     {

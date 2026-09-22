@@ -103,7 +103,7 @@ describe('EverflowIntegration', () => {
         adv_event_id: 'advertiser-event',
         event_name: 'Order Completed',
         order_id: 'order-1',
-        email: 'user@example.com',
+        email: 'trait@example.com',
         user_id: 'user-1',
         user_ip: '203.0.113.1',
         user_agent: 'Test Agent',

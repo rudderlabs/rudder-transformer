@@ -94,7 +94,7 @@ export const data: RouterTestData[] = [
               adv_event_id: 'advertiser-event-1',
               event_name: 'Order Completed & Verified',
               order_id: 'order-1',
-              email: 'user@example.com',
+              email: 'fallback@example.com',
               user_id: 'user-1',
               user_ip: '203.0.113.1',
               user_agent: 'Test Agent/1.0',

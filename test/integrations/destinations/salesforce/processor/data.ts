@@ -1,4 +1,172 @@
 import { authHeader1, authHeader2, secret2 } from '../maskedSecrets';
+
+// Cases for the "Map Rudder Properties to Salesforce Properties" switch. The dashboard saves
+// it as `mapProperties`; `mapProperty` is the older name that API-written configs may carry.
+const legacyDestination = (config: Record<string, unknown>) => ({
+  Config: {
+    initialAccessToken: 'dummyInitialAccessToken',
+    password: 'dummyPassword1',
+    userName: 'testsalesforce1453@gmail.com',
+    ...config,
+  },
+  DestinationDefinition: {
+    DisplayName: 'Salesforce',
+    ID: '1T96GHZ0YZ1qQSLULHCoJkow9KC',
+    Name: 'SALESFORCE',
+  },
+  Enabled: true,
+  ID: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
+  Name: 'tst',
+  Transformations: [],
+});
+
+const v2Destination = (config: Record<string, unknown>) => ({
+  Config: { rudderAccountId: 'dummyRudderAccountId', ...config },
+  DestinationDefinition: {
+    DisplayName: 'Salesforce V2',
+    ID: '2ce3kzTNnSVpMXnYQtgmmWjWnQj',
+    Name: 'SALESFORCE_OAUTH',
+  },
+  Enabled: true,
+  ID: '2ce3o8tPHUhvxkiQdTfTbomFMyk',
+  Name: 'Test SF V2',
+  Transformations: [],
+});
+
+const v2Metadata = { secret: { access_token: secret2, instance_url: 'https://dummyurl.com' } };
+
+const identify = (traits: Record<string, unknown>, context: Record<string, unknown> = {}) => ({
+  type: 'identify',
+  userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+  traits,
+  context: { externalId: [{ type: 'Salesforce-Lead', id: 'sf-lead-id' }], ...context },
+});
+
+const restCall = (endpoint: string, authorization: string, json: Record<string, unknown>) => ({
+  version: '1',
+  type: 'REST',
+  method: 'POST',
+  endpoint,
+  headers: { 'Content-Type': 'application/json', Authorization: authorization },
+  params: {},
+  userId: '',
+  body: { JSON: json, XML: {}, JSON_ARRAY: {}, FORM: {} },
+  files: {},
+});
+
+const mappingSwitchCase = ({
+  description,
+  destination,
+  message,
+  expected,
+  metadata,
+}: {
+  description: string;
+  destination: Record<string, unknown>;
+  message: Record<string, unknown>;
+  expected: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+}) => ({
+  name: 'salesforce',
+  description,
+  feature: 'processor',
+  module: 'destination',
+  version: 'v0',
+  input: { request: { body: [{ destination, message, ...(metadata && { metadata }) }] } },
+  output: {
+    response: {
+      status: 200,
+      body: [{ statusCode: 200, output: expected, ...(metadata && { metadata }) }],
+    },
+  },
+});
+
+// Traits in RudderStack shape, so a mapped payload and a verbatim one differ on every key.
+const rudderTraits = {
+  email: 'peter.gibbons@initech.com',
+  firstName: 'Peter',
+  lastName: 'Gibbons',
+  company: 'Initech',
+  plan: 'pro',
+};
+const mappedTraits = {
+  Email: 'peter.gibbons@initech.com',
+  FirstName: 'Peter',
+  LastName: 'Gibbons',
+  Company: 'Initech',
+  plan__c: 'pro',
+};
+// Traits already carrying Salesforce API names, which mapping would suffix with __c.
+const apiNameTraits = { FirstName: 'Peter', LastName: 'Gibbons', Custom_Field__c: 'custom' };
+
+const legacyLeadEndpoint =
+  'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/sf-lead-id?_HttpMethod=PATCH';
+
+const mappingSwitchCases = [
+  mappingSwitchCase({
+    description: 'mapProperties false sends traits verbatim',
+    destination: legacyDestination({ mapProperties: false }),
+    message: identify(apiNameTraits),
+    expected: restCall(legacyLeadEndpoint, authHeader1, apiNameTraits),
+  }),
+  mappingSwitchCase({
+    description: 'mapProperties false wins over mapProperty true',
+    destination: legacyDestination({ mapProperties: false, mapProperty: true }),
+    message: identify(rudderTraits),
+    expected: restCall(legacyLeadEndpoint, authHeader1, rudderTraits),
+  }),
+  mappingSwitchCase({
+    description: 'mapProperties true wins over mapProperty false',
+    destination: legacyDestination({ mapProperties: true, mapProperty: false }),
+    message: identify(rudderTraits),
+    expected: restCall(legacyLeadEndpoint, authHeader1, mappedTraits),
+  }),
+  mappingSwitchCase({
+    description: 'mapProperties false sends verbatim traits to the converted Contact',
+    destination: legacyDestination({ mapProperties: false, useContactId: true }),
+    message: {
+      type: 'identify',
+      userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+      traits: { Email: 'converted.lead@initech.com', Custom_Field__c: 'custom' },
+      context: { traits: { email: 'converted.lead@initech.com' } },
+    },
+    expected: restCall(
+      'https://ap15.salesforce.com/services/data/v50.0/sobjects/Contact/003convertedContact?_HttpMethod=PATCH',
+      authHeader1,
+      { Email: 'converted.lead@initech.com', Custom_Field__c: 'custom' },
+    ),
+  }),
+  mappingSwitchCase({
+    description: 'mapProperties false creates a Lead without the n/a defaults',
+    destination: legacyDestination({ mapProperties: false }),
+    message: {
+      type: 'identify',
+      userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+      traits: { Email: 'new.lead@initech.com', Custom_Field__c: 'custom' },
+      context: { traits: { email: 'new.lead@initech.com' } },
+    },
+    expected: restCall(
+      'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
+      authHeader1,
+      {
+        Email: 'new.lead@initech.com',
+        Custom_Field__c: 'custom',
+      },
+    ),
+  }),
+  mappingSwitchCase({
+    description: 'Salesforce V2: mapProperties false sends traits verbatim',
+    destination: v2Destination({ mapProperties: false }),
+    message: identify(apiNameTraits),
+    metadata: v2Metadata,
+    expected: restCall(
+      'https://dummyurl.com/services/data/v50.0/sobjects/Lead/sf-lead-id?_HttpMethod=PATCH',
+      authHeader2,
+      apiNameTraits,
+    ),
+  }),
+];
+
 export const data = [
   {
     name: 'salesforce',
@@ -1015,139 +1183,6 @@ export const data = [
   },
   {
     name: 'salesforce',
-    description: 'Test 7: mapping off under the mapProperties key the dashboard saves',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            destination: {
-              Config: {
-                initialAccessToken: 'dummyInitialAccessToken',
-                password: 'dummyPassword1',
-                userName: 'testsalesforce1453@gmail.com',
-                mapProperties: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Salesforce',
-                ID: '1T96GHZ0YZ1qQSLULHCoJkow9KC',
-                Name: 'SALESFORCE',
-              },
-              Enabled: true,
-              ID: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
-              Name: 'tst',
-              Transformations: [],
-            },
-            message: {
-              anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                ip: '0.0.0.0',
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                traits: {
-                  Phone: '570-690-4150',
-                  Rating: 'Hot',
-                  Title: 'VP of Derp',
-                  FirstName: 'Peter',
-                  LastName: 'Gibbons',
-                  PostalCode: '94115',
-                  City: 'east greenwich',
-                  Country: 'USA',
-                  State: 'California',
-                  Street: '19123 forest lane',
-                  Company: 'Initech',
-                  Custom_Field__c: 'custom',
-                },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-                externalId: [
-                  {
-                    type: 'Salesforce-Lead',
-                    id: 'sf-contact-id',
-                  },
-                ],
-              },
-              integrations: {
-                All: true,
-              },
-              messageId: 'f19c35da-e9de-4c6e-b6e5-9e60cccc12c8',
-              originalTimestamp: '2020-01-27T12:20:55.301Z',
-              receivedAt: '2020-01-27T17:50:58.657+05:30',
-              request_ip: '14.98.244.60',
-              sentAt: '2020-01-27T12:20:56.849Z',
-              timestamp: '2020-01-27T17:50:57.109+05:30',
-              type: 'identify',
-              userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
-            },
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            statusCode: 200,
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint:
-                'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/sf-contact-id?_HttpMethod=PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: authHeader1,
-              },
-              params: {},
-              userId: '',
-              body: {
-                JSON: {
-                  Phone: '570-690-4150',
-                  Rating: 'Hot',
-                  Title: 'VP of Derp',
-                  FirstName: 'Peter',
-                  LastName: 'Gibbons',
-                  PostalCode: '94115',
-                  City: 'east greenwich',
-                  Country: 'USA',
-                  State: 'California',
-                  Street: '19123 forest lane',
-                  Company: 'Initech',
-                  Custom_Field__c: 'custom',
-                },
-                XML: {},
-                JSON_ARRAY: {},
-                FORM: {},
-              },
-              files: {},
-            },
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'salesforce',
     description: 'Test 8',
     feature: 'processor',
     module: 'destination',
@@ -1860,4 +1895,5 @@ export const data = [
       },
     },
   },
+  ...mappingSwitchCases,
 ];

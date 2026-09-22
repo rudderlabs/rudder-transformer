@@ -15,15 +15,15 @@ This transformer handles Salesforce CRM integration for creating and updating Sa
 
 Sourced from `schema.json` and `ui-config.json` in `rudder-integrations-config`. Only configurations used in transformer code via `destination.Config` are listed:
 
-| Config Key           | Type    | Default | Used By               | Description                                                                                                  |
-| -------------------- | ------- | ------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `userName`           | string  | —       | SALESFORCE only       | Salesforce username for legacy auth                                                                          |
-| `password`           | string  | —       | SALESFORCE only       | Salesforce password for legacy auth                                                                          |
-| `initialAccessToken` | string  | —       | SALESFORCE only       | Salesforce security token for legacy auth                                                                    |
-| `sandbox`            | boolean | `false` | SALESFORCE only       | Use sandbox token endpoint (`test.salesforce.com`)                                                           |
-| `mapProperties`      | boolean | `true`  | Both                  | Map RudderStack traits to standard Salesforce fields via config JSONs. When disabled, traits are sent as-is. |
-| `useContactId`       | boolean | `false` | Both                  | When a Lead is converted, use the `ConvertedContactId` instead of the Lead ID                                |
-| `rudderAccountId`    | string  | —       | SALESFORCE_OAUTH only | OAuth account identifier                                                                                     |
+| Config Key           | Type    | Default | Used By               | Description                                                                                                                                       |
+| -------------------- | ------- | ------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `userName`           | string  | —       | SALESFORCE only       | Salesforce username for legacy auth                                                                                                               |
+| `password`           | string  | —       | SALESFORCE only       | Salesforce password for legacy auth                                                                                                               |
+| `initialAccessToken` | string  | —       | SALESFORCE only       | Salesforce security token for legacy auth                                                                                                         |
+| `sandbox`            | boolean | `false` | SALESFORCE only       | Use sandbox token endpoint (`test.salesforce.com`)                                                                                                |
+| `mapProperties`      | boolean | `true`  | Both                  | Map RudderStack traits to standard Salesforce fields via config JSONs. When disabled, traits are sent as-is. `mapProperty` is read as a fallback. |
+| `useContactId`       | boolean | `false` | Both                  | When a Lead is converted, use the `ConvertedContactId` instead of the Lead ID                                                                     |
+| `rudderAccountId`    | string  | —       | SALESFORCE_OAUTH only | OAuth account identifier                                                                                                                          |
 
 ### Implementation
 
@@ -83,7 +83,7 @@ When `useContactId` is enabled and a Lead has been converted, the transformer au
 
 #### Custom Field Mapping
 
-For Lead and Contact objects, traits that don't match standard Salesforce fields (and aren't in the ignore list) are automatically mapped as custom fields with `__c` suffix.
+When `mapProperties` is enabled, Lead and Contact traits that don't match standard Salesforce fields (and aren't in the ignore list) are mapped as custom fields with a `__c` suffix. With it disabled, traits keep their names.
 
 #### SOQL Injection Prevention
 
@@ -126,7 +126,7 @@ Throttling cost per identify event: **3 units** (defined in `db-config.json`).
 
 #### Already-delivered data replay
 
-**Safe**. Identify events are idempotent upserts — replaying them will overwrite fields with the same values. However, note that the lookup + update is not atomic, so concurrent replays of the same record could cause race conditions.
+**Safe** while the transformation and the destination config are unchanged. Identify events are idempotent upserts — replaying them will overwrite fields with the same values. A replay after `mapProperties` changes builds a different payload. However, note that the lookup + update is not atomic, so concurrent replays of the same record could cause race conditions.
 
 ### Multiplexing
 

@@ -6,8 +6,9 @@ import {
   getOperationAudienceId,
   populateIdentifiersForRecordEvent,
 } from './util';
-import { API_VERSION } from './config';
 import stats from '../../../util/stats';
+
+const API_VERSION = 'v25';
 
 const accessToken = generateRandomString();
 const body = {

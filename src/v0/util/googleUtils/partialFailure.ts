@@ -18,7 +18,7 @@
  *
  * Refs:
  * - https://developers.google.com/google-ads/api/docs/best-practices/partial-failures
- * - https://github.com/googleapis/googleapis/blob/master/google/ads/googleads/v23/errors/errors.proto
+ * - https://github.com/googleapis/googleapis/blob/master/google/ads/googleads/v25/errors/errors.proto
  */
 
 type FieldPathElement = {
@@ -37,7 +37,7 @@ type GoogleAdsError = {
 };
 
 type GoogleAdsFailure = {
-  /** e.g. `type.googleapis.com/google.ads.googleads.v23.errors.GoogleAdsFailure` */
+  /** e.g. `type.googleapis.com/google.ads.googleads.v25.errors.GoogleAdsFailure` */
   '@type'?: string;
   errors?: GoogleAdsError[];
   requestId?: string;
@@ -152,7 +152,7 @@ export const parsePartialFailure = (
  * are not what we actually observe on this destination, and widening the set is a behaviour
  * change for events that are being delivered fine today.
  *
- * Ref - https://github.com/googleapis/googleapis/blob/master/google/ads/googleads/v23/errors/internal_error.proto
+ * Ref - https://github.com/googleapis/googleapis/blob/master/google/ads/googleads/v25/errors/internal_error.proto
  */
 const isTransientError = (error: GoogleAdsError): boolean =>
   error?.errorCode?.internalError === 'INTERNAL_ERROR';

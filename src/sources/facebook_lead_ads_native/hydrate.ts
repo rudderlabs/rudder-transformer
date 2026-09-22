@@ -55,7 +55,7 @@ type APIResponse = {
   statusCode: number;
 } & ({ data: FacebookSuccessResponse } | { error: string });
 
-const FACEBOOK_GRAPH_API_URL = 'https://graph.facebook.com/v24.0';
+const FACEBOOK_GRAPH_API_URL = 'https://graph.facebook.com/v25.0';
 
 /**
  * Fetches lead data from Facebook Graph API for a single lead ID

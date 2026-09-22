@@ -15,7 +15,7 @@ import {
 } from './record';
 import { dmRouterData } from './dataManager';
 
-const API_VERSION = 'v23';
+const API_VERSION = 'v25';
 
 const deliveryAccount = {
   id: '',

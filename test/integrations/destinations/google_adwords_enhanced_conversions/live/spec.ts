@@ -19,7 +19,7 @@ const DEST = 'google_adwords_enhanced_conversions';
 //   3. the post-transform hook resolves conversion actions by NAME via `googleAds:searchStream`,
 //      and
 //   4. framework-owned transport uploads to `customers/<id>:uploadConversionAdjustments` on
-//      Google Ads v23.
+//      Google Ads v25.
 //
 // There is deliberately no read-back `verify`. Google Ads exposes no API for reading an uploaded
 // conversion adjustment, and matching against the underlying conversion is asynchronous (hours), so
@@ -203,7 +203,7 @@ export const live = {
   // adjustments simply fail to match any conversion and are discarded on Google's side.
   enabled: true,
   authType: 'oauth',
-  // rudder-auth's v1 route. It answers with `{ access_token }`, which is the key transform.ts reads
+  // rudder-auth's v1 route. It answers with '{ access_token }', which is the key transform.ts reads
   // via getAccessToken.
   oauthVersion: 'v1',
   envOverrides: {

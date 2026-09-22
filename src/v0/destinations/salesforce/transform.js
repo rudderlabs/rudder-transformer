@@ -196,8 +196,10 @@ async function getSalesforceIdFromPayload({ message, destination, metadata }, st
 // Function for handling identify events
 async function processIdentify({ message, destination, metadata }, stateInfo) {
   const { Name } = destination.DestinationDefinition;
-  const mapProperty =
-    destination.Config.mapProperty === undefined ? true : destination.Config.mapProperty;
+  // The dashboard saves this switch as `mapProperties`. `mapProperty` keeps configs written
+  // through the API under the old name working.
+  const mapPropertyConfig = destination.Config.mapProperties ?? destination.Config.mapProperty;
+  const mapProperty = mapPropertyConfig === undefined ? true : mapPropertyConfig;
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, 'traits');
   if (!traits) {

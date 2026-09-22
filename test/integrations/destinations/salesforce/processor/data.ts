@@ -1015,6 +1015,139 @@ export const data = [
   },
   {
     name: 'salesforce',
+    description: 'Test 7: mapping off under the mapProperties key the dashboard saves',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                initialAccessToken: 'dummyInitialAccessToken',
+                password: 'dummyPassword1',
+                userName: 'testsalesforce1453@gmail.com',
+                mapProperties: false,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Salesforce',
+                ID: '1T96GHZ0YZ1qQSLULHCoJkow9KC',
+                Name: 'SALESFORCE',
+              },
+              Enabled: true,
+              ID: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
+              Name: 'tst',
+              Transformations: [],
+            },
+            message: {
+              anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  Phone: '570-690-4150',
+                  Rating: 'Hot',
+                  Title: 'VP of Derp',
+                  FirstName: 'Peter',
+                  LastName: 'Gibbons',
+                  PostalCode: '94115',
+                  City: 'east greenwich',
+                  Country: 'USA',
+                  State: 'California',
+                  Street: '19123 forest lane',
+                  Company: 'Initech',
+                  Custom_Field__c: 'custom',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
+                externalId: [
+                  {
+                    type: 'Salesforce-Lead',
+                    id: 'sf-contact-id',
+                  },
+                ],
+              },
+              integrations: {
+                All: true,
+              },
+              messageId: 'f19c35da-e9de-4c6e-b6e5-9e60cccc12c8',
+              originalTimestamp: '2020-01-27T12:20:55.301Z',
+              receivedAt: '2020-01-27T17:50:58.657+05:30',
+              request_ip: '14.98.244.60',
+              sentAt: '2020-01-27T12:20:56.849Z',
+              timestamp: '2020-01-27T17:50:57.109+05:30',
+              type: 'identify',
+              userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/sf-contact-id?_HttpMethod=PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: authHeader1,
+              },
+              params: {},
+              userId: '',
+              body: {
+                JSON: {
+                  Phone: '570-690-4150',
+                  Rating: 'Hot',
+                  Title: 'VP of Derp',
+                  FirstName: 'Peter',
+                  LastName: 'Gibbons',
+                  PostalCode: '94115',
+                  City: 'east greenwich',
+                  Country: 'USA',
+                  State: 'California',
+                  Street: '19123 forest lane',
+                  Company: 'Initech',
+                  Custom_Field__c: 'custom',
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'salesforce',
     description: 'Test 8',
     feature: 'processor',
     module: 'destination',

@@ -1,35 +1,28 @@
 import {
   abort,
-  perItem,
   type DeliveryContext,
   type DeliverySpec,
-  type ItemVerdict,
   type StatusOverrideMap,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 
-const everflowFailureReason = (ctx: DeliveryContext): string => {
-  const raw = ctx.response;
-  const text = typeof raw === 'string' ? raw.trim() : raw;
-  const hasBody =
-    typeof text === 'string'
-      ? text.length > 0
-      : text !== null &&
-        text !== undefined &&
-        typeof text === 'object' &&
-        Object.keys(text).length > 0;
-
-  if (hasBody) {
-    return typeof text === 'string' ? text : JSON.stringify(text);
+const everflowFailureReason = ({ response, status }: DeliveryContext): string => {
+  let detail = '';
+  if (typeof response === 'string') {
+    detail = response.trim();
+  } else if (Object.keys(response ?? {}).length > 0) {
+    detail = JSON.stringify(response);
   }
 
-  return `Everflow rejected the conversion (status ${ctx.status}); no error detail returned. Check the Everflow conversion report.`;
+  return (
+    detail ||
+    `Everflow rejected the conversion (status ${status}); no error detail returned. Check the Everflow conversion report.`
+  );
 };
 
-const allJobs = (ctx: DeliveryContext, verdict: ItemVerdict) =>
-  perItem(ctx.jobs.map(() => verdict));
-
+// Everflow answers a rejected conversion with a bodyless 204, which the framework would otherwise
+// classify as success along with every other 2xx.
 const statusOverrides: StatusOverrideMap = {
-  204: (ctx) => allJobs(ctx, abort(everflowFailureReason(ctx))),
+  204: (ctx) => abort(everflowFailureReason(ctx)),
 };
 
 export const everflowDelivery: DeliverySpec = {

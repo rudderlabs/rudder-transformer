@@ -1,4 +1,3 @@
-export const DESTINATION = 'EVERFLOW';
 export const MAX_BATCH_SIZE = 1;
 export const HTTP_METHOD = 'GET';
 

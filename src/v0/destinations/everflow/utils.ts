@@ -1,7 +1,14 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { constructPayload, getValueFromMessage, isAppleFamily, isAndroidFamily } from '../../util';
+import pickBy from 'lodash/pickBy';
+import {
+  constructPayload,
+  getValueFromMessage,
+  isAppleFamily,
+  isAndroidFamily,
+  toUnixTimestamp,
+} from '../../util';
 import mappingConfig from './data/EVERFLOWConfig.json';
-import type { EverflowDestinationConfig, EverflowMessage, EverflowPostbackParams } from './types';
+import type { EverflowDestinationConfig, EverflowMessage } from './types';
 
 type MappingEntry = {
   sourceKeys: string | string[];
@@ -19,6 +26,8 @@ type EverflowMappingConfig = {
 
 const EVERFLOW_MAPPING_CONFIG = mappingConfig as EverflowMappingConfig;
 
+const DECIMAL_AMOUNT_PATTERN = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i;
+
 const isPresent = (value: unknown): boolean =>
   value !== undefined && value !== null && value !== '';
 
@@ -32,15 +41,12 @@ const resolveAmount = (message: EverflowMessage): number | undefined => {
   if (rawAmount === undefined) {
     return undefined;
   }
-  if (
-    (typeof rawAmount !== 'string' && typeof rawAmount !== 'number') ||
-    (typeof rawAmount === 'string' &&
-      !/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(rawAmount.trim()))
-  ) {
-    throw new InstrumentationError('Everflow amount must be a valid decimal number.');
-  }
 
-  const amount = Number(rawAmount);
+  const amount =
+    typeof rawAmount === 'number' ||
+    (typeof rawAmount === 'string' && DECIMAL_AMOUNT_PATTERN.test(rawAmount.trim()))
+      ? Number(rawAmount)
+      : NaN;
   if (!Number.isFinite(amount)) {
     throw new InstrumentationError('Everflow amount must be a valid decimal number.');
   }
@@ -61,57 +67,59 @@ const resolveTimestamp = (message: EverflowMessage): number | undefined => {
   if (typeof rawTimestamp !== 'string' && typeof rawTimestamp !== 'number') {
     return undefined;
   }
-  const milliseconds = new Date(rawTimestamp).getTime();
-  return Number.isNaN(milliseconds) ? undefined : Math.floor(milliseconds / 1000);
+  const seconds = toUnixTimestamp(rawTimestamp);
+  return Number.isNaN(seconds) ? undefined : seconds;
 };
 
 const resolveMobileParams = (
   message: EverflowMessage,
   explicitAndroidId: unknown,
-): Partial<EverflowPostbackParams> => {
+): Record<string, unknown> => {
   const deviceType = optionalValue(message, 'context.device.type');
-  const advertisingId = optionalValue(message, 'context.device.advertisingId');
-  const androidDeviceId = optionalValue(message, 'context.device.id');
   const appleDevice = isAppleFamily(deviceType);
   const androidDevice = isAndroidFamily(deviceType);
+  if (!appleDevice && !androidDevice) {
+    // `android_id` already carries any explicitly mapped value, so there is nothing to add.
+    return {};
+  }
 
+  const advertisingId = optionalValue(message, 'context.device.advertisingId');
+  if (appleDevice) {
+    return { idfa: advertisingId };
+  }
   return {
-    idfa: appleDevice ? advertisingId : undefined,
-    google_aid: androidDevice ? advertisingId : undefined,
-    android_id: explicitAndroidId ?? (androidDevice ? androidDeviceId : undefined),
+    google_aid: advertisingId,
+    android_id: explicitAndroidId ?? optionalValue(message, 'context.device.id'),
   };
 };
 
 export const buildEverflowParams = (
   message: EverflowMessage,
   config: Pick<EverflowDestinationConfig, 'networkId' | 'verificationToken'>,
-): EverflowPostbackParams => {
+): Record<string, unknown> => {
   const mappedParams = constructPayload(
     message,
     EVERFLOW_MAPPING_CONFIG.standardMappings,
-  ) as Partial<EverflowPostbackParams>;
+  ) as Record<string, unknown>;
   if (mappedParams.transaction_id === undefined) {
     throw new InstrumentationError(
       'Everflow transaction_id is required in properties.transactionId, properties.transaction_id, or properties.tid.',
     );
   }
 
-  const params: EverflowPostbackParams = {
+  // `constructPayload` never emits empty values, so only the optional block below needs filtering.
+  return {
     nid: config.networkId,
     ...mappedParams,
-  } as EverflowPostbackParams;
-  const optionalParams: Partial<EverflowPostbackParams> = {
-    verification_token: isPresent(config.verificationToken) ? config.verificationToken : undefined,
-    amount: resolveAmount(message),
-    currency: resolveCurrency(message),
-    timestamp: resolveTimestamp(message),
-    ...resolveMobileParams(message, mappedParams.android_id),
+    ...pickBy(
+      {
+        verification_token: config.verificationToken,
+        amount: resolveAmount(message),
+        currency: resolveCurrency(message),
+        timestamp: resolveTimestamp(message),
+        ...resolveMobileParams(message, mappedParams.android_id),
+      },
+      isPresent,
+    ),
   };
-
-  Object.entries(optionalParams).forEach(([key, value]) => {
-    if (isPresent(value)) {
-      params[key] = value;
-    }
-  });
-  return params;
 };

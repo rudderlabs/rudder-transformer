@@ -10,6 +10,14 @@ const transactionId = (ctx: RunContext): string => {
   return id;
 };
 
+const trackEvent = (ctx: RunContext, id: string, suffix: string) => ({
+  type: 'track',
+  messageId: `${ctx.runId}-${suffix}`,
+  timestamp: ctx.now(),
+  integrations: { All: true },
+  properties: { transactionId: id },
+});
+
 export const live = {
   enabled: true,
   authType: 'apiKey',
@@ -24,15 +32,21 @@ export const live = {
           name: 'deliver conversion',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
-          seed: (ctx) => ({
-            type: 'track',
-            messageId: `${ctx.runId}-conversion`,
-            timestamp: ctx.now(),
-            integrations: { All: true },
-            properties: {
-              transactionId: transactionId(ctx),
-            },
-          }),
+          seed: (ctx) => trackEvent(ctx, transactionId(ctx), 'conversion'),
+        },
+      ],
+    },
+    {
+      id: 'everflow-random-transaction-rejected',
+      description: 'A random transaction ID exercises Everflow HTTP 204 rejection handling',
+      steps: [
+        {
+          stepType: 'pipeline',
+          name: 'reject random transaction ID',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          expectedFailure: { items: [0] },
+          seed: (ctx) => trackEvent(ctx, ctx.identity('random-transaction'), 'random-transaction'),
         },
       ],
     },

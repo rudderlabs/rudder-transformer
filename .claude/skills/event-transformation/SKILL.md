@@ -146,6 +146,55 @@ Every path in a mapping file is a claim that the partner reads that field from t
 "look related" ships wrong values to the partner with nothing failing. Map only what the spec
 or the partner's docs name, and let the field be absent otherwise.
 
+### Device and app identifiers have one canonical source each
+
+The mirror-image mistake is inventing a RudderStack-side path for a value the event spec
+already places. Two identifiers account for most of it:
+
+| The partner is asking for                               | Read it from                   |
+| ------------------------------------------------------- | ------------------------------ |
+| A mobile advertising id — IDFA, GAID, AAID, MADID, RDID | `context.device.advertisingId` |
+| The app / bundle / package identifier                   | `context.app.namespace`        |
+
+**19 destinations read `context.device.advertisingId`. None read `properties.google_aid`,
+`properties.googleAid` or `properties.idfa`** — the partner's spelling for the field changes
+constantly, the path we read it from does not. A `properties.*` alias for either identifier
+invents a second source contract for a value the SDKs already populate, and the only way a
+customer satisfies it is by sending the same value twice.
+
+**The device type picks the *destination* field, not the source path.** IDFA and GAID are the
+same path; which partner field it lands in is decided by the OS:
+
+- `cdk/v2/destinations/reddit/procWorkflow.yaml:44-45` — `$.isAppleFamily(os)` gates `idfa`,
+  `os === "android"` gates `aaid`, both off the one path.
+- `v0/destinations/impact/util.js:32,35` — `AppleIfa` vs `GoogAId` from a single
+  `get(message, 'context.device.advertisingId')`.
+- `v0/destinations/af/transform.js:75,78` — `idfa` vs `advertising_id`.
+- `singular` splits it across per-platform mapping files instead
+  (`SINGULARIosEventConfig.json` → `idfa`, `SINGULARAndroidEventConfig.json` → `aifa`).
+
+**Precedent that is not the pattern:** `adj/data/ADJUSTTrackConfig.json` maps both `idfa` and
+`gps_adid` from the path with no OS gate at all. That works because Adjust ignores the one that
+can't apply — don't copy it unless the partner documents the same tolerance.
+
+**Where a fallback chain exists, `context.device.advertisingId` is always last in it** — 5 of
+the 19: `context.idfa` / `context.aaid` first (`blueshift`, `revenue_cat`,
+`branch/transform.js:86,91`), `properties.adId` first (`snapchat_conversion`), and a `traits.*`
+chain first (`openai_ads/data/OPENAI_ADSConfig.json:106-111`). Each of those is an older
+customer contract being preserved, not a shape to start from. A new destination maps the
+canonical path alone.
+
+The app identifier is the same story: 9 destinations read `context.app.namespace`, and
+`tiktok_ads` is the only one that puts `properties.appId` / `properties.app_id` in front of it
+(`TikTokTrackV2.json:203`).
+
+These counts move as destinations are added. To recompute:
+
+```bash
+git grep -lE "device(\??\.)advertisingId" -- src/v0/destinations src/cdk/v2/destinations \
+  | grep -viE "test|\.md$" | sed -E 's|.*destinations/([^/]+)/.*|\1|' | sort -u | wc -l
+```
+
 ## Presence Checks: Know What The Shared Helpers Actually Do
 
 Two helpers in `src/v0/util/index.js` are routinely misapplied. Both are one-liners over

@@ -1,4 +1,4 @@
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError, isDefinedNotNullNotEmpty } from '@rudderstack/integrations-lib';
 import pickBy from 'lodash/pickBy';
 import {
   constructPayload,
@@ -28,12 +28,9 @@ const EVERFLOW_MAPPING_CONFIG = mappingConfig as EverflowMappingConfig;
 
 const DECIMAL_AMOUNT_PATTERN = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i;
 
-const isPresent = (value: unknown): boolean =>
-  value !== undefined && value !== null && value !== '';
-
 const optionalValue = (message: EverflowMessage, paths: string | readonly string[]): unknown => {
   const value = getValueFromMessage(message, paths);
-  return isPresent(value) ? value : undefined;
+  return isDefinedNotNullNotEmpty(value) ? value : undefined;
 };
 
 const resolveAmount = (message: EverflowMessage): number | undefined => {
@@ -114,7 +111,7 @@ export const buildEverflowParams = (
         timestamp: resolveTimestamp(message),
         ...resolveMobileParams(message, mappedParams.android_id),
       },
-      isPresent,
+      isDefinedNotNullNotEmpty,
     ),
   };
 };

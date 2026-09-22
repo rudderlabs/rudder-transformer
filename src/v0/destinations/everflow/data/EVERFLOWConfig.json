@@ -2,7 +2,8 @@
   "standardMappings": [
     {
       "sourceKeys": ["properties.transactionId", "properties.transaction_id", "properties.tid"],
-      "destKey": "transaction_id"
+      "destKey": "transaction_id",
+      "required": true
     },
     {
       "sourceKeys": ["properties.coupon", "properties.couponCode", "properties.coupon_code"],

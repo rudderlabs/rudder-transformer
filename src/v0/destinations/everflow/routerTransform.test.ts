@@ -233,7 +233,9 @@ describe('EverflowIntegration', () => {
           properties: {},
         }),
       ),
-    ).toThrow('Everflow transaction_id is required');
+    ).toThrow(
+      'Missing required value from ["properties.transactionId","properties.transaction_id","properties.tid"]',
+    );
   });
 
   it.each([

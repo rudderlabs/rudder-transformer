@@ -101,11 +101,6 @@ export const buildEverflowParams = (
     message,
     EVERFLOW_MAPPING_CONFIG.standardMappings,
   ) as Record<string, unknown>;
-  if (mappedParams.transaction_id === undefined) {
-    throw new InstrumentationError(
-      'Everflow transaction_id is required in properties.transactionId, properties.transaction_id, or properties.tid.',
-    );
-  }
 
   // `constructPayload` never emits empty values, so only the optional block below needs filtering.
   return {

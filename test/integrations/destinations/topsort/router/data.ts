@@ -129,10 +129,6 @@ export const data: RouterTestData[] = [
                           id: '235',
                           type: 'product',
                         },
-                        additionalAttribution: {
-                          id: 'a13362',
-                          type: 'product',
-                        },
                         placement: {
                           path: '/category/123',
                           pageSize: 15,
@@ -260,10 +256,6 @@ export const data: RouterTestData[] = [
                           id: '235',
                           type: 'product',
                         },
-                        additionalAttribution: {
-                          id: 'a13362',
-                          type: 'product',
-                        },
                         placement: {
                           path: '/category/123',
                           pageSize: 15,
@@ -384,10 +376,6 @@ export const data: RouterTestData[] = [
                         resolvedBidId: '13841873482r7903r823',
                         entity: {
                           id: '235',
-                          type: 'product',
-                        },
-                        additionalAttribution: {
-                          id: 'a13362',
                           type: 'product',
                         },
                         items: [

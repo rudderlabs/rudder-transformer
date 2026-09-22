@@ -125,10 +125,6 @@ export const trackClicksTestData: ProcessorTestData[] = [
                       id: '235',
                       type: 'product',
                     },
-                    additionalAttribution: {
-                      id: 'a13362',
-                      type: 'product',
-                    },
                     placement: {
                       path: '/categories/dairy',
                       pageSize: 15,
@@ -244,10 +240,6 @@ export const trackClicksTestData: ProcessorTestData[] = [
                       id: '235',
                       type: 'product',
                     },
-                    additionalAttribution: {
-                      id: 'a13362',
-                      type: 'product',
-                    },
                     placement: {
                       path: '/categories/dairy',
                       pageSize: 15,
@@ -263,10 +255,6 @@ export const trackClicksTestData: ProcessorTestData[] = [
                     resolvedBidId: '13841873482r7903r823',
                     entity: {
                       id: '235',
-                      type: 'product',
-                    },
-                    additionalAttribution: {
-                      id: 'a13362',
                       type: 'product',
                     },
                     placement: {
@@ -505,10 +493,6 @@ export const trackClicksTestData: ProcessorTestData[] = [
                       id: '235',
                       type: 'product',
                     },
-                    additionalAttribution: {
-                      id: 'a13362',
-                      type: 'product',
-                    },
                     placement: {
                       path: '/categories/dairy',
                       pageSize: 15,
@@ -524,10 +508,6 @@ export const trackClicksTestData: ProcessorTestData[] = [
                     resolvedBidId: '13841873482r7903r823',
                     entity: {
                       id: '235',
-                      type: 'product',
-                    },
-                    additionalAttribution: {
-                      id: 'a13362',
                       type: 'product',
                     },
                     placement: {

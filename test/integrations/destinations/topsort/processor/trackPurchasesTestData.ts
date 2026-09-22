@@ -120,10 +120,6 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
                       id: '235',
                       type: 'product',
                     },
-                    additionalAttribution: {
-                      id: 'a13362',
-                      type: 'product',
-                    },
                     items: [
                       {
                         productId: '622c6f5d5cf86a4c77358033',
@@ -237,10 +233,6 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
                     resolvedBidId: '13841873482r7903r823',
                     entity: {
                       id: '235',
-                      type: 'product',
-                    },
-                    additionalAttribution: {
-                      id: 'a13362',
                       type: 'product',
                     },
                     items: [
@@ -382,10 +374,6 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
                       id: '235',
                       type: 'product',
                     },
-                    additionalAttribution: {
-                      id: 'a13362',
-                      type: 'product',
-                    },
                     items: [
                       {
                         productId: '622c6f5d5cf86a4c77358033',
@@ -424,10 +412,6 @@ export const trackPurchasesTestData: ProcessorTestData[] = [
                     resolvedBidId: '13841873482r7903r823',
                     entity: {
                       id: '235',
-                      type: 'product',
-                    },
-                    additionalAttribution: {
-                      id: 'a13362',
                       type: 'product',
                     },
                     items: [

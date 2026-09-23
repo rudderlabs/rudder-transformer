@@ -158,4 +158,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return [successResponses, ...failureResponses];
 };
 
-module.exports = { process, processRouterDest, buildTopsortEvents, validateEvent };
+module.exports = { process, processRouterDest, buildTopsortEvents };

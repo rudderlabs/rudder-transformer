@@ -34,8 +34,14 @@ const makeInput = (jobId: number, event: string, properties: Record<string, unkn
     destination,
   }) as never;
 
+// A response's `batchedRequest` is a single request, or an array of them when
+// `combineBatchRequestsWithSameJobIds` folds several chunks back into one response —
+// which happens whenever a chunk boundary falls inside one job's fanned-out products.
 const bodiesOf = (results: any[]) =>
-  results.filter((r) => r.batched).map((r) => r.batchedRequest.body.JSON);
+  results
+    .filter((r) => r.batched)
+    .flatMap((r) => (Array.isArray(r.batchedRequest) ? r.batchedRequest : [r.batchedRequest]))
+    .map((req) => req.body.JSON);
 
 describe('Topsort batching', () => {
   it('splits a group larger than the API cap into several requests', async () => {
@@ -62,6 +68,25 @@ describe('Topsort batching', () => {
 
     expect(bodies.flatMap((b) => b.impressions)).toHaveLength(60);
     bodies.forEach((b) => expect(b.impressions.length).toBeLessThanOrEqual(MAX_BATCH_SIZE));
+  });
+
+  it('caps the request even when the boundary falls inside one job', async () => {
+    // 7 events x 8 products = 56 impressions. The 50th lands mid-way through job 6,
+    // so that job's events straddle two chunks — the case where the framework folds
+    // both requests back into a single response keyed by the shared jobId.
+    const products = Array.from({ length: 8 }, (_, i) => ({ product_id: `p-${i}` }));
+    const inputs = Array.from({ length: 7 }, (_, i) =>
+      makeInput(i, 'Checkout Started', { products }),
+    );
+
+    const results = await processDestinationIntegration(inputs, Integration, {});
+    const bodies = bodiesOf(results);
+
+    expect(bodies.map((b) => b.impressions.length)).toEqual([MAX_BATCH_SIZE, 6]);
+    // Every job is still accounted for exactly once, across the merged response.
+    expect(results.flatMap((r: any) => r.metadata.map((m: any) => m.jobId)).sort()).toEqual([
+      0, 1, 2, 3, 4, 5, 6,
+    ]);
   });
 
   it('sends each event type as its own request', async () => {

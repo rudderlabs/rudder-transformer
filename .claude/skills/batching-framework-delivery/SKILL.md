@@ -16,10 +16,11 @@ For the router-transform half of the framework, see `.claude/skills/batching-fra
 Add a `delivery.ts` only when the destination's response handling genuinely differs:
 
 - a **partial-failure body** — some records rejected inside an otherwise-successful response
-- a **2xx that isn't a success** — either the body carries the failure, or the status itself does
-  (a bodyless `204` meaning rejected beside a `200` meaning accepted). The framework treats the
-  whole 2xx class as success, so an unhandled one is silently reported as delivered: read the
-  partner's docs for what each success-range status means.
+- a **2xx that isn't a success** — either the body carries the failure, or the status itself does,
+  where the partner distinguishes accepted from rejected within the success range. The framework
+  treats the whole 2xx class as success, so an unhandled one is silently reported as delivered:
+  read the partner's docs for what each success-range status means rather than assuming 2xx is
+  uniformly good.
 - **identity-keyed failures** — the response names *which* records failed rather than indexing them
 - a **real auth signal** in the body that should drive token refresh
 
@@ -31,14 +32,15 @@ The framework already throttles 429, retries retryable statuses and aborts the r
 destination whose only real difference is one status declares exactly that one:
 
 ```typescript
-// Good — the framework handles 429/4xx/5xx; only the 204 quirk is ours
+// Good — the framework handles 429/4xx/5xx; only the status this API treats
+// differently is ours
 const statusOverrides: StatusOverrideMap = {
-  204: (ctx) => abort(rejectionReason(ctx)),
+  207: (ctx) => perItem(verdictPerItem(ctx)),
 };
 
 // Bad — three entries restating the default, hiding the one that matters
 const statusOverrides: StatusOverrideMap = {
-  204: (ctx) => abort(rejectionReason(ctx)),
+  207: (ctx) => perItem(verdictPerItem(ctx)),
   429: (ctx) => throttled('rate limited'),
   '4xx': (ctx) => abort('client error'),
   '5xx': (ctx) => retry('server error'),

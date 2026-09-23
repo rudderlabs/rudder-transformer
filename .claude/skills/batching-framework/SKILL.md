@@ -45,7 +45,7 @@ A new destination is:
 **The mapping file is part of that shape, not an optional extra.** Field plucking belongs in
 `data/<DEST_UPPER>Config.json`, read by `constructPayload` — never in a hand-rolled field-path
 constant in `config.ts` (`SOURCE_PATHS`, `FIELD_PATHS`, and the like). `config.ts` holds constants
-the framework itself needs: batch limits, HTTP method, endpoint templates, validation regexes.
+the framework itself needs: batch limits, endpoint templates, validation regexes.
 `.claude/skills/event-transformation/SKILL.md` owns the mapping shape and the reasoning.
 
 The rest of this skill assumes that starting point. The `networkHandler` material below is about
@@ -353,11 +353,6 @@ something to pass it, and don't set `maxPayloadSize`, which measures nothing on 
 Unlike the transport and OAuth gaps elsewhere in this skill set, this one has a correct workaround
 and costs a line, so use the stub rather than blocking on it; defaulting `wrapBody` when `TBody`
 carries no fields is still a worthwhile framework fix if you are in there anyway.
-
-A partner shaped like this often signals rejection through the status rather than a body — a
-bodyless `204` meaning "not accepted" alongside `200` for accepted. Check before assuming the
-framework's 2xx-is-success default fits: see
-`.claude/skills/batching-framework-delivery/SKILL.md#when-you-need-this`.
 
 ### CustomBatchStrategy (for complex batching logic)
 

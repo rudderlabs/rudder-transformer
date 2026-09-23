@@ -33,23 +33,20 @@ A new destination is:
   existing destination — does not apply.
 - **`transformAtV1: router`** in its `rudder-integrations-config` definition. The framework only
   runs on the router path; a definition left on `processor` silently never reaches it.
-- **Shipping `test/integrations/destinations/<dest>/live.ts`.** Component tests assert against
-  mocks, so they cannot catch a payload the partner rejects — an endpoint typo, a renamed field, a
-  required parameter nobody sent. See `.claude/skills/writing-tests/SKILL.md#every-new-destination-gets-livets`
-  for the rule and `.claude/skills/live-integration-test/SKILL.md` for the harness. This is part of
-  the destination, not a follow-up PR.
+- **Shipping `test/integrations/destinations/<dest>/live.ts`** from day one — part of the
+  destination, not a follow-up PR. See
+  `.claude/skills/writing-tests/SKILL.md#every-new-destination-gets-livets` for why, and
+  `.claude/skills/live-integration-test/SKILL.md` for the harness.
 
 `src/v0/destinations/openai_ads/` is the canonical shape — `routerTransform.ts`, `delivery.ts`,
 `types.ts`, `config.ts`, `utils.ts` and `data/OPENAI_ADSConfig.json`. `posthog` and
 `custom_audience` are the same shape without a `delivery.ts`.
 
-**The mapping file is part of that shape, not an optional extra.** A destination's source-field →
-destination-field plucking belongs in `data/<DEST_UPPER>Config.json` and is consumed by
-`constructPayload` — never as a bespoke `SOURCE_PATHS` / `FIELD_PATHS` constant in `config.ts`,
-which forces a hand-written config type and a resolver function per field group. `config.ts` holds
-constants the framework itself needs (batch limits, HTTP method, endpoint templates, regexes).
-See `.claude/skills/event-transformation/SKILL.md` for the mapping shape, `required: true`, and
-`sourceFromGenericMap`.
+**The mapping file is part of that shape, not an optional extra.** Field plucking belongs in
+`data/<DEST_UPPER>Config.json`, read by `constructPayload` — never in a hand-rolled field-path
+constant in `config.ts` (`SOURCE_PATHS`, `FIELD_PATHS`, and the like). `config.ts` holds constants
+the framework itself needs: batch limits, HTTP method, endpoint templates, validation regexes.
+`.claude/skills/event-transformation/SKILL.md` owns the mapping shape and the reasoning.
 
 The rest of this skill assumes that starting point. The `networkHandler` material below is about
 **migrating** an existing destination and is marked as such.
@@ -102,8 +99,7 @@ DeliveryV1Response
 src/v0/destinations/<dest_name>/
 ├── routerTransform.ts        # DestinationIntegration subclass (exported as Integration)
 ├── types.ts                  # Zod schemas, TypeScript types
-├── config.ts                 # Constants the framework needs: batch limits, HTTP method,
-│                             #   endpoint templates, validation regexes — NOT field paths
+├── config.ts                 # Framework-needed constants only — NOT field paths (see above)
 ├── data/<DEST_UPPER>Config.json  # The source→dest field mapping, read by constructPayload
 ├── utils.ts                  # (Optional) Field processing, API helpers
 ├── delivery.ts               # (Optional) the `delivery` spec — only if response handling
@@ -211,7 +207,7 @@ const { apiKey, pixelId } = resolveAccountConfig(this.destination as MyDestinati
 
 ```typescript
 type TransformedEvent<TBody> = {
-  body: TBody; // Individual event payload
+  body: TBody; // Individual event payload — `{}` if the API takes no body (see below)
   endpoint: string; // API endpoint
   endpointPath: string; // REQUIRED. Low-cardinality metrics label (see below)
   method: string; // HTTP method (POST, PUT, DELETE, etc.)
@@ -227,16 +223,9 @@ The framework groups all `TransformedEvent` objects by a composite key of `(endp
 
 ### `endpointPath` Is A Metrics Label, Not The URL
 
-`endpointPath` is **required** (`destinationIntegration/types.ts`) and easy to fill in with the
-resolved endpoint, which is wrong. It is not used to address anything: it travels on
-`batchedRequest.endpointPath` and becomes a **stat tag** on `outgoing_request_latency` and
-`outgoing_request_count`, on the delivery payload-size stats, and the prefix of the delivery error
-message (`src/adapters/network.js`). Whatever you put there becomes a label value on a time
-series — including on a latency histogram, where the bucket count multiplies it.
-
-**Give it a static string naming the logical endpoint** — `'postback'`, `'/events'`, `'/merge'` —
-chosen from a fixed, enumerable set. Never the resolved URL, and never anything derived from the
-event or from destination config:
+**Give `endpointPath` a static string naming the logical endpoint** — `'postback'`, `'/events'`,
+`'/merge'` — chosen from a fixed, enumerable set. Never the resolved URL, and never anything
+derived from the event or from destination config:
 
 ```typescript
 // Good — a fixed label per logical endpoint
@@ -249,10 +238,13 @@ return { ..., endpointPath: message.type === 'track' ? '/track' : '/identify' };
 return { ..., endpointPath: postbackUrl };
 ```
 
-A customer-configured base URL, an audience or account id, or an interpolated event name each
-turn one metric into thousands. Prefer an over-broad label to a precise one: the destination type
-is already a tag, so a single `'postback'` across every request is a perfectly good answer for a
-destination with one endpoint.
+It is **required** (`destinationIntegration/types.ts`) and easy to fill in with the resolved
+endpoint, which is wrong. It addresses nothing: it travels on `batchedRequest.endpointPath` and
+becomes a **stat tag** on `outgoing_request_latency` and `outgoing_request_count`, on the delivery
+payload-size stats, and the prefix of the delivery error message (`src/adapters/network.js`). Each
+distinct value is another time series — and on a latency histogram the bucket count multiplies it.
+Prefer an over-broad label to a precise one: the destination type is already a tag, so a single
+`'postback'` across every request is a fine answer for a destination with one endpoint.
 
 Two consequences of it being observability-only:
 
@@ -260,8 +252,7 @@ Two consequences of it being observability-only:
   *"Observability-only — not part of the grouping key"*). Do not reach for it to keep events
   apart — that is what `internalGroupKey` is for.
 - **The group takes it from whichever payload opened the group.** If it varies across events that
-  otherwise batch together, the value on the emitted request is arbitrary. Another reason to
-  derive it from the endpoint shape rather than the event.
+  otherwise batch together, the value on the emitted request is arbitrary.
 
 ### The `internalGroupKey` Pattern
 
@@ -356,14 +347,17 @@ getBatchStrategy(): BatchStrategy<PostbackPayload> {
 }
 ```
 
-`wrapBody` is non-optional on `ChunkBatchStrategy` even though nothing is wrapped here — the
-`() => ({})` stub is the accepted shape, not an oversight to route around. Don't invent a
-`body`-shaped payload just to have something to pass it, and don't set `maxPayloadSize`: with an
-empty body it measures nothing.
+`wrapBody` is non-optional on `ChunkBatchStrategy` even though nothing is wrapped here. The
+`() => ({})` stub is the accepted shape today — don't invent a `body`-shaped payload just to have
+something to pass it, and don't set `maxPayloadSize`, which measures nothing on an empty body.
+Unlike the transport and OAuth gaps elsewhere in this skill set, this one has a correct workaround
+and costs a line, so use the stub rather than blocking on it; defaulting `wrapBody` when `TBody`
+carries no fields is still a worthwhile framework fix if you are in there anyway.
 
-Note that the batch-invariant rule still holds and does more work here than usual — with
-`maxItems: 1` every request is its own batch, but per-event values in `params` mean the composite
-grouping key differs for every event, which is exactly what you want.
+A partner shaped like this often signals rejection through the status rather than a body — a
+bodyless `204` meaning "not accepted" alongside `200` for accepted. Check before assuming the
+framework's 2xx-is-success default fits: see
+`.claude/skills/batching-framework-delivery/SKILL.md#when-you-need-this`.
 
 ### CustomBatchStrategy (for complex batching logic)
 

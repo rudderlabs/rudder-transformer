@@ -102,13 +102,14 @@ the scenario perform one valid delivery first so any such lookup is cached, then
 step — and keep that warm-up inside the scenario so it does not depend on scenario order.
 
 **A rejection the partner decides is a live scenario; one your transform decides is not.** Where a
-destination's `delivery` spec reads a rejection off the response — a status in the success range
-that means "not accepted", an error body on a 200 — the live suite is the only place that proves
-the real API produces it, because the mocked suite asserts against a response we wrote ourselves.
-Pair the happy path with a scenario that makes the *partner* reject: seed an id the account does
-not contain (a random transaction id, a deleted record id) while everything else stays valid, and
-assert the failure. Keep the two adjacent in the spec so the contrast is visible — one id resolves
-against the account, one deliberately does not.
+destination's `delivery` spec reads a rejection off the response — a success-range status that
+means "not accepted", an error body on a 200, per
+`.claude/skills/batching-framework-delivery/SKILL.md#when-you-need-this` — the live suite is the
+only place that proves the real API produces it, because the mocked suite asserts against a
+response we wrote ourselves. Pair the happy path with a scenario that makes the *partner* reject:
+seed an id the account does not contain (a random transaction id, a deleted record id) while
+everything else stays valid, and assert the failure. Keep the two adjacent in the spec so the
+contrast is visible — one id resolves against the account, one deliberately does not.
 
 **A partner-side id that must match a real record comes from `resourceIds`.** The rule above about
 literals cuts both ways here: a conversion or transaction id that has to exist in the sandbox
@@ -122,8 +123,7 @@ Give each a stable `id` and a one-line `description`.
 **Skip cases that can't be meaningfully delivered live** — pure validation/error cases (bad config,
 missing required field → 400, "more than one match" aborts, unsupported event type). Those are
 contract checks the mocked suite already owns; the live suite verifies real *delivery*, so don't
-port them. The line is who decides: a request that never leaves the transformer is out of scope, a
-request the partner answers with a rejection is in scope.
+port them — same who-decides line as above.
 
 ## Stateful cases: setup + verify as steps, teardown declared on the scenario
 

@@ -16,11 +16,10 @@ For the router-transform half of the framework, see `.claude/skills/batching-fra
 Add a `delivery.ts` only when the destination's response handling genuinely differs:
 
 - a **partial-failure body** — some records rejected inside an otherwise-successful response
-- a **2xx that isn't a success** — either the failure is in the body, or the *status itself* carries
-  it. A partner that answers a rejected event with a bodyless `204` while `200` means accepted is
-  the second shape: the framework classifies the whole 2xx class as success, so without a `204`
-  override every rejection is silently reported as delivered. Read the partner's docs for what each
-  success-range status means before concluding the default fits.
+- a **2xx that isn't a success** — either the body carries the failure, or the status itself does
+  (a bodyless `204` meaning rejected beside a `200` meaning accepted). The framework treats the
+  whole 2xx class as success, so an unhandled one is silently reported as delivered: read the
+  partner's docs for what each success-range status means.
 - **identity-keyed failures** — the response names *which* records failed rather than indexing them
 - a **real auth signal** in the body that should drive token refresh
 
@@ -46,14 +45,14 @@ const statusOverrides: StatusOverrideMap = {
 };
 ```
 
-Two cases are **not** restatements and are worth keeping: an exact key that exists to *protect* a
+One case is **not** a restatement and is worth keeping: an exact key that exists to *protect* a
 status from a broader class key (`429: (ctx, fallback) => fallback()` beside a `'4xx'` override,
-per the `dontBatch` pattern in `batching-framework`), and an override that keeps the default
-verdict but attaches a destination-specific reason — though prefer `failureReason` for that, since
-it applies to every failure without listing statuses.
+per the `dontBatch` pattern in `batching-framework`).
 
-A `failureReason` is separate from all of this: it is worth declaring on its own, with no
-`statusOverrides` at all, whenever the partner's error body says something a reader needs.
+An override that only attaches a destination-specific reason isn't one either — but `failureReason`
+does that better, since it applies to every failure without listing statuses, and is worth
+declaring alone with no `statusOverrides` at all whenever the partner's error body says something
+a reader needs.
 
 ## Reference
 

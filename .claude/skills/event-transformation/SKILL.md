@@ -146,6 +146,56 @@ Every path in a mapping file is a claim that the partner reads that field from t
 "look related" ships wrong values to the partner with nothing failing. Map only what the spec
 or the partner's docs name, and let the field be absent otherwise.
 
+## A Value The SDKs Populate Has One Canonical `context.*` Path
+
+The mirror image of the rule above: don't invent a RudderStack-side path for a value the SDKs
+already place. Every such value has exactly one canonical `context.*` path — the partner's
+spelling for the field changes constantly, the path we read it from does not.
+
+| The partner is asking for                               | Read it from                        |
+| ------------------------------------------------------- | ----------------------------------- |
+| A mobile advertising id — IDFA, GAID, AAID, MADID, RDID | `context.device.advertisingId`      |
+| The app / bundle / package identifier                   | `context.app.namespace`             |
+| User agent · IP                                         | `context.userAgent` · `context.ip`  |
+
+The shape repeats across every SDK-populated field: 19 destinations read
+`context.device.advertisingId`; `context.userAgent` appears in 40 destination files against 2
+carrying a `properties.*` alias, `context.ip` in 61 against none. A `properties.*` alias invents
+a second source contract for a value the SDKs already send, so the only way a customer satisfies
+it is by sending the same value twice.
+
+Neither identifier in the first two rows has a `GenericFieldMapping.json` entry — its keys are
+all trait / address / page / identity fields — so list the path explicitly;
+`sourceFromGenericMap` will not help you here.
+
+**This applies to event-stream destinations only.** Audience and RETL destinations receive
+identifiers as record fields, not context: `src/v0/destinations/fb_custom_audience/util.ts:127`
+takes MADID off the per-row user schema, and
+`src/v0/destinations/google_adwords_remarketing_lists/dataManager/util.ts:115` takes the mobile
+device id off the RETL column `fields.mobileId`.
+
+**The device type picks the *destination* field, not the source path.** IDFA and GAID are the
+same path; which partner field it lands in is decided by the OS — and the gate lives in a
+different layer in each destination, which is why it is easy to miss:
+
+- A workflow condition — `src/cdk/v2/destinations/reddit/procWorkflow.yaml:44-45`,
+  `$.isAppleFamily(os)` for `idfa` and `os === "android"` for `aaid`.
+- A branch in the transform — `src/v0/destinations/impact/util.js` picks `AppleIfa` vs
+  `GoogAId`; `src/v0/destinations/adj/transform.js:36-41` maps both `idfa` and `gps_adid` from
+  the one path and then *deletes* whichever the platform can't carry.
+- Separate per-platform mapping files — `src/v0/destinations/singular/data/`, where
+  `SINGULARIosEventConfig.json` has `idfa` and `SINGULARAndroidEventConfig.json` has `aifa`.
+
+**Precedent that is not the pattern.** Several destinations put another path first and fall
+back to the canonical one: `context.idfa` / `context.aaid` in `branch` and `revenue_cat`,
+`properties.adId` in `snapchat_conversion`, `properties.anon_id` in `facebook_conversions`,
+`properties.appId` in `tiktok_ads`, and a `traits.*` chain in `openai_ads`. `rakuten` goes
+further and reads the advertising id from `properties.*` only, with no context path at all
+(`src/cdk/v2/destinations/rakuten/data/propertiesMapping.json:89`). Each has a reason local to
+that destination — an inherited customer contract, or a partner whose own field genuinely has
+no context equivalent. None of them is the starting shape: map the canonical path alone, and
+add an alias only when the partner's docs or an agreed contract demand it.
+
 ## Presence Checks: Know What The Shared Helpers Actually Do
 
 Two helpers in `src/v0/util/index.js` are routinely misapplied. Both are one-liners over

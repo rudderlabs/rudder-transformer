@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.154.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.153.0...v1.154.0) (2026-09-22)
+
+
+### Features
+
+* **custom_audience:** make connection audienceId optional ([#5588](https://github.com/rudderlabs/rudder-transformer/issues/5588)) ([0267fa7](https://github.com/rudderlabs/rudder-transformer/commit/0267fa74b746d2b66645b6aa06631164d4bf421b)), closes [rudderlabs/rudder-webapp#10140](https://github.com/rudderlabs/rudder-webapp/issues/10140)
+
+
+### Bug Fixes
+
+* **facebook_lead_ads_native:** align Graph API usage to v25 ([#5586](https://github.com/rudderlabs/rudder-transformer/issues/5586)) ([071064e](https://github.com/rudderlabs/rudder-transformer/commit/071064ed9129bdf68b4016fb8bba09508b3f5aa4))
+* **google_ads:** upgrade Google Ads API to v25 ([#5587](https://github.com/rudderlabs/rudder-transformer/issues/5587)) ([3ef9bae](https://github.com/rudderlabs/rudder-transformer/commit/3ef9baeab1cd669975e1d1cfe26547bb71deaf05))
+* **google-ads:** refresh v23 metadata and fixtures ([#5585](https://github.com/rudderlabs/rudder-transformer/issues/5585)) ([3ee185c](https://github.com/rudderlabs/rudder-transformer/commit/3ee185c823c23325b0d56d0ea68aba4c4d3e5051))
+
 ## [1.153.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.152.0...v1.153.0) (2026-09-15)
 
 

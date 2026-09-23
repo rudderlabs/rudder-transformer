@@ -798,18 +798,18 @@ export const data = [
     },
     mockFns: (mock) => {
       // Mock successful Facebook API responses for lead data
-      mock.onGet('https://graph.facebook.com/v24.0/1459076748710714').reply(200, {
+      mock.onGet('https://graph.facebook.com/v25.0/1459076748710714').reply(200, {
         field_data: [
           { name: 'email', values: ['jane@example.com'] },
           { name: 'company_name', values: ['Acme Corp'] },
         ],
       });
 
-      mock.onGet('https://graph.facebook.com/v24.0/1459076748710715').reply(200, {
+      mock.onGet('https://graph.facebook.com/v25.0/1459076748710715').reply(200, {
         field_data: [{ name: 'email', values: ['bob@example.com'] }],
       });
 
-      mock.onGet('https://graph.facebook.com/v24.0/1459076748710713').reply(200, {
+      mock.onGet('https://graph.facebook.com/v25.0/1459076748710713').reply(200, {
         field_data: [
           { name: 'email', values: ['test@example.com'] },
           { name: 'full_name', values: ['John Doe'] },

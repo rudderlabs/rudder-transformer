@@ -22,6 +22,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   CANDU: { routerTransform: true },
   DELIGHTED: { routerTransform: true },
   DRIP: { routerTransform: true },
+  EVERFLOW: { routerTransform: true, batching: true, transformerProxy: true },
   FB_CUSTOM_AUDIENCE: { routerTransform: true, transformerProxy: true },
   GA: { routerTransform: true, regulations: true },
   GAINSIGHT: { routerTransform: true },

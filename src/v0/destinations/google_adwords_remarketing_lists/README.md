@@ -234,21 +234,21 @@ The destination processes operations in batches, and Google Ads applies the fina
 
 ### Current Version
 
-- **Google Ads API Version**: v23
-- **Endpoint Base**: `https://googleads.googleapis.com/v23/customers`
+- **Google Ads API Version**: v25
+- **Endpoint Base**: `https://googleads.googleapis.com/v25/customers`
 
 ### Version Deprecation
 
 - Google Ads API follows a regular deprecation cycle
 - Typically maintains 3-4 versions simultaneously
 - Older versions are deprecated approximately 12 months after new version release
-- **Current Status**: v23 is the latest stable version (released January 28, 2026)
-- **Sunset Window**: v22 is tentatively scheduled to sunset in October 2026
-- **Upgrade Path**: When new versions are released, update the `API_VERSION` constant in `config.ts`
+- **Current Status**: v25 is the latest stable version (released July 22, 2026)
+- **Sunset Window**: v25 is expected to sunset in August 2027
+- **Upgrade Path**: When new versions are released, update the Google Ads `API_VERSION` constants across the transformer, integrations-info, and integrations-lib repositories so runtime code, tests, and metadata stay aligned.
 
 ### Breaking Changes
 
-- No OfflineUserDataJobs endpoint shape changes are currently required for this integration when moving from v22 to v23.
+- No OfflineUserDataJobs endpoint shape changes are currently required for this integration when moving from v23 to v25.
 - Continue monitoring Google Ads release notes for Customer Match eligibility and policy changes.
 - Thoroughly test with new API versions before production deployment.
 
@@ -258,7 +258,7 @@ The destination processes operations in batches, and Google Ads applies the fina
 
 - [Customer Match Overview](https://developers.google.com/google-ads/api/docs/remarketing/audience-segments/customer-match/get-started)
 - [Manage Customer Lists](https://developers.google.com/google-ads/api/docs/remarketing/audience-segments/customer-match/manage)
-- [Offline User Data Jobs](https://developers.google.com/google-ads/api/reference/rpc/v23/OfflineUserDataJobService)
+- [Offline User Data Jobs](https://developers.google.com/google-ads/api/reference/rpc/v25/OfflineUserDataJobService)
 - [API Rate Limits](https://developers.google.com/google-ads/api/docs/best-practices/quotas)
 
 ### RETL Functionality

@@ -12,7 +12,7 @@ const hashAttributes: string[] = ['email', 'phone', 'firstName', 'lastName', 'st
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
-const API_VERSION = 'v23';
+const API_VERSION = 'v25';
 
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers`;
 

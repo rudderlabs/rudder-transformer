@@ -276,7 +276,7 @@ describe('Facebook Lead Ads Hydration', () => {
           if (verifyHttpCall) {
             expect(mockHttpGET).toHaveBeenCalledTimes(1);
             expect(mockHttpGET).toHaveBeenCalledWith(
-              'https://graph.facebook.com/v24.0/123456',
+              'https://graph.facebook.com/v25.0/123456',
               {
                 params: {
                   access_token: 'test_token',

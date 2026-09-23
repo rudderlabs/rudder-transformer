@@ -15,6 +15,7 @@ jest.mock('../../../adapters/network', () => ({
 const DEST = 'customerio';
 const WORKSPACE = 'ws-1';
 const GAEC_DEST = 'google_adwords_enhanced_conversions';
+const API_VERSION = 'v25';
 
 const job = (jobId: number) =>
   ({
@@ -41,7 +42,7 @@ const proxyRequest = (): ProxyV1Request =>
   }) as unknown as ProxyV1Request;
 
 const gaecProxyRequest = (
-  endpoint = 'https://googleads.googleapis.com/v23/customers/123:uploadConversionAdjustments',
+  endpoint = `https://googleads.googleapis.com/${API_VERSION}/customers/123:uploadConversionAdjustments`,
 ): ProxyV1Request =>
   ({
     ...proxyRequest(),

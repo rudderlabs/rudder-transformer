@@ -14,6 +14,8 @@ import type {
   RouterTransformationResponse,
 } from '../../../types/destinationTransformation';
 
+const API_VERSION = 'v25';
+
 type GAECInput = Parameters<InstanceType<typeof Integration>['transformEvent']>[0];
 
 // The conversion action lookup goes through the Google Ads SDK (see ./utils), so the SDK client
@@ -193,7 +195,7 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       );
 
       expect(result.endpoint).toBe(
-        'https://googleads.googleapis.com/v23/customers/1234567890:uploadConversionAdjustments',
+        `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
       );
       expect(result.endpointPath).toBe('/uploadConversionAdjustments');
       expect(result.params).toEqual({});
@@ -335,7 +337,7 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       });
       const request = singleBatch(results[0]);
       expect(request.endpoint).toBe(
-        'https://googleads.googleapis.com/v23/customers/1234567890:uploadConversionAdjustments',
+        `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
       );
       expect(request.endpointPath).toBe('/uploadConversionAdjustments');
       expect(request.params).toEqual({});

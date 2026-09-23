@@ -26,16 +26,30 @@ A new destination is:
   judgement call: see
   `.claude/skills/batching-framework-delivery/SKILL.md#a-new-destination-gets-no-networkhandlerts`,
   including what to do when it looks like you need one.
-- **Registered `{ routerTransform: true, batching: true }` in `src/features.ts`** from day one.
-  A new destination is GA on the framework immediately, so the
+- **Registered `{ routerTransform: true, batching: true }` in `src/features.ts`** from day one —
+  plus `transformerProxy: true` if delivery goes through the transformer proxy (see
+  "Enabling the Framework" below). A new destination is GA on the framework immediately, so the
   `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` rollout flag — which exists for migrating an
   existing destination — does not apply.
 - **`transformAtV1: router`** in its `rudder-integrations-config` definition. The framework only
   runs on the router path; a definition left on `processor` silently never reaches it.
+- **Shipping `test/integrations/destinations/<dest>/live.ts`.** Component tests assert against
+  mocks, so they cannot catch a payload the partner rejects — an endpoint typo, a renamed field, a
+  required parameter nobody sent. See `.claude/skills/writing-tests/SKILL.md#every-new-destination-gets-livets`
+  for the rule and `.claude/skills/live-integration-test/SKILL.md` for the harness. This is part of
+  the destination, not a follow-up PR.
 
 `src/v0/destinations/openai_ads/` is the canonical shape — `routerTransform.ts`, `delivery.ts`,
-`types.ts`, `config.ts`, `utils.ts` and nothing else. `posthog` and `custom_audience` are the same
-shape without a `delivery.ts`.
+`types.ts`, `config.ts`, `utils.ts` and `data/OPENAI_ADSConfig.json`. `posthog` and
+`custom_audience` are the same shape without a `delivery.ts`.
+
+**The mapping file is part of that shape, not an optional extra.** A destination's source-field →
+destination-field plucking belongs in `data/<DEST_UPPER>Config.json` and is consumed by
+`constructPayload` — never as a bespoke `SOURCE_PATHS` / `FIELD_PATHS` constant in `config.ts`,
+which forces a hand-written config type and a resolver function per field group. `config.ts` holds
+constants the framework itself needs (batch limits, HTTP method, endpoint templates, regexes).
+See `.claude/skills/event-transformation/SKILL.md` for the mapping shape, `required: true`, and
+`sourceFromGenericMap`.
 
 The rest of this skill assumes that starting point. The `networkHandler` material below is about
 **migrating** an existing destination and is marked as such.
@@ -88,12 +102,20 @@ DeliveryV1Response
 src/v0/destinations/<dest_name>/
 ├── routerTransform.ts        # DestinationIntegration subclass (exported as Integration)
 ├── types.ts                  # Zod schemas, TypeScript types
-├── config.ts                 # Constants, endpoints, action maps
+├── config.ts                 # Constants the framework needs: batch limits, HTTP method,
+│                             #   endpoint templates, validation regexes — NOT field paths
+├── data/<DEST_UPPER>Config.json  # The source→dest field mapping, read by constructPayload
 ├── utils.ts                  # (Optional) Field processing, API helpers
 ├── delivery.ts               # (Optional) the `delivery` spec — only if response handling
 │                             #            differs from the framework default
 ├── delivery.test.ts          # (Optional) Parity test vs the legacy handler
 └── routerTransform.test.ts   # Unit tests
+
+test/integrations/destinations/<dest_name>/
+├── router/data.ts            # Component (mocked) cases — the merge gate
+├── dataDelivery/data.ts      # Proxy/delivery cases
+├── network.ts                # Mocked partner responses
+└── live.ts                   # Real-account scenarios — required for a new destination
 ```
 
 ## Migrating a legacy (v0 JS) destination
@@ -191,6 +213,7 @@ const { apiKey, pixelId } = resolveAccountConfig(this.destination as MyDestinati
 type TransformedEvent<TBody> = {
   body: TBody; // Individual event payload
   endpoint: string; // API endpoint
+  endpointPath: string; // REQUIRED. Low-cardinality metrics label (see below)
   method: string; // HTTP method (POST, PUT, DELETE, etc.)
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
@@ -201,6 +224,44 @@ type TransformedEvent<TBody> = {
 The framework groups all `TransformedEvent` objects by a composite key of `(endpoint, method, headers, params, internalGroupKey)`. Events in the same group are batched together.
 
 > **Put batch-invariant fields in `headers`/`params`.** Anything that must be identical across a batch (auth token, account/customer IDs, target action, API resource being addressed) belongs in `headers` or `params` so the composite key naturally keeps incompatible events apart. You usually don't need `internalGroupKey` if these already carry the distinguishing values.
+
+### `endpointPath` Is A Metrics Label, Not The URL
+
+`endpointPath` is **required** (`destinationIntegration/types.ts`) and easy to fill in with the
+resolved endpoint, which is wrong. It is not used to address anything: it travels on
+`batchedRequest.endpointPath` and becomes a **stat tag** on `outgoing_request_latency` and
+`outgoing_request_count`, on the delivery payload-size stats, and the prefix of the delivery error
+message (`src/adapters/network.js`). Whatever you put there becomes a label value on a time
+series — including on a latency histogram, where the bucket count multiplies it.
+
+**Give it a static string naming the logical endpoint** — `'postback'`, `'/events'`, `'/merge'` —
+chosen from a fixed, enumerable set. Never the resolved URL, and never anything derived from the
+event or from destination config:
+
+```typescript
+// Good — a fixed label per logical endpoint
+return { body, endpoint: postbackUrl, endpointPath: 'postback', method, params };
+
+// Good — still fixed; the set is closed and readable in the source
+return { ..., endpointPath: message.type === 'track' ? '/track' : '/identify' };
+
+// Bad — one time series per customer-configured URL, per audience id, per event name
+return { ..., endpointPath: postbackUrl };
+```
+
+A customer-configured base URL, an audience or account id, or an interpolated event name each
+turn one metric into thousands. Prefer an over-broad label to a precise one: the destination type
+is already a tag, so a single `'postback'` across every request is a perfectly good answer for a
+destination with one endpoint.
+
+Two consequences of it being observability-only:
+
+- **It is deliberately excluded from the grouping key** (`processDestinationIntegration.ts`:
+  *"Observability-only — not part of the grouping key"*). Do not reach for it to keep events
+  apart — that is what `internalGroupKey` is for.
+- **The group takes it from whichever payload opened the group.** If it varies across events that
+  otherwise batch together, the value on the emitted request is arbitrary. Another reason to
+  derive it from the endpoint shape rather than the event.
 
 ### The `internalGroupKey` Pattern
 
@@ -266,6 +327,44 @@ The `wrapBody` function:
 - Returns the final `Record<string, unknown>` that becomes `batchedRequest.body.JSON`
 - Is also used for size measurement when `maxPayloadSize` is set
 
+### Destinations with no request body
+
+Some partners take the whole event in the query string — a pixel or postback URL fetched with
+`GET`, one conversion per request. The framework still expects a strategy, so the shape is
+(`src/v0/destinations/everflow/` is the worked example):
+
+```typescript
+// types.ts — there is no body, and the type should say so
+export type PostbackPayload = Record<string, never>;
+
+// routerTransform.ts
+transformEvent(input): TransformedEvent<PostbackPayload> {
+  return {
+    body: {},                         // empty — everything travels in `params`
+    endpoint: postbackUrl,
+    endpointPath: 'postback',
+    method: 'GET',
+    params: buildParams(input.message, config),
+  };
+}
+
+getBatchStrategy(): BatchStrategy<PostbackPayload> {
+  return new ChunkBatchStrategy<PostbackPayload>({
+    maxItems: MAX_BATCH_SIZE,         // 1 — the API takes one conversion per request
+    wrapBody: () => ({}),             // required by the constructor; nothing to wrap
+  });
+}
+```
+
+`wrapBody` is non-optional on `ChunkBatchStrategy` even though nothing is wrapped here — the
+`() => ({})` stub is the accepted shape, not an oversight to route around. Don't invent a
+`body`-shaped payload just to have something to pass it, and don't set `maxPayloadSize`: with an
+empty body it measures nothing.
+
+Note that the batch-invariant rule still holds and does more work here than usual — with
+`maxItems: 1` every request is its own batch, but per-event values in `params` mean the composite
+grouping key differs for every event, which is exactly what you want.
+
 ### CustomBatchStrategy (for complex batching logic)
 
 Full control over how events are grouped and wrapped:
@@ -328,6 +427,26 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
 `routerTransform: true` puts the destination on the router-transform path at all;
 `batching: true` marks it **batching-GA**. For the current roster, grep `batching: true` in
 `src/features.ts` — it changes as destinations migrate, so a list copied into a doc goes stale.
+
+**Every capability is declared here, including `transformerProxy`.** `destinationCapabilities` is
+the single authored source for all of them — `routerTransform`, `regulations`, `batching`, `cdkV2`
+and `transformerProxy` — and each derived map and `defaultFeaturesConfig` section is computed from
+it. The rule above is not specific to the batching map: whenever it looks like a destination needs
+adding to a list in `src/constants/`, the change belongs in `features.ts`.
+
+Declare `transformerProxy: true` when the destination's delivery goes through the transformer
+proxy rather than rudder-server delivering the payload itself:
+
+```typescript
+<DEST_NAME_UPPER>: { routerTransform: true, batching: true, transformerProxy: true },
+```
+
+`features.test.ts` enforces that a destination may only declare it if it actually implements the
+proxy. **`batching: true` satisfies that on its own** — the framework owns delivery outright, so a
+batching destination implements the proxy however its `delivery` spec is laid out, and one
+declaring no spec at all still qualifies. You do not need a `networkHandler.ts` to earn the
+capability, and writing one to "support" it is exactly the anti-pattern in
+`.claude/skills/batching-framework-delivery/SKILL.md#a-new-destination-gets-no-networkhandlerts`.
 
 ### One gate, both halves
 

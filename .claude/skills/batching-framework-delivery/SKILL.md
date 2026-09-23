@@ -16,9 +16,44 @@ For the router-transform half of the framework, see `.claude/skills/batching-fra
 Add a `delivery.ts` only when the destination's response handling genuinely differs:
 
 - a **partial-failure body** — some records rejected inside an otherwise-successful response
-- a **2xx that isn't a success** — the failure is in the body, not the status
+- a **2xx that isn't a success** — either the failure is in the body, or the *status itself* carries
+  it. A partner that answers a rejected event with a bodyless `204` while `200` means accepted is
+  the second shape: the framework classifies the whole 2xx class as success, so without a `204`
+  override every rejection is silently reported as delivered. Read the partner's docs for what each
+  success-range status means before concluding the default fits.
 - **identity-keyed failures** — the response names *which* records failed rather than indexing them
 - a **real auth signal** in the body that should drive token refresh
+
+### Override only what differs
+
+A `statusOverrides` entry that reproduces the framework's own classification is dead code — it
+reads as a deliberate decision, and it silently stops tracking the default if that ever changes.
+The framework already throttles 429, retries retryable statuses and aborts the rest, so a
+destination whose only real difference is one status declares exactly that one:
+
+```typescript
+// Good — the framework handles 429/4xx/5xx; only the 204 quirk is ours
+const statusOverrides: StatusOverrideMap = {
+  204: (ctx) => abort(rejectionReason(ctx)),
+};
+
+// Bad — three entries restating the default, hiding the one that matters
+const statusOverrides: StatusOverrideMap = {
+  204: (ctx) => abort(rejectionReason(ctx)),
+  429: (ctx) => throttled('rate limited'),
+  '4xx': (ctx) => abort('client error'),
+  '5xx': (ctx) => retry('server error'),
+};
+```
+
+Two cases are **not** restatements and are worth keeping: an exact key that exists to *protect* a
+status from a broader class key (`429: (ctx, fallback) => fallback()` beside a `'4xx'` override,
+per the `dontBatch` pattern in `batching-framework`), and an override that keeps the default
+verdict but attaches a destination-specific reason — though prefer `failureReason` for that, since
+it applies to every failure without listing statuses.
+
+A `failureReason` is separate from all of this: it is worth declaring on its own, with no
+`statusOverrides` at all, whenever the partner's error body says something a reader needs.
 
 ## Reference
 

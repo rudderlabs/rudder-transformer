@@ -39,7 +39,7 @@ Only **identify** events are supported. Any other message type throws an `Instru
 
 ### Lead Object Mappings (SFIdentifyLeadConfig.json)
 
-Applied when the target object is `Lead`, `mapProperty` is enabled, and the event is **not** mapped to destination (i.e., not rETL/VDM).
+Applied when the target object is `Lead`, `mapProperties` is enabled, and the event is **not** mapped to destination (i.e., not rETL/VDM).
 
 | RudderStack Field (traits)           | Salesforce Lead Field | Notes                    |
 | ------------------------------------ | --------------------- | ------------------------ |
@@ -68,7 +68,7 @@ Any trait not in the `SFIgnoreLeadConfig.json` ignore list is mapped as a custom
 
 ### Contact Object Mappings (SFIdentifyContactConfig.json)
 
-Applied when the target object is `Contact`, `mapProperty` is enabled, and the event is **not** mapped to destination.
+Applied when the target object is `Contact`, `mapProperties` is enabled, and the event is **not** mapped to destination.
 
 | RudderStack Field (traits)           | Salesforce Contact Field | Notes |
 | ------------------------------------ | ------------------------ | ----- |
@@ -128,9 +128,9 @@ All API calls use version `v50.0` (defined in `config.js` as `SF_API_VERSION`).
    - If no record ID: **POST** (create) to `{instanceUrl}/services/data/v50.0/sobjects/{objectType}`
 
 4. **Payload construction**:
-   - For Lead/Contact with `mapProperty` enabled and not `mappedToDestination`: traits are mapped via config JSONs, unmapped traits become `__c` custom fields
+   - For Lead/Contact with `mapProperties` enabled and not `mappedToDestination`: traits are mapped via config JSONs, unmapped traits become `__c` custom fields
    - For `mappedToDestination` events: traits are sent as-is (except `Id` is removed from payload)
-   - For other object types or `mapProperty` disabled: traits are sent as-is
+   - For other object types or `mapProperties` disabled: traits are sent as-is
 
 ### Lead Lookup Flow
 

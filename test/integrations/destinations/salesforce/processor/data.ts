@@ -1,4 +1,169 @@
 import { authHeader1, authHeader2, secret2 } from '../maskedSecrets';
+
+// Cases for the "Map Rudder Properties to Salesforce Properties" switch. The dashboard saves
+// it as `mapProperties`; the transform still reads `mapProperty` as a fallback.
+const legacyDestination = (config: Record<string, unknown>) => ({
+  Config: {
+    initialAccessToken: 'dummyInitialAccessToken',
+    password: 'dummyPassword1',
+    userName: 'testsalesforce1453@gmail.com',
+    ...config,
+  },
+  DestinationDefinition: {
+    DisplayName: 'Salesforce',
+    ID: '1T96GHZ0YZ1qQSLULHCoJkow9KC',
+    Name: 'SALESFORCE',
+  },
+  Enabled: true,
+  ID: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
+  Name: 'tst',
+  Transformations: [],
+});
+
+const v2Destination = (config: Record<string, unknown>) => ({
+  Config: { rudderAccountId: 'dummyRudderAccountId', ...config },
+  DestinationDefinition: {
+    DisplayName: 'Salesforce V2',
+    ID: '2ce3kzTNnSVpMXnYQtgmmWjWnQj',
+    Name: 'SALESFORCE_OAUTH',
+  },
+  Enabled: true,
+  ID: '2ce3o8tPHUhvxkiQdTfTbomFMyk',
+  Name: 'Test SF V2',
+  Transformations: [],
+});
+
+const v2Metadata = { secret: { access_token: secret2, instance_url: 'https://dummyurl.com' } };
+
+const identifyLead = (traits: Record<string, unknown>) => ({
+  type: 'identify',
+  userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+  traits,
+  context: { externalId: [{ type: 'Salesforce-Lead', id: 'sf-lead-id' }] },
+});
+
+const restCall = (endpoint: string, authorization: string, json: Record<string, unknown>) => ({
+  version: '1',
+  type: 'REST',
+  method: 'POST',
+  endpoint,
+  headers: { 'Content-Type': 'application/json', Authorization: authorization },
+  params: {},
+  userId: '',
+  body: { JSON: json, XML: {}, JSON_ARRAY: {}, FORM: {} },
+  files: {},
+});
+
+const mappingSwitchCase = ({
+  description,
+  destination,
+  message,
+  expected,
+  metadata,
+}: {
+  description: string;
+  destination: Record<string, unknown>;
+  message: Record<string, unknown>;
+  expected: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+}) => ({
+  name: 'salesforce',
+  description,
+  feature: 'processor',
+  module: 'destination',
+  version: 'v0',
+  input: { request: { body: [{ destination, message, ...(metadata && { metadata }) }] } },
+  output: {
+    response: {
+      status: 200,
+      body: [{ statusCode: 200, output: expected, ...(metadata && { metadata }) }],
+    },
+  },
+});
+
+// Traits in RudderStack shape, so a mapped payload and a verbatim one differ on every key.
+const rudderTraits = {
+  email: 'peter.gibbons@initech.com',
+  firstName: 'Peter',
+  lastName: 'Gibbons',
+  company: 'Initech',
+  plan: 'pro',
+};
+const mappedTraits = {
+  Email: 'peter.gibbons@initech.com',
+  FirstName: 'Peter',
+  LastName: 'Gibbons',
+  Company: 'Initech',
+  plan__c: 'pro',
+};
+// Traits already carrying Salesforce API names, which mapping would suffix with __c.
+const apiNameTraits = { FirstName: 'Peter', LastName: 'Gibbons', Custom_Field__c: 'custom' };
+
+const legacyLeadEndpoint =
+  'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/sf-lead-id?_HttpMethod=PATCH';
+
+const mappingSwitchCases = [
+  mappingSwitchCase({
+    description: 'mapProperties false sends traits verbatim',
+    destination: legacyDestination({ mapProperties: false }),
+    message: identifyLead(apiNameTraits),
+    expected: restCall(legacyLeadEndpoint, authHeader1, apiNameTraits),
+  }),
+  mappingSwitchCase({
+    description: 'mapProperties false wins over mapProperty true',
+    destination: legacyDestination({ mapProperties: false, mapProperty: true }),
+    message: identifyLead(rudderTraits),
+    expected: restCall(legacyLeadEndpoint, authHeader1, rudderTraits),
+  }),
+  mappingSwitchCase({
+    description: 'mapProperties true wins over mapProperty false',
+    destination: legacyDestination({ mapProperties: true, mapProperty: false }),
+    message: identifyLead(rudderTraits),
+    expected: restCall(legacyLeadEndpoint, authHeader1, mappedTraits),
+  }),
+  mappingSwitchCase({
+    description: 'mapProperties false sends verbatim traits to the converted Contact',
+    destination: legacyDestination({ mapProperties: false, useContactId: true }),
+    message: {
+      type: 'identify',
+      userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+      traits: { Email: 'converted.lead@initech.com', Custom_Field__c: 'custom' },
+      context: { traits: { email: 'converted.lead@initech.com' } },
+    },
+    expected: restCall(
+      'https://ap15.salesforce.com/services/data/v50.0/sobjects/Contact/003convertedContact?_HttpMethod=PATCH',
+      authHeader1,
+      { Email: 'converted.lead@initech.com', Custom_Field__c: 'custom' },
+    ),
+  }),
+  mappingSwitchCase({
+    description: 'mapProperties false creates a Lead without the n/a defaults',
+    destination: legacyDestination({ mapProperties: false }),
+    message: {
+      type: 'identify',
+      userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+      traits: { LeadSource: 'Lookout Signup' },
+      context: { traits: { email: 'new.lead@initech.com' } },
+    },
+    expected: restCall(
+      'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
+      authHeader1,
+      { LeadSource: 'Lookout Signup' },
+    ),
+  }),
+  mappingSwitchCase({
+    description: 'Salesforce V2: mapProperties false sends traits verbatim',
+    destination: v2Destination({ mapProperties: false }),
+    message: identifyLead(apiNameTraits),
+    metadata: v2Metadata,
+    expected: restCall(
+      'https://dummyurl.com/services/data/v50.0/sobjects/Lead/sf-lead-id?_HttpMethod=PATCH',
+      authHeader2,
+      apiNameTraits,
+    ),
+  }),
+];
+
 export const data = [
   {
     name: 'salesforce',
@@ -1727,4 +1892,5 @@ export const data = [
       },
     },
   },
+  ...mappingSwitchCases,
 ];

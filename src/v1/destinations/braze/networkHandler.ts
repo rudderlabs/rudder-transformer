@@ -80,12 +80,14 @@ const buildJobStates = (
   response: unknown,
   statusCode: number,
   rudderJobMetadata: ProxyMetdata[],
-): DeliveryJobState[] =>
-  rudderJobMetadata.map((metadata) => ({
+): DeliveryJobState[] => {
+  const responseBody = JSON.stringify(response) ?? '';
+  return rudderJobMetadata.map((metadata) => ({
     statusCode,
     metadata,
-    error: JSON.stringify(response) ?? '',
+    error: responseBody,
   }));
+};
 
 const isNumberArray = (value: unknown): value is number[] =>
   Array.isArray(value) && value.every((n) => typeof n === 'number');
@@ -229,7 +231,6 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
       { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status) },
       destinationResponse,
       '',
-      buildJobStates(response, status, rudderJobMetadata),
     );
   }
 
@@ -249,7 +250,6 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
       { [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status) },
       destinationResponse,
       '',
-      buildJobStates(response, status, rudderJobMetadata),
     );
   }
 

@@ -140,6 +140,9 @@ const batchIdentifyForRetl = (
         identifyResponseList.push({
           ...ev.message.body.JSON,
           id: updateEndpoint.split('/').pop(),
+          // lets the 207 handler map a per-record error (e.g. OBJECT_NOT_FOUND, reported by
+          // record id) back to this job
+          objectWriteTraceId: String(ev.metadata.jobId),
         });
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
           0,

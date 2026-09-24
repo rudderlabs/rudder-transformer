@@ -167,6 +167,56 @@ const mappingSwitchCases = [
     v2Endpoint('Lead'),
     { LeadSource: 'Lookout Signup' },
   ),
+  // The lookups (Lead by email, converted Lead to Contact) with the switch off. Legacy reaches
+  // the same code when the singular key is false.
+  mappingSwitchCase({
+    description:
+      'legacy Salesforce: mapProperty false creates a looked-up Lead without n/a defaults',
+    destination: legacyDestination({ mapProperty: false }),
+    message: {
+      type: 'identify',
+      userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+      traits: { LeadSource: 'Lookout Signup' },
+      context: { traits: { email: 'new.lead@initech.com' } },
+    },
+    expected: restCall(
+      'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
+      authHeader1,
+      { LeadSource: 'Lookout Signup' },
+    ),
+  }),
+  mappingSwitchCase({
+    description:
+      'legacy Salesforce: mapProperty false sends verbatim traits to the converted Contact',
+    destination: legacyDestination({ mapProperty: false, useContactId: true }),
+    message: {
+      type: 'identify',
+      userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+      traits: { Email: 'converted.lead@initech.com', Custom_Field__c: 'custom' },
+      context: { traits: { email: 'converted.lead@initech.com' } },
+    },
+    expected: restCall(
+      'https://ap15.salesforce.com/services/data/v50.0/sobjects/Contact/003convertedContact?_HttpMethod=PATCH',
+      authHeader1,
+      { Email: 'converted.lead@initech.com', Custom_Field__c: 'custom' },
+    ),
+  }),
+  // A user transformation that sets only an Account externalId type creates an Account.
+  // The switch applies to Lead and Contact only, so both settings send the same payload.
+  ...[false, true].map((mapProperties) =>
+    v2Case(
+      `Account externalId without an id ignores mapProperties ${mapProperties}`,
+      { mapProperties },
+      {
+        type: 'identify',
+        userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+        traits: { NAME: 'Initech', PARENTID: '001parentAccount' },
+        context: { externalId: [{ type: 'Salesforce-Account' }] },
+      },
+      v2Endpoint('Account'),
+      { NAME: 'Initech', PARENTID: '001parentAccount' },
+    ),
+  ),
   mappingSwitchCase({
     description: 'legacy Salesforce: mapProperties false keeps the mapping',
     destination: legacyDestination({ mapProperties: false }),

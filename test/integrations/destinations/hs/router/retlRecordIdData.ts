@@ -312,6 +312,37 @@ export const retlRecordIdData: Record<string, unknown>[] = [
     ],
   ),
   routerCase(
+    'hs-retl-record-id-legacy-api-invalid-ids',
+    'rETL (legacy API): missing or non-numeric hs_object_id fails only that record',
+    [
+      {
+        destination: retlLegacyDestination,
+        message: identifyMessage(808, { firstname: 'Frank' }),
+        metadata: { jobId: 6014, userId: 'u1' },
+      },
+      {
+        destination: retlLegacyDestination,
+        message: identifyMessage(null, { firstname: 'NoId' }),
+        metadata: { jobId: 6015, userId: 'u1' },
+      },
+      {
+        destination: retlLegacyDestination,
+        message: identifyMessage('abc', { firstname: 'BadId' }),
+        metadata: { jobId: 6016, userId: 'u1' },
+      },
+    ],
+    [
+      batchUpdate(
+        'contacts',
+        [{ id: '808', properties: { firstname: 'Frank' } }],
+        [{ jobId: 6014, userId: 'u1' }],
+        retlLegacyDestination,
+      ),
+      invalidRecordId('', { jobId: 6015, userId: 'u1' }, retlLegacyDestination),
+      invalidRecordId('abc', { jobId: 6016, userId: 'u1' }, retlLegacyDestination),
+    ],
+  ),
+  routerCase(
     'hs-retl-record-id-companies-batch-update',
     'rETL (v3): hs_object_id identifier on a non-contact object -> direct batch update',
     [

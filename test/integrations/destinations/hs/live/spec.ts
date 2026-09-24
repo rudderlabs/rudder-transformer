@@ -574,6 +574,78 @@ export const live = {
       },
     },
     {
+      id: 'hs-retl-contacts-update-by-record-id-v1',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL identify keyed by hs_object_id updates the contact directly via the v1 transform (no search)',
+      configOverride: (base) => ({ ...base, apiVersion: 'legacyApi' }),
+      steps: [
+        { stepType: 'action', name: 'setup', run: createContactAndRegisterId },
+        {
+          name: 'retl update contact by record id (v1 transform)',
+          stepType: 'pipeline',
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-record-id-v1'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlRecordIdContext(registeredId(ctx, 'contacts')),
+            traits: retlRecordIdUpdateTraits(ctx),
+          }),
+        },
+      ],
+      verify: {
+        check: verifyRegisteredObjectProperties('contacts', retlRecordIdUpdateTraits),
+        ...CONTACT_READBACK,
+      },
+    },
+    {
+      // Exercises the v1 update batching's duplicate-id merge against HubSpot.
+      id: 'hs-retl-contacts-update-by-record-id-batch-v1',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL record id batch with a duplicate id is merged and delivered as one batch/update via the v1 transform',
+      configOverride: (base) => ({ ...base, apiVersion: 'legacyApi' }),
+      steps: [
+        { stepType: 'action', name: 'setup', run: createTwoContactsAndRegisterIds },
+        {
+          name: 'retl update two contacts by record id in one batch (v1 transform)',
+          stepType: 'pipeline',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => {
+            const [firstId, secondId] = registeredIds(ctx, 'contacts');
+            return [
+              {
+                ...baseTimestamps(ctx, 'retl-record-id-v1-dup-1'),
+                type: 'identify',
+                recordId: ctx.runId,
+                context: retlRecordIdContext(firstId),
+                traits: retlRecordIdDupFirstTraits(ctx),
+              },
+              {
+                ...baseTimestamps(ctx, 'retl-record-id-v1-dup-2'),
+                type: 'identify',
+                recordId: ctx.runId,
+                context: retlRecordIdContext(firstId),
+                traits: retlRecordIdDupSecondTraits(ctx),
+              },
+              {
+                ...baseTimestamps(ctx, 'retl-record-id-v1-other'),
+                type: 'identify',
+                recordId: ctx.runId,
+                context: retlRecordIdContext(secondId),
+                traits: retlRecordIdOtherContactTraits(ctx),
+              },
+            ];
+          },
+        },
+      ],
+      verify: {
+        check: verifyRecordIdBatch(retlRecordIdDupCombinedTraits, retlRecordIdOtherContactTraits),
+        ...CONTACT_READBACK,
+      },
+    },
+    {
       id: 'hs-retl-companies-update-by-record-id-v3',
       cleanup: deleteRegisteredObjects,
       description:

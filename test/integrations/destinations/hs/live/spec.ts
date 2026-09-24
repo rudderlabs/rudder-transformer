@@ -38,6 +38,7 @@ import {
   retlUpsertSecondaryTraits,
 } from './profiles';
 import {
+  createAndDeleteContact,
   createAssociationObjects,
   createCompanyAndRegisterId,
   createContactAndRegisterId,
@@ -644,6 +645,29 @@ export const live = {
         check: verifyRegisteredObjectProperties('companies', retlRecordIdCompanyTraits),
         ...CONTACT_READBACK,
       },
+    },
+    {
+      // A record id that no longer exists in HubSpot must fail delivery — never create a record.
+      // Also pins HubSpot's batch/update response for a missing id: a 207 here would read as
+      // delivered and fail this step.
+      id: 'hs-retl-contacts-update-by-stale-record-id-v3',
+      cleanup: deleteRegisteredObjects,
+      description: 'RETL update keyed by a deleted hs_object_id fails delivery',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createAndDeleteContact },
+        {
+          name: 'retl update deleted contact by record id',
+          stepType: 'pipeline',
+          expectedFailure: { items: [0] },
+          seed: (ctx) =>
+            recordIdEvent(
+              ctx,
+              'retl-record-id-stale',
+              registeredId(ctx, 'contacts'),
+              retlRecordIdUpdateTraits(ctx),
+            ),
+        },
+      ],
     },
   ],
 } satisfies LiveSpec;

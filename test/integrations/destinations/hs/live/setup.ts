@@ -1,7 +1,13 @@
 import type { RunContext } from '../../../live/types';
 import { pollUntil } from '../../../live/poll';
 import { lookupFirstname } from './profiles';
-import { createCrmObject, findContactIdByEmail, findContactIdByProperty } from './api';
+import {
+  createCrmObject,
+  deleteContactById,
+  findContactIdByEmail,
+  findContactIdByProperty,
+  registeredId,
+} from './api';
 
 // The CRM Search index is eventually consistent — a fresh contact can drop out of the next
 // search, so a first-hit poll leaves the transform's own search racing to create and 409-ing on
@@ -77,6 +83,13 @@ export const createCompanyAndRegisterId = async (ctx: RunContext): Promise<void>
 export const createTwoContactsAndRegisterIds = async (ctx: RunContext): Promise<void> => {
   await createContactAndRegisterId(ctx, 'first');
   await createContactAndRegisterId(ctx, 'second');
+};
+
+// Stale record id: create a contact and delete it, keeping its id registered so the pipeline step
+// can address a record id that no longer exists (deleted contacts are archived, not reusable).
+export const createAndDeleteContact = async (ctx: RunContext): Promise<void> => {
+  await createContactAndRegisterId(ctx);
+  await deleteContactById(ctx, registeredId(ctx, 'contacts'));
 };
 
 // An association links two existing objects (a company and a contact), so its scenario can't mint

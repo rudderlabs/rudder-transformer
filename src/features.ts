@@ -2,6 +2,7 @@ import path from 'path';
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { DestHandlerMap } from './constants/destinationCanonicalNames';
 import { getIntegrations } from './routes/utils';
+import { secretPaths } from './secretPaths';
 
 // ---------------------------------------------------------------------------
 // Destination capabilities
@@ -243,6 +244,19 @@ interface FeaturesConfig {
   supportTransformerProxyV1: true;
   upgradedToSourceTransformV2: true;
   supportDestTransformCompactedPayloadV1: true;
+  /**
+   * destType -> the request paths to mask before showing a destination live event.
+   *
+   * Carried here rather than on a dedicated endpoint because it is the same shape as
+   * routerTransform and transformerProxy above - a per-destination map - and because shipping
+   * it with the flags removes any window where a consumer holds capabilities from one build
+   * and paths from another.
+   *
+   * The contract - what an empty list, `null` and an absent key each mean - is stated once, in
+   * swagger/components/schemas/features.yaml. Do not restate it here: the copy that used to
+   * live in this comment drifted within a single commit of the contract changing.
+   */
+  secretPaths: Record<string, string[] | null>;
 }
 
 const defaultFeaturesConfig: FeaturesConfig = {
@@ -253,6 +267,10 @@ const defaultFeaturesConfig: FeaturesConfig = {
   supportTransformerProxyV1: true,
   upgradedToSourceTransformV2: true,
   supportDestTransformCompactedPayloadV1: true,
+  // `?? {}` so the key is always present. An absent field is indistinguishable from a build that
+  // predates masking, which a consumer must treat as "no masking" - the opposite of the
+  // fail-closed empty map the loader produces.
+  secretPaths: secretPaths ?? {},
 };
 
 export default defaultFeaturesConfig;

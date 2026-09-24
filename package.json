@@ -56,7 +56,10 @@
     "release:github": "node scripts/create-github-release.js",
     "clean:node": "modclean",
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0",
-    "generate:testcases": "ts-node ./test/scripts/generateJson.ts --location testcases"
+    "generate:testcases": "ts-node ./test/scripts/generateJson.ts --location testcases",
+    "secret-paths": "node test/secret-paths/run.js",
+    "secret-paths:check": "node test/secret-paths/run.js --check",
+    "secret-paths:validate": "node test/secret-paths/run.js --validate"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",

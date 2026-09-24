@@ -8,6 +8,13 @@ export interface Hydrator {
   hydrate(input: SourceHydrationRequest): Promise<SourceHydrationOutput>;
 }
 
+/**
+ * Serialised once. `defaultFeaturesConfig` is frozen at module load, and /features is polled on
+ * an interval by every data-plane pod - re-stringifying per request was affordable at ~3KB and
+ * is less so now that the secretPaths map is carried in the same payload.
+ */
+const serialisedFeatures = JSON.stringify(defaultFeaturesConfig);
+
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
     const handlerName = getDestinationHandlerName(dest);
@@ -73,6 +80,6 @@ export class MiscService {
   }
 
   public static getFeatures() {
-    return JSON.stringify(defaultFeaturesConfig);
+    return serialisedFeatures;
   }
 }

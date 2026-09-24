@@ -1082,6 +1082,7 @@ export {
   getEventAndPropertiesFromConfig,
   searchContacts,
   splitEventsForCreateUpdate,
+  setHsSearchId,
   getHsSearchId,
   validatePayloadDataTypes,
   getUTCMidnightTimeStampValue,

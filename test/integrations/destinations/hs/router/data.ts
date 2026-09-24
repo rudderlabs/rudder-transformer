@@ -11,6 +11,7 @@ import { destination } from './config';
 import { upsertData } from './upsertData';
 import { errorValidationData } from './errorValidationData';
 import { retlUpsertData } from './retlUpsertData';
+import { retlRecordIdData } from './retlRecordIdData';
 
 /**
  * Helpers + migrated event-stream / legacy router cases (previously eventStreamData.ts).
@@ -4479,4 +4480,4 @@ const baseData: Record<string, unknown>[] = [
 ];
 
 // Dedicated rETL upsert fixtures are appended after the base fixtures.
-export const data = [...baseData, ...retlUpsertData];
+export const data = [...baseData, ...retlUpsertData, ...retlRecordIdData];

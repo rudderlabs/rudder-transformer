@@ -27,6 +27,7 @@ import {
   RETL_SOURCE,
   BATCH_CREATE_PATH_SUFFIX,
   BATCH_UPDATE_PATH_SUFFIX,
+  HS_RECORD_ID_PROPERTY,
 } from './config';
 import {
   populateTraits,
@@ -49,7 +50,7 @@ import type {
   HubSpotBatchRequestOutput,
   HubSpotUpsertPayload,
 } from './types';
-import { hasAssociationShape, hasUpsertPayloadShape } from './types';
+import { hasAssociationShape, hasPropertiesRecord, hasUpsertPayloadShape } from './types';
 
 /**
  * rETL (new/v3 API) identify handler.
@@ -171,6 +172,13 @@ const processRetlIdentify = async (
     recordTransformFlow(destination, 'retl', 'retl', 'create');
   } else if (operation === 'updateObject' && getHsSearchId(message)) {
     const { hsSearchId } = getHsSearchId(message);
+    // a record id comes straight from the warehouse row (no search), so it can be missing or malformed
+    if (
+      externalIdInfo?.identifierType === HS_RECORD_ID_PROPERTY &&
+      !/^\d+$/.test(hsSearchId ?? '')
+    ) {
+      throw new InstrumentationError(`rETL - invalid HubSpot record id "${hsSearchId ?? ''}"`);
+    }
     endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
       OBJECT_TYPE_PLACEHOLDER,
       objectType,
@@ -234,10 +242,20 @@ const batchIdentifyRetl = (
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-          id: updateEndpoint.split('/').pop(),
-        });
+        const id = updateEndpoint.split('/').pop();
+        const json = ev.message.body.JSON;
+        // Deduplicate by id - hubspot fails the batch update request
+        // if the same id appears more than once.
+        const existing = identifyResponseList.find((data) => data.id === id);
+        if (existing && hasPropertiesRecord(existing) && hasPropertiesRecord(json)) {
+          // Merge latest properties with existing properties
+          existing.properties = { ...existing.properties, ...json.properties };
+        } else {
+          identifyResponseList.push({
+            ...json,
+            id,
+          });
+        }
 
         metadata.push(ev.metadata);
       });

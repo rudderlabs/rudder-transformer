@@ -2,11 +2,12 @@ import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { EventType, MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } from '../../util';
-import { API_VERSION } from './config';
+import { API_VERSION, HS_RECORD_ID_PROPERTY } from './config';
 import { processRetlLegacyIdentify, batchRetlLegacyEvents } from './retl-v1';
 import { processRetlIdentify, batchRetlEvents } from './retl-v3';
 import {
   splitEventsForCreateUpdate,
+  setHsSearchId,
   getProperties,
   validateDestinationConfig,
   isLookupFieldUnique,
@@ -82,13 +83,34 @@ const processBatchRouterRetl = async (
       // objectType we use the v3 batch upsert endpoint directly: tag every event for
       // upsert and skip `splitEventsForCreateUpdate` (and its Search chain).
       // Otherwise, unchanged.
+      // hs_object_id is hubspot's own record id: records are addressed directly, so there's
+      // nothing to search for, and hubspot doesn't report it as unique, so upsert can't use
+      // it either. Tag every event for a direct batch update, skipping the Search chain.
+      const isRecordIdLookup =
+        destination.Config.apiVersion === API_VERSION.v3 &&
+        identifierType === HS_RECORD_ID_PROPERTY;
       const canUpsert =
+        !isRecordIdLookup &&
         destination.Config.apiVersion === API_VERSION.v3 &&
         objectType &&
         identifierType &&
         (await isLookupFieldUnique(destination, identifierType, metadata, objectType));
 
-      if (canUpsert) {
+      if (isRecordIdLookup) {
+        tempInputs = tempInputs.map((input) => {
+          const taggedInput = input;
+          const recordId = getDestinationExternalIDInfoForRetl(
+            input.message,
+            'HS',
+          )?.destinationExternalId;
+          taggedInput.message.context = {
+            ...input.message.context,
+            externalId: setHsSearchId(input, String(recordId ?? '')),
+            hubspotOperation: 'updateObject',
+          };
+          return taggedInput;
+        });
+      } else if (canUpsert) {
         tempInputs = tempInputs.map((input) => {
           const taggedInput = input;
           taggedInput.message.context = {

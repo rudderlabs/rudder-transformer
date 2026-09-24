@@ -139,9 +139,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   _e: 'Order Completed',
@@ -292,9 +292,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   anonymous_id: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
@@ -407,9 +407,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   anonymous_id: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
@@ -515,9 +515,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   anonymous_id: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
@@ -622,9 +622,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   user_id: 'rudder123',
@@ -729,9 +729,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   user_id: 'rudder123',
@@ -1069,9 +1069,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   _e: 'Order Completed',
@@ -1213,9 +1213,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   event: 'ApplicationLoaded',
@@ -1313,9 +1313,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   event: 'ApplicationLoaded',
@@ -1423,9 +1423,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   anonymous_id: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
@@ -1533,9 +1533,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://api.lytics.io/collect/json/default?access_token=${defaultApiKey}`,
+              endpoint: 'https://api.lytics.io/collect/json/default',
               headers: { 'Content-Type': 'application/json' },
-              params: {},
+              params: { access_token: defaultApiKey },
               body: {
                 JSON: {
                   anonymous_id: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',

@@ -267,6 +267,7 @@ const formingFinalResponse = (
     const response = defaultRequestConfig();
     response.endpoint = endpointDetails.endpoint;
     response.endpointPath = endpointDetails.path;
+    response.params = endpointDetails.params;
     response.method = defaultPostRequestConfig.requestMethod;
     const jsonData = {
       user_data: userData,

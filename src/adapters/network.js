@@ -50,6 +50,29 @@ const networkClientConfigs = {
   httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
+const PARAMS_SERIALIZER_PRESETS = {
+  identity: { encode: (value) => value },
+};
+
+const shouldUseIdentityParamsSerializer = ({ endpoint, url, params }) =>
+  /^https:\/\/graph\.facebook\.com\/v[0-9.]+\/[^/]+\/events$/.test(endpoint || url) &&
+  params?.upload_tag !== undefined &&
+  params?.access_token !== undefined &&
+  typeof params?.data === 'string' &&
+  params.data.startsWith('%5B') &&
+  params.data.endsWith('%5D');
+
+const resolveParamsSerializer = (paramsSerializer) => {
+  if (typeof paramsSerializer === 'string') {
+    return PARAMS_SERIALIZER_PRESETS[paramsSerializer] || paramsSerializer;
+  }
+  return paramsSerializer;
+};
+
+const resolveRequestParamsSerializer = ({ endpoint, url, params, paramsSerializer }) =>
+  paramsSerializer ||
+  (shouldUseIdentityParamsSerializer({ endpoint, url, params }) ? 'identity' : undefined);
+
 const fireOutgoingReqStats = ({
   destType,
   feature,
@@ -104,6 +127,7 @@ const enhanceRequestOptions = (options) => {
   const requestOptions = {
     ...networkClientConfigs,
     ...options,
+    paramsSerializer: resolveParamsSerializer(resolveRequestParamsSerializer(options || {})),
     maxContentLength: MAX_CONTENT_LENGTH,
     maxBodyLength: MAX_BODY_LENGTH,
   };
@@ -418,6 +442,7 @@ const prepareProxyRequest = async (request) => {
     body,
     method,
     params,
+    paramsSerializer,
     endpoint,
     headers: incomingHeaders = {},
     destinationConfig: config,
@@ -430,7 +455,15 @@ const prepareProxyRequest = async (request) => {
   const data = await extractPayloadForFormat(payload, payloadFormat);
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
   headers['User-Agent'] = 'RudderLabs';
-  return removeUndefinedValues({ endpoint, data, params, headers, method, config });
+  return removeUndefinedValues({
+    endpoint,
+    data,
+    params,
+    paramsSerializer,
+    headers,
+    method,
+    config,
+  });
 };
 
 const getHttpWrapperMethod = (requestType) => {
@@ -509,12 +542,14 @@ const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }
  */
 const proxyRequest = async (request, destType) => {
   const { metadata, endpointPath, body } = request;
-  const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
+  const { endpoint, data, method, params, paramsSerializer, headers } =
+    await prepareProxyRequest(request);
   fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
   const requestOptions = {
     url: endpoint,
     data,
     params,
+    paramsSerializer,
     headers,
     method,
   };

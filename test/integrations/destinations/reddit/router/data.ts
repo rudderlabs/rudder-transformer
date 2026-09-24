@@ -440,10 +440,7 @@ const v3Data: RouterTestData[] = [
                             action_source: 'WEBSITE',
                             event_source_url: 'https://www.example.com/checkout?order=1234',
                             event_at: 1760346197562,
-                            metadata: {
-                              item_count: 1,
-                              products: [{}],
-                            },
+                            metadata: {},
                             type: {
                               custom_event_name: 'Custom Event',
                               tracking_type: 'CUSTOM',
@@ -928,10 +925,7 @@ const v3Data: RouterTestData[] = [
                         {
                           action_source: 'PHYSICAL_STORE',
                           event_at: 1760346197562,
-                          metadata: {
-                            item_count: 1,
-                            products: [{}],
-                          },
+                          metadata: {},
                           type: { tracking_type: 'LEAD' },
                           user: { ...HASHED_USER_DATA.testUserOne, user_agent: COMMON_USER_AGENT },
                         },

@@ -4,9 +4,11 @@ import {
   ASSOC_TO_TYPE,
   fetchContactByEmail,
   fetchContactPropsById,
+  fetchCrmObjectPropsById,
   findContactIdByEmail,
   getAssociatedIds,
   registeredId,
+  registeredIds,
 } from './api';
 
 // Verify the contact carries every expected property.
@@ -18,6 +20,30 @@ export const verifyContactProperties =
     const props = await fetchContactByEmail(ctx, keys);
     expect(props).not.toBeNull();
     expect(props).toMatchObject(want);
+  };
+
+// Verify the registered object (by record id, the `index`-th registered of `objectType`) carries
+// every expected property.
+export const verifyRegisteredObjectProperties =
+  (objectType: string, expected: (ctx: RunContext) => Record<string, string>, index = 0) =>
+  async (ctx: RunContext): Promise<void> => {
+    const id = registeredIds(ctx, objectType)[index];
+    expect(id).toBeDefined();
+    const want = expected(ctx);
+    const props = await fetchCrmObjectPropsById(ctx, objectType, id, Object.keys(want));
+    expect(props).not.toBeNull();
+    expect(props).toMatchObject(want);
+  };
+
+// Record-id batch: both contacts updated by the one batch, the first with both merged events.
+export const verifyRecordIdBatch =
+  (
+    first: (ctx: RunContext) => Record<string, string>,
+    second: (ctx: RunContext) => Record<string, string>,
+  ) =>
+  async (ctx: RunContext): Promise<void> => {
+    await verifyRegisteredObjectProperties('contacts', first, 0)(ctx);
+    await verifyRegisteredObjectProperties('contacts', second, 1)(ctx);
   };
 
 // Verify the pipeline step's association actually links the two set-up records.

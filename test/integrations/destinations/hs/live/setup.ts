@@ -5,6 +5,7 @@ import {
   ASSOC_FROM_TYPE,
   ASSOC_TO_TYPE,
   createCrmObject,
+  deleteCrmObjectById,
   findContactIdByEmail,
   findContactIdByProperty,
 } from './api';
@@ -65,6 +66,39 @@ export const createContactAndRegisterId = async (ctx: RunContext): Promise<void>
     lastname: ctx.runId,
   });
   ctx.register({ type: 'contacts', id });
+};
+
+// Record-id batch scenario: two contacts, both registered, so one batch can address each by id.
+export const createTwoContactsAndRegisterIds = async (ctx: RunContext): Promise<void> => {
+  for (const label of ['first', 'second']) {
+    // eslint-disable-next-line no-await-in-loop
+    const id = await createCrmObject(ctx, 'contacts', {
+      email: ctx.email(label),
+      firstname: `CI-RecordId-${label}`,
+      lastname: ctx.runId,
+    });
+    ctx.register({ type: 'contacts', id });
+  }
+};
+
+export const createCompanyAndRegisterId = async (ctx: RunContext): Promise<void> => {
+  const id = await createCrmObject(ctx, 'companies', {
+    name: `RudderStack CI ${ctx.runId}`,
+    domain: `ci-${ctx.runId}.example.com`,
+  });
+  ctx.register({ type: 'companies', id });
+};
+
+// Stale record id: create a contact and delete it, keeping its id registered so the pipeline step
+// can address a record id that no longer exists (deleted contacts are archived, not reusable).
+export const createAndDeleteContact = async (ctx: RunContext): Promise<void> => {
+  const id = await createCrmObject(ctx, 'contacts', {
+    email: ctx.email(),
+    firstname: 'CI-RecordId-Deleted',
+    lastname: ctx.runId,
+  });
+  ctx.register({ type: 'contacts', id });
+  await deleteCrmObjectById(ctx, 'contacts', id);
 };
 
 // An association links two existing objects, so its scenario can't mint ids on the fly — setup

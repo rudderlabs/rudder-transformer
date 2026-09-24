@@ -89,6 +89,44 @@ export const retlContactContextForEmail = (email: string) => ({
 
 export const retlContactContext = (ctx: RunContext) => retlContactContextForEmail(ctx.email());
 
+// rETL mappedToDestination context keyed by HubSpot's record id: the transform skips Search and
+// sends a direct batch/update to this id.
+export const retlRecordIdContext = (recordId: string, objectType = 'contacts') => ({
+  mappedToDestination: true,
+  externalId: [{ type: `HS-${objectType}`, identifierType: 'hs_object_id', id: recordId }],
+  sources: { job_id: 'rudder-live-integration-test', version: 'v1' },
+});
+
+export const retlRecordIdUpdateTraits = (ctx: RunContext): Record<string, string> => ({
+  firstname: 'CI-RecordId-Updated',
+  lastname: `${ctx.runId}-v2`,
+  lifecyclestage: 'customer',
+});
+
+// Record-id batch: the first contact gets two events with DISJOINT properties (merged into one
+// batch input, since HubSpot rejects a duplicate id), the second contact gets one.
+export const retlRecordIdDupFirstTraits = (ctx: RunContext): Record<string, string> => ({
+  firstname: 'CI-RecordId-Dup',
+  jobtitle: `ci-${ctx.runId}-first`,
+});
+export const retlRecordIdDupSecondTraits = (ctx: RunContext): Record<string, string> => ({
+  lastname: `ci-${ctx.runId}-second`,
+  lifecyclestage: 'customer',
+});
+export const retlRecordIdDupCombinedTraits = (ctx: RunContext): Record<string, string> => ({
+  ...retlRecordIdDupFirstTraits(ctx),
+  ...retlRecordIdDupSecondTraits(ctx),
+});
+export const retlRecordIdOtherContactTraits = (ctx: RunContext): Record<string, string> => ({
+  firstname: 'CI-RecordId-Other',
+  lastname: `${ctx.runId}-other`,
+});
+
+export const retlRecordIdCompanyTraits = (ctx: RunContext): Record<string, string> => ({
+  name: `RudderStack CI ${ctx.runId} v2`,
+  description: `ci-${ctx.runId}-record-id`,
+});
+
 // Additional-email upsert: the two upserts write DISJOINT properties so the read-back can assert the
 // single contact carries BOTH sets - proving the primary-email and additional-email upserts landed
 // on the same record rather than forking a second one.

@@ -167,18 +167,56 @@ export const registeredId = (ctx: RunContext, type: string): string => {
   return id;
 };
 
-export const fetchContactPropsById = async (
+export const fetchCrmObjectPropsById = async (
   ctx: RunContext,
+  objectType: string,
   id: string,
   propertyNames: string[],
 ): Promise<Record<string, string> | null> => {
-  const res = await axios.get<HsContactResponse>(`${HS_BASE}/crm/v3/objects/contacts/${id}`, {
+  const res = await axios.get<HsContactResponse>(`${HS_BASE}/crm/v3/objects/${objectType}/${id}`, {
     params: { properties: propertyNames.join(',') },
     headers: authHeaders(ctx),
     httpsAgent: hsAgent,
     timeout: 15000,
   });
   return res.data.properties ?? null;
+};
+
+export const fetchContactPropsById = (
+  ctx: RunContext,
+  id: string,
+  propertyNames: string[],
+): Promise<Record<string, string> | null> =>
+  fetchCrmObjectPropsById(ctx, 'contacts', id, propertyNames);
+
+export const deleteCrmObjectById = async (
+  ctx: RunContext,
+  objectType: string,
+  id: string,
+): Promise<void> => {
+  await axios.delete(`${HS_BASE}/crm/v3/objects/${objectType}/${id}`, {
+    headers: authHeaders(ctx),
+    httpsAgent: hsAgent,
+    timeout: 15000,
+  });
+};
+
+// Every id registered under `type`, in registration order.
+export const registeredIds = (ctx: RunContext, type: string): string[] =>
+  ctx.resources.filter((r) => r.type === type).map((r) => r.id);
+
+// Delete every object the scenario registered (type = CRM object type). Best-effort per object so
+// one failure (e.g. an object the scenario already deleted) can't strand the rest.
+export const deleteRegisteredObjects = async (ctx: RunContext): Promise<void> => {
+  for (const r of ctx.resources) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await deleteCrmObjectById(ctx, r.type, r.id);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(`[live:hs] teardown failed for ${r.type}/${r.id}`, err);
+    }
+  }
 };
 
 // Delete any contact reachable by the run's primary or additional email. On the happy path only the

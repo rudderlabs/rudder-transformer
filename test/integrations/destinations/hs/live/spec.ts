@@ -4,8 +4,10 @@ import {
   ASSOC_TO_TYPE,
   deleteAssociationObjects,
   deleteContactByEmail,
+  deleteRegisteredObjects,
   deleteUpsertAdditionalEmailContacts,
   registeredId,
+  registeredIds,
 } from './api';
 import {
   baseTimestamps,
@@ -25,20 +27,32 @@ import {
   retlContactCreateV1Traits,
   retlContactUpdateTraits,
   retlContactUpdateV1Traits,
+  retlRecordIdCompanyTraits,
+  retlRecordIdContext,
+  retlRecordIdDupCombinedTraits,
+  retlRecordIdDupFirstTraits,
+  retlRecordIdDupSecondTraits,
+  retlRecordIdOtherContactTraits,
+  retlRecordIdUpdateTraits,
   retlUpsertCombinedTraits,
   retlUpsertPrimaryTraits,
   retlUpsertSecondaryTraits,
 } from './profiles';
 import {
+  createAndDeleteContact,
   createAssociationObjects,
+  createCompanyAndRegisterId,
   createContactAndRegisterId,
   createContactAndWaitSearchable,
   createContactSearchableByFirstname,
   createContactWithAdditionalEmail,
+  createTwoContactsAndRegisterIds,
 } from './setup';
 import {
   verifyAssociationExists,
   verifyContactProperties,
+  verifyRecordIdBatch,
+  verifyRegisteredObjectProperties,
   verifyUpsertResolvesToSameContact,
 } from './verify';
 
@@ -485,6 +499,126 @@ export const live = {
         },
       ],
       verify: { check: verifyAssociationExists },
+    },
+    {
+      // Record id (hs_object_id) identifier: the transform addresses the record directly with a
+      // batch/update — no Search, so no settle delay or retries are needed after setup.
+      id: 'hs-retl-contacts-update-by-record-id-v3',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL identify keyed by hs_object_id updates the contact directly (crm/v3 batch/update, no search)',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createContactAndRegisterId },
+        {
+          name: 'retl update contact by record id',
+          stepType: 'pipeline',
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-record-id'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlRecordIdContext(registeredId(ctx, 'contacts')),
+            traits: retlRecordIdUpdateTraits(ctx),
+          }),
+        },
+      ],
+      verify: {
+        check: verifyRegisteredObjectProperties('contacts', retlRecordIdUpdateTraits),
+        ...CONTACT_READBACK,
+      },
+    },
+    {
+      // HubSpot rejects a batch/update carrying the same id twice, so the two events for the first
+      // contact must be merged into one input for this single request to land.
+      id: 'hs-retl-contacts-update-by-record-id-batch-v3',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL record id batch with a duplicate id is merged and delivered as one crm/v3 batch/update',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createTwoContactsAndRegisterIds },
+        {
+          name: 'retl update two contacts by record id in one batch',
+          stepType: 'pipeline',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => {
+            const [firstId, secondId] = registeredIds(ctx, 'contacts');
+            return [
+              {
+                ...baseTimestamps(ctx, 'retl-record-id-dup-1'),
+                type: 'identify',
+                recordId: ctx.runId,
+                context: retlRecordIdContext(firstId),
+                traits: retlRecordIdDupFirstTraits(ctx),
+              },
+              {
+                ...baseTimestamps(ctx, 'retl-record-id-dup-2'),
+                type: 'identify',
+                recordId: ctx.runId,
+                context: retlRecordIdContext(firstId),
+                traits: retlRecordIdDupSecondTraits(ctx),
+              },
+              {
+                ...baseTimestamps(ctx, 'retl-record-id-other'),
+                type: 'identify',
+                recordId: ctx.runId,
+                context: retlRecordIdContext(secondId),
+                traits: retlRecordIdOtherContactTraits(ctx),
+              },
+            ];
+          },
+        },
+      ],
+      verify: {
+        check: verifyRecordIdBatch(retlRecordIdDupCombinedTraits, retlRecordIdOtherContactTraits),
+        ...CONTACT_READBACK,
+      },
+    },
+    {
+      id: 'hs-retl-companies-update-by-record-id-v3',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL identify keyed by hs_object_id updates a company directly (crm/v3 batch/update, no search)',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createCompanyAndRegisterId },
+        {
+          name: 'retl update company by record id',
+          stepType: 'pipeline',
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-record-id-company'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlRecordIdContext(registeredId(ctx, 'companies'), 'companies'),
+            traits: retlRecordIdCompanyTraits(ctx),
+          }),
+        },
+      ],
+      verify: {
+        check: verifyRegisteredObjectProperties('companies', retlRecordIdCompanyTraits),
+        ...CONTACT_READBACK,
+      },
+    },
+    {
+      // A record id that no longer exists in HubSpot must fail delivery — never create a record.
+      // Also pins HubSpot's batch/update response for a missing id: a 207 here would read as
+      // delivered and fail this step.
+      id: 'hs-retl-contacts-update-by-stale-record-id-v3',
+      cleanup: deleteRegisteredObjects,
+      description: 'RETL update keyed by a deleted hs_object_id fails delivery',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createAndDeleteContact },
+        {
+          name: 'retl update deleted contact by record id',
+          stepType: 'pipeline',
+          expectedFailure: { items: [0] },
+          seed: (ctx) => ({
+            ...baseTimestamps(ctx, 'retl-record-id-stale'),
+            type: 'identify',
+            recordId: ctx.runId,
+            context: retlRecordIdContext(registeredId(ctx, 'contacts')),
+            traits: retlRecordIdUpdateTraits(ctx),
+          }),
+        },
+      ],
     },
   ],
 } satisfies LiveSpec;

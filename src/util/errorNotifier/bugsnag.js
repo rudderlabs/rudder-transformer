@@ -48,10 +48,7 @@ const errorTypesDenyList = [
   FilteredEventsError,
 ];
 
-const pathsDenyList = [
-  '/src/warehouse/',
-  '/src/util/custom', // User-transformation files
-];
+const pathsDenyList = ['/src/util/custom']; // User-transformation files
 
 let bugsnagClient;
 

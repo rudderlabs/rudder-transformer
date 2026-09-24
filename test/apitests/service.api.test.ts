@@ -95,6 +95,11 @@ describe('Api tests with a mock source/destination', () => {
       expectedError: 'Unknown destination: not_a_destination',
     },
     {
+      name: 'retired warehouse processor path destination',
+      request: () => request(server).post('/v0/destinations/postgres').send([]),
+      expectedError: 'Unknown destination: postgres',
+    },
+    {
       name: 'routerTransform body destType',
       request: () =>
         request(server).post('/routerTransform').send({ input: [], destType: 'not_a_destination' }),

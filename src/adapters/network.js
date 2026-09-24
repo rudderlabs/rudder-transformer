@@ -55,7 +55,7 @@ const PARAMS_SERIALIZER_PRESETS = {
 };
 
 const shouldUseIdentityParamsSerializer = ({ endpoint, url, params }) =>
-  /^https:\/\/graph\.facebook\.com\/v[0-9.]+\/[^/]+\/events$/.test(endpoint || url) &&
+  /^https:\/\/graph\.facebook\.com\/v[\d.]+\/[^/]+\/events$/.test(endpoint || url) &&
   params?.upload_tag !== undefined &&
   params?.access_token !== undefined &&
   typeof params?.data === 'string' &&

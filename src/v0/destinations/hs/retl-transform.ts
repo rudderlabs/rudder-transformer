@@ -37,6 +37,10 @@ const isRetlMappedEvent = (message: HubspotRudderMessage): boolean => {
 const shouldUseHsRetlSplitPath = (input: HubspotRouterRequest): boolean =>
   isRetlMappedEvent(input.message);
 
+// the record id carried by a rETL row whose identifier is hs_object_id
+const getHsRecordId = (input: HubspotRouterRequest): string =>
+  String(getDestinationExternalIDInfoForRetl(input.message, 'HS')?.destinationExternalId ?? '');
+
 const processSingleMessageRetl = async (
   { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
@@ -75,6 +79,35 @@ const processBatchRouterRetl = async (
     validateDestinationConfig(destination);
     // skip splitting the batches to inserts and updates if the object is an association
     if (!objectType || String(objectType).toLowerCase() !== 'association') {
+      // hs_object_id is hubspot's own record id: records are addressed directly, so there's
+      // nothing to search for, and hubspot doesn't report it as unique, so upsert can't use
+      // it either. Tag every event for a direct batch update, skipping the Search chain.
+      const isRecordIdLookup =
+        destination.Config.apiVersion === API_VERSION.v3 &&
+        identifierType === HS_RECORD_ID_PROPERTY;
+
+      if (isRecordIdLookup) {
+        // the record id comes straight from the warehouse row, so fail missing or
+        // malformed ones up front, before any hubspot call
+        tempInputs = tempInputs.filter((input) => {
+          const recordId = getHsRecordId(input);
+          if (/^\d+$/.test(recordId)) {
+            return true;
+          }
+          errorRespList.push(
+            handleRtTfSingleEventError(
+              input,
+              new InstrumentationError(`rETL - invalid HubSpot record id "${recordId}"`),
+              reqMetadata,
+            ),
+          );
+          return false;
+        });
+        if (tempInputs.length === 0) {
+          return { batchedResponseList, errorRespList, dontBatchEvents: [] };
+        }
+      }
+
       propertyMap = await getProperties(destination, metadata);
 
       // Upsert is only implemented for the v3 endpoint (retl-v3); the
@@ -83,12 +116,6 @@ const processBatchRouterRetl = async (
       // objectType we use the v3 batch upsert endpoint directly: tag every event for
       // upsert and skip `splitEventsForCreateUpdate` (and its Search chain).
       // Otherwise, unchanged.
-      // hs_object_id is hubspot's own record id: records are addressed directly, so there's
-      // nothing to search for, and hubspot doesn't report it as unique, so upsert can't use
-      // it either. Tag every event for a direct batch update, skipping the Search chain.
-      const isRecordIdLookup =
-        destination.Config.apiVersion === API_VERSION.v3 &&
-        identifierType === HS_RECORD_ID_PROPERTY;
       const canUpsert =
         !isRecordIdLookup &&
         destination.Config.apiVersion === API_VERSION.v3 &&
@@ -99,13 +126,9 @@ const processBatchRouterRetl = async (
       if (isRecordIdLookup) {
         tempInputs = tempInputs.map((input) => {
           const taggedInput = input;
-          const recordId = getDestinationExternalIDInfoForRetl(
-            input.message,
-            'HS',
-          )?.destinationExternalId;
           taggedInput.message.context = {
             ...input.message.context,
-            externalId: setHsSearchId(input, String(recordId ?? '')),
+            externalId: setHsSearchId(input, getHsRecordId(input)),
             hubspotOperation: 'updateObject',
           };
           return taggedInput;
@@ -128,15 +151,16 @@ const processBatchRouterRetl = async (
     // Any error thrown from the above try block applies to all the events
     return {
       batchedResponseList,
-      errorRespList: tempInputs.map((input) =>
-        handleRtTfSingleEventError(input, error, reqMetadata),
-      ),
+      errorRespList: [
+        ...errorRespList,
+        ...tempInputs.map((input) => handleRtTfSingleEventError(input, error, reqMetadata)),
+      ],
       dontBatchEvents: [],
     };
   }
 
   await Promise.all(
-    inputs.map(async (input) => {
+    tempInputs.map(async (input) => {
       try {
         let receivedResponse = await processSingleMessageRetl(
           { message: input.message, destination, metadata: input.metadata },

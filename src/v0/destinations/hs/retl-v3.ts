@@ -27,7 +27,6 @@ import {
   RETL_SOURCE,
   BATCH_CREATE_PATH_SUFFIX,
   BATCH_UPDATE_PATH_SUFFIX,
-  HS_RECORD_ID_PROPERTY,
 } from './config';
 import {
   populateTraits,
@@ -172,13 +171,6 @@ const processRetlIdentify = async (
     recordTransformFlow(destination, 'retl', 'retl', 'create');
   } else if (operation === 'updateObject' && getHsSearchId(message)) {
     const { hsSearchId } = getHsSearchId(message);
-    // a record id comes straight from the warehouse row (no search), so it can be missing or malformed
-    if (
-      externalIdInfo?.identifierType === HS_RECORD_ID_PROPERTY &&
-      !/^\d+$/.test(hsSearchId ?? '')
-    ) {
-      throw new InstrumentationError(`rETL - invalid HubSpot record id "${hsSearchId ?? ''}"`);
-    }
     endpointPath = CRM_CREATE_UPDATE_ALL_OBJECTS_ENDPOINT_PATH.replace(
       OBJECT_TYPE_PLACEHOLDER,
       objectType,

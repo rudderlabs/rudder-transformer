@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   validate-actor:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: arc-amd64
     permissions:
       contents: read # minimum required permission; org team membership check uses app token (create-github-app-token)
     steps:

@@ -469,7 +469,6 @@ export const retlUpsertData: Record<string, unknown>[] = [
                           firstname: 'Karen',
                           lastname: 'Peñarete',
                         },
-                        objectWriteTraceId: '5006',
                       },
                     ],
                   },

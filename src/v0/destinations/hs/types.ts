@@ -135,7 +135,6 @@ export interface HubSpotIdentifyPayload {
 export interface HubSpotBatchInputItem {
   id?: string;
   properties: Record<string, unknown>;
-  objectWriteTraceId?: string;
 }
 
 /**
@@ -284,9 +283,9 @@ export interface HubspotRudderMessage extends Omit<RudderMessage, 'context' | 'e
 /**
  * Type guard: JSON payload has properties as Record (not array) - for create/update contact
  */
-export function hasPropertiesRecord<T>(
-  json: T,
-): json is T & { properties: Record<string, unknown> } {
+export function hasPropertiesRecord(
+  json: unknown,
+): json is { properties: Record<string, unknown> } {
   if (!json || Array.isArray(json)) return false;
   const obj = json as Record<string, unknown>;
   return (

@@ -175,8 +175,8 @@ export const retlRecordIdData: Record<string, unknown>[] = [
       batchUpdate(
         'contacts',
         [
-          { id: '101', properties: { firstname: 'Alice' }, objectWriteTraceId: '6001' },
-          { id: '202', properties: { firstname: 'Bob' }, objectWriteTraceId: '6002' },
+          { id: '101', properties: { firstname: 'Alice' } },
+          { id: '202', properties: { firstname: 'Bob' } },
         ],
         [
           { jobId: 6001, userId: 'u1' },
@@ -208,7 +208,7 @@ export const retlRecordIdData: Record<string, unknown>[] = [
     [
       batchUpdate(
         'contacts',
-        [{ id: '303', properties: { firstname: 'Carol' }, objectWriteTraceId: '6003' }],
+        [{ id: '303', properties: { firstname: 'Carol' } }],
         [{ jobId: 6003, userId: 'u1' }],
       ),
       invalidRecordId('', { jobId: 6004, userId: 'u1' }),
@@ -276,13 +276,7 @@ export const retlRecordIdData: Record<string, unknown>[] = [
     [
       batchUpdate(
         'contacts',
-        [
-          {
-            id: '404',
-            properties: { firstname: 'Dan', lastname: 'New' },
-            objectWriteTraceId: '6006,6007',
-          },
-        ],
+        [{ id: '404', properties: { firstname: 'Dan', lastname: 'New' } }],
         [
           { jobId: 6006, userId: 'u1' },
           { jobId: 6007, userId: 'u1' },
@@ -308,13 +302,7 @@ export const retlRecordIdData: Record<string, unknown>[] = [
     [
       batchUpdate(
         'contacts',
-        [
-          {
-            id: '606',
-            properties: { firstname: 'Erin', lastname: 'New' },
-            objectWriteTraceId: '6012,6013',
-          },
-        ],
+        [{ id: '606', properties: { firstname: 'Erin', lastname: 'New' } }],
         [
           { jobId: 6012, userId: 'u1' },
           { jobId: 6013, userId: 'u1' },
@@ -346,7 +334,7 @@ export const retlRecordIdData: Record<string, unknown>[] = [
     [
       batchUpdate(
         'contacts',
-        [{ id: '808', properties: { firstname: 'Frank' }, objectWriteTraceId: '6014' }],
+        [{ id: '808', properties: { firstname: 'Frank' } }],
         [{ jobId: 6014, userId: 'u1' }],
         retlLegacyDestination,
       ),
@@ -367,7 +355,7 @@ export const retlRecordIdData: Record<string, unknown>[] = [
     [
       batchUpdate(
         'companies',
-        [{ id: '505', properties: { name: 'Acme' }, objectWriteTraceId: '6008' }],
+        [{ id: '505', properties: { name: 'Acme' } }],
         [{ jobId: 6008, userId: 'u1' }],
       ),
     ],

@@ -904,7 +904,6 @@ const baseData: Record<string, unknown>[] = [
                           country: 'India',
                         },
                         id: '103605',
-                        objectWriteTraceId: '2',
                       },
                     ],
                   },
@@ -1923,7 +1922,6 @@ const baseData: Record<string, unknown>[] = [
                       {
                         properties: { lastname: 'Peñarete', firstname: 'Karen' },
                         id: '103689',
-                        objectWriteTraceId: '3',
                       },
                     ],
                   },

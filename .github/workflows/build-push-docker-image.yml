@@ -136,11 +136,11 @@ jobs:
     strategy:
       matrix:
         build-config:
-          - os: [self-hosted, Linux, ARM64]
+          - os: arc-arm64
             tags: ${{ format('{0}:{1}', inputs.image_repo, inputs.image_tag) }}-arm64
             image_tag: ${{ inputs.image_tag }}-arm64
             platform: linux/arm64
-          - os: [self-hosted, Linux, X64]
+          - os: arc-amd64
             tags: ${{ format('{0}:{1}', inputs.image_repo, inputs.image_tag) }}-amd64
             image_tag: ${{ inputs.image_tag }}-amd64
             platform: linux/amd64

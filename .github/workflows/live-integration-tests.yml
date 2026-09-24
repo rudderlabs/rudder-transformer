@@ -178,7 +178,7 @@ jobs:
     if: needs.discover.outputs.has_work == 'true'
     name: live (${{ matrix.destination }})
     # required: puts the job in infra1-us → PrivateLink path to dev Vault
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: arc-amd64
     timeout-minutes: 30
     permissions:
       id-token: write # required: lets the job mint the GitHub OIDC JWT

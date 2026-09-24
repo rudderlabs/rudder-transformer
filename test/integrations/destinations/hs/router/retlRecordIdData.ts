@@ -106,7 +106,9 @@ const invalidRecordId = (
   metadata: [metadata],
   batched: false,
   statusCode: 400,
-  error: `rETL - invalid HubSpot record id "${recordId}"`,
+  error: recordId
+    ? `rETL - invalid HubSpot record id "${recordId}"`
+    : 'rETL - HubSpot record id (hs_object_id) is empty',
   statTags: {
     destType: 'HS',
     errorCategory: 'dataValidation',

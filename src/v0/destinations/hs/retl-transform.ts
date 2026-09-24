@@ -94,12 +94,11 @@ const processBatchRouterRetl = async (
           if (/^\d+$/.test(recordId)) {
             return true;
           }
+          const reason = recordId
+            ? `rETL - invalid HubSpot record id "${recordId}"`
+            : 'rETL - HubSpot record id (hs_object_id) is empty';
           errorRespList.push(
-            handleRtTfSingleEventError(
-              input,
-              new InstrumentationError(`rETL - invalid HubSpot record id "${recordId}"`),
-              reqMetadata,
-            ),
+            handleRtTfSingleEventError(input, new InstrumentationError(reason), reqMetadata),
           );
           return false;
         });

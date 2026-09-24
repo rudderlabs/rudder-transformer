@@ -38,6 +38,7 @@ import type {
   HubspotProcessorTransformationOutput,
   HubSpotBatchProcessingItem,
 } from './types';
+import { hasPropertiesRecord } from './types';
 
 /**
  * rETL (legacy API) identify handler.
@@ -137,10 +138,20 @@ const batchIdentifyForRetl = (
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-          id: updateEndpoint.split('/').pop(),
-        });
+        const id = updateEndpoint.split('/').pop();
+        const json = ev.message.body.JSON;
+        // Deduplicate by id - hubspot fails the batch update request
+        // if the same id appears more than once.
+        const existing = identifyResponseList.find((data) => data.id === id);
+        if (existing && hasPropertiesRecord(existing) && hasPropertiesRecord(json)) {
+          // Merge latest properties with existing properties
+          existing.properties = { ...existing.properties, ...json.properties };
+        } else {
+          identifyResponseList.push({
+            ...json,
+            id,
+          });
+        }
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
           0,
           updateEndpoint.lastIndexOf('/'),

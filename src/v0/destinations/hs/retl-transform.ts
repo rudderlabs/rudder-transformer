@@ -82,9 +82,8 @@ const processBatchRouterRetl = async (
       // hs_object_id is hubspot's own record id: records are addressed directly, so there's
       // nothing to search for, and hubspot doesn't report it as unique, so upsert can't use
       // it either. Tag every event for a direct batch update, skipping the Search chain.
-      const isRecordIdLookup =
-        destination.Config.apiVersion === API_VERSION.v3 &&
-        identifierType === HS_RECORD_ID_PROPERTY;
+      // Both the v3 and legacy rETL handlers support updateObject via crm/v3 batch/update.
+      const isRecordIdLookup = identifierType === HS_RECORD_ID_PROPERTY;
 
       if (isRecordIdLookup) {
         // the record id comes straight from the warehouse row, so fail missing or

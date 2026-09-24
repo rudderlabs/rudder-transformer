@@ -24,6 +24,14 @@ const retlDestination = {
   },
 };
 
+const retlLegacyDestination = {
+  ID: 'hs-retl-record-id-legacy-dest',
+  Config: {
+    ...retlDestination.Config,
+    apiVersion: 'legacyApi',
+  },
+};
+
 // the shared mocks answer the properties call for this token with a 401
 const retlUnauthorizedDestination = {
   ID: 'hs-retl-record-id-unauthorized-dest',
@@ -72,6 +80,7 @@ const batchUpdate = (
   objectType: string,
   inputs: Record<string, unknown>[],
   metadata: Record<string, unknown>[],
+  destination: Record<string, unknown> = retlDestination,
 ) => ({
   batchedRequest: {
     version: '1',
@@ -95,7 +104,7 @@ const batchUpdate = (
   metadata,
   batched: true,
   statusCode: 200,
-  destination: retlDestination,
+  destination,
 });
 
 const invalidRecordId = (
@@ -272,6 +281,33 @@ export const retlRecordIdData: Record<string, unknown>[] = [
           { jobId: 6006, userId: 'u1' },
           { jobId: 6007, userId: 'u1' },
         ],
+      ),
+    ],
+  ),
+  routerCase(
+    'hs-retl-record-id-legacy-api-batch-update',
+    'rETL (legacy API): hs_object_id identifier -> direct batch update with duplicate ids merged, no search',
+    [
+      {
+        destination: retlLegacyDestination,
+        message: identifyMessage(606, { firstname: 'Erin', lastname: 'Old' }),
+        metadata: { jobId: 6012, userId: 'u1' },
+      },
+      {
+        destination: retlLegacyDestination,
+        message: identifyMessage(606, { lastname: 'New' }),
+        metadata: { jobId: 6013, userId: 'u1' },
+      },
+    ],
+    [
+      batchUpdate(
+        'contacts',
+        [{ id: '606', properties: { firstname: 'Erin', lastname: 'New' } }],
+        [
+          { jobId: 6012, userId: 'u1' },
+          { jobId: 6013, userId: 'u1' },
+        ],
+        retlLegacyDestination,
       ),
     ],
   ),

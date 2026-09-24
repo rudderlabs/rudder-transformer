@@ -1,4 +1,5 @@
 import { defaultMockFns } from '../mocks';
+import { apiSecret } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateSimplifiedTrackPayload } from '../../../testUtils';
@@ -13,7 +14,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    apiSecret: 'dummyApiSecret',
+    apiSecret,
     measurementId: 'dummyMeasurementId',
     firebaseAppId: '',
     blockPageViewEvent: false,

@@ -1,10 +1,10 @@
 import crypto from 'crypto';
-import { HEADER_BLOCK, NONCE, TIMESTAMP } from '../constants';
+import { HEADER_BLOCK, NONCE, SECRET, TIMESTAMP, USERNAME } from '../constants';
 
 const config = {
   discardEmptyProperties: true,
-  emersysUsername: 'dummy',
-  emersysUserSecret: 'dummy',
+  emersysUsername: USERNAME,
+  emersysUserSecret: SECRET,
   emersysCustomIdentifier: '3',
   defaultContactList: 'dummy',
   eventsMapping: [

@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import { NONCE, COMMON_HEADER_BLOCK, TIMESTAMP_2 } from '../constants';
+import { COMMON_HEADER_BLOCK, NONCE, SECRET, TIMESTAMP_2, USERNAME } from '../constants';
 const buf = Buffer.from(NONCE, 'hex');
 
 export const mockFns = (_) => {
@@ -92,8 +92,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '3',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -256,8 +256,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '3',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -422,8 +422,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -560,8 +560,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -678,8 +678,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -793,8 +793,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '2',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -906,8 +906,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '2',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -1026,8 +1026,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '2',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -1148,8 +1148,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -1269,8 +1269,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '',
                 defaultContactList: 'dummy',
                 eventsMapping: [
@@ -1403,8 +1403,8 @@ export const data = [
               },
               Config: {
                 discardEmptyProperties: true,
-                emersysUsername: 'dummy',
-                emersysUserSecret: 'dummy',
+                emersysUsername: USERNAME,
+                emersysUserSecret: SECRET,
                 emersysCustomIdentifier: '3',
                 defaultContactList: 'dummy',
                 fieldMapping: [

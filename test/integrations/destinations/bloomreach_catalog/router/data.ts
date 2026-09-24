@@ -360,4 +360,81 @@ export const data = [
     },
     mockFns: defaultMockFns,
   },
+  {
+    id: 'bloomreach-catalog-router-test-2',
+    name: destType,
+    description: 'Router test for a focused single-record update batch',
+    scenario: 'Framework',
+    successCriteria: 'The update event should be transformed into a single-record batch',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                fields: {
+                  item_id: 'test-item-id-focused',
+                  title: 'Focused Hardcover',
+                  unprinted: 5,
+                },
+                channel: 'sources',
+                context: sampleContext,
+                recordId: '11',
+              },
+              metadata: generateMetadata(11),
+              destination,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: updateEndpoint,
+                headers,
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch: JSON.stringify([
+                      {
+                        item_id: 'test-item-id-focused',
+                        properties: {
+                          title: 'Focused Hardcover',
+                          unprinted: 5,
+                        },
+                      },
+                    ]),
+                  },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(11)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
 ];

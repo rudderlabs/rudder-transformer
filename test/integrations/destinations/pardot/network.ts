@@ -1,4 +1,4 @@
-import { authHeader1 } from './maskedSecrets';
+import { authHeader1, businessUnitId } from './maskedSecrets';
 import { getFormData } from '../../../../src/adapters/network';
 
 export const networkCallsData = [
@@ -271,7 +271,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-        'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
+        'Pardot-Business-Unit-Id': businessUnitId,
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',

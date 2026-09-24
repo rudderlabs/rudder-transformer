@@ -1,3 +1,4 @@
+import { secret1 } from './maskedSecrets';
 export const networkCallsData = [
   {
     httpReq: {
@@ -9,7 +10,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'successResponse',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -76,7 +77,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'permissionMissingError',
       },
       params: {
-        access_token: 'BCD',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -118,7 +119,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'audienceUnavailableError',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -160,7 +161,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'audienceDeletedError',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -227,7 +228,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'failedToUpdateAudienceError',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -294,7 +295,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'parameterExceededError',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -361,7 +362,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'tooManyCallsError',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -428,7 +429,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'code200PermissionError',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -496,7 +497,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'accessTokenInvalidError',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -542,7 +543,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'accessTokenInvalidError-2',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -585,7 +586,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'htmlResponse',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -646,7 +647,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'validAccessToken',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -688,7 +689,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'messagingTOSNotAccepted',
       },
       params: {
-        access_token: 'XYZ',
+        access_token: secret1,
       },
       userId: '',
       body: {
@@ -732,7 +733,7 @@ export const networkCallsData = [
         'test-dest-response-key': 'infraFailureNoErrorField',
       },
       params: {
-        access_token: 'ABC',
+        access_token: secret1,
       },
       userId: '',
       body: {

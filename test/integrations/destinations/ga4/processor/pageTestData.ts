@@ -1,4 +1,5 @@
 import { defaultMockFns } from '../mocks';
+import { apiSecret } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import {
@@ -17,7 +18,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    apiSecret: 'dummyApiSecret',
+    apiSecret,
     measurementId: 'dummyMeasurementId',
     firebaseAppId: '',
     blockPageViewEvent: false,
@@ -58,7 +59,7 @@ const commonOutputHeaders = {
 };
 
 const commonOutputParams = {
-  api_secret: 'dummyApiSecret',
+  api_secret: apiSecret,
   measurement_id: 'dummyMeasurementId',
 };
 
@@ -322,7 +323,7 @@ export const pageTestData: ProcessorTestData[] = [
           {
             destination: {
               Config: {
-                apiSecret: 'api_secr',
+                apiSecret,
                 debugMode: false,
                 typesOfClient: 'gtag',
                 measurementId: 'meas_id',
@@ -499,7 +500,7 @@ export const pageTestData: ProcessorTestData[] = [
               files: {},
               method: 'POST',
               params: {
-                api_secret: 'api_secr',
+                api_secret: apiSecret,
                 measurement_id: 'meas_id',
               },
               userId: '',

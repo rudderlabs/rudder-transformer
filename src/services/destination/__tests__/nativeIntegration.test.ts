@@ -9,10 +9,12 @@ import {
   ProxyMetdata,
   ProxyV1Request,
 } from '../../../types/index';
-import { responseHandler as brazeResponseHandler } from '../../../v1/destinations/braze/networkHandler';
+import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { ErrorReportingService } from '../../errorReporting';
 import { NativeIntegrationDestinationService } from '../nativeIntegration';
 import { DestinationPostTransformationService } from '../postTransformation';
+
+type NetworkHandlerFactoryResult = ReturnType<typeof networkHandlerFactory.getNetworkHandler>;
 
 beforeEach(() => {
   jest.spyOn(ErrorReportingService, 'reportError').mockImplementation(jest.fn());
@@ -154,14 +156,15 @@ describe('NativeIntegration Service', () => {
           message: 'success',
           destinationResponse,
         } as DeliveryV0Response;
-        jest.spyOn(networkHandlerFactory, 'getNetworkHandler').mockReturnValue({
+        const handler: NetworkHandlerFactoryResult = {
           handlerVersion: 'v0',
           networkHandler: {
             proxy: jest.fn().mockResolvedValue({}),
             processAxiosResponse: jest.fn().mockReturnValue({ status: 200, response: {} }),
             responseHandler: jest.fn().mockReturnValue(v0Response),
           },
-        } as never);
+        };
+        jest.spyOn(networkHandlerFactory, 'getNetworkHandler').mockReturnValue(handler);
         const stringifySpy = jest.spyOn(JSON, 'stringify');
         const service = new NativeIntegrationDestinationService();
 
@@ -189,7 +192,7 @@ describe('NativeIntegration Service', () => {
     );
   });
 
-  describe('deliver - v1 Braze whole-batch failure', () => {
+  describe('deliver - v1 whole-batch failure', () => {
     const metadata = (jobId: number): ProxyMetdata => ({
       jobId,
       attemptNum: 0,
@@ -214,26 +217,39 @@ describe('NativeIntegration Service', () => {
         metadata: [metadata(1), metadata(2), metadata(3)],
         destinationConfig: {},
       } as ProxyV1Request;
-      jest.spyOn(networkHandlerFactory, 'getNetworkHandler').mockReturnValue({
+      const handler: NetworkHandlerFactoryResult = {
         handlerVersion: 'v1',
         networkHandler: {
           proxy: jest.fn().mockResolvedValue({}),
           processAxiosResponse: jest.fn().mockReturnValue(destinationResponse),
-          responseHandler: brazeResponseHandler,
+          responseHandler: jest.fn(() => {
+            throw new TransformerProxyError(
+              'Request failed for test destination with status: 500',
+              500,
+              { errorType: 'retryable' },
+              destinationResponse,
+            );
+          }),
         },
-      } as never);
+      };
+      jest.spyOn(networkHandlerFactory, 'getNetworkHandler').mockReturnValue(handler);
       const stringifySpy = jest.spyOn(JSON, 'stringify');
       const service = new NativeIntegrationDestinationService();
 
-      const result = (await service.deliver(request, 'braze', {}, 'v1')) as DeliveryV1Response;
+      const result = (await service.deliver(
+        request,
+        '__rudder_test__',
+        {},
+        'v1',
+      )) as DeliveryV1Response;
 
       expect(result).toEqual({
         status: 500,
-        message: 'Request failed for braze with status: 500',
+        message: 'Request failed for test destination with status: 500',
         statTags: {
           errorCategory: 'network',
           errorType: 'retryable',
-          destType: 'BRAZE',
+          destType: '__RUDDER_TEST__',
           module: 'destination',
           implementation: 'native',
           feature: 'dataDelivery',

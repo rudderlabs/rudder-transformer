@@ -731,7 +731,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
 
   describe('upstream 5xx — retryable error type', () => {
     it('does not serialize an undefined response or eagerly build per-job entries', () => {
-      const destinationResponse = { response: undefined, status: 500 } as never;
+      const destinationResponse = { response: undefined, status: 500 };
       const rudderJobMetadata = [createMetadata(10), createMetadata(20)];
       const stringifySpy = jest.spyOn(JSON, 'stringify');
 
@@ -743,8 +743,9 @@ describe('Braze v1 networkHandler responseHandler', () => {
       }
 
       expect(thrown).toBeInstanceOf(TransformerProxyError);
-      const proxyError = thrown as InstanceType<typeof TransformerProxyError>;
-      expect(proxyError.response).toBeUndefined();
+      if (thrown instanceof TransformerProxyError) {
+        expect(thrown.response).toBeUndefined();
+      }
       expect(stringifySpy).not.toHaveBeenCalled();
     });
 

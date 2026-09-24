@@ -173,6 +173,12 @@ interface CaseOutcome {
   transformed: boolean;
   /** The secret source - declared key or the runtime bag - that destabilised the diff, if any. */
   unstableSource?: SecretSource;
+  /**
+   * Whether the runtime bag was ever compared cleanly - both decoy runs completed and the diff
+   * was trustworthy - in at least one case. Distinct from "it found something": a clean
+   * comparison that moved nothing is still evidence about where the bag does not go.
+   */
+  runtimeMeasured?: boolean;
   /** Set when the harness itself failed - a corpus or generator defect, not a finding. */
   harnessError?: string;
 }
@@ -457,6 +463,9 @@ const deriveForCase = async (
     outcome.locations.push(
       ...locationsForKey(sourceName(source), baseline, decoy, flattenRequests(out2)),
     );
+    // Reached only when both decoys ran and the shape held, so the diff for this source in this
+    // case was trustworthy.
+    if (source.kind === 'runtime') outcome.runtimeMeasured = true;
   }
 
   return outcome;
@@ -607,6 +616,7 @@ const deriveForDestination = async (
       total.locations.push(...outcome.locations.map(withoutUnreadEvidence));
       total.sawRequest = total.sawRequest || outcome.sawRequest;
       total.transformed = total.transformed || outcome.transformed;
+      total.runtimeMeasured = total.runtimeMeasured || outcome.runtimeMeasured;
       // Nothing this destination produces will be published once it is doomed, so stop paying
       // for transforms: the remaining cases and files cannot change the outcome.
       if (outcome.unstableSource || outcome.harnessError) {
@@ -952,15 +962,21 @@ const main = async () => {
       // `--validate` is what confirms it: it replays the corpus looking for any declared secret
       // that survives masking, and reports none for either destination.
       //
-      // The rescue can only stand in for a *config* source, though. It perturbs the credential the
-      // destination fetches, which is a different value from the one the runtime bag carries - so
-      // when the bag is what destabilised, a non-empty result says nothing about where the bag's
-      // token went, and publishing it would be a positive claim built on unrelated evidence.
-      // Fail closed instead, which masks everything maskable and therefore covers the token.
-      const exchanged =
-        result.unstableSource.kind === 'runtime'
-          ? []
-          : await deriveFromFetchedCredentials(harness, destination, filePaths);
+      // The rescue perturbs the credential the destination *fetches*, which is a different value
+      // from the one the runtime bag carries. So when the bag destabilised and was never compared
+      // cleanly in any case, a non-empty rescue says nothing about where the bag's token went, and
+      // publishing it would be a positive claim built on unrelated evidence - fail closed instead,
+      // which masks everything maskable and therefore covers the token.
+      //
+      // When the bag *was* compared cleanly somewhere, its locations are already in
+      // `result.locations`, measured by the same corroborated diff every other path comes from.
+      // SALESFORCE is the case: its bag moves `endpoint` and `headers.Authorization` on the cases
+      // that hold, and a later case collapses under the decoy. Discarding a measured location to
+      // punish an unrelated case would mask that destination wholesale on evidence we do have.
+      const bagUnmeasured = result.unstableSource.kind === 'runtime' && !result.runtimeMeasured;
+      const exchanged = bagUnmeasured
+        ? []
+        : await deriveFromFetchedCredentials(harness, destination, filePaths);
       if (exchanged.length === 0) {
         console.log(`unstable under '${sourceName(result.unstableSource)}' - failing closed`);
         recordUnresolved(destType, 'unstable-under-substitution');

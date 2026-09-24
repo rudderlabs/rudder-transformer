@@ -125,14 +125,13 @@ names the config field it comes from. That follows from the registry being the s
 and the fix is upstream.
 
 The _runtime_ half is bounded instead by the corpus: a destination is known to be handed a bag
-only because one of its fixtures carries one. 18 of the 24 OAuth destinations now derive their
-credential. Of the six that do not, two are a real gap: `BINGADS_AUDIENCE` and
-`YANDEX_METRICA_OFFLINE_EVENTS` carry no `metadata.secret` in any fixture, so there is nothing to
-perturb. The other four are not gaps — `BINGADS_OFFLINE_CONVERSIONS` and
-`SALESFORCE_BULK_UPLOAD` ship no transform here and are absent from the manifest, which by the
-contract already means mask-everything; `SALESFORCE_OAUTH` is a networkHandler with no transform;
-and `GA` carries its bag only in a `deleteUsers` fixture, a flow that never records a destination
-live event at all. See **What is still missing**.
+only because one of its fixtures carries one. 18 of the 24 OAuth destinations derive their
+credential; the other six were each checked, and none is a gap. `BINGADS_AUDIENCE` and
+`YANDEX_METRICA_OFFLINE_EVENTS` emit no headers and read no token, so there is no credential in
+what they build. `BINGADS_OFFLINE_CONVERSIONS` and `SALESFORCE_BULK_UPLOAD` ship no transform here
+and are absent from the manifest, which by the contract already means mask-everything.
+`SALESFORCE_OAUTH` is a networkHandler with no transform. `GA` reads a token only in its
+`deleteUsers` flow, which never records a destination live event.
 
 The reasons that fail **closed** — `no-fixtures`, `unstable-under-substitution`,
 `dynamic-key-family`, `harness-error` — are the ones where the derivation could neither place a
@@ -225,10 +224,11 @@ This is a POC. Known gaps:
   either distinctive fixture values or a committed baseline of accepted collisions.
 - **`secretKeys` is read from a local checkout** via `--integrations-config`. A real build
   would consume the published destination definitions.
-- **Two OAuth destinations have no `metadata.secret` in any fixture** — `BINGADS_AUDIENCE` and
-  `YANDEX_METRICA_OFFLINE_EVENTS` — so the runtime source has nothing to perturb and they are
-  still published as having nothing to mask. Adding a bag to one fixture each closes it. The
-  registry cannot replace the corpus here: `config.auth.type === 'OAuth'` looks like the
+- **Fixture quality bounds the runtime half**, tracked in INT-7221: six destinations' credential
+  values are short or dual-use enough that `--validate` cannot tell a real survivor from a
+  collision, four destinations' paths rest on a single fixture case, and `ELOQUA` declares a
+  credential no fixture populates. That ticket is fixture-only and independent of this tooling.
+  Note the registry cannot replace the corpus for discovery: `config.auth.type === 'OAuth'` looks like the
   authoritative statement of "this destination is handed a bag", but four destinations read
   `metadata.secret` without declaring it — `FACEBOOK_OFFLINE_CONVERSIONS`, `SALESFORCE`,
   `WOOTRIC` and `YAHOO_DSP` — so gating discovery on it would lose coverage rather than gain

@@ -1,14 +1,19 @@
 const lodash = require('lodash');
 const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
+const logger = require('../../../logger');
 const { isHttpStatusSuccess } = require('../../util');
 const { DEL_MAX_BATCH_SIZE, DISTINCT_ID_MAX_BATCH_SIZE } = require('./config');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { HTTP_STATUS_CODES, JSON_MIME_TYPE } = require('../../util/constant');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
 const { getBaseEndpoint, getCreateDeletionTaskEndpoint } = require('./util');
+
+// The create deletion task API allows one request per second; a faster request gets
+// 429 "Too Many Requests, this API is limited to 1 req/s".
+const DELETION_TASK_REQUEST_INTERVAL_MS = 1000;
 
 const deleteProfile = async (userAttributes, config) => {
   const endpoint = `${getBaseEndpoint(config)}/engage`;
@@ -86,16 +91,23 @@ const createDeletionTask = async (userAttributes, config) => {
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.mixpanel.com/docs/privacy-security#create-a-deletion-task
   const batchEvents = getUserIdBatches(userAttributes, DISTINCT_ID_MAX_BATCH_SIZE);
-  await Promise.all(
-    batchEvents.map(async (batchEvent) => {
-      const request = {
-        distinct_ids: batchEvent,
-        compliance_type: complianceType,
-      };
+  let requestCount = 0;
+  // Requests are sent one at a time to stay within the API's rate limit.
+  for (const batchEvent of batchEvents) {
+    let distinctIds = batchEvent;
+    while (distinctIds.length > 0) {
+      if (requestCount > 0) {
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => {
+          setTimeout(resolve, DELETION_TASK_REQUEST_INTERVAL_MS);
+        });
+      }
+      requestCount += 1;
+      // eslint-disable-next-line no-await-in-loop
       const { processedResponse: handledDelResponse } = await handleHttpRequest(
         'post',
         endpoint,
-        request,
+        { distinct_ids: distinctIds, compliance_type: complianceType },
         { headers },
         {
           destType: 'mp',
@@ -105,7 +117,20 @@ const createDeletionTask = async (userAttributes, config) => {
           module: 'deletion',
         },
       );
-      if (!isHttpStatusSuccess(handledDelResponse.status)) {
+      if (isHttpStatusSuccess(handledDelResponse.status)) {
+        break;
+      }
+
+      // A 409 rejects the whole request and names the ids that already have a deletion task running:
+      // { status: 'error', error: { conflicting_distinct_ids: ['u1'], conflicting_task_ids: ['<task id>'], error: '...' } }
+      // Those users are already being deleted, so only the rest are resubmitted.
+      const conflictingIds = handledDelResponse.response?.error?.conflicting_distinct_ids;
+      const remainingIds =
+        handledDelResponse.status === HTTP_STATUS_CODES.CONFLICT && Array.isArray(conflictingIds)
+          ? lodash.difference(distinctIds, conflictingIds)
+          : distinctIds;
+      // Any other failure, including a 409 that names none of these ids, fails the request.
+      if (remainingIds.length === distinctIds.length) {
         throw new NetworkError(
           'User deletion request failed for `create deletion task` api',
           handledDelResponse.status,
@@ -115,8 +140,17 @@ const createDeletionTask = async (userAttributes, config) => {
           handledDelResponse,
         );
       }
-    }),
-  );
+      logger.info(
+        '[MP] Deletion task already running for some distinct ids, resubmitting the rest',
+        {
+          conflictingCount: distinctIds.length - remainingIds.length,
+          remainingCount: remainingIds.length,
+          conflictingTaskIds: handledDelResponse.response.error.conflicting_task_ids,
+        },
+      );
+      distinctIds = remainingIds;
+    }
+  }
 
   return {
     statusCode: 200,

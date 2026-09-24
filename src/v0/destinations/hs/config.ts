@@ -105,6 +105,8 @@ const primaryToSecondaryFields: Record<string, string> = {
 
 // hubspot's own record id, present on every CRM object
 const HS_RECORD_ID_PROPERTY = 'hs_object_id';
+// a valid record id is a non-empty string of digits
+const HS_RECORD_ID_REGEX = /^\d+$/;
 
 // list of fields that hubspot maintains for each record of object
 const HUBSPOT_SYSTEM_FIELDS = [HS_RECORD_ID_PROPERTY];
@@ -149,6 +151,7 @@ export {
   DESTINATION,
   HUBSPOT_SYSTEM_FIELDS,
   HS_RECORD_ID_PROPERTY,
+  HS_RECORD_ID_REGEX,
   CONTACT_PROPERTIES_CACHE_TTL,
   CRM_V3_PROPERTIES_ENDPOINT_PATH,
 };

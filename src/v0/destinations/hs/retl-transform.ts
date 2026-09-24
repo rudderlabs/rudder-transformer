@@ -2,7 +2,7 @@ import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { EventType, MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } from '../../util';
-import { API_VERSION, HS_RECORD_ID_PROPERTY } from './config';
+import { API_VERSION, HS_RECORD_ID_PROPERTY, HS_RECORD_ID_REGEX } from './config';
 import { processRetlLegacyIdentify, batchRetlLegacyEvents } from './retl-v1';
 import { processRetlIdentify, batchRetlEvents } from './retl-v3';
 import {
@@ -88,7 +88,7 @@ const processBatchRouterRetl = async (
           const recordId = String(
             getDestinationExternalIDInfoForRetl(input.message, 'HS')?.destinationExternalId ?? '',
           );
-          if (!/^\d+$/.test(recordId)) {
+          if (!HS_RECORD_ID_REGEX.test(recordId)) {
             const reason = recordId
               ? `rETL - invalid HubSpot record id "${recordId}"`
               : 'rETL - HubSpot record id (hs_object_id) is empty';

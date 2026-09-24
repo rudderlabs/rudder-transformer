@@ -1,7 +1,7 @@
 import { authHeader1 } from '../maskedSecrets';
 
 // The router path shares processIdentify with the processor, so one case pins the mapping
-// switch there too.
+// switch there too: the legacy destination keeps the pre-fix mapping.
 const mappingOffDestination = {
   Config: {
     initialAccessToken: 'dummyInitialAccessToken',
@@ -19,11 +19,24 @@ const mappingOffDestination = {
   Name: 'tst',
   Transformations: [],
 };
-const apiNameTraits = { FirstName: 'Peter', LastName: 'Gibbons', Custom_Field__c: 'custom' };
+const rudderTraits = {
+  email: 'peter.gibbons@initech.com',
+  firstName: 'Peter',
+  lastName: 'Gibbons',
+  company: 'Initech',
+  plan: 'pro',
+};
+const mappedTraits = {
+  Email: 'peter.gibbons@initech.com',
+  FirstName: 'Peter',
+  LastName: 'Gibbons',
+  Company: 'Initech',
+  plan__c: 'pro',
+};
 
 const mappingOffRouterCase = {
   name: 'salesforce',
-  description: 'mapProperties false sends traits verbatim on the router path',
+  description: 'legacy Salesforce: mapProperties false keeps the mapping on the router path',
   feature: 'router',
   module: 'destination',
   version: 'v0',
@@ -35,7 +48,7 @@ const mappingOffRouterCase = {
             message: {
               type: 'identify',
               userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
-              traits: apiNameTraits,
+              traits: rudderTraits,
               context: { externalId: [{ type: 'Salesforce-Lead', id: 'sf-lead-id' }] },
             },
             metadata: { jobId: 1, userId: 'u1' },
@@ -62,7 +75,7 @@ const mappingOffRouterCase = {
                   'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/sf-lead-id?_HttpMethod=PATCH',
                 headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
                 params: {},
-                body: { JSON: apiNameTraits, XML: {}, JSON_ARRAY: {}, FORM: {} },
+                body: { JSON: mappedTraits, XML: {}, JSON_ARRAY: {}, FORM: {} },
                 files: {},
               },
             ],

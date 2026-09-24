@@ -146,6 +146,27 @@ global.describe = () => {};
 global.it = () => {};
 global.test = () => {};
 
+// The component suite's environment, which jest applies via `setupFiles` and this runner
+// otherwise would not. Read off the jest config rather than naming `test/setup.ts` here, so a
+// file added to `setupFiles` is picked up instead of silently not applying.
+//
+// Placed here, after the `jest` shim and before the first module that reads what these files set.
+// Both halves of that matter: a setup file doing anything ordinary for a jest setupFile
+// (`jest.setTimeout`, `expect.extend`) would throw if the shim were not installed yet, and the
+// files' own contract is that they run before the modules which read their variables.
+//
+// Same failure mode as the missing sandbox bundle above if this is skipped, and just as quiet:
+// without GOOGLE_ADS_DEVELOPER_TOKEN every GOOGLE_ADWORDS_OFFLINE_CONVERSIONS case returned a 400
+// from `getDeveloperToken`, the destination produced no request in any fixture, and it was
+// published as `[]` - nothing to mask - while sending `Authorization: Bearer <token>`.
+const ROOT = path.join(__dirname, '../..');
+const { setupFiles = [] } = require(path.join(ROOT, 'jest.config.js'));
+setupFiles.forEach((file) =>
+  require(
+    file.startsWith('<rootDir>') ? path.join(ROOT, file.slice('<rootDir>'.length)) : path.resolve(ROOT, file),
+  ),
+);
+
 const { hasFlag } = require('./args.ts');
 
 if (hasFlag('validate')) {

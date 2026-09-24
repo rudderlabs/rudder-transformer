@@ -20,7 +20,11 @@ import MockAxiosAdapter from 'axios-mock-adapter';
 import { Server } from 'http';
 import { join } from 'path';
 import isObjectLike from 'lodash/isObjectLike';
-import { configureBatchProcessingDefaults, axiosFromLib } from '@rudderstack/integrations-lib';
+import {
+  base64Convertor,
+  configureBatchProcessingDefaults,
+  axiosFromLib,
+} from '@rudderstack/integrations-lib';
 import { applicationRoutes } from '../../src/routes/index';
 import {
   getTestDataFilePaths,
@@ -391,15 +395,129 @@ export const visitConfigSecrets = (
   walk(node, false);
 };
 
-/** The declared-key values present in a request body - the generator's definition, reused. */
-export const configSecretsFor = (node: unknown, declaredKey: string): string[] => {
+/**
+ * The key under which rudder-server hands a destination its runtime credential bag.
+ *
+ * Named once: `visitConfigSecrets` opens config scope on it too, so the two walkers overlap on
+ * these leaves by design - a destination that declares `accessToken` has the bag's `accessToken`
+ * rewritten by the config source as well. The overlap costs a little duplicated substitution and
+ * removes a way for the bag to be reachable by one walker and not the other.
+ */
+const SECRET_BAG_KEY = 'secret';
+
+/**
+ * Collects the values one walker visits, subject to the "long enough to be a secret" rule.
+ *
+ * Shared by both `*SecretsFor` helpers so what they report is filtered identically. Both the
+ * generator and the validator read these, and the file's contract is that they agree: if the
+ * generator perturbs a value the validator never collects, the validator reports "no survivors"
+ * about a secret it never looked for.
+ *
+ * The runtime walker applies the same threshold itself, so for `runtimeSecretsFor` this filter is
+ * already satisfied - there, what is perturbed and what is reported are the same set by
+ * construction. `visitConfigSecrets` does not, which is pre-existing: a config key can still be
+ * substituted at a length this would not report. Narrowing it is a change to what the config
+ * source perturbs, so it is left alone here.
+ */
+const collect = (walk: (visit: (current: string) => string) => void): string[] => {
   const found: string[] = [];
-  visitConfigSecrets(node, declaredKey, (current) => {
+  walk((current) => {
     if (current.length >= MIN_SECRET_LEN) found.push(current);
     return current;
   });
   return found;
 };
+
+/** The declared-key values present in a request body - the generator's definition, reused. */
+export const configSecretsFor = (node: unknown, declaredKey: string): string[] =>
+  collect((visit) => visitConfigSecrets(node, declaredKey, visit));
+
+/**
+ * Visits every string the runtime credential bag carries, and replaces it with whatever the
+ * visitor returns.
+ *
+ * This is the OAuth half of "what counts as a credential". `secretKeys` cannot answer it: the
+ * bag is not configuration. The control plane mints it per OAuth account and rudder-server
+ * forwards it as an opaque `json.RawMessage` (`router/types/types.go`, `JobMetadataT.Secret`)
+ * without reading its keys, so there is no registry naming them and no declaration to follow.
+ * A destination reads what it needs out of it - `access_token` for the Google Ads family,
+ * `consumerSecret`/`accessTokenSecret` for the OAuth1 ones - and nothing upstream records which.
+ *
+ * So the rule here is positional rather than nominal: everything under a `secret` object is
+ * treated as a credential, whatever it is called. That deliberately over-masks; the decision and
+ * its cost are recorded in README.md under "Over-masking is accepted".
+ *
+ * Only strings at or over `MIN_SECRET_LEN` are visited. Shorter ones are not credentials, and
+ * substituting them is actively harmful here in a way it is not for a config key: the bag is
+ * perturbed all at once rather than one key at a time, and `useMocksFor` rewrites the recorded
+ * mocks by plain substring replacement over their serialised JSON - so a two-character bag value
+ * would rewrite unrelated text throughout the corpus and the decoy run would take a branch the
+ * real one did not. It also keeps what the generator perturbs and what the validator collects
+ * the same set.
+ */
+export const visitRuntimeSecrets = (node: unknown, visit: (current: string) => string): void => {
+  const walk = (current: unknown, insideBag: boolean): void => {
+    if (!isObj(current)) return;
+    for (const key of Object.keys(current)) {
+      const value = current[key];
+      const nowInsideBag = insideBag || key === SECRET_BAG_KEY;
+      if (nowInsideBag && typeof value === 'string' && value.length >= MIN_SECRET_LEN) {
+        // eslint-disable-next-line no-param-reassign -- rewriting the caller's copy is the point
+        current[key] = visit(value);
+      } else {
+        walk(value, nowInsideBag);
+      }
+    }
+  };
+  walk(node, false);
+};
+
+/** The runtime-bag values present in a request body - the generator's definition, reused. */
+export const runtimeSecretsFor = (node: unknown): string[] =>
+  collect((visit) => visitRuntimeSecrets(node, visit));
+
+/**
+ * Does this string carry the secret directly, or through a reversible encoding?
+ *
+ * Shared by the generator's containment test and the validator's survivor search, deliberately:
+ * it is plumbing - a question about string encodings - not derivation logic. The two still reach
+ * their answers independently, the generator by perturbing inputs and diffing and the validator
+ * by masking and searching; they only agree on what "this value appears here" means. When they
+ * did not, the generator's bare `includes` missed exactly what the validator would then report as
+ * a survivor: `oauth-1.0a` percent-encodes every parameter value, so a realistic base64-shaped
+ * token reaches the OAuth1 `Authorization` header as `oauth_token="ab%2Bcd%2Fef%3D"`.
+ */
+export const carriesSecret = (value: string, secret: string): boolean => {
+  const forms = [
+    secret,
+    base64Convertor(secret),
+    base64Convertor(`${secret}:`),
+    base64Convertor(`:${secret}`),
+    encodeURIComponent(secret),
+  ];
+  if (forms.some((form) => value.includes(form))) return true;
+  return (value.match(/[\d+/A-Za-z]{8,}={0,2}/g) || []).some((token) =>
+    Buffer.from(token, 'base64').toString('utf8').includes(secret),
+  );
+};
+
+/**
+ * Whether a fixture case is one the derivation can use.
+ *
+ * One definition, because two halves of this tool ask the question and they have to agree: the
+ * corpus scan decides whether a destination has a runtime bag worth perturbing, and the
+ * derivation decides which cases to run. When the scan counted a bag in a case the derivation
+ * then declined, SALESFORCE_OAUTH - a networkHandler with no transform, whose only fixtures are
+ * `dataDelivery` ones - gated a derivation that had no case to run and failed closed as
+ * `harness-error`, a defect reported about a destination that simply has nothing to derive from.
+ */
+export const isDerivableCase = (harness: Harness, tcData: any): boolean =>
+  tcData?.module === tags.MODULES.DESTINATION &&
+  // Before `routeFor`, which reads `tcData.input.pathSuffix` without guarding it. The corpus scan
+  // calls this outside the try/catch that turns a bad fixture into one `harness-error`, so a case
+  // with no `input` would otherwise take the whole run down instead of that one destination.
+  Boolean(tcData.input?.request?.body) &&
+  Boolean(harness.routeFor(tcData));
 
 /**
  * The corpus bucketed by destination directory, globbed once.

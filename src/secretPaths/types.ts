@@ -32,15 +32,25 @@
 export type UnresolvedReason =
   /** No component-test fixtures to diff. */
   | 'no-fixtures'
-  /** Destination declares no secretKeys, or declares an empty list. */
+  /**
+   * Neither secret source had anything to offer: the destination declares no `secretKeys` (or an
+   * empty list), and no fixture in its corpus carries a `metadata.secret` bag either. Both are
+   * checked, so this is not "nothing was declared" but "nothing was declared and nothing was
+   * handed over at runtime".
+   */
   | 'no-declared-secrets'
   /** The transform emits no HTTP request (streaming / object-storage destinations). */
   | 'no-http-request'
   /** Substituting a decoy changed the output's shape, so the diff is not trustworthy. */
   | 'unstable-under-substitution'
   /**
-   * A request was built, but no declared secret reached it in any fixture. Still fail-closed:
-   * an unexercised branch is indistinguishable from a destination that sends no credential.
+   * A request was built, but nothing from either secret source reached it in any fixture. Still
+   * fail-closed: an unexercised branch is indistinguishable from a destination that sends no
+   * credential.
+   *
+   * Reached more often now that the runtime bag is a source, because the corpus over-reports who
+   * has one: `generateMetadata` attaches a `secret` object to every case it builds, so a
+   * destination that never reads one is still measured against it and correctly finds nothing.
    */
   | 'no-secret-located'
   /**
@@ -89,10 +99,12 @@ export type UnresolvedReason =
  * the generator. Only the two reasons that mean "nothing reached the request" clear the list.
  */
 export const MASKING_FOR_REASON: Record<UnresolvedReason, string[] | null> = {
-  // Nothing to mask. `secretKeys` is the source of truth for what counts as a credential, so a
-  // destination that declares none has none by definition; `no-http-request` builds no request
-  // to show in the first place. Widening coverage is done by populating `secretKeys` in
-  // rudder-integrations-config, not by second-guessing it here.
+  // Nothing to mask: no config field is declared a credential and no runtime credential bag was
+  // ever handed over, so there is no secret for this destination to put anywhere;
+  // `no-http-request` builds no request to show in the first place. Widening the configured half
+  // is done by populating `secretKeys` in rudder-integrations-config, not by second-guessing it
+  // here. The runtime half needs no declaration - but it does need a fixture, which is the gap
+  // this reason still covers for an OAuth destination whose corpus carries no `metadata.secret`.
   'no-declared-secrets': [],
   'no-http-request': [],
   // Also nothing to mask: the destination declares credentials, and perturbing every one of them

@@ -5,25 +5,39 @@ credentials the transformer put in it. This is the transformer half of a fix: wo
 **where** each destination's declared credentials land in the request it builds, and publish
 that so the data plane can mask those fields before the payload leaves.
 
-Nothing here is hand-authored per destination. The only input is `secretKeys` from the
-destination definition, which is the source of truth for what counts as a credential.
+Nothing here is hand-authored per destination. There are two secret sources, and between them
+they cover the two ways a destination is handed a credential:
+
+- **Configured** — `secretKeys` from the destination definition, the source of truth for which
+  config fields are credentials. Perturbed **by name**, wherever that key appears in a config.
+- **Runtime** — the `metadata.secret` bag the control plane mints per OAuth account and
+  rudder-server forwards verbatim as an opaque blob. Nothing declares its keys, so every value
+  under it is treated as a credential and perturbed **by position**.
+
+The second source exists because `secretKeys` cannot describe it. An OAuth destination's bearer
+token is never a config field — `GOOGLE_ADWORDS_ENHANCED_CONVERSIONS` declares `secretKeys: []`
+and still sends `Authorization: Bearer <token>` — so following the registry alone published
+"nothing to mask" for all 24 OAuth destinations in the catalogue. Treating the whole bag as
+secret over-masks, deliberately; the decision and what it costs are recorded under **What is
+still missing**.
 
 ## How the derivation works
 
-A byte in the outbound request is secret-derived **iff** changing a declared secret input
-changes it. For every component-test fixture the generator:
+A byte in the outbound request is secret-derived **iff** changing a secret input changes it. For
+every component-test fixture the generator:
 
-1. Resolves the destination's declared `secretKeys` to their values in the fixture config.
+1. Resolves the destination's declared `secretKeys` to their values in the fixture config, and
+   collects every value the fixture's `metadata.secret` bag carries.
 2. Runs the real transform **twice**. Anything that differs between two identical runs is
    non-deterministic — a nonce, a timestamp, a generated id — and is excluded so it can never
    be mistaken for a secret.
-3. Runs it again per declared key with a **format-preserving decoy** substituted: same
+3. Runs it again per secret source with a **format-preserving decoy** substituted: same
    length, same character class per position, punctuation preserved, so length checks,
    format regexes, base64-decodability and UUID shape all behave identically and the decoy
    run takes the same branches.
-4. Diffs the outputs. Fields that moved are secret-derived. One key is substituted at a time
-   so that a key which destabilises the output marks only itself unstable, rather than
-   discarding every other key's result for that destination.
+4. Diffs the outputs. Fields that moved are secret-derived. One source is substituted at a time
+   so that a source which destabilises the output can be named, rather than the failure being
+   attributed to the destination as a whole.
 5. Emits the sorted set of paths that moved, in gjson/sjson dot notation.
 
 The published contract is deliberately just a list of paths per destType. The consumer
@@ -53,6 +67,19 @@ Two checks stop plausible-looking noise from getting in:
   transform took a different branch, positions no longer line up, and the destination is
   marked unresolved rather than guessed at.
 
+One thing the diff rule cannot see, and the single exception to it: a field that differs between
+two identical real runs is excluded from attribution — rightly, or a nonce would be blamed on
+whichever input was perturbed — but exclusion is not the same as carrying no credential.
+`TWITTER_ADS` and `X_AUDIENCE` sign with OAuth1, so `headers.Authorization` holds a fresh
+`oauth_nonce` on every run as well as `oauth_token="<the bag's access token>"`; excluded from the
+diff, the whole header read as nothing to mask. So a non-deterministic leaf is also checked for
+**containment** of a runtime-bag value, through `carriesSecret` — the same encoding-aware test the
+validator searches with, because OAuth1 percent-encodes its parameter values and a bare `includes`
+would miss exactly what the validator then reports as a survivor. Containment is sound only for
+the bag and stays scoped to it: that is the one source whose plaintext the generator is holding,
+where finding the value is direct evidence rather than the guess it would be against a config
+secret that may have been hashed, signed or base64'd on the way in.
+
 Anything the derivation cannot cover gets `null` in `destinations` — mask everything — with the
 reason recorded in `unresolved` for counting. The consumer never classifies reason strings: the
 decision is already data in the value it reads. `null` rather than a sentinel path like `["*"]`
@@ -63,10 +90,12 @@ destinations we are least confident about. `null` also makes "absent from the ma
 "uncomputable" the same case, which is what they always were.
 
 Two reasons mean there is nothing to mask and get an empty list: `no-declared-secrets` and
-`no-http-request`. `secretKeys` is the source of truth for what counts as a credential, so a
-destination declaring none has none by definition. The way to widen coverage is to populate
-`secretKeys` in `rudder-integrations-config` — the derivation follows the registry rather than
-second-guessing it.
+`no-http-request`. The first now means both sources came up empty — no config field is declared a
+credential _and_ no fixture hands the destination a `metadata.secret` bag — so there is no secret
+for it to put anywhere. The way to widen the configured half is to populate `secretKeys` in
+`rudder-integrations-config`; the derivation follows the registry rather than second-guessing it.
+The runtime half needs no declaration, but it does need a fixture that carries a bag, which is
+the gap this reason still covers for an OAuth destination whose corpus has none.
 
 `no-secret-located` is also empty: the destination declares credentials, and perturbing every
 one of them moved nothing in the request. That normally means the declared key serves a
@@ -88,11 +117,22 @@ transform. The risk this accepts is a real destination whose definition disappea
 quietly becoming unmasked; `--check` is what catches that, failing CI with
 `["headers.Authorization"] -> []` in the diff rather than letting it land silently.
 
-Completeness is bounded by `secretKeys`, deliberately. A destination that builds request _field
-names_ from its own config — HTTP uses `{ [config.apiKeyName]: config.apiKeyValue }`, WEBHOOK
-copies user-configured header names through — gets the names its fixtures happened to use. A
-header a workspace names itself is not masked unless `secretKeys` names the config field it comes
-from. That follows from the registry being the source of truth, and the fix is upstream.
+Completeness of the _configured_ half is bounded by `secretKeys`, deliberately. A destination that
+builds request _field names_ from its own config — HTTP uses `{ [config.apiKeyName]:
+config.apiKeyValue }`, WEBHOOK copies user-configured header names through — gets the names its
+fixtures happened to use. A header a workspace names itself is not masked unless `secretKeys`
+names the config field it comes from. That follows from the registry being the source of truth,
+and the fix is upstream.
+
+The _runtime_ half is bounded instead by the corpus: a destination is known to be handed a bag
+only because one of its fixtures carries one. 18 of the 24 OAuth destinations now derive their
+credential. Of the six that do not, two are a real gap: `BINGADS_AUDIENCE` and
+`YANDEX_METRICA_OFFLINE_EVENTS` carry no `metadata.secret` in any fixture, so there is nothing to
+perturb. The other four are not gaps — `BINGADS_OFFLINE_CONVERSIONS` and
+`SALESFORCE_BULK_UPLOAD` ship no transform here and are absent from the manifest, which by the
+contract already means mask-everything; `SALESFORCE_OAUTH` is a networkHandler with no transform;
+and `GA` carries its bag only in a `deleteUsers` fixture, a flow that never records a destination
+live event at all. See **What is still missing**.
 
 The reasons that fail **closed** — `no-fixtures`, `unstable-under-substitution`,
 `dynamic-key-family`, `harness-error` — are the ones where the derivation could neither place a
@@ -185,6 +225,29 @@ This is a POC. Known gaps:
   either distinctive fixture values or a committed baseline of accepted collisions.
 - **`secretKeys` is read from a local checkout** via `--integrations-config`. A real build
   would consume the published destination definitions.
+- **Two OAuth destinations have no `metadata.secret` in any fixture** — `BINGADS_AUDIENCE` and
+  `YANDEX_METRICA_OFFLINE_EVENTS` — so the runtime source has nothing to perturb and they are
+  still published as having nothing to mask. Adding a bag to one fixture each closes it. The
+  registry cannot replace the corpus here: `config.auth.type === 'OAuth'` looks like the
+  authoritative statement of "this destination is handed a bag", but four destinations read
+  `metadata.secret` without declaring it — `FACEBOOK_OFFLINE_CONVERSIONS`, `SALESFORCE`,
+  `WOOTRIC` and `YAHOO_DSP` — so gating discovery on it would lose coverage rather than gain
+  precision. What the registry could add is the _other_ direction: a destination that declares
+  OAuth and has no case to derive from could fail closed rather than claim nothing to mask. That
+  is a real behaviour change for those destinations, so it is recorded here rather than folded
+  into this change.
+- **The corpus scan over-includes, harmlessly.** `generateMetadata` in `test/integrations/testUtils.ts`
+  attaches `secret: { accessToken: … }` to every case it builds, so 59 destinations look like they
+  are handed a bag whether or not they are. A destination that never reads it derives nothing and
+  still publishes `[]`, so no path is wrong; the cost is that those destinations now run a
+  derivation they used to skip, and land on `no-secret-located` rather than `no-declared-secrets`.
+  Distinguishing a real bag from the harness default is what the registry direction above would buy.
+- **Over-masking is accepted, by decision.** Everything under `metadata.secret` is treated as a
+  credential because nothing declares which of its keys are, so non-credentials in the bag are
+  masked too: `TIKTOK_AUDIENCE`'s bag carries `advertiserIds`, which its transform emits as the
+  request field `advertiser_ids`, so the derived path is now `body.JSON.advertiser_ids.#` and the
+  advertiser IDs stop being visible. The cost is a less useful live event; the alternative is
+  guessing at credential-looking key names, which fails in the direction that publishes a token.
 - **Tokens fetched during transform** are covered by perturbing the mocked auth response
   instead of the config, but only for destinations whose fixtures mock that exchange. One
   whose auth call is not mocked still cannot be derived, and fails closed.

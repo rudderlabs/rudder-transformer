@@ -18,6 +18,12 @@
  * perturbs inputs and diffs, the validator masks and searches. Sharing the plumbing is what
  * makes it a check; sharing the logic would make it a tautology.
  *
+ * `carriesSecret` sits on the plumbing side of that line, with `configSecretsFor` and
+ * `runtimeSecretsFor`: it answers "does this string contain this value, through any reversible
+ * encoding", which is a question about encodings rather than about where credentials land. The
+ * two halves still select what to test independently - by non-determinism there, by survivorship
+ * here - they only agree on what "appears" means.
+ *
  * Known limitation, and the reason this reports rather than throws today: a short or dual-use
  * fixture secret collides with ordinary data and reads as a leak. LEMNISK's fixture key is
  * `1234`, which appears inside `product_id: "ab1234"`. Before this can gate CI, those fixture
@@ -25,32 +31,19 @@
  *
  * Usage: node test/secret-paths/run.js --validate --integrations-config=<path>
  */
-import { base64Convertor } from '@rudderstack/integrations-lib';
 import { getTestData } from '../integrations/testUtils';
 import tags from '../../src/v0/util/tags';
 import { ARRAY_MARKER, ENDPOINT_FIELD, parsePath } from '../../src/secretPaths/path';
 import {
+  carriesSecret,
   configSecretsFor,
+  isDerivableCase,
   fixturesByDestination,
   isObj,
   requestsIn,
+  runtimeSecretsFor,
   startHarness,
 } from './harness';
-
-/** Does this string carry the secret directly, or through a reversible encoding? */
-const carriesSecret = (value: string, secret: string): boolean => {
-  const forms = [
-    secret,
-    base64Convertor(secret),
-    base64Convertor(`${secret}:`),
-    base64Convertor(`:${secret}`),
-    encodeURIComponent(secret),
-  ];
-  if (forms.some((form) => value.includes(form))) return true;
-  return (value.match(/[\d+/A-Za-z]{8,}={0,2}/g) || []).some((token) =>
-    Buffer.from(token, 'base64').toString('utf8').includes(secret),
-  );
-};
 
 /** Applies one path, expanding `#`, the way the consumer's sjson.Set would. */
 const maskAt = (root: unknown, path: string): void => {
@@ -118,16 +111,23 @@ export const validate = async (
         continue;
       }
       for (const tc of fixtures) {
-        if (tc.module !== tags.MODULES.DESTINATION) continue;
-        if (!tc.input?.request?.body) continue;
+        // The shared predicate, so the validator replays exactly the cases the generator derived
+        // from - it was hand-rolling a copy that omitted the `routeFor` check and so replayed
+        // `dataDelivery` cases the generator declines.
+        if (!isDerivableCase(harness, tc)) continue;
 
         // The generator's own definition of "this destination's secrets", so the validator
-        // cannot report a clean bill of health about a value it never looked for.
+        // cannot report a clean bill of health about a value it never looked for. Both sources,
+        // for the same reason: searching only the declared keys would have reported every OAuth
+        // destination clean while its bearer token sat unmasked in the headers.
         //
         // Read from the fixture, before the transform, precisely so the transform can be skipped:
         // a case whose config carries no declared value has nothing for this loop to search for,
         // and running it anyway costs a full transform to reach a guaranteed `continue`.
-        const secrets = declaredKeys.flatMap((key) => configSecretsFor(tc.input.request.body, key));
+        const secrets = [
+          ...declaredKeys.flatMap((key) => configSecretsFor(tc.input.request.body, key)),
+          ...runtimeSecretsFor(tc.input.request.body),
+        ];
         if (secrets.length === 0) continue;
 
         const output = await harness.withCaseEnv(tc, () =>

@@ -13,7 +13,7 @@ interface HsCreateResponse {
 interface HsAssociationsResponse {
   results?: Array<{ toObjectId: string | number }>;
 }
-interface HsContactResponse {
+interface HsObjectResponse {
   properties?: Record<string, string>;
 }
 
@@ -107,13 +107,20 @@ export const createCrmObject = async (
   return String(id);
 };
 
-export const deleteContactById = async (ctx: RunContext, id: string): Promise<void> => {
-  await axios.delete(`${HS_BASE}/crm/v3/objects/contacts/${id}`, {
+export const deleteCrmObjectById = async (
+  ctx: RunContext,
+  objectType: string,
+  id: string,
+): Promise<void> => {
+  await axios.delete(`${HS_BASE}/crm/v3/objects/${objectType}/${id}`, {
     headers: authHeaders(ctx),
     httpsAgent: hsAgent,
     timeout: 15000,
   });
 };
+
+export const deleteContactById = (ctx: RunContext, id: string): Promise<void> =>
+  deleteCrmObjectById(ctx, 'contacts', id);
 
 export const deleteContactByEmail = async (ctx: RunContext): Promise<void> => {
   const id = await findContactIdByEmail(ctx, ctx.email());
@@ -139,30 +146,25 @@ export const getAssociatedIds = async (
   return (res.data.results ?? []).map((r) => String(r.toObjectId));
 };
 
-export const deleteAssociationObjects = async (ctx: RunContext): Promise<void> => {
-  for (const r of ctx.resources) {
-    if (r.type !== ASSOC_FROM_TYPE && r.type !== ASSOC_TO_TYPE) {
-      continue;
-    }
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      await axios.delete(`${HS_BASE}/crm/v3/objects/${r.type}/${r.id}`, {
-        headers: authHeaders(ctx),
-        httpsAgent: hsAgent,
-        timeout: 15000,
-      });
-    } catch (err) {
-      // Best-effort: log and continue so one failure can't strand sibling resources.
-      // eslint-disable-next-line no-console
-      console.error(`[live:hs] teardown failed for ${r.type}/${r.id}`, err);
-    }
+// Delete every object the scenario registered (resource type = CRM object type). The deletes run
+// independently, so one failure (e.g. an object the scenario already deleted) can't strand the
+// rest; failures are rethrown together for the runner to log.
+export const deleteRegisteredObjects = async (ctx: RunContext): Promise<void> => {
+  const results = await Promise.allSettled(
+    ctx.resources.map((r) => deleteCrmObjectById(ctx, r.type, r.id)),
+  );
+  const failed = results.flatMap((result, i) =>
+    result.status === 'rejected' ? [`${ctx.resources[i].type}/${ctx.resources[i].id}`] : [],
+  );
+  if (failed.length > 0) {
+    throw new Error(`[live:hs] teardown failed for ${failed.join(', ')}`);
   }
 };
 
 export const registeredId = (ctx: RunContext, type: string): string => {
   const id = ctx.resources.find((r) => r.type === type)?.id;
   if (!id) {
-    throw new Error(`association setup did not register a ${type} id`);
+    throw new Error(`setup did not register a ${type} id`);
   }
   return id;
 };
@@ -173,7 +175,7 @@ export const fetchCrmObjectPropsById = async (
   id: string,
   propertyNames: string[],
 ): Promise<Record<string, string> | null> => {
-  const res = await axios.get<HsContactResponse>(`${HS_BASE}/crm/v3/objects/${objectType}/${id}`, {
+  const res = await axios.get<HsObjectResponse>(`${HS_BASE}/crm/v3/objects/${objectType}/${id}`, {
     params: { properties: propertyNames.join(',') },
     headers: authHeaders(ctx),
     httpsAgent: hsAgent,
@@ -189,35 +191,9 @@ export const fetchContactPropsById = (
 ): Promise<Record<string, string> | null> =>
   fetchCrmObjectPropsById(ctx, 'contacts', id, propertyNames);
 
-export const deleteCrmObjectById = async (
-  ctx: RunContext,
-  objectType: string,
-  id: string,
-): Promise<void> => {
-  await axios.delete(`${HS_BASE}/crm/v3/objects/${objectType}/${id}`, {
-    headers: authHeaders(ctx),
-    httpsAgent: hsAgent,
-    timeout: 15000,
-  });
-};
-
 // Every id registered under `type`, in registration order.
 export const registeredIds = (ctx: RunContext, type: string): string[] =>
   ctx.resources.filter((r) => r.type === type).map((r) => r.id);
-
-// Delete every object the scenario registered (type = CRM object type). Best-effort per object so
-// one failure (e.g. an object the scenario already deleted) can't strand the rest.
-export const deleteRegisteredObjects = async (ctx: RunContext): Promise<void> => {
-  for (const r of ctx.resources) {
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      await deleteCrmObjectById(ctx, r.type, r.id);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(`[live:hs] teardown failed for ${r.type}/${r.id}`, err);
-    }
-  }
-};
 
 // Delete any contact reachable by the run's primary or additional email. On the happy path only the
 // single set-up contact (found via its primary email) exists; if the additional-email upsert ever

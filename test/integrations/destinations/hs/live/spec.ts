@@ -1,8 +1,7 @@
-import type { LiveSpec } from '../../../live/types';
+import type { LiveSpec, RunContext } from '../../../live/types';
 import {
   ASSOC_FROM_TYPE,
   ASSOC_TO_TYPE,
-  deleteAssociationObjects,
   deleteContactByEmail,
   deleteRegisteredObjects,
   deleteUpsertAdditionalEmailContacts,
@@ -66,6 +65,33 @@ const withoutAuthorizationType = (base: Record<string, unknown>): Record<string,
 const CONTACT_READBACK = {
   attempts: 6,
   delayMs: (attempt: number) => Math.min(1000 * 2 ** attempt, 8000),
+};
+
+// One rETL identify keyed by HubSpot's record id; `suffix` keeps messageIds unique per event.
+const recordIdEvent = (
+  ctx: RunContext,
+  suffix: string,
+  recordId: string,
+  traits: Record<string, string>,
+  objectType = 'contacts',
+) => ({
+  ...baseTimestamps(ctx, suffix),
+  type: 'identify',
+  recordId: ctx.runId,
+  context: retlRecordIdContext(recordId, objectType),
+  traits,
+});
+
+// Record-id batch shared by the v3 and legacy (v1) scenarios: two events for the first contact
+// (disjoint traits, merged into one input since HubSpot rejects a repeated id in a batch/update)
+// and one for the second.
+const recordIdBatchSeed = (suffix: string) => (ctx: RunContext) => {
+  const [firstId, secondId] = registeredIds(ctx, 'contacts');
+  return [
+    recordIdEvent(ctx, `${suffix}-dup-1`, firstId, retlRecordIdDupFirstTraits(ctx)),
+    recordIdEvent(ctx, `${suffix}-dup-2`, firstId, retlRecordIdDupSecondTraits(ctx)),
+    recordIdEvent(ctx, `${suffix}-other`, secondId, retlRecordIdOtherContactTraits(ctx)),
+  ];
 };
 
 export const live = {
@@ -468,7 +494,7 @@ export const live = {
     {
       id: 'hs-retl-associations-v3',
       description: 'RETL association between two objects (crm/v3/associations)',
-      cleanup: deleteAssociationObjects,
+      cleanup: deleteRegisteredObjects,
       steps: [
         { stepType: 'action', name: 'setup', run: createAssociationObjects },
         {
@@ -512,13 +538,13 @@ export const live = {
         {
           name: 'retl update contact by record id',
           stepType: 'pipeline',
-          seed: (ctx) => ({
-            ...baseTimestamps(ctx, 'retl-record-id'),
-            type: 'identify',
-            recordId: ctx.runId,
-            context: retlRecordIdContext(registeredId(ctx, 'contacts')),
-            traits: retlRecordIdUpdateTraits(ctx),
-          }),
+          seed: (ctx) =>
+            recordIdEvent(
+              ctx,
+              'retl-record-id',
+              registeredId(ctx, 'contacts'),
+              retlRecordIdUpdateTraits(ctx),
+            ),
         },
       ],
       verify: {
@@ -540,32 +566,7 @@ export const live = {
           stepType: 'pipeline',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
-          seed: (ctx) => {
-            const [firstId, secondId] = registeredIds(ctx, 'contacts');
-            return [
-              {
-                ...baseTimestamps(ctx, 'retl-record-id-dup-1'),
-                type: 'identify',
-                recordId: ctx.runId,
-                context: retlRecordIdContext(firstId),
-                traits: retlRecordIdDupFirstTraits(ctx),
-              },
-              {
-                ...baseTimestamps(ctx, 'retl-record-id-dup-2'),
-                type: 'identify',
-                recordId: ctx.runId,
-                context: retlRecordIdContext(firstId),
-                traits: retlRecordIdDupSecondTraits(ctx),
-              },
-              {
-                ...baseTimestamps(ctx, 'retl-record-id-other'),
-                type: 'identify',
-                recordId: ctx.runId,
-                context: retlRecordIdContext(secondId),
-                traits: retlRecordIdOtherContactTraits(ctx),
-              },
-            ];
-          },
+          seed: recordIdBatchSeed('retl-record-id'),
         },
       ],
       verify: {
@@ -584,13 +585,13 @@ export const live = {
         {
           name: 'retl update contact by record id (v1 transform)',
           stepType: 'pipeline',
-          seed: (ctx) => ({
-            ...baseTimestamps(ctx, 'retl-record-id-v1'),
-            type: 'identify',
-            recordId: ctx.runId,
-            context: retlRecordIdContext(registeredId(ctx, 'contacts')),
-            traits: retlRecordIdUpdateTraits(ctx),
-          }),
+          seed: (ctx) =>
+            recordIdEvent(
+              ctx,
+              'retl-record-id-v1',
+              registeredId(ctx, 'contacts'),
+              retlRecordIdUpdateTraits(ctx),
+            ),
         },
       ],
       verify: {
@@ -612,32 +613,7 @@ export const live = {
           stepType: 'pipeline',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
-          seed: (ctx) => {
-            const [firstId, secondId] = registeredIds(ctx, 'contacts');
-            return [
-              {
-                ...baseTimestamps(ctx, 'retl-record-id-v1-dup-1'),
-                type: 'identify',
-                recordId: ctx.runId,
-                context: retlRecordIdContext(firstId),
-                traits: retlRecordIdDupFirstTraits(ctx),
-              },
-              {
-                ...baseTimestamps(ctx, 'retl-record-id-v1-dup-2'),
-                type: 'identify',
-                recordId: ctx.runId,
-                context: retlRecordIdContext(firstId),
-                traits: retlRecordIdDupSecondTraits(ctx),
-              },
-              {
-                ...baseTimestamps(ctx, 'retl-record-id-v1-other'),
-                type: 'identify',
-                recordId: ctx.runId,
-                context: retlRecordIdContext(secondId),
-                traits: retlRecordIdOtherContactTraits(ctx),
-              },
-            ];
-          },
+          seed: recordIdBatchSeed('retl-record-id-v1'),
         },
       ],
       verify: {
@@ -655,13 +631,14 @@ export const live = {
         {
           name: 'retl update company by record id',
           stepType: 'pipeline',
-          seed: (ctx) => ({
-            ...baseTimestamps(ctx, 'retl-record-id-company'),
-            type: 'identify',
-            recordId: ctx.runId,
-            context: retlRecordIdContext(registeredId(ctx, 'companies'), 'companies'),
-            traits: retlRecordIdCompanyTraits(ctx),
-          }),
+          seed: (ctx) =>
+            recordIdEvent(
+              ctx,
+              'retl-record-id-company',
+              registeredId(ctx, 'companies'),
+              retlRecordIdCompanyTraits(ctx),
+              'companies',
+            ),
         },
       ],
       verify: {
@@ -682,13 +659,13 @@ export const live = {
           name: 'retl update deleted contact by record id',
           stepType: 'pipeline',
           expectedFailure: { items: [0] },
-          seed: (ctx) => ({
-            ...baseTimestamps(ctx, 'retl-record-id-stale'),
-            type: 'identify',
-            recordId: ctx.runId,
-            context: retlRecordIdContext(registeredId(ctx, 'contacts')),
-            traits: retlRecordIdUpdateTraits(ctx),
-          }),
+          seed: (ctx) =>
+            recordIdEvent(
+              ctx,
+              'retl-record-id-stale',
+              registeredId(ctx, 'contacts'),
+              retlRecordIdUpdateTraits(ctx),
+            ),
         },
       ],
     },

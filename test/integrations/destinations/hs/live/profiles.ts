@@ -79,23 +79,24 @@ export const retlContactUpdateV1Traits = (ctx: RunContext): Record<string, strin
   lifecyclestage: 'customer',
 });
 
-// rETL mappedToDestination context keyed by a specific email. No hubspotOperation:
-// splitEventsForCreateUpdate resolves email (a unique property) to create/update or batch/upsert.
-export const retlContactContextForEmail = (email: string) => ({
+// rETL mappedToDestination context for one object, keyed by `identifierType` = `id`.
+const retlObjectContext = (objectType: string, identifierType: string, id: string) => ({
   mappedToDestination: true,
-  externalId: [{ type: 'HS-contacts', identifierType: 'email', id: email }],
+  externalId: [{ type: `HS-${objectType}`, identifierType, id }],
   sources: { job_id: 'rudder-live-integration-test', version: 'v1' },
 });
+
+// rETL mappedToDestination context keyed by a specific email. No hubspotOperation:
+// splitEventsForCreateUpdate resolves email (a unique property) to create/update or batch/upsert.
+export const retlContactContextForEmail = (email: string) =>
+  retlObjectContext('contacts', 'email', email);
 
 export const retlContactContext = (ctx: RunContext) => retlContactContextForEmail(ctx.email());
 
 // rETL mappedToDestination context keyed by HubSpot's record id: the transform skips Search and
 // sends a direct batch/update to this id.
-export const retlRecordIdContext = (recordId: string, objectType = 'contacts') => ({
-  mappedToDestination: true,
-  externalId: [{ type: `HS-${objectType}`, identifierType: 'hs_object_id', id: recordId }],
-  sources: { job_id: 'rudder-live-integration-test', version: 'v1' },
-});
+export const retlRecordIdContext = (recordId: string, objectType = 'contacts') =>
+  retlObjectContext(objectType, 'hs_object_id', recordId);
 
 export const retlRecordIdUpdateTraits = (ctx: RunContext): Record<string, string> => ({
   firstname: 'CI-RecordId-Updated',

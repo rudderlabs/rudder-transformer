@@ -2,12 +2,11 @@ import type { RunContext } from '../../../live/types';
 import { pollUntil } from '../../../live/poll';
 import { lookupFirstname } from './profiles';
 import {
-  ASSOC_FROM_TYPE,
-  ASSOC_TO_TYPE,
   createCrmObject,
-  deleteCrmObjectById,
+  deleteContactById,
   findContactIdByEmail,
   findContactIdByProperty,
+  registeredId,
 } from './api';
 
 // The CRM Search index is eventually consistent — a fresh contact can drop out of the next
@@ -59,26 +58,17 @@ export const createContactSearchableByFirstname = async (ctx: RunContext): Promi
   );
 };
 
-export const createContactAndRegisterId = async (ctx: RunContext): Promise<void> => {
+// `label` gives each contact of a multi-contact scenario its own email.
+export const createContactAndRegisterId = async (
+  ctx: RunContext,
+  label?: string,
+): Promise<void> => {
   const id = await createCrmObject(ctx, 'contacts', {
-    email: ctx.email(),
-    firstname: 'CI-HSID',
+    email: ctx.email(label),
+    firstname: label ? `CI-HSID-${label}` : 'CI-HSID',
     lastname: ctx.runId,
   });
   ctx.register({ type: 'contacts', id });
-};
-
-// Record-id batch scenario: two contacts, both registered, so one batch can address each by id.
-export const createTwoContactsAndRegisterIds = async (ctx: RunContext): Promise<void> => {
-  for (const label of ['first', 'second']) {
-    // eslint-disable-next-line no-await-in-loop
-    const id = await createCrmObject(ctx, 'contacts', {
-      email: ctx.email(label),
-      firstname: `CI-RecordId-${label}`,
-      lastname: ctx.runId,
-    });
-    ctx.register({ type: 'contacts', id });
-  }
 };
 
 export const createCompanyAndRegisterId = async (ctx: RunContext): Promise<void> => {
@@ -89,33 +79,24 @@ export const createCompanyAndRegisterId = async (ctx: RunContext): Promise<void>
   ctx.register({ type: 'companies', id });
 };
 
+// Record-id batch scenario: two contacts, registered in order, so one batch can address each by id.
+export const createTwoContactsAndRegisterIds = async (ctx: RunContext): Promise<void> => {
+  await createContactAndRegisterId(ctx, 'first');
+  await createContactAndRegisterId(ctx, 'second');
+};
+
 // Stale record id: create a contact and delete it, keeping its id registered so the pipeline step
 // can address a record id that no longer exists (deleted contacts are archived, not reusable).
 export const createAndDeleteContact = async (ctx: RunContext): Promise<void> => {
-  const id = await createCrmObject(ctx, 'contacts', {
-    email: ctx.email(),
-    firstname: 'CI-RecordId-Deleted',
-    lastname: ctx.runId,
-  });
-  ctx.register({ type: 'contacts', id });
-  await deleteCrmObjectById(ctx, 'contacts', id);
+  await createContactAndRegisterId(ctx);
+  await deleteContactById(ctx, registeredId(ctx, 'contacts'));
 };
 
-// An association links two existing objects, so its scenario can't mint ids on the fly — setup
-// creates both and registers their real ids for the pipeline step to reference.
+// An association links two existing objects (a company and a contact), so its scenario can't mint
+// ids on the fly — setup creates both and registers their real ids for the pipeline step.
 export const createAssociationObjects = async (ctx: RunContext): Promise<void> => {
-  const fromId = await createCrmObject(ctx, ASSOC_FROM_TYPE, {
-    name: `RudderStack CI ${ctx.runId}`,
-    domain: `ci-${ctx.runId}.example.com`,
-  });
-  ctx.register({ type: ASSOC_FROM_TYPE, id: fromId });
-
-  const toId = await createCrmObject(ctx, ASSOC_TO_TYPE, {
-    email: ctx.email(),
-    firstname: 'CI-ASSOC',
-    lastname: ctx.runId,
-  });
-  ctx.register({ type: ASSOC_TO_TYPE, id: toId });
+  await createCompanyAndRegisterId(ctx);
+  await createContactAndRegisterId(ctx);
 };
 
 // Additional-email upsert scenario: create a contact whose primary email is the run email and whose

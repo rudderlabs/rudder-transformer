@@ -66,6 +66,12 @@ export const getMockHttpCallsData = (filePath): MockHttpCallsData[] => {
 };
 
 const MOCKABLE_BODY_PARAMS_METHODS = ['post', 'put', 'patch'];
+// Body-request mocks historically use `destination` as a test discriminator, not a required
+// Axios query parameter. Only opt into strict matching when another query parameter is present.
+const MOCK_DESTINATION_PARAM = 'destination';
+
+const hasRequestParams = (params: Record<string, unknown> | undefined) =>
+  params && Object.keys(params).some((key) => key !== MOCK_DESTINATION_PARAM);
 
 const groupedMockKey = (axiosMock: MockHttpCallsData) => {
   const { url, method, data: reqData, headers } = axiosMock.httpReq;
@@ -118,7 +124,7 @@ export const registerAxiosMocks = (
 
   axiosMocks.forEach((axiosMock) => {
     const { method, params } = axiosMock.httpReq;
-    if (params && MOCKABLE_BODY_PARAMS_METHODS.includes(method.toLowerCase())) {
+    if (hasRequestParams(params) && MOCKABLE_BODY_PARAMS_METHODS.includes(method.toLowerCase())) {
       const key = groupedMockKey(axiosMock);
       groupedBodyParamsMocks[key] = groupedBodyParamsMocks[key] || [];
       groupedBodyParamsMocks[key].push(axiosMock);

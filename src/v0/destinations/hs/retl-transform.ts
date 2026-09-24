@@ -87,19 +87,25 @@ const processBatchRouterRetl = async (
 
       if (isRecordIdLookup) {
         // the record id comes straight from the warehouse row, so fail missing or
-        // malformed ones up front, before any hubspot call
+        // malformed ones up front, before any hubspot call, and tag the rest for update
         tempInputs = tempInputs.filter((input) => {
           const recordId = getHsRecordId(input);
-          if (/^\d+$/.test(recordId)) {
-            return true;
+          if (!/^\d+$/.test(recordId)) {
+            const reason = recordId
+              ? `rETL - invalid HubSpot record id "${recordId}"`
+              : 'rETL - HubSpot record id (hs_object_id) is empty';
+            errorRespList.push(
+              handleRtTfSingleEventError(input, new InstrumentationError(reason), reqMetadata),
+            );
+            return false;
           }
-          const reason = recordId
-            ? `rETL - invalid HubSpot record id "${recordId}"`
-            : 'rETL - HubSpot record id (hs_object_id) is empty';
-          errorRespList.push(
-            handleRtTfSingleEventError(input, new InstrumentationError(reason), reqMetadata),
-          );
-          return false;
+          const taggedInput = input;
+          taggedInput.message.context = {
+            ...input.message.context,
+            externalId: setHsSearchId(input, recordId),
+            hubspotOperation: 'updateObject',
+          };
+          return true;
         });
         if (tempInputs.length === 0) {
           return { batchedResponseList, errorRespList, dontBatchEvents: [] };
@@ -121,17 +127,7 @@ const processBatchRouterRetl = async (
         identifierType &&
         (await isLookupFieldUnique(destination, identifierType, metadata, objectType));
 
-      if (isRecordIdLookup) {
-        tempInputs = tempInputs.map((input) => {
-          const taggedInput = input;
-          taggedInput.message.context = {
-            ...input.message.context,
-            externalId: setHsSearchId(input, getHsRecordId(input)),
-            hubspotOperation: 'updateObject',
-          };
-          return taggedInput;
-        });
-      } else if (canUpsert) {
+      if (canUpsert) {
         tempInputs = tempInputs.map((input) => {
           const taggedInput = input;
           taggedInput.message.context = {
@@ -140,8 +136,9 @@ const processBatchRouterRetl = async (
           };
           return taggedInput;
         });
-      } else {
+      } else if (!isRecordIdLookup) {
         // get info about existing objects and split accordingly.
+        // (record id events were already tagged for update above)
         tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);
       }
     }

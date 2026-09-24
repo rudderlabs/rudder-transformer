@@ -37,10 +37,6 @@ const isRetlMappedEvent = (message: HubspotRudderMessage): boolean => {
 const shouldUseHsRetlSplitPath = (input: HubspotRouterRequest): boolean =>
   isRetlMappedEvent(input.message);
 
-// the record id carried by a rETL row whose identifier is hs_object_id
-const getHsRecordId = (input: HubspotRouterRequest): string =>
-  String(getDestinationExternalIDInfoForRetl(input.message, 'HS')?.destinationExternalId ?? '');
-
 const processSingleMessageRetl = async (
   { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
@@ -89,7 +85,9 @@ const processBatchRouterRetl = async (
         // the record id comes straight from the warehouse row, so fail missing or
         // malformed ones up front, before any hubspot call, and tag the rest for update
         tempInputs = tempInputs.filter((input) => {
-          const recordId = getHsRecordId(input);
+          const recordId = String(
+            getDestinationExternalIDInfoForRetl(input.message, 'HS')?.destinationExternalId ?? '',
+          );
           if (!/^\d+$/.test(recordId)) {
             const reason = recordId
               ? `rETL - invalid HubSpot record id "${recordId}"`

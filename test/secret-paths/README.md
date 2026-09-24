@@ -224,10 +224,14 @@ This is a POC. Known gaps:
   either distinctive fixture values or a committed baseline of accepted collisions.
 - **`secretKeys` is read from a local checkout** via `--integrations-config`. A real build
   would consume the published destination definitions.
-- **Fixture quality bounds the runtime half**, tracked in INT-7221: six destinations' credential
-  values are short or dual-use enough that `--validate` cannot tell a real survivor from a
-  collision, four destinations' paths rest on a single fixture case, and `ELOQUA` declares a
-  credential no fixture populates. That ticket is fixture-only and independent of this tooling.
+- **Fixture quality bounds what can be concluded**, tracked in INT-7221 — fixture-only work,
+  independent of this tooling. Five destinations hold credential values that are too short,
+  identical to ordinary data in the same fixture, or spelled differently between cases
+  (`LEMNISK`, `FB_CUSTOM_AUDIENCE`, `EMARSYS`, `GA4`, `CLICKSEND`); four destinations' paths rest
+  on a single fixture case; `ELOQUA` declares a credential no fixture populates. That accounts for
+  five of the six `--validate` survivors. The sixth, `KLAVIYO`, is **not** a fixture problem — it
+  routes `privateApiKey` through `maskedSecrets.ts` correctly and its value is distinctive, so its
+  survivor is a candidate real finding and needs triaging here rather than upstream.
   Note the registry cannot replace the corpus for discovery: `config.auth.type === 'OAuth'` looks like the
   authoritative statement of "this destination is handed a bag", but four destinations read
   `metadata.secret` without declaring it — `FACEBOOK_OFFLINE_CONVERSIONS`, `SALESFORCE`,

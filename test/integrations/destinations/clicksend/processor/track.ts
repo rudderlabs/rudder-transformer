@@ -11,6 +11,7 @@ import {
   SMS_SEND_ENDPOINT,
 } from '../commonConfig';
 import { transformResultBuilder } from '../../../testUtils';
+import { defaultSenderId } from '../maskedSecrets';
 export const track = [
   {
     id: 'clicksend-test-track-success-1',
@@ -60,7 +61,7 @@ export const track = [
               JSON: {
                 list_id: 123345,
                 body: 'abcd',
-                from: 'abc@gmail.com',
+                from: defaultSenderId,
                 name: 'new campaign',
                 schedule: 1611761576,
               },
@@ -224,7 +225,7 @@ export const track = [
               JSON: {
                 email: 'abc@gmail.com',
                 body: 'abcd',
-                from: 'abc@gmail.com',
+                from: defaultSenderId,
                 from_email: 'dummy@gmail.com',
                 custom_string: 'test string',
                 schedule: 1611761576,

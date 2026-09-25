@@ -1,10 +1,12 @@
+import { apiSecret } from './maskedSecrets';
+
 const headers = {
   HOST: 'www.google-analytics.com',
   'Content-Type': 'application/json',
 };
 
 const params = {
-  api_secret: 'dymmyApiSecret',
+  api_secret: apiSecret,
 };
 
 const dataDeliveryMocksData = [

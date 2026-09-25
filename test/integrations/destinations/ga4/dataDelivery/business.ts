@@ -1,4 +1,5 @@
 import { ProxyV1TestData } from '../../../testTypes';
+import { apiSecret } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -12,7 +13,7 @@ const headers = {
 };
 
 const params = {
-  api_secret: 'dymmyApiSecret',
+  api_secret: apiSecret,
 };
 
 const validRequest = {

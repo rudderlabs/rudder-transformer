@@ -1,4 +1,5 @@
 import { mockFns } from '../mocks';
+import { appSecretProof, secret1, secret2 } from '../maskedSecrets';
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -58,7 +59,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -170,7 +171,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -379,7 +380,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -491,7 +492,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -537,7 +538,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               userId: '',
               body: {
@@ -594,7 +595,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               userId: '',
               body: {
@@ -705,7 +706,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -751,7 +752,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               userId: '',
               body: {
@@ -809,7 +810,7 @@ export const data = [
               headers: {},
               userId: '',
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               body: {
                 JSON: {
@@ -919,7 +920,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: 'DOBM',
                 isHashRequired: true,
                 disableFormat: false,
@@ -954,7 +955,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               body: {
                 JSON: {
@@ -986,7 +987,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               body: {
                 JSON: {
@@ -1071,7 +1072,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -1117,7 +1118,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               userId: '',
               body: {
@@ -1175,7 +1176,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               userId: '',
               body: {
@@ -1306,7 +1307,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -1355,7 +1356,7 @@ export const data = [
               headers: {},
               userId: '',
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               body: {
                 JSON: {
@@ -1415,7 +1416,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               userId: '',
               body: {
@@ -1545,7 +1546,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -1591,7 +1592,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               userId: '',
               body: {
@@ -1648,7 +1649,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               userId: '',
               body: {
@@ -1759,7 +1760,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -1806,7 +1807,7 @@ export const data = [
               headers: {},
               userId: '',
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               body: {
                 JSON: {
@@ -1863,7 +1864,7 @@ export const data = [
               headers: {},
               userId: '',
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               body: {
                 JSON: {
@@ -1958,7 +1959,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -2006,7 +2007,7 @@ export const data = [
               headers: {},
               userId: '',
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               body: {
                 JSON: {
@@ -2102,7 +2103,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -2200,7 +2201,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -2247,7 +2248,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               userId: '',
               body: {
@@ -2382,7 +2383,7 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
+                accessToken: secret1,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -2428,7 +2429,7 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
+                access_token: secret1,
               },
               body: {
                 JSON: {
@@ -2564,8 +2565,8 @@ export const data = [
             },
             destination: {
               Config: {
-                accessToken: 'ABC',
-                appSecret: 'dummySecret',
+                accessToken: secret1,
+                appSecret: secret2,
                 userSchema: [
                   'EMAIL',
                   'DOBM',
@@ -2611,8 +2612,8 @@ export const data = [
               endpointPath: 'users',
               headers: {},
               params: {
-                access_token: 'ABC',
-                appsecret_proof: 'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                access_token: secret1,
+                appsecret_proof: appSecretProof,
                 appsecret_time: 1697328000,
               },
               userId: '',

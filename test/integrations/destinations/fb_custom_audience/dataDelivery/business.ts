@@ -1,5 +1,6 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
+import { secret1 } from '../maskedSecrets';
 export const statTags = {
   destType: 'FB_CUSTOM_AUDIENCE',
   destinationId: 'default-destinationId',
@@ -12,7 +13,7 @@ export const statTags = {
 };
 
 const testParams1 = {
-  access_token: 'ABC',
+  access_token: secret1,
 };
 
 const testBodyJson1 = {
@@ -53,7 +54,7 @@ const testBodyJson1 = {
 };
 
 export const testParams2 = {
-  access_token: 'ABC',
+  access_token: secret1,
 };
 
 export const testBodyJson2 = {
@@ -68,7 +69,7 @@ export const testBodyJson2 = {
 };
 
 const testParams3 = {
-  access_token: 'BCD',
+  access_token: secret1,
 };
 
 const testBodyJson3 = {

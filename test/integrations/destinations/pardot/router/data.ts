@@ -1,4 +1,11 @@
-import { authHeader1, secret1, authHeader2, secret2 } from '../maskedSecrets';
+import {
+  authHeader1,
+  authHeader2,
+  businessUnitId,
+  refreshToken,
+  secret1,
+  secret2,
+} from '../maskedSecrets';
 import { FEATURES, MODULES } from '../../../../../src/v0/util/tags';
 
 export const data = [
@@ -16,7 +23,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -57,7 +64,7 @@ export const data = [
               },
               metadata: {
                 jobId: 1,
-                secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
+                secret: { access_token: secret1, refresh_token: refreshToken },
                 userId: 'u1',
               },
               message: {
@@ -123,7 +130,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -164,7 +171,7 @@ export const data = [
               },
               metadata: {
                 jobId: 2,
-                secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
+                secret: { access_token: secret1, refresh_token: refreshToken },
                 userId: 'u1',
               },
               message: {
@@ -229,7 +236,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -270,7 +277,7 @@ export const data = [
               },
               metadata: {
                 jobId: 3,
-                secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
+                secret: { access_token: secret1, refresh_token: refreshToken },
                 userId: 'u1',
               },
               message: {
@@ -336,7 +343,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -377,7 +384,7 @@ export const data = [
               },
               metadata: {
                 jobId: 4,
-                secret: { access_token: secret2, refresh_token: 'myRefreshToken' },
+                secret: { access_token: secret2, refresh_token: refreshToken },
                 userId: 'u1',
               },
               message: {
@@ -442,7 +449,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -559,7 +566,7 @@ export const data = [
                 endpoint: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/id/123435',
                 headers: {
                   Authorization: authHeader1,
-                  'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
+                  'Pardot-Business-Unit-Id': businessUnitId,
                 },
                 params: {},
                 body: {
@@ -579,7 +586,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
-                  secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
+                  secret: { access_token: secret1, refresh_token: refreshToken },
                   userId: 'u1',
                 },
               ],
@@ -588,7 +595,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -637,7 +644,7 @@ export const data = [
                   'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
                 headers: {
                   Authorization: authHeader1,
-                  'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
+                  'Pardot-Business-Unit-Id': businessUnitId,
                 },
                 params: {},
                 body: {
@@ -657,7 +664,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 2,
-                  secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
+                  secret: { access_token: secret1, refresh_token: refreshToken },
                   userId: 'u1',
                 },
               ],
@@ -666,7 +673,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -715,7 +722,7 @@ export const data = [
                   'https://pi.pardot.com/api/prospect/version/4/do/upsert/fid/00Q6r000002LKhTPVR',
                 headers: {
                   Authorization: authHeader1,
-                  'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
+                  'Pardot-Business-Unit-Id': businessUnitId,
                 },
                 params: {},
                 body: {
@@ -735,7 +742,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 3,
-                  secret: { access_token: secret1, refresh_token: 'myRefreshToken' },
+                  secret: { access_token: secret1, refresh_token: refreshToken },
                   userId: 'u1',
                 },
               ],
@@ -744,7 +751,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -793,7 +800,7 @@ export const data = [
                   'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/rolex_waltair@mywebsite.io',
                 headers: {
                   Authorization: authHeader2,
-                  'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
+                  'Pardot-Business-Unit-Id': businessUnitId,
                 },
                 params: {},
                 body: {
@@ -813,7 +820,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 4,
-                  secret: { access_token: secret2, refresh_token: 'myRefreshToken' },
+                  secret: { access_token: secret2, refresh_token: refreshToken },
                   userId: 'u1',
                 },
               ],
@@ -822,7 +829,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -866,7 +873,7 @@ export const data = [
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  businessUnitId: '0Uv2v000000k9tHCAQ',
+                  businessUnitId,
                   campaignId: 42213,
                   authStatus: 'active',
                   eventDelivery: true,
@@ -926,6 +933,216 @@ export const data = [
   },
   {
     name: 'pardot',
+    description: 'Test 1 - single identify email branch',
+    feature: 'router',
+    module: MODULES.DESTINATION,
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                Config: {
+                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
+                  businessUnitId,
+                  campaignId: 42213,
+                  authStatus: 'active',
+                  eventDelivery: true,
+                  eventDeliveryTS: 1636965406397,
+                },
+                DestinationDefinition: {
+                  name: 'PARDOT',
+                  displayName: 'Pardot',
+                  config: {
+                    auth: { type: 'OAuth' },
+                    transformAt: 'router',
+                    transformAtV1: 'router',
+                    saveDestinationResponse: true,
+                    includeKeys: [],
+                    excludeKeys: [],
+                    supportedSourceTypes: [
+                      'android',
+                      'ios',
+                      'web',
+                      'unity',
+                      'amp',
+                      'cloud',
+                      'warehouse',
+                      'reactnative',
+                      'flutter',
+                      'cordova',
+                    ],
+                    destConfig: {
+                      defaultConfig: ['rudderAccountId', 'businessUnitId', 'campaignId'],
+                    },
+                    secretKeys: ['businessUnitId'],
+                  },
+                },
+                Enabled: true,
+                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
+                Name: 'test destination',
+                Transformations: [],
+              },
+              metadata: {
+                jobId: 2,
+                secret: { access_token: secret1, refresh_token: refreshToken },
+                userId: 'u1',
+              },
+              message: {
+                type: 'identify',
+                event: 'insert product',
+                sentAt: '2021-09-08T11:10:45.466Z',
+                userId: 'user12345',
+                channel: 'web',
+                context: {
+                  os: { name: '', version: '' },
+                  app: {
+                    name: 'RudderLabs JavaScript SDK',
+                    build: '1.0.0',
+                    version: '1.1.18',
+                    namespace: 'com.rudderlabs.javascript',
+                  },
+                  page: {
+                    url: 'http://127.0.0.1:5500/index.html',
+                    path: '/index.html',
+                    title: 'Document',
+                    search: '',
+                    tab_url: 'http://127.0.0.1:5500/index.html',
+                    referrer: '$direct',
+                    initial_referrer: '$direct',
+                    referring_domain: '',
+                    initial_referring_domain: '',
+                  },
+                  locale: 'en-GB',
+                  screen: {
+                    width: 1536,
+                    height: 960,
+                    density: 2,
+                    innerWidth: 1536,
+                    innerHeight: 776,
+                  },
+                  traits: {},
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
+                  campaign: {},
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
+                },
+                rudderId: 'fa2994a5-2a81-45fd-9919-fcf5596ad380',
+                messageId: 'e2d1a383-d9a2-4e03-a9dc-131d153c4d95',
+                timestamp: '2021-11-15T14:06:42.497+05:30',
+                properties: {},
+                receivedAt: '2021-11-15T14:06:42.497+05:30',
+                request_ip: '[::1]',
+                anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
+                integrations: { All: true },
+                originalTimestamp: '2021-09-08T11:10:45.466Z',
+                traits: {
+                  email: 'Roger_12@waltair.io',
+                  active_seats: 4,
+                  firstName: 'Roger_12',
+                  lastName: 'Federer_12',
+                  website: 'https://rudderstack.com',
+                  score: 14,
+                },
+              },
+            },
+          ],
+          destType: 'pardot',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
+                headers: {
+                  Authorization: authHeader1,
+                  'Pardot-Business-Unit-Id': businessUnitId,
+                },
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {
+                    first_name: 'Roger_12',
+                    last_name: 'Federer_12',
+                    website: 'https://rudderstack.com',
+                    score: 14,
+                    campaign_id: 42213,
+                  },
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  secret: { access_token: secret1, refresh_token: refreshToken },
+                  userId: 'u1',
+                },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
+                  businessUnitId,
+                  campaignId: 42213,
+                  authStatus: 'active',
+                  eventDelivery: true,
+                  eventDeliveryTS: 1636965406397,
+                },
+                DestinationDefinition: {
+                  name: 'PARDOT',
+                  displayName: 'Pardot',
+                  config: {
+                    auth: { type: 'OAuth' },
+                    transformAt: 'router',
+                    transformAtV1: 'router',
+                    saveDestinationResponse: true,
+                    includeKeys: [],
+                    excludeKeys: [],
+                    supportedSourceTypes: [
+                      'android',
+                      'ios',
+                      'web',
+                      'unity',
+                      'amp',
+                      'cloud',
+                      'warehouse',
+                      'reactnative',
+                      'flutter',
+                      'cordova',
+                    ],
+                    destConfig: {
+                      defaultConfig: ['rudderAccountId', 'businessUnitId', 'campaignId'],
+                    },
+                    secretKeys: ['businessUnitId'],
+                  },
+                },
+                Enabled: true,
+                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
+                Name: 'test destination',
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'pardot',
     description: 'Test proxy - 0',
     feature: FEATURES.DATA_DELIVERY,
     module: MODULES.DESTINATION,
@@ -939,7 +1156,7 @@ export const data = [
           endpoint: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/id/123435',
           headers: {
             Authorization: authHeader1,
-            'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
+            'Pardot-Business-Unit-Id': businessUnitId,
           },
           body: {
             JSON: {},
@@ -1075,7 +1292,7 @@ export const data = [
             'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
           headers: {
             Authorization: authHeader1,
-            'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
+            'Pardot-Business-Unit-Id': businessUnitId,
           },
           body: {
             JSON: {},
@@ -1210,7 +1427,7 @@ export const data = [
           endpoint: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/fid/00Q6r000002LKhTPVR',
           headers: {
             Authorization: authHeader1,
-            'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
+            'Pardot-Business-Unit-Id': businessUnitId,
           },
           body: {
             JSON: {},
@@ -1346,7 +1563,7 @@ export const data = [
             'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/rolex_waltair@mywebsite.io',
           headers: {
             Authorization: authHeader2,
-            'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
+            'Pardot-Business-Unit-Id': businessUnitId,
           },
           body: {
             JSON: {},

@@ -82,8 +82,14 @@ const processBatchRouterRetl = async (
       const isRecordIdLookup = identifierType === HS_RECORD_ID_PROPERTY;
 
       if (isRecordIdLookup) {
-        // the record id comes straight from the warehouse row, so fail missing or
-        // malformed ones up front, before any hubspot call, and tag the rest for update
+        // The record id comes straight from the warehouse row. rETL only drops null or duplicate
+        // values of the source's primary key, so when that's a different column (e.g. a profile
+        // id) a record id can arrive missing or malformed. Such a row can never succeed: there's
+        // nothing to address in hubspot, and falling back to Search/create would match on another
+        // field or duplicate the record. So fail it here with a non-retryable error, before any
+        // hubspot call: it never reaches hubspot, and it keeps its own error even if the
+        // properties fetch below fails (that error is retryable and would otherwise retry a row
+        // that can't succeed). Tag the rest for a direct update.
         tempInputs = tempInputs.filter((input) => {
           const recordId = String(
             getDestinationExternalIDInfoForRetl(input.message, 'HS')?.destinationExternalId ?? '',

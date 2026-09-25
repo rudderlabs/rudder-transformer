@@ -71,12 +71,11 @@ export const identifierEscapingData = [
                 version: '1',
                 type: 'REST',
                 method: 'DELETE',
-                endpoint:
-                  'https://www.zohoapis.in/crm/v6/Leads?ids=<ESCAPED_LOOKUP_RECORD_ID>&wf_trigger=false',
+                endpoint: 'https://www.zohoapis.in/crm/v6/Leads',
                 headers: {
                   Authorization: 'Zoho-oauthtoken correct-access-token',
                 },
-                params: {},
+                params: { ids: '<ESCAPED_LOOKUP_RECORD_ID>', wf_trigger: false },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {},

@@ -5,14 +5,15 @@ const {
   defaultPostRequestConfig,
 } = require('../../util');
 
-const { offlineConversionResponseBuilder, prepareUrls } = require('./utils');
+const { offlineConversionResponseBuilder, prepareRequestDetails } = require('./utils');
 
 const { EventType } = require('../../../constants');
 
-const responseBuilder = (endpoint) => {
-  if (endpoint) {
+const responseBuilder = (requestDetails) => {
+  if (requestDetails) {
     const response = defaultRequestConfig();
-    response.endpoint = endpoint;
+    response.endpoint = requestDetails.endpoint;
+    response.params = requestDetails.params;
     response.method = defaultPostRequestConfig.requestMethod;
     return response;
   }
@@ -27,15 +28,15 @@ const trackResponseBuilder = (message, destination) => {
 
   const offlineConversionsPayloads = offlineConversionResponseBuilder(message, destination);
 
-  const finalResponseUrls = [];
+  const finalRequestDetails = [];
   offlineConversionsPayloads.forEach((item) => {
     const { data, eventSetIds, payload } = item;
-    finalResponseUrls.push(...prepareUrls(destination, data, eventSetIds, payload));
+    finalRequestDetails.push(...prepareRequestDetails(destination, data, eventSetIds, payload));
   });
 
   const eventsToSend = [];
-  finalResponseUrls.forEach((url) => {
-    const response = responseBuilder(url);
+  finalRequestDetails.forEach((requestDetails) => {
+    const response = responseBuilder(requestDetails);
     eventsToSend.push(response);
   });
   return eventsToSend;

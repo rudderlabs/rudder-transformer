@@ -60,28 +60,31 @@ const getAccessToken = (destination) => {
 };
 
 /**
- * Returns an array of urls
- * %5B%5D signifies an array in encode format
+ * Returns an array of request details
  * @param {*} metadata
  * @param {*} data
  * @param {*} ids
  * @param {*} payload
  * @returns
  */
-const prepareUrls = (destination, data, ids, payload) => {
-  const urls = [];
+const prepareRequestDetails = (destination, data, ids, payload) => {
+  const requestDetails = [];
   const uploadTags = payload.upload_tag || 'rudderstack';
   const [first] = data;
-  const encodedData = `%5B${encodeURIComponent(JSON.stringify(first))}%5D`;
+  const serializedData = JSON.stringify([first]);
   const accessToken = getAccessToken(destination);
   ids.forEach((id) => {
-    const endpoint = ENDPOINT.replace('OFFLINE_EVENT_SET_ID', id);
-    urls.push(
-      `${endpoint}?upload_tag=${uploadTags}&data=${encodedData}&access_token=${accessToken}`,
-    );
+    requestDetails.push({
+      endpoint: ENDPOINT.replace('OFFLINE_EVENT_SET_ID', id),
+      params: {
+        upload_tag: uploadTags,
+        data: serializedData,
+        access_token: accessToken,
+      },
+    });
   });
 
-  return urls;
+  return requestDetails;
 };
 
 /**
@@ -452,4 +455,7 @@ const offlineConversionResponseBuilder = (message, destination) => {
   return offlineConversionsPayloads;
 };
 
-module.exports = { offlineConversionResponseBuilder, prepareUrls };
+module.exports = {
+  offlineConversionResponseBuilder,
+  prepareRequestDetails,
+};

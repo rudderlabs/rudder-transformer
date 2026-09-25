@@ -16,8 +16,9 @@ export const otherScenariosV1: ProxyV1TestData[] = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=throttled_valid_access_token`,
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events`,
           params: {
+            access_token: 'throttled_valid_access_token',
             destination: 'facebook_pixel',
           },
           FORM: testFormData,
@@ -60,7 +61,11 @@ export const otherScenariosV1: ProxyV1TestData[] = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234572/events?access_token=valid_access_token_unhandled_response`,
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234572/events`,
+          params: {
+            access_token: 'valid_access_token_unhandled_response',
+            destination: 'facebook_pixel',
+          },
           FORM: testFormData,
         }),
         method: 'POST',

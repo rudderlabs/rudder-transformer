@@ -57,36 +57,6 @@ export const networkCallsData = [
       },
     },
   },
-  {
-    httpReq: {
-      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: authHeader1,
-      },
-      data: {
-        inputs: [{ id: '90003', properties: { firstname: 'Gone' }, objectWriteTraceId: '4' }],
-      },
-    },
-    httpRes: {
-      status: 207,
-      data: {
-        status: 'COMPLETE',
-        results: [],
-        errors: [
-          {
-            status: 'error',
-            category: 'OBJECT_NOT_FOUND',
-            message:
-              'Could not get some CONTACT objects, they may be deleted or not exist. Check that ids are valid.',
-            context: { ids: ['90003'], objectWriteTraceId: ['4'] },
-          },
-        ],
-        numErrors: 1,
-      },
-    },
-  },
   // Silent failure mocks (placed first so they match before broader mocks below)
   // batch endpoints returning 2xx with empty results+errors → silent failure
   {

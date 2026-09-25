@@ -123,11 +123,6 @@ export const retlRecordIdOtherContactTraits = (ctx: RunContext): Record<string, 
   lastname: `${ctx.runId}-other`,
 });
 
-export const retlRecordIdCompanyTraits = (ctx: RunContext): Record<string, string> => ({
-  name: `RudderStack CI ${ctx.runId} v2`,
-  description: `ci-${ctx.runId}-record-id`,
-});
-
 // Additional-email upsert: the two upserts write DISJOINT properties so the read-back can assert the
 // single contact carries BOTH sets - proving the primary-email and additional-email upserts landed
 // on the same record rather than forking a second one.

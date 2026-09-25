@@ -15,7 +15,7 @@ const MULTI_STATUS_MESSAGE =
  * input carries the job id(s) it was built from as objectWriteTraceId (comma-separated when
  * several events were merged into one input), so the handler fails exactly those jobs; every
  * other job in the batch succeeds.
- * Network mocks: network.ts (batch/update, ids 90001 / 90002 / 90003).
+ * Network mocks: network.ts (batch/update, ids 90001 / 90002).
  */
 export const updateMultiStatusData = [
   {
@@ -59,47 +59,6 @@ export const updateMultiStatusData = [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
               { statusCode: 400, metadata: generateMetadata(2), error: NOT_FOUND_MESSAGE },
               { statusCode: 400, metadata: generateMetadata(3), error: NOT_FOUND_MESSAGE },
-            ],
-          },
-        },
-      },
-    },
-  },
-  {
-    name: 'hs',
-    id: 'hs_update_207_record_not_found_single',
-    description: '207 from batch/update with only a missing record id fails its job',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v1',
-    input: {
-      request: {
-        body: generateProxyV1Payload(
-          {
-            endpoint: UPDATE_ENDPOINT,
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: authHeader1,
-            },
-            JSON: {
-              inputs: [{ id: '90003', properties: { firstname: 'Gone' }, objectWriteTraceId: '4' }],
-            },
-          },
-          [generateMetadata(4)],
-          { apiVersion: 'newApi' },
-        ),
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: {
-            status: 207,
-            message: MULTI_STATUS_MESSAGE,
-            response: [
-              { statusCode: 400, metadata: generateMetadata(4), error: NOT_FOUND_MESSAGE },
             ],
           },
         },

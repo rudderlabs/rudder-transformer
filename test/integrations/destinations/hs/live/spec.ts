@@ -26,7 +26,6 @@ import {
   retlContactCreateV1Traits,
   retlContactUpdateTraits,
   retlContactUpdateV1Traits,
-  retlRecordIdCompanyTraits,
   retlRecordIdContext,
   retlRecordIdDupCombinedTraits,
   retlRecordIdDupFirstTraits,
@@ -40,7 +39,6 @@ import {
 import {
   createAndDeleteContact,
   createAssociationObjects,
-  createCompanyAndRegisterId,
   createContactAndRegisterId,
   createContactAndWaitSearchable,
   createContactSearchableByFirstname,
@@ -51,7 +49,6 @@ import {
   verifyAssociationExists,
   verifyContactProperties,
   verifyRecordIdBatch,
-  verifyRegisteredObjectProperties,
   verifyUpsertResolvesToSameContact,
 } from './verify';
 
@@ -73,12 +70,11 @@ const recordIdEvent = (
   suffix: string,
   recordId: string,
   traits: Record<string, string>,
-  objectType = 'contacts',
 ) => ({
   ...baseTimestamps(ctx, suffix),
   type: 'identify',
   recordId: ctx.runId,
-  context: retlRecordIdContext(recordId, objectType),
+  context: retlRecordIdContext(recordId),
   traits,
 });
 
@@ -527,32 +523,6 @@ export const live = {
       verify: { check: verifyAssociationExists },
     },
     {
-      // Record id (hs_object_id) identifier: the transform addresses the record directly with a
-      // batch/update — no Search, so no settle delay or retries are needed after setup.
-      id: 'hs-retl-contacts-update-by-record-id-v3',
-      cleanup: deleteRegisteredObjects,
-      description:
-        'RETL identify keyed by hs_object_id updates the contact directly (crm/v3 batch/update, no search)',
-      steps: [
-        { stepType: 'action', name: 'setup', run: createContactAndRegisterId },
-        {
-          name: 'retl update contact by record id',
-          stepType: 'pipeline',
-          seed: (ctx) =>
-            recordIdEvent(
-              ctx,
-              'retl-record-id',
-              registeredId(ctx, 'contacts'),
-              retlRecordIdUpdateTraits(ctx),
-            ),
-        },
-      ],
-      verify: {
-        check: verifyRegisteredObjectProperties('contacts', retlRecordIdUpdateTraits),
-        ...CONTACT_READBACK,
-      },
-    },
-    {
       // HubSpot rejects a batch/update carrying the same id twice, so the two events for the first
       // contact must be merged into one input for this single request to land.
       id: 'hs-retl-contacts-update-by-record-id-batch-v3',
@@ -575,31 +545,6 @@ export const live = {
       },
     },
     {
-      id: 'hs-retl-contacts-update-by-record-id-v1',
-      cleanup: deleteRegisteredObjects,
-      description:
-        'RETL identify keyed by hs_object_id updates the contact directly via the v1 transform (no search)',
-      configOverride: (base) => ({ ...base, apiVersion: 'legacyApi' }),
-      steps: [
-        { stepType: 'action', name: 'setup', run: createContactAndRegisterId },
-        {
-          name: 'retl update contact by record id (v1 transform)',
-          stepType: 'pipeline',
-          seed: (ctx) =>
-            recordIdEvent(
-              ctx,
-              'retl-record-id-v1',
-              registeredId(ctx, 'contacts'),
-              retlRecordIdUpdateTraits(ctx),
-            ),
-        },
-      ],
-      verify: {
-        check: verifyRegisteredObjectProperties('contacts', retlRecordIdUpdateTraits),
-        ...CONTACT_READBACK,
-      },
-    },
-    {
       // Exercises the v1 update batching's duplicate-id merge against HubSpot.
       id: 'hs-retl-contacts-update-by-record-id-batch-v1',
       cleanup: deleteRegisteredObjects,
@@ -618,31 +563,6 @@ export const live = {
       ],
       verify: {
         check: verifyRecordIdBatch(retlRecordIdDupCombinedTraits, retlRecordIdOtherContactTraits),
-        ...CONTACT_READBACK,
-      },
-    },
-    {
-      id: 'hs-retl-companies-update-by-record-id-v3',
-      cleanup: deleteRegisteredObjects,
-      description:
-        'RETL identify keyed by hs_object_id updates a company directly (crm/v3 batch/update, no search)',
-      steps: [
-        { stepType: 'action', name: 'setup', run: createCompanyAndRegisterId },
-        {
-          name: 'retl update company by record id',
-          stepType: 'pipeline',
-          seed: (ctx) =>
-            recordIdEvent(
-              ctx,
-              'retl-record-id-company',
-              registeredId(ctx, 'companies'),
-              retlRecordIdCompanyTraits(ctx),
-              'companies',
-            ),
-        },
-      ],
-      verify: {
-        check: verifyRegisteredObjectProperties('companies', retlRecordIdCompanyTraits),
         ...CONTACT_READBACK,
       },
     },

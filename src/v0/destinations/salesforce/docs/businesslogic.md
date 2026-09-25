@@ -131,6 +131,7 @@ All API calls use version `v50.0` (defined in `config.js` as `SF_API_VERSION`).
    - For Lead/Contact with `mapProperties` enabled and not `mappedToDestination`: traits are mapped via config JSONs, unmapped traits become `__c` custom fields
    - For `mappedToDestination` events: traits are sent as-is (except `Id` is removed from payload)
    - For other object types or `mapProperties` disabled: traits are sent as-is
+   - The legacy `SALESFORCE` destination reads the switch from `mapProperty` only. The dashboard saves `mapProperties`, so legacy Lead and Contact traits are always mapped
 
 ### Lead Lookup Flow
 

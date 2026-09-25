@@ -9,23 +9,6 @@ const isProductArrayValid = (event, properties) =>
 const getItemPayloads = (products, mappingConfigs) =>
   products.map((product) => constructPayload(product, mappingConfigs));
 
-// Function to add the structured event data to the final payloads array
-const addFinalPayload = (eventData, finalPayloads) => {
-  switch (eventData.event) {
-    case 'impressions':
-      finalPayloads.impressions.push(eventData.topsortPayload);
-      break;
-    case 'clicks':
-      finalPayloads.clicks.push(eventData.topsortPayload);
-      break;
-    case 'purchases':
-      finalPayloads.purchases.push(eventData.topsortPayload);
-      break;
-    default:
-      throw new ConfigurationError('Invalid event mapping');
-  }
-};
-
 // Function to retrieve mapped event name from Topsort event mappings.
 const getMappedEventName = (parsedTopsortEventMappings, event) => {
   const eventName = event.toLowerCase();
@@ -48,6 +31,5 @@ const getMappedEventName = (parsedTopsortEventMappings, event) => {
 module.exports = {
   isProductArrayValid,
   getItemPayloads,
-  addFinalPayload,
   getMappedEventName,
 };

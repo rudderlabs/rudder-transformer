@@ -12,6 +12,10 @@ const ConfigCategory = {
   PURCHASE_ITEM: { name: 'TopSortPurchaseProductConfig' },
 };
 
+// The Events API binds `max=50` on each of the impressions/clicks/purchases arrays
+// independently, and rejects the whole request past that.
+const MAX_BATCH_SIZE = 50;
+
 const ECOMM_EVENTS_WITH_PRODUCT_ARRAY = [
   'Cart Viewed',
   'Checkout Started',
@@ -27,5 +31,6 @@ module.exports = {
   mappingConfig,
   ConfigCategory,
   ENDPOINT,
+  MAX_BATCH_SIZE,
   ECOMM_EVENTS_WITH_PRODUCT_ARRAY,
 };

@@ -59,11 +59,6 @@ const getAccessToken = (destination) => {
   return Config.accessToken;
 };
 
-const facebookOfflineConversionsParamsSerializer = {
-  serialize: ({ upload_tag: uploadTag, data, access_token: accessToken }) =>
-    `upload_tag=${uploadTag}&data=${data}&access_token=${accessToken}`,
-};
-
 /**
  * Returns an array of request details
  * @param {*} metadata
@@ -76,14 +71,14 @@ const prepareRequestDetails = (destination, data, ids, payload) => {
   const requestDetails = [];
   const uploadTags = payload.upload_tag || 'rudderstack';
   const [first] = data;
-  const encodedData = `%5B${encodeURIComponent(JSON.stringify(first))}%5D`;
+  const serializedData = JSON.stringify([first]);
   const accessToken = getAccessToken(destination);
   ids.forEach((id) => {
     requestDetails.push({
       endpoint: ENDPOINT.replace('OFFLINE_EVENT_SET_ID', id),
       params: {
         upload_tag: uploadTags,
-        data: encodedData,
+        data: serializedData,
         access_token: accessToken,
       },
     });
@@ -461,7 +456,6 @@ const offlineConversionResponseBuilder = (message, destination) => {
 };
 
 module.exports = {
-  facebookOfflineConversionsParamsSerializer,
   offlineConversionResponseBuilder,
   prepareRequestDetails,
 };

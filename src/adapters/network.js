@@ -418,7 +418,6 @@ const prepareProxyRequest = async (request) => {
     body,
     method,
     params,
-    paramsSerializer,
     endpoint,
     headers: incomingHeaders = {},
     destinationConfig: config,
@@ -431,15 +430,7 @@ const prepareProxyRequest = async (request) => {
   const data = await extractPayloadForFormat(payload, payloadFormat);
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
   headers['User-Agent'] = 'RudderLabs';
-  return removeUndefinedValues({
-    endpoint,
-    data,
-    params,
-    paramsSerializer,
-    headers,
-    method,
-    config,
-  });
+  return removeUndefinedValues({ endpoint, data, params, headers, method, config });
 };
 
 const getHttpWrapperMethod = (requestType) => {
@@ -518,14 +509,12 @@ const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }
  */
 const proxyRequest = async (request, destType) => {
   const { metadata, endpointPath, body } = request;
-  const { endpoint, data, method, params, paramsSerializer, headers } =
-    await prepareProxyRequest(request);
+  const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
   fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
   const requestOptions = {
     url: endpoint,
     data,
     params,
-    paramsSerializer,
     headers,
     method,
   };

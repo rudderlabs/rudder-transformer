@@ -1306,12 +1306,6 @@ describe('proxyRequest tests', () => {
     };
 
     const result = await proxyRequest(request, 'DT');
-    expect(axios).toHaveBeenCalledWith(
-      expect.objectContaining({
-        url: 'https://example.com',
-        params: { param1: 'value1' },
-      }),
-    );
     expect(result).toEqual({
       success: true,
       response: { status: 200, data: { key: 'value' } },

@@ -1,5 +1,4 @@
-const axios = require('axios');
-const { facebookOfflineConversionsParamsSerializer, prepareRequestDetails } = require('./utils');
+const { prepareRequestDetails } = require('./utils');
 
 const buildLegacyUrl = (endpoint, uploadTag, event, accessToken) =>
   `${endpoint}?upload_tag=${uploadTag}&data=%5B${encodeURIComponent(
@@ -7,11 +6,7 @@ const buildLegacyUrl = (endpoint, uploadTag, event, accessToken) =>
   )}%5D&access_token=${accessToken}`;
 
 const serializeRequestUrl = (request) =>
-  axios.getUri({
-    url: request.endpoint,
-    params: request.params,
-    paramsSerializer: facebookOfflineConversionsParamsSerializer,
-  });
+  `${request.endpoint}?${new URLSearchParams(request.params).toString()}`;
 
 describe('prepareRequestDetails', () => {
   test.each([
@@ -33,20 +28,20 @@ describe('prepareRequestDetails', () => {
     };
     const eventSetId = 'event-set-id';
     const [request] = prepareRequestDetails(destination, [event], [eventSetId], payload);
-    const legacyUrl = buildLegacyUrl(
-      request.endpoint,
-      payload.upload_tag || 'rudderstack',
-      event,
-      accessToken,
+    const legacyUrl = new URL(
+      buildLegacyUrl(request.endpoint, payload.upload_tag || 'rudderstack', event, accessToken),
     );
-    const serializedUrl = serializeRequestUrl(request);
+    const serializedUrl = new URL(serializeRequestUrl(request));
 
     expect(request.endpoint).toBe(`https://graph.facebook.com/v16.0/${eventSetId}/events`);
     expect(request.params).toEqual({
       upload_tag: payload.upload_tag || 'rudderstack',
-      data: `%5B${encodeURIComponent(JSON.stringify(event))}%5D`,
+      data: JSON.stringify([event]),
       access_token: accessToken,
     });
-    expect(serializedUrl).toBe(legacyUrl);
+    expect(serializedUrl.searchParams.get('data')).toBe(legacyUrl.searchParams.get('data'));
+    expect(serializedUrl.searchParams.get('upload_tag')).toBe(payload.upload_tag || 'rudderstack');
+    expect(serializedUrl.searchParams.get('access_token')).toBe(accessToken);
+    expect(serializedUrl.toString()).not.toContain('%25');
   });
 });

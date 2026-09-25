@@ -35,17 +35,6 @@ Allows custom transformations through user-defined functions executed in a sandb
 - Provide isolation between user code and system code
 - Handle errors in user transformations
 
-### Warehouse Transformer
-
-Specialized transformer for data warehouse destinations with specific formatting requirements.
-
-**Key responsibilities:**
-
-- Format data for warehouse destinations
-- Handle schema management
-- Apply type conversions
-- Manage batching for efficient loading
-
 ### API Layer
 
 Koa.js based REST API that exposes transformation endpoints for processor, router, and batch operations.
@@ -97,14 +86,12 @@ graph TD
     A[API Layer] --> B[Destination Transformer]
     A --> C[Source Transformer]
     A --> D[User Transformation]
-    A --> E[Warehouse Transformer]
     B --> F[Redis Cache]
     B --> G[Metrics Service]
     H[CDK] --> B
     B --> I[Destination APIs]
     C --> J[Source APIs]
     D --> K[Isolated VM]
-    E --> L[Warehouse Connections]
 ```
 
 ## Data Flow

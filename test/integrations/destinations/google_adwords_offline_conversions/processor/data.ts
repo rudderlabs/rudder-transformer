@@ -5938,6 +5938,354 @@ export const data = [
     mockFns: timestampMock,
   },
   {
+    id: 'gaoc_processor_missing_properties_click_without_identifier',
+    name: 'google_adwords_offline_conversions',
+    description:
+      'A click conversion without properties or user identifiers returns an instrumentation error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              event: 'Missing Properties Click',
+              type: 'track',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+              },
+            },
+            destination: {
+              Config: {
+                customerId: '111-222-3333',
+                subAccount: true,
+                loginCustomerId: 'login-customer-id',
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Missing Properties Click',
+                    to: 'click',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Missing Properties Click',
+                    to: 'Sign-up - click',
+                  },
+                ],
+                customVariables: [],
+                UserIdentifierSource: 'FIRST_PARTY',
+                conversionEnvironment: 'WEB',
+                hashUserIdentifier: true,
+                defaultUserIdentifier: 'email',
+                validateOnly: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Either an email address or a phone number is required for user identification when none of gclid, wbraid, or gbraid is provided.',
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+              },
+            },
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'gaoc_processor_missing_properties_click_with_traits_email',
+    name: 'google_adwords_offline_conversions',
+    description: 'A click conversion without properties uses an email from context traits',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              context: {
+                traits: {
+                  email: 'alex@example.com',
+                },
+              },
+              event: 'Missing Properties Click',
+              type: 'track',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+              },
+            },
+            destination: {
+              Config: {
+                customerId: '111-222-3333',
+                subAccount: true,
+                loginCustomerId: 'login-customer-id',
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Missing Properties Click',
+                    to: 'click',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Missing Properties Click',
+                    to: 'Sign-up - click',
+                  },
+                ],
+                customVariables: [],
+                UserIdentifierSource: 'FIRST_PARTY',
+                conversionEnvironment: 'WEB',
+                hashUserIdentifier: true,
+                defaultUserIdentifier: 'email',
+                validateOnly: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+                'login-customer-id': 'logincustomerid',
+              },
+              params: {
+                event: 'Sign-up - click',
+                customerId: '1112223333',
+                customVariables: [],
+                properties: {},
+              },
+              body: {
+                JSON: {
+                  conversions: [
+                    {
+                      userIdentifiers: [
+                        {
+                          userIdentifierSource: 'FIRST_PARTY',
+                          hashedEmail:
+                            '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                        },
+                      ],
+                      conversionEnvironment: 'WEB',
+                      conversionDateTime: '2019-10-14 16:45:18+05:30',
+                      consent: {
+                        adPersonalization: 'UNSPECIFIED',
+                        adUserData: 'UNSPECIFIED',
+                      },
+                      conversionAction: 'customers/1112223333/conversionActions/848898416',
+                    },
+                  ],
+                  partialFailure: true,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: timestampMock,
+  },
+  {
+    id: 'gaoc_processor_missing_properties_call',
+    name: 'google_adwords_offline_conversions',
+    description: 'A call conversion without properties returns the existing required-field error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              event: 'Missing Properties Call',
+              type: 'track',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+              },
+            },
+            destination: {
+              Config: {
+                customerId: '111-222-3333',
+                subAccount: true,
+                loginCustomerId: 'login-customer-id',
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Missing Properties Call',
+                    to: 'call',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Missing Properties Call',
+                    to: 'Sign-up - click',
+                  },
+                ],
+                customVariables: [],
+                validateOnly: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Missing required value from "properties.callerId"',
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+              },
+            },
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'gaoc_processor_missing_properties_store',
+    name: 'google_adwords_offline_conversions',
+    description: 'A store conversion without properties returns the existing required-field error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              event: 'Missing Properties Store',
+              type: 'track',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+              },
+            },
+            destination: {
+              Config: {
+                customerId: '111-222-3333',
+                subAccount: true,
+                loginCustomerId: 'login-customer-id',
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Missing Properties Store',
+                    to: 'store',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Missing Properties Store',
+                    to: 'Sign-up - click',
+                  },
+                ],
+                customVariables: [],
+                hashUserIdentifier: true,
+                defaultUserIdentifier: 'email',
+                validateOnly: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Missing required value from ["properties.conversionValue","properties.total","properties.value","properties.revenue"]',
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+              },
+            },
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
     id: 'gaoc_processor_test_searchstream_401_error',
     name: 'google_adwords_offline_conversions',
     description:

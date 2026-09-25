@@ -115,7 +115,8 @@ const getConversions = (
  * @param {*} destination
  * @returns
  */
-const trackResponseBuilder = async (message, metadata, destination) => {
+const trackResponseBuilder = async (rawMessage, metadata, destination) => {
+  const message = { ...rawMessage, properties: rawMessage.properties ?? {} };
   let { eventsToConversionsNamesMapping, eventsToOfflineConversionsTypeMapping } =
     destination.Config;
   let { event } = message;

@@ -143,8 +143,8 @@ const batchIdentifyForRetl = (
         // objectWriteTraceId lists the job id(s) behind each input, so the 207 handler can map a
         // per-record error (e.g. OBJECT_NOT_FOUND for a deleted record) back to its jobs.
         const traceId = String(ev.metadata.jobId);
-        // Deduplicate by id - hubspot fails the batch update request
-        // if the same id appears more than once.
+        // Deduplicate by id - hubspot rejects the whole batch/update (400, "Duplicate IDs found in
+        // batch input") if the same id appears more than once, so merge a repeated id into one input.
         const existing = identifyResponseList.find((data) => data.id === id);
         if (existing && hasPropertiesRecord(existing) && hasPropertiesRecord(json)) {
           // Merge latest properties with existing properties

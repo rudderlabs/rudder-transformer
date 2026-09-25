@@ -565,6 +565,35 @@ describe('logging in http methods', () => {
   beforeEach(() => {
     mockLoggerInstance.event.mockClear();
   });
+
+  test('a delivery hands the same requestId to its request and response logs', async () => {
+    const requestLogSpy = jest.spyOn(logger, 'requestLog');
+    const responseLogSpy = jest.spyOn(logger, 'responseLog');
+    const statTags = {
+      metadata: { destType: 'DT', destinationId: 'd1', workspaceId: 'w1' },
+      destType: 'DT',
+      endpointPath: '/m/n/o',
+      requestMethod: 'post',
+    };
+    axios.post.mockResolvedValueOnce({ status: 200, data: {} });
+    axios.post.mockResolvedValueOnce({ status: 200, data: {} });
+
+    await httpPOST('https://some.web.com/m/n/o', {}, {}, statTags);
+    await httpPOST('https://some.web.com/m/n/o', {}, {}, statTags);
+
+    expect(requestLogSpy).toHaveBeenCalledTimes(2);
+    expect(responseLogSpy).toHaveBeenCalledTimes(2);
+    const requestIds = requestLogSpy.mock.calls.map(([, logInfo]) => logInfo.requestId);
+    const responseIds = responseLogSpy.mock.calls.map(([, logInfo]) => logInfo.requestId);
+    // paired per delivery, UUID-shaped, and distinct across deliveries
+    expect(responseIds).toEqual(requestIds);
+    requestIds.forEach((id) => expect(id).toMatch(/^[0-9a-f-]{36}$/));
+    expect(new Set(requestIds).size).toBe(2);
+
+    requestLogSpy.mockRestore();
+    responseLogSpy.mockRestore();
+  });
+
   test('post - when proper metadata(object) is sent should call logger without error', async () => {
     const statTags = {
       metadata: {

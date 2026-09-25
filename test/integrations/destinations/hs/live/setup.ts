@@ -6,7 +6,9 @@ import {
   deleteContactById,
   findContactIdByEmail,
   findContactIdByProperty,
+  mergeContacts,
   registeredId,
+  registeredIds,
 } from './api';
 
 // The CRM Search index is eventually consistent — a fresh contact can drop out of the next
@@ -85,11 +87,20 @@ export const createTwoContactsAndRegisterIds = async (ctx: RunContext): Promise<
   await createContactAndRegisterId(ctx, 'second');
 };
 
-// Stale record id: create a contact and delete it, keeping its id registered so the pipeline step
-// can address a record id that no longer exists (deleted contacts are archived, not reusable).
-export const createAndDeleteContact = async (ctx: RunContext): Promise<void> => {
-  await createContactAndRegisterId(ctx);
+// Stale record id: two contacts, the first deleted but kept registered, so one batch can address a
+// record id that no longer exists next to one that does (deleted contacts are archived, not reusable).
+export const createTwoContactsAndDeleteFirst = async (ctx: RunContext): Promise<void> => {
+  await createTwoContactsAndRegisterIds(ctx);
   await deleteContactById(ctx, registeredId(ctx, 'contacts'));
+};
+
+// Merged record id: three contacts, the second merged into the first, all ids kept registered so one
+// batch can address the merged-away id next to an unrelated live contact (the third).
+export const createThreeContactsAndMergeSecond = async (ctx: RunContext): Promise<void> => {
+  await createTwoContactsAndRegisterIds(ctx);
+  await createContactAndRegisterId(ctx, 'third');
+  const [primaryId, mergedId] = registeredIds(ctx, 'contacts');
+  await mergeContacts(ctx, primaryId, mergedId);
 };
 
 // An association links two existing objects (a company and a contact), so its scenario can't mint

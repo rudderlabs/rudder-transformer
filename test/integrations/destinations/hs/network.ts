@@ -23,7 +23,7 @@ const crmV3PropertiesResponse = {
 export const networkCallsData = [
   // batch/update 207 with a missing record: HubSpot reports OBJECT_NOT_FOUND with the record id
   // and the input's echoed objectWriteTraceId in context, shape as returned by the live API
-  // (dataDelivery/updateMultiStatus.ts)
+  // (dataDelivery/upsert.ts)
   {
     httpReq: {
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
@@ -54,6 +54,31 @@ export const networkCallsData = [
           },
         ],
         numErrors: 1,
+      },
+    },
+  },
+  // batch/update 200 that leaves a merged-away record id out of `results` with no error, shape as
+  // returned by the live API (dataDelivery/upsert.ts)
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          { id: '90003', properties: { firstname: 'Alive' }, objectWriteTraceId: '4' },
+          { id: '90004', properties: { firstname: 'Merged' }, objectWriteTraceId: '5,6' },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 'COMPLETE',
+        results: [{ id: '90003', properties: { firstname: 'Alive' } }],
       },
     },
   },

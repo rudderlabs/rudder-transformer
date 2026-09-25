@@ -366,6 +366,8 @@ export const upsertData = [
 const UPDATE_ENDPOINT = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
 const NOT_FOUND_MESSAGE =
   'Could not get some CONTACT objects, they may be deleted or not exist. Check that ids are valid.';
+const NOT_UPDATED_MESSAGE =
+  '[HUBSPOT] Record not updated: HubSpot left its id out of the batch/update results without an error (e.g. the record was merged into another one).';
 const MULTI_STATUS_MESSAGE =
   '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results';
 
@@ -421,6 +423,53 @@ export const updateMultiStatusData = [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
               { statusCode: 400, metadata: generateMetadata(2), error: NOT_FOUND_MESSAGE },
               { statusCode: 400, metadata: generateMetadata(3), error: NOT_FOUND_MESSAGE },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    id: 'hs_update_200_merged_record_id_left_out',
+    description:
+      '200 from batch/update that leaves a merged-away record id out of the results: every job merged into that input fails, the rest succeed',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            endpoint: UPDATE_ENDPOINT,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: authHeader1,
+            },
+            JSON: {
+              inputs: [
+                { id: '90003', properties: { firstname: 'Alive' }, objectWriteTraceId: '4' },
+                { id: '90004', properties: { firstname: 'Merged' }, objectWriteTraceId: '5,6' },
+              ],
+            },
+          },
+          [generateMetadata(4), generateMetadata(5), generateMetadata(6)],
+          { apiVersion: 'newApi' },
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 207,
+            message: MULTI_STATUS_MESSAGE,
+            response: [
+              { statusCode: 200, metadata: generateMetadata(4), error: 'success' },
+              { statusCode: 400, metadata: generateMetadata(5), error: NOT_UPDATED_MESSAGE },
+              { statusCode: 400, metadata: generateMetadata(6), error: NOT_UPDATED_MESSAGE },
             ],
           },
         },

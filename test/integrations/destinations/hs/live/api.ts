@@ -122,6 +122,23 @@ export const deleteCrmObjectById = async (
 export const deleteContactById = (ctx: RunContext, id: string): Promise<void> =>
   deleteCrmObjectById(ctx, 'contacts', id);
 
+// Merge `idToMerge` into `primaryId`; the merged-away id stops being a record of its own.
+export const mergeContacts = async (
+  ctx: RunContext,
+  primaryId: string,
+  idToMerge: string,
+): Promise<void> => {
+  await axios.post(
+    `${HS_BASE}/crm/v3/objects/contacts/merge`,
+    { primaryObjectId: primaryId, objectIdToMerge: idToMerge },
+    {
+      headers: jsonAuthHeaders(ctx),
+      httpsAgent: hsAgent,
+      timeout: 15000,
+    },
+  );
+};
+
 export const deleteContactByEmail = async (ctx: RunContext): Promise<void> => {
   const id = await findContactIdByEmail(ctx, ctx.email());
   if (id) {

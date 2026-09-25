@@ -37,18 +37,20 @@ import {
   retlUpsertSecondaryTraits,
 } from './profiles';
 import {
-  createAndDeleteContact,
   createAssociationObjects,
   createContactAndRegisterId,
   createContactAndWaitSearchable,
   createContactSearchableByFirstname,
   createContactWithAdditionalEmail,
+  createTwoContactsAndDeleteFirst,
+  createThreeContactsAndMergeSecond,
   createTwoContactsAndRegisterIds,
 } from './setup';
 import {
   verifyAssociationExists,
   verifyContactProperties,
   verifyRecordIdBatch,
+  verifyRegisteredObjectProperties,
   verifyUpsertResolvesToSameContact,
 } from './verify';
 
@@ -567,27 +569,65 @@ export const live = {
       },
     },
     {
-      // A record id that no longer exists in HubSpot must fail delivery — never create a record.
-      // Also pins HubSpot's batch/update response for a missing id: a 207 here would read as
-      // delivered and fail this step.
+      // A record id that no longer exists in HubSpot must fail delivery — never create a record —
+      // without failing the rest of the batch. The deleted id gets two events, merged into one input
+      // whose trace id lists both jobs, so HubSpot's 207 must fail exactly those two jobs while the
+      // live contact's job is delivered.
       id: 'hs-retl-contacts-update-by-stale-record-id-v3',
       cleanup: deleteRegisteredObjects,
-      description: 'RETL update keyed by a deleted hs_object_id fails delivery',
+      description:
+        'RETL batch with a deleted hs_object_id fails only the jobs merged into that id, the rest land',
       steps: [
-        { stepType: 'action', name: 'setup', run: createAndDeleteContact },
+        { stepType: 'action', name: 'setup', run: createTwoContactsAndDeleteFirst },
         {
-          name: 'retl update deleted contact by record id',
+          name: 'retl update a deleted and a live contact by record id in one batch',
           stepType: 'pipeline',
-          expectedFailure: { items: [0] },
-          seed: (ctx) =>
-            recordIdEvent(
-              ctx,
-              'retl-record-id-stale',
-              registeredId(ctx, 'contacts'),
-              retlRecordIdUpdateTraits(ctx),
-            ),
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          expectedFailure: { items: [0, 1] },
+          seed: recordIdBatchSeed('retl-record-id-stale'),
         },
       ],
+      verify: {
+        check: verifyRegisteredObjectProperties('contacts', retlRecordIdOtherContactTraits, 1),
+        ...CONTACT_READBACK,
+      },
+    },
+    {
+      // A contact merged into another keeps its old id in the warehouse. HubSpot's batch/update
+      // neither updates the surviving contact nor reports an error for a merged-away id: it just
+      // leaves it out of `results`. Its job must still fail, while an unrelated live contact in the
+      // same batch lands.
+      id: 'hs-retl-contacts-update-by-merged-record-id-v3',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL batch with a merged-away hs_object_id fails that job, the live contact still lands',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createThreeContactsAndMergeSecond },
+        {
+          name: 'retl update a merged-away and a live contact by record id in one batch',
+          stepType: 'pipeline',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          expectedFailure: { items: [0] },
+          seed: (ctx) => {
+            const [, mergedId, otherId] = registeredIds(ctx, 'contacts');
+            return [
+              recordIdEvent(ctx, 'retl-record-id-merged', mergedId, retlRecordIdUpdateTraits(ctx)),
+              recordIdEvent(
+                ctx,
+                'retl-record-id-merged-other',
+                otherId,
+                retlRecordIdOtherContactTraits(ctx),
+              ),
+            ];
+          },
+        },
+      ],
+      verify: {
+        check: verifyRegisteredObjectProperties('contacts', retlRecordIdOtherContactTraits, 2),
+        ...CONTACT_READBACK,
+      },
     },
   ],
 } satisfies LiveSpec;

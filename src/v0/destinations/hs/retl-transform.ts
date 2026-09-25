@@ -75,17 +75,17 @@ const processBatchRouterRetl = async (
     validateDestinationConfig(destination);
     // skip splitting the batches to inserts and updates if the object is an association
     if (!objectType || String(objectType).toLowerCase() !== 'association') {
-      // hs_object_id is hubspot's own record id: records are addressed directly, so there's
-      // nothing to search for, and hubspot doesn't report it as unique, so upsert can't use
-      // it either. Tag every event for a direct batch update, skipping the Search chain.
-      // Both the v3 and legacy rETL handlers support updateObject via crm/v3 batch/update.
+      // hs_object_id is hubspot's own record id, so records are addressed directly: no Search,
+      // and no upsert either, since a record id only ever updates an existing record, never
+      // creates one. Both the v3 and legacy rETL handlers send updateObject to crm/v3 batch/update.
       const isRecordIdLookup = identifierType === HS_RECORD_ID_PROPERTY;
 
       if (isRecordIdLookup) {
-        // The record id comes straight from the warehouse row, and rETL only filters the source's
-        // primary key, so it can arrive missing or malformed. Such a row can never succeed (Search/
-        // create would match another field or duplicate the record), so fail it here, before any
-        // hubspot call, with its own non-retryable error. Tag the rest for a direct update.
+        // The record id is the warehouse value of the mapped identifier column. rETL only drops
+        // rows whose primary key is null or duplicated, so when the primary key is another column
+        // this value can be empty or malformed. Such a row can't be updated and would put a bad id
+        // into the shared batch/update request, so fail it here, before any hubspot call, with a
+        // non-retryable error. Tag the rest for a direct update.
         tempInputs = tempInputs.filter((input) => {
           const recordId = String(
             getDestinationExternalIDInfoForRetl(input.message, 'HS')?.destinationExternalId ?? '',

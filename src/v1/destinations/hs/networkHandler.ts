@@ -81,24 +81,7 @@ type UpsertError = {
   message?: string;
   context?: {
     objectWriteTraceId?: string[];
-    // record ids, e.g. for OBJECT_NOT_FOUND from batch/update
-    ids?: string[];
   };
-};
-
-// A batch request input as far as 207 handling needs it: the record id and the job id(s) it was
-// built from (objectWriteTraceId, comma-separated when several events were merged into one input).
-type BatchRequestInput = {
-  id?: unknown;
-  objectWriteTraceId?: unknown;
-};
-
-const isBatchRequestInput = (value: unknown): value is BatchRequestInput =>
-  typeof value === 'object' && value !== null;
-
-const getBatchRequestInputs = (destinationRequest?: ProxyV1Request): BatchRequestInput[] => {
-  const inputs = destinationRequest?.body?.JSON?.inputs;
-  return Array.isArray(inputs) ? inputs.filter(isBatchRequestInput) : [];
 };
 
 type UpsertResponse = {
@@ -151,20 +134,17 @@ const buildSilentFailureResponse = (
 
 /**
  * Handles 207 Multi-Status responses from HubSpot batch upsert/update APIs.
- * An error names its records either by objectWriteTraceId (upsert) or by record id
- * (context.ids, e.g. OBJECT_NOT_FOUND from batch/update); a record id resolves to the
- * objectWriteTraceId of the request input carrying it. The jobs those trace ids list are
- * marked as failed (400). All other events are marked as success (200).
+ * HubSpot echoes each failed input's objectWriteTraceId in error.context (for batch/update
+ * OBJECT_NOT_FOUND too); a trace id lists the job id(s) the input was built from. Those jobs
+ * are marked as failed (400). All other events are marked as success (200).
  *
  * @param response - The parsed response body from HubSpot
  * @param rudderJobMetadata - Array of metadata for each job in the batch
- * @param requestInputs - The batch request's inputs
  * @returns DeliveryV1Response with individual status for each job
  */
 const handle207MultiStatus = (
   response: UpsertResponse,
   rudderJobMetadata: ProxyMetdata[],
-  requestInputs: BatchRequestInput[],
 ): DeliveryV1Response => {
   const { errors = [] } = response;
   const responseWithIndividualEvents: DeliveryJobState[] = [];
@@ -172,18 +152,13 @@ const handle207MultiStatus = (
   // Build a map of failed jobIds with their error messages from errors array
   const failedJobsMap = new Map<string, string>();
   errors.forEach((error: UpsertError) => {
-    const recordIds = error.context?.ids ?? [];
-    const traceIds = [
-      ...(error.context?.objectWriteTraceId ?? []),
-      ...requestInputs
-        .filter((input) => recordIds.includes(String(input.id)))
-        .map((input) => String(input.objectWriteTraceId ?? '')),
-    ];
+    // objectWriteTraceId is in error.context as an array
+    const traceIds = error.context?.objectWriteTraceId || [];
     const errorMessage = error.message!;
 
     // a trace id lists one job id, or several (comma-separated) for a merged input
     traceIds
-      .flatMap((traceId) => traceId.split(','))
+      .flatMap((traceId: string) => traceId.split(','))
       .forEach((jobId) => {
         if (jobId) {
           failedJobsMap.set(jobId, errorMessage);
@@ -243,11 +218,7 @@ const responseHandler = (responseParams: {
 
   // Handle 207 Multi-Status response from batch upsert/update APIs
   if (status === 207) {
-    return handle207MultiStatus(
-      response,
-      rudderJobMetadata,
-      getBatchRequestInputs(destinationRequest),
-    );
+    return handle207MultiStatus(response, rudderJobMetadata);
   }
 
   if (isHttpStatusSuccess(status)) {

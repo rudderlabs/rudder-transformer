@@ -10,10 +10,11 @@ const MULTI_STATUS_MESSAGE =
 /**
  * 207 Multi-Status handling for the HubSpot batch update API.
  *
- * batch/update reports a missing record (OBJECT_NOT_FOUND) by record id in
- * error.context.ids, not by objectWriteTraceId. Each update input carries the job id(s) it was
- * built from as objectWriteTraceId (comma-separated when several events were merged into one
- * input), so the handler fails exactly those jobs; every other job in the batch succeeds.
+ * batch/update reports a missing record (OBJECT_NOT_FOUND) in errors[], echoing the failed
+ * input's objectWriteTraceId in error.context (next to the record id in context.ids). Each update
+ * input carries the job id(s) it was built from as objectWriteTraceId (comma-separated when
+ * several events were merged into one input), so the handler fails exactly those jobs; every
+ * other job in the batch succeeds.
  * Network mocks: network.ts (batch/update, ids 90001 / 90002 / 90003).
  */
 export const updateMultiStatusData = [

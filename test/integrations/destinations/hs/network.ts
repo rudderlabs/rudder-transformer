@@ -21,8 +21,9 @@ const crmV3PropertiesResponse = {
 };
 
 export const networkCallsData = [
-  // batch/update 207 with a missing record: HubSpot reports OBJECT_NOT_FOUND by record id
-  // (context.ids), shape as returned by the live API (dataDelivery/updateMultiStatus.ts)
+  // batch/update 207 with a missing record: HubSpot reports OBJECT_NOT_FOUND with the record id
+  // and the input's echoed objectWriteTraceId in context, shape as returned by the live API
+  // (dataDelivery/updateMultiStatus.ts)
   {
     httpReq: {
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
@@ -49,7 +50,7 @@ export const networkCallsData = [
             category: 'OBJECT_NOT_FOUND',
             message:
               'Could not get some CONTACT objects, they may be deleted or not exist. Check that ids are valid.',
-            context: { ids: ['90002'] },
+            context: { ids: ['90002'], objectWriteTraceId: ['2,3'] },
           },
         ],
         numErrors: 1,
@@ -79,7 +80,7 @@ export const networkCallsData = [
             category: 'OBJECT_NOT_FOUND',
             message:
               'Could not get some CONTACT objects, they may be deleted or not exist. Check that ids are valid.',
-            context: { ids: ['90003'] },
+            context: { ids: ['90003'], objectWriteTraceId: ['4'] },
           },
         ],
         numErrors: 1,

@@ -267,4 +267,4 @@ export const networkCallsData = [
       },
     },
   },
-];
+].map((mock) => ({ ...mock, matchRequestParams: true }));

@@ -3,6 +3,7 @@ import { join } from 'path';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
+import isEqual from 'lodash/isEqual';
 import { OptionValues } from 'commander';
 import { filter, removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
 import tags from '../../src/v0/util/tags';
@@ -64,11 +65,75 @@ export const getMockHttpCallsData = (filePath): MockHttpCallsData[] => {
   return require(filePath).networkCallsData as MockHttpCallsData[];
 };
 
+const MOCKABLE_BODY_PARAMS_METHODS = ['post', 'put', 'patch'];
+
+const groupedMockKey = (axiosMock: MockHttpCallsData) => {
+  const { url, method, data: reqData, headers } = axiosMock.httpReq;
+  return JSON.stringify({ url, method: method.toLowerCase(), reqData, headers });
+};
+
+const addBodyRequestParamsMock = (mock: MockAxiosAdapter, axiosMocks: MockHttpCallsData[]) => {
+  const { url, method, data: reqData, ...opts } = axiosMocks[0].httpReq;
+
+  const headersAsymMatch = {
+    asymmetricMatch: function (actual) {
+      return isMatch(actual, opts.headers);
+    },
+  };
+
+  const responseForParams = (config) => {
+    const matchedMock = axiosMocks.find((axiosMock) =>
+      isEqual(config.params, axiosMock.httpReq.params),
+    );
+    if (!matchedMock) {
+      return [404, { error: 'No matching request mock for params' }];
+    }
+    const { data, headers, status } = matchedMock.httpRes;
+    return [status, data, headers];
+  };
+
+  switch (method.toLowerCase()) {
+    case 'post':
+      // @ts-ignore
+      mock.onPost(url, reqData, headersAsymMatch).reply(responseForParams);
+      break;
+    case 'patch':
+      // @ts-ignore
+      mock.onPatch(url, reqData, headersAsymMatch).reply(responseForParams);
+      break;
+    case 'put':
+      // @ts-ignore
+      mock.onPut(url, reqData, headersAsymMatch).reply(responseForParams);
+      break;
+    default:
+      break;
+  }
+};
+
 export const registerAxiosMocks = (
   mockAdapter: MockAxiosAdapter,
   axiosMocks: MockHttpCallsData[],
 ) => {
-  axiosMocks.forEach((axiosMock) => addMock(mockAdapter, axiosMock));
+  const groupedBodyParamsMocks: Record<string, MockHttpCallsData[]> = {};
+
+  axiosMocks.forEach((axiosMock) => {
+    const { method } = axiosMock.httpReq;
+    if (
+      axiosMock.matchRequestParams &&
+      MOCKABLE_BODY_PARAMS_METHODS.includes(method.toLowerCase())
+    ) {
+      const key = groupedMockKey(axiosMock);
+      groupedBodyParamsMocks[key] = groupedBodyParamsMocks[key] || [];
+      groupedBodyParamsMocks[key].push(axiosMock);
+      return;
+    }
+
+    addMock(mockAdapter, axiosMock);
+  });
+
+  Object.values(groupedBodyParamsMocks).forEach((bodyParamsMocks) =>
+    addBodyRequestParamsMock(mockAdapter, bodyParamsMocks),
+  );
 };
 
 export const getAllTestMockDataFilePaths = (dirPath: string, resourceName?: string): string[] => {

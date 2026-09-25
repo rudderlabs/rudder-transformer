@@ -2,7 +2,6 @@ import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/confi
 import { testScenariosForV1API, testFormData, statTags as baseStatTags } from './business';
 import { otherScenariosV1 } from './other';
 import { oauthScenariosV1 } from './oauth';
-import { mockFacebookPixelNetworkResponses } from '../mocks';
 
 const statTags = {
   ...baseStatTags,
@@ -633,4 +632,4 @@ export const data = [
   ...testScenariosForV1API,
   ...otherScenariosV1,
   ...oauthScenariosV1,
-].map((testCase) => ({ ...testCase, mockFns: mockFacebookPixelNetworkResponses }));
+];

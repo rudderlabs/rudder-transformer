@@ -59,6 +59,11 @@ const getAccessToken = (destination) => {
   return Config.accessToken;
 };
 
+const facebookOfflineConversionsParamsSerializer = {
+  serialize: ({ upload_tag: uploadTag, data, access_token: accessToken }) =>
+    `upload_tag=${uploadTag}&data=${data}&access_token=${accessToken}`,
+};
+
 /**
  * Returns an array of request details
  * @param {*} metadata
@@ -455,4 +460,8 @@ const offlineConversionResponseBuilder = (message, destination) => {
   return offlineConversionsPayloads;
 };
 
-module.exports = { offlineConversionResponseBuilder, prepareRequestDetails };
+module.exports = {
+  facebookOfflineConversionsParamsSerializer,
+  offlineConversionResponseBuilder,
+  prepareRequestDetails,
+};

@@ -50,29 +50,6 @@ const networkClientConfigs = {
   httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
-const PARAMS_SERIALIZER_PRESETS = {
-  identity: { encode: (value) => value },
-};
-
-const shouldUseIdentityParamsSerializer = ({ endpoint, url, params }) =>
-  /^https:\/\/graph\.facebook\.com\/v[\d.]+\/[^/]+\/events$/.test(endpoint || url) &&
-  params?.upload_tag !== undefined &&
-  params?.access_token !== undefined &&
-  typeof params?.data === 'string' &&
-  params.data.startsWith('%5B') &&
-  params.data.endsWith('%5D');
-
-const resolveParamsSerializer = (paramsSerializer) => {
-  if (typeof paramsSerializer === 'string') {
-    return PARAMS_SERIALIZER_PRESETS[paramsSerializer] || paramsSerializer;
-  }
-  return paramsSerializer;
-};
-
-const resolveRequestParamsSerializer = ({ endpoint, url, params, paramsSerializer }) =>
-  paramsSerializer ||
-  (shouldUseIdentityParamsSerializer({ endpoint, url, params }) ? 'identity' : undefined);
-
 const fireOutgoingReqStats = ({
   destType,
   feature,
@@ -127,7 +104,6 @@ const enhanceRequestOptions = (options) => {
   const requestOptions = {
     ...networkClientConfigs,
     ...options,
-    paramsSerializer: resolveParamsSerializer(resolveRequestParamsSerializer(options || {})),
     maxContentLength: MAX_CONTENT_LENGTH,
     maxBodyLength: MAX_BODY_LENGTH,
   };

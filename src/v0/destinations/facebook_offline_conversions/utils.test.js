@@ -1,6 +1,5 @@
 const axios = require('axios');
-const { enhanceRequestOptions } = require('../../../adapters/network');
-const { prepareRequestDetails } = require('./utils');
+const { facebookOfflineConversionsParamsSerializer, prepareRequestDetails } = require('./utils');
 
 const buildLegacyUrl = (endpoint, uploadTag, event, accessToken) =>
   `${endpoint}?upload_tag=${uploadTag}&data=%5B${encodeURIComponent(
@@ -8,13 +7,11 @@ const buildLegacyUrl = (endpoint, uploadTag, event, accessToken) =>
   )}%5D&access_token=${accessToken}`;
 
 const serializeRequestUrl = (request) =>
-  axios.getUri(
-    enhanceRequestOptions({
-      url: request.endpoint,
-      params: request.params,
-      paramsSerializer: request.paramsSerializer,
-    }),
-  );
+  axios.getUri({
+    url: request.endpoint,
+    params: request.params,
+    paramsSerializer: facebookOfflineConversionsParamsSerializer,
+  });
 
 describe('prepareRequestDetails', () => {
   test.each([

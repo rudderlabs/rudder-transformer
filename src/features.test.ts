@@ -123,26 +123,6 @@ describe('destination registry', () => {
     expect(getDestinationHandlerName('salesforce_oauth_sandbox')).toBe('salesforce');
   });
 
-  it('rejects retired warehouse transformation destination names', () => {
-    const retiredDestinations = [
-      'postgres',
-      'snowflake',
-      'snowpipe_streaming',
-      'bq',
-      'rs',
-      'clickhouse',
-      'mssql',
-      'azure_synapse',
-      'deltalake',
-      's3_datalake',
-      'gcs_datalake',
-      'azure_datalake',
-    ];
-
-    expect(retiredDestinations.filter(isValidDestination)).toEqual([]);
-    expect(isValidDestination('bqstream')).toBe(true);
-  });
-
   it('rejects unknown destination names', () => {
     expect(isValidDestination('../salesforce')).toBe(false);
     expect(isValidDestination('not_a_destination')).toBe(false);

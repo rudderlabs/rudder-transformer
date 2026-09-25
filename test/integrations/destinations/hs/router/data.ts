@@ -10,8 +10,7 @@ import {
 import { destination } from './config';
 import { upsertData } from './upsertData';
 import { errorValidationData } from './errorValidationData';
-import { retlUpsertData } from './retlUpsertData';
-import { retlRecordIdData } from './retlRecordIdData';
+import { retlUpsertData, retlRecordIdData } from './retlUpsertData';
 
 /**
  * Helpers + migrated event-stream / legacy router cases (previously eventStreamData.ts).

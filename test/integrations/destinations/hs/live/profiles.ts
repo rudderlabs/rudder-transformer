@@ -79,15 +79,49 @@ export const retlContactUpdateV1Traits = (ctx: RunContext): Record<string, strin
   lifecyclestage: 'customer',
 });
 
-// rETL mappedToDestination context keyed by a specific email. No hubspotOperation:
-// splitEventsForCreateUpdate resolves email (a unique property) to create/update or batch/upsert.
-export const retlContactContextForEmail = (email: string) => ({
+// rETL mappedToDestination context for one object, keyed by `identifierType` = `id`.
+const retlObjectContext = (objectType: string, identifierType: string, id: string) => ({
   mappedToDestination: true,
-  externalId: [{ type: 'HS-contacts', identifierType: 'email', id: email }],
+  externalId: [{ type: `HS-${objectType}`, identifierType, id }],
   sources: { job_id: 'rudder-live-integration-test', version: 'v1' },
 });
 
+// rETL mappedToDestination context keyed by a specific email. No hubspotOperation:
+// splitEventsForCreateUpdate resolves email (a unique property) to create/update or batch/upsert.
+export const retlContactContextForEmail = (email: string) =>
+  retlObjectContext('contacts', 'email', email);
+
 export const retlContactContext = (ctx: RunContext) => retlContactContextForEmail(ctx.email());
+
+// rETL mappedToDestination context keyed by HubSpot's record id: the transform skips Search and
+// sends a direct batch/update to this id.
+export const retlRecordIdContext = (recordId: string, objectType = 'contacts') =>
+  retlObjectContext(objectType, 'hs_object_id', recordId);
+
+export const retlRecordIdUpdateTraits = (ctx: RunContext): Record<string, string> => ({
+  firstname: 'CI-RecordId-Updated',
+  lastname: `${ctx.runId}-v2`,
+  lifecyclestage: 'customer',
+});
+
+// Record-id batch: the first contact gets two events with DISJOINT properties (merged into one
+// batch input, since HubSpot rejects a duplicate id), the second contact gets one.
+export const retlRecordIdDupFirstTraits = (ctx: RunContext): Record<string, string> => ({
+  firstname: 'CI-RecordId-Dup',
+  jobtitle: `ci-${ctx.runId}-first`,
+});
+export const retlRecordIdDupSecondTraits = (ctx: RunContext): Record<string, string> => ({
+  lastname: `ci-${ctx.runId}-second`,
+  lifecyclestage: 'customer',
+});
+export const retlRecordIdDupCombinedTraits = (ctx: RunContext): Record<string, string> => ({
+  ...retlRecordIdDupFirstTraits(ctx),
+  ...retlRecordIdDupSecondTraits(ctx),
+});
+export const retlRecordIdOtherContactTraits = (ctx: RunContext): Record<string, string> => ({
+  firstname: 'CI-RecordId-Other',
+  lastname: `${ctx.runId}-other`,
+});
 
 // Additional-email upsert: the two upserts write DISJOINT properties so the read-back can assert the
 // single contact carries BOTH sets - proving the primary-email and additional-email upserts landed

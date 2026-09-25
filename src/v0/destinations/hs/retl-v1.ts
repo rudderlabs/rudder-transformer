@@ -38,6 +38,7 @@ import type {
   HubspotProcessorTransformationOutput,
   HubSpotBatchProcessingItem,
 } from './types';
+import { hasPropertiesRecord } from './types';
 
 /**
  * rETL (legacy API) identify handler.
@@ -137,10 +138,25 @@ const batchIdentifyForRetl = (
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-          id: updateEndpoint.split('/').pop(),
-        });
+        const id = updateEndpoint.split('/').pop();
+        const json = ev.message.body.JSON;
+        // objectWriteTraceId lists the job id(s) behind each input, so the 207 handler can map a
+        // per-record error (e.g. OBJECT_NOT_FOUND for a deleted record) back to its jobs.
+        const traceId = String(ev.metadata.jobId);
+        // Deduplicate by id - hubspot rejects the whole batch/update (400, "Duplicate IDs found in
+        // batch input") if the same id appears more than once, so merge a repeated id into one input.
+        const existing = identifyResponseList.find((data) => data.id === id);
+        if (existing && hasPropertiesRecord(existing) && hasPropertiesRecord(json)) {
+          // Merge latest properties with existing properties
+          existing.properties = { ...existing.properties, ...json.properties };
+          existing.objectWriteTraceId = `${existing.objectWriteTraceId},${traceId}`;
+        } else {
+          identifyResponseList.push({
+            ...json,
+            id,
+            objectWriteTraceId: traceId,
+          });
+        }
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
           0,
           updateEndpoint.lastIndexOf('/'),

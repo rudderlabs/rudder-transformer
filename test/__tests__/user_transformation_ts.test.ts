@@ -40,4 +40,42 @@ describe('User Transform Service', () => {
 
     expect(output).toEqual(expectedData);
   });
+
+  it('executes a codeVersion 1 fail-open catch with the sandbox log function', async () => {
+    const [inputEvent] = require(`./data/${integration}_filter_input.json`);
+    const codeRevision = {
+      codeVersion: '1',
+      name,
+      code: `export async function transformEvent(event) {
+                try {
+                  throw new Error('Jev unavailable');
+                } catch (error) {
+                  log('Jev classification failed:', error.message);
+                  return event;
+                }
+              }
+            `,
+    };
+
+    const output = await UserTransformService.testTransformRoutine(
+      [inputEvent],
+      codeRevision,
+      [],
+      [],
+      true,
+    );
+
+    expect(output).toEqual({
+      status: 200,
+      body: {
+        transformedEvents: [
+          {
+            transformedEvent: inputEvent.message,
+            metadata: inputEvent.metadata,
+          },
+        ],
+        logs: ['Log: Jev classification failed: Jev unavailable'],
+      },
+    });
+  });
 });

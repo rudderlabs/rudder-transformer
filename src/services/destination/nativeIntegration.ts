@@ -362,14 +362,15 @@ export class NativeIntegrationDestinationService implements DestinationService {
       // Adaption Logic for V0 to V1
       if (handlerVersion.toLowerCase() === 'v0' && version.toLowerCase() === 'v1') {
         const v0Response = responseProxy as DeliveryV0Response;
+        const destinationResponseBody =
+          v0Response.destinationResponse?.response === undefined
+            ? v0Response.destinationResponse
+            : v0Response.destinationResponse?.response;
+        const serializedDestinationResponse = JSON.stringify(destinationResponseBody);
         const jobStates = (deliveryRequest as ProxyV1Request).metadata.map(
           (metadata) =>
             ({
-              error: JSON.stringify(
-                v0Response.destinationResponse?.response === undefined
-                  ? v0Response.destinationResponse
-                  : v0Response.destinationResponse?.response,
-              ),
+              error: serializedDestinationResponse,
               statusCode: v0Response.status,
               metadata,
             }) as DeliveryJobState,

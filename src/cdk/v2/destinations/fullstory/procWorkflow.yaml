@@ -71,8 +71,9 @@ steps:
   - name: mapIdsForTrack
     condition: $.context.messageType == "track"
     template: |
+      const sessionId = .message.properties.sessionId ?? .message.context.sessionId;
       $.context.payload.session = {
-        "id": .message.properties.sessionId ?? .message.context.sessionId,
+        "id": typeof sessionId in ["string", "number"] ? String(sessionId) : undefined,
         "use_most_recent": .message.properties.useMostRecent,
       };
       $.context.payload.user = {

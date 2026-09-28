@@ -1,62 +1,93 @@
 import { z } from 'zod';
 import {
-  DestinationIntegration,
-  TransformedEvent,
   CustomBatchStrategy,
+  DestinationIntegration,
   makeRouterInputSchema,
+  type BatchGroup,
+  type BatchStrategy,
+  type TransformedEvent,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
-import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
-import { buildTopsortEvents } from './transform';
-import { ENDPOINT, MAX_BATCH_SIZE } from './config';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import { ENDPOINT, ENDPOINT_PATH, MAX_BATCH_SIZE } from './config';
+import { topsortDelivery } from './delivery';
 import {
   TopsortDestinationConfigSchema,
   TopsortMessageSchema,
+  type TopsortEvent,
   type TopsortEventType,
-  type TopsortPayload,
 } from './types';
-import { JSON_MIME_TYPE } from '../../util/constant';
+import { buildTopsortEvents } from './utils';
 
 const topsortInputSchema = makeRouterInputSchema({
   destinationConfig: TopsortDestinationConfigSchema,
-  message: TopsortMessageSchema.refine((msg) => msg.type?.toLowerCase() === 'track', {
+  message: TopsortMessageSchema.refine((msg) => msg.type.toLowerCase() === 'track', {
     message: 'Only "track" events are supported. Dropping event.',
   }),
 });
 
-class TopsortIntegration extends DestinationIntegration<TopsortPayload, typeof topsortInputSchema> {
-  transformEvent(input: z.infer<typeof topsortInputSchema>): TransformedEvent<TopsortPayload>[] {
+type PendingRequest = {
+  events: Record<TopsortEventType, TopsortEvent['event'][]>;
+  jobIds: Set<number>;
+};
+
+const newPendingRequest = (): PendingRequest => ({
+  events: { impressions: [], clicks: [], purchases: [] },
+  jobIds: new Set(),
+});
+
+// A request carries only the event arrays it has events for.
+const toBatchGroup = ({ events, jobIds }: PendingRequest): BatchGroup => ({
+  body: Object.fromEntries(
+    Object.entries(events).filter(([, typeEvents]) => typeEvents.length > 0),
+  ),
+  jobIds,
+});
+
+// The Events API accepts impressions, clicks and purchases in one request but caps each array
+// at MAX_BATCH_SIZE independently, so a new request starts only when the array an event belongs
+// in is full. A job whose fanned-out events straddle that boundary lands in both requests; the
+// framework folds them back into one response for that job.
+const batchIntoRequests = (
+  payloads: (TransformedEvent<TopsortEvent> & { jobId: number })[],
+): BatchGroup[] => {
+  const requests: BatchGroup[] = [];
+  let pending = newPendingRequest();
+
+  payloads.forEach(({ body, jobId }) => {
+    if (pending.events[body.type].length >= MAX_BATCH_SIZE) {
+      requests.push(toBatchGroup(pending));
+      pending = newPendingRequest();
+    }
+    pending.events[body.type].push(body.event);
+    pending.jobIds.add(jobId);
+  });
+
+  if (pending.jobIds.size > 0) {
+    requests.push(toBatchGroup(pending));
+  }
+  return requests;
+};
+
+class TopsortIntegration extends DestinationIntegration<TopsortEvent, typeof topsortInputSchema> {
+  static readonly delivery = topsortDelivery;
+
+  transformEvent(input: z.infer<typeof topsortInputSchema>): TransformedEvent<TopsortEvent>[] {
     const headers = {
       'content-type': JSON_MIME_TYPE,
       Authorization: `Bearer ${this.destination.Config.apiKey}`,
     };
 
-    // One message can map to several Topsort events: an impression or click
-    // carrying a `products` array fans out to one event per product.
-    return buildTopsortEvents(input.message, this.destination).map(({ event, topsortPayload }) => ({
-      body: topsortPayload,
+    return buildTopsortEvents(input.message, this.destination.Config).map((body) => ({
+      body,
       endpoint: ENDPOINT,
-      endpointPath: '/v2/events',
+      endpointPath: ENDPOINT_PATH,
       method: 'POST',
       headers,
-      // The API caps each of impressions/clicks/purchases at 50 independently,
-      // so each type has to be chunked and sent as its own array.
-      internalGroupKey: event,
     }));
   }
 
-  getBatchStrategy(): BatchStrategy<TopsortPayload> {
-    return new CustomBatchStrategy<TopsortPayload>((payloads) => {
-      // The framework has already split groups on internalGroupKey, so every
-      // payload here is the same event type.
-      const eventType = payloads[0].internalGroupKey as TopsortEventType;
-      const wrapBody = (bodies: TopsortPayload[]) => ({ [eventType]: bodies });
-
-      return chunkPayloads(payloads, { maxItems: MAX_BATCH_SIZE, wrapBody }).map((chunk) => ({
-        body: wrapBody(chunk.bodies),
-        jobIds: chunk.jobIds,
-      }));
-    });
+  getBatchStrategy(): BatchStrategy<TopsortEvent> {
+    return new CustomBatchStrategy<TopsortEvent>(batchIntoRequests);
   }
 
   getInputSchema() {

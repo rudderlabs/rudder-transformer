@@ -40,6 +40,7 @@ describe('features destination capabilities', () => {
       OPENAI_ADS: true,
       TEST_DESTINATION: true,
       CUSTOMERIO: true,
+      TOPSORT: true,
     });
   });
 

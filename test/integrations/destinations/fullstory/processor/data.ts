@@ -180,7 +180,7 @@ export const data = [
   },
   {
     name: 'fullstory',
-    description: 'Track event uses context sessionId fallback',
+    description: 'Track event stringifies numeric context sessionId fallback',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -192,7 +192,7 @@ export const data = [
               anonymousId: '78c53c15-32a1-4b65-adac-bec2d7bb8fab',
               channel: 'web',
               context: {
-                sessionId: 'context-session-001',
+                sessionId: 1790559397,
                 app: {
                   name: 'RSPM',
                   version: '1.9.0',
@@ -323,7 +323,7 @@ export const data = [
                     },
                   },
                   session: {
-                    id: 'context-session-001',
+                    id: '1790559397',
                   },
                   user: {
                     uid: 'u001',
@@ -357,7 +357,7 @@ export const data = [
   },
   {
     name: 'fullstory',
-    description: 'Track event prefers properties sessionId over context sessionId',
+    description: 'Track event stringifies numeric properties sessionId and preserves precedence',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -369,7 +369,7 @@ export const data = [
               anonymousId: '78c53c15-32a1-4b65-adac-bec2d7bb8fab',
               channel: 'web',
               context: {
-                sessionId: 'context-session-002',
+                sessionId: 1790559398,
                 app: {
                   name: 'RSPM',
                   version: '1.9.0',
@@ -418,7 +418,7 @@ export const data = [
               messageId: '1578564113557-af022c68-429e-4af4-b99b-2b9174056383',
               properties: {
                 userId: 'u001',
-                sessionId: 'properties-session-002',
+                sessionId: 0,
                 review_id: 'review_id_1',
                 product_id: 'product_id_1',
                 rating: 5,
@@ -465,7 +465,7 @@ export const data = [
                   name: 'Product Reviewed',
                   properties: {
                     userId: 'u001',
-                    sessionId: 'properties-session-002',
+                    sessionId: 0,
                     review_id: 'review_id_1',
                     product_id: 'product_id_1',
                     rating: 5,
@@ -502,7 +502,7 @@ export const data = [
                     },
                   },
                   session: {
-                    id: 'properties-session-002',
+                    id: '0',
                   },
                   user: {
                     uid: 'u001',

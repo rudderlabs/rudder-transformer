@@ -75,8 +75,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
-                  clientSecret: 'vcn7AQ2W9GGIAZSsN6Mfq',
+                  clientId: 'sfmcClientIdF7Kq2Wa9X',
+                  clientSecret: 'sfmcClientSecretP3Nd8',
                   createOrUpdateContacts: true,
                   eventDelivery: true,
                   eventDeliveryTS: 1615371070621,
@@ -153,8 +153,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
-                  clientSecret: 'vcn7AQ2W9GGIAZSsN6Mfq',
+                  clientId: 'sfmcClientIdF7Kq2Wa9X',
+                  clientSecret: 'sfmcClientSecretP3Nd8',
                   createOrUpdateContacts: false,
                   eventDelivery: true,
                   eventDeliveryTS: 1615371070621,
@@ -200,8 +200,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
-                  clientSecret: 'vcn7AQ2W9GGIAZSsN6Mfq',
+                  clientId: 'sfmcClientIdF7Kq2Wa9X',
+                  clientSecret: 'sfmcClientSecretP3Nd8',
                   createOrUpdateContacts: true,
                   eventDelivery: true,
                   eventDeliveryTS: 1615371070621,
@@ -314,8 +314,8 @@ export const data = [
                   },
                 },
                 Config: {
-                  clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
-                  clientSecret: 'vcn7AQ2W9GGIAZSsN6Mfq',
+                  clientId: 'sfmcClientIdF7Kq2Wa9X',
+                  clientSecret: 'sfmcClientSecretP3Nd8',
                   createOrUpdateContacts: false,
                   eventDelivery: true,
                   eventDeliveryTS: 1615371070621,

@@ -1,5 +1,6 @@
-export const ENDPOINT = 'https://api.topsort.com/v2/events';
+const BASE_URL = 'https://api.topsort.com';
 export const ENDPOINT_PATH = '/v2/events';
+export const ENDPOINT = `${BASE_URL}${ENDPOINT_PATH}`;
 
 // The Events API binds `maxItems: 50` on each of the impressions/clicks/purchases arrays
 // independently, and rejects the whole request past that.

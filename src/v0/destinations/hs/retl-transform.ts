@@ -75,9 +75,11 @@ const processBatchRouterRetl = async (
     validateDestinationConfig(destination);
     // skip splitting the batches to inserts and updates if the object is an association
     if (!objectType || String(objectType).toLowerCase() !== 'association') {
-      // hs_object_id is hubspot's own record id, so records are addressed directly: no Search,
-      // and no upsert either, since a record id only ever updates an existing record, never
-      // creates one. Both the v3 and legacy rETL handlers send updateObject to crm/v3 batch/update.
+      // hs_object_id is hubspot's own record id, so records are addressed directly: no Search.
+      // No upsert either: hubspot reports hs_object_id as non-unique and rejects batch/upsert by it
+      // (400 "Unable to perform update/upsert by non-unique ... property hs_object_id"), and a
+      // record id should only update an existing record anyway, never create one. Both the v3 and
+      // legacy rETL handlers send updateObject to crm/v3 batch/update.
       const isRecordIdLookup = identifierType === HS_RECORD_ID_PROPERTY;
 
       if (isRecordIdLookup) {

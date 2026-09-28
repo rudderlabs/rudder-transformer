@@ -476,4 +476,51 @@ export const updateMultiStatusData = [
       },
     },
   },
+  {
+    name: 'hs',
+    id: 'hs_update_200_result_matched_by_trace_id',
+    description:
+      '200 from batch/update: a result under a different record id still counts for the input whose objectWriteTraceId it echoes; an input missing entirely fails',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            endpoint: UPDATE_ENDPOINT,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: authHeader1,
+            },
+            JSON: {
+              inputs: [
+                { id: '90005', properties: { firstname: 'Resolved' }, objectWriteTraceId: '7' },
+                { id: '90006', properties: { firstname: 'Merged' }, objectWriteTraceId: '8,9' },
+              ],
+            },
+          },
+          [generateMetadata(7), generateMetadata(8), generateMetadata(9)],
+          { apiVersion: 'newApi' },
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 207,
+            message: MULTI_STATUS_MESSAGE,
+            response: [
+              { statusCode: 200, metadata: generateMetadata(7), error: 'success' },
+              { statusCode: 400, metadata: generateMetadata(8), error: NOT_UPDATED_MESSAGE },
+              { statusCode: 400, metadata: generateMetadata(9), error: NOT_UPDATED_MESSAGE },
+            ],
+          },
+        },
+      },
+    },
+  },
 ];

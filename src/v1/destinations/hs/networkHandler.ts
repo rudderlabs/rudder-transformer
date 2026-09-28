@@ -127,6 +127,8 @@ const NOT_UPDATED_ERROR =
  * batch/update leaves an input out of `results`, and reports no error for it, when its id no
  * longer addresses a record of its own (e.g. it was merged into another record). Returns the job
  * ids (from each such input's objectWriteTraceId) so they fail instead of reading as delivered.
+ * A result's `id` is the record's current id, which need not be the id we sent, so an input also
+ * counts as updated when a result echoes its objectWriteTraceId.
  */
 const findNotUpdatedJobIds = (
   response: UpsertResponse,
@@ -139,9 +141,16 @@ const findNotUpdatedJobIds = (
   if (!Array.isArray(inputs)) {
     return [];
   }
-  const resultIds = new Set((response?.results ?? []).map((result) => String(result.id)));
+  const results = response?.results ?? [];
+  const resultIds = new Set(results.map((result) => String(result.id)));
+  const resultTraceIds = new Set(results.map((result) => result.objectWriteTraceId));
   return inputs
-    .filter((input) => input?.objectWriteTraceId && !resultIds.has(String(input.id)))
+    .filter(
+      (input) =>
+        input?.objectWriteTraceId &&
+        !resultIds.has(String(input.id)) &&
+        !resultTraceIds.has(String(input.objectWriteTraceId)),
+    )
     .flatMap((input) => String(input.objectWriteTraceId).split(','))
     .filter(Boolean);
 };
@@ -255,10 +264,10 @@ const responseHandler = (responseParams: {
   // Handle 207 Multi-Status response from batch upsert/update APIs, and a 2xx batch/update that
   // left some inputs out of its results (handled the same way: those jobs fail, the rest succeed)
   const notUpdatedJobIds = isHttpStatusSuccess(status)
-    ? findNotUpdatedJobIds(response as UpsertResponse, destinationRequest)
+    ? findNotUpdatedJobIds(response, destinationRequest)
     : [];
   if (status === 207 || notUpdatedJobIds.length > 0) {
-    return handle207MultiStatus(response as UpsertResponse, rudderJobMetadata, notUpdatedJobIds);
+    return handle207MultiStatus(response, rudderJobMetadata, notUpdatedJobIds);
   }
 
   if (isHttpStatusSuccess(status)) {

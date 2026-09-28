@@ -14,7 +14,7 @@ const CRM_V3_PROPERTIES_ENDPOINT = 'https://api.hubapi.com/crm/v3/properties/con
 const crmV3PropertiesResponse = {
   results: [
     { name: 'email', hasUniqueValue: true },
-    { name: 'hs_object_id', hasUniqueValue: true },
+    { name: 'hs_object_id', hasUniqueValue: false },
     { name: 'user_id', hasUniqueValue: true },
     { name: 'custom_field_not_present', hasUniqueValue: true },
   ],
@@ -79,6 +79,31 @@ export const networkCallsData = [
       data: {
         status: 'COMPLETE',
         results: [{ id: '90003', properties: { firstname: 'Alive' } }],
+      },
+    },
+  },
+  // batch/update 200 whose result for 90005 carries a different (current) record id but echoes the
+  // input's objectWriteTraceId, and that leaves 90006 out entirely (dataDelivery/upsert.ts)
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          { id: '90005', properties: { firstname: 'Resolved' }, objectWriteTraceId: '7' },
+          { id: '90006', properties: { firstname: 'Merged' }, objectWriteTraceId: '8,9' },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 'COMPLETE',
+        results: [{ id: '90500', properties: { firstname: 'Resolved' }, objectWriteTraceId: '7' }],
       },
     },
   },

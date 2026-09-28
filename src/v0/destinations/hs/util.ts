@@ -62,8 +62,14 @@ import type {
   HubSpotTrackEventRequest,
   HubSpotPropertyV3,
   HubSpotPropertiesV3Response,
+  HubSpotBatchInputItem,
 } from './types';
-import { isDateLike, isHubSpotExternalIdInfo, isHubSpotSearchResponse } from './types';
+import {
+  hasPropertiesRecord,
+  isDateLike,
+  isHubSpotExternalIdInfo,
+  isHubSpotSearchResponse,
+} from './types';
 
 const UNSUPPORTED_LEGACY_AUTH_ERROR =
   'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.';
@@ -1069,6 +1075,29 @@ const recordTransformFlow = (
   });
 };
 
+/**
+ * Adds one rETL row to a batch/update request, keyed by record id. HubSpot rejects the whole
+ * batch/update (400, "Duplicate IDs found in batch input") if an id appears more than once, so a
+ * row whose id is already in the batch is combined into that input: a later row's value wins for
+ * the same property, and the input's objectWriteTraceId lists every job behind it (comma-separated)
+ * so the response handler can map a per-record error or a missing result back to its jobs. A
+ * repeated id is always combined, never pushed a second time.
+ */
+const pushOrCombineUpdateInput = (
+  inputs: Array<HubSpotBatchInputItem | Record<string, unknown>>,
+  { id, json, traceId }: { id: string | undefined; json: unknown; traceId: string },
+): void => {
+  const properties = hasPropertiesRecord(json) ? json.properties : {};
+  const existing = inputs.find((input) => input.id === id);
+  if (existing) {
+    const existingProperties = hasPropertiesRecord(existing) ? existing.properties : {};
+    existing.properties = { ...existingProperties, ...properties };
+    existing.objectWriteTraceId = `${existing.objectWriteTraceId},${traceId}`;
+    return;
+  }
+  inputs.push({ ...(json as Record<string, unknown>), id, objectWriteTraceId: traceId });
+};
+
 export {
   validateDestinationConfig,
   addHsAuthorisationHeader,
@@ -1094,4 +1123,5 @@ export {
   getLookupFieldValue,
   isLookupFieldUnique,
   recordTransformFlow,
+  pushOrCombineUpdateInput,
 };

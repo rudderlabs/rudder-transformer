@@ -121,7 +121,7 @@ const isSilentFailure = (response: Response, endpoint?: string): boolean => {
 
 const BATCH_UPDATE_ENDPOINT_PATTERN = /\/crm\/v3\/objects\/[^/]+\/batch\/update(\?|$)/;
 const NOT_UPDATED_ERROR =
-  '[HUBSPOT] Record not updated: HubSpot left its id out of the batch/update results without an error (e.g. the record was merged into another one).';
+  '[HUBSPOT] Record not updated: its id is missing from the batch/update results (e.g. a merged record).';
 
 /**
  * batch/update leaves an input out of `results`, and reports no error for it, when its id no
@@ -149,7 +149,11 @@ const findNotUpdatedJobIds = (
   }
   const results = response?.results ?? [];
   const resultIds = new Set(results.map((result) => String(result.id)));
-  const resultTraceIds = new Set(results.map((result) => result.objectWriteTraceId));
+  const resultTraceIds = new Set(
+    results.flatMap((result) =>
+      result.objectWriteTraceId ? [String(result.objectWriteTraceId)] : [],
+    ),
+  );
   return inputs
     .filter(
       (input) =>
@@ -199,7 +203,7 @@ const handlePartialBatchResponse = (
   errors.forEach((error: UpsertError) => {
     // objectWriteTraceId is in error.context as an array
     const traceIds = error.context?.objectWriteTraceId || [];
-    const errorMessage = error.message!;
+    const errorMessage = error.message ?? 'Unknown error from HubSpot';
 
     // a trace id lists one job id, or several (comma-separated) for a combined input
     traceIds
@@ -238,7 +242,7 @@ const handlePartialBatchResponse = (
 
   return {
     status: 207,
-    message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+    message: '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
     response: responseWithIndividualEvents,
   };
 };
@@ -255,6 +259,13 @@ const responseHandler = (responseParams: {
   const responseWithIndividualEvents: DeliveryJobState[] = [];
   const { response, status } = destinationResponse;
 
+  // Jobs of a 2xx batch/update whose input HubSpot left out of its results. Computed first so
+  // that a batch/update with every input missing reports "Record not updated" per job rather
+  // than the generic silent-failure reason below.
+  const notUpdatedJobIds = isHttpStatusSuccess(status)
+    ? findNotUpdatedJobIds(response, destinationRequest)
+    : [];
+
   // Detect silent failures on new API v3 batch endpoints: HubSpot returned 2xx
   // but the response indicates no records were processed (empty results and
   // errors). When errors are present, the 207 multi-status handler below
@@ -263,15 +274,16 @@ const responseHandler = (responseParams: {
   // and is excluded.
   // Mark all events as 400 since retrying with the same payload would produce
   // the same silent no-op.
-  if (isHttpStatusSuccess(status) && isSilentFailure(response, destinationRequest.endpoint)) {
+  if (
+    notUpdatedJobIds.length === 0 &&
+    isHttpStatusSuccess(status) &&
+    isSilentFailure(response, destinationRequest.endpoint)
+  ) {
     return buildSilentFailureResponse(rudderJobMetadata, status);
   }
 
   // Handle 207 Multi-Status response from batch upsert/update APIs, and a 2xx batch/update that
   // left some inputs out of its results (handled the same way: those jobs fail, the rest succeed)
-  const notUpdatedJobIds = isHttpStatusSuccess(status)
-    ? findNotUpdatedJobIds(response, destinationRequest)
-    : [];
   if (status === 207 || notUpdatedJobIds.length > 0) {
     return handlePartialBatchResponse(response, rudderJobMetadata, notUpdatedJobIds);
   }

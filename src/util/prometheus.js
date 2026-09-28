@@ -590,6 +590,12 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'hs_retl_invalid_record_id',
+        help: 'rETL rows dropped for an empty or non-numeric HubSpot record id (hs_object_id)',
+        type: 'counter',
+        labelNames: ['destination_id', 'reason'],
+      },
+      {
         name: 'mixpanel_batch_engage_pack_size',
         help: 'mixpanel_batch_engage_pack_size',
         type: 'gauge',

@@ -2,6 +2,7 @@ import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { EventType, MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } from '../../util';
+import stats from '../../../util/stats';
 import { API_VERSION, HS_RECORD_ID_PROPERTY, HS_RECORD_ID_REGEX } from './config';
 import { processRetlLegacyIdentify, batchRetlLegacyEvents } from './retl-v1';
 import { processRetlIdentify, batchRetlEvents } from './retl-v3';
@@ -87,28 +88,33 @@ const processBatchRouterRetl = async (
         // rows whose primary key is null or duplicated, so when the primary key is another column
         // this value can be empty or malformed. Such a row can't be updated and would put a bad id
         // into the shared batch/update request, so fail it here, before any hubspot call, with a
-        // non-retryable error. Tag the rest for a direct update.
-        tempInputs = tempInputs.filter((input) => {
+        // non-retryable error, and count it. Tag the rest for a direct update.
+        const validInputs: HubspotRouterRequest[] = [];
+        for (const input of tempInputs) {
           const recordId = String(
             getDestinationExternalIDInfoForRetl(input.message, 'HS')?.destinationExternalId ?? '',
           );
-          if (!HS_RECORD_ID_REGEX.test(recordId)) {
+          if (HS_RECORD_ID_REGEX.test(recordId)) {
+            input.message.context = {
+              ...input.message.context,
+              externalId: setHsSearchId(input, recordId),
+              hubspotOperation: 'updateObject',
+            };
+            validInputs.push(input);
+          } else {
             const reason = recordId
               ? `rETL - invalid HubSpot record id "${recordId}"`
               : 'rETL - HubSpot record id (hs_object_id) is empty';
+            stats.increment('hs_retl_invalid_record_id', {
+              destination_id: destination.ID,
+              reason: recordId ? 'invalid' : 'empty',
+            });
             errorRespList.push(
               handleRtTfSingleEventError(input, new InstrumentationError(reason), reqMetadata),
             );
-            return false;
           }
-          const taggedInput = input;
-          taggedInput.message.context = {
-            ...input.message.context,
-            externalId: setHsSearchId(input, recordId),
-            hubspotOperation: 'updateObject',
-          };
-          return true;
-        });
+        }
+        tempInputs = validInputs;
         if (tempInputs.length === 0) {
           return { batchedResponseList, errorRespList, dontBatchEvents: [] };
         }

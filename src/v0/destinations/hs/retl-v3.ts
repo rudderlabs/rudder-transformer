@@ -32,6 +32,7 @@ import {
   populateTraits,
   addExternalIdToHSTraits,
   removeHubSpotSystemField,
+  pushOrCombineUpdateInput,
   getHsSearchId,
   addHsAuthorisationHeader,
   recordTransformFlow,
@@ -49,7 +50,7 @@ import type {
   HubSpotBatchRequestOutput,
   HubSpotUpsertPayload,
 } from './types';
-import { hasAssociationShape, hasPropertiesRecord, hasUpsertPayloadShape } from './types';
+import { hasAssociationShape, hasUpsertPayloadShape } from './types';
 
 /**
  * rETL (new/v3 API) identify handler.
@@ -235,26 +236,11 @@ const batchIdentifyRetl = (
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
         const id = updateEndpoint.split('/').pop();
-        const json = ev.message.body.JSON;
-        // objectWriteTraceId lists the job id(s) behind each input, so the response handler can map
-        // a per-record error (e.g. OBJECT_NOT_FOUND for a deleted record) or a missing result back
-        // to its jobs.
-        const traceId = String(ev.metadata.jobId);
-        // Deduplicate by id - hubspot rejects the whole batch/update (400, "Duplicate IDs found in
-        // batch input") if the same id appears more than once, so rows with the same id are
-        // combined into one input.
-        const existing = identifyResponseList.find((data) => data.id === id);
-        if (existing && hasPropertiesRecord(existing) && hasPropertiesRecord(json)) {
-          // Combine the rows: a later row's value wins for the same property
-          existing.properties = { ...existing.properties, ...json.properties };
-          existing.objectWriteTraceId = `${existing.objectWriteTraceId},${traceId}`;
-        } else {
-          identifyResponseList.push({
-            ...json,
-            id,
-            objectWriteTraceId: traceId,
-          });
-        }
+        pushOrCombineUpdateInput(identifyResponseList, {
+          id,
+          json: ev.message.body.JSON,
+          traceId: String(ev.metadata.jobId),
+        });
 
         metadata.push(ev.metadata);
       });

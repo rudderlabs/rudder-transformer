@@ -72,7 +72,8 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 200,
@@ -143,7 +144,8 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 400,
@@ -224,7 +226,8 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 200,
@@ -291,7 +294,8 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 200,
@@ -348,7 +352,8 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 200,
@@ -367,9 +372,9 @@ const UPDATE_ENDPOINT = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/up
 const NOT_FOUND_MESSAGE =
   'Could not get some CONTACT objects, they may be deleted or not exist. Check that ids are valid.';
 const NOT_UPDATED_MESSAGE =
-  '[HUBSPOT] Record not updated: HubSpot left its id out of the batch/update results without an error (e.g. the record was merged into another one).';
+  '[HUBSPOT] Record not updated: its id is missing from the batch/update results (e.g. a merged record).';
 const MULTI_STATUS_MESSAGE =
-  '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results';
+  '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results';
 
 /**
  * 207 Multi-Status handling for the HubSpot batch update API.
@@ -517,6 +522,53 @@ export const updateMultiStatusData = [
               { statusCode: 200, metadata: generateMetadata(7), error: 'success' },
               { statusCode: 400, metadata: generateMetadata(8), error: NOT_UPDATED_MESSAGE },
               { statusCode: 400, metadata: generateMetadata(9), error: NOT_UPDATED_MESSAGE },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    id: 'hs_update_200_every_input_missing',
+    description:
+      '200 from batch/update with every input missing (empty results and errors): each job fails as not updated, not with the generic silent-failure reason',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            endpoint: UPDATE_ENDPOINT,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: authHeader1,
+            },
+            JSON: {
+              inputs: [
+                { id: '90007', properties: { firstname: 'MergedA' }, objectWriteTraceId: '10' },
+                { id: '90008', properties: { firstname: 'MergedB' }, objectWriteTraceId: '11,12' },
+              ],
+            },
+          },
+          [generateMetadata(10), generateMetadata(11), generateMetadata(12)],
+          { apiVersion: 'newApi' },
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 207,
+            message: MULTI_STATUS_MESSAGE,
+            response: [
+              { statusCode: 400, metadata: generateMetadata(10), error: NOT_UPDATED_MESSAGE },
+              { statusCode: 400, metadata: generateMetadata(11), error: NOT_UPDATED_MESSAGE },
+              { statusCode: 400, metadata: generateMetadata(12), error: NOT_UPDATED_MESSAGE },
             ],
           },
         },

@@ -107,6 +107,28 @@ export const networkCallsData = [
       },
     },
   },
+  // batch/update 200 that leaves every input out (empty results and errors), e.g. all ids belong
+  // to merged records (dataDelivery/upsert.ts)
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          { id: '90007', properties: { firstname: 'MergedA' }, objectWriteTraceId: '10' },
+          { id: '90008', properties: { firstname: 'MergedB' }, objectWriteTraceId: '11,12' },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: { status: 'COMPLETE', results: [] },
+    },
+  },
   // Silent failure mocks (placed first so they match before broader mocks below)
   // batch endpoints returning 2xx with empty results+errors → silent failure
   {

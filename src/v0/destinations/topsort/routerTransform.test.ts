@@ -1,8 +1,14 @@
-import { Integration } from './routerTransform';
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
+import type {
+  RouterTransformationRequestData,
+  RouterTransformationResponse,
+} from '../../../types/destinationTransformation';
+import type { Destination } from '../../../types';
 import { MAX_BATCH_SIZE } from './config';
+import { Integration } from './routerTransform';
+import type { TopsortEventType } from './types';
 
-const destination = {
+const destination: Destination = {
   ID: 'topsort-dest-1',
   Config: {
     apiKey: 'dummyApiKey',
@@ -20,132 +26,175 @@ const destination = {
   Transformations: [],
 };
 
-const makeInput = (jobId: number, event: string, properties: Record<string, unknown> = {}) =>
-  ({
-    message: {
-      type: 'track',
-      event,
-      anonymousId: 'anon-1',
-      messageId: `msg-${jobId}`,
-      timestamp: '2024-11-05T15:19:08+00:00',
-      properties: { product_id: 'p-1', ...properties },
-    },
-    metadata: { jobId, workspaceId: 'ws-1' },
-    destination,
-  }) as never;
+const makeInput = (
+  jobId: number,
+  event: string,
+  properties: Record<string, unknown> = {},
+): RouterTransformationRequestData => ({
+  message: {
+    type: 'track',
+    event,
+    anonymousId: 'anon-1',
+    messageId: `msg-${jobId}`,
+    timestamp: '2024-11-05T15:19:08+00:00',
+    properties: { product_id: 'p-1', ...properties },
+  },
+  metadata: {
+    jobId,
+    workspaceId: 'ws-1',
+    destinationId: 'topsort-dest-1',
+    sourceId: 'src-1',
+    sourceType: 'web',
+    sourceCategory: 'cloud',
+    destinationType: 'TOPSORT',
+    messageId: `msg-${jobId}`,
+  },
+  destination,
+});
+
+const productsOf = (count: number) =>
+  Array.from({ length: count }, (_, i) => ({ product_id: `p-${i}` }));
+
+const run = (inputs: RouterTransformationRequestData[]): Promise<RouterTransformationResponse[]> =>
+  processDestinationIntegration(inputs, Integration, {});
 
 // A response's `batchedRequest` is a single request, or an array of them when
 // `combineBatchRequestsWithSameJobIds` folds several chunks back into one response —
 // which happens whenever a chunk boundary falls inside one job's fanned-out products.
-const bodiesOf = (results: any[]) =>
+const requestBodies = (results: RouterTransformationResponse[]): Record<string, unknown>[] =>
   results
-    .filter((r) => r.batched)
-    .flatMap((r) => (Array.isArray(r.batchedRequest) ? r.batchedRequest : [r.batchedRequest]))
-    .map((req) => req.body.JSON);
+    .flatMap(({ batchedRequest }) => (batchedRequest ? [batchedRequest].flat() : []))
+    .map(({ body }) => body?.JSON ?? {});
+
+const countOf = (body: Record<string, unknown>, eventType: TopsortEventType): number => {
+  const events = body[eventType];
+  return Array.isArray(events) ? events.length : 0;
+};
+
+const failedJobIds = (results: RouterTransformationResponse[]) =>
+  results.filter(({ batched }) => !batched).flatMap(({ metadata }) => metadata.map((m) => m.jobId));
 
 describe('Topsort batching', () => {
-  it('splits a group larger than the API cap into several requests', async () => {
+  it('starts a new request when an event array reaches the API cap', async () => {
     const inputs = Array.from({ length: MAX_BATCH_SIZE + 20 }, (_, i) =>
       makeInput(i, 'Product Clicked'),
     );
 
-    const bodies = bodiesOf(await processDestinationIntegration(inputs, Integration, {}));
+    const bodies = requestBodies(await run(inputs));
 
-    expect(bodies).toHaveLength(2);
-    expect(bodies[0].clicks).toHaveLength(MAX_BATCH_SIZE);
-    expect(bodies[1].clicks).toHaveLength(20);
-    bodies.forEach((b) => expect(Object.keys(b)).toEqual(['clicks']));
+    expect(bodies.map((body) => countOf(body, 'clicks'))).toEqual([MAX_BATCH_SIZE, 20]);
   });
 
-  it('counts fanned-out products against the cap, not input events', async () => {
-    // 6 events x 10 products = 60 impressions, which must not ride in one request.
-    const products = Array.from({ length: 10 }, (_, i) => ({ product_id: `p-${i}` }));
-    const inputs = Array.from({ length: 6 }, (_, i) =>
-      makeInput(i, 'Checkout Started', { products }),
-    );
-
-    const bodies = bodiesOf(await processDestinationIntegration(inputs, Integration, {}));
-
-    expect(bodies.flatMap((b) => b.impressions)).toHaveLength(60);
-    bodies.forEach((b) => expect(b.impressions.length).toBeLessThanOrEqual(MAX_BATCH_SIZE));
-  });
-
-  it('caps the request even when the boundary falls inside one job', async () => {
-    // 7 events x 8 products = 56 impressions. The 50th lands mid-way through job 6,
-    // so that job's events straddle two chunks — the case where the framework folds
-    // both requests back into a single response keyed by the shared jobId.
-    const products = Array.from({ length: 8 }, (_, i) => ({ product_id: `p-${i}` }));
-    const inputs = Array.from({ length: 7 }, (_, i) =>
-      makeInput(i, 'Checkout Started', { products }),
-    );
-
-    const results = await processDestinationIntegration(inputs, Integration, {});
-    const bodies = bodiesOf(results);
-
-    expect(bodies.map((b) => b.impressions.length)).toEqual([MAX_BATCH_SIZE, 6]);
-    // Every job is still accounted for exactly once, across the merged response.
-    expect(results.flatMap((r: any) => r.metadata.map((m: any) => m.jobId)).sort()).toEqual([
-      0, 1, 2, 3, 4, 5, 6,
-    ]);
-  });
-
-  it('sends each event type as its own request', async () => {
+  it('sends clicks, impressions and purchases together in one request', async () => {
     const inputs = [
       makeInput(1, 'Product Clicked'),
       makeInput(2, 'Product Viewed'),
       makeInput(3, 'Order Completed'),
     ];
 
-    const bodies = bodiesOf(await processDestinationIntegration(inputs, Integration, {}));
-    const keys = bodies.flatMap((b) => Object.keys(b)).sort();
+    const bodies = requestBodies(await run(inputs));
 
-    expect(keys).toEqual(['clicks', 'impressions', 'purchases']);
-    bodies.forEach((b) => expect(Object.values(b)[0]).toHaveLength(1));
+    expect(bodies).toEqual([
+      {
+        clicks: [expect.objectContaining({ id: 'msg-1' })],
+        impressions: [expect.objectContaining({ id: 'msg-2' })],
+        purchases: [expect.objectContaining({ id: 'msg-3' })],
+      },
+    ]);
+  });
+
+  it('caps each event array independently, so other types keep filling the request', async () => {
+    // 60 clicks then 10 purchases: the first request fills with 50 clicks, and the rest of the
+    // clicks ride with the purchases in the second.
+    const inputs = [
+      ...Array.from({ length: 60 }, (_, i) => makeInput(i, 'Product Clicked')),
+      ...Array.from({ length: 10 }, (_, i) => makeInput(60 + i, 'Order Completed')),
+    ];
+
+    const bodies = requestBodies(await run(inputs));
+
+    expect(bodies.map((body) => [countOf(body, 'clicks'), countOf(body, 'purchases')])).toEqual([
+      [MAX_BATCH_SIZE, 0],
+      [10, 10],
+    ]);
+  });
+
+  it('counts fanned-out products against the cap, not input events', async () => {
+    // 6 events x 10 products = 60 impressions, which must not ride in one request.
+    const inputs = Array.from({ length: 6 }, (_, i) =>
+      makeInput(i, 'Checkout Started', { products: productsOf(10) }),
+    );
+
+    const bodies = requestBodies(await run(inputs));
+
+    expect(bodies.map((body) => countOf(body, 'impressions'))).toEqual([MAX_BATCH_SIZE, 10]);
+  });
+
+  it('accounts for every job once when the cap falls inside one job', async () => {
+    // 7 events x 8 products = 56 impressions. The 50th lands mid-way through job 6, so that
+    // job's events straddle two requests, which the framework folds into one response.
+    const inputs = Array.from({ length: 7 }, (_, i) =>
+      makeInput(i, 'Checkout Started', { products: productsOf(8) }),
+    );
+
+    const results = await run(inputs);
+
+    expect(requestBodies(results).map((body) => countOf(body, 'impressions'))).toEqual([
+      MAX_BATCH_SIZE,
+      6,
+    ]);
+    expect(results.flatMap(({ metadata }) => metadata.map((m) => m.jobId)).sort()).toEqual([
+      0, 1, 2, 3, 4, 5, 6,
+    ]);
   });
 
   it('gives fanned-out events distinct ids that are stable across runs', async () => {
-    const inputs = [
-      makeInput(1, 'Checkout Started', {
-        products: [{ product_id: 'a' }, { product_id: 'b' }, { product_id: 'c' }],
-      }),
+    const inputs = [makeInput(1, 'Checkout Started', { products: productsOf(3) })];
+    const expected = [
+      {
+        impressions: [
+          expect.objectContaining({ id: 'msg-1-0' }),
+          expect.objectContaining({ id: 'msg-1-1' }),
+          expect.objectContaining({ id: 'msg-1-2' }),
+        ],
+      },
     ];
 
-    const first = bodiesOf(await processDestinationIntegration(inputs, Integration, {}));
-    const second = bodiesOf(await processDestinationIntegration(inputs, Integration, {}));
-
-    const ids = first[0].impressions.map((e: any) => e.id);
-    expect(ids).toEqual(['msg-1-0', 'msg-1-1', 'msg-1-2']);
     // Retry idempotency: the same input must produce the same ids.
-    expect(second[0].impressions.map((e: any) => e.id)).toEqual(ids);
+    expect(requestBodies(await run(inputs))).toEqual(expected);
+    expect(requestBodies(await run(inputs))).toEqual(expected);
   });
+});
 
-  it('fails only the offending job when an event is not mapped', async () => {
-    const inputs = [makeInput(1, 'Product Clicked'), makeInput(2, 'Totally Unmapped Event')];
+describe('Topsort validation', () => {
+  const failureCases: { name: string; input: RouterTransformationRequestData }[] = [
+    { name: 'an unmapped event', input: makeInput(2, 'Totally Unmapped Event') },
+    {
+      name: 'a non-track event',
+      input: { ...makeInput(2, 'Product Clicked'), message: { type: 'identify', messageId: 'm' } },
+    },
+    {
+      name: 'a missing messageId',
+      input: {
+        ...makeInput(2, 'Product Clicked'),
+        message: { type: 'track', event: 'Product Clicked', properties: {} },
+      },
+    },
+  ];
 
-    const results = await processDestinationIntegration(inputs, Integration, {});
-    const bodies = bodiesOf(results);
-    const failures = results.filter((r) => !r.batched);
+  it.each(failureCases)('fails only the offending job for $name', async ({ input }) => {
+    const results = await run([makeInput(1, 'Product Clicked'), input]);
 
-    expect(bodies[0].clicks).toHaveLength(1);
-    expect(failures).toHaveLength(1);
-    expect(failures[0].metadata[0].jobId).toBe(2);
-  });
-
-  it('rejects non-track events', async () => {
-    const input = makeInput(1, 'Product Clicked');
-    (input as any).message.type = 'identify';
-
-    const results = await processDestinationIntegration([input], Integration, {});
-
-    expect(results[0].statusCode).toBe(400);
+    expect(requestBodies(results)).toEqual([
+      { clicks: [expect.objectContaining({ id: 'msg-1' })] },
+    ]);
+    expect(failedJobIds(results)).toEqual([2]);
   });
 
   it('emits no request when every event fails', async () => {
-    const inputs = [makeInput(1, 'Unmapped A'), makeInput(2, 'Unmapped B')];
+    const results = await run([makeInput(1, 'Unmapped A'), makeInput(2, 'Unmapped B')]);
 
-    const results = await processDestinationIntegration(inputs, Integration, {});
-
-    expect(bodiesOf(results)).toHaveLength(0);
-    expect(results).toHaveLength(2);
+    expect(requestBodies(results)).toEqual([]);
+    expect(failedJobIds(results)).toEqual([1, 2]);
   });
 });

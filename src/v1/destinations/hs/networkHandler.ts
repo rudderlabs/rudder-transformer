@@ -129,6 +129,12 @@ const NOT_UPDATED_ERROR =
  * ids (from each such input's objectWriteTraceId) so they fail instead of reading as delivered.
  * A result's `id` is the record's current id, which need not be the id we sent, so an input also
  * counts as updated when a result echoes its objectWriteTraceId.
+ *
+ * HubSpot documents that batch update doesn't support merged-away ids
+ * (https://developers.hubspot.com/docs/api-reference/legacy/crm/using-object-apis, "Update
+ * records"); the silent 200 is observed behaviour, not documented. Only batch/update is checked:
+ * upsert and create results aren't keyed by the id we sent. Inputs without an objectWriteTraceId
+ * (event-stream updates) are skipped, as they can't be mapped back to their jobs.
  */
 const findNotUpdatedJobIds = (
   response: UpsertResponse,

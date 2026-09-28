@@ -175,18 +175,18 @@ const buildSilentFailureResponse = (
 });
 
 /**
- * Handles 207 Multi-Status responses from HubSpot batch upsert/update APIs.
- * HubSpot echoes each failed input's objectWriteTraceId in error.context (for batch/update
- * OBJECT_NOT_FOUND too); a trace id lists the job id(s) the input was built from. Those jobs,
- * and the not-updated jobs (see findNotUpdatedJobIds), are marked as failed (400). All other
- * events are marked as success (200).
+ * Builds the per-job result of a HubSpot batch upsert/update that partly failed: a 207 whose
+ * errors echo the failed inputs' objectWriteTraceId in error.context (for batch/update
+ * OBJECT_NOT_FOUND too), or a 2xx batch/update that left some inputs out of its results (see
+ * findNotUpdatedJobIds). A trace id lists the job id(s) the input was built from. Those jobs are
+ * marked as failed (400); all other events are marked as success (200).
  *
  * @param response - The parsed response body from HubSpot
  * @param rudderJobMetadata - Array of metadata for each job in the batch
  * @param notUpdatedJobIds - Jobs whose batch/update input HubSpot left out of the results
  * @returns DeliveryV1Response with individual status for each job
  */
-const handle207MultiStatus = (
+const handlePartialBatchResponse = (
   response: UpsertResponse,
   rudderJobMetadata: ProxyMetdata[],
   notUpdatedJobIds: string[] = [],
@@ -273,7 +273,7 @@ const responseHandler = (responseParams: {
     ? findNotUpdatedJobIds(response, destinationRequest)
     : [];
   if (status === 207 || notUpdatedJobIds.length > 0) {
-    return handle207MultiStatus(response, rudderJobMetadata, notUpdatedJobIds);
+    return handlePartialBatchResponse(response, rudderJobMetadata, notUpdatedJobIds);
   }
 
   if (isHttpStatusSuccess(status)) {

@@ -201,7 +201,7 @@ const handlePartialBatchResponse = (
     const traceIds = error.context?.objectWriteTraceId || [];
     const errorMessage = error.message!;
 
-    // a trace id lists one job id, or several (comma-separated) for a merged input
+    // a trace id lists one job id, or several (comma-separated) for a combined input
     traceIds
       .flatMap((traceId: string) => traceId.split(','))
       .forEach((jobId) => {

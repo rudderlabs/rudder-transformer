@@ -140,14 +140,16 @@ const batchIdentifyForRetl = (
         const updateEndpoint = ev.message.endpoint;
         const id = updateEndpoint.split('/').pop();
         const json = ev.message.body.JSON;
-        // objectWriteTraceId lists the job id(s) behind each input, so the 207 handler can map a
-        // per-record error (e.g. OBJECT_NOT_FOUND for a deleted record) back to its jobs.
+        // objectWriteTraceId lists the job id(s) behind each input, so the response handler can map
+        // a per-record error (e.g. OBJECT_NOT_FOUND for a deleted record) or a missing result back
+        // to its jobs.
         const traceId = String(ev.metadata.jobId);
         // Deduplicate by id - hubspot rejects the whole batch/update (400, "Duplicate IDs found in
-        // batch input") if the same id appears more than once, so merge a repeated id into one input.
+        // batch input") if the same id appears more than once, so rows with the same id are
+        // combined into one input.
         const existing = identifyResponseList.find((data) => data.id === id);
         if (existing && hasPropertiesRecord(existing) && hasPropertiesRecord(json)) {
-          // Merge latest properties with existing properties
+          // Combine the rows: a later row's value wins for the same property
           existing.properties = { ...existing.properties, ...json.properties };
           existing.objectWriteTraceId = `${existing.objectWriteTraceId},${traceId}`;
         } else {

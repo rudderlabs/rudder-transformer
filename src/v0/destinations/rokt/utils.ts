@@ -191,7 +191,7 @@ const buildDeviceInfo = (message: RudderMessage): RoktDeviceInfo => {
 
 const buildConversion = (message: RudderMessage): RoktConversion => {
   const customAttributes = mappedPayload(message, ROKT_MAPPING_CONFIG.conversionAttributeMappings);
-  const amount = customAttributes.amount;
+  const { amount } = customAttributes;
   const type = mappedValue(message, ROKT_MAPPING_CONFIG.conversionTypeMappings);
   let conversiontype = type;
   if (!isPresent(conversiontype) && ['page', 'screen'].includes(message.type)) {

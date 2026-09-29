@@ -2,11 +2,13 @@ import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { EventType, MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } from '../../util';
-import { API_VERSION } from './config';
+import stats from '../../../util/stats';
+import { API_VERSION, HS_RECORD_ID_PROPERTY, HS_RECORD_ID_REGEX } from './config';
 import { processRetlLegacyIdentify, batchRetlLegacyEvents } from './retl-v1';
 import { processRetlIdentify, batchRetlEvents } from './retl-v3';
 import {
   splitEventsForCreateUpdate,
+  setHsSearchId,
   getProperties,
   validateDestinationConfig,
   isLookupFieldUnique,
@@ -74,6 +76,50 @@ const processBatchRouterRetl = async (
     validateDestinationConfig(destination);
     // skip splitting the batches to inserts and updates if the object is an association
     if (!objectType || String(objectType).toLowerCase() !== 'association') {
+      // hs_object_id is hubspot's own record id, so records are addressed directly: no Search.
+      // No upsert either: hubspot reports hs_object_id as non-unique and rejects batch/upsert by it
+      // (400 "Unable to perform update/upsert by non-unique ... property hs_object_id"), and a
+      // record id should only update an existing record anyway, never create one. Both the v3 and
+      // legacy rETL handlers send updateObject to crm/v3 batch/update.
+      const isRecordIdLookup = identifierType === HS_RECORD_ID_PROPERTY;
+
+      if (isRecordIdLookup) {
+        // The record id is the warehouse value of the mapped identifier column. rETL only drops
+        // rows whose primary key is null or duplicated, so when the primary key is another column
+        // this value can be empty or malformed. Such a row can't be updated and would put a bad id
+        // into the shared batch/update request, so fail it here, before any hubspot call, with a
+        // non-retryable error, and count it. Tag the rest for a direct update.
+        const validInputs: HubspotRouterRequest[] = [];
+        for (const input of tempInputs) {
+          const recordId = String(
+            getDestinationExternalIDInfoForRetl(input.message, 'HS')?.destinationExternalId ?? '',
+          );
+          if (HS_RECORD_ID_REGEX.test(recordId)) {
+            input.message.context = {
+              ...input.message.context,
+              externalId: setHsSearchId(input, recordId),
+              hubspotOperation: 'updateObject',
+            };
+            validInputs.push(input);
+          } else {
+            const reason = recordId
+              ? `rETL - invalid HubSpot record id "${recordId}"`
+              : 'rETL - HubSpot record id (hs_object_id) is empty';
+            stats.increment('hs_retl_invalid_record_id', {
+              destination_id: destination.ID,
+              reason: recordId ? 'invalid' : 'empty',
+            });
+            errorRespList.push(
+              handleRtTfSingleEventError(input, new InstrumentationError(reason), reqMetadata),
+            );
+          }
+        }
+        tempInputs = validInputs;
+        if (tempInputs.length === 0) {
+          return { batchedResponseList, errorRespList, dontBatchEvents: [] };
+        }
+      }
+
       propertyMap = await getProperties(destination, metadata);
 
       // Upsert is only implemented for the v3 endpoint (retl-v3); the
@@ -83,6 +129,7 @@ const processBatchRouterRetl = async (
       // upsert and skip `splitEventsForCreateUpdate` (and its Search chain).
       // Otherwise, unchanged.
       const canUpsert =
+        !isRecordIdLookup &&
         destination.Config.apiVersion === API_VERSION.v3 &&
         objectType &&
         identifierType &&
@@ -97,8 +144,9 @@ const processBatchRouterRetl = async (
           };
           return taggedInput;
         });
-      } else {
+      } else if (!isRecordIdLookup) {
         // get info about existing objects and split accordingly.
+        // (record id events were already tagged for update above)
         tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);
       }
     }
@@ -106,15 +154,16 @@ const processBatchRouterRetl = async (
     // Any error thrown from the above try block applies to all the events
     return {
       batchedResponseList,
-      errorRespList: tempInputs.map((input) =>
-        handleRtTfSingleEventError(input, error, reqMetadata),
-      ),
+      errorRespList: [
+        ...errorRespList,
+        ...tempInputs.map((input) => handleRtTfSingleEventError(input, error, reqMetadata)),
+      ],
       dontBatchEvents: [],
     };
   }
 
   await Promise.all(
-    inputs.map(async (input) => {
+    tempInputs.map(async (input) => {
       try {
         let receivedResponse = await processSingleMessageRetl(
           { message: input.message, destination, metadata: input.metadata },

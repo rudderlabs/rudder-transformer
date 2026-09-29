@@ -14,13 +14,121 @@ const CRM_V3_PROPERTIES_ENDPOINT = 'https://api.hubapi.com/crm/v3/properties/con
 const crmV3PropertiesResponse = {
   results: [
     { name: 'email', hasUniqueValue: true },
-    { name: 'hs_object_id', hasUniqueValue: true },
+    { name: 'hs_object_id', hasUniqueValue: false },
     { name: 'user_id', hasUniqueValue: true },
     { name: 'custom_field_not_present', hasUniqueValue: true },
   ],
 };
 
 export const networkCallsData = [
+  // batch/update 207 with a missing record: HubSpot reports OBJECT_NOT_FOUND with the record id
+  // and the input's echoed objectWriteTraceId in context, shape as returned by the live API
+  // (dataDelivery/upsert.ts)
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          { id: '90001', properties: { firstname: 'Alive' }, objectWriteTraceId: '1' },
+          { id: '90002', properties: { firstname: 'Gone' }, objectWriteTraceId: '2,3' },
+        ],
+      },
+    },
+    httpRes: {
+      status: 207,
+      data: {
+        status: 'COMPLETE',
+        results: [{ id: '90001', properties: { firstname: 'Alive' } }],
+        errors: [
+          {
+            status: 'error',
+            category: 'OBJECT_NOT_FOUND',
+            message:
+              'Could not get some CONTACT objects, they may be deleted or not exist. Check that ids are valid.',
+            context: { ids: ['90002'], objectWriteTraceId: ['2,3'] },
+          },
+        ],
+        numErrors: 1,
+      },
+    },
+  },
+  // batch/update 200 that leaves a merged-away record id out of `results` with no error, shape as
+  // returned by the live API (dataDelivery/upsert.ts)
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          { id: '90003', properties: { firstname: 'Alive' }, objectWriteTraceId: '4' },
+          { id: '90004', properties: { firstname: 'Merged' }, objectWriteTraceId: '5,6' },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 'COMPLETE',
+        results: [{ id: '90003', properties: { firstname: 'Alive' } }],
+      },
+    },
+  },
+  // batch/update 200 whose result for 90005 carries a different (current) record id but echoes the
+  // input's objectWriteTraceId, and that leaves 90006 out entirely (dataDelivery/upsert.ts)
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          { id: '90005', properties: { firstname: 'Resolved' }, objectWriteTraceId: '7' },
+          { id: '90006', properties: { firstname: 'Merged' }, objectWriteTraceId: '8,9' },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 'COMPLETE',
+        results: [{ id: '90500', properties: { firstname: 'Resolved' }, objectWriteTraceId: '7' }],
+      },
+    },
+  },
+  // batch/update 200 that leaves every input out (empty results and errors), e.g. all ids belong
+  // to merged records (dataDelivery/upsert.ts)
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          { id: '90007', properties: { firstname: 'MergedA' }, objectWriteTraceId: '10' },
+          { id: '90008', properties: { firstname: 'MergedB' }, objectWriteTraceId: '11,12' },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: { status: 'COMPLETE', results: [] },
+    },
+  },
   // Silent failure mocks (placed first so they match before broader mocks below)
   // batch endpoints returning 2xx with empty results+errors → silent failure
   {

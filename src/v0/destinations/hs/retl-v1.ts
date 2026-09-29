@@ -25,6 +25,7 @@ import {
 import {
   populateTraits,
   removeHubSpotSystemField,
+  pushOrCombineUpdateInput,
   getHsSearchId,
   recordTransformFlow,
   addHsAuthorisationHeader,
@@ -137,9 +138,11 @@ const batchIdentifyForRetl = (
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-          id: updateEndpoint.split('/').pop(),
+        const id = updateEndpoint.split('/').pop();
+        pushOrCombineUpdateInput(identifyResponseList, {
+          id,
+          json: ev.message.body.JSON,
+          traceId: String(ev.metadata.jobId),
         });
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
           0,

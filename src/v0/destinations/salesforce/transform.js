@@ -196,8 +196,14 @@ async function getSalesforceIdFromPayload({ message, destination, metadata }, st
 // Function for handling identify events
 async function processIdentify({ message, destination, metadata }, stateInfo) {
   const { Name } = destination.DestinationDefinition;
-  const mapProperty =
-    destination.Config.mapProperty === undefined ? true : destination.Config.mapProperty;
+  // The dashboard saves this switch as `mapProperties`; `mapProperty` stays as a fallback.
+  // The deprecated legacy destination keeps the pre-fix read of `mapProperty` alone: most
+  // destinations saved with the switch off are legacy, and they rely on the mapping.
+  const mapPropertyConfig =
+    Name?.toUpperCase() === 'SALESFORCE'
+      ? destination.Config.mapProperty
+      : (destination.Config.mapProperties ?? destination.Config.mapProperty);
+  const mapProperty = mapPropertyConfig === undefined ? true : mapPropertyConfig;
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, 'traits');
   if (!traits) {

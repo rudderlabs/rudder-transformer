@@ -5,7 +5,6 @@ test/
 benchmark/
 dist/
 dist-test/
-**/warehouse/
 **/lambda/
 *.md
 *.test.js

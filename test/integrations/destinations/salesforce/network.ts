@@ -338,6 +338,35 @@ const transformationMocksData = [
       },
     },
   },
+  {
+    httpReq: {
+      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=converted.lead%40initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted',
+      method: 'GET',
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        searchRecords: [
+          {
+            Id: '00QconvertedLead',
+            IsConverted: true,
+            ConvertedContactId: '003convertedContact',
+            IsDeleted: false,
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=new.lead%40initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted',
+      method: 'GET',
+    },
+    httpRes: {
+      status: 200,
+      data: { searchRecords: [] },
+    },
+  },
 ];
 
 const businessMockData = [

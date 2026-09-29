@@ -16,9 +16,45 @@ For the router-transform half of the framework, see `.claude/skills/batching-fra
 Add a `delivery.ts` only when the destination's response handling genuinely differs:
 
 - a **partial-failure body** — some records rejected inside an otherwise-successful response
-- a **2xx that isn't a success** — the failure is in the body, not the status
+- a **2xx that isn't a success** — either the body carries the failure, or the status itself does,
+  where the partner distinguishes accepted from rejected within the success range. The framework
+  treats the whole 2xx class as success, so an unhandled one is silently reported as delivered:
+  read the partner's docs for what each success-range status means rather than assuming 2xx is
+  uniformly good.
 - **identity-keyed failures** — the response names *which* records failed rather than indexing them
 - a **real auth signal** in the body that should drive token refresh
+
+### Override only what differs
+
+A `statusOverrides` entry that reproduces the framework's own classification is dead code — it
+reads as a deliberate decision, and it silently stops tracking the default if that ever changes.
+The framework already throttles 429, retries retryable statuses and aborts the rest, so a
+destination whose only real difference is one status declares exactly that one:
+
+```typescript
+// Good — the framework handles 429/4xx/5xx; only the status this API treats
+// differently is ours
+const statusOverrides: StatusOverrideMap = {
+  207: (ctx) => perItem(verdictPerItem(ctx)),
+};
+
+// Bad — three entries restating the default, hiding the one that matters
+const statusOverrides: StatusOverrideMap = {
+  207: (ctx) => perItem(verdictPerItem(ctx)),
+  429: (ctx) => throttled('rate limited'),
+  '4xx': (ctx) => abort('client error'),
+  '5xx': (ctx) => retry('server error'),
+};
+```
+
+One case is **not** a restatement and is worth keeping: an exact key that exists to *protect* a
+status from a broader class key (`429: (ctx, fallback) => fallback()` beside a `'4xx'` override,
+per the `dontBatch` pattern in `batching-framework`).
+
+An override that only attaches a destination-specific reason isn't one either — but `failureReason`
+does that better, since it applies to every failure without listing statuses, and is worth
+declaring alone with no `statusOverrides` at all whenever the partner's error body says something
+a reader needs.
 
 ## Reference
 

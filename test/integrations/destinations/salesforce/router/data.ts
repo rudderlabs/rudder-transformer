@@ -1,4 +1,116 @@
 import { authHeader1 } from '../maskedSecrets';
+
+// The router path shares processIdentify with the processor, so these cases pin the mapping
+// switch there too: legacy keeps the pre-fix mapping, Salesforce V2 honours the switch.
+const mappingOffDestination = (definitionName: string) => ({
+  Config: {
+    initialAccessToken: 'dummyInitialAccessToken',
+    password: 'dummyPassword1',
+    userName: 'testsalesforce1453@gmail.com',
+    mapProperties: false,
+  },
+  DestinationDefinition: {
+    DisplayName: 'Salesforce',
+    ID: '1T96GHZ0YZ1qQSLULHCoJkow9KC',
+    Name: definitionName,
+  },
+  Enabled: true,
+  ID: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
+  Name: 'tst',
+  Transformations: [],
+});
+const rudderTraits = {
+  email: 'peter.gibbons@initech.com',
+  firstName: 'Peter',
+  lastName: 'Gibbons',
+  company: 'Initech',
+  plan: 'pro',
+};
+const mappedTraits = {
+  Email: 'peter.gibbons@initech.com',
+  FirstName: 'Peter',
+  LastName: 'Gibbons',
+  Company: 'Initech',
+  plan__c: 'pro',
+};
+
+const mappingOffRouterCase = (
+  description: string,
+  definitionName: string,
+  expectedJson: Record<string, unknown>,
+) => {
+  const destination = mappingOffDestination(definitionName);
+  return {
+    name: 'salesforce',
+    description,
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
+                traits: rudderTraits,
+                context: { externalId: [{ type: 'Salesforce-Lead', id: 'sf-lead-id' }] },
+              },
+              metadata: { jobId: 1, userId: 'u1' },
+              destination,
+            },
+          ],
+          destType: 'salesforce',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/sf-lead-id?_HttpMethod=PATCH',
+                  headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
+                  params: {},
+                  body: { JSON: expectedJson, XML: {}, JSON_ARRAY: {}, FORM: {} },
+                  files: {},
+                },
+              ],
+              metadata: [
+                { destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' }, jobId: 1, userId: 'u1' },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  };
+};
+
+const mappingOffRouterCases = [
+  mappingOffRouterCase(
+    'legacy Salesforce: mapProperties false keeps the mapping on the router path',
+    'SALESFORCE',
+    mappedTraits,
+  ),
+  mappingOffRouterCase(
+    'Salesforce V2: mapProperties false sends traits verbatim on the router path',
+    'SALESFORCE_OAUTH',
+    rudderTraits,
+  ),
+];
 export const data = [
   {
     name: 'salesforce',
@@ -1064,4 +1176,5 @@ export const data = [
       DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS: 'ws-soql-skip',
     },
   },
+  ...mappingOffRouterCases,
 ];

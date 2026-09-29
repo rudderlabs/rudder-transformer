@@ -71,12 +71,11 @@ export const deleteDataBatch = [
                 version: '1',
                 type: 'REST',
                 method: 'DELETE',
-                endpoint:
-                  'https://www.zohoapis.in/crm/v6/Contacts?ids=<RECORD_ID_2>&wf_trigger=false',
+                endpoint: 'https://www.zohoapis.in/crm/v6/Contacts',
                 headers: {
                   Authorization: 'Zoho-oauthtoken correct-access-token',
                 },
-                params: {},
+                params: { ids: '<RECORD_ID_2>', wf_trigger: false },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {},
@@ -179,12 +178,11 @@ export const deleteDataBatch = [
                 version: '1',
                 type: 'REST',
                 method: 'DELETE',
-                endpoint:
-                  'https://www.zohoapis.in/crm/v6/Leads?ids=<RECORD_ID_1>,<RECORD_ID_2>&wf_trigger=false',
+                endpoint: 'https://www.zohoapis.in/crm/v6/Leads',
                 headers: {
                   Authorization: 'Zoho-oauthtoken correct-access-token',
                 },
-                params: {},
+                params: { ids: '<RECORD_ID_1>,<RECORD_ID_2>', wf_trigger: false },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {},
@@ -295,11 +293,11 @@ export const deleteDataBatch = [
                 version: '1',
                 type: 'REST',
                 method: 'DELETE',
-                endpoint: 'https://www.zohoapis.in/crm/v6/Leads?ids=<RECORD_ID_1>&wf_trigger=false',
+                endpoint: 'https://www.zohoapis.in/crm/v6/Leads',
                 headers: {
                   Authorization: 'Zoho-oauthtoken correct-access-token',
                 },
-                params: {},
+                params: { ids: '<RECORD_ID_1>', wf_trigger: false },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {},
@@ -828,12 +826,11 @@ export const deleteDataBatch = [
                 version: '1',
                 type: 'REST',
                 method: 'DELETE',
-                endpoint:
-                  'https://www.zohoapis.in/crm/v6/Leads?ids=<RECORD_ID_1>,<RECORD_ID_2>,<RECORD_ID_4>&wf_trigger=false',
+                endpoint: 'https://www.zohoapis.in/crm/v6/Leads',
                 headers: {
                   Authorization: 'Zoho-oauthtoken correct-access-token-partial',
                 },
-                params: {},
+                params: { ids: '<RECORD_ID_1>,<RECORD_ID_2>,<RECORD_ID_4>', wf_trigger: false },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {},
@@ -877,11 +874,11 @@ export const deleteDataBatch = [
                 version: '1',
                 type: 'REST',
                 method: 'DELETE',
-                endpoint: 'https://www.zohoapis.in/crm/v6/Leads?ids=<RECORD_ID_5>&wf_trigger=false',
+                endpoint: 'https://www.zohoapis.in/crm/v6/Leads',
                 headers: {
                   Authorization: 'Zoho-oauthtoken correct-access-token-partial',
                 },
-                params: {},
+                params: { ids: '<RECORD_ID_5>', wf_trigger: false },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {},

@@ -92,6 +92,7 @@ export interface SrcTestCaseData {
 }
 
 export type MockHttpCallsData = {
+  matchRequestParams?: boolean;
   httpReq: Record<string, any>;
   httpRes: Partial<AxiosResponse>;
 };

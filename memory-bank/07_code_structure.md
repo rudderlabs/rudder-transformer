@@ -18,8 +18,7 @@ rudder-transformer/
 │   ├── types/              # Global type definitions
 │   ├── util/               # Utility functions and helpers
 │   ├── v0/                 # Legacy version of transformations
-│   ├── v1/                 # Current version of transformations
-│   └── warehouse/          # Warehouse-specific transformations
+│   └── v1/                 # Current version of transformations
 ├── test/                   # Test files and utilities
 ├── swagger/                # API documentation
 └── scripts/                # Utility scripts for development and deployment
@@ -54,10 +53,6 @@ Implementations for source integrations that import data from external systems.
 #### `src/v0/` and `src/v1/`
 
 Different versions of the transformation logic, with v1 being the current version.
-
-#### `src/warehouse/`
-
-Specialized transformations for data warehouse destinations.
 
 ## Naming Conventions
 
@@ -96,7 +91,6 @@ The codebase is organized into modules based on functionality:
 
 - **Sources**: Implement source integrations
 - **Destinations**: Implement destination integrations
-- **Warehouse**: Implement warehouse integrations
 
 ### Utility Modules
 

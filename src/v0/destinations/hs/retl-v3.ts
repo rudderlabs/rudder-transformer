@@ -32,6 +32,7 @@ import {
   populateTraits,
   addExternalIdToHSTraits,
   removeHubSpotSystemField,
+  pushOrCombineUpdateInput,
   getHsSearchId,
   addHsAuthorisationHeader,
   recordTransformFlow,
@@ -234,9 +235,11 @@ const batchIdentifyRetl = (
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
-        identifyResponseList.push({
-          ...ev.message.body.JSON,
-          id: updateEndpoint.split('/').pop(),
+        const id = updateEndpoint.split('/').pop();
+        pushOrCombineUpdateInput(identifyResponseList, {
+          id,
+          json: ev.message.body.JSON,
+          traceId: String(ev.metadata.jobId),
         });
 
         metadata.push(ev.metadata);

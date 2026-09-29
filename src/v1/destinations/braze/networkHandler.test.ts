@@ -87,11 +87,17 @@ describe('Braze v1 networkHandler responseHandler', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('happy path — 2xx, message=success, no errors', () => {
-    it('returns per-job entries with the HTTP status code and full response body as error field', () => {
+    it('serializes the response once and reuses it for every job', () => {
       const response = { message: 'success', events_processed: 2, purchases_processed: 1 };
       const destinationResponse = { response, status: 200 };
       const rudderJobMetadata = [createMetadata(10), createMetadata(20), createMetadata(30)];
+      const expectedResponseBody = JSON.stringify(response);
+      const stringifySpy = jest.spyOn(JSON, 'stringify');
 
       const result = responseHandler({ destinationResponse, rudderJobMetadata });
 
@@ -99,11 +105,15 @@ describe('Braze v1 networkHandler responseHandler', () => {
         status: 200,
         message: 'Request for braze Processed Successfully',
         response: [
-          { statusCode: 200, metadata: createMetadata(10), error: JSON.stringify(response) },
-          { statusCode: 200, metadata: createMetadata(20), error: JSON.stringify(response) },
-          { statusCode: 200, metadata: createMetadata(30), error: JSON.stringify(response) },
+          { statusCode: 200, metadata: createMetadata(10), error: expectedResponseBody },
+          { statusCode: 200, metadata: createMetadata(20), error: expectedResponseBody },
+          { statusCode: 200, metadata: createMetadata(30), error: expectedResponseBody },
         ],
       });
+      expect(result.response[1].error).toBe(result.response[0].error);
+      expect(result.response[2].error).toBe(result.response[0].error);
+      expect(stringifySpy).toHaveBeenCalledTimes(1);
+      stringifySpy.mockRestore();
       expect(mockStats.increment).not.toHaveBeenCalled();
     });
 
@@ -670,7 +680,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       );
     });
 
-    it('throws TransformerProxyError with per-job entries at the 2xx HTTP status', () => {
+    it('throws TransformerProxyError without eagerly building per-job entries at the 2xx HTTP status', () => {
       const response = {
         message: "Valid data must be provided in the 'attributes' field.",
         errors: [{ type: NON_SCHEMA_ERROR, input_array: 'events', index: 0 }],
@@ -689,16 +699,14 @@ describe('Braze v1 networkHandler responseHandler', () => {
         if (thrown instanceof TransformerProxyError) {
           expect(thrown.message).toContain('Request failed for braze with status: 200');
           expect(thrown.status).toBe(200);
-          expect(thrown.response).toEqual([
-            { statusCode: 200, metadata: createMetadata(10), error: JSON.stringify(response) },
-          ]);
+          expect(thrown.response).toBeUndefined();
         }
       }
     });
   });
 
   describe('upstream 4xx — aborted error type', () => {
-    it('throws TransformerProxyError with per-job entries and aborted statTag for 401', () => {
+    it('throws TransformerProxyError without eagerly building per-job entries and keeps aborted statTag for 401', () => {
       const response = { message: 'Invalid API Key' };
       const destinationResponse = { response, status: 401 };
       const rudderJobMetadata = [createMetadata(10), createMetadata(20)];
@@ -715,17 +723,33 @@ describe('Braze v1 networkHandler responseHandler', () => {
           expect(thrown.message).toContain('Request failed for braze with status: 401');
           expect(thrown.status).toBe(401);
           expect(thrown.statTags).toMatchObject({ errorType: 'aborted' });
-          expect(thrown.response).toEqual([
-            { statusCode: 401, metadata: createMetadata(10), error: JSON.stringify(response) },
-            { statusCode: 401, metadata: createMetadata(20), error: JSON.stringify(response) },
-          ]);
+          expect(thrown.response).toBeUndefined();
         }
       }
     });
   });
 
   describe('upstream 5xx — retryable error type', () => {
-    it('throws TransformerProxyError with per-job entries and retryable statTag for 500', () => {
+    it('does not serialize an undefined response or eagerly build per-job entries', () => {
+      const destinationResponse = { response: undefined, status: 500 };
+      const rudderJobMetadata = [createMetadata(10), createMetadata(20)];
+      const stringifySpy = jest.spyOn(JSON, 'stringify');
+
+      let thrown: unknown;
+      try {
+        responseHandler({ destinationResponse, rudderJobMetadata });
+      } catch (error: unknown) {
+        thrown = error;
+      }
+
+      expect(thrown).toBeInstanceOf(TransformerProxyError);
+      if (thrown instanceof TransformerProxyError) {
+        expect(thrown.response).toBeUndefined();
+      }
+      expect(stringifySpy).not.toHaveBeenCalled();
+    });
+
+    it('throws TransformerProxyError without eagerly building per-job entries and keeps retryable statTag for 500', () => {
       const response = { message: 'Internal Server Error' };
       const destinationResponse = { response, status: 500 };
       const rudderJobMetadata = [createMetadata(10)];
@@ -742,9 +766,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
           expect(thrown.message).toContain('Request failed for braze with status: 500');
           expect(thrown.status).toBe(500);
           expect(thrown.statTags).toMatchObject({ errorType: 'retryable' });
-          expect(thrown.response).toEqual([
-            { statusCode: 500, metadata: createMetadata(10), error: JSON.stringify(response) },
-          ]);
+          expect(thrown.response).toBeUndefined();
         }
       }
     });

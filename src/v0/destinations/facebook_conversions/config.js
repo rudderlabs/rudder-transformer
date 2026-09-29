@@ -5,8 +5,9 @@ const VERSION = 'v25.0';
 const ENDPOINT_PATH = 'events';
 
 const getEndpointDetails = (pixelId, accessToken) => ({
-  endpoint: `https://graph.facebook.com/${VERSION}/${pixelId}/${ENDPOINT_PATH}?access_token=${accessToken}`,
+  endpoint: `https://graph.facebook.com/${VERSION}/${pixelId}/${ENDPOINT_PATH}`,
   path: ENDPOINT_PATH,
+  params: { access_token: accessToken },
 });
 
 const CONFIG_CATEGORIES = {

@@ -1,11 +1,12 @@
-import type { LiveSpec } from '../../../live/types';
+import type { LiveSpec, RunContext } from '../../../live/types';
 import {
   ASSOC_FROM_TYPE,
   ASSOC_TO_TYPE,
-  deleteAssociationObjects,
   deleteContactByEmail,
+  deleteRegisteredObjects,
   deleteUpsertAdditionalEmailContacts,
   registeredId,
+  registeredIds,
 } from './api';
 import {
   baseTimestamps,
@@ -25,6 +26,12 @@ import {
   retlContactCreateV1Traits,
   retlContactUpdateTraits,
   retlContactUpdateV1Traits,
+  retlRecordIdContext,
+  retlRecordIdDupCombinedTraits,
+  retlRecordIdDupFirstTraits,
+  retlRecordIdDupSecondTraits,
+  retlRecordIdOtherContactTraits,
+  retlRecordIdUpdateTraits,
   retlUpsertCombinedTraits,
   retlUpsertPrimaryTraits,
   retlUpsertSecondaryTraits,
@@ -35,10 +42,15 @@ import {
   createContactAndWaitSearchable,
   createContactSearchableByFirstname,
   createContactWithAdditionalEmail,
+  createTwoContactsAndDeleteFirst,
+  createThreeContactsAndMergeSecond,
+  createTwoContactsAndRegisterIds,
 } from './setup';
 import {
   verifyAssociationExists,
   verifyContactProperties,
+  verifyRecordIdBatch,
+  verifyRegisteredObjectProperties,
   verifyUpsertResolvesToSameContact,
 } from './verify';
 
@@ -52,6 +64,32 @@ const withoutAuthorizationType = (base: Record<string, unknown>): Record<string,
 const CONTACT_READBACK = {
   attempts: 6,
   delayMs: (attempt: number) => Math.min(1000 * 2 ** attempt, 8000),
+};
+
+// One rETL identify keyed by HubSpot's record id; `suffix` keeps messageIds unique per event.
+const recordIdEvent = (
+  ctx: RunContext,
+  suffix: string,
+  recordId: string,
+  traits: Record<string, string>,
+) => ({
+  ...baseTimestamps(ctx, suffix),
+  type: 'identify',
+  recordId: ctx.runId,
+  context: retlRecordIdContext(recordId),
+  traits,
+});
+
+// Record-id batch shared by the v3 and legacy (v1) scenarios: two events for the first contact
+// (disjoint traits, merged into one input since HubSpot rejects a repeated id in a batch/update)
+// and one for the second.
+const recordIdBatchSeed = (suffix: string) => (ctx: RunContext) => {
+  const [firstId, secondId] = registeredIds(ctx, 'contacts');
+  return [
+    recordIdEvent(ctx, `${suffix}-dup-1`, firstId, retlRecordIdDupFirstTraits(ctx)),
+    recordIdEvent(ctx, `${suffix}-dup-2`, firstId, retlRecordIdDupSecondTraits(ctx)),
+    recordIdEvent(ctx, `${suffix}-other`, secondId, retlRecordIdOtherContactTraits(ctx)),
+  ];
 };
 
 export const live = {
@@ -454,7 +492,7 @@ export const live = {
     {
       id: 'hs-retl-associations-v3',
       description: 'RETL association between two objects (crm/v3/associations)',
-      cleanup: deleteAssociationObjects,
+      cleanup: deleteRegisteredObjects,
       steps: [
         { stepType: 'action', name: 'setup', run: createAssociationObjects },
         {
@@ -485,6 +523,111 @@ export const live = {
         },
       ],
       verify: { check: verifyAssociationExists },
+    },
+    {
+      // HubSpot rejects a batch/update carrying the same id twice, so the two events for the first
+      // contact must be merged into one input for this single request to land.
+      id: 'hs-retl-contacts-update-by-record-id-batch-v3',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL record id batch with a duplicate id is merged and delivered as one crm/v3 batch/update',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createTwoContactsAndRegisterIds },
+        {
+          name: 'retl update two contacts by record id in one batch',
+          stepType: 'pipeline',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: recordIdBatchSeed('retl-record-id'),
+        },
+      ],
+      verify: {
+        check: verifyRecordIdBatch(retlRecordIdDupCombinedTraits, retlRecordIdOtherContactTraits),
+        ...CONTACT_READBACK,
+      },
+    },
+    {
+      // Exercises the v1 update batching's duplicate-id merge against HubSpot.
+      id: 'hs-retl-contacts-update-by-record-id-batch-v1',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL record id batch with a duplicate id is merged and delivered as one batch/update via the v1 transform',
+      configOverride: (base) => ({ ...base, apiVersion: 'legacyApi' }),
+      steps: [
+        { stepType: 'action', name: 'setup', run: createTwoContactsAndRegisterIds },
+        {
+          name: 'retl update two contacts by record id in one batch (v1 transform)',
+          stepType: 'pipeline',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: recordIdBatchSeed('retl-record-id-v1'),
+        },
+      ],
+      verify: {
+        check: verifyRecordIdBatch(retlRecordIdDupCombinedTraits, retlRecordIdOtherContactTraits),
+        ...CONTACT_READBACK,
+      },
+    },
+    {
+      // A record id that no longer exists in HubSpot must fail delivery — never create a record —
+      // without failing the rest of the batch. The deleted id gets two events, merged into one input
+      // whose trace id lists both jobs, so HubSpot's 207 must fail exactly those two jobs while the
+      // live contact's job is delivered.
+      id: 'hs-retl-contacts-update-by-stale-record-id-v3',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL batch with a deleted hs_object_id fails only the jobs merged into that id, the rest land',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createTwoContactsAndDeleteFirst },
+        {
+          name: 'retl update a deleted and a live contact by record id in one batch',
+          stepType: 'pipeline',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          expectedFailure: { items: [0, 1] },
+          seed: recordIdBatchSeed('retl-record-id-stale'),
+        },
+      ],
+      verify: {
+        check: verifyRegisteredObjectProperties('contacts', retlRecordIdOtherContactTraits, 1),
+        ...CONTACT_READBACK,
+      },
+    },
+    {
+      // A contact merged into another keeps its old id in the warehouse. HubSpot's batch/update
+      // neither updates the surviving contact nor reports an error for a merged-away id: it just
+      // leaves it out of `results`. Its job must still fail, while an unrelated live contact in the
+      // same batch lands.
+      id: 'hs-retl-contacts-update-by-merged-record-id-v3',
+      cleanup: deleteRegisteredObjects,
+      description:
+        'RETL batch with a merged-away hs_object_id fails that job, the live contact still lands',
+      steps: [
+        { stepType: 'action', name: 'setup', run: createThreeContactsAndMergeSecond },
+        {
+          name: 'retl update a merged-away and a live contact by record id in one batch',
+          stepType: 'pipeline',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          expectedFailure: { items: [0] },
+          seed: (ctx) => {
+            const [, mergedId, otherId] = registeredIds(ctx, 'contacts');
+            return [
+              recordIdEvent(ctx, 'retl-record-id-merged', mergedId, retlRecordIdUpdateTraits(ctx)),
+              recordIdEvent(
+                ctx,
+                'retl-record-id-merged-other',
+                otherId,
+                retlRecordIdOtherContactTraits(ctx),
+              ),
+            ];
+          },
+        },
+      ],
+      verify: {
+        check: verifyRegisteredObjectProperties('contacts', retlRecordIdOtherContactTraits, 2),
+        ...CONTACT_READBACK,
+      },
     },
   ],
 } satisfies LiveSpec;

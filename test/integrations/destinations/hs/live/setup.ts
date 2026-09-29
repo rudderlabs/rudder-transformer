@@ -2,11 +2,13 @@ import type { RunContext } from '../../../live/types';
 import { pollUntil } from '../../../live/poll';
 import { lookupFirstname } from './profiles';
 import {
-  ASSOC_FROM_TYPE,
-  ASSOC_TO_TYPE,
   createCrmObject,
+  deleteContactById,
   findContactIdByEmail,
   findContactIdByProperty,
+  mergeContacts,
+  registeredId,
+  registeredIds,
 } from './api';
 
 // The CRM Search index is eventually consistent — a fresh contact can drop out of the next
@@ -58,30 +60,54 @@ export const createContactSearchableByFirstname = async (ctx: RunContext): Promi
   );
 };
 
-export const createContactAndRegisterId = async (ctx: RunContext): Promise<void> => {
+// `label` gives each contact of a multi-contact scenario its own email.
+export const createContactAndRegisterId = async (
+  ctx: RunContext,
+  label?: string,
+): Promise<void> => {
   const id = await createCrmObject(ctx, 'contacts', {
-    email: ctx.email(),
-    firstname: 'CI-HSID',
+    email: ctx.email(label),
+    firstname: label ? `CI-HSID-${label}` : 'CI-HSID',
     lastname: ctx.runId,
   });
   ctx.register({ type: 'contacts', id });
 };
 
-// An association links two existing objects, so its scenario can't mint ids on the fly — setup
-// creates both and registers their real ids for the pipeline step to reference.
-export const createAssociationObjects = async (ctx: RunContext): Promise<void> => {
-  const fromId = await createCrmObject(ctx, ASSOC_FROM_TYPE, {
+export const createCompanyAndRegisterId = async (ctx: RunContext): Promise<void> => {
+  const id = await createCrmObject(ctx, 'companies', {
     name: `RudderStack CI ${ctx.runId}`,
     domain: `ci-${ctx.runId}.example.com`,
   });
-  ctx.register({ type: ASSOC_FROM_TYPE, id: fromId });
+  ctx.register({ type: 'companies', id });
+};
 
-  const toId = await createCrmObject(ctx, ASSOC_TO_TYPE, {
-    email: ctx.email(),
-    firstname: 'CI-ASSOC',
-    lastname: ctx.runId,
-  });
-  ctx.register({ type: ASSOC_TO_TYPE, id: toId });
+// Record-id batch scenario: two contacts, registered in order, so one batch can address each by id.
+export const createTwoContactsAndRegisterIds = async (ctx: RunContext): Promise<void> => {
+  await createContactAndRegisterId(ctx, 'first');
+  await createContactAndRegisterId(ctx, 'second');
+};
+
+// Stale record id: two contacts, the first deleted but kept registered, so one batch can address a
+// record id that no longer exists next to one that does (deleted contacts are archived, not reusable).
+export const createTwoContactsAndDeleteFirst = async (ctx: RunContext): Promise<void> => {
+  await createTwoContactsAndRegisterIds(ctx);
+  await deleteContactById(ctx, registeredId(ctx, 'contacts'));
+};
+
+// Merged record id: three contacts, the second merged into the first, all ids kept registered so one
+// batch can address the merged-away id next to an unrelated live contact (the third).
+export const createThreeContactsAndMergeSecond = async (ctx: RunContext): Promise<void> => {
+  await createTwoContactsAndRegisterIds(ctx);
+  await createContactAndRegisterId(ctx, 'third');
+  const [primaryId, mergedId] = registeredIds(ctx, 'contacts');
+  await mergeContacts(ctx, primaryId, mergedId);
+};
+
+// An association links two existing objects (a company and a contact), so its scenario can't mint
+// ids on the fly — setup creates both and registers their real ids for the pipeline step.
+export const createAssociationObjects = async (ctx: RunContext): Promise<void> => {
+  await createCompanyAndRegisterId(ctx);
+  await createContactAndRegisterId(ctx);
 };
 
 // Additional-email upsert scenario: create a contact whose primary email is the run email and whose

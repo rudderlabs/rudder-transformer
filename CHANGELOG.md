@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.155.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.154.0...v1.155.0) (2026-09-29)
+
+
+### Features
+
+* **everflow:** add everflow destination ([#5596](https://github.com/rudderlabs/rudder-transformer/issues/5596)) ([dfdd95f](https://github.com/rudderlabs/rudder-transformer/commit/dfdd95faeaef3ff71f632062fbc8ef511223e374))
+* **hs:** update rETL records directly when identifier is hs_object_id ([#5608](https://github.com/rudderlabs/rudder-transformer/issues/5608)) ([df245a1](https://github.com/rudderlabs/rudder-transformer/commit/df245a10b60c36c3a8a8f36274d72c410c9e0a51)), closes [rudderlabs/rudder-integrations-info#765](https://github.com/rudderlabs/rudder-integrations-info/issues/765) [#765](https://github.com/rudderlabs/rudder-transformer/issues/765)
+* **topsort:** move to batching framework ([#5621](https://github.com/rudderlabs/rudder-transformer/issues/5621)) ([c3f6214](https://github.com/rudderlabs/rudder-transformer/commit/c3f6214f06f4cbb8d8074a796b9050106ff742b8)), closes [#5606](https://github.com/rudderlabs/rudder-transformer/issues/5606) [#5618](https://github.com/rudderlabs/rudder-transformer/issues/5618) [#2763](https://github.com/rudderlabs/rudder-transformer/issues/2763)
+
+
+### Bug Fixes
+
+* **fullstory:** convert session IDs to strings ([#5619](https://github.com/rudderlabs/rudder-transformer/issues/5619)) ([9a8904e](https://github.com/rudderlabs/rudder-transformer/commit/9a8904e9b528c96227f0107c795d1f616dd35100))
+* **google_adwords_offline_conversions:** normalize missing properties ([9ca2360](https://github.com/rudderlabs/rudder-transformer/commit/9ca23600cb698c1ef00d87db5de204ea81f24126))
+* **google_adwords_offline_conversions:** normalize missing properties ([#5616](https://github.com/rudderlabs/rudder-transformer/issues/5616)) ([1b40f50](https://github.com/rudderlabs/rudder-transformer/commit/1b40f50967e768f855ec4426872380194f816701))
+* **proxy:** serialize shared responses once per batch ([#5607](https://github.com/rudderlabs/rudder-transformer/issues/5607)) ([7412026](https://github.com/rudderlabs/rudder-transformer/commit/7412026aecfcd2acd167a84634e012bf8abd1175))
+* **salesforce:** escape the email in the Lead SOQL lookup ([#5604](https://github.com/rudderlabs/rudder-transformer/issues/5604)) ([9a78786](https://github.com/rudderlabs/rudder-transformer/commit/9a787865d8e69a0d0a294873d4318ef5ea4d7776))
+* **salesforce:** keep the pre-fix mapProperty read on legacy Salesforce ([#5613](https://github.com/rudderlabs/rudder-transformer/issues/5613)) ([135db76](https://github.com/rudderlabs/rudder-transformer/commit/135db76eb4b896e3de357745e4a35966cd504133))
+* **salesforce:** read the mapProperties key the dashboard saves ([#5603](https://github.com/rudderlabs/rudder-transformer/issues/5603)) ([75260c6](https://github.com/rudderlabs/rudder-transformer/commit/75260c63dec3e753fcf3aa6cbd4824e9dfc24f60)), closes [rudderlabs/rudder-integrations-config#1248](https://github.com/rudderlabs/rudder-integrations-config/issues/1248)
+
 ## [1.154.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.153.0...v1.154.0) (2026-09-22)
 
 

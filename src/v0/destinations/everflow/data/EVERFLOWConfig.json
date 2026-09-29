@@ -1,0 +1,83 @@
+{
+  "standardMappings": [
+    {
+      "sourceKeys": ["properties.transactionId", "properties.transaction_id", "properties.tid"],
+      "destKey": "transaction_id",
+      "required": true
+    },
+    {
+      "sourceKeys": ["properties.coupon", "properties.couponCode", "properties.coupon_code"],
+      "destKey": "coupon_code"
+    },
+    {
+      "sourceKeys": ["properties.eventId", "properties.event_id"],
+      "destKey": "event_id"
+    },
+    {
+      "sourceKeys": ["properties.advEventId", "properties.adv_event_id"],
+      "destKey": "adv_event_id"
+    },
+    { "sourceKeys": "event", "destKey": "event_name" },
+    {
+      "sourceKeys": ["properties.orderId", "properties.order_id"],
+      "destKey": "order_id"
+    },
+    {
+      "sourceKeys": "emailOnly",
+      "destKey": "email",
+      "sourceFromGenericMap": true
+    },
+    { "sourceKeys": "userId", "destKey": "user_id" },
+    {
+      "sourceKeys": ["context.ip", "context.request_ip"],
+      "destKey": "user_ip"
+    },
+    { "sourceKeys": "context.userAgent", "destKey": "user_agent" },
+    {
+      "sourceKeys": ["properties.idfa_md5", "properties.idfaMd5"],
+      "destKey": "idfa_md5"
+    },
+    {
+      "sourceKeys": ["properties.idfa_sha1", "properties.idfaSha1"],
+      "destKey": "idfa_sha1"
+    },
+    {
+      "sourceKeys": ["properties.google_aid_md5", "properties.googleAidMd5"],
+      "destKey": "google_aid_md5"
+    },
+    {
+      "sourceKeys": ["properties.google_aid_sha1", "properties.googleAidSha1"],
+      "destKey": "google_aid_sha1"
+    },
+    {
+      "sourceKeys": ["properties.android_id", "properties.androidId"],
+      "destKey": "android_id"
+    },
+    { "sourceKeys": "context.app.namespace", "destKey": "app_id" },
+    {
+      "sourceKeys": ["properties.oid", "properties.offerId", "properties.offer_id"],
+      "destKey": "oid"
+    },
+    {
+      "sourceKeys": ["properties.affid", "properties.affiliateId", "properties.affiliate_id"],
+      "destKey": "affid"
+    },
+    { "sourceKeys": "properties.adv1", "destKey": "adv1", "metadata": { "type": "toString" } },
+    { "sourceKeys": "properties.adv2", "destKey": "adv2", "metadata": { "type": "toString" } },
+    { "sourceKeys": "properties.adv3", "destKey": "adv3", "metadata": { "type": "toString" } },
+    { "sourceKeys": "properties.adv4", "destKey": "adv4", "metadata": { "type": "toString" } },
+    { "sourceKeys": "properties.adv5", "destKey": "adv5", "metadata": { "type": "toString" } },
+    { "sourceKeys": "properties.adv6", "destKey": "adv6", "metadata": { "type": "toString" } },
+    { "sourceKeys": "properties.adv7", "destKey": "adv7", "metadata": { "type": "toString" } },
+    { "sourceKeys": "properties.adv8", "destKey": "adv8", "metadata": { "type": "toString" } },
+    { "sourceKeys": "properties.adv9", "destKey": "adv9", "metadata": { "type": "toString" } },
+    {
+      "sourceKeys": "properties.adv10",
+      "destKey": "adv10",
+      "metadata": { "type": "toString" }
+    }
+  ],
+  "amountPaths": ["properties.revenue", "properties.total", "properties.value", "properties.price"],
+  "currencyPath": "properties.currency",
+  "timestampPaths": ["timestamp", "originalTimestamp"]
+}

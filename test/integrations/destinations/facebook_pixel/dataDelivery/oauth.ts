@@ -16,7 +16,11 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234571/events?access_token=valid_access_token`,
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234571/events`,
+          params: {
+            access_token: 'valid_access_token',
+            destination: 'facebook_pixel',
+          },
           FORM: testFormData,
         }),
         method: 'POST',

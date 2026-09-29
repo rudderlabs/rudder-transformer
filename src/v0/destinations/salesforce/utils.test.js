@@ -608,6 +608,18 @@ describe('Salesforce Utils', () => {
       ).rejects.toThrow(InstrumentationError);
     });
 
+    it('should throw InstrumentationError for invalid objectType', async () => {
+      await expect(
+        getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          "lead WHERE Name = 'x' OR Id",
+          'Email',
+          'value',
+        ),
+      ).rejects.toThrow(InstrumentationError);
+      expect(mockSalesforceSdk.query).not.toHaveBeenCalled();
+    });
+
     it('should not remove quote from numeric identifierValue', async () => {
       mockSalesforceSdk.query.mockResolvedValueOnce({
         totalSize: 1,
@@ -793,6 +805,28 @@ describe('Salesforce Utils', () => {
       expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
         "SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = 'test@example.com'",
       );
+    });
+
+    it.each([
+      [
+        "a' OR Email != '@x.com",
+        String.raw`SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = 'a\' OR Email != \'@x.com'`,
+      ],
+      [
+        String.raw`a\' OR Name = 'x`,
+        String.raw`SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = 'a\\\' OR Name = \'x'`,
+      ],
+      [
+        "o'brien@example.com",
+        String.raw`SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = 'o\'brien@example.com'`,
+      ],
+      [42, "SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = '42'"],
+    ])('should escape the email %p in the SOQL query', async (email, expectedQuery) => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({ totalSize: 0, records: [] });
+
+      await getSalesforceIdForLeadUsingSdk(mockSalesforceSdk, email, mockDestination);
+
+      expect(mockSalesforceSdk.query).toHaveBeenCalledWith(expectedQuery);
     });
 
     it('should return Contact ID when lead is converted and useContactId is true', async () => {

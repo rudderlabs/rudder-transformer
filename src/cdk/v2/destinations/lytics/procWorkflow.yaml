@@ -21,7 +21,7 @@ steps:
   - name: prepareContext
     template: |
       $.context.messageType = .message.type.toLowerCase();
-      $.context.endpoint = "https://api.lytics.io/collect/json/"+.destination.Config.stream +"?access_token="+.destination.Config.apiKey;
+      $.context.endpoint = "https://api.lytics.io/collect/json/" + .destination.Config.stream;
       $.context.payload = {};
   - name: identifyPayload
     condition: $.context.messageType === {{$.EventType.IDENTIFY}}
@@ -64,6 +64,7 @@ steps:
         const response = $.defaultRequestConfig();
         response.body.JSON = $.context.payload;
         response.endpoint = $.context.endpoint;
+        response.params = { access_token: .destination.Config.apiKey };
         response.headers = {
           "Content-Type": "application/json"
         };

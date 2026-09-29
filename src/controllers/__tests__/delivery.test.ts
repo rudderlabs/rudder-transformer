@@ -312,7 +312,12 @@ describe('Delivery controller tests', () => {
       // its own return. An integration's `failureReason` can be the whole destination body -
       // `braze_audience` falls through to `JSON.stringify(response)`.
       frameworkDeliveryEnabled = true;
-      jest.spyOn(FetchHandler, 'getDestinationIntegrationHandler').mockReturnValue({} as never);
+      class StubDestinationIntegration {
+        static readonly delivery = {};
+      }
+      jest
+        .spyOn(FetchHandler, 'getDestinationIntegrationHandler')
+        .mockReturnValue(StubDestinationIntegration as never);
       handleDeliveryResponseMock.mockReturnValue({
         kind: 'perItem',
         verdicts: Array.from({ length: JOBS }, () => ({

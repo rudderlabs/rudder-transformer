@@ -1,12 +1,7 @@
 import { Connection, Destination, RouterTransformationRequest } from '../../../../../src/types';
 import { VDM_V2_SCHEMA_VERSION } from '../../../../../src/v0/util/constant';
-import { generateMetadata as generateCommonMetadata } from '../../../testUtils';
+import { generateMetadata } from '../../../testUtils';
 import { secret1, secret2 } from '../maskedSecrets';
-
-const generateMetadata = (jobId: number) => ({
-  ...generateCommonMetadata(jobId),
-  secret: { accessToken: secret1 },
-});
 
 const destinationV2: Destination = {
   Config: {

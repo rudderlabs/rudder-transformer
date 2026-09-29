@@ -1,11 +1,6 @@
 import { Destination, RouterTransformationRequest } from '../../../../../src/types';
-import { generateMetadata as generateCommonMetadata } from '../../../testUtils';
+import { generateMetadata } from '../../../testUtils';
 import { secret1 } from '../maskedSecrets';
-
-const generateMetadata = (jobId: number) => ({
-  ...generateCommonMetadata(jobId),
-  secret: { accessToken: secret1 },
-});
 
 export const esDestinationAudience: Destination = {
   Config: {

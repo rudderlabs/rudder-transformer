@@ -245,6 +245,14 @@ export type DeliverySpec = {
   failureReason?: (ctx: DeliveryContext) => string;
 
   /**
+   * Where a failed destination response may be exposed. The default preserves the legacy throw
+   * path, which lets postTransformation use the response as the per-job error and error-reporting
+   * context. `controlled` keeps the raw body only in `destinationResponse` for the dashboard's
+   * saved-response surface; job errors and routine error reporting use the verdict reason instead.
+   */
+  failureResponseExposure?: 'legacy' | 'controlled';
+
+  /**
    * Last chance to modify the outgoing request before it is sent. Whatever this adds is used for
    * the call and never persisted on the job — the place for secrets the destination needs but
    * that must not appear in live events.
@@ -259,7 +267,7 @@ export type DeliverySpec = {
 
 /** A spec with response members filled in — what the framework actually runs against. */
 export type ResolvedDeliverySpec = Required<
-  Pick<DeliverySpec, 'statusOverrides' | 'failureReason'>
+  Pick<DeliverySpec, 'statusOverrides' | 'failureReason' | 'failureResponseExposure'>
 > &
   Pick<DeliverySpec, 'prepareRequest'>;
 
@@ -315,6 +323,8 @@ export function resolveDeliverySpec(klass: unknown): ResolvedDeliverySpec {
     ) as StatusOverrideMap,
     failureReason:
       chain.find((spec) => spec.failureReason)?.failureReason ?? statusOnlyFailureReason,
+    failureResponseExposure:
+      chain.find((spec) => spec.failureResponseExposure)?.failureResponseExposure ?? 'legacy',
     prepareRequest: chain.find((spec) => spec.prepareRequest)?.prepareRequest,
   };
 }
@@ -364,6 +374,7 @@ export function toDeliveryV1Response(
   result: HandleResponseResult,
   ctx: DeliveryContext,
   destType: string,
+  failureResponseExposure: NonNullable<DeliverySpec['failureResponseExposure']> = 'legacy',
 ): DeliveryV1Response {
   // `perItemPreserved` tracks whether we actually ended up with per-item detail: false for a
   // whole-batch verdict, and false when a per-item list had to be discarded.
@@ -468,7 +479,8 @@ export function toDeliveryV1Response(
     !perItemPreserved &&
     !dontBatchRequested &&
     verdictsAttributable &&
-    !isHttpStatusSuccess(ctx.status)
+    !isHttpStatusSuccess(ctx.status) &&
+    failureResponseExposure === 'legacy'
   ) {
     let authErrorCategory = '';
     if (first.kind === 'retry') {
@@ -538,6 +550,12 @@ export function toDeliveryV1Response(
       : undefined;
 
   return {
+    // Raw bodies in controlled mode are exposed only through the dashboard-backed destination
+    // response field. They never become per-job errors or error-reporting metadata because this
+    // mode returns rather than entering postTransformation's legacy throw path.
+    ...(failureResponseExposure === 'controlled' && !allSucceeded
+      ? { destinationResponse: { status: ctx.status, response: ctx.response } }
+      : {}),
     // The destination's own status, always. `ProxyResponseV1` has no `status` field
     // (`router/transformer/transformer_proxy_adapter.go:41-45` — only `message`, `response` and
     // `authErrorCategory`), so rudder-server takes disposition from each job state and never reads

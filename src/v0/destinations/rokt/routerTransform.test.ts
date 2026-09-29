@@ -1,0 +1,557 @@
+import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
+import type { DestinationIntegrationConstructor } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import type { Destination, RouterTransformationRequestData, RudderMessage } from '../../../types';
+import { MAX_PER_USER_BATCH_BYTES } from './config';
+import type { RoktBatch } from './types';
+import { Integration } from './routerTransform';
+import { buildRoktBatch } from './utils';
+
+const destination: Destination = {
+  ID: 'rokt-dest-1',
+  Name: 'ROKT',
+  DestinationDefinition: { ID: 'rokt-def-1', Name: 'ROKT', DisplayName: 'Rokt', Config: {} },
+  Config: {
+    apiEndpoint: 'https://s2s.mparticle.com/',
+    serverToServerKey: 'server-key',
+    serverToServerSecret: 'server-secret',
+  },
+  Enabled: true,
+  WorkspaceID: 'ws-1',
+  Transformations: [],
+};
+
+const makeInput = (
+  jobId: number,
+  message: Record<string, unknown> = {},
+  destinationOverride = destination,
+): RouterTransformationRequestData => ({
+  message: {
+    type: 'track',
+    event: 'purchase',
+    userId: `user-${jobId}`,
+    messageId: `message-${jobId}`,
+    timestamp: '2026-09-29T00:00:00.000Z',
+    properties: {},
+    ...message,
+  },
+  metadata: {
+    jobId,
+    workspaceId: 'ws-1',
+    destinationId: 'rokt-dest-1',
+    sourceId: 'source-1',
+    sourceType: 'web',
+    sourceCategory: 'cloud',
+    destinationType: 'ROKT',
+    messageId: `message-${jobId}`,
+  },
+  destination: destinationOverride,
+});
+
+const transform = (input: RouterTransformationRequestData = makeInput(1)) =>
+  new Integration(input.destination).transformEvent(
+    input as unknown as Parameters<InstanceType<typeof Integration>['transformEvent']>[0],
+  );
+
+const batchBody = async (inputs: RouterTransformationRequestData[]): Promise<RoktBatch[]> => {
+  const responses = await processDestinationIntegration(
+    inputs,
+    Integration as DestinationIntegrationConstructor<RoktBatch>,
+    {},
+  );
+  const request = responses[0].batchedRequest;
+  if (!request || Array.isArray(request)) throw new Error('Expected one batched request');
+  return JSON.parse(request.body?.JSON_ARRAY?.batch as string) as RoktBatch[];
+};
+
+describe('RoktIntegration', () => {
+  it('builds the mParticle bulk request without persisting Basic auth', () => {
+    const result = transform();
+    expect(result.headers).not.toHaveProperty('Authorization');
+    expect(result).toEqual({
+      endpoint: 'https://s2s.mparticle.com/v2/bulkevents',
+      endpointPath: '/v2/bulkevents',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: {
+        schema_version: 2,
+        environment: 'production',
+        user_identities: { customerid: 'user-1' },
+        events: [
+          {
+            event_type: 'custom_event',
+            data: {
+              event_name: 'conversion',
+              custom_event_type: 'transaction',
+              timestamp_unixtime_ms: 1790640000000,
+              source_message_id: 'message-1',
+              custom_attributes: { conversiontype: 'purchase' },
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it.each([
+    'http://s2s.mparticle.com',
+    'https://attacker.example',
+    'https://s2s.mparticle.com.attacker.example',
+    'https://user@s2s.mparticle.com',
+    'https://s2s.mparticle.com:8443',
+    'https://s2s.mparticle.com/path',
+    'https://s2s.mparticle.com?redirect=1',
+    'https://127.0.0.1',
+  ])('rejects unsafe apiEndpoint %s', (apiEndpoint) => {
+    const input = makeInput(
+      1,
+      {},
+      { ...destination, Config: { ...destination.Config, apiEndpoint } },
+    );
+    expect(() => transform(input)).toThrow(
+      'ROKT apiEndpoint must be an approved HTTPS mParticle Events API base URL',
+    );
+  });
+
+  it.each([
+    'https://s2s.mparticle.com',
+    'https://s2s.us2.mparticle.com/',
+    'https://s2s.eu1.mparticle.com',
+    'https://s2s.au1.mparticle.com/',
+  ])('accepts the approved mParticle endpoint %s', (apiEndpoint) => {
+    const input = makeInput(
+      1,
+      {},
+      { ...destination, Config: { ...destination.Config, apiEndpoint } },
+    );
+    expect(transform(input).endpoint).toBe(`${apiEndpoint.replace(/\/$/, '')}/v2/bulkevents`);
+  });
+
+  it.each(['apiEndpoint', 'serverToServerKey', 'serverToServerSecret'])(
+    'rejects whitespace-only %s configuration',
+    async (field) => {
+      const input = makeInput(
+        1,
+        {},
+        {
+          ...destination,
+          Config: { ...destination.Config, [field]: '   ' },
+        },
+      );
+      const responses = await processDestinationIntegration(
+        [input],
+        Integration as DestinationIntegrationConstructor<RoktBatch>,
+        {},
+      );
+
+      expect(responses).toHaveLength(1);
+      expect(responses[0].error).toContain('Required configuration value cannot be blank');
+      expect(responses[0].batchedRequest).toBeUndefined();
+    },
+  );
+
+  it('maps ordered identity, click-id, event, and root field chains', () => {
+    const result = transform(
+      makeInput(1, {
+        userId: 'customer-1',
+        request_ip: '198.51.100.3',
+        originalTimestamp: '2026-09-29T00:00:01.000Z',
+        sentAt: '2026-09-29T00:00:02.000Z',
+        timestamp: undefined,
+        context: {
+          ip: '198.51.100.1',
+          request_ip: '198.51.100.2',
+          traits: { email: ' FIRST@EXAMPLE.TEST ' },
+          page: { search: '?rclid=query-rclid&rtid=query-rtid' },
+        },
+        traits: { email: 'second@example.test' },
+        event: 'event-fallback',
+        properties: {
+          email: 'third@example.test',
+          roktClickId: 'property-click',
+          rokt_click_id: 'ignored-click',
+          conversiontype: 'first-type',
+          conversionType: 'ignored-type',
+          orderId: 'order-first',
+          order_id: 'order-second',
+          amount: 0,
+          revenue: 50,
+          currency: 'USD',
+        },
+      }),
+    ).body;
+
+    expect(result).toMatchObject({
+      ip: '198.51.100.1',
+      user_identities: {
+        email: 'first@example.test',
+        customerid: 'customer-1',
+        other2: 'property-click',
+      },
+      integration_attributes: {
+        '1277': { passbackconversiontrackingid: 'property-click' },
+      },
+      events: [
+        {
+          data: {
+            timestamp_unixtime_ms: 1790640001000,
+            custom_attributes: {
+              conversiontype: 'first-type',
+              confirmationref: 'order-first',
+              amount: '0',
+              currency: 'USD',
+            },
+          },
+        },
+      ],
+    });
+  });
+
+  it('skips whitespace aliases without trimming selected fallback values', () => {
+    const body = transform(
+      makeInput(2, {
+        context: {
+          ip: '   ',
+          request_ip: ' 198.51.100.2 ',
+          userAgent: ' ',
+          user_agent: ' selected-agent ',
+          traits: {
+            email: '   ',
+            firstName: ' ',
+            first_name: ' Selected First ',
+            iosAdvertisingId: ' ',
+            ios_advertising_id: ' selected-ios-id ',
+          },
+          page: { path: ' ', url: ' ' },
+        },
+        traits: { email: ' FALLBACK@EXAMPLE.TEST ' },
+        properties: {
+          conversiontype: ' ',
+          conversionType: ' selected-type ',
+          confirmationRef: ' ',
+          confirmation_ref: ' selected-confirmation ',
+          currency: ' USD ',
+          roktClickId: ' ',
+          rokt_click_id: ' selected-click-id ',
+          name: ' Selected Screen ',
+          url: ' selected-url ',
+        },
+      }),
+    ).body;
+
+    expect(body).toMatchObject({
+      ip: ' 198.51.100.2 ',
+      user_identities: {
+        email: 'fallback@example.test',
+        customerid: 'user-2',
+        other2: ' selected-click-id ',
+      },
+      integration_attributes: {
+        '1277': { passbackconversiontrackingid: ' selected-click-id ' },
+      },
+      user_attributes: { firstname: ' Selected First ' },
+      device_info: {
+        http_header_user_agent: ' selected-agent ',
+        ios_advertising_id: ' selected-ios-id ',
+      },
+      events: [
+        {
+          data: {
+            custom_attributes: {
+              conversiontype: ' selected-type ',
+              confirmationref: ' selected-confirmation ',
+              currency: ' USD ',
+              screen_name: ' Selected Screen ',
+              url: ' selected-url ',
+            },
+          },
+        },
+      ],
+    });
+  });
+
+  it('falls through empty aliases and uses rtid from page search', () => {
+    const body = transform(
+      makeInput(2, {
+        type: 'page',
+        userId: undefined,
+        event: undefined,
+        context: {
+          ip: '',
+          request_ip: '198.51.100.2',
+          traits: { email: ' ' },
+          page: { search: '?rclid=&rtid=rtid-value', path: '' },
+        },
+        traits: { email: '' },
+        properties: {
+          email: '',
+          roktClickId: '',
+          rokt_click_id: ' ',
+          rclid: '',
+          rtid: '',
+          name: 'Checkout',
+        },
+      }),
+    ).body;
+
+    expect(body).toMatchObject({
+      ip: '198.51.100.2',
+      user_identities: { other2: 'rtid-value' },
+      integration_attributes: {
+        '1277': { passbackconversiontrackingid: 'rtid-value' },
+      },
+    });
+    expect(body.events?.[0].data.custom_attributes).toEqual({
+      conversiontype: 'screen_view',
+      screen_name: 'Checkout',
+    });
+  });
+
+  it('maps screen identity and falls back through timestamp, conversion, and URL aliases', () => {
+    const body = transform(
+      makeInput(3, {
+        type: 'screen',
+        event: '',
+        name: 'Root Screen',
+        timestamp: '',
+        originalTimestamp: '',
+        sentAt: '2026-09-29T00:00:03.000Z',
+        context: { page: { path: '', url: '' } },
+        properties: {
+          conversiontype: '',
+          conversionType: '',
+          conversion_type: '',
+          name: '',
+          url: 'https://example.test/screen',
+          amount: '',
+          revenue: 15,
+        },
+      }),
+    ).body;
+
+    expect(body.events?.[0].data).toMatchObject({
+      timestamp_unixtime_ms: 1790640003000,
+      custom_attributes: {
+        conversiontype: 'screen_view',
+        amount: '15',
+        screen_name: 'Root Screen',
+        url: 'https://example.test/screen',
+      },
+    });
+  });
+
+  it('maps all user attributes and routes typed advertising IDs', () => {
+    const body = transform(
+      makeInput(3, {
+        context: {
+          locale: 'en-US',
+          userAgent: 'synthetic-agent',
+          device: { type: 'iPhone', advertisingId: 'ios-device-id' },
+          traits: {
+            firstName: 'First',
+            firstNameSha256: 'first-hash',
+            last_name: 'Last',
+            last_name_sha256: 'last-hash',
+            phone: '+15550000000',
+            phone_sha256: 'phone-hash',
+            age: 42,
+            dateOfBirth: '2000-02-03T10:00:00Z',
+            gender: 'x',
+            address: { city: 'City', state: 'State', postal_code: '12345' },
+            title: 'Engineer',
+            androidAdvertisingId: 'android-trait-id',
+          },
+        },
+        properties: { value: 12, predicted_ltv: '99.5' },
+      }),
+    ).body;
+
+    expect(body.user_attributes).toEqual({
+      firstname: 'First',
+      firstnamesha256: 'first-hash',
+      lastname: 'Last',
+      lastnamesha256: 'last-hash',
+      mobile: '+15550000000',
+      mobilesha256: 'phone-hash',
+      age: 42,
+      dob: '20000203',
+      gender: 'x',
+      city: 'City',
+      state: 'State',
+      zip: '12345',
+      title: 'Engineer',
+      language: 'en-US',
+      value: 12,
+      predictedltv: '99.5',
+    });
+    expect(body.device_info).toEqual({
+      http_header_user_agent: 'synthetic-agent',
+      ios_advertising_id: 'ios-device-id',
+      android_advertising_id: 'android-trait-id',
+    });
+  });
+
+  it('routes Android advertising IDs and uses explicit iOS trait fallbacks', () => {
+    const body = transform(
+      makeInput(4, {
+        context: {
+          device: { type: 'Android', advertisingId: 'android-device-id' },
+          traits: { ios_advertising_id: 'ios-trait-id' },
+        },
+      }),
+    ).body;
+
+    expect(body.device_info).toEqual({
+      ios_advertising_id: 'ios-trait-id',
+      android_advertising_id: 'android-device-id',
+    });
+  });
+
+  it('does not infer a platform but retains explicit trait fallbacks for unknown devices', () => {
+    const body = transform(
+      makeInput(5, {
+        context: {
+          device: { type: 'desktop', advertisingId: 'unknown-platform-id' },
+          traits: { androidAdvertisingId: 'explicit-android-id' },
+        },
+      }),
+    ).body;
+    expect(body.device_info).toEqual({ android_advertising_id: 'explicit-android-id' });
+  });
+
+  it('omits unresolved optional and deliberately unmapped fields', () => {
+    const body = transform(
+      makeInput(6, {
+        messageId: undefined,
+        properties: { currency: '', rclid: '', application_info: 'ignored' },
+        traits: { birthday: 'not-a-date', mpid: 'ignored' },
+        context: {
+          sessionId: 'ignored',
+          device: { advertisingId: 'untyped-id' },
+        },
+      }),
+    ).body;
+
+    expect(body).toEqual({
+      schema_version: 2,
+      environment: 'production',
+      user_identities: { customerid: 'user-6' },
+      events: [
+        {
+          event_type: 'custom_event',
+          data: {
+            event_name: 'conversion',
+            custom_event_type: 'transaction',
+            timestamp_unixtime_ms: 1790640000000,
+            custom_attributes: { conversiontype: 'purchase' },
+          },
+        },
+      ],
+    });
+  });
+
+  it('emits identify attributes without a conversion event', () => {
+    const body = transform(
+      makeInput(7, {
+        type: 'identify',
+        event: undefined,
+        timestamp: undefined,
+        userId: 'identify-user',
+        traits: { firstName: 'Identify' },
+      }),
+    ).body;
+    expect(body).toEqual({
+      schema_version: 2,
+      environment: 'production',
+      user_identities: { customerid: 'identify-user' },
+      user_attributes: { firstname: 'Identify' },
+    });
+  });
+
+  it('rejects unsupported types, missing conversion identity, timestamp, and conversiontype', async () => {
+    const responses = await processDestinationIntegration(
+      [
+        makeInput(8, { type: 'group' }),
+        makeInput(9, { type: 'alias' }),
+        makeInput(10, { userId: undefined, context: {}, properties: {} }),
+        makeInput(14, { userId: 123 }),
+        makeInput(11, { timestamp: undefined, originalTimestamp: undefined, sentAt: undefined }),
+        makeInput(12, { timestamp: 'not-a-date' }),
+        makeInput(13, { event: undefined, properties: {} }),
+      ],
+      Integration as DestinationIntegrationConstructor<RoktBatch>,
+      {},
+    );
+
+    expect(responses).toHaveLength(7);
+    expect(responses.map((response) => response.error)).toEqual([
+      expect.stringContaining('Unsupported message type'),
+      expect.stringContaining('Unsupported message type'),
+      expect.stringContaining('message.userId: Expected string'),
+      'ROKT conversion requires at least one supported identity signal',
+      'ROKT conversion requires a timestamp',
+      'ROKT conversion timestamp is invalid',
+      'ROKT conversion requires conversiontype',
+    ]);
+    expect(responses.every((response) => response.batchedRequest === undefined)).toBe(true);
+  });
+
+  it.each([
+    { name: 'single-byte UTF-8', fill: 'x' },
+    { name: 'multi-byte UTF-8', fill: 'é' },
+  ])('enforces the exact 128 KiB serialized boundary for $name values', ({ fill }) => {
+    const input = makeInput(14, { traits: { firstName: fill } });
+    const oneUnitBatch = buildRoktBatch(input.message as RudderMessage);
+    const oneUnitBytes = Buffer.byteLength(JSON.stringify(oneUnitBatch), 'utf8');
+    const fillBytes = Buffer.byteLength(fill, 'utf8');
+    const overhead = oneUnitBytes - fillBytes;
+    const unitsAtOrBelowLimit = Math.floor((MAX_PER_USER_BATCH_BYTES - overhead) / fillBytes);
+
+    const atOrBelowLimit = buildRoktBatch({
+      ...input.message,
+      traits: { firstName: fill.repeat(unitsAtOrBelowLimit) },
+    } as RudderMessage);
+    const batchBytes = Buffer.byteLength(JSON.stringify(atOrBelowLimit), 'utf8');
+    expect(batchBytes).toBeLessThanOrEqual(MAX_PER_USER_BATCH_BYTES);
+    expect(MAX_PER_USER_BATCH_BYTES - batchBytes).toBeLessThan(fillBytes);
+
+    expect(() =>
+      buildRoktBatch({
+        ...input.message,
+        traits: { firstName: `${fill.repeat(unitsAtOrBelowLimit)}${fill}` },
+      } as RudderMessage),
+    ).toThrow(`ROKT per-user batch exceeds the ${MAX_PER_USER_BATCH_BYTES}-byte limit`);
+  });
+
+  it.each([
+    { inputCount: 100, expectedChunks: [100] },
+    { inputCount: 101, expectedChunks: [100, 1] },
+  ])(
+    'packs $inputCount per-user batches into $expectedChunks request sizes',
+    async ({ inputCount, expectedChunks }) => {
+      const inputs = Array.from({ length: inputCount }, (_, index) => makeInput(index + 1));
+      const responses = await processDestinationIntegration(
+        inputs,
+        Integration as DestinationIntegrationConstructor<RoktBatch>,
+        {},
+      );
+
+      expect(responses).toHaveLength(expectedChunks.length);
+      expect(
+        responses.map((response) => {
+          const request = response.batchedRequest;
+          if (!request || Array.isArray(request)) throw new Error('Expected a batched request');
+          expect(request.body?.JSON).toEqual({});
+          return JSON.parse(request.body?.JSON_ARRAY?.batch as string).length;
+        }),
+      ).toEqual(expectedChunks);
+    },
+  );
+
+  it('preserves one per-user batch object for each input', async () => {
+    const bodies = await batchBody([makeInput(15), makeInput(16)]);
+    expect(bodies.map((body) => body.user_identities.customerid)).toEqual(['user-15', 'user-16']);
+    expect(bodies.every((body) => body.events?.length === 1)).toBe(true);
+  });
+});

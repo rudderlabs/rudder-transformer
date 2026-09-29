@@ -222,6 +222,7 @@ export const DeliveryV1ResponseSchema = z
     status: z.number(),
     message: z.string(),
     statTags: z.record(z.unknown()).optional(),
+    destinationResponse: z.unknown().optional(),
     authErrorCategory: z.string().optional(),
     response: z.array(DeliveryJobStateSchema),
   })
@@ -235,6 +236,7 @@ export const DeliveryV1ResponseSchemaForOauth = z
     status: z.number(),
     message: z.string(),
     statTags: z.record(z.unknown()).optional(),
+    destinationResponse: z.unknown().optional(),
     authErrorCategory: z.string().optional(),
     response: z.array(DeliveryJobStateSchema),
   })

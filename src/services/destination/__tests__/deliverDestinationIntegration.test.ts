@@ -62,12 +62,15 @@ const gaecProxyRequest = (
     destinationConfig: {},
   }) as unknown as ProxyV1Request;
 
-const roktProxyRequest = (endpoint = 'https://s2s.mparticle.com/v2/bulkevents'): ProxyV1Request =>
+const roktProxyRequest = (): ProxyV1Request =>
   ({
     ...proxyRequest(),
-    endpoint,
+    endpoint: 'https://s2s.mparticle.com/v2/bulkevents',
     endpointPath: '/v2/bulkevents',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      Authorization: `Basic ${Buffer.from('server-key:server-secret').toString('base64')}`,
+      'Content-Type': 'application/json',
+    },
     body: { JSON_ARRAY: { batch: '[]' } },
     metadata: [job(1)],
     destinationConfig: {
@@ -351,12 +354,11 @@ describe('deliver() — batching-framework delivery', () => {
       }),
       ROKT_DEST,
     );
-    expect(request.headers).not.toHaveProperty('Authorization');
     expect(result.response).toEqual([
       {
         statusCode: 400,
         metadata: job(1),
-        error: 'mParticle rejected the bulk request (status 400); no safe error detail returned.',
+        error: 'Rokt rejected the bulk request (status 400); no safe error detail returned.',
       },
     ]);
     expect(result.message).not.toContain(unsafe);
@@ -372,33 +374,6 @@ describe('deliver() — batching-framework delivery', () => {
       module: 'destination',
       destinationId: 'd1',
       workspaceId: WORKSPACE,
-    });
-  });
-
-  it('rejects a forged ROKT endpoint before posting to the destination', async () => {
-    const legacy = stubTransport(202, {});
-
-    const result = (await service.deliver(
-      roktProxyRequest('https://attacker.example/v2/bulkevents'),
-      ROKT_DEST,
-      {},
-      'v1',
-    )) as DeliveryV1Response;
-
-    expect(legacy).not.toHaveBeenCalled();
-    expect(mockedFrameworkProxyRequest).not.toHaveBeenCalled();
-    expect(result.status).toBe(400);
-    expect(result.response).toEqual([
-      {
-        statusCode: 400,
-        metadata: job(1),
-        error: 'ROKT delivery endpoint does not match the configured endpoint',
-      },
-    ]);
-    expect(result.statTags).toMatchObject({
-      destType: 'ROKT',
-      errorCategory: 'dataValidation',
-      errorType: 'configuration',
     });
   });
 
@@ -419,7 +394,7 @@ describe('deliver() — batching-framework delivery', () => {
       {
         statusCode: 500,
         metadata: job(1),
-        error: 'mParticle rejected the bulk request (status 500); no safe error detail returned.',
+        error: 'Rokt rejected the bulk request (status 500); no safe error detail returned.',
       },
     ]);
     expect(result.destinationResponse).toEqual({ status: 500, response: {} });

@@ -14,7 +14,7 @@ export const live: LiveSpec = {
   scenarios: [
     {
       id: 'rokt-supported-message-types',
-      description: 'the mParticle Custom Feed accepts track, page, screen, and identify batches',
+      description: 'the Rokt Custom Feed accepts track, page, screen, and identify batches',
       steps: [
         {
           stepType: 'pipeline',

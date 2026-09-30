@@ -56,12 +56,12 @@ export const retryableRequest = [
 
 export const networkCallsData = [
   {
-    description: 'mParticle accepts a ROKT bulk request',
+    description: 'Rokt accepts a ROKT bulk request',
     httpReq: { method: 'POST', url: endpoint, headers: deliveryHeaders, data: acceptedRequest },
     httpRes: { data: {}, status: 202 },
   },
   {
-    description: 'mParticle rejects a ROKT bulk request with an unsafe response body',
+    description: 'Rokt rejects a ROKT bulk request with an unsafe response body',
     httpReq: { method: 'POST', url: endpoint, headers: deliveryHeaders, data: rejectedRequest },
     httpRes: {
       data: { message: 'unsafe echoed value synthetic-customer-2' },
@@ -69,7 +69,7 @@ export const networkCallsData = [
     },
   },
   {
-    description: 'mParticle returns an undocumented HTTP 200 for a ROKT bulk request',
+    description: 'Rokt returns an undocumented HTTP 200 for a ROKT bulk request',
     httpReq: {
       method: 'POST',
       url: endpoint,
@@ -79,12 +79,12 @@ export const networkCallsData = [
     httpRes: { data: {}, status: 200 },
   },
   {
-    description: 'mParticle throttles a ROKT bulk request',
+    description: 'Rokt throttles a ROKT bulk request',
     httpReq: { method: 'POST', url: endpoint, headers: deliveryHeaders, data: throttledRequest },
     httpRes: { data: {}, status: 429 },
   },
   {
-    description: 'mParticle returns a server error for a ROKT bulk request',
+    description: 'Rokt returns a server error for a ROKT bulk request',
     httpReq: {
       method: 'POST',
       url: endpoint,

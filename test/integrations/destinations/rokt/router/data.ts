@@ -105,7 +105,7 @@ export const data: RouterTestData[] = [
   {
     id: 'rokt-router-supported-events',
     name: 'rokt',
-    description: 'ROKT maps conversions and identify updates into mParticle per-user batches',
+    description: 'ROKT maps conversions and identify updates into Rokt per-user batches',
     scenario: 'Native JSON-array batching',
     successCriteria:
       'Track, click-only page, and identify messages produce one bulk request without merging per-user batches',

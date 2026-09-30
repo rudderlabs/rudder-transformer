@@ -23,13 +23,14 @@ class RoktIntegration extends DestinationIntegration<RoktBatch, typeof roktInput
   static readonly delivery = roktDelivery;
 
   transformEvent(input: z.infer<typeof roktInputSchema>): TransformedEvent<RoktBatch> {
-    const { apiEndpoint } = this.destination.Config;
+    const { apiEndpoint, serverToServerKey, serverToServerSecret } = this.destination.Config;
     return {
       body: buildRoktBatch(input.message as unknown as RudderMessage),
       endpoint: resolveEndpoint(apiEndpoint),
       endpointPath: BULK_EVENTS_PATH,
       method: 'POST',
       headers: {
+        Authorization: `Basic ${Buffer.from(`${serverToServerKey}:${serverToServerSecret}`).toString('base64')}`,
         'Content-Type': JSON_MIME_TYPE,
       },
     };

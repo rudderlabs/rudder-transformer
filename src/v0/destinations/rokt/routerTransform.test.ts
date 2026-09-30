@@ -64,14 +64,14 @@ const batchBody = async (inputs: RouterTransformationRequestData[]): Promise<Rok
 };
 
 describe('RoktIntegration', () => {
-  it('builds the mParticle bulk request without persisting Basic auth', () => {
+  it('builds the Rokt bulk request with Basic auth', () => {
     const result = transform();
-    expect(result.headers).not.toHaveProperty('Authorization');
     expect(result).toEqual({
       endpoint: 'https://s2s.mparticle.com/v2/bulkevents',
       endpointPath: '/v2/bulkevents',
       method: 'POST',
       headers: {
+        Authorization: `Basic ${Buffer.from('server-key:server-secret').toString('base64')}`,
         'Content-Type': 'application/json',
       },
       body: {
@@ -110,7 +110,7 @@ describe('RoktIntegration', () => {
       { ...destination, Config: { ...destination.Config, apiEndpoint } },
     );
     expect(() => transform(input)).toThrow(
-      'ROKT apiEndpoint must be an approved HTTPS mParticle Events API base URL',
+      'ROKT apiEndpoint must be an approved HTTPS Rokt Events API base URL',
     );
   });
 
@@ -119,7 +119,7 @@ describe('RoktIntegration', () => {
     'https://s2s.us2.mparticle.com/',
     'https://s2s.eu1.mparticle.com',
     'https://s2s.au1.mparticle.com/',
-  ])('accepts the approved mParticle endpoint %s', (apiEndpoint) => {
+  ])('accepts the approved Rokt endpoint %s', (apiEndpoint) => {
     const input = makeInput(
       1,
       {},

@@ -6,7 +6,7 @@ import {
   BULK_EVENTS_PATH,
   IOS_DEVICE_TYPES,
   MAX_PER_USER_BATCH_BYTES,
-  MPARTICLE_EVENTS_API_HOSTS,
+  ROKT_EVENTS_API_HOSTS,
   ROKT_INTEGRATION_ID,
 } from './config';
 import mappingConfig from './data/ROKTConfig.json';
@@ -83,12 +83,12 @@ export const resolveEndpoint = (apiEndpoint: string): string => {
   try {
     parsed = new URL(apiEndpoint);
   } catch {
-    throw new ConfigurationError('ROKT apiEndpoint must be a valid mParticle Events API URL');
+    throw new ConfigurationError('ROKT apiEndpoint must be a valid Rokt Events API URL');
   }
 
   if (
     parsed.protocol !== 'https:' ||
-    !MPARTICLE_EVENTS_API_HOSTS.has(parsed.hostname.toLowerCase()) ||
+    !ROKT_EVENTS_API_HOSTS.has(parsed.hostname.toLowerCase()) ||
     parsed.username ||
     parsed.password ||
     parsed.port ||
@@ -97,7 +97,7 @@ export const resolveEndpoint = (apiEndpoint: string): string => {
     !['', '/'].includes(parsed.pathname)
   ) {
     throw new ConfigurationError(
-      'ROKT apiEndpoint must be an approved HTTPS mParticle Events API base URL',
+      'ROKT apiEndpoint must be an approved HTTPS Rokt Events API base URL',
     );
   }
 

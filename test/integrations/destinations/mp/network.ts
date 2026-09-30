@@ -1123,6 +1123,135 @@ const deleteNwData = [
   {
     httpReq: {
       method: 'post',
+      url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
+      data: {
+        distinct_ids: ['mp-conflicting-user'],
+        compliance_type: 'CCPA',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader4,
+      },
+    },
+    httpRes: {
+      status: 409,
+      statusText: 'Conflict',
+      data: {
+        error: {
+          conflicting_distinct_id_count: 1,
+          conflicting_distinct_ids: ['mp-conflicting-user'],
+          conflicting_task_ids: ['50d6ff45-0989-4dac-bcb9-0244a9baf1a5'],
+          error:
+            '1 of these distinct IDs are already being deleted by a request that is still running. Wait for 50d6ff45-0989-4dac-bcb9-0244a9baf1a5 to finish, then submit them again.',
+        },
+        status: 'error',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
+      data: {
+        distinct_ids: ['mp-conflicting-user', 'mp-new-user'],
+        compliance_type: 'CCPA',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader4,
+      },
+    },
+    httpRes: {
+      status: 409,
+      statusText: 'Conflict',
+      data: {
+        error: {
+          conflicting_distinct_id_count: 1,
+          conflicting_distinct_ids: ['mp-conflicting-user'],
+          conflicting_task_ids: ['50d6ff45-0989-4dac-bcb9-0244a9baf1a5'],
+          error:
+            '1 of these distinct IDs are already being deleted by a request that is still running. Wait for 50d6ff45-0989-4dac-bcb9-0244a9baf1a5 to finish, then submit them again.',
+        },
+        status: 'error',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
+      data: {
+        distinct_ids: ['mp-new-user'],
+        compliance_type: 'CCPA',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader4,
+      },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'OK',
+      data: {
+        ' message': '1',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
+      data: {
+        distinct_ids: ['mp-conflicting-user', 'mp-rate-limited-user'],
+        compliance_type: 'CCPA',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader4,
+      },
+    },
+    httpRes: {
+      status: 409,
+      statusText: 'Conflict',
+      data: {
+        error: {
+          conflicting_distinct_id_count: 1,
+          conflicting_distinct_ids: ['mp-conflicting-user'],
+          conflicting_task_ids: ['50d6ff45-0989-4dac-bcb9-0244a9baf1a5'],
+          error:
+            '1 of these distinct IDs are already being deleted by a request that is still running. Wait for 50d6ff45-0989-4dac-bcb9-0244a9baf1a5 to finish, then submit them again.',
+        },
+        status: 'error',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: `https://mixpanel.com/api/app/data-deletions/v3.0/?token=${secret4}`,
+      data: {
+        distinct_ids: ['mp-rate-limited-user'],
+        compliance_type: 'CCPA',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader4,
+      },
+    },
+    httpRes: {
+      status: 429,
+      statusText: 'Too Many Requests',
+      data: {
+        error: {
+          error: 'Too Many Requests, this API is limited to 1 req/s',
+        },
+        status: 'error',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
 
       url: 'https://api-eu.mixpanel.com/engage',
       data: [

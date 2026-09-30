@@ -1,4 +1,4 @@
-import { authHeader1, secret1 } from '../maskedSecrets';
+import { authHeader1, defaultSenderId, defaultSenderPhoneNumber, secret1 } from '../maskedSecrets';
 import {
   commonInput,
   destination,
@@ -16,8 +16,8 @@ const commonDestination = {
     clicksendUsername: secret1,
     defaultCampaignSchedule: '2',
     defaultCampaignScheduleUnit: 'day',
-    defaultSenderId: 'abc@gmail.com',
-    defaultSenderPhoneNumber: '+919XXXXXXXX8',
+    defaultSenderId,
+    defaultSenderPhoneNumber,
     defaultSource: 'php',
   },
   DestinationDefinition: {
@@ -118,7 +118,7 @@ export const data = [
                   FORM: {},
                   JSON: {
                     body: 'abcd',
-                    from: 'abc@gmail.com',
+                    from: defaultSenderId,
                     list_id: 123345,
                     name: 'new campaign',
                     schedule: 1611761576,
@@ -158,7 +158,7 @@ export const data = [
                         body: 'abcd',
                         custom_string: 'test string',
                         email: 'abc@gmail.com',
-                        from: 'abc@gmail.com',
+                        from: defaultSenderId,
                         from_email: 'dummy@gmail.com',
                         schedule: 1611761576,
                         source: 'php',
@@ -378,7 +378,7 @@ export const data = [
                   FORM: {},
                   JSON: {
                     body: 'abcd',
-                    from: 'abc@gmail.com',
+                    from: defaultSenderId,
                     list_id: 123345,
                     name: 'new campaign',
                     schedule: 1611761576,
@@ -418,7 +418,7 @@ export const data = [
                         body: 'abcd',
                         custom_string: 'test string',
                         email: 'abc@gmail.com',
-                        from: 'abc@gmail.com',
+                        from: defaultSenderId,
                         from_email: 'dummy@gmail.com',
                         schedule: 1611761576,
                         source: 'php',
@@ -428,7 +428,7 @@ export const data = [
                         body: 'abcd',
                         custom_string: 'test string',
                         email: 'abc@gmail.com',
-                        from: 'abc@gmail.com',
+                        from: defaultSenderId,
                         from_email: 'dummy@gmail.com',
                         schedule: 1611761576,
                         source: 'php',
@@ -438,7 +438,7 @@ export const data = [
                         body: 'abcd',
                         custom_string: 'test string',
                         email: 'abc@gmail.com',
-                        from: 'abc@gmail.com',
+                        from: defaultSenderId,
                         from_email: 'dummy@gmail.com',
                         schedule: 1611761576,
                         source: 'php',

@@ -1,4 +1,5 @@
 import { defaultMockFns } from '../mocks';
+import { apiSecret } from '../maskedSecrets';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import {
@@ -17,7 +18,7 @@ const destination: Destination = {
     Config: {},
   },
   Config: {
-    apiSecret: 'dummyApiSecret',
+    apiSecret,
     measurementId: 'dummyMeasurementId',
     firebaseAppId: '',
     blockPageViewEvent: false,
@@ -58,7 +59,7 @@ const commonOutputHeaders = {
 };
 
 const commonOutputParams = {
-  api_secret: 'dummyApiSecret',
+  api_secret: apiSecret,
   measurement_id: 'dummyMeasurementId',
 };
 
@@ -1854,7 +1855,7 @@ export const ecommTestData: ProcessorTestData[] = [
               endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: {
-                api_secret: 'dummyApiSecret',
+                api_secret: apiSecret,
                 firebase_app_id: 'dummyFirebaseAppId',
               },
               JSON: {

@@ -355,6 +355,7 @@ export const data = [
               },
               Config: {
                 webhookUrl: 'https://6b0e6a60.ngrok.io/n',
+                authHeader: authHeader1,
               },
             },
             metadata: {
@@ -376,6 +377,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://6b0e6a60.ngrok.io/n',
               headers: {
+                authorization: authHeader1,
                 'content-type': 'application/json',
               },
               params: {},

@@ -17,5 +17,4 @@ const statusOverrides: StatusOverrideMap = {
 export const roktDelivery: DeliverySpec = {
   statusOverrides,
   failureReason,
-  failureResponseExposure: 'controlled',
 };

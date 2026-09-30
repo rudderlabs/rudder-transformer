@@ -516,28 +516,6 @@ describe('toDeliveryV1Response — per-item detail survives a non-2xx', () => {
     );
     expect(result.response.map((r) => r.statusCode)).toEqual([500, 500]);
   });
-
-  it('confines a controlled whole-batch response to destinationResponse', () => {
-    const unsafe = { message: 'echoed customer@example.test secret-value' };
-    const result = toDeliveryV1Response(
-      abort('safe status-only reason'),
-      ctxFor(400, unsafe, 2),
-      DEST,
-      'controlled',
-    );
-
-    expect(result).toEqual({
-      status: 400,
-      message: `[${DEST}] safe status-only reason`,
-      destinationResponse: { status: 400, response: unsafe },
-      statTags: { errorCategory: 'network', errorType: 'aborted' },
-      response: [
-        { statusCode: 400, metadata: job(1), error: 'safe status-only reason' },
-        { statusCode: 400, metadata: job(2), error: 'safe status-only reason' },
-      ],
-    });
-    expect(JSON.stringify(result.response)).not.toContain('customer@example.test');
-  });
 });
 
 describe('toDeliveryV1Response — dontBatch retry aborts', () => {

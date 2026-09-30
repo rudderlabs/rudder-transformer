@@ -1,6 +1,5 @@
 import { proxyRequest as frameworkProxyRequest } from '../../../adapters/network';
 import networkHandlerFactory from '../../../adapters/networkHandlerFactory';
-import { ErrorReportingService } from '../../errorReporting';
 import { NativeIntegrationDestinationService } from '../nativeIntegration';
 import {
   destinationIntegrationsMap,
@@ -16,7 +15,6 @@ jest.mock('../../../adapters/network', () => ({
 const DEST = 'customerio';
 const WORKSPACE = 'ws-1';
 const GAEC_DEST = 'google_adwords_enhanced_conversions';
-const ROKT_DEST = 'rokt';
 const API_VERSION = 'v25';
 
 const job = (jobId: number) =>
@@ -60,24 +58,6 @@ const gaecProxyRequest = (
     },
     metadata: [job(1)],
     destinationConfig: {},
-  }) as unknown as ProxyV1Request;
-
-const roktProxyRequest = (): ProxyV1Request =>
-  ({
-    ...proxyRequest(),
-    endpoint: 'https://s2s.mparticle.com/v2/bulkevents',
-    endpointPath: '/v2/bulkevents',
-    headers: {
-      Authorization: `Basic ${Buffer.from('server-key:server-secret').toString('base64')}`,
-      'Content-Type': 'application/json',
-    },
-    body: { JSON_ARRAY: { batch: '[]' } },
-    metadata: [job(1)],
-    destinationConfig: {
-      apiEndpoint: 'https://s2s.mparticle.com/',
-      serverToServerKey: 'server-key',
-      serverToServerSecret: 'server-secret',
-    },
   }) as unknown as ProxyV1Request;
 
 const mockedFrameworkProxyRequest = frameworkProxyRequest as jest.MockedFunction<
@@ -333,73 +313,5 @@ describe('deliver() — batching-framework delivery', () => {
     expect(result.status).toBe(400);
     expect(result.response).toHaveLength(2);
     expect(result.response.map((r) => r.statusCode)).toEqual([400, 400]);
-  });
-
-  it('keeps a controlled response body out of job errors and error reporting', async () => {
-    const unsafe = 'echoed customer@example.test server-secret';
-    const request = roktProxyRequest();
-    const legacy = stubTransport(400, { message: unsafe });
-    stubFrameworkTransport(400, { message: unsafe });
-    const reportError = jest.spyOn(ErrorReportingService, 'reportError');
-
-    const result = (await service.deliver(request, ROKT_DEST, {}, 'v1')) as DeliveryV1Response;
-
-    expect(legacy).not.toHaveBeenCalled();
-    expect(mockedFrameworkProxyRequest).toHaveBeenCalledWith(
-      expect.objectContaining({
-        headers: {
-          Authorization: `Basic ${Buffer.from('server-key:server-secret').toString('base64')}`,
-          'Content-Type': 'application/json',
-        },
-      }),
-      ROKT_DEST,
-    );
-    expect(result.response).toEqual([
-      {
-        statusCode: 400,
-        metadata: job(1),
-        error: 'Rokt rejected the bulk request (status 400); no safe error detail returned.',
-      },
-    ]);
-    expect(result.message).not.toContain(unsafe);
-    expect(result.destinationResponse).toEqual({ status: 400, response: { message: unsafe } });
-    expect(JSON.stringify(result.response)).not.toContain(unsafe);
-    expect(reportError).not.toHaveBeenCalled();
-    expect(result.statTags).toEqual({
-      destType: 'ROKT',
-      errorCategory: 'network',
-      errorType: 'aborted',
-      feature: 'dataDelivery',
-      implementation: 'native',
-      module: 'destination',
-      destinationId: 'd1',
-      workspaceId: WORKSPACE,
-    });
-  });
-
-  it('sanitizes controlled transport exceptions before error reporting', async () => {
-    const unsafe = 'customer@example.test Basic encoded-secret';
-    const request = roktProxyRequest();
-    stubTransport(500, {});
-    mockedFrameworkProxyRequest.mockRejectedValueOnce(
-      Object.assign(new Error(`socket failed for ${unsafe}`), {
-        config: { headers: { Authorization: 'Basic encoded-secret' }, data: unsafe },
-      }),
-    );
-    const reportError = jest.spyOn(ErrorReportingService, 'reportError');
-
-    const result = (await service.deliver(request, ROKT_DEST, {}, 'v1')) as DeliveryV1Response;
-
-    expect(result.response).toEqual([
-      {
-        statusCode: 500,
-        metadata: job(1),
-        error: 'Rokt rejected the bulk request (status 500); no safe error detail returned.',
-      },
-    ]);
-    expect(result.destinationResponse).toEqual({ status: 500, response: {} });
-    expect(JSON.stringify(result)).not.toContain(unsafe);
-    expect(JSON.stringify(result)).not.toContain('encoded-secret');
-    expect(reportError).not.toHaveBeenCalled();
   });
 });

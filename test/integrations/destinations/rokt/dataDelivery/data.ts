@@ -72,12 +72,11 @@ export const data: ProxyV1TestData[] = [
     },
   },
   {
-    id: 'rokt-delivery-rejected-sanitized',
+    id: 'rokt-delivery-rejected',
     name: 'rokt',
-    description: 'Framework delivery sanitizes Rokt HTTP 400 failure reasons',
+    description: 'Framework delivery rejects Rokt HTTP 400 responses',
     scenario: 'Native batching delivery',
-    successCriteria:
-      'The failure preserves raw response only as destinationResponse, not the reason or per-job error',
+    successCriteria: 'The whole request is aborted using the existing framework response path',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
@@ -105,17 +104,12 @@ export const data: ProxyV1TestData[] = [
             status: 400,
             message:
               '[ROKT] Rokt rejected the bulk request (status 400); no safe error detail returned.',
-            destinationResponse: {
-              response: { message: 'unsafe echoed value synthetic-customer-2' },
-              status: 400,
-            },
             statTags,
             response: [
               {
                 statusCode: 400,
                 metadata: proxyMetadata(2),
-                error:
-                  'Rokt rejected the bulk request (status 400); no safe error detail returned.',
+                error: '{"message":"unsafe echoed value synthetic-customer-2"}',
               },
             ],
           },
@@ -156,7 +150,6 @@ export const data: ProxyV1TestData[] = [
             status: 200,
             message:
               '[ROKT] Rokt rejected the bulk request (status 200); no safe error detail returned.',
-            destinationResponse: { response: {}, status: 200 },
             statTags,
             response: [
               {
@@ -204,14 +197,12 @@ export const data: ProxyV1TestData[] = [
             status: 429,
             message:
               '[ROKT] Rokt rejected the bulk request (status 429); no safe error detail returned.',
-            destinationResponse: { response: {}, status: 429 },
             statTags: { ...statTags, errorType: 'throttled' },
             response: [
               {
                 statusCode: 429,
                 metadata: proxyMetadata(4),
-                error:
-                  'Rokt rejected the bulk request (status 429); no safe error detail returned.',
+                error: '{}',
               },
             ],
           },
@@ -224,7 +215,8 @@ export const data: ProxyV1TestData[] = [
     name: 'rokt',
     description: 'Framework delivery retries every job after a Rokt HTTP 503',
     scenario: 'Native batching delivery',
-    successCriteria: 'The whole request remains retryable and null response data stays confined',
+    successCriteria:
+      'The whole request remains retryable through the existing framework response path',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
@@ -252,20 +244,17 @@ export const data: ProxyV1TestData[] = [
             status: 503,
             message:
               '[ROKT] Rokt rejected the bulk request (status 503); no safe error detail returned.',
-            destinationResponse: { response: '', status: 503 },
             statTags: { ...statTags, errorType: 'retryable' },
             response: [
               {
-                statusCode: 500,
+                statusCode: 503,
                 metadata: proxyMetadata(5),
-                error:
-                  'Rokt rejected the bulk request (status 503); no safe error detail returned.',
+                error: '""',
               },
               {
-                statusCode: 500,
+                statusCode: 503,
                 metadata: proxyMetadata(6),
-                error:
-                  'Rokt rejected the bulk request (status 503); no safe error detail returned.',
+                error: '""',
               },
             ],
           },

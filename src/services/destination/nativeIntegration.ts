@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
-import { BaseError, mapInBatches, NetworkError } from '@rudderstack/integrations-lib';
+import { mapInBatches } from '@rudderstack/integrations-lib';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { proxyRequest } from '../../adapters/network';
 import { processAxiosResponse } from '../../adapters/utils/networkUtils';
@@ -272,32 +272,21 @@ export class NativeIntegrationDestinationService implements DestinationService {
 
       let sentDeliveryRequest = deliveryRequest;
       let processedProxyResponse;
-      let deliverySpec;
       if (frameworkOwnsTransport) {
-        deliverySpec = resolveDeliverySpec(IntegrationClass);
-        // `prepareRequest` is also where a destination rejects a request it must not send. Keep it
-        // outside the controlled transport catch so deterministic configuration failures preserve
-        // their 400/configuration classification instead of becoming sanitized retryable 500s.
-        sentDeliveryRequest =
-          deliverySpec.prepareRequest?.(deliveryRequest, reqCtx!) ?? deliveryRequest;
-        try {
-          // The framework sent this request, so the framework reads the reply: the shared axios
-          // normalizer, not `networkHandler.processAxiosResponse`. A destination overrides that hook
-          // to adapt *its own* transport — GAEC's, for one, exists solely to unwrap the Google Ads
-          // SDK's `{ statusCode, responseBody }` — and none of that applies to a response this
-          // request never went through the destination to get. Destination-specific reading of a
-          // framework-sent response belongs in `DeliverySpec` (`statusOverrides`/`failureReason`).
-          processedProxyResponse = processAxiosResponse(
-            await proxyRequest(sentDeliveryRequest, destinationType),
-          );
-        } catch (error) {
-          if (deliverySpec.failureResponseExposure !== 'controlled') throw error;
-          if (error instanceof BaseError && !(error instanceof NetworkError)) throw error;
-          // A transport exception can retain Axios config, headers and request data. Controlled
-          // integrations must not pass that object through postTransformation/error reporting.
-          const status = error instanceof NetworkError ? error.status : 500;
-          processedProxyResponse = { status, response: {} };
-        }
+        const spec = resolveDeliverySpec(IntegrationClass);
+        // `prepareRequest` is also where a destination rejects a request it must not send — GAEC
+        // uses it to catch legacy-shape payloads left over from a transport flag flip. Throwing
+        // from it lands in this method's catch, same as any other delivery failure.
+        sentDeliveryRequest = spec.prepareRequest?.(deliveryRequest, reqCtx!) ?? deliveryRequest;
+        // The framework sent this request, so the framework reads the reply: the shared axios
+        // normalizer, not `networkHandler.processAxiosResponse`. A destination overrides that hook
+        // to adapt *its own* transport — GAEC's, for one, exists solely to unwrap the Google Ads
+        // SDK's `{ statusCode, responseBody }` — and none of that applies to a response this
+        // request never went through the destination to get. Destination-specific reading of a
+        // framework-sent response belongs in `DeliverySpec` (`statusOverrides`/`failureReason`).
+        processedProxyResponse = processAxiosResponse(
+          await proxyRequest(sentDeliveryRequest, destinationType),
+        );
       } else {
         processedProxyResponse = networkHandler.processAxiosResponse(
           await networkHandler.proxy(deliveryRequest, destinationType),
@@ -322,12 +311,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
         };
         // Uppercased to match `statTags.destType`, which is what every other destination tag in a
         // delivery response and in the stats emitted alongside it uses.
-        deliverySpec ??= resolveDeliverySpec(IntegrationClass);
         const frameworkResponse = toDeliveryV1Response(
           handleDeliveryResponse(IntegrationClass, ctx),
           ctx,
           destinationType.toUpperCase(),
-          deliverySpec.failureResponseExposure,
         );
 
         // The bridge sets `statTags` only for a uniform whole-response failure, and only the

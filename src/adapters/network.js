@@ -151,22 +151,19 @@ const commonHandler = async (
   axiosMethod,
   { statTags, method, ...args },
   disableMetrics = false,
-  suppressRequestResponseLogs = false,
 ) => {
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
 
-  if (!suppressRequestResponseLogs) {
-    logger.requestLog(`${commonMsg} request`, {
-      metadata: statTags?.metadata,
-      requestDetails: {
-        url: url || requestOptions?.url,
-        body: data || requestOptions?.data,
-        method,
-      },
-    });
-  }
+  logger.requestLog(`${commonMsg} request`, {
+    metadata: statTags?.metadata,
+    requestDetails: {
+      url: url || requestOptions?.url,
+      body: data || requestOptions?.data,
+      method,
+    },
+  });
   const startTime = new Date();
   try {
     const response = await axiosMethod(...getHttpMethodArgs(method, args));
@@ -174,12 +171,10 @@ const commonHandler = async (
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    if (!suppressRequestResponseLogs) {
-      logger.responseLog(`${commonMsg} response`, {
-        metadata: statTags?.metadata,
-        responseDetails: getResponseDetails(clientResponse),
-      });
-    }
+    logger.responseLog(`${commonMsg} response`, {
+      metadata: statTags?.metadata,
+      responseDetails: getResponseDetails(clientResponse),
+    });
     if (!disableMetrics) {
       fireHTTPStats(clientResponse, startTime, statTags);
     }
@@ -194,19 +189,9 @@ const commonHandler = async (
  * @param {*} options
  * @returns
  */
-const httpSend = async (
-  options,
-  statTags = {},
-  disableMetrics = false,
-  suppressRequestResponseLogs = false,
-) => {
+const httpSend = async (options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(
-    axios,
-    { statTags, options, requestOptions },
-    disableMetrics,
-    suppressRequestResponseLogs,
-  );
+  return commonHandler(axios, { statTags, options, requestOptions }, disableMetrics);
 };
 
 /**
@@ -523,7 +508,6 @@ const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }
  * @returns
  */
 const proxyRequest = async (request, destType) => {
-  const normalizedDestType = destType?.toUpperCase?.() ?? '';
   const { metadata, endpointPath, body } = request;
   const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
   fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
@@ -533,24 +517,17 @@ const proxyRequest = async (request, destType) => {
     params,
     headers,
     method,
-    ...(normalizedDestType === 'ROKT' ? { maxRedirects: 0 } : {}),
   };
-  const statTags = {
-    feature: 'proxy',
-    destType,
-    endpointPath,
-    requestMethod: method,
-    metadata,
-  };
-  // ROKT payloads and responses can contain direct identifiers. Keep them out of even the opt-in
-  // event-level network logs while preserving the shared transport configuration and safe metrics.
-  const suppressRequestResponseLogs = normalizedDestType === 'ROKT';
-  return httpSend(
+  const response = await httpSend(
     requestOptions,
-    statTags,
-    !suppressRequestResponseLogs,
-    suppressRequestResponseLogs,
+    {
+      feature: 'proxy',
+      destType,
+      metadata,
+    },
+    true,
   );
+  return response;
 };
 
 module.exports = {

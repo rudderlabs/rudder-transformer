@@ -18,28 +18,43 @@ const job: ProxyMetdata = {
   dontBatch: false,
 };
 
-const context = (status: number, response: unknown = {}): DeliveryContext => ({
-  status,
-  response,
-  jobs: [job],
-  request: { body: { JSON_ARRAY: { batch: '[]' } } } as unknown as ProxyV1Request,
-  destinationConfig: {},
-  ...firstJobIdentity([job]),
-});
+const context = (status: number, response: unknown = {}, jobCount = 1): DeliveryContext => {
+  const jobs = Array.from({ length: jobCount }, (_, index) => ({ ...job, jobId: index + 1 }));
+
+  return {
+    status,
+    response,
+    jobs,
+    request: { body: { JSON_ARRAY: { batch: '[]' } } } as unknown as ProxyV1Request,
+    destinationConfig: {},
+    ...firstJobIdentity(jobs),
+  };
+};
 
 describe('ROKT delivery', () => {
-  it('classifies only HTTP 202 as successful', () => {
+  it('treats HTTP 202 with an empty response body as successful', () => {
     expect(handleDeliveryResponse(Integration, context(202))).toEqual({ kind: 'success' });
-    for (const status of [200, 201, 204, 206]) {
-      expect(handleDeliveryResponse(Integration, context(status))).toEqual({
-        kind: 'abort',
-        reason: `Rokt rejected the bulk request (status ${status}); no safe error detail returned.`,
-      });
-    }
   });
 
-  it('preserves framework abort, throttle, and retry semantics for non-2xx responses', () => {
+  it('retries HTTP 202 partial failures as individual events', () => {
+    expect(
+      handleDeliveryResponse(
+        Integration,
+        context(202, { errors: [{ code: 'BAD_REQUEST', message: 'invalid event' }] }, 2),
+      ),
+    ).toEqual({
+      kind: 'retry',
+      reason: 'Rokt partially rejected the bulk request; retrying each event individually.',
+      dontBatch: true,
+    });
+  });
+
+  it('aborts HTTP 400 responses', () => {
     expect(handleDeliveryResponse(Integration, context(400))).toMatchObject({ kind: 'abort' });
+  });
+
+  it('preserves framework success, throttle, and retry semantics for other responses', () => {
+    expect(handleDeliveryResponse(Integration, context(200))).toEqual({ kind: 'success' });
     expect(handleDeliveryResponse(Integration, context(429))).toMatchObject({
       kind: 'retry',
       as: 'throttled',

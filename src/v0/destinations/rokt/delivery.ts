@@ -1,5 +1,5 @@
 import {
-  abort,
+  retry,
   success,
   type DeliveryContext,
   type DeliverySpec,
@@ -9,9 +9,22 @@ import {
 const failureReason = ({ status }: DeliveryContext): string =>
   `Rokt rejected the bulk request (status ${status}); no safe error detail returned.`;
 
+const partialFailureReason =
+  'Rokt partially rejected the bulk request; retrying each event individually.';
+
 const statusOverrides: StatusOverrideMap = {
-  202: () => success(),
-  '2xx': (ctx) => abort(failureReason(ctx)),
+  202: (ctx) => {
+    const errors =
+      typeof ctx.response === 'object' && ctx.response !== null && 'errors' in ctx.response
+        ? ctx.response.errors
+        : undefined;
+
+    if (Array.isArray(errors) && errors.length > 0 && errors.length < ctx.jobs.length) {
+      return retry(partialFailureReason, { dontBatch: true });
+    }
+
+    return success();
+  },
 };
 
 export const roktDelivery: DeliverySpec = {

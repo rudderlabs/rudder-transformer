@@ -126,9 +126,9 @@ export const data: ProxyV1TestData[] = [
   {
     id: 'rokt-delivery-unexpected-2xx',
     name: 'rokt',
-    description: 'Framework delivery rejects undocumented Rokt HTTP 200 responses',
+    description: 'Framework delivery preserves default HTTP 200 handling for Rokt',
     scenario: 'Native batching delivery',
-    successCriteria: 'HTTP 200 fails rather than inheriting generic 2xx success behavior',
+    successCriteria: 'HTTP 200 inherits the framework generic 2xx success behavior',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
@@ -155,15 +155,12 @@ export const data: ProxyV1TestData[] = [
         body: {
           output: {
             status: 200,
-            message:
-              '[ROKT] Rokt rejected the bulk request (status 200); no safe error detail returned.',
-            statTags,
+            message: '[ROKT] Request processed successfully',
             response: [
               {
-                statusCode: 400,
+                statusCode: 200,
                 metadata: proxyMetadata(3),
-                error:
-                  'Rokt rejected the bulk request (status 200); no safe error detail returned.',
+                error: 'success',
               },
             ],
           },

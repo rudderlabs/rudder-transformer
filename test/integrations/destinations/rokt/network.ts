@@ -139,7 +139,20 @@ export const allInvalidResponse = {
     },
   ],
 };
+export const completeFailureRequest = allInvalidRequest.map((batch, index) => ({
+  ...batch,
+  user_identities: { customerid: `synthetic-customer-${index + 13}` },
+  events: batch.events.map((event) => ({
+    ...event,
+    data: { ...event.data, source_message_id: `message-${index + 13}` },
+  })),
+}));
+export const completeFailureResponse = allInvalidResponse;
 export const invalidCredentialsRequest = requestForCustomer('synthetic-customer-12', 'message-12');
+export const missingCredentialsRequest = requestForCustomer('synthetic-customer-15', 'message-15');
+export const headersWithoutCredentials = { 'Content-Type': 'application/json' };
+export const unrecognizedErrorRequest = requestForCustomer('synthetic-customer-16', 'message-16');
+export const unrecognizedErrorResponse = { unexpected: true };
 export const throttledRequest = requestForCustomer('synthetic-customer-4');
 export const retryableRequest = [
   ...requestForCustomer('synthetic-customer-5'),
@@ -177,9 +190,32 @@ export const networkCallsData = [
     },
   },
   {
+    description: 'Rokt reports every batch as failed in an HTTP 202 response',
+    httpReq: { method: 'POST', url: endpoint, headers, data: completeFailureRequest },
+    httpRes: {
+      data: completeFailureResponse,
+      status: 202,
+    },
+  },
+  {
     description: 'Rokt rejects invalid credentials with an empty response',
     httpReq: { method: 'POST', url: endpoint, headers, data: invalidCredentialsRequest },
     httpRes: { data: '', status: 403 },
+  },
+  {
+    description: 'Rokt rejects requests without credentials with an empty response',
+    httpReq: {
+      method: 'POST',
+      url: endpoint,
+      headers: headersWithoutCredentials,
+      data: missingCredentialsRequest,
+    },
+    httpRes: { data: '', status: 401 },
+  },
+  {
+    description: 'Rokt returns an unrecognized error response',
+    httpReq: { method: 'POST', url: endpoint, headers, data: unrecognizedErrorRequest },
+    httpRes: { data: unrecognizedErrorResponse, status: 400 },
   },
   {
     description: 'Rokt throttles a ROKT bulk request',

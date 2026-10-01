@@ -6,12 +6,17 @@ import {
   acceptedRequest,
   allInvalidRequest,
   allInvalidResponse,
+  completeFailureRequest,
+  headersWithoutCredentials,
   invalidCredentialsRequest,
+  missingCredentialsRequest,
   partialFailureRequest,
   rejectedRequest,
   rejectedResponse,
   retryableRequest,
   throttledRequest,
+  unrecognizedErrorRequest,
+  unrecognizedErrorResponse,
 } from '../network';
 
 const proxyMetadata = (jobId: number): ProxyMetdata => ({
@@ -113,12 +118,59 @@ export const data: ProxyV1TestData[] = [
           output: {
             status: 202,
             message:
-              '[ROKT] Rokt partially rejected the bulk request; retrying each event individually.',
+              "[ROKT] Rokt rejected 1 of 3 events (BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 648.); retrying each event individually.",
             statTags: { ...statTags, errorType: 'retryable' },
             response: [7, 8, 9].map((jobId) => ({
               statusCode: 500,
               metadata: { ...proxyMetadata(jobId), dontBatch: true },
-              error: 'Rokt partially rejected the bulk request; retrying each event individually.',
+              error:
+                "Rokt rejected 1 of 3 events (BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 648.); retrying each event individually.",
+            })),
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'rokt-delivery-complete-202-failure',
+    name: 'rokt',
+    description: 'Framework delivery aborts every event rejected in an HTTP 202 response',
+    scenario: 'Native batching delivery',
+    successCriteria: 'Every job is aborted when the Rokt error count matches the batch size',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    envOverrides,
+    input: {
+      request: {
+        method: 'POST',
+        body: generateProxyV1Payload(
+          {
+            endpoint,
+            endpointPath: '/v2/bulkevents',
+            method: 'POST',
+            headers,
+            JSON_ARRAY: { batch: JSON.stringify(completeFailureRequest) },
+          },
+          [proxyMetadata(13), proxyMetadata(14)],
+          destination.Config,
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 202,
+            message:
+              "[ROKT] Rokt rejected all 2 events: BAD_REQUEST - Error converting value \"not-a-guid\" to type 'System.Guid'. Path '[0].device_info.ios_advertising_id', line 1, position 153.; BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 702.",
+            statTags,
+            response: [13, 14].map((jobId) => ({
+              statusCode: 400,
+              metadata: proxyMetadata(jobId),
+              error:
+                "Rokt rejected all 2 events: BAD_REQUEST - Error converting value \"not-a-guid\" to type 'System.Guid'. Path '[0].device_info.ios_advertising_id', line 1, position 153.; BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 702.",
             })),
           },
         },
@@ -158,7 +210,7 @@ export const data: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              '[ROKT] Rokt rejected the bulk request (status 400); no safe error detail returned.',
+              "[ROKT] Rokt rejected the bulk request (status 400): BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 314.",
             statTags,
             response: [
               {
@@ -205,7 +257,7 @@ export const data: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              '[ROKT] Rokt rejected the bulk request (status 400); no safe error detail returned.',
+              "[ROKT] Rokt rejected the bulk request (status 400): BAD_REQUEST - Error converting value \"not-a-guid\" to type 'System.Guid'. Path '[0].device_info.ios_advertising_id', line 1, position 153.; BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 702.",
             statTags,
             response: [10, 11].map((jobId) => ({
               statusCode: 400,
@@ -250,13 +302,107 @@ export const data: ProxyV1TestData[] = [
           output: {
             status: 403,
             message:
-              '[ROKT] Rokt rejected the bulk request (status 403); no safe error detail returned.',
+              '[ROKT] Rokt rejected the bulk request (status 403): the Server-to-Server key/secret were rejected; check the destination credentials.',
             statTags,
             response: [
               {
                 statusCode: 403,
                 metadata: proxyMetadata(12),
                 error: '""',
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'rokt-delivery-missing-credentials',
+    name: 'rokt',
+    description: 'Framework delivery explains Rokt requests without credentials',
+    scenario: 'Native batching delivery',
+    successCriteria: 'The request is aborted on HTTP 401 with a credential-specific message',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    envOverrides,
+    input: {
+      request: {
+        method: 'POST',
+        body: generateProxyV1Payload(
+          {
+            endpoint,
+            endpointPath: '/v2/bulkevents',
+            method: 'POST',
+            headers: headersWithoutCredentials,
+            JSON_ARRAY: { batch: JSON.stringify(missingCredentialsRequest) },
+          },
+          [proxyMetadata(15)],
+          destination.Config,
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 401,
+            message:
+              '[ROKT] Rokt rejected the bulk request (status 401): no credentials were sent.',
+            statTags,
+            response: [
+              {
+                statusCode: 401,
+                metadata: proxyMetadata(15),
+                error: '""',
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'rokt-delivery-unrecognized-error-body',
+    name: 'rokt',
+    description: 'Framework delivery handles an unrecognized Rokt error body',
+    scenario: 'Native batching delivery',
+    successCriteria: 'The request is aborted without copying fields outside the errors envelope',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    envOverrides,
+    input: {
+      request: {
+        method: 'POST',
+        body: generateProxyV1Payload(
+          {
+            endpoint,
+            endpointPath: '/v2/bulkevents',
+            method: 'POST',
+            headers,
+            JSON_ARRAY: { batch: JSON.stringify(unrecognizedErrorRequest) },
+          },
+          [proxyMetadata(16)],
+          destination.Config,
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            message:
+              '[ROKT] Rokt rejected the bulk request (status 400): Rokt returned no recognized error details.',
+            statTags,
+            response: [
+              {
+                statusCode: 400,
+                metadata: proxyMetadata(16),
+                error: JSON.stringify(unrecognizedErrorResponse),
               },
             ],
           },
@@ -297,7 +443,7 @@ export const data: ProxyV1TestData[] = [
           output: {
             status: 429,
             message:
-              '[ROKT] Rokt rejected the bulk request (status 429); no safe error detail returned.',
+              '[ROKT] Rokt rejected the bulk request (status 429): Rokt returned no recognized error details.',
             statTags: { ...statTags, errorType: 'throttled' },
             response: [
               {
@@ -345,7 +491,7 @@ export const data: ProxyV1TestData[] = [
           output: {
             status: 503,
             message:
-              '[ROKT] Rokt rejected the bulk request (status 503); no safe error detail returned.',
+              '[ROKT] Rokt rejected the bulk request (status 503): Rokt returned no recognized error details.',
             statTags: { ...statTags, errorType: 'retryable' },
             response: [
               {

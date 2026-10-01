@@ -1,13 +1,13 @@
 import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
-import { constructPayload, formatTimeStamp, getValueFromMessage } from '../../util';
-import type { RudderMessage } from '../../../types';
 import {
-  ANDROID_DEVICE_TYPES,
-  BULK_EVENTS_PATH,
-  IOS_DEVICE_TYPES,
-  MAX_PER_USER_BATCH_BYTES,
-  ROKT_INTEGRATION_ID,
-} from './config';
+  constructPayload,
+  formatTimeStamp,
+  getValueFromMessage,
+  isAndroidFamily,
+  isAppleFamily,
+} from '../../util';
+import type { RudderMessage } from '../../../types';
+import { BULK_EVENTS_PATH, MAX_PER_USER_BATCH_BYTES, ROKT_INTEGRATION_ID } from './config';
 import mappingConfig from './data/ROKTConfig.json';
 import type {
   RoktBatch,
@@ -131,15 +131,13 @@ const buildUserAttributes = (message: RudderMessage): RoktUserAttributes => {
 
 const buildDeviceInfo = (message: RudderMessage): RoktDeviceInfo => {
   const deviceInfo = mappedPayload(message, ROKT_MAPPING_CONFIG.deviceMappings) as RoktDeviceInfo;
-  const deviceType = asNonEmptyString(
-    mappedValue(message, ROKT_MAPPING_CONFIG.deviceTypeMappings),
-  )?.toLowerCase();
+  const deviceType = asNonEmptyString(mappedValue(message, ROKT_MAPPING_CONFIG.deviceTypeMappings));
   const advertisingId = mappedValue(message, ROKT_MAPPING_CONFIG.advertisingIdMappings);
 
-  if (deviceType && isPresent(advertisingId)) {
-    if (IOS_DEVICE_TYPES.has(deviceType)) {
+  if (isPresent(advertisingId)) {
+    if (isAppleFamily(deviceType)) {
       deviceInfo.ios_advertising_id = advertisingId;
-    } else if (ANDROID_DEVICE_TYPES.has(deviceType)) {
+    } else if (isAndroidFamily(deviceType)) {
       deviceInfo.android_advertising_id = advertisingId;
     }
   }

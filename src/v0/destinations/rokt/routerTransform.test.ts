@@ -358,7 +358,7 @@ describe('RoktIntegration', () => {
         context: {
           locale: 'en-US',
           userAgent: 'synthetic-agent',
-          device: { type: 'iPhone', advertisingId: 'ios-device-id' },
+          device: { type: 'iOS', advertisingId: 'ios-device-id' },
           traits: {
             firstName: 'First',
             firstNameSha256: 'first-hash',

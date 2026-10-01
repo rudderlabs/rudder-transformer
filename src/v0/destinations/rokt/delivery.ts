@@ -1,4 +1,5 @@
 import {
+  abort,
   retry,
   success,
   type DeliveryContext,
@@ -11,6 +12,7 @@ const failureReason = ({ status }: DeliveryContext): string =>
 
 const partialFailureReason =
   'Rokt partially rejected the bulk request; retrying each event individually.';
+const completeFailureReason = 'Rokt rejected every event in the bulk request.';
 
 const statusOverrides: StatusOverrideMap = {
   202: (ctx) => {
@@ -19,8 +21,13 @@ const statusOverrides: StatusOverrideMap = {
         ? ctx.response.errors
         : undefined;
 
-    if (Array.isArray(errors) && errors.length > 0 && errors.length < ctx.jobs.length) {
-      return retry(partialFailureReason, { dontBatch: true });
+    if (Array.isArray(errors) && errors.length > 0) {
+      if (errors.length < ctx.jobs.length) {
+        return retry(partialFailureReason, { dontBatch: true });
+      }
+      if (errors.length === ctx.jobs.length) {
+        return abort(completeFailureReason);
+      }
     }
 
     return success();

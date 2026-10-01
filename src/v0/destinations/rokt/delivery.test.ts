@@ -49,6 +49,27 @@ describe('ROKT delivery', () => {
     });
   });
 
+  it('aborts every event when HTTP 202 reports one error per job', () => {
+    expect(
+      handleDeliveryResponse(
+        Integration,
+        context(
+          202,
+          {
+            errors: [
+              { code: 'BAD_REQUEST', message: 'invalid event 1' },
+              { code: 'BAD_REQUEST', message: 'invalid event 2' },
+            ],
+          },
+          2,
+        ),
+      ),
+    ).toEqual({
+      kind: 'abort',
+      reason: 'Rokt rejected every event in the bulk request.',
+    });
+  });
+
   it('aborts HTTP 400 responses', () => {
     expect(handleDeliveryResponse(Integration, context(400))).toMatchObject({ kind: 'abort' });
   });

@@ -847,6 +847,36 @@ class Prometheus {
         labelNames: [],
       },
       {
+        name: 'payload_capture_written',
+        help: 'Request/response capture records written to the local staging file',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
+        name: 'payload_capture_sampled_out',
+        help: 'Request/response capture records skipped by the sampling budget',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
+        name: 'payload_capture_dropped',
+        help: 'Request/response capture records dropped instead of written',
+        type: 'counter',
+        labelNames: ['reason'],
+      },
+      {
+        name: 'payload_capture_uploaded',
+        help: 'Request/response capture files uploaded to object storage',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
+        name: 'payload_capture_upload_failure',
+        help: 'Request/response capture file upload failures',
+        type: 'counter',
+        labelNames: ['reason'],
+      },
+      {
         name: 'get_tracking_plan_error',
         help: 'get_tracking_plan_error',
         type: 'counter',

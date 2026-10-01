@@ -4,6 +4,7 @@ import logger from '../logger';
 import { logProcessInfo } from './utils';
 import { RedisDB } from './redis/redisConnector';
 import { shutdownMetricsClient } from './stats';
+import { payloadCapture } from './payloadCapture';
 
 /**
  * workerShutdownFn is called during worker shutdown.
@@ -22,6 +23,8 @@ export function workerShutdownFn(serverFn: () => any): (signal?: string) => Prom
       timeout: 30000, // timeout: 30 secs
     });
     await shutdownServer();
+    logger.info(`Shutting down payload capture for worker (pid: ${process.pid})`);
+    await payloadCapture.shutdown();
     logger.info(`Shutting down metrics client for worker (pid: ${process.pid})`);
     await shutdownMetricsClient();
     logger.info(`Shutting down redis client for worker (pid: ${process.pid})`);

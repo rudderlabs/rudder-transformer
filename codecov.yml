@@ -6,3 +6,4 @@ coverage:
 ignore:
   - '**/*.bench.js'
   - '**/*.bench.ts'
+  - '**/*.manual.ts'

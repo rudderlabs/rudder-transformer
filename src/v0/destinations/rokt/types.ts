@@ -28,7 +28,7 @@ export const RoktMessageSchema = z
           SUPPORTED_MESSAGE_TYPES.includes(type as (typeof SUPPORTED_MESSAGE_TYPES)[number]),
         'Unsupported message type. ROKT supports track, page, screen, and identify.',
       ),
-    userId: z.string().nullish(),
+    userId: z.union([z.string(), z.number()]).transform(String).nullish(),
   })
   .passthrough();
 
@@ -71,10 +71,10 @@ export type RoktConversion = {
   data: {
     event_name: 'conversion';
     custom_event_type: 'transaction';
-    timestamp_unixtime_ms: number;
+    timestamp_unixtime_ms?: number;
     source_message_id?: string;
     custom_attributes: {
-      conversiontype: unknown;
+      conversiontype?: unknown;
       confirmationref?: unknown;
       amount?: string;
       currency?: unknown;

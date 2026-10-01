@@ -73,6 +73,24 @@ const identifyBatch = {
   user_attributes: { firstname: 'Identify' },
 };
 
+const identityFreeBatch = {
+  schema_version: 2,
+  environment: 'production',
+  user_identities: {},
+  events: [
+    {
+      event_type: 'custom_event',
+      data: {
+        event_name: 'conversion',
+        custom_event_type: 'transaction',
+        timestamp_unixtime_ms: timestampMs,
+        source_message_id: 'message-5',
+        custom_attributes: { conversiontype: 'purchase' },
+      },
+    },
+  ],
+};
+
 const errorStatTags = {
   errorCategory: 'dataValidation',
   errorType: 'instrumentation',
@@ -193,9 +211,9 @@ export const data: RouterTestData[] = [
   {
     id: 'rokt-router-invalid-conversion',
     name: 'rokt',
-    description: 'ROKT rejects unsupported and identity-free conversion events',
+    description: 'ROKT rejects unsupported events and accepts identity-free conversions',
     scenario: 'Instrumentation validation',
-    successCriteria: 'Invalid messages produce deterministic errors and no outbound request',
+    successCriteria: 'Unsupported messages fail while identity-free conversions are delivered',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -231,20 +249,19 @@ export const data: RouterTestData[] = [
         body: {
           output: [
             {
+              batchedRequest: batchedRequest([identityFreeBatch]),
+              metadata: [metadata(5)],
+              destination,
+              batched: true,
+              statusCode: 200,
+            },
+            {
               metadata: [metadata(4)],
               destination,
               batched: false,
               statusCode: 400,
               error:
                 'message.type: Unsupported message type. ROKT supports track, page, screen, and identify.',
-              statTags: errorStatTags,
-            },
-            {
-              metadata: [metadata(5)],
-              destination,
-              batched: false,
-              statusCode: 400,
-              error: 'ROKT conversion requires at least one supported identity signal',
               statTags: errorStatTags,
             },
           ],

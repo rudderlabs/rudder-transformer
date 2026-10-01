@@ -1,4 +1,4 @@
-import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
+import { ConfigurationError } from '@rudderstack/integrations-lib';
 import {
   constructPayload,
   formatTimeStamp,
@@ -7,7 +7,7 @@ import {
   isAppleFamily,
 } from '../../util';
 import type { RudderMessage } from '../../../types';
-import { BULK_EVENTS_PATH, MAX_PER_USER_BATCH_BYTES, ROKT_INTEGRATION_ID } from './config';
+import { BULK_EVENTS_PATH, ROKT_INTEGRATION_ID } from './config';
 import mappingConfig from './data/ROKTConfig.json';
 import type {
   RoktBatch,
@@ -91,16 +91,11 @@ const resolveClickId = (message: RudderMessage): string | undefined => {
   return [params.get('rclid'), params.get('rtid')].find(isPresent) ?? undefined;
 };
 
-const resolveTimestamp = (message: RudderMessage): number => {
+const resolveTimestamp = (message: RudderMessage): number | undefined => {
   const rawTimestamp = mappedValue(message, ROKT_MAPPING_CONFIG.timestampMappings);
-  if (!isPresent(rawTimestamp)) {
-    throw new InstrumentationError('ROKT conversion requires a timestamp');
-  }
+  if (!isPresent(rawTimestamp)) return undefined;
   const timestamp = new Date(rawTimestamp as string | number).getTime();
-  if (!Number.isFinite(timestamp)) {
-    throw new InstrumentationError('ROKT conversion timestamp is invalid');
-  }
-  return timestamp;
+  return Number.isFinite(timestamp) ? timestamp : undefined;
 };
 
 const formatDateOfBirth = (value: unknown): string | undefined => {
@@ -118,7 +113,8 @@ const buildIdentities = (message: RudderMessage, clickId?: string): RoktUserIden
     ROKT_MAPPING_CONFIG.identityMappings,
   ) as RoktUserIdentities;
   const email = asNonEmptyString(identities.email)?.toLowerCase();
-  return compact({ ...identities, email, other2: clickId });
+  const customerid = isPresent(identities.customerid) ? String(identities.customerid) : undefined;
+  return compact({ ...identities, email, customerid, other2: clickId });
 };
 
 const buildUserAttributes = (message: RudderMessage): RoktUserAttributes => {
@@ -165,9 +161,7 @@ const buildConversion = (message: RudderMessage): RoktConversion => {
   if (!isPresent(conversiontype) && ['page', 'screen'].includes(message.type)) {
     conversiontype = 'screen_view';
   }
-  if (!isPresent(conversiontype)) {
-    throw new InstrumentationError('ROKT conversion requires conversiontype');
-  }
+  const timestamp = resolveTimestamp(message);
   const sourceMessageId = asNonEmptyString(message.messageId);
 
   return {
@@ -175,7 +169,7 @@ const buildConversion = (message: RudderMessage): RoktConversion => {
     data: {
       event_name: 'conversion',
       custom_event_type: 'transaction',
-      timestamp_unixtime_ms: resolveTimestamp(message),
+      ...(timestamp !== undefined ? { timestamp_unixtime_ms: timestamp } : {}),
       ...(sourceMessageId ? { source_message_id: sourceMessageId } : {}),
       custom_attributes: compact({
         ...customAttributes,
@@ -190,16 +184,11 @@ export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
   const sanitizedMessage = omitWhitespaceOnlyValues(message) as RudderMessage;
   const clickId = resolveClickId(sanitizedMessage);
   const identities = buildIdentities(sanitizedMessage, clickId);
-  if (message.type !== 'identify' && Object.keys(identities).length === 0) {
-    throw new InstrumentationError(
-      'ROKT conversion requires at least one supported identity signal',
-    );
-  }
 
   const root = mappedPayload(sanitizedMessage, ROKT_MAPPING_CONFIG.rootMappings);
   const userAttributes = buildUserAttributes(sanitizedMessage);
   const deviceInfo = buildDeviceInfo(sanitizedMessage);
-  const batch: RoktBatch = {
+  return {
     schema_version: 2,
     environment: 'production',
     user_identities: identities,
@@ -215,12 +204,4 @@ export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
       : {}),
     ...(message.type === 'identify' ? {} : { events: [buildConversion(sanitizedMessage)] }),
   };
-
-  const batchBytes = Buffer.byteLength(JSON.stringify(batch), 'utf8');
-  if (batchBytes > MAX_PER_USER_BATCH_BYTES) {
-    throw new InstrumentationError(
-      `ROKT per-user batch exceeds the ${MAX_PER_USER_BATCH_BYTES}-byte limit`,
-    );
-  }
-  return batch;
 };

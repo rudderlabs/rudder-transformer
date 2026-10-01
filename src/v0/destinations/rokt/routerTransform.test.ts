@@ -4,12 +4,9 @@ import type {
   Destination,
   RouterTransformationRequestData,
   RouterTransformationResponse,
-  RudderMessage,
 } from '../../../types';
-import { MAX_PER_USER_BATCH_BYTES } from './config';
 import type { RoktBatch } from './types';
 import { Integration } from './routerTransform';
-import { buildRoktBatch } from './utils';
 
 const destination: Destination = {
   ID: 'rokt-dest-1',
@@ -480,55 +477,81 @@ describe('RoktIntegration', () => {
     });
   });
 
-  it('rejects unsupported types, missing conversion identity, timestamp, and conversiontype', async () => {
+  it('rejects unsupported message types', async () => {
     const responses = await route([
       makeInput(8, { type: 'group' }),
       makeInput(9, { type: 'alias' }),
-      makeInput(10, { userId: undefined, context: {}, properties: {} }),
-      makeInput(14, { userId: 123 }),
-      makeInput(11, { timestamp: undefined, originalTimestamp: undefined, sentAt: undefined }),
-      makeInput(12, { timestamp: 'not-a-date' }),
-      makeInput(13, { event: undefined, properties: {} }),
     ]);
 
-    expect(responses).toHaveLength(7);
+    expect(responses).toHaveLength(2);
     expect(responses.map((response) => response.error)).toEqual([
       expect.stringContaining('Unsupported message type'),
       expect.stringContaining('Unsupported message type'),
-      expect.stringContaining('message.userId: Expected string'),
-      'ROKT conversion requires at least one supported identity signal',
-      'ROKT conversion requires a timestamp',
-      'ROKT conversion timestamp is invalid',
-      'ROKT conversion requires conversiontype',
     ]);
     expect(responses.every((response) => response.batchedRequest === undefined)).toBe(true);
   });
 
   it.each([
-    { name: 'single-byte UTF-8', fill: 'x' },
-    { name: 'multi-byte UTF-8', fill: 'é' },
-  ])('enforces the exact 128 KiB serialized boundary for $name values', ({ fill }) => {
-    const input = makeInput(14, { traits: { firstName: fill } });
-    const oneUnitBatch = buildRoktBatch(input.message as RudderMessage);
-    const oneUnitBytes = Buffer.byteLength(JSON.stringify(oneUnitBatch), 'utf8');
-    const fillBytes = Buffer.byteLength(fill, 'utf8');
-    const overhead = oneUnitBytes - fillBytes;
-    const unitsAtOrBelowLimit = Math.floor((MAX_PER_USER_BATCH_BYTES - overhead) / fillBytes);
+    { name: 'missing', timestamp: undefined },
+    { name: 'invalid', timestamp: 'not-a-date' },
+  ])('omits an $name conversion timestamp', ({ timestamp: timestampValue }) => {
+    const body = transform(makeInput(10, { timestamp: timestampValue })).body;
 
-    const atOrBelowLimit = buildRoktBatch({
-      ...input.message,
-      traits: { firstName: fill.repeat(unitsAtOrBelowLimit) },
-    } as RudderMessage);
-    const batchBytes = Buffer.byteLength(JSON.stringify(atOrBelowLimit), 'utf8');
-    expect(batchBytes).toBeLessThanOrEqual(MAX_PER_USER_BATCH_BYTES);
-    expect(MAX_PER_USER_BATCH_BYTES - batchBytes).toBeLessThan(fillBytes);
+    expect(body.events?.[0].data).toEqual({
+      event_name: 'conversion',
+      custom_event_type: 'transaction',
+      source_message_id: 'message-10',
+      custom_attributes: { conversiontype: 'purchase' },
+    });
+  });
 
-    expect(() =>
-      buildRoktBatch({
-        ...input.message,
-        traits: { firstName: `${fill.repeat(unitsAtOrBelowLimit)}${fill}` },
-      } as RudderMessage),
-    ).toThrow(`ROKT per-user batch exceeds the ${MAX_PER_USER_BATCH_BYTES}-byte limit`);
+  it.each([
+    { name: 'missing', properties: {} },
+    { name: 'null', properties: { conversiontype: null } },
+  ])(
+    'accepts conversions without an identity and with a $name conversion type',
+    ({ properties }) => {
+      const body = transform(
+        makeInput(11, {
+          userId: undefined,
+          event: undefined,
+          timestamp: undefined,
+          context: {},
+          properties,
+        }),
+      ).body;
+
+      expect(body).toEqual({
+        schema_version: 2,
+        environment: 'production',
+        user_identities: {},
+        events: [
+          {
+            event_type: 'custom_event',
+            data: {
+              event_name: 'conversion',
+              custom_event_type: 'transaction',
+              source_message_id: 'message-11',
+              custom_attributes: {},
+            },
+          },
+        ],
+      });
+    },
+  );
+
+  it('converts a numeric userId to a customer ID string', async () => {
+    const [response] = await route([makeInput(12, { userId: 123 })]);
+
+    expect(parseBatch(response)[0].user_identities.customerid).toBe('123');
+  });
+
+  it('does not impose a client-side per-user payload size limit', () => {
+    const largeValue = 'x'.repeat(200 * 1024);
+    const body = transform(makeInput(13, { traits: { firstName: largeValue } })).body;
+
+    expect(body.user_attributes?.firstname).toBe(largeValue);
+    expect(Buffer.byteLength(JSON.stringify(body), 'utf8')).toBeGreaterThan(200 * 1024);
   });
 
   it.each([

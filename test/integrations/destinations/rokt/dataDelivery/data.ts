@@ -32,6 +32,10 @@ const statTags = {
   workspaceId: 'ws-1',
 };
 
+const envOverrides = {
+  ROKT_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS: 'ws-1',
+};
+
 export const data: ProxyV1TestData[] = [
   {
     id: 'rokt-delivery-accepted',
@@ -42,6 +46,7 @@ export const data: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
+    envOverrides,
     input: {
       request: {
         method: 'POST',
@@ -80,6 +85,7 @@ export const data: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
+    envOverrides,
     input: {
       request: {
         method: 'POST',
@@ -126,6 +132,7 @@ export const data: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
+    envOverrides,
     input: {
       request: {
         method: 'POST',
@@ -173,6 +180,7 @@ export const data: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
+    envOverrides,
     input: {
       request: {
         method: 'POST',
@@ -220,6 +228,7 @@ export const data: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
+    envOverrides,
     input: {
       request: {
         method: 'POST',

@@ -115,6 +115,7 @@ describe('RoktIntegration', () => {
     'https://s2s.mparticle.com:8443',
     'https://s2s.mparticle.com/path',
     'https://s2s.mparticle.com?redirect=1',
+    'https://mparticle.com',
     'https://127.0.0.1',
   ])('rejects unsafe apiEndpoint %s', (apiEndpoint) => {
     const input = makeInput(
@@ -123,7 +124,7 @@ describe('RoktIntegration', () => {
       { ...destination, Config: { ...destination.Config, apiEndpoint } },
     );
     expect(() => transform(input)).toThrow(
-      'ROKT apiEndpoint must be an approved HTTPS Rokt Events API base URL',
+      'ROKT apiEndpoint must be a valid HTTPS Rokt Events API base URL',
     );
   });
 
@@ -132,7 +133,8 @@ describe('RoktIntegration', () => {
     'https://s2s.us2.mparticle.com/',
     'https://s2s.eu1.mparticle.com',
     'https://s2s.au1.mparticle.com/',
-  ])('accepts the approved Rokt endpoint %s', (apiEndpoint) => {
+    'https://s2s.future.mparticle.com',
+  ])('accepts the Rokt endpoint %s', (apiEndpoint) => {
     const input = makeInput(
       1,
       {},

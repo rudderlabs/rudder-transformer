@@ -10,6 +10,9 @@ const eventBase = (ctx: RunContext, suffix: string) => ({
 export const live: LiveSpec = {
   enabled: true,
   authType: 'basic',
+  envOverrides: {
+    ROKT_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS: 'ALL',
+  },
   resolveConfig: (secret) => ({ ...secret.config }),
   scenarios: [
     {

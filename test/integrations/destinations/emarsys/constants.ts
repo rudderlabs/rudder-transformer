@@ -1,9 +1,10 @@
 import { base64Sha } from '../../../../src/cdk/v2/destinations/emarsys/utils';
+import { secret1, secret2 } from './maskedSecrets';
 
 export const NONCE = '5398e214ae99c2e50afb709a3bc423f9';
 export const TIMESTAMP = '2019-10-14T00:00:00.000Z';
-export const USERNAME = 'dummy';
-export const SECRET = 'dummy';
+export const USERNAME = secret1;
+export const SECRET = secret2;
 
 export const PASSWORD_DIGEST = base64Sha(NONCE + TIMESTAMP + SECRET);
 export const HEADER_BLOCK = `UsernameToken Username="${USERNAME}", PasswordDigest="${PASSWORD_DIGEST}", Nonce="${NONCE}", Created="${TIMESTAMP}"`;

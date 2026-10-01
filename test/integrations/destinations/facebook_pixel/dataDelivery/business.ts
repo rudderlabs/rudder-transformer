@@ -42,7 +42,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_access_token`,
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events`,
+          params: {
+            access_token: 'invalid_access_token',
+            destination: 'facebook_pixel',
+          },
           FORM: testFormData,
         }),
         method: 'POST',
@@ -87,8 +91,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=my_access_token`,
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events`,
           params: {
+            access_token: 'my_access_token',
             destination: 'facebook_pixel',
           },
           FORM: testFormData,
@@ -127,7 +132,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_timestamp_correct_access_token`,
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events`,
+          params: {
+            access_token: 'invalid_timestamp_correct_access_token',
+            destination: 'facebook_pixel',
+          },
           FORM: testFormData,
         }),
         method: 'POST',
@@ -167,7 +176,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_account_id_valid_access_token`,
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events`,
+          params: {
+            access_token: 'invalid_account_id_valid_access_token',
+            destination: 'facebook_pixel',
+          },
           FORM: testFormData,
         }),
         method: 'POST',
@@ -207,7 +220,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=not_found_access_token`,
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events`,
+          params: {
+            access_token: 'not_found_access_token',
+            destination: 'facebook_pixel',
+          },
           FORM: testFormData,
         }),
         method: 'POST',
@@ -246,7 +263,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     input: {
       request: {
         body: generateProxyV1Payload({
-          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234570/events?access_token=valid_access_token`,
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234570/events`,
+          params: {
+            access_token: 'valid_access_token',
+            destination: 'facebook_pixel',
+          },
           FORM: testFormData,
         }),
         method: 'POST',

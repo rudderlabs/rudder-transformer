@@ -1,4 +1,4 @@
-import { authHeader1, secret1 } from './maskedSecrets';
+import { authHeader1, defaultSenderId, defaultSenderPhoneNumber, secret1 } from './maskedSecrets';
 export const destination = {
   ID: 'random_id',
   Name: 'clicksend',
@@ -12,8 +12,8 @@ export const destination = {
     defaultCampaignScheduleUnit: 'day',
     defaultCampaignSchedule: '2',
     defaultSource: 'php',
-    defaultSenderId: 'abc@gmail.com',
-    defaultSenderPhoneNumber: '+919XXXXXXXX8',
+    defaultSenderId,
+    defaultSenderPhoneNumber,
   },
 };
 

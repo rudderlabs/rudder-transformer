@@ -1,9 +1,10 @@
 import { Destination, RouterTransformationRequest } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
+import { secret1 } from '../maskedSecrets';
 
 export const esDestinationAudience: Destination = {
   Config: {
-    accessToken: 'ABC',
+    accessToken: secret1,
     userSchema: [
       'EMAIL',
       'DOBM',
@@ -40,7 +41,7 @@ export const esDestinationAudience: Destination = {
 
 export const esDestinationAudienceHashOn: Destination = {
   Config: {
-    accessToken: 'ABC',
+    accessToken: secret1,
     userSchema: [
       'EMAIL',
       'DOBM',
@@ -176,7 +177,7 @@ export const eventStreamAudienceListRouterRequest: RouterTransformationRequest =
 
 export const esDestinationRecord: Destination = {
   Config: {
-    accessToken: 'ABC',
+    accessToken: secret1,
     userSchema: ['EMAIL', 'FI'],
     isHashRequired: true,
     disableFormat: false,

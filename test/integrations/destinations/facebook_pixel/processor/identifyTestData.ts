@@ -173,10 +173,10 @@ export const identifyTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v25.0/dummyPixelId/events?access_token=09876',
+              endpoint: 'https://graph.facebook.com/v25.0/dummyPixelId/events',
               endpointPath: 'events',
               headers: {},
-              params: {},
+              params: { access_token: '09876' },
               FORM: {
                 data: [
                   JSON.stringify({

@@ -1,3 +1,5 @@
+import { routingKey } from '../maskedSecrets';
+
 export const data = [
   // {
   //   name: 'pagerduty',
@@ -19,7 +21,7 @@ export const data = [
   //             request_ip: '[::1]',
   //             originalTimestamp: '2022-10-11T13:10:54.877+05:30',
   //           },
-  //           destination: { Config: { routingKey: '9552b56325dc490bd0139be85f7b8fac' } },
+  //           destination: { Config: { routingKey } },
   //         },
   //       ],
   //       method: 'POST',
@@ -116,7 +118,7 @@ export const data = [
   //             request_ip: '[::1]',
   //             originalTimestamp: '2022-10-11T13:10:54.877+05:30',
   //           },
-  //           destination: { Config: { routingKey: '9552b56325dc490bd0139be85f7b8fac' } },
+  //           destination: { Config: { routingKey } },
   //         },
   //       ],
   //       method: 'POST',
@@ -160,7 +162,7 @@ export const data = [
   //             userId: 'user@45',
   //             properties: {},
   //           },
-  //           destination: { Config: { routingKey: '9552b56325dc490bd0139be85f7b8fac' } },
+  //           destination: { Config: { routingKey } },
   //         },
   //       ],
   //       method: 'POST',
@@ -205,7 +207,7 @@ export const data = [
   //             userId: 'user@45',
   //             properties: { dedupKey: '9116b734-7e6b-4497-ab51-c16744d4487e' },
   //           },
-  //           destination: { Config: { routingKey: '9552b56325dc490bd0139be85f7b8fac' } },
+  //           destination: { Config: { routingKey } },
   //         },
   //       ],
   //       method: 'POST',
@@ -252,7 +254,7 @@ export const data = [
   //           },
   //           destination: {
   //             Config: {
-  //               routingKey: '9552b56325dc490bd0139be85f7b8fac',
+  //               routingKey,
   //               dedupKeyFieldIdentifier: 'properties.dedupKey',
   //             },
   //           },
@@ -334,7 +336,7 @@ export const data = [
             },
             destination: {
               Config: {
-                routingKey: '9552b56325dc490bd0139be85f7b8fac',
+                routingKey,
                 dedupKeyFieldIdentifier: 'properties.dedupKey',
               },
             },
@@ -369,127 +371,127 @@ export const data = [
       });
     },
   },
-  // {
-  //   name: 'pagerduty',
-  //   description: 'Trigger event',
-  //   feature: 'processor',
-  //   module: 'destination',
-  //   version: 'v0',
-  //   input: {
-  //     request: {
-  //       body: [
-  //         {
-  //           message: {
-  //             channel: 'web',
-  //             type: 'track',
-  //             event: 'apiSecret is not present',
-  //             messageId: '9116b734-7e6b-4497-ab51-c16744d4487e',
-  //             userId: 'user@45',
-  //             properties: {
-  //               action: 'trigger',
-  //               dedupKey: '9116b734-7e6b-4497-ab51-c16744d4487e',
-  //               severity: 'critical',
-  //               component: 'ui',
-  //               source: 'rudder-webapp',
-  //               group: 'destination',
-  //               class: 'connection settings',
-  //               customDetails: { 'ping time': '1500ms', 'load avg': 0.75 },
-  //               imageURLs: [
-  //                 {
-  //                   src: 'https://static.s4be.cochrane.org/app/uploads/2017/04/shutterstock_531145954.jpg',
-  //                   alt: 'first image',
-  //                 },
-  //                 {
-  //                   src: 'https://chart.googleapis.com/chart?chs=600x400&chd=t:6,2,9,5,2,5,7,4,8,2,1&cht=lc&chds=a&chxt=y&chm=D,0033FF,0,0,5,1',
-  //                   alt: 'second image',
-  //                 },
-  //                 { alt: 'third image' },
-  //               ],
-  //               linkURLs: [
-  //                 {
-  //                   href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error',
-  //                   text: 'Js Object Error',
-  //                 },
-  //                 {
-  //                   href: 'https://www.techtarget.com/whatis/definition/stack-overflow#:~:text=A%20stack%20overflow%20is%20a,been%20allocated%20to%20that%20stack',
-  //                   text: 'Stack Overflow Error',
-  //                 },
-  //                 { text: 'Destructure Error' },
-  //               ],
-  //             },
-  //           },
-  //           destination: {
-  //             Config: {
-  //               routingKey: '9552b56325dc490bd0139be85f7b8fac',
-  //               dedupKeyFieldIdentifier: 'properties.dedupKey',
-  //             },
-  //           },
-  //         },
-  //       ],
-  //       method: 'POST',
-  //     },
-  //     pathSuffix: '',
-  //   },
-  //   output: {
-  //     response: {
-  //       status: 200,
-  //       body: [
-  //         {
-  //           output: {
-  //             body: {
-  //               XML: {},
-  //               FORM: {},
-  //               JSON: {
-  //                 links: [
-  //                   {
-  //                     href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error',
-  //                     text: 'Js Object Error',
-  //                   },
-  //                   {
-  //                     href: 'https://www.techtarget.com/whatis/definition/stack-overflow#:~:text=A%20stack%20overflow%20is%20a,been%20allocated%20to%20that%20stack',
-  //                     text: 'Stack Overflow Error',
-  //                   },
-  //                 ],
-  //                 images: [
-  //                   {
-  //                     alt: 'first image',
-  //                     src: 'https://static.s4be.cochrane.org/app/uploads/2017/04/shutterstock_531145954.jpg',
-  //                   },
-  //                   {
-  //                     alt: 'second image',
-  //                     src: 'https://chart.googleapis.com/chart?chs=600x400&chd=t:6,2,9,5,2,5,7,4,8,2,1&cht=lc&chds=a&chxt=y&chm=D,0033FF,0,0,5,1',
-  //                   },
-  //                 ],
-  //                 payload: {
-  //                   class: 'connection settings',
-  //                   group: 'destination',
-  //                   source: 'rudder-webapp',
-  //                   summary: 'apiSecret is not present',
-  //                   severity: 'critical',
-  //                   component: 'ui',
-  //                   custom_details: { 'ping time': '1500ms', 'load avg': 0.75 },
-  //                 },
-  //                 dedup_key: '9116b734-7e6b-4497-ab51-c16744d4487e',
-  //                 routing_key: '9552b56325dc490bd0139be85f7b8fac',
-  //                 event_action: 'trigger',
-  //               },
-  //               JSON_ARRAY: {},
-  //             },
-  //             type: 'REST',
-  //             files: {},
-  //             method: 'POST',
-  //             params: {},
-  //             headers: { 'Content-Type': 'application/json' },
-  //             version: '1',
-  //             endpoint: 'https://events.pagerduty.com/v2/enqueue',
-  //             userId: '',
-  //           },
-  //           statusCode: 200,
-  //         },
-  //       ],
-  //     },
-  //   },
-  // },
+  {
+    name: 'pagerduty',
+    description: 'Trigger event',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              type: 'track',
+              event: 'apiSecret is not present',
+              messageId: '9116b734-7e6b-4497-ab51-c16744d4487e',
+              userId: 'user@45',
+              properties: {
+                action: 'trigger',
+                dedupKey: '9116b734-7e6b-4497-ab51-c16744d4487e',
+                severity: 'critical',
+                component: 'ui',
+                source: 'rudder-webapp',
+                group: 'destination',
+                class: 'connection settings',
+                customDetails: { 'ping time': '1500ms', 'load avg': 0.75 },
+                imageURLs: [
+                  {
+                    src: 'https://static.s4be.cochrane.org/app/uploads/2017/04/shutterstock_531145954.jpg',
+                    alt: 'first image',
+                  },
+                  {
+                    src: 'https://chart.googleapis.com/chart?chs=600x400&chd=t:6,2,9,5,2,5,7,4,8,2,1&cht=lc&chds=a&chxt=y&chm=D,0033FF,0,0,5,1',
+                    alt: 'second image',
+                  },
+                  { alt: 'third image' },
+                ],
+                linkURLs: [
+                  {
+                    href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error',
+                    text: 'Js Object Error',
+                  },
+                  {
+                    href: 'https://www.techtarget.com/whatis/definition/stack-overflow#:~:text=A%20stack%20overflow%20is%20a,been%20allocated%20to%20that%20stack',
+                    text: 'Stack Overflow Error',
+                  },
+                  { text: 'Destructure Error' },
+                ],
+              },
+            },
+            destination: {
+              Config: {
+                routingKey,
+                dedupKeyFieldIdentifier: 'properties.dedupKey',
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                XML: {},
+                FORM: {},
+                JSON: {
+                  links: [
+                    {
+                      href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error',
+                      text: 'Js Object Error',
+                    },
+                    {
+                      href: 'https://www.techtarget.com/whatis/definition/stack-overflow#:~:text=A%20stack%20overflow%20is%20a,been%20allocated%20to%20that%20stack',
+                      text: 'Stack Overflow Error',
+                    },
+                  ],
+                  images: [
+                    {
+                      alt: 'first image',
+                      src: 'https://static.s4be.cochrane.org/app/uploads/2017/04/shutterstock_531145954.jpg',
+                    },
+                    {
+                      alt: 'second image',
+                      src: 'https://chart.googleapis.com/chart?chs=600x400&chd=t:6,2,9,5,2,5,7,4,8,2,1&cht=lc&chds=a&chxt=y&chm=D,0033FF,0,0,5,1',
+                    },
+                  ],
+                  payload: {
+                    class: 'connection settings',
+                    group: 'destination',
+                    source: 'rudder-webapp',
+                    summary: 'apiSecret is not present',
+                    severity: 'critical',
+                    component: 'ui',
+                    custom_details: { 'ping time': '1500ms', 'load avg': 0.75 },
+                  },
+                  dedup_key: '9116b734-7e6b-4497-ab51-c16744d4487e',
+                  routing_key: routingKey,
+                  event_action: 'trigger',
+                },
+                JSON_ARRAY: {},
+              },
+              type: 'REST',
+              files: {},
+              method: 'POST',
+              params: {},
+              headers: { 'Content-Type': 'application/json' },
+              version: '1',
+              endpoint: 'https://events.pagerduty.com/v2/enqueue',
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
   // {
   //   name: 'pagerduty',
   //   description: 'Acknowledge event',
@@ -541,7 +543,7 @@ export const data = [
   //           },
   //           destination: {
   //             Config: {
-  //               routingKey: '9552b56325dc490bd0139be85f7b8fac',
+  //               routingKey,
   //               dedupKeyFieldIdentifier: 'properties.dedupKey',
   //             },
   //           },
@@ -562,7 +564,7 @@ export const data = [
   //               FORM: {},
   //               JSON: {
   //                 dedup_key: '9116b734-7e6b-4497-ab51-c16744d4487e',
-  //                 routing_key: '9552b56325dc490bd0139be85f7b8fac',
+  //                 routing_key: routingKey,
   //                 event_action: 'acknowledge',
   //               },
   //               JSON_ARRAY: {},
@@ -633,7 +635,7 @@ export const data = [
   //           },
   //           destination: {
   //             Config: {
-  //               routingKey: '9552b56325dc490bd0139be85f7b8fac',
+  //               routingKey,
   //               dedupKeyFieldIdentifier: 'properties.dedupKey',
   //             },
   //           },
@@ -654,7 +656,7 @@ export const data = [
   //               FORM: {},
   //               JSON: {
   //                 dedup_key: '9116b734-7e6b-4497-ab51-c16744d4487e',
-  //                 routing_key: '9552b56325dc490bd0139be85f7b8fac',
+  //                 routing_key: routingKey,
   //                 event_action: 'resolve',
   //               },
   //               JSON_ARRAY: {},
@@ -720,7 +722,7 @@ export const data = [
   //           },
   //           destination: {
   //             Config: {
-  //               routingKey: '9552b56325dc490bd0139be85f7b8fac',
+  //               routingKey,
   //               dedupKeyFieldIdentifier: 'properties.dedupKey',
   //             },
   //           },
@@ -765,7 +767,7 @@ export const data = [
   //                   summary: 'Github CI/CD Triggered',
   //                   custom_details: { 'load avg': 0.75, 'ping time': '1500ms' },
   //                 },
-  //                 routing_key: '9552b56325dc490bd0139be85f7b8fac',
+  //                 routing_key: routingKey,
   //               },
   //               JSON_ARRAY: {},
   //             },

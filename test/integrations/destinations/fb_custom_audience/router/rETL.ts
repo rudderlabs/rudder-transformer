@@ -1,10 +1,11 @@
 import { Connection, Destination, RouterTransformationRequest } from '../../../../../src/types';
 import { VDM_V2_SCHEMA_VERSION } from '../../../../../src/v0/util/constant';
 import { generateMetadata } from '../../../testUtils';
+import { secret1, secret2 } from '../maskedSecrets';
 
 const destinationV2: Destination = {
   Config: {
-    accessToken: 'ABC',
+    accessToken: secret1,
     disableFormat: false,
     isHashRequired: true,
     isRaw: false,
@@ -488,8 +489,8 @@ export const rETLRecordV2RouterInvalidRequestWithValueBasedAudience: RouterTrans
 
 export const destinationV1: Destination = {
   Config: {
-    accessToken: 'ABC',
-    appSecret: 'dummySecret',
+    accessToken: secret1,
+    appSecret: secret2,
     disableFormat: false,
     isHashRequired: true,
     isRaw: false,

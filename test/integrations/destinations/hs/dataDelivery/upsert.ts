@@ -72,7 +72,8 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 200,
@@ -143,7 +144,8 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 400,
@@ -224,7 +226,8 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 200,
@@ -291,7 +294,8 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 200,
@@ -348,13 +352,223 @@ export const upsertData = [
         body: {
           output: {
             status: 207,
-            message: '[HUBSPOT Response V1 Handler] - Batch upsert completed with partial results',
+            message:
+              '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results',
             response: [
               {
                 statusCode: 200,
                 metadata: generateMetadata(9),
                 error: 'success',
               },
+            ],
+          },
+        },
+      },
+    },
+  },
+];
+
+const UPDATE_ENDPOINT = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update';
+const NOT_FOUND_MESSAGE =
+  'Could not get some CONTACT objects, they may be deleted or not exist. Check that ids are valid.';
+const NOT_UPDATED_MESSAGE =
+  '[HUBSPOT] Record not updated: its id is missing from the batch/update results (e.g. a merged record).';
+const MULTI_STATUS_MESSAGE =
+  '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results';
+
+/**
+ * 207 Multi-Status handling for the HubSpot batch update API.
+ *
+ * batch/update reports a missing record (OBJECT_NOT_FOUND) in errors[], echoing the failed
+ * input's objectWriteTraceId in error.context (next to the record id in context.ids). Each update
+ * input carries the job id(s) it was built from as objectWriteTraceId (comma-separated when
+ * several events were merged into one input), so the handler fails exactly those jobs; every
+ * other job in the batch succeeds.
+ * Network mocks: network.ts (batch/update, ids 90001 / 90002).
+ */
+export const updateMultiStatusData = [
+  {
+    name: 'hs',
+    id: 'hs_update_207_record_not_found_merged_input',
+    description:
+      '207 from batch/update: a missing record id fails every job merged into its input, the rest succeed',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            endpoint: UPDATE_ENDPOINT,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: authHeader1,
+            },
+            JSON: {
+              inputs: [
+                { id: '90001', properties: { firstname: 'Alive' }, objectWriteTraceId: '1' },
+                { id: '90002', properties: { firstname: 'Gone' }, objectWriteTraceId: '2,3' },
+              ],
+            },
+          },
+          [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
+          { apiVersion: 'newApi' },
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 207,
+            message: MULTI_STATUS_MESSAGE,
+            response: [
+              { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
+              { statusCode: 400, metadata: generateMetadata(2), error: NOT_FOUND_MESSAGE },
+              { statusCode: 400, metadata: generateMetadata(3), error: NOT_FOUND_MESSAGE },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    id: 'hs_update_200_merged_record_id_left_out',
+    description:
+      '200 from batch/update that leaves a merged-away record id out of the results: every job merged into that input fails, the rest succeed',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            endpoint: UPDATE_ENDPOINT,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: authHeader1,
+            },
+            JSON: {
+              inputs: [
+                { id: '90003', properties: { firstname: 'Alive' }, objectWriteTraceId: '4' },
+                { id: '90004', properties: { firstname: 'Merged' }, objectWriteTraceId: '5,6' },
+              ],
+            },
+          },
+          [generateMetadata(4), generateMetadata(5), generateMetadata(6)],
+          { apiVersion: 'newApi' },
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 207,
+            message: MULTI_STATUS_MESSAGE,
+            response: [
+              { statusCode: 200, metadata: generateMetadata(4), error: 'success' },
+              { statusCode: 400, metadata: generateMetadata(5), error: NOT_UPDATED_MESSAGE },
+              { statusCode: 400, metadata: generateMetadata(6), error: NOT_UPDATED_MESSAGE },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    id: 'hs_update_200_result_matched_by_trace_id',
+    description:
+      '200 from batch/update: a result under a different record id still counts for the input whose objectWriteTraceId it echoes; an input missing entirely fails',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            endpoint: UPDATE_ENDPOINT,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: authHeader1,
+            },
+            JSON: {
+              inputs: [
+                { id: '90005', properties: { firstname: 'Resolved' }, objectWriteTraceId: '7' },
+                { id: '90006', properties: { firstname: 'Merged' }, objectWriteTraceId: '8,9' },
+              ],
+            },
+          },
+          [generateMetadata(7), generateMetadata(8), generateMetadata(9)],
+          { apiVersion: 'newApi' },
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 207,
+            message: MULTI_STATUS_MESSAGE,
+            response: [
+              { statusCode: 200, metadata: generateMetadata(7), error: 'success' },
+              { statusCode: 400, metadata: generateMetadata(8), error: NOT_UPDATED_MESSAGE },
+              { statusCode: 400, metadata: generateMetadata(9), error: NOT_UPDATED_MESSAGE },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    id: 'hs_update_200_every_input_missing',
+    description:
+      '200 from batch/update with every input missing (empty results and errors): each job fails as not updated, not with the generic silent-failure reason',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            endpoint: UPDATE_ENDPOINT,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: authHeader1,
+            },
+            JSON: {
+              inputs: [
+                { id: '90007', properties: { firstname: 'MergedA' }, objectWriteTraceId: '10' },
+                { id: '90008', properties: { firstname: 'MergedB' }, objectWriteTraceId: '11,12' },
+              ],
+            },
+          },
+          [generateMetadata(10), generateMetadata(11), generateMetadata(12)],
+          { apiVersion: 'newApi' },
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 207,
+            message: MULTI_STATUS_MESSAGE,
+            response: [
+              { statusCode: 400, metadata: generateMetadata(10), error: NOT_UPDATED_MESSAGE },
+              { statusCode: 400, metadata: generateMetadata(11), error: NOT_UPDATED_MESSAGE },
+              { statusCode: 400, metadata: generateMetadata(12), error: NOT_UPDATED_MESSAGE },
             ],
           },
         },

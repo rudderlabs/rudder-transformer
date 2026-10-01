@@ -33,7 +33,7 @@ export const networkCallsData = [
   {
     description: 'Rokt accepts a ROKT bulk request',
     httpReq: { method: 'POST', url: endpoint, headers, data: acceptedRequest },
-    httpRes: { data: {}, status: 202 },
+    httpRes: { data: '', status: 202 },
   },
   {
     description: 'Rokt rejects a ROKT bulk request with an unsafe response body',

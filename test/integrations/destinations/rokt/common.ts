@@ -6,8 +6,6 @@ export const headers = {
   Authorization: `Basic ${Buffer.from('server-key:server-secret').toString('base64')}`,
 };
 
-export const deliveryHeaders = headers;
-
 export const destination: Destination = {
   ID: 'rokt-dest-1',
   Name: 'ROKT',

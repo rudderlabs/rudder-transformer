@@ -32,8 +32,6 @@ export const RoktMessageSchema = z
   })
   .passthrough();
 
-export type RoktDestinationConfig = z.infer<typeof RoktDestinationConfigSchema>;
-
 export type RoktUserIdentities = {
   email?: string;
   customerid?: string;

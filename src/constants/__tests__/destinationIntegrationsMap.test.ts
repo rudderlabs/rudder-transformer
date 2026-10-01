@@ -132,11 +132,5 @@ describe('isDestinationIntegrationEnabled', () => {
       expect(isBatchingFrameworkTransportEnabled('TEST_DEST', 'ws-1')).toBe(true);
       expect(isBatchingFrameworkTransportEnabled('TEST_DEST', 'ws-2')).toBe(false);
     });
-
-    it('enables ROKT transport everywhere once batching is enabled', () => {
-      delete process.env.ROKT_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS;
-
-      expect(isBatchingFrameworkTransportEnabled('rokt', 'ws-1')).toBe(true);
-    });
   });
 });

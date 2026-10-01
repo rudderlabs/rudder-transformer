@@ -1,52 +1,27 @@
-import { deliveryHeaders, endpoint } from './common';
+import { endpoint, headers } from './common';
 
-export const acceptedRequest = [
+const requestForCustomer = (customerid: string, messageId = 'message-1') => [
   {
     schema_version: 2,
     environment: 'production',
-    user_identities: { customerid: 'synthetic-customer-1' },
-    events: [
-      {
-        event_type: 'custom_event',
-        data: {
-          event_name: 'conversion',
-          custom_event_type: 'transaction',
-          timestamp_unixtime_ms: 1790640000000,
-          source_message_id: 'message-1',
-          custom_attributes: { conversiontype: 'purchase' },
-        },
-      },
-    ],
-  },
-];
-
-export const rejectedRequest = [
-  {
-    schema_version: 2,
-    environment: 'production',
-    user_identities: { customerid: 'synthetic-customer-2' },
-    events: [
-      {
-        event_type: 'custom_event',
-        data: {
-          event_name: 'conversion',
-          custom_event_type: 'transaction',
-          timestamp_unixtime_ms: 1790640000000,
-          source_message_id: 'message-2',
-          custom_attributes: { conversiontype: 'purchase' },
-        },
-      },
-    ],
-  },
-];
-
-const requestForCustomer = (customerid: string) => [
-  {
-    ...acceptedRequest[0],
     user_identities: { customerid },
+    events: [
+      {
+        event_type: 'custom_event',
+        data: {
+          event_name: 'conversion',
+          custom_event_type: 'transaction',
+          timestamp_unixtime_ms: 1790640000000,
+          source_message_id: messageId,
+          custom_attributes: { conversiontype: 'purchase' },
+        },
+      },
+    ],
   },
 ];
 
+export const acceptedRequest = requestForCustomer('synthetic-customer-1');
+export const rejectedRequest = requestForCustomer('synthetic-customer-2', 'message-2');
 export const unexpectedSuccessRequest = requestForCustomer('synthetic-customer-3');
 export const throttledRequest = requestForCustomer('synthetic-customer-4');
 export const retryableRequest = [
@@ -57,12 +32,12 @@ export const retryableRequest = [
 export const networkCallsData = [
   {
     description: 'Rokt accepts a ROKT bulk request',
-    httpReq: { method: 'POST', url: endpoint, headers: deliveryHeaders, data: acceptedRequest },
+    httpReq: { method: 'POST', url: endpoint, headers, data: acceptedRequest },
     httpRes: { data: {}, status: 202 },
   },
   {
     description: 'Rokt rejects a ROKT bulk request with an unsafe response body',
-    httpReq: { method: 'POST', url: endpoint, headers: deliveryHeaders, data: rejectedRequest },
+    httpReq: { method: 'POST', url: endpoint, headers, data: rejectedRequest },
     httpRes: {
       data: { message: 'unsafe echoed value synthetic-customer-2' },
       status: 400,
@@ -73,14 +48,14 @@ export const networkCallsData = [
     httpReq: {
       method: 'POST',
       url: endpoint,
-      headers: deliveryHeaders,
+      headers,
       data: unexpectedSuccessRequest,
     },
     httpRes: { data: {}, status: 200 },
   },
   {
     description: 'Rokt throttles a ROKT bulk request',
-    httpReq: { method: 'POST', url: endpoint, headers: deliveryHeaders, data: throttledRequest },
+    httpReq: { method: 'POST', url: endpoint, headers, data: throttledRequest },
     httpRes: { data: {}, status: 429 },
   },
   {
@@ -88,7 +63,7 @@ export const networkCallsData = [
     httpReq: {
       method: 'POST',
       url: endpoint,
-      headers: deliveryHeaders,
+      headers,
       data: retryableRequest,
     },
     httpRes: { data: null, status: 503 },

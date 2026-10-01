@@ -1,5 +1,5 @@
 import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
-import { constructPayload, getValueFromMessage } from '../../util';
+import { constructPayload, formatTimeStamp, getValueFromMessage } from '../../util';
 import type { RudderMessage } from '../../../types';
 import {
   ANDROID_DEVICE_TYPES,
@@ -21,27 +21,10 @@ import type {
 type MappingEntry = {
   sourceKeys: string | string[];
   destKey: string;
-  required?: boolean;
-  sourceFromGenericMap?: boolean;
   metadata?: Record<string, unknown>;
 };
 
-type RoktMappingConfig = {
-  rootMappings: MappingEntry[];
-  identityMappings: MappingEntry[];
-  userAttributeMappings: MappingEntry[];
-  deviceMappings: MappingEntry[];
-  clickIdMappings: MappingEntry[];
-  timestampMappings: MappingEntry[];
-  conversionTypeMappings: MappingEntry[];
-  deviceTypeMappings: MappingEntry[];
-  advertisingIdMappings: MappingEntry[];
-  iosAdvertisingIdMappings: MappingEntry[];
-  androidAdvertisingIdMappings: MappingEntry[];
-  conversionAttributeMappings: MappingEntry[];
-};
-
-const ROKT_MAPPING_CONFIG = mappingConfig as RoktMappingConfig;
+const ROKT_MAPPING_CONFIG = mappingConfig as Record<keyof typeof mappingConfig, MappingEntry[]>;
 
 const isPlainRecord = (value: unknown): value is Record<string, unknown> =>
   Object.prototype.toString.call(value) === '[object Object]';
@@ -60,9 +43,6 @@ const omitWhitespaceOnlyValues = (value: unknown): unknown => {
     Object.entries(value).map(([key, item]) => [key, omitWhitespaceOnlyValues(item)]),
   );
 };
-
-const mappingMessage = (message: RudderMessage): RudderMessage =>
-  omitWhitespaceOnlyValues(message) as RudderMessage;
 
 const mappedPayload = (message: RudderMessage, mappings: MappingEntry[]): Record<string, unknown> =>
   (constructPayload(message, mappings) ?? {}) as Record<string, unknown>;
@@ -110,11 +90,8 @@ const resolveClickId = (message: RudderMessage): string | undefined => {
 
   const search = asNonEmptyString(getValueFromMessage(message, 'context.page.search'));
   if (!search) return undefined;
-  const params = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search);
-  const rclid = params.get('rclid');
-  if (isPresent(rclid)) return rclid!;
-  const rtid = params.get('rtid');
-  return isPresent(rtid) ? rtid! : undefined;
+  const params = new URLSearchParams(search);
+  return [params.get('rclid'), params.get('rtid')].find(isPresent) ?? undefined;
 };
 
 const resolveTimestamp = (message: RudderMessage): number => {
@@ -122,8 +99,7 @@ const resolveTimestamp = (message: RudderMessage): number => {
   if (!isPresent(rawTimestamp)) {
     throw new InstrumentationError('ROKT conversion requires a timestamp');
   }
-  const timestamp = mappedPayload(message, ROKT_MAPPING_CONFIG.timestampMappings)
-    .timestamp_unixtime_ms as number;
+  const timestamp = formatTimeStamp(rawTimestamp) as number;
   if (!Number.isFinite(timestamp)) {
     throw new InstrumentationError('ROKT conversion timestamp is invalid');
   }
@@ -134,12 +110,8 @@ const formatDateOfBirth = (value: unknown): string | undefined => {
   if (!isPresent(value)) return undefined;
   const text = String(value).trim();
   if (/^\d{8}$/.test(text)) return text;
-  const date = new Date(text);
-  if (Number.isNaN(date.getTime())) return undefined;
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  return `${year}${month}${day}`;
+  if (Number.isNaN(new Date(text).getTime())) return undefined;
+  return formatTimeStamp(text, 'YYYYMMDD') as string;
 };
 
 const buildIdentities = (message: RudderMessage, clickId?: string): RoktUserIdentities => {
@@ -166,25 +138,26 @@ const buildDeviceInfo = (message: RudderMessage): RoktDeviceInfo => {
   )?.toLowerCase();
   const advertisingId = mappedValue(message, ROKT_MAPPING_CONFIG.advertisingIdMappings);
 
-  if (deviceType && IOS_DEVICE_TYPES.has(deviceType) && isPresent(advertisingId)) {
-    deviceInfo.ios_advertising_id = advertisingId;
-  } else if (deviceType && ANDROID_DEVICE_TYPES.has(deviceType) && isPresent(advertisingId)) {
-    deviceInfo.android_advertising_id = advertisingId;
+  if (deviceType && isPresent(advertisingId)) {
+    if (IOS_DEVICE_TYPES.has(deviceType)) {
+      deviceInfo.ios_advertising_id = advertisingId;
+    } else if (ANDROID_DEVICE_TYPES.has(deviceType)) {
+      deviceInfo.android_advertising_id = advertisingId;
+    }
   }
 
-  const iosFallback = mappedPayload(
-    message,
-    ROKT_MAPPING_CONFIG.iosAdvertisingIdMappings,
-  ).ios_advertising_id;
-  const androidFallback = mappedPayload(
-    message,
-    ROKT_MAPPING_CONFIG.androidAdvertisingIdMappings,
-  ).android_advertising_id;
-  if (!isPresent(deviceInfo.ios_advertising_id) && isPresent(iosFallback)) {
-    deviceInfo.ios_advertising_id = iosFallback;
+  // compact() drops whichever fallback resolves to nothing
+  if (!isPresent(deviceInfo.ios_advertising_id)) {
+    deviceInfo.ios_advertising_id = mappedValue(
+      message,
+      ROKT_MAPPING_CONFIG.iosAdvertisingIdMappings,
+    );
   }
-  if (!isPresent(deviceInfo.android_advertising_id) && isPresent(androidFallback)) {
-    deviceInfo.android_advertising_id = androidFallback;
+  if (!isPresent(deviceInfo.android_advertising_id)) {
+    deviceInfo.android_advertising_id = mappedValue(
+      message,
+      ROKT_MAPPING_CONFIG.androidAdvertisingIdMappings,
+    );
   }
   return compact(deviceInfo);
 };
@@ -192,14 +165,14 @@ const buildDeviceInfo = (message: RudderMessage): RoktDeviceInfo => {
 const buildConversion = (message: RudderMessage): RoktConversion => {
   const customAttributes = mappedPayload(message, ROKT_MAPPING_CONFIG.conversionAttributeMappings);
   const { amount } = customAttributes;
-  const type = mappedValue(message, ROKT_MAPPING_CONFIG.conversionTypeMappings);
-  let conversiontype = type;
+  let conversiontype = mappedValue(message, ROKT_MAPPING_CONFIG.conversionTypeMappings);
   if (!isPresent(conversiontype) && ['page', 'screen'].includes(message.type)) {
     conversiontype = 'screen_view';
   }
   if (!isPresent(conversiontype)) {
     throw new InstrumentationError('ROKT conversion requires conversiontype');
   }
+  const sourceMessageId = asNonEmptyString(message.messageId);
 
   return {
     event_type: 'custom_event',
@@ -207,9 +180,7 @@ const buildConversion = (message: RudderMessage): RoktConversion => {
       event_name: 'conversion',
       custom_event_type: 'transaction',
       timestamp_unixtime_ms: resolveTimestamp(message),
-      ...(asNonEmptyString(message.messageId)
-        ? { source_message_id: asNonEmptyString(message.messageId) }
-        : {}),
+      ...(sourceMessageId ? { source_message_id: sourceMessageId } : {}),
       custom_attributes: compact({
         ...customAttributes,
         conversiontype,
@@ -220,7 +191,7 @@ const buildConversion = (message: RudderMessage): RoktConversion => {
 };
 
 export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
-  const sanitizedMessage = mappingMessage(message);
+  const sanitizedMessage = omitWhitespaceOnlyValues(message) as RudderMessage;
   const clickId = resolveClickId(sanitizedMessage);
   const identities = buildIdentities(sanitizedMessage, clickId);
   if (message.type !== 'identify' && Object.keys(identities).length === 0) {

@@ -76,9 +76,6 @@ export const isBatchingFrameworkTransportEnabled = (
   if (!isDestinationIntegrationEnabled(upperDestType, workspaceId)) {
     return false;
   }
-  if (upperDestType === 'ROKT') {
-    return true;
-  }
   return matchesWorkspace(
     getEnabledWorkspaceIds(upperDestType, 'BATCHING_FRAMEWORK_TRANSPORT'),
     workspaceId,

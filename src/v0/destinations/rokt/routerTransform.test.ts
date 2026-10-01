@@ -52,16 +52,21 @@ const transform = (input: RouterTransformationRequestData = makeInput(1)) =>
     input as unknown as Parameters<InstanceType<typeof Integration>['transformEvent']>[0],
   );
 
-const batchBody = async (inputs: RouterTransformationRequestData[]): Promise<RoktBatch[]> => {
-  const responses = await processDestinationIntegration(
+const route = (inputs: RouterTransformationRequestData[]) =>
+  processDestinationIntegration(
     inputs,
     Integration as DestinationIntegrationConstructor<RoktBatch>,
     {},
   );
-  const request = responses[0].batchedRequest;
+
+const parseBatch = (response: Awaited<ReturnType<typeof route>>[number]): RoktBatch[] => {
+  const request = response.batchedRequest;
   if (!request || Array.isArray(request)) throw new Error('Expected one batched request');
   return JSON.parse(request.body?.JSON_ARRAY?.batch as string) as RoktBatch[];
 };
+
+const batchBody = async (inputs: RouterTransformationRequestData[]): Promise<RoktBatch[]> =>
+  parseBatch((await route(inputs))[0]);
 
 describe('RoktIntegration', () => {
   it('builds the Rokt bulk request with Basic auth', () => {
@@ -139,11 +144,7 @@ describe('RoktIntegration', () => {
           Config: { ...destination.Config, [field]: '   ' },
         },
       );
-      const responses = await processDestinationIntegration(
-        [input],
-        Integration as DestinationIntegrationConstructor<RoktBatch>,
-        {},
-      );
+      const responses = await route([input]);
 
       expect(responses).toHaveLength(1);
       expect(responses[0].error).toContain('Required configuration value cannot be blank');
@@ -470,19 +471,15 @@ describe('RoktIntegration', () => {
   });
 
   it('rejects unsupported types, missing conversion identity, timestamp, and conversiontype', async () => {
-    const responses = await processDestinationIntegration(
-      [
-        makeInput(8, { type: 'group' }),
-        makeInput(9, { type: 'alias' }),
-        makeInput(10, { userId: undefined, context: {}, properties: {} }),
-        makeInput(14, { userId: 123 }),
-        makeInput(11, { timestamp: undefined, originalTimestamp: undefined, sentAt: undefined }),
-        makeInput(12, { timestamp: 'not-a-date' }),
-        makeInput(13, { event: undefined, properties: {} }),
-      ],
-      Integration as DestinationIntegrationConstructor<RoktBatch>,
-      {},
-    );
+    const responses = await route([
+      makeInput(8, { type: 'group' }),
+      makeInput(9, { type: 'alias' }),
+      makeInput(10, { userId: undefined, context: {}, properties: {} }),
+      makeInput(14, { userId: 123 }),
+      makeInput(11, { timestamp: undefined, originalTimestamp: undefined, sentAt: undefined }),
+      makeInput(12, { timestamp: 'not-a-date' }),
+      makeInput(13, { event: undefined, properties: {} }),
+    ]);
 
     expect(responses).toHaveLength(7);
     expect(responses.map((response) => response.error)).toEqual([
@@ -531,19 +528,13 @@ describe('RoktIntegration', () => {
     'packs $inputCount per-user batches into $expectedChunks request sizes',
     async ({ inputCount, expectedChunks }) => {
       const inputs = Array.from({ length: inputCount }, (_, index) => makeInput(index + 1));
-      const responses = await processDestinationIntegration(
-        inputs,
-        Integration as DestinationIntegrationConstructor<RoktBatch>,
-        {},
-      );
+      const responses = await route(inputs);
 
       expect(responses).toHaveLength(expectedChunks.length);
       expect(
         responses.map((response) => {
-          const request = response.batchedRequest;
-          if (!request || Array.isArray(request)) throw new Error('Expected a batched request');
-          expect(request.body?.JSON).toEqual({});
-          return JSON.parse(request.body?.JSON_ARRAY?.batch as string).length;
+          expect((response.batchedRequest as { body?: { JSON?: unknown } }).body?.JSON).toEqual({});
+          return parseBatch(response).length;
         }),
       ).toEqual(expectedChunks);
     },

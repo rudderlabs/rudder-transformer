@@ -8,6 +8,7 @@ import {
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import type { RudderMessage } from '../../../types';
+import { base64Convertor } from '../../util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import { BULK_EVENTS_PATH, MAX_BATCHES_PER_REQUEST } from './config';
 import { roktDelivery } from './delivery';
@@ -30,7 +31,7 @@ class RoktIntegration extends DestinationIntegration<RoktBatch, typeof roktInput
       endpointPath: BULK_EVENTS_PATH,
       method: 'POST',
       headers: {
-        Authorization: `Basic ${Buffer.from(`${serverToServerKey}:${serverToServerSecret}`).toString('base64')}`,
+        Authorization: `Basic ${base64Convertor(`${serverToServerKey}:${serverToServerSecret}`)}`,
         'Content-Type': JSON_MIME_TYPE,
       },
     };

@@ -186,6 +186,17 @@ different layer in each destination, which is why it is easy to miss:
 - Separate per-platform mapping files — `src/v0/destinations/singular/data/`, where
   `SINGULARIosEventConfig.json` has `idfa` and `SINGULARAndroidEventConfig.json` has `aifa`.
 
+**Gate on the shared helpers, never a local platform list.** Whatever layer the gate lives in,
+the test itself is `isAppleFamily` / `isAndroidFamily` from `src/v0/util/index.js:1724` and
+`:1732` (`$.isAppleFamily` inside a workflow YAML) — already the platform check in ~20
+destinations, including kochava, impact, singular, customerio and tiktok_ads. Apple family is
+`ios`, `ipados`, `watchos`, `tvos`; Android family is `android`. Both lowercase internally and
+return `false` for a non-string, so pass the raw value without `.toLowerCase()` or a presence
+guard — but they do not trim, so trim first if the field can carry whitespace. A hand-rolled
+`new Set(['ios', 'iphone', 'ipad', 'apple'])` drifts from that definition — here it drops
+`watchos` / `tvos` and admits device-model names — so the same event routes its advertising id
+to a different partner field than every other destination would.
+
 **Precedent that is not the pattern.** Several destinations put another path first and fall
 back to the canonical one: `context.idfa` / `context.aaid` in `branch` and `revenue_cat`,
 `properties.adId` in `snapchat_conversion`, `properties.anon_id` in `facebook_conversions`,

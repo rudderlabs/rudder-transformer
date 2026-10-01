@@ -1,6 +1,11 @@
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { DestinationIntegrationConstructor } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import type { Destination, RouterTransformationRequestData, RudderMessage } from '../../../types';
+import type {
+  Destination,
+  RouterTransformationRequestData,
+  RouterTransformationResponse,
+  RudderMessage,
+} from '../../../types';
 import { MAX_PER_USER_BATCH_BYTES } from './config';
 import type { RoktBatch } from './types';
 import { Integration } from './routerTransform';
@@ -59,11 +64,14 @@ const route = (inputs: RouterTransformationRequestData[]) =>
     {},
   );
 
-const parseBatch = (response: Awaited<ReturnType<typeof route>>[number]): RoktBatch[] => {
+const batchedRequestOf = (response: RouterTransformationResponse) => {
   const request = response.batchedRequest;
   if (!request || Array.isArray(request)) throw new Error('Expected one batched request');
-  return JSON.parse(request.body?.JSON_ARRAY?.batch as string) as RoktBatch[];
+  return request;
 };
+
+const parseBatch = (response: RouterTransformationResponse): RoktBatch[] =>
+  JSON.parse(batchedRequestOf(response).body?.JSON_ARRAY?.batch as string) as RoktBatch[];
 
 const batchBody = async (inputs: RouterTransformationRequestData[]): Promise<RoktBatch[]> =>
   parseBatch((await route(inputs))[0]);
@@ -533,7 +541,7 @@ describe('RoktIntegration', () => {
       expect(responses).toHaveLength(expectedChunks.length);
       expect(
         responses.map((response) => {
-          expect((response.batchedRequest as { body?: { JSON?: unknown } }).body?.JSON).toEqual({});
+          expect(batchedRequestOf(response).body?.JSON).toEqual({});
           return parseBatch(response).length;
         }),
       ).toEqual(expectedChunks);

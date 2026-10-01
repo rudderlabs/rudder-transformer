@@ -99,7 +99,7 @@ const resolveTimestamp = (message: RudderMessage): number => {
   if (!isPresent(rawTimestamp)) {
     throw new InstrumentationError('ROKT conversion requires a timestamp');
   }
-  const timestamp = formatTimeStamp(rawTimestamp) as number;
+  const timestamp = new Date(rawTimestamp as string | number).getTime();
   if (!Number.isFinite(timestamp)) {
     throw new InstrumentationError('ROKT conversion timestamp is invalid');
   }
@@ -110,8 +110,9 @@ const formatDateOfBirth = (value: unknown): string | undefined => {
   if (!isPresent(value)) return undefined;
   const text = String(value).trim();
   if (/^\d{8}$/.test(text)) return text;
-  if (Number.isNaN(new Date(text).getTime())) return undefined;
-  return formatTimeStamp(text, 'YYYYMMDD') as string;
+  const date = new Date(text);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return formatTimeStamp(date, 'YYYYMMDD') as string;
 };
 
 const buildIdentities = (message: RudderMessage, clickId?: string): RoktUserIdentities => {

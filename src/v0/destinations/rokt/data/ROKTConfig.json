@@ -150,8 +150,7 @@
   "timestampMappings": [
     {
       "sourceKeys": ["timestamp", "originalTimestamp", "sentAt"],
-      "destKey": "timestamp_unixtime_ms",
-      "metadata": { "type": "timestamp" }
+      "destKey": "timestamp_unixtime_ms"
     }
   ],
   "conversionTypeMappings": [

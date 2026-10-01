@@ -21,7 +21,37 @@ const requestForCustomer = (customerid: string, messageId = 'message-1') => [
 ];
 
 export const acceptedRequest = requestForCustomer('synthetic-customer-1');
-export const rejectedRequest = requestForCustomer('synthetic-customer-2', 'message-2');
+export const rejectedRequest = [
+  {
+    schema_version: 2,
+    environment: 'production',
+    user_identities: { customerid: 'synthetic-customer-2' },
+    events: [
+      {
+        event_type: 'custom_event',
+        data: {
+          event_name: 'conversion',
+          custom_event_type: 'transaction',
+          timestamp_unixtime_ms: 1790640000000,
+          source_message_id: 'message-2',
+          custom_attributes: {
+            currency: { code: 'USD' },
+            conversiontype: 'purchase',
+          },
+        },
+      },
+    ],
+  },
+];
+export const rejectedResponse = {
+  errors: [
+    {
+      code: 'BAD_REQUEST',
+      message:
+        "Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 314.",
+    },
+  ],
+};
 export const unexpectedSuccessRequest = requestForCustomer('synthetic-customer-3');
 export const throttledRequest = requestForCustomer('synthetic-customer-4');
 export const retryableRequest = [
@@ -36,10 +66,10 @@ export const networkCallsData = [
     httpRes: { data: '', status: 202 },
   },
   {
-    description: 'Rokt rejects a ROKT bulk request with an unsafe response body',
+    description: 'Rokt rejects an object-valued currency attribute',
     httpReq: { method: 'POST', url: endpoint, headers, data: rejectedRequest },
     httpRes: {
-      data: { message: 'unsafe echoed value synthetic-customer-2' },
+      data: rejectedResponse,
       status: 400,
     },
   },

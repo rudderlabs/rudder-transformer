@@ -5,6 +5,7 @@ import { destination, endpoint, headers } from '../common';
 import {
   acceptedRequest,
   rejectedRequest,
+  rejectedResponse,
   retryableRequest,
   throttledRequest,
   unexpectedSuccessRequest,
@@ -115,7 +116,7 @@ export const data: ProxyV1TestData[] = [
               {
                 statusCode: 400,
                 metadata: proxyMetadata(2),
-                error: '{"message":"unsafe echoed value synthetic-customer-2"}',
+                error: JSON.stringify(rejectedResponse),
               },
             ],
           },

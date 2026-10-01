@@ -41,6 +41,7 @@ describe('features destination capabilities', () => {
       TEST_DESTINATION: true,
       CUSTOMERIO: true,
       TOPSORT: true,
+      ROKT: true,
     });
   });
 

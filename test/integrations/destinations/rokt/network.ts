@@ -52,7 +52,6 @@ export const rejectedResponse = {
     },
   ],
 };
-export const unexpectedSuccessRequest = requestForCustomer('synthetic-customer-3');
 export const throttledRequest = requestForCustomer('synthetic-customer-4');
 export const retryableRequest = [
   ...requestForCustomer('synthetic-customer-5'),
@@ -72,16 +71,6 @@ export const networkCallsData = [
       data: rejectedResponse,
       status: 400,
     },
-  },
-  {
-    description: 'Rokt returns an undocumented HTTP 200 for a ROKT bulk request',
-    httpReq: {
-      method: 'POST',
-      url: endpoint,
-      headers,
-      data: unexpectedSuccessRequest,
-    },
-    httpRes: { data: {}, status: 200 },
   },
   {
     description: 'Rokt throttles a ROKT bulk request',

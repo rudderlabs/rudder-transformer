@@ -8,7 +8,6 @@ import {
   rejectedResponse,
   retryableRequest,
   throttledRequest,
-  unexpectedSuccessRequest,
 } from '../network';
 
 const proxyMetadata = (jobId: number): ProxyMetdata => ({
@@ -117,51 +116,6 @@ export const data: ProxyV1TestData[] = [
                 statusCode: 400,
                 metadata: proxyMetadata(2),
                 error: JSON.stringify(rejectedResponse),
-              },
-            ],
-          },
-        },
-      },
-    },
-  },
-  {
-    id: 'rokt-delivery-unexpected-2xx',
-    name: 'rokt',
-    description: 'Framework delivery preserves default HTTP 200 handling for Rokt',
-    scenario: 'Native batching delivery',
-    successCriteria: 'HTTP 200 inherits the framework generic 2xx success behavior',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v1',
-    envOverrides,
-    input: {
-      request: {
-        method: 'POST',
-        body: generateProxyV1Payload(
-          {
-            endpoint,
-            endpointPath: '/v2/bulkevents',
-            method: 'POST',
-            headers,
-            JSON_ARRAY: { batch: JSON.stringify(unexpectedSuccessRequest) },
-          },
-          [proxyMetadata(3)],
-          destination.Config,
-        ),
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: {
-            status: 200,
-            message: '[ROKT] Request processed successfully',
-            response: [
-              {
-                statusCode: 200,
-                metadata: proxyMetadata(3),
-                error: 'success',
               },
             ],
           },

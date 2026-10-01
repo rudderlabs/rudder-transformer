@@ -4,6 +4,10 @@ import { generateProxyV1Payload } from '../../../testUtils';
 import { destination, endpoint, headers } from '../common';
 import {
   acceptedRequest,
+  allInvalidRequest,
+  allInvalidResponse,
+  invalidCredentialsRequest,
+  partialFailureRequest,
   rejectedRequest,
   rejectedResponse,
   retryableRequest,
@@ -77,6 +81,51 @@ export const data: ProxyV1TestData[] = [
     },
   },
   {
+    id: 'rokt-delivery-partial-failure',
+    name: 'rokt',
+    description: 'Framework delivery retries mixed-validity Rokt batches individually',
+    scenario: 'Native batching delivery',
+    successCriteria: 'Every job is retried with dontBatch after a partial HTTP 202 response',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    envOverrides,
+    input: {
+      request: {
+        method: 'POST',
+        body: generateProxyV1Payload(
+          {
+            endpoint,
+            endpointPath: '/v2/bulkevents',
+            method: 'POST',
+            headers,
+            JSON_ARRAY: { batch: JSON.stringify(partialFailureRequest) },
+          },
+          [proxyMetadata(7), proxyMetadata(8), proxyMetadata(9)],
+          destination.Config,
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 202,
+            message:
+              '[ROKT] Rokt partially rejected the bulk request; retrying each event individually.',
+            statTags: { ...statTags, errorType: 'retryable' },
+            response: [7, 8, 9].map((jobId) => ({
+              statusCode: 500,
+              metadata: { ...proxyMetadata(jobId), dontBatch: true },
+              error: 'Rokt partially rejected the bulk request; retrying each event individually.',
+            })),
+          },
+        },
+      },
+    },
+  },
+  {
     id: 'rokt-delivery-rejected',
     name: 'rokt',
     description: 'Framework delivery rejects Rokt HTTP 400 responses',
@@ -116,6 +165,98 @@ export const data: ProxyV1TestData[] = [
                 statusCode: 400,
                 metadata: proxyMetadata(2),
                 error: JSON.stringify(rejectedResponse),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'rokt-delivery-all-invalid',
+    name: 'rokt',
+    description: 'Framework delivery aborts an entirely invalid Rokt bulk request',
+    scenario: 'Native batching delivery',
+    successCriteria: 'Every job is aborted when Rokt rejects every batch with HTTP 400',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    envOverrides,
+    input: {
+      request: {
+        method: 'POST',
+        body: generateProxyV1Payload(
+          {
+            endpoint,
+            endpointPath: '/v2/bulkevents',
+            method: 'POST',
+            headers,
+            JSON_ARRAY: { batch: JSON.stringify(allInvalidRequest) },
+          },
+          [proxyMetadata(10), proxyMetadata(11)],
+          destination.Config,
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            message:
+              '[ROKT] Rokt rejected the bulk request (status 400); no safe error detail returned.',
+            statTags,
+            response: [10, 11].map((jobId) => ({
+              statusCode: 400,
+              metadata: proxyMetadata(jobId),
+              error: JSON.stringify(allInvalidResponse),
+            })),
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'rokt-delivery-invalid-credentials',
+    name: 'rokt',
+    description: 'Framework delivery aborts Rokt requests with invalid credentials',
+    scenario: 'Native batching delivery',
+    successCriteria: 'The request is aborted on HTTP 403 with an empty response body',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    envOverrides,
+    input: {
+      request: {
+        method: 'POST',
+        body: generateProxyV1Payload(
+          {
+            endpoint,
+            endpointPath: '/v2/bulkevents',
+            method: 'POST',
+            headers,
+            JSON_ARRAY: { batch: JSON.stringify(invalidCredentialsRequest) },
+          },
+          [proxyMetadata(12)],
+          destination.Config,
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 403,
+            message:
+              '[ROKT] Rokt rejected the bulk request (status 403); no safe error detail returned.',
+            statTags,
+            response: [
+              {
+                statusCode: 403,
+                metadata: proxyMetadata(12),
+                error: '""',
               },
             ],
           },

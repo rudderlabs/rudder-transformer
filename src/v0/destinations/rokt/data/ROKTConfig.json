@@ -215,6 +215,10 @@
     {
       "sourceKeys": "context.device.advertisingId",
       "destKey": "advertising_id"
+    },
+    {
+      "sourceKeys": "context.page.search",
+      "destKey": "page_search"
     }
   ]
 }

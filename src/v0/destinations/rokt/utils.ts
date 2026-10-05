@@ -3,13 +3,12 @@ import { isPlainObject, pick } from 'lodash';
 import {
   constructPayload,
   formatTimeStamp,
-  getValueFromMessage,
   isAndroidFamily,
   isAppleFamily,
   isValidUrl,
 } from '../../util';
 import type { RudderMessage } from '../../../types';
-import { BULK_EVENTS_PATH, PAGE_SEARCH_SOURCE_KEY, ROKT_INTEGRATION_ID } from './config';
+import { BULK_EVENTS_PATH, ROKT_INTEGRATION_ID } from './config';
 import mappingConfig from './data/ROKTConfig.json';
 import type {
   RoktBatch,
@@ -27,14 +26,9 @@ type MappingEntry = {
 const ROKT_MAPPING_CONFIG = mappingConfig as Record<keyof typeof mappingConfig, MappingEntry[]>;
 
 // Every message path the transform reads; buildRoktBatch copies only these.
-const MAPPED_PATHS = [
-  ...new Set([
-    ...Object.values(ROKT_MAPPING_CONFIG)
-      .flat()
-      .flatMap(({ sourceKeys }) => sourceKeys),
-    PAGE_SEARCH_SOURCE_KEY,
-  ]),
-];
+const MAPPED_PATHS = Object.values(ROKT_MAPPING_CONFIG)
+  .flat()
+  .flatMap(({ sourceKeys }) => sourceKeys);
 
 // Single values the transform post-processes before placing them in the batch.
 type MessageValues = {
@@ -44,6 +38,7 @@ type MessageValues = {
   conversiontype?: unknown;
   device_type?: unknown;
   advertising_id?: unknown;
+  page_search?: unknown;
 };
 
 const isPresent = (value: unknown): boolean =>
@@ -103,13 +98,13 @@ export const resolveEndpoint = (apiEndpoint: string): string => {
 // Shared with delivery, which maps Rokt's error positions back onto this exact serialization.
 export const serializeRoktBatches = (batches: unknown[]): string => JSON.stringify(batches);
 
-const resolveClickId = (
-  message: RudderMessage,
-  { click_id: propertyValue }: MessageValues,
-): string | undefined => {
+const resolveClickId = ({
+  click_id: propertyValue,
+  page_search: pageSearch,
+}: MessageValues): string | undefined => {
   if (isPresent(propertyValue)) return String(propertyValue);
 
-  const search = asNonEmptyString(getValueFromMessage(message, PAGE_SEARCH_SOURCE_KEY));
+  const search = asNonEmptyString(pageSearch);
   if (!search) return undefined;
   const params = new URLSearchParams(search);
   return [params.get('rclid'), params.get('rtid')].find(isPresent) ?? undefined;
@@ -203,17 +198,16 @@ export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
     sanitizedMessage,
     ROKT_MAPPING_CONFIG.messageValueMappings,
   ) as MessageValues;
-  const clickId = resolveClickId(sanitizedMessage, values);
+  const clickId = resolveClickId(values);
   const identities = buildIdentities(sanitizedMessage, clickId);
 
-  const { ip } = values;
   const userAttributes = buildUserAttributes(sanitizedMessage);
   const deviceInfo = buildDeviceInfo(sanitizedMessage, values);
   return {
     schema_version: 2,
     environment: 'production',
     user_identities: identities,
-    ...(isPresent(ip) ? { ip } : {}),
+    ...(isPresent(values.ip) ? { ip: values.ip } : {}),
     ...(Object.keys(userAttributes).length > 0 ? { user_attributes: userAttributes } : {}),
     ...(Object.keys(deviceInfo).length > 0 ? { device_info: deviceInfo } : {}),
     ...(clickId

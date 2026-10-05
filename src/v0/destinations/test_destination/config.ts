@@ -5,7 +5,8 @@
 // a required accountId; only v1 is implemented in the transformer today.
 
 // Integration major at which the v2 config/API shape (apiKey/region/accountId) kicks in (INT-6492).
-// Single source shared by transform.ts (process dispatch) and networkHandler.ts (proxy dispatch).
+// Single source shared by transform.ts (process dispatch), routerTransform.ts (framework delivery),
+// and networkHandler.ts (legacy proxy dispatch).
 export const V2_MAJOR = 2;
 
 // The `.invalid` TLD is reserved (RFC 2606) and never resolves — a deliberate signal that this

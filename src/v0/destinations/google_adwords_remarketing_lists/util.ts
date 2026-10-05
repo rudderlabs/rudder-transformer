@@ -12,7 +12,7 @@ import {
 import {
   processAudienceRecord,
   isValidPhoneNumber,
-  type AudienceField,
+  toAudienceFieldConfig,
 } from '../../util/audienceUtils';
 import { normalizeEmail, normalizePhone } from '../../util/googleUtils/userDataNormalization';
 import logger from '../../../logger';
@@ -69,27 +69,6 @@ const GARL_STRING_FIELD_CONFIG = {
     hashingType: HashingType.NONE,
   },
 };
-
-type StringFieldConfig = {
-  normalize: (v: string) => string;
-  validate: (v: string) => boolean;
-  hashingType: HashingType;
-};
-
-// Bridge string-typed config to the unknown-typed AudienceField interface
-const toAudienceFieldConfig = (
-  stringConfig: Record<string, StringFieldConfig>,
-): Record<string, AudienceField> =>
-  Object.fromEntries(
-    Object.entries(stringConfig).map(([key, { normalize, validate, ...rest }]) => [
-      key,
-      {
-        ...rest,
-        normalize: (v: unknown) => normalize(String(v)),
-        validate: (v: unknown) => validate(v as string),
-      },
-    ]),
-  );
 
 const GARL_FIELD_CONFIG = toAudienceFieldConfig(GARL_STRING_FIELD_CONFIG);
 
@@ -271,5 +250,4 @@ export {
   getOperationAudienceId,
   populateIdentifiersForRecordEvent,
   GARL_FIELD_CONFIG,
-  toAudienceFieldConfig,
 };

@@ -1,7 +1,11 @@
 import moment from 'moment-timezone';
 import validator from 'validator';
 import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
-import { processAudienceRecord, HashingType } from '../../../util/audienceUtils';
+import {
+  processAudienceRecord,
+  HashingType,
+  toAudienceFieldConfig,
+} from '../../../util/audienceUtils';
 import {
   isDefinedAndNotNullAndNotEmpty,
   constructPayload,
@@ -11,7 +15,7 @@ import {
 } from '../../../util';
 import { JSON_MIME_TYPE } from '../../../util/constant';
 import logger from '../../../../logger';
-import { GARL_FIELD_CONFIG, toAudienceFieldConfig } from '../util';
+import { GARL_FIELD_CONFIG } from '../util';
 import { TYPEOFLIST, consentConfigMap, destType } from '../config';
 import { populateConsentFromConfig } from '../../../util/googleUtils';
 import {
@@ -25,7 +29,6 @@ import type {
   ConsentStatus,
   AddressInfo,
   UserIdentifier,
-  IpData,
   DataManagerDestination,
   GARLIngestAPIPayload,
   GARLRemoveAPIPayload,
@@ -47,7 +50,6 @@ interface AudienceDestinationContext {
 }
 
 const ADDRESS_SCHEMA_FIELDS = ['firstName', 'lastName', 'country', 'postalCode'];
-const IP_SCHEMA_FIELDS = ['userIp', 'ipObserveStartTime', 'ipObserveEndTime'];
 
 const normalizeIpObserveTime = (value: string): string => {
   const time = moment.parseZone(value.trim(), moment.ISO_8601, true);
@@ -105,7 +107,6 @@ export const buildConsent = (consentObj: Record<string, string>): Consent => ({
  * - Named fields (e.g. 'email', 'phone') must be listed in userSchema.
  * - Address sub-fields (firstName, lastName, country, postalCode) are included
  *   when userSchema contains 'addressInfo' or any individual address field name.
- * - IP observation timestamps are included when userSchema contains 'userIp'.
  */
 const filterFieldsBySchema = (
   fields: Record<string, unknown>,
@@ -115,13 +116,10 @@ const filterFieldsBySchema = (
 
   const needsAddress =
     userSchema.includes('addressInfo') || userSchema.some((s) => ADDRESS_SCHEMA_FIELDS.includes(s));
-  const needsIp = userSchema.includes('userIp');
 
   return Object.fromEntries(
-    Object.entries(fields).filter(([k]) =>
-      IP_SCHEMA_FIELDS.includes(k)
-        ? needsIp
-        : userSchema.includes(k) || (needsAddress && ADDRESS_SCHEMA_FIELDS.includes(k)),
+    Object.entries(fields).filter(
+      ([k]) => userSchema.includes(k) || (needsAddress && ADDRESS_SCHEMA_FIELDS.includes(k)),
     ),
   );
 };
@@ -181,18 +179,22 @@ export const buildAudienceMemberFromProcessedFields = (
       }
     }
 
-    const { userIp, ipObserveStartTime, ipObserveEndTime } = schemaFields;
-    const ipEntry: IpData | undefined = userIp
-      ? {
-          ipAddress: String(userIp),
-          ...(ipObserveStartTime ? { observeStartTime: String(ipObserveStartTime) } : {}),
-          ...(ipObserveEndTime ? { observeEndTime: String(ipObserveEndTime) } : {}),
-        }
-      : undefined;
+    // Mapping userIp switches the whole connection to compositeData; the observation times only
+    // qualify an IP, so they are read alongside it rather than filtered by userSchema.
+    const isIpMapped = userSchema?.includes('userIp') ?? false;
+    const { userIp, ipObserveStartTime, ipObserveEndTime } = fields;
+    const ipEntry =
+      isIpMapped && userIp
+        ? {
+            ipAddress: String(userIp),
+            ...(ipObserveStartTime ? { observeStartTime: String(ipObserveStartTime) } : {}),
+            ...(ipObserveEndTime ? { observeEndTime: String(ipObserveEndTime) } : {}),
+          }
+        : undefined;
 
     if (userIdentifiers.length === 0 && !ipEntry) return null;
 
-    if (userSchema?.includes('userIp')) {
+    if (isIpMapped) {
       member.compositeData = {
         ...(ipEntry ? { ipData: [ipEntry] } : {}),
         ...(userIdentifiers.length > 0 ? { userData: { userIdentifiers } } : {}),

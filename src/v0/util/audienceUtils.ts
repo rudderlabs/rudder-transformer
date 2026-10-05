@@ -30,6 +30,29 @@ export interface AudienceField {
   validate?: (normalized: unknown) => boolean;
 }
 
+export type StringFieldConfig = {
+  normalize: (v: string) => string;
+  validate: (v: string) => boolean;
+  hashingType: HashingType;
+};
+
+/**
+ * Bridges string-typed field configs to the unknown-typed AudienceField interface.
+ */
+export const toAudienceFieldConfig = (
+  stringConfig: Record<string, StringFieldConfig>,
+): Record<string, AudienceField> =>
+  Object.fromEntries(
+    Object.entries(stringConfig).map(([key, { normalize, validate, ...rest }]) => [
+      key,
+      {
+        ...rest,
+        normalize: (v: unknown) => normalize(String(v)),
+        validate: (v: unknown) => validate(v as string),
+      },
+    ]),
+  );
+
 const PHONE_NUMBER_REGEX = /^\+?\d+$/;
 
 /**

@@ -11,8 +11,7 @@ import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import { isHttpStatusSuccess } from '../../util/index';
 import { getAuthErrCategory } from '../../util/googleUtils';
 // The SDK client builder, the conversion action lookup and its cache live in ./utils because
-// routerTransform needs the lookup too when the framework transport is enabled; both paths must
-// share the one cache.
+// routerTransform needs the lookup too for framework transport; both paths must share the one cache.
 import { buildGoogleAdsClient, getConversionActionId, isObject } from './utils';
 import tags from '../../util/tags';
 
@@ -40,6 +39,7 @@ interface GaecProxyRequest {
  */
 const gaecProxyRequest = async (request: GaecProxyRequest): Promise<GaecSdkResponse> => {
   const { body, params } = request;
+  // TODO(RUD-3195 follow-up): remove this guard after queues from the final transport-GA flip drain.
   if (!params?.event) {
     const error = new NetworkError(
       '[Google Ads Enhanced Conversions] new-shape payload reached legacy proxy after transport flag flip',

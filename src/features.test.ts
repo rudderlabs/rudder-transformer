@@ -28,6 +28,9 @@ describe('features destination capabilities', () => {
     );
     expect(defaultFeaturesConfig.transformerProxy).toMatchObject({
       EVERFLOW: true,
+      POSTHOG: true,
+      CUSTOM_AUDIENCE: true,
+      REDDIT_AUDIENCE: true,
     });
     expect(getGaDestinationIntegrations()).toEqual({
       GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: true,
@@ -56,6 +59,12 @@ describe('features destination capabilities', () => {
       ...Object.keys(defaultFeaturesConfig.transformerProxy),
     ];
     expect(allDestinations.filter((destination) => !isValidDestination(destination))).toEqual([]);
+  });
+
+  it('advertises transformerProxy for every batching-framework GA destination', () => {
+    Object.keys(getGaDestinationIntegrations()).forEach((destination) => {
+      expect(defaultFeaturesConfig.transformerProxy).toHaveProperty(destination, true);
+    });
   });
 
   // A destination may only declare transformerProxy if it implements the proxy itself: either a
@@ -98,7 +107,7 @@ describe('features destination capabilities', () => {
   // the map: declaring them would turn proxy delivery on for the first time, which is a rollout
   // rather than the config consolidation this map exists for.
   it('excludes destinations that implement a proxy handler but have never been enabled', () => {
-    ['CLICKSEND', 'MONDAY', 'POSTSCRIPT', 'FB', 'REDDIT_AUDIENCE', 'GA'].forEach((destination) => {
+    ['CLICKSEND', 'MONDAY', 'POSTSCRIPT', 'FB', 'GA'].forEach((destination) => {
       expect(defaultFeaturesConfig.transformerProxy).not.toHaveProperty(destination);
     });
   });

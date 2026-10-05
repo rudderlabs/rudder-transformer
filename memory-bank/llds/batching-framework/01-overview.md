@@ -16,7 +16,7 @@ Provide a **generic batching framework** that:
 1. Standardises validation, chunking, metadata resolution, and response formatting
 2. Lets each destination focus **only** on per-event transformation and batching strategy
 3. Supports all existing batching patterns without forcing a single payload shape
-4. Is opt-in — destinations migrate incrementally via a registry map
+4. Is opt-in — destinations migrate incrementally via one enrolment predicate shared by transform and delivery
 
 ## Requirements
 
@@ -146,9 +146,10 @@ const destinationCapabilities = {
 ```
 
 `destinationIntegrationsMap` (`src/constants/destinationIntegrationsMap.ts`) is **derived** from
-that capability via `getGaDestinationIntegrations()` and must not be hand-edited. The registration
-mechanics, the pre-GA rollout env var and the v0-proxy carve-out are documented once, in
-`.claude/skills/batching-framework/SKILL.md#enabling-the-framework` — not repeated here.
+that capability via `getGaDestinationIntegrations()` and must not be hand-edited. Before GA,
+`{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` can enrol individual workspaces. Both registration
+paths feed `isDestinationIntegrationEnabled`, which gates transform and v1 delivery together; v0
+proxy requests remain on the legacy handler.
 
 The framework caches the **constructor** (not an instance) in `FetchHandler.destinationIntegrationHandlerMap` and creates a **new instance per request** to avoid race conditions with mutable instance state.
 

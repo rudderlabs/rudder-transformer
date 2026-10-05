@@ -22,7 +22,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   CANDU: { routerTransform: true },
   DELIGHTED: { routerTransform: true },
   DRIP: { routerTransform: true },
-  EVERFLOW: { routerTransform: true, batching: true, transformerProxy: true },
+  EVERFLOW: { routerTransform: true, batching: true },
   FB_CUSTOM_AUDIENCE: { routerTransform: true, transformerProxy: true },
   GA: { routerTransform: true, regulations: true },
   GAINSIGHT: { routerTransform: true },
@@ -31,7 +31,6 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: {
     routerTransform: true,
     batching: true,
-    transformerProxy: true,
   },
   GOOGLE_ADWORDS_REMARKETING_LISTS: { routerTransform: true, transformerProxy: true },
   GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: { routerTransform: true, transformerProxy: true },
@@ -78,7 +77,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   MP: { routerTransform: true, regulations: true, transformerProxy: true },
   TIKTOK_ADS_OFFLINE_EVENTS: { routerTransform: true },
   CRITEO_AUDIENCE: { routerTransform: true, transformerProxy: true },
-  CUSTOMERIO: { routerTransform: true, batching: true, transformerProxy: true },
+  CUSTOMERIO: { routerTransform: true, batching: true },
   BRAZE: { routerTransform: true, regulations: true, transformerProxy: true },
   OPTIMIZELY_FULLSTACK: { routerTransform: true, cdkV2: true },
   TWITTER_ADS: { routerTransform: true },
@@ -108,18 +107,18 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   AMAZON_AUDIENCE: { routerTransform: true, transformerProxy: true },
   INTERCOM_V2: { routerTransform: true, transformerProxy: true },
   LINKEDIN_AUDIENCE: { routerTransform: true },
-  TOPSORT: { routerTransform: true, batching: true, transformerProxy: true },
+  TOPSORT: { routerTransform: true, batching: true },
   CUSTOMERIO_AUDIENCE: { routerTransform: true },
   ACCOIL_ANALYTICS: { routerTransform: true, cdkV2: true },
   POSTSCRIPT: { routerTransform: true },
   POSTHOG: { routerTransform: true, batching: true },
   CUSTOM_AUDIENCE: { routerTransform: true, batching: true },
-  ITERABLE_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: true },
-  BRAZE_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: true },
+  ITERABLE_AUDIENCE: { routerTransform: true, batching: true },
+  BRAZE_AUDIENCE: { routerTransform: true, batching: true },
   REDDIT_AUDIENCE: { routerTransform: true, batching: true },
   SURVICATE: { routerTransform: true },
   // dev-only fixture — see src/v0/destinations/test_destination/config.ts
-  TEST_DESTINATION: { routerTransform: true, batching: true, transformerProxy: true },
+  TEST_DESTINATION: { routerTransform: true, batching: true },
   AF: { regulations: true },
   ENGAGE: { regulations: true },
   SPRIG: { regulations: true, cdkV2: true },
@@ -222,6 +221,11 @@ const getCapabilityEntries = (capability: keyof DestinationCapabilities) =>
 const getCapabilityMap = (capability: keyof DestinationCapabilities): Record<string, true> =>
   Object.fromEntries(getCapabilityEntries(capability).map(([destination]) => [destination, true]));
 
+const getTransformerProxyCapabilityMap = (): Record<string, true> => ({
+  ...getCapabilityMap('transformerProxy'),
+  ...getCapabilityMap('batching'),
+});
+
 export const getGaDestinationIntegrations = (): Record<string, true> =>
   getCapabilityMap('batching');
 
@@ -247,7 +251,7 @@ interface FeaturesConfig {
 
 const defaultFeaturesConfig: FeaturesConfig = {
   routerTransform: getCapabilityMap('routerTransform'),
-  transformerProxy: getCapabilityMap('transformerProxy'),
+  transformerProxy: getTransformerProxyCapabilityMap(),
   regulations: getCapabilityEntries('regulations').map(([destination]) => destination),
   supportSourceTransformV1: true,
   supportTransformerProxyV1: true,

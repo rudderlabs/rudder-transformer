@@ -19,9 +19,9 @@ import logger from '../../../logger';
 // ---------------------------------------------------------------------------
 // Conversion action resolution
 //
-// Shared by both paths: the legacy networkHandler resolves at delivery time, and — when the
-// framework transport is enabled — routerTransform resolves during transform so that events with
-// different conversion names can land in one batch. Both go through the one cache below; a second
+// Shared by both paths: the legacy networkHandler resolves at delivery time, while routerTransform
+// resolves during transform so that events with different conversion names can land in one batch.
+// Both go through the one cache below; a second
 // CacheClass with the same name would double the memory and split the hit rate.
 // ---------------------------------------------------------------------------
 

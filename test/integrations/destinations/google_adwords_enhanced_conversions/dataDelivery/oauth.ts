@@ -6,6 +6,10 @@ import {
   generateMetadata,
 } from '../../../testUtils';
 
+const API_VERSION = 'v25';
+const uploadEndpoint = (customerId: string) =>
+  `https://googleads.googleapis.com/${API_VERSION}/customers/${customerId}:uploadConversionAdjustments`;
+
 const requestPayload = {
   partialFailure: true,
   conversionAdjustments: [
@@ -197,7 +201,16 @@ export const v1oauthScenarios = [
       request: {
         body: generateProxyV1Payload({
           ...commonRequestParameters,
-          endpoint: '',
+          JSON: {
+            ...requestPayload,
+            conversionAdjustments: requestPayload.conversionAdjustments.map((adjustment) => ({
+              ...adjustment,
+              conversionAction: 'customers/1234567901/conversionActions/123434342',
+            })),
+          },
+          params: {},
+          endpoint: uploadEndpoint('1234567901'),
+          endpointPath: '/uploadConversionAdjustments',
         }),
         method: 'POST',
       },
@@ -208,15 +221,23 @@ export const v1oauthScenarios = [
         body: {
           output: {
             authErrorCategory: 'REFRESH_TOKEN',
-            message: `"${JSON.stringify([{ error: { code: 401, message: 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', status: 'UNAUTHENTICATED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
+            message:
+              '[GOOGLE_ADWORDS_ENHANCED_CONVERSIONS] Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
             response: [
               {
-                error: `"${JSON.stringify([{ error: { code: 401, message: 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', status: 'UNAUTHENTICATED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
+                error: JSON.stringify({
+                  error: {
+                    code: 401,
+                    message:
+                      'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+                    status: 'UNAUTHENTICATED',
+                  },
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 401,
               },
             ],
-            statTags: expectedStatTags,
+            statTags: { ...expectedStatTags, errorType: 'retryable' },
             status: 401,
           },
         },
@@ -238,19 +259,16 @@ export const v1oauthScenarios = [
       request: {
         body: generateProxyV1Payload({
           JSON: {
-            query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Product Added'`,
+            ...requestPayload,
+            conversionAdjustments: requestPayload.conversionAdjustments.map((adjustment) => ({
+              ...adjustment,
+              conversionAction: 'customers/1234567910/conversionActions/123434342',
+            })),
           },
           headers,
-          params: {
-            developerToken: 'test-developer-token-12345',
-            accessToken: 'google_adwords_enhanced_conversions1',
-            loginCustomerId: '0987654321',
-            event: 'Product Added',
-            customerId: '1234567910',
-            destination: 'google_adwords_enhanced_conversions',
-            subAccount: true,
-          },
-          endpoint: '',
+          params: {},
+          endpoint: uploadEndpoint('1234567910'),
+          endpointPath: '/uploadConversionAdjustments',
         }),
         method: 'POST',
       },
@@ -261,10 +279,23 @@ export const v1oauthScenarios = [
         body: {
           output: {
             authErrorCategory: 'AUTH_STATUS_INACTIVE',
-            message: `"${JSON.stringify([{ error: { code: 403, message: 'The caller does not have permission', errors: [{ message: 'The caller does not have permission', domain: 'global', reason: 'forbidden' }], status: 'PERMISSION_DENIED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
+            message: '[GOOGLE_ADWORDS_ENHANCED_CONVERSIONS] The caller does not have permission',
             response: [
               {
-                error: `"${JSON.stringify([{ error: { code: 403, message: 'The caller does not have permission', errors: [{ message: 'The caller does not have permission', domain: 'global', reason: 'forbidden' }], status: 'PERMISSION_DENIED' } }])} during Google_adwords_enhanced_conversions response transformation"`,
+                error: JSON.stringify({
+                  error: {
+                    code: 403,
+                    message: 'The caller does not have permission',
+                    errors: [
+                      {
+                        message: 'The caller does not have permission',
+                        domain: 'global',
+                        reason: 'forbidden',
+                      },
+                    ],
+                    status: 'PERMISSION_DENIED',
+                  },
+                }),
                 metadata: generateMetadata(1),
                 statusCode: 403,
               },

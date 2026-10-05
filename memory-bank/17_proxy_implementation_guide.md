@@ -907,17 +907,9 @@ const getResponseStrategy = (endpoint, response) => {
 
 **Problem**: A destination has a `networkHandler` (delivery proxy), but `transformerProxy` is not enabled for it in the rudder-server config. rudder-server then delivers directly and bypasses the networkHandler, so any request-building or delivery logic that lives only in the handler never executes — deliveries fail. This most often bites **open-source / self-hosted** users, who (unlike managed/SaaS deployments) are usually unaware of the `transformerProxy` flag and never set it.
 
-**Example**: GAEC (`google_adwords_enhanced_conversions`) builds the actual Google Ads API URL and performs delivery inside its networkHandler (via the Google Ads SDK) — the transform's `deliveryRequest` sets only `params`, `headers`, and `body`, and leaves `endpoint` empty on purpose. When `transformerProxy` is not enabled, rudder-server attempts direct delivery using that empty `endpoint`, producing an error like:
+**Historical example**: GAEC (`google_adwords_enhanced_conversions`) previously left `endpoint` empty and relied on its networkHandler to build and send the Google Ads request. That design failed under direct delivery with `unsupported protocol scheme ""`. GAEC now emits an HTTP-ready endpoint during framework transform and uses its delivery spec for v1 transport/response handling; its networkHandler remains only for the v0 compatibility path.
 
-```json
-{
-  "response": "504 Unable to make \"POST\" request for URL : \"\". Error: Post \"?accessToken=xxx&customerId=1225016906&developerToken=xxxx&event=Contact+%28Copy+Test%29&loginCustomerId=&subAccount=false\": unsupported protocol scheme \"\"",
-  "routerSubStage": "router_dest_delivery",
-  "payloadStage": "router_input"
-}
-```
-
-The tell-tale signs: an **empty URL** (everything after `?` is just the serialized `params`), `unsupported protocol scheme ""`, and `routerSubStage: "router_dest_delivery"` (direct delivery, not the proxy). The fix is to set `transformerProxy: true` for the destination so rudder-server routes delivery through the networkHandler, which then constructs the real endpoint.
+The broader lesson still applies: if correctness depends on transformer-owned delivery behavior (for example `prepareRequest`, OAuth classification, partial-failure attribution, or batch-to-singleton retries), the destination must advertise `transformerProxy: true` so rudder-server does not bypass it.
 
 **Solution**:
 

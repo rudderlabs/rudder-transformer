@@ -10,8 +10,8 @@
  *    body (2SV-not-enrolled and CUSTOMER_NOT_FOUND mean the grant is gone, not that the token is
  *    stale). The framework never infers auth from a status, so this is declared explicitly.
  *
- * With the transport flag enabled, the framework sends the prepared request directly and this spec
- * injects the developer token at delivery time so it never appears in persisted router output.
+ * The framework sends the prepared request directly, and this spec injects the developer token at
+ * delivery time so it never appears in persisted router output.
  */
 import { NetworkError } from '@rudderstack/integrations-lib';
 import { isEmptyObject } from '../../util';
@@ -83,10 +83,10 @@ export const gaecDelivery: DeliverySpec = {
   statusOverrides: gaecStatusOverrides,
   failureReason: (ctx) => extractGaecErrorMessage(ctx.response),
   prepareRequest: (request) => {
-    // An empty endpoint means legacy, params-based router output reached the framework transport
-    // because the transport flag flipped on while these jobs were queued — sending it would POST
-    // to ''. Retryable, so the job re-transforms into the new shape and succeeds on the retry.
-    // The mirror of this guard, new shape reaching the legacy proxy, lives in ./networkHandler.
+    // TODO(RUD-3195 follow-up): remove this guard after queues from the final transport-GA flip drain.
+    // An empty endpoint means legacy, params-based router output reached the framework transport;
+    // sending it would POST to ''. Retryable, so the job re-transforms into the new shape and
+    // succeeds on the retry. The mirror guard lives in ./networkHandler.
     if (!request.endpoint) {
       const error = new NetworkError(
         '[Google Ads Enhanced Conversions] old-shape payload reached framework transport after transport flag flip',

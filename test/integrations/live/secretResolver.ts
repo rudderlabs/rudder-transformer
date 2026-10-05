@@ -31,6 +31,14 @@ export const requiredSecretField = (
   mustBe: string,
 ): string => requiredField(s.secret?.[field], destination, `secret.${field}`, mustBe);
 
+/** A mandatory `resourceIds` entry: an account-scoped id (list, audience, pixel) the scenarios target. */
+export const requiredResourceId = (
+  s: LiveSecret,
+  destination: string,
+  key: string,
+  mustBe: string,
+): string => requiredField(s.resourceIds?.[key], destination, `resourceIds.${key}`, mustBe);
+
 export class SecretResolver {
   private readonly env: NodeJS.ProcessEnv;
 

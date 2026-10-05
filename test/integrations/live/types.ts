@@ -91,6 +91,14 @@ interface DestinationOverride {
   WorkspaceID?: string;
 }
 
+// The connected account rudder-server attaches to `destination.deliveryAccount`. The runner derives
+// it once per spec from `accountDefinition`, so transforms that branch on the account definition
+// (e.g. GARL's Data Manager path) see it on every step.
+interface DeliveryAccount {
+  id: string;
+  accountDefinitionName: string;
+}
+
 // A pipeline step: seed -> /routerTransform -> /proxy, asserting the events are delivered.
 interface PipelineStep extends Step {
   stepType: 'pipeline';
@@ -276,6 +284,7 @@ interface BuildRouterTransformBodyOptions {
   secret?: Record<string, string>;
   metadataOverride?: MetadataOverride;
   destinationOverride?: DestinationOverride;
+  deliveryAccount?: DeliveryAccount;
   // Full connection object for RETL / audience destinations that read connection.config
   // (e.g. customAttributeName). Absent for event-stream destinations that don't need it.
   connection?: Record<string, unknown>;
@@ -289,6 +298,7 @@ interface RouterTransformInput {
     ID: string;
     Config: Record<string, unknown>;
     Enabled: boolean;
+    deliveryAccount?: DeliveryAccount;
   } & DestinationOverride;
   connection?: Record<string, unknown>;
   metadata: {
@@ -341,6 +351,8 @@ interface RunPipelineStepParams {
   http: LiveHttpClient;
   // Optional connection for destinations that require it at transform time (audience / VDM).
   connection?: Record<string, unknown>;
+  // Derived from the spec's accountDefinition; absent for specs that declare none.
+  deliveryAccount?: DeliveryAccount;
 }
 
 // ─── Poll helpers (poll.ts) ───
@@ -383,6 +395,7 @@ export {
   EnrolledDestination,
   MetadataOverride,
   DestinationOverride,
+  DeliveryAccount,
   PipelineStep,
   ActionStep,
   VerifyStep,

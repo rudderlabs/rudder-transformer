@@ -345,6 +345,12 @@ describe('buildAudienceMember IP processing', () => {
     destinationId: 'destination-id',
     isHashRequired: true,
   };
+  // SHA-256 of 'user@example.com'
+  const hashedEmailUserData = {
+    userIdentifiers: [
+      { emailAddress: 'b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514' },
+    ],
+  };
 
   it('preserves a valid IP when hashing is required and nests it with hashed email data', () => {
     expect(
@@ -357,13 +363,7 @@ describe('buildAudienceMember IP processing', () => {
     ).toEqual({
       member: {
         compositeData: {
-          userData: {
-            userIdentifiers: [
-              {
-                emailAddress: 'b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514',
-              },
-            ],
-          },
+          userData: hashedEmailUserData,
           ipData: [{ ipAddress: '203.0.113.98' }],
         },
       },
@@ -381,13 +381,7 @@ describe('buildAudienceMember IP processing', () => {
     ).toEqual({
       member: {
         compositeData: {
-          userData: {
-            userIdentifiers: [
-              {
-                emailAddress: 'b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514',
-              },
-            ],
-          },
+          userData: hashedEmailUserData,
         },
       },
     });
@@ -460,13 +454,7 @@ describe('buildAudienceMember IP processing', () => {
     ).toEqual({
       member: {
         compositeData: {
-          userData: {
-            userIdentifiers: [
-              {
-                emailAddress: 'b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514',
-              },
-            ],
-          },
+          userData: hashedEmailUserData,
         },
       },
     });

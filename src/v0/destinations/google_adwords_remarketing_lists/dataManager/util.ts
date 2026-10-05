@@ -1,5 +1,7 @@
+import moment from 'moment-timezone';
+import validator from 'validator';
 import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
-import { processAudienceRecord } from '../../../util/audienceUtils';
+import { processAudienceRecord, HashingType } from '../../../util/audienceUtils';
 import {
   isDefinedAndNotNullAndNotEmpty,
   constructPayload,
@@ -9,7 +11,7 @@ import {
 } from '../../../util';
 import { JSON_MIME_TYPE } from '../../../util/constant';
 import logger from '../../../../logger';
-import { GARL_FIELD_CONFIG } from '../util';
+import { GARL_FIELD_CONFIG, toAudienceFieldConfig } from '../util';
 import { TYPEOFLIST, consentConfigMap, destType } from '../config';
 import { populateConsentFromConfig } from '../../../util/googleUtils';
 import {
@@ -46,6 +48,43 @@ interface AudienceDestinationContext {
 
 const ADDRESS_SCHEMA_FIELDS = ['firstName', 'lastName', 'country', 'postalCode'];
 const IP_SCHEMA_FIELDS = ['userIp', 'ipObserveStartTime', 'ipObserveEndTime'];
+
+// Strict ISO 8601 (offset preserved), plus the `... UTC` form some warehouses emit.
+const IP_OBSERVE_TIME_FORMATS = [
+  moment.ISO_8601,
+  'YYYY-MM-DD HH:mm:ss [UTC]',
+  'YYYY-MM-DD HH:mm:ss.SSS [UTC]',
+];
+
+const normalizeIpObserveTime = (value: string): string => {
+  const trimmedValue = value.trim();
+  const strictTime = moment.parseZone(trimmedValue, IP_OBSERVE_TIME_FORMATS, true);
+  const time =
+    strictTime.isValid() || !/^\d{4}/.test(trimmedValue)
+      ? strictTime
+      : moment.parseZone(trimmedValue);
+  return time.isValid() ? time.toISOString(true) : '';
+};
+
+const IP_OBSERVE_TIME_FIELD = {
+  normalize: normalizeIpObserveTime,
+  validate: (v: string) => v.length > 0,
+  hashingType: HashingType.NONE,
+};
+
+// IP identifiers only exist on the Data Manager path, so they extend the shared GARL config here.
+const DM_FIELD_CONFIG = {
+  ...GARL_FIELD_CONFIG,
+  ...toAudienceFieldConfig({
+    userIp: {
+      normalize: (v: string) => v.trim(),
+      validate: (v: string) => validator.isIP(v),
+      hashingType: HashingType.NONE,
+    },
+    ipObserveStartTime: IP_OBSERVE_TIME_FIELD,
+    ipObserveEndTime: IP_OBSERVE_TIME_FIELD,
+  }),
+};
 
 /**
  * The destination uses the Data Manager API when it is connected to the
@@ -91,11 +130,10 @@ const filterFieldsBySchema = (
   const needsIp = userSchema.includes('userIp');
 
   return Object.fromEntries(
-    Object.entries(fields).filter(
-      ([k]) =>
-        (userSchema.includes(k) && !IP_SCHEMA_FIELDS.includes(k)) ||
-        (needsAddress && ADDRESS_SCHEMA_FIELDS.includes(k)) ||
-        (needsIp && IP_SCHEMA_FIELDS.includes(k)),
+    Object.entries(fields).filter(([k]) =>
+      IP_SCHEMA_FIELDS.includes(k)
+        ? needsIp
+        : userSchema.includes(k) || (needsAddress && ADDRESS_SCHEMA_FIELDS.includes(k)),
     ),
   );
 };
@@ -155,28 +193,22 @@ export const buildAudienceMemberFromProcessedFields = (
       }
     }
 
-    const ipData: IpData[] = [];
-    if (schemaFields.userIp) {
-      const ipEntry: IpData = { ipAddress: String(schemaFields.userIp) };
-      if (schemaFields.ipObserveStartTime) {
-        ipEntry.observeStartTime = String(schemaFields.ipObserveStartTime);
-      }
-      if (schemaFields.ipObserveEndTime) {
-        ipEntry.observeEndTime = String(schemaFields.ipObserveEndTime);
-      }
-      ipData.push(ipEntry);
-    }
+    const { userIp, ipObserveStartTime, ipObserveEndTime } = schemaFields;
+    const ipEntry: IpData | undefined = userIp
+      ? {
+          ipAddress: String(userIp),
+          ...(ipObserveStartTime ? { observeStartTime: String(ipObserveStartTime) } : {}),
+          ...(ipObserveEndTime ? { observeEndTime: String(ipObserveEndTime) } : {}),
+        }
+      : undefined;
 
-    if (userIdentifiers.length === 0 && ipData.length === 0) return null;
+    if (userIdentifiers.length === 0 && !ipEntry) return null;
 
     if (userSchema?.includes('userIp')) {
-      member.compositeData = {};
-      if (ipData.length > 0) {
-        member.compositeData.ipData = ipData;
-      }
-      if (userIdentifiers.length > 0) {
-        member.compositeData.userData = { userIdentifiers };
-      }
+      member.compositeData = {
+        ...(ipEntry ? { ipData: [ipEntry] } : {}),
+        ...(userIdentifiers.length > 0 ? { userData: { userIdentifiers } } : {}),
+      };
     } else {
       member.userData = { userIdentifiers };
     }
@@ -207,7 +239,7 @@ export const buildAudienceMember = (
   let processedFields: Record<string, unknown>;
   try {
     processedFields = processAudienceRecord(rawRecord, {
-      fieldConfigs: GARL_FIELD_CONFIG,
+      fieldConfigs: DM_FIELD_CONFIG,
       destination: {
         workspaceId,
         id: destinationId,

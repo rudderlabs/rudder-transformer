@@ -286,6 +286,8 @@ async function processVDMV1RecordEvents(groupedRecordInputs: GARLRouterRequest[]
 
 async function processVDMV2RecordEvents(groupedRecordInputs: GARLRouterRequest[]) {
   const { connection } = groupedRecordInputs[0];
+  // Union across the batch, not the first record's keys: whether `userIp` is mapped decides the
+  // member shape (compositeData vs userData), and Google rejects a request that mixes the two.
   const userSchema = [
     ...new Set(
       groupedRecordInputs.flatMap(({ message }) =>

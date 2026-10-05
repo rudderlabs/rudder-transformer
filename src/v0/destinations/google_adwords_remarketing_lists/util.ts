@@ -1,5 +1,4 @@
 import get from 'get-value';
-import moment from 'moment-timezone';
 import validator from 'validator';
 import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
 import {
@@ -32,28 +31,6 @@ import type { GARLDestinationConfig } from './types';
 import { HashingType } from '../../util/audienceUtils';
 
 const COUNTRY_CODE_REGEX = /^[A-Za-z]{2,3}$/;
-const WAREHOUSE_UTC_TIMESTAMP_FORMATS = [
-  'YYYY-MM-DD HH:mm:ss [UTC]',
-  'YYYY-MM-DD HH:mm:ss.SSS [UTC]',
-];
-
-const normalizeIpObserveTime = (value: string): string => {
-  const trimmedValue = value.trim();
-  const strictIsoTime = moment.parseZone(trimmedValue, moment.ISO_8601, true);
-  if (strictIsoTime.isValid()) {
-    return strictIsoTime.toISOString(true);
-  }
-
-  const warehouseUtcTime = moment.utc(trimmedValue, WAREHOUSE_UTC_TIMESTAMP_FORMATS, true);
-  if (warehouseUtcTime.isValid()) {
-    return warehouseUtcTime.toISOString(true);
-  }
-
-  const permissiveTime = /^\d{4}/.test(trimmedValue)
-    ? moment.parseZone(trimmedValue)
-    : moment.invalid();
-  return permissiveTime.isValid() ? permissiveTime.toISOString(true) : '';
-};
 
 /**
  * Per-field normalization and validation rules for GARL.
@@ -91,34 +68,30 @@ const GARL_STRING_FIELD_CONFIG = {
     validate: (v: string) => v.length > 0,
     hashingType: HashingType.NONE,
   },
-  userIp: {
-    normalize: (v: string) => v.trim(),
-    validate: validator.isIP,
-    hashingType: HashingType.NONE,
-  },
-  ipObserveStartTime: {
-    normalize: normalizeIpObserveTime,
-    validate: (v: string) => v.length > 0,
-    hashingType: HashingType.NONE,
-  },
-  ipObserveEndTime: {
-    normalize: normalizeIpObserveTime,
-    validate: (v: string) => v.length > 0,
-    hashingType: HashingType.NONE,
-  },
+};
+
+type StringFieldConfig = {
+  normalize: (v: string) => string;
+  validate: (v: string) => boolean;
+  hashingType: HashingType;
 };
 
 // Bridge string-typed config to the unknown-typed AudienceField interface
-const GARL_FIELD_CONFIG: Record<string, AudienceField> = Object.fromEntries(
-  Object.entries(GARL_STRING_FIELD_CONFIG).map(([key, { normalize, validate, ...rest }]) => [
-    key,
-    {
-      ...rest,
-      normalize: (v: unknown) => normalize(String(v)),
-      validate: (v: unknown) => validate(v as string),
-    },
-  ]),
-);
+const toAudienceFieldConfig = (
+  stringConfig: Record<string, StringFieldConfig>,
+): Record<string, AudienceField> =>
+  Object.fromEntries(
+    Object.entries(stringConfig).map(([key, { normalize, validate, ...rest }]) => [
+      key,
+      {
+        ...rest,
+        normalize: (v: unknown) => normalize(String(v)),
+        validate: (v: unknown) => validate(v as string),
+      },
+    ]),
+  );
+
+const GARL_FIELD_CONFIG = toAudienceFieldConfig(GARL_STRING_FIELD_CONFIG);
 
 const responseBuilder = (
   accessToken: string,
@@ -298,4 +271,5 @@ export {
   getOperationAudienceId,
   populateIdentifiersForRecordEvent,
   GARL_FIELD_CONFIG,
+  toAudienceFieldConfig,
 };

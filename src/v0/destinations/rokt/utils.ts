@@ -1,13 +1,25 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
+import { get, isPlainObject, set } from 'lodash';
 import {
   constructPayload,
   formatTimeStamp,
   getValueFromMessage,
   isAndroidFamily,
   isAppleFamily,
+  isValidUrl,
 } from '../../util';
 import type { RudderMessage } from '../../../types';
-import { BULK_EVENTS_PATH, ROKT_INTEGRATION_ID } from './config';
+import {
+  ADVERTISING_ID_SOURCE_KEY,
+  BULK_EVENTS_PATH,
+  CLICK_ID_SOURCE_KEYS,
+  CONVERSION_TYPE_SOURCE_KEYS,
+  DEVICE_TYPE_SOURCE_KEY,
+  IP_SOURCE_KEYS,
+  PAGE_SEARCH_SOURCE_KEY,
+  ROKT_INTEGRATION_ID,
+  TIMESTAMP_SOURCE_KEYS,
+} from './config';
 import mappingConfig from './data/ROKTConfig.json';
 import type {
   RoktBatch,
@@ -25,8 +37,23 @@ type MappingEntry = {
 
 const ROKT_MAPPING_CONFIG = mappingConfig as Record<keyof typeof mappingConfig, MappingEntry[]>;
 
-const isPlainRecord = (value: unknown): value is Record<string, unknown> =>
-  Object.prototype.toString.call(value) === '[object Object]';
+// Every message path the transform reads; buildRoktBatch copies only these.
+const MAPPED_PATHS = [
+  ...new Set(
+    [
+      ...Object.values(ROKT_MAPPING_CONFIG)
+        .flat()
+        .flatMap(({ sourceKeys }) => sourceKeys),
+      ...IP_SOURCE_KEYS,
+      ...CLICK_ID_SOURCE_KEYS,
+      PAGE_SEARCH_SOURCE_KEY,
+      ...TIMESTAMP_SOURCE_KEYS,
+      ...CONVERSION_TYPE_SOURCE_KEYS,
+      DEVICE_TYPE_SOURCE_KEY,
+      ADVERTISING_ID_SOURCE_KEY,
+    ].flat(),
+  ),
+];
 
 const isPresent = (value: unknown): boolean =>
   value !== undefined && value !== null && !(typeof value === 'string' && value.trim() === '');
@@ -37,19 +64,27 @@ const compact = <T extends Record<string, unknown>>(value: T): T =>
 const omitWhitespaceOnlyValues = (value: unknown): unknown => {
   if (typeof value === 'string') return value.trim() === '' ? '' : value;
   if (Array.isArray(value)) return value.map(omitWhitespaceOnlyValues);
-  if (!isPlainRecord(value)) return value;
+  if (!isPlainObject(value)) return value;
   return Object.fromEntries(
-    Object.entries(value).map(([key, item]) => [key, omitWhitespaceOnlyValues(item)]),
+    Object.entries(value as Record<string, unknown>).map(([key, item]) => [
+      key,
+      omitWhitespaceOnlyValues(item),
+    ]),
   );
+};
+
+// Blanking whitespace-only strings lets getValueFromMessage fall through to the next source key.
+const sanitizeMappedPaths = (message: RudderMessage): RudderMessage => {
+  const view = {} as RudderMessage;
+  for (const path of MAPPED_PATHS) {
+    const value: unknown = get(message, path);
+    if (value !== undefined) set(view, path, omitWhitespaceOnlyValues(value));
+  }
+  return view;
 };
 
 const mappedPayload = (message: RudderMessage, mappings: MappingEntry[]): Record<string, unknown> =>
   (constructPayload(message, mappings) ?? {}) as Record<string, unknown>;
-
-const mappedValue = (message: RudderMessage, mappings: MappingEntry[]): unknown => {
-  const [mapping] = mappings;
-  return mapping ? getValueFromMessage(message, mapping.sourceKeys) : undefined;
-};
 
 const asNonEmptyString = (value: unknown): string | undefined => {
   if (!isPresent(value)) return undefined;
@@ -58,10 +93,8 @@ const asNonEmptyString = (value: unknown): string | undefined => {
 };
 
 export const resolveEndpoint = (apiEndpoint: string): string => {
-  let parsed: URL;
-  try {
-    parsed = new URL(apiEndpoint);
-  } catch {
+  const parsed = isValidUrl(apiEndpoint);
+  if (!parsed) {
     throw new ConfigurationError('ROKT apiEndpoint must be a valid Rokt Events API URL');
   }
 
@@ -81,18 +114,21 @@ export const resolveEndpoint = (apiEndpoint: string): string => {
   return `${parsed.origin}${BULK_EVENTS_PATH}`;
 };
 
+// Shared with delivery, which maps Rokt's error positions back onto this exact serialization.
+export const serializeRoktBatches = (batches: unknown[]): string => JSON.stringify(batches);
+
 const resolveClickId = (message: RudderMessage): string | undefined => {
-  const propertyValue = mappedValue(message, ROKT_MAPPING_CONFIG.clickIdMappings);
+  const propertyValue = getValueFromMessage(message, CLICK_ID_SOURCE_KEYS);
   if (isPresent(propertyValue)) return String(propertyValue);
 
-  const search = asNonEmptyString(getValueFromMessage(message, 'context.page.search'));
+  const search = asNonEmptyString(getValueFromMessage(message, PAGE_SEARCH_SOURCE_KEY));
   if (!search) return undefined;
   const params = new URLSearchParams(search);
   return [params.get('rclid'), params.get('rtid')].find(isPresent) ?? undefined;
 };
 
 const resolveTimestamp = (message: RudderMessage): number | undefined => {
-  const rawTimestamp = mappedValue(message, ROKT_MAPPING_CONFIG.timestampMappings);
+  const rawTimestamp = getValueFromMessage(message, TIMESTAMP_SOURCE_KEYS);
   if (!isPresent(rawTimestamp)) return undefined;
   const timestamp = new Date(rawTimestamp as string | number).getTime();
   return Number.isFinite(timestamp) ? timestamp : undefined;
@@ -125,44 +161,34 @@ const buildUserAttributes = (message: RudderMessage): RoktUserAttributes => {
   return compact({ ...attributes, dob: formatDateOfBirth(attributes.dob) });
 };
 
+// The trait-based ids come from deviceMappings; a typed context.device.advertisingId overrides them.
 const buildDeviceInfo = (message: RudderMessage): RoktDeviceInfo => {
   const deviceInfo = mappedPayload(message, ROKT_MAPPING_CONFIG.deviceMappings) as RoktDeviceInfo;
-  const deviceType = asNonEmptyString(mappedValue(message, ROKT_MAPPING_CONFIG.deviceTypeMappings));
-  const advertisingId = mappedValue(message, ROKT_MAPPING_CONFIG.advertisingIdMappings);
+  const advertisingId = getValueFromMessage(message, ADVERTISING_ID_SOURCE_KEY);
 
   if (isPresent(advertisingId)) {
+    const deviceType = asNonEmptyString(getValueFromMessage(message, DEVICE_TYPE_SOURCE_KEY));
     if (isAppleFamily(deviceType)) {
       deviceInfo.ios_advertising_id = advertisingId;
     } else if (isAndroidFamily(deviceType)) {
       deviceInfo.android_advertising_id = advertisingId;
     }
   }
-
-  // compact() drops whichever fallback resolves to nothing
-  if (!isPresent(deviceInfo.ios_advertising_id)) {
-    deviceInfo.ios_advertising_id = mappedValue(
-      message,
-      ROKT_MAPPING_CONFIG.iosAdvertisingIdMappings,
-    );
-  }
-  if (!isPresent(deviceInfo.android_advertising_id)) {
-    deviceInfo.android_advertising_id = mappedValue(
-      message,
-      ROKT_MAPPING_CONFIG.androidAdvertisingIdMappings,
-    );
-  }
   return compact(deviceInfo);
 };
 
-const buildConversion = (message: RudderMessage): RoktConversion => {
+const buildConversion = (
+  message: RudderMessage,
+  { type, messageId }: RudderMessage,
+): RoktConversion => {
   const customAttributes = mappedPayload(message, ROKT_MAPPING_CONFIG.conversionAttributeMappings);
   const { amount } = customAttributes;
-  let conversiontype = mappedValue(message, ROKT_MAPPING_CONFIG.conversionTypeMappings);
-  if (!isPresent(conversiontype) && ['page', 'screen'].includes(message.type)) {
+  let conversiontype = getValueFromMessage(message, CONVERSION_TYPE_SOURCE_KEYS);
+  if (!isPresent(conversiontype) && ['page', 'screen'].includes(type)) {
     conversiontype = 'screen_view';
   }
   const timestamp = resolveTimestamp(message);
-  const sourceMessageId = asNonEmptyString(message.messageId);
+  const sourceMessageId = asNonEmptyString(messageId);
 
   return {
     event_type: 'custom_event',
@@ -181,18 +207,18 @@ const buildConversion = (message: RudderMessage): RoktConversion => {
 };
 
 export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
-  const sanitizedMessage = omitWhitespaceOnlyValues(message) as RudderMessage;
+  const sanitizedMessage = sanitizeMappedPaths(message);
   const clickId = resolveClickId(sanitizedMessage);
   const identities = buildIdentities(sanitizedMessage, clickId);
 
-  const root = mappedPayload(sanitizedMessage, ROKT_MAPPING_CONFIG.rootMappings);
+  const ip = getValueFromMessage(sanitizedMessage, IP_SOURCE_KEYS);
   const userAttributes = buildUserAttributes(sanitizedMessage);
   const deviceInfo = buildDeviceInfo(sanitizedMessage);
   return {
     schema_version: 2,
     environment: 'production',
     user_identities: identities,
-    ...(isPresent(root.ip) ? { ip: root.ip } : {}),
+    ...(isPresent(ip) ? { ip } : {}),
     ...(Object.keys(userAttributes).length > 0 ? { user_attributes: userAttributes } : {}),
     ...(Object.keys(deviceInfo).length > 0 ? { device_info: deviceInfo } : {}),
     ...(clickId
@@ -202,6 +228,8 @@ export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
           },
         }
       : {}),
-    ...(message.type === 'identify' ? {} : { events: [buildConversion(sanitizedMessage)] }),
+    ...(message.type === 'identify'
+      ? {}
+      : { events: [buildConversion(sanitizedMessage, message)] }),
   };
 };

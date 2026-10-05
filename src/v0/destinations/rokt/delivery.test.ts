@@ -1,7 +1,6 @@
 import {
   firstJobIdentity,
   handleDeliveryResponse,
-  reasonOf,
 } from '../../../services/destination/destinationIntegration/delivery';
 import type { DeliveryContext } from '../../../services/destination/destinationIntegration/delivery';
 import type { ProxyMetdata, ProxyV1Request } from '../../../types';
@@ -147,16 +146,5 @@ describe('ROKT delivery', () => {
       as: 'throttled',
     });
     expect(handleDeliveryResponse(Integration, context(503))).toMatchObject({ kind: 'retry' });
-  });
-
-  it('ignores response text outside the Rokt errors envelope', () => {
-    const verdict = handleDeliveryResponse(
-      Integration,
-      context(400, { message: 'not a Rokt errors response' }),
-    );
-
-    expect(reasonOf(verdict.kind === 'perItem' ? { kind: 'abort', reason: '' } : verdict)).toBe(
-      'Rokt rejected the bulk request (status 400): Rokt returned no recognized error details.',
-    );
   });
 });

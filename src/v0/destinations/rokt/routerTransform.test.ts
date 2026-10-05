@@ -491,6 +491,13 @@ describe('RoktIntegration', () => {
     expect(responses.every((response) => response.batchedRequest === undefined)).toBe(true);
   });
 
+  it('rejects a message without a type', async () => {
+    const [response] = await route([makeInput(10, { type: undefined })]);
+
+    expect(response.error).toContain('Message Type is not present. Aborting message.');
+    expect(response.batchedRequest).toBeUndefined();
+  });
+
   it.each([
     { name: 'missing', timestamp: undefined },
     { name: 'invalid', timestamp: 'not-a-date' },

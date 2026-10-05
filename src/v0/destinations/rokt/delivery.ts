@@ -1,4 +1,5 @@
-import { unescape } from 'lodash';
+import { once, unescape } from 'lodash';
+import { z } from 'zod';
 import {
   perItem,
   retry,
@@ -7,48 +8,33 @@ import {
   type DeliverySpec,
   type StatusOverrideMap,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import { serializeRoktBatches } from './utils';
 
-type RoktError = {
-  message: string;
-};
+const RoktErrorsResponseSchema = z.object({ errors: z.array(z.unknown()).nonempty() });
+const RoktErrorSchema = z.object({ code: z.string(), message: z.string() });
 
 type RoktErrorDetails = {
+  // Every entry in `errors`, including ones without a recognizable code/message.
   count: number;
-  errors: RoktError[];
+  errors: string[];
   message: string;
 };
 
 const parseRoktErrors = ({ response }: DeliveryContext): RoktErrorDetails | undefined => {
-  if (
-    typeof response !== 'object' ||
-    response === null ||
-    !('errors' in response) ||
-    !Array.isArray(response.errors) ||
-    response.errors.length === 0
-  ) {
+  const parsed = RoktErrorsResponseSchema.safeParse(response);
+  if (!parsed.success) {
     return undefined;
   }
 
-  const errors = response.errors.flatMap((error): RoktError[] => {
-    if (
-      typeof error !== 'object' ||
-      error === null ||
-      !('code' in error) ||
-      typeof error.code !== 'string' ||
-      !('message' in error) ||
-      typeof error.message !== 'string'
-    ) {
-      return [];
-    }
-    return [{ message: `${error.code} - ${unescape(error.message)}` }];
+  const errors = parsed.data.errors.flatMap((error) => {
+    const result = RoktErrorSchema.safeParse(error);
+    return result.success ? [`${result.data.code} - ${unescape(result.data.message)}`] : [];
   });
 
   return {
-    count: response.errors.length,
+    count: parsed.data.errors.length,
     errors,
-    message:
-      errors.map(({ message }) => message).join('; ') ||
-      'Rokt returned no recognized error details.',
+    message: errors.join('; ') || 'Rokt returned no recognized error details.',
   };
 };
 
@@ -71,8 +57,8 @@ const partialFailureReason = (ctx: DeliveryContext, errors: RoktErrorDetails): s
   `Rokt rejected ${errors.count} of ${ctx.jobs.length} events (${errors.message}); ` +
   'retrying each event individually.';
 
-const failedEventReason = ({ message }: RoktError): string =>
-  `Rokt rejected this event: ${message}; retrying it individually.`;
+const failedEventReason = (error: string): string =>
+  `Rokt rejected this event: ${error}; retrying it individually.`;
 
 type BatchSpan = {
   start: number;
@@ -85,46 +71,44 @@ const getBatchSpans = (ctx: DeliveryContext): BatchSpan[] | undefined => {
     return undefined;
   }
 
+  let parsed: unknown;
   try {
-    const parsed: unknown = JSON.parse(serializedBatch);
-    if (!Array.isArray(parsed) || parsed.length !== ctx.jobs.length) {
-      return undefined;
-    }
-
-    const serializedItems = parsed
-      .map((item) => JSON.stringify(item))
-      .filter((item): item is string => item !== undefined);
-    if (serializedItems.length !== parsed.length) {
-      return undefined;
-    }
-    if (`[${serializedItems.join(',')}]` !== serializedBatch) {
-      return undefined;
-    }
-
-    let start = 1;
-    return serializedItems.map((item) => {
-      const span = { start, end: start + item.length - 1 };
-      start = span.end + 2;
-      return span;
-    });
+    parsed = JSON.parse(serializedBatch);
   } catch {
     return undefined;
   }
+  if (
+    !Array.isArray(parsed) ||
+    parsed.length !== ctx.jobs.length ||
+    serializeRoktBatches(parsed) !== serializedBatch
+  ) {
+    return undefined;
+  }
+
+  // The batch is `[` + items joined by `,` + `]`, so each item's span follows from its length.
+  let start = 1;
+  return parsed.map((item) => {
+    const end = start + JSON.stringify(item).length - 1;
+    const span = { start, end };
+    start = end + 2;
+    return span;
+  });
 };
 
 const getFailedBatchIndex = (
-  error: RoktError,
+  error: string,
   jobCount: number,
-  spans: BatchSpan[] | undefined,
+  getSpans: () => BatchSpan[] | undefined,
 ): number | undefined => {
-  const pathIndex = /Path '\[(\d+)]/.exec(error.message)?.[1];
+  const pathIndex = /Path '\[(\d+)]/.exec(error)?.[1];
   if (pathIndex !== undefined) {
     const index = Number(pathIndex);
-    return Number.isSafeInteger(index) && index < jobCount ? index : undefined;
+    return index < jobCount ? index : undefined;
   }
 
-  const position = /\bposition\s+(\d+)\b/i.exec(error.message)?.[1];
-  if (position === undefined || !spans) {
+  const position = /\bposition\s+(\d+)\b/i.exec(error)?.[1];
+  const spans = position === undefined ? undefined : getSpans();
+  if (!spans) {
     return undefined;
   }
 
@@ -138,15 +122,17 @@ const getPerItemVerdicts = (ctx: DeliveryContext, errorDetails: RoktErrorDetails
     return undefined;
   }
 
-  const spans = getBatchSpans(ctx);
-  const errorsByBatch = new Map<number, RoktError[]>();
+  // Only errors without a `[n]` path need the spans, so compute them at most once, on demand.
+  const getSpans = once(() => getBatchSpans(ctx));
+  const errorsByBatch = new Map<number, string[]>();
   for (const error of errorDetails.errors) {
-    const index = getFailedBatchIndex(error, ctx.jobs.length, spans);
+    const index = getFailedBatchIndex(error, ctx.jobs.length, getSpans);
     if (typeof index !== 'number') {
       return undefined;
     }
-    const existingErrors = errorsByBatch.get(index);
-    errorsByBatch.set(index, [...(existingErrors ?? []), error]);
+    const batchErrors = errorsByBatch.get(index) ?? [];
+    batchErrors.push(error);
+    errorsByBatch.set(index, batchErrors);
   }
 
   return perItem(
@@ -155,7 +141,7 @@ const getPerItemVerdicts = (ctx: DeliveryContext, errorDetails: RoktErrorDetails
       if (!errors) {
         return success();
       }
-      return retry(errors.map((error) => failedEventReason(error)).join(' '), { dontBatch: true });
+      return retry(errors.map(failedEventReason).join(' '), { dontBatch: true });
     }),
   );
 };

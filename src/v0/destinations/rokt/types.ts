@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ROKT_INTEGRATION_ID } from './config';
 
 const requiredConfigString = z
   .string()
@@ -13,21 +14,19 @@ export const RoktDestinationConfigSchema = z
   })
   .passthrough();
 
-const SUPPORTED_MESSAGE_TYPES = ['track', 'page', 'screen', 'identify'] as const;
+const UNSUPPORTED_MESSAGE_TYPE =
+  'Unsupported message type. ROKT supports track, page, screen, and identify.';
 
 export const RoktMessageSchema = z
   .object({
-    type: z
-      .string({
-        required_error: 'Message Type is not present. Aborting message.',
-        invalid_type_error:
-          'Unsupported message type. ROKT supports track, page, screen, and identify.',
-      })
-      .refine(
-        (type): type is (typeof SUPPORTED_MESSAGE_TYPES)[number] =>
-          SUPPORTED_MESSAGE_TYPES.includes(type as (typeof SUPPORTED_MESSAGE_TYPES)[number]),
-        'Unsupported message type. ROKT supports track, page, screen, and identify.',
-      ),
+    type: z.enum(['track', 'page', 'screen', 'identify'], {
+      errorMap: (_issue, ctx) => ({
+        message:
+          ctx.data === undefined
+            ? 'Message Type is not present. Aborting message.'
+            : UNSUPPORTED_MESSAGE_TYPE,
+      }),
+    }),
     userId: z.union([z.string(), z.number()]).transform(String).nullish(),
   })
   .passthrough();
@@ -92,7 +91,7 @@ export type RoktBatch = {
   user_attributes?: RoktUserAttributes;
   device_info?: RoktDeviceInfo;
   integration_attributes?: {
-    '1277': { passbackconversiontrackingid: string };
+    [ROKT_INTEGRATION_ID]: { passbackconversiontrackingid: string };
   };
   events?: [RoktConversion];
 };

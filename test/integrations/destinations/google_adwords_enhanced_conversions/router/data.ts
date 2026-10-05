@@ -2,6 +2,8 @@ import sha256 from 'sha256';
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { newData as batchingData } from './batching-data';
 
+const API_VERSION = 'v25';
+
 const events = [
   {
     metadata: {
@@ -717,6 +719,7 @@ export const data = [
                       {
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         adjustmentType: 'ENHANCEMENT',
+                        conversionAction: 'customers/1234567890/conversionActions/123434340',
                         gclidDateTimePair: {
                           conversionDateTime: '2022-01-01 12:32:45-08:00',
                           gclid: 'gclid1234',
@@ -748,6 +751,7 @@ export const data = [
                       {
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         adjustmentType: 'ENHANCEMENT',
+                        conversionAction: 'customers/1234567890/conversionActions/123434340',
                         gclidDateTimePair: {
                           conversionDateTime: '2022-01-01 12:32:45-08:00',
                           gclid: 'gclid1234',
@@ -782,7 +786,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint: '',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
                 endpointPath: '/uploadConversionAdjustments',
                 files: {},
                 headers: {
@@ -791,13 +795,7 @@ export const data = [
                   'login-customer-id': '11',
                 },
                 method: 'POST',
-                params: {
-                  accessToken: 'google_adwords_enhanced_conversions1',
-                  customerId: '1234567890',
-                  event: 'Page View',
-                  loginCustomerId: '11',
-                  subAccount: true,
-                },
+                params: {},
                 type: 'REST',
                 version: '1',
               },
@@ -1008,6 +1006,7 @@ export const data = [
                       {
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         adjustmentType: 'ENHANCEMENT',
+                        conversionAction: 'customers/1234567890/conversionActions/123434340',
                         gclidDateTimePair: {
                           conversionDateTime: '2022-01-01 12:32:45-08:00',
                           gclid: 'gclid1234',
@@ -1039,6 +1038,7 @@ export const data = [
                       {
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         adjustmentType: 'ENHANCEMENT',
+                        conversionAction: 'customers/1234567890/conversionActions/123434340',
                         gclidDateTimePair: {
                           conversionDateTime: '2022-01-01 12:32:45-08:00',
                           gclid: 'gclid1234',
@@ -1073,7 +1073,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint: '',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/{{event.context.customerID || "" }}:uploadConversionAdjustments`,
                 endpointPath: '/uploadConversionAdjustments',
                 files: {},
                 headers: {
@@ -1082,13 +1082,7 @@ export const data = [
                   'login-customer-id': '{{event.context.subaccountID || "" }}',
                 },
                 method: 'POST',
-                params: {
-                  accessToken: 'google_adwords_enhanced_conversions1',
-                  customerId: '{{event.context.customerID || "" }}',
-                  event: 'Page View',
-                  loginCustomerId: '{{event.context.subaccountID || "" }}',
-                  subAccount: true,
-                },
+                params: {},
                 type: 'REST',
                 version: '1',
               },

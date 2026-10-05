@@ -366,14 +366,12 @@ currently unused anywhere, and it marks `secret` and `dontBatch` **required** on
 entry, so a real payload omitting either would fail validation and fall through to the legacy
 handler silently — a worse failure than the cast it replaces.
 
-> **Superseded.** The separate delivery flag described below was removed once the rollout it
-> existed for was complete. There is no `isBatchingFrameworkDeliveryEnabled` any more: `deliver()`
-> calls the _same_ `isBatchingFrameworkEnabled(destType, workspaceId)` that
-> `doRouterTransformation` uses, so whichever half built the request is the half that reads its
-> response. The property this section's flag enforced by checking — delivery can never be enabled
-> without the transform — now holds by construction, and it extends to the pre-GA workspace
-> allowlist, which moves both halves together. The rest of this section is kept for the reasoning
-> that produced the design, not as a description of current behaviour.
+> **Superseded.** The separate delivery/transport flag described below was removed once its rollout
+> completed; both historical names (`{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS` and
+> `{DEST}_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS`) are obsolete. `deliver()` calls the
+> same `isDestinationIntegrationEnabled(destType, workspaceId)` as `doRouterTransformation`, so the
+> transform and transport move together. The rest of this section is retained only as historical
+> design reasoning, not as a description of current behaviour.
 
 **Resolution is gated on `isBatchingFrameworkDeliveryEnabled`** — its own flag, separate from the transform's, defaulting to **off** for every destination and workspace:
 
@@ -470,7 +468,12 @@ Intersecting the two sets — classes extending the `BatchDestination` family, a
 
 `iterable_audience` carries the most behavioural risk. Its handler resolves failures by identity, not status: GDPR-forgotten users are deliberately returned as **200 plus a metric** rather than 400 (`audience-list.ts:88-98`), and `notFound` on an unsubscribe is a no-op success (`:100-103`). Falling back to the framework classification would abort those as plain failures, so its `statusOverrides` must reproduce all three branches. Migrating it also fixes its `metadata: undefined` bug for free, since the framework bounds-checks `perItem` (§3.2).
 
-**`gaec` is smaller than its line count suggests.** Its `v0/networkHandler.ts` is 262 lines but is almost entirely _transport_ — an SDK-based `gaecProxyRequest`, a `conversionActionId` cache, and `gaecProcessAxiosResponse` — which §3.6 rule 2 leaves in place. Only `gaecResponseHandler` in the v1 file migrates. Two things to carry over: it reports partial failure on a **2xx** status with `partialFailureError` set, which is the case §3.7's non-2xx condition exists for; and it derives auth categories from the response via `getAuthErrCategory` (`v0/util/googleUtils`), so as a genuine OAuth destination it must declare those explicitly under §3.1 rather than relying on inference.
+**Historical GAEC migration note.** The original design kept `v0/networkHandler.ts` for its
+SDK-based transport and migrated only the v1 response handler. Framework transport later became
+GA for GAEC: conversion-action lookup moved into the router transform, developer-token injection
+moved into `delivery.ts`, and both destination-specific network handlers were removed. The delivery
+spec still carries the two response semantics identified here: partial failures on a **2xx** and
+body-derived OAuth categories.
 
 **`braze_audience` landed on develop after this design was written** (#5408) and is migrated on the same terms. It is the second destination whose partial failures arrive on a 2xx (like gaec) and the second whose response indexes the request body positionally (like customerio) — no new mechanism, which is the useful thing about it: a destination added after the contract existed fits it without extending it.
 
@@ -568,7 +571,9 @@ Four things to note:
 
 ### 4.3 `google_adwords_enhanced_conversions`
 
-Only `gaecResponseHandler` migrates. The 262-line `v0/networkHandler.ts` is transport — an SDK-based `gaecProxyRequest`, a `conversionActionId` cache, and `gaecProcessAxiosResponse` — which §3.6 rule 2 keeps in place.
+This was the original migration boundary. After framework transport reached GA, conversion-action
+lookup moved into the router transform, developer-token injection moved into `delivery.ts`, and the
+v0 and v1 GAEC network handlers were removed.
 
 ```ts
 const gaecStatusOverrides: StatusOverrideMap = {
@@ -768,7 +773,7 @@ The success-path per-job `error` changes because §3.6 rule 3 stops running the 
 
 ## 6. Scope
 
-**In:** `delivery.ts` (the `Verdict` type, builders, `DeliveryContext`, the bridge); the framework-owned `handleDeliveryResponse` / `resolveDeliverySpec` plus the single declaration point on `BatchDestination`, the `delivery` spec carrying `statusOverrides` and `failureReason`; the `isBatchingFrameworkDeliveryEnabled` flag and the branch it gates in `deliver()`; **`statusOverrides` for the four destinations that need them (§4.1-4.4); `test_destination` needs none (§4.5)**; unit tests for the bridge, override precedence and `fallback`, the status derivation, and the `perItem` bounds guard; **enabling `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS` via `envOverrides` on all five destinations' `dataDelivery` component tests, and regenerating their expectations** so the framework path is what CI actually exercises rather than dead code behind an off flag.
+**Historical scope:** `delivery.ts` (the `Verdict` type, builders, `DeliveryContext`, the bridge); the framework-owned `handleDeliveryResponse` / `resolveDeliverySpec` plus the single declaration point on `BatchDestination`; `statusOverrides` for the four destinations that needed them (§4.1-4.4); and tests for the bridge, override precedence, status derivation, and `perItem` bounds guard. The separate delivery rollout flag and its component-test overrides described in the original scope have since been removed; framework transform and delivery now use one enrolment predicate.
 
 **Out, and deliberately so:**
 
@@ -782,7 +787,7 @@ The success-path per-job `error` changes because §3.6 rule 3 stops running the 
 
 ## 7. Decisions and deferrals
 
-1. **Delivery has its own flag, off by default** (§3.6). Wiring `deliver()` therefore changes nothing until a workspace is named in `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS`, and the flag refuses unless that workspace is also on the batching-framework transform. All five destinations are still migrated together (§4.0), because the flag can only be enabled for a destination whose class can answer.
+1. **Superseded:** delivery originally had its own flag (§3.6), but that rollout control was removed after GA. `isDestinationIntegrationEnabled` now enables transform and delivery together, while v0 proxy requests retain the legacy handler boundary.
 2. **Two behaviour changes for customerio, both in §4.1** — the top-level `message` text, and dropping the status-inferred `authErrorCategory`, which is provably unreachable for a Basic-auth destination and takes the transformer's own HTTP status for those responses from `401`/`403` to `200`. Per-job `error`, per-job `statusCode`, top-level `status` and `statTags` are otherwise unchanged. All five destinations have worked migrations (§4.1-4.5) and parity tables (§5.1-5.5).
 3. **`destinationResponse`** is echoed on failures and omitted on successes (§3.7), on the evidence that its only consumer is failure-gated. Note `iterable_audience` currently echoes it on success (`audience-list.ts:113-118`), so that is a further response-shape change once its flag is enabled.
 4. **Item→job mapping is deferred** (§3.5) until a multiplexing batching destination needs it. The two hazards to handle are recorded there so the work does not have to be re-derived.

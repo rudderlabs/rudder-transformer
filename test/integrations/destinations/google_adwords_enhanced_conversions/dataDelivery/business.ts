@@ -1,4 +1,4 @@
-import { authHeader1, secret1 } from '../maskedSecrets';
+import { authHeader1 } from '../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
@@ -20,6 +20,10 @@ const params = {
   loginCustomerId: '0987654321',
   subAccount: true,
 };
+
+const API_VERSION = 'v25';
+const uploadEndpoint = (customerId: string) =>
+  `https://googleads.googleapis.com/${API_VERSION}/customers/${customerId}:uploadConversionAdjustments`;
 
 const validRequestPaylod = {
   partialFailure: true,
@@ -52,6 +56,14 @@ const validRequestPaylod = {
     },
   ],
 };
+
+const withConversionAction = (payload: typeof validRequestPaylod, resourceName: string) => ({
+  ...payload,
+  conversionAdjustments: payload.conversionAdjustments.map((adjustment) => ({
+    ...adjustment,
+    conversionAction: resourceName,
+  })),
+});
 
 const commonRequestParameters = {
   headers,
@@ -227,7 +239,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            endpoint: '',
+            params: {},
+            JSON: withConversionAction(
+              validRequestPaylod,
+              'customers/1234567899/conversionActions/123434342',
+            ),
+            endpoint: uploadEndpoint('1234567899'),
+            endpointPath: '/uploadConversionAdjustments',
           },
           [generateMetadata(1)],
         ),
@@ -268,15 +286,17 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            params: {
-              accessToken: 'google_adwords_enhanced_conversions1',
-              loginCustomerId: 'wrongLoginCustomerId',
-              event: 'Product Added',
-              customerId: '1234567888',
-              destination: 'google_adwords_enhanced_conversions',
-              subAccount: false,
+            headers: {
+              Authorization: authHeader1,
+              'Content-Type': 'application/json',
             },
-            endpoint: '',
+            params: {},
+            JSON: withConversionAction(
+              validRequestPaylod,
+              'customers/1234567888/conversionActions/123434345',
+            ),
+            endpoint: uploadEndpoint('1234567888'),
+            endpointPath: '/uploadConversionAdjustments',
           },
           [generateMetadata(1)],
         ),
@@ -311,8 +331,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'gaec_v1_scenario_3',
     name: 'google_adwords_enhanced_conversions',
-    description: '[Proxy v1 API] :: Test for a scenario when invalid conversion name is provided',
-    successCriteria: 'Should return 400 with failure error',
+    description: '[Proxy v1 API] :: Test for a non-auth 400 response from the destination',
+    successCriteria: 'Should return 400 with the destination failure reason',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -322,14 +342,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            params: {
-              accessToken: 'google_adwords_enhanced_conversions1',
-              event: 'Invalid Conversion',
-              customerId: 'validCustomerId',
-              destination: 'google_adwords_enhanced_conversions',
-              subAccount: false,
+            headers: {
+              Authorization: authHeader1,
+              'Content-Type': 'application/json',
             },
-            endpoint: '',
+            params: {},
+            endpoint: uploadEndpoint('1234567666'),
+            endpointPath: '/uploadConversionAdjustments',
           },
           [generateMetadata(1)],
         ),
@@ -341,32 +360,21 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            message:
-              'Conversion Action not found, make sure the event name provided on the dashboard is exactly same as the conversion action name in Google Ads',
+            message: '[GOOGLE_ADWORDS_ENHANCED_CONVERSIONS] Invalid conversion adjustment payload',
             response: [
               {
-                error:
-                  'Conversion Action not found, make sure the event name provided on the dashboard is exactly same as the conversion action name in Google Ads',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {
-                    accessToken: 'commonAccessToken',
+                error: JSON.stringify({
+                  error: {
+                    code: 400,
+                    message: 'Invalid conversion adjustment payload',
+                    status: 'INVALID_ARGUMENT',
                   },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
+                }),
+                metadata: generateMetadata(1),
                 statusCode: 400,
               },
             ],
-            statTags: {
-              ...expectedStatTags,
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-            },
+            statTags: expectedStatTags,
             status: 400,
           },
         },
@@ -388,14 +396,17 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             ...commonRequestParameters,
-            params: {
-              accessToken: 'google_adwords_enhanced_conversions1',
-              event: 'Wrong Conversion',
-              customerId: '1234567888',
-              destination: 'google_adwords_enhanced_conversions',
-              subAccount: false,
+            headers: {
+              Authorization: authHeader1,
+              'Content-Type': 'application/json',
             },
-            endpoint: '',
+            params: {},
+            JSON: withConversionAction(
+              validRequestPaylod,
+              'customers/1234567888/conversionActions/12344444',
+            ),
+            endpoint: uploadEndpoint('1234567888'),
+            endpointPath: '/uploadConversionAdjustments',
           },
           [generateMetadata(1)],
         ),
@@ -462,13 +473,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             headers,
-            params: {
-              event: 'Product Added',
-              customerId: '1234567777',
-              destination: 'google_adwords_enhanced_conversions',
-              accessToken: secret1,
-              subAccount: false,
-            },
+            params: {},
             JSON: {
               partialFailure: true,
               conversionAdjustments: [
@@ -497,6 +502,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                     },
                   ],
                   adjustmentType: 'ENHANCEMENT',
+                  conversionAction: 'customers/1234567777/conversionActions/123434350',
                 },
                 {
                   gclidDateTimePair: {
@@ -523,10 +529,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                     },
                   ],
                   adjustmentType: 'ENHANCEMENT',
+                  conversionAction: 'customers/1234567777/conversionActions/123434350',
                 },
               ],
             },
-            endpoint: '',
+            endpoint: uploadEndpoint('1234567777'),
+            endpointPath: '/uploadConversionAdjustments',
           },
           [generateMetadata(1), generateMetadata(2)],
         ),

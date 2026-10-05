@@ -146,7 +146,7 @@ For record events, user identifiers are processed based on:
 
 3. **Hashing**: Applied based on `isHashRequired` configuration, except `userIp` and its timestamps always remain unhashed
 
-When a valid IP is present, Data Manager requires the mutually exclusive `compositeData` identity shape; any email, phone, or address data moves under `compositeData.userData`. Without a valid IP, the existing top-level `userData` payload remains unchanged. Google does not perform IP matching for end users in the EEA, UK, or Switzerland, even though the field is accepted.
+Google rejects a request that mixes `AudienceMember` identity types. When a VDM-V2 General-list connection maps `userIp`, every member therefore uses `compositeData`: valid IP rows include `ipData`, while rows with absent or invalid IP values carry their email, phone, or address identifiers under `compositeData.userData` only. Connections without `userIp` mapped keep the existing top-level `userData` payload unchanged. Google does not perform IP matching for end users in the EEA, UK, or Switzerland, even though the field is accepted.
 
 ### Error Handling
 

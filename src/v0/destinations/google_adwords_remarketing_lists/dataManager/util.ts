@@ -109,8 +109,9 @@ const filterFieldsBySchema = (
  * - General list:        uses userIdentifier.json mapping via constructPayload to build
  *                        userData.userIdentifiers[] (email, phone, addressInfo).
  *                        AddressInfo requires all four fields; omitted if any is missing.
- *                        A valid IP moves identity data into compositeData so Google's
- *                        AudienceMember oneof remains valid.
+ *                        When userIp is mapped, every member uses compositeData so a batch
+ *                        never mixes Data Manager identity types. Valid IP data is added to
+ *                        ipData; rows without a valid IP can still use nested userData.
  */
 export const buildAudienceMemberFromProcessedFields = (
   fields: Record<string, unknown>,
@@ -168,8 +169,11 @@ export const buildAudienceMemberFromProcessedFields = (
 
     if (userIdentifiers.length === 0 && ipData.length === 0) return null;
 
-    if (ipData.length > 0) {
-      member.compositeData = { ipData };
+    if (userSchema?.includes('userIp')) {
+      member.compositeData = {};
+      if (ipData.length > 0) {
+        member.compositeData.ipData = ipData;
+      }
       if (userIdentifiers.length > 0) {
         member.compositeData.userData = { userIdentifiers };
       }

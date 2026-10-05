@@ -44,7 +44,7 @@ For Data Manager accounts, General-list VDM-V2 record mappings additionally supp
 | `ipObserveStartTime` | `compositeData.ipData[].observeStartTime` | No       | Interaction start time normalized to an RFC 3339 timestamp |
 | `ipObserveEndTime`   | `compositeData.ipData[].observeEndTime`   | No       | Interaction end time normalized to an RFC 3339 timestamp   |
 
-The observation timestamps qualify `userIp`; they are ignored when no valid IP survives validation. A row produces one `ipData` element. Because `AudienceMember` identity data is mutually exclusive, a member with IP data places any email, phone, and address identifiers under `compositeData.userData`; a member without IP data keeps the existing top-level `userData` shape. IP data is not available for the legacy Google Ads API path, event-stream or VDM-V1 flows, or `userID` and `mobileDeviceID` list types.
+The observation timestamps qualify `userIp`; they are ignored when no valid IP survives validation. A row produces one `ipData` element. Google rejects a request that mixes `AudienceMember` identity types, so a VDM-V2 General-list connection that maps `userIp` uses `compositeData` for every member in the batch. Rows without a valid IP place email, phone, and address identifiers under `compositeData.userData` without an `ipData` field. Connections that do not map `userIp` keep the existing top-level `userData` shape. IP data is not available for the legacy Google Ads API path, event-stream or VDM-V1 flows, or `userID` and `mobileDeviceID` list types.
 
 Google accepts these fields for EEA, UK, and Switzerland end users but does not perform IP matching for those users, so the field has limited matching effect for those audiences.
 

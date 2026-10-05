@@ -888,6 +888,32 @@ export const dmRouterData = [
                             ],
                           },
                         },
+                        {
+                          consent: {
+                            adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
+                            adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                          },
+                          compositeData: {
+                            userData: {
+                              userIdentifiers: [
+                                { emailAddress: sha256('delete-email-only@example.com') },
+                              ],
+                            },
+                          },
+                        },
+                        {
+                          consent: {
+                            adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
+                            adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                          },
+                          compositeData: {
+                            userData: {
+                              userIdentifiers: [
+                                { emailAddress: sha256('delete-invalid-ip@example.com') },
+                              ],
+                            },
+                          },
+                        },
                       ],
                       encoding: 'HEX',
                     },
@@ -901,6 +927,26 @@ export const dmRouterData = [
               metadata: [
                 {
                   jobId: 3,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: DM_WORKSPACE_ID,
+                  secret: { access_token: secret4 },
+                  dontBatch: false,
+                },
+                {
+                  jobId: 5,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: DM_WORKSPACE_ID,
+                  secret: { access_token: secret4 },
+                  dontBatch: false,
+                },
+                {
+                  jobId: 6,
                   attemptNum: 1,
                   userId: 'default-userId',
                   sourceId: 'default-sourceId',
@@ -938,12 +984,14 @@ export const dmRouterData = [
                             adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
                             adUserData: 'CONSENT_STATUS_UNSPECIFIED',
                           },
-                          userData: {
-                            userIdentifiers: [
-                              {
-                                emailAddress: sha256('email-only@example.com'),
-                              },
-                            ],
+                          compositeData: {
+                            userData: {
+                              userIdentifiers: [
+                                {
+                                  emailAddress: sha256('email-only@example.com'),
+                                },
+                              ],
+                            },
                           },
                         },
                         {
@@ -982,6 +1030,21 @@ export const dmRouterData = [
                             ],
                           },
                         },
+                        {
+                          consent: {
+                            adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
+                            adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                          },
+                          compositeData: {
+                            userData: {
+                              userIdentifiers: [
+                                {
+                                  emailAddress: sha256('invalid-ip@example.com'),
+                                },
+                              ],
+                            },
+                          },
+                        },
                       ],
                       encoding: 'HEX',
                       consent: {
@@ -1010,6 +1073,16 @@ export const dmRouterData = [
                 },
                 {
                   jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: DM_WORKSPACE_ID,
+                  secret: { access_token: secret4 },
+                  dontBatch: false,
+                },
+                {
+                  jobId: 4,
                   attemptNum: 1,
                   userId: 'default-userId',
                   sourceId: 'default-sourceId',

@@ -317,6 +317,17 @@ describe('filterFieldsBySchema (via buildAudienceMemberFromProcessedFields)', ()
     ).toEqual({ userData: { userIdentifiers: [{ emailAddress: 'hashed_email' }] } });
   });
 
+  it('uses nested userData when userIp is mapped but absent from the row', () => {
+    expect(
+      buildAudienceMemberFromProcessedFields({ email: 'hashed_email' }, 'General', [
+        'email',
+        'userIp',
+      ]),
+    ).toEqual({
+      compositeData: { userData: { userIdentifiers: [{ emailAddress: 'hashed_email' }] } },
+    });
+  });
+
   it('does not admit timestamp qualifiers without userIp in userSchema', () => {
     expect(
       buildAudienceMemberFromProcessedFields(
@@ -359,7 +370,7 @@ describe('buildAudienceMember IP processing', () => {
     });
   });
 
-  it('drops an invalid IP while preserving an email-only member', () => {
+  it('drops an invalid IP while preserving nested email data for an IP-mapped connection', () => {
     expect(
       buildAudienceMember(
         { email: 'user@example.com', userIp: 'not-an-ip' },
@@ -369,12 +380,14 @@ describe('buildAudienceMember IP processing', () => {
       ),
     ).toEqual({
       member: {
-        userData: {
-          userIdentifiers: [
-            {
-              emailAddress: 'b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514',
-            },
-          ],
+        compositeData: {
+          userData: {
+            userIdentifiers: [
+              {
+                emailAddress: 'b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514',
+              },
+            ],
+          },
         },
       },
     });
@@ -446,12 +459,14 @@ describe('buildAudienceMember IP processing', () => {
       ),
     ).toEqual({
       member: {
-        userData: {
-          userIdentifiers: [
-            {
-              emailAddress: 'b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514',
-            },
-          ],
+        compositeData: {
+          userData: {
+            userIdentifiers: [
+              {
+                emailAddress: 'b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514',
+              },
+            ],
+          },
         },
       },
     });

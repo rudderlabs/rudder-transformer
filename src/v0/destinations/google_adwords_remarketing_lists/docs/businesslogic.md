@@ -167,7 +167,7 @@ Google accepts these fields for EEA, UK, and Switzerland end users but does not 
 #### Data Manager IP Data
 
 - `userIp` must be a valid IPv4 or IPv6 address and is always sent unhashed, including when `isHashRequired` is true
-- Optional observation timestamps accept warehouse-friendly timestamp forms and are normalized to RFC 3339 while preserving the parsed offset
+- Optional observation timestamps accept ISO 8601 / RFC 3339 values and are normalized to RFC 3339 while preserving the parsed offset
 - Invalid IP values are dropped; timestamps never create an IP entry on their own
 
 ### Data Quality Checks

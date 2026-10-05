@@ -397,7 +397,7 @@ describe('buildAudienceMember IP processing', () => {
       expected: '2026-06-10T20:17:52.299+00:00',
     },
     {
-      value: '2026-06-10 20:17:52.299 UTC',
+      value: '2026-06-10T20:17:52.299000000',
       expected: '2026-06-10T20:17:52.299+00:00',
     },
     {
@@ -426,10 +426,10 @@ describe('buildAudienceMember IP processing', () => {
     },
   );
 
-  it('drops an unparseable timestamp while preserving valid IP data', () => {
+  it('drops a non-ISO timestamp while preserving valid IP data', () => {
     expect(
       buildAudienceMember(
-        { userIp: '203.0.113.98', ipObserveStartTime: 'not-a-timestamp' },
+        { userIp: '203.0.113.98', ipObserveStartTime: '2026-06-10 20:17:52.299 UTC' },
         'General',
         ['userIp', 'ipObserveStartTime'],
         ctx,

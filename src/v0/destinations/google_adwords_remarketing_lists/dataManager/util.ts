@@ -49,20 +49,8 @@ interface AudienceDestinationContext {
 const ADDRESS_SCHEMA_FIELDS = ['firstName', 'lastName', 'country', 'postalCode'];
 const IP_SCHEMA_FIELDS = ['userIp', 'ipObserveStartTime', 'ipObserveEndTime'];
 
-// Strict ISO 8601 (offset preserved), plus the `... UTC` form some warehouses emit.
-const IP_OBSERVE_TIME_FORMATS = [
-  moment.ISO_8601,
-  'YYYY-MM-DD HH:mm:ss [UTC]',
-  'YYYY-MM-DD HH:mm:ss.SSS [UTC]',
-];
-
 const normalizeIpObserveTime = (value: string): string => {
-  const trimmedValue = value.trim();
-  const strictTime = moment.parseZone(trimmedValue, IP_OBSERVE_TIME_FORMATS, true);
-  const time =
-    strictTime.isValid() || !/^\d{4}/.test(trimmedValue)
-      ? strictTime
-      : moment.parseZone(trimmedValue);
+  const time = moment.parseZone(value.trim(), moment.ISO_8601, true);
   return time.isValid() ? time.toISOString(true) : '';
 };
 

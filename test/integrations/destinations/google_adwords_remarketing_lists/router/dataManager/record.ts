@@ -261,7 +261,7 @@ export const dmRETLRecordRouterRequestVDMv2General: RouterTransformationRequest 
         identifiers: {
           ...fullFields,
           userIp: '203.0.113.98',
-          ipObserveStartTime: '2026-06-10 20:17:52.299 UTC',
+          ipObserveStartTime: '2026-06-10 20:17:52.123-07',
           ipObserveEndTime: '2026-06-17 04:02:04+05:30',
         },
         type: 'record',

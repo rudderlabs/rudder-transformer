@@ -21,6 +21,7 @@ export const buildRouterTransformBody = (
       ID: `live-${destination}`,
       Config: config,
       Enabled: true,
+      ...(options?.deliveryAccount ? { deliveryAccount: options.deliveryAccount } : {}),
       ...(options?.destinationOverride ?? {}),
     },
     ...(options?.connection ? { connection: options.connection } : {}),

@@ -52,7 +52,7 @@ export const dmDestination: Destination = {
 };
 
 // Destination used for VDMv2 (no explicit schema/typeOfList — comes from connection config)
-const dmDestinationNoSchema: Destination = {
+export const dmDestinationNoSchema: Destination = {
   Config: {
     rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
     audienceId: '7090784486',
@@ -243,12 +243,85 @@ export const dmRETLRecordRouterRequestVDMv2General: RouterTransformationRequest 
       message: {
         action: 'insert',
         context: { ip: '14.5.67.21', library: { name: 'http' } },
+        recordId: '3',
+        rudderId: '3',
+        identifiers: { email: 'email-only@example.com' },
+        type: 'record',
+      },
+      metadata: generateDMGoogleOAuthMetadata(2),
+    },
+    {
+      destination: dmDestinationNoSchema,
+      connection: dmConnectionGeneral,
+      message: {
+        action: 'insert',
+        context: { ip: '14.5.67.21', library: { name: 'http' } },
         recordId: '2',
         rudderId: '2',
-        identifiers: { ...fullFields },
+        identifiers: {
+          ...fullFields,
+          userIp: '203.0.113.98',
+          ipObserveStartTime: '2026-06-10 20:17:52.123-07',
+          ipObserveEndTime: '2026-06-17 04:02:04+05:30',
+        },
         type: 'record',
       },
       metadata: generateDMGoogleOAuthMetadata(1),
+    },
+    {
+      destination: dmDestinationNoSchema,
+      connection: dmConnectionGeneral,
+      message: {
+        action: 'insert',
+        context: { ip: '14.5.67.21', library: { name: 'http' } },
+        recordId: '5',
+        rudderId: '5',
+        identifiers: { email: 'invalid-ip@example.com', userIp: 'not-an-ip' },
+        type: 'record',
+      },
+      metadata: generateDMGoogleOAuthMetadata(4),
+    },
+    {
+      destination: dmDestinationNoSchema,
+      connection: dmConnectionGeneral,
+      message: {
+        action: 'delete',
+        context: { ip: '14.5.67.21', library: { name: 'http' } },
+        recordId: '4',
+        rudderId: '4',
+        identifiers: {
+          userIp: '2001:db8::1',
+          ipObserveStartTime: '2026-06-10T20:17:52Z',
+        },
+        type: 'record',
+      },
+      metadata: generateDMGoogleOAuthMetadata(3),
+    },
+    {
+      destination: dmDestinationNoSchema,
+      connection: dmConnectionGeneral,
+      message: {
+        action: 'delete',
+        context: { ip: '14.5.67.21', library: { name: 'http' } },
+        recordId: '6',
+        rudderId: '6',
+        identifiers: { email: 'delete-email-only@example.com' },
+        type: 'record',
+      },
+      metadata: generateDMGoogleOAuthMetadata(5),
+    },
+    {
+      destination: dmDestinationNoSchema,
+      connection: dmConnectionGeneral,
+      message: {
+        action: 'delete',
+        context: { ip: '14.5.67.21', library: { name: 'http' } },
+        recordId: '7',
+        rudderId: '7',
+        identifiers: { email: 'delete-invalid-ip@example.com', userIp: 'invalid-ip' },
+        type: 'record',
+      },
+      metadata: generateDMGoogleOAuthMetadata(6),
     },
   ],
   destType: 'google_adwords_remarketing_lists',

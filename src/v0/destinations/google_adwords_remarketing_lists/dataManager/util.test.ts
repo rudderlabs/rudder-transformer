@@ -1,4 +1,5 @@
 import {
+  buildAudienceMember,
   buildMemberConsentFromConfig,
   buildAudienceMemberFromProcessedFields,
   isDataManagerAccount,
@@ -272,5 +273,190 @@ describe('filterFieldsBySchema (via buildAudienceMemberFromProcessedFields)', ()
 
   it.each(testCases)('$description', ({ fields, userSchema, expected }) => {
     expect(buildAudienceMemberFromProcessedFields(fields, 'General', userSchema)).toEqual(expected);
+  });
+
+  it('moves email and IP data into compositeData without top-level userData', () => {
+    expect(
+      buildAudienceMemberFromProcessedFields(
+        {
+          email: 'hashed_email',
+          userIp: '203.0.113.98',
+          ipObserveStartTime: '2026-06-10T20:17:52.000Z',
+          ipObserveEndTime: '2026-06-17T04:02:04.000Z',
+        },
+        'General',
+        ['email', 'userIp', 'ipObserveStartTime', 'ipObserveEndTime'],
+      ),
+    ).toEqual({
+      compositeData: {
+        userData: { userIdentifiers: [{ emailAddress: 'hashed_email' }] },
+        ipData: [
+          {
+            ipAddress: '203.0.113.98',
+            observeStartTime: '2026-06-10T20:17:52.000Z',
+            observeEndTime: '2026-06-17T04:02:04.000Z',
+          },
+        ],
+      },
+    });
+  });
+
+  it('accepts IP-only members without empty userData fields', () => {
+    expect(
+      buildAudienceMemberFromProcessedFields({ userIp: '2001:db8::1' }, 'General', ['userIp']),
+    ).toEqual({ compositeData: { ipData: [{ ipAddress: '2001:db8::1' }] } });
+  });
+
+  it('filters IP fields when userIp is absent from userSchema', () => {
+    expect(
+      buildAudienceMemberFromProcessedFields(
+        { email: 'hashed_email', userIp: '203.0.113.98' },
+        'General',
+        ['email'],
+      ),
+    ).toEqual({ userData: { userIdentifiers: [{ emailAddress: 'hashed_email' }] } });
+  });
+
+  it('uses nested userData when userIp is mapped but absent from the row', () => {
+    expect(
+      buildAudienceMemberFromProcessedFields({ email: 'hashed_email' }, 'General', [
+        'email',
+        'userIp',
+      ]),
+    ).toEqual({
+      compositeData: { userData: { userIdentifiers: [{ emailAddress: 'hashed_email' }] } },
+    });
+  });
+
+  it('does not admit timestamp qualifiers without userIp in userSchema', () => {
+    expect(
+      buildAudienceMemberFromProcessedFields(
+        { userIp: '203.0.113.98', ipObserveStartTime: '2026-06-10T20:17:52.000Z' },
+        'General',
+        ['ipObserveStartTime'],
+      ),
+    ).toBeNull();
+  });
+});
+
+describe('buildAudienceMember IP processing', () => {
+  const ctx = {
+    workspaceId: 'workspace-id',
+    destinationId: 'destination-id',
+    isHashRequired: true,
+  };
+  // SHA-256 of 'user@example.com'
+  const hashedEmailUserData = {
+    userIdentifiers: [
+      { emailAddress: 'b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514' },
+    ],
+  };
+
+  it('preserves a valid IP when hashing is required and nests it with hashed email data', () => {
+    expect(
+      buildAudienceMember(
+        { email: 'user@example.com', userIp: ' 203.0.113.98 ' },
+        'General',
+        ['email', 'userIp'],
+        ctx,
+      ),
+    ).toEqual({
+      member: {
+        compositeData: {
+          userData: hashedEmailUserData,
+          ipData: [{ ipAddress: '203.0.113.98' }],
+        },
+      },
+    });
+  });
+
+  it('drops an invalid IP while preserving nested email data for an IP-mapped connection', () => {
+    expect(
+      buildAudienceMember(
+        { email: 'user@example.com', userIp: 'not-an-ip' },
+        'General',
+        ['email', 'userIp'],
+        ctx,
+      ),
+    ).toEqual({
+      member: {
+        compositeData: {
+          userData: hashedEmailUserData,
+        },
+      },
+    });
+  });
+
+  const timestampCases = [
+    {
+      value: '2026-06-10T20:17:52Z',
+      expected: '2026-06-10T20:17:52.000+00:00',
+    },
+    {
+      value: '2026-06-10 20:17:52.299Z',
+      expected: '2026-06-10T20:17:52.299+00:00',
+    },
+    {
+      value: '2026-06-10T20:17:52.299000000',
+      expected: '2026-06-10T20:17:52.299+00:00',
+    },
+    {
+      value: '2026-06-10 20:17:52+05:30',
+      expected: '2026-06-10T20:17:52.000+05:30',
+    },
+  ];
+
+  it.each(timestampCases)(
+    'normalizes $value while preserving its offset',
+    ({ value, expected }) => {
+      expect(
+        buildAudienceMember(
+          { userIp: '203.0.113.98', ipObserveStartTime: value },
+          'General',
+          ['userIp', 'ipObserveStartTime'],
+          ctx,
+        ),
+      ).toEqual({
+        member: {
+          compositeData: {
+            ipData: [{ ipAddress: '203.0.113.98', observeStartTime: expected }],
+          },
+        },
+      });
+    },
+  );
+
+  it('drops a non-ISO timestamp while preserving valid IP data', () => {
+    expect(
+      buildAudienceMember(
+        { userIp: '203.0.113.98', ipObserveStartTime: '2026-06-10 20:17:52.299 UTC' },
+        'General',
+        ['userIp', 'ipObserveStartTime'],
+        ctx,
+      ),
+    ).toEqual({
+      member: { compositeData: { ipData: [{ ipAddress: '203.0.113.98' }] } },
+    });
+  });
+
+  it('ignores valid timestamps when the IP is invalid', () => {
+    expect(
+      buildAudienceMember(
+        {
+          email: 'user@example.com',
+          userIp: 'not-an-ip',
+          ipObserveStartTime: '2026-06-10T20:17:52Z',
+        },
+        'General',
+        ['email', 'userIp', 'ipObserveStartTime'],
+        ctx,
+      ),
+    ).toEqual({
+      member: {
+        compositeData: {
+          userData: hashedEmailUserData,
+        },
+      },
+    });
   });
 });

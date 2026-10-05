@@ -1,5 +1,11 @@
+import moment from 'moment-timezone';
+import validator from 'validator';
 import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
-import { processAudienceRecord } from '../../../util/audienceUtils';
+import {
+  processAudienceRecord,
+  HashingType,
+  toAudienceFieldConfig,
+} from '../../../util/audienceUtils';
 import {
   isDefinedAndNotNullAndNotEmpty,
   constructPayload,
@@ -44,6 +50,31 @@ interface AudienceDestinationContext {
 }
 
 const ADDRESS_SCHEMA_FIELDS = ['firstName', 'lastName', 'country', 'postalCode'];
+
+const normalizeIpObserveTime = (value: string): string => {
+  const time = moment.parseZone(value.trim(), moment.ISO_8601, true);
+  return time.isValid() ? time.toISOString(true) : '';
+};
+
+const IP_OBSERVE_TIME_FIELD = {
+  normalize: normalizeIpObserveTime,
+  validate: (v: string) => v.length > 0,
+  hashingType: HashingType.NONE,
+};
+
+// IP identifiers only exist on the Data Manager path, so they extend the shared GARL config here.
+const DM_FIELD_CONFIG = {
+  ...GARL_FIELD_CONFIG,
+  ...toAudienceFieldConfig({
+    userIp: {
+      normalize: (v: string) => v.trim(),
+      validate: (v: string) => validator.isIP(v),
+      hashingType: HashingType.NONE,
+    },
+    ipObserveStartTime: IP_OBSERVE_TIME_FIELD,
+    ipObserveEndTime: IP_OBSERVE_TIME_FIELD,
+  }),
+};
 
 /**
  * The destination uses the Data Manager API when it is connected to the
@@ -102,6 +133,9 @@ const filterFieldsBySchema = (
  * - General list:        uses userIdentifier.json mapping via constructPayload to build
  *                        userData.userIdentifiers[] (email, phone, addressInfo).
  *                        AddressInfo requires all four fields; omitted if any is missing.
+ *                        When userIp is mapped, every member uses compositeData so a batch
+ *                        never mixes Data Manager identity types. Valid IP data is added to
+ *                        ipData; rows without a valid IP can still use nested userData.
  */
 export const buildAudienceMemberFromProcessedFields = (
   fields: Record<string, unknown>,
@@ -145,8 +179,29 @@ export const buildAudienceMemberFromProcessedFields = (
       }
     }
 
-    if (userIdentifiers.length === 0) return null;
-    member.userData = { userIdentifiers };
+    // Mapping userIp switches the whole connection to compositeData; the observation times only
+    // qualify an IP, so they are read alongside it rather than filtered by userSchema.
+    const isIpMapped = userSchema?.includes('userIp') ?? false;
+    const { userIp, ipObserveStartTime, ipObserveEndTime } = fields;
+    const ipEntry =
+      isIpMapped && userIp
+        ? {
+            ipAddress: String(userIp),
+            ...(ipObserveStartTime ? { observeStartTime: String(ipObserveStartTime) } : {}),
+            ...(ipObserveEndTime ? { observeEndTime: String(ipObserveEndTime) } : {}),
+          }
+        : undefined;
+
+    if (userIdentifiers.length === 0 && !ipEntry) return null;
+
+    if (isIpMapped) {
+      member.compositeData = {
+        ...(ipEntry ? { ipData: [ipEntry] } : {}),
+        ...(userIdentifiers.length > 0 ? { userData: { userIdentifiers } } : {}),
+      };
+    } else {
+      member.userData = { userIdentifiers };
+    }
   }
 
   if (memberConsent) {
@@ -174,7 +229,7 @@ export const buildAudienceMember = (
   let processedFields: Record<string, unknown>;
   try {
     processedFields = processAudienceRecord(rawRecord, {
-      fieldConfigs: GARL_FIELD_CONFIG,
+      fieldConfigs: DM_FIELD_CONFIG,
       destination: {
         workspaceId,
         id: destinationId,

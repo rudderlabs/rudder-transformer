@@ -13,6 +13,7 @@ import { runPipelineStep } from './live/runPipelineStep';
 import { retryUntilPasses } from './live/poll';
 import { OAuthTokenResolver } from './live/oauthTokenResolver';
 import { RudderAuthContainer } from './live/rudderAuthContainer';
+import { readString } from './live/coerce';
 import { EnvManager, EnvOverride } from './envUtils';
 import type { LiveSecret, EnrolledDestination } from './live/types';
 
@@ -163,6 +164,14 @@ describe('Live Integration Test Suite', () => {
       const ctx = new RunContextImpl({ liveSecret });
       const scenarioConfig =
         scenario.configOverride?.(destinationConfig, liveSecret) ?? destinationConfig;
+      // rudder-server attaches the connected account to the destination; mirror it from the spec's
+      // declared account definition so transforms that branch on it see the production shape.
+      const deliveryAccount = spec.accountDefinition
+        ? {
+            id: readString(scenarioConfig.rudderAccountId, `live-${destination}-account`),
+            accountDefinitionName: spec.accountDefinition.name,
+          }
+        : undefined;
 
       const envManager = new EnvManager();
 
@@ -231,6 +240,7 @@ describe('Live Integration Test Suite', () => {
                   ctx,
                   config: scenarioConfig,
                   connection,
+                  deliveryAccount,
                   http: {
                     post: async (url, body) => agent().post(url).send(body),
                   },

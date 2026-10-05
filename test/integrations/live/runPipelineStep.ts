@@ -55,6 +55,7 @@ const attemptDelivery = async ({
   ctx,
   config,
   connection,
+  deliveryAccount,
   http,
 }: RunPipelineStepParams): Promise<DeliveryFailure | undefined> => {
   const events = seedEvents(step, ctx);
@@ -76,6 +77,7 @@ const attemptDelivery = async ({
     secret: ctx.liveSecret.secret,
     metadataOverride: step.metadataOverride,
     connection,
+    deliveryAccount,
     destinationOverride: step.destinationOverride,
   });
 

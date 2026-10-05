@@ -83,6 +83,7 @@ The destination supports three types of record event flows:
 - **Configuration Source**: `connection.config.destination`
 - **User Schema**: Dynamically derived from `message.identifiers` keys
 - **Data Mapping**: `message.identifiers` mapped to `message.fields` for processing
+- **Data Manager General lists**: Support unhashed `userIp` plus optional `ipObserveStartTime` and `ipObserveEndTime` qualifiers. This IP mapping is limited to VDM-V2 RETL records; event-stream and VDM-V1 flows are not configured to expose it.
 
 ## RETL-Specific Logic
 
@@ -133,15 +134,19 @@ For record events, user identifiers are processed based on:
 
    - `userID`: Uses `thirdPartyUserId` field
    - `mobileDeviceID`: Uses `mobileId` field
-   - `General`: Uses configured user schema fields
+   - `General`: Uses configured user schema fields and, on the Data Manager path, optional IP data
 
 2. **User Schema Fields**:
 
-   - `email`: Mapped to `hashedEmail`
-   - `phone`: Mapped to `hashedPhoneNumber`
-   - `addressInfo`: Mapped to address information object
+   - `email`: Mapped to the API's email identifier
+   - `phone`: Mapped to the API's phone identifier
+   - `addressInfo`: Mapped to the API's address identifier
+   - `userIp`: Mapped to `compositeData.ipData[].ipAddress` for Data Manager General-list VDM-V2 records
+   - `ipObserveStartTime` / `ipObserveEndTime`: Optional RFC 3339 qualifiers included only with a valid `userIp`
 
-3. **Hashing**: Applied based on `isHashRequired` configuration
+3. **Hashing**: Applied based on `isHashRequired` configuration, except `userIp` and its timestamps always remain unhashed
+
+When a valid IP is present, Data Manager requires the mutually exclusive `compositeData` identity shape; any email, phone, or address data moves under `compositeData.userData`. Without a valid IP, the existing top-level `userData` payload remains unchanged. Google does not perform IP matching for end users in the EEA, UK, or Switzerland, even though the field is accepted.
 
 ### Error Handling
 

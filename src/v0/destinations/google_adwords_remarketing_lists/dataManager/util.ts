@@ -23,6 +23,7 @@ import type {
   ConsentStatus,
   AddressInfo,
   UserIdentifier,
+  IpData,
   DataManagerDestination,
   GARLIngestAPIPayload,
   GARLRemoveAPIPayload,
@@ -44,6 +45,7 @@ interface AudienceDestinationContext {
 }
 
 const ADDRESS_SCHEMA_FIELDS = ['firstName', 'lastName', 'country', 'postalCode'];
+const IP_SCHEMA_FIELDS = ['userIp', 'ipObserveStartTime', 'ipObserveEndTime'];
 
 /**
  * The destination uses the Data Manager API when it is connected to the
@@ -76,6 +78,7 @@ export const buildConsent = (consentObj: Record<string, string>): Consent => ({
  * - Named fields (e.g. 'email', 'phone') must be listed in userSchema.
  * - Address sub-fields (firstName, lastName, country, postalCode) are included
  *   when userSchema contains 'addressInfo' or any individual address field name.
+ * - IP observation timestamps are included when userSchema contains 'userIp'.
  */
 const filterFieldsBySchema = (
   fields: Record<string, unknown>,
@@ -85,10 +88,14 @@ const filterFieldsBySchema = (
 
   const needsAddress =
     userSchema.includes('addressInfo') || userSchema.some((s) => ADDRESS_SCHEMA_FIELDS.includes(s));
+  const needsIp = userSchema.includes('userIp');
 
   return Object.fromEntries(
     Object.entries(fields).filter(
-      ([k]) => userSchema.includes(k) || (needsAddress && ADDRESS_SCHEMA_FIELDS.includes(k)),
+      ([k]) =>
+        (userSchema.includes(k) && !IP_SCHEMA_FIELDS.includes(k)) ||
+        (needsAddress && ADDRESS_SCHEMA_FIELDS.includes(k)) ||
+        (needsIp && IP_SCHEMA_FIELDS.includes(k)),
     ),
   );
 };
@@ -102,6 +109,8 @@ const filterFieldsBySchema = (
  * - General list:        uses userIdentifier.json mapping via constructPayload to build
  *                        userData.userIdentifiers[] (email, phone, addressInfo).
  *                        AddressInfo requires all four fields; omitted if any is missing.
+ *                        A valid IP moves identity data into compositeData so Google's
+ *                        AudienceMember oneof remains valid.
  */
 export const buildAudienceMemberFromProcessedFields = (
   fields: Record<string, unknown>,
@@ -145,8 +154,28 @@ export const buildAudienceMemberFromProcessedFields = (
       }
     }
 
-    if (userIdentifiers.length === 0) return null;
-    member.userData = { userIdentifiers };
+    const ipData: IpData[] = [];
+    if (schemaFields.userIp) {
+      const ipEntry: IpData = { ipAddress: String(schemaFields.userIp) };
+      if (schemaFields.ipObserveStartTime) {
+        ipEntry.observeStartTime = String(schemaFields.ipObserveStartTime);
+      }
+      if (schemaFields.ipObserveEndTime) {
+        ipEntry.observeEndTime = String(schemaFields.ipObserveEndTime);
+      }
+      ipData.push(ipEntry);
+    }
+
+    if (userIdentifiers.length === 0 && ipData.length === 0) return null;
+
+    if (ipData.length > 0) {
+      member.compositeData = { ipData };
+      if (userIdentifiers.length > 0) {
+        member.compositeData.userData = { userIdentifiers };
+      }
+    } else {
+      member.userData = { userIdentifiers };
+    }
   }
 
   if (memberConsent) {

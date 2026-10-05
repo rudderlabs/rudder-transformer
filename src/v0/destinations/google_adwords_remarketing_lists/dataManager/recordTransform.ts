@@ -285,8 +285,14 @@ async function processVDMV1RecordEvents(groupedRecordInputs: GARLRouterRequest[]
 }
 
 async function processVDMV2RecordEvents(groupedRecordInputs: GARLRouterRequest[]) {
-  const { connection, message } = groupedRecordInputs[0];
-  const userSchema = message?.identifiers ? Object.keys(message.identifiers) : [];
+  const { connection } = groupedRecordInputs[0];
+  const userSchema = [
+    ...new Set(
+      groupedRecordInputs.flatMap(({ message }) =>
+        message?.identifiers ? Object.keys(message.identifiers) : [],
+      ),
+    ),
+  ];
 
   const events = await mapInBatches(groupedRecordInputs, (record) => ({
     ...record,

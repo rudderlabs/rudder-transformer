@@ -13,6 +13,7 @@ import { DM_ACCOUNT_DEFINITION_NAME } from '../../../../../../src/v0/destination
 import { dmAudienceRequest } from './audience';
 import {
   dmDestination,
+  dmDestinationNoSchema,
   dmEventStreamRecordRouterRequest,
   dmRETLRecordRouterRequestVDMv1,
   dmRETLRecordRouterRequest,
@@ -840,11 +841,11 @@ export const dmRouterData = [
     },
   },
 
-  // ── Test 05: VDMv2 General typeOfList insert → DM ingest ──────────────────
+  // ── Test 05: VDMv2 General IP records → DM ingest and remove ──────────────
   {
     id: 'garl-dm-router-05',
     name: 'google_adwords_remarketing_lists',
-    description: '[DM API] VDMv2 General typeOfList insert → audienceMembers:ingest',
+    description: '[DM API] VDMv2 General IP records → compositeData ingest and remove',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -854,6 +855,65 @@ export const dmRouterData = [
         status: 200,
         body: {
           output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://datamanager.googleapis.com/v1/audienceMembers:remove',
+                  endpointPath: '/v1/audienceMembers:remove',
+                  headers: { Authorization: authHeader4, 'Content-Type': 'application/json' },
+                  params: {},
+                  body: {
+                    JSON: {
+                      destinations: [
+                        {
+                          operatingAccount: { accountId: '7693729833', accountType: 'GOOGLE_ADS' },
+                          productDestinationId: '7090784486',
+                        },
+                      ],
+                      audienceMembers: [
+                        {
+                          consent: {
+                            adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
+                            adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                          },
+                          compositeData: {
+                            ipData: [
+                              {
+                                ipAddress: '2001:db8::1',
+                                observeStartTime: '2026-06-10T20:17:52.000+00:00',
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                      encoding: 'HEX',
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 3,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: DM_WORKSPACE_ID,
+                  secret: { access_token: secret4 },
+                  dontBatch: false,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: dmDestinationNoSchema,
+            },
             {
               batchedRequest: [
                 {
@@ -881,21 +941,43 @@ export const dmRouterData = [
                           userData: {
                             userIdentifiers: [
                               {
-                                emailAddress:
-                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+                                emailAddress: sha256('email-only@example.com'),
                               },
-                              {
-                                phoneNumber: sha256('+09876543210'),
-                              },
-                              {
-                                address: {
-                                  givenName:
-                                    '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
-                                  familyName:
-                                    'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
-                                  regionCode: 'US',
-                                  postalCode: '1245',
+                            ],
+                          },
+                        },
+                        {
+                          consent: {
+                            adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
+                            adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                          },
+                          compositeData: {
+                            userData: {
+                              userIdentifiers: [
+                                {
+                                  emailAddress:
+                                    'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
                                 },
+                                {
+                                  phoneNumber: sha256('+09876543210'),
+                                },
+                                {
+                                  address: {
+                                    givenName:
+                                      '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                                    familyName:
+                                      'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
+                                    regionCode: 'US',
+                                    postalCode: '1245',
+                                  },
+                                },
+                              ],
+                            },
+                            ipData: [
+                              {
+                                ipAddress: '203.0.113.98',
+                                observeStartTime: '2026-06-10T20:17:52.299+00:00',
+                                observeEndTime: '2026-06-17T04:02:04.000+05:30',
                               },
                             ],
                           },
@@ -917,6 +999,16 @@ export const dmRouterData = [
               ],
               metadata: [
                 {
+                  jobId: 2,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: DM_WORKSPACE_ID,
+                  secret: { access_token: secret4 },
+                  dontBatch: false,
+                },
+                {
                   jobId: 1,
                   attemptNum: 1,
                   userId: 'default-userId',
@@ -929,34 +1021,7 @@ export const dmRouterData = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
-                  audienceId: '7090784486',
-                  customerId: '7693729833',
-                  loginCustomerId: '',
-                  subAccount: false,
-                },
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
-                Enabled: true,
-                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                DestinationDefinition: {
-                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
-                  DisplayName: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
-                  Config: {},
-                },
-                Transformations: [],
-                IsConnectionEnabled: true,
-                IsProcessorEnabled: true,
-                deliveryAccount: {
-                  id: 'dm-delivery-account-id',
-                  options: null,
-                  secret: null,
-                  accountDefinitionName: DM_ACCOUNT_DEFINITION_NAME,
-                },
-              },
+              destination: dmDestinationNoSchema,
             },
           ],
         },

@@ -57,6 +57,17 @@ export interface UserData {
   userIdentifiers: UserIdentifier[];
 }
 
+export interface IpData {
+  ipAddress: string;
+  observeStartTime?: string;
+  observeEndTime?: string;
+}
+
+export interface CompositeData {
+  userData?: UserData;
+  ipData?: IpData[];
+}
+
 export interface MobileData {
   mobileIds: string[];
 }
@@ -70,6 +81,7 @@ export interface AudienceMember {
   userData?: UserData;
   mobileData?: MobileData;
   userIdData?: UserIdData;
+  compositeData?: CompositeData;
 }
 
 export interface TermsOfService {

@@ -26,9 +26,10 @@ A new destination is:
   judgement call: see
   `.claude/skills/batching-framework-delivery/SKILL.md#a-new-destination-gets-no-networkhandlerts`,
   including what to do when it looks like you need one.
-- **Registered `{ routerTransform: true, batching: true }` in `src/features.ts`** from day one —
-  plus `transformerProxy: true` if delivery goes through the transformer proxy (see
-  "Enabling the Framework" below). A new destination is GA on the framework immediately, so the
+- **Registered `{ routerTransform: true, batching: true }` in `src/features.ts`** from day one.
+  Batching destinations advertise transformer-proxy delivery by default; set
+  `transformerProxy: false` only for a confirmed direct-delivery exception (see "Enabling the
+  Framework" below). A new destination is GA on the framework immediately, so the
   `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` rollout flag — which exists for migrating an
   existing destination — does not apply.
 - **`transformAtV1: router`** in its `rudder-integrations-config` definition. The framework only
@@ -423,18 +424,18 @@ and `transformerProxy` — and each derived map and `defaultFeaturesConfig` sect
 it. The rule above is not specific to the batching map: whenever it looks like a destination needs
 adding to a list in `src/constants/`, the change belongs in `features.ts`.
 
-Declare `transformerProxy: true` when the destination's delivery goes through the transformer
-proxy rather than rudder-server delivering the payload itself:
+Batching destinations advertise `transformerProxy` by default. Use the explicit `false` override
+only when batching transform output is still delivered directly by rudder-server:
 
 ```typescript
-<DEST_NAME_UPPER>: { routerTransform: true, batching: true, transformerProxy: true },
+CUSTOM_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: false },
 ```
 
-`features.test.ts` enforces that a destination may only declare it if it actually implements the
-proxy. **`batching: true` satisfies that on its own** — the framework owns delivery outright, so a
-batching destination implements the proxy however its `delivery` spec is laid out, and one
-declaring no spec at all still qualifies. You do not need a `networkHandler.ts` to earn the
-capability, and writing one to "support" it is exactly the anti-pattern in
+`features.test.ts` enforces that a destination may only advertise the proxy if it actually
+implements it. Unless explicitly disabled, **`batching: true` satisfies that on its own** — the
+framework owns delivery outright, so a batching destination implements the proxy however its
+`delivery` spec is laid out, and one declaring no spec at all still qualifies. You do not need a
+`networkHandler.ts` to earn the capability, and writing one to "support" it is exactly the anti-pattern in
 `.claude/skills/batching-framework-delivery/SKILL.md#a-new-destination-gets-no-networkhandlerts`.
 
 ### One gate, both halves

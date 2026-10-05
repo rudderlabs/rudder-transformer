@@ -219,10 +219,11 @@ cutoff on its own; two things still send traffic through it:
   for a batching-GA destination, because the framework answers with a `DeliveryV1Response` that
   a v0 caller cannot parse.
 
-`customerio`, `braze_audience`, `iterable_audience`, `google_adwords_enhanced_conversions` and
-`reddit_audience` are all batching-GA today and still carry both a `delivery.ts` and a
-`src/v1/destinations/<dest>/networkHandler.ts` (gaec keeps a v0 one too) — now for the **second**
-reason only. The handler is deletable once v0 proxy traffic is confirmed dead for the destination.
+`customerio`, `braze_audience`, `iterable_audience` and `reddit_audience` are all batching-GA today
+and still carry both a `delivery.ts` and a `src/v1/destinations/<dest>/networkHandler.ts` — now for
+the **second** reason only. GAEC's destination-specific handlers were deleted after framework
+transport became its only supported path. A retained handler is deletable once v0 proxy traffic is
+confirmed dead for the destination.
 
 ### A new destination gets no `networkHandler.ts`
 

@@ -13,9 +13,7 @@
  * The framework sends the prepared request directly, and this spec injects the developer token at
  * delivery time so it never appears in persisted router output.
  */
-import { NetworkError } from '@rudderstack/integrations-lib';
 import { isEmptyObject } from '../../util';
-import tags from '../../util/tags';
 import {
   abort,
   authExpired,
@@ -82,24 +80,8 @@ const gaecStatusOverrides: StatusOverrideMap = {
 export const gaecDelivery: DeliverySpec = {
   statusOverrides: gaecStatusOverrides,
   failureReason: (ctx) => extractGaecErrorMessage(ctx.response),
-  prepareRequest: (request) => {
-    // TODO(RUD-3195 follow-up): remove this guard after queues from the final transport-GA flip drain.
-    // An empty endpoint means legacy, params-based router output reached the framework transport;
-    // sending it would POST to ''. Retryable, so the job re-transforms into the new shape and
-    // succeeds on the retry. The mirror guard lives in ./networkHandler.
-    if (!request.endpoint) {
-      const error = new NetworkError(
-        '[Google Ads Enhanced Conversions] old-shape payload reached framework transport after transport flag flip',
-        500,
-        { [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.RETRYABLE },
-        { status: 500, response: 'old-shape payload reached framework transport' },
-      );
-      error.statTags[tags.TAG_NAMES.META] = 'gaec_transport_flag_shape_mismatch_old_to_framework';
-      throw error;
-    }
-    return {
-      ...request,
-      headers: { ...request.headers, 'developer-token': getDeveloperToken() },
-    };
-  },
+  prepareRequest: (request) => ({
+    ...request,
+    headers: { ...request.headers, 'developer-token': getDeveloperToken() },
+  }),
 };

@@ -468,7 +468,12 @@ Intersecting the two sets — classes extending the `BatchDestination` family, a
 
 `iterable_audience` carries the most behavioural risk. Its handler resolves failures by identity, not status: GDPR-forgotten users are deliberately returned as **200 plus a metric** rather than 400 (`audience-list.ts:88-98`), and `notFound` on an unsubscribe is a no-op success (`:100-103`). Falling back to the framework classification would abort those as plain failures, so its `statusOverrides` must reproduce all three branches. Migrating it also fixes its `metadata: undefined` bug for free, since the framework bounds-checks `perItem` (§3.2).
 
-**`gaec` is smaller than its line count suggests.** Its `v0/networkHandler.ts` is 262 lines but is almost entirely _transport_ — an SDK-based `gaecProxyRequest`, a `conversionActionId` cache, and `gaecProcessAxiosResponse` — which §3.6 rule 2 leaves in place. Only `gaecResponseHandler` in the v1 file migrates. Two things to carry over: it reports partial failure on a **2xx** status with `partialFailureError` set, which is the case §3.7's non-2xx condition exists for; and it derives auth categories from the response via `getAuthErrCategory` (`v0/util/googleUtils`), so as a genuine OAuth destination it must declare those explicitly under §3.1 rather than relying on inference.
+**Historical GAEC migration note.** The original design kept `v0/networkHandler.ts` for its
+SDK-based transport and migrated only the v1 response handler. Framework transport later became
+GA for GAEC: conversion-action lookup moved into the router transform, developer-token injection
+moved into `delivery.ts`, and both destination-specific network handlers were removed. The delivery
+spec still carries the two response semantics identified here: partial failures on a **2xx** and
+body-derived OAuth categories.
 
 **`braze_audience` landed on develop after this design was written** (#5408) and is migrated on the same terms. It is the second destination whose partial failures arrive on a 2xx (like gaec) and the second whose response indexes the request body positionally (like customerio) — no new mechanism, which is the useful thing about it: a destination added after the contract existed fits it without extending it.
 
@@ -566,7 +571,9 @@ Four things to note:
 
 ### 4.3 `google_adwords_enhanced_conversions`
 
-Only `gaecResponseHandler` migrates. The 262-line `v0/networkHandler.ts` is transport — an SDK-based `gaecProxyRequest`, a `conversionActionId` cache, and `gaecProcessAxiosResponse` — which §3.6 rule 2 keeps in place.
+This was the original migration boundary. After framework transport reached GA, conversion-action
+lookup moved into the router transform, developer-token injection moved into `delivery.ts`, and the
+v0 and v1 GAEC network handlers were removed.
 
 ```ts
 const gaecStatusOverrides: StatusOverrideMap = {

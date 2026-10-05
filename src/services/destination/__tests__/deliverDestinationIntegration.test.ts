@@ -41,12 +41,10 @@ const proxyRequest = (): ProxyV1Request =>
     destinationConfig: {},
   }) as unknown as ProxyV1Request;
 
-const gaecProxyRequest = (
-  endpoint = `https://googleads.googleapis.com/${API_VERSION}/customers/123:uploadConversionAdjustments`,
-): ProxyV1Request =>
+const gaecProxyRequest = (): ProxyV1Request =>
   ({
     ...proxyRequest(),
-    endpoint,
+    endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/123:uploadConversionAdjustments`,
     endpointPath: '/123:uploadConversionAdjustments',
     headers: { Authorization: 'Bearer token', 'Content-Type': 'application/json' },
     params: {},
@@ -160,25 +158,6 @@ describe('deliver() — batching-framework delivery', () => {
     } finally {
       destinationIntegrationsMap.CUSTOMERIO = true;
     }
-  });
-
-  it('returns a retryable shape-mismatch failure before posting an old-shape payload to framework transport', async () => {
-    stubTransport(200, {});
-
-    const result = (await service.deliver(
-      gaecProxyRequest(''),
-      GAEC_DEST,
-      {},
-      'v1',
-    )) as DeliveryV1Response;
-
-    expect(mockedFrameworkProxyRequest).not.toHaveBeenCalled();
-    expect(result.status).toBe(500);
-    expect(result.message).toContain('old-shape payload reached framework transport');
-    expect(result.statTags).toMatchObject({
-      errorType: 'retryable',
-      meta: 'gaec_transport_flag_shape_mismatch_old_to_framework',
-    });
   });
 
   it('uses the framework for a destination declaring batching in features.ts', async () => {

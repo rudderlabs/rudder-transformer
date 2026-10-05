@@ -907,7 +907,7 @@ const getResponseStrategy = (endpoint, response) => {
 
 **Problem**: A destination has a `networkHandler` (delivery proxy), but `transformerProxy` is not enabled for it in the rudder-server config. rudder-server then delivers directly and bypasses the networkHandler, so any request-building or delivery logic that lives only in the handler never executes — deliveries fail. This most often bites **open-source / self-hosted** users, who (unlike managed/SaaS deployments) are usually unaware of the `transformerProxy` flag and never set it.
 
-**Historical example**: GAEC (`google_adwords_enhanced_conversions`) previously left `endpoint` empty and relied on its networkHandler to build and send the Google Ads request. That design failed under direct delivery with `unsupported protocol scheme ""`. GAEC now emits an HTTP-ready endpoint during framework transform and uses its delivery spec for v1 transport/response handling; its networkHandler remains only for the v0 compatibility path.
+**Historical example**: GAEC (`google_adwords_enhanced_conversions`) previously left `endpoint` empty and relied on its networkHandler to build and send the Google Ads request. That design failed under direct delivery with `unsupported protocol scheme ""`. GAEC now emits an HTTP-ready endpoint during framework transform and uses its delivery spec for transport/response handling; the destination-specific network handlers were removed when framework transport became GA.
 
 The broader lesson still applies: if correctness depends on transformer-owned delivery behavior (for example `prepareRequest`, OAuth classification, partial-failure attribution, or batch-to-singleton retries), the destination must advertise `transformerProxy: true` so rudder-server does not bypass it.
 

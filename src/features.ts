@@ -12,7 +12,7 @@ interface DestinationCapabilities {
   regulations?: true;
   batching?: true;
   cdkV2?: true;
-  transformerProxy?: true;
+  transformerProxy?: boolean;
 }
 
 const destinationCapabilities: Record<string, DestinationCapabilities> = {
@@ -112,7 +112,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   ACCOIL_ANALYTICS: { routerTransform: true, cdkV2: true },
   POSTSCRIPT: { routerTransform: true },
   POSTHOG: { routerTransform: true, batching: true },
-  CUSTOM_AUDIENCE: { routerTransform: true, batching: true },
+  CUSTOM_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: false },
   ITERABLE_AUDIENCE: { routerTransform: true, batching: true },
   BRAZE_AUDIENCE: { routerTransform: true, batching: true },
   REDDIT_AUDIENCE: { routerTransform: true, batching: true },
@@ -221,10 +221,16 @@ const getCapabilityEntries = (capability: keyof DestinationCapabilities) =>
 const getCapabilityMap = (capability: keyof DestinationCapabilities): Record<string, true> =>
   Object.fromEntries(getCapabilityEntries(capability).map(([destination]) => [destination, true]));
 
-const getTransformerProxyCapabilityMap = (): Record<string, true> => ({
-  ...getCapabilityMap('transformerProxy'),
-  ...getCapabilityMap('batching'),
-});
+const getTransformerProxyCapabilityMap = (): Record<string, true> =>
+  Object.fromEntries(
+    Object.entries(destinationCapabilities)
+      .filter(
+        ([, capabilities]) =>
+          capabilities.transformerProxy ||
+          (capabilities.batching && capabilities.transformerProxy !== false),
+      )
+      .map(([destination]) => [destination, true]),
+  );
 
 export const getGaDestinationIntegrations = (): Record<string, true> =>
   getCapabilityMap('batching');

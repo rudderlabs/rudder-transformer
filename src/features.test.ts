@@ -29,9 +29,9 @@ describe('features destination capabilities', () => {
     expect(defaultFeaturesConfig.transformerProxy).toMatchObject({
       EVERFLOW: true,
       POSTHOG: true,
-      CUSTOM_AUDIENCE: true,
       REDDIT_AUDIENCE: true,
     });
+    expect(defaultFeaturesConfig.transformerProxy).not.toHaveProperty('CUSTOM_AUDIENCE');
     expect(getGaDestinationIntegrations()).toEqual({
       GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: true,
       POSTHOG: true,
@@ -61,10 +61,13 @@ describe('features destination capabilities', () => {
     expect(allDestinations.filter((destination) => !isValidDestination(destination))).toEqual([]);
   });
 
-  it('advertises transformerProxy for every batching-framework GA destination', () => {
-    Object.keys(getGaDestinationIntegrations()).forEach((destination) => {
-      expect(defaultFeaturesConfig.transformerProxy).toHaveProperty(destination, true);
-    });
+  it('advertises transformerProxy for batching-framework GA destinations unless disabled', () => {
+    Object.keys(getGaDestinationIntegrations())
+      .filter((destination) => destination !== 'CUSTOM_AUDIENCE')
+      .forEach((destination) => {
+        expect(defaultFeaturesConfig.transformerProxy).toHaveProperty(destination, true);
+      });
+    expect(defaultFeaturesConfig.transformerProxy).not.toHaveProperty('CUSTOM_AUDIENCE');
   });
 
   // A destination may only declare transformerProxy if it implements the proxy itself: either a

@@ -1,0 +1,224 @@
+{
+  "identityMappings": [
+    {
+      "sourceKeys": ["context.traits.email", "traits.email", "properties.email"],
+      "destKey": "email"
+    },
+    {
+      "sourceKeys": "userId",
+      "destKey": "customerid"
+    }
+  ],
+  "userAttributeMappings": [
+    {
+      "sourceKeys": [
+        "context.traits.firstName",
+        "context.traits.first_name",
+        "traits.firstName",
+        "traits.first_name"
+      ],
+      "destKey": "firstname"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.firstNameSha256",
+        "context.traits.first_name_sha256",
+        "traits.firstNameSha256",
+        "traits.first_name_sha256"
+      ],
+      "destKey": "firstnamesha256"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.lastName",
+        "context.traits.last_name",
+        "traits.lastName",
+        "traits.last_name"
+      ],
+      "destKey": "lastname"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.lastNameSha256",
+        "context.traits.last_name_sha256",
+        "traits.lastNameSha256",
+        "traits.last_name_sha256"
+      ],
+      "destKey": "lastnamesha256"
+    },
+    {
+      "sourceKeys": ["context.traits.phone", "traits.phone"],
+      "destKey": "mobile"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.phoneSha256",
+        "context.traits.phone_sha256",
+        "traits.phoneSha256",
+        "traits.phone_sha256"
+      ],
+      "destKey": "mobilesha256"
+    },
+    {
+      "sourceKeys": ["context.traits.age", "traits.age"],
+      "destKey": "age"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.birthday",
+        "context.traits.dateOfBirth",
+        "context.traits.date_of_birth",
+        "traits.birthday",
+        "traits.dateOfBirth",
+        "traits.date_of_birth"
+      ],
+      "destKey": "dob"
+    },
+    {
+      "sourceKeys": ["context.traits.gender", "traits.gender"],
+      "destKey": "gender"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.address.city",
+        "context.traits.city",
+        "traits.address.city",
+        "traits.city"
+      ],
+      "destKey": "city"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.address.state",
+        "context.traits.state",
+        "traits.address.state",
+        "traits.state"
+      ],
+      "destKey": "state"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.address.postalCode",
+        "context.traits.address.postal_code",
+        "context.traits.zip",
+        "traits.address.postalCode",
+        "traits.address.postal_code",
+        "traits.zip"
+      ],
+      "destKey": "zip"
+    },
+    {
+      "sourceKeys": ["context.traits.title", "traits.title"],
+      "destKey": "title"
+    },
+    {
+      "sourceKeys": ["context.locale", "context.traits.language", "traits.language"],
+      "destKey": "language"
+    },
+    {
+      "sourceKeys": ["properties.value", "properties.revenue"],
+      "destKey": "value"
+    },
+    {
+      "sourceKeys": ["properties.predictedLtv", "properties.predicted_ltv"],
+      "destKey": "predictedltv"
+    }
+  ],
+  "deviceMappings": [
+    {
+      "sourceKeys": ["context.userAgent", "context.user_agent"],
+      "destKey": "http_header_user_agent"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.iosAdvertisingId",
+        "context.traits.ios_advertising_id",
+        "traits.iosAdvertisingId",
+        "traits.ios_advertising_id"
+      ],
+      "destKey": "ios_advertising_id"
+    },
+    {
+      "sourceKeys": [
+        "context.traits.androidAdvertisingId",
+        "context.traits.android_advertising_id",
+        "traits.androidAdvertisingId",
+        "traits.android_advertising_id"
+      ],
+      "destKey": "android_advertising_id"
+    }
+  ],
+  "conversionAttributeMappings": [
+    {
+      "sourceKeys": [
+        "properties.orderId",
+        "properties.order_id",
+        "properties.confirmationRef",
+        "properties.confirmation_ref"
+      ],
+      "destKey": "confirmationref"
+    },
+    {
+      "sourceKeys": [
+        "properties.amount",
+        "properties.revenue",
+        "properties.total",
+        "properties.value",
+        "properties.price"
+      ],
+      "destKey": "amount"
+    },
+    {
+      "sourceKeys": "properties.currency",
+      "destKey": "currency"
+    },
+    {
+      "sourceKeys": ["context.page.path", "properties.name", "name"],
+      "destKey": "screen_name"
+    },
+    {
+      "sourceKeys": ["context.page.url", "properties.url"],
+      "destKey": "url"
+    }
+  ],
+  "messageValueMappings": [
+    {
+      "sourceKeys": ["context.ip", "context.request_ip", "request_ip"],
+      "destKey": "ip"
+    },
+    {
+      "sourceKeys": [
+        "properties.roktClickId",
+        "properties.rokt_click_id",
+        "properties.rclid",
+        "properties.rtid"
+      ],
+      "destKey": "click_id"
+    },
+    {
+      "sourceKeys": ["timestamp", "originalTimestamp", "sentAt"],
+      "destKey": "timestamp"
+    },
+    {
+      "sourceKeys": [
+        "properties.conversiontype",
+        "properties.conversionType",
+        "properties.conversion_type",
+        "event"
+      ],
+      "destKey": "conversiontype"
+    },
+    {
+      "sourceKeys": "context.device.type",
+      "destKey": "device_type"
+    },
+    {
+      "sourceKeys": "context.device.advertisingId",
+      "destKey": "advertising_id"
+    },
+    {
+      "sourceKeys": "context.page.search",
+      "destKey": "page_search"
+    }
+  ]
+}

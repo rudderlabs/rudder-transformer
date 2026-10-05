@@ -80,6 +80,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'attentive_tag',
   'dub',
   'survicate',
+  'rokt',
 ];
 
 const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = [

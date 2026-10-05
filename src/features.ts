@@ -116,6 +116,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   ITERABLE_AUDIENCE: { routerTransform: true, batching: true },
   BRAZE_AUDIENCE: { routerTransform: true, batching: true },
   REDDIT_AUDIENCE: { routerTransform: true, batching: true },
+  ROKT: { routerTransform: true, batching: true, transformerProxy: true },
   SURVICATE: { routerTransform: true },
   // dev-only fixture — see src/v0/destinations/test_destination/config.ts
   TEST_DESTINATION: { routerTransform: true, batching: true },

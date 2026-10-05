@@ -13,6 +13,7 @@ import {
   processAudienceRecord,
   isValidPhoneNumber,
   toAudienceFieldConfig,
+  HashingType,
 } from '../../util/audienceUtils';
 import { normalizeEmail, normalizePhone } from '../../util/googleUtils/userDataNormalization';
 import logger from '../../../logger';
@@ -28,7 +29,6 @@ import {
   destType,
 } from './config';
 import type { GARLDestinationConfig } from './types';
-import { HashingType } from '../../util/audienceUtils';
 
 const COUNTRY_CODE_REGEX = /^[A-Za-z]{2,3}$/;
 

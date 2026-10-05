@@ -23,23 +23,15 @@ const roktInputSchema = makeRouterInputSchema({
 class RoktIntegration extends DestinationIntegration<RoktBatch, typeof roktInputSchema> {
   static readonly delivery = roktDelivery;
 
-  // Same for every event of this destination, so resolved on first use.
-  private endpoint?: string;
-
-  private authorization?: string;
-
   transformEvent(input: z.infer<typeof roktInputSchema>): TransformedEvent<RoktBatch> {
     const { apiEndpoint, serverToServerKey, serverToServerSecret } = this.destination.Config;
-    const body = buildRoktBatch(input.message as unknown as RudderMessage);
-    this.endpoint ??= resolveEndpoint(apiEndpoint);
-    this.authorization ??= `Basic ${base64Convertor(`${serverToServerKey}:${serverToServerSecret}`)}`;
     return {
-      body,
-      endpoint: this.endpoint,
+      body: buildRoktBatch(input.message as unknown as RudderMessage),
+      endpoint: resolveEndpoint(apiEndpoint),
       endpointPath: BULK_EVENTS_PATH,
       method: 'POST',
       headers: {
-        Authorization: this.authorization,
+        Authorization: `Basic ${base64Convertor(`${serverToServerKey}:${serverToServerSecret}`)}`,
         'Content-Type': JSON_MIME_TYPE,
       },
     };

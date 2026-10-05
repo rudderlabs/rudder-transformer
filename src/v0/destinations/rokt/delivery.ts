@@ -1,4 +1,4 @@
-import { once, unescape } from 'lodash';
+import { unescape } from 'lodash';
 import { z } from 'zod';
 import {
   perItem,
@@ -98,7 +98,7 @@ const getBatchSpans = (ctx: DeliveryContext): BatchSpan[] | undefined => {
 const getFailedBatchIndex = (
   error: string,
   jobCount: number,
-  getSpans: () => BatchSpan[] | undefined,
+  spans: BatchSpan[] | undefined,
 ): number | undefined => {
   const pathIndex = /Path '\[(\d+)]/.exec(error)?.[1];
   if (pathIndex !== undefined) {
@@ -107,8 +107,7 @@ const getFailedBatchIndex = (
   }
 
   const position = /\bposition\s+(\d+)\b/i.exec(error)?.[1];
-  const spans = position === undefined ? undefined : getSpans();
-  if (!spans) {
+  if (position === undefined || !spans) {
     return undefined;
   }
 
@@ -122,11 +121,10 @@ const getPerItemVerdicts = (ctx: DeliveryContext, errorDetails: RoktErrorDetails
     return undefined;
   }
 
-  // Only errors without a `[n]` path need the spans, so compute them at most once, on demand.
-  const getSpans = once(() => getBatchSpans(ctx));
+  const spans = getBatchSpans(ctx);
   const errorsByBatch = new Map<number, string[]>();
   for (const error of errorDetails.errors) {
-    const index = getFailedBatchIndex(error, ctx.jobs.length, getSpans);
+    const index = getFailedBatchIndex(error, ctx.jobs.length, spans);
     if (typeof index !== 'number') {
       return undefined;
     }

@@ -180,5 +180,41 @@
       "sourceKeys": ["context.page.url", "properties.url"],
       "destKey": "url"
     }
+  ],
+  "messageValueMappings": [
+    {
+      "sourceKeys": ["context.ip", "context.request_ip", "request_ip"],
+      "destKey": "ip"
+    },
+    {
+      "sourceKeys": [
+        "properties.roktClickId",
+        "properties.rokt_click_id",
+        "properties.rclid",
+        "properties.rtid"
+      ],
+      "destKey": "click_id"
+    },
+    {
+      "sourceKeys": ["timestamp", "originalTimestamp", "sentAt"],
+      "destKey": "timestamp"
+    },
+    {
+      "sourceKeys": [
+        "properties.conversiontype",
+        "properties.conversionType",
+        "properties.conversion_type",
+        "event"
+      ],
+      "destKey": "conversiontype"
+    },
+    {
+      "sourceKeys": "context.device.type",
+      "destKey": "device_type"
+    },
+    {
+      "sourceKeys": "context.device.advertisingId",
+      "destKey": "advertising_id"
+    }
   ]
 }

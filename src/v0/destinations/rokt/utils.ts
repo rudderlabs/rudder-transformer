@@ -1,5 +1,5 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
-import { get, isPlainObject, set } from 'lodash';
+import { isPlainObject, pick } from 'lodash';
 import {
   constructPayload,
   formatTimeStamp,
@@ -9,17 +9,7 @@ import {
   isValidUrl,
 } from '../../util';
 import type { RudderMessage } from '../../../types';
-import {
-  ADVERTISING_ID_SOURCE_KEY,
-  BULK_EVENTS_PATH,
-  CLICK_ID_SOURCE_KEYS,
-  CONVERSION_TYPE_SOURCE_KEYS,
-  DEVICE_TYPE_SOURCE_KEY,
-  IP_SOURCE_KEYS,
-  PAGE_SEARCH_SOURCE_KEY,
-  ROKT_INTEGRATION_ID,
-  TIMESTAMP_SOURCE_KEYS,
-} from './config';
+import { BULK_EVENTS_PATH, PAGE_SEARCH_SOURCE_KEY, ROKT_INTEGRATION_ID } from './config';
 import mappingConfig from './data/ROKTConfig.json';
 import type {
   RoktBatch,
@@ -32,28 +22,29 @@ import type {
 type MappingEntry = {
   sourceKeys: string | string[];
   destKey: string;
-  metadata?: Record<string, unknown>;
 };
 
 const ROKT_MAPPING_CONFIG = mappingConfig as Record<keyof typeof mappingConfig, MappingEntry[]>;
 
 // Every message path the transform reads; buildRoktBatch copies only these.
 const MAPPED_PATHS = [
-  ...new Set(
-    [
-      ...Object.values(ROKT_MAPPING_CONFIG)
-        .flat()
-        .flatMap(({ sourceKeys }) => sourceKeys),
-      ...IP_SOURCE_KEYS,
-      ...CLICK_ID_SOURCE_KEYS,
-      PAGE_SEARCH_SOURCE_KEY,
-      ...TIMESTAMP_SOURCE_KEYS,
-      ...CONVERSION_TYPE_SOURCE_KEYS,
-      DEVICE_TYPE_SOURCE_KEY,
-      ADVERTISING_ID_SOURCE_KEY,
-    ].flat(),
-  ),
+  ...new Set([
+    ...Object.values(ROKT_MAPPING_CONFIG)
+      .flat()
+      .flatMap(({ sourceKeys }) => sourceKeys),
+    PAGE_SEARCH_SOURCE_KEY,
+  ]),
 ];
+
+// Single values the transform post-processes before placing them in the batch.
+type MessageValues = {
+  ip?: unknown;
+  click_id?: unknown;
+  timestamp?: unknown;
+  conversiontype?: unknown;
+  device_type?: unknown;
+  advertising_id?: unknown;
+};
 
 const isPresent = (value: unknown): boolean =>
   value !== undefined && value !== null && !(typeof value === 'string' && value.trim() === '');
@@ -73,15 +64,10 @@ const omitWhitespaceOnlyValues = (value: unknown): unknown => {
   );
 };
 
-// Blanking whitespace-only strings lets getValueFromMessage fall through to the next source key.
-const sanitizeMappedPaths = (message: RudderMessage): RudderMessage => {
-  const view = {} as RudderMessage;
-  for (const path of MAPPED_PATHS) {
-    const value: unknown = get(message, path);
-    if (value !== undefined) set(view, path, omitWhitespaceOnlyValues(value));
-  }
-  return view;
-};
+// Copies only the mapped paths. Blanking whitespace-only strings lets getValueFromMessage fall
+// through to the next source key.
+const sanitizeMappedPaths = (message: RudderMessage): RudderMessage =>
+  omitWhitespaceOnlyValues(pick(message, MAPPED_PATHS)) as RudderMessage;
 
 const mappedPayload = (message: RudderMessage, mappings: MappingEntry[]): Record<string, unknown> =>
   (constructPayload(message, mappings) ?? {}) as Record<string, unknown>;
@@ -117,8 +103,10 @@ export const resolveEndpoint = (apiEndpoint: string): string => {
 // Shared with delivery, which maps Rokt's error positions back onto this exact serialization.
 export const serializeRoktBatches = (batches: unknown[]): string => JSON.stringify(batches);
 
-const resolveClickId = (message: RudderMessage): string | undefined => {
-  const propertyValue = getValueFromMessage(message, CLICK_ID_SOURCE_KEYS);
+const resolveClickId = (
+  message: RudderMessage,
+  { click_id: propertyValue }: MessageValues,
+): string | undefined => {
   if (isPresent(propertyValue)) return String(propertyValue);
 
   const search = asNonEmptyString(getValueFromMessage(message, PAGE_SEARCH_SOURCE_KEY));
@@ -127,8 +115,7 @@ const resolveClickId = (message: RudderMessage): string | undefined => {
   return [params.get('rclid'), params.get('rtid')].find(isPresent) ?? undefined;
 };
 
-const resolveTimestamp = (message: RudderMessage): number | undefined => {
-  const rawTimestamp = getValueFromMessage(message, TIMESTAMP_SOURCE_KEYS);
+const resolveTimestamp = (rawTimestamp: unknown): number | undefined => {
   if (!isPresent(rawTimestamp)) return undefined;
   const timestamp = new Date(rawTimestamp as string | number).getTime();
   return Number.isFinite(timestamp) ? timestamp : undefined;
@@ -162,12 +149,14 @@ const buildUserAttributes = (message: RudderMessage): RoktUserAttributes => {
 };
 
 // The trait-based ids come from deviceMappings; a typed context.device.advertisingId overrides them.
-const buildDeviceInfo = (message: RudderMessage): RoktDeviceInfo => {
+const buildDeviceInfo = (
+  message: RudderMessage,
+  { advertising_id: advertisingId, device_type: rawDeviceType }: MessageValues,
+): RoktDeviceInfo => {
   const deviceInfo = mappedPayload(message, ROKT_MAPPING_CONFIG.deviceMappings) as RoktDeviceInfo;
-  const advertisingId = getValueFromMessage(message, ADVERTISING_ID_SOURCE_KEY);
 
   if (isPresent(advertisingId)) {
-    const deviceType = asNonEmptyString(getValueFromMessage(message, DEVICE_TYPE_SOURCE_KEY));
+    const deviceType = asNonEmptyString(rawDeviceType);
     if (isAppleFamily(deviceType)) {
       deviceInfo.ios_advertising_id = advertisingId;
     } else if (isAndroidFamily(deviceType)) {
@@ -179,15 +168,17 @@ const buildDeviceInfo = (message: RudderMessage): RoktDeviceInfo => {
 
 const buildConversion = (
   message: RudderMessage,
-  { type, messageId }: RudderMessage,
+  values: MessageValues,
+  type: string,
+  messageId?: string,
 ): RoktConversion => {
   const customAttributes = mappedPayload(message, ROKT_MAPPING_CONFIG.conversionAttributeMappings);
   const { amount } = customAttributes;
-  let conversiontype = getValueFromMessage(message, CONVERSION_TYPE_SOURCE_KEYS);
+  let { conversiontype } = values;
   if (!isPresent(conversiontype) && ['page', 'screen'].includes(type)) {
     conversiontype = 'screen_view';
   }
-  const timestamp = resolveTimestamp(message);
+  const timestamp = resolveTimestamp(values.timestamp);
   const sourceMessageId = asNonEmptyString(messageId);
 
   return {
@@ -208,12 +199,16 @@ const buildConversion = (
 
 export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
   const sanitizedMessage = sanitizeMappedPaths(message);
-  const clickId = resolveClickId(sanitizedMessage);
+  const values = mappedPayload(
+    sanitizedMessage,
+    ROKT_MAPPING_CONFIG.messageValueMappings,
+  ) as MessageValues;
+  const clickId = resolveClickId(sanitizedMessage, values);
   const identities = buildIdentities(sanitizedMessage, clickId);
 
-  const ip = getValueFromMessage(sanitizedMessage, IP_SOURCE_KEYS);
+  const { ip } = values;
   const userAttributes = buildUserAttributes(sanitizedMessage);
-  const deviceInfo = buildDeviceInfo(sanitizedMessage);
+  const deviceInfo = buildDeviceInfo(sanitizedMessage, values);
   return {
     schema_version: 2,
     environment: 'production',
@@ -230,6 +225,6 @@ export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
       : {}),
     ...(message.type === 'identify'
       ? {}
-      : { events: [buildConversion(sanitizedMessage, message)] }),
+      : { events: [buildConversion(sanitizedMessage, values, message.type, message.messageId)] }),
   };
 };

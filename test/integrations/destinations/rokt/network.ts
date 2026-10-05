@@ -139,15 +139,6 @@ export const allInvalidResponse = {
     },
   ],
 };
-export const completeFailureRequest = allInvalidRequest.map((batch, index) => ({
-  ...batch,
-  user_identities: { customerid: `synthetic-customer-${index + 13}` },
-  events: batch.events.map((event) => ({
-    ...event,
-    data: { ...event.data, source_message_id: `message-${index + 13}` },
-  })),
-}));
-export const completeFailureResponse = allInvalidResponse;
 export const invalidCredentialsRequest = requestForCustomer('synthetic-customer-12', 'message-12');
 export const missingCredentialsRequest = requestForCustomer('synthetic-customer-15', 'message-15');
 export const headersWithoutCredentials = { 'Content-Type': 'application/json' };
@@ -187,14 +178,6 @@ export const networkCallsData = [
     httpRes: {
       data: allInvalidResponse,
       status: 400,
-    },
-  },
-  {
-    description: 'Rokt reports every batch as failed in an HTTP 202 response',
-    httpReq: { method: 'POST', url: endpoint, headers, data: completeFailureRequest },
-    httpRes: {
-      data: completeFailureResponse,
-      status: 202,
     },
   },
   {

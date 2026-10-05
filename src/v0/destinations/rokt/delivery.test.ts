@@ -18,14 +18,19 @@ const job: ProxyMetdata = {
   dontBatch: false,
 };
 
-const context = (status: number, response: unknown = {}, jobCount = 1): DeliveryContext => {
+const context = (
+  status: number,
+  response: unknown = {},
+  jobCount = 1,
+  serializedBatch = '[]',
+): DeliveryContext => {
   const jobs = Array.from({ length: jobCount }, (_, index) => ({ ...job, jobId: index + 1 }));
 
   return {
     status,
     response,
     jobs,
-    request: { body: { JSON_ARRAY: { batch: '[]' } } } as unknown as ProxyV1Request,
+    request: { body: { JSON_ARRAY: { batch: serializedBatch } } } as unknown as ProxyV1Request,
     destinationConfig: {},
     ...firstJobIdentity(jobs),
   };
@@ -40,7 +45,7 @@ const currencyError = {
 const advertisingIdError = {
   code: 'BAD_REQUEST',
   message:
-    "Error converting value &quot;not-a-guid&quot; to type 'System.Guid'. Path '[0].device_info.ios_advertising_id', line 1, position 153.",
+    "Error converting value &quot;not-a-guid&quot; to type 'System.Guid'. Path '[1].device_info.ios_advertising_id', line 1, position 153.",
 };
 
 describe('ROKT delivery', () => {
@@ -48,33 +53,62 @@ describe('ROKT delivery', () => {
     expect(handleDeliveryResponse(Integration, context(202))).toEqual({ kind: 'success' });
   });
 
-  it('retries HTTP 202 partial failures as individual events', () => {
+  it('maps an indexed batch-level error to only the failed event', () => {
     expect(
-      handleDeliveryResponse(Integration, context(202, { errors: [currencyError] }, 3)),
+      handleDeliveryResponse(Integration, context(202, { errors: [advertisingIdError] }, 3)),
     ).toEqual({
-      kind: 'retry',
-      reason:
-        "Rokt rejected 1 of 3 events (BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 314.); retrying each event individually.",
-      dontBatch: true,
+      kind: 'perItem',
+      verdicts: [
+        { kind: 'success' },
+        {
+          kind: 'retry',
+          reason:
+            "Rokt rejected this event: BAD_REQUEST - Error converting value \"not-a-guid\" to type 'System.Guid'. Path '[1].device_info.ios_advertising_id', line 1, position 153.; retrying it individually.",
+          dontBatch: true,
+        },
+        { kind: 'success' },
+      ],
     });
   });
 
-  it('aborts every event when HTTP 202 reports one error per job', () => {
+  it('maps an event-data error position to only the failed event', () => {
+    const batches = [{ value: 'good-1' }, { currency: { code: 'USD' } }, { value: 'good-2' }];
+    const serializedBatch = JSON.stringify(batches);
+    const position = serializedBatch.indexOf('{"code":"USD"}') + 1;
+    const positionedCurrencyError = {
+      ...currencyError,
+      message: currencyError.message.replace(/position \d+/, `position ${position}`),
+    };
+
     expect(
       handleDeliveryResponse(
         Integration,
-        context(
-          202,
-          {
-            errors: [advertisingIdError, currencyError],
-          },
-          2,
-        ),
+        context(202, { errors: [positionedCurrencyError] }, 3, serializedBatch),
       ),
     ).toEqual({
-      kind: 'abort',
+      kind: 'perItem',
+      verdicts: [
+        { kind: 'success' },
+        {
+          kind: 'retry',
+          reason: `Rokt rejected this event: ${positionedCurrencyError.code} - ${positionedCurrencyError.message}; retrying it individually.`,
+          dontBatch: true,
+        },
+        { kind: 'success' },
+      ],
+    });
+  });
+
+  it('retries every job when a partial failure cannot be attributed', () => {
+    const unlocatedError = { code: 'BAD_REQUEST', message: 'Invalid event batch.' };
+
+    expect(
+      handleDeliveryResponse(Integration, context(202, { errors: [unlocatedError] }, 3)),
+    ).toEqual({
+      kind: 'retry',
       reason:
-        "Rokt rejected all 2 events: BAD_REQUEST - Error converting value \"not-a-guid\" to type 'System.Guid'. Path '[0].device_info.ios_advertising_id', line 1, position 153.; BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 314.",
+        'Rokt rejected 1 of 3 events (BAD_REQUEST - Invalid event batch.); retrying each event individually.',
+      dontBatch: true,
     });
   });
 

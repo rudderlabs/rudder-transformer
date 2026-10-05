@@ -79,26 +79,27 @@ export const live: LiveSpec = {
     {
       id: 'rokt-mixed-batch',
       description:
-        'a batch mixing valid and invalid events is retried individually, and only the invalid event fails',
+        'a batch mixing valid and invalid events delivers the valid event and retries only the invalid event',
       steps: [
         {
-          // Rokt returns one error for the two batches, so delivery must retry rather than mark
-          // both jobs delivered.
+          // Rokt returns one positioned error for the two batches, so delivery must preserve the
+          // accepted job and retry only the rejected one.
           stepType: 'pipeline',
-          name: 'batched: partial rejection retries the whole batch',
+          name: 'batched: partial rejection retries only the failed event',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
-          expectedFailure: {},
+          expectedFailure: { items: [1] },
           seed: (ctx) => [goodTrack(ctx, 'mixed-good'), badTrack(ctx, 'mixed-bad')],
         },
         {
-          // Model rudder-server's dontBatch redelivery explicitly; the live harness does not replay it.
+          // Model rudder-server's dontBatch redelivery of the rejected event explicitly; the live
+          // harness does not replay retryable job states.
           stepType: 'pipeline',
-          name: 'dontBatch retry: only the invalid event is aborted',
+          name: 'dontBatch retry: the invalid event is aborted',
           metadataOverride: { dontBatch: true },
-          expectedProxyRequests: 2,
-          expectedFailure: { items: [1] },
-          seed: (ctx) => [goodTrack(ctx, 'retry-good'), badTrack(ctx, 'retry-bad')],
+          expectedProxyRequests: 1,
+          expectedFailure: {},
+          seed: (ctx) => [badTrack(ctx, 'retry-bad')],
         },
       ],
     },

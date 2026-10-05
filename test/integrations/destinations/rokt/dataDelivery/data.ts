@@ -6,7 +6,6 @@ import {
   acceptedRequest,
   allInvalidRequest,
   allInvalidResponse,
-  completeFailureRequest,
   headersWithoutCredentials,
   invalidCredentialsRequest,
   missingCredentialsRequest,
@@ -88,9 +87,9 @@ export const data: ProxyV1TestData[] = [
   {
     id: 'rokt-delivery-partial-failure',
     name: 'rokt',
-    description: 'Framework delivery retries mixed-validity Rokt batches individually',
+    description: 'Framework delivery retries only rejected items in mixed-validity Rokt batches',
     scenario: 'Native batching delivery',
-    successCriteria: 'Every job is retried with dontBatch after a partial HTTP 202 response',
+    successCriteria: 'Accepted jobs succeed and only the rejected job retries with dontBatch',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
@@ -118,60 +117,17 @@ export const data: ProxyV1TestData[] = [
           output: {
             status: 202,
             message:
-              "[ROKT] Rokt rejected 1 of 3 events (BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 648.); retrying each event individually.",
-            statTags: { ...statTags, errorType: 'retryable' },
-            response: [7, 8, 9].map((jobId) => ({
-              statusCode: 500,
-              metadata: { ...proxyMetadata(jobId), dontBatch: true },
-              error:
-                "Rokt rejected 1 of 3 events (BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 648.); retrying each event individually.",
-            })),
-          },
-        },
-      },
-    },
-  },
-  {
-    id: 'rokt-delivery-complete-202-failure',
-    name: 'rokt',
-    description: 'Framework delivery aborts every event rejected in an HTTP 202 response',
-    scenario: 'Native batching delivery',
-    successCriteria: 'Every job is aborted when the Rokt error count matches the batch size',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v1',
-    envOverrides,
-    input: {
-      request: {
-        method: 'POST',
-        body: generateProxyV1Payload(
-          {
-            endpoint,
-            endpointPath: '/v2/bulkevents',
-            method: 'POST',
-            headers,
-            JSON_ARRAY: { batch: JSON.stringify(completeFailureRequest) },
-          },
-          [proxyMetadata(13), proxyMetadata(14)],
-          destination.Config,
-        ),
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: {
-            status: 202,
-            message:
-              "[ROKT] Rokt rejected all 2 events: BAD_REQUEST - Error converting value \"not-a-guid\" to type 'System.Guid'. Path '[0].device_info.ios_advertising_id', line 1, position 153.; BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 702.",
-            statTags,
-            response: [13, 14].map((jobId) => ({
-              statusCode: 400,
-              metadata: proxyMetadata(jobId),
-              error:
-                "Rokt rejected all 2 events: BAD_REQUEST - Error converting value \"not-a-guid\" to type 'System.Guid'. Path '[0].device_info.ios_advertising_id', line 1, position 153.; BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 702.",
-            })),
+              "[ROKT] Rokt rejected this event: BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 648.; retrying it individually.",
+            response: [
+              { statusCode: 200, metadata: proxyMetadata(7), error: 'success' },
+              {
+                statusCode: 500,
+                metadata: { ...proxyMetadata(8), dontBatch: true },
+                error:
+                  "Rokt rejected this event: BAD_REQUEST - Error reading string. Unexpected token: StartObject. Path 'data.custom_attributes.currency', line 1, position 648.; retrying it individually.",
+              },
+              { statusCode: 200, metadata: proxyMetadata(9), error: 'success' },
+            ],
           },
         },
       },

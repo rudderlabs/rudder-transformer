@@ -144,7 +144,7 @@ describe('trackResponseBuilder', () => {
     });
   });
 
-  it('should include contents_ids and num_items in properties if contents are present', async () => {
+  it('should include content_ids and num_items in properties if contents are present', async () => {
     const message = {
       event: 'purchase',
       properties: {
@@ -164,7 +164,7 @@ describe('trackResponseBuilder', () => {
     };
     const resp = await trackResponseBuilder(message, { Config: config });
     const data = resp.body.JSON.data[0];
-    expect(data.properties.contents_ids).toEqual(['123', '456']);
+    expect(data.properties.content_ids).toEqual(['123', '456']);
     expect(data.properties.num_items).toBe(2);
   });
 

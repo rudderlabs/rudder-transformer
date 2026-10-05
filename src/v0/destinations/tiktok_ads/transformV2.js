@@ -62,14 +62,14 @@ const getTrackResponsePayload = (message, destConfig, event, setDefaultForConten
     payload.properties.contents = getContents(message, false);
   }
 
-  // if contents is present then we need to add contents_ids and num_items to the payload
+  // if contents is present then we need to add content_ids and num_items to the payload
   if (payload.properties?.contents?.length > 0) {
     const contentIds = payload.properties.contents
       .map((content) => content.content_id)
       .filter(Boolean);
 
     if (contentIds.length > 0) {
-      payload.properties.contents_ids = contentIds;
+      payload.properties.content_ids = contentIds;
       payload.properties.num_items = contentIds.length;
     }
   }

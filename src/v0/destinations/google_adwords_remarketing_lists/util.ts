@@ -12,7 +12,8 @@ import {
 import {
   processAudienceRecord,
   isValidPhoneNumber,
-  type AudienceField,
+  toAudienceFieldConfig,
+  HashingType,
 } from '../../util/audienceUtils';
 import { normalizeEmail, normalizePhone } from '../../util/googleUtils/userDataNormalization';
 import logger from '../../../logger';
@@ -28,7 +29,6 @@ import {
   destType,
 } from './config';
 import type { GARLDestinationConfig } from './types';
-import { HashingType } from '../../util/audienceUtils';
 
 const COUNTRY_CODE_REGEX = /^[A-Za-z]{2,3}$/;
 
@@ -70,17 +70,7 @@ const GARL_STRING_FIELD_CONFIG = {
   },
 };
 
-// Bridge string-typed config to the unknown-typed AudienceField interface
-const GARL_FIELD_CONFIG: Record<string, AudienceField> = Object.fromEntries(
-  Object.entries(GARL_STRING_FIELD_CONFIG).map(([key, { normalize, validate, ...rest }]) => [
-    key,
-    {
-      ...rest,
-      normalize: (v: unknown) => normalize(String(v)),
-      validate: (v: unknown) => validate(v as string),
-    },
-  ]),
-);
+const GARL_FIELD_CONFIG = toAudienceFieldConfig(GARL_STRING_FIELD_CONFIG);
 
 const responseBuilder = (
   accessToken: string,

@@ -8,6 +8,7 @@ import {
   rETLRecordV2RouterInvalidRequestWithLookalikeValue,
   rETLRecordV2RouterMissingAccessTokenRequest,
 } from './rETL';
+import { appSecretProof, secret1, secret2 } from '../maskedSecrets';
 import { mockFns } from '../mocks';
 import { defaultAccessToken } from '../../../common/secrets';
 import { generateMetadata } from '../../../testUtils';
@@ -50,7 +51,7 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
+                    access_token: secret1,
                   },
                   body: {
                     JSON: {
@@ -103,7 +104,7 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
+                    access_token: secret1,
                   },
                   body: {
                     JSON: {
@@ -177,7 +178,7 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
+                    access_token: secret1,
                   },
                   body: {
                     JSON: {
@@ -230,7 +231,7 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
+                    access_token: secret1,
                   },
                   body: {
                     JSON: {
@@ -327,7 +328,7 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
+                    access_token: secret1,
                   },
                   body: {
                     JSON: {
@@ -392,7 +393,7 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
+                    access_token: secret1,
                   },
                   body: {
                     JSON: {
@@ -441,7 +442,7 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
+                    access_token: secret1,
                   },
                   body: {
                     JSON: {
@@ -574,9 +575,8 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
-                    appsecret_proof:
-                      'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                    access_token: secret1,
+                    appsecret_proof: appSecretProof,
                     appsecret_time: 1697328000,
                   },
                   body: {
@@ -632,8 +632,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  accessToken: 'ABC',
-                  appSecret: 'dummySecret',
+                  accessToken: secret1,
+                  appSecret: secret2,
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
@@ -667,9 +667,8 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
-                    appsecret_proof:
-                      'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                    access_token: secret1,
+                    appsecret_proof: appSecretProof,
                     appsecret_time: 1697328000,
                   },
                   body: {
@@ -709,8 +708,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  accessToken: 'ABC',
-                  appSecret: 'dummySecret',
+                  accessToken: secret1,
+                  appSecret: secret2,
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
@@ -744,9 +743,8 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
-                    appsecret_proof:
-                      'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                    access_token: secret1,
+                    appsecret_proof: appSecretProof,
                     appsecret_time: 1697328000,
                   },
                   body: {
@@ -818,8 +816,8 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  accessToken: 'ABC',
-                  appSecret: 'dummySecret',
+                  accessToken: secret1,
+                  appSecret: secret2,
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
@@ -907,7 +905,7 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
+                    access_token: secret1,
                   },
                   body: {
                     JSON: {
@@ -939,7 +937,7 @@ export const data = [
               metadata: [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
               destination: {
                 Config: {
-                  accessToken: 'ABC',
+                  accessToken: secret1,
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,
@@ -1163,7 +1161,7 @@ export const data = [
                   endpointPath: 'users',
                   headers: {},
                   params: {
-                    access_token: 'ABC',
+                    access_token: secret1,
                   },
                   body: {
                     JSON: {
@@ -1224,7 +1222,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  accessToken: 'ABC',
+                  accessToken: secret1,
                   disableFormat: false,
                   isHashRequired: true,
                   isRaw: false,

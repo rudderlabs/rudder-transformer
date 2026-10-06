@@ -34,6 +34,20 @@ Maps user identifiers based on list type and schema:
 | `phone`       | `hashedPhoneNumber` | Yes              | SHA-256 hashed phone number      |
 | `addressInfo` | `addressInfo`       | Partial          | Address object with hashed names |
 
+### Data Manager IP Data (VDM-V2 RETL)
+
+For Data Manager accounts, General-list VDM-V2 record mappings additionally support:
+
+| Mapping field        | Data Manager field                        | Required | Description                                                |
+| -------------------- | ----------------------------------------- | -------- | ---------------------------------------------------------- |
+| `userIp`             | `compositeData.ipData[].ipAddress`        | Yes      | Unhashed IPv4 or IPv6 address                              |
+| `ipObserveStartTime` | `compositeData.ipData[].observeStartTime` | No       | Interaction start time normalized to an RFC 3339 timestamp |
+| `ipObserveEndTime`   | `compositeData.ipData[].observeEndTime`   | No       | Interaction end time normalized to an RFC 3339 timestamp   |
+
+The observation timestamps qualify `userIp`; they are ignored when no valid IP survives validation. A row produces one `ipData` element. Google rejects a request that mixes `AudienceMember` identity types, so a VDM-V2 General-list connection that maps `userIp` uses `compositeData` for every member in the batch. Rows without a valid IP place email, phone, and address identifiers under `compositeData.userData` without an `ipData` field. Connections that do not map `userIp` keep the existing top-level `userData` shape. IP data is not available for the legacy Google Ads API path, event-stream or VDM-V1 flows, or `userID` and `mobileDeviceID` list types.
+
+Google accepts these fields for EEA, UK, and Switzerland end users but does not perform IP matching for those users, so the field has limited matching effect for those audiences.
+
 ### Special List Types
 
 | Type of List     | Google Ads Field   | Description                  |
@@ -149,6 +163,12 @@ Maps user identifiers based on list type and schema:
 - `firstName` and `lastName` are hashed when present
 - `countryCode` must be valid ISO country code
 - `postalCode` is sent in plain text
+
+#### Data Manager IP Data
+
+- `userIp` must be a valid IPv4 or IPv6 address and is always sent unhashed, including when `isHashRequired` is true
+- Optional observation timestamps accept ISO 8601 / RFC 3339 values and are normalized to RFC 3339 while preserving the parsed offset
+- Invalid IP values are dropped; timestamps never create an IP entry on their own
 
 ### Data Quality Checks
 

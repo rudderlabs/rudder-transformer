@@ -30,10 +30,7 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { groupRouterTransformEvents } from '../../v0/util';
-import {
-  isDestinationIntegrationEnabled,
-  isBatchingFrameworkTransportEnabled,
-} from '../../constants/destinationIntegrationsMap';
+import { isDestinationIntegrationEnabled } from '../../constants/destinationIntegrationsMap';
 import { processDestinationIntegration } from './destinationIntegration/processDestinationIntegration';
 import {
   handleDeliveryResponse,
@@ -253,14 +250,11 @@ export class NativeIntegrationDestinationService implements DestinationService {
       );
       const frameworkRequest = isProxyV1Request(deliveryRequest, version);
       const workspaceId = frameworkRequest ? deliveryRequest.metadata[0]?.workspaceId : '';
-      const frameworkOwnsTransport =
-        frameworkRequest && isBatchingFrameworkTransportEnabled(destinationType, workspaceId);
-      const frameworkOwnsResponse =
+      const frameworkOwns =
         frameworkRequest && isDestinationIntegrationEnabled(destinationType, workspaceId);
-      const IntegrationClass =
-        frameworkOwnsTransport || frameworkOwnsResponse
-          ? FetchHandler.getDestinationIntegrationHandler(destinationType)
-          : undefined;
+      const IntegrationClass = frameworkOwns
+        ? FetchHandler.getDestinationIntegrationHandler(destinationType)
+        : undefined;
       const reqCtx: DeliveryRequestContext | undefined = frameworkRequest
         ? {
             jobs: deliveryRequest.metadata,
@@ -272,10 +266,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
 
       let sentDeliveryRequest = deliveryRequest;
       let processedProxyResponse;
-      if (frameworkOwnsTransport) {
+      if (frameworkOwns) {
         const spec = resolveDeliverySpec(IntegrationClass);
         // `prepareRequest` is also where a destination rejects a request it must not send — GAEC
-        // uses it to catch legacy-shape payloads left over from a transport flag flip. Throwing
+        // uses it to catch legacy-shape payloads left over from the final transport-GA flip. Throwing
         // from it lands in this method's catch, same as any other delivery failure.
         sentDeliveryRequest = spec.prepareRequest?.(deliveryRequest, reqCtx!) ?? deliveryRequest;
         // The framework sent this request, so the framework reads the reply: the shared axios
@@ -300,7 +294,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
       //
       // The guard is `isProxyV1Request`, which requires the v1 route *and* an array `metadata`;
       // see its declaration for why neither half alone is enough.
-      if (frameworkRequest && frameworkOwnsResponse) {
+      if (frameworkOwns) {
         const ctx: DeliveryContext = {
           status: processedProxyResponse.status,
           response: processedProxyResponse.response,

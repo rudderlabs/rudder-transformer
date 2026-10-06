@@ -10,7 +10,6 @@ import type { BatchStrategy } from '../../../services/destination/destinationInt
 // reused here so no transform logic is duplicated.
 import { process as transformSingleEvent } from './transform';
 import {
-  destType,
   getUploadConversionAdjustmentsEndpoint,
   UPLOAD_CONVERSION_ADJUSTMENTS_ENDPOINT_PATH,
   MAX_CONVERSION_ADJUSTMENTS_PER_BATCH,
@@ -18,7 +17,6 @@ import {
 import { gaecDelivery } from './delivery';
 import { getConversionActionId } from './utils';
 import type { ConversionAdjustment, GaecRouterRequest } from './types';
-import { isBatchingFrameworkTransportEnabled } from '../../../constants/destinationIntegrationsMap';
 import { getAccessToken } from '../../util';
 
 const gaecInputSchema = makeRouterInputSchema({
@@ -42,8 +40,8 @@ class GoogleAdwordsEnhancedConversionsIntegration extends DestinationIntegration
   static readonly delivery = gaecDelivery;
 
   /**
-   * Async only on the framework-transport path, where the conversion action resource name has to
-   * be resolved before the adjustment is complete. The lookup is cache-backed and keyed on
+   * The conversion action resource name is resolved before the adjustment is complete. The lookup
+   * is cache-backed and keyed on
    * (conversion name, customerId), so a batch pays at most one request per distinct conversion
    * name and every later event in the call is a hit.
    *
@@ -58,19 +56,6 @@ class GoogleAdwordsEnhancedConversionsIntegration extends DestinationIntegration
     // body.JSON is `{ conversionAdjustments: [<single adjustment>], partialFailure: true }`.
     const gaecInput = input as GaecBatchInput;
     const result = transformSingleEvent(gaecInput);
-
-    if (!isBatchingFrameworkTransportEnabled(destType, gaecInput.metadata.workspaceId)) {
-      return {
-        body: result.body.JSON.conversionAdjustments![0],
-        endpoint: result.endpoint, // '' — delivery is handled by the networkHandler/proxy
-        endpointPath: '/uploadConversionAdjustments',
-        method: result.method,
-        headers: result.headers,
-        // Legacy shape: params carries event (conversion name), customerId, loginCustomerId,
-        // subAccount and accessToken, keeping flag-off output byte-identical.
-        params: result.params,
-      };
-    }
 
     const customerId = result.params.customerId!;
     const conversionAction = await getConversionActionId({

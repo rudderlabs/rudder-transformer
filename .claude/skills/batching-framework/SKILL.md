@@ -26,9 +26,10 @@ A new destination is:
   judgement call: see
   `.claude/skills/batching-framework-delivery/SKILL.md#a-new-destination-gets-no-networkhandlerts`,
   including what to do when it looks like you need one.
-- **Registered `{ routerTransform: true, batching: true }` in `src/features.ts`** from day one —
-  plus `transformerProxy: true` if delivery goes through the transformer proxy (see
-  "Enabling the Framework" below). A new destination is GA on the framework immediately, so the
+- **Registered `{ routerTransform: true, batching: true }` in `src/features.ts`** from day one.
+  Batching destinations advertise transformer-proxy delivery by default; set
+  `transformerProxy: false` only for a confirmed direct-delivery exception (see "Enabling the
+  Framework" below). A new destination is GA on the framework immediately, so the
   `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` rollout flag — which exists for migrating an
   existing destination — does not apply.
 - **`transformAtV1: router`** in its `rudder-integrations-config` definition. The framework only
@@ -423,18 +424,18 @@ and `transformerProxy` — and each derived map and `defaultFeaturesConfig` sect
 it. The rule above is not specific to the batching map: whenever it looks like a destination needs
 adding to a list in `src/constants/`, the change belongs in `features.ts`.
 
-Declare `transformerProxy: true` when the destination's delivery goes through the transformer
-proxy rather than rudder-server delivering the payload itself:
+Batching destinations advertise `transformerProxy` by default. Use the explicit `false` override
+only when batching transform output is still delivered directly by rudder-server:
 
 ```typescript
-<DEST_NAME_UPPER>: { routerTransform: true, batching: true, transformerProxy: true },
+CUSTOM_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: false },
 ```
 
-`features.test.ts` enforces that a destination may only declare it if it actually implements the
-proxy. **`batching: true` satisfies that on its own** — the framework owns delivery outright, so a
-batching destination implements the proxy however its `delivery` spec is laid out, and one
-declaring no spec at all still qualifies. You do not need a `networkHandler.ts` to earn the
-capability, and writing one to "support" it is exactly the anti-pattern in
+`features.test.ts` enforces that a destination may only advertise the proxy if it actually
+implements it. Unless explicitly disabled, **`batching: true` satisfies that on its own** — the
+framework owns delivery outright, so a batching destination implements the proxy however its
+`delivery` spec is laid out, and one declaring no spec at all still qualifies. You do not need a
+`networkHandler.ts` to earn the capability, and writing one to "support" it is exactly the anti-pattern in
 `.claude/skills/batching-framework-delivery/SKILL.md#a-new-destination-gets-no-networkhandlerts`.
 
 ### One gate, both halves
@@ -477,22 +478,20 @@ same predicate as the transform, per "One gate, both halves" above.
 
 ### If you just batched a destination that had a network handler
 
-Only *response handling* moves onto the class; transport (`proxy` / `prepareProxy` /
-`processAxiosResponse`) stays in `networkHandler.ts`. When the handler builds the request at delivery
-time, `transformEvent`'s `endpoint` is typically an unused placeholder — the handler derives the real
-URL from `params`. If instead it reads the endpoint from the payload, set it normally.
+For an enrolled **v1** request, transport and response handling move onto the class together:
+`deliver()` uses the integration's optional `prepareRequest`, the shared HTTP proxy, and its delivery
+spec. `transformEvent` must therefore emit the real endpoint and an HTTP-ready request. Use
+`prepareRequest` only for delivery-time material that must not be persisted, such as a developer
+token.
 
-- **Audit the transport for single-item assumptions.** Pre-batching it received one item per request
-  and often hard-codes index `0` (e.g. `set(body.JSON, 'items[0].field', ...)`). Once batched,
-  `items` is an array of N — iterate the whole array. The single-item case collapses to an array of
-  one, so legacy traffic is unaffected (a safe, ungated change).
-- **Don't gate transport changes on the batching predicate**; make them correct for both 1 and N
-  items. `deliver()` does read `isDestinationIntegrationEnabled`, but only *after* `proxy()` and
-  `processAxiosResponse()` have already run — transport is chosen by `networkHandlerFactory`, not by
-  the predicate — and the same handler still serves v0 proxy requests and any pre-GA workspace.
+Keep the legacy `networkHandler` only while v0 proxy requests or unenrolled pre-GA workspaces still
+need it. Audit that path for single-item assumptions if it can receive batches, but do not make the
+framework request depend on handler-only URL construction or SDK transport. If the partner genuinely
+cannot use the shared HTTP proxy, treat that as a framework gap rather than splitting v1 ownership
+between the class and handler.
 
-Cover this with a focused unit test that mocks the delivery SDK/client and asserts the per-item field
-is set on **every** item (cheaper and more direct than a full dataDelivery mock).
+Cover both boundaries: a v1 test proving the framework prepares, sends, and interprets the request,
+and a v0 test proving the legacy handler remains selected.
 
 ## Partners that reject the whole batch
 

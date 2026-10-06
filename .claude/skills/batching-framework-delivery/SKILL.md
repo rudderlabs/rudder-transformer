@@ -200,9 +200,9 @@ Don't set these yourself:
 - **`statTags`** — the whole tag set, when every job failed the same way
 - **`authErrorCategory`** — from the auth refinements only
 
-## Transport stays in `networkHandler.ts`
+## Enrolled v1 delivery uses the framework transport
 
-Only *response handling* moves. A destination that **already has** a handler building its HTTP request at delivery time (SDK call, URL derived from `params`, custom `processAxiosResponse`) keeps `proxy` / `prepareProxy` / `processAxiosResponse` there — `deliver()` in `src/services/destination/nativeIntegration.ts` resolves the network handler and calls `proxy()` / `processAxiosResponse()` *before* it consults `isDestinationIntegrationEnabled`, and `DestinationIntegration` exposes no transport hook to move that into.
+For a destination/workspace where `isDestinationIntegrationEnabled` is true and the request is a v1 proxy request, transform, transport, and response handling move together: `deliver()` resolves the `DestinationIntegration` delivery spec, runs `prepareRequest`, sends through the framework's shared `proxyRequest`, and converts the result with the delivery response helpers.
 
 This whole section is about **migrations**. For a destination being built new, see "A new destination gets no `networkHandler.ts`" below — the answer there is always no.
 
@@ -219,10 +219,11 @@ cutoff on its own; two things still send traffic through it:
   for a batching-GA destination, because the framework answers with a `DeliveryV1Response` that
   a v0 caller cannot parse.
 
-`customerio`, `braze_audience`, `iterable_audience`, `google_adwords_enhanced_conversions` and
-`reddit_audience` are all batching-GA today and still carry both a `delivery.ts` and a
-`src/v1/destinations/<dest>/networkHandler.ts` (gaec keeps a v0 one too) — now for the **second**
-reason only. The handler is deletable once v0 proxy traffic is confirmed dead for the destination.
+`customerio`, `braze_audience`, `iterable_audience` and `reddit_audience` are all batching-GA today
+and still carry both a `delivery.ts` and a `src/v1/destinations/<dest>/networkHandler.ts` — now for
+the **second** reason only. GAEC's destination-specific handlers were deleted after framework
+transport became its only supported path. A retained handler is deletable once v0 proxy traffic is
+confirmed dead for the destination.
 
 ### A new destination gets no `networkHandler.ts`
 
@@ -240,9 +241,9 @@ unenrolled workspaces, so nothing above applies to it. Build it framework-native
 **If it looks like you need one, that is a framework gap — raise it, don't fork around it.** Two
 cases come up, and neither is a licence to hand-write a handler:
 
-- **Transport the framework cannot express** — an SDK call, a URL derived from `params`. Framework
-  delivery replaces response *interpretation* only, and `deliver()` runs transport before it
-  consults the predicate at all, so a handler written here would sit on the delivery path forever.
+- **Transport the framework cannot express** — for example, an SDK-only call. Enrolled v1 delivery
+  uses the framework's shared HTTP proxy, so URLs derived from event data belong in `transformEvent`
+  and delivery-only headers belong in `prepareRequest`; an SDK-only transport is a framework gap.
 - **OAuth on the v0 proxy path.** A v0 request bypasses `delivery.ts`, and `genericNetworkHandler`
   throws a bare `NetworkError` with no `authErrorCategory`, so a 401 there aborts the batch without
   requesting a token refresh. This is a **known gap in the framework**, not a reason to grow a

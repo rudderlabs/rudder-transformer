@@ -8,6 +8,17 @@ import { ServiceSelector } from '../../helpers/serviceSelector';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import stats from '../../util/stats';
+import { proxyRequest as frameworkProxyRequest } from '../../adapters/network';
+import { DestinationIntegration } from '../../services/destination/destinationIntegration/destinationIntegration';
+
+jest.mock('../../adapters/network', () => ({
+  ...jest.requireActual('../../adapters/network'),
+  proxyRequest: jest.fn(),
+}));
+
+const mockedFrameworkProxyRequest = frameworkProxyRequest as jest.MockedFunction<
+  typeof frameworkProxyRequest
+>;
 
 // The batching framework's delivery branch returns before the rest of `deliver` runs, so it is
 // reached by forcing the gate rather than by configuration. `null` delegates to the real predicate,
@@ -312,7 +323,15 @@ describe('Delivery controller tests', () => {
       // its own return. An integration's `failureReason` can be the whole destination body -
       // `braze_audience` falls through to `JSON.stringify(response)`.
       frameworkDeliveryEnabled = true;
-      jest.spyOn(FetchHandler, 'getDestinationIntegrationHandler').mockReturnValue({} as never);
+      // Framework-owned delivery validates the class before sending, then uses the shared
+      // transport. Keep both dependencies real-shaped so this test reaches response capping.
+      jest
+        .spyOn(FetchHandler, 'getDestinationIntegrationHandler')
+        .mockReturnValue(DestinationIntegration as never);
+      mockedFrameworkProxyRequest.mockResolvedValue({
+        success: true,
+        response: { status: 400, data: {} },
+      } as never);
       handleDeliveryResponseMock.mockReturnValue({
         kind: 'perItem',
         verdicts: Array.from({ length: JOBS }, () => ({

@@ -1,3 +1,5 @@
+import { secret1, secret2, secret3, secret4 } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'lemnisk',
@@ -22,12 +24,12 @@ export const data = [
                 Config: {
                   plWriteKey: '',
                   pl: 'https://crux.lemnisk.co/v2/data',
-                  passKey: '',
-                  apiKey: '',
+                  passKey: secret2,
+                  apiKey: secret3,
                   diapi: ' ',
                   cloudMode: 'web',
                   srcId: '',
-                  diapiWriteKey: '',
+                  diapiWriteKey: secret4,
                 },
                 destinationDefinition: {
                   config: {
@@ -105,14 +107,14 @@ export const data = [
                 name: 'Lemnisk Marketing Automation',
                 enabled: true,
                 Config: {
-                  plWriteKey: 'pl_writeKey',
+                  plWriteKey: secret1,
                   pl: 'http://10.11.36.17:8080/analyze/analyze.php',
-                  passKey: '',
-                  apiKey: '',
+                  passKey: secret2,
+                  apiKey: secret3,
                   diapi: '',
                   cloudMode: 'web',
                   srcId: '',
-                  diapiWriteKey: '',
+                  diapiWriteKey: secret4,
                 },
                 destinationDefinition: {
                   config: {
@@ -205,14 +207,14 @@ export const data = [
                 name: 'Lemnisk Marketing Automation',
                 enabled: true,
                 Config: {
-                  plWriteKey: 'pl_writeKey',
+                  plWriteKey: secret1,
                   pl: 'http://10.11.36.17:8080/analyze/analyze.php',
-                  passKey: '',
-                  apiKey: '',
+                  passKey: secret2,
+                  apiKey: secret3,
                   diapi: '',
                   cloudMode: 'web',
                   srcId: '',
-                  diapiWriteKey: '',
+                  diapiWriteKey: secret4,
                 },
                 destinationDefinition: {
                   config: {
@@ -295,12 +297,12 @@ export const data = [
                 Config: {
                   plWriteKey: '',
                   pl: 'https://crux.lemnisk.co/v2/data',
-                  passKey: '',
-                  apiKey: '',
+                  passKey: secret2,
+                  apiKey: secret3,
                   diapi: ' ',
                   cloudMode: 'web',
                   srcId: '',
-                  diapiWriteKey: '',
+                  diapiWriteKey: secret4,
                 },
                 destinationDefinition: {
                   config: {
@@ -391,7 +393,7 @@ export const data = [
                     userId: 'anon-id-new',
                     messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
                     originalTimestamp: '2020-09-29T14:50:29.907+05:30',
-                    writeKey: 'pl_writeKey',
+                    writeKey: secret1,
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -405,14 +407,14 @@ export const data = [
                 name: 'Lemnisk Marketing Automation',
                 enabled: true,
                 Config: {
-                  plWriteKey: 'pl_writeKey',
+                  plWriteKey: secret1,
                   pl: 'http://10.11.36.17:8080/analyze/analyze.php',
-                  passKey: '',
-                  apiKey: '',
+                  passKey: secret2,
+                  apiKey: secret3,
                   diapi: '',
                   cloudMode: 'web',
                   srcId: '',
-                  diapiWriteKey: '',
+                  diapiWriteKey: secret4,
                 },
                 destinationDefinition: {
                   config: {
@@ -512,7 +514,7 @@ export const data = [
                     userId: 'anon-id-new',
                     messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
                     originalTimestamp: '2020-09-29T14:50:29.907+05:30',
-                    writeKey: 'pl_writeKey',
+                    writeKey: secret1,
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -526,14 +528,14 @@ export const data = [
                 name: 'Lemnisk Marketing Automation',
                 enabled: true,
                 Config: {
-                  plWriteKey: 'pl_writeKey',
+                  plWriteKey: secret1,
                   pl: 'http://10.11.36.17:8080/analyze/analyze.php',
-                  passKey: '',
-                  apiKey: '',
+                  passKey: secret2,
+                  apiKey: secret3,
                   diapi: '',
                   cloudMode: 'web',
                   srcId: '',
-                  diapiWriteKey: '',
+                  diapiWriteKey: secret4,
                 },
                 destinationDefinition: {
                   config: {

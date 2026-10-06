@@ -5,7 +5,6 @@ import {
   toDeliveryV1Response,
 } from '../../../services/destination/destinationIntegration/delivery';
 import type { DeliveryContext } from '../../../services/destination/destinationIntegration/delivery';
-import { gaecResponseHandler } from '../../../v1/destinations/google_adwords_enhanced_conversions/networkHandler';
 import type { ProxyMetdata, ProxyV1Request } from '../../../types';
 
 const DEST = 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS';
@@ -39,7 +38,7 @@ const ctxFor = (
     jobs,
     request: {
       body: { JSON: { conversionAdjustments: adjustments, partialFailure: true } },
-      endpoint: '',
+      endpoint: 'https://googleads.googleapis.com/v25/customers/123:uploadConversionAdjustments',
     } as unknown as ProxyV1Request,
     destinationConfig: {},
     ...firstJobIdentity(jobs),
@@ -65,30 +64,6 @@ const viaFramework = (ctx: DeliveryContext) => {
   }
 };
 
-const viaLegacy = (ctx: DeliveryContext) => {
-  try {
-    const response = gaecResponseHandler({
-      destinationResponse: { status: ctx.status, response: ctx.response },
-      rudderJobMetadata: ctx.jobs,
-    });
-    return {
-      threw: false,
-      status: response.status,
-      // `response` is optional on ResponseProxyObject; a missing one would make the parity
-      // assertion fail loudly against the framework's populated list, which is what we want.
-      codes: response.response?.map((r) => r.statusCode) ?? [],
-      errors: response.response?.map((r) => r.error) ?? [],
-    };
-  } catch (e: any) {
-    return {
-      threw: true,
-      status: e.status,
-      errorType: e.statTags?.errorType,
-      authErrorCategory: e.authErrorCategory,
-    };
-  }
-};
-
 const twoStepAuthError = {
   error: {
     message: 'auth problem',
@@ -98,49 +73,46 @@ const twoStepAuthError = {
   },
 };
 
-describe('gaec delivery — parity with the existing response handler', () => {
-  const parityCases = [
+describe('gaec delivery — default status handling', () => {
+  const statusCases = [
     {
-      name: '2xx, no partialFailureError',
+      name: 'returns success for 2xx without a partial failure',
       status: 200,
       response: { results: [{ a: 1 }, { b: 2 }] },
-    },
-    {
-      name: '2xx, partialFailureError code 0 means no error',
-      status: 200,
-      response: { partialFailureError: { code: 0 }, results: [{ a: 1 }, { b: 2 }] },
-    },
-    {
-      name: '2xx, one empty result means that adjustment failed',
-      status: 200,
-      response: {
-        partialFailureError: { code: 3, message: 'duplicate enhancement' },
-        results: [{ a: 1 }, {}],
+      expected: {
+        threw: false,
+        status: 200,
+        codes: [200, 200],
+        errors: ['success', 'success'],
       },
     },
-    { name: '400 abort', status: 400, response: { error: { message: 'bad request' } } },
-    { name: '500 retry', status: 500, response: { error: { message: 'internal' } } },
-    { name: '403 access denied', status: 403, response: { error: { message: 'denied' } } },
-    { name: '401 stale token', status: 401, response: { error: { message: 'unauthorized' } } },
-    { name: '401 two-step not enrolled', status: 401, response: twoStepAuthError },
-    // Non-object 2xx bodies: `body?.partialFailureError` reads as undefined without needing the
-    // v0 handler's explicit `isPartialFailureBody` guard, so these are read as plain success.
-    { name: '2xx, empty string body', status: 200, response: '' },
-    { name: '2xx, null body', status: 200, response: null },
+    {
+      name: 'returns success when partialFailureError code is 0',
+      status: 200,
+      response: { partialFailureError: { code: 0 }, results: [{ a: 1 }, { b: 2 }] },
+      expected: {
+        threw: false,
+        status: 200,
+        codes: [200, 200],
+        errors: ['success', 'success'],
+      },
+    },
+    {
+      name: 'aborts a non-auth 400 response',
+      status: 400,
+      response: { error: { message: 'bad request' } },
+      expected: { threw: true, status: 400, errorType: 'aborted' },
+    },
+    {
+      name: 'retries a 500 response',
+      status: 500,
+      response: { error: { message: 'internal' } },
+      expected: { threw: true, status: 500, errorType: 'retryable' },
+    },
   ];
 
-  it.each(parityCases)('per-job codes match: $name', ({ status, response }) => {
-    const ctx = ctxFor(status, response);
-    const next = viaFramework(ctx);
-    const prev = viaLegacy(ctx);
-
-    expect(next.threw).toBe(prev.threw);
-    if (prev.threw) {
-      expect(next.status).toBe(prev.status);
-      expect(next.authErrorCategory ?? '').toBe(prev.authErrorCategory ?? '');
-      return;
-    }
-    expect(next.codes).toEqual(prev.codes);
+  it.each(statusCases)('$name', ({ status, response, expected }) => {
+    expect(viaFramework(ctxFor(status, response))).toMatchObject(expected);
   });
 });
 

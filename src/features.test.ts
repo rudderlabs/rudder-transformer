@@ -28,7 +28,10 @@ describe('features destination capabilities', () => {
     );
     expect(defaultFeaturesConfig.transformerProxy).toMatchObject({
       EVERFLOW: true,
+      POSTHOG: true,
+      REDDIT_AUDIENCE: true,
     });
+    expect(defaultFeaturesConfig.transformerProxy).not.toHaveProperty('CUSTOM_AUDIENCE');
     expect(getGaDestinationIntegrations()).toEqual({
       GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: true,
       POSTHOG: true,
@@ -41,6 +44,7 @@ describe('features destination capabilities', () => {
       TEST_DESTINATION: true,
       CUSTOMERIO: true,
       TOPSORT: true,
+      ROKT: true,
     });
   });
 
@@ -56,6 +60,15 @@ describe('features destination capabilities', () => {
       ...Object.keys(defaultFeaturesConfig.transformerProxy),
     ];
     expect(allDestinations.filter((destination) => !isValidDestination(destination))).toEqual([]);
+  });
+
+  it('advertises transformerProxy for batching-framework GA destinations unless disabled', () => {
+    Object.keys(getGaDestinationIntegrations())
+      .filter((destination) => destination !== 'CUSTOM_AUDIENCE')
+      .forEach((destination) => {
+        expect(defaultFeaturesConfig.transformerProxy).toHaveProperty(destination, true);
+      });
+    expect(defaultFeaturesConfig.transformerProxy).not.toHaveProperty('CUSTOM_AUDIENCE');
   });
 
   // A destination may only declare transformerProxy if it implements the proxy itself: either a
@@ -98,7 +111,7 @@ describe('features destination capabilities', () => {
   // the map: declaring them would turn proxy delivery on for the first time, which is a rollout
   // rather than the config consolidation this map exists for.
   it('excludes destinations that implement a proxy handler but have never been enabled', () => {
-    ['CLICKSEND', 'MONDAY', 'POSTSCRIPT', 'FB', 'REDDIT_AUDIENCE', 'GA'].forEach((destination) => {
+    ['CLICKSEND', 'MONDAY', 'POSTSCRIPT', 'FB', 'GA'].forEach((destination) => {
       expect(defaultFeaturesConfig.transformerProxy).not.toHaveProperty(destination);
     });
   });

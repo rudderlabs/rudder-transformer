@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { NONCE, TIMESTAMP_2 } from '../constants';
+import { NONCE, SECRET, TIMESTAMP_2, USERNAME } from '../constants';
 const buf = Buffer.from(NONCE, 'hex');
 
 export const mockFns = (_) => {
@@ -60,7 +60,7 @@ export const data = [
             config: {
               discardEmptyProperties: true,
               emersysUsername: undefined,
-              emersysUserSecret: 'dummySecret',
+              emersysUserSecret: SECRET,
               emersysCustomIdentifier: '',
               defaultContactList: 'dummy',
               eventsMapping: commonEventMap,
@@ -103,8 +103,8 @@ export const data = [
             ],
             config: {
               discardEmptyProperties: true,
-              emersysUsername: 'dummy',
-              emersysUserSecret: 'dummy',
+              emersysUsername: USERNAME,
+              emersysUserSecret: SECRET,
               emersysCustomIdentifier: '2',
               defaultContactList: undefined,
               eventsMapping: commonEventMap,
@@ -146,8 +146,8 @@ export const data = [
             ],
             config: {
               discardEmptyProperties: true,
-              emersysUsername: 'dummy',
-              emersysUserSecret: 'dummy',
+              emersysUsername: USERNAME,
+              emersysUserSecret: SECRET,
               emersysCustomIdentifier: '',
               defaultContactList: 'dummy',
               eventsMapping: commonEventMap,
@@ -190,8 +190,8 @@ export const data = [
             ],
             config: {
               discardEmptyProperties: true,
-              emersysUsername: 'dummy',
-              emersysUserSecret: 'dummy',
+              emersysUsername: USERNAME,
+              emersysUserSecret: SECRET,
               emersysCustomIdentifier: '',
               defaultContactList: 'dummy',
               eventsMapping: commonEventMap,

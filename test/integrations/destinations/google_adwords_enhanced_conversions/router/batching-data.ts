@@ -1,12 +1,8 @@
 /**
  * Google Enhanced Conversions - Router Tests with the native batching framework
  *
- * These tests exercise the batching path, enabled per-workspace via the env var
- * GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS (set to 'ALL'
- * here through envOverrides). The default (env var unset) path is covered by data.ts.
- *
- * When batching is enabled, events that share a conversion name + customer (and therefore the
- * same grouping key) are combined into a single request with multiple conversionAdjustments.
+ * These tests exercise the batching-GA path. Conversion actions are resolved during transform, so
+ * events with different conversion names and the same customer can share one upload request.
  */
 
 import sha256 from 'sha256';
@@ -24,10 +20,9 @@ const sharedConfig = {
 };
 
 // The conversion-action cache is keyed on (conversion name, customerId) and is shared by the
-// transform-time and delivery-time lookups, so it outlives a single component test case. The
-// transport test gets a customerId of its own: on the shared one it would either warm the entry
-// another case expects to miss, or read one that case had already warmed.
-const transportConfig = {
+// transform-time and legacy delivery-time lookups, so it outlives a single component test case.
+// This case gets a customerId of its own to avoid sharing cache state with other fixtures.
+const frameworkConfig = {
   ...sharedConfig,
   customerId: '1234567892',
 };
@@ -99,12 +94,6 @@ const enhancementAdjustment = {
 };
 
 const envOverrides = {
-  GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL',
-};
-
-const transportEnvOverrides = {
-  ...envOverrides,
-  GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS: 'ALL',
   GOOGLE_ADS_DEVELOPER_TOKEN: 'test-developer-token-12345',
 };
 
@@ -112,7 +101,7 @@ export const newData = [
   {
     name: 'google_adwords_enhanced_conversions',
     description:
-      'Batching Framework Transport: events with different conversion names share one upload request after transform-time lookup',
+      'Batching Framework: events with different conversion names share one upload request after transform-time lookup',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -122,12 +111,12 @@ export const newData = [
           input: [
             {
               metadata: { secret, jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
-              destination: { hasDynamicConfig: false, Config: transportConfig },
+              destination: { hasDynamicConfig: false, Config: frameworkConfig },
               message: trackMessage('Page View'),
             },
             {
               metadata: { secret, jobId: 2, userId: 'u1', workspaceId: 'ws-1' },
-              destination: { hasDynamicConfig: false, Config: transportConfig },
+              destination: { hasDynamicConfig: false, Config: frameworkConfig },
               message: trackMessage('Product Added'),
             },
           ],
@@ -178,191 +167,7 @@ export const newData = [
                 { secret, jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
                 { secret, jobId: 2, userId: 'u1', workspaceId: 'ws-1' },
               ],
-              destination: { hasDynamicConfig: false, Config: transportConfig },
-              batched: true,
-              statusCode: 200,
-            },
-          ],
-        },
-      },
-    },
-    envOverrides: transportEnvOverrides,
-  },
-  {
-    name: 'google_adwords_enhanced_conversions',
-    description:
-      'Batching Framework: two track events with the same conversion + customer are combined into one request',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: {
-          input: [
-            {
-              metadata: { secret, jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
-              destination: { hasDynamicConfig: false, Config: sharedConfig },
-              message: trackMessage('Page View'),
-            },
-            {
-              metadata: { secret, jobId: 2, userId: 'u1', workspaceId: 'ws-1' },
-              destination: { hasDynamicConfig: false, Config: sharedConfig },
-              message: trackMessage('Page View'),
-            },
-          ],
-          destType: 'google_adwords_enhanced_conversions',
-        },
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: '',
-                endpointPath: '/uploadConversionAdjustments',
-                headers: {
-                  Authorization: authHeader1,
-                  'Content-Type': 'application/json',
-                  'login-customer-id': '11',
-                },
-                params: {
-                  accessToken: 'google_adwords_enhanced_conversions1',
-                  customerId: '1234567890',
-                  event: 'Page View',
-                  loginCustomerId: '11',
-                  subAccount: true,
-                },
-                body: {
-                  JSON: {
-                    conversionAdjustments: [enhancementAdjustment, enhancementAdjustment],
-                    partialFailure: true,
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [
-                { secret, jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
-                { secret, jobId: 2, userId: 'u1', workspaceId: 'ws-1' },
-              ],
-              destination: { hasDynamicConfig: false, Config: sharedConfig },
-              batched: true,
-              statusCode: 200,
-            },
-          ],
-        },
-      },
-    },
-    envOverrides,
-  },
-  {
-    name: 'google_adwords_enhanced_conversions',
-    description:
-      'Batching Framework: events with different conversion names are split into separate batches',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: {
-          input: [
-            {
-              metadata: { secret, jobId: 1, userId: 'u1', workspaceId: 'ws-1' },
-              destination: { hasDynamicConfig: false, Config: sharedConfig },
-              message: trackMessage('Page View'),
-            },
-            {
-              metadata: { secret, jobId: 2, userId: 'u1', workspaceId: 'ws-1' },
-              destination: { hasDynamicConfig: false, Config: sharedConfig },
-              message: trackMessage('Product Added'),
-            },
-          ],
-          destType: 'google_adwords_enhanced_conversions',
-        },
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: '',
-                endpointPath: '/uploadConversionAdjustments',
-                headers: {
-                  Authorization: authHeader1,
-                  'Content-Type': 'application/json',
-                  'login-customer-id': '11',
-                },
-                params: {
-                  accessToken: 'google_adwords_enhanced_conversions1',
-                  customerId: '1234567890',
-                  event: 'Page View',
-                  loginCustomerId: '11',
-                  subAccount: true,
-                },
-                body: {
-                  JSON: {
-                    conversionAdjustments: [enhancementAdjustment],
-                    partialFailure: true,
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [{ secret, jobId: 1, userId: 'u1', workspaceId: 'ws-1' }],
-              destination: { hasDynamicConfig: false, Config: sharedConfig },
-              batched: true,
-              statusCode: 200,
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: '',
-                endpointPath: '/uploadConversionAdjustments',
-                headers: {
-                  Authorization: authHeader1,
-                  'Content-Type': 'application/json',
-                  'login-customer-id': '11',
-                },
-                params: {
-                  accessToken: 'google_adwords_enhanced_conversions1',
-                  customerId: '1234567890',
-                  event: 'Product Added',
-                  loginCustomerId: '11',
-                  subAccount: true,
-                },
-                body: {
-                  JSON: {
-                    conversionAdjustments: [enhancementAdjustment],
-                    partialFailure: true,
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [{ secret, jobId: 2, userId: 'u1', workspaceId: 'ws-1' }],
-              destination: { hasDynamicConfig: false, Config: sharedConfig },
+              destination: { hasDynamicConfig: false, Config: frameworkConfig },
               batched: true,
               statusCode: 200,
             },

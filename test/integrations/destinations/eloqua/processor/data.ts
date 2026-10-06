@@ -1,3 +1,5 @@
+import { password } from '../maskedSecrets';
+
 export const data = [
   {
     name: 'eloqua',
@@ -45,6 +47,7 @@ export const data = [
                 customerId: '78678678',
                 audienceId: '564567',
                 hashEmail: false,
+                password,
               },
               DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },
@@ -145,6 +148,7 @@ export const data = [
                 customerId: '78678678',
                 audienceId: '564567',
                 hashEmail: false,
+                password,
               },
               DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },
@@ -222,6 +226,7 @@ export const data = [
                 customerId: '78678678',
                 audienceId: '564567',
                 hashEmail: false,
+                password,
               },
               DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },
@@ -306,6 +311,7 @@ export const data = [
                 customerId: '78678678',
                 audienceId: '564567',
                 hashEmail: false,
+                password,
               },
               DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },
@@ -405,6 +411,7 @@ export const data = [
                 customerId: '78678678',
                 audienceId: '564567',
                 hashEmail: false,
+                password,
               },
               DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },

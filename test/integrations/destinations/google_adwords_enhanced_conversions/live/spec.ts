@@ -206,10 +206,6 @@ export const live = {
   // rudder-auth's v1 route. It answers with '{ access_token }', which is the key transform.ts reads
   // via getAccessToken.
   oauthVersion: 'v1',
-  envOverrides: {
-    GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS:
-      'live-workspaceId',
-  },
   // Mirrors rudder-integrations-config
   // `destinations/google_adwords_enhanced_conversions/accounts/google_adwords_enhanced_conversions_oauth/db-config.json`.
   // `name` is what rudder-auth lowercases to pick its implementation, so it has to match that file

@@ -53,12 +53,15 @@ const destination: Destination = {
       { conversions: 'Purchase' },
       { conversions: 'Signup' },
       { conversions: 'Missing Conversion' },
-      // The conversion-action cache is module-level and outlives individual tests, so every
-      // transport-enabled test uses a name of its own; sharing one would let an earlier test's
-      // cache entry swallow the lookup a later test asserts on.
+      // The conversion-action cache is module-level and outlives individual tests, so tests that
+      // assert lookup calls use names of their own; sharing one would let an earlier test's cache
+      // entry swallow the lookup a later test asserts on.
       { conversions: 'Warm Cache Event' },
       { conversions: 'Direct Event' },
       { conversions: 'Repeated Event' },
+      { conversions: 'Batch Event A' },
+      { conversions: 'Batch Event B' },
+      { conversions: 'Batch Event C' },
     ],
     authStatus: 'active',
   },
@@ -130,12 +133,6 @@ type EnhancedConversionsBody = { conversionAdjustments: unknown[]; partialFailur
 const batchBody = (resp: RouterTransformationResponse): EnhancedConversionsBody =>
   singleBatch(resp).body?.JSON as EnhancedConversionsBody;
 
-const enableTransport = () => {
-  process.env.GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS =
-    'ws-1';
-  process.env.GOOGLE_ADS_DEVELOPER_TOKEN = 'dummy-developer-token';
-};
-
 /**
  * Resolves each listed conversion name to a distinct resource name and any other name to `null`,
  * which is how the SDK reports "no such conversion action".
@@ -155,39 +152,19 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
   const integration = new Integration(destination);
 
   beforeEach(() => {
-    mockGetConversionActionId.mockReset();
+    mockGetConversionActionId
+      .mockReset()
+      .mockResolvedValue('customers/1234567890/conversionActions/default');
     MockGoogleAds.mockClear();
-    delete process.env
-      .GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_BATCHING_FRAMEWORK_TRANSPORT_ENABLED_WORKSPACE_IDS;
+    process.env.GOOGLE_ADS_DEVELOPER_TOKEN = 'dummy-developer-token';
+  });
+
+  afterEach(() => {
     delete process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
   });
 
   describe('transformEvent', () => {
-    it('reshapes a single track event into a TransformedEvent carrying one adjustment', async () => {
-      const result = await integration.transformEvent(makeInput(1) as unknown as GAECInput);
-
-      expect(result.endpoint).toBe('');
-      expect(result.method).toBe('POST');
-      expect(result.headers).toMatchObject({
-        Authorization: 'Bearer dummy-access-token',
-        'Content-Type': 'application/json',
-        'login-customer-id': '11',
-      });
-      expect(result.params).toMatchObject({
-        event: 'Page View',
-        customerId: '1234567890',
-        loginCustomerId: '11',
-        subAccount: true,
-      });
-      // body is the single conversion adjustment; the conversionAdjustments wrapper and
-      // partialFailure flag are re-added by wrapBody at batch time.
-      expect(result.body).toHaveProperty('adjustmentType', 'ENHANCEMENT');
-      expect(result.body).toHaveProperty('userIdentifiers');
-      expect(result.body).not.toHaveProperty('conversionAdjustments');
-    });
-
-    it('emits full endpoint, empty params and a resolved conversion action when transport is enabled', async () => {
-      enableTransport();
+    it('emits a framework-transport-ready adjustment with a resolved conversion action', async () => {
       mockConversionActionLookup(['Direct Event']);
 
       const result = await integration.transformEvent(
@@ -198,7 +175,17 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
         `https://googleads.googleapis.com/${API_VERSION}/customers/1234567890:uploadConversionAdjustments`,
       );
       expect(result.endpointPath).toBe('/uploadConversionAdjustments');
+      expect(result.method).toBe('POST');
+      expect(result.headers).toMatchObject({
+        Authorization: 'Bearer dummy-access-token',
+        'Content-Type': 'application/json',
+        'login-customer-id': '11',
+      });
       expect(result.params).toEqual({});
+      // body is the single conversion adjustment; wrapBody re-adds the batch envelope.
+      expect(result.body).toHaveProperty('adjustmentType', 'ENHANCEMENT');
+      expect(result.body).toHaveProperty('userIdentifiers');
+      expect(result.body).not.toHaveProperty('conversionAdjustments');
       // The developer token is delivery-only; it must never reach persisted router output.
       expect(result.headers).not.toHaveProperty('developer-token');
       expect(result.body).toHaveProperty(
@@ -208,7 +195,6 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
     });
 
     it('fails only this event when its conversion name does not resolve', async () => {
-      enableTransport();
       mockConversionActionLookup([]);
 
       await expect(
@@ -282,37 +268,21 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       const body = batchBody(batch);
       expect(body.conversionAdjustments).toHaveLength(3);
       expect(body.partialFailure).toBe(true);
-      expect(singleBatch(batch).params).toMatchObject({ event: 'Page View' });
+      expect(singleBatch(batch).params).toEqual({});
+      expect(body.conversionAdjustments).toEqual([
+        expect.objectContaining({ conversionAction: expect.any(String) }),
+        expect.objectContaining({ conversionAction: expect.any(String) }),
+        expect.objectContaining({ conversionAction: expect.any(String) }),
+      ]);
       expect(batch.metadata.map((m) => m.jobId)).toEqual([1, 2, 3]);
     });
 
-    it('splits events with different conversion names into separate batches', async () => {
+    it('batches different conversion names into one full-endpoint request', async () => {
+      mockConversionActionLookup(['Batch Event A', 'Batch Event B', 'Batch Event C']);
       const inputs = [
-        makeInput(1, { event: 'Page View' }),
-        makeInput(2, { event: 'Product Added' }),
-        makeInput(3, { event: 'Page View' }),
-      ];
-      const results = await processDestinationIntegration(
-        inputs,
-        Integration as DestinationIntegrationConstructor,
-        {},
-      );
-
-      expect(results).toHaveLength(2);
-      const byEvent: Record<string, RouterTransformationResponse> = Object.fromEntries(
-        results.map((r) => [singleBatch(r).params?.event as string, r]),
-      );
-      expect(batchBody(byEvent['Page View']).conversionAdjustments).toHaveLength(2);
-      expect(batchBody(byEvent['Product Added']).conversionAdjustments).toHaveLength(1);
-    });
-
-    it('batches different conversion names into one full-endpoint request when transport is enabled', async () => {
-      enableTransport();
-      mockConversionActionLookup(['Page View', 'Product Added', 'Purchase']);
-      const inputs = [
-        makeInput(1, { event: 'Page View' }),
-        makeInput(2, { event: 'Product Added' }),
-        makeInput(3, { event: 'Purchase' }),
+        makeInput(1, { event: 'Batch Event A' }),
+        makeInput(2, { event: 'Batch Event B' }),
+        makeInput(3, { event: 'Batch Event C' }),
       ];
 
       const results = await processDestinationIntegration(
@@ -325,9 +295,9 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
       // One lookup per distinct conversion name, and the developer token is supplied to the SDK
       // client rather than carried on the transformed payload.
       expect(mockGetConversionActionId.mock.calls.map(([name]) => name)).toEqual([
-        'Page View',
-        'Product Added',
-        'Purchase',
+        'Batch Event A',
+        'Batch Event B',
+        'Batch Event C',
       ]);
       expect(MockGoogleAds.mock.calls[0][0]).toMatchObject({
         customerId: '1234567890',
@@ -350,7 +320,6 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
     });
 
     it('keeps a job whose conversion name does not resolve out of the batch', async () => {
-      enableTransport();
       mockConversionActionLookup(['Page View']);
       const inputs = [
         makeInput(1, { event: 'Page View' }),
@@ -377,7 +346,6 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
     });
 
     it('surfaces authErrorCategory on the failed job when the lookup auth fails', async () => {
-      enableTransport();
       mockGetConversionActionId.mockResolvedValue({
         type: 'client-error',
         statusCode: 401,
@@ -406,7 +374,6 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
     });
 
     it('serves a warm conversion-action cache without another lookup', async () => {
-      enableTransport();
       mockConversionActionLookup(['Warm Cache Event']);
       await processDestinationIntegration(
         [makeInput(10, { event: 'Warm Cache Event' })],
@@ -429,7 +396,6 @@ describe('GoogleAdwordsEnhancedConversions Integration', () => {
     });
 
     it('looks a repeated conversion name up once per transform call', async () => {
-      enableTransport();
       mockConversionActionLookup(['Repeated Event']);
 
       await processDestinationIntegration(

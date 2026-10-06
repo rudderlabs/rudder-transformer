@@ -36,7 +36,11 @@ export const createGroupUserAndWait = async (ctx: RunContext): Promise<void> => 
       const p = await exportUserByExternalId(ctx, externalId);
       return { done: Boolean(p?.email), value: p };
     },
-    { label: 'group user searchable', attempts: 7, delayMs: (n) => 1000 * 2 ** n },
+    {
+      label: 'group user searchable',
+      attempts: 9,
+      delayMs: (n) => Math.min(1000 * 2 ** n, 16000),
+    },
   );
 };
 
@@ -51,6 +55,10 @@ export const createDedupUserAndWait = async (ctx: RunContext): Promise<void> => 
       const p = await exportUserByExternalId(ctx, externalId);
       return { done: Boolean(p?.email), value: p };
     },
-    { label: 'dedup user searchable', attempts: 7, delayMs: (n) => 1000 * 2 ** n },
+    {
+      label: 'dedup user searchable',
+      attempts: 9,
+      delayMs: (n) => Math.min(1000 * 2 ** n, 16000),
+    },
   );
 };

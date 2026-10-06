@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.156.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.155.0...v1.156.0) (2026-10-06)
+
+
+### Features
+
+* **google_adwords_remarketing_lists:** support Data Manager IP matching ([#5629](https://github.com/rudderlabs/rudder-transformer/issues/5629)) ([eef7ec1](https://github.com/rudderlabs/rudder-transformer/commit/eef7ec10e55eafca7e8ce7705fc0ee3780feb364))
+* **rokt:** add cloud event stream destination ([#5625](https://github.com/rudderlabs/rudder-transformer/issues/5625)) ([d766c83](https://github.com/rudderlabs/rudder-transformer/commit/d766c833e7195d8be8225febf36e3a44231c9bd9))
+
 ## [1.155.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.154.0...v1.155.0) (2026-09-29)
 
 

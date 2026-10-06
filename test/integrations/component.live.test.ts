@@ -4,18 +4,22 @@ import request from 'supertest';
 import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
 import type { Server } from 'http';
+import { join } from 'path';
 import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
+import {
+  discoverLiveSpecs,
+  LiveOAuthTokenResolver,
+  LiveRudderAuthContainer,
+  resolveLiveSecret,
+  retryUntilPasses,
+} from '@rudderstack/integrations-lib/build/live-test';
 import { applicationRoutes } from '../../src/routes/index';
-import { getEnrolledDestinations } from './live/registry';
-import { SecretResolver } from './live/secretResolver';
 import { RunContextImpl } from './live/runContext';
 import { runPipelineStep } from './live/runPipelineStep';
-import { retryUntilPasses } from './live/poll';
-import { OAuthTokenResolver } from './live/oauthTokenResolver';
-import { RudderAuthContainer } from './live/rudderAuthContainer';
 import { readString } from './live/coerce';
 import { EnvManager, EnvOverride } from './envUtils';
-import type { LiveSecret, EnrolledDestination } from './live/types';
+import { LiveSecretSchema } from './live/types';
+import type { LiveSecret, EnrolledDestination, LiveSpec } from './live/types';
 
 describe('Live Integration Test Suite', () => {
   // npm run test:live
@@ -47,11 +51,17 @@ describe('Live Integration Test Suite', () => {
     }
   });
 
-  const resolver = new SecretResolver();
   const agent = () => request(server);
-  let tokenResolver: OAuthTokenResolver | undefined;
+  let tokenResolver: LiveOAuthTokenResolver | undefined;
 
-  const enrolledDestinations: EnrolledDestination[] = getEnrolledDestinations(opts.destination);
+  const enrolledDestinations: EnrolledDestination[] = discoverLiveSpecs<LiveSpec>({
+    layout: {
+      kind: 'directory',
+      dir: join(__dirname, 'destinations'),
+      specFile: 'live',
+    },
+    filter: opts.destination,
+  }).map(({ name, spec }) => ({ destination: name, spec }));
   // eslint-disable-next-line no-console
   console.log(
     `[live] resolved ${enrolledDestinations.length} destination(s): ` +
@@ -63,16 +73,18 @@ describe('Live Integration Test Suite', () => {
   }
 
   // Manage the rudder-auth container when an OAuth destination is enrolled; it forwards only the
-  // enrolled OAuth destinations' credentials (see RudderAuthContainer).
+  // enrolled OAuth destinations' credentials.
   const oauthDestinations = enrolledDestinations
     .filter((d) => d.spec.authType === 'oauth')
     .map((d) => d.destination);
   const hasOAuthDestination = oauthDestinations.length > 0;
-  const authContainer = new RudderAuthContainer(oauthDestinations);
+  const authContainer = new LiveRudderAuthContainer({
+    entries: oauthDestinations.map((name) => ({ name, category: 'destination' })),
+  });
   beforeAll(async () => {
     if (hasOAuthDestination) {
       const rudderAuthUrl = await authContainer.start();
-      tokenResolver = new OAuthTokenResolver(rudderAuthUrl);
+      tokenResolver = new LiveOAuthTokenResolver(rudderAuthUrl);
     }
   }, 900000);
   afterAll(async () => {
@@ -92,7 +104,7 @@ describe('Live Integration Test Suite', () => {
   // destinations in one jest process would need this moved into a beforeAll to keep one
   // unprovisioned secret from taking the others down with it.
   describe.each(enrolledDestinations)('$destination', ({ destination, spec }) => {
-    const liveSecret: LiveSecret = resolver.resolve(destination);
+    const liveSecret: LiveSecret = resolveLiveSecret(destination, { schema: LiveSecretSchema });
 
     // Applied around the whole destination rather than per scenario: the flags a live spec names
     // gate the transform and delivery paths themselves, so every scenario has to run under them.
@@ -132,12 +144,13 @@ describe('Live Integration Test Suite', () => {
         }
         // Merge rudder-auth's refreshed secret wholesale (mirroring rudder-server) so each
         // transform finds its token under whatever key it reads (accessToken | access_token).
-        const secret = await tokenResolver.resolveSecret(
-          destination,
-          liveSecret,
-          spec.oauthVersion ?? 'v0',
-          spec.accountDefinition,
-        );
+        const secret = await tokenResolver.resolveSecret({
+          name: destination,
+          category: 'destination',
+          version: spec.oauthVersion ?? 'v0',
+          oauthRefresh: liveSecret.oauthRefresh,
+          accountDefinition: spec.accountDefinition,
+        });
         liveSecret.secret = { ...(liveSecret.secret ?? {}), ...secret };
       }
     });

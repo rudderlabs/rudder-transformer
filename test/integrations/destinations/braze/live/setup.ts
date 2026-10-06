@@ -1,5 +1,5 @@
+import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 import type { RunContext } from '../../../live/types';
-import { pollUntil } from '../../../live/poll';
 import { createUserWithAttributes, exportUserByExternalId } from './api';
 import { dedupExistingInitialAttrs } from './profiles';
 

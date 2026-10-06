@@ -1,4 +1,4 @@
-import { requiredResourceId } from '../../../live/secretResolver';
+import { requiredResourceId } from '../../../live/requiredFields';
 import type { LiveSpec } from '../../../live/types';
 import { contactIdentifiers, ipIdentifiers, memberWithIp, nulled, recordSeed } from './profiles';
 

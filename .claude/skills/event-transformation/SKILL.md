@@ -360,6 +360,30 @@ and lowercases one enum before comparing it, every other enum comparison in that
 the same — an `action_source` matched case-sensitively rejects a perfectly ordinary `'Web'` and
 drops the event, purely because it was the one string nobody normalized.
 
+## Reject Only What The Partner Rejects
+
+The same rule applies to validation. Every `InstrumentationError` a transform throws drops an
+event the customer sent, so each one has to point at something the partner actually
+**enforces**: a rejection you observed live, or one the API reference documents together with
+its error. A field described in the docs as "required", a documented size limit, or a stricter
+type than the API parses are not enough on their own. Partners routinely accept what their docs
+describe as invalid, and a check written from the docs alone turns events that would have been
+delivered into aborts that nobody traces back to the transformer.
+
+- **Before you add a "requires X" check, send the payload without X.** If the partner accepts
+  it, delete the check.
+- **Coerce a convertible type instead of rejecting it.** A numeric id where the API wants a
+  string should be `String(value)`, not a Zod `z.string()` failure.
+- **Omit an optional field you can't resolve.** Don't send `NaN`, `null` or `"Invalid Date"`
+  in its place, and don't fail the event over it.
+- **Size and count limits belong to the batch strategy.** Don't add a per-event byte check
+  unless the partner rejects oversize items and the batch strategy can't keep them out.
+
+This is not the case against validating in `transformEvent` at all. A rule the partner does
+enforce, especially on an all-or-nothing batch endpoint, still belongs there (see
+`.claude/skills/batching-framework/SKILL.md#partners-that-reject-the-whole-batch`). The test is
+whether you can produce the partner's rejection for it.
+
 ## Passthrough Extras Must Not Overwrite Payload-Owned Fields
 
 When a destination forwards unmapped properties as custom data, the merge order decides who

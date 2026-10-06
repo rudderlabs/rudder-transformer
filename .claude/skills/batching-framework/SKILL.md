@@ -49,6 +49,15 @@ constant in `config.ts` (`SOURCE_PATHS`, `FIELD_PATHS`, and the like). `config.t
 the framework itself needs: batch limits, endpoint templates, validation regexes.
 `.claude/skills/event-transformation/SKILL.md` owns the mapping shape and the reasoning.
 
+**A new destination's diff stays in its own folder.** Outside `src/v0/destinations/<dest>/` and
+`test/integrations/destinations/<dest>/`, it touches only the registration points: its entry in
+`src/features.ts` and in `INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE`
+(`test/integrations/component.test.ts`). A branch on the destination's name in shared code, or a new
+mode, schema field or adapter special case added to the framework for one destination, is a
+framework change. It needs its own PR and its own justification, even when the spec seems to
+require it. Shipping it inside a destination PR hides it from the people who own the framework,
+and reverting it later means unwinding the destination too.
+
 The rest of this skill assumes that starting point. The `networkHandler` material below is about
 **migrating** an existing destination and is marked as such.
 
@@ -483,6 +492,16 @@ For an enrolled **v1** request, transport and response handling move onto the cl
 spec. `transformEvent` must therefore emit the real endpoint and an HTTP-ready request. Use
 `prepareRequest` only for delivery-time material that must not be persisted, such as a developer
 token.
+
+That means a platform-level secret the transform never sees: gaec's `developer-token` comes from
+the environment (`google_adwords_enhanced_conversions/delivery.ts`). It does not cover:
+
+- **The destination's own credentials.** An API key or Basic auth pair from
+  `destination.Config` goes into `transformEvent`'s `headers`, like every other destination.
+- **Re-validating at send time.** The endpoint, host and config fields checked in
+  `getInputSchema`/`transformEvent` are already guaranteed by the time the request is sent. A
+  second check in `prepareRequest` is dead code, and it can fail in a place the transform tests
+  never exercise.
 
 Keep the legacy `networkHandler` only while v0 proxy requests or unenrolled pre-GA workspaces still
 need it. Audit that path for single-item assumptions if it can receive batches, but do not make the

@@ -2017,10 +2017,7 @@ describe("User transformation with IVM cache", () => {
     });
 
     const outputCached = await userTransformHandler(inputData, trRevCode.versionId, [libraryVersionId]);
-    expect(outputCached.length).toEqual(expectedData.transformedEvents.length);
-    output.forEach((event, index) => {
-      expect(event.transformedEvent).toEqual(expectedData.transformedEvents[index]);
-    });
+    expect(outputCached).toEqual(output);
   });
 
   describe("UserTransformation With Credentials for code version 1", () => {

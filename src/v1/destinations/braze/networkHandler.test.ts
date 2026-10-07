@@ -6,8 +6,7 @@ jest.mock('../../../util/stats', () => ({
 
 import stats from '../../../util/stats';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
-import type { ProxyMetdata } from '../../../types';
-import type { BrazeEvent, BrazeProxyV1Request } from '../../../v0/destinations/braze/types';
+import type { ProxyMetdata, ProxyV1Request } from '../../../types';
 import { responseHandler } from './networkHandler';
 
 const createMetadata = (jobId: number, destInfo?: Record<string, unknown>): ProxyMetdata => ({
@@ -21,14 +20,6 @@ const createMetadata = (jobId: number, destInfo?: Record<string, unknown>): Prox
   dontBatch: false,
   ...(destInfo !== undefined ? { destInfo } : {}),
 });
-
-// Event names used to cover recommended-ecommerce and legacy custom payloads.
-const ECOM_ORDER_PLACED = 'ecommerce.order_placed';
-const ECOM_PRODUCT_VIEWED = 'ecommerce.product_viewed';
-const LEGACY_EVENT = 'Some Custom Event';
-// BrazeEvent requires `time`; the handler only correlates response indices, so one value serves all.
-const EVENT_TIME = '2026-08-18T00:00:00.000Z';
-const eventNamed = (name: string): BrazeEvent => ({ name, time: EVENT_TIME });
 
 // Verbatim ecommerce schema rejections observed on real /users/track responses.
 const SCHEMA_ERRORS = {
@@ -45,13 +36,9 @@ const NON_SCHEMA_ERROR = "'external_id' is required";
 
 const METRIC_LABELS = { destinationId: 'dest-1', workspaceId: 'workspace-1' };
 
-// Minimal proxy-request stub. The handler reads endpointPath to dispatch its
-// correlation branch; the body keeps the sent event shape realistic.
-const buildRequestFor = (
-  endpointPath: string,
-  metadata: ProxyMetdata[],
-  events: BrazeEvent[] = [],
-): BrazeProxyV1Request => ({
+// Minimal proxy-request stub. The handler reads only endpointPath to dispatch
+// its correlation branch.
+const buildRequestFor = (endpointPath: string, metadata: ProxyMetdata[]): ProxyV1Request => ({
   version: '1',
   type: 'REST',
   method: 'POST',
@@ -60,16 +47,10 @@ const buildRequestFor = (
   userId: '',
   metadata,
   destinationConfig: {},
-  body: { JSON: { partner: 'RudderStack', ...(events.length > 0 ? { events } : {}) } },
 });
 
-const trackRequestFor = (metadata: ProxyMetdata[], events: BrazeEvent[] = []) =>
-  buildRequestFor('users/track', metadata, events);
+const trackRequestFor = (metadata: ProxyMetdata[]) => buildRequestFor('users/track', metadata);
 const mergeRequestFor = (metadata: ProxyMetdata[]) => buildRequestFor('users/merge', metadata);
-
-// A sent events[] of `count` items all carrying the same Braze event name.
-const eventsNamed = (name: string, count: number): BrazeEvent[] =>
-  Array.from({ length: count }, () => eventNamed(name));
 
 const mockStats = stats as jest.Mocked<typeof stats>;
 
@@ -141,10 +122,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       };
       const destinationResponse = { response, status: 200 };
       const rudderJobMetadata = [createMetadata(10), createMetadata(20)];
-      const destinationRequest = trackRequestFor(
-        rudderJobMetadata,
-        eventsNamed(ECOM_ORDER_PLACED, 2),
-      );
+      const destinationRequest = trackRequestFor(rudderJobMetadata);
 
       const result = responseHandler({
         destinationResponse,
@@ -177,10 +155,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       };
       const destinationResponse = { response, status: 200 };
       const rudderJobMetadata = [createMetadata(10, { eventsIndices: [0] }), createMetadata(20)];
-      const destinationRequest = trackRequestFor(
-        rudderJobMetadata,
-        eventsNamed(ECOM_ORDER_PLACED, 1),
-      );
+      const destinationRequest = trackRequestFor(rudderJobMetadata);
 
       const result = responseHandler({
         destinationResponse,
@@ -251,16 +226,12 @@ describe('Braze v1 networkHandler responseHandler', () => {
         errors: [{ type: SCHEMA_ERRORS.typeMismatchPrice, input_array: 'events', index: 1 }],
       };
       const destinationResponse = { response, status: 200 };
-      // Chunk contains 2 ecommerce events at positions [0, 1]. Job 10 owns
-      // index 0 (clean), job 20 owns index 1 (rejected).
+      // Job 10 owns index 0 (clean), while job 20 owns index 1 (rejected).
       const rudderJobMetadata = [
         createMetadata(10, { eventsIndices: [0] }),
         createMetadata(20, { eventsIndices: [1] }),
       ];
-      const destinationRequest = trackRequestFor(
-        rudderJobMetadata,
-        eventsNamed(ECOM_ORDER_PLACED, 2),
-      );
+      const destinationRequest = trackRequestFor(rudderJobMetadata);
 
       const result = responseHandler({
         destinationResponse,
@@ -296,10 +267,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
         createMetadata(30, { purchasesIndices: [0, 1, 2] }),
         createMetadata(40, { attributesIndices: [1] }),
       ];
-      const destinationRequest = trackRequestFor(
-        rudderJobMetadata,
-        eventsNamed(ECOM_ORDER_PLACED, 1),
-      );
+      const destinationRequest = trackRequestFor(rudderJobMetadata);
 
       const result = responseHandler({
         destinationResponse,
@@ -333,7 +301,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
     });
 
     it('emits a single 400 (not multiple) when one job spans multiple rejected indices; concatenates all matching error.type strings', () => {
-      // One job contributes 3 ecommerce events and two are rejected. The job
+      // One job contributes 3 events and two are rejected. The job
       // emits exactly ONE abort entry whose `error` is a semicolon-separated
       // join of every matching Braze error.type verbatim (encounter order across
       // the job's declared indices, no deduplication).
@@ -346,10 +314,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       };
       const destinationResponse = { response, status: 200 };
       const rudderJobMetadata = [createMetadata(10, { eventsIndices: [0, 1, 2] })];
-      const destinationRequest = trackRequestFor(
-        rudderJobMetadata,
-        eventsNamed(ECOM_PRODUCT_VIEWED, 3),
-      );
+      const destinationRequest = trackRequestFor(rudderJobMetadata);
 
       const result = responseHandler({
         destinationResponse,
@@ -384,10 +349,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
           purchasesIndices: [0],
         }),
       ];
-      const destinationRequest = trackRequestFor(
-        rudderJobMetadata,
-        eventsNamed(ECOM_ORDER_PLACED, 1),
-      );
+      const destinationRequest = trackRequestFor(rudderJobMetadata);
 
       const result = responseHandler({
         destinationResponse,
@@ -402,7 +364,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
     });
 
     it('does NOT deduplicate identical error.type strings across a job’s rejected indices', () => {
-      // Same error type on two ecommerce event indices — both hits kept so the
+      // Same error type on two event indices — both hits kept so the
       // downstream count remains informative.
       const response = {
         message: 'success',
@@ -413,10 +375,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       };
       const destinationResponse = { response, status: 200 };
       const rudderJobMetadata = [createMetadata(10, { eventsIndices: [0, 1] })];
-      const destinationRequest = trackRequestFor(
-        rudderJobMetadata,
-        eventsNamed(ECOM_ORDER_PLACED, 2),
-      );
+      const destinationRequest = trackRequestFor(rudderJobMetadata);
 
       const result = responseHandler({
         destinationResponse,
@@ -441,10 +400,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
         createMetadata(20, { eventsIndices: [1] }),
         createMetadata(30, { eventsIndices: [2] }),
       ];
-      const destinationRequest = trackRequestFor(
-        rudderJobMetadata,
-        eventsNamed(ECOM_ORDER_PLACED, 3),
-      );
+      const destinationRequest = trackRequestFor(rudderJobMetadata);
 
       const result = responseHandler({
         destinationResponse,
@@ -469,10 +425,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
         createMetadata(10, { eventsIndices: 'not-an-array' }),
         createMetadata(20, { eventsIndices: [0] }),
       ];
-      const destinationRequest = trackRequestFor(
-        rudderJobMetadata,
-        eventsNamed(ECOM_ORDER_PLACED, 1),
-      );
+      const destinationRequest = trackRequestFor(rudderJobMetadata);
 
       const result = responseHandler({
         destinationResponse,
@@ -486,83 +439,61 @@ describe('Braze v1 networkHandler responseHandler', () => {
   });
 
   describe('correlated failure classification', () => {
-    const ecommerceSchemaCases = [
-      { name: 'additional properties outside schema', type: SCHEMA_ERRORS.additionalProperty },
-      { name: 'integer where string expected', type: SCHEMA_ERRORS.typeMismatchProductId },
-      { name: 'missing required property', type: SCHEMA_ERRORS.missingRequired },
-      { name: 'string where number expected', type: SCHEMA_ERRORS.typeMismatchPrice },
-    ];
-
-    const otherCorrelatedFailureCases = [
+    const correlatedFailureCases = [
       {
-        name: 'schema rejection of a legacy custom event',
-        sentEvents: [eventNamed(LEGACY_EVENT)],
+        name: 'schema rejection for additional properties',
+        errors: [{ type: SCHEMA_ERRORS.additionalProperty, input_array: 'events', index: 0 }],
+        destInfo: { eventsIndices: [0] },
+        expectedError: SCHEMA_ERRORS.additionalProperty,
+      },
+      {
+        name: 'schema rejection for an integer where a string was expected',
+        errors: [{ type: SCHEMA_ERRORS.typeMismatchProductId, input_array: 'events', index: 0 }],
+        destInfo: { eventsIndices: [0] },
+        expectedError: SCHEMA_ERRORS.typeMismatchProductId,
+      },
+      {
+        name: 'schema rejection for a missing required property',
         errors: [{ type: SCHEMA_ERRORS.missingRequired, input_array: 'events', index: 0 }],
         destInfo: { eventsIndices: [0] },
         expectedError: SCHEMA_ERRORS.missingRequired,
       },
       {
-        name: 'non-schema failure on an ecommerce event',
-        sentEvents: [eventNamed(ECOM_ORDER_PLACED)],
+        name: 'schema rejection for a string where a number was expected',
+        errors: [{ type: SCHEMA_ERRORS.typeMismatchPrice, input_array: 'events', index: 0 }],
+        destInfo: { eventsIndices: [0] },
+        expectedError: SCHEMA_ERRORS.typeMismatchPrice,
+      },
+      {
+        name: 'non-schema event failure',
         errors: [{ type: NON_SCHEMA_ERROR, input_array: 'events', index: 0 }],
         destInfo: { eventsIndices: [0] },
         expectedError: NON_SCHEMA_ERROR,
       },
       {
-        name: 'schema rejection when events[] is absent from the sent body',
-        sentEvents: [],
-        errors: [{ type: SCHEMA_ERRORS.missingRequired, input_array: 'events', index: 0 }],
-        destInfo: { eventsIndices: [0] },
-        expectedError: SCHEMA_ERRORS.missingRequired,
-      },
-      {
         name: 'schema rejection in the attributes array',
-        sentEvents: [eventNamed(ECOM_ORDER_PLACED)],
         errors: [{ type: SCHEMA_ERRORS.missingRequired, input_array: 'attributes', index: 0 }],
         destInfo: { attributesIndices: [0] },
         expectedError: SCHEMA_ERRORS.missingRequired,
       },
       {
         name: 'schema rejection in the purchases array',
-        sentEvents: [eventNamed(ECOM_ORDER_PLACED)],
         errors: [{ type: SCHEMA_ERRORS.typeMismatchPrice, input_array: 'purchases', index: 0 }],
         destInfo: { purchasesIndices: [0] },
         expectedError: SCHEMA_ERRORS.typeMismatchPrice,
       },
     ];
 
-    it.each(ecommerceSchemaCases)(
-      'aborts an ecommerce schema rejection with 400: $name',
-      ({ type }) => {
-        const response = {
-          message: 'success',
-          errors: [{ type, input_array: 'events', index: 0 }],
-        };
-        const rudderJobMetadata = [createMetadata(10, { eventsIndices: [0] })];
-
-        const result = responseHandler({
-          destinationResponse: { response, status: 200 },
-          rudderJobMetadata,
-          destinationRequest: trackRequestFor(rudderJobMetadata, [eventNamed(ECOM_ORDER_PLACED)]),
-        });
-
-        expect(result.response).toEqual([
-          { statusCode: 400, metadata: rudderJobMetadata[0], error: type },
-        ]);
-        expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 1, METRIC_LABELS);
-      },
-    );
-
-    it.each(otherCorrelatedFailureCases)(
+    it.each(correlatedFailureCases)(
       'emits 400 for $name',
-      ({ sentEvents, errors, destInfo, expectedError }) => {
+      ({ errors, destInfo, expectedError }) => {
         const response = { message: 'success', errors };
         const rudderJobMetadata = [createMetadata(10, destInfo)];
 
         const result = responseHandler({
           destinationResponse: { response, status: 200 },
           rudderJobMetadata,
-          destinationRequest: trackRequestFor(rudderJobMetadata, sentEvents),
+          destinationRequest: trackRequestFor(rudderJobMetadata),
         });
 
         expect(result.response).toEqual([
@@ -585,7 +516,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       const result = responseHandler({
         destinationResponse: { response, status: 200 },
         rudderJobMetadata,
-        destinationRequest: trackRequestFor(rudderJobMetadata, eventsNamed(ECOM_ORDER_PLACED, 2)),
+        destinationRequest: trackRequestFor(rudderJobMetadata),
       });
 
       expect(result.response[0].statusCode).toBe(400);
@@ -594,7 +525,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       );
     });
 
-    it('counts every correlated job as aborted regardless of event type', () => {
+    it('counts every correlated job as aborted', () => {
       const response = {
         message: 'success',
         errors: [
@@ -602,7 +533,6 @@ describe('Braze v1 networkHandler responseHandler', () => {
           { type: SCHEMA_ERRORS.missingRequired, input_array: 'events', index: 1 },
         ],
       };
-      // Index 0 holds an ecommerce event and index 1 a legacy event; both abort.
       const rudderJobMetadata = [
         createMetadata(10, { eventsIndices: [0] }),
         createMetadata(20, { eventsIndices: [1] }),
@@ -611,10 +541,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       const result = responseHandler({
         destinationResponse: { response, status: 200 },
         rudderJobMetadata,
-        destinationRequest: trackRequestFor(rudderJobMetadata, [
-          eventNamed(ECOM_ORDER_PLACED),
-          eventNamed(LEGACY_EVENT),
-        ]),
+        destinationRequest: trackRequestFor(rudderJobMetadata),
       });
 
       expect(result.response.map((r) => r.statusCode)).toEqual([400, 400]);

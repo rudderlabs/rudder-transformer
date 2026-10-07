@@ -137,9 +137,7 @@ const STANDARD_USER_ALIAS = {
 };
 
 // Recommended-ecommerce events, shaped as the `useEcommerceRecommendedEvents`
-// transform path emits them (see processor scenario T-I-06). Their `name` is
-// what lets the v1 networkHandler tell them apart from legacy custom events
-// sharing the same events[] after chunking.
+// transform path emits them (see processor scenario T-I-06).
 const BrazeEcommerceOrderPlaced = {
   name: 'ecommerce.order_placed',
   time: '2023-11-30T21:48:45.634Z',

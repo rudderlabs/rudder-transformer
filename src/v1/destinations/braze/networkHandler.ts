@@ -93,7 +93,7 @@ const readIndicesFor = (
 
 // Build per-input-array maps from Braze `errors[]` → { index → error.type }.
 // The map preserves the FIRST error.type seen for each (input_array, index)
-// pair. Hits across different positions are concatenated in encounter order.
+// pair.
 type RejectedIndexMap = Map<number, string>;
 const buildRejectedIndexMaps = (
   errors: BrazeError[],
@@ -148,7 +148,8 @@ const ERROR_TYPE_JOIN = '; ';
 // Map every metadata to its DeliveryJobState. Jobs that intersect no rejected
 // index get 200 with the full response body (matching the happy-path shape);
 // every correlated failure gets 400 with all matching Braze error.type strings
-// concatenated. Pure — the caller emits counters after inspecting the result.
+// joined in the job's index order (events → attributes → purchases). Pure —
+// the caller emits counters after inspecting the result.
 const buildTrackPartialFailureStates = (
   response: unknown,
   rudderJobMetadata: ProxyMetdata[],

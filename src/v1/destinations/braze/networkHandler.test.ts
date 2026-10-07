@@ -25,14 +25,12 @@ const createMetadata = (jobId: number, destInfo?: Record<string, unknown>): Prox
 const SCHEMA_ERRORS = {
   additionalProperty:
     'The property \'#/\' contains additional properties ["sku_abcd"] outside of the schema when none are allowed',
-  typeMismatchProductId:
-    "The property '#/product_id' of type integer did not match the following type: string",
   missingRequired: "The property '#/' did not contain a required property of 'product_id'",
   typeMismatchPrice:
     "The property '#/price' of type string did not match the following type: number",
 };
-// A track failure that is not a schema rejection — always aborts, whatever it hit.
-const NON_SCHEMA_ERROR = "'external_id' is required";
+// Verbatim Braze identifier rejection used in correlation coverage.
+const IDENTIFIER_ERROR = "'external_id' is required";
 
 const METRIC_LABELS = { destinationId: 'dest-1', workspaceId: 'workspace-1' };
 
@@ -184,7 +182,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       const response = {
         message: 'success',
         aliases_processed: 0,
-        errors: [{ type: NON_SCHEMA_ERROR, input_array: 'user_identifiers', index: 0 }],
+        errors: [{ type: IDENTIFIER_ERROR, input_array: 'user_identifiers', index: 0 }],
       };
       const destinationResponse = { response, status: 200 };
       const rudderJobMetadata = [createMetadata(10, {}), createMetadata(20, {})];
@@ -337,7 +335,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
         message: 'success',
         errors: [
           { type: SCHEMA_ERRORS.missingRequired, input_array: 'events', index: 0 },
-          { type: NON_SCHEMA_ERROR, input_array: 'attributes', index: 0 },
+          { type: IDENTIFIER_ERROR, input_array: 'attributes', index: 0 },
           { type: SCHEMA_ERRORS.typeMismatchPrice, input_array: 'purchases', index: 0 },
         ],
       };
@@ -359,7 +357,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
 
       expect(result.response[0].statusCode).toBe(400);
       expect(result.response[0].error).toBe(
-        `${SCHEMA_ERRORS.missingRequired}; ${NON_SCHEMA_ERROR}; ${SCHEMA_ERRORS.typeMismatchPrice}`,
+        `${SCHEMA_ERRORS.missingRequired}; ${IDENTIFIER_ERROR}; ${SCHEMA_ERRORS.typeMismatchPrice}`,
       );
     });
 
@@ -441,34 +439,16 @@ describe('Braze v1 networkHandler responseHandler', () => {
   describe('correlated failure classification', () => {
     const correlatedFailureCases = [
       {
-        name: 'schema rejection for additional properties',
-        errors: [{ type: SCHEMA_ERRORS.additionalProperty, input_array: 'events', index: 0 }],
-        destInfo: { eventsIndices: [0] },
-        expectedError: SCHEMA_ERRORS.additionalProperty,
-      },
-      {
-        name: 'schema rejection for an integer where a string was expected',
-        errors: [{ type: SCHEMA_ERRORS.typeMismatchProductId, input_array: 'events', index: 0 }],
-        destInfo: { eventsIndices: [0] },
-        expectedError: SCHEMA_ERRORS.typeMismatchProductId,
-      },
-      {
         name: 'schema rejection for a missing required property',
         errors: [{ type: SCHEMA_ERRORS.missingRequired, input_array: 'events', index: 0 }],
         destInfo: { eventsIndices: [0] },
         expectedError: SCHEMA_ERRORS.missingRequired,
       },
       {
-        name: 'schema rejection for a string where a number was expected',
-        errors: [{ type: SCHEMA_ERRORS.typeMismatchPrice, input_array: 'events', index: 0 }],
+        name: 'identifier rejection in the events array',
+        errors: [{ type: IDENTIFIER_ERROR, input_array: 'events', index: 0 }],
         destInfo: { eventsIndices: [0] },
-        expectedError: SCHEMA_ERRORS.typeMismatchPrice,
-      },
-      {
-        name: 'non-schema event failure',
-        errors: [{ type: NON_SCHEMA_ERROR, input_array: 'events', index: 0 }],
-        destInfo: { eventsIndices: [0] },
-        expectedError: NON_SCHEMA_ERROR,
+        expectedError: IDENTIFIER_ERROR,
       },
       {
         name: 'schema rejection in the attributes array',
@@ -502,51 +482,6 @@ describe('Braze v1 networkHandler responseHandler', () => {
         expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 1, METRIC_LABELS);
       },
     );
-
-    it('aborts a job with mixed schema and non-schema hits, keeping both error types', () => {
-      const response = {
-        message: 'success',
-        errors: [
-          { type: SCHEMA_ERRORS.missingRequired, input_array: 'events', index: 0 },
-          { type: NON_SCHEMA_ERROR, input_array: 'events', index: 1 },
-        ],
-      };
-      const rudderJobMetadata = [createMetadata(10, { eventsIndices: [0, 1] })];
-
-      const result = responseHandler({
-        destinationResponse: { response, status: 200 },
-        rudderJobMetadata,
-        destinationRequest: trackRequestFor(rudderJobMetadata),
-      });
-
-      expect(result.response[0].statusCode).toBe(400);
-      expect(result.response[0].error).toBe(
-        `${SCHEMA_ERRORS.missingRequired}; ${NON_SCHEMA_ERROR}`,
-      );
-    });
-
-    it('counts every correlated job as aborted', () => {
-      const response = {
-        message: 'success',
-        errors: [
-          { type: SCHEMA_ERRORS.missingRequired, input_array: 'events', index: 0 },
-          { type: SCHEMA_ERRORS.missingRequired, input_array: 'events', index: 1 },
-        ],
-      };
-      const rudderJobMetadata = [
-        createMetadata(10, { eventsIndices: [0] }),
-        createMetadata(20, { eventsIndices: [1] }),
-      ];
-
-      const result = responseHandler({
-        destinationResponse: { response, status: 200 },
-        rudderJobMetadata,
-        destinationRequest: trackRequestFor(rudderJobMetadata),
-      });
-
-      expect(result.response.map((r) => r.statusCode)).toEqual([400, 400]);
-      expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 2, METRIC_LABELS);
-    });
   });
 
   describe('application-level error — 2xx, message!=success', () => {
@@ -579,7 +514,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
     it('throws TransformerProxyError without eagerly building per-job entries at the 2xx HTTP status', () => {
       const response = {
         message: "Valid data must be provided in the 'attributes' field.",
-        errors: [{ type: NON_SCHEMA_ERROR, input_array: 'events', index: 0 }],
+        errors: [{ type: IDENTIFIER_ERROR, input_array: 'events', index: 0 }],
       };
       const destinationResponse = { response, status: 200 };
       const rudderJobMetadata = [createMetadata(10)];

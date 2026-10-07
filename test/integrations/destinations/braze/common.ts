@@ -172,9 +172,8 @@ export const missingRestApiKeyDestination = {
  * since an uncorrelated job echoes `JSON.stringify(response)` verbatim.
  */
 
-// Verbatim Braze error types. Only a schema rejection (prefixed with the failing
-// item's JSON pointer) of a recommended-ecommerce event in `events[]` yields a
-// 296; every other correlated failure aborts its job.
+// Verbatim Braze error types used to verify that every correlated rejection,
+// including recommended-ecommerce schema failures, aborts its owning job.
 export const BRAZE_ECOMMERCE_SCHEMA_ERROR =
   "The property '#/' did not contain a required property of 'product_id'";
 export const BRAZE_PURCHASE_ERROR = "'quantity' is not valid";

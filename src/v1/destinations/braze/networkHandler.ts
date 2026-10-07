@@ -8,11 +8,9 @@ import stats from '../../../util/stats';
 import type { DeliveryJobState, DeliveryV1Response, ProxyMetdata } from '../../../types';
 import {
   BrazeError,
-  BrazeEvent,
   BrazeProxyV1Request,
   BrazeResponseHandlerParams,
 } from '../../../v0/destinations/braze/types';
-import { isBrazeEcommerceEventName } from '../../../v0/destinations/braze/ecommerceUtil';
 
 const DESTINATION = 'braze';
 
@@ -23,14 +21,13 @@ const failureMessage = (status: number): string =>
 // Ops-facing metric names — kept as constants so dashboards and alerts have a
 // single definition site to grep for.
 const METRIC_PARTIAL_FAILURE = 'braze_partial_failure';
-const METRIC_DELIVERED_WITH_WARNING = 'braze_delivered_with_warning';
 const METRIC_DELIVERY_ABORTED = 'braze_delivery_aborted';
 
 // Braze's `endpointPath` value for the /users/track endpoint — the only
 // endpoint whose response carries per-entry `errors[]` correlatable back to
 // originating jobs. Sub/merge responses return a single top-level message
-// that applies uniformly to the whole call, so they skip 296 correlation
-// entirely and fall through to the uniform per-job outcome path.
+// that applies uniformly to the whole call, so they skip correlation and fall
+// through to the uniform per-job outcome path.
 const TRACK_ENDPOINT_PATH = 'users/track';
 
 // Braze's `errors[i].input_array` values on /users/track responses,
@@ -50,16 +47,6 @@ const DEST_INFO_KEY: Record<TrackInputArray, string> = {
   attributes: 'attributesIndices',
   purchases: 'purchasesIndices',
 };
-
-// Braze validates each recommended-ecommerce event against its ecommerce event
-// schema and reports violations in `errors[i].type`, prefixed with the failing
-// item's JSON pointer. Observed forms:
-//   The property '#/' did not contain a required property of 'product_id'
-//   The property '#/price' of type string did not match the following type: number
-// These are per-item payload defects — Braze kept the rest of the batch and
-// dropped only the offending item — so the owning job is delivered-with-warning
-// rather than aborted.
-const ECOMMERCE_SCHEMA_ERROR_TYPE = /^The property '#\//;
 
 // True when the delivery request was aimed at /users/track. Uses the
 // framework-populated `endpointPath` on the ProxyV1Request. Absence of the
@@ -152,40 +139,18 @@ const collectWarnedHits = (
   return hits;
 };
 
-// The `events[]` we sent on this chunk, positionally aligned with Braze's
-// `errors[i].index`. `cleanTrackChunk` omits empty sub-arrays when building the
-// body, so an absent `events` is normal rather than a broken contract.
-const readSentEvents = (destinationRequest: BrazeProxyV1Request | undefined): BrazeEvent[] => {
-  const events = destinationRequest?.body?.JSON?.events;
-  // The body is an unvalidated echo of what we sent, so the declared type is a
-  // statement of intent rather than a guarantee — check before trusting it.
-  return Array.isArray(events) ? events : [];
-};
-
-// A hit is delivered-with-warning only when it is a schema rejection of a
-// recommended-ecommerce event. The item is identified by its Braze event name:
-// only the recommended-ecommerce path emits those names, so it separates them
-// from the legacy custom events sharing the same `events[]` after chunking.
-// Every other correlated failure aborts its job.
-const isEcommerceSchemaWarning = (hit: WarnedHit, sentEvents: BrazeEvent[]): boolean =>
-  hit.inputArray === 'events' &&
-  isBrazeEcommerceEventName(sentEvents[hit.index]?.name) &&
-  ECOMMERCE_SCHEMA_ERROR_TYPE.test(hit.type);
-
 // Separator for concatenating multiple warned error.type strings on a single
 // job — chosen for readability when the field is logged verbatim.
 const ERROR_TYPE_JOIN = '; ';
 
 // Map every metadata to its DeliveryJobState. Jobs that intersect no warned
 // index get 200 with the full response body (matching the happy-path shape);
-// the rest get 296 when every hit is an ecommerce schema rejection and 400
-// otherwise, carrying all matching Braze error.type strings concatenated.
-// Pure — the caller aggregates and emits the counters after inspecting the result.
+// every correlated failure gets 400 with all matching Braze error.type strings
+// concatenated. Pure — the caller emits counters after inspecting the result.
 const buildTrackPartialFailureStates = (
   response: unknown,
   rudderJobMetadata: ProxyMetdata[],
   warned: Record<TrackInputArray, WarnedIndexMap>,
-  sentEvents: BrazeEvent[],
 ): DeliveryJobState[] => {
   const successBody = JSON.stringify(response) ?? '';
   return rudderJobMetadata.map((metadata) => {
@@ -193,12 +158,11 @@ const buildTrackPartialFailureStates = (
     if (hits.length === 0) {
       return { statusCode: 200, metadata, error: successBody };
     }
-    // Abort outranks warning: one non-ecommerce-schema hit aborts the whole
-    // job, though `error` still carries every hit that matched it.
-    const statusCode = hits.every((hit) => isEcommerceSchemaWarning(hit, sentEvents))
-      ? HTTP_STATUS_CODES.DELIVERED_WITH_WARNING
-      : HTTP_STATUS_CODES.BAD_REQUEST;
-    return { statusCode, metadata, error: hits.map((hit) => hit.type).join(ERROR_TYPE_JOIN) };
+    return {
+      statusCode: HTTP_STATUS_CODES.BAD_REQUEST,
+      metadata,
+      error: hits.map((hit) => hit.type).join(ERROR_TYPE_JOIN),
+    };
   });
 };
 
@@ -273,18 +237,7 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
     // destInfo default to 200 inside the builder (nothing to correlate).
     if (isTrackEndpoint(destinationRequest)) {
       const warned = buildWarnedIndexMaps(errors);
-      const states = buildTrackPartialFailureStates(
-        response,
-        rudderJobMetadata,
-        warned,
-        readSentEvents(destinationRequest),
-      );
-      countStatesByStatus(
-        states,
-        HTTP_STATUS_CODES.DELIVERED_WITH_WARNING,
-        METRIC_DELIVERED_WITH_WARNING,
-        labels,
-      );
+      const states = buildTrackPartialFailureStates(response, rudderJobMetadata, warned);
       countStatesByStatus(states, HTTP_STATUS_CODES.BAD_REQUEST, METRIC_DELIVERY_ABORTED, labels);
       return { status, message: SUCCESS_MESSAGE, response: states };
     }

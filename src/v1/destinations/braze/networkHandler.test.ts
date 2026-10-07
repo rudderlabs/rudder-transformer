@@ -22,13 +22,11 @@ const createMetadata = (jobId: number, destInfo?: Record<string, unknown>): Prox
   ...(destInfo !== undefined ? { destInfo } : {}),
 });
 
-// Braze event names emitted by the recommended-ecommerce path. Only these mark
-// an item in the sent events[] as eligible for 296.
+// Event names used to cover recommended-ecommerce and legacy custom payloads.
 const ECOM_ORDER_PLACED = 'ecommerce.order_placed';
 const ECOM_PRODUCT_VIEWED = 'ecommerce.product_viewed';
-// A legacy custom event — reaches the same events[] after chunking, but never 296.
 const LEGACY_EVENT = 'Some Custom Event';
-// BrazeEvent requires `time`; the handler never reads it, so one value serves all.
+// BrazeEvent requires `time`; the handler only correlates response indices, so one value serves all.
 const EVENT_TIME = '2026-08-18T00:00:00.000Z';
 const eventNamed = (name: string): BrazeEvent => ({ name, time: EVENT_TIME });
 
@@ -48,7 +46,7 @@ const NON_SCHEMA_ERROR = "'external_id' is required";
 const METRIC_LABELS = { destinationId: 'dest-1', workspaceId: 'workspace-1' };
 
 // Minimal proxy-request stub. The handler reads endpointPath to dispatch its
-// correlation branch and body.JSON.events to identify ecommerce items by name.
+// correlation branch; the body keeps the sent event shape realistic.
 const buildRequestFor = (
   endpointPath: string,
   metadata: ProxyMetdata[],
@@ -163,16 +161,15 @@ describe('Braze v1 networkHandler responseHandler', () => {
         ],
       });
       expect(mockStats.increment).toHaveBeenCalledWith('braze_partial_failure', METRIC_LABELS);
-      // Nothing correlated → neither per-outcome counter fires.
-      expectNoCounter('braze_delivered_with_warning');
+      // Nothing correlated → the abort counter does not fire.
       expectNoCounter('braze_delivery_aborted');
     });
 
-    it('when SOME metadata lack destInfo (mixed batch), correlated jobs get 296 and uncorrelated jobs get 200', () => {
-      // Job 10 has destInfo intersecting the warned index → 296.
+    it('when SOME metadata lack destInfo (mixed batch), correlated jobs get 400 and uncorrelated jobs get 200', () => {
+      // Job 10 has destInfo intersecting the rejected index → 400.
       // Job 20 lacks destInfo → nothing to correlate → defaults to 200.
-      // Under today's per-job semantics we surface the warning we can
-      // attribute instead of losing it for the whole batch.
+      // Per-job correlation aborts the failure we can attribute without
+      // changing the uncorrelated fallback.
       const response = {
         message: 'success',
         events_processed: 1,
@@ -192,7 +189,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       });
 
       expect(result.response[0]).toEqual({
-        statusCode: 296,
+        statusCode: 400,
         metadata: rudderJobMetadata[0],
         error: SCHEMA_ERRORS.missingRequired,
       });
@@ -201,12 +198,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
         metadata: rudderJobMetadata[1],
         error: JSON.stringify(response),
       });
-      expect(mockStats.counter).toHaveBeenCalledWith(
-        'braze_delivered_with_warning',
-        1,
-        METRIC_LABELS,
-      );
-      expectNoCounter('braze_delivery_aborted');
+      expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 1, METRIC_LABELS);
     });
 
     it('when the delivery endpoint is NOT /users/track (e.g. alias-merge), falls back to uniform-200 without inspecting destInfo', () => {
@@ -233,7 +225,6 @@ describe('Braze v1 networkHandler responseHandler', () => {
         expect(state.statusCode).toBe(200);
       }
       expect(mockStats.increment).toHaveBeenCalledWith('braze_partial_failure', METRIC_LABELS);
-      expectNoCounter('braze_delivered_with_warning');
       expectNoCounter('braze_delivery_aborted');
     });
 
@@ -248,13 +239,12 @@ describe('Braze v1 networkHandler responseHandler', () => {
       const result = responseHandler({ destinationResponse, rudderJobMetadata });
 
       expect(result.response[0].statusCode).toBe(200);
-      expectNoCounter('braze_delivered_with_warning');
       expectNoCounter('braze_delivery_aborted');
     });
   });
 
   describe('partial failure — per-job correlation', () => {
-    it('emits 296 only for jobs whose destInfo indices intersect a warned events index; other jobs get 200', () => {
+    it('emits 400 only for jobs whose destInfo indices intersect a rejected events index; other jobs get 200', () => {
       const response = {
         message: 'success',
         events_processed: 1,
@@ -262,7 +252,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       };
       const destinationResponse = { response, status: 200 };
       // Chunk contains 2 ecommerce events at positions [0, 1]. Job 10 owns
-      // index 0 (clean), job 20 owns index 1 (warned).
+      // index 0 (clean), job 20 owns index 1 (rejected).
       const rudderJobMetadata = [
         createMetadata(10, { eventsIndices: [0] }),
         createMetadata(20, { eventsIndices: [1] }),
@@ -281,20 +271,16 @@ describe('Braze v1 networkHandler responseHandler', () => {
       expect(result.response).toEqual([
         { statusCode: 200, metadata: rudderJobMetadata[0], error: JSON.stringify(response) },
         {
-          statusCode: 296,
+          statusCode: 400,
           metadata: rudderJobMetadata[1],
           error: SCHEMA_ERRORS.typeMismatchPrice,
         },
       ]);
       expect(mockStats.increment).toHaveBeenCalledWith('braze_partial_failure', METRIC_LABELS);
-      expect(mockStats.counter).toHaveBeenCalledWith(
-        'braze_delivered_with_warning',
-        1,
-        METRIC_LABELS,
-      );
+      expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 1, METRIC_LABELS);
     });
 
-    it('warns only the ecommerce events hit — attributes and purchases hits abort their jobs', () => {
+    it('aborts every correlated hit regardless of the track sub-array', () => {
       const response = {
         message: 'success',
         errors: [
@@ -321,16 +307,15 @@ describe('Braze v1 networkHandler responseHandler', () => {
         destinationRequest,
       });
 
-      // Only job 20's hit is an ecommerce schema rejection in events[]; jobs
-      // 10 and 30 hit other sub-arrays and abort. Job 40 owns attributes[1],
-      // which is not warned at all → 200.
+      // Jobs 10, 20, and 30 each correlate to a rejected item and abort.
+      // Job 40 owns attributes[1], which Braze did not reject → 200.
       expect(result.response[0]).toEqual({
         statusCode: 400,
         metadata: rudderJobMetadata[0],
         error: SCHEMA_ERRORS.missingRequired,
       });
       expect(result.response[1]).toEqual({
-        statusCode: 296,
+        statusCode: 400,
         metadata: rudderJobMetadata[1],
         error: SCHEMA_ERRORS.missingRequired,
       });
@@ -344,19 +329,14 @@ describe('Braze v1 networkHandler responseHandler', () => {
         metadata: rudderJobMetadata[3],
         error: JSON.stringify(response),
       });
-      expect(mockStats.counter).toHaveBeenCalledWith(
-        'braze_delivered_with_warning',
-        1,
-        METRIC_LABELS,
-      );
-      expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 2, METRIC_LABELS);
+      expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 3, METRIC_LABELS);
     });
 
-    it('emits a single 296 (not multiple) when one job spans multiple warned indices; concatenates all matching error.type strings', () => {
-      // One job contributing 3 ecommerce events; two of them get warned. The
-      // job emits exactly ONE entry whose `error` is a semicolon-separated join
-      // of every matching Braze error.type verbatim (encounter order across the
-      // job's declared indices, no deduplication).
+    it('emits a single 400 (not multiple) when one job spans multiple rejected indices; concatenates all matching error.type strings', () => {
+      // One job contributes 3 ecommerce events and two are rejected. The job
+      // emits exactly ONE abort entry whose `error` is a semicolon-separated
+      // join of every matching Braze error.type verbatim (encounter order across
+      // the job's declared indices, no deduplication).
       const response = {
         message: 'success',
         errors: [
@@ -378,7 +358,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       });
 
       expect(result.response).toHaveLength(1);
-      expect(result.response[0].statusCode).toBe(296);
+      expect(result.response[0].statusCode).toBe(400);
       expect(result.response[0].error).toBe(
         `${SCHEMA_ERRORS.missingRequired}; ${SCHEMA_ERRORS.typeMismatchPrice}`,
       );
@@ -386,9 +366,8 @@ describe('Braze v1 networkHandler responseHandler', () => {
 
     it('concatenates matches across events + attributes + purchases when a single job spans all three, and aborts', () => {
       // Job 10 contributes to every track sub-array and each contribution is
-      // warned. Only the events hit qualifies for 296, so abort wins — but the
-      // `error` field still carries every hit in order: events → attributes →
-      // purchases.
+      // rejected. The `error` field carries every hit in order: events →
+      // attributes → purchases.
       const response = {
         message: 'success',
         errors: [
@@ -422,7 +401,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       );
     });
 
-    it('does NOT deduplicate identical error.type strings across a job’s warned indices', () => {
+    it('does NOT deduplicate identical error.type strings across a job’s rejected indices', () => {
       // Same error type on two ecommerce event indices — both hits kept so the
       // downstream count remains informative.
       const response = {
@@ -445,7 +424,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
         destinationRequest,
       });
 
-      expect(result.response[0].statusCode).toBe(296);
+      expect(result.response[0].statusCode).toBe(400);
       expect(result.response[0].error).toBe(
         `${SCHEMA_ERRORS.additionalProperty}; ${SCHEMA_ERRORS.additionalProperty}`,
       );
@@ -474,7 +453,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       });
 
       expect(result.response.map((r) => r.metadata.jobId)).toEqual([10, 20, 30]);
-      expect(result.response.map((r) => r.statusCode)).toEqual([200, 296, 200]);
+      expect(result.response.map((r) => r.statusCode)).toEqual([200, 400, 200]);
     });
 
     it('when destInfo has malformed indices field (non-array), that field is ignored and no outcome is emitted for that job', () => {
@@ -484,8 +463,8 @@ describe('Braze v1 networkHandler responseHandler', () => {
       };
       const destinationResponse = { response, status: 200 };
       // Job 10's destInfo has a garbage `eventsIndices`; we must not throw
-      // and must not falsely emit 296 for it. Job 20 with valid destInfo
-      // still gets its 296.
+      // and must not falsely emit 400 for it. Job 20 with valid destInfo
+      // still gets its 400.
       const rudderJobMetadata = [
         createMetadata(10, { eventsIndices: 'not-an-array' }),
         createMetadata(20, { eventsIndices: [0] }),
@@ -502,21 +481,19 @@ describe('Braze v1 networkHandler responseHandler', () => {
       });
 
       expect(result.response[0].statusCode).toBe(200);
-      expect(result.response[1].statusCode).toBe(296);
+      expect(result.response[1].statusCode).toBe(400);
     });
   });
 
-  describe('296 vs 400 classification', () => {
-    // A hit warns only when it is a schema rejection (error.type prefixed with
-    // the JSON pointer) of a recommended-ecommerce event in the sent events[].
-    const warningCases = [
+  describe('correlated failure classification', () => {
+    const ecommerceSchemaCases = [
       { name: 'additional properties outside schema', type: SCHEMA_ERRORS.additionalProperty },
       { name: 'integer where string expected', type: SCHEMA_ERRORS.typeMismatchProductId },
       { name: 'missing required property', type: SCHEMA_ERRORS.missingRequired },
       { name: 'string where number expected', type: SCHEMA_ERRORS.typeMismatchPrice },
     ];
 
-    const abortCases = [
+    const otherCorrelatedFailureCases = [
       {
         name: 'schema rejection of a legacy custom event',
         sentEvents: [eventNamed(LEGACY_EVENT)],
@@ -554,31 +531,29 @@ describe('Braze v1 networkHandler responseHandler', () => {
       },
     ];
 
-    it.each(warningCases)('emits 296 for an ecommerce schema rejection: $name', ({ type }) => {
-      const response = {
-        message: 'success',
-        errors: [{ type, input_array: 'events', index: 0 }],
-      };
-      const rudderJobMetadata = [createMetadata(10, { eventsIndices: [0] })];
+    it.each(ecommerceSchemaCases)(
+      'aborts an ecommerce schema rejection with 400: $name',
+      ({ type }) => {
+        const response = {
+          message: 'success',
+          errors: [{ type, input_array: 'events', index: 0 }],
+        };
+        const rudderJobMetadata = [createMetadata(10, { eventsIndices: [0] })];
 
-      const result = responseHandler({
-        destinationResponse: { response, status: 200 },
-        rudderJobMetadata,
-        destinationRequest: trackRequestFor(rudderJobMetadata, [eventNamed(ECOM_ORDER_PLACED)]),
-      });
+        const result = responseHandler({
+          destinationResponse: { response, status: 200 },
+          rudderJobMetadata,
+          destinationRequest: trackRequestFor(rudderJobMetadata, [eventNamed(ECOM_ORDER_PLACED)]),
+        });
 
-      expect(result.response).toEqual([
-        { statusCode: 296, metadata: rudderJobMetadata[0], error: type },
-      ]);
-      expect(mockStats.counter).toHaveBeenCalledWith(
-        'braze_delivered_with_warning',
-        1,
-        METRIC_LABELS,
-      );
-      expectNoCounter('braze_delivery_aborted');
-    });
+        expect(result.response).toEqual([
+          { statusCode: 400, metadata: rudderJobMetadata[0], error: type },
+        ]);
+        expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 1, METRIC_LABELS);
+      },
+    );
 
-    it.each(abortCases)(
+    it.each(otherCorrelatedFailureCases)(
       'emits 400 for $name',
       ({ sentEvents, errors, destInfo, expectedError }) => {
         const response = { message: 'success', errors };
@@ -594,11 +569,10 @@ describe('Braze v1 networkHandler responseHandler', () => {
           { statusCode: 400, metadata: rudderJobMetadata[0], error: expectedError },
         ]);
         expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 1, METRIC_LABELS);
-        expectNoCounter('braze_delivered_with_warning');
       },
     );
 
-    it('aborts a job that mixes a qualifying and a non-qualifying hit, keeping both error types', () => {
+    it('aborts a job with mixed schema and non-schema hits, keeping both error types', () => {
       const response = {
         message: 'success',
         errors: [
@@ -620,7 +594,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
       );
     });
 
-    it('emits both counters when a batch produces warned and aborted jobs together', () => {
+    it('counts every correlated job as aborted regardless of event type', () => {
       const response = {
         message: 'success',
         errors: [
@@ -628,7 +602,7 @@ describe('Braze v1 networkHandler responseHandler', () => {
           { type: SCHEMA_ERRORS.missingRequired, input_array: 'events', index: 1 },
         ],
       };
-      // Index 0 holds an ecommerce event (warns); index 1 a legacy one (aborts).
+      // Index 0 holds an ecommerce event and index 1 a legacy event; both abort.
       const rudderJobMetadata = [
         createMetadata(10, { eventsIndices: [0] }),
         createMetadata(20, { eventsIndices: [1] }),
@@ -643,13 +617,8 @@ describe('Braze v1 networkHandler responseHandler', () => {
         ]),
       });
 
-      expect(result.response.map((r) => r.statusCode)).toEqual([296, 400]);
-      expect(mockStats.counter).toHaveBeenCalledWith(
-        'braze_delivered_with_warning',
-        1,
-        METRIC_LABELS,
-      );
-      expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 1, METRIC_LABELS);
+      expect(result.response.map((r) => r.statusCode)).toEqual([400, 400]);
+      expect(mockStats.counter).toHaveBeenCalledWith('braze_delivery_aborted', 2, METRIC_LABELS);
     });
   });
 

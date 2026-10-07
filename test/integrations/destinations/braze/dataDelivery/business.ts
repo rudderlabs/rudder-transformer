@@ -433,7 +433,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     description:
       '[Proxy v1 API] :: /users/track partial failure where Braze rejects a recommended-ecommerce event on schema grounds and a purchase separately',
     successCriteria:
-      'Should return 296 for the job owning the rejected ecommerce event, 400 for the job owning the failed purchase, and 200 for the job whose event was accepted',
+      'Should return 400 for jobs owning the rejected ecommerce event and failed purchase, and 200 for the job whose event was accepted',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -468,7 +468,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             response: [
               {
                 error: BRAZE_ECOMMERCE_SCHEMA_ERROR,
-                statusCode: 296,
+                statusCode: 400,
                 metadata: metadataWithDestInfo(1, { eventsIndices: [0] }),
               },
               {
@@ -494,8 +494,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     name: 'braze',
     description:
       '[Proxy v1 API] :: /users/track schema rejection at events[0], where that item is a legacy custom event rather than a recommended-ecommerce one',
-    successCriteria:
-      'Should return 400, not 296 — the schema error only warrants a warning for recommended-ecommerce events',
+    successCriteria: 'Should return 400 for the job owning the correlated schema rejection',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -541,8 +540,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     name: 'braze',
     description:
       '[Proxy v1 API] :: /users/track failure on a recommended-ecommerce event that is not a schema rejection',
-    successCriteria:
-      'Should return 400, not 296 — only schema rejections of ecommerce events are treated as delivered-with-warning',
+    successCriteria: 'Should return 400 for the job owning the correlated non-schema failure',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',

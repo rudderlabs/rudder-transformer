@@ -1,5 +1,5 @@
+import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 import type { LiveSpec, RunContext } from '../../../live/types';
-import { pollUntil } from '../../../live/poll';
 import {
   clearMembership,
   customAttributeNameFromSecret,

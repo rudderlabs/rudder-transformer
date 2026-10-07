@@ -1,4 +1,4 @@
-import { requiredSecretField } from '../../../live/secretResolver';
+import { requiredSecretField } from '../../../live/requiredFields';
 import type { LiveScenario, LiveSpec } from '../../../live/types';
 import {
   PRIMARY_CONVERSION,

@@ -18,11 +18,12 @@ The mocked suite is untouched and remains the merge gate. This suite is additive
   rudder-server that maps each `/routerTransform` `output[]` item to the `ProxyV1Request`(s) for
   `/v1/destinations/<dest>/proxy` (the response/delivery half); `coerce.ts` holds the runtime
   coercions both halves share.
-- **Harness core** (`live/`): `SecretResolver` (env-var based), `RunContext`
-  (`runId` + memoised `identity`/`email`/`now`/`register`), `registry.ts`,
-  `runPipelineStep.ts` (transform → deliver → assert delivered), and `poll.ts` —
-  a shared `pollUntil(check, opts)` for eventually-consistent read-backs.
-- **Enrollment by discovery** — `registry.ts` scans `destinations/*/live.ts` and runs
+- **Harness core** (`live/`): transformer-specific `RunContext`
+  (`runId` + memoised `identity`/`email`/`now`/`register`) and `runPipelineStep.ts`
+  (transform → deliver → assert delivered). Generic secret resolution, spec discovery,
+  polling, OAuth refresh, and rudder-auth container management come from
+  `@rudderstack/integrations-lib/build/live-test`.
+- **Enrollment by discovery** — the shared library scans `destinations/*/live.ts` and runs
   any spec with `enabled: true`. A destination's `live.ts` either exports the `LiveSpec`
   directly, or (for non-trivial specs) re-exports it from a `live/` module folder — see
   the reference layout below.
@@ -44,13 +45,13 @@ For anything beyond a couple of scenarios, split the spec into a `live/` folder 
 
 OAuth destinations don't ship a long-lived access token in their secret — one is minted at run
 time. When any enrolled destination is `authType: 'oauth'`, a suite-level `beforeAll` starts the
-**rudder-auth** container via testcontainers (`RudderAuthContainer`, `live/rudderAuthContainer.ts`)
-and returns its base URL. `OAuthTokenResolver` (`live/oauthTokenResolver.ts`), built from that URL,
-refreshes each OAuth destination's secret and merges the result into `metadata.secret`. This mirrors
+**rudder-auth** container via the library's `LiveRudderAuthContainer` and returns its base URL.
+`LiveOAuthTokenResolver`, built from that URL, refreshes each OAuth destination's secret and merges
+its result into `metadata.secret`. This mirrors
 production, where rudder-server delegates token refresh to rudder-auth rather than the transformer
 holding credentials.
 
-`OAuthTokenResolver` calls exactly the rudder-auth route the spec's `oauthVersion` declares — **v0**
+`LiveOAuthTokenResolver` calls exactly the rudder-auth route the spec's `oauthVersion` declares — **v0**
 (legacy `POST /tokens/destination/<dest>/refresh` with `{ refreshToken }`, the default) or **v1**
 (`POST /auth/v1/refresh` with `{ accountDefinition, account: { secret: { refreshToken }, options } }`).
 There is no fallback between them, so a leftover legacy route can't be hit by accident. rudder-auth
@@ -76,7 +77,7 @@ credentials for each integration; the container also forwards credential-shaped 
 override those defaults — so the refresh token must be issued by whichever app rudder-auth ends up
 using (the image default, or the creds you supply). In CI those app creds come from Vault: an OAuth
 job imports the whole `control-plane/data/external-services` set in one wildcard read, and the
-container (`rudderAuthContainer.ts`) forwards only the **enrolled** destinations' destination-flow
+library container helper forwards only the **enrolled** destinations' destination-flow
 creds — scoped to `<DEST>_…` and to base/`_DESTINATION` names, never `_SOURCE` — keeping every other
 secret in the job env out of the container. Locally, set them in `.env`.
 
@@ -112,13 +113,13 @@ LIVE_SECRET_<DEST>='{...}' npm run test:live -- --destination=<dest>
 Only the destinations named by `--destination` (comma-separated) run. `verify` steps,
 if a scenario defines them, run automatically.
 
-Credentials are **required**: `resolve()` throws if `LIVE_SECRET_<DEST>` is missing or
+Credentials are **required**: `resolveLiveSecret()` throws if `LIVE_SECRET_<DEST>` is missing or
 invalid, so a selected destination without its secret fails (it does not skip).
 
 ### Supplying credentials
 
-`SecretResolver` reads a single env var per destination, `LIVE_SECRET_<DEST>` — a JSON
-blob matching the `LiveSecret` shape:
+The shared `resolveLiveSecret` helper reads a single env var per destination,
+`LIVE_SECRET_<DEST>` — a JSON blob matching the transformer-owned `LiveSecret` shape:
 
 ```json
 { "authType": "apiKey", "config": { "accessToken": "..." }, "readback": { "accessToken": "..." } }
@@ -130,9 +131,9 @@ blob matching the `LiveSecret` shape:
   token (`oauthRefresh.refreshToken`), and read-back credentials for `verify` steps. The V1
   route's `accountDefinition` is NOT here — it lives on the spec (see above).
 
-`SecretResolver` validates the blob against a zod schema (`LiveSecretSchema`) and throws a
-path-scoped error if it doesn't match. In production the blob comes from Vault (one path per
-destination, stored as single-line JSON); the resolver interface stays the same.
+`resolveLiveSecret` validates the blob against the transformer-owned zod schema
+(`LiveSecretSchema`) and throws a path-scoped, secret-safe error if it doesn't match. In production
+the blob comes from Vault (one path per destination, stored as single-line JSON).
 
 `LIVE_TEST_EMAIL_DOMAIN` overrides the sink domain used for generated test emails.
 
@@ -209,8 +210,8 @@ scenario-level `cleanup`. There are no lifecycle hooks. Each step declares a req
   property/trait profile between the pipeline `seed` and the verify (a `(ctx) => ({ ... })` factory
   used by both) so seed and assertion can't drift — see `verifyContactProperties` and
   `verifyAssociationExists` in `destinations/hs/live/verify.ts`. For eventually-consistent
-  destinations, poll the read-back with the shared `pollUntil(check, opts)` helper (`live/poll.ts`)
-  — use `soft: true` so an exhausted poll returns the last-observed value and the closing
+  destinations, poll the read-back with the shared `pollUntil(check, opts)` helper from
+  `@rudderstack/integrations-lib/build/live-test` — use `soft: true` so an exhausted poll returns the last-observed value and the closing
   `expect(...)` prints a real diff instead of a bare timeout. This read-back is also what actually
   confirms a batch write: a batch endpoint can return `207` (which counts as delivered) even when an
   item fails, so the delivery verdict alone is not proof the write landed.

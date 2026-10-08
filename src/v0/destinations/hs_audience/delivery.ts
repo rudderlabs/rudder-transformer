@@ -63,6 +63,16 @@ function normalizeIdArray(value: unknown): string[] | null {
   return ids;
 }
 
+// Live HubSpot add-and-remove responses omit empty arrays (e.g. only
+// `recordsIdsAdded` is present). Treat absent/null like []. A present
+// non-array still fails closed.
+function normalizeResponseIdArray(value: unknown): string[] | null {
+  if (value === undefined || value === null) {
+    return [];
+  }
+  return normalizeIdArray(value);
+}
+
 function sentMembership(body: unknown): { operation: 'add' | 'remove'; ids: string[] } | null {
   const record = asRecord(body);
   if (!record) {
@@ -86,9 +96,10 @@ function sentMembership(body: unknown): { operation: 'add' | 'remove'; ids: stri
   return { operation: 'remove', ids: toRemove };
 }
 
-// `recordsIdsAdded` is HubSpot's spelling. All three arrays are normalized so
-// one bad id fails the batch closed, but only `recordIdsMissing` changes a
-// verdict. Absence from the added array is a successful no-op.
+// `recordsIdsAdded` is HubSpot's documented spelling; `recordIdsAdded` is
+// accepted as a fallback. All three arrays are normalized so one bad id fails
+// the batch closed, but only `recordIdsMissing` changes a verdict. Absence
+// from the added array is a successful no-op.
 function missingIds(
   response: unknown,
   sent: { operation: 'add' | 'remove'; ids: string[] },
@@ -97,9 +108,11 @@ function missingIds(
   if (!record) {
     return null;
   }
-  const missing = normalizeIdArray(record.recordIdsMissing);
-  const removed = normalizeIdArray(record.recordIdsRemoved);
-  const added = normalizeIdArray(record.recordsIdsAdded);
+  const missing = normalizeResponseIdArray(record.recordIdsMissing);
+  const removed = normalizeResponseIdArray(record.recordIdsRemoved);
+  const added = normalizeResponseIdArray(
+    record.recordsIdsAdded !== undefined ? record.recordsIdsAdded : record.recordIdsAdded,
+  );
   if (!missing || !removed || !added) {
     return null;
   }

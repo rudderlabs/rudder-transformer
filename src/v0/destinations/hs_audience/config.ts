@@ -29,7 +29,8 @@ export const CONFLICTING_MEMBERSHIP = 'Conflicting membership operations for Hub
 export const LOOKUP_UNCORRELATED = 'HubSpot contact lookup response could not be correlated';
 export const TOKEN_REJECTED = 'HubSpot rejected the access token';
 export const LOOKUP_MISSING_SCOPE = 'HubSpot token is missing the crm.objects.contacts.read scope';
-export const MEMBERSHIP_MISSING_SCOPE = 'HubSpot token is missing the crm.lists.write scope';
+export const MEMBERSHIP_MISSING_SCOPE =
+  'HubSpot token is missing the crm.lists.write or crm.objects.contacts.write scope';
 export const RATE_LIMIT_EXCEEDED = 'HubSpot rate limit exceeded';
 export const LOOKUP_UNAVAILABLE = 'HubSpot contact lookup is temporarily unavailable';
 export const LOOKUP_REJECTED = 'HubSpot contact lookup was rejected';

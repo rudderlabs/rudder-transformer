@@ -170,17 +170,31 @@ describe('HubSpot audience delivery', () => {
     },
   );
 
+  it('succeeds when HubSpot omits empty membership arrays', () => {
+    const result = deliver(
+      ctxFor(200, { recordsIdsAdded: ['252295450529'] }, membershipBody(['252295450529']), 1),
+    );
+
+    expect(result.response).toEqual([
+      expect.objectContaining({ statusCode: 200, error: 'success' }),
+    ]);
+  });
+
+  it('accepts recordIdsAdded when recordsIdsAdded is absent', () => {
+    const result = deliver(
+      ctxFor(
+        200,
+        { recordIdsMissing: [], recordIdsAdded: ['1', '2'], recordIdsRemoved: [] },
+        membershipBody(['1', '2']),
+      ),
+    );
+
+    expect(result.response.map((item) => item.error)).toEqual(['success', 'success']);
+  });
+
   it.each([
     ['both membership arrays are nonempty', { recordIdsToAdd: ['1'], recordIdsToRemove: ['2'] }],
     ['neither membership array is nonempty', { recordIdsToAdd: [], recordIdsToRemove: [] }],
-    [
-      'HubSpot uses recordIdsAdded instead of recordsIdsAdded',
-      {
-        recordIdsMissing: [],
-        recordIdsAdded: ['1', '2'],
-        recordIdsRemoved: [],
-      },
-    ],
     ['a returned id cannot be normalized', acknowledged(['0'], [], [])],
     [
       'a returned field is not an array',
@@ -202,7 +216,12 @@ describe('HubSpot audience delivery', () => {
 
   it.each([
     [401, 'HubSpot rejected the access token', 400, 'aborted'],
-    [403, 'HubSpot token is missing the crm.lists.write scope', 400, 'aborted'],
+    [
+      403,
+      'HubSpot token is missing the crm.lists.write or crm.objects.contacts.write scope',
+      400,
+      'aborted',
+    ],
     [404, 'HubSpot list was not found', 400, 'aborted'],
     [400, 'HubSpot membership update was rejected', 400, 'aborted'],
     [429, 'HubSpot rate limit exceeded', 429, 'throttled'],

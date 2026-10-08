@@ -33,7 +33,7 @@ An email that HubSpot's contact batch-read reports as `OBJECT_NOT_FOUND` is not 
 
 A delete whose membership response lists the id in `recordIdsMissing` is a successful no-op. The contact is already absent, which is what the remove asked for. An email-lookup miss on delete is different: HubSpot never confirmed which contact the old identifier was, so the row fails instead of being treated as already removed.
 
-An id that is absent from `recordsIdsAdded` and also absent from `recordIdsMissing` is a successful add. HubSpot omits contacts that were already on the list. That is not a failure.
+An id that is absent from `recordsIdsAdded` and also absent from `recordIdsMissing` is a successful add. HubSpot omits contacts that were already on the list. That is not a failure. Live HubSpot responses also omit empty arrays entirely (for example `{ "recordsIdsAdded": ["…"] }` with no `recordIdsMissing` / `recordIdsRemoved`); those absent fields are treated as `[]`.
 
 ## Authentication
 
@@ -65,15 +65,14 @@ Supply `LIVE_SECRET_HS_AUDIENCE` locally or through the live suite's Vault confi
 }
 ```
 
-The key needs `crm.lists.read`, `crm.lists.write`, and `crm.objects.contacts.read`. No contact-write scope is needed: the test creates or deletes neither contacts nor lists. Cleanup removes the test membership even after a pipeline failure, once the initial absence check has succeeded, and verifies that it is absent. Cleanup failures are reported by the harness and require manual removal before another run.
+The key needs `crm.lists.read`, `crm.lists.write`, `crm.objects.contacts.read`, and `crm.objects.contacts.write`. HubSpot membership mutate returns 403 without contact write (`requires one of [contacts-write]`), even though the test does not create or delete contacts or lists. Cleanup removes the test membership even after a pipeline failure, once the initial absence check has succeeded, and verifies that it is absent. Cleanup failures are reported by the harness and require manual removal before another run.
 
-Run `npm run test:live -- --destination=hs_audience` with that environment variable configured. Never commit the actual key. This scenario has been added but has not been run in this change.
+Run `npm run test:live -- --destination=hs_audience` with that environment variable configured. Never commit the actual key.
 
 ## Manual acceptance still open
 
 These were not verified against a live portal or a fleet config in this change:
 
-- The add-and-remove response shape, including `recordsIdsAdded`
 - Missing-id behavior for adds and removes
 - Duplicate id entries
 - The 1,000 id cap
@@ -84,17 +83,17 @@ These were not verified against a live portal or a fleet config in this change:
 
 ## Errors
 
-| Situation                                               | Result                                                         |
-| ------------------------------------------------------- | -------------------------------------------------------------- |
-| Missing token                                           | `HubSpot access token is required`                             |
-| Invalid record id                                       | `Invalid HubSpot Record ID`                                    |
-| Invalid email                                           | `Invalid email identifier`                                     |
-| Lookup 401                                              | `HubSpot rejected the access token`                            |
-| Lookup 403                                              | `HubSpot token is missing the crm.objects.contacts.read scope` |
-| Other lookup 4xx                                        | `HubSpot contact lookup was rejected`                          |
-| Membership 403                                          | `HubSpot token is missing the crm.lists.write scope`           |
-| Membership 404                                          | `HubSpot list was not found`                                   |
-| 429                                                     | `HubSpot rate limit exceeded`                                  |
-| Lookup or membership response that cannot be correlated | retry, static correlation message, no raw body                 |
+| Situation                                               | Result                                                                             |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Missing token                                           | `HubSpot access token is required`                                                 |
+| Invalid record id                                       | `Invalid HubSpot Record ID`                                                        |
+| Invalid email                                           | `Invalid email identifier`                                                         |
+| Lookup 401                                              | `HubSpot rejected the access token`                                                |
+| Lookup 403                                              | `HubSpot token is missing the crm.objects.contacts.read scope`                     |
+| Other lookup 4xx                                        | `HubSpot contact lookup was rejected`                                              |
+| Membership 403                                          | `HubSpot token is missing the crm.lists.write or crm.objects.contacts.write scope` |
+| Membership 404                                          | `HubSpot list was not found`                                                       |
+| 429                                                     | `HubSpot rate limit exceeded`                                                      |
+| Lookup or membership response that cannot be correlated | retry, static correlation message, no raw body                                     |
 
 Reasons do not include identifier values, response bodies, headers, `message`, or `correlationId`.

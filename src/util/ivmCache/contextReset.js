@@ -144,6 +144,8 @@ async function injectFreshApis(jail, cachedIsolate, credentials) {
     return credentials[key];
   });
 
+  await jail.set('log', () => {});
+
   await jail.set('extractStackTrace', (trace, stringLiterals) =>
     extractStackTraceUptoLastSubstringMatch(trace, stringLiterals),
   );

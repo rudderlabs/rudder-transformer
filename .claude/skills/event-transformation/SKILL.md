@@ -374,8 +374,6 @@ delivered into aborts that nobody traces back to the transformer.
   it, delete the check.
 - **Coerce a convertible type instead of rejecting it.** A numeric id where the API wants a
   string should be `String(value)`, not a Zod `z.string()` failure.
-- **Omit an optional field you can't resolve.** Don't send `NaN`, `null` or `"Invalid Date"`
-  in its place, and don't fail the event over it.
 - **Size and count limits belong to the batch strategy.** Don't add a per-event byte check
   unless the partner rejects oversize items and the batch strategy can't keep them out.
 

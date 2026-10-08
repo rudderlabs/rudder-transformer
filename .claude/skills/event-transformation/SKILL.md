@@ -255,6 +255,8 @@ Its sibling `removeUndefinedAndNullAndEmptyValues` does **not** preserve them �
 One caveat when a required field can be absent: `removeUndefinedAndNullValues` will strip it,
 and the request goes out silently missing a field the API requires. Validate required fields
 before this call (or map them with `required: true`), rather than letting them disappear.
+"Required" means the partner rejects the request without it — shown, not just documented; see
+[Reject Only What The Partner Rejects](#reject-only-what-the-partner-rejects).
 
 ## Monetary Values — Never Assume Two Decimal Places
 

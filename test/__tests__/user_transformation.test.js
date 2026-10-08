@@ -1956,7 +1956,7 @@ describe("User transformation with IVM cache", () => {
     expect(outputCached).toEqual(expectedData);
   });
 
-  it(`Simple ${name} async test for V1 transformation code`, async () => {
+  it(`retains log() when resetting a cached ${name} V1 context`, async () => {
     const libraryVersionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);
     const expectedData = require(`./data/${integration}_code_test_output.json`);
@@ -2018,7 +2018,7 @@ describe("User transformation with IVM cache", () => {
 
     const outputCached = await userTransformHandler(inputData, trRevCode.versionId, [libraryVersionId]);
     expect(outputCached.length).toEqual(expectedData.transformedEvents.length);
-    output.forEach((event, index) => {
+    outputCached.forEach((event, index) => {
       expect(event.transformedEvent).toEqual(expectedData.transformedEvents[index]);
     });
   });

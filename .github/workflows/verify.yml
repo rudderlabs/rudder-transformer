@@ -57,3 +57,48 @@ jobs:
         if: ${{ failure() }}
         run: |
           echo 'Eslint failure. Ensure you run `npm run lint:fix` and commit the files.'
+
+  secret-paths:
+    name: Verify generated secret paths
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout transformer
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
+          path: rudder-transformer
+
+      - name: Checkout integrations-config develop
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: rudderlabs/rudder-integrations-config
+          ref: develop
+          path: rudder-integrations-config
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: rudder-transformer/.nvmrc
+          cache: npm
+          cache-dependency-path: rudder-transformer/package-lock.json
+
+      - name: Install dependencies
+        working-directory: rudder-transformer
+        run: npm ci && npm run prepare
+
+      - name: Typecheck secret-path tooling
+        working-directory: rudder-transformer
+        run: npm run typecheck:secret-paths
+
+      - name: Check deterministic artifact
+        working-directory: rudder-transformer
+        run: npm run check:secret-paths -- --integrations-config=../rudder-integrations-config/src/configurations/destinations
+
+      - name: Validate masking independently
+        working-directory: rudder-transformer
+        run: npm run validate:secret-paths -- --integrations-config=../rudder-integrations-config/src/configurations/destinations

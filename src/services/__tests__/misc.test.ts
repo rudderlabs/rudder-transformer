@@ -60,10 +60,20 @@ describe('Misc | getFeatures', () => {
     return miscService;
   }
 
-  it('should return the default configuration as a JSON string', () => {
+  it('should return the default configuration with the committed secret paths', () => {
     const miscService = getMiscService();
-    const expectedConfig = JSON.stringify(defaultFeaturesConfig);
-    const result = miscService.getFeatures();
-    expect(result).toBe(expectedConfig);
+    const first = miscService.getFeatures();
+    const second = miscService.getFeatures();
+
+    expect(first).toBe(JSON.stringify(defaultFeaturesConfig));
+    expect(JSON.parse(first).secretPaths).toEqual(defaultFeaturesConfig.secretPaths);
+    expect(second).toBe(first);
+  });
+
+  it('omits secretPaths when the artifact is unavailable', () => {
+    jest.doMock('../../secretPaths', () => ({ secretPaths: undefined }));
+    const miscService = getMiscService();
+
+    expect(JSON.parse(miscService.getFeatures())).not.toHaveProperty('secretPaths');
   });
 });

@@ -1,0 +1,31 @@
+{
+  "KLAVIYO": [
+    "config.privateApiKey at body.JSON.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.external_id: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.external_id: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profile.data.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profiles.data.#.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profiles.data.#.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profiles.data.#.attributes.email: klaviyo1",
+    "config.privateApiKey at body.JSON.data.attributes.profiles.data.#.attributes.email: klaviyo1"
+  ],
+  "SALESFORCE": [
+    "metadata.#.secret.accessToken at metadata.#.secret.accessToken: commonAccessToken",
+    "metadata.#.secret.accessToken at metadata.#.secret.accessToken: commonAccessToken"
+  ]
+}

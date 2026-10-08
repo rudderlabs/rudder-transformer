@@ -11,3 +11,4 @@ dist
 .eslintignore
 .prettierignore
 .claude/
+src/secretPaths/secretPaths.json

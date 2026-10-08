@@ -4,6 +4,12 @@ import { DestHandlerMap } from './constants/destinationCanonicalNames';
 import { getIntegrations } from './routes/utils';
 
 // ---------------------------------------------------------------------------
+// Features config
+// ---------------------------------------------------------------------------
+
+import { secretPaths, SecretPaths } from './secretPaths';
+
+// ---------------------------------------------------------------------------
 // Destination capabilities
 // ---------------------------------------------------------------------------
 
@@ -242,10 +248,6 @@ export const isDestinationCdkV2Enabled = (destination: string): boolean =>
 export const isDestinationRouterTransformEnabled = (destination: string): boolean =>
   Boolean(destinationCapabilities[destination.trim().toUpperCase()]?.routerTransform);
 
-// ---------------------------------------------------------------------------
-// Features config
-// ---------------------------------------------------------------------------
-
 interface FeaturesConfig {
   routerTransform: Record<string, true>;
   transformerProxy: Record<string, true>;
@@ -254,6 +256,7 @@ interface FeaturesConfig {
   supportTransformerProxyV1: true;
   upgradedToSourceTransformV2: true;
   supportDestTransformCompactedPayloadV1: true;
+  secretPaths?: SecretPaths;
 }
 
 const defaultFeaturesConfig: FeaturesConfig = {
@@ -264,6 +267,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
   supportTransformerProxyV1: true,
   upgradedToSourceTransformV2: true,
   supportDestTransformCompactedPayloadV1: true,
+  ...(secretPaths && { secretPaths }),
 };
 
 export default defaultFeaturesConfig;

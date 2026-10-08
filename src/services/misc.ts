@@ -8,6 +8,8 @@ export interface Hydrator {
   hydrate(input: SourceHydrationRequest): Promise<SourceHydrationOutput>;
 }
 
+const serialisedFeaturesConfig = JSON.stringify(defaultFeaturesConfig);
+
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
     const handlerName = getDestinationHandlerName(dest);
@@ -73,6 +75,6 @@ export class MiscService {
   }
 
   public static getFeatures() {
-    return JSON.stringify(defaultFeaturesConfig);
+    return serialisedFeaturesConfig;
   }
 }

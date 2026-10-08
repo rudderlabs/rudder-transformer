@@ -49,15 +49,6 @@ constant in `config.ts` (`SOURCE_PATHS`, `FIELD_PATHS`, and the like). `config.t
 the framework itself needs: batch limits, endpoint templates, validation regexes.
 `.claude/skills/event-transformation/SKILL.md` owns the mapping shape and the reasoning.
 
-**A new destination's diff stays in its own folder.** Outside `src/v0/destinations/<dest>/` and
-`test/integrations/destinations/<dest>/`, it touches only the registration points: its entry in
-`src/features.ts` and in `INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE`
-(`test/integrations/component.test.ts`). A branch on the destination's name in shared code, or a new
-mode, schema field or adapter special case added to the framework for one destination, is a
-framework change. It needs its own PR and its own justification, even when the spec seems to
-require it. Shipping it inside a destination PR hides it from the people who own the framework,
-and reverting it later means unwinding the destination too.
-
 The rest of this skill assumes that starting point. The `networkHandler` material below is about
 **migrating** an existing destination and is marked as such.
 

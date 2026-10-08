@@ -167,6 +167,7 @@ describe('Context Reset Utilities', () => {
       expect(mockJail.set).toHaveBeenCalledWith('_fetchV2', expect.any(Object));
       expect(mockJail.set).toHaveBeenCalledWith('_geolocation', expect.any(Object));
       expect(mockJail.set).toHaveBeenCalledWith('_getCredential', expect.any(Function));
+      expect(mockJail.set).toHaveBeenCalledWith('log', expect.any(Function));
       expect(mockJail.set).toHaveBeenCalledWith('extractStackTrace', expect.any(Function));
     });
 
@@ -180,6 +181,7 @@ describe('Context Reset Utilities', () => {
         ['_fetchV2', expect.any(Object)],
         ['_geolocation', expect.any(Object)],
         ['_getCredential', expect.any(Function)],
+        ['log', expect.any(Function)],
         ['extractStackTrace', expect.any(Function)],
       ];
 

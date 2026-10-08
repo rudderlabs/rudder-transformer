@@ -144,6 +144,9 @@ async function injectFreshApis(jail, cachedIsolate, credentials) {
     return credentials[key];
   });
 
+  // Cached contexts are production-only, where the standard factory exposes log as a no-op.
+  await jail.set('log', () => {});
+
   await jail.set('extractStackTrace', (trace, stringLiterals) =>
     extractStackTraceUptoLastSubstringMatch(trace, stringLiterals),
   );

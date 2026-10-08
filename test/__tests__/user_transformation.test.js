@@ -1272,6 +1272,43 @@ describe("User transformation with IVM cache", () => {
     }
   });
 
+  it('keeps log available in a V1 fail-open branch after a cache hit', async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const respBody = {
+      versionId,
+      codeVersion: "1",
+      name: "Jev fail-open log regression",
+      code: `
+        export async function transformEvent(event) {
+          try {
+            throw new Error('Jev unavailable');
+          } catch (error) {
+            log('Jev classification failed; returning original event');
+            return event;
+          }
+        }
+      `
+    };
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+    const expectedOutput = inputData.map(({ message }) => ({
+      transformedEvent: message,
+      metadata: {}
+    }));
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    const outputCached = await userTransformHandler(inputData, versionId, []);
+
+    expect(output).toEqual(expectedOutput);
+    expect(outputCached).toEqual(expectedOutput);
+  });
+
   it(`Simple ${name} async fetchV2 test for V1 transformation - transformEvent`, async () => {
     const versionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);

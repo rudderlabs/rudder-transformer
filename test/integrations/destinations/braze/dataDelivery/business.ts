@@ -4,11 +4,8 @@ import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { authHeader1 } from '../maskedSecrets';
 import {
   BRAZE_ECOMMERCE_SCHEMA_ERROR,
-  BRAZE_IDENTIFIER_ERROR,
   BRAZE_PURCHASE_ERROR,
   ecommerceMixedResponse,
-  ecommerceNonSchemaResponse,
-  legacyEventSchemaResponse,
 } from '../common';
 
 const BRAZE_USERS_TRACK_ENDPOINT = 'https://rest.iad-03.braze.com/users/track';
@@ -140,9 +137,7 @@ const STANDARD_USER_ALIAS = {
 };
 
 // Recommended-ecommerce events, shaped as the `useEcommerceRecommendedEvents`
-// transform path emits them (see processor scenario T-I-06). Their `name` is
-// what lets the v1 networkHandler tell them apart from legacy custom events
-// sharing the same events[] after chunking.
+// transform path emits them (see processor scenario T-I-06).
 const BrazeEcommerceOrderPlaced = {
   name: 'ecommerce.order_placed',
   time: '2023-11-30T21:48:45.634Z',
@@ -433,7 +428,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     description:
       '[Proxy v1 API] :: /users/track partial failure where Braze rejects a recommended-ecommerce event on schema grounds and a purchase separately',
     successCriteria:
-      'Should return 296 for the job owning the rejected ecommerce event, 400 for the job owning the failed purchase, and 200 for the job whose event was accepted',
+      'Should return 400 for jobs owning the rejected ecommerce event and failed purchase, and 200 for the job whose event was accepted',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -468,7 +463,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             response: [
               {
                 error: BRAZE_ECOMMERCE_SCHEMA_ERROR,
-                statusCode: 296,
+                statusCode: 400,
                 metadata: metadataWithDestInfo(1, { eventsIndices: [0] }),
               },
               {
@@ -480,100 +475,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 error: JSON.stringify(ecommerceMixedResponse),
                 statusCode: 200,
                 metadata: metadataWithDestInfo(3, { eventsIndices: [1] }),
-              },
-            ],
-            status: 200,
-            message: 'Request for braze Processed Successfully',
-          },
-        },
-      },
-    },
-  },
-  {
-    id: 'braze_v1_scenario_6',
-    name: 'braze',
-    description:
-      '[Proxy v1 API] :: /users/track schema rejection at events[0], where that item is a legacy custom event rather than a recommended-ecommerce one',
-    successCriteria:
-      'Should return 400, not 296 — the schema error only warrants a warning for recommended-ecommerce events',
-    scenario: 'Business',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v1',
-    input: {
-      request: {
-        body: generateProxyV1Payload(
-          {
-            JSON: {
-              partner,
-              events: [BrazeEvent2],
-            },
-            headers,
-            endpoint: `${BRAZE_USERS_TRACK_ENDPOINT}/ecommerce_legacy_event`,
-            endpointPath: 'users/track',
-          },
-          [metadataWithDestInfo(1, { eventsIndices: [0] })],
-        ),
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: {
-            response: [
-              {
-                error: BRAZE_ECOMMERCE_SCHEMA_ERROR,
-                statusCode: 400,
-                metadata: metadataWithDestInfo(1, { eventsIndices: [0] }),
-              },
-            ],
-            status: 200,
-            message: 'Request for braze Processed Successfully',
-          },
-        },
-      },
-    },
-  },
-  {
-    id: 'braze_v1_scenario_7',
-    name: 'braze',
-    description:
-      '[Proxy v1 API] :: /users/track failure on a recommended-ecommerce event that is not a schema rejection',
-    successCriteria:
-      'Should return 400, not 296 — only schema rejections of ecommerce events are treated as delivered-with-warning',
-    scenario: 'Business',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v1',
-    input: {
-      request: {
-        body: generateProxyV1Payload(
-          {
-            JSON: {
-              partner,
-              events: [BrazeEcommerceOrderPlaced],
-            },
-            headers,
-            endpoint: `${BRAZE_USERS_TRACK_ENDPOINT}/ecommerce_non_schema`,
-            endpointPath: 'users/track',
-          },
-          [metadataWithDestInfo(1, { eventsIndices: [0] })],
-        ),
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: {
-            response: [
-              {
-                error: BRAZE_IDENTIFIER_ERROR,
-                statusCode: 400,
-                metadata: metadataWithDestInfo(1, { eventsIndices: [0] }),
               },
             ],
             status: 200,

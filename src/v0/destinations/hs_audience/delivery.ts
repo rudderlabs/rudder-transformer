@@ -96,16 +96,24 @@ function sentMembership(body: unknown): { operation: 'add' | 'remove'; ids: stri
   return { operation: 'remove', ids: toRemove };
 }
 
+const MEMBERSHIP_RESULT_KEYS = [
+  'recordIdsMissing',
+  'recordIdsRemoved',
+  'recordsIdsAdded',
+  'recordIdsAdded',
+] as const;
+
 // `recordsIdsAdded` is HubSpot's documented spelling; `recordIdsAdded` is
 // accepted as a fallback. All three arrays are normalized so one bad id fails
 // the batch closed, but only `recordIdsMissing` changes a verdict. Absence
-// from the added array is a successful no-op.
+// from the added array is a successful no-op. A body with none of the result
+// keys is not a membership result, even if other fields are present.
 function missingIds(
   response: unknown,
   sent: { operation: 'add' | 'remove'; ids: string[] },
 ): Set<string> | null {
   const record = asRecord(response);
-  if (!record) {
+  if (!record || !MEMBERSHIP_RESULT_KEYS.some((key) => record[key] !== undefined)) {
     return null;
   }
   const missing = normalizeResponseIdArray(record.recordIdsMissing);

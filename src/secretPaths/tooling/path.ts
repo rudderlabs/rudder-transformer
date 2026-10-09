@@ -31,6 +31,14 @@ export const ARRAY_MARKER = '#';
  */
 export const ENDPOINT_FIELD = 'endpoint';
 
+/** Top-level fields that become part of the HTTP request delivered to a destination. */
+export const DELIVERED_REQUEST_FIELDS = ['headers', 'params', 'body', ENDPOINT_FIELD] as const;
+
+/** Delivered fields that the consumer may mask; endpoint is deliberately excluded by policy. */
+export const MASKABLE_REQUEST_FIELDS = DELIVERED_REQUEST_FIELDS.filter(
+  (field) => field !== ENDPOINT_FIELD,
+);
+
 /**
  * gjson/sjson treat `.`, `*` and `?` as path syntax, so a key containing one must be escaped or
  * the path addresses something else entirely: `headers.X-Api.Key` unescaped creates a nested

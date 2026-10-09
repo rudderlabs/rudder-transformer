@@ -17,6 +17,8 @@ import {
 
 const AUTHORIZATION_LOCATION = 'req[0]|headers.Authorization';
 const AUTHORIZATION_PATH = 'headers.Authorization';
+const ENDPOINT_LOCATION = 'req[0]|endpoint';
+const DESTINATION_ENDPOINT = 'https://destination.example';
 const INVALID_PATH_MESSAGE = 'Invalid secret path';
 const PARAM_TOKEN = 'param+token';
 const CHARACTER_CLASSES = [/[a-z]/, /[A-Z]/, /\d/, /[^\dA-Za-z]/];
@@ -67,21 +69,26 @@ describe('secret-path generator utilities', () => {
   });
 
   it('keeps before-and-after evidence only for the endpoint', () => {
-    const endpoint = 'req[0]|endpoint';
     const real = baseline({
-      [endpoint]: 'https://x.example/?k=real',
+      [ENDPOINT_LOCATION]: 'https://x.example/?k=real',
       [AUTHORIZATION_LOCATION]: 'a',
     });
 
     expect(
       locationsForKey(
         real,
-        flattened({ [endpoint]: 'https://x.example/?k=dcy1', [AUTHORIZATION_LOCATION]: 'b' }),
-        flattened({ [endpoint]: 'https://x.example/?k=dcy2', [AUTHORIZATION_LOCATION]: 'c' }),
+        flattened({
+          [ENDPOINT_LOCATION]: 'https://x.example/?k=dcy1',
+          [AUTHORIZATION_LOCATION]: 'b',
+        }),
+        flattened({
+          [ENDPOINT_LOCATION]: 'https://x.example/?k=dcy2',
+          [AUTHORIZATION_LOCATION]: 'c',
+        }),
       ),
     ).toEqual([
       {
-        loc: endpoint,
+        loc: ENDPOINT_LOCATION,
         evidence: { real: 'https://x.example/?k=real', decoy: 'https://x.example/?k=dcy1' },
       },
       { loc: AUTHORIZATION_LOCATION },
@@ -99,14 +106,61 @@ describe('secret-path generator utilities', () => {
     expect(output).toEqual({
       requestCount: 2,
       leaves: new Map([
-        ['req[0]|endpoint', 'https://one.example'],
-        ['req[0]|headers.Authorization', 'first'],
+        [ENDPOINT_LOCATION, 'https://one.example'],
+        [AUTHORIZATION_LOCATION, 'first'],
         ['req[1]|endpoint', 'https://two.example'],
         ['req[1]|headers.Authorization', 'second'],
       ]),
     });
-    expect(hasSameShape(output, flattened({ 'req[0]|endpoint': 'changed' }, 1))).toBe(false);
-    expect(hasSameShape(output, flattened({ 'req[0]|endpoint': 'changed' }, 2))).toBe(false);
+    expect(hasSameShape(output, flattened({ [ENDPOINT_LOCATION]: 'changed' }, 1))).toBe(false);
+    expect(hasSameShape(output, flattened({ [ENDPOINT_LOCATION]: 'changed' }, 2))).toBe(false);
+  });
+
+  it('flattens only fields delivered to the destination', () => {
+    const output = flattenRequests({
+      endpoint: DESTINATION_ENDPOINT,
+      headers: { Authorization: 'Bearer delivered-secret' },
+      params: { api_key: 'delivered-param' },
+      body: { token: 'delivered-body' },
+      metadata: [{ secret: { accessToken: 'source-only-secret' } }],
+      destinationConfig: { apiKey: 'source-only-config' },
+      accessKey: 'source-only-access-key',
+      accessSecret: 'source-only-access-secret',
+    });
+
+    expect(output).toEqual({
+      requestCount: 1,
+      leaves: new Map([
+        [AUTHORIZATION_LOCATION, 'Bearer delivered-secret'],
+        ['req[0]|params.api_key', 'delivered-param'],
+        ['req[0]|body.token', 'delivered-body'],
+        [ENDPOINT_LOCATION, DESTINATION_ENDPOINT],
+      ]),
+    });
+  });
+
+  it('does not mistake nested destination config for another delivered request', () => {
+    const output = flattenRequests({
+      batchedRequest: {
+        endpoint: DESTINATION_ENDPOINT,
+        headers: { Authorization: 'Basic delivered-secret' },
+      },
+      destination: {
+        Config: {
+          endpoint: 'https://configuration.example',
+          accessKey: 'source-only-access-key',
+          accessSecret: 'source-only-access-secret',
+        },
+      },
+    });
+
+    expect(output.requestCount).toBe(1);
+    expect(output.leaves).toEqual(
+      new Map([
+        [AUTHORIZATION_LOCATION, 'Basic delivered-secret'],
+        [ENDPOINT_LOCATION, DESTINATION_ENDPOINT],
+      ]),
+    );
   });
 
   it('collapses dynamic key families to their containing object', () => {
@@ -161,7 +215,7 @@ describe('secret-path generator utilities', () => {
 
   it('keeps fetched candidates only when they reach baseline headers or params', () => {
     const real = baseline({
-      'req[0]|headers.Authorization': 'Bearer session-token',
+      [AUTHORIZATION_LOCATION]: 'Bearer session-token',
       'req[0]|params.api_key': encodeURIComponent(PARAM_TOKEN),
       'req[0]|body.JSON.key': 'birthday',
     });
@@ -189,6 +243,9 @@ describe('secret-path generator utilities', () => {
     [{ TEST: [AUTHORIZATION_PATH, AUTHORIZATION_PATH] }, 'unique and sorted'],
     [{ TEST: ['*'] }, INVALID_PATH_MESSAGE],
     [{ TEST: ['endpoint.token'] }, INVALID_PATH_MESSAGE],
+    [{ TEST: ['metadata.#.secret.accessToken'] }, INVALID_PATH_MESSAGE],
+    [{ TEST: ['destinationConfig.apiKey'] }, INVALID_PATH_MESSAGE],
+    [{ TEST: ['accessKey'] }, INVALID_PATH_MESSAGE],
     [{ TEST: ['headers.X*Token'] }, INVALID_PATH_MESSAGE],
   ])('rejects invalid artifact output %#', (secretPaths, message) => {
     expect(() => validateSecretPaths(secretPaths)).toThrow(message);

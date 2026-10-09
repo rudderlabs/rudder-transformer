@@ -22,6 +22,7 @@ import { EnvManager } from '../../../test/integrations/envUtils';
 import tags from '../../v0/util/tags';
 import DestinationCache from '../../v0/util/cache';
 import { MockHttpCallsData } from '../../../test/integrations/testTypes';
+import { DELIVERED_REQUEST_FIELDS, ENDPOINT_FIELD } from './path';
 
 const DEFAULT_VERSION = 'v0';
 const DATA_DELIVERY_FIXTURE_ROUTE = 'fixture:dataDelivery';
@@ -138,10 +139,20 @@ export interface Harness {
 export function requestsIn(output: unknown): Record<string, any>[] {
   const found: Record<string, any>[] = [];
   const seen = new Set<unknown>();
+  const requestPayloadFields = DELIVERED_REQUEST_FIELDS.filter((field) => field !== ENDPOINT_FIELD);
   const walk = (node: unknown): void => {
     if (!isObj(node) || seen.has(node)) return;
     seen.add(node);
-    if (!Array.isArray(node) && typeof node.endpoint === 'string') found.push(node);
+    if (
+      !Array.isArray(node) &&
+      typeof node[ENDPOINT_FIELD] === 'string' &&
+      requestPayloadFields.some((field) => Object.prototype.hasOwnProperty.call(node, field))
+    ) {
+      found.push(node);
+      // A delivered request can contain source-only envelope fields. They are inputs to the
+      // delivery adapter, not nested requests, so traversal stops at this boundary.
+      return;
+    }
     for (const key of Object.keys(node)) walk(node[key]);
   };
   walk(output);

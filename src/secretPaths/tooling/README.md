@@ -17,11 +17,11 @@ For each destination type:
 - a missing destination remains a consumer-side mask-everything fallback for mixed-version rollouts,
   but the generator never intentionally omits a destination.
 
-There is no envelope, version, timestamp, source reference, diagnostic reason, or wildcard fail-closed sentinel in the artifact. Destination keys and path lists are sorted. Paths use gjson/sjson notation: literal `.`, `*`, `?`, and `\` are escaped, arrays use `#`, and bracketed or numeric object keys remain literal. The top-level `endpoint` field is the only excluded surface and is never emitted.
+There is no envelope, version, timestamp, source reference, diagnostic reason, or wildcard fail-closed sentinel in the artifact. Destination keys and path lists are sorted. Paths use gjson/sjson notation: literal `.`, `*`, `?`, and `\` are escaped, arrays use `#`, and bracketed or numeric object keys remain literal. Emitted paths begin only with the delivered request fields `headers`, `params`, or `body`; source-only envelope fields such as `metadata` and `destinationConfig` are never emitted. The delivered top-level `endpoint` field is excluded by policy.
 
 ## Inputs
 
-Configured credentials come only from each destination definition's `config.secretKeys` in `rudder-integrations-config/src/configurations/destinations`. Every value under fixture `metadata.secret` is also a credential source because the runtime bag has no per-key declaration. Names that merely look sensitive are not inferred.
+Configured credentials come only from each destination definition's `config.secretKeys` in `rudder-integrations-config/src/configurations/destinations`. Every value under fixture `metadata.secret` is also a credential source because the runtime bag has no per-key declaration, but the bag itself is not part of the delivered request and therefore cannot be an emitted path. Names that merely look sensitive are not inferred.
 
 A transformer destination without a matching definition fails generation. The only identity aliases are:
 

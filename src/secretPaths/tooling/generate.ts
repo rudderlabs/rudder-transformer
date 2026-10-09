@@ -47,7 +47,9 @@ import {
 } from './harness';
 import {
   ARRAY_MARKER,
+  DELIVERED_REQUEST_FIELDS,
   ENDPOINT_FIELD,
+  MASKABLE_REQUEST_FIELDS,
   collapseArrayMarkers,
   escapeSegment,
   formatPath,
@@ -163,11 +165,10 @@ export const flattenRequests = (output: unknown): FlattenedOutput => {
   // fixture harness and the flattener.
   const requests = requestsIn(output);
   requests.forEach((node, index) => {
-    // Every field, not just headers/params/body/endpoint. MOVABLE_INK puts its accessKey at
-    // the top level of the request, and anything not walked here is invisible to the diff -
-    // which means it is never masked, however plainly it carries a credential.
-    for (const field of Object.keys(node)) {
-      addLeaf(locationKey(index, field), node[field]);
+    for (const field of DELIVERED_REQUEST_FIELDS) {
+      if (Object.prototype.hasOwnProperty.call(node, field)) {
+        addLeaf(locationKey(index, field), node[field]);
+      }
     }
   });
 
@@ -769,7 +770,7 @@ export const validateSecretPaths = (secretPaths: SecretPaths): void => {
         secretPath !== formatPath(segments) ||
         segments.some((segment) => segment.length === 0) ||
         segments[0] === ARRAY_MARKER ||
-        segments[0] === ENDPOINT_FIELD
+        !MASKABLE_REQUEST_FIELDS.includes(segments[0] as (typeof MASKABLE_REQUEST_FIELDS)[number])
       ) {
         throw new Error(`Invalid secret path for ${destType}: ${secretPath}`);
       }

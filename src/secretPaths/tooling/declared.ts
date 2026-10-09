@@ -1,4 +1,3 @@
-/* eslint-disable no-continue */
 /**
  * Reads `secretKeys` off the destination definitions - the source of truth for what counts as a
  * credential. Shared by the generator and the validator so both agree on what they are looking
@@ -6,11 +5,11 @@
  */
 import fs from 'fs';
 import { join } from 'path';
-import { getIntegrations } from '../../src/routes/utils';
+import { getIntegrations } from '../../routes/utils';
 
 export const integrationsConfigPath = (configuredPath?: string): string =>
   configuredPath ||
-  join(__dirname, '../../../rudder-integrations-config/src/configurations/destinations');
+  join(__dirname, '../../../../rudder-integrations-config/src/configurations/destinations');
 
 const DEFINITION_ALIASES: Record<string, string> = {
   rudder_test: 'test_destination',
@@ -40,9 +39,11 @@ const loadDefinitions = (root: string): Map<string, Definition> => {
     definitions.set(key, definition);
   };
 
-  for (const dir of getIntegrations(root).sort()) {
+  const configuredIntegrations = getIntegrations(root)
+    .sort()
+    .filter((dir) => fs.existsSync(join(root, dir, 'db-config.json')));
+  for (const dir of configuredIntegrations) {
     const file = join(root, dir, 'db-config.json');
-    if (!fs.existsSync(file)) continue;
     const parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as {
       name?: unknown;
       config?: Record<string, unknown>;
@@ -85,8 +86,8 @@ const definitionFor = (destination: string, configuredPath?: string): Definition
 export const implementedDestinations = (): string[] =>
   [
     ...new Set([
-      ...getIntegrations(join(__dirname, '../../src/v0/destinations')),
-      ...getIntegrations(join(__dirname, '../../src/cdk/v2/destinations')),
+      ...getIntegrations(join(__dirname, '../../v0/destinations')),
+      ...getIntegrations(join(__dirname, '../../cdk/v2/destinations')),
     ]),
   ].sort();
 

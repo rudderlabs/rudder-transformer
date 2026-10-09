@@ -1,5 +1,7 @@
 import { findSurvivorIds, maskAt, secretValuesFor } from './validate';
 
+const TENANT_SECRET = 'tenant-secret';
+
 describe('secret-path survivor masking', () => {
   it('extracts runtime credentials only from metadata.secret', () => {
     expect(
@@ -28,11 +30,11 @@ describe('secret-path survivor masking', () => {
   });
 
   it('covers tenant-chosen credential header names through a containing-object path', () => {
-    const request = { headers: { 'X-Customer-Token': 'tenant-secret' } };
-    const secret = [{ source: 'config.apiKeyValue', value: 'tenant-secret' }];
+    const request = { headers: { 'X-Customer-Token': TENANT_SECRET } };
+    const secret = [{ source: 'config.apiKeyValue', value: TENANT_SECRET }];
 
     expect(findSurvivorIds(request, ['headers.x-api-key'], secret)).toEqual([
-      'config.apiKeyValue at headers.X-Customer-Token: tenant-secret',
+      `config.apiKeyValue at headers.X-Customer-Token: ${TENANT_SECRET}`,
     ]);
     expect(findSurvivorIds(request, ['headers'], secret)).toEqual([]);
   });
@@ -52,7 +54,7 @@ describe('secret-path survivor masking', () => {
     },
     {
       path: 'headers',
-      request: { headers: { 'X-Customer-Token': 'tenant-secret', other: 'visible' } },
+      request: { headers: { 'X-Customer-Token': TENANT_SECRET, other: 'visible' } },
       expected: { headers: '******' },
     },
     {

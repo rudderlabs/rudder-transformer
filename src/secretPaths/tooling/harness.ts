@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /**
  * Shared plumbing for the generator and the validator.
  *
@@ -25,24 +24,23 @@ import {
   configureBatchProcessingDefaults,
   axiosFromLib,
 } from '@rudderstack/integrations-lib';
-import { applicationRoutes } from '../../src/routes/index';
+import { applicationRoutes } from '../../routes/index';
 import {
   getTestDataFilePaths,
   registerAxiosMocks,
   getTestMockData,
-} from '../integrations/testUtils';
-import tags from '../../src/v0/util/tags';
-import { MockHttpCallsData } from '../integrations/testTypes';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const DestinationCache = require('../../src/v0/util/cache');
-import { EnvManager } from '../integrations/envUtils';
+} from '../../../test/integrations/testUtils';
+import { EnvManager } from '../../../test/integrations/envUtils';
+import tags from '../../v0/util/tags';
+import DestinationCache from '../../v0/util/cache';
+import { MockHttpCallsData } from '../../../test/integrations/testTypes';
 
 const DEFAULT_VERSION = 'v0';
 export const DATA_DELIVERY_FIXTURE_ROUTE = 'fixture:dataDelivery';
 /** Shorter than this is not a credential worth substituting or hunting for. */
 export const MIN_SECRET_LEN = 3;
 
-export const TEST_ROOT = join(__dirname, '../integrations');
+export const TEST_ROOT = join(__dirname, '../../../test/integrations');
 
 // isObjectLike, not lodash's isObject or the repo's util isObject: both exclude arrays, and
 // these traversals have to descend into them.
@@ -56,7 +54,7 @@ export const isObj = (v: unknown): v is Record<string, any> => isObjectLike(v);
  * reaches the request is still settled by diffing, so a wrong candidate costs two runs and
  * yields nothing.
  */
-const CREDENTIAL_KEY = /token|secret|password|credential|session|signature|api[-_]?key|^key$/i;
+const CREDENTIAL_KEY = /token|secret|password|credential|session|signature|api[_-]?key|^key$/i;
 
 /**
  * How strictly a recorded mock has to match the outgoing request.
@@ -145,6 +143,74 @@ export interface Harness {
    */
   probe(destType: string, config: Record<string, string>): Promise<ProbeResult>;
   stop(): void;
+}
+
+/** Every request-shaped object in a transform response, in traversal order. */
+export function requestsIn(output: unknown): Record<string, any>[] {
+  const found: Record<string, any>[] = [];
+  const seen = new Set<unknown>();
+  const walk = (node: unknown): void => {
+    if (!isObj(node) || seen.has(node)) return;
+    seen.add(node);
+    if (!Array.isArray(node) && typeof node.endpoint === 'string') found.push(node);
+    for (const key of Object.keys(node)) walk(node[key]);
+  };
+  walk(output);
+  return found;
+}
+
+/** Visits and replaces one declared key wherever a destination config appears in a request. */
+export const visitConfigSecrets = (
+  node: unknown,
+  declaredKey: string,
+  visit: (current: string) => string,
+): void => {
+  const leaf = declaredKey.split('.').pop()!.toLowerCase();
+  const walk = (current: unknown, insideConfig: boolean): void => {
+    if (!isObj(current)) return;
+    for (const key of Object.keys(current)) {
+      const value = current[key];
+      const nowInsideConfig = insideConfig || key === 'config' || key === 'Config';
+      if (insideConfig && key.toLowerCase() === leaf && typeof value === 'string') {
+        // eslint-disable-next-line no-param-reassign -- rewriting the caller's copy is the point
+        current[key] = visit(value);
+      } else {
+        walk(value, nowInsideConfig);
+      }
+    }
+  };
+  walk(node, false);
+};
+
+const SECRET_BAG_KEY = 'secret';
+
+const collect = (walk: (visit: (current: string) => string) => void): string[] => {
+  const found: string[] = [];
+  walk((current) => {
+    if (current.length >= MIN_SECRET_LEN) found.push(current);
+    return current;
+  });
+  return found;
+};
+
+/** The declared-key values present in a request body - the generator's definition, reused. */
+export function configSecretsFor(node: unknown, declaredKey: string): string[] {
+  return collect((visit) => visitConfigSecrets(node, declaredKey, visit));
+}
+
+/** Whether a string carries a secret directly or through a reversible encoding. */
+export function carriesSecret(value: string, secret: string): boolean {
+  const forms = [
+    secret,
+    base64Convertor(secret),
+    base64Convertor(`${secret}:`),
+    base64Convertor(`:${secret}`),
+    encodeURIComponent(secret),
+  ];
+  if (forms.some((form) => value.includes(form))) return true;
+  return (value.match(/[\d+/A-Za-z]{8,}={0,2}/g) || []).some((token) =>
+    Buffer.from(token, 'base64').toString('utf8').includes(secret),
+  );
 }
 
 /**
@@ -359,86 +425,6 @@ export const startHarness = (): Harness => {
   };
 };
 
-/** Every request-shaped object in a transform response, in traversal order. */
-export const requestsIn = (output: unknown): Record<string, any>[] => {
-  const found: Record<string, any>[] = [];
-  const seen = new Set<unknown>();
-  const walk = (node: unknown): void => {
-    if (!isObj(node) || seen.has(node)) return;
-    seen.add(node);
-    if (!Array.isArray(node) && typeof node.endpoint === 'string') found.push(node);
-    for (const key of Object.keys(node)) walk(node[key]);
-  };
-  walk(output);
-  return found;
-};
-
-/**
- * Visits every value of one declared key wherever a destination config appears in the request
- * body, and replaces it with whatever the visitor returns.
- *
- * `secretKeys` entries are normally plain keys; `webhook`/`pipedream` use a path (`headers.to`)
- * whose parent is an array, so match on the final segment and rewrite every occurrence. Both
- * callers depend on these rules agreeing: if the generator substitutes a value the validator
- * never collects, the validator reports "no survivors" about a secret it never looked for.
- */
-export const visitConfigSecrets = (
-  node: unknown,
-  declaredKey: string,
-  visit: (current: string) => string,
-): void => {
-  const leaf = declaredKey.split('.').pop()!.toLowerCase();
-  const walk = (current: unknown, insideConfig: boolean): void => {
-    if (!isObj(current)) return;
-    for (const key of Object.keys(current)) {
-      const value = current[key];
-      const nowInsideConfig = insideConfig || key === 'config' || key === 'Config';
-      if (insideConfig && key.toLowerCase() === leaf && typeof value === 'string') {
-        // eslint-disable-next-line no-param-reassign -- rewriting the caller's copy is the point
-        current[key] = visit(value);
-      } else {
-        walk(value, nowInsideConfig);
-      }
-    }
-  };
-  walk(node, false);
-};
-
-/**
- * The key under which rudder-server hands a destination its runtime credential bag.
- *
- * Named once so the generator and validator agree on the only runtime credential-bag spelling.
- * Config-secret traversal deliberately does not open scope on this key; metadata bags are the
- * runtime source, not destination configuration.
- */
-const SECRET_BAG_KEY = 'secret';
-
-/**
- * Collects the values one walker visits, subject to the "long enough to be a secret" rule.
- *
- * Shared by both generator-side `*SecretsFor` helpers so what they report is filtered identically.
- * The validator keeps its own contract-focused extractor; these helpers define only what the
- * generator perturbs.
- *
- * The runtime walker applies the same threshold itself, so for `runtimeSecretsFor` this filter is
- * already satisfied - there, what is perturbed and what is reported are the same set by
- * construction. `visitConfigSecrets` does not, which is pre-existing: a config key can still be
- * substituted at a length this would not report. Narrowing it is a change to what the config
- * source perturbs, so it is left alone here.
- */
-const collect = (walk: (visit: (current: string) => string) => void): string[] => {
-  const found: string[] = [];
-  walk((current) => {
-    if (current.length >= MIN_SECRET_LEN) found.push(current);
-    return current;
-  });
-  return found;
-};
-
-/** The declared-key values present in a request body - the generator's definition, reused. */
-export const configSecretsFor = (node: unknown, declaredKey: string): string[] =>
-  collect((visit) => visitConfigSecrets(node, declaredKey, visit));
-
 /**
  * Visits every string the runtime credential bag carries, and replaces it with whatever the
  * visitor returns.
@@ -497,31 +483,6 @@ export const runtimeSecretsFor = (node: unknown): string[] =>
   collect((visit) => visitRuntimeSecrets(node, visit));
 
 /**
- * Does this string carry the secret directly, or through a reversible encoding?
- *
- * Shared by the generator's containment test and the validator's survivor search, deliberately:
- * it is plumbing - a question about string encodings - not derivation logic. The two still reach
- * their answers independently, the generator by perturbing inputs and diffing and the validator
- * by masking and searching; they only agree on what "this value appears here" means. When they
- * did not, the generator's bare `includes` missed exactly what the validator would then report as
- * a survivor: `oauth-1.0a` percent-encodes every parameter value, so a realistic base64-shaped
- * token reaches the OAuth1 `Authorization` header as `oauth_token="ab%2Bcd%2Fef%3D"`.
- */
-export const carriesSecret = (value: string, secret: string): boolean => {
-  const forms = [
-    secret,
-    base64Convertor(secret),
-    base64Convertor(`${secret}:`),
-    base64Convertor(`:${secret}`),
-    encodeURIComponent(secret),
-  ];
-  if (forms.some((form) => value.includes(form))) return true;
-  return (value.match(/[\d+/A-Za-z]{8,}={0,2}/g) || []).some((token) =>
-    Buffer.from(token, 'base64').toString('utf8').includes(secret),
-  );
-};
-
-/**
  * Whether a fixture case is one the derivation can use.
  *
  * One definition, because two halves of this tool ask the question and they have to agree: the
@@ -547,9 +508,12 @@ export const isDerivableCase = (harness: Harness, tcData: any): boolean =>
  */
 export const fixturesByDestination = (): Map<string, string[]> => {
   const buckets = new Map<string, string[]>();
-  for (const filePath of getTestDataFilePaths(TEST_ROOT, {})) {
+  const destinationFixtures = getTestDataFilePaths(TEST_ROOT, {}).filter((filePath) =>
+    filePath.includes('/destinations/'),
+  );
+  for (const filePath of destinationFixtures) {
     const dir = filePath.split('/destinations/')[1]?.split('/')[0];
-    if (!dir) continue;
+    if (!dir) throw new Error(`Unable to identify destination fixture: ${filePath}`);
     const bucket = buckets.get(dir) ?? [];
     bucket.push(filePath);
     buckets.set(dir, bucket);

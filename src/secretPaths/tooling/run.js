@@ -21,15 +21,15 @@ if (options.check && options.validate) {
 const result = spawnSync(
   process.execPath,
   [
-    path.join(__dirname, '../../node_modules/jest/bin/jest.js'),
+    path.join(__dirname, '../../../node_modules/jest/bin/jest.js'),
     '-c',
     'jest.config.js',
     '--runInBand',
     '--testMatch',
-    '<rootDir>/test/secret-paths/run-entry.ts',
+    '<rootDir>/src/secretPaths/tooling/run-entry.ts',
   ],
   {
-    cwd: path.join(__dirname, '../..'),
+    cwd: path.join(__dirname, '../../..'),
     env: { ...process.env, SECRET_PATHS_RUN_OPTIONS: JSON.stringify(options) },
     stdio: 'inherit',
   },

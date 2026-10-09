@@ -1,5 +1,4 @@
-/* eslint-disable no-console, no-await-in-loop, no-restricted-syntax, no-continue */
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-console, no-await-in-loop */
 /**
  * Validates the committed paths against the fixture corpus.
  *
@@ -32,15 +31,15 @@
  *
  * Usage: npm run validate:secret-paths -- --integrations-config=<path>
  */
-import { getTestData } from '../integrations/testUtils';
-import type { SecretPaths } from '../../src/secretPaths';
+import { getTestData } from '../../../test/integrations/testUtils';
+import type { SecretPaths } from '..';
 import {
   ARRAY_MARKER,
   ENDPOINT_FIELD,
   collapseArrayMarkers,
   escapeSegment,
   parsePath,
-} from '../../src/secretPaths/path';
+} from '../path';
 import validationBaseline from './validation-baseline.json';
 import {
   carriesSecret,
@@ -148,6 +147,30 @@ const leafSurvivorsIn = (request: Record<string, unknown>, secret: SecretValue):
   return survivors;
 };
 
+export function maskAt(root: unknown, path: string): void {
+  const segments = parsePath(path);
+  const descend = (node: unknown, depth: number): void => {
+    if (!isObj(node)) return;
+    const target = node;
+    const segment = segments[depth];
+    const last = depth === segments.length - 1;
+    if (segment === ARRAY_MARKER) {
+      if (!Array.isArray(target)) return;
+      target.forEach((child, index) => {
+        if (last) target[index] = '******';
+        else descend(child, depth + 1);
+      });
+      return;
+    }
+    if (last) {
+      if (target[segment] !== undefined) target[segment] = '******';
+      return;
+    }
+    descend(target[segment], depth + 1);
+  };
+  descend(root, 0);
+}
+
 export const findSurvivorIds = (
   request: Record<string, unknown>,
   paths: string[],
@@ -156,29 +179,6 @@ export const findSurvivorIds = (
   const masked = JSON.parse(JSON.stringify(request));
   paths.forEach((path) => maskAt(masked, path));
   return secrets.flatMap((secret) => leafSurvivorsIn(masked, secret).map(survivorId));
-};
-
-export const maskAt = (root: unknown, path: string): void => {
-  const segments = parsePath(path);
-  const descend = (node: unknown, depth: number): void => {
-    if (!isObj(node)) return;
-    const segment = segments[depth];
-    const last = depth === segments.length - 1;
-    if (segment === ARRAY_MARKER) {
-      if (!Array.isArray(node)) return;
-      node.forEach((child, index) => {
-        if (last) node[index] = '******';
-        else descend(child, depth + 1);
-      });
-      return;
-    }
-    if (last) {
-      if (node[segment] !== undefined) node[segment] = '******';
-      return;
-    }
-    descend(node[segment], depth + 1);
-  };
-  descend(root, 0);
 };
 
 export const validate = async (
@@ -215,48 +215,44 @@ export const validate = async (
     let cases = 0;
     const survivors: string[] = [];
 
+    const validateCase = async (tc: any): Promise<void> => {
+      if (!isDerivableCase(harness, tc)) return;
+
+      // Contract-focused extraction, independent from the generator's perturbation walkers.
+      const secrets = secretValuesFor(tc.input.request.body, declaredKeys);
+      if (secrets.length === 0) return;
+
+      const output = await harness.withCaseEnv(tc, () =>
+        harness.runCase(tc, tc.input.request.body),
+      );
+      if (!output) return;
+      const requests = requestsIn(output);
+      if (requests.length === 0) return;
+      cases += 1;
+
+      for (const req of requests) {
+        // The endpoint is excluded from masking by decision, so a secret sitting there is not
+        // a path the derivation missed. It is counted separately rather than ignored.
+        const { [ENDPOINT_FIELD]: endpoint, ...maskable } = req;
+        if (
+          typeof endpoint === 'string' &&
+          secrets.some((secret) => carriesSecret(endpoint, secret.value))
+        ) {
+          endpointCarriers.add(destType);
+        }
+        if (paths !== null) survivors.push(...findSurvivorIds(maskable, paths, secrets));
+      }
+    };
+
     for (const file of corpus.get(destType.toLowerCase()) ?? []) {
       let fixtures: any[];
       try {
         fixtures = getTestData(file);
       } catch {
-        continue;
+        fixtures = [];
       }
       for (const tc of fixtures) {
-        // The shared predicate, so the validator replays exactly the cases the generator derived
-        // from - it was hand-rolling a copy that omitted the `routeFor` check and so replayed
-        // `dataDelivery` cases the generator declines.
-        if (!isDerivableCase(harness, tc)) continue;
-
-        // Contract-focused extraction, independent from the generator's perturbation walkers:
-        // configured values come from declared config keys, and runtime values come only from real
-        // metadata.secret bags. Read before the transform, precisely so a case with no candidate
-        // credential can skip an expensive replay.
-        const secrets = secretValuesFor(tc.input.request.body, declaredKeys);
-        if (secrets.length === 0) continue;
-
-        const output = await harness.withCaseEnv(tc, () =>
-          harness.runCase(tc, tc.input.request.body),
-        );
-        if (!output) continue;
-        const requests = requestsIn(output);
-        if (requests.length === 0) continue;
-        cases += 1;
-
-        for (const req of requests) {
-          // The endpoint is excluded from masking by decision, so a secret sitting there is not
-          // a path the derivation missed. It is counted separately rather than ignored, so that
-          // exclusion can never quietly absorb a credential nobody decided to accept.
-          const { [ENDPOINT_FIELD]: endpoint, ...maskable } = req;
-          if (
-            typeof endpoint === 'string' &&
-            secrets.some((s) => carriesSecret(endpoint, s.value))
-          ) {
-            endpointCarriers.add(destType);
-          }
-          if (failClosed) continue;
-          survivors.push(...findSurvivorIds(maskable, paths, secrets));
-        }
+        await validateCase(tc);
       }
     }
     // Fail-closed destinations have no derived paths to be covered by anything.

@@ -14,6 +14,12 @@ import {
   valuesFor,
 } from './generate';
 
+const AUTHORIZATION_LOCATION = 'req[0]|headers.Authorization';
+const AUTHORIZATION_PATH = 'headers.Authorization';
+const INVALID_PATH_MESSAGE = 'Invalid secret path';
+const CHARACTER_CLASSES = [/[a-z]/, /[A-Z]/, /\d/, /[^\dA-Za-z]/];
+const PUNCTUATION = /[^\dA-Za-z]/;
+
 const flattened = (entries: Record<string, string>, requestCount = 1): FlattenedOutput => ({
   leaves: new Map(Object.entries(entries)),
   requestCount,
@@ -36,29 +42,27 @@ describe('secret-path generator utilities', () => {
     expect(second).toHaveLength(value.length);
     expect(new Set([value, first, second]).size).toBe(3);
     [...value].forEach((character, index) => {
-      expect(
-        [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z\d]/].findIndex((group) => group.test(character)),
-      ).toBe(
-        [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z\d]/].findIndex((group) => group.test(first[index])),
+      expect(CHARACTER_CLASSES.findIndex((group) => group.test(character))).toBe(
+        CHARACTER_CLASSES.findIndex((group) => group.test(first[index])),
       );
-      if (/[^A-Za-z\d]/.test(character)) expect(first[index]).toBe(character);
+      if (PUNCTUATION.test(character)) expect(first[index]).toBe(character);
     });
   });
 
   it('requires two distinct decoy outputs before attributing a location', () => {
-    const real = baseline({ 'req[0]|headers.Authorization': 'Bearer real' });
-    const first = flattened({ 'req[0]|headers.Authorization': 'Bearer decoy-a' });
+    const real = baseline({ [AUTHORIZATION_LOCATION]: 'Bearer real' });
+    const first = flattened({ [AUTHORIZATION_LOCATION]: 'Bearer decoy-a' });
 
     expect(
       locationsForKey(
         real,
         first,
-        flattened({ 'req[0]|headers.Authorization': 'Bearer decoy-b' }),
+        flattened({ [AUTHORIZATION_LOCATION]: 'Bearer decoy-b' }),
         'apiKey',
       ),
     ).toEqual([
       {
-        loc: 'req[0]|headers.Authorization',
+        loc: AUTHORIZATION_LOCATION,
         source: 'apiKey',
         evidence: { real: 'Bearer real', decoy: 'Bearer decoy-a' },
       },
@@ -95,7 +99,7 @@ describe('secret-path generator utilities', () => {
 
   it('collapses destination-configured secret header names to the containing object', () => {
     expect(collapseDynamicConfigHeader('headers.x-api-key', true)).toBe('headers');
-    expect(collapseDynamicConfigHeader('headers.Authorization')).toBe('headers.Authorization');
+    expect(collapseDynamicConfigHeader(AUTHORIZATION_PATH)).toBe(AUTHORIZATION_PATH);
   });
 
   it('records dynamic header evidence from destination config values', () => {
@@ -127,18 +131,18 @@ describe('secret-path generator utilities', () => {
         movement('endpoint.token'),
         movement('body.JSON.messages.#0.token'),
         movement('params.bd[0]'),
-        movement('headers.Authorization'),
+        movement(AUTHORIZATION_PATH),
         movement('body.JSON.messages.#1.token'),
         movement('params.z'),
       ]),
-    ).toEqual(['body.JSON.messages.#.token', 'headers.Authorization', 'params']);
+    ).toEqual(['body.JSON.messages.#.token', AUTHORIZATION_PATH, 'params']);
   });
 
   it('collapses dynamic config-header locations when paths are emitted', () => {
     expect(
       toSecretPaths([
         { loc: 'req[0]|headers.x-api-key', headerNameFromConfig: true },
-        { loc: 'req[0]|headers.Authorization' },
+        { loc: AUTHORIZATION_LOCATION },
       ]),
     ).toEqual(['headers']);
   });
@@ -151,17 +155,17 @@ describe('secret-path generator utilities', () => {
 
   it('serialises sorted paths and JSON null without a wildcard sentinel', () => {
     expect(serialise({ EMPTY: [], UNRESOLVED: null })).toBe(
-      '{\n  "EMPTY": [],\n  "UNRESOLVED": null\n}\n',
+      '{ "EMPTY": [], "UNRESOLVED": null }\n',
     );
   });
 
   it.each([
     [{ B: [], A: [] }, 'destination keys'],
-    [{ TEST: ['params.z', 'headers.Authorization'] }, 'unique and sorted'],
-    [{ TEST: ['headers.Authorization', 'headers.Authorization'] }, 'unique and sorted'],
-    [{ TEST: ['*'] }, 'Invalid secret path'],
-    [{ TEST: ['endpoint.token'] }, 'Invalid secret path'],
-    [{ TEST: ['headers.X*Token'] }, 'Invalid secret path'],
+    [{ TEST: ['params.z', AUTHORIZATION_PATH] }, 'unique and sorted'],
+    [{ TEST: [AUTHORIZATION_PATH, AUTHORIZATION_PATH] }, 'unique and sorted'],
+    [{ TEST: ['*'] }, INVALID_PATH_MESSAGE],
+    [{ TEST: ['endpoint.token'] }, INVALID_PATH_MESSAGE],
+    [{ TEST: ['headers.X*Token'] }, INVALID_PATH_MESSAGE],
   ])('rejects invalid artifact output %#', (secretPaths, message) => {
     expect(() => validateSecretPaths(secretPaths)).toThrow(message);
   });

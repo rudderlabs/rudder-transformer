@@ -1,4 +1,5 @@
-import secretPaths from '../../src/secretPaths/secretPaths.json';
+import { getTestData } from '../../../test/integrations/testUtils';
+import secretPaths from '../secretPaths.json';
 import { loadDeclaredSecretKeys } from './declared';
 import { main } from './generate';
 import { fixturesByDestination } from './harness';
@@ -18,8 +19,7 @@ const options = JSON.parse(process.env.SECRET_PATHS_RUN_OPTIONS ?? '{}') as RunO
 // phase too; the generator then reads the already-cached exports from inside the test.
 for (const fixturePaths of fixturesByDestination().values()) {
   for (const fixturePath of fixturePaths) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require, import/no-dynamic-require
-    require(fixturePath);
+    getTestData(fixturePath);
   }
 }
 

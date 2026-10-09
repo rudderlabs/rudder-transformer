@@ -1,7 +1,4 @@
-/* eslint-disable no-console, no-await-in-loop, no-restricted-syntax, no-continue */
-// This is a build-time generator, not shipped runtime code, so the test-only packages it
-// drives (supertest, axios-mock-adapter, http-terminator) are correctly devDependencies.
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-console, no-await-in-loop */
 /**
  * Derives the `secretPaths` map carried on GET /features.
  *
@@ -28,16 +25,17 @@
  * build would read the published destination definitions instead.
  */
 import fs from 'fs';
+import { execFileSync } from 'child_process';
 import cloneDeep from 'lodash/cloneDeep';
-import path, { join } from 'path';
-import { getTestData } from '../integrations/testUtils';
-import type { SecretPaths } from '../../src/secretPaths';
+import { createRequire } from 'module';
+import nodePath, { join } from 'path';
+import { getTestData } from '../../../test/integrations/testUtils';
+import type { SecretPaths } from '..';
 import { implementedDestinations, loadDeclaredSecretKeys, probeConfigFor } from './declared';
 import type { MockMatching } from './harness';
 import {
   carriesSecret,
   configSecretsFor,
-  DATA_DELIVERY_FIXTURE_ROUTE,
   Harness,
   fixturesByDestination,
   isDerivableCase,
@@ -54,7 +52,7 @@ import {
   escapeSegment,
   formatPath,
   parsePath,
-} from '../../src/secretPaths/path';
+} from '../path';
 
 type EndpointExposure = 'query' | 'url';
 type UnresolvedReason =
@@ -77,8 +75,10 @@ const MASKING_FOR_REASON: Record<UnresolvedReason, string[] | null> = {
   'no-secret-located': [],
   'unstable-under-substitution': null,
 };
+const HARNESS_ERROR_REASON: UnresolvedReason = 'harness-error';
 
-const OUT_FILE = join(__dirname, '../../src/secretPaths/secretPaths.json');
+const OUT_FILE = join(__dirname, '../secretPaths.json');
+const PRETTIER_BIN = createRequire(__filename).resolve('prettier/bin/prettier.cjs');
 
 /** Takes a thunk so the message - often a stringified leaf - is only built when debugging. */
 const debug = (message: () => string): void => {
@@ -385,21 +385,17 @@ const secretCarriersIn = (
   const found: Movement[] = [];
   for (const loc of locations) {
     const realValue = baseline.runA.leaves.get(loc);
-    if (realValue === undefined) continue;
-    // `carriesSecret`, not a bare `includes`: OAuth1 percent-encodes every parameter value, so a
-    // realistic base64-shaped token reaches the header as `oauth_token="ab%2Bcd%2Fef%3D"`. The
-    // validator has always searched for the encoded forms; the generator has to look for the same
-    // ones, or it under-finds exactly what the validator then reports as a survivor.
-    if (!secrets.some((secret) => carriesSecret(realValue, secret))) continue;
-    debug(
-      () =>
-        `${loc} from=metadata.secret (contains a bag value)` +
-        `\n            real =${JSON.stringify(realValue).slice(0, 90)}`,
-    );
-    // No decoy ran for this leaf, so there is no before-and-after to attach. `exposureOf` reads
-    // evidence only to tell a `query` exposure from a `url` one, and falls back to `url` - the
-    // unfixable classification - which is the safe way round for a field nothing measured.
-    found.push({ loc, source: 'metadata.secret' });
+    if (realValue !== undefined && secrets.some((secret) => carriesSecret(realValue, secret))) {
+      // `carriesSecret`, not a bare `includes`: OAuth1 percent-encodes every parameter value, so a
+      // realistic base64-shaped token reaches the header as `oauth_token="ab%2Bcd%2Fef%3D"`.
+      debug(
+        () =>
+          `${loc} from=metadata.secret (contains a bag value)` +
+          `\n            real =${JSON.stringify(realValue).slice(0, 90)}`,
+      );
+      // No decoy ran for this leaf, so there is no before-and-after to attach.
+      found.push({ loc, source: 'metadata.secret' });
+    }
   }
   return found;
 };
@@ -414,33 +410,30 @@ export const locationsForKey = (
 ): Movement[] => {
   const found: Movement[] = [];
   for (const [loc, realValue] of baseline.runA.leaves) {
-    if (baseline.nonDeterministic.has(loc)) continue;
     // An empty decoy value carries no secret, so treating it like a miss is correct.
     const decoyValue = decoy.leaves.get(loc) ?? '';
-    if (decoyValue === '' || decoyValue === realValue) continue;
-
-    // Corroboration: a field that genuinely carries the secret takes a *different* value for
-    // every distinct decoy. A field that merely broke as a side effect of the substitution -
-    // a lookup whose mocked response stopped matching, say, so the id it contributed became
-    // `undefined` - collapses to the same value both times. Without this check that collapse
-    // reads as "secret-derived" and gets masked.
-    if (decoy2.leaves.get(loc) === decoyValue) continue;
-
-    debug(
-      () =>
-        `${loc} from=${source}` +
-        `\n            real =${JSON.stringify(realValue).slice(0, 90)}` +
-        `\n            decoy=${JSON.stringify(decoyValue).slice(0, 90)}`,
-    );
-    const segments = parsePath(pathOf(loc));
-    found.push({
-      loc,
-      source,
-      ...(segments.length === 2 &&
-        segments[0] === 'headers' &&
-        configuredValues.has(segments[1]) && { headerNameFromConfig: true }),
-      evidence: { real: realValue, decoy: decoyValue },
-    });
+    const corroborated =
+      !baseline.nonDeterministic.has(loc) &&
+      decoyValue !== '' &&
+      decoyValue !== realValue &&
+      decoy2.leaves.get(loc) !== decoyValue;
+    if (corroborated) {
+      debug(
+        () =>
+          `${loc} from=${source}` +
+          `\n            real =${JSON.stringify(realValue).slice(0, 90)}` +
+          `\n            decoy=${JSON.stringify(decoyValue).slice(0, 90)}`,
+      );
+      const segments = parsePath(pathOf(loc));
+      found.push({
+        loc,
+        source,
+        ...(segments.length === 2 &&
+          segments[0] === 'headers' &&
+          configuredValues.has(segments[1]) && { headerNameFromConfig: true }),
+        evidence: { real: realValue, decoy: decoyValue },
+      });
+    }
   }
   return found;
 };
@@ -498,11 +491,12 @@ const deriveForCase = async (
   // destination fails closed either way - a partial path set is indistinguishable from a
   // complete one to a consumer - but which source destabilised it is the first thing anyone
   // investigating needs, and the run has it in hand right here.
-  for (const source of secretSources) {
+  const presentSources = secretSources
+    .map((source) => ({ source, present: valuesFor(source, originalBody) }))
+    .filter(({ present }) => present.length > 0);
+  for (const { source, present } of presentSources) {
     // `valuesFor`/`rewriteWith` are the only place the two kinds differ; past them the sources
     // are the same measurement, so neither can drift away from the other's rules.
-    const present = valuesFor(source, originalBody);
-    if (present.length === 0) continue;
     if (present.some((value) => decoysFor(value) === null)) {
       debug(() => `unstable: '${sourceName(source)}' has no distinct decoys`);
       outcome.unstableSource = source;
@@ -595,41 +589,46 @@ const deriveFromFetchedCredentials = async (
       try {
         cases = getTestData(filePath);
       } catch {
-        continue;
+        cases = [];
       }
-      for (const tcData of cases) {
-        if (!isDerivableCase(harness, tcData)) continue;
-        const body = tcData.input.request.body;
+      for (const tcData of cases.filter((candidate) => isDerivableCase(harness, candidate))) {
+        const { body } = tcData.input.request;
         const candidates = harness.mockResponseSecrets(destination, body, declaredKeys);
-        if (candidates.length === 0) continue;
-
-        // The same two-run non-determinism rule as the config pass, not a second copy of it:
-        // that rule is the soundness core of the whole derivation, and a fix applied to one copy
-        // would silently miss this branch.
-        const { baseline } = await runBaseline(harness, tcData, body, () =>
-          harness.useMocksFor(destination),
-        );
-        if (!baseline) continue;
-
-        for (const candidate of candidates) {
-          const decoys = decoysFor(candidate);
-          if (!decoys) {
-            stable = false;
-            return;
-          }
-          const decoyRuns = await runCorroboratedDecoys(baseline, 'fetched credential', (seed) => {
-            const substitutions = new Map([[candidate, decoys[seed - 1]]]);
-            harness.useMocksFor(destination, substitutions, 'strict', 'response');
-            return harness.runCase(tcData, cloneDeep(body));
-          });
-          if (!decoyRuns) {
-            stable = false;
-            return;
-          }
-          // The same corroborated diff as the config pass, not a second copy of it.
-          locations.push(
-            ...locationsForKey(baseline, ...decoyRuns, undefined, destinationConfigValues(tcData)),
+        if (candidates.length > 0) {
+          // The same two-run non-determinism rule as the config pass, not a second copy of it.
+          const { baseline } = await runBaseline(harness, tcData, body, () =>
+            harness.useMocksFor(destination),
           );
+          if (baseline) {
+            for (const candidate of candidates) {
+              const decoys = decoysFor(candidate);
+              if (!decoys) {
+                stable = false;
+                return;
+              }
+              const decoyRuns = await runCorroboratedDecoys(
+                baseline,
+                'fetched credential',
+                (seed) => {
+                  const substitutions = new Map([[candidate, decoys[seed - 1]]]);
+                  harness.useMocksFor(destination, substitutions, 'strict', 'response');
+                  return harness.runCase(tcData, cloneDeep(body));
+                },
+              );
+              if (!decoyRuns) {
+                stable = false;
+                return;
+              }
+              locations.push(
+                ...locationsForKey(
+                  baseline,
+                  ...decoyRuns,
+                  undefined,
+                  destinationConfigValues(tcData),
+                ),
+              );
+            }
+          }
         }
       }
     }
@@ -678,6 +677,17 @@ const corpusCarriesRuntimeSecrets = (harness: Harness, filePaths: string[]): boo
     );
   });
 
+/** Drops comparison evidence after its endpoint classification has been consumed. */
+function withoutUnreadEvidence(movement: Movement): Movement {
+  return pathOf(movement.loc) === ENDPOINT_FIELD
+    ? movement
+    : {
+        loc: movement.loc,
+        source: movement.source,
+        ...(movement.headerNameFromConfig && { headerNameFromConfig: true }),
+      };
+}
+
 const deriveForDestination = async (
   harness: Harness,
   destination: string,
@@ -699,9 +709,7 @@ const deriveForDestination = async (
       return total;
     }
 
-    for (const tcData of cases) {
-      if (!isDerivableCase(harness, tcData)) continue;
-
+    for (const tcData of cases.filter((candidate) => isDerivableCase(harness, candidate))) {
       const outcome = await harness.withCaseEnv(tcData, () =>
         deriveForCase(harness, destination, tcData, secretSources, matching),
       );
@@ -744,7 +752,7 @@ const deriveForDestination = async (
  */
 export const collapseKeyFamily = (path: string): string | null => {
   const segments = parsePath(path);
-  const family = segments.findIndex((segment) => /\[\d+\]$/.test(segment));
+  const family = segments.findIndex((segment) => /\[\d+]$/.test(segment));
   if (family === -1) return path;
   return family === 0 ? null : formatPath(segments.slice(0, family));
 };
@@ -804,21 +812,6 @@ const exposureOf = (locations: Movement[]): EndpointExposure | undefined => {
     : 'url';
 };
 
-/**
- * Drops the evidence nothing will read, at the one point per-destination accumulation happens.
- *
- * Kept out of the producers on purpose: deciding what to retain is the same policy question as
- * deciding what to publish, and putting it in a producer is how the other one escapes it.
- */
-const withoutUnreadEvidence = (m: Movement): Movement =>
-  pathOf(m.loc) === ENDPOINT_FIELD
-    ? m
-    : {
-        loc: m.loc,
-        source: m.source,
-        ...(m.headerNameFromConfig && { headerNameFromConfig: true }),
-      };
-
 const sortedByKey = <T>(record: Record<string, T>): Record<string, T> =>
   Object.fromEntries(Object.entries(record).sort(([a], [b]) => (a < b ? -1 : 1)));
 
@@ -834,23 +827,24 @@ export const validateSecretPaths = (secretPaths: SecretPaths): void => {
   }
 
   for (const [destType, paths] of Object.entries(secretPaths)) {
-    if (paths === null) continue;
-    const sortedPaths = [...paths].sort();
-    if (
-      new Set(paths).size !== paths.length ||
-      JSON.stringify(paths) !== JSON.stringify(sortedPaths)
-    ) {
-      throw new Error(`Secret paths for ${destType} must be unique and sorted`);
-    }
-    for (const secretPath of paths) {
-      const segments = parsePath(secretPath);
+    if (paths !== null) {
+      const sortedPaths = [...paths].sort();
       if (
-        secretPath !== formatPath(segments) ||
-        segments.some((segment) => segment.length === 0) ||
-        segments[0] === ARRAY_MARKER ||
-        segments[0] === ENDPOINT_FIELD
+        new Set(paths).size !== paths.length ||
+        JSON.stringify(paths) !== JSON.stringify(sortedPaths)
       ) {
-        throw new Error(`Invalid secret path for ${destType}: ${secretPath}`);
+        throw new Error(`Secret paths for ${destType} must be unique and sorted`);
+      }
+      for (const secretPath of paths) {
+        const segments = parsePath(secretPath);
+        if (
+          secretPath !== formatPath(segments) ||
+          segments.some((segment) => segment.length === 0) ||
+          segments[0] === ARRAY_MARKER ||
+          segments[0] === ENDPOINT_FIELD
+        ) {
+          throw new Error(`Invalid secret path for ${destType}: ${secretPath}`);
+        }
       }
     }
   }
@@ -858,7 +852,11 @@ export const validateSecretPaths = (secretPaths: SecretPaths): void => {
 
 export const serialise = (secretPaths: SecretPaths): string => {
   validateSecretPaths(secretPaths);
-  return `${JSON.stringify(secretPaths, null, 2)}\n`;
+  return execFileSync(process.execPath, [PRETTIER_BIN, '--parser=json'], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    input: JSON.stringify(secretPaths),
+  });
 };
 
 /**
@@ -870,10 +868,10 @@ export const serialise = (secretPaths: SecretPaths): string => {
  * artifact is regenerated and committed.
  *
  * Byte comparison is only honest because the artifact holds nothing that varies by environment:
- * there is no build stamp and no checksum, keys are sorted on emit, and the file is in
- * .prettierignore so nothing reformats it afterwards. Same code plus same `secretKeys` produces
- * the same bytes on a laptop and on a runner. The per-destination report below exists to explain
- * a failure, never to decide it.
+ * there is no build stamp and no checksum, keys are sorted on emit, and the serializer matches
+ * the repository's Prettier JSON format. Same code plus same `secretKeys` produces the same bytes
+ * on a laptop and on a runner. The per-destination report below exists to explain a failure,
+ * never to decide it.
  */
 const reportDrift = (fresh: SecretPaths): void => {
   // Read from disk rather than importing, so a run started before an edit still compares against
@@ -884,7 +882,7 @@ const reportDrift = (fresh: SecretPaths): void => {
     committedText = fs.readFileSync(OUT_FILE, 'utf8');
     committed = JSON.parse(committedText);
   } catch (err) {
-    console.error(`\nERROR: cannot read ${path.relative(process.cwd(), OUT_FILE)}: ${err}`);
+    console.error(`\nERROR: cannot read ${nodePath.relative(process.cwd(), OUT_FILE)}: ${err}`);
     process.exitCode = 1;
     return;
   }
@@ -973,7 +971,7 @@ export const main = async (options: GenerateOptions = {}) => {
     destinations[destType] = MASKING_FOR_REASON[reason];
   };
 
-  for (const destination of allDestinations) {
+  const deriveOne = async (destination: string): Promise<void> => {
     const destType = destination.toUpperCase();
     const lower = destination.toLowerCase();
     const declaredKeys = declaredSecretKeys[lower];
@@ -998,7 +996,7 @@ export const main = async (options: GenerateOptions = {}) => {
 
     if (secretSources.length === 0) {
       recordUnresolved(destType, 'no-declared-secrets');
-      continue;
+      return;
     }
 
     if (filePaths.length === 0) {
@@ -1014,7 +1012,7 @@ export const main = async (options: GenerateOptions = {}) => {
       if (probed === 'no-request') {
         console.log('no http request (probed)');
         recordUnresolved(destType, 'no-http-request');
-        continue;
+        return;
       }
       // Neither a fixture nor a conclusive probe. Failing closed would bury that in the manifest
       // as one more `null`, and the count could grow without anyone noticing. A destination we
@@ -1022,7 +1020,7 @@ export const main = async (options: GenerateOptions = {}) => {
       console.log(`no fixtures, and probe was ${probed}`);
       inconclusive.push(destType);
       recordUnresolved(destType, 'no-fixtures');
-      continue;
+      return;
     }
 
     process.stdout.write(`  ${destination} ... `);
@@ -1051,14 +1049,14 @@ export const main = async (options: GenerateOptions = {}) => {
       }
     } catch (err: any) {
       console.log(`harness error (${String(err?.message).slice(0, 60)})`);
-      recordUnresolved(destType, 'harness-error');
-      continue;
+      recordUnresolved(destType, HARNESS_ERROR_REASON);
+      return;
     }
 
     if (result.harnessError) {
       console.log(`harness error (${result.harnessError.slice(0, 60)})`);
-      recordUnresolved(destType, 'harness-error');
-      continue;
+      recordUnresolved(destType, HARNESS_ERROR_REASON);
+      return;
     }
     if (result.unstableSource) {
       // Substituting this key changed the output's shape, so the paths derived from the other
@@ -1096,7 +1094,7 @@ export const main = async (options: GenerateOptions = {}) => {
       if (!fetched?.stable || fetched.locations.length === 0) {
         console.log(`unstable under '${sourceName(result.unstableSource)}' - failing closed`);
         recordUnresolved(destType, 'unstable-under-substitution');
-        continue;
+        return;
       }
       // The fetched locations are merged below, not assigned. Everything already collected came
       // from a source that cleared both the shape check and the two-decoy corroboration before the
@@ -1107,13 +1105,13 @@ export const main = async (options: GenerateOptions = {}) => {
     if (!result.transformed) {
       // Nothing ran, so we know nothing. Fail closed rather than claim there is no request.
       console.log('no case transformed - failing closed');
-      recordUnresolved(destType, 'harness-error');
-      continue;
+      recordUnresolved(destType, HARNESS_ERROR_REASON);
+      return;
     }
     if (!result.sawRequest) {
       console.log('no http request');
       recordUnresolved(destType, 'no-http-request');
-      continue;
+      return;
     }
     // A destination can both place one declared/runtime value directly and exchange another
     // declared config secret for a token. Run the grounded auth-response pass even when ordinary
@@ -1122,7 +1120,7 @@ export const main = async (options: GenerateOptions = {}) => {
     if (!fetched.stable) {
       console.log('fetched credential unstable under substitution - failing closed');
       recordUnresolved(destType, 'unstable-under-substitution');
-      continue;
+      return;
     }
     if (fetched.locations.length > 0) {
       result.locations.push(...fetched.locations.map(withoutUnreadEvidence));
@@ -1141,19 +1139,23 @@ export const main = async (options: GenerateOptions = {}) => {
       const reason: UnresolvedReason = exposure ? 'endpoint-only' : 'no-secret-located';
       console.log(reason);
       recordUnresolved(destType, reason);
-      continue;
+      return;
     }
 
     // Only reachable when a family sat at the top level, where no object contains it.
     if (result.locations.some((m) => collapseKeyFamily(pathOf(m.loc)) === null)) {
       console.log('dynamic key family at the top level - failing closed');
       recordUnresolved(destType, 'dynamic-key-family');
-      continue;
+      return;
     }
     destinations[destType] = paths;
     console.log(
       `${paths.length} path(s): ${paths.join(', ')}${relaxed ? ' [relaxed mock matching]' : ''}`,
     );
+  };
+
+  for (const destination of allDestinations) {
+    await deriveOne(destination);
   }
 
   // Sorted on the way out. Destination order otherwise follows directory enumeration, which is
@@ -1168,7 +1170,7 @@ export const main = async (options: GenerateOptions = {}) => {
     action = 'derived';
   } else {
     fs.writeFileSync(OUT_FILE, serialise(secretPaths));
-    action = `wrote ${path.relative(process.cwd(), OUT_FILE)}:`;
+    action = `wrote ${nodePath.relative(process.cwd(), OUT_FILE)}:`;
   }
   const all = Object.values(destinations);
   const maskAll = all.filter((p) => p === null).length;

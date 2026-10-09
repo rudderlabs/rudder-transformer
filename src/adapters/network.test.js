@@ -853,6 +853,161 @@ describe('logging in http methods', () => {
   });
 });
 
+describe('HS_AUDIENCE payload logs', () => {
+  const audienceTags = {
+    destType: 'HS_AUDIENCE',
+    feature: 'transformation',
+    endpointPath: '/crm/v3/objects/contacts/batch/read',
+    requestMethod: 'POST',
+    metadata: { workspaceId: 'ws-1' },
+  };
+
+  beforeEach(() => {
+    mockLoggerInstance.event.mockClear();
+    stats.timing.mockClear();
+    stats.counter.mockClear();
+    stats.histogram.mockClear();
+    axios.post.mockReset();
+    axios.mockReset();
+  });
+
+  test('httpPOST skips request and response logs and still records metrics', async () => {
+    axios.post.mockResolvedValueOnce({
+      status: 200,
+      data: { status: 'COMPLETE', results: [], errors: [] },
+      headers: {},
+    });
+
+    await httpPOST(
+      'https://api.hubapi.com/crm/v3/objects/contacts/batch/read',
+      { inputs: [{ id: 'a@example.com' }] },
+      { headers: { Authorization: 'Bearer pat-test-hs-audience-token' } },
+      audienceTags,
+    );
+
+    expect(mockLoggerInstance.event).not.toHaveBeenCalled();
+    expect(stats.timing).toHaveBeenCalledWith(
+      'outgoing_request_latency',
+      expect.any(Date),
+      expect.objectContaining({ destType: 'HS_AUDIENCE' }),
+    );
+    expect(stats.counter).toHaveBeenCalledWith(
+      'outgoing_request_count',
+      1,
+      expect.objectContaining({ destType: 'HS_AUDIENCE', success: true }),
+    );
+  });
+
+  test('a trimmed or lowercase destType is the same destination', async () => {
+    axios.post.mockResolvedValue({ status: 200, data: {}, headers: {} });
+
+    await httpPOST(
+      'https://api.hubapi.com/lookup',
+      {},
+      {},
+      {
+        ...audienceTags,
+        destType: 'hs_audience',
+      },
+    );
+    await httpPOST(
+      'https://api.hubapi.com/lookup',
+      {},
+      {},
+      {
+        ...audienceTags,
+        destType: ' HS_AUDIENCE ',
+      },
+    );
+
+    expect(mockLoggerInstance.event).not.toHaveBeenCalled();
+    expect(stats.counter).toHaveBeenCalledTimes(2);
+  });
+
+  test('a failed audience call still skips payload logs', async () => {
+    axios.post.mockRejectedValueOnce({
+      response: { status: 401, data: { message: 'pat-test-hs-audience-token' } },
+    });
+
+    await httpPOST(
+      'https://api.hubapi.com/lookup',
+      { token: 'pat-test-hs-audience-token' },
+      {},
+      audienceTags,
+    );
+
+    expect(mockLoggerInstance.event).not.toHaveBeenCalled();
+    expect(stats.timing).toHaveBeenCalledTimes(1);
+    expect(stats.counter).toHaveBeenCalledWith(
+      'outgoing_request_count',
+      1,
+      expect.objectContaining({ destType: 'HS_AUDIENCE', success: false }),
+    );
+  });
+
+  test('another destination still logs the request and the response', async () => {
+    axios.post.mockResolvedValueOnce({ status: 200, data: { ok: true }, headers: {} });
+
+    await httpPOST(
+      'https://example.com/post',
+      { email: 'a@example.com' },
+      {},
+      {
+        destType: 'DT',
+        feature: 'feat',
+        endpointPath: '/post',
+        requestMethod: 'post',
+      },
+    );
+
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
+  });
+
+  test('proxy delivery skips audience payload logs and still records payload size', async () => {
+    axios.mockResolvedValueOnce({ status: 200, data: {} });
+    const request = {
+      body: { JSON: { recordIdsToAdd: ['1'], recordIdsToRemove: [] } },
+      endpoint: 'https://api.hubapi.com/crm/v3/lists/10/memberships/add-and-remove',
+      endpointPath: '/crm/v3/lists/:listId/memberships/add-and-remove',
+      method: 'PUT',
+      headers: { Authorization: 'Bearer pat-test-hs-audience-token' },
+      metadata: { destinationId: 'dest-1', workspaceId: 'ws-1' },
+    };
+
+    await proxyRequest(request, 'hs_audience');
+
+    expect(mockLoggerInstance.event).not.toHaveBeenCalled();
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_payload_size_bytes',
+      expect.any(Number),
+      expect.objectContaining({ destType: 'hs_audience' }),
+    );
+  });
+
+  test('proxy delivery for another destination still logs payloads', async () => {
+    axios.mockResolvedValueOnce({ status: 200, data: { ok: true } });
+
+    await proxyRequest(
+      {
+        body: { JSON: { email: 'a@example.com' } },
+        endpoint: 'https://example.com/post',
+        endpointPath: '/post',
+        method: 'POST',
+        headers: {},
+        metadata: { destinationId: 'dest-1' },
+      },
+      'DT',
+    );
+
+    expect(mockLoggerInstance.event).toHaveBeenCalledTimes(2);
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_payload_size_bytes',
+      expect.any(Number),
+      expect.objectContaining({ destType: 'DT' }),
+    );
+  });
+});
+
 describe('httpDELETE tests', () => {
   beforeEach(() => {
     mockLoggerInstance.event.mockClear();

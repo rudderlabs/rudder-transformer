@@ -39,6 +39,7 @@ describe('features destination capabilities', () => {
       ITERABLE_AUDIENCE: true,
       BRAZE_AUDIENCE: true,
       REDDIT_AUDIENCE: true,
+      HS_AUDIENCE: true,
       EVERFLOW: true,
       OPENAI_ADS: true,
       TEST_DESTINATION: true,

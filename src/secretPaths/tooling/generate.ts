@@ -17,7 +17,7 @@
  *   rudder-server forwards verbatim. Nothing declares its keys, so every value under it is
  *   treated as a credential and perturbed by position. See `visitRuntimeSecrets`.
  *
- * Usage (run-entry.ts is the Jest entry point):
+ * Usage (`generate.jest-entry.ts` is the Jest entry point):
  *   SECRET_PATHS_DESTINATION=klaviyo,ga4 npm run generate:secret-paths
  *   npm run generate:secret-paths                        # whole corpus
  *

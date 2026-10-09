@@ -1,3 +1,10 @@
+/**
+ * Jest entry point for `generate.ts`, launched only by the secret-path npm scripts through an
+ * explicit `--testMatch`.
+ *
+ * Deliberately not named `.test.ts`: the default Jest suite collects that suffix, and normal
+ * `npm test` must not run the full derivation or require an integrations-config checkout.
+ */
 import { getTestData } from '../../../test/integrations/testUtils';
 import { main } from './generate';
 import { fixturesByDestination } from './harness';

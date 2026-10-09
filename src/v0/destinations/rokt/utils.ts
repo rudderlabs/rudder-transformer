@@ -73,26 +73,60 @@ const asNonEmptyString = (value: unknown): string | undefined => {
   return stringValue || undefined;
 };
 
+const normalizeEndpointPath = (apiEndpoint: string, parsed: URL): string | undefined => {
+  // URL.pathname canonicalizes dot segments and treats backslashes as separators for HTTPS URLs,
+  // so validate the original path spelling before using it.
+  if (apiEndpoint.includes('\\')) return undefined;
+  const rawUrl = /^[A-Za-z][\d+.A-Za-z-]*:\/\/([^#/?]+)([^#?]*)/.exec(apiEndpoint);
+  if (!rawUrl) return undefined;
+
+  const [, rawAuthority, rawPath] = rawUrl;
+  const rawAuthorityUrl = isValidUrl(`${parsed.protocol}//${rawAuthority}`);
+  if (
+    !rawAuthorityUrl ||
+    rawAuthorityUrl.host !== parsed.host ||
+    rawAuthorityUrl.username !== parsed.username ||
+    rawAuthorityUrl.password !== parsed.password
+  ) {
+    return undefined;
+  }
+
+  if (rawPath === '' || rawPath === '/') return '';
+
+  const normalizedPath = rawPath.endsWith('/') ? rawPath.slice(0, -1) : rawPath;
+  const segments = normalizedPath.slice(1).split('/');
+  const validSegments = segments.every(
+    (segment) => segment !== '.' && segment !== '..' && /^[\w.~-]+$/.test(segment),
+  );
+
+  if (!normalizedPath.startsWith('/') || rawPath.includes('%') || !validSegments) return undefined;
+  return normalizedPath;
+};
+
 export const resolveEndpoint = (apiEndpoint: string): string => {
   const parsed = isValidUrl(apiEndpoint);
   if (!parsed) {
     throw new ConfigurationError('ROKT apiEndpoint must be a valid Rokt Events API URL');
   }
 
+  const host = parsed.hostname.toLowerCase();
+  const hostAllowed = host === 'mparticle.com' || host.endsWith('.mparticle.com');
+  const normalizedPath = normalizeEndpointPath(apiEndpoint, parsed);
+
   if (
     parsed.protocol !== 'https:' ||
-    !parsed.hostname.toLowerCase().endsWith('.mparticle.com') ||
+    !hostAllowed ||
     parsed.username ||
     parsed.password ||
     parsed.port ||
     parsed.search ||
     parsed.hash ||
-    !['', '/'].includes(parsed.pathname)
+    normalizedPath === undefined
   ) {
     throw new ConfigurationError('ROKT apiEndpoint must be a valid HTTPS Rokt Events API base URL');
   }
 
-  return `${parsed.origin}${BULK_EVENTS_PATH}`;
+  return `${parsed.origin}${normalizedPath}${BULK_EVENTS_PATH}`;
 };
 
 // Shared with delivery, which maps Rokt's error positions back onto this exact serialization.

@@ -1,3 +1,4 @@
+import { requireLiveField } from '@rudderstack/integrations-lib/build/live-test';
 import type { LiveScenario, RunContext } from '../../../live/types';
 import {
   ASSOC_FROM_TYPE,
@@ -627,18 +628,6 @@ interface BuildScenariosOptions {
   configKey: 'accessToken' | 'serviceKeyAccessToken';
 }
 
-const requireCredential = (
-  value: unknown,
-  configKey: BuildScenariosOptions['configKey'],
-): string => {
-  if (typeof value !== 'string' || value.length === 0) {
-    throw new Error(
-      `HubSpot live tests require LIVE_SECRET_HS.config.${configKey} to be a non-empty string`,
-    );
-  }
-  return value;
-};
-
 export const buildScenarios = ({
   label,
   configKey,
@@ -648,7 +637,15 @@ export const buildScenarios = ({
     id: `${scenario.id}-${label}`,
     configOverride: (base, secret) => {
       const overriddenBase = scenario.configOverride?.(base, secret) ?? base;
-      const accessToken = requireCredential(overriddenBase[configKey], configKey);
+      const credential = overriddenBase[configKey];
+      const accessToken = requireLiveField(
+        typeof credential === 'string' ? credential : undefined,
+        {
+          name: 'hs',
+          path: `config.${configKey}`,
+          mustBe: 'a non-empty string',
+        },
+      );
       const { serviceKeyAccessToken: _serviceKeyAccessToken, ...destinationConfig } =
         overriddenBase;
       return { ...destinationConfig, accessToken };

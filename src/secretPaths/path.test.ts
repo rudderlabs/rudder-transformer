@@ -1,9 +1,7 @@
 import { collapseArrayMarkers, formatPath, parsePath } from './path';
 
 describe('secretPaths path grammar', () => {
-  // The generator writes paths with escapeSegment and the validator reads them back with
-  // parsePath. If the two ever disagree the validator checks a grammar the generator does not
-  // emit, and that failure reports as "no leaks found" rather than as an error.
+  // Generated paths must round-trip through the same parser used for normalization and checks.
   describe('escapeSegment / parsePath round-trip', () => {
     it.each([
       [['headers', 'Authorization']],

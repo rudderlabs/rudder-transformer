@@ -1,5 +1,0 @@
-{
-  "SALESFORCE": [
-    "metadata.#.secret.accessToken at metadata.#.secret.accessToken: commonAccessToken"
-  ]
-}

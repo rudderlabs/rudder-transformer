@@ -170,9 +170,8 @@ export const flattenRequests = (output: unknown): FlattenedOutput => {
     leaves.set(prefix, String(value));
   };
 
-  // `requestsIn` is the single definition of "this object is an outbound request", shared with
-  // the validator. A second copy here would let the two tools inspect different sets of requests
-  // while both reporting success.
+  // `requestsIn` is the single definition of "this object is an outbound request" used by the
+  // fixture harness and the flattener.
   const requests = requestsIn(output);
   requests.forEach((node, index) => {
     // Every field, not just headers/params/body/endpoint. MOVABLE_INK puts its accessKey at
@@ -400,6 +399,19 @@ const secretCarriersIn = (
   return found;
 };
 
+const withConfigHeaderEvidence = (
+  movement: Movement,
+  configuredValues: ReadonlySet<string>,
+): Movement => {
+  const segments = parsePath(pathOf(movement.loc));
+  return {
+    ...movement,
+    ...(segments.length === 2 &&
+      segments[0] === 'headers' &&
+      configuredValues.has(segments[1]) && { headerNameFromConfig: true }),
+  };
+};
+
 /** Compares the baseline against two decoy runs and reports what moved because of one source. */
 export const locationsForKey = (
   baseline: Baseline,
@@ -476,16 +488,11 @@ const deriveForCase = async (
   tcData: any,
   secretSources: SecretSource[],
   matching: MockMatching,
+  baseline: Baseline,
+  originalBody: unknown,
+  configuredValues: ReadonlySet<string>,
 ): Promise<CaseOutcome> => {
-  const outcome: CaseOutcome = { locations: [], sawRequest: false, transformed: false };
-  const originalBody = tcData.input.request.body;
-  const configuredValues = destinationConfigValues(tcData);
-
-  harness.useMocksFor(destination, undefined, matching);
-  const { transformed, baseline } = await runBaseline(harness, tcData, originalBody);
-  outcome.transformed = transformed;
-  if (!baseline) return outcome;
-  outcome.sawRequest = true;
+  const outcome: CaseOutcome = { locations: [], sawRequest: true, transformed: true };
 
   // One source at a time so the one responsible for an unstable diff can be named. The whole
   // destination fails closed either way - a partial path set is indistinguishable from a
@@ -501,25 +508,6 @@ const deriveForCase = async (
       debug(() => `unstable: '${sourceName(source)}' has no distinct decoys`);
       outcome.unstableSource = source;
       return outcome;
-    }
-
-    // Reads the baseline only - no decoy run is involved - so it is settled here, once, before
-    // the substitution work for this source begins. Exact containment is direct evidence for a
-    // runtime-bag value: every value in that bag is a credential by contract. It also covers
-    // request fixtures whose auth helper is mocked to a stable header and static data-delivery
-    // fixtures, neither of which can recompute that header from a perturbed metadata bag.
-    if (source.kind === 'runtime') {
-      outcome.locations.push(
-        ...secretCarriersIn(baseline.runA.leaves.keys(), baseline, present).map((movement) => {
-          const segments = parsePath(pathOf(movement.loc));
-          return {
-            ...movement,
-            ...(segments.length === 2 &&
-              segments[0] === 'headers' &&
-              configuredValues.has(segments[1]) && { headerNameFromConfig: true }),
-          };
-        }),
-      );
     }
 
     // Build the decoy body and the matching mock rewrite together. The corpus matches mocks on
@@ -696,11 +684,13 @@ const deriveForDestination = async (
   matching: MockMatching = 'strict',
 ): Promise<CaseOutcome> => {
   const total: CaseOutcome = { locations: [], sawRequest: false, transformed: false };
+  const eligibleCases: any[] = [];
 
   for (const filePath of filePaths) {
-    let cases: any[];
     try {
-      cases = getTestData(filePath);
+      eligibleCases.push(
+        ...getTestData(filePath).filter((candidate: any) => isDerivableCase(harness, candidate)),
+      );
     } catch (err) {
       // A fixture that will not load is a corpus defect, not evidence about where a credential
       // lands. Labelling it `unstable-under-substitution` would hide a build problem behind a
@@ -708,21 +698,69 @@ const deriveForDestination = async (
       total.harnessError = `${filePath}: ${String(err).slice(0, 80)}`;
       return total;
     }
+  }
 
-    for (const tcData of cases.filter((candidate) => isDerivableCase(harness, candidate))) {
-      const outcome = await harness.withCaseEnv(tcData, () =>
-        deriveForCase(harness, destination, tcData, secretSources, matching),
-      );
-      total.locations.push(...outcome.locations.map(withoutUnreadEvidence));
-      total.sawRequest = total.sawRequest || outcome.sawRequest;
-      total.transformed = total.transformed || outcome.transformed;
-      total.runtimeMeasured = total.runtimeMeasured || outcome.runtimeMeasured;
-      // Nothing this destination produces will be published once it is doomed, so stop paying
-      // for transforms: the remaining cases and files cannot change the outcome.
-      if (outcome.unstableSource) {
-        total.unstableSource = outcome.unstableSource;
-        return total;
+  interface BaselineCase {
+    baseline: Baseline;
+    configuredValues: ReadonlySet<string>;
+    originalBody: unknown;
+    tcData: any;
+  }
+
+  const baselineCases: BaselineCase[] = [];
+  const runtimeSource = secretSources.find((source) => source.kind === 'runtime');
+
+  // Run the baseline-only token scan over every eligible case before any decoy can make the
+  // destination unstable. Direct containment is settled without substitution, so findings from
+  // later cases must not depend on whether an earlier case can survive a decoy.
+  for (const tcData of eligibleCases) {
+    const originalBody = tcData.input.request.body;
+    const configuredValues = destinationConfigValues(tcData);
+    const result = await harness.withCaseEnv(tcData, async () => {
+      harness.useMocksFor(destination, undefined, matching);
+      return runBaseline(harness, tcData, originalBody);
+    });
+    total.transformed = total.transformed || result.transformed;
+    if (result.baseline) {
+      total.sawRequest = true;
+      baselineCases.push({ baseline: result.baseline, configuredValues, originalBody, tcData });
+
+      if (runtimeSource) {
+        const runtimeSecrets = valuesFor(runtimeSource, originalBody);
+        total.locations.push(
+          ...secretCarriersIn(
+            result.baseline.runA.leaves.keys(),
+            result.baseline,
+            runtimeSecrets,
+          ).map((movement) =>
+            withoutUnreadEvidence(withConfigHeaderEvidence(movement, configuredValues)),
+          ),
+        );
       }
+    }
+  }
+
+  for (const { baseline, configuredValues, originalBody, tcData } of baselineCases) {
+    const outcome = await harness.withCaseEnv(tcData, () =>
+      deriveForCase(
+        harness,
+        destination,
+        tcData,
+        secretSources,
+        matching,
+        baseline,
+        originalBody,
+        configuredValues,
+      ),
+    );
+    total.locations.push(...outcome.locations.map(withoutUnreadEvidence));
+    total.runtimeMeasured = total.runtimeMeasured || outcome.runtimeMeasured;
+    // The baseline pass above has already collected direct runtime-secret evidence from every
+    // eligible case. Once a decoy is unstable, no later decoy can make the destination's
+    // attribution complete, so stop the substitution pass without losing baseline findings.
+    if (outcome.unstableSource) {
+      total.unstableSource = outcome.unstableSource;
+      return total;
     }
   }
 
@@ -984,11 +1022,10 @@ export const main = async (options: GenerateOptions = {}) => {
     // destination is given one. Scanned before the derivation because it decides whether there is
     // anything to derive at all: an OAuth destination declares no `secretKeys` and would
     // otherwise stop at `no-declared-secrets` while sending a bearer token.
-    // Bag first, deliberately. `deriveForCase` returns at the first source that destabilises the
-    // diff, so a declared key that breaks its destination's own token exchange would otherwise
-    // abort the case before the bag was ever measured - and the fetched-credential rescue below
-    // can still publish a non-null list for such a destination, which would then be missing the
-    // bearer token. Measuring the bag first means its locations exist before anything can abort.
+    // Bag first, deliberately. `deriveForCase` returns at the first source that destabilises one
+    // case, so a declared key that breaks its destination's own token exchange would otherwise
+    // prevent the bag from being measured in that case. Measuring it first retains any direct
+    // evidence before the case aborts; destination traversal still continues with later cases.
     const configSources: SecretSource[] = declaredKeys.map((key) => ({ kind: 'config', key }));
     const secretSources: SecretSource[] = corpusCarriesRuntimeSecrets(harness, filePaths)
       ? [{ kind: 'runtime' }, ...configSources]
@@ -1072,8 +1109,6 @@ export const main = async (options: GenerateOptions = {}) => {
       // before reaching `subDomain`, so publishing only the token dropped `endpoint` and left the
       // subdomain visible. The endpoint is no longer masked for any destination, so a declared
       // identifier sitting in a URL is now the accepted `url` exposure rather than a regression.
-      // `--validate` is what confirms it: it replays the corpus looking for any declared secret
-      // that survives masking, and reports none for either destination.
       //
       // The rescue perturbs the credential the destination *fetches*, which is a different value
       // from the one the runtime bag carries. So when the bag destabilised and was never compared

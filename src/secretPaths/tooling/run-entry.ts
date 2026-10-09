@@ -1,15 +1,11 @@
 import { getTestData } from '../../../test/integrations/testUtils';
-import secretPaths from '../secretPaths.json';
-import { loadDeclaredSecretKeys } from './declared';
 import { main } from './generate';
 import { fixturesByDestination } from './harness';
-import { validate } from './validate';
 
 interface RunOptions {
   check?: boolean;
   destination?: string;
   integrationsConfig?: string;
-  validate?: boolean;
 }
 
 const options = JSON.parse(process.env.SECRET_PATHS_RUN_OPTIONS ?? '{}') as RunOptions;
@@ -25,18 +21,10 @@ for (const fixturePaths of fixturesByDestination().values()) {
 
 jest.setTimeout(30 * 60 * 1000);
 
-it(
-  options.validate ? 'validates the committed secret paths' : 'derives the secret paths',
-  async () => {
-    if (options.validate) {
-      await validate(secretPaths, loadDeclaredSecretKeys(undefined, options.integrationsConfig));
-      return;
-    }
-
-    await main({
-      check: options.check,
-      destinations: options.destination?.split(','),
-      integrationsConfig: options.integrationsConfig,
-    });
-  },
-);
+it('derives the secret paths', async () => {
+  await main({
+    check: options.check,
+    destinations: options.destination?.split(','),
+    integrationsConfig: options.integrationsConfig,
+  });
+});

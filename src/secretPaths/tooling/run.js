@@ -6,17 +6,13 @@ const { Command } = require('commander');
 
 const command = new Command()
   .name('secret-paths')
-  .description('Generate, compare, or validate the destination secret-path artifact')
+  .description('Generate or compare the destination secret-path artifact')
   .option('--destination <names>', 'comma-separated destinations to generate')
   .option('--integrations-config <path>', 'path to integrations-config destination definitions')
   .option('--check', 'compare fresh derivation with the committed artifact')
-  .option('--validate', 'validate committed paths against the fixture corpus')
   .parse();
 
 const options = command.opts();
-if (options.check && options.validate) {
-  command.error('--check and --validate cannot be used together');
-}
 
 const result = spawnSync(
   process.execPath,

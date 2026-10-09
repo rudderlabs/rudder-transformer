@@ -1,10 +1,8 @@
 /**
  * The path grammar published in `secretPaths`, as executable code rather than prose.
  *
- * The generator writes paths with these rules, the validator reads them back with the inverse,
- * and the Go consumer applies them with sjson. Three implementations of one grammar is how the
- * validator quietly starts checking something the generator does not emit - and that failure
- * reports as "no leaks found", not as an error. So the escape and the un-escape live together.
+ * The generator writes paths with these rules and the Go consumer applies them with sjson. The
+ * escape and un-escape operations live together so generated paths can be round-trip tested.
  *
  * Grammar:
  *   headers.Authorization      a field of the outbound request
@@ -25,12 +23,8 @@ export const ARRAY_MARKER = '#';
  * so because `secretKeys` declares an identifier that happens to sit in the host or path, such as
  * a subdomain or an account id, which is not a credential.
  *
- * It lives here, beside the grammar, for the reason stated above: the generator omits it and the
- * validator must exempt it, and if those two spellings drift the validator reports "no leaks
- * found" while checking a field the generator never emits.
- *
- * There is a third spelling this constant cannot reach. The Go consumer has to know the same name
- * to implement `null`, which masks everything maskable *except* this field; its only spec is
+ * It lives here, beside the grammar, because the generator omits it while the Go consumer has to
+ * know the same name to implement `null`, which masks everything maskable *except* this field; its only spec is
  * the prose in swagger/components/schemas/features.yaml. Deliberately named for the endpoint
  * rather than as a general exclusion list: everything built on it - the `query` vs `url`
  * classification, the `endpoint-only` reason - is URL-shaped, so a second excluded field would be

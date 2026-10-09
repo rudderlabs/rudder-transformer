@@ -1,7 +1,7 @@
 /**
  * Reads `secretKeys` off the destination definitions - the source of truth for what counts as a
- * credential. Shared by the generator and the validator so both agree on what they are looking
- * for. A production build would consume the published definitions instead of a local checkout.
+ * credential. A production build would consume the published definitions instead of a local
+ * checkout.
  */
 import fs from 'fs';
 import { join } from 'path';

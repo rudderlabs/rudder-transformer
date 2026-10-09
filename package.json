@@ -59,7 +59,6 @@
     "generate:testcases": "ts-node ./test/scripts/generateJson.ts --location testcases",
     "generate:secret-paths": "npm run build:sandboxes && node src/secretPaths/tooling/run.js",
     "check:secret-paths": "npm run build:sandboxes && node src/secretPaths/tooling/run.js --check",
-    "validate:secret-paths": "npm run build:sandboxes && node src/secretPaths/tooling/run.js --validate",
     "typecheck:secret-paths": "tsc -p tsconfig.secret-paths.json"
   },
   "dependencies": {

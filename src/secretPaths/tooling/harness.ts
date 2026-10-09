@@ -1,16 +1,4 @@
-/**
- * Shared plumbing for the generator and the validator.
- *
- * Both drive the real transforms through the component-test corpus, and both need to drive them
- * *identically* - the validator checks paths the generator derived, so if it replays a subtly
- * different request (a missing pathSuffix, a dropped query param) it is not checking the same
- * thing at all. Keeping the request construction in one place is what makes the validator a
- * check rather than a second opinion.
- *
- * Deliberately NOT shared: how the generator decides a field is secret-derived, and how the
- * validator decides a secret survived. The validator being an independent re-derivation is the
- * whole point - share the plumbing, never the logic.
- */
+/** Drives the generator through the existing component-test routes, fixtures, and network mocks. */
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import request from 'supertest';
@@ -36,15 +24,15 @@ import DestinationCache from '../../v0/util/cache';
 import { MockHttpCallsData } from '../../../test/integrations/testTypes';
 
 const DEFAULT_VERSION = 'v0';
-export const DATA_DELIVERY_FIXTURE_ROUTE = 'fixture:dataDelivery';
+const DATA_DELIVERY_FIXTURE_ROUTE = 'fixture:dataDelivery';
 /** Shorter than this is not a credential worth substituting or hunting for. */
-export const MIN_SECRET_LEN = 3;
+const MIN_SECRET_LEN = 3;
 
-export const TEST_ROOT = join(__dirname, '../../../test/integrations');
+const TEST_ROOT = join(__dirname, '../../../test/integrations');
 
 // isObjectLike, not lodash's isObject or the repo's util isObject: both exclude arrays, and
 // these traversals have to descend into them.
-export const isObj = (v: unknown): v is Record<string, any> => isObjectLike(v);
+const isObj = (v: unknown): v is Record<string, any> => isObjectLike(v);
 
 /**
  * Response fields whose name suggests a credential.
@@ -444,8 +432,7 @@ export const startHarness = (): Harness => {
  * perturbed all at once rather than one key at a time, and `useMocksFor` rewrites the recorded
  * mocks by plain substring replacement over their serialised JSON - so a two-character bag value
  * would rewrite unrelated text throughout the corpus and the decoy run would take a branch the
- * real one did not. It also keeps what the generator perturbs and what the validator collects
- * the same set.
+ * real one did not.
  */
 export const visitRuntimeSecrets = (node: unknown, visit: (current: string) => string): void => {
   const visitBag = (bag: unknown): void => {

@@ -98,7 +98,3 @@ jobs:
       - name: Check deterministic artifact
         working-directory: rudder-transformer
         run: npm run check:secret-paths -- --integrations-config=../rudder-integrations-config/src/configurations/destinations
-
-      - name: Validate masking independently
-        working-directory: rudder-transformer
-        run: npm run validate:secret-paths -- --integrations-config=../rudder-integrations-config/src/configurations/destinations

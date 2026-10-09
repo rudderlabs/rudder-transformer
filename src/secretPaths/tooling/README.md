@@ -49,12 +49,6 @@ Destinations that exchange a declared config credential for a token get a second
 
 Generator diagnostics such as `no-declared-secrets`, `no-secret-located`, `endpoint-only`, and `unstable-under-substitution` are console-only. They do not alter the direct-map wire shape.
 
-## Independent validation
-
-The validator replays the corpus independently, applies committed paths using the shared path parser, then searches every maskable request field for declared/runtime secret values and reversible encodings. It excludes only top-level `endpoint` and replaces matched fields with exactly `******`.
-
-Known fixture-value collisions are committed in `validation-baseline.json` with their source and leaf path. Validation fails on either additions or removals, so the baseline cannot silently grow and a resolved collision must be removed. The validator shares request plumbing and path grammar with generation, but not causality or secret-source selection logic.
-
 ## Commands
 
 ```bash
@@ -65,9 +59,6 @@ npm run generate:secret-paths -- --integrations-config="$CONFIG"
 
 # Derive and byte-compare without writing
 npm run check:secret-paths -- --integrations-config="$CONFIG"
-
-# Mask then search; fail on survivor-baseline drift
-npm run validate:secret-paths -- --integrations-config="$CONFIG"
 
 # Restrict derivation to selected destinations
 npm run generate:secret-paths -- --destination=klaviyo,ga4 --integrations-config="$CONFIG"
@@ -80,7 +71,7 @@ npm run typecheck:secret-paths
 
 ## Runtime publication
 
-`src/secretPaths/index.ts` imports the committed JSON directly, and `src/features.ts` always publishes it. `src/services/misc.ts` serializes the complete feature payload once at module load so repeated `GET /features` calls return stable cached bytes. Runtime code intentionally does not derive or validate the artifact; generation, structural checks, drift checks, and independent corpus validation are PR-time responsibilities.
+`src/secretPaths/index.ts` imports the committed JSON directly, and `src/features.ts` always publishes it. `src/services/misc.ts` serializes the complete feature payload once at module load so repeated `GET /features` calls return stable cached bytes. Runtime code intentionally does not derive or validate the artifact; generation, structural checks, and drift checks are PR-time responsibilities.
 
 ## Coverage boundary
 

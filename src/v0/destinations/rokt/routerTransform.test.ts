@@ -153,6 +153,18 @@ describe('RoktIntegration', () => {
     expect(transform(input).endpoint).toBe(`${apiEndpoint.replace(/\/$/, '')}/v2/bulkevents`);
   });
 
+  it('ignores surrounding whitespace in apiEndpoint', () => {
+    const input = makeInput(
+      1,
+      {},
+      {
+        ...destination,
+        Config: { ...destination.Config, apiEndpoint: ' https://inbound.mparticle.com/s2s/ ' },
+      },
+    );
+    expect(transform(input).endpoint).toBe('https://inbound.mparticle.com/s2s/v2/bulkevents');
+  });
+
   it.each(['apiEndpoint', 'serverToServerKey', 'serverToServerSecret'])(
     'rejects whitespace-only %s configuration',
     async (field) => {

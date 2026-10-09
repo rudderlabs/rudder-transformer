@@ -1,13 +1,6 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { isPlainObject, pick } from 'lodash';
-import {
-  constructPayload,
-  formatTimeStamp,
-  isAndroidFamily,
-  isAppleFamily,
-  isValidUrl,
-  stripTrailingSlash,
-} from '../../util';
+import { constructPayload, formatTimeStamp, isAndroidFamily, isAppleFamily } from '../../util';
 import type { RudderMessage } from '../../../types';
 import { BULK_EVENTS_PATH, ROKT_INTEGRATION_ID } from './config';
 import mappingConfig from './data/ROKTConfig.json';
@@ -74,44 +67,21 @@ const asNonEmptyString = (value: unknown): string | undefined => {
   return stringValue || undefined;
 };
 
-const isSafePathSegment = (segment: string): boolean =>
-  segment !== '.' && segment !== '..' && /^[\w.~-]+$/.test(segment);
-
-// URL.pathname canonicalizes dot segments and treats backslashes as separators for HTTPS URLs,
-// so validate the original path spelling before using it.
-const normalizeEndpointPath = (apiEndpoint: string): string | undefined => {
-  if (apiEndpoint.includes('\\')) return undefined;
-  const rawPath = /^https:\/\/[^#/?]+([^#?]*)/i.exec(apiEndpoint)?.[1];
-  if (rawPath === undefined) return undefined;
-
-  const path = stripTrailingSlash(rawPath);
-  return path.split('/').slice(1).every(isSafePathSegment) ? path : undefined;
-};
+// Matched against the raw string rather than a parsed URL: URL canonicalizes dot segments,
+// percent-escapes and backslashes, so the path it reports is not the path the customer typed.
+// Excludes userinfo, non-default ports, query, fragment, empty segments and segments starting with
+// '.' (so '.' and '..').
+const ROKT_ENDPOINT_PATTERN =
+  /^https:\/\/((?:[\da-z-]+\.)*mparticle\.com)(?::443)?((?:\/[\w~-][\w.~-]*)*)\/?$/i;
 
 export const resolveEndpoint = (apiEndpoint: string): string => {
-  const parsed = isValidUrl(apiEndpoint);
-  if (!parsed) {
-    throw new ConfigurationError('ROKT apiEndpoint must be a valid Rokt Events API URL');
-  }
-
-  const host = parsed.hostname.toLowerCase();
-  const hostAllowed = host === 'mparticle.com' || host.endsWith('.mparticle.com');
-  const normalizedPath = normalizeEndpointPath(apiEndpoint);
-
-  if (
-    parsed.protocol !== 'https:' ||
-    !hostAllowed ||
-    parsed.username ||
-    parsed.password ||
-    parsed.port ||
-    parsed.search ||
-    parsed.hash ||
-    normalizedPath === undefined
-  ) {
+  const match = ROKT_ENDPOINT_PATTERN.exec(apiEndpoint.trim());
+  if (!match) {
     throw new ConfigurationError('ROKT apiEndpoint must be a valid HTTPS Rokt Events API base URL');
   }
 
-  return `${parsed.origin}${normalizedPath}${BULK_EVENTS_PATH}`;
+  const [, host, path] = match;
+  return `https://${host.toLowerCase()}${path}${BULK_EVENTS_PATH}`;
 };
 
 // Shared with delivery, which maps Rokt's error positions back onto this exact serialization.

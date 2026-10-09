@@ -79,11 +79,20 @@ const definitionFor = (destination: string): Definition | undefined =>
     (DEFINITION_ALIASES[destination.toLowerCase()] ?? destination).toLowerCase(),
   );
 
+/**
+ * Every destination the transformer implements, sorted. A destination lives under v0 or cdk/v2,
+ * never both. Shared so the generator's manifest and this lookup enumerate the same set.
+ */
+export const implementedDestinations = (): string[] =>
+  [
+    ...new Set([
+      ...getIntegrations(join(__dirname, '../../src/v0/destinations')),
+      ...getIntegrations(join(__dirname, '../../src/cdk/v2/destinations')),
+    ]),
+  ].sort();
+
 export const loadDeclaredSecretKeys = (only?: string[]): Record<string, string[]> => {
-  const destinations = only ?? [
-    ...getIntegrations(join(__dirname, '../../src/v0/destinations')),
-    ...getIntegrations(join(__dirname, '../../src/cdk/v2/destinations')),
-  ];
+  const destinations = only ?? implementedDestinations();
   const out: Record<string, string[]> = {};
   const missing: string[] = [];
   for (const destination of [...new Set(destinations.map((name) => name.toLowerCase()))].sort()) {

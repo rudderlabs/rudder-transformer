@@ -2,11 +2,6 @@ import path from 'path';
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { DestHandlerMap } from './constants/destinationCanonicalNames';
 import { getIntegrations } from './routes/utils';
-
-// ---------------------------------------------------------------------------
-// Features config
-// ---------------------------------------------------------------------------
-
 import { secretPaths, SecretPaths } from './secretPaths';
 
 // ---------------------------------------------------------------------------
@@ -247,6 +242,10 @@ export const isDestinationCdkV2Enabled = (destination: string): boolean =>
 
 export const isDestinationRouterTransformEnabled = (destination: string): boolean =>
   Boolean(destinationCapabilities[destination.trim().toUpperCase()]?.routerTransform);
+
+// ---------------------------------------------------------------------------
+// Features config
+// ---------------------------------------------------------------------------
 
 interface FeaturesConfig {
   routerTransform: Record<string, true>;

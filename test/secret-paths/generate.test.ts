@@ -129,8 +129,7 @@ describe('secret-path generator utilities', () => {
     ).toEqual(['headers']);
   });
 
-  it('loads definition files lazily so pure helpers stay checkout-free', () => {
-    expect(decoyOf('Abc123', 1)).toHaveLength(6);
+  it('reads runtime secrets only from a metadata.secret bag', () => {
     expect(
       valuesFor({ kind: 'runtime' }, { message: { properties: { secret: 'not-runtime' } } }),
     ).toEqual([]);

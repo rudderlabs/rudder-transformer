@@ -160,6 +160,12 @@ export const startHarness = (): Harness => {
     (instance) => new MockAxiosAdapter(instance as any, { onNoMatch: 'throwException' }),
   );
   const mocksByDestination = new Map<string, MockHttpCallsData[]>();
+  const mocksFor = (destination: string): MockHttpCallsData[] => {
+    if (!mocksByDestination.has(destination)) {
+      mocksByDestination.set(destination, getTestMockData(destination));
+    }
+    return mocksByDestination.get(destination)!;
+  };
 
   const app = new Koa();
   app.use(bodyParser({ jsonLimit: '200mb' }));
@@ -180,10 +186,7 @@ export const startHarness = (): Harness => {
       matching: MockMatching = 'strict',
       scope: SubstitutionScope = 'all',
     ): void {
-      if (!mocksByDestination.has(destination)) {
-        mocksByDestination.set(destination, getTestMockData(destination));
-      }
-      let mocks = mocksByDestination.get(destination) as MockHttpCallsData[];
+      let mocks = mocksFor(destination);
       if (substitutions?.size) {
         const rewrite = (value: unknown) => {
           let serialised = JSON.stringify(value);
@@ -204,11 +207,10 @@ export const startHarness = (): Harness => {
           mocks.forEach((mock) => {
             const { url, method, data, params } = mock.httpReq as any;
             const { data: resData, headers: resHeaders, status } = mock.httpRes as any;
-            const verb = `on${(method || 'get').charAt(0).toUpperCase()}${(method || 'get').slice(1).toLowerCase()}`;
-            const handler = (adapter as any)[verb];
+            const verb = (method || 'get').toLowerCase();
+            const handler = (adapter as any)[`on${verb.charAt(0).toUpperCase()}${verb.slice(1)}`];
             if (typeof handler !== 'function') return;
-            const args =
-              (method || 'get').toLowerCase() === 'get' ? [url, { params }] : [url, data];
+            const args = verb === 'get' ? [url, { params }] : [url, data];
             handler.apply(adapter, args).reply(status, resData, resHeaders);
           });
           return;
@@ -282,9 +284,6 @@ export const startHarness = (): Harness => {
       requestBody: unknown,
       declaredKeys: string[],
     ): string[] {
-      if (!mocksByDestination.has(destination)) {
-        mocksByDestination.set(destination, getTestMockData(destination));
-      }
       const declaredValues = declaredKeys.flatMap((key) => configSecretsFor(requestBody, key));
       if (declaredValues.length === 0) return [];
 
@@ -301,7 +300,7 @@ export const startHarness = (): Harness => {
         const serialised = JSON.stringify(node);
         return declaredValues.some((secret) => carriesSecret(serialised, secret));
       };
-      (mocksByDestination.get(destination) as MockHttpCallsData[])
+      mocksFor(destination)
         .filter((mock) => carriesDeclaredSecret(mock.httpReq))
         .forEach((mock) => walkResponse(mock.httpRes?.data, ''));
       return [...found];
@@ -457,8 +456,7 @@ export const configSecretsFor = (node: unknown, declaredKey: string): string[] =
  * `consumerSecret`/`accessTokenSecret` for the OAuth1 ones - and nothing upstream records which.
  *
  * So the rule here is positional rather than nominal: everything under a real `metadata.secret`
- * object is treated as a credential, whatever it is called. That deliberately over-masks; the
- * decision and its cost are recorded in README.md under "Over-masking is accepted".
+ * object is treated as a credential, whatever it is called. That deliberately over-masks.
  *
  * Only strings at or over `MIN_SECRET_LEN` are visited. Shorter ones are not credentials, and
  * substituting them is actively harmful here in a way it is not for a config key: the bag is

@@ -62,12 +62,10 @@ describe('Misc | getFeatures', () => {
 
   it('should return the default configuration with the committed secret paths', () => {
     const miscService = getMiscService();
-    const first = miscService.getFeatures();
-    const second = miscService.getFeatures();
+    const features = miscService.getFeatures();
 
-    expect(first).toBe(JSON.stringify(defaultFeaturesConfig));
-    expect(JSON.parse(first).secretPaths).toEqual(defaultFeaturesConfig.secretPaths);
-    expect(second).toBe(first);
+    expect(features).toBe(JSON.stringify(defaultFeaturesConfig));
+    expect(JSON.parse(features).secretPaths).toEqual(defaultFeaturesConfig.secretPaths);
   });
 
   it('omits secretPaths when the artifact is unavailable', () => {

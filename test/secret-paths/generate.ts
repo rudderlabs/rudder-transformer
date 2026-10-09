@@ -20,9 +20,9 @@
  *   rudder-server forwards verbatim. Nothing declares its keys, so every value under it is
  *   treated as a credential and perturbed by position. See `visitRuntimeSecrets`.
  *
- * Usage:
- *   npx ts-node test/secret-paths/generate.ts --destination=klaviyo,ga4
- *   npx ts-node test/secret-paths/generate.ts            # whole corpus
+ * Usage (run.js is the entry point):
+ *   npm run generate:secret-paths -- --destination=klaviyo,ga4
+ *   npm run generate:secret-paths                        # whole corpus
  *
  * `--integrations-config` points at a rudder-integrations-config checkout; a production
  * build would read the published destination definitions instead.
@@ -31,8 +31,8 @@ import fs from 'fs';
 import cloneDeep from 'lodash/cloneDeep';
 import path, { join } from 'path';
 import { getTestData } from '../integrations/testUtils';
-import { getIntegrations } from '../../src/routes/utils';
-import { loadDeclaredSecretKeys, probeConfigFor } from './declared';
+import type { SecretPaths } from '../../src/secretPaths';
+import { implementedDestinations, loadDeclaredSecretKeys, probeConfigFor } from './declared';
 import { argOf, hasFlag } from './args';
 import type { MockMatching } from './harness';
 import {
@@ -53,9 +53,10 @@ import {
   ENDPOINT_FIELD,
   collapseArrayMarkers,
   escapeSegment,
+  formatPath,
   parsePath,
 } from '../../src/secretPaths/path';
-type SecretPaths = Record<string, string[] | null>;
+
 type EndpointExposure = 'query' | 'url';
 type UnresolvedReason =
   | 'dynamic-key-family'
@@ -79,6 +80,10 @@ const MASKING_FOR_REASON: Record<UnresolvedReason, string[] | null> = {
 };
 
 const OUT_FILE = join(__dirname, '../../src/secretPaths/secretPaths.json');
+
+const debug = (message: string): void => {
+  if (process.env.SECRET_PATHS_DEBUG) console.log(`\n    [debug] ${message}`);
+};
 
 // ---------------------------------------------------------------------------
 // Decoys
@@ -204,7 +209,7 @@ export interface CaseOutcome {
    * comparison that moved nothing is still evidence about where the bag does not go.
    */
   runtimeMeasured?: boolean;
-  /** Set when the harness itself failed - a corpus or generator defect, not a finding. */
+  /** Set when a fixture file failed to load - a corpus defect, not a finding. */
   harnessError?: string;
 }
 
@@ -351,7 +356,6 @@ const secretCarriersIn = (
   locations: Iterable<string>,
   baseline: Baseline,
   secrets: string[],
-  source = 'metadata.secret',
 ): Movement[] => {
   const found: Movement[] = [];
   for (const loc of locations) {
@@ -362,35 +366,21 @@ const secretCarriersIn = (
     // validator has always searched for the encoded forms; the generator has to look for the same
     // ones, or it under-finds exactly what the validator then reports as a survivor.
     if (!secrets.some((secret) => carriesSecret(realValue, secret))) continue;
-    if (process.env.SECRET_PATHS_DEBUG) {
-      console.log(
-        `\n    [debug] ${loc} from=metadata.secret (contains a bag value)` +
-          `\n            real =${JSON.stringify(realValue).slice(0, 90)}`,
-      );
-    }
+    debug(
+      `${loc} from=metadata.secret (contains a bag value)` +
+        `\n            real =${JSON.stringify(realValue).slice(0, 90)}`,
+    );
     // No decoy ran for this leaf, so there is no before-and-after to attach. `exposureOf` reads
     // evidence only to tell a `query` exposure from a `url` one, and falls back to `url` - the
     // unfixable classification - which is the safe way round for a field nothing measured.
-    found.push({ loc, source });
+    found.push({ loc, source: 'metadata.secret' });
   }
   return found;
 };
 
-const nonDeterministicSecretCarriers = (baseline: Baseline, bagValues: string[]): Movement[] =>
-  secretCarriersIn(baseline.nonDeterministic, baseline, bagValues);
-
-/**
- * Data-delivery fixtures are already transformed proxy requests. Perturbing `metadata.secret` moves
- * the metadata copy but cannot recompute any header that was copied from it earlier, so causality
- * under-derives static proxy evidence. For that surface, containment is the only available evidence:
- * mask every leaf in the already-built request that still carries a runtime-bag value.
- */
-const staticProxySecretCarriers = (baseline: Baseline, bagValues: string[]): Movement[] =>
-  secretCarriersIn(baseline.runA.leaves.keys(), baseline, bagValues);
-
 /** Compares the baseline against two decoy runs and reports what moved because of one source. */
 export const locationsForKey = (
-  source: string,
+  source: string | undefined,
   baseline: Baseline,
   decoy: FlattenedOutput,
   decoy2: FlattenedOutput,
@@ -409,13 +399,11 @@ export const locationsForKey = (
     // reads as "secret-derived" and gets masked.
     if (decoy2.leaves.get(loc) === decoyValue) continue;
 
-    if (process.env.SECRET_PATHS_DEBUG) {
-      console.log(
-        `\n    [debug] ${loc} from=${source}` +
-          `\n            real =${JSON.stringify(realValue).slice(0, 90)}` +
-          `\n            decoy=${JSON.stringify(decoyValue).slice(0, 90)}`,
-      );
-    }
+    debug(
+      `${loc} from=${source}` +
+        `\n            real =${JSON.stringify(realValue).slice(0, 90)}` +
+        `\n            decoy=${JSON.stringify(decoyValue).slice(0, 90)}`,
+    );
     found.push({ loc, source, evidence: { real: realValue, decoy: decoyValue } });
   }
   return found;
@@ -447,9 +435,7 @@ const deriveForCase = async (
     const present = valuesFor(source, originalBody);
     if (present.length === 0) continue;
     if (present.some((value) => decoysFor(value) === null)) {
-      if (process.env.SECRET_PATHS_DEBUG) {
-        console.log(`\n    [debug] unstable: '${sourceName(source)}' has no distinct decoys`);
-      }
+      debug(`unstable: '${sourceName(source)}' has no distinct decoys`);
       outcome.unstableSource = source;
       return outcome;
     }
@@ -457,13 +443,15 @@ const deriveForCase = async (
     // Reads the baseline only - no decoy run is involved - so it is settled here, once, before
     // the substitution work for this source begins. Static data-delivery fixtures cannot be
     // recomputed from perturbed metadata, so containment is their complete request-surface rule;
-    // transform fixtures keep the narrower non-deterministic-leaf recovery.
+    // transform fixtures keep the narrower non-deterministic-leaf recovery. (Data-delivery
+    // fixtures are already-built proxy requests: perturbing `metadata.secret` cannot recompute a
+    // header copied from it earlier, so containment over every leaf is the only evidence there.)
     if (source.kind === 'runtime') {
-      const carriers =
+      const candidates =
         harness.routeFor(tcData) === DATA_DELIVERY_FIXTURE_ROUTE
-          ? staticProxySecretCarriers(baseline, present)
-          : nonDeterministicSecretCarriers(baseline, present);
-      outcome.locations.push(...carriers);
+          ? baseline.runA.leaves.keys()
+          : baseline.nonDeterministic;
+      outcome.locations.push(...secretCarriersIn(candidates, baseline, present));
     }
 
     // Build the decoy body and the matching mock rewrite together. The corpus matches mocks on
@@ -481,54 +469,31 @@ const deriveForCase = async (
       return body;
     };
 
-    const out1 = await harness.runCase(tcData, decoyBody(1));
-    if (!out1) {
-      // The decoy changed the outcome (validation rejected it, a different branch was taken),
-      // so any diff would be meaningless. Fail closed for this destination.
-      if (process.env.SECRET_PATHS_DEBUG) {
-        console.log(`\n    [debug] unstable: '${sourceName(source)}' decoy run produced no output`);
-      }
-      outcome.unstableSource = source;
-      return outcome;
-    }
-
-    const decoy = flattenRequests(out1);
-    // A different number of requests, or of fields within them, means the decoy took a
-    // different branch. Positions no longer line up, so any diff would be noise. Checked before
-    // the corroboration run so an unstable key does not cost a second full transform.
-    if (!hasSameShape(baseline.runA, decoy)) {
-      if (process.env.SECRET_PATHS_DEBUG) {
-        console.log(
-          `\n    [debug] unstable: '${sourceName(source)}' changed the shape - ` +
-            `requests ${baseline.runA.requestCount}->${decoy.requestCount}, ` +
-            `leaves ${baseline.runA.leaves.size}->${decoy.leaves.size}`,
+    // The second run corroborates the first - see `locationsForKey`. Each is checked before the
+    // next runs, so an unstable source does not cost a second full transform.
+    const decoyRuns: FlattenedOutput[] = [];
+    for (const seed of [1, 2]) {
+      const out = await harness.runCase(tcData, decoyBody(seed));
+      // No output: the decoy changed the outcome (validation rejected it, a different branch was
+      // taken). A different number of requests, or of fields within them, means the same - the
+      // positions no longer line up. Either way any diff would be noise, so fail closed.
+      const run = out ? flattenRequests(out) : undefined;
+      if (!run || !hasSameShape(baseline.runA, run)) {
+        debug(
+          run
+            ? `unstable: '${sourceName(source)}' changed the shape (decoy ${seed}) - ` +
+                `requests ${baseline.runA.requestCount}->${run.requestCount}, ` +
+                `leaves ${baseline.runA.leaves.size}->${run.leaves.size}`
+            : `unstable: '${sourceName(source)}' decoy ${seed} run produced no output`,
         );
+        outcome.unstableSource = source;
+        return outcome;
       }
-      outcome.unstableSource = source;
-      return outcome;
-    }
-
-    const out2 = await harness.runCase(tcData, decoyBody(2));
-    if (!out2) {
-      outcome.unstableSource = source;
-      return outcome;
-    }
-
-    const corroboratingDecoy = flattenRequests(out2);
-    if (!hasSameShape(baseline.runA, corroboratingDecoy)) {
-      if (process.env.SECRET_PATHS_DEBUG) {
-        console.log(
-          `\n    [debug] unstable: '${sourceName(source)}' changed the corroborating shape - ` +
-            `requests ${baseline.runA.requestCount}->${corroboratingDecoy.requestCount}, ` +
-            `leaves ${baseline.runA.leaves.size}->${corroboratingDecoy.leaves.size}`,
-        );
-      }
-      outcome.unstableSource = source;
-      return outcome;
+      decoyRuns.push(run);
     }
 
     outcome.locations.push(
-      ...locationsForKey(sourceName(source), baseline, decoy, corroboratingDecoy),
+      ...locationsForKey(sourceName(source), baseline, decoyRuns[0], decoyRuns[1]),
     );
     // Reached only when both decoys ran and the shape held, so the diff for this source in this
     // case was trustworthy.
@@ -548,11 +513,13 @@ const deriveForCase = async (
  * string for both the config password and the returned token, and rewriting the request half
  * would stop the auth call matching at all.
  *
- * Run only for destinations the main pass left empty, so it costs nothing for the rest.
+ * Runs once for every destination that transformed, so a direct finding cannot hide a fetched
+ * token; cases whose mocked responses carry no credential are skipped without a transform.
  */
-type FetchedCredentialOutcome =
-  | { stable: true; locations: Movement[] }
-  | { stable: false; locations: Movement[] };
+interface FetchedCredentialOutcome {
+  stable: boolean;
+  locations: Movement[];
+}
 
 const deriveFromFetchedCredentials = async (
   harness: Harness,
@@ -584,7 +551,6 @@ const deriveFromFetchedCredentials = async (
           harness.useMocksFor(destination),
         );
         if (!baseline) continue;
-        const { runA, nonDeterministic } = baseline;
 
         for (const candidate of candidates) {
           const decoys = decoysFor(candidate);
@@ -601,29 +567,19 @@ const deriveFromFetchedCredentials = async (
           }
           if (
             decoyRuns.length !== 2 ||
-            decoyRuns.some(
-              (run) =>
-                run.requestCount !== runA.requestCount || run.leaves.size !== runA.leaves.size,
-            )
+            decoyRuns.some((run) => !hasSameShape(baseline.runA, run))
           ) {
             stable = false;
             return;
           }
-
-          for (const [loc, realValue] of runA.leaves) {
-            if (nonDeterministic.has(loc)) continue;
-            const moved = decoyRuns[0].leaves.get(loc);
-            if (moved === undefined || moved === realValue) continue;
-            // same corroboration rule: a field carrying the credential differs for each decoy
-            if (decoyRuns[1].leaves.get(loc) === moved) continue;
-            locations.push({ loc, evidence: { real: realValue, decoy: moved } });
-          }
+          // The same corroborated diff as the config pass, not a second copy of it.
+          locations.push(...locationsForKey(undefined, baseline, decoyRuns[0], decoyRuns[1]));
         }
       }
     }
   });
   harness.useMocksFor(destination);
-  return stable ? { stable: true, locations } : { stable: false, locations };
+  return { stable, locations };
 };
 
 /**
@@ -699,9 +655,8 @@ const deriveForDestination = async (
       total.runtimeMeasured = total.runtimeMeasured || outcome.runtimeMeasured;
       // Nothing this destination produces will be published once it is doomed, so stop paying
       // for transforms: the remaining cases and files cannot change the outcome.
-      if (outcome.unstableSource || outcome.harnessError) {
+      if (outcome.unstableSource) {
         total.unstableSource = outcome.unstableSource;
-        total.harnessError = outcome.harnessError;
         return total;
       }
     }
@@ -732,10 +687,10 @@ const deriveForDestination = async (
  * Returns null when the family sits at the top level, where there is no containing object.
  */
 export const collapseKeyFamily = (path: string): string | null => {
-  const segments = path.split(/(?<!\\)\./);
+  const segments = parsePath(path);
   const family = segments.findIndex((segment) => /\[\d+\]$/.test(segment));
   if (family === -1) return path;
-  return family === 0 ? null : segments.slice(0, family).join('.');
+  return family === 0 ? null : formatPath(segments.slice(0, family));
 };
 
 const CONFIG_DYNAMIC_HEADER_SOURCES: Record<string, string[]> = {
@@ -846,12 +801,8 @@ export const validateSecretPaths = (secretPaths: SecretPaths): void => {
     }
     for (const secretPath of paths) {
       const segments = parsePath(secretPath);
-      const canonical = segments
-        .map((segment) => (segment === ARRAY_MARKER ? ARRAY_MARKER : escapeSegment(segment)))
-        .join('.');
       if (
-        secretPath.length === 0 ||
-        secretPath !== canonical ||
+        secretPath !== formatPath(segments) ||
         segments.some((segment) => segment.length === 0) ||
         segments[0] === ARRAY_MARKER ||
         segments[0] === ENDPOINT_FIELD
@@ -961,27 +912,18 @@ export const main = async () => {
   // fixtures - otherwise a fixture-less destination is absent from the manifest entirely
   // rather than recorded as a countable gap. Both implementation roots count: a destination
   // lives under v0 or cdk/v2, never both.
-  const implemented = new Set<string>([
-    ...getIntegrations(join(__dirname, '../../src/v0/destinations')),
-    ...getIntegrations(join(__dirname, '../../src/cdk/v2/destinations')),
-  ]);
-  const allDestinations = [...implemented]
-    .filter((d: string) => !only || only.includes(d.toLowerCase()))
-    .sort();
+  const allDestinations = implementedDestinations().filter(
+    (d) => !only || only.includes(d.toLowerCase()),
+  );
 
   const destinations: Record<string, string[] | null> = {};
   /** Destinations with neither a fixture nor a usable probe - a build failure, not a finding. */
   const inconclusive: string[] = [];
-  const unresolved: Record<string, UnresolvedReason> = {};
   /** Destinations whose endpoint carried a declared secret - recorded, never masked. */
   const endpointExposures: Record<string, EndpointExposure> = {};
 
-  /**
-   * Records both halves at once: why, for diagnostics, and what the consumer must do. Deciding
-   * here rather than in the consumer means the policy lives with the evidence.
-   */
+  /** Decides what the consumer must do here, so the policy lives with the evidence. */
   const recordUnresolved = (destType: string, reason: UnresolvedReason) => {
-    unresolved[destType] = reason;
     destinations[destType] = MASKING_FOR_REASON[reason];
   };
 
@@ -1037,6 +979,8 @@ export const main = async () => {
     process.stdout.write(`  ${destination} ... `);
     let result: CaseOutcome;
     let relaxed = false;
+    /** The fetched-credential pass, computed once - by the rescue below when it runs. */
+    let fetched: FetchedCredentialOutcome | undefined;
     try {
       result = await deriveForDestination(harness, destination, secretSources, filePaths);
       if (result.unstableSource) {
@@ -1096,21 +1040,18 @@ export const main = async () => {
       // that hold, and a later case collapses under the decoy. Discarding a measured location to
       // punish an unrelated case would mask that destination wholesale on evidence we do have.
       const bagUnmeasured = result.unstableSource.kind === 'runtime' && !result.runtimeMeasured;
-      const exchanged = bagUnmeasured
-        ? { stable: true as const, locations: [] }
-        : await deriveFromFetchedCredentials(harness, destination, declaredKeys, filePaths);
-      if (!exchanged.stable || exchanged.locations.length === 0) {
+      if (!bagUnmeasured) {
+        fetched = await deriveFromFetchedCredentials(harness, destination, declaredKeys, filePaths);
+      }
+      if (!fetched?.stable || fetched.locations.length === 0) {
         console.log(`unstable under '${sourceName(result.unstableSource)}' - failing closed`);
         recordUnresolved(destType, 'unstable-under-substitution');
         continue;
       }
-      // Merged, not assigned. Everything already collected came from a source that cleared both
-      // the shape check and the two-decoy corroboration before the abort, so merging can only
-      // under-report; replacing the list would drop those findings entirely.
-      result.locations.push(...exchanged.locations.map(withoutUnreadEvidence));
-      process.stdout.write(
-        `unstable under '${sourceName(result.unstableSource)}', credential fetched during transform -> `,
-      );
+      // The fetched locations are merged below, not assigned. Everything already collected came
+      // from a source that cleared both the shape check and the two-decoy corroboration before the
+      // abort, so merging can only under-report; replacing would drop those findings entirely.
+      process.stdout.write(`unstable under '${sourceName(result.unstableSource)}', `);
     }
 
     if (!result.transformed) {
@@ -1127,12 +1068,7 @@ export const main = async () => {
     // A destination can both place one declared/runtime value directly and exchange another
     // declared config secret for a token. Run the grounded auth-response pass even when ordinary
     // derivation already found paths, otherwise those direct findings can hide the fetched token.
-    const fetched = await deriveFromFetchedCredentials(
-      harness,
-      destination,
-      declaredKeys,
-      filePaths,
-    );
+    fetched ??= await deriveFromFetchedCredentials(harness, destination, declaredKeys, filePaths);
     if (!fetched.stable) {
       console.log('fetched credential unstable under substitution - failing closed');
       recordUnresolved(destType, 'unstable-under-substitution');
@@ -1225,10 +1161,3 @@ export const main = async () => {
     process.exitCode = 1;
   }
 };
-
-if (require.main === module) {
-  main().catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
-}

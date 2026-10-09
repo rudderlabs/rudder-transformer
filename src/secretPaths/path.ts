@@ -72,6 +72,9 @@ export const parsePath = (path: string): string[] => {
   return segments;
 };
 
+/** Joins segments into a path - the exact inverse of `parsePath`. */
+export const formatPath = (segments: string[]): string => segments.map(escapeSegment).join('.');
+
 /**
  * Collapses marked array positions to a single wildcard.
  *

@@ -58,13 +58,9 @@ require.extensions['.ts'] = (mod, filename) => {
 // tests; an unbounded append-only list would also retain every spied object for the whole run.
 const originals = new Map();
 
-const remember = (obj, prop, isOwn) => {
-  const key = `${obj === globalThis ? 'global' : obj.constructor?.name || 'obj'}:${prop}`;
-  if (!originals.has(key)) originals.set(key, { obj, prop, value: obj[prop], isOwn });
-};
-
 const install = (obj, prop) => (impl) => {
-  remember(obj, prop, Object.prototype.hasOwnProperty.call(obj, prop));
+  const key = `${obj === globalThis ? 'global' : obj.constructor?.name || 'obj'}:${prop}`;
+  if (!originals.has(key)) originals.set(key, { obj, prop, value: obj[prop] });
   obj[prop] = impl;
 };
 
@@ -97,8 +93,7 @@ global.jest = {
   spyOn: (obj, method) => mockApi(install(obj, method)),
   // Fixtures use this to pin non-function properties (e.g. a module's exported constant).
   replaceProperty: (obj, prop, value) => {
-    remember(obj, prop, Object.prototype.hasOwnProperty.call(obj, prop));
-    obj[prop] = value;
+    install(obj, prop)(value);
     return { restore: () => {} };
   },
   useFakeTimers: () => global.jest,

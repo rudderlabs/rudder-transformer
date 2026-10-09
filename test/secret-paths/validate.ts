@@ -33,6 +33,7 @@
  * Usage: node test/secret-paths/run.js --validate --integrations-config=<path>
  */
 import { getTestData } from '../integrations/testUtils';
+import type { SecretPaths } from '../../src/secretPaths';
 import {
   ARRAY_MARKER,
   ENDPOINT_FIELD,
@@ -153,23 +154,6 @@ const leafSurvivorsIn = (request: Record<string, unknown>, secret: SecretValue):
   return survivors;
 };
 
-/** Applies one path, expanding `#`, the way the consumer's sjson.Set would. */
-export const survivorLocationsIn = (request: Record<string, unknown>, secret: string): string[] =>
-  Object.entries(request)
-    .filter(([field]) => field !== ENDPOINT_FIELD)
-    .filter(([, value]) => carriesSecret(JSON.stringify(value), secret))
-    .map(([field]) => field);
-
-export const findSurvivors = (
-  request: Record<string, unknown>,
-  paths: string[],
-  secrets: string[],
-): string[] => {
-  const masked = JSON.parse(JSON.stringify(request));
-  paths.forEach((path) => maskAt(masked, path));
-  return secrets.filter((secret) => survivorLocationsIn(masked, secret).length > 0);
-};
-
 export const findSurvivorIds = (
   request: Record<string, unknown>,
   paths: string[],
@@ -204,7 +188,7 @@ export const maskAt = (root: unknown, path: string): void => {
 };
 
 export const validate = async (
-  secretPaths: Record<string, string[] | null>,
+  secretPaths: SecretPaths,
   declaredByDestination: Record<string, string[]>,
 ): Promise<void> => {
   const harness = startHarness();

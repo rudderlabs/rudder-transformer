@@ -1,4 +1,4 @@
-import { collapseArrayMarkers, escapeSegment, parsePath } from './path';
+import { collapseArrayMarkers, formatPath, parsePath } from './path';
 
 describe('secretPaths path grammar', () => {
   // The generator writes paths with escapeSegment and the validator reads them back with
@@ -20,7 +20,7 @@ describe('secretPaths path grammar', () => {
       // split gets wrong, because it cannot tell an escaped backslash from an escaping one
       [['body', 'ends\\', 'inner']],
     ])('round-trips %j', (segments: string[]) => {
-      expect(parsePath(segments.map(escapeSegment).join('.'))).toEqual(segments);
+      expect(parsePath(formatPath(segments))).toEqual(segments);
     });
   });
 

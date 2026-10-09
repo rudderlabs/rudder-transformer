@@ -81,8 +81,9 @@ const MASKING_FOR_REASON: Record<UnresolvedReason, string[] | null> = {
 
 const OUT_FILE = join(__dirname, '../../src/secretPaths/secretPaths.json');
 
-const debug = (message: string): void => {
-  if (process.env.SECRET_PATHS_DEBUG) console.log(`\n    [debug] ${message}`);
+/** Takes a thunk so the message - often a stringified leaf - is only built when debugging. */
+const debug = (message: () => string): void => {
+  if (process.env.SECRET_PATHS_DEBUG) console.log(`\n    [debug] ${message()}`);
 };
 
 // ---------------------------------------------------------------------------
@@ -367,7 +368,8 @@ const secretCarriersIn = (
     // ones, or it under-finds exactly what the validator then reports as a survivor.
     if (!secrets.some((secret) => carriesSecret(realValue, secret))) continue;
     debug(
-      `${loc} from=metadata.secret (contains a bag value)` +
+      () =>
+        `${loc} from=metadata.secret (contains a bag value)` +
         `\n            real =${JSON.stringify(realValue).slice(0, 90)}`,
     );
     // No decoy ran for this leaf, so there is no before-and-after to attach. `exposureOf` reads
@@ -380,10 +382,10 @@ const secretCarriersIn = (
 
 /** Compares the baseline against two decoy runs and reports what moved because of one source. */
 export const locationsForKey = (
-  source: string | undefined,
   baseline: Baseline,
   decoy: FlattenedOutput,
   decoy2: FlattenedOutput,
+  source?: string,
 ): Movement[] => {
   const found: Movement[] = [];
   for (const [loc, realValue] of baseline.runA.leaves) {
@@ -400,13 +402,46 @@ export const locationsForKey = (
     if (decoy2.leaves.get(loc) === decoyValue) continue;
 
     debug(
-      `${loc} from=${source}` +
+      () =>
+        `${loc} from=${source}` +
         `\n            real =${JSON.stringify(realValue).slice(0, 90)}` +
         `\n            decoy=${JSON.stringify(decoyValue).slice(0, 90)}`,
     );
     found.push({ loc, source, evidence: { real: realValue, decoy: decoyValue } });
   }
   return found;
+};
+
+/**
+ * Runs the two decoy transforms that corroborate each other - see `locationsForKey`. Each run is
+ * checked before the next, so an unstable input does not cost a second full transform.
+ *
+ * Returns undefined when either run produced no output (the decoy changed the outcome: validation
+ * rejected it, a different branch was taken) or a different number of requests or fields. The
+ * positions no longer line up, so any diff would be noise and the caller fails closed.
+ */
+const runCorroboratedDecoys = async (
+  baseline: Baseline,
+  label: string,
+  runDecoy: (seed: 1 | 2) => Promise<unknown | null>,
+): Promise<[FlattenedOutput, FlattenedOutput] | undefined> => {
+  const runs: FlattenedOutput[] = [];
+  for (const seed of [1, 2] as const) {
+    const out = await runDecoy(seed);
+    const run = out ? flattenRequests(out) : undefined;
+    if (!run || !hasSameShape(baseline.runA, run)) {
+      debug(() =>
+        run
+          ? `unstable: '${label}' changed the shape (decoy ${seed}) - ` +
+            `requests ${baseline.runA.requestCount}->${run.requestCount}, ` +
+            `leaves ${baseline.runA.leaves.size}->${run.leaves.size}`
+          : `unstable: '${label}' decoy ${seed} run produced no output`,
+      );
+      return undefined;
+    }
+    runs.push(run);
+  }
+  return [runs[0], runs[1]];
 };
 
 const deriveForCase = async (
@@ -435,7 +470,7 @@ const deriveForCase = async (
     const present = valuesFor(source, originalBody);
     if (present.length === 0) continue;
     if (present.some((value) => decoysFor(value) === null)) {
-      debug(`unstable: '${sourceName(source)}' has no distinct decoys`);
+      debug(() => `unstable: '${sourceName(source)}' has no distinct decoys`);
       outcome.unstableSource = source;
       return outcome;
     }
@@ -469,32 +504,14 @@ const deriveForCase = async (
       return body;
     };
 
-    // The second run corroborates the first - see `locationsForKey`. Each is checked before the
-    // next runs, so an unstable source does not cost a second full transform.
-    const decoyRuns: FlattenedOutput[] = [];
-    for (const seed of [1, 2]) {
-      const out = await harness.runCase(tcData, decoyBody(seed));
-      // No output: the decoy changed the outcome (validation rejected it, a different branch was
-      // taken). A different number of requests, or of fields within them, means the same - the
-      // positions no longer line up. Either way any diff would be noise, so fail closed.
-      const run = out ? flattenRequests(out) : undefined;
-      if (!run || !hasSameShape(baseline.runA, run)) {
-        debug(
-          run
-            ? `unstable: '${sourceName(source)}' changed the shape (decoy ${seed}) - ` +
-                `requests ${baseline.runA.requestCount}->${run.requestCount}, ` +
-                `leaves ${baseline.runA.leaves.size}->${run.leaves.size}`
-            : `unstable: '${sourceName(source)}' decoy ${seed} run produced no output`,
-        );
-        outcome.unstableSource = source;
-        return outcome;
-      }
-      decoyRuns.push(run);
-    }
-
-    outcome.locations.push(
-      ...locationsForKey(sourceName(source), baseline, decoyRuns[0], decoyRuns[1]),
+    const decoyRuns = await runCorroboratedDecoys(baseline, sourceName(source), (seed) =>
+      harness.runCase(tcData, decoyBody(seed)),
     );
+    if (!decoyRuns) {
+      outcome.unstableSource = source;
+      return outcome;
+    }
+    outcome.locations.push(...locationsForKey(baseline, ...decoyRuns, sourceName(source)));
     // Reached only when both decoys ran and the shape held, so the diff for this source in this
     // case was trustworthy.
     if (source.kind === 'runtime') outcome.runtimeMeasured = true;
@@ -502,6 +519,11 @@ const deriveForCase = async (
 
   return outcome;
 };
+
+interface FetchedCredentialOutcome {
+  stable: boolean;
+  locations: Movement[];
+}
 
 /**
  * Derives paths for a credential the destination *fetches* rather than reads from config.
@@ -513,13 +535,9 @@ const deriveForCase = async (
  * string for both the config password and the returned token, and rewriting the request half
  * would stop the auth call matching at all.
  *
- * Runs once for every destination that transformed, so a direct finding cannot hide a fetched
- * token; cases whose mocked responses carry no credential are skipped without a transform.
+ * Runs at most once per destination, so a direct finding cannot hide a fetched token; cases
+ * whose mocked responses carry no credential are skipped without a transform.
  */
-interface FetchedCredentialOutcome {
-  stable: boolean;
-  locations: Movement[];
-}
 
 const deriveFromFetchedCredentials = async (
   harness: Harness,
@@ -558,22 +576,17 @@ const deriveFromFetchedCredentials = async (
             stable = false;
             return;
           }
-          const decoyRuns: FlattenedOutput[] = [];
-          for (const decoy of decoys) {
-            harness.useMocksFor(destination, new Map([[candidate, decoy]]), 'strict', 'response');
-            const out = await harness.runCase(tcData, cloneDeep(body));
-            if (!out) break;
-            decoyRuns.push(flattenRequests(out));
-          }
-          if (
-            decoyRuns.length !== 2 ||
-            decoyRuns.some((run) => !hasSameShape(baseline.runA, run))
-          ) {
+          const decoyRuns = await runCorroboratedDecoys(baseline, 'fetched credential', (seed) => {
+            const substitutions = new Map([[candidate, decoys[seed - 1]]]);
+            harness.useMocksFor(destination, substitutions, 'strict', 'response');
+            return harness.runCase(tcData, cloneDeep(body));
+          });
+          if (!decoyRuns) {
             stable = false;
             return;
           }
           // The same corroborated diff as the config pass, not a second copy of it.
-          locations.push(...locationsForKey(undefined, baseline, decoyRuns[0], decoyRuns[1]));
+          locations.push(...locationsForKey(baseline, ...decoyRuns));
         }
       }
     }
@@ -910,8 +923,7 @@ export const main = async () => {
 
   // Enumerate from what the transformer actually implements, not from what happens to have
   // fixtures - otherwise a fixture-less destination is absent from the manifest entirely
-  // rather than recorded as a countable gap. Both implementation roots count: a destination
-  // lives under v0 or cdk/v2, never both.
+  // rather than recorded as a countable gap.
   const allDestinations = implementedDestinations().filter(
     (d) => !only || only.includes(d.toLowerCase()),
   );
@@ -979,7 +991,7 @@ export const main = async () => {
     process.stdout.write(`  ${destination} ... `);
     let result: CaseOutcome;
     let relaxed = false;
-    /** The fetched-credential pass, computed once - by the rescue below when it runs. */
+    /** The fetched-credential pass, run at most once - by the rescue below when it runs. */
     let fetched: FetchedCredentialOutcome | undefined;
     try {
       result = await deriveForDestination(harness, destination, secretSources, filePaths);
@@ -1040,6 +1052,7 @@ export const main = async () => {
       // that hold, and a later case collapses under the decoy. Discarding a measured location to
       // punish an unrelated case would mask that destination wholesale on evidence we do have.
       const bagUnmeasured = result.unstableSource.kind === 'runtime' && !result.runtimeMeasured;
+      // An unmeasured bag skips the pass, leaving `fetched` unset - which fails closed here.
       if (!bagUnmeasured) {
         fetched = await deriveFromFetchedCredentials(harness, destination, declaredKeys, filePaths);
       }

@@ -51,10 +51,10 @@ describe('secret-path generator utilities', () => {
 
     expect(
       locationsForKey(
-        'apiKey',
         real,
         first,
         flattened({ 'req[0]|headers.Authorization': 'Bearer decoy-b' }),
+        'apiKey',
       ),
     ).toEqual([
       {
@@ -63,7 +63,7 @@ describe('secret-path generator utilities', () => {
         evidence: { real: 'Bearer real', decoy: 'Bearer decoy-a' },
       },
     ]);
-    expect(locationsForKey('apiKey', real, first, first)).toEqual([]);
+    expect(locationsForKey(real, first, first, 'apiKey')).toEqual([]);
   });
 
   it('retains request and leaf counts for shape-stability checks', () => {

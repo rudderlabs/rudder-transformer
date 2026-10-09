@@ -220,7 +220,9 @@ spec.
    filled `LIVE_SECRET_<DEST>` skeleton the developer can paste and fill in — the one thing they
    can't derive from the repo. Placeholders for the secret values, real keys for everything else,
    e.g.:
-   `LIVE_SECRET_HS={"authType":"apiKey","config":{"accessToken":"<private-app-token>"},"readback":{"accessToken":"<private-app-token>"}}`
+   `LIVE_SECRET_HS={"authType":"apiKey","config":{"accessToken":"<private-app-token>","serviceKeyAccessToken":"<service-key>"},"readback":{"accessToken":"<private-app-token>"}}`
+   For HubSpot, `config.accessToken` is the private app token used by setup/read-back helpers and the
+   private-app delivery pass; `config.serviceKeyAccessToken` is used by the service-key delivery pass.
    Include `readback` only if the destination has `verify` steps; add `resourceIds`/`oauthRefresh`
    when the config needs them.
 5. **For each behavior**, add a scenario: a pipeline step whose `seed(ctx)` reproduces the component

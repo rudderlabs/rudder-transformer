@@ -33,7 +33,7 @@ const propertyMap: Record<string, string> = {
 };
 
 const unsupportedLegacyAuthError =
-  'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.';
+  'HubSpot API Key authentication is no longer supported. Use a private app access token or service key.';
 
 describe('Validate destination config utility function test cases', () => {
   it('should reject unsupported legacy API key authentication before checking legacy fields', () => {
@@ -44,7 +44,7 @@ describe('Validate destination config utility function test cases', () => {
     ).toThrow(unsupportedLegacyAuthError);
   });
 
-  it('should require accessToken for Private Apps authentication', () => {
+  it('should require accessToken for bearer-token authentication', () => {
     expect(() =>
       validateDestinationConfig({
         Config: {},

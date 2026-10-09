@@ -4,7 +4,7 @@ module.exports = {
     'type-enum': () => [
       2,
       'always',
-      ['fix', 'feat', 'chore', 'refactor', 'docs', 'test', 'ci', 'style'],
+      ['fix', 'feat', 'chore', 'refactor', 'docs', 'test', 'ci', 'style', 'revert'],
     ],
     'body-max-line-length': () => [2, 'always', 500],
   },

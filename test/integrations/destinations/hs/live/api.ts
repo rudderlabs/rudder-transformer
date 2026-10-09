@@ -24,6 +24,8 @@ export const ASSOC_TO_TYPE = 'contacts';
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles when the suite finishes.
 const hsAgent = new Agent({ keepAlive: false });
 
+// Setup, read-back, and cleanup deliberately use the private-app token in config.accessToken;
+// scenario overrides select the credential under test only for the transform/delivery path.
 const bearer = (ctx: RunContext): string => {
   const token = ctx.liveSecret.config.accessToken;
   if (typeof token !== 'string' || token.length === 0) {

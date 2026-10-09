@@ -91,10 +91,8 @@ jobs:
         working-directory: rudder-transformer
         run: npm ci && npm run prepare
 
-      - name: Typecheck secret-path tooling
-        working-directory: rudder-transformer
-        run: npm run typecheck:secret-paths
-
       - name: Check deterministic artifact
         working-directory: rudder-transformer
-        run: npm run check:secret-paths -- --integrations-config=../rudder-integrations-config/src/configurations/destinations
+        env:
+          SECRET_PATHS_INTEGRATIONS_CONFIG: ../rudder-integrations-config/src/configurations/destinations
+        run: npm run check:secret-paths

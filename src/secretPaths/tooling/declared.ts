@@ -24,7 +24,9 @@ interface Definition {
 
 const loadDefinitions = (root: string): Map<string, Definition> => {
   if (!fs.existsSync(root)) {
-    throw new Error(`integrations-config not found at ${root}. Pass --integrations-config=<path>.`);
+    throw new Error(
+      `integrations-config not found at ${root}. Set SECRET_PATHS_INTEGRATIONS_CONFIG=<path>.`,
+    );
   }
 
   const definitions = new Map<string, Definition>();

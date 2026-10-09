@@ -32,13 +32,6 @@
       "rules": {
         "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
       }
-    },
-    {
-      "files": ["src/secretPaths/tooling/run.js"],
-      "parserOptions": { "project": "./tsconfig.secret-paths-eslint.json" },
-      "rules": {
-        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
-      }
     }
   ],
   "rules": {

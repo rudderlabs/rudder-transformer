@@ -17,12 +17,12 @@
  *   rudder-server forwards verbatim. Nothing declares its keys, so every value under it is
  *   treated as a credential and perturbed by position. See `visitRuntimeSecrets`.
  *
- * Usage (run.js is the entry point):
- *   npm run generate:secret-paths -- --destination=klaviyo,ga4
+ * Usage (run-entry.ts is the Jest entry point):
+ *   SECRET_PATHS_DESTINATION=klaviyo,ga4 npm run generate:secret-paths
  *   npm run generate:secret-paths                        # whole corpus
  *
- * `--integrations-config` points at a rudder-integrations-config checkout; a production
- * build would read the published destination definitions instead.
+ * `SECRET_PATHS_INTEGRATIONS_CONFIG` points at a rudder-integrations-config checkout; a
+ * production build would read the published destination definitions instead.
  */
 import fs from 'fs';
 import { execFileSync } from 'child_process';
@@ -1002,7 +1002,7 @@ const reportDrift = (fresh: SecretPaths): void => {
   say('Entries for destinations this build no longer knows about:', removed);
   console.error(
     '\nRegenerate and commit the result:\n' +
-      '  npm run generate:secret-paths -- --integrations-config=<path>\n\n' +
+      '  SECRET_PATHS_INTEGRATIONS_CONFIG=<path> npm run generate:secret-paths\n\n' +
       'If a path moved, that is a credential landing somewhere new - check the change is\n' +
       'intended before committing the regenerated file.',
   );

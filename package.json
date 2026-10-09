@@ -57,9 +57,8 @@
     "clean:node": "modclean",
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0",
     "generate:testcases": "ts-node ./test/scripts/generateJson.ts --location testcases",
-    "generate:secret-paths": "npm run build:sandboxes && node src/secretPaths/tooling/run.js",
-    "check:secret-paths": "npm run build:sandboxes && node src/secretPaths/tooling/run.js --check",
-    "typecheck:secret-paths": "tsc -p tsconfig.secret-paths.json"
+    "generate:secret-paths": "npm run build:sandboxes && jest -c jest.config.js --runInBand --testMatch='<rootDir>/src/secretPaths/tooling/run-entry.ts'",
+    "check:secret-paths": "npm run build:sandboxes && SECRET_PATHS_CHECK=true jest -c jest.config.js --runInBand --testMatch='<rootDir>/src/secretPaths/tooling/run-entry.ts'"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",

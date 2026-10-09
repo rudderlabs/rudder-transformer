@@ -9,6 +9,7 @@ import {
   hasSameShape,
   locationsForKey,
   Movement,
+  nonHttpSecretCarriersIn,
   serialise,
   toSecretPaths,
   validateSecretPaths,
@@ -21,6 +22,7 @@ const ENDPOINT_LOCATION = 'req[0]|endpoint';
 const DESTINATION_ENDPOINT = 'https://destination.example';
 const INVALID_PATH_MESSAGE = 'Invalid secret path';
 const PARAM_TOKEN = 'param+token';
+const NON_HTTP_SECRET = 'test-account-id';
 const CHARACTER_CLASSES = [/[a-z]/, /[A-Z]/, /\d/, /[^\dA-Za-z]/];
 const PUNCTUATION = /[^\dA-Za-z]/;
 
@@ -163,6 +165,25 @@ describe('secret-path generator utilities', () => {
     );
   });
 
+  it('finds secrets in top-level non-http delivery fields', () => {
+    expect(
+      nonHttpSecretCarriersIn(
+        [
+          { output: { payload: JSON.stringify({ account_id: NON_HTTP_SECRET }) } },
+          { batchedRequest: { payload: Buffer.from(NON_HTTP_SECRET).toString('base64') } },
+        ],
+        [NON_HTTP_SECRET],
+      ),
+    ).toEqual({ fields: ['payload'], unaddressable: false });
+  });
+
+  it('fails closed when a non-http result containing a secret has no addressable field', () => {
+    expect(nonHttpSecretCarriersIn([{ output: NON_HTTP_SECRET }], [NON_HTTP_SECRET])).toEqual({
+      fields: [],
+      unaddressable: true,
+    });
+  });
+
   it('collapses dynamic key families to their containing object', () => {
     expect(collapseKeyFamily('params.bd[12]')).toBe('params');
     expect(collapseKeyFamily('bd[12]')).toBeNull();
@@ -235,6 +256,10 @@ describe('secret-path generator utilities', () => {
     expect(() => validateSecretPaths({ UNRESOLVED: null } as unknown as SecretPaths)).toThrow(
       'Secret paths for UNRESOLVED must be an array',
     );
+  });
+
+  it('accepts the confirmed non-http payload field', () => {
+    expect(() => validateSecretPaths({ TEST: ['payload'] })).not.toThrow();
   });
 
   it.each([

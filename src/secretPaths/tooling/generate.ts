@@ -47,9 +47,10 @@ import {
 } from './harness';
 import {
   ARRAY_MARKER,
+  DELIVERED_NON_HTTP_FIELDS,
   DELIVERED_REQUEST_FIELDS,
   ENDPOINT_FIELD,
-  MASKABLE_REQUEST_FIELDS,
+  MASKABLE_DELIVERY_FIELDS,
   collapseArrayMarkers,
   escapeSegment,
   formatPath,
@@ -61,6 +62,7 @@ type FailureReason =
   | 'dynamic-key-family'
   | 'harness-error'
   | 'no-fixtures'
+  | 'unaddressable-non-http-secret'
   | 'unstable-under-substitution';
 type DerivationFailure = { destType: string; reason: FailureReason };
 
@@ -196,6 +198,8 @@ interface CaseOutcome {
    * comparison that moved nothing is still evidence about where the bag does not go.
    */
   runtimeMeasured?: boolean;
+  /** A secret appeared in a non-HTTP result, but not in a known delivered top-level field. */
+  unaddressableNonHttpSecret?: boolean;
 }
 
 export interface Baseline {
@@ -209,6 +213,8 @@ interface BaselineResult {
   transformed: boolean;
   /** Present only when the case actually produced a request to diff. */
   baseline?: Baseline;
+  /** The unchanged transform output, retained only when there is no HTTP request to inspect. */
+  output?: unknown;
 }
 
 /** Establishes the baseline: the real output, plus the fields that vary on their own. */
@@ -232,7 +238,7 @@ const runBaseline = async (
   const runB = flattenRequests(realB);
   // Ran, but built nothing to diff - an error-path fixture, say. Nothing to derive from, and
   // diffing an empty baseline against a decoy would read any difference as instability.
-  if (runA.leaves.size === 0) return { transformed: true };
+  if (runA.leaves.size === 0) return { transformed: true, output: realA };
 
   const nonDeterministic = new Set<string>();
   for (const [loc, value] of runA.leaves) {
@@ -356,6 +362,67 @@ const secretCarriersIn = (baseline: Baseline, secrets: string[]): Movement[] => 
     }
   }
   return found;
+};
+
+export interface NonHttpSecretCarriers {
+  fields: string[];
+  /** The secret was present in a delivery result whose top-level field is not addressable. */
+  unaddressable: boolean;
+}
+
+/**
+ * Finds credentials in successful non-HTTP transform results.
+ *
+ * Processor and router responses wrap the object handed to delivery as `output` and
+ * `batchedRequest` respectively. A value can itself be structured or stringified JSON; either
+ * way the consumer can only address the containing top-level field, so that is what we publish.
+ */
+export const nonHttpSecretCarriersIn = (
+  output: unknown,
+  secrets: string[],
+): NonHttpSecretCarriers => {
+  const fields = new Set<string>();
+  let unaddressable = false;
+  const wrapperFields = new Set(['output', 'batchedRequest']);
+  const carriesAnySecret = (value: unknown): boolean => {
+    const serialised = typeof value === 'string' ? value : JSON.stringify(value);
+    return Boolean(serialised && secrets.some((secret) => carriesSecret(serialised, secret)));
+  };
+  let walk: (value: unknown) => void;
+  const inspectDeliveredOutput = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      value.forEach(walk);
+      return;
+    }
+    if (!value || typeof value !== 'object') {
+      if (carriesAnySecret(value)) {
+        debug(() => `non-http secret in unaddressable delivery value: ${JSON.stringify(value)}`);
+        unaddressable = true;
+      }
+      return;
+    }
+    const record = value as Record<string, unknown>;
+    for (const field of DELIVERED_NON_HTTP_FIELDS) {
+      if (Object.prototype.hasOwnProperty.call(record, field) && carriesAnySecret(record[field])) {
+        debug(() => `non-http secret in delivery field: ${field}`);
+        fields.add(field);
+      }
+    }
+  };
+  walk = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      value.forEach(walk);
+      return;
+    }
+    if (!value || typeof value !== 'object') return;
+    const record = value as Record<string, unknown>;
+    for (const [field, child] of Object.entries(record)) {
+      if (wrapperFields.has(field)) inspectDeliveredOutput(child);
+      else walk(child);
+    }
+  };
+  walk(output);
+  return { fields: [...fields].sort(), unaddressable };
 };
 
 /** Marks a `headers.<name>` movement whose header name is a value from the destination config. */
@@ -653,6 +720,11 @@ const deriveForDestination = async (
           ),
         );
       }
+    } else if (result.output) {
+      const secrets = secretSources.flatMap((source) => valuesFor(source, originalBody));
+      const carriers = nonHttpSecretCarriersIn(result.output, secrets);
+      total.locations.push(...carriers.fields.map((field) => ({ loc: locationKey(0, field) })));
+      total.unaddressableNonHttpSecret = total.unaddressableNonHttpSecret || carriers.unaddressable;
     }
   }
 
@@ -770,7 +842,7 @@ export const validateSecretPaths = (secretPaths: SecretPaths): void => {
         secretPath !== formatPath(segments) ||
         segments.some((segment) => segment.length === 0) ||
         segments[0] === ARRAY_MARKER ||
-        !MASKABLE_REQUEST_FIELDS.includes(segments[0] as (typeof MASKABLE_REQUEST_FIELDS)[number])
+        !MASKABLE_DELIVERY_FIELDS.includes(segments[0] as (typeof MASKABLE_DELIVERY_FIELDS)[number])
       ) {
         throw new Error(`Invalid secret path for ${destType}: ${secretPath}`);
       }
@@ -875,6 +947,25 @@ interface GenerateOptions {
   destinations?: string[];
   integrationsConfig?: string;
 }
+
+const recordNonHttpOutcome = (
+  result: CaseOutcome,
+  recordPaths: (paths: string[]) => void,
+  recordFailure: (reason: FailureReason) => void,
+): boolean => {
+  if (result.sawRequest) return false;
+  if (result.unaddressableNonHttpSecret) {
+    console.log('secret in unaddressable non-http output - failing generation');
+    recordFailure('unaddressable-non-http-secret');
+    return true;
+  }
+  const paths = toSecretPaths(result.locations);
+  recordPaths(paths);
+  console.log(
+    paths.length > 0 ? `${paths.length} non-http path(s): ${paths.join(', ')}` : 'no http request',
+  );
+  return true;
+};
 
 export const main = async (options: GenerateOptions = {}) => {
   const only = options.destinations?.map((destination) => destination.trim().toLowerCase());
@@ -993,11 +1084,16 @@ export const main = async (options: GenerateOptions = {}) => {
       recordFailure(destType, HARNESS_ERROR);
       return;
     }
-    if (!result.sawRequest) {
-      console.log('no http request');
-      recordEmpty(destType);
+    if (
+      recordNonHttpOutcome(
+        result,
+        (paths) => {
+          destinations[destType] = paths;
+        },
+        (reason) => recordFailure(destType, reason),
+      )
+    )
       return;
-    }
 
     // An unstable source leaves the paths from the other sources a subset of the truth. Most such
     // destinations trade a declared secret for a session token, so a decoy breaks the exchange

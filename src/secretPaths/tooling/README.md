@@ -17,7 +17,7 @@ For each destination type:
 - a missing destination remains a consumer-side mask-everything fallback for mixed-version rollouts,
   but the generator never intentionally omits a destination.
 
-There is no envelope, version, timestamp, source reference, diagnostic reason, or wildcard fail-closed sentinel in the artifact. Destination keys and path lists are sorted. Paths use gjson/sjson notation: literal `.`, `*`, `?`, and `\` are escaped, arrays use `#`, and bracketed or numeric object keys remain literal. Emitted paths begin only with the delivered request fields `headers`, `params`, or `body`; source-only envelope fields such as `metadata` and `destinationConfig` are never emitted. The delivered top-level `endpoint` field is excluded by policy.
+There is no envelope, version, timestamp, source reference, diagnostic reason, or wildcard fail-closed sentinel in the artifact. Destination keys and path lists are sorted. Paths use gjson/sjson notation: literal `.`, `*`, `?`, and `\` are escaped, arrays use `#`, and bracketed or numeric object keys remain literal. Emitted paths begin only with the delivered HTTP request fields `headers`, `params`, or `body`, or a confirmed non-HTTP delivery field such as `payload`; source-only envelope fields such as `metadata` and `destinationConfig` are never emitted. The delivered top-level `endpoint` field is excluded by policy.
 
 ## Inputs
 
@@ -47,7 +47,7 @@ If either decoy cannot differ from the original, a decoy run fails, or request/l
 
 Destinations that exchange a declared config credential for a token get a second, grounded pass. It is eligible only for mocked auth exchanges initiated with values from declared `secretKeys`; only response values are perturbed and shared token caches are bypassed. The same baseline, two-decoy, and shape rules apply. This derives `headers.Authorization` for SFMC and MARKETO without guessing credential-looking response fields.
 
-Valid empty diagnostics (`no-declared-secrets`, `no-secret-located`, `no-http-request`, and `endpoint-only`) produce `[]`. Unresolved diagnostics (`harness-error`, `unstable-under-substitution`, `dynamic-key-family`, and `no-fixtures`) fail the run before the artifact is written.
+Before `no-http-request` can produce `[]`, the generator searches confirmed non-HTTP delivery fields in successful transform results for declared and runtime credential values. It emits the containing top-level field (for example, `payload` when the value is stringified JSON) and fails if a delivery result carries the secret without an addressable field. Other valid empty diagnostics (`no-declared-secrets`, `no-secret-located`, and `endpoint-only`) also produce `[]`. Unresolved diagnostics (`harness-error`, `unstable-under-substitution`, `dynamic-key-family`, `unaddressable-non-http-secret`, and `no-fixtures`) fail the run before the artifact is written.
 
 ## Commands
 

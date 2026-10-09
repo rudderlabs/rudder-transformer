@@ -255,7 +255,7 @@ interface FeaturesConfig {
   supportTransformerProxyV1: true;
   upgradedToSourceTransformV2: true;
   supportDestTransformCompactedPayloadV1: true;
-  secretPaths?: SecretPaths;
+  secretPaths: SecretPaths;
 }
 
 const defaultFeaturesConfig: FeaturesConfig = {
@@ -266,7 +266,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
   supportTransformerProxyV1: true,
   upgradedToSourceTransformV2: true,
   supportDestTransformCompactedPayloadV1: true,
-  ...(secretPaths && { secretPaths }),
+  secretPaths,
 };
 
 export default defaultFeaturesConfig;

@@ -67,11 +67,4 @@ describe('Misc | getFeatures', () => {
     expect(features).toBe(JSON.stringify(defaultFeaturesConfig));
     expect(JSON.parse(features).secretPaths).toEqual(defaultFeaturesConfig.secretPaths);
   });
-
-  it('omits secretPaths when the artifact is unavailable', () => {
-    jest.doMock('../../secretPaths', () => ({ secretPaths: undefined }));
-    const miscService = getMiscService();
-
-    expect(JSON.parse(miscService.getFeatures())).not.toHaveProperty('secretPaths');
-  });
 });

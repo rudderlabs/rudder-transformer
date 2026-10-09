@@ -202,20 +202,15 @@ export const startHarness = (): Harness => {
       }
       adapters.forEach((adapter) => {
         adapter.reset();
-        if (matching === 'ignore-headers') {
-          // Deliberately not registerAxiosMocks: that helper always installs a header matcher.
-          mocks.forEach((mock) => {
-            const { url, method, data, params } = mock.httpReq as any;
-            const { data: resData, headers: resHeaders, status } = mock.httpRes as any;
-            const verb = (method || 'get').toLowerCase();
-            const handler = (adapter as any)[`on${verb.charAt(0).toUpperCase()}${verb.slice(1)}`];
-            if (typeof handler !== 'function') return;
-            const args = verb === 'get' ? [url, { params }] : [url, data];
-            handler.apply(adapter, args).reply(status, resData, resHeaders);
-          });
-          return;
-        }
-        registerAxiosMocks(adapter, mocks);
+        registerAxiosMocks(
+          adapter,
+          matching === 'ignore-headers'
+            ? mocks.map((mock) => ({
+                ...mock,
+                httpReq: { ...mock.httpReq, headers: undefined },
+              }))
+            : mocks,
+        );
       });
     },
 
@@ -255,10 +250,10 @@ export const startHarness = (): Harness => {
           .send(body as any);
       } finally {
         // Undo the fixture's spies here, not in the callers. A fixture that pins the clock
-        // (`jest.useFakeTimers().setSystemTime(...)`) overwrites Date.now globally in the shim,
-        // so one un-restored case silently changes the transform result for every later
-        // destination - and a driver that then skips those cases still reports a clean run.
-        (global as any).jest?.restoreAllMocks?.();
+        // (`jest.useFakeTimers().setSystemTime(...)`) changes the active clock, so one unrestored
+        // case silently changes the transform result for every later destination.
+        jest.restoreAllMocks();
+        jest.useRealTimers();
       }
       if (res.status !== (tcData.output?.response?.status ?? 200)) return null;
       return res.body;

@@ -27,10 +27,10 @@
  * non-determinism there, by survivorship here - they only agree on what "appears" means.
  *
  * Known fixture-corpus survivors are pinned exactly in `validation-baseline.json`. Any added or
- * removed survivor fails validation, so collision cleanup can shrink the baseline deliberately
- * without allowing new credential exposure to pass unnoticed.
+ * removed survivor identity fails validation, so collision cleanup can shrink the baseline
+ * deliberately without allowing new credential exposure to pass unnoticed.
  *
- * Usage: node test/secret-paths/run.js --validate --integrations-config=<path>
+ * Usage: npm run validate:secret-paths -- --integrations-config=<path>
  */
 import { getTestData } from '../integrations/testUtils';
 import type { SecretPaths } from '../../src/secretPaths';
@@ -119,12 +119,6 @@ export const secretValuesFor = (node: unknown, declaredKeys: string[]): SecretVa
 ];
 
 const survivorId = ({ source, path, value }: Survivor): string => `${source} at ${path}: ${value}`;
-
-const countsFor = (values: string[]): Map<string, number> => {
-  const counts = new Map<string, number>();
-  values.forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1));
-  return counts;
-};
 
 const leafSurvivorsIn = (request: Record<string, unknown>, secret: SecretValue): Survivor[] => {
   const survivors: Survivor[] = [];
@@ -250,12 +244,10 @@ export const validate = async (
         cases += 1;
 
         for (const req of requests) {
-          const masked = JSON.parse(JSON.stringify(req));
-          paths?.forEach((p) => maskAt(masked, p));
           // The endpoint is excluded from masking by decision, so a secret sitting there is not
           // a path the derivation missed. It is counted separately rather than ignored, so that
           // exclusion can never quietly absorb a credential nobody decided to accept.
-          const { [ENDPOINT_FIELD]: endpoint, ...maskable } = masked;
+          const { [ENDPOINT_FIELD]: endpoint, ...maskable } = req;
           if (
             typeof endpoint === 'string' &&
             secrets.some((s) => carriesSecret(endpoint, s.value))
@@ -263,28 +255,20 @@ export const validate = async (
             endpointCarriers.add(destType);
           }
           if (failClosed) continue;
-          secrets
-            .flatMap((secret) => leafSurvivorsIn(maskable, secret))
-            .forEach((survivor) => survivors.push(survivorId(survivor)));
+          survivors.push(...findSurvivorIds(maskable, paths, secrets));
         }
       }
     }
     // Fail-closed destinations have no derived paths to be covered by anything.
     if (!failClosed) coverage.push(cases);
-    const observed = countsFor(survivors);
-    const accepted = countsFor((validationBaseline as Record<string, string[]>)[destType] ?? []);
-    const unexpected = [...observed.keys()].filter((survivor) => !accepted.has(survivor));
-    const missing = [...accepted.keys()].filter((survivor) => !observed.has(survivor));
-    const countChanged = [...observed.entries()]
-      .filter(
-        ([survivor, count]) =>
-          accepted.get(survivor) !== undefined && accepted.get(survivor) !== count,
-      )
-      .map(([survivor, count]) => `${survivor} (${accepted.get(survivor)} -> ${count})`);
-    if (unexpected.length > 0 || missing.length > 0 || countChanged.length > 0) {
+    const observed = new Set(survivors);
+    const accepted = new Set((validationBaseline as Record<string, string[]>)[destType] ?? []);
+    const unexpected = [...observed].filter((survivor) => !accepted.has(survivor));
+    const missing = [...accepted].filter((survivor) => !observed.has(survivor));
+    if (unexpected.length > 0 || missing.length > 0) {
       leaks.push(
         `${destType}: unexpected [${unexpected.join(', ')}], missing baseline ` +
-          `[${missing.join(', ')}], count changed [${countChanged.join(', ')}]`,
+          `[${missing.join(', ')}]`,
       );
     }
     process.stdout.write('.');

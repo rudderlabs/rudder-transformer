@@ -7,10 +7,9 @@
 import fs from 'fs';
 import { join } from 'path';
 import { getIntegrations } from '../../src/routes/utils';
-import { argOf } from './args';
 
-export const integrationsConfigPath = (): string =>
-  argOf('integrations-config') ||
+export const integrationsConfigPath = (configuredPath?: string): string =>
+  configuredPath ||
   join(__dirname, '../../../rudder-integrations-config/src/configurations/destinations');
 
 const DEFINITION_ALIASES: Record<string, string> = {
@@ -24,8 +23,7 @@ interface Definition {
   config: Record<string, unknown>;
 }
 
-const loadDefinitions = (): Map<string, Definition> => {
-  const root = integrationsConfigPath();
+const loadDefinitions = (root: string): Map<string, Definition> => {
   if (!fs.existsSync(root)) {
     throw new Error(`integrations-config not found at ${root}. Pass --integrations-config=<path>.`);
   }
@@ -67,15 +65,16 @@ const loadDefinitions = (): Map<string, Definition> => {
   return definitions;
 };
 
-let definitions: Map<string, Definition> | undefined;
+const definitionsByRoot = new Map<string, Map<string, Definition>>();
 
-const definitionsForRun = (): Map<string, Definition> => {
-  definitions ??= loadDefinitions();
-  return definitions;
+const definitionsForRun = (configuredPath?: string): Map<string, Definition> => {
+  const root = integrationsConfigPath(configuredPath);
+  if (!definitionsByRoot.has(root)) definitionsByRoot.set(root, loadDefinitions(root));
+  return definitionsByRoot.get(root)!;
 };
 
-const definitionFor = (destination: string): Definition | undefined =>
-  definitionsForRun().get(
+const definitionFor = (destination: string, configuredPath?: string): Definition | undefined =>
+  definitionsForRun(configuredPath).get(
     (DEFINITION_ALIASES[destination.toLowerCase()] ?? destination).toLowerCase(),
   );
 
@@ -91,12 +90,15 @@ export const implementedDestinations = (): string[] =>
     ]),
   ].sort();
 
-export const loadDeclaredSecretKeys = (only?: string[]): Record<string, string[]> => {
+export const loadDeclaredSecretKeys = (
+  only?: string[],
+  configuredPath?: string,
+): Record<string, string[]> => {
   const destinations = only ?? implementedDestinations();
   const out: Record<string, string[]> = {};
   const missing: string[] = [];
   for (const destination of [...new Set(destinations.map((name) => name.toLowerCase()))].sort()) {
-    const definition = definitionFor(destination);
+    const definition = definitionFor(destination, configuredPath);
     if (!definition) missing.push(destination);
     else out[destination] = definition.secretKeys;
   }
@@ -107,8 +109,11 @@ export const loadDeclaredSecretKeys = (only?: string[]): Record<string, string[]
 };
 
 /** Every config key a destination declares, filled with a distinctive dummy, for probing. */
-export const probeConfigFor = (destination: string): Record<string, string> => {
-  const declared = definitionFor(destination)?.config;
+export const probeConfigFor = (
+  destination: string,
+  configuredPath?: string,
+): Record<string, string> => {
+  const declared = definitionFor(destination, configuredPath)?.config;
   if (!declared) return {};
   const config: Record<string, string> = {};
   for (const group of Object.values((declared.destConfig as Record<string, unknown>) ?? {})) {

@@ -94,12 +94,29 @@ describe('secret-path generator utilities', () => {
   });
 
   it('collapses destination-configured secret header names to the containing object', () => {
-    expect(collapseDynamicConfigHeader('HTTP', 'headers.x-api-key', 'apiKeyValue')).toBe('headers');
-    expect(collapseDynamicConfigHeader('WEBHOOK', 'headers.test2', 'headers.to')).toBe('headers');
-    expect(collapseDynamicConfigHeader('PIPEDREAM', 'headers.test2', 'headers.to')).toBe('headers');
-    expect(collapseDynamicConfigHeader('HTTP', 'headers.Authorization', 'bearerToken')).toBe(
-      'headers.Authorization',
-    );
+    expect(collapseDynamicConfigHeader('headers.x-api-key', true)).toBe('headers');
+    expect(collapseDynamicConfigHeader('headers.Authorization')).toBe('headers.Authorization');
+  });
+
+  it('records dynamic header evidence from destination config values', () => {
+    const real = baseline({ 'req[0]|headers.x-api-key': 'real-secret' });
+
+    expect(
+      locationsForKey(
+        real,
+        flattened({ 'req[0]|headers.x-api-key': 'decoy-a' }),
+        flattened({ 'req[0]|headers.x-api-key': 'decoy-b' }),
+        'apiKeyValue',
+        new Set(['x-api-key']),
+      ),
+    ).toEqual([
+      {
+        loc: 'req[0]|headers.x-api-key',
+        source: 'apiKeyValue',
+        headerNameFromConfig: true,
+        evidence: { real: 'real-secret', decoy: 'decoy-a' },
+      },
+    ]);
   });
 
   it('normalizes, orders, deduplicates, and excludes endpoint paths', () => {
@@ -119,13 +136,10 @@ describe('secret-path generator utilities', () => {
 
   it('collapses dynamic config-header locations when paths are emitted', () => {
     expect(
-      toSecretPaths(
-        [
-          { loc: 'req[0]|headers.x-api-key', source: 'apiKeyValue' },
-          { loc: 'req[0]|headers.Authorization', source: 'bearerToken' },
-        ],
-        'HTTP',
-      ),
+      toSecretPaths([
+        { loc: 'req[0]|headers.x-api-key', headerNameFromConfig: true },
+        { loc: 'req[0]|headers.Authorization' },
+      ]),
     ).toEqual(['headers']);
   });
 

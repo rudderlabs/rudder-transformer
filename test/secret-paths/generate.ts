@@ -33,7 +33,6 @@ import path, { join } from 'path';
 import { getTestData } from '../integrations/testUtils';
 import type { SecretPaths } from '../../src/secretPaths';
 import { implementedDestinations, loadDeclaredSecretKeys, probeConfigFor } from './declared';
-import { argOf, hasFlag } from './args';
 import type { MockMatching } from './harness';
 import {
   carriesSecret,
@@ -276,6 +275,29 @@ const sourceName = (source: SecretSource): string =>
 export const valuesFor = (source: SecretSource, body: unknown): string[] =>
   source.kind === 'config' ? configSecretsFor(body, source.key) : runtimeSecretsFor(body);
 
+/** String values observed under each fixture case's `destination.Config`. */
+const destinationConfigValues = (body: unknown): Set<string> => {
+  const values = new Set<string>();
+  const collectStrings = (node: unknown): void => {
+    if (typeof node === 'string') {
+      values.add(node);
+      return;
+    }
+    if (!node || typeof node !== 'object') return;
+    Object.values(node).forEach(collectStrings);
+  };
+  const findDestinations = (node: unknown): void => {
+    if (!node || typeof node !== 'object') return;
+    const record = node as Record<string, unknown>;
+    if (record.destination && typeof record.destination === 'object') {
+      collectStrings((record.destination as Record<string, unknown>).Config);
+    }
+    Object.values(record).forEach(findDestinations);
+  };
+  findDestinations(body);
+  return values;
+};
+
 /** Rewrites this source's values in place, by name for a config key and by position for the bag. */
 const rewriteWith = (
   source: SecretSource,
@@ -300,6 +322,8 @@ export interface Movement {
   loc: string;
   /** The declared config key or runtime bag that moved this field. */
   source?: string;
+  /** The header key was observed as a value in this fixture's destination config. */
+  headerNameFromConfig?: boolean;
   /**
    * What the field held before and after the perturbation.
    *
@@ -386,6 +410,7 @@ export const locationsForKey = (
   decoy: FlattenedOutput,
   decoy2: FlattenedOutput,
   source?: string,
+  configuredValues: ReadonlySet<string> = new Set(),
 ): Movement[] => {
   const found: Movement[] = [];
   for (const [loc, realValue] of baseline.runA.leaves) {
@@ -407,7 +432,15 @@ export const locationsForKey = (
         `\n            real =${JSON.stringify(realValue).slice(0, 90)}` +
         `\n            decoy=${JSON.stringify(decoyValue).slice(0, 90)}`,
     );
-    found.push({ loc, source, evidence: { real: realValue, decoy: decoyValue } });
+    const segments = parsePath(pathOf(loc));
+    found.push({
+      loc,
+      source,
+      ...(segments.length === 2 &&
+        segments[0] === 'headers' &&
+        configuredValues.has(segments[1]) && { headerNameFromConfig: true }),
+      evidence: { real: realValue, decoy: decoyValue },
+    });
   }
   return found;
 };
@@ -453,6 +486,7 @@ const deriveForCase = async (
 ): Promise<CaseOutcome> => {
   const outcome: CaseOutcome = { locations: [], sawRequest: false, transformed: false };
   const originalBody = tcData.input.request.body;
+  const configuredValues = destinationConfigValues(tcData);
 
   harness.useMocksFor(destination, undefined, matching);
   const { transformed, baseline } = await runBaseline(harness, tcData, originalBody);
@@ -476,17 +510,22 @@ const deriveForCase = async (
     }
 
     // Reads the baseline only - no decoy run is involved - so it is settled here, once, before
-    // the substitution work for this source begins. Static data-delivery fixtures cannot be
-    // recomputed from perturbed metadata, so containment is their complete request-surface rule;
-    // transform fixtures keep the narrower non-deterministic-leaf recovery. (Data-delivery
-    // fixtures are already-built proxy requests: perturbing `metadata.secret` cannot recompute a
-    // header copied from it earlier, so containment over every leaf is the only evidence there.)
+    // the substitution work for this source begins. Exact containment is direct evidence for a
+    // runtime-bag value: every value in that bag is a credential by contract. It also covers
+    // request fixtures whose auth helper is mocked to a stable header and static data-delivery
+    // fixtures, neither of which can recompute that header from a perturbed metadata bag.
     if (source.kind === 'runtime') {
-      const candidates =
-        harness.routeFor(tcData) === DATA_DELIVERY_FIXTURE_ROUTE
-          ? baseline.runA.leaves.keys()
-          : baseline.nonDeterministic;
-      outcome.locations.push(...secretCarriersIn(candidates, baseline, present));
+      outcome.locations.push(
+        ...secretCarriersIn(baseline.runA.leaves.keys(), baseline, present).map((movement) => {
+          const segments = parsePath(pathOf(movement.loc));
+          return {
+            ...movement,
+            ...(segments.length === 2 &&
+              segments[0] === 'headers' &&
+              configuredValues.has(segments[1]) && { headerNameFromConfig: true }),
+          };
+        }),
+      );
     }
 
     // Build the decoy body and the matching mock rewrite together. The corpus matches mocks on
@@ -511,7 +550,9 @@ const deriveForCase = async (
       outcome.unstableSource = source;
       return outcome;
     }
-    outcome.locations.push(...locationsForKey(baseline, ...decoyRuns, sourceName(source)));
+    outcome.locations.push(
+      ...locationsForKey(baseline, ...decoyRuns, sourceName(source), configuredValues),
+    );
     // Reached only when both decoys ran and the shape held, so the diff for this source in this
     // case was trustworthy.
     if (source.kind === 'runtime') outcome.runtimeMeasured = true;
@@ -586,7 +627,9 @@ const deriveFromFetchedCredentials = async (
             return;
           }
           // The same corroborated diff as the config pass, not a second copy of it.
-          locations.push(...locationsForKey(baseline, ...decoyRuns));
+          locations.push(
+            ...locationsForKey(baseline, ...decoyRuns, undefined, destinationConfigValues(tcData)),
+          );
         }
       }
     }
@@ -706,53 +749,34 @@ export const collapseKeyFamily = (path: string): string | null => {
   return family === 0 ? null : formatPath(segments.slice(0, family));
 };
 
-const CONFIG_DYNAMIC_HEADER_SOURCES: Record<string, string[]> = {
-  CUSTOM_AUDIENCE: ['apiKeyValue'],
-  HTTP: ['apiKeyValue'],
-  PIPEDREAM: ['headers.to'],
-  WEBHOOK: ['headers.to'],
-};
-
 /**
  * Some destinations use a declared secret as a header value while another config field supplies the
  * header name. A fixture can only prove one concrete child key, but production can emit any tenant
  * configured key; mask the containing headers object when that dynamic source moves a header leaf.
  */
-export const collapseDynamicConfigHeader = (
-  destination: string,
-  path: string,
-  source?: string,
-): string => {
-  if (
-    source &&
-    parsePath(path)[0] === 'headers' &&
-    CONFIG_DYNAMIC_HEADER_SOURCES[destination.toUpperCase()]?.includes(source)
-  ) {
-    return 'headers';
-  }
-  return path;
-};
+export const collapseDynamicConfigHeader = (path: string, headerNameFromConfig = false): string =>
+  headerNameFromConfig ? 'headers' : path;
 
 /**
  * Applies the endpoint exclusion; see ENDPOINT_FIELD in src/secretPaths/path.ts for why.
  *
  * Both producers funnel through here, so the policy cannot be escaped by adding a third.
  */
-export const toSecretPaths = (locations: Movement[], destination = ''): string[] =>
+export const toSecretPaths = (locations: Movement[]): string[] =>
   [
     ...new Set(
       locations
-        .map(({ loc, source }) => ({ path: pathOf(loc), source }))
+        .map(({ loc, headerNameFromConfig }) => ({ path: pathOf(loc), headerNameFromConfig }))
         .filter(({ path: candidate }) => parsePath(candidate)[0] !== ENDPOINT_FIELD)
         // Collapse marked array positions to a wildcard. Fixtures only ever exercise as many
         // elements as they declare, so emitting the observed indices would leave every element
         // beyond that count unmasked in production.
-        .map(({ path: candidate, source }) => ({
+        .map(({ path: candidate, headerNameFromConfig }) => ({
           path: collapseArrayMarkers(candidate),
-          source,
+          headerNameFromConfig,
         }))
-        .map(({ path: candidate, source }) =>
-          collapseDynamicConfigHeader(destination, candidate, source),
+        .map(({ path: candidate, headerNameFromConfig }) =>
+          collapseDynamicConfigHeader(candidate, headerNameFromConfig),
         )
         // A dynamically-numbered key family cannot be addressed directly, so it becomes the
         // object containing it. `null` means nothing contains it; the caller fails closed.
@@ -787,7 +811,13 @@ const exposureOf = (locations: Movement[]): EndpointExposure | undefined => {
  * deciding what to publish, and putting it in a producer is how the other one escapes it.
  */
 const withoutUnreadEvidence = (m: Movement): Movement =>
-  pathOf(m.loc) === ENDPOINT_FIELD ? m : { loc: m.loc, source: m.source };
+  pathOf(m.loc) === ENDPOINT_FIELD
+    ? m
+    : {
+        loc: m.loc,
+        source: m.source,
+        ...(m.headerNameFromConfig && { headerNameFromConfig: true }),
+      };
 
 const sortedByKey = <T>(record: Record<string, T>): Record<string, T> =>
   Object.fromEntries(Object.entries(record).sort(([a], [b]) => (a < b ? -1 : 1)));
@@ -901,7 +931,7 @@ const reportDrift = (fresh: SecretPaths): void => {
   say('Entries for destinations this build no longer knows about:', removed);
   console.error(
     '\nRegenerate and commit the result:\n' +
-      '  node test/secret-paths/run.js --integrations-config=<path>\n\n' +
+      '  npm run generate:secret-paths -- --integrations-config=<path>\n\n' +
       'If a path moved, that is a credential landing somewhere new - check the change is\n' +
       'intended before committing the regenerated file.',
   );
@@ -910,11 +940,15 @@ const reportDrift = (fresh: SecretPaths): void => {
 
 // ---------------------------------------------------------------------------
 
-export const main = async () => {
-  const only = argOf('destination')
-    ?.split(',')
-    .map((d) => d.trim().toLowerCase());
-  const declaredSecretKeys = loadDeclaredSecretKeys(only);
+export interface GenerateOptions {
+  check?: boolean;
+  destinations?: string[];
+  integrationsConfig?: string;
+}
+
+export const main = async (options: GenerateOptions = {}) => {
+  const only = options.destinations?.map((destination) => destination.trim().toLowerCase());
+  const declaredSecretKeys = loadDeclaredSecretKeys(only, options.integrationsConfig);
 
   // throwException, never passthrough: an unmocked call must fail loudly rather than reach
   // a real destination API from a build step.
@@ -973,7 +1007,10 @@ export const main = async () => {
       // comes back. Warehouse and object-storage destinations return rows or the message itself,
       // never an endpoint - so there is nothing in a request for a consumer to mask.
       process.stdout.write(`  ${destination} ... `);
-      const probed = await harness.probe(destination, probeConfigFor(destination));
+      const probed = await harness.probe(
+        destination,
+        probeConfigFor(destination, options.integrationsConfig),
+      );
       if (probed === 'no-request') {
         console.log('no http request (probed)');
         recordUnresolved(destType, 'no-http-request');
@@ -1094,7 +1131,7 @@ export const main = async () => {
 
     // Both policies are applied once, over the locations from both producers, so that neither
     // producer can escape either of them.
-    const paths = toSecretPaths(result.locations, destType);
+    const paths = toSecretPaths(result.locations);
     const exposure = exposureOf(result.locations);
     if (exposure) endpointExposures[destType] = exposure;
 
@@ -1126,7 +1163,7 @@ export const main = async () => {
   const secretPaths = sortedByKey(destinations);
 
   let action: string;
-  if (hasFlag('check')) {
+  if (options.check) {
     reportDrift(secretPaths);
     action = 'derived';
   } else {

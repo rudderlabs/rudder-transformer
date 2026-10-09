@@ -7,15 +7,15 @@ This tooling derives the destination credential paths published by `GET /feature
 `src/secretPaths/secretPaths.json` is directly:
 
 ```ts
-type SecretPaths = Record<string, string[] | null>;
+type SecretPaths = Record<string, string[]>;
 ```
 
 For each destination type:
 
 - a path list is the complete set of known maskable secret-derived request paths;
 - `[]` means the corpus positively found nothing maskable;
-- `null` means derivation was inconclusive and the consumer must fail closed;
-- a missing destination in a present map is treated like `null` by the consumer.
+- a missing destination remains a consumer-side mask-everything fallback for mixed-version rollouts,
+  but the generator never intentionally omits a destination.
 
 There is no envelope, version, timestamp, source reference, diagnostic reason, or wildcard fail-closed sentinel in the artifact. Destination keys and path lists are sorted. Paths use gjson/sjson notation: literal `.`, `*`, `?`, and `\` are escaped, arrays use `#`, and bracketed or numeric object keys remain literal. The top-level `endpoint` field is the only excluded surface and is never emitted.
 
@@ -43,11 +43,11 @@ For each fixture case and secret source, the generator:
 5. Accepts a leaf only when baseline differs from decoy A and decoy B differs from decoy A.
 6. Unions accepted locations across cases, drops request indices, collapses arrays to `#`, removes child paths covered by a parent, and sorts the result.
 
-If either decoy cannot differ from the original, a decoy run fails, or request/leaf counts change, the destination is `null` with the diagnostic `unstable-under-substitution`. A dynamically numbered object-key family such as AWIN `params.bd[N]` collapses to its containing object (`params`); a top-level family fails closed.
+If either decoy cannot differ from the original, a decoy run fails, or request/leaf counts change, generation fails with `unstable-under-substitution` before writing the artifact. A dynamically numbered object-key family such as AWIN `params.bd[N]` collapses to its containing object (`params`); a top-level family also fails generation.
 
 Destinations that exchange a declared config credential for a token get a second, grounded pass. It is eligible only for mocked auth exchanges initiated with values from declared `secretKeys`; only response values are perturbed and shared token caches are bypassed. The same baseline, two-decoy, and shape rules apply. This derives `headers.Authorization` for SFMC and MARKETO without guessing credential-looking response fields.
 
-Generator diagnostics such as `no-declared-secrets`, `no-secret-located`, `endpoint-only`, and `unstable-under-substitution` are console-only. They do not alter the direct-map wire shape.
+Valid empty diagnostics (`no-declared-secrets`, `no-secret-located`, `no-http-request`, and `endpoint-only`) produce `[]`. Unresolved diagnostics (`harness-error`, `unstable-under-substitution`, `dynamic-key-family`, and `no-fixtures`) fail the run before the artifact is written.
 
 ## Commands
 

@@ -55,27 +55,45 @@ import {
 } from '../path';
 
 type EndpointExposure = 'query' | 'url';
-type UnresolvedReason =
-  | 'dynamic-key-family'
+type EmptyReason =
   | 'endpoint-only'
-  | 'harness-error'
   | 'no-declared-secrets'
-  | 'no-fixtures'
   | 'no-http-request'
-  | 'no-secret-located'
+  | 'no-secret-located';
+type FailureReason =
+  | 'dynamic-key-family'
+  | 'harness-error'
+  | 'no-fixtures'
   | 'unstable-under-substitution';
+type DerivationReason = EmptyReason | FailureReason;
 
-const MASKING_FOR_REASON: Record<UnresolvedReason, string[] | null> = {
-  'dynamic-key-family': null,
-  'endpoint-only': [],
-  'harness-error': null,
-  'no-declared-secrets': [],
-  'no-fixtures': null,
-  'no-http-request': [],
-  'no-secret-located': [],
-  'unstable-under-substitution': null,
+const HARNESS_ERROR_REASON = 'harness-error';
+const UNSTABLE_SUBSTITUTION_REASON = 'unstable-under-substitution';
+const FAILURE_REASONS: Record<FailureReason, true> = {
+  'dynamic-key-family': true,
+  [HARNESS_ERROR_REASON]: true,
+  'no-fixtures': true,
+  [UNSTABLE_SUBSTITUTION_REASON]: true,
 };
-const HARNESS_ERROR_REASON: UnresolvedReason = 'harness-error';
+
+const isFailureReason = (reason: DerivationReason): reason is FailureReason =>
+  reason in FAILURE_REASONS;
+
+type DerivationFailure = { destType: string; reason: FailureReason };
+
+const createOutcomeRecorder = (
+  destinations: SecretPaths,
+  failures: DerivationFailure[],
+): ((destType: string, reason: DerivationReason) => void) => {
+  const destinationResults = destinations;
+  return (destType, reason) => {
+    if (isFailureReason(reason)) {
+      failures.push({ destType, reason });
+    } else {
+      destinationResults[destType] = [];
+    }
+  };
+};
 
 const OUT_FILE = join(__dirname, '../secretPaths.json');
 const PRETTIER_BIN = createRequire(__filename).resolve('prettier/bin/prettier.cjs');
@@ -842,7 +860,7 @@ export const toSecretPaths = (locations: Movement[]): string[] =>
           collapseDynamicConfigHeader(candidate, headerNameFromConfig),
         )
         // A dynamically-numbered key family cannot be addressed directly, so it becomes the
-        // object containing it. `null` means nothing contains it; the caller fails closed.
+        // object containing it. `null` means nothing contains it; the caller fails generation.
         .map(collapseKeyFamily)
         .filter((path): path is string => path !== null),
     ),
@@ -882,24 +900,25 @@ export const validateSecretPaths = (secretPaths: SecretPaths): void => {
   }
 
   for (const [destType, paths] of Object.entries(secretPaths)) {
-    if (paths !== null) {
-      const sortedPaths = [...paths].sort();
+    if (!Array.isArray(paths)) {
+      throw new Error(`Secret paths for ${destType} must be an array`);
+    }
+    const sortedPaths = [...paths].sort();
+    if (
+      new Set(paths).size !== paths.length ||
+      JSON.stringify(paths) !== JSON.stringify(sortedPaths)
+    ) {
+      throw new Error(`Secret paths for ${destType} must be unique and sorted`);
+    }
+    for (const secretPath of paths) {
+      const segments = parsePath(secretPath);
       if (
-        new Set(paths).size !== paths.length ||
-        JSON.stringify(paths) !== JSON.stringify(sortedPaths)
+        secretPath !== formatPath(segments) ||
+        segments.some((segment) => segment.length === 0) ||
+        segments[0] === ARRAY_MARKER ||
+        segments[0] === ENDPOINT_FIELD
       ) {
-        throw new Error(`Secret paths for ${destType} must be unique and sorted`);
-      }
-      for (const secretPath of paths) {
-        const segments = parsePath(secretPath);
-        if (
-          secretPath !== formatPath(segments) ||
-          segments.some((segment) => segment.length === 0) ||
-          segments[0] === ARRAY_MARKER ||
-          segments[0] === ENDPOINT_FIELD
-        ) {
-          throw new Error(`Invalid secret path for ${destType}: ${secretPath}`);
-        }
+        throw new Error(`Invalid secret path for ${destType}: ${secretPath}`);
       }
     }
   }
@@ -942,8 +961,7 @@ const reportDrift = (fresh: SecretPaths): void => {
     return;
   }
 
-  const show = (paths: string[] | null | undefined): string =>
-    paths === null ? 'null (mask everything)' : JSON.stringify(paths);
+  const show = (paths: string[] | undefined): string => JSON.stringify(paths);
 
   if (committedText === serialise(fresh)) {
     console.log('\n--check: committed manifest matches what this build derives.');
@@ -1015,16 +1033,13 @@ export const main = async (options: GenerateOptions = {}) => {
     (d) => !only || only.includes(d.toLowerCase()),
   );
 
-  const destinations: Record<string, string[] | null> = {};
-  /** Destinations with neither a fixture nor a usable probe - a build failure, not a finding. */
-  const inconclusive: string[] = [];
+  const destinations: SecretPaths = {};
+  const failures: DerivationFailure[] = [];
   /** Destinations whose endpoint carried a declared secret - recorded, never masked. */
   const endpointExposures: Record<string, EndpointExposure> = {};
 
-  /** Decides what the consumer must do here, so the policy lives with the evidence. */
-  const recordUnresolved = (destType: string, reason: UnresolvedReason) => {
-    destinations[destType] = MASKING_FOR_REASON[reason];
-  };
+  /** Records valid empty findings while retaining build failures outside the artifact. */
+  const recordOutcome = createOutcomeRecorder(destinations, failures);
 
   const deriveOne = async (destination: string): Promise<void> => {
     const destType = destination.toUpperCase();
@@ -1049,7 +1064,7 @@ export const main = async (options: GenerateOptions = {}) => {
       : configSources;
 
     if (secretSources.length === 0) {
-      recordUnresolved(destType, 'no-declared-secrets');
+      recordOutcome(destType, 'no-declared-secrets');
       return;
     }
 
@@ -1065,15 +1080,13 @@ export const main = async (options: GenerateOptions = {}) => {
       );
       if (probed === 'no-request') {
         console.log('no http request (probed)');
-        recordUnresolved(destType, 'no-http-request');
+        recordOutcome(destType, 'no-http-request');
         return;
       }
-      // Neither a fixture nor a conclusive probe. Failing closed would bury that in the manifest
-      // as one more `null`, and the count could grow without anyone noticing. A destination we
-      // cannot reason about at all is a build problem, so say so and stop.
+      // Neither a fixture nor a conclusive probe. A destination we cannot reason about at all is
+      // a build problem, so record the failure and abort before writing the artifact.
       console.log(`no fixtures, and probe was ${probed}`);
-      inconclusive.push(destType);
-      recordUnresolved(destType, 'no-fixtures');
+      recordOutcome(destType, 'no-fixtures');
       return;
     }
 
@@ -1103,13 +1116,13 @@ export const main = async (options: GenerateOptions = {}) => {
       }
     } catch (err: any) {
       console.log(`harness error (${String(err?.message).slice(0, 60)})`);
-      recordUnresolved(destType, HARNESS_ERROR_REASON);
+      recordOutcome(destType, HARNESS_ERROR_REASON);
       return;
     }
 
     if (result.harnessError) {
       console.log(`harness error (${result.harnessError.slice(0, 60)})`);
-      recordUnresolved(destType, HARNESS_ERROR_REASON);
+      recordOutcome(destType, HARNESS_ERROR_REASON);
       return;
     }
     if (result.unstableSource) {
@@ -1130,8 +1143,8 @@ export const main = async (options: GenerateOptions = {}) => {
       // The rescue perturbs the credential the destination *fetches*, which is a different value
       // from the one the runtime bag carries. So when the bag destabilised and was never compared
       // cleanly in any case, a non-empty rescue says nothing about where the bag's token went, and
-      // publishing it would be a positive claim built on unrelated evidence - fail closed instead,
-      // which masks everything maskable and therefore covers the token.
+      // publishing it would be a positive claim built on unrelated evidence, so fail generation
+      // instead of committing an incomplete result.
       //
       // When the bag *was* compared cleanly somewhere, its locations are already in
       // `result.locations`, measured by the same corroborated diff every other path comes from.
@@ -1139,13 +1152,13 @@ export const main = async (options: GenerateOptions = {}) => {
       // that hold, and a later case collapses under the decoy. Discarding a measured location to
       // punish an unrelated case would mask that destination wholesale on evidence we do have.
       const bagUnmeasured = result.unstableSource.kind === 'runtime' && !result.runtimeMeasured;
-      // An unmeasured bag skips the pass, leaving `fetched` unset - which fails closed here.
+      // An unmeasured bag skips the pass, leaving `fetched` unset - which fails generation here.
       if (!bagUnmeasured) {
         fetched = await deriveFromFetchedCredentials(harness, destination, declaredKeys, filePaths);
       }
       if (!fetched?.stable || fetched.locations.length === 0) {
-        console.log(`unstable under '${sourceName(result.unstableSource)}' - failing closed`);
-        recordUnresolved(destType, 'unstable-under-substitution');
+        console.log(`unstable under '${sourceName(result.unstableSource)}' - failing generation`);
+        recordOutcome(destType, UNSTABLE_SUBSTITUTION_REASON);
         return;
       }
       // The fetched locations are merged below, not assigned. Everything already collected came
@@ -1155,14 +1168,14 @@ export const main = async (options: GenerateOptions = {}) => {
     }
 
     if (!result.transformed) {
-      // Nothing ran, so we know nothing. Fail closed rather than claim there is no request.
-      console.log('no case transformed - failing closed');
-      recordUnresolved(destType, HARNESS_ERROR_REASON);
+      // Nothing ran, so we know nothing. Fail the build rather than claim there is no request.
+      console.log('no case transformed - failing generation');
+      recordOutcome(destType, HARNESS_ERROR_REASON);
       return;
     }
     if (!result.sawRequest) {
       console.log('no http request');
-      recordUnresolved(destType, 'no-http-request');
+      recordOutcome(destType, 'no-http-request');
       return;
     }
     // A destination can both place one declared/runtime value directly and exchange another
@@ -1170,8 +1183,8 @@ export const main = async (options: GenerateOptions = {}) => {
     // derivation already found paths, otherwise those direct findings can hide the fetched token.
     fetched ??= await deriveFromFetchedCredentials(harness, destination, declaredKeys, filePaths);
     if (!fetched.stable) {
-      console.log('fetched credential unstable under substitution - failing closed');
-      recordUnresolved(destType, 'unstable-under-substitution');
+      console.log('fetched credential unstable under substitution - failing generation');
+      recordOutcome(destType, UNSTABLE_SUBSTITUTION_REASON);
       return;
     }
     if (fetched.locations.length > 0) {
@@ -1188,16 +1201,16 @@ export const main = async (options: GenerateOptions = {}) => {
     if (paths.length === 0) {
       // `endpoint-only` and `no-secret-located` both publish `[]`, but they are different claims:
       // one located the credential in the excluded field, the other found none at all.
-      const reason: UnresolvedReason = exposure ? 'endpoint-only' : 'no-secret-located';
+      const reason: EmptyReason = exposure ? 'endpoint-only' : 'no-secret-located';
       console.log(reason);
-      recordUnresolved(destType, reason);
+      recordOutcome(destType, reason);
       return;
     }
 
     // Only reachable when a family sat at the top level, where no object contains it.
     if (result.locations.some((m) => collapseKeyFamily(pathOf(m.loc)) === null)) {
-      console.log('dynamic key family at the top level - failing closed');
-      recordUnresolved(destType, 'dynamic-key-family');
+      console.log('dynamic key family at the top level - failing generation');
+      recordOutcome(destType, 'dynamic-key-family');
       return;
     }
     destinations[destType] = paths;
@@ -1208,6 +1221,18 @@ export const main = async (options: GenerateOptions = {}) => {
 
   for (const destination of allDestinations) {
     await deriveOne(destination);
+  }
+
+  if (failures.length > 0) {
+    harness.stop();
+    console.error('\nERROR: secret-path derivation failed; artifact was not written:');
+    for (const { destType, reason } of failures.sort((a, b) =>
+      a.destType.localeCompare(b.destType),
+    )) {
+      console.error(`  ${destType}: ${reason}`);
+    }
+    process.exitCode = 1;
+    return;
   }
 
   // Sorted on the way out. Destination order otherwise follows directory enumeration, which is
@@ -1225,12 +1250,10 @@ export const main = async (options: GenerateOptions = {}) => {
     action = `wrote ${nodePath.relative(process.cwd(), OUT_FILE)}:`;
   }
   const all = Object.values(destinations);
-  const maskAll = all.filter((p) => p === null).length;
-  const nothing = all.filter((p) => p !== null && p.length === 0).length;
+  const nothing = all.filter((paths) => paths.length === 0).length;
   console.log(
     `\n${action} ${all.length} destinations - ` +
-      `${all.length - maskAll - nothing} with derived paths, ${maskAll} fail-closed, ` +
-      `${nothing} with nothing to mask`,
+      `${all.length - nothing} with derived paths, ${nothing} with nothing to mask`,
   );
 
   const exposed = (kind: EndpointExposure) =>
@@ -1255,13 +1278,4 @@ export const main = async (options: GenerateOptions = {}) => {
   }
 
   harness.stop();
-
-  if (inconclusive.length > 0) {
-    console.error(
-      `\nERROR: no fixtures and an inconclusive probe for: ${inconclusive.join(', ')}.\n` +
-        'Each is masked wholesale as a fallback, but nothing here can say what it actually sends.\n' +
-        'Add a component-test fixture, or make the probe conclusive for it.',
-    );
-    process.exitCode = 1;
-  }
 };

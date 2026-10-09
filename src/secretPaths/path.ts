@@ -23,12 +23,11 @@ export const ARRAY_MARKER = '#';
  * so because `secretKeys` declares an identifier that happens to sit in the host or path, such as
  * a subdomain or an account id, which is not a credential.
  *
- * It lives here, beside the grammar, because the generator omits it while the Go consumer has to
- * know the same name to implement `null`, which masks everything maskable *except* this field; its only spec is
- * the prose in swagger/components/schemas/features.yaml. Deliberately named for the endpoint
- * rather than as a general exclusion list: everything built on it - the `query` vs `url`
- * classification, the `endpoint-only` reason - is URL-shaped, so a second excluded field would be
- * a redesign of those rather than another entry here.
+ * It lives here, beside the grammar, because the generator omits it while the consumer has to
+ * preserve the same field when a mixed-version fallback masks everything else. Deliberately named
+ * for the endpoint rather than as a general exclusion list: everything built on it - the `query`
+ * vs `url` classification, the `endpoint-only` reason - is URL-shaped, so a second excluded field
+ * would be a redesign of those rather than another entry here.
  */
 export const ENDPOINT_FIELD = 'endpoint';
 

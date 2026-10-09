@@ -1,3 +1,4 @@
+import type { SecretPaths } from '..';
 import {
   Baseline,
   decoyOf,
@@ -167,9 +168,15 @@ describe('secret-path generator utilities', () => {
     ).toEqual(['session-token', PARAM_TOKEN]);
   });
 
-  it('serialises sorted paths and JSON null without a wildcard sentinel', () => {
-    expect(serialise({ EMPTY: [], UNRESOLVED: null })).toBe(
-      '{ "EMPTY": [], "UNRESOLVED": null }\n',
+  it('serialises a direct map containing only path arrays', () => {
+    expect(serialise({ EMPTY: [], MASKED: [AUTHORIZATION_PATH] })).toBe(
+      '{ "EMPTY": [], "MASKED": ["headers.Authorization"] }\n',
+    );
+  });
+
+  it('rejects null artifact entries', () => {
+    expect(() => validateSecretPaths({ UNRESOLVED: null } as unknown as SecretPaths)).toThrow(
+      'Secret paths for UNRESOLVED must be an array',
     );
   });
 

@@ -144,25 +144,16 @@ describe('RoktIntegration', () => {
     'https://inbound.mparticle.com/s2s',
     'https://inbound.mparticle.com/s2s/',
     'https://mparticle.com',
+    ' https://inbound.mparticle.com/s2s/ ',
   ])('accepts the Rokt endpoint %s', (apiEndpoint) => {
     const input = makeInput(
       1,
       {},
       { ...destination, Config: { ...destination.Config, apiEndpoint } },
     );
-    expect(transform(input).endpoint).toBe(`${apiEndpoint.replace(/\/$/, '')}/v2/bulkevents`);
-  });
-
-  it('ignores surrounding whitespace in apiEndpoint', () => {
-    const input = makeInput(
-      1,
-      {},
-      {
-        ...destination,
-        Config: { ...destination.Config, apiEndpoint: ' https://inbound.mparticle.com/s2s/ ' },
-      },
+    expect(transform(input).endpoint).toBe(
+      `${apiEndpoint.trim().replace(/\/$/, '')}/v2/bulkevents`,
     );
-    expect(transform(input).endpoint).toBe('https://inbound.mparticle.com/s2s/v2/bulkevents');
   });
 
   it.each(['apiEndpoint', 'serverToServerKey', 'serverToServerSecret'])(

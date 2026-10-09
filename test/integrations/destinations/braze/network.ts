@@ -1,9 +1,5 @@
 import { authHeader1, authHeader2 } from './maskedSecrets';
-import {
-  ecommerceMixedResponse,
-  ecommerceNonSchemaResponse,
-  legacyEventSchemaResponse,
-} from './common';
+import { ecommerceMixedResponse } from './common';
 const dataDeliveryMocksData = [
   {
     httpReq: {
@@ -633,30 +629,6 @@ const updatedDataDeliveryMocksData = [
     },
     httpRes: {
       data: ecommerceMixedResponse,
-      status: 200,
-    },
-  },
-  {
-    description:
-      'Mock response depicting a /users/track schema rejection at events[0], where that item is a legacy custom event rather than a recommended-ecommerce one',
-    httpReq: {
-      url: `${BRAZE_USERS_TRACK_ENDPOINT}/ecommerce_legacy_event`,
-      method: 'POST',
-    },
-    httpRes: {
-      data: legacyEventSchemaResponse,
-      status: 200,
-    },
-  },
-  {
-    description:
-      'Mock response depicting a /users/track failure at events[0] that is not a schema rejection, on a recommended-ecommerce event',
-    httpReq: {
-      url: `${BRAZE_USERS_TRACK_ENDPOINT}/ecommerce_non_schema`,
-      method: 'POST',
-    },
-    httpRes: {
-      data: ecommerceNonSchemaResponse,
       status: 200,
     },
   },

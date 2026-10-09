@@ -591,7 +591,7 @@ Update Contacts:
    ```javascript
    if (Config.authorizationType === 'legacyApiKey') {
      throw new ConfigurationError(
-       'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.',
+       'HubSpot API Key authentication is no longer supported. Use a private app access token or service key.',
      );
    }
    if (!Config.accessToken) {

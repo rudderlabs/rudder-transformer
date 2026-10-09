@@ -1,6 +1,6 @@
 ---
 name: event-transformation
-description: Business logic for turning one RudderStack event into one destination payload — the standard mapping JSON shape and constructPayload, resolving source values, ISO-4217 minor units, preserving customer data, and assembling the payload, plus category conventions for ads destinations (identity match fields, deduplication keys). Applied automatically — not user-invocable.
+description: Business logic for turning one RudderStack event into one destination payload — the standard mapping JSON shape and constructPayload, resolving source values, ISO-4217 minor units, preserving customer data, which event validations a transform may add (only what the partner rejects), and assembling the payload, plus category conventions for ads destinations (identity match fields, deduplication keys). Applied automatically — not user-invocable.
 ---
 
 # Event Transformation
@@ -255,6 +255,8 @@ Its sibling `removeUndefinedAndNullAndEmptyValues` does **not** preserve them �
 One caveat when a required field can be absent: `removeUndefinedAndNullValues` will strip it,
 and the request goes out silently missing a field the API requires. Validate required fields
 before this call (or map them with `required: true`), rather than letting them disappear.
+"Required" means the partner rejects the request without it — shown, not just documented; see
+[Reject Only What The Partner Rejects](#reject-only-what-the-partner-rejects).
 
 ## Monetary Values — Never Assume Two Decimal Places
 
@@ -359,6 +361,32 @@ Where the partner *does* require a normalized form, apply it **consistently**. I
 and lowercases one enum before comparing it, every other enum comparison in that file should do
 the same — an `action_source` matched case-sensitively rejects a perfectly ordinary `'Web'` and
 drops the event, purely because it was the one string nobody normalized.
+
+## Reject Only What The Partner Rejects
+
+The same rule applies to validation. Every `InstrumentationError` a transform throws drops an
+event the customer sent, so each one has to point at something the partner actually
+**enforces**: a rejection you observed live, or a mock captured from one. Documentation is not
+enough on its own, however specific it is: a field described as "required", a documented size
+limit, a documented error for a missing field, and a stricter type than the API parses all
+still need the request sent. If you can't send it yet, forward the event and record the check
+as unverified, with the request that would settle it. Partners routinely accept what their docs
+describe as invalid, and a check written from the docs alone turns events that would have been
+delivered into aborts that nobody traces back to the transformer.
+
+- **Before you add a "requires X" check, send the payload without X.** If the partner accepts
+  it, delete the check.
+- **Coerce a convertible type instead of rejecting it.** A numeric id where the API wants a
+  string should be `String(value)`, not a Zod `z.string()` failure.
+- **Size and count limits belong to the batch strategy.** Don't add a per-event byte check
+  unless the partner has been shown to reject oversize items and the batch strategy can't keep
+  them out. A documented per-item cap that the strategy can't express is still unverified until
+  an oversize item has been sent.
+
+This is not the case against validating in `transformEvent` at all. A rule the partner does
+enforce, especially on an all-or-nothing batch endpoint, still belongs there (see
+`.claude/skills/batching-framework/SKILL.md#partners-that-reject-the-whole-batch`). The test is
+whether you can produce the partner's rejection for it.
 
 ## Passthrough Extras Must Not Overwrite Payload-Owned Fields
 

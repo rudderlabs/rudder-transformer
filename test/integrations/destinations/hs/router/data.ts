@@ -176,7 +176,7 @@ const esAccessTokenOnlyCfg = (accessToken: string, over: Record<string, unknown>
   ...over,
 });
 const unsupportedLegacyAuthError =
-  'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.';
+  'HubSpot API Key authentication is no longer supported. Use a private app access token or service key.';
 const legacyCfg = (over: Record<string, unknown> = {}) => ({
   authorizationType: 'legacyApiKey',
   apiVersion: 'legacyApi',

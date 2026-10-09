@@ -165,7 +165,10 @@ export const Integration = MyIntegration;
 
 Build the schema with `makeRouterInputSchema({ message, destinationConfig?, connectionConfig? })` — a single message variant plus optional destination/connection config. Hybrid record + event-stream destinations extend `VDMV2ObjectDestination`, which unions two such schemas for you.
 
-### Required config fields are `z.string().min(1)`
+### Required config fields (credentials, account ids) are `z.string().min(1)`
+
+This covers destination and connection config the customer sets up. Event fields follow a
+different rule; see the next section.
 
 `z.string()` accepts `''`. For a credential or an account identifier that means an unconfigured
 destination passes schema validation and the emptiness surfaces on the wire — an empty bearer
@@ -189,6 +192,18 @@ const DestinationConfigSchema = z.object({
   pixelId: z.string().optional(),
 });
 ```
+
+### Event fields: require only what the partner rejects without
+
+The message schema and `transformEvent` are where event validation lands, and every rule there
+drops an event the customer sent. Make an event field required, cap its size, or narrow its type
+only when the partner has been **shown** to reject the request without it, by a live call or a
+mock captured from one. Documentation is not enough, even a documented error for the missing
+field or a documented per-item size cap. Until it is shown, leave the field optional and omit
+it from the payload when it is absent, don't add the size check, and coerce a convertible type
+instead of rejecting it. This holds when speccing a destination as much as when implementing
+one. The full rule, with the request to send before adding a check, is in
+`.claude/skills/event-transformation/SKILL.md#reject-only-what-the-partner-rejects`.
 
 ### Read credentials off `this.destination.Config`, without a cast
 
@@ -483,6 +498,16 @@ For an enrolled **v1** request, transport and response handling move onto the cl
 spec. `transformEvent` must therefore emit the real endpoint and an HTTP-ready request. Use
 `prepareRequest` only for delivery-time material that must not be persisted, such as a developer
 token.
+
+That means a platform-level secret the transform never sees: gaec's `developer-token` comes from
+the environment (`google_adwords_enhanced_conversions/delivery.ts`). It does not cover:
+
+- **The destination's own credentials.** An API key or Basic auth pair from
+  `destination.Config` goes into `transformEvent`'s `headers`, like every other destination.
+- **Re-validating at send time.** The endpoint, host and config fields checked in
+  `getInputSchema`/`transformEvent` are already guaranteed by the time the request is sent. A
+  second check in `prepareRequest` is dead code, and it can fail in a place the transform tests
+  never exercise.
 
 Keep the legacy `networkHandler` only while v0 proxy requests or unenrolled pre-GA workspaces still
 need it. Audit that path for single-item assumptions if it can receive batches, but do not make the

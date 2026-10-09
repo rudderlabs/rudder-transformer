@@ -1528,7 +1528,7 @@ const perJobDeliveryMappingTests = [
             // Job 1's page-view lands at events[0]; job 2's identify lands at
             // attributes[0]. Per-metadata destInfo carries the positional
             // indices the v1 networkHandler uses to correlate per-item
-            // warnings back to the originating job.
+            // rejections back to the originating job.
             {
               batchedRequest: {
                 version: '1',

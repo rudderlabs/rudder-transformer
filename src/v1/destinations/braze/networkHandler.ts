@@ -5,14 +5,13 @@ import { TAG_NAMES } from '../../../v0/util/tags';
 import { isHttpStatusSuccess } from '../../../v0/util/index';
 import { HTTP_STATUS_CODES } from '../../../v0/util/constant';
 import stats from '../../../util/stats';
-import type { DeliveryJobState, DeliveryV1Response, ProxyMetdata } from '../../../types';
-import {
-  BrazeError,
-  BrazeEvent,
-  BrazeProxyV1Request,
-  BrazeResponseHandlerParams,
-} from '../../../v0/destinations/braze/types';
-import { isBrazeEcommerceEventName } from '../../../v0/destinations/braze/ecommerceUtil';
+import type {
+  DeliveryJobState,
+  DeliveryV1Response,
+  ProxyMetdata,
+  ProxyV1Request,
+} from '../../../types';
+import type { BrazeError, BrazeResponseHandlerParams } from '../../../v0/destinations/braze/types';
 
 const DESTINATION = 'braze';
 
@@ -23,14 +22,13 @@ const failureMessage = (status: number): string =>
 // Ops-facing metric names — kept as constants so dashboards and alerts have a
 // single definition site to grep for.
 const METRIC_PARTIAL_FAILURE = 'braze_partial_failure';
-const METRIC_DELIVERED_WITH_WARNING = 'braze_delivered_with_warning';
 const METRIC_DELIVERY_ABORTED = 'braze_delivery_aborted';
 
 // Braze's `endpointPath` value for the /users/track endpoint — the only
 // endpoint whose response carries per-entry `errors[]` correlatable back to
 // originating jobs. Sub/merge responses return a single top-level message
-// that applies uniformly to the whole call, so they skip 296 correlation
-// entirely and fall through to the uniform per-job outcome path.
+// that applies uniformly to the whole call, so they skip correlation and fall
+// through to the uniform per-job outcome path.
 const TRACK_ENDPOINT_PATH = 'users/track';
 
 // Braze's `errors[i].input_array` values on /users/track responses,
@@ -51,21 +49,11 @@ const DEST_INFO_KEY: Record<TrackInputArray, string> = {
   purchases: 'purchasesIndices',
 };
 
-// Braze validates each recommended-ecommerce event against its ecommerce event
-// schema and reports violations in `errors[i].type`, prefixed with the failing
-// item's JSON pointer. Observed forms:
-//   The property '#/' did not contain a required property of 'product_id'
-//   The property '#/price' of type string did not match the following type: number
-// These are per-item payload defects — Braze kept the rest of the batch and
-// dropped only the offending item — so the owning job is delivered-with-warning
-// rather than aborted.
-const ECOMMERCE_SCHEMA_ERROR_TYPE = /^The property '#\//;
-
 // True when the delivery request was aimed at /users/track. Uses the
 // framework-populated `endpointPath` on the ProxyV1Request. Absence of the
 // field (or a request the framework didn't attach) is treated as non-track:
 // the handler falls back to uniform-per-job outcomes rather than mis-attributing.
-const isTrackEndpoint = (destinationRequest: BrazeProxyV1Request | undefined): boolean =>
+const isTrackEndpoint = (destinationRequest: ProxyV1Request | undefined): boolean =>
   destinationRequest?.endpointPath === TRACK_ENDPOINT_PATH;
 
 /**
@@ -94,7 +82,7 @@ const isNumberArray = (value: unknown): value is number[] =>
 
 // Read a metadata's per-track-input-array index array. Returns undefined when
 // destInfo is missing OR the field isn't a number array — either signals we
-// can't correlate this job against warned indices.
+// can't correlate this job against rejected indices.
 const readIndicesFor = (
   metadata: ProxyMetdata,
   inputArray: TrackInputArray,
@@ -105,11 +93,12 @@ const readIndicesFor = (
 
 // Build per-input-array maps from Braze `errors[]` → { index → error.type }.
 // The map preserves the FIRST error.type seen for each (input_array, index)
-// pair; when a job spans multiple warned positions, only the first hit's
-// type is surfaced verbatim.
-type WarnedIndexMap = Map<number, string>;
-const buildWarnedIndexMaps = (errors: BrazeError[]): Record<TrackInputArray, WarnedIndexMap> => {
-  const maps: Record<TrackInputArray, WarnedIndexMap> = {
+// pair.
+type RejectedIndexMap = Map<number, string>;
+const buildRejectedIndexMaps = (
+  errors: BrazeError[],
+): Record<TrackInputArray, RejectedIndexMap> => {
+  const maps: Record<TrackInputArray, RejectedIndexMap> = {
     events: new Map(),
     attributes: new Map(),
     purchases: new Map(),
@@ -122,29 +111,29 @@ const buildWarnedIndexMaps = (errors: BrazeError[]): Record<TrackInputArray, War
   return maps;
 };
 
-// A single warned position matched back to a job: which track sub-array it came
+// A single rejected position matched back to a job: which track sub-array it came
 // from, its index within that array, and Braze's verbatim `error.type`.
-type WarnedHit = {
+type RejectedHit = {
   inputArray: TrackInputArray;
   index: number;
   type: string;
 };
 
-// Correlate a single metadata against the warned index maps. Returns every
+// Correlate a single metadata against the rejected index maps. Returns every
 // matching entry across the job's contributions to events/attributes/purchases,
 // preserving encounter order. Duplicates are intentionally kept — each hit
-// reflects a distinct warned payload item, so the count carries information for
+// reflects a distinct rejected payload item, so the count carries information for
 // downstream consumers.
-const collectWarnedHits = (
+const collectRejectedHits = (
   metadata: ProxyMetdata,
-  warned: Record<TrackInputArray, WarnedIndexMap>,
-): WarnedHit[] => {
-  const hits: WarnedHit[] = [];
+  rejected: Record<TrackInputArray, RejectedIndexMap>,
+): RejectedHit[] => {
+  const hits: RejectedHit[] = [];
   for (const inputArray of TRACK_INPUT_ARRAYS) {
     const indices = readIndicesFor(metadata, inputArray);
     if (indices) {
       for (const index of indices) {
-        const type = warned[inputArray].get(index);
+        const type = rejected[inputArray].get(index);
         if (type) hits.push({ inputArray, index, type });
       }
     }
@@ -152,70 +141,42 @@ const collectWarnedHits = (
   return hits;
 };
 
-// The `events[]` we sent on this chunk, positionally aligned with Braze's
-// `errors[i].index`. `cleanTrackChunk` omits empty sub-arrays when building the
-// body, so an absent `events` is normal rather than a broken contract.
-const readSentEvents = (destinationRequest: BrazeProxyV1Request | undefined): BrazeEvent[] => {
-  const events = destinationRequest?.body?.JSON?.events;
-  // The body is an unvalidated echo of what we sent, so the declared type is a
-  // statement of intent rather than a guarantee — check before trusting it.
-  return Array.isArray(events) ? events : [];
-};
-
-// A hit is delivered-with-warning only when it is a schema rejection of a
-// recommended-ecommerce event. The item is identified by its Braze event name:
-// only the recommended-ecommerce path emits those names, so it separates them
-// from the legacy custom events sharing the same `events[]` after chunking.
-// Every other correlated failure aborts its job.
-const isEcommerceSchemaWarning = (hit: WarnedHit, sentEvents: BrazeEvent[]): boolean =>
-  hit.inputArray === 'events' &&
-  isBrazeEcommerceEventName(sentEvents[hit.index]?.name) &&
-  ECOMMERCE_SCHEMA_ERROR_TYPE.test(hit.type);
-
-// Separator for concatenating multiple warned error.type strings on a single
+// Separator for concatenating multiple rejected error.type strings on a single
 // job — chosen for readability when the field is logged verbatim.
 const ERROR_TYPE_JOIN = '; ';
 
-// Map every metadata to its DeliveryJobState. Jobs that intersect no warned
+// Map every metadata to its DeliveryJobState. Jobs that intersect no rejected
 // index get 200 with the full response body (matching the happy-path shape);
-// the rest get 296 when every hit is an ecommerce schema rejection and 400
-// otherwise, carrying all matching Braze error.type strings concatenated.
-// Pure — the caller aggregates and emits the counters after inspecting the result.
+// every correlated failure gets 400 with all matching Braze error.type strings
+// joined in the job's index order (events → attributes → purchases). Pure —
+// the caller emits counters after inspecting the result.
 const buildTrackPartialFailureStates = (
   response: unknown,
   rudderJobMetadata: ProxyMetdata[],
-  warned: Record<TrackInputArray, WarnedIndexMap>,
-  sentEvents: BrazeEvent[],
+  rejected: Record<TrackInputArray, RejectedIndexMap>,
 ): DeliveryJobState[] => {
   const successBody = JSON.stringify(response) ?? '';
   return rudderJobMetadata.map((metadata) => {
-    const hits = collectWarnedHits(metadata, warned);
+    const hits = collectRejectedHits(metadata, rejected);
     if (hits.length === 0) {
       return { statusCode: 200, metadata, error: successBody };
     }
-    // Abort outranks warning: one non-ecommerce-schema hit aborts the whole
-    // job, though `error` still carries every hit that matched it.
-    const statusCode = hits.every((hit) => isEcommerceSchemaWarning(hit, sentEvents))
-      ? HTTP_STATUS_CODES.DELIVERED_WITH_WARNING
-      : HTTP_STATUS_CODES.BAD_REQUEST;
-    return { statusCode, metadata, error: hits.map((hit) => hit.type).join(ERROR_TYPE_JOIN) };
+    return {
+      statusCode: HTTP_STATUS_CODES.BAD_REQUEST,
+      metadata,
+      error: hits.map((hit) => hit.type).join(ERROR_TYPE_JOIN),
+    };
   });
 };
 
 type MetricLabels = { destinationId: string; workspaceId: string };
 
-// Emit `metricName` with the number of states carrying `statusCode`, skipping
-// the call entirely when nothing matched so the series stays absent rather than
-// reporting a zero.
-const countStatesByStatus = (
-  states: DeliveryJobState[],
-  statusCode: number,
-  metricName: string,
-  labels: MetricLabels,
-): void => {
-  const count = states.filter((state) => state.statusCode === statusCode).length;
+// Count aborted states, skipping the metric call when nothing matched so the
+// series stays absent rather than reporting a zero.
+const countAbortedStates = (states: DeliveryJobState[], labels: MetricLabels): void => {
+  const count = states.filter((state) => state.statusCode === HTTP_STATUS_CODES.BAD_REQUEST).length;
   if (count > 0) {
-    stats.counter(metricName, count, labels);
+    stats.counter(METRIC_DELIVERY_ABORTED, count, labels);
   }
 };
 
@@ -272,20 +233,9 @@ const responseHandler = (params: BrazeResponseHandlerParams): DeliveryV1Response
     // /users/track, correlation still runs. Jobs whose metadata is missing
     // destInfo default to 200 inside the builder (nothing to correlate).
     if (isTrackEndpoint(destinationRequest)) {
-      const warned = buildWarnedIndexMaps(errors);
-      const states = buildTrackPartialFailureStates(
-        response,
-        rudderJobMetadata,
-        warned,
-        readSentEvents(destinationRequest),
-      );
-      countStatesByStatus(
-        states,
-        HTTP_STATUS_CODES.DELIVERED_WITH_WARNING,
-        METRIC_DELIVERED_WITH_WARNING,
-        labels,
-      );
-      countStatesByStatus(states, HTTP_STATUS_CODES.BAD_REQUEST, METRIC_DELIVERY_ABORTED, labels);
+      const rejected = buildRejectedIndexMaps(errors);
+      const states = buildTrackPartialFailureStates(response, rudderJobMetadata, rejected);
+      countAbortedStates(states, labels);
       return { status, message: SUCCESS_MESSAGE, response: states };
     }
     // Non-track endpoint (sub/merge) — fall through to the uniform-200

@@ -5,6 +5,7 @@ import {
   collapseKeyFamily,
   FlattenedOutput,
   flattenRequests,
+  fetchedCredentialsOnAuthSurface,
   hasSameShape,
   locationsForKey,
   Movement,
@@ -17,6 +18,7 @@ import {
 const AUTHORIZATION_LOCATION = 'req[0]|headers.Authorization';
 const AUTHORIZATION_PATH = 'headers.Authorization';
 const INVALID_PATH_MESSAGE = 'Invalid secret path';
+const PARAM_TOKEN = 'param+token';
 const CHARACTER_CLASSES = [/[a-z]/, /[A-Z]/, /\d/, /[^\dA-Za-z]/];
 const PUNCTUATION = /[^\dA-Za-z]/;
 
@@ -151,6 +153,18 @@ describe('secret-path generator utilities', () => {
     expect(
       valuesFor({ kind: 'runtime' }, { message: { properties: { secret: 'not-runtime' } } }),
     ).toEqual([]);
+  });
+
+  it('keeps fetched candidates only when they reach baseline headers or params', () => {
+    const real = baseline({
+      'req[0]|headers.Authorization': 'Bearer session-token',
+      'req[0]|params.api_key': encodeURIComponent(PARAM_TOKEN),
+      'req[0]|body.JSON.key': 'birthday',
+    });
+
+    expect(
+      fetchedCredentialsOnAuthSurface(real, ['session-token', PARAM_TOKEN, 'birthday']),
+    ).toEqual(['session-token', PARAM_TOKEN]);
   });
 
   it('serialises sorted paths and JSON null without a wildcard sentinel', () => {

@@ -548,6 +548,22 @@ interface FetchedCredentialOutcome {
   locations: Movement[];
 }
 
+/** Keeps only mocked-response candidates observed in baseline request authentication fields. */
+export const fetchedCredentialsOnAuthSurface = (
+  baseline: Baseline,
+  candidates: string[],
+): string[] => {
+  const authValues = [...baseline.runA.leaves]
+    .filter(([location]) => {
+      const [topLevelField] = parsePath(pathOf(location));
+      return topLevelField === 'headers' || topLevelField === 'params';
+    })
+    .map(([, value]) => value);
+  return candidates.filter((candidate) =>
+    authValues.some((value) => carriesSecret(value, candidate)),
+  );
+};
+
 /**
  * Derives paths for a credential the destination *fetches* rather than reads from config.
  *
@@ -581,13 +597,14 @@ const deriveFromFetchedCredentials = async (
       }
       for (const tcData of cases.filter((candidate) => isDerivableCase(harness, candidate))) {
         const { body } = tcData.input.request;
-        const candidates = harness.mockResponseSecrets(destination, body, declaredKeys);
-        if (candidates.length > 0) {
+        const responseCandidates = harness.mockResponseSecrets(destination, body, declaredKeys);
+        if (responseCandidates.length > 0) {
           // The same two-run non-determinism rule as the config pass, not a second copy of it.
           const { baseline } = await runBaseline(harness, tcData, body, () =>
             harness.useMocksFor(destination),
           );
           if (baseline) {
+            const candidates = fetchedCredentialsOnAuthSurface(baseline, responseCandidates);
             for (const candidate of candidates) {
               const decoys = decoysFor(candidate);
               if (!decoys) {

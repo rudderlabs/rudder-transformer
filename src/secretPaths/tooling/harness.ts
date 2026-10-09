@@ -38,9 +38,9 @@ const isObj = (v: unknown): v is Record<string, any> => isObjectLike(v);
  * Response fields whose name suggests a credential.
  *
  * A heuristic, unlike the config side which is driven by the `secretKeys` registry - there is no
- * registry for what a destination's own API hands back. It only picks *candidates*; whether one
- * reaches the request is still settled by diffing, so a wrong candidate costs two runs and
- * yields nothing.
+ * registry for what a destination's own API hands back. It only picks *candidates*; the generator
+ * first requires a candidate to appear in baseline request headers or params, then settles its
+ * output path by corroborated diffing.
  */
 const CREDENTIAL_KEY = /token|secret|password|credential|session|signature|api[_-]?key|^key$/i;
 
@@ -107,7 +107,8 @@ export interface Harness {
    * Some destinations never put a declared secret in the request: they exchange it for a session
    * token first - salesforce trades a password for one - so the request carries the token, which
    * comes from the mocked response rather than the config. Perturbing the config cannot move it,
-   * which is why these read as `no-secret-located`. Perturbing the response can.
+   * which is why these read as `no-secret-located`. The caller filters these response candidates
+   * against the baseline request's authentication surface before perturbing them.
    */
   mockResponseSecrets(destination: string, requestBody: unknown, declaredKeys: string[]): string[];
   /**

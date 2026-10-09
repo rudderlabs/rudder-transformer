@@ -55,11 +55,6 @@ import {
 } from './path';
 
 type EndpointExposure = 'query' | 'url';
-type EmptyReason =
-  | 'endpoint-only'
-  | 'no-declared-secrets'
-  | 'no-http-request'
-  | 'no-secret-located';
 type FailureReason =
   | 'dynamic-key-family'
   | 'harness-error'
@@ -363,10 +358,7 @@ const secretCarriersIn = (baseline: Baseline, secrets: string[]): Movement[] => 
 };
 
 /** Marks a `headers.<name>` movement whose header name is a value from the destination config. */
-const withConfigHeaderEvidence = (
-  movement: Movement,
-  configuredValues: ReadonlySet<string>,
-): Movement => {
+const markConfigHeader = (movement: Movement, configuredValues: ReadonlySet<string>): Movement => {
   const segments = parsePath(pathOf(movement.loc));
   return segments.length === 2 && segments[0] === 'headers' && configuredValues.has(segments[1])
     ? { ...movement, headerNameFromConfig: true }
@@ -399,7 +391,7 @@ export const locationsForKey = (
           `\n            decoy=${JSON.stringify(decoyValue).slice(0, 90)}`,
       );
       found.push(
-        withConfigHeaderEvidence(
+        markConfigHeader(
           pathOf(loc) === ENDPOINT_FIELD
             ? { loc, evidence: { real: realValue, decoy: decoyValue } }
             : { loc },
@@ -656,7 +648,7 @@ const deriveForDestination = async (
         const runtimeSecrets = valuesFor(runtimeSource, originalBody);
         total.locations.push(
           ...secretCarriersIn(result.baseline, runtimeSecrets).map((movement) =>
-            withConfigHeaderEvidence(movement, configuredValues),
+            markConfigHeader(movement, configuredValues),
           ),
         );
       }
@@ -1013,22 +1005,18 @@ export const main = async (options: GenerateOptions = {}) => {
     // nothing about the runtime bag's token, so a bag that was never compared cleanly in any case
     // fails generation outright. A bag that was compared cleanly somewhere already has its
     // locations in `result.locations` (SALESFORCE: an early case holds, a later one collapses).
+    // Run even when the direct derivation already found paths: a destination can place one secret
+    // directly and exchange another for a token, and the direct findings must not hide the token.
     const unstable = result.unstableSource;
-    const failUnstable = () => {
+    const fetched =
+      unstable?.kind === 'runtime' && !result.runtimeMeasured
+        ? undefined
+        : await deriveFromFetchedCredentials(harness, destination, declaredKeys, cases);
+    if (!fetched?.stable || (unstable && fetched.locations.length === 0)) {
       console.log(
         `unstable under '${unstable ? sourceName(unstable) : FETCHED_CREDENTIAL}' - failing generation`,
       );
       recordFailure(destType, 'unstable-under-substitution');
-    };
-    if (unstable?.kind === 'runtime' && !result.runtimeMeasured) {
-      failUnstable();
-      return;
-    }
-    // Run even when the direct derivation already found paths: a destination can place one secret
-    // directly and exchange another for a token, and the direct findings must not hide the token.
-    const fetched = await deriveFromFetchedCredentials(harness, destination, declaredKeys, cases);
-    if (!fetched.stable || (unstable && fetched.locations.length === 0)) {
-      failUnstable();
       return;
     }
     if (fetched.locations.length > 0) {
@@ -1047,8 +1035,7 @@ export const main = async (options: GenerateOptions = {}) => {
     if (paths.length === 0) {
       // `endpoint-only` and `no-secret-located` both publish `[]`, but they are different claims:
       // one located the credential in the excluded field, the other found none at all.
-      const reason: EmptyReason = exposure ? 'endpoint-only' : 'no-secret-located';
-      console.log(reason);
+      console.log(exposure ? 'endpoint-only' : 'no-secret-located');
       recordEmpty(destType);
       return;
     }

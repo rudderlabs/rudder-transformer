@@ -214,25 +214,29 @@ export const startHarness = (): Harness => {
   const adapters = [axios, axiosFromLib].map(
     (instance) => new MockAxiosAdapter(instance as any, { onNoMatch: 'throwException' }),
   );
-  interface DestinationMocks {
-    mocks: MockHttpCallsData[];
-    /** Serialised once, so each decoy run only substitutes and re-parses. */
-    serialised: string;
-    serialisedResponses: string[];
-  }
-  const mocksByDestination = new Map<string, DestinationMocks>();
-  const cachedMocks = (destination: string): DestinationMocks => {
+  const mocksByDestination = new Map<string, MockHttpCallsData[]>();
+  const mocksFor = (destination: string): MockHttpCallsData[] => {
     if (!mocksByDestination.has(destination)) {
-      const mocks: MockHttpCallsData[] = getTestMockData(destination);
-      mocksByDestination.set(destination, {
-        mocks,
-        serialised: JSON.stringify(mocks),
-        serialisedResponses: mocks.map((mock) => JSON.stringify(mock.httpRes)),
-      });
+      mocksByDestination.set(destination, getTestMockData(destination));
     }
     return mocksByDestination.get(destination)!;
   };
-  const mocksFor = (destination: string): MockHttpCallsData[] => cachedMocks(destination).mocks;
+  /**
+   * The serialised mocks used for decoy substitution, built on first use and kept for the current
+   * destination only: destinations are derived one at a time and never revisited.
+   */
+  let serialisedFor: { destination: string; all: string; responses: string[] } | undefined;
+  const serialisedMocks = (destination: string) => {
+    if (serialisedFor?.destination !== destination) {
+      const mocks = mocksFor(destination);
+      serialisedFor = {
+        destination,
+        all: JSON.stringify(mocks),
+        responses: mocks.map((mock) => JSON.stringify(mock.httpRes)),
+      };
+    }
+    return serialisedFor;
+  };
 
   const app = new Koa();
   app.use(bodyParser({ jsonLimit: '200mb' }));
@@ -253,9 +257,9 @@ export const startHarness = (): Harness => {
       matching: MockMatching = 'strict',
       scope: SubstitutionScope = 'all',
     ): void {
-      const { mocks: cachedList, serialised, serialisedResponses } = cachedMocks(destination);
-      let mocks = cachedList;
+      let mocks = mocksFor(destination);
       if (substitutions?.size) {
+        const { all, responses } = serialisedMocks(destination);
         const rewrite = (text: string) => {
           let rewritten = text;
           for (const [real, decoy] of substitutions) {
@@ -265,8 +269,8 @@ export const startHarness = (): Harness => {
         };
         mocks =
           scope === 'response'
-            ? mocks.map((mock, i) => ({ ...mock, httpRes: rewrite(serialisedResponses[i]) }))
-            : (rewrite(serialised) as MockHttpCallsData[]);
+            ? mocks.map((mock, i) => ({ ...mock, httpRes: rewrite(responses[i]) }))
+            : (rewrite(all) as MockHttpCallsData[]);
       }
       adapters.forEach((adapter) => {
         adapter.reset();

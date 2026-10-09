@@ -91,6 +91,15 @@ which is the positional mapping delivery specs implement and the thing that brea
 transform passes through unvalidated (gaec uses a malformed `adjustmentDateTime`) so the item
 survives transform and fails at the API.
 
+**A `dontBatch` retry takes a second step.** The harness does not replay rudder-server's
+one-event-at-a-time redelivery of a job returned with `dontBatch`, so the step that seeds the
+mixed batch only proves which jobs came back for retry, not that the retry resolves. Model the
+redelivery explicitly. Add a step with `metadataOverride: { dontBatch: true }` that seeds only
+the events the first step returned for retry, which is just the rejected ones when the spec
+answers per item, and assert their final verdict. Add a single-bad-event scenario with
+`expectedFailure: {}` beside it, so the whole-batch rejection is covered too.
+`destinations/rokt/live.ts` has both.
+
 **Credential branches need a bad credential, not a broken account.** For a spec's `authExpired` /
 `authRevoked` handling, use `metadataOverride: { secret: { ... } }` to hand one step a credential
 the destination rejects, and assert `expectedFailure: { category: '...' }` — the category, not

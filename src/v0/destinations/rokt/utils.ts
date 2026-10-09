@@ -6,6 +6,7 @@ import {
   isAndroidFamily,
   isAppleFamily,
   isValidUrl,
+  stripTrailingSlash,
 } from '../../util';
 import type { RudderMessage } from '../../../types';
 import { BULK_EVENTS_PATH, ROKT_INTEGRATION_ID } from './config';
@@ -73,34 +74,18 @@ const asNonEmptyString = (value: unknown): string | undefined => {
   return stringValue || undefined;
 };
 
-const normalizeEndpointPath = (apiEndpoint: string, parsed: URL): string | undefined => {
-  // URL.pathname canonicalizes dot segments and treats backslashes as separators for HTTPS URLs,
-  // so validate the original path spelling before using it.
+const isSafePathSegment = (segment: string): boolean =>
+  segment !== '.' && segment !== '..' && /^[\w.~-]+$/.test(segment);
+
+// URL.pathname canonicalizes dot segments and treats backslashes as separators for HTTPS URLs,
+// so validate the original path spelling before using it.
+const normalizeEndpointPath = (apiEndpoint: string): string | undefined => {
   if (apiEndpoint.includes('\\')) return undefined;
-  const rawUrl = /^[A-Za-z][\d+.A-Za-z-]*:\/\/([^#/?]+)([^#?]*)/.exec(apiEndpoint);
-  if (!rawUrl) return undefined;
+  const rawPath = /^https:\/\/[^#/?]+([^#?]*)/i.exec(apiEndpoint)?.[1];
+  if (rawPath === undefined) return undefined;
 
-  const [, rawAuthority, rawPath] = rawUrl;
-  const rawAuthorityUrl = isValidUrl(`${parsed.protocol}//${rawAuthority}`);
-  if (
-    !rawAuthorityUrl ||
-    rawAuthorityUrl.host !== parsed.host ||
-    rawAuthorityUrl.username !== parsed.username ||
-    rawAuthorityUrl.password !== parsed.password
-  ) {
-    return undefined;
-  }
-
-  if (rawPath === '' || rawPath === '/') return '';
-
-  const normalizedPath = rawPath.endsWith('/') ? rawPath.slice(0, -1) : rawPath;
-  const segments = normalizedPath.slice(1).split('/');
-  const validSegments = segments.every(
-    (segment) => segment !== '.' && segment !== '..' && /^[\w.~-]+$/.test(segment),
-  );
-
-  if (!normalizedPath.startsWith('/') || rawPath.includes('%') || !validSegments) return undefined;
-  return normalizedPath;
+  const path = stripTrailingSlash(rawPath);
+  return path.split('/').slice(1).every(isSafePathSegment) ? path : undefined;
 };
 
 export const resolveEndpoint = (apiEndpoint: string): string => {
@@ -111,7 +96,7 @@ export const resolveEndpoint = (apiEndpoint: string): string => {
 
   const host = parsed.hostname.toLowerCase();
   const hostAllowed = host === 'mparticle.com' || host.endsWith('.mparticle.com');
-  const normalizedPath = normalizeEndpointPath(apiEndpoint, parsed);
+  const normalizedPath = normalizeEndpointPath(apiEndpoint);
 
   if (
     parsed.protocol !== 'https:' ||

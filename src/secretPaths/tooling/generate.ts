@@ -52,7 +52,7 @@ import {
   escapeSegment,
   formatPath,
   parsePath,
-} from '../path';
+} from './path';
 
 type EndpointExposure = 'query' | 'url';
 type EmptyReason =
@@ -65,35 +65,11 @@ type FailureReason =
   | 'harness-error'
   | 'no-fixtures'
   | 'unstable-under-substitution';
-type DerivationReason = EmptyReason | FailureReason;
-
-const HARNESS_ERROR_REASON = 'harness-error';
-const UNSTABLE_SUBSTITUTION_REASON = 'unstable-under-substitution';
-const FAILURE_REASONS: Record<FailureReason, true> = {
-  'dynamic-key-family': true,
-  [HARNESS_ERROR_REASON]: true,
-  'no-fixtures': true,
-  [UNSTABLE_SUBSTITUTION_REASON]: true,
-};
-
-const isFailureReason = (reason: DerivationReason): reason is FailureReason =>
-  reason in FAILURE_REASONS;
-
 type DerivationFailure = { destType: string; reason: FailureReason };
 
-const createOutcomeRecorder = (
-  destinations: SecretPaths,
-  failures: DerivationFailure[],
-): ((destType: string, reason: DerivationReason) => void) => {
-  const destinationResults = destinations;
-  return (destType, reason) => {
-    if (isFailureReason(reason)) {
-      failures.push({ destType, reason });
-    } else {
-      destinationResults[destType] = [];
-    }
-  };
-};
+const HARNESS_ERROR: FailureReason = 'harness-error';
+/** How the fetched-credential pass names itself in diagnostics. */
+const FETCHED_CREDENTIAL = 'fetched credential';
 
 const OUT_FILE = join(__dirname, '../secretPaths.json');
 const PRETTIER_BIN = createRequire(__filename).resolve('prettier/bin/prettier.cjs');
@@ -207,15 +183,13 @@ export const flattenRequests = (output: unknown): FlattenedOutput => {
 // Derivation
 // ---------------------------------------------------------------------------
 
-export interface CaseOutcome {
+interface CaseOutcome {
   locations: Movement[];
   sawRequest: boolean;
   /**
-   * Whether any case transformed successfully at all. `no-http-request` is the only reason that
-   * fails OPEN, so it has to be proved rather than inferred: "no case produced a request" is
-   * equally consistent with a destination that builds none and with a harness that could not run
-   * one - a missing esbuild sandbox bundle made every HTTP case 500 and published `[]` for a
-   * destination that sends an Authorization header.
+   * Whether any case transformed successfully at all. `no-http-request` publishes `[]`, so it has
+   * to be proved rather than inferred: "no case produced a request" is equally consistent with a
+   * destination that builds none and with a harness that could not run one.
    */
   transformed: boolean;
   /** The secret source - declared key or the runtime bag - that destabilised the diff, if any. */
@@ -226,8 +200,6 @@ export interface CaseOutcome {
    * comparison that moved nothing is still evidence about where the bag does not go.
    */
   runtimeMeasured?: boolean;
-  /** Set when a fixture file failed to load - a corpus defect, not a finding. */
-  harnessError?: string;
 }
 
 export interface Baseline {
@@ -282,7 +254,7 @@ const runBaseline = async (
  * `secretKeys` entries are not always plain keys (`webhook` and `pipedream` declare `headers.to`),
  * so "no destination could declare this" was an assumption, not a fact.
  */
-export type SecretSource = { kind: 'config'; key: string } | { kind: 'runtime' };
+type SecretSource = { kind: 'config'; key: string } | { kind: 'runtime' };
 
 /** How a source names itself in diagnostics: `unstable under 'clientSecret'` / `'metadata.secret'`. */
 const sourceName = (source: SecretSource): string =>
@@ -325,29 +297,15 @@ const rewriteWith = (
   else visitRuntimeSecrets(body, visit);
 };
 
-/**
- * One field that moved when an input was perturbed, with the evidence that proved it.
- *
- * The two values travel with the location rather than being consumed on the spot, so that policy
- * questions - is this field excluded? where in the URL does the credential sit? - are answered
- * once, at the point paths are collapsed, instead of inside each producer. There are two
- * producers (config-driven and fetched-credential), and classifying in one of them is how the
- * other silently escapes the policy.
- */
+/** One field that moved when an input was perturbed. */
 export interface Movement {
   /** `req[n]|headers.Authorization` - the request index is dropped when paths are collapsed. */
   loc: string;
-  /** The declared config key or runtime bag that moved this field. */
-  source?: string;
   /** The header key was observed as a value in this fixture's destination config. */
   headerNameFromConfig?: boolean;
   /**
-   * What the field held before and after the perturbation.
-   *
-   * Retained only for the excluded field, whose classifier is the sole reader - see
-   * `withoutUnreadEvidence`. Keeping it for every movement would pin two copies of every moved
-   * leaf for a whole destination's corpus, and a destination that emits its payload as one
-   * stringified leaf moves a 50-500 KB value per fixture case per declared key.
+   * What the endpoint held before and after the perturbation, read by `exposureOf`. Attached to
+   * the endpoint only: other leaves can be 50-500 KB stringified payloads, and nothing reads them.
    */
   evidence?: Evidence;
 }
@@ -378,31 +336,18 @@ const classifyEndpoint = ({ real, decoy }: Evidence): EndpointExposure => {
 };
 
 /**
- * Non-deterministic leaves that carry a runtime-bag value verbatim.
+ * Baseline leaves that carry a runtime-bag value.
  *
- * The diff rule cannot see these. A field that differs between two identical real runs is
- * excluded from attribution - rightly, since a nonce that changes on its own would otherwise be
- * blamed on whichever input was perturbed - but exclusion is not the same as "carries no
- * credential". TWITTER_ADS and X_AUDIENCE sign with OAuth1, so `headers.Authorization` holds a
- * fresh `oauth_nonce` on every run *and* `oauth_token="<the bag's access token>"`. Excluded from
- * the diff, the whole header read as nothing to mask.
- *
- * Containment is sound where the diff is not, and only here: the runtime bag is the one source
- * whose plaintext we are holding, so `value.includes(secret)` is direct evidence rather than the
- * guess that value-matching would be against a config secret that may have been hashed, signed or
- * base64'd on its way into the request. It stays narrowly scoped for that reason - non-
- * deterministic leaves only, runtime bag only. Everything deterministic is already the diff's job,
- * and a containment test there would mask any field that merely happened to equal a bag value.
+ * Needs no decoy, so it covers what the diff cannot: non-deterministic fields (OAuth1 headers
+ * hold a fresh `oauth_nonce` *and* `oauth_token="<the bag's access token>"`) and already-built
+ * data-delivery requests, which cannot recompute a header from a perturbed bag. Scoped to the
+ * runtime bag because it is the one source whose plaintext we hold: every value in it is a
+ * credential by contract, so containment is direct evidence rather than a guess.
  */
-const secretCarriersIn = (
-  locations: Iterable<string>,
-  baseline: Baseline,
-  secrets: string[],
-): Movement[] => {
+const secretCarriersIn = (baseline: Baseline, secrets: string[]): Movement[] => {
   const found: Movement[] = [];
-  for (const loc of locations) {
-    const realValue = baseline.runA.leaves.get(loc);
-    if (realValue !== undefined && secrets.some((secret) => carriesSecret(realValue, secret))) {
+  for (const [loc, realValue] of baseline.runA.leaves) {
+    if (secrets.some((secret) => carriesSecret(realValue, secret))) {
       // `carriesSecret`, not a bare `includes`: OAuth1 percent-encodes every parameter value, so a
       // realistic base64-shaped token reaches the header as `oauth_token="ab%2Bcd%2Fef%3D"`.
       debug(
@@ -411,23 +356,21 @@ const secretCarriersIn = (
           `\n            real =${JSON.stringify(realValue).slice(0, 90)}`,
       );
       // No decoy ran for this leaf, so there is no before-and-after to attach.
-      found.push({ loc, source: 'metadata.secret' });
+      found.push({ loc });
     }
   }
   return found;
 };
 
+/** Marks a `headers.<name>` movement whose header name is a value from the destination config. */
 const withConfigHeaderEvidence = (
   movement: Movement,
   configuredValues: ReadonlySet<string>,
 ): Movement => {
   const segments = parsePath(pathOf(movement.loc));
-  return {
-    ...movement,
-    ...(segments.length === 2 &&
-      segments[0] === 'headers' &&
-      configuredValues.has(segments[1]) && { headerNameFromConfig: true }),
-  };
+  return segments.length === 2 && segments[0] === 'headers' && configuredValues.has(segments[1])
+    ? { ...movement, headerNameFromConfig: true }
+    : movement;
 };
 
 /** Compares the baseline against two decoy runs and reports what moved because of one source. */
@@ -435,6 +378,7 @@ export const locationsForKey = (
   baseline: Baseline,
   decoy: FlattenedOutput,
   decoy2: FlattenedOutput,
+  /** Names the perturbed input in debug output only. */
   source?: string,
   configuredValues: ReadonlySet<string> = new Set(),
 ): Movement[] => {
@@ -454,15 +398,14 @@ export const locationsForKey = (
           `\n            real =${JSON.stringify(realValue).slice(0, 90)}` +
           `\n            decoy=${JSON.stringify(decoyValue).slice(0, 90)}`,
       );
-      const segments = parsePath(pathOf(loc));
-      found.push({
-        loc,
-        source,
-        ...(segments.length === 2 &&
-          segments[0] === 'headers' &&
-          configuredValues.has(segments[1]) && { headerNameFromConfig: true }),
-        evidence: { real: realValue, decoy: decoyValue },
-      });
+      found.push(
+        withConfigHeaderEvidence(
+          pathOf(loc) === ENDPOINT_FIELD
+            ? { loc, evidence: { real: realValue, decoy: decoyValue } }
+            : { loc },
+          configuredValues,
+        ),
+      );
     }
   }
   return found;
@@ -474,7 +417,7 @@ export const locationsForKey = (
  *
  * Returns undefined when either run produced no output (the decoy changed the outcome: validation
  * rejected it, a different branch was taken) or a different number of requests or fields. The
- * positions no longer line up, so any diff would be noise and the caller fails closed.
+ * positions no longer line up, so any diff would be noise and the source is unstable.
  */
 const runCorroboratedDecoys = async (
   baseline: Baseline,
@@ -512,10 +455,8 @@ const deriveForCase = async (
 ): Promise<CaseOutcome> => {
   const outcome: CaseOutcome = { locations: [], sawRequest: true, transformed: true };
 
-  // One source at a time so the one responsible for an unstable diff can be named. The whole
-  // destination fails closed either way - a partial path set is indistinguishable from a
-  // complete one to a consumer - but which source destabilised it is the first thing anyone
-  // investigating needs, and the run has it in hand right here.
+  // One source at a time so the one responsible for an unstable diff can be named - the first
+  // thing anyone investigating a failed generation needs.
   const presentSources = secretSources
     .map((source) => ({ source, present: valuesFor(source, originalBody) }))
     .filter(({ present }) => present.length > 0);
@@ -600,57 +541,41 @@ const deriveFromFetchedCredentials = async (
   harness: Harness,
   destination: string,
   declaredKeys: string[],
-  filePaths: string[],
+  cases: any[],
 ): Promise<FetchedCredentialOutcome> => {
   const locations: Movement[] = [];
   let stable = true;
 
   await harness.withoutCache(async () => {
-    for (const filePath of filePaths) {
-      let cases: any[];
-      try {
-        cases = getTestData(filePath);
-      } catch {
-        cases = [];
-      }
-      for (const tcData of cases.filter((candidate) => isDerivableCase(harness, candidate))) {
-        const { body } = tcData.input.request;
-        const responseCandidates = harness.mockResponseSecrets(destination, body, declaredKeys);
-        if (responseCandidates.length > 0) {
-          // The same two-run non-determinism rule as the config pass, not a second copy of it.
-          const { baseline } = await runBaseline(harness, tcData, body, () =>
-            harness.useMocksFor(destination),
-          );
-          if (baseline) {
-            const candidates = fetchedCredentialsOnAuthSurface(baseline, responseCandidates);
-            for (const candidate of candidates) {
-              const decoys = decoysFor(candidate);
-              if (!decoys) {
-                stable = false;
-                return;
-              }
-              const decoyRuns = await runCorroboratedDecoys(
-                baseline,
-                'fetched credential',
-                (seed) => {
-                  const substitutions = new Map([[candidate, decoys[seed - 1]]]);
-                  harness.useMocksFor(destination, substitutions, 'strict', 'response');
-                  return harness.runCase(tcData, cloneDeep(body));
-                },
-              );
-              if (!decoyRuns) {
-                stable = false;
-                return;
-              }
-              locations.push(
-                ...locationsForKey(
-                  baseline,
-                  ...decoyRuns,
-                  undefined,
-                  destinationConfigValues(tcData),
-                ),
-              );
+    for (const tcData of cases) {
+      const { body } = tcData.input.request;
+      const responseCandidates = harness.mockResponseSecrets(destination, body, declaredKeys);
+      if (responseCandidates.length > 0) {
+        // The same two-run non-determinism rule as the config pass, not a second copy of it.
+        const { baseline } = await runBaseline(harness, tcData, body, () =>
+          harness.useMocksFor(destination),
+        );
+        if (baseline) {
+          const configuredValues = destinationConfigValues(tcData);
+          const candidates = fetchedCredentialsOnAuthSurface(baseline, responseCandidates);
+          for (const candidate of candidates) {
+            const decoys = decoysFor(candidate);
+            if (!decoys) {
+              stable = false;
+              return;
             }
+            const decoyRuns = await runCorroboratedDecoys(baseline, FETCHED_CREDENTIAL, (seed) => {
+              const substitutions = new Map([[candidate, decoys[seed - 1]]]);
+              harness.useMocksFor(destination, substitutions, 'strict', 'response');
+              return harness.runCase(tcData, cloneDeep(body));
+            });
+            if (!decoyRuns) {
+              stable = false;
+              return;
+            }
+            locations.push(
+              ...locationsForKey(baseline, ...decoyRuns, FETCHED_CREDENTIAL, configuredValues),
+            );
           }
         }
       }
@@ -661,79 +586,46 @@ const deriveFromFetchedCredentials = async (
 };
 
 /**
- * Whether any fixture in this destination's corpus carries a runtime credential bag.
+ * Whether any fixture case carries a runtime credential bag.
  *
- * Reads the fixtures only - no transforms - so asking the question costs a module load per file
- * rather than a derivation. That matters because it is asked of every destination, including the
- * ~50 that declare no `secretKeys` and would otherwise have stopped at the first check.
- *
- * Counts a bag only in a case the derivation can actually use, by the harness's own definition of
- * that rather than a second copy of it. The two have to agree: SALESFORCE_OAUTH ships a
- * networkHandler and no transform, so its only fixtures are `dataDelivery` ones, which build no
- * request from config and which `routeFor` therefore declines. Counting the bag there gated a
- * derivation that then had no case to run, and the destination failed closed as `harness-error` -
- * a defect reported about a destination that simply has no transform to derive from.
- *
- * The corpus rather than the registry, deliberately. `config.auth.type === 'OAuth'` reads like the
- * authoritative answer to "is this destination handed a bag", and it would be cheaper and would
- * not over-report the way the corpus does - `generateMetadata` attaches a `secret` object to every
- * case it builds. But it is not sound in the direction that matters: FACEBOOK_OFFLINE_CONVERSIONS,
- * SALESFORCE, WOOTRIC and YAHOO_DSP all read `metadata.secret` without declaring OAuth, so gating
- * on the registry would drop the source for destinations that genuinely use it. Over-reporting
- * costs a derivation that finds nothing; under-reporting publishes a token.
- *
- * A fixture that will not load is passed over rather than reported here: the same file is loaded
- * again by `deriveForDestination`, which records it as `harness-error` with the parse message
- * attached. Failing twice for one defect would just double the noise.
+ * The corpus rather than the registry, deliberately. `config.auth.type === 'OAuth'` would be
+ * cheaper, but FACEBOOK_OFFLINE_CONVERSIONS, SALESFORCE, WOOTRIC and YAHOO_DSP all read
+ * `metadata.secret` without declaring OAuth. Over-reporting costs a derivation that finds nothing;
+ * under-reporting publishes a token.
  */
-const corpusCarriesRuntimeSecrets = (harness: Harness, filePaths: string[]): boolean =>
-  filePaths.some((filePath) => {
-    let cases: any[];
-    try {
-      cases = getTestData(filePath);
-    } catch {
-      return false;
-    }
-    return cases.some(
-      (tcData) =>
-        isDerivableCase(harness, tcData) && runtimeSecretsFor(tcData.input.request.body).length > 0,
-    );
-  });
+const corpusCarriesRuntimeSecrets = (cases: any[]): boolean =>
+  cases.some((tcData) => runtimeSecretsFor(tcData.input.request.body).length > 0);
 
-/** Drops comparison evidence after its endpoint classification has been consumed. */
-function withoutUnreadEvidence(movement: Movement): Movement {
-  return pathOf(movement.loc) === ENDPOINT_FIELD
-    ? movement
-    : {
-        loc: movement.loc,
-        source: movement.source,
-        ...(movement.headerNameFromConfig && { headerNameFromConfig: true }),
-      };
-}
+/**
+ * Every derivable case in a destination's fixture files, or the load error for the first file
+ * that will not load. A fixture that will not load is a corpus defect, not evidence about where a
+ * credential lands, so it is reported as `harness-error` rather than as instability.
+ */
+const loadDerivableCases = (
+  harness: Harness,
+  filePaths: string[],
+): { cases: any[] } | { error: string } => {
+  const cases: any[] = [];
+  for (const filePath of filePaths) {
+    try {
+      cases.push(
+        ...getTestData(filePath).filter((tcData: any) => isDerivableCase(harness, tcData)),
+      );
+    } catch (err) {
+      return { error: `${filePath}: ${String(err).slice(0, 80)}` };
+    }
+  }
+  return { cases };
+};
 
 const deriveForDestination = async (
   harness: Harness,
   destination: string,
   secretSources: SecretSource[],
-  filePaths: string[],
+  eligibleCases: any[],
   matching: MockMatching = 'strict',
 ): Promise<CaseOutcome> => {
   const total: CaseOutcome = { locations: [], sawRequest: false, transformed: false };
-  const eligibleCases: any[] = [];
-
-  for (const filePath of filePaths) {
-    try {
-      eligibleCases.push(
-        ...getTestData(filePath).filter((candidate: any) => isDerivableCase(harness, candidate)),
-      );
-    } catch (err) {
-      // A fixture that will not load is a corpus defect, not evidence about where a credential
-      // lands. Labelling it `unstable-under-substitution` would hide a build problem behind a
-      // security finding, so it gets its own reason.
-      total.harnessError = `${filePath}: ${String(err).slice(0, 80)}`;
-      return total;
-    }
-  }
 
   interface BaselineCase {
     baseline: Baseline;
@@ -763,12 +655,8 @@ const deriveForDestination = async (
       if (runtimeSource) {
         const runtimeSecrets = valuesFor(runtimeSource, originalBody);
         total.locations.push(
-          ...secretCarriersIn(
-            result.baseline.runA.leaves.keys(),
-            result.baseline,
-            runtimeSecrets,
-          ).map((movement) =>
-            withoutUnreadEvidence(withConfigHeaderEvidence(movement, configuredValues)),
+          ...secretCarriersIn(result.baseline, runtimeSecrets).map((movement) =>
+            withConfigHeaderEvidence(movement, configuredValues),
           ),
         );
       }
@@ -788,7 +676,7 @@ const deriveForDestination = async (
         configuredValues,
       ),
     );
-    total.locations.push(...outcome.locations.map(withoutUnreadEvidence));
+    total.locations.push(...outcome.locations);
     total.runtimeMeasured = total.runtimeMeasured || outcome.runtimeMeasured;
     // The baseline pass above has already collected direct runtime-secret evidence from every
     // eligible case. Once a decoy is unstable, no later decoy can make the destination's
@@ -803,13 +691,6 @@ const deriveForDestination = async (
 };
 
 /**
- * Collapses per-request locations into the sorted set of paths to mask. The per-request index
- * is dropped: a batched request repeats the same shape.
- *
- * See swagger/components/schemas/features.yaml for the notation - it is the one place the
- * consumer contract is stated.
- */
-/**
  * Collapses a dynamically-numbered key family to the object that contains it.
  *
  * `bd[0]`-style keys come from a loop - AWIN emits one `bd[N]` param per product, each carrying
@@ -818,8 +699,7 @@ const deriveForDestination = async (
  * (`params.bd*` masks only the first match). Masking the containing object does cover it.
  *
  * This is coarser than a leaf path: AWIN's `params` also carries amount, currency and voucher
- * code, which are not secret and stop being visible. It is still strictly better than what it
- * replaces - failing the destination closed masked the headers and body as well.
+ * code, which are not secret and stop being visible.
  *
  * Returns null when the family sits at the top level, where there is no containing object.
  */
@@ -831,33 +711,18 @@ export const collapseKeyFamily = (path: string): string | null => {
 };
 
 /**
- * Some destinations use a declared secret as a header value while another config field supplies the
- * header name. A fixture can only prove one concrete child key, but production can emit any tenant
- * configured key; mask the containing headers object when that dynamic source moves a header leaf.
- */
-export const collapseDynamicConfigHeader = (path: string, headerNameFromConfig = false): string =>
-  headerNameFromConfig ? 'headers' : path;
-
-/**
- * Applies the endpoint exclusion; see ENDPOINT_FIELD in src/secretPaths/path.ts for why.
- *
- * Both producers funnel through here, so the policy cannot be escaped by adding a third.
+ * Collapses movements into the sorted set of paths to mask, applying the endpoint exclusion (see
+ * ENDPOINT_FIELD in ./path). Both producers funnel through here, so the policy cannot be escaped.
  */
 export const toSecretPaths = (locations: Movement[]): string[] =>
   [
     ...new Set(
       locations
-        .map(({ loc, headerNameFromConfig }) => ({ path: pathOf(loc), headerNameFromConfig }))
-        .filter(({ path: candidate }) => parsePath(candidate)[0] !== ENDPOINT_FIELD)
-        // Collapse marked array positions to a wildcard. Fixtures only ever exercise as many
-        // elements as they declare, so emitting the observed indices would leave every element
-        // beyond that count unmasked in production.
-        .map(({ path: candidate, headerNameFromConfig }) => ({
-          path: collapseArrayMarkers(candidate),
-          headerNameFromConfig,
-        }))
-        .map(({ path: candidate, headerNameFromConfig }) =>
-          collapseDynamicConfigHeader(candidate, headerNameFromConfig),
+        .filter(({ loc }) => parsePath(pathOf(loc))[0] !== ENDPOINT_FIELD)
+        // A fixture proves only one concrete header name; when that name comes from tenant config,
+        // production can emit any other, so the containing `headers` object is masked instead.
+        .map(({ loc, headerNameFromConfig }) =>
+          headerNameFromConfig ? 'headers' : collapseArrayMarkers(pathOf(loc)),
         )
         // A dynamically-numbered key family cannot be addressed directly, so it becomes the
         // object containing it. `null` means nothing contains it; the caller fails generation.
@@ -888,10 +753,6 @@ const exposureOf = (locations: Movement[]): EndpointExposure | undefined => {
 const sortedByKey = <T>(record: Record<string, T>): Record<string, T> =>
   Object.fromEntries(Object.entries(record).sort(([a], [b]) => (a < b ? -1 : 1)));
 
-/**
- * The artifact's bytes. One definition, used both to write the file and to check it, so the two
- * cannot disagree about what "unchanged" means.
- */
 export const validateSecretPaths = (secretPaths: SecretPaths): void => {
   const destinationKeys = Object.keys(secretPaths);
   const sortedDestinationKeys = [...destinationKeys].sort();
@@ -924,6 +785,10 @@ export const validateSecretPaths = (secretPaths: SecretPaths): void => {
   }
 };
 
+/**
+ * The artifact's bytes. One definition, used both to write the file and to check it, so the two
+ * cannot disagree about what "unchanged" means.
+ */
 export const serialise = (secretPaths: SecretPaths): string => {
   validateSecretPaths(secretPaths);
   return execFileSync(process.execPath, [PRETTIER_BIN, '--parser=json'], {
@@ -934,7 +799,8 @@ export const serialise = (secretPaths: SecretPaths): string => {
 };
 
 /**
- * `--check`: fails unless the committed file is byte-for-byte what this run would write.
+ * Check mode (`npm run check:secret-paths`): fails unless the committed file is byte-for-byte
+ * what this run would write.
  *
  * This is what makes the scheme hold across changes nobody remembers to think about. A new
  * destination, a transform that moves a credential from a header into the body, a `secretKeys`
@@ -1011,7 +877,7 @@ const reportDrift = (fresh: SecretPaths): void => {
 
 // ---------------------------------------------------------------------------
 
-export interface GenerateOptions {
+interface GenerateOptions {
   check?: boolean;
   destinations?: string[];
   integrationsConfig?: string;
@@ -1021,8 +887,6 @@ export const main = async (options: GenerateOptions = {}) => {
   const only = options.destinations?.map((destination) => destination.trim().toLowerCase());
   const declaredSecretKeys = loadDeclaredSecretKeys(only, options.integrationsConfig);
 
-  // throwException, never passthrough: an unmocked call must fail loudly rather than reach
-  // a real destination API from a build step.
   const harness = startHarness();
   const corpus = fixturesByDestination();
 
@@ -1038,8 +902,14 @@ export const main = async (options: GenerateOptions = {}) => {
   /** Destinations whose endpoint carried a declared secret - recorded, never masked. */
   const endpointExposures: Record<string, EndpointExposure> = {};
 
-  /** Records valid empty findings while retaining build failures outside the artifact. */
-  const recordOutcome = createOutcomeRecorder(destinations, failures);
+  /** A positive "nothing to mask" finding. */
+  const recordEmpty = (destType: string): void => {
+    destinations[destType] = [];
+  };
+  /** A destination the derivation could not settle; generation fails without writing the file. */
+  const recordFailure = (destType: string, reason: FailureReason): void => {
+    failures.push({ destType, reason });
+  };
 
   const deriveOne = async (destination: string): Promise<void> => {
     const destType = destination.toUpperCase();
@@ -1047,6 +917,13 @@ export const main = async (options: GenerateOptions = {}) => {
     const declaredKeys = declaredSecretKeys[lower];
 
     const filePaths = corpus.get(destination) ?? [];
+    const loaded = loadDerivableCases(harness, filePaths);
+    if ('error' in loaded) {
+      console.log(`  ${destination} ... harness error (${loaded.error.slice(0, 60)})`);
+      recordFailure(destType, HARNESS_ERROR);
+      return;
+    }
+    const { cases } = loaded;
 
     // The second secret source, discovered rather than declared. Nothing upstream says a
     // destination is handed a runtime credential bag - `secretKeys` describes configuration, and
@@ -1056,15 +933,14 @@ export const main = async (options: GenerateOptions = {}) => {
     // otherwise stop at `no-declared-secrets` while sending a bearer token.
     // Bag first, deliberately. `deriveForCase` returns at the first source that destabilises one
     // case, so a declared key that breaks its destination's own token exchange would otherwise
-    // prevent the bag from being measured in that case. Measuring it first retains any direct
-    // evidence before the case aborts; destination traversal still continues with later cases.
+    // prevent the bag from being measured in that case.
     const configSources: SecretSource[] = declaredKeys.map((key) => ({ kind: 'config', key }));
-    const secretSources: SecretSource[] = corpusCarriesRuntimeSecrets(harness, filePaths)
+    const secretSources: SecretSource[] = corpusCarriesRuntimeSecrets(cases)
       ? [{ kind: 'runtime' }, ...configSources]
       : configSources;
 
     if (secretSources.length === 0) {
-      recordOutcome(destType, 'no-declared-secrets');
+      recordEmpty(destType);
       return;
     }
 
@@ -1080,23 +956,21 @@ export const main = async (options: GenerateOptions = {}) => {
       );
       if (probed === 'no-request') {
         console.log('no http request (probed)');
-        recordOutcome(destType, 'no-http-request');
+        recordEmpty(destType);
         return;
       }
       // Neither a fixture nor a conclusive probe. A destination we cannot reason about at all is
       // a build problem, so record the failure and abort before writing the artifact.
       console.log(`no fixtures, and probe was ${probed}`);
-      recordOutcome(destType, 'no-fixtures');
+      recordFailure(destType, 'no-fixtures');
       return;
     }
 
     process.stdout.write(`  ${destination} ... `);
     let result: CaseOutcome;
     let relaxed = false;
-    /** The fetched-credential pass, run at most once - by the rescue below when it runs. */
-    let fetched: FetchedCredentialOutcome | undefined;
     try {
-      result = await deriveForDestination(harness, destination, secretSources, filePaths);
+      result = await deriveForDestination(harness, destination, secretSources, cases);
       if (result.unstableSource) {
         // Strict matching could not settle this destination. Its credential probably reaches the
         // matched headers in a form the substitution cannot rewrite - `Basic base64(user:secret)`
@@ -1106,89 +980,61 @@ export const main = async (options: GenerateOptions = {}) => {
           harness,
           destination,
           secretSources,
-          filePaths,
+          cases,
           'ignore-headers',
         );
-        if (!retry.unstableSource && !retry.harnessError && retry.locations.length > 0) {
+        if (!retry.unstableSource && retry.locations.length > 0) {
           result = retry;
           relaxed = true;
         }
       }
     } catch (err: any) {
       console.log(`harness error (${String(err?.message).slice(0, 60)})`);
-      recordOutcome(destType, HARNESS_ERROR_REASON);
+      recordFailure(destType, HARNESS_ERROR);
       return;
-    }
-
-    if (result.harnessError) {
-      console.log(`harness error (${result.harnessError.slice(0, 60)})`);
-      recordOutcome(destType, HARNESS_ERROR_REASON);
-      return;
-    }
-    if (result.unstableSource) {
-      // Substituting this key changed the output's shape, so the paths derived from the other
-      // declared keys are a subset of the truth - CANNY sends its key at body.FORM.apiKey on
-      // exactly such a branch.
-      //
-      // These destabilise for a specific, recoverable reason: they trade a declared secret for a
-      // session token, so a decoy breaks the exchange rather than changing one value. Perturbing
-      // the token in the mocked response instead leaves the exchange intact, and that pass never
-      // touches the config, so config instability does not disqualify it.
-      //
-      // This was rejected once, when the endpoint was still masked: SFMC bailed on `clientId`
-      // before reaching `subDomain`, so publishing only the token dropped `endpoint` and left the
-      // subdomain visible. The endpoint is no longer masked for any destination, so a declared
-      // identifier sitting in a URL is now the accepted `url` exposure rather than a regression.
-      //
-      // The rescue perturbs the credential the destination *fetches*, which is a different value
-      // from the one the runtime bag carries. So when the bag destabilised and was never compared
-      // cleanly in any case, a non-empty rescue says nothing about where the bag's token went, and
-      // publishing it would be a positive claim built on unrelated evidence, so fail generation
-      // instead of committing an incomplete result.
-      //
-      // When the bag *was* compared cleanly somewhere, its locations are already in
-      // `result.locations`, measured by the same corroborated diff every other path comes from.
-      // SALESFORCE is the case: its bag moves `endpoint` and `headers.Authorization` on the cases
-      // that hold, and a later case collapses under the decoy. Discarding a measured location to
-      // punish an unrelated case would mask that destination wholesale on evidence we do have.
-      const bagUnmeasured = result.unstableSource.kind === 'runtime' && !result.runtimeMeasured;
-      // An unmeasured bag skips the pass, leaving `fetched` unset - which fails generation here.
-      if (!bagUnmeasured) {
-        fetched = await deriveFromFetchedCredentials(harness, destination, declaredKeys, filePaths);
-      }
-      if (!fetched?.stable || fetched.locations.length === 0) {
-        console.log(`unstable under '${sourceName(result.unstableSource)}' - failing generation`);
-        recordOutcome(destType, UNSTABLE_SUBSTITUTION_REASON);
-        return;
-      }
-      // The fetched locations are merged below, not assigned. Everything already collected came
-      // from a source that cleared both the shape check and the two-decoy corroboration before the
-      // abort, so merging can only under-report; replacing would drop those findings entirely.
-      process.stdout.write(`unstable under '${sourceName(result.unstableSource)}', `);
     }
 
     if (!result.transformed) {
       // Nothing ran, so we know nothing. Fail the build rather than claim there is no request.
       console.log('no case transformed - failing generation');
-      recordOutcome(destType, HARNESS_ERROR_REASON);
+      recordFailure(destType, HARNESS_ERROR);
       return;
     }
     if (!result.sawRequest) {
       console.log('no http request');
-      recordOutcome(destType, 'no-http-request');
+      recordEmpty(destType);
       return;
     }
-    // A destination can both place one declared/runtime value directly and exchange another
-    // declared config secret for a token. Run the grounded auth-response pass even when ordinary
-    // derivation already found paths, otherwise those direct findings can hide the fetched token.
-    fetched ??= await deriveFromFetchedCredentials(harness, destination, declaredKeys, filePaths);
-    if (!fetched.stable) {
-      console.log('fetched credential unstable under substitution - failing generation');
-      recordOutcome(destType, UNSTABLE_SUBSTITUTION_REASON);
+
+    // An unstable source leaves the paths from the other sources a subset of the truth. Most such
+    // destinations trade a declared secret for a session token, so a decoy breaks the exchange
+    // rather than changing one value; perturbing the token in the mocked response instead (the
+    // fetched-credential pass) keeps the exchange intact and can still locate it. That rescue says
+    // nothing about the runtime bag's token, so a bag that was never compared cleanly in any case
+    // fails generation outright. A bag that was compared cleanly somewhere already has its
+    // locations in `result.locations` (SALESFORCE: an early case holds, a later one collapses).
+    const unstable = result.unstableSource;
+    const failUnstable = () => {
+      console.log(
+        `unstable under '${unstable ? sourceName(unstable) : FETCHED_CREDENTIAL}' - failing generation`,
+      );
+      recordFailure(destType, 'unstable-under-substitution');
+    };
+    if (unstable?.kind === 'runtime' && !result.runtimeMeasured) {
+      failUnstable();
+      return;
+    }
+    // Run even when the direct derivation already found paths: a destination can place one secret
+    // directly and exchange another for a token, and the direct findings must not hide the token.
+    const fetched = await deriveFromFetchedCredentials(harness, destination, declaredKeys, cases);
+    if (!fetched.stable || (unstable && fetched.locations.length === 0)) {
+      failUnstable();
       return;
     }
     if (fetched.locations.length > 0) {
-      result.locations.push(...fetched.locations.map(withoutUnreadEvidence));
+      // Merged, not assigned: everything already collected cleared both the shape check and the
+      // two-decoy corroboration, so replacing it would drop those findings.
+      result.locations.push(...fetched.locations);
       process.stdout.write('credential fetched during transform -> ');
     }
 
@@ -1203,14 +1049,14 @@ export const main = async (options: GenerateOptions = {}) => {
       // one located the credential in the excluded field, the other found none at all.
       const reason: EmptyReason = exposure ? 'endpoint-only' : 'no-secret-located';
       console.log(reason);
-      recordOutcome(destType, reason);
+      recordEmpty(destType);
       return;
     }
 
     // Only reachable when a family sat at the top level, where no object contains it.
     if (result.locations.some((m) => collapseKeyFamily(pathOf(m.loc)) === null)) {
       console.log('dynamic key family at the top level - failing generation');
-      recordOutcome(destType, 'dynamic-key-family');
+      recordFailure(destType, 'dynamic-key-family');
       return;
     }
     destinations[destType] = paths;
@@ -1219,12 +1065,15 @@ export const main = async (options: GenerateOptions = {}) => {
     );
   };
 
-  for (const destination of allDestinations) {
-    await deriveOne(destination);
+  try {
+    for (const destination of allDestinations) {
+      await deriveOne(destination);
+    }
+  } finally {
+    harness.stop();
   }
 
   if (failures.length > 0) {
-    harness.stop();
     console.error('\nERROR: secret-path derivation failed; artifact was not written:');
     for (const { destType, reason } of failures.sort((a, b) =>
       a.destType.localeCompare(b.destType),
@@ -1276,6 +1125,4 @@ export const main = async (options: GenerateOptions = {}) => {
         '  merge into the URL - no change on the wire, and the existing `params.*` masking applies.',
     );
   }
-
-  harness.stop();
 };

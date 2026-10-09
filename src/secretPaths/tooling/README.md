@@ -30,7 +30,7 @@ A transformer destination without a matching definition fails generation. The on
 
 The fixture corpus includes transform cases from `processor/`, `router/`, and `dataDelivery/`. Request-shaped data-delivery fixtures are inspected directly; processor and router fixtures invoke their real transform routes. Optional fixture directories may be absent.
 
-CI and the committed artifact use the integrations-config `develop` branch, which is the contract's definition source.
+CI and the committed artifact use the integrations-config `main` branch, which is the contract's definition source.
 
 ## Derivation
 

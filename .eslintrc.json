@@ -28,7 +28,7 @@
   "overrides": [
     {
       "files": ["src/secretPaths/tooling/**/*.ts"],
-      "parserOptions": { "project": "./tsconfig.secret-paths.json" },
+      "parserOptions": { "project": "./tsconfig.test.json" },
       "rules": {
         "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
       }

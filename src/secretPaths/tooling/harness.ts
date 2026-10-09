@@ -214,13 +214,25 @@ export const startHarness = (): Harness => {
   const adapters = [axios, axiosFromLib].map(
     (instance) => new MockAxiosAdapter(instance as any, { onNoMatch: 'throwException' }),
   );
-  const mocksByDestination = new Map<string, MockHttpCallsData[]>();
-  const mocksFor = (destination: string): MockHttpCallsData[] => {
+  interface DestinationMocks {
+    mocks: MockHttpCallsData[];
+    /** Serialised once, so each decoy run only substitutes and re-parses. */
+    serialised: string;
+    serialisedResponses: string[];
+  }
+  const mocksByDestination = new Map<string, DestinationMocks>();
+  const cachedMocks = (destination: string): DestinationMocks => {
     if (!mocksByDestination.has(destination)) {
-      mocksByDestination.set(destination, getTestMockData(destination));
+      const mocks: MockHttpCallsData[] = getTestMockData(destination);
+      mocksByDestination.set(destination, {
+        mocks,
+        serialised: JSON.stringify(mocks),
+        serialisedResponses: mocks.map((mock) => JSON.stringify(mock.httpRes)),
+      });
     }
     return mocksByDestination.get(destination)!;
   };
+  const mocksFor = (destination: string): MockHttpCallsData[] => cachedMocks(destination).mocks;
 
   const app = new Koa();
   app.use(bodyParser({ jsonLimit: '200mb' }));
@@ -241,19 +253,20 @@ export const startHarness = (): Harness => {
       matching: MockMatching = 'strict',
       scope: SubstitutionScope = 'all',
     ): void {
-      let mocks = mocksFor(destination);
+      const { mocks: cachedList, serialised, serialisedResponses } = cachedMocks(destination);
+      let mocks = cachedList;
       if (substitutions?.size) {
-        const rewrite = (value: unknown) => {
-          let serialised = JSON.stringify(value);
+        const rewrite = (text: string) => {
+          let rewritten = text;
           for (const [real, decoy] of substitutions) {
-            serialised = serialised.split(real).join(decoy);
+            rewritten = rewritten.split(real).join(decoy);
           }
-          return JSON.parse(serialised);
+          return JSON.parse(rewritten);
         };
         mocks =
           scope === 'response'
-            ? mocks.map((mock) => ({ ...mock, httpRes: rewrite(mock.httpRes) }))
-            : (rewrite(mocks) as MockHttpCallsData[]);
+            ? mocks.map((mock, i) => ({ ...mock, httpRes: rewrite(serialisedResponses[i]) }))
+            : (rewrite(serialised) as MockHttpCallsData[]);
       }
       adapters.forEach((adapter) => {
         adapter.reset();
@@ -451,14 +464,9 @@ export const visitRuntimeSecrets = (node: unknown, visit: (current: string) => s
 
   const walk = (current: unknown): void => {
     if (!isObj(current)) return;
-    if (isObj(current.metadata)) {
-      visitBag(current.metadata[SECRET_BAG_KEY]);
-    }
-    if (Array.isArray(current.metadata)) {
-      current.metadata.forEach((metadata) => {
-        if (isObj(metadata)) visitBag(metadata[SECRET_BAG_KEY]);
-      });
-    }
+    [current.metadata].flat().forEach((metadata) => {
+      if (isObj(metadata)) visitBag(metadata[SECRET_BAG_KEY]);
+    });
     for (const key of Object.keys(current)) {
       if (key !== 'metadata') walk(current[key]);
     }
@@ -470,21 +478,10 @@ export const visitRuntimeSecrets = (node: unknown, visit: (current: string) => s
 export const runtimeSecretsFor = (node: unknown): string[] =>
   collect((visit) => visitRuntimeSecrets(node, visit));
 
-/**
- * Whether a fixture case is one the derivation can use.
- *
- * One definition, because two halves of this tool ask the question and they have to agree: the
- * corpus scan decides whether a destination has a runtime bag worth perturbing, and the
- * derivation decides which cases to run. When the scan counted a bag in a case the derivation
- * then declined, SALESFORCE_OAUTH - a networkHandler with no transform, whose only fixtures are
- * `dataDelivery` ones - gated a derivation that had no case to run and failed closed as
- * `harness-error`, a defect reported about a destination that simply has nothing to derive from.
- */
+/** Whether a fixture case is one the derivation can use: a destination case with a route. */
 export const isDerivableCase = (harness: Harness, tcData: any): boolean =>
   tcData?.module === tags.MODULES.DESTINATION &&
-  // Before `routeFor`, which reads `tcData.input.pathSuffix` without guarding it. The corpus scan
-  // calls this outside the try/catch that turns a bad fixture into one `harness-error`, so a case
-  // with no `input` would otherwise take the whole run down instead of that one destination.
+  // Before `routeFor`, which reads `tcData.input.pathSuffix` without guarding it.
   Boolean(tcData.input?.request?.body) &&
   Boolean(harness.routeFor(tcData));
 

@@ -2,7 +2,6 @@ import type { SecretPaths } from '..';
 import {
   Baseline,
   decoyOf,
-  collapseDynamicConfigHeader,
   collapseKeyFamily,
   FlattenedOutput,
   flattenRequests,
@@ -63,14 +62,30 @@ describe('secret-path generator utilities', () => {
         flattened({ [AUTHORIZATION_LOCATION]: 'Bearer decoy-b' }),
         'apiKey',
       ),
+    ).toEqual([{ loc: AUTHORIZATION_LOCATION }]);
+    expect(locationsForKey(real, first, first, 'apiKey')).toEqual([]);
+  });
+
+  it('keeps before-and-after evidence only for the endpoint', () => {
+    const endpoint = 'req[0]|endpoint';
+    const real = baseline({
+      [endpoint]: 'https://x.example/?k=real',
+      [AUTHORIZATION_LOCATION]: 'a',
+    });
+
+    expect(
+      locationsForKey(
+        real,
+        flattened({ [endpoint]: 'https://x.example/?k=dcy1', [AUTHORIZATION_LOCATION]: 'b' }),
+        flattened({ [endpoint]: 'https://x.example/?k=dcy2', [AUTHORIZATION_LOCATION]: 'c' }),
+      ),
     ).toEqual([
       {
-        loc: AUTHORIZATION_LOCATION,
-        source: 'apiKey',
-        evidence: { real: 'Bearer real', decoy: 'Bearer decoy-a' },
+        loc: endpoint,
+        evidence: { real: 'https://x.example/?k=real', decoy: 'https://x.example/?k=dcy1' },
       },
+      { loc: AUTHORIZATION_LOCATION },
     ]);
-    expect(locationsForKey(real, first, first, 'apiKey')).toEqual([]);
   });
 
   it('retains request and leaf counts for shape-stability checks', () => {
@@ -100,11 +115,6 @@ describe('secret-path generator utilities', () => {
     expect(collapseKeyFamily('params.fixed')).toBe('params.fixed');
   });
 
-  it('collapses destination-configured secret header names to the containing object', () => {
-    expect(collapseDynamicConfigHeader('headers.x-api-key', true)).toBe('headers');
-    expect(collapseDynamicConfigHeader(AUTHORIZATION_PATH)).toBe(AUTHORIZATION_PATH);
-  });
-
   it('records dynamic header evidence from destination config values', () => {
     const real = baseline({ 'req[0]|headers.x-api-key': 'real-secret' });
 
@@ -116,14 +126,7 @@ describe('secret-path generator utilities', () => {
         'apiKeyValue',
         new Set(['x-api-key']),
       ),
-    ).toEqual([
-      {
-        loc: 'req[0]|headers.x-api-key',
-        source: 'apiKeyValue',
-        headerNameFromConfig: true,
-        evidence: { real: 'real-secret', decoy: 'decoy-a' },
-      },
-    ]);
+    ).toEqual([{ loc: 'req[0]|headers.x-api-key', headerNameFromConfig: true }]);
   });
 
   it('normalizes, orders, deduplicates, and excludes endpoint paths', () => {

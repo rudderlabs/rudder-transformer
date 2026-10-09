@@ -7,7 +7,7 @@ import fs from 'fs';
 import { join } from 'path';
 import { getIntegrations } from '../../routes/utils';
 
-export const integrationsConfigPath = (configuredPath?: string): string =>
+const integrationsConfigPath = (configuredPath?: string): string =>
   configuredPath ||
   join(__dirname, '../../../../rudder-integrations-config/src/configurations/destinations');
 
@@ -76,10 +76,10 @@ const definitionsForRun = (configuredPath?: string): Map<string, Definition> => 
   return definitionsByRoot.get(root)!;
 };
 
-const definitionFor = (destination: string, configuredPath?: string): Definition | undefined =>
-  definitionsForRun(configuredPath).get(
-    (DEFINITION_ALIASES[destination.toLowerCase()] ?? destination).toLowerCase(),
-  );
+const definitionFor = (destination: string, configuredPath?: string): Definition | undefined => {
+  const key = destination.toLowerCase();
+  return definitionsForRun(configuredPath).get(DEFINITION_ALIASES[key] ?? key);
+};
 
 /**
  * Every destination the transformer implements, sorted. A destination lives under v0 or cdk/v2,
@@ -116,17 +116,19 @@ export const probeConfigFor = (
   destination: string,
   configuredPath?: string,
 ): Record<string, string> => {
-  const declared = definitionFor(destination, configuredPath)?.config;
-  if (!declared) return {};
+  const definition = definitionFor(destination, configuredPath);
+  if (!definition) return {};
   const config: Record<string, string> = {};
-  for (const group of Object.values((declared.destConfig as Record<string, unknown>) ?? {})) {
+  for (const group of Object.values(
+    (definition.config.destConfig as Record<string, unknown>) ?? {},
+  )) {
     if (Array.isArray(group)) {
       group.forEach((key) => {
         config[String(key)] = `probe-${key}`;
       });
     }
   }
-  ((declared.secretKeys as string[]) ?? []).forEach((key) => {
+  definition.secretKeys.forEach((key) => {
     config[key] = `probe-${key}`;
   });
   return config;

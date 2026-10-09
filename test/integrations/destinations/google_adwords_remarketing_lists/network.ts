@@ -1,4 +1,4 @@
-import { authHeader1, authHeader2, authHeader4, secret2 } from './maskedSecrets';
+import { authHeader1, authHeader2, authHeader4 } from './maskedSecrets';
 
 const API_VERSION = 'v25';
 
@@ -250,7 +250,7 @@ export const networkCallsData = [
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
           customerMatchUserListMetadata: {
-            userList: `customers/${secret2}/userLists/709078448`,
+            userList: 'customers/7693729833/userLists/709078448',
             consent: {
               adPersonalization: 'UNSPECIFIED',
               adUserData: 'UNSPECIFIED',

@@ -22,7 +22,7 @@ import { EnvManager } from '../../../test/integrations/envUtils';
 import tags from '../../v0/util/tags';
 import DestinationCache from '../../v0/util/cache';
 import { MockHttpCallsData } from '../../../test/integrations/testTypes';
-import { DELIVERED_REQUEST_FIELDS, ENDPOINT_FIELD } from './path';
+import { ENDPOINT_FIELD, REQUEST_PAYLOAD_FIELDS } from './path';
 
 const DEFAULT_VERSION = 'v0';
 const DATA_DELIVERY_FIXTURE_ROUTE = 'fixture:dataDelivery';
@@ -33,7 +33,7 @@ const TEST_ROOT = join(__dirname, '../../../test/integrations');
 
 // isObjectLike, not lodash's isObject or the repo's util isObject: both exclude arrays, and
 // these traversals have to descend into them.
-const isObj = (v: unknown): v is Record<string, any> => isObjectLike(v);
+export const isObj = (v: unknown): v is Record<string, any> => isObjectLike(v);
 
 /**
  * Response fields whose name suggests a credential.
@@ -139,14 +139,13 @@ export interface Harness {
 export function requestsIn(output: unknown): Record<string, any>[] {
   const found: Record<string, any>[] = [];
   const seen = new Set<unknown>();
-  const requestPayloadFields = DELIVERED_REQUEST_FIELDS.filter((field) => field !== ENDPOINT_FIELD);
   const walk = (node: unknown): void => {
     if (!isObj(node) || seen.has(node)) return;
     seen.add(node);
     if (
       !Array.isArray(node) &&
       typeof node[ENDPOINT_FIELD] === 'string' &&
-      requestPayloadFields.some((field) => Object.prototype.hasOwnProperty.call(node, field))
+      REQUEST_PAYLOAD_FIELDS.some((field) => Object.prototype.hasOwnProperty.call(node, field))
     ) {
       found.push(node);
       // A delivered request can contain source-only envelope fields. They are inputs to the
@@ -211,6 +210,12 @@ export function carriesSecret(value: string, secret: string): boolean {
   return (value.match(/[\d+/A-Za-z]{8,}={0,2}/g) || []).some((token) =>
     Buffer.from(token, 'base64').toString('utf8').includes(secret),
   );
+}
+
+/** Whether a value - a string as is, anything else serialised - carries any of the secrets. */
+export function carriesAnySecret(value: unknown, secrets: string[]): boolean {
+  const serialised = typeof value === 'string' ? value : JSON.stringify(value);
+  return Boolean(serialised) && secrets.some((secret) => carriesSecret(serialised, secret));
 }
 
 /**
@@ -374,12 +379,8 @@ export const startHarness = (): Harness => {
         if (!isObj(node)) return;
         for (const k of Object.keys(node)) walkResponse((node as Record<string, unknown>)[k], k);
       };
-      const carriesDeclaredSecret = (node: unknown): boolean => {
-        const serialised = JSON.stringify(node);
-        return declaredValues.some((secret) => carriesSecret(serialised, secret));
-      };
       mocksFor(destination)
-        .filter((mock) => carriesDeclaredSecret(mock.httpReq))
+        .filter((mock) => carriesAnySecret(mock.httpReq, declaredValues))
         .forEach((mock) => walkResponse(mock.httpRes?.data, ''));
       return [...found];
     },

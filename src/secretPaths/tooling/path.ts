@@ -31,17 +31,23 @@ export const ARRAY_MARKER = '#';
  */
 export const ENDPOINT_FIELD = 'endpoint';
 
+/** Fields of a delivered HTTP request other than the endpoint. */
+export const REQUEST_PAYLOAD_FIELDS = ['headers', 'params', 'body'] as const;
+
 /** Top-level fields that become part of the HTTP request delivered to a destination. */
-export const DELIVERED_REQUEST_FIELDS = ['headers', 'params', 'body', ENDPOINT_FIELD] as const;
+export const DELIVERED_REQUEST_FIELDS = [...REQUEST_PAYLOAD_FIELDS, ENDPOINT_FIELD] as const;
 
 /** Top-level fields sent through a non-HTTP delivery transport. */
 export const DELIVERED_NON_HTTP_FIELDS = ['payload'] as const;
 
+/** Response wrappers around what is handed to delivery: processor `output`, router `batchedRequest`. */
+export const DELIVERY_WRAPPER_FIELDS: ReadonlySet<string> = new Set(['output', 'batchedRequest']);
+
 /** Delivered fields that the consumer may mask; endpoint is deliberately excluded by policy. */
-export const MASKABLE_DELIVERY_FIELDS = [
-  ...DELIVERED_REQUEST_FIELDS.filter((field) => field !== ENDPOINT_FIELD),
+export const MASKABLE_DELIVERY_FIELDS: ReadonlySet<string> = new Set([
+  ...REQUEST_PAYLOAD_FIELDS,
   ...DELIVERED_NON_HTTP_FIELDS,
-];
+]);
 
 /**
  * gjson/sjson treat `.`, `*` and `?` as path syntax, so a key containing one must be escaped or

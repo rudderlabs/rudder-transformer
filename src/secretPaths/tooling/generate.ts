@@ -34,11 +34,13 @@ import type { SecretPaths } from '..';
 import { implementedDestinations, loadDeclaredSecretKeys, probeConfigFor } from './declared';
 import type { MockMatching } from './harness';
 import {
+  carriesAnySecret,
   carriesSecret,
   configSecretsFor,
   Harness,
   fixturesByDestination,
   isDerivableCase,
+  isObj,
   requestsIn,
   runtimeSecretsFor,
   startHarness,
@@ -49,6 +51,7 @@ import {
   ARRAY_MARKER,
   DELIVERED_NON_HTTP_FIELDS,
   DELIVERED_REQUEST_FIELDS,
+  DELIVERY_WRAPPER_FIELDS,
   ENDPOINT_FIELD,
   MASKABLE_DELIVERY_FIELDS,
   collapseArrayMarkers,
@@ -230,15 +233,16 @@ const runBaseline = async (
   beforeRun();
   const realA = await harness.runCase(tcData, cloneDeep(originalBody));
   if (!realA) return { transformed: false };
+  const runA = flattenRequests(realA);
+  // Ran, but built nothing to diff - an error-path fixture, or a non-HTTP destination. Nothing to
+  // derive from, so the second run is skipped; diffing an empty baseline against a decoy would
+  // read any difference as instability.
+  if (runA.leaves.size === 0) return { transformed: true, output: realA };
+
   beforeRun();
   const realB = await harness.runCase(tcData, cloneDeep(originalBody));
   if (!realB) return { transformed: false };
-
-  const runA = flattenRequests(realA);
   const runB = flattenRequests(realB);
-  // Ran, but built nothing to diff - an error-path fixture, say. Nothing to derive from, and
-  // diffing an empty baseline against a decoy would read any difference as instability.
-  if (runA.leaves.size === 0) return { transformed: true, output: realA };
 
   const nonDeterministic = new Set<string>();
   for (const [loc, value] of runA.leaves) {
@@ -349,7 +353,7 @@ const classifyEndpoint = ({ real, decoy }: Evidence): EndpointExposure => {
 const secretCarriersIn = (baseline: Baseline, secrets: string[]): Movement[] => {
   const found: Movement[] = [];
   for (const [loc, realValue] of baseline.runA.leaves) {
-    if (secrets.some((secret) => carriesSecret(realValue, secret))) {
+    if (carriesAnySecret(realValue, secrets)) {
       // `carriesSecret`, not a bare `includes`: OAuth1 percent-encodes every parameter value, so a
       // realistic base64-shaped token reaches the header as `oauth_token="ab%2Bcd%2Fef%3D"`.
       debug(
@@ -364,7 +368,7 @@ const secretCarriersIn = (baseline: Baseline, secrets: string[]): Movement[] => 
   return found;
 };
 
-export interface NonHttpSecretCarriers {
+interface NonHttpSecretCarriers {
   fields: string[];
   /** The secret was present in a delivery result whose top-level field is not addressable. */
   unaddressable: boolean;
@@ -383,45 +387,31 @@ export const nonHttpSecretCarriersIn = (
 ): NonHttpSecretCarriers => {
   const fields = new Set<string>();
   let unaddressable = false;
-  const wrapperFields = new Set(['output', 'batchedRequest']);
-  const carriesAnySecret = (value: unknown): boolean => {
-    const serialised = typeof value === 'string' ? value : JSON.stringify(value);
-    return Boolean(serialised && secrets.some((secret) => carriesSecret(serialised, secret)));
-  };
-  let walk: (value: unknown) => void;
-  const inspectDeliveredOutput = (value: unknown): void => {
+  /** `delivered`: `value` sits directly under a delivery wrapper. Arrays are searched for wrappers. */
+  const walk = (value: unknown, delivered: boolean): void => {
     if (Array.isArray(value)) {
-      value.forEach(walk);
-      return;
-    }
-    if (!value || typeof value !== 'object') {
-      if (carriesAnySecret(value)) {
+      value.forEach((item) => walk(item, false));
+    } else if (!isObj(value)) {
+      if (delivered && carriesAnySecret(value, secrets)) {
         debug(() => `non-http secret in unaddressable delivery value: ${JSON.stringify(value)}`);
         unaddressable = true;
       }
-      return;
-    }
-    const record = value as Record<string, unknown>;
-    for (const field of DELIVERED_NON_HTTP_FIELDS) {
-      if (Object.prototype.hasOwnProperty.call(record, field) && carriesAnySecret(record[field])) {
+    } else if (delivered) {
+      DELIVERED_NON_HTTP_FIELDS.filter(
+        (field) =>
+          Object.prototype.hasOwnProperty.call(value, field) &&
+          carriesAnySecret(value[field], secrets),
+      ).forEach((field) => {
         debug(() => `non-http secret in delivery field: ${field}`);
         fields.add(field);
-      }
+      });
+    } else {
+      Object.entries(value).forEach(([field, child]) =>
+        walk(child, DELIVERY_WRAPPER_FIELDS.has(field)),
+      );
     }
   };
-  walk = (value: unknown): void => {
-    if (Array.isArray(value)) {
-      value.forEach(walk);
-      return;
-    }
-    if (!value || typeof value !== 'object') return;
-    const record = value as Record<string, unknown>;
-    for (const [field, child] of Object.entries(record)) {
-      if (wrapperFields.has(field)) inspectDeliveredOutput(child);
-      else walk(child);
-    }
-  };
-  walk(output);
+  walk(output, false);
   return { fields: [...fields].sort(), unaddressable };
 };
 
@@ -695,6 +685,8 @@ const deriveForDestination = async (
   }
 
   const baselineCases: BaselineCase[] = [];
+  /** Outputs of cases that built no HTTP request, scanned only if no case built one. */
+  const noRequestOutputs: { output: unknown; originalBody: unknown }[] = [];
   const runtimeSource = secretSources.find((source) => source.kind === 'runtime');
 
   // Run the baseline-only token scan over every eligible case before any decoy can make the
@@ -721,8 +713,16 @@ const deriveForDestination = async (
         );
       }
     } else if (result.output) {
+      noRequestOutputs.push({ output: result.output, originalBody });
+    }
+  }
+
+  // Only a destination that never builds an HTTP request is a non-HTTP destination; for any other,
+  // an output without a request is just an error-path case and its scan would be discarded.
+  if (!total.sawRequest) {
+    for (const { output, originalBody } of noRequestOutputs) {
       const secrets = secretSources.flatMap((source) => valuesFor(source, originalBody));
-      const carriers = nonHttpSecretCarriersIn(result.output, secrets);
+      const carriers = nonHttpSecretCarriersIn(output, secrets);
       total.locations.push(...carriers.fields.map((field) => ({ loc: locationKey(0, field) })));
       total.unaddressableNonHttpSecret = total.unaddressableNonHttpSecret || carriers.unaddressable;
     }
@@ -841,8 +841,7 @@ export const validateSecretPaths = (secretPaths: SecretPaths): void => {
       if (
         secretPath !== formatPath(segments) ||
         segments.some((segment) => segment.length === 0) ||
-        segments[0] === ARRAY_MARKER ||
-        !MASKABLE_DELIVERY_FIELDS.includes(segments[0] as (typeof MASKABLE_DELIVERY_FIELDS)[number])
+        !MASKABLE_DELIVERY_FIELDS.has(segments[0])
       ) {
         throw new Error(`Invalid secret path for ${destType}: ${secretPath}`);
       }
@@ -948,25 +947,6 @@ interface GenerateOptions {
   integrationsConfig?: string;
 }
 
-const recordNonHttpOutcome = (
-  result: CaseOutcome,
-  recordPaths: (paths: string[]) => void,
-  recordFailure: (reason: FailureReason) => void,
-): boolean => {
-  if (result.sawRequest) return false;
-  if (result.unaddressableNonHttpSecret) {
-    console.log('secret in unaddressable non-http output - failing generation');
-    recordFailure('unaddressable-non-http-secret');
-    return true;
-  }
-  const paths = toSecretPaths(result.locations);
-  recordPaths(paths);
-  console.log(
-    paths.length > 0 ? `${paths.length} non-http path(s): ${paths.join(', ')}` : 'no http request',
-  );
-  return true;
-};
-
 export const main = async (options: GenerateOptions = {}) => {
   const only = options.destinations?.map((destination) => destination.trim().toLowerCase());
   const declaredSecretKeys = loadDeclaredSecretKeys(only, options.integrationsConfig);
@@ -993,6 +973,21 @@ export const main = async (options: GenerateOptions = {}) => {
   /** A destination the derivation could not settle; generation fails without writing the file. */
   const recordFailure = (destType: string, reason: FailureReason): void => {
     failures.push({ destType, reason });
+  };
+  /** No case built an HTTP request: publish the non-HTTP delivery fields found, or fail. */
+  const recordNonHttp = (destType: string, result: CaseOutcome): void => {
+    if (result.unaddressableNonHttpSecret) {
+      console.log('secret in unaddressable non-http output - failing generation');
+      recordFailure(destType, 'unaddressable-non-http-secret');
+      return;
+    }
+    const paths = toSecretPaths(result.locations);
+    destinations[destType] = paths;
+    console.log(
+      paths.length > 0
+        ? `${paths.length} non-http path(s): ${paths.join(', ')}`
+        : 'no http request',
+    );
   };
 
   const deriveOne = async (destination: string): Promise<void> => {
@@ -1084,16 +1079,10 @@ export const main = async (options: GenerateOptions = {}) => {
       recordFailure(destType, HARNESS_ERROR);
       return;
     }
-    if (
-      recordNonHttpOutcome(
-        result,
-        (paths) => {
-          destinations[destType] = paths;
-        },
-        (reason) => recordFailure(destType, reason),
-      )
-    )
+    if (!result.sawRequest) {
+      recordNonHttp(destType, result);
       return;
+    }
 
     // An unstable source leaves the paths from the other sources a subset of the truth. Most such
     // destinations trade a declared secret for a session token, so a decoy breaks the exchange

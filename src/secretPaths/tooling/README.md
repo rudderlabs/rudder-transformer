@@ -21,7 +21,7 @@ There is no envelope, version, timestamp, source reference, diagnostic reason, o
 
 ## Inputs
 
-Configured credentials come only from each destination definition's `config.secretKeys` in `rudder-integrations-config/src/configurations/destinations`. Every value under fixture `metadata.secret` is also a credential source because the runtime bag has no per-key declaration, but the bag itself is not part of the delivered request and therefore cannot be an emitted path. Names that merely look sensitive are not inferred.
+Configured credentials come only from each destination definition's `config.secretKeys` in `rudder-integrations-config/src/configurations/destinations`. Every value under fixture `metadata.secret` is also a credential source because the runtime bag has no per-key declaration. Names that merely look sensitive are not inferred.
 
 A transformer destination without a matching definition fails generation. The only identity aliases are:
 
@@ -47,7 +47,7 @@ If either decoy cannot differ from the original, a decoy run fails, or request/l
 
 Destinations that exchange a declared config credential for a token get a second, grounded pass. It is eligible only for mocked auth exchanges initiated with values from declared `secretKeys`; only response values are perturbed and shared token caches are bypassed. The same baseline, two-decoy, and shape rules apply. This derives `headers.Authorization` for SFMC and MARKETO without guessing credential-looking response fields.
 
-Before `no-http-request` can produce `[]`, the generator searches confirmed non-HTTP delivery fields in successful transform results for declared and runtime credential values. It emits the containing top-level field (for example, `payload` when the value is stringified JSON) and fails if a delivery result carries the secret without an addressable field. Other valid empty diagnostics (`no-declared-secrets`, `no-secret-located`, and `endpoint-only`) also produce `[]`. Unresolved diagnostics (`harness-error`, `unstable-under-substitution`, `dynamic-key-family`, `unaddressable-non-http-secret`, and `no-fixtures`) fail the run before the artifact is written.
+When no case builds an HTTP request, the generator searches confirmed non-HTTP delivery fields in successful transform results for declared and runtime credential values. It emits the containing top-level field (for example, `payload` when the value is stringified JSON) and fails if a delivery result carries the secret without an addressable field. A destination with no declared or runtime secret, one whose credential is located nowhere (`no-secret-located`), and one whose credential sits only in the excluded endpoint (`endpoint-only`) also produce `[]`. Unresolved diagnostics (`harness-error`, `unstable-under-substitution`, `dynamic-key-family`, `unaddressable-non-http-secret`, and `no-fixtures`) fail the run before the artifact is written.
 
 ## Commands
 

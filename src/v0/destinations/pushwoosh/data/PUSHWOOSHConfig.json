@@ -1,0 +1,23 @@
+{
+  "trackMappings": [
+    { "sourceKeys": "userId", "destKey": "user_id", "required": true },
+    { "sourceKeys": "context.device.id", "destKey": "device_id" },
+    { "sourceKeys": "event", "destKey": "name", "required": true },
+    { "sourceKeys": ["timestamp", "originalTimestamp"], "destKey": "timestamp" }
+  ],
+  "identifyMappings": [{ "sourceKeys": "userId", "destKey": "userId", "required": true }],
+  "attributesSourceKey": "properties",
+  "tagsSourceKeys": ["traits", "context.traits"],
+  "platformSourceKeys": ["context.device.type", "context.os.name"],
+  "excludedTraitKeys": [
+    "userId",
+    "id",
+    "anonymousId",
+    "email",
+    "phone",
+    "firstName",
+    "lastName",
+    "name",
+    "address"
+  ]
+}

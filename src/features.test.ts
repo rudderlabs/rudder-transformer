@@ -45,6 +45,7 @@ describe('features destination capabilities', () => {
       CUSTOMERIO: true,
       TOPSORT: true,
       ROKT: true,
+      PUSHWOOSH: true,
     });
   });
 

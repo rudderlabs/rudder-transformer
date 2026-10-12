@@ -2,6 +2,8 @@ import { EventTesterService } from '../eventTester';
 import { NativeIntegrationDestinationService } from '../../destination/nativeIntegration';
 import { userTransformHandler } from '../../../routerUtils';
 import { FetchHandler } from '../../../helpers/fetchHandlers';
+import { ServiceSelector } from '../../../helpers/serviceSelector';
+import type { DestinationService } from '../../../interfaces/DestinationService';
 
 jest.mock('../../../routerUtils', () => ({
   ...jest.requireActual('../../../routerUtils'),
@@ -556,6 +558,55 @@ describe('EventTesterService.runDestTransform', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
+  });
+
+  it('selects and initializes the destination service by destination type and workspace', async () => {
+    const init = jest.fn();
+    const doRouterTransformation = jest.fn().mockResolvedValue([
+      {
+        batchedRequest: sampleOutput,
+        metadata: [{}] as any,
+        destination: {} as any,
+        batched: false,
+        statusCode: 200,
+      },
+    ]);
+    const doProcessorTransformation = jest.fn();
+    const service = {
+      init,
+      doRouterTransformation,
+      doProcessorTransformation,
+    } as unknown as DestinationService;
+    const selectorSpy = jest
+      .spyOn(ServiceSelector, 'getDestinationServiceByType')
+      .mockReturnValue(service);
+
+    const result = await EventTesterService.testEvent(
+      [
+        buildV1Event({
+          message: { type: 'track', event: 'Webhook Triggered' },
+          stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+          destination: { workspaceId: 'workspace-http', destinationDefinition: {} },
+        }),
+      ],
+      'v0',
+      'http',
+    );
+
+    expect(selectorSpy).toHaveBeenCalledWith('http', 'workspace-http');
+    expect(init).toHaveBeenCalledTimes(1);
+    expect(doRouterTransformation).toHaveBeenCalledWith(
+      [
+        expect.objectContaining({
+          metadata: { workspaceId: 'workspace-http', jobId: 1 },
+        }),
+      ],
+      'http',
+      'v0',
+      {},
+    );
+    expect(doProcessorTransformation).not.toHaveBeenCalled();
+    expect(result).toEqual([{ dest_transformed_payload: [sampleOutput] }]);
   });
 
   it('delegates to NativeIntegrationDestinationService.doRouterTransformation', async () => {

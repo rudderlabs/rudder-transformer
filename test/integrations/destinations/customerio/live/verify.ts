@@ -1,5 +1,5 @@
+import { retryUntilPasses } from '@rudderstack/integrations-lib/build/live-test';
 import type { RunContext } from '../../../live/types';
-import { retryUntilPasses } from '../../../live/poll';
 import {
   getActivities,
   getObjectAttributes,

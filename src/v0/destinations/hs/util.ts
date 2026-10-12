@@ -72,7 +72,7 @@ import {
 } from './types';
 
 const UNSUPPORTED_LEGACY_AUTH_ERROR =
-  'HubSpot API Key authentication is no longer supported. Use Private Apps authentication.';
+  'HubSpot API Key authentication is no longer supported. Use a private app access token or service key.';
 
 /**
  * validate destination config and check for existence of data
@@ -90,7 +90,7 @@ const validateDestinationConfig = ({ Config }: HubSpotDestination): Configuratio
 };
 
 /**
- * Adds HubSpot Private Apps authorization header to a response-like object.
+ * Adds a HubSpot access token or service key authorization header to a response-like object.
  */
 const addHsAuthorisationHeader = <T extends { headers?: Record<string, unknown> }>(
   response: T,

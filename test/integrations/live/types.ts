@@ -1,21 +1,20 @@
 import { z } from 'zod';
+import { LiveOAuthRefreshSchema } from '@rudderstack/integrations-lib/build/live-test';
+import type {
+  LiveAccountDefinition,
+  LiveOAuthVersion,
+  PollCheckResult,
+  PollUntilOptions,
+  RetryUntilPassesOptions,
+} from '@rudderstack/integrations-lib/build/live-test';
 import { EnvOverride } from '../envUtils';
 
-// The part of rudder-auth's account definition an integration has to state for itself: the
-// destination `type` and the account-definition `name` rudder-auth resolves its implementation
-// from (`name.toLowerCase()`). `category` is not here — it is 'destination' for every live spec,
-// so the resolver supplies it rather than making each spec repeat a constant it cannot vary.
-//
-// A plain type, not a zod schema: this is declared in TypeScript by the spec, so the compiler
-// already checks it. Zod earns its place at the LIVE_SECRET_<DEST> boundary, where the input is
-// untrusted JSON — this is not that.
-interface AccountDefinition {
-  type: string;
-  name: string;
-}
+// Keep the harness-facing names stable while sourcing the shared contracts from integrations-lib.
+type AccountDefinition = LiveAccountDefinition;
+type OAuthVersion = LiveOAuthVersion;
 
 // Resolved credentials for one destination, validated at the LIVE_SECRET_<DEST> boundary by
-// SecretResolver. The type is inferred from the schema (z.infer) so it can never drift from what
+// resolveLiveSecret. The type is inferred from the schema (z.infer) so it can never drift from what
 // is actually validated — one source of truth for the secret shape. Unknown keys are stripped;
 // unset `authType`/`config` fall back to their defaults.
 const LiveSecretSchema = z.object({
@@ -23,17 +22,11 @@ const LiveSecretSchema = z.object({
   config: z.record(z.unknown()).default({}), // merged into destination.Config
   secret: z.record(z.string()).optional(), // merged into metadata.secret
   resourceIds: z.record(z.string()).optional(), // account-scoped: listId, pixelId, audience ids, etc.
-  oauthRefresh: z
-    .object({
-      refreshToken: z.string(), // the long-lived token: the only oauth secret stored
-      providerFields: z.record(z.string()).optional(), // e.g. Salesforce instance_url, GCP project id
-    })
-    .optional(),
+  oauthRefresh: LiveOAuthRefreshSchema.optional(),
   readback: z.record(z.unknown()).optional(), // credentials for the optional verify() hook
 });
 type LiveSecret = z.infer<typeof LiveSecretSchema>;
 type AuthType = LiveSecret['authType'];
-type OAuthVersion = 'v0' | 'v1';
 
 interface LiveResource {
   type: string;
@@ -190,17 +183,15 @@ interface LiveScenario {
   // mid-scenario), use a VerifyStep in `steps` instead.
   verify?: {
     check: (ctx: RunContext) => Promise<void>;
-    attempts?: number; // default 4
-    delayMs?: (attempt: number) => number; // default 1000 * 2 ** attempt
-  };
+  } & RetryUntilPassesOptions;
   // Scenario teardown: armed at scenario start, drained after its steps finish (LIFO, best-effort),
   // and run even if a step failed. Prefer this over a trailing cleanup step.
   cleanup?: (ctx: RunContext) => void | Promise<void>;
 }
 
-// Per-destination contract at test/integrations/destinations/<dest>/live.ts, loaded by the registry.
+// Per-destination contract at test/integrations/destinations/<dest>/live.ts, loaded by discovery.
 interface LiveSpec {
-  enabled: boolean; // false parks the whole destination — the registry skips it
+  enabled: boolean; // false parks the whole destination — discovery skips it
   authType: AuthType;
   oauthVersion?: OAuthVersion;
   // The rudder-auth account definition for a `v1` refresh, which resolves the implementation from
@@ -353,32 +344,6 @@ interface RunPipelineStepParams {
   connection?: Record<string, unknown>;
   // Derived from the spec's accountDefinition; absent for specs that declare none.
   deliveryAccount?: DeliveryAccount;
-}
-
-// ─── Poll helpers (poll.ts) ───
-
-interface PollCheckResult<T> {
-  done: boolean;
-  value: T;
-}
-
-interface PollUntilOptions {
-  label: string;
-  attempts: number;
-  /** Delay before the next attempt; `attempt` is 0-based (after the first check). */
-  delayMs: (attempt: number) => number;
-  /** Extra wait after a successful check (e.g. search-index settle). */
-  settleMs?: number;
-  /**
-   * When true, return the last observed value on exhaustion instead of throwing — useful for
-   * verify steps that want a jest `expect` diff of the final read-back.
-   */
-  soft?: boolean;
-}
-
-interface RetryUntilPassesOptions {
-  attempts?: number; // default 4
-  delayMs?: (attempt: number) => number; // default 1000 * 2 ** attempt
 }
 
 export {

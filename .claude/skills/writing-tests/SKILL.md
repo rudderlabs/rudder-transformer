@@ -257,6 +257,20 @@ Watch for **shape variants within the same error envelope**. Many APIs return
 `code` as `null` with no `errors[]` for an auth failure. Those are two distinct code paths
 through your error formatter — mock both.
 
+A captured mock is a **request–response pair**, and both halves have to be real:
+
+- **The request must be one the partner actually rejects.** A failure mock that pairs a payload
+  the partner accepts with an error response passes the suite and proves nothing. Replay it
+  live: if the partner answers 2xx, the mock is fiction.
+- **Copy the body exactly, including an empty one.** A partner that answers `202` with no body
+  is `data: ''`, not an invented `{ status: 'accepted' }`. The invented body silently skips the
+  empty-body branch of your formatter.
+- **Don't mock a status the partner never returns.** A `200` beside a partner that only ever
+  sends `202`, or an all-items-failed `2xx` from one that sends `400` for that case, creates a
+  verdict branch for a response that can't happen.
+- **When the docs and a live call disagree, the live call wins.** The API reference tells you
+  what to try. The live response is what goes in the mock.
+
 ## Every New Destination Gets `live.ts`
 
 A new destination ships with `test/integrations/destinations/<destination>/live.ts` covering at

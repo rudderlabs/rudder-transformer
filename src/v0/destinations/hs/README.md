@@ -6,7 +6,7 @@ Implementation in **JavaScript**
 
 ### Required Settings
 
-- **Access Token**: Required Private App access token for authentication
+- **Access Token**: Required HubSpot private app access token or service key for authentication
 
 - **API Version**: Choose the HubSpot API version to use
 
@@ -249,9 +249,9 @@ For implementation details, see the [Proxy Implementation Guide](../../../../../
 ### OAuth Support
 
 - **Supported**: No
-- **Auth Type**: Private App Access Token only
+- **Auth Type**: Private app access token or service key
 
-> HubSpot destination uses Private App Access Token authentication. OAuth flow is not currently implemented.
+> HubSpot destination uses bearer-token authentication with either a private app access token or a service key. OAuth flow is not currently implemented.
 
 ### Additional Functionalities
 
@@ -262,7 +262,7 @@ The HubSpot destination uniquely supports two API versions with automatic routin
 - **Legacy API (v1)**: Older contacts and events API
 
   - File: `es-retl-v1.ts`
-  - Best for: Existing integrations using legacy API-version endpoints with Private Apps authentication
+  - Best for: Existing integrations using legacy API-version endpoints with a private app access token or service key
   - Endpoints: `/contacts/v1/*`, `https://track.hubspot.com/v1/event`
 
 - **New API (v3)**: Current CRM API with enhanced features
@@ -379,7 +379,7 @@ When using email as the identifier type for rETL sources, the destination also c
 
 #### General Validations
 
-- **Authorization**: Private App Access Token must be provided
+- **Authorization**: A private app access token or service key must be provided
 - **Hub ID**: Required for legacy API-version track events
 - **API Version**: Must be either `legacyApi` or `newApi`
 - **Message Type**: Only `identify` and `track` supported for cloud mode

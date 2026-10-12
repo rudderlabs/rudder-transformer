@@ -21,6 +21,11 @@ Add a `delivery.ts` only when the destination's response handling genuinely diff
   treats the whole 2xx class as success, so an unhandled one is silently reported as delivered:
   read the partner's docs for what each success-range status means rather than assuming 2xx is
   uniformly good.
+
+  The reverse also holds. Override only the statuses the partner has been **shown** to return,
+  live or in a captured `network.ts` mock. A `'2xx'` class override that aborts every success
+  status other than the documented one is speculative: it handles a response nobody has seen,
+  and if the partner ever sends one, it discards a delivery that probably succeeded.
 - **identity-keyed failures** — the response names *which* records failed rather than indexing them
 - a **real auth signal** in the body that should drive token refresh
 
@@ -134,6 +139,12 @@ turn a genuine shape change into a silent fallback instead of a visible failure.
 
 If a shape is real, mock it. If you cannot produce a mock for it, delete the branch.
 
+**An empty body is a shape too.** Auth failures often come back with no body. In that case
+`no error detail returned` tells the reader nothing, but the status does. Map the statuses this
+API actually sends with an empty body to what they mean for this destination's credentials, for
+example `the API key was rejected; check the destination credentials`, and keep a plain fallback
+for the rest.
+
 Do account for **variants within the envelope you do handle** — the same API commonly returns
 `{ error: { message, type, param, code, errors[] } }` for a validation failure but `param` and
 `code` as `null` with no `errors[]` for an auth failure. Those are two paths through your
@@ -173,6 +184,18 @@ statusOverrides: {
       : retry(responseToMessage(ctx.response)),
 }
 ```
+
+**A partial accept is not a whole-batch rejection.** When the partner ingests the valid items and
+reports the rest, usually as an error list inside a 2xx, `retry(reason, { dontBatch: true })`
+re-sends the items it already accepted. Unless the partner deduplicates on an id you send, that
+duplicates every one of them. Check the partner's docs, or a live mixed batch, for whether valid
+items are kept. If they are, attribute each error to its item and return `perItem`: `success()`
+for the accepted items and `retry(…, { dontBatch: true })` or `abort(…)` for the rejected ones.
+When errors aren't indexed, look for any locator in them, such as an array index in a field path
+or a character offset into the request body, and map it against the body you posted. Fall back
+to the whole-batch `dontBatch` retry only when an error can't be attributed, and treat that as a
+known duplication cost rather than a safe default. `src/v0/destinations/rokt/delivery.ts` is
+the worked example: it uses both locator forms and falls back only when one fails.
 
 ### `perItem` is positional and 1:1
 

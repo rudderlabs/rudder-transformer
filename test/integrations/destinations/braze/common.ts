@@ -172,14 +172,11 @@ export const missingRestApiKeyDestination = {
  * since an uncorrelated job echoes `JSON.stringify(response)` verbatim.
  */
 
-// Verbatim Braze error types. Only a schema rejection (prefixed with the failing
-// item's JSON pointer) of a recommended-ecommerce event in `events[]` yields a
-// 296; every other correlated failure aborts its job.
+// Verbatim Braze error types used to verify that every correlated rejection,
+// including recommended-ecommerce schema failures, aborts its owning job.
 export const BRAZE_ECOMMERCE_SCHEMA_ERROR =
   "The property '#/' did not contain a required property of 'product_id'";
 export const BRAZE_PURCHASE_ERROR = "'quantity' is not valid";
-export const BRAZE_IDENTIFIER_ERROR =
-  "'external_id', 'braze_id', 'user_alias', 'email' or 'phone' is required";
 
 // A schema rejection of an ecommerce event alongside an unrelated purchase failure.
 export const ecommerceMixedResponse = {
@@ -189,18 +186,4 @@ export const ecommerceMixedResponse = {
     { type: BRAZE_ECOMMERCE_SCHEMA_ERROR, input_array: 'events', index: 0 },
     { type: BRAZE_PURCHASE_ERROR, input_array: 'purchases', index: 0 },
   ],
-};
-
-// The same schema rejection, but the item at events[0] is a legacy custom event.
-export const legacyEventSchemaResponse = {
-  message: 'success',
-  events_processed: 0,
-  errors: [{ type: BRAZE_ECOMMERCE_SCHEMA_ERROR, input_array: 'events', index: 0 }],
-};
-
-// A non-schema failure on a recommended-ecommerce event.
-export const ecommerceNonSchemaResponse = {
-  message: 'success',
-  events_processed: 0,
-  errors: [{ type: BRAZE_IDENTIFIER_ERROR, input_array: 'events', index: 0 }],
 };

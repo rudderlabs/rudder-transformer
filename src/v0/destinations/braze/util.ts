@@ -837,7 +837,7 @@ const isWorkspaceOnMauPlan = (workspaceId) => {
 // Each `TaggedTrackChunk` also stores parallel `*SourceJobIndex` arrays so that
 // `trackChunkResponse` can build the per-metadata `destInfo` positional map
 // (attributesIndices / eventsIndices / purchasesIndices) that the v1
-// networkHandler uses to correlate Braze's per-item warnings back to
+// networkHandler uses to correlate Braze's per-item rejections back to
 // originating jobs.
 // ---------------------------------------------------------------------------
 

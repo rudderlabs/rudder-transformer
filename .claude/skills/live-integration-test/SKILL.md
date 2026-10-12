@@ -36,8 +36,8 @@ merge gate; this suite is additive and asserts on the genuine delivery verdict.
 3. **The transformer** — `src/v0|v1/destinations/<dest>/` or `src/cdk/v2/destinations/<dest>/`: the
    config fields, auth mechanism, and the destination API endpoints (for setup/verify/cleanup steps).
 4. **The live harness contract** — `test/integrations/live/types.ts` (`LiveSpec`, `LiveScenario`,
-   `LiveStep`, `RunContext`), the shared `pollUntil` read-back helper
-   (`test/integrations/live/poll.ts`), and `test/integrations/live/README.md`.
+   `LiveStep`, `RunContext`), the shared `pollUntil` read-back helper from
+   `@rudderstack/integrations-lib/build/live-test`, and `test/integrations/live/README.md`.
 5. **The reference implementation** — read the HubSpot spec end-to-end as the worked example of
    every pattern below. For non-trivial specs it is a **module folder**:
    `destinations/hs/live.ts` is a one-line re-export of `destinations/hs/live/spec.ts`, with helpers
@@ -90,6 +90,15 @@ declare `expectedFailure: { items: [<seed index>] }`. The step then asserts whic
 which is the positional mapping delivery specs implement and the thing that breaks silently. Find a field the
 transform passes through unvalidated (gaec uses a malformed `adjustmentDateTime`) so the item
 survives transform and fails at the API.
+
+**A `dontBatch` retry takes a second step.** The harness does not replay rudder-server's
+one-event-at-a-time redelivery of a job returned with `dontBatch`, so the step that seeds the
+mixed batch only proves which jobs came back for retry, not that the retry resolves. Model the
+redelivery explicitly. Add a step with `metadataOverride: { dontBatch: true }` that seeds only
+the events the first step returned for retry, which is just the rejected ones when the spec
+answers per item, and assert their final verdict. Add a single-bad-event scenario with
+`expectedFailure: {}` beside it, so the whole-batch rejection is covered too.
+`destinations/rokt/live.ts` has both.
 
 **Credential branches need a bad credential, not a broken account.** For a spec's `authExpired` /
 `authRevoked` handling, use `metadataOverride: { secret: { ... } }` to hand one step a credential
@@ -144,7 +153,7 @@ as ordered steps, and **declare teardown on the scenario** rather than adding a 
   `(ctx) => ({ ... })` factory referenced by both, so the seeded values and the assertion can't
   drift (see `esContactCreateTraits` + `verifyContactProperties`, and `verifyAssociationExists`, in
   `hs/live/verify.ts`). Poll eventually-consistent read-backs with the shared `pollUntil` helper
-  (`live/poll.ts`; `soft: true` returns the last value so the closing `expect(...)` prints a real
+  (`@rudderstack/integrations-lib/build/live-test`; `soft: true` returns the last value so the closing `expect(...)` prints a real
   diff). Read-back is also the
   real check for **batch** writes: a batch endpoint can return `207` (which counts as delivered)
   even when an item fails, so the delivery verdict alone doesn't prove the write landed.
@@ -172,7 +181,7 @@ runs against the previous attempt's state.
 
 ## Credentials — `LIVE_SECRET_<DEST>` (`LiveSecret` shape)
 
-`SecretResolver` reads one env var, `LIVE_SECRET_<DEST>`, a JSON blob:
+`resolveLiveSecret` reads one env var, `LIVE_SECRET_<DEST>`, a JSON blob:
 `{ authType, config, secret?, resourceIds?, oauthRefresh?, readback? }`. `config` merges into
 `destination.Config`; `secret` into `metadata.secret`; `resourceIds` supplies account-scoped ids
 (listId, pixelId, measurementId, …); `readback` holds credentials for `verify` steps.
@@ -198,7 +207,7 @@ plane's `accounts/<dest>_oauth/db-config.json`, so it belongs on the spec, not i
 `DESTINATION_<DEST>_OAUTH` convention does not hold everywhere
 (`google_adwords_remarketing_lists` has a separate `_DM_OAUTH` definition), and a guess that is
 usually right surfaces as an opaque refresh failure instead of a missing declaration. At run time the
-suite starts the **rudder-auth** container (testcontainers, ECR image) and `OAuthTokenResolver` calls
+suite starts the **rudder-auth** container (testcontainers, ECR image) and `LiveOAuthTokenResolver` calls
 exactly that one route — no fallback — then merges the whole returned secret into `metadata.secret`,
 so the transform reads its token under whatever key rudder-auth returns (`accessToken` |
 `access_token`). The OAuth **app** creds come from Vault: the CI job wildcard-imports
@@ -220,7 +229,9 @@ spec.
    filled `LIVE_SECRET_<DEST>` skeleton the developer can paste and fill in — the one thing they
    can't derive from the repo. Placeholders for the secret values, real keys for everything else,
    e.g.:
-   `LIVE_SECRET_HS={"authType":"apiKey","config":{"accessToken":"<private-app-token>"},"readback":{"accessToken":"<private-app-token>"}}`
+   `LIVE_SECRET_HS={"authType":"apiKey","config":{"accessToken":"<private-app-token>","serviceKeyAccessToken":"<service-key>"}}`
+   For HubSpot, `config.accessToken` is the private app token used by setup/read-back helpers and the
+   private-app delivery pass; `config.serviceKeyAccessToken` is used by the service-key delivery pass.
    Include `readback` only if the destination has `verify` steps; add `resourceIds`/`oauthRefresh`
    when the config needs them.
 5. **For each behavior**, add a scenario: a pipeline step whose `seed(ctx)` reproduces the component
@@ -281,7 +292,7 @@ event with `properties` for a conversion, or an audience membership event), swap
 import axios from 'axios';
 import { Agent } from 'https';
 import type { LiveSpec, RunContext } from '../../live/types';
-import { pollUntil } from '../../live/poll';
+import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles.
 const agent = new Agent({ keepAlive: false });

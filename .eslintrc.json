@@ -25,6 +25,15 @@
     "project": "./tsconfig.json",
     "extraFileExtensions": [".yaml"]
   },
+  "overrides": [
+    {
+      "files": ["src/secretPaths/tooling/**/*.ts"],
+      "parserOptions": { "project": "./tsconfig.test.json" },
+      "rules": {
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+      }
+    }
+  ],
   "rules": {
     "unicorn/filename-case": [
       "off",

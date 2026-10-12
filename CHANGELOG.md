@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.157.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.156.0...v1.157.0) (2026-10-12)
+
+
+### Features
+
+* **hs:** support service keys in HubSpot credentials ([#5642](https://github.com/rudderlabs/rudder-transformer/issues/5642)) ([2d5ec1d](https://github.com/rudderlabs/rudder-transformer/commit/2d5ec1dc9a1a386920e2b5059ac35e95175bd078))
+* **secret-paths:** derive and publish credential masking paths ([#5641](https://github.com/rudderlabs/rudder-transformer/issues/5641)) ([25fca9d](https://github.com/rudderlabs/rudder-transformer/commit/25fca9dd52692a14a0e0ebf4f2aaa429da5b9baf))
+
+
+### Bug Fixes
+
+* **braze:** abort recommended ecommerce schema failures ([#5636](https://github.com/rudderlabs/rudder-transformer/issues/5636)) ([11d917f](https://github.com/rudderlabs/rudder-transformer/commit/11d917f416d059c10cf48a584be32182716344f2))
+* **event-test:** select CDK v2 destination service ([#5646](https://github.com/rudderlabs/rudder-transformer/issues/5646)) ([f39e815](https://github.com/rudderlabs/rudder-transformer/commit/f39e815cc4e34a8ae7b9a61a1cdb826846438e72))
+* **rokt:** support path-prefixed API endpoints ([#5644](https://github.com/rudderlabs/rudder-transformer/issues/5644)) ([9aa3385](https://github.com/rudderlabs/rudder-transformer/commit/9aa3385aa9a90f1ad34a75bd8aa918781cfb923d))
+* **tiktok_ads:** correct Events 2.0 content IDs key ([19df99a](https://github.com/rudderlabs/rudder-transformer/commit/19df99a593ae05ab5ddcd6e8eafcdd9f92999dac))
+* **tiktok_ads:** correct Events 2.0 content IDs key ([#5630](https://github.com/rudderlabs/rudder-transformer/issues/5630)) ([de4fed1](https://github.com/rudderlabs/rudder-transformer/commit/de4fed1fabca5c3019b2b518c7ab17c5f3407a1c))
+
 ## [1.156.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.155.0...v1.156.0) (2026-10-06)
 
 

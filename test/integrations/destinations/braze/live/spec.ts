@@ -650,6 +650,14 @@ export const live = {
               order_id: `ord-${ctx.runId}`,
               total: 42.5,
               currency: 'USD',
+              products: [
+                {
+                  product_id: `sku-${ctx.runId}`,
+                  name: 'CI Live Product',
+                  quantity: 1,
+                  price: 42.5,
+                },
+              ],
             },
           }),
         },
@@ -673,7 +681,19 @@ export const live = {
             event: 'order refunded',
             userId: ctx.identity('user'),
             context: { ...brazeLibraryContext, traits: ecomOrderRefundedTraits(ctx) },
-            properties: { order_id: `ord-${ctx.runId}`, total: 42.5, currency: 'USD' },
+            properties: {
+              order_id: `ord-${ctx.runId}`,
+              total: 42.5,
+              currency: 'USD',
+              products: [
+                {
+                  product_id: `sku-${ctx.runId}`,
+                  name: 'CI Live Product',
+                  quantity: 1,
+                  price: 42.5,
+                },
+              ],
+            },
           }),
         },
       ],
@@ -701,6 +721,14 @@ export const live = {
               total: 42.5,
               currency: 'USD',
               cancel_reason: 'ci-test',
+              products: [
+                {
+                  product_id: `sku-${ctx.runId}`,
+                  name: 'CI Live Product',
+                  quantity: 1,
+                  price: 42.5,
+                },
+              ],
             },
           }),
         },

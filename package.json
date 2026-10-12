@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.156.0",
+  "version": "1.157.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -56,7 +56,9 @@
     "release:github": "node scripts/create-github-release.js",
     "clean:node": "modclean",
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0",
-    "generate:testcases": "ts-node ./test/scripts/generateJson.ts --location testcases"
+    "generate:testcases": "ts-node ./test/scripts/generateJson.ts --location testcases",
+    "generate:secret-paths": "npm run build:sandboxes && jest -c jest.config.js --runInBand --testMatch='<rootDir>/src/secretPaths/tooling/generate.jest-entry.ts'",
+    "check:secret-paths": "SECRET_PATHS_CHECK=true npm run generate:secret-paths"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",
@@ -64,7 +66,7 @@
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
     "@pyroscope/nodejs": "^0.4.5",
-    "@rudderstack/integrations-lib": "^0.2.77",
+    "@rudderstack/integrations-lib": "^0.2.78",
     "@rudderstack/json-template-engine": "^0.19.5",
     "@rudderstack/workflow-engine": "^0.9.1",
     "@shopify/jest-koa-mocks": "^5.1.1",

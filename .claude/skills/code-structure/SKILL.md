@@ -333,14 +333,6 @@ the cases nobody tests, and the drift fails silently. Before writing one, look f
 - **`commander`** (already a devDependency, see `test/integrations/component.test.ts`) for CLI
   flags. Hand-rolled argv parsing silently ignores a mistyped flag; commander rejects it.
 
-Two smaller forms of the same mistake:
-
-- **Guarding a state the build cannot produce.** A JSON file under `src/` is always emitted
-  (`resolveJsonModule`), so `import data from './data.json'` — not `existsSync`/`readFileSync`
-  plus a "missing file" branch and a test for it.
-- **Tests that exercise a copy.** If a helper is unit-tested, the production path calls that
-  helper — it doesn't re-implement the same loop inline, leaving the tests on code CI never runs.
-
 ## Don't Re-Validate Inputs That Zod Has Already Validated
 
 If a function is reachable only through a Zod-guarded entry point (`getInputSchema()` in a `DestinationIntegration`, a controller's `safeParse()`, etc.), helpers downstream should treat the validated fields as guaranteed. Don't re-check enum membership, presence, or shape — let the type system carry that contract.

@@ -65,6 +65,13 @@ function stripInternalProps(value: unknown): unknown {
 }
 ```
 
+**A directive for a rule that never fires is noise.** Everything under `test/` (and the other
+`.eslintignore` paths) isn't linted at all, so disable comments there do nothing today — and
+code moved into `src/` suddenly is linted. To audit, lint the files with
+`npx eslint --no-ignore --no-inline-config <files>`: delete each directive whose rule doesn't
+fire, restructure the code for the ones that do (e.g. `no-continue` → `.filter()` before the
+loop), and keep only those whose violation is the intended behaviour, with a reason.
+
 ## Centralized Handler Map Over Duplicated Logic
 
 When multiple functions need per-type behavior, use a single handler map rather than parallel switch statements or if-else chains. Adding a new type should require a change in exactly one place.
@@ -308,6 +315,31 @@ const schema = z.object({
 const ACTIONS = { INSERT: 'insert', UPDATE: 'update', DELETE: 'delete' } as const;
 type Action = (typeof ACTIONS)[keyof typeof ACTIONS];
 ```
+
+The same applies to **infrastructure**: test runners, mock helpers, CLI parsing, fixture
+loading. A re-implementation is never a faithful copy — it drifts from the original in exactly
+the cases nobody tests, and the drift fails silently. Before writing one, look for:
+
+- **Jest itself.** Tooling that must load jest fixtures runs as a jest entry under the existing
+  `jest.config.js` (a dedicated `--testMatch`, `--runInBand`), not under a hand-built shim of
+  `jest.fn`/`spyOn`/`expect`/`setupFiles`. A shim gets the details wrong (e.g. `mockReturnValueOnce`
+  becoming permanent). Name such an entry so it doesn't match `*.test.ts`, or every `npm test`
+  runs it.
+- **`registerAxiosMocks`** (`test/integrations/testUtils.ts`) for replaying `network.ts` mocks,
+  including variants — e.g. headers are matched with lodash `isMatch`, so passing
+  `headers: undefined` ignores them. Don't write a parallel verb/URL dispatcher.
+- **`getTestData`** (`test/integrations/testUtils.ts`) for loading a fixture file, instead of a
+  dynamic `require`.
+- **`commander`** (already a devDependency, see `test/integrations/component.test.ts`) for CLI
+  flags. Hand-rolled argv parsing silently ignores a mistyped flag; commander rejects it.
+
+Two smaller forms of the same mistake:
+
+- **Guarding a state the build cannot produce.** A JSON file under `src/` is always emitted
+  (`resolveJsonModule`), so `import data from './data.json'` — not `existsSync`/`readFileSync`
+  plus a "missing file" branch and a test for it.
+- **Tests that exercise a copy.** If a helper is unit-tested, the production path calls that
+  helper — it doesn't re-implement the same loop inline, leaving the tests on code CI never runs.
 
 ## Don't Re-Validate Inputs That Zod Has Already Validated
 

@@ -37,15 +37,22 @@ export class ServiceSelector {
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_SOURCE);
   }
 
+  public static getDestinationServiceByType(
+    destType: string,
+    workspaceId: string,
+  ): DestinationService {
+    if (shouldUseCdkV2(destType, workspaceId)) {
+      return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
+    }
+    return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
+  }
+
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
     const destinationType = events[0]?.destination?.DestinationDefinition?.Name ?? '';
     const workspaceId = events[0]?.metadata?.workspaceId ?? '';
-    if (shouldUseCdkV2(destinationType, workspaceId)) {
-      return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
-    }
-    return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
+    return this.getDestinationServiceByType(destinationType, workspaceId);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

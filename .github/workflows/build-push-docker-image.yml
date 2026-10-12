@@ -192,7 +192,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # 2.1.7
 
       - name: Build and Push Multi-platform Images to ECR
-        uses: rudderlabs/build-scan-push-action@865b4253caa57f8f20cd109e0efc1affe3a64939 # v2.2.0
+        uses: rudderlabs/build-scan-push-action@8b0c8fa6e6d526c296bc1de587abb8ed2ee6e903 # v2.3.0
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
@@ -212,7 +212,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Multi-platform Images to DockerHub
-        uses: rudderlabs/build-scan-push-action@865b4253caa57f8f20cd109e0efc1affe3a64939 # v2.2.0
+        uses: rudderlabs/build-scan-push-action@8b0c8fa6e6d526c296bc1de587abb8ed2ee6e903 # v2.3.0
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .

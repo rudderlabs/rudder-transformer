@@ -64,7 +64,11 @@ function claim(assigned: Map<string, Assignment>, email: string, assignment: Ass
   return true;
 }
 
-function claimResult(assigned: Map<string, Assignment>, result: unknown): boolean {
+function claimResult(
+  assigned: Map<string, Assignment>,
+  requested: ReadonlySet<string>,
+  result: unknown,
+): boolean {
   const record = asRecord(result);
   const properties = asRecord(record?.properties);
   const email = normalizeLookupEmail(properties?.email);
@@ -72,7 +76,31 @@ function claimResult(assigned: Map<string, Assignment>, result: unknown): boolea
   if (!email || !contactId.ok) {
     return false;
   }
-  return claim(assigned, email, { kind: 'found', recordId: contactId.id });
+  const additional = properties?.hs_additional_emails;
+  if (additional !== undefined && additional !== null && typeof additional !== 'string') {
+    return false;
+  }
+  const addresses = new Set([email]);
+  if (typeof additional === 'string') {
+    for (const address of additional.split(';')) {
+      if (address.trim()) {
+        const normalized = normalizeLookupEmail(address);
+        if (!normalized) {
+          return false;
+        }
+        addresses.add(normalized);
+      }
+    }
+  }
+  for (const address of addresses) {
+    if (
+      requested.has(address) &&
+      !claim(assigned, address, { kind: 'found', recordId: contactId.id })
+    ) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function claimNotFound(assigned: Map<string, Assignment>, error: unknown): boolean {
@@ -107,7 +135,8 @@ function numErrorsAgrees(body: Record<string, unknown>, errors: unknown[]): bool
  * Correlate a batch-read body by normalized email.
  * Returns null when the body cannot be trusted; callers retry the chunk and
  * must not mark any of its emails as missing contacts.
- * Identities are read only from `properties.email` and `context.ids`.
+ * Identities are read from `properties.email`, semicolon-separated
+ * `properties.hs_additional_emails`, and not-found `context.ids`.
  */
 export function correlateContactLookup(
   requestedEmails: readonly string[],
@@ -124,7 +153,8 @@ export function correlateContactLookup(
   }
 
   const assigned = new Map<string, Assignment>();
-  const resultsFit = results.every((result) => claimResult(assigned, result));
+  const requested = new Set(requestedEmails);
+  const resultsFit = results.every((result) => claimResult(assigned, requested, result));
   const errorsFit = resultsFit && errors.every((error) => claimNotFound(assigned, error));
   const covered = errorsFit && requestedEmails.every((email) => assigned.has(email));
   if (!covered) {
@@ -190,7 +220,7 @@ async function lookupEmailChunk(
       CONTACT_BATCH_READ_URL,
       {
         idProperty: 'email',
-        properties: ['email'],
+        properties: ['email', 'hs_additional_emails'],
         propertiesWithHistory: [],
         inputs: emails.map((id) => ({ id })),
       },

@@ -1,5 +1,9 @@
 import type { z } from 'zod';
-import { InstrumentationError, RetryableError } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  RetryableError,
+} from '@rudderstack/integrations-lib';
 import {
   ChunkBatchStrategy,
   DestinationIntegration,
@@ -139,11 +143,11 @@ class HubSpotAudienceIntegration extends DestinationIntegration<
   private classifyRow(input: RouterInput): PreparedRow {
     const credential = readAccessToken(input.destination?.Config);
     if (!credential) {
-      return { error: rowError(ACCESS_TOKEN_REQUIRED) };
+      return { error: new ConfigurationError(ACCESS_TOKEN_REQUIRED) };
     }
     const list = readListId(input.connection);
     if (!list.ok) {
-      return { error: rowError(list.message), credential };
+      return { error: new ConfigurationError(list.message), credential };
     }
     const operation = membershipOperation(input.message?.action);
     if (!operation) {

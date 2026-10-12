@@ -155,8 +155,8 @@ const commonHandler = async (
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
-  // HubSpot audience lookup and proxy calls carry contact emails and the bearer
-  // token. Payload logs would store those values, so this destination keeps the
+  // HubSpot audience lookup and proxy payloads carry contact emails and ids.
+  // Payload logs would store those values, so this destination keeps the
   // latency and count metrics and skips request/response body logs.
   const suppressPayloadLogs =
     String(statTags?.destType || '')

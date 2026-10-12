@@ -6,7 +6,7 @@ const lookupUrl = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/read';
 // record ids do not. The membership request produced afterwards has no token.
 export const emailLookupBody = {
   idProperty: 'email',
-  properties: ['email'],
+  properties: ['email', 'hs_additional_emails'],
   propertiesWithHistory: [],
   inputs: [{ id: 'alice@example.com' }],
 };

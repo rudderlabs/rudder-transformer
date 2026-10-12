@@ -18,6 +18,16 @@ export const addSuccessResponse = {
   recordIdsRemoved: [],
 };
 
+export const noOpAddBody = {
+  recordIdsToAdd: ['61', '62', '61'],
+  recordIdsToRemove: [],
+};
+
+export const noOpRemoveBody = {
+  recordIdsToAdd: [],
+  recordIdsToRemove: ['71'],
+};
+
 export const missingAddBody = {
   recordIdsToAdd: ['21', '22'],
   recordIdsToRemove: [],
@@ -75,6 +85,14 @@ const put = (data: object) => ({
 });
 
 export const networkCallsData = [
+  {
+    httpReq: put(noOpAddBody),
+    httpRes: { status: 200, data: {} },
+  },
+  {
+    httpReq: put(noOpRemoveBody),
+    httpRes: { status: 200, data: {} },
+  },
   {
     httpReq: put(addSuccessBody),
     httpRes: { status: 200, data: addSuccessResponse },

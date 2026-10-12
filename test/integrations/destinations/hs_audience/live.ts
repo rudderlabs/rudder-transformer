@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { Agent } from 'https';
+import { mkdtemp, writeFile } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { z } from 'zod';
 import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 import { RecordAction } from '../../../../src/types/rudderEvents';
@@ -45,6 +48,7 @@ const request = async (
   path: string,
   params?: Record<string, string | number>,
   data?: object,
+  capture?: 'add-no-op' | 'remove-no-op',
 ): Promise<unknown> => {
   let response;
   try {
@@ -61,9 +65,19 @@ const request = async (
       validateStatus: () => true,
       params,
       data,
+      // Capture the exact response text for the dedicated sandbox no-op probe.
+      ...(capture ? { responseType: 'text' as const, transformResponse: [] } : {}),
     });
   } catch {
     throw new Error('HS_AUDIENCE live helper request failed');
+  }
+  if (capture) {
+    const directory = await mkdtemp(join(tmpdir(), 'hs-audience-no-op-'));
+    const artifact = join(directory, `${capture}.json`);
+    await writeFile(artifact, JSON.stringify({ status: response.status, body: response.data }), {
+      mode: 0o600,
+    });
+    console.info(`HS_AUDIENCE ${capture} response captured at ${artifact}`);
   }
   if (response.status < 200 || response.status >= 300) {
     throw new Error(`HS_AUDIENCE live helper returned HTTP ${response.status}`);
@@ -127,6 +141,22 @@ const recordSeed = (action: RecordAction) => (ctx: RunContext) => ({
   identifiers: { hs_object_id: contactIdFromSecret(ctx.liveSecret) },
 });
 
+const captureNoOp = async (ctx: RunContext, operation: 'add' | 'remove'): Promise<void> => {
+  const listId = encodeURIComponent(listIdFromSecret(ctx.liveSecret));
+  const contactId = contactIdFromSecret(ctx.liveSecret);
+  await request(
+    ctx,
+    'PUT',
+    `/crm/v3/lists/${listId}/memberships/add-and-remove`,
+    undefined,
+    {
+      recordIdsToAdd: operation === 'add' ? [contactId] : [],
+      recordIdsToRemove: operation === 'remove' ? [contactId] : [],
+    },
+    operation === 'add' ? 'add-no-op' : 'remove-no-op',
+  );
+};
+
 export const live = {
   enabled: true,
   authType: 'apiKey',
@@ -142,7 +172,7 @@ export const live = {
   scenarios: [
     {
       id: 'hs-audience-membership-add-remove',
-      description: 'An existing contact is added to a static list and then removed',
+      description: 'An existing contact is added and removed, including repeated membership no-ops',
       cleanup: cleanupMembership,
       steps: [
         {
@@ -182,6 +212,23 @@ export const live = {
           check: (ctx) => verifyMembership(ctx, true),
         },
         {
+          stepType: 'action',
+          name: 'capture raw response when re-adding an existing member',
+          run: (ctx) => captureNoOp(ctx, 'add'),
+        },
+        {
+          stepType: 'pipeline',
+          name: 'update an already-present contact membership',
+          seed: recordSeed(RecordAction.UPDATE),
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+        },
+        {
+          stepType: 'verify',
+          name: 'verify the repeated add preserves membership',
+          check: (ctx) => verifyMembership(ctx, true),
+        },
+        {
           stepType: 'pipeline',
           name: 'delete contact membership',
           seed: recordSeed(RecordAction.DELETE),
@@ -191,6 +238,23 @@ export const live = {
         {
           stepType: 'verify',
           name: 'verify contact is outside the list',
+          check: (ctx) => verifyMembership(ctx, false),
+        },
+        {
+          stepType: 'action',
+          name: 'capture raw response when removing an absent member',
+          run: (ctx) => captureNoOp(ctx, 'remove'),
+        },
+        {
+          stepType: 'pipeline',
+          name: 'delete an already-absent contact membership',
+          seed: recordSeed(RecordAction.DELETE),
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+        },
+        {
+          stepType: 'verify',
+          name: 'verify the repeated remove preserves absence',
           check: (ctx) => verifyMembership(ctx, false),
         },
       ],

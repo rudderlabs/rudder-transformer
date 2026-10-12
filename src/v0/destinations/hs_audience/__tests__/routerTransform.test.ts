@@ -184,6 +184,7 @@ describe('HubSpot audience routing', () => {
       'https://api.hubapi.com/crm/v3/lists/list-b/memberships/add-and-remove',
     ]);
     expect(failure?.error).toBe('HubSpot list ID is required');
+    expect(failure?.statTags).toEqual(expect.objectContaining({ errorType: 'configuration' }));
     expect(failure?.metadata).toEqual([expect.objectContaining({ jobId: 2 })]);
   });
 
@@ -204,6 +205,11 @@ describe('HubSpot audience routing', () => {
       'HubSpot access token is required',
     ]);
     expect(result.errorPayloads.every((payload) => payload.statusCode === 400)).toBe(true);
+    expect(result.errorPayloads.map((payload) => payload.statTags?.errorType)).toEqual([
+      'configuration',
+      'instrumentation',
+      'configuration',
+    ]);
     expect(JSON.stringify(result.errorPayloads)).not.toContain('upsert');
     expect(JSON.stringify(result.errorPayloads)).not.toContain('../secret');
     expect(mockHttpPost).not.toHaveBeenCalled();
@@ -296,6 +302,36 @@ describe('HubSpot audience conflicts and lookup state', () => {
       recordIdsToAdd: [],
       recordIdsToRemove: ['55'],
     });
+  });
+
+  it('resolves a secondary email without failing other rows in the lookup chunk', async () => {
+    mockHttpPost.mockResolvedValue(
+      httpSuccess({
+        status: 'COMPLETE',
+        results: [
+          {
+            id: '55',
+            properties: {
+              email: 'primary@example.com',
+              hs_additional_emails: 'alias@example.com',
+            },
+          },
+          { id: '99', properties: { email: 'other@example.com' } },
+        ],
+        errors: [],
+      }),
+    );
+    const integration = new Integration(destination, listA);
+    const result = await integration.transformEvents(
+      asRouterInputs([
+        buildInput(1, 'insert', { email: ' Alias@Example.com ' }, destination, listA),
+        buildInput(2, 'insert', { email: 'other@example.com' }, destination, listA),
+      ]),
+    );
+
+    expect(result.errorPayloads).toEqual([]);
+    expect(result.successPayloads.map((payload) => payload.body.recordId)).toEqual(['55', '99']);
+    expect(result.successPayloads.map((payload) => payload.jobId)).toEqual([1, 2]);
   });
 
   it('reports a lookup miss differently for add and remove', async () => {

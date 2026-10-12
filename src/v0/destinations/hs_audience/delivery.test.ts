@@ -1,4 +1,4 @@
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { ConfigurationError } from '@rudderstack/integrations-lib';
 import {
   handleDeliveryResponse,
   toDeliveryV1Response,
@@ -180,6 +180,20 @@ describe('HubSpot audience delivery', () => {
     ]);
   });
 
+  it.each(['add', 'remove'] as const)('accepts an empty result object for %s', (operation) => {
+    const result = deliver(ctxFor(200, {}, membershipBody(['1', '2', '1'], operation), 3));
+
+    expect(result.response.map((item) => item.statusCode)).toEqual([200, 200, 200]);
+    expect(result.response.map((item) => item.error)).toEqual(['success', 'success', 'success']);
+    expect(result.response.map((item) => item.metadata.jobId)).toEqual([1, 2, 3]);
+  });
+
+  it.each(['', null, { status: 'error' }])('rejects an unverified or unrelated body %p', (body) => {
+    const result = deliver(ctxFor(200, body, membershipBody(['1', '2'])));
+
+    expect(result.response.map((item) => item.statusCode)).toEqual([500, 500]);
+  });
+
   it('accepts recordIdsAdded when recordsIdsAdded is absent', () => {
     const result = deliver(
       ctxFor(
@@ -349,7 +363,7 @@ describe('HubSpot audience prepareRequest', () => {
         destinationId: 'd1',
         workspaceId: 'w1',
       }),
-    ).toThrow(InstrumentationError);
+    ).toThrow(ConfigurationError);
     expect(() =>
       prepare(request, {
         jobs: [],

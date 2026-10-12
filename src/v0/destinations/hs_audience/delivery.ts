@@ -11,7 +11,7 @@
  * contacts that were already on the list. `perItem` on 4xx and 5xx keeps the
  * framework from attaching the raw response, which can echo ids and tokens.
  */
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { ConfigurationError } from '@rudderstack/integrations-lib';
 import {
   abort,
   perItem,
@@ -107,13 +107,18 @@ const MEMBERSHIP_RESULT_KEYS = [
 // accepted as a fallback. All three arrays are normalized so one bad id fails
 // the batch closed, but only `recordIdsMissing` changes a verdict. Absence
 // from the added array is a successful no-op. A body with none of the result
-// keys is not a membership result, even if other fields are present.
+// keys is accepted only when it is an empty object: all empty arrays may be
+// omitted on a no-op. Empty transport bodies remain unverified.
 function missingIds(
   response: unknown,
   sent: { operation: 'add' | 'remove'; ids: string[] },
 ): Set<string> | null {
   const record = asRecord(response);
-  if (!record || !MEMBERSHIP_RESULT_KEYS.some((key) => record[key] !== undefined)) {
+  if (
+    !record ||
+    (Object.keys(record).length > 0 &&
+      !MEMBERSHIP_RESULT_KEYS.some((key) => record[key] !== undefined))
+  ) {
     return null;
   }
   const missing = normalizeResponseIdArray(record.recordIdsMissing);
@@ -216,7 +221,7 @@ function prepareMembershipRequest(
 ): ProxyRequest {
   const token = readAccessToken(ctx.destinationConfig);
   if (!token) {
-    throw new InstrumentationError(ACCESS_TOKEN_REQUIRED);
+    throw new ConfigurationError(ACCESS_TOKEN_REQUIRED);
   }
   return {
     ...request,

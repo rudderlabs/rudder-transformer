@@ -6,6 +6,8 @@ import {
   addSuccessBody,
   missingAddBody,
   missingRemoveBody,
+  noOpAddBody,
+  noOpRemoveBody,
   rateLimitBody,
   rejectedTokenBody,
 } from './network';
@@ -38,6 +40,38 @@ const proxyInput = (body: object, jobIds: number[]) =>
   );
 
 const scenarios: ProxyV1TestData[] = [
+  ...[
+    { operation: 'add', body: noOpAddBody, jobIds: [1, 2, 3] },
+    { operation: 'remove', body: noOpRemoveBody, jobIds: [1] },
+  ].map(
+    ({ operation, body, jobIds }): ProxyV1TestData => ({
+      id: `hs_audience_v1_no_op_${operation}`,
+      name: 'hs_audience',
+      description: `[Proxy v1] a no-op ${operation} with an empty result object succeeds`,
+      successCriteria: 'All omitted arrays become empty and each ordered job succeeds',
+      scenario: 'Business',
+      feature: 'dataDelivery',
+      module: 'destination',
+      version: 'v1',
+      input: { request: { body: proxyInput(body, jobIds), method: 'POST' } },
+      output: {
+        response: {
+          status: 200,
+          body: {
+            output: {
+              status: 200,
+              message: FRAMEWORK_SUCCESS_MESSAGE,
+              response: jobIds.map((jobId) => ({
+                statusCode: 200,
+                metadata: generateMetadata(jobId),
+                error: 'success',
+              })),
+            },
+          },
+        },
+      },
+    }),
+  ),
   {
     id: 'hs_audience_v1_membership_success',
     name: 'hs_audience',

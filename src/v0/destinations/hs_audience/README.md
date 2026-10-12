@@ -24,6 +24,8 @@ A nonempty HubSpot record id wins. Email is used only when the record id is empt
 
 Valid decimal strings drop leading zeros by string replace. Values longer than `Number.MAX_SAFE_INTEGER` stay strings. Numeric ids are accepted only when they are positive safe integers. List ids are not passed through that normalizer.
 
+Email batch-read requests include `email` and `hs_additional_emails`. Results match requested addresses against the normalized primary email and semicolon-separated secondary emails. Multiple requested addresses may resolve to the same contact; conflicting contact IDs or found/missing claims still fail the lookup chunk. Secondary-email resolution through this exact batch-read endpoint remains pending live verification.
+
 ## Lookup miss and membership miss
 
 An email that HubSpot's contact batch-read reports as `OBJECT_NOT_FOUND` is not yet a membership result.
@@ -35,9 +37,13 @@ A delete whose membership response lists the id in `recordIdsMissing` is a succe
 
 An id that is absent from `recordsIdsAdded` and also absent from `recordIdsMissing` is a successful add. HubSpot omits contacts that were already on the list. That is not a failure. Live HubSpot responses also omit empty arrays entirely (for example `{ "recordsIdsAdded": ["…"] }` with no `recordIdsMissing` / `recordIdsRemoved`); those absent fields are treated as `[]`.
 
+A 2xx response containing `{}` succeeds for every sent ID because all empty arrays may be omitted. Present malformed fields, unrelated nonempty objects, and empty-string/null transport bodies still produce controlled retries. Empty transport-body success semantics for `/add-and-remove` remain pending live verification; evidence for the separate `/memberships/add` endpoint does not establish this contract.
+
 ## Authentication
 
 Membership transform output has `Content-Type` only. `prepareRequest` reads `destinationConfig.accessToken` and sets `Authorization: Bearer <token>` on a clone immediately before the proxy call. A missing token fails before the request is sent.
+
+Missing tokens and missing or invalid list configuration use `ConfigurationError` (non-retryable 400). Invalid record identifiers and actions remain instrumentation errors.
 
 Proxy delivery is mandatory. A direct router send would have no Authorization header. Lookup calls set the header inside the transformer and do not put it on the membership payload.
 
@@ -53,7 +59,7 @@ Add and remove for the same list are separate requests (`internalGroupKey`). Eac
 
 ## Live membership test
 
-`test/integrations/destinations/hs_audience/live.ts` exercises a real record-ID insert and delete through router transform and proxy delivery, with paginated membership read-back after each operation. It requires an existing sandbox contact and a dedicated MANUAL or SNAPSHOT contact list in the same portal. The contact must initially be outside the list; the test fails before modifying membership otherwise. Reserve this list/contact pair for this test and avoid concurrent runs against it.
+`test/integrations/destinations/hs_audience/live.ts` exercises a real record-ID insert, an update re-adding the existing member, a delete, and a repeated delete of the absent member through router transform and proxy delivery, with paginated membership read-back after each operation. Before each repeated pipeline operation, a direct sandbox probe captures the exact response text and HTTP status to a private temporary JSON file; the test prints only the artifact path. The probes use the same `/add-and-remove` endpoint and do not capture request headers. It requires an existing sandbox contact and a dedicated MANUAL or SNAPSHOT contact list in the same portal. The contact must initially be outside the list; the test fails before modifying membership otherwise. Reserve this list/contact pair for this test and avoid concurrent runs against it.
 
 Supply `LIVE_SECRET_HS_AUDIENCE` locally or through the live suite's Vault configuration:
 
@@ -74,6 +80,9 @@ Run `npm run test:live -- --destination=hs_audience` with that environment varia
 These were not verified against a live portal or a fleet config in this change:
 
 - Missing-id behavior for adds and removes
+- No-op response shapes, including empty transport bodies, for `/add-and-remove`; run the repeated-add/remove steps above and retain the raw response artifacts with membership read-back evidence
+- Secondary-email batch-read resolution: request a prepared sandbox contact's secondary address with both email properties and confirm the returned primary/secondary values and resolved ID
+- Stale/merged IDs: use a prepared sandbox merged-contact fixture with known old and surviving IDs plus a dedicated static list. Send the old ID in separate add-only and remove-only `/add-and-remove` requests, alongside an unrelated valid contact. Retain exact HTTP statuses, raw response bodies, sent IDs, and membership read-back for the survivor and unrelated contact. Determine whether HubSpot reports the old ID as missing or substitutes the surviving ID. Unsent returned IDs continue to fail the batch closed; do not create or merge contacts as part of this membership test
 - Duplicate id entries
 - The 1,000 id cap
 - Mixed or partial lookup error bodies

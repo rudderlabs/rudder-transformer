@@ -42,6 +42,95 @@ describe('correlateContactLookup', () => {
     expect(correlated?.get('b@example.com')).toEqual({ kind: 'found', recordId: LARGE_ID });
   });
 
+  it('matches primary and secondary addresses to the same contact without leaking extra aliases', () => {
+    const requested = ['a@example.com', 'alias@example.com', 'b@example.com'];
+    const correlated = correlateContactLookup(requested, {
+      status: 'COMPLETE',
+      results: [
+        {
+          id: '00123',
+          properties: {
+            email: 'A@Example.com',
+            hs_additional_emails: ' Alias@Example.com ;a@example.com;;unused@example.com ',
+          },
+        },
+        { id: '2', properties: { email: 'b@example.com', hs_additional_emails: null } },
+      ],
+      errors: [],
+    });
+
+    expect(correlated?.get('a@example.com')).toEqual({ kind: 'found', recordId: '123' });
+    expect(correlated?.get('alias@example.com')).toEqual({ kind: 'found', recordId: '123' });
+    expect(correlated?.get('b@example.com')).toEqual({ kind: 'found', recordId: '2' });
+    expect(correlated?.has('unused@example.com')).toBe(false);
+  });
+
+  it('matches a secondary address when the primary address was not requested', () => {
+    const correlated = correlateContactLookup(['alias@example.com'], {
+      status: 'COMPLETE',
+      results: [
+        {
+          id: '1',
+          properties: {
+            email: 'primary@example.com',
+            hs_additional_emails: 'alias@example.com',
+          },
+        },
+      ],
+      errors: [],
+    });
+
+    expect(correlated?.get('alias@example.com')).toEqual({ kind: 'found', recordId: '1' });
+  });
+
+  it.each([
+    [
+      'two contacts claim the same requested alias',
+      [
+        {
+          id: '1',
+          properties: { email: 'primary@example.com', hs_additional_emails: 'a@example.com' },
+        },
+        { id: '2', properties: { email: 'a@example.com' } },
+      ],
+      [],
+    ],
+    [
+      'a secondary address is also reported missing',
+      [
+        {
+          id: '1',
+          properties: { email: 'primary@example.com', hs_additional_emails: 'a@example.com' },
+        },
+      ],
+      [{ category: 'OBJECT_NOT_FOUND', context: { ids: ['a@example.com'] } }],
+    ],
+    [
+      'secondary addresses are not a string',
+      [
+        {
+          id: '1',
+          properties: { email: 'a@example.com', hs_additional_emails: ['alias@example.com'] },
+        },
+      ],
+      [],
+    ],
+    [
+      'a secondary address is malformed',
+      [
+        {
+          id: '1',
+          properties: { email: 'a@example.com', hs_additional_emails: 'invalid-address' },
+        },
+      ],
+      [],
+    ],
+  ])('rejects the chunk when %s', (_name, results, errors) => {
+    expect(
+      correlateContactLookup(['a@example.com'], { status: 'COMPLETE', results, errors }),
+    ).toBeNull();
+  });
+
   it('accepts an explicit OBJECT_NOT_FOUND miss and ignores free-text messages', () => {
     const correlated = correlateContactLookup(['missing@example.com'], {
       status: 'COMPLETE',
@@ -185,7 +274,7 @@ describe('lookupDistinctEmails', () => {
     expect(lookedUp.get('user100@example.com')?.kind).toBe('found');
     expect(mockHttpPost.mock.calls[0][1]).toEqual({
       idProperty: 'email',
-      properties: ['email'],
+      properties: ['email', 'hs_additional_emails'],
       propertiesWithHistory: [],
       inputs: emails(100).map((id) => ({ id })),
     });

@@ -85,7 +85,7 @@ export const oauthError = [
       request: {
         body: generateProxyV1Payload({
           headers: { ...commonHeaders, Authorization: authHeader2 },
-          params: { ...commonParams, customerId: secret2 },
+          params: { ...commonParams, customerId: '7693729833' },
           JSON: validRequestPayload1,
           endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
           accessToken: secret2,

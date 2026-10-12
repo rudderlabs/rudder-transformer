@@ -1,7 +1,7 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 import { FixMe } from '../../types';
 import { isDestinationRouterTransformEnabled } from '../../features';
-import { NativeIntegrationDestinationService } from '../destination/nativeIntegration';
+import { ServiceSelector } from '../../helpers/serviceSelector';
 import type { Destination, Connection } from '../../types/controlPlaneConfig';
 import type { Metadata, RudderMessage } from '../../types/rudderEvents';
 import type { ProcessorTransformationRequest, RouterTransformationRequestData } from '../../types';
@@ -67,7 +67,8 @@ export class EventTesterService {
       connection: event.connection as Connection,
     }));
 
-    const service = new NativeIntegrationDestinationService();
+    const service = ServiceSelector.getDestinationServiceByType(dest, workspaceId);
+    service.init();
     const responses = isDestinationRouterTransformEnabled(dest)
       ? await service.doRouterTransformation(inputs, dest, version, {})
       : await service.doProcessorTransformation(

@@ -60,10 +60,11 @@ describe('Misc | getFeatures', () => {
     return miscService;
   }
 
-  it('should return the default configuration as a JSON string', () => {
+  it('should return the default configuration with the committed secret paths', () => {
     const miscService = getMiscService();
-    const expectedConfig = JSON.stringify(defaultFeaturesConfig);
-    const result = miscService.getFeatures();
-    expect(result).toBe(expectedConfig);
+    const features = miscService.getFeatures();
+
+    expect(features).toBe(JSON.stringify(defaultFeaturesConfig));
+    expect(JSON.parse(features).secretPaths).toEqual(defaultFeaturesConfig.secretPaths);
   });
 });

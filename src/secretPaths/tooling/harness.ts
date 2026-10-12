@@ -1,0 +1,523 @@
+/** Drives the generator through the existing component-test routes, fixtures, and network mocks. */
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
+import request from 'supertest';
+import axios from 'axios';
+import MockAxiosAdapter from 'axios-mock-adapter';
+import { Server } from 'http';
+import { join } from 'path';
+import isObjectLike from 'lodash/isObjectLike';
+import {
+  base64Convertor,
+  configureBatchProcessingDefaults,
+  axiosFromLib,
+} from '@rudderstack/integrations-lib';
+import { applicationRoutes } from '../../routes/index';
+import {
+  getTestDataFilePaths,
+  registerAxiosMocks,
+  getTestMockData,
+} from '../../../test/integrations/testUtils';
+import { EnvManager } from '../../../test/integrations/envUtils';
+import tags from '../../v0/util/tags';
+import DestinationCache from '../../v0/util/cache';
+import { MockHttpCallsData } from '../../../test/integrations/testTypes';
+import { ENDPOINT_FIELD, REQUEST_PAYLOAD_FIELDS } from './path';
+
+const DEFAULT_VERSION = 'v0';
+const DATA_DELIVERY_FIXTURE_ROUTE = 'fixture:dataDelivery';
+/** Shorter than this is not a credential worth substituting or hunting for. */
+const MIN_SECRET_LEN = 3;
+
+const TEST_ROOT = join(__dirname, '../../../test/integrations');
+
+// isObjectLike, not lodash's isObject or the repo's util isObject: both exclude arrays, and
+// these traversals have to descend into them.
+export const isObj = (v: unknown): v is Record<string, any> => isObjectLike(v);
+
+/**
+ * Response fields whose name suggests a credential.
+ *
+ * A heuristic, unlike the config side which is driven by the `secretKeys` registry - there is no
+ * registry for what a destination's own API hands back. It only picks *candidates*; the generator
+ * first requires a candidate to appear in baseline request headers or params, then settles its
+ * output path by corroborated diffing.
+ */
+const CREDENTIAL_KEY = /token|secret|password|credential|session|signature|api[_-]?key|^key$/i;
+
+/**
+ * How strictly a recorded mock has to match the outgoing request.
+ *
+ * `strict` is the corpus's own behaviour, including the request headers - which is what we want,
+ * because it keeps a destination's lookups discriminating exactly as they do in the suite.
+ *
+ * `ignore-headers` exists for destinations whose credential reaches the matched headers in a form
+ * the substitution cannot rewrite - `Basic base64(user:secret)` contains no raw secret to replace.
+ * Relaxing is sound for the derivation specifically: both the real and the decoy run are relaxed
+ * identically, so they still differ only by the credential. It is not free, though - where several
+ * mocks share a method, URL and body and differ only by headers (marketo has 44 such groups), the
+ * first registered wins, and the transform may take a branch production would not. So it is used
+ * only as a fallback, after strict matching has already failed for that destination, and never for
+ * one that derived cleanly.
+ */
+export type MockMatching = 'strict' | 'ignore-headers';
+
+/**
+ * Which half of a recorded mock a substitution rewrites.
+ *
+ * `all` keeps a destination's own lookups matching when its *config* secret changes - the
+ * request headers carry that secret, so they have to move with it.
+ *
+ * `response` is for the opposite case: perturbing a credential the destination *receives*. The
+ * fixture often uses one string for both the config password and the returned token, so
+ * rewriting everywhere would also change what the auth call must send, and that call would stop
+ * matching. Rewriting only the response leaves the exchange intact and changes just its result.
+ */
+export type SubstitutionScope = 'all' | 'response';
+
+/** `no-request`: ran clean, built nothing. `builds-request`: built one. `inconclusive`: neither. */
+export type ProbeResult = 'no-request' | 'builds-request' | 'inconclusive';
+
+export interface Harness {
+  /**
+   * Re-registers the corpus's network mocks for one destination, optionally rewriting recorded
+   * secret values to their decoys.
+   *
+   * The corpus matches mocks on request headers, and those headers carry the credential - 56 of
+   * zendesk's 57 mocks, 45 of 45 for intercom. So substituting a secret makes a destination's own
+   * lookups stop matching, the transform throws, and the changed output shape reads as
+   * "the secret destabilises this destination" when the real cause is that we moved the goalposts
+   * mid-run. Rewriting the mocks alongside the config keeps the lookup succeeding identically, so
+   * the only thing that differs between the two runs is the credential itself.
+   */
+  useMocksFor(
+    destination: string,
+    substitutions?: Map<string, string>,
+    matching?: MockMatching,
+    scope?: SubstitutionScope,
+  ): void;
+  /** Replays one fixture case, returning the response body, or null if it did not transform. */
+  runCase(tcData: any, body: unknown): Promise<unknown | null>;
+  /** The route a fixture case posts to, or null if it is not a transform case. */
+  routeFor(tcData: any): string | null;
+  /** Runs `fn` with the case's env overrides applied, restoring them afterwards. */
+  withCaseEnv<T>(tcData: any, fn: () => Promise<T>): Promise<T>;
+  /**
+   * Credential-looking values a destination's mocked responses hand back.
+   *
+   * Some destinations never put a declared secret in the request: they exchange it for a session
+   * token first - salesforce trades a password for one - so the request carries the token, which
+   * comes from the mocked response rather than the config. Perturbing the config cannot move it,
+   * which is why these read as `no-secret-located`. The caller filters these response candidates
+   * against the baseline request's authentication surface before perturbing them.
+   */
+  mockResponseSecrets(destination: string, requestBody: unknown, declaredKeys: string[]): string[];
+  /**
+   * Runs `fn` with the shared destination cache bypassed.
+   *
+   * Destinations that fetch a token cache it in-process (salesforce's ACCESS_TOKEN_CACHE has a
+   * TTL), so a rewritten mock response is never read on a second run - the first run's token is
+   * reused and nothing appears to move. Note the TTL itself is no lever: node-cache treats
+   * `stdTTL: 0` as *unlimited*, so zeroing it makes the cache permanent rather than absent.
+   * Bypassing the lookup is what actually works, and one patch covers every destination that
+   * uses the shared util.
+   */
+  withoutCache<T>(fn: () => Promise<T>): Promise<T>;
+  /**
+   * Transforms one synthetic event, for destinations the corpus has no fixture for.
+   *
+   * Returns `'no-request'` only when the transform *succeeded* and produced nothing
+   * request-shaped - the same evidence rule fixture-backed destinations are judged by. An error
+   * response is also not request-shaped, so the success check is what stops a destination that
+   * merely rejected the synthetic config from being read as "sends no credential".
+   */
+  probe(destType: string, config: Record<string, string>): Promise<ProbeResult>;
+  stop(): void;
+}
+
+/** Every request-shaped object in a transform response, in traversal order. */
+export function requestsIn(output: unknown): Record<string, any>[] {
+  const found: Record<string, any>[] = [];
+  const seen = new Set<unknown>();
+  const walk = (node: unknown): void => {
+    if (!isObj(node) || seen.has(node)) return;
+    seen.add(node);
+    if (
+      !Array.isArray(node) &&
+      typeof node[ENDPOINT_FIELD] === 'string' &&
+      REQUEST_PAYLOAD_FIELDS.some((field) => Object.prototype.hasOwnProperty.call(node, field))
+    ) {
+      found.push(node);
+      // A delivered request can contain source-only envelope fields. They are inputs to the
+      // delivery adapter, not nested requests, so traversal stops at this boundary.
+      return;
+    }
+    for (const key of Object.keys(node)) walk(node[key]);
+  };
+  walk(output);
+  return found;
+}
+
+/** Visits and replaces one declared key wherever a destination config appears in a request. */
+export const visitConfigSecrets = (
+  node: unknown,
+  declaredKey: string,
+  visit: (current: string) => string,
+): void => {
+  const leaf = declaredKey.split('.').pop()!.toLowerCase();
+  const walk = (current: unknown, insideConfig: boolean): void => {
+    if (!isObj(current)) return;
+    for (const key of Object.keys(current)) {
+      const value = current[key];
+      const nowInsideConfig = insideConfig || key === 'config' || key === 'Config';
+      if (insideConfig && key.toLowerCase() === leaf && typeof value === 'string') {
+        // eslint-disable-next-line no-param-reassign -- rewriting the caller's copy is the point
+        current[key] = visit(value);
+      } else {
+        walk(value, nowInsideConfig);
+      }
+    }
+  };
+  walk(node, false);
+};
+
+const SECRET_BAG_KEY = 'secret';
+
+const collect = (walk: (visit: (current: string) => string) => void): string[] => {
+  const found: string[] = [];
+  walk((current) => {
+    if (current.length >= MIN_SECRET_LEN) found.push(current);
+    return current;
+  });
+  return found;
+};
+
+/** The declared-key values present in a request body - the generator's definition, reused. */
+export function configSecretsFor(node: unknown, declaredKey: string): string[] {
+  return collect((visit) => visitConfigSecrets(node, declaredKey, visit));
+}
+
+/** Whether a string carries a secret directly or through a reversible encoding. */
+export function carriesSecret(value: string, secret: string): boolean {
+  const forms = [
+    secret,
+    base64Convertor(secret),
+    base64Convertor(`${secret}:`),
+    base64Convertor(`:${secret}`),
+    encodeURIComponent(secret),
+  ];
+  if (forms.some((form) => value.includes(form))) return true;
+  return (value.match(/[\d+/A-Za-z]{8,}={0,2}/g) || []).some((token) =>
+    Buffer.from(token, 'base64').toString('utf8').includes(secret),
+  );
+}
+
+/** Whether a value - a string as is, anything else serialised - carries any of the secrets. */
+export function carriesAnySecret(value: unknown, secrets: string[]): boolean {
+  const serialised = typeof value === 'string' ? value : JSON.stringify(value);
+  return Boolean(serialised) && secrets.some((secret) => carriesSecret(serialised, secret));
+}
+
+/**
+ * Starts the transformer in-process with the corpus's network mocks attached.
+ *
+ * throwException, never passthrough: an unmocked call must fail loudly rather than reach a real
+ * destination API from a build step.
+ */
+export const startHarness = (): Harness => {
+  configureBatchProcessingDefaults({ batchSize: 1, yieldThreshold: 1, sequentialProcessing: true });
+
+  const adapters = [axios, axiosFromLib].map(
+    (instance) => new MockAxiosAdapter(instance as any, { onNoMatch: 'throwException' }),
+  );
+  const mocksByDestination = new Map<string, MockHttpCallsData[]>();
+  const mocksFor = (destination: string): MockHttpCallsData[] => {
+    if (!mocksByDestination.has(destination)) {
+      mocksByDestination.set(destination, getTestMockData(destination));
+    }
+    return mocksByDestination.get(destination)!;
+  };
+  /**
+   * The serialised mocks used for decoy substitution, built on first use and kept for the current
+   * destination only: destinations are derived one at a time and never revisited.
+   */
+  let serialisedFor: { destination: string; all: string; responses: string[] } | undefined;
+  const serialisedMocks = (destination: string) => {
+    if (serialisedFor?.destination !== destination) {
+      const mocks = mocksFor(destination);
+      serialisedFor = {
+        destination,
+        all: JSON.stringify(mocks),
+        responses: mocks.map((mock) => JSON.stringify(mock.httpRes)),
+      };
+    }
+    return serialisedFor;
+  };
+
+  const app = new Koa();
+  app.use(bodyParser({ jsonLimit: '200mb' }));
+  applicationRoutes(app);
+  const server: Server = app.listen();
+
+  /**
+   * Per-case setup the component suite performs. Without it, destinations whose fixtures install
+   * their own mocks (90 of ga4's 93 cases, for instance) fail the transform and look
+   * indistinguishable from "emits no request" - a silent, and dangerous, false negative.
+   */
+  const applyCaseSetup = (tcData: any) => adapters.forEach((a) => tcData?.mockFns?.(a));
+
+  return {
+    useMocksFor(
+      destination: string,
+      substitutions?: Map<string, string>,
+      matching: MockMatching = 'strict',
+      scope: SubstitutionScope = 'all',
+    ): void {
+      let mocks = mocksFor(destination);
+      if (substitutions?.size) {
+        const { all, responses } = serialisedMocks(destination);
+        const rewrite = (text: string) => {
+          let rewritten = text;
+          for (const [real, decoy] of substitutions) {
+            rewritten = rewritten.split(real).join(decoy);
+          }
+          return JSON.parse(rewritten);
+        };
+        mocks =
+          scope === 'response'
+            ? mocks.map((mock, i) => ({ ...mock, httpRes: rewrite(responses[i]) }))
+            : (rewrite(all) as MockHttpCallsData[]);
+      }
+      adapters.forEach((adapter) => {
+        adapter.reset();
+        registerAxiosMocks(
+          adapter,
+          matching === 'ignore-headers'
+            ? mocks.map((mock) => ({
+                ...mock,
+                httpReq: { ...mock.httpReq, headers: undefined },
+              }))
+            : mocks,
+        );
+      });
+    },
+
+    routeFor(tcData: any): string | null {
+      switch (tcData.feature) {
+        case tags.FEATURES.ROUTER:
+          return join('/routerTransform', tcData.input.pathSuffix || '');
+        case tags.FEATURES.PROCESSOR:
+          return join(
+            '/',
+            tcData.version || DEFAULT_VERSION,
+            'destinations',
+            tcData.name,
+            tcData.input.pathSuffix || '',
+          );
+        case tags.FEATURES.DATA_DELIVERY:
+          // Data-delivery fixtures already contain the transformed outbound request as their input.
+          // They are included as request-shaped corpus evidence without invoking partner delivery.
+          return DATA_DELIVERY_FIXTURE_ROUTE;
+        default:
+          return null;
+      }
+    },
+
+    async runCase(tcData: any, body: unknown): Promise<unknown | null> {
+      const route = this.routeFor(tcData);
+      if (!route) return null;
+      if (route === DATA_DELIVERY_FIXTURE_ROUTE) return body;
+      applyCaseSetup(tcData);
+      let res;
+      try {
+        const { headers, params } = tcData.input.request;
+        res = await request(server)
+          .post(route)
+          .set(headers || {})
+          .query(params || {})
+          .send(body as any);
+      } finally {
+        // Undo the fixture's spies here, not in the callers. A fixture that pins the clock
+        // (`jest.useFakeTimers().setSystemTime(...)`) changes the active clock, so one unrestored
+        // case silently changes the transform result for every later destination.
+        jest.restoreAllMocks();
+        jest.useRealTimers();
+      }
+      if (res.status !== (tcData.output?.response?.status ?? 200)) return null;
+      return res.body;
+    },
+
+    async withCaseEnv<T>(tcData: any, fn: () => Promise<T>): Promise<T> {
+      const envKeys = Object.keys(tcData.envOverrides ?? {});
+      if (envKeys.length === 0) return fn();
+      const manager = new EnvManager();
+      const snapshotId = `${tcData.id || tcData.name}-secret-paths`;
+      manager.takeSnapshot(snapshotId, envKeys);
+      manager.applyOverrides(tcData.envOverrides);
+      try {
+        return await fn();
+      } finally {
+        manager.restoreSnapshot(snapshotId);
+        manager.cleanup();
+      }
+    },
+
+    mockResponseSecrets(
+      destination: string,
+      requestBody: unknown,
+      declaredKeys: string[],
+    ): string[] {
+      const declaredValues = declaredKeys.flatMap((key) => configSecretsFor(requestBody, key));
+      if (declaredValues.length === 0) return [];
+
+      const found = new Set<string>();
+      const walkResponse = (node: unknown, key: string): void => {
+        if (typeof node === 'string') {
+          if (CREDENTIAL_KEY.test(key) && node.length >= MIN_SECRET_LEN) found.add(node);
+          return;
+        }
+        if (!isObj(node)) return;
+        for (const k of Object.keys(node)) walkResponse((node as Record<string, unknown>)[k], k);
+      };
+      mocksFor(destination)
+        .filter((mock) => carriesAnySecret(mock.httpReq, declaredValues))
+        .forEach((mock) => walkResponse(mock.httpRes?.data, ''));
+      return [...found];
+    },
+
+    async withoutCache<T>(fn: () => Promise<T>): Promise<T> {
+      const original = DestinationCache.prototype.get;
+      DestinationCache.prototype.get = async function bypass(_key: string, storeFunction?: any) {
+        if (!storeFunction) return undefined;
+        const result = await storeFunction();
+        // Mirror the real Cache.get contract: a store function may return `{value, age}` to set
+        // its own TTL, and callers are handed `value`, not the wrapper. marketo's getAuthToken
+        // does exactly that, so a bypass that skipped the unwrap returned an object where the
+        // destination expected a token - and the credential never reached the request.
+        if (result !== null && typeof result === 'object' && 'value' in result && 'age' in result) {
+          return (result as any).value;
+        }
+        return result;
+      };
+      try {
+        return await fn();
+      } finally {
+        DestinationCache.prototype.get = original;
+      }
+    },
+
+    async probe(destType: string, config: Record<string, string>): Promise<ProbeResult> {
+      const event = {
+        message: {
+          type: 'track',
+          event: 'probe',
+          userId: 'probe-user',
+          properties: { probe: true },
+          context: { traits: { email: 'probe@example.com' } },
+          originalTimestamp: '2024-01-01T00:00:00.000Z',
+          timestamp: '2024-01-01T00:00:00.000Z',
+          messageId: 'probe-message-id',
+        },
+        metadata: { jobId: 1, destinationId: 'probe-dest', sourceId: 'probe-source' },
+        destination: { ID: 'probe-dest', Name: destType, Enabled: true, Config: config },
+        request: { query: { whSchemaVersion: 'v1' } },
+      };
+      let res;
+      try {
+        res = await request(server)
+          .post(`/v0/destinations/${destType}`)
+          .send([event] as any);
+      } catch {
+        return 'inconclusive';
+      }
+      if (res.status !== 200) return 'inconclusive';
+      // A per-event 4xx/5xx means the transform rejected the synthetic input, which tells us
+      // nothing about where its credentials go.
+      if (/"statusCode":\s*[45]\d\d/.test(JSON.stringify(res.body))) return 'inconclusive';
+      return requestsIn(res.body).length > 0 ? 'builds-request' : 'no-request';
+    },
+
+    stop() {
+      server.close();
+    },
+  };
+};
+
+/**
+ * Visits every string the runtime credential bag carries, and replaces it with whatever the
+ * visitor returns.
+ *
+ * This is the OAuth half of "what counts as a credential". `secretKeys` cannot answer it: the
+ * bag is not configuration. The control plane mints it per OAuth account and rudder-server
+ * forwards it as an opaque `json.RawMessage` (`router/types/types.go`, `JobMetadataT.Secret`)
+ * without reading its keys, so there is no registry naming them and no declaration to follow.
+ * A destination reads what it needs out of it - `access_token` for the Google Ads family,
+ * `consumerSecret`/`accessTokenSecret` for the OAuth1 ones - and nothing upstream records which.
+ *
+ * So the rule here is positional rather than nominal: everything under a real `metadata.secret`
+ * object is treated as a credential, whatever it is called. That deliberately over-masks.
+ *
+ * Only strings at or over `MIN_SECRET_LEN` are visited. Shorter ones are not credentials, and
+ * substituting them is actively harmful here in a way it is not for a config key: the bag is
+ * perturbed all at once rather than one key at a time, and `useMocksFor` rewrites the recorded
+ * mocks by plain substring replacement over their serialised JSON - so a two-character bag value
+ * would rewrite unrelated text throughout the corpus and the decoy run would take a branch the
+ * real one did not.
+ */
+export const visitRuntimeSecrets = (node: unknown, visit: (current: string) => string): void => {
+  const visitBag = (bag: unknown): void => {
+    if (!isObj(bag)) return;
+    for (const key of Object.keys(bag)) {
+      const value = bag[key];
+      if (typeof value === 'string' && value.length >= MIN_SECRET_LEN) {
+        // eslint-disable-next-line no-param-reassign -- rewriting the caller's copy is the point
+        bag[key] = visit(value);
+      } else {
+        visitBag(value);
+      }
+    }
+  };
+
+  const walk = (current: unknown): void => {
+    if (!isObj(current)) return;
+    [current.metadata].flat().forEach((metadata) => {
+      if (isObj(metadata)) visitBag(metadata[SECRET_BAG_KEY]);
+    });
+    for (const key of Object.keys(current)) {
+      if (key !== 'metadata') walk(current[key]);
+    }
+  };
+  walk(node);
+};
+
+/** The runtime-bag values present in a request body - the generator's definition, reused. */
+export const runtimeSecretsFor = (node: unknown): string[] =>
+  collect((visit) => visitRuntimeSecrets(node, visit));
+
+/** Whether a fixture case is one the derivation can use: a destination case with a route. */
+export const isDerivableCase = (harness: Harness, tcData: any): boolean =>
+  tcData?.module === tags.MODULES.DESTINATION &&
+  // Before `routeFor`, which reads `tcData.input.pathSuffix` without guarding it.
+  Boolean(tcData.input?.request?.body) &&
+  Boolean(harness.routeFor(tcData));
+
+/**
+ * The corpus bucketed by destination directory, globbed once.
+ *
+ * getTestDataFilePaths re-globs the whole tree on every call, so calling it per destination
+ * costs one full-tree scan per destination for no benefit.
+ */
+export const fixturesByDestination = (): Map<string, string[]> => {
+  const buckets = new Map<string, string[]>();
+  const destinationFixtures = getTestDataFilePaths(TEST_ROOT, {}).filter((filePath) =>
+    filePath.includes('/destinations/'),
+  );
+  for (const filePath of destinationFixtures) {
+    const dir = filePath.split('/destinations/')[1]?.split('/')[0];
+    if (!dir) throw new Error(`Unable to identify destination fixture: ${filePath}`);
+    const bucket = buckets.get(dir) ?? [];
+    bucket.push(filePath);
+    buckets.set(dir, bucket);
+  }
+  return buckets;
+};

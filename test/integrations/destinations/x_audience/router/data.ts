@@ -222,8 +222,10 @@ export const data = [
   mockFns: (_) => {
     jest.mock('../../../../../src/v0/destinations/twitter_ads/util', () => ({
       ...jest.requireActual('../../../../../src/v0/destinations/twitter_ads/util'),
-      getAuthHeaderForRequest: (_a, _b) => {
-        return { Authorization: authHeaderConstant };
+      getAuthHeaderForRequest: (_a, oauth) => {
+        return {
+          Authorization: authHeaderConstant.replace('validAccessToken', oauth.accessToken),
+        };
       },
     }));
     jest.mock('../../../../../src/v0/destinations/x_audience/config', () => ({

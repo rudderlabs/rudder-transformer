@@ -2,6 +2,7 @@ import path from 'path';
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { DestHandlerMap } from './constants/destinationCanonicalNames';
 import { getIntegrations } from './routes/utils';
+import { secretPaths, SecretPaths } from './secretPaths';
 
 // ---------------------------------------------------------------------------
 // Destination capabilities
@@ -255,6 +256,7 @@ interface FeaturesConfig {
   supportTransformerProxyV1: true;
   upgradedToSourceTransformV2: true;
   supportDestTransformCompactedPayloadV1: true;
+  secretPaths: SecretPaths;
 }
 
 const defaultFeaturesConfig: FeaturesConfig = {
@@ -265,6 +267,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
   supportTransformerProxyV1: true,
   upgradedToSourceTransformV2: true,
   supportDestTransformCompactedPayloadV1: true,
+  secretPaths,
 };
 
 export default defaultFeaturesConfig;

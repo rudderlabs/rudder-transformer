@@ -1,5 +1,4 @@
 /* eslint-disable global-require, import/no-dynamic-require */
-import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import defaultFeaturesConfig, { getDestinationHandlerName } from '../features';
 import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
@@ -14,25 +13,7 @@ const serialisedFeaturesConfig = JSON.stringify(defaultFeaturesConfig);
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
     const handlerName = getDestinationHandlerName(dest);
-    const handlerModule = `../${version}/destinations/${handlerName}/transform`;
-    try {
-      return require(handlerModule);
-    } catch (error: unknown) {
-      if (
-        typeof error === 'object' &&
-        error !== null &&
-        'code' in error &&
-        error.code === 'MODULE_NOT_FOUND' &&
-        'message' in error &&
-        typeof error.message === 'string' &&
-        error.message.includes(handlerModule)
-      ) {
-        throw new ConfigurationError(
-          `Destination handler module not found for destination "${dest}" (handler "${handlerName}", version "${version}")`,
-        );
-      }
-      throw error;
-    }
+    return require(`../${version}/destinations/${handlerName}/transform`);
   }
 
   public static getSourceHandler(source: string) {

@@ -38,12 +38,6 @@ describe('Misc tests', () => {
       'Invalid destination: not_a_destination',
     );
   });
-
-  test('should report a missing destination handler as a configuration error', () => {
-    expect(() => MiscService.getDestHandler('http', 'v0')).toThrow(
-      'Destination handler module not found for destination "http" (handler "http", version "v0")',
-    );
-  });
 });
 
 describe('Misc | getFeatures', () => {

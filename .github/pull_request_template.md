@@ -26,6 +26,16 @@ N/A
 
 N/A
 
+### Customer-facing docs
+
+Customer-facing docs: none / `<docs PR link>` / `DOCS-<id>`
+
+Any change that alters what a customer sees or configures — destination settings,
+supported API versions, defaults, field mappings, validation or error behaviour —
+needs a matching update to the customer-facing documentation. Link the docs PR or
+DOCS ticket above, or state `none` with a one-line reason. In-repo docs
+(`README.md`, `docs/*.md`) are not customer-facing and do not satisfy this.
+
 <hr>
 
 ### Developer checklist
@@ -34,11 +44,11 @@ N/A
 
 - [ ] **No breaking changes are being introduced.**
 
-- [ ] All related docs linked with the PR?
+- [ ] Customer-facing docs impact declared above (docs PR / DOCS ticket / none)?
 
 - [ ] All changes manually tested?
 
-- [ ] Any documentation changes needed with this change?
+- [ ] In-repo docs (README, docs/*) updated if needed?
 
 - [ ] Is the PR limited to 10 file changes?
 

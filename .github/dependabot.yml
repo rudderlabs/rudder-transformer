@@ -12,3 +12,18 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+    groups:
+      # Split security updates so one failing bump doesn't block the rest.
+      # Major version bumps are left out and raised as separate PRs.
+      security-prod:
+        applies-to: security-updates
+        dependency-type: 'production'
+        update-types:
+          - 'patch'
+          - 'minor'
+      security-dev:
+        applies-to: security-updates
+        dependency-type: 'development'
+        update-types:
+          - 'patch'
+          - 'minor'

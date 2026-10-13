@@ -48,7 +48,7 @@ DOCS ticket above, or state `none` with a one-line reason. In-repo docs
 
 - [ ] All changes manually tested?
 
-- [ ] In-repo docs (README, docs/*) updated if needed?
+- [ ] In-repo docs (README, docs/\*) updated if needed?
 
 - [ ] Is the PR limited to 10 file changes?
 

@@ -21,7 +21,7 @@ There is no envelope, version, timestamp, source reference, diagnostic reason, o
 
 ## Inputs
 
-Configured credentials come only from each destination definition's `config.secretKeys` in `rudder-integrations-config/src/configurations/destinations`. Every value under fixture `metadata.secret` is also a credential source because the runtime bag has no per-key declaration. Names that merely look sensitive are not inferred.
+Configured credentials come from each destination definition's `config.secretKeys` in `rudder-integrations-config/src/configurations/destinations`. Every value under fixture `metadata.secret` and `destination.deliveryAccount.secret` is also a credential source because those runtime bags have no destination-level per-key declaration. Names that merely look sensitive are not inferred.
 
 A transformer destination without a matching definition fails generation. The only identity aliases are:
 

@@ -183,6 +183,19 @@ export const visitConfigSecrets = (
 
 const SECRET_BAG_KEY = 'secret';
 
+const visitSecretBag = (bag: unknown, visit: (current: string) => string): void => {
+  if (!isObj(bag)) return;
+  for (const key of Object.keys(bag)) {
+    const value = bag[key];
+    if (typeof value === 'string' && value.length >= MIN_SECRET_LEN) {
+      // eslint-disable-next-line no-param-reassign -- rewriting the caller's copy is the point
+      bag[key] = visit(value);
+    } else {
+      visitSecretBag(value, visit);
+    }
+  }
+};
+
 const collect = (walk: (visit: (current: string) => string) => void): string[] => {
   const found: string[] = [];
   walk((current) => {
@@ -465,23 +478,10 @@ export const startHarness = (): Harness => {
  * real one did not.
  */
 export const visitRuntimeSecrets = (node: unknown, visit: (current: string) => string): void => {
-  const visitBag = (bag: unknown): void => {
-    if (!isObj(bag)) return;
-    for (const key of Object.keys(bag)) {
-      const value = bag[key];
-      if (typeof value === 'string' && value.length >= MIN_SECRET_LEN) {
-        // eslint-disable-next-line no-param-reassign -- rewriting the caller's copy is the point
-        bag[key] = visit(value);
-      } else {
-        visitBag(value);
-      }
-    }
-  };
-
   const walk = (current: unknown): void => {
     if (!isObj(current)) return;
     [current.metadata].flat().forEach((metadata) => {
-      if (isObj(metadata)) visitBag(metadata[SECRET_BAG_KEY]);
+      if (isObj(metadata)) visitSecretBag(metadata[SECRET_BAG_KEY], visit);
     });
     for (const key of Object.keys(current)) {
       if (key !== 'metadata') walk(current[key]);
@@ -493,6 +493,32 @@ export const visitRuntimeSecrets = (node: unknown, visit: (current: string) => s
 /** The runtime-bag values present in a request body - the generator's definition, reused. */
 export const runtimeSecretsFor = (node: unknown): string[] =>
   collect((visit) => visitRuntimeSecrets(node, visit));
+
+/**
+ * Visits every string in a destination delivery account's secret bag.
+ *
+ * Delivery-account credentials are runtime inputs like `metadata.secret`: their keys are defined
+ * by the selected account definition rather than the destination's `secretKeys` registry. Treat
+ * every sufficiently long string under `destination.deliveryAccount.secret` as a credential so
+ * account-backed destinations participate in the same evidence-based derivation as inline ones.
+ */
+export const visitDeliveryAccountSecrets = (
+  node: unknown,
+  visit: (current: string) => string,
+): void => {
+  const walk = (current: unknown): void => {
+    if (!isObj(current)) return;
+    if (isObj(current.destination) && isObj(current.destination.deliveryAccount)) {
+      visitSecretBag(current.destination.deliveryAccount.secret, visit);
+    }
+    for (const key of Object.keys(current)) walk(current[key]);
+  };
+  walk(node);
+};
+
+/** The delivery-account secret values present in a request body. */
+export const deliveryAccountSecretsFor = (node: unknown): string[] =>
+  collect((visit) => visitDeliveryAccountSecrets(node, visit));
 
 /** Whether a fixture case is one the derivation can use: a destination case with a route. */
 export const isDerivableCase = (harness: Harness, tcData: any): boolean =>

@@ -7,8 +7,8 @@
  * non-deterministic fields) and then once per secret source with a format-preserving decoy
  * substituted, and record which output leaves moved.
  *
- * Nothing here is hand-authored per destination. There are two secret sources, and between them
- * they cover the two ways a destination is handed a credential:
+ * Nothing here is hand-authored per destination. There are three secret sources, and between them
+ * they cover the ways a destination is handed a credential:
  *
  *   CONFIGURED - `secretKeys` from the destination definition, the source of truth for which
  *   config fields are credentials. Perturbed by name, wherever that key appears in a config.
@@ -16,6 +16,9 @@
  *   RUNTIME - the `metadata.secret` bag the control plane mints per OAuth account and
  *   rudder-server forwards verbatim. Nothing declares its keys, so every value under it is
  *   treated as a credential and perturbed by position. See `visitRuntimeSecrets`.
+ *
+ *   DELIVERY ACCOUNT - the `destination.deliveryAccount.secret` bag supplied for account-managed
+ *   authentication. Its account definition owns the keys, so they are also perturbed by position.
  *
  * Usage (`generate.jest-entry.ts` is the Jest entry point):
  *   SECRET_PATHS_DESTINATION=klaviyo,ga4 npm run generate:secret-paths
@@ -37,6 +40,7 @@ import {
   carriesAnySecret,
   carriesSecret,
   configSecretsFor,
+  deliveryAccountSecretsFor,
   Harness,
   fixturesByDestination,
   isDerivableCase,
@@ -45,6 +49,7 @@ import {
   runtimeSecretsFor,
   startHarness,
   visitConfigSecrets,
+  visitDeliveryAccountSecrets,
   visitRuntimeSecrets,
 } from './harness';
 import {
@@ -193,7 +198,7 @@ interface CaseOutcome {
    * destination that builds none and with a harness that could not run one.
    */
   transformed: boolean;
-  /** The secret source - declared key or the runtime bag - that destabilised the diff, if any. */
+  /** The configured, runtime, or delivery-account source that destabilised the diff, if any. */
   unstableSource?: SecretSource;
   /**
    * Whether the runtime bag was ever compared cleanly - both decoy runs completed and the diff
@@ -254,24 +259,36 @@ const runBaseline = async (
 /**
  * What one perturbation targets.
  *
- * A union rather than a list of key strings with one reserved value: the two sources are matched
- * differently - a declared key by name, the bag by position - and a reserved string would sit in
- * the same namespace as the registry's own entries while nothing enforced the separation.
+ * A union rather than a list of key strings with reserved values: configured sources are matched
+ * by declared name, while the runtime and delivery-account bags are matched by position. Reserved
+ * strings would sit in the same namespace as the registry's own entries while nothing enforced
+ * the separation.
  * `secretKeys` entries are not always plain keys (`webhook` and `pipedream` declare `headers.to`),
  * so "no destination could declare this" was an assumption, not a fact.
  */
-type SecretSource = { kind: 'config'; key: string } | { kind: 'runtime' };
+type SecretSource =
+  | { kind: 'config'; key: string }
+  | { kind: 'deliveryAccount' }
+  | { kind: 'runtime' };
 
 /** How a source names itself in diagnostics: `unstable under 'clientSecret'` / `'metadata.secret'`. */
-const sourceName = (source: SecretSource): string =>
-  source.kind === 'config' ? source.key : 'metadata.secret';
+const sourceName = (source: SecretSource): string => {
+  if (source.kind === 'config') return source.key;
+  return source.kind === 'deliveryAccount'
+    ? 'destination.deliveryAccount.secret'
+    : 'metadata.secret';
+};
 
 /** The values this source contributes to one fixture body, subject to the shared length rule. */
-export const valuesFor = (source: SecretSource, body: unknown): string[] =>
-  source.kind === 'config' ? configSecretsFor(body, source.key) : runtimeSecretsFor(body);
+export const valuesFor = (source: SecretSource, body: unknown): string[] => {
+  if (source.kind === 'config') return configSecretsFor(body, source.key);
+  return source.kind === 'deliveryAccount'
+    ? deliveryAccountSecretsFor(body)
+    : runtimeSecretsFor(body);
+};
 
-/** String values observed under each fixture case's `destination.Config`. */
-const destinationConfigValues = (body: unknown): Set<string> => {
+/** String values that can determine output header names for a fixture destination. */
+export const destinationConfigValues = (body: unknown): Set<string> => {
   const values = new Set<string>();
   const collectStrings = (node: unknown): void => {
     if (typeof node === 'string') {
@@ -285,7 +302,11 @@ const destinationConfigValues = (body: unknown): Set<string> => {
     if (!node || typeof node !== 'object') return;
     const record = node as Record<string, unknown>;
     if (record.destination && typeof record.destination === 'object') {
-      collectStrings((record.destination as Record<string, unknown>).Config);
+      const destination = record.destination as Record<string, unknown>;
+      collectStrings(destination.Config);
+      if (destination.deliveryAccount && typeof destination.deliveryAccount === 'object') {
+        collectStrings((destination.deliveryAccount as Record<string, unknown>).options);
+      }
     }
     Object.values(record).forEach(findDestinations);
   };
@@ -300,6 +321,7 @@ const rewriteWith = (
   visit: (current: string) => string,
 ): void => {
   if (source.kind === 'config') visitConfigSecrets(body, source.key, visit);
+  else if (source.kind === 'deliveryAccount') visitDeliveryAccountSecrets(body, visit);
   else visitRuntimeSecrets(body, visit);
 };
 
@@ -511,8 +533,8 @@ const deriveForCase = async (
     .map((source) => ({ source, present: valuesFor(source, originalBody) }))
     .filter(({ present }) => present.length > 0);
   for (const { source, present } of presentSources) {
-    // `valuesFor`/`rewriteWith` are the only place the two kinds differ; past them the sources
-    // are the same measurement, so neither can drift away from the other's rules.
+    // `valuesFor`/`rewriteWith` are the only place the source kinds differ; past them every source
+    // uses the same measurement, so none can drift away from the others' rules.
     if (present.some((value) => decoysFor(value) === null)) {
       debug(() => `unstable: '${sourceName(source)}' has no distinct decoys`);
       outcome.unstableSource = source;
@@ -645,6 +667,17 @@ const deriveFromFetchedCredentials = async (
  */
 const corpusCarriesRuntimeSecrets = (cases: any[]): boolean =>
   cases.some((tcData) => runtimeSecretsFor(tcData.input.request.body).length > 0);
+
+/** Whether any fixture case carries account-managed credentials. */
+const corpusCarriesDeliveryAccountSecrets = (cases: any[]): boolean =>
+  cases.some((tcData) => deliveryAccountSecretsFor(tcData.input.request.body).length > 0);
+
+const secretSourcesFor = (cases: any[], declaredKeys: string[]): SecretSource[] => {
+  const sources: SecretSource[] = declaredKeys.map((key) => ({ kind: 'config', key }));
+  if (corpusCarriesDeliveryAccountSecrets(cases)) sources.unshift({ kind: 'deliveryAccount' });
+  if (corpusCarriesRuntimeSecrets(cases)) sources.unshift({ kind: 'runtime' });
+  return sources;
+};
 
 /**
  * Every derivable case in a destination's fixture files, or the load error for the first file
@@ -1004,19 +1037,12 @@ export const main = async (options: GenerateOptions = {}) => {
     }
     const { cases } = loaded;
 
-    // The second secret source, discovered rather than declared. Nothing upstream says a
-    // destination is handed a runtime credential bag - `secretKeys` describes configuration, and
-    // the bag is not configuration - so the corpus is the only place to learn that this
-    // destination is given one. Scanned before the derivation because it decides whether there is
-    // anything to derive at all: an OAuth destination declares no `secretKeys` and would
-    // otherwise stop at `no-declared-secrets` while sending a bearer token.
-    // Bag first, deliberately. `deriveForCase` returns at the first source that destabilises one
-    // case, so a declared key that breaks its destination's own token exchange would otherwise
-    // prevent the bag from being measured in that case.
-    const configSources: SecretSource[] = declaredKeys.map((key) => ({ kind: 'config', key }));
-    const secretSources: SecretSource[] = corpusCarriesRuntimeSecrets(cases)
-      ? [{ kind: 'runtime' }, ...configSources]
-      : configSources;
+    // Runtime and delivery-account bags are discovered from the corpus rather than declared by
+    // destination `secretKeys`. Scan for both before derivation because either can be the only
+    // credential source in a fixture. Runtime goes first deliberately: `deriveForCase` returns at
+    // the first source that destabilises one case, so a later source that breaks a destination's
+    // own token exchange must not prevent the runtime bag from being measured.
+    const secretSources = secretSourcesFor(cases, declaredKeys);
 
     if (secretSources.length === 0) {
       recordEmpty(destType);

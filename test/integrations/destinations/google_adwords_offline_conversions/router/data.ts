@@ -1042,6 +1042,13 @@ export const data = [
                           {
                             create: {
                               transaction_attribute: {
+                                item_attribute: {
+                                  item_id: '507f1f77bcf86cd799439011',
+                                  merchant_id: 'merchantId',
+                                  country_code: 'feedCountryCode',
+                                  language_code: 'feedLanguageCode',
+                                  quantity: 2,
+                                },
                                 transaction_amount_micros: '1000000',
                                 currency_code: 'GBP',
                                 transaction_date_time: '2019-10-14 16:45:18+05:30',

@@ -4406,14 +4406,12 @@ export const data = [
               userId: '12345',
               properties: {
                 loyaltyFraction: 1,
-                item_id: 'item id',
                 merchant_id: 'merchant id',
                 currency: 'INR',
                 revenue: '100',
                 store_code: 'store code',
                 gclid: 'gclid',
-                product_id: '123445',
-                quantity: 123,
+                products: [{ sku: 'item id' }],
               },
               integrations: {
                 All: true,
@@ -4535,6 +4533,11 @@ export const data = [
                           store_attribute: {
                             store_code: 'store code',
                           },
+                          item_attribute: {
+                            item_id: 'item id',
+                            merchant_id: 'merchant id',
+                            quantity: 1,
+                          },
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
@@ -4606,6 +4609,8 @@ export const data = [
               properties: {
                 item_id: 'item id',
                 merchant_id: 'merchant id',
+                country_code: 'IN',
+                language_code: 'en',
                 currency: 'INR',
                 revenue: '100',
                 store_code: 'store code',
@@ -4733,6 +4738,13 @@ export const data = [
                           store_attribute: {
                             store_code: 'store code',
                           },
+                          item_attribute: {
+                            item_id: 'item id',
+                            merchant_id: 'merchant id',
+                            country_code: 'IN',
+                            language_code: 'en',
+                            quantity: 123,
+                          },
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2023-02-06 19:44:25+05:30',
@@ -4742,6 +4754,7 @@ export const data = [
                           {
                             address_info: {
                               state: 'England',
+                              country_code: 'IN',
                               hashed_first_name: 'first_name',
                               hashed_street_address: 'street_address',
                             },
@@ -4805,7 +4818,6 @@ export const data = [
               userId: '12345',
               properties: {
                 item_id: 'item id',
-                merchant_id: 'merchant id',
                 currency: 'INR',
                 revenue: '100',
                 store_code: 'store code',
@@ -5003,7 +5015,6 @@ export const data = [
               userId: '12345',
               properties: {
                 item_id: 'item id',
-                merchant_id: 'merchant id',
                 currency: 'INR',
                 revenue: '100',
                 store_code: 'store code',
@@ -5162,7 +5173,6 @@ export const data = [
               userId: '12345',
               properties: {
                 item_id: 'item id',
-                merchant_id: 'merchant id',
                 currency: 'INR',
                 revenue: '100',
                 store_code: 'store code',
@@ -5319,7 +5329,6 @@ export const data = [
               userId: '12345',
               properties: {
                 item_id: 'item id',
-                merchant_id: 'merchant id',
                 currency: 'INR',
                 revenue: '100',
                 store_code: 'store code',
@@ -5471,7 +5480,6 @@ export const data = [
               userId: '12345',
               properties: {
                 item_id: 'item id',
-                merchant_id: 'merchant id',
                 currency: 'INR',
                 revenue: '100',
                 store_code: 'store code',

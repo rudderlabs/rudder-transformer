@@ -252,6 +252,46 @@ const getCallConversionPayload = (
   return { payload, endpointDetails };
 };
 
+const isStoreItemAttributeValuePresent = (value) =>
+  isDefinedAndNotNull(value) && !(typeof value === 'string' && value === '');
+
+const buildStoreItemAttribute = (message, payload) => {
+  const transactionAttribute = payload.operations.create.transaction_attribute;
+  const itemAttribute = transactionAttribute.item_attribute;
+  if (!itemAttribute?.merchant_id) {
+    delete transactionAttribute.item_attribute;
+    return;
+  }
+
+  const products = get(message, 'properties.products');
+  if (Array.isArray(products) && products.length === 1) {
+    const [product] = products;
+    if (!isDefinedAndNotNull(itemAttribute.item_id)) {
+      const productId = isStoreItemAttributeValuePresent(product?.product_id)
+        ? product.product_id
+        : product?.sku;
+      if (isStoreItemAttributeValuePresent(productId)) {
+        itemAttribute.item_id = String(productId);
+      }
+    }
+    if (!isDefinedAndNotNull(itemAttribute.quantity) && isDefinedAndNotNull(product?.quantity)) {
+      const quantity = Number.parseInt(product.quantity, 10);
+      if (!Number.isNaN(quantity)) {
+        itemAttribute.quantity = quantity;
+      }
+    }
+  }
+
+  if (!itemAttribute.item_id) {
+    delete transactionAttribute.item_attribute;
+    return;
+  }
+
+  if (!isDefinedAndNotNull(itemAttribute.quantity)) {
+    itemAttribute.quantity = 1;
+  }
+};
+
 /**
  * This Function create the add conversion payload
  * and returns the payload
@@ -260,6 +300,7 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData, conver
   const { properties } = message;
   const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
+  buildStoreItemAttribute(message, payload);
   payload.enable_partial_failure = false;
   payload.enable_warnings = false;
   payload.validate_only = validateOnly || false;

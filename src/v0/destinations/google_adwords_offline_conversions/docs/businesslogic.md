@@ -121,6 +121,20 @@ Each conversion type follows a different processing flow:
 | `properties.currency`                                                                         | `operations.create.transaction_attribute.currency_code`              | Yes      | String   | Currency code                     |
 | `timestamp` / `originalTimestamp`                                                             | `operations.create.transaction_attribute.transaction_date_time`      | Yes      | DateTime | Transaction time                  |
 
+#### Item Attribution Mapping
+
+| RudderStack Field                                                 | Google Ads Field                                                       | Required | Type    | Notes                                        |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------- | -------- | ------- | -------------------------------------------- |
+| `properties.item_id` / `properties.product_id` / `properties.sku` | `operations.create.transaction_attribute.item_attribute.item_id`       | No       | String  | First available flat item identifier         |
+| `properties.merchantId` / `properties.merchant_id`                | `operations.create.transaction_attribute.item_attribute.merchant_id`   | No       | String  | Merchant Center merchant ID                  |
+| `properties.feedCountryCode` / `properties.country_code`          | `operations.create.transaction_attribute.item_attribute.country_code`  | No       | String  | Merchant Center feed country                 |
+| `properties.feedLanguageCode` / `properties.language_code`        | `operations.create.transaction_attribute.item_attribute.language_code` | No       | String  | Merchant Center feed language                |
+| `properties.quantity`                                             | `operations.create.transaction_attribute.item_attribute.quantity`      | No       | Integer | Defaults to `1` for emitted item attribution |
+
+Store Sales item attribution is emitted only when both an item ID and a Merchant Center merchant ID resolve. The merchant must be linked to the Google Ads account; otherwise Google can reject or ignore the attribution. The flat item-ID fallback order is `properties.item_id`, `properties.product_id`, then `properties.sku`.
+
+For a single-entry `properties.products` array, `products[0].product_id` (falling back to `products[0].sku`) and `products[0].quantity` fill missing flat item fields. Flat fields take precedence, and missing quantity defaults to `1` only after item and merchant IDs make the attribution eligible. Multi-entry product arrays are not expanded in this phase. `lineItems` is not an accepted key; use `properties.products`.
+
 #### Address Data Mapping
 
 | RudderStack Field                                   | Google Ads Field                     | Required | Type   | Hashed | Notes                    |

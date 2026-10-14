@@ -416,6 +416,12 @@ describe('getCallConversionPayload', () => {
 });
 
 describe('getAddConversionPayload', () => {
+  const defaultConfig = {
+    validateOnly: false,
+    hashUserIdentifier: true,
+    defaultUserIdentifier: 'email',
+  };
+
   // Helper function to create a valid message with required fields
   const createValidMessage = (overrides = {}) => {
     return {
@@ -433,6 +439,131 @@ describe('getAddConversionPayload', () => {
       },
     };
   };
+
+  const getTransactionAttribute = (properties = {}) => {
+    const result = getAddConversionPayload(
+      createValidMessage({ properties }),
+      defaultConfig,
+      {},
+      'customers/123/conversionActions/456',
+    );
+    return result.operations.create.transaction_attribute;
+  };
+
+  it('should preserve the existing payload when item attribution properties are absent', () => {
+    const result = getAddConversionPayload(
+      createValidMessage(),
+      defaultConfig,
+      {},
+      'customers/123/conversionActions/456',
+    );
+
+    expect(result).toEqual({
+      operations: {
+        create: {
+          transaction_attribute: {
+            transaction_amount_micros: '100000000',
+            currency_code: 'USD',
+            transaction_date_time: '2022-01-01 12:32:45+00:00',
+            conversion_action: 'customers/123/conversionActions/456',
+          },
+          userIdentifiers: [{ hashedEmail: sha256('test@example.com').toString() }],
+          consent: {
+            adPersonalization: 'UNSPECIFIED',
+            adUserData: 'UNSPECIFIED',
+          },
+        },
+      },
+      enable_partial_failure: false,
+      enable_warnings: false,
+      validate_only: false,
+    });
+  });
+
+  it.each([
+    {
+      name: 'item_id before product_id and sku',
+      properties: {
+        item_id: 'item-id',
+        product_id: 'product-id',
+        sku: 'sku-id',
+        merchantId: 'merchant-123',
+        quantity: 2,
+        feedCountryCode: 'US',
+        feedLanguageCode: 'en',
+      },
+      expected: {
+        item_id: 'item-id',
+        merchant_id: 'merchant-123',
+        country_code: 'US',
+        language_code: 'en',
+        quantity: 2,
+      },
+    },
+    {
+      name: 'product_id before sku',
+      properties: { product_id: 'product-id', sku: 'sku-id', merchant_id: 'merchant-123' },
+      expected: { item_id: 'product-id', merchant_id: 'merchant-123', quantity: 1 },
+    },
+    {
+      name: 'sku as final flat fallback',
+      properties: { sku: 'sku-id', merchant_id: 'merchant-123' },
+      expected: { item_id: 'sku-id', merchant_id: 'merchant-123', quantity: 1 },
+    },
+    {
+      name: 'single products entry fallback',
+      properties: {
+        merchantId: 'merchant-123',
+        products: [{ product_id: 'products-id', quantity: '3' }],
+      },
+      expected: { item_id: 'products-id', merchant_id: 'merchant-123', quantity: 3 },
+    },
+    {
+      name: 'single products SKU fallback with quantity default',
+      properties: { merchantId: 'merchant-123', products: [{ sku: 'products-sku' }] },
+      expected: { item_id: 'products-sku', merchant_id: 'merchant-123', quantity: 1 },
+    },
+    {
+      name: 'single products SKU fallback when product_id is empty',
+      properties: {
+        merchantId: 'merchant-123',
+        products: [{ product_id: '', sku: 'products-sku', quantity: 2 }],
+      },
+      expected: { item_id: 'products-sku', merchant_id: 'merchant-123', quantity: 2 },
+    },
+    {
+      name: 'flat item and quantity before products values',
+      properties: {
+        item_id: 'flat-id',
+        merchantId: 'merchant-123',
+        quantity: 0,
+        products: [{ product_id: 'products-id', quantity: 5 }],
+      },
+      expected: { item_id: 'flat-id', merchant_id: 'merchant-123', quantity: 0 },
+    },
+  ])('should populate item attribution using $name', ({ properties, expected }) => {
+    expect(getTransactionAttribute(properties).item_attribute).toEqual(expected);
+  });
+
+  it.each([
+    {
+      name: 'item ID without merchant ID',
+      properties: { item_id: 'item-id' },
+    },
+    {
+      name: 'merchant ID without item ID',
+      properties: { merchantId: 'merchant-123' },
+    },
+    {
+      name: 'multiple products entries',
+      properties: {
+        merchantId: 'merchant-123',
+        products: [{ product_id: 'first' }, { product_id: 'second' }],
+      },
+    },
+  ])('should omit item attribution for $name', ({ properties }) => {
+    expect(getTransactionAttribute(properties)).not.toHaveProperty('item_attribute');
+  });
 
   it('should create add conversion payload with default config', () => {
     const message = createValidMessage();

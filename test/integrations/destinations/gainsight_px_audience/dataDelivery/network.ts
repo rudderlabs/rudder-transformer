@@ -1,6 +1,6 @@
 // Auto-discovered by the component runner (glob **/network.ts). Each mock matches on body AND on the
-// injected X-APTRINSIC-API-KEY header, so a request sent without prepareRequest finds no mock.
-import { sentHeaders, usersUpdateEndpoint } from '../common';
+// X-APTRINSIC-API-KEY header the transform set, so a request sent without the key finds no mock.
+import { headers, usersUpdateEndpoint } from '../common';
 
 export const bodies = {
   success: { identifyId: 'gpx-ok', customAttributes: { rs_gpx_e2e: true } },
@@ -11,6 +11,7 @@ export const bodies = {
   unauthorized: { identifyId: 'gpx-401', customAttributes: { rs_gpx_e2e: true } },
   forbidden: { identifyId: 'gpx-403', customAttributes: { rs_gpx_e2e: false } },
   rateLimited: { identifyId: 'gpx-429', customAttributes: { rs_gpx_e2e: true } },
+  noMessage: { identifyId: 'gpx-409-empty', customAttributes: { rs_gpx_e2e: true } },
   serverError: { identifyId: 'gpx-500', customAttributes: { rs_gpx_e2e: true } },
 };
 
@@ -40,7 +41,7 @@ const put = (data: Record<string, unknown>) => ({
   method: 'PUT',
   url: usersUpdateEndpoint,
   data,
-  headers: sentHeaders,
+  headers,
 });
 
 export const networkCallsData = [
@@ -54,6 +55,7 @@ export const networkCallsData = [
   { httpReq: put(bodies.typeMismatch), httpRes: { data: responses.typeMismatch, status: 400 } },
   { httpReq: put(bodies.unauthorized), httpRes: { data: responses.unauthorized, status: 401 } },
   { httpReq: put(bodies.forbidden), httpRes: { data: responses.forbidden, status: 403 } },
+  { httpReq: put(bodies.noMessage), httpRes: { data: {}, status: 409 } },
   { httpReq: put(bodies.rateLimited), httpRes: { data: responses.rateLimited, status: 429 } },
   { httpReq: put(bodies.serverError), httpRes: { data: responses.serverError, status: 500 } },
 ];

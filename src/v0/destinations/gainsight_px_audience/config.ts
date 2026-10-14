@@ -24,16 +24,7 @@ export const ACTION_ATTR_VALUE: Record<RecordAction, boolean> = {
 export const usersUpdateEndpoint = (dataCenter: DataCenter): string =>
   `${getBaseEndpoint({ dataCenter })}${USERS_UPDATE_PATH}`;
 
-/** Static reasons only: never an identifyId, never PX response text (it echoes rejectedValue). */
 export const REASONS = {
-  userNotFound: 'Gainsight PX user not found',
-  attributeMissing: 'Gainsight PX attribute is missing or disabled',
-  badRequest: 'Gainsight PX rejected the request (400)',
-  unauthorized: 'Gainsight PX rejected the API key or data center',
-  forbidden: 'Gainsight PX API key lacks Write permission',
-  throttled: 'Gainsight PX rate limit exceeded',
-  otherClientError: (status: number) => `Gainsight PX rejected the request (${status})`,
-  serverError: (status: number) => `Gainsight PX server error (${status})`,
   noIdentifyId: 'No identifyId mapped',
   invalidIdentifyId: 'Invalid identifyId',
   missingApiKey: 'Gainsight PX API key is missing',

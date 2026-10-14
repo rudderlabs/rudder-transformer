@@ -81,6 +81,13 @@ const TYPE_MISMATCH_BODY = {
   },
 };
 
+const MULTI_SUBERROR_BODY = {
+  externalapierror: {
+    status: 'BAD_REQUEST',
+    subErrors: [{ message: 'first problem' }, { message: 'second problem' }],
+  },
+};
+
 describe('gainsight_px_audience delivery — spec', () => {
   it('overrides only 404; every other status takes the default classification', () => {
     expect(Object.keys(resolveDeliverySpec(Integration).statusOverrides)).toEqual(['404']);
@@ -110,100 +117,92 @@ describe('gainsight_px_audience delivery — through the framework', () => {
       delivered(404),
     ],
     [
-      '404 on true → abort, user not found',
+      '404 on true → abort with PX message',
       404,
       { message: 'User not found' },
       true,
-      failed(404, 'Gainsight PX user not found', 'aborted'),
+      failed(404, 'User not found', 'aborted'),
     ],
     [
       '404 with an unreadable body value → abort, never a silent success',
       404,
       {},
       'false',
-      failed(404, 'Gainsight PX user not found', 'aborted'),
+      failed(404, 'Gainsight PX request failed with status 404', 'aborted'),
     ],
     [
-      '400 disabled/unknown attribute → abort, attribute missing',
+      '400 disabled/unknown attribute → abort with the PX subError message',
       400,
       ATTRIBUTE_MISSING_BODY,
       true,
-      failed(400, 'Gainsight PX attribute is missing or disabled', 'aborted'),
+      failed(
+        400,
+        "User custom attribute api name 'rs_gpx_e2e' does not exist or not enabled",
+        'aborted',
+      ),
     ],
     [
-      '400 type mismatch → abort, generic 400',
+      '400 with several subErrors → abort with all of them joined',
       400,
-      TYPE_MISMATCH_BODY,
+      MULTI_SUBERROR_BODY,
       true,
-      failed(400, 'Gainsight PX rejected the request (400)', 'aborted'),
+      failed(400, 'first problem; second problem', 'aborted'),
     ],
     [
-      '401 → abort, key or data center',
+      '401 → abort with PX message',
       401,
       { message: 'Unauthorized' },
       true,
-      failed(401, 'Gainsight PX rejected the API key or data center', 'aborted'),
+      failed(401, 'Unauthorized', 'aborted'),
     ],
     [
-      '403 → abort, lacks Write',
+      '403 → abort with PX message',
       403,
       { message: 'Forbidden' },
       false,
-      failed(403, 'Gainsight PX API key lacks Write permission', 'aborted'),
+      failed(403, 'Forbidden', 'aborted'),
     ],
     [
-      '409 → abort, other 4xx',
+      '409 with no message → abort with the fallback',
       409,
       {},
       true,
-      failed(409, 'Gainsight PX rejected the request (409)', 'aborted'),
+      failed(409, 'Gainsight PX request failed with status 409', 'aborted'),
     ],
     [
-      '429 → throttled',
+      '429 → throttled with PX message',
       429,
       { message: 'Too many requests' },
       true,
-      failed(429, 'Gainsight PX rate limit exceeded', 'throttled'),
+      failed(429, 'Too many requests', 'throttled'),
     ],
     [
-      '500 → retry',
+      '500 → retry with PX message',
       500,
       { message: 'boom' },
       true,
-      failed(500, 'Gainsight PX server error (500)', 'retryable'),
+      failed(500, 'boom', 'retryable'),
     ],
-    ['503 → retry', 503, '', false, failed(503, 'Gainsight PX server error (503)', 'retryable')],
+    [
+      '503 with an empty body → retry with the fallback',
+      503,
+      '',
+      false,
+      failed(503, 'Gainsight PX request failed with status 503', 'retryable'),
+    ],
   ])('%s', (_name, status, response, value, expected) => {
     expect(deliver(ctxFor(status, response, value))).toEqual(expected);
   });
 
-  it('never copies PX text or the identifyId into the reason', () => {
+  it('never copies the identifyId into the reason', () => {
     const { message } = deliver(ctxFor(400, TYPE_MISMATCH_BODY));
-    expect(message).not.toContain('yes');
+    expect(message).toBe(`[${DEST}] value 'yes' does not match the type BOOLEAN`);
     expect(message).not.toContain('secret-user-id');
   });
 });
 
-describe('gainsight_px_audience delivery — prepareRequest', () => {
-  const { prepareRequest } = resolveDeliverySpec(Integration);
-  const reqCtx = (apiKey: unknown) => {
-    const ctx = ctxFor(204, '');
-    return { ...ctx, destinationConfig: { apiKey, dataCenter: 'US' } };
-  };
-
-  it('adds the trimmed key from destinationConfig and keeps the other headers', () => {
-    const ctx = reqCtx('  live-key  ');
-    const sent = prepareRequest!(ctx.request, ctx);
-    expect(sent.headers).toEqual({
-      'Content-Type': 'application/json',
-      'X-APTRINSIC-API-KEY': 'live-key',
-    });
-    // The persisted request is untouched — the key never reaches the job.
-    expect(ctx.request.headers).toEqual({ 'Content-Type': 'application/json' });
-  });
-
-  it.each([[''], ['   '], [undefined]])('refuses to send without a key (%p)', (apiKey) => {
-    const ctx = reqCtx(apiKey);
-    expect(() => prepareRequest!(ctx.request, ctx)).toThrow('Gainsight PX API key is missing');
+describe('gainsight_px_audience delivery — no send-time request rewrite', () => {
+  it('declares no prepareRequest: the transform already set the API key header', () => {
+    expect(resolveDeliverySpec(Integration).prepareRequest).toBeUndefined();
   });
 });

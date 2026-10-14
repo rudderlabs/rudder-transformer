@@ -60,7 +60,7 @@ const deliveryCase = (
 
 /**
  * A failure leaves the framework as a TransformerProxyError carrying the PX status. The top-level
- * message is our static reason; postTransformation sets each job's error to the PX body.
+ * message is PX's own message from the body; postTransformation sets each job's error to the PX body.
  */
 const failureCase = (
   id: string,
@@ -76,7 +76,7 @@ const failureCase = (
 export const data: ProxyV1TestData[] = [
   deliveryCase(
     'gpx_v1_204_success',
-    '204 → 200 success; mock matched only with the injected key',
+    '204 → 200 success; mock matched only with the key header the transform set',
     bodies.success,
     204,
     200,
@@ -84,10 +84,10 @@ export const data: ProxyV1TestData[] = [
   ),
   failureCase(
     'gpx_v1_404_true_abort',
-    '404 on true → abort with the user-not-found reason',
+    '404 on true → abort with the PX message',
     bodies.notFoundTrue,
     404,
-    'Gainsight PX user not found',
+    'User not found',
     'aborted',
     responses.notFound,
   ),
@@ -101,46 +101,55 @@ export const data: ProxyV1TestData[] = [
   ),
   failureCase(
     'gpx_v1_400_attribute_missing',
-    '400 does not exist or not enabled → abort, attribute missing',
+    '400 does not exist or not enabled → abort with the PX subError message',
     bodies.attributeMissing,
     400,
-    'Gainsight PX attribute is missing or disabled',
+    "User custom attribute api name 'rs_gpx_e2e' does not exist or not enabled",
     'aborted',
     responses.attributeMissing,
   ),
   failureCase(
     'gpx_v1_400_type_mismatch',
-    '400 type mismatch → abort, generic 400 reason',
+    '400 type mismatch → abort with the PX subError message',
     bodies.typeMismatch,
     400,
-    'Gainsight PX rejected the request (400)',
+    'value null does not match the type BOOLEAN',
     'aborted',
     responses.typeMismatch,
   ),
   failureCase(
     'gpx_v1_401_abort',
-    '401 → abort, key or data center',
+    '401 → abort with the PX message',
     bodies.unauthorized,
     401,
-    'Gainsight PX rejected the API key or data center',
+    'Unauthorized',
     'aborted',
     responses.unauthorized,
   ),
   failureCase(
     'gpx_v1_403_abort',
-    '403 → abort, lacks Write',
+    '403 → abort with the PX message',
     bodies.forbidden,
     403,
-    'Gainsight PX API key lacks Write permission',
+    'Forbidden',
     'aborted',
     responses.forbidden,
+  ),
+  failureCase(
+    'gpx_v1_409_no_message',
+    '409 with no message in the body → abort with the static fallback',
+    bodies.noMessage,
+    409,
+    'Gainsight PX request failed with status 409',
+    'aborted',
+    {},
   ),
   failureCase(
     'gpx_v1_429_throttled',
     '429 → 429 throttled',
     bodies.rateLimited,
     429,
-    'Gainsight PX rate limit exceeded',
+    'Too many requests',
     'throttled',
     responses.rateLimited,
   ),
@@ -149,7 +158,7 @@ export const data: ProxyV1TestData[] = [
     '500 → 500 retry',
     bodies.serverError,
     500,
-    'Gainsight PX server error (500)',
+    'Internal error',
     'retryable',
     responses.serverError,
   ),

@@ -45,11 +45,8 @@ export const usersUpdateEndpoint = 'https://api.aptrinsic.com/v1/users/update';
 export const euUsersUpdateEndpoint = 'https://api-eu.aptrinsic.com/v1/users/update';
 export const endpointPath = '/v1/users/update';
 
-/** What the transform emits — no key. */
-export const headers = { 'Content-Type': 'application/json' };
-
-/** What prepareRequest sends — the mock only matches when the key was injected. */
-export const sentHeaders = { 'Content-Type': 'application/json', 'X-APTRINSIC-API-KEY': authKey };
+/** What the transform emits and the proxy sends unchanged: the key travels in the header. */
+export const headers = { 'Content-Type': 'application/json', 'X-APTRINSIC-API-KEY': authKey };
 
 export const RouterInstrumentationErrorStatTags = {
   destType: 'GAINSIGHT_PX_AUDIENCE',

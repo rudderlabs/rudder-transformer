@@ -77,7 +77,7 @@ const routerCase = (
 export const data: RouterTestData[] = [
   routerCase(
     'gainsight-px-audience-router-actions',
-    'insert/update write true and delete writes false, one PUT /v1/users/update each, no key in output',
+    'insert/update write true and delete writes false, one PUT /v1/users/update each',
     [row(1, 'insert', 'u-1'), row(2, 'update', 'u-2'), row(3, 'delete', 'u-3')],
     [
       ok(1, { identifyId: 'u-1', customAttributes: { rs_gpx_e2e: true } }),

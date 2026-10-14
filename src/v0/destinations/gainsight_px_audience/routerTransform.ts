@@ -5,7 +5,14 @@ import {
   type TransformedEvent,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
-import { ACTION_ATTR_VALUE, DESTINATION_TYPE, ENDPOINT_PATH, usersUpdateEndpoint } from './config';
+import {
+  ACTION_ATTR_VALUE,
+  API_KEY_HEADER,
+  DESTINATION_TYPE,
+  ENDPOINT_PATH,
+  REASONS,
+  usersUpdateEndpoint,
+} from './config';
 import { gainsightPxAudienceDelivery } from './delivery';
 import {
   GainsightPxAudienceRouterRequestSchema,
@@ -13,9 +20,6 @@ import {
   type GainsightPxAudienceRouterRequest,
 } from './types';
 import { normalizeIdentifyId } from './utils';
-
-/** No credential here: prepareRequest (./delivery) adds X-APTRINSIC-API-KEY at send time. */
-const HEADERS = { 'Content-Type': 'application/json' };
 
 class GainsightPxAudienceIntegration extends DestinationIntegration<
   GainsightPxAudiencePayload,
@@ -34,6 +38,8 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
     }
 
     const { message, destination } = input;
+    const apiKey = destination.Config.apiKey.trim();
+    if (!apiKey) throw new ConfigurationError(REASONS.missingApiKey);
     const identifyId = normalizeIdentifyId(message.identifiers?.identifyId);
 
     return {
@@ -46,7 +52,7 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
       endpoint: usersUpdateEndpoint(destination.Config.dataCenter),
       endpointPath: ENDPOINT_PATH,
       method: 'PUT',
-      headers: { ...HEADERS },
+      headers: { 'Content-Type': 'application/json', [API_KEY_HEADER]: apiKey },
     };
   }
 

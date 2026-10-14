@@ -103,17 +103,37 @@ describe('GainsightPxAudienceIntegration via processDestinationIntegration', () 
     ]);
   });
 
-  it('never puts the API key in transform output', async () => {
+  it('sets the trimmed API key header in the router output', async () => {
     const results = await processDestinationIntegration(
-      [buildInput(1, 'insert', { identifyId: 'u-1' })],
+      [
+        buildInput(
+          1,
+          'insert',
+          { identifyId: 'u-1' },
+          buildDestination({ apiKey: '  test-gainsight-px-api-key  ' }),
+        ),
+      ],
       Integration,
       {},
     );
-    const serialized = JSON.stringify(successes(results)[0].batchedRequest);
-    expect(serialized).not.toContain('test-gainsight-px-api-key');
     expect(successes(results)[0].batchedRequest.headers).toEqual({
       'Content-Type': 'application/json',
+      'X-APTRINSIC-API-KEY': 'test-gainsight-px-api-key',
     });
+  });
+
+  it('fails the row with a ConfigurationError when the API key is blank', async () => {
+    const results = await processDestinationIntegration(
+      [buildInput(1, 'insert', { identifyId: 'u-1' }, buildDestination({ apiKey: '   ' }))],
+      Integration,
+      {},
+    );
+    expect(successes(results)).toHaveLength(0);
+    const failed = results[0] as any;
+    expect(failed.statusCode).toBe(400);
+    expect(failed.error).toBe('Gainsight PX API key is missing');
+    expect(failed.statTags.errorCategory).toBe('dataValidation');
+    expect(failed.statTags.errorType).toBe('configuration');
   });
 
   it.each([

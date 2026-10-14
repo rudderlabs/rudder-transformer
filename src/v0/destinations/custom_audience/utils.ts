@@ -170,7 +170,10 @@ const buildLegacyAuthHeaders = (
 
 type AuthDestination = {
   Config: CustomAudienceDestConfig;
+  // Rudder Server serializes its DeliveryAccount field with this lowercase JSON tag.
   deliveryAccount?: unknown;
+  // EventTesterService.transformDestination capitalizes top-level keys for endpoint preview.
+  DeliveryAccount?: unknown;
 };
 
 type AccountAuthHandler = (account: ParsedCustomAudienceDeliveryAccount) => Record<string, string>;
@@ -231,8 +234,14 @@ const resolveAccountAuth = (deliveryAccount: unknown): Record<string, string> =>
   return handler(account);
 };
 
+const getDeliveryAccount = (destination: AuthDestination): unknown => {
+  if (destination.deliveryAccount !== undefined) return destination.deliveryAccount;
+  return destination.DeliveryAccount;
+};
+
 export const resolveAuth = (destination: AuthDestination): Record<string, string> => {
-  const { Config: destConfig, deliveryAccount } = destination;
+  const { Config: destConfig } = destination;
+  const deliveryAccount = getDeliveryAccount(destination);
   if (destConfig.authenticationEnabled === false) return {};
 
   const hasLinkedAccount =

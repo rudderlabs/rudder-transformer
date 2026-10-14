@@ -498,6 +498,23 @@ describe('buildRequestHeaders', () => {
     expect(buildRequestHeaders(destination)).toEqual(expectedHeaders);
   });
 
+  it('uses linked account from endpoint-preview transformed DeliveryAccount key', () => {
+    const previewDestination = {
+      ...buildDestination({ authenticationEnabled: true, rudderAccountId: 'account-1' }),
+      deliveryAccount: undefined,
+      DeliveryAccount: {
+        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+        options: {},
+        secret: { bearerToken: 'preview-account-token' },
+      },
+    };
+
+    expect(buildRequestHeaders(previewDestination)).toEqual({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer preview-account-token',
+    });
+  });
+
   it.each(failureCases)('throws ConfigurationError when $name', ({ destination, errorMessage }) => {
     const build = () => buildRequestHeaders(destination);
     expect(build).toThrow(ConfigurationError);

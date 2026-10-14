@@ -13,7 +13,6 @@ const destination: Destination = {
   Name: 'ROKT',
   DestinationDefinition: { ID: 'rokt-def-1', Name: 'ROKT', DisplayName: 'Rokt', Config: {} },
   Config: {
-    apiEndpoint: 'https://s2s.mparticle.com/',
     serverToServerKey: 'server-key',
     serverToServerSecret: 'server-secret',
   },
@@ -77,7 +76,7 @@ describe('RoktIntegration', () => {
   it('builds the Rokt bulk request with Basic auth', () => {
     const result = transform();
     expect(result).toEqual({
-      endpoint: 'https://s2s.mparticle.com/v2/bulkevents',
+      endpoint: 'https://inbound.mparticle.com/s2s/v2/bulkevents',
       endpointPath: '/v2/bulkevents',
       method: 'POST',
       headers: {
@@ -104,59 +103,7 @@ describe('RoktIntegration', () => {
     });
   });
 
-  it.each([
-    'http://s2s.mparticle.com',
-    'https://attacker.example',
-    'https://evilmparticle.com',
-    'https://s2s.mparticle.com.attacker.example',
-    'https://user@s2s.mparticle.com',
-    'https://s2s.mparticle.com:8443',
-    'https://s2s.mparticle.com?redirect=1',
-    'https://s2s.mparticle.com#fragment',
-    'https://127.0.0.1',
-    'https://inbound.mparticle.com/../etc',
-    'https://inbound.mparticle.com/%2e%2e/etc',
-    'https://inbound.mparticle.com//s2s',
-    'https://inbound.mparticle.com/s2s%2f..',
-    'https://inbound.mparticle.com\\..\\s2s',
-    'https://inbound.mparticle.com\\%2e%2e/s2s',
-    'https://inbound.mparticle.com\\s2s/path',
-    'https:///mparticle.com/s2s',
-    'https:///s2s.mparticle.com/path',
-  ])('rejects unsafe apiEndpoint %s', (apiEndpoint) => {
-    const input = makeInput(
-      1,
-      {},
-      { ...destination, Config: { ...destination.Config, apiEndpoint } },
-    );
-    expect(() => transform(input)).toThrow(
-      'ROKT apiEndpoint must be a valid HTTPS Rokt Events API base URL',
-    );
-  });
-
-  it.each([
-    'https://s2s.mparticle.com',
-    'https://s2s.mparticle.com/path',
-    'https://s2s.us2.mparticle.com/',
-    'https://s2s.eu1.mparticle.com',
-    'https://s2s.au1.mparticle.com/',
-    'https://s2s.future.mparticle.com',
-    'https://inbound.mparticle.com/s2s',
-    'https://inbound.mparticle.com/s2s/',
-    'https://mparticle.com',
-    ' https://inbound.mparticle.com/s2s/ ',
-  ])('accepts the Rokt endpoint %s', (apiEndpoint) => {
-    const input = makeInput(
-      1,
-      {},
-      { ...destination, Config: { ...destination.Config, apiEndpoint } },
-    );
-    expect(transform(input).endpoint).toBe(
-      `${apiEndpoint.trim().replace(/\/$/, '')}/v2/bulkevents`,
-    );
-  });
-
-  it.each(['apiEndpoint', 'serverToServerKey', 'serverToServerSecret'])(
+  it.each(['serverToServerKey', 'serverToServerSecret'])(
     'rejects whitespace-only %s configuration',
     async (field) => {
       const input = makeInput(

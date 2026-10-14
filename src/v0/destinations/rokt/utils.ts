@@ -1,8 +1,7 @@
-import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { isPlainObject, pick } from 'lodash';
 import { constructPayload, formatTimeStamp, isAndroidFamily, isAppleFamily } from '../../util';
 import type { RudderMessage } from '../../../types';
-import { BULK_EVENTS_PATH, ROKT_INTEGRATION_ID } from './config';
+import { ROKT_INTEGRATION_ID } from './config';
 import mappingConfig from './data/ROKTConfig.json';
 import type {
   RoktBatch,
@@ -65,23 +64,6 @@ const asNonEmptyString = (value: unknown): string | undefined => {
   if (!isPresent(value)) return undefined;
   const stringValue = String(value).trim();
   return stringValue || undefined;
-};
-
-// Matched against the raw string rather than a parsed URL: URL canonicalizes dot segments,
-// percent-escapes and backslashes, so the path it reports is not the path the customer typed.
-// Excludes userinfo, non-default ports, query, fragment, empty segments and segments starting with
-// '.' (so '.' and '..').
-const ROKT_ENDPOINT_PATTERN =
-  /^https:\/\/((?:[\da-z-]+\.)*mparticle\.com)(?::443)?((?:\/[\w~-][\w.~-]*)*)\/?$/i;
-
-export const resolveEndpoint = (apiEndpoint: string): string => {
-  const match = ROKT_ENDPOINT_PATTERN.exec(apiEndpoint.trim());
-  if (!match) {
-    throw new ConfigurationError('ROKT apiEndpoint must be a valid HTTPS Rokt Events API base URL');
-  }
-
-  const [, host, path] = match;
-  return `https://${host.toLowerCase()}${path}${BULK_EVENTS_PATH}`;
 };
 
 // Shared with delivery, which maps Rokt's error positions back onto this exact serialization.

@@ -1,6 +1,6 @@
 import type { Destination, Metadata } from '../../../../src/types';
 
-export const endpoint = 'https://s2s.mparticle.com/v2/bulkevents';
+export const endpoint = 'https://inbound.mparticle.com/s2s/v2/bulkevents';
 export const headers = {
   'Content-Type': 'application/json',
   Authorization: `Basic ${Buffer.from('server-key:server-secret').toString('base64')}`,
@@ -16,7 +16,6 @@ export const destination: Destination = {
     Config: {},
   },
   Config: {
-    apiEndpoint: 'https://s2s.mparticle.com',
     serverToServerKey: 'server-key',
     serverToServerSecret: 'server-secret',
   },

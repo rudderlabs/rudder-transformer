@@ -10,10 +10,10 @@ import type { BatchStrategy } from '../../../services/destination/destinationInt
 import type { RudderMessage } from '../../../types';
 import { base64Convertor } from '../../util';
 import { JSON_MIME_TYPE } from '../../util/constant';
-import { BULK_EVENTS_PATH, MAX_BATCHES_PER_REQUEST } from './config';
+import { BULK_EVENTS_PATH, MAX_BATCHES_PER_REQUEST, ROKT_EVENTS_BASE_URL } from './config';
 import { roktDelivery } from './delivery';
 import { RoktDestinationConfigSchema, RoktMessageSchema, type RoktBatch } from './types';
-import { buildRoktBatch, resolveEndpoint, serializeRoktBatches } from './utils';
+import { buildRoktBatch, serializeRoktBatches } from './utils';
 
 const roktInputSchema = makeRouterInputSchema({
   destinationConfig: RoktDestinationConfigSchema,
@@ -24,10 +24,10 @@ class RoktIntegration extends DestinationIntegration<RoktBatch, typeof roktInput
   static readonly delivery = roktDelivery;
 
   transformEvent(input: z.infer<typeof roktInputSchema>): TransformedEvent<RoktBatch> {
-    const { apiEndpoint, serverToServerKey, serverToServerSecret } = this.destination.Config;
+    const { serverToServerKey, serverToServerSecret } = this.destination.Config;
     return {
       body: buildRoktBatch(input.message as unknown as RudderMessage),
-      endpoint: resolveEndpoint(apiEndpoint),
+      endpoint: `${ROKT_EVENTS_BASE_URL}${BULK_EVENTS_PATH}`,
       endpointPath: BULK_EVENTS_PATH,
       method: 'POST',
       headers: {

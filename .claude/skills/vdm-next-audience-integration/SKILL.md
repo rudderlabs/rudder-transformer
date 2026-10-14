@@ -5,771 +5,239 @@ description: Create the transformation logic for a new VDM Next audience destina
 
 # VDM Next — Audience Integration (rudder-transformer)
 
-**Objective:** Build the transformation logic for a new VDM Next audience destination — process warehouse record events into HTTP API requests that add/remove users from audience segments, with identifier normalization, hashing, and batching.
+Turn warehouse `record` events into API requests that add/remove users from an audience, with
+identifier normalization, hashing and batching. Built on the batching framework — read
+`.claude/skills/batching-framework/SKILL.md` for the class, strategies, `endpointPath`,
+`internalGroupKey`, registration and testing; this skill covers only what is audience-specific.
 
-## Context
+Audience traits: **add** (insert/update) and **remove** (delete) membership; **identifiers**
+(email, phone, ad ids) needing normalization + hashing; batching by **user count** (and maybe
+payload size); sometimes **subtypes** (user vs company, standard vs value-based).
 
-This is the transformer step in building a VDM Next audience integration.
+## Reference
 
-Audience destinations share these traits:
-
-- Operations are **add** (insert/update) and **remove** (delete) on audience membership
-- Records contain **identifiers** (email, phone, ad IDs) that may require **normalization and hashing**
-- Batching is by **user count** (destination API limits) and optionally **payload size**
-- Some destinations support multiple **audience subtypes** (user vs company, standard vs value-based)
+- `src/v0/destinations/reddit_audience/` — **read first.** Modern shape: `makeRouterInputSchema`,
+  typed generic, OAuth token from `metadata`, `processAudienceRecord`, `internalGroupKey` with its
+  reason, `delivery.ts`.
+- `src/v0/destinations/custom_audience/` — `CustomBatchStrategy`, template evaluation, auth headers,
+  `routerTransform.test.ts` (complete suite).
+- `src/v0/destinations/iterable_audience/delivery.ts` — identity-keyed failures.
+- Domain patterns: `linkedin_audience/` (user vs company, `ACTION_RECORD_MAP`,
+  `USER_IDENTIFIER_MAP`, `COMPANY_TRAITS`), `fb_custom_audience/` (value-based audiences, per-field
+  normalization in `util.ts`, `recordTransform.ts`), `tiktok_audience/` (`prepareIdentifiersPayload`).
+- `src/v0/util/audienceUtils.ts` — `processAudienceRecord`, `AudienceField`, `HashingType`,
+  `validateHashingConsistency`, `isValidPhoneNumber`.
+- Component fixtures: `test/integrations/destinations/{linkedin_audience,tiktok_audience}/router/data.ts`,
+  `fb_custom_audience/router/rETL.ts`.
 
 ## File Structure
 
 ```
-src/v0/destinations/<dest_name>/
-├── routerTransform.ts        # DestinationIntegration subclass (exported as Integration)
-├── types.ts                  # Zod schemas + TypeScript types for record events
-├── config.ts                 # Constants: endpoints, action maps, batch sizes, identifier configs
-├── utils.ts                  # (Optional) Normalization, hashing, field processing, API helpers
-├── delivery.ts               # (Optional) the `delivery` spec — only if response handling
-│                             #            differs from the framework default
-├── routerTransform.test.ts   # Unit tests for router transform
-└── utils.test.ts             # (Optional) Unit tests for utilities
+src/v0/destinations/<dest>/
+├── routerTransform.ts   # DestinationIntegration subclass, exported as Integration
+├── types.ts             # Zod schemas (makeRouterInputSchema) + payload types
+├── config.ts            # endpoints, action map, batch limits
+├── utils.ts             # (optional) identifier field config, body builders
+├── delivery.ts          # (optional) only if response handling differs from default
+├── routerTransform.test.ts
+└── utils.test.ts        # (optional)
+test/integrations/destinations/<dest>/  router/data.ts, common.ts, network.ts, live.ts
 ```
 
-```
-test/integrations/destinations/<dest_name>/
-├── router/
-│   └── data.ts               # Router test cases (data-driven)
-└── (optional additional test organization below)
-```
-
-## Reference
-
-**Primary reference** — uses the batching framework (the only pattern for new destinations):
-
-- **Custom Audience** (`src/v0/destinations/custom_audience/`) — `DestinationIntegration` subclass with `CustomBatchStrategy`, field processing, hashing, auth headers. **Read this first.**
-
-For audience-specific domain patterns (identifier schemas, hashing configs, payload formats):
-
-- **LinkedIn Audience** (`src/v0/destinations/linkedin_audience/`) — User vs company audience types, `processAudienceRecord` usage, Zod schemas
-- **Facebook Custom Audience** (`src/v0/destinations/fb_custom_audience/`) — Value-based audiences, custom per-field normalization, shared network handler
-- **TikTok Audience** (`src/v0/destinations/tiktok_audience/`) — `prepareIdentifiersPayload`, Zod schemas with `.passthrough()`
-
-Shared utilities:
-
-- `src/v0/util/audienceUtils.ts` — `processAudienceRecord`, `AudienceField`, `HashingType`, `validateHashingConsistency`
-
-For batching framework internals (abstract class, strategies, orchestrator):
-
-- `.claude/skills/batching-framework/SKILL.md` — Full framework documentation
-
----
-
-## config.ts — Constants, Actions, and Identifier Configuration
+## config.ts
 
 ```typescript
 import { EVENT_TYPES } from '../../util/recordUtils';
 
-// Map record actions to destination API actions
-// insert and update both map to the "add" operation for audience destinations
+// Most audience APIs upsert, so insert and update share the "add" operation.
 export const ACTION_RECORD_MAP: Record<string, string> = {
-  [EVENT_TYPES.INSERT]: 'ADD', // or destination-specific value
-  [EVENT_TYPES.UPDATE]: 'ADD', // In majority of destinations, it's upsert API, so both INSERT/UPDATE maps to same endpoint
-  [EVENT_TYPES.DELETE]: 'REMOVE', // or destination-specific value
+  [EVENT_TYPES.INSERT]: 'ADD',
+  [EVENT_TYPES.UPDATE]: 'ADD',
+  [EVENT_TYPES.DELETE]: 'REMOVE',
 };
-
 export const DESTINATION_TYPE = '<dest_name>';
-
-// API endpoints — may be parameterized by audienceId or audience type
-export const BASE_URL = 'https://api.<destination>.com/v1';
-
-// Endpoint may be a function when URL depends on runtime values
-export function getEndpoint(audienceId: string): string {
-  return `${BASE_URL}/audiences/${audienceId}/users`;
-}
-
-// Batch limits — audience destinations often allow large batches
-export const MAX_BATCH_SIZE = 10000; // Facebook: 10000, LinkedIn: 5000, TikTok: 50
-
-// Identifier fields supported by the destination
-export const SUPPORTED_IDENTIFIER_FIELDS = ['EMAIL', 'PHONE', 'MADID', 'EXTERN_ID'] as const;
+export const getEndpoint = (audienceId: string) => `https://api.<destination>.com/v1/audiences/${audienceId}/users`;
+export const MAX_BATCH_SIZE = 10000; // partner-doc constant (FB 10000, LinkedIn 5000, TikTok 50) — never a config field
 ```
 
-**Reference:**
-
-- `src/v0/destinations/custom_audience/constants.ts` — `SUPPORTED_HTTP_METHODS`, `AUTHENTICATION_TYPES`, `ERROR_MESSAGES`
-- `src/v0/destinations/fb_custom_audience/config.ts` — `schemaFields`, `MAX_USER_COUNT`, `getEndPoint()`
-- `src/v0/destinations/linkedin_audience/config.ts` — `ACTION_RECORD_MAP`, `USER_IDENTIFIER_MAP`, `COMPANY_TRAITS`, `MAX_BATCH_SIZE`
-
----
-
-## types.ts — Zod Schemas and Types
-
-Use Zod schemas for runtime validation. Derive TypeScript types with `z.infer<>`.
+## types.ts
 
 ```typescript
 import { z } from 'zod';
+import { makeRouterInputSchema } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import { RecordAction } from '../../../types/rudderEvents';
 
-// Validate destination config
-const DestinationSchema = z
-  .object({
-    ID: z.string(),
-    Config: z
-      .object({
-        // Destination-level config (from dashboard settings)
-      })
-      .passthrough(),
-  })
-  .passthrough();
+const ConnectionDestinationSchema = z.object({
+  audienceId: z.union([z.string(), z.number()]), // must match the webapp form output
+  isHashRequired: z.boolean(),
+  // audienceType: z.enum(['user', 'company']), isValueBasedAudience: z.boolean().optional(),
+}).passthrough();
 
-// Validate connection config — must match webapp form output
-const ConnectionSchema = z
-  .object({
-    config: z
-      .object({
-        destination: z
-          .object({
-            audienceId: z.union([z.string(), z.number()]),
-            isHashRequired: z.boolean(),
-            // Audience type if destination supports multiple (e.g., 'user' | 'company')
-            // audienceType: z.enum(['user', 'company']),
-            // Value-based flag if applicable
-            // isValueBasedAudience: z.boolean().optional(),
-          })
-          .passthrough(),
-      })
-      .passthrough(),
-  })
-  .passthrough();
-
-// Validate the record message
-const MessageSchema = z
-  .object({
-    type: z.enum(['record'], {
-      required_error: 'message Type is not present. Aborting message.',
-    }),
-    action: z.enum(['insert', 'delete', 'update'], {
-      required_error: 'action is not present. Aborting message.',
-    }),
-    userId: z.string().optional(),
+export const RouterRequestSchema = makeRouterInputSchema({
+  destinationConfig: z.object({}).passthrough(),
+  message: z.object({
+    type: z.literal('record'),
+    action: z.nativeEnum(RecordAction),
     identifiers: z.record(z.string(), z.string().nullable()),
     fields: z.record(z.string(), z.string().nullable()),
-  })
-  .passthrough();
-
-// Validate metadata with auth secrets
-const MetadataSchema = z
-  .object({
-    workspaceId: z.string(),
-    secret: z
-      .object({
-        accessToken: z.string({
-          required_error: 'Access token is required. Authorize the destination.',
-        }),
-      })
-      .passthrough(),
-  })
-  .passthrough();
-
-// Compose the full router request schema
-export const RecordRouterRequestSchema = z
-  .object({
-    message: MessageSchema,
-    destination: DestinationSchema,
-    connection: ConnectionSchema,
-    metadata: MetadataSchema,
-  })
-  .passthrough();
-
-// Derive TypeScript type from Zod schema
-export type RecordRequest = z.infer<typeof RecordRouterRequestSchema>;
-
-// Destination-specific payload types
-export type AudiencePayload = {
-  action: string;
-  // User-level identifiers (destination-specific structure)
-  [key: string]: unknown;
-};
-```
-
-**Reference:**
-
-- `src/v0/destinations/linkedin_audience/types.ts` — Complete Zod schema example with `z.enum`, custom error messages, and `z.infer<>` type derivation
-- `src/v0/destinations/tiktok_audience/recordTypes.ts` — Zod schemas with `.passthrough()` pattern
-- `src/v0/destinations/custom_audience/types.ts` — TypeScript interfaces for action configs, field configs, connection config
-
----
-
-## Identifier Processing — The `processAudienceRecord` Utility
-
-Audience destinations require normalizing and hashing user identifiers before sending to the API. Use the shared `processAudienceRecord` utility from `src/v0/util/audienceUtils.ts`.
-
-### Defining Identifier Field Configs
-
-Each audience destination defines a field config map describing how to normalize, validate, and hash each identifier type:
-
-```typescript
-import { AudienceField, HashingType } from '../../util/audienceUtils';
-import validator from 'validator';
-
-const IDENTIFIER_FIELD_CONFIG: Record<string, AudienceField> = {
-  email: {
-    hashingType: HashingType.SHA256,
-    normalize: (value: string) => value.replace(/\s/g, '').toLowerCase(),
-    validate: (normalized: string) => validator.isEmail(normalized),
-  },
-  phone: {
-    hashingType: HashingType.SHA256,
-    normalize: (value: string) => value.replace(/[^\d+]/g, ''),
-    validate: (normalized: string) => /^\+?\d+$/.test(normalized),
-  },
-  advertisingId: {
-    hashingType: HashingType.NONE, // No hashing for device IDs
-    normalize: (value: string) => value.trim(),
-    validate: (normalized: string) => normalized.length > 0,
-  },
-};
-```
-
-### Using `processAudienceRecord`
-
-```typescript
-import { processAudienceRecord } from '../../util/audienceUtils';
-
-const processedIdentifiers = processAudienceRecord(record.identifiers, {
-  fieldConfigs: IDENTIFIER_FIELD_CONFIG,
-  destination: {
-    workspaceId: metadata.workspaceId,
-    id: destination.ID,
-    type: DESTINATION_TYPE,
-    config: { isHashRequired: destConfig.isHashRequired },
-  },
+  }).passthrough(),
+  connectionConfig: z.object({ destination: ConnectionDestinationSchema }).passthrough(),
 });
-// Returns Record<string, string> — normalized, validated, hashed identifiers
+
+// metadata passes through unvalidated, so type the OAuth secret explicitly (reddit_audience types.ts)
+export type RouterInput = z.infer<typeof RouterRequestSchema> & {
+  metadata?: { secret?: { accessToken?: string } };
+};
 ```
 
-### Processing Pipeline Per Field
+Reuse `EVENT_TYPES`, `RecordAction`, `RudderRecordV2` rather than redeclaring
+(`code-structure` → "Reuse Existing Repo-Wide Utilities").
 
-```
-Raw value → Null check → Hashing consistency check → Normalization → Validation → Hashing → Result
-```
-
-1. **Null check**: Skip null, empty, or false values
-2. **Hashing consistency**: Detects mismatches between `isHashRequired` flag and actual data (emits `audience_hashing_inconsistency` metric)
-3. **Pre-hashed bypass**: If `isHashRequired=false` and value matches hash format, pass through as-is
-4. **Normalize**: Apply field-specific normalization (lowercase, strip whitespace, etc.)
-5. **Validate**: Apply field-specific validation (email format, phone format, etc.)
-6. **Hash**: Apply SHA-256/SHA-512/MD5 if `isHashRequired=true` and field is hashable
-
-**Reference:**
-
-- `src/v0/util/audienceUtils.ts` — `processAudienceRecord()`, `AudienceField`, `HashingType`, `validateHashingConsistency()`
-- `src/v0/destinations/linkedin_audience/transform.ts` — `USERS_IDENTIFIER_CONFIG` using `processAudienceRecord`
-- `src/v0/destinations/fb_custom_audience/util.ts` — Custom normalization per Facebook field (EMAIL, PHONE, GEN, FN, LN, CT, ST, ZIP, COUNTRY, MADID, EXTERN_ID, LOOKALIKE_VALUE)
-- `src/v0/destinations/custom_audience/utils.ts` — `processFields()` with hashing via `processAudienceRecord`
-
----
-
-## routerTransform.ts — DestinationIntegration Implementation
-
-All new audience destinations use the native batching framework. Extend `DestinationIntegration` and implement three methods. For full framework documentation, see `.claude/skills/batching-framework/SKILL.md`.
+## Identifier Processing — `processAudienceRecord`
 
 ```typescript
-import { ZodType } from 'zod';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { DestinationIntegration } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { ChunkBatchStrategy } from '../../../services/destination/destinationIntegration/chunkBatchStrategy';
-import type {
-  TransformedEvent,
-  BatchStrategy,
-} from '../../../services/destination/destinationIntegration/types';
-import type { RouterTransformationRequestData } from '../../../types';
-import { processAudienceRecord } from '../../util/audienceUtils';
-import { RecordRouterRequestSchema, type RecordRequest } from './types';
-import {
-  ACTION_RECORD_MAP,
-  getEndpoint,
-  MAX_BATCH_SIZE,
-  DESTINATION_TYPE,
-  IDENTIFIER_FIELD_CONFIG,
-} from './config';
+import validator from 'validator';
+import { AudienceField, HashingType, processAudienceRecord } from '../../util/audienceUtils';
 
-// Payload type for each individual transformed event body
-type AudienceEventPayload = {
-  action: string;
-  processedIdentifiers: Record<string, string>;
-  fields: Record<string, string | null>;
+export const IDENTIFIER_FIELD_CONFIG: Record<string, AudienceField> = {
+  email: { hashingType: HashingType.SHA256, normalize: (v) => v.replace(/\s/g, '').toLowerCase(), validate: (n) => validator.isEmail(n) },
+  phone: { hashingType: HashingType.SHA256, normalize: (v) => v.replace(/[^\d+]/g, ''), validate: (n) => /^\+?\d+$/.test(n) },
+  advertisingId: { hashingType: HashingType.NONE, normalize: (v) => v.trim(), validate: (n) => n.length > 0 },
 };
 
-class AudienceIntegration extends DestinationIntegration<AudienceEventPayload> {
-  // Transform a single event into the intermediate payload
-  transformEvent(input: RouterTransformationRequestData): TransformedEvent<AudienceEventPayload> {
-    const event = input as unknown as RecordRequest;
-    const { message, connection, destination, metadata } = event;
-    const { action, identifiers, fields } = message;
-    const destConfig = connection.config.destination;
+const processed = processAudienceRecord(message.identifiers, {
+  fieldConfigs: IDENTIFIER_FIELD_CONFIG,
+  destination: { workspaceId: this.destination.WorkspaceID, id: this.destination.ID, type: DESTINATION_TYPE,
+                 config: { isHashRequired } },
+}); // Record<string, string>
+```
 
-    // Process identifiers: normalize, validate, hash
-    const processedIdentifiers = processAudienceRecord(identifiers, {
-      fieldConfigs: IDENTIFIER_FIELD_CONFIG,
-      destination: {
-        workspaceId: metadata.workspaceId,
-        id: destination.ID,
-        type: DESTINATION_TYPE,
-        config: { isHashRequired: destConfig.isHashRequired },
-      },
-    });
+Per field: null/empty/false skipped → hashing-consistency check (mismatch with `isHashRequired`
+emits `audience_hashing_inconsistency`) → pre-hashed bypass when `isHashRequired=false` and the
+value looks hashed → normalize → validate → hash (SHA-256/SHA-512/MD5) when required and hashable.
+FB's per-field normalizers (EMAIL, PHONE, GEN, FN, LN, CT, ST, ZIP, COUNTRY, MADID, EXTERN_ID,
+LOOKALIKE_VALUE) are in `fb_custom_audience/util.ts`.
 
-    if (Object.keys(processedIdentifiers).length === 0) {
+## routerTransform.ts
+
+```typescript
+class AudienceIntegration extends DestinationIntegration<AudiencePayload, typeof RouterRequestSchema> {
+  constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
+    super(...args);
+    if (!this.connection) throw new InstrumentationError('Connection config is required for <dest>');
+  }
+
+  transformEvent(input: z.infer<typeof RouterRequestSchema>): TransformedEvent<AudiencePayload> {
+    const { message, metadata } = input as RouterInput; // widens only the untyped metadata
+    const accessToken = metadata?.secret?.accessToken;
+    if (!accessToken) throw new OAuthSecretError('Secret or accessToken is not present in the metadata');
+
+    const { audienceId, isHashRequired } = this.connection!.config.destination;
+    const processed = processAudienceRecord(message.identifiers, { /* as above */ });
+    if (Object.keys(processed).length === 0) {
       throw new InstrumentationError('All identifier values are empty after processing.');
     }
-
-    const mappedAction = ACTION_RECORD_MAP[action];
+    const action = ACTION_RECORD_MAP[message.action];
 
     return {
-      body: { action: mappedAction, processedIdentifiers, fields },
-      endpoint: getEndpoint(String(destConfig.audienceId)),
-      method: mappedAction === 'REMOVE' ? 'DELETE' : 'POST',
-      headers: {
-        Authorization: `Bearer ${metadata.secret.accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      // internalGroupKey forces separate batches per action (ADD vs REMOVE)
-      internalGroupKey: mappedAction,
+      body: { action, processed },
+      endpoint: getEndpoint(String(audienceId)),
+      endpointPath: '/audiences/users',          // static metrics label, not the URL
+      method: action === 'REMOVE' ? 'DELETE' : 'POST',
+      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+      internalGroupKey: action,                  // say which API constraint forces the split
     };
   }
 
-  // Define how batches are chunked and wrapped into API request bodies
-  getBatchStrategy(): BatchStrategy<AudienceEventPayload> {
-    return new ChunkBatchStrategy<AudienceEventPayload>({
-      maxItems: MAX_BATCH_SIZE,
-      // maxPayloadSize: '10MB',  // Optional: also limit by total request size
-      wrapBody: (bodies) => buildRequestBody(bodies),
-    });
+  getBatchStrategy() {
+    return new ChunkBatchStrategy<AudiencePayload>({ maxItems: MAX_BATCH_SIZE, wrapBody: buildRequestBody });
   }
 
-  // Zod schema for input validation (run before transformEvent)
-  getInputSchema(): ZodType {
-    return RecordRouterRequestSchema;
-  }
+  getInputSchema() { return RouterRequestSchema; }
 }
-
-// Destination-specific: assemble the API request body from a batch of payloads
-function buildRequestBody(bodies: AudienceEventPayload[]): Record<string, unknown> {
-  // Pattern varies by destination:
-
-  // LinkedIn style — array of elements:
-  // return {
-  //   elements: bodies.map((b) => ({
-  //     action: b.action,
-  //     userIds: Object.entries(b.processedIdentifiers).map(([k, v]) => ({
-  //       idType: USER_IDENTIFIER_MAP[k], idValue: v,
-  //     })),
-  //     ...b.fields,
-  //   })),
-  // };
-
-  // Facebook style — schema + data matrix:
-  // const schema = Object.keys(bodies[0].processedIdentifiers);
-  // return {
-  //   payload: {
-  //     schema,
-  //     data: bodies.map((b) => schema.map((key) => b.processedIdentifiers[key])),
-  //     is_raw: false,
-  //   },
-  // };
-
-  // TikTok style — grouped identifier list:
-  // return {
-  //   id_schema: Object.keys(bodies[0].processedIdentifiers),
-  //   user_list: bodies.map((b) => ({ id: Object.values(b.processedIdentifiers) })),
-  // };
-
-  throw new Error('Implement destination-specific request body builder');
-}
-
 export const Integration = AudienceIntegration;
 ```
 
-### Enabling the Batching Framework
+`buildRequestBody` is destination-specific. Common shapes:
 
-Add `<DEST_NAME_UPPER>: { routerTransform: true, batching: true }` to `destinationCapabilities` in
-`src/features.ts`. That one entry enables the framework transform *and* delivery.
+```typescript
+// LinkedIn — elements array
+({ elements: bodies.map((b) => ({ action: b.action,
+   userIds: Object.entries(b.processed).map(([k, v]) => ({ idType: USER_IDENTIFIER_MAP[k], idValue: v })) })) });
+// Facebook — schema + data matrix
+({ payload: { schema, data: bodies.map((b) => schema.map((k) => b.processed[k])), is_raw: false } });
+// TikTok — id_schema + user_list
+({ id_schema: Object.keys(bodies[0].processed), user_list: bodies.map((b) => ({ id: Object.values(b.processed) })) });
+```
 
-**See `.claude/skills/batching-framework/SKILL.md#enabling-the-framework`** for why
-`src/constants/destinationIntegrationsMap.ts` must not be hand-edited, and for the pre-GA rollout
-flag.
+If rows must align to one column order (FB, Reddit), put the column set in `internalGroupKey` too
+and read it off `bodies[0]` in `wrapBody` (`reddit_audience` does, and fails loudly on misalignment
+because Reddit silently accepts misaligned rows).
 
-**Reference:**
-
-- `src/v0/destinations/custom_audience/routerTransform.ts` — Complete `DestinationIntegration` implementation with `CustomBatchStrategy`, field processing, auth headers
-- `.claude/skills/batching-framework/SKILL.md` — `DestinationIntegration` abstract class, `ChunkBatchStrategy`, `CustomBatchStrategy`, `TransformedEvent` type, `internalGroupKey` pattern
-
----
+Register `<DEST_NAME_UPPER>: { routerTransform: true, batching: true }` in `src/features.ts`
+(`batching-framework#enabling-the-framework`).
 
 ## Audience-Specific Patterns
 
-### Multiple Audience Types
+- **Multiple audience types** — branch on `connection.config.destination.audienceType` in
+  `transformEvent`: user (email/phone/ad ids, `/segments/{id}/users`) vs company (name, domain,
+  org URN, `/segments/{id}/companies`, typically unhashed). See `linkedin_audience/transform.ts`
+  `prepareUserTypePayload()` / `prepareCompanyTypePayload()`.
+- **Value-based audiences** — when `isValueBasedAudience`, require a numeric `LOOKALIKE_VALUE ≥ 0`
+  and include it in the schema/data (`fb_custom_audience/recordTransform.ts`).
+- **HTTP method per action** — FB: `DELETE` for remove, `POST` for add; LinkedIn/TikTok: always
+  `POST` with the action in the body; Reddit: `PATCH`.
+- **Auth placement** — `Authorization: Bearer` (LinkedIn, Reddit), `params.access_token` (FB),
+  `Access-Token` header (TikTok), `x-api-key` (custom_audience). Batch-invariant auth in
+  `headers`/`params` keeps grouping correct.
 
-Some destinations support different audience types with different identifier schemas and endpoints. Handle by branching on the audience type in `transformEvent()`:
+## Delivery (optional)
 
-```typescript
-const { audienceType } = connection.config.destination;
+Most audience destinations need nothing — the default reproduces `genericNetworkHandler`. See
+`batching-framework-delivery` for the contract, verdicts and `perItem` rules. **No `networkHandler.ts`**
+(`batching-framework-delivery#a-new-destination-gets-no-networkhandlerts`).
 
-if (audienceType === 'user') {
-  // Use user identifier config (email, phone, ad IDs)
-  // Endpoint: /segments/{id}/users
-  return prepareUserPayload(event);
-} else if (audienceType === 'company') {
-  // Use company identifier config (company name, domain, org URN)
-  // Endpoint: /segments/{id}/companies
-  // Company identifiers are typically NOT hashed
-  return prepareCompanyPayload(event);
-}
-```
+Audience-specific: failures are often keyed by **identity** (a `failedUpdates` object naming
+emails/userIds) rather than index. `iterable_audience/delivery.ts` matches each posted subscriber
+against the returned sets and keeps two deliberate successes — a GDPR-forgotten user, and
+`notFound` on unsubscribe. Encode such semantics in `delivery.statusOverrides`, or the default
+aborts them.
 
-**Reference:** `src/v0/destinations/linkedin_audience/transform.ts` — `prepareUserTypePayload()` vs `prepareCompanyTypePayload()`
+## Errors
 
-### Value-Based Audiences
+| Scenario | Error | Effect |
+| --- | --- | --- |
+| Zod validation (`getInputSchema`) | auto-formatted | fails one event |
+| Missing OAuth token | `OAuthSecretError` | fails one event |
+| Unknown/invalid identifier keys, all identifiers empty, strict hashing violation | `InstrumentationError` | fails one event |
+| Unsupported audience type | `ConfigurationError` | fails one event |
+| `wrapBody` failure | caught by strategy | fails the group |
 
-Some destinations support value-based audiences where each user has an associated numeric value:
+Delivery failures are verdicts (`authExpired`, `authRevoked`, `throttled`, `retry`, `perItem`);
+override only signals that must be read from the body.
 
-```typescript
-const { isValueBasedAudience } = connection.config.destination;
+## Tests
 
-if (isValueBasedAudience) {
-  // Ensure LOOKALIKE_VALUE field is present in identifiers
-  // Validate it's numeric and >= 0
-  // Include it in the schema/data alongside other identifiers
-}
-```
+Follow `writing-tests` (`it.each`, fixtures in `common.ts`, `sha256(...)` for expected hashes,
+captured `network.ts`, `live.ts`). Unit tests drive `processDestinationIntegration(inputs,
+Integration, {})` — model on `custom_audience/routerTransform.test.ts`. Cover:
 
-**Reference:** `src/v0/destinations/fb_custom_audience/recordTransform.ts` — Value-based audience handling
-
-### HTTP Method Per Action
-
-```typescript
-// Facebook: POST for add, DELETE for remove
-method: action === 'REMOVE' ? 'DELETE' : 'POST';
-
-// LinkedIn/TikTok: Always POST, action is inside the payload body
-method: 'POST';
-```
-
-### Auth Header Patterns
-
-```typescript
-// Bearer token (LinkedIn)
-headers: { Authorization: `Bearer ${accessToken}` };
-
-// Query parameter (Facebook)
-params: { access_token: accessToken };
-
-// Custom header (TikTok)
-headers: { 'Access-Token': accessToken };
-
-// API key (custom_audience)
-headers: { 'x-api-key': apiKey };
-```
-
----
-
-## Delivery — response handling (Optional)
-
-Response handling lives on your `DestinationIntegration` class as a static `delivery` spec, not in a
-`networkHandler.ts`. **Most audience destinations need nothing** — the framework default reproduces
-`genericNetworkHandler`.
-
-**See `.claude/skills/batching-framework-delivery/SKILL.md`** for the contract, the verdict builders
-and the `perItem` rules. There is no delivery flag — it rides on the same predicate as the transform.
-
-What is audience-specific: these APIs commonly report failures by **identity** rather than index —
-a `failedUpdates` object naming the emails/userIds that failed, with no positional information.
-`iterable_audience` is the reference for that shape. It matches each posted subscriber against the
-returned identity sets, and keeps two deliberate successes: a GDPR-forgotten user is accepted rather
-than aborted, and `notFound` on an unsubscribe is a no-op success. Reproduce that kind of
-destination-specific semantics in `delivery.statusOverrides`, or the default will abort them as
-plain failures.
-
-**Do not add a `networkHandler.ts`.** A new audience destination is framework-native: transport
-comes from the framework default and response handling from `delivery.ts`. If the destination
-appears to need transport the framework cannot express, or OAuth refresh on the v0 proxy path,
-that is a gap in the framework — raise it rather than hand-writing a handler. See
-`.claude/skills/batching-framework-delivery/SKILL.md#a-new-destination-gets-no-networkhandlerts`.
-
-**Reference:** `src/v0/destinations/iterable_audience/delivery.ts` (identity-keyed)
-
----
-
-## Key Shared Utilities
-
-```typescript
-// From @rudderstack/integrations-lib
-import {
-  InstrumentationError, // Bad input data — aborts event, no retry
-  ConfigurationError, // Bad configuration — aborts event, no retry
-  formatZodError, // Formats Zod validation errors
-} from '@rudderstack/integrations-lib';
-
-// Record action constants
-import { EVENT_TYPES } from '../../util/recordUtils';
-// EVENT_TYPES = { INSERT: 'insert', UPDATE: 'update', DELETE: 'delete' }
-
-// Audience identifier processing utilities
-import {
-  processAudienceRecord,
-  AudienceField,
-  HashingType,
-  validateHashingConsistency,
-  isValidPhoneNumber,
-} from '../../util/audienceUtils';
-```
-
----
-
-## Error Handling Strategy
-
-Errors thrown in `transformEvent()` are automatically caught by the framework and wrapped into per-event error responses. Other events in the batch are not affected.
-
-| Scenario                                       | Error Type               | Handling                  |
-| ---------------------------------------------- | ------------------------ | ------------------------- |
-| Zod validation failure (from `getInputSchema`) | Framework auto-formats   | Fails single event        |
-| Invalid/unknown identifier keys                | `InstrumentationError`   | Fails single event        |
-| All identifiers empty after processing         | `InstrumentationError`   | Fails single event        |
-| Unsupported audience type                      | `ConfigurationError`     | Fails single event        |
-| Batch strategy error (wrapBody failure)        | Caught in batch strategy | Fails all events in group |
-| Hashing consistency violation (strict mode)    | `InstrumentationError`   | Fails single event        |
-
-At delivery time, failures are expressed as verdicts (`authExpired`, `throttled`, `authRevoked`,
-`retry`, `perItem`) rather than hand-built responses — see
-`.claude/skills/batching-framework-delivery/SKILL.md`. The framework default already covers plain
-4xx/5xx/429; declare an override only for signals that have to be read out of the response body.
-
----
-
-## Test Structure
-
-> **Note:** Follow the conventions defined in `.claude/skills/writing-tests/SKILL.md` for all test writing — including `it.each()` for table-driven tests, fixtures in `common.ts` when shared, mocking only leaf dependencies, and computing expected hashed values via hash functions.
-
-### Unit Tests (co-located)
-
-**routerTransform.test.ts** — Test the `Integration` class via the framework's `processDestinationIntegration` function.
-
-```typescript
-import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
-import { Integration } from './routerTransform';
-
-const buildDestination = (overrides = {}) => ({
-  ID: 'dest-1',
-  Config: { ...overrides },
-});
-
-const buildConnection = (overrides = {}) => ({
-  config: {
-    destination: {
-      audienceId: '12345',
-      isHashRequired: true,
-      ...overrides,
-    },
-  },
-});
-
-const buildInput = (jobId: number, messageOverrides = {}, connectionOverrides = {}) => ({
-  message: {
-    type: 'record',
-    action: 'insert',
-    userId: 'user-1',
-    identifiers: { email: 'user@example.com' },
-    fields: {},
-    ...messageOverrides,
-  },
-  metadata: { jobId, workspaceId: 'ws-1', secret: { accessToken: 'token' } },
-  destination: buildDestination(),
-  connection: buildConnection(connectionOverrides),
-});
-
-describe('AudienceIntegration via processDestinationIntegration', () => {
-  it('valid insert -> successful batched response with hashed identifiers', async () => {
-    const inputs = [buildInput(1), buildInput(2)];
-    const results = await processDestinationIntegration(inputs, Integration, {});
-    const successes = results.filter((r) => r.statusCode === 200);
-    expect(successes).toHaveLength(1);
-    expect(successes[0].batched).toBe(true);
-    expect(successes[0].metadata).toHaveLength(2);
-    // Verify hashed values in batchedRequest.body.JSON
-  });
-
-  it('mixed actions -> grouped into separate batches', async () => {
-    const inputs = [
-      buildInput(1, { action: 'insert' }),
-      buildInput(2, { action: 'insert' }),
-      buildInput(3, { action: 'delete' }),
-    ];
-    const results = await processDestinationIntegration(inputs, Integration, {});
-    const successes = results.filter((r) => r.statusCode === 200);
-    expect(successes).toHaveLength(2); // One ADD batch, one REMOVE batch
-  });
-
-  it('invalid identifier key -> per-event error response', async () => {
-    const inputs = [buildInput(1, { identifiers: { UNKNOWN_KEY: 'value' } })];
-    const results = await processDestinationIntegration(inputs, Integration, {});
-    expect(results[0].statusCode).toBe(400);
-  });
-
-  it('missing access token -> Zod validation error', async () => {
-    const input = buildInput(1);
-    delete (input.metadata as any).secret;
-    const results = await processDestinationIntegration([input], Integration, {});
-    expect(results[0].statusCode).toBe(400);
-  });
-
-  it('pre-hashed values pass through when isHashRequired=false', async () => {
-    const hashedEmail = 'a'.repeat(64);
-    const inputs = [
-      buildInput(1, { identifiers: { email: hashedEmail } }, { isHashRequired: false }),
-    ];
-    const results = await processDestinationIntegration(inputs, Integration, {});
-    const successes = results.filter((r) => r.statusCode === 200);
-    expect(successes).toHaveLength(1);
-    // Verify value passed through unchanged
-  });
-});
-```
-
-**Reference:**
-
-- `src/v0/destinations/custom_audience/routerTransform.test.ts` — Complete test suite with `processDestinationIntegration`, helper factories, action grouping, hashing, auth, and error cases
-
-### Integration Tests
-
-**router/data.ts** — Data-driven test cases with `input.request.body` and `output.response.body`.
-
-```typescript
-export const data = [
-  {
-    name: '<dest_name>',
-    description: 'Record insert with valid identifiers -> successful batched response',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: {
-          input: [
-            {
-              message: {
-                type: 'record',
-                action: 'insert',
-                userId: 'user-1',
-                identifiers: { email: 'user@example.com', phone: '+15551234567' },
-                fields: { name: 'Test User' },
-              },
-              metadata: {
-                jobId: 1,
-                workspaceId: 'ws-1',
-                secret: { accessToken: 'valid-token' },
-                userId: 'u1',
-              },
-              destination: {
-                ID: 'dest-1',
-                DestinationDefinition: { Name: '<DEST_NAME_UPPER>', Config: {} },
-                Config: {},
-              },
-              connection: {
-                config: {
-                  destination: {
-                    audienceId: '12345',
-                    isHashRequired: true,
-                    schemaVersion: '1.1',
-                  },
-                },
-              },
-            },
-          ],
-          destType: '<dest_name>',
-        },
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: '<EXPECTED_ENDPOINT>',
-                headers: {
-                  Authorization: 'Bearer valid-token',
-                  'Content-Type': 'application/json',
-                },
-                body: {
-                  JSON: {
-                    /* expected body with hashed identifiers */
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-                params: {},
-              },
-              metadata: [
-                {
-                  jobId: 1,
-                  workspaceId: 'ws-1',
-                  secret: { accessToken: 'valid-token' },
-                  userId: 'u1',
-                },
-              ],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                /* destination object */
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
-  // Additional test cases:
-  // - Delete action -> REMOVE operation
-  // - Update action -> ADD operation
-  // - Missing access token -> validation error
-  // - Invalid identifier keys -> error response
-  // - All null identifiers -> error response
-  // - Pre-hashed values (isHashRequired=false)
-  // - Batch size exceeded -> multiple batched requests
-  // - Mixed actions -> separate batches per action
-  // - Unsupported message type -> error response
-  // - Multiple audience types (user vs company) if applicable
-  // - Value-based audience if applicable
-];
-```
-
-**Reference:**
-
-- `test/integrations/destinations/linkedin_audience/router/data.ts`
-- `test/integrations/destinations/fb_custom_audience/router/rETL.ts`
-- `test/integrations/destinations/tiktok_audience/router/data.ts`
-
----
+- insert/update → ADD, delete → REMOVE; mixed actions → separate batches; over-limit → multiple batches
+- hashing on, and pre-hashed passthrough with `isHashRequired: false`
+- invalid identifier keys, all-null identifiers, missing token, unsupported message type
+- audience subtypes and value-based audiences if applicable
 
 ## Steps
 
-1. Create `src/v0/destinations/<dest_name>/` folder
-2. Create `config.ts` — action maps (`insert/update -> ADD`, `delete -> REMOVE`), endpoint constants or functions, batch sizes, identifier field configs (`AudienceField` objects with `hashingType`, `normalize`, `validate`), API version constants
-3. Create `types.ts` — Zod schemas for message, destination, connection (with `audienceId`, `isHashRequired`, and any audience-type fields), metadata (with `secret.accessToken`); derive TypeScript types with `z.infer<>`; add destination-specific payload types
-4. Create `routerTransform.ts` — extend `DestinationIntegration` with three methods:
-   - `transformEvent()` — validate identifiers, process via `processAudienceRecord`, map action, return `TransformedEvent` with endpoint, method, headers, `internalGroupKey` (action)
-   - `getBatchStrategy()` — return `ChunkBatchStrategy` with `maxItems`/`maxPayloadSize` and `wrapBody` that builds the destination-specific request body
-   - `getInputSchema()` — return the Zod schema for input validation
-   - Export the class as `Integration`
-5. Register in `src/features.ts` — see "Enabling the Batching Framework" above
-6. Handle delivery (optional) — see "Delivery — response handling" above; the framework default covers most audience destinations
-7. Create `routerTransform.test.ts` — unit tests using `processDestinationIntegration(inputs, Integration, {})` covering: valid insert/update/delete, invalid identifiers, null identifiers, hashing on/off, batch overflow, mixed actions, missing auth
-8. Create `test/integrations/destinations/<dest_name>/router/data.ts` — integration test cases covering: successful operations, validation errors, unsupported types, batching, audience subtypes, pre-hashed values
-9. Run verification:
+1. `config.ts` — action map, endpoint(s), batch limits.
+2. `types.ts` — `makeRouterInputSchema` with connection `audienceId`/`isHashRequired`/subtype
+   fields; `RouterInput` widening for `metadata.secret`; payload types.
+3. Identifier field config (`AudienceField` with `hashingType`, `normalize`, `validate`).
+4. `routerTransform.ts` — `transformEvent`, `getBatchStrategy`, `getInputSchema`; export `Integration`.
+5. Register in `src/features.ts`.
+6. `delivery.ts` only if needed.
+7. Unit tests, `router/data.ts` component cases, `network.ts` captured responses, `live.ts`.
+8. Verify:
    ```bash
    npm run lint
    npm test -- --testPathPattern="<dest_name>" --no-coverage

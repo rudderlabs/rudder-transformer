@@ -6,308 +6,198 @@ argument-hint: <destination-folder-name>
 
 # Live Integration Test — Enroll a Destination
 
-**Objective:** Create `test/integrations/destinations/<dest>/live.ts` — a `LiveSpec` whose
-`scenarios` drive events through the real `transform → deliver` pipeline against a **real
-destination account**, deriving the event seeds, config, and code-path coverage from the
-destination's existing (mocked) component tests. The mocked `component.test.ts` suite stays the
-merge gate; this suite is additive and asserts on the genuine delivery verdict.
+Create `test/integrations/destinations/<dest>/live.ts` — a `LiveSpec` whose `scenarios` drive
+events through real `transform → deliver` against a **real account**, derived from the
+destination's mocked component tests. The mocked suite stays the merge gate; this one is additive
+and asserts the genuine delivery verdict.
 
-## Inputs
-
-- **Destination folder name**: `$ARGUMENTS[0]` — the folder under `test/integrations/destinations/`
-  and `src/.../destinations/`, e.g. `<dest>`.
+Input: `$ARGUMENTS[0]` — the folder name under `test/integrations/destinations/` and `src/.../destinations/`.
 
 ## Sources of truth (read these first)
 
-1. **Component test cases** — the raw material for scenarios:
-   - `test/integrations/destinations/<dest>/router/data.ts` and, if present,
-     `test/integrations/destinations/<dest>/processor/data.ts` (plus their imports: `config.ts`,
-     `upsertData.ts`, `errorValidationData.ts`, …). Most destinations have both a `processor/` and a
-     `router/` suite; some (e.g. router-only ones) have just `router/`. Each case is
-     `{ id, description, feature, input.request.body.input[].message, ...destination.Config..., output }`.
-     The **`message`** is the raw event and **`destination.Config`** is the config — these become the
-     scenario's `seed(ctx)` and `resolveConfig`/`configOverride`.
-   - `test/integrations/destinations/<dest>/dataDelivery/*.ts` — proxy/delivery cases (optional; not
-     every destination has them). Show what a delivered vs failed verdict looks like.
-2. **`test/integrations/destinations/<dest>/network.ts`** — the mocked API responses. This reveals
-   **which real endpoints the transform hits** and the branch each case exercises (create vs update,
-   search hit/miss, batch vs single, membership add/remove), which tells you what live
-   **setup/verify/cleanup** must do.
-3. **The transformer** — `src/v0|v1/destinations/<dest>/` or `src/cdk/v2/destinations/<dest>/`: the
-   config fields, auth mechanism, and the destination API endpoints (for setup/verify/cleanup steps).
-4. **The live harness contract** — `test/integrations/live/types.ts` (`LiveSpec`, `LiveScenario`,
-   `LiveStep`, `RunContext`), the shared `pollUntil` read-back helper from
-   `@rudderstack/integrations-lib/build/live-test`, and `test/integrations/live/README.md`.
-5. **The reference implementation** — read the HubSpot spec end-to-end as the worked example of
-   every pattern below. For non-trivial specs it is a **module folder**:
-   `destinations/hs/live.ts` is a one-line re-export of `destinations/hs/live/spec.ts`, with helpers
-   split across `live/api.ts` (real-API calls + auth), `live/setup.ts` (action bodies),
-   `live/verify.ts` (verify steps), and `live/profiles.ts` (trait profiles). It is a CRM/object
-   destination; adapt the shapes to your destination's category (see below).
+1. **Component cases** — `router/data.ts`, `processor/data.ts` if present, and their imports.
+   Each case's `input.request.body.input[].message` becomes `seed(ctx)`; its `destination.Config`
+   becomes `resolveConfig`/`configOverride`. `dataDelivery/*.ts` (optional) shows delivered vs
+   failed verdicts.
+2. **`network.ts`** — which real endpoints are hit and which branch each case exercises (create vs
+   update, search hit/miss, batch vs single, add/remove) → what setup/verify/cleanup must do.
+3. **The transformer** (`src/v0|v1/destinations/<dest>/` or `src/cdk/v2/destinations/<dest>/`) —
+   config fields, auth, endpoints.
+4. **Harness contract** — `test/integrations/live/types.ts` (`LiveSpec`, `LiveScenario`,
+   `LiveStep`, `RunContext`), `pollUntil` from `@rudderstack/integrations-lib/build/live-test`,
+   `test/integrations/live/README.md`.
+5. **Reference** — HubSpot, read end to end: `destinations/hs/live.ts` re-exports
+   `hs/live/spec.ts`, with `api.ts` (real API + auth), `setup.ts`, `verify.ts`, `profiles.ts`.
+   CRM-shaped; adapt to your category.
 
 ## The mapping: component case → live scenario
 
 | Component test | Live spec |
 | --- | --- |
-| mocked network via `network.ts` / `MockAxiosAdapter` | **no mock** — the runner boots the real app and hits real APIs |
-| a `data.ts` case = one input `message` + `destination.Config` + expected `output` | a **scenario** with a pipeline step whose `seed(ctx)` rebuilds that `message` |
-| hardcoded PII/ids in the message (email, userId, externalId, recordId, list/audience id) | `ctx.email()`, `ctx.identity(entity)`, `ctx.runId`, `ctx.now(offset?)`, `ctx.liveSecret.resourceIds`, or an id registered by a setup step — never a literal |
-| config variants across cases (api version, list/object type, mapping) | a base `resolveConfig` + per-scenario `configOverride(base)` |
-| a case that asserts a specific transformed request shape | a scenario asserting the event is **delivered** (verdict 2xx / 207); the shape is the transform's job, already covered by the mocked suite |
+| mocked network | **no mock** — real app, real APIs |
+| one case = `message` + `destination.Config` + `output` | a scenario whose pipeline step's `seed(ctx)` rebuilds the `message` |
+| literal PII/ids (email, userId, externalId, recordId, list id) | `ctx.email()`, `ctx.identity(entity)`, `ctx.runId`, `ctx.now(offset?)`, `ctx.liveSecret.resourceIds`, or an id registered by setup |
+| config variants | base `resolveConfig` + per-scenario `configOverride(base)` |
+| asserting a transformed request shape | asserting the event is **delivered** (2xx/207); shape is the mocked suite's job |
 
-**What that rule is and isn't about.** It targets values that must be *unique per run* or that are
-*sensitive*: identities, PII, and ids of records the run creates. It is not a ban on constants. A
-name that is fixed **configuration of the sandbox account** — a conversion action name, a list
-name — is neither secret nor run-scoped, and it must match the account character for character, so
-a literal next to the code that uses it beats a Vault key that can be forgotten. Prefer
-`resourceIds` when the value is an opaque id you'd have to look up anyway, or genuinely varies by
-environment; prefer a named constant in the spec when it's a stable label a reader can sanity-check
-against the account. Either way the failure should name the thing: a missing `resourceIds` key
-fails at collection, a wrong constant fails at the destination's own lookup.
+The no-literal rule covers values that must be **unique per run or are sensitive**. Fixed
+sandbox-account configuration (a conversion action name, a list name) may be a named constant —
+it must match the account exactly and a reader can check it. Use `resourceIds` for opaque ids or
+values that vary by environment. Either way, failures should name the thing.
 
-**One scenario per distinct behavior, not per component case.** Collapse the many mocked cases into
-the *code paths* that matter live — these differ by destination category:
+**One scenario per distinct behavior, not per case:**
 
-- **CRM / object destinations**: create vs update; event-stream vs RETL (`mappedToDestination`);
-  lookup-by-id vs search-by-field; associations; per object type; API-version variants.
-- **Audience destinations**: add vs remove membership; list/segment creation; raw vs hashed identifiers.
-- **Conversion / event destinations**: the distinct event types and property mappings; enhanced /
-  offline conversion variants.
-- **Cross-cutting** (any category): batched vs `dontBatch`; config-driven variants.
+- **CRM/object**: create vs update; event-stream vs RETL (`mappedToDestination`); lookup-by-id vs
+  search; associations; per object type; API-version variants.
+- **Audience**: add vs remove; list creation; raw vs hashed identifiers.
+- **Conversion/event**: distinct event types and property mappings; enhanced/offline variants.
+- **Cross-cutting**: batched vs `dontBatch`; config-driven variants.
 
-**Batching is a scenario, not a side effect.** A pipeline step whose `seed` returns one event can
-never show that N events group into one delivery request. Return an ARRAY from `seed` for that
-— every event goes into a single `/routerTransform` call — and pin the result with
-`expectedOutputs`/`expectedProxyRequests`, since a grouping regression that fans events out still
-delivers 2xx on each. Worth a scenario per batching-key dimension the destination has: events that
-should group (same key), events that should fan out (different key), and `metadataOverride:
-{ dontBatch: true }`.
+**Batching is a scenario.** Return an ARRAY from `seed` (one `/routerTransform` call) and pin with
+`expectedOutputs`/`expectedProxyRequests` — a fan-out regression still delivers 2xx per event.
+One scenario per batching-key dimension: same key groups, different key fans out, and
+`metadataOverride: { dontBatch: true }`.
 
-**Partial failure is where a delivery spec earns its keep.** If the destination reports per-item
-results inside a 2xx (or a batch endpoint that 207s), add a scenario seeding one valid item next to
-one the DESTINATION rejects — not one your transform rejects, which never reaches delivery — and
-declare `expectedFailure: { items: [<seed index>] }`. The step then asserts which job was blamed,
-which is the positional mapping delivery specs implement and the thing that breaks silently. Find a field the
-transform passes through unvalidated (gaec uses a malformed `adjustmentDateTime`) so the item
-survives transform and fails at the API.
+**Partial failure.** If the destination reports per-item results in a 2xx/207, seed one valid item
+beside one the **partner** rejects (not your transform) and declare
+`expectedFailure: { items: [<seed index>] }` — this checks positional blame, which breaks
+silently. Use a field the transform passes through unvalidated (gaec: malformed `adjustmentDateTime`).
 
-**A `dontBatch` retry takes a second step.** The harness does not replay rudder-server's
-one-event-at-a-time redelivery of a job returned with `dontBatch`, so the step that seeds the
-mixed batch only proves which jobs came back for retry, not that the retry resolves. Model the
-redelivery explicitly. Add a step with `metadataOverride: { dontBatch: true }` that seeds only
-the events the first step returned for retry, which is just the rejected ones when the spec
-answers per item, and assert their final verdict. Add a single-bad-event scenario with
-`expectedFailure: {}` beside it, so the whole-batch rejection is covered too.
-`destinations/rokt/live.ts` has both.
+**A `dontBatch` retry takes a second step.** The harness doesn't replay rudder-server's
+one-at-a-time redelivery. Add a step with `metadataOverride: { dontBatch: true }` seeding only the
+events returned for retry (just the rejected ones when the spec answers per item) and assert their
+final verdict; add a single-bad-event scenario with `expectedFailure: {}` for the whole-batch
+case. `destinations/rokt/live.ts` has both.
 
-**Credential branches need a bad credential, not a broken account.** For a spec's `authExpired` /
-`authRevoked` handling, use `metadataOverride: { secret: { ... } }` to hand one step a credential
-the destination rejects, and assert `expectedFailure: { category: '...' }` — the category, not
-merely that delivery failed, since a generic abort looks identical otherwise. Watch for transforms that call the
-destination BEFORE the delivery request (gaec resolves its conversion action by name first): those
-calls use the same credential and throw from inside `networkHandler.proxy()`, which the framework
-catches as a legacy-path error and never routes through the delivery spec. Where that applies, have
-the scenario perform one valid delivery first so any such lookup is cached, then fail the next
-step — and keep that warm-up inside the scenario so it does not depend on scenario order.
+**Credential branches need a bad credential, not a broken account.** For `authExpired`/
+`authRevoked`, pass `metadataOverride: { secret: { ... } }` and assert
+`expectedFailure: { category: '...' }` (a generic abort looks identical otherwise). If the
+transform calls the partner *before* delivery (gaec resolves its conversion action by name), that
+call throws inside `networkHandler.proxy()` and bypasses the delivery spec — so deliver once
+validly first (caching the lookup) inside the same scenario, then fail the next step.
 
-**A rejection the partner decides is a live scenario; one your transform decides is not.** Where a
-destination's `delivery` spec reads a rejection off the response — a success-range status that
-means "not accepted", an error body on a 200, per
-`.claude/skills/batching-framework-delivery/SKILL.md#when-you-need-this` — the live suite is the
-only place that proves the real API produces it, because the mocked suite asserts against a
-response we wrote ourselves. Pair the happy path with a scenario that makes the *partner* reject:
-seed an id the account does not contain (a random transaction id, a deleted record id) while
-everything else stays valid, and assert the failure. Keep the two adjacent in the spec so the
-contrast is visible — one id resolves against the account, one deliberately does not.
+**Partner-decided rejections are live scenarios; transform-decided ones are not.** Where the
+`delivery` spec reads a rejection off the response (a non-accepting success status, an error body
+on 200 — `batching-framework-delivery#when-you-need-this`), only live proves the real API produces
+it. Pair the happy path with an adjacent scenario seeding an id the account lacks (random
+transaction id, deleted record) with everything else valid.
 
-**A partner-side id that must match a real record comes from `resourceIds`.** The rule above about
-literals cuts both ways here: a conversion or transaction id that has to exist in the sandbox
-account is exactly the opaque, account-scoped value `ctx.liveSecret.resourceIds` is for — a literal
-goes stale the moment the account is re-seeded, and `ctx.runId` never matches anything. Use
-`ctx.runId` / a random value only for the negative scenario above, where *not* matching is the
-point.
+**Partner-side ids that must match a real record come from `resourceIds`** — a literal goes stale
+when the account is re-seeded, and `ctx.runId` never matches. Random/`runId` values only for the
+negative scenario.
 
-Give each a stable `id` and a one-line `description`.
-
-**Skip cases that can't be meaningfully delivered live** — pure validation/error cases (bad config,
-missing required field → 400, "more than one match" aborts, unsupported event type). Those are
-contract checks the mocked suite already owns; the live suite verifies real *delivery*, so don't
-port them — same who-decides line as above.
+Give each scenario a stable `id` and one-line `description`. **Skip pure validation/error cases**
+(bad config, missing field → 400, multiple-match aborts, unsupported type) — the mocked suite owns them.
 
 ## Stateful cases: setup + verify as steps, teardown declared on the scenario
 
-If a case's code path depends on pre-existing destination state, express **setup** and **read-back**
-as ordered steps, and **declare teardown on the scenario** rather than adding a trailing cleanup step:
+- **Setup** (update, lookup-by-id, search-by-field, remove-from-audience) — an
+  `{ stepType: 'action', name: 'setup', run }` step creating state via the real API and
+  `ctx.register({ type, id })`-ing ids; the pipeline step reads `ctx.resources` or reuses the same
+  `ctx.email()`/identity.
+- **Verify** — a `verify` step reading back and asserting **fields** with jest `expect` (returns
+  `void`; a failed matcher fails the step): create checks every created property, update the
+  changed ones, associations that the link exists. Share one `(ctx) => ({ ... })` profile between
+  `seed` and verify so they can't drift (`esContactCreateTraits` + `verifyContactProperties`,
+  `verifyAssociationExists` in `hs/live/verify.ts`). Poll eventually-consistent reads with
+  `pollUntil` (`soft: true` returns the last value so `expect` prints a real diff). Read-back is
+  the real check for batch writes — a 207 counts as delivered even when an item failed.
+- **Cleanup** — `cleanup: (ctx) => …` on the `LiveScenario`, declared per scenario. Armed at
+  start, drained after the steps — LIFO, best-effort (logged, not thrown), **even if a step
+  failed**. For dynamically discovered resources, `ctx.addCleanup(fn)` from a setup `run`. No
+  teardown on `verify` steps, no trailing cleanup step.
 
-- **update / lookup-by-id / search-by-field / remove-from-audience** → an `action` step
-  (`{ stepType: 'action', name: 'setup', run }`) creates the prerequisite state via the real
-  destination API and `ctx.register({ type, id })`s any ids; the
-  pipeline step then references `ctx.resources` for that id, or seeds the same `ctx.email()`/identity
-  the setup used.
-- **verify** → a `verify` step that reads the object/membership/association back from the
-  destination API and asserts its **fields** with jest `expect(...)` (it resolves on success and a
-  failed matcher fails the step — it returns `void`, no boolean), not just its existence: a create
-  scenario checks the object carries every property it was created with; an update scenario checks
-  the properties it changed; an association scenario checks the link actually exists between the
-  two records. Share one property/trait profile between the pipeline `seed` and the verify — a
-  `(ctx) => ({ ... })` factory referenced by both, so the seeded values and the assertion can't
-  drift (see `esContactCreateTraits` + `verifyContactProperties`, and `verifyAssociationExists`, in
-  `hs/live/verify.ts`). Poll eventually-consistent read-backs with the shared `pollUntil` helper
-  (`@rudderstack/integrations-lib/build/live-test`; `soft: true` returns the last value so the closing `expect(...)` prints a real
-  diff). Read-back is also the
-  real check for **batch** writes: a batch endpoint can return `207` (which counts as delivered)
-  even when an item fails, so the delivery verdict alone doesn't prove the write landed.
-- **cleanup** → **declare it on the scenario.** Set `cleanup: (ctx) => delete…(ctx)` on the
-  `LiveScenario`; the runner arms it at scenario start and drains it after the scenario's steps
-  finish — LIFO and best-effort (a failing cleanup is logged, not thrown), running **even if a
-  step failed**. For resources a setup action discovers dynamically, `ctx.addCleanup(fn)` from its
-  `run` is the imperative escape hatch. Declare `cleanup` explicitly on each scenario (don't
-  club it onto many at once). Don't put teardown on a `verify` step, and no trailing cleanup
-  action step.
+Use `https.Agent({ keepAlive: false })` for helper calls so sockets don't linger as open handles.
+`ctx.identity`/`ctx.email` are unique per run (`ci-<runId>-…`), so duplicate-409s need no strategy.
 
-Use a dedicated `https.Agent({ keepAlive: false })` for these helper calls so read-back/cleanup
-sockets don't linger as open handles when the suite finishes.
-
-Identities from `ctx.identity` / `ctx.email` are always unique per scenario run
-(`ci-<runId>-…`), so destination 409s on duplicates are avoided without a per-spec strategy.
-
-For eventually-consistent destinations (search-indexed create/update routing), make the
-precondition deterministic in the **setup action** (poll until the record is stably searchable).
-When the transform itself re-searches that index at delivery time, setup polling alone can still
-race — a just-created record is occasionally missed and 409s — so also set `retries` on the
-pipeline step to re-run seed → transform → deliver with backoff. Only use `retries` where a failed
-attempt persists nothing (e.g. a 409-on-create), so repeating is safe; otherwise a re-delivery
-runs against the previous attempt's state.
+**Eventually-consistent destinations:** poll in the setup action until the record is stably
+searchable. If the transform re-searches at delivery time it can still race (occasional 409), so
+set `retries` on the pipeline step — only where a failed attempt persists nothing.
 
 ## Credentials — `LIVE_SECRET_<DEST>` (`LiveSecret` shape)
 
-`resolveLiveSecret` reads one env var, `LIVE_SECRET_<DEST>`, a JSON blob:
-`{ authType, config, secret?, resourceIds?, oauthRefresh?, readback? }`. `config` merges into
-`destination.Config`; `secret` into `metadata.secret`; `resourceIds` supplies account-scoped ids
-(listId, pixelId, measurementId, …); `readback` holds credentials for `verify` steps.
-`resolveConfig(s)` maps `s.config` (plus fixed non-secret defaults taken from the component
-`destination.Config`) into the real `destination.Config`.
+`resolveLiveSecret` reads JSON `{ authType, config, secret?, resourceIds?, oauthRefresh?, readback? }`:
+`config` → `destination.Config`, `secret` → `metadata.secret`, `resourceIds` = account-scoped ids
+(listId, pixelId, …), `readback` = creds for verify steps. `resolveConfig(s)` maps `s.config` plus
+fixed non-secret defaults from the component config.
 
-**Credentials an SDK reads from `process.env`** (not from `destination.Config` or
-`metadata.secret`) — e.g. Google Ads' shared `GOOGLE_ADS_DEVELOPER_TOKEN`: put the value in the
-secret and map it with `resolveEnv: (s) => ({ VAR: s.secret?.field })` on the spec. `envOverrides`
-is a static literal and cannot carry a secret. `resolveEnv` is applied and restored alongside
-`envOverrides` and wins on a key collision. Check `test/setup.ts` first — it seeds placeholders for
-a few such variables, and a spec that doesn't override one silently ships the placeholder to the
-real destination.
+**Env-read credentials** (e.g. Google Ads' `GOOGLE_ADS_DEVELOPER_TOKEN`): put the value in the
+secret and map with `resolveEnv: (s) => ({ VAR: s.secret?.field })` — `envOverrides` is a static
+literal and can't carry secrets; `resolveEnv` is applied/restored with it and wins on collision.
+Check `test/setup.ts` — it seeds placeholders that otherwise ship to the real destination.
 
-**OAuth destinations** (`authType: 'oauth'`): supply `oauthRefresh` — the long-lived `refreshToken`
-and any `providerFields` (e.g. Salesforce `instance_url`) — and set `oauthVersion` to the route
-rudder-auth uses: `'v0'` (legacy
-`/tokens/destination/<dest>/refresh`, the default) or `'v1'` (`/auth/v1/refresh`). A `'v1'`
-spec must also declare `accountDefinition: { type, name }` — public metadata mirroring the control
-plane's `accounts/<dest>_oauth/db-config.json`, so it belongs on the spec, not in the secret.
-`name` is what rudder-auth lowercases to choose an implementation; `category` is always
-`'destination'` and the resolver supplies it. Nothing is derived from the destination name: the
-`DESTINATION_<DEST>_OAUTH` convention does not hold everywhere
-(`google_adwords_remarketing_lists` has a separate `_DM_OAUTH` definition), and a guess that is
-usually right surfaces as an opaque refresh failure instead of a missing declaration. At run time the
-suite starts the **rudder-auth** container (testcontainers, ECR image) and `LiveOAuthTokenResolver` calls
-exactly that one route — no fallback — then merges the whole returned secret into `metadata.secret`,
-so the transform reads its token under whatever key rudder-auth returns (`accessToken` |
-`access_token`). The OAuth **app** creds come from Vault: the CI job wildcard-imports
-`control-plane/data/external-services` and the container forwards only the enrolled destinations'
-`<DEST>_…` base/`_DESTINATION` creds (never `_SOURCE`); locally set `*_CLIENT_ID`/`*_CLIENT_SECRET` in
-`.env`. The image ships working defaults per integration. `criteo_audience` is the reference OAuth
-spec.
+**OAuth** (`authType: 'oauth'`): supply `oauthRefresh` (`refreshToken` + any `providerFields`, e.g.
+Salesforce `instance_url`) and `oauthVersion`: `'v0'` (`/tokens/destination/<dest>/refresh`,
+default) or `'v1'` (`/auth/v1/refresh`). `'v1'` also needs `accountDefinition: { type, name }` on
+the spec (public, mirrors control plane `accounts/<dest>_oauth/db-config.json`; `name` is what
+rudder-auth lowercases to pick an implementation; `category` is always `'destination'`, supplied
+by the resolver). Nothing is derived from the destination name — `DESTINATION_<DEST>_OAUTH` does not hold everywhere
+(`google_adwords_remarketing_lists` has a separate `_DM_OAUTH` definition), and a wrong guess
+surfaces as an opaque refresh failure. At run time the suite starts **rudder-auth**
+(testcontainers, ECR image); `LiveOAuthTokenResolver` calls exactly that route, no fallback, and
+merges the returned secret into `metadata.secret` (token under `accessToken` | `access_token`).
+App creds come from Vault: CI wildcard-imports `control-plane/data/external-services` and the
+container forwards only enrolled destinations' `<DEST>_…` base/`_DESTINATION` creds (never
+`_SOURCE`); locally set `*_CLIENT_ID`/`*_CLIENT_SECRET` in `.env`. Reference: `criteo_audience`.
 
 ## Steps
 
-1. **Read** the sources above for `<dest>`; enumerate the distinct behaviors its component cases
-   cover (dedupe error-only ones).
-2. **Choose** `authType`. For **OAuth**, set `authType: 'oauth'` and require `oauthRefresh` in the
-   secret; the rudder-auth container handles refresh at run time (see Credentials).
-   `criteo_audience` is the reference OAuth spec. `apiKey`/`basic` destinations need no refresh layer.
-3. **Write `resolveConfig`** from the component `destination.Config` — keep the non-secret fields as
-   fixed defaults, spread `s.config` last for the real credentials.
-4. **Emit a credential template.** `resolveConfig` names the destination's config fields, so print a
-   filled `LIVE_SECRET_<DEST>` skeleton the developer can paste and fill in — the one thing they
-   can't derive from the repo. Placeholders for the secret values, real keys for everything else,
-   e.g.:
+1. Read the sources; list distinct behaviors (drop error-only ones).
+2. Choose `authType` (`apiKey`/`basic` need no refresh; `oauth` per above).
+3. Write `resolveConfig`: non-secret component config as defaults, `s.config` spread last.
+4. **Print a `LIVE_SECRET_<DEST>` template** with real keys and placeholder values, e.g.
    `LIVE_SECRET_HS={"authType":"apiKey","config":{"accessToken":"<private-app-token>","serviceKeyAccessToken":"<service-key>"}}`
-   For HubSpot, `config.accessToken` is the private app token used by setup/read-back helpers and the
-   private-app delivery pass; `config.serviceKeyAccessToken` is used by the service-key delivery pass.
-   Include `readback` only if the destination has `verify` steps; add `resourceIds`/`oauthRefresh`
-   when the config needs them.
-5. **For each behavior**, add a scenario: a pipeline step whose `seed(ctx)` reproduces the component
-   `message` with ctx-based identities; a `configOverride` for config-dependent variants; and a
-   `setup` step plus a scenario-level `verify`/`cleanup` for stateful ones. For create/update
-   behaviors, factor the asserted fields into a `(ctx) => ({ ... })` profile shared by the seed and
-   the field-level verify so the two stay in lockstep.
-6. **Enroll**: `enabled: true` (registry auto-discovers `destinations/*/live.ts`; no registration).
-   Use `enabled: false` to park a spec in the tree without running it. If the destination sits
-   behind a destination-specific rollout flag, name it in `envOverrides`. Batching-framework
-   delivery has no flag of its own — it is gated on the same predicate as the transform, so a
-   pre-GA destination only needs `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL'`. Do not
-   add it for destinations already marked batching-GA in `features.ts`; both sides are enabled
-   there. See `.claude/skills/batching-framework/SKILL.md#one-gate-both-halves`.
-7. **CI is automatic.** The `discover` job builds the workflow matrix from `destinations/*/live.ts`,
-   so a new spec runs in CI with no workflow edit. `LIVE_SECRET_<DEST>` is derived from the
-   destination code; an **OAuth** spec (`authType: 'oauth'`) additionally wildcard-imports the whole
-   `control-plane/data/external-services` cred set and starts rudder-auth (the container forwards only
-   the enrolled destinations' `<DEST>_…` base/`_DESTINATION` creds), while apiKey destinations do
-   neither. See `.github/scripts/live-test-matrix.js`.
-8. **Verify**:
-   `npx tsc --noEmit -p tsconfig.test.json`
-   then, with real credentials:
-   `LIVE_SECRET_<DEST>='{...}' LOG_LEVEL=silent npm run test:live -- --destination=<dest>`.
-   (Run with `LOG_LEVEL=silent` until secret masking in `network.js` logs is verified — see the
-   README security note.)
+   (HubSpot: `accessToken` drives setup/read-back and the private-app pass,
+   `serviceKeyAccessToken` the service-key pass). Add `readback` only with verify steps;
+   `resourceIds`/`oauthRefresh` when needed.
+5. Per behavior: pipeline step with ctx-based `seed`; `configOverride` for variants; setup +
+   verify + `cleanup` for stateful ones, with a shared profile for create/update.
+6. **Enroll**: `enabled: true` (auto-discovered; `false` parks it). Name destination-specific
+   rollout flags in `envOverrides`. Batching delivery has no flag: a pre-GA destination needs only
+   `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL'`; batching-GA destinations need nothing
+   (`batching-framework#one-gate-both-halves`).
+7. **CI is automatic** — the `discover` job builds the matrix from `destinations/*/live.ts`
+   (`.github/scripts/live-test-matrix.js`). OAuth specs additionally import the external-services
+   cred set and start rudder-auth; apiKey specs do neither.
+8. **Verify**: `npx tsc --noEmit -p tsconfig.test.json`, then
+   `LIVE_SECRET_<DEST>='{...}' LOG_LEVEL=silent npm run test:live -- --destination=<dest>`
+   (keep `LOG_LEVEL=silent` until secret masking in `network.js` logs is verified — README note).
 
 ## After the spec — onboarding checklist
 
-Generating `live.ts` is only the in-repo half. Enrolling a destination end-to-end also touches
-systems outside the repo — print this checklist at the end so the developer knows what's left:
+Print this at the end:
 
-- **Vault**: add the `LIVE_SECRET_<DEST>` field (the full `LiveSecret` JSON, stored as **single-line**
-  JSON — a multi-line value breaks the CI secret import) under
-  `engineering_shared/data/integrations_team/e2e_test/rudder-transformer`. For OAuth destinations, also
-  ensure the app creds exist under `control-plane/data/external-services` with the names rudder-auth
-  expects (e.g. `<DEST>_CLIENT_ID_DESTINATION`) — the OAuth job wildcard-imports that whole set and the
-  container forwards this destination's `<DEST>_…` base/`_DESTINATION` creds, so nothing in the
-  workflow needs to know the exact field names.
-- **GitHub**: any Actions vars/secrets the run needs — the workflow reads `VAULT_ADDR`,
-  `VAULT_JWT_AUTH_PATH`, `VAULT_JWT_ROLE` (and, for OAuth, `AWS_ECR_IAM_ROLE_ARN` for the rudder-auth
-  image pull); add destination-specific ones if required.
-- **Sandbox account**: who owns it, what a run creates, and what cleanup is expected to remove — a
-  live run writes to a real account.
+- **Vault**: `LIVE_SECRET_<DEST>` as **single-line** JSON (multi-line breaks CI import) under
+  `engineering_shared/data/integrations_team/e2e_test/rudder-transformer`. OAuth: app creds under
+  `control-plane/data/external-services` with rudder-auth's expected names (e.g.
+  `<DEST>_CLIENT_ID_DESTINATION`).
+- **GitHub**: `VAULT_ADDR`, `VAULT_JWT_AUTH_PATH`, `VAULT_JWT_ROLE` (+ `AWS_ECR_IAM_ROLE_ARN` for
+  OAuth's image pull), plus any destination-specific ones.
+- **Sandbox account**: owner, what a run creates, what cleanup removes.
 
 ## Skeleton — `test/integrations/destinations/<dest>/live.ts`
 
-For a couple of scenarios a single `live.ts` is fine; beyond that, split it into a `live/` module
-folder (`spec.ts` + `api.ts`/`setup.ts`/`verify.ts`/`profiles.ts`) and make `live.ts` a one-line
-re-export — see `destinations/hs/live/`. Steps are plain objects with a required `stepType`
-discriminant (`'pipeline' | 'action' | 'verify'`); there are no `action()`/`verify()` wrapper
-helpers. The `seed` below is an event-stream `identify` (CRM shape) purely to illustrate structure
-— **use the event shape your destination's component `message`s actually take** (e.g. a `track`
-event with `properties` for a conversion, or an audience membership event), swapping literals for
-`ctx` values.
+One file for a couple of scenarios; beyond that a `live/` folder (`spec.ts` +
+`api.ts`/`setup.ts`/`verify.ts`/`profiles.ts`) with `live.ts` as a one-line re-export. Steps are
+plain objects with a required `stepType` (`'pipeline' | 'action' | 'verify'`) — no wrapper
+helpers. The `identify` seed is illustrative only; use your component `message`s' actual shape.
 
 ```ts
 import axios from 'axios';
 import { Agent } from 'https';
-import type { LiveSpec, RunContext } from '../../live/types';
+import type { LiveSpec, LiveStep, RunContext } from '../../live/types';
 import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 
-// keepAlive:false so read-back/cleanup sockets don't linger as open handles.
 const agent = new Agent({ keepAlive: false });
 
-// Real-API helpers for stateful scenarios (create/read-back/delete). Derive endpoints + auth
-// from src/.../destinations/<dest> and network.ts. Example shapes only:
-// const createEntity = async (ctx: RunContext): Promise<void> => { ... ctx.register(...) };
-// const fetchEntity = async (ctx: RunContext, keys: string[]) => { ... };   // real GET/search
-// const cleanupEntity = async (ctx: RunContext): Promise<void> => { ... };
+// Real-API helpers (endpoints + auth from src/.../<dest> and network.ts):
+// const createEntity = async (ctx: RunContext) => { ... ctx.register(...) };
+// const fetchEntity = async (ctx: RunContext, keys: string[]) => { ... };
+// const cleanupEntity = async (ctx: RunContext) => { ... };
 
-// One field profile shared by a scenario's seed and its verify, so they can't drift.
-// const createProps = (ctx: RunContext): Record<string, string> => ({ name: 'CI', ref: ctx.runId });
+// Shared by seed and verify so they can't drift.
+// const createProps = (ctx: RunContext) => ({ name: 'CI', ref: ctx.runId });
 
-// A verify step is a plain { stepType: 'verify', name, check } object; `check` asserts with jest
-// expect(...) (returns void). Poll eventually-consistent read-backs with pollUntil (soft: true).
 // const verifyEntityProps = (want: (ctx: RunContext) => Record<string, string>): LiveStep => ({
 //   stepType: 'verify',
 //   name: 'verify entity properties',
@@ -327,24 +217,17 @@ const agent = new Agent({ keepAlive: false });
 export const live = {
   enabled: true,
   authType: 'apiKey', // apiKey | oauth | basic | serviceAccount | custom
-  // Optional: env applied around this destination's scenarios and restored after. Only needed for a
-  // destination-specific rollout flag, e.g. a pre-GA batching enrolment:
-  // envOverrides: { <DEST>_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL' },
-  // Non-secret Config defaults from the component test's destination.Config; real creds via s.config.
+  // envOverrides: { <DEST>_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ALL' }, // pre-GA only
   resolveConfig: (s) => ({ ...s.config }),
   scenarios: [
     {
       id: '<dest>-create',
       description: 'A new <entity> is created and delivered',
-      // Teardown for this scenario; armed at start, drained after its steps (LIFO, best-effort).
       cleanup: (ctx) => cleanupEntity(ctx),
       steps: [
         {
           stepType: 'pipeline',
           name: 'create <entity>',
-          // Rebuild the component case's message, but with ctx identities instead of literals.
-          // Shape (type/traits/properties/event) is destination-specific — copy it from the case.
-          // Seed the shared field profile so verify can read the same values back.
           seed: (ctx) => ({
             type: 'identify',
             userId: ctx.identity('user'),
@@ -353,20 +236,15 @@ export const live = {
             integrations: { All: true },
           }),
         },
-        // verifyEntityProps(createProps), // field-level read-back sharing the seed's profile
+        // verifyEntityProps(createProps),
       ],
     },
-    // {
-    //   id: '<dest>-update',
-    //   description: 'An existing <entity> is updated',
-    //   cleanup: (ctx) => cleanupEntity(ctx),
-    //   steps: [
-    //     { stepType: 'action', name: 'setup', run: createEntity },
-    //     { stepType: 'pipeline', name: 'update', seed: (ctx) => ({ ...updateProps(ctx) }) },
-    //     verifyEntityProps(updateProps),
-    //   ],
-    // },
-    // { id: '<dest>-variant', description: 'config-driven variant', configOverride: (base) => ({ ...base }), steps: [ ... ] },
+    // { id: '<dest>-update', description: '...', cleanup: (ctx) => cleanupEntity(ctx), steps: [
+    //   { stepType: 'action', name: 'setup', run: createEntity },
+    //   { stepType: 'pipeline', name: 'update', seed: (ctx) => ({ ...updateProps(ctx) }) },
+    //   verifyEntityProps(updateProps),
+    // ] },
+    // { id: '<dest>-variant', description: '...', configOverride: (base) => ({ ...base }), steps: [ ... ] },
   ],
 } satisfies LiveSpec;
 
@@ -375,13 +253,10 @@ export default live;
 
 ## Notes
 
-- Build every value from `ctx`, never from string templates — identities are unique per run, which
-  keeps runs isolated and avoids destination 409s on duplicates.
-- For association scenarios, seed a **real** destination-defined association type, not a placeholder
-  copied from the mocked `network.ts` (a fake type makes a batch endpoint return `207` without
-  creating the link, so delivery passes but the read-back verify fails). E.g. HubSpot's
-  companies→contacts default type is `company_to_contact`.
-- The base `tsconfig.json` excludes `test/`; type-check the spec via `tsconfig.test.json`
-  (`npx tsc --noEmit -p tsconfig.test.json`), which includes `test/**`. ts-jest also checks at run time.
-- Never store a long-lived secret in the repo; live credentials come from `LIVE_SECRET_<DEST>`
-  locally and Vault (via GitHub-OIDC) in CI.
+- Build every value from `ctx`, never string templates.
+- Associations: seed a **real** destination-defined association type (HubSpot companies→contacts
+  is `company_to_contact`), not a placeholder from `network.ts` — a fake one 207s without creating
+  the link, so delivery passes and read-back fails.
+- Base `tsconfig.json` excludes `test/`; type-check with `tsconfig.test.json`.
+- Never commit long-lived secrets; creds come from `LIVE_SECRET_<DEST>` locally and Vault
+  (GitHub OIDC) in CI.

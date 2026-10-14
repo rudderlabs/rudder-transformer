@@ -5,64 +5,39 @@ description: Business logic for turning one RudderStack event into one destinati
 
 # Event Transformation
 
-**Objective:** everything involved in turning a single RudderStack event into a single
-destination payload — where each value comes from, how it is resolved, what you are allowed to
-do to it, and how the final object is assembled.
+**Field plucking is data, not code.** The source→destination mapping lives in
+`data/<DEST_UPPER>Config.json` in the standard shape, consumed by `constructPayload`. Only genuinely
+custom work — hashing, unit conversion, partner-specific validation — is TypeScript. Worked
+example: `src/v0/destinations/openai_ads/` (mapping JSON, `constructPayload` in `utils.ts`, only
+hashing/amount/content-item validation in code).
 
-The governing idea: **field plucking is *data*, not code.** A destination's source-field →
-destination-field mapping belongs in `data/<DEST_UPPER>Config.json` in the repo-standard shape,
-consumed by `constructPayload`. Only genuinely custom transformation — hashing, unit
-conversion, partner-specific validation — is written as TypeScript.
-
-`src/v0/destinations/openai_ads/` is the current worked example: mapping JSON in
-`data/OPENAI_ADSConfig.json`, `constructPayload` in `utils.ts`, and only the hashing,
-amount/currency and content-item validation left in code.
-
-Everything up to **Category Conventions** applies to every destination. That last section
-holds rules that bind only one class of destination — read the subsection for what you are
-building and skip the rest. A rule sits there because it is wrong or meaningless outside its
-category, not because it is optional inside it.
+Everything before **Category Conventions** applies to every destination; that section binds only
+its category.
 
 ## The Standard Mapping Shape
 
-A mapping file is an array of entries. `constructPayload(message, mappingJson)`
-(`src/v0/util/index.js:1081`) walks it and builds the payload.
+`constructPayload(message, mappingJson)` (`src/v0/util/index.js:1081`) walks an array:
 
 ```json
 [
-  {
-    "sourceKeys": ["traits.emails", "context.traits.emails", "traits.email"],
-    "destKey": "emails_sha256"
-  },
+  { "sourceKeys": ["traits.emails", "context.traits.emails", "traits.email"], "destKey": "emails_sha256" },
   { "sourceKeys": "event", "destKey": "type", "required": true },
-  {
-    "sourceKeys": ["timestamp", "originalTimestamp"],
-    "destKey": "timestamp_ms",
-    "metadata": { "type": "timestamp" }
-  }
+  { "sourceKeys": ["timestamp", "originalTimestamp"], "destKey": "timestamp_ms", "metadata": { "type": "timestamp" } }
 ]
 ```
 
-- **`sourceKeys`** — a dot path, or an array of dot paths tried **in precedence order**.
-- **`destKey`** — set via `lodash.set`, so `"data.amount"` nests.
-- **`required: true`** — `constructPayload` throws
-  `InstrumentationError("Missing required value from ...")` when nothing resolves. Use this
-  instead of a downstream presence check and a hand-written throw.
-- **`metadata: { type: "timestamp" }`** — routes the value through `formatTimeStamp`, which
-  with no `typeFormat` returns `date.getTime()` — epoch **milliseconds**
-  (`src/v0/util/index.js:398-406`). This replaces a bespoke timestamp resolver entirely; most
-  CAPI destinations want exactly this for a `timestamp_ms` field.
+- `sourceKeys` — a path, or paths in **precedence order**. `destKey` — `lodash.set`, so `"data.amount"` nests.
+- `required: true` — throws `InstrumentationError("Missing required value from ...")`; replaces a
+  hand-written presence check.
+- `metadata: { type: "timestamp" }` — `formatTimeStamp` with no `typeFormat` returns epoch **ms**
+  (`src/v0/util/index.js:398-406`); replaces bespoke timestamp resolvers (what most CAPI
+  `timestamp_ms` fields want).
 
-Do **not** invent a bespoke config shape (`userFields`, `contentSourcePaths`,
-`clickIdPaths`, …). A custom shape forces a hand-written config type, a resolver function per
-field group, and a hand-maintained parallel list of "keys we already mapped" — all of which
-disappear when the config is a standard mapping array.
+Never invent a config shape (`userFields`, `contentSourcePaths`, `clickIdPaths`, …) — it forces a
+hand-written type, a resolver per group, and a parallel "already mapped" list.
 
-### Mapping individual array items
-
-For a repeated object (line items, products, contents), call `constructPayload` once per
-element with an item-level mapping. Precedent: `src/v0/destinations/ga4/utils.js:215,254` and
-`src/v0/destinations/ometria/util.js:28,43`.
+**Array items:** call `constructPayload` per element with an item-level mapping
+(`src/v0/destinations/ga4/utils.js:215,254`, `src/v0/destinations/ometria/util.js:28,43`):
 
 ```ts
 const contents = rawContents.map((item) => constructPayload(item, MAPPING.contentMappings));
@@ -70,450 +45,252 @@ const contents = rawContents.map((item) => constructPayload(item, MAPPING.conten
 
 ## `constructPayload` Sets Only What It Finds
 
-The write is guarded: `if (value || value === 0 || value === false)` then
-`lodash.set(payload, destKey, value)` (`src/v0/util/index.js:1136-1139`). Three consequences
-worth knowing before you rely on them:
+The write is guarded by `value || value === 0 || value === false` (`src/v0/util/index.js:1136-1139`):
 
-- **Empty strings never land.** `''` is falsy and is not one of the two exceptions, so a
-  `destKey` whose source resolves to `''` is simply absent from the payload.
-- **`false` and `0` do land.** A boolean or numeric field is safe to map declaratively.
-- **Two entries with the same `destKey` act as a precedence chain** — later entries only
-  overwrite when they resolve. This *works*, but it reads like a copy-paste accident and the
-  behaviour depends on array order. **Collapse duplicate `destKey`s into one entry with the
-  union of the source keys**, ordered by precedence.
-
-`constructPayload` performs **no type validation**. A field declared as an object in your
-payload type (`Record<string, unknown>`) will happily receive a scalar from the event. If the
-emitted shape must match a declared type, guard it after the call.
+- `''` never lands; `false` and `0` do.
+- Duplicate `destKey`s act as a precedence chain (later overwrite only when they resolve) — reads
+  like a copy-paste accident. **Collapse them into one entry** with the union of keys in precedence order.
+- **No type validation.** A field typed `Record<string, unknown>` will receive a scalar; guard after:
 
 ```ts
-// Good — the mapping plucks it, the code guarantees its shape
 const item = constructPayload(raw, MAPPING.contentMappings);
 if (!isPlainObject(item.variant_dict)) delete item.variant_dict;
-
-// Bad — `variant_dict` is typed Record<string, unknown> but a scalar reaches the wire
-const item = constructPayload(raw, MAPPING.contentMappings);
 ```
 
 ## Use `getValueFromMessage`, Not a Hand-Rolled First-Of-N Helper
 
-`getValueFromMessage(message, sourceKeys)` (`src/v0/util/index.js:647`) already takes an array
-of paths and returns the first usable value. Do not write `getFirstValue` /
-`getFirstDefinedValue` / `firstScalar` variants of it.
+`getValueFromMessage(message, sourceKeys)` (`src/v0/util/index.js:647`) already returns the first
+usable value — no `getFirstValue`/`getFirstDefinedValue`/`firstScalar`.
 
-Two behaviours to be deliberate about:
-
-- **It logs on single-element arrays.** `sourceKeys.length === 1` triggers
-  `logger.warn('List with single element is not ideal. Use it as string instead')` — on
-  *every event*. A one-path mapping entry must use a bare string, not a one-element array.
-- **Its usability test is `val || val === false || val === 0`.** So it skips `''` and falls
-  through to the next path, and returns `null` when nothing matches. It never returns `''` —
-  don't write downstream `!== ''` checks, they are dead code.
+- A **one-element array** logs `List with single element is not ideal...` on *every event* — use a
+  bare string.
+- Usability is `val || val === false || val === 0`: skips `''`, returns `null` when nothing
+  matches, never `''` — downstream `!== ''` checks are dead code.
 
 ## `sourceFromGenericMap` — Check What It Expands To First
 
-`sourceFromGenericMap: true` resolves `sourceKeys` through
-`src/v0/util/data/GenericFieldMapping.json` instead of treating them as paths. It removes real
-duplication, but **the expansion is large and not always what you want** — verify the entry
-before using it.
+`sourceFromGenericMap: true` expands `sourceKeys` via `src/v0/util/data/GenericFieldMapping.json`.
+The expansion is large — verify the entry first. Trap: a review removes `*.zip` paths, a later
+"simplification" to `sourceKeys: "zipcode"` silently reinstates them.
 
-The trap: an earlier review round removes `*.zip` paths from a postal-code mapping; a later
-round "simplifies" it to `sourceFromGenericMap: true` with `sourceKeys: "zipcode"` — and
-silently reinstates them, because `zipcode` expands to 28 paths including `traits.zip`,
-`traits.zipCode`, `traits.address.zip_code` and the `context.traits.*` mirrors.
+| Generic key | Surprise |
+| --- | --- |
+| `zipcode` | 28 paths — every zip/postal spelling under `traits`, `traits.address`, and `context.traits` mirrors |
+| `email` | includes `properties.email` **and** `context.externalId.0.id` |
+| `phone` | includes `properties.phone` |
+| `city` | **only** `traits.address.city` / `context.traits.address.city`, not `traits.city` |
+| `firstName` / `lastName` | singular only, three casings; no plural forms |
 
-Entries that commonly surprise:
-
-| Generic key                | Expands to something wider than the name suggests                                                                                                             |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `zipcode`                  | 28 paths — every `zip` / `zipcode` / `zip_code` / `zipCode` / `postalcode` / `postal_code` / `postalCode` spelling under `traits`, `traits.address` and the `context.traits` mirrors |
-| `email`                    | includes `properties.email` **and** `context.externalId.0.id`                                                                                                   |
-| `phone`                    | includes `properties.phone`                                                                                                                                     |
-| `city`                     | **only** `traits.address.city` / `context.traits.address.city` — not `traits.city`                                                                              |
-| `firstName` / `lastName`   | singular forms only, in three casings; no plural (`firstNames`) forms                                                                                           |
-
-So: `region` and `country` are safe (`traits.region` / `traits.country` and their
-`context.traits` mirrors, nothing else), while `zipcode`, `email` and `phone` pull in paths a
-destination often should not read. If the generic map is wider or narrower than the partner
-spec, list the paths explicitly instead — and if the destination field is a **plural array**,
-you need explicit plural source keys regardless, because the generic map carries only the
-singular forms.
+`region`/`country` are safe (`traits.*` + `context.traits.*` only). When the generic map is wider or
+narrower than the partner spec, list paths explicitly. Plural-array destination fields always need
+explicit plural source keys.
 
 ## Don't Guess Source Paths
 
-Every path in a mapping file is a claim that the partner reads that field from there. Adding
-`traits.state` to a `regions` mapping, or `traits.countryCode` to `countries`, because they
-"look related" ships wrong values to the partner with nothing failing. Map only what the spec
-or the partner's docs name, and let the field be absent otherwise.
+Every path claims the partner reads that field from there. Adding `traits.state` to `regions` or
+`traits.countryCode` to `countries` because they "look related" ships wrong values silently. Map
+only what the spec or partner docs name.
 
 ## A Value The SDKs Populate Has One Canonical `context.*` Path
 
-The mirror image of the rule above: don't invent a RudderStack-side path for a value the SDKs
-already place. Every such value has exactly one canonical `context.*` path — the partner's
-spelling for the field changes constantly, the path we read it from does not.
+| Partner asks for | Read from |
+| --- | --- |
+| Mobile advertising id — IDFA, GAID, AAID, MADID, RDID | `context.device.advertisingId` |
+| App / bundle / package id | `context.app.namespace` |
+| User agent · IP | `context.userAgent` · `context.ip` |
 
-| The partner is asking for                               | Read it from                        |
-| ------------------------------------------------------- | ----------------------------------- |
-| A mobile advertising id — IDFA, GAID, AAID, MADID, RDID | `context.device.advertisingId`      |
-| The app / bundle / package identifier                   | `context.app.namespace`             |
-| User agent · IP                                         | `context.userAgent` · `context.ip`  |
+(19 destinations read `context.device.advertisingId`; `context.userAgent` in 40 files vs 2 with a
+`properties.*` alias; `context.ip` in 61 vs none.) A `properties.*` alias invents a second
+contract the customer can only meet by sending the value twice. Neither of the first two has a
+`GenericFieldMapping.json` entry — list the path explicitly.
 
-The shape repeats across every SDK-populated field: 19 destinations read
-`context.device.advertisingId`; `context.userAgent` appears in 40 destination files against 2
-carrying a `properties.*` alias, `context.ip` in 61 against none. A `properties.*` alias invents
-a second source contract for a value the SDKs already send, so the only way a customer satisfies
-it is by sending the same value twice.
+**Event-stream only.** Audience/RETL destinations take identifiers from record fields
+(`src/v0/destinations/fb_custom_audience/util.ts:127` MADID from the row schema;
+`src/v0/destinations/google_adwords_remarketing_lists/dataManager/util.ts:115` from `fields.mobileId`).
 
-Neither identifier in the first two rows has a `GenericFieldMapping.json` entry — its keys are
-all trait / address / page / identity fields — so list the path explicitly;
-`sourceFromGenericMap` will not help you here.
+**Device type picks the destination field, not the source path.** The gate lives in different
+layers: workflow condition (`src/cdk/v2/destinations/reddit/procWorkflow.yaml:44-45` —
+`$.isAppleFamily(os)` → `idfa`, `os === "android"` → `aaid`), transform
+branch (`src/v0/destinations/impact/util.js` `AppleIfa` vs `GoogAId`; `src/v0/destinations/adj/transform.js:36-41`
+maps `idfa` and `gps_adid` from one path, then deletes the one the platform can't carry), or per-platform mapping files (`singular/data/SINGULARIosEventConfig.json` `idfa` vs
+`SINGULARAndroidEventConfig.json` `aifa`).
 
-**This applies to event-stream destinations only.** Audience and RETL destinations receive
-identifiers as record fields, not context: `src/v0/destinations/fb_custom_audience/util.ts:127`
-takes MADID off the per-row user schema, and
-`src/v0/destinations/google_adwords_remarketing_lists/dataManager/util.ts:115` takes the mobile
-device id off the RETL column `fields.mobileId`.
+**Gate on `isAppleFamily` / `isAndroidFamily`** (`src/v0/util/index.js:1724`, `:1732`;
+`$.isAppleFamily` in YAML) — used by ~20 destinations. Apple = `ios`, `ipados`, `watchos`, `tvos`;
+Android = `android`. They lowercase and return `false` for non-strings (no `.toLowerCase()` or
+presence guard needed) but don't trim. A local `new Set(['ios','iphone','ipad','apple'])` drops
+`watchos`/`tvos`, admits model names, and routes ids differently from every other destination.
 
-**The device type picks the *destination* field, not the source path.** IDFA and GAID are the
-same path; which partner field it lands in is decided by the OS — and the gate lives in a
-different layer in each destination, which is why it is easy to miss:
-
-- A workflow condition — `src/cdk/v2/destinations/reddit/procWorkflow.yaml:44-45`,
-  `$.isAppleFamily(os)` for `idfa` and `os === "android"` for `aaid`.
-- A branch in the transform — `src/v0/destinations/impact/util.js` picks `AppleIfa` vs
-  `GoogAId`; `src/v0/destinations/adj/transform.js:36-41` maps both `idfa` and `gps_adid` from
-  the one path and then *deletes* whichever the platform can't carry.
-- Separate per-platform mapping files — `src/v0/destinations/singular/data/`, where
-  `SINGULARIosEventConfig.json` has `idfa` and `SINGULARAndroidEventConfig.json` has `aifa`.
-
-**Gate on the shared helpers, never a local platform list.** Whatever layer the gate lives in,
-the test itself is `isAppleFamily` / `isAndroidFamily` from `src/v0/util/index.js:1724` and
-`:1732` (`$.isAppleFamily` inside a workflow YAML) — already the platform check in ~20
-destinations, including kochava, impact, singular, customerio and tiktok_ads. Apple family is
-`ios`, `ipados`, `watchos`, `tvos`; Android family is `android`. Both lowercase internally and
-return `false` for a non-string, so pass the raw value without `.toLowerCase()` or a presence
-guard — but they do not trim, so trim first if the field can carry whitespace. A hand-rolled
-`new Set(['ios', 'iphone', 'ipad', 'apple'])` drifts from that definition — here it drops
-`watchos` / `tvos` and admits device-model names — so the same event routes its advertising id
-to a different partner field than every other destination would.
-
-**Precedent that is not the pattern.** Several destinations put another path first and fall
-back to the canonical one: `context.idfa` / `context.aaid` in `branch` and `revenue_cat`,
-`properties.adId` in `snapchat_conversion`, `properties.anon_id` in `facebook_conversions`,
-`properties.appId` in `tiktok_ads`, and a `traits.*` chain in `openai_ads`. `rakuten` goes
-further and reads the advertising id from `properties.*` only, with no context path at all
-(`src/cdk/v2/destinations/rakuten/data/propertiesMapping.json:89`). Each has a reason local to
-that destination — an inherited customer contract, or a partner whose own field genuinely has
-no context equivalent. None of them is the starting shape: map the canonical path alone, and
-add an alias only when the partner's docs or an agreed contract demand it.
+**Precedent that is not the pattern:** `branch`/`revenue_cat` (`context.idfa`/`context.aaid`
+first), `snapchat_conversion` (`properties.adId`), `facebook_conversions` (`properties.anon_id`),
+`tiktok_ads` (`properties.appId`), `openai_ads` (`traits.*` chain), `rakuten` (`properties.*` only,
+`src/cdk/v2/destinations/rakuten/data/propertiesMapping.json:89`). Each has a local reason. Start
+with the canonical path alone; add an alias only when partner docs or an agreed contract demand it.
 
 ## Presence Checks: Know What The Shared Helpers Actually Do
 
-Two helpers in `src/v0/util/index.js` are routinely misapplied. Both are one-liners over
-lodash, and both have a sharp edge.
-
-**`isDefinedAndNotNullAndNotEmpty` is `lodash.isEmpty`-based, so it rejects every number and
-every boolean.** `lodash.isEmpty(1)` is `true` — numbers have no length and no own enumerable
-keys. Using it as a general presence check silently drops `quantity: 1` and `amount: 0`.
-
-```ts
-// Good — use it only for strings, arrays and objects
-if (isDefinedAndNotNullAndNotEmpty(rawContents)) { /* skip empty contents[] */ }
-
-// Bad — `quantity: 1` is dropped, with no error
-if (isDefinedAndNotNullAndNotEmpty(quantity)) payload.quantity = quantity;
-```
-
-For numbers, booleans and "any scalar the partner accepts", use `isDefinedAndNotNull`
-(`x !== undefined && x !== null`) or a single local `isPresent` predicate — and use **one**
-predicate throughout a file. Four divergent spellings of the same idea in one module is a
-review finding on its own.
-
-**`removeUndefinedAndNullValues` is `lodash.pickBy(obj, isDefinedAndNotNull)`**
-(`src/v0/util/index.js:60`), so it **preserves `false` and `0`**. That makes it the safe way to
-replace a stack of conditional spreads with one flat object literal:
+- **`isDefinedAndNotNullAndNotEmpty` is `lodash.isEmpty`-based — rejects every number and
+  boolean** (`isEmpty(1) === true`), silently dropping `quantity: 1`. Use it only for
+  strings/arrays/objects. For scalars use `isDefinedAndNotNull` or one local `isPresent` — and
+  **one** predicate per file.
+- **`removeUndefinedAndNullValues` = `lodash.pickBy(obj, isDefinedAndNotNull)`**
+  (`src/v0/util/index.js:60`) — preserves `false`/`0`, so prefer one flat literal over conditional spreads:
 
 ```ts
-// Good — flat and readable; `opt_out: false` survives
-return removeUndefinedAndNullValues({
-  id, type, timestamp_ms, oppref, source_url, opt_out, data,
-});
-
-// Bad — five conditional spreads for the same result
-return {
-  id, type, timestamp_ms,
-  ...(oppref ? { oppref } : {}),
-  ...(sourceUrl ? { source_url: sourceUrl } : {}),
-  ...(optOut !== undefined ? { opt_out: optOut } : {}),
-  ...(data ? { data } : {}),
-};
+// Good — `opt_out: false` survives
+return removeUndefinedAndNullValues({ id, type, timestamp_ms, oppref, source_url, opt_out, data });
+// Bad
+return { id, type, timestamp_ms, ...(oppref ? { oppref } : {}), ...(optOut !== undefined ? { opt_out: optOut } : {}) };
 ```
 
-Its sibling `removeUndefinedAndNullAndEmptyValues` does **not** preserve them — it adds
-`isNotEmpty`, inheriting the `lodash.isEmpty` behaviour above. Don't reach for it reflexively.
-
-One caveat when a required field can be absent: `removeUndefinedAndNullValues` will strip it,
-and the request goes out silently missing a field the API requires. Validate required fields
-before this call (or map them with `required: true`), rather than letting them disappear.
-"Required" means the partner rejects the request without it — shown, not just documented; see
-[Reject Only What The Partner Rejects](#reject-only-what-the-partner-rejects).
+- `removeUndefinedAndNullAndEmptyValues` adds `isNotEmpty` and **drops** `false`/`0` — don't reach
+  for it reflexively.
+- Both strip an absent required field silently; validate first or map with `required: true`.
+  "Required" = the partner is shown to reject without it
+  ([Reject Only What The Partner Rejects](#reject-only-what-the-partner-rejects)).
 
 ## Monetary Values — Never Assume Two Decimal Places
 
-**The current state of the repo is a latent bug.** Every monetary conversion multiplies by a
-hardcoded 100:
+**Latent bug:** hardcoded `× 100` at `src/cdk/v2/destinations/reddit/utils.js:74,81,88`,
+`src/cdk/v2/destinations/rakuten/utils.js:29`,
+`src/cdk/v2/destinations/optimizely_fullstack/procWorkflow.yaml:196` (unconditional).
+`src/v0/destinations/dub/utils.ts:60` is opt-in behind `convertAmountToCents` and documented
+(`dub/types.ts:90-92`) — still not the pattern.
 
-- `src/cdk/v2/destinations/reddit/utils.js:74`, `:81`, `:88`
-- `src/cdk/v2/destinations/rakuten/utils.js:29`
-- `src/cdk/v2/destinations/optimizely_fullstack/procWorkflow.yaml:196`
+`× 100` is right only for exponent-2 currencies; **39 of 179** ISO-4217 currencies aren't. JPY,
+KRW, VND, CLP, ISK (0 decimals) → 100× too high; BHD, KWD, TND (3) → 10× too low. Silent revenue
+corruption for ads/analytics destinations.
 
-Those three are unconditional. `src/v0/destinations/dub/utils.ts:60` also multiplies by 100,
-but only behind the customer-set `convertAmountToCents` flag, and dub's own field doc already
-carries the caveat (`src/v0/destinations/dub/types.ts:90-92`) — so it is opt-in and documented
-rather than silently wrong. Don't treat it as the pattern to copy either.
-
-Multiplying by 100 is correct only for currencies with an ISO-4217 exponent of 2, and **39 of
-the 179 currencies in the ISO-4217 table are not** (count taken from the `currency-codes`
-package's table, not from this repo). JPY, KRW, VND, CLP and ISK are zero-decimal, so `× 100`
-reports revenue **100× too high**; BHD, KWD and TND are three-decimal, so it reports 10× too
-low. For an advertising or analytics destination this silently corrupts the customer's
-reported conversion value in those markets, with nothing failing and no error to trace.
-
-There is no shared helper in the repo (the only trace is a comment at
-`src/v0/destinations/dub/types.ts:92`). For new work, resolve the exponent from a real
-ISO-4217 source rather than a literal:
+No shared helper exists. Resolve the exponent from ISO-4217 (`currency-codes` is already a
+dependency, `package.json:81`, `^2.2.0`; refresh when a currency redenominates):
 
 ```ts
-import cc from 'currency-codes'; // MIT, 179 currencies, exposes `digits`
+import cc from 'currency-codes';
 const DEFAULT_EXPONENT = 2;
 const exponent = (code?: string) => cc.code(code ?? '')?.digits ?? DEFAULT_EXPONENT;
-const toMinorUnits = (value: number, currency?: string) =>
-  Math.round(value * 10 ** exponent(currency));
+const toMinorUnits = (value: number, currency?: string) => Math.round(value * 10 ** exponent(currency));
 ```
 
-**`currency-codes` is a dependency of this repo** (`package.json:79`, `^2.2.0`) — `openai_ads`
-added it, so no new dependency is needed. The ISO-4217 list is static and needs refreshing
-when a currency redenominates.
+Better reference: `src/v0/destinations/openai_ads/utils.ts:393` `toMinorUnits` — scales the
+decimal string with `BigInt` (no float error, for exact-integer partners), bounds input length
+before `BigInt` parses customer digits, rounds half-away-from-zero, keeps negatives (refunds).
 
-That snippet is the minimum shape. The worked reference is
-`src/v0/destinations/openai_ads/utils.ts:377` (`toMinorUnits`), which scales the decimal string
-with `BigInt` rather than multiplying a float — worth copying when the partner accepts only an
-exact integer, since `value * 10 ** exponent` inherits float error. It also bounds the input
-length before `BigInt` parses a customer-controlled digit string, rounds half-away-from-zero
-instead of dropping the event over a fraction of a cent, and keeps negative amounts (a refund
-is a conversion with a negative value).
-
-Notes:
-
-- `cc.code()` returns `undefined` for an unrecognised code, so you still choose the fallback.
-  Default to 2 **and log once per unrecognised currency** — a code the library doesn't know is
-  either a customer typo or a currency it predates, and both are worth seeing. `openai_ads`
-  makes the opposite call and throws an `InstrumentationError`; either is defensible, but
-  decide it deliberately rather than by omission.
-- Decide explicitly what happens when a value resolves but a currency doesn't. Silently
-  assuming one misattributes revenue; failing the single event surfaces it in Live Events.
-- If the partner uses "micros" (currency unit × 10⁶ regardless of decimals, e.g. Google Ads),
-  that is a fixed multiplier and **not** an exponent — don't route it through this.
-
-Deliberately not fixing the call sites above in one pass: each needs its own regression
-testing against the partner. Do it when you touch the destination.
+- Unknown code → `cc.code()` is `undefined`. Default to 2 **and log once per unrecognised
+  currency**, or throw `InstrumentationError` like `openai_ads` — decide deliberately.
+- Decide what happens when a value resolves but the currency doesn't (assuming one misattributes;
+  failing surfaces it in Live Events).
+- "Micros" (×10⁶, e.g. Google Ads) is a fixed multiplier, not an exponent.
+- Fix the legacy call sites when you touch each destination, with partner regression testing.
 
 ## Never Silently Rewrite or Drop Customer Data
 
-A transformer's job is to map the customer's event onto the partner's schema, not to clean it
-up. When you normalize, reformat or discard a value the customer deliberately sent, the change
-is invisible: nothing fails, no error reaches Live Events, and the partner receives something
-the customer never sent. Pass values through and let the partner's API validate them.
+Map, don't clean. Normalizing or discarding a deliberately-sent value is invisible — nothing fails
+and the partner gets something the customer never sent. Let the partner validate.
 
-Three shapes this takes, all of them easy to add and hard to notice:
+- **Trim only inside hash normalizers.** A `trimString` helper on event names, paths, URLs and
+  content rewrites data everywhere and, doubling as a truthiness check, obscures resolution.
+- **Don't re-serialise URLs** via `new URL()` — it lowercases the host, adds a trailing slash and
+  drops default ports. Return the raw value.
+- **Don't "sanitise" custom properties** by recursively dropping empties, non-finite numbers or
+  non-plain values.
 
-- **Trimming everywhere.** Trim belongs *only* inside hash normalizers, where a stray space
-  changes the digest. Applying a `trimString` helper to event names, dot-path values, URLs and
-  content fields rewrites customer data at every call site — and, because the helper doubles as
-  a truthiness check, makes the value-resolution path harder to follow than a plain lookup.
-- **Re-serialising URLs.** Parsing a customer's URL through `new URL()` just to strip
-  `search`/`hash` and re-serialise also lowercases the host, adds a trailing slash and drops a
-  default port. Return the raw value.
-- **"Sanitising" custom properties.** A recursive walk that drops empty strings, non-finite
-  numbers, empty arrays/objects and anything non-plain deletes data the customer chose to send.
-
-The exception is a documented partner requirement — hashing, minor-unit conversion, or an enum
-the API rejects otherwise. Those are transformations you can point at a spec for.
+Exception: documented partner requirements (hashing, minor units, an enum the API otherwise
+rejects). Where normalization *is* required, apply it **consistently** — one case-sensitive enum
+comparison (`action_source: 'Web'`) among normalized ones drops ordinary events.
 
 ```ts
-// Good — resolve, then hand it over untouched
-const sourceUrl = getValueFromMessage(message, MAPPING.sourceUrlPaths);
-
-// Bad — silently normalizes the customer's URL
-const sourceUrl = (() => {
-  try {
-    const u = new URL(raw);
-    u.search = '';
-    u.hash = '';
-    return u.toString();
-  } catch {
-    return undefined;
-  }
-})();
+const sourceUrl = getValueFromMessage(message, MAPPING.sourceUrlPaths); // Good — untouched
+// Bad — new URL(raw); u.search = ''; u.hash = ''; return u.toString();
 ```
-
-Where the partner *does* require a normalized form, apply it **consistently**. If a file trims
-and lowercases one enum before comparing it, every other enum comparison in that file should do
-the same — an `action_source` matched case-sensitively rejects a perfectly ordinary `'Web'` and
-drops the event, purely because it was the one string nobody normalized.
 
 ## Reject Only What The Partner Rejects
 
-The same rule applies to validation. Every `InstrumentationError` a transform throws drops an
-event the customer sent, so each one has to point at something the partner actually
-**enforces**: a rejection you observed live, or a mock captured from one. Documentation is not
-enough on its own, however specific it is: a field described as "required", a documented size
-limit, a documented error for a missing field, and a stricter type than the API parses all
-still need the request sent. If you can't send it yet, forward the event and record the check
-as unverified, with the request that would settle it. Partners routinely accept what their docs
-describe as invalid, and a check written from the docs alone turns events that would have been
-delivered into aborts that nobody traces back to the transformer.
+Every `InstrumentationError` drops a customer event, so each must point at something the partner
+**enforces**: a rejection observed live or a mock captured from one. Docs alone — "required", a
+documented size limit, a documented missing-field error, a stricter type than the API parses —
+are not enough. If you can't send the request yet, forward the event and record the check as
+unverified with the request that would settle it.
 
-- **Before you add a "requires X" check, send the payload without X.** If the partner accepts
-  it, delete the check.
-- **Coerce a convertible type instead of rejecting it.** A numeric id where the API wants a
-  string should be `String(value)`, not a Zod `z.string()` failure.
-- **Size and count limits belong to the batch strategy.** Don't add a per-event byte check
-  unless the partner has been shown to reject oversize items and the batch strategy can't keep
-  them out. A documented per-item cap that the strategy can't express is still unverified until
-  an oversize item has been sent.
+- **Before adding "requires X", send the payload without X.** Accepted → delete the check.
+- **Coerce convertible types** (`String(value)` for a numeric id), don't `z.string()`-reject.
+- **Size/count limits belong to the batch strategy.** A per-event byte check needs a shown
+  rejection *and* a limit the strategy can't express.
 
-This is not the case against validating in `transformEvent` at all. A rule the partner does
-enforce, especially on an all-or-nothing batch endpoint, still belongs there (see
-`.claude/skills/batching-framework/SKILL.md#partners-that-reject-the-whole-batch`). The test is
-whether you can produce the partner's rejection for it.
+Enforced rules still belong in `transformEvent`, especially for all-or-nothing endpoints
+(`.claude/skills/batching-framework/SKILL.md#partners-that-reject-the-whole-batch`). The test is
+whether you can produce the partner's rejection.
 
 ## Passthrough Extras Must Not Overwrite Payload-Owned Fields
 
-When a destination forwards unmapped properties as custom data, the merge order decides who
-wins. `Object.assign(payload, extras)` after setting a payload-owned field lets a customer
-property silently replace it — and a discriminator like `data.type` is exactly the field that
-breaks the request when it changes.
-
-Assign extras **first** and the payload's own fields **last**, so ownership is structural
-rather than dependent on a reserved-key list staying complete. A reserved-key set is still
-worth having (see below), but it should not be the only thing standing between
-`properties.type` and the payload's `type`.
+Assign extras **first**, payload-owned fields **last**, so ownership is structural, not dependent on
+a complete reserved-key list:
 
 ```ts
-// Good — the payload's own fields always win
-const data = { ...buildCustomExtras(message), type: dataType, amount, currency };
-
-// Bad — a customer's `properties.type` clobbers the discriminator
-const data = { type: dataType, amount, currency };
-Object.assign(data, buildCustomExtras(message));
+const data = { ...buildCustomExtras(message), type: dataType, amount, currency }; // Good
+const data = { type: dataType, amount, currency }; Object.assign(data, buildCustomExtras(message)); // Bad — properties.type clobbers the discriminator
 ```
 
 ## Reserved-Key Sets Must Be Scoped To The Object Being Filtered
 
-A destination that forwards unmapped event properties as custom data needs a set of keys to
-*exclude* — the ones already mapped. Derive that set from the mapping config so it cannot
-drift, but **scope it to the object the passthrough actually reads**.
-
-A custom-extras builder that iterates `message.properties` can only ever collide with the
-direct children of `properties`. Trait paths, message-level fields and item-level keys address
-different objects and can never collide — including them silently deletes the customer's data.
+Derive the exclusion set from the mapping config, **scoped to the object the passthrough reads**.
+A builder iterating `message.properties` can only collide with direct children of `properties`;
+reserving trait leaves, message fields or item keys deletes customer data.
 
 ```ts
-// Good — only `properties.`-rooted source paths contribute a reserved key
+// Good — only `properties.`-rooted paths reserve a key
 const PROPERTIES_PREFIX = 'properties.';
 const RESERVED = new Set(
-  Object.values(MAPPING)
-    .flatMap(sourceKeysOf)
-    .flatMap((keys) =>
-      (Array.isArray(keys) ? keys : [keys])
-        .filter((p) => p.startsWith(PROPERTIES_PREFIX))
-        .map((p) => p.slice(PROPERTIES_PREFIX.length).split('.')[0]),
-    ),
+  Object.values(MAPPING).flatMap(sourceKeysOf).flatMap((keys) =>
+    (Array.isArray(keys) ? keys : [keys])
+      .filter((p) => p.startsWith(PROPERTIES_PREFIX))
+      .map((p) => p.slice(PROPERTIES_PREFIX.length).split('.')[0])),
 );
-
-// Bad — walks every group and takes the last path segment. Reserves item-level field
-// names (`id`, `name`, `type`, `sku`, `price`, `quantity`) and trait leaves, so a custom
-// event sending `properties.id` or `properties.name` loses them with no error.
+// Bad — last segment of every path reserves `id`, `name`, `type`, `sku`, `price`, `quantity`
 const RESERVED = new Set(Object.values(MAPPING).flatMap(lastSegmentOf));
 ```
 
-Restructuring the JSON to separate message-relative paths from item-level keys does *not* fix
-this on its own — `context.externalId.0.id` is message-domain and still contributes an `id`
-leaf. The prefix filter is what fixes it. Cover it with a component-test fixture: a custom
-event carrying `properties.id` / `properties.name` must pass them through.
+Splitting the JSON into message vs item paths doesn't fix it (`context.externalId.0.id` still
+yields `id`); the prefix filter does. Add a component fixture: a custom event with
+`properties.id`/`properties.name` must pass them through.
 
 ## Category Conventions
 
-Everything above applies to every destination. What follows does not.
-
 ### Ads Destinations
 
-Scope: conversion / offline-event APIs where we send server-side events for ad attribution —
-`openai_ads`, `facebook_conversions`, `pinterest_tag`, `linkedin_ads`, `snapchat_conversion`,
-`reddit`, the Google Ads conversion destinations. **Not** CRMs or marketing platforms that
-maintain user profiles (Braze, HubSpot, Customer.io), and **not** audience/RETL sync
-destinations — both have identity models that these two rules would actively break.
-
-`src/v0/destinations/openai_ads/` is the reference implementation for both.
+Scope: server-side conversion APIs for ad attribution — `openai_ads`, `facebook_conversions`,
+`pinterest_tag`, `linkedin_ads`, `snapchat_conversion`, `reddit`, Google Ads conversion
+destinations. **Not** CRMs/marketing platforms (Braze, HubSpot, Customer.io) or audience/RETL
+destinations. Reference: `src/v0/destinations/openai_ads/`.
 
 #### A partner field named `external_id` is not RudderStack's `externalId`
 
-The names collide; the concepts are unrelated. Establish which one you are looking at *before*
-writing the mapping.
-
-For an ads destination, map the partner's identifier field from top-level **`userId`, falling
-back to `anonymousId`** — and nothing else
-(`src/v0/destinations/openai_ads/data/OPENAI_ADSConfig.json:26-27`):
+Unrelated concepts. Map the partner's identifier from **`userId`, falling back to `anonymousId`**,
+nothing else (`src/v0/destinations/openai_ads/data/OPENAI_ADSConfig.json:26-27`):
 
 ```json
 { "sourceKeys": ["userId", "anonymousId"], "destKey": "external_ids_sha256" }
 ```
 
-**Precedent that is not the pattern:** `facebook_conversions` maps `external_id` from
-`["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id",
-"anonymousId"]` (`src/v0/destinations/facebook_conversions/data/FBCUserDataConfig.json:2-16`).
-It is an older integration with a deliberately broad fallback chain. Don't copy it into a new
-destination.
+Not the pattern: `facebook_conversions`' broad chain
+(`userId`, `traits.userId`, `traits.id`, `context.traits.userId`, `context.traits.id`, `anonymousId` —
+`src/v0/destinations/facebook_conversions/data/FBCUserDataConfig.json:2-16`).
 
 #### `deduplicationKey` goes on the event-mapping row, not the destination config
 
-The config key is spelled **`deduplicationKey`** — not `eventId`, `conversionId`, or a new
-spelling. That much matches `rudder-integrations-config/CONVENTIONS.md`. What follows is about
-*where the field lives*, which that document does not cover.
+Spelled `deduplicationKey` — not `eventId`, `conversionId` or a new spelling (per `rudder-integrations-config/CONVENTIONS.md`, which doesn't cover
+placement). **With an event-mapping table, it's a per-row field**: each conversion type dedupes
+against the pixel on a different property (order → `properties.orderId`); one global key resolves
+for one type and falls back to `messageId` (never matching the pixel) for the rest. Global only
+when there's no event-mapping table. **Optional; absent or unresolved → `messageId`**; never
+required or validated non-empty.
 
-**If the destination config has an event-mapping table, `deduplicationKey` is a field on each
-row.** Ads partners dedupe server events against a browser pixel per conversion type, and the
-field carrying the shared id differs per event — an order dedupes on `properties.orderId`, a
-signup on something else. One global key forces every event through a single path, so it
-resolves for one event type and silently falls back to `messageId` for the rest, which never
-matches the pixel. A global key is right only when the destination has no event-mapping table.
+`openai_ads`: `deduplicationKey: z.string().optional()` in `OpenAIAdsEventMappingSchema` beside
+`from`/`to`/`customEventName` (`types.ts:16`); `resolveEventId` falls back to `message.messageId`
+(`utils.ts:547`) and throws `InstrumentationError` for a resolved non-scalar (a
+misconfiguration worth surfacing); in integrations-config, a row `textInput` with
+`"configKey": "deduplicationKey"`, no `required`, regex admitting empty (`^$|^[A-Za-z_]…`).
 
-**It is optional, and absent-or-unresolved means `messageId`.** Never required, never validated
-as non-empty.
-
-`openai_ads` implements exactly this:
-
-- `deduplicationKey: z.string().optional()` inside `OpenAIAdsEventMappingSchema`, alongside
-  `from`, `to` and `customEventName` (`src/v0/destinations/openai_ads/types.ts:16`).
-- `resolveEventId` resolves the row's dot path against the message and falls back to
-  `message.messageId` when the key is unset or the path yields nothing
-  (`src/v0/destinations/openai_ads/utils.ts:531-542`).
-- In `integrations-config`, a `textInput` inside the event-mapping row with
-  `"configKey": "deduplicationKey"`, no `required`, and a regex admitting the empty string
-  (`^$|^[A-Za-z_]…`) so clearing it stays valid.
-
-A resolved-but-non-scalar value throws an `InstrumentationError` there rather than falling back
-silently: a customer pointing the key at an object is a misconfiguration worth surfacing, not
-worth papering over with `messageId`.
-
-**Precedent that is not the pattern:** `pinterest_tag` and `snapchat_conversion` both have
-event-mapping tables (`eventsMapping`, `rudderEventsToSnapEvents`) *and* keep
-`deduplicationKey` global — that is the shape this rule moves away from, not an exception to
-it. `linkedin_ads` has no event-mapping table, so its global key
-(`src/cdk/v2/destinations/linkedin_ads/procWorkflow.yaml:47`) is fine as it stands.
-
-Watch the fallback shape if you copy from the older ones. `pinterest_tag` and `linkedin_ads`
-use `getOneByPaths(…) ?? .messageId`, which falls back when the config is unset *or* no path
-resolves. `snapchat_conversion` uses `deduplicationKey || 'messageId'`, so a set-but-
-unresolvable path yields no id at all rather than `messageId`. Prefer the first.
+Not the pattern: `pinterest_tag`/`snapchat_conversion` have mapping tables but a global key.
+`linkedin_ads` has no table, so its global key (`src/cdk/v2/destinations/linkedin_ads/procWorkflow.yaml:47`) is fine.
+Fallback shape: prefer `getOneByPaths(…) ?? .messageId` (pinterest_tag, linkedin_ads) over
+`deduplicationKey || 'messageId'` (snapchat_conversion — a set-but-unresolvable path yields no id).

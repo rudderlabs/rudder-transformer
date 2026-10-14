@@ -5,145 +5,73 @@ description: TypeScript-specific conventions — type narrowing, optional chaini
 
 # TypeScript Guidelines
 
-Follow these conventions when writing TypeScript code.
-
 ## No Optional Chaining When the Type Guarantees the Property
 
-Inside a type-specific handler or after narrowing, don't use `?.` on properties that the type guarantees exist. It adds noise and obscures which properties are genuinely optional.
+After narrowing (e.g. inside the `order` handler), `?.` on guaranteed properties is noise that hides
+which ones are genuinely optional.
 
 ```ts
-// Good — inside the "order" handler, lineItems is guaranteed
-order: {
-  process: (event) => {
-    event.lineItems.forEach((item) => validateItem(item));
-  },
-},
-
-// Bad — unnecessary defensive chaining
-order: {
-  process: (event) => {
-    event.lineItems?.forEach((item) => validateItem(item));
-  },
-},
+order: { process: (event) => event.lineItems.forEach(validateItem) },  // Good
+order: { process: (event) => event.lineItems?.forEach(validateItem) }, // Bad
 ```
 
 ## Discriminated Unions in Return Types
 
-When a function returns success/failure outcomes, use a union type discriminated on a literal field — not a single type with optional fields.
-
 ```ts
-// Good
-type Result = { valid: true; recordFields: string[] } | { valid: false; errors: string[] };
-
-// Bad
-type Result = { valid: boolean; errors?: string[]; recordFields?: string[] };
+type Result = { valid: true; recordFields: string[] } | { valid: false; errors: string[] }; // Good
+type Result = { valid: boolean; errors?: string[]; recordFields?: string[] };              // Bad
 ```
 
 ## Cast at the Earliest Point Where the Type Is Known
 
-Place type assertions as close as possible to where the value's shape is determined. This applies at two levels: wrapper functions should narrow their return type so callers never cast, and within a function, cast individual values at the point of production rather than on an aggregate after collection.
+Wrappers narrow their return type so callers never cast; inside a function, cast each value where
+it is produced, not the aggregate.
 
 ```ts
-// Good — wrapper narrows; callers are type-safe
-export async function sandboxedEvaluate(
-  template: string,
-  chunks: unknown[][],
-): Promise<Record<string, unknown>[]> {
+// Good — wrapper returns Record<string, unknown>[] (typed via EvaluateResult); callers don't cast
+export async function sandboxedEvaluate(template: string, chunks: unknown[][]): Promise<Record<string, unknown>[]> {
   const result = await runner.execute<EvaluateResult>(key, expr);
-  return result.bodies; // typed Record<string, unknown>[] inside EvaluateResult
-}
-
-const bodies = await sandboxedEvaluate(template, chunks);
-return chunks.map((chunk, i) => ({ body: bodies[i], jobIds: chunk.jobIds }));
-
-// Bad — wrapper returns unknown[]; every caller casts
-export async function sandboxedEvaluate(template: string, chunks: unknown[][]): Promise<unknown[]> {
-  const result = await runner.execute<{ bodies: unknown[] }>(key, expr);
   return result.bodies;
 }
+// Bad — returns unknown[]; every caller writes `bodies[i] as Record<string, unknown>`
 
-const bodies = await sandboxedEvaluate(template, chunks);
-return chunks.map((chunk, i) => ({
-  body: bodies[i] as Record<string, unknown>, // cast leaks into call site
-  jobIds: chunk.jobIds,
-}));
-```
-
-Within a function, cast each value where it originates — not after aggregating into an array or object.
-
-```ts
-// Good — cast at the individual call site where the shape is known
-const bodies = await Promise.all(
-  chunks.map(
-    (records) =>
-      evaluateTemplate(template, { records, connection }) as Promise<Record<string, unknown>>,
-  ),
-);
-
-// Bad — cast on the collected aggregate
-const bodies = (await Promise.all(
-  chunks.map((records) => evaluateTemplate(template, { records, connection })),
-)) as Record<string, unknown>[];
+// Good — cast per call site
+const bodies = await Promise.all(chunks.map((records) =>
+  evaluateTemplate(template, { records, connection }) as Promise<Record<string, unknown>>));
+// Bad — `(await Promise.all(...)) as Record<string, unknown>[]`
 ```
 
 ## Prefer `unknown` Over `any` for Generic Containers
 
-Use `unknown` instead of `any` for `Map`, `Promise`, or collection types where the container doesn't need to know the value's shape. Callers can narrow with `as T` at the point of use.
-
 ```ts
-// Good
-private pendingCreations = new Map<string, Promise<unknown>>();
-private cache = new Map<string, unknown>();
-
-// Bad
-private pendingCreations = new Map<string, Promise<any>>();
-private cache = new Map<string, any>();
+private pendingCreations = new Map<string, Promise<unknown>>(); // Good — narrow with `as T` at use
+private cache = new Map<string, any>();                         // Bad
 ```
 
 ## Use `.finally()` for Shared Cleanup in Promise Chains
 
-When `.then()` and `.catch()` both need the same cleanup, move it to `.finally()` and keep only the success-path logic in `.then()`.
-
 ```ts
-// Good — cleanup in one place
+// Good
 pending = this.createEntry()
-  .then((entry) => {
-    this.cache.set(cacheKey, entry);
-    return entry;
-  })
-  .finally(() => {
-    this.pendingCreations.delete(cacheKey);
-  });
-
-// Bad — duplicated cleanup
-pending = this.createEntry()
-  .then((entry) => {
-    this.pendingCreations.delete(cacheKey);
-    this.cache.set(cacheKey, entry);
-    return entry;
-  })
-  .catch((err) => {
-    this.pendingCreations.delete(cacheKey);
-    throw err;
-  });
+  .then((entry) => { this.cache.set(cacheKey, entry); return entry; })
+  .finally(() => { this.pendingCreations.delete(cacheKey); });
+// Bad — the same delete in both .then() and .catch()
 ```
 
 ## No Bare `as string` Over a Dot-Path Value
 
-`get(message, path)` returns `any`. Casting the result to `string` because the payload type
-says `string` asserts something nothing checked: the customer's field may be a number, and the
-path may not resolve at all. Both failures are silent — a JSON number reaches an API expecting
-a string, or the field is `undefined` and gets stripped by `removeUndefinedAndNullValues`, so
-the request goes out missing a **required** field instead of failing with an actionable error.
+`get(message, path)` returns `any`; `as string` asserts what nothing checked. A number reaches an
+API expecting a string, or an unresolved path becomes `undefined`, is stripped by
+`removeUndefinedAndNullValues`, and a **required** field silently goes missing.
 
 ```ts
-// Good — validate the type, stringify, and fail loudly when a required value is absent
+// Good — validate, stringify, fail loudly
 const raw = get(message, mapping.deduplicationKey);
 if (isPresent(raw) && !['string', 'number', 'boolean'].includes(typeof raw)) {
   throw new InstrumentationError(`deduplicationKey "${mapping.deduplicationKey}" is not a scalar`);
 }
 const id = isPresent(raw) ? String(raw) : message.messageId;
 
-// Bad — a lie about two untyped sources
+// Bad
 const id = (get(message, mapping.deduplicationKey) ?? message.messageId) as string;
 ```

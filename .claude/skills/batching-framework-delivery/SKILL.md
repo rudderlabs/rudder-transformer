@@ -5,77 +5,60 @@ description: Delivery (response handling) for batching-framework destinations. D
 
 # Batching Framework — Delivery
 
-**Objective:** Handle a destination's delivery response by declaring what should happen to the batch, and let the framework turn that into the delivery API response. Integrations never build a `DeliveryV1Response`, choose a status code, or throw.
-
-For the router-transform half of the framework, see `.claude/skills/batching-framework/SKILL.md`.
+Declare what should happen to the batch; the framework builds the delivery response.
+Integrations never build a `DeliveryV1Response`, choose a status code, or throw. Transform half:
+`.claude/skills/batching-framework/SKILL.md`.
 
 ## When you need this
 
-**Most destinations need nothing.** The framework default reproduces `genericNetworkHandler`: 2xx is a success, 429 is throttled, other retryable statuses retry, everything else aborts. `posthog` and `custom_audience` declare no overrides at all.
+**Most destinations need nothing.** The default reproduces `genericNetworkHandler`: 2xx success,
+429 throttled, other retryable statuses retry, the rest abort. `posthog` and `custom_audience`
+declare nothing. Add a `delivery.ts` only for:
 
-Add a `delivery.ts` only when the destination's response handling genuinely differs:
-
-- a **partial-failure body** — some records rejected inside an otherwise-successful response
-- a **2xx that isn't a success** — either the body carries the failure, or the status itself does,
-  where the partner distinguishes accepted from rejected within the success range. The framework
-  treats the whole 2xx class as success, so an unhandled one is silently reported as delivered:
-  read the partner's docs for what each success-range status means rather than assuming 2xx is
-  uniformly good.
-
-  The reverse also holds. Override only the statuses the partner has been **shown** to return,
-  live or in a captured `network.ts` mock. A `'2xx'` class override that aborts every success
-  status other than the documented one is speculative: it handles a response nobody has seen,
-  and if the partner ever sends one, it discards a delivery that probably succeeded.
-- **identity-keyed failures** — the response names *which* records failed rather than indexing them
-- a **real auth signal** in the body that should drive token refresh
+- a **partial-failure body** — some records rejected inside a successful response;
+- a **2xx that isn't a success** — the body or the specific status means "not accepted". The
+  framework treats all 2xx as delivered, so read the partner's docs for each success-range
+  status. Conversely, override only statuses the partner has been **shown** to return (live or a
+  captured `network.ts` mock); a speculative `'2xx'` override aborting every undocumented success
+  status discards deliveries that probably succeeded;
+- **identity-keyed failures** — the response names which records failed instead of indexing them;
+- a **real auth signal** in the body that should drive token refresh.
 
 ### Override only what differs
 
-A `statusOverrides` entry that reproduces the framework's own classification is dead code — it
-reads as a deliberate decision, and it silently stops tracking the default if that ever changes.
-The framework already throttles 429, retries retryable statuses and aborts the rest, so a
-destination whose only real difference is one status declares exactly that one:
+An override reproducing the default is dead code that looks deliberate and stops tracking the
+default if it changes.
 
 ```typescript
-// Good — the framework handles 429/4xx/5xx; only the status this API treats
-// differently is ours
-const statusOverrides: StatusOverrideMap = {
-  207: (ctx) => perItem(verdictPerItem(ctx)),
-};
+// Good — only the status this API treats differently
+const statusOverrides: StatusOverrideMap = { 207: (ctx) => perItem(verdictPerItem(ctx)) };
 
-// Bad — three entries restating the default, hiding the one that matters
+// Bad — restates 429/4xx/5xx defaults around the one that matters
 const statusOverrides: StatusOverrideMap = {
   207: (ctx) => perItem(verdictPerItem(ctx)),
-  429: (ctx) => throttled('rate limited'),
-  '4xx': (ctx) => abort('client error'),
-  '5xx': (ctx) => retry('server error'),
+  429: () => throttled('rate limited'), '4xx': () => abort('client error'), '5xx': () => retry('server error'),
 };
 ```
 
-One case is **not** a restatement and is worth keeping: an exact key that exists to *protect* a
-status from a broader class key (`429: (ctx, fallback) => fallback()` beside a `'4xx'` override,
-per the `dontBatch` pattern in `batching-framework`).
-
-An override that only attaches a destination-specific reason isn't one either — but `failureReason`
-does that better, since it applies to every failure without listing statuses, and is worth
-declaring alone with no `statusOverrides` at all whenever the partner's error body says something
-a reader needs.
+Not restatements: an exact key that *protects* a status from a broader class key
+(`429: (ctx, fallback) => fallback()` beside `'4xx'`), and reason-only overrides — though
+`failureReason` does that better, needs no status list, and is worth declaring alone whenever the
+partner's error body says something a reader needs.
 
 ## Reference
 
 - `src/services/destination/destinationIntegration/delivery.ts` — verdicts, `DeliverySpec`, the bridge
-- `src/v0/destinations/customerio/v2/delivery.ts` — 207 multi-status, positional index
-- `src/v0/destinations/braze_audience/delivery.ts` — partial failure on a 2xx, positional index
-- `src/v0/destinations/iterable_audience/delivery.ts` — failures keyed by identity, not index
+- `src/v0/destinations/customerio/v2/delivery.ts` — 207 multi-status, positional
+- `src/v0/destinations/braze_audience/delivery.ts` — partial failure on a 2xx, positional
+- `src/v0/destinations/iterable_audience/delivery.ts` — failures keyed by identity
 - `src/v0/destinations/google_adwords_enhanced_conversions/delivery.ts` — partial failure + body-derived OAuth
-- `docs/superpowers/specs/2026-07-30-network-handler-abstraction-design.md` — design, evidence, per-destination parity tables
+- `src/v0/destinations/rokt/delivery.ts` — attributing unindexed errors via locators
+- `docs/superpowers/specs/2026-07-30-network-handler-abstraction-design.md` — design and parity tables
 
 ## Declaring the delivery spec
 
-Everything an integration says about delivery lives in **one object**, exported from its
-`delivery.ts` and attached to the class as `static readonly delivery`. Grouping it is the point: a
-`DestinationIntegration`'s other members are all about transforming an event, and a bare `statusOverrides`
-or `failureReason` beside them reads as more of the same.
+One object exported from `delivery.ts`, attached as `static readonly delivery` — grouped so it
+doesn't read as more transform surface.
 
 ```typescript
 // delivery.ts
@@ -91,8 +74,7 @@ const myStatusOverrides: StatusOverrideMap = {
 
 export const myDelivery: DeliverySpec = {
   statusOverrides: myStatusOverrides,
-  // Optional: the reason on a failure verdict. Default is status-only and never reads the body.
-  failureReason: (ctx) => extractMyErrorMessage(ctx.response),
+  failureReason: (ctx) => extractMyErrorMessage(ctx.response), // optional; default never reads the body
 };
 
 // routerTransform.ts
@@ -101,206 +83,188 @@ class MyIntegration extends DestinationIntegration<TBody> {
 }
 ```
 
-- Both members are **optional**. A destination needing neither declares no `delivery` at all.
-- Status keys are an **exact status** or a class (`'2xx'` / `'4xx'` / `'5xx'`); exact wins.
-- The spec is **resolved down the prototype chain**: `statusOverrides` merges key-by-key (child
-  winning) and `failureReason` takes the nearest declaration. Declaring a spec in a subclass
-  therefore does not drop what a parent declared — static properties are shadowed, not merged, and
-  that failure would otherwise be invisible.
-- `fallback()` gives you the framework's own classification. Call it for the responses your override
-  does not own, rather than re-deriving a verdict — the return type stays total, with no sentinel.
-- Applying the spec is **framework-owned**: `handleDeliveryResponse(Class, ctx)` is a free function
-  in `delivery.ts`, so there is nothing to override and no `super` to call.
+- Both members optional; with neither, declare no `delivery`.
+- Keys: exact status or class (`'2xx'`/`'4xx'`/`'5xx'`); exact wins.
+- Resolved down the prototype chain: `statusOverrides` merges key-by-key (child wins),
+  `failureReason` takes the nearest — so a subclass spec doesn't silently drop the parent's.
+- `fallback()` returns the framework's own classification; call it for responses you don't own.
+- `handleDeliveryResponse(Class, ctx)` is a framework-owned free function — nothing to override.
 
-`DeliveryContext` carries `status`, `response` (parsed body), `jobs` (one `ProxyMetdata` per job, in order), `request` (what was sent) and `destinationConfig`.
+`DeliveryContext`: `status`, `response` (parsed body), `jobs` (one `ProxyMetdata` per job, in
+order), `request` (what was sent), `destinationConfig`.
 
 ## Error messages belong to the integration
 
-`failureReason`'s default is status-only — `[Generic Response Handler] Request failed with status: <n>` — and **never inspects the response body**. That mirrors `genericNetworkHandler`, the fallback every unmigrated destination already gets, which likewise leaves the body to travel in `destinationResponse`.
+Default `failureReason` is `[Generic Response Handler] Request failed with status: <n>` and never
+reads the body (like `genericNetworkHandler`; the body travels in `destinationResponse`).
 
-Do not add body-parsing to the framework. There is no shared convention to generalise: on the legacy path every destination extracts its message itself, against the shape its own API returns (`buildErrorMessage` joining `reason`/`field`/`message` for customerio, `error.message` for gaec, `params ?? msg ?? message` for iterable_audience). A generic "look for `message`, then `msg`, then `error`" helper looks like it unifies them but does not — it just imposes one destination's field order on every other, and any quirk added for one leaks into all of them.
+**Don't add body parsing to the framework.** Each destination extracts its own shape
+(customerio `buildErrorMessage` joins `reason`/`field`/`message`; gaec `error.message`;
+iterable_audience `params ?? msg ?? message`). A generic "try `message`, `msg`, `error`" helper
+imposes one destination's field order on all.
 
-So: if your destination's errors are worth reading, write the extractor in your own `delivery.ts` and point `delivery.failureReason` at it. Return the string **bare** — the per-job `error` is what live events display and what error reporting groups on, so `Invalid API key` beats `"Invalid API key"`.
-
-**Extract the whole envelope, not just `message`.** Most partner errors carry more than a
-sentence, and the extra fields are what make the failure actionable: a `code` the customer can
-look up, a `param` naming the offending field, and a nested `errors[]` saying *which* event in
-the batch failed. Lifting only `error.message` produces
-`[DEST] event_timestamp_ms must be within the last 7 days.` — true, but it doesn't say which of
-the 200 events was stale. Fold `code`, `param` and the per-item entries into the string.
+Write the extractor in your `delivery.ts`. Return it **bare** (`Invalid API key`, not
+`"Invalid API key"`) — it's what Live Events shows and error reporting groups on. **Fold in the
+whole envelope**: `code`, `param` and per-item `errors[]` make it actionable (`message` alone says
+an event was stale, not which of 200).
 
 ### Handle only the response shapes the API actually returns
 
-The extractor should branch on exactly the shapes covered by the destination's `network.ts`
-mocks. A formatter that also handles a bare string body, a string `error`, a top-level
-`message` and three fallback spellings is untested speculation: the branches cannot be
-exercised, they suggest to the next reader that the API is more variable than it is, and they
-turn a genuine shape change into a silent fallback instead of a visible failure.
+Branch only on shapes covered by `network.ts` mocks — extra fallbacks are untested, imply a
+variable API, and turn a real shape change into a silent fallback. If a shape is real, mock it;
+otherwise delete the branch.
 
-If a shape is real, mock it. If you cannot produce a mock for it, delete the branch.
-
-**An empty body is a shape too.** Auth failures often come back with no body. In that case
-`no error detail returned` tells the reader nothing, but the status does. Map the statuses this
-API actually sends with an empty body to what they mean for this destination's credentials, for
-example `the API key was rejected; check the destination credentials`, and keep a plain fallback
-for the rest.
-
-Do account for **variants within the envelope you do handle** — the same API commonly returns
-`{ error: { message, type, param, code, errors[] } }` for a validation failure but `param` and
-`code` as `null` with no `errors[]` for an auth failure. Those are two paths through your
-formatter, not two different APIs.
+- **An empty body is a shape.** Auth failures often have none; map the statuses this API sends
+  empty to what they mean (`the API key was rejected; check the destination credentials`), with a
+  plain fallback for the rest.
+- **Variants within one envelope** — e.g. `{ error: { message, type, param, code, errors[] } }`
+  on validation vs `param`/`code` null and no `errors[]` on auth — are two formatter paths; mock both.
 
 ## Verdicts
 
 | Builder | Meaning | Result |
 | --- | --- | --- |
 | `success()` | delivered | per-job `200` |
-| `abort(reason)` | permanent failure | per-job `400` |
-| `retry(reason, { dontBatch })` | transient failure; with `dontBatch`, try a batch-shaped permanent failure once alone first | per-job `500`, or per-job `400` when isolation is impossible |
+| `abort(reason)` | permanent | per-job `400` |
+| `retry(reason, { dontBatch })` | transient; with `dontBatch`, isolate a batch-shaped permanent failure first | per-job `500`, or `400` when isolation is impossible |
 | `throttled(reason)` | rate limited | per-job `429` |
-| `authExpired(reason)` | token stale but recoverable | `REFRESH_TOKEN` → refresh + retry |
+| `authExpired(reason)` | stale, recoverable token | `REFRESH_TOKEN` → refresh + retry |
 | `authRevoked(reason)` | grant gone | `AUTH_STATUS_INACTIVE` → abort |
-| `perItem([...])` | one verdict per request-body item | per-job, positionally |
+| `perItem([...])` | one verdict per request-body item | per-job, positional |
 
-`ItemVerdict` (what `perItem` accepts) deliberately excludes the two auth refinements: rudder-server overwrites the status code of *every* job in a batch when an `authErrorCategory` is present, so a per-item auth verdict cannot be represented.
+`ItemVerdict` excludes the auth refinements: rudder-server overwrites every job's status when an
+`authErrorCategory` is present, so per-item auth is unrepresentable.
 
 ### `dontBatch` softens an abort; it never hardens a retry
 
-Use `retry(reason, { dontBatch: true })` only for a permanent whole-batch rejection where one bad event may be poisoning the batch. The flag means: return a retryable job state now so rudder-server redelivers each event once alone; if the event is already alone, the framework rewrites the verdict to `abort(reason)`, emits a terminal per-job `400` with the reason unchanged, and increments `batch_delivery_dont_batch_aborted`.
+Use `retry(reason, { dontBatch: true })` only for a **permanent whole-batch rejection** that one
+bad event may cause. rudder-server redelivers each event alone; if it is already alone, the
+framework rewrites to `abort(reason)` (terminal 400, reason unchanged) and increments
+`batch_delivery_dont_batch_aborted`.
 
-Do **not** pair `dontBatch` with transient/retryable statuses such as 5xx. On a single-event batch there is nothing to isolate, so `retry(reason, { dontBatch: true })` becomes an immediate abort with no retry. Transient destination failures must use plain `retry(reason)` (or `throttled(reason)` for 429) so normal retry semantics are preserved.
-
-**Don't guard the flag on batch size yourself.** The rewrite above is the framework's job (`destinationIntegration/delivery.ts:401`), so a `ctx.jobs.length > 1` check around `dontBatch` is redundant — and it is subtly worse than redundant, because the single-job branch it adds returns a plain `retry` where the framework would have produced a terminal `abort`, converting a permanent rejection into an infinite retry.
+- **Never with transient statuses (5xx).** On a single-event batch it becomes an immediate abort.
+  Use plain `retry(reason)` / `throttled(reason)`.
+- **Don't guard on batch size yourself** (`destinationIntegration/delivery.ts:421` does it). A
+  `ctx.jobs.length > 1` guard is worse than redundant: its single-job branch returns a plain
+  `retry` where the framework would abort — an infinite retry.
 
 ```ts
 // Good
 statusOverrides: { 400: (ctx) => retry(responseToMessage(ctx.response), { dontBatch: true }) }
-
-// Bad — the framework already handles the singleton case
-statusOverrides: {
-  400: (ctx) =>
-    ctx.jobs.length > 1
-      ? retry(responseToMessage(ctx.response), { dontBatch: true })
-      : retry(responseToMessage(ctx.response)),
-}
+// Bad
+400: (ctx) => ctx.jobs.length > 1 ? retry(msg, { dontBatch: true }) : retry(msg),
 ```
 
-**A partial accept is not a whole-batch rejection.** When the partner ingests the valid items and
-reports the rest, usually as an error list inside a 2xx, `retry(reason, { dontBatch: true })`
-re-sends the items it already accepted. Unless the partner deduplicates on an id you send, that
-duplicates every one of them. Check the partner's docs, or a live mixed batch, for whether valid
-items are kept. If they are, attribute each error to its item and return `perItem`: `success()`
-for the accepted items and `retry(…, { dontBatch: true })` or `abort(…)` for the rejected ones.
-When errors aren't indexed, look for any locator in them, such as an array index in a field path
-or a character offset into the request body, and map it against the body you posted. Fall back
-to the whole-batch `dontBatch` retry only when an error can't be attributed, and treat that as a
-known duplication cost rather than a safe default. `src/v0/destinations/rokt/delivery.ts` is
-the worked example: it uses both locator forms and falls back only when one fails.
+**A partial accept is not a whole-batch rejection.** If the partner keeps valid items and reports
+the rest (usually inside a 2xx), a `dontBatch` retry re-sends accepted items — duplicates unless
+the partner dedupes on an id you send. Confirm from docs or a live mixed batch. If valid items are
+kept, return `perItem`: `success()` for accepted, `retry(…, { dontBatch: true })` or `abort(…)`
+for rejected. For unindexed errors use any locator (array index in a field path, character offset
+into the body) mapped against the posted body. Fall back to a whole-batch `dontBatch` retry only
+for errors you can't attribute, as a known duplication cost. `rokt/delivery.ts` does both locator
+forms.
 
 ### `perItem` is positional and 1:1
 
-**Index it off the posted request body (`ctx.request.body?.JSON`), not off the response.** The posted array is the one guaranteed to be the same length as the job list; a response array can be truncated or omitted entirely. A length mismatch makes the framework retry the whole batch rather than misattribute — correct, but a worse outcome than reading the body you sent.
-
-`gaec` originally indexed off the response's `results` and hit exactly this: whenever Google omitted `results`, an abort became a batch retry that could never converge, since re-uploading accepted adjustments returns duplicate-enhancement failures on every attempt.
-
-**`ctx.request.body?.JSON` only holds the batch on `BodyFormat.JSON`.** `mapSuccessPayloadToServerFormat` writes the batch to `body[strategy.bodyFormat]` and hard-sets the other three to `{}` (`processDestinationIntegration.ts`), so a destination on `JSON_ARRAY`, `FORM` or `XML` reading `body.JSON` gets nothing on every response — success included — and the mismatch guard answers each one with an N-job 500. Read the key your `getBatchStrategy` actually returns. All six spec'd destinations are on `JSON` today, which is why no test catches this for you.
-
-**Decide what an unreadable posted array should mean before you write the loop.** `perItem([])` is a length mismatch, so the bridge retries the whole batch — and that retry reposts the same body and mismatches again, which never converges. `braze_audience` avoids it by falling back to `ctx.jobs`, which the framework builds 1:1 with the posted array. Taking the `fallback` parameter and returning a whole-batch verdict is the other option.
-
-**A delivery spec and an array-returning `transformEvent` are mutually exclusive.** `ctx.jobs` carries one entry per job, so a job contributing two body items puts the two lengths permanently out of step and the batch retries forever. `destinationIntegration.ts` and the VDM V2 dispatch table both permit `transformEvent` to return an array; a destination that does must not call `perItem`.
+- **Index off the posted body (`ctx.request.body?.JSON`), not the response.** Only the posted array
+  is guaranteed job-length; a length mismatch makes the framework retry the whole batch. gaec
+  indexed off `results` and, when Google omitted it, an abort became a never-converging batch
+  retry (re-uploads return duplicate-enhancement failures).
+- **`body.JSON` holds the batch only on `BodyFormat.JSON`.** `mapSuccessPayloadToServerFormat`
+  writes to `body[strategy.bodyFormat]` and sets the other three to `{}`
+  (`processDestinationIntegration.ts`), so `JSON_ARRAY`/`FORM`/`XML` destinations reading `body.JSON`
+  get an N-job 500 on every response. Read the key your strategy returns (no test catches this —
+  all spec'd destinations are on `JSON`).
+- **Decide what an unreadable posted array means.** `perItem([])` mismatches → batch retry → same
+  mismatch forever. `braze_audience` falls back to `ctx.jobs` (1:1 with the posted array);
+  returning a whole-batch verdict via `fallback` also works.
+- **A delivery spec and an array-returning `transformEvent` are mutually exclusive** — a job with
+  two body items puts lengths permanently out of step. Such destinations must not call `perItem`.
 
 ### Never infer auth from a status code
 
-A 401 from an API-key destination is a bad key, not a refreshable token, and guessing costs a real control-plane token refresh. Derive the category from the **response body** — `gaec` does, via `getAuthErrCategory` — or leave it alone. `getAuthErrCategoryFromStCode`'s unconditional 401→`REFRESH_TOKEN` is the anti-pattern this replaces.
+A 401 on an API-key destination is a bad key; guessing costs a real control-plane token refresh.
+Derive the category from the **body** (gaec's `getAuthErrCategory`) or leave it.
+`getAuthErrCategoryFromStCode`'s unconditional 401→`REFRESH_TOKEN` is the anti-pattern.
 
 ## What the framework derives
 
-Don't set these yourself:
-
-- **per-job `statusCode`** — from the verdict kind
-- **top-level `status`** — `ctx.status`, passed through
-- **`message`** — the shared failure reason when every failure agrees on one, otherwise a count
-- **`statTags`** — the whole tag set, when every job failed the same way
-- **`authErrorCategory`** — from the auth refinements only
+Don't set: per-job `statusCode` (from verdict), top-level `status` (`ctx.status`), `message`
+(shared reason, else a count), `statTags` (when every job failed the same way),
+`authErrorCategory` (auth refinements only).
 
 ## Enrolled v1 delivery uses the framework transport
 
-For a destination/workspace where `isDestinationIntegrationEnabled` is true and the request is a v1 proxy request, transform, transport, and response handling move together: `deliver()` resolves the `DestinationIntegration` delivery spec, runs `prepareRequest`, sends through the framework's shared `proxyRequest`, and converts the result with the delivery response helpers.
+This section is about **migrations** only. When `isDestinationIntegrationEnabled` is true and the
+request is v1, transform, transport and response handling move together: `deliver()` resolves
+the spec, runs the optional `prepareRequest`, sends via the shared `proxyRequest`, and converts
+the result. So `transformEvent` must emit the real endpoint and an HTTP-ready request.
 
-This whole section is about **migrations**. For a destination being built new, see "A new destination gets no `networkHandler.ts`" below — the answer there is always no.
+`prepareRequest` is only for delivery-time material that must not be persisted — a platform
+secret the transform never sees (gaec's env-sourced `developer-token`). Not for:
+
+- the destination's own credentials (`destination.Config` → `transformEvent`'s `headers`);
+- re-validating endpoint/host/config already checked in `getInputSchema`/`transformEvent` (dead
+  code that can fail where transform tests never look).
+
+If the partner genuinely can't use the shared HTTP proxy, that is a framework gap — don't split
+v1 ownership between class and handler. Test both boundaries: v1 proves the framework prepares,
+sends and interprets; v0 proves the legacy handler is still selected.
 
 ### Keeping the legacy handler
 
-**Keep the legacy `networkHandler.ts` until nothing routes to it.** `batching: true` is not the
-cutoff on its own; two things still send traffic through it:
+Keep `networkHandler.ts` until nothing routes to it — `batching: true` alone is not the cutoff:
 
-- **Pre-GA workspaces.** A workspace not named in
-  `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` transforms through `processRouterDest` *and*
-  is delivered by that handler — the two move together, so this is one condition, not two.
-- **v0 proxy requests.** `deliver()` reaches the framework branch only via `isProxyV1Request`,
-  which requires the v1 route *and* an array `metadata`. A v0 request stays on the handler even
-  for a batching-GA destination, because the framework answers with a `DeliveryV1Response` that
-  a v0 caller cannot parse.
+- **Pre-GA workspaces** (not in `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS`) transform via
+  `processRouterDest` *and* deliver via the handler — one condition.
+- **v0 proxy requests.** The framework branch requires `isProxyV1Request` (v1 route *and* array
+  `metadata`); v0 callers can't parse a `DeliveryV1Response`.
 
-`customerio`, `braze_audience`, `iterable_audience` and `reddit_audience` are all batching-GA today
-and still carry both a `delivery.ts` and a `src/v1/destinations/<dest>/networkHandler.ts` — now for
-the **second** reason only. GAEC's destination-specific handlers were deleted after framework
-transport became its only supported path. A retained handler is deletable once v0 proxy traffic is
-confirmed dead for the destination.
+While the handler survives, audit it for single-item assumptions if it can receive batches, and
+don't make the framework request depend on handler-only URL construction or SDK transport.
+`customerio`, `braze_audience`, `iterable_audience`, `reddit_audience` are batching-GA and keep a
+`src/v1/destinations/<dest>/networkHandler.ts` for v0 traffic only; GAEC's were deleted. A
+retained handler is deletable once v0 proxy traffic is confirmed dead.
 
 ### A new destination gets no `networkHandler.ts`
 
-**Do not write one.** A destination built new on the framework has no legacy transform and no
-unenrolled workspaces, so nothing above applies to it. Build it framework-native:
+**Do not write one** — no legacy transform, no unenrolled workspaces:
 
-- **No `networkHandler.ts`, for transport or for response handling.** `posthog` and
-  `custom_audience` have neither a `networkHandler.ts` nor a `delivery.ts` — they take the
-  framework default, which reproduces `genericNetworkHandler`. That is the shape to copy.
-- **Add a `delivery.ts` only to override the default verdicts** (see the verdict builders above).
-- Mark it `batching: true` in `src/features.ts` from the start — a new destination is GA on day
-  one, so the `{DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` rollout flag is for migrations and
-  is not needed. That single entry turns on transform *and* delivery; there is nothing else to set.
+- No handler for transport or response handling; `posthog`/`custom_audience` (no handler, no
+  `delivery.ts`) are the shape to copy.
+- `delivery.ts` only to override default verdicts.
+- `batching: true` in `features.ts` from the start turns on transform *and* delivery; no rollout flag.
 
-**If it looks like you need one, that is a framework gap — raise it, don't fork around it.** Two
-cases come up, and neither is a licence to hand-write a handler:
+**If it looks like you need one, it's a framework gap — raise it:**
 
-- **Transport the framework cannot express** — for example, an SDK-only call. Enrolled v1 delivery
-  uses the framework's shared HTTP proxy, so URLs derived from event data belong in `transformEvent`
-  and delivery-only headers belong in `prepareRequest`; an SDK-only transport is a framework gap.
-- **OAuth on the v0 proxy path.** A v0 request bypasses `delivery.ts`, and `genericNetworkHandler`
-  throws a bare `NetworkError` with no `authErrorCategory`, so a 401 there aborts the batch without
-  requesting a token refresh. This is a **known gap in the framework**, not a reason to grow a
-  second copy of response handling — writing a handler re-forks classification across two files,
-  which is the exact thing this framework exists to remove.
+- **Transport the framework can't express** (e.g. SDK-only). Event-derived URLs belong in
+  `transformEvent`, delivery-only headers in `prepareRequest`.
+- **OAuth on the v0 proxy path.** v0 bypasses `delivery.ts`, and `genericNetworkHandler` throws a
+  bare `NetworkError` with no `authErrorCategory`, so a 401 aborts without refresh. Known gap;
+  a handler would re-fork classification across two files.
 
-`reddit_audience` does ship `src/v1/destinations/reddit_audience/networkHandler.ts` despite being
-new and `batching: true` from the start. It predates this guidance and is **not a template** — if
-you are citing it to justify a handler on a new destination, raise the gap instead.
+`reddit_audience`'s handler predates this guidance — **not a template**.
 
 ## Enabling it
 
-Delivery has **no flag of its own**. It is gated on `isDestinationIntegrationEnabled(destType, workspaceId)` — the same predicate as the router transform:
+No delivery flag: gated on `isDestinationIntegrationEnabled`, same as the transform
+(`batching-framework#one-gate-both-halves`). An unenrolled workspace's payloads come from
+`processRouterDest`, so pairing them with framework response handling would misread them.
 
-- **GA:** the destination is marked `batching: true` in `features.ts` (surfaced as `destinationIntegrationsMap`), which enables both halves everywhere.
-- **Pre-GA:** the workspace is named in `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or `ALL`).
-
-One predicate for both halves is deliberate. The delivery path interprets a payload built by the matching transform path; an unenrolled workspace's events are still built by `processRouterDest`, and pairing those with framework response handling would misread them. Deciding both from one call makes that mismatch unrepresentable. See `.claude/skills/batching-framework/SKILL.md#one-gate-both-halves` for the predicate and the v0-proxy carve-out.
-
-Nothing extra is needed in your `dataDelivery` component tests or `live.ts` specs for a destination
-already marked batching-GA in `features.ts`; a pre-GA destination needs the transform flag set via
-`envOverrides`, or CI keeps exercising the legacy handler. If you are reading an older spec that
-still sets `{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS`, that flag no longer exists —
-delete the override rather than porting it.
+`dataDelivery` component tests and `live.ts` need nothing extra for a batching-GA destination; a
+pre-GA one needs the transform flag in `envOverrides` or CI exercises the legacy handler.
+`{DEST}_BATCHING_FRAMEWORK_DELIVERY_ENABLED_WORKSPACE_IDS` no longer exists — delete such
+overrides rather than porting them.
 
 ## Testing
 
-Drive **both** paths over the same responses and compare, rather than asserting the new one in isolation — that is what makes it a parity test:
+Parity, not isolation — drive both paths over the same responses:
 
 ```typescript
-const viaFramework = (ctx) =>
-  toDeliveryV1Response(handleDeliveryResponse(Integration, ctx), ctx, DEST);
+const viaFramework = (ctx) => toDeliveryV1Response(handleDeliveryResponse(Integration, ctx), ctx, DEST);
 const viaLegacy = (ctx) => legacyResponseHandler({ ... });
-// compare per-job statusCodes and errors for each response shape
+// compare per-job statusCodes and errors per response shape
 ```
 
-**Reference:** `src/v0/destinations/braze_audience/delivery.test.ts` — also compares `stats.increment` call lists, so counters are held to parity too.
+Reference: `src/v0/destinations/braze_audience/delivery.test.ts` (also compares
+`stats.increment` calls).

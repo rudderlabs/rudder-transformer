@@ -5,276 +5,126 @@ description: Conventions to follow when writing or modifying tests in this repo.
 
 # Test Writing Conventions
 
-Follow these conventions when writing or modifying tests in this repo.
-
 ## Error Matchers
 
-Never use `/.+/` or other catch-all patterns in test assertions. Run the code to find the actual error message and match on a distinctive substring.
-
-```ts
-// Good
-errorMatch: /Unexpected token/;
-
-// Bad
-errorMatch: /.+/;
-```
+Never `/.+/` or other catch-alls. Run the code and match a distinctive substring of the real
+message: `errorMatch: /Unexpected token/`.
 
 ## No Redundant If-Guards After Assertions
 
-`expect(result.valid).toBe(true)` already throws on failure — don't wrap the next assertion in `if (result.valid)`. Use `'field' in result && result.field` for TypeScript narrowing without a runtime branch.
+`expect(...).toBe(true)` already throws; narrow with `'field' in result &&` instead of `if`.
 
 ```ts
-// Good
 expect(result.valid).toBe(true);
-expect('recordFields' in result && result.recordFields.sort()).toEqual(expected);
-
-// Bad
-expect(result.valid).toBe(true);
-if (result.valid) {
-  expect(result.recordFields.sort()).toEqual(expected);
-}
+expect('recordFields' in result && result.recordFields.sort()).toEqual(expected); // Good
+// Bad — if (result.valid) { expect(result.recordFields.sort()).toEqual(expected); }
 ```
 
 ## Table-Driven Tests With `it.each()`
 
-When two or more test cases share the same assertion structure, group them into an `it.each()` data table. When a describe block has cases with different assertion shapes, use one `it.each()` per shape. Keep test data arrays at the top of the describe block for easy scanning.
+Two or more cases with the same assertion shape → one `it.each()` table; one table per shape. Keep
+the data arrays at the top of the `describe`.
 
 ```ts
-// Good — cases grouped by assertion shape, each group gets its own it.each()
 const validCases = [
   { name: 'objects', template: '$.records.({ "e": .email })', expectedFields: ['email'] },
   { name: 'arrays', template: '$.records.([.email, .phone])', expectedFields: ['email', 'phone'] },
 ];
-
 const invalidCases = [
   { name: 'spread operator', template: '{ ...$.records }', errorMatch: /spread_expr/ },
   { name: 'bare identifier', template: 'process', errorMatch: /Bare identifiers/ },
 ];
-
-it.each(validCases)('should accept: $name', ({ template, expectedFields }) => { ... });
-it.each(invalidCases)('should reject: $name', ({ template, errorMatch }) => { ... });
-
-// Bad — individual blocks with identical assertion structure
-it('should reject spread operator', () => {
-  const result = validateTemplate('{ ...$.records }');
-  expect(result.valid).toBe(false);
-  expect(result.errors?.[0]).toMatch(/spread_expr/);
-});
-
-it('should reject variable declarations', () => {
-  const result = validateTemplate('let x = 1');
-  expect(result.valid).toBe(false);
-  expect(result.errors?.[0]).toMatch(/definition_expr/);
-});
+it.each(validCases)('should accept: $name', ({ template, expectedFields }) => { /* … */ });
+it.each(invalidCases)('should reject: $name', ({ template, errorMatch }) => { /* … */ });
+// Bad — one it() per case with identical assertions
 ```
 
 ## Test Depth Should Match Logic Ownership
 
-Thoroughly test the logic a layer owns (e.g., input validation in a controller — cover all invalid shapes). For success/failure paths delegated to another module that has its own tests, one representative case each is enough.
-
-```ts
-// Good — controller owns Zod validation, so test all 400 shapes;
-// one valid + one invalid template case since templateValidator.test.ts covers the rest
-const badRequestCases = [
-  { name: 'missing field', body: {}, expectedError: 'requestBody: Required' },
-  { name: 'empty string', body: { requestBody: '' }, expectedError: '...' },
-  { name: 'wrong type', body: { requestBody: 123 }, expectedError: '...' },
-];
-
-it.each(badRequestCases)('should return 400: $name', async ({ body, expectedError }) => { ... });
-
-it('should return valid=true for a valid template', async () => { ... });
-it('should return valid=false for an invalid template', async () => { ... });
-
-// Bad — controller test re-tests every template validation scenario
-// that templateValidator.test.ts already covers
-it('should reject spread operator', ...);
-it('should reject bare identifiers', ...);
-it('should reject bracket notation', ...);
-```
+Exhaustively test what the layer owns (e.g. every invalid request shape a controller's Zod schema
+rejects); for behavior delegated to a separately-tested module, one success and one failure case
+suffice. A controller test must not re-test every template-validation scenario
+`templateValidator.test.ts` covers.
 
 ## Test File Location and Naming
 
-Test files use 1:1 name mapping to the source file. If a `__tests__/` directory already exists at that level, place the test there. Otherwise, co-locate it alongside the source file.
-
-```
-# If __tests__/ exists
-src/controllers/__tests__/eventTest.test.ts
-
-# If no __tests__/ directory
-src/v0/destinations/custom_audience/templateValidator.test.ts
-```
+1:1 with the source file name. Use an existing `__tests__/` at that level
+(`src/controllers/__tests__/eventTest.test.ts`); otherwise co-locate
+(`src/v0/destinations/custom_audience/templateValidator.test.ts`).
 
 ## Consistent Test Data Scoping
 
-All test data arrays within a `describe` block should live at the same scope — either all inside or all outside. Don't mix.
+All data arrays in a `describe` live at the same scope — all inside or all outside.
 
 ## Component Test Fixtures Live in `common.ts`
 
-Reusable destination, connection, and override fixtures for component tests under `test/integrations/destinations/<destination>/` go in `common.ts` and are imported by `router/data.ts`, `processor/data.ts`, etc. Don't define them inline at the top of `data.ts`. This includes per-scenario variants (e.g., a destination override that changes a single action's `requestBody`, or a connection variant with `isHashRequired: true`).
+Reusable destination/connection/override fixtures for `test/integrations/destinations/<dest>/` —
+including per-scenario variants — go in `common.ts`, imported by `router/data.ts` etc., never
+declared at the top of `data.ts`.
 
 ```ts
-// Good — variants exported from common.ts alongside the base fixtures
 // common.ts
-export const destination = { /* ... */ };
-export const connection = { /* ... */ };
+export const connection = { /* … */ };
 export const hashRequiredConnection = {
   ...connection,
   config: { destination: { ...connection.config.destination, isHashRequired: true } },
 };
-
 // router/data.ts
 import { destination, connection, hashRequiredConnection } from '../common';
-export const data = [
-  { /* ... */, connection: hashRequiredConnection },
-];
-
-// Bad — variants declared at the top of router/data.ts
-const hashRequiredConnection = { /* ... */ };  // belongs in common.ts
 ```
 
 ## Component Test Entries Are Plain Object Literals
 
-Each entry in the exported `data` array of `test/integrations/destinations/<destination>/{router,processor}/data.ts` is a plain object literal. Don't wrap an entry in an IIFE just to lift local consts — hoist those to top-level constants in `common.ts` (or near the top of the file if truly local) instead.
-
-```ts
-// Good — plain object entries; overrides hoisted to common.ts or top of file
-import { customMappingsDestination, customMappingsConnection } from '../common';
-
-export const data = [
-  {
-    id: 'test-4',
-    /* ... */,
-    input: { /* uses customMappingsDestination, customMappingsConnection */ },
-  },
-];
-
-// Bad — IIFE inside the array breaks the file's pattern
-export const data = [
-  (() => {
-    const customMappingsDestination = { /* ... */ };
-    const customMappingsConnection = { /* ... */ };
-    return { id: 'test-4', /* ... */ };
-  })(),
-];
-```
+Each `data` entry in `{router,processor}/data.ts` is a plain object. Don't wrap one in an IIFE to
+lift local consts — hoist them to `common.ts` (or the top of the file if truly local).
 
 ## Compute Hashed Expected Values via the Hash Function
 
-When asserting on hashed identifiers in audience-destination tests, invoke the hash function in the test data (`sha256('a@b.com')`) instead of pasting a copied hex string. Generated values stay in sync with input edits and reviewers can scan inputs without decoding hex.
-
-```ts
-// Good
-import sha256 from 'sha256';
-
-users: [
-  { email: sha256('a@b.com') },
-  { email: sha256('c@d.com') },
-],
-
-// Bad — copied hex; rotting risk if the input email is ever changed
-users: [
-  { email: 'fb98d44ad7501a959f3f4f4a3f004fe2d9e581ea6207e218c4b02c08a4d75adf' },
-  { email: '6a4d2afe9d4d6f5cb73d8e3e3a8fa8e5dc1d2a1f64d1b9e0c5b9b1c2d6e3f5a4' },
-],
-```
+`{ email: sha256('a@b.com') }` (`import sha256 from 'sha256'`), never a pasted hex string — it
+stays in sync with input edits and reviewers can read it.
 
 ## Assert Whole Response Objects, Not Individual Fields
 
-When testing a method that returns a structured response, assert the entire object with `toEqual` rather than picking individual fields. This catches unexpected extra fields and makes the expected shape explicit at a glance.
-
-```ts
-// Good — full response shape visible in one assertion
-expect(result).toEqual({
-  users: [{ id: 'u1', status: 'active' }],
-  errors: [],
-  metadata: { total: 1 },
-});
-
-// Bad — individual field assertions hide the overall shape
-expect(result.users).toEqual([{ id: 'u1', status: 'active' }]);
-expect(result.errors).toEqual([]);
-expect(result.metadata).toEqual({ total: 1 });
-```
+`expect(result).toEqual({ users: [...], errors: [], metadata: { total: 1 } })` — shows the full
+shape and catches unexpected fields, unlike per-field `expect(result.users)…`.
 
 ## Mock Leaf Dependencies, Not Intermediate Modules
 
-Prefer using the real module and mocking only its leaf dependencies (logger, stats) rather than replacing the whole module with a stub. Only mock the module itself if using it makes the test significantly more complex.
+Use the real module; mock only leaves (logger, stats). Stub a whole module only if using it makes
+the test significantly more complex.
 
 ```ts
-// Good — real DisposableCache, only leaf deps mocked
-jest.mock('../../../../logger', () => ({
-  info: jest.fn(),
-  debug: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
-}));
-jest.mock('../../../../util/stats', () => ({
-  increment: jest.fn(),
-  gauge: jest.fn(),
-}));
-
-import { IvmScriptRunner } from './ivmScriptRunner'; // uses real DisposableCache
-
-// Bad — entire intermediate module replaced with a stub
-jest.mock('../../../../util/ivmCache/index', () => {
-  return class MockCache {
-    private store = new Map();
-    get(key: string) {
-      return this.store.get(key);
-    }
-    set(key: string, value: any) {
-      this.store.set(key, value);
-    }
-    delete(key: string) {
-      this.store.delete(key);
-    }
-  };
-});
+// Good — real DisposableCache
+jest.mock('../../../../logger', () => ({ info: jest.fn(), debug: jest.fn(), warn: jest.fn(), error: jest.fn() }));
+jest.mock('../../../../util/stats', () => ({ increment: jest.fn(), gauge: jest.fn() }));
+import { IvmScriptRunner } from './ivmScriptRunner';
+// Bad — jest.mock('../../../../util/ivmCache/index', () => class MockCache { /* Map-backed get/set/delete */ })
 ```
 
 ## Network Mocks Are Captured, Not Invented
 
-Entries in `test/integrations/destinations/<destination>/network.ts` must be **real responses
-from the partner**, copied from a live call or the partner's published API reference. An
-invented error envelope tests your guess at the API, and the delivery code written against it
-inherits the same guess.
+`network.ts` entries are **real partner responses** — from a live call or the partner's published
+API reference. An invented envelope tests your guess, and delivery code inherits it. An empty
+`networkMocks` in a new destination means `dataDelivery` asserts nothing.
 
-An empty `networkMocks` array in a new destination means no partner response is exercised at
-all — the `dataDelivery` suite is asserting nothing.
+Cover at minimum: **success**; a **validation failure** (ideally *partial* — some records rejected
+in a well-formed request, which drives per-item verdicts and `dontBatch`); **auth/config failures**
+— invalid API key (401), invalid account/pixel id, missing required query param.
 
-Cover, at minimum:
+Mock **shape variants within one envelope** — e.g. `{ error: { message, type, param, code, errors[] } }`
+for validation vs `param`/`code` null with no `errors[]` for auth are two formatter paths.
 
-- **The success shape.**
-- **A validation failure** — ideally a *partial* one (some records rejected inside an otherwise
-  well-formed request), because that is what drives per-item verdicts and `dontBatch`.
-- **The auth and configuration failures**: an invalid API key (401), an invalid account/pixel
-  identifier, and a missing required query parameter. These are the responses customers
-  actually hit, and they are usually the ones with no coverage.
+Both halves of a request–response pair must be real:
 
-Watch for **shape variants within the same error envelope**. Many APIs return
-`{ error: { message, type, param, code, errors[] } }` for a validation failure but `param`,
-`code` as `null` with no `errors[]` for an auth failure. Those are two distinct code paths
-through your error formatter — mock both.
-
-A captured mock is a **request–response pair**, and both halves have to be real:
-
-- **The request must be one the partner actually rejects.** A failure mock that pairs a payload
-  the partner accepts with an error response passes the suite and proves nothing. Replay it
-  live: if the partner answers 2xx, the mock is fiction.
-- **Copy the body exactly, including an empty one.** A partner that answers `202` with no body
-  is `data: ''`, not an invented `{ status: 'accepted' }`. The invented body silently skips the
-  empty-body branch of your formatter.
-- **Don't mock a status the partner never returns.** A `200` beside a partner that only ever
-  sends `202`, or an all-items-failed `2xx` from one that sends `400` for that case, creates a
-  verdict branch for a response that can't happen.
-- **When the docs and a live call disagree, the live call wins.** The API reference tells you
-  what to try. The live response is what goes in the mock.
+- **The request must be one the partner rejects** — replay it live; a 2xx means the mock is fiction.
+- **Copy the body exactly, including empty** — `202` with no body is `data: ''`, not
+  `{ status: 'accepted' }` (which skips the empty-body branch).
+- **Don't mock a status the partner never returns** (`200` from a `202`-only partner; an
+  all-failed `2xx` from one that sends `400`).
+- **Docs vs live disagree → live wins.**
 
 ## Every New Destination Gets `live.ts`
 
-A new destination ships with `test/integrations/destinations/<destination>/live.ts` covering at
-least one positive scenario per event shape it supports. Component tests assert against mocks,
-so they cannot catch a payload the partner rejects — an endpoint typo, a field the API renamed,
-a required parameter nobody sent. See the `live-integration-test` skill for the harness and
-credential setup.
+Ship `test/integrations/destinations/<dest>/live.ts` with at least one positive scenario per
+supported event shape. Mocked component tests can't catch a payload the partner rejects (endpoint
+typo, renamed field, missing required parameter). Harness and credentials: `live-integration-test` skill.

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.158.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.157.0...v1.158.0) (2026-10-14)
+
+
+### Features
+
+* **gainsight_px_audience:** add Gainsight PX Audience destination ([#5669](https://github.com/rudderlabs/rudder-transformer/issues/5669)) ([98abb78](https://github.com/rudderlabs/rudder-transformer/commit/98abb78e1fdd927766a080615aa949406a6f3e3f)), closes [rudder-specs#216](https://github.com/rudderlabs/rudder-specs/issues/216) [integrations-config#2823](https://github.com/rudderlabs/integrations-config/issues/2823) [integrations-info#793](https://github.com/rudderlabs/integrations-info/issues/793) [webapp#10262](https://github.com/rudderlabs/webapp/issues/10262) [Lookout#945](https://github.com/rudderlabs/Lookout/issues/945)
+
+
+### Bug Fixes
+
+* **rokt:** hardcode mParticle events endpoint ([#5670](https://github.com/rudderlabs/rudder-transformer/issues/5670)) ([d7e8e4f](https://github.com/rudderlabs/rudder-transformer/commit/d7e8e4f4cd8d0fd632b5718f2c142a23359af1c4))
+
 ## [1.157.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.156.0...v1.157.0) (2026-10-12)
 
 

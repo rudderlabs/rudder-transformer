@@ -38,6 +38,7 @@ describe('features destination capabilities', () => {
       CUSTOM_AUDIENCE: true,
       ITERABLE_AUDIENCE: true,
       BRAZE_AUDIENCE: true,
+      GAINSIGHT_PX_AUDIENCE: true,
       REDDIT_AUDIENCE: true,
       EVERFLOW: true,
       OPENAI_ADS: true,
@@ -69,6 +70,11 @@ describe('features destination capabilities', () => {
         expect(defaultFeaturesConfig.transformerProxy).toHaveProperty(destination, true);
       });
     expect(defaultFeaturesConfig.transformerProxy).not.toHaveProperty('CUSTOM_AUDIENCE');
+  });
+
+  it('advertises proxy delivery for GAINSIGHT_PX_AUDIENCE so no Router env flag is needed', () => {
+    expect(defaultFeaturesConfig.routerTransform).toHaveProperty('GAINSIGHT_PX_AUDIENCE', true);
+    expect(defaultFeaturesConfig.transformerProxy).toHaveProperty('GAINSIGHT_PX_AUDIENCE', true);
   });
 
   // A destination may only declare transformerProxy if it implements the proxy itself: either a

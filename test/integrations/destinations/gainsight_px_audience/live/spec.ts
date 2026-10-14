@@ -6,7 +6,6 @@ import {
   fetchMembership,
   setMembership,
   unknownIdentifyId,
-  userExists,
 } from './api';
 
 // LIVE_SECRET_GAINSIGHT_PX_AUDIENCE='{"config":{"apiKey":"…","dataCenter":"US"},
@@ -150,33 +149,6 @@ export const live = {
         },
       ],
       verify: { check: expectMembership(true), ...POLL },
-    },
-    {
-      id: 'gainsight-px-audience-leave-unknown',
-      // Parked: the framework answers this 404-turned-success with per-job statusCode 200 but passes
-      // PX's 404 through as the top-level `status` with no statTags, which DeliveryV1ResponseSchema
-      // (src/types/zodTypes.ts) rejects, so the harness fails the step before reading the verdict.
-      // rudder-server reads the per-job codes, so delivery itself is correct. Re-enable once the
-      // framework reports a 2xx top-level status when every verdict is a success.
-      enabled: false,
-      description:
-        'delete for a user PX does not know is delivered (404 on false → success); no user is created',
-      steps: [
-        {
-          name: 'delete unknown → success',
-          stepType: 'pipeline',
-          expectedOutputs: 1,
-          expectedProxyRequests: 1,
-          seed: recordSeed('delete', unknownIdentifyId),
-        },
-        {
-          stepType: 'verify',
-          name: 'unknown user still absent',
-          check: async (ctx: RunContext) => {
-            expect(await userExists(ctx, unknownIdentifyId(ctx))).toBe(false);
-          },
-        },
-      ],
     },
     {
       id: 'gainsight-px-audience-same-batch',

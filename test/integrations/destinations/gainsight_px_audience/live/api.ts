@@ -64,16 +64,3 @@ export const setMembership = async (ctx: RunContext, value: boolean): Promise<vo
     throw new Error(`Gainsight PX setMembership(${value}) failed: status=${res.status}`);
   }
 };
-
-/** True when PX knows the user; false on 404. Used to prove a leave never creates a user. */
-export const userExists = async (ctx: RunContext, identifyId: string): Promise<boolean> => {
-  const res = await axios.get(`${baseUrl(ctx)}/users/${encodeURIComponent(identifyId)}`, {
-    headers: headers(ctx),
-    httpsAgent: agent,
-    timeout: 15000,
-    validateStatus: () => true,
-  });
-  if (res.status === 200) return true;
-  if (res.status === 404) return false;
-  throw new Error(`Gainsight PX GET user failed: status=${res.status}`);
-};

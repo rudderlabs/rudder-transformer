@@ -122,19 +122,22 @@ describe('GainsightPxAudienceIntegration via processDestinationIntegration', () 
     });
   });
 
-  it('fails the row with a ConfigurationError when the API key is blank', async () => {
-    const results = await processDestinationIntegration(
-      [buildInput(1, 'insert', { identifyId: 'u-1' }, buildDestination({ apiKey: '   ' }))],
-      Integration,
-      {},
-    );
-    expect(successes(results)).toHaveLength(0);
-    const failed = results[0] as any;
-    expect(failed.statusCode).toBe(400);
-    expect(failed.error).toBe('Gainsight PX API key is missing');
-    expect(failed.statTags.errorCategory).toBe('dataValidation');
-    expect(failed.statTags.errorType).toBe('configuration');
-  });
+  it.each([[''], ['   ']])(
+    'fails the row in input-schema validation when the API key is %p',
+    async (apiKey) => {
+      const results = await processDestinationIntegration(
+        [buildInput(1, 'insert', { identifyId: 'u-1' }, buildDestination({ apiKey }))],
+        Integration,
+        {},
+      );
+      expect(successes(results)).toHaveLength(0);
+      const failed = results[0] as any;
+      expect(failed.statusCode).toBe(400);
+      expect(failed.error).toBe('destination.Config.apiKey: Gainsight PX API key is missing');
+      expect(failed.statTags.errorCategory).toBe('dataValidation');
+      expect(failed.statTags.errorType).toBe('configuration');
+    },
+  );
 
   it.each([
     ['EU', 'https://api-eu.aptrinsic.com/v1/users/update'],

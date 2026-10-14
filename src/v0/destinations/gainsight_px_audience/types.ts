@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { RecordAction } from '../../../types/rudderEvents';
 import { makeRouterInputSchema } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { ATTRIBUTE_NAME_PATTERN, DATA_CENTERS } from './config';
+import { ATTRIBUTE_NAME_PATTERN, DATA_CENTERS, REASONS } from './config';
 
 /** Flattened account: apiKey (secret) + dataCenter (option). */
 export const GainsightPxAudienceDestinationConfigSchema = z
   .object({
-    apiKey: z.string().min(1),
+    apiKey: z.string().trim().min(1, REASONS.missingApiKey),
     dataCenter: z.enum(DATA_CENTERS),
   })
   .passthrough();

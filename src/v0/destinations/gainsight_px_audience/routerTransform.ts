@@ -10,7 +10,6 @@ import {
   API_KEY_HEADER,
   DESTINATION_TYPE,
   ENDPOINT_PATH,
-  REASONS,
   usersUpdateEndpoint,
 } from './config';
 import { gainsightPxAudienceDelivery } from './delivery';
@@ -38,8 +37,6 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
     }
 
     const { message, destination } = input;
-    const apiKey = destination.Config.apiKey.trim();
-    if (!apiKey) throw new ConfigurationError(REASONS.missingApiKey);
     const identifyId = normalizeIdentifyId(message.identifiers?.identifyId);
 
     return {
@@ -52,7 +49,12 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
       endpoint: usersUpdateEndpoint(destination.Config.dataCenter),
       endpointPath: ENDPOINT_PATH,
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', [API_KEY_HEADER]: apiKey },
+      // The input schema rejects a blank key but the framework hands transformEvent the raw
+      // config, not the parsed value, so the trim is applied here too.
+      headers: {
+        'Content-Type': 'application/json',
+        [API_KEY_HEADER]: destination.Config.apiKey.trim(),
+      },
     };
   }
 

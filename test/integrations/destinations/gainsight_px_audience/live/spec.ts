@@ -102,7 +102,7 @@ export const live = {
     {
       id: 'gainsight-px-audience-unknown-user',
       description:
-        'insert for a user PX does not know is NOT delivered (404 → per-item abort); no user is created',
+        'insert for a user PX does not know is NOT delivered (404 → abort); no user is created',
       steps: [
         {
           name: 'insert unknown → abort',

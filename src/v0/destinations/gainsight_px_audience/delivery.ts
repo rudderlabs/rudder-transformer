@@ -1,23 +1,18 @@
 /**
  * Delivery for GAINSIGHT_PX_AUDIENCE: one job per request (ChunkBatchStrategy maxItems 1).
  *
- * Every non-2xx verdict is returned per item, never as a uniform verdict: a uniform non-2xx verdict
- * takes the framework's throw path, which copies the PX body (it echoes `rejectedValue`) into
- * reporting and lets rudder-server's isJobTerminated abort any 4xx — including a 429 we want
- * throttled. Per item, an abort reaches rudder-server as 400, a retry as 500, throttled as 429,
- * each with a static reason.
+ * The framework's classification stands (2xx success, 429 throttled, 5xx retry, other 4xx abort).
+ * Two things differ:
+ *  - 404 on a request that wrote `false` is a success: a user PX does not know is already not a
+ *    member. A 404 on `true` aborts, since users are never created.
+ *  - failure reasons are static per status, so neither PX response text (it echoes
+ *    `rejectedValue`) nor the identifyId reaches the reason.
  */
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import {
-  abort,
-  perItem,
-  retry,
   success,
-  throttled,
   type DeliveryContext,
   type DeliverySpec,
-  type ItemVerdict,
-  type StatusOverrideMap,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { API_KEY_HEADER, REASONS } from './config';
 
@@ -39,32 +34,23 @@ const mentionsMissingAttribute = (response: unknown): boolean => {
   }
 };
 
-export const verdictFor = (ctx: DeliveryContext): ItemVerdict => {
-  const { status, response } = ctx;
-  if (status >= 200 && status < 300) return success();
-  // A user PX does not know is not a member: leaving succeeds, joining fails visibly and replays.
-  if (status === 404) return sentValue(ctx) === false ? success() : abort(REASONS.userNotFound);
+export const failureReason = ({ status, response }: DeliveryContext): string => {
   if (status === 400) {
-    return mentionsMissingAttribute(response)
-      ? abort(REASONS.attributeMissing)
-      : abort(REASONS.badRequest);
+    return mentionsMissingAttribute(response) ? REASONS.attributeMissing : REASONS.badRequest;
   }
-  if (status === 401) return abort(REASONS.unauthorized);
-  if (status === 403) return abort(REASONS.forbidden);
-  if (status === 429) return throttled(REASONS.throttled);
-  if (status >= 500) return retry(REASONS.serverError(status));
-  return abort(REASONS.otherClientError(status));
-};
-
-const perJob = (ctx: DeliveryContext) => perItem(ctx.jobs.map(() => verdictFor(ctx)));
-
-const statusOverrides: StatusOverrideMap = {
-  '4xx': perJob,
-  '5xx': perJob,
+  if (status === 401) return REASONS.unauthorized;
+  if (status === 403) return REASONS.forbidden;
+  if (status === 404) return REASONS.userNotFound;
+  if (status === 429) return REASONS.throttled;
+  if (status >= 500) return REASONS.serverError(status);
+  return REASONS.otherClientError(status);
 };
 
 export const gainsightPxAudienceDelivery: DeliverySpec = {
-  statusOverrides,
+  statusOverrides: {
+    404: (ctx, fallback) => (sentValue(ctx) === false ? success() : fallback()),
+  },
+  failureReason,
   // The key is added for the call only and never persisted on the job or shown in Live Events.
   prepareRequest: (request, ctx) => {
     const raw = ctx.destinationConfig.apiKey;

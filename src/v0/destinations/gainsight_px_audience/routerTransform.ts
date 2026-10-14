@@ -51,7 +51,7 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
   }
 
   getBatchStrategy(): BatchStrategy<GainsightPxAudiencePayload> {
-    // PX has no bulk user endpoint: one record per request, so per-item verdicts are 1:1 with jobs.
+    // PX has no bulk user endpoint: one record per request, so every verdict covers exactly one job.
     return new ChunkBatchStrategy<GainsightPxAudiencePayload>({
       maxItems: 1,
       wrapBody: ([body]) => body,

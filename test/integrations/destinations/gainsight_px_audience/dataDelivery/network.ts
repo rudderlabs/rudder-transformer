@@ -14,6 +14,28 @@ export const bodies = {
   serverError: { identifyId: 'gpx-500', customAttributes: { rs_gpx_e2e: true } },
 };
 
+export const responses = {
+  notFound: { message: 'User not found' },
+  attributeMissing: {
+    externalapierror: {
+      status: 'BAD_REQUEST',
+      subErrors: [
+        { message: "User custom attribute api name 'rs_gpx_e2e' does not exist or not enabled" },
+      ],
+    },
+  },
+  typeMismatch: {
+    externalapierror: {
+      status: 'BAD_REQUEST',
+      subErrors: [{ message: 'value null does not match the type BOOLEAN', rejectedValue: null }],
+    },
+  },
+  unauthorized: { message: 'Unauthorized' },
+  forbidden: { message: 'Forbidden' },
+  rateLimited: { message: 'Too many requests' },
+  serverError: { message: 'Internal error' },
+};
+
 const put = (data: Record<string, unknown>) => ({
   method: 'PUT',
   url: usersUpdateEndpoint,
@@ -23,55 +45,15 @@ const put = (data: Record<string, unknown>) => ({
 
 export const networkCallsData = [
   { httpReq: put(bodies.success), httpRes: { data: '', status: 204 } },
-  {
-    httpReq: put(bodies.notFoundTrue),
-    httpRes: { data: { message: 'User not found' }, status: 404 },
-  },
-  {
-    httpReq: put(bodies.notFoundFalse),
-    httpRes: { data: { message: 'User not found' }, status: 404 },
-  },
+  { httpReq: put(bodies.notFoundTrue), httpRes: { data: responses.notFound, status: 404 } },
+  { httpReq: put(bodies.notFoundFalse), httpRes: { data: responses.notFound, status: 404 } },
   {
     httpReq: put(bodies.attributeMissing),
-    httpRes: {
-      status: 400,
-      data: {
-        externalapierror: {
-          status: 'BAD_REQUEST',
-          subErrors: [
-            {
-              message: "User custom attribute api name 'rs_gpx_e2e' does not exist or not enabled",
-            },
-          ],
-        },
-      },
-    },
+    httpRes: { data: responses.attributeMissing, status: 400 },
   },
-  {
-    httpReq: put(bodies.typeMismatch),
-    httpRes: {
-      status: 400,
-      data: {
-        externalapierror: {
-          status: 'BAD_REQUEST',
-          subErrors: [
-            { message: 'value null does not match the type BOOLEAN', rejectedValue: null },
-          ],
-        },
-      },
-    },
-  },
-  {
-    httpReq: put(bodies.unauthorized),
-    httpRes: { data: { message: 'Unauthorized' }, status: 401 },
-  },
-  { httpReq: put(bodies.forbidden), httpRes: { data: { message: 'Forbidden' }, status: 403 } },
-  {
-    httpReq: put(bodies.rateLimited),
-    httpRes: { data: { message: 'Too many requests' }, status: 429 },
-  },
-  {
-    httpReq: put(bodies.serverError),
-    httpRes: { data: { message: 'Internal error' }, status: 500 },
-  },
+  { httpReq: put(bodies.typeMismatch), httpRes: { data: responses.typeMismatch, status: 400 } },
+  { httpReq: put(bodies.unauthorized), httpRes: { data: responses.unauthorized, status: 401 } },
+  { httpReq: put(bodies.forbidden), httpRes: { data: responses.forbidden, status: 403 } },
+  { httpReq: put(bodies.rateLimited), httpRes: { data: responses.rateLimited, status: 429 } },
+  { httpReq: put(bodies.serverError), httpRes: { data: responses.serverError, status: 500 } },
 ];

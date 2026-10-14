@@ -1,4 +1,5 @@
 import type { SecretPaths } from '..';
+import secretPathsArtifact from '../secretPaths.json';
 import {
   Baseline,
   decoyOf,
@@ -226,6 +227,12 @@ describe('secret-path generator utilities', () => {
         { loc: AUTHORIZATION_LOCATION },
       ]),
     ).toEqual(['headers']);
+  });
+
+  it('publishes CUSTOM_AUDIENCE as whole-header redaction for dynamic API-key account headers', () => {
+    const paths: SecretPaths = secretPathsArtifact;
+
+    expect(paths.CUSTOM_AUDIENCE).toContain('headers');
   });
 
   it('reads runtime secrets only from a metadata.secret bag', () => {

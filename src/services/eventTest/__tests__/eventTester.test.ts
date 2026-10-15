@@ -32,6 +32,36 @@ const buildV1Event = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+describe('EventTesterService.transformDestination', () => {
+  it('maps preview destinations to the canonical transformer field casing', () => {
+    const destination = (
+      EventTesterService as unknown as {
+        transformDestination: (input: Record<string, unknown>) => Record<string, unknown>;
+      }
+    ).transformDestination({
+      id: 'dest-id',
+      workspaceId: 'workspace-id',
+      revisionId: 'revision-id',
+      destinationDefinition: { id: 'definition-id', name: 'TEST' },
+      deliveryAccount: { secret: { token: 'secret' } },
+      deleteAccount: { id: 'delete-account' },
+      hasDynamicConfig: true,
+      version: 2,
+    });
+
+    expect(destination).toEqual({
+      ID: 'dest-id',
+      WorkspaceID: 'workspace-id',
+      RevisionID: 'revision-id',
+      DestinationDefinition: { ID: 'definition-id', Name: 'TEST' },
+      deliveryAccount: { secret: { token: 'secret' } },
+      deleteAccount: { id: 'delete-account' },
+      hasDynamicConfig: true,
+      version: 2,
+    });
+  });
+});
+
 describe('EventTesterService.testEvent', () => {
   afterEach(() => {
     jest.restoreAllMocks();
@@ -427,7 +457,7 @@ describe('EventTesterService.runUserTransform', () => {
   });
 
   it('reads camelCase versionId from transformed destination and calls userTransformHandler', async () => {
-    // transformDestination capitalises top-level keys only:
+    // transformDestination normalizes top-level destination keys only:
     //   { transformations: [{ versionId: '...' }] }
     //   → { Transformations: [{ versionId: '...' }] }   (array contents untouched)
     //
@@ -685,7 +715,7 @@ describe('EventTesterService.runDestTransform', () => {
         destination: expect.objectContaining({
           ID: 'dest-id',
           Name: 'Test Destination',
-          WorkspaceId: 'ws-1',
+          WorkspaceID: 'ws-1',
         }),
       }),
       {},

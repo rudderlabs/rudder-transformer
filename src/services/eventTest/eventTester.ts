@@ -44,6 +44,19 @@ type EventTesterV2Response = {
   dest_transform_output: DestTransformOutputEntry[];
 };
 
+const destinationKeyOverrides: Record<string, string> = {
+  workspaceId: 'WorkspaceID',
+  revisionId: 'RevisionID',
+  deliveryAccount: 'deliveryAccount',
+  deleteAccount: 'deleteAccount',
+  hasDynamicConfig: 'hasDynamicConfig',
+  version: 'version',
+};
+
+const transformKey = (key: string): string =>
+  destinationKeyOverrides[key] ??
+  (key === 'id' ? key.toUpperCase() : key.charAt(0).toUpperCase() + key.slice(1));
+
 export class EventTesterService {
   private static async runDestTransform(
     version: string,
@@ -53,9 +66,9 @@ export class EventTesterService {
     if (events.length === 0) {
       return [];
     }
-    const workspaceId = events[0].destination.WorkspaceId;
+    const workspaceId = events[0].destination.WorkspaceID;
     if (typeof workspaceId !== 'string' || !workspaceId) {
-      return [{ error: 'destination.WorkspaceId is required' }];
+      return [{ error: 'destination.WorkspaceID is required' }];
     }
 
     const inputs: RouterTransformationRequestData[] = events.map((event, idx) => ({
@@ -164,18 +177,15 @@ export class EventTesterService {
   }
 
   private static transformDestination(dest) {
-    function capitalize(s) {
-      return s === 'id' ? s.toUpperCase() : s.charAt(0).toUpperCase() + s.slice(1);
-    }
     const transformedObj: FixMe = {};
     const { destinationDefinition } = dest;
     Object.keys(dest).forEach((key) => {
-      transformedObj[capitalize(key)] = dest[key];
+      transformedObj[transformKey(key)] = dest[key];
     });
 
     const destDef = {};
     Object.keys(destinationDefinition).forEach((key) => {
-      destDef[capitalize(key)] = destinationDefinition[key];
+      destDef[transformKey(key)] = destinationDefinition[key];
     });
     transformedObj.DestinationDefinition = destDef;
     return transformedObj;

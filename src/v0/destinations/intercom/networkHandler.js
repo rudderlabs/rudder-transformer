@@ -2,14 +2,19 @@ const { RetryableError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, httpSend } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
+const isArchivedContactConflict = (response) =>
+  response?.errors?.some(
+    (error) => typeof error?.message === 'string' && /archived/i.test(error.message),
+  );
+
 const errorResponseHandler = (destinationResponse, dest, destinationRequest) => {
   const { status, response } = destinationResponse;
   const endpoint = destinationRequest?.endpoint || '';
-  // Intercom's search index is eventually consistent. A contact created may not
-  // appear in searchContact() results immediately, causing the transformer to attempt POST /contacts
-  // which returns 409 (contact already exists). Retrying allows the search index to catch up so the
-  // contact is found and updated via PUT on the next attempt.
-  if (status === 409 && endpoint.endsWith('/contacts')) {
+  // Intercom uses 409 for both transient search-index conflicts and permanent archived-contact
+  // conflicts. Retry the transient case so a later search can find and update the contact, but let
+  // archived conflicts fall through with their original status so rudder-server's isJobTerminated
+  // aborts them without blocking subsequent events for the user.
+  if (status === 409 && endpoint.endsWith('/contacts') && !isArchivedContactConflict(response)) {
     throw new RetryableError(
       `[Intercom Response Handler] Request failed for destination ${dest} with status: ${status}. ${JSON.stringify(response)}`,
       500,

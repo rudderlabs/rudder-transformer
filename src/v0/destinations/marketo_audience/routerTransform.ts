@@ -37,10 +37,11 @@ import { authCache, baseUrl, readListId, resolveIdentifier } from './utils';
 type Operation = 'add' | 'remove';
 
 // A row through the pre-stage. An `email` row becomes a `lead` row, or a failed one, once the
-// lookup answers; transformEvent only ever sees `lead` and `failed`.
+// lookup answers; transformEvent only ever sees `lead` and `failed`. `copy` counts earlier rows of
+// this call with the same list, lead and operation.
 type PreparedRow =
   | { kind: 'failed'; error: Error }
-  | { kind: 'lead'; listId: string; operation: Operation; leadId: number }
+  | { kind: 'lead'; listId: string; operation: Operation; leadId: number; copy: number }
   | { kind: 'email'; listId: string; operation: Operation; email: string };
 
 type PendingRow = Exclude<PreparedRow, { kind: 'failed' }>;
@@ -58,7 +59,7 @@ function prepareRow(input: MarketoAudienceRouterRequest): PreparedRow {
     return failed(new InstrumentationError(identifier.message));
   }
   if (identifier.kind === 'id') {
-    return { kind: 'lead', listId: list.listId, operation, leadId: identifier.leadId };
+    return { kind: 'lead', listId: list.listId, operation, leadId: identifier.leadId, copy: 0 };
   }
   return { kind: 'email', listId: list.listId, operation, email: identifier.email };
 }
@@ -72,7 +73,13 @@ function applyLookup(
   }
   switch (outcome.kind) {
     case 'found':
-      return { kind: 'lead', listId: row.listId, operation: row.operation, leadId: outcome.leadId };
+      return {
+        kind: 'lead',
+        listId: row.listId,
+        operation: row.operation,
+        leadId: outcome.leadId,
+        copy: 0,
+      };
     case 'missing':
       // Leads are never created. A missing removal cannot be confirmed as already absent.
       return failed(
@@ -121,6 +128,7 @@ class MarketoAudienceIntegration extends DestinationIntegration<
         this.token = token;
         await this.resolveEmails(pending);
         this.failConflicts();
+        this.numberCopies();
       }
     }
     return super.transformEvents(inputs, reqMetadata);
@@ -142,6 +150,9 @@ class MarketoAudienceIntegration extends DestinationIntegration<
       // Set at transform time: the proxy re-sends the stored headers and `prepareRequest` cannot
       // fetch a token. secretPaths.json masks it in Live Events.
       headers: { Authorization: `Bearer ${this.token}`, 'Content-Type': 'application/json' },
+      // Verdicts are positional, so a request may carry each lead ID once: the n-th copy of a lead
+      // goes to the n-th request. How Marketo answers a repeated ID is unverified.
+      internalGroupKey: String(row.copy),
     };
   }
 
@@ -222,6 +233,20 @@ class MarketoAudienceIntegration extends DestinationIntegration<
         inputs.forEach((input) =>
           this.rows.set(input, failed(new InstrumentationError(CONFLICTING_MEMBERSHIP))),
         );
+      }
+    });
+  }
+
+  // Two rows can name one lead: the same lead ID twice, a lead ID and an email that resolves to it,
+  // or the same email twice. Each copy after the first is numbered so it batches separately.
+  private numberCopies() {
+    const seen = new Map<string, number>();
+    this.rows.forEach((row, input) => {
+      if (row.kind === 'lead') {
+        const key = `${row.listId}:${row.leadId}:${row.operation}`;
+        const copy = seen.get(key) ?? 0;
+        seen.set(key, copy + 1);
+        this.rows.set(input, { ...row, copy });
       }
     });
   }

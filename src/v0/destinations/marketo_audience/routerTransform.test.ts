@@ -359,6 +359,54 @@ describe('MARKETO_AUDIENCE router transform', () => {
     expect(membership(forJob(results, 4)).body).toEqual({ input: [{ id: 102 }] });
   });
 
+  const repeatedLeadCases = [
+    {
+      name: 'the same lead ID twice',
+      inputs: () => [row(1, { id: '101' }), row(2, { id: 101 }), row(3, { id: '102' })],
+    },
+    {
+      name: 'a lead ID and an email that resolves to the same lead',
+      inputs: () => [
+        row(1, { id: '101' }),
+        row(2, { email: 'bob@acme.io' }),
+        row(3, { id: '102' }),
+      ],
+    },
+    {
+      name: 'the same email twice',
+      inputs: () => [
+        row(1, { email: 'bob@acme.io' }),
+        row(2, { email: 'Bob@acme.io' }),
+        row(3, { id: '102' }),
+      ],
+    },
+  ];
+
+  it.each(repeatedLeadCases)(
+    'sends each copy of a repeated lead in its own request: $name',
+    async ({ inputs }) => {
+      mockHttpPost.mockResolvedValue(leadsResponse([{ id: 101, email: 'bob@acme.io' }]));
+
+      const results = await run(inputs());
+
+      expect(results.map((result) => membership(result))).toEqual([
+        expect.objectContaining({ method: 'POST', body: { input: [{ id: 101 }, { id: 102 }] } }),
+        expect.objectContaining({ method: 'POST', body: { input: [{ id: 101 }] } }),
+      ]);
+      expect(results.map(jobIds)).toEqual([[1, 3], [2]]);
+    },
+  );
+
+  it('keeps a repeated lead on another list or operation in the same request as the rest', async () => {
+    const results = await run([
+      row(1, { id: '101' }),
+      row(2, { id: '101' }, { audienceId: '5678' }),
+      row(3, { id: '102' }, { audienceId: '5678' }),
+    ]);
+
+    expect(results.map(jobIds)).toEqual([[1], [2, 3]]);
+  });
+
   it('splits 301 additions to one list into 300 + 1', async () => {
     const inputs = Array.from({ length: 301 }, (_, i) => row(i + 1, { id: String(i + 1) }));
 

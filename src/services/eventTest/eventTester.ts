@@ -44,15 +44,6 @@ type EventTesterV2Response = {
   dest_transform_output: DestTransformOutputEntry[];
 };
 
-const destinationKeyOverrides: Record<string, string> = {
-  deliveryAccount: 'deliveryAccount',
-};
-
-const capitalize = (key: string): string =>
-  key === 'id' ? key.toUpperCase() : key.charAt(0).toUpperCase() + key.slice(1);
-
-const transformKey = (key: string): string => destinationKeyOverrides[key] ?? capitalize(key);
-
 export class EventTesterService {
   private static async runDestTransform(
     version: string,
@@ -173,10 +164,13 @@ export class EventTesterService {
   }
 
   private static transformDestination(dest) {
+    function capitalize(s) {
+      return s === 'id' ? s.toUpperCase() : s.charAt(0).toUpperCase() + s.slice(1);
+    }
     const transformedObj: FixMe = {};
     const { destinationDefinition } = dest;
     Object.keys(dest).forEach((key) => {
-      transformedObj[transformKey(key)] = dest[key];
+      transformedObj[capitalize(key)] = dest[key];
     });
 
     const destDef = {};

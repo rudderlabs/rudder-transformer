@@ -33,7 +33,7 @@ const buildV1Event = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe('EventTesterService.transformDestination', () => {
-  it('maps preview destinations to the canonical transformer field casing', () => {
+  it('preserves lower-camel deliveryAccount while retaining existing key conversion', () => {
     const destination = (
       EventTesterService as unknown as {
         transformDestination: (input: Record<string, unknown>) => Record<string, unknown>;
@@ -51,14 +51,15 @@ describe('EventTesterService.transformDestination', () => {
 
     expect(destination).toEqual({
       ID: 'dest-id',
-      WorkspaceID: 'workspace-id',
-      RevisionID: 'revision-id',
+      WorkspaceId: 'workspace-id',
+      RevisionId: 'revision-id',
       DestinationDefinition: { ID: 'definition-id', Name: 'TEST' },
       deliveryAccount: { secret: { token: 'secret' } },
-      deleteAccount: { id: 'delete-account' },
-      hasDynamicConfig: true,
-      version: 2,
+      DeleteAccount: { id: 'delete-account' },
+      HasDynamicConfig: true,
+      Version: 2,
     });
+    expect(destination).not.toHaveProperty('DeliveryAccount');
   });
 });
 
@@ -715,7 +716,7 @@ describe('EventTesterService.runDestTransform', () => {
         destination: expect.objectContaining({
           ID: 'dest-id',
           Name: 'Test Destination',
-          WorkspaceID: 'ws-1',
+          WorkspaceId: 'ws-1',
         }),
       }),
       {},

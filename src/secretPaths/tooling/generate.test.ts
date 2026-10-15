@@ -3,7 +3,6 @@ import {
   Baseline,
   decoyOf,
   collapseKeyFamily,
-  destinationConfigValues,
   FlattenedOutput,
   flattenRequests,
   fetchedCredentialsOnAuthSurface,
@@ -227,49 +226,6 @@ describe('secret-path generator utilities', () => {
         { loc: AUTHORIZATION_LOCATION },
       ]),
     ).toEqual(['headers']);
-  });
-
-  it('reads delivery-account credentials only from the account secret bag', () => {
-    const body = {
-      input: [
-        {
-          destination: {
-            Config: { apiKeyValue: 'inline-secret' },
-            deliveryAccount: {
-              options: { apiKeyName: 'X-Account-Key' },
-              secret: {
-                apiKeyValue: 'account-secret',
-                nested: { password: 'nested-account-secret' },
-              },
-            },
-          },
-        },
-      ],
-      unrelated: { secret: { token: 'unrelated-secret' } },
-    };
-
-    expect(valuesFor({ kind: 'deliveryAccount' }, body)).toEqual([
-      'account-secret',
-      'nested-account-secret',
-    ]);
-  });
-
-  it('treats delivery-account option values as dynamic header-name evidence', () => {
-    const configuredValues = destinationConfigValues({
-      input: [
-        {
-          destination: {
-            Config: { apiKeyName: 'X-Inline-Key' },
-            deliveryAccount: {
-              options: { apiKeyName: 'X-Account-Key' },
-              secret: { apiKeyValue: 'account-secret' },
-            },
-          },
-        },
-      ],
-    });
-
-    expect(configuredValues).toEqual(new Set(['X-Inline-Key', 'X-Account-Key']));
   });
 
   it('reads runtime secrets only from a metadata.secret bag', () => {

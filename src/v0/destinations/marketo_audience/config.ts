@@ -23,6 +23,7 @@ export const DUPLICATE_LEADS =
 export const CONFLICTING_MEMBERSHIP = 'Conflicting membership operations for Marketo lead';
 export const TOKEN_UNAVAILABLE = 'Marketo access token could not be fetched';
 export const ROW_NOT_PREPARED = 'Marketo Audience row was not prepared before transform';
+export const PRESTAGE_FAILED = 'Marketo Audience could not prepare the row';
 
 export const DAILY_QUOTA_REACHED = 'Marketo daily API quota reached';
 export const MEMBERSHIP_FAILED = 'Marketo request failed';

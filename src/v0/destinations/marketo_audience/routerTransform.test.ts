@@ -3,6 +3,7 @@ jest.mock('../../../adapters/network');
 import { httpGET, httpPOST } from '../../../adapters/network';
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
+import * as lookupModule from './lookup';
 import { Integration } from './routerTransform';
 import { authCache } from './utils';
 
@@ -405,6 +406,25 @@ describe('MARKETO_AUDIENCE router transform', () => {
     ]);
 
     expect(results.map(jobIds)).toEqual([[1], [2, 3]]);
+  });
+
+  it('fails each pending row with a typed error when the pre-stage throws unexpectedly', async () => {
+    const lookup = jest
+      .spyOn(lookupModule, 'lookupLeadsByEmail')
+      .mockRejectedValueOnce(new Error('boom'));
+
+    const results = await run([
+      row(1, { id: 'abc' }),
+      row(2, { id: '101' }),
+      row(3, { email: 'bob@acme.io' }),
+    ]);
+
+    lookup.mockRestore();
+    expect([failure(results, 1), failure(results, 2), failure(results, 3)]).toEqual([
+      { statusCode: 400, error: 'Invalid Marketo Lead ID' },
+      { statusCode: 500, error: 'Marketo Audience could not prepare the row' },
+      { statusCode: 500, error: 'Marketo Audience could not prepare the row' },
+    ]);
   });
 
   it('splits 301 additions to one list into 300 + 1', async () => {

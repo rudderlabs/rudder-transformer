@@ -21,6 +21,7 @@ import {
   LOOKUP_UNMATCHED,
   MAX_LEAD_IDS,
   MEMBERSHIP_ENDPOINT_PATH,
+  PRESTAGE_FAILED,
   REMOVAL_UNCONFIRMED,
   ROW_NOT_PREPARED,
   TOKEN_UNAVAILABLE,
@@ -116,20 +117,16 @@ class MarketoAudienceIntegration extends DestinationIntegration<
     inputs: MarketoAudienceRouterRequest[],
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<MarketoAudiencePayload>> {
-    this.rows = new Map(inputs.map((input) => [input, prepareRow(input)]));
-    const pending = [...this.rows].filter(
-      (entry): entry is [MarketoAudienceRouterRequest, PendingRow] => entry[1].kind !== 'failed',
-    );
-    if (pending.length > 0) {
-      const token = await this.fetchToken();
-      if (token instanceof Error) {
-        pending.forEach(([input]) => this.rows.set(input, failed(token)));
-      } else {
-        this.token = token;
-        await this.resolveEmails(pending);
-        this.failConflicts();
-        this.numberCopies();
-      }
+    this.rows = new Map();
+    try {
+      await this.prepareRows(inputs);
+    } catch {
+      // Expected failures are already typed on their own rows. Anything that still escapes would
+      // fail the whole destination group with an untyped error, so it lands on each row instead.
+      const unexpected = new RetryableError(PRESTAGE_FAILED);
+      inputs
+        .filter((input) => this.rows.get(input)?.kind !== 'failed')
+        .forEach((input) => this.rows.set(input, failed(unexpected)));
     }
     return super.transformEvents(inputs, reqMetadata);
   }
@@ -167,6 +164,24 @@ class MarketoAudienceIntegration extends DestinationIntegration<
 
   getInputSchema() {
     return MarketoAudienceRouterRequestSchema;
+  }
+
+  private async prepareRows(inputs: MarketoAudienceRouterRequest[]) {
+    this.rows = new Map(inputs.map((input) => [input, prepareRow(input)]));
+    const pending = [...this.rows].filter(
+      (entry): entry is [MarketoAudienceRouterRequest, PendingRow] => entry[1].kind !== 'failed',
+    );
+    if (pending.length > 0) {
+      const token = await this.fetchToken();
+      if (token instanceof Error) {
+        pending.forEach(([input]) => this.rows.set(input, failed(token)));
+      } else {
+        this.token = token;
+        await this.resolveEmails(pending);
+        this.failConflicts();
+        this.numberCopies();
+      }
+    }
   }
 
   private async fetchToken(): Promise<string | Error> {

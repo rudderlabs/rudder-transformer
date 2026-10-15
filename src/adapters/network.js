@@ -147,6 +147,10 @@ const getHttpMethodArgs = (method, { url, data, requestOptions }) => {
       return [requestOptions];
   }
 };
+// Destinations whose request and response bodies stay out of the network event logs. Their lookup
+// and delivery payloads carry customer emails and lead IDs; metrics are still recorded.
+const PAYLOAD_LOG_SUPPRESSED_DEST_TYPES = new Set(['MARKETO_AUDIENCE']);
+
 const commonHandler = async (
   axiosMethod,
   { statTags, method, ...args },
@@ -155,15 +159,22 @@ const commonHandler = async (
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
+  const suppressPayloadLogs = PAYLOAD_LOG_SUPPRESSED_DEST_TYPES.has(
+    String(statTags?.destType || '')
+      .trim()
+      .toUpperCase(),
+  );
 
-  logger.requestLog(`${commonMsg} request`, {
-    metadata: statTags?.metadata,
-    requestDetails: {
-      url: url || requestOptions?.url,
-      body: data || requestOptions?.data,
-      method,
-    },
-  });
+  if (!suppressPayloadLogs) {
+    logger.requestLog(`${commonMsg} request`, {
+      metadata: statTags?.metadata,
+      requestDetails: {
+        url: url || requestOptions?.url,
+        body: data || requestOptions?.data,
+        method,
+      },
+    });
+  }
   const startTime = new Date();
   try {
     const response = await axiosMethod(...getHttpMethodArgs(method, args));
@@ -171,10 +182,12 @@ const commonHandler = async (
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    logger.responseLog(`${commonMsg} response`, {
-      metadata: statTags?.metadata,
-      responseDetails: getResponseDetails(clientResponse),
-    });
+    if (!suppressPayloadLogs) {
+      logger.responseLog(`${commonMsg} response`, {
+        metadata: statTags?.metadata,
+        responseDetails: getResponseDetails(clientResponse),
+      });
+    }
     if (!disableMetrics) {
       fireHTTPStats(clientResponse, startTime, statTags);
     }

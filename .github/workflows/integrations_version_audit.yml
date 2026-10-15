@@ -33,7 +33,12 @@ jobs:
       - name: Disable Claude Code hooks for Cursor
         run: rm -f .claude/settings.json .claude/settings.local.json
 
+      - name: Record audit start time
+        id: start
+        run: echo "time=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
       - name: Run Integration Version Audit and Create Linear Tickets
+        id: audit
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
@@ -50,3 +55,57 @@ jobs:
           8. If you create a script file instead of creating tickets, the task has FAILED
 
           Execute the audit plan: analyze integrations, then create or update Linear tickets using direct API calls. Include ticket URLs in your final output." --force
+
+      # cursor-agent exits 0 even when it cannot reach Linear, so the run counts as successful
+      # only if an audit master ticket was created or updated during it.
+      - name: Build Slack message
+        id: message
+        if: always()
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          LINEAR_TEAM_ID: ${{ secrets.LINEAR_TEAM_ID }}
+          SINCE: ${{ steps.start.outputs.time }}
+          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          query='query($filter: IssueFilter, $since: DateComparator) {
+            issues(filter: $filter, first: 20) {
+              nodes { identifier number title url children(filter: { updatedAt: $since }) { nodes { id } } }
+            }
+          }'
+          body=$(jq -n --arg q "$query" --arg team "$LINEAR_TEAM_ID" --arg since "$SINCE" '{
+            query: $q,
+            variables: {
+              filter: {
+                team: { id: { eq: $team } },
+                title: { containsIgnoreCase: "Integration Version Audit [Rudder Transformer]" },
+                parent: { null: true },
+                updatedAt: { gte: $since }
+              },
+              since: { gte: $since }
+            }
+          }')
+          master=$(curl -sS https://api.linear.app/graphql \
+            -H "Authorization: $LINEAR_API_KEY" -H "Content-Type: application/json" -d "$body" \
+            | jq -c '[.data.issues.nodes[]?] | sort_by(.number) | last // empty' || true)
+
+          if [ "$AUDIT_OUTCOME" = "success" ] && [ -n "$master" ]; then
+            text=$(jq -r '":white_check_mark: *Integration Version Audit (Rudder Transformer) completed*\nParent ticket: <\(.url)|\(.identifier): \(.title)>\nSubtickets created/updated: \(.children.nodes | length)"' <<< "$master")
+          else
+            text=":x: *Integration Version Audit (Rudder Transformer) failed*: no Linear tickets were created or updated"
+          fi
+          text="$text"$'\n'"<$RUN_URL|View workflow run>"
+          echo "text=$(jq -n --arg t "$text" '$t')" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Slack
+        if: always()
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        continue-on-error: true
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "channel": "${{ secrets.SLACK_INTEGRATION_DEV_CHANNEL_ID }}",
+              "text": ${{ steps.message.outputs.text }}
+            }

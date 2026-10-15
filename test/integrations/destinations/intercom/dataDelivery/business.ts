@@ -48,6 +48,12 @@ const conflictUserPayload = {
   },
 };
 
+const archivedConflictUserPayload = {
+  ...conflictUserPayload,
+  email: 'archived_contact@test.com',
+  user_id: 'archived_test_user_id',
+};
+
 const updateUserPayload = {
   email: 'test_1@test.com',
   phone: '9876543211',
@@ -320,6 +326,52 @@ export const testScenariosForV0API = [
               module: 'destination',
               workspaceId: 'default-workspaceId',
             },
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'intercom_v0_archived_contact_conflict',
+    name: 'intercom',
+    description:
+      '[Proxy v0 API] :: Scenario to test Archived Contact Conflict Handling from Destination',
+    successCriteria: 'Should return 409 status code without a retryable error',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          JSON: archivedConflictUserPayload,
+          headers: {
+            ...commonHeaders,
+            'Intercom-Version': '2.10',
+          },
+          endpoint: 'https://api.intercom.io/contacts',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 409,
+        body: {
+          output: {
+            destinationResponse: {
+              type: 'error.list',
+              request_id: 'archived_request_126',
+              errors: [
+                {
+                  code: 'conflict',
+                  message:
+                    'An archived contact matching those details already exists with id=test1',
+                },
+              ],
+            },
+            message: 'Request Processed Successfully',
+            status: 409,
           },
         },
       },
@@ -612,6 +664,61 @@ export const testScenariosForV1API = [
               workspaceId: 'default-workspaceId',
             },
             status: 500,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'intercom_v1_archived_contact_conflict',
+    name: 'intercom',
+    description:
+      '[Proxy v1 API] :: Scenario to test Archived Contact Conflict Handling from Destination',
+    successCriteria: 'Should return output status 409 without a retryable error',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            JSON: archivedConflictUserPayload,
+            headers: {
+              ...commonHeaders,
+              'Intercom-Version': '2.10',
+            },
+            endpoint: 'https://api.intercom.io/contacts',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message: 'Request Processed Successfully',
+            response: [
+              {
+                error: JSON.stringify({
+                  type: 'error.list',
+                  request_id: 'archived_request_126',
+                  errors: [
+                    {
+                      code: 'conflict',
+                      message:
+                        'An archived contact matching those details already exists with id=test1',
+                    },
+                  ],
+                }),
+                metadata: generateMetadata(1),
+                statusCode: 409,
+              },
+            ],
+            status: 409,
           },
         },
       },

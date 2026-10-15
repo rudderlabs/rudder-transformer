@@ -772,6 +772,39 @@ const deliveryCallsData = [
   },
   {
     httpReq: {
+      url: 'https://api.intercom.io/contacts',
+      data: {
+        email: 'archived_contact@test.com',
+        name: 'Rudder Labs',
+        signed_up_at: 1601496060,
+        last_seen_user_agent: 'unknown',
+        update_last_request_at: true,
+        user_id: 'archived_test_user_id',
+        custom_attributes: {
+          'address.city': 'Kolkata',
+          'address.state': 'West Bengal',
+        },
+      },
+      params: {},
+      headers: v1VersionHeaders,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        type: 'error.list',
+        request_id: 'archived_request_126',
+        errors: [
+          {
+            code: 'conflict',
+            message: 'An archived contact matching those details already exists with id=test1',
+          },
+        ],
+      },
+      status: 409,
+    },
+  },
+  {
+    httpReq: {
       url: 'https://api.intercom.io/users',
       data: userPayload,
       params: {},

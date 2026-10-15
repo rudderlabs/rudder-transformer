@@ -6,19 +6,42 @@ const requiredConfigString = z
   .min(1)
   .refine((value) => value.trim().length > 0, 'Required configuration value cannot be blank');
 
+const RoktEventsMappingEntrySchema = z.object({
+  from: requiredConfigString,
+  to: requiredConfigString,
+});
+
 export const RoktDestinationConfigSchema = z
   .object({
     serverToServerKey: requiredConfigString,
     serverToServerSecret: requiredConfigString,
+    eventsMapping: z
+      .array(RoktEventsMappingEntrySchema)
+      .superRefine((eventsMapping, ctx) => {
+        const seenEventNames = new Set<string>();
+        eventsMapping.forEach(({ from }, index) => {
+          if (seenEventNames.has(from)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: [index, 'from'],
+              message:
+                'Only one Rokt conversion type can be configured per RudderStack event name.',
+            });
+          }
+          seenEventNames.add(from);
+        });
+      })
+      .default([]),
   })
   .passthrough();
 
-const UNSUPPORTED_MESSAGE_TYPE =
-  'Unsupported message type. ROKT supports track, page, screen, and identify.';
+export type RoktEventsMapping = z.infer<typeof RoktDestinationConfigSchema>['eventsMapping'];
+
+const UNSUPPORTED_MESSAGE_TYPE = 'Unsupported message type. ROKT supports track.';
 
 export const RoktMessageSchema = z
   .object({
-    type: z.enum(['track', 'page', 'screen', 'identify'], {
+    type: z.literal('track', {
       errorMap: (_issue, ctx) => ({
         message:
           ctx.data === undefined
@@ -26,6 +49,7 @@ export const RoktMessageSchema = z
             : UNSUPPORTED_MESSAGE_TYPE,
       }),
     }),
+    event: z.string().min(1),
     userId: z.union([z.string(), z.number()]).transform(String).nullish(),
   })
   .passthrough();
@@ -72,7 +96,7 @@ export type RoktConversion = {
     timestamp_unixtime_ms?: number;
     source_message_id?: string;
     custom_attributes: {
-      conversiontype?: unknown;
+      conversiontype: string;
       confirmationref?: unknown;
       amount?: string;
       currency?: unknown;
@@ -92,5 +116,5 @@ export type RoktBatch = {
   integration_attributes?: {
     [ROKT_INTEGRATION_ID]: { passbackconversiontrackingid: string };
   };
-  events?: [RoktConversion];
+  events: [RoktConversion];
 };

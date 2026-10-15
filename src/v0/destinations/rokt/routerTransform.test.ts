@@ -15,6 +15,7 @@ const destination: Destination = {
   Config: {
     serverToServerKey: 'server-key',
     serverToServerSecret: 'server-secret',
+    eventsMapping: [{ from: 'purchase', to: 'mapped-purchase' }],
   },
   Enabled: true,
   WorkspaceID: 'ws-1',
@@ -73,7 +74,7 @@ const batchBody = async (inputs: RouterTransformationRequestData[]): Promise<Rok
   parseBatch((await route(inputs))[0]);
 
 describe('RoktIntegration', () => {
-  it('builds the Rokt bulk request with Basic auth', () => {
+  it('builds a mapped Rokt bulk request with Basic auth', () => {
     const result = transform();
     expect(result).toEqual({
       endpoint: 'https://inbound.mparticle.com/s2s/v2/bulkevents',
@@ -95,7 +96,7 @@ describe('RoktIntegration', () => {
               custom_event_type: 'transaction',
               timestamp_unixtime_ms: 1790640000000,
               source_message_id: 'message-1',
-              custom_attributes: { conversiontype: 'purchase' },
+              custom_attributes: { conversiontype: 'mapped-purchase' },
             },
           },
         ],
@@ -122,6 +123,30 @@ describe('RoktIntegration', () => {
     },
   );
 
+  it('rejects duplicate RudderStack event mapping rows', async () => {
+    const [response] = await route([
+      makeInput(
+        1,
+        {},
+        {
+          ...destination,
+          Config: {
+            ...destination.Config,
+            eventsMapping: [
+              { from: 'purchase', to: 'mapped-purchase' },
+              { from: 'purchase', to: 'alternate-purchase' },
+            ],
+          },
+        },
+      ),
+    ]);
+
+    expect(response.error).toContain(
+      'Only one Rokt conversion type can be configured per RudderStack event name.',
+    );
+    expect(response.batchedRequest).toBeUndefined();
+  });
+
   it('maps ordered identity, click-id, event, and root field chains', () => {
     const result = transform(
       makeInput(1, {
@@ -137,7 +162,7 @@ describe('RoktIntegration', () => {
           page: { search: '?rclid=query-rclid&rtid=query-rtid' },
         },
         traits: { email: 'second@example.test' },
-        event: 'event-fallback',
+        event: 'purchase',
         properties: {
           email: 'third@example.test',
           roktClickId: 'property-click',
@@ -168,7 +193,7 @@ describe('RoktIntegration', () => {
           data: {
             timestamp_unixtime_ms: 1790640001000,
             custom_attributes: {
-              conversiontype: 'first-type',
+              conversiontype: 'mapped-purchase',
               confirmationref: 'order-first',
               amount: '0',
               currency: 'USD',
@@ -230,7 +255,7 @@ describe('RoktIntegration', () => {
         {
           data: {
             custom_attributes: {
-              conversiontype: ' selected-type ',
+              conversiontype: 'mapped-purchase',
               confirmationref: ' selected-confirmation ',
               currency: ' USD ',
               screen_name: ' Selected Screen ',
@@ -242,73 +267,15 @@ describe('RoktIntegration', () => {
     });
   });
 
-  it('falls through empty aliases and uses rtid from page search', () => {
+  it('uses the configured conversion type instead of properties.conversiontype', () => {
     const body = transform(
       makeInput(2, {
-        type: 'page',
-        userId: undefined,
-        event: undefined,
-        context: {
-          ip: '',
-          request_ip: '198.51.100.2',
-          traits: { email: ' ' },
-          page: { search: '?rclid=&rtid=rtid-value', path: '' },
-        },
-        traits: { email: '' },
-        properties: {
-          email: '',
-          roktClickId: '',
-          rokt_click_id: ' ',
-          rclid: '',
-          rtid: '',
-          name: 'Checkout',
-        },
+        properties: { conversiontype: 'instrumented-type' },
       }),
     ).body;
 
-    expect(body).toMatchObject({
-      ip: '198.51.100.2',
-      user_identities: { other2: 'rtid-value' },
-      integration_attributes: {
-        '1277': { passbackconversiontrackingid: 'rtid-value' },
-      },
-    });
-    expect(body.events?.[0].data.custom_attributes).toEqual({
-      conversiontype: 'screen_view',
-      screen_name: 'Checkout',
-    });
-  });
-
-  it('maps screen identity and falls back through timestamp, conversion, and URL aliases', () => {
-    const body = transform(
-      makeInput(3, {
-        type: 'screen',
-        event: '',
-        name: 'Root Screen',
-        timestamp: '',
-        originalTimestamp: '',
-        sentAt: '2026-09-29T00:00:03.000Z',
-        context: { page: { path: '', url: '' } },
-        properties: {
-          conversiontype: '',
-          conversionType: '',
-          conversion_type: '',
-          name: '',
-          url: 'https://example.test/screen',
-          amount: '',
-          revenue: 15,
-        },
-      }),
-    ).body;
-
-    expect(body.events?.[0].data).toMatchObject({
-      timestamp_unixtime_ms: 1790640003000,
-      custom_attributes: {
-        conversiontype: 'screen_view',
-        amount: '15',
-        screen_name: 'Root Screen',
-        url: 'https://example.test/screen',
-      },
+    expect(body.events[0].data.custom_attributes).toEqual({
+      conversiontype: 'mapped-purchase',
     });
   });
 
@@ -415,43 +382,53 @@ describe('RoktIntegration', () => {
             event_name: 'conversion',
             custom_event_type: 'transaction',
             timestamp_unixtime_ms: 1790640000000,
-            custom_attributes: { conversiontype: 'purchase' },
+            custom_attributes: { conversiontype: 'mapped-purchase' },
           },
         },
       ],
     });
   });
 
-  it('emits identify attributes without a conversion event', () => {
-    const body = transform(
-      makeInput(7, {
-        type: 'identify',
-        event: undefined,
-        timestamp: undefined,
-        userId: 'identify-user',
-        traits: { firstName: 'Identify' },
-      }),
-    ).body;
-    expect(body).toEqual({
-      schema_version: 2,
-      environment: 'production',
-      user_identities: { customerid: 'identify-user' },
-      user_attributes: { firstname: 'Identify' },
-    });
+  it.each(['page', 'screen', 'identify', 'group'])(
+    'rejects unsupported %s messages',
+    async (type) => {
+      const [response] = await route([makeInput(8, { type })]);
+
+      expect(response.error).toContain('Unsupported message type. ROKT supports track.');
+      expect(response.batchedRequest).toBeUndefined();
+    },
+  );
+
+  it('rejects a track message without an event name', async () => {
+    const [response] = await route([makeInput(9, { event: undefined })]);
+
+    expect(response.error).toContain('message.event: Required');
+    expect(response.batchedRequest).toBeUndefined();
   });
 
-  it('rejects unsupported message types', async () => {
-    const responses = await route([
-      makeInput(8, { type: 'group' }),
-      makeInput(9, { type: 'alias' }),
-    ]);
+  it.each(['unmapped', 'Purchase'])('aborts an exact mapping miss for event %s', async (event) => {
+    const [response] = await route([makeInput(9, { event })]);
 
-    expect(responses).toHaveLength(2);
-    expect(responses.map((response) => response.error)).toEqual([
-      expect.stringContaining('Unsupported message type'),
-      expect.stringContaining('Unsupported message type'),
-    ]);
-    expect(responses.every((response) => response.batchedRequest === undefined)).toBe(true);
+    expect(response.error).toContain(
+      `Event "${event}" is not present in the Rokt events mapping. Dropping the event.`,
+    );
+    expect(response.batchedRequest).toBeUndefined();
+  });
+
+  it('aborts track messages when the events mapping is not configured', async () => {
+    const destinationWithoutMapping = {
+      ...destination,
+      Config: {
+        serverToServerKey: 'server-key',
+        serverToServerSecret: 'server-secret',
+      },
+    };
+    const [response] = await route([makeInput(9, {}, destinationWithoutMapping)]);
+
+    expect(response.error).toContain(
+      'Event "purchase" is not present in the Rokt events mapping. Dropping the event.',
+    );
+    expect(response.batchedRequest).toBeUndefined();
   });
 
   it('rejects a message without a type', async () => {
@@ -467,11 +444,11 @@ describe('RoktIntegration', () => {
   ])('omits an $name conversion timestamp', ({ timestamp: timestampValue }) => {
     const body = transform(makeInput(10, { timestamp: timestampValue })).body;
 
-    expect(body.events?.[0].data).toEqual({
+    expect(body.events[0].data).toEqual({
       event_name: 'conversion',
       custom_event_type: 'transaction',
       source_message_id: 'message-10',
-      custom_attributes: { conversiontype: 'purchase' },
+      custom_attributes: { conversiontype: 'mapped-purchase' },
     });
   });
 
@@ -479,12 +456,11 @@ describe('RoktIntegration', () => {
     { name: 'missing', properties: {} },
     { name: 'null', properties: { conversiontype: null } },
   ])(
-    'accepts conversions without an identity and with a $name conversion type',
+    'accepts mapped conversions without an identity and with a $name instrumented conversion type',
     ({ properties }) => {
       const body = transform(
         makeInput(11, {
           userId: undefined,
-          event: undefined,
           timestamp: undefined,
           context: {},
           properties,
@@ -502,7 +478,7 @@ describe('RoktIntegration', () => {
               event_name: 'conversion',
               custom_event_type: 'transaction',
               source_message_id: 'message-11',
-              custom_attributes: {},
+              custom_attributes: { conversiontype: 'mapped-purchase' },
             },
           },
         ],
@@ -546,6 +522,6 @@ describe('RoktIntegration', () => {
   it('preserves one per-user batch object for each input', async () => {
     const bodies = await batchBody([makeInput(15), makeInput(16)]);
     expect(bodies.map((body) => body.user_identities.customerid)).toEqual(['user-15', 'user-16']);
-    expect(bodies.every((body) => body.events?.length === 1)).toBe(true);
+    expect(bodies.every((body) => body.events.length === 1)).toBe(true);
   });
 });

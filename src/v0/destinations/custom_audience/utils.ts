@@ -226,14 +226,8 @@ const resolveAccountAuth = (deliveryAccount: unknown): Record<string, string> =>
   return handler(account);
 };
 
-const getDeliveryAccount = (destination: CustomAudienceDestination): unknown => {
-  if (destination.deliveryAccount !== undefined) return destination.deliveryAccount;
-  return destination.DeliveryAccount;
-};
-
 export const resolveAuth = (destination: CustomAudienceDestination): Record<string, string> => {
-  const { Config: destConfig } = destination;
-  const deliveryAccount = getDeliveryAccount(destination);
+  const { Config: destConfig, deliveryAccount } = destination;
   if (destConfig.authenticationEnabled === false) return {};
 
   const hasLinkedAccount =

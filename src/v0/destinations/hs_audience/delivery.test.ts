@@ -188,7 +188,14 @@ describe('HubSpot audience delivery', () => {
     expect(result.response.map((item) => item.metadata.jobId)).toEqual([1, 2, 3]);
   });
 
-  it.each(['', null, { status: 'error' }])('rejects an unverified or unrelated body %p', (body) => {
+  it('treats an empty 2xx body the same as an empty object', () => {
+    const result = deliver(ctxFor(200, '', membershipBody(['1', '2'])));
+
+    expect(result.response.map((item) => item.statusCode)).toEqual([200, 200]);
+    expect(result.response.map((item) => item.error)).toEqual(['success', 'success']);
+  });
+
+  it.each([null, { status: 'error' }])('rejects an unverified or unrelated body %p', (body) => {
     const result = deliver(ctxFor(200, body, membershipBody(['1', '2'])));
 
     expect(result.response.map((item) => item.statusCode)).toEqual([500, 500]);
@@ -239,6 +246,7 @@ describe('HubSpot audience delivery', () => {
     [404, 'HubSpot list was not found', 400, 'aborted'],
     [400, 'HubSpot membership update was rejected', 400, 'aborted'],
     [429, 'HubSpot rate limit exceeded', 429, 'throttled'],
+    [477, 'HubSpot membership update is temporarily unavailable', 500, 'retryable'],
     [503, 'HubSpot membership update is temporarily unavailable', 500, 'retryable'],
   ] as const)('keeps a static reason for HTTP %s', (status, reason, jobStatus, errorType) => {
     const result = deliver(
@@ -258,6 +266,25 @@ describe('HubSpot audience delivery', () => {
     expect(result.response.map((item) => item.error)).toEqual([reason, reason]);
     expect(JSON.stringify(result.response)).not.toContain(SENTINEL);
     expect(JSON.stringify(result.response)).not.toContain('corr-1');
+  });
+
+  it('retries a 400 whose body is a Node transport message', () => {
+    const result = deliver(
+      ctxFor(400, '[ENOTFOUND] :: DNS lookup failed', membershipBody(['1', '2'])),
+    );
+
+    expect(result.status).toBe(400);
+    expect(result.message).toBe(
+      '[HS_AUDIENCE] HubSpot membership update is temporarily unavailable',
+    );
+    expect(result.statTags).toEqual(
+      expect.objectContaining({ errorCategory: 'network', errorType: 'retryable' }),
+    );
+    expect(result.response.map((item) => item.statusCode)).toEqual([500, 500]);
+    expect(result.response.map((item) => item.error)).toEqual([
+      'HubSpot membership update is temporarily unavailable',
+      'HubSpot membership update is temporarily unavailable',
+    ]);
   });
 
   it('recognizes the ineligible-list subcategory on the body or on a nested error', () => {

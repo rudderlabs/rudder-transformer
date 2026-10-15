@@ -115,20 +115,28 @@ describe('correlateContactLookup', () => {
       ],
       [],
     ],
-    [
-      'a secondary address is malformed',
-      [
-        {
-          id: '1',
-          properties: { email: 'a@example.com', hs_additional_emails: 'invalid-address' },
-        },
-      ],
-      [],
-    ],
   ])('rejects the chunk when %s', (_name, results, errors) => {
     expect(
       correlateContactLookup(['a@example.com'], { status: 'COMPLETE', results, errors }),
     ).toBeNull();
+  });
+
+  it('skips a secondary address that fails validation and keeps the requested match', () => {
+    const correlated = correlateContactLookup(['alias@example.com'], {
+      status: 'COMPLETE',
+      results: [
+        {
+          id: '1',
+          properties: {
+            email: 'primary@example.com',
+            hs_additional_emails: 'invalid-address;old@legacy_corp.com;alias@example.com',
+          },
+        },
+      ],
+      errors: [],
+    });
+
+    expect(correlated?.get('alias@example.com')).toEqual({ kind: 'found', recordId: '1' });
   });
 
   it('accepts an explicit OBJECT_NOT_FOUND miss and ignores free-text messages', () => {
@@ -328,6 +336,29 @@ describe('lookupDistinctEmails', () => {
     expect(generated.status).toBe(500);
     expect(generated.message).not.toContain('raw-body');
   });
+
+  it.each([
+    [401, 'HubSpot rejected the access token'],
+    [403, 'HubSpot token is missing the crm.objects.contacts.read scope'],
+    [429, 'HubSpot rate limit exceeded'],
+    [477, 'HubSpot contact lookup is temporarily unavailable'],
+  ] as const)(
+    'stops after HTTP %s and applies that error to the remaining emails',
+    async (status, message) => {
+      mockHttpPost.mockResolvedValueOnce(httpFailure(status));
+
+      const lookedUp = await lookupDistinctEmails('pat-test', emails(201), {});
+
+      expect(mockHttpPost).toHaveBeenCalledTimes(1);
+      const first = lookedUp.get('user0@example.com');
+      const last = lookedUp.get('user200@example.com');
+      if (first?.kind !== 'error' || last?.kind !== 'error') {
+        throw new Error('expected the portal-wide failure on every email');
+      }
+      expect(first.error).toBe(last.error);
+      expect(generateErrorObject(first.error).message).toBe(message);
+    },
+  );
 
   it('keeps a failed middle chunk from changing the chunks around it', async () => {
     let call = 0;

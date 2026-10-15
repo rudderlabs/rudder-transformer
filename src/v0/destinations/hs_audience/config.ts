@@ -42,8 +42,9 @@ export const MEMBERSHIP_UNCORRELATED = 'HubSpot membership response could not be
 
 export const OBJECT_NOT_FOUND = 'OBJECT_NOT_FOUND';
 export const VALIDATION_ERROR = 'VALIDATION_ERROR';
-// HubSpot's published ineligible-list signal. Message text is not a substitute:
-// other 400 bodies can mention a DYNAMIC list without this subcategory.
+// Observed on a membership 400. HubSpot's published docs and OpenAPI spec do
+// not list this subcategory. Message text is not a substitute: other 400
+// bodies can mention a DYNAMIC list without this subcategory.
 export const INELIGIBLE_LIST_SUBCATEGORY = 'ListError.INVALID_OBJECT_TYPE_FOR_LIST';
 
 export function isSafeListId(listId: string): boolean {

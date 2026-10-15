@@ -37,7 +37,7 @@ A delete whose membership response lists the id in `recordIdsMissing` is a succe
 
 An id that is absent from `recordsIdsAdded` and also absent from `recordIdsMissing` is a successful add. HubSpot omits contacts that were already on the list. That is not a failure. Live HubSpot responses also omit empty arrays entirely (for example `{ "recordsIdsAdded": ["…"] }` with no `recordIdsMissing` / `recordIdsRemoved`); those absent fields are treated as `[]`.
 
-A 2xx response containing `{}` succeeds for every sent ID because all empty arrays may be omitted. Present malformed fields, unrelated nonempty objects, and empty-string/null transport bodies still produce controlled retries. Empty transport-body success semantics for `/add-and-remove` remain pending live verification; evidence for the separate `/memberships/add` endpoint does not establish this contract.
+A 2xx response containing `{}` or `''` succeeds for every sent ID. The proxy reports an empty HTTP body as `''`, and that body cannot carry `recordIdsMissing`. `null` and an unrelated nonempty object still produce controlled retries.
 
 ## Authentication
 
@@ -55,7 +55,7 @@ Add and remove for the same list are separate requests (`internalGroupKey`). Eac
 
 ## Ineligible lists
 
-`HubSpot list is not eligible for contact membership sync` is returned only for HTTP 400 whose `category` is `VALIDATION_ERROR` and whose `subCategory` is exactly `ListError.INVALID_OBJECT_TYPE_FOR_LIST`. That subcategory may be a top-level string or any `errors[].subCategory` string. The response `message` is not consulted. Any other 400, including a body that mentions a DYNAMIC list without that subcategory, aborts with `HubSpot membership update was rejected`.
+`HubSpot list is not eligible for contact membership sync` is returned only for HTTP 400 whose `category` is `VALIDATION_ERROR` and whose `subCategory` is exactly `ListError.INVALID_OBJECT_TYPE_FOR_LIST`. That subcategory was observed on a membership 400; HubSpot's published docs and OpenAPI spec do not list it. It may be a top-level string or any `errors[].subCategory` string. The response `message` is not consulted. A 400 whose body is a Node transport message (`[CODE]` or `[CODE] :: ...`) retries with `HubSpot membership update is temporarily unavailable`, as does HTTP 477, HubSpot's portal-migration status. Any other 400, including a body that mentions a DYNAMIC list without that subcategory, aborts with `HubSpot membership update was rejected`.
 
 ## Live membership test
 
@@ -80,7 +80,7 @@ Run `npm run test:live -- --destination=hs_audience` with that environment varia
 These were not verified against a live portal or a fleet config in this change:
 
 - Missing-id behavior for adds and removes
-- No-op response shapes, including empty transport bodies, for `/add-and-remove`; run the repeated-add/remove steps above and retain the raw response artifacts with membership read-back evidence
+- No-op response shapes for `/add-and-remove`. A 2xx `''` is already treated as success. A live capture can still confirm the body HubSpot sends; run the repeated-add/remove steps above and retain the raw response artifacts with membership read-back evidence
 - Secondary-email batch-read resolution: request a prepared sandbox contact's secondary address with both email properties and confirm the returned primary/secondary values and resolved ID
 - Stale/merged IDs: use a prepared sandbox merged-contact fixture with known old and surviving IDs plus a dedicated static list. Send the old ID in separate add-only and remove-only `/add-and-remove` requests, alongside an unrelated valid contact. Retain exact HTTP statuses, raw response bodies, sent IDs, and membership read-back for the survivor and unrelated contact. Determine whether HubSpot reports the old ID as missing or substitutes the surviving ID. Unsent returned IDs continue to fail the batch closed; do not create or merge contacts as part of this membership test
 - Duplicate id entries
@@ -99,7 +99,10 @@ These were not verified against a live portal or a fleet config in this change:
 | Invalid email                                           | `Invalid email identifier`                                                         |
 | Lookup 401                                              | `HubSpot rejected the access token`                                                |
 | Lookup 403                                              | `HubSpot token is missing the crm.objects.contacts.read scope`                     |
+| Lookup 477                                              | `HubSpot contact lookup is temporarily unavailable`                                |
+| Membership 477                                          | `HubSpot membership update is temporarily unavailable`                             |
 | Other lookup 4xx                                        | `HubSpot contact lookup was rejected`                                              |
+| Membership 400 with a Node transport body               | `HubSpot membership update is temporarily unavailable`                             |
 | Membership 403                                          | `HubSpot token is missing the crm.lists.write or crm.objects.contacts.write scope` |
 | Membership 404                                          | `HubSpot list was not found`                                                       |
 | 429                                                     | `HubSpot rate limit exceeded`                                                      |

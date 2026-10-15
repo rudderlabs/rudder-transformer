@@ -107,13 +107,14 @@ const MEMBERSHIP_RESULT_KEYS = [
 // accepted as a fallback. All three arrays are normalized so one bad id fails
 // the batch closed, but only `recordIdsMissing` changes a verdict. Absence
 // from the added array is a successful no-op. A body with none of the result
-// keys is accepted only when it is an empty object: all empty arrays may be
-// omitted on a no-op. Empty transport bodies remain unverified.
+// keys is accepted when it is an empty object or an empty string: the proxy
+// reports an empty HTTP body as `''`, and that body cannot carry
+// `recordIdsMissing`. All empty arrays may be omitted on a no-op.
 function missingIds(
   response: unknown,
   sent: { operation: 'add' | 'remove'; ids: string[] },
 ): Set<string> | null {
-  const record = asRecord(response);
+  const record = asRecord(response === '' ? {} : response);
   if (
     !record ||
     (Object.keys(record).length > 0 &&
@@ -190,6 +191,14 @@ function isIneligibleList(response: unknown): boolean {
   });
 }
 
+// processAxiosResponse turns a Node transport failure with no HTTP status into
+// a 400 whose body is `[CODE]` or `[CODE] :: ...`. HubSpot never sent that 400.
+const NODE_TRANSPORT_MESSAGE = /^\[\w+]/;
+
+function isNodeTransportMessage(response: unknown): boolean {
+  return typeof response === 'string' && NODE_TRANSPORT_MESSAGE.test(response);
+}
+
 function clientFailure(ctx: DeliveryContext): ItemVerdict {
   if (ctx.status === 401) {
     return abort(TOKEN_REJECTED);
@@ -202,6 +211,11 @@ function clientFailure(ctx: DeliveryContext): ItemVerdict {
   }
   if (ctx.status === 429) {
     return throttled(RATE_LIMIT_EXCEEDED);
+  }
+  // 477 is HubSpot's portal-migration status. Retry-After can ask for a long
+  // wait; this verdict does not forward that header.
+  if (ctx.status === 477 || (ctx.status === 400 && isNodeTransportMessage(ctx.response))) {
+    return retry(MEMBERSHIP_UNAVAILABLE);
   }
   if (ctx.status === 400 && isIneligibleList(ctx.response)) {
     return abort(LIST_INELIGIBLE);

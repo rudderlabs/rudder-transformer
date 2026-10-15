@@ -83,11 +83,10 @@ function claimResult(
   const addresses = new Set([email]);
   if (typeof additional === 'string') {
     for (const address of additional.split(';')) {
-      if (address.trim()) {
-        const normalized = normalizeLookupEmail(address);
-        if (!normalized) {
-          return false;
-        }
+      const normalized = normalizeLookupEmail(address);
+      // A secondary address that fails validation can never equal a requested
+      // email: every requested address already passed the same validator.
+      if (normalized) {
         addresses.add(normalized);
       }
     }
@@ -193,13 +192,20 @@ function lookupStatusError(status: number): Error {
   if (status === 429) {
     return new ThrottledError(RATE_LIMIT_EXCEEDED);
   }
-  if (status >= 500) {
+  // 477 is HubSpot's portal-migration status. Retry-After can ask for a long
+  // wait; this verdict does not forward that header.
+  if (status === 477 || status >= 500) {
     return new RetryableError(LOOKUP_UNAVAILABLE, status);
   }
   // A 400 or 404 is not a confirmed miss and it is not a retry. The status is
   // kept so the router aborts the row, with a reason that does not say the
   // lookup will become available later.
   return new NetworkError(LOOKUP_REJECTED, status);
+}
+
+function isPortalWideLookupFailure(error: Error): boolean {
+  const {status} = (error as { status?: unknown });
+  return status === 401 || status === 403 || status === 429 || status === 477;
 }
 
 export function toLookupError(error: unknown): Error {
@@ -272,9 +278,11 @@ function distinctInOrder(emails: string[]): string[] {
 }
 
 /**
- * Look up distinct emails for one credential. Chunks run one after another so
- * a bad chunk does not cancel the emails that follow it. Each email in a failed
- * chunk receives the same classified error; confirmed misses are not guessed.
+ * Look up distinct emails for one credential. Chunks run one after another.
+ * A 401, 403, 429, or 477 stops the loop: those answers are about the token or
+ * the portal, so every email not yet sent receives that same error. Any other
+ * failed chunk stays local, and the chunks after it are still sent. Confirmed
+ * misses are not guessed.
  */
 export async function lookupDistinctEmails(
   accessToken: string,
@@ -298,6 +306,12 @@ export async function lookupDistinctEmails(
       chunk.forEach((email) => {
         results.set(email, { kind: 'error', error: classified });
       });
+      if (isPortalWideLookupFailure(classified)) {
+        distinct.slice(offset).forEach((email) => {
+          results.set(email, { kind: 'error', error: classified });
+        });
+        break;
+      }
     }
   }
   return results;

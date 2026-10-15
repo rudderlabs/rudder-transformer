@@ -204,7 +204,7 @@ function lookupStatusError(status: number): Error {
 }
 
 function isPortalWideLookupFailure(error: Error): boolean {
-  const {status} = (error as { status?: unknown });
+  const { status } = error as { status?: unknown };
   return status === 401 || status === 403 || status === 429 || status === 477;
 }
 

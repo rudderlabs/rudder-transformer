@@ -11,14 +11,14 @@ import { chunkPayloads } from '../../../services/destination/destinationIntegrat
 import { RecordAction } from '../../../types/rudderEvents';
 import { sandboxedEvaluateTemplate } from './template/templateSandboxClient';
 import {
-  buildRequestHeaders as resolveRequestHeaders,
+  buildRequestHeaders,
   injectCustomMappings,
   lookupActionConfig,
   processFields,
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import type { Action, CustomAudienceDestination } from './types';
+import type { Action } from './types';
 import { CustomAudienceDestConfigSchema, CustomAudienceConnectionDestConfigSchema } from './types';
 
 const customAudienceInputSchema = makeRouterInputSchema({
@@ -54,10 +54,6 @@ class CustomAudienceIntegration extends DestinationIntegration<
     return this.connection!.config.destination;
   }
 
-  private buildRequestHeaders(destination: CustomAudienceDestination): Record<string, string> {
-    return resolveRequestHeaders(destination);
-  }
-
   private buildEndpointsByAction(): Partial<Record<Action, string>> {
     return Object.fromEntries(
       Object.keys(this.destination.Config.actions).map((action) => [
@@ -76,7 +72,7 @@ class CustomAudienceIntegration extends DestinationIntegration<
   ): TransformedEvent<Record<string, unknown>> {
     const { message } = input;
     const { action, identifiers } = message;
-    this.headers ??= this.buildRequestHeaders(this.destination);
+    this.headers ??= buildRequestHeaders(this.destination);
     const { action: resolvedAction, config: actionConfig } = lookupActionConfig(
       action,
       this.destination.Config.actions,

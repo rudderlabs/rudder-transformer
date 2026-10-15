@@ -7,6 +7,12 @@ After making code changes, always run these checks before committing:
 1. **Lint & format**: `npm run lint` (runs prettier + eslint --fix). If it produces diffs, stage and commit them.
 2. **Unit tests**: `npm test -- --testPathPattern="<destination_name>" --no-coverage` for the affected destination.
 3. **Integration tests**: `npm run test:ts -- component --destination=<destination_name>` for the affected destination.
+4. **Secret paths**: if you changed a destination's transform or its component fixtures (or its `secretKeys` in
+   `rudder-integrations-config`), regenerate `src/secretPaths/secretPaths.json` — CI's "Verify generated secret
+   paths" job byte-compares it on every PR:
+   `SECRET_PATHS_DESTINATION=<destination_name> SECRET_PATHS_INTEGRATIONS_CONFIG=<integrations-config>/src/configurations/destinations npm run generate:secret-paths`.
+   Review the diff it produces; a wrong entry is fixed in the fixture or in `secretKeys`, never by hand-editing
+   the JSON. See `src/secretPaths/tooling/README.md`.
 
 ## Project Structure
 

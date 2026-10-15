@@ -24,12 +24,15 @@ import {
   type PinterestAudienceRouterInput,
   type PinterestAudienceRouterRequest,
 } from './types';
+import { pinterestAudienceDelivery } from './delivery';
 import { PINTEREST_FIELD_CONFIG, pickPinterestIdentifiers, toRecordRow } from './utils';
 
 class PinterestAudienceIntegration extends DestinationIntegration<
   PinterestAudiencePayload,
   typeof PinterestAudienceRouterRequestSchema
 > {
+  static readonly delivery = pinterestAudienceDelivery;
+
   transformEvent(
     input: PinterestAudienceRouterRequest,
   ): TransformedEvent<PinterestAudiencePayload> {

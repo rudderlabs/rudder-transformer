@@ -8,7 +8,6 @@ const requiredConfigString = z
 
 export const RoktDestinationConfigSchema = z
   .object({
-    apiEndpoint: requiredConfigString,
     serverToServerKey: requiredConfigString,
     serverToServerSecret: requiredConfigString,
   })

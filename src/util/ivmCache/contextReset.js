@@ -46,6 +46,7 @@ async function injectFreshApis(jail, cachedIsolate, credentials) {
   );
 
   await jail.set('_ivm', ivm);
+  await jail.set('log', () => {});
 
   await jail.set(
     '_fetch',

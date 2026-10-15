@@ -116,6 +116,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   CUSTOM_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: false },
   ITERABLE_AUDIENCE: { routerTransform: true, batching: true },
   BRAZE_AUDIENCE: { routerTransform: true, batching: true },
+  GAINSIGHT_PX_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: true },
   REDDIT_AUDIENCE: { routerTransform: true, batching: true },
   HS_AUDIENCE: { routerTransform: true, batching: true },
   ROKT: { routerTransform: true, batching: true, transformerProxy: true },

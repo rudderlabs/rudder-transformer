@@ -116,10 +116,7 @@ export type CustomAudienceItemBody = {
 export type CustomAudienceDestination = Destination<
   CustomAudienceDestConfig,
   CustomAudienceDeliveryAccount | null
-> & {
-  // EventTesterService.transformDestination capitalizes top-level keys for endpoint preview.
-  DeliveryAccount?: unknown;
-};
+>;
 
 export type CustomAudienceConnection = Connection<{
   destination: CustomAudienceConnectionDestConfig;

@@ -67,7 +67,7 @@ jobs:
           else
             text=":x: *Integration Version Audit (Rudder Transformer) failed*: no master ticket was created or updated"
           fi
-          text="$text"$'\n'"<$RUN_URL|View workflow run>"
+          text="$text"$'\n'"<$RUN_URL|View workflow run>"$'\n'"CC: <!subteam^S02AEQL26CT>"
           echo "text=$(jq -n --arg t "$text" '$t')" >> "$GITHUB_OUTPUT"
 
       - name: Notify Slack

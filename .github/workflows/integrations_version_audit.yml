@@ -29,6 +29,10 @@ jobs:
           curl https://cursor.com/install -fsS | bash
           echo "$HOME/.cursor/bin" >> $GITHUB_PATH
 
+      # Cursor loads Claude Code hooks from .claude/settings.json; its lint-staged hook blocks every shell command.
+      - name: Disable Claude Code hooks for Cursor
+        run: rm -f .claude/settings.json .claude/settings.local.json
+
       - name: Run Integration Version Audit and Create Linear Tickets
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}

@@ -33,10 +33,6 @@ jobs:
       - name: Disable Claude Code hooks for Cursor
         run: rm -f .claude/settings.json .claude/settings.local.json
 
-      - name: Record audit start time
-        id: start
-        run: echo "time=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
-
       - name: Run Integration Version Audit and Create Linear Tickets
         id: audit
         env:
@@ -44,6 +40,7 @@ jobs:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
           LINEAR_TEAM_ID: ${{ secrets.LINEAR_TEAM_ID }}
         run: |
+          set -o pipefail
           cursor-agent -p "⚠️ CRITICAL REQUIREMENTS:
           1. Follow the plan in @.github/scripts/integrations_version_audit_plan.md
           2. You MUST create Linear tickets DIRECTLY using Linear API calls during this execution
@@ -53,46 +50,22 @@ jobs:
           6. Make Linear API calls directly using your capabilities to create/update tickets immediately after analysis
           7. Your output MUST include actual Linear ticket URLs (like https://linear.app/...)
           8. If you create a script file instead of creating tickets, the task has FAILED
+          9. After the master ticket is created or refreshed, print one line exactly as: MASTER_TICKET_URL: <master ticket URL>
 
-          Execute the audit plan: analyze integrations, then create or update Linear tickets using direct API calls. Include ticket URLs in your final output." --force
+          Execute the audit plan: analyze integrations, then create or update Linear tickets using direct API calls. Include ticket URLs in your final output." --force | tee audit_output.txt
 
-      # cursor-agent exits 0 even when it cannot reach Linear, so the run counts as successful
-      # only if an audit master ticket was created or updated during it.
       - name: Build Slack message
         id: message
         if: always()
         env:
-          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
-          LINEAR_TEAM_ID: ${{ secrets.LINEAR_TEAM_ID }}
-          SINCE: ${{ steps.start.outputs.time }}
-          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          query='query($filter: IssueFilter, $since: DateComparator) {
-            issues(filter: $filter, first: 20) {
-              nodes { identifier number title url children(filter: { updatedAt: $since }) { nodes { id } } }
-            }
-          }'
-          body=$(jq -n --arg q "$query" --arg team "$LINEAR_TEAM_ID" --arg since "$SINCE" '{
-            query: $q,
-            variables: {
-              filter: {
-                team: { id: { eq: $team } },
-                title: { containsIgnoreCase: "Integration Version Audit [Rudder Transformer]" },
-                parent: { null: true },
-                updatedAt: { gte: $since }
-              },
-              since: { gte: $since }
-            }
-          }')
-          master=$(curl -sS https://api.linear.app/graphql \
-            -H "Authorization: $LINEAR_API_KEY" -H "Content-Type: application/json" -d "$body" \
-            | jq -c '[.data.issues.nodes[]?] | sort_by(.number) | last // empty' || true)
-
-          if [ "$AUDIT_OUTCOME" = "success" ] && [ -n "$master" ]; then
-            text=$(jq -r '":white_check_mark: *Integration Version Audit (Rudder Transformer) completed*\nParent ticket: <\(.url)|\(.identifier): \(.title)>\nSubtickets created/updated: \(.children.nodes | length)"' <<< "$master")
+          # cursor-agent exits 0 even when Linear calls fail, so success needs the master ticket URL.
+          master_url=$(grep 'MASTER_TICKET_URL' audit_output.txt 2>/dev/null | grep -oE 'https://linear\.app/[^] )>*`]+' | tail -1 || true)
+          if [ "${{ steps.audit.outcome }}" = "success" ] && [ -n "$master_url" ]; then
+            text=":white_check_mark: *Integration Version Audit (Rudder Transformer) completed*"$'\n'"Parent ticket: $master_url"
           else
-            text=":x: *Integration Version Audit (Rudder Transformer) failed*: no Linear tickets were created or updated"
+            text=":x: *Integration Version Audit (Rudder Transformer) failed*: no master ticket was created or updated"
           fi
           text="$text"$'\n'"<$RUN_URL|View workflow run>"
           echo "text=$(jq -n --arg t "$text" '$t')" >> "$GITHUB_OUTPUT"

@@ -805,10 +805,9 @@ export const data: RouterTestData[] = [
   {
     id: 'custom-audience-router-test-account-api-key-auth',
     name: destType,
-    description:
-      'Uses linked API-key accounts with dynamic header names covered by header redaction',
+    description: 'Uses linked API-key accounts with configured header names',
     scenario: 'Business',
-    successCriteria: 'The transformed request carries the masked linked-account API key header',
+    successCriteria: 'The transformed request carries the linked-account API key header',
     feature: 'router',
     module: 'destination',
     version: 'v0',

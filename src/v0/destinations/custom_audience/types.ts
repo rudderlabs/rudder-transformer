@@ -80,6 +80,10 @@ export type ParsedCustomAudienceDeliveryAccount = z.infer<
 
 export type CustomAudienceDeliveryAccount = ParsedCustomAudienceDeliveryAccount;
 
+export type CustomAudienceAccountAuthHandler = (
+  account: ParsedCustomAudienceDeliveryAccount,
+) => Record<string, string>;
+
 export const customMappingSchema = z.object({
   from: z.string().min(1, 'Custom mapping "from" value must be non-empty'),
   to: z.string().min(1, 'Custom mapping "to" value must be non-empty'),
@@ -112,7 +116,10 @@ export type CustomAudienceItemBody = {
 export type CustomAudienceDestination = Destination<
   CustomAudienceDestConfig,
   CustomAudienceDeliveryAccount | null
->;
+> & {
+  // EventTesterService.transformDestination capitalizes top-level keys for endpoint preview.
+  DeliveryAccount?: unknown;
+};
 
 export type CustomAudienceConnection = Connection<{
   destination: CustomAudienceConnectionDestConfig;

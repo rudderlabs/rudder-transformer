@@ -9,8 +9,10 @@ import type {
   ActionConfig,
   ActionFieldConfig,
   AuthenticationType,
+  CustomAudienceAccountAuthHandler,
   CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
+  CustomAudienceDestination,
   ParsedCustomAudienceDeliveryAccount,
   CustomAudienceHeader,
   CustomMapping,
@@ -168,16 +170,6 @@ const buildLegacyAuthHeaders = (
   }
 };
 
-type AuthDestination = {
-  Config: CustomAudienceDestConfig;
-  // Rudder Server serializes its DeliveryAccount field with this lowercase JSON tag.
-  deliveryAccount?: unknown;
-  // EventTesterService.transformDestination capitalizes top-level keys for endpoint preview.
-  DeliveryAccount?: unknown;
-};
-
-type AccountAuthHandler = (account: ParsedCustomAudienceDeliveryAccount) => Record<string, string>;
-
 const requireAccountValues = (
   account: ParsedCustomAudienceDeliveryAccount,
   values: Array<{ field: string; value: unknown }>,
@@ -193,7 +185,7 @@ const requireAccountValues = (
   return values.map(({ value }) => value as string);
 };
 
-const ACCOUNT_AUTH_HANDLERS: Record<string, AccountAuthHandler> = {
+const ACCOUNT_AUTH_HANDLERS: Record<string, CustomAudienceAccountAuthHandler> = {
   [ACCOUNT_DEFINITION_NAMES.BASIC_AUTH]: (account) => {
     const [username, password] = requireAccountValues(account, [
       { field: 'options.basicAuthUserName', value: account.options?.basicAuthUserName },
@@ -234,12 +226,12 @@ const resolveAccountAuth = (deliveryAccount: unknown): Record<string, string> =>
   return handler(account);
 };
 
-const getDeliveryAccount = (destination: AuthDestination): unknown => {
+const getDeliveryAccount = (destination: CustomAudienceDestination): unknown => {
   if (destination.deliveryAccount !== undefined) return destination.deliveryAccount;
   return destination.DeliveryAccount;
 };
 
-export const resolveAuth = (destination: AuthDestination): Record<string, string> => {
+export const resolveAuth = (destination: CustomAudienceDestination): Record<string, string> => {
   const { Config: destConfig } = destination;
   const deliveryAccount = getDeliveryAccount(destination);
   if (destConfig.authenticationEnabled === false) return {};
@@ -272,7 +264,9 @@ const flattenConfigHeaders = (
   return result;
 };
 
-export const buildRequestHeaders = (destination: AuthDestination): Record<string, string> => ({
+export const buildRequestHeaders = (
+  destination: CustomAudienceDestination,
+): Record<string, string> => ({
   'Content-Type': 'application/json',
   ...flattenConfigHeaders(destination.Config.headers),
   ...resolveAuth(destination),

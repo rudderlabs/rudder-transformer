@@ -4,7 +4,7 @@ export const appCode = 'ABCDE-12345';
 export const apiToken = 'test-pushwoosh-api-token';
 
 export const eventsEndpoint =
-  'https://integration-segment.svc-nue.pushwoosh.com/integration-segment/v1/post-events';
+  'https://integration-rudderstack.svc-nue.pushwoosh.com/integration-segment/v1/post-events';
 export const setTagsEndpoint = 'https://api.pushwoosh.com/json/1.3/setTags';
 
 export const eventsHeaders = {

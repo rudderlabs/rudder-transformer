@@ -1,3 +1,4 @@
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { isPlainObject, pick } from 'lodash';
 import { constructPayload, formatTimeStamp, isAndroidFamily, isAppleFamily } from '../../util';
 import type { RudderMessage } from '../../../types';
@@ -7,6 +8,7 @@ import type {
   RoktBatch,
   RoktConversion,
   RoktDeviceInfo,
+  RoktEventsMapping,
   RoktUserAttributes,
   RoktUserIdentities,
 } from './types';
@@ -28,7 +30,6 @@ type MessageValues = {
   ip?: unknown;
   click_id?: unknown;
   timestamp?: unknown;
-  conversiontype?: unknown;
   device_type?: unknown;
   advertising_id?: unknown;
   page_search?: unknown;
@@ -135,15 +136,11 @@ const buildDeviceInfo = (
 const buildConversion = (
   message: RudderMessage,
   values: MessageValues,
-  type: string,
+  conversionType: string,
   messageId?: string,
 ): RoktConversion => {
   const customAttributes = mappedPayload(message, ROKT_MAPPING_CONFIG.conversionAttributeMappings);
   const { amount } = customAttributes;
-  let { conversiontype } = values;
-  if (!isPresent(conversiontype) && ['page', 'screen'].includes(type)) {
-    conversiontype = 'screen_view';
-  }
   const timestamp = resolveTimestamp(values.timestamp);
   const sourceMessageId = asNonEmptyString(messageId);
 
@@ -156,14 +153,24 @@ const buildConversion = (
       ...(sourceMessageId ? { source_message_id: sourceMessageId } : {}),
       custom_attributes: compact({
         ...customAttributes,
-        conversiontype,
+        conversiontype: conversionType,
         amount: isPresent(amount) ? String(amount) : undefined,
       }),
     },
   };
 };
 
-export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
+export const buildRoktBatch = (
+  message: RudderMessage,
+  eventsMapping: RoktEventsMapping,
+): RoktBatch => {
+  const entry = eventsMapping.find((row) => row.from === message.event);
+  if (!entry) {
+    throw new InstrumentationError(
+      `Event "${message.event}" is not present in the Rokt events mapping. Dropping the event.`,
+    );
+  }
+
   const sanitizedMessage = sanitizeMappedPaths(message);
   const values = mappedPayload(
     sanitizedMessage,
@@ -188,8 +195,6 @@ export const buildRoktBatch = (message: RudderMessage): RoktBatch => {
           },
         }
       : {}),
-    ...(message.type === 'identify'
-      ? {}
-      : { events: [buildConversion(sanitizedMessage, values, message.type, message.messageId)] }),
+    events: [buildConversion(sanitizedMessage, values, entry.to, message.messageId)],
   };
 };

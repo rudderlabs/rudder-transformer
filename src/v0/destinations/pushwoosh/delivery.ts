@@ -1,9 +1,11 @@
 import { z } from 'zod';
 import {
+  abort,
   defaultFailureReason,
   retry,
   type DeliveryContext,
   type DeliverySpec,
+  type StatusOverride,
   type StatusOverrideMap,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 
@@ -38,7 +40,18 @@ const pushwooshFailureReason = ({ response, status }: DeliveryContext): string =
   return defaultFailureReason(status);
 };
 
+// The legacy JSON API may report an application error inside an HTTP 200 body.
+const legacyBodyVerdict: StatusOverride = (ctx, fallback) => {
+  const legacy = LegacyApiErrorSchema.safeParse(ctx.response);
+  if (!legacy.success || legacy.data.status_code === 200) {
+    return fallback();
+  }
+  const reason = pushwooshFailureReason(ctx);
+  return legacy.data.status_code >= 500 ? retry(reason) : abort(reason);
+};
+
 const statusOverrides: StatusOverrideMap = {
+  200: legacyBodyVerdict,
   // A decode failure names no event, so isolate the batch; other 400s are config errors and abort.
   400: (ctx, fallback) =>
     EventDecodeErrorSchema.safeParse(ctx.response).success

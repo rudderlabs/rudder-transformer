@@ -12,6 +12,7 @@ import {
 import {
   applicationNotFoundResponse,
   decodeFailureRequest,
+  errorIn200Request,
   eventsBatchRequest,
   invalidApplicationRequest,
   invalidApplicationResponse,
@@ -227,6 +228,30 @@ export const data: ProxyV1TestData[] = [
             status: 400,
             message: '[PUSHWOOSH] application code is not valid (status_code: 210)',
             response: [job(1, 400, JSON.stringify(invalidApplicationResponse))],
+            statTags: statTags('aborted'),
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'pushwoosh-delivery-set-tags-error-in-http-200',
+    name: 'pushwoosh',
+    description: 'setTags HTTP 200 carrying status_code 210 is not reported as delivered',
+    scenario: 'Native batching delivery',
+    successCriteria: 'The legacy body status_code overrides the HTTP 200 and the job aborts',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: { request: { method: 'POST', body: setTagsPayload(errorIn200Request) } },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: '[PUSHWOOSH] Argument error (status_code: 210)',
+            response: [job(1, 400, 'Argument error (status_code: 210)')],
             statTags: statTags('aborted'),
           },
         },

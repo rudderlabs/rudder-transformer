@@ -11,6 +11,7 @@ import {
   EVENTS_ENDPOINT,
   EVENTS_ENDPOINT_PATH,
   MAX_BATCH_SIZE,
+  MAX_PAYLOAD_SIZE,
   SET_TAGS_ENDPOINT,
   SET_TAGS_ENDPOINT_PATH,
 } from './config';
@@ -72,6 +73,7 @@ class PushwooshIntegration extends DestinationIntegration<
     if (endpoint === EVENTS_ENDPOINT) {
       return new ChunkBatchStrategy<PushwooshPayload>({
         maxItems: MAX_BATCH_SIZE,
+        maxPayloadSize: MAX_PAYLOAD_SIZE,
         wrapBody: (bodies) => ({ events: bodies }),
       });
     }

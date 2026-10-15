@@ -38,6 +38,14 @@ export const invalidApplicationResponse = {
   response: null,
 };
 
+// Documented (not observed live) legacy-API shape: an application error inside an HTTP 200.
+export const errorIn200Request = setTagsBody('user-error-in-200', { plan: 'pro' });
+export const errorIn200Response = {
+  status_code: 210,
+  status_message: 'Argument error',
+  response: null,
+};
+
 export const networkCallsData = [
   {
     description: 'Pushwoosh post-events accepts a batch with an empty 200',
@@ -98,5 +106,15 @@ export const networkCallsData = [
       data: invalidApplicationRequest,
     },
     httpRes: { status: 400, data: invalidApplicationResponse },
+  },
+  {
+    description: 'Pushwoosh setTags reports an argument error inside an HTTP 200',
+    httpReq: {
+      method: 'POST',
+      url: setTagsEndpoint,
+      headers: setTagsHeaders,
+      data: errorIn200Request,
+    },
+    httpRes: { status: 200, data: errorIn200Response },
   },
 ];

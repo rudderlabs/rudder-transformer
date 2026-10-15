@@ -60,6 +60,24 @@ describe('PushwooshIntegration batching', () => {
     ]);
   });
 
+  it('splits a post-events batch that would exceed MAX_PAYLOAD_SIZE', async () => {
+    const blob = 'x'.repeat(4 * 1024 * 1024);
+    const bigTrack = (jobId: number) =>
+      input(jobId, {
+        type: 'track',
+        userId: `user-${jobId}`,
+        event: 'Purchase',
+        timestamp: '2026-10-10T10:00:00.000Z',
+        properties: { blob },
+      });
+    const results = await processDestinationIntegration([1, 2, 3].map(bigTrack), Integration, {});
+
+    expect(requestSummary(results)).toEqual([
+      { endpoint: EVENTS_ENDPOINT, jobIds: [1, 2], statusCode: 200 },
+      { endpoint: EVENTS_ENDPOINT, jobIds: [3], statusCode: 200 },
+    ]);
+  });
+
   it('sends every identify as its own setTags request', async () => {
     const results = await processDestinationIntegration(
       [identify(1), track(2), identify(3)],

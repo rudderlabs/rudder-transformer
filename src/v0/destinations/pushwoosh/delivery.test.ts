@@ -77,6 +77,24 @@ const cases = [
     expected: { kind: 'abort', reason: 'Pushwoosh request failed (status_code: 210)' },
   },
   {
+    name: 'setTags 200 with status_code 200 is a success',
+    status: 200,
+    response: { status_code: 200, status_message: 'OK', response: {} },
+    expected: { kind: 'success' },
+  },
+  {
+    name: 'setTags error inside HTTP 200 (status_code 210) aborts',
+    status: 200,
+    response: { status_code: 210, status_message: 'application code is not valid', response: null },
+    expected: { kind: 'abort', reason: 'application code is not valid (status_code: 210)' },
+  },
+  {
+    name: 'setTags 5xx-range status_code inside HTTP 200 is retried',
+    status: 200,
+    response: { status_code: 500, status_message: 'Internal error', response: null },
+    expected: { kind: 'retry', reason: 'Internal error (status_code: 500)' },
+  },
+  {
     name: 'unrecognised 5xx body is retried with the generic reason',
     status: 503,
     response: '',

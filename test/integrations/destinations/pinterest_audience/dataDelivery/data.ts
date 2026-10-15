@@ -79,16 +79,30 @@ const deliveryCase = (
 });
 
 export const data: ProxyV1TestData[] = [
-  deliveryCase('pinterest_audience_v1_add_200', '[Proxy v1] D12 200 CustomerList → every job 200', successBody, 2, 200, {
-    status: 200,
-    message: SUCCESS_MESSAGE,
-    response: jobs(2).map((metadata) => ({ statusCode: 200, metadata, error: 'success' })),
-  }),
-  deliveryCase('pinterest_audience_v1_remove_200', '[Proxy v1] REMOVE succeeds on the same URL', removeBody, 1, 200, {
-    status: 200,
-    message: SUCCESS_MESSAGE,
-    response: jobs(1).map((metadata) => ({ statusCode: 200, metadata, error: 'success' })),
-  }),
+  deliveryCase(
+    'pinterest_audience_v1_add_200',
+    '[Proxy v1] D12 200 CustomerList → every job 200',
+    successBody,
+    2,
+    200,
+    {
+      status: 200,
+      message: SUCCESS_MESSAGE,
+      response: jobs(2).map((metadata) => ({ statusCode: 200, metadata, error: 'success' })),
+    },
+  ),
+  deliveryCase(
+    'pinterest_audience_v1_remove_200',
+    '[Proxy v1] REMOVE succeeds on the same URL',
+    removeBody,
+    1,
+    200,
+    {
+      status: 200,
+      message: SUCCESS_MESSAGE,
+      response: jobs(1).map((metadata) => ({ statusCode: 200, metadata, error: 'success' })),
+    },
+  ),
   deliveryCase(
     'pinterest_audience_v1_401_refresh',
     '[Proxy v1] D13 401 with an auth body → REFRESH_TOKEN',
@@ -101,34 +115,69 @@ export const data: ProxyV1TestData[] = [
       ...failed(authExpiredResponse, '2: Authentication failed.', 401, 'retryable'),
     },
   ),
-  deliveryCase('pinterest_audience_v1_403_abort', '[Proxy v1] 403 aborts and names the ad account', forbiddenBody, 1, 200, {
-    status: 403,
-    ...failed(
-      forbiddenResponse,
-      `Pinterest refused the request: You are not permitted to access that resource. Check the connected account still has access to ad account ${adAccountId}.`,
-      403,
-      'aborted',
-    ),
-  }),
-  deliveryCase('pinterest_audience_v1_404_list_not_found', '[Proxy v1] D14 404/1018 aborts: list not found', notFoundBody, 1, 200, {
-    status: 404,
-    ...failed(
-      notFoundResponse,
-      `Customer list ${customerListId} was not found — it may have been deleted. Pick or create the audience again.`,
-      404,
-      'aborted',
-    ),
-  }),
-  deliveryCase('pinterest_audience_v1_400_malformed', '[Proxy v1] D15 400/2740 aborts with code: message', malformedBody, 1, 200, {
-    status: 400,
-    ...failed(malformedResponse, '2740: Malformatted user list.', 400, 'aborted'),
-  }),
-  deliveryCase('pinterest_audience_v1_429_throttled', '[Proxy v1] D16 429 is throttled', rateLimitBody, 1, 200, {
-    status: 429,
-    ...failed(rateLimitResponse, '8: Rate limit exceeded.', 429, 'throttled'),
-  }),
-  deliveryCase('pinterest_audience_v1_500_retry', '[Proxy v1] D17 5xx retries', serverErrorBody, 1, 200, {
-    status: 500,
-    ...failed(serverErrorResponse, '1: Something went wrong on our end.', 500, 'retryable'),
-  }),
+  deliveryCase(
+    'pinterest_audience_v1_403_abort',
+    '[Proxy v1] 403 aborts and names the ad account',
+    forbiddenBody,
+    1,
+    200,
+    {
+      status: 403,
+      ...failed(
+        forbiddenResponse,
+        `Pinterest refused the request: You are not permitted to access that resource. Check the connected account still has access to ad account ${adAccountId}.`,
+        403,
+        'aborted',
+      ),
+    },
+  ),
+  deliveryCase(
+    'pinterest_audience_v1_404_list_not_found',
+    '[Proxy v1] D14 404/1018 aborts: list not found',
+    notFoundBody,
+    1,
+    200,
+    {
+      status: 404,
+      ...failed(
+        notFoundResponse,
+        `Customer list ${customerListId} was not found — it may have been deleted. Pick or create the audience again.`,
+        404,
+        'aborted',
+      ),
+    },
+  ),
+  deliveryCase(
+    'pinterest_audience_v1_400_malformed',
+    '[Proxy v1] D15 400/2740 aborts with code: message',
+    malformedBody,
+    1,
+    200,
+    {
+      status: 400,
+      ...failed(malformedResponse, '2740: Malformatted user list.', 400, 'aborted'),
+    },
+  ),
+  deliveryCase(
+    'pinterest_audience_v1_429_throttled',
+    '[Proxy v1] D16 429 is throttled',
+    rateLimitBody,
+    1,
+    200,
+    {
+      status: 429,
+      ...failed(rateLimitResponse, '8: Rate limit exceeded.', 429, 'throttled'),
+    },
+  ),
+  deliveryCase(
+    'pinterest_audience_v1_500_retry',
+    '[Proxy v1] D17 5xx retries',
+    serverErrorBody,
+    1,
+    200,
+    {
+      status: 500,
+      ...failed(serverErrorResponse, '1: Something went wrong on our end.', 500, 'retryable'),
+    },
+  ),
 ];

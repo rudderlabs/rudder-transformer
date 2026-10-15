@@ -47,7 +47,9 @@ const RecordMessageSchema = z
 export const PinterestAudienceRouterRequestSchema = makeRouterInputSchema({
   destinationConfig: PinterestAudienceDestinationConfigSchema,
   message: RecordMessageSchema,
-  connectionConfig: z.object({ destination: PinterestAudienceConnectionConfigSchema }).passthrough(),
+  connectionConfig: z
+    .object({ destination: PinterestAudienceConnectionConfigSchema })
+    .passthrough(),
 });
 
 export type PinterestAudienceRouterRequest = z.infer<typeof PinterestAudienceRouterRequestSchema>;

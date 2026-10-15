@@ -125,7 +125,12 @@ describe('pinterest_audience router transform', () => {
   it('D2 rows of two connections go to their own list and never mix', async () => {
     const results = await run([
       buildInput(1, 'insert', { EMAIL: 'a@example.com' }),
-      buildInput(2, 'insert', { EMAIL: 'b@example.com' }, buildConnection({ customerListId: OTHER_LIST_ID })),
+      buildInput(
+        2,
+        'insert',
+        { EMAIL: 'b@example.com' },
+        buildConnection({ customerListId: OTHER_LIST_ID }),
+      ),
     ]);
     expect(
       successes(results).map((r) => [r.batchedRequest.endpoint, bodyOf(r).records_v2, jobIdsOf(r)]),
@@ -152,7 +157,11 @@ describe('pinterest_audience router transform', () => {
 
   it('ignores identifier keys Pinterest does not accept', async () => {
     const results = await run([
-      buildInput(1, 'insert', { EMAIL: 'a@example.com', EXTERNAL_ID: 'x-1', email: 'b@example.com' }),
+      buildInput(1, 'insert', {
+        EMAIL: 'a@example.com',
+        EXTERNAL_ID: 'x-1',
+        email: 'b@example.com',
+      }),
     ]);
     expect(bodyOf(successes(results)[0]).records_v2).toEqual([{ email: sha256('a@example.com') }]);
   });
@@ -186,7 +195,12 @@ describe('pinterest_audience router transform', () => {
 
   it('D9 aborts a plain value when isHashRequired is false', async () => {
     const results = await run([
-      buildInput(1, 'insert', { EMAIL: 'alice@example.com' }, buildConnection({ isHashRequired: false })),
+      buildInput(
+        1,
+        'insert',
+        { EMAIL: 'alice@example.com' },
+        buildConnection({ isHashRequired: false }),
+      ),
     ]);
     expect(failures(results)).toEqual([
       expect.objectContaining({

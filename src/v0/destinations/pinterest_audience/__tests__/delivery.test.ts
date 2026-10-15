@@ -116,7 +116,12 @@ describe('pinterest_audience delivery — verdicts', () => {
 
 describe('extractPinterestErrorMessage', () => {
   it.each<[string, unknown, number, string]>([
-    ['code and message', { code: 2740, message: 'Malformatted user list.' }, 400, '2740: Malformatted user list.'],
+    [
+      'code and message',
+      { code: 2740, message: 'Malformatted user list.' },
+      400,
+      '2740: Malformatted user list.',
+    ],
     ['message only', { message: 'Bad request.' }, 400, 'Bad request.'],
     ['empty body', '', 502, 'Pinterest request failed with status 502'],
   ])('%s', (_name, response, status, expected) => {

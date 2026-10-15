@@ -97,14 +97,20 @@ export const data: RouterTestData[] = [
     [input(1, 'insert', { EMAIL: RAW_EMAIL }), input(2, 'delete', { EMAIL: RAW_EMAIL })],
     [
       {
-        batchedRequest: batchedRequest({ operation_type: 'ADD', records_v2: [{ email: EMAIL_SHA256 }] }),
+        batchedRequest: batchedRequest({
+          operation_type: 'ADD',
+          records_v2: [{ email: EMAIL_SHA256 }],
+        }),
         metadata: [metadataFor(1)],
         batched: true,
         statusCode: 200,
         destination,
       },
       {
-        batchedRequest: batchedRequest({ operation_type: 'REMOVE', records_v2: [{ email: EMAIL_SHA256 }] }),
+        batchedRequest: batchedRequest({
+          operation_type: 'REMOVE',
+          records_v2: [{ email: EMAIL_SHA256 }],
+        }),
         metadata: [metadataFor(2)],
         batched: true,
         statusCode: 200,
@@ -121,7 +127,10 @@ export const data: RouterTestData[] = [
     ],
     [
       {
-        batchedRequest: batchedRequest({ operation_type: 'ADD', records_v2: [{ email: EMAIL_SHA256 }] }),
+        batchedRequest: batchedRequest({
+          operation_type: 'ADD',
+          records_v2: [{ email: EMAIL_SHA256 }],
+        }),
         metadata: [metadataFor(1)],
         batched: true,
         statusCode: 200,
@@ -145,7 +154,10 @@ export const data: RouterTestData[] = [
     [input(1, 'insert', { PHONE: '12345' }), input(2, 'insert', { EMAIL: RAW_EMAIL })],
     [
       {
-        batchedRequest: batchedRequest({ operation_type: 'ADD', records_v2: [{ email: EMAIL_SHA256 }] }),
+        batchedRequest: batchedRequest({
+          operation_type: 'ADD',
+          records_v2: [{ email: EMAIL_SHA256 }],
+        }),
         metadata: [metadataFor(2)],
         batched: true,
         statusCode: 200,

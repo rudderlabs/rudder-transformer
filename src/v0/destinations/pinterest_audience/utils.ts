@@ -6,7 +6,7 @@ import type { PinterestRecordRow } from './types';
 // `validate` is dropped and counted on `pinterest_audience_invalid_field`.
 const EMAIL_SHAPE = /^[^@]+@[^@]+$/;
 // Pinterest: "AAIDs must be lowercase … 8-4-4-4-12".
-const MAID_SHAPE = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/;
+const MAID_SHAPE = /^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/;
 // E.164 length including the country code. The pre-hash phone format is assumption P6 (spec §3.3).
 const PHONE_SHAPE = /^\d{8,15}$/;
 

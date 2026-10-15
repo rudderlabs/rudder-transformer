@@ -70,7 +70,10 @@ export const headers = {
 };
 
 /** generateMetadata with this destination's distinctive token. */
-export const metadataFor = (jobId: number) => ({ ...generateMetadata(jobId), secret: { accessToken } });
+export const metadataFor = (jobId: number) => ({
+  ...generateMetadata(jobId),
+  secret: { accessToken },
+});
 
 export const RAW_EMAIL = '  Alice@Example.COM ';
 export const EMAIL_SHA256 = sha256('alice@example.com');

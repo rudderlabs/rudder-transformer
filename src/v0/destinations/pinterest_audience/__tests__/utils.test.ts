@@ -74,9 +74,17 @@ describe('pinterest_audience normalisation (spec §3.3)', () => {
 
   const droppedCases = [
     { name: 'D6 phone under 8 digits', identifiers: { PHONE: '12345' }, fieldName: 'PHONE' },
-    { name: 'phone over 15 digits', identifiers: { PHONE: '1234567890123456' }, fieldName: 'PHONE' },
+    {
+      name: 'phone over 15 digits',
+      identifiers: { PHONE: '1234567890123456' },
+      fieldName: 'PHONE',
+    },
     { name: 'email without @', identifiers: { EMAIL: 'alice.example.com' }, fieldName: 'EMAIL' },
-    { name: 'email with empty local part', identifiers: { EMAIL: '@example.com' }, fieldName: 'EMAIL' },
+    {
+      name: 'email with empty local part',
+      identifiers: { EMAIL: '@example.com' },
+      fieldName: 'EMAIL',
+    },
     { name: 'email with empty domain', identifiers: { EMAIL: 'alice@' }, fieldName: 'EMAIL' },
     { name: 'email with two @', identifiers: { EMAIL: 'a@b@example.com' }, fieldName: 'EMAIL' },
     {

@@ -1,7 +1,14 @@
 // Pinterest responses for PATCH /v5/ad_accounts/{ad}/customer_lists/{list}.
 // Shapes: OpenAPI v5.28.0 `CustomerList` (200) and `Pinterest.Lib.Error` {code, message}.
 // Replaced by live captures from probes P1/P5 (spec §9).
-import { EMAIL_SHA256, adAccountId, customerListId, endpoint, endpointPath, headers } from '../common';
+import {
+  EMAIL_SHA256,
+  adAccountId,
+  customerListId,
+  endpoint,
+  endpointPath,
+  headers,
+} from '../common';
 
 export { endpoint, endpointPath, headers };
 
@@ -36,7 +43,10 @@ export const customerListResponse = {
 };
 // pinned by probe P5 (spec §9)
 export const authExpiredResponse = { code: 2, message: 'Authentication failed.' };
-export const forbiddenResponse = { code: 29, message: 'You are not permitted to access that resource.' };
+export const forbiddenResponse = {
+  code: 29,
+  message: 'You are not permitted to access that resource.',
+};
 export const notFoundResponse = { code: 1018, message: 'Customer list not found.' };
 export const malformedResponse = { code: 2740, message: 'Malformatted user list.' };
 export const rateLimitResponse = { code: 8, message: 'Rate limit exceeded.' };

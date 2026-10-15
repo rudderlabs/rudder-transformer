@@ -1,6 +1,5 @@
 import sha256 from 'sha256';
 import { Integration } from '../routerTransform';
-import { MAX_RECORDS_PER_REQUEST } from '../config';
 import { processDestinationIntegration } from '../../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
@@ -211,12 +210,12 @@ describe('pinterest_audience router transform', () => {
     ]);
   });
 
-  it('D10 chunks at MAX_RECORDS_PER_REQUEST', async () => {
-    const inputs = Array.from({ length: MAX_RECORDS_PER_REQUEST + 1 }, (_, i) =>
+  it('D10 chunks at 1000 rows per request (literal, so a changed constant fails)', async () => {
+    const inputs = Array.from({ length: 1001 }, (_, i) =>
       buildInput(i + 1, 'insert', { EMAIL: `user${i}@example.com` }),
     );
     const sizes = successes(await run(inputs)).map((r) => bodyOf(r).records_v2.length);
-    expect(sizes).toEqual([MAX_RECORDS_PER_REQUEST, 1]);
+    expect(sizes).toEqual([1000, 1]);
   });
 
   it('D11 fails the record when the access token is missing', async () => {
@@ -264,5 +263,56 @@ describe('pinterest_audience router transform', () => {
         statTags: expect.objectContaining({ errorType: 'configuration' }),
       }),
     ]);
+  });
+
+  it('hashes each row per its own connection and sends it to its own list URL', async () => {
+    const OTHER_AD_ACCOUNT_ID = '549756359985';
+    const preHashed = sha256('pre@example.com');
+    const results = await run([
+      buildInput(1, 'insert', { EMAIL: 'Hash@Example.com' }),
+      buildInput(
+        2,
+        'insert',
+        { EMAIL: preHashed },
+        buildConnection({
+          isHashRequired: false,
+          adAccountId: OTHER_AD_ACCOUNT_ID,
+          customerListId: OTHER_LIST_ID,
+        }),
+      ),
+    ]);
+    const ok = successes(results);
+    expect(failures(results)).toHaveLength(0);
+    expect(
+      ok
+        .map((r) => [r.batchedRequest.endpoint, bodyOf(r), jobIdsOf(r)])
+        .sort((a, b) => a[2][0] - b[2][0]),
+    ).toEqual([
+      [
+        ENDPOINT,
+        { operation_type: 'ADD', records_v2: [{ email: sha256('hash@example.com') }] },
+        [1],
+      ],
+      [
+        `https://api.pinterest.com/v5/ad_accounts/${OTHER_AD_ACCOUNT_ID}/customer_lists/${OTHER_LIST_ID}`,
+        { operation_type: 'ADD', records_v2: [{ email: preHashed }] },
+        [2],
+      ],
+    ]);
+  });
+
+  it('fails only the pre-hashed row when isHashRequired is true; siblings deliver', async () => {
+    const results = await run([
+      buildInput(1, 'insert', { EMAIL: 'good@example.com' }),
+      buildInput(2, 'insert', { EMAIL: sha256('pre@example.com') }),
+      buildInput(3, 'insert', { EMAIL: 'also@example.com' }),
+    ]);
+    const ok = successes(results);
+    expect(ok).toHaveLength(1);
+    expect(jobIdsOf(ok[0])).toEqual([1, 3]);
+    const bad = failures(results);
+    expect(bad).toHaveLength(1);
+    expect(bad[0].metadata.map((m: any) => m.jobId)).toEqual([2]);
+    expect(bad[0].statusCode).toBe(400);
   });
 });

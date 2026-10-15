@@ -41,7 +41,8 @@ export const customerListResponse = {
   type: 'customerlist',
   updated_time: 1461269616,
 };
-// pinned by probe P5 (spec §9)
+// INVENTED — replace with a captured response when probe P5 runs
+// PROVISIONAL — not yet pinned: probe P5 (spec §9) is blocked until Pinterest grants Standard access
 export const authExpiredResponse = { code: 2, message: 'Authentication failed.' };
 export const forbiddenResponse = {
   code: 29,

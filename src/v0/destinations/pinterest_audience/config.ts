@@ -14,7 +14,7 @@ export const getEndpoint = (adAccountId: string, customerListId: string): string
  * Rows per PATCH. Pinterest documents no ceiling; 2742
  * EXCEEDED_MAX_USER_LISTS_PER_REQUEST_LIMIT is the over-limit code.
  */
-// pinned by probe P1 (spec §9)
+// PROVISIONAL — not yet pinned: probe P1 (spec §9) is blocked until Pinterest grants Standard access
 export const MAX_RECORDS_PER_REQUEST = 1000;
 
 /**

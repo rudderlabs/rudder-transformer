@@ -33,7 +33,7 @@ export const extractPinterestErrorMessage = (response: unknown, status: number):
   return typeof code === 'number' ? `${code}: ${message}` : message;
 };
 
-// pinned by probe P5 (spec §9): expected `{ code, message }` with an auth/token/expiry message.
+// PROVISIONAL — not yet pinned: probe P5 (spec §9) is blocked until Pinterest grants Standard access. Expected `{ code, message }` with an auth/token/expiry message.
 // Update this pattern from the captured 401 body of an expired/revoked token.
 const AUTH_MESSAGE_PATTERN = /auth|token|expired/i;
 

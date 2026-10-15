@@ -380,6 +380,22 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       },
     },
     {
+      name: 'linked account from endpoint-preview shaped DeliveryAccount',
+      destination: {
+        ...buildDestination({ authenticationEnabled: true, rudderAccountId: 'account-1' }),
+        deliveryAccount: undefined,
+        DeliveryAccount: {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+          options: {},
+          secret: { bearerToken: 'preview-account-token' },
+        },
+      } as unknown as CustomAudienceDestination,
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer preview-account-token',
+      },
+    },
+    {
       name: 'linked account over stale inline credentials when toggle is absent',
       destination: buildDestination(
         {

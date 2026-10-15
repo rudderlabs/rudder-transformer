@@ -50,8 +50,8 @@ The endpoints are hard-coded to Pushwoosh's EU (NUE) data center. Accounts hoste
 
 ### Rate Limits
 
-- **post-events**: no per-account rate limit. Capacity is about 150 in-flight requests per pod × 2 pods; beyond that the ingress answers `429`, which the framework reports as throttled so rudder-server backs off. The ingress body limit is 100MB; the transformer caps batches at 10MB.
-- **setTags**: **NEEDS REVIEW** — rate limit for `/json/1.3/setTags` not verified against the Pushwoosh API reference.
+- **post-events**: no per-account rate limit. Capacity is about 150 in-flight requests per pod × 2 pods; beyond that the service answers `429`, which the framework reports as throttled so rudder-server backs off. The ingress body limit is 100MB; the transformer caps batches at 10MB.
+- **setTags**: no per-account rate limit. It is served by an autoscaled Device API cluster (about 650 req/s on average, 1.8k req/s at peak, p99 under 5 ms).
 
 ### Batching Support
 

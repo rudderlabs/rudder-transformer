@@ -76,6 +76,7 @@ jobs:
         continue-on-error: true
         with:
           method: chat.postMessage
+          errors: true
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
             {

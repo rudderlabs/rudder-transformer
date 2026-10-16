@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.160.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.159.0...v1.160.0) (2026-10-16)
+
+
+### Features
+
+* **hs_audience:** hubspot audience list membership destination ([4b3f6e5](https://github.com/rudderlabs/rudder-transformer/commit/4b3f6e570a66a486953d26c5a787ef4d3785bceb))
+* **hs_audience:** hubspot audience list membership destination ([#5638](https://github.com/rudderlabs/rudder-transformer/issues/5638)) ([0ba2227](https://github.com/rudderlabs/rudder-transformer/commit/0ba2227282ce962ef6828ebad7257c0da5f269cc)), closes [rudder-integrations-config#2798](https://github.com/rudderlabs/rudder-integrations-config/issues/2798) [rudder-integrations-info#784](https://github.com/rudderlabs/rudder-integrations-info/issues/784) [rudder-specs#204](https://github.com/rudderlabs/rudder-specs/issues/204)
+
+
+### Bug Fixes
+
+* hubspot audience enhance membership result validation ([2c8c5a3](https://github.com/rudderlabs/rudder-transformer/commit/2c8c5a3461048fba0a37dfeaacb31e3ce12139e2))
+* hubspot audience live tests ([15f1bc1](https://github.com/rudderlabs/rudder-transformer/commit/15f1bc1a0599c97bdcc826ab4ad93b2074c047fb))
+
 ## [1.159.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.158.0...v1.159.0) (2026-10-16)
 
 

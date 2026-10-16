@@ -14,8 +14,12 @@ import {
   ACTION_RECORD_MAP,
   DESTINATION_TYPE,
   ENDPOINT_PATH,
+  IDENTIFIERS_BY_FORMAT,
   MAX_RECORDS_PER_REQUEST,
+  RECORD_FORMATS,
   getEndpoint,
+  resolveRecordFormat,
+  type RecordFormat,
 } from './config';
 import {
   PinterestAudienceRouterRequestSchema,
@@ -32,6 +36,11 @@ class PinterestAudienceIntegration extends DestinationIntegration<
   typeof PinterestAudienceRouterRequestSchema
 > {
   static readonly delivery = pinterestAudienceDelivery;
+
+  /** Spec D15: the definition picks the body shape; one destination per instance, so one format. */
+  private get recordFormat(): RecordFormat {
+    return resolveRecordFormat(this.destination.DestinationDefinition?.Config);
+  }
 
   transformEvent(
     input: PinterestAudienceRouterRequest,
@@ -50,21 +59,25 @@ class PinterestAudienceIntegration extends DestinationIntegration<
     }
 
     const { adAccountId, customerListId, isHashRequired } = connectionConfig;
-    const processed = processAudienceRecord(pickPinterestIdentifiers(message.identifiers ?? {}), {
-      fieldConfigs: PINTEREST_FIELD_CONFIG,
-      destination: {
-        workspaceId: this.destination.WorkspaceID,
-        id: this.destination.ID,
-        type: DESTINATION_TYPE,
-        config: { isHashRequired },
+    const allowed = IDENTIFIERS_BY_FORMAT[this.recordFormat];
+    const processed = processAudienceRecord(
+      pickPinterestIdentifiers(message.identifiers ?? {}, allowed),
+      {
+        fieldConfigs: PINTEREST_FIELD_CONFIG,
+        destination: {
+          workspaceId: this.destination.WorkspaceID,
+          id: this.destination.ID,
+          type: DESTINATION_TYPE,
+          config: { isHashRequired },
+        },
       },
-    });
+    );
 
     const row = toRecordRow(processed);
     if (Object.keys(row).length === 0) {
       // Permanent, per record: nothing Pinterest could match on. Siblings still deliver.
       throw new InstrumentationError(
-        'No valid Pinterest identifier (EMAIL / MAID / PHONE) after normalization',
+        `No valid Pinterest identifier (${allowed.join(' / ')}) after normalization`,
       );
     }
 
@@ -79,19 +92,29 @@ class PinterestAudienceIntegration extends DestinationIntegration<
         Authorization: `Bearer ${accessToken}`,
       },
       // ADD and REMOVE share one URL and the body carries a single `operation_type`, so they
-      // cannot share a request. Identifier sets need no split: records_v2 rows are named fields.
+      // cannot share a request. Identifier sets need no split in either format: records_v2 rows
+      // are named fields and the classic string is flat.
       internalGroupKey: operationType,
     };
   }
 
   getBatchStrategy(): BatchStrategy<PinterestAudiencePayload> {
+    const format = this.recordFormat;
     return new ChunkBatchStrategy<PinterestAudiencePayload>({
       maxItems: MAX_RECORDS_PER_REQUEST,
       // internalGroupKey makes every body in a group carry the same operationType.
-      wrapBody: (bodies): PinterestAudienceRequestBody => ({
-        operation_type: bodies[0].operationType,
-        records_v2: bodies.map((b) => b.row),
-      }),
+      wrapBody: (bodies): PinterestAudienceRequestBody => {
+        const { operationType } = bodies[0];
+        if (format === RECORD_FORMATS.V2) {
+          return { operation_type: operationType, records_v2: bodies.map((b) => b.row) };
+        }
+        // Classic: one flat string, one identifier per record — a row with email and MAID is two
+        // records. Row order is kept so a failure can be read back against the chunk.
+        return {
+          operation_type: operationType,
+          records: bodies.flatMap((b) => Object.values(b.row)).join(','),
+        };
+      },
     });
   }
 

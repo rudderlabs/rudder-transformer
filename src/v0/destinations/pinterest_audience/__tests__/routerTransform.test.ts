@@ -14,20 +14,23 @@ const endpointFor = (listId: string) =>
   `https://api.pinterest.com/v5/ad_accounts/${AD_ACCOUNT_ID}/customer_lists/${listId}`;
 const ENDPOINT = endpointFor(LIST_ID);
 
-const buildDestination = () => ({
+const buildDestination = (definitionConfig: Record<string, unknown> = {}) => ({
   ID: 'dest-1',
   Name: 'pinterest_audience',
   DestinationDefinition: {
     ID: 'destDef-1',
     Name: 'PINTEREST_AUDIENCE',
     DisplayName: 'Pinterest Audience',
-    Config: {},
+    Config: definitionConfig,
   },
   Config: { rudderAccountId: 'acc-1' },
   Enabled: true,
   WorkspaceID: 'ws-1',
   Transformations: [],
 });
+
+/** The definition value that turns multi-field rows on (spec D15). */
+const V2 = { recordFormat: 'records_v2' };
 
 const buildConnection = (overrides: Record<string, unknown> = {}) => ({
   sourceId: 'src-1',
@@ -75,16 +78,23 @@ const buildInput = (
     connection,
   }) as unknown as RouterTransformationRequestData;
 
-const run = (inputs: RouterTransformationRequestData[]) =>
-  processDestinationIntegration(inputs, Integration, {});
+const run = (
+  inputs: RouterTransformationRequestData[],
+  definitionConfig: Record<string, unknown> = {},
+) =>
+  processDestinationIntegration(
+    inputs.map((i) => ({ ...i, destination: buildDestination(definitionConfig) })),
+    Integration,
+    {},
+  );
 const successes = (results: any[]) => results.filter((r) => r.statusCode === 200);
 const failures = (results: any[]) => results.filter((r) => r.statusCode !== 200);
 const bodyOf = (r: any) => r.batchedRequest.body.JSON;
 const jobIdsOf = (r: any) => r.metadata.map((m: any) => m.jobId);
 
 describe('pinterest_audience router transform', () => {
-  it('builds one PATCH to the customer list with records_v2', async () => {
-    const results = await run([buildInput(1, 'insert', { EMAIL: '  Alice@Example.COM ' })]);
+  it('builds one PATCH to the customer list with records_v2 when the definition asks for it', async () => {
+    const results = await run([buildInput(1, 'insert', { EMAIL: '  Alice@Example.COM ' })], V2);
     const ok = successes(results);
     expect(ok).toHaveLength(1);
     expect(ok[0].batched).toBe(true);
@@ -100,12 +110,90 @@ describe('pinterest_audience router transform', () => {
     });
   });
 
-  it('D1 insert+update become one ADD request and delete one REMOVE request on the same URL', async () => {
+  it('D19 builds the classic records string by default, one identifier per record, row order kept', async () => {
     const results = await run([
-      buildInput(1, 'insert', { EMAIL: 'a@example.com' }),
-      buildInput(2, 'update', { EMAIL: 'b@example.com' }),
-      buildInput(3, 'delete', { EMAIL: 'c@example.com' }),
+      buildInput(1, 'insert', {
+        EMAIL: '  Alice@Example.COM ',
+        MAID: 'CDDA802E-FB9C-47AD-9866-0794D394C912',
+      }),
+      buildInput(2, 'insert', { MAID: 'CDDA802E-FB9C-47AD-9866-0794D394C912' }),
     ]);
+    const ok = successes(results);
+    expect(ok).toHaveLength(1);
+    expect(ok[0].batchedRequest).toMatchObject({ method: 'PATCH', endpoint: ENDPOINT });
+    expect(bodyOf(ok[0])).toEqual({
+      operation_type: 'ADD',
+      records: [
+        sha256('alice@example.com'),
+        sha256('cdda802e-fb9c-47ad-9866-0794d394c912'),
+        sha256('cdda802e-fb9c-47ad-9866-0794d394c912'),
+      ].join(','),
+    });
+    expect(bodyOf(ok[0])).not.toHaveProperty('records_v2');
+  });
+
+  it.each([{ recordFormat: 'records' }, { recordFormat: 'v3' }, { recordFormat: 2 }])(
+    'D19 treats definition %p as classic',
+    async (definitionConfig) => {
+      const results = await run(
+        [buildInput(1, 'insert', { EMAIL: 'a@example.com' })],
+        definitionConfig,
+      );
+      expect(bodyOf(successes(results)[0])).toEqual({
+        operation_type: 'ADD',
+        records: sha256('a@example.com'),
+      });
+    },
+  );
+
+  it('D20 drops PHONE before processing under the classic format (not counted as invalid)', async () => {
+    const results = await run([
+      buildInput(1, 'insert', { EMAIL: 'a@example.com', PHONE: '+1 (415) 555-0132' }),
+    ]);
+    expect(bodyOf(successes(results)[0])).toEqual({
+      operation_type: 'ADD',
+      records: sha256('a@example.com'),
+    });
+  });
+
+  it('D21 aborts a PHONE-only row under the classic format and names the classic identifiers', async () => {
+    const results = await run([
+      buildInput(1, 'insert', { PHONE: '+1 (415) 555-0132' }),
+      buildInput(2, 'insert', { EMAIL: 'b@example.com' }),
+    ]);
+    expect(failures(results)).toEqual([
+      expect.objectContaining({
+        statusCode: 400,
+        error: 'No valid Pinterest identifier (EMAIL / MAID) after normalization',
+        metadata: [expect.objectContaining({ jobId: 1 })],
+      }),
+    ]);
+    expect(jobIdsOf(successes(results)[0])).toEqual([2]);
+    expect(bodyOf(successes(results)[0])).toEqual({
+      operation_type: 'ADD',
+      records: sha256('b@example.com'),
+    });
+  });
+
+  it('D22 chunks the classic format at 1000 rows per request (literal, so a changed constant fails)', async () => {
+    const inputs = Array.from({ length: 1001 }, (_, i) =>
+      buildInput(i + 1, 'insert', { EMAIL: `user${i}@example.com` }),
+    );
+    const sizes = successes(await run(inputs)).map(
+      (r) => (bodyOf(r).records as string).split(',').length,
+    );
+    expect(sizes).toEqual([1000, 1]);
+  });
+
+  it('D1 insert+update become one ADD request and delete one REMOVE request on the same URL', async () => {
+    const results = await run(
+      [
+        buildInput(1, 'insert', { EMAIL: 'a@example.com' }),
+        buildInput(2, 'update', { EMAIL: 'b@example.com' }),
+        buildInput(3, 'delete', { EMAIL: 'c@example.com' }),
+      ],
+      V2,
+    );
     const ok = successes(results);
     expect(ok).toHaveLength(2);
     ok.forEach((r) => expect(r.batchedRequest.endpoint).toBe(ENDPOINT));
@@ -122,15 +210,18 @@ describe('pinterest_audience router transform', () => {
   });
 
   it('D2 rows of two connections go to their own list and never mix', async () => {
-    const results = await run([
-      buildInput(1, 'insert', { EMAIL: 'a@example.com' }),
-      buildInput(
-        2,
-        'insert',
-        { EMAIL: 'b@example.com' },
-        buildConnection({ customerListId: OTHER_LIST_ID }),
-      ),
-    ]);
+    const results = await run(
+      [
+        buildInput(1, 'insert', { EMAIL: 'a@example.com' }),
+        buildInput(
+          2,
+          'insert',
+          { EMAIL: 'b@example.com' },
+          buildConnection({ customerListId: OTHER_LIST_ID }),
+        ),
+      ],
+      V2,
+    );
     expect(
       successes(results).map((r) => [r.batchedRequest.endpoint, bodyOf(r).records_v2, jobIdsOf(r)]),
     ).toEqual([
@@ -140,11 +231,14 @@ describe('pinterest_audience router transform', () => {
   });
 
   it('rows with different identifier sets share one request', async () => {
-    const results = await run([
-      buildInput(1, 'insert', { EMAIL: 'a@example.com' }),
-      buildInput(2, 'insert', { MAID: 'CDDA802E-FB9C-47AD-9866-0794D394C912' }),
-      buildInput(3, 'insert', { PHONE: '+1 (415) 555-0132', EMAIL: 'c@example.com' }),
-    ]);
+    const results = await run(
+      [
+        buildInput(1, 'insert', { EMAIL: 'a@example.com' }),
+        buildInput(2, 'insert', { MAID: 'CDDA802E-FB9C-47AD-9866-0794D394C912' }),
+        buildInput(3, 'insert', { PHONE: '+1 (415) 555-0132', EMAIL: 'c@example.com' }),
+      ],
+      V2,
+    );
     const ok = successes(results);
     expect(ok).toHaveLength(1);
     expect(bodyOf(ok[0]).records_v2).toEqual([
@@ -155,13 +249,16 @@ describe('pinterest_audience router transform', () => {
   });
 
   it('ignores identifier keys Pinterest does not accept', async () => {
-    const results = await run([
-      buildInput(1, 'insert', {
-        EMAIL: 'a@example.com',
-        EXTERNAL_ID: 'x-1',
-        email: 'b@example.com',
-      }),
-    ]);
+    const results = await run(
+      [
+        buildInput(1, 'insert', {
+          EMAIL: 'a@example.com',
+          EXTERNAL_ID: 'x-1',
+          email: 'b@example.com',
+        }),
+      ],
+      V2,
+    );
     expect(bodyOf(successes(results)[0]).records_v2).toEqual([{ email: sha256('a@example.com') }]);
   });
 
@@ -170,10 +267,10 @@ describe('pinterest_audience router transform', () => {
     { name: 'D7 only invalid identifiers', identifiers: { PHONE: '12345', EMAIL: 'not-an-email' } },
     { name: 'only unsupported keys', identifiers: { EXTERNAL_ID: 'x-1' } },
   ])('aborts only the record with $name; siblings deliver', async ({ identifiers }) => {
-    const results = await run([
-      buildInput(1, 'insert', { EMAIL: 'a@example.com' }),
-      buildInput(2, 'insert', identifiers),
-    ]);
+    const results = await run(
+      [buildInput(1, 'insert', { EMAIL: 'a@example.com' }), buildInput(2, 'insert', identifiers)],
+      V2,
+    );
     expect(jobIdsOf(successes(results)[0])).toEqual([1]);
     expect(failures(results)).toEqual([
       expect.objectContaining({
@@ -186,9 +283,10 @@ describe('pinterest_audience router transform', () => {
 
   it('D8 passes pre-hashed values through when isHashRequired is false', async () => {
     const pre = sha256('alice@example.com');
-    const results = await run([
-      buildInput(1, 'insert', { EMAIL: pre }, buildConnection({ isHashRequired: false })),
-    ]);
+    const results = await run(
+      [buildInput(1, 'insert', { EMAIL: pre }, buildConnection({ isHashRequired: false }))],
+      V2,
+    );
     expect(bodyOf(successes(results)[0]).records_v2).toEqual([{ email: pre }]);
   });
 
@@ -210,11 +308,11 @@ describe('pinterest_audience router transform', () => {
     ]);
   });
 
-  it('D10 chunks at 1000 rows per request (literal, so a changed constant fails)', async () => {
+  it('D10 chunks records_v2 at 1000 rows per request (literal, so a changed constant fails)', async () => {
     const inputs = Array.from({ length: 1001 }, (_, i) =>
       buildInput(i + 1, 'insert', { EMAIL: `user${i}@example.com` }),
     );
-    const sizes = successes(await run(inputs)).map((r) => bodyOf(r).records_v2.length);
+    const sizes = successes(await run(inputs, V2)).map((r) => bodyOf(r).records_v2.length);
     expect(sizes).toEqual([1000, 1]);
   });
 
@@ -268,19 +366,22 @@ describe('pinterest_audience router transform', () => {
   it('hashes each row per its own connection and sends it to its own list URL', async () => {
     const OTHER_AD_ACCOUNT_ID = '549756359985';
     const preHashed = sha256('pre@example.com');
-    const results = await run([
-      buildInput(1, 'insert', { EMAIL: 'Hash@Example.com' }),
-      buildInput(
-        2,
-        'insert',
-        { EMAIL: preHashed },
-        buildConnection({
-          isHashRequired: false,
-          adAccountId: OTHER_AD_ACCOUNT_ID,
-          customerListId: OTHER_LIST_ID,
-        }),
-      ),
-    ]);
+    const results = await run(
+      [
+        buildInput(1, 'insert', { EMAIL: 'Hash@Example.com' }),
+        buildInput(
+          2,
+          'insert',
+          { EMAIL: preHashed },
+          buildConnection({
+            isHashRequired: false,
+            adAccountId: OTHER_AD_ACCOUNT_ID,
+            customerListId: OTHER_LIST_ID,
+          }),
+        ),
+      ],
+      V2,
+    );
     const ok = successes(results);
     expect(failures(results)).toHaveLength(0);
     expect(

@@ -81,7 +81,7 @@ const scenarios: ProxyV1TestData[] = [
     id: 'hs_audience_v1_membership_success',
     name: 'hs_audience',
     description: '[Proxy v1] a 200 membership update succeeds for every sent id',
-    successCriteria: 'Reordered recordsIdsAdded values still match and every job is 200',
+    successCriteria: 'Every job is 200 when no sent id appears in recordIdsMissing',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',

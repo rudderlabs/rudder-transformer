@@ -27,7 +27,11 @@ const membershipBody = (ids: string[], operation: 'add' | 'remove' = 'add') =>
     ? { recordIdsToAdd: ids, recordIdsToRemove: [] }
     : { recordIdsToAdd: [], recordIdsToRemove: ids };
 
-const acknowledged = (missing: string[] = [], added: string[] = [], removed: string[] = []) => ({
+const acknowledged = (
+  missing: (string | number)[] = [],
+  added: string[] = [],
+  removed: string[] = [],
+) => ({
   recordIdsMissing: missing,
   recordsIdsAdded: added,
   recordIdsRemoved: removed,
@@ -91,15 +95,10 @@ describe('HubSpot audience delivery', () => {
     expect(result.response.map((item) => item.error)).toEqual(['success', 'success']);
   });
 
-  it('matches reordered and zero-padded remote ids, including a large string id', () => {
+  it('matches numeric and reordered remote ids, including a large string id', () => {
     const largeId = '9007199254740993';
     const result = deliver(
-      ctxFor(
-        200,
-        acknowledged(['001', largeId], ['2'], []),
-        membershipBody(['1', '2', largeId]),
-        3,
-      ),
+      ctxFor(200, acknowledged([largeId, 1], ['2'], []), membershipBody(['1', '2', largeId]), 3),
     );
 
     expect(result.response.map((item) => item.statusCode)).toEqual([400, 200, 400]);
@@ -117,57 +116,41 @@ describe('HubSpot audience delivery', () => {
   });
 
   it.each([
-    ['missing and added overlap', acknowledged(['001'], ['1']), ['add', 'remove'] as const],
-    ['missing and removed overlap', acknowledged(['001'], [], ['1']), ['add', 'remove'] as const],
-    ['added and removed overlap', acknowledged([], ['001'], ['1']), ['add', 'remove'] as const],
-    ['missing contains an unsent id', acknowledged(['3']), ['add', 'remove'] as const],
-    ['added contains an unsent id', acknowledged([], ['3']), ['add', 'remove'] as const],
-    ['removed contains an unsent id', acknowledged([], [], ['3']), ['add', 'remove'] as const],
-    // Opposite-array noise only fails the matching operation; the other is valid.
-    ['an addition reports removals', acknowledged([], [], ['2']), ['add'] as const],
-    ['a removal reports additions', acknowledged([], ['2']), ['remove'] as const],
-  ])('retries each ordered job when %s', (_name, response, operations) => {
-    for (const operation of operations) {
-      const ctx = ctxFor(
-        200,
-        { ...response, message: SENTINEL },
-        membershipBody(['1', '2', '1'], operation),
-        3,
-      );
-      ctx.jobs = [job(9), job(4), job(2)];
-      const result = deliver(ctx);
+    acknowledged(['1'], ['1', '3']),
+    acknowledged(['1'], [], ['1', '3']),
+    { recordIdsMissing: ['1', '3'], newResultField: ['2'] },
+  ])('uses only missing ids to classify a 200 response: %p', (response) => {
+    const ctx = ctxFor(200, response, membershipBody(['1', '2', '1']), 3);
+    ctx.jobs = [job(9), job(4), job(2)];
 
-      expect(result.response.map((item) => item.metadata.jobId)).toEqual([9, 4, 2]);
-      expect(result.response.map((item) => item.statusCode)).toEqual([500, 500, 500]);
-      expect(result.response.map((item) => item.error)).toEqual([
-        'HubSpot membership response could not be correlated',
-        'HubSpot membership response could not be correlated',
-        'HubSpot membership response could not be correlated',
-      ]);
-      expect(JSON.stringify(result)).not.toContain(SENTINEL);
-      expect(result.response.every((item) => item.metadata.dontBatch === false)).toBe(true);
-    }
+    expect(deliver(ctx)).toEqual({
+      status: 200,
+      message: '[HS_AUDIENCE] Contact not found in HubSpot',
+      response: [
+        { statusCode: 400, metadata: job(9), error: 'Contact not found in HubSpot' },
+        { statusCode: 200, metadata: job(4), error: 'success' },
+        { statusCode: 400, metadata: job(2), error: 'Contact not found in HubSpot' },
+      ],
+    });
   });
 
-  it.each(['add', 'remove'] as const)(
-    'accepts repeated and reordered response ids and omitted no-ops for %s',
-    (operation) => {
-      const largeId = '9007199254740993';
-      const changed = [largeId, '002', '2'];
-      const response =
-        operation === 'add'
-          ? acknowledged(['001', '1'], changed)
-          : acknowledged(['001', '1'], [], changed);
-      const result = deliver(
-        ctxFor(200, response, membershipBody(['1', '2', largeId, '3', '2'], operation), 5),
-      );
+  it('succeeds on removal regardless of missing or changed response ids', () => {
+    const ctx = ctxFor(
+      200,
+      acknowledged(['1', '3'], ['1'], ['1']),
+      membershipBody(['1', '2'], 'remove'),
+    );
 
-      expect(result.response.map((item) => item.statusCode)).toEqual(
-        operation === 'add' ? [400, 200, 200, 200, 200] : [200, 200, 200, 200, 200],
-      );
-      expect(result.response.map((item) => item.metadata.jobId)).toEqual([1, 2, 3, 4, 5]);
-    },
-  );
+    expect(deliver(ctx)).toEqual({
+      status: 200,
+      message: '[HS_AUDIENCE] Request processed successfully',
+      response: [1, 2].map((jobId) => ({
+        statusCode: 200,
+        metadata: job(jobId),
+        error: 'success',
+      })),
+    });
+  });
 
   it('succeeds when HubSpot omits empty membership arrays', () => {
     const result = deliver(
@@ -194,48 +177,42 @@ describe('HubSpot audience delivery', () => {
     expect(result.response.map((item) => item.error)).toEqual(['success', 'success']);
   });
 
-  it.each([null, { status: 'error' }])('rejects an unverified or unrelated body %p', (body) => {
-    const result = deliver(ctxFor(200, body, membershipBody(['1', '2'])));
+  it.each([null, { status: 'error' }, { newResultField: ['1', '2'] }, { recordIdsMissing: '1' }])(
+    'accepts a 200 body without a missing-id array: %p',
+    (response) => {
+      expect(deliver(ctxFor(200, response, membershipBody(['1', '2'])))).toEqual({
+        status: 200,
+        message: '[HS_AUDIENCE] Request processed successfully',
+        response: [1, 2].map((jobId) => ({
+          statusCode: 200,
+          metadata: job(jobId),
+          error: 'success',
+        })),
+      });
+    },
+  );
 
-    expect(result.response.map((item) => item.statusCode)).toEqual([500, 500]);
-  });
+  it.each(['add', 'remove'] as const)(
+    'retries when the %s request id count differs from the job count',
+    (operation) => {
+      const ctx = ctxFor(200, {}, membershipBody(['1'], operation));
+      ctx.jobs = [job(9), job(4)];
 
-  it('accepts recordIdsAdded when recordsIdsAdded is absent', () => {
-    const result = deliver(
-      ctxFor(
-        200,
-        { recordIdsMissing: [], recordIdsAdded: ['1', '2'], recordIdsRemoved: [] },
-        membershipBody(['1', '2']),
-      ),
-    );
-
-    expect(result.response.map((item) => item.error)).toEqual(['success', 'success']);
-  });
-
-  it.each([
-    ['both membership arrays are nonempty', { recordIdsToAdd: ['1'], recordIdsToRemove: ['2'] }],
-    ['neither membership array is nonempty', { recordIdsToAdd: [], recordIdsToRemove: [] }],
-    ['a returned id cannot be normalized', acknowledged(['0'], [], [])],
-    [
-      'a returned field is not an array',
-      { recordIdsMissing: '1', recordsIdsAdded: [], recordIdsRemoved: [] },
-    ],
-  ])('retries every job when %s', (_name, response) => {
-    const leaked = { ...(response as object), message: SENTINEL };
-    const result = deliver(ctxFor(200, leaked, membershipBody(['1', '2'])));
-
-    expect(result.status).toBe(200);
-    expect(result.response).toHaveLength(2);
-    expect(result.response.map((item) => item.statusCode)).toEqual([500, 500]);
-    expect(result.response.map((item) => item.error)).toEqual([
-      'HubSpot membership response could not be correlated',
-      'HubSpot membership response could not be correlated',
-    ]);
-    expect(JSON.stringify(result.response)).not.toContain(SENTINEL);
-  });
+      expect(deliver(ctx)).toEqual({
+        status: 200,
+        message: '[HS_AUDIENCE] HubSpot membership response could not be correlated',
+        statTags: { errorCategory: 'network', errorType: 'retryable' },
+        response: [9, 4].map((jobId) => ({
+          statusCode: 500,
+          metadata: job(jobId),
+          error: 'HubSpot membership response could not be correlated',
+        })),
+      });
+    },
+  );
 
   it('declares only the HTTP statuses with HubSpot-specific behavior', () => {
-    expect(Object.keys(Integration.delivery.statusOverrides ?? {})).toEqual(['200', '400', '477']);
+    expect(Object.keys(Integration.delivery.statusOverrides ?? {})).toEqual(['200', '477']);
   });
 
   it('uses the framework success verdict for a fully successful membership response', () => {
@@ -295,7 +272,7 @@ describe('HubSpot audience delivery', () => {
     'uses HubSpot details with the framework HTTP %s classification and response echo',
     (status, kind, errorType) => {
       const reason =
-        'HubSpot rejected the request (category: VALIDATION_ERROR, subCategory: ListError.SOMETHING_ELSE, correlationId: corr-1)';
+        'HubSpot rejected the request (category: VALIDATION_ERROR, correlationId: corr-1)';
       const response = {
         message: 'HubSpot rejected the request',
         category: 'VALIDATION_ERROR',
@@ -336,39 +313,26 @@ describe('HubSpot audience delivery', () => {
     });
   });
 
-  it('formats nested errors in response order and ignores malformed context values', () => {
-    const reason =
-      'Membership rejected (category: VALIDATION_ERROR, correlationId: corr-nested) | ' +
-      'error[0]: Invalid contact (subCategory: INVALID_CONTACT, code: CONTACT_INVALID, context: {"ids":["101"]}) | ' +
-      'error[3]: code: MISSING_SCOPE';
-    const result = handleDeliveryResponse(
-      Integration,
-      ctxFor(
-        400,
-        {
-          message: 'Membership rejected',
-          category: 'VALIDATION_ERROR',
-          correlationId: 'corr-nested',
-          errors: [
-            {
-              message: 'Invalid contact',
-              subCategory: 'INVALID_CONTACT',
-              code: 'CONTACT_INVALID',
-              context: { ids: ['101'], malformed: [{ value: SENTINEL }], empty: [] },
-              ignored: SENTINEL,
-            },
-            null,
-            { message: 42, code: {}, context: [] },
-            { code: 'MISSING_SCOPE' },
-          ],
-          ignored: SENTINEL,
-        },
-        membershipBody(['101']),
-        1,
-      ),
+  it('keeps the top-level reason concise when nested details are present', () => {
+    const ctx = ctxFor(
+      400,
+      {
+        message: 'Membership rejected',
+        category: 'VALIDATION_ERROR',
+        correlationId: 'corr-nested',
+        subCategory: 'INVALID_CONTACT',
+        errors: [
+          { message: 'Invalid contact', code: 'CONTACT_INVALID', context: { ids: ['101'] } },
+        ],
+      },
+      membershipBody(['101']),
+      1,
     );
 
-    expect(result).toEqual({ kind: 'abort', reason });
+    expect(handleDeliveryResponse(Integration, ctx)).toEqual({
+      kind: 'abort',
+      reason: 'Membership rejected (category: VALIDATION_ERROR, correlationId: corr-nested)',
+    });
   });
 
   it.each([
@@ -394,7 +358,7 @@ describe('HubSpot audience delivery', () => {
     ],
     [
       { errors: [{ message: 'requires one of [contacts-write]' }] },
-      'HubSpot token is missing the crm.lists.write or crm.objects.contacts.write scope | error[0]: requires one of [contacts-write]',
+      'HubSpot token is missing the crm.lists.write or crm.objects.contacts.write scope',
     ],
   ])('handles the error-envelope variant %p', (response, reason) => {
     const result = handleDeliveryResponse(
@@ -442,87 +406,41 @@ describe('HubSpot audience delivery', () => {
     },
   );
 
-  it('retries a 400 whose body is a Node transport message', () => {
-    const result = deliver(
-      ctxFor(400, '[ENOTFOUND] :: DNS lookup failed', membershipBody(['1', '2'])),
-    );
+  it('delegates adapter-mapped transport failures to the framework', () => {
+    const response = '[ENOTFOUND] :: DNS lookup failed';
+    const ctx = ctxFor(400, response, membershipBody(['1', '2']));
 
-    expect(result.status).toBe(400);
-    expect(result.message).toBe(
-      '[HS_AUDIENCE] HubSpot membership update is temporarily unavailable',
+    expect(() => deliver(ctx)).toThrow(
+      expect.objectContaining({
+        status: 400,
+        message: '[HS_AUDIENCE] HubSpot membership update was rejected',
+        statTags: { errorCategory: 'network', errorType: 'aborted' },
+        destinationResponse: { status: 400, response },
+      }),
     );
-    expect(result.statTags).toEqual(
-      expect.objectContaining({ errorCategory: 'network', errorType: 'retryable' }),
-    );
-    expect(result.response.map((item) => item.statusCode)).toEqual([500, 500]);
-    expect(result.response.map((item) => item.error)).toEqual([
-      'HubSpot membership update is temporarily unavailable',
-      'HubSpot membership update is temporarily unavailable',
-    ]);
   });
 
-  it('prefixes the ineligible-list cause and keeps HubSpot details, on the body or a nested error', () => {
-    const topLevel = handleDeliveryResponse(
-      Integration,
-      ctxFor(
-        400,
-        {
-          category: 'VALIDATION_ERROR',
-          subCategory: 'ListError.INVALID_OBJECT_TYPE_FOR_LIST',
-          message: 'Cannot add contacts to a DYNAMIC list',
-        },
-        membershipBody(['1'], 'add'),
-        1,
-      ),
-    );
-    const nested = handleDeliveryResponse(
-      Integration,
-      ctxFor(
-        400,
-        {
-          category: 'VALIDATION_ERROR',
-          message: 'Cannot add contacts to a DYNAMIC list',
-          errors: [
-            { message: 'nested-leak', subCategory: 'ListError.INVALID_OBJECT_TYPE_FOR_LIST' },
-          ],
-        },
-        membershipBody(['1'], 'add'),
-        1,
-      ),
+  it.each([
+    { subCategory: 'ListError.INVALID_OBJECT_TYPE_FOR_LIST' },
+    { errors: [{ subCategory: 'ListError.INVALID_OBJECT_TYPE_FOR_LIST' }] },
+    { subCategory: 'ListError.SOMETHING_ELSE' },
+  ])("uses HubSpot's own explanation for an ineligible list: %p", (details) => {
+    const ctx = ctxFor(
+      400,
+      {
+        category: 'VALIDATION_ERROR',
+        message: 'Cannot add contacts to a DYNAMIC list',
+        correlationId: 'corr-dynamic',
+        ...details,
+      },
+      membershipBody(['1']),
+      1,
     );
 
-    expect(topLevel).toEqual({
+    expect(handleDeliveryResponse(Integration, ctx)).toEqual({
       kind: 'abort',
       reason:
-        'HubSpot list is not eligible for contact membership sync: Cannot add contacts to a DYNAMIC list (category: VALIDATION_ERROR, subCategory: ListError.INVALID_OBJECT_TYPE_FOR_LIST)',
-    });
-    expect(nested).toEqual({
-      kind: 'abort',
-      reason:
-        'HubSpot list is not eligible for contact membership sync: Cannot add contacts to a DYNAMIC list (category: VALIDATION_ERROR) | error[0]: nested-leak (subCategory: ListError.INVALID_OBJECT_TYPE_FOR_LIST)',
-    });
-  });
-
-  it('does not treat a DYNAMIC-list body as ineligible without the subcategory', () => {
-    const result = handleDeliveryResponse(
-      Integration,
-      ctxFor(
-        400,
-        {
-          category: 'VALIDATION_ERROR',
-          message: 'The list is DYNAMIC and cannot be synced',
-          correlationId: 'corr-dynamic',
-          errors: [{ subCategory: 'ListError.SOMETHING_ELSE', message: 'DYNAMIC' }],
-        },
-        membershipBody(['1'], 'add'),
-        1,
-      ),
-    );
-
-    expect(result).toEqual({
-      kind: 'abort',
-      reason:
-        'The list is DYNAMIC and cannot be synced (category: VALIDATION_ERROR, correlationId: corr-dynamic) | error[0]: DYNAMIC (subCategory: ListError.SOMETHING_ELSE)',
+        'Cannot add contacts to a DYNAMIC list (category: VALIDATION_ERROR, correlationId: corr-dynamic)',
     });
   });
 });

@@ -35,9 +35,9 @@ An email that HubSpot's contact batch-read reports as `OBJECT_NOT_FOUND` is not 
 
 A delete whose membership response lists the id in `recordIdsMissing` is a successful no-op. The contact is already absent, which is what the remove asked for. An email-lookup miss on delete is different: HubSpot never confirmed which contact the old identifier was, so the row fails instead of being treated as already removed.
 
-An id that is absent from `recordsIdsAdded` and also absent from `recordIdsMissing` is a successful add. HubSpot omits contacts that were already on the list. That is not a failure. Live HubSpot responses also omit empty arrays entirely (for example `{ "recordsIdsAdded": ["…"] }` with no `recordIdsMissing` / `recordIdsRemoved`); those absent fields are treated as `[]`.
+For HTTP 200, an addition fails only when its id appears in `recordIdsMissing`. Delivery converts returned missing ids to strings for matching. It ignores added/removed arrays and unrelated response fields. If `recordIdsMissing` is absent or is not an array, it is treated as empty. Existing members and successful no-ops succeed.
 
-A 200 response containing `{}` or `''` succeeds for every sent ID. The proxy reports an empty HTTP body as `''`, and that body cannot carry `recordIdsMissing`. For HTTP 200, `null` and an unrelated nonempty object still produce controlled retries. Other successful HTTP statuses use the framework success default.
+The request id count must equal the job count so delivery can assign each verdict to the correct job. A count mismatch retries every job with `HubSpot membership response could not be correlated`. Other successful HTTP statuses use the framework success default.
 
 ## Authentication
 
@@ -55,11 +55,11 @@ Each row uses `connection.config.destination.audienceId` from that row. The inte
 
 Add and remove for the same list are separate requests (`internalGroupKey`). Each request is add-only or remove-only and holds at most 1,000 ids. Duplicate ids are preserved. One source job contributes one id.
 
-## Ineligible lists
+## Delivery failures
 
-`HubSpot list is not eligible for contact membership sync` prefixes the failure reason only for HTTP 400 whose `category` is `VALIDATION_ERROR` and whose `subCategory` is exactly `ListError.INVALID_OBJECT_TYPE_FOR_LIST`. That subcategory was observed on a membership 400. HubSpot's published docs and OpenAPI spec do not list it. It may be a top-level string or any `errors[].subCategory` string. Detection does not use the response `message`. The prefix is followed by the usual HubSpot message and details (`<prefix>: <HubSpot reason>`), and the framework applies its ordinary abort verdict.
+HTTP 400 uses the framework abort verdict. HubSpot's message explains rejected membership changes, including ineligible lists. Delivery does not detect list-specific subcategories or add an error prefix. Network failures use the shared adapter's status mapping: failures mapped to 500 retry, while failures mapped to 400 abort.
 
-A 400 whose body is a Node transport message (`[CODE]` or `[CODE] :: ...`) retries with `HubSpot membership update is temporarily unavailable`. HTTP 477, HubSpot's portal-migration status, also retries. It uses HubSpot error details when available and the static unavailable reason otherwise. Any other 400 aborts with HubSpot error details or `HubSpot membership update was rejected`. Mentioning a DYNAMIC list without the exact subcategory does not select the ineligible-list reason.
+HTTP 477, HubSpot's portal-migration status, retries each job as 500. It uses HubSpot's message, category, and correlation ID when available, with the static unavailable reason as fallback.
 
 ## Live membership test
 
@@ -86,7 +86,7 @@ These were not verified against a live portal or a fleet config in this change:
 - Missing-id behavior for adds and removes
 - No-op response shapes for `/add-and-remove`. A 200 `''` is already treated as success. A live capture can still confirm the body HubSpot sends; run the repeated-add/remove steps above and retain the raw response artifacts with membership read-back evidence
 - Secondary-email batch-read resolution: request a prepared sandbox contact's secondary address with both email properties and confirm the returned primary/secondary values and resolved ID
-- Stale/merged IDs: use a prepared sandbox merged-contact fixture with known old and surviving IDs plus a dedicated static list. Send the old ID in separate add-only and remove-only `/add-and-remove` requests, alongside an unrelated valid contact. Retain exact HTTP statuses, raw response bodies, sent IDs, and membership read-back for the survivor and unrelated contact. Determine whether HubSpot reports the old ID as missing or substitutes the surviving ID. Unsent returned IDs continue to fail the batch closed; do not create or merge contacts as part of this membership test
+- Stale/merged IDs: use a prepared sandbox merged-contact fixture with known old and surviving IDs plus a dedicated static list. Send the old ID in separate add-only and remove-only `/add-and-remove` requests, alongside an unrelated valid contact. Retain exact HTTP statuses, raw response bodies, sent IDs, and membership read-back for the survivor and unrelated contact. Determine whether HubSpot reports the old ID as missing or substitutes the surviving ID. Delivery ignores returned IDs that were not sent; do not create or merge contacts as part of this membership test
 - Duplicate id entries
 - The 1,000 id cap
 - Mixed or partial lookup error bodies
@@ -96,30 +96,29 @@ These were not verified against a live portal or a fleet config in this change:
 
 ## Errors
 
-| Situation                                               | Result                                                                                                                   |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Missing token                                           | `HubSpot access token is required`                                                                                       |
-| Invalid record id                                       | `Invalid HubSpot Record ID`                                                                                              |
-| Invalid email                                           | `Invalid email identifier`                                                                                               |
-| Lookup 401                                              | `HubSpot rejected the access token`                                                                                      |
-| Lookup 403                                              | `HubSpot token is missing the crm.objects.contacts.read scope`                                                           |
-| Lookup 477                                              | `HubSpot contact lookup is temporarily unavailable`                                                                      |
-| Membership 477                                          | retry with HubSpot details. Fallback: `HubSpot membership update is temporarily unavailable`                             |
-| Other lookup 4xx                                        | `HubSpot contact lookup was rejected`                                                                                    |
-| Membership 400 with a Node transport body               | `HubSpot membership update is temporarily unavailable`                                                                   |
-| Membership 401                                          | abort with HubSpot details. Fallback: `HubSpot rejected the access token`                                                |
-| Membership 403                                          | abort with HubSpot details. Fallback: `HubSpot token is missing the crm.lists.write or crm.objects.contacts.write scope` |
-| Membership 404                                          | abort with HubSpot details. Fallback: `HubSpot list was not found`                                                       |
-| Other membership 4xx                                    | abort with HubSpot details. Fallback: `HubSpot membership update was rejected`                                           |
-| Lookup 429                                              | `HubSpot rate limit exceeded`                                                                                            |
-| Membership 429                                          | throttle with HubSpot details. Fallback: `HubSpot rate limit exceeded`                                                   |
-| Membership 5xx                                          | framework retry with HubSpot details. Fallback: framework status-only reason                                             |
-| Lookup or membership response that cannot be correlated | retry, static correlation message, no raw body                                                                           |
+| Situation                                                      | Result                                                                                                                   |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Missing token                                                  | `HubSpot access token is required`                                                                                       |
+| Invalid record id                                              | `Invalid HubSpot Record ID`                                                                                              |
+| Invalid email                                                  | `Invalid email identifier`                                                                                               |
+| Lookup 401                                                     | `HubSpot rejected the access token`                                                                                      |
+| Lookup 403                                                     | `HubSpot token is missing the crm.objects.contacts.read scope`                                                           |
+| Lookup 477                                                     | `HubSpot contact lookup is temporarily unavailable`                                                                      |
+| Membership 477                                                 | retry with HubSpot details. Fallback: `HubSpot membership update is temporarily unavailable`                             |
+| Other lookup 4xx                                               | `HubSpot contact lookup was rejected`                                                                                    |
+| Membership 401                                                 | abort with HubSpot details. Fallback: `HubSpot rejected the access token`                                                |
+| Membership 403                                                 | abort with HubSpot details. Fallback: `HubSpot token is missing the crm.lists.write or crm.objects.contacts.write scope` |
+| Membership 404                                                 | abort with HubSpot details. Fallback: `HubSpot list was not found`                                                       |
+| Other membership 4xx                                           | abort with HubSpot details. Fallback: `HubSpot membership update was rejected`                                           |
+| Lookup 429                                                     | `HubSpot rate limit exceeded`                                                                                            |
+| Membership 429                                                 | throttle with HubSpot details. Fallback: `HubSpot rate limit exceeded`                                                   |
+| Membership 5xx                                                 | framework retry with HubSpot details. Fallback: framework status-only reason                                             |
+| Lookup correlation failure or membership id/job count mismatch | retry, static correlation message, no raw body                                                                           |
 
-Membership failure reasons contain HubSpot's `message`, followed by labeled `category`, `subCategory`, and `correlationId` when available. Nested `errors[]` follow in response order with messages, codes, subcategories, correlation fields, and valid context arrays. Empty or malformed fields are ignored. If no usable details exist, the reason uses the status fallback.
+Membership failure reasons contain HubSpot's `message`, followed by labeled `category` and `correlationId` when available. Empty or malformed fields are ignored. Nested errors, context, and subcategories are not included in the formatted reason. If no usable message exists, delivery uses the status fallback and appends any available category or correlation ID.
 
-Only HTTP 200, 400, and 477 have delivery overrides. HTTP 200 returns per-job verdicts for missing additions or malformed membership results. A fully successful 200 uses the framework success verdict. The 400 override retries only Node transport failures. Other 400 responses use the framework default. HTTP 477 retries each job as 500 so portal migration remains retryable. All other statuses use the framework default.
+Only HTTP 200 and 477 have delivery overrides. HTTP 200 returns per-job verdicts for missing additions or an id/job count mismatch. A fully successful 200 uses the framework success verdict. HTTP 477 retries each job as 500 so portal migration remains retryable. All other statuses use the framework default.
 
-These details can contain identifiers or list text echoed by HubSpot. The formatter does not serialize the entire response. Ordinary 4xx and 5xx failures use the framework response path, which attaches the raw HubSpot body to the thrown error's `destinationResponse`. Proxy v1 copies that body as JSON into each job's `error` and retains the HTTP status. The formatted reason appears in the top-level `message`. Lookup errors and membership correlation errors retain controlled static reasons.
+These details can contain identifiers or list text echoed by HubSpot. The formatter does not serialize the entire response. Ordinary 4xx and 5xx failures use the framework response path, which attaches the raw HubSpot body to the thrown error's `destinationResponse`. Proxy v1 copies that body as JSON into each job's `error` and retains the HTTP status. The formatted reason appears in the top-level `message`. Lookup errors and membership id/job count mismatches retain controlled static reasons.
 
 The router Authorization and membership error-detail policies deliberately differ from the companion HubSpot spec in `rudder-specs`. That spec remains outside this change.

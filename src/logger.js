@@ -1,9 +1,10 @@
-/* istanbul ignore file */
 const {
   LOGLEVELS,
   structuredLogger,
   isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
+const { getMatchedMetadata } = require('./util/logger');
+
 let logLevel = (process.env.LOG_LEVEL ?? 'info').toLowerCase();
 
 const logger = structuredLogger({
@@ -138,14 +139,45 @@ const error = (...args) => {
 // Type-only JSDoc: consumers (e.g. the Google Ads SDK's IHttpLogger) declare the second
 // argument optional; the runtime contract (callers must pass it) is unchanged.
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
-const requestLog = (identifierMsg, { metadata, requestDetails: { url, body, method } }) => {
-  // no allowlist dependency: LOG_LEVEL=event is the only gate
+const requestLog = (
+  identifierMsg,
+  { metadata, requestDetails: { url, body, method }, requestId },
+) => {
+  // the event log has no allowlist dependency: LOG_LEVEL=event is the only gate
   event(identifierMsg, { metadata, url, body, method });
+  // the allowlist gates only the durable S3 capture
+  const filteredMetadata = getMatchedMetadata(metadata);
+  if (filteredMetadata.length > 0) {
+    // lazy require to avoid a logger → payloadCapture → stats → logger require cycle
+    const { payloadCapture } = require('./util/payloadCapture');
+    payloadCapture.write({
+      kind: 'request',
+      identifierMsg,
+      metadata: filteredMetadata,
+      details: { url, body, method },
+      requestId,
+    });
+  }
 };
 
 /** @type {(identifierMsg?: *, logInfo?: *) => void} */
-const responseLog = (identifierMsg, { metadata, responseDetails: { body, status, headers } }) => {
+const responseLog = (
+  identifierMsg,
+  { metadata, responseDetails: { body, status, headers }, requestId },
+) => {
   event(identifierMsg, { metadata, body, status, headers });
+  const filteredMetadata = getMatchedMetadata(metadata);
+  if (filteredMetadata.length > 0) {
+    // lazy require to avoid a logger → payloadCapture → stats → logger require cycle
+    const { payloadCapture } = require('./util/payloadCapture');
+    payloadCapture.write({
+      kind: 'response',
+      identifierMsg,
+      metadata: filteredMetadata,
+      details: { body, status, headers },
+      requestId,
+    });
+  }
 };
 
 module.exports = {

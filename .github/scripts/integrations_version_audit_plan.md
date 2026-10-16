@@ -128,14 +128,12 @@ Conduct an AI-assisted audit of all integrations from `.github/scripts/versions.
 
 Categorization logic:
 
-- **Action Required**:
-  - Has a sunset date (regardless of how far in the future)
-  - Current version differs from latest version (and latest is not "NA"/"n/a")
+- **Action Required** (only when there is a newer version to move to):
+  - Current version used in code is older than the latest available version (and latest is not "NA"/"n/a")
   - Version gap > 2 major versions (even without sunset date)
-  - Any deprecation risk or configuration issues identified
+  - Code still uses a deprecated endpoint or version by default while a newer one exists
 - **No Action**:
-  - Up-to-date (current version matches latest version)
-  - No sunset date announced
+  - Up-to-date: the version used in code matches the latest available version, **even if that version has a sunset date**. A sunset date alone is not a reason to create a ticket; a later audit flags it once a newer version is released.
   - No version gap or only minor version differences
   - Compliant with latest standards
 - **Unknown**:
@@ -374,7 +372,7 @@ Categorization logic:
 
 - **[Integration Name]** ([Ticket URL]) — Due: [Date] — Sunset: [Sunset Date] — Docs: [Link] — [Brief description]
 
-## ✅ Low Priority / Up-to-Date
+## 📝 Low Priority
 
 **Count**: [Number]
 

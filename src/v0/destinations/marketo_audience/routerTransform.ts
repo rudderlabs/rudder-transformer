@@ -12,10 +12,12 @@ import {
   type TransformedEvent,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
+import logger from '../../../logger';
 import { RecordAction } from '../../../types/rudderEvents';
 import { getAuthToken } from '../marketo/util';
 import {
   CONFLICTING_MEMBERSHIP,
+  DESTINATION_TYPE,
   DUPLICATE_LEADS,
   LEAD_NOT_FOUND,
   LOOKUP_UNMATCHED,
@@ -48,6 +50,16 @@ type PreparedRow =
 type PendingRow = Exclude<PreparedRow, { kind: 'failed' }>;
 
 const failed = (error: Error): PreparedRow => ({ kind: 'failed', error });
+
+// Stack frames only. V8's first stack line repeats the message, a multi-line message spans more
+// lines, and the message can carry emails or Marketo text, which must never be logged.
+function stackFrames(error: unknown): string {
+  const stack = error instanceof Error ? (error.stack ?? '') : '';
+  return stack
+    .split('\n')
+    .filter((line) => /^\s+at /.test(line))
+    .join('\n');
+}
 
 function prepareRow(input: MarketoAudienceRouterRequest): PreparedRow {
   const list = readListId(input.connection);
@@ -120,9 +132,17 @@ class MarketoAudienceIntegration extends DestinationIntegration<
     this.rows = new Map();
     try {
       await this.prepareRows(inputs);
-    } catch {
+    } catch (error) {
       // Expected failures are already typed on their own rows. Anything that still escapes would
-      // fail the whole destination group with an untyped error, so it lands on each row instead.
+      // fail the whole destination group with an untyped error, so it lands on each row instead,
+      // and this log is what records the bug.
+      logger.error('Marketo Audience pre-stage failed', {
+        destType: DESTINATION_TYPE.toUpperCase(),
+        destinationId: this.destination.ID,
+        workspaceId: this.destination.WorkspaceID,
+        errorName: error instanceof Error ? error.name : typeof error,
+        stack: stackFrames(error),
+      });
       const unexpected = new RetryableError(PRESTAGE_FAILED);
       inputs
         .filter((input) => this.rows.get(input)?.kind !== 'failed')

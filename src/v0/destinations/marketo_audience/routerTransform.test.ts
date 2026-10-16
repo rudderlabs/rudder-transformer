@@ -1,6 +1,7 @@
 jest.mock('../../../adapters/network');
 
 import { httpGET, httpPOST } from '../../../adapters/network';
+import logger from '../../../logger';
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import * as lookupModule from './lookup';
@@ -406,6 +407,36 @@ describe('MARKETO_AUDIENCE router transform', () => {
     ]);
 
     expect(results.map(jobIds)).toEqual([[1], [2, 3]]);
+  });
+
+  it('logs the name and stack frames of an unexpected pre-stage error, never its message', async () => {
+    const lookup = jest
+      .spyOn(lookupModule, 'lookupLeadsByEmail')
+      .mockRejectedValueOnce(new Error('lookup broke for bob@acme.io\nand for eve@acme.io'));
+    const logError = jest.spyOn(logger, 'error').mockImplementation(() => {});
+
+    const results = await run([row(1, { id: '101' }), row(2, { email: 'bob@acme.io' })]);
+
+    const logged = [...logError.mock.calls];
+    lookup.mockRestore();
+    logError.mockRestore();
+    expect(logged).toEqual([
+      [
+        'Marketo Audience pre-stage failed',
+        {
+          destType: 'MARKETO_AUDIENCE',
+          destinationId: 'dest-1',
+          workspaceId: 'ws-1',
+          errorName: 'Error',
+          stack: expect.stringMatching(/^\s+at /),
+        },
+      ],
+    ]);
+    expect(JSON.stringify(logged)).not.toMatch(/acme\.io|lookup broke/);
+    expect([failure(results, 1), failure(results, 2)]).toEqual([
+      { statusCode: 500, error: 'Marketo Audience could not prepare the row' },
+      { statusCode: 500, error: 'Marketo Audience could not prepare the row' },
+    ]);
   });
 
   it('fails each pending row with a typed error when the pre-stage throws unexpectedly', async () => {

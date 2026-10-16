@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.159.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.158.0...v1.159.0) (2026-10-16)
+
+
+### Features
+
+* **rokt:** map track conversion types from destination config ([#5679](https://github.com/rudderlabs/rudder-transformer/issues/5679)) ([09ef263](https://github.com/rudderlabs/rudder-transformer/commit/09ef26372d5090a85bb7cfd9fe20d734fa96bf40))
+
+
+### Bug Fixes
+
+* **intercom:** abort archived contact conflicts ([#5678](https://github.com/rudderlabs/rudder-transformer/issues/5678)) ([5064184](https://github.com/rudderlabs/rudder-transformer/commit/5064184d87868e92191c0bad3d9153335d18be44))
+* **user-transformations:** preserve log in cached V1 contexts ([#5637](https://github.com/rudderlabs/rudder-transformer/issues/5637)) ([baf5d6a](https://github.com/rudderlabs/rudder-transformer/commit/baf5d6af3334e69516d513a37555a695d0069bc0))
+
 ## [1.158.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.157.0...v1.158.0) (2026-10-14)
 
 

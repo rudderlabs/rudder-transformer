@@ -199,6 +199,17 @@ describe('MARKETO_AUDIENCE delivery', () => {
       );
     });
 
+    it('retries every job on a 400 that is a Node transport failure, not a Marketo answer', () => {
+      const ctx = context(400, '[ENOTFOUND] :: DNS lookup failed');
+
+      const response = toDeliveryV1Response(handled(ctx), ctx, 'MARKETO_AUDIENCE');
+
+      expect(response.response.map(({ statusCode, error }) => ({ statusCode, error }))).toEqual([
+        { statusCode: 500, error: 'Marketo request failed (network error)' },
+        { statusCode: 500, error: 'Marketo request failed (network error)' },
+      ]);
+    });
+
     it('returns per-job errors without the raw response', () => {
       const ctx = context(400, { message: 'raw marketo message' });
 

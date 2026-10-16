@@ -53,6 +53,18 @@ function outcomeError(outcome: MarketoOutcome): Error {
   return new AbortedError(outcome.reason);
 }
 
+// Transport failures have no HTTP status, and processAxiosResponse maps some of them (DNS, for
+// one) onto 400, which would abort a network blip as permanent.
+function hasHttpStatus(clientResponse: {
+  success?: boolean;
+  response?: { status?: unknown; response?: { status?: unknown } };
+}): boolean {
+  const status = clientResponse.success
+    ? clientResponse.response?.status
+    : clientResponse.response?.response?.status;
+  return typeof status === 'number' && status !== 0;
+}
+
 function httpError(status: number): Error {
   if (status === 429) {
     return new ThrottledError('Marketo rate limit reached (HTTP 429)');
@@ -97,6 +109,9 @@ async function fetchPage(
       metadata: { destinationId: request.destinationId, workspaceId: request.workspaceId },
     },
   );
+  if (!hasHttpStatus(clientResponse)) {
+    throw new RetryableError(`${LOOKUP_FAILED} (network error)`);
+  }
   const { status, response } = processAxiosResponse(clientResponse);
   if (!isHttpStatusSuccess(status)) {
     throw httpError(status);

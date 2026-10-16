@@ -269,6 +269,21 @@ describe('lookupLeadsByEmail', () => {
     expect('error' in outcome! && outcome.error).toBeInstanceOf(RetryableError);
   });
 
+  it.each(['ENOTFOUND', 'EPIPE'])(
+    'retries a %s transport failure, which has no HTTP status',
+    async (code) => {
+      mockHttpPost.mockResolvedValue({ success: false, response: { code } });
+
+      const outcome = (await lookup(['alice@acme.io'])).get('alice@acme.io');
+
+      expect('error' in outcome! && errorShape(outcome.error)).toEqual({
+        type: 'RetryableError',
+        message: 'Marketo lead lookup failed (network error)',
+        status: 500,
+      });
+    },
+  );
+
   it('turns an unexpected throw into a retryable error', async () => {
     mockHttpPost.mockRejectedValue(new TypeError('boom'));
 

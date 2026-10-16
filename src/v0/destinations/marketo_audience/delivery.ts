@@ -39,6 +39,10 @@ const LEAD_NOT_FOUND_CODE = '1004';
 const PARTITION_DENIED_CODE = '1008';
 const NOT_IN_LIST_CODE = '1015';
 
+// processAxiosResponse turns a Node transport failure with no HTTP status into a 400 whose body is
+// `[CODE]` or `[CODE] :: ...`. Marketo never sent that 400.
+const NODE_TRANSPORT_MESSAGE = /^\[\w+]/;
+
 const everyJob = (ctx: DeliveryContext, verdict: ItemVerdict): HandleResponseResult =>
   perItem(ctx.jobs.map(() => verdict));
 
@@ -123,16 +127,24 @@ function membershipResponse(ctx: DeliveryContext): HandleResponseResult {
   return everyJob(ctx, outcomeVerdict(outcome));
 }
 
+function clientFailure(ctx: DeliveryContext): ItemVerdict {
+  if (ctx.status === 429) {
+    return throttled('Marketo rate limit reached (HTTP 429)');
+  }
+  if (
+    ctx.status === 400 &&
+    typeof ctx.response === 'string' &&
+    NODE_TRANSPORT_MESSAGE.test(ctx.response)
+  ) {
+    return retry(`${MEMBERSHIP_FAILED} (network error)`);
+  }
+  return abort(`${MEMBERSHIP_FAILED} (HTTP ${ctx.status})`);
+}
+
 export const marketoAudienceDelivery: DeliverySpec = {
   statusOverrides: {
     '2xx': membershipResponse,
-    '4xx': (ctx) =>
-      everyJob(
-        ctx,
-        ctx.status === 429
-          ? throttled('Marketo rate limit reached (HTTP 429)')
-          : abort(`${MEMBERSHIP_FAILED} (HTTP ${ctx.status})`),
-      ),
+    '4xx': (ctx) => everyJob(ctx, clientFailure(ctx)),
     '5xx': (ctx) => everyJob(ctx, retry(`${MEMBERSHIP_FAILED} (HTTP ${ctx.status})`)),
   },
 };

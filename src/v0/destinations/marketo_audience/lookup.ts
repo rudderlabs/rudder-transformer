@@ -145,10 +145,17 @@ function collectPage(body: unknown, matches: Matches, destinationId: string): st
   }
   page.result.forEach((entry) => {
     const lead = asRecord(entry);
-    const leadId = parsePositiveId(lead?.id);
+    if (typeof lead?.email !== 'string') {
+      throw new RetryableError(LOOKUP_UNMATCHED);
+    }
     // Marketo matches emails case-insensitively; requested emails are already lowercased.
-    const ids = typeof lead?.email === 'string' && matches.get(lead.email.trim().toLowerCase());
-    if (!leadId.ok || !ids) {
+    const ids = matches.get(lead.email.trim().toLowerCase());
+    // A lead for an address this chunk did not ask for says nothing about the requested ones.
+    if (!ids) {
+      return;
+    }
+    const leadId = parsePositiveId(lead.id);
+    if (!leadId.ok) {
       throw new RetryableError(LOOKUP_UNMATCHED);
     }
     ids.add(leadId.id);

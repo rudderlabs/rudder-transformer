@@ -144,6 +144,24 @@ describe('lookupLeadsByEmail', () => {
     );
   });
 
+  it('skips a returned lead whose email was not requested and resolves the others', async () => {
+    mockHttpPost.mockResolvedValue(
+      leads([
+        { id: 7, email: 'mallory@acme.io' },
+        { id: 101, email: 'alice@acme.io' },
+      ]),
+    );
+
+    const outcomes = await lookup(['alice@acme.io', 'bob@acme.io']);
+
+    expect(outcomes).toEqual(
+      new Map([
+        ['alice@acme.io', { kind: 'found', leadId: 101 }],
+        ['bob@acme.io', { kind: 'missing' }],
+      ]),
+    );
+  });
+
   it('counts a lead repeated across pages once', async () => {
     mockHttpPost
       .mockResolvedValueOnce(
@@ -240,10 +258,7 @@ describe('lookupLeadsByEmail', () => {
     { name: 'success:false without a code', response: ok({ success: false, errors: [] }) },
     { name: 'a body that is not an object', response: ok('<html>maintenance</html>') },
     { name: 'a result that is not an array', response: ok({ success: true, result: {} }) },
-    {
-      name: 'a lead for an email that was not requested',
-      response: leads([{ id: 7, email: 'mallory@acme.io' }]),
-    },
+    { name: 'a lead without an email', response: leads([{ id: 7 }]) },
     { name: 'a lead without a usable id', response: leads([{ id: 'x', email: 'alice@acme.io' }]) },
     { name: 'moreResult without a page token', response: leads([], { moreResult: true }) },
   ];

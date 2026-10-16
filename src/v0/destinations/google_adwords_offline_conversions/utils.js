@@ -299,45 +299,66 @@ const normalizeStoreMerchantId = (value) => {
   return undefined;
 };
 
+const backfillStoreItemAttribute = (itemAttribute, product) => {
+  const backfilledItemAttribute = { ...itemAttribute };
+  if (!isPresent(backfilledItemAttribute.item_id)) {
+    const productItemId = resolveProductItemId(product, { allowSkuFallback: true });
+    if (isPresent(productItemId)) {
+      backfilledItemAttribute.item_id = String(productItemId);
+    }
+  }
+  if (!isPresent(backfilledItemAttribute.quantity)) {
+    backfilledItemAttribute.quantity = product?.quantity;
+  }
+  return backfilledItemAttribute;
+};
+
+const normalizeStoreItemAttribute = (itemAttribute) => {
+  const normalizedItemAttribute = { ...itemAttribute };
+  const quantity = normalizeGoogleItemQuantity(normalizedItemAttribute.quantity, {
+    requirePositiveSafeInteger: true,
+  });
+  if (quantity === undefined) {
+    delete normalizedItemAttribute.quantity;
+  } else {
+    normalizedItemAttribute.quantity = quantity;
+  }
+
+  const merchantId = normalizeStoreMerchantId(normalizedItemAttribute.merchant_id);
+  if (merchantId === undefined) {
+    delete normalizedItemAttribute.merchant_id;
+  } else {
+    normalizedItemAttribute.merchant_id = merchantId;
+  }
+  return normalizedItemAttribute;
+};
+
 const buildStoreItemAttribute = (message, mappedItemAttribute = {}) => {
   const products = get(message, 'properties.products');
   if (Array.isArray(products) && products.length > 1) {
     return null;
   }
 
-  const itemAttribute = { ...mappedItemAttribute };
+  let itemAttribute = { ...mappedItemAttribute };
   if (Array.isArray(products) && products.length === 1) {
-    const [product] = products;
-    if (!isPresent(itemAttribute.item_id)) {
-      const productItemId = resolveProductItemId(product, { allowSkuFallback: true });
-      if (isPresent(productItemId)) {
-        itemAttribute.item_id = String(productItemId);
-      }
-    }
-    if (!isPresent(itemAttribute.quantity)) {
-      itemAttribute.quantity = product?.quantity;
-    }
+    itemAttribute = backfillStoreItemAttribute(itemAttribute, products[0]);
   }
 
-  const quantity = normalizeGoogleItemQuantity(itemAttribute.quantity, {
-    requirePositiveSafeInteger: true,
-  });
-  if (quantity === undefined) {
-    delete itemAttribute.quantity;
-  } else {
-    itemAttribute.quantity = quantity;
-  }
-
-  const merchantId = normalizeStoreMerchantId(itemAttribute.merchant_id);
-  if (merchantId === undefined) {
-    delete itemAttribute.merchant_id;
-  } else {
-    itemAttribute.merchant_id = merchantId;
-  }
+  itemAttribute = normalizeStoreItemAttribute(itemAttribute);
 
   return isPresent(itemAttribute.item_id) && isPresent(itemAttribute.merchant_id)
     ? itemAttribute
     : null;
+};
+
+const populateStoreItemAttribute = (payload, message) => {
+  const itemAttribute = buildStoreItemAttribute(message, get(payload, STORE_ITEM_ATTRIBUTE_PATH));
+  if (itemAttribute) {
+    set(payload, STORE_ITEM_ATTRIBUTE_PATH, itemAttribute);
+  } else {
+    const { transaction_attribute: transactionAttribute } = payload.operations.create;
+    delete transactionAttribute.item_attribute;
+  }
 };
 
 /**
@@ -361,12 +382,7 @@ const getAddConversionPayload = (
   );
 
   if (itemAttributionEnabled) {
-    const itemAttribute = buildStoreItemAttribute(message, get(payload, STORE_ITEM_ATTRIBUTE_PATH));
-    if (itemAttribute) {
-      set(payload, STORE_ITEM_ATTRIBUTE_PATH, itemAttribute);
-    } else {
-      delete payload.operations.create.transaction_attribute.item_attribute;
-    }
+    populateStoreItemAttribute(payload, message);
   }
 
   payload.enable_partial_failure = false;

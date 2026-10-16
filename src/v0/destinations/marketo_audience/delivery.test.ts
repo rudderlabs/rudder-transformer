@@ -190,12 +190,22 @@ describe('MARKETO_AUDIENCE delivery', () => {
       { status: 400, verdict: abort('Marketo request failed (HTTP 400)') },
       { status: 404, verdict: abort('Marketo request failed (HTTP 404)') },
       { status: 429, verdict: throttled('Marketo rate limit reached (HTTP 429)') },
-      { status: 503, verdict: retry('Marketo request failed (HTTP 503)') },
     ];
 
     it.each(cases)('applies HTTP $status to every job', ({ status, verdict }) => {
       expect(handled(context(status, { message: 'raw marketo message' }))).toEqual(
         perItem([verdict, verdict]),
+      );
+    });
+
+    it('leaves a 5xx to the framework default, which retries the whole batch', () => {
+      const ctx = context(503, { message: 'raw marketo message' });
+
+      expect(() => toDeliveryV1Response(handled(ctx), ctx, 'MARKETO_AUDIENCE')).toThrow(
+        expect.objectContaining({
+          status: 503,
+          statTags: expect.objectContaining({ errorType: 'retryable' }),
+        }),
       );
     });
 

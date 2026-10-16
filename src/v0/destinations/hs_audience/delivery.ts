@@ -1,33 +1,25 @@
 /**
  * Delivery for HubSpot list membership.
  *
- * Authorization is applied here, on a clone, because the router output is
- * persisted and shown in live events. Direct delivery would send that output
- * with no token, so proxy delivery is required.
- *
- * A 2xx is not success by itself. Missing adds abort; a missing id on a
+ * HTTP 200 is not success by itself. Missing adds abort; a missing id on a
  * removal is the absence the caller asked for, so it succeeds with no reason.
  * An id left out of `recordsIdsAdded` is the same success: HubSpot omits
- * contacts that were already on the list. `perItem` on 4xx keeps the
- * framework from attaching the raw response, which can echo ids and tokens.
- * 5xx is left to the framework default, which retries.
+ * contacts that were already on the list. Only transport failures mapped to
+ * 400 and portal-migration 477 need custom retry verdicts. Other statuses
+ * use the framework default with HubSpot-specific failure reasons.
  */
-import { ConfigurationError } from '@rudderstack/integrations-lib';
 import {
   abort,
+  defaultFailureReason,
   perItem,
   retry,
   success,
-  throttled,
   type DeliveryContext,
-  type DeliveryRequestContext,
   type DeliverySpec,
   type ItemVerdict,
   type StatusOverrideMap,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import type { ProxyRequest } from '../../../types';
 import {
-  ACCESS_TOKEN_REQUIRED,
   CONTACT_NOT_FOUND,
   INELIGIBLE_LIST_SUBCATEGORY,
   LIST_INELIGIBLE,
@@ -40,7 +32,7 @@ import {
   TOKEN_REJECTED,
   VALIDATION_ERROR,
 } from './config';
-import { normalizeContactId, readAccessToken } from './utils';
+import { normalizeContactId } from './utils';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -200,53 +192,103 @@ function isNodeTransportMessage(response: unknown): boolean {
   return typeof response === 'string' && NODE_TRANSPORT_MESSAGE.test(response);
 }
 
-function clientFailure(ctx: DeliveryContext): ItemVerdict {
-  if (ctx.status === 401) {
-    return abort(TOKEN_REJECTED);
+const MEMBERSHIP_FAILURE_REASONS: Readonly<Partial<Record<number, string>>> = {
+  401: TOKEN_REJECTED,
+  403: MEMBERSHIP_MISSING_SCOPE,
+  404: LIST_NOT_FOUND,
+  429: RATE_LIMIT_EXCEEDED,
+  477: MEMBERSHIP_UNAVAILABLE,
+};
+
+function nonemptyText(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+}
+
+function errorDetails(record: Record<string, unknown>, keys: readonly string[]): string[] {
+  return keys.flatMap((key) => {
+    const value = nonemptyText(record[key]);
+    return value ? [`${key}: ${value}`] : [];
+  });
+}
+
+function formatError(message: string | undefined, details: string[]): string | undefined {
+  if (!message) {
+    return details.length > 0 ? details.join(', ') : undefined;
   }
-  if (ctx.status === 403) {
-    return abort(MEMBERSHIP_MISSING_SCOPE);
+  return details.length > 0 ? `${message} (${details.join(', ')})` : message;
+}
+
+function nestedErrorDetails(record: Record<string, unknown>): string[] {
+  const details = errorDetails(record, ['category', 'subCategory', 'correlationId', 'code']);
+  const context = asRecord(record.context);
+  if (context) {
+    // HubSpot error context maps field names to arrays of strings, such as
+    // { ids: ['101'] }. Ignore malformed values rather than serializing them.
+    const entries = Object.entries(context).filter(
+      ([, values]) =>
+        Array.isArray(values) &&
+        values.length > 0 &&
+        values.every((value) => typeof value === 'string'),
+    );
+    if (entries.length > 0) {
+      details.push(`context: ${JSON.stringify(Object.fromEntries(entries))}`);
+    }
   }
-  if (ctx.status === 404) {
-    return abort(LIST_NOT_FOUND);
+  return details;
+}
+
+function failureReason(ctx: DeliveryContext): string {
+  const fallbackReason =
+    MEMBERSHIP_FAILURE_REASONS[ctx.status] ??
+    (ctx.status >= 400 && ctx.status < 500
+      ? MEMBERSHIP_REJECTED
+      : defaultFailureReason(ctx.status));
+  const record = asRecord(ctx.response);
+  if (!record) {
+    return fallbackReason;
   }
-  if (ctx.status === 429) {
-    return throttled(RATE_LIMIT_EXCEEDED);
-  }
-  // 477 is HubSpot's portal-migration status. Retry-After can ask for a long
-  // wait; this verdict does not forward that header.
-  if (ctx.status === 477 || (ctx.status === 400 && isNodeTransportMessage(ctx.response))) {
-    return retry(MEMBERSHIP_UNAVAILABLE);
-  }
-  if (ctx.status === 400 && isIneligibleList(ctx.response)) {
-    return abort(LIST_INELIGIBLE);
-  }
-  return abort(MEMBERSHIP_REJECTED);
+  const reason = formatError(
+    nonemptyText(record.message) ?? fallbackReason,
+    errorDetails(record, ['category', 'subCategory', 'correlationId']),
+  );
+  const nested = Array.isArray(record.errors)
+    ? record.errors.flatMap((entry, index) => {
+        const error = asRecord(entry);
+        if (!error) {
+          return [];
+        }
+        const detail = formatError(nonemptyText(error.message), nestedErrorDetails(error));
+        return detail ? [`error[${index}]: ${detail}`] : [];
+      })
+    : [];
+  const detailedReason = [reason, ...nested].join(' | ');
+  // The ineligible-list cause is named up front; HubSpot's own text stays attached.
+  return ctx.status === 400 && isIneligibleList(ctx.response)
+    ? `${LIST_INELIGIBLE}: ${detailedReason}`
+    : detailedReason;
 }
 
 const statusOverrides: StatusOverrideMap = {
-  '2xx': (ctx) => perItem(membershipOutcomes(ctx)),
-  '4xx': (ctx) => perItem(ctx.jobs.map(() => clientFailure(ctx))),
+  // The framework succeeds on 200. HubSpot can report missing contacts inside
+  // that response, so failed additions and malformed results need per-job verdicts.
+  200: (ctx, fallback) => {
+    const verdicts = membershipOutcomes(ctx);
+    return verdicts.every((verdict) => verdict.kind === 'success') ? fallback() : perItem(verdicts);
+  },
+  // The framework aborts on 400. Node transport failures mapped to 400 must retry.
+  400: (ctx, fallback) =>
+    isNodeTransportMessage(ctx.response)
+      ? perItem(ctx.jobs.map(() => retry(MEMBERSHIP_UNAVAILABLE)))
+      : fallback(),
+  // The framework aborts on 477. HubSpot portal migration must retry, with
+  // per-job 500s so the HTTP 477 does not terminate jobs. Retry-After is not forwarded.
+  477: (ctx) => {
+    const reason = failureReason(ctx);
+    return perItem(ctx.jobs.map(() => retry(reason)));
+  },
 };
-
-function prepareMembershipRequest(
-  request: ProxyRequest,
-  ctx: DeliveryRequestContext,
-): ProxyRequest {
-  const token = readAccessToken(ctx.destinationConfig);
-  if (!token) {
-    throw new ConfigurationError(ACCESS_TOKEN_REQUIRED);
-  }
-  return {
-    ...request,
-    headers: {
-      ...request.headers,
-      Authorization: `Bearer ${token}`,
-    },
-  };
-}
 
 export const hubSpotAudienceDelivery: DeliverySpec = {
   statusOverrides,
-  prepareRequest: prepareMembershipRequest,
+  failureReason,
 };

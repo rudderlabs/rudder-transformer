@@ -287,7 +287,7 @@ class HubSpotAudienceIntegration extends DestinationIntegration<
           endpointPath: MEMBERSHIP_ENDPOINT_PATH,
           method: 'PUT',
           internalGroupKey: prepared.operation,
-          headers: { ...JSON_HEADERS },
+          headers: { ...JSON_HEADERS, Authorization: `Bearer ${prepared.credential}` },
         },
       });
     });

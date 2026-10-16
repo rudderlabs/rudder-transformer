@@ -13,8 +13,6 @@ import type { HubSpotAudiencePayload, MembershipOperation } from './types';
 
 const DECIMAL_DIGITS = /^\d+$/;
 
-// Membership transform output stops here. The bearer token is added later, on a
-// clone, so it is not stored with the router payload.
 export const JSON_HEADERS: Record<string, string> = {
   'Content-Type': 'application/json',
 };

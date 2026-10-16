@@ -59,10 +59,10 @@ export const data: RouterTestData[] = [
     id: 'hs-audience-router-direct-id-add-and-delete',
     name: destType,
     description:
-      'Direct record ids add and delete without a contact lookup or an Authorization header',
+      'Direct record ids add and delete without a contact lookup and carry Authorization',
     scenario: 'Business',
     successCriteria:
-      'Insert and delete stay in separate membership batches and the request carries Content-Type only',
+      'Insert and delete stay in separate membership batches with Content-Type and Authorization',
     feature: 'router',
     module: 'destination',
     version: 'v0',

@@ -40,6 +40,7 @@ const otherListConnection = listConnection('20');
 
 const headers = {
   'Content-Type': 'application/json',
+  Authorization: `Bearer ${accessToken}`,
 };
 
 const membershipEndpoint = (listId: string) =>

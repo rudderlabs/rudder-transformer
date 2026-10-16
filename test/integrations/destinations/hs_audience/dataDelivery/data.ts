@@ -9,11 +9,16 @@ import {
   noOpAddBody,
   noOpRemoveBody,
   rateLimitBody,
+  rateLimitResponse,
   rejectedTokenBody,
+  rejectedTokenResponse,
 } from './network';
 
 const FRAMEWORK_SUCCESS_MESSAGE = '[HS_AUDIENCE] Request processed successfully';
 const frameworkFailure = (reason: string) => `[HS_AUDIENCE] ${reason}`;
+const rejectedTokenReason =
+  'raw-body-sentinel (category: INVALID_AUTHENTICATION, correlationId: corr-rejected-token)';
+const rateLimitReason = 'raw-body-sentinel (category: RATE_LIMIT, correlationId: corr-rate-limit)';
 
 const deliveryStatTags = (errorType: 'aborted' | 'throttled') => ({
   destType: 'HS_AUDIENCE',
@@ -75,7 +80,7 @@ const scenarios: ProxyV1TestData[] = [
   {
     id: 'hs_audience_v1_membership_success',
     name: 'hs_audience',
-    description: '[Proxy v1] a 2xx membership update succeeds for every sent id',
+    description: '[Proxy v1] a 200 membership update succeeds for every sent id',
     successCriteria: 'Reordered recordsIdsAdded values still match and every job is 200',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -170,8 +175,9 @@ const scenarios: ProxyV1TestData[] = [
   {
     id: 'hs_audience_v1_rejected_token',
     name: 'hs_audience',
-    description: '[Proxy v1] 401 aborts with a static reason and does not copy the response body',
-    successCriteria: 'The batch status stays 401 and each job is aborted as 400',
+    description: '[Proxy v1] 401 uses the framework failure path with the HubSpot response echo',
+    successCriteria:
+      'The batch and job status stay 401 with the framework reason and response echo',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -188,13 +194,13 @@ const scenarios: ProxyV1TestData[] = [
         body: {
           output: {
             status: 401,
-            message: frameworkFailure('HubSpot rejected the access token'),
+            message: frameworkFailure(rejectedTokenReason),
             statTags: deliveryStatTags('aborted'),
             response: [
               {
-                statusCode: 400,
+                statusCode: 401,
                 metadata: generateMetadata(1),
-                error: 'HubSpot rejected the access token',
+                error: JSON.stringify(rejectedTokenResponse),
               },
             ],
           },
@@ -205,7 +211,7 @@ const scenarios: ProxyV1TestData[] = [
   {
     id: 'hs_audience_v1_rate_limit',
     name: 'hs_audience',
-    description: '[Proxy v1] 429 throttles with a static reason',
+    description: '[Proxy v1] 429 throttles with HubSpot error details',
     successCriteria: 'The batch status stays 429 and the job is throttled',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -223,13 +229,13 @@ const scenarios: ProxyV1TestData[] = [
         body: {
           output: {
             status: 429,
-            message: frameworkFailure('HubSpot rate limit exceeded'),
+            message: frameworkFailure(rateLimitReason),
             statTags: deliveryStatTags('throttled'),
             response: [
               {
                 statusCode: 429,
                 metadata: generateMetadata(1),
-                error: 'HubSpot rate limit exceeded',
+                error: JSON.stringify(rateLimitResponse),
               },
             ],
           },

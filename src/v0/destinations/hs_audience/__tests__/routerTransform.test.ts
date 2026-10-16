@@ -4,7 +4,10 @@ import { httpPOST } from '../../../../adapters/network';
 import { processDestinationIntegration } from '../../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Connection, Destination } from '../../../../types/controlPlaneConfig';
 import type { z } from 'zod';
-import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
+import type {
+  ProcessorTransformationOutput,
+  RouterTransformationRequestData,
+} from '../../../../types/destinationTransformation';
 import type { Metadata } from '../../../../types/rudderEvents';
 import { Integration } from '../routerTransform';
 import { HubSpotAudienceRouterRequestSchema } from '../types';
@@ -133,8 +136,11 @@ describe('HubSpot audience routing', () => {
       'remove',
       'add',
     ]);
-    expect(result.successPayloads.every((payload) => payload.headers?.Authorization)).toBe(false);
-    expect(result.successPayloads[0].headers).toEqual({ 'Content-Type': 'application/json' });
+    expect(result.successPayloads.map((payload) => payload.headers)).toEqual([
+      { 'Content-Type': 'application/json', Authorization: 'Bearer pat-test' },
+      { 'Content-Type': 'application/json', Authorization: 'Bearer pat-test' },
+      { 'Content-Type': 'application/json', Authorization: 'Bearer pat-test' },
+    ]);
     expect(result.successPayloads[0].endpointPath).toBe(
       '/crm/v3/lists/:listId/memberships/add-and-remove',
     );
@@ -158,6 +164,7 @@ describe('HubSpot audience routing', () => {
     });
     expect((batched[0] as { batchedRequest: { headers: object } }).batchedRequest.headers).toEqual({
       'Content-Type': 'application/json',
+      Authorization: 'Bearer pat-test',
     });
   });
 
@@ -214,6 +221,39 @@ describe('HubSpot audience routing', () => {
     expect(JSON.stringify(result.errorPayloads)).not.toContain('../secret');
     expect(mockHttpPost).not.toHaveBeenCalled();
   });
+
+  it.each([undefined, '', '   '])(
+    'isolates the row with a missing token %p',
+    async (accessToken) => {
+      const missingDestination = { ...destination, Config: { accessToken } };
+      const results = await processDestinationIntegration(
+        [
+          buildInput(1, 'insert', { email: 'alice@example.com' }, missingDestination, listA),
+          buildInput(2, 'insert', { hs_object_id: '202' }, destination, listA),
+        ],
+        Integration,
+        {},
+      );
+
+      expect(
+        results.map((result) => ({
+          statusCode: result.statusCode,
+          error: result.error,
+          errorType: (result.statTags as { errorType?: string } | undefined)?.errorType,
+          jobIds: result.metadata.map((metadata) => metadata.jobId),
+        })),
+      ).toEqual([
+        { statusCode: 200, error: undefined, errorType: undefined, jobIds: [2] },
+        {
+          statusCode: 400,
+          error: 'HubSpot access token is required',
+          errorType: 'configuration',
+          jobIds: [1],
+        },
+      ]);
+      expect(mockHttpPost).not.toHaveBeenCalled();
+    },
+  );
 
   it('does not fall back to email when the record id is invalid', async () => {
     mockHttpPost.mockImplementation(foundByEmail(() => '5'));
@@ -435,6 +475,10 @@ describe('HubSpot audience conflicts and lookup state', () => {
       '2',
       '3',
     ]);
+    expect(split.successPayloads.map((payload) => payload.headers)).toEqual([
+      { 'Content-Type': 'application/json', Authorization: 'Bearer pat-test' },
+      { 'Content-Type': 'application/json', Authorization: 'Bearer pat-other' },
+    ]);
     const authorizations = mockHttpPost.mock.calls.map((call) => call[2].headers.Authorization);
     expect(authorizations).toContain('Bearer pat-test');
     expect(authorizations).toContain('Bearer pat-other');
@@ -447,6 +491,43 @@ describe('HubSpot audience batching', () => {
 
   beforeEach(() => {
     mockHttpPost.mockReset();
+  });
+
+  it('separates credentials on the same list and operation and trims each token', async () => {
+    const firstDestination = buildDestination('  pat-test  ');
+    const otherDestination = buildDestination('pat-other');
+    const results = await processDestinationIntegration(
+      [
+        buildInput(1, 'insert', { hs_object_id: '101' }, firstDestination, connection),
+        buildInput(2, 'insert', { hs_object_id: '202' }, otherDestination, connection),
+        buildInput(3, 'update', { hs_object_id: '303' }, firstDestination, connection),
+      ],
+      Integration,
+      {},
+    );
+
+    expect(
+      results.map((result) => {
+        const request = result.batchedRequest as ProcessorTransformationOutput;
+        return {
+          headers: request.headers,
+          body: request.body?.JSON,
+          jobIds: result.metadata.map((metadata) => metadata.jobId),
+        };
+      }),
+    ).toEqual([
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer pat-test' },
+        body: { recordIdsToAdd: ['101', '303'], recordIdsToRemove: [] },
+        jobIds: [1, 3],
+      },
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer pat-other' },
+        body: { recordIdsToAdd: ['202'], recordIdsToRemove: [] },
+        jobIds: [2],
+      },
+    ]);
+    expect(mockHttpPost).not.toHaveBeenCalled();
   });
 
   it('keeps duplicate ids in job order and emits one entry per job', async () => {

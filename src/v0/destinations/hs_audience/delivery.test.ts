@@ -247,7 +247,6 @@ describe('HubSpot audience delivery', () => {
     [400, 'HubSpot membership update was rejected', 400, 'aborted'],
     [429, 'HubSpot rate limit exceeded', 429, 'throttled'],
     [477, 'HubSpot membership update is temporarily unavailable', 500, 'retryable'],
-    [503, 'HubSpot membership update is temporarily unavailable', 500, 'retryable'],
   ] as const)('keeps a static reason for HTTP %s', (status, reason, jobStatus, errorType) => {
     const result = deliver(
       ctxFor(
@@ -266,6 +265,17 @@ describe('HubSpot audience delivery', () => {
     expect(result.response.map((item) => item.error)).toEqual([reason, reason]);
     expect(JSON.stringify(result.response)).not.toContain(SENTINEL);
     expect(JSON.stringify(result.response)).not.toContain('corr-1');
+  });
+
+  it('leaves a 5xx to the framework default, which retries the whole batch', () => {
+    const ctx = ctxFor(503, { message: 'unavailable' }, membershipBody(['1', '2']));
+
+    expect(() => deliver(ctx)).toThrow(
+      expect.objectContaining({
+        status: 503,
+        statTags: expect.objectContaining({ errorType: 'retryable' }),
+      }),
+    );
   });
 
   it('retries a 400 whose body is a Node transport message', () => {

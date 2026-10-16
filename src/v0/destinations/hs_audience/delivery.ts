@@ -8,8 +8,9 @@
  * A 2xx is not success by itself. Missing adds abort; a missing id on a
  * removal is the absence the caller asked for, so it succeeds with no reason.
  * An id left out of `recordsIdsAdded` is the same success: HubSpot omits
- * contacts that were already on the list. `perItem` on 4xx and 5xx keeps the
+ * contacts that were already on the list. `perItem` on 4xx keeps the
  * framework from attaching the raw response, which can echo ids and tokens.
+ * 5xx is left to the framework default, which retries.
  */
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import {
@@ -226,7 +227,6 @@ function clientFailure(ctx: DeliveryContext): ItemVerdict {
 const statusOverrides: StatusOverrideMap = {
   '2xx': (ctx) => perItem(membershipOutcomes(ctx)),
   '4xx': (ctx) => perItem(ctx.jobs.map(() => clientFailure(ctx))),
-  '5xx': (ctx) => perItem(ctx.jobs.map(() => retry(MEMBERSHIP_UNAVAILABLE))),
 };
 
 function prepareMembershipRequest(

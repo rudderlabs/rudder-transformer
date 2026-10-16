@@ -155,24 +155,14 @@ const commonHandler = async (
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
-  // HubSpot audience lookup and proxy payloads carry contact emails and ids.
-  // Payload logs would store those values, so this destination keeps the
-  // latency and count metrics and skips request/response body logs.
-  const suppressPayloadLogs =
-    String(statTags?.destType || '')
-      .trim()
-      .toUpperCase() === 'HS_AUDIENCE';
-
-  if (!suppressPayloadLogs) {
-    logger.requestLog(`${commonMsg} request`, {
-      metadata: statTags?.metadata,
-      requestDetails: {
-        url: url || requestOptions?.url,
-        body: data || requestOptions?.data,
-        method,
-      },
-    });
-  }
+  logger.requestLog(`${commonMsg} request`, {
+    metadata: statTags?.metadata,
+    requestDetails: {
+      url: url || requestOptions?.url,
+      body: data || requestOptions?.data,
+      method,
+    },
+  });
   const startTime = new Date();
   try {
     const response = await axiosMethod(...getHttpMethodArgs(method, args));
@@ -180,12 +170,10 @@ const commonHandler = async (
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    if (!suppressPayloadLogs) {
-      logger.responseLog(`${commonMsg} response`, {
-        metadata: statTags?.metadata,
-        responseDetails: getResponseDetails(clientResponse),
-      });
-    }
+    logger.responseLog(`${commonMsg} response`, {
+      metadata: statTags?.metadata,
+      responseDetails: getResponseDetails(clientResponse),
+    });
     if (!disableMetrics) {
       fireHTTPStats(clientResponse, startTime, statTags);
     }

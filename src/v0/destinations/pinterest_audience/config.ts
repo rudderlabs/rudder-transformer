@@ -11,10 +11,11 @@ export const getEndpoint = (adAccountId: string, customerListId: string): string
   `${BASE_URL}/ad_accounts/${adAccountId}/customer_lists/${customerListId}`;
 
 /**
- * Rows per PATCH. Pinterest documents no ceiling; 2742
+ * Rows per PATCH. Under `records` a row with email and MAID is two records, so a classic body
+ * carries up to 2 × this many identifiers. Pinterest documents no ceiling; 2742
  * EXCEEDED_MAX_USER_LISTS_PER_REQUEST_LIMIT is the over-limit code.
  */
-// PROVISIONAL — not yet pinned: probe P1 (spec §9) is blocked until Pinterest grants Standard access
+// PROVISIONAL — pinned by probe P1 (spec §9) once run on the classic string (unblocked 2026-10-16)
 export const MAX_RECORDS_PER_REQUEST = 1000;
 
 /**
@@ -50,3 +51,28 @@ export const RECORD_KEY_BY_IDENTIFIER = {
 } as const satisfies Record<PinterestIdentifier, string>;
 
 export type RecordKey = (typeof RECORD_KEY_BY_IDENTIFIER)[PinterestIdentifier];
+
+/**
+ * Body format for customer-list writes, chosen by the definition (spec D15).
+ * `records`: classic comma-separated SHA-256 values (emails, MAIDs, IDFAs) — what Pinterest
+ * accepts for our app today. `records_v2`: multi-field rows incl. `hashed_phone_number`, which
+ * Pinterest enables per app (403 code 29 until then).
+ */
+export const RECORD_FORMATS = {
+  CLASSIC: 'records',
+  V2: 'records_v2',
+} as const;
+
+export type RecordFormat = (typeof RECORD_FORMATS)[keyof typeof RECORD_FORMATS];
+
+/** Absent, misspelt or unknown => classic: the format that cannot be refused for our app. */
+export const resolveRecordFormat = (
+  definitionConfig: Record<string, unknown> | undefined,
+): RecordFormat =>
+  definitionConfig?.recordFormat === RECORD_FORMATS.V2 ? RECORD_FORMATS.V2 : RECORD_FORMATS.CLASSIC;
+
+/** PHONE exists only as `records_v2.hashed_phone_number`; the classic string has no phone slot. */
+export const IDENTIFIERS_BY_FORMAT: Record<RecordFormat, readonly PinterestIdentifier[]> = {
+  [RECORD_FORMATS.CLASSIC]: ['EMAIL', 'MAID'],
+  [RECORD_FORMATS.V2]: IDENTIFIERS,
+};

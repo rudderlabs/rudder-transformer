@@ -34,12 +34,19 @@ const isPinterestIdentifier = (key: string): key is PinterestIdentifier =>
 /**
  * processAudienceRecord passes a key with no field config through untouched (hashing NONE), and
  * Pinterest rejects any unknown `records_v2` property (`additionalProperties: false`), so drop
- * everything else before processing.
+ * everything else before processing. `allowed` narrows further for the classic format, which has
+ * no phone slot (spec §3.3): a PHONE value is dropped here, before validation, so it is neither
+ * counted as invalid nor sent.
  */
 export const pickPinterestIdentifiers = (
   identifiers: Record<string, unknown>,
+  allowed: readonly PinterestIdentifier[] = IDENTIFIERS,
 ): Record<string, unknown> =>
-  Object.fromEntries(Object.entries(identifiers).filter(([key]) => isPinterestIdentifier(key)));
+  Object.fromEntries(
+    Object.entries(identifiers).filter(
+      ([key]) => isPinterestIdentifier(key) && allowed.includes(key),
+    ),
+  );
 
 /** Rename the processed identifiers to their `CustomerListRecordRow` keys. */
 export const toRecordRow = (processed: Record<string, unknown>): PinterestRecordRow =>

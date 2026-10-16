@@ -72,8 +72,7 @@ export type PinterestAudiencePayload = {
   row: PinterestRecordRow;
 };
 
-/** The PATCH body assembled by the batch strategy. */
-export type PinterestAudienceRequestBody = {
-  operation_type: OperationType;
-  records_v2: PinterestRecordRow[];
-};
+/** The PATCH body assembled by the batch strategy; the definition's `recordFormat` picks the shape. */
+export type PinterestAudienceRequestBody =
+  | { operation_type: OperationType; records_v2: PinterestRecordRow[] }
+  | { operation_type: OperationType; records: string };

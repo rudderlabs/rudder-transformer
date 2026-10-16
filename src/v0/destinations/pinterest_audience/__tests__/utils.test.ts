@@ -1,7 +1,12 @@
 import sha256 from 'sha256';
 import stats from '../../../../util/stats';
 import { processAudienceRecord } from '../../../util/audienceUtils';
-import { DESTINATION_TYPE } from '../config';
+import {
+  DESTINATION_TYPE,
+  IDENTIFIERS_BY_FORMAT,
+  RECORD_FORMATS,
+  resolveRecordFormat,
+} from '../config';
 import { PINTEREST_FIELD_CONFIG, pickPinterestIdentifiers, toRecordRow } from '../utils';
 
 const runProcess = (identifiers: Record<string, unknown>, isHashRequired = true) =>
@@ -165,5 +170,47 @@ describe('toRecordRow', () => {
     { name: 'nothing', processed: {}, expected: {} },
   ])('renames to records_v2 keys: $name', ({ processed, expected }) => {
     expect(toRecordRow(processed)).toEqual(expected);
+  });
+});
+
+describe('resolveRecordFormat (spec D15)', () => {
+  it('is records_v2 only for that exact string', () => {
+    expect(resolveRecordFormat({ recordFormat: 'records_v2' })).toBe(RECORD_FORMATS.V2);
+  });
+
+  it.each([
+    undefined,
+    {},
+    { recordFormat: 'records' },
+    { recordFormat: 'v3' },
+    { recordFormat: 2 },
+  ])('defaults to the classic string for %p', (definitionConfig) => {
+    expect(resolveRecordFormat(definitionConfig as Record<string, unknown> | undefined)).toBe(
+      RECORD_FORMATS.CLASSIC,
+    );
+  });
+
+  it('carries PHONE only under records_v2', () => {
+    expect(IDENTIFIERS_BY_FORMAT.records).toEqual(['EMAIL', 'MAID']);
+    expect(IDENTIFIERS_BY_FORMAT.records_v2).toEqual(['EMAIL', 'MAID', 'PHONE']);
+  });
+});
+
+describe('pickPinterestIdentifiers with an allowed set', () => {
+  it('drops PHONE when the classic set is given, before any processing', () => {
+    expect(
+      pickPinterestIdentifiers(
+        { EMAIL: 'a@example.com', PHONE: '14155550132', MAID: 'x' },
+        IDENTIFIERS_BY_FORMAT.records,
+      ),
+    ).toEqual({ EMAIL: 'a@example.com', MAID: 'x' });
+  });
+
+  it('keeps all three by default', () => {
+    expect(pickPinterestIdentifiers({ EMAIL: 'a', MAID: 'b', PHONE: 'c', OTHER: 'd' })).toEqual({
+      EMAIL: 'a',
+      MAID: 'b',
+      PHONE: 'c',
+    });
   });
 });

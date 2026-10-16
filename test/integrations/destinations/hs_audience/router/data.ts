@@ -119,11 +119,11 @@ export const data: RouterTestData[] = [
     },
   },
   {
-    id: 'hs-audience-router-per-row-list',
+    id: 'hs-audience-router-shared-list',
     name: destType,
-    description: 'Each row uses its own connection list id',
+    description: 'All rows use the configured connection list id',
     scenario: 'Business',
-    successCriteria: 'Two list ids produce two membership endpoints',
+    successCriteria: 'Rows on the same connection form one membership batch',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -132,7 +132,7 @@ export const data: RouterTestData[] = [
         method: 'POST',
         body: {
           input: [
-            record(1, 'insert', { hs_object_id: '11' }, connection),
+            record(1, 'insert', { hs_object_id: '11' }, otherListConnection),
             record(2, 'insert', { hs_object_id: '22' }, otherListConnection),
           ],
           destType,
@@ -143,10 +143,7 @@ export const data: RouterTestData[] = [
       response: {
         status: 200,
         body: {
-          output: [
-            membershipBatch('10', 'add', ['11'], [1]),
-            membershipBatch('20', 'add', ['22'], [2]),
-          ],
+          output: [membershipBatch('20', 'add', ['11', '22'], [1, 2])],
         },
       },
     },

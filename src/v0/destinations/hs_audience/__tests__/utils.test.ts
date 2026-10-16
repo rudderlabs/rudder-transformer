@@ -1,10 +1,9 @@
 import {
   classifyEmail,
+  formatHubSpotError,
   membershipEndpoint,
   membershipOperation,
   normalizeContactId,
-  readAccessToken,
-  readListId,
   resolveIdentifier,
   wrapMembershipBody,
 } from '../utils';
@@ -109,35 +108,6 @@ describe('resolveIdentifier', () => {
   });
 });
 
-describe('readListId', () => {
-  it('returns the trimmed row list id without contact-id normalization', () => {
-    expect(readListId({ config: { destination: { audienceId: '  00123  ' } } })).toEqual({
-      ok: true,
-      listId: '00123',
-    });
-  });
-
-  it('requires a nonempty string and rejects unsafe ids', () => {
-    expect(readListId(undefined)).toEqual({ ok: false, message: 'HubSpot list ID is required' });
-    expect(readListId({ config: { destination: {} } })).toEqual({
-      ok: false,
-      message: 'HubSpot list ID is required',
-    });
-    expect(readListId({ config: { destination: { audienceId: '   ' } } })).toEqual({
-      ok: false,
-      message: 'HubSpot list ID is required',
-    });
-    expect(readListId({ config: { destination: { audienceId: 10 } } })).toEqual({
-      ok: false,
-      message: 'HubSpot list ID is required',
-    });
-    expect(readListId({ config: { destination: { audienceId: '../secret' } } })).toEqual({
-      ok: false,
-      message: 'HubSpot list ID is invalid',
-    });
-  });
-});
-
 describe('isSafeListId', () => {
   it('matches the integrations-info path-segment check', () => {
     expect(isSafeListId('')).toBe(false);
@@ -185,11 +155,40 @@ describe('membership helpers', () => {
       ]),
     ).toEqual({ recordIdsToAdd: [], recordIdsToRemove: ['9', '8'] });
   });
+});
 
-  it('reads a trimmed destination token and ignores a blank one', () => {
-    expect(readAccessToken({ accessToken: '  pat-test  ' })).toBe('pat-test');
-    expect(readAccessToken({ accessToken: '   ' })).toBeNull();
-    expect(readAccessToken({ accessToken: 1 })).toBeNull();
-    expect(readAccessToken(undefined)).toBeNull();
+describe('formatHubSpotError', () => {
+  it('formats the message and labeled details without nested errors or context', () => {
+    expect(
+      formatHubSpotError(
+        {
+          message: '  Lookup rejected  ',
+          category: ' VALIDATION_ERROR ',
+          correlationId: ' corr-1 ',
+          errors: [{ message: 'nested detail' }],
+          context: { ids: ['a@example.com'] },
+        },
+        'fallback',
+      ),
+    ).toBe('Lookup rejected (category: VALIDATION_ERROR, correlationId: corr-1)');
+  });
+
+  it.each([
+    undefined,
+    null,
+    '',
+    'raw response',
+    [],
+    {},
+    { message: 123, category: [], correlationId: false },
+    { message: '  ', errors: [{ message: 'nested' }] },
+  ])('uses the fallback for unusable details %p', (response) => {
+    expect(formatHubSpotError(response, 'fallback')).toBe('fallback');
+  });
+
+  it('appends usable details even when the message is absent', () => {
+    expect(
+      formatHubSpotError({ category: 'MISSING_SCOPES', correlationId: 'corr-2' }, 'fallback'),
+    ).toBe('fallback (category: MISSING_SCOPES, correlationId: corr-2)');
   });
 });

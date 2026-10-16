@@ -1,11 +1,9 @@
 import { z } from 'zod';
 import { makeRouterInputSchema } from '../../../services/destination/destinationIntegration/destinationIntegration';
 
-// The token is checked per row so a blank value becomes the static credential
-// error. A Zod minimum here would replace that message.
 export const HubSpotAudienceDestinationConfigSchema = z
   .object({
-    accessToken: z.unknown().optional(),
+    accessToken: z.string().min(1),
   })
   .passthrough();
 
@@ -13,13 +11,11 @@ export type HubSpotAudienceDestinationConfig = z.infer<
   typeof HubSpotAudienceDestinationConfigSchema
 >;
 
-// `audienceId` stays loose on purpose. Missing, blank, and unsafe ids are
-// reported from the row, not by a schema error that would hide which case it was.
 // `identifierMappings` is control-plane metadata; rudder-sources already resolves
 // it into `message.identifiers`.
 export const HubSpotAudienceConnectionConfigSchema = z
   .object({
-    audienceId: z.unknown().optional(),
+    audienceId: z.string().min(1),
     identifierMappings: z.unknown().optional(),
   })
   .passthrough();
@@ -39,7 +35,7 @@ export const HubSpotAudienceRouterRequestSchema = makeRouterInputSchema({
   message: RecordMessageSchema,
   connectionConfig: z
     .object({
-      destination: HubSpotAudienceConnectionConfigSchema.optional(),
+      destination: HubSpotAudienceConnectionConfigSchema,
     })
     .passthrough(),
 });

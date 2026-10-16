@@ -3,11 +3,8 @@ import {
   HUBSPOT_API_BASE,
   INVALID_EMAIL_IDENTIFIER,
   INVALID_RECORD_ID,
-  LIST_ID_INVALID,
-  LIST_ID_REQUIRED,
   MEMBERSHIP_ENDPOINT_PATH,
   NO_IDENTIFIER_MAPPED,
-  isSafeListId,
 } from './config';
 import type { HubSpotAudiencePayload, MembershipOperation } from './types';
 
@@ -28,8 +25,6 @@ export type IdentifierResolution =
   | { kind: 'id'; recordId: string }
   | { kind: 'email'; email: string }
   | { kind: 'error'; message: string };
-
-export type ListIdResolution = { ok: true; listId: string } | { ok: false; message: string };
 
 // Absent, null, and whitespace-only are empty. `0` and `false` are not: a
 // supplied value that cannot be a HubSpot id must fail instead of falling through.
@@ -127,38 +122,20 @@ export function resolveIdentifier(identifiers: unknown): IdentifierResolution {
   return { kind: 'error', message: NO_IDENTIFIER_MAPPED };
 }
 
-export function readAccessToken(config: unknown): string | null {
-  if (!config || typeof config !== 'object') {
-    return null;
-  }
-  const token = (config as Record<string, unknown>).accessToken;
-  if (typeof token !== 'string') {
-    return null;
-  }
-  const trimmed = token.trim();
-  if (trimmed === '') {
-    return null;
-  }
-  return trimmed;
+function nonemptyText(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
 }
 
-// List ids are not contact ids: "00123" stays "00123". Encoding happens only
-// when the id is placed in the URL path.
-export function readListId(connection: unknown): ListIdResolution {
-  const destination = (connection as { config?: { destination?: { audienceId?: unknown } } })
-    ?.config?.destination;
-  const audienceId = destination?.audienceId;
-  if (typeof audienceId !== 'string') {
-    return { ok: false, message: LIST_ID_REQUIRED };
-  }
-  const trimmed = audienceId.trim();
-  if (trimmed === '') {
-    return { ok: false, message: LIST_ID_REQUIRED };
-  }
-  if (!isSafeListId(trimmed)) {
-    return { ok: false, message: LIST_ID_INVALID };
-  }
-  return { ok: true, listId: trimmed };
+export function formatHubSpotError(response: unknown, fallbackReason: string): string {
+  const record = response as
+    | { message?: unknown; category?: unknown; correlationId?: unknown }
+    | undefined;
+  const message = nonemptyText(record?.message) ?? fallbackReason;
+  const details = (['category', 'correlationId'] as const).flatMap((key) => {
+    const value = nonemptyText(record?.[key]);
+    return value ? [`${key}: ${value}`] : [];
+  });
+  return details.length > 0 ? `${message} (${details.join(', ')})` : message;
 }
 
 export function membershipOperation(action: unknown): MembershipOperation | null {

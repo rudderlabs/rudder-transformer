@@ -20,6 +20,7 @@ import {
   RATE_LIMIT_EXCEEDED,
   TOKEN_REJECTED,
 } from './config';
+import { formatHubSpotError } from './utils';
 
 const MEMBERSHIP_FAILURE_REASONS: Readonly<Partial<Record<number, string>>> = {
   401: TOKEN_REJECTED,
@@ -29,25 +30,13 @@ const MEMBERSHIP_FAILURE_REASONS: Readonly<Partial<Record<number, string>>> = {
   477: MEMBERSHIP_UNAVAILABLE,
 };
 
-function nonemptyText(value: unknown): string | undefined {
-  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
-}
-
 function failureReason(ctx: DeliveryContext): string {
   const fallbackReason =
     MEMBERSHIP_FAILURE_REASONS[ctx.status] ??
     (ctx.status >= 400 && ctx.status < 500
       ? MEMBERSHIP_REJECTED
       : defaultFailureReason(ctx.status));
-  const record = ctx.response as
-    | { message?: unknown; category?: unknown; correlationId?: unknown }
-    | undefined;
-  const message = nonemptyText(record?.message) ?? fallbackReason;
-  const details = (['category', 'correlationId'] as const).flatMap((key) => {
-    const value = nonemptyText(record?.[key]);
-    return value ? [`${key}: ${value}`] : [];
-  });
-  return details.length > 0 ? `${message} (${details.join(', ')})` : message;
+  return formatHubSpotError(ctx.response, fallbackReason);
 }
 
 const statusOverrides: StatusOverrideMap = {

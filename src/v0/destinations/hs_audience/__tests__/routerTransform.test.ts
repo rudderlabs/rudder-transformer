@@ -1,5 +1,6 @@
 jest.mock('../../../../adapters/network');
 
+import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { httpPOST } from '../../../../adapters/network';
 import { processDestinationIntegration } from '../../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Connection, Destination } from '../../../../types/controlPlaneConfig';
@@ -102,24 +103,22 @@ const jsonBody = (response: { batchedRequest?: { body?: { JSON?: unknown } } }) 
 describe('HubSpot audience routing', () => {
   const destination = buildDestination();
   const listA = buildConnection('list-a');
-  const listB = buildConnection('list-b');
 
   beforeEach(() => {
     mockHttpPost.mockReset();
   });
 
-  it('does not require a connection on the integration instance', () => {
-    expect(() => new Integration(destination)).not.toThrow();
+  it('requires the shared connection on the integration instance', () => {
+    expect(() => new Integration(destination)).toThrow('HubSpot list ID is required');
     expect(() => new Integration(destination, listA)).not.toThrow();
   });
 
-  it('uses each row list and separates add from remove', async () => {
+  it('uses the shared list and separates add from remove', async () => {
     const integration = new Integration(destination, listA);
-    const rowOnOtherList = buildInput(2, 'delete', { hs_object_id: '20' }, destination, listB);
     const result = await integration.transformEvents(
       asRouterInputs([
         buildInput(1, 'insert', { hs_object_id: '10' }, destination, listA),
-        rowOnOtherList,
+        buildInput(2, 'delete', { hs_object_id: '20' }, destination, listA),
         buildInput(3, 'update', { hs_object_id: '30' }, destination, listA),
       ]),
     );
@@ -128,7 +127,7 @@ describe('HubSpot audience routing', () => {
     expect(result.errorPayloads).toEqual([]);
     expect(result.successPayloads.map((payload) => payload.endpoint)).toEqual([
       'https://api.hubapi.com/crm/v3/lists/list-a/memberships/add-and-remove',
-      'https://api.hubapi.com/crm/v3/lists/list-b/memberships/add-and-remove',
+      'https://api.hubapi.com/crm/v3/lists/list-a/memberships/add-and-remove',
       'https://api.hubapi.com/crm/v3/lists/list-a/memberships/add-and-remove',
     ]);
     expect(result.successPayloads.map((payload) => payload.internalGroupKey)).toEqual([
@@ -168,92 +167,67 @@ describe('HubSpot audience routing', () => {
     });
   });
 
-  it('fails only the row whose connection is missing', async () => {
+  it.each([undefined, '', '   ', 10])(
+    'rejects a missing list id %p at construction',
+    (audienceId) => {
+      const connection = { ...listA, config: { destination: { audienceId } } } as Connection;
+      expect(() => new Integration(destination, connection)).toThrow(ConfigurationError);
+      expect(() => new Integration(destination, connection)).toThrow('HubSpot list ID is required');
+    },
+  );
+
+  it.each(['../secret', 'a/b', 'a?b', 'a b'])(
+    'rejects an unsafe list id %p at construction',
+    (listId) => {
+      expect(() => new Integration(destination, buildConnection(listId))).toThrow(
+        ConfigurationError,
+      );
+      expect(() => new Integration(destination, buildConnection(listId))).toThrow(
+        'HubSpot list ID is invalid',
+      );
+    },
+  );
+
+  it.each([undefined, '', '   ', 123])(
+    'rejects a missing token %p at construction',
+    (accessToken) => {
+      const missingDestination = { ...destination, Config: { accessToken } };
+      expect(() => new Integration(missingDestination, listA)).toThrow(ConfigurationError);
+      expect(() => new Integration(missingDestination, listA)).toThrow(
+        'HubSpot access token is required',
+      );
+      expect(mockHttpPost).not.toHaveBeenCalled();
+    },
+  );
+
+  it('trims the shared list id without contact-id normalization', async () => {
+    const connection = buildConnection('  00123  ');
+    const results = await processDestinationIntegration(
+      [buildInput(1, 'insert', { hs_object_id: '10' }, destination, connection)],
+      Integration,
+      {},
+    );
+    expect((results[0].batchedRequest as ProcessorTransformationOutput).endpoint).toBe(
+      'https://api.hubapi.com/crm/v3/lists/00123/memberships/add-and-remove',
+    );
+  });
+
+  it('fails only the row with an unsupported action', async () => {
     const results = await processDestinationIntegration(
       [
-        buildInput(1, 'insert', { hs_object_id: '10' }, destination, listA),
-        buildInput(2, 'insert', { hs_object_id: '20' }, destination),
-        buildInput(3, 'insert', { hs_object_id: '30' }, destination, listB),
+        buildInput(1, 'upsert', { hs_object_id: '10' }, destination, listA),
+        buildInput(2, 'insert', { hs_object_id: '20' }, destination, listA),
       ],
       Integration,
       {},
     );
-
-    const successes = results.filter((result) => result.statusCode === 200);
+    expect(results.filter((result) => result.statusCode === 200)).toHaveLength(1);
     const failure = results.find((result) => result.statusCode === 400);
-    expect(successes).toHaveLength(2);
-    expect(
-      successes.map(
-        (result) => (result as { batchedRequest: { endpoint: string } }).batchedRequest.endpoint,
-      ),
-    ).toEqual([
-      'https://api.hubapi.com/crm/v3/lists/list-a/memberships/add-and-remove',
-      'https://api.hubapi.com/crm/v3/lists/list-b/memberships/add-and-remove',
-    ]);
-    expect(failure?.error).toBe('HubSpot list ID is required');
-    expect(failure?.statTags).toEqual(expect.objectContaining({ errorType: 'configuration' }));
-    expect(failure?.metadata).toEqual([expect.objectContaining({ jobId: 2 })]);
-  });
-
-  it('rejects an unsafe list id and an unsupported action without echoing the value', async () => {
-    const integration = new Integration(destination, listA);
-    const result = await integration.transformEvents(
-      asRouterInputs([
-        buildInput(1, 'insert', { hs_object_id: '10' }, destination, buildConnection('../secret')),
-        buildInput(2, 'upsert', { hs_object_id: '10' }, destination, listA),
-        buildInput(3, 'insert', { hs_object_id: '10' }, buildDestination('   '), listA),
-      ]),
-    );
-
-    expect(result.successPayloads).toEqual([]);
-    expect(result.errorPayloads.map((payload) => payload.error)).toEqual([
-      'HubSpot list ID is invalid',
-      'Unsupported record action',
-      'HubSpot access token is required',
-    ]);
-    expect(result.errorPayloads.every((payload) => payload.statusCode === 400)).toBe(true);
-    expect(result.errorPayloads.map((payload) => payload.statTags?.errorType)).toEqual([
-      'configuration',
-      'instrumentation',
-      'configuration',
-    ]);
-    expect(JSON.stringify(result.errorPayloads)).not.toContain('upsert');
-    expect(JSON.stringify(result.errorPayloads)).not.toContain('../secret');
+    expect(failure?.error).toBe('Unsupported record action');
+    expect(failure?.statTags).toEqual(expect.objectContaining({ errorType: 'instrumentation' }));
+    expect(failure?.metadata).toEqual([expect.objectContaining({ jobId: 1 })]);
     expect(mockHttpPost).not.toHaveBeenCalled();
   });
-
-  it.each([undefined, '', '   '])(
-    'isolates the row with a missing token %p',
-    async (accessToken) => {
-      const missingDestination = { ...destination, Config: { accessToken } };
-      const results = await processDestinationIntegration(
-        [
-          buildInput(1, 'insert', { email: 'alice@example.com' }, missingDestination, listA),
-          buildInput(2, 'insert', { hs_object_id: '202' }, destination, listA),
-        ],
-        Integration,
-        {},
-      );
-
-      expect(
-        results.map((result) => ({
-          statusCode: result.statusCode,
-          error: result.error,
-          errorType: (result.statTags as { errorType?: string } | undefined)?.errorType,
-          jobIds: result.metadata.map((metadata) => metadata.jobId),
-        })),
-      ).toEqual([
-        { statusCode: 200, error: undefined, errorType: undefined, jobIds: [2] },
-        {
-          statusCode: 400,
-          error: 'HubSpot access token is required',
-          errorType: 'configuration',
-          jobIds: [1],
-        },
-      ]);
-      expect(mockHttpPost).not.toHaveBeenCalled();
-    },
-  );
 
   it('does not fall back to email when the record id is invalid', async () => {
     mockHttpPost.mockImplementation(foundByEmail(() => '5'));
@@ -309,39 +283,34 @@ describe('HubSpot audience conflicts and lookup state', () => {
     ]);
   });
 
-  it('keeps opposite operations on different lists and preserves same-operation duplicates', async () => {
-    const results = await processDestinationIntegration(
+  it('keeps operations on separate connection calls independent and preserves duplicates', async () => {
+    const additions = await processDestinationIntegration(
       [
         buildInput(2, 'insert', { hs_object_id: '55' }, destination, listA),
-        buildInput(4, 'delete', { email: 'shared@example.com' }, destination, listB),
         buildInput(9, 'insert', { hs_object_id: '55' }, destination, listA),
       ],
       Integration,
       {},
     );
-
-    expect(results.filter((result) => result.statusCode === 400)).toEqual([]);
-    const addBatch = results.find((result) =>
-      (result as { batchedRequest?: { endpoint?: string } }).batchedRequest?.endpoint?.includes(
-        'list-a',
-      ),
+    const removals = await processDestinationIntegration(
+      [buildInput(4, 'delete', { email: 'shared@example.com' }, destination, listB)],
+      Integration,
+      {},
     );
-    const removeBatch = results.find((result) =>
-      (result as { batchedRequest?: { endpoint?: string } }).batchedRequest?.endpoint?.includes(
-        'list-b',
-      ),
-    );
-    expect(jsonBody(addBatch as never)).toEqual({
+    expect(additions.filter((result) => result.statusCode === 400)).toEqual([]);
+    expect(removals.filter((result) => result.statusCode === 400)).toEqual([]);
+    expect(jsonBody(additions[0] as never)).toEqual({
       recordIdsToAdd: ['55', '55'],
       recordIdsToRemove: [],
     });
-    expect(
-      (addBatch as { metadata: { jobId: number }[] }).metadata.map((item) => item.jobId),
-    ).toEqual([2, 9]);
-    expect(jsonBody(removeBatch as never)).toEqual({
+    expect(additions[0].metadata.map((item) => item.jobId)).toEqual([2, 9]);
+    expect(jsonBody(removals[0] as never)).toEqual({
       recordIdsToAdd: [],
       recordIdsToRemove: ['55'],
     });
+    expect((removals[0].batchedRequest as ProcessorTransformationOutput).endpoint).toContain(
+      '/lists/list-b/',
+    );
   });
 
   it('resolves a secondary email without failing other rows in the lookup chunk', async () => {
@@ -374,6 +343,51 @@ describe('HubSpot audience conflicts and lookup state', () => {
     expect(result.successPayloads.map((payload) => payload.jobId)).toEqual([1, 2]);
   });
 
+  it('keeps found contacts deliverable and retries only rows for an uncovered email', async () => {
+    mockHttpPost.mockResolvedValueOnce(
+      httpSuccess({
+        results: [{ id: '55', properties: { email: 'found@example.com' } }],
+        errors: [{ category: 'OBJECT_NOT_FOUND', context: { ids: ['missing@example.com'] } }],
+      }),
+    );
+    const integration = new Integration(destination, listA);
+    const result = await integration.transformEvents(
+      asRouterInputs([
+        buildInput(1, 'insert', { email: 'found@example.com' }, destination, listA),
+        buildInput(2, 'insert', { email: 'uncovered@example.com' }, destination, listA),
+        buildInput(3, 'insert', { email: 'missing@example.com' }, destination, listA),
+        buildInput(4, 'insert', { email: 'uncovered@example.com' }, destination, listA),
+      ]),
+    );
+    expect(
+      result.successPayloads.map((payload) => ({ jobId: payload.jobId, body: payload.body })),
+    ).toEqual([{ jobId: 1, body: { operation: 'add', recordId: '55' } }]);
+    expect(result.successPayloads[0].headers).toEqual({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer pat-test',
+    });
+    expect(
+      result.errorPayloads.map((payload) => ({
+        jobId: payload.jobId,
+        statusCode: payload.statusCode,
+        error: payload.error,
+      })),
+    ).toEqual([
+      {
+        jobId: 2,
+        statusCode: 500,
+        error: 'HubSpot contact lookup response could not be correlated',
+      },
+      { jobId: 3, statusCode: 400, error: 'Contact not found in HubSpot' },
+      {
+        jobId: 4,
+        statusCode: 500,
+        error: 'HubSpot contact lookup response could not be correlated',
+      },
+    ]);
+    expect(mockHttpPost).toHaveBeenCalledTimes(1);
+  });
+
   it('reports a lookup miss differently for add and remove', async () => {
     mockHttpPost.mockResolvedValue(
       httpSuccess({
@@ -402,7 +416,7 @@ describe('HubSpot audience conflicts and lookup state', () => {
     expect(result.errorPayloads.every((payload) => payload.statusCode === 400)).toBe(true);
   });
 
-  it('does not let a failed middle chunk or a rejected token fail other rows', async () => {
+  it('does not let a failed middle chunk fail other rows', async () => {
     let call = 0;
     mockHttpPost.mockImplementation(async (_url: string, body: { inputs: { id: string }[] }) => {
       call += 1;
@@ -433,9 +447,8 @@ describe('HubSpot audience conflicts and lookup state', () => {
     expect(recordIds).toContain('5200');
     expect(recordIds).not.toContain('5100');
     expect(result.errorPayloads).toHaveLength(100);
-    expect(result.errorPayloads[0].error).toBe('HubSpot contact lookup is temporarily unavailable');
+    expect(result.errorPayloads[0].error).toBe('raw-body-sentinel');
     expect(result.errorPayloads[0].statusCode).toBe(503);
-    expect(result.errorPayloads[0].error).not.toContain('raw-body-sentinel');
     expect(result.successPayloads).toHaveLength(102);
   });
 
@@ -461,24 +474,21 @@ describe('HubSpot audience conflicts and lookup state', () => {
     const second = await integration.transformEvents(
       asRouterInputs([buildInput(2, 'insert', { email: 'a@example.com' }, destination, listA)]),
     );
-    const split = await integration.transformEvents(
+    const otherIntegration = new Integration(otherDestination, listA);
+    const other = await otherIntegration.transformEvents(
       asRouterInputs([
-        buildInput(3, 'insert', { email: 'a@example.com' }, destination, listA),
-        buildInput(4, 'insert', { email: 'a@example.com' }, otherDestination, listA),
+        buildInput(3, 'insert', { email: 'a@example.com' }, otherDestination, listA),
       ]),
     );
 
-    expect(mockHttpPost).toHaveBeenCalledTimes(4);
+    expect(mockHttpPost).toHaveBeenCalledTimes(3);
     expect(first.successPayloads[0].body.recordId).toBe('1');
     expect(second.successPayloads[0].body.recordId).toBe('2');
-    expect(split.successPayloads.map((payload) => payload.body.recordId).sort()).toEqual([
-      '2',
-      '3',
-    ]);
-    expect(split.successPayloads.map((payload) => payload.headers)).toEqual([
-      { 'Content-Type': 'application/json', Authorization: 'Bearer pat-test' },
-      { 'Content-Type': 'application/json', Authorization: 'Bearer pat-other' },
-    ]);
+    expect(other.successPayloads[0].body.recordId).toBe('2');
+    expect(other.successPayloads[0].headers).toEqual({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer pat-other',
+    });
     const authorizations = mockHttpPost.mock.calls.map((call) => call[2].headers.Authorization);
     expect(authorizations).toContain('Bearer pat-test');
     expect(authorizations).toContain('Bearer pat-other');
@@ -493,21 +503,25 @@ describe('HubSpot audience batching', () => {
     mockHttpPost.mockReset();
   });
 
-  it('separates credentials on the same list and operation and trims each token', async () => {
+  it('uses a trimmed token per connection call', async () => {
     const firstDestination = buildDestination('  pat-test  ');
     const otherDestination = buildDestination('pat-other');
     const results = await processDestinationIntegration(
       [
         buildInput(1, 'insert', { hs_object_id: '101' }, firstDestination, connection),
-        buildInput(2, 'insert', { hs_object_id: '202' }, otherDestination, connection),
         buildInput(3, 'update', { hs_object_id: '303' }, firstDestination, connection),
       ],
       Integration,
       {},
     );
 
+    const otherResults = await processDestinationIntegration(
+      [buildInput(2, 'insert', { hs_object_id: '202' }, otherDestination, connection)],
+      Integration,
+      {},
+    );
     expect(
-      results.map((result) => {
+      [...results, ...otherResults].map((result) => {
         const request = result.batchedRequest as ProcessorTransformationOutput;
         return {
           headers: request.headers,

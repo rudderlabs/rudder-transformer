@@ -20,7 +20,12 @@ import {
   RATE_LIMIT_EXCEEDED,
   TOKEN_REJECTED,
 } from './config';
-import { JSON_HEADERS, normalizeContactId, normalizeLookupEmail } from './utils';
+import {
+  JSON_HEADERS,
+  formatHubSpotError,
+  normalizeContactId,
+  normalizeLookupEmail,
+} from './utils';
 
 export type EmailLookupResult =
   | { kind: 'found'; recordId: string }
@@ -29,6 +34,12 @@ export type EmailLookupResult =
 
 type Assignment = { kind: 'found'; recordId: string } | { kind: 'miss' };
 
+const LOOKUP_FAILURE_REASONS: Readonly<Partial<Record<number, string>>> = {
+  401: TOKEN_REJECTED,
+  403: LOOKUP_MISSING_SCOPE,
+  429: RATE_LIMIT_EXCEEDED,
+};
+
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return null;
@@ -36,171 +47,83 @@ function asRecord(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
-function optionalArray(value: unknown): unknown[] | null {
-  if (value === undefined) {
-    return [];
-  }
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  return value;
-}
-
-// The same email may be repeated when the contact id agrees, or when both
-// claims are a miss. A different id, or a hit and a miss together, cannot be
-// trusted, so the chunk is retried and neither side becomes a confirmed miss.
-function claim(assigned: Map<string, Assignment>, email: string, assignment: Assignment): boolean {
-  const current = assigned.get(email);
-  if (!current) {
-    assigned.set(email, assignment);
-    return true;
-  }
-  if (current.kind !== assignment.kind) {
-    return false;
-  }
-  if (current.kind === 'found' && assignment.kind === 'found') {
-    return current.recordId === assignment.recordId;
-  }
-  return true;
-}
-
 function claimResult(
   assigned: Map<string, Assignment>,
   requested: ReadonlySet<string>,
   result: unknown,
-): boolean {
+): void {
   const record = asRecord(result);
   const properties = asRecord(record?.properties);
-  const email = normalizeLookupEmail(properties?.email);
   const contactId = normalizeContactId(record?.id);
-  if (!email || !contactId.ok) {
-    return false;
+  if (!contactId.ok) {
+    return;
   }
   const additional = properties?.hs_additional_emails;
-  if (additional !== undefined && additional !== null && typeof additional !== 'string') {
-    return false;
-  }
-  const addresses = new Set([email]);
-  if (typeof additional === 'string') {
-    for (const address of additional.split(';')) {
-      const normalized = normalizeLookupEmail(address);
-      // A secondary address that fails validation can never equal a requested
-      // email: every requested address already passed the same validator.
-      if (normalized) {
-        addresses.add(normalized);
-      }
+  const addresses = [
+    properties?.email,
+    ...(typeof additional === 'string' ? additional.split(';') : []),
+  ];
+  addresses.forEach((address) => {
+    const email = normalizeLookupEmail(address);
+    if (email && requested.has(email) && !assigned.has(email)) {
+      assigned.set(email, { kind: 'found', recordId: contactId.id });
     }
-  }
-  for (const address of addresses) {
-    if (
-      requested.has(address) &&
-      !claim(assigned, address, { kind: 'found', recordId: contactId.id })
-    ) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function claimNotFound(assigned: Map<string, Assignment>, error: unknown): boolean {
-  const record = asRecord(error);
-  if (!record || record.category !== OBJECT_NOT_FOUND) {
-    return false;
-  }
-  const ids = asRecord(record.context)?.ids;
-  if (!Array.isArray(ids)) {
-    return false;
-  }
-  return ids.every((rawId) => {
-    if (typeof rawId !== 'string') {
-      return false;
-    }
-    const email = normalizeLookupEmail(rawId);
-    if (!email) {
-      return false;
-    }
-    return claim(assigned, email, { kind: 'miss' });
   });
 }
 
-function numErrorsAgrees(body: Record<string, unknown>, errors: unknown[]): boolean {
-  if (!Object.prototype.hasOwnProperty.call(body, 'numErrors')) {
-    return true;
+function claimNotFound(
+  assigned: Map<string, Assignment>,
+  requested: ReadonlySet<string>,
+  error: unknown,
+): void {
+  const record = asRecord(error);
+  if (record?.category !== OBJECT_NOT_FOUND) {
+    return;
   }
-  return body.numErrors === errors.length;
+  const ids = asRecord(record.context)?.ids;
+  if (Array.isArray(ids)) {
+    ids.forEach((id) => {
+      const email = normalizeLookupEmail(id);
+      if (email && requested.has(email) && !assigned.has(email)) {
+        assigned.set(email, { kind: 'miss' });
+      }
+    });
+  }
 }
 
-/**
- * Correlate a batch-read body by normalized email.
- * Returns null when the body cannot be trusted; callers retry the chunk and
- * must not mark any of its emails as missing contacts.
- * Identities are read from `properties.email`, semicolon-separated
- * `properties.hs_additional_emails`, and not-found `context.ids`.
- */
+/** Match usable lookup results and confirmed misses by normalized email. */
 export function correlateContactLookup(
   requestedEmails: readonly string[],
   body: unknown,
-): Map<string, Assignment> | null {
+): Map<string, Assignment> {
   const record = asRecord(body);
-  if (!record || record.status !== 'COMPLETE') {
-    return null;
-  }
-  const results = optionalArray(record.results);
-  const errors = optionalArray(record.errors);
-  if (!results || !errors || !numErrorsAgrees(record, errors)) {
-    return null;
-  }
-
   const assigned = new Map<string, Assignment>();
   const requested = new Set(requestedEmails);
-  const resultsFit = results.every((result) => claimResult(assigned, requested, result));
-  const errorsFit = resultsFit && errors.every((error) => claimNotFound(assigned, error));
-  const covered = errorsFit && requestedEmails.every((email) => assigned.has(email));
-  if (!covered) {
-    return null;
+  // Keep the first contact match; a not-found entry must not overwrite a found contact.
+  if (Array.isArray(record?.results)) {
+    record.results.forEach((result) => claimResult(assigned, requested, result));
   }
-
-  const byEmail = new Map<string, Assignment>();
-  requestedEmails.forEach((email) => {
-    const assignment = assigned.get(email);
-    if (assignment) {
-      byEmail.set(email, assignment);
-    }
-  });
-  return byEmail;
+  if (Array.isArray(record?.errors)) {
+    record.errors.forEach((error) => claimNotFound(assigned, requested, error));
+  }
+  return assigned;
 }
 
-// Transport failures often have no HTTP status. processAxiosResponse maps some
-// of those (DNS, for example) onto 400, which would abort a blip as permanent.
-function httpStatus(clientResponse: { success?: boolean; response?: any }): number | null {
-  const status = clientResponse?.success
-    ? clientResponse.response?.status
-    : clientResponse?.response?.response?.status;
-  if (typeof status !== 'number' || status === 0) {
-    return null;
-  }
-  return status;
-}
-
-function lookupStatusError(status: number): Error {
-  if (status === 401) {
-    return new NetworkError(TOKEN_REJECTED, 401);
-  }
-  if (status === 403) {
-    return new NetworkError(LOOKUP_MISSING_SCOPE, 403);
-  }
+function lookupStatusError(status: number, response: unknown): Error {
+  const fallbackReason =
+    LOOKUP_FAILURE_REASONS[status] ??
+    (status === 477 || status >= 500 ? LOOKUP_UNAVAILABLE : LOOKUP_REJECTED);
+  const reason = formatHubSpotError(response, fallbackReason);
   if (status === 429) {
-    return new ThrottledError(RATE_LIMIT_EXCEEDED);
+    return new ThrottledError(reason);
   }
   // 477 is HubSpot's portal-migration status. Retry-After can ask for a long
   // wait; this verdict does not forward that header.
   if (status === 477 || status >= 500) {
-    return new RetryableError(LOOKUP_UNAVAILABLE, status);
+    return new RetryableError(reason, status);
   }
-  // A 400 or 404 is not a confirmed miss and it is not a retry. The status is
-  // kept so the router aborts the row, with a reason that does not say the
-  // lookup will become available later.
-  return new NetworkError(LOOKUP_REJECTED, status);
+  // A rejected lookup is not a confirmed contact miss.
+  return new NetworkError(reason, status);
 }
 
 function isPortalWideLookupFailure(error: Error): boolean {
@@ -251,18 +174,11 @@ async function lookupEmailChunk(
 
   // No destinationResponse: generateErrorObject would embed the raw body,
   // and that body can repeat the emails from this request.
-  if (httpStatus(clientResponse) === null) {
-    throw new RetryableError(LOOKUP_UNAVAILABLE, 500);
-  }
   const processed = processAxiosResponse(clientResponse);
   if (!isHttpStatusSuccess(processed.status)) {
-    throw lookupStatusError(processed.status);
+    throw lookupStatusError(processed.status, processed.response);
   }
-  const correlated = correlateContactLookup(emails, processed.response);
-  if (!correlated) {
-    throw new RetryableError(LOOKUP_UNCORRELATED, 500);
-  }
-  return correlated;
+  return correlateContactLookup(emails, processed.response);
 }
 
 function distinctInOrder(emails: string[]): string[] {
@@ -298,8 +214,15 @@ export async function lookupDistinctEmails(
     try {
       // eslint-disable-next-line no-await-in-loop
       const correlated = await lookupEmailChunk(accessToken, chunk, metadata);
-      correlated.forEach((assignment, email) => {
-        results.set(email, assignment);
+      chunk.forEach((email) => {
+        // An uncovered email retries its own rows; confirmed matches stay deliverable.
+        results.set(
+          email,
+          correlated.get(email) ?? {
+            kind: 'error',
+            error: new RetryableError(LOOKUP_UNCORRELATED, 500),
+          },
+        );
       });
     } catch (error) {
       const classified = toLookupError(error);

@@ -11,7 +11,7 @@ function httpSuccess(data: unknown, status = 200) {
   return { success: true, response: { data, status, headers: {} } };
 }
 
-function httpFailure(status: number, data: unknown = { message: 'raw-body-sentinel' }) {
+function httpFailure(status: number, data: unknown = {}) {
   return { success: false, response: { response: { status, data } } };
 }
 
@@ -38,8 +38,8 @@ describe('correlateContactLookup', () => {
       errors: [],
     });
 
-    expect(correlated?.get('a@example.com')).toEqual({ kind: 'found', recordId: '123' });
-    expect(correlated?.get('b@example.com')).toEqual({ kind: 'found', recordId: LARGE_ID });
+    expect(correlated.get('a@example.com')).toEqual({ kind: 'found', recordId: '123' });
+    expect(correlated.get('b@example.com')).toEqual({ kind: 'found', recordId: LARGE_ID });
   });
 
   it('matches primary and secondary addresses to the same contact without leaking extra aliases', () => {
@@ -59,10 +59,10 @@ describe('correlateContactLookup', () => {
       errors: [],
     });
 
-    expect(correlated?.get('a@example.com')).toEqual({ kind: 'found', recordId: '123' });
-    expect(correlated?.get('alias@example.com')).toEqual({ kind: 'found', recordId: '123' });
-    expect(correlated?.get('b@example.com')).toEqual({ kind: 'found', recordId: '2' });
-    expect(correlated?.has('unused@example.com')).toBe(false);
+    expect(correlated.get('a@example.com')).toEqual({ kind: 'found', recordId: '123' });
+    expect(correlated.get('alias@example.com')).toEqual({ kind: 'found', recordId: '123' });
+    expect(correlated.get('b@example.com')).toEqual({ kind: 'found', recordId: '2' });
+    expect(correlated.has('unused@example.com')).toBe(false);
   });
 
   it('matches a secondary address when the primary address was not requested', () => {
@@ -80,12 +80,12 @@ describe('correlateContactLookup', () => {
       errors: [],
     });
 
-    expect(correlated?.get('alias@example.com')).toEqual({ kind: 'found', recordId: '1' });
+    expect(correlated.get('alias@example.com')).toEqual({ kind: 'found', recordId: '1' });
   });
 
   it.each([
     [
-      'two contacts claim the same requested alias',
+      'duplicate contact claims',
       [
         {
           id: '1',
@@ -96,17 +96,12 @@ describe('correlateContactLookup', () => {
       [],
     ],
     [
-      'a secondary address is also reported missing',
-      [
-        {
-          id: '1',
-          properties: { email: 'primary@example.com', hs_additional_emails: 'a@example.com' },
-        },
-      ],
+      'a found address also reported missing',
+      [{ id: '1', properties: { email: 'a@example.com' } }],
       [{ category: 'OBJECT_NOT_FOUND', context: { ids: ['a@example.com'] } }],
     ],
     [
-      'secondary addresses are not a string',
+      'non-string secondary addresses',
       [
         {
           id: '1',
@@ -115,10 +110,10 @@ describe('correlateContactLookup', () => {
       ],
       [],
     ],
-  ])('rejects the chunk when %s', (_name, results, errors) => {
-    expect(
-      correlateContactLookup(['a@example.com'], { status: 'COMPLETE', results, errors }),
-    ).toBeNull();
+  ])('keeps a usable contact match despite %s', (_name, results, errors) => {
+    expect(correlateContactLookup(['a@example.com'], { results, errors })).toEqual(
+      new Map([['a@example.com', { kind: 'found', recordId: '1' }]]),
+    );
   });
 
   it('skips a secondary address that fails validation and keeps the requested match', () => {
@@ -136,7 +131,7 @@ describe('correlateContactLookup', () => {
       errors: [],
     });
 
-    expect(correlated?.get('alias@example.com')).toEqual({ kind: 'found', recordId: '1' });
+    expect(correlated.get('alias@example.com')).toEqual({ kind: 'found', recordId: '1' });
   });
 
   it('accepts an explicit OBJECT_NOT_FOUND miss and ignores free-text messages', () => {
@@ -152,10 +147,10 @@ describe('correlateContactLookup', () => {
       ],
     });
 
-    expect(correlated?.get('missing@example.com')).toEqual({ kind: 'miss' });
+    expect(correlated.get('missing@example.com')).toEqual({ kind: 'miss' });
   });
 
-  it('rejects a miss that is only named in message text', () => {
+  it('leaves an email unmatched when it is only named in message text', () => {
     expect(
       correlateContactLookup(['missing@example.com'], {
         status: 'COMPLETE',
@@ -167,16 +162,16 @@ describe('correlateContactLookup', () => {
           },
         ],
       }),
-    ).toBeNull();
+    ).toEqual(new Map());
   });
 
-  it('accepts a partial body only when every requested email is accounted for once', () => {
+  it('preserves usable answers when another requested email is uncovered', () => {
     expect(
       correlateContactLookup(['a@example.com', 'b@example.com'], {
         status: 'COMPLETE',
         results: [{ id: '1', properties: { email: 'a@example.com' } }],
         errors: [{ category: 'OBJECT_NOT_FOUND', context: { ids: ['b@example.com'] } }],
-      })?.get('b@example.com'),
+      }).get('b@example.com'),
     ).toEqual({ kind: 'miss' });
 
     expect(
@@ -185,7 +180,7 @@ describe('correlateContactLookup', () => {
         results: [{ id: '1', properties: { email: 'a@example.com' } }],
         errors: [],
       }),
-    ).toBeNull();
+    ).toEqual(new Map([['a@example.com', { kind: 'found', recordId: '1' }]]));
   });
 
   it('accepts a repeated result when the contact id is the same', () => {
@@ -198,65 +193,58 @@ describe('correlateContactLookup', () => {
       errors: [],
     });
 
-    expect(correlated?.get('a@example.com')).toEqual({ kind: 'found', recordId: '1' });
+    expect(correlated.get('a@example.com')).toEqual({ kind: 'found', recordId: '1' });
   });
 
   it.each([
-    ['incomplete status', { status: 'PENDING', results: [], errors: [] }],
+    ['missing status', { results: [{ id: '1', properties: { email: 'a@example.com' } }] }],
     [
-      'email in both results and errors',
-      {
-        status: 'COMPLETE',
-        results: [{ id: '1', properties: { email: 'a@example.com' } }],
-        errors: [{ category: 'OBJECT_NOT_FOUND', context: { ids: ['a@example.com'] } }],
-      },
+      'a different status',
+      { status: 'PENDING', results: [{ id: '1', properties: { email: 'a@example.com' } }] },
     ],
     [
-      'two results disagree',
+      'a mismatched error count',
+      { numErrors: 2, results: [{ id: '1', properties: { email: 'a@example.com' } }], errors: [] },
+    ],
+    [
+      'a malformed error array',
+      { results: [{ id: '1', properties: { email: 'a@example.com' } }], errors: {} },
+    ],
+    [
+      'an unrelated error',
       {
-        status: 'COMPLETE',
-        results: [
-          { id: '1', properties: { email: 'a@example.com' } },
-          { id: '2', properties: { email: 'a@example.com' } },
+        results: [{ id: '1', properties: { email: 'a@example.com' } }],
+        errors: [{ category: 'VALIDATION_ERROR' }],
+      },
+    ],
+  ])('matches contacts despite %s', (_name, body) => {
+    expect(correlateContactLookup(['a@example.com'], body)).toEqual(
+      new Map([['a@example.com', { kind: 'found', recordId: '1' }]]),
+    );
+  });
+
+  it.each([
+    null,
+    '',
+    {},
+    { results: {} },
+    { results: [null, { id: '0', properties: { email: 'a@example.com' } }] },
+    { errors: [{ category: 'OBJECT_NOT_FOUND', context: { ids: [1] } }] },
+    { errors: [{ category: 'VALIDATION_ERROR', context: { ids: ['a@example.com'] } }] },
+  ])('leaves unusable answers unmatched: %p', (body) => {
+    expect(correlateContactLookup(['a@example.com'], body)).toEqual(new Map());
+  });
+
+  it('keeps confirmed misses despite malformed sibling entries', () => {
+    expect(
+      correlateContactLookup(['missing@example.com'], {
+        results: [null],
+        errors: [
+          null,
+          { category: 'OBJECT_NOT_FOUND', context: { ids: [null, 'missing@example.com'] } },
         ],
-        errors: [],
-      },
-    ],
-    [
-      'error category is not OBJECT_NOT_FOUND',
-      {
-        status: 'COMPLETE',
-        results: [],
-        errors: [{ category: 'VALIDATION_ERROR', context: { ids: ['a@example.com'] } }],
-      },
-    ],
-    [
-      'context.ids is not a string array',
-      {
-        status: 'COMPLETE',
-        results: [],
-        errors: [{ category: 'OBJECT_NOT_FOUND', context: { ids: [1] } }],
-      },
-    ],
-    [
-      'result id is malformed',
-      {
-        status: 'COMPLETE',
-        results: [{ id: '0', properties: { email: 'a@example.com' } }],
-        errors: [],
-      },
-    ],
-    [
-      'numErrors does not match the error entries',
-      {
-        status: 'COMPLETE',
-        numErrors: 2,
-        results: [{ id: '1', properties: { email: 'a@example.com' } }],
-        errors: [],
-      },
-    ],
-  ])('retries the chunk when the body is %s', (_name, body) => {
-    expect(correlateContactLookup(['a@example.com'], body)).toBeNull();
+      }),
+    ).toEqual(new Map([['missing@example.com', { kind: 'miss' }]]));
   });
 });
 
@@ -314,7 +302,7 @@ describe('lookupDistinctEmails', () => {
     expect(lookedUp.get('a@example.com')).toEqual({ kind: 'found', recordId: '8' });
   });
 
-  it('does not mark a malformed or incomplete chunk as a miss', async () => {
+  it('retries only uncovered emails and preserves known contacts', async () => {
     mockHttpPost.mockResolvedValueOnce(
       httpSuccess({
         status: 'COMPLETE',
@@ -325,11 +313,11 @@ describe('lookupDistinctEmails', () => {
 
     const lookedUp = await lookupDistinctEmails('pat-test', ['a@example.com', 'b@example.com'], {});
 
-    expect(lookedUp.get('a@example.com')?.kind).toBe('error');
+    expect(lookedUp.get('a@example.com')).toEqual({ kind: 'found', recordId: '1' });
     expect(lookedUp.get('b@example.com')?.kind).toBe('error');
-    const failure = lookedUp.get('a@example.com');
+    const failure = lookedUp.get('b@example.com');
     if (failure?.kind !== 'error') {
-      throw new Error('expected a chunk error');
+      throw new Error('expected an unmatched-email error');
     }
     const generated = generateErrorObject(failure.error);
     expect(generated.message).toBe('HubSpot contact lookup response could not be correlated');
@@ -381,24 +369,28 @@ describe('lookupDistinctEmails', () => {
     if (middle?.kind !== 'error') {
       throw new Error('expected the middle chunk to fail');
     }
-    expect(generateErrorObject(middle.error).message).toBe(
-      'HubSpot contact lookup is temporarily unavailable',
-    );
-    expect(generateErrorObject(middle.error).message).not.toContain('raw-body-sentinel');
+    expect(generateErrorObject(middle.error).message).toBe('raw-body-sentinel');
   });
 
   it('classifies auth, scope, throttle, and transport without treating them as misses', async () => {
-    mockHttpPost.mockResolvedValueOnce(httpFailure(401, { message: 'token pat-secret' }));
+    mockHttpPost.mockResolvedValueOnce(
+      httpFailure(401, {
+        message: 'Invalid access token',
+        category: 'INVALID_AUTHENTICATION',
+        correlationId: 'corr-auth',
+      }),
+    );
     const rejected = await lookupDistinctEmails('pat-test', ['a@example.com'], {});
     const rejectedError = rejected.get('a@example.com');
     if (rejectedError?.kind !== 'error') {
       throw new Error('expected an auth error');
     }
     const generated = generateErrorObject(rejectedError.error);
-    expect(generated.message).toBe('HubSpot rejected the access token');
+    expect(generated.message).toBe(
+      'Invalid access token (category: INVALID_AUTHENTICATION, correlationId: corr-auth)',
+    );
     expect(generated.status).toBe(401);
     expect(generated.authErrorCategory || '').toBe('');
-    expect(generated.message).not.toContain('pat-secret');
 
     mockHttpPost.mockResolvedValueOnce(httpFailure(403));
     const forbidden = await lookupDistinctEmails('pat-test', ['a@example.com'], {});
@@ -417,12 +409,7 @@ describe('lookupDistinctEmails', () => {
       throw new Error('expected a rejected lookup');
     }
     expect(generateErrorObject(rejectedLookupError.error).status).toBe(400);
-    expect(generateErrorObject(rejectedLookupError.error).message).toBe(
-      'HubSpot contact lookup was rejected',
-    );
-    expect(generateErrorObject(rejectedLookupError.error).message).not.toContain(
-      'raw-body-sentinel',
-    );
+    expect(generateErrorObject(rejectedLookupError.error).message).toBe('raw-body-sentinel');
 
     mockHttpPost.mockResolvedValueOnce(httpFailure(429));
     const throttled = await lookupDistinctEmails('pat-test', ['a@example.com'], {});
@@ -444,6 +431,48 @@ describe('lookupDistinctEmails', () => {
       'HubSpot contact lookup is temporarily unavailable',
     );
   });
+
+  it.each([
+    ['ENOTFOUND', 400, 'HubSpot contact lookup was rejected'],
+    ['EPIPE', 400, 'HubSpot contact lookup was rejected'],
+    ['UNKNOWN_CODE', 400, 'HubSpot contact lookup was rejected'],
+    ['ETIMEDOUT', 500, 'HubSpot contact lookup is temporarily unavailable'],
+    ['ECONNREFUSED', 500, 'HubSpot contact lookup is temporarily unavailable'],
+    ['ECONNABORTED', 500, 'HubSpot contact lookup is temporarily unavailable'],
+  ])('uses the shared network mapping for %s', async (code, status, message) => {
+    mockHttpPost.mockResolvedValueOnce({ success: false, response: { code } });
+    const result = await lookupDistinctEmails('pat-test', ['a@example.com'], {});
+    const outcome = result.get('a@example.com');
+    expect(outcome?.kind).toBe('error');
+    const generated = outcome?.kind === 'error' && generateErrorObject(outcome.error);
+    expect(generated).toEqual(expect.objectContaining({ status, message }));
+  });
+
+  it.each([400, 401, 403, 404, 429, 477, 503])(
+    'includes HubSpot details for HTTP %s',
+    async (status) => {
+      mockHttpPost.mockResolvedValueOnce(
+        httpFailure(status, {
+          message: 'Lookup failed',
+          category: 'REQUEST_ERROR',
+          correlationId: 'corr-lookup',
+          errors: [{ message: 'nested detail' }],
+        }),
+      );
+      const result = await lookupDistinctEmails('pat-test', ['a@example.com'], {});
+      const outcome = result.get('a@example.com');
+      expect(outcome?.kind).toBe('error');
+      const generated = outcome?.kind === 'error' && generateErrorObject(outcome.error);
+      expect(generated).toEqual(
+        expect.objectContaining({
+          status,
+          message: 'Lookup failed (category: REQUEST_ERROR, correlationId: corr-lookup)',
+        }),
+      );
+      // NetworkError defaults destinationResponse to ''; the raw HubSpot body must stay absent.
+      expect(generated && generated.destinationResponse).toBeFalsy();
+    },
+  );
 
   it('does not reuse a previous invocation or another credential', async () => {
     mockHttpPost.mockImplementation(

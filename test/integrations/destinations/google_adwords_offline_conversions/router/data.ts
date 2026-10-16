@@ -1475,6 +1475,9 @@ export const data = [
                   value: 123.05,
                   currency: 'USD',
                   order_id: '12343-4886-294995',
+                  merchantId: '90071992547409931234',
+                  feedCountryCode: 'US',
+                  feedLanguageCode: 'en',
                   products: [
                     {
                       sku: 'C2302100',
@@ -1496,10 +1499,162 @@ export const data = [
                 },
                 jobId: 1,
                 userId: 'u1',
+                workspaceId: 'workspace-item-attribution',
               },
               destination: {
                 Config: {
                   // customerId: '962-581-2972',
+                  customerId: '{{ event.context.account_mcc || "1234556775" }}',
+                  subAccount: false,
+                  loginCustomerId: '{{ event.context.account_mcc || "1234556775" }}',
+                  eventsToOfflineConversionsTypeMapping: [
+                    {
+                      from: 'Order Completed',
+                      to: 'store',
+                    },
+                  ],
+                  eventsToConversionsNamesMapping: [
+                    {
+                      from: 'Order Completed',
+                      to: 'Store sales',
+                    },
+                  ],
+                  UserIdentifierSource: 'FIRST_PARTY',
+                  conversionEnvironment: 'none',
+                  defaultUserIdentifier: 'email',
+                  hashUserIdentifier: true,
+                  validateOnly: false,
+                  eventDelivery: false,
+                  eventDeliveryTS: 1715104236592,
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                },
+              },
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'Order Completed',
+                sentAt: '2024-05-09T00:02:48.319Z',
+                userId: '7fe0de4847f6dafb0cba694ef725404a',
+                channel: 'sources',
+                context: {
+                  traits: {
+                    email: 'johnwick@gmail.com',
+                    address: {
+                      city: 'homestead',
+                      state: 'fl',
+                      country: 'usa',
+                      postalCode: '33032',
+                    },
+                    lastName: 'wick',
+                    firstName: 'john',
+                  },
+                },
+                messageId: 'flag-off-store-sales-item-attribution',
+                originalTimestamp: '2024-05-09T00:02:48.319Z',
+                anonymousId: '00000000000000000000000000',
+                properties: {
+                  value: 123.05,
+                  currency: 'USD',
+                  order_id: 'flag-off-order',
+                  merchantId: '90071992547409931234',
+                  item_id: 'flat-item',
+                  products: [
+                    {
+                      sku: 'C2302100',
+                      quantity: '1',
+                    },
+                  ],
+                  conversionDateTime: '2024-05-07 17:27:28-00:00',
+                },
+              },
+              metadata: {
+                secret: {
+                  access_token: secret1,
+                  refresh_token: 'efgh5678',
+                  developer_token: secret3,
+                },
+                jobId: 2,
+                userId: 'u1',
+                workspaceId: 'non-matching-workspace',
+              },
+              destination: {
+                Config: {
+                  customerId: '{{ event.context.account_mcc || "1234556775" }}',
+                  subAccount: false,
+                  loginCustomerId: '{{ event.context.account_mcc || "1234556775" }}',
+                  eventsToOfflineConversionsTypeMapping: [
+                    {
+                      from: 'Order Completed',
+                      to: 'store',
+                    },
+                  ],
+                  eventsToConversionsNamesMapping: [
+                    {
+                      from: 'Order Completed',
+                      to: 'Store sales',
+                    },
+                  ],
+                  UserIdentifierSource: 'FIRST_PARTY',
+                  conversionEnvironment: 'none',
+                  defaultUserIdentifier: 'email',
+                  hashUserIdentifier: true,
+                  validateOnly: false,
+                  eventDelivery: false,
+                  eventDeliveryTS: 1715104236592,
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                },
+              },
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'Order Completed',
+                sentAt: '2024-05-09T00:02:48.319Z',
+                userId: '7fe0de4847f6dafb0cba694ef725404a',
+                channel: 'sources',
+                context: {
+                  traits: {
+                    email: 'johnwick@gmail.com',
+                    address: {
+                      city: 'homestead',
+                      state: 'fl',
+                      country: 'usa',
+                      postalCode: '33032',
+                    },
+                    lastName: 'wick',
+                    firstName: 'john',
+                  },
+                },
+                messageId: 'gate-failure-store-sales-item-attribution',
+                originalTimestamp: '2024-05-09T00:02:48.319Z',
+                anonymousId: '00000000000000000000000000',
+                properties: {
+                  value: 123.05,
+                  currency: 'USD',
+                  order_id: 'gate-failure-order',
+                  item_id: 'flat-item',
+                  products: [
+                    {
+                      sku: 'C2302100',
+                      quantity: '1',
+                    },
+                  ],
+                  conversionDateTime: '2024-05-07 17:27:28-00:00',
+                },
+              },
+              metadata: {
+                secret: {
+                  access_token: secret1,
+                  refresh_token: 'efgh5678',
+                  developer_token: secret3,
+                },
+                jobId: 3,
+                userId: 'u1',
+                workspaceId: 'workspace-item-attribution',
+              },
+              destination: {
+                Config: {
                   customerId: '{{ event.context.account_mcc || "1234556775" }}',
                   subAccount: false,
                   loginCustomerId: '{{ event.context.account_mcc || "1234556775" }}',
@@ -1574,6 +1729,55 @@ export const data = [
                               order_id: '12343-4886-294995',
                               currency_code: 'USD',
                               transaction_date_time: '2019-10-14 16:45:18+05:30',
+                              item_attribute: {
+                                item_id: 'C2302100',
+                                merchant_id: '90071992547409931234',
+                                country_code: 'US',
+                                language_code: 'en',
+                                quantity: 1,
+                              },
+                              conversion_action: 'customers/1234556775/conversionActions/948898416',
+                            },
+                            userIdentifiers: [
+                              {
+                                hashedEmail:
+                                  'cd54e8f2e90e2a092a153f7e27e7b47a8ad29adb7943a05d749f0f9836935a2f',
+                              },
+                            ],
+                            consent: {
+                              adPersonalization: 'UNSPECIFIED',
+                              adUserData: 'UNSPECIFIED',
+                            },
+                          },
+                        },
+                        {
+                          create: {
+                            transaction_attribute: {
+                              transaction_amount_micros: '123050000',
+                              order_id: 'flag-off-order',
+                              currency_code: 'USD',
+                              transaction_date_time: '2019-10-14 16:45:18+05:30',
+                              conversion_action: 'customers/1234556775/conversionActions/948898416',
+                            },
+                            userIdentifiers: [
+                              {
+                                hashedEmail:
+                                  'cd54e8f2e90e2a092a153f7e27e7b47a8ad29adb7943a05d749f0f9836935a2f',
+                              },
+                            ],
+                            consent: {
+                              adPersonalization: 'UNSPECIFIED',
+                              adUserData: 'UNSPECIFIED',
+                            },
+                          },
+                        },
+                        {
+                          create: {
+                            transaction_attribute: {
+                              transaction_amount_micros: '123050000',
+                              order_id: 'gate-failure-order',
+                              currency_code: 'USD',
+                              transaction_date_time: '2019-10-14 16:45:18+05:30',
                               conversion_action: 'customers/1234556775/conversionActions/948898416',
                             },
                             userIdentifiers: [
@@ -1610,6 +1814,27 @@ export const data = [
                   },
                   jobId: 1,
                   userId: 'u1',
+                  workspaceId: 'workspace-item-attribution',
+                },
+                {
+                  secret: {
+                    access_token: secret1,
+                    refresh_token: 'efgh5678',
+                    developer_token: secret3,
+                  },
+                  jobId: 2,
+                  userId: 'u1',
+                  workspaceId: 'non-matching-workspace',
+                },
+                {
+                  secret: {
+                    access_token: secret1,
+                    refresh_token: 'efgh5678',
+                    developer_token: secret3,
+                  },
+                  jobId: 3,
+                  userId: 'u1',
+                  workspaceId: 'workspace-item-attribution',
                 },
               ],
               destination: {
@@ -1648,5 +1873,8 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_STORE_SALES_ITEM_ATTRIBUTION: 'workspace-item-attribution',
+    },
   },
 ];

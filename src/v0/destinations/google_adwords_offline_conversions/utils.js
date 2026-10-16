@@ -8,6 +8,7 @@ const {
   NetworkError,
 } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
+const { isFeatureEnabled } = require('../../../util/featureFlags');
 const {
   isHttpStatusSuccess,
   constructPayload,
@@ -37,6 +38,7 @@ const {
   CALL_CONVERSION_ENDPOINT_PATH,
   CLICK_CONVERSION_ENDPOINT_PATH,
   STORE_CONVERSION_ENDPOINT_PATH,
+  STORE_SALES_ITEM_ATTRIBUTION_FLAG,
 } = require('./config');
 const {
   processAxiosResponse,
@@ -115,15 +117,45 @@ const getReqHeaders = (Config, metadata, passToken = false) => {
   return headers;
 };
 
+const isPresent = (value) => value !== undefined && value !== null && value !== '';
+
+const resolveProductItemId = (product, { allowSkuFallback = false } = {}) => {
+  if (isPresent(product?.product_id)) {
+    return product.product_id;
+  }
+  if (allowSkuFallback && isPresent(product?.sku)) {
+    return product.sku;
+  }
+  return undefined;
+};
+
+const normalizeGoogleItemQuantity = (value, { requirePositiveSafeInteger = false } = {}) => {
+  if (!requirePositiveSafeInteger) {
+    return parseInt(value, 10);
+  }
+  if (
+    !isPresent(value) ||
+    (typeof value !== 'number' && typeof value !== 'string') ||
+    (typeof value === 'string' && !/^\d+$/.test(value))
+  ) {
+    return undefined;
+  }
+
+  const quantity = Number(value);
+  return Number.isSafeInteger(quantity) && quantity > 0 ? quantity : undefined;
+};
+
+const buildClickCartItem = (product) => ({
+  productId: resolveProductItemId(product),
+  quantity: normalizeGoogleItemQuantity(product.quantity),
+  unitPrice: Number(product.price),
+});
+
 const generateItemListFromProducts = (products) => {
   const itemList = [];
   products.forEach((product) => {
     if (Object.keys(product).length > 0) {
-      itemList.push({
-        productId: product.product_id,
-        quantity: parseInt(product.quantity, 10),
-        unitPrice: Number(product.price),
-      });
+      itemList.push(buildClickCartItem(product));
     }
   });
   return itemList;
@@ -252,14 +284,91 @@ const getCallConversionPayload = (
   return { payload, endpointDetails };
 };
 
+const STORE_ITEM_ATTRIBUTE_PATH = 'operations.create.transaction_attribute.item_attribute';
+const aggregateStoreConversionsMapping = trackAddStoreConversionsMapping.filter(
+  ({ destKey }) => !destKey.startsWith(`${STORE_ITEM_ATTRIBUTE_PATH}.`),
+);
+
+const normalizeStoreMerchantId = (value) => {
+  if (typeof value === 'string' && /^0*[1-9]\d*$/.test(value)) {
+    return value;
+  }
+  if (typeof value === 'number' && Number.isSafeInteger(value) && value > 0) {
+    return String(value);
+  }
+  return undefined;
+};
+
+const buildStoreItemAttribute = (message, mappedItemAttribute = {}) => {
+  const products = get(message, 'properties.products');
+  if (Array.isArray(products) && products.length > 1) {
+    return null;
+  }
+
+  const itemAttribute = { ...mappedItemAttribute };
+  if (Array.isArray(products) && products.length === 1) {
+    const [product] = products;
+    if (!isPresent(itemAttribute.item_id)) {
+      const productItemId = resolveProductItemId(product, { allowSkuFallback: true });
+      if (isPresent(productItemId)) {
+        itemAttribute.item_id = String(productItemId);
+      }
+    }
+    if (!isPresent(itemAttribute.quantity)) {
+      itemAttribute.quantity = product?.quantity;
+    }
+  }
+
+  const quantity = normalizeGoogleItemQuantity(itemAttribute.quantity, {
+    requirePositiveSafeInteger: true,
+  });
+  if (quantity === undefined) {
+    delete itemAttribute.quantity;
+  } else {
+    itemAttribute.quantity = quantity;
+  }
+
+  const merchantId = normalizeStoreMerchantId(itemAttribute.merchant_id);
+  if (merchantId === undefined) {
+    delete itemAttribute.merchant_id;
+  } else {
+    itemAttribute.merchant_id = merchantId;
+  }
+
+  return isPresent(itemAttribute.item_id) && isPresent(itemAttribute.merchant_id)
+    ? itemAttribute
+    : null;
+};
+
 /**
  * This Function create the add conversion payload
  * and returns the payload
  */
-const getAddConversionPayload = (message, Config, eventLevelConsentsData, conversionActionId) => {
+const getAddConversionPayload = (
+  message,
+  Config,
+  eventLevelConsentsData,
+  conversionActionId,
+  workspaceId,
+) => {
   const { properties } = message;
   const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
-  const payload = constructPayload(message, trackAddStoreConversionsMapping);
+  const itemAttributionEnabled =
+    isPresent(workspaceId) && isFeatureEnabled(STORE_SALES_ITEM_ATTRIBUTION_FLAG, workspaceId);
+  const payload = constructPayload(
+    message,
+    itemAttributionEnabled ? trackAddStoreConversionsMapping : aggregateStoreConversionsMapping,
+  );
+
+  if (itemAttributionEnabled) {
+    const itemAttribute = buildStoreItemAttribute(message, get(payload, STORE_ITEM_ATTRIBUTE_PATH));
+    if (itemAttribute) {
+      set(payload, STORE_ITEM_ATTRIBUTE_PATH, itemAttribute);
+    } else {
+      delete payload.operations.create.transaction_attribute.item_attribute;
+    }
+  }
+
   payload.enable_partial_failure = false;
   payload.enable_warnings = false;
   payload.validate_only = validateOnly || false;
@@ -331,6 +440,7 @@ const getStoreConversionPayload = (
   filteredCustomerId,
   eventLevelConsentsData,
   conversionActionId,
+  workspaceId,
 ) => {
   const { validateOnly } = Config;
   const endpointDetails = {
@@ -346,6 +456,7 @@ const getStoreConversionPayload = (
       Config,
       eventLevelConsentsData,
       conversionActionId,
+      workspaceId,
     ),
     executeJobPayload: { validate_only: validateOnly },
   };
@@ -429,13 +540,7 @@ const getClickConversionPayloadAndEndpoint = (
   const products = get(message, 'properties.products');
   if (Array.isArray(products)) {
     // products is a list of items
-    const itemList = products
-      .filter((product) => Object.keys(product).length > 0)
-      .map((product) => ({
-        productId: product.product_id,
-        quantity: parseInt(product.quantity, 10),
-        unitPrice: Number(product.price),
-      }));
+    const itemList = generateItemListFromProducts(products);
 
     set(payload, 'conversions[0].cartData.items', itemList);
   }

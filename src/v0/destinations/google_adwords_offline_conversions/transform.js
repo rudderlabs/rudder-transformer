@@ -73,6 +73,7 @@ const getConversions = (
       filteredCustomerId,
       eventLevelConsentsData,
       conversionActionId,
+      metadata.workspaceId,
     );
   } else {
     // call conversions

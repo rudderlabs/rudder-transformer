@@ -46,5 +46,39 @@
       "originalTimestamp"
     ],
     "required": true
+  },
+  {
+    "destKey": "operations.create.transaction_attribute.item_attribute.item_id",
+    "sourceKeys": ["properties.item_id", "properties.product_id", "properties.sku"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "operations.create.transaction_attribute.item_attribute.merchant_id",
+    "sourceKeys": ["properties.merchantId", "properties.merchant_id"],
+    "required": false
+  },
+  {
+    "destKey": "operations.create.transaction_attribute.item_attribute.country_code",
+    "sourceKeys": ["properties.feedCountryCode", "properties.country_code"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "operations.create.transaction_attribute.item_attribute.language_code",
+    "sourceKeys": ["properties.feedLanguageCode", "properties.language_code"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "operations.create.transaction_attribute.item_attribute.quantity",
+    "sourceKeys": "properties.quantity",
+    "required": false
   }
 ]

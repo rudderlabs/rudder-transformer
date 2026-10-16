@@ -38,39 +38,11 @@ const trackBatch = {
           currency: 'USD',
           screen_name: '/checkout',
           url: 'https://example.test/checkout',
-          conversiontype: 'purchase',
+          conversiontype: 'mapped-purchase',
         },
       },
     },
   ],
-};
-
-const pageBatch = {
-  schema_version: 2,
-  environment: 'production',
-  user_identities: { other2: 'synthetic-page-click' },
-  integration_attributes: {
-    '1277': { passbackconversiontrackingid: 'synthetic-page-click' },
-  },
-  events: [
-    {
-      event_type: 'custom_event',
-      data: {
-        event_name: 'conversion',
-        custom_event_type: 'transaction',
-        timestamp_unixtime_ms: timestampMs,
-        source_message_id: 'message-2',
-        custom_attributes: { screen_name: '/landing', conversiontype: 'screen_view' },
-      },
-    },
-  ],
-};
-
-const identifyBatch = {
-  schema_version: 2,
-  environment: 'production',
-  user_identities: { customerid: 'synthetic-identify-3' },
-  user_attributes: { firstname: 'Identify' },
 };
 
 const identityFreeBatch = {
@@ -84,8 +56,8 @@ const identityFreeBatch = {
         event_name: 'conversion',
         custom_event_type: 'transaction',
         timestamp_unixtime_ms: timestampMs,
-        source_message_id: 'message-5',
-        custom_attributes: { conversiontype: 'purchase' },
+        source_message_id: 'message-6',
+        custom_attributes: { conversiontype: 'mapped-purchase' },
       },
     },
   ],
@@ -123,10 +95,9 @@ export const data: RouterTestData[] = [
   {
     id: 'rokt-router-supported-events',
     name: 'rokt',
-    description: 'ROKT maps conversions and identify updates into Rokt per-user batches',
+    description: 'ROKT maps configured track conversions into Rokt per-user batches',
     scenario: 'Native JSON-array batching',
-    successCriteria:
-      'Track, click-only page, and identify messages produce one bulk request without merging per-user batches',
+    successCriteria: 'Mapped track messages produce a bulk request with traits and device context',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -163,29 +134,6 @@ export const data: RouterTestData[] = [
               metadata: metadata(1),
               destination,
             },
-            {
-              message: {
-                type: 'page',
-                messageId: 'message-2',
-                timestamp,
-                context: {
-                  page: { path: '/landing', search: '?rtid=synthetic-page-click' },
-                },
-                properties: {},
-              },
-              metadata: metadata(2),
-              destination,
-            },
-            {
-              message: {
-                type: 'identify',
-                messageId: 'message-3',
-                userId: 'synthetic-identify-3',
-                traits: { firstName: 'Identify' },
-              },
-              metadata: metadata(3),
-              destination,
-            },
           ],
           destType: 'rokt',
         },
@@ -197,8 +145,8 @@ export const data: RouterTestData[] = [
         body: {
           output: [
             {
-              batchedRequest: batchedRequest([trackBatch, pageBatch, identifyBatch]),
-              metadata: [metadata(1), metadata(2), metadata(3)],
+              batchedRequest: batchedRequest([trackBatch]),
+              metadata: [metadata(1)],
               batched: true,
               statusCode: 200,
               destination,
@@ -211,9 +159,9 @@ export const data: RouterTestData[] = [
   {
     id: 'rokt-router-invalid-conversion',
     name: 'rokt',
-    description: 'ROKT rejects unsupported events and accepts identity-free conversions',
+    description: 'ROKT rejects unsupported messages and unmapped track events',
     scenario: 'Instrumentation validation',
-    successCriteria: 'Unsupported messages fail while identity-free conversions are delivered',
+    successCriteria: 'Only mapped track messages are delivered',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -223,19 +171,30 @@ export const data: RouterTestData[] = [
         body: {
           input: [
             {
-              message: { type: 'group', messageId: 'message-4' },
+              message: { type: 'page', event: 'purchase', messageId: 'message-4' },
               metadata: metadata(4),
               destination,
             },
             {
               message: {
                 type: 'track',
-                event: 'purchase',
+                event: 'unmapped',
                 messageId: 'message-5',
                 timestamp,
                 properties: {},
               },
               metadata: metadata(5),
+              destination,
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'purchase',
+                messageId: 'message-6',
+                timestamp,
+                properties: {},
+              },
+              metadata: metadata(6),
               destination,
             },
           ],
@@ -250,7 +209,7 @@ export const data: RouterTestData[] = [
           output: [
             {
               batchedRequest: batchedRequest([identityFreeBatch]),
-              metadata: [metadata(5)],
+              metadata: [metadata(6)],
               destination,
               batched: true,
               statusCode: 200,
@@ -260,8 +219,16 @@ export const data: RouterTestData[] = [
               destination,
               batched: false,
               statusCode: 400,
+              error: 'message.type: Unsupported message type. ROKT supports track.',
+              statTags: errorStatTags,
+            },
+            {
+              metadata: [metadata(5)],
+              destination,
+              batched: false,
+              statusCode: 400,
               error:
-                'message.type: Unsupported message type. ROKT supports track, page, screen, and identify.',
+                'Event "unmapped" is not present in the Rokt events mapping. Dropping the event.',
               statTags: errorStatTags,
             },
           ],

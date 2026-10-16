@@ -200,15 +200,6 @@
       "destKey": "timestamp"
     },
     {
-      "sourceKeys": [
-        "properties.conversiontype",
-        "properties.conversionType",
-        "properties.conversion_type",
-        "event"
-      ],
-      "destKey": "conversiontype"
-    },
-    {
       "sourceKeys": "context.device.type",
       "destKey": "device_type"
     },

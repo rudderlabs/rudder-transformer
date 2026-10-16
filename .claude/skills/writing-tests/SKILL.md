@@ -271,6 +271,35 @@ A captured mock is a **request–response pair**, and both halves have to be rea
 - **When the docs and a live call disagree, the live call wins.** The API reference tells you
   what to try. The live response is what goes in the mock.
 
+## Fixture Secrets Are Distinctive and Reach the Request
+
+Component fixtures are also the input to the secret-path generator
+(`src/secretPaths/tooling/`), which publishes the masking paths for Live Events by finding where
+each fixture credential (`secretKeys` config values and every `metadata.secret` value) lands in
+the transformed request. A sloppy fixture secret does not fail a test — it publishes a wrong
+path, and regenerating the artifact makes CI green again.
+
+- **Never reuse a secret placeholder as a non-secret value.** A `secret2` that is both the access
+  token and the request's `customerId` masks the customer ID.
+- **Never pick a secret that is a substring of other fixture data.** `${basename}1` as the API key
+  next to an email like `test${basename}1@email.com` makes the email look like a credential.
+  Use a value no other field could contain (`${basename}-private-api-key-1`).
+- **Auth mocks must carry the case's secret.** A mocked header builder that returns a constant
+  `oauth_token="dummyAccessToken"` while the case's `metadata.secret.accessToken` is something
+  else means no credential is found in the request, and the destination publishes `[]` — its
+  real `Authorization` header goes unmasked. Build the mocked value from the secret the case
+  passes in, or don't mock the builder.
+
+```ts
+// Good — distinct, non-overlapping values
+const accessToken = 'secret-access-token-1';
+const customerId = '7693729833';
+
+// Bad — one placeholder plays two roles
+const metadata = { secret: { accessToken: 'secret2' } };
+const params = { customerId: 'secret2' };
+```
+
 ## Every New Destination Gets `live.ts`
 
 A new destination ships with `test/integrations/destinations/<destination>/live.ts` covering at

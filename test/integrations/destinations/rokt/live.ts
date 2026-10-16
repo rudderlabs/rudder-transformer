@@ -25,40 +25,21 @@ const badTrack = (ctx: RunContext, suffix: string) => ({
 export const live: LiveSpec = {
   enabled: true,
   authType: 'basic',
-  resolveConfig: (secret) => ({ ...secret.config }),
+  resolveConfig: (secret) => ({
+    ...secret.config,
+    eventsMapping: [{ from: 'purchase', to: 'purchase' }],
+  }),
   scenarios: [
     {
       id: 'rokt-supported-message-types',
-      description: 'the Rokt Custom Feed accepts track, page, screen, and identify batches',
+      description: 'the Rokt Custom Feed accepts mapped track event batches',
       steps: [
         {
           stepType: 'pipeline',
-          name: 'deliver supported event types',
+          name: 'deliver mapped track event',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
-          seed: (ctx) => [
-            goodTrack(ctx, 'track'),
-            {
-              ...eventBase(ctx, 'page'),
-              type: 'page',
-              userId: ctx.identity('page'),
-              context: { page: { path: '/live-page' } },
-              properties: {},
-            },
-            {
-              ...eventBase(ctx, 'screen'),
-              type: 'screen',
-              name: 'Live Screen',
-              userId: ctx.identity('screen'),
-              properties: {},
-            },
-            {
-              ...eventBase(ctx, 'identify'),
-              type: 'identify',
-              userId: ctx.identity('identify'),
-              traits: { firstName: 'Live' },
-            },
-          ],
+          seed: (ctx) => [goodTrack(ctx, 'track')],
         },
       ],
     },

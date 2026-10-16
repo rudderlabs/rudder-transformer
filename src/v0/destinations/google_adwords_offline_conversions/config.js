@@ -1,6 +1,7 @@
 const { getMappingConfig } = require('../../util');
 
 const API_VERSION = 'v25';
+const STORE_SALES_ITEM_ATTRIBUTION_FLAG = 'GAOC_STORE_SALES_ITEM_ATTRIBUTION';
 
 const CUSTOMER_ID_PARAM = ':customerId';
 
@@ -81,5 +82,6 @@ module.exports = {
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
   consentConfigMap,
   API_VERSION,
+  STORE_SALES_ITEM_ATTRIBUTION_FLAG,
   MAX_CONVERSIONS_PER_BATCH,
 };

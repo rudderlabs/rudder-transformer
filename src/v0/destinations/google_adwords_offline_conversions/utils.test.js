@@ -14,7 +14,11 @@ const {
   getAddConversionPayload,
   getConversionActionIds,
 } = require('./utils');
-const { CLICK_CONVERSION_ENDPOINT_PATH, CALL_CONVERSION_ENDPOINT_PATH } = require('./config');
+const {
+  CLICK_CONVERSION_ENDPOINT_PATH,
+  CALL_CONVERSION_ENDPOINT_PATH,
+  STORE_SALES_ITEM_ATTRIBUTION_FLAG,
+} = require('./config');
 
 const API_VERSION = 'v25';
 
@@ -416,23 +420,53 @@ describe('getCallConversionPayload', () => {
 });
 
 describe('getAddConversionPayload', () => {
-  // Helper function to create a valid message with required fields
-  const createValidMessage = (overrides = {}) => {
-    return {
-      event: 'testEvent',
-      timestamp: '2022-01-01T12:32:45Z',
-      properties: {
-        revenue: 100, // Required field
-        currency: 'USD', // Required field
-        ...(overrides.properties || {}),
-      },
-      traits: {
-        email: 'test@example.com',
-        phone: '+1234567890',
-        ...(overrides.traits || {}),
-      },
-    };
+  const workspaceId = 'workspace-enabled';
+  const createValidMessage = (overrides = {}) => ({
+    event: 'testEvent',
+    timestamp: '2022-01-01T12:32:45Z',
+    properties: {
+      revenue: 100,
+      currency: 'USD',
+      ...(overrides.properties || {}),
+    },
+    traits: {
+      email: 'test@example.com',
+      phone: '+1234567890',
+      ...(overrides.traits || {}),
+    },
+  });
+  const itemProperties = {
+    item_id: 'item-1',
+    merchantId: '90071992547409931234',
+    feedCountryCode: 'US',
+    feedLanguageCode: 'en',
+    quantity: '2',
   };
+  const defaultConfig = {
+    validateOnly: false,
+    hashUserIdentifier: true,
+    defaultUserIdentifier: 'email',
+  };
+  const buildPayload = (properties = {}, currentWorkspaceId = workspaceId) =>
+    getAddConversionPayload(
+      createValidMessage({ properties }),
+      defaultConfig,
+      {},
+      'customers/123/conversionActions/456',
+      currentWorkspaceId,
+    );
+  const originalStoreSalesItemAttributionFlag = process.env[STORE_SALES_ITEM_ATTRIBUTION_FLAG];
+  const setStoreSalesItemAttributionFlag = (value) => {
+    if (value === undefined) {
+      delete process.env[STORE_SALES_ITEM_ATTRIBUTION_FLAG];
+    } else {
+      process.env[STORE_SALES_ITEM_ATTRIBUTION_FLAG] = value;
+    }
+  };
+
+  afterEach(() => {
+    setStoreSalesItemAttributionFlag(originalStoreSalesItemAttributionFlag);
+  });
 
   it('should create add conversion payload with default config', () => {
     const message = createValidMessage();
@@ -583,6 +617,165 @@ describe('getAddConversionPayload', () => {
       adUserData: 'GRANTED',
       adPersonalization: 'DENIED',
     });
+  });
+
+  it.each([
+    ['unset', undefined, workspaceId],
+    ['nonmatching workspace', 'another-workspace', workspaceId],
+    ['missing workspace metadata', workspaceId, null],
+  ])(
+    'keeps the aggregate payload byte-identical when the flag is %s',
+    (_description, flagValue, currentWorkspaceId) => {
+      setStoreSalesItemAttributionFlag(flagValue);
+      const aggregatePayload = buildPayload({}, currentWorkspaceId);
+      const itemPayload = buildPayload(itemProperties, currentWorkspaceId);
+
+      expect(JSON.stringify(itemPayload)).toBe(JSON.stringify(aggregatePayload));
+    },
+  );
+
+  it.each([
+    ['matching workspace', workspaceId],
+    ['trimmed workspace list', `another-workspace, ${workspaceId} `],
+    ['all workspaces', 'ALL'],
+  ])('adds item attribution for %s', (_description, flagValue) => {
+    setStoreSalesItemAttributionFlag(flagValue);
+
+    const payload = buildPayload(itemProperties);
+
+    expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
+      item_id: 'item-1',
+      merchant_id: '90071992547409931234',
+      country_code: 'US',
+      language_code: 'en',
+      quantity: 2,
+    });
+  });
+
+  it('keeps the aggregate payload unchanged when item properties are absent', () => {
+    const aggregatePayload = buildPayload();
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    expect(JSON.stringify(buildPayload())).toBe(JSON.stringify(aggregatePayload));
+  });
+
+  it.each([
+    ['item ID', { merchantId: '123456' }],
+    ['merchant ID', { item_id: 'item-1' }],
+  ])('removes the entire item attribute when %s is missing', (_description, properties) => {
+    const aggregatePayload = buildPayload();
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    expect(JSON.stringify(buildPayload(properties))).toBe(JSON.stringify(aggregatePayload));
+  });
+
+  it.each([
+    ['item_id', { item_id: 101, product_id: 202, sku: 303 }, '101'],
+    ['product_id', { product_id: 202, sku: 303 }, '202'],
+    ['sku', { sku: 303 }, '303'],
+  ])('uses the first available flat %s source', (_description, properties, expectedItemId) => {
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    const payload = buildPayload({ merchant_id: '123456', ...properties });
+
+    expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
+      item_id: expectedItemId,
+      merchant_id: '123456',
+    });
+  });
+
+  it('backfills only missing item ID and quantity from a single product', () => {
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    const payload = buildPayload({
+      item_id: 'flat-item',
+      merchantId: '123456',
+      products: [{ product_id: 'nested-item', sku: 'nested-sku', quantity: '4' }],
+    });
+
+    expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
+      item_id: 'flat-item',
+      merchant_id: '123456',
+      quantity: 4,
+    });
+  });
+
+  it('uses a single product SKU when its product ID is absent', () => {
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    const payload = buildPayload({
+      merchantId: '123456',
+      products: [{ sku: 'nested-sku' }],
+    });
+
+    expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
+      item_id: 'nested-sku',
+      merchant_id: '123456',
+    });
+  });
+
+  it.each([
+    ['string', '12345678901234567890', '12345678901234567890'],
+    ['safe integer', 1234567890, '1234567890'],
+  ])('normalizes valid %s merchant IDs', (_description, merchantId, expectedMerchantId) => {
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    const payload = buildPayload({ item_id: 'item-1', merchantId });
+
+    expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
+      item_id: 'item-1',
+      merchant_id: expectedMerchantId,
+    });
+  });
+
+  it.each([
+    ['zero string', '0'],
+    ['zero number', 0],
+    ['decimal string', '1.5'],
+    ['decimal number', 1.5],
+    ['non-decimal string', 'merchant-1'],
+    ['unsafe integer', Number.MAX_SAFE_INTEGER + 1],
+    ['boolean', false],
+    ['object', { value: 123 }],
+  ])('removes the entire item attribute for %s merchant ID', (_description, merchantId) => {
+    const aggregatePayload = buildPayload();
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    expect(JSON.stringify(buildPayload({ item_id: 'item-1', merchantId }))).toBe(
+      JSON.stringify(aggregatePayload),
+    );
+  });
+
+  it.each([
+    ['missing', undefined],
+    ['decimal number', 1.5],
+    ['decimal string', '1.5'],
+    ['zero', 0],
+    ['negative number', -1],
+    ['unsafe integer', Number.MAX_SAFE_INTEGER + 1],
+    ['boolean', true],
+    ['object', { value: 2 }],
+  ])('omits %s quantity', (_description, quantity) => {
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    const payload = buildPayload({ item_id: 'item-1', merchantId: '123456', quantity });
+
+    expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
+      item_id: 'item-1',
+      merchant_id: '123456',
+    });
+  });
+
+  it('keeps multi-item events aggregate-only even when flat item fields are complete', () => {
+    const aggregatePayload = buildPayload();
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    const payload = buildPayload({
+      ...itemProperties,
+      products: [{ product_id: 'item-1' }, { product_id: 'item-2' }],
+    });
+
+    expect(JSON.stringify(payload)).toBe(JSON.stringify(aggregatePayload));
   });
 });
 

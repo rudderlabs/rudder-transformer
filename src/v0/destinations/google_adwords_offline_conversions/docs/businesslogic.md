@@ -113,13 +113,36 @@ Each conversion type follows a different processing flow:
 
 #### Transaction Data Mapping
 
-| RudderStack Field                                                                             | Google Ads Field                                                     | Required | Type     | Notes                             |
-| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------- | -------- | --------------------------------- |
-| `properties.store_code` / `properties.storeCode`                                              | `operations.create.transaction_attribute.store_attribute.store_code` | No       | String   | Store identifier                  |
-| `properties.conversionValue` / `properties.total` / `properties.value` / `properties.revenue` | `operations.create.transaction_attribute.transaction_amount_micros`  | Yes      | Number   | Converted to micros (\*1,000,000) |
-| `properties.order_id` / `properties.orderId`                                                  | `operations.create.transaction_attribute.order_id`                   | No       | String   | Order identifier                  |
-| `properties.currency`                                                                         | `operations.create.transaction_attribute.currency_code`              | Yes      | String   | Currency code                     |
-| `timestamp` / `originalTimestamp`                                                             | `operations.create.transaction_attribute.transaction_date_time`      | Yes      | DateTime | Transaction time                  |
+| RudderStack Field                                                                             | Google Ads Field                                                       | Required | Type     | Notes                             |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------- | -------- | --------------------------------- |
+| `properties.store_code` / `properties.storeCode`                                              | `operations.create.transaction_attribute.store_attribute.store_code`   | No       | String   | Store identifier                  |
+| `properties.conversionValue` / `properties.total` / `properties.value` / `properties.revenue` | `operations.create.transaction_attribute.transaction_amount_micros`    | Yes      | Number   | Converted to micros (\*1,000,000) |
+| `properties.order_id` / `properties.orderId`                                                  | `operations.create.transaction_attribute.order_id`                     | No       | String   | Order identifier                  |
+| `properties.currency`                                                                         | `operations.create.transaction_attribute.currency_code`                | Yes      | String   | Currency code                     |
+| `timestamp` / `originalTimestamp`                                                             | `operations.create.transaction_attribute.transaction_date_time`        | Yes      | DateTime | Transaction time                  |
+| `properties.item_id` / `properties.product_id` / `properties.sku`                             | `operations.create.transaction_attribute.item_attribute.item_id`       | No       | String   | Merchant Center item ID           |
+| `properties.merchantId` / `properties.merchant_id`                                            | `operations.create.transaction_attribute.item_attribute.merchant_id`   | No       | Int64    | Merchant Center account ID        |
+| `properties.feedCountryCode` / `properties.country_code`                                      | `operations.create.transaction_attribute.item_attribute.country_code`  | No       | String   | Feed country                      |
+| `properties.feedLanguageCode` / `properties.language_code`                                    | `operations.create.transaction_attribute.item_attribute.language_code` | No       | String   | Feed language                     |
+| `properties.quantity`                                                                         | `operations.create.transaction_attribute.item_attribute.quantity`      | No       | Int64    | Positive whole-number quantity    |
+
+Store Sales item attribution is enabled operationally for selected workspaces through the
+`GAOC_STORE_SALES_ITEM_ATTRIBUTION` environment flag; it is not a customer self-serve destination
+setting. Google requires the Google Ads customer to have item-attribute allow-list approval and the
+referenced Merchant Center account linked before attributed requests can be accepted.
+
+RudderStack emits `item_attribute` only when both `item_id` and `merchant_id` resolve. Flat item IDs
+use `item_id`, then `product_id`, then `sku`; when `properties.products` has exactly one entry, its
+`product_id` (then `sku`) and `quantity` backfill only missing flat values. Multi-entry product arrays
+remain aggregate-only until per-item transaction-value semantics are approved. A missing or invalid
+quantity is omitted rather than defaulted by RudderStack; Google Ads defaults an omitted quantity to
+`1`. Merchant IDs must be non-empty decimal strings or positive safe integers; numeric merchant IDs
+are converted to strings, and unsafe or non-decimal values make the item attribute unresolved. Quantities
+must be positive safe integers (integer strings are converted to numbers).
+
+`properties.lineItems` is not accepted. Although the originating request described “lineItems
+mapping”, this implementation follows the existing ecommerce convention of `properties.products`,
+`properties.product_id`, and `properties.merchantId`.
 
 #### Address Data Mapping
 

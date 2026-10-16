@@ -119,6 +119,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   GAINSIGHT_PX_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: true },
   REDDIT_AUDIENCE: { routerTransform: true, batching: true },
   ROKT: { routerTransform: true, batching: true, transformerProxy: true },
+  PUSHWOOSH: { routerTransform: true, batching: true },
   SURVICATE: { routerTransform: true },
   // dev-only fixture — see src/v0/destinations/test_destination/config.ts
   TEST_DESTINATION: { routerTransform: true, batching: true },

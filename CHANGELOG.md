@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.160.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.159.0...v1.160.0) (2026-10-16)
+
+
+### Features
+
+* **hs_audience:** hubspot audience list membership destination ([4b3f6e5](https://github.com/rudderlabs/rudder-transformer/commit/4b3f6e570a66a486953d26c5a787ef4d3785bceb))
+* **hs_audience:** hubspot audience list membership destination ([#5638](https://github.com/rudderlabs/rudder-transformer/issues/5638)) ([0ba2227](https://github.com/rudderlabs/rudder-transformer/commit/0ba2227282ce962ef6828ebad7257c0da5f269cc)), closes [rudder-integrations-config#2798](https://github.com/rudderlabs/rudder-integrations-config/issues/2798) [rudder-integrations-info#784](https://github.com/rudderlabs/rudder-integrations-info/issues/784) [rudder-specs#204](https://github.com/rudderlabs/rudder-specs/issues/204)
+
+
+### Bug Fixes
+
+* hubspot audience enhance membership result validation ([2c8c5a3](https://github.com/rudderlabs/rudder-transformer/commit/2c8c5a3461048fba0a37dfeaacb31e3ce12139e2))
+* hubspot audience live tests ([15f1bc1](https://github.com/rudderlabs/rudder-transformer/commit/15f1bc1a0599c97bdcc826ab4ad93b2074c047fb))
+
+## [1.159.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.158.0...v1.159.0) (2026-10-16)
+
+
+### Features
+
+* **rokt:** map track conversion types from destination config ([#5679](https://github.com/rudderlabs/rudder-transformer/issues/5679)) ([09ef263](https://github.com/rudderlabs/rudder-transformer/commit/09ef26372d5090a85bb7cfd9fe20d734fa96bf40))
+
+
+### Bug Fixes
+
+* **intercom:** abort archived contact conflicts ([#5678](https://github.com/rudderlabs/rudder-transformer/issues/5678)) ([5064184](https://github.com/rudderlabs/rudder-transformer/commit/5064184d87868e92191c0bad3d9153335d18be44))
+* **user-transformations:** preserve log in cached V1 contexts ([#5637](https://github.com/rudderlabs/rudder-transformer/issues/5637)) ([baf5d6a](https://github.com/rudderlabs/rudder-transformer/commit/baf5d6af3334e69516d513a37555a695d0069bc0))
+
+## [1.158.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.157.0...v1.158.0) (2026-10-14)
+
+
+### Features
+
+* **gainsight_px_audience:** add Gainsight PX Audience destination ([#5669](https://github.com/rudderlabs/rudder-transformer/issues/5669)) ([98abb78](https://github.com/rudderlabs/rudder-transformer/commit/98abb78e1fdd927766a080615aa949406a6f3e3f)), closes [rudder-specs#216](https://github.com/rudderlabs/rudder-specs/issues/216) [integrations-config#2823](https://github.com/rudderlabs/integrations-config/issues/2823) [integrations-info#793](https://github.com/rudderlabs/integrations-info/issues/793) [webapp#10262](https://github.com/rudderlabs/webapp/issues/10262) [Lookout#945](https://github.com/rudderlabs/Lookout/issues/945)
+
+
+### Bug Fixes
+
+* **rokt:** hardcode mParticle events endpoint ([#5670](https://github.com/rudderlabs/rudder-transformer/issues/5670)) ([d7e8e4f](https://github.com/rudderlabs/rudder-transformer/commit/d7e8e4f4cd8d0fd632b5718f2c142a23359af1c4))
+
 ## [1.157.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.156.0...v1.157.0) (2026-10-12)
 
 

@@ -155,7 +155,6 @@ const commonHandler = async (
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
-
   logger.requestLog(`${commonMsg} request`, {
     metadata: statTags?.metadata,
     requestDetails: {

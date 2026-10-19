@@ -29,12 +29,18 @@ jobs:
           curl https://cursor.com/install -fsS | bash
           echo "$HOME/.cursor/bin" >> $GITHUB_PATH
 
+      # Cursor loads Claude Code hooks from .claude/settings.json; its lint-staged hook blocks every shell command.
+      - name: Disable Claude Code hooks for Cursor
+        run: rm -f .claude/settings.json .claude/settings.local.json
+
       - name: Run Integration Version Audit and Create Linear Tickets
+        id: audit
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
           LINEAR_TEAM_ID: ${{ secrets.LINEAR_TEAM_ID }}
         run: |
+          set -o pipefail
           cursor-agent -p "⚠️ CRITICAL REQUIREMENTS:
           1. Follow the plan in @.github/scripts/integrations_version_audit_plan.md
           2. You MUST create Linear tickets DIRECTLY using Linear API calls during this execution
@@ -44,5 +50,36 @@ jobs:
           6. Make Linear API calls directly using your capabilities to create/update tickets immediately after analysis
           7. Your output MUST include actual Linear ticket URLs (like https://linear.app/...)
           8. If you create a script file instead of creating tickets, the task has FAILED
+          9. After the master ticket is created or refreshed, print one line exactly as: MASTER_TICKET_URL: <master ticket URL>
 
-          Execute the audit plan: analyze integrations, then create or update Linear tickets using direct API calls. Include ticket URLs in your final output." --force
+          Execute the audit plan: analyze integrations, then create or update Linear tickets using direct API calls. Include ticket URLs in your final output." --force | tee audit_output.txt
+
+      - name: Build Slack message
+        id: message
+        if: always()
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          # cursor-agent exits 0 even when Linear calls fail, so success needs the master ticket URL.
+          master_url=$(grep 'MASTER_TICKET_URL' audit_output.txt 2>/dev/null | grep -oE 'https://linear\.app/[^] )>*`]+' | tail -1 || true)
+          if [ "${{ steps.audit.outcome }}" = "success" ] && [ -n "$master_url" ]; then
+            text=":white_check_mark: *Integration Version Audit (Rudder Transformer) completed*"$'\n'"Parent ticket: $master_url"
+          else
+            text=":x: *Integration Version Audit (Rudder Transformer) failed*: no master ticket was created or updated"
+          fi
+          text="$text"$'\n'"<$RUN_URL|View workflow run>"$'\n'"CC: <!subteam^S02AEQL26CT>"
+          echo "text=$(jq -n --arg t "$text" '$t')" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Slack
+        if: always()
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        continue-on-error: true
+        with:
+          method: chat.postMessage
+          errors: true
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "channel": "${{ secrets.SLACK_INTEGRATION_DEV_CHANNEL_ID }}",
+              "text": ${{ steps.message.outputs.text }}
+            }

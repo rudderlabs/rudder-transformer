@@ -18,6 +18,7 @@ export const destination: Destination = {
   Config: {
     serverToServerKey: 'server-key',
     serverToServerSecret: 'server-secret',
+    eventsMapping: [{ from: 'purchase', to: 'mapped-purchase' }],
   },
   Enabled: true,
   WorkspaceID: 'ws-1',

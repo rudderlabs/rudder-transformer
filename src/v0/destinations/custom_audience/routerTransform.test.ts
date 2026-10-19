@@ -4,7 +4,7 @@ import { Integration } from './routerTransform';
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
-import { AUTHENTICATION_TYPES } from './constants';
+import { ACCOUNT_DEFINITION_NAMES, AUTHENTICATION_TYPES } from './constants';
 import type {
   Action,
   ActionConfig,
@@ -47,6 +47,7 @@ const audienceIdFreeInsertAction: ActionConfig = {
 
 const buildDestination = (
   configOverrides: Partial<CustomAudienceDestConfig> = {},
+  deliveryAccount?: unknown,
 ): CustomAudienceDestination => ({
   ID: 'dest-1',
   Name: 'custom_audience',
@@ -65,6 +66,7 @@ const buildDestination = (
   Enabled: true,
   WorkspaceID: 'ws-1',
   Transformations: [],
+  deliveryAccount: deliveryAccount as CustomAudienceDestination['deliveryAccount'],
 });
 
 const buildConnection = (
@@ -352,36 +354,120 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
 
   const authCases = [
     {
-      name: 'Bearer',
-      overrides: { authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN, bearerToken: 'sek-ret' },
-      expectedHeader: 'Authorization',
-      expectedValue: 'Bearer sek-ret',
+      name: 'legacy inline credentials when toggle is absent',
+      destination: buildDestination({
+        authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+        bearerToken: 'legacy-token',
+      }),
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer legacy-token',
+      },
     },
     {
-      name: 'API key',
-      overrides: {
-        authenticationType: AUTHENTICATION_TYPES.API_KEY,
-        apiKeyName: 'X-Custom-Key',
-        apiKeyValue: 'secret',
+      name: 'linked account secret when toggle is true',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+          options: {},
+          secret: { bearerToken: 'account-token' },
+        },
+      ),
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer account-token',
       },
-      expectedHeader: 'X-Custom-Key',
-      expectedValue: 'secret',
+    },
+    {
+      name: 'linked account over stale inline credentials when toggle is absent',
+      destination: buildDestination(
+        {
+          rudderAccountId: 'account-1',
+          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.API_KEY,
+          options: { apiKeyName: 'X-Account-Key' },
+          secret: { apiKeyValue: 'account-secret' },
+        },
+      ),
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        'X-Account-Key': 'account-secret',
+      },
+    },
+    {
+      name: 'no auth when toggle is false despite stored auth data',
+      destination: buildDestination(
+        {
+          authenticationEnabled: false,
+          rudderAccountId: 'account-1',
+          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+          options: {},
+          secret: { bearerToken: 'account-token' },
+        },
+      ),
+      expectedHeaders: { 'Content-Type': 'application/json' },
     },
   ];
 
-  it.each(authCases)(
-    'builds $name auth header when configured',
-    async ({ overrides, expectedHeader, expectedValue }) => {
-      const destination = buildDestination(overrides);
-      const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
+  it.each(authCases)('resolves $name', async ({ destination, expectedHeaders }) => {
+    const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
 
-      const results = await processDestinationIntegration(inputs, Integration, {});
+    const results = await processDestinationIntegration(inputs, Integration, {});
 
-      const success = results.find((r) => r.statusCode === 200);
-      const batched = success?.batchedRequest;
-      if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
-      const headers = batched.headers as Record<string, string>;
-      expect(headers[expectedHeader]).toBe(expectedValue);
+    const success = results.find((r) => r.statusCode === 200);
+    const batched = success?.batchedRequest;
+    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
+    expect(batched.headers).toEqual(expectedHeaders);
+  });
+
+  const accountErrorCases = [
+    {
+      name: 'missing linked account ID',
+      destination: buildDestination({ authenticationEnabled: true, authenticationType: undefined }),
+      errorMatch: /rudderAccountId does not identify a linked delivery account/,
+    },
+    {
+      name: 'null account definition name',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        { accountDefinitionName: null, options: {}, secret: {} },
+      ),
+      errorMatch: /missing accountDefinitionName/,
+    },
+    {
+      name: 'empty account secret',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+          options: {},
+          secret: {},
+        },
+      ),
+      errorMatch: /missing: secret\.bearerToken/,
+    },
+  ];
+
+  it.each(accountErrorCases)(
+    'returns controlled 400 for $name',
+    async ({ destination, errorMatch }) => {
+      const results = await processDestinationIntegration(
+        [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)],
+        Integration,
+        {},
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0]).toMatchObject({ statusCode: 400, batched: false });
+      expect(results[0].error).toMatch(errorMatch);
     },
   );
 

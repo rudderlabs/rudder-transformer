@@ -1,6 +1,7 @@
 import cluster from 'cluster';
-import { start, stuckWorkerRespawnFunc, workerShutdownFn } from './cluster';
+import { primaryShutdownFn, start, stuckWorkerRespawnFunc, workerShutdownFn } from './cluster';
 import Koa from 'koa';
+import logger from '../logger';
 
 describe('cluster test', () => {
   beforeAll(() => {
@@ -67,5 +68,53 @@ describe('cluster test', () => {
     expect(fn).toBeDefined();
     await expect(fn()).resolves.toBeUndefined;
     expect(server.listening).toBe(false);
+  });
+
+  describe('process info log level on shutdown', () => {
+    const shutdownCases = [
+      { signal: 'SIGTERM', level: 'info' },
+      { signal: 'SIGINT', level: 'info' },
+      { signal: 'STUCK_WORKER', level: 'error' },
+      { signal: 'RESTART_LIMIT_EXCEEDED', level: 'error' },
+      { signal: undefined, level: 'error' },
+    ];
+
+    const processInfoLevels = (infoSpy: jest.SpyInstance, errorSpy: jest.SpyInstance) =>
+      [
+        ...infoSpy.mock.calls.map(([msg]) => ['info', msg]),
+        ...errorSpy.mock.calls.map(([msg]) => ['error', msg]),
+      ]
+        .filter(([, msg]) => typeof msg === 'string' && msg.startsWith('Process info:'))
+        .map(([level]) => level);
+
+    let infoSpy: jest.SpyInstance;
+    let errorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      infoSpy = jest.spyOn(logger, 'info');
+      errorSpy = jest.spyOn(logger, 'error');
+    });
+
+    afterEach(() => {
+      infoSpy.mockRestore();
+      errorSpy.mockRestore();
+    });
+
+    it.each(shutdownCases)(
+      'workerShutdownFn logs process info at $level for $signal',
+      async ({ signal, level }) => {
+        const server = new Koa().listen(0);
+        await workerShutdownFn(() => server)(signal);
+        expect(processInfoLevels(infoSpy, errorSpy)).toEqual([level]);
+      },
+    );
+
+    it.each(shutdownCases)(
+      'primaryShutdownFn logs process info at $level for $signal',
+      async ({ signal, level }) => {
+        await primaryShutdownFn(() => null)(signal);
+        expect(processInfoLevels(infoSpy, errorSpy)).toEqual([level]);
+      },
+    );
   });
 });

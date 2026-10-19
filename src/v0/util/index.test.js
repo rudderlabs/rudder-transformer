@@ -1676,3 +1676,29 @@ describe('E.164 phone number helpers', () => {
     });
   });
 });
+
+describe('dev warnings on hot paths', () => {
+  const logger = require('../../logger');
+  let warnSpy;
+
+  beforeEach(() => {
+    warnSpy = jest.spyOn(logger, 'warn');
+  });
+
+  afterEach(() => {
+    warnSpy.mockRestore();
+  });
+
+  it.each([
+    ['undefined', undefined],
+    ['null', null],
+  ])('isEmptyObject returns true for %s without warning', (_label, input) => {
+    expect(utilities.isEmptyObject(input)).toBe(true);
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('getValueFromMessage reads a single-element sourceKeys list without warning', () => {
+    expect(utilities.getValueFromMessage({ a: 'value' }, ['a'])).toBe('value');
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+});

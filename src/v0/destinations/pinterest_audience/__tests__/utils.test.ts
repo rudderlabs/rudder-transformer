@@ -184,6 +184,12 @@ describe('resolveRecordFormat (spec D15)', () => {
     { recordFormat: 'records' },
     { recordFormat: 'v3' },
     { recordFormat: 2 },
+    { recordFormat: null },
+    // Exact match only: a forgiving resolver would switch these to records_v2, which Pinterest
+    // refuses (403 code 29) until it enables the format for the app.
+    { recordFormat: 'RECORDS_V2' },
+    { recordFormat: ' records_v2' },
+    { recordFormat: 'records_v2 ' },
   ])('defaults to the classic string for %p', (definitionConfig) => {
     expect(resolveRecordFormat(definitionConfig as Record<string, unknown> | undefined)).toBe(
       RECORD_FORMATS.CLASSIC,

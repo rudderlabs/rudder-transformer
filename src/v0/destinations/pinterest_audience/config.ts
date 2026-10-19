@@ -15,7 +15,8 @@ export const getEndpoint = (adAccountId: string, customerListId: string): string
  * carries up to 2 × this many identifiers. Pinterest documents no ceiling; 2742
  * EXCEEDED_MAX_USER_LISTS_PER_REQUEST_LIMIT is the over-limit code.
  */
-// PROVISIONAL — pinned by probe P1 (spec §9) once run on the classic string (unblocked 2026-10-16)
+// Probe P1 (spec §9, 2026-10-16): Pinterest accepted ≥ 10,000 classic identifiers in one
+// request, so 1000 rows stays.
 export const MAX_RECORDS_PER_REQUEST = 1000;
 
 /**

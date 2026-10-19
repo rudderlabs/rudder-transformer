@@ -1,4 +1,5 @@
 import sha256 from 'sha256';
+import stats from '../../../../util/stats';
 import { Integration } from '../routerTransform';
 import { processDestinationIntegration } from '../../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../../types/rudderEvents';
@@ -147,13 +148,24 @@ describe('pinterest_audience router transform', () => {
   );
 
   it('D20 drops PHONE before processing under the classic format (not counted as invalid)', async () => {
-    const results = await run([
-      buildInput(1, 'insert', { EMAIL: 'a@example.com', PHONE: '+1 (415) 555-0132' }),
-    ]);
-    expect(bodyOf(successes(results)[0])).toEqual({
-      operation_type: 'ADD',
-      records: sha256('a@example.com'),
-    });
+    // A too-short phone would be counted on pinterest_audience_invalid_field if it reached
+    // processAudienceRecord, so the metric staying silent proves PHONE was dropped first.
+    const increment = jest.spyOn(stats, 'increment');
+    try {
+      const results = await run([
+        buildInput(1, 'insert', { EMAIL: 'a@example.com', PHONE: '123' }),
+      ]);
+      expect(bodyOf(successes(results)[0])).toEqual({
+        operation_type: 'ADD',
+        records: sha256('a@example.com'),
+      });
+      expect(increment).not.toHaveBeenCalledWith(
+        'pinterest_audience_invalid_field',
+        expect.anything(),
+      );
+    } finally {
+      increment.mockRestore();
+    }
   });
 
   it('D21 aborts a PHONE-only row under the classic format and names the classic identifiers', async () => {

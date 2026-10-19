@@ -4,7 +4,7 @@ import {
   type DeliveryContext,
 } from '../../../../services/destination/destinationIntegration/delivery';
 import { Integration } from '../routerTransform';
-import { extractPinterestErrorMessage, isAuthErrorBody } from '../delivery';
+import { extractPinterestErrorMessage } from '../delivery';
 
 const AD_ACCOUNT_ID = '549756359984';
 const LIST_ID = '643';
@@ -59,16 +59,16 @@ describe('pinterest_audience delivery — verdicts', () => {
       { kind: 'retry', as: 'authExpired', reason: '2: Authentication failed.' },
     ],
     [
-      '401 with no body → retry without a refresh',
+      '401 with no body → authExpired (refresh, never a same-token retry)',
       401,
       '',
-      { kind: 'retry', reason: 'Pinterest request failed with status 401' },
+      { kind: 'retry', as: 'authExpired', reason: 'Pinterest request failed with status 401' },
     ],
     [
-      '401 not about auth → retry without a refresh',
+      '401 with any other body → authExpired',
       401,
-      { code: 29, message: 'You are not permitted to access that resource.' },
-      { kind: 'retry', reason: '29: You are not permitted to access that resource.' },
+      { code: 3, message: 'Not authorized to access this resource.' },
+      { kind: 'retry', as: 'authExpired', reason: '3: Not authorized to access this resource.' },
     ],
     [
       '403 → abort naming the ad account',
@@ -126,17 +126,5 @@ describe('extractPinterestErrorMessage', () => {
     ['empty body', '', 502, 'Pinterest request failed with status 502'],
   ])('%s', (_name, response, status, expected) => {
     expect(extractPinterestErrorMessage(response, status)).toBe(expected);
-  });
-});
-
-describe('isAuthErrorBody', () => {
-  it.each<[unknown, boolean]>([
-    [{ code: 2, message: 'Authentication failed.' }, true],
-    [{ code: 3, message: 'Access token expired.' }, true],
-    [{ code: 29, message: 'You are not permitted to access that resource.' }, false],
-    [{ message: 'Authentication failed.' }, false],
-    ['Authentication failed.', false],
-  ])('%j → %s', (response, expected) => {
-    expect(isAuthErrorBody(response)).toBe(expected);
   });
 });

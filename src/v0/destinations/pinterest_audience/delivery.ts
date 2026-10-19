@@ -9,7 +9,6 @@
 import {
   abort,
   authExpired,
-  retry,
   type DeliveryContext,
   type DeliverySpec,
   type StatusOverrideMap,
@@ -33,17 +32,6 @@ export const extractPinterestErrorMessage = (response: unknown, status: number):
   return typeof code === 'number' ? `${code}: ${message}` : message;
 };
 
-// PROVISIONAL — not yet pinned: probe P5 (spec §9) is blocked until Pinterest grants Standard access. Expected `{ code, message }` with an auth/token/expiry message.
-// Update this pattern from the captured 401 body of an expired/revoked token.
-const AUTH_MESSAGE_PATTERN = /auth|token|expired/i;
-
-/** A 401 drives a token refresh only when the BODY says auth — never from the status alone. */
-export const isAuthErrorBody = (response: unknown): boolean => {
-  const { code } = errorBodyOf(response);
-  const message = messageOf(response);
-  return typeof code === 'number' && !!message && AUTH_MESSAGE_PATTERN.test(message);
-};
-
 /** Pinterest codes for "customer list not found" (spec §3.2). */
 const LIST_NOT_FOUND_CODES: ReadonlySet<number> = new Set([1001, 1018]);
 
@@ -60,12 +48,11 @@ const listNotFound = (ctx: DeliveryContext) =>
   );
 
 const pinterestAudienceStatusOverrides: StatusOverrideMap = {
-  // A 401 is never terminal: the default would abort and drop up to MAX_RECORDS_PER_REQUEST
-  // members. Refresh only on a recognised auth body; anything else retries without a refresh.
-  401: (ctx) => {
-    const reason = extractPinterestErrorMessage(ctx.response, ctx.status);
-    return isAuthErrorBody(ctx.response) ? authExpired(reason) : retry(reason);
-  },
+  // Every 401 refreshes the token and retries. Retrying with the same token cannot succeed,
+  // and aborting would drop up to MAX_RECORDS_PER_REQUEST members. A refresh that was not
+  // needed is harmless; a revoked grant fails the refresh and marks the account for
+  // re-authorisation in rudder-auth.
+  401: (ctx) => authExpired(extractPinterestErrorMessage(ctx.response, ctx.status)),
   403: (ctx) => {
     const detail = messageOf(ctx.response)?.replace(/\.$/, '');
     return abort(

@@ -50,9 +50,10 @@ export type CustomAudienceHeader = z.infer<typeof customAudienceHeaderSchema>;
 export const CustomAudienceDestConfigSchema = z
   .object({
     baseUrl: z.string(),
-    authenticationType: z.enum(
-      Object.values(AUTHENTICATION_TYPES) as [AuthenticationType, ...AuthenticationType[]],
-    ),
+    authenticationEnabled: z.boolean().optional(),
+    authenticationType: z
+      .enum(Object.values(AUTHENTICATION_TYPES) as [AuthenticationType, ...AuthenticationType[]])
+      .optional(),
     headers: z.array(customAudienceHeaderSchema).optional(),
     actions: actionsSchema,
     basicAuthUserName: z.string().optional(),
@@ -64,6 +65,24 @@ export const CustomAudienceDestConfigSchema = z
   .passthrough();
 
 export type CustomAudienceDestConfig = z.infer<typeof CustomAudienceDestConfigSchema>;
+
+export const CustomAudienceDeliveryAccountSchema = z
+  .object({
+    options: z.record(z.unknown()).nullish(),
+    secret: z.record(z.unknown()).nullish(),
+    accountDefinitionName: z.string().nullish(),
+  })
+  .passthrough();
+
+export type ParsedCustomAudienceDeliveryAccount = z.infer<
+  typeof CustomAudienceDeliveryAccountSchema
+>;
+
+export type CustomAudienceDeliveryAccount = ParsedCustomAudienceDeliveryAccount;
+
+export type CustomAudienceAccountAuthHandler = (
+  account: ParsedCustomAudienceDeliveryAccount,
+) => Record<string, string>;
 
 export const customMappingSchema = z.object({
   from: z.string().min(1, 'Custom mapping "from" value must be non-empty'),
@@ -94,7 +113,10 @@ export type CustomAudienceItemBody = {
   record: Record<string, string>;
 };
 
-export type CustomAudienceDestination = Destination<CustomAudienceDestConfig>;
+export type CustomAudienceDestination = Destination<
+  CustomAudienceDestConfig,
+  CustomAudienceDeliveryAccount | null
+>;
 
 export type CustomAudienceConnection = Connection<{
   destination: CustomAudienceConnectionDestConfig;

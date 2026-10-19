@@ -1,19 +1,23 @@
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
 
 import { HashingType, processAudienceRecord, type AudienceField } from '../../util/audienceUtils';
 
 import { RecordAction } from '../../../types/rudderEvents';
-import { AUTHENTICATION_TYPES, ERROR_MESSAGES } from './constants';
+import { ACCOUNT_DEFINITION_NAMES, AUTHENTICATION_TYPES, ERROR_MESSAGES } from './constants';
 import type {
   Action,
   ActionConfig,
   ActionFieldConfig,
   AuthenticationType,
+  CustomAudienceAccountAuthHandler,
   CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
+  CustomAudienceDestination,
+  ParsedCustomAudienceDeliveryAccount,
   CustomAudienceHeader,
   CustomMapping,
 } from './types';
+import { CustomAudienceDeliveryAccountSchema } from './types';
 
 export const lookupActionConfig = (
   action: Action,
@@ -136,27 +140,109 @@ export const processFields = (
   return processed;
 };
 
-const buildAuthHeaders = (
+const buildBasicAuthHeader = (username: string, password: string): Record<string, string> => ({
+  Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
+});
+
+const buildBearerTokenHeader = (token: string): Record<string, string> => ({
+  Authorization: `Bearer ${token}`,
+});
+
+const buildApiKeyHeader = (name: string, value: string): Record<string, string> => ({
+  [name]: value,
+});
+
+const buildLegacyAuthHeaders = (
   authenticationType: AuthenticationType,
   destConfig: CustomAudienceDestConfig,
 ): Record<string, string> => {
   switch (authenticationType) {
     case AUTHENTICATION_TYPES.NO_AUTH:
       return {};
-    case AUTHENTICATION_TYPES.BASIC_AUTH: {
-      // Schema guarantees these fields are present when authenticationType === basicAuth.
-      const encoded = Buffer.from(
-        `${destConfig.basicAuthUserName!}:${destConfig.basicAuthPassword!}`,
-      ).toString('base64');
-      return { Authorization: `Basic ${encoded}` };
-    }
+    case AUTHENTICATION_TYPES.BASIC_AUTH:
+      return buildBasicAuthHeader(destConfig.basicAuthUserName!, destConfig.basicAuthPassword!);
     case AUTHENTICATION_TYPES.BEARER_TOKEN:
-      return { Authorization: `Bearer ${destConfig.bearerToken!}` };
+      return buildBearerTokenHeader(destConfig.bearerToken!);
     case AUTHENTICATION_TYPES.API_KEY:
-      return { [destConfig.apiKeyName!]: destConfig.apiKeyValue! };
+      return buildApiKeyHeader(destConfig.apiKeyName!, destConfig.apiKeyValue!);
     default:
       return {};
   }
+};
+
+const requireAccountValues = (
+  account: ParsedCustomAudienceDeliveryAccount,
+  values: Array<{ field: string; value: unknown }>,
+): string[] => {
+  const missingFields = values
+    .filter(({ value }) => typeof value !== 'string' || value.length === 0)
+    .map(({ field }) => field);
+  if (missingFields.length > 0) {
+    throw new ConfigurationError(
+      ERROR_MESSAGES.INCOMPLETE_ACCOUNT(account.accountDefinitionName!, missingFields),
+    );
+  }
+  return values.map(({ value }) => value as string);
+};
+
+const ACCOUNT_AUTH_HANDLERS: Record<string, CustomAudienceAccountAuthHandler> = {
+  [ACCOUNT_DEFINITION_NAMES.BASIC_AUTH]: (account) => {
+    const [username, password] = requireAccountValues(account, [
+      { field: 'options.basicAuthUserName', value: account.options?.basicAuthUserName },
+      { field: 'secret.basicAuthPassword', value: account.secret?.basicAuthPassword },
+    ]);
+    return buildBasicAuthHeader(username, password);
+  },
+  [ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN]: (account) => {
+    const [token] = requireAccountValues(account, [
+      { field: 'secret.bearerToken', value: account.secret?.bearerToken },
+    ]);
+    return buildBearerTokenHeader(token);
+  },
+  [ACCOUNT_DEFINITION_NAMES.API_KEY]: (account) => {
+    const [name, value] = requireAccountValues(account, [
+      { field: 'options.apiKeyName', value: account.options?.apiKeyName },
+      { field: 'secret.apiKeyValue', value: account.secret?.apiKeyValue },
+    ]);
+    return buildApiKeyHeader(name, value);
+  },
+};
+
+const resolveAccountAuth = (deliveryAccount: unknown): Record<string, string> => {
+  const parsedAccount = CustomAudienceDeliveryAccountSchema.safeParse(deliveryAccount);
+  if (!parsedAccount.success) {
+    throw new ConfigurationError(ERROR_MESSAGES.MISSING_DELIVERY_ACCOUNT);
+  }
+  const account = parsedAccount.data;
+  if (!account.accountDefinitionName) {
+    throw new ConfigurationError(ERROR_MESSAGES.MISSING_ACCOUNT_DEFINITION);
+  }
+  const handler = ACCOUNT_AUTH_HANDLERS[account.accountDefinitionName];
+  if (!handler) {
+    throw new ConfigurationError(
+      ERROR_MESSAGES.UNKNOWN_ACCOUNT_DEFINITION(account.accountDefinitionName),
+    );
+  }
+  return handler(account);
+};
+
+export const resolveAuth = (destination: CustomAudienceDestination): Record<string, string> => {
+  const { Config: destConfig, deliveryAccount } = destination;
+  if (destConfig.authenticationEnabled === false) return {};
+
+  const hasLinkedAccount =
+    typeof destConfig.rudderAccountId === 'string' && destConfig.rudderAccountId.length > 0;
+  if (destConfig.authenticationEnabled === true) {
+    if (!hasLinkedAccount) {
+      throw new ConfigurationError(ERROR_MESSAGES.MISSING_ACCOUNT_ID);
+    }
+    return resolveAccountAuth(deliveryAccount);
+  }
+  if (hasLinkedAccount) return resolveAccountAuth(deliveryAccount);
+  if (destConfig.authenticationType) {
+    return buildLegacyAuthHeaders(destConfig.authenticationType, destConfig);
+  }
+  return {};
 };
 
 const flattenConfigHeaders = (
@@ -173,9 +259,9 @@ const flattenConfigHeaders = (
 };
 
 export const buildRequestHeaders = (
-  destConfig: CustomAudienceDestConfig,
+  destination: CustomAudienceDestination,
 ): Record<string, string> => ({
   'Content-Type': 'application/json',
-  ...flattenConfigHeaders(destConfig.headers),
-  ...buildAuthHeaders(destConfig.authenticationType, destConfig),
+  ...flattenConfigHeaders(destination.Config.headers),
+  ...resolveAuth(destination),
 });

@@ -40,7 +40,7 @@ steps:
   - name: commonFields
     description: |
       Builds common fields in destination payload.
-      ref: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api?view=li-lms-2024-02&tabs=curl#adding-multiple-conversion-events-in-a-batch
+      ref: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api?view=li-lms-2026-09&tabs=curl#adding-multiple-conversion-events-in-a-batch
     template: |
       let commonFields = .message.().({
         "conversionHappenedAt": $.fetchAndVerifyConversionHappenedAt(^.message),  

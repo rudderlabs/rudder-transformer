@@ -204,10 +204,10 @@
   },
   {
     "Destination": "Linkedin Ads",
-    "Version currently referred in CloudMode Services": "/rest/conversionEvents (API version header: 202511)",
-    "Link to check Versions documentation": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes",
-    "Latest Version rolled out": "202511 (November 2025)",
-    "Sunset Date Current Version used in backend": "November 2026 (version 202511 released November 2025, supported for minimum 12 months)"
+    "Version currently referred in CloudMode Services": "/rest/conversionEvents (API version header: 202609)",
+    "Link to check Versions documentation": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes?view=li-lms-2026-09 https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations?view=li-lms-2026-09",
+    "Latest Version rolled out": "202609 (September 2026; verified from the linked Microsoft Learn references for INT-7383 on October 15, 2026)",
+    "Sunset Date Current Version used in backend": "No exact sunset date recorded for 202609; LinkedIn monthly versions are supported for a minimum of one year"
   },
   {
     "Destination": "Linkedin Audience",

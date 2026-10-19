@@ -14,6 +14,12 @@ import {
   hashRequiredConnection,
   useInsertConfigDestination,
   useInsertConfigWithRequiredInsertFieldDestination,
+  accountManagedDestination,
+  accountManagedHeaders,
+  accountManagedApiKeyDestination,
+  accountManagedApiKeyHeaders,
+  authenticationDisabledDestination,
+  authenticationDisabledHeaders,
 } from '../common';
 
 const errorStatTags = {
@@ -727,6 +733,195 @@ export const data: RouterTestData[] = [
               error: 'Missing required fields for action "update": externalId',
               statTags: errorStatTags,
               destination: useInsertConfigWithRequiredInsertFieldDestination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-account-auth',
+    name: destType,
+    description: 'Uses the linked delivery account secret when authentication is enabled',
+    scenario: 'Business',
+    successCriteria: 'The transformed request carries the masked linked-account bearer token',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: sha256('account@example.com') },
+              }),
+              metadata: generateMetadata(1),
+              destination: accountManagedDestination,
+              connection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertEndpoint,
+                endpointPath: '/insert',
+                headers: accountManagedHeaders,
+                params: {},
+                body: {
+                  JSON: {
+                    audienceId: 'aud-42',
+                    users: [{ email: sha256('account@example.com') }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1)],
+              batched: true,
+              statusCode: 200,
+              destination: accountManagedDestination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-account-api-key-auth',
+    name: destType,
+    description: 'Uses linked API-key accounts with configured header names',
+    scenario: 'Business',
+    successCriteria: 'The transformed request carries the linked-account API key header',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: sha256('account-api-key@example.com') },
+              }),
+              metadata: generateMetadata(1),
+              destination: accountManagedApiKeyDestination,
+              connection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertEndpoint,
+                endpointPath: '/insert',
+                headers: accountManagedApiKeyHeaders,
+                params: {},
+                body: {
+                  JSON: {
+                    audienceId: 'aud-42',
+                    users: [{ email: sha256('account-api-key@example.com') }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1)],
+              batched: true,
+              statusCode: 200,
+              destination: accountManagedApiKeyDestination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-auth-disabled',
+    name: destType,
+    description: 'Suppresses stored inline and account auth when authentication is disabled',
+    scenario: 'Business',
+    successCriteria: 'The transformed request contains only configured non-auth headers',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: sha256('disabled@example.com') },
+              }),
+              metadata: generateMetadata(1),
+              destination: authenticationDisabledDestination,
+              connection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertEndpoint,
+                endpointPath: '/insert',
+                headers: authenticationDisabledHeaders,
+                params: {},
+                body: {
+                  JSON: {
+                    audienceId: 'aud-42',
+                    users: [{ email: sha256('disabled@example.com') }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1)],
+              batched: true,
+              statusCode: 200,
+              destination: authenticationDisabledDestination,
             },
           ],
         },

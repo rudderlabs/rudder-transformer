@@ -18,6 +18,9 @@ const CONFIG_CATEGORIES = {
 
 const PARTNER_NAME = 'RudderStack';
 
+// TikTok soft-deprecated PlaceAnOrder in favor of Purchase.
+// Keep legacy mappings until all customers migrate to the new event names.
+// https://ads.tiktok.com/help/article/about-events-api-for-offline
 const EVENT_NAME_MAPPING = {
   addpaymentinfo: 'AddPaymentInfo',
   addtocart: 'AddToCart',
@@ -28,8 +31,10 @@ const EVENT_NAME_MAPPING = {
   completeregistration: 'CompleteRegistration',
   contact: 'Contact',
   download: 'Download',
+  lead: 'Lead',
   'order completed': 'PlaceAnOrder',
   'payment info entered': 'AddPaymentInfo',
+  purchase: 'Purchase',
   'product added': 'AddToCart',
   'product added to wishlist': 'AddToWishlist',
   search: 'Search',

@@ -1,5 +1,5 @@
 import sha256 from 'sha256';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
 import { HashingType } from '../../util/audienceUtils';
 import {
   buildRequestHeaders,
@@ -9,11 +9,12 @@ import {
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import { AUTHENTICATION_TYPES } from './constants';
+import { ACCOUNT_DEFINITION_NAMES, AUTHENTICATION_TYPES } from './constants';
 import type {
   ActionConfig,
   CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
+  CustomAudienceDestination,
 } from './types';
 
 const baseConnection: CustomAudienceConnectionDestConfig = {
@@ -276,56 +277,230 @@ describe('processFields', () => {
 });
 
 describe('buildRequestHeaders', () => {
-  const cases: {
+  const buildDestination = (
+    configOverrides: Partial<CustomAudienceDestConfig> = {},
+    deliveryAccount?: unknown,
+  ): CustomAudienceDestination =>
+    ({
+      ID: 'dest-1',
+      Config: { ...baseDestConfig, ...configOverrides },
+      deliveryAccount: deliveryAccount as CustomAudienceDestination['deliveryAccount'],
+    }) as CustomAudienceDestination;
+
+  const successCases: {
     name: string;
-    overrides: Partial<CustomAudienceDestConfig>;
+    destination: CustomAudienceDestination;
     expectedHeaders: Record<string, string>;
   }[] = [
     {
-      name: 'returns Content-Type only for noAuth + no headers',
-      overrides: {},
+      name: 'returns Content-Type only for legacy noAuth',
+      destination: buildDestination(),
       expectedHeaders: { 'Content-Type': 'application/json' },
     },
     {
       name: 'merges destination headers',
-      overrides: { headers: [{ key: 'X-App', value: 'rudder' }] },
+      destination: buildDestination({ headers: [{ key: 'X-App', value: 'rudder' }] }),
       expectedHeaders: { 'Content-Type': 'application/json', 'X-App': 'rudder' },
     },
     {
-      name: 'builds Basic auth header with base64-encoded credentials',
-      overrides: {
+      name: 'builds legacy Basic auth header',
+      destination: buildDestination({
         authenticationType: AUTHENTICATION_TYPES.BASIC_AUTH,
-        basicAuthUserName: 'user',
-        basicAuthPassword: 'pass',
-      },
+        basicAuthUserName: 'legacy-user',
+        basicAuthPassword: 'legacy-pass',
+      }),
       expectedHeaders: {
         'Content-Type': 'application/json',
-        Authorization: `Basic ${Buffer.from('user:pass').toString('base64')}`,
+        Authorization: `Basic ${Buffer.from('legacy-user:legacy-pass').toString('base64')}`,
       },
     },
     {
-      name: 'builds Bearer token header',
-      overrides: { authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN, bearerToken: 'abc' },
+      name: 'builds legacy Bearer token header',
+      destination: buildDestination({
+        authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+        bearerToken: 'legacy-token',
+      }),
       expectedHeaders: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer abc',
+        Authorization: 'Bearer legacy-token',
       },
     },
     {
-      name: 'builds API key header with custom name',
-      overrides: {
+      name: 'builds legacy API key header',
+      destination: buildDestination({
         authenticationType: AUTHENTICATION_TYPES.API_KEY,
-        apiKeyName: 'X-API-Key',
-        apiKeyValue: 'secret',
-      },
+        apiKeyName: 'X-Legacy-Key',
+        apiKeyValue: 'legacy-secret',
+      }),
       expectedHeaders: {
         'Content-Type': 'application/json',
-        'X-API-Key': 'secret',
+        'X-Legacy-Key': 'legacy-secret',
       },
+    },
+    {
+      name: 'uses linked Basic auth account',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BASIC_AUTH,
+          options: { basicAuthUserName: 'account-user' },
+          secret: { basicAuthPassword: 'account-pass' },
+        },
+      ),
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${Buffer.from('account-user:account-pass').toString('base64')}`,
+      },
+    },
+    {
+      name: 'uses linked Bearer token account',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+          options: {},
+          secret: { bearerToken: 'account-token' },
+        },
+      ),
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer account-token',
+      },
+    },
+    {
+      name: 'uses linked API key account',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.API_KEY,
+          options: { apiKeyName: 'X-Account-Key' },
+          secret: { apiKeyValue: 'account-secret' },
+        },
+      ),
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        'X-Account-Key': 'account-secret',
+      },
+    },
+    {
+      name: 'gives linked account precedence over stale inline credentials when toggle is absent',
+      destination: buildDestination(
+        {
+          rudderAccountId: 'account-1',
+          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+          options: {},
+          secret: { bearerToken: 'account-token' },
+        },
+      ),
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer account-token',
+      },
+    },
+    {
+      name: 'suppresses all auth when toggle is false',
+      destination: buildDestination(
+        {
+          authenticationEnabled: false,
+          rudderAccountId: 'account-1',
+          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+          options: {},
+          secret: { bearerToken: 'account-token' },
+        },
+      ),
+      expectedHeaders: { 'Content-Type': 'application/json' },
+    },
+    {
+      name: 'uses no auth when toggle and legacy selector are absent',
+      destination: buildDestination({ authenticationType: undefined }),
+      expectedHeaders: { 'Content-Type': 'application/json' },
     },
   ];
 
-  it.each(cases)('$name', ({ overrides, expectedHeaders }) => {
-    expect(buildRequestHeaders({ ...baseDestConfig, ...overrides })).toEqual(expectedHeaders);
+  const failureCases: {
+    name: string;
+    destination: CustomAudienceDestination;
+    errorMessage: string;
+  }[] = [
+    {
+      name: 'toggle true without a linked account ID',
+      destination: buildDestination({ authenticationEnabled: true, rudderAccountId: undefined }),
+      errorMessage: 'rudderAccountId does not identify a linked delivery account',
+    },
+    {
+      name: 'linked account payload is missing',
+      destination: buildDestination({ authenticationEnabled: true, rudderAccountId: 'account-1' }),
+      errorMessage: 'deliveryAccount is missing or malformed',
+    },
+    {
+      name: 'account definition name is null',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        { accountDefinitionName: null, options: {}, secret: {} },
+      ),
+      errorMessage: 'missing accountDefinitionName',
+    },
+    {
+      name: 'account definition name is unknown',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        { accountDefinitionName: 'DESTINATION_UNKNOWN', options: {}, secret: {} },
+      ),
+      errorMessage: 'unknown accountDefinitionName: DESTINATION_UNKNOWN',
+    },
+    {
+      name: 'Basic account username is missing',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BASIC_AUTH,
+          options: {},
+          secret: { basicAuthPassword: 'pass' },
+        },
+      ),
+      errorMessage: 'missing: options.basicAuthUserName',
+    },
+    {
+      name: 'Bearer account secret is empty',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+          options: {},
+          secret: {},
+        },
+      ),
+      errorMessage: 'missing: secret.bearerToken',
+    },
+    {
+      name: 'API key account option and secret are incomplete',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.API_KEY,
+          options: {},
+          secret: {},
+        },
+      ),
+      errorMessage: 'missing: options.apiKeyName, secret.apiKeyValue',
+    },
+  ];
+
+  it.each(successCases)('$name', ({ destination, expectedHeaders }) => {
+    expect(buildRequestHeaders(destination)).toEqual(expectedHeaders);
+  });
+
+  it.each(failureCases)('throws ConfigurationError when $name', ({ destination, errorMessage }) => {
+    const build = () => buildRequestHeaders(destination);
+    expect(build).toThrow(ConfigurationError);
+    expect(build).toThrow(errorMessage);
   });
 });

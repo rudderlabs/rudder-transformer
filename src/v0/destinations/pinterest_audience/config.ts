@@ -54,7 +54,7 @@ export const RECORD_KEY_BY_IDENTIFIER = {
 export type RecordKey = (typeof RECORD_KEY_BY_IDENTIFIER)[PinterestIdentifier];
 
 /**
- * Body format for customer-list writes, chosen by the definition (spec D15).
+ * Body format for customer-list writes (spec D15).
  * `records`: classic comma-separated SHA-256 values (emails, MAIDs, IDFAs) — what Pinterest
  * accepts for our app today. `records_v2`: multi-field rows incl. `hashed_phone_number`, which
  * Pinterest enables per app (403 code 29 until then).
@@ -66,11 +66,13 @@ export const RECORD_FORMATS = {
 
 export type RecordFormat = (typeof RECORD_FORMATS)[keyof typeof RECORD_FORMATS];
 
-/** Absent, misspelt or unknown => classic: the format that cannot be refused for our app. */
-export const resolveRecordFormat = (
-  definitionConfig: Record<string, unknown> | undefined,
-): RecordFormat =>
-  definitionConfig?.recordFormat === RECORD_FORMATS.V2 ? RECORD_FORMATS.V2 : RECORD_FORMATS.CLASSIC;
+/**
+ * The format this destination sends. Classic until Pinterest enables `records_v2` for our app;
+ * switching it is a code change released together with PHONE in integrations-info `/listFields`
+ * and the web app and Lookout phone copy (spec D15 checklist). It lives here rather than in the
+ * definition config so the shared definition schema carries nothing Pinterest-specific.
+ */
+export const RECORD_FORMAT: RecordFormat = RECORD_FORMATS.CLASSIC;
 
 /** PHONE exists only as `records_v2.hashed_phone_number`; the classic string has no phone slot. */
 export const IDENTIFIERS_BY_FORMAT: Record<RecordFormat, readonly PinterestIdentifier[]> = {

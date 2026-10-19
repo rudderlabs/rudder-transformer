@@ -21,7 +21,7 @@ const ctxFor = (status: number, response: unknown): DeliveryContext =>
       body: {
         JSON: {
           operation_type: 'ADD',
-          records_v2: [{ email: 'a'.repeat(64) }, { email: 'b'.repeat(64) }],
+          records: `${'a'.repeat(64)},${'b'.repeat(64)}`,
         },
       },
     },

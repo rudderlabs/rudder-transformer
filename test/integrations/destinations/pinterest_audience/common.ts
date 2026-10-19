@@ -27,15 +27,6 @@ export const destination = {
   WorkspaceID: 'workspace-id',
 };
 
-/** The same destination with the definition flipped to multi-field rows (spec D15). */
-export const v2Destination = {
-  ...destination,
-  DestinationDefinition: {
-    ...destination.DestinationDefinition,
-    Config: { recordFormat: 'records_v2' },
-  },
-};
-
 export const connectionFor = (
   listId: string = customerListId,
   overrides: Record<string, unknown> = {},

@@ -72,7 +72,7 @@ export type PinterestAudiencePayload = {
   row: PinterestRecordRow;
 };
 
-/** The PATCH body assembled by the batch strategy; the definition's `recordFormat` picks the shape. */
+/** The PATCH body assembled by the batch strategy; `RECORD_FORMAT` (config.ts) picks the shape. */
 export type PinterestAudienceRequestBody =
   | { operation_type: OperationType; records_v2: PinterestRecordRow[] }
   | { operation_type: OperationType; records: string };

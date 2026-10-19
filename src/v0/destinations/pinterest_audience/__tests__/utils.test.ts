@@ -1,12 +1,7 @@
 import sha256 from 'sha256';
 import stats from '../../../../util/stats';
 import { processAudienceRecord } from '../../../util/audienceUtils';
-import {
-  DESTINATION_TYPE,
-  IDENTIFIERS_BY_FORMAT,
-  RECORD_FORMATS,
-  resolveRecordFormat,
-} from '../config';
+import { DESTINATION_TYPE, IDENTIFIERS_BY_FORMAT, RECORD_FORMATS, RECORD_FORMAT } from '../config';
 import { PINTEREST_FIELD_CONFIG, pickPinterestIdentifiers, toRecordRow } from '../utils';
 
 const runProcess = (identifiers: Record<string, unknown>, isHashRequired = true) =>
@@ -173,27 +168,9 @@ describe('toRecordRow', () => {
   });
 });
 
-describe('resolveRecordFormat (spec D15)', () => {
-  it('is records_v2 only for that exact string', () => {
-    expect(resolveRecordFormat({ recordFormat: 'records_v2' })).toBe(RECORD_FORMATS.V2);
-  });
-
-  it.each([
-    undefined,
-    {},
-    { recordFormat: 'records' },
-    { recordFormat: 'v3' },
-    { recordFormat: 2 },
-    { recordFormat: null },
-    // Exact match only: a forgiving resolver would switch these to records_v2, which Pinterest
-    // refuses (403 code 29) until it enables the format for the app.
-    { recordFormat: 'RECORDS_V2' },
-    { recordFormat: ' records_v2' },
-    { recordFormat: 'records_v2 ' },
-  ])('defaults to the classic string for %p', (definitionConfig) => {
-    expect(resolveRecordFormat(definitionConfig as Record<string, unknown> | undefined)).toBe(
-      RECORD_FORMATS.CLASSIC,
-    );
+describe('RECORD_FORMAT (spec D15)', () => {
+  it('ships the classic string until Pinterest enables records_v2 for the app', () => {
+    expect(RECORD_FORMAT).toBe(RECORD_FORMATS.CLASSIC);
   });
 
   it('carries PHONE only under records_v2', () => {

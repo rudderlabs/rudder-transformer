@@ -21,7 +21,6 @@ import {
   otherCustomerListId,
   otherListConnection,
   preHashedConnection,
-  v2Destination,
 } from '../common';
 
 const input = (
@@ -71,144 +70,107 @@ const routerCase = (
 
 export const data: RouterTestData[] = [
   routerCase(
-    'pinterest-audience-router-add-mixed-identifiers',
-    'insert and update batch into one ADD request; rows with different identifier sets share it (records_v2 definition)',
-    [
-      input(
-        1,
-        'insert',
-        { EMAIL: RAW_EMAIL, MAID: RAW_MAID, PHONE: RAW_PHONE },
-        connection,
-        v2Destination,
-      ),
-      input(2, 'update', { MAID: RAW_MAID }, connection, v2Destination),
-    ],
-    [
-      {
-        batchedRequest: batchedRequest({
-          operation_type: 'ADD',
-          records_v2: [
-            { email: EMAIL_SHA256, maid: MAID_SHA256, hashed_phone_number: PHONE_SHA256 },
-            { maid: MAID_SHA256 },
-          ],
-        }),
-        metadata: [metadataFor(1), metadataFor(2)],
-        batched: true,
-        statusCode: 200,
-        destination: v2Destination,
-      },
-    ],
-  ),
-  routerCase(
     'pinterest-audience-router-add-remove-split',
-    'D1: ADD and REMOVE share one URL, so internalGroupKey splits them (records_v2 definition)',
+    'D1: ADD and REMOVE share one URL, so internalGroupKey splits them',
     [
-      input(1, 'insert', { EMAIL: RAW_EMAIL }, connection, v2Destination),
-      input(2, 'delete', { EMAIL: RAW_EMAIL }, connection, v2Destination),
+      input(1, 'insert', { EMAIL: RAW_EMAIL }, connection),
+      input(2, 'delete', { EMAIL: RAW_EMAIL }, connection),
     ],
     [
       {
         batchedRequest: batchedRequest({
           operation_type: 'ADD',
-          records_v2: [{ email: EMAIL_SHA256 }],
+          records: EMAIL_SHA256,
         }),
         metadata: [metadataFor(1)],
         batched: true,
         statusCode: 200,
-        destination: v2Destination,
+        destination,
       },
       {
         batchedRequest: batchedRequest({
           operation_type: 'REMOVE',
-          records_v2: [{ email: EMAIL_SHA256 }],
+          records: EMAIL_SHA256,
         }),
         metadata: [metadataFor(2)],
         batched: true,
         statusCode: 200,
-        destination: v2Destination,
+        destination,
       },
     ],
   ),
   routerCase(
     'pinterest-audience-router-two-lists',
-    'D2: rows of two connections go to their own customer list (records_v2 definition)',
+    'D2: rows of two connections go to their own customer list',
     [
-      input(1, 'insert', { EMAIL: RAW_EMAIL }, connection, v2Destination),
-      input(2, 'insert', { EMAIL: RAW_EMAIL }, otherListConnection, v2Destination),
+      input(1, 'insert', { EMAIL: RAW_EMAIL }, connection),
+      input(2, 'insert', { EMAIL: RAW_EMAIL }, otherListConnection),
     ],
     [
       {
         batchedRequest: batchedRequest({
           operation_type: 'ADD',
-          records_v2: [{ email: EMAIL_SHA256 }],
+          records: EMAIL_SHA256,
         }),
         metadata: [metadataFor(1)],
         batched: true,
         statusCode: 200,
-        destination: v2Destination,
+        destination,
       },
       {
         batchedRequest: batchedRequest(
-          { operation_type: 'ADD', records_v2: [{ email: EMAIL_SHA256 }] },
+          { operation_type: 'ADD', records: EMAIL_SHA256 },
           endpointFor(otherCustomerListId),
         ),
         metadata: [metadataFor(2)],
         batched: true,
         statusCode: 200,
-        destination: v2Destination,
+        destination,
       },
     ],
   ),
   routerCase(
     'pinterest-audience-router-invalid-only-aborts-alone',
-    'D7: a record whose identifiers are all invalid aborts; its sibling delivers (records_v2 definition)',
+    'D7: a record whose identifiers are all invalid aborts; its sibling delivers',
     [
-      input(1, 'insert', { PHONE: '12345' }, connection, v2Destination),
-      input(2, 'insert', { EMAIL: RAW_EMAIL }, connection, v2Destination),
+      input(1, 'insert', { EMAIL: 'not-an-email' }, connection),
+      input(2, 'insert', { EMAIL: RAW_EMAIL }, connection),
     ],
     [
       {
         batchedRequest: batchedRequest({
           operation_type: 'ADD',
-          records_v2: [{ email: EMAIL_SHA256 }],
+          records: EMAIL_SHA256,
         }),
         metadata: [metadataFor(2)],
         batched: true,
         statusCode: 200,
-        destination: v2Destination,
+        destination,
       },
       {
         metadata: [metadataFor(1)],
         batched: false,
         statusCode: 400,
-        error: 'No valid Pinterest identifier (EMAIL / MAID / PHONE) after normalization',
+        error: 'No valid Pinterest identifier (EMAIL / MAID) after normalization',
         statTags: RouterInstrumentationErrorStatTags,
-        destination: v2Destination,
+        destination,
       },
     ],
   ),
   routerCase(
     'pinterest-audience-router-pre-hashed',
-    'D8: isHashRequired false passes SHA-256 values through unchanged (records_v2 definition)',
-    [
-      input(
-        1,
-        'insert',
-        { EMAIL: EMAIL_SHA256, PHONE: PHONE_SHA256 },
-        preHashedConnection,
-        v2Destination,
-      ),
-    ],
+    'D8: isHashRequired false passes SHA-256 values through unchanged',
+    [input(1, 'insert', { EMAIL: EMAIL_SHA256, MAID: MAID_SHA256 }, preHashedConnection)],
     [
       {
         batchedRequest: batchedRequest({
           operation_type: 'ADD',
-          records_v2: [{ email: EMAIL_SHA256, hashed_phone_number: PHONE_SHA256 }],
+          records: `${EMAIL_SHA256},${MAID_SHA256}`,
         }),
         metadata: [metadataFor(1)],
         batched: true,
         statusCode: 200,
-        destination: v2Destination,
+        destination,
       },
     ],
   ),

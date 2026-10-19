@@ -14,7 +14,7 @@ export { endpoint, endpointPath, headers };
 
 const body = (operationType: 'ADD' | 'REMOVE', emails: string[]) => ({
   operation_type: operationType,
-  records_v2: emails.map((email) => ({ email })),
+  records: emails.join(','),
 });
 
 // --- request bodies (one distinct body per scenario so each mock matches exactly one) ---

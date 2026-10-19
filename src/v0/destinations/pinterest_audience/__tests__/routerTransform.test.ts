@@ -1,6 +1,7 @@
 import sha256 from 'sha256';
 import stats from '../../../../util/stats';
 import { Integration } from '../routerTransform';
+import * as config from '../config';
 import { processDestinationIntegration } from '../../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
@@ -31,7 +32,7 @@ const buildDestination = (definitionConfig: Record<string, unknown> = {}) => ({
 });
 
 /** The definition value that turns multi-field rows on (spec D15). */
-const V2 = { recordFormat: 'records_v2' };
+const V2 = config.RECORD_FORMATS.V2;
 
 const buildConnection = (overrides: Record<string, unknown> = {}) => ({
   sourceId: 'src-1',
@@ -81,19 +82,24 @@ const buildInput = (
 
 const run = (
   inputs: RouterTransformationRequestData[],
+  format: config.RecordFormat = config.RECORD_FORMATS.CLASSIC,
   definitionConfig: Record<string, unknown> = {},
-) =>
-  processDestinationIntegration(
+) => {
+  jest.replaceProperty(config, 'RECORD_FORMAT', format);
+  return processDestinationIntegration(
     inputs.map((i) => ({ ...i, destination: buildDestination(definitionConfig) })),
     Integration,
     {},
   );
+};
 const successes = (results: any[]) => results.filter((r) => r.statusCode === 200);
 const failures = (results: any[]) => results.filter((r) => r.statusCode !== 200);
 const bodyOf = (r: any) => r.batchedRequest.body.JSON;
 const jobIdsOf = (r: any) => r.metadata.map((m: any) => m.jobId);
 
 describe('pinterest_audience router transform', () => {
+  afterEach(() => jest.restoreAllMocks());
+
   it('builds one PATCH to the customer list with records_v2 when the definition asks for it', async () => {
     const results = await run([buildInput(1, 'insert', { EMAIL: '  Alice@Example.COM ' })], V2);
     const ok = successes(results);
@@ -133,19 +139,17 @@ describe('pinterest_audience router transform', () => {
     expect(bodyOf(ok[0])).not.toHaveProperty('records_v2');
   });
 
-  it.each([{ recordFormat: 'records' }, { recordFormat: 'v3' }, { recordFormat: 2 }])(
-    'D19 treats definition %p as classic',
-    async (definitionConfig) => {
-      const results = await run(
-        [buildInput(1, 'insert', { EMAIL: 'a@example.com' })],
-        definitionConfig,
-      );
-      expect(bodyOf(successes(results)[0])).toEqual({
-        operation_type: 'ADD',
-        records: sha256('a@example.com'),
-      });
-    },
-  );
+  it('D19 ignores a recordFormat on the definition config: the format is a code constant', async () => {
+    const results = await run(
+      [buildInput(1, 'insert', { EMAIL: 'a@example.com' })],
+      config.RECORD_FORMATS.CLASSIC,
+      { recordFormat: 'records_v2' },
+    );
+    expect(bodyOf(successes(results)[0])).toEqual({
+      operation_type: 'ADD',
+      records: sha256('a@example.com'),
+    });
+  });
 
   it('D20 drops PHONE before processing under the classic format (not counted as invalid)', async () => {
     // A too-short phone would be counted on pinterest_audience_invalid_field if it reached

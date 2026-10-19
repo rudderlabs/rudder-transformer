@@ -16,9 +16,9 @@ import {
   ENDPOINT_PATH,
   IDENTIFIERS_BY_FORMAT,
   MAX_RECORDS_PER_REQUEST,
+  RECORD_FORMAT,
   RECORD_FORMATS,
   getEndpoint,
-  resolveRecordFormat,
   type RecordFormat,
 } from './config';
 import {
@@ -37,9 +37,10 @@ class PinterestAudienceIntegration extends DestinationIntegration<
 > {
   static readonly delivery = pinterestAudienceDelivery;
 
-  /** Spec D15: the definition picks the body shape; one destination per instance, so one format. */
+  /** Spec D15: read at call time so tests can switch it with `jest.replaceProperty`. */
+  // eslint-disable-next-line class-methods-use-this
   private get recordFormat(): RecordFormat {
-    return resolveRecordFormat(this.destination.DestinationDefinition?.Config);
+    return RECORD_FORMAT;
   }
 
   transformEvent(

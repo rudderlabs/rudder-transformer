@@ -8,6 +8,7 @@ const {
   NetworkError,
 } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
+const { isFeatureEnabled } = require('../../../util/featureFlags');
 const {
   isHttpStatusSuccess,
   constructPayload,
@@ -15,10 +16,13 @@ const {
   defaultPostRequestConfig,
   removeHyphens,
   getFieldValueFromMessage,
+  getValueFromMessage,
+  isBlank,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
   getAccessToken,
   getIntegrationsObj,
+  removeUndefinedValues,
 } = require('../../util');
 const {
   SEARCH_STREAM,
@@ -26,6 +30,7 @@ const {
   CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
   trackCreateStoreConversionsMapping,
   trackAddStoreConversionsMapping,
+  trackStoreItemAttributeMapping,
   trackAddStoreAddressConversionsMapping,
   trackClickConversionsMapping,
   CLICK_CONVERSION,
@@ -37,6 +42,7 @@ const {
   CALL_CONVERSION_ENDPOINT_PATH,
   CLICK_CONVERSION_ENDPOINT_PATH,
   STORE_CONVERSION_ENDPOINT_PATH,
+  STORE_SALES_ITEM_ATTRIBUTION_FLAG,
 } = require('./config');
 const {
   processAxiosResponse,
@@ -121,7 +127,7 @@ const generateItemListFromProducts = (products) => {
     if (Object.keys(product).length > 0) {
       itemList.push({
         productId: product.product_id,
-        quantity: parseInt(product.quantity, 10),
+        quantity: Number.parseInt(product.quantity, 10),
         unitPrice: Number(product.price),
       });
     }
@@ -252,14 +258,88 @@ const getCallConversionPayload = (
   return { payload, endpointDetails };
 };
 
+// int64 fields (merchant_id, quantity): accepts a number or digit string
+const toPositiveSafeInteger = (value) => {
+  const number = typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : value;
+  return Number.isSafeInteger(number) && number > 0 ? number : undefined;
+};
+
+const toStoreProductItemId = (product) => {
+  const itemId = getValueFromMessage(product, ['item_id', 'product_id', 'sku']);
+  return isDefinedAndNotNull(itemId) ? String(itemId) : undefined;
+};
+
+// returns null unless item_id and merchant_id are valid (Google requires both)
+const finalizeStoreItemAttribute = (itemAttribute) => {
+  const finalizedItemAttribute = removeUndefinedValues({
+    ...itemAttribute,
+    merchant_id: toPositiveSafeInteger(itemAttribute.merchant_id),
+    quantity: toPositiveSafeInteger(itemAttribute.quantity),
+  });
+  return !isBlank(finalizedItemAttribute.item_id) && !isBlank(finalizedItemAttribute.merchant_id)
+    ? finalizedItemAttribute
+    : null;
+};
+
+// one item attribute per valid product, or at most one from flat properties
+const buildStoreItemAttributes = (message) => {
+  const mappedItemAttribute = constructPayload(message, trackStoreItemAttributeMapping);
+  const products = get(message, 'properties.products');
+  if (Array.isArray(products) && products.length > 0) {
+    // item_id/quantity per product; other fields shared
+    return products
+      .map((product) =>
+        finalizeStoreItemAttribute({
+          ...mappedItemAttribute,
+          item_id: toStoreProductItemId(product),
+          quantity: product?.quantity,
+        }),
+      )
+      .filter(Boolean);
+  }
+
+  const finalizedItemAttribute = finalizeStoreItemAttribute(mappedItemAttribute);
+  return finalizedItemAttribute ? [finalizedItemAttribute] : [];
+};
+
+/**
+ * One operation per item, since Google allows one item_attribute per transaction.
+ * NOTE: each carries the full order value (accepted pilot trade-off, INT-7377 §5).
+ */
+const fanOutStoreOperation = (operation, itemAttributes) =>
+  itemAttributes.map((itemAttribute) => ({
+    ...operation,
+    create: {
+      ...operation.create,
+      transaction_attribute: {
+        ...operation.create.transaction_attribute,
+        item_attribute: itemAttribute,
+      },
+    },
+  }));
+
 /**
  * This Function create the add conversion payload
  * and returns the payload
  */
-const getAddConversionPayload = (message, Config, eventLevelConsentsData, conversionActionId) => {
+const getAddConversionPayload = (
+  message,
+  Config,
+  eventLevelConsentsData,
+  conversionActionId,
+  workspaceId,
+) => {
   const { properties } = message;
   const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
+  const itemAttributionEnabled =
+    !isBlank(workspaceId) && isFeatureEnabled(STORE_SALES_ITEM_ATTRIBUTION_FLAG, workspaceId);
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
+
+  const storeItemAttributes = itemAttributionEnabled ? buildStoreItemAttributes(message) : [];
+  if (storeItemAttributes.length === 1) {
+    [payload.operations.create.transaction_attribute.item_attribute] = storeItemAttributes;
+  }
+
   payload.enable_partial_failure = false;
   payload.enable_warnings = false;
   payload.validate_only = validateOnly || false;
@@ -322,6 +402,10 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData, conver
   const consentObject = finaliseConsent(consentConfigMap, eventLevelConsentsData);
   // create property should be present because there are some mandatory properties mapped in the mapping json.
   set(payload, 'operations.create.consent', consentObject);
+  // keep last: turns operations into an array
+  if (storeItemAttributes.length > 1) {
+    payload.operations = fanOutStoreOperation(payload.operations, storeItemAttributes);
+  }
   return payload;
 };
 
@@ -331,6 +415,7 @@ const getStoreConversionPayload = (
   filteredCustomerId,
   eventLevelConsentsData,
   conversionActionId,
+  workspaceId,
 ) => {
   const { validateOnly } = Config;
   const endpointDetails = {
@@ -346,6 +431,7 @@ const getStoreConversionPayload = (
       Config,
       eventLevelConsentsData,
       conversionActionId,
+      workspaceId,
     ),
     executeJobPayload: { validate_only: validateOnly },
   };
@@ -429,13 +515,7 @@ const getClickConversionPayloadAndEndpoint = (
   const products = get(message, 'properties.products');
   if (Array.isArray(products)) {
     // products is a list of items
-    const itemList = products
-      .filter((product) => Object.keys(product).length > 0)
-      .map((product) => ({
-        productId: product.product_id,
-        quantity: parseInt(product.quantity, 10),
-        unitPrice: Number(product.price),
-      }));
+    const itemList = generateItemListFromProducts(products);
 
     set(payload, 'conversions[0].cartData.items', itemList);
   }

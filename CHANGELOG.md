@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.161.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.160.0...v1.161.0) (2026-10-19)
+
+
+### Features
+
+* **custom_audience:** support delivery account authentication ([#5671](https://github.com/rudderlabs/rudder-transformer/issues/5671)) ([469166a](https://github.com/rudderlabs/rudder-transformer/commit/469166a8b9ae805a5e703e96c5c030eda921f73f))
+* **gaoc:** add flagged store sales item attribution ([#5684](https://github.com/rudderlabs/rudder-transformer/issues/5684)) ([9459b17](https://github.com/rudderlabs/rudder-transformer/commit/9459b17cc2579f77140a708e8238504148efea36))
+* **tiktok_ads_offline_events:** add Purchase and Lead mappings ([#5689](https://github.com/rudderlabs/rudder-transformer/issues/5689)) ([a18688a](https://github.com/rudderlabs/rudder-transformer/commit/a18688ac11588403f50e9738e84a76223204f4df))
+
+
+### Bug Fixes
+
+* **linkedin_ads:** upgrade conversion API to 202609 ([#5685](https://github.com/rudderlabs/rudder-transformer/issues/5685)) ([3c60b36](https://github.com/rudderlabs/rudder-transformer/commit/3c60b363760f3e3b0244f1b0ceaf34e6c4209f1a))
+
 ## [1.160.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.159.0...v1.160.0) (2026-10-16)
 
 

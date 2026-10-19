@@ -131,7 +131,7 @@ const resolveProductItemId = (product, { allowSkuFallback = false } = {}) => {
 
 const normalizeGoogleItemQuantity = (value, { requirePositiveSafeInteger = false } = {}) => {
   if (!requirePositiveSafeInteger) {
-    return parseInt(value, 10);
+    return Number.parseInt(value, 10);
   }
   if (
     !isPresent(value) ||

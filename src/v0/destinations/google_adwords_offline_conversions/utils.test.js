@@ -437,7 +437,7 @@ describe('getAddConversionPayload', () => {
   });
   const itemProperties = {
     item_id: 'item-1',
-    merchantId: '90071992547409931234',
+    merchantId: '123456789',
     feedCountryCode: 'US',
     feedLanguageCode: 'en',
     quantity: '2',
@@ -645,7 +645,7 @@ describe('getAddConversionPayload', () => {
 
     expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
       item_id: 'item-1',
-      merchant_id: '90071992547409931234',
+      merchant_id: 123456789,
       country_code: 'US',
       language_code: 'en',
       quantity: 2,
@@ -669,6 +669,7 @@ describe('getAddConversionPayload', () => {
       ['decimal number', 1.5],
       ['non-decimal string', 'merchant-1'],
       ['unsafe integer', Number.MAX_SAFE_INTEGER + 1],
+      ['unsafe digit string', '12345678901234567890'],
       ['boolean', false],
       ['object', { value: 123 }],
     ].map(([description, merchantId]) => [
@@ -693,7 +694,7 @@ describe('getAddConversionPayload', () => {
 
     expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
       item_id: expectedItemId,
-      merchant_id: '123456',
+      merchant_id: 123456,
     });
   });
 
@@ -709,28 +710,29 @@ describe('getAddConversionPayload', () => {
 
     expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
       item_id: 'nested-item',
-      merchant_id: '123456',
+      merchant_id: 123456,
       quantity: 4,
     });
   });
 
-  it('uses a single product SKU when its product ID is absent', () => {
+  it.each([
+    ['item_id', { item_id: 101, product_id: 202, sku: 303 }, '101'],
+    ['product_id', { product_id: 202, sku: 303 }, '202'],
+    ['sku', { sku: 303 }, '303'],
+  ])('uses the first available product %s source', (_description, product, expectedItemId) => {
     setStoreSalesItemAttributionFlag(workspaceId);
 
-    const payload = buildPayload({
-      merchantId: '123456',
-      products: [{ sku: 'nested-sku' }],
-    });
+    const payload = buildPayload({ merchantId: '123456', products: [product] });
 
     expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
-      item_id: 'nested-sku',
-      merchant_id: '123456',
+      item_id: expectedItemId,
+      merchant_id: 123456,
     });
   });
 
   it.each([
-    ['string', '12345678901234567890', '12345678901234567890'],
-    ['safe integer', 1234567890, '1234567890'],
+    ['digit string', '1234567890', 1234567890],
+    ['safe integer', 1234567890, 1234567890],
   ])('normalizes valid %s merchant IDs', (_description, merchantId, expectedMerchantId) => {
     setStoreSalesItemAttributionFlag(workspaceId);
 
@@ -758,7 +760,7 @@ describe('getAddConversionPayload', () => {
 
     expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
       item_id: 'item-1',
-      merchant_id: '123456',
+      merchant_id: 123456,
     });
   });
 
@@ -785,14 +787,14 @@ describe('getAddConversionPayload', () => {
       operations: [
         withItemAttribute({
           item_id: 'product-1',
-          merchant_id: '90071992547409931234',
+          merchant_id: 123456789,
           country_code: 'US',
           language_code: 'en',
           quantity: 3,
         }),
         withItemAttribute({
           item_id: 'sku-2',
-          merchant_id: '90071992547409931234',
+          merchant_id: 123456789,
           country_code: 'US',
           language_code: 'en',
         }),
@@ -810,7 +812,7 @@ describe('getAddConversionPayload', () => {
 
     expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
       item_id: 'product-1',
-      merchant_id: '123456',
+      merchant_id: 123456,
     });
   });
 });

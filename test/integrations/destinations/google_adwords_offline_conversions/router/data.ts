@@ -1475,7 +1475,7 @@ export const data = [
                   value: 123.05,
                   currency: 'USD',
                   order_id: '12343-4886-294995',
-                  merchantId: '90071992547409931234',
+                  merchantId: '123456789',
                   feedCountryCode: 'US',
                   feedLanguageCode: 'en',
                   products: [
@@ -1557,7 +1557,7 @@ export const data = [
                   value: 123.05,
                   currency: 'USD',
                   order_id: 'flag-off-order',
-                  merchantId: '90071992547409931234',
+                  merchantId: '123456789',
                   item_id: 'flat-item',
                   products: [
                     {
@@ -1708,7 +1708,7 @@ export const data = [
                   value: 123.05,
                   currency: 'USD',
                   order_id: 'multi-item-order',
-                  merchantId: '90071992547409931234',
+                  merchantId: '123456789',
                   item_id: 'flat-item',
                   products: [
                     {
@@ -1810,7 +1810,7 @@ export const data = [
                               transaction_date_time: '2019-10-14 16:45:18+05:30',
                               item_attribute: {
                                 item_id: 'C2302100',
-                                merchant_id: '90071992547409931234',
+                                merchant_id: 123456789,
                                 country_code: 'US',
                                 language_code: 'en',
                                 quantity: 1,
@@ -1880,7 +1880,7 @@ export const data = [
                               transaction_date_time: '2019-10-14 16:45:18+05:30',
                               item_attribute: {
                                 item_id: 'P1001',
-                                merchant_id: '90071992547409931234',
+                                merchant_id: 123456789,
                                 quantity: 2,
                               },
                               conversion_action: 'customers/1234556775/conversionActions/948898416',
@@ -1906,7 +1906,7 @@ export const data = [
                               transaction_date_time: '2019-10-14 16:45:18+05:30',
                               item_attribute: {
                                 item_id: 'S2002',
-                                merchant_id: '90071992547409931234',
+                                merchant_id: 123456789,
                               },
                               conversion_action: 'customers/1234556775/conversionActions/948898416',
                             },

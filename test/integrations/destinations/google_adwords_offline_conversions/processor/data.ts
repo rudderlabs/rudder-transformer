@@ -4077,7 +4077,7 @@ export const data = [
                 email: 'alex@example.com',
                 gclid: 'gclid',
                 product_id: '123445',
-                merchantId: '90071992547409931234',
+                merchantId: '123456789',
                 feedCountryCode: 'US',
                 feedLanguageCode: 'en',
                 custom_key: 'CUSTOM_KEY',
@@ -4212,7 +4212,7 @@ export const data = [
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
                           item_attribute: {
                             item_id: '123445',
-                            merchant_id: '90071992547409931234',
+                            merchant_id: 123456789,
                             country_code: 'US',
                             language_code: 'en',
                             quantity: 123,

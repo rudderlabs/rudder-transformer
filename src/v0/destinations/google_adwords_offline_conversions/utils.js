@@ -16,6 +16,7 @@ const {
   defaultPostRequestConfig,
   removeHyphens,
   getFieldValueFromMessage,
+  getValueFromMessage,
   isBlank,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
@@ -257,34 +258,23 @@ const getCallConversionPayload = (
   return { payload, endpointDetails };
 };
 
-const POSITIVE_INTEGER_STRING = /^0*[1-9]\d*$/;
-const isPositiveSafeInteger = (value) => Number.isSafeInteger(value) && value > 0;
-
-// strings kept as-is: merchant IDs can exceed MAX_SAFE_INTEGER
-const toStoreMerchantId = (value) => {
-  if (typeof value === 'string' && POSITIVE_INTEGER_STRING.test(value)) {
-    return value;
-  }
-  return isPositiveSafeInteger(value) ? String(value) : undefined;
-};
-
-const toStoreQuantity = (value) => {
-  const quantity =
-    typeof value === 'string' && POSITIVE_INTEGER_STRING.test(value) ? Number(value) : value;
-  return isPositiveSafeInteger(quantity) ? quantity : undefined;
+// int64 fields (merchant_id, quantity): accepts a number or digit string
+const toPositiveSafeInteger = (value) => {
+  const number = typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : value;
+  return Number.isSafeInteger(number) && number > 0 ? number : undefined;
 };
 
 const toStoreProductItemId = (product) => {
-  const itemId = [product?.product_id, product?.sku].find((value) => !isBlank(value));
-  return itemId === undefined ? undefined : String(itemId);
+  const itemId = getValueFromMessage(product, ['item_id', 'product_id', 'sku']);
+  return isDefinedAndNotNull(itemId) ? String(itemId) : undefined;
 };
 
 // returns null unless item_id and merchant_id are valid (Google requires both)
 const finalizeStoreItemAttribute = (itemAttribute) => {
   const finalizedItemAttribute = removeUndefinedValues({
     ...itemAttribute,
-    merchant_id: toStoreMerchantId(itemAttribute.merchant_id),
-    quantity: toStoreQuantity(itemAttribute.quantity),
+    merchant_id: toPositiveSafeInteger(itemAttribute.merchant_id),
+    quantity: toPositiveSafeInteger(itemAttribute.quantity),
   });
   return !isBlank(finalizedItemAttribute.item_id) && !isBlank(finalizedItemAttribute.merchant_id)
     ? finalizedItemAttribute

@@ -135,7 +135,7 @@ referenced Merchant Center account linked before attributed requests can be acce
 RudderStack emits `item_attribute` only when both `item_id` and `merchant_id` resolve. Flat item IDs
 use `item_id`, then `product_id`, then `sku`, and apply only when `properties.products` is absent or
 empty. A non-empty product array, whatever its length, produces one operation per product, grouped by
-the shared `order_id`: each product supplies its own item ID (`product_id`, then `sku`) and quantity,
+the shared `order_id`: each product supplies its own item ID (`item_id`, then `product_id`, then `sku`) and quantity,
 and flat item ID and quantity are ignored, while merchant ID, country code and language code come from
 the flat properties. Products without an item ID are skipped; if none resolve, the event stays
 aggregate-only.
@@ -143,9 +143,9 @@ Every fanned-out operation carries the full order value in `transaction_amount_m
 reports N × the order value for an N-item basket. This is an accepted trade-off for the flag-gated
 pilot; per-item value (unit price × quantity) is not calculated. A missing or invalid
 quantity is omitted rather than defaulted by RudderStack; Google Ads defaults an omitted quantity to
-`1`. Merchant IDs must be non-empty decimal strings or positive safe integers; numeric merchant IDs
-are converted to strings, and unsafe or non-decimal values make the item attribute unresolved. Quantities
-must be positive safe integers (integer strings are converted to numbers).
+`1`. Merchant IDs and quantities are Google `int64` fields: both must be positive safe integers, given
+as numbers or digit strings, and are sent as numbers (as in the click path's `cartData.merchantId`).
+An invalid merchant ID makes the item attribute unresolved.
 
 `properties.lineItems` is not accepted. Although the originating request described “lineItems
 mapping”, this implementation follows the existing ecommerce convention of `properties.products`,

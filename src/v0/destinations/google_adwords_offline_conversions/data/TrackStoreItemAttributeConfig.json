@@ -1,0 +1,36 @@
+[
+  {
+    "destKey": "item_id",
+    "sourceKeys": ["properties.item_id", "properties.product_id", "properties.sku"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "merchant_id",
+    "sourceKeys": ["properties.merchantId", "properties.merchant_id"],
+    "required": false
+  },
+  {
+    "destKey": "country_code",
+    "sourceKeys": ["properties.feedCountryCode", "properties.country_code"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "language_code",
+    "sourceKeys": ["properties.feedLanguageCode", "properties.language_code"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "quantity",
+    "sourceKeys": "properties.quantity",
+    "required": false
+  }
+]

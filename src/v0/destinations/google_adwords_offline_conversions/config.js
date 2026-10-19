@@ -41,6 +41,9 @@ const CONFIG_CATEGORIES = {
   TRACK_STORE_ADDRESS_IDENTIFIER: {
     name: 'storeAddoperationAddressMap',
   },
+  TRACK_STORE_ITEM_ATTRIBUTE: {
+    name: 'TrackStoreItemAttributeConfig',
+  },
 };
 
 const CONVERSION_ACTION_ID_CACHE_TTL = process.env.CONVERSION_ACTION_ID_CACHE_TTL
@@ -78,6 +81,7 @@ module.exports = {
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_CONVERSION_CONFIG_CREATE_JOB.name],
   trackAddStoreConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_CONVERSION_CONFIG_ADD_CONVERSION.name],
+  trackStoreItemAttributeMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ITEM_ATTRIBUTE.name],
   trackAddStoreAddressConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
   consentConfigMap,

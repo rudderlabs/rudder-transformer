@@ -21,6 +21,7 @@ const {
   isDefinedAndNotNull,
   getAccessToken,
   getIntegrationsObj,
+  removeUndefinedValues,
 } = require('../../util');
 const {
   SEARCH_STREAM,
@@ -28,6 +29,7 @@ const {
   CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
   trackCreateStoreConversionsMapping,
   trackAddStoreConversionsMapping,
+  trackStoreItemAttributeMapping,
   trackAddStoreAddressConversionsMapping,
   trackClickConversionsMapping,
   CLICK_CONVERSION,
@@ -118,43 +120,15 @@ const getReqHeaders = (Config, metadata, passToken = false) => {
   return headers;
 };
 
-const resolveProductItemId = (product, { allowSkuFallback = false } = {}) => {
-  if (!isBlank(product?.product_id)) {
-    return product.product_id;
-  }
-  if (allowSkuFallback && !isBlank(product?.sku)) {
-    return product.sku;
-  }
-  return undefined;
-};
-
-const normalizeGoogleItemQuantity = (value, { requirePositiveSafeInteger = false } = {}) => {
-  if (!requirePositiveSafeInteger) {
-    return Number.parseInt(value, 10);
-  }
-  if (
-    isBlank(value) ||
-    (typeof value !== 'number' && typeof value !== 'string') ||
-    (typeof value === 'string' && !/^\d+$/.test(value))
-  ) {
-    return undefined;
-  }
-
-  const quantity = Number(value);
-  return Number.isSafeInteger(quantity) && quantity > 0 ? quantity : undefined;
-};
-
-const buildClickCartItem = (product) => ({
-  productId: resolveProductItemId(product),
-  quantity: normalizeGoogleItemQuantity(product.quantity),
-  unitPrice: Number(product.price),
-});
-
 const generateItemListFromProducts = (products) => {
   const itemList = [];
   products.forEach((product) => {
     if (Object.keys(product).length > 0) {
-      itemList.push(buildClickCartItem(product));
+      itemList.push({
+        productId: product.product_id,
+        quantity: Number.parseInt(product.quantity, 10),
+        unitPrice: Number(product.price),
+      });
     }
   });
   return itemList;
@@ -283,82 +257,76 @@ const getCallConversionPayload = (
   return { payload, endpointDetails };
 };
 
-const STORE_ITEM_ATTRIBUTE_PATH = 'operations.create.transaction_attribute.item_attribute';
-const aggregateStoreConversionsMapping = trackAddStoreConversionsMapping.filter(
-  ({ destKey }) => !destKey.startsWith(`${STORE_ITEM_ATTRIBUTE_PATH}.`),
-);
+const POSITIVE_INTEGER_STRING = /^0*[1-9]\d*$/;
+const isPositiveSafeInteger = (value) => Number.isSafeInteger(value) && value > 0;
 
-const normalizeStoreMerchantId = (value) => {
-  if (typeof value === 'string' && /^0*[1-9]\d*$/.test(value)) {
+// strings kept as-is: merchant IDs can exceed MAX_SAFE_INTEGER
+const toStoreMerchantId = (value) => {
+  if (typeof value === 'string' && POSITIVE_INTEGER_STRING.test(value)) {
     return value;
   }
-  if (typeof value === 'number' && Number.isSafeInteger(value) && value > 0) {
-    return String(value);
-  }
-  return undefined;
+  return isPositiveSafeInteger(value) ? String(value) : undefined;
 };
 
-const backfillStoreItemAttribute = (itemAttribute, product) => {
-  const backfilledItemAttribute = { ...itemAttribute };
-  if (isBlank(backfilledItemAttribute.item_id)) {
-    const productItemId = resolveProductItemId(product, { allowSkuFallback: true });
-    if (!isBlank(productItemId)) {
-      backfilledItemAttribute.item_id = String(productItemId);
-    }
-  }
-  if (isBlank(backfilledItemAttribute.quantity)) {
-    backfilledItemAttribute.quantity = product?.quantity;
-  }
-  return backfilledItemAttribute;
+const toStoreQuantity = (value) => {
+  const quantity =
+    typeof value === 'string' && POSITIVE_INTEGER_STRING.test(value) ? Number(value) : value;
+  return isPositiveSafeInteger(quantity) ? quantity : undefined;
 };
 
-const normalizeStoreItemAttribute = (itemAttribute) => {
-  const normalizedItemAttribute = { ...itemAttribute };
-  const quantity = normalizeGoogleItemQuantity(normalizedItemAttribute.quantity, {
-    requirePositiveSafeInteger: true,
+const toStoreProductItemId = (product) => {
+  const itemId = [product?.product_id, product?.sku].find((value) => !isBlank(value));
+  return itemId === undefined ? undefined : String(itemId);
+};
+
+// returns null unless item_id and merchant_id are valid (Google requires both)
+const finalizeStoreItemAttribute = (itemAttribute) => {
+  const finalizedItemAttribute = removeUndefinedValues({
+    ...itemAttribute,
+    merchant_id: toStoreMerchantId(itemAttribute.merchant_id),
+    quantity: toStoreQuantity(itemAttribute.quantity),
   });
-  if (quantity === undefined) {
-    delete normalizedItemAttribute.quantity;
-  } else {
-    normalizedItemAttribute.quantity = quantity;
-  }
-
-  const merchantId = normalizeStoreMerchantId(normalizedItemAttribute.merchant_id);
-  if (merchantId === undefined) {
-    delete normalizedItemAttribute.merchant_id;
-  } else {
-    normalizedItemAttribute.merchant_id = merchantId;
-  }
-  return normalizedItemAttribute;
-};
-
-const buildStoreItemAttribute = (message, mappedItemAttribute = {}) => {
-  const products = get(message, 'properties.products');
-  if (Array.isArray(products) && products.length > 1) {
-    return null;
-  }
-
-  let itemAttribute = { ...mappedItemAttribute };
-  if (Array.isArray(products) && products.length === 1) {
-    itemAttribute = backfillStoreItemAttribute(itemAttribute, products[0]);
-  }
-
-  itemAttribute = normalizeStoreItemAttribute(itemAttribute);
-
-  return !isBlank(itemAttribute.item_id) && !isBlank(itemAttribute.merchant_id)
-    ? itemAttribute
+  return !isBlank(finalizedItemAttribute.item_id) && !isBlank(finalizedItemAttribute.merchant_id)
+    ? finalizedItemAttribute
     : null;
 };
 
-const populateStoreItemAttribute = (payload, message) => {
-  const itemAttribute = buildStoreItemAttribute(message, get(payload, STORE_ITEM_ATTRIBUTE_PATH));
-  if (itemAttribute) {
-    set(payload, STORE_ITEM_ATTRIBUTE_PATH, itemAttribute);
-  } else {
-    const { transaction_attribute: transactionAttribute } = payload.operations.create;
-    delete transactionAttribute.item_attribute;
+// one item attribute per valid product, or at most one from flat properties
+const buildStoreItemAttributes = (message) => {
+  const mappedItemAttribute = constructPayload(message, trackStoreItemAttributeMapping);
+  const products = get(message, 'properties.products');
+  if (Array.isArray(products) && products.length > 0) {
+    // item_id/quantity per product; other fields shared
+    return products
+      .map((product) =>
+        finalizeStoreItemAttribute({
+          ...mappedItemAttribute,
+          item_id: toStoreProductItemId(product),
+          quantity: product?.quantity,
+        }),
+      )
+      .filter(Boolean);
   }
+
+  const finalizedItemAttribute = finalizeStoreItemAttribute(mappedItemAttribute);
+  return finalizedItemAttribute ? [finalizedItemAttribute] : [];
 };
+
+/**
+ * One operation per item, since Google allows one item_attribute per transaction.
+ * NOTE: each carries the full order value (accepted pilot trade-off, INT-7377 §5).
+ */
+const fanOutStoreOperation = (operation, itemAttributes) =>
+  itemAttributes.map((itemAttribute) => ({
+    ...operation,
+    create: {
+      ...operation.create,
+      transaction_attribute: {
+        ...operation.create.transaction_attribute,
+        item_attribute: itemAttribute,
+      },
+    },
+  }));
 
 /**
  * This Function create the add conversion payload
@@ -375,13 +343,11 @@ const getAddConversionPayload = (
   const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
   const itemAttributionEnabled =
     !isBlank(workspaceId) && isFeatureEnabled(STORE_SALES_ITEM_ATTRIBUTION_FLAG, workspaceId);
-  const payload = constructPayload(
-    message,
-    itemAttributionEnabled ? trackAddStoreConversionsMapping : aggregateStoreConversionsMapping,
-  );
+  const payload = constructPayload(message, trackAddStoreConversionsMapping);
 
-  if (itemAttributionEnabled) {
-    populateStoreItemAttribute(payload, message);
+  const storeItemAttributes = itemAttributionEnabled ? buildStoreItemAttributes(message) : [];
+  if (storeItemAttributes.length === 1) {
+    [payload.operations.create.transaction_attribute.item_attribute] = storeItemAttributes;
   }
 
   payload.enable_partial_failure = false;
@@ -446,6 +412,10 @@ const getAddConversionPayload = (
   const consentObject = finaliseConsent(consentConfigMap, eventLevelConsentsData);
   // create property should be present because there are some mandatory properties mapped in the mapping json.
   set(payload, 'operations.create.consent', consentObject);
+  // keep last: turns operations into an array
+  if (storeItemAttributes.length > 1) {
+    payload.operations = fanOutStoreOperation(payload.operations, storeItemAttributes);
+  }
   return payload;
 };
 

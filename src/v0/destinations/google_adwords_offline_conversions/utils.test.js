@@ -652,17 +652,30 @@ describe('getAddConversionPayload', () => {
     });
   });
 
-  it('keeps the aggregate payload unchanged when item properties are absent', () => {
-    const aggregatePayload = buildPayload();
-    setStoreSalesItemAttributionFlag(workspaceId);
-
-    expect(JSON.stringify(buildPayload())).toBe(JSON.stringify(aggregatePayload));
-  });
-
   it.each([
-    ['item ID', { merchantId: '123456' }],
-    ['merchant ID', { item_id: 'item-1' }],
-  ])('removes the entire item attribute when %s is missing', (_description, properties) => {
+    ['item properties are absent', {}],
+    ['item ID is missing', { merchantId: '123456' }],
+    ['merchant ID is missing', { item_id: 'item-1' }],
+    [
+      'a single product has no item ID',
+      { item_id: 'flat-item', merchantId: '123456', products: [{ quantity: 2 }] },
+    ],
+    ['a basket has no merchant ID', { products: [{ product_id: 'p1' }, { product_id: 'p2' }] }],
+    ['no basket product has an item ID', { merchantId: '123456', products: [{}, { quantity: 1 }] }],
+    ...[
+      ['zero string', '0'],
+      ['zero number', 0],
+      ['decimal string', '1.5'],
+      ['decimal number', 1.5],
+      ['non-decimal string', 'merchant-1'],
+      ['unsafe integer', Number.MAX_SAFE_INTEGER + 1],
+      ['boolean', false],
+      ['object', { value: 123 }],
+    ].map(([description, merchantId]) => [
+      `merchant ID is a ${description}`,
+      { item_id: 'item-1', merchantId },
+    ]),
+  ])('keeps the payload aggregate-only when %s', (_description, properties) => {
     const aggregatePayload = buildPayload();
     setStoreSalesItemAttributionFlag(workspaceId);
 
@@ -684,17 +697,18 @@ describe('getAddConversionPayload', () => {
     });
   });
 
-  it('backfills only missing item ID and quantity from a single product', () => {
+  it('uses the item ID and quantity of a single product over flat values', () => {
     setStoreSalesItemAttributionFlag(workspaceId);
 
     const payload = buildPayload({
       item_id: 'flat-item',
+      quantity: 9,
       merchantId: '123456',
       products: [{ product_id: 'nested-item', sku: 'nested-sku', quantity: '4' }],
     });
 
     expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
-      item_id: 'flat-item',
+      item_id: 'nested-item',
       merchant_id: '123456',
       quantity: 4,
     });
@@ -729,24 +743,6 @@ describe('getAddConversionPayload', () => {
   });
 
   it.each([
-    ['zero string', '0'],
-    ['zero number', 0],
-    ['decimal string', '1.5'],
-    ['decimal number', 1.5],
-    ['non-decimal string', 'merchant-1'],
-    ['unsafe integer', Number.MAX_SAFE_INTEGER + 1],
-    ['boolean', false],
-    ['object', { value: 123 }],
-  ])('removes the entire item attribute for %s merchant ID', (_description, merchantId) => {
-    const aggregatePayload = buildPayload();
-    setStoreSalesItemAttributionFlag(workspaceId);
-
-    expect(JSON.stringify(buildPayload({ item_id: 'item-1', merchantId }))).toBe(
-      JSON.stringify(aggregatePayload),
-    );
-  });
-
-  it.each([
     ['missing', undefined],
     ['decimal number', 1.5],
     ['decimal string', '1.5'],
@@ -766,16 +762,56 @@ describe('getAddConversionPayload', () => {
     });
   });
 
-  it('keeps multi-item events aggregate-only even when flat item fields are complete', () => {
+  it('fans a multi-item basket out into one operation per product carrying the full order value', () => {
     const aggregatePayload = buildPayload();
     setStoreSalesItemAttributionFlag(workspaceId);
+    const withItemAttribute = (itemAttribute) => ({
+      create: {
+        ...aggregatePayload.operations.create,
+        transaction_attribute: {
+          ...aggregatePayload.operations.create.transaction_attribute,
+          item_attribute: itemAttribute,
+        },
+      },
+    });
 
     const payload = buildPayload({
       ...itemProperties,
-      products: [{ product_id: 'item-1' }, { product_id: 'item-2' }],
+      products: [{ product_id: 'product-1', quantity: 3 }, { sku: 'sku-2' }],
     });
 
-    expect(JSON.stringify(payload)).toBe(JSON.stringify(aggregatePayload));
+    expect(payload).toEqual({
+      ...aggregatePayload,
+      operations: [
+        withItemAttribute({
+          item_id: 'product-1',
+          merchant_id: '90071992547409931234',
+          country_code: 'US',
+          language_code: 'en',
+          quantity: 3,
+        }),
+        withItemAttribute({
+          item_id: 'sku-2',
+          merchant_id: '90071992547409931234',
+          country_code: 'US',
+          language_code: 'en',
+        }),
+      ],
+    });
+  });
+
+  it('keeps a single operation when only one product in a basket is attributable', () => {
+    setStoreSalesItemAttributionFlag(workspaceId);
+
+    const payload = buildPayload({
+      merchantId: '123456',
+      products: [{ product_id: 'product-1' }, { quantity: 2 }],
+    });
+
+    expect(payload.operations.create.transaction_attribute.item_attribute).toEqual({
+      item_id: 'product-1',
+      merchant_id: '123456',
+    });
   });
 });
 

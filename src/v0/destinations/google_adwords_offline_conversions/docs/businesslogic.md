@@ -58,7 +58,8 @@ Each conversion type follows a different processing flow:
 #### Store Conversions Flow
 
 1. **Job Creation**: Uses `TrackCreateJobStoreConversionsConfig.json`
-2. **Operation Addition**: Uses `TrackAddStoreConversionsConfig.json`
+2. **Operation Addition**: Uses `TrackAddStoreConversionsConfig.json`, plus
+   `TrackStoreItemAttributeConfig.json` for `item_attribute` when item attribution is enabled
 3. **User Identifier Processing**: Handles email, phone, and address data
 4. **Job Execution**: Three-step API process
 
@@ -132,9 +133,15 @@ setting. Google requires the Google Ads customer to have item-attribute allow-li
 referenced Merchant Center account linked before attributed requests can be accepted.
 
 RudderStack emits `item_attribute` only when both `item_id` and `merchant_id` resolve. Flat item IDs
-use `item_id`, then `product_id`, then `sku`; when `properties.products` has exactly one entry, its
-`product_id` (then `sku`) and `quantity` backfill only missing flat values. Multi-entry product arrays
-remain aggregate-only until per-item transaction-value semantics are approved. A missing or invalid
+use `item_id`, then `product_id`, then `sku`, and apply only when `properties.products` is absent or
+empty. A non-empty product array, whatever its length, produces one operation per product, grouped by
+the shared `order_id`: each product supplies its own item ID (`product_id`, then `sku`) and quantity,
+and flat item ID and quantity are ignored, while merchant ID, country code and language code come from
+the flat properties. Products without an item ID are skipped; if none resolve, the event stays
+aggregate-only.
+Every fanned-out operation carries the full order value in `transaction_amount_micros`, so Google
+reports N × the order value for an N-item basket. This is an accepted trade-off for the flag-gated
+pilot; per-item value (unit price × quantity) is not calculated. A missing or invalid
 quantity is omitted rather than defaulted by RudderStack; Google Ads defaults an omitted quantity to
 `1`. Merchant IDs must be non-empty decimal strings or positive safe integers; numeric merchant IDs
 are converted to strings, and unsafe or non-decimal values make the item attribute unresolved. Quantities

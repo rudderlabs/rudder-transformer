@@ -229,13 +229,19 @@ const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
   return { storeSalesEvents, clickCallEvents };
 };
 
+// a multi-item store sale carries an array of operations (one per item), a single one an object
+const getStoreSalesOperations = (storeSalesEvent) =>
+  [].concat(get(storeSalesEvent, 'message.body.JSON.addConversionPayload.operations'));
+
 const batchEvents = async (storeSalesEvents) => {
   const batchEventResponse = defaultBatchRequestConfig();
   batchEventResponse.metadatas = [];
   set(batchEventResponse, 'batchedRequest.body.JSON', storeSalesEvents[0].message.body.JSON);
-  set(batchEventResponse, 'batchedRequest.body.JSON.addConversionPayload.operations', [
-    get(storeSalesEvents[0], 'message.body.JSON.addConversionPayload.operations'),
-  ]);
+  set(
+    batchEventResponse,
+    'batchedRequest.body.JSON.addConversionPayload.operations',
+    getStoreSalesOperations(storeSalesEvents[0]),
+  );
   batchEventResponse.metadatas.push(storeSalesEvents[0].metadata);
   const { params, headers, endpoint, endpointPath } = storeSalesEvents[0].message;
   batchEventResponse.batchedRequest.params = params;
@@ -249,7 +255,7 @@ const batchEvents = async (storeSalesEvents) => {
       return;
     }
     batchEventResponse.batchedRequest?.body?.JSON.addConversionPayload?.operations?.push(
-      storeSalesEvent.message?.body?.JSON?.addConversionPayload?.operations,
+      ...getStoreSalesOperations(storeSalesEvent),
     );
     batchEventResponse.metadatas.push(storeSalesEvent.metadata);
   });

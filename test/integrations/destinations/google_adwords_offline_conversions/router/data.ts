@@ -1681,6 +1681,85 @@ export const data = [
                 },
               },
             },
+            {
+              message: {
+                type: 'track',
+                event: 'Order Completed',
+                sentAt: '2024-05-09T00:02:48.319Z',
+                userId: '7fe0de4847f6dafb0cba694ef725404a',
+                channel: 'sources',
+                context: {
+                  traits: {
+                    email: 'johnwick@gmail.com',
+                    address: {
+                      city: 'homestead',
+                      state: 'fl',
+                      country: 'usa',
+                      postalCode: '33032',
+                    },
+                    lastName: 'wick',
+                    firstName: 'john',
+                  },
+                },
+                messageId: 'multi-item-store-sales-item-attribution',
+                originalTimestamp: '2024-05-09T00:02:48.319Z',
+                anonymousId: '00000000000000000000000000',
+                properties: {
+                  value: 123.05,
+                  currency: 'USD',
+                  order_id: 'multi-item-order',
+                  merchantId: '90071992547409931234',
+                  item_id: 'flat-item',
+                  products: [
+                    {
+                      product_id: 'P1001',
+                      quantity: '2',
+                    },
+                    {
+                      sku: 'S2002',
+                    },
+                  ],
+                  conversionDateTime: '2024-05-07 17:27:28-00:00',
+                },
+              },
+              metadata: {
+                secret: {
+                  access_token: secret1,
+                  refresh_token: 'efgh5678',
+                  developer_token: secret3,
+                },
+                jobId: 4,
+                userId: 'u1',
+                workspaceId: 'workspace-item-attribution',
+              },
+              destination: {
+                Config: {
+                  customerId: '{{ event.context.account_mcc || "1234556775" }}',
+                  subAccount: false,
+                  loginCustomerId: '{{ event.context.account_mcc || "1234556775" }}',
+                  eventsToOfflineConversionsTypeMapping: [
+                    {
+                      from: 'Order Completed',
+                      to: 'store',
+                    },
+                  ],
+                  eventsToConversionsNamesMapping: [
+                    {
+                      from: 'Order Completed',
+                      to: 'Store sales',
+                    },
+                  ],
+                  UserIdentifierSource: 'FIRST_PARTY',
+                  conversionEnvironment: 'none',
+                  defaultUserIdentifier: 'email',
+                  hashUserIdentifier: true,
+                  validateOnly: false,
+                  eventDelivery: false,
+                  eventDeliveryTS: 1715104236592,
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                },
+              },
+            },
           ],
           destType: 'google_adwords_offline_conversions',
         },
@@ -1792,6 +1871,57 @@ export const data = [
                             },
                           },
                         },
+                        {
+                          create: {
+                            transaction_attribute: {
+                              transaction_amount_micros: '123050000',
+                              order_id: 'multi-item-order',
+                              currency_code: 'USD',
+                              transaction_date_time: '2019-10-14 16:45:18+05:30',
+                              item_attribute: {
+                                item_id: 'P1001',
+                                merchant_id: '90071992547409931234',
+                                quantity: 2,
+                              },
+                              conversion_action: 'customers/1234556775/conversionActions/948898416',
+                            },
+                            userIdentifiers: [
+                              {
+                                hashedEmail:
+                                  'cd54e8f2e90e2a092a153f7e27e7b47a8ad29adb7943a05d749f0f9836935a2f',
+                              },
+                            ],
+                            consent: {
+                              adPersonalization: 'UNSPECIFIED',
+                              adUserData: 'UNSPECIFIED',
+                            },
+                          },
+                        },
+                        {
+                          create: {
+                            transaction_attribute: {
+                              transaction_amount_micros: '123050000',
+                              order_id: 'multi-item-order',
+                              currency_code: 'USD',
+                              transaction_date_time: '2019-10-14 16:45:18+05:30',
+                              item_attribute: {
+                                item_id: 'S2002',
+                                merchant_id: '90071992547409931234',
+                              },
+                              conversion_action: 'customers/1234556775/conversionActions/948898416',
+                            },
+                            userIdentifiers: [
+                              {
+                                hashedEmail:
+                                  'cd54e8f2e90e2a092a153f7e27e7b47a8ad29adb7943a05d749f0f9836935a2f',
+                              },
+                            ],
+                            consent: {
+                              adPersonalization: 'UNSPECIFIED',
+                              adUserData: 'UNSPECIFIED',
+                            },
+                          },
+                        },
                       ],
                       enable_partial_failure: false,
                       enable_warnings: false,
@@ -1833,6 +1963,16 @@ export const data = [
                     developer_token: secret3,
                   },
                   jobId: 3,
+                  userId: 'u1',
+                  workspaceId: 'workspace-item-attribution',
+                },
+                {
+                  secret: {
+                    access_token: secret1,
+                    refresh_token: 'efgh5678',
+                    developer_token: secret3,
+                  },
+                  jobId: 4,
                   userId: 'u1',
                   workspaceId: 'workspace-item-attribution',
                 },

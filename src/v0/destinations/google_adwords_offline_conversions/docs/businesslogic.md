@@ -58,7 +58,8 @@ Each conversion type follows a different processing flow:
 #### Store Conversions Flow
 
 1. **Job Creation**: Uses `TrackCreateJobStoreConversionsConfig.json`
-2. **Operation Addition**: Uses `TrackAddStoreConversionsConfig.json`
+2. **Operation Addition**: Uses `TrackAddStoreConversionsConfig.json`, plus
+   `TrackStoreItemAttributeConfig.json` for `item_attribute` when item attribution is enabled
 3. **User Identifier Processing**: Handles email, phone, and address data
 4. **Job Execution**: Three-step API process
 
@@ -113,13 +114,42 @@ Each conversion type follows a different processing flow:
 
 #### Transaction Data Mapping
 
-| RudderStack Field                                                                             | Google Ads Field                                                     | Required | Type     | Notes                             |
-| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------- | -------- | --------------------------------- |
-| `properties.store_code` / `properties.storeCode`                                              | `operations.create.transaction_attribute.store_attribute.store_code` | No       | String   | Store identifier                  |
-| `properties.conversionValue` / `properties.total` / `properties.value` / `properties.revenue` | `operations.create.transaction_attribute.transaction_amount_micros`  | Yes      | Number   | Converted to micros (\*1,000,000) |
-| `properties.order_id` / `properties.orderId`                                                  | `operations.create.transaction_attribute.order_id`                   | No       | String   | Order identifier                  |
-| `properties.currency`                                                                         | `operations.create.transaction_attribute.currency_code`              | Yes      | String   | Currency code                     |
-| `timestamp` / `originalTimestamp`                                                             | `operations.create.transaction_attribute.transaction_date_time`      | Yes      | DateTime | Transaction time                  |
+| RudderStack Field                                                                             | Google Ads Field                                                       | Required | Type     | Notes                             |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------- | -------- | --------------------------------- |
+| `properties.store_code` / `properties.storeCode`                                              | `operations.create.transaction_attribute.store_attribute.store_code`   | No       | String   | Store identifier                  |
+| `properties.conversionValue` / `properties.total` / `properties.value` / `properties.revenue` | `operations.create.transaction_attribute.transaction_amount_micros`    | Yes      | Number   | Converted to micros (\*1,000,000) |
+| `properties.order_id` / `properties.orderId`                                                  | `operations.create.transaction_attribute.order_id`                     | No       | String   | Order identifier                  |
+| `properties.currency`                                                                         | `operations.create.transaction_attribute.currency_code`                | Yes      | String   | Currency code                     |
+| `timestamp` / `originalTimestamp`                                                             | `operations.create.transaction_attribute.transaction_date_time`        | Yes      | DateTime | Transaction time                  |
+| `properties.item_id` / `properties.product_id` / `properties.sku`                             | `operations.create.transaction_attribute.item_attribute.item_id`       | No       | String   | Merchant Center item ID           |
+| `properties.merchantId` / `properties.merchant_id`                                            | `operations.create.transaction_attribute.item_attribute.merchant_id`   | No       | Int64    | Merchant Center account ID        |
+| `properties.feedCountryCode` / `properties.country_code`                                      | `operations.create.transaction_attribute.item_attribute.country_code`  | No       | String   | Feed country                      |
+| `properties.feedLanguageCode` / `properties.language_code`                                    | `operations.create.transaction_attribute.item_attribute.language_code` | No       | String   | Feed language                     |
+| `properties.quantity`                                                                         | `operations.create.transaction_attribute.item_attribute.quantity`      | No       | Int64    | Positive whole-number quantity    |
+
+Store Sales item attribution is enabled operationally for selected workspaces through the
+`GAOC_STORE_SALES_ITEM_ATTRIBUTION` environment flag; it is not a customer self-serve destination
+setting. Google requires the Google Ads customer to have item-attribute allow-list approval and the
+referenced Merchant Center account linked before attributed requests can be accepted.
+
+RudderStack emits `item_attribute` only when both `item_id` and `merchant_id` resolve. Flat item IDs
+use `item_id`, then `product_id`, then `sku`, and apply only when `properties.products` is absent or
+empty. A non-empty product array, whatever its length, produces one operation per product, grouped by
+the shared `order_id`: each product supplies its own item ID (`item_id`, then `product_id`, then `sku`) and quantity,
+and flat item ID and quantity are ignored, while merchant ID, country code and language code come from
+the flat properties. Products without an item ID are skipped; if none resolve, the event stays
+aggregate-only.
+Every fanned-out operation carries the full order value in `transaction_amount_micros`, so Google
+reports N × the order value for an N-item basket. This is an accepted trade-off for the flag-gated
+pilot; per-item value (unit price × quantity) is not calculated. A missing or invalid
+quantity is omitted rather than defaulted by RudderStack; Google Ads defaults an omitted quantity to
+`1`. Merchant IDs and quantities are Google `int64` fields: both must be positive safe integers, given
+as numbers or digit strings, and are sent as numbers (as in the click path's `cartData.merchantId`).
+An invalid merchant ID makes the item attribute unresolved.
+
+`properties.lineItems` is not accepted. Although the originating request described “lineItems
+mapping”, this implementation follows the existing ecommerce convention of `properties.products`,
+`properties.product_id`, and `properties.merchantId`.
 
 #### Address Data Mapping
 

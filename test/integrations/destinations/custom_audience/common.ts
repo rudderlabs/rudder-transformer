@@ -1,12 +1,18 @@
+import type { Destination } from '../../../../src/types/controlPlaneConfig';
 import { HashingType } from '../../../../src/v0/util/audienceUtils';
-import { AUTHENTICATION_TYPES } from '../../../../src/v0/destinations/custom_audience/constants';
+import {
+  ACCOUNT_DEFINITION_NAMES,
+  AUTHENTICATION_TYPES,
+} from '../../../../src/v0/destinations/custom_audience/constants';
 import type {
   ActionConfig,
   CustomAudienceConnection,
   CustomAudienceDestination,
   UpdateActionConfig,
 } from '../../../../src/v0/destinations/custom_audience/types';
-import { bearerToken } from './maskedSecrets';
+import { accountApiKeyValue, accountBearerToken, bearerToken } from './maskedSecrets';
+
+type ComponentCustomAudienceDestination = CustomAudienceDestination & Destination;
 
 export const destType = 'custom_audience';
 const destTypeInUpperCase = 'CUSTOM_AUDIENCE';
@@ -30,7 +36,7 @@ const deleteActionConfig: ActionConfig = {
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
 
-export const destination: CustomAudienceDestination = {
+export const destination: ComponentCustomAudienceDestination = {
   Config: {
     baseUrl: 'https://api.example.com',
     authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
@@ -74,8 +80,88 @@ export const headers = {
   Authorization: `Bearer ${bearerToken}`,
 };
 
+export const accountManagedDestination: ComponentCustomAudienceDestination = {
+  ...destination,
+  Config: {
+    ...destination.Config,
+    authenticationEnabled: true,
+    authenticationType: undefined,
+    bearerToken: undefined,
+    rudderAccountId: 'account-1',
+  },
+  deliveryAccount: {
+    id: 'account-1',
+    accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+    options: {},
+    secret: { bearerToken: accountBearerToken },
+  },
+};
+
+export const accountManagedHeaders = {
+  'Content-Type': 'application/json',
+  'X-App': 'rudderstack',
+  Authorization: `Bearer ${accountBearerToken}`,
+};
+
+export const accountManagedApiKeyDestination: ComponentCustomAudienceDestination = {
+  ...destination,
+  Config: {
+    ...destination.Config,
+    authenticationEnabled: true,
+    authenticationType: undefined,
+    bearerToken: undefined,
+    rudderAccountId: 'account-1',
+  },
+  deliveryAccount: {
+    id: 'account-1',
+    accountDefinitionName: ACCOUNT_DEFINITION_NAMES.API_KEY,
+    options: { apiKeyName: 'X-Account-Key' },
+    secret: { apiKeyValue: accountApiKeyValue },
+  },
+};
+
+export const accountManagedApiKeyHeaders = {
+  'Content-Type': 'application/json',
+  'X-App': 'rudderstack',
+  'X-Account-Key': accountApiKeyValue,
+};
+
+export const authenticationDisabledDestination: ComponentCustomAudienceDestination = {
+  ...destination,
+  Config: {
+    ...destination.Config,
+    authenticationEnabled: false,
+    rudderAccountId: 'account-1',
+  },
+  deliveryAccount: {
+    id: 'account-1',
+    accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+    options: {},
+    secret: { bearerToken: accountBearerToken },
+  },
+};
+
+export const authenticationDisabledHeaders = {
+  'Content-Type': 'application/json',
+  'X-App': 'rudderstack',
+};
+
 export const insertEndpoint = 'https://api.example.com/audiences/aud-42/members';
 export const deleteEndpoint = 'https://api.example.com/audiences/aud-42/members';
+
+const asComponentDestination = (
+  customAudienceDestination: CustomAudienceDestination,
+): ComponentCustomAudienceDestination =>
+  customAudienceDestination as ComponentCustomAudienceDestination;
+
+export const componentDestination = asComponentDestination(destination);
+export const componentAccountManagedDestination = asComponentDestination(accountManagedDestination);
+export const componentAccountManagedApiKeyDestination = asComponentDestination(
+  accountManagedApiKeyDestination,
+);
+export const componentAuthenticationDisabledDestination = asComponentDestination(
+  authenticationDisabledDestination,
+);
 
 // Variants used by router tests that exercise customMappings injection
 // and isHashRequired hashing.
@@ -99,7 +185,7 @@ export const extraTargetCustomMappingsConnection: CustomAudienceConnection = {
   },
 };
 
-export const customMappingsDestination: CustomAudienceDestination = {
+export const customMappingsDestination: ComponentCustomAudienceDestination = {
   ...destination,
   Config: {
     ...destination.Config,
@@ -136,7 +222,7 @@ const useInsertConfigUpdateAction: UpdateActionConfig = {
   useInsertConfig: true,
 };
 
-export const useInsertConfigDestination: CustomAudienceDestination = {
+export const useInsertConfigDestination: ComponentCustomAudienceDestination = {
   ...destination,
   Config: {
     ...destination.Config,
@@ -148,25 +234,26 @@ export const useInsertConfigDestination: CustomAudienceDestination = {
   },
 };
 
-export const useInsertConfigWithRequiredInsertFieldDestination: CustomAudienceDestination = {
-  ...destination,
-  Config: {
-    ...destination.Config,
-    actions: {
-      insert: {
-        ...insertActionConfig,
-        fields: [
-          ...insertActionConfig.fields,
-          {
-            name: 'externalId',
-            hashType: HashingType.NONE,
-            isRequired: true,
-            isCustom: false,
-          },
-        ],
+export const useInsertConfigWithRequiredInsertFieldDestination: ComponentCustomAudienceDestination =
+  {
+    ...destination,
+    Config: {
+      ...destination.Config,
+      actions: {
+        insert: {
+          ...insertActionConfig,
+          fields: [
+            ...insertActionConfig.fields,
+            {
+              name: 'externalId',
+              hashType: HashingType.NONE,
+              isRequired: true,
+              isCustom: false,
+            },
+          ],
+        },
+        update: useInsertConfigUpdateAction,
+        delete: deleteActionConfig,
       },
-      update: useInsertConfigUpdateAction,
-      delete: deleteActionConfig,
     },
-  },
-};
+  };

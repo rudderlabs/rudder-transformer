@@ -4077,9 +4077,12 @@ export const data = [
                 email: 'alex@example.com',
                 gclid: 'gclid',
                 product_id: '123445',
+                merchantId: '123456789',
+                feedCountryCode: 'US',
+                feedLanguageCode: 'en',
                 custom_key: 'CUSTOM_KEY',
                 CUSTOM_KEY: 'CUSTOM_VALUE',
-                quantity: 123,
+                quantity: '123',
               },
               integrations: {
                 All: true,
@@ -4092,6 +4095,7 @@ export const data = [
                 access_token: secret1,
                 refresh_token: 'efgh5678',
               },
+              workspaceId: 'workspace-item-attribution',
             },
             destination: {
               Config: {
@@ -4206,6 +4210,13 @@ export const data = [
                           order_id: 'order id',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          item_attribute: {
+                            item_id: '123445',
+                            merchant_id: 123456789,
+                            country_code: 'US',
+                            language_code: 'en',
+                            quantity: 123,
+                          },
                           CUSTOM_KEY: 'CUSTOM_VALUE',
                           conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
@@ -4237,6 +4248,7 @@ export const data = [
                 access_token: secret1,
                 refresh_token: 'efgh5678',
               },
+              workspaceId: 'workspace-item-attribution',
             },
             statusCode: 200,
           },
@@ -4244,6 +4256,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_STORE_SALES_ITEM_ATTRIBUTION: 'workspace-item-attribution',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -4407,7 +4422,7 @@ export const data = [
               properties: {
                 loyaltyFraction: 1,
                 item_id: 'item id',
-                merchant_id: 'merchant id',
+                merchant_id: '123456',
                 currency: 'INR',
                 revenue: '100',
                 store_code: 'store code',
@@ -4426,6 +4441,7 @@ export const data = [
                 access_token: secret1,
                 refresh_token: 'efgh5678',
               },
+              workspaceId: 'workspace-item-attribution',
             },
             destination: {
               Config: {
@@ -4570,6 +4586,7 @@ export const data = [
                 access_token: secret1,
                 refresh_token: 'efgh5678',
               },
+              workspaceId: 'workspace-item-attribution',
             },
             statusCode: 200,
           },
@@ -4577,6 +4594,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_STORE_SALES_ITEM_ATTRIBUTION: 'another-workspace',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -4605,7 +4625,6 @@ export const data = [
               userId: '12345',
               properties: {
                 item_id: 'item id',
-                merchant_id: 'merchant id',
                 currency: 'INR',
                 revenue: '100',
                 store_code: 'store code',
@@ -4624,6 +4643,7 @@ export const data = [
                 access_token: secret1,
                 refresh_token: 'efgh5678',
               },
+              workspaceId: 'workspace-item-attribution',
             },
             destination: {
               Config: {
@@ -4769,6 +4789,7 @@ export const data = [
                 access_token: secret1,
                 refresh_token: 'efgh5678',
               },
+              workspaceId: 'workspace-item-attribution',
             },
             statusCode: 200,
           },
@@ -4776,6 +4797,9 @@ export const data = [
       },
     },
     mockFns: (_) => timestampMock(_, '2023-02-06 19:44:25+05:30'),
+    envOverrides: {
+      GAOC_STORE_SALES_ITEM_ATTRIBUTION: 'workspace-item-attribution',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',

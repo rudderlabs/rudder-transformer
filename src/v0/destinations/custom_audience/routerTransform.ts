@@ -41,14 +41,13 @@ class CustomAudienceIntegration extends DestinationIntegration<
   // so resolve once per configured action — not once per event.
   private endpointByAction?: Partial<Record<Action, string>>;
 
-  private readonly headers: Record<string, string>;
+  private headers?: Record<string, string>;
 
   constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
     super(...args);
     if (!this.connection) {
       throw new InstrumentationError('Connection config is required for custom_audience');
     }
-    this.headers = buildRequestHeaders(this.destination.Config);
   }
 
   private get connectionConfig() {
@@ -73,6 +72,7 @@ class CustomAudienceIntegration extends DestinationIntegration<
   ): TransformedEvent<Record<string, unknown>> {
     const { message } = input;
     const { action, identifiers } = message;
+    this.headers ??= buildRequestHeaders(this.destination);
     const { action: resolvedAction, config: actionConfig } = lookupActionConfig(
       action,
       this.destination.Config.actions,

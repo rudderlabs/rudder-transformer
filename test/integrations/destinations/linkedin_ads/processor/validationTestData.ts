@@ -77,7 +77,7 @@ const commonStats = {
 const commonHeader = {
   Authorization: defaultAccessTokenAuthHeader,
   'Content-Type': 'application/json',
-  'LinkedIn-Version': '202511',
+  'LinkedIn-Version': '202609',
   'X-RestLi-Method': 'BATCH_CREATE',
   'X-Restli-Protocol-Version': '2.0.0',
 };

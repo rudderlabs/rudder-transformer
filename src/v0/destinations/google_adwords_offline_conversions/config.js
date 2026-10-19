@@ -1,6 +1,7 @@
 const { getMappingConfig } = require('../../util');
 
 const API_VERSION = 'v25';
+const STORE_SALES_ITEM_ATTRIBUTION_FLAG = 'GAOC_STORE_SALES_ITEM_ATTRIBUTION';
 
 const CUSTOMER_ID_PARAM = ':customerId';
 
@@ -40,6 +41,9 @@ const CONFIG_CATEGORIES = {
   TRACK_STORE_ADDRESS_IDENTIFIER: {
     name: 'storeAddoperationAddressMap',
   },
+  TRACK_STORE_ITEM_ATTRIBUTE: {
+    name: 'TrackStoreItemAttributeConfig',
+  },
 };
 
 const CONVERSION_ACTION_ID_CACHE_TTL = process.env.CONVERSION_ACTION_ID_CACHE_TTL
@@ -77,9 +81,11 @@ module.exports = {
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_CONVERSION_CONFIG_CREATE_JOB.name],
   trackAddStoreConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_CONVERSION_CONFIG_ADD_CONVERSION.name],
+  trackStoreItemAttributeMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ITEM_ATTRIBUTE.name],
   trackAddStoreAddressConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
   consentConfigMap,
   API_VERSION,
+  STORE_SALES_ITEM_ATTRIBUTION_FLAG,
   MAX_CONVERSIONS_PER_BATCH,
 };

@@ -888,4 +888,264 @@ export const data = [
       },
     },
   },
+  {
+    name: 'tiktok_ads_offline_events',
+    description: 'Explicit Purchase standard event mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                hashUserProperties: true,
+                eventsToStandard: [{ from: 'SomeEvent', to: 'Purchase' }],
+              },
+            },
+            message: {
+              type: 'track',
+              event: 'SomeEvent',
+              timestamp: '2023-01-03',
+              properties: {
+                eventSetId: 'purchase-explicit-event-set',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/offline/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_set_id: 'purchase-explicit-event-set',
+                  timestamp: '2023-01-03',
+                  event: 'Purchase',
+                  partner_name: 'RudderStack',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              event_set_id: 'purchase-explicit-event-set',
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads_offline_events',
+    description: 'Default Purchase standard event mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                hashUserProperties: true,
+                eventsToStandard: [],
+              },
+            },
+            message: {
+              type: 'track',
+              event: 'purchase',
+              timestamp: '2023-01-03',
+              properties: {
+                eventSetId: 'purchase-default-event-set',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/offline/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_set_id: 'purchase-default-event-set',
+                  timestamp: '2023-01-03',
+                  event: 'Purchase',
+                  partner_name: 'RudderStack',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              event_set_id: 'purchase-default-event-set',
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads_offline_events',
+    description: 'Explicit Lead standard event mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                hashUserProperties: true,
+                eventsToStandard: [{ from: 'SomeEvent', to: 'Lead' }],
+              },
+            },
+            message: {
+              type: 'track',
+              event: 'SomeEvent',
+              timestamp: '2023-01-03',
+              properties: {
+                eventSetId: 'lead-explicit-event-set',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/offline/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_set_id: 'lead-explicit-event-set',
+                  timestamp: '2023-01-03',
+                  event: 'Lead',
+                  partner_name: 'RudderStack',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              event_set_id: 'lead-explicit-event-set',
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads_offline_events',
+    description: 'Default Lead standard event mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                hashUserProperties: true,
+                eventsToStandard: [],
+              },
+            },
+            message: {
+              type: 'track',
+              event: 'lead',
+              timestamp: '2023-01-03',
+              properties: {
+                eventSetId: 'lead-default-event-set',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/offline/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_set_id: 'lead-default-event-set',
+                  timestamp: '2023-01-03',
+                  event: 'Lead',
+                  partner_name: 'RudderStack',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              event_set_id: 'lead-default-event-set',
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

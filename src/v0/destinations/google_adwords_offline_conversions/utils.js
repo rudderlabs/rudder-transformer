@@ -16,6 +16,7 @@ const {
   defaultPostRequestConfig,
   removeHyphens,
   getFieldValueFromMessage,
+  isBlank,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
   getAccessToken,
@@ -117,13 +118,11 @@ const getReqHeaders = (Config, metadata, passToken = false) => {
   return headers;
 };
 
-const isPresent = (value) => value !== undefined && value !== null && value !== '';
-
 const resolveProductItemId = (product, { allowSkuFallback = false } = {}) => {
-  if (isPresent(product?.product_id)) {
+  if (!isBlank(product?.product_id)) {
     return product.product_id;
   }
-  if (allowSkuFallback && isPresent(product?.sku)) {
+  if (allowSkuFallback && !isBlank(product?.sku)) {
     return product.sku;
   }
   return undefined;
@@ -134,7 +133,7 @@ const normalizeGoogleItemQuantity = (value, { requirePositiveSafeInteger = false
     return Number.parseInt(value, 10);
   }
   if (
-    !isPresent(value) ||
+    isBlank(value) ||
     (typeof value !== 'number' && typeof value !== 'string') ||
     (typeof value === 'string' && !/^\d+$/.test(value))
   ) {
@@ -301,13 +300,13 @@ const normalizeStoreMerchantId = (value) => {
 
 const backfillStoreItemAttribute = (itemAttribute, product) => {
   const backfilledItemAttribute = { ...itemAttribute };
-  if (!isPresent(backfilledItemAttribute.item_id)) {
+  if (isBlank(backfilledItemAttribute.item_id)) {
     const productItemId = resolveProductItemId(product, { allowSkuFallback: true });
-    if (isPresent(productItemId)) {
+    if (!isBlank(productItemId)) {
       backfilledItemAttribute.item_id = String(productItemId);
     }
   }
-  if (!isPresent(backfilledItemAttribute.quantity)) {
+  if (isBlank(backfilledItemAttribute.quantity)) {
     backfilledItemAttribute.quantity = product?.quantity;
   }
   return backfilledItemAttribute;
@@ -346,7 +345,7 @@ const buildStoreItemAttribute = (message, mappedItemAttribute = {}) => {
 
   itemAttribute = normalizeStoreItemAttribute(itemAttribute);
 
-  return isPresent(itemAttribute.item_id) && isPresent(itemAttribute.merchant_id)
+  return !isBlank(itemAttribute.item_id) && !isBlank(itemAttribute.merchant_id)
     ? itemAttribute
     : null;
 };
@@ -375,7 +374,7 @@ const getAddConversionPayload = (
   const { properties } = message;
   const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
   const itemAttributionEnabled =
-    isPresent(workspaceId) && isFeatureEnabled(STORE_SALES_ITEM_ATTRIBUTION_FLAG, workspaceId);
+    !isBlank(workspaceId) && isFeatureEnabled(STORE_SALES_ITEM_ATTRIBUTION_FLAG, workspaceId);
   const payload = constructPayload(
     message,
     itemAttributionEnabled ? trackAddStoreConversionsMapping : aggregateStoreConversionsMapping,

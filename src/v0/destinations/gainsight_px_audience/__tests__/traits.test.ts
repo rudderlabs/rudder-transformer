@@ -74,6 +74,14 @@ describe('convertTraitValue — trait-mappings §5.2 conversion table', () => {
     ['an impossible date', '2026-13-45', leftOut('unconvertible')],
     ['an offset without a colon', '2026-10-20T10:00:00+0200', sent(1792483200000)],
     ['an hour offset', '2026-10-20T10:00:00+02', sent(1792483200000)],
+    ['a pre-1970 date (PX 400s negative)', '1969-12-31', leftOut('unconvertible')],
+    ['a pre-1970 date-time', '1900-01-01T00:00:00Z', leftOut('unconvertible')],
+    ['an overflowing day (V8 rolls to March)', '2026-02-30', leftOut('unconvertible')],
+    ['an overflowing day with a time', '2026-02-31T00:00Z', leftOut('unconvertible')],
+    ['an hour of 24', '2026-10-20T24:00:00Z', leftOut('unconvertible')],
+    ['a minute of 60', '2026-10-20T10:60:00Z', leftOut('unconvertible')],
+    ['a leap day', '2024-02-29', sent(1709164800000)],
+    ['a non-leap Feb 29', '2026-02-29', leftOut('unconvertible')],
     ['a numeric string (never sent as a string)', '1792490400000', leftOut('unconvertible')],
   ])('DATE_TIME: %s', (_case, value, expected) => {
     expect(convertTraitValue(value, 'DATE_TIME')).toEqual(expected);

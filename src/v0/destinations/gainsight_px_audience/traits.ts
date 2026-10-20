@@ -23,23 +23,43 @@ const ISO_DATE_TIME =
   /^(\d{4}-\d{2}-\d{2})(?:[ T](\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?)(Z|[+-]\d{2}(?::?\d{2})?)?)?$/;
 
 // PX stores a DATE_TIME string as 0 (probe 2026-10-20), so a date is always sent as epoch ms.
+// PX 400s a fractional, negative or out-of-range DATE_TIME number (probe 2026-10-20).
+const MAX_DATE_MS = 8.64e15;
+const epochMs = (value: number): number | undefined =>
+  Number.isInteger(value) && value >= 0 && value <= MAX_DATE_MS ? value : undefined;
+
+// V8 rolls an overflowing day into the next month ("2026-02-30" is March 2); a real calendar date
+// reads back to the same year, month and day.
+const isRealDate = (date: string): boolean => {
+  const [y, m, d] = date.split('-').map(Number);
+  const utc = new Date(Date.UTC(y, m - 1, d));
+  return utc.getUTCFullYear() === y && utc.getUTCMonth() === m - 1 && utc.getUTCDate() === d;
+};
+
+const isRealTime = (time: string, zone?: string): boolean => {
+  const [h, m, sec] = time.split(':');
+  const offset = zone && zone !== 'Z' ? zone.slice(1).replace(':', '') : '';
+  return (
+    Number(h) <= 23 &&
+    Number(m) <= 59 &&
+    (sec === undefined || Math.floor(Number(sec)) <= 59) &&
+    (offset === '' || (Number(offset.slice(0, 2)) <= 23 && Number(offset.slice(2) || 0) <= 59))
+  );
+};
+
 const parseEpochMs = (raw: string): number | undefined => {
   const match = ISO_DATE_TIME.exec(raw.trim());
   if (!match) return undefined;
   const [, date, time, zone] = match;
+  if (!isRealDate(date) || (time !== undefined && !isRealTime(time, zone))) return undefined;
   let offset = zone ?? 'Z'; // zone-less (and date-only) is UTC
   if (offset !== 'Z') {
     const digits = offset.slice(1).replace(':', '');
     offset = `${offset[0]}${digits.slice(0, 2)}:${digits.slice(2) || '00'}`;
   }
   const parsed = Date.parse(`${date}T${time ?? '00:00'}${offset}`);
-  return Number.isFinite(parsed) ? parsed : undefined;
+  return Number.isFinite(parsed) ? epochMs(parsed) : undefined;
 };
-
-// PX 400s a fractional, negative or out-of-range DATE_TIME number (probe 2026-10-20).
-const MAX_DATE_MS = 8.64e15;
-const epochMs = (value: number): number | undefined =>
-  Number.isInteger(value) && value >= 0 && value <= MAX_DATE_MS ? value : undefined;
 
 const finiteNumber = (value: number): number | undefined =>
   Number.isFinite(value) ? value : undefined;

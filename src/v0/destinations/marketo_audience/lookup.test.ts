@@ -162,6 +162,33 @@ describe('lookupLeadsByEmail', () => {
     );
   });
 
+  it('follows a nextPageToken that comes without moreResult', async () => {
+    mockHttpPost
+      .mockResolvedValueOnce(leads([{ id: 101, email: 'alice@acme.io' }], { nextPageToken: 'p2' }))
+      .mockResolvedValueOnce(leads([{ id: 202, email: 'bob@acme.io' }]));
+
+    const outcomes = await lookup(['alice@acme.io', 'bob@acme.io']);
+
+    expect(mockHttpPost).toHaveBeenCalledTimes(2);
+    expect(sentForm(1).nextPageToken).toBe('p2');
+    expect(outcomes).toEqual(
+      new Map([
+        ['alice@acme.io', { kind: 'found', leadId: 101 }],
+        ['bob@acme.io', { kind: 'found', leadId: 202 }],
+      ]),
+    );
+  });
+
+  it('stops paging when moreResult is false, even with a nextPageToken', async () => {
+    mockHttpPost.mockResolvedValue(
+      leads([{ id: 101, email: 'alice@acme.io' }], { moreResult: false, nextPageToken: 'p2' }),
+    );
+
+    await lookup(['alice@acme.io']);
+
+    expect(mockHttpPost).toHaveBeenCalledTimes(1);
+  });
+
   it('counts a lead repeated across pages once', async () => {
     mockHttpPost
       .mockResolvedValueOnce(

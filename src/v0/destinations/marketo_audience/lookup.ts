@@ -160,13 +160,19 @@ function collectPage(body: unknown, matches: Matches, destinationId: string): st
     }
     ids.add(leadId.id);
   });
-  if (page.moreResult !== true) {
-    return undefined;
+  const token =
+    typeof page.nextPageToken === 'string' && page.nextPageToken !== ''
+      ? page.nextPageToken
+      : undefined;
+  if (page.moreResult === true) {
+    if (!token) {
+      throw new RetryableError(LOOKUP_UNMATCHED);
+    }
+    return token;
   }
-  if (typeof page.nextPageToken !== 'string' || page.nextPageToken === '') {
-    throw new RetryableError(LOOKUP_UNMATCHED);
-  }
-  return page.nextPageToken;
+  // Adobe documents `moreResult` for filter reads, but some Marketo endpoints send only the token.
+  // Without `moreResult`, a token still means another page; `moreResult: false` ends paging.
+  return page.moreResult === undefined ? token : undefined;
 }
 
 async function matchChunk(request: LookupRequest, emails: string[]): Promise<Matches> {

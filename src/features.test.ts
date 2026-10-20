@@ -42,6 +42,7 @@ describe('features destination capabilities', () => {
       REDDIT_AUDIENCE: true,
       PINTEREST_AUDIENCE: true,
       HS_AUDIENCE: true,
+      MARKETO_AUDIENCE: true,
       EVERFLOW: true,
       OPENAI_ADS: true,
       TEST_DESTINATION: true,

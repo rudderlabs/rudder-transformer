@@ -203,7 +203,7 @@ describe('lookupLeadsByEmail', () => {
       response: failure('603'),
       expected: {
         type: 'AbortedError',
-        message: 'Marketo API user lacks Read-Only Lead permission',
+        message: 'Marketo denied access',
         status: 400,
       },
     },

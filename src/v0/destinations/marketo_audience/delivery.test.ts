@@ -173,7 +173,7 @@ describe('MARKETO_AUDIENCE delivery', () => {
         verdict: retry(`Marketo is temporarily unavailable (code ${code})`),
       })),
       { code: '1013', verdict: abort('Marketo static list not found') },
-      { code: '603', verdict: abort('Marketo API user lacks Read-Write Lead permission') },
+      { code: '603', verdict: abort('Marketo denied access') },
       { code: '1003', verdict: abort('Marketo request failed (code 1003)') },
     ];
 

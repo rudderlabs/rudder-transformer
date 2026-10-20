@@ -19,12 +19,12 @@ import {
   type ItemVerdict,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import {
+  ACCESS_DENIED,
   LEAD_NOT_FOUND,
   LIST_NOT_FOUND,
   MEMBERSHIP_FAILED,
   PARTITION_DENIED,
   RESPONSE_UNMATCHED,
-  WRITE_PERMISSION_MISSING,
 } from './config';
 import {
   asRecord,
@@ -119,7 +119,7 @@ function membershipResponse(ctx: DeliveryContext): HandleResponseResult {
   }
   const outcome = classifyMarketoCode(
     code,
-    { '603': WRITE_PERMISSION_MISSING, '1013': LIST_NOT_FOUND },
+    { '603': ACCESS_DENIED, '1013': LIST_NOT_FOUND },
     MEMBERSHIP_FAILED,
   );
   // The retried jobs are transformed again and fetch a new token.

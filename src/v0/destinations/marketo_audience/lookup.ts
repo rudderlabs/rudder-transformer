@@ -8,12 +8,12 @@ import { httpPOST } from '../../../adapters/network';
 import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
 import { isHttpStatusSuccess } from '../../util';
 import {
+  ACCESS_DENIED,
   DESTINATION_TYPE,
   LOOKUP_ENDPOINT_PATH,
   LOOKUP_FAILED,
   LOOKUP_UNMATCHED,
   MAX_LOOKUP_EMAILS,
-  READ_PERMISSION_MISSING,
 } from './config';
 import {
   asRecord,
@@ -134,7 +134,7 @@ function collectPage(body: unknown, matches: Matches, destinationId: string): st
     if (!code) {
       throw new RetryableError(LOOKUP_UNMATCHED);
     }
-    const outcome = classifyMarketoCode(code, { '603': READ_PERMISSION_MISSING }, LOOKUP_FAILED);
+    const outcome = classifyMarketoCode(code, { '603': ACCESS_DENIED }, LOOKUP_FAILED);
     if (outcome.evictToken) {
       authCache.del(destinationId);
     }

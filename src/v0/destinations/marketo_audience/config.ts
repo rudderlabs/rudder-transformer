@@ -32,7 +32,7 @@ export const MEMBERSHIP_FAILED = 'Marketo request failed';
 export const RESPONSE_UNMATCHED = 'Marketo response could not be matched to the request';
 export const PARTITION_DENIED = 'Lead is in a partition the Marketo API user cannot access';
 export const LIST_NOT_FOUND = 'Marketo static list not found';
-export const WRITE_PERMISSION_MISSING = 'Marketo API user lacks Read-Write Lead permission';
 export const LOOKUP_FAILED = 'Marketo lead lookup failed';
 export const LOOKUP_UNMATCHED = 'Marketo lead lookup response could not be matched to the request';
-export const READ_PERMISSION_MISSING = 'Marketo API user lacks Read-Only Lead permission';
+// 603 covers a missing permission and other access refusals (an IP allowlist, a disabled user).
+export const ACCESS_DENIED = 'Marketo denied access';

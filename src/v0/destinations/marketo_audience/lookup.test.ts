@@ -189,6 +189,31 @@ describe('lookupLeadsByEmail', () => {
     expect(mockHttpPost).toHaveBeenCalledTimes(1);
   });
 
+  it('halves a chunk on 1003 until only the email matching over 1,000 leads fails', async () => {
+    // user<n>@acme.io is lead n; many@acme.io matches more than 1,000 leads.
+    mockHttpPost.mockImplementation(async (_url: string, body: string) => {
+      const requested = new URLSearchParams(body).get('filterValues')!.split(',');
+      if (requested.includes('many@acme.io')) {
+        return failure('1003');
+      }
+      return leads(requested.map((email) => ({ id: Number(email.slice(4, -8)), email })));
+    });
+
+    const outcomes = await lookup(['many@acme.io', ...emailsFrom(1, 299)]);
+
+    // 300 -> 150 -> 75 -> 38 -> 19 -> 10 -> 5 -> 3 -> 2 -> 1: one call, then two per halving.
+    expect(mockHttpPost).toHaveBeenCalledTimes(19);
+    const many = outcomes.get('many@acme.io');
+    expect('error' in many! && errorShape(many.error)).toEqual({
+      type: 'TooManyLeadsError',
+      message: 'More than 1,000 Marketo leads match this email',
+      status: 400,
+    });
+    expect(outcomes.get('user1@acme.io')).toEqual({ kind: 'found', leadId: 1 });
+    expect(outcomes.get('user299@acme.io')).toEqual({ kind: 'found', leadId: 299 });
+    expect(emailsFrom(1, 299).every((email) => outcomes.get(email)?.kind === 'found')).toBe(true);
+  });
+
   it('counts a lead repeated across pages once', async () => {
     mockHttpPost
       .mockResolvedValueOnce(
@@ -238,8 +263,8 @@ describe('lookupLeadsByEmail', () => {
       name: 'success:false 1003',
       response: failure('1003'),
       expected: {
-        type: 'AbortedError',
-        message: 'Marketo lead lookup failed (code 1003)',
+        type: 'TooManyLeadsError',
+        message: 'More than 1,000 Marketo leads match this email',
         status: 400,
       },
     },

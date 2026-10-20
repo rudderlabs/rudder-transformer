@@ -14,6 +14,7 @@ import {
   LOOKUP_FAILED,
   LOOKUP_UNMATCHED,
   MAX_LOOKUP_EMAILS,
+  TOO_MANY_LEADS,
 } from './config';
 import {
   asRecord,
@@ -30,6 +31,16 @@ export type LookupOutcome =
   | { kind: 'missing' }
   | { kind: 'duplicate' }
   | { kind: 'error'; error: Error };
+
+// Marketo answers 1003 when more than 1,000 leads match the filter, and returns no partial pages.
+const TOO_MANY_RESULTS_CODE = '1003';
+
+class TooManyLeadsError extends AbortedError {
+  constructor() {
+    super(TOO_MANY_LEADS);
+    this.name = 'TooManyLeadsError';
+  }
+}
 
 type LookupRequest = {
   accountId: string;
@@ -134,6 +145,9 @@ function collectPage(body: unknown, matches: Matches, destinationId: string): st
     if (!code) {
       throw new RetryableError(LOOKUP_UNMATCHED);
     }
+    if (code === TOO_MANY_RESULTS_CODE) {
+      throw new TooManyLeadsError();
+    }
     const outcome = classifyMarketoCode(code, { '603': ACCESS_DENIED }, LOOKUP_FAILED);
     if (outcome.evictToken) {
       authCache.del(destinationId);
@@ -205,7 +219,8 @@ function matchOutcome(ids: Set<number> | undefined): LookupOutcome {
   return { kind: 'found', leadId: [...ids][0] };
 }
 
-// A failed chunk fails its own emails only, with the classified error.
+// A failed chunk fails its own emails only, with the classified error. A 1003 is split instead:
+// halving the chunk until the email that matches too many leads is alone fails only that email.
 async function lookupChunk(
   request: LookupRequest,
   emails: string[],
@@ -214,6 +229,12 @@ async function lookupChunk(
     const matches = await matchChunk(request, emails);
     return emails.map((email) => [email, matchOutcome(matches.get(email))]);
   } catch (error) {
+    if (error instanceof TooManyLeadsError && emails.length > 1) {
+      const half = Math.ceil(emails.length / 2);
+      const first = await lookupChunk(request, emails.slice(0, half));
+      const second = await lookupChunk(request, emails.slice(half));
+      return [...first, ...second];
+    }
     const classified = error instanceof BaseError ? error : new RetryableError(LOOKUP_FAILED);
     return emails.map((email) => [email, { kind: 'error', error: classified }]);
   }

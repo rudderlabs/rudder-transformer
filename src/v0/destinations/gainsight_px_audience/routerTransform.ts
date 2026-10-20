@@ -12,7 +12,6 @@ import {
   API_KEY_HEADER,
   DESTINATION_TYPE,
   ENDPOINT_PATH,
-  LOG_DEST_TYPE,
   usersUpdateEndpoint,
 } from './config';
 import { gainsightPxAudienceDelivery } from './delivery';
@@ -101,7 +100,7 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
     return GainsightPxAudienceRouterRequestSchema;
   }
 
-  /** `{ [flag]: true, ...traits }`, flag first; counts what was left out (trait-mappings §5.2). */
+  /** `{ [flag]: true, ...traits }`; counts what was left out (trait-mappings §5.2). */
   private memberAttributes(
     flag: string,
     mappings: unknown,
@@ -120,7 +119,12 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
   private logLeftOutTraits(): void {
     // The attribute API name and a count only: never a value, never an identifyId (D25).
     this.leftOutTraits.forEach(({ attribute, reason, count }) => {
-      logger.warn(LEFT_OUT_MESSAGE, { destType: LOG_DEST_TYPE, attribute, reason, count });
+      logger.warn(LEFT_OUT_MESSAGE, {
+        destType: 'gainsight_px_audience',
+        attribute,
+        reason,
+        count,
+      });
     });
     this.leftOutTraits.clear();
   }

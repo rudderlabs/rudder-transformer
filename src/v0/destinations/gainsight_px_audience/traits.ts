@@ -2,11 +2,10 @@
  * Trait conversion for GAINSIGHT_PX_AUDIENCE (trait-mappings D18, §5.2). Pure: no I/O, no logging.
  *
  * PX rejects the WHOLE write when one value does not match its attribute's type (§3), which would
- * also block the membership flag. So a value that cannot be converted is left out of the write
- * instead of sent, and the caller reports it (D25).
+ * also block the membership flag. So a value the transformer cannot convert never blocks the flag:
+ * it is left out of the write and the caller reports it (D25). A PX-side rejection (an attribute
+ * disabled or retyped after /setup) still fails the write.
  */
-
-import { MAX_TRAIT_MAPPINGS } from './config';
 
 export type TraitType = 'STRING' | 'NUMBER' | 'BOOLEAN' | 'DATE_TIME';
 export type TraitValue = string | number | boolean;
@@ -18,20 +17,34 @@ export type TraitConversion =
 export type TraitMapping = { from: string; to: string; type?: string | null };
 export type LeftOutTrait = { attribute: string; reason: LeftOutReason };
 
-// A date-time with no offset: what a warehouse TIMESTAMP WITHOUT TIME ZONE serialises to. JS reads
-// that form as HOST-LOCAL time; PX wants GMT epoch ms, so it is read as UTC instead.
-const ZONELESS_DATE_TIME = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?)$/;
+// Strict ISO-8601 only: YYYY-MM-DD, optional [ T]hh:mm[:ss[.f]], optional Z or +-hh[:mm]. Anything
+// else (including "1", "10/20/2026") is left out: V8's lenient Date.parse would guess, by host zone.
+const ISO_DATE_TIME =
+  /^(\d{4}-\d{2}-\d{2})(?:[ T](\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?)(Z|[+-]\d{2}(?::?\d{2})?)?)?$/;
 
+// PX stores a DATE_TIME string as 0 (probe 2026-10-20), so a date is always sent as epoch ms.
 const parseEpochMs = (raw: string): number | undefined => {
-  const trimmed = raw.trim();
-  if (trimmed === '') return undefined;
-  const zoneless = ZONELESS_DATE_TIME.exec(trimmed);
-  const parsed = Date.parse(zoneless ? `${zoneless[1]}T${zoneless[2]}Z` : trimmed);
+  const match = ISO_DATE_TIME.exec(raw.trim());
+  if (!match) return undefined;
+  const [, date, time, zone] = match;
+  let offset = zone ?? 'Z'; // zone-less (and date-only) is UTC
+  if (offset !== 'Z') {
+    const digits = offset.slice(1).replace(':', '');
+    offset = `${offset[0]}${digits.slice(0, 2)}:${digits.slice(2) || '00'}`;
+  }
+  const parsed = Date.parse(`${date}T${time ?? '00:00'}${offset}`);
   return Number.isFinite(parsed) ? parsed : undefined;
 };
 
+// PX 400s a fractional, negative or out-of-range DATE_TIME number (probe 2026-10-20).
+const MAX_DATE_MS = 8.64e15;
+const epochMs = (value: number): number | undefined =>
+  Number.isInteger(value) && value >= 0 && value <= MAX_DATE_MS ? value : undefined;
+
 const finiteNumber = (value: number): number | undefined =>
   Number.isFinite(value) ? value : undefined;
+
+const DECIMAL = /^[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$/;
 
 const CONVERTERS: Record<TraitType, (value: unknown) => TraitValue | undefined> = {
   STRING: (value) => {
@@ -42,8 +55,10 @@ const CONVERTERS: Record<TraitType, (value: unknown) => TraitValue | undefined> 
   },
   NUMBER: (value) => {
     if (typeof value === 'number') return finiteNumber(value);
-    // `Number('')` is 0: a blank string is not a number.
-    if (typeof value === 'string' && value.trim() !== '') return finiteNumber(Number(value.trim()));
+    // Decimal text only: `Number('')` is 0 and `Number('0x1F')` is 31.
+    if (typeof value === 'string' && DECIMAL.test(value.trim())) {
+      return finiteNumber(Number(value.trim()));
+    }
     return undefined;
   },
   BOOLEAN: (value) => {
@@ -55,7 +70,7 @@ const CONVERTERS: Record<TraitType, (value: unknown) => TraitValue | undefined> 
     return undefined;
   },
   DATE_TIME: (value) => {
-    if (typeof value === 'number') return finiteNumber(value);
+    if (typeof value === 'number') return epochMs(value);
     if (typeof value === 'string') return parseEpochMs(value);
     return undefined;
   },
@@ -82,14 +97,13 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> =>
 
 /**
  * The stored `fieldMappings`, made safe (D18: a bad trait never blocks the flag). A non-array is no
- * mappings; only the first MAX_TRAIT_MAPPINGS rows count; a row that is not an object, or whose
+ * mappings; a row that is not an object, or whose
  * `from`/`to` is not a string, is dropped. A missing, null or non-string `type` is kept as no type, so
  * the row is left out and reported as `unknown_type` rather than silently disappearing.
  */
 export const sanitizeMappings = (raw: unknown): TraitMapping[] => {
   if (!Array.isArray(raw)) return [];
   return raw
-    .slice(0, MAX_TRAIT_MAPPINGS)
     .filter(
       (row): row is Record<string, unknown> =>
         isPlainObject(row) && typeof row.from === 'string' && typeof row.to === 'string',
@@ -97,7 +111,7 @@ export const sanitizeMappings = (raw: unknown): TraitMapping[] => {
     .map((row) => ({
       from: row.from as string,
       to: row.to as string,
-      type: typeof row.type === 'string' ? row.type : undefined,
+      type: row.type as string | undefined,
     }));
 };
 
@@ -120,7 +134,8 @@ export const collectTraits = (
     const raw = fields && Object.prototype.hasOwnProperty.call(fields, to) ? fields[to] : undefined;
     const result = convertTraitValue(raw, type);
     if (result.ok) traits[to] = result.value;
-    else leftOut.push({ attribute: to, reason: result.reason });
+    // A null value is normal for a nullable column: left out silently, not reported (D25).
+    else if (result.reason !== 'null') leftOut.push({ attribute: to, reason: result.reason });
   });
   return { traits, leftOut };
 };

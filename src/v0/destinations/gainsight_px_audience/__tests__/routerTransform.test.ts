@@ -290,7 +290,7 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
   });
   afterEach(() => warnSpy.mockRestore());
 
-  it('writes the flag first, then the converted traits, in one PUT', async () => {
+  it('writes the flag and the converted traits in one PUT', async () => {
     const results = await processDestinationIntegration(
       [
         member(1, 'insert', 'u-1', {
@@ -312,7 +312,6 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
         rs_gpx_date: 1792490400000,
       },
     });
-    expect(Object.keys(body.customAttributes)[0]).toBe('rs_gpx_e2e');
     expect(warnSpy).not.toHaveBeenCalled();
   });
 
@@ -367,14 +366,6 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
           reason: 'unconvertible',
           count: 2,
         },
-      ],
-      [
-        'Gainsight PX Audience: trait left out of the write',
-        { destType: 'gainsight_px_audience', attribute: 'rs_gpx_date', reason: 'null', count: 2 },
-      ],
-      [
-        'Gainsight PX Audience: trait left out of the write',
-        { destType: 'gainsight_px_audience', attribute: 'rs_gpx_string', reason: 'null', count: 1 },
       ],
     ]);
     const logged = JSON.stringify(warnSpy.mock.calls);
@@ -478,15 +469,15 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
       expect(body.customAttributes).toEqual({ rs_gpx_e2e: true, rs_gpx_string: 'x' });
     });
 
-    it('ignores rows beyond the first 50 and still writes the flag and the first 50', async () => {
-      const rows = Array.from({ length: 50 }, (_, i) => ({
+    it('has no row cap: 60 valid rows are all written', async () => {
+      const rows = Array.from({ length: 60 }, (_, i) => ({
         from: `c${i}`,
         to: `t${i}`,
         type: 'STRING',
       }));
-      rows.push({ from: 'role', to: 'rs_gpx_string', type: 'STRING' });
-      const body = await flagOnly(rows, { rs_gpx_string: 'x', t0: 'kept' });
-      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true, t0: 'kept' });
+      const values = Object.fromEntries(rows.map((r) => [r.to, 'v']));
+      const body = await flagOnly(rows, values);
+      expect(Object.keys(body.customAttributes)).toHaveLength(61);
     });
 
     it.each([
@@ -496,10 +487,7 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
     ])('treats fields as %s as no field values, leaving traits out', async (_label, fields) => {
       const body = await flagOnly([{ from: 'role', to: 'rs_gpx_string', type: 'STRING' }], fields);
       expect(body.customAttributes).toEqual({ rs_gpx_e2e: true });
-      expect(warnSpy).toHaveBeenCalledWith(
-        'Gainsight PX Audience: trait left out of the write',
-        expect.objectContaining({ attribute: 'rs_gpx_string', reason: 'null' }),
-      );
+      expect(warnSpy).not.toHaveBeenCalled();
     });
 
     it('treats a non-array fieldMappings as none', async () => {

@@ -61,7 +61,7 @@ export type GainsightPxAudienceRouterRequest = z.infer<
   typeof GainsightPxAudienceRouterRequestSchema
 >;
 
-/** One PUT /v1/users/update body: the flag first, then any converted traits. */
+/** One PUT /v1/users/update body: the flag plus any converted traits. */
 export type GainsightPxAudiencePayload = {
   identifyId: string;
   customAttributes: Record<string, TraitValue>;

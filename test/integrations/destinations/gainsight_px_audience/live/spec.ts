@@ -103,7 +103,7 @@ export const live = {
       schemaVersion: '1.1',
       identifierMappings: [{ from: 'user_id', to: 'identifyId' }],
       // Every scenario maps the traits; the v1 scenarios seed no `fields`, so their writes stay
-      // flag-only (each trait is left out as `null`).
+      // flag-only (a missing value is left out silently).
       fieldMappings: [
         { from: 'role', to: TRAIT_ATTRIBUTES.string, type: 'STRING' },
         { from: 'events', to: TRAIT_ATTRIBUTES.number, type: 'NUMBER' },

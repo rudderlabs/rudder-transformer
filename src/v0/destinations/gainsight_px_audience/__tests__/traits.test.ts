@@ -22,6 +22,11 @@ describe('convertTraitValue — trait-mappings §5.2 conversion table', () => {
     ['a negative decimal', -1.5, sent(-1.5)],
     ['a numeric string', '42', sent(42)],
     ['a padded numeric string', ' 42.5 ', sent(42.5)],
+    ['an exponent string', '1e3', sent(1000)],
+    ['a leading-dot string', '.5', sent(0.5)],
+    ['a signed string', '-3', sent(-3)],
+    ['a hex string', '0x1F', leftOut('unconvertible')],
+    ['a binary string', '0b101', leftOut('unconvertible')],
     ['an empty string (not 0)', '', leftOut('unconvertible')],
     ['a blank string (not 0)', '   ', leftOut('unconvertible')],
     ['a non-numeric string', 'abc', leftOut('unconvertible')],
@@ -56,6 +61,20 @@ describe('convertTraitValue — trait-mappings §5.2 conversion table', () => {
     ['an empty string', '', leftOut('unconvertible')],
     ['NaN', Number.NaN, leftOut('unconvertible')],
     ['a boolean', true, leftOut('unconvertible')],
+    ['zero (epoch start)', 0, sent(0)],
+    ['the largest valid Date', 8.64e15, sent(8.64e15)],
+    ['a fractional epoch ms (PX 400s)', 1792490400000.5, leftOut('unconvertible')],
+    ['a negative epoch ms (PX 400s)', -1000, leftOut('unconvertible')],
+    ['1e20 (not a valid Date, PX 400s)', 1e20, leftOut('unconvertible')],
+    ['just past the largest valid Date', 8.64e15 + 2, leftOut('unconvertible')],
+    ['"1" (V8 would read 2001-01-01)', '1', leftOut('unconvertible')],
+    ['"12" (V8 would read 2001-12-01)', '12', leftOut('unconvertible')],
+    ['a US-format date', '10/20/2026', leftOut('unconvertible')],
+    ['a month-name date', 'Oct 20 2026 10:00', leftOut('unconvertible')],
+    ['an impossible date', '2026-13-45', leftOut('unconvertible')],
+    ['an offset without a colon', '2026-10-20T10:00:00+0200', sent(1792483200000)],
+    ['an hour offset', '2026-10-20T10:00:00+02', sent(1792483200000)],
+    ['a numeric string (never sent as a string)', '1792490400000', leftOut('unconvertible')],
   ])('DATE_TIME: %s', (_case, value, expected) => {
     expect(convertTraitValue(value, 'DATE_TIME')).toEqual(expected);
   });
@@ -121,7 +140,7 @@ describe('collectTraits', () => {
     });
   });
 
-  it('lists every left-out trait with its reason', () => {
+  it('lists left-out traits with their reason, and leaves null values out silently', () => {
     expect(
       collectTraits(
         [...MAPPINGS, { from: 'x', to: 'rs_untyped' }],
@@ -131,9 +150,7 @@ describe('collectTraits', () => {
     ).toEqual({
       traits: {},
       leftOut: [
-        { attribute: 'rs_gpx_string', reason: 'null' },
         { attribute: 'rs_gpx_number', reason: 'unconvertible' },
-        { attribute: 'rs_gpx_date', reason: 'null' },
         { attribute: 'rs_untyped', reason: 'unknown_type' },
       ],
     });
@@ -152,7 +169,7 @@ describe('collectTraits', () => {
   it('does not read inherited keys of the fields object', () => {
     expect(
       collectTraits([{ from: 'x', to: 'constructor', type: 'STRING' }], {}, 'rs_gpx_e2e'),
-    ).toEqual({ traits: {}, leftOut: [{ attribute: 'constructor', reason: 'null' }] });
+    ).toEqual({ traits: {}, leftOut: [] });
   });
 
   it('handles no mappings and no fields', () => {

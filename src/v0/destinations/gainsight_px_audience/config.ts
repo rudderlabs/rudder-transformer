@@ -29,9 +29,3 @@ export const REASONS = {
   invalidIdentifyId: 'Invalid identifyId',
   missingApiKey: 'Gainsight PX API key is missing',
 } as const;
-
-/** The `destType` the left-out-trait warn line carries (observability § Trait mappings). */
-export const LOG_DEST_TYPE = 'gainsight_px_audience';
-
-/** A connection maps at most this many traits (trait-mappings D17). */
-export const MAX_TRAIT_MAPPINGS = 50;

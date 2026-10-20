@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { RecordAction } from '../../../types/rudderEvents';
 import { makeRouterInputSchema } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { ATTRIBUTE_NAME_PATTERN, DATA_CENTERS, MAX_TRAIT_MAPPINGS, REASONS } from './config';
+import { ATTRIBUTE_NAME_PATTERN, DATA_CENTERS, REASONS } from './config';
 import type { TraitValue } from './traits';
 
 /** Flattened account: apiKey (secret) + dataCenter (option). */
@@ -27,11 +27,9 @@ export const GainsightPxAudienceConnectionConfigSchema = z
     identifierMappings: z
       .array(z.object({ from: z.string().min(1), to: z.literal('identifyId') }))
       .optional(),
-    // trait-mappings D17. Nullish so a stored `null` never blocks the flag.
-    fieldMappings: z
-      .array(z.object({ from: z.string(), to: z.string(), type: z.string().optional() }))
-      .max(MAX_TRAIT_MAPPINGS)
-      .nullish(),
+    // trait-mappings D17/D18. Deliberately unvalidated: a bad trait config must never block the flag,
+    // so traits.sanitizeMappings drops invalid rows and caps the list instead of failing the row.
+    fieldMappings: z.unknown().optional(),
   })
   .passthrough();
 
@@ -46,7 +44,8 @@ const RecordMessageSchema = z
     action: z.nativeEnum(RecordAction),
     identifiers: z.record(z.unknown()).optional(),
     // rudder-sources: fields[mapping.to] = column[mapping.from] for every fieldMappings row.
-    fields: z.record(z.unknown()).nullish(),
+    // Unvalidated for the same reason: traits.collectTraits treats a non-object as no values.
+    fields: z.unknown().optional(),
   })
   .passthrough();
 

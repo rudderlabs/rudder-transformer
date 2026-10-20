@@ -433,6 +433,81 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
     });
   });
 
+  describe('a malformed trait config never blocks the flag (D18)', () => {
+    const flagOnly = async (
+      fieldMappings: unknown,
+      fields: unknown = { rs_gpx_string: 'x' },
+    ): Promise<any> => {
+      const results = await processDestinationIntegration(
+        [
+          buildInput(
+            1,
+            'insert',
+            { identifyId: 'u-1' },
+            buildDestination(),
+            buildConnection('rs_gpx_e2e', 'src-1', fieldMappings),
+            fields as Record<string, unknown>,
+          ),
+        ],
+        Integration,
+        {},
+      );
+      expect(results).toHaveLength(1);
+      expect(results[0].statusCode).toBe(200);
+      return bodyOf(results[0]);
+    };
+
+    it('writes the flag and logs unknown_type for a stored type: null', async () => {
+      const body = await flagOnly([{ from: 'role', to: 'rs_gpx_string', type: null }]);
+      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true });
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Gainsight PX Audience: trait left out of the write',
+        expect.objectContaining({ attribute: 'rs_gpx_string', reason: 'unknown_type' }),
+      );
+    });
+
+    it('drops non-object rows and rows with a non-string from/to, keeping the valid ones', async () => {
+      const body = await flagOnly([
+        'oops',
+        null,
+        42,
+        { from: 1, to: 'rs_gpx_number', type: 'NUMBER' },
+        { from: 'a', to: null, type: 'STRING' },
+        { from: 'role', to: 'rs_gpx_string', type: 'STRING' },
+      ]);
+      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true, rs_gpx_string: 'x' });
+    });
+
+    it('ignores rows beyond the first 50 and still writes the flag and the first 50', async () => {
+      const rows = Array.from({ length: 50 }, (_, i) => ({
+        from: `c${i}`,
+        to: `t${i}`,
+        type: 'STRING',
+      }));
+      rows.push({ from: 'role', to: 'rs_gpx_string', type: 'STRING' });
+      const body = await flagOnly(rows, { rs_gpx_string: 'x', t0: 'kept' });
+      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true, t0: 'kept' });
+    });
+
+    it.each([
+      ['a string', 'oops'],
+      ['an array', ['x']],
+      ['a number', 7],
+    ])('treats fields as %s as no field values, leaving traits out', async (_label, fields) => {
+      const body = await flagOnly([{ from: 'role', to: 'rs_gpx_string', type: 'STRING' }], fields);
+      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true });
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Gainsight PX Audience: trait left out of the write',
+        expect.objectContaining({ attribute: 'rs_gpx_string', reason: 'null' }),
+      );
+    });
+
+    it('treats a non-array fieldMappings as none', async () => {
+      const body = await flagOnly({ from: 'role', to: 'rs_gpx_string', type: 'STRING' });
+      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true });
+    });
+  });
+
   it('never lets a trait overwrite the flag (API-saved config)', async () => {
     const results = await processDestinationIntegration(
       [
@@ -475,21 +550,5 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
       { rs_gpx_e2e: true },
     ]);
     expect(warnSpy).not.toHaveBeenCalled();
-  });
-
-  it('fails the row at the input schema when more than 50 traits are mapped', async () => {
-    const tooMany = Array.from({ length: 51 }, (_, i) => ({
-      from: `c${i}`,
-      to: `rs_t${i}`,
-      type: 'STRING',
-    }));
-    const results = await processDestinationIntegration(
-      [member(1, 'insert', 'u-1', {}, buildConnection('rs_gpx_e2e', 'src-1', tooMany))],
-      Integration,
-      {},
-    );
-    expect(successes(results)).toHaveLength(0);
-    expect((results[0] as any).statusCode).toBe(400);
-    expect((results[0] as any).error).toContain('fieldMappings');
   });
 });

@@ -4,7 +4,8 @@
  * The framework's classification stands (2xx success, 429 throttled, 5xx retry, other 4xx abort).
  * Two things differ:
  *  - 404 on a leave (exactly one key, `false`) is a success: a user PX does not know is already not a
- *    member. A 404 on `true` aborts, since users are never created.
+ *    member. A 404 on any request that is not a leave (exactly one key whose value is false)
+ *    aborts, since users are never created.
  *  - the failure reason is PX's own message from the response body.
  */
 import {

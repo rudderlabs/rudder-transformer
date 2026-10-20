@@ -6,6 +6,8 @@
  * instead of sent, and the caller reports it (D25).
  */
 
+import { MAX_TRAIT_MAPPINGS } from './config';
+
 export type TraitType = 'STRING' | 'NUMBER' | 'BOOLEAN' | 'DATE_TIME';
 export type TraitValue = string | number | boolean;
 export type LeftOutReason = 'null' | 'unconvertible' | 'unknown_type';
@@ -75,19 +77,45 @@ export const convertTraitValue = (value: unknown, type: unknown): TraitConversio
     : { ok: true, value: converted as TraitValue };
 };
 
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+/**
+ * The stored `fieldMappings`, made safe (D18: a bad trait never blocks the flag). A non-array is no
+ * mappings; only the first MAX_TRAIT_MAPPINGS rows count; a row that is not an object, or whose
+ * `from`/`to` is not a string, is dropped. A missing, null or non-string `type` is kept as no type, so
+ * the row is left out and reported as `unknown_type` rather than silently disappearing.
+ */
+export const sanitizeMappings = (raw: unknown): TraitMapping[] => {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .slice(0, MAX_TRAIT_MAPPINGS)
+    .filter(
+      (row): row is Record<string, unknown> =>
+        isPlainObject(row) && typeof row.from === 'string' && typeof row.to === 'string',
+    )
+    .map((row) => ({
+      from: row.from as string,
+      to: row.to as string,
+      type: typeof row.type === 'string' ? row.type : undefined,
+    }));
+};
+
 /**
  * The member write's traits, read from the record's `fields` by `to` (rudder-sources sets
  * `fields[m.To] = column[m.From]`). A trait mapped to the flag is skipped: it would overwrite the
  * flag, and /setup refuses that mapping, so only an API-only save can carry it.
  */
 export const collectTraits = (
-  mappings: readonly TraitMapping[] | null | undefined,
-  fields: Record<string, unknown> | null | undefined,
+  rawMappings: unknown,
+  rawFields: unknown,
   flag: string,
 ): { traits: Record<string, TraitValue>; leftOut: LeftOutTrait[] } => {
+  const mappings = sanitizeMappings(rawMappings);
+  const fields = isPlainObject(rawFields) ? rawFields : undefined;
   const traits: Record<string, TraitValue> = {};
   const leftOut: LeftOutTrait[] = [];
-  (mappings ?? []).forEach(({ to, type }) => {
+  mappings.forEach(({ to, type }) => {
     if (to === flag) return;
     const raw = fields && Object.prototype.hasOwnProperty.call(fields, to) ? fields[to] : undefined;
     const result = convertTraitValue(raw, type);

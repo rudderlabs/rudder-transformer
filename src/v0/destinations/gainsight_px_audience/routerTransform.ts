@@ -16,7 +16,7 @@ import {
   usersUpdateEndpoint,
 } from './config';
 import { gainsightPxAudienceDelivery } from './delivery';
-import { collectTraits, type LeftOutReason, type TraitMapping, type TraitValue } from './traits';
+import { collectTraits, type LeftOutReason, type TraitValue } from './traits';
 import {
   GainsightPxAudienceRouterRequestSchema,
   type GainsightPxAudiencePayload,
@@ -104,8 +104,8 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
   /** `{ [flag]: true, ...traits }`, flag first; counts what was left out (trait-mappings §5.2). */
   private memberAttributes(
     flag: string,
-    mappings: readonly TraitMapping[] | null | undefined,
-    fields: Record<string, unknown> | null | undefined,
+    mappings: unknown,
+    fields: unknown,
   ): Record<string, TraitValue> {
     const { traits, leftOut } = collectTraits(mappings, fields, flag);
     leftOut.forEach(({ attribute, reason }) => {

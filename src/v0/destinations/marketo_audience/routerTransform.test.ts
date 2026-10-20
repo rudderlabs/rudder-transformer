@@ -137,6 +137,12 @@ describe('MARKETO_AUDIENCE router transform', () => {
     mockHttpGet.mockResolvedValue(tokenResponse());
   });
 
+  const unbatched = (jobId: number, identifiers: Record<string, unknown>, action = 'insert') =>
+    ({
+      ...row(jobId, identifiers, { action }),
+      metadata: { jobId, dontBatch: true },
+    }) as unknown as RouterTransformationRequestData;
+
   it('adds and removes lead IDs in separate requests without a lookup', async () => {
     const results = await run([
       row(1, { id: '101' }),
@@ -276,12 +282,6 @@ describe('MARKETO_AUDIENCE router transform', () => {
       expect([failure(results, 1), failure(results, 2)]).toEqual([expected, expected]);
     },
   );
-
-  const unbatched = (jobId: number, identifiers: Record<string, unknown>) =>
-    ({
-      ...row(jobId, identifiers),
-      metadata: { jobId, dontBatch: true },
-    }) as unknown as RouterTransformationRequestData;
 
   const tokenNamed = (accessToken: string) => ({
     success: true,
@@ -445,6 +445,34 @@ describe('MARKETO_AUDIENCE router transform', () => {
     });
     expect(membership(forJob(results, 2)).body).toEqual({ input: [{ id: 202 }] });
   });
+
+  const crossCallConflicts = [
+    {
+      name: 'a batched insert and a dontBatch delete',
+      inputs: () => [row(1, { id: '101' }), unbatched(2, { id: '101' }, 'delete')],
+    },
+    {
+      name: 'two dontBatch rows',
+      inputs: () => [unbatched(1, { id: '101' }), unbatched(2, { id: '101' }, 'delete')],
+    },
+  ];
+
+  it.each(crossCallConflicts)(
+    'fails both rows of a lead added and removed across transform calls: $name',
+    async ({ inputs }) => {
+      const results = await run([...inputs(), row(3, { id: '102' })]);
+
+      const conflict = {
+        statusCode: 400,
+        error: 'Conflicting membership operations for Marketo lead',
+      };
+      expect([failure(results, 1), failure(results, 2)]).toEqual([conflict, conflict]);
+      expect(results.filter((result) => result.batchedRequest).map(membership)).toEqual([
+        expect.objectContaining({ body: { input: [{ id: 102 }] }, jobIds: [3] }),
+      ]);
+      expect(results.flatMap(jobIds).sort()).toEqual([1, 2, 3]);
+    },
+  );
 
   it('fails every row of a lead that is both added and removed on one list', async () => {
     mockHttpPost.mockResolvedValue(leadsResponse([{ id: 101, email: 'bob@acme.io' }]));

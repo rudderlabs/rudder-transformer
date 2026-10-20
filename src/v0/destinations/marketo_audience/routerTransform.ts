@@ -14,6 +14,7 @@ import {
   type TransformedEvent,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
+import { generateErrorObject } from '../../util';
 import logger from '../../../logger';
 import { RecordAction } from '../../../types/rudderEvents';
 import { getAuthToken } from '../marketo/util';
@@ -61,6 +62,10 @@ type PreparedRow =
 type PendingRow = Exclude<PreparedRow, { kind: 'failed' }>;
 
 const failed = (error: Error): PreparedRow => ({ kind: 'failed', error });
+
+// The schema-typed input has no `metadata`; jobId is the only metadata field this reads.
+const jobIdOf = (input: MarketoAudienceRouterRequest): number | undefined =>
+  (input as { metadata?: { jobId?: number } }).metadata?.jobId;
 
 // Stack frames only: the message can carry emails or Marketo text, which must never be logged.
 // V8 starts the stack with `${name}: ${message}`, so the message's own lines are skipped first: a
@@ -154,6 +159,14 @@ class MarketoAudienceIntegration extends DestinationIntegration<
   // costs one identity call per router request, not one per row.
   private tokenRequest?: Promise<unknown>;
 
+  // Operations and still-deliverable jobs per list and lead, from every transformEvents call on this
+  // instance. The framework transforms the batchable rows first and then each dontBatch row in a
+  // call of its own, so an add and a remove of one lead can arrive in different calls.
+  private seenLeads = new Map<string, { operations: Set<Operation>; jobIds: number[] }>();
+
+  // Jobs from earlier calls that a row of this call conflicts with.
+  private earlierConflicts: number[] = [];
+
   // Every row of one call belongs to this.destination: the transformer groups router input by
   // destination ID before the framework runs. Connections differ per row, so each row reads its
   // own (`this.connection` is only the first row's).
@@ -162,6 +175,7 @@ class MarketoAudienceIntegration extends DestinationIntegration<
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<MarketoAudiencePayload>> {
     this.rows = new Map();
+    this.earlierConflicts = [];
     try {
       await this.prepareRows(inputs);
     } catch (error) {
@@ -180,7 +194,19 @@ class MarketoAudienceIntegration extends DestinationIntegration<
         .filter((input) => this.rows.get(input)?.kind !== 'failed')
         .forEach((input) => this.rows.set(input, failed(unexpected)));
     }
-    return super.transformEvents(inputs, reqMetadata);
+    const result = await super.transformEvents(inputs, reqMetadata);
+    // The framework drops a failed job from every success payload before it builds requests, so an
+    // earlier job failed here never reaches Marketo.
+    const conflict = generateErrorObject(new InstrumentationError(CONFLICTING_MEMBERSHIP));
+    this.earlierConflicts.forEach((jobId) =>
+      result.errorPayloads.push({
+        error: conflict.message,
+        statusCode: conflict.status,
+        statTags: conflict.statTags,
+        jobId,
+      }),
+    );
+    return result;
   }
 
   transformEvent(input: MarketoAudienceRouterRequest): TransformedEvent<MarketoAudiencePayload> {
@@ -280,7 +306,8 @@ class MarketoAudienceIntegration extends DestinationIntegration<
   }
 
   // An add and a remove of one lead on one list cannot both be right, and sending both would leave
-  // the membership to request order. Every row involved fails instead.
+  // the membership to request order. Every row involved fails instead, including rows from earlier
+  // calls on this instance.
   private failConflicts() {
     const byLead = new Map<
       string,
@@ -295,12 +322,19 @@ class MarketoAudienceIntegration extends DestinationIntegration<
         byLead.set(key, lead);
       }
     });
-    byLead.forEach(({ inputs, ops }) => {
-      if (ops.size > 1) {
+    byLead.forEach(({ inputs, ops }, key) => {
+      const seen = this.seenLeads.get(key);
+      const operations = new Set([...ops, ...(seen?.operations ?? [])]);
+      if (operations.size > 1) {
         inputs.forEach((input) =>
           this.rows.set(input, failed(new InstrumentationError(CONFLICTING_MEMBERSHIP))),
         );
+        this.earlierConflicts.push(...(seen?.jobIds ?? []));
+        this.seenLeads.set(key, { operations, jobIds: [] });
+        return;
       }
+      const jobIds = inputs.map(jobIdOf).filter((jobId): jobId is number => jobId !== undefined);
+      this.seenLeads.set(key, { operations, jobIds: [...(seen?.jobIds ?? []), ...jobIds] });
     });
   }
 

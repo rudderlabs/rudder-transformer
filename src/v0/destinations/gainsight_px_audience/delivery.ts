@@ -3,7 +3,7 @@
  *
  * The framework's classification stands (2xx success, 429 throttled, 5xx retry, other 4xx abort).
  * Two things differ:
- *  - 404 on a request that wrote `false` is a success: a user PX does not know is already not a
+ *  - 404 on a leave (exactly one key, `false`) is a success: a user PX does not know is already not a
  *    member. A 404 on `true` aborts, since users are never created.
  *  - the failure reason is PX's own message from the response body.
  */
@@ -18,11 +18,19 @@ type PxErrorBody = {
   externalapierror?: { subErrors?: { message?: unknown }[] };
 };
 
-/** The boolean this request wrote; undefined when the body cannot be read as one. */
-const sentValue = (ctx: DeliveryContext): boolean | undefined => {
-  const json = ctx.request.body?.JSON as { customAttributes?: Record<string, unknown> } | undefined;
-  const values = json?.customAttributes ? Object.values(json.customAttributes) : [];
-  return typeof values[0] === 'boolean' ? values[0] : undefined;
+/**
+ * A leave writes exactly one attribute, the flag, with `false` (trait-mappings D24). A member write
+ * carries `true` plus any traits; every other shape, including an unreadable body, is not a
+ * leave, so its 404 takes the framework fallback (abort).
+ */
+export const isLeave = (ctx: DeliveryContext): boolean => {
+  const json = ctx.request.body?.JSON as { customAttributes?: unknown } | undefined;
+  const attributes = json?.customAttributes;
+  if (attributes === null || typeof attributes !== 'object' || Array.isArray(attributes)) {
+    return false;
+  }
+  const values = Object.values(attributes);
+  return values.length === 1 && values[0] === false;
 };
 
 /**
@@ -42,7 +50,7 @@ export const extractPxErrorMessage = (response: unknown, status: number): string
 
 export const gainsightPxAudienceDelivery: DeliverySpec = {
   statusOverrides: {
-    404: (ctx, fallback) => (sentValue(ctx) === false ? success() : fallback()),
+    404: (ctx, fallback) => (isLeave(ctx) ? success() : fallback()),
   },
   failureReason: ({ response, status }) => extractPxErrorMessage(response, status),
 };

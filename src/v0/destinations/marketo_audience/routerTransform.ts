@@ -264,9 +264,12 @@ class MarketoAudienceIntegration extends DestinationIntegration<
 
   private async fetchToken(): Promise<string | Error> {
     const { ID, WorkspaceID, Config } = this.destination;
-    // A 601/602 evicts the cached token. The framework calls transformEvents again on this
-    // instance for each dontBatch row, and those calls must fetch a new token, not reuse this one.
-    if (this.token && (await authCache.get(ID)) === undefined) {
+    // The framework calls transformEvents again on this instance for each dontBatch row. By then a
+    // 601/602 may have evicted the cached token, or another request cached a newer one, so those
+    // calls take the cached token or fetch one. A failed fetch leaves no token here and the
+    // rejected request in place, so the later rows fail with its error without another call.
+    if (this.token && (await authCache.get(ID)) !== this.token) {
+      this.token = '';
       this.tokenRequest = undefined;
     }
     this.tokenRequest ??= getAuthToken(

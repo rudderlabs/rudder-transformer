@@ -352,13 +352,21 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
     );
 
     expect(successes(results).map(bodyOf)).toEqual([
-      { identifyId: 'secret-user-1', customAttributes: { rs_gpx_e2e: true, rs_gpx_string: 'admin' } },
+      {
+        identifyId: 'secret-user-1',
+        customAttributes: { rs_gpx_e2e: true, rs_gpx_string: 'admin' },
+      },
       { identifyId: 'secret-user-2', customAttributes: { rs_gpx_e2e: true } },
     ]);
     expect(warnSpy.mock.calls).toEqual([
       [
         'Gainsight PX Audience: trait left out of the write',
-        { destType: 'gainsight_px_audience', attribute: 'rs_gpx_number', reason: 'unconvertible', count: 2 },
+        {
+          destType: 'gainsight_px_audience',
+          attribute: 'rs_gpx_number',
+          reason: 'unconvertible',
+          count: 2,
+        },
       ],
       [
         'Gainsight PX Audience: trait left out of the write',
@@ -385,7 +393,12 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
     expect(successes(results)).toHaveLength(2);
     const line = [
       'Gainsight PX Audience: trait left out of the write',
-      { destType: 'gainsight_px_audience', attribute: 'rs_gpx_number', reason: 'unconvertible', count: 1 },
+      {
+        destType: 'gainsight_px_audience',
+        attribute: 'rs_gpx_number',
+        reason: 'unconvertible',
+        count: 1,
+      },
     ];
     const forPair = warnSpy.mock.calls.filter(
       ([, meta]) => meta.attribute === 'rs_gpx_number' && meta.reason === 'unconvertible',
@@ -400,9 +413,13 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
   it('logs unknown_type for a row saved without type', async () => {
     const results = await processDestinationIntegration(
       [
-        member(1, 'insert', 'u-1', { rs_gpx_string: 'admin' }, buildConnection('rs_gpx_e2e', 'src-1', [
-          { from: 'role', to: 'rs_gpx_string' },
-        ])),
+        member(
+          1,
+          'insert',
+          'u-1',
+          { rs_gpx_string: 'admin' },
+          buildConnection('rs_gpx_e2e', 'src-1', [{ from: 'role', to: 'rs_gpx_string' }]),
+        ),
       ],
       Integration,
       {},
@@ -419,9 +436,15 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
   it('never lets a trait overwrite the flag (API-saved config)', async () => {
     const results = await processDestinationIntegration(
       [
-        member(1, 'insert', 'u-1', { rs_gpx_e2e: false }, buildConnection('rs_gpx_e2e', 'src-1', [
-          { from: 'x', to: 'rs_gpx_e2e', type: 'BOOLEAN' },
-        ])),
+        member(
+          1,
+          'insert',
+          'u-1',
+          { rs_gpx_e2e: false },
+          buildConnection('rs_gpx_e2e', 'src-1', [
+            { from: 'x', to: 'rs_gpx_e2e', type: 'BOOLEAN' },
+          ]),
+        ),
       ],
       Integration,
       {},
@@ -455,7 +478,11 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
   });
 
   it('fails the row at the input schema when more than 50 traits are mapped', async () => {
-    const tooMany = Array.from({ length: 51 }, (_, i) => ({ from: `c${i}`, to: `rs_t${i}`, type: 'STRING' }));
+    const tooMany = Array.from({ length: 51 }, (_, i) => ({
+      from: `c${i}`,
+      to: `rs_t${i}`,
+      type: 'STRING',
+    }));
     const results = await processDestinationIntegration(
       [member(1, 'insert', 'u-1', {}, buildConnection('rs_gpx_e2e', 'src-1', tooMany))],
       Integration,

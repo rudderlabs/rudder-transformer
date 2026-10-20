@@ -84,10 +84,13 @@ describe('convertTraitValue — trait-mappings §5.2 conversion table', () => {
     });
   });
 
-  it.each(['STRING', 'NUMBER', 'BOOLEAN', 'DATE_TIME'])('%s: null and undefined are left out', (type) => {
-    expect(convertTraitValue(null, type)).toEqual(leftOut('null'));
-    expect(convertTraitValue(undefined, type)).toEqual(leftOut('null'));
-  });
+  it.each(['STRING', 'NUMBER', 'BOOLEAN', 'DATE_TIME'])(
+    '%s: null and undefined are left out',
+    (type) => {
+      expect(convertTraitValue(null, type)).toEqual(leftOut('null'));
+      expect(convertTraitValue(undefined, type)).toEqual(leftOut('null'));
+    },
+  );
 
   it.each<[string, unknown]>([
     ['missing', undefined],
@@ -140,7 +143,11 @@ describe('collectTraits', () => {
 
   it('never collects a trait mapped to the flag', () => {
     expect(
-      collectTraits([{ from: 'x', to: 'rs_gpx_e2e', type: 'BOOLEAN' }], { rs_gpx_e2e: false }, 'rs_gpx_e2e'),
+      collectTraits(
+        [{ from: 'x', to: 'rs_gpx_e2e', type: 'BOOLEAN' }],
+        { rs_gpx_e2e: false },
+        'rs_gpx_e2e',
+      ),
     ).toEqual({ traits: {}, leftOut: [] });
   });
 

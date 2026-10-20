@@ -180,7 +180,13 @@ export const data: RouterTestData[] = [
   routerCase(
     'gainsight-px-audience-router-traits-unconvertible',
     'an unconvertible and a null trait are left out; the flag and the good trait still go',
-    [traitRow(1, 'insert', 'u-1', { rs_gpx_string: 'viewer', rs_gpx_number: 'abc', rs_gpx_date: null })],
+    [
+      traitRow(1, 'insert', 'u-1', {
+        rs_gpx_string: 'viewer',
+        rs_gpx_number: 'abc',
+        rs_gpx_date: null,
+      }),
+    ],
     [ok(1, { identifyId: 'u-1', customAttributes: { rs_gpx_e2e: true, rs_gpx_string: 'viewer' } })],
   ),
 ];

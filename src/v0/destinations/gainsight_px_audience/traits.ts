@@ -9,7 +9,9 @@
 export type TraitType = 'STRING' | 'NUMBER' | 'BOOLEAN' | 'DATE_TIME';
 export type TraitValue = string | number | boolean;
 export type LeftOutReason = 'null' | 'unconvertible' | 'unknown_type';
-export type TraitConversion = { ok: true; value: TraitValue } | { ok: false; reason: LeftOutReason };
+export type TraitConversion =
+  | { ok: true; value: TraitValue }
+  | { ok: false; reason: LeftOutReason };
 /** A connection `fieldMappings` row; `type` is the PX attribute type `/setup` stamped. */
 export type TraitMapping = { from: string; to: string; type?: string | null };
 export type LeftOutTrait = { attribute: string; reason: LeftOutReason };
@@ -87,8 +89,7 @@ export const collectTraits = (
   const leftOut: LeftOutTrait[] = [];
   (mappings ?? []).forEach(({ to, type }) => {
     if (to === flag) return;
-    const raw =
-      fields && Object.prototype.hasOwnProperty.call(fields, to) ? fields[to] : undefined;
+    const raw = fields && Object.prototype.hasOwnProperty.call(fields, to) ? fields[to] : undefined;
     const result = convertTraitValue(raw, type);
     if (result.ok) traits[to] = result.value;
     else leftOut.push({ attribute: to, reason: result.reason });

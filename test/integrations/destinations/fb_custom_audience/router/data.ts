@@ -7,10 +7,13 @@ import {
   rETLRecordV2RouterInvalidRequestWithValueBasedAudience,
   rETLRecordV2RouterInvalidRequestWithLookalikeValue,
   rETLRecordV2RouterMissingAccessTokenRequest,
+  rETLRecordV2ConcurrentSyncsRouterRequest,
+  destinationV2,
 } from './rETL';
 import { appSecretProof, secret1, secret2 } from '../maskedSecrets';
 import { mockFns } from '../mocks';
 import { defaultAccessToken } from '../../../common/secrets';
+import sha256 from 'sha256';
 import { generateMetadata } from '../../../testUtils';
 import {
   esDestinationAudience,
@@ -1408,6 +1411,93 @@ export const data = [
                 destinationId: 'default-destinationId',
                 workspaceId: 'default-workspaceId',
               },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'fb-custom-audience-router-test-concurrent-syncs',
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 guards concurrent syncs reaching the wrong list (ACT2-1257)',
+    scenario: 'Framework+Business',
+    successCriteria:
+      'Records from two source jobs on two connections form two requests, each sent to its own connection audienceId',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2ConcurrentSyncsRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v25.0/23848494844100489/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: secret1,
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI'],
+                        data: [[sha256('first@sync.com'), sha256('ab')]],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [{ ...generateMetadata(1), sourceId: '2MUWghI7u85n91dd1qzGyswpZan' }],
+              destination: destinationV2,
+              statusCode: 200,
+            },
+            {
+              batched: true,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v25.0/23848494844100490/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: secret1,
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        schema: ['EMAIL', 'FI'],
+                        data: [[sha256('second@sync.com'), sha256('cd')]],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [{ ...generateMetadata(2), sourceId: '2MUWghI7u85n91dd1qzGyswpZbo' }],
+              destination: destinationV2,
+              statusCode: 200,
             },
           ],
         },

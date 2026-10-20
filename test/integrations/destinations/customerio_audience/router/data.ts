@@ -9,6 +9,10 @@ import {
   insertOrUpdateEndpoint,
   deleteEndpoint,
   connection,
+  secondConnection,
+  firstSourceJobContext,
+  secondSourceJobContext,
+  secondInsertOrUpdateEndpoint,
   params,
   inValidConnection,
   RouterConfigurationErrorStatTags,
@@ -908,6 +912,110 @@ export const data: RouterTestData[] = [
               batched: true,
               statusCode: 200,
               destination: { ...destination, Config: { ...destination.Config, region: 'EU' } },
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  /**
+   * Test Case: Concurrent syncs on one destination
+   *
+   * Purpose: rudder-server sends rows from every rETL job of a destination in one
+   * /routerTransform call. Rows from two source jobs on two connections must not
+   * share one group, or the second sync's rows reach the first sync's segment.
+   */
+  {
+    id: 'customerio-audience-router-concurrent-syncs-test',
+    name: destType,
+    description: 'Guards concurrent syncs reaching the wrong list (ACT2-1257)',
+    scenario: 'Framework+Business',
+    successCriteria:
+      'Rows from two source jobs on two connections form two requests, each sent to its own connection segment',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { id: 'first-sync-user' },
+                  action: 'insert',
+                }),
+                context: firstSourceJobContext,
+              },
+              metadata: { ...generateMetadata(1), sourceId: connection.sourceId },
+              destination,
+              connection,
+            },
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { id: 'second-sync-user' },
+                  action: 'insert',
+                }),
+                context: secondSourceJobContext,
+              },
+              metadata: { ...generateMetadata(2), sourceId: secondConnection.sourceId },
+              destination,
+              connection: secondConnection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertOrUpdateEndpoint,
+                headers,
+                params,
+                body: {
+                  JSON: { ids: ['first-sync-user'] },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ ...generateMetadata(1), sourceId: connection.sourceId }],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: secondInsertOrUpdateEndpoint,
+                headers,
+                params,
+                body: {
+                  JSON: { ids: ['second-sync-user'] },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ ...generateMetadata(2), sourceId: secondConnection.sourceId }],
+              batched: true,
+              statusCode: 200,
+              destination,
             },
           ],
         },

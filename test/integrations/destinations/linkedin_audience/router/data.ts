@@ -1,4 +1,13 @@
+import sha256 from 'sha256';
 import * as config from '../../../../../src/v0/destinations/linkedin_audience/config';
+import {
+  connection,
+  destination,
+  firstSourceJobContext,
+  headers,
+  secondConnection,
+  secondSourceJobContext,
+} from '../common';
 
 export const data = [
   {
@@ -3229,6 +3238,175 @@ export const data = [
     },
     mockFns: () => {
       jest.replaceProperty(config, 'MAX_BATCH_SIZE', 2);
+    },
+  },
+  {
+    id: 'linkedin_audience-router-test-concurrent-syncs',
+    name: 'linkedin_audience',
+    description:
+      'Two concurrent rETL syncs on one destination are sent to their own segments, so one sync never reaches the wrong list (ACT2-1257)',
+    scenario: 'Business',
+    successCriteria:
+      'each source job is batched separately and posted to its own connection audienceId',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {},
+                channel: 'sources',
+                context: firstSourceJobContext,
+                recordId: '1',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId-1',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: { sha256Email: 'first@rudderstack.com' },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'randomSourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'commonAccessToken' },
+                dontBatch: false,
+              },
+              destination,
+              connection,
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {},
+                channel: 'sources',
+                context: secondSourceJobContext,
+                recordId: '2',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId-2',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: { sha256Email: 'second@rudderstack.com' },
+              },
+              metadata: {
+                jobId: 2,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'secondSourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'commonAccessToken' },
+                dontBatch: false,
+              },
+              destination,
+              connection: secondConnection,
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    elements: [
+                      {
+                        action: 'ADD',
+                        userIds: [
+                          { idType: 'SHA256_EMAIL', idValue: sha256('first@rudderstack.com') },
+                        ],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
+                endpointPath: '/dmpSegments/<audienceId>/users',
+                files: {},
+                headers,
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination,
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'randomSourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'commonAccessToken' },
+                  dontBatch: false,
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    elements: [
+                      {
+                        action: 'ADD',
+                        userIds: [
+                          { idType: 'SHA256_EMAIL', idValue: sha256('second@rudderstack.com') },
+                        ],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.linkedin.com/rest/dmpSegments/77001122/users',
+                endpointPath: '/dmpSegments/<audienceId>/users',
+                files: {},
+                headers,
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination,
+              metadata: [
+                {
+                  jobId: 2,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'secondSourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'commonAccessToken' },
+                  dontBatch: false,
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
     },
   },
 ];

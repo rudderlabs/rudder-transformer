@@ -3,6 +3,7 @@ import { RouterTestData } from '../../../testTypes';
 import {
   connection,
   connectionFor,
+  connectionWithTraits,
   destination,
   destType,
   endpointPath,
@@ -74,6 +75,18 @@ const routerCase = (
   output: { response: { status: 200, body: { output } } },
 });
 
+const traitRow = (
+  jobId: number,
+  action: string,
+  identifyId: string,
+  fields: Record<string, unknown>,
+) => ({
+  message: generateRecordPayload({ identifiers: { identifyId }, action, fields }),
+  metadata: generateMetadata(jobId),
+  destination,
+  connection: connectionWithTraits,
+});
+
 export const data: RouterTestData[] = [
   routerCase(
     'gainsight-px-audience-router-actions',
@@ -135,5 +148,39 @@ export const data: RouterTestData[] = [
         destination,
       },
     ],
+  ),
+  routerCase(
+    'gainsight-px-audience-router-traits-insert',
+    'insert writes the flag plus each trait converted to its PX type',
+    [
+      traitRow(1, 'insert', 'u-1', {
+        rs_gpx_string: 'admin',
+        rs_gpx_number: '42',
+        rs_gpx_date: '2026-10-20T10:00:00Z',
+      }),
+    ],
+    [
+      ok(1, {
+        identifyId: 'u-1',
+        customAttributes: {
+          rs_gpx_e2e: true,
+          rs_gpx_string: 'admin',
+          rs_gpx_number: 42,
+          rs_gpx_date: 1792490400000,
+        },
+      }),
+    ],
+  ),
+  routerCase(
+    'gainsight-px-audience-router-traits-delete',
+    'delete with traits mapped writes only the flag false',
+    [traitRow(1, 'delete', 'u-1', { rs_gpx_string: 'admin', rs_gpx_number: 7 })],
+    [ok(1, { identifyId: 'u-1', customAttributes: { rs_gpx_e2e: false } })],
+  ),
+  routerCase(
+    'gainsight-px-audience-router-traits-unconvertible',
+    'an unconvertible and a null trait are left out; the flag and the good trait still go',
+    [traitRow(1, 'insert', 'u-1', { rs_gpx_string: 'viewer', rs_gpx_number: 'abc', rs_gpx_date: null })],
+    [ok(1, { identifyId: 'u-1', customAttributes: { rs_gpx_e2e: true, rs_gpx_string: 'viewer' } })],
   ),
 ];

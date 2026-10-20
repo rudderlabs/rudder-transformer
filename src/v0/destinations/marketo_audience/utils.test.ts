@@ -160,7 +160,7 @@ describe('classifyMarketoCode', () => {
     })),
     {
       code: '607',
-      expected: { kind: 'abort', reason: 'Marketo daily API quota reached', evictToken: false },
+      expected: { kind: 'throttled', reason: 'Marketo daily API quota reached', evictToken: false },
     },
     {
       code: '603',

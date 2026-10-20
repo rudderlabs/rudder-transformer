@@ -153,7 +153,7 @@ describe('MARKETO_AUDIENCE delivery', () => {
         code,
         verdict: throttled(`Marketo rate limit reached (code ${code})`),
       })),
-      { code: '607', verdict: abort('Marketo daily API quota reached') },
+      { code: '607', verdict: throttled('Marketo daily API quota reached') },
       ...['604', '611', '713'].map((code) => ({
         code,
         verdict: retry(`Marketo is temporarily unavailable (code ${code})`),

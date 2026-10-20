@@ -167,8 +167,11 @@ export function classifyMarketoCode(
       evictToken: false,
     };
   }
+  // The daily quota resets at 12:00 AM CST, so a later retry succeeds. rudder-server retries a
+  // throttled job without counting it against the retry limit, and Marketo does not charge calls
+  // that return a limit code. MARKETO and MARKETO_STATIC_LIST throttle 607 too.
   if (code === DAILY_QUOTA_CODE) {
-    return { kind: 'abort', reason: DAILY_QUOTA_REACHED, evictToken: false };
+    return { kind: 'throttled', reason: DAILY_QUOTA_REACHED, evictToken: false };
   }
   return {
     kind: 'abort',

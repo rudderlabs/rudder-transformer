@@ -196,7 +196,7 @@ describe('lookupLeadsByEmail', () => {
     {
       name: 'success:false 607',
       response: failure('607'),
-      expected: { type: 'AbortedError', message: 'Marketo daily API quota reached', status: 400 },
+      expected: { type: 'ThrottledError', message: 'Marketo daily API quota reached', status: 429 },
     },
     {
       name: 'success:false 603',
@@ -333,7 +333,7 @@ describe('lookupLeadsByEmail', () => {
 
   it('keeps the cached token on other failures', async () => {
     authCache.set('dest-1', 'good-token');
-    mockHttpPost.mockResolvedValue(failure('607'));
+    mockHttpPost.mockResolvedValue(failure('1003'));
 
     const outcome = (await lookup(['alice@acme.io'])).get('alice@acme.io');
 

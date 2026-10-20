@@ -207,8 +207,8 @@ export const data: ProxyV1TestData[] = [
   {
     id: 'marketo_audience_v1_daily_quota',
     name: destType,
-    description: '[Proxy v1] 607 aborts every job: the daily quota lasts until the reset',
-    successCriteria: 'Every job is 400 with the quota reason',
+    description: '[Proxy v1] 607 throttles every job until Marketo resets the daily quota',
+    successCriteria: 'Every job is 429 with the quota reason',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -221,8 +221,8 @@ export const data: ProxyV1TestData[] = [
           output: {
             status: 200,
             message: '[MARKETO_AUDIENCE] Marketo daily API quota reached',
-            statTags: deliveryStatTags('aborted'),
-            response: [job(1, 400, 'Marketo daily API quota reached')],
+            statTags: deliveryStatTags('throttled'),
+            response: [job(1, 429, 'Marketo daily API quota reached')],
           },
         },
       },

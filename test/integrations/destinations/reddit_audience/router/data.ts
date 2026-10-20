@@ -14,24 +14,33 @@ import {
   endpoint,
   endpointPath,
   headers,
+  secondConnection,
+  secondEndpoint,
 } from '../common';
 
 const input = (
   jobId: number,
   action: 'insert' | 'update' | 'delete',
   identifiers: Record<string, unknown>,
+  inputConnection: typeof connection = connection,
+  metadata: Record<string, unknown> = generateMetadata(jobId),
 ) => ({
   message: generateRecordPayload({ identifiers, action }),
-  metadata: generateMetadata(jobId),
+  metadata,
   destination,
-  connection,
+  connection: inputConnection,
 });
 
-const batchedRequest = (body: Record<string, unknown>) => ({
+const jobMetadata = (jobId: number, sourceJobId: string) => ({
+  ...generateMetadata(jobId),
+  sourceJobId,
+});
+
+const batchedRequest = (body: Record<string, unknown>, requestEndpoint: string = endpoint) => ({
   version: '1',
   type: 'REST',
   method: 'PATCH',
-  endpoint,
+  endpoint: requestEndpoint,
   endpointPath,
   headers,
   params: {},
@@ -269,6 +278,80 @@ export const data: RouterTestData[] = [
               statusCode: 400,
               error: 'No valid Reddit identifier (EMAIL_SHA256 / MAID_SHA256) after normalization',
               statTags: RouterInstrumentationErrorStatTags,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'reddit-audience-router-concurrent-syncs-own-audience',
+    name: destType,
+    description:
+      "two concurrent rETL syncs on one destination, each with its own connection and audience, must each reach their own list instead of the first connection's list (ACT2-1257)",
+    scenario: 'Framework',
+    successCriteria:
+      "Two batched requests, one per source job: job 1 PATCHes the first connection's audience and job 2 PATCHes the second connection's audience",
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            input(
+              1,
+              'insert',
+              { EMAIL_SHA256: ALICE_EMAIL },
+              connection,
+              jobMetadata(1, 'source-job-1'),
+            ),
+            input(
+              2,
+              'insert',
+              { EMAIL_SHA256: ALICE_EMAIL },
+              secondConnection,
+              jobMetadata(2, 'source-job-2'),
+            ),
+          ],
+          destType,
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: batchedRequest({
+                data: {
+                  action_type: 'ADD',
+                  column_order: ['EMAIL_SHA256'],
+                  user_data: [[ALICE_EMAIL_SHA256]],
+                },
+              }),
+              metadata: [jobMetadata(1, 'source-job-1')],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: batchedRequest(
+                {
+                  data: {
+                    action_type: 'ADD',
+                    column_order: ['EMAIL_SHA256'],
+                    user_data: [[ALICE_EMAIL_SHA256]],
+                  },
+                },
+                secondEndpoint,
+              ),
+              metadata: [jobMetadata(2, 'source-job-2')],
+              batched: true,
+              statusCode: 200,
               destination,
             },
           ],

@@ -9,6 +9,7 @@ import {
   membershipEndpoint,
   otherListConnection,
   routerInstrumentationErrorStatTags,
+  secondSyncConnection,
 } from '../common';
 
 const record = (
@@ -16,9 +17,10 @@ const record = (
   action: string,
   identifiers: Record<string, unknown>,
   rowConnection = connection,
+  sourceJobId?: string,
 ) => ({
   message: generateRecordPayload({ identifiers, action }),
-  metadata: generateMetadata(jobId),
+  metadata: { ...generateMetadata(jobId), ...(sourceJobId && { sourceJobId }) },
   destination,
   connection: rowConnection,
 });
@@ -28,6 +30,7 @@ const membershipBatch = (
   operation: 'add' | 'remove',
   recordIds: string[],
   jobIds: number[],
+  sourceJobId?: string,
 ) => ({
   batchedRequest: {
     version: '1',
@@ -48,7 +51,10 @@ const membershipBatch = (
     },
     files: {},
   },
-  metadata: jobIds.map((jobId) => generateMetadata(jobId)),
+  metadata: jobIds.map((jobId) => ({
+    ...generateMetadata(jobId),
+    ...(sourceJobId && { sourceJobId }),
+  })),
   batched: true,
   statusCode: 200,
   destination,
@@ -183,6 +189,41 @@ export const data: RouterTestData[] = [
               statTags: routerInstrumentationErrorStatTags,
               destination,
             },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'hs-audience-router-concurrent-syncs-separate-lists',
+    name: destType,
+    description:
+      'Two concurrent rETL syncs on one destination each reach their own list, guarding concurrent syncs reaching the wrong list (ACT2-1257)',
+    scenario: 'Business',
+    successCriteria:
+      "Rows from different source jobs form separate membership batches, each sent to its own connection's list id",
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            record(1, 'insert', { hs_object_id: '101' }, connection, 'source-job-1'),
+            record(2, 'insert', { hs_object_id: '202' }, secondSyncConnection, 'source-job-2'),
+          ],
+          destType,
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            membershipBatch('10', 'add', ['101'], [1], 'source-job-1'),
+            membershipBatch('30', 'add', ['202'], [2], 'source-job-2'),
           ],
         },
       },

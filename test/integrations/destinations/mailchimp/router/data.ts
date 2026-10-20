@@ -750,6 +750,50 @@ export const data = [
                         status: 'subscribed',
                         email_address: 'bob.dole@initech.com',
                       },
+                    ],
+                    update_existing: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 2, userId: 'u1' }],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrJ6',
+                Name: 'test-mc',
+                DestinationDefinition: {
+                  ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
+                  Name: 'MC',
+                  DisplayName: 'MailChimp',
+                },
+                Config: {
+                  apiKey: secret1,
+                  audienceId: '1232yyqw22',
+                  datacenterId: 'us20',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://us20.api.mailchimp.com/3.0/lists/1232yyqw22?skip_merge_validation=false&skip_duplicate_check=false',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader1,
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    members: [
                       { status: 'subscribed', email_address: 'emrichardson820+22822@gmail.com' },
                       { status: 'subscribed', email_address: 'emrichardson820+22822@gmail.com' },
                     ],
@@ -762,7 +806,6 @@ export const data = [
                 files: {},
               },
               metadata: [
-                { jobId: 2, userId: 'u1' },
                 { jobId: 3, userId: 'u1' },
                 { jobId: 4, userId: 'u1' },
               ],

@@ -5,9 +5,11 @@ import {
   destType,
   destination,
   connection,
+  secondConnection,
   headers,
   insertEndpoint,
   deleteEndpoint,
+  secondConnectionInsertEndpoint,
   customMappingsDestination,
   customMappingsConnection,
   extraTargetCustomMappingsConnection,
@@ -995,6 +997,105 @@ export const data: RouterTestData[] = [
               batched: true,
               statusCode: 200,
               destination: useInsertConfigDestination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-concurrent-syncs',
+    name: destType,
+    description:
+      "Keeps concurrent rETL syncs on the same destination apart so each sync reaches its own audience, not the first sync's (ACT2-1257)",
+    scenario: 'Framework+Business',
+    successCriteria:
+      'Events from two source jobs on two connections form two batches, each sent to its own connection audienceId in endpoint and body',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: sha256('a@b.com') },
+              }),
+              metadata: { ...generateMetadata(1), sourceJobId: 'source-job-1' },
+              destination,
+              connection,
+            },
+            {
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: sha256('c@d.com') },
+              }),
+              metadata: { ...generateMetadata(2), sourceJobId: 'source-job-2' },
+              destination,
+              connection: secondConnection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertEndpoint,
+                endpointPath: '/insert',
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    audienceId: 'aud-42',
+                    users: [{ email: sha256('a@b.com') }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ ...generateMetadata(1), sourceJobId: 'source-job-1' }],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: secondConnectionInsertEndpoint,
+                endpointPath: '/insert',
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    audienceId: 'aud-77',
+                    users: [{ email: sha256('c@d.com') }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ ...generateMetadata(2), sourceJobId: 'source-job-2' }],
+              batched: true,
+              statusCode: 200,
+              destination,
             },
           ],
         },

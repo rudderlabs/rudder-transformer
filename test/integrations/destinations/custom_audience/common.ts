@@ -74,6 +74,15 @@ export const connection: CustomAudienceConnection = {
   },
 };
 
+// A second rETL sync on the same destination, targeting a different audience.
+export const secondConnection: CustomAudienceConnection = {
+  ...connection,
+  sourceId: 'src-2',
+  config: {
+    destination: { ...connection.config.destination, audienceId: 'aud-77' },
+  },
+};
+
 export const headers = {
   'Content-Type': 'application/json',
   'X-App': 'rudderstack',
@@ -148,6 +157,7 @@ export const authenticationDisabledHeaders = {
 
 export const insertEndpoint = 'https://api.example.com/audiences/aud-42/members';
 export const deleteEndpoint = 'https://api.example.com/audiences/aud-42/members';
+export const secondConnectionInsertEndpoint = 'https://api.example.com/audiences/aud-77/members';
 
 const asComponentDestination = (
   customAudienceDestination: CustomAudienceDestination,

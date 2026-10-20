@@ -47,7 +47,21 @@ export const preHashedConnection = {
   },
 };
 
+/**
+ * A second rETL sync (its own source) on the same destination, writing to a
+ * different Reddit audience. Used to prove concurrent syncs stay on their own list.
+ */
+export const secondAudienceId = 'ca.987654321098765';
+export const secondConnection = {
+  ...connection,
+  sourceId: 'src-2',
+  config: {
+    destination: { ...connection.config.destination, audienceId: secondAudienceId },
+  },
+};
+
 export const endpoint = `https://ads-api.reddit.com/api/v3/custom_audiences/${audienceId}/users`;
+export const secondEndpoint = `https://ads-api.reddit.com/api/v3/custom_audiences/${secondAudienceId}/users`;
 export const endpointPath = '/custom_audiences/{audience_id}/users';
 
 // `generateMetadata` puts `defaultAccessToken` on metadata.secret.accessToken.

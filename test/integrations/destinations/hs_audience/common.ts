@@ -22,9 +22,9 @@ const destination: Destination = {
   WorkspaceID: 'test-workspace-id',
 };
 
-const listConnection = (audienceId: string): Connection =>
+const listConnection = (audienceId: string, sourceId = 'dummy-source-id'): Connection =>
   ({
-    sourceId: 'dummy-source-id',
+    sourceId,
     destinationId: 'dummy-destination-id',
     enabled: true,
     config: {
@@ -37,6 +37,8 @@ const listConnection = (audienceId: string): Connection =>
 
 const connection = listConnection('10');
 const otherListConnection = listConnection('20');
+// A second rETL sync on the same destination: its own source and its own list.
+const secondSyncConnection = listConnection('30', 'second-sync-source-id');
 
 const headers = {
   'Content-Type': 'application/json',
@@ -65,6 +67,7 @@ export {
   destination,
   connection,
   otherListConnection,
+  secondSyncConnection,
   headers,
   membershipEndpoint,
   endpointPath,

@@ -3,6 +3,7 @@ import {
   destType,
   destination,
   connection,
+  secondListConnection,
   userIdDestination,
   userIdConnection,
   hybridDestination,
@@ -653,6 +654,111 @@ export const data: RouterTestData[] = [
               statusCode: 400,
               error: 'message.type: Invalid literal value, expected "record"',
               statTags: RouterInstrumentationErrorStatTags,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  /**
+   * Test Case 7: Concurrent syncs on one destination (ACT2-1257)
+   *
+   * Two rETL syncs (different source jobs + connections → different lists)
+   * arrive in one router call. Each must batch to its own connection's list.
+   */
+  {
+    id: 'iterable-audience-router-concurrent-syncs-separate-lists',
+    name: destType,
+    description:
+      'Guards concurrent syncs reaching the wrong list (ACT2-1257): two source jobs on the same destination with different connections/lists batch separately',
+    scenario: 'Framework+Business',
+    successCriteria:
+      'Each source job must produce its own subscribe batch carrying its own connection listId (12345 and 67890), never the first connection list for both',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                identifiers: { email: 'user1@example.com' },
+                action: 'insert',
+              }),
+              metadata: { ...generateMetadata(1), sourceJobId: 'source-job-1' },
+              destination,
+              connection,
+            },
+            {
+              message: generateRecordPayload({
+                identifiers: { email: 'user2@example.com' },
+                action: 'insert',
+              }),
+              metadata: { ...generateMetadata(2), sourceJobId: 'source-job-2' },
+              destination,
+              connection: secondListConnection,
+            },
+          ],
+          destType,
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: subscribeEndpoint,
+                endpointPath: '/lists/subscribe',
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    listId: 12345,
+                    subscribers: [{ email: 'user1@example.com' }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ ...generateMetadata(1), sourceJobId: 'source-job-1' }],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: subscribeEndpoint,
+                endpointPath: '/lists/subscribe',
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    listId: 67890,
+                    subscribers: [{ email: 'user2@example.com' }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ ...generateMetadata(2), sourceJobId: 'source-job-2' }],
+              batched: true,
+              statusCode: 200,
               destination,
             },
           ],

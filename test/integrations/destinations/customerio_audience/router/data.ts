@@ -275,16 +275,6 @@ export const data: RouterTestData[] = [
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
-            // Error Case 2: Invalid message type
-            // Event with type 'identify' instead of 'record' should fail validation
-            {
-              metadata: [generateMetadata(9)],
-              batched: false,
-              statusCode: 400,
-              error: 'type: Invalid literal value, expected "record"',
-              statTags: RouterInstrumentationErrorStatTags,
-              destination,
-            },
             // Error Case 3: Missing identifiers
             // Event without identifiers should fail validation
             {
@@ -302,6 +292,18 @@ export const data: RouterTestData[] = [
               batched: false,
               statusCode: 400,
               error: 'identifiers: exactly one identifier is supported',
+              statTags: RouterInstrumentationErrorStatTags,
+              destination,
+            },
+            // Error Case 2: Invalid message type
+            // Event with type 'identify' instead of 'record' should fail validation.
+            // It carries no source job id, so it is grouped (and returned) after the
+            // 'randomJobId' rows from generateRecordPayload.
+            {
+              metadata: [generateMetadata(9)],
+              batched: false,
+              statusCode: 400,
+              error: 'type: Invalid literal value, expected "record"',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

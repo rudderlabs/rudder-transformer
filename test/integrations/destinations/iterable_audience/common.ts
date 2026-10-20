@@ -36,6 +36,18 @@ const connection: Connection = {
   },
 };
 
+// A second rETL sync on the same destination, targeting a different list.
+const secondListConnection: Connection = {
+  ...connection,
+  sourceId: 'dummy-source-id-2',
+  config: {
+    destination: {
+      audienceId: '67890',
+      identifierMappings: [{ from: 'email', to: 'email' }],
+    },
+  },
+};
+
 const userIdDestination: Destination = {
   ...destination,
   Config: {
@@ -123,6 +135,7 @@ export {
   destTypeInUpperCase,
   destination,
   connection,
+  secondListConnection,
   userIdDestination,
   userIdConnection,
   hybridDestination,

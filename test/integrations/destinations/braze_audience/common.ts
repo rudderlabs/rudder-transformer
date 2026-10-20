@@ -53,6 +53,18 @@ export const connection = {
   },
 };
 
+// Second rETL sync (own source + source job) into the same destination, writing a different attribute.
+export const secondConnection = {
+  ...connection,
+  sourceId: 'src-2',
+  config: {
+    destination: {
+      ...connection.config.destination,
+      customAttributeName: 'rs_churn_risk',
+    },
+  },
+};
+
 export const bulkEndpoint = 'https://rest.iad-03.braze.com/users/track/bulk';
 export const euBulkEndpoint = 'https://rest.fra-01.braze.eu/users/track/bulk';
 export const auBulkEndpoint = 'https://rest.au-01.braze.com/users/track/bulk';

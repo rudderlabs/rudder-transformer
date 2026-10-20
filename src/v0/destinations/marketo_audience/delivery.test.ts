@@ -190,6 +190,7 @@ describe('MARKETO_AUDIENCE delivery', () => {
       { status: 400, verdict: abort('Marketo request failed (HTTP 400)') },
       { status: 404, verdict: abort('Marketo request failed (HTTP 404)') },
       { status: 429, verdict: throttled('Marketo rate limit reached (HTTP 429)') },
+      { status: 503, verdict: retry('Marketo request failed (HTTP 503)') },
     ];
 
     it.each(cases)('applies HTTP $status to every job', ({ status, verdict }) => {
@@ -198,15 +199,16 @@ describe('MARKETO_AUDIENCE delivery', () => {
       );
     });
 
-    it('leaves a 5xx to the framework default, which retries the whole batch', () => {
-      const ctx = context(503, { message: 'raw marketo message' });
+    it('retries every job on a 5xx without its body, which can carry an email', () => {
+      const ctx = context(503, { message: 'Failure for alice@example.com' });
 
-      expect(() => toDeliveryV1Response(handled(ctx), ctx, 'MARKETO_AUDIENCE')).toThrow(
-        expect.objectContaining({
-          status: 503,
-          statTags: expect.objectContaining({ errorType: 'retryable' }),
-        }),
-      );
+      const response = toDeliveryV1Response(handled(ctx), ctx, 'MARKETO_AUDIENCE');
+
+      expect(response.response.map(({ statusCode, error }) => ({ statusCode, error }))).toEqual([
+        { statusCode: 500, error: 'Marketo request failed (HTTP 503)' },
+        { statusCode: 500, error: 'Marketo request failed (HTTP 503)' },
+      ]);
+      expect(JSON.stringify(response)).not.toContain('alice@example.com');
     });
 
     it('retries every job on a 400 that is a Node transport failure, not a Marketo answer', () => {

@@ -3,9 +3,9 @@
  *
  * Marketo answers application errors with HTTP 200, so the 2xx override does most of the work:
  * `success: true` carries one result per sent lead, in request order; `success: false` carries a
- * code that applies to the whole request. 2xx and 4xx verdicts go through `perItem`, so the
- * framework does not attach the raw response, and reasons carry Marketo codes only: no lead IDs,
- * emails or Marketo message text. 5xx is left to the framework default, which retries.
+ * code that applies to the whole request. Every verdict goes through `perItem`, so the framework
+ * does not attach the raw response, and reasons carry Marketo codes or HTTP statuses only: no lead
+ * IDs, emails or Marketo message text.
  */
 import {
   abort,
@@ -138,5 +138,8 @@ export const marketoAudienceDelivery: DeliverySpec = {
   statusOverrides: {
     '2xx': membershipResponse,
     '4xx': (ctx) => everyJob(ctx, clientFailure(ctx)),
+    // The framework retries a 5xx too, but its whole-batch error carries the raw body, which can
+    // hold an email. A per-job retry with a fixed reason keeps the body out of job errors.
+    '5xx': (ctx) => everyJob(ctx, retry(`${MEMBERSHIP_FAILED} (HTTP ${ctx.status})`)),
   },
 };

@@ -277,6 +277,53 @@ describe('MARKETO_AUDIENCE router transform', () => {
     },
   );
 
+  const unbatched = (jobId: number, identifiers: Record<string, unknown>) =>
+    ({
+      ...row(jobId, identifiers),
+      metadata: { jobId, dontBatch: true },
+    }) as unknown as RouterTransformationRequestData;
+
+  const tokenNamed = (accessToken: string) => ({
+    success: true,
+    response: {
+      status: 200,
+      data: { access_token: accessToken, token_type: 'bearer', expires_in: 3599, scope: 'x' },
+    },
+  });
+
+  it('fetches a new token for a dontBatch row after a 602 evicted the first one', async () => {
+    mockHttpGet
+      .mockResolvedValueOnce(tokenNamed('token-a'))
+      .mockResolvedValueOnce(tokenNamed('token-b'));
+    mockHttpPost.mockResolvedValue({
+      success: true,
+      response: {
+        status: 200,
+        data: { success: false, errors: [{ code: '602', message: 'Access token expired' }] },
+      },
+    });
+
+    const results = await run([row(1, { email: 'bob@acme.io' }), unbatched(2, { id: '202' })]);
+
+    expect(mockHttpGet).toHaveBeenCalledTimes(2);
+    expect(membership(forJob(results, 2)).headers).toEqual({
+      Authorization: 'Bearer token-b',
+      'Content-Type': 'application/json',
+    });
+  });
+
+  it('reuses the token for a dontBatch row when nothing evicted it', async () => {
+    mockHttpGet.mockResolvedValue(tokenNamed('token-a'));
+
+    const results = await run([row(1, { id: '101' }), unbatched(2, { id: '202' })]);
+
+    expect(mockHttpGet).toHaveBeenCalledTimes(1);
+    expect(membership(forJob(results, 2)).headers).toEqual({
+      Authorization: 'Bearer token-a',
+      'Content-Type': 'application/json',
+    });
+  });
+
   it('skips the token call when no row is deliverable', async () => {
     const results = await run([row(1, { id: 'abc' }), row(2, {})]);
 

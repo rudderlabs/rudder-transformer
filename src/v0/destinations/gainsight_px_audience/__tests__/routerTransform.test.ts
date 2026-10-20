@@ -375,6 +375,28 @@ describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
     );
   });
 
+  it('counts per transformEvents pass: a dontBatch row logs on its own', async () => {
+    const batchable = member(1, 'insert', 'secret-user-1', { rs_gpx_number: 'abc' });
+    const retried = member(2, 'insert', 'secret-user-2', { rs_gpx_number: 'xyz' });
+    (retried.metadata as any).dontBatch = true;
+
+    const results = await processDestinationIntegration([batchable, retried], Integration, {});
+
+    expect(successes(results)).toHaveLength(2);
+    const line = [
+      'Gainsight PX Audience: trait left out of the write',
+      { destType: 'gainsight_px_audience', attribute: 'rs_gpx_number', reason: 'unconvertible', count: 1 },
+    ];
+    const forPair = warnSpy.mock.calls.filter(
+      ([, meta]) => meta.attribute === 'rs_gpx_number' && meta.reason === 'unconvertible',
+    );
+    expect(forPair).toEqual([line, line]);
+    const logged = JSON.stringify(warnSpy.mock.calls);
+    ['abc', 'xyz', 'secret-user-1', 'secret-user-2'].forEach((text) =>
+      expect(logged).not.toContain(text),
+    );
+  });
+
   it('logs unknown_type for a row saved without type', async () => {
     const results = await processDestinationIntegration(
       [

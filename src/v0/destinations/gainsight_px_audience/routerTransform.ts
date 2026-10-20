@@ -40,6 +40,8 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
   /**
    * No lookup and no I/O: this override only brackets the call so the left-out traits are counted
    * across every row and logged once per (attribute, reason) (trait-mappings D25).
+   * The counter is per transformEvents pass: the framework runs one pass for the batchable rows
+   * and one per row the router marks `dontBatch` (retries), so those log separately.
    */
   async transformEvents(
     inputs: GainsightPxAudienceRouterRequest[],

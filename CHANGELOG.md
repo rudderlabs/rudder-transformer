@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.162.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.161.0...v1.162.0) (2026-10-20)
+
+
+### Features
+
+* **pinterest_audience:** add router destination on the batching framework (ACT2-1194) ([#5680](https://github.com/rudderlabs/rudder-transformer/issues/5680)) ([4b476f9](https://github.com/rudderlabs/rudder-transformer/commit/4b476f921104da9c78ab3735ec628fd4ed487512))
+
 ## [1.161.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.160.0...v1.161.0) (2026-10-19)
 
 

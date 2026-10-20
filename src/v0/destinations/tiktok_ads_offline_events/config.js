@@ -31,7 +31,6 @@ const EVENT_NAME_MAPPING = {
   completeregistration: 'CompleteRegistration',
   contact: 'Contact',
   download: 'Download',
-  lead: 'Lead',
   'order completed': 'PlaceAnOrder',
   'payment info entered': 'AddPaymentInfo',
   purchase: 'Purchase',

@@ -62,12 +62,16 @@ type PendingRow = Exclude<PreparedRow, { kind: 'failed' }>;
 
 const failed = (error: Error): PreparedRow => ({ kind: 'failed', error });
 
-// Stack frames only. V8's first stack line repeats the message, a multi-line message spans more
-// lines, and the message can carry emails or Marketo text, which must never be logged.
+// Stack frames only: the message can carry emails or Marketo text, which must never be logged.
+// V8 starts the stack with `${name}: ${message}`, so the message's own lines are skipped first: a
+// later message line can itself look like a frame.
 function stackFrames(error: unknown): string {
-  const stack = error instanceof Error ? (error.stack ?? '') : '';
-  return stack
+  if (!(error instanceof Error) || !error.stack) {
+    return '';
+  }
+  return error.stack
     .split('\n')
+    .slice(error.message.split('\n').length)
     .filter((line) => /^\s+at /.test(line))
     .join('\n');
 }

@@ -545,6 +545,24 @@ describe('MARKETO_AUDIENCE router transform', () => {
     ]);
   });
 
+  it('keeps a message line that looks like a stack frame out of the log', async () => {
+    const lookup = jest
+      .spyOn(lookupModule, 'lookupLeadsByEmail')
+      .mockRejectedValueOnce(new Error('lookup bug for\n    at alice@example.com'));
+    const logError = jest.spyOn(logger, 'error').mockImplementation(() => {});
+
+    await run([row(1, { email: 'bob@acme.io' })]);
+
+    const logged = [...logError.mock.calls];
+    lookup.mockRestore();
+    logError.mockRestore();
+    expect(logged).toHaveLength(1);
+    expect(logged[0][1]).toEqual(
+      expect.objectContaining({ stack: expect.stringMatching(/^\s+at /) }),
+    );
+    expect(JSON.stringify(logged)).not.toContain('alice@example.com');
+  });
+
   it('fails each pending row with a typed error when the pre-stage throws unexpectedly', async () => {
     const lookup = jest
       .spyOn(lookupModule, 'lookupLeadsByEmail')

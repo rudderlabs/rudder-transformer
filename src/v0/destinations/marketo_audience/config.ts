@@ -34,6 +34,7 @@ export const PARTITION_DENIED = 'Lead is in a partition the Marketo API user can
 export const LIST_NOT_FOUND = 'Marketo static list not found';
 export const LOOKUP_FAILED = 'Marketo lead lookup failed';
 export const TOO_MANY_LEADS = 'More than 1,000 Marketo leads match this email';
+export const LOOKUP_SPLIT_LIMIT = 'Marketo lead lookup split limit reached (code 1003)';
 export const LOOKUP_UNMATCHED = 'Marketo lead lookup response could not be matched to the request';
 // 603 covers a missing permission and other access refusals (an IP allowlist, a disabled user).
 export const ACCESS_DENIED = 'Marketo denied access';

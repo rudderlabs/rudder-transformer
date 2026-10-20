@@ -12,6 +12,7 @@ import {
   DESTINATION_TYPE,
   LOOKUP_ENDPOINT_PATH,
   LOOKUP_FAILED,
+  LOOKUP_SPLIT_LIMIT,
   LOOKUP_UNMATCHED,
   MAX_LOOKUP_EMAILS,
   TOO_MANY_LEADS,
@@ -34,6 +35,13 @@ export type LookupOutcome =
 
 // Marketo answers 1003 when more than 1,000 leads match the filter, and returns no partial pages.
 const TOO_MANY_RESULTS_CODE = '1003';
+
+// Lookups one 300-email chunk may make, sent one after another: its own and those of a 1003 split.
+// Splitting out one email takes nine halvings (300 -> 1) of two lookups each, so 1 + 18. That is
+// under a fifth of Marketo's 100 calls per 20 s per instance; without a cap, every 20th email
+// failing makes 163 calls, and 1003 also means "invalid data". Emails still unresolved when the
+// budget runs out retry: by then the split-out and resolved rows are gone, so the retry is smaller.
+const MAX_CHUNK_LOOKUPS = 19;
 
 class TooManyLeadsError extends AbortedError {
   constructor() {
@@ -219,20 +227,37 @@ function matchOutcome(ids: Set<number> | undefined): LookupOutcome {
   return { kind: 'found', leadId: [...ids][0] };
 }
 
+// Takes one lookup from a chunk's budget, shared by every level of its split; false once spent.
+function lookupBudget(limit: number): () => boolean {
+  let left = limit;
+  return () => {
+    if (left === 0) {
+      return false;
+    }
+    left -= 1;
+    return true;
+  };
+}
+
 // A failed chunk fails its own emails only, with the classified error. A 1003 is split instead:
 // halving the chunk until the email that matches too many leads is alone fails only that email.
 async function lookupChunk(
   request: LookupRequest,
   emails: string[],
+  takeLookup: () => boolean,
 ): Promise<[string, LookupOutcome][]> {
+  if (!takeLookup()) {
+    const error = new RetryableError(LOOKUP_SPLIT_LIMIT);
+    return emails.map((email) => [email, { kind: 'error', error }]);
+  }
   try {
     const matches = await matchChunk(request, emails);
     return emails.map((email) => [email, matchOutcome(matches.get(email))]);
   } catch (error) {
     if (error instanceof TooManyLeadsError && emails.length > 1) {
       const half = Math.ceil(emails.length / 2);
-      const first = await lookupChunk(request, emails.slice(0, half));
-      const second = await lookupChunk(request, emails.slice(half));
+      const first = await lookupChunk(request, emails.slice(0, half), takeLookup);
+      const second = await lookupChunk(request, emails.slice(half), takeLookup);
       return [...first, ...second];
     }
     const classified = error instanceof BaseError ? error : new RetryableError(LOOKUP_FAILED);
@@ -254,6 +279,7 @@ export async function lookupLeadsByEmail(
     const chunkOutcomes = await lookupChunk(
       request,
       distinct.slice(offset, offset + MAX_LOOKUP_EMAILS),
+      lookupBudget(MAX_CHUNK_LOOKUPS),
     );
     chunkOutcomes.forEach(([email, outcome]) => outcomes.set(email, outcome));
   }

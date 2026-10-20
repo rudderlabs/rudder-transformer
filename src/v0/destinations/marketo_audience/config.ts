@@ -22,6 +22,8 @@ export const DUPLICATE_LEADS =
   'Email matches more than one Marketo lead; merge the duplicates in Marketo or map the Marketo Lead ID';
 export const CONFLICTING_MEMBERSHIP = 'Conflicting membership operations for Marketo lead';
 export const TOKEN_UNAVAILABLE = 'Marketo access token could not be fetched';
+export const TOKEN_REJECTED = 'Marketo rejected the access token request';
+export const TOKEN_RATE_LIMITED = 'Marketo rate limit reached on the access token request';
 export const ROW_NOT_PREPARED = 'Marketo Audience row was not prepared before transform';
 export const PRESTAGE_FAILED = 'Marketo Audience could not prepare the row';
 

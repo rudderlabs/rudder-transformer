@@ -1,9 +1,11 @@
 import {
+  AbortedError,
   BaseError,
   ConfigurationError,
   InstrumentationError,
   PlatformError,
   RetryableError,
+  ThrottledError,
 } from '@rudderstack/integrations-lib';
 import {
   ChunkBatchStrategy,
@@ -26,6 +28,8 @@ import {
   PRESTAGE_FAILED,
   REMOVAL_UNCONFIRMED,
   ROW_NOT_PREPARED,
+  TOKEN_RATE_LIMITED,
+  TOKEN_REJECTED,
   TOKEN_UNAVAILABLE,
 } from './config';
 import { marketoAudienceDelivery } from './delivery';
@@ -35,7 +39,14 @@ import {
   type MarketoAudiencePayload,
   type MarketoAudienceRouterRequest,
 } from './types';
-import { authCache, baseUrl, readListId, resolveIdentifier } from './utils';
+import {
+  asRecord,
+  authCache,
+  baseUrl,
+  isNodeTransportMessage,
+  readListId,
+  resolveIdentifier,
+} from './utils';
 
 type Operation = 'add' | 'remove';
 
@@ -59,6 +70,23 @@ function stackFrames(error: unknown): string {
     .split('\n')
     .filter((line) => /^\s+at /.test(line))
     .join('\n');
+}
+
+// The shared getAuthToken throws with Marketo's own message text, and attaches the identity
+// response, which holds the access token when Marketo answers `expires_in: 0`. Rows get a fixed
+// reason per class instead. A transport failure arrives as a synthetic 400 and retries.
+function tokenError(error: unknown): Error {
+  const status = error instanceof BaseError ? error.status : undefined;
+  if (status === 429) {
+    return new ThrottledError(TOKEN_RATE_LIMITED);
+  }
+  // Typed as a string in integrations-lib; getAuthToken stores the processed `{ response, status }`.
+  const sent = error instanceof BaseError ? asRecord(error.destinationResponse) : null;
+  const transport = isNodeTransportMessage(sent?.response);
+  if (status === undefined || status >= 500 || transport) {
+    return new RetryableError(TOKEN_UNAVAILABLE);
+  }
+  return new AbortedError(TOKEN_REJECTED, status);
 }
 
 function prepareRow(input: MarketoAudienceRouterRequest): PreparedRow {
@@ -217,12 +245,7 @@ class MarketoAudienceIntegration extends DestinationIntegration<
         ? token
         : new RetryableError(TOKEN_UNAVAILABLE);
     } catch (error) {
-      if (!(error instanceof BaseError)) {
-        return new RetryableError(TOKEN_UNAVAILABLE);
-      }
-      // getAuthToken attaches the identity response, which holds the access token when Marketo
-      // answers `expires_in: 0`, and the row error would print it. Keep status and tags only.
-      return new BaseError(error.message, error.status, error.statTags);
+      return tokenError(error);
     }
   }
 

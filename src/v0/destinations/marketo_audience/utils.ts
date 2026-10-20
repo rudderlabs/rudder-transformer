@@ -47,6 +47,14 @@ export function baseUrl(accountId: string): string {
   return `https://${accountId}.mktorest.com`;
 }
 
+// processAxiosResponse turns a Node transport failure with no HTTP status (ENOTFOUND, EPIPE, ...)
+// into a 400 whose body is `[CODE]` or `[CODE] :: ...`. Marketo never sent that 400.
+const NODE_TRANSPORT_MESSAGE = /^\[\w+]/;
+
+export function isNodeTransportMessage(body: unknown): boolean {
+  return typeof body === 'string' && NODE_TRANSPORT_MESSAGE.test(body);
+}
+
 export function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return null;

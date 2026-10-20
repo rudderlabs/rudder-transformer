@@ -218,6 +218,65 @@ describe('MARKETO_AUDIENCE router transform', () => {
     expect(failure(results, 1).error).not.toContain(TOKEN);
   });
 
+  const tokenFailureCases = [
+    {
+      name: 'a DNS failure, which Node reports with no HTTP status',
+      response: { success: false, response: { code: 'ENOTFOUND' } },
+      expected: { statusCode: 500, error: 'Marketo access token could not be fetched' },
+    },
+    {
+      name: 'a broken pipe, which Node reports with no HTTP status',
+      response: { success: false, response: { code: 'EPIPE' } },
+      expected: { statusCode: 500, error: 'Marketo access token could not be fetched' },
+    },
+    {
+      name: 'an HTTP 503',
+      response: { success: false, response: { response: { status: 503, data: '' } } },
+      expected: { statusCode: 500, error: 'Marketo access token could not be fetched' },
+    },
+    {
+      name: 'rejected client credentials',
+      response: {
+        success: false,
+        response: {
+          response: {
+            status: 401,
+            data: { error: 'invalid_client', error_description: 'Bad client credentials' },
+          },
+        },
+      },
+      expected: { statusCode: 401, error: 'Marketo rejected the access token request' },
+    },
+    {
+      name: 'a rate-limit code whose message Marketo wrote',
+      response: {
+        success: true,
+        response: {
+          status: 200,
+          data: {
+            success: false,
+            errors: [{ code: '606', message: 'Max rate limit exceeded for bob@acme.io' }],
+          },
+        },
+      },
+      expected: {
+        statusCode: 429,
+        error: 'Marketo rate limit reached on the access token request',
+      },
+    },
+  ];
+
+  it.each(tokenFailureCases)(
+    'fails every row with a fixed reason when the token call fails: $name',
+    async ({ response, expected }) => {
+      mockHttpGet.mockResolvedValue(response);
+
+      const results = await run([row(1, { id: '101' }), row(2, { email: 'bob@acme.io' })]);
+
+      expect([failure(results, 1), failure(results, 2)]).toEqual([expected, expected]);
+    },
+  );
+
   it('skips the token call when no row is deliverable', async () => {
     const results = await run([row(1, { id: 'abc' }), row(2, {})]);
 

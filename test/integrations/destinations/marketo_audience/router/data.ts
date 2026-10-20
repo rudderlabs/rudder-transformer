@@ -347,14 +347,14 @@ export const data: RouterTestData[] = [
             rowError(
               1,
               401,
-              'Request failed  with status: 401',
+              'Marketo rejected the access token request',
               routerStatTags('network', 'aborted'),
               rejectedCredentialsDestination,
             ),
             rowError(
               2,
               401,
-              'Request failed  with status: 401',
+              'Marketo rejected the access token request',
               routerStatTags('network', 'aborted'),
               rejectedCredentialsDestination,
             ),

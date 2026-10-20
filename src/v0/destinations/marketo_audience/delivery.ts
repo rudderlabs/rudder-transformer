@@ -2,7 +2,7 @@
  * Delivery for Marketo static-list membership (add: POST, remove: DELETE).
  *
  * Marketo answers application errors with HTTP 200, so the 2xx override does most of the work:
- * `success: true` carries one result per sent lead, in request order; `success: false` carries a
+ * `success: true` carries one result per sent lead, matched by lead ID; `success: false` carries a
  * code that applies to the whole request. Every verdict goes through `perItem`, so the framework
  * does not attach the raw response, and reasons carry Marketo codes or HTTP statuses only: no lead
  * IDs, emails or Marketo message text.
@@ -79,28 +79,33 @@ function resultVerdict(result: Record<string, unknown>, removing: boolean): Item
   return retry(RESPONSE_UNMATCHED);
 }
 
-// Results are positional; the lead ID at each position must also be the one that was sent there,
-// or a verdict could land on the wrong job.
+// Results are matched to jobs by lead ID: Marketo returns one result per sent lead but does not
+// promise their order. internalGroupKey keeps each lead ID once per request, so an ID names a job.
 function resultVerdicts(ctx: DeliveryContext, body: Record<string, unknown>): ItemVerdict[] {
   const sent = asRecord(ctx.request.body?.JSON)?.input;
   const { result } = body;
+  const unmatched = () => ctx.jobs.map(() => retry(RESPONSE_UNMATCHED));
   if (
     !Array.isArray(sent) ||
     !Array.isArray(result) ||
     sent.length !== ctx.jobs.length ||
     result.length !== sent.length
   ) {
-    return ctx.jobs.map(() => retry(RESPONSE_UNMATCHED));
+    return unmatched();
+  }
+  const entries = result
+    .map(asRecord)
+    .filter((entry): entry is Record<string, unknown> => entry !== null);
+  const byId = new Map(entries.map((entry) => [String(entry.id), entry]));
+  if (entries.length !== result.length || byId.size !== result.length) {
+    return unmatched();
+  }
+  const matched = sent.map((item) => byId.get(String(asRecord(item)?.id)));
+  if (!matched.every((entry): entry is Record<string, unknown> => entry !== undefined)) {
+    return unmatched();
   }
   const removing = ctx.request.method.toUpperCase() === 'DELETE';
-  const entries = result.map(asRecord);
-  const aligned = entries.every(
-    (entry, i) => entry && String(entry.id) === String(asRecord(sent[i])?.id),
-  );
-  if (!aligned) {
-    return ctx.jobs.map(() => retry(RESPONSE_UNMATCHED));
-  }
-  return entries.map((entry) => resultVerdict(entry as Record<string, unknown>, removing));
+  return matched.map((entry) => resultVerdict(entry, removing));
 }
 
 function membershipResponse(ctx: DeliveryContext): HandleResponseResult {

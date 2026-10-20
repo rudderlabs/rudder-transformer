@@ -84,6 +84,13 @@ describe('MARKETO_AUDIENCE delivery', () => {
         expected: [success(), success(), success()],
       },
       {
+        name: 'results in another order than the leads were sent',
+        method: 'POST',
+        ids: [101, 102],
+        result: [skipped(102, '1004'), { id: 101, status: 'added' }],
+        expected: [success(), abort('Lead not found in Marketo')],
+      },
+      {
         name: 'a lead not in the list on add',
         method: 'POST',
         ids: [101],
@@ -125,9 +132,16 @@ describe('MARKETO_AUDIENCE delivery', () => {
     const cases = [
       { name: 'fewer results than leads', response: results([{ id: 101, status: 'added' }]) },
       {
-        name: 'results out of order',
+        name: 'a result for a lead that was not sent',
         response: results([
-          { id: 102, status: 'added' },
+          { id: 101, status: 'added' },
+          { id: 999, status: 'added' },
+        ]),
+      },
+      {
+        name: 'the same lead twice in the results',
+        response: results([
+          { id: 101, status: 'added' },
           { id: 101, status: 'added' },
         ]),
       },

@@ -447,84 +447,62 @@ event carrying `properties.id` / `properties.name` must pass them through.
 
 ## Mapping The Ecommerce Spec
 
-Many destinations translate the RudderStack Ecommerce spec (`Product Viewed`, `Product Added`,
-`Checkout Started`, `Order Completed`, … with `properties.products[]` and order-level
-`order_id` / `total` / `revenue` / `value` / `currency`) onto a partner's purchase or cart
-events. **There is no shared ecommerce helper or mapping in the repo.** `GenericFieldMapping.json`
-has no `revenue`, `order_id` or `products` key, and every destination owns its own event table
-(`ConfigCategory`, `ECOMM_EVENT_MAP`, `ecomEventMaps`, …). The ~40 implementations disagree on
-almost every rule below, so copying the nearest one copies its bugs too.
+Destinations that send the RudderStack Ecommerce spec (`Product Viewed`, `Product Added`,
+`Checkout Started`, `Order Completed`, … with `properties.products[]`) to a partner's cart or
+purchase events all do it **one way**, described below. Existing destinations diverge from it on
+almost every point. Don't copy them. Bring a destination onto this shape when you touch its
+ecommerce path.
 
-`src/v0/destinations/braze/` behind `useEcommerceRecommendedEvents` is the reference: one
-routing table in `config.ts:11-51`, one mapping JSON per event under `data/ecommerce/`, and a
-shared per-item `data/ecommerce/Product.json`. `facebook_conversions` is the runner-up (per-event
-`data/FBC*CustomData.json`, single-product handling in `getProducts`, `utils.js:82`).
+### 1. Route event names through one table
 
-### Route events through one table, normalised once
+The spec-event → partner-event table lives in `config`, as a `Map` keyed by the lowercased spec
+name. Match it on `event.trim().toLowerCase()`. The customer's event mapping is checked first and
+normalised the same way. Anything left over is sent as the partner's custom event:
 
-Keep the spec-event → partner-event routing in **one** table in `config`, and match it on
-`event.trim().toLowerCase()`. Braze declares `rsEvents: [{ name: 'product added', action:
-'add' }]` per partner event and builds the lookup from it (`ecommerceUtil.ts:69,353-355`).
-GA4 normalises to `trim().replace(/\s+/g, '_').toUpperCase()` (`ga4/transform.js:47,60`), which
-also admits `order_completed`.
+```ts
+// config.ts
+export const ECOMMERCE_EVENTS = new Map([
+  ['product viewed', 'view_item'],
+  ['product added', 'add_to_cart'],
+  ['order completed', 'purchase'],
+]);
 
-- **A customer's event mapping runs first, normalised the same way.** Build it with
-  `getHashFromArrayWithDuplicate` (`src/v0/util/index.js:246`), which trims, lowercases and lets
-  one event fan out to several partner events. `getHashFromArray` lowercases but does not trim.
-  Passing `isLowerCase = false`, or comparing `.from === event`, makes the customer table
-  case-sensitive while the built-in table is not (reddit v2 `procWorkflow.yaml:55`,
-  `pinterest_tag`, `bluecore`, `linkedin_ads`).
-- **Look up with an own-property check.** `map[event]` on a plain object resolves
-  `"constructor"` to `Object` (`blueshift/transform.js:60`, and Braze's own
-  `EVENT_NAME_TO_BRAZE[key]` at `ecommerceUtil.ts:355`). Use `Object.hasOwn` or a `Map`.
-- **Every gate on the event name uses the same normalised key.** `topsort` lowercases for the
-  customer map but checks `ECOMM_EVENTS_WITH_PRODUCT_ARRAY.has(event)` exact-case
-  (`topsort/utils.ts:51`), so `order completed` never fans out over its products.
-- **An unknown event goes out as the partner's custom event.** Throw only when the partner has
-  no custom-event concept. `snapchat_conversion` and `tiktok_ads_offline_events` throw on any
-  unmapped name. That aborts every non-ecommerce event the customer sends.
-- **Check each row against the partner's event semantics.** `branch` routes
-  `'Order Completed'` to `ADD_PAYMENT_INFO` (`branch/data/eventMapping.js:39`), so no purchase
-  ever reaches Branch.
+// utils.ts
+const resolveEventNames = (event: string, config: DestinationConfig): string[] => {
+  const key = event.trim().toLowerCase();
+  const customerMap = getHashFromArrayWithDuplicate(config.eventsMapping); // trims + lowercases
+  if (Object.hasOwn(customerMap, key)) return [...customerMap[key]];
+  return [ECOMMERCE_EVENTS.get(key) ?? event]; // unmapped → partner's custom event
+};
+```
 
-### `products[]` and single-product events
+Use a `Map` and `Object.hasOwn`, never a bare `obj[event]` lookup: a plain object resolves
+`"constructor"` to `Object`. Every other check on the event name uses the same `key`.
 
-Map each product with `constructPayload` and **one shared item mapping**, as in
-[Mapping individual array items](#mapping-individual-array-items) (`braze/data/ecommerce/Product.json`,
-`the_trade_desk_real_time_conversions/data/TTDItemConfig.json`, `ga4/data/GA4ItemListConfig.json`).
+### 2. Build items with one rule and one item mapping
 
-- **Single-product events carry the product at the top level.** `Product Viewed`, `Product
-  Added`, `Product Removed` and `Product Added to Wishlist` put `product_id`, `price` and so on
-  directly under `properties`. Treat `[message.properties]` as the item list
-  (`facebook_conversions/utils.js:82-93`), or fall back to it when there is no array (Braze cart
-  events, GA4 `getItemsArray`, `tiktok_ads_offline_events`). `tiktok_ads`, `af` and
-  `google_adwords_offline_conversions` skip this, so these events reach the partner with no
-  item.
-- **Gate on `Array.isArray`, not on truthiness or `.length`.** The products field is
-  customer-controlled.
-  - `products.forEach` with no guard throws a `TypeError` instead of an `InstrumentationError`
-    (`the_trade_desk_real_time_conversions/utils.js:76`).
-  - A string `products` passes a truthy check and is iterated character by character
-    (`branch`), or reaches `.every` (`reddit/utils.js:50`).
-  - Skip non-object items, as `facebook_conversions` does. Don't filter nulls for validation and
-    then build from the unfiltered array (Braze's legacy `purchases[]` path).
-- **One product-id precedence per payload.** Start with `["product_id", "sku"]`, the same entry
-  in the item mapping and in any `content_ids`-style list derived from it. `pinterest_tag` reads
-  `product_id ?? sku ?? id` for `content_ids` but `product_id ?? sku` for `contents[].id`
-  (`procWorkflow.yaml:155,160`). `dynamic_yield` reads `sku || product_id` for one product but
-  `sku` only for the cart (`procWorkflow.yaml:134,147`). Either way, the two fields of one event
-  can name different products.
-- **Don't merge item fields into event-level data.** `branch` folds unmapped product fields into
-  the event's `custom_data`, so later products overwrite earlier ones. Route a product's extra
-  keys onto that item (Braze `metadata`, TTD `extractCustomFields(product, item, …)`).
+```ts
+const getItems = (properties: Record<string, unknown>) =>
+  (Array.isArray(properties.products) ? properties.products : [properties])
+    .filter(isPlainObject)
+    .map((product) => constructPayload(product, MAPPING.productMapping));
+```
 
-### Order value and numbers
+- If `products` is an array, its object entries are the items. Otherwise the event's
+  `properties` is the single item. That covers `Product Viewed` / `Product Added`, which put the
+  product at the top level, without a per-event branch.
+- The item mapping is one file, `data/<DEST>ProductConfig.json`, used for every event. The
+  product id is always `["product_id", "sku"]`, and any derived id list (e.g. `content_ids`)
+  is built from the mapped items, never from a second chain.
+- Unmapped product keys stay on their item, never merged into event-level data.
 
-The spec gives `total`, `revenue` and `value`, and there is **no repo convention** for
-precedence. FB CAPI uses `revenue > value > price > total`, GA4 `total > value > revenue`,
-pinterest `value > total > revenue`, and iterable `total` only. Pick the chain from what the
-partner's field means: an order total, a per-item price or a generic event value. Then write it
-as **one ordered `sourceKeys` chain in the mapping JSON**, not a `||` chain in code:
+### 3. Map order fields in the event mapping JSON
+
+| Destination field | `sourceKeys` |
+| ----------------- | ------------ |
+| Value | `properties.total` → `properties.value` → `properties.revenue` → `price × quantity` |
+| Order id | `properties.order_id` |
+| Currency | `properties.currency`, passed through with **no default** |
 
 ```json
 {
@@ -545,24 +523,14 @@ as **one ordered `sourceKeys` chain in the mapping JSON**, not a `||` chain in c
 }
 ```
 
-(`ga4/data/GA4ProductAddedConfig.json`.)
-
-- **The default key is `defaultVal`.** `handleSourceKeysOperation` reads only `defaultVal`
-  (`src/v0/util/index.js:597`). Seven `singular/data/**` configs and
-  `ga4/data/GA4ProductRemovedConfig.json:24` spell it `"default": 1`, so price × quantity
-  silently resolves to nothing whenever `quantity` is absent.
-- **A `0` value is a value.** `a || b || c` drops `revenue: 0` and `price: 0` (reddit
-  `utils.js:73,80`, `dynamic_yield`). Mapping JSON keeps them (see
-  [`constructPayload` Sets Only What It Finds](#constructpayload-sets-only-what-it-finds)).
-- **Coerce numeric strings losslessly.** Use `metadata: { type: "toNumber" }` or `Number()`
-  followed by a NaN check. `parseInt(price, 10)` truncates `19.99` to `19`
-  (`attentive_tag/util.js:108,123`). `Number.isNaN("abc")` is `false`, so it does not validate a
-  string.
-- **Currency: pass it through.** Don't add a `'USD'` default.
-  `facebook_conversions`, `facebook_pixel`, `ga4`, `kochava`, `monetate` and `linkedin_ads`
-  default to it, and that is the silent misattribution described in
-  [Monetary Values](#monetary-values--never-assume-two-decimal-places). Minor-unit conversion
-  goes through that section as well.
+- Use the same chain on every event and in every destination. Don't re-order it per partner.
+- The value lives in the mapping JSON, not in an `a || b || c` chain in code, so `0` survives
+  (see [`constructPayload` Sets Only What It Finds](#constructpayload-sets-only-what-it-finds)).
+- The operation default is spelled `defaultVal`. `handleSourceKeysOperation` ignores `default`
+  (`src/v0/util/index.js:597`), so the product resolves to nothing whenever `quantity` is absent.
+- Numbers go through `metadata: { type: "toNumber" }`, never `parseInt` (which truncates cents).
+- Conversion to minor units follows [Monetary Values](#monetary-values--never-assume-two-decimal-places).
+  A missing currency is not defaulted to `USD`.
 
 ## Category Conventions
 

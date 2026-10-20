@@ -12,6 +12,8 @@ import {
   auBulkEndpoint,
   headers,
   RouterInstrumentationErrorStatTags,
+  firstSourceJobContext,
+  secondSourceJobContext,
 } from '../common';
 
 export const data: RouterTestData[] = [
@@ -321,20 +323,26 @@ export const data: RouterTestData[] = [
         body: {
           input: [
             {
-              message: generateRecordPayload({
-                identifiers: { external_id: 'user-1' },
-                action: 'insert',
-              }),
-              metadata: { ...generateMetadata(1), sourceJobId: 'source-job-1' },
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { external_id: 'user-1' },
+                  action: 'insert',
+                }),
+                context: firstSourceJobContext,
+              },
+              metadata: { ...generateMetadata(1), sourceId: connection.sourceId },
               destination,
               connection,
             },
             {
-              message: generateRecordPayload({
-                identifiers: { external_id: 'user-2' },
-                action: 'insert',
-              }),
-              metadata: { ...generateMetadata(2), sourceJobId: 'source-job-2' },
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { external_id: 'user-2' },
+                  action: 'insert',
+                }),
+                context: secondSourceJobContext,
+              },
+              metadata: { ...generateMetadata(2), sourceId: secondConnection.sourceId },
               destination,
               connection: secondConnection,
             },
@@ -367,7 +375,7 @@ export const data: RouterTestData[] = [
                 },
                 files: {},
               },
-              metadata: [{ ...generateMetadata(1), sourceJobId: 'source-job-1' }],
+              metadata: [{ ...generateMetadata(1), sourceId: connection.sourceId }],
               batched: true,
               statusCode: 200,
               destination,
@@ -391,7 +399,7 @@ export const data: RouterTestData[] = [
                 },
                 files: {},
               },
-              metadata: [{ ...generateMetadata(2), sourceJobId: 'source-job-2' }],
+              metadata: [{ ...generateMetadata(2), sourceId: secondConnection.sourceId }],
               batched: true,
               statusCode: 200,
               destination,

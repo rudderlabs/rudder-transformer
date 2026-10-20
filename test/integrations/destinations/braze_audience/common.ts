@@ -65,6 +65,14 @@ export const secondConnection = {
   },
 };
 
+// generateRecordPayload hardcodes context.sources.job_id. Concurrent rETL syncs are told apart only
+// by their source job, so each sync's rows carry their own job ID on the message.
+const sourceJobContext = (jobId: string) => ({
+  sources: { job_id: jobId, version: 'local', job_run_id: 'jobRunId', task_run_id: 'taskRunId' },
+});
+export const firstSourceJobContext = sourceJobContext('source-job-1');
+export const secondSourceJobContext = sourceJobContext('source-job-2');
+
 export const bulkEndpoint = 'https://rest.iad-03.braze.com/users/track/bulk';
 export const euBulkEndpoint = 'https://rest.fra-01.braze.eu/users/track/bulk';
 export const auBulkEndpoint = 'https://rest.au-01.braze.com/users/track/bulk';

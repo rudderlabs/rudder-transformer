@@ -789,33 +789,28 @@ describe('extractCustomFields', () => {
 });
 
 describe('groupRouterTransformEvents', () => {
-  // Router inputs are `{ message, metadata, destination, connection }`; the source job ID is in
-  // `metadata.sourceJobId` (set by rudder-server) and `message.context.sources.job_id`.
-  const routerInput = ({ destinationId = 'dest1', sourceJobId, contextJobId, sourceId } = {}) => ({
-    message: contextJobId ? { context: { sources: { job_id: contextJobId } } } : {},
-    metadata: { jobId: 1, ...(sourceId && { sourceId }), ...(sourceJobId && { sourceJobId }) },
+  // Router inputs are `{ message, metadata, destination, connection }`; rudder-server sends the
+  // source job ID only as `message.context.sources.job_id` (router metadata has no such field).
+  const routerInput = ({ destinationId = 'dest1', jobId, sourceId } = {}) => ({
+    message: jobId ? { context: { sources: { job_id: jobId } } } : {},
+    metadata: { jobId: 1, ...(sourceId && { sourceId }) },
     destination: { ID: destinationId, hasDynamicConfig: false, Config: {} },
   });
 
   const groupingCases = [
     {
-      name: 'splits two rETL syncs on one destination by metadata.sourceJobId',
+      name: 'splits two rETL syncs on one destination by message.context.sources.job_id',
       events: [
-        routerInput({ sourceJobId: 'job1' }),
-        routerInput({ sourceJobId: 'job2' }),
-        routerInput({ sourceJobId: 'job1' }),
+        routerInput({ jobId: 'job1' }),
+        routerInput({ jobId: 'job2' }),
+        routerInput({ jobId: 'job1' }),
       ],
       expectedGroupSizes: [2, 1],
     },
     {
-      name: 'falls back to message.context.sources.job_id',
-      events: [routerInput({ contextJobId: 'job1' }), routerInput({ contextJobId: 'job2' })],
-      expectedGroupSizes: [1, 1],
-    },
-    {
-      name: 'treats metadata.sourceJobId and the context job ID as the same job',
-      events: [routerInput({ sourceJobId: 'job1' }), routerInput({ contextJobId: 'job1' })],
-      expectedGroupSizes: [2],
+      name: 'separates rows with a source job ID from rows without one',
+      events: [routerInput({ jobId: 'job1' }), routerInput(), routerInput({ jobId: 'job1' })],
+      expectedGroupSizes: [2, 1],
     },
     {
       name: 'keeps event-stream jobs from different sources in one group',
@@ -825,8 +820,8 @@ describe('groupRouterTransformEvents', () => {
     {
       name: 'splits the same source job across destinations',
       events: [
-        routerInput({ destinationId: 'dest1', sourceJobId: 'job1' }),
-        routerInput({ destinationId: 'dest2', sourceJobId: 'job1' }),
+        routerInput({ destinationId: 'dest1', jobId: 'job1' }),
+        routerInput({ destinationId: 'dest2', jobId: 'job1' }),
       ],
       expectedGroupSizes: [1, 1],
     },
@@ -882,7 +877,7 @@ describe('groupRouterTransformEvents', () => {
 
   it.each(configCases)('$name', async ({ hasDynamicConfig, configs, expectedGroupSizes }) => {
     const events = configs.map((Config) => ({
-      ...routerInput({ sourceJobId: 'job1' }),
+      ...routerInput({ jobId: 'job1' }),
       destination: { ID: 'dest1', hasDynamicConfig, Config },
     }));
 

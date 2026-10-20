@@ -2495,10 +2495,11 @@ const groupRouterTransformEvents = async (events) =>
 
       // Each rETL sync is its own source job, and its events carry that connection's config.
       // Keeping jobs apart stops one sync's rows being sent on a sibling sync's connection.
-      // Event-stream jobs have no source job ID, so they still share one group.
+      // Router inputs are { message, metadata, destination, connection }; the job ID is only
+      // on the message. Events without one (SDK event stream) still share one group.
       return [
         ev.destination?.ID || 'default',
-        ev.metadata?.sourceJobId || ev.message?.context?.sources?.job_id || 'default',
+        ev.message?.context?.sources?.job_id || 'default',
         destConfigGroupKey,
       ];
     }),

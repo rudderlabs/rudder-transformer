@@ -5,10 +5,12 @@ import {
   destination,
   destType,
   endpointPath,
+  firstSourceJobContext,
   headers,
   membershipEndpoint,
   otherListConnection,
   routerInstrumentationErrorStatTags,
+  secondSourceJobContext,
   secondSyncConnection,
 } from '../common';
 
@@ -17,10 +19,9 @@ const record = (
   action: string,
   identifiers: Record<string, unknown>,
   rowConnection = connection,
-  sourceJobId?: string,
 ) => ({
   message: generateRecordPayload({ identifiers, action }),
-  metadata: { ...generateMetadata(jobId), ...(sourceJobId && { sourceJobId }) },
+  metadata: generateMetadata(jobId),
   destination,
   connection: rowConnection,
 });
@@ -30,7 +31,6 @@ const membershipBatch = (
   operation: 'add' | 'remove',
   recordIds: string[],
   jobIds: number[],
-  sourceJobId?: string,
 ) => ({
   batchedRequest: {
     version: '1',
@@ -51,10 +51,7 @@ const membershipBatch = (
     },
     files: {},
   },
-  metadata: jobIds.map((jobId) => ({
-    ...generateMetadata(jobId),
-    ...(sourceJobId && { sourceJobId }),
-  })),
+  metadata: jobIds.map((jobId) => generateMetadata(jobId)),
   batched: true,
   statusCode: 200,
   destination,
@@ -210,8 +207,30 @@ export const data: RouterTestData[] = [
         method: 'POST',
         body: {
           input: [
-            record(1, 'insert', { hs_object_id: '101' }, connection, 'source-job-1'),
-            record(2, 'insert', { hs_object_id: '202' }, secondSyncConnection, 'source-job-2'),
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { hs_object_id: '101' },
+                  action: 'insert',
+                }),
+                context: firstSourceJobContext,
+              },
+              metadata: { ...generateMetadata(1), sourceId: connection.sourceId },
+              destination,
+              connection,
+            },
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { hs_object_id: '202' },
+                  action: 'insert',
+                }),
+                context: secondSourceJobContext,
+              },
+              metadata: { ...generateMetadata(2), sourceId: secondSyncConnection.sourceId },
+              destination,
+              connection: secondSyncConnection,
+            },
           ],
           destType,
         },
@@ -222,8 +241,14 @@ export const data: RouterTestData[] = [
         status: 200,
         body: {
           output: [
-            membershipBatch('10', 'add', ['101'], [1], 'source-job-1'),
-            membershipBatch('30', 'add', ['202'], [2], 'source-job-2'),
+            {
+              ...membershipBatch('10', 'add', ['101'], [1]),
+              metadata: [{ ...generateMetadata(1), sourceId: connection.sourceId }],
+            },
+            {
+              ...membershipBatch('30', 'add', ['202'], [2]),
+              metadata: [{ ...generateMetadata(2), sourceId: secondSyncConnection.sourceId }],
+            },
           ],
         },
       },

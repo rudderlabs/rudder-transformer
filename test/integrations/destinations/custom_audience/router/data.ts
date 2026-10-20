@@ -22,6 +22,8 @@ import {
   accountManagedApiKeyHeaders,
   authenticationDisabledDestination,
   authenticationDisabledHeaders,
+  firstSourceJobContext,
+  secondSourceJobContext,
 } from '../common';
 
 const errorStatTags = {
@@ -1019,20 +1021,26 @@ export const data: RouterTestData[] = [
         body: {
           input: [
             {
-              message: generateRecordPayload({
-                action: 'insert',
-                identifiers: { email: sha256('a@b.com') },
-              }),
-              metadata: { ...generateMetadata(1), sourceJobId: 'source-job-1' },
+              message: {
+                ...generateRecordPayload({
+                  action: 'insert',
+                  identifiers: { email: sha256('a@b.com') },
+                }),
+                context: firstSourceJobContext,
+              },
+              metadata: { ...generateMetadata(1), sourceId: connection.sourceId },
               destination,
               connection,
             },
             {
-              message: generateRecordPayload({
-                action: 'insert',
-                identifiers: { email: sha256('c@d.com') },
-              }),
-              metadata: { ...generateMetadata(2), sourceJobId: 'source-job-2' },
+              message: {
+                ...generateRecordPayload({
+                  action: 'insert',
+                  identifiers: { email: sha256('c@d.com') },
+                }),
+                context: secondSourceJobContext,
+              },
+              metadata: { ...generateMetadata(2), sourceId: secondConnection.sourceId },
               destination,
               connection: secondConnection,
             },
@@ -1067,7 +1075,7 @@ export const data: RouterTestData[] = [
                 },
                 files: {},
               },
-              metadata: [{ ...generateMetadata(1), sourceJobId: 'source-job-1' }],
+              metadata: [{ ...generateMetadata(1), sourceId: connection.sourceId }],
               batched: true,
               statusCode: 200,
               destination,
@@ -1092,7 +1100,7 @@ export const data: RouterTestData[] = [
                 },
                 files: {},
               },
-              metadata: [{ ...generateMetadata(2), sourceJobId: 'source-job-2' }],
+              metadata: [{ ...generateMetadata(2), sourceId: secondConnection.sourceId }],
               batched: true,
               statusCode: 200,
               destination,

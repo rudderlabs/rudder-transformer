@@ -13,27 +13,22 @@ import {
   destination,
   endpoint,
   endpointPath,
+  firstSourceJobContext,
   headers,
   secondConnection,
   secondEndpoint,
+  secondSourceJobContext,
 } from '../common';
 
 const input = (
   jobId: number,
   action: 'insert' | 'update' | 'delete',
   identifiers: Record<string, unknown>,
-  inputConnection: typeof connection = connection,
-  metadata: Record<string, unknown> = generateMetadata(jobId),
 ) => ({
   message: generateRecordPayload({ identifiers, action }),
-  metadata,
+  metadata: generateMetadata(jobId),
   destination,
-  connection: inputConnection,
-});
-
-const jobMetadata = (jobId: number, sourceJobId: string) => ({
-  ...generateMetadata(jobId),
-  sourceJobId,
+  connection,
 });
 
 const batchedRequest = (body: Record<string, unknown>, requestEndpoint: string = endpoint) => ({
@@ -301,20 +296,30 @@ export const data: RouterTestData[] = [
         method: 'POST',
         body: {
           input: [
-            input(
-              1,
-              'insert',
-              { EMAIL_SHA256: ALICE_EMAIL },
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { EMAIL_SHA256: ALICE_EMAIL },
+                  action: 'insert',
+                }),
+                context: firstSourceJobContext,
+              },
+              metadata: { ...generateMetadata(1), sourceId: connection.sourceId },
+              destination,
               connection,
-              jobMetadata(1, 'source-job-1'),
-            ),
-            input(
-              2,
-              'insert',
-              { EMAIL_SHA256: ALICE_EMAIL },
-              secondConnection,
-              jobMetadata(2, 'source-job-2'),
-            ),
+            },
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { EMAIL_SHA256: ALICE_EMAIL },
+                  action: 'insert',
+                }),
+                context: secondSourceJobContext,
+              },
+              metadata: { ...generateMetadata(2), sourceId: secondConnection.sourceId },
+              destination,
+              connection: secondConnection,
+            },
           ],
           destType,
         },
@@ -333,7 +338,7 @@ export const data: RouterTestData[] = [
                   user_data: [[ALICE_EMAIL_SHA256]],
                 },
               }),
-              metadata: [jobMetadata(1, 'source-job-1')],
+              metadata: [{ ...generateMetadata(1), sourceId: connection.sourceId }],
               batched: true,
               statusCode: 200,
               destination,
@@ -349,7 +354,7 @@ export const data: RouterTestData[] = [
                 },
                 secondEndpoint,
               ),
-              metadata: [jobMetadata(2, 'source-job-2')],
+              metadata: [{ ...generateMetadata(2), sourceId: secondConnection.sourceId }],
               batched: true,
               statusCode: 200,
               destination,

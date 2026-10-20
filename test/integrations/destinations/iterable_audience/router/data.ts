@@ -15,6 +15,8 @@ import {
   euUnsubscribeEndpoint,
   headers,
   RouterInstrumentationErrorStatTags,
+  firstSourceJobContext,
+  secondSourceJobContext,
 } from '../common';
 import { RouterTestData } from '../../../testTypes';
 
@@ -684,20 +686,26 @@ export const data: RouterTestData[] = [
         body: {
           input: [
             {
-              message: generateRecordPayload({
-                identifiers: { email: 'user1@example.com' },
-                action: 'insert',
-              }),
-              metadata: { ...generateMetadata(1), sourceJobId: 'source-job-1' },
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { email: 'user1@example.com' },
+                  action: 'insert',
+                }),
+                context: firstSourceJobContext,
+              },
+              metadata: { ...generateMetadata(1), sourceId: connection.sourceId },
               destination,
               connection,
             },
             {
-              message: generateRecordPayload({
-                identifiers: { email: 'user2@example.com' },
-                action: 'insert',
-              }),
-              metadata: { ...generateMetadata(2), sourceJobId: 'source-job-2' },
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { email: 'user2@example.com' },
+                  action: 'insert',
+                }),
+                context: secondSourceJobContext,
+              },
+              metadata: { ...generateMetadata(2), sourceId: secondListConnection.sourceId },
               destination,
               connection: secondListConnection,
             },
@@ -731,7 +739,7 @@ export const data: RouterTestData[] = [
                 },
                 files: {},
               },
-              metadata: [{ ...generateMetadata(1), sourceJobId: 'source-job-1' }],
+              metadata: [{ ...generateMetadata(1), sourceId: connection.sourceId }],
               batched: true,
               statusCode: 200,
               destination,
@@ -756,7 +764,7 @@ export const data: RouterTestData[] = [
                 },
                 files: {},
               },
-              metadata: [{ ...generateMetadata(2), sourceJobId: 'source-job-2' }],
+              metadata: [{ ...generateMetadata(2), sourceId: secondListConnection.sourceId }],
               batched: true,
               statusCode: 200,
               destination,

@@ -324,6 +324,59 @@ describe('MARKETO_AUDIENCE router transform', () => {
     });
   });
 
+  const rejectedCredentials = {
+    success: false,
+    response: {
+      response: {
+        status: 401,
+        data: { error: 'invalid_client', error_description: 'Bad client credentials' },
+      },
+    },
+  };
+
+  it('fails later dontBatch rows without another identity call after a refetch fails', async () => {
+    mockHttpGet.mockResolvedValueOnce(tokenNamed('token-a')).mockResolvedValue(rejectedCredentials);
+    // The lookup's 602 evicts token-a, so the first dontBatch row refetches and gets a 401.
+    mockHttpPost.mockResolvedValue({
+      success: true,
+      response: {
+        status: 200,
+        data: { success: false, errors: [{ code: '602', message: 'Access token expired' }] },
+      },
+    });
+    const dontBatch = [2, 3, 4];
+
+    const results = await run([
+      row(1, { email: 'bob@acme.io' }),
+      ...dontBatch.map((jobId) => unbatched(jobId, { id: String(200 + jobId) })),
+    ]);
+
+    expect(mockHttpGet).toHaveBeenCalledTimes(2);
+    expect(dontBatch.map((jobId) => failure(results, jobId))).toEqual(
+      dontBatch.map(() => ({
+        statusCode: 401,
+        error: 'Marketo rejected the access token request',
+      })),
+    );
+  });
+
+  it('sends the token another request cached, not its own older one', async () => {
+    mockHttpGet.mockResolvedValue(tokenNamed('token-a'));
+    // While this request looks up bob, another request replaces token-a in the cache.
+    mockHttpPost.mockImplementation(async () => {
+      authCache.set('dest-1', 'token-b');
+      return leadsResponse([{ id: 101, email: 'bob@acme.io' }]);
+    });
+
+    const results = await run([row(1, { email: 'bob@acme.io' }), unbatched(2, { id: '202' })]);
+
+    expect(mockHttpGet).toHaveBeenCalledTimes(1);
+    expect(membership(forJob(results, 2)).headers).toEqual({
+      Authorization: 'Bearer token-b',
+      'Content-Type': 'application/json',
+    });
+  });
+
   it('skips the token call when no row is deliverable', async () => {
     const results = await run([row(1, { id: 'abc' }), row(2, {})]);
 

@@ -97,10 +97,17 @@ function resultVerdicts(ctx: DeliveryContext, body: Record<string, unknown>): It
     .map(asRecord)
     .filter((entry): entry is Record<string, unknown> => entry !== null);
   const byId = new Map(entries.map((entry) => [String(entry.id), entry]));
-  if (entries.length !== result.length || byId.size !== result.length) {
+  const sentIds = sent.map((item) => String(asRecord(item)?.id));
+  // A lead ID sent twice would let one result answer two jobs. The router never sends one today;
+  // this is a second defence.
+  if (
+    entries.length !== result.length ||
+    byId.size !== result.length ||
+    new Set(sentIds).size !== sentIds.length
+  ) {
     return unmatched();
   }
-  const matched = sent.map((item) => byId.get(String(asRecord(item)?.id)));
+  const matched = sentIds.map((id) => byId.get(id));
   if (!matched.every((entry): entry is Record<string, unknown> => entry !== undefined)) {
     return unmatched();
   }

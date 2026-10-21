@@ -12,6 +12,7 @@ import {
   DESTINATION_TYPE,
   LOOKUP_ENDPOINT_PATH,
   LOOKUP_FAILED,
+  LOOKUP_SPLIT_LIMIT,
   LOOKUP_UNMATCHED,
   MAX_LOOKUP_EMAILS,
   TOO_MANY_LEADS,
@@ -34,6 +35,16 @@ export type LookupOutcome =
 
 // Marketo answers 1003 when more than 1,000 leads match the filter, and returns no partial pages.
 const TOO_MANY_RESULTS_CODE = '1003';
+
+// Lookup calls, pages included, that one lookupLeadsByEmail call (one per transformEvents call)
+// may make, sent one after another. Every chunk and every level of a 1003 split share them.
+// Splitting one email out of a 300-email chunk takes 19 when each lookup is one page: one lookup,
+// then nine halvings (300 -> 1) of two. That is under a fifth of Marketo's 100 calls per 20 s per
+// instance; without a cap, every 20th email failing makes 163 calls, and 1003 also means "invalid
+// data". Without a 1003 a chunk reads at most 4 pages (1,000 leads), so for up to 1,200 emails only
+// a split reaches the cap. Emails still unresolved when it runs out retry with a fixed reason: by
+// then the split-out and resolved rows are gone, so the retry is smaller.
+const MAX_LOOKUP_CALLS = 19;
 
 class TooManyLeadsError extends AbortedError {
   constructor() {
@@ -189,11 +200,19 @@ function collectPage(body: unknown, matches: Matches, destinationId: string): st
   return page.moreResult === undefined ? token : undefined;
 }
 
-async function matchChunk(request: LookupRequest, emails: string[]): Promise<Matches> {
+async function matchChunk(
+  request: LookupRequest,
+  emails: string[],
+  takeCall: () => boolean,
+): Promise<Matches> {
   const matches: Matches = new Map(emails.map((email) => [email, new Set<number>()]));
   const usedTokens = new Set<string>();
   let pageToken: string | undefined;
   do {
+    // A lookup cut short at the cap drops its partial matches: every email it asked for retries.
+    if (!takeCall()) {
+      throw new RetryableError(LOOKUP_SPLIT_LIMIT);
+    }
     // eslint-disable-next-line no-await-in-loop -- each page needs the previous page's token
     const body = await fetchPage(request, emails, pageToken);
     const nextToken = collectPage(body, matches, request.destinationId);
@@ -219,20 +238,33 @@ function matchOutcome(ids: Set<number> | undefined): LookupOutcome {
   return { kind: 'found', leadId: [...ids][0] };
 }
 
+// Takes one call from the budget of one lookupLeadsByEmail call; false once spent.
+function callBudget(limit: number): () => boolean {
+  let left = limit;
+  return () => {
+    if (left === 0) {
+      return false;
+    }
+    left -= 1;
+    return true;
+  };
+}
+
 // A failed chunk fails its own emails only, with the classified error. A 1003 is split instead:
 // halving the chunk until the email that matches too many leads is alone fails only that email.
 async function lookupChunk(
   request: LookupRequest,
   emails: string[],
+  takeCall: () => boolean,
 ): Promise<[string, LookupOutcome][]> {
   try {
-    const matches = await matchChunk(request, emails);
+    const matches = await matchChunk(request, emails, takeCall);
     return emails.map((email) => [email, matchOutcome(matches.get(email))]);
   } catch (error) {
     if (error instanceof TooManyLeadsError && emails.length > 1) {
       const half = Math.ceil(emails.length / 2);
-      const first = await lookupChunk(request, emails.slice(0, half));
-      const second = await lookupChunk(request, emails.slice(half));
+      const first = await lookupChunk(request, emails.slice(0, half), takeCall);
+      const second = await lookupChunk(request, emails.slice(half), takeCall);
       return [...first, ...second];
     }
     const classified = error instanceof BaseError ? error : new RetryableError(LOOKUP_FAILED);
@@ -249,11 +281,13 @@ export async function lookupLeadsByEmail(
 ): Promise<Map<string, LookupOutcome>> {
   const distinct = [...new Set(request.emails)];
   const outcomes = new Map<string, LookupOutcome>();
+  const takeCall = callBudget(MAX_LOOKUP_CALLS);
   for (let offset = 0; offset < distinct.length; offset += MAX_LOOKUP_EMAILS) {
     // eslint-disable-next-line no-await-in-loop -- one call at a time against the instance rate limit
     const chunkOutcomes = await lookupChunk(
       request,
       distinct.slice(offset, offset + MAX_LOOKUP_EMAILS),
+      takeCall,
     );
     chunkOutcomes.forEach(([email, outcome]) => outcomes.set(email, outcome));
   }

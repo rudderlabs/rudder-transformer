@@ -145,13 +145,21 @@ describe('MARKETO_AUDIENCE delivery', () => {
           { id: 101, status: 'added' },
         ]),
       },
+      {
+        name: 'the same lead sent twice',
+        ids: [101, 101],
+        response: results([
+          { id: 101, status: 'added' },
+          { id: 102, status: 'added' },
+        ]),
+      },
       { name: 'a result that is not an array', response: { success: true, result: {} } },
       { name: 'a body that is not an object', response: '<html>maintenance</html>' },
       { name: 'success:false without a code', response: { success: false, errors: [] } },
     ];
 
-    it.each(cases)('retries every job: $name', ({ response }) => {
-      expect(handled(context(200, response))).toEqual(
+    it.each(cases)('retries every job: $name', ({ response, ids }) => {
+      expect(handled(context(200, response, { ids }))).toEqual(
         perItem([retry(UNMATCHED), retry(UNMATCHED)]),
       );
     });

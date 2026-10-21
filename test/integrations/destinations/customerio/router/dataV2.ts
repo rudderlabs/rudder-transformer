@@ -2776,6 +2776,7 @@ export const dataV2 = [
               },
               metadata: { jobId: 120, userId: 'u1', workspaceId: 'ws-cio-v2', sourceId: 'src-1' },
               destination: {
+                ID: 'cio-v2-concurrent-dest',
                 Config: {
                   datacenter: 'US',
                   siteID: secret1,
@@ -2812,6 +2813,7 @@ export const dataV2 = [
               },
               metadata: { jobId: 121, userId: 'u1', workspaceId: 'ws-cio-v2', sourceId: 'src-2' },
               destination: {
+                ID: 'cio-v2-concurrent-dest',
                 Config: {
                   datacenter: 'US',
                   siteID: secret1,
@@ -2866,6 +2868,7 @@ export const dataV2 = [
               },
               metadata: [{ jobId: 120, userId: 'u1', workspaceId: 'ws-cio-v2', sourceId: 'src-1' }],
               destination: {
+                ID: 'cio-v2-concurrent-dest',
                 Config: {
                   datacenter: 'US',
                   siteID: secret1,
@@ -2907,6 +2910,7 @@ export const dataV2 = [
               },
               metadata: [{ jobId: 121, userId: 'u1', workspaceId: 'ws-cio-v2', sourceId: 'src-2' }],
               destination: {
+                ID: 'cio-v2-concurrent-dest',
                 Config: {
                   datacenter: 'US',
                   siteID: secret1,

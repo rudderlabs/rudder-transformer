@@ -853,7 +853,12 @@ const concurrentSyncMessage = (
   context: {
     mappedToDestination: true,
     externalId: [{ identifierType, id: identifierValue, type: `HS-${objectType}` }],
-    sources: { job_id: jobId, task_id: `${jobId}-task`, version: 'v1.0.0' },
+    sources: {
+      job_id: jobId,
+      job_run_id: `${jobId}-run`,
+      task_run_id: `${jobId}-task`,
+      version: 'v1.0.0',
+    },
   },
   traits,
   messageId: `msg-${identifierValue}`,

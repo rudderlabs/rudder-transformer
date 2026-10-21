@@ -1,23 +1,29 @@
 # syntax=docker/dockerfile:1.4
+# RESOLVE: node:22.23.4-bookworm-slim index digest (docker buildx imagetools inspect node:22.23.4-bookworm-slim)
+FROM node:22.23.4-bookworm-slim AS nodejs
+
 FROM ubuntu:22.04@sha256:0a9887931b0e38af2e3487ed39e29436b0535c4f3f52e57745baaf79d1898956 AS base
 ENV HUSKY 0
 
+# python3 is for node-gyp; the NodeSource nodejs package used to pull it in.
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
-  && apt-get install -y ca-certificates curl make g++ \
+  && apt-get install -y ca-certificates curl make g++ python3 \
   && apt-get install -y cpio \
-  && curl -sL https://deb.nodesource.com/setup_22.x | bash \
-  && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /var/lib/apt/lists.d/* \
   && apt-get autoremove \
   && apt-get clean \
   && apt-get autoclean
 
-# setup_22.x installs whatever 22.x NodeSource has. Node 22.23.4 is the first 22.x that rejects the compromised eMudhra
-# intermediates, so fail the build instead of shipping an older one.
-RUN dpkg --compare-versions "$(node --version | tr -d v)" ge 22.23.4 \
-  || { echo "nodejs $(node --version) is older than 22.23.4" >&2; exit 1; }
+# Node comes from the official image, the same release the main Dockerfile runs, so the version is the pinned tag
+# above and Dependabot keeps it current.
+COPY --from=nodejs /usr/local/bin/node /usr/local/bin/node
+COPY --from=nodejs /usr/local/include/node /usr/local/include/node
+COPY --from=nodejs /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+  && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
+  && ln -s ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack
 
 RUN adduser --disabled-password --gecos "" --uid 1000 node
 

@@ -13,6 +13,11 @@ RUN apt-get update \
   && apt-get clean \
   && apt-get autoclean
 
+# setup_22.x installs whatever 22.x NodeSource has. Node 22.23.4 is the first 22.x that rejects the compromised eMudhra
+# intermediates, so fail the build instead of shipping an older one.
+RUN dpkg --compare-versions "$(node --version | tr -d v)" ge 22.23.4 \
+  || { echo "nodejs $(node --version) is older than 22.23.4" >&2; exit 1; }
+
 RUN adduser --disabled-password --gecos "" --uid 1000 node
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app && mkdir -p /home/node/.npm &&  chown -R node:node /home/node/.npm

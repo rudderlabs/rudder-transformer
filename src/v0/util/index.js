@@ -2463,8 +2463,9 @@ const applyCustomMappings = async (event, mappings, workspaceId) => {
 };
 
 /**
- * This groups the events by destination ID, source ID, and optionally by destination config.
- * Note: sourceID is only used for rETL events.
+ * This groups the events by destination ID, source job ID, and optionally by destination config.
+ * The source job ID is read from `message.context.sources.job_id`, which rudder-sources stamps on
+ * every event it sends (one ID per rETL connection). Events without it share one group.
  *
  * The function checks the hasDynamicConfig flag on the destination to determine if events
  * should be grouped by destination config as well. This is important for destinations that

@@ -791,51 +791,74 @@ describe('extractCustomFields', () => {
 describe('groupRouterTransformEvents', () => {
   // Router inputs are `{ message, metadata, destination, connection }`; rudder-server sends the
   // source job ID only as `message.context.sources.job_id` (router metadata has no such field).
-  const routerInput = ({ destinationId = 'dest1', jobId, sourceId } = {}) => ({
-    message: jobId ? { context: { sources: { job_id: jobId } } } : {},
-    metadata: { jobId: 1, ...(sourceId && { sourceId }) },
-    destination: { ID: destinationId, hasDynamicConfig: false, Config: {} },
+  const routerInput = ({ id, destinationId = 'dest1', jobId, sourceId, sources } = {}) => ({
+    message: sources || jobId ? { context: { sources: sources ?? { job_id: jobId } } } : {},
+    metadata: { jobId: id, ...(sourceId && { sourceId }) },
+    destination: destinationId ? { ID: destinationId, hasDynamicConfig: false, Config: {} } : {},
   });
 
   const groupingCases = [
     {
       name: 'splits two rETL syncs on one destination by message.context.sources.job_id',
       events: [
-        routerInput({ jobId: 'job1' }),
-        routerInput({ jobId: 'job2' }),
-        routerInput({ jobId: 'job1' }),
+        routerInput({ id: 1, jobId: 'job1' }),
+        routerInput({ id: 2, jobId: 'job2' }),
+        routerInput({ id: 3, jobId: 'job1' }),
       ],
-      expectedGroupSizes: [2, 1],
+      expectedGroups: [[1, 3], [2]],
     },
     {
       name: 'separates rows with a source job ID from rows without one',
-      events: [routerInput({ jobId: 'job1' }), routerInput(), routerInput({ jobId: 'job1' })],
-      expectedGroupSizes: [2, 1],
+      events: [
+        routerInput({ id: 1, jobId: 'job1' }),
+        routerInput({ id: 2 }),
+        routerInput({ id: 3, jobId: 'job1' }),
+      ],
+      expectedGroups: [[1, 3], [2]],
+    },
+    {
+      name: 'groups rows whose sources context has no job_id with rows that have no context',
+      events: [
+        routerInput({ id: 1, sources: { job_run_id: 'run1' } }),
+        routerInput({ id: 2 }),
+        routerInput({ id: 3, jobId: 'job1' }),
+      ],
+      expectedGroups: [[1, 2], [3]],
     },
     {
       name: 'keeps event-stream jobs from different sources in one group',
-      events: [routerInput({ sourceId: 'src1' }), routerInput({ sourceId: 'src2' })],
-      expectedGroupSizes: [2],
+      events: [routerInput({ id: 1, sourceId: 'src1' }), routerInput({ id: 2, sourceId: 'src2' })],
+      expectedGroups: [[1, 2]],
     },
     {
       name: 'splits the same source job across destinations',
       events: [
-        routerInput({ destinationId: 'dest1', jobId: 'job1' }),
-        routerInput({ destinationId: 'dest2', jobId: 'job1' }),
+        routerInput({ id: 1, destinationId: 'dest1', jobId: 'job1' }),
+        routerInput({ id: 2, destinationId: 'dest2', jobId: 'job1' }),
       ],
-      expectedGroupSizes: [1, 1],
+      expectedGroups: [[1], [2]],
     },
     {
-      name: 'groups events with no destination or source job under default keys',
-      events: [{}, {}, { destination: { ID: 'dest1' } }],
-      expectedGroupSizes: [2, 1],
+      name: 'splits by source job when the destination ID is missing',
+      events: [
+        routerInput({ id: 1, destinationId: null, jobId: 'job1' }),
+        routerInput({ id: 2, destinationId: null, jobId: 'job2' }),
+        routerInput({ id: 3, destinationId: null }),
+      ],
+      expectedGroups: [[1], [2], [3]],
     },
   ];
 
-  it.each(groupingCases)('$name', async ({ events, expectedGroupSizes }) => {
+  it.each(groupingCases)('$name', async ({ events, expectedGroups }) => {
     const result = await groupRouterTransformEvents(events);
 
-    expect(result.map((group) => group.length)).toEqual(expectedGroupSizes);
+    expect(result.map((group) => group.map((ev) => ev.metadata.jobId))).toEqual(expectedGroups);
+  });
+
+  it('should group events with no message, metadata or destination under default keys', async () => {
+    const result = await groupRouterTransformEvents([{}, {}, { destination: { ID: 'dest1' } }]);
+
+    expect(result.map((group) => group.length)).toEqual([2, 1]);
   });
 
   it('should return an empty array when there are no events', async () => {

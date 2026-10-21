@@ -821,3 +821,152 @@ export const retlRecordIdData: Record<string, unknown>[] = [
     ],
   ),
 ];
+
+/**
+ * Concurrent rETL syncs on one destination (ACT2-1257).
+ *
+ * rudder-server sends every rETL job of a destination in one /routerTransform call, and the
+ * source job ID reaches the transformer only as `message.context.sources.job_id`. hs reads the
+ * object type and identifier type off the message's externalId (`HS-<objectType>`), and the rETL
+ * router takes both from the first row of its group. If two syncs shared a group, the companies
+ * row would be tagged and batched with the contacts row and sent to the contacts upsert endpoint.
+ */
+const concurrentSyncsDestination = {
+  ID: 'hs-retl-concurrent-syncs-dest',
+  Config: {
+    authorizationType: 'newPrivateAppApi',
+    accessToken: secret1,
+    apiVersion: 'newApi',
+    lookupField: 'email',
+  },
+};
+
+const concurrentSyncMessage = (
+  jobId: string,
+  objectType: string,
+  identifierType: string,
+  identifierValue: string,
+  traits: Record<string, unknown>,
+) => ({
+  type: 'identify',
+  channel: 'sources',
+  context: {
+    mappedToDestination: true,
+    externalId: [{ identifierType, id: identifierValue, type: `HS-${objectType}` }],
+    sources: { job_id: jobId, task_id: `${jobId}-task`, version: 'v1.0.0' },
+  },
+  traits,
+  messageId: `msg-${identifierValue}`,
+  originalTimestamp: '2024-01-15T10:00:00.000Z',
+  sentAt: '2024-01-15T10:00:00.000Z',
+  integrations: { All: true },
+});
+
+const contactsSyncMetadata = { jobId: 7001, userId: 'u1', sourceId: 'hs-retl-contacts-source' };
+const companiesSyncMetadata = { jobId: 7002, userId: 'u1', sourceId: 'hs-retl-companies-source' };
+
+const batchUpsert = (
+  objectType: string,
+  inputs: Record<string, unknown>[],
+  metadata: Record<string, unknown>[],
+) => ({
+  batchedRequest: {
+    version: '1',
+    type: 'REST',
+    method: 'POST',
+    endpoint: `https://api.hubapi.com/crm/v3/objects/${objectType}/batch/upsert`,
+    endpointPath: `/crm/v3/objects/${objectType}/batch/upsert`,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authHeader1,
+    },
+    params: {},
+    body: {
+      JSON: { inputs },
+      JSON_ARRAY: {},
+      XML: {},
+      FORM: {},
+    },
+    files: {},
+  },
+  metadata,
+  batched: true,
+  statusCode: 200,
+  destination: concurrentSyncsDestination,
+});
+
+export const retlConcurrentSyncsData: Record<string, unknown>[] = [
+  {
+    name: 'hs',
+    id: 'hs-retl-router-concurrent-syncs',
+    description:
+      'rETL (v3): concurrent contacts and companies syncs on one destination each upsert their own object (guards concurrent syncs reaching the wrong object, ACT2-1257)',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: concurrentSyncsDestination,
+              message: concurrentSyncMessage(
+                'source-job-1',
+                'contacts',
+                'email',
+                'alice@example.com',
+                {
+                  firstname: 'Alice',
+                },
+              ),
+              metadata: contactsSyncMetadata,
+            },
+            {
+              destination: concurrentSyncsDestination,
+              message: concurrentSyncMessage('source-job-2', 'companies', 'company_id', 'acme-1', {
+                name: 'Acme',
+              }),
+              metadata: companiesSyncMetadata,
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            batchUpsert(
+              'contacts',
+              [
+                {
+                  id: 'alice@example.com',
+                  idProperty: 'email',
+                  properties: { firstname: 'Alice' },
+                  objectWriteTraceId: '7001',
+                },
+              ],
+              [contactsSyncMetadata],
+            ),
+            batchUpsert(
+              'companies',
+              [
+                {
+                  id: 'acme-1',
+                  idProperty: 'company_id',
+                  properties: { name: 'Acme' },
+                  objectWriteTraceId: '7002',
+                },
+              ],
+              [companiesSyncMetadata],
+            ),
+          ],
+        },
+      },
+    },
+    envOverrides: {},
+  },
+];

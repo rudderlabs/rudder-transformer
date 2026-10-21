@@ -279,7 +279,7 @@ export const data: RouterTestData[] = [
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
-            // Error Case 3: Missing identifiers
+            // Error Case 2: Missing identifiers
             // Event without identifiers should fail validation
             {
               metadata: [generateMetadata(10)],
@@ -289,7 +289,7 @@ export const data: RouterTestData[] = [
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
-            // Error Case 4: Multiple identifiers
+            // Error Case 3: Multiple identifiers
             // Event with multiple identifiers should fail validation (only one allowed)
             {
               metadata: [generateMetadata(11)],
@@ -299,7 +299,7 @@ export const data: RouterTestData[] = [
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
-            // Error Case 2: Invalid message type
+            // Error Case 4: Invalid message type
             // Event with type 'identify' instead of 'record' should fail validation.
             // It carries no source job id, so it is grouped (and returned) after the
             // 'randomJobId' rows from generateRecordPayload.

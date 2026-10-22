@@ -2463,8 +2463,9 @@ const applyCustomMappings = async (event, mappings, workspaceId) => {
 };
 
 /**
- * This groups the events by destination ID, source ID, and optionally by destination config.
- * Note: sourceID is only used for rETL events.
+ * This groups the events by destination ID, source job ID, and optionally by destination config.
+ * The source job ID is read from `message.context.sources.job_id`, which rudder-sources stamps on
+ * every event it sends (one ID per rETL connection). Events without it share one group.
  *
  * The function checks the hasDynamicConfig flag on the destination to determine if events
  * should be grouped by destination config as well. This is important for destinations that
@@ -2493,9 +2494,13 @@ const groupRouterTransformEvents = async (events) =>
         destConfigGroupKey = stableStringify(ev.destination.Config);
       }
 
+      // Each rETL sync is its own source job, and its events carry that connection's config.
+      // Keeping jobs apart stops one sync's rows being sent on a sibling sync's connection.
+      // Router inputs are { message, metadata, destination, connection }; the job ID is only
+      // on the message. Events without one (SDK event stream) still share one group.
       return [
         ev.destination?.ID || 'default',
-        ev.context?.sources?.job_id || 'default',
+        ev.message?.context?.sources?.job_id || 'default',
         destConfigGroupKey,
       ];
     }),

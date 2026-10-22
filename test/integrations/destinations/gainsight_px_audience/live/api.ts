@@ -34,9 +34,18 @@ const headers = (ctx: RunContext) => ({
   Connection: 'close' as const,
 });
 
-/** GET /users/{id} lags writes by ~6–12 s; callers poll. */
-export const fetchMembership = async (ctx: RunContext): Promise<unknown> => {
-  const attr = customAttributeNameFromSecret(ctx.liveSecret);
+/**
+ * Sandbox configuration, not run data: custom user attributes created once in PX admin (the API
+ * cannot create them). Prerequisite in gainsight-px-audience-tests.md § Trait mappings.
+ */
+export const TRAIT_ATTRIBUTES = {
+  string: 'rs_gpx_string',
+  number: 'rs_gpx_number',
+  date: 'rs_gpx_date',
+} as const;
+
+/** GET /users/{id} lags writes by ~6–25 s; callers poll. */
+export const fetchCustomAttributes = async (ctx: RunContext): Promise<Record<string, unknown>> => {
   const res = await axios.get(
     `${baseUrl(ctx)}/users/${encodeURIComponent(existingIdentifyId(ctx))}`,
     {
@@ -47,20 +56,26 @@ export const fetchMembership = async (ctx: RunContext): Promise<unknown> => {
     },
   );
   if (res.status !== 200) throw new Error(`Gainsight PX GET user failed: status=${res.status}`);
-  return (res.data?.customAttributes ?? {})[attr];
+  return (res.data?.customAttributes ?? {}) as Record<string, unknown>;
 };
 
-/** Precondition/cleanup: set the attribute directly through the same endpoint the destination uses. */
-export const setMembership = async (ctx: RunContext, value: boolean): Promise<void> => {
+export const fetchMembership = async (ctx: RunContext): Promise<unknown> =>
+  (await fetchCustomAttributes(ctx))[customAttributeNameFromSecret(ctx.liveSecret)];
+
+/** Precondition/cleanup: write attributes directly through the endpoint the destination uses. */
+export const setCustomAttributes = async (
+  ctx: RunContext,
+  customAttributes: Record<string, unknown>,
+): Promise<void> => {
   const res = await axios.put(
     `${baseUrl(ctx)}/users/update`,
-    {
-      identifyId: existingIdentifyId(ctx),
-      customAttributes: { [customAttributeNameFromSecret(ctx.liveSecret)]: value },
-    },
+    { identifyId: existingIdentifyId(ctx), customAttributes },
     { headers: headers(ctx), httpsAgent: agent, timeout: 15000, validateStatus: () => true },
   );
   if (res.status < 200 || res.status >= 300) {
-    throw new Error(`Gainsight PX setMembership(${value}) failed: status=${res.status}`);
+    throw new Error(`Gainsight PX setCustomAttributes failed: status=${res.status}`);
   }
 };
+
+export const setMembership = (ctx: RunContext, value: boolean): Promise<void> =>
+  setCustomAttributes(ctx, { [customAttributeNameFromSecret(ctx.liveSecret)]: value });

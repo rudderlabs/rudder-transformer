@@ -1,8 +1,10 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
+import logger from '../../../logger';
 import {
   DestinationIntegration,
   ChunkBatchStrategy,
   type TransformedEvent,
+  type TransformResult,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import {
@@ -13,6 +15,7 @@ import {
   usersUpdateEndpoint,
 } from './config';
 import { gainsightPxAudienceDelivery } from './delivery';
+import { collectTraits, type LeftOutReason, type TraitValue } from './traits';
 import {
   GainsightPxAudienceRouterRequestSchema,
   type GainsightPxAudiencePayload,
@@ -20,11 +23,37 @@ import {
 } from './types';
 import { normalizeIdentifyId } from './utils';
 
+type LeftOutCount = { attribute: string; reason: LeftOutReason; count: number };
+
+const LEFT_OUT_MESSAGE = 'Gainsight PX Audience: trait left out of the write';
+
 class GainsightPxAudienceIntegration extends DestinationIntegration<
   GainsightPxAudiencePayload,
   typeof GainsightPxAudienceRouterRequestSchema
 > {
   static readonly delivery = gainsightPxAudienceDelivery;
+
+  /** Traits left out during the current transformEvents call, one entry per (attribute, reason). */
+  private leftOutTraits = new Map<string, LeftOutCount>();
+
+  /**
+   * No lookup and no I/O: this override only brackets the call so the left-out traits are counted
+   * across every row and logged once per (attribute, reason) (trait-mappings D25).
+   * The counter is per transformEvents pass: the framework runs one pass for the batchable rows
+   * and one per row the router marks `dontBatch` (retries), so those log separately.
+   */
+  async transformEvents(
+    inputs: GainsightPxAudienceRouterRequest[],
+    reqMetadata?: NonNullable<unknown>,
+  ): Promise<TransformResult<GainsightPxAudiencePayload>> {
+    this.leftOutTraits = new Map();
+    try {
+      // Awaited so `finally` runs after every row was transformed.
+      return await super.transformEvents(inputs, reqMetadata);
+    } finally {
+      this.logLeftOutTraits();
+    }
+  }
 
   transformEvent(
     input: GainsightPxAudienceRouterRequest,
@@ -37,15 +66,16 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
     }
 
     const { message, destination } = input;
+    // Before the traits: a row that fails here must not be counted as a left-out trait.
     const identifyId = normalizeIdentifyId(message.identifiers?.identifyId);
+    const flag = connectionConfig.customAttributeName;
+    const customAttributes = ACTION_ATTR_VALUE[message.action]
+      ? this.memberAttributes(flag, connectionConfig.fieldMappings, message.fields)
+      : // A leave writes only the flag; traits keep their last PX values (trait-mappings D23).
+        { [flag]: false };
 
     return {
-      body: {
-        identifyId,
-        customAttributes: {
-          [connectionConfig.customAttributeName]: ACTION_ATTR_VALUE[message.action],
-        },
-      },
+      body: { identifyId, customAttributes },
       endpoint: usersUpdateEndpoint(destination.Config.dataCenter),
       endpointPath: ENDPOINT_PATH,
       method: 'PUT',
@@ -68,6 +98,35 @@ class GainsightPxAudienceIntegration extends DestinationIntegration<
 
   getInputSchema() {
     return GainsightPxAudienceRouterRequestSchema;
+  }
+
+  /** `{ [flag]: true, ...traits }`; counts what was left out (trait-mappings §5.2). */
+  private memberAttributes(
+    flag: string,
+    mappings: unknown,
+    fields: unknown,
+  ): Record<string, TraitValue> {
+    const { traits, leftOut } = collectTraits(mappings, fields, flag);
+    leftOut.forEach(({ attribute, reason }) => {
+      const key = `${attribute}\u0000${reason}`;
+      const entry = this.leftOutTraits.get(key);
+      if (entry) entry.count += 1;
+      else this.leftOutTraits.set(key, { attribute, reason, count: 1 });
+    });
+    return { [flag]: true, ...traits };
+  }
+
+  private logLeftOutTraits(): void {
+    // The attribute API name and a count only: never a value, never an identifyId (D25).
+    this.leftOutTraits.forEach(({ attribute, reason, count }) => {
+      logger.warn(LEFT_OUT_MESSAGE, {
+        destType: 'gainsight_px_audience',
+        attribute,
+        reason,
+        count,
+      });
+    });
+    this.leftOutTraits.clear();
   }
 }
 

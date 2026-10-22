@@ -2,6 +2,7 @@ import { Integration } from '../routerTransform';
 import { processDestinationIntegration } from '../../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
+import logger from '../../../../logger';
 
 type RecordAction = 'insert' | 'update' | 'delete';
 
@@ -25,7 +26,11 @@ const buildDestination = (config: Record<string, unknown> = {}) => ({
   Transformations: [],
 });
 
-const buildConnection = (customAttributeName = 'rs_gpx_e2e', sourceId = 'src-1') => ({
+const buildConnection = (
+  customAttributeName = 'rs_gpx_e2e',
+  sourceId = 'src-1',
+  fieldMappings?: unknown,
+) => ({
   sourceId,
   destinationId: 'dest-1',
   enabled: true,
@@ -35,6 +40,7 @@ const buildConnection = (customAttributeName = 'rs_gpx_e2e', sourceId = 'src-1')
       syncMode: 'mirror',
       schemaVersion: '1.1',
       identifierMappings: [{ from: 'user_id', to: 'identifyId' }],
+      ...(fieldMappings !== undefined ? { fieldMappings } : {}),
     },
   },
 });
@@ -57,12 +63,14 @@ const buildInput = (
   identifiers: Record<string, unknown>,
   destination = buildDestination(),
   connection: ReturnType<typeof buildConnection> | undefined = buildConnection(),
+  fields: Record<string, unknown> = {},
 ): RouterTransformationRequestData =>
   ({
     message: {
       type: 'record',
       action,
       identifiers,
+      fields,
       channel: 'sources',
       context: {},
       recordId: String(jobId),
@@ -258,5 +266,277 @@ describe('GainsightPxAudienceIntegration via processDestinationIntegration', () 
     const results = await processDestinationIntegration([input], Integration, {});
     expect(results[0].statusCode).toBe(400);
     expect(results[0].error).toContain('Connection config is required');
+  });
+});
+
+describe('GainsightPxAudienceIntegration — trait mappings (v1.1)', () => {
+  const TRAITS = [
+    { from: 'role', to: 'rs_gpx_string', type: 'STRING' },
+    { from: 'events', to: 'rs_gpx_number', type: 'NUMBER' },
+    { from: 'last_visit', to: 'rs_gpx_date', type: 'DATE_TIME' },
+  ];
+  const traitConnection = buildConnection('rs_gpx_e2e', 'src-1', TRAITS);
+  const member = (
+    jobId: number,
+    action: RecordAction,
+    identifyId: string,
+    fields: Record<string, unknown>,
+    connection = traitConnection,
+  ) => buildInput(jobId, action, { identifyId }, buildDestination(), connection, fields);
+
+  let warnSpy: jest.SpyInstance;
+  beforeEach(() => {
+    warnSpy = jest.spyOn(logger, 'warn').mockImplementation(() => undefined);
+  });
+  afterEach(() => warnSpy.mockRestore());
+
+  it('writes the flag and the converted traits in one PUT', async () => {
+    const results = await processDestinationIntegration(
+      [
+        member(1, 'insert', 'u-1', {
+          rs_gpx_string: 'admin',
+          rs_gpx_number: '42',
+          rs_gpx_date: '2026-10-20T10:00:00Z',
+        }),
+      ],
+      Integration,
+      {},
+    );
+    const body = bodyOf(successes(results)[0]);
+    expect(body).toEqual({
+      identifyId: 'u-1',
+      customAttributes: {
+        rs_gpx_e2e: true,
+        rs_gpx_string: 'admin',
+        rs_gpx_number: 42,
+        rs_gpx_date: 1792490400000,
+      },
+    });
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('writes the traits on update as on insert', async () => {
+    const results = await processDestinationIntegration(
+      [member(1, 'update', 'u-1', { rs_gpx_string: 'viewer' })],
+      Integration,
+      {},
+    );
+    expect(bodyOf(successes(results)[0]).customAttributes).toMatchObject({
+      rs_gpx_e2e: true,
+      rs_gpx_string: 'viewer',
+    });
+  });
+
+  it('writes only { flag: false } on delete, even with trait values present (D23)', async () => {
+    const results = await processDestinationIntegration(
+      [member(1, 'delete', 'u-1', { rs_gpx_string: 'admin', rs_gpx_number: 'abc' })],
+      Integration,
+      {},
+    );
+    expect(bodyOf(successes(results)[0])).toEqual({
+      identifyId: 'u-1',
+      customAttributes: { rs_gpx_e2e: false },
+    });
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('leaves a bad trait out, keeps the flag and the other traits, and logs one line per (attribute, reason)', async () => {
+    const results = await processDestinationIntegration(
+      [
+        member(1, 'insert', 'secret-user-1', { rs_gpx_string: 'admin', rs_gpx_number: 'abc' }),
+        member(2, 'insert', 'secret-user-2', { rs_gpx_string: null, rs_gpx_number: 'xyz' }),
+      ],
+      Integration,
+      {},
+    );
+
+    expect(successes(results).map(bodyOf)).toEqual([
+      {
+        identifyId: 'secret-user-1',
+        customAttributes: { rs_gpx_e2e: true, rs_gpx_string: 'admin' },
+      },
+      { identifyId: 'secret-user-2', customAttributes: { rs_gpx_e2e: true } },
+    ]);
+    expect(warnSpy.mock.calls).toEqual([
+      [
+        'Gainsight PX Audience: trait left out of the write',
+        {
+          destType: 'gainsight_px_audience',
+          attribute: 'rs_gpx_number',
+          reason: 'unconvertible',
+          count: 2,
+        },
+      ],
+    ]);
+    const logged = JSON.stringify(warnSpy.mock.calls);
+    ['abc', 'xyz', 'secret-user-1', 'secret-user-2'].forEach((text) =>
+      expect(logged).not.toContain(text),
+    );
+  });
+
+  it('counts per transformEvents pass: a dontBatch row logs on its own', async () => {
+    const batchable = member(1, 'insert', 'secret-user-1', { rs_gpx_number: 'abc' });
+    const retried = member(2, 'insert', 'secret-user-2', { rs_gpx_number: 'xyz' });
+    (retried.metadata as any).dontBatch = true;
+
+    const results = await processDestinationIntegration([batchable, retried], Integration, {});
+
+    expect(successes(results)).toHaveLength(2);
+    const line = [
+      'Gainsight PX Audience: trait left out of the write',
+      {
+        destType: 'gainsight_px_audience',
+        attribute: 'rs_gpx_number',
+        reason: 'unconvertible',
+        count: 1,
+      },
+    ];
+    const forPair = warnSpy.mock.calls.filter(
+      ([, meta]) => meta.attribute === 'rs_gpx_number' && meta.reason === 'unconvertible',
+    );
+    expect(forPair).toEqual([line, line]);
+    const logged = JSON.stringify(warnSpy.mock.calls);
+    ['abc', 'xyz', 'secret-user-1', 'secret-user-2'].forEach((text) =>
+      expect(logged).not.toContain(text),
+    );
+  });
+
+  it('logs unknown_type for a row saved without type', async () => {
+    const results = await processDestinationIntegration(
+      [
+        member(
+          1,
+          'insert',
+          'u-1',
+          { rs_gpx_string: 'admin' },
+          buildConnection('rs_gpx_e2e', 'src-1', [{ from: 'role', to: 'rs_gpx_string' }]),
+        ),
+      ],
+      Integration,
+      {},
+    );
+    expect(bodyOf(successes(results)[0]).customAttributes).toEqual({ rs_gpx_e2e: true });
+    expect(warnSpy).toHaveBeenCalledWith('Gainsight PX Audience: trait left out of the write', {
+      destType: 'gainsight_px_audience',
+      attribute: 'rs_gpx_string',
+      reason: 'unknown_type',
+      count: 1,
+    });
+  });
+
+  describe('a malformed trait config never blocks the flag (D18)', () => {
+    const flagOnly = async (
+      fieldMappings: unknown,
+      fields: unknown = { rs_gpx_string: 'x' },
+    ): Promise<any> => {
+      const results = await processDestinationIntegration(
+        [
+          buildInput(
+            1,
+            'insert',
+            { identifyId: 'u-1' },
+            buildDestination(),
+            buildConnection('rs_gpx_e2e', 'src-1', fieldMappings),
+            fields as Record<string, unknown>,
+          ),
+        ],
+        Integration,
+        {},
+      );
+      expect(results).toHaveLength(1);
+      expect(results[0].statusCode).toBe(200);
+      return bodyOf(results[0]);
+    };
+
+    it('writes the flag and logs unknown_type for a stored type: null', async () => {
+      const body = await flagOnly([{ from: 'role', to: 'rs_gpx_string', type: null }]);
+      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true });
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Gainsight PX Audience: trait left out of the write',
+        expect.objectContaining({ attribute: 'rs_gpx_string', reason: 'unknown_type' }),
+      );
+    });
+
+    it('drops non-object rows and rows with a non-string from/to, keeping the valid ones', async () => {
+      const body = await flagOnly([
+        'oops',
+        null,
+        42,
+        { from: 1, to: 'rs_gpx_number', type: 'NUMBER' },
+        { from: 'a', to: null, type: 'STRING' },
+        { from: 'role', to: 'rs_gpx_string', type: 'STRING' },
+      ]);
+      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true, rs_gpx_string: 'x' });
+    });
+
+    it('has no row cap: 60 valid rows are all written', async () => {
+      const rows = Array.from({ length: 60 }, (_, i) => ({
+        from: `c${i}`,
+        to: `t${i}`,
+        type: 'STRING',
+      }));
+      const values = Object.fromEntries(rows.map((r) => [r.to, 'v']));
+      const body = await flagOnly(rows, values);
+      expect(Object.keys(body.customAttributes)).toHaveLength(61);
+    });
+
+    it.each([
+      ['a string', 'oops'],
+      ['an array', ['x']],
+      ['a number', 7],
+    ])('treats fields as %s as no field values, leaving traits out', async (_label, fields) => {
+      const body = await flagOnly([{ from: 'role', to: 'rs_gpx_string', type: 'STRING' }], fields);
+      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true });
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('treats a non-array fieldMappings as none', async () => {
+      const body = await flagOnly({ from: 'role', to: 'rs_gpx_string', type: 'STRING' });
+      expect(body.customAttributes).toEqual({ rs_gpx_e2e: true });
+    });
+  });
+
+  it('never lets a trait overwrite the flag (API-saved config)', async () => {
+    const results = await processDestinationIntegration(
+      [
+        member(
+          1,
+          'insert',
+          'u-1',
+          { rs_gpx_e2e: false },
+          buildConnection('rs_gpx_e2e', 'src-1', [
+            { from: 'x', to: 'rs_gpx_e2e', type: 'BOOLEAN' },
+          ]),
+        ),
+      ],
+      Integration,
+      {},
+    );
+    expect(bodyOf(successes(results)[0]).customAttributes).toEqual({ rs_gpx_e2e: true });
+  });
+
+  it('does not count traits of a row that fails on its identifyId', async () => {
+    await processDestinationIntegration(
+      [buildInput(1, 'insert', {}, buildDestination(), traitConnection, { rs_gpx_number: 'abc' })],
+      Integration,
+      {},
+    );
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('keeps v1 behaviour for a connection without fieldMappings, and tolerates null ones', async () => {
+    const results = await processDestinationIntegration(
+      [
+        member(1, 'insert', 'u-1', { rs_gpx_string: 'x' }, buildConnection()),
+        member(2, 'insert', 'u-2', {}, buildConnection('rs_gpx_e2e', 'src-1', null)),
+      ],
+      Integration,
+      {},
+    );
+    expect(successes(results).map((r) => bodyOf(r).customAttributes)).toEqual([
+      { rs_gpx_e2e: true },
+      { rs_gpx_e2e: true },
+    ]);
+    expect(warnSpy).not.toHaveBeenCalled();
   });
 });

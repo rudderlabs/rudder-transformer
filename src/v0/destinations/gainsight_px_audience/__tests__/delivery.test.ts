@@ -1,4 +1,5 @@
 import { Integration } from '../routerTransform';
+import { isLeave } from '../delivery';
 import {
   firstJobIdentity,
   handleDeliveryResponse,
@@ -38,6 +39,21 @@ const ctxFor = (status: number, response: unknown, value: unknown = true): Deliv
     } as unknown as ProxyV1Request,
     destinationConfig: { apiKey: '  live-key  ', dataCenter: 'US' },
     ...firstJobIdentity(jobs),
+  };
+};
+
+const ctxWithAttributes = (
+  status: number,
+  response: unknown,
+  customAttributes: unknown,
+): DeliveryContext => {
+  const base = ctxFor(status, response);
+  return {
+    ...base,
+    request: {
+      ...base.request,
+      body: { JSON: { identifyId: 'secret-user-id', customAttributes } },
+    } as unknown as ProxyV1Request,
   };
 };
 
@@ -204,5 +220,69 @@ describe('gainsight_px_audience delivery — through the framework', () => {
 describe('gainsight_px_audience delivery — no send-time request rewrite', () => {
   it('declares no prepareRequest: the transform already set the API key header', () => {
     expect(resolveDeliverySpec(Integration).prepareRequest).toBeUndefined();
+  });
+});
+
+describe('gainsight_px_audience delivery — leave detection (trait-mappings D24)', () => {
+  it.each<[string, unknown, boolean]>([
+    ['exactly one key, false', { rs_gpx_e2e: false }, true],
+    ['one key, true', { rs_gpx_e2e: true }, false],
+    ['flag true plus traits', { rs_gpx_e2e: true, rs_gpx_string: 'a' }, false],
+    ['false plus another key', { rs_gpx_e2e: false, rs_gpx_string: 'a' }, false],
+    ['one key, the string "false"', { rs_gpx_e2e: 'false' }, false],
+    ['one key, 0', { rs_gpx_e2e: 0 }, false],
+    ['no keys', {}, false],
+    ['null', null, false],
+    ['an array', [false], false],
+  ])('%s → isLeave %p', (_name, customAttributes, expected) => {
+    expect(isLeave(ctxWithAttributes(404, {}, customAttributes))).toBe(expected);
+  });
+
+  it('404 on a member write with traits aborts with the PX message', () => {
+    expect(
+      deliver(
+        ctxWithAttributes(
+          404,
+          { message: 'User not found' },
+          { rs_gpx_e2e: true, rs_gpx_number: 42 },
+        ),
+      ),
+    ).toEqual({
+      status: 404,
+      codes: [404],
+      message: `[${DEST}] User not found`,
+      errorType: 'aborted',
+    });
+  });
+
+  it('404 on a leave succeeds', () => {
+    expect(
+      deliver(ctxWithAttributes(404, { message: 'User not found' }, { rs_gpx_e2e: false })),
+    ).toEqual({
+      status: 404,
+      codes: [200],
+      message: `[${DEST}] Request processed successfully`,
+    });
+  });
+
+  it('a type-mismatch 400 on a trait aborts with the PX message naming the attribute', () => {
+    const body = {
+      externalapierror: {
+        status: 'BAD_REQUEST',
+        subErrors: [
+          {
+            message: 'User custom attribute rs_gpx_number value abc does not match the type NUMBER',
+            rejectedValue: { rs_gpx_e2e: true, rs_gpx_number: 'abc' },
+          },
+        ],
+      },
+    };
+    const { message } = deliver(
+      ctxWithAttributes(400, body, { rs_gpx_e2e: true, rs_gpx_number: 'abc' }),
+    );
+    expect(message).toBe(
+      `[${DEST}] User custom attribute rs_gpx_number value abc does not match the type NUMBER`,
+    );
+    expect(message).not.toContain('secret-user-id');
   });
 });

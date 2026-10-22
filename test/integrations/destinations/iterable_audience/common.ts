@@ -36,6 +36,18 @@ const connection: Connection = {
   },
 };
 
+// A second rETL sync on the same destination, targeting a different list.
+const secondListConnection: Connection = {
+  ...connection,
+  sourceId: 'dummy-source-id-2',
+  config: {
+    destination: {
+      audienceId: '67890',
+      identifierMappings: [{ from: 'email', to: 'email' }],
+    },
+  },
+};
+
 const userIdDestination: Destination = {
   ...destination,
   Config: {
@@ -118,11 +130,22 @@ const RouterConfigurationErrorStatTags = {
   errorType: 'configuration',
 };
 
+// generateRecordPayload hardcodes context.sources.job_id. Concurrent rETL syncs are told apart only
+// by their source job, so each sync's rows carry their own job ID on the message.
+const sourceJobContext = (jobId: string) => ({
+  sources: { job_id: jobId, version: 'local', job_run_id: 'jobRunId', task_run_id: 'taskRunId' },
+});
+const firstSourceJobContext = sourceJobContext('source-job-1');
+const secondSourceJobContext = sourceJobContext('source-job-2');
+
 export {
+  firstSourceJobContext,
+  secondSourceJobContext,
   destType,
   destTypeInUpperCase,
   destination,
   connection,
+  secondListConnection,
   userIdDestination,
   userIdConnection,
   hybridDestination,

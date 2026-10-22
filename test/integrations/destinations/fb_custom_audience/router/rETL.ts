@@ -3,7 +3,7 @@ import { VDM_V2_SCHEMA_VERSION } from '../../../../../src/v0/util/constant';
 import { generateMetadata } from '../../../testUtils';
 import { secret1, secret2 } from '../maskedSecrets';
 
-const destinationV2: Destination = {
+export const destinationV2: Destination = {
   Config: {
     accessToken: secret1,
     disableFormat: false,
@@ -28,7 +28,7 @@ const destinationV2: Destination = {
   IsProcessorEnabled: true,
 };
 
-const connection: Connection = {
+export const connection: Connection = {
   sourceId: '2MUWghI7u85n91dd1qzGyswpZan',
   destinationId: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
   enabled: true,
@@ -44,6 +44,31 @@ const connection: Connection = {
     },
   },
 };
+
+// A second rETL sync on the same destination: its own source and its own audience.
+export const secondConnection: Connection = {
+  ...connection,
+  sourceId: '2MUWghI7u85n91dd1qzGyswpZbo',
+  config: {
+    ...connection.config,
+    destination: {
+      ...(connection.config.destination || {}),
+      audienceId: '23848494844100490',
+    },
+  },
+};
+
+// rudder-server sends the source job ID only as message.context.sources.job_id.
+const sourceJobContext = (jobId: string) => ({
+  sources: {
+    job_id: jobId,
+    job_run_id: 'cgiiurt8um7k7n5dq480',
+    task_run_id: 'cgiiurt8um7k7n5dq48g',
+    version: '895/merge',
+  },
+});
+const firstSourceJobContext = sourceJobContext('source-job-1');
+const secondSourceJobContext = sourceJobContext('source-job-2');
 
 const connectionWithValueBasedAudience: Connection = {
   ...connection,
@@ -754,6 +779,44 @@ export const rETLRecordV2RouterMissingAccessTokenRequest: RouterTransformationRe
         type: 'record',
       },
       metadata: generateMetadata(1),
+    },
+  ],
+  destType: 'fb_custom_audience',
+};
+
+export const rETLRecordV2ConcurrentSyncsRouterRequest: RouterTransformationRequest = {
+  input: [
+    {
+      destination: destinationV2,
+      connection,
+      message: {
+        action: 'insert',
+        context: firstSourceJobContext,
+        recordId: '1',
+        rudderId: '1',
+        identifiers: {
+          EMAIL: 'first@sync.com',
+          FI: 'ab',
+        },
+        type: 'record',
+      },
+      metadata: { ...generateMetadata(1), sourceId: connection.sourceId },
+    },
+    {
+      destination: destinationV2,
+      connection: secondConnection,
+      message: {
+        action: 'insert',
+        context: secondSourceJobContext,
+        recordId: '2',
+        rudderId: '2',
+        identifiers: {
+          EMAIL: 'second@sync.com',
+          FI: 'cd',
+        },
+        type: 'record',
+      },
+      metadata: { ...generateMetadata(2), sourceId: secondConnection.sourceId },
     },
   ],
   destType: 'fb_custom_audience',

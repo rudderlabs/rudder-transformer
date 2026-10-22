@@ -330,6 +330,19 @@ export const networkCallsData = [
       data: { results: [{ name: 'email', hasUniqueValue: false }] },
     },
   },
+  // objectType `companies`: the custom company_id property is unique, so rETL company rows
+  // keyed on it take the batch upsert endpoint.
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/properties/companies',
+      method: 'GET',
+      headers: { Authorization: authHeader1 },
+    },
+    httpRes: {
+      status: 200,
+      data: { results: [{ name: 'company_id', hasUniqueValue: true }] },
+    },
+  },
   // objectType `contacts`, secret3 (idx: duplicate records for secondary property):
   // email non-unique so it stays on the update path.
   {

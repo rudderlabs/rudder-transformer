@@ -6,6 +6,17 @@ import { RedisDB } from './redis/redisConnector';
 import { shutdownMetricsClient } from './stats';
 
 /**
+ * Process info is logged at error level unless the shutdown was triggered by a signal
+ * (e.g. a rollout). ClusterManager passes its own reason (STUCK_WORKER, RESTART_LIMIT_EXCEEDED)
+ * when it gives up on the workers, and that is a failure.
+ * @param {string} [signal] the signal or reason the cluster manager passed to the shutdown function
+ */
+function logShutdownProcessInfo(signal?: string): void {
+  const isSignalShutdown = signal === 'SIGTERM' || signal === 'SIGINT';
+  logProcessInfo(isSignalShutdown ? 'info' : 'error');
+}
+
+/**
  * workerShutdownFn is called during worker shutdown.
  * It will log the process info, shutdown the http server, shutdown the metrics client,
  * and disconnect the Redis client.
@@ -13,9 +24,9 @@ import { shutdownMetricsClient } from './stats';
  * @returns an async function that will be called during worker shutdown
  */
 export function workerShutdownFn(serverFn: () => any): (signal?: string) => Promise<void> {
-  return async () => {
+  return async (signal?: string) => {
     // This function runs on each worker process during shutdown
-    logProcessInfo();
+    logShutdownProcessInfo(signal);
     logger.info(`Shutting down http server for worker (pid: ${process.pid})`);
     const shutdownServer = gracefulShutdown(serverFn(), {
       signals: '', // no signals to listen for
@@ -27,6 +38,26 @@ export function workerShutdownFn(serverFn: () => any): (signal?: string) => Prom
     logger.info(`Shutting down redis client for worker (pid: ${process.pid})`);
     await RedisDB.disconnect();
   };
+}
+
+/**
+ * primaryShutdownFn is called during primary shutdown.
+ * It will log the process info, shutdown the metrics http server and the metrics client.
+ * @param {any} server the metrics http server instance, if any
+ * @param {string} [signal] the signal or reason the cluster manager passed to the shutdown function
+ */
+export async function primaryShutdownFn(server: any, signal?: string): Promise<void> {
+  logShutdownProcessInfo(signal);
+  if (server) {
+    logger.info('Shutting down metrics http server on primary process');
+    const shutdownServer = gracefulShutdown(server, {
+      signals: '', // no signals to listen for
+      timeout: 30000, // timeout: 30 secs
+    });
+    await shutdownServer();
+    logger.info('Shutting down metrics client on primary process');
+    await shutdownMetricsClient();
+  }
 }
 
 /**
@@ -113,20 +144,8 @@ export async function start(port: any, app: any, metricsApp: any) {
         server = metricsApp.listen(metricsPort);
       }
     },
-    primaryShutdownFn: async () => {
-      // This function runs on the primary process during shutdown
-      logProcessInfo();
-      if (server) {
-        logger.info('Shutting down metrics http server on primary process');
-        const shutdownServer = gracefulShutdown(server, {
-          signals: '', // no signals to listen for
-          timeout: 30000, // timeout: 30 secs
-        });
-        await shutdownServer();
-        logger.info('Shutting down metrics client on primary process');
-        await shutdownMetricsClient();
-      }
-    },
+    // server is assigned in primaryFn, so read it when shutdown runs
+    primaryShutdownFn: (signal?: string) => primaryShutdownFn(server, signal),
     workerFn: () => {
       // This function runs on each worker process
       server = app.listen(port);

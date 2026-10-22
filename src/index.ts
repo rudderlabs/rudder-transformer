@@ -114,8 +114,8 @@ applicationRoutes(app);
 function finalFunction() {
   RedisDB.disconnect();
   logger.info('Redis client disconnected');
-  logger.error(`Process (pid: ${process.pid}) was gracefully shutdown`);
-  logProcessInfo();
+  logger.info(`Process (pid: ${process.pid}) was gracefully shutdown`);
+  logProcessInfo('info');
 }
 
 if (clusterEnabled) {
@@ -135,11 +135,11 @@ if (clusterEnabled) {
   const server = app.listen(port);
 
   process.on('SIGTERM', () => {
-    logger.error(`SIGTERM signal received`);
+    logger.info(`SIGTERM signal received`);
   });
 
   process.on('SIGINT', () => {
-    logger.error(`SIGINT signal received`);
+    logger.info(`SIGINT signal received`);
   });
 
   // Handle uncaught exceptions

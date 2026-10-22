@@ -2,7 +2,12 @@ import get from 'get-value';
 import set from 'set-value';
 import truncate from 'truncate-utf8-bytes';
 import validator from 'validator';
-import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
+import { isPlainObject } from 'lodash';
+import {
+  InstrumentationError,
+  ConfigurationError,
+  isDefinedNotNullNotEmpty,
+} from '@rudderstack/integrations-lib';
 import {
   MAX_BATCH_SIZE,
   configFieldsToCheck,
@@ -218,6 +223,13 @@ const aliasResponseBuilder = (message, userId): ResponseDetails => {
   return { rawPayload, endpointDetails, requestConfig };
 };
 
+export const relationshipAttributesFor = (
+  value: unknown,
+): { relationship_attributes?: Record<string, unknown> } =>
+  isPlainObject(value) && isDefinedNotNullNotEmpty(value)
+    ? { relationship_attributes: value as Record<string, unknown> }
+    : {};
+
 const groupResponseBuilder = (message): ResponseDetails => {
   const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.OBJECT_EVENTS.name])!;
   const rawPayload: CustomerIOObjectPayload = {
@@ -236,7 +248,10 @@ const groupResponseBuilder = (message): ResponseDetails => {
   const id = payload?.userId || payload?.email;
   if (id) {
     const cioProperty = validator.isEmail(id) ? 'email' : 'id';
-    rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
+    rawPayload.cio_relationships.push({
+      identifiers: { [cioProperty]: id },
+      ...relationshipAttributesFor(payload.relationshipAttributes),
+    });
   }
   const requestConfig = defaultPostRequestConfig;
   const endpointDetails = getEndpointDetails({ eventType: 'objectEvent' });

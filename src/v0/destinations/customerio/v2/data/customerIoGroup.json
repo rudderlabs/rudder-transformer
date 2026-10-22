@@ -37,11 +37,16 @@
     "required": false
   },
   {
+    "destKey": "relationshipAttributes",
+    "sourceKeys": "traits.relationshipAttributes",
+    "required": false
+  },
+  {
     "destKey": "attributes",
     "sourceKeys": "traits",
     "required": false,
     "metadata": {
-      "excludes": ["action"]
+      "excludes": ["action", "relationshipAttributes"]
     }
   }
 ]

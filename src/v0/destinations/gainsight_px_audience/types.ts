@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { RecordAction } from '../../../types/rudderEvents';
 import { makeRouterInputSchema } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { ATTRIBUTE_NAME_PATTERN, DATA_CENTERS, REASONS } from './config';
+import type { TraitValue } from './traits';
 
 /** Flattened account: apiKey (secret) + dataCenter (option). */
 export const GainsightPxAudienceDestinationConfigSchema = z
@@ -26,6 +27,9 @@ export const GainsightPxAudienceConnectionConfigSchema = z
     identifierMappings: z
       .array(z.object({ from: z.string().min(1), to: z.literal('identifyId') }))
       .optional(),
+    // trait-mappings D17/D18. Deliberately unvalidated: a bad trait config must never block the flag,
+    // so traits.sanitizeMappings drops invalid rows and caps the list instead of failing the row.
+    fieldMappings: z.unknown().optional(),
   })
   .passthrough();
 
@@ -39,6 +43,9 @@ const RecordMessageSchema = z
     type: z.literal('record'),
     action: z.nativeEnum(RecordAction),
     identifiers: z.record(z.unknown()).optional(),
+    // rudder-sources: fields[mapping.to] = column[mapping.from] for every fieldMappings row.
+    // Unvalidated for the same reason: traits.collectTraits treats a non-object as no values.
+    fields: z.unknown().optional(),
   })
   .passthrough();
 
@@ -54,8 +61,8 @@ export type GainsightPxAudienceRouterRequest = z.infer<
   typeof GainsightPxAudienceRouterRequestSchema
 >;
 
-/** One PUT /v1/users/update body. */
+/** One PUT /v1/users/update body: the flag plus any converted traits. */
 export type GainsightPxAudiencePayload = {
   identifyId: string;
-  customAttributes: Record<string, boolean>;
+  customAttributes: Record<string, TraitValue>;
 };

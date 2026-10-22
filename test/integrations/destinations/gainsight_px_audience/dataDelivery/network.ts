@@ -3,6 +3,14 @@
 import { headers, usersUpdateEndpoint } from '../common';
 
 export const bodies = {
+  notFoundMemberWithTraits: {
+    identifyId: 'gpx-missing-traits',
+    customAttributes: { rs_gpx_e2e: true, rs_gpx_string: 'admin', rs_gpx_number: 42 },
+  },
+  traitTypeMismatch: {
+    identifyId: 'gpx-trait-mismatch',
+    customAttributes: { rs_gpx_e2e: true, rs_gpx_number: 'abc' },
+  },
   success: { identifyId: 'gpx-ok', customAttributes: { rs_gpx_e2e: true } },
   notFoundTrue: { identifyId: 'gpx-missing-true', customAttributes: { rs_gpx_e2e: true } },
   notFoundFalse: { identifyId: 'gpx-missing-false', customAttributes: { rs_gpx_e2e: false } },
@@ -16,6 +24,17 @@ export const bodies = {
 };
 
 export const responses = {
+  traitTypeMismatch: {
+    externalapierror: {
+      status: 'BAD_REQUEST',
+      subErrors: [
+        {
+          message: 'User custom attribute rs_gpx_number value abc does not match the type NUMBER',
+          rejectedValue: { rs_gpx_e2e: true, rs_gpx_number: 'abc' },
+        },
+      ],
+    },
+  },
   notFound: { message: 'User not found' },
   attributeMissing: {
     externalapierror: {
@@ -45,6 +64,14 @@ const put = (data: Record<string, unknown>) => ({
 });
 
 export const networkCallsData = [
+  {
+    httpReq: put(bodies.notFoundMemberWithTraits),
+    httpRes: { data: responses.notFound, status: 404 },
+  },
+  {
+    httpReq: put(bodies.traitTypeMismatch),
+    httpRes: { data: responses.traitTypeMismatch, status: 400 },
+  },
   { httpReq: put(bodies.success), httpRes: { data: '', status: 204 } },
   { httpReq: put(bodies.notFoundTrue), httpRes: { data: responses.notFound, status: 404 } },
   { httpReq: put(bodies.notFoundFalse), httpRes: { data: responses.notFound, status: 404 } },

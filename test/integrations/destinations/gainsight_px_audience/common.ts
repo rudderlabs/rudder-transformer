@@ -58,3 +58,16 @@ export const RouterInstrumentationErrorStatTags = {
   module: 'destination',
   workspaceId: 'default-workspaceId',
 };
+
+export const traitMappings = [
+  { from: 'role', to: 'rs_gpx_string', type: 'STRING' },
+  { from: 'events', to: 'rs_gpx_number', type: 'NUMBER' },
+  { from: 'last_visit', to: 'rs_gpx_date', type: 'DATE_TIME' },
+];
+
+export const connectionWithTraits = {
+  ...connection,
+  config: {
+    destination: { ...connection.config.destination, fieldMappings: traitMappings },
+  },
+};

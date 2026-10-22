@@ -112,7 +112,7 @@ describe('cluster test', () => {
     it.each(shutdownCases)(
       'primaryShutdownFn logs process info at $level for $signal',
       async ({ signal, level }) => {
-        await primaryShutdownFn(() => null)(signal);
+        await primaryShutdownFn(null, signal);
         expect(processInfoLevels(infoSpy, errorSpy)).toEqual([level]);
       },
     );

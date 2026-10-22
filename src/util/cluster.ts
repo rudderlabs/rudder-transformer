@@ -43,25 +43,21 @@ export function workerShutdownFn(serverFn: () => any): (signal?: string) => Prom
 /**
  * primaryShutdownFn is called during primary shutdown.
  * It will log the process info, shutdown the metrics http server and the metrics client.
- * @param {() => any} serverFn a function that returns the metrics http server instance, if any
- * @returns an async function that will be called during primary shutdown
+ * @param {any} server the metrics http server instance, if any
+ * @param {string} [signal] the signal or reason the cluster manager passed to the shutdown function
  */
-export function primaryShutdownFn(serverFn: () => any): (signal?: string) => Promise<void> {
-  return async (signal?: string) => {
-    // This function runs on the primary process during shutdown
-    logShutdownProcessInfo(signal);
-    const server = serverFn();
-    if (server) {
-      logger.info('Shutting down metrics http server on primary process');
-      const shutdownServer = gracefulShutdown(server, {
-        signals: '', // no signals to listen for
-        timeout: 30000, // timeout: 30 secs
-      });
-      await shutdownServer();
-      logger.info('Shutting down metrics client on primary process');
-      await shutdownMetricsClient();
-    }
-  };
+export async function primaryShutdownFn(server: any, signal?: string): Promise<void> {
+  logShutdownProcessInfo(signal);
+  if (server) {
+    logger.info('Shutting down metrics http server on primary process');
+    const shutdownServer = gracefulShutdown(server, {
+      signals: '', // no signals to listen for
+      timeout: 30000, // timeout: 30 secs
+    });
+    await shutdownServer();
+    logger.info('Shutting down metrics client on primary process');
+    await shutdownMetricsClient();
+  }
 }
 
 /**
@@ -148,7 +144,8 @@ export async function start(port: any, app: any, metricsApp: any) {
         server = metricsApp.listen(metricsPort);
       }
     },
-    primaryShutdownFn: primaryShutdownFn(() => server),
+    // server is assigned in primaryFn, so read it when shutdown runs
+    primaryShutdownFn: (signal?: string) => primaryShutdownFn(server, signal),
     workerFn: () => {
       // This function runs on each worker process
       server = app.listen(port);

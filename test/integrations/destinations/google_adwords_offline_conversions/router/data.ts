@@ -1829,6 +1829,92 @@ export const data = [
                             },
                           },
                         },
+                      ],
+                      enable_partial_failure: false,
+                      enable_warnings: false,
+                      validate_only: false,
+                    },
+                    executeJobPayload: { validate_only: false },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  secret: {
+                    access_token: secret1,
+                    refresh_token: 'efgh5678',
+                    developer_token: secret3,
+                  },
+                  jobId: 1,
+                  userId: 'u1',
+                  workspaceId: 'workspace-item-attribution',
+                },
+              ],
+              destination: {
+                Config: {
+                  // customerId: '962-581-2972',
+                  customerId: '1234556775',
+                  subAccount: false,
+                  loginCustomerId: '1234556775',
+                  eventsToOfflineConversionsTypeMapping: [
+                    {
+                      from: 'Order Completed',
+                      to: 'store',
+                    },
+                  ],
+                  eventsToConversionsNamesMapping: [
+                    {
+                      from: 'Order Completed',
+                      to: 'Store sales',
+                    },
+                  ],
+                  UserIdentifierSource: 'FIRST_PARTY',
+                  conversionEnvironment: 'none',
+                  defaultUserIdentifier: 'email',
+                  hashUserIdentifier: true,
+                  validateOnly: false,
+                  eventDelivery: false,
+                  eventDeliveryTS: 1715104236592,
+                  rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                },
+              },
+              batched: true,
+              statusCode: 200,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234556775/offlineUserDataJobs`,
+                endpointPath: 'offlineUserDataJobs',
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                },
+                params: {
+                  event: 'Store sales',
+                  customerId: '1234556775',
+                },
+                body: {
+                  JSON: {
+                    event: '1234556775',
+                    isStoreConversion: true,
+                    createJobPayload: {
+                      job: {
+                        type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
+                        storeSalesMetadata: {
+                          loyaltyFraction: '1',
+                          transaction_upload_fraction: '1',
+                        },
+                      },
+                    },
+                    addConversionPayload: {
+                      operations: [
                         {
                           create: {
                             transaction_attribute: {
@@ -1936,16 +2022,6 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  secret: {
-                    access_token: secret1,
-                    refresh_token: 'efgh5678',
-                    developer_token: secret3,
-                  },
-                  jobId: 1,
-                  userId: 'u1',
-                  workspaceId: 'workspace-item-attribution',
-                },
                 {
                   secret: {
                     access_token: secret1,

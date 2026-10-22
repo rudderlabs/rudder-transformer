@@ -542,3 +542,57 @@ export const dmRETLRecordRouterRequestForVDMV2Flow: RouterTransformationRequest 
   ],
   destType: 'google_adwords_remarketing_lists',
 };
+
+// rudder-server sends every rETL job of a destination in one router call, so two concurrent syncs
+// (two connections, two lists) arrive together. Each sync's rows carry only their own source job
+// ID, on message.context.sources.job_id.
+const sourceJobContext = (jobId: string) => ({
+  ip: '14.5.67.21',
+  library: { name: 'http' },
+  sources: { job_id: jobId, version: 'local', job_run_id: 'jobRunId', task_run_id: 'taskRunId' },
+});
+
+const dmSecondSyncConnection: Connection = {
+  ...dmConnectionGeneral,
+  sourceId: '2MUWghI7u85n91dd1qzGyswpZbo',
+  config: {
+    destination: {
+      schemaVersion: VDM_V2_SCHEMA_VERSION,
+      isHashRequired: true,
+      typeOfList: 'General',
+      audienceId: '8090784486',
+    },
+  },
+};
+
+export const dmRETLRecordRouterRequestConcurrentSyncs: RouterTransformationRequest = {
+  input: [
+    {
+      destination: dmDestinationNoSchema,
+      connection: dmConnectionGeneral,
+      message: {
+        action: 'insert',
+        context: sourceJobContext('source-job-1'),
+        recordId: '1',
+        rudderId: '1',
+        identifiers: { email: 'test@abc.com' },
+        type: 'record',
+      },
+      metadata: { ...generateDMGoogleOAuthMetadata(1), sourceId: dmConnectionGeneral.sourceId },
+    },
+    {
+      destination: dmDestinationNoSchema,
+      connection: dmSecondSyncConnection,
+      message: {
+        action: 'insert',
+        context: sourceJobContext('source-job-2'),
+        recordId: '2',
+        rudderId: '2',
+        identifiers: { email: 'test@abc.com' },
+        type: 'record',
+      },
+      metadata: { ...generateDMGoogleOAuthMetadata(2), sourceId: dmSecondSyncConnection.sourceId },
+    },
+  ],
+  destType: 'google_adwords_remarketing_lists',
+};

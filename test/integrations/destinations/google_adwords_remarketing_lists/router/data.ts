@@ -12,6 +12,8 @@ import {
   rETLRecordRouterRequestForVDMV2Flow,
   fieldStrippingRequest,
   allFieldsInvalidRequest,
+  destination2,
+  rETLRecordRouterRequestConcurrentSyncs,
 } from './record';
 import { dmRouterData } from './dataManager';
 
@@ -1898,6 +1900,150 @@ export const data = [
                 workspaceId: 'default-workspaceId',
               },
               statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'garl-router-concurrent-syncs',
+    name: 'google_adwords_remarketing_lists record event tests VDMv2 concurrent syncs',
+    description:
+      'VDMv2: two syncs on one destination, each row goes to its own connection list; guards concurrent syncs reaching the wrong list (ACT2-1257)',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordRouterRequestConcurrentSyncs,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+                  endpointPath: 'offlineUserDataJobs',
+                  headers: {
+                    Authorization: authHeader3,
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    listId: '7090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
+                  body: {
+                    JSON: {
+                      operations: [
+                        {
+                          create: {
+                            userIdentifiers: [
+                              {
+                                hashedEmail:
+                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  secret: {
+                    access_token: secret3,
+                  },
+                  sourceId: '2MUWghI7u85n91dd1qzGyswpZan',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 1,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: destination2,
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+                  endpointPath: 'offlineUserDataJobs',
+                  headers: {
+                    Authorization: authHeader3,
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    listId: '8090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
+                  body: {
+                    JSON: {
+                      operations: [
+                        {
+                          create: {
+                            userIdentifiers: [
+                              {
+                                hashedEmail:
+                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  secret: {
+                    access_token: secret3,
+                  },
+                  sourceId: '2MUWghI7u85n91dd1qzGyswpZbo',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 2,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: destination2,
             },
           ],
         },

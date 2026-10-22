@@ -43,6 +43,29 @@ const connection: Connection = {
   },
 };
 
+const secondConnection: Connection = {
+  ...connection,
+  sourceId: 'second-source-id',
+  config: {
+    destination: {
+      schemaVersion: VDM_V2_SCHEMA_VERSION,
+      audienceId: 'second-segment-id',
+      identifierMappings: [
+        {
+          from: 'some-key',
+          to: 'id',
+        },
+      ],
+    },
+  },
+};
+
+const sourceJobContext = (jobId: string) => ({
+  sources: { job_id: jobId, version: 'local', job_run_id: 'jobRunId', task_run_id: 'taskRunId' },
+});
+const firstSourceJobContext = sourceJobContext('source-job-1');
+const secondSourceJobContext = sourceJobContext('source-job-2');
+
 const inValidConnection: Connection = {
   ...connection,
   config: {
@@ -55,6 +78,9 @@ const inValidConnection: Connection = {
 
 const insertOrUpdateEndpoint =
   'https://track.customer.io/api/v1/segments/test-segment-id/add_customers';
+
+const secondInsertOrUpdateEndpoint =
+  'https://track.customer.io/api/v1/segments/second-segment-id/add_customers';
 
 const deleteEndpoint = 'https://track.customer.io/api/v1/segments/test-segment-id/remove_customers';
 
@@ -94,6 +120,9 @@ export {
   channel,
   destination,
   connection,
+  secondConnection,
+  firstSourceJobContext,
+  secondSourceJobContext,
   inValidConnection,
   processorInstrumentationErrorStatTags,
   RouterInstrumentationErrorStatTags,
@@ -101,5 +130,6 @@ export {
   headers,
   params,
   insertOrUpdateEndpoint,
+  secondInsertOrUpdateEndpoint,
   deleteEndpoint,
 };

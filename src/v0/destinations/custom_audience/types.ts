@@ -80,8 +80,13 @@ export type ParsedCustomAudienceDeliveryAccount = z.infer<
 
 export type CustomAudienceDeliveryAccount = ParsedCustomAudienceDeliveryAccount;
 
+export type CustomAudienceAuthMetadata = {
+  secret?: { accessToken?: string };
+};
+
 export type CustomAudienceAccountAuthHandler = (
   account: ParsedCustomAudienceDeliveryAccount,
+  metadata?: CustomAudienceAuthMetadata,
 ) => Record<string, string>;
 
 export const customMappingSchema = z.object({

@@ -1,5 +1,9 @@
 import sha256 from 'sha256';
-import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  OAuthSecretError,
+} from '@rudderstack/integrations-lib';
 import { HashingType } from '../../util/audienceUtils';
 import {
   buildRequestHeaders,
@@ -12,6 +16,7 @@ import {
 import { ACCOUNT_DEFINITION_NAMES, AUTHENTICATION_TYPES } from './constants';
 import type {
   ActionConfig,
+  CustomAudienceAuthMetadata,
   CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
   CustomAudienceDestination,
@@ -290,6 +295,7 @@ describe('buildRequestHeaders', () => {
   const successCases: {
     name: string;
     destination: CustomAudienceDestination;
+    metadata?: CustomAudienceAuthMetadata;
     expectedHeaders: Record<string, string>;
   }[] = [
     {
@@ -380,6 +386,44 @@ describe('buildRequestHeaders', () => {
       expectedHeaders: {
         'Content-Type': 'application/json',
         'X-Account-Key': 'account-secret',
+      },
+    },
+    {
+      name: 'uses metadata token for linked OAuth Client Credentials account',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS,
+          options: {},
+          secret: { accessToken: 'stale-account-token' },
+        },
+      ),
+      metadata: {
+        secret: { accessToken: 'client-credentials-token' },
+      },
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer client-credentials-token',
+      },
+    },
+    {
+      name: 'uses metadata token for linked OAuth Auth Code account over stale inline credentials',
+      destination: buildDestination(
+        {
+          rudderAccountId: 'account-1',
+          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+          options: {},
+          secret: {},
+        },
+      ),
+      metadata: { secret: { accessToken: 'auth-code-token' } },
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer auth-code-token',
       },
     },
     {
@@ -494,13 +538,43 @@ describe('buildRequestHeaders', () => {
     },
   ];
 
-  it.each(successCases)('$name', ({ destination, expectedHeaders }) => {
-    expect(buildRequestHeaders(destination)).toEqual(expectedHeaders);
+  const oauthMetadataFailureCases: {
+    name: string;
+    metadata?: CustomAudienceAuthMetadata;
+  }[] = [
+    { name: 'metadata is absent', metadata: undefined },
+    { name: 'metadata secret is absent', metadata: {} },
+    { name: 'metadata accessToken is absent', metadata: { secret: {} } },
+    { name: 'metadata accessToken is empty', metadata: { secret: { accessToken: '' } } },
+  ];
+
+  it.each(successCases)('$name', ({ destination, metadata, expectedHeaders }) => {
+    expect(buildRequestHeaders(destination, metadata)).toEqual(expectedHeaders);
   });
 
   it.each(failureCases)('throws ConfigurationError when $name', ({ destination, errorMessage }) => {
     const build = () => buildRequestHeaders(destination);
     expect(build).toThrow(ConfigurationError);
     expect(build).toThrow(errorMessage);
+  });
+
+  it.each(oauthMetadataFailureCases)('throws OAuthSecretError when $name', ({ metadata }) => {
+    const destination = buildDestination(
+      {
+        authenticationEnabled: true,
+        rudderAccountId: 'account-1',
+        authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+        bearerToken: 'stale-inline-token',
+      },
+      {
+        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS,
+        options: {},
+        secret: { accessToken: 'stale-account-token' },
+      },
+    );
+    const build = () => buildRequestHeaders(destination, metadata);
+
+    expect(build).toThrow(OAuthSecretError);
+    expect(build).toThrow('Secret or accessToken is not present in the metadata');
   });
 });

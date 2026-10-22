@@ -1,4 +1,8 @@
-import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  OAuthSecretError,
+} from '@rudderstack/integrations-lib';
 
 import { HashingType, processAudienceRecord, type AudienceField } from '../../util/audienceUtils';
 
@@ -10,6 +14,7 @@ import type {
   ActionFieldConfig,
   AuthenticationType,
   CustomAudienceAccountAuthHandler,
+  CustomAudienceAuthMetadata,
   CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
   CustomAudienceDestination,
@@ -185,6 +190,17 @@ const requireAccountValues = (
   return values.map(({ value }) => value as string);
 };
 
+const buildOAuthHeader = (
+  _account: ParsedCustomAudienceDeliveryAccount,
+  metadata?: CustomAudienceAuthMetadata,
+): Record<string, string> => {
+  const accessToken = metadata?.secret?.accessToken;
+  if (typeof accessToken !== 'string' || accessToken.length === 0) {
+    throw new OAuthSecretError('Secret or accessToken is not present in the metadata');
+  }
+  return buildBearerTokenHeader(accessToken);
+};
+
 const ACCOUNT_AUTH_HANDLERS: Record<string, CustomAudienceAccountAuthHandler> = {
   [ACCOUNT_DEFINITION_NAMES.BASIC_AUTH]: (account) => {
     const [username, password] = requireAccountValues(account, [
@@ -206,9 +222,14 @@ const ACCOUNT_AUTH_HANDLERS: Record<string, CustomAudienceAccountAuthHandler> = 
     ]);
     return buildApiKeyHeader(name, value);
   },
+  [ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS]: buildOAuthHeader,
+  [ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE]: buildOAuthHeader,
 };
 
-const resolveAccountAuth = (deliveryAccount: unknown): Record<string, string> => {
+const resolveAccountAuth = (
+  deliveryAccount: unknown,
+  metadata?: CustomAudienceAuthMetadata,
+): Record<string, string> => {
   const parsedAccount = CustomAudienceDeliveryAccountSchema.safeParse(deliveryAccount);
   if (!parsedAccount.success) {
     throw new ConfigurationError(ERROR_MESSAGES.MISSING_DELIVERY_ACCOUNT);
@@ -223,10 +244,13 @@ const resolveAccountAuth = (deliveryAccount: unknown): Record<string, string> =>
       ERROR_MESSAGES.UNKNOWN_ACCOUNT_DEFINITION(account.accountDefinitionName),
     );
   }
-  return handler(account);
+  return handler(account, metadata);
 };
 
-export const resolveAuth = (destination: CustomAudienceDestination): Record<string, string> => {
+export const resolveAuth = (
+  destination: CustomAudienceDestination,
+  metadata?: CustomAudienceAuthMetadata,
+): Record<string, string> => {
   const { Config: destConfig, deliveryAccount } = destination;
   if (destConfig.authenticationEnabled === false) return {};
 
@@ -236,9 +260,9 @@ export const resolveAuth = (destination: CustomAudienceDestination): Record<stri
     if (!hasLinkedAccount) {
       throw new ConfigurationError(ERROR_MESSAGES.MISSING_ACCOUNT_ID);
     }
-    return resolveAccountAuth(deliveryAccount);
+    return resolveAccountAuth(deliveryAccount, metadata);
   }
-  if (hasLinkedAccount) return resolveAccountAuth(deliveryAccount);
+  if (hasLinkedAccount) return resolveAccountAuth(deliveryAccount, metadata);
   if (destConfig.authenticationType) {
     return buildLegacyAuthHeaders(destConfig.authenticationType, destConfig);
   }
@@ -260,8 +284,9 @@ const flattenConfigHeaders = (
 
 export const buildRequestHeaders = (
   destination: CustomAudienceDestination,
+  metadata?: CustomAudienceAuthMetadata,
 ): Record<string, string> => ({
   'Content-Type': 'application/json',
   ...flattenConfigHeaders(destination.Config.headers),
-  ...resolveAuth(destination),
+  ...resolveAuth(destination, metadata),
 });

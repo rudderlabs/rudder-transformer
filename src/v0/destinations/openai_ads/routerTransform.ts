@@ -7,7 +7,7 @@ import {
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { JSON_MIME_TYPE } from '../../util/constant';
-import { ENDPOINT, ENDPOINT_PATH, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
+import { DESTINATION, ENDPOINT, ENDPOINT_PATH, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
 import { openAIAdsDelivery } from './delivery';
 import {
   OpenAIAdsDestinationConfigSchema,
@@ -30,9 +30,15 @@ class OpenAIAdsIntegration extends DestinationIntegration<
   transformEvent(
     input: z.infer<typeof openAIAdsInputSchema>,
   ): TransformedEvent<OpenAIAdsEventPayload> {
-    const { apiKey, pixelId } = this.destination.Config;
+    const { apiKey, pixelId, isHashRequired } = this.destination.Config;
+    const audienceDestination = {
+      workspaceId: this.destination.WorkspaceID,
+      id: this.destination.ID,
+      type: DESTINATION,
+      config: { isHashRequired: isHashRequired ?? true },
+    };
     return {
-      body: buildOpenAIEvent(input.message, this.destination.Config),
+      body: buildOpenAIEvent(input.message, this.destination.Config, audienceDestination),
       endpoint: ENDPOINT,
       endpointPath: ENDPOINT_PATH,
       method: 'POST',

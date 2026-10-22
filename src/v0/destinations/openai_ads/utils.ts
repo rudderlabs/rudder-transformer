@@ -18,7 +18,6 @@ import {
   ACTION_SOURCES,
   CUSTOMER_ACTION_DATA_TYPE,
   CUSTOM_EVENT_SENTINEL,
-  DESTINATION,
   EVENT_DATA_TYPES,
   MAX_EVENT_AGE_MS,
   MAX_EVENT_FUTURE_SKEW_MS,
@@ -30,6 +29,7 @@ import mappingConfig from './data/OPENAI_ADSConfig.json';
 import type {
   HashMatchField,
   OpenAIAdsActionSource,
+  OpenAIAdsAudienceDestination,
   OpenAIAdsContent,
   OpenAIAdsDestinationConfig,
   OpenAIAdsEventData,
@@ -90,13 +90,6 @@ type CurrencyMetadata = {
 };
 
 type UserPayload = Partial<Record<HashMatchField | PlainMatchField, unknown>>;
-
-const audienceDestination = {
-  workspaceId: '',
-  id: '',
-  type: DESTINATION,
-  config: { isHashRequired: true },
-};
 
 const normalizeHashString = (value: unknown): string | undefined => {
   if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean') {
@@ -170,8 +163,9 @@ const HASH_FIELD_CONFIGS: Record<HashMatchField, AudienceField> = {
   },
 };
 
-const hashUserPayload = (
+const processHashedUserPayload = (
   payload: Partial<Record<HashMatchField, unknown>>,
+  audienceDestination: OpenAIAdsAudienceDestination,
 ): Partial<Record<HashMatchField, string[]>> => {
   const record: Record<string, unknown> = {};
   const fieldConfigs: Record<string, AudienceField> = {};
@@ -335,7 +329,10 @@ const resolveOptOut = (payload: EventBasePayload): boolean | undefined => {
   throw new InstrumentationError('OpenAI Ads opt_out must be a boolean');
 };
 
-const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
+const buildUser = (
+  message: RudderMessage,
+  audienceDestination: OpenAIAdsAudienceDestination,
+): OpenAIAdsUser | undefined => {
   const user: OpenAIAdsUser = {};
   const addArray = (key: PlainMatchField | HashMatchField, value: string[] | undefined) => {
     if (value?.length) user[key] = value;
@@ -348,7 +345,10 @@ const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
       mappings: OPENAI_ADS_MAPPING_CONFIG.hashedUserMappings,
       transform: (payload) => {
         Object.entries(
-          hashUserPayload(payload as Partial<Record<HashMatchField, unknown>>),
+          processHashedUserPayload(
+            payload as Partial<Record<HashMatchField, unknown>>,
+            audienceDestination,
+          ),
         ).forEach(([key, values]) => addArray(key as HashMatchField, values));
       },
     },
@@ -560,6 +560,7 @@ const resolveEventId = (message: RudderMessage, mapping: ResolvedOpenAIAdsEventM
 export const buildOpenAIEvent = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
+  audienceDestination: OpenAIAdsAudienceDestination,
 ): OpenAIAdsEventPayload => {
   const mapping = resolveEventMapping(message, config);
   const eventType = mapping.to;
@@ -574,7 +575,7 @@ export const buildOpenAIEvent = (
   const timestampMs = resolveTimestampMs(topLevelPayload);
   const actionSource = resolveActionSource(topLevelPayload, config);
   const sourceUrl = resolveSourceUrl(topLevelPayload, actionSource);
-  const user = buildUser(message);
+  const user = buildUser(message, audienceDestination);
   const optOut = resolveOptOut(topLevelPayload);
 
   return removeUndefinedAndNullValues({

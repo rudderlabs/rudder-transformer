@@ -13,9 +13,9 @@
  *   CONFIGURED - `secretKeys` from the destination definition, the source of truth for which
  *   config fields are credentials. Perturbed by name, wherever that key appears in a config.
  *
- *   RUNTIME - the `metadata.secret` bag the control plane mints per OAuth account and
- *   rudder-server forwards verbatim. Nothing declares its keys, so every value under it is
- *   treated as a credential and perturbed by position. See `visitRuntimeSecrets`.
+ *   RUNTIME - the `metadata.secret` OAuth bag and `destination.deliveryAccount.secret` reusable
+ *   account bag. Nothing declares their nested keys here, so every value under them is treated as
+ *   a credential and perturbed by position. See `visitRuntimeSecrets`.
  *
  * Usage (`generate.jest-entry.ts` is the Jest entry point):
  *   SECRET_PATHS_DESTINATION=klaviyo,ga4 npm run generate:secret-paths
@@ -262,9 +262,9 @@ const runBaseline = async (
  */
 type SecretSource = { kind: 'config'; key: string } | { kind: 'runtime' };
 
-/** How a source names itself in diagnostics: `unstable under 'clientSecret'` / `'metadata.secret'`. */
+/** How a source names itself in diagnostics: `unstable under 'clientSecret'` / runtime secrets. */
 const sourceName = (source: SecretSource): string =>
-  source.kind === 'config' ? source.key : 'metadata.secret';
+  source.kind === 'config' ? source.key : 'runtime account secret';
 
 /** The values this source contributes to one fixture body, subject to the shared length rule. */
 export const valuesFor = (source: SecretSource, body: unknown): string[] =>
@@ -640,8 +640,9 @@ const deriveFromFetchedCredentials = async (
  *
  * The corpus rather than the registry, deliberately. `config.auth.type === 'OAuth'` would be
  * cheaper, but FACEBOOK_OFFLINE_CONVERSIONS, SALESFORCE, WOOTRIC and YAHOO_DSP all read
- * `metadata.secret` without declaring OAuth. Over-reporting costs a derivation that finds nothing;
- * under-reporting publishes a token.
+ * `metadata.secret` without declaring OAuth, and delivery-account credentials are likewise absent
+ * from destination `secretKeys`. Over-reporting costs a derivation that finds nothing;
+ * under-reporting publishes a credential.
  */
 const corpusCarriesRuntimeSecrets = (cases: any[]): boolean =>
   cases.some((tcData) => runtimeSecretsFor(tcData.input.request.body).length > 0);

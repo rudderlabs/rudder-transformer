@@ -4,7 +4,7 @@ import { Integration } from './routerTransform';
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { Metadata } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
-import { ACCOUNT_DEFINITION_NAMES, AUTHENTICATION_TYPES } from './constants';
+import { ACCOUNT_DEFINITION_NAMES } from './constants';
 import type {
   Action,
   ActionConfig,
@@ -59,7 +59,6 @@ const buildDestination = (
   },
   Config: {
     baseUrl: 'https://api.example.com',
-    authenticationType: AUTHENTICATION_TYPES.NO_AUTH,
     actions: { insert: baseInsertAction, delete: baseDeleteAction },
     ...configOverrides,
   },
@@ -354,15 +353,12 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
 
   const authCases = [
     {
-      name: 'legacy inline credentials when toggle is absent',
+      name: 'no auth for stale inline credentials when toggle and account are absent',
       destination: buildDestination({
-        authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
-        bearerToken: 'legacy-token',
+        authenticationType: 'bearerToken',
+        bearerToken: 'stale-inline-token',
       }),
-      expectedHeaders: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer legacy-token',
-      },
+      expectedHeaders: { 'Content-Type': 'application/json' },
     },
     {
       name: 'linked account secret when toggle is true',
@@ -384,7 +380,7 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       destination: buildDestination(
         {
           rudderAccountId: 'account-1',
-          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          authenticationType: 'bearerToken',
           bearerToken: 'stale-inline-token',
         },
         {
@@ -404,7 +400,7 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
         {
           authenticationEnabled: false,
           rudderAccountId: 'account-1',
-          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          authenticationType: 'bearerToken',
           bearerToken: 'stale-inline-token',
         },
         {
@@ -431,7 +427,7 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
   const accountErrorCases = [
     {
       name: 'missing linked account ID',
-      destination: buildDestination({ authenticationEnabled: true, authenticationType: undefined }),
+      destination: buildDestination({ authenticationEnabled: true }),
       errorMatch: /rudderAccountId does not identify a linked delivery account/,
     },
     {

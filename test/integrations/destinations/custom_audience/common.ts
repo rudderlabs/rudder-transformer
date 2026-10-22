@@ -1,16 +1,13 @@
 import type { Destination } from '../../../../src/types/controlPlaneConfig';
 import { HashingType } from '../../../../src/v0/util/audienceUtils';
-import {
-  ACCOUNT_DEFINITION_NAMES,
-  AUTHENTICATION_TYPES,
-} from '../../../../src/v0/destinations/custom_audience/constants';
+import { ACCOUNT_DEFINITION_NAMES } from '../../../../src/v0/destinations/custom_audience/constants';
 import type {
   ActionConfig,
   CustomAudienceConnection,
   CustomAudienceDestination,
   UpdateActionConfig,
 } from '../../../../src/v0/destinations/custom_audience/types';
-import { accountApiKeyValue, accountBearerToken, bearerToken } from './maskedSecrets';
+import { accountApiKeyValue, accountBearerToken } from './maskedSecrets';
 
 type ComponentCustomAudienceDestination = CustomAudienceDestination & Destination;
 
@@ -39,8 +36,8 @@ const deleteActionConfig: ActionConfig = {
 export const destination: ComponentCustomAudienceDestination = {
   Config: {
     baseUrl: 'https://api.example.com',
-    authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
-    bearerToken,
+    authenticationEnabled: true,
+    rudderAccountId: 'account-1',
     headers: [{ key: 'X-App', value: 'rudderstack' }],
     actions: {
       insert: insertActionConfig,
@@ -59,6 +56,12 @@ export const destination: ComponentCustomAudienceDestination = {
   Name: destTypeInUpperCase,
   Transformations: [],
   WorkspaceID: 'ws-1',
+  deliveryAccount: {
+    id: 'account-1',
+    accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
+    options: {},
+    secret: { bearerToken: accountBearerToken },
+  },
 };
 
 export const connection: CustomAudienceConnection = {
@@ -77,25 +80,10 @@ export const connection: CustomAudienceConnection = {
 export const headers = {
   'Content-Type': 'application/json',
   'X-App': 'rudderstack',
-  Authorization: `Bearer ${bearerToken}`,
+  Authorization: `Bearer ${accountBearerToken}`,
 };
 
-export const accountManagedDestination: ComponentCustomAudienceDestination = {
-  ...destination,
-  Config: {
-    ...destination.Config,
-    authenticationEnabled: true,
-    authenticationType: undefined,
-    bearerToken: undefined,
-    rudderAccountId: 'account-1',
-  },
-  deliveryAccount: {
-    id: 'account-1',
-    accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BEARER_TOKEN,
-    options: {},
-    secret: { bearerToken: accountBearerToken },
-  },
-};
+export const accountManagedDestination = destination;
 
 export const accountManagedHeaders = {
   'Content-Type': 'application/json',
@@ -107,9 +95,6 @@ export const accountManagedApiKeyDestination: ComponentCustomAudienceDestination
   ...destination,
   Config: {
     ...destination.Config,
-    authenticationEnabled: true,
-    authenticationType: undefined,
-    bearerToken: undefined,
     rudderAccountId: 'account-1',
   },
   deliveryAccount: {

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.164.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.163.0...v1.164.0) (2026-10-22)
+
+
+### Features
+
+* **gainsight_px_audience:** sync trait attributes for audience members ([#5703](https://github.com/rudderlabs/rudder-transformer/issues/5703)) ([aef00d3](https://github.com/rudderlabs/rudder-transformer/commit/aef00d3ddee02801443427f7ade5a6ff3e4329f3))
+
+
+### Bug Fixes
+
+* group router transform events by source job so concurrent syncs reach their own list ([21de025](https://github.com/rudderlabs/rudder-transformer/commit/21de025608b39ae7f2372738234dab8e6adafd34))
+* group router transform events by source job so concurrent syncs reach their own list ([#5705](https://github.com/rudderlabs/rudder-transformer/issues/5705)) ([93fc7b2](https://github.com/rudderlabs/rudder-transformer/commit/93fc7b22cb1d09917231a5be1e0b725d462c5cf9)), closes [#3496](https://github.com/rudderlabs/rudder-transformer/issues/3496) [#3496](https://github.com/rudderlabs/rudder-transformer/issues/3496)
+* key router groups on the message's source job id only ([98cf63f](https://github.com/rudderlabs/rudder-transformer/commit/98cf63ff1d83c9aaee067064e48b40d0621ad166))
+
 ## [1.163.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.162.0...v1.163.0) (2026-10-21)
 
 

@@ -224,7 +224,8 @@ describe('OpenAIAdsIntegration', () => {
     const identifierInput = (
       identifierDestination: Destination,
       identifiers: {
-        userId: string;
+        userId?: string;
+        anonymousId?: string;
         email: string;
         phone?: string;
         firstName?: string;
@@ -237,6 +238,7 @@ describe('OpenAIAdsIntegration', () => {
         event: 'Product Viewed',
         messageId: 'msg-identifiers',
         userId: identifiers.userId,
+        anonymousId: identifiers.anonymousId,
         timestamp: EVENT_TIMESTAMP,
         context: {
           traits: {
@@ -254,14 +256,17 @@ describe('OpenAIAdsIntegration', () => {
       (stats.increment as jest.Mock).mockClear();
     });
 
-    it('passes pre-hashed identifiers through unchanged when hashing is disabled', () => {
+    it('lowercases pre-hashed identifiers when hashing is disabled', () => {
+      const uppercaseIdentifiers = Object.fromEntries(
+        Object.entries(hashedIdentifiers).map(([key, value]) => [key, value.toUpperCase()]),
+      ) as typeof hashedIdentifiers;
       const body = transform(
         identifierInput(destinationWithHashing(false), {
-          userId: hashedIdentifiers.externalId,
-          email: hashedIdentifiers.email,
-          phone: hashedIdentifiers.phone,
-          firstName: hashedIdentifiers.firstName,
-          lastName: hashedIdentifiers.lastName,
+          userId: uppercaseIdentifiers.externalId,
+          email: uppercaseIdentifiers.email,
+          phone: uppercaseIdentifiers.phone,
+          firstName: uppercaseIdentifiers.firstName,
+          lastName: uppercaseIdentifiers.lastName,
         }),
       ).body;
 
@@ -273,6 +278,32 @@ describe('OpenAIAdsIntegration', () => {
         last_names_sha256: [hashedIdentifiers.lastName],
       });
       expect(stats.increment).not.toHaveBeenCalled();
+    });
+
+    it('passes a pre-hashed anonymousId through as the external ID when hashing is disabled', () => {
+      const body = transform(
+        identifierInput(destinationWithHashing(false), {
+          anonymousId: hashedIdentifiers.externalId,
+          email: hashedIdentifiers.email,
+        }),
+      ).body;
+
+      expect(body.user).toEqual({
+        emails_sha256: [hashedIdentifiers.email],
+        external_ids_sha256: [hashedIdentifiers.externalId],
+      });
+      expect(stats.increment).not.toHaveBeenCalled();
+    });
+
+    it('rejects a plain anonymousId fallback when hashing is disabled', () => {
+      expect(() =>
+        transform(
+          identifierInput(destinationWithHashing(false), {
+            anonymousId: 'Anonymous-1',
+            email: hashedIdentifiers.email,
+          }),
+        ),
+      ).toThrow('appears to be unhashed');
     });
 
     it.each([

@@ -188,7 +188,7 @@ const processHashedUserPayload = (
     (acc, [recordKey, value]) => {
       const field = fieldByRecordKey[recordKey];
       if (field && typeof value === 'string') {
-        acc[field] = [...(acc[field] ?? []), value];
+        acc[field] = [...(acc[field] ?? []), value.toLowerCase()];
       }
       return acc;
     },

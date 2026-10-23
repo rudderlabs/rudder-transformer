@@ -25,7 +25,9 @@ const {
   isBlockedIP,
   ssrfSafeAgentFactory,
   getDestinationVersion,
+  logProcessInfo,
 } = require('./utils');
+const logger = require('../logger');
 
 describe('asyncHooks behaviour', () => {
   it('should propagate correctly', () => {
@@ -354,5 +356,33 @@ describe('getDestinationVersion', () => {
     ['not-a-number', 1],
   ])('normalizes %p to %p', (input, expected) => {
     expect(getDestinationVersion(input)).toBe(expected);
+  });
+});
+
+describe('logProcessInfo', () => {
+  let infoSpy;
+  let errorSpy;
+
+  beforeEach(() => {
+    infoSpy = jest.spyOn(logger, 'info').mockImplementation(() => {});
+    errorSpy = jest.spyOn(logger, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    infoSpy.mockRestore();
+    errorSpy.mockRestore();
+  });
+
+  // The uncaughtException and unhandledRejection handlers rely on the default staying at error
+  it('logs at error by default', () => {
+    logProcessInfo();
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringMatching(/^Process info: /));
+    expect(infoSpy).not.toHaveBeenCalled();
+  });
+
+  it('logs at the given level', () => {
+    logProcessInfo('info');
+    expect(infoSpy).toHaveBeenCalledWith(expect.stringMatching(/^Process info: /));
+    expect(errorSpy).not.toHaveBeenCalled();
   });
 });

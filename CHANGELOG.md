@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.163.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.162.0...v1.163.0) (2026-10-21)
+
+
+### Features
+
+* **marketo_audience:** marketo audience static list membership destination ([#5681](https://github.com/rudderlabs/rudder-transformer/issues/5681)) ([e518283](https://github.com/rudderlabs/rudder-transformer/commit/e518283602c515ad1245184ddac0043989ad07dc)), closes [rudder-specs#214](https://github.com/rudderlabs/rudder-specs/issues/214) [#5638](https://github.com/rudderlabs/rudder-transformer/issues/5638) [#2836](https://github.com/rudderlabs/rudder-transformer/issues/2836) [#5638](https://github.com/rudderlabs/rudder-transformer/issues/5638)
+
+
+### Bug Fixes
+
+* **deps:** build on node 22.23.4 to reject the compromised eMudhra intermediates ([#5707](https://github.com/rudderlabs/rudder-transformer/issues/5707)) ([428344f](https://github.com/rudderlabs/rudder-transformer/commit/428344f09e8a256f61af62187ab24df6cfda1b27))
+* **marketo_audience:** cap 1003 splits, clear failed tokens, check unique lead IDs ([#5704](https://github.com/rudderlabs/rudder-transformer/issues/5704)) ([cae58e7](https://github.com/rudderlabs/rudder-transformer/commit/cae58e71d511e16e0ffa44643d63651161105a86)), closes [#5681](https://github.com/rudderlabs/rudder-transformer/issues/5681) [#5681](https://github.com/rudderlabs/rudder-transformer/issues/5681)
+* **tiktok_ads_offline_events:** remove default Lead mapping ([da80d63](https://github.com/rudderlabs/rudder-transformer/commit/da80d6382c6353ec5b6abfb3f73baad4cf173977))
+* **tiktok_ads_offline_events:** remove default Lead mapping ([#5702](https://github.com/rudderlabs/rudder-transformer/issues/5702)) ([370715f](https://github.com/rudderlabs/rudder-transformer/commit/370715f68bfca52e6f21866f074dbe0fbe2138c4))
+
 ## [1.162.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.161.0...v1.162.0) (2026-10-20)
 
 

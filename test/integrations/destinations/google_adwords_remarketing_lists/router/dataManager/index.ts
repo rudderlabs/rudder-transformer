@@ -24,6 +24,7 @@ import {
   dmFieldStrippingRequest,
   dmAllFieldsInvalidRequest,
   dmRETLRecordRouterRequestForVDMV2Flow,
+  dmRETLRecordRouterRequestConcurrentSyncs,
 } from './record';
 
 const DM_WORKSPACE_ID = 'dm-enabled-workspaceId';
@@ -1783,6 +1784,153 @@ export const dmRouterData = [
                 destinationId: 'default-destinationId',
                 workspaceId: DM_WORKSPACE_ID,
               },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'garl-dm-router-12',
+    name: 'google_adwords_remarketing_lists',
+    description:
+      '[DM API] VDMv2: two syncs on one destination, each row goes to its own connection list; guards concurrent syncs reaching the wrong list (ACT2-1257)',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: { request: { body: dmRETLRecordRouterRequestConcurrentSyncs, method: 'POST' } },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://datamanager.googleapis.com/v1/audienceMembers:ingest',
+                  endpointPath: '/v1/audienceMembers:ingest',
+                  headers: { Authorization: authHeader4, 'Content-Type': 'application/json' },
+                  params: {},
+                  body: {
+                    JSON: {
+                      destinations: [
+                        {
+                          operatingAccount: { accountId: '7693729833', accountType: 'GOOGLE_ADS' },
+                          productDestinationId: '7090784486',
+                        },
+                      ],
+                      audienceMembers: [
+                        {
+                          consent: {
+                            adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
+                            adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                          },
+                          userData: {
+                            userIdentifiers: [
+                              {
+                                emailAddress:
+                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                      encoding: 'HEX',
+                      consent: {
+                        adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
+                        adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                      },
+                      termsOfService: { customerMatchTermsOfServiceStatus: 'ACCEPTED' },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: '2MUWghI7u85n91dd1qzGyswpZan',
+                  destinationId: 'default-destinationId',
+                  workspaceId: DM_WORKSPACE_ID,
+                  secret: { access_token: secret4 },
+                  dontBatch: false,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: dmDestinationNoSchema,
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://datamanager.googleapis.com/v1/audienceMembers:ingest',
+                  endpointPath: '/v1/audienceMembers:ingest',
+                  headers: { Authorization: authHeader4, 'Content-Type': 'application/json' },
+                  params: {},
+                  body: {
+                    JSON: {
+                      destinations: [
+                        {
+                          operatingAccount: { accountId: '7693729833', accountType: 'GOOGLE_ADS' },
+                          productDestinationId: '8090784486',
+                        },
+                      ],
+                      audienceMembers: [
+                        {
+                          consent: {
+                            adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
+                            adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                          },
+                          userData: {
+                            userIdentifiers: [
+                              {
+                                emailAddress:
+                                  'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                      encoding: 'HEX',
+                      consent: {
+                        adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
+                        adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                      },
+                      termsOfService: { customerMatchTermsOfServiceStatus: 'ACCEPTED' },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 2,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: '2MUWghI7u85n91dd1qzGyswpZbo',
+                  destinationId: 'default-destinationId',
+                  workspaceId: DM_WORKSPACE_ID,
+                  secret: { access_token: secret4 },
+                  dontBatch: false,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: dmDestinationNoSchema,
             },
           ],
         },

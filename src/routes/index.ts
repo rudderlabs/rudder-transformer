@@ -45,7 +45,7 @@ export function addSwaggerRoutes(app: Koa<any, object>) {
         app.use(router.routes());
       }
     } else {
-      logger.error('Swagger file does not exist!');
+      logger.info('Swagger file not found, /docs disabled');
     }
   } catch (err) {
     logger.error('Error while loading swagger file', err);

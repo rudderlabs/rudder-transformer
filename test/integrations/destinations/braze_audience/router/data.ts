@@ -4,6 +4,7 @@ import {
   destType,
   destination,
   connection,
+  secondConnection,
   euDestination,
   auDestination,
   bulkEndpoint,
@@ -11,6 +12,8 @@ import {
   auBulkEndpoint,
   headers,
   RouterInstrumentationErrorStatTags,
+  firstSourceJobContext,
+  secondSourceJobContext,
 } from '../common';
 
 export const data: RouterTestData[] = [
@@ -296,6 +299,109 @@ export const data: RouterTestData[] = [
               statusCode: 400,
               error: 'external_id is missing or empty after trim',
               statTags: RouterInstrumentationErrorStatTags,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'braze-audience-router-concurrent-syncs-separate-connections',
+    name: destType,
+    description:
+      'Two concurrent rETL syncs (different source jobs and connections) on one destination each write their own custom attribute; guards concurrent syncs reaching the wrong list (ACT2-1257)',
+    scenario: 'Framework',
+    successCriteria:
+      'Two separate batched POSTs: source-job-1 sets rs_high_intent, source-job-2 sets rs_churn_risk',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { external_id: 'user-1' },
+                  action: 'insert',
+                }),
+                context: firstSourceJobContext,
+              },
+              metadata: { ...generateMetadata(1), sourceId: connection.sourceId },
+              destination,
+              connection,
+            },
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { external_id: 'user-2' },
+                  action: 'insert',
+                }),
+                context: secondSourceJobContext,
+              },
+              metadata: { ...generateMetadata(2), sourceId: secondConnection.sourceId },
+              destination,
+              connection: secondConnection,
+            },
+          ],
+          destType,
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: bulkEndpoint,
+                endpointPath: '/users/track/bulk',
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    attributes: [{ external_id: 'user-1', rs_high_intent: true }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ ...generateMetadata(1), sourceId: connection.sourceId }],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: bulkEndpoint,
+                endpointPath: '/users/track/bulk',
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    attributes: [{ external_id: 'user-2', rs_churn_risk: true }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ ...generateMetadata(2), sourceId: secondConnection.sourceId }],
+              batched: true,
+              statusCode: 200,
               destination,
             },
           ],

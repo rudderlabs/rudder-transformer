@@ -22,9 +22,9 @@ const destination: Destination = {
   WorkspaceID: 'test-workspace-id',
 };
 
-const listConnection = (audienceId: string): Connection =>
+const listConnection = (audienceId: string, sourceId = 'dummy-source-id'): Connection =>
   ({
-    sourceId: 'dummy-source-id',
+    sourceId,
     destinationId: 'dummy-destination-id',
     enabled: true,
     config: {
@@ -37,6 +37,8 @@ const listConnection = (audienceId: string): Connection =>
 
 const connection = listConnection('10');
 const otherListConnection = listConnection('20');
+// A second rETL sync on the same destination: its own source and its own list.
+const secondSyncConnection = listConnection('30', 'second-sync-source-id');
 
 const headers = {
   'Content-Type': 'application/json',
@@ -59,12 +61,23 @@ const routerInstrumentationErrorStatTags = {
   workspaceId: 'default-workspaceId',
 };
 
+// generateRecordPayload hardcodes context.sources.job_id. Concurrent rETL syncs are told apart only
+// by their source job, so each sync's rows carry their own job ID on the message.
+const sourceJobContext = (jobId: string) => ({
+  sources: { job_id: jobId, version: 'local', job_run_id: 'jobRunId', task_run_id: 'taskRunId' },
+});
+const firstSourceJobContext = sourceJobContext('source-job-1');
+const secondSourceJobContext = sourceJobContext('source-job-2');
+
 export {
+  firstSourceJobContext,
+  secondSourceJobContext,
   destType,
   destTypeInUpperCase,
   destination,
   connection,
   otherListConnection,
+  secondSyncConnection,
   headers,
   membershipEndpoint,
   endpointPath,

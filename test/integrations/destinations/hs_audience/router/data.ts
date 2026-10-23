@@ -5,10 +5,13 @@ import {
   destination,
   destType,
   endpointPath,
+  firstSourceJobContext,
   headers,
   membershipEndpoint,
   otherListConnection,
   routerInstrumentationErrorStatTags,
+  secondSourceJobContext,
+  secondSyncConnection,
 } from '../common';
 
 const record = (
@@ -182,6 +185,69 @@ export const data: RouterTestData[] = [
               error: 'Invalid HubSpot Record ID',
               statTags: routerInstrumentationErrorStatTags,
               destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'hs-audience-router-concurrent-syncs-separate-lists',
+    name: destType,
+    description:
+      'Two concurrent rETL syncs on one destination each reach their own list, guarding concurrent syncs reaching the wrong list (ACT2-1257)',
+    scenario: 'Business',
+    successCriteria:
+      "Rows from different source jobs form separate membership batches, each sent to its own connection's list id",
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { hs_object_id: '101' },
+                  action: 'insert',
+                }),
+                context: firstSourceJobContext,
+              },
+              metadata: { ...generateMetadata(1), sourceId: connection.sourceId },
+              destination,
+              connection,
+            },
+            {
+              message: {
+                ...generateRecordPayload({
+                  identifiers: { hs_object_id: '202' },
+                  action: 'insert',
+                }),
+                context: secondSourceJobContext,
+              },
+              metadata: { ...generateMetadata(2), sourceId: secondSyncConnection.sourceId },
+              destination,
+              connection: secondSyncConnection,
+            },
+          ],
+          destType,
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              ...membershipBatch('10', 'add', ['101'], [1]),
+              metadata: [{ ...generateMetadata(1), sourceId: connection.sourceId }],
+            },
+            {
+              ...membershipBatch('30', 'add', ['202'], [2]),
+              metadata: [{ ...generateMetadata(2), sourceId: secondSyncConnection.sourceId }],
             },
           ],
         },

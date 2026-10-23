@@ -955,9 +955,6 @@ const removeHubSpotSystemField = (properties: Record<string, unknown>): Record<s
 const uniqueObjectPropertiesCache = new Cache(
   'HS_OBJECT_PROPERTIES_V3',
   CONTACT_PROPERTIES_CACHE_TTL,
-  {
-    destType: DESTINATION,
-  },
 );
 
 /**

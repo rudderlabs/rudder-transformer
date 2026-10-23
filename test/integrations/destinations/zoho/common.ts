@@ -490,6 +490,34 @@ const commonDeletionConnectionConfigV2_MultipleIdentifiers: Connection = {
   },
 };
 
+// A second rETL sync (its own source) on the same destination, writing to Contacts.
+const contactsConnectionConfigV2: Connection = {
+  sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTh',
+  destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
+  enabled: true,
+  processorEnabled: true,
+  config: {
+    destination: {
+      object: 'Contacts',
+      trigger: 'None',
+      schemaVersion: '1.1',
+      addDefaultDuplicateCheck: true,
+      identifierMappings: [
+        {
+          from: 'phone',
+          to: 'Phone',
+        },
+      ],
+    },
+  },
+};
+
+const sourceJobContext = (jobId: string) => ({
+  sources: { job_id: jobId, version: 'local', job_run_id: 'jobRunId', task_run_id: 'taskRunId' },
+});
+const firstSourceJobContext = sourceJobContext('source-job-1');
+const secondSourceJobContext = sourceJobContext('source-job-2');
+
 export {
   destType,
   destTypeInUpperCase,
@@ -515,4 +543,7 @@ export {
   commonConnectionConfigCustomModuleV2,
   commonDeletionConnectionConfigV2,
   commonDeletionConnectionConfigV2_MultipleIdentifiers,
+  contactsConnectionConfigV2,
+  firstSourceJobContext,
+  secondSourceJobContext,
 };

@@ -374,9 +374,9 @@ function processInfo() {
   };
 }
 
-function logProcessInfo() {
+function logProcessInfo(level = 'error') {
   const inspectedInfo = util.inspect(processInfo(), false, Infinity, true);
-  logger.error(`Process info: ${inspectedInfo}`);
+  logger[level](`Process info: ${inspectedInfo}`);
 }
 
 // stringLiterals expected to be an array of strings. A line in trace should contain

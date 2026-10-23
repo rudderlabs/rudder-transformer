@@ -2746,6 +2746,188 @@ export const dataV2 = [
     },
   },
   {
+    id: 'cio-v2-router-record-concurrent-syncs',
+    name: 'customerio',
+    description:
+      "v2: guards concurrent syncs reaching the wrong object — a person sync and an event sync on one destination each keep their own connection's object, not the first sync's (ACT2-1257)",
+    scenario: 'Framework+Business',
+    successCriteria:
+      'Rows from two source jobs on two connections form two requests: the person row is sent as a person identify, the event row as a person event',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: { id: 'user-123', name: 'Jane Doe', plan: 'pro' },
+                context: {
+                  sources: {
+                    job_id: 'source-job-1',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+              },
+              metadata: { jobId: 120, userId: 'u1', workspaceId: 'ws-cio-v2', sourceId: 'src-1' },
+              destination: {
+                ID: 'cio-v2-concurrent-dest',
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
+              connection: {
+                sourceId: 'src-1',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { object: 'person', syncMode: 'upsert' } },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: {
+                  id: 'user-123',
+                  name: 'Order Completed',
+                  plan: 'pro',
+                  created_at: '2024-06-25T14:00:00.000Z',
+                },
+                context: {
+                  sources: {
+                    job_id: 'source-job-2',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+              },
+              metadata: { jobId: 121, userId: 'u1', workspaceId: 'ws-cio-v2', sourceId: 'src-2' },
+              destination: {
+                ID: 'cio-v2-concurrent-dest',
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
+              connection: {
+                sourceId: 'src-2',
+                destinationId: 'dest-1',
+                enabled: true,
+                config: { destination: { object: 'event', syncMode: 'upsert' } },
+              },
+            },
+          ],
+          destType: 'customerio',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'identify',
+                        identifiers: { id: 'user-123' },
+                        attributes: { name: 'Jane Doe', plan: 'pro' },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 120, userId: 'u1', workspaceId: 'ws-cio-v2', sourceId: 'src-1' }],
+              destination: {
+                ID: 'cio-v2-concurrent-dest',
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
+              batched: true,
+              statusCode: 200,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
+                headers: { Authorization: authHeader1, 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    batch: [
+                      {
+                        type: 'person',
+                        action: 'event',
+                        identifiers: { id: 'user-123' },
+                        name: 'Order Completed',
+                        timestamp: 1719324000,
+                        attributes: { plan: 'pro' },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 121, userId: 'u1', workspaceId: 'ws-cio-v2', sourceId: 'src-2' }],
+              destination: {
+                ID: 'cio-v2-concurrent-dest',
+                Config: {
+                  datacenter: 'US',
+                  siteID: secret1,
+                  apiKey: secret2,
+                  apiVersion: 'v2',
+                  userIdIdentifierType: 'id',
+                },
+              },
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
     id: 'cio-v2-router-record-event-delete',
     name: 'customerio',
     description: 'v2: event object record delete returns instrumentation error',

@@ -1268,9 +1268,9 @@ export const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  method: 'DELETE',
+                  method: 'POST',
                   endpoint:
-                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1122/leads.json?id=2001&id=2002&id=2003',
+                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1122/leads.json?id=1001&id=1002&id=1003',
                   headers: {
                     Authorization: authHeaderAccessToken,
                     'Content-Type': 'application/json',
@@ -1281,9 +1281,9 @@ export const data = [
                 },
               ],
               metadata: [
-                { jobId: 4, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
-                { jobId: 5, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
-                { jobId: 6, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
+                { jobId: 1, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
+                { jobId: 2, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
+                { jobId: 3, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -1313,9 +1313,9 @@ export const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  method: 'POST',
+                  method: 'DELETE',
                   endpoint:
-                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1122/leads.json?id=1001&id=1002&id=1003',
+                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/1122/leads.json?id=2001&id=2002&id=2003',
                   headers: {
                     Authorization: authHeaderAccessToken,
                     'Content-Type': 'application/json',
@@ -1326,9 +1326,9 @@ export const data = [
                 },
               ],
               metadata: [
-                { jobId: 1, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
-                { jobId: 2, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
-                { jobId: 3, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
+                { jobId: 4, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
+                { jobId: 5, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
+                { jobId: 6, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -1744,9 +1744,9 @@ export const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  method: 'DELETE',
+                  method: 'POST',
                   endpoint:
-                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/id001/leads.json?id=2002',
+                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/id001/leads.json?id=1001&id=1003',
                   headers: {
                     Authorization: authHeaderAccessToken,
                     'Content-Type': 'application/json',
@@ -1756,7 +1756,10 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [{ jobId: 5, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' }],
+              metadata: [
+                { jobId: 1, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
+                { jobId: 3, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
+              ],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1787,7 +1790,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/id001/leads.json?id=1001&id=1003',
+                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/id002/leads.json?id=1002',
                   headers: {
                     Authorization: authHeaderAccessToken,
                     'Content-Type': 'application/json',
@@ -1797,10 +1800,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                { jobId: 1, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
-                { jobId: 3, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' },
-              ],
+              metadata: [{ jobId: 2, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1873,9 +1873,9 @@ export const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  method: 'POST',
+                  method: 'DELETE',
                   endpoint:
-                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/id002/leads.json?id=1002',
+                    'https://marketo_static_list_acct_id_success.mktorest.com/rest/v1/lists/id001/leads.json?id=2002',
                   headers: {
                     Authorization: authHeaderAccessToken,
                     'Content-Type': 'application/json',
@@ -1885,7 +1885,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [{ jobId: 2, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' }],
+              metadata: [{ jobId: 5, destInfo: { authKey: 'dummyDestinationId' }, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {

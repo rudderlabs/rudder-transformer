@@ -37,12 +37,6 @@ export type OpenAIAdsStandardEvent = keyof typeof STANDARD_EVENT_DATA_TYPES;
 export type OpenAIAdsActionSource = (typeof ACTION_SOURCES)[number];
 export type OpenAIAdsEventMapping = z.infer<typeof OpenAIAdsEventMappingSchema>;
 export type OpenAIAdsDestinationConfig = z.infer<typeof OpenAIAdsDestinationConfigSchema>;
-export type OpenAIAdsAudienceDestination = {
-  workspaceId: string;
-  id: string;
-  type: string;
-  config: { isHashRequired: boolean };
-};
 export type HashMatchField = (typeof HASHED_MATCH_FIELDS)[number];
 export type PlainMatchField =
   | 'regions'

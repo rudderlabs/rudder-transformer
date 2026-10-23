@@ -10,6 +10,7 @@ import type { RudderMessage } from '../../../types';
 import { constructPayload, getValueFromMessage, removeUndefinedAndNullValues } from '../../util';
 import {
   HashingType,
+  isAlreadyHashed,
   isValidPhoneNumber,
   processAudienceRecord,
   type AudienceField,
@@ -18,6 +19,7 @@ import {
   ACTION_SOURCES,
   CUSTOMER_ACTION_DATA_TYPE,
   CUSTOM_EVENT_SENTINEL,
+  DESTINATION,
   EVENT_DATA_TYPES,
   MAX_EVENT_AGE_MS,
   MAX_EVENT_FUTURE_SKEW_MS,
@@ -29,7 +31,6 @@ import mappingConfig from './data/OPENAI_ADSConfig.json';
 import type {
   HashMatchField,
   OpenAIAdsActionSource,
-  OpenAIAdsAudienceDestination,
   OpenAIAdsContent,
   OpenAIAdsDestinationConfig,
   OpenAIAdsEventData,
@@ -44,7 +45,6 @@ const ACTION_SOURCE_SET = new Set<string>(ACTION_SOURCES);
 // Comfortably past any real monetary value, and short enough that BigInt parsing stays free.
 const MAX_AMOUNT_LENGTH = 40;
 const CURRENCY_RE = /^[A-Z]{3}$/;
-const SHA256_HEX_REGEX = /^[\dA-Fa-f]{64}$/;
 const PUNCTUATION_REGEX = /[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/g;
 // Null-prototype so an event type of `constructor` or `toString` misses instead of resolving to
 // something off Object.prototype. The zod schema already rejects those before they reach the
@@ -91,6 +91,11 @@ type CurrencyMetadata = {
 };
 
 type UserPayload = Partial<Record<HashMatchField | PlainMatchField, unknown>>;
+
+type DestinationMeta = {
+  workspaceId: string;
+  destinationId: string;
+};
 
 const normalizeHashString = (value: unknown): string | undefined => {
   if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean') {
@@ -166,7 +171,8 @@ const HASH_FIELD_CONFIGS: Record<HashMatchField, AudienceField> = {
 
 const processHashedUserPayload = (
   payload: Partial<Record<HashMatchField, unknown>>,
-  audienceDestination: OpenAIAdsAudienceDestination,
+  destinationMeta: DestinationMeta,
+  isHashRequired: boolean,
 ): Partial<Record<HashMatchField, string[]>> => {
   const record: Record<string, unknown> = {};
   const fieldConfigs: Record<string, AudienceField> = {};
@@ -183,7 +189,12 @@ const processHashedUserPayload = (
 
   const processed = processAudienceRecord(record, {
     fieldConfigs,
-    destination: audienceDestination,
+    destination: {
+      workspaceId: destinationMeta.workspaceId,
+      id: destinationMeta.destinationId,
+      type: DESTINATION,
+      config: { isHashRequired },
+    },
   });
   return Object.entries(processed).reduce<Partial<Record<HashMatchField, string[]>>>(
     (acc, [recordKey, value]) => {
@@ -200,22 +211,27 @@ const processHashedUserPayload = (
 const processHashableUserFields = (
   message: RudderMessage,
   payload: Partial<Record<HashMatchField, unknown>>,
-  audienceDestination: OpenAIAdsAudienceDestination,
+  destinationMeta: DestinationMeta,
+  isHashRequired: boolean,
 ): Partial<Record<HashMatchField, string[]>> => {
   const usesAnonymousIdFallback = !isPresent(message.userId) && isPresent(message.anonymousId);
-  if (audienceDestination.config.isHashRequired || !usesAnonymousIdFallback) {
-    return processHashedUserPayload(payload, audienceDestination);
+  if (isHashRequired || !usesAnonymousIdFallback) {
+    return processHashedUserPayload(payload, destinationMeta, isHashRequired);
   }
 
   const { external_ids_sha256: anonymousId, ...preHashedPayload } = payload;
   const anonymousIdValues = toStringArray(anonymousId);
-  const anonymousIdDestination = anonymousIdValues.every((value) => SHA256_HEX_REGEX.test(value))
-    ? audienceDestination
-    : { ...audienceDestination, config: { isHashRequired: true } };
+  const anonymousIdIsHashed = anonymousIdValues.every((value) =>
+    isAlreadyHashed(value, HashingType.SHA256),
+  );
 
   return {
-    ...processHashedUserPayload(preHashedPayload, audienceDestination),
-    ...processHashedUserPayload({ external_ids_sha256: anonymousId }, anonymousIdDestination),
+    ...processHashedUserPayload(preHashedPayload, destinationMeta, isHashRequired),
+    ...processHashedUserPayload(
+      { external_ids_sha256: anonymousId },
+      destinationMeta,
+      !anonymousIdIsHashed,
+    ),
   };
 };
 
@@ -354,7 +370,8 @@ const resolveOptOut = (payload: EventBasePayload): boolean | undefined => {
 
 const buildUser = (
   message: RudderMessage,
-  audienceDestination: OpenAIAdsAudienceDestination,
+  destinationMeta: DestinationMeta,
+  isHashRequired: boolean,
 ): OpenAIAdsUser | undefined => {
   const user: OpenAIAdsUser = {};
   const addArray = (key: PlainMatchField | HashMatchField, value: string[] | undefined) => {
@@ -371,7 +388,8 @@ const buildUser = (
           processHashableUserFields(
             message,
             payload as Partial<Record<HashMatchField, unknown>>,
-            audienceDestination,
+            destinationMeta,
+            isHashRequired,
           ),
         ).forEach(([key, values]) => addArray(key as HashMatchField, values));
       },
@@ -584,8 +602,9 @@ const resolveEventId = (message: RudderMessage, mapping: ResolvedOpenAIAdsEventM
 export const buildOpenAIEvent = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
-  audienceDestination: OpenAIAdsAudienceDestination,
+  destinationMeta: DestinationMeta,
 ): OpenAIAdsEventPayload => {
+  const isHashRequired = config.isHashRequired ?? true;
   const mapping = resolveEventMapping(message, config);
   const eventType = mapping.to;
   const customEventName =
@@ -599,7 +618,7 @@ export const buildOpenAIEvent = (
   const timestampMs = resolveTimestampMs(topLevelPayload);
   const actionSource = resolveActionSource(topLevelPayload, config);
   const sourceUrl = resolveSourceUrl(topLevelPayload, actionSource);
-  const user = buildUser(message, audienceDestination);
+  const user = buildUser(message, destinationMeta, isHashRequired);
   const optOut = resolveOptOut(topLevelPayload);
 
   return removeUndefinedAndNullValues({

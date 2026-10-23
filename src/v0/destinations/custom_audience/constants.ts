@@ -1,12 +1,5 @@
 export const SUPPORTED_HTTP_METHODS = ['POST', 'PUT', 'PATCH', 'GET', 'DELETE'] as const;
 
-export const AUTHENTICATION_TYPES = {
-  NO_AUTH: 'noAuth',
-  BASIC_AUTH: 'basicAuth',
-  BEARER_TOKEN: 'bearerToken',
-  API_KEY: 'apiKey',
-} as const;
-
 export const ACCOUNT_DEFINITION_NAMES = {
   BASIC_AUTH: 'DESTINATION_CUSTOM_AUDIENCE_BASIC_AUTH',
   BEARER_TOKEN: 'DESTINATION_CUSTOM_AUDIENCE_BEARER_TOKEN',

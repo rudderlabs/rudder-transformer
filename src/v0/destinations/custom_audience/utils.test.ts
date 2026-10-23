@@ -9,7 +9,7 @@ import {
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import { ACCOUNT_DEFINITION_NAMES, AUTHENTICATION_TYPES } from './constants';
+import { ACCOUNT_DEFINITION_NAMES } from './constants';
 import type {
   ActionConfig,
   CustomAudienceConnectionDestConfig,
@@ -24,7 +24,6 @@ const baseConnection: CustomAudienceConnectionDestConfig = {
 
 const baseDestConfig: CustomAudienceDestConfig = {
   baseUrl: 'https://api.example.com',
-  authenticationType: AUTHENTICATION_TYPES.NO_AUTH,
   actions: {
     insert: {
       endpoint: '/audiences/{{connection.audienceId}}/members',
@@ -293,7 +292,7 @@ describe('buildRequestHeaders', () => {
     expectedHeaders: Record<string, string>;
   }[] = [
     {
-      name: 'returns Content-Type only for legacy noAuth',
+      name: 'returns Content-Type only when authentication is not configured',
       destination: buildDestination(),
       expectedHeaders: { 'Content-Type': 'application/json' },
     },
@@ -301,41 +300,6 @@ describe('buildRequestHeaders', () => {
       name: 'merges destination headers',
       destination: buildDestination({ headers: [{ key: 'X-App', value: 'rudder' }] }),
       expectedHeaders: { 'Content-Type': 'application/json', 'X-App': 'rudder' },
-    },
-    {
-      name: 'builds legacy Basic auth header',
-      destination: buildDestination({
-        authenticationType: AUTHENTICATION_TYPES.BASIC_AUTH,
-        basicAuthUserName: 'legacy-user',
-        basicAuthPassword: 'legacy-pass',
-      }),
-      expectedHeaders: {
-        'Content-Type': 'application/json',
-        Authorization: `Basic ${Buffer.from('legacy-user:legacy-pass').toString('base64')}`,
-      },
-    },
-    {
-      name: 'builds legacy Bearer token header',
-      destination: buildDestination({
-        authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
-        bearerToken: 'legacy-token',
-      }),
-      expectedHeaders: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer legacy-token',
-      },
-    },
-    {
-      name: 'builds legacy API key header',
-      destination: buildDestination({
-        authenticationType: AUTHENTICATION_TYPES.API_KEY,
-        apiKeyName: 'X-Legacy-Key',
-        apiKeyValue: 'legacy-secret',
-      }),
-      expectedHeaders: {
-        'Content-Type': 'application/json',
-        'X-Legacy-Key': 'legacy-secret',
-      },
     },
     {
       name: 'uses linked Basic auth account',
@@ -387,7 +351,7 @@ describe('buildRequestHeaders', () => {
       destination: buildDestination(
         {
           rudderAccountId: 'account-1',
-          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          authenticationType: 'bearerToken',
           bearerToken: 'stale-inline-token',
         },
         {
@@ -407,7 +371,7 @@ describe('buildRequestHeaders', () => {
         {
           authenticationEnabled: false,
           rudderAccountId: 'account-1',
-          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          authenticationType: 'bearerToken',
           bearerToken: 'stale-inline-token',
         },
         {
@@ -419,8 +383,11 @@ describe('buildRequestHeaders', () => {
       expectedHeaders: { 'Content-Type': 'application/json' },
     },
     {
-      name: 'uses no auth when toggle and legacy selector are absent',
-      destination: buildDestination({ authenticationType: undefined }),
+      name: 'ignores stale inline credentials when no account is linked',
+      destination: buildDestination({
+        authenticationType: 'bearerToken',
+        bearerToken: 'stale-inline-token',
+      }),
       expectedHeaders: { 'Content-Type': 'application/json' },
     },
   ];

@@ -22,6 +22,7 @@ export const OpenAIAdsDestinationConfigSchema = z
     pixelId: z.string().min(1),
     defaultCurrency: z.string().optional(),
     defaultActionSource: z.enum(ACTION_SOURCES).optional(),
+    isHashRequired: z.boolean().optional(),
     eventMapping: z.array(OpenAIAdsEventMappingSchema).optional(),
   })
   .passthrough();

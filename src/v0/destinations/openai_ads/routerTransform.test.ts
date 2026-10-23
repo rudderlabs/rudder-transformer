@@ -1,4 +1,5 @@
 import sha256 from 'sha256';
+import stats from '../../../util/stats';
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { ChunkBatchStrategy } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { DestinationIntegrationConstructor } from '../../../services/destination/destinationIntegration/destinationIntegration';
@@ -11,6 +12,12 @@ import type { Destination } from '../../../types';
 import type { OpenAIAdsEventPayload } from './types';
 import { STANDARD_EVENTS, STANDARD_EVENT_DATA_TYPES } from './config';
 import { Integration } from './routerTransform';
+
+jest.mock('../../../util/stats', () => ({
+  increment: jest.fn(),
+  histogram: jest.fn(),
+}));
+
 // OpenAI only ingests events from the last 7 days, so fixtures are stamped relative to now
 // rather than at a fixed date that would age out of the window.
 const EVENT_TIMESTAMP = new Date(Date.now() - 60_000).toISOString();
@@ -197,6 +204,188 @@ describe('OpenAIAdsIntegration', () => {
       },
     });
     expect(JSON.stringify(event)).not.toContain('USER@EXAMPLE.COM');
+  });
+
+  describe('identifier hashing configuration', () => {
+    const hashedIdentifiers = {
+      email: sha256('user@example.com'),
+      phone: sha256('15551234567'),
+      externalId: sha256('user-1'),
+      firstName: sha256('jane'),
+      lastName: sha256('doe'),
+    };
+    const destinationWithHashing = (isHashRequired?: boolean): Destination => ({
+      ...destination,
+      Config: {
+        ...destination.Config,
+        ...(isHashRequired === undefined ? {} : { isHashRequired }),
+      },
+    });
+    const identifierInput = (
+      identifierDestination: Destination,
+      identifiers: {
+        userId?: string;
+        anonymousId?: string;
+        email?: string;
+        phone?: string;
+        firstName?: string;
+        lastName?: string;
+      },
+    ): RouterTransformationRequestData => ({
+      ...makeInput(1, 'Product Viewed', identifierDestination),
+      message: {
+        type: 'track',
+        event: 'Product Viewed',
+        messageId: 'msg-identifiers',
+        userId: identifiers.userId,
+        anonymousId: identifiers.anonymousId,
+        timestamp: EVENT_TIMESTAMP,
+        context: {
+          traits: {
+            email: identifiers.email,
+            phone: identifiers.phone,
+            firstName: identifiers.firstName,
+            lastName: identifiers.lastName,
+          },
+        },
+        properties: {},
+      },
+    });
+
+    beforeEach(() => {
+      (stats.increment as jest.Mock).mockClear();
+    });
+
+    it('lowercases pre-hashed identifiers when hashing is disabled', () => {
+      const uppercaseIdentifiers = Object.fromEntries(
+        Object.entries(hashedIdentifiers).map(([key, value]) => [key, value.toUpperCase()]),
+      ) as typeof hashedIdentifiers;
+      const body = transform(
+        identifierInput(destinationWithHashing(false), {
+          userId: uppercaseIdentifiers.externalId,
+          email: uppercaseIdentifiers.email,
+          phone: uppercaseIdentifiers.phone,
+          firstName: uppercaseIdentifiers.firstName,
+          lastName: uppercaseIdentifiers.lastName,
+        }),
+      ).body;
+
+      expect(body.user).toEqual({
+        emails_sha256: [hashedIdentifiers.email],
+        phone_numbers_sha256: [hashedIdentifiers.phone],
+        external_ids_sha256: [hashedIdentifiers.externalId],
+        first_names_sha256: [hashedIdentifiers.firstName],
+        last_names_sha256: [hashedIdentifiers.lastName],
+      });
+      expect(stats.increment).not.toHaveBeenCalled();
+    });
+
+    it('lowercases a pre-hashed anonymousId fallback when hashing is disabled', () => {
+      const body = transform(
+        identifierInput(destinationWithHashing(false), {
+          anonymousId: hashedIdentifiers.externalId.toUpperCase(),
+        }),
+      ).body;
+
+      expect(body.user).toEqual({
+        external_ids_sha256: [hashedIdentifiers.externalId],
+      });
+      expect(stats.increment).not.toHaveBeenCalled();
+    });
+
+    it('normalizes and hashes a plain anonymousId fallback when hashing is disabled', () => {
+      const body = transform(
+        identifierInput(destinationWithHashing(false), {
+          anonymousId: ' 550E8400-E29B-41D4-A716-446655440000 ',
+        }),
+      ).body;
+
+      expect(body.user).toEqual({
+        external_ids_sha256: [sha256('550e8400-e29b-41d4-a716-446655440000')],
+      });
+      expect(stats.increment).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      { label: 'enabled', isHashRequired: true },
+      { label: 'absent', isHashRequired: undefined },
+    ])(
+      'normalizes and hashes plain identifiers when the config is $label',
+      ({ isHashRequired }) => {
+        const body = transform(
+          identifierInput(destinationWithHashing(isHashRequired), {
+            userId: 'User-1',
+            email: ' USER@EXAMPLE.COM ',
+            phone: '001 (555) 123-4567',
+            firstName: 'Jane!',
+            lastName: "D'Oe",
+          }),
+        ).body;
+
+        expect(body.user).toEqual({
+          emails_sha256: [hashedIdentifiers.email],
+          phone_numbers_sha256: [hashedIdentifiers.phone],
+          external_ids_sha256: [hashedIdentifiers.externalId],
+          first_names_sha256: [hashedIdentifiers.firstName],
+          last_names_sha256: [hashedIdentifiers.lastName],
+        });
+        expect(stats.increment).not.toHaveBeenCalled();
+      },
+    );
+
+    it('rejects pre-hashed identifiers and attributes the metric when hashing is enabled', () => {
+      expect(() =>
+        transform(
+          identifierInput(destinationWithHashing(true), {
+            userId: 'User-1',
+            email: hashedIdentifiers.email,
+          }),
+        ),
+      ).toThrow('already be hashed');
+      expect(stats.increment).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+        propertyName: 'emails_sha256.0',
+        type: 'hashed_when_hash_enabled',
+        workspaceId: 'ws-1',
+        destinationId: 'openai-ads-dest-1',
+        destType: 'OPENAI_ADS',
+      });
+    });
+
+    it.each([
+      {
+        label: 'plain identifiers',
+        userId: 'User-1',
+        email: 'user@example.com',
+        propertyName: 'emails_sha256.0',
+      },
+      {
+        label: 'plain userId without anonymousId',
+        userId: 'User-1',
+        email: hashedIdentifiers.email,
+        propertyName: 'external_ids_sha256.0',
+      },
+      {
+        label: 'plain userId with anonymousId',
+        userId: 'User-1',
+        anonymousId: 'Anonymous-Ignored',
+        email: hashedIdentifiers.email,
+        propertyName: 'external_ids_sha256.0',
+      },
+    ])(
+      'rejects $label when hashing is disabled',
+      ({ userId, anonymousId, email, propertyName }) => {
+        expect(() =>
+          transform(identifierInput(destinationWithHashing(false), { userId, anonymousId, email })),
+        ).toThrow('appears to be unhashed');
+        expect(stats.increment).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+          propertyName,
+          type: 'unhashed_when_hash_disabled',
+          workspaceId: 'ws-1',
+          destinationId: 'openai-ads-dest-1',
+          destType: 'OPENAI_ADS',
+        });
+      },
+    );
   });
 
   it.each([

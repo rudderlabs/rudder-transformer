@@ -44,6 +44,7 @@ const ACTION_SOURCE_SET = new Set<string>(ACTION_SOURCES);
 // Comfortably past any real monetary value, and short enough that BigInt parsing stays free.
 const MAX_AMOUNT_LENGTH = 40;
 const CURRENCY_RE = /^[A-Z]{3}$/;
+const SHA256_HEX_REGEX = /^[\dA-Fa-f]{64}$/;
 const PUNCTUATION_REGEX = /[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/g;
 // Null-prototype so an event type of `constructor` or `toString` misses instead of resolving to
 // something off Object.prototype. The zod schema already rejects those before they reach the
@@ -196,6 +197,28 @@ const processHashedUserPayload = (
   );
 };
 
+const processHashableUserFields = (
+  message: RudderMessage,
+  payload: Partial<Record<HashMatchField, unknown>>,
+  audienceDestination: OpenAIAdsAudienceDestination,
+): Partial<Record<HashMatchField, string[]>> => {
+  const usesAnonymousIdFallback = !isPresent(message.userId) && isPresent(message.anonymousId);
+  if (audienceDestination.config.isHashRequired || !usesAnonymousIdFallback) {
+    return processHashedUserPayload(payload, audienceDestination);
+  }
+
+  const { external_ids_sha256: anonymousId, ...preHashedPayload } = payload;
+  const anonymousIdValues = toStringArray(anonymousId);
+  const anonymousIdDestination = anonymousIdValues.every((value) => SHA256_HEX_REGEX.test(value))
+    ? audienceDestination
+    : { ...audienceDestination, config: { isHashRequired: true } };
+
+  return {
+    ...processHashedUserPayload(preHashedPayload, audienceDestination),
+    ...processHashedUserPayload({ external_ids_sha256: anonymousId }, anonymousIdDestination),
+  };
+};
+
 const isMappingEntry = (value: unknown): value is MappingEntry =>
   isRecord(value) && 'destKey' in value && 'sourceKeys' in value;
 
@@ -345,7 +368,8 @@ const buildUser = (
       mappings: OPENAI_ADS_MAPPING_CONFIG.hashedUserMappings,
       transform: (payload) => {
         Object.entries(
-          processHashedUserPayload(
+          processHashableUserFields(
+            message,
             payload as Partial<Record<HashMatchField, unknown>>,
             audienceDestination,
           ),

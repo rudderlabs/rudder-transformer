@@ -17,6 +17,7 @@ import {
   identifyTraits,
   pageProperties,
   recordIdentifiers,
+  relationshipAttributes,
   trackProperties,
 } from './profiles';
 
@@ -154,19 +155,20 @@ export const verifyPersonState =
       const relationships = await getRelationships(ctx, userId);
       // The App API returns object_type_id as a string ("1") even though the OpenAPI spec types it
       // as an integer — normalise both sides rather than trusting either.
-      expect(
-        relationships.map((r) => ({
-          objectTypeId: String(r.object_type_id),
-          objectId: r.identifiers?.object_id,
-        })),
-      ).toEqual(
-        expect.arrayContaining([
-          { objectTypeId: GROUP_OBJECT_TYPE_ID, objectId: ctx.identity('group') },
-        ]),
+      const groupRelationship = relationships.find(
+        (relationship) =>
+          String(relationship.object_type_id) === GROUP_OBJECT_TYPE_ID &&
+          relationship.identifiers?.object_id === ctx.identity('group'),
       );
+      expect(groupRelationship).toBeDefined();
+      expect(asStrings(groupRelationship?.attributes ?? {})).toMatchObject(
+        asStrings(relationshipAttributes(ctx)),
+      );
+
       const objectAttributes = await getObjectAttributes(ctx, ctx.identity('group'));
       expect(objectAttributes).not.toBeNull();
       expect(asStrings(objectAttributes ?? {})).toMatchObject(asStrings(groupTraits(ctx)));
+      expect(objectAttributes).not.toHaveProperty('relationshipAttributes');
     });
 
     // Record the normalised surface for the cross-scenario comparison.

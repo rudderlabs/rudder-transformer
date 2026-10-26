@@ -16,6 +16,7 @@ const {
   flattenJson,
   isAppleFamily,
   simpleProcessRouterDest,
+  getDestinationExternalID,
 } = require('../../util');
 
 const rejectParams = ['revenue', 'currency'];
@@ -41,6 +42,10 @@ function responseBuilderSimple(message, category, destination) {
     delete payload.gps_adid;
   } else {
     throw new InstrumentationError('Device type not valid');
+  }
+  const adjustAdid = getDestinationExternalID(message, 'adjustExternalId');
+  if (adjustAdid) {
+    payload.adid = adjustAdid;
   }
   if (payload.revenue) {
     payload.currency = message?.properties?.currency || 'USD';

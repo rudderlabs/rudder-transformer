@@ -111,6 +111,7 @@ const groupResponseBuilder = (message) => {
 
 - **Object Management**: Creates and manages objects in Customer.io
 - **Relationship Handling**: Establishes relationships between users and objects
+- **Relationship Attributes**: Maps a non-empty object from `traits.relationshipAttributes` to `cio_relationships[].relationship_attributes`; omits it for empty/non-object values or when no person identifier is present
 - **Batch Processing**: Uses Customer.io's v2 batch API for efficient processing
 - **Action Support**: Supports identify, delete, add_relationships, delete_relationships actions
 

@@ -13,7 +13,7 @@ import {
   validateEventName,
   setValueForUntrustedPath,
 } from '../../../util';
-import { populateSpecedTraits } from '../util';
+import { populateSpecedTraits, relationshipAttributesFor } from '../util';
 import { SpecedTraits } from '../../../../constants';
 import {
   getV2Endpoint,
@@ -213,7 +213,12 @@ export const buildObject = (message, destination: CustomerIODestination): Custom
   // The relationship's person side is a person identifier too, so it uses the
   // destination's configured mapping rather than detecting email-vs-id per event.
   const cioRelationships = isDefinedNotNullNotEmpty(mapped.userId)
-    ? [{ identifiers: personIdentifierFor(mapped.userId, destination) }]
+    ? [
+        {
+          identifiers: personIdentifierFor(mapped.userId, destination),
+          ...relationshipAttributesFor(mapped.relationshipAttributes),
+        },
+      ]
     : [];
   return {
     type: 'object',

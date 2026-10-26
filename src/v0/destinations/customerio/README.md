@@ -129,6 +129,10 @@ Customer.io destination does not make intermediate calls for any event types. Al
 
 ### Additional Functionalities
 
+#### Group Relationship Attributes
+
+Group events can set attributes on the person↔object relationship by sending a non-empty object in `traits.relationshipAttributes`. The destination emits it as `cio_relationships[].relationship_attributes` and excludes it from the object's `attributes`. Empty or non-object values are omitted, and the value is silently ignored when the Group event has no person identifier. This applies only to Group events; Identify relationship payloads are not supported.
+
 #### Device Management
 
 - **Device Registration**: Automatic device token registration for mobile push notifications
@@ -179,6 +183,10 @@ Customer.io requires strict event ordering for all event types due to the follow
 **Group Events**: These events manage object relationships and attributes, requiring proper ordering to maintain data consistency.
 
 **Alias Events**: These events merge user profiles and must be processed in order to prevent data corruption during merge operations.
+
+#### Group Relationship Attributes
+
+Group events can set attributes on the person↔object relationship by sending a non-empty object in `traits.relationshipAttributes`. The destination emits it as `cio_relationships[].relationship_attributes` and excludes it from the object's `attributes`. Empty or non-object values are omitted, and the value is silently ignored when the Group event has no person identifier. This applies only to Group events; Identify relationship payloads are not supported.
 
 > Effectively, Customer.io requires strict event ordering for all event types to maintain data integrity.
 

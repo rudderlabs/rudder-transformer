@@ -387,7 +387,7 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
         {
           authenticationEnabled: true,
           rudderAccountId: 'account-1',
-          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          authenticationType: 'bearerToken',
           bearerToken: 'stale-inline-token',
         },
         {
@@ -436,6 +436,24 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
           secret: { bearerToken: 'account-token' },
         },
       ),
+      expectedHeaders: { 'Content-Type': 'application/json' },
+    },
+    {
+      name: 'no auth when toggle is false for an OAuth account',
+      destination: buildDestination(
+        {
+          authenticationEnabled: false,
+          rudderAccountId: 'account-1',
+          authenticationType: 'bearerToken',
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+          options: {},
+          secret: { accessToken: 'stale-account-token' },
+        },
+      ),
+      metadataOverrides: { secret: { accessToken: 'metadata-oauth-token' } },
       expectedHeaders: { 'Content-Type': 'application/json' },
     },
   ];
@@ -490,24 +508,27 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       ),
       errorMatch: /missing: secret\.bearerToken/,
     },
-    {
-      name: 'selected OAuth account without metadata access token',
+    ...[
+      ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS,
+      ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+    ].map((accountDefinitionName) => ({
+      name: `selected ${accountDefinitionName} account without metadata access token`,
       destination: buildDestination(
         {
           authenticationEnabled: true,
           rudderAccountId: 'account-1',
-          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          authenticationType: 'bearerToken',
           bearerToken: 'stale-inline-token',
         },
         {
-          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS,
+          accountDefinitionName,
           options: {},
           secret: { accessToken: 'stale-account-token' },
         },
       ),
       errorMatch: /Secret or accessToken is not present in the metadata/,
       statusCode: 500,
-    },
+    })),
   ];
 
   it.each(accountErrorCases)(
@@ -556,6 +577,46 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
         })
         .sort(),
     ).toEqual(['Bearer oauth-token-a', 'Bearer oauth-token-b']);
+  });
+
+  it('batches OAuth events that share an access token', async () => {
+    const destination = buildDestination(
+      { authenticationEnabled: true, rudderAccountId: 'account-1' },
+      {
+        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS,
+        options: {},
+        secret: {},
+      },
+    );
+    const metadataOverrides = { secret: { accessToken: 'shared-oauth-token' } };
+    const inputs = [
+      buildInput(
+        1,
+        'insert',
+        { email: hashedEmail('a@b.com') },
+        destination,
+        buildConnection(),
+        metadataOverrides,
+      ),
+      buildInput(
+        2,
+        'insert',
+        { email: hashedEmail('c@d.com') },
+        destination,
+        buildConnection(),
+        metadataOverrides,
+      ),
+    ];
+
+    const results = await processDestinationIntegration(inputs, Integration, {});
+    const successes = results.filter((result) => result.statusCode === 200);
+
+    expect(successes).toHaveLength(1);
+    const request = successes[0]?.batchedRequest;
+    if (!request || Array.isArray(request)) throw new Error('expected single batchedRequest');
+    expect(request.headers?.Authorization).toBe('Bearer shared-oauth-token');
+    expect(successes[0].metadata.map((item) => item.jobId).sort()).toEqual([1, 2]);
+    expect((request.body?.JSON as { users: unknown[] }).users).toHaveLength(2);
   });
 
   it('throws when requestBody template fails at runtime', async () => {

@@ -375,7 +375,7 @@ describe('buildRequestHeaders', () => {
       destination: buildDestination(
         {
           rudderAccountId: 'account-1',
-          authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
+          authenticationType: 'bearerToken',
           bearerToken: 'stale-inline-token',
         },
         {
@@ -424,6 +424,24 @@ describe('buildRequestHeaders', () => {
           secret: { bearerToken: 'account-token' },
         },
       ),
+      expectedHeaders: { 'Content-Type': 'application/json' },
+    },
+    {
+      name: 'suppresses OAuth auth when toggle is false',
+      destination: buildDestination(
+        {
+          authenticationEnabled: false,
+          rudderAccountId: 'account-1',
+          authenticationType: 'bearerToken',
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+          options: {},
+          secret: { accessToken: 'stale-account-token' },
+        },
+      ),
+      metadata: { secret: { accessToken: 'metadata-oauth-token' } },
       expectedHeaders: { 'Content-Type': 'application/json' },
     },
     {
@@ -505,15 +523,22 @@ describe('buildRequestHeaders', () => {
     },
   ];
 
+  const oauthAccountDefinitionNames = [
+    ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS,
+    ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+  ];
   const oauthMetadataFailureCases: {
     name: string;
     metadata?: CustomAudienceAuthMetadata;
-  }[] = [
-    { name: 'metadata is absent', metadata: undefined },
-    { name: 'metadata secret is absent', metadata: {} },
-    { name: 'metadata accessToken is absent', metadata: { secret: {} } },
-    { name: 'metadata accessToken is empty', metadata: { secret: { accessToken: '' } } },
-  ];
+    accountDefinitionName: string;
+  }[] = oauthAccountDefinitionNames.flatMap((accountDefinitionName) =>
+    [
+      { name: 'metadata is absent', metadata: undefined },
+      { name: 'metadata secret is absent', metadata: {} },
+      { name: 'metadata accessToken is absent', metadata: { secret: {} } },
+      { name: 'metadata accessToken is empty', metadata: { secret: { accessToken: '' } } },
+    ].map((testCase) => ({ ...testCase, accountDefinitionName })),
+  );
 
   it.each(successCases)('$name', ({ destination, metadata, expectedHeaders }) => {
     expect(buildRequestHeaders(destination, metadata)).toEqual(expectedHeaders);
@@ -525,23 +550,26 @@ describe('buildRequestHeaders', () => {
     expect(build).toThrow(errorMessage);
   });
 
-  it.each(oauthMetadataFailureCases)('throws OAuthSecretError when $name', ({ metadata }) => {
-    const destination = buildDestination(
-      {
-        authenticationEnabled: true,
-        rudderAccountId: 'account-1',
-        authenticationType: AUTHENTICATION_TYPES.BEARER_TOKEN,
-        bearerToken: 'stale-inline-token',
-      },
-      {
-        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS,
-        options: {},
-        secret: { accessToken: 'stale-account-token' },
-      },
-    );
-    const build = () => buildRequestHeaders(destination, metadata);
+  it.each(oauthMetadataFailureCases)(
+    'throws OAuthSecretError when $name for $accountDefinitionName',
+    ({ metadata, accountDefinitionName }) => {
+      const destination = buildDestination(
+        {
+          authenticationEnabled: true,
+          rudderAccountId: 'account-1',
+          authenticationType: 'bearerToken',
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName,
+          options: {},
+          secret: { accessToken: 'stale-account-token' },
+        },
+      );
+      const build = () => buildRequestHeaders(destination, metadata);
 
-    expect(build).toThrow(OAuthSecretError);
-    expect(build).toThrow('Secret or accessToken is not present in the metadata');
-  });
+      expect(build).toThrow(OAuthSecretError);
+      expect(build).toThrow('Secret or accessToken is not present in the metadata');
+    },
+  );
 });

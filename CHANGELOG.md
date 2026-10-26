@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.165.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.164.0...v1.165.0) (2026-10-26)
+
+
+### Features
+
+* **customerio:** support group relationship attributes ([#5716](https://github.com/rudderlabs/rudder-transformer/issues/5716)) ([a1ec80d](https://github.com/rudderlabs/rudder-transformer/commit/a1ec80d29116a46dbf071ff94aaabe015292efca))
+* **pushwoosh:** add pushwoosh destination ([#5645](https://github.com/rudderlabs/rudder-transformer/issues/5645)) ([f1dd798](https://github.com/rudderlabs/rudder-transformer/commit/f1dd7986d0af32dfc4cd69f0549d951deb915d7c)), closes [rudderlabs/rudder-integrations-config#2809](https://github.com/rudderlabs/rudder-integrations-config/issues/2809)
+
+
+### Bug Fixes
+
+* **custom_audience:** remove legacy inline authentication ([#5712](https://github.com/rudderlabs/rudder-transformer/issues/5712)) ([1291c68](https://github.com/rudderlabs/rudder-transformer/commit/1291c6847714bf2e96dab3a467300a03437b6f6f)), closes [rudderlabs/rudder-integrations-config#2855](https://github.com/rudderlabs/rudder-integrations-config/issues/2855)
+* **openai_ads:** honor destination hashing configuration ([#5718](https://github.com/rudderlabs/rudder-transformer/issues/5718)) ([a69ac12](https://github.com/rudderlabs/rudder-transformer/commit/a69ac1237cefdb851d37530b278a1412c18b96a0)), closes [rudder-integrations-config#2864](https://github.com/rudderlabs/rudder-integrations-config/issues/2864)
+
 ## [1.164.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.163.0...v1.164.0) (2026-10-22)
 
 

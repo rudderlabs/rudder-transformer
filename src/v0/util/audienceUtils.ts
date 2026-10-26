@@ -68,6 +68,9 @@ function hashValue(value: string, hashingType: HashingType): string {
   return hashFunction(value);
 }
 
+export const isAlreadyHashed = (value: string, hashingType: HashingType): boolean =>
+  HASHING_CONFIG[hashingType]?.regex.test(value) ?? false;
+
 interface AudienceDestination {
   workspaceId: string;
   id: string;
@@ -90,8 +93,8 @@ export const validateHashingConsistency = (
 ): void => {
   const { workspaceId, id: destinationId, type: destType, config } = destination;
   const { isHashRequired } = config;
-  const isAlreadyHashed = HASHING_CONFIG[hashingType]?.regex.test(sourceValue) ?? false;
-  if (isHashRequired && isAlreadyHashed) {
+  const looksHashed = isAlreadyHashed(sourceValue, hashingType);
+  if (isHashRequired && looksHashed) {
     stats.increment('audience_hashing_inconsistency', {
       propertyName,
       type: 'hashed_when_hash_enabled',
@@ -103,7 +106,7 @@ export const validateHashingConsistency = (
       `Hashing is enabled but the value for field ${propertyName} appears to already be hashed. Either disable hashing or send unhashed data.`,
     );
   }
-  if (!isHashRequired && !isAlreadyHashed) {
+  if (!isHashRequired && !looksHashed) {
     stats.increment('audience_hashing_inconsistency', {
       propertyName,
       type: 'unhashed_when_hash_disabled',

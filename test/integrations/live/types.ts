@@ -287,6 +287,7 @@ interface RouterTransformInput {
   message: Record<string, unknown>;
   destination: {
     ID: string;
+    DestinationDefinition: { Name: string };
     Config: Record<string, unknown>;
     Enabled: boolean;
     deliveryAccount?: DeliveryAccount;

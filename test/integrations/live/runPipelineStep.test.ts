@@ -101,6 +101,9 @@ describe('buildRouterTransformBody', () => {
     expect(body.input.map((i) => i.metadata.jobId)).toEqual([11, 22]);
     expect(body.input.map((i) => i.message)).toEqual([event('a'), event('b')]);
     body.input.forEach((i) => expect(i.destination.Config).toEqual({ apiKey: 'k' }));
+    body.input.forEach((i) =>
+      expect(i.destination.DestinationDefinition).toEqual({ Name: 'DEST' }),
+    );
   });
 
   it('applies metadataOverride to every input, not just the first', () => {

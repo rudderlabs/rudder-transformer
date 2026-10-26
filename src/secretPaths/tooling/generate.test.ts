@@ -228,7 +228,18 @@ describe('secret-path generator utilities', () => {
     ).toEqual(['headers']);
   });
 
-  it('reads runtime secrets only from a metadata.secret bag', () => {
+  it.each([
+    ['OAuth metadata', { metadata: { secret: { accessToken: 'oauth-token' } } }, 'oauth-token'],
+    [
+      'delivery account',
+      { destination: { deliveryAccount: { secret: { apiKeyValue: 'account-secret' } } } },
+      'account-secret',
+    ],
+  ])('reads runtime secrets from the %s bag', (_name, body, expected) => {
+    expect(valuesFor({ kind: 'runtime' }, body)).toEqual([expected]);
+  });
+
+  it('ignores unrelated objects named secret', () => {
     expect(
       valuesFor({ kind: 'runtime' }, { message: { properties: { secret: 'not-runtime' } } }),
     ).toEqual([]);

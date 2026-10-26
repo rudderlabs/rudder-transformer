@@ -10,6 +10,7 @@ import type { RudderMessage } from '../../../types';
 import { constructPayload, getValueFromMessage, removeUndefinedAndNullValues } from '../../util';
 import {
   HashingType,
+  isAlreadyHashed,
   isValidPhoneNumber,
   processAudienceRecord,
   type AudienceField,
@@ -91,11 +92,9 @@ type CurrencyMetadata = {
 
 type UserPayload = Partial<Record<HashMatchField | PlainMatchField, unknown>>;
 
-const audienceDestination = {
-  workspaceId: '',
-  id: '',
-  type: DESTINATION,
-  config: { isHashRequired: true },
+type DestinationMeta = {
+  workspaceId: string;
+  destinationId: string;
 };
 
 const normalizeHashString = (value: unknown): string | undefined => {
@@ -170,8 +169,10 @@ const HASH_FIELD_CONFIGS: Record<HashMatchField, AudienceField> = {
   },
 };
 
-const hashUserPayload = (
+const processHashedUserPayload = (
   payload: Partial<Record<HashMatchField, unknown>>,
+  destinationMeta: DestinationMeta,
+  isHashRequired: boolean,
 ): Partial<Record<HashMatchField, string[]>> => {
   const record: Record<string, unknown> = {};
   const fieldConfigs: Record<string, AudienceField> = {};
@@ -188,18 +189,50 @@ const hashUserPayload = (
 
   const processed = processAudienceRecord(record, {
     fieldConfigs,
-    destination: audienceDestination,
+    destination: {
+      workspaceId: destinationMeta.workspaceId,
+      id: destinationMeta.destinationId,
+      type: DESTINATION,
+      config: { isHashRequired },
+    },
   });
   return Object.entries(processed).reduce<Partial<Record<HashMatchField, string[]>>>(
     (acc, [recordKey, value]) => {
       const field = fieldByRecordKey[recordKey];
       if (field && typeof value === 'string') {
-        acc[field] = [...(acc[field] ?? []), value];
+        acc[field] = [...(acc[field] ?? []), value.toLowerCase()];
       }
       return acc;
     },
     {},
   );
+};
+
+const processHashableUserFields = (
+  message: RudderMessage,
+  payload: Partial<Record<HashMatchField, unknown>>,
+  destinationMeta: DestinationMeta,
+  isHashRequired: boolean,
+): Partial<Record<HashMatchField, string[]>> => {
+  const usesAnonymousIdFallback = !isPresent(message.userId) && isPresent(message.anonymousId);
+  if (isHashRequired || !usesAnonymousIdFallback) {
+    return processHashedUserPayload(payload, destinationMeta, isHashRequired);
+  }
+
+  const { external_ids_sha256: anonymousId, ...preHashedPayload } = payload;
+  const anonymousIdValues = toStringArray(anonymousId);
+  const anonymousIdIsHashed = anonymousIdValues.every((value) =>
+    isAlreadyHashed(value, HashingType.SHA256),
+  );
+
+  return {
+    ...processHashedUserPayload(preHashedPayload, destinationMeta, isHashRequired),
+    ...processHashedUserPayload(
+      { external_ids_sha256: anonymousId },
+      destinationMeta,
+      !anonymousIdIsHashed,
+    ),
+  };
 };
 
 const isMappingEntry = (value: unknown): value is MappingEntry =>
@@ -335,7 +368,11 @@ const resolveOptOut = (payload: EventBasePayload): boolean | undefined => {
   throw new InstrumentationError('OpenAI Ads opt_out must be a boolean');
 };
 
-const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
+const buildUser = (
+  message: RudderMessage,
+  destinationMeta: DestinationMeta,
+  isHashRequired: boolean,
+): OpenAIAdsUser | undefined => {
   const user: OpenAIAdsUser = {};
   const addArray = (key: PlainMatchField | HashMatchField, value: string[] | undefined) => {
     if (value?.length) user[key] = value;
@@ -348,7 +385,12 @@ const buildUser = (message: RudderMessage): OpenAIAdsUser | undefined => {
       mappings: OPENAI_ADS_MAPPING_CONFIG.hashedUserMappings,
       transform: (payload) => {
         Object.entries(
-          hashUserPayload(payload as Partial<Record<HashMatchField, unknown>>),
+          processHashableUserFields(
+            message,
+            payload as Partial<Record<HashMatchField, unknown>>,
+            destinationMeta,
+            isHashRequired,
+          ),
         ).forEach(([key, values]) => addArray(key as HashMatchField, values));
       },
     },
@@ -560,7 +602,9 @@ const resolveEventId = (message: RudderMessage, mapping: ResolvedOpenAIAdsEventM
 export const buildOpenAIEvent = (
   message: RudderMessage,
   config: OpenAIAdsDestinationConfig,
+  destinationMeta: DestinationMeta,
 ): OpenAIAdsEventPayload => {
+  const isHashRequired = config.isHashRequired ?? true;
   const mapping = resolveEventMapping(message, config);
   const eventType = mapping.to;
   const customEventName =
@@ -574,7 +618,7 @@ export const buildOpenAIEvent = (
   const timestampMs = resolveTimestampMs(topLevelPayload);
   const actionSource = resolveActionSource(topLevelPayload, config);
   const sourceUrl = resolveSourceUrl(topLevelPayload, actionSource);
-  const user = buildUser(message);
+  const user = buildUser(message, destinationMeta, isHashRequired);
   const optOut = resolveOptOut(topLevelPayload);
 
   return removeUndefinedAndNullValues({

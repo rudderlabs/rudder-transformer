@@ -153,7 +153,6 @@ function isEmpty(input) {
  */
 function isEmptyObject(obj) {
   if (!obj) {
-    logger.warn('input is undefined or null');
     return true;
   }
   return Object.keys(obj).length === 0;
@@ -646,9 +645,6 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
 
 const getValueFromMessage = (message, sourceKeys) => {
   if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-    if (sourceKeys.length === 1) {
-      logger.warn('List with single element is not ideal. Use it as string instead');
-    }
     // got the possible sourceKeys
     for (const sourceKey of sourceKeys) {
       let val = null;

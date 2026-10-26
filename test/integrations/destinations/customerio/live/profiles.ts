@@ -39,6 +39,11 @@ export const groupTraits = (ctx: RunContext): Record<string, unknown> => ({
   ciRun: ctx.runId,
 });
 
+export const relationshipAttributes = (ctx: RunContext): Record<string, unknown> => ({
+  role: 'admin',
+  ciRun: ctx.runId,
+});
+
 export const recordIdentifiers = (ctx: RunContext): Record<string, string> => ({
   id: ctx.identity('record'),
   email: ctx.email('record'),

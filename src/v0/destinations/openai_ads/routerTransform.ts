@@ -32,7 +32,10 @@ class OpenAIAdsIntegration extends DestinationIntegration<
   ): TransformedEvent<OpenAIAdsEventPayload> {
     const { apiKey, pixelId } = this.destination.Config;
     return {
-      body: buildOpenAIEvent(input.message, this.destination.Config),
+      body: buildOpenAIEvent(input.message, this.destination.Config, {
+        workspaceId: this.destination.WorkspaceID,
+        destinationId: this.destination.ID,
+      }),
       endpoint: ENDPOINT,
       endpointPath: ENDPOINT_PATH,
       method: 'POST',

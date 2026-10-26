@@ -3,11 +3,8 @@ import { HashingType } from '../../util/audienceUtils';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import type { Metadata, RecordAction, RudderRecordV2 } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
-import { AUTHENTICATION_TYPES } from './constants';
 
 export type Action = `${RecordAction}`;
-
-export type AuthenticationType = (typeof AUTHENTICATION_TYPES)[keyof typeof AUTHENTICATION_TYPES];
 
 export const actionFieldConfigSchema = z.object({
   name: z.string(),
@@ -51,16 +48,8 @@ export const CustomAudienceDestConfigSchema = z
   .object({
     baseUrl: z.string(),
     authenticationEnabled: z.boolean().optional(),
-    authenticationType: z
-      .enum(Object.values(AUTHENTICATION_TYPES) as [AuthenticationType, ...AuthenticationType[]])
-      .optional(),
     headers: z.array(customAudienceHeaderSchema).optional(),
     actions: actionsSchema,
-    basicAuthUserName: z.string().optional(),
-    basicAuthPassword: z.string().optional(),
-    bearerToken: z.string().optional(),
-    apiKeyName: z.string().optional(),
-    apiKeyValue: z.string().optional(),
   })
   .passthrough();
 

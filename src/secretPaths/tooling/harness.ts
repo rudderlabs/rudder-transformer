@@ -444,18 +444,16 @@ export const startHarness = (): Harness => {
 };
 
 /**
- * Visits every string the runtime credential bag carries, and replaces it with whatever the
+ * Visits every string carried by runtime credential bags, and replaces it with whatever the
  * visitor returns.
  *
- * This is the OAuth half of "what counts as a credential". `secretKeys` cannot answer it: the
- * bag is not configuration. The control plane mints it per OAuth account and rudder-server
- * forwards it as an opaque `json.RawMessage` (`router/types/types.go`, `JobMetadataT.Secret`)
- * without reading its keys, so there is no registry naming them and no declaration to follow.
- * A destination reads what it needs out of it - `access_token` for the Google Ads family,
- * `consumerSecret`/`accessTokenSecret` for the OAuth1 ones - and nothing upstream records which.
+ * This is the account half of "what counts as a credential". `secretKeys` cannot answer it:
+ * OAuth credentials arrive in `metadata.secret`, while reusable delivery-account credentials
+ * arrive in `destination.deliveryAccount.secret`. Neither bag is destination configuration, and
+ * neither has a registry naming which nested keys a transform reads.
  *
- * So the rule here is positional rather than nominal: everything under a real `metadata.secret`
- * object is treated as a credential, whatever it is called. That deliberately over-masks.
+ * So the rule here is positional rather than nominal: everything under either real secret bag is
+ * treated as a credential, whatever it is called. That deliberately over-masks.
  *
  * Only strings at or over `MIN_SECRET_LEN` are visited. Shorter ones are not credentials, and
  * substituting them is actively harmful here in a way it is not for a config key: the bag is
@@ -483,6 +481,9 @@ export const visitRuntimeSecrets = (node: unknown, visit: (current: string) => s
     [current.metadata].flat().forEach((metadata) => {
       if (isObj(metadata)) visitBag(metadata[SECRET_BAG_KEY]);
     });
+    if (isObj(current.destination) && isObj(current.destination.deliveryAccount)) {
+      visitBag(current.destination.deliveryAccount[SECRET_BAG_KEY]);
+    }
     for (const key of Object.keys(current)) {
       if (key !== 'metadata') walk(current[key]);
     }
@@ -490,7 +491,7 @@ export const visitRuntimeSecrets = (node: unknown, visit: (current: string) => s
   walk(node);
 };
 
-/** The runtime-bag values present in a request body - the generator's definition, reused. */
+/** Runtime account-secret values present in a request body - the generator's definition, reused. */
 export const runtimeSecretsFor = (node: unknown): string[] =>
   collect((visit) => visitRuntimeSecrets(node, visit));
 

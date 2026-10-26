@@ -169,7 +169,8 @@ const groupResponseBuilder = (message) => {
 - **User ID**: `userIdOnly` → `userId`
 - **Email**: `context.traits.email`, `properties.email`, or `context.externalId[0].id` → `email`
 - **Action**: `traits.action` or `properties.action` → `action`
-- **Attributes**: `traits` (excluding action) → `attributes`
+- **Relationship Attributes**: `traits.relationshipAttributes` → `cio_relationships[].relationship_attributes`
+- **Attributes**: `traits` (excluding `action` and `relationshipAttributes`) → `attributes`
 
 **Supported Actions**:
 
@@ -183,6 +184,8 @@ const groupResponseBuilder = (message) => {
 - `object_id` is required
 - Action must be from supported actions list
 - User relationships are established via email or ID
+- A non-empty object in `traits.relationshipAttributes` is attached only to the group event's person↔object relationship; it is omitted when empty, non-object, or when no person identifier resolves
+- Relationship attributes apply to Group events only and do not add relationship support to Identify events
 
 ### Alias Events
 

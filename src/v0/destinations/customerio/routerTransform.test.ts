@@ -409,6 +409,112 @@ describe('CustomerIOIntegration — event-stream event routing', () => {
     });
   });
 
+  it.each([
+    {
+      path: 'legacy',
+      destination: baseDestination,
+      expectedPersonIdentifiers: { id: 'user-1' },
+    },
+    {
+      path: 'V2',
+      destination: makeV2Destination({ userIdIdentifierType: 'cio_id' }),
+      expectedPersonIdentifiers: { cio_id: 'user-1' },
+    },
+  ])(
+    'maps valid relationship attributes only on $path group relationships',
+    async ({ destination, expectedPersonIdentifiers }) => {
+      const integration = new Integration(destination);
+      const invalidRelationshipAttributes = [
+        { name: 'string', value: 'admin' },
+        { name: 'array', value: ['admin'] },
+        { name: 'empty-object', value: {} },
+      ];
+      const inputs = [
+        makeEventStreamInput(
+          {
+            type: 'group',
+            userId: 'user-1',
+            groupId: 'group-with-attributes',
+            traits: {
+              name: 'Acme',
+              relationshipAttributes: { role: 'admin', active: true },
+            },
+          },
+          destination,
+        ),
+        makeEventStreamInput(
+          {
+            type: 'group',
+            userId: 'user-1',
+            groupId: 'group-without-attributes',
+            traits: { name: 'Acme' },
+          },
+          destination,
+        ),
+        makeEventStreamInput(
+          {
+            type: 'group',
+            groupId: 'group-without-person',
+            traits: { name: 'Acme', relationshipAttributes: { role: 'admin' } },
+          },
+          destination,
+        ),
+        ...invalidRelationshipAttributes.map(({ name, value }) =>
+          makeEventStreamInput(
+            {
+              type: 'group',
+              userId: 'user-1',
+              groupId: `group-with-invalid-${name}`,
+              traits: { name: 'Acme', relationshipAttributes: value },
+            },
+            destination,
+          ),
+        ),
+      ];
+
+      const { successPayloads, errorPayloads } = await integration.transformEvents(inputs);
+      expect(errorPayloads).toHaveLength(0);
+      expect(successPayloads.map(({ body }) => body)).toEqual([
+        {
+          type: 'object',
+          action: 'identify',
+          identifiers: { object_id: 'group-with-attributes', object_type_id: '1' },
+          attributes: { name: 'Acme' },
+          cio_relationships: [
+            {
+              identifiers: expectedPersonIdentifiers,
+              relationship_attributes: { role: 'admin', active: true },
+            },
+          ],
+        },
+        {
+          type: 'object',
+          action: 'identify',
+          identifiers: { object_id: 'group-without-attributes', object_type_id: '1' },
+          attributes: { name: 'Acme' },
+          cio_relationships: [{ identifiers: expectedPersonIdentifiers }],
+        },
+        {
+          type: 'object',
+          action: 'identify',
+          identifiers: { object_id: 'group-without-person', object_type_id: '1' },
+          attributes: { name: 'Acme' },
+          cio_relationships: [],
+        },
+        ...invalidRelationshipAttributes.map(({ name: relationshipAttributesType }) => ({
+          type: 'object' as const,
+          action: 'identify',
+          identifiers: {
+            object_id: `group-with-invalid-${relationshipAttributesType}`,
+            object_type_id: '1',
+          },
+          attributes: { name: 'Acme' },
+          cio_relationships: [{ identifiers: expectedPersonIdentifiers }],
+        })),
+      ]);
+    },
+  );
+
   it('writes every person identifier under the configured mapping key', async () => {
     const v2Destination = makeV2Destination({ userIdIdentifierType: 'cio_id' });
     const integration = new Integration(v2Destination);

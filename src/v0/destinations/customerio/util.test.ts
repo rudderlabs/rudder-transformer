@@ -194,29 +194,83 @@ describe('Unit test cases for customerio aliasResponseBuilder', () => {
 });
 
 describe('Unit test cases for customerio groupResponseBuilder', () => {
-  it('Device token name does not match with event name as well as allowed list', async () => {
-    let expectedOutput = {
-      endpointDetails: {
-        endpoint: 'https://track.customer.io/api/v2/batch',
-        path: 'v2/batch',
+  const expectedAttributes = {
+    address: { city: 'kolkata', country: 'India' },
+    createdAt: '2014-05-21T15:54:20Z',
+    email: 'abc@test.com',
+    name: 'rudder',
+    objectTypeId: 'obj1',
+    timestamp: '2014-05-21T15:54:20Z',
+  };
+  const expectedResponse = (cioRelationships: Record<string, unknown>[]) => ({
+    endpointDetails: {
+      endpoint: 'https://track.customer.io/api/v2/batch',
+      path: 'v2/batch',
+    },
+    rawPayload: {
+      action: 'identify',
+      attributes: expectedAttributes,
+      cio_relationships: cioRelationships,
+      identifiers: { object_id: 'group1', object_type_id: 'obj1' },
+      type: 'object',
+    },
+    requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
+  });
+
+  it('omits relationship attributes from the relationship entry when they are absent', () => {
+    const message = { ...getGroupTestMessage(), userId: 'user-1' };
+
+    expect(groupResponseBuilder(message)).toEqual(
+      expectedResponse([{ identifiers: { id: 'user-1' } }]),
+    );
+  });
+
+  it('adds relationship attributes to the person relationship and excludes them from object attributes', () => {
+    const baseMessage = getGroupTestMessage();
+    const message = {
+      ...baseMessage,
+      userId: 'user-1',
+      traits: {
+        ...baseMessage.traits,
+        relationshipAttributes: { role: 'admin', active: true },
       },
-      rawPayload: {
-        action: 'identify',
-        attributes: {
-          address: { city: 'kolkata', country: 'India' },
-          createdAt: '2014-05-21T15:54:20Z',
-          email: 'abc@test.com',
-          name: 'rudder',
-          objectTypeId: 'obj1',
-          timestamp: '2014-05-21T15:54:20Z',
-        },
-        cio_relationships: [],
-        identifiers: { object_id: 'group1', object_type_id: 'obj1' },
-        type: 'object',
-      },
-      requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
-    expect(groupResponseBuilder(getGroupTestMessage())).toEqual(expectedOutput);
+
+    expect(groupResponseBuilder(message)).toEqual(
+      expectedResponse([
+        {
+          identifiers: { id: 'user-1' },
+          relationship_attributes: { role: 'admin', active: true },
+        },
+      ]),
+    );
+  });
+
+  it('drops relationship attributes when no person identifier resolves', () => {
+    const baseMessage = getGroupTestMessage();
+    const message = {
+      ...baseMessage,
+      traits: { ...baseMessage.traits, relationshipAttributes: { role: 'admin' } },
+    };
+
+    expect(groupResponseBuilder(message)).toEqual(expectedResponse([]));
+  });
+
+  it.each([
+    { name: 'string', relationshipAttributes: 'admin' },
+    { name: 'array', relationshipAttributes: ['admin'] },
+    { name: 'empty object', relationshipAttributes: {} },
+  ])('drops $name relationship attributes', ({ relationshipAttributes }) => {
+    const baseMessage = getGroupTestMessage();
+    const message = {
+      ...baseMessage,
+      userId: 'user-1',
+      traits: { ...baseMessage.traits, relationshipAttributes },
+    };
+
+    expect(groupResponseBuilder(message)).toEqual(
+      expectedResponse([{ identifiers: { id: 'user-1' } }]),
+    );
   });
 });
 

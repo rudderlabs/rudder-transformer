@@ -3,12 +3,11 @@ import { ConfigurationError, InstrumentationError } from '@rudderstack/integrati
 import { HashingType, processAudienceRecord, type AudienceField } from '../../util/audienceUtils';
 
 import { RecordAction } from '../../../types/rudderEvents';
-import { ACCOUNT_DEFINITION_NAMES, AUTHENTICATION_TYPES, ERROR_MESSAGES } from './constants';
+import { ACCOUNT_DEFINITION_NAMES, ERROR_MESSAGES } from './constants';
 import type {
   Action,
   ActionConfig,
   ActionFieldConfig,
-  AuthenticationType,
   CustomAudienceAccountAuthHandler,
   CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
@@ -152,24 +151,6 @@ const buildApiKeyHeader = (name: string, value: string): Record<string, string> 
   [name]: value,
 });
 
-const buildLegacyAuthHeaders = (
-  authenticationType: AuthenticationType,
-  destConfig: CustomAudienceDestConfig,
-): Record<string, string> => {
-  switch (authenticationType) {
-    case AUTHENTICATION_TYPES.NO_AUTH:
-      return {};
-    case AUTHENTICATION_TYPES.BASIC_AUTH:
-      return buildBasicAuthHeader(destConfig.basicAuthUserName!, destConfig.basicAuthPassword!);
-    case AUTHENTICATION_TYPES.BEARER_TOKEN:
-      return buildBearerTokenHeader(destConfig.bearerToken!);
-    case AUTHENTICATION_TYPES.API_KEY:
-      return buildApiKeyHeader(destConfig.apiKeyName!, destConfig.apiKeyValue!);
-    default:
-      return {};
-  }
-};
-
 const requireAccountValues = (
   account: ParsedCustomAudienceDeliveryAccount,
   values: Array<{ field: string; value: unknown }>,
@@ -239,9 +220,6 @@ export const resolveAuth = (destination: CustomAudienceDestination): Record<stri
     return resolveAccountAuth(deliveryAccount);
   }
   if (hasLinkedAccount) return resolveAccountAuth(deliveryAccount);
-  if (destConfig.authenticationType) {
-    return buildLegacyAuthHeaders(destConfig.authenticationType, destConfig);
-  }
   return {};
 };
 

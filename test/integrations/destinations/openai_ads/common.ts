@@ -39,6 +39,14 @@ export const pageScreenTypeMappingDestination: Destination = {
   },
 };
 
+export const preHashedDestination: Destination = {
+  ...destination,
+  Config: {
+    ...destination.Config,
+    isHashRequired: false,
+  },
+};
+
 export const metadata = (jobId: number): Metadata => ({
   jobId,
   attemptNum: 1,

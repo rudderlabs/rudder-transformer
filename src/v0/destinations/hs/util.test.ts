@@ -22,6 +22,10 @@ import {
 import { primaryToSecondaryFields } from './config';
 import { HubspotRudderMessage } from './types';
 import { httpGET } from '../../../adapters/network';
+import Cache from '../../util/cache';
+
+// Captured at import time, before any beforeEach clears the mock
+const cacheConstructorCalls = [...(Cache as unknown as jest.Mock).mock.calls];
 
 const propertyMap: Record<string, string> = {
   firstName: 'string',
@@ -481,6 +485,14 @@ describe('isLookupFieldUnique utility test cases', () => {
       'dest-123:contacts',
       expect.objectContaining({ email: true }),
     );
+  });
+});
+
+describe('HubSpot object properties cache', () => {
+  // node_cache_* metrics take their label set from the first cache that emits, so an extra
+  // destType tag gets dropped with a warning on every emit when another cache emitted first
+  it('is created without extra stat tags', () => {
+    expect(cacheConstructorCalls).toContainEqual(['HS_OBJECT_PROPERTIES_V3', expect.any(Number)]);
   });
 });
 

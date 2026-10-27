@@ -28,8 +28,6 @@ const { isHttpStatusSuccess } = require('../index');
  *   - This seems like a generic document that contains errors possible for Graph API
  * 2. https://developers.facebook.com/docs/marketing-api/error-reference/
  *   - The doc seems to be more related to Marketing API
- * 3. https://developers.facebook.com/docs/graph-api/overview/rate-limiting/
- *   - Rate-limit codes 4, 17, 613, and 80003 are handled as throttled responses.
 {
   // A scenario where in we have to know the error with code and subcode, we can conclude that
   // this error will have a particular status, statTags

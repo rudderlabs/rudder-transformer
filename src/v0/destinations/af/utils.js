@@ -1,6 +1,6 @@
-const { getValueFromMessage, hashToSha256 } = require('../../util');
+const { constructPayload, hashToSha256, removeUndefinedValues } = require('../../util');
 const { HashingType, isAlreadyHashed } = require('../../util/audienceUtils');
-const { ADVANCED_MATCHING_SOURCE_KEYS } = require('./config');
+const { ConfigCategory, mappingConfig } = require('./config');
 
 const toTrimmedString = (value) => {
   if (typeof value !== 'string' && typeof value !== 'number') {
@@ -19,7 +19,7 @@ const hashLowercased = (value) => {
     : hashToSha256(trimmed.toLowerCase());
 };
 
-const phoneHashes = (value) => {
+const hashPhone = (value) => {
   const trimmed = toTrimmedString(value);
   if (!trimmed) {
     return {};
@@ -42,15 +42,17 @@ const phoneHashes = (value) => {
  * Advanced Matching identifiers for the S2S v3 in-app event API, normalized as AppsFlyer
  * requires before hashing. A value that is already a SHA-256 digest is sent unchanged.
  */
-const getAdvancedMatchingFields = (message) => ({
-  email_hashed: hashLowercased(getValueFromMessage(message, ADVANCED_MATCHING_SOURCE_KEYS.email)),
-  ...phoneHashes(getValueFromMessage(message, ADVANCED_MATCHING_SOURCE_KEYS.phone)),
-  first_name_hashed: hashLowercased(
-    getValueFromMessage(message, ADVANCED_MATCHING_SOURCE_KEYS.firstName),
-  ),
-  last_name_hashed: hashLowercased(
-    getValueFromMessage(message, ADVANCED_MATCHING_SOURCE_KEYS.lastName),
-  ),
-});
+const getAdvancedMatchingFields = (message) => {
+  const identifiers = constructPayload(
+    message,
+    mappingConfig[ConfigCategory.ADVANCED_MATCHING.name],
+  );
+  return removeUndefinedValues({
+    email_hashed: hashLowercased(identifiers.email_hashed),
+    ...hashPhone(identifiers.phone_number_hashed),
+    first_name_hashed: hashLowercased(identifiers.first_name_hashed),
+    last_name_hashed: hashLowercased(identifiers.last_name_hashed),
+  });
+};
 
 module.exports = { getAdvancedMatchingFields };

@@ -1,0 +1,32 @@
+[
+  {
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "destKey": "email_hashed"
+  },
+  {
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "destKey": "phone_number_hashed"
+  },
+  {
+    "sourceKeys": [
+      "traits.firstName",
+      "traits.firstname",
+      "traits.first_name",
+      "context.traits.firstName",
+      "context.traits.firstname",
+      "context.traits.first_name"
+    ],
+    "destKey": "first_name_hashed"
+  },
+  {
+    "sourceKeys": [
+      "traits.lastName",
+      "traits.lastname",
+      "traits.last_name",
+      "context.traits.lastName",
+      "context.traits.lastname",
+      "context.traits.last_name"
+    ],
+    "destKey": "last_name_hashed"
+  }
+]

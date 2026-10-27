@@ -16,6 +16,9 @@ const ConfigCategory = {
   DEFAULT: {
     name: 'AFDefaultConfig',
   },
+  ADVANCED_MATCHING: {
+    name: 'AFAdvancedMatchingConfig',
+  },
 };
 
 const Event = {
@@ -62,28 +65,6 @@ const ENDPOINT_PATH_V2 = `v2/${BASE_ENDPOINT_PATH}`;
 const ENDPOINT = `https://api2.appsflyer.com/${BASE_ENDPOINT_PATH}/`;
 const ENDPOINT_V2 = `https://api3.appsflyer.com/${BASE_ENDPOINT_PATH}/`;
 
-// The generic email mapping also reads context.externalId, which carries the AppsFlyer ID here.
-const ADVANCED_MATCHING_SOURCE_KEYS = {
-  email: ['traits.email', 'context.traits.email'],
-  phone: ['traits.phone', 'context.traits.phone'],
-  firstName: [
-    'traits.firstName',
-    'traits.firstname',
-    'traits.first_name',
-    'context.traits.firstName',
-    'context.traits.firstname',
-    'context.traits.first_name',
-  ],
-  lastName: [
-    'traits.lastName',
-    'traits.lastname',
-    'traits.last_name',
-    'context.traits.lastName',
-    'context.traits.lastname',
-    'context.traits.last_name',
-  ],
-};
-
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 const nameToEventMap = {};
@@ -93,7 +74,6 @@ events.forEach((event) => {
 });
 
 module.exports = {
-  ADVANCED_MATCHING_SOURCE_KEYS,
   ConfigCategory,
   ENDPOINT_PATH_V2,
   ENDPOINT_PATH,

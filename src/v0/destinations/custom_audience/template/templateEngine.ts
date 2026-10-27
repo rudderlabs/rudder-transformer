@@ -329,13 +329,12 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         ctx.fields.add(steps[0].value as string);
       }
 
-      // $$ root path — check for $$.records.{...} to enter iteration context.
-      // AST shape: steps = [variable("$"), name("records"), unary("{"/"]")]
-      const isRecordsPath = startsWithRootCollection(steps, ctx.rootCollection);
-
       steps.forEach((step, idx) => {
         if (step.type !== 'unary') return;
-        if (isRecordsPath && idx === 2) {
+        // A mapping right after `$$.records` iterates the records — at idx 2, or later
+        // when a mid-path `$$` resets the context (`$$.records.{...}.$$.records.{...}`).
+        // AST shape: steps = [variable("$"), name("records"), unary("{"/"]")]
+        if (idx >= 2 && startsWithRootCollection(steps.slice(idx - 2), ctx.rootCollection)) {
           // The record mapping itself — bare names inside are record fields
           walk(step, true, ctx);
         } else if (idx === 0) {

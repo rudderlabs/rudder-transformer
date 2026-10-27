@@ -117,6 +117,11 @@ describe('parseTemplate', () => {
       expectedFields: ['email'],
     },
     {
+      name: 'mid-path $$ resets to the records for a second mapping',
+      template: '[$$.records.{ "e": email }.$$.records.{ "p": phone }]',
+      expectedFields: ['email', 'phone'],
+    },
+    {
       name: 'root collection referenced inside a nested mapping',
       template: '[$$.records.{ "a": [items.{ "s": [$$.records.{ "e": email }] }] }]',
       expectedFields: ['email', 'items'],

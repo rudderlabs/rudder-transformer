@@ -192,6 +192,23 @@ describe('errorResponseHandler', () => {
       expectedStatus: 429,
     },
     {
+      name: 'NetworkError with hourly rate limit and no subcode',
+      destResponse: {
+        response: {
+          error: {
+            code: 613,
+            type: 'OAuthException',
+            message: '(#613) Hourly limit for this API call has been exceeded',
+          },
+        },
+        status: 429,
+      },
+      expectedErrorClass: NetworkError,
+      expectedMessage:
+        'Hourly limit for this API call has been exceeded.. Facebook responded with error code: 613',
+      expectedStatus: 429,
+    },
+    {
       name: 'NetworkError with generic unhandled error',
       destResponse: {
         response: {

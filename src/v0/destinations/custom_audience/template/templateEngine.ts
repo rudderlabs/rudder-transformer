@@ -267,15 +267,6 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         return;
       }
 
-      // Inner mappings over a relative collection must also be array-wrapped:
-      // products.{...} collapses to an object for a single product.
-      if (steps[0]?.type === 'name' && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
-        ctx.errors.push(
-          'Relative collection iteration must be wrapped in [...] to guarantee array output.',
-        );
-        return;
-      }
-
       // Walk each step
       for (const step of steps) {
         if (step.type === 'unary') {

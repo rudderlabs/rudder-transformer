@@ -73,6 +73,11 @@ describe('parseTemplate', () => {
       expectedFields: ['email'],
     },
     {
+      name: 'unwrapped nested relative collection',
+      template: '{ "data": [$$.records.{ "items": products.{ "sku": sku } }] }',
+      expectedFields: ['products'],
+    },
+    {
       name: 'iteration on non-records path (no record fields extracted)',
       template: '{ "data": $$.connection.{ "id": email } }',
       expectedFields: [],
@@ -80,12 +85,6 @@ describe('parseTemplate', () => {
   ];
 
   const invalidTemplates = [
-    {
-      name: 'unwrapped nested relative collection',
-      template: '{ "data": [$$.records.{ "items": products.{ "sku": sku } }] }',
-      expectedError:
-        'Relative collection iteration must be wrapped in [...] to guarantee array output.',
-    },
     {
       name: 'spread operator',
       template: '{ ...$.records }',
@@ -204,7 +203,7 @@ describe('parseTemplate', () => {
   it.each([
     { template: '[ $$.events.{ "payload": { "email": email } } ]', valid: true },
     { template: '[ $$.events.{ "items": [products.{ "sku": sku }] } ]', valid: true },
-    { template: '[ $$.events.{ "items": products.{ "sku": sku } } ]', valid: false },
+    { template: '[ $$.events.{ "items": products.{ "sku": sku } } ]', valid: true },
     { template: '[ $$.events.{ "items": products.$map(sku) } ]', valid: false },
     { template: '$$.events.{ "email": email }', valid: false },
     { template: '[ $$.events.foo.{ "email": email } ]', valid: false },

@@ -53,7 +53,7 @@ const VARIABLE_REFERENCE_ERROR =
 // arrays — see jsonata-js/jsonata#296. Walk the result tree in-place and
 // delete them so they don't leak to callers.
 // Mutating is safe here because the JSONata result is not referenced elsewhere.
-const JSONATA_INTERNAL_PROPS = ['sequence', 'keepArray'];
+const JSONATA_INTERNAL_PROPS = ['sequence', 'keepArray', 'keepSingleton'];
 
 function stripJsonataInternals(value: unknown): unknown {
   if (value === null || typeof value !== 'object') return value;
@@ -137,6 +137,20 @@ interface NodeHandler {
     ctx: FieldContext,
     walk: FieldWalker,
   ) => void;
+
+  /**
+   * AST properties this node type may carry beyond COMMON_AST_KEYS. Any other
+   * property (a sub-expression or binding slot no handler walks) is rejected.
+   */
+  astKeys?: string[];
+}
+
+// Properties every allowed node may carry. `keepArray` is the `expr[]` flag (no sub-expression).
+const COMMON_AST_KEYS = new Set(['type', 'value', 'position', 'keepArray']);
+
+/** First AST property outside the node type's allowlist, if any. */
+function unsupportedAstKey(node: AstNode, astKeys: string[] = []): string | undefined {
+  return Object.keys(node).find((key) => !COMMON_AST_KEYS.has(key) && !astKeys.includes(key));
 }
 
 /**
@@ -194,6 +208,7 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
   //   object: { type: "unary", value: "{", lhs: [[key, value], ...] }
   //   array:  { type: "unary", value: "[", expressions: [...] }
   unary: {
+    astKeys: ['lhs', 'expressions', 'consarray'],
     validate: (node, ctx, walk) => {
       if (node.value === '{') {
         const pairs: AstNode[][] = node.lhs ?? [];
@@ -233,6 +248,7 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
   //   2. name → bare field name — only inside a mapping step
   //   3. anything else → rejected via the step walk
   path: {
+    astKeys: ['steps', 'keepSingletonArray'],
     validate: (node, ctx, walk) => {
       const steps: AstNode[] = node.steps ?? [];
 
@@ -272,52 +288,39 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         return;
       }
 
-      // Root and nested mappings must be wrapped in [...] to guarantee array output.
-      // JSONata unwraps single-element mapping results into bare values, so
-      // `$$.records.{...}` with one record returns an object instead of a
-      // one-element array. Wrapping in [...] prevents this:
+      // Root and nested mappings (`items.{...}`, `[items].{...}`) must be wrapped
+      // in [...] to guarantee array output — non-root `$$` paths such as
+      // `$$.connection.{...}` are exempt. JSONata unwraps single-element mapping
+      // results into bare values, so `$$.records.{...}` with one record returns
+      // an object instead of a one-element array. Wrapping in [...] prevents this:
       //   [$$.records.{ "email": email }]   → always an array
-      if (isRootCollectionPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
-        ctx.errors.push(
-          `$$.${root} iteration must be wrapped in [...] to guarantee array output ` +
-            `(e.g. [$$.${root}.{...}]). Without this, single-record batches produce a bare object.`,
-        );
-        return;
-      }
-      // Every other mapping (`items.{...}`, `[items].{...}`, `[$$.records.{...}].{...}`)
-      // too — except on non-root `$$` paths such as `$$.connection.{...}`.
       const isOtherRootPath = steps[0]?.type === 'variable' && !isRootCollectionPath;
       if (!isOtherRootPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
-        const source = steps
-          .slice(0, mappingStepIdx)
-          .map((s) => (s.type === 'name' ? s.value : '[...]'))
-          .join('.');
-        ctx.errors.push(
-          `Nested iteration (${source}.{...}) must be wrapped in [...] to guarantee array output ` +
-            `(e.g. [${source}.{...}]). Without this, single-element arrays produce a bare value.`,
-        );
+        if (isRootCollectionPath) {
+          ctx.errors.push(
+            `$$.${root} iteration must be wrapped in [...] to guarantee array output ` +
+              `(e.g. [$$.${root}.{...}]). Without this, single-record batches produce a bare object.`,
+          );
+        } else {
+          const source = steps
+            .slice(0, mappingStepIdx)
+            .map((s) => (s.type === 'name' ? s.value : '[...]'))
+            .join('.');
+          ctx.errors.push(
+            `Nested iteration (${source}.{...}) must be wrapped in [...] to guarantee array output ` +
+              `(e.g. [${source}.{...}]). Without this, single-element arrays produce a bare value.`,
+          );
+        }
         return;
       }
 
       // Walk each step
+      // Mapping steps make bare names valid inside; a heading constructor does not.
+      // Every step goes through validateNode, which rejects filters and group-by on
+      // any step, non-$$ variables (`items.$eval`) and disallowed types (function,
+      // wildcard, descendant, sort, etc.)
       for (const [idx, step] of steps.entries()) {
-        if (step.type === 'unary' && idx === 0) {
-          // Heading constructor — same context as a standalone one
-          walk(step, { ...ctx, wrappedInArray: false });
-        } else if (step.type === 'unary') {
-          // Mapping step — bare names become valid inside
-          walk(step, {
-            ...ctx,
-            insideMappingStep: true,
-            insideObjectOrArray: true,
-            wrappedInArray: false,
-          });
-        } else {
-          // Every other step goes through validateNode, which rejects filters and
-          // group-by on any step, non-$$ variables (`items.$eval`) and disallowed
-          // types (function, wildcard, descendant, sort, etc.)
-          walk(step, ctx);
-        }
+        walk(step, step.type === 'unary' && idx > 0 ? { ...ctx, insideMappingStep: true } : ctx);
       }
     },
 
@@ -361,8 +364,7 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
   // Validity of bare-name paths is checked in the path handler.
   name: { validate: () => {} },
 
-  // Variable node — standalone `$$` reference (outside a path).
-  // Inside paths, variables are validated by the path handler directly.
+  // Variable node — a standalone `$$` reference or a variable step in a path.
   // Bracket notation on it is rejected by validateNode.
   variable: {
     validate: (node, ctx) => {
@@ -376,6 +378,7 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
   // e.g. `$number($$.connection.audience_id)` → walk into the argument.
   // Other functions ($map, $string, etc.) are rejected.
   function: {
+    astKeys: ['procedure', 'arguments', 'name'],
     validate: (node, ctx, walk) => {
       const { procedure } = node;
       if (
@@ -383,7 +386,7 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         procedure.value !== ALLOWED_FUNCTION ||
         procedure.type !== 'variable' ||
         // e.g. `$number[$eval(...)]("7")` — the procedure is never walked itself
-        attachedExpressionError(procedure) ||
+        unsupportedAstKey(procedure) !== undefined ||
         (node.arguments ?? []).length !== 1
       ) {
         ctx.errors.push('Function calls are not supported. Only $number() casting is allowed.');
@@ -417,6 +420,12 @@ function validateNode(node: AstNode, ctx: ValidationContext): void {
   const attachedError = attachedExpressionError(node);
   if (attachedError) {
     ctx.errors.push(attachedError);
+    return;
+  }
+  // Fail closed on any other slot JSONata may attach (e.g. a future parser feature)
+  const unknownKey = unsupportedAstKey(node, handler.astKeys);
+  if (unknownKey) {
+    ctx.errors.push(`Expression feature "${unknownKey}" is not supported.`);
     return;
   }
 

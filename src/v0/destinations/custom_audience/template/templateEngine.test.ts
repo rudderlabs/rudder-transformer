@@ -102,6 +102,11 @@ describe('parseTemplate', () => {
       expectedFields: ['email'],
     },
     {
+      name: 'keep-array projection inside a mapping',
+      template: '[$$.records.{ "skus": line_items.sku[] }]',
+      expectedFields: ['line_items'],
+    },
+    {
       name: 'bare-name object key reads a record field',
       template: '[$$.records.{ email: 1 }]',
       expectedFields: ['email'],
@@ -441,6 +446,14 @@ describe('evaluateTemplate', () => {
     expect(result).toEqual({
       data: [{ items: [{ sku: 'a' }] }, { items: [{ sku: 'b' }, { sku: 'c' }] }],
     });
+  });
+
+  it('keep-array projection keeps single-element results as arrays', async () => {
+    const result = await evaluateTemplate('[$$.records.{ "skus": line_items.sku[] }]', {
+      records: [{ line_items: [{ sku: 'a' }] }],
+      connection: {},
+    });
+    expect(result).toEqual([{ skus: ['a'] }]);
   });
 
   it('throws on invalid template syntax', async () => {

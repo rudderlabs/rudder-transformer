@@ -1,7 +1,7 @@
 export const data = [
   {
     name: 'adj',
-    description: 'Test 0',
+    description: 'Android event includes Adjust adid and user agent',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -19,6 +19,7 @@ export const data = [
                   namespace: 'com.example.testapp',
                   version: '1.0',
                 },
+                externalId: [{ type: 'adjustExternalId', id: 'ignored-external-adid' }],
                 device: {
                   adTrackingEnabled: true,
                   advertisingId: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -40,7 +41,7 @@ export const data = [
                   'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
               },
               event: 'First Investment',
-              integrations: { All: true },
+              integrations: { All: true, Adjust: { adid: 'adjust-adid-android' } },
               messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
               originalTimestamp: '2020-09-28T19:53:31.900Z',
               properties: {
@@ -118,6 +119,9 @@ export const data = [
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                adid: 'adjust-adid-android',
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 currency: 'EUR',
                 ip_address: '[::1]',
                 s2s: 1,
@@ -364,7 +368,7 @@ export const data = [
   },
   {
     name: 'adj',
-    description: 'Test 3',
+    description: 'iOS event includes both Adjust adid and IDFA',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -403,7 +407,7 @@ export const data = [
                   'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
               },
               event: 'First Investment',
-              integrations: { All: true },
+              integrations: { All: true, Adjust: { adid: 'adjust-adid-ios' } },
               messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
               originalTimestamp: '2020-09-28T19:53:31.900Z',
               properties: {
@@ -488,6 +492,9 @@ export const data = [
                 idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                adid: 'adjust-adid-ios',
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 currency: 'EUR',
                 s2s: 1,
                 ip_address: '[::1]',
@@ -965,6 +972,8 @@ export const data = [
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 currency: 'EUR',
                 s2s: 1,
                 ip_address: '[::1]',
@@ -1100,6 +1109,8 @@ export const data = [
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 currency: 'USD',
                 s2s: 1,
                 ip_address: '[::1]',
@@ -1235,6 +1246,8 @@ export const data = [
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 currency: 'USD',
                 s2s: 1,
                 ip_address: '[::1]',
@@ -1483,6 +1496,8 @@ export const data = [
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 currency: 'USD',
                 s2s: 1,
                 ip_address: '[::1]',
@@ -1602,6 +1617,8 @@ export const data = [
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 s2s: 1,
                 ip_address: '[::1]',
                 app_token: 'testAppToken',
@@ -1737,6 +1754,8 @@ export const data = [
                 idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 currency: 'EUR',
                 s2s: 1,
                 ip_address: '[::1]',
@@ -1756,7 +1775,7 @@ export const data = [
   },
   {
     name: 'adj',
-    description: 'Test 14',
+    description: 'iOS event includes Adjust adid and IDFV without IDFA',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1776,12 +1795,11 @@ export const data = [
                 },
                 device: {
                   adTrackingEnabled: true,
-                  advertisingId: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                   id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                   manufacturer: 'Google',
                   model: 'AOSP on IA Emulator',
                   name: 'generic_x86_arm',
-                  type: 'ipados',
+                  type: 'iOS',
                   attTrackingStatus: 3,
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.6' },
@@ -1795,7 +1813,7 @@ export const data = [
                   'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
               },
               event: 'First Investment',
-              integrations: { All: true },
+              integrations: { All: true, Adjust: { adid: 'adjust-adid-ios-without-idfa' } },
               messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
               originalTimestamp: '2020-09-28T19:53:31.900Z',
               receivedAt: '2020-09-29T14:50:43.005+05:30',
@@ -1853,9 +1871,11 @@ export const data = [
               headers: { Accept: '*/*' },
               params: {
                 idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                adid: 'adjust-adid-ios-without-idfa',
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 s2s: 1,
                 ip_address: '[::1]',
                 app_token: 'testAppToken',
@@ -1974,6 +1994,8 @@ export const data = [
                 idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 s2s: 1,
                 ip_address: '[::1]',
                 app_token: 'testAppToken',
@@ -2120,6 +2142,8 @@ export const data = [
                 gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                 att_status: 3,
                 tracking_enabled: true,
+                user_agent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 currency: 'EUR',
                 ip_address: '[::1]',
                 s2s: 1,

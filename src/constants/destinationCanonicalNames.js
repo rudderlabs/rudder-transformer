@@ -190,6 +190,7 @@ const DestCanonicalNames = {
   clevertap: ['clevertap', 'Clevertap', 'CleverTap', 'CLEVERTAP'],
   airship: ['airship', 'Airship', 'AIRSHIP'],
   singular: ['Singular'],
+  adj: ['Adjust', 'ADJ', 'adjust', 'adj'],
 };
 
 module.exports = {

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.165.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.165.0...v1.165.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* **fb_custom_audience:** classify Facebook error 613 as throttled ([#5733](https://github.com/rudderlabs/rudder-transformer/issues/5733)) ([e3aa7d6](https://github.com/rudderlabs/rudder-transformer/commit/e3aa7d64189327141564ffe76ece27577ce85e06))
+* **intercom:** keep mapped external_id in rETL v2 flow when email is absent ([#5730](https://github.com/rudderlabs/rudder-transformer/issues/5730)) ([5e56bbe](https://github.com/rudderlabs/rudder-transformer/commit/5e56bbe233bbc4659d2de46b38664d0f838771c3))
+* **refiner:** return 400 for unmappable source webhooks ([#5719](https://github.com/rudderlabs/rudder-transformer/issues/5719)) ([ac72877](https://github.com/rudderlabs/rudder-transformer/commit/ac72877702b1ed8c0fcb35dd4d69abee806f0150))
+
 ## [1.165.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.164.0...v1.165.0) (2026-10-26)
 
 

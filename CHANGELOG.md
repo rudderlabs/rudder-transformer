@@ -14,7 +14,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 * **fb_custom_audience:** classify Facebook error 613 as throttled ([#5733](https://github.com/rudderlabs/rudder-transformer/issues/5733)) ([e3aa7d6](https://github.com/rudderlabs/rudder-transformer/commit/e3aa7d64189327141564ffe76ece27577ce85e06))
 * **intercom:** keep mapped external_id in rETL v2 flow when email is absent ([#5730](https://github.com/rudderlabs/rudder-transformer/issues/5730)) ([5e56bbe](https://github.com/rudderlabs/rudder-transformer/commit/5e56bbe233bbc4659d2de46b38664d0f838771c3))
-* **intercom:** keep mapped external_id in rETL v2 identify regardless of email ([#5735](https://github.com/rudderlabs/rudder-transformer/issues/5735)) ([0cf9dd7](https://github.com/rudderlabs/rudder-transformer/commit/0cf9dd7434c1400e2a5169d329afb2b9f06f8e81))
 * **refiner:** return 400 for unmappable source webhooks ([#5719](https://github.com/rudderlabs/rudder-transformer/issues/5719)) ([ac72877](https://github.com/rudderlabs/rudder-transformer/commit/ac72877702b1ed8c0fcb35dd4d69abee806f0150))
 
 ## [1.165.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.164.0...v1.165.0) (2026-10-26)

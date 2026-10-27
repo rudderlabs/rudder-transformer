@@ -150,6 +150,24 @@ function hasFilterOrPredicate(node: AstNode): boolean {
   );
 }
 
+/**
+ * Filters (`expr[...]`), group-by (`expr{...}`) and context/index bindings
+ * (`expr@$v`, `expr#$v`) can follow any node type. Their sub-expressions and
+ * bindings hang off properties no handler walks, so they are rejected per node.
+ */
+function attachedExpressionError(node: AstNode): string | undefined {
+  if (hasFilterOrPredicate(node)) {
+    return node.type === 'variable'
+      ? 'Bracket notation ($$["key"]) is not supported. Use dot notation ($$.key) instead.'
+      : 'Filter expressions are not supported.';
+  }
+  if (node.group !== undefined) return 'Group-by expressions (expr{...}) are not supported.';
+  if (node.focus !== undefined || node.index !== undefined) {
+    return 'Context and index bindings (@$var, #$var) are not supported.';
+  }
+  return undefined;
+}
+
 /** True when the path starts with `$$.<rootCollection>`. */
 function startsWithRootCollection(steps: AstNode[], rootCollection: string): boolean {
   return (
@@ -196,6 +214,8 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       if (node.value === '{') {
         const pairs: AstNode[][] = node.lhs ?? [];
         for (const pair of pairs) {
+          // Keys too — a bare-name key (`{ email: 1 }`) reads record data
+          walk(pair[0], insideRecordsIteration, ctx);
           walk(pair[1], insideRecordsIteration, ctx);
         }
       } else if (node.value === '[') {
@@ -216,14 +236,6 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
     validate: (node, ctx, walk) => {
       const steps: AstNode[] = node.steps ?? [];
 
-      // Check for filter/predicate on any step (e.g. $$["key"], records[x=1])
-      for (const step of steps) {
-        if (hasFilterOrPredicate(step)) {
-          ctx.errors.push('Filter expressions are not supported.');
-          return;
-        }
-      }
-
       // Bare name path (no $$ root) — only valid inside a mapping step.
       // Its remaining steps (e.g. a nested `items.{...}` mapping) are walked below.
       const isRelativePath = steps[0]?.type === 'name';
@@ -240,20 +252,6 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         return;
       }
 
-      // $$ root path — verify root variable
-      if (steps[0]?.type === 'variable') {
-        if (steps[0].value !== ROOT_VARIABLE) {
-          ctx.errors.push(VARIABLE_REFERENCE_ERROR);
-          return;
-        }
-        if (hasFilterOrPredicate(steps[0])) {
-          ctx.errors.push(
-            'Bracket notation ($$["key"]) is not supported. Use dot notation ($$.key) instead.',
-          );
-          return;
-        }
-      }
-
       // Detect the root collection path (e.g. $$.records) and check for nested iteration.
       // Only `$$.records.{...}` is allowed — deeper paths like `$$.records.foo.{...}`
       // would produce incorrect recordFields since bare names refer to nested data.
@@ -261,8 +259,10 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       const root = ctx.rootCollection;
       const isRootCollectionPath = startsWithRootCollection(steps, root);
 
+      // A constructor heading the path (`[items].x`) is not a mapping step — it
+      // is walked as a plain constructor below. Mappings follow it, at idx > 0.
       const mappingStepIdx = steps.findIndex(
-        (s: AstNode) => s.type === 'unary' && (s.value === '{' || s.value === '['),
+        (s: AstNode, idx) => idx > 0 && s.type === 'unary' && (s.value === '{' || s.value === '['),
       );
 
       if (isRootCollectionPath && mappingStepIdx >= 0 && mappingStepIdx !== 2) {
@@ -284,10 +284,13 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         );
         return;
       }
-      if (isRelativePath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
+      // Every other mapping (`items.{...}`, `[items].{...}`, `[$$.records.{...}].{...}`)
+      // too — except on non-root `$$` paths such as `$$.connection.{...}`.
+      const isOtherRootPath = steps[0]?.type === 'variable' && !isRootCollectionPath;
+      if (!isOtherRootPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
         const source = steps
           .slice(0, mappingStepIdx)
-          .map((s) => s.value)
+          .map((s) => (s.type === 'name' ? s.value : '[...]'))
           .join('.');
         ctx.errors.push(
           `Nested iteration (${source}.{...}) must be wrapped in [...] to guarantee array output ` +
@@ -297,8 +300,11 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       }
 
       // Walk each step
-      for (const step of steps) {
-        if (step.type === 'unary') {
+      for (const [idx, step] of steps.entries()) {
+        if (step.type === 'unary' && idx === 0) {
+          // Heading constructor — same context as a standalone one
+          walk(step, { ...ctx, wrappedInArray: false });
+        } else if (step.type === 'unary') {
           // Mapping step — bare names become valid inside
           walk(step, {
             ...ctx,
@@ -306,16 +312,12 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
             insideObjectOrArray: true,
             wrappedInArray: false,
           });
-        } else if (step.type === 'variable' && step.value !== ROOT_VARIABLE) {
-          // e.g. `items.$eval` — a variable step would yield a builtin, not data
-          ctx.errors.push(VARIABLE_REFERENCE_ERROR);
-          return;
-        } else if (step.type !== 'name' && step.type !== 'variable') {
-          // Unknown step type (function, wildcard, descendant, sort, etc.)
-          // — delegate to validateNode which will reject disallowed types
+        } else {
+          // Every other step goes through validateNode, which rejects filters and
+          // group-by on any step, non-$$ variables (`items.$eval`) and disallowed
+          // types (function, wildcard, descendant, sort, etc.)
           walk(step, ctx);
         }
-        // name and $$ variable are known leaf steps — no children to walk
       }
     },
 
@@ -380,6 +382,8 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         !procedure ||
         procedure.value !== ALLOWED_FUNCTION ||
         procedure.type !== 'variable' ||
+        // e.g. `$number[$eval(...)]("7")` — the procedure is never walked itself
+        attachedExpressionError(procedure) ||
         (node.arguments ?? []).length !== 1
       ) {
         ctx.errors.push('Function calls are not supported. Only $number() casting is allowed.');
@@ -410,19 +414,9 @@ function validateNode(node: AstNode, ctx: ValidationContext): void {
     ctx.errors.push(`Expression type "${node.type}" is not supported.`);
     return;
   }
-  // Filters (`expr[...]`) and group-by (`expr{...}`) can follow any node type.
-  // Their sub-expressions hang off predicate/stages/group, which no handler
-  // walks, so reject them here for every node rather than in each handler.
-  if (hasFilterOrPredicate(node)) {
-    ctx.errors.push(
-      node.type === 'variable'
-        ? 'Bracket notation ($$["key"]) is not supported. Use dot notation ($$.key) instead.'
-        : 'Filter expressions are not supported.',
-    );
-    return;
-  }
-  if (node.group !== undefined) {
-    ctx.errors.push('Group-by expressions (expr{...}) are not supported.');
+  const attachedError = attachedExpressionError(node);
+  if (attachedError) {
+    ctx.errors.push(attachedError);
     return;
   }
 

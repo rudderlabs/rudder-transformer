@@ -102,6 +102,16 @@ describe('parseTemplate', () => {
       expectedFields: ['email'],
     },
     {
+      name: 'bare-name object key reads a record field',
+      template: '[$$.records.{ email: 1 }]',
+      expectedFields: ['email'],
+    },
+    {
+      name: 'wrapped mapping chained onto the wrapped root iteration',
+      template: '[[$$.records.{ "e": email }].{ "y": e }]',
+      expectedFields: ['email'],
+    },
+    {
       name: 'root collection referenced inside a nested mapping',
       template: '[$$.records.{ "a": [items.{ "s": [$$.records.{ "e": email }] }] }]',
       expectedFields: ['email', 'items'],
@@ -254,6 +264,56 @@ describe('parseTemplate', () => {
       name: 'variable step on a relative path',
       template: '[$$.records.{ "a": items.$eval }]',
       expectedError: 'Variable references are not allowed. Use $$.field to access data.',
+    },
+    {
+      name: 'filter on the $number procedure',
+      template: '{ "a": $number[$eval("1+1") = 2]("7") }',
+      expectedError: 'Function calls are not supported. Only $number() casting is allowed.',
+    },
+    {
+      name: 'group-by on the $number procedure',
+      template: '{ "a": $number{ "k": $eval("1+1") }("7") }',
+      expectedError: 'Function calls are not supported. Only $number() casting is allowed.',
+    },
+    {
+      name: 'group-by on a string path step',
+      template: '{ "a": [$$.records.{ "x": "items"{ "k": $eval("2+2") }.k }] }',
+      expectedError: 'Group-by expressions (expr{...}) are not supported.',
+    },
+    {
+      name: 'group-by on a $$ path step',
+      template: '$${ "k": $eval("1+1") }.k',
+      expectedError: 'Group-by expressions (expr{...}) are not supported.',
+    },
+    {
+      name: 'context binding on a nested mapping',
+      template: '[$$.records.{ "items": [line_items@$i.{ "sku": sku }] }]',
+      expectedError: 'Context and index bindings (@$var, #$var) are not supported.',
+    },
+    {
+      name: 'index binding on a nested mapping',
+      template: '[$$.records.{ "items": [line_items#$i.{ "sku": sku }] }]',
+      expectedError: 'Context and index bindings (@$var, #$var) are not supported.',
+    },
+    {
+      name: 'bare root collection iterated through a heading constructor',
+      template: '{ "data": [[records].{ "e": email }] }',
+      expectedError:
+        'Relative field references (field) can only be used inside a $$.records.{} mapping block.',
+    },
+    {
+      name: 'unwrapped mapping after a heading constructor',
+      template: '[$$.records.{ "e": [line_items].{ "z": sku } }]',
+      expectedError:
+        'Nested iteration ([...].{...}) must be wrapped in [...] to guarantee array output ' +
+        '(e.g. [[...].{...}]). Without this, single-element arrays produce a bare value.',
+    },
+    {
+      name: 'unwrapped mapping chained onto the wrapped root iteration',
+      template: '[$$.records.{ "e": email }].{ "y": e }',
+      expectedError:
+        'Nested iteration ([...].{...}) must be wrapped in [...] to guarantee array output ' +
+        '(e.g. [[...].{...}]). Without this, single-element arrays produce a bare value.',
     },
     {
       name: 'group-by inside a nested mapping',

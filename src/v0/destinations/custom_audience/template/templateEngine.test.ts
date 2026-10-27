@@ -71,6 +71,41 @@ describe('parseTemplate', () => {
       template: '{ "data": $$.connection.{ "id": email } }',
       expectedFields: [],
     },
+    {
+      name: 'nested mapping over a record field (inner fields are not record fields)',
+      template: `{
+        "data": [$$.records.{
+          "email": email,
+          "items": [line_items.{ "sku": sku, "qty": $number(quantity) }]
+        }]
+      }`,
+      expectedFields: ['email', 'line_items'],
+    },
+    {
+      name: 'nested array mapping over a deep record path',
+      template: '{ "data": [$$.records.{ "pairs": [props.items.[sku, name]] }] }',
+      expectedFields: ['props'],
+    },
+    {
+      name: 'mapping nested two levels deep',
+      template: '[$$.records.{ "orders": [orders.{ "lines": [lines.{ "sku": sku }] }] }]',
+      expectedFields: ['orders'],
+    },
+    {
+      name: 'path headed by a wrapped nested mapping',
+      template: '[$$.records.{ "a": [items.{ "s": sku }].s }]',
+      expectedFields: ['items'],
+    },
+    {
+      name: 'chained mapping on the root (second block reads the first block output)',
+      template: '[$$.records.{ "a": email }.{ "b": a }]',
+      expectedFields: ['email'],
+    },
+    {
+      name: 'root collection referenced inside a nested mapping',
+      template: '[$$.records.{ "a": [items.{ "s": [$$.records.{ "e": email }] }] }]',
+      expectedFields: ['email', 'items'],
+    },
   ];
 
   const invalidTemplates = [
@@ -178,6 +213,53 @@ describe('parseTemplate', () => {
         '$$.records iteration must be wrapped in [...] to guarantee array output ' +
         '(e.g. [$$.records.{...}]). Without this, single-record batches produce a bare object.',
     },
+    {
+      name: 'unwrapped nested iteration',
+      template: '{ "data": [$$.records.{ "items": items.{ "sku": sku } }] }',
+      expectedError:
+        'Nested iteration (items.{...}) must be wrapped in [...] to guarantee array output ' +
+        '(e.g. [items.{...}]). Without this, single-element arrays produce a bare value.',
+    },
+    {
+      name: 'function call inside a nested mapping',
+      template: '{ "data": [$$.records.{ "items": [items.{ "x": $eval("1") }] }] }',
+      expectedError: 'Function calls are not supported. Only $number() casting is allowed.',
+    },
+    {
+      name: 'function step on a relative path',
+      template: '{ "data": [$$.records.{ "x": items.$string() }] }',
+      expectedError: 'Function calls are not supported. Only $number() casting is allowed.',
+    },
+    {
+      name: 'filter inside a nested mapping',
+      template: '{ "data": [$$.records.{ "items": [items.{ "sku": skus[0] }] }] }',
+      expectedError: 'Filter expressions are not supported.',
+    },
+    {
+      name: 'group-by on a $$ path',
+      template: '{ "a": $$.connection{ "k": $string("x") } }',
+      expectedError: 'Group-by expressions (expr{...}) are not supported.',
+    },
+    {
+      name: 'filter on an array constructor inside a mapping',
+      template: '[$$.records.{ "a": [email][$eval("1")] }]',
+      expectedError: 'Filter expressions are not supported.',
+    },
+    {
+      name: 'filter on the wrapped root iteration',
+      template: '{ "d": [$$.records.{ "e": email }][$eval("1")] }',
+      expectedError: 'Filter expressions are not supported.',
+    },
+    {
+      name: 'variable step on a relative path',
+      template: '[$$.records.{ "a": items.$eval }]',
+      expectedError: 'Variable references are not allowed. Use $$.field to access data.',
+    },
+    {
+      name: 'group-by inside a nested mapping',
+      template: '[$$.records.{ "p": [items{ "k": $string(a) }] }]',
+      expectedError: 'Group-by expressions (expr{...}) are not supported.',
+    },
   ];
 
   it.each(validTemplates)(
@@ -193,6 +275,48 @@ describe('parseTemplate', () => {
     const result = parseTemplate(template);
     expect(result.valid).toBe(false);
     expect('errors' in result && result.errors[0]).toBe(expectedError);
+  });
+
+  describe('custom root collection', () => {
+    it('binds iteration and field extraction to the given root', () => {
+      const result = parseTemplate(
+        '{ "batch": [$$.events.{ "id": userId, "products": [properties.products.{ "sku": sku }] }] }',
+        'events',
+      );
+      expect(result).toEqual({ valid: true, recordFields: ['userId', 'properties'] });
+    });
+
+    it.each([
+      {
+        name: 'unwrapped root iteration',
+        template: '{ "batch": $$.events.{ "id": userId } }',
+        expectedError:
+          '$$.events iteration must be wrapped in [...] to guarantee array output ' +
+          '(e.g. [$$.events.{...}]). Without this, single-record batches produce a bare object.',
+      },
+      {
+        name: 'iteration under the root',
+        template: '{ "batch": [$$.events.properties.{ "id": userId }] }',
+        expectedError:
+          'Nested iteration under $$.events is not supported. Use $$.events.{...} directly.',
+      },
+      {
+        name: 'relative field outside mapping',
+        template: '{ "a": userId }',
+        expectedError:
+          'Relative field references (field) can only be used inside a $$.events.{} mapping block.',
+      },
+    ])('rejects $name', ({ template, expectedError }) => {
+      const result = parseTemplate(template, 'events');
+      expect('errors' in result && result.errors[0]).toBe(expectedError);
+    });
+
+    it('does not treat $$.records as the root collection', () => {
+      expect(parseTemplate('{ "a": $$.records.{ "id": id } }', 'events')).toEqual({
+        valid: true,
+        recordFields: [],
+      });
+    });
   });
 });
 
@@ -244,6 +368,19 @@ describe('evaluateTemplate', () => {
       },
     );
     expect(result).toEqual({ data: [{ id: 42 }] });
+  });
+
+  it('nested [...] wrapper keeps single-element inner arrays as arrays', async () => {
+    const result = await evaluateTemplate(
+      '{ "data": [$$.records.{ "items": [items.{ "sku": sku }] }] }',
+      {
+        records: [{ items: [{ sku: 'a' }] }, { items: [{ sku: 'b' }, { sku: 'c' }] }],
+        connection: {},
+      },
+    );
+    expect(result).toEqual({
+      data: [{ items: [{ sku: 'a' }] }, { items: [{ sku: 'b' }, { sku: 'c' }] }],
+    });
   });
 
   it('throws on invalid template syntax', async () => {

@@ -29,6 +29,14 @@
  * unwraps single-element mapping results into bare values, so the wrapper
  * ensures the output is always an array regardless of batch size.
  *
+ * Nested arrays inside a record are mapped the same way, relative to the
+ * record and with the same wrapper rule:
+ *
+ *   [$$.records.{ "items": [line_items.{ "sku": sku }] }]
+ *
+ * The root collection defaults to `records`; parseTemplate takes another
+ * name for callers whose input binds a different collection (e.g. `events`).
+ *
  * The engine parses this into an AST where:
  *   - `$$` paths produce a variable step with value "$" (root reference)
  *   - bare names like `email_sha256` produce name steps (record field access)
@@ -38,6 +46,8 @@
 import jsonata from 'jsonata';
 
 const PARSE_FALLBACK_ERROR = 'Failed to parse template.';
+const VARIABLE_REFERENCE_ERROR =
+  'Variable references are not allowed. Use $$.field to access data.';
 
 // JSONata attaches internal properties (`sequence`, `keepArray`) to mapped
 // arrays — see jsonata-js/jsonata#296. Walk the result tree in-place and
@@ -80,8 +90,9 @@ interface AstNode {
 // e.g. `$$.records` → path { steps: [variable("$"), name("records")] }
 const ROOT_VARIABLE = '$';
 
-// The field name used in `$$.records.{}` iteration paths.
-const RECORDS_FIELD = 'records';
+// The default root collection iterated as `$$.records.{}`. Callers binding a
+// different input shape (e.g. `$$.events`) pass their own name to parseTemplate.
+const DEFAULT_ROOT_COLLECTION = 'records';
 
 // The only function call allowed in templates — `$number(value)` for type
 // casting.  e.g. `$number($$.connection.audience_id)` parses as:
@@ -95,12 +106,18 @@ interface ValidationContext {
   insideObjectOrArray: boolean;
   /** True when this node is a direct child of a [...] array constructor. */
   wrappedInArray: boolean;
+  /** Name of the collection iterated under `$$` (e.g. "records"). */
+  rootCollection: string;
   errors: string[];
 }
 
 // Walk function signatures passed to handlers so they can recurse.
 type ValidateWalker = (node: AstNode, ctx: ValidationContext) => void;
-type FieldWalker = (node: AstNode, insideRecordsIteration: boolean, fields: Set<string>) => void;
+interface FieldContext {
+  fields: Set<string>;
+  rootCollection: string;
+}
+type FieldWalker = (node: AstNode, insideRecordsIteration: boolean, ctx: FieldContext) => void;
 
 interface NodeHandler {
   /**
@@ -117,7 +134,7 @@ interface NodeHandler {
   collectFields?: (
     node: AstNode,
     insideRecordsIteration: boolean,
-    fields: Set<string>,
+    ctx: FieldContext,
     walk: FieldWalker,
   ) => void;
 }
@@ -130,6 +147,17 @@ function hasFilterOrPredicate(node: AstNode): boolean {
   return (
     (Array.isArray(node.predicate) && node.predicate.length > 0) ||
     (Array.isArray(node.stages) && node.stages.length > 0)
+  );
+}
+
+/** True when the path starts with `$$.<rootCollection>`. */
+function startsWithRootCollection(steps: AstNode[], rootCollection: string): boolean {
+  return (
+    steps.length >= 2 &&
+    steps[0]?.type === 'variable' &&
+    steps[0]?.value === ROOT_VARIABLE &&
+    steps[1]?.type === 'name' &&
+    steps[1]?.value === rootCollection
   );
 }
 
@@ -164,16 +192,16 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         ctx.errors.push(`Expression type "unary(${node.value})" is not supported.`);
       }
     },
-    collectFields: (node, insideRecordsIteration, fields, walk) => {
+    collectFields: (node, insideRecordsIteration, ctx, walk) => {
       if (node.value === '{') {
         const pairs: AstNode[][] = node.lhs ?? [];
         for (const pair of pairs) {
-          walk(pair[1], insideRecordsIteration, fields);
+          walk(pair[1], insideRecordsIteration, ctx);
         }
       } else if (node.value === '[') {
         const elements: AstNode[] = node.expressions ?? [];
         for (const elem of elements) {
-          walk(elem, insideRecordsIteration, fields);
+          walk(elem, insideRecordsIteration, ctx);
         }
       }
     },
@@ -196,28 +224,26 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         }
       }
 
-      // Bare name path (no $$ root) — only valid inside a mapping step
-      if (steps[0]?.type === 'name') {
-        if (!ctx.insideMappingStep) {
-          if (!ctx.insideObjectOrArray) {
-            ctx.errors.push(
-              `Bare identifiers (e.g., "${steps[0].value}") are not allowed. Use $$.field to access data.`,
-            );
-          } else {
-            ctx.errors.push(
-              'Relative field references (field) can only be used inside a $$.records.{} mapping block.',
-            );
-          }
-          return;
+      // Bare name path (no $$ root) — only valid inside a mapping step.
+      // Its remaining steps (e.g. a nested `items.{...}` mapping) are walked below.
+      const isRelativePath = steps[0]?.type === 'name';
+      if (isRelativePath && !ctx.insideMappingStep) {
+        if (!ctx.insideObjectOrArray) {
+          ctx.errors.push(
+            `Bare identifiers (e.g., "${steps[0].value}") are not allowed. Use $$.field to access data.`,
+          );
+        } else {
+          ctx.errors.push(
+            `Relative field references (field) can only be used inside a $$.${ctx.rootCollection}.{} mapping block.`,
+          );
         }
-        // Valid bare name inside mapping — leaf node, nothing more to validate
         return;
       }
 
       // $$ root path — verify root variable
       if (steps[0]?.type === 'variable') {
         if (steps[0].value !== ROOT_VARIABLE) {
-          ctx.errors.push('Variable references are not allowed. Use $$.field to access data.');
+          ctx.errors.push(VARIABLE_REFERENCE_ERROR);
           return;
         }
         if (hasFilterOrPredicate(steps[0])) {
@@ -228,36 +254,44 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         }
       }
 
-      // Detect $$.records path and check for nested iteration.
+      // Detect the root collection path (e.g. $$.records) and check for nested iteration.
       // Only `$$.records.{...}` is allowed — deeper paths like `$$.records.foo.{...}`
       // would produce incorrect recordFields since bare names refer to nested data.
-      const isRecordsPath =
-        steps.length >= 2 &&
-        steps[0]?.type === 'variable' &&
-        steps[0]?.value === ROOT_VARIABLE &&
-        steps[1]?.type === 'name' &&
-        steps[1]?.value === RECORDS_FIELD;
+      // Nested arrays are mapped per record instead: `[$$.records.{ "x": [foo.{...}] }]`.
+      const root = ctx.rootCollection;
+      const isRootCollectionPath = startsWithRootCollection(steps, root);
 
       const mappingStepIdx = steps.findIndex(
         (s: AstNode) => s.type === 'unary' && (s.value === '{' || s.value === '['),
       );
 
-      if (isRecordsPath && mappingStepIdx >= 0 && mappingStepIdx !== 2) {
+      if (isRootCollectionPath && mappingStepIdx >= 0 && mappingStepIdx !== 2) {
         ctx.errors.push(
-          'Nested iteration under $$.records is not supported. Use $$.records.{...} directly.',
+          `Nested iteration under $$.${root} is not supported. Use $$.${root}.{...} directly.`,
         );
         return;
       }
 
-      // $$.records mappings must be wrapped in [...] to guarantee array output.
+      // Root and nested mappings must be wrapped in [...] to guarantee array output.
       // JSONata unwraps single-element mapping results into bare values, so
       // `$$.records.{...}` with one record returns an object instead of a
       // one-element array. Wrapping in [...] prevents this:
       //   [$$.records.{ "email": email }]   → always an array
-      if (isRecordsPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
+      if (isRootCollectionPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
         ctx.errors.push(
-          '$$.records iteration must be wrapped in [...] to guarantee array output ' +
-            '(e.g. [$$.records.{...}]). Without this, single-record batches produce a bare object.',
+          `$$.${root} iteration must be wrapped in [...] to guarantee array output ` +
+            `(e.g. [$$.${root}.{...}]). Without this, single-record batches produce a bare object.`,
+        );
+        return;
+      }
+      if (isRelativePath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
+        const source = steps
+          .slice(0, mappingStepIdx)
+          .map((s) => s.value)
+          .join('.');
+        ctx.errors.push(
+          `Nested iteration (${source}.{...}) must be wrapped in [...] to guarantee array output ` +
+            `(e.g. [${source}.{...}]). Without this, single-element arrays produce a bare value.`,
         );
         return;
       }
@@ -272,12 +306,16 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
             insideObjectOrArray: true,
             wrappedInArray: false,
           });
+        } else if (step.type === 'variable' && step.value !== ROOT_VARIABLE) {
+          // e.g. `items.$eval` — a variable step would yield a builtin, not data
+          ctx.errors.push(VARIABLE_REFERENCE_ERROR);
+          return;
         } else if (step.type !== 'name' && step.type !== 'variable') {
           // Unknown step type (function, wildcard, descendant, sort, etc.)
           // — delegate to validateNode which will reject disallowed types
           walk(step, ctx);
         }
-        // name and variable are known leaf steps — no children to walk
+        // name and $$ variable are known leaf steps — no children to walk
       }
     },
 
@@ -286,39 +324,34 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
     //     e.g. `email_sha256` → "email_sha256"
     //   - `$$.records.{<mapping>}` → enter the mapping with insideRecordsIteration=true
     //   - `$$.connection.*` and other `$$` paths → ignored (no record fields)
-    collectFields: (node, insideRecordsIteration, fields, walk) => {
+    //   - Nested mapping on a bare name (e.g. `items.{ "sku": sku }`) → only the
+    //     first name is a record field; names inside refer to the nested elements
+    collectFields: (node, insideRecordsIteration, ctx, walk) => {
       const steps: AstNode[] = node.steps ?? [];
 
       // Bare name inside records iteration → record field
       if (insideRecordsIteration && steps[0]?.type === 'name') {
-        fields.add(steps[0].value as string);
-        return;
+        ctx.fields.add(steps[0].value as string);
       }
 
       // $$ root path — check for $$.records.{...} to enter iteration context.
       // AST shape: steps = [variable("$"), name("records"), unary("{"/"]")]
-      const isRecordsPath =
-        steps.length >= 3 &&
-        steps[0]?.type === 'variable' &&
-        steps[0]?.value === ROOT_VARIABLE &&
-        steps[1]?.type === 'name' &&
-        steps[1]?.value === RECORDS_FIELD;
+      const isRecordsPath = startsWithRootCollection(steps, ctx.rootCollection);
 
-      for (const step of steps) {
-        if (step.type === 'unary' && isRecordsPath) {
-          if (step.value === '{') {
-            const pairs: AstNode[][] = step.lhs ?? [];
-            for (const pair of pairs) {
-              walk(pair[1], true, fields);
-            }
-          } else if (step.value === '[') {
-            const elements: AstNode[] = step.expressions ?? [];
-            for (const elem of elements) {
-              walk(elem, true, fields);
-            }
-          }
+      steps.forEach((step, idx) => {
+        if (step.type !== 'unary') return;
+        if (isRecordsPath && idx === 2) {
+          // The record mapping itself — bare names inside are record fields
+          walk(step, true, ctx);
+        } else if (idx === 0) {
+          // A constructor heading the path, e.g. `[items.{...}].x`
+          walk(step, insideRecordsIteration, ctx);
+        } else {
+          // Nested or chained mappings — bare names refer to their elements,
+          // but $$.records paths inside them still carry record fields
+          walk(step, false, ctx);
         }
-      }
+      });
     },
   },
 
@@ -328,16 +361,11 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
 
   // Variable node — standalone `$$` reference (outside a path).
   // Inside paths, variables are validated by the path handler directly.
+  // Bracket notation on it is rejected by validateNode.
   variable: {
     validate: (node, ctx) => {
-      if (hasFilterOrPredicate(node)) {
-        ctx.errors.push(
-          'Bracket notation ($$["key"]) is not supported. Use dot notation ($$.key) instead.',
-        );
-        return;
-      }
       if (node.value !== ROOT_VARIABLE) {
-        ctx.errors.push('Variable references are not allowed. Use $$.field to access data.');
+        ctx.errors.push(VARIABLE_REFERENCE_ERROR);
       }
     },
   },
@@ -359,9 +387,9 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       }
       walk(node.arguments![0], { ...ctx, wrappedInArray: false });
     },
-    collectFields: (node, insideRecordsIteration, fields, walk) => {
+    collectFields: (node, insideRecordsIteration, ctx, walk) => {
       // After validation, only $number(expr) with a single arg reaches here
-      walk(node.arguments![0], insideRecordsIteration, fields);
+      walk(node.arguments![0], insideRecordsIteration, ctx);
     },
   },
 
@@ -382,6 +410,21 @@ function validateNode(node: AstNode, ctx: ValidationContext): void {
     ctx.errors.push(`Expression type "${node.type}" is not supported.`);
     return;
   }
+  // Filters (`expr[...]`) and group-by (`expr{...}`) can follow any node type.
+  // Their sub-expressions hang off predicate/stages/group, which no handler
+  // walks, so reject them here for every node rather than in each handler.
+  if (hasFilterOrPredicate(node)) {
+    ctx.errors.push(
+      node.type === 'variable'
+        ? 'Bracket notation ($$["key"]) is not supported. Use dot notation ($$.key) instead.'
+        : 'Filter expressions are not supported.',
+    );
+    return;
+  }
+  if (node.group !== undefined) {
+    ctx.errors.push('Group-by expressions (expr{...}) are not supported.');
+    return;
+  }
 
   handler.validate(node, ctx, validateNode);
 }
@@ -393,15 +436,18 @@ function validateNode(node: AstNode, ctx: ValidationContext): void {
  * mapping blocks.  Connection fields (e.g. `$$.connection.audience_id`)
  * and static literals are ignored.
  */
-function collectFields(node: AstNode, insideRecordsIteration: boolean, fields: Set<string>): void {
+function collectFields(node: AstNode, insideRecordsIteration: boolean, ctx: FieldContext): void {
   if (!node || !node.type) return;
-  NODE_HANDLERS[node.type]?.collectFields?.(node, insideRecordsIteration, fields, collectFields);
+  NODE_HANDLERS[node.type]?.collectFields?.(node, insideRecordsIteration, ctx, collectFields);
 }
 
 /**
  * Parse and validate a template string, returning the validated AST or errors.
  */
-function parseAndValidate(template: string): { ast: AstNode } | { errors: string[] } {
+function parseAndValidate(
+  template: string,
+  rootCollection: string,
+): { ast: AstNode } | { errors: string[] } {
   let ast: AstNode;
   try {
     const expr = jsonata(template);
@@ -420,6 +466,7 @@ function parseAndValidate(template: string): { ast: AstNode } | { errors: string
     insideMappingStep: false,
     insideObjectOrArray: false,
     wrappedInArray: false,
+    rootCollection,
     errors: [],
   };
   validateNode(ast, ctx);
@@ -449,14 +496,17 @@ export type ParseTemplateResult =
  * Example: `{ "data": [$$.records.[email, phone]] }`
  *   → { valid: true, recordFields: ["email", "phone"] }
  */
-export function parseTemplate(template: string): ParseTemplateResult {
-  const result = parseAndValidate(template);
+export function parseTemplate(
+  template: string,
+  rootCollection: string = DEFAULT_ROOT_COLLECTION,
+): ParseTemplateResult {
+  const result = parseAndValidate(template, rootCollection);
   if ('errors' in result) {
     return { valid: false, errors: result.errors };
   }
 
   const fields = new Set<string>();
-  collectFields(result.ast, false, fields);
+  collectFields(result.ast, false, { fields, rootCollection });
   return { valid: true, recordFields: [...fields] };
 }
 

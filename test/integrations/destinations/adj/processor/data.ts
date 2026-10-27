@@ -19,7 +19,7 @@ export const data = [
                   namespace: 'com.example.testapp',
                   version: '1.0',
                 },
-                externalId: [{ type: 'adjustExternalId', id: 'adjust-adid-android' }],
+                externalId: [{ type: 'adjustExternalId', id: 'ignored-external-adid' }],
                 device: {
                   adTrackingEnabled: true,
                   advertisingId: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -41,7 +41,7 @@ export const data = [
                   'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
               },
               event: 'First Investment',
-              integrations: { All: true },
+              integrations: { All: true, Adjust: { adid: 'adjust-adid-android' } },
               messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
               originalTimestamp: '2020-09-28T19:53:31.900Z',
               properties: {
@@ -386,7 +386,6 @@ export const data = [
                   namespace: 'com.example.testapp',
                   version: '1.0',
                 },
-                externalId: [{ type: 'adjustExternalId', id: 'adjust-adid-ios' }],
                 device: {
                   adTrackingEnabled: true,
                   advertisingId: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -408,7 +407,7 @@ export const data = [
                   'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
               },
               event: 'First Investment',
-              integrations: { All: true },
+              integrations: { All: true, Adjust: { adid: 'adjust-adid-ios' } },
               messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
               originalTimestamp: '2020-09-28T19:53:31.900Z',
               properties: {
@@ -1794,7 +1793,6 @@ export const data = [
                   namespace: 'com.example.testapp',
                   version: '1.0',
                 },
-                externalId: [{ type: 'adjustExternalId', id: 'adjust-adid-ios-without-idfa' }],
                 device: {
                   adTrackingEnabled: true,
                   id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -1815,7 +1813,7 @@ export const data = [
                   'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
               },
               event: 'First Investment',
-              integrations: { All: true },
+              integrations: { All: true, Adjust: { adid: 'adjust-adid-ios-without-idfa' } },
               messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
               originalTimestamp: '2020-09-28T19:53:31.900Z',
               receivedAt: '2020-09-29T14:50:43.005+05:30',

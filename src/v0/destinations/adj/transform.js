@@ -16,7 +16,7 @@ const {
   flattenJson,
   isAppleFamily,
   simpleProcessRouterDest,
-  getDestinationExternalID,
+  getIntegrationsObj,
 } = require('../../util');
 
 const rejectParams = ['revenue', 'currency'];
@@ -43,7 +43,7 @@ function responseBuilderSimple(message, category, destination) {
   } else {
     throw new InstrumentationError('Device type not valid');
   }
-  const adjustAdid = getDestinationExternalID(message, 'adjustExternalId');
+  const adjustAdid = getIntegrationsObj(message, 'adj')?.adid;
   if (adjustAdid) {
     payload.adid = adjustAdid;
   }

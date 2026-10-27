@@ -30,7 +30,7 @@ const configSchema = z.object({
   apiUrl: z.string().min(1),
   requestBodyTemplate: z.string().min(1),
   method: z.enum(['POST', 'PUT', 'PATCH', 'GET', 'DELETE']).default('POST'),
-  maxBatchSize: z.coerce.number().int().min(1).max(5000).default(100),
+  maxBatchSize: z.coerce.number().int().min(1).max(5000).default(5000),
   headers: z.array(mapping).optional(),
   queryParams: z.array(mapping).optional(),
   pathParams: z.array(pathParam).optional(),

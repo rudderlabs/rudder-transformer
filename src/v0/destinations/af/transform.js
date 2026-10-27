@@ -28,6 +28,7 @@ const {
   nameToEventMap,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { getAdvancedMatchingFields } = require('./utils');
 
 function determineEndpoint(os, finalEndPoint, androidAppId, appleAppId) {
   if (os && os.toLowerCase() === 'android' && androidAppId) {
@@ -95,6 +96,11 @@ function responseBuilderSimple(payload, message, destination) {
 
   if (isDefinedAndNotNullAndNotEmpty(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
+  }
+
+  // The hashed identifiers exist only on the S2S v3 endpoint.
+  if (authVersion === 'v2') {
+    Object.assign(updatedPayload, getAdvancedMatchingFields(message));
   }
 
   const finalAuthentication =

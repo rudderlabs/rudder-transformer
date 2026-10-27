@@ -2324,4 +2324,210 @@ export const newConfigValidationTests: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'af-advanced-matching-test-1',
+    name: 'af',
+    description: 'S2S v3 sends normalized, hashed Advanced Matching identifiers from traits',
+    scenario: 'Business',
+    successCriteria:
+      'email, phone and names are trimmed, lowercased and hashed; E.164 phone is hashed when it carries a country code',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              authVersion: 'v2',
+              s2sKey: 'dummy',
+            }),
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'Sign Up',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: {
+                ...commonContextWithExternalId,
+                traits: {
+                  email: ' Jane.Doe@Example.com ',
+                  phone: '+1 (555) 123-4567',
+                  firstName: ' Jane',
+                  lastName: 'DOE ',
+                },
+              },
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: 'https://api3.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v2/inappevent',
+              headers: { ...commonHeader, authentication: 'dummy' },
+              JSON: {
+                bundleIdentifier: 'com.rudderlabs.javascript',
+                eventValue: '',
+                eventName: 'Sign Up',
+                customer_user_id: 'default-user-id',
+                appsflyer_id: 'afUid',
+                email_hashed: '86e0b9e56c17cc4d12387e1949b85053fbe73bc3ce5a1188713a9d300cc6133d',
+                phone_number_hashed:
+                  'd6736136ea896c1bfdc553e0e86e702c70d060d805696ca3e4e9e0961353860a',
+                phone_number_e164_hashed:
+                  '8a59780bb8cd2ba022bfa5ba2ea3b6e07af17a7d8b30c1f9b3390e36f69019e4',
+                first_name_hashed:
+                  '81f8f6dde88365f3928796ec7aa53f72820b06db8664f5fe76a7eb13e24546a2',
+                last_name_hashed:
+                  '799ef92a11af918e3fb741df42934f3b568ed2d93ac1df74f1b8d41a27932a6f',
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'af-advanced-matching-test-2',
+    name: 'af',
+    description:
+      'S2S v3 forwards pre-hashed identifiers and omits E.164 for a phone without a country code',
+    scenario: 'Business',
+    successCriteria:
+      'SHA-256 values pass through unchanged; a phone without a leading + gets no E.164 hash',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              authVersion: 'v2',
+              s2sKey: 'dummy',
+            }),
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'Sign Up',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: {
+                ...commonContextWithExternalId,
+                traits: {
+                  email: '86E0B9E56C17CC4D12387E1949B85053FBE73BC3CE5A1188713A9D300CC6133D',
+                  phone: '15551234567',
+                },
+              },
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: 'https://api3.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v2/inappevent',
+              headers: { ...commonHeader, authentication: 'dummy' },
+              JSON: {
+                bundleIdentifier: 'com.rudderlabs.javascript',
+                eventValue: '',
+                eventName: 'Sign Up',
+                customer_user_id: 'default-user-id',
+                appsflyer_id: 'afUid',
+                email_hashed: '86E0B9E56C17CC4D12387E1949B85053FBE73BC3CE5A1188713A9D300CC6133D',
+                phone_number_hashed:
+                  'd6736136ea896c1bfdc553e0e86e702c70d060d805696ca3e4e9e0961353860a',
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'af-advanced-matching-test-3',
+    name: 'af',
+    description: 'v1 authentication sends no Advanced Matching identifiers',
+    scenario: 'Business',
+    successCriteria: 'The api2 payload carries no hashed identifier fields',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              authVersion: 'v1',
+              devKey: 'abcde',
+            }),
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'Sign Up',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: {
+                ...commonContextWithExternalId,
+                traits: { email: 'jane.doe@example.com', phone: '+15551234567' },
+              },
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
+              headers: commonHeader,
+              JSON: {
+                bundleIdentifier: 'com.rudderlabs.javascript',
+                eventValue: '',
+                eventName: 'Sign Up',
+                customer_user_id: 'default-user-id',
+                appsflyer_id: 'afUid',
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
 ];

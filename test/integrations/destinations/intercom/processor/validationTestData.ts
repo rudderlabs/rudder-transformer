@@ -131,7 +131,7 @@ export const validationTestData: ProcessorTestData[] = [
     description: '[Error - V2 version]: Check for unsupported message type',
     scenario: 'Framework',
     successCriteria:
-      'Response should contain error message and status code should be 400, as we are sending a message type which is not supported by intercom destination and the error message should be Event type alias is not supported',
+      'Response should contain error message and status code should be 400, as we are sending a message type which is not supported by intercom destination and the error message should be message type page is not supported',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

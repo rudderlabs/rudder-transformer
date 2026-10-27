@@ -85,7 +85,7 @@ export class EventTesterService {
     const service = ServiceSelector.getDestinationServiceByType(
       dest,
       workspaceId,
-      events[0].destination.Version as number | undefined,
+      inputs[0].destination.version,
     );
     service.init();
     const responses = isDestinationRouterTransformEnabled(dest)

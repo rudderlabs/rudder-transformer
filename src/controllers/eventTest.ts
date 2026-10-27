@@ -40,18 +40,16 @@ const parseTemplateBodySchema = z.object({
 const MAX_HTTP_TEMPLATE_LENGTH = 16_384;
 const MAX_HTTP_REQUEST_FIELDS = 100;
 const MAX_HTTP_TEMPLATE_TOTAL_LENGTH = 65_536;
+const httpMappingsSchema = z
+  .array(z.object({ from: z.string().max(MAX_HTTP_TEMPLATE_LENGTH) }))
+  .max(MAX_HTTP_REQUEST_FIELDS)
+  .optional();
 const httpParseBodySchema = z
   .object({
     workspaceId: z.string().min(1),
     requestBodyTemplate: z.string().max(MAX_HTTP_TEMPLATE_LENGTH),
-    headers: z
-      .array(z.object({ from: z.string().max(MAX_HTTP_TEMPLATE_LENGTH) }))
-      .max(MAX_HTTP_REQUEST_FIELDS)
-      .optional(),
-    queryParams: z
-      .array(z.object({ from: z.string().max(MAX_HTTP_TEMPLATE_LENGTH) }))
-      .max(MAX_HTTP_REQUEST_FIELDS)
-      .optional(),
+    headers: httpMappingsSchema,
+    queryParams: httpMappingsSchema,
     pathParams: z
       .array(z.object({ path: z.string().max(MAX_HTTP_TEMPLATE_LENGTH) }))
       .max(MAX_HTTP_REQUEST_FIELDS)

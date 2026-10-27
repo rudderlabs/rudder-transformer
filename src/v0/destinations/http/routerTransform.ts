@@ -71,11 +71,7 @@ const toExpressions = (config: z.infer<typeof configSchema>): RequestFieldExpres
 
 const makeEndpoint = (url: string, pathParams: unknown[]): string => {
   const parts = pathParams.map((part) => {
-    if (
-      part === null ||
-      part === undefined ||
-      !['string', 'number', 'boolean'].includes(typeof part)
-    ) {
+    if (!['string', 'number', 'boolean'].includes(typeof part)) {
       throw new ConfigurationError('Path segment could not be resolved to a scalar');
     }
     return encodeURIComponent(String(part));
@@ -104,15 +100,15 @@ const makeAuthHeaders = (config: z.infer<typeof configSchema>): Record<string, s
   }
 };
 
+const toTransformError = (error: unknown) => {
+  const err = generateErrorObject(error);
+  return { error: err.message, statusCode: err.status, statTags: err.statTags };
+};
+
 class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
-  transformEvent(input: Input): TransformedEvent<Body> {
-    const config = configSchema.parse(this.destination.Config);
-    return this.makeEvent(
-      input.message,
-      { headers: {}, params: {}, pathParams: [] },
-      config,
-      makeAuthHeaders(config),
-    );
+  // Unreachable: transformEvents is overridden to evaluate request fields for the whole batch.
+  transformEvent(): never {
+    throw new PlatformError('HTTP v2 transforms events in batch via transformEvents', 500);
   }
 
   private makeEvent(
@@ -151,22 +147,25 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
       authHeaders = makeAuthHeaders(config);
       expressions = toExpressions(config);
     } catch (error) {
-      const err = generateErrorObject(error);
+      const err = toTransformError(error);
       return {
         successPayloads: [],
-        errorPayloads: inputs.map(({ metadata }) => ({
-          jobId: metadata?.jobId ?? 0,
-          error: err.message,
-          statusCode: err.status,
-          statTags: err.statTags,
-        })),
+        errorPayloads: inputs.map(({ metadata }) => ({ jobId: metadata?.jobId ?? 0, ...err })),
       };
     }
-    const results = await sandboxedEvaluateRequestFields(
-      expressions,
-      inputs.map(({ message }) => message),
-      this.destination.WorkspaceID,
-    );
+    const { headers, queryParams, pathParams } = expressions;
+    // Skip the isolate round-trip (and copying every message into it) when nothing is mapped.
+    const results =
+      headers.length + queryParams.length + pathParams.length > 0
+        ? await sandboxedEvaluateRequestFields(
+            expressions,
+            inputs.map(({ message }) => message),
+            this.destination.WorkspaceID,
+          )
+        : inputs.map(() => ({
+            ok: true as const,
+            fields: { headers: {}, params: {}, pathParams: [] },
+          }));
     if (results.length !== inputs.length)
       throw new PlatformError('Request fields returned an unexpected number of results', 500);
     const output: TransformResult<Body> = { successPayloads: [], errorPayloads: [] };
@@ -180,13 +179,7 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
           jobId,
         });
       } catch (error) {
-        const err = generateErrorObject(error);
-        output.errorPayloads.push({
-          jobId,
-          error: err.message,
-          statusCode: err.status,
-          statTags: err.statTags,
-        });
+        output.errorPayloads.push({ jobId, ...toTransformError(error) });
       }
     });
     return output;
@@ -203,14 +196,11 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
       );
       if (bodies.length !== chunks.length)
         throw new PlatformError('Template returned an unexpected number of bodies', 500);
-      const error = (message: string, jobIds: Set<number>) => {
-        const err = generateErrorObject(new ConfigurationError(message));
-        return {
-          body: {},
-          jobIds,
-          error: { error: err.message, statusCode: err.status, statTags: err.statTags },
-        };
-      };
+      const error = (message: string, jobIds: Set<number>) => ({
+        body: {},
+        jobIds,
+        error: toTransformError(new ConfigurationError(message)),
+      });
       return chunks.map((chunk, i) => {
         const result = bodies[i];
         if (!result.ok)

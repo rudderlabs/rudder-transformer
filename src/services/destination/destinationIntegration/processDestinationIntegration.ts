@@ -274,7 +274,7 @@ export async function processDestinationIntegration<
     (p) => !failedJobIds.has(p.jobId),
   );
 
-  // 7. Build request groups:
+  // 6. Build request groups:
   // - Batchable payloads are grouped by composite key (endpoint, method, headers, params)
   // - NonBatchable payloads each form their own group to prevent merging with other events
   const batchableGroups = groupPayloadsByCompositeKey(successBatchablePayloads);
@@ -283,7 +283,7 @@ export async function processDestinationIntegration<
   );
   const allGroups = [...batchableGroups, ...nonBatchableGroups];
 
-  // 8. Apply batch strategy to each group and convert to server format
+  // 7. Apply batch strategy to each group and convert to server format
   const successResponses: RouterTransformationResponse[] = [];
   for (const group of allGroups) {
     const strategy = integration.getBatchStrategy(group.endpoint);
@@ -314,7 +314,7 @@ export async function processDestinationIntegration<
     }
   }
 
-  // 9. Merge success responses that share jobIds (multiplexed events across groups)
+  // 8. Merge success responses that share jobIds (multiplexed events across groups)
 
   return [
     ...combineBatchRequestsWithSameJobIds(successResponses),

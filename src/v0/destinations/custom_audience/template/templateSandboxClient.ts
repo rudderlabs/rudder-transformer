@@ -25,13 +25,12 @@ import type {
 export async function sandboxedParseTemplate(
   template: string,
   workspaceId: string,
-  collection?: string,
 ): Promise<ParseTemplateResult> {
   try {
     return await templateSandboxRunner.execute<ParseTemplateResult>(
       workspaceId,
-      'return parseTemplateInSandbox($0, $1)',
-      [template, collection],
+      'return parseTemplateInSandbox($0)',
+      [template],
     );
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
@@ -104,7 +103,7 @@ export async function sandboxedEvaluateTemplate(
   if (!result.ok) {
     throw new InstrumentationError(ERROR_MESSAGES.TEMPLATE_EVALUATION_FAILED(result.error));
   }
-  return result.bodies as Record<string, unknown>[];
+  return result.bodies;
 }
 
 export async function sandboxedEvaluateHttpBody(

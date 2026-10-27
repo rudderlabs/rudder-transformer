@@ -1499,7 +1499,7 @@ export const identifyTestData = [
     description: 'V2 version : external_id set as identifier in rETL flow along with email',
     scenario: 'Business',
     successCriteria:
-      'Response should contain update user payload with email and without external_id in the body',
+      'Response should contain update user payload with both email and the mapped external_id in the body',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1527,6 +1527,7 @@ export const identifyTestData = [
               JSON: {
                 custom_attributes: { key1: 'value1', key2: 'value2' },
                 email: 'test+2@rudderlabs.com',
+                external_id: 'user@2',
                 phone: '+91 9999999999',
               },
             }),

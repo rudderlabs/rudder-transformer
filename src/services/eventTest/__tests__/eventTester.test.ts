@@ -235,46 +235,40 @@ describe('EventTesterService.testEvent', () => {
 describe('EventTesterService.testEventV2', () => {
   const metadataCases = [
     {
-      name: 'masks the access token for a linked-account dry run',
+      name: 'forwards the supplied secret in a linked-account dry run',
       linkedAccount: true,
       send: false,
-      secret: { accessToken: 'resolved-test-token' },
-      expectedSecret: { accessToken: '********' },
+      secret: { accessToken: 'masked-by-config-backend' },
     },
     {
-      name: 'previews a linked account without a supplied secret',
+      name: 'does not add a secret to a linked-account dry run without one',
       linkedAccount: true,
       send: false,
       secret: undefined,
-      expectedSecret: { accessToken: '********' },
     },
     {
       name: 'uses the supplied secret for a linked-account test send',
       linkedAccount: true,
       send: true,
       secret: { accessToken: 'resolved-test-token' },
-      expectedSecret: { accessToken: 'resolved-test-token' },
     },
     {
       name: 'does not add a secret to a linked-account test send without one',
       linkedAccount: true,
       send: true,
       secret: undefined,
-      expectedSecret: undefined,
     },
     {
-      name: 'does not add a secret to an unlinked dry run',
+      name: 'forwards a supplied secret in an unlinked dry run',
       linkedAccount: false,
       send: false,
       secret: { accessToken: 'resolved-test-token' },
-      expectedSecret: undefined,
     },
     {
-      name: 'does not add a secret to an unlinked test send',
+      name: 'forwards a supplied secret in an unlinked test send',
       linkedAccount: false,
       send: true,
       secret: { accessToken: 'resolved-test-token' },
-      expectedSecret: undefined,
     },
   ];
 
@@ -283,7 +277,7 @@ describe('EventTesterService.testEventV2', () => {
     jest.clearAllMocks();
   });
 
-  it.each(metadataCases)('$name', async ({ linkedAccount, send, secret, expectedSecret }) => {
+  it.each(metadataCases)('$name', async ({ linkedAccount, send, secret }) => {
     const doRouterSpy = jest
       .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
       .mockResolvedValue([
@@ -328,7 +322,7 @@ describe('EventTesterService.testEventV2', () => {
           metadata: {
             workspaceId: 'ws-1',
             jobId: 1,
-            ...(expectedSecret && { secret: expectedSecret }),
+            ...(secret && { secret }),
           },
         }),
       ],
@@ -389,7 +383,7 @@ describe('EventTesterService.testEventV2', () => {
         expect.objectContaining({ message: { type: 'record', id: 'ok-1' } }),
         expect.objectContaining({ message: { type: 'record', id: 'ok-2' } }),
       ]),
-      { isDryRun: true, secret: undefined },
+      undefined,
     );
     expect(runDestTransformSpy.mock.calls[0][2]).toHaveLength(2);
     expect(result).toEqual({

@@ -1,4 +1,5 @@
 import { getGaDestinationIntegrations } from '../features';
+import { getDestinationVersion } from '../util/utils';
 
 // Destinations that have completed GA for the batching framework.
 // Once a destination is added here, it always uses the new path regardless of env var.
@@ -48,8 +49,17 @@ export const matchesWorkspace = (enabledWorkspaceIds: string[], workspaceId: str
  * `delivery` spec is still valid and gets the framework's status-only classification, which
  * reproduces `genericNetworkHandler`.
  */
-export const isDestinationIntegrationEnabled = (destType: string, workspaceId: string): boolean => {
+export const isDestinationIntegrationEnabled = (
+  destType: string,
+  workspaceId: string,
+  destinationVersion?: number,
+): boolean => {
   const upperDestType = destType.toUpperCase();
+  // HTTP v1 remains on CDK, while v2 is native even though the type-wide
+  // batching/proxy capability cannot be advertised independently by version.
+  if (upperDestType === 'HTTP') {
+    return getDestinationVersion(destinationVersion) >= 2;
+  }
 
   // GA: destination is fully migrated
   if (destinationIntegrationsMap[upperDestType]) {

@@ -262,10 +262,7 @@ export async function processDestinationIntegration<
     allErrors.push(...singleResult.errorPayloads);
   }
 
-  // 5. Convert all errors to responses
-  const errorResponses = mapErrorPayloadToServerFormat(allErrors, metadataMap, destination);
-
-  // 6. Remove failed jobIds from payloads before building success responses.
+  // 5. Remove failed jobIds from payloads before building success responses.
   // This handles the multiplexing case: if transformEvent for jobId=1 produces
   // payloads for both /track and /identify endpoints, and the /identify payload
   // fails, jobId=1 must be removed from the /track payloads too — a partially
@@ -294,25 +291,33 @@ export async function processDestinationIntegration<
     const batchResults = await strategy.batch(group.payloads);
 
     for (const batchResult of batchResults) {
-      stats.histogram('output_batch_size', batchResult.jobIds.size, metricTags);
-
-      successResponses.push(
-        mapSuccessPayloadToServerFormat(
-          batchResult,
-          group.endpoint,
-          group.endpointPath,
-          group.method,
-          group.headers,
-          group.params,
-          metadataMap,
-          destination,
-          strategy.bodyFormat,
-        ),
-      );
+      if (batchResult.error) {
+        for (const jobId of batchResult.jobIds) {
+          allErrors.push({ jobId, ...batchResult.error });
+        }
+      } else {
+        stats.histogram('output_batch_size', batchResult.jobIds.size, metricTags);
+        successResponses.push(
+          mapSuccessPayloadToServerFormat(
+            batchResult,
+            group.endpoint,
+            group.endpointPath,
+            group.method,
+            group.headers,
+            group.params,
+            metadataMap,
+            destination,
+            strategy.bodyFormat,
+          ),
+        );
+      }
     }
   }
 
   // 9. Merge success responses that share jobIds (multiplexed events across groups)
 
-  return [...combineBatchRequestsWithSameJobIds(successResponses), ...errorResponses];
+  return [
+    ...combineBatchRequestsWithSameJobIds(successResponses),
+    ...mapErrorPayloadToServerFormat(allErrors, metadataMap, destination),
+  ];
 }

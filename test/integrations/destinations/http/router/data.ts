@@ -1,6 +1,6 @@
-import { authHeader1 } from '../maskedSecrets';
+import { authHeader1, authHeader2 } from '../maskedSecrets';
 import { generateMetadata } from '../../../testUtils';
-import { destType, destinations, traits, properties } from '../common';
+import { destType, destinations, v2Destination, traits, properties } from '../common';
 
 const routerRequest1 = {
   input: [
@@ -158,6 +158,88 @@ const routerRequest4 = {
 };
 
 export const data = [
+  {
+    id: 'http-router-v2-request-template',
+    name: destType,
+    description: 'HTTP v2 groups request fields and evaluates the body template per chunk',
+    scenario: 'Framework+Business',
+    successCriteria:
+      'Same path/header events are chunked and differently routed events stay separate',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: { type: 'track', userId: 'a', group: 'one' },
+              metadata: generateMetadata(1),
+              destination: v2Destination,
+            },
+            {
+              message: { type: 'track', userId: 'b', group: 'one' },
+              metadata: generateMetadata(2),
+              destination: v2Destination,
+            },
+            {
+              message: { type: 'track', userId: 'c', group: 'one' },
+              metadata: generateMetadata(3),
+              destination: v2Destination,
+            },
+            {
+              message: { type: 'track', userId: 'd', group: 'two' },
+              metadata: generateMetadata(4),
+              destination: v2Destination,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            ...[
+              { path: 'one', ids: ['a', 'b'], jobs: [1, 2] },
+              { path: 'one', ids: ['c'], jobs: [3] },
+              { path: 'two', ids: ['d'], jobs: [4] },
+            ].map(({ path, ids, jobs }) => ({
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: `https://example.org/events/${path}`,
+                endpointPath: '/http',
+                headers: {
+                  Authorization: authHeader2,
+                  'X-Group': path,
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch: JSON.stringify({ events: ids.map((userId) => ({ userId })) }),
+                  },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: jobs.map((job) => generateMetadata(job)),
+              destination: v2Destination,
+              batched: true,
+              statusCode: 200,
+            })),
+          ],
+        },
+      },
+    },
+  },
   {
     id: 'http-router-test-1',
     name: destType,

@@ -708,6 +708,32 @@ const destinations: Destination[] = [
   },
 ];
 
+const v2Destination: Destination = {
+  Config: {
+    apiUrl: 'https://example.org/events',
+    auth: 'bearerTokenAuth',
+    bearerToken: secret2,
+    method: 'POST',
+    format: 'JSON',
+    maxBatchSize: '2',
+    requestBodyTemplate: '{ "events": [$$.events.{ "userId": userId }] }',
+    headers: [{ to: 'X-Group', from: '$.group' }],
+    pathParams: [{ path: '$.group' }],
+  },
+  DestinationDefinition: {
+    DisplayName: displayName,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Config: {},
+  },
+  Enabled: true,
+  ID: '123',
+  Name: destTypeInUpperCase,
+  Transformations: [],
+  WorkspaceID: 'test-workspace-id',
+  version: 2,
+};
+
 const traits = {
   email: 'john.doe@example.com',
   firstName: 'John',
@@ -778,6 +804,7 @@ const RouterInstrumentationErrorStatTags = {
 export {
   destType,
   destinations,
+  v2Destination,
   processorInstrumentationErrorStatTags,
   processorConfigurationErrorStatTags,
   RouterInstrumentationErrorStatTags,

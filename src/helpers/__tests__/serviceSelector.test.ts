@@ -93,6 +93,15 @@ describe('ServiceSelector Service', () => {
     },
   );
 
+  test('routes HTTP v2 to native while preserving v1 CDK selection', () => {
+    expect(ServiceSelector.getDestinationServiceByType('HTTP', 'workspace-1', 2)).toBeInstanceOf(
+      NativeIntegrationDestinationService,
+    );
+    expect(ServiceSelector.getDestinationServiceByType('HTTP', 'workspace-1', 1)).toBeInstanceOf(
+      CDKV2DestinationService,
+    );
+  });
+
   test('getPrimaryDestinationService should return cdk v2 dest service', async () => {
     const events = [
       {

@@ -57,6 +57,12 @@ describe('parseTemplate', () => {
       expectedFields: ['country', 'email', 'gender', 'phone'],
     },
     {
+      name: 'nested relative mappings in a collection',
+      template:
+        '{ "data": [$$.records.{ "items": [products.{ "sku": sku, "attr": { "q": qty } }] }] }',
+      expectedFields: ['products'],
+    },
+    {
       name: 'deduplicated fields',
       template: `{
         "data": [$$.records.{
@@ -74,6 +80,12 @@ describe('parseTemplate', () => {
   ];
 
   const invalidTemplates = [
+    {
+      name: 'unwrapped nested relative collection',
+      template: '{ "data": [$$.records.{ "items": products.{ "sku": sku } }] }',
+      expectedError:
+        'Relative collection iteration must be wrapped in [...] to guarantee array output.',
+    },
     {
       name: 'spread operator',
       template: '{ ...$.records }',
@@ -188,6 +200,18 @@ describe('parseTemplate', () => {
       expect('recordFields' in result && result.recordFields.sort()).toEqual(expectedFields);
     },
   );
+
+  it.each([
+    { template: '[ $$.events.{ "payload": { "email": email } } ]', valid: true },
+    { template: '[ $$.events.{ "items": [products.{ "sku": sku }] } ]', valid: true },
+    { template: '[ $$.events.{ "items": products.{ "sku": sku } } ]', valid: false },
+    { template: '[ $$.events.{ "items": products.$map(sku) } ]', valid: false },
+    { template: '$$.events.{ "email": email }', valid: false },
+    { template: '[ $$.events.foo.{ "email": email } ]', valid: false },
+    { template: '{ "email": email }', valid: false },
+  ])('validates the events collection: $template', ({ template, valid }) => {
+    expect(parseTemplate(template, 'events').valid).toBe(valid);
+  });
 
   it.each(invalidTemplates)('should reject: $name', ({ template, expectedError }) => {
     const result = parseTemplate(template);

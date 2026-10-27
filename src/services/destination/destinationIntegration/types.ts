@@ -57,6 +57,8 @@ export type TransformResult<TBody extends Record<string, unknown> = Record<strin
 export type BatchGroup = {
   body: Record<string, unknown>;
   jobIds: Set<number>;
+  // A strategy may reject one chunk without discarding the other chunks in its group.
+  error?: TransformError;
 };
 
 export enum BodyFormat {

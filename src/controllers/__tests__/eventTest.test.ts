@@ -5,11 +5,17 @@ import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import { applicationRoutes } from '../../routes';
 import { EventTesterService } from '../../services/eventTest/eventTester';
-import { sandboxedParseTemplate } from '../../v0/destinations/custom_audience/template/templateSandboxClient';
+import {
+  sandboxedParseTemplate,
+  sandboxedParseHttpTemplates,
+} from '../../v0/destinations/custom_audience/template/templateSandboxClient';
 
 jest.mock('../../v0/destinations/custom_audience/template/templateSandboxClient');
 const mockParseTemplate = sandboxedParseTemplate as jest.MockedFunction<
   typeof sandboxedParseTemplate
+>;
+const mockParseHttpTemplates = sandboxedParseHttpTemplates as jest.MockedFunction<
+  typeof sandboxedParseHttpTemplates
 >;
 
 let server: http.Server;
@@ -28,6 +34,7 @@ afterAll(async () => {
 
 beforeEach(() => {
   mockParseTemplate.mockReset();
+  mockParseHttpTemplates.mockReset();
 });
 
 const ENDPOINT = '/test-router/custom_audience/parse-template';
@@ -181,6 +188,61 @@ describe('POST /test-router/custom_audience/parse-template', () => {
 
     expect(response.status).toBe(400);
     expect(response.body.error).toBe(expectedError);
+  });
+});
+
+describe('POST /test-router/http/parse-template', () => {
+  it('returns indexed errors for all four surfaces in one request', async () => {
+    mockParseHttpTemplates.mockImplementation(async (templates) =>
+      templates.map((template) =>
+        template.includes('$map')
+          ? { valid: false, errors: ['Function calls are not supported'] }
+          : { valid: true, recordFields: [] },
+      ),
+    );
+    const response = await request(server)
+      .post('/test-router/http/parse-template')
+      .send({
+        workspaceId: 'ws',
+        requestBodyTemplate: '$map($$.events)',
+        headers: [{ from: 'literal' }, { from: '$map($$.message)' }],
+        queryParams: [{ from: '$map($$.message)' }],
+        pathParams: [{ path: '$map($$.message)' }],
+      });
+    expect(response.body).toEqual({
+      valid: false,
+      errors: [
+        { field: 'requestBodyTemplate', messages: ['Function calls are not supported'] },
+        { field: 'headers', index: 1, messages: ['Function calls are not supported'] },
+        { field: 'queryParams', index: 0, messages: ['Function calls are not supported'] },
+        { field: 'pathParams', index: 0, messages: ['Function calls are not supported'] },
+      ],
+    });
+    expect(mockParseHttpTemplates).toHaveBeenCalledWith(
+      ['$map($$.events)', '"literal"', '$map($$.message)', '$map($$.message)', '$map($$.message)'],
+      'ws',
+    );
+  });
+
+  it.each([
+    { name: 'too many fields', fields: Array.from({ length: 101 }, () => ({ from: 'x' })) },
+    { name: 'oversized field', fields: [{ from: 'x'.repeat(16_385) }] },
+  ])('rejects $name before entering the sandbox', async ({ fields }) => {
+    const response = await request(server).post('/test-router/http/parse-template').send({
+      workspaceId: 'ws',
+      requestBodyTemplate: '$$.events',
+      headers: fields,
+    });
+    expect(response.status).toBe(400);
+    expect(mockParseHttpTemplates).not.toHaveBeenCalled();
+  });
+
+  it('rejects missing body template', async () => {
+    const response = await request(server)
+      .post('/test-router/http/parse-template')
+      .send({ workspaceId: 'ws' });
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain('requestBodyTemplate: Required');
   });
 });
 

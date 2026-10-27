@@ -5,6 +5,7 @@ import { DestinationValidationMiddleware } from '../middlewares/destinationValid
 const router = new Router({ prefix: '/test-router' });
 
 router.post('/custom_audience/parse-template', EventTestController.parseCustomAudienceTemplate);
+router.post('/http/parse-template', EventTestController.parseHttpTemplate);
 router.post(
   '/:version/:destination/batch',
   DestinationValidationMiddleware.pathParam,

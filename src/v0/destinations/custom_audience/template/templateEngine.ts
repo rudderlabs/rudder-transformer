@@ -96,11 +96,17 @@ interface ValidationContext {
   /** True when this node is a direct child of a [...] array constructor. */
   wrappedInArray: boolean;
   errors: string[];
+  collection: string;
 }
 
 // Walk function signatures passed to handlers so they can recurse.
 type ValidateWalker = (node: AstNode, ctx: ValidationContext) => void;
-type FieldWalker = (node: AstNode, insideRecordsIteration: boolean, fields: Set<string>) => void;
+type FieldWalker = (
+  node: AstNode,
+  insideRecordsIteration: boolean,
+  fields: Set<string>,
+  collection: string,
+) => void;
 
 interface NodeHandler {
   /**
@@ -119,6 +125,7 @@ interface NodeHandler {
     insideRecordsIteration: boolean,
     fields: Set<string>,
     walk: FieldWalker,
+    collection: string,
   ) => void;
 }
 
@@ -164,16 +171,16 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         ctx.errors.push(`Expression type "unary(${node.value})" is not supported.`);
       }
     },
-    collectFields: (node, insideRecordsIteration, fields, walk) => {
+    collectFields: (node, insideRecordsIteration, fields, walk, collection) => {
       if (node.value === '{') {
         const pairs: AstNode[][] = node.lhs ?? [];
         for (const pair of pairs) {
-          walk(pair[1], insideRecordsIteration, fields);
+          walk(pair[1], insideRecordsIteration, fields, collection);
         }
       } else if (node.value === '[') {
         const elements: AstNode[] = node.expressions ?? [];
         for (const elem of elements) {
-          walk(elem, insideRecordsIteration, fields);
+          walk(elem, insideRecordsIteration, fields, collection);
         }
       }
     },
@@ -197,22 +204,20 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       }
 
       // Bare name path (no $$ root) — only valid inside a mapping step
-      if (steps[0]?.type === 'name') {
-        if (!ctx.insideMappingStep) {
-          if (!ctx.insideObjectOrArray) {
-            ctx.errors.push(
-              `Bare identifiers (e.g., "${steps[0].value}") are not allowed. Use $$.field to access data.`,
-            );
-          } else {
-            ctx.errors.push(
-              'Relative field references (field) can only be used inside a $$.records.{} mapping block.',
-            );
-          }
-          return;
+      if (steps[0]?.type === 'name' && !ctx.insideMappingStep) {
+        if (!ctx.insideObjectOrArray) {
+          ctx.errors.push(
+            `Bare identifiers (e.g., "${steps[0].value}") are not allowed. Use $$.field to access data.`,
+          );
+        } else {
+          ctx.errors.push(
+            `Relative field references (field) can only be used inside a $$.${ctx.collection}.{} mapping block.`,
+          );
         }
-        // Valid bare name inside mapping — leaf node, nothing more to validate
         return;
       }
+      // A relative path may contain another mapping step (products.{...}).
+      // Validate every child, including functions and predicates, just like a root path.
 
       // $$ root path — verify root variable
       if (steps[0]?.type === 'variable') {
@@ -231,20 +236,20 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       // Detect $$.records path and check for nested iteration.
       // Only `$$.records.{...}` is allowed — deeper paths like `$$.records.foo.{...}`
       // would produce incorrect recordFields since bare names refer to nested data.
-      const isRecordsPath =
+      const isCollectionPath =
         steps.length >= 2 &&
         steps[0]?.type === 'variable' &&
         steps[0]?.value === ROOT_VARIABLE &&
         steps[1]?.type === 'name' &&
-        steps[1]?.value === RECORDS_FIELD;
+        steps[1]?.value === ctx.collection;
 
       const mappingStepIdx = steps.findIndex(
         (s: AstNode) => s.type === 'unary' && (s.value === '{' || s.value === '['),
       );
 
-      if (isRecordsPath && mappingStepIdx >= 0 && mappingStepIdx !== 2) {
+      if (isCollectionPath && mappingStepIdx >= 0 && mappingStepIdx !== 2) {
         ctx.errors.push(
-          'Nested iteration under $$.records is not supported. Use $$.records.{...} directly.',
+          `Nested iteration under $$.${ctx.collection} is not supported. Use $$.${ctx.collection}.{...} directly.`,
         );
         return;
       }
@@ -254,10 +259,19 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       // `$$.records.{...}` with one record returns an object instead of a
       // one-element array. Wrapping in [...] prevents this:
       //   [$$.records.{ "email": email }]   → always an array
-      if (isRecordsPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
+      if (isCollectionPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
         ctx.errors.push(
-          '$$.records iteration must be wrapped in [...] to guarantee array output ' +
-            '(e.g. [$$.records.{...}]). Without this, single-record batches produce a bare object.',
+          `$$.${ctx.collection} iteration must be wrapped in [...] to guarantee array output ` +
+            `(e.g. [$$.${ctx.collection}.{...}]). Without this, single-record batches produce a bare object.`,
+        );
+        return;
+      }
+
+      // Inner mappings over a relative collection must also be array-wrapped:
+      // products.{...} collapses to an object for a single product.
+      if (steps[0]?.type === 'name' && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
+        ctx.errors.push(
+          'Relative collection iteration must be wrapped in [...] to guarantee array output.',
         );
         return;
       }
@@ -286,10 +300,11 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
     //     e.g. `email_sha256` → "email_sha256"
     //   - `$$.records.{<mapping>}` → enter the mapping with insideRecordsIteration=true
     //   - `$$.connection.*` and other `$$` paths → ignored (no record fields)
-    collectFields: (node, insideRecordsIteration, fields, walk) => {
+    collectFields: (node, insideRecordsIteration, fields, walk, collection) => {
       const steps: AstNode[] = node.steps ?? [];
 
-      // Bare name inside records iteration → record field
+      // Bare name inside records iteration → top-level record field.
+      // Nested relative mappings collect their source collection, not item keys.
       if (insideRecordsIteration && steps[0]?.type === 'name') {
         fields.add(steps[0].value as string);
         return;
@@ -297,24 +312,24 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
 
       // $$ root path — check for $$.records.{...} to enter iteration context.
       // AST shape: steps = [variable("$"), name("records"), unary("{"/"]")]
-      const isRecordsPath =
+      const isCollectionPath =
         steps.length >= 3 &&
         steps[0]?.type === 'variable' &&
         steps[0]?.value === ROOT_VARIABLE &&
         steps[1]?.type === 'name' &&
-        steps[1]?.value === RECORDS_FIELD;
+        steps[1]?.value === collection;
 
       for (const step of steps) {
-        if (step.type === 'unary' && isRecordsPath) {
+        if (step.type === 'unary' && (isCollectionPath || insideRecordsIteration)) {
           if (step.value === '{') {
             const pairs: AstNode[][] = step.lhs ?? [];
             for (const pair of pairs) {
-              walk(pair[1], true, fields);
+              walk(pair[1], true, fields, collection);
             }
           } else if (step.value === '[') {
             const elements: AstNode[] = step.expressions ?? [];
             for (const elem of elements) {
-              walk(elem, true, fields);
+              walk(elem, true, fields, collection);
             }
           }
         }
@@ -359,9 +374,9 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       }
       walk(node.arguments![0], { ...ctx, wrappedInArray: false });
     },
-    collectFields: (node, insideRecordsIteration, fields, walk) => {
+    collectFields: (node, insideRecordsIteration, fields, walk, collection) => {
       // After validation, only $number(expr) with a single arg reaches here
-      walk(node.arguments![0], insideRecordsIteration, fields);
+      walk(node.arguments![0], insideRecordsIteration, fields, collection);
     },
   },
 
@@ -393,15 +408,29 @@ function validateNode(node: AstNode, ctx: ValidationContext): void {
  * mapping blocks.  Connection fields (e.g. `$$.connection.audience_id`)
  * and static literals are ignored.
  */
-function collectFields(node: AstNode, insideRecordsIteration: boolean, fields: Set<string>): void {
+function collectFields(
+  node: AstNode,
+  insideRecordsIteration: boolean,
+  fields: Set<string>,
+  collection: string,
+): void {
   if (!node || !node.type) return;
-  NODE_HANDLERS[node.type]?.collectFields?.(node, insideRecordsIteration, fields, collectFields);
+  NODE_HANDLERS[node.type]?.collectFields?.(
+    node,
+    insideRecordsIteration,
+    fields,
+    collectFields,
+    collection,
+  );
 }
 
 /**
  * Parse and validate a template string, returning the validated AST or errors.
  */
-function parseAndValidate(template: string): { ast: AstNode } | { errors: string[] } {
+function parseAndValidate(
+  template: string,
+  collection: string,
+): { ast: AstNode } | { errors: string[] } {
   let ast: AstNode;
   try {
     const expr = jsonata(template);
@@ -421,6 +450,7 @@ function parseAndValidate(template: string): { ast: AstNode } | { errors: string
     insideObjectOrArray: false,
     wrappedInArray: false,
     errors: [],
+    collection,
   };
   validateNode(ast, ctx);
 
@@ -449,14 +479,14 @@ export type ParseTemplateResult =
  * Example: `{ "data": [$$.records.[email, phone]] }`
  *   → { valid: true, recordFields: ["email", "phone"] }
  */
-export function parseTemplate(template: string): ParseTemplateResult {
-  const result = parseAndValidate(template);
+export function parseTemplate(template: string, collection = RECORDS_FIELD): ParseTemplateResult {
+  const result = parseAndValidate(template, collection);
   if ('errors' in result) {
     return { valid: false, errors: result.errors };
   }
 
   const fields = new Set<string>();
-  collectFields(result.ast, false, fields);
+  collectFields(result.ast, false, fields, collection);
   return { valid: true, recordFields: [...fields] };
 }
 

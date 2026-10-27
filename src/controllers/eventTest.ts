@@ -5,7 +5,11 @@ import { EventTesterService } from '../services/eventTest/eventTester';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
-import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
+import {
+  sandboxedParseTemplate,
+  sandboxedParseHttpTemplates,
+} from '../v0/destinations/custom_audience/template/templateSandboxClient';
+import { requestFieldExpression } from '../v0/destinations/http/requestFields';
 import {
   actionConfigSchema,
   CustomAudienceDestConfig,
@@ -32,6 +36,37 @@ const parseTemplateBodySchema = z.object({
   actions: parseTemplateActionsSchema,
   workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
 });
+
+const MAX_HTTP_TEMPLATE_LENGTH = 16_384;
+const MAX_HTTP_REQUEST_FIELDS = 100;
+const MAX_HTTP_TEMPLATE_TOTAL_LENGTH = 65_536;
+const httpParseBodySchema = z
+  .object({
+    workspaceId: z.string().min(1),
+    requestBodyTemplate: z.string().max(MAX_HTTP_TEMPLATE_LENGTH),
+    headers: z
+      .array(z.object({ from: z.string().max(MAX_HTTP_TEMPLATE_LENGTH) }))
+      .max(MAX_HTTP_REQUEST_FIELDS)
+      .optional(),
+    queryParams: z
+      .array(z.object({ from: z.string().max(MAX_HTTP_TEMPLATE_LENGTH) }))
+      .max(MAX_HTTP_REQUEST_FIELDS)
+      .optional(),
+    pathParams: z
+      .array(z.object({ path: z.string().max(MAX_HTTP_TEMPLATE_LENGTH) }))
+      .max(MAX_HTTP_REQUEST_FIELDS)
+      .optional(),
+  })
+  .refine(
+    ({ requestBodyTemplate, headers = [], queryParams = [], pathParams = [] }) =>
+      headers.length + queryParams.length + pathParams.length <= MAX_HTTP_REQUEST_FIELDS &&
+      requestBodyTemplate.length +
+        headers.reduce((n, { from }) => n + from.length, 0) +
+        queryParams.reduce((n, { from }) => n + from.length, 0) +
+        pathParams.reduce((n, { path }) => n + path.length, 0) <=
+        MAX_HTTP_TEMPLATE_TOTAL_LENGTH,
+    { message: 'Too many request fields or too much template input' },
+  );
 
 const testEventV2Schema = z.object({
   events: z.array(z.record(z.unknown())),
@@ -79,6 +114,57 @@ export class EventTestController {
   public static status(ctx: Context) {
     ctx.status = 200;
     ctx.body = 'OK';
+  }
+
+  public static async parseHttpTemplate(ctx: Context) {
+    const parsed = httpParseBodySchema.safeParse(ctx.request.body);
+    if (!parsed.success) {
+      ctx.status = 400;
+      ctx.body = { error: formatZodError(parsed.error) };
+      return;
+    }
+    const {
+      workspaceId,
+      requestBodyTemplate,
+      headers = [],
+      queryParams = [],
+      pathParams = [],
+    } = parsed.data;
+    const fields = [
+      { field: 'requestBodyTemplate', template: requestBodyTemplate },
+      ...headers.map(({ from }, index) => ({
+        field: 'headers',
+        index,
+        template: requestFieldExpression(from),
+      })),
+      ...queryParams.map(({ from }, index) => ({
+        field: 'queryParams',
+        index,
+        template: requestFieldExpression(from),
+      })),
+      ...pathParams.map(({ path }, index) => ({
+        field: 'pathParams',
+        index,
+        template: requestFieldExpression(path),
+      })),
+    ];
+    // A single bounded isolate call validates all surfaces while preserving their indices.
+    const results = await sandboxedParseHttpTemplates(
+      fields.map(({ template }) => template),
+      workspaceId,
+    );
+    const errors = results.flatMap((result, i) =>
+      result.valid
+        ? []
+        : [
+            {
+              field: fields[i].field,
+              ...('index' in fields[i] ? { index: fields[i].index } : {}),
+              messages: result.errors,
+            },
+          ],
+    );
+    ctx.body = { valid: errors.length === 0, errors };
   }
 
   public static async parseCustomAudienceTemplate(ctx: Context) {

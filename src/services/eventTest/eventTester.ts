@@ -72,11 +72,21 @@ export class EventTesterService {
       // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
       // jobId must be unique per event so the batching framework can track per-event failures.
       metadata: { workspaceId, jobId: idx + 1 } as Metadata,
-      destination: event.destination as Destination,
+      destination: {
+        ...event.destination,
+        // Preview's key conversion produces `Version` and `WorkspaceId`; native integrations
+        // read the control-plane spelling of both fields.
+        version: event.destination.Version,
+        WorkspaceID: workspaceId,
+      } as Destination,
       connection: event.connection as Connection,
     }));
 
-    const service = ServiceSelector.getDestinationServiceByType(dest, workspaceId);
+    const service = ServiceSelector.getDestinationServiceByType(
+      dest,
+      workspaceId,
+      events[0].destination.Version as number | undefined,
+    );
     service.init();
     const responses = isDestinationRouterTransformEnabled(dest)
       ? await service.doRouterTransformation(inputs, dest, version, {})

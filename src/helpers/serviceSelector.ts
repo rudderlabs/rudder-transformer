@@ -7,6 +7,7 @@ import { NativeIntegrationDestinationService } from '../services/destination/nat
 import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types';
 import { shouldUseCdkV2 } from '../cdk/v2/utils';
+import { isDestinationIntegrationEnabled } from '../constants/destinationIntegrationsMap';
 
 export class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();
@@ -40,7 +41,14 @@ export class ServiceSelector {
   public static getDestinationServiceByType(
     destType: string,
     workspaceId: string,
+    destinationVersion?: number,
   ): DestinationService {
+    if (
+      destType.toUpperCase() === 'HTTP' &&
+      isDestinationIntegrationEnabled(destType, workspaceId, destinationVersion)
+    ) {
+      return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
+    }
     if (shouldUseCdkV2(destType, workspaceId)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
     }
@@ -52,7 +60,11 @@ export class ServiceSelector {
   ): DestinationService {
     const destinationType = events[0]?.destination?.DestinationDefinition?.Name ?? '';
     const workspaceId = events[0]?.metadata?.workspaceId ?? '';
-    return this.getDestinationServiceByType(destinationType, workspaceId);
+    return this.getDestinationServiceByType(
+      destinationType,
+      workspaceId,
+      events[0]?.destination?.version,
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

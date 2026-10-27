@@ -53,6 +53,54 @@ export const otherScenariosV1: ProxyV1TestData[] = [
     },
   },
   {
+    id: 'fbca_v1_other_scenario_3',
+    name: 'fb_custom_audience',
+    description: 'user update request is throttled by the Facebook hourly API limit',
+    successCriteria: 'Should return 429 with throttled error type and no unhandled status meta tag',
+    scenario: 'Framework',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          method: 'DELETE',
+          endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
+          headers: {
+            'test-dest-response-key': 'hourlyLimitError',
+          },
+          params: testParams,
+          JSON: testBodyJson,
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              'Hourly limit for this API call has been exceeded.. Facebook responded with error code: 613',
+            statTags: {
+              ...statTags,
+              errorType: 'throttled',
+            },
+            status: 429,
+            response: [
+              {
+                error:
+                  'Hourly limit for this API call has been exceeded.. Facebook responded with error code: 613',
+                statusCode: 429,
+                metadata: generateMetadata(1),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
     id: 'fbca_v1_other_scenario_2',
     name: 'fb_custom_audience',
     description: 'got invalid response format (not-json) from facebook',

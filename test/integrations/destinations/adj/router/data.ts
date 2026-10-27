@@ -123,6 +123,8 @@ export const data = [
                   gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                   att_status: 3,
                   tracking_enabled: true,
+                  user_agent:
+                    'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                   currency: 'EUR',
                   s2s: 1,
                   ip_address: '[::1]',
@@ -298,6 +300,8 @@ export const data = [
                   idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                   att_status: 3,
                   tracking_enabled: true,
+                  user_agent:
+                    'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                   currency: 'EUR',
                   s2s: 1,
                   ip_address: '[::1]',

@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.165.0",
+  "version": "1.166.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -49,7 +49,7 @@
     "test:live:coverage": "npm run test:live -- --coverage",
     "test:ts:silent": "export LOG_LEVEL=silent && npm run test:ts -- --silent",
     "test:ts:ci": "npm run test:ts -- --coverage --expand --maxWorkers=50%",
-    "pre-commit": "npm run test:ts:silent && npm run test:js:silent && npx lint-staged",
+    "pre-commit": "npx lint-staged",
     "commit-msg": "commitlint --edit",
     "prepare": "npm --prefix ./node_modules/isolated-vm run rebuild",
     "release": "npx standard-version",

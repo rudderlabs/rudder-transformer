@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 # Get changed files in test/integrations/sources/
 changed_sources=$(git diff --cached --name-only | grep "test/integrations/sources/" | cut -d'/' -f4 | sort -u)
 

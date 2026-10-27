@@ -257,6 +257,26 @@ const originalTimestamp = '2023-11-10T14:42:44.724Z';
 const v2Endpoint = 'https://api.intercom.io/contacts';
 const v1Endpoint = 'https://api.intercom.io/users';
 
+// rETL message where the identifier is mapped as external_id (no user_id trait)
+const rETLExternalIdMessage = (externalId: string, email: string | null) => ({
+  userId: externalId,
+  context: {
+    externalId: [{ id: externalId, type: 'INTERCOM-customer', identifierType: 'external_id' }],
+    mappedToDestination: 'true',
+    traits: { external_id: externalId },
+  },
+  integrations: { INTERCOM: { lookup: 'external_id' } },
+  traits: {
+    custom_attributes: { key1: 'value1', key2: 'value2' },
+    email,
+    external_id: externalId,
+    phone: '+91 9999999999',
+  },
+  type: 'identify',
+  timestamp,
+  originalTimestamp,
+});
+
 export const identifyTestData = [
   {
     id: 'intercom-identify-test-1',
@@ -1379,6 +1399,139 @@ export const identifyTestData = [
               version: '1',
             },
             statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-20',
+    name: 'intercom',
+    description:
+      'V2 version : external_id set as identifier in rETL flow without email and that external_id is not present on intercom',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain create user payload with post method and the mapped external_id in the body',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: rETLExternalIdMessage('user@1', null),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: v2Endpoint,
+              headers: v2Headers,
+              JSON: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                external_id: 'user@1',
+                phone: '+91 9999999999',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-21',
+    name: 'intercom',
+    description:
+      'V2 version : external_id set as identifier in rETL flow without email and that external_id is present on intercom',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain update user payload with put method and the mapped external_id in the body',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: rETLExternalIdMessage('user@2', null),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: `${v2Endpoint}/70701240741e45d040`,
+              headers: v2Headers,
+              method: 'PUT',
+              JSON: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                external_id: 'user@2',
+                phone: '+91 9999999999',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-22',
+    name: 'intercom',
+    description: 'V2 version : external_id set as identifier in rETL flow along with email',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain update user payload with email and without external_id in the body',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: rETLExternalIdMessage('user@2', 'test+2@rudderlabs.com'),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: `${v2Endpoint}/70701240741e45d040`,
+              headers: v2Headers,
+              method: 'PUT',
+              JSON: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                email: 'test+2@rudderlabs.com',
+                phone: '+91 9999999999',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },

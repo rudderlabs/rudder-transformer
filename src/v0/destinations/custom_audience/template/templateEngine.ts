@@ -81,8 +81,6 @@ interface AstNode {
   expressions?: AstNode[];
   arguments?: AstNode[];
   procedure?: AstNode;
-  predicate?: unknown[];
-  stages?: unknown[];
   [key: string]: unknown;
 }
 
@@ -153,33 +151,25 @@ function unsupportedAstKey(node: AstNode, astKeys: string[] = []): string | unde
   return Object.keys(node).find((key) => !COMMON_AST_KEYS.has(key) && !astKeys.includes(key));
 }
 
-/**
- * Check for filter/predicate/stages on a node — these indicate
- * bracket notation or filter expressions which are not allowed.
- */
-function hasFilterOrPredicate(node: AstNode): boolean {
-  return (
-    (Array.isArray(node.predicate) && node.predicate.length > 0) ||
-    (Array.isArray(node.stages) && node.stages.length > 0)
-  );
-}
+// Messages for the slots JSONata attaches to any node type — filters
+// (`expr[...]`), group-by (`expr{...}`) and context/index bindings (`expr@$v`,
+// `expr#$v`). Other unknown keys get a generic message.
+const FILTER_ERROR = 'Filter expressions are not supported.';
+const BINDING_ERROR = 'Context and index bindings (@$var, #$var) are not supported.';
+const UNSUPPORTED_KEY_ERRORS: Record<string, string> = {
+  predicate: FILTER_ERROR,
+  stages: FILTER_ERROR,
+  group: 'Group-by expressions (expr{...}) are not supported.',
+  focus: BINDING_ERROR,
+  index: BINDING_ERROR,
+  tuple: BINDING_ERROR,
+};
 
-/**
- * Filters (`expr[...]`), group-by (`expr{...}`) and context/index bindings
- * (`expr@$v`, `expr#$v`) can follow any node type. Their sub-expressions and
- * bindings hang off properties no handler walks, so they are rejected per node.
- */
-function attachedExpressionError(node: AstNode): string | undefined {
-  if (hasFilterOrPredicate(node)) {
-    return node.type === 'variable'
-      ? 'Bracket notation ($$["key"]) is not supported. Use dot notation ($$.key) instead.'
-      : 'Filter expressions are not supported.';
+function unsupportedAstKeyError(node: AstNode, key: string): string {
+  if (key === 'predicate' && node.type === 'variable') {
+    return 'Bracket notation ($$["key"]) is not supported. Use dot notation ($$.key) instead.';
   }
-  if (node.group !== undefined) return 'Group-by expressions (expr{...}) are not supported.';
-  if (node.focus !== undefined || node.index !== undefined) {
-    return 'Context and index bindings (@$var, #$var) are not supported.';
-  }
-  return undefined;
+  return UNSUPPORTED_KEY_ERRORS[key] ?? `Expression feature "${key}" is not supported.`;
 }
 
 /** True when the path starts with `$$.<rootCollection>`. */
@@ -417,15 +407,11 @@ function validateNode(node: AstNode, ctx: ValidationContext): void {
     ctx.errors.push(`Expression type "${node.type}" is not supported.`);
     return;
   }
-  const attachedError = attachedExpressionError(node);
-  if (attachedError) {
-    ctx.errors.push(attachedError);
-    return;
-  }
-  // Fail closed on any other slot JSONata may attach (e.g. a future parser feature)
+  // Fail closed on any slot no handler walks — filters, group-by, bindings, or
+  // anything a future parser version adds
   const unknownKey = unsupportedAstKey(node, handler.astKeys);
   if (unknownKey) {
-    ctx.errors.push(`Expression feature "${unknownKey}" is not supported.`);
+    ctx.errors.push(unsupportedAstKeyError(node, unknownKey));
     return;
   }
 

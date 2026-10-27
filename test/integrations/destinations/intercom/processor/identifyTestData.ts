@@ -1499,7 +1499,7 @@ export const identifyTestData = [
     description: 'V2 version : external_id set as identifier in rETL flow along with email',
     scenario: 'Business',
     successCriteria:
-      'Response should contain update user payload with email and without external_id in the body',
+      'Response should contain update user payload with both email and the mapped external_id in the body',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1527,7 +1527,126 @@ export const identifyTestData = [
               JSON: {
                 custom_attributes: { key1: 'value1', key2: 'value2' },
                 email: 'test+2@rudderlabs.com',
+                external_id: 'user@2',
                 phone: '+91 9999999999',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-23',
+    name: 'intercom',
+    description:
+      'V2 version : user_id set as identifier in rETL flow along with a different mapped external_id and without email',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain update user payload with the mapped external_id, not the user_id, as external_id',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: {
+              context: {
+                externalId: [
+                  { id: 'user@1', type: 'INTERCOM-customer', identifierType: 'user_id' },
+                ],
+                mappedToDestination: 'true',
+              },
+              traits: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                external_id: 'user@2',
+                name: 'Test Name',
+              },
+              type: 'identify',
+              timestamp,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: `${v2Endpoint}/70701240741e45d040`,
+              headers: v2Headers,
+              method: 'PUT',
+              JSON: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                external_id: 'user@2',
+                name: 'Test Name',
+                user_id: 'user@1',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-24',
+    name: 'intercom',
+    description: 'V2 version : email set as identifier in rETL flow',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain create user payload with email and without external_id in the body',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: {
+              context: {
+                externalId: [
+                  { id: 'test@rudderlabs.com', type: 'INTERCOM-customer', identifierType: 'email' },
+                ],
+                mappedToDestination: 'true',
+              },
+              traits: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                name: 'Test Name',
+              },
+              type: 'identify',
+              timestamp,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: v2Endpoint,
+              headers: v2Headers,
+              JSON: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                email: 'test@rudderlabs.com',
+                name: 'Test Name',
               },
             }),
             statusCode: 200,

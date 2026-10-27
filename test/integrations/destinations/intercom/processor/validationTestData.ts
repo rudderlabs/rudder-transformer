@@ -592,4 +592,49 @@ export const validationTestData: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'intercom-validation-test-11',
+    name: 'intercom',
+    description: '[Error - V2 version]: rETL identify call without email, user_id or external_id',
+    scenario: 'Framework',
+    successCriteria:
+      'Response status code should be 400 and it should throw instrumentation error with respective error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: {
+              context: {
+                externalId: [{ type: 'INTERCOM-customer', identifierType: 'user_id' }],
+                mappedToDestination: 'true',
+              },
+              traits: { email: null, name: 'Test Name' },
+              type: 'identify',
+              timestamp: '2020-01-21T00:21:34.208Z',
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Either email or userId is required for Identify call: Workflow: procWorkflow, Step: identifyPayloadForLatestVersion, ChildStep: undefined, OriginalError: Either email or userId is required for Identify call',
+            statTags: expectedStatTags,
+            statusCode: 400,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
 ];

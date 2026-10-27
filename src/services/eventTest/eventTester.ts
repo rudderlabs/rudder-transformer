@@ -24,6 +24,12 @@ type EventTesterV2Payload = {
   connection?: Record<string, unknown>;
   stage: EventTesterStage;
   libraries?: Record<string, unknown>[];
+  secret?: Record<string, unknown>;
+};
+
+type DestTransformOptions = {
+  isDryRun: boolean;
+  secret?: Record<string, unknown>;
 };
 
 type UserTransformResult = {
@@ -58,6 +64,7 @@ export class EventTesterService {
     version: string,
     dest: string,
     events: DestTransformInput[],
+    options: DestTransformOptions = { isDryRun: false },
   ): Promise<DestTransformEntry[]> {
     if (events.length === 0) {
       return [];
@@ -67,14 +74,20 @@ export class EventTesterService {
       return [{ error: 'destination.WorkspaceId is required' }];
     }
 
-    const inputs: RouterTransformationRequestData[] = events.map((event, idx) => ({
-      message: event.message as RudderMessage,
-      // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
-      // jobId must be unique per event so the batching framework can track per-event failures.
-      metadata: { workspaceId, jobId: idx + 1 } as Metadata,
-      destination: event.destination as Destination,
-      connection: event.connection as Connection,
-    }));
+    const inputs: RouterTransformationRequestData[] = events.map((event, idx) => {
+      let secret: Record<string, unknown> | undefined;
+      if (event.destination.deliveryAccount) {
+        secret = options.isDryRun ? { accessToken: '********' } : options.secret;
+      }
+      return {
+        message: event.message as RudderMessage,
+        // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
+        // jobId must be unique per event so the batching framework can track per-event failures.
+        metadata: { workspaceId, jobId: idx + 1, ...(secret && { secret }) } as Metadata,
+        destination: event.destination as Destination,
+        connection: event.connection as Connection,
+      };
+    });
 
     const service = ServiceSelector.getDestinationServiceByType(dest, workspaceId);
     service.init();
@@ -278,7 +291,7 @@ export class EventTesterService {
     version: string,
     dest: string,
   ): Promise<EventTesterV2Response> {
-    const { events, destination, connection, stage, libraries } = payload;
+    const { events, destination, connection, stage, libraries, secret } = payload;
 
     const transformedDestination = this.transformDestination(destination);
     const preparedEvents: DestTransformInput[] = events.map((message) => ({
@@ -319,7 +332,10 @@ export class EventTesterService {
         connection,
       }));
 
-    const destResults = await this.runDestTransform(version, dest, eventsForDestTransform);
+    const destResults = await this.runDestTransform(version, dest, eventsForDestTransform, {
+      isDryRun: !stage.send_to_destination,
+      secret,
+    });
 
     const destOutput: DestTransformOutputEntry[] = destResults.map((r) =>
       'error' in r

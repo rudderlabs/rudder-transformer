@@ -233,9 +233,109 @@ describe('EventTesterService.testEvent', () => {
 });
 
 describe('EventTesterService.testEventV2', () => {
+  const metadataCases = [
+    {
+      name: 'masks the access token for a linked-account dry run',
+      linkedAccount: true,
+      send: false,
+      secret: { accessToken: 'resolved-test-token' },
+      expectedSecret: { accessToken: '********' },
+    },
+    {
+      name: 'previews a linked account without a supplied secret',
+      linkedAccount: true,
+      send: false,
+      secret: undefined,
+      expectedSecret: { accessToken: '********' },
+    },
+    {
+      name: 'uses the supplied secret for a linked-account test send',
+      linkedAccount: true,
+      send: true,
+      secret: { accessToken: 'resolved-test-token' },
+      expectedSecret: { accessToken: 'resolved-test-token' },
+    },
+    {
+      name: 'does not add a secret to a linked-account test send without one',
+      linkedAccount: true,
+      send: true,
+      secret: undefined,
+      expectedSecret: undefined,
+    },
+    {
+      name: 'does not add a secret to an unlinked dry run',
+      linkedAccount: false,
+      send: false,
+      secret: { accessToken: 'resolved-test-token' },
+      expectedSecret: undefined,
+    },
+    {
+      name: 'does not add a secret to an unlinked test send',
+      linkedAccount: false,
+      send: true,
+      secret: { accessToken: 'resolved-test-token' },
+      expectedSecret: undefined,
+    },
+  ];
+
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
+  });
+
+  it.each(metadataCases)('$name', async ({ linkedAccount, send, secret, expectedSecret }) => {
+    const doRouterSpy = jest
+      .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
+      .mockResolvedValue([
+        {
+          batchedRequest: sampleOutput,
+          metadata: [{}] as any,
+          destination: {} as any,
+          batched: false,
+          statusCode: 200,
+        },
+      ]);
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          sendPayloadsToDestination: (
+            destination: string,
+            transformedPayloads: unknown[],
+          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
+        },
+        'sendPayloadsToDestination',
+      )
+      .mockResolvedValue({ responses: ['ok'], statuses: [200] });
+
+    await EventTesterService.testEventV2(
+      {
+        events: [{ type: 'record' }],
+        destination: {
+          workspaceId: 'ws-1',
+          destinationDefinition: {},
+          ...(linkedAccount && { deliveryAccount: { accountDefinitionName: 'OAUTH_AUTH_CODE' } }),
+        },
+        stage: { dest_transform: true, send_to_destination: send },
+        secret,
+      },
+      'v0',
+      'custom_audience',
+    );
+
+    expect(doRouterSpy).toHaveBeenCalledWith(
+      [
+        expect.objectContaining({
+          metadata: {
+            workspaceId: 'ws-1',
+            jobId: 1,
+            ...(expectedSecret && { secret: expectedSecret }),
+          },
+        }),
+      ],
+      'custom_audience',
+      'v0',
+      {},
+    );
   });
 
   it('runs user transform per event and forwards only successful events into batch dest transform', async () => {
@@ -289,6 +389,7 @@ describe('EventTesterService.testEventV2', () => {
         expect.objectContaining({ message: { type: 'record', id: 'ok-1' } }),
         expect.objectContaining({ message: { type: 'record', id: 'ok-2' } }),
       ]),
+      { isDryRun: true, secret: undefined },
     );
     expect(runDestTransformSpy.mock.calls[0][2]).toHaveLength(2);
     expect(result).toEqual({

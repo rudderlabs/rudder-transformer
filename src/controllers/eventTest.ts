@@ -43,6 +43,7 @@ const testEventV2Schema = z.object({
     send_to_destination: z.boolean().optional(),
   }),
   libraries: z.array(z.record(z.unknown())).optional(),
+  secret: z.record(z.unknown()).optional(),
 });
 
 export class EventTestController {

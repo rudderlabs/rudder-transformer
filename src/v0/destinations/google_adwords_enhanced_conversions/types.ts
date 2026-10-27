@@ -118,7 +118,6 @@ export interface GaecDeliveryRequest {
   params: {
     event?: string;
     customerId?: string;
-    accessToken?: string;
     loginCustomerId?: string;
     subAccount?: boolean;
     [key: string]: unknown;

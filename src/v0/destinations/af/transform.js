@@ -15,7 +15,10 @@ const {
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
   simpleProcessRouterDest,
+  constructPayload,
+  hashToSha256,
 } = require('../../util');
+const { HashingType, isAlreadyHashed } = require('../../util/audienceUtils');
 
 const {
   Event,
@@ -28,7 +31,6 @@ const {
   nameToEventMap,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { getAdvancedMatchingFields } = require('./utils');
 
 function determineEndpoint(os, finalEndPoint, androidAppId, appleAppId) {
   if (os && os.toLowerCase() === 'android' && androidAppId) {
@@ -40,6 +42,56 @@ function determineEndpoint(os, finalEndPoint, androidAppId, appleAppId) {
   throw new ConfigurationError(
     'os name is required along with the respective appId eg. (os->android & Android App Id is required) or (os->ios & Apple App Id is required)',
   );
+}
+
+function toTrimmedString(value) {
+  if (typeof value !== 'string' && typeof value !== 'number') {
+    return undefined;
+  }
+  return String(value).trim() || undefined;
+}
+
+function hashLowercased(value) {
+  const trimmed = toTrimmedString(value);
+  if (!trimmed) {
+    return undefined;
+  }
+  return isAlreadyHashed(trimmed, HashingType.SHA256)
+    ? trimmed
+    : hashToSha256(trimmed.toLowerCase());
+}
+
+function hashPhone(value) {
+  const trimmed = toTrimmedString(value);
+  if (!trimmed) {
+    return {};
+  }
+  if (isAlreadyHashed(trimmed, HashingType.SHA256)) {
+    return { phone_number_hashed: trimmed };
+  }
+  const digits = trimmed.replace(/\D/g, '').replace(/^0+/, '');
+  if (!digits) {
+    return {};
+  }
+  // Only a leading '+' proves the number carries its country code, which E.164 requires.
+  return {
+    phone_number_hashed: hashToSha256(digits),
+    ...(trimmed.startsWith('+') && { phone_number_e164_hashed: hashToSha256(`+${digits}`) }),
+  };
+}
+
+// Normalized as the S2S v3 reference requires before hashing. A SHA-256 digest passes unchanged.
+function getAdvancedMatchingFields(message) {
+  const identifiers = constructPayload(
+    message,
+    mappingConfig[ConfigCategory.ADVANCED_MATCHING.name],
+  );
+  return removeUndefinedValues({
+    email_hashed: hashLowercased(identifiers.email_hashed),
+    ...hashPhone(identifiers.phone_number_hashed),
+    first_name_hashed: hashLowercased(identifiers.first_name_hashed),
+    last_name_hashed: hashLowercased(identifiers.last_name_hashed),
+  });
 }
 
 function responseBuilderSimple(payload, message, destination) {
@@ -98,7 +150,7 @@ function responseBuilderSimple(payload, message, destination) {
     updatedPayload.sharing_filter = sharingFilter;
   }
 
-  // The hashed identifiers exist only on the S2S v3 endpoint.
+  // The legacy api2 endpoint that v1 authorization targets has no hashed identifier fields.
   if (authVersion === 'v2') {
     Object.assign(updatedPayload, getAdvancedMatchingFields(message));
   }

@@ -168,8 +168,8 @@ when the matching trait is present in `traits` or `context.traits`:
 | Trait                                    | AppsFlyer field            | Normalization before SHA-256 |
 | ---------------------------------------- | -------------------------- | ---------------------------- |
 | `email`                                  | `email_hashed`             | Trim, lowercase              |
-| `phone`                                  | `phone_number_hashed`      | Digits only                  |
-| `phone` (with a leading `+`)             | `phone_number_e164_hashed` | `+` followed by the digits   |
+| `phone`                                  | `phone_number_hashed`      | Digits, no leading zeros     |
+| `phone` (with a leading `+`)             | `phone_number_e164_hashed` | `+` followed by those digits |
 | `firstName` / `firstname` / `first_name` | `first_name_hashed`        | Trim, lowercase              |
 | `lastName` / `lastname` / `last_name`    | `last_name_hashed`         | Trim, lowercase              |
 

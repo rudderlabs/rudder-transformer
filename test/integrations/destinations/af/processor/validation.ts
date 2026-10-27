@@ -2407,7 +2407,7 @@ export const newConfigValidationTests: ProcessorTestData[] = [
       'S2S v3 forwards pre-hashed identifiers and omits E.164 for a phone without a country code',
     scenario: 'Business',
     successCriteria:
-      'SHA-256 values pass through unchanged; a phone without a leading + gets no E.164 hash',
+      'SHA-256 values pass through unchanged; leading zeros are stripped; a phone without a leading + gets no E.164 hash',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2427,7 +2427,7 @@ export const newConfigValidationTests: ProcessorTestData[] = [
                 ...commonContextWithExternalId,
                 traits: {
                   email: '86E0B9E56C17CC4D12387E1949B85053FBE73BC3CE5A1188713A9D300CC6133D',
-                  phone: '15551234567',
+                  phone: '0015551234567',
                 },
               },
               messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',

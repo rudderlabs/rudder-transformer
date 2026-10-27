@@ -426,6 +426,73 @@ export const networkCallsData = [
       method: 'DELETE',
       endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
       headers: {
+        'test-dest-response-key': 'hourlyLimitError',
+      },
+      params: {
+        access_token: secret1,
+      },
+      userId: '',
+      body: {
+        JSON: {
+          payload: {
+            is_raw: true,
+            data_source: {
+              sub_type: 'ANYTHING',
+            },
+            schema: [
+              'EMAIL',
+              'DOBM',
+              'DOBD',
+              'DOBY',
+              'PHONE',
+              'GEN',
+              'FI',
+              'MADID',
+              'ZIP',
+              'ST',
+              'COUNTRY',
+            ],
+            data: [
+              [
+                'shrouti@abc.com',
+                '2',
+                '13',
+                '2013',
+                '@09432457768',
+                'f',
+                'Ms.',
+                'ABC',
+                'ZIP ',
+                '123abc ',
+                'IN',
+              ],
+            ],
+          },
+        },
+        XML: {},
+        JSON_ARRAY: {},
+        FORM: {},
+      },
+      files: {},
+    },
+    httpRes: {
+      data: {
+        error: {
+          code: 613,
+          message: '(#613) Hourly limit for this API call has been exceeded',
+          type: 'OAuthException',
+        },
+      },
+      status: 429,
+    },
+  },
+  {
+    httpReq: {
+      version: '1',
+      type: 'REST',
+      method: 'DELETE',
+      endpoint: 'https://graph.facebook.com/v25.0/aud1/users',
+      headers: {
         'test-dest-response-key': 'code200PermissionError',
       },
       params: {

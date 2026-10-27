@@ -412,4 +412,49 @@ export const data = [
       },
     },
   },
+  {
+    name: 'refiner',
+    description: 'Refiner webhook without response or form fields',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                remote_id: 'user-without-response',
+                triggered_event: 'Completed Survey',
+              }),
+            },
+            source: {},
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'At least one of response, form.uuid, or form.name is required for Refiner webhooks',
+            statTags: {
+              destinationId: 'Non determinable',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              implementation: 'native',
+              module: 'source',
+              srcType: 'refiner',
+              workspaceId: 'Non determinable',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

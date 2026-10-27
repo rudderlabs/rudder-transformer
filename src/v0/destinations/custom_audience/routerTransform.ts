@@ -1,14 +1,11 @@
-import { z } from 'zod';
 import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import {
   DestinationIntegration,
   CustomBatchStrategy,
   TransformedEvent,
-  makeRouterInputSchema,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
-import { RecordAction } from '../../../types/rudderEvents';
 import { sandboxedEvaluateTemplate } from './template/templateSandboxClient';
 import {
   buildRequestHeaders,
@@ -18,20 +15,7 @@ import {
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import type { Action, CustomAudienceAuthMetadata } from './types';
-import { CustomAudienceDestConfigSchema, CustomAudienceConnectionDestConfigSchema } from './types';
-
-const customAudienceInputSchema = makeRouterInputSchema({
-  destinationConfig: CustomAudienceDestConfigSchema,
-  message: z
-    .object({
-      type: z.literal('record'),
-      action: z.nativeEnum(RecordAction),
-      identifiers: z.record(z.unknown()),
-    })
-    .passthrough(),
-  connectionConfig: z.object({ destination: CustomAudienceConnectionDestConfigSchema }),
-});
+import { customAudienceInputSchema, type Action, type CustomAudienceRouterInput } from './types';
 
 class CustomAudienceIntegration extends DestinationIntegration<
   Record<string, unknown>,
@@ -65,11 +49,8 @@ class CustomAudienceIntegration extends DestinationIntegration<
     ) as Partial<Record<Action, string>>;
   }
 
-  transformEvent(
-    input: z.infer<typeof customAudienceInputSchema>,
-  ): TransformedEvent<Record<string, unknown>> {
-    const { message } = input;
-    const { metadata } = input as typeof input & { metadata?: CustomAudienceAuthMetadata };
+  transformEvent(input: CustomAudienceRouterInput): TransformedEvent<Record<string, unknown>> {
+    const { message, metadata } = input;
     const { action, identifiers } = message;
     const headers = buildRequestHeaders(this.destination, metadata);
     const { action: resolvedAction, config: actionConfig } = lookupActionConfig(

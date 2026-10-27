@@ -16,9 +16,9 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   simpleProcessRouterDest,
   constructPayload,
+  getIntegrationsObj,
   hashToSha256,
 } = require('../../util');
-const { HashingType, isAlreadyHashed } = require('../../util/audienceUtils');
 
 const {
   Event,
@@ -44,54 +44,28 @@ function determineEndpoint(os, finalEndPoint, androidAppId, appleAppId) {
   );
 }
 
-function toTrimmedString(value) {
-  if (typeof value !== 'string' && typeof value !== 'number') {
-    return undefined;
-  }
-  return String(value).trim() || undefined;
-}
-
-function hashLowercased(value) {
-  const trimmed = toTrimmedString(value);
-  if (!trimmed) {
-    return undefined;
-  }
-  return isAlreadyHashed(trimmed, HashingType.SHA256)
-    ? trimmed
-    : hashToSha256(trimmed.toLowerCase());
-}
-
-function hashPhone(value) {
-  const trimmed = toTrimmedString(value);
-  if (!trimmed) {
-    return {};
-  }
-  if (isAlreadyHashed(trimmed, HashingType.SHA256)) {
-    return { phone_number_hashed: trimmed };
-  }
-  const digits = trimmed.replace(/\D/g, '').replace(/^0+/, '');
-  if (!digits) {
-    return {};
-  }
-  // Only a leading '+' proves the number carries its country code, which E.164 requires.
-  return {
-    phone_number_hashed: hashToSha256(digits),
-    ...(trimmed.startsWith('+') && { phone_number_e164_hashed: hashToSha256(`+${digits}`) }),
-  };
-}
-
-// Normalized as the S2S v3 reference requires before hashing. A SHA-256 digest passes unchanged.
 function getAdvancedMatchingFields(message) {
-  const identifiers = constructPayload(
+  const { phone, ...hashedFields } = constructPayload(
     message,
     mappingConfig[ConfigCategory.ADVANCED_MATCHING.name],
+    'af',
   );
-  return removeUndefinedValues({
-    email_hashed: hashLowercased(identifiers.email_hashed),
-    ...hashPhone(identifiers.phone_number_hashed),
-    first_name_hashed: hashLowercased(identifiers.first_name_hashed),
-    last_name_hashed: hashLowercased(identifiers.last_name_hashed),
-  });
+  if (!isDefinedAndNotNull(phone)) {
+    return hashedFields;
+  }
+  if (getIntegrationsObj(message, 'af')?.hashed) {
+    return { ...hashedFields, phone_number_hashed: String(phone) };
+  }
+  const trimmedPhone = String(phone).trim();
+  const digits = trimmedPhone.replace(/\D/g, '').replace(/^0+/, '');
+  if (!digits) {
+    return hashedFields;
+  }
+  return {
+    ...hashedFields,
+    phone_number_hashed: hashToSha256(digits),
+    ...(trimmedPhone.startsWith('+') && { phone_number_e164_hashed: hashToSha256(`+${digits}`) }),
+  };
 }
 
 function responseBuilderSimple(payload, message, destination) {

@@ -1,11 +1,14 @@
 [
   {
     "sourceKeys": ["traits.email", "context.traits.email"],
-    "destKey": "email_hashed"
+    "destKey": "email_hashed",
+    "metadata": {
+      "type": ["trim", "toLower", "hashToSha256"]
+    }
   },
   {
     "sourceKeys": ["traits.phone", "context.traits.phone"],
-    "destKey": "phone_number_hashed"
+    "destKey": "phone"
   },
   {
     "sourceKeys": [
@@ -16,7 +19,10 @@
       "context.traits.firstname",
       "context.traits.first_name"
     ],
-    "destKey": "first_name_hashed"
+    "destKey": "first_name_hashed",
+    "metadata": {
+      "type": ["trim", "toLower", "hashToSha256"]
+    }
   },
   {
     "sourceKeys": [
@@ -27,6 +33,9 @@
       "context.traits.lastname",
       "context.traits.last_name"
     ],
-    "destKey": "last_name_hashed"
+    "destKey": "last_name_hashed",
+    "metadata": {
+      "type": ["trim", "toLower", "hashToSha256"]
+    }
   }
 ]

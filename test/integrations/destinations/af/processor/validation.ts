@@ -2403,11 +2403,9 @@ export const newConfigValidationTests: ProcessorTestData[] = [
   {
     id: 'af-advanced-matching-test-2',
     name: 'af',
-    description:
-      'S2S v3 forwards pre-hashed identifiers and omits E.164 for a phone without a country code',
+    description: 'S2S v3 strips leading zeros and omits E.164 for a phone without a leading +',
     scenario: 'Business',
-    successCriteria:
-      'SHA-256 values pass through unchanged; leading zeros are stripped; a phone without a leading + gets no E.164 hash',
+    successCriteria: 'phone_number_hashed hashes the digits without leading zeros; no E.164 hash',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2425,10 +2423,7 @@ export const newConfigValidationTests: ProcessorTestData[] = [
               sentAt: '2020-08-14T05:30:30.118Z',
               context: {
                 ...commonContextWithExternalId,
-                traits: {
-                  email: '86E0B9E56C17CC4D12387E1949B85053FBE73BC3CE5A1188713A9D300CC6133D',
-                  phone: '0015551234567',
-                },
+                traits: { phone: '0015551234567' },
               },
               messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
               timestamp: '2020-08-14T05:30:30.118Z',
@@ -2456,7 +2451,74 @@ export const newConfigValidationTests: ProcessorTestData[] = [
                 eventName: 'Sign Up',
                 customer_user_id: 'default-user-id',
                 appsflyer_id: 'afUid',
-                email_hashed: '86E0B9E56C17CC4D12387E1949B85053FBE73BC3CE5A1188713A9D300CC6133D',
+                phone_number_hashed:
+                  'd6736136ea896c1bfdc553e0e86e702c70d060d805696ca3e4e9e0961353860a',
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'af-advanced-matching-test-4',
+    name: 'af',
+    description: 'S2S v3 forwards identifiers unhashed when integrations.AF.hashed is set',
+    scenario: 'Business',
+    successCriteria: 'Pre-hashed email and phone are sent without hashing again',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              authVersion: 'v2',
+              s2sKey: 'dummy',
+            }),
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'Sign Up',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: {
+                ...commonContextWithExternalId,
+                traits: {
+                  email: '86e0b9e56c17cc4d12387e1949b85053fbe73bc3ce5a1188713a9d300cc6133d',
+                  phone: 'd6736136ea896c1bfdc553e0e86e702c70d060d805696ca3e4e9e0961353860a',
+                },
+              },
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: { AF: { hashed: true } },
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: 'https://api3.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v2/inappevent',
+              headers: { ...commonHeader, authentication: 'dummy' },
+              JSON: {
+                bundleIdentifier: 'com.rudderlabs.javascript',
+                eventValue: '',
+                eventName: 'Sign Up',
+                customer_user_id: 'default-user-id',
+                appsflyer_id: 'afUid',
+                email_hashed: '86e0b9e56c17cc4d12387e1949b85053fbe73bc3ce5a1188713a9d300cc6133d',
                 phone_number_hashed:
                   'd6736136ea896c1bfdc553e0e86e702c70d060d805696ca3e4e9e0961353860a',
               },

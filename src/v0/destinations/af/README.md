@@ -173,8 +173,8 @@ when the matching trait is present in `traits` or `context.traits`:
 | `firstName` / `firstname` / `first_name` | `first_name_hashed`        | Trim, lowercase              |
 | `lastName` / `lastname` / `last_name`    | `last_name_hashed`         | Trim, lowercase              |
 
-A value that is already a SHA-256 hex digest is sent unchanged. v1 authorization sends none of
-these fields.
+To send pre-hashed values, set `integrations.AF.hashed` to `true`; the destination then skips
+hashing. v1 authorization sends none of these fields.
 
 #### Event Validation
 

@@ -1,6 +1,6 @@
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { Integration } from './routerTransform';
-import { requestFieldExpression } from './requestFields';
+import { requestFieldExpression } from './utils';
 import { prepareProxyRequest } from '../../../adapters/network';
 import type { RouterTransformationRequestData } from '../../../types';
 
@@ -55,6 +55,27 @@ describe('HTTP v2 native router', () => {
     { value: "'val1'", expression: "'val1'" },
   ])('quotes or retains $value', ({ value, expression }) => {
     expect(requestFieldExpression(value)).toBe(expression);
+  });
+
+  it.each([
+    { config: { auth: 'basicAuth' }, message: 'Username is required for Basic Authentication' },
+    {
+      config: { auth: 'bearerTokenAuth' },
+      message: 'Token is required for Bearer Token Authentication',
+    },
+    { config: { auth: 'apiKeyAuth', apiKeyName: 'X-Key' }, message: 'API key value is required' },
+    {
+      config: { headers: [{ to: '$.a.b[0]', from: 'x' }] },
+      message: 'Invalid request field name: $.a.b[0]',
+    },
+  ])('rejects invalid config per job: $message', async ({ config, message }) => {
+    const event = {
+      ...input('1', 1),
+      destination: { ...destination, Config: { ...destination.Config, ...config } },
+    };
+    const [response] = await processDestinationIntegration([event], Integration, {});
+    expect(response).toMatchObject({ statusCode: 400, metadata: [{ jobId: 1 }] });
+    expect(response.error).toContain(message);
   });
 
   it('resolves request fields and isolates an invalid path from successful requests', async () => {

@@ -7,7 +7,7 @@ import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
 import { sandboxedParseHttpTemplates } from '../v0/destinations/http/templateSandboxClient';
-import { requestFieldExpression } from '../v0/destinations/http/requestFields';
+import { requestFieldExpression } from '../v0/destinations/http/utils';
 import {
   actionConfigSchema,
   CustomAudienceDestConfig,

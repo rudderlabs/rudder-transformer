@@ -1,10 +1,8 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
-import { z } from 'zod';
 import {
   BodyFormat,
   CustomBatchStrategy,
   DestinationIntegration,
-  makeRouterInputSchema,
   toTransformError,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type {
@@ -14,95 +12,17 @@ import type {
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
-import type {
-  RequestFieldExpressions,
-  EvaluatedRequestFields,
-  RequestFieldResult,
-} from './httpTemplateSandbox';
-import { requestFieldExpression } from './requestFields';
-
-const mapping = z.object({ to: z.string().min(1), from: z.string() });
-const pathParam = z.object({ path: z.string() });
-const configSchema = z.object({
-  apiUrl: z.string().min(1),
-  requestBodyTemplate: z.string().min(1),
-  method: z.enum(['POST', 'PUT', 'PATCH', 'GET', 'DELETE']).default('POST'),
-  maxBatchSize: z.coerce.number().int().min(1).max(5000).default(5000),
-  headers: z.array(mapping).optional(),
-  queryParams: z.array(mapping).optional(),
-  pathParams: z.array(pathParam).optional(),
-  auth: z.enum(['noAuth', 'basicAuth', 'bearerTokenAuth', 'apiKeyAuth']).optional(),
-  username: z.string().optional(),
-  password: z.string().optional(),
-  bearerToken: z.string().optional(),
-  apiKeyName: z.string().optional(),
-  apiKeyValue: z.string().optional(),
-});
-const inputSchema = makeRouterInputSchema({
-  message: z.record(z.unknown()),
-  destinationConfig: configSchema,
-});
-type Input = z.infer<typeof inputSchema>;
-type Body = { message: Record<string, unknown> };
-type Config = z.infer<typeof configSchema>;
-
-const mappingKey = (key: string): string => {
-  // New v2 config stores bare names; migrated v1 mappings may use dot or bracket notation.
-  if (!key.startsWith('$')) return key;
-  const match = key.match(/^\$(?:\.(?:'([^']+)'|([\w.-]+))|\['([^']+)']|\["([^"]+)"])$/);
-  if (!match) throw new ConfigurationError(`Invalid request field name: ${key}`);
-  return match[1] ?? match[2] ?? match[3] ?? match[4];
-};
-
-const toExpressions = (config: Config): RequestFieldExpressions => {
-  const convert = ({ to, from }: z.infer<typeof mapping>) => ({
-    to: mappingKey(to),
-    from: requestFieldExpression(from),
-  });
-  return {
-    headers: (config.headers ?? []).map(convert),
-    queryParams: (config.queryParams ?? []).map(convert),
-    pathParams: (config.pathParams ?? []).map(({ path }) => requestFieldExpression(path)),
-  };
-};
+import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
+import { HttpConfigSchema, HttpInputSchema } from './types';
+import type { HttpBody as Body, HttpConfig as Config, HttpInput as Input } from './types';
+import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
 
 const NO_FIELDS: RequestFieldResult = {
   ok: true,
   fields: { headers: {}, params: {}, pathParams: [] },
 };
 
-const makeEndpoint = (url: string, pathParams: unknown[]): string => {
-  const parts = pathParams.map((part) => {
-    if (!['string', 'number', 'boolean'].includes(typeof part)) {
-      throw new ConfigurationError('Path segment could not be resolved to a scalar');
-    }
-    return encodeURIComponent(String(part));
-  });
-  return parts.length > 0 ? `${url.replace(/\/$/, '')}/${parts.join('/')}` : url;
-};
-
-const makeAuthHeaders = (config: Config): Record<string, string> => {
-  switch (config.auth) {
-    case 'basicAuth':
-      if (!config.username)
-        throw new ConfigurationError('Username is required for Basic Authentication');
-      return {
-        Authorization: `Basic ${Buffer.from(`${config.username}:${config.password ?? ''}`).toString('base64')}`,
-      };
-    case 'bearerTokenAuth':
-      if (!config.bearerToken)
-        throw new ConfigurationError('Token is required for Bearer Token Authentication');
-      return { Authorization: `Bearer ${config.bearerToken}` };
-    case 'apiKeyAuth':
-      if (!config.apiKeyName || !config.apiKeyValue)
-        throw new ConfigurationError('API key name and value are required');
-      return { [config.apiKeyName]: config.apiKeyValue };
-    default:
-      return {};
-  }
-};
-
-class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
+class HttpIntegration extends DestinationIntegration<Body, typeof HttpInputSchema> {
   private parsedConfig?: Config;
 
   private authHeaders: Record<string, string> = {};
@@ -110,10 +30,8 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
   // Request fields are evaluated for the whole batch in one isolate call; transformEvent reads them.
   private fieldResults = new Map<Input, RequestFieldResult>();
 
-  private setupError?: Error;
-
   private get config(): Config {
-    this.parsedConfig ??= configSchema.parse(this.destination.Config);
+    this.parsedConfig ??= HttpConfigSchema.parse(this.destination.Config);
     return this.parsedConfig;
   }
 
@@ -121,16 +39,12 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
     inputs: Input[],
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<Body>> {
-    let expressions: RequestFieldExpressions | undefined;
-    try {
-      this.authHeaders = makeAuthHeaders(this.config);
-      expressions = toExpressions(this.config);
-    } catch (error) {
-      this.setupError = error as Error;
-    }
+    // The input schema has already validated this config for every input.
+    this.authHeaders = makeAuthHeaders(this.config);
+    const expressions = toExpressions(this.config);
+    const { headers, queryParams, pathParams } = expressions;
     // Skip the isolate round-trip (and copying every message into it) when nothing is mapped.
-    const { headers = [], queryParams = [], pathParams = [] } = expressions ?? {};
-    if (expressions && headers.length + queryParams.length + pathParams.length > 0) {
+    if (headers.length + queryParams.length + pathParams.length > 0) {
       const results = await sandboxedEvaluateRequestFields(
         expressions,
         inputs.map(({ message }) => message),
@@ -142,7 +56,6 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
   }
 
   transformEvent(input: Input): TransformedEvent<Body> {
-    if (this.setupError) throw this.setupError;
     const result = this.fieldResults.get(input) ?? NO_FIELDS;
     if (!result.ok)
       throw new ConfigurationError(`Request field evaluation failed: ${result.error}`);
@@ -204,7 +117,7 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
   }
 
   getInputSchema() {
-    return inputSchema;
+    return HttpInputSchema;
   }
 }
 

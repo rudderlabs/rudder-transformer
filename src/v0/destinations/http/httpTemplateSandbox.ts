@@ -9,10 +9,10 @@
  * Exposes HTTP v2 template parse, request-field and body evaluation globals
  * sharing one isolate per workspace.
  */
-import jsonata from 'jsonata';
 import {
+  compileTemplate,
+  CompiledTemplate,
   parseTemplate,
-  evaluateTemplate,
   ParseTemplateResult,
 } from '../../../util/jsonataTemplate/templateEngine';
 
@@ -48,53 +48,50 @@ globalThis.parseHttpTemplatesInSandbox = (templates: string[]): ParseTemplateRes
     }
   });
 
+const evaluatePairs = async (
+  pairs: [string, CompiledTemplate][],
+  data: Record<string, unknown>,
+): Promise<Record<string, unknown>> => {
+  const out: Record<string, unknown> = {};
+  for (const [key, evaluate] of pairs) {
+    // eslint-disable-next-line no-await-in-loop -- per-event field evaluation is ordered
+    out[key] = await evaluate(data);
+  }
+  return out;
+};
+
 globalThis.evaluateRequestFieldsInSandbox = async (
   expressions: RequestFieldExpressions,
   events: unknown[],
 ): Promise<RequestFieldResult[]> => {
-  let compiled: {
-    headers: { to: string; expr: jsonata.Expression }[];
-    queryParams: { to: string; expr: jsonata.Expression }[];
-    pathParams: jsonata.Expression[];
-  };
+  const compilePair = ({ to, from }: { to: string; from: string }): [string, CompiledTemplate] => [
+    to,
+    compileTemplate(from, HTTP_COLLECTION),
+  ];
+  let headers: [string, CompiledTemplate][];
+  let queryParams: [string, CompiledTemplate][];
+  let pathParams: CompiledTemplate[];
   try {
-    for (const expression of [
-      ...expressions.headers.map(({ from }) => from),
-      ...expressions.queryParams.map(({ from }) => from),
-      ...expressions.pathParams,
-    ]) {
-      const result = parseTemplate(expression, HTTP_COLLECTION);
-      if (!result.valid) throw new Error(result.errors.join('; '));
-    }
-    compiled = {
-      headers: expressions.headers.map(({ to, from }) => ({ to, expr: jsonata(from) })),
-      queryParams: expressions.queryParams.map(({ to, from }) => ({ to, expr: jsonata(from) })),
-      pathParams: expressions.pathParams.map((path) => jsonata(path)),
-    };
+    headers = expressions.headers.map(compilePair);
+    queryParams = expressions.queryParams.map(compilePair);
+    pathParams = expressions.pathParams.map((path) => compileTemplate(path, HTTP_COLLECTION));
   } catch (e: unknown) {
     const error = errorMessage(e);
     return events.map(() => ({ ok: false, error }));
   }
   const results: RequestFieldResult[] = [];
   for (const message of events) {
+    const data = { message };
     try {
-      const data = { message };
-      const headers: Record<string, unknown> = {};
-      const params: Record<string, unknown> = {};
-      for (const { to, expr } of compiled.headers) {
-        // eslint-disable-next-line no-await-in-loop -- per-event field evaluation is ordered
-        headers[to] = await expr.evaluate(data);
-      }
-      for (const { to, expr } of compiled.queryParams) {
-        // eslint-disable-next-line no-await-in-loop -- per-event field evaluation is ordered
-        params[to] = await expr.evaluate(data);
-      }
-      const pathParams: unknown[] = [];
-      for (const expr of compiled.pathParams) {
-        // eslint-disable-next-line no-await-in-loop -- evaluate compiled expressions in order
-        pathParams.push(await expr.evaluate(data));
-      }
-      results.push({ ok: true, fields: { headers, params, pathParams } });
+      /* eslint-disable no-await-in-loop -- per-event field evaluation is ordered */
+      const fields = {
+        headers: await evaluatePairs(headers, data),
+        params: await evaluatePairs(queryParams, data),
+        pathParams: [] as unknown[],
+      };
+      for (const evaluate of pathParams) fields.pathParams.push(await evaluate(data));
+      /* eslint-enable no-await-in-loop */
+      results.push({ ok: true, fields });
     } catch (e: unknown) {
       results.push({ ok: false, error: errorMessage(e) });
     }
@@ -106,18 +103,21 @@ globalThis.evaluateHttpBodyInSandbox = async (
   template: string,
   chunks: unknown[][],
 ): Promise<HttpBodyResult[]> => {
-  const validation = parseTemplate(template, HTTP_COLLECTION);
-  if (!validation.valid) {
-    return chunks.map(() => ({ ok: false, error: validation.errors.join('; ') }));
+  let evaluate: CompiledTemplate;
+  try {
+    evaluate = compileTemplate(template, HTTP_COLLECTION);
+  } catch (e: unknown) {
+    const error = errorMessage(e);
+    return chunks.map(() => ({ ok: false, error }));
   }
-  return Promise.all(
-    chunks.map(async (events): Promise<HttpBodyResult> => {
-      try {
-        const body = await evaluateTemplate(template, { events });
-        return { ok: true, body };
-      } catch (e: unknown) {
-        return { ok: false, error: errorMessage(e) };
-      }
-    }),
-  );
+  const results: HttpBodyResult[] = [];
+  for (const events of chunks) {
+    try {
+      // eslint-disable-next-line no-await-in-loop -- a compiled expression is not reentrant
+      results.push({ ok: true, body: await evaluate({ events }) });
+    } catch (e: unknown) {
+      results.push({ ok: false, error: errorMessage(e) });
+    }
+  }
+  return results;
 };

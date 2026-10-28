@@ -106,25 +106,24 @@ export class EventTestController {
       queryParams = [],
       pathParams = [],
     } = parsed.data;
-    const fields = [
+    const surface = (field: string, values: string[]) =>
+      values.map((value, index) => ({ field, index, template: requestFieldExpression(value) }));
+    const fields: { field: string; index?: number; template: string }[] = [
       { field: 'requestBodyTemplate', template: requestBodyTemplate },
-      ...headers.map(({ from }, index) => ({
-        field: 'headers',
-        index,
-        template: requestFieldExpression(from),
-      })),
-      ...queryParams.map(({ from }, index) => ({
-        field: 'queryParams',
-        index,
-        template: requestFieldExpression(from),
-      })),
-      ...pathParams.map(({ path }, index) => ({
-        field: 'pathParams',
-        index,
-        template: requestFieldExpression(path),
-      })),
+      ...surface(
+        'headers',
+        headers.map(({ from }) => from),
+      ),
+      ...surface(
+        'queryParams',
+        queryParams.map(({ from }) => from),
+      ),
+      ...surface(
+        'pathParams',
+        pathParams.map(({ path }) => path),
+      ),
     ];
-    // A single bounded isolate call validates all surfaces while preserving their indices.
+    // A single isolate call validates all surfaces while preserving their indices.
     const results = await sandboxedParseHttpTemplates(
       fields.map(({ template }) => template),
       workspaceId,
@@ -132,13 +131,7 @@ export class EventTestController {
     const errors = results.flatMap((result, i) =>
       result.valid
         ? []
-        : [
-            {
-              field: fields[i].field,
-              ...('index' in fields[i] ? { index: fields[i].index } : {}),
-              messages: result.errors,
-            },
-          ],
+        : [{ field: fields[i].field, index: fields[i].index, messages: result.errors }],
     );
     ctx.body = { valid: errors.length === 0, errors };
   }

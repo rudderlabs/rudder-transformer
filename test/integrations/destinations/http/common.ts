@@ -714,7 +714,6 @@ const v2Destination: Destination = {
     auth: 'bearerTokenAuth',
     bearerToken: secret2,
     method: 'POST',
-    format: 'JSON',
     maxBatchSize: '2',
     requestBodyTemplate: '{ "events": [$$.events.{ "userId": userId }] }',
     headers: [{ to: 'X-Group', from: '$.group' }],

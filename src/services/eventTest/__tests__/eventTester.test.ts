@@ -51,13 +51,13 @@ describe('EventTesterService.transformDestination', () => {
 
     expect(destination).toEqual({
       ID: 'dest-id',
-      WorkspaceId: 'workspace-id',
+      WorkspaceID: 'workspace-id',
       RevisionId: 'revision-id',
       DestinationDefinition: { ID: 'definition-id', Name: 'TEST' },
       deliveryAccount: { secret: { token: 'secret' } },
       DeleteAccount: { id: 'delete-account' },
       HasDynamicConfig: true,
-      Version: 2,
+      version: 2,
     });
     expect(destination).not.toHaveProperty('DeliveryAccount');
   });
@@ -754,7 +754,7 @@ describe('EventTesterService.runDestTransform', () => {
         destination: expect.objectContaining({
           ID: 'dest-id',
           Name: 'Test Destination',
-          WorkspaceId: 'ws-1',
+          WorkspaceID: 'ws-1',
         }),
       }),
       {},

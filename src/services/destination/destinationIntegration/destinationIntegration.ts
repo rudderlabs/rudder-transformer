@@ -4,6 +4,7 @@ import { generateErrorObject } from '../../../v0/util';
 import type {
   BatchStrategy,
   TransformedEvent,
+  TransformError,
   TransformResult,
   ExtractDestinationConfig,
   ExtractConnectionConfig,
@@ -20,6 +21,19 @@ export type {
   ExtractConnectionConfig,
 } from './types';
 export { BodyFormat, parseSizeToBytes } from './types';
+
+/** Converts a thrown error into the framework's per-job error shape. */
+export const toTransformError = (error: unknown): TransformError => {
+  const errObj = generateErrorObject(error);
+  return {
+    error: errObj.message || 'Unknown error during transformation',
+    statusCode: errObj.status,
+    statTags: errObj.statTags,
+    // Carried so an OAuth failure inside an async transformEvent still asks rudder-server
+    // for a token refresh; see TransformError.authErrorCategory.
+    authErrorCategory: errObj.authErrorCategory,
+  };
+};
 export { makeRouterInputSchema } from './inputSchema';
 export { ChunkBatchStrategy } from './chunkBatchStrategy';
 export { CustomBatchStrategy } from './customBatchStrategy';
@@ -146,17 +160,8 @@ export abstract class DestinationIntegration<
         for (const result of results) {
           successPayloads.push({ ...result, jobId });
         }
-      } catch (error: any) {
-        const errObj = generateErrorObject(error);
-        errorPayloads.push({
-          error: errObj.message || 'Unknown error during transformation',
-          statusCode: errObj.status,
-          jobId,
-          statTags: errObj.statTags,
-          // Carried so an OAuth failure inside an async transformEvent still asks rudder-server
-          // for a token refresh; see TransformError.authErrorCategory.
-          authErrorCategory: errObj.authErrorCategory,
-        });
+      } catch (error: unknown) {
+        errorPayloads.push({ ...toTransformError(error), jobId });
       }
     }
 

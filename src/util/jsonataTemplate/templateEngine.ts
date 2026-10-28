@@ -420,10 +420,11 @@ function collectFields(
 function parseAndValidate(
   template: string,
   collection: string,
-): { ast: AstNode } | { errors: string[] } {
+): { ast: AstNode; expr: jsonata.Expression } | { errors: string[] } {
   let ast: AstNode;
+  let expr: jsonata.Expression;
   try {
-    const expr = jsonata(template);
+    expr = jsonata(template);
     ast = expr.ast() as AstNode;
   } catch (e: unknown) {
     const message =
@@ -447,7 +448,7 @@ function parseAndValidate(
   if (ctx.errors.length > 0) {
     return { errors: ctx.errors };
   }
-  return { ast };
+  return { ast, expr };
 }
 
 // ---------------------------------------------------------------------------
@@ -478,6 +479,23 @@ export function parseTemplate(template: string, collection: string): ParseTempla
   const fields = new Set<string>();
   collectFields(result.ast, false, fields, collection);
   return { valid: true, recordFields: [...fields] };
+}
+
+export type CompiledTemplate = (data: Record<string, unknown>) => Promise<unknown>;
+
+/**
+ * Validate a template once and return an evaluator that reuses the compiled
+ * expression, for callers evaluating one template against many inputs.
+ * Throws an Error listing every validation failure.
+ *
+ * Never run the evaluator concurrently: a JSONata expression binds its input
+ * on the shared instance, so overlapping evaluations all see the last input.
+ */
+export function compileTemplate(template: string, collection: string): CompiledTemplate {
+  const result = parseAndValidate(template, collection);
+  if ('errors' in result) throw new Error(result.errors.join('; '));
+  const { expr } = result;
+  return async (data) => stripJsonataInternals(await expr.evaluate(data));
 }
 
 /**

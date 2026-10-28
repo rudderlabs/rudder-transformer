@@ -44,8 +44,11 @@ type EventTesterV2Response = {
   dest_transform_output: DestTransformOutputEntry[];
 };
 
+// Native integrations read the control-plane spelling of these keys.
 const destinationKeyOverrides: Record<string, string> = {
   deliveryAccount: 'deliveryAccount',
+  version: 'version',
+  workspaceId: 'WorkspaceID',
 };
 
 const capitalize = (key: string): string =>
@@ -62,9 +65,9 @@ export class EventTesterService {
     if (events.length === 0) {
       return [];
     }
-    const workspaceId = events[0].destination.WorkspaceId;
+    const workspaceId = events[0].destination.WorkspaceID;
     if (typeof workspaceId !== 'string' || !workspaceId) {
-      return [{ error: 'destination.WorkspaceId is required' }];
+      return [{ error: 'destination.WorkspaceID is required' }];
     }
 
     const inputs: RouterTransformationRequestData[] = events.map((event, idx) => ({
@@ -72,13 +75,7 @@ export class EventTesterService {
       // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
       // jobId must be unique per event so the batching framework can track per-event failures.
       metadata: { workspaceId, jobId: idx + 1 } as Metadata,
-      destination: {
-        ...event.destination,
-        // Preview's key conversion produces `Version` and `WorkspaceId`; native integrations
-        // read the control-plane spelling of both fields.
-        version: event.destination.Version,
-        WorkspaceID: workspaceId,
-      } as Destination,
+      destination: event.destination as Destination,
       connection: event.connection as Connection,
     }));
 

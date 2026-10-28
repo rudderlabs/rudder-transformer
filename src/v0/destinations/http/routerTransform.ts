@@ -1,10 +1,11 @@
-import { ConfigurationError, PlatformError } from '@rudderstack/integrations-lib';
+import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { z } from 'zod';
 import {
   BodyFormat,
   CustomBatchStrategy,
   DestinationIntegration,
   makeRouterInputSchema,
+  toTransformError,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type {
   BatchStrategy,
@@ -12,9 +13,12 @@ import type {
   TransformResult,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
-import { generateErrorObject } from '../../util';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
-import type { RequestFieldExpressions, EvaluatedRequestFields } from './httpTemplateSandbox';
+import type {
+  RequestFieldExpressions,
+  EvaluatedRequestFields,
+  RequestFieldResult,
+} from './httpTemplateSandbox';
 import { requestFieldExpression } from './requestFields';
 
 const mapping = z.object({ to: z.string().min(1), from: z.string() });
@@ -40,7 +44,7 @@ const inputSchema = makeRouterInputSchema({
 });
 type Input = z.infer<typeof inputSchema>;
 type Body = { message: Record<string, unknown> };
-type RouterInput = Input & { metadata?: { jobId?: number } };
+type Config = z.infer<typeof configSchema>;
 
 const mappingKey = (key: string): string => {
   // New v2 config stores bare names; migrated v1 mappings may use dot or bracket notation.
@@ -50,7 +54,7 @@ const mappingKey = (key: string): string => {
   return match[1] ?? match[2] ?? match[3] ?? match[4];
 };
 
-const toExpressions = (config: z.infer<typeof configSchema>): RequestFieldExpressions => {
+const toExpressions = (config: Config): RequestFieldExpressions => {
   const convert = ({ to, from }: z.infer<typeof mapping>) => ({
     to: mappingKey(to),
     from: requestFieldExpression(from),
@@ -60,6 +64,11 @@ const toExpressions = (config: z.infer<typeof configSchema>): RequestFieldExpres
     queryParams: (config.queryParams ?? []).map(convert),
     pathParams: (config.pathParams ?? []).map(({ path }) => requestFieldExpression(path)),
   };
+};
+
+const NO_FIELDS: RequestFieldResult = {
+  ok: true,
+  fields: { headers: {}, params: {}, pathParams: [] },
 };
 
 const makeEndpoint = (url: string, pathParams: unknown[]): string => {
@@ -72,7 +81,7 @@ const makeEndpoint = (url: string, pathParams: unknown[]): string => {
   return parts.length > 0 ? `${url.replace(/\/$/, '')}/${parts.join('/')}` : url;
 };
 
-const makeAuthHeaders = (config: z.infer<typeof configSchema>): Record<string, string> => {
+const makeAuthHeaders = (config: Config): Record<string, string> => {
   switch (config.auth) {
     case 'basicAuth':
       if (!config.username)
@@ -93,21 +102,57 @@ const makeAuthHeaders = (config: z.infer<typeof configSchema>): Record<string, s
   }
 };
 
-const toTransformError = (error: unknown) => {
-  const err = generateErrorObject(error);
-  return { error: err.message, statusCode: err.status, statTags: err.statTags };
-};
-
 class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
-  // Unreachable: transformEvents is overridden to evaluate request fields for the whole batch.
-  transformEvent(): never {
-    throw new PlatformError('HTTP v2 transforms events in batch via transformEvents', 500);
+  private parsedConfig?: Config;
+
+  private authHeaders: Record<string, string> = {};
+
+  // Request fields are evaluated for the whole batch in one isolate call; transformEvent reads them.
+  private fieldResults = new Map<Input, RequestFieldResult>();
+
+  private setupError?: Error;
+
+  private get config(): Config {
+    this.parsedConfig ??= configSchema.parse(this.destination.Config);
+    return this.parsedConfig;
+  }
+
+  async transformEvents(
+    inputs: Input[],
+    reqMetadata?: NonNullable<unknown>,
+  ): Promise<TransformResult<Body>> {
+    let expressions: RequestFieldExpressions | undefined;
+    try {
+      this.authHeaders = makeAuthHeaders(this.config);
+      expressions = toExpressions(this.config);
+    } catch (error) {
+      this.setupError = error as Error;
+    }
+    // Skip the isolate round-trip (and copying every message into it) when nothing is mapped.
+    const { headers = [], queryParams = [], pathParams = [] } = expressions ?? {};
+    if (expressions && headers.length + queryParams.length + pathParams.length > 0) {
+      const results = await sandboxedEvaluateRequestFields(
+        expressions,
+        inputs.map(({ message }) => message),
+        this.destination.WorkspaceID,
+      );
+      inputs.forEach((input, i) => this.fieldResults.set(input, results[i]));
+    }
+    return super.transformEvents(inputs, reqMetadata);
+  }
+
+  transformEvent(input: Input): TransformedEvent<Body> {
+    if (this.setupError) throw this.setupError;
+    const result = this.fieldResults.get(input) ?? NO_FIELDS;
+    if (!result.ok)
+      throw new ConfigurationError(`Request field evaluation failed: ${result.error}`);
+    return this.makeEvent(input.message, result.fields, this.config, this.authHeaders);
   }
 
   private makeEvent(
     message: Record<string, unknown>,
     fields: EvaluatedRequestFields,
-    config: z.infer<typeof configSchema>,
+    config: Config,
     authHeaders: Record<string, string>,
   ): TransformedEvent<Body> {
     const headers: Record<string, unknown> = {
@@ -131,55 +176,8 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
     };
   }
 
-  async transformEvents(inputs: RouterInput[]): Promise<TransformResult<Body>> {
-    let config: z.infer<typeof configSchema>;
-    let authHeaders: Record<string, string>;
-    let expressions: RequestFieldExpressions;
-    try {
-      config = configSchema.parse(this.destination.Config);
-      authHeaders = makeAuthHeaders(config);
-      expressions = toExpressions(config);
-    } catch (error) {
-      const err = toTransformError(error);
-      return {
-        successPayloads: [],
-        errorPayloads: inputs.map(({ metadata }) => ({ jobId: metadata?.jobId ?? 0, ...err })),
-      };
-    }
-    const { headers, queryParams, pathParams } = expressions;
-    // Skip the isolate round-trip (and copying every message into it) when nothing is mapped.
-    const results =
-      headers.length + queryParams.length + pathParams.length > 0
-        ? await sandboxedEvaluateRequestFields(
-            expressions,
-            inputs.map(({ message }) => message),
-            this.destination.WorkspaceID,
-          )
-        : inputs.map(() => ({
-            ok: true as const,
-            fields: { headers: {}, params: {}, pathParams: [] },
-          }));
-    if (results.length !== inputs.length)
-      throw new PlatformError('Request fields returned an unexpected number of results', 500);
-    const output: TransformResult<Body> = { successPayloads: [], errorPayloads: [] };
-    results.forEach((result, i) => {
-      const jobId = inputs[i].metadata?.jobId ?? 0;
-      try {
-        if (!result.ok)
-          throw new ConfigurationError(`Request field evaluation failed: ${result.error}`);
-        output.successPayloads.push({
-          ...this.makeEvent(inputs[i].message, result.fields, config, authHeaders),
-          jobId,
-        });
-      } catch (error) {
-        output.errorPayloads.push({ jobId, ...toTransformError(error) });
-      }
-    });
-    return output;
-  }
-
   getBatchStrategy(): BatchStrategy<Body> {
-    const { requestBodyTemplate, maxBatchSize } = configSchema.parse(this.destination.Config);
+    const { requestBodyTemplate, maxBatchSize } = this.config;
     return new CustomBatchStrategy<Body>(async (payloads) => {
       const chunks = chunkPayloads(payloads, { maxItems: maxBatchSize, wrapBody: () => ({}) });
       const bodies = await sandboxedEvaluateHttpBody(
@@ -187,8 +185,6 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
         chunks.map(({ bodies: items }) => items.map(({ message }) => message)),
         this.destination.WorkspaceID,
       );
-      if (bodies.length !== chunks.length)
-        throw new PlatformError('Template returned an unexpected number of bodies', 500);
       const error = (message: string, jobIds: Set<number>) => ({
         body: {},
         jobIds,

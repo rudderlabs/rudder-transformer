@@ -1,5 +1,7 @@
 /**
- * Template engine for Custom Audience destinations.
+ * Whitelisted JSONata template engine shared by destinations that accept
+ * user-supplied templates (custom_audience iterates `$$.records`, HTTP v2
+ * iterates `$$.events`).
  *
  * All template-language operations are consolidated here so that swapping the
  * underlying expression engine only touches this single file.
@@ -79,9 +81,6 @@ interface AstNode {
 // JSONata represents `$$` (root input) as a variable with value "$".
 // e.g. `$$.records` → path { steps: [variable("$"), name("records")] }
 const ROOT_VARIABLE = '$';
-
-// The field name used in `$$.records.{}` iteration paths.
-const RECORDS_FIELD = 'records';
 
 // The only function call allowed in templates — `$number(value)` for type
 // casting.  e.g. `$number($$.connection.audience_id)` parses as:
@@ -470,7 +469,7 @@ export type ParseTemplateResult =
  * Example: `{ "data": [$$.records.[email, phone]] }`
  *   → { valid: true, recordFields: ["email", "phone"] }
  */
-export function parseTemplate(template: string, collection = RECORDS_FIELD): ParseTemplateResult {
+export function parseTemplate(template: string, collection: string): ParseTemplateResult {
   const result = parseAndValidate(template, collection);
   if ('errors' in result) {
     return { valid: false, errors: result.errors };

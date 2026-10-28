@@ -13,16 +13,9 @@ import type {
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { generateErrorObject } from '../../util';
-import {
-  sandboxedEvaluateHttpBody,
-  sandboxedEvaluateRequestFields,
-} from '../custom_audience/template/templateSandboxClient';
-import type {
-  RequestFieldExpressions,
-  EvaluatedRequestFields,
-} from '../custom_audience/template/templateEngineSandbox';
+import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
+import type { RequestFieldExpressions, EvaluatedRequestFields } from './httpTemplateSandbox';
 import { requestFieldExpression } from './requestFields';
-import { ERROR_MESSAGES } from '../custom_audience/constants';
 
 const mapping = z.object({ to: z.string().min(1), from: z.string() });
 const pathParam = z.object({ path: z.string() });
@@ -204,7 +197,7 @@ class HttpIntegration extends DestinationIntegration<Body, typeof inputSchema> {
       return chunks.map((chunk, i) => {
         const result = bodies[i];
         if (!result.ok)
-          return error(ERROR_MESSAGES.TEMPLATE_EVALUATION_FAILED(result.error), chunk.jobIds);
+          return error(`Failed to evaluate requestBody template: ${result.error}`, chunk.jobIds);
         const batch = JSON.stringify(result.body);
         if (batch === undefined || result.body === null) {
           return error('Request body template did not produce JSON', chunk.jobIds);

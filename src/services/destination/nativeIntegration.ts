@@ -147,7 +147,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
         const useDestinationIntegration = isDestinationIntegrationEnabled(
           destinationType,
           workspaceId,
-          destInputArray[0].destination.version,
         );
 
         const metaTO = this.getTags(
@@ -252,12 +251,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
       const frameworkRequest = isProxyV1Request(deliveryRequest, version);
       const workspaceId = frameworkRequest ? deliveryRequest.metadata[0]?.workspaceId : '';
       const frameworkOwns =
-        frameworkRequest &&
-        isDestinationIntegrationEnabled(
-          destinationType,
-          workspaceId,
-          deliveryRequest.destinationVersion,
-        );
+        frameworkRequest && isDestinationIntegrationEnabled(destinationType, workspaceId);
       const IntegrationClass = frameworkOwns
         ? FetchHandler.getDestinationIntegrationHandler(destinationType)
         : undefined;

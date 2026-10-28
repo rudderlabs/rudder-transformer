@@ -5,12 +5,11 @@ import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import { applicationRoutes } from '../../routes';
 import { EventTesterService } from '../../services/eventTest/eventTester';
-import {
-  sandboxedParseTemplate,
-  sandboxedParseHttpTemplates,
-} from '../../v0/destinations/custom_audience/template/templateSandboxClient';
+import { sandboxedParseTemplate } from '../../v0/destinations/custom_audience/template/templateSandboxClient';
+import { sandboxedParseHttpTemplates } from '../../v0/destinations/http/templateSandboxClient';
 
 jest.mock('../../v0/destinations/custom_audience/template/templateSandboxClient');
+jest.mock('../../v0/destinations/http/templateSandboxClient');
 const mockParseTemplate = sandboxedParseTemplate as jest.MockedFunction<
   typeof sandboxedParseTemplate
 >;
@@ -222,19 +221,6 @@ describe('POST /test-router/http/parse-template', () => {
       ['$map($$.events)', '"literal"', '$map($$.message)', '$map($$.message)', '$map($$.message)'],
       'ws',
     );
-  });
-
-  it.each([
-    { name: 'too many fields', fields: Array.from({ length: 101 }, () => ({ from: 'x' })) },
-    { name: 'oversized field', fields: [{ from: 'x'.repeat(16_385) }] },
-  ])('rejects $name before entering the sandbox', async ({ fields }) => {
-    const response = await request(server).post('/test-router/http/parse-template').send({
-      workspaceId: 'ws',
-      requestBodyTemplate: '$$.events',
-      headers: fields,
-    });
-    expect(response.status).toBe(400);
-    expect(mockParseHttpTemplates).not.toHaveBeenCalled();
   });
 
   it('rejects missing body template', async () => {

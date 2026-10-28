@@ -194,7 +194,7 @@ describe('parseTemplate', () => {
   it.each(validTemplates)(
     'should accept and extract fields: $name',
     ({ template, expectedFields }) => {
-      const result = parseTemplate(template);
+      const result = parseTemplate(template, 'records');
       expect(result.valid).toBe(true);
       expect('recordFields' in result && result.recordFields.sort()).toEqual(expectedFields);
     },
@@ -213,7 +213,7 @@ describe('parseTemplate', () => {
   });
 
   it.each(invalidTemplates)('should reject: $name', ({ template, expectedError }) => {
-    const result = parseTemplate(template);
+    const result = parseTemplate(template, 'records');
     expect(result.valid).toBe(false);
     expect('errors' in result && result.errors[0]).toBe(expectedError);
   });

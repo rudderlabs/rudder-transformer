@@ -5,10 +5,8 @@ import { EventTesterService } from '../services/eventTest/eventTester';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
-import {
-  sandboxedParseTemplate,
-  sandboxedParseHttpTemplates,
-} from '../v0/destinations/custom_audience/template/templateSandboxClient';
+import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
+import { sandboxedParseHttpTemplates } from '../v0/destinations/http/templateSandboxClient';
 import { requestFieldExpression } from '../v0/destinations/http/requestFields';
 import {
   actionConfigSchema,
@@ -37,34 +35,14 @@ const parseTemplateBodySchema = z.object({
   workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
 });
 
-const MAX_HTTP_TEMPLATE_LENGTH = 16_384;
-const MAX_HTTP_REQUEST_FIELDS = 100;
-const MAX_HTTP_TEMPLATE_TOTAL_LENGTH = 65_536;
-const httpMappingsSchema = z
-  .array(z.object({ from: z.string().max(MAX_HTTP_TEMPLATE_LENGTH) }))
-  .max(MAX_HTTP_REQUEST_FIELDS)
-  .optional();
-const httpParseBodySchema = z
-  .object({
-    workspaceId: z.string().min(1),
-    requestBodyTemplate: z.string().max(MAX_HTTP_TEMPLATE_LENGTH),
-    headers: httpMappingsSchema,
-    queryParams: httpMappingsSchema,
-    pathParams: z
-      .array(z.object({ path: z.string().max(MAX_HTTP_TEMPLATE_LENGTH) }))
-      .max(MAX_HTTP_REQUEST_FIELDS)
-      .optional(),
-  })
-  .refine(
-    ({ requestBodyTemplate, headers = [], queryParams = [], pathParams = [] }) =>
-      headers.length + queryParams.length + pathParams.length <= MAX_HTTP_REQUEST_FIELDS &&
-      requestBodyTemplate.length +
-        headers.reduce((n, { from }) => n + from.length, 0) +
-        queryParams.reduce((n, { from }) => n + from.length, 0) +
-        pathParams.reduce((n, { path }) => n + path.length, 0) <=
-        MAX_HTTP_TEMPLATE_TOTAL_LENGTH,
-    { message: 'Too many request fields or too much template input' },
-  );
+const httpMappingsSchema = z.array(z.object({ from: z.string() })).optional();
+const httpParseBodySchema = z.object({
+  workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
+  requestBodyTemplate: z.string(),
+  headers: httpMappingsSchema,
+  queryParams: httpMappingsSchema,
+  pathParams: z.array(z.object({ path: z.string() })).optional(),
+});
 
 const testEventV2Schema = z.object({
   events: z.array(z.record(z.unknown())),

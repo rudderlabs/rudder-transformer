@@ -482,15 +482,30 @@ Use a `Map` and `Object.hasOwn`, never a bare `obj[event]` lookup: a plain objec
 ### 2. Build items with one rule and one item mapping
 
 ```ts
-const getItems = (properties: Record<string, unknown>) =>
-  (Array.isArray(properties.products) ? properties.products : [properties])
-    .filter(isPlainObject)
-    .map((product) => constructPayload(product, MAPPING.productMapping));
+// config.ts: the spec events that carry one product at the top level of `properties`
+export const SINGLE_PRODUCT_EVENTS = new Set([
+  'product clicked', 'product viewed', 'product added', 'product removed',
+  'product shared', 'product reviewed',
+  'product added to wishlist', 'product removed from wishlist', 'wishlist product added to cart',
+]);
+
+// utils.ts: `key` is the normalised event name from step 1
+const getItems = (properties: Record<string, unknown>, key: string) => {
+  if (Array.isArray(properties.products)) {
+    return properties.products
+      .filter(isPlainObject)
+      .map((product) => constructPayload(product, MAPPING.productMapping));
+  }
+  return SINGLE_PRODUCT_EVENTS.has(key) ? [constructPayload(properties, MAPPING.productMapping)] : [];
+};
 ```
 
-- If `products` is an array, its object entries are the items. Otherwise the event's
-  `properties` is the single item. That covers `Product Viewed` / `Product Added`, which put the
-  product at the top level, without a per-event branch.
+- If `products` is an array, its object entries are the items.
+- Otherwise `properties` is the single item **only** for the single-product events above, which
+  put the product at the top level. Every other event without `products[]` sends no items.
+  Promotion, checkout-step, payment, search and coupon events have no product fields: falling
+  back to `properties` there turns a promotion `name` into a fake `item_name`, or sends
+  `items: [{}]` that the partner rejects (or that throws on a `required` product id).
 - The item mapping is one file, `data/<DEST>ProductConfig.json`, used for every event. The
   product id is always `["product_id", "sku"]`, and any derived id list (e.g. `content_ids`)
   is built from the mapped items, never from a second chain.
@@ -500,7 +515,7 @@ const getItems = (properties: Record<string, unknown>) =>
 
 | Destination field | `sourceKeys` |
 | ----------------- | ------------ |
-| Value | `properties.total` → `properties.value` → `properties.revenue` → `price × quantity` |
+| Value (gross, default) | `properties.total` → `properties.value` → `properties.revenue` → `price × quantity` |
 | Order id | `properties.order_id` |
 | Currency | `properties.currency`, passed through with **no default** |
 
@@ -523,7 +538,15 @@ const getItems = (properties: Record<string, unknown>) =>
 }
 ```
 
-- Use the same chain on every event and in every destination. Don't re-order it per partner.
+- The chain above is the default for a **gross order value** field. `getValueFromMessage` takes the
+  first key that has a value and orders often carry several, so the order decides what gets sent.
+  The spec defines them differently: `total` / `value` include discounts and coupons, `revenue`
+  excludes shipping and tax, `subtotal` is after discounts but before shipping and tax. The SDKs
+  don't calculate any of them. Choose the order, and whether `subtotal` belongs in it, from the
+  partner's own definition of the field. If the partner's value excludes shipping and tax, lead
+  with `revenue`. When moving an existing destination onto this shape, keep its current order
+  unless it is wrong for the partner's field: reordering silently changes the value customers
+  report.
 - The value lives in the mapping JSON, not in an `a || b || c` chain in code, so `0` survives
   (see [`constructPayload` Sets Only What It Finds](#constructpayload-sets-only-what-it-finds)).
 - The operation default is spelled `defaultVal`. `handleSourceKeysOperation` ignores `default`

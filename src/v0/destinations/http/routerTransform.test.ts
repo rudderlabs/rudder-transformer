@@ -1,6 +1,5 @@
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { Integration } from './routerTransform';
-import * as sandboxClient from './templateSandboxClient';
 import { requestFieldExpression } from './utils';
 import { prepareProxyRequest } from '../../../adapters/network';
 import type { RouterTransformationRequestData } from '../../../types';
@@ -262,19 +261,6 @@ describe('HTTP v2 native router', () => {
       statusCode: 400,
       error: 'Header "x-num" must resolve to a string',
     });
-  });
-
-  it('evaluates bodies for every request group in one isolate call', async () => {
-    const evaluate = jest.spyOn(sandboxClient, 'sandboxedEvaluateHttpBody');
-    // pathParams on $.id puts each event in its own request group.
-    const responses = await processDestinationIntegration(
-      [input('a', 1), input('b', 2), input('c', 3)],
-      Integration,
-      {},
-    );
-    expect(responses.filter((r) => r.statusCode === 200)).toHaveLength(3);
-    expect(evaluate).toHaveBeenCalledTimes(1);
-    evaluate.mockRestore();
   });
 
   it('fails only the body chunk with a bad cast', async () => {

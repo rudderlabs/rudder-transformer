@@ -1,8 +1,7 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
-import lodash from 'lodash';
 import {
   BodyFormat,
-  ChunkBatchStrategy,
+  CustomBatchStrategy,
   DestinationIntegration,
   toTransformError,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
@@ -12,7 +11,7 @@ import type {
   TransformResult,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { removeUndefinedAndNullValues, removeUndefinedValues } from '../../util';
-import { groupPayloadsByCompositeKey } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
+import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
 import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
@@ -43,50 +42,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       );
       inputs.forEach((input, i) => this.fieldResults.set(input, results[i]));
     }
-    return this.buildRequestBodies(await super.transformEvents(inputs, reqMetadata));
-  }
-
-  /**
-   * The body template is evaluated per chunk (`$$.events` is the chunk), so chunks are built here
-   * rather than in the batch strategy: a chunk whose template fails then becomes an ordinary
-   * per-job transform error, before the framework batches anything.
-   */
-  private async buildRequestBodies({
-    successPayloads,
-    errorPayloads,
-  }: TransformResult<HttpBody>): Promise<TransformResult<HttpBody>> {
-    const { requestBodyTemplate, maxBatchSize = MAX_BATCH_SIZE } = this.destination.Config;
-    // Raw config: the control plane sends maxBatchSize as a string.
-    const chunks = groupPayloadsByCompositeKey(successPayloads).flatMap((group) =>
-      lodash.chunk(group.payloads, Number(maxBatchSize)),
-    );
-    if (chunks.length === 0) return { successPayloads, errorPayloads };
-    const bodies = await sandboxedEvaluateHttpBody(
-      requestBodyTemplate,
-      chunks.map((chunk) => chunk.map(({ body }) => body)),
-      this.destination.WorkspaceID,
-    );
-    const output: TransformResult<HttpBody> = { successPayloads: [], errorPayloads };
-    chunks.forEach((chunk, i) => {
-      const result = bodies[i];
-      const batch = result.ok ? JSON.stringify(result.body) : undefined;
-      let failure: string | undefined;
-      if (!result.ok) failure = `Failed to evaluate requestBody template: ${result.error}`;
-      else if (batch === undefined || result.body === null)
-        failure = 'Request body template did not produce JSON';
-      if (failure) {
-        const error = toTransformError(new ConfigurationError(failure));
-        chunk.forEach(({ jobId }) => output.errorPayloads.push({ ...error, jobId }));
-        return;
-      }
-      // Unique per chunk, so the framework groups exactly this chunk into one request.
-      const internalGroupKey = `chunk-${i}`;
-      const body = { batch };
-      chunk.forEach((payload) =>
-        output.successPayloads.push({ ...payload, body, internalGroupKey }),
-      );
-    });
-    return output;
+    return super.transformEvents(inputs, reqMetadata);
   }
 
   transformEvent(input: HttpInput): TransformedEvent<HttpBody> {
@@ -118,11 +74,34 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
   }
 
   getBatchStrategy(): BatchStrategy<HttpBody> {
-    // transformEvents built each chunk's body; every payload in a group shares it.
-    return new ChunkBatchStrategy<HttpBody>({
-      wrapBody: ([body]) => body,
-      bodyFormat: BodyFormat.JSON_ARRAY,
-    });
+    const { requestBodyTemplate, maxBatchSize = MAX_BATCH_SIZE } = this.destination.Config;
+    return new CustomBatchStrategy<HttpBody>(async (payloads) => {
+      // Raw config: the control plane sends maxBatchSize as a string.
+      const chunks = chunkPayloads(payloads, {
+        maxItems: Number(maxBatchSize),
+        wrapBody: () => ({}),
+      });
+      const bodies = await sandboxedEvaluateHttpBody(
+        requestBodyTemplate,
+        chunks.map((chunk) => chunk.bodies),
+        this.destination.WorkspaceID,
+      );
+      const error = (message: string, jobIds: Set<number>) => ({
+        body: {},
+        jobIds,
+        error: toTransformError(new ConfigurationError(message)),
+      });
+      return chunks.map((chunk, i) => {
+        const result = bodies[i];
+        if (!result.ok)
+          return error(`Failed to evaluate requestBody template: ${result.error}`, chunk.jobIds);
+        const batch = JSON.stringify(result.body);
+        if (batch === undefined || result.body === null) {
+          return error('Request body template did not produce JSON', chunk.jobIds);
+        }
+        return { body: { batch }, jobIds: chunk.jobIds };
+      });
+    }, BodyFormat.JSON_ARRAY);
   }
 
   getInputSchema() {

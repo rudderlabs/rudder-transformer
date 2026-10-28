@@ -22,12 +22,17 @@ const mapping = z.object({
   from: z.string(),
 });
 
+export const DEFAULT_METHOD = 'POST';
+export const MAX_BATCH_SIZE = 5000;
+
+// Defaults are applied in the router: the framework validates against this schema but hands
+// the destination its raw config.
 export const HttpDestinationConfigSchema = z
   .object({
     apiUrl: z.string().min(1),
     requestBodyTemplate: z.string().min(1),
-    method: z.enum(['POST', 'PUT', 'PATCH', 'GET', 'DELETE']).default('POST'),
-    maxBatchSize: z.coerce.number().int().min(1).max(5000).default(5000),
+    method: z.enum(['POST', 'PUT', 'PATCH', 'GET', 'DELETE']).optional(),
+    maxBatchSize: z.coerce.number().int().min(1).max(MAX_BATCH_SIZE).optional(),
     headers: z.array(mapping).optional(),
     queryParams: z.array(mapping).optional(),
     pathParams: z.array(z.object({ path: z.string() })).optional(),

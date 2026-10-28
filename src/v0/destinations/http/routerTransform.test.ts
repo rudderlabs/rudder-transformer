@@ -57,6 +57,20 @@ describe('HTTP v2 native router', () => {
     expect(requestFieldExpression(value)).toBe(expression);
   });
 
+  it('defaults method to POST and batches up to 5000 when unset', async () => {
+    const { method, maxBatchSize, ...config } = destination.Config;
+    const events = [input('1', 1), input('2', 2), input('3', 3)].map((event) => ({
+      ...event,
+      destination: { ...destination, Config: { ...config, pathParams: [] } },
+    }));
+    const responses = await processDestinationIntegration(events, Integration, {});
+    expect(responses).toHaveLength(1);
+    expect(responses[0]).toMatchObject({
+      batchedRequest: { method: 'POST' },
+      metadata: [{ jobId: 1 }, { jobId: 2 }, { jobId: 3 }],
+    });
+  });
+
   it.each([
     { config: { auth: 'basicAuth' }, message: 'Username is required for Basic Authentication' },
     {

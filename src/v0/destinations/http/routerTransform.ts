@@ -13,7 +13,7 @@ import type {
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
-import { HttpDestinationConfigSchema, HttpInputSchema } from './types';
+import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
 import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
 import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
 
@@ -23,22 +23,14 @@ const NO_FIELDS: RequestFieldResult = {
 };
 
 class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputSchema> {
-  private parsedConfig?: HttpDestinationConfig;
-
   // Request fields are evaluated for the whole batch in one isolate call; transformEvent reads them.
   private fieldResults = new Map<HttpInput, RequestFieldResult>();
-
-  private get config(): HttpDestinationConfig {
-    this.parsedConfig ??= HttpDestinationConfigSchema.parse(this.destination.Config);
-    return this.parsedConfig;
-  }
 
   async transformEvents(
     inputs: HttpInput[],
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<HttpBody>> {
-    // The input schema has already validated this config for every input.
-    const expressions = toExpressions(this.config);
+    const expressions = toExpressions(this.destination.Config);
     const { headers, queryParams, pathParams } = expressions;
     // Skip the isolate round-trip (and copying every message into it) when nothing is mapped.
     if (headers.length + queryParams.length + pathParams.length > 0) {
@@ -56,7 +48,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
     const result = this.fieldResults.get(input) ?? NO_FIELDS;
     if (!result.ok)
       throw new ConfigurationError(`Request field evaluation failed: ${result.error}`);
-    return this.makeEvent(input.message, result.fields, this.config);
+    return this.makeEvent(input.message, result.fields, this.destination.Config);
   }
 
   private makeEvent(
@@ -77,7 +69,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       body: { message },
       endpoint: makeEndpoint(config.apiUrl, fields.pathParams),
       endpointPath: '/http',
-      method: config.method,
+      method: config.method ?? DEFAULT_METHOD,
       headers,
       params: Object.fromEntries(
         Object.entries(fields.params).filter(([, value]) => value !== undefined),
@@ -86,9 +78,13 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
   }
 
   getBatchStrategy(): BatchStrategy<HttpBody> {
-    const { requestBodyTemplate, maxBatchSize } = this.config;
+    const { requestBodyTemplate, maxBatchSize = MAX_BATCH_SIZE } = this.destination.Config;
     return new CustomBatchStrategy<HttpBody>(async (payloads) => {
-      const chunks = chunkPayloads(payloads, { maxItems: maxBatchSize, wrapBody: () => ({}) });
+      // Raw config: the control plane sends maxBatchSize as a string.
+      const chunks = chunkPayloads(payloads, {
+        maxItems: Number(maxBatchSize),
+        wrapBody: () => ({}),
+      });
       const bodies = await sandboxedEvaluateHttpBody(
         requestBodyTemplate,
         chunks.map(({ bodies: items }) => items.map(({ message }) => message)),

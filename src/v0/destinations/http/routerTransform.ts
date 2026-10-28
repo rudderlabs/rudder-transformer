@@ -13,8 +13,8 @@ import type {
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
-import { HttpConfigSchema, HttpInputSchema } from './types';
-import type { HttpBody as Body, HttpConfig as Config, HttpInput as Input } from './types';
+import { HttpDestinationConfigSchema, HttpInputSchema } from './types';
+import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
 import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
 
 const NO_FIELDS: RequestFieldResult = {
@@ -22,25 +22,22 @@ const NO_FIELDS: RequestFieldResult = {
   fields: { headers: {}, params: {}, pathParams: [] },
 };
 
-class HttpIntegration extends DestinationIntegration<Body, typeof HttpInputSchema> {
-  private parsedConfig?: Config;
-
-  private authHeaders: Record<string, string> = {};
+class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputSchema> {
+  private parsedConfig?: HttpDestinationConfig;
 
   // Request fields are evaluated for the whole batch in one isolate call; transformEvent reads them.
-  private fieldResults = new Map<Input, RequestFieldResult>();
+  private fieldResults = new Map<HttpInput, RequestFieldResult>();
 
-  private get config(): Config {
-    this.parsedConfig ??= HttpConfigSchema.parse(this.destination.Config);
+  private get config(): HttpDestinationConfig {
+    this.parsedConfig ??= HttpDestinationConfigSchema.parse(this.destination.Config);
     return this.parsedConfig;
   }
 
   async transformEvents(
-    inputs: Input[],
+    inputs: HttpInput[],
     reqMetadata?: NonNullable<unknown>,
-  ): Promise<TransformResult<Body>> {
+  ): Promise<TransformResult<HttpBody>> {
     // The input schema has already validated this config for every input.
-    this.authHeaders = makeAuthHeaders(this.config);
     const expressions = toExpressions(this.config);
     const { headers, queryParams, pathParams } = expressions;
     // Skip the isolate round-trip (and copying every message into it) when nothing is mapped.
@@ -55,21 +52,20 @@ class HttpIntegration extends DestinationIntegration<Body, typeof HttpInputSchem
     return super.transformEvents(inputs, reqMetadata);
   }
 
-  transformEvent(input: Input): TransformedEvent<Body> {
+  transformEvent(input: HttpInput): TransformedEvent<HttpBody> {
     const result = this.fieldResults.get(input) ?? NO_FIELDS;
     if (!result.ok)
       throw new ConfigurationError(`Request field evaluation failed: ${result.error}`);
-    return this.makeEvent(input.message, result.fields, this.config, this.authHeaders);
+    return this.makeEvent(input.message, result.fields, this.config);
   }
 
   private makeEvent(
     message: Record<string, unknown>,
     fields: EvaluatedRequestFields,
-    config: Config,
-    authHeaders: Record<string, string>,
-  ): TransformedEvent<Body> {
+    config: HttpDestinationConfig,
+  ): TransformedEvent<HttpBody> {
     const headers: Record<string, unknown> = {
-      ...authHeaders,
+      ...makeAuthHeaders(config),
       ...fields.headers,
       'Content-Type': 'application/json',
     };
@@ -89,9 +85,9 @@ class HttpIntegration extends DestinationIntegration<Body, typeof HttpInputSchem
     };
   }
 
-  getBatchStrategy(): BatchStrategy<Body> {
+  getBatchStrategy(): BatchStrategy<HttpBody> {
     const { requestBodyTemplate, maxBatchSize } = this.config;
-    return new CustomBatchStrategy<Body>(async (payloads) => {
+    return new CustomBatchStrategy<HttpBody>(async (payloads) => {
       const chunks = chunkPayloads(payloads, { maxItems: maxBatchSize, wrapBody: () => ({}) });
       const bodies = await sandboxedEvaluateHttpBody(
         requestBodyTemplate,

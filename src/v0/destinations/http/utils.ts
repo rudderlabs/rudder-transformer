@@ -1,7 +1,8 @@
 // Host-side helpers shared by verification and the router; never import this into the isolate.
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import type { RequestFieldExpressions } from './httpTemplateSandbox';
-import type { HttpConfig } from './types';
+import { mappingKey } from './types';
+import type { HttpDestinationConfig } from './types';
 
 // Only leading-$ values are expressions. Everything else is a literal JSONata string.
 export function requestFieldExpression(value: string): string {
@@ -14,16 +15,8 @@ export function requestFieldExpression(value: string): string {
   return value.startsWith('$.') ? `$$.message.${value.slice(2)}` : value;
 }
 
-// New v2 config stores bare names; migrated v1 mappings may use dot or bracket notation.
-// Returns undefined for a `$`-prefixed key that is not a single field reference.
-export const mappingKey = (key: string): string | undefined => {
-  if (!key.startsWith('$')) return key;
-  const match = key.match(/^\$(?:\.(?:'([^']+)'|([\w.-]+))|\['([^']+)']|\["([^"]+)"])$/);
-  return match ? (match[1] ?? match[2] ?? match[3] ?? match[4]) : undefined;
-};
-
-export const toExpressions = (config: HttpConfig): RequestFieldExpressions => {
-  // HttpConfigSchema has rejected keys mappingKey cannot resolve.
+export const toExpressions = (config: HttpDestinationConfig): RequestFieldExpressions => {
+  // HttpDestinationConfigSchema has rejected keys mappingKey cannot resolve.
   const convert = ({ to, from }: { to: string; from: string }) => ({
     to: mappingKey(to) ?? to,
     from: requestFieldExpression(from),
@@ -45,8 +38,8 @@ export const makeEndpoint = (url: string, pathParams: unknown[]): string => {
   return parts.length > 0 ? `${url.replace(/\/$/, '')}/${parts.join('/')}` : url;
 };
 
-// Required credentials are enforced by HttpConfigSchema.
-export const makeAuthHeaders = (config: HttpConfig): Record<string, string> => {
+// Required credentials are enforced by HttpDestinationConfigSchema.
+export const makeAuthHeaders = (config: HttpDestinationConfig): Record<string, string> => {
   const { auth, username, password = '', bearerToken, apiKeyName = '', apiKeyValue = '' } = config;
   switch (auth) {
     case 'basicAuth':

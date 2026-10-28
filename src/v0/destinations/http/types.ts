@@ -1,6 +1,13 @@
 import { z } from 'zod';
 import { makeRouterInputSchema } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { mappingKey } from './utils';
+
+// New v2 config stores bare names; migrated v1 mappings may use dot or bracket notation.
+// Returns undefined for a `$`-prefixed key that is not a single field reference.
+export const mappingKey = (key: string): string | undefined => {
+  if (!key.startsWith('$')) return key;
+  const match = key.match(/^\$(?:\.(?:'([^']+)'|([\w.-]+))|\['([^']+)']|\["([^"]+)"])$/);
+  return match ? (match[1] ?? match[2] ?? match[3] ?? match[4]) : undefined;
+};
 
 const mapping = z.object({
   to: z
@@ -15,7 +22,7 @@ const mapping = z.object({
   from: z.string(),
 });
 
-export const HttpConfigSchema = z
+export const HttpDestinationConfigSchema = z
   .object({
     apiUrl: z.string().min(1),
     requestBodyTemplate: z.string().min(1),
@@ -47,9 +54,9 @@ export const HttpConfigSchema = z
 
 export const HttpInputSchema = makeRouterInputSchema({
   message: z.record(z.unknown()),
-  destinationConfig: HttpConfigSchema,
+  destinationConfig: HttpDestinationConfigSchema,
 });
 
-export type HttpConfig = z.infer<typeof HttpConfigSchema>;
+export type HttpDestinationConfig = z.infer<typeof HttpDestinationConfigSchema>;
 export type HttpInput = z.infer<typeof HttpInputSchema>;
 export type HttpBody = { message: Record<string, unknown> };

@@ -149,7 +149,7 @@ export class DestinationController {
     const destination = routerRequest.destType;
     const events = routerRequest.input;
 
-    const resplist = ServiceSelector.groupByDestinationService(events).flatMap(
+    ctx.body = ServiceSelector.groupByDestinationService(events).flatMap(
       ([integrationService, groupEvents]) => {
         try {
           const processedEvents = DestinationPreTransformationService.preProcess(groupEvents, ctx);
@@ -177,7 +177,6 @@ export class DestinationController {
         }
       },
     );
-    ctx.body = resplist;
     ControllerUtility.postProcess(ctx);
     return ctx;
   }

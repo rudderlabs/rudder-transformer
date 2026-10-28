@@ -10,6 +10,7 @@ import type {
   TransformedEvent,
   TransformResult,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import { removeUndefinedValues } from '../../util';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
@@ -71,9 +72,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       endpointPath: '/http',
       method: config.method ?? DEFAULT_METHOD,
       headers,
-      params: Object.fromEntries(
-        Object.entries(fields.params).filter(([, value]) => value !== undefined),
-      ),
+      params: removeUndefinedValues(fields.params),
     };
   }
 

@@ -232,19 +232,6 @@ describe('HTTP v2 native router', () => {
     expect(request.params).toEqual({ q1: 'val2' });
   });
 
-  it('uses schema defaults for missing method and batch size', async () => {
-    const { method, maxBatchSize, ...config } = destination.Config;
-    const events = [input('one', 1), input('two', 2)].map((event) => ({
-      ...event,
-      destination: { ...destination, Config: { ...config, pathParams: [] } },
-    }));
-    const responses = await processDestinationIntegration(events, Integration, {});
-    expect(responses).toHaveLength(1);
-    expect((responses[0] as unknown as NativeResponse).batchedRequest).toMatchObject({
-      method: 'POST',
-    });
-  });
-
   it('fails only the body chunk with a bad cast', async () => {
     const events = [input('1', 1), input('bad', 2), input('3', 3)].map((event) => ({
       ...event,

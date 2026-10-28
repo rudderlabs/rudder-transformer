@@ -262,7 +262,8 @@ export async function processDestinationIntegration<
     allErrors.push(...singleResult.errorPayloads);
   }
 
-  // 5. Remove failed jobIds from payloads before building success responses.
+  // 5. Remove jobIds that failed during transform from payloads before building success
+  // responses (errors a batch strategy returns in step 7 are not applied across groups).
   // This handles the multiplexing case: if transformEvent for jobId=1 produces
   // payloads for both /track and /identify endpoints, and the /identify payload
   // fails, jobId=1 must be removed from the /track payloads too — a partially

@@ -6,10 +6,11 @@
  * All template-language operations are consolidated here so that swapping the
  * underlying expression engine only touches this single file.
  *
- * Exposes two capabilities:
+ * Exposes three capabilities:
  *   1. **parseTemplate** — parse, validate, and extract record fields from a
  *      user-provided template.
- *   2. **evaluateTemplate** — compile and evaluate a template against data.
+ *   2. **compileTemplate** — validate once and return a reusable evaluator.
+ *   3. **evaluateTemplate** — compile and evaluate a template against data.
  *
  * User-provided request body templates are parsed into an AST by JSONata
  * and then walked against a whitelist of allowed node types.  Any node type
@@ -27,7 +28,7 @@
  *     }]
  *   }
  *
- * The [...] wrapper around $$.records iteration is mandatory — JSONata
+ * The [...] wrapper around collection iteration ($$.records here) is mandatory — JSONata
  * unwraps single-element mapping results into bare values, so the wrapper
  * ensures the output is always an array regardless of batch size.
  *
@@ -102,14 +103,14 @@ interface ValidationContext {
 type ValidateWalker = (node: AstNode, ctx: ValidationContext) => void;
 type FieldWalker = (
   node: AstNode,
-  insideRecordsIteration: boolean,
+  insideCollectionIteration: boolean,
   fields: Set<string>,
   collection: string,
 ) => void;
 
 interface NodeHandler {
   /**
-   * Validate this node type's children. Called during validateTemplate().
+   * Validate this node type's children. Called during validateNode().
    * Presence of a handler entry in NODE_HANDLERS IS the whitelist — if the
    * node type isn't here, it's rejected.
    */
@@ -117,11 +118,11 @@ interface NodeHandler {
 
   /**
    * Extract record field names from this node type's children.
-   * Called during extractInputFields(). Optional — omit for leaf nodes.
+   * Called during collectFields(). Optional — omit for leaf nodes.
    */
   collectFields?: (
     node: AstNode,
-    insideRecordsIteration: boolean,
+    insideCollectionIteration: boolean,
     fields: Set<string>,
     walk: FieldWalker,
     collection: string,
@@ -170,16 +171,16 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         ctx.errors.push(`Expression type "unary(${node.value})" is not supported.`);
       }
     },
-    collectFields: (node, insideRecordsIteration, fields, walk, collection) => {
+    collectFields: (node, insideCollectionIteration, fields, walk, collection) => {
       if (node.value === '{') {
         const pairs: AstNode[][] = node.lhs ?? [];
         for (const pair of pairs) {
-          walk(pair[1], insideRecordsIteration, fields, collection);
+          walk(pair[1], insideCollectionIteration, fields, collection);
         }
       } else if (node.value === '[') {
         const elements: AstNode[] = node.expressions ?? [];
         for (const elem of elements) {
-          walk(elem, insideRecordsIteration, fields, collection);
+          walk(elem, insideCollectionIteration, fields, collection);
         }
       }
     },
@@ -215,8 +216,8 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         }
         return;
       }
-      // A relative path may contain another mapping step (products.{...}).
-      // Validate every child, including functions and predicates, just like a root path.
+      // Relative paths inside a mapping fall through, so nested mappings (products.{...}) are
+      // validated like root paths.
 
       // $$ root path — verify root variable
       if (steps[0]?.type === 'variable') {
@@ -232,8 +233,8 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         }
       }
 
-      // Detect $$.records path and check for nested iteration.
-      // Only `$$.records.{...}` is allowed — deeper paths like `$$.records.foo.{...}`
+      // Detect the $$.<collection> path and check for nested iteration.
+      // Only `$$.<collection>.{...}` is allowed — deeper paths like `$$.<collection>.foo.{...}`
       // would produce incorrect recordFields since bare names refer to nested data.
       const isCollectionPath =
         steps.length >= 2 &&
@@ -253,11 +254,11 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         return;
       }
 
-      // $$.records mappings must be wrapped in [...] to guarantee array output.
+      // $$.<collection> mappings must be wrapped in [...] to guarantee array output.
       // JSONata unwraps single-element mapping results into bare values, so
-      // `$$.records.{...}` with one record returns an object instead of a
+      // `$$.<collection>.{...}` with one record returns an object instead of a
       // one-element array. Wrapping in [...] prevents this:
-      //   [$$.records.{ "email": email }]   → always an array
+      //   [$$.<collection>.{ "email": email }]   → always an array
       if (isCollectionPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
         ctx.errors.push(
           `$$.${ctx.collection} iteration must be wrapped in [...] to guarantee array output ` +
@@ -286,22 +287,22 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
     },
 
     // Field extraction for paths:
-    //   - Bare name (no root) inside records iteration → first name = record field
+    //   - Bare name (no root) inside collection iteration → first name = record field
     //     e.g. `email_sha256` → "email_sha256"
-    //   - `$$.records.{<mapping>}` → enter the mapping with insideRecordsIteration=true
+    //   - `$$.<collection>.{<mapping>}` → enter the mapping with insideCollectionIteration=true
     //   - `$$.connection.*` and other `$$` paths → ignored (no record fields)
-    collectFields: (node, insideRecordsIteration, fields, walk, collection) => {
+    collectFields: (node, insideCollectionIteration, fields, walk, collection) => {
       const steps: AstNode[] = node.steps ?? [];
 
-      // Bare name inside records iteration → top-level record field.
+      // Bare name inside collection iteration → top-level record field.
       // Nested relative mappings collect their source collection, not item keys.
-      if (insideRecordsIteration && steps[0]?.type === 'name') {
+      if (insideCollectionIteration && steps[0]?.type === 'name') {
         fields.add(steps[0].value as string);
         return;
       }
 
-      // $$ root path — check for $$.records.{...} to enter iteration context.
-      // AST shape: steps = [variable("$"), name("records"), unary("{"/"]")]
+      // $$ root path — check for $$.<collection>.{...} to enter iteration context.
+      // AST shape: steps = [variable("$"), name(<collection>), unary("{"/"]")]
       const isCollectionPath =
         steps.length >= 3 &&
         steps[0]?.type === 'variable' &&
@@ -310,7 +311,7 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         steps[1]?.value === collection;
 
       for (const step of steps) {
-        if (step.type === 'unary' && (isCollectionPath || insideRecordsIteration)) {
+        if (step.type === 'unary' && (isCollectionPath || insideCollectionIteration)) {
           if (step.value === '{') {
             const pairs: AstNode[][] = step.lhs ?? [];
             for (const pair of pairs) {
@@ -364,9 +365,9 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       }
       walk(node.arguments![0], { ...ctx, wrappedInArray: false });
     },
-    collectFields: (node, insideRecordsIteration, fields, walk, collection) => {
+    collectFields: (node, insideCollectionIteration, fields, walk, collection) => {
       // After validation, only $number(expr) with a single arg reaches here
-      walk(node.arguments![0], insideRecordsIteration, fields, collection);
+      walk(node.arguments![0], insideCollectionIteration, fields, collection);
     },
   },
 
@@ -394,20 +395,20 @@ function validateNode(node: AstNode, ctx: ValidationContext): void {
 /**
  * Recursively collect record field names from the AST.
  *
- * Only extracts fields accessed via bare names inside `$$.records.{}`
+ * Only extracts fields accessed via bare names inside `$$.<collection>.{}`
  * mapping blocks.  Connection fields (e.g. `$$.connection.audience_id`)
  * and static literals are ignored.
  */
 function collectFields(
   node: AstNode,
-  insideRecordsIteration: boolean,
+  insideCollectionIteration: boolean,
   fields: Set<string>,
   collection: string,
 ): void {
   if (!node || !node.type) return;
   NODE_HANDLERS[node.type]?.collectFields?.(
     node,
-    insideRecordsIteration,
+    insideCollectionIteration,
     fields,
     collectFields,
     collection,
@@ -464,7 +465,7 @@ export type ParseTemplateResult =
  *
  * Parses the template into an AST, walks every node against a whitelist
  * (returning all errors so users can fix everything in one pass), then
- * extracts deduplicated record field names from `$$.records.{}`
+ * extracts deduplicated record field names from `$$.<collection>.{}`
  * mapping blocks.
  *
  * Example: `{ "data": [$$.records.[email, phone]] }`

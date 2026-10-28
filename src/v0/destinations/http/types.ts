@@ -27,7 +27,7 @@ export const MAX_BATCH_SIZE = 5000;
 
 // Defaults are applied in the router: the framework validates against this schema but hands
 // the destination its raw config.
-export const HttpDestinationConfigSchema = z
+const HttpDestinationConfigSchema = z
   .object({
     apiUrl: z.string().min(1),
     requestBodyTemplate: z.string().min(1),

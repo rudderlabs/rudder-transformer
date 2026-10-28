@@ -7,7 +7,7 @@ import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
 import { sandboxedParseHttpTemplates } from '../v0/destinations/http/templateSandboxClient';
-import { requestFieldExpression } from '../v0/destinations/http/utils';
+import { verificationFields } from '../v0/destinations/http/utils';
 import {
   actionConfigSchema,
   CustomAudienceDestConfig,
@@ -99,34 +99,11 @@ export class EventTestController {
       ctx.body = { error: formatZodError(parsed.error) };
       return;
     }
-    const {
-      workspaceId,
-      requestBodyTemplate,
-      headers = [],
-      queryParams = [],
-      pathParams = [],
-    } = parsed.data;
-    const surface = (field: string, values: string[]) =>
-      values.map((value, index) => ({ field, index, template: requestFieldExpression(value) }));
-    const fields: { field: string; index?: number; template: string }[] = [
-      { field: 'requestBodyTemplate', template: requestBodyTemplate },
-      ...surface(
-        'headers',
-        headers.map(({ from }) => from),
-      ),
-      ...surface(
-        'queryParams',
-        queryParams.map(({ from }) => from),
-      ),
-      ...surface(
-        'pathParams',
-        pathParams.map(({ path }) => path),
-      ),
-    ];
+    const fields = verificationFields(parsed.data);
     // A single isolate call validates all surfaces while preserving their indices.
     const results = await sandboxedParseHttpTemplates(
       fields.map(({ template }) => template),
-      workspaceId,
+      parsed.data.workspaceId,
     );
     const errors = results.flatMap((result, i) =>
       result.valid

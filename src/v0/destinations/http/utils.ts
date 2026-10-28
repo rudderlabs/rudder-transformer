@@ -16,8 +16,8 @@ export function requestFieldExpression(value: string): string {
 }
 
 export const toExpressions = (config: HttpDestinationConfig): RequestFieldExpressions => {
-  // HttpDestinationConfigSchema has rejected keys mappingKey cannot resolve.
   const convert = ({ to, from }: { to: string; from: string }) => ({
+    // `?? to` only satisfies the type: the config schema rejects keys mappingKey cannot resolve.
     to: mappingKey(to) ?? to,
     from: requestFieldExpression(from),
   });
@@ -26,6 +26,35 @@ export const toExpressions = (config: HttpDestinationConfig): RequestFieldExpres
     queryParams: (config.queryParams ?? []).map(convert),
     pathParams: (config.pathParams ?? []).map(({ path }) => requestFieldExpression(path)),
   };
+};
+
+export type VerificationField = { field: string; index?: number; template: string };
+
+// The templates parse-template verifies, in the order its errors are reported. Each request field
+// goes through requestFieldExpression, exactly as the router evaluates it.
+export const verificationFields = (body: {
+  requestBodyTemplate: string;
+  headers?: { from: string }[];
+  queryParams?: { from: string }[];
+  pathParams?: { path: string }[];
+}): VerificationField[] => {
+  const surface = (field: string, values: string[]) =>
+    values.map((value, index) => ({ field, index, template: requestFieldExpression(value) }));
+  return [
+    { field: 'requestBodyTemplate', template: body.requestBodyTemplate },
+    ...surface(
+      'headers',
+      (body.headers ?? []).map(({ from }) => from),
+    ),
+    ...surface(
+      'queryParams',
+      (body.queryParams ?? []).map(({ from }) => from),
+    ),
+    ...surface(
+      'pathParams',
+      (body.pathParams ?? []).map(({ path }) => path),
+    ),
+  ];
 };
 
 export const makeEndpoint = (url: string, pathParams: unknown[]): string => {
@@ -38,7 +67,7 @@ export const makeEndpoint = (url: string, pathParams: unknown[]): string => {
   return parts.length > 0 ? `${url.replace(/\/$/, '')}/${parts.join('/')}` : url;
 };
 
-// Required credentials are enforced by HttpDestinationConfigSchema.
+// Required credentials are enforced by the config schema in types.ts.
 export const makeAuthHeaders = (config: HttpDestinationConfig): Record<string, string> => {
   const { auth, username, password = '', bearerToken, apiKeyName = '', apiKeyValue = '' } = config;
   switch (auth) {

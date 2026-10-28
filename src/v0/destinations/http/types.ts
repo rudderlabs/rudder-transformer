@@ -64,4 +64,4 @@ export const HttpInputSchema = makeRouterInputSchema({
 
 export type HttpDestinationConfig = z.infer<typeof HttpDestinationConfigSchema>;
 export type HttpInput = z.infer<typeof HttpInputSchema>;
-export type HttpBody = { message: Record<string, unknown> };
+export type HttpBody = Record<string, unknown>;

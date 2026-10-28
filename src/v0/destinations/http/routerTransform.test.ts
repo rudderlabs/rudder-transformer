@@ -232,6 +232,37 @@ describe('HTTP v2 native router', () => {
     expect(request.params).toEqual({ q1: 'val2' });
   });
 
+  it('drops mapped headers whose source is missing or null, like v1', async () => {
+    const config = {
+      ...destination.Config,
+      pathParams: [],
+      headers: [
+        { to: 'x-missing', from: '$.notThere' },
+        { to: 'x-null', from: '$.nothing' },
+        { to: 'x-num', from: '$.value' },
+      ],
+    };
+    const withNull = (id: string, jobId: number, value: unknown) => ({
+      ...input(id, jobId),
+      message: { type: 'track' as const, id, nothing: null, value },
+      destination: { ...destination, Config: config },
+    });
+    const responses = await processDestinationIntegration(
+      [withNull('a', 1, 'str'), withNull('b', 2, 5)],
+      Integration,
+      {},
+    );
+    const delivered = responses.find((r) => r.metadata[0].jobId === 1) as unknown as NativeResponse;
+    expect(delivered.batchedRequest.headers).toEqual({
+      'x-num': 'str',
+      'Content-Type': 'application/json',
+    });
+    expect(responses.find((r) => r.metadata[0].jobId === 2)).toMatchObject({
+      statusCode: 400,
+      error: 'Header "x-num" must resolve to a string',
+    });
+  });
+
   it('fails only the body chunk with a bad cast', async () => {
     const events = [input('1', 1), input('bad', 2), input('3', 3)].map((event) => ({
       ...event,

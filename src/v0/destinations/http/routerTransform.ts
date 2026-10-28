@@ -10,7 +10,7 @@ import type {
   TransformedEvent,
   TransformResult,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { removeUndefinedValues } from '../../util';
+import { removeUndefinedAndNullValues, removeUndefinedValues } from '../../util';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
@@ -57,21 +57,18 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
     fields: EvaluatedRequestFields,
     config: HttpDestinationConfig,
   ): TransformedEvent<HttpBody> {
-    const headers: Record<string, unknown> = {
-      ...makeAuthHeaders(config),
-      ...fields.headers,
-      'Content-Type': 'application/json',
-    };
-    for (const [key, value] of Object.entries(headers)) {
+    // Like v1, a mapped header whose source is missing is dropped rather than failing the event.
+    const mapped = removeUndefinedAndNullValues(fields.headers);
+    for (const [key, value] of Object.entries(mapped)) {
       if (typeof value !== 'string')
         throw new ConfigurationError(`Header "${key}" must resolve to a string`);
     }
     return {
-      body: { message },
+      body: message,
       endpoint: makeEndpoint(config.apiUrl, fields.pathParams),
       endpointPath: '/http',
       method: config.method ?? DEFAULT_METHOD,
-      headers,
+      headers: { ...makeAuthHeaders(config), ...mapped, 'Content-Type': 'application/json' },
       params: removeUndefinedValues(fields.params),
     };
   }
@@ -86,7 +83,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       });
       const bodies = await sandboxedEvaluateHttpBody(
         requestBodyTemplate,
-        chunks.map(({ bodies: items }) => items.map(({ message }) => message)),
+        chunks.map((chunk) => chunk.bodies),
         this.destination.WorkspaceID,
       );
       const error = (message: string, jobIds: Set<number>) => ({

@@ -262,8 +262,10 @@ export async function processDestinationIntegration<
     allErrors.push(...singleResult.errorPayloads);
   }
 
-  // 5. Remove jobIds that failed during transform from payloads before building success
-  // responses (errors a batch strategy returns in step 7 are not applied across groups).
+  // 5. Convert all errors to responses
+  const errorResponses = mapErrorPayloadToServerFormat(allErrors, metadataMap, destination);
+
+  // 6. Remove failed jobIds from payloads before building success responses.
   // This handles the multiplexing case: if transformEvent for jobId=1 produces
   // payloads for both /track and /identify endpoints, and the /identify payload
   // fails, jobId=1 must be removed from the /track payloads too — a partially
@@ -275,7 +277,7 @@ export async function processDestinationIntegration<
     (p) => !failedJobIds.has(p.jobId),
   );
 
-  // 6. Build request groups:
+  // 7. Build request groups:
   // - Batchable payloads are grouped by composite key (endpoint, method, headers, params)
   // - NonBatchable payloads each form their own group to prevent merging with other events
   const batchableGroups = groupPayloadsByCompositeKey(successBatchablePayloads);
@@ -284,7 +286,7 @@ export async function processDestinationIntegration<
   );
   const allGroups = [...batchableGroups, ...nonBatchableGroups];
 
-  // 7. Apply batch strategy to each group and convert to server format
+  // 8. Apply batch strategy to each group and convert to server format
   const successResponses: RouterTransformationResponse[] = [];
   for (const group of allGroups) {
     const strategy = integration.getBatchStrategy(group.endpoint);
@@ -292,33 +294,25 @@ export async function processDestinationIntegration<
     const batchResults = await strategy.batch(group.payloads);
 
     for (const batchResult of batchResults) {
-      if (batchResult.error) {
-        for (const jobId of batchResult.jobIds) {
-          allErrors.push({ jobId, ...batchResult.error });
-        }
-      } else {
-        stats.histogram('output_batch_size', batchResult.jobIds.size, metricTags);
-        successResponses.push(
-          mapSuccessPayloadToServerFormat(
-            batchResult,
-            group.endpoint,
-            group.endpointPath,
-            group.method,
-            group.headers,
-            group.params,
-            metadataMap,
-            destination,
-            strategy.bodyFormat,
-          ),
-        );
-      }
+      stats.histogram('output_batch_size', batchResult.jobIds.size, metricTags);
+
+      successResponses.push(
+        mapSuccessPayloadToServerFormat(
+          batchResult,
+          group.endpoint,
+          group.endpointPath,
+          group.method,
+          group.headers,
+          group.params,
+          metadataMap,
+          destination,
+          strategy.bodyFormat,
+        ),
+      );
     }
   }
 
-  // 8. Merge success responses that share jobIds (multiplexed events across groups)
+  // 9. Merge success responses that share jobIds (multiplexed events across groups)
 
-  return [
-    ...combineBatchRequestsWithSameJobIds(successResponses),
-    ...mapErrorPayloadToServerFormat(allErrors, metadataMap, destination),
-  ];
+  return [...combineBatchRequestsWithSameJobIds(successResponses), ...errorResponses];
 }

@@ -7,7 +7,7 @@ import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
 import { sandboxedParseHttpTemplates } from '../v0/destinations/http/templateSandboxClient';
-import { verificationFields } from '../v0/destinations/http/utils';
+import { requestFieldExpression } from '../v0/destinations/http/utils';
 import {
   actionConfigSchema,
   CustomAudienceDestConfig,
@@ -43,6 +43,28 @@ const httpParseBodySchema = z.object({
   queryParams: httpMappingsSchema,
   pathParams: z.array(z.object({ path: z.string() })).optional(),
 });
+
+// The templates parse-template verifies, labelled with the `field`/`index` its response reports.
+// Each request field goes through requestFieldExpression, exactly as the router evaluates it.
+const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
+  const surface = (field: string, values: string[]) =>
+    values.map((value, index) => ({ field, index, template: requestFieldExpression(value) }));
+  return [
+    { field: 'requestBodyTemplate', index: undefined, template: body.requestBodyTemplate },
+    ...surface(
+      'headers',
+      (body.headers ?? []).map(({ from }) => from),
+    ),
+    ...surface(
+      'queryParams',
+      (body.queryParams ?? []).map(({ from }) => from),
+    ),
+    ...surface(
+      'pathParams',
+      (body.pathParams ?? []).map(({ path }) => path),
+    ),
+  ];
+};
 
 const testEventV2Schema = z.object({
   events: z.array(z.record(z.unknown())),

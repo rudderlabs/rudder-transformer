@@ -28,35 +28,6 @@ export const toExpressions = (config: HttpDestinationConfig): RequestFieldExpres
   };
 };
 
-export type VerificationField = { field: string; index?: number; template: string };
-
-// The templates parse-template verifies, in the order its errors are reported. Each request field
-// goes through requestFieldExpression, exactly as the router evaluates it.
-export const verificationFields = (body: {
-  requestBodyTemplate: string;
-  headers?: { from: string }[];
-  queryParams?: { from: string }[];
-  pathParams?: { path: string }[];
-}): VerificationField[] => {
-  const surface = (field: string, values: string[]) =>
-    values.map((value, index) => ({ field, index, template: requestFieldExpression(value) }));
-  return [
-    { field: 'requestBodyTemplate', template: body.requestBodyTemplate },
-    ...surface(
-      'headers',
-      (body.headers ?? []).map(({ from }) => from),
-    ),
-    ...surface(
-      'queryParams',
-      (body.queryParams ?? []).map(({ from }) => from),
-    ),
-    ...surface(
-      'pathParams',
-      (body.pathParams ?? []).map(({ path }) => path),
-    ),
-  ];
-};
-
 export const makeEndpoint = (url: string, pathParams: unknown[]): string => {
   const parts = pathParams.map((part) => {
     if (!['string', 'number', 'boolean'].includes(typeof part)) {

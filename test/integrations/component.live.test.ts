@@ -231,47 +231,50 @@ describe('Live Integration Test Suite', () => {
         }
       };
 
-      test.each(scenario.steps)(
-        'step: $name',
-        async (step) => {
-          failIfSkipped(`step "${step.name}"`);
-          try {
-            // Steps run in declared order; dispatch by discriminant — action = direct API side
-            // effect, verify = read-back assertion, pipeline = seed -> transform -> deliver -> assert.
-            switch (step.stepType) {
-              case 'action':
-                await step.run(ctx);
-                return;
-              case 'verify':
-                await step.check(ctx);
-                return;
-              case 'pipeline':
-                await runPipelineStep({
-                  destination,
-                  scenarioId: scenario.id,
-                  step,
-                  ctx,
-                  config: scenarioConfig,
-                  connection,
-                  deliveryAccount,
-                  http: {
-                    post: async (url, body) => agent().post(url).send(body),
-                  },
-                });
-                return;
-              default: {
-                // Exhaustive discriminated-union check: adding a new step type without a case here
-                // becomes a compile error rather than a silent no-op.
-                const exhaustive: never = step;
-                throw new Error(`[live] unknown step type: ${JSON.stringify(exhaustive)}`);
+      scenario.steps.forEach((step) =>
+        test(
+          `step: ${step.name}`,
+          async () => {
+            failIfSkipped(`step "${step.name}"`);
+            try {
+              // Steps run in declared order; dispatch by discriminant — action = direct API side
+              // effect, verify = read-back assertion, pipeline = seed -> transform -> deliver -> assert.
+              switch (step.stepType) {
+                case 'action':
+                  await step.run(ctx);
+                  return;
+                case 'verify':
+                  await step.check(ctx);
+                  return;
+                case 'pipeline':
+                  await runPipelineStep({
+                    destination,
+                    scenarioId: scenario.id,
+                    step,
+                    ctx,
+                    config: scenarioConfig,
+                    connection,
+                    deliveryAccount,
+                    http: {
+                      post: async (url, body) => agent().post(url).send(body),
+                    },
+                  });
+                  return;
+                default: {
+                  // Exhaustive discriminated-union check: adding a new step type without a case here
+                  // becomes a compile error rather than a silent no-op.
+                  const exhaustive: never = step;
+                  throw new Error(`[live] unknown step type: ${JSON.stringify(exhaustive)}`);
+                }
               }
+            } catch (err) {
+              scenarioFailed = true;
+              throw err;
             }
-          } catch (err) {
-            scenarioFailed = true;
-            throw err;
-          }
-        },
-        120000,
+          },
+          // A step can ask for more time (e.g. a setup that waits for a slow search index).
+          step.timeoutMs ?? 120000,
+        ),
       );
 
       // The scenario's common trailing read-back: framework owns the polling, retrying the

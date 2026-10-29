@@ -206,7 +206,7 @@ export const trackTestData = [
   {
     id: 'intercom-track-test-2',
     name: 'intercom',
-    description: 'V2 version : Track rEtl test',
+    description: 'V2 version : Track call in rETL flow with user_id and without email',
     scenario: 'Business',
     successCriteria:
       "Response status code should be 200 and response should contain event name and it's properties",

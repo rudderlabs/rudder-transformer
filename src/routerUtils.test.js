@@ -39,23 +39,6 @@ describe('sendToDestination', () => {
     });
   });
 
-  it('passes the saved origin to the guarded proxy path for a test send', async () => {
-    proxyRequest.mockResolvedValue({
-      success: true,
-      response: { headers: {}, data: 'ok', status: 200 },
-    });
-    await sendToDestination(
-      'custom_audience',
-      { endpoint: 'https://api.example.com/users' },
-      'https://api.example.com',
-    );
-    expect(proxyRequest).toHaveBeenCalledWith(
-      { endpoint: 'https://api.example.com/users' },
-      undefined,
-      'https://api.example.com',
-    );
-  });
-
   it('should handle network failure and return a parsed response', async () => {
     // Mock proxyRequest to return a network failure
     proxyRequest.mockResolvedValue({

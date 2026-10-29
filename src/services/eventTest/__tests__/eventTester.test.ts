@@ -233,158 +233,9 @@ describe('EventTesterService.testEvent', () => {
 });
 
 describe('EventTesterService.testEventV2', () => {
-  const metadataCases = [
-    {
-      name: 'forwards the supplied secret in a linked-account dry run',
-      linkedAccount: true,
-      send: false,
-      secret: { accessToken: 'masked-by-config-backend' },
-    },
-    {
-      name: 'does not add a secret to a linked-account dry run without one',
-      linkedAccount: true,
-      send: false,
-      secret: undefined,
-    },
-    {
-      name: 'uses the supplied secret for a linked-account test send',
-      linkedAccount: true,
-      send: true,
-      secret: { accessToken: 'resolved-test-token' },
-    },
-    {
-      name: 'does not add a secret to a linked-account test send without one',
-      linkedAccount: true,
-      send: true,
-      secret: undefined,
-    },
-    {
-      name: 'forwards a supplied secret in an unlinked dry run',
-      linkedAccount: false,
-      send: false,
-      secret: { accessToken: 'resolved-test-token' },
-    },
-    {
-      name: 'forwards a supplied secret in an unlinked test send',
-      linkedAccount: false,
-      send: true,
-      secret: { accessToken: 'resolved-test-token' },
-    },
-  ];
-
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
-  });
-
-  it.each(metadataCases)('$name', async ({ linkedAccount, send, secret }) => {
-    const doRouterSpy = jest
-      .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
-      .mockResolvedValue([
-        {
-          batchedRequest: sampleOutput,
-          metadata: [{}] as any,
-          destination: {} as any,
-          batched: false,
-          statusCode: 200,
-        },
-      ]);
-    jest
-      .spyOn(
-        EventTesterService as unknown as {
-          sendPayloadsToDestination: (
-            destination: string,
-            transformedPayloads: unknown[],
-          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
-        },
-        'sendPayloadsToDestination',
-      )
-      .mockResolvedValue({ responses: ['ok'], statuses: [200] });
-
-    await EventTesterService.testEventV2(
-      {
-        events: [{ type: 'record' }],
-        destination: {
-          workspaceId: 'ws-1',
-          destinationDefinition: {},
-          config: { baseUrl: 'https://api.example.com' },
-          ...(linkedAccount && { deliveryAccount: { accountDefinitionName: 'OAUTH_AUTH_CODE' } }),
-        },
-        stage: { dest_transform: true, send_to_destination: send },
-        secret,
-      },
-      'v0',
-      'custom_audience',
-    );
-
-    expect(doRouterSpy).toHaveBeenCalledWith(
-      [
-        expect.objectContaining({
-          metadata: {
-            workspaceId: 'ws-1',
-            jobId: 1,
-            ...(secret && { secret }),
-          },
-        }),
-      ],
-      'custom_audience',
-      'v0',
-      {},
-    );
-  });
-
-  it('redacts a real Custom Audience token from the test-send response after sending it', async () => {
-    const request = { ...sampleOutput, headers: { Authorization: 'Bearer real-test-token' } };
-    jest
-      .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
-      .mockResolvedValue([
-        {
-          batchedRequest: request,
-          metadata: [{}] as any,
-          destination: {} as any,
-          batched: false,
-          statusCode: 200,
-        },
-      ]);
-    const sendSpy = jest
-      .spyOn(
-        EventTesterService as unknown as {
-          sendPayloadsToDestination: (
-            destination: string,
-            payloads: unknown[],
-            origin: string,
-          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
-        },
-        'sendPayloadsToDestination',
-      )
-      .mockResolvedValue({ responses: ['reflected real-test-token'], statuses: [200] });
-
-    const result = await EventTesterService.testEventV2(
-      {
-        events: [{ type: 'record' }],
-        destination: {
-          workspaceId: 'ws-1',
-          destinationDefinition: {},
-          config: { baseUrl: 'https://api.example.com' },
-          deliveryAccount: { accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_OAUTH_AUTH_CODE' },
-        },
-        stage: { dest_transform: true, send_to_destination: true },
-        secret: { accessToken: 'real-test-token' },
-      },
-      'v0',
-      'custom_audience',
-    );
-
-    expect(sendSpy).toHaveBeenCalledWith('custom_audience', [request], 'https://api.example.com');
-    expect(result).toEqual({
-      dest_transform_output: [
-        {
-          dest_transformed_payload: { ...request, headers: { Authorization: 'Bearer ********' } },
-          destination_response: 'reflected ********',
-          destination_response_status: 200,
-        },
-      ],
-    });
   });
 
   it('runs user transform per event and forwards only successful events into batch dest transform', async () => {
@@ -438,7 +289,7 @@ describe('EventTesterService.testEventV2', () => {
         expect.objectContaining({ message: { type: 'record', id: 'ok-1' } }),
         expect.objectContaining({ message: { type: 'record', id: 'ok-2' } }),
       ]),
-      undefined,
+      false,
     );
     expect(runDestTransformSpy.mock.calls[0][2]).toHaveLength(2);
     expect(result).toEqual({
@@ -449,6 +300,51 @@ describe('EventTesterService.testEventV2', () => {
       ],
       dest_transform_output: [{ dest_transformed_payload: sampleOutput }],
     });
+  });
+
+  it.each([
+    {
+      name: 'the exact Preview stage',
+      stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+      isPreview: true,
+    },
+    {
+      name: 'a destination-only stage without the Preview shape',
+      stage: { dest_transform: true, send_to_destination: false },
+      isPreview: false,
+    },
+  ])('marks only $name and never maps a top-level secret', async ({ stage, isPreview }) => {
+    const doRouterSpy = jest
+      .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
+      .mockResolvedValue([
+        {
+          batchedRequest: sampleOutput,
+          metadata: [{}] as any,
+          destination: {} as any,
+          batched: false,
+          statusCode: 200,
+        },
+      ]);
+    const sendSpy = jest.spyOn(
+      EventTesterService as unknown as {
+        sendPayloadsToDestination: (destination: string, payloads: unknown[]) => Promise<unknown>;
+      },
+      'sendPayloadsToDestination',
+    );
+
+    const payload = {
+      events: [{ type: 'record' }],
+      destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+      stage,
+      secret: { accessToken: 'not-forwarded' },
+    };
+    await EventTesterService.testEventV2(payload, 'v0', 'custom_audience');
+
+    const [{ metadata }] = doRouterSpy.mock.calls[0][0];
+    expect(metadata).not.toHaveProperty('secret');
+    if (isPreview) expect(metadata).toHaveProperty('isPreview', true);
+    else expect(metadata).not.toHaveProperty('isPreview');
+    expect(sendSpy).not.toHaveBeenCalled();
   });
 
   it('maps destination responses/statuses 1:1 to batched transformed payloads', async () => {
@@ -483,11 +379,7 @@ describe('EventTesterService.testEventV2', () => {
     const result = await EventTesterService.testEventV2(
       {
         events: [{ type: 'record' }, { type: 'record' }],
-        destination: {
-          workspaceId: 'ws-1',
-          destinationDefinition: {},
-          config: { baseUrl: 'https://api.example.com' },
-        },
+        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
         connection: {},
         stage: { user_transform: false, dest_transform: true, send_to_destination: true },
         libraries: [],
@@ -529,11 +421,7 @@ describe('EventTesterService.testEventV2', () => {
     const result = await EventTesterService.testEventV2(
       {
         events: [{ type: 'record' }],
-        destination: {
-          workspaceId: 'ws-1',
-          destinationDefinition: {},
-          config: { baseUrl: 'https://api.example.com' },
-        },
+        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
         connection: {},
         stage: { user_transform: false, dest_transform: true, send_to_destination: true },
         libraries: [],
@@ -583,11 +471,7 @@ describe('EventTesterService.testEventV2', () => {
     const result = await EventTesterService.testEventV2(
       {
         events: [{ type: 'record' }, { type: 'record' }, { type: 'record' }],
-        destination: {
-          workspaceId: 'ws-1',
-          destinationDefinition: {},
-          config: { baseUrl: 'https://api.example.com' },
-        },
+        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
         connection: {},
         stage: { user_transform: false, dest_transform: true, send_to_destination: true },
         libraries: [],

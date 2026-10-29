@@ -5,7 +5,6 @@ import { processDestinationIntegration } from '../../../services/destination/des
 import type { Metadata } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { ACCOUNT_DEFINITION_NAMES } from './constants';
-import { clientCredentialsTokenProvider } from './clientCredentials';
 import type {
   Action,
   ActionConfig,
@@ -133,7 +132,6 @@ const buildInput = (
   }) as unknown as RouterTransformationRequestData;
 
 describe('CustomAudienceIntegration via processDestinationIntegration', () => {
-  afterEach(() => jest.restoreAllMocks());
   it('groups events by action and chunks by batchSize', async () => {
     const inputs = [
       buildInput(1, 'insert', { email: hashedEmail('a@b.com') }),
@@ -483,40 +481,6 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
     },
   );
 
-  it('builds a Client Credentials Bearer header from a grant result', async () => {
-    const grant = jest
-      .spyOn(clientCredentialsTokenProvider, 'getToken')
-      .mockResolvedValue('granted-token');
-    const destination = buildDestination(
-      {
-        authenticationEnabled: true,
-        rudderAccountId: 'account-1',
-        headers: [{ key: 'authorization', value: 'stale-custom-value' }],
-      },
-      {
-        id: 'account-1',
-        secretVersion: 1,
-        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
-        options: {},
-        secret: {},
-      },
-    );
-    const results = await processDestinationIntegration(
-      [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)],
-      Integration,
-      {},
-    );
-    expect(results).toHaveLength(1);
-    expect(results[0].statusCode).toBe(200);
-    const request = results[0].batchedRequest;
-    if (!request || Array.isArray(request)) throw new Error('expected single batchedRequest');
-    expect(request.headers).toEqual({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer granted-token',
-    });
-    expect(grant).toHaveBeenCalledTimes(1);
-  });
-
   const accountErrorCases = [
     {
       name: 'missing linked account ID',
@@ -544,37 +508,26 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       ),
       errorMatch: /missing: secret\.bearerToken/,
     },
-    {
-      name: 'Client Credentials missing token URL',
-      destination: buildDestination(
-        { authenticationEnabled: true, rudderAccountId: 'account-1' },
-        {
-          id: 'account-1',
-          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
-          options: { clientId: 'client-id' },
-          secret: { clientSecret: 'private-secret' },
-        },
-      ),
-      errorMatch: /options\.tokenUrl/,
-    },
-    ...[ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE].map((accountDefinitionName) => ({
-      name: `selected ${accountDefinitionName} account without metadata access token`,
-      destination: buildDestination(
-        {
-          authenticationEnabled: true,
-          rudderAccountId: 'account-1',
-          authenticationType: 'bearerToken',
-          bearerToken: 'stale-inline-token',
-        },
-        {
-          accountDefinitionName,
-          options: {},
-          secret: { accessToken: 'stale-account-token' },
-        },
-      ),
-      errorMatch: /Secret or accessToken is not present in the metadata/,
-      statusCode: 500,
-    })),
+    ...[ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS, ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE].map(
+      (accountDefinitionName) => ({
+        name: `selected ${accountDefinitionName} account without metadata access token`,
+        destination: buildDestination(
+          {
+            authenticationEnabled: true,
+            rudderAccountId: 'account-1',
+            authenticationType: 'bearerToken',
+            bearerToken: 'stale-inline-token',
+          },
+          {
+            accountDefinitionName,
+            options: {},
+            secret: { accessToken: 'stale-account-token' },
+          },
+        ),
+        errorMatch: /Secret or accessToken is not present in the metadata/,
+        statusCode: 500,
+      }),
+    ),
   ];
 
   it.each(accountErrorCases)(
@@ -589,6 +542,36 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       expect(results).toHaveLength(1);
       expect(results[0]).toMatchObject({ statusCode, batched: false });
       expect(results[0].error).toMatch(errorMatch);
+    },
+  );
+
+  it.each([ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS, ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE])(
+    'renders a masked Preview header for %s',
+    async (accountDefinitionName) => {
+      const destination = buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        { accountDefinitionName, secret: { accessToken: 'stale-account-token' } },
+      );
+      const results = await processDestinationIntegration(
+        [
+          buildInput(
+            1,
+            'insert',
+            { email: hashedEmail('a@b.com') },
+            destination,
+            buildConnection(),
+            { isPreview: true },
+          ),
+        ],
+        Integration,
+        {},
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].statusCode).toBe(200);
+      const request = results[0].batchedRequest;
+      if (!request || Array.isArray(request)) throw new Error('expected single batchedRequest');
+      expect(request.headers?.Authorization).toBe('Bearer ********');
     },
   );
 

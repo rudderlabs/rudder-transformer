@@ -126,15 +126,12 @@ interface PipelineStep extends Step {
   //   category the error category the delivery reported, when it reports one (rudder-server reads
   //            it to decide whether a credential is worth refreshing). Asserting it is what
   //            separates a specific failure branch from the generic one — both abort the job.
-  //   allowSuccessIf verifies the side effect when an API sometimes accepts an item that usually
-  //                  fails. Without this check, a 2xx verdict could hide a missing write.
   //
   // A step declaring this no longer requires the batch's top-level status to be 2xx, because a
   // partial or auth failure legitimately isn't.
   expectedFailure?: {
     items?: readonly number[];
     category?: string;
-    allowSuccessIf?: (ctx: RunContext, deliveredIndices: readonly number[]) => Promise<void>;
   };
   // Re-run seed -> transform -> deliver up to this many extra times (backoff) if delivery fails.
   // For routes that decide create-vs-update by searching an eventually-consistent index: a

@@ -13,13 +13,11 @@ const userTransformHandler = () => {
   throw new Error('Functions are not enabled');
 };
 
-async function sendToDestination(destination, payload, allowedOrigin) {
+async function sendToDestination(destination, payload) {
   let parsedResponse;
   logger.info('Request recieved for destination', destination);
 
-  const resp = allowedOrigin
-    ? await proxyRequest(payload, undefined, allowedOrigin)
-    : await proxyRequest(payload);
+  const resp = await proxyRequest(payload);
 
   if (resp.success) {
     const { response } = resp;

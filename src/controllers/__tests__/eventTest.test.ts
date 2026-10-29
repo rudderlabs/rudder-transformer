@@ -216,10 +216,11 @@ describe('POST /test-router/:version/:destination/batch', () => {
       connection: {},
       stage: { user_transform: false, dest_transform: false, send_to_destination: false },
       libraries: [],
-      secret: { accessToken: 'resolved-test-token' },
     };
 
-    const response = await request(server).post(ENDPOINT_V2).send(payload);
+    const response = await request(server)
+      .post(ENDPOINT_V2)
+      .send({ ...payload, secret: { accessToken: 'ignored' } });
 
     expect(response.status).toBe(200);
     expect(testEventV2Spy).toHaveBeenCalledWith(payload, 'v0', 'custom_audience');
@@ -227,19 +228,5 @@ describe('POST /test-router/:version/:destination/batch', () => {
       user_transformed_payload: [{ type: 'record' }],
       dest_transform_output: [],
     });
-  });
-
-  it('should reject a non-object secret', async () => {
-    const response = await request(server)
-      .post(ENDPOINT_V2)
-      .send({
-        events: [{ type: 'record' }],
-        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
-        stage: { dest_transform: true, send_to_destination: true },
-        secret: 'resolved-test-token',
-      });
-
-    expect(response.status).toBe(400);
-    expect(response.body.error).toContain('secret: Expected object, received string');
   });
 });

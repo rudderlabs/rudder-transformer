@@ -58,8 +58,6 @@ export type CustomAudienceDestConfig = z.infer<typeof CustomAudienceDestConfigSc
 
 export const CustomAudienceDeliveryAccountSchema = z
   .object({
-    id: z.string().optional(),
-    secretVersion: z.number().nullish(),
     options: z.record(z.unknown()).nullish(),
     secret: z.record(z.unknown()).nullish(),
     accountDefinitionName: z.string().nullish(),
@@ -73,15 +71,14 @@ export type ParsedCustomAudienceDeliveryAccount = z.infer<
 export type CustomAudienceDeliveryAccount = ParsedCustomAudienceDeliveryAccount;
 
 export type CustomAudienceAuthMetadata = {
-  workspaceId?: string;
+  isPreview?: true;
   secret?: { accessToken?: string };
 };
 
 export type CustomAudienceAccountAuthHandler = (
   account: ParsedCustomAudienceDeliveryAccount,
   metadata?: CustomAudienceAuthMetadata,
-  workspaceId?: string,
-) => Record<string, string> | Promise<Record<string, string>>;
+) => Record<string, string>;
 
 export const customMappingSchema = z.object({
   from: z.string().min(1, 'Custom mapping "from" value must be non-empty'),

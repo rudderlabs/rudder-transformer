@@ -1311,49 +1311,6 @@ describe('proxyRequest tests', () => {
       response: { status: 200, data: { key: 'value' } },
     });
   });
-
-  test('uses a pinned HTTPS agent and refuses redirects for a guarded test send', async () => {
-    axios.mockResolvedValueOnce({ status: 200, data: { reflected: 'test-token' } });
-    mockLoggerInstance.event.mockClear();
-    const request = {
-      body: { JSON: { user: 'test' } },
-      method: 'POST',
-      endpoint: 'https://api.example.com/users',
-      headers: { Authorization: 'Bearer test-token' },
-    };
-    await proxyRequest(request, 'CUSTOM_AUDIENCE', 'https://api.example.com');
-    expect(axios).toHaveBeenCalledWith(
-      expect.objectContaining({
-        httpsAgent: expect.anything(),
-        proxy: false,
-        maxRedirects: 0,
-      }),
-    );
-    expect(mockLoggerInstance.event).not.toHaveBeenCalled();
-  });
-
-  test.each([
-    'http://api.example.com/users',
-    'https://other.example.com/users',
-    'https://127.0.0.1/users',
-  ])(
-    'refuses an unsafe guarded test-send endpoint before forwarding credentials: %s',
-    async (endpoint) => {
-      await expect(
-        proxyRequest(
-          {
-            body: { JSON: { user: 'test' } },
-            method: 'POST',
-            endpoint,
-            headers: { Authorization: 'Bearer test-token' },
-          },
-          'CUSTOM_AUDIENCE',
-          'https://api.example.com',
-        ),
-      ).rejects.toThrow();
-      expect(axios).not.toHaveBeenCalled();
-    },
-  );
 });
 
 describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {

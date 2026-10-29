@@ -8,9 +8,6 @@ export const ACCOUNT_DEFINITION_NAMES = {
   OAUTH_AUTH_CODE: 'DESTINATION_CUSTOM_AUDIENCE_OAUTH_AUTH_CODE',
 } as const;
 
-export const CUSTOM_AUDIENCE_CLIENT_CREDENTIALS_USER_AGENT =
-  'web:com.rudderstack.custom-activation:v1.0.0 (by /u/rudderstack)';
-
 export const ERROR_MESSAGES = {
   NO_ACTION_CONFIG: (action: string) => `No action configuration found for action: ${action}`,
   ALL_FIELDS_STRIPPED: 'All fields were stripped after processing; nothing to send',

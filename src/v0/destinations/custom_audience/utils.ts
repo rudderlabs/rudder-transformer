@@ -22,7 +22,6 @@ import type {
   CustomMapping,
 } from './types';
 import { CustomAudienceDeliveryAccountSchema } from './types';
-import { clientCredentialsTokenProvider } from './clientCredentials';
 
 export const lookupActionConfig = (
   action: Action,
@@ -176,6 +175,7 @@ const buildOAuthHeader = (
   _account: ParsedCustomAudienceDeliveryAccount,
   metadata?: CustomAudienceAuthMetadata,
 ): Record<string, string> => {
+  if (metadata?.isPreview) return buildBearerTokenHeader('********');
   const accessToken = metadata?.secret?.accessToken;
   if (typeof accessToken !== 'string' || accessToken.length === 0) {
     throw new OAuthSecretError('Secret or accessToken is not present in the metadata');
@@ -204,26 +204,14 @@ const ACCOUNT_AUTH_HANDLERS: Record<string, CustomAudienceAccountAuthHandler> = 
     ]);
     return buildApiKeyHeader(name, value);
   },
-  [ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS]: async (account, metadata, workspaceId) => {
-    const token = metadata?.secret?.accessToken;
-    if (token !== undefined) {
-      if (typeof token !== 'string' || token.length === 0) {
-        throw new OAuthSecretError('Secret or accessToken is not present in the metadata');
-      }
-      return buildBearerTokenHeader(token);
-    }
-    return buildBearerTokenHeader(
-      await clientCredentialsTokenProvider.getToken(account, workspaceId ?? ''),
-    );
-  },
+  [ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS]: buildOAuthHeader,
   [ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE]: buildOAuthHeader,
 };
 
 const resolveAccountAuth = (
   deliveryAccount: unknown,
   metadata?: CustomAudienceAuthMetadata,
-  workspaceId?: string,
-): Promise<Record<string, string>> => {
+): Record<string, string> => {
   const parsedAccount = CustomAudienceDeliveryAccountSchema.safeParse(deliveryAccount);
   if (!parsedAccount.success) {
     throw new ConfigurationError(ERROR_MESSAGES.MISSING_DELIVERY_ACCOUNT);
@@ -238,15 +226,14 @@ const resolveAccountAuth = (
       ERROR_MESSAGES.UNKNOWN_ACCOUNT_DEFINITION(account.accountDefinitionName),
     );
   }
-  return Promise.resolve(handler(account, metadata, workspaceId));
+  return handler(account, metadata);
 };
 
-export const resolveAuth = async (
+export const resolveAuth = (
   destination: CustomAudienceDestination,
   metadata?: CustomAudienceAuthMetadata,
-): Promise<Record<string, string>> => {
-  const { Config: destConfig, deliveryAccount, WorkspaceID } = destination;
-  const workspaceId = WorkspaceID || metadata?.workspaceId;
+): Record<string, string> => {
+  const { Config: destConfig, deliveryAccount } = destination;
   if (destConfig.authenticationEnabled === false) return {};
 
   const hasLinkedAccount =
@@ -255,9 +242,9 @@ export const resolveAuth = async (
     if (!hasLinkedAccount) {
       throw new ConfigurationError(ERROR_MESSAGES.MISSING_ACCOUNT_ID);
     }
-    return resolveAccountAuth(deliveryAccount, metadata, workspaceId);
+    return resolveAccountAuth(deliveryAccount, metadata);
   }
-  if (hasLinkedAccount) return resolveAccountAuth(deliveryAccount, metadata, workspaceId);
+  if (hasLinkedAccount) return resolveAccountAuth(deliveryAccount, metadata);
   return {};
 };
 
@@ -274,16 +261,11 @@ const flattenConfigHeaders = (
   return result;
 };
 
-export const buildRequestHeaders = async (
+export const buildRequestHeaders = (
   destination: CustomAudienceDestination,
   metadata?: CustomAudienceAuthMetadata,
-): Promise<Record<string, string>> => {
-  const authHeaders = await resolveAuth(destination, metadata);
-  const configuredHeaders = flattenConfigHeaders(destination.Config.headers);
-  if ('Authorization' in authHeaders) {
-    Object.keys(configuredHeaders)
-      .filter((name) => name.toLowerCase() === 'authorization')
-      .forEach((name) => delete configuredHeaders[name]);
-  }
-  return { 'Content-Type': 'application/json', ...configuredHeaders, ...authHeaders };
-};
+): Record<string, string> => ({
+  'Content-Type': 'application/json',
+  ...flattenConfigHeaders(destination.Config.headers),
+  ...resolveAuth(destination, metadata),
+});

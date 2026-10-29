@@ -102,31 +102,32 @@ export const headers = {
 
 export const accountManagedDestination = destination;
 
-export const clientCredentialsPreviewSecret = {
-  accessToken: 'component-client-credentials-preview-token-9f8a',
-};
-
-export const clientCredentialsPreviewDestination: ComponentCustomAudienceDestination = {
-  ...destination,
-  deliveryAccount: {
-    id: 'client-credentials-account-1',
-    secretVersion: 1,
-    accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
-    options: {},
-    secret: {},
-  },
-};
-
-export const clientCredentialsPreviewHeaders = {
-  'Content-Type': 'application/json',
-  'X-App': 'rudderstack',
-  Authorization: `Bearer ${clientCredentialsPreviewSecret.accessToken}`,
-};
-
 export const accountManagedHeaders = {
   'Content-Type': 'application/json',
   'X-App': 'rudderstack',
   Authorization: `Bearer ${accountBearerToken}`,
+};
+
+export const oauthPreviewDestinations = [
+  { id: 'client-credentials', definition: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS },
+  { id: 'authorization-code', definition: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE },
+].map(({ id, definition }) => ({
+  id,
+  destination: {
+    ...destination,
+    deliveryAccount: {
+      id: 'account-1',
+      accountDefinitionName: definition,
+      options: {},
+      secret: {},
+    },
+  } as ComponentCustomAudienceDestination,
+}));
+
+export const oauthPreviewHeaders = {
+  'Content-Type': 'application/json',
+  'X-App': 'rudderstack',
+  Authorization: 'Bearer ********',
 };
 
 export const accountManagedApiKeyDestination: ComponentCustomAudienceDestination = {

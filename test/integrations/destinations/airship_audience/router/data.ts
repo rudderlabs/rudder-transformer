@@ -125,12 +125,19 @@ export const data: RouterTestData[] = [
   ),
   routerCase(
     'airship-audience-router-invalid-named-user-ids',
-    'an empty and an object named user ID each fail alone; the good row is still sent',
-    [row(1, 'insert', ''), row(2, 'insert', {}), row(3, 'insert', 'good')],
+    'an empty, an object and a 129-character named user ID each fail alone; 128 characters and the good row are still sent',
     [
-      ok([3], tagBody('add', ['good'])),
+      row(1, 'insert', ''),
+      row(2, 'insert', {}),
+      row(3, 'insert', 'good'),
+      row(4, 'insert', 'n'.repeat(129)),
+      row(5, 'insert', 'n'.repeat(128)),
+    ],
+    [
+      ok([3, 5], tagBody('add', ['good', 'n'.repeat(128)])),
       failed(1, 'No named user ID mapped'),
       failed(2, 'Invalid named user ID'),
+      failed(4, 'Invalid named user ID'),
     ],
   ),
   routerCase(

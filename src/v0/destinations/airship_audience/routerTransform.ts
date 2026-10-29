@@ -9,6 +9,7 @@ import {
   ACCEPT_HEADER,
   ACTION_OPERATION,
   ENDPOINT_PATH,
+  MAX_NAMED_USER_ID_LENGTH,
   MAX_NAMED_USERS,
   REASONS,
   tagsEndpoint,
@@ -22,8 +23,8 @@ import {
 
 /**
  * A finite number becomes a string, then the value is trimmed. Never lowercased: named user IDs
- * are case-sensitive. No length check: Airship's documented 128-character cap was never sent
- * live, and a 400 on the batch is split by the delivery spec so only that row aborts.
+ * are case-sensitive. Over 128 characters fails here, before a 400 sends the whole batch through
+ * the dontBatch split.
  */
 const normalizeNamedUserId = (raw: unknown): string => {
   if (raw === undefined || raw === null) throw new InstrumentationError(REASONS.noNamedUserId);
@@ -35,6 +36,9 @@ const normalizeNamedUserId = (raw: unknown): string => {
   }
   const value = String(raw).trim();
   if (value.length === 0) throw new InstrumentationError(REASONS.noNamedUserId);
+  if (value.length > MAX_NAMED_USER_ID_LENGTH) {
+    throw new InstrumentationError(REASONS.invalidNamedUserId);
+  }
   return value;
 };
 

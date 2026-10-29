@@ -15,6 +15,9 @@ export const tagsEndpoint = (dataCenter: DataCenter): string =>
 /** Airship's documented cap per call (live, it accepted 1,001: the cap is ours). */
 export const MAX_NAMED_USERS = 1000;
 
+// Live 2026-10-29: a 129-character ID gets 400 40003 "Named user id … is greater than 128 characters".
+export const MAX_NAMED_USER_ID_LENGTH = 128;
+
 export const ACCEPT_HEADER = 'application/vnd.urbanairship+json; version=3';
 
 export type TagOperation = 'add' | 'remove';

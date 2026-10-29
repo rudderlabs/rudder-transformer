@@ -99,9 +99,8 @@ describe('AirshipAudienceIntegration via processDestinationIntegration', () => {
     ['12345 → "12345"', 12345, '12345'],
     ['" rs-air-e2e-1 " is trimmed', ' rs-air-e2e-1 ', 'rs-air-e2e-1'],
     ['"Rs-Air-1" keeps its case', 'Rs-Air-1', 'Rs-Air-1'],
-    // No length check: Airship's 128-character cap is documented but was never sent live, so the
-    // row is forwarded and the delivery 400 split isolates it if Airship rejects it.
-    ['129 characters is forwarded unchanged', 'n'.repeat(129), 'n'.repeat(129)],
+    ['128 characters is accepted', 'n'.repeat(128), 'n'.repeat(128)],
+    ['128 characters after trim is accepted', ` ${'n'.repeat(128)} `, 'n'.repeat(128)],
   ];
 
   const rejectedIds: [string, unknown, string][] = [
@@ -113,6 +112,8 @@ describe('AirshipAudienceIntegration via processDestinationIntegration', () => {
     ['a boolean', true, 'Invalid named user ID'],
     ['NaN', Number.NaN, 'Invalid named user ID'],
     ['Infinity', Number.POSITIVE_INFINITY, 'Invalid named user ID'],
+    // Airship refuses the whole request: 400 40003 "Named user id … is greater than 128 characters".
+    ['129 characters', 'n'.repeat(129), 'Invalid named user ID'],
   ];
 
   it('three inserts → one request adding the tag to all three IDs', async () => {

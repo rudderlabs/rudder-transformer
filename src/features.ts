@@ -122,6 +122,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   PINTEREST_AUDIENCE: { routerTransform: true, batching: true },
   HS_AUDIENCE: { routerTransform: true, batching: true },
   MARKETO_AUDIENCE: { routerTransform: true, batching: true },
+  AIRSHIP_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: true },
   ROKT: { routerTransform: true, batching: true, transformerProxy: true },
   PUSHWOOSH: { routerTransform: true, batching: true },
   SURVICATE: { routerTransform: true },

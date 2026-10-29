@@ -6,9 +6,7 @@ import {
   deleteRunCompany,
   deleteRunContacts,
   getContactCompanies,
-  pollContact,
   searchContacts,
-  searchContactsByEmailOrExternalId,
 } from './api';
 
 // Intercom 2.10 rejects custom attributes the workspace has not defined, and the v2 transform turns
@@ -36,7 +34,9 @@ const baseEvent = (ctx: RunContext, suffix: string) => ({
 
 // Shared by the seeds and the read-backs so the asserted values cannot drift from what was sent.
 const createProfile = (ctx: RunContext) => ({ email: ctx.email(), name: `CI Create ${ctx.runId}` });
-const updateProfile = (ctx: RunContext) => ({ email: ctx.email(), name: `CI Update ${ctx.runId}` });
+// No email: the update is matched by userId (external_id), so the transform's search stays on the
+// fast external_id index instead of the slow email OR external_id query.
+const updateProfile = (ctx: RunContext) => ({ name: `CI Update ${ctx.runId}` });
 const retlProfile = (ctx: RunContext) => ({ name: `CI rETL ${ctx.runId}` });
 const emailOnlyProfile = (ctx: RunContext) => ({
   email: ctx.email(),
@@ -50,39 +50,33 @@ const companyProfile = (ctx: RunContext) => ({
 });
 
 const createRunContact = async (ctx: RunContext): Promise<void> => {
-  await createContact(ctx, {
+  const contactId = await createContact(ctx, {
     email: ctx.email(),
     external_id: ctx.identity('user'),
     name: `CI Setup ${ctx.runId}`,
   });
-  const contact = await pollContact(ctx, 'external_id', ctx.identity('user'));
-  if (!contact) {
-    throw new Error('[live:intercom] setup contact never became searchable by external_id');
-  }
-  // The transform searches email OR external_id; wait until that exact query finds the contact too,
-  // otherwise it is routed to a create and Intercom answers 409 (contact already exists). A new contact
-  // is searchable by external_id within seconds, but the OR query can take ~30-50s to return it.
+  // The steps that follow setup make the transform search by external_id only (group traits and the
+  // update event carry no email; track does not search). Wait until that search finds the contact,
+  // otherwise identify is routed to a create (Intercom answers 409) and group to a company-only upsert.
+  // A new contact is searchable by external_id within seconds; an email OR external_id search can take
+  // well over a minute, which is why the setup-backed events carry no email.
   const startedAt = Date.now();
-  const viaTransformQuery = await pollUntil(
+  const found = await pollUntil(
     async () => {
-      const contacts = await searchContactsByEmailOrExternalId(
-        ctx,
-        ctx.email(),
-        ctx.identity('user'),
-      );
-      return { done: contacts.some((c) => c.id === contact.id), value: contacts };
+      const contacts = await searchContacts(ctx, 'external_id', ctx.identity('user'));
+      return { done: contacts.some((c) => c.id === contactId), value: contacts };
     },
     {
-      label: 'intercom contact via transform search',
-      attempts: 12,
-      delayMs: (n) => Math.min(1000 * 2 ** n, 15000),
+      label: 'intercom contact by external_id',
+      attempts: 8,
+      delayMs: (n) => Math.min(1000 * 2 ** n, 8000),
       soft: true,
     },
   );
-  if (!viaTransformQuery.some((c) => c.id === contact.id)) {
+  if (!found.some((c) => c.id === contactId)) {
     throw new Error(
-      `[live:intercom] setup contact not found via the email OR external_id query the transform sends ` +
-        `after ${Math.round((Date.now() - startedAt) / 1000)}s`,
+      `[live:intercom] setup contact not searchable by external_id after ` +
+        `${Math.round((Date.now() - startedAt) / 1000)}s`,
     );
   }
 };
@@ -340,8 +334,12 @@ export const live = {
           stepType: 'pipeline',
           name: 'group',
           expectedOutputs: 1,
-          expectedProxyRequests: 1,
-          ...SEARCH_RACE,
+          // The group workflow upserts the company and attaches the contact during transformation,
+          // then returns 299 (SUPPRESS_EVENTS); rudder-server delivers nothing more, so neither does
+          // the harness. The read-back is what proves the attach happened.
+          expectedProxyRequests: 0,
+          // No delivery retries: a search miss here takes the company-only branch and still succeeds,
+          // so retries would never fire. Setup instead waits until the contact is searchable.
           seed: (ctx) => ({
             ...baseEvent(ctx, 'group'),
             type: 'group',

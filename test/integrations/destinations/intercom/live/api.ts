@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { Agent } from 'https';
-import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 import type { RunContext } from '../../../live/types';
 
 // Same hosts the transform resolves from destination.Config.apiServer (src/cdk/v2/destinations/intercom/config.js).
@@ -66,48 +65,6 @@ export const searchContacts = async (
   );
   return res.data?.data ?? [];
 };
-
-// Same query the transform's searchContact sends for an event-stream identify with email and userId
-// (lowercased email OR external_id), so setup waits until the transform itself would find the contact.
-export const searchContactsByEmailOrExternalId = async (
-  ctx: RunContext,
-  email: string,
-  externalId: string,
-): Promise<IntercomContact[]> => {
-  const res = await axios.post<{ data?: IntercomContact[] }>(
-    `${baseUrl(ctx)}/contacts/search`,
-    {
-      query: {
-        operator: 'OR',
-        value: [
-          { field: 'email', operator: '=', value: email.toLowerCase() },
-          { field: 'external_id', operator: '=', value: externalId },
-        ],
-      },
-    },
-    requestConfig(ctx),
-  );
-  return res.data?.data ?? [];
-};
-
-// Contact search is eventually consistent, so a freshly written contact can take a few seconds to appear.
-export const pollContact = (
-  ctx: RunContext,
-  field: 'email' | 'external_id',
-  value: string,
-): Promise<IntercomContact | undefined> =>
-  pollUntil(
-    async () => {
-      const [contact] = await searchContacts(ctx, field, value);
-      return { done: Boolean(contact), value: contact };
-    },
-    {
-      label: `intercom contact ${field}`,
-      attempts: 6,
-      delayMs: (n) => Math.min(1000 * 2 ** n, 8000),
-      soft: true,
-    },
-  );
 
 export const createContact = async (
   ctx: RunContext,

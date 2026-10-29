@@ -421,3 +421,74 @@ describe('runPipelineStep — transform failures', () => {
     ).rejects.toThrow('failed to transform');
   });
 });
+
+describe('runPipelineStep — outputs rudder-server does not deliver', () => {
+  // Answers /routerTransform with one output per job, using the status `statusFor` picks per job.
+  const stubHttpWithStatuses = (
+    calls: { url: string; body: unknown }[],
+    statusFor: (jobIndex: number) => number,
+  ): LiveHttpClient => ({
+    post: async (url: string, body: object): Promise<LiveHttpResponse> => {
+      calls.push({ url, body });
+      if (url === '/routerTransform') {
+        const jobIds = (body as RouterTransformRequestBody).input.map((i) => i.metadata.jobId);
+        return {
+          status: 200,
+          body: { output: jobIds.map((jobId, index) => routerOutput([jobId], statusFor(index))) },
+        };
+      }
+      const proxyJobIds = (body as { metadata: { jobId: number }[] }).metadata.map((m) => m.jobId);
+      return { status: 200, body: deliveredProxyOutput(proxyJobIds) };
+    },
+  });
+
+  const proxyCalls = (calls: { url: string }[]) =>
+    calls.filter((c) => c.url !== '/routerTransform');
+
+  it.each([
+    [299, 'handled by the transformer'],
+    [298, 'filtered'],
+  ])('completes a %i (%s) output without proxying it', async (statusCode) => {
+    const calls: { url: string; body: unknown }[] = [];
+    await run(
+      {
+        stepType: 'pipeline',
+        name: 'suppressed',
+        seed: () => event('a'),
+        expectedProxyRequests: 0,
+      },
+      stubHttpWithStatuses(calls, () => statusCode),
+    );
+    expect(proxyCalls(calls)).toHaveLength(0);
+  });
+
+  it('proxies only the 200 output when a batch mixes delivered and suppressed jobs', async () => {
+    const calls: { url: string; body: unknown }[] = [];
+    await run(
+      {
+        stepType: 'pipeline',
+        name: 'mixed',
+        seed: () => [event('a'), event('b')],
+        expectedOutputs: 2,
+        expectedProxyRequests: 1,
+      },
+      stubHttpWithStatuses(calls, (index) => (index === 0 ? 200 : 299)),
+    );
+    expect(proxyCalls(calls)).toHaveLength(1);
+  });
+
+  it('fails a step that expects a proxy request when the output was suppressed', async () => {
+    const calls: { url: string; body: unknown }[] = [];
+    await expect(
+      run(
+        {
+          stepType: 'pipeline',
+          name: 'expects delivery',
+          seed: () => event('a'),
+          expectedProxyRequests: 1,
+        },
+        stubHttpWithStatuses(calls, () => 299),
+      ),
+    ).rejects.toThrow();
+  });
+});

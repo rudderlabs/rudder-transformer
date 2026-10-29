@@ -44,8 +44,8 @@ import {
   createContactAndWaitSearchable,
   createContactSearchableByFirstname,
   createContactWithAdditionalEmail,
-  createThreeContactsAndMergeSecond,
   createTwoContactsAndDeleteFirst,
+  createThreeContactsAndMergeSecond,
   createTwoContactsAndRegisterIds,
 } from './setup';
 import {

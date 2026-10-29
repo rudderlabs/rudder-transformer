@@ -1,4 +1,4 @@
-import { authHeader1, authHeader2, authHeader3 } from './maskedSecrets';
+import { authHeader1, authHeader2, authHeader3, authHeader4 } from './maskedSecrets';
 const commonHeaders = {
   Accept: 'application/json',
   Authorization: authHeader1,
@@ -19,6 +19,27 @@ const v1VersionHeaders = {
   Accept: 'application/json',
   'Intercom-Version': '2.10',
   'User-Agent': 'RudderStack',
+};
+
+// v2 headers for a destination whose Config has no apiVersion (defaults to v2)
+const noVersionHeaders = {
+  'Content-Type': 'application/json',
+  Authorization: authHeader4,
+  Accept: 'application/json',
+  'Intercom-Version': '2.10',
+  'User-Agent': 'RudderStack',
+};
+
+const emptySearchResponse = {
+  type: 'list',
+  total_count: 0,
+  pages: {
+    type: 'pages',
+    page: 1,
+    per_page: 50,
+    total_pages: 0,
+  },
+  data: [],
 };
 
 const userPayload = {
@@ -1346,4 +1367,86 @@ const deliveryCallsData = [
   },
 ];
 
-export const networkCallsData = [...deleteNwData, ...deliveryCallsData];
+const noVersionSearchCallsData = [
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'email', operator: '=', value: 'test_1@test.com' },
+            { field: 'external_id', operator: '=', value: 'test_user_id_1' },
+          ],
+        },
+      },
+      headers: noVersionHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: emptySearchResponse,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test_1@test.com' }],
+        },
+      },
+      headers: noVersionHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: emptySearchResponse,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test_3@test.com' }],
+        },
+      },
+      headers: noVersionHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '7070129940741e45d041',
+            workspace_id: 'rudderWorkspace',
+            role: 'user',
+            email: 'test_3@test.com',
+          },
+        ],
+      },
+    },
+  },
+];
+
+export const networkCallsData = [
+  ...deleteNwData,
+  ...deliveryCallsData,
+  ...noVersionSearchCallsData,
+];

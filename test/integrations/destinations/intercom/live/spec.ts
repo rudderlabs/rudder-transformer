@@ -18,11 +18,6 @@ const READBACK = {
   delayMs: (attempt: number) => Math.min(1000 * 2 ** attempt, 8000),
 };
 
-// A setup-created contact must be searchable before the transform runs its create-vs-update search,
-// otherwise the event is routed to a create and 409s on the duplicate. A failed attempt persists
-// nothing, so the retry is safe.
-const SEARCH_RACE = { retries: 5, delayBeforeMs: 5000 };
-
 const baseEvent = (ctx: RunContext, suffix: string) => ({
   channel: 'web',
   messageId: `${ctx.runId}-${suffix}`,
@@ -60,8 +55,7 @@ const createRunContact = async (ctx: RunContext): Promise<void> => {
   // otherwise identify is routed to a create (Intercom answers 409) and group to a company-only upsert.
   // A new contact is searchable by external_id within seconds; an email OR external_id search can take
   // well over a minute, which is why the setup-backed events carry no email.
-  const startedAt = Date.now();
-  const found = await pollUntil(
+  await pollUntil(
     async () => {
       const contacts = await searchContacts(ctx, 'external_id', ctx.identity('user'));
       return { done: contacts.some((c) => c.id === contactId), value: contacts };
@@ -70,15 +64,8 @@ const createRunContact = async (ctx: RunContext): Promise<void> => {
       label: 'intercom contact by external_id',
       attempts: 8,
       delayMs: (n) => Math.min(1000 * 2 ** n, 8000),
-      soft: true,
     },
   );
-  if (!found.some((c) => c.id === contactId)) {
-    throw new Error(
-      `[live:intercom] setup contact not searchable by external_id after ` +
-        `${Math.round((Date.now() - startedAt) / 1000)}s`,
-    );
-  }
 };
 
 // Read-backs search once per attempt: the scenario-level `verify` already retries with READBACK backoff.
@@ -233,7 +220,7 @@ export const live = {
           name: 'identify update',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
-          ...SEARCH_RACE,
+          retries: 2, // setup already waited for the external_id index; this only covers a replica lag
           seed: (ctx) => ({
             ...baseEvent(ctx, 'identify-update'),
             type: 'identify',
@@ -309,7 +296,6 @@ export const live = {
           name: 'track',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
-          ...SEARCH_RACE,
           seed: (ctx) => ({
             ...baseEvent(ctx, 'track'),
             type: 'track',

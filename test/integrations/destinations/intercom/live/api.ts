@@ -1,12 +1,17 @@
 import axios from 'axios';
 import { Agent } from 'https';
 import type { RunContext } from '../../../live/types';
+import {
+  BASE_ENDPOINT,
+  BASE_EU_ENDPOINT,
+  BASE_AU_ENDPOINT,
+} from '../../../../../src/cdk/v2/destinations/intercom/config';
 
-// Same hosts the transform resolves from destination.Config.apiServer (src/cdk/v2/destinations/intercom/config.js).
+// Same hosts the transform resolves from destination.Config.apiServer.
 const BASE_URLS: Record<string, string> = {
-  standard: 'https://api.intercom.io',
-  eu: 'https://api.eu.intercom.io',
-  au: 'https://api.au.intercom.io',
+  standard: BASE_ENDPOINT,
+  eu: BASE_EU_ENDPOINT,
+  au: BASE_AU_ENDPOINT,
 };
 
 export interface IntercomContact {
@@ -14,14 +19,12 @@ export interface IntercomContact {
   email?: string | null;
   external_id?: string | null;
   name?: string | null;
-  phone?: string | null;
 }
 
 export interface IntercomCompany {
   id: string;
   company_id?: string;
   name?: string;
-  plan?: { name?: string } | null;
 }
 
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles when the suite finishes.
@@ -83,12 +86,11 @@ export const getContactCompanies = async (
   ctx: RunContext,
   contactId: string,
 ): Promise<IntercomCompany[]> => {
-  // The attached-companies list has been returned under both `companies` and `data` across API versions.
-  const res = await axios.get<{ data?: IntercomCompany[]; companies?: IntercomCompany[] }>(
+  const res = await axios.get<{ companies?: IntercomCompany[] }>(
     `${baseUrl(ctx)}/contacts/${contactId}/companies`,
     requestConfig(ctx),
   );
-  return res.data?.companies ?? res.data?.data ?? [];
+  return res.data?.companies ?? [];
 };
 
 export const getCompanyByCompanyId = async (

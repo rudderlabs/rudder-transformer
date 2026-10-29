@@ -213,7 +213,11 @@ const attemptDelivery = async ({
   const survived = expectedFailureIndices.filter((index) =>
     isDelivered(verdictByJobId.get(events[index].jobId) ?? 0),
   );
-  expect({ expectedToFailButDelivered: survived }).toEqual({ expectedToFailButDelivered: [] });
+  if (survived.length > 0 && expectedFailure?.allowSuccessIf) {
+    await expectedFailure.allowSuccessIf(ctx, survived);
+  } else {
+    expect({ expectedToFailButDelivered: survived }).toEqual({ expectedToFailButDelivered: [] });
+  }
 
   if (expectedFailure?.category) {
     expect({ errorCategory: errorCategories }).toEqual({

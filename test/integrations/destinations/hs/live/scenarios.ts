@@ -1,4 +1,4 @@
-import { requireLiveField } from '@rudderstack/integrations-lib/build/live-test';
+import { requireLiveField, retryUntilPasses } from '@rudderstack/integrations-lib/build/live-test';
 import type { LiveScenario, RunContext } from '../../../live/types';
 import {
   ASSOC_FROM_TYPE,
@@ -587,13 +587,13 @@ const scenarios: readonly LiveScenario[] = [
   },
   {
     // A contact merged into another keeps its old id in the warehouse. HubSpot's batch/update
-    // neither updates the surviving contact nor reports an error for a merged-away id: it just
-    // leaves it out of `results`. Its job must still fail, while an unrelated live contact in the
-    // same batch lands.
+    // sometimes leaves that id out of `results` and sometimes accepts it. A success verdict is
+    // valid only if the surviving contact received the update. The unrelated live contact must
+    // always be updated.
     id: 'hs-retl-contacts-update-by-merged-record-id-v3',
     cleanup: deleteRegisteredObjects,
     description:
-      'RETL batch with a merged-away hs_object_id fails that job, the live contact still lands',
+      'RETL batch with a merged-away hs_object_id accounts for its outcome and updates the live contact',
     steps: [
       { stepType: 'action', name: 'setup', run: createThreeContactsAndMergeSecond },
       {
@@ -601,7 +601,14 @@ const scenarios: readonly LiveScenario[] = [
         stepType: 'pipeline',
         expectedOutputs: 1,
         expectedProxyRequests: 1,
-        expectedFailure: { items: [0] },
+        expectedFailure: {
+          items: [0],
+          allowSuccessIf: (ctx) =>
+            retryUntilPasses(
+              () => verifyRegisteredObjectProperties('contacts', retlRecordIdUpdateTraits, 0)(ctx),
+              CONTACT_READBACK,
+            ),
+        },
         seed: (ctx) => {
           const [, mergedId, otherId] = registeredIds(ctx, 'contacts');
           return [

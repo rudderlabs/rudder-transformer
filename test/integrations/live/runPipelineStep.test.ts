@@ -294,6 +294,25 @@ describe('runPipelineStep — expected per-item failures', () => {
     await expect(run(partialStep([1]), allGood)).rejects.toThrow('expectedToFailButDelivered');
   });
 
+  it('accepts an unexpectedly delivered item only after its side effect is verified', async () => {
+    const allowSuccessIf = jest.fn(async () => {});
+    const step: PipelineStep = {
+      ...partialStep([0]),
+      expectedFailure: { items: [0], allowSuccessIf },
+    };
+
+    await expect(run(step, stubHttp([]))).resolves.toBeUndefined();
+    expect(allowSuccessIf).toHaveBeenCalledWith(expect.anything(), [0]);
+    await expect(run(step, partialHttp(0))).resolves.toBeUndefined();
+    expect(allowSuccessIf).toHaveBeenCalledTimes(1);
+
+    const failedCheck = new Error('write was not observed');
+    step.expectedFailure!.allowSuccessIf = async () => {
+      throw failedCheck;
+    };
+    await expect(run(step, stubHttp([]))).rejects.toThrow('write was not observed');
+  });
+
   it('still fails on a failure that was not declared', async () => {
     await expect(run(partialStep(), partialHttp(1))).rejects.toThrow('not delivered');
   });

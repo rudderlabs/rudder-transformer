@@ -4,7 +4,6 @@ import {
   ASSOC_FROM_TYPE,
   ASSOC_TO_TYPE,
   deleteContactByEmail,
-  deleteMergedContacts,
   deleteRegisteredObjects,
   deleteUpsertAdditionalEmailContacts,
   registeredId,
@@ -591,7 +590,8 @@ const scenarios: readonly LiveScenario[] = [
     // batch/update and returns the survivor under its current id, echoing objectWriteTraceId.
     // Both the merged-away contact's update and the unrelated contact's update must land.
     id: 'hs-retl-contacts-update-by-merged-record-id-v3',
-    cleanup: deleteMergedContacts,
+    // HubSpot DELETE is idempotent and an original id deletes the survivor, so plain teardown suffices.
+    cleanup: deleteRegisteredObjects,
     description:
       'RETL batch/update resolves a merged-away hs_object_id to the survivor and delivers both updates',
     steps: [

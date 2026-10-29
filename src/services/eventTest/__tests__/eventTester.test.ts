@@ -305,15 +305,37 @@ describe('EventTesterService.testEventV2', () => {
   it.each([
     {
       name: 'the exact Preview stage',
+      dest: 'custom_audience',
       stage: { user_transform: false, dest_transform: true, send_to_destination: false },
       isPreview: true,
     },
     {
-      name: 'a destination-only stage without the Preview shape',
-      stage: { dest_transform: true, send_to_destination: false },
+      name: 'a stage with user transform enabled',
+      dest: 'custom_audience',
+      stage: { user_transform: true, dest_transform: true, send_to_destination: false },
       isPreview: false,
     },
-  ])('marks only $name and never maps a top-level secret', async ({ stage, isPreview }) => {
+    {
+      name: 'a stage with destination sending enabled',
+      dest: 'custom_audience',
+      stage: { user_transform: false, dest_transform: true, send_to_destination: true },
+      isPreview: false,
+    },
+    {
+      name: 'the exact Preview stage for a different destination',
+      dest: 'http',
+      stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+      isPreview: false,
+    },
+  ])('marks only $name and never maps a top-level secret', async ({ dest, stage, isPreview }) => {
+    jest
+      .spyOn(
+        EventTesterService as unknown as {
+          runUserTransform: (events: unknown[], libraries: unknown[]) => Promise<unknown[]>;
+        },
+        'runUserTransform',
+      )
+      .mockResolvedValue([{ message: { type: 'record' } }]);
     const doRouterSpy = jest
       .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
       .mockResolvedValue([
@@ -325,26 +347,62 @@ describe('EventTesterService.testEventV2', () => {
           statusCode: 200,
         },
       ]);
-    const sendSpy = jest.spyOn(
-      EventTesterService as unknown as {
-        sendPayloadsToDestination: (destination: string, payloads: unknown[]) => Promise<unknown>;
-      },
-      'sendPayloadsToDestination',
-    );
+    const sendSpy = jest
+      .spyOn(
+        EventTesterService as unknown as {
+          sendPayloadsToDestination: (
+            destination: string,
+            payloads: unknown[],
+          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
+        },
+        'sendPayloadsToDestination',
+      )
+      .mockResolvedValue({ responses: ['ok'], statuses: [200] });
 
     const payload = {
       events: [{ type: 'record' }],
-      destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+      destination:
+        dest === 'http'
+          ? {
+              workspaceId: 'ws-1',
+              version: 2,
+              destinationDefinition: { id: 'http', name: 'HTTP', config: {} },
+              config: { apiUrl: 'https://example.org/events', method: 'POST' },
+            }
+          : { workspaceId: 'ws-1', destinationDefinition: {} },
       stage,
       secret: { accessToken: 'not-forwarded' },
     };
-    await EventTesterService.testEventV2(payload, 'v0', 'custom_audience');
+    await EventTesterService.testEventV2(payload, 'v0', dest);
 
+    expect(doRouterSpy).toHaveBeenCalledTimes(1);
     const [{ metadata }] = doRouterSpy.mock.calls[0][0];
     expect(metadata).not.toHaveProperty('secret');
     if (isPreview) expect(metadata).toHaveProperty('isPreview', true);
     else expect(metadata).not.toHaveProperty('isPreview');
-    expect(sendSpy).not.toHaveBeenCalled();
+    expect(sendSpy).toHaveBeenCalledTimes(stage.send_to_destination ? 1 : 0);
+  });
+
+  it('skips destination transform when the Preview stage disables it', async () => {
+    const runDestTransformSpy = jest.spyOn(
+      EventTesterService as unknown as {
+        runDestTransform: (version: string, dest: string, events: unknown[]) => Promise<unknown[]>;
+      },
+      'runDestTransform',
+    );
+
+    const result = await EventTesterService.testEventV2(
+      {
+        events: [{ type: 'record' }],
+        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+        stage: { user_transform: false, dest_transform: false, send_to_destination: false },
+      },
+      'v0',
+      'custom_audience',
+    );
+
+    expect(result.dest_transform_output).toEqual([]);
+    expect(runDestTransformSpy).not.toHaveBeenCalled();
   });
 
   it('previews native HTTP v2 batches without a connection', async () => {

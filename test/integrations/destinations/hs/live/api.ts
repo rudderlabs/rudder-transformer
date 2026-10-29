@@ -130,8 +130,8 @@ export const mergeContacts = async (
   ctx: RunContext,
   primaryId: string,
   idToMerge: string,
-): Promise<string | undefined> => {
-  const res = await axios.post<HsObjectResponse>(
+): Promise<void> => {
+  await axios.post(
     `${HS_BASE}/crm/v3/objects/contacts/merge`,
     { primaryObjectId: primaryId, objectIdToMerge: idToMerge },
     {
@@ -140,7 +140,6 @@ export const mergeContacts = async (
       timeout: 15000,
     },
   );
-  return res.data.id ? String(res.data.id) : undefined;
 };
 
 // GET on an original id resolves to the survivor's current id after a merge.
@@ -150,7 +149,7 @@ export const resolveContactId = async (ctx: RunContext, id: string): Promise<str
     httpsAgent: hsAgent,
     timeout: 15000,
   });
-  if (!res.data.id) throw new Error('Merged contact has no resolved id');
+  if (!res.data.id) throw new Error(`contacts/${id} returned no id`);
   return String(res.data.id);
 };
 
@@ -187,6 +186,27 @@ export const deleteRegisteredObjects = async (ctx: RunContext): Promise<void> =>
   );
   const failed = results.flatMap((result, i) =>
     result.status === 'rejected' ? [`${ctx.resources[i].type}/${ctx.resources[i].id}`] : [],
+  );
+  if (failed.length > 0) {
+    throw new Error(`[live:hs] teardown failed for ${failed.join(', ')}`);
+  }
+};
+
+// Merged-record teardown: after a merge every original id resolves to the survivor, whose id may be
+// new, so resolve each registered contact and delete each current id once. Resolving first also
+// covers a merge that landed although its request failed, or never ran.
+export const deleteMergedContacts = async (ctx: RunContext): Promise<void> => {
+  const ids = registeredIds(ctx, 'contacts');
+  const resolved = await Promise.allSettled(ids.map((id) => resolveContactId(ctx, id)));
+  const failed = ids.flatMap((id, i) =>
+    resolved[i].status === 'rejected' ? [`resolve contacts/${id}`] : [],
+  );
+  const currentIds = [
+    ...new Set(resolved.flatMap((r) => (r.status === 'fulfilled' ? [r.value] : []))),
+  ];
+  const deleted = await Promise.allSettled(currentIds.map((id) => deleteContactById(ctx, id)));
+  failed.push(
+    ...currentIds.flatMap((id, i) => (deleted[i].status === 'rejected' ? [`contacts/${id}`] : [])),
   );
   if (failed.length > 0) {
     throw new Error(`[live:hs] teardown failed for ${failed.join(', ')}`);

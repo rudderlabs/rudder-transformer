@@ -4,6 +4,7 @@ import {
   ASSOC_FROM_TYPE,
   ASSOC_TO_TYPE,
   deleteContactByEmail,
+  deleteMergedContacts,
   deleteRegisteredObjects,
   deleteUpsertAdditionalEmailContacts,
   registeredId,
@@ -46,7 +47,6 @@ import {
   createThreeContactsAndMergeSecond,
   createTwoContactsAndDeleteFirst,
   createTwoContactsAndRegisterIds,
-  deleteMergedContacts,
 } from './setup';
 import {
   verifyAssociationExists,

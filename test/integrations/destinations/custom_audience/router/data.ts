@@ -18,6 +18,8 @@ import {
   useInsertConfigWithRequiredInsertFieldDestination,
   accountManagedDestination,
   accountManagedHeaders,
+  oauthPreviewDestinations,
+  oauthPreviewHeaders,
   accountManagedApiKeyDestination,
   accountManagedApiKeyHeaders,
   authenticationDisabledDestination,
@@ -1110,4 +1112,65 @@ export const data: RouterTestData[] = [
       },
     },
   },
+  ...oauthPreviewDestinations.map(({ id, destination: previewDestination }): RouterTestData => {
+    const metadata = { ...generateMetadata(1), isPreview: true };
+    const email = sha256(`${id}@example.com`);
+    return {
+      id: `custom-audience-router-test-${id}-preview`,
+      name: destType,
+      description: `Renders a masked ${id} Preview header without a token`,
+      scenario: 'Business',
+      successCriteria: 'The transformed request carries a masked Bearer header',
+      feature: 'router',
+      module: 'destination',
+      version: 'v0',
+      input: {
+        request: {
+          body: {
+            input: [
+              {
+                message: generateRecordPayload({ action: 'insert', identifiers: { email } }),
+                metadata,
+                destination: previewDestination,
+                connection,
+              },
+            ],
+            destType,
+          },
+          method: 'POST',
+        },
+      },
+      output: {
+        response: {
+          status: 200,
+          body: {
+            output: [
+              {
+                batchedRequest: {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: insertEndpoint,
+                  endpointPath: '/insert',
+                  headers: oauthPreviewHeaders,
+                  params: {},
+                  body: {
+                    JSON: { audienceId: 'aud-42', users: [{ email }] },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                metadata: [metadata],
+                batched: true,
+                statusCode: 200,
+                destination: previewDestination,
+              },
+            ],
+          },
+        },
+      },
+    };
+  }),
 ];

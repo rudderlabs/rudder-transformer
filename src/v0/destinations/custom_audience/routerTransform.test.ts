@@ -8,6 +8,7 @@ import { ACCOUNT_DEFINITION_NAMES } from './constants';
 import type {
   Action,
   ActionConfig,
+  CustomAudienceAuthMetadata,
   CustomAudienceConnection,
   CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
@@ -92,7 +93,10 @@ const buildConnectionWithoutAudienceId = (): CustomAudienceConnection => ({
   config: { destination: { isHashRequired: false } },
 });
 
-const buildMetadata = (jobId: number): Metadata =>
+const buildMetadata = (
+  jobId: number,
+  overrides: Partial<CustomAudienceAuthMetadata> = {},
+): Metadata =>
   ({
     jobId,
     workspaceId: 'ws-1',
@@ -102,6 +106,7 @@ const buildMetadata = (jobId: number): Metadata =>
     sourceCategory: 'warehouse',
     destinationType: 'CUSTOM_AUDIENCE',
     messageId: `msg-${jobId}`,
+    ...overrides,
   }) as Metadata;
 
 const buildInput = (
@@ -110,6 +115,7 @@ const buildInput = (
   identifiers: Record<string, unknown>,
   destination: CustomAudienceDestination = buildDestination(),
   connection: CustomAudienceConnection = buildConnection(),
+  metadataOverrides: Partial<CustomAudienceAuthMetadata> = {},
 ): RouterTransformationRequestData =>
   ({
     message: {
@@ -120,7 +126,7 @@ const buildInput = (
       context: {},
       recordId: String(jobId),
     },
-    metadata: buildMetadata(jobId),
+    metadata: buildMetadata(jobId, metadataOverrides),
     destination,
     connection,
   }) as unknown as RouterTransformationRequestData;
@@ -376,6 +382,27 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       },
     },
     {
+      name: 'OAuth metadata access token for linked Auth Code account',
+      destination: buildDestination(
+        {
+          authenticationEnabled: true,
+          rudderAccountId: 'account-1',
+          authenticationType: 'bearerToken',
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+          options: {},
+          secret: { accessToken: 'stale-account-token' },
+        },
+      ),
+      metadataOverrides: { secret: { accessToken: 'metadata-oauth-token' } },
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer metadata-oauth-token',
+      },
+    },
+    {
       name: 'linked account over stale inline credentials when toggle is absent',
       destination: buildDestination(
         {
@@ -411,24 +438,55 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       ),
       expectedHeaders: { 'Content-Type': 'application/json' },
     },
+    {
+      name: 'no auth when toggle is false for an OAuth account',
+      destination: buildDestination(
+        {
+          authenticationEnabled: false,
+          rudderAccountId: 'account-1',
+          authenticationType: 'bearerToken',
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+          options: {},
+          secret: { accessToken: 'stale-account-token' },
+        },
+      ),
+      metadataOverrides: { secret: { accessToken: 'metadata-oauth-token' } },
+      expectedHeaders: { 'Content-Type': 'application/json' },
+    },
   ];
 
-  it.each(authCases)('resolves $name', async ({ destination, expectedHeaders }) => {
-    const inputs = [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)];
+  it.each(authCases)(
+    'resolves $name',
+    async ({ destination, metadataOverrides, expectedHeaders }) => {
+      const inputs = [
+        buildInput(
+          1,
+          'insert',
+          { email: hashedEmail('a@b.com') },
+          destination,
+          buildConnection(),
+          metadataOverrides,
+        ),
+      ];
 
-    const results = await processDestinationIntegration(inputs, Integration, {});
+      const results = await processDestinationIntegration(inputs, Integration, {});
 
-    const success = results.find((r) => r.statusCode === 200);
-    const batched = success?.batchedRequest;
-    if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
-    expect(batched.headers).toEqual(expectedHeaders);
-  });
+      const success = results.find((r) => r.statusCode === 200);
+      const batched = success?.batchedRequest;
+      if (!batched || Array.isArray(batched)) throw new Error('expected single batchedRequest');
+      expect(batched.headers).toEqual(expectedHeaders);
+    },
+  );
 
   const accountErrorCases = [
     {
       name: 'missing linked account ID',
       destination: buildDestination({ authenticationEnabled: true }),
       errorMatch: /rudderAccountId does not identify a linked delivery account/,
+      statusCode: 400,
     },
     {
       name: 'null account definition name',
@@ -450,11 +508,34 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       ),
       errorMatch: /missing: secret\.bearerToken/,
     },
+    ...[ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS, ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE].map(
+      (accountDefinitionName) => ({
+        name: `selected ${accountDefinitionName} account without metadata access token`,
+        destination: buildDestination(
+          {
+            authenticationEnabled: true,
+            rudderAccountId: 'account-1',
+            authenticationType: 'bearerToken',
+            bearerToken: 'stale-inline-token',
+          },
+          {
+            accountDefinitionName,
+            options: {},
+            secret: { accessToken: 'stale-account-token' },
+          },
+        ),
+        errorMatch:
+          accountDefinitionName === ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS
+            ? /OAuth access token is unavailable.*rudder-server version with machine_oauth support/
+            : /OAuth access token is unavailable in event metadata/,
+        statusCode: 500,
+      }),
+    ),
   ];
 
   it.each(accountErrorCases)(
-    'returns controlled 400 for $name',
-    async ({ destination, errorMatch }) => {
+    'returns a controlled error for $name',
+    async ({ destination, errorMatch, statusCode = 400 }) => {
       const results = await processDestinationIntegration(
         [buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination)],
         Integration,
@@ -462,10 +543,113 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       );
 
       expect(results).toHaveLength(1);
-      expect(results[0]).toMatchObject({ statusCode: 400, batched: false });
+      expect(results[0]).toMatchObject({ statusCode, batched: false });
       expect(results[0].error).toMatch(errorMatch);
     },
   );
+
+  it.each([ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS, ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE])(
+    'renders a masked Preview header for %s',
+    async (accountDefinitionName) => {
+      const destination = buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        { accountDefinitionName, secret: { accessToken: 'stale-account-token' } },
+      );
+      const results = await processDestinationIntegration(
+        [
+          buildInput(
+            1,
+            'insert',
+            { email: hashedEmail('a@b.com') },
+            destination,
+            buildConnection(),
+            { isPreview: true },
+          ),
+        ],
+        Integration,
+        {},
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0].statusCode).toBe(200);
+      const request = results[0].batchedRequest;
+      if (!request || Array.isArray(request)) throw new Error('expected single batchedRequest');
+      expect(request.headers?.Authorization).toBe('Bearer ********');
+    },
+  );
+
+  it('groups OAuth events by their per-event access token', async () => {
+    const destination = buildDestination(
+      { authenticationEnabled: true, rudderAccountId: 'account-1' },
+      {
+        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+        options: {},
+        secret: {},
+      },
+    );
+    const inputs = [
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination, buildConnection(), {
+        secret: { accessToken: 'oauth-token-a' },
+      }),
+      buildInput(2, 'insert', { email: hashedEmail('c@d.com') }, destination, buildConnection(), {
+        secret: { accessToken: 'oauth-token-b' },
+      }),
+    ];
+
+    const results = await processDestinationIntegration(inputs, Integration, {});
+    const successes = results.filter((result) => result.statusCode === 200);
+
+    expect(successes).toHaveLength(2);
+    expect(
+      successes
+        .map((result) => {
+          const request = result.batchedRequest;
+          if (!request || Array.isArray(request)) throw new Error('expected single batchedRequest');
+          return request.headers?.Authorization;
+        })
+        .sort(),
+    ).toEqual(['Bearer oauth-token-a', 'Bearer oauth-token-b']);
+  });
+
+  it('batches OAuth events that share an access token', async () => {
+    const destination = buildDestination(
+      { authenticationEnabled: true, rudderAccountId: 'account-1' },
+      {
+        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+        options: {},
+        secret: {},
+      },
+    );
+    const metadataOverrides = { secret: { accessToken: 'shared-oauth-token' } };
+    const inputs = [
+      buildInput(
+        1,
+        'insert',
+        { email: hashedEmail('a@b.com') },
+        destination,
+        buildConnection(),
+        metadataOverrides,
+      ),
+      buildInput(
+        2,
+        'insert',
+        { email: hashedEmail('c@d.com') },
+        destination,
+        buildConnection(),
+        metadataOverrides,
+      ),
+    ];
+
+    const results = await processDestinationIntegration(inputs, Integration, {});
+    const successes = results.filter((result) => result.statusCode === 200);
+
+    expect(successes).toHaveLength(1);
+    const request = successes[0]?.batchedRequest;
+    if (!request || Array.isArray(request)) throw new Error('expected single batchedRequest');
+    expect(request.headers?.Authorization).toBe('Bearer shared-oauth-token');
+    expect(successes[0].metadata.map((item) => item.jobId).sort()).toEqual([1, 2]);
+    expect((request.body?.JSON as { users: unknown[] }).users).toHaveLength(2);
+  });
 
   it('throws when requestBody template fails at runtime', async () => {
     const destination = buildDestination({

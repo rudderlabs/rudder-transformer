@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { HashingType } from '../../util/audienceUtils';
+import { makeRouterInputSchema } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
-import type { Metadata, RecordAction, RudderRecordV2 } from '../../../types/rudderEvents';
+import { RecordAction, type Metadata, type RudderRecordV2 } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 
 export type Action = `${RecordAction}`;
@@ -69,8 +70,14 @@ export type ParsedCustomAudienceDeliveryAccount = z.infer<
 
 export type CustomAudienceDeliveryAccount = ParsedCustomAudienceDeliveryAccount;
 
+export type CustomAudienceAuthMetadata = {
+  isPreview?: true;
+  secret?: { accessToken?: string };
+};
+
 export type CustomAudienceAccountAuthHandler = (
   account: ParsedCustomAudienceDeliveryAccount,
+  metadata?: CustomAudienceAuthMetadata,
 ) => Record<string, string>;
 
 export const customMappingSchema = z.object({
@@ -117,3 +124,19 @@ export type CustomAudienceRouterRequest = RouterTransformationRequestData<
   CustomAudienceConnection,
   Metadata
 >;
+
+export const customAudienceInputSchema = makeRouterInputSchema({
+  destinationConfig: CustomAudienceDestConfigSchema,
+  message: z
+    .object({
+      type: z.literal('record'),
+      action: z.nativeEnum(RecordAction),
+      identifiers: z.record(z.unknown()),
+    })
+    .passthrough(),
+  connectionConfig: z.object({ destination: CustomAudienceConnectionDestConfigSchema }),
+});
+
+export type CustomAudienceRouterInput = z.infer<typeof customAudienceInputSchema> & {
+  metadata?: CustomAudienceAuthMetadata;
+};

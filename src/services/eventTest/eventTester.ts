@@ -61,6 +61,7 @@ export class EventTesterService {
     version: string,
     dest: string,
     events: DestTransformInput[],
+    isPreview = false,
   ): Promise<DestTransformEntry[]> {
     if (events.length === 0) {
       return [];
@@ -74,7 +75,7 @@ export class EventTesterService {
       message: event.message as RudderMessage,
       // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
       // jobId must be unique per event so the batching framework can track per-event failures.
-      metadata: { workspaceId, jobId: idx + 1 } as Metadata,
+      metadata: { workspaceId, jobId: idx + 1, ...(isPreview && { isPreview: true }) } as Metadata,
       destination: event.destination as Destination,
       connection: event.connection as Connection,
     }));
@@ -326,7 +327,17 @@ export class EventTesterService {
         connection,
       }));
 
-    const destResults = await this.runDestTransform(version, dest, eventsForDestTransform);
+    const isPreview =
+      dest === 'custom_audience' &&
+      stage.user_transform === false &&
+      stage.dest_transform === true &&
+      stage.send_to_destination === false;
+    const destResults = await this.runDestTransform(
+      version,
+      dest,
+      eventsForDestTransform,
+      isPreview,
+    );
 
     const destOutput: DestTransformOutputEntry[] = destResults.map((r) =>
       'error' in r

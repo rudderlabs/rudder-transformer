@@ -1,5 +1,9 @@
 import sha256 from 'sha256';
-import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  OAuthSecretError,
+} from '@rudderstack/integrations-lib';
 import { HashingType } from '../../util/audienceUtils';
 import {
   buildRequestHeaders,
@@ -12,6 +16,7 @@ import {
 import { ACCOUNT_DEFINITION_NAMES } from './constants';
 import type {
   ActionConfig,
+  CustomAudienceAuthMetadata,
   CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
   CustomAudienceDestination,
@@ -289,6 +294,7 @@ describe('buildRequestHeaders', () => {
   const successCases: {
     name: string;
     destination: CustomAudienceDestination;
+    metadata?: CustomAudienceAuthMetadata;
     expectedHeaders: Record<string, string>;
   }[] = [
     {
@@ -347,6 +353,44 @@ describe('buildRequestHeaders', () => {
       },
     },
     {
+      name: 'uses metadata token for linked OAuth Client Credentials account',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+          options: {},
+          secret: { accessToken: 'stale-account-token' },
+        },
+      ),
+      metadata: {
+        secret: { accessToken: 'client-credentials-token' },
+      },
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer client-credentials-token',
+      },
+    },
+    {
+      name: 'uses metadata token for linked OAuth Auth Code account over stale inline credentials',
+      destination: buildDestination(
+        {
+          rudderAccountId: 'account-1',
+          authenticationType: 'bearerToken',
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+          options: {},
+          secret: {},
+        },
+      ),
+      metadata: { secret: { accessToken: 'auth-code-token' } },
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer auth-code-token',
+      },
+    },
+    {
       name: 'gives linked account precedence over stale inline credentials when toggle is absent',
       destination: buildDestination(
         {
@@ -380,6 +424,24 @@ describe('buildRequestHeaders', () => {
           secret: { bearerToken: 'account-token' },
         },
       ),
+      expectedHeaders: { 'Content-Type': 'application/json' },
+    },
+    {
+      name: 'suppresses OAuth auth when toggle is false',
+      destination: buildDestination(
+        {
+          authenticationEnabled: false,
+          rudderAccountId: 'account-1',
+          authenticationType: 'bearerToken',
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+          options: {},
+          secret: { accessToken: 'stale-account-token' },
+        },
+      ),
+      metadata: { secret: { accessToken: 'metadata-oauth-token' } },
       expectedHeaders: { 'Content-Type': 'application/json' },
     },
     {
@@ -461,8 +523,25 @@ describe('buildRequestHeaders', () => {
     },
   ];
 
-  it.each(successCases)('$name', ({ destination, expectedHeaders }) => {
-    expect(buildRequestHeaders(destination)).toEqual(expectedHeaders);
+  const oauthAccountDefinitionNames = [
+    ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+    ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+  ];
+  const oauthMetadataFailureCases: {
+    name: string;
+    metadata?: CustomAudienceAuthMetadata;
+    accountDefinitionName: string;
+  }[] = oauthAccountDefinitionNames.flatMap((accountDefinitionName) =>
+    [
+      { name: 'metadata is absent', metadata: undefined },
+      { name: 'metadata secret is absent', metadata: {} },
+      { name: 'metadata accessToken is absent', metadata: { secret: {} } },
+      { name: 'metadata accessToken is empty', metadata: { secret: { accessToken: '' } } },
+    ].map((testCase) => ({ ...testCase, accountDefinitionName })),
+  );
+
+  it.each(successCases)('$name', ({ destination, metadata, expectedHeaders }) => {
+    expect(buildRequestHeaders(destination, metadata)).toEqual(expectedHeaders);
   });
 
   it.each(failureCases)('throws ConfigurationError when $name', ({ destination, errorMessage }) => {
@@ -470,4 +549,53 @@ describe('buildRequestHeaders', () => {
     expect(build).toThrow(ConfigurationError);
     expect(build).toThrow(errorMessage);
   });
+
+  it.each(oauthMetadataFailureCases)(
+    'throws OAuthSecretError when $name for $accountDefinitionName',
+    ({ metadata, accountDefinitionName }) => {
+      const destination = buildDestination(
+        {
+          authenticationEnabled: true,
+          rudderAccountId: 'account-1',
+          authenticationType: 'bearerToken',
+          bearerToken: 'stale-inline-token',
+        },
+        {
+          accountDefinitionName,
+          options: {},
+          secret: { accessToken: 'stale-account-token' },
+        },
+      );
+      const build = () => buildRequestHeaders(destination, metadata);
+
+      expect(build).toThrow(OAuthSecretError);
+      expect(build).toThrow('OAuth access token is unavailable in event metadata.');
+      if (accountDefinitionName === ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS) {
+        expect(build).toThrow('rudder-server version with machine_oauth support');
+      } else {
+        expect(build).not.toThrow('machine_oauth');
+      }
+    },
+  );
+
+  it.each(oauthAccountDefinitionNames)(
+    'renders a masked Preview header for %s without reading a token',
+    (accountDefinitionName) => {
+      const destination = buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        { accountDefinitionName, secret: { accessToken: 'stale-account-token' } },
+      );
+      const metadata: CustomAudienceAuthMetadata = { isPreview: true };
+      Object.defineProperty(metadata, 'secret', {
+        get: () => {
+          throw new Error('Preview must not read a token');
+        },
+      });
+
+      expect(buildRequestHeaders(destination, metadata)).toEqual({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ********',
+      });
+    },
+  );
 });

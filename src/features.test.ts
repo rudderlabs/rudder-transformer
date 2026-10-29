@@ -32,6 +32,7 @@ describe('features destination capabilities', () => {
       REDDIT_AUDIENCE: true,
     });
     expect(defaultFeaturesConfig.transformerProxy).not.toHaveProperty('CUSTOM_AUDIENCE');
+    expect(defaultFeaturesConfig.transformerProxy).not.toHaveProperty('HTTP');
     expect(getGaDestinationIntegrations()).toEqual({
       GOOGLE_ADWORDS_ENHANCED_CONVERSIONS: true,
       POSTHOG: true,
@@ -50,6 +51,7 @@ describe('features destination capabilities', () => {
       TOPSORT: true,
       ROKT: true,
       PUSHWOOSH: true,
+      HTTP: true,
     });
   });
 
@@ -69,7 +71,7 @@ describe('features destination capabilities', () => {
 
   it('advertises transformerProxy for batching-framework GA destinations unless disabled', () => {
     Object.keys(getGaDestinationIntegrations())
-      .filter((destination) => destination !== 'CUSTOM_AUDIENCE')
+      .filter((destination) => !['CUSTOM_AUDIENCE', 'HTTP'].includes(destination))
       .forEach((destination) => {
         expect(defaultFeaturesConfig.transformerProxy).toHaveProperty(destination, true);
       });

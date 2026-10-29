@@ -1,6 +1,12 @@
 import sha256 from 'sha256';
 import { RouterTestData } from '../../../testTypes';
-import { destination, endpoint, metadata, pageScreenTypeMappingDestination } from '../common';
+import {
+  destination,
+  endpoint,
+  metadata,
+  pageScreenTypeMappingDestination,
+  preHashedDestination,
+} from '../common';
 
 // OpenAI only ingests events from the last 7 days, so these are stamped relative to now rather
 // than at a fixed date that would age out of the window.
@@ -632,6 +638,85 @@ export const data: RouterTestData[] = [
               batched: true,
               statusCode: 200,
               destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'openai-ads-router-pre-hashed-pii',
+    name: 'openai_ads',
+    description: 'Mapped track event passes pre-hashed PII through when hashing is disabled',
+    scenario: 'Native batching cloud CAPI',
+    successCriteria: 'All pre-hashed user matching fields remain unchanged',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                event: 'Product Viewed',
+                messageId: 'msg-17',
+                userId: sha256('user-17'),
+                timestamp: EVENT_TIMESTAMP,
+                context: {
+                  traits: {
+                    email: sha256('user17@example.com'),
+                    phone: sha256('15551234567'),
+                    firstName: sha256('jane'),
+                    lastName: sha256('doe'),
+                  },
+                },
+                properties: {},
+              },
+              metadata: metadata(17),
+              destination: preHashedDestination,
+            },
+          ],
+          destType: 'openai_ads',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                ...batchedRequest,
+                body: {
+                  ...batchedRequest.body,
+                  JSON: {
+                    events: [
+                      {
+                        id: 'msg-17',
+                        type: 'contents_viewed',
+                        timestamp_ms: EVENT_TIMESTAMP_MS,
+                        action_source: 'offline',
+                        user: {
+                          emails_sha256: [sha256('user17@example.com')],
+                          phone_numbers_sha256: [sha256('15551234567')],
+                          external_ids_sha256: [sha256('user-17')],
+                          first_names_sha256: [sha256('jane')],
+                          last_names_sha256: [sha256('doe')],
+                        },
+                        data: { type: 'contents' },
+                      },
+                    ],
+                  },
+                },
+              },
+              metadata: [metadata(17)],
+              batched: true,
+              statusCode: 200,
+              destination: preHashedDestination,
             },
           ],
         },

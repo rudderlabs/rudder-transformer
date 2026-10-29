@@ -2,7 +2,11 @@ import { z } from 'zod';
 import get from 'get-value';
 import { makeRouterInputSchema } from '../../../../services/destination/destinationIntegration/destinationIntegration';
 import { RECORD_IDENTIFIER_KEYS } from './config';
-import { CustomerIODestinationConfigSchema, CustomerIOConnectionConfigSchema } from '../types';
+import {
+  CustomerIODestinationConfigSchema,
+  CustomerIOConnectionConfigSchema,
+  type CustomerIORelationship,
+} from '../types';
 
 // CustomerIO accepts a person identifier as either a string or a number, and both are
 // passed through as authored, so the value type mirrors that rather than narrowing to string.
@@ -30,7 +34,7 @@ export type CustomerIOV2Payload = {
   attributes?: Record<string, unknown>;
   name?: string;
   timestamp?: number;
-  cio_relationships?: { identifiers: Record<string, unknown> }[];
+  cio_relationships?: CustomerIORelationship[];
   device?: CustomerIOV2Device;
   // A merge's two sides are person identifiers, so they carry whatever key the
   // destination's userIdIdentifierType selects — not just id/email.

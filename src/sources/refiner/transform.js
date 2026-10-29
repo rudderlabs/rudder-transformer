@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const { removeUndefinedAndNullValues, getBodyFromV2SpecPayload } = require('../../v0/util');
 
@@ -28,6 +29,11 @@ const prepareTrackPayload = (event) => {
   const message = new Message('Refiner');
   message.setEventType('track');
   message.setPropertiesV2(event, trackMapping);
+  if (!message.properties) {
+    throw new InstrumentationError(
+      'At least one of response, form.uuid, or form.name is required for Refiner webhooks',
+    );
+  }
   message.properties.response = removeUndefinedAndNullValues(message.properties.response);
   return message;
 };

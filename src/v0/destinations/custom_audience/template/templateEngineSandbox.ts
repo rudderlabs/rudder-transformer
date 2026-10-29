@@ -11,7 +11,11 @@
  * All template-language dependencies are encapsulated in templateEngine —
  * this file only orchestrates the sandbox boundary.
  */
-import { parseTemplate, evaluateTemplate, ParseTemplateResult } from './templateEngine';
+import {
+  parseTemplate,
+  evaluateTemplate,
+  ParseTemplateResult,
+} from '../../../../util/jsonataTemplate/templateEngine';
 
 export type EvaluateResult =
   | { ok: true; bodies: Record<string, unknown>[] }
@@ -21,7 +25,7 @@ declare const globalThis: Record<string, unknown>;
 
 globalThis.parseTemplateInSandbox = (template: string): ParseTemplateResult => {
   try {
-    return parseTemplate(template);
+    return parseTemplate(template, 'records');
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : 'Unexpected error during template parsing.';
     return { valid: false, errors: [message] };

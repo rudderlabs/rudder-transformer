@@ -1,6 +1,11 @@
 import sha256 from 'sha256';
 import { InstrumentationError, hashToSha256 } from '@rudderstack/integrations-lib';
-import { processAudienceRecord, AudienceField, HashingType } from './audienceUtils';
+import {
+  processAudienceRecord,
+  isAlreadyHashed,
+  AudienceField,
+  HashingType,
+} from './audienceUtils';
 
 jest.mock('../../util/stats', () => ({
   increment: jest.fn(),
@@ -11,6 +16,8 @@ import { createHash } from 'crypto';
 import md5 from 'md5';
 
 const mockStatsIncrement = stats.increment as jest.Mock;
+const plaintextEmail = 'user@example.com';
+const sha256HashedEmail = hashToSha256(plaintextEmail);
 
 const makeDestination = (
   overrides: {
@@ -47,6 +54,18 @@ const idField: AudienceField = {
 
 beforeEach(() => {
   mockStatsIncrement.mockClear();
+});
+
+describe('isAlreadyHashed', () => {
+  it.each([
+    ['lowercase SHA-256 hex', sha256HashedEmail, HashingType.SHA256, true],
+    ['uppercase SHA-256 hex', sha256HashedEmail.toUpperCase(), HashingType.SHA256, true],
+    ['UUID', '550e8400-e29b-41d4-a716-446655440000', HashingType.SHA256, false],
+    ['plain string', plaintextEmail, HashingType.SHA256, false],
+    ['non-hashable field', sha256HashedEmail, HashingType.NONE, false],
+  ])('returns the expected result for %s', (_label, value, hashingType, expected) => {
+    expect(isAlreadyHashed(value, hashingType)).toBe(expected);
+  });
 });
 
 describe('processAudienceRecord', () => {
@@ -251,8 +270,6 @@ describe('processAudienceRecord', () => {
   });
 
   describe('hashing consistency validation', () => {
-    const plaintextEmail = 'user@example.com';
-    const sha256HashedEmail = hashToSha256(plaintextEmail);
     const sha512HashedEmail = createHash('sha512').update(plaintextEmail).digest('hex');
     const md5HashedEmail = md5(plaintextEmail);
 

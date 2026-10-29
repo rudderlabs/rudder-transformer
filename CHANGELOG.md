@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.166.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.165.0...v1.166.0) (2026-10-27)
+
+
+### Features
+
+* **adj:** map Adjust adid and user agent ([#5731](https://github.com/rudderlabs/rudder-transformer/issues/5731)) ([8cf808e](https://github.com/rudderlabs/rudder-transformer/commit/8cf808e4d075b4369f6c5888eebbb93ed66338e2))
+
+
+### Bug Fixes
+
+* **fb_custom_audience:** classify Facebook error 613 as throttled ([#5733](https://github.com/rudderlabs/rudder-transformer/issues/5733)) ([e3aa7d6](https://github.com/rudderlabs/rudder-transformer/commit/e3aa7d64189327141564ffe76ece27577ce85e06))
+* **intercom:** keep mapped external_id in rETL v2 flow when email is absent ([#5730](https://github.com/rudderlabs/rudder-transformer/issues/5730)) ([5e56bbe](https://github.com/rudderlabs/rudder-transformer/commit/5e56bbe233bbc4659d2de46b38664d0f838771c3))
+* **intercom:** keep mapped external_id in rETL v2 identify regardless of email ([#5735](https://github.com/rudderlabs/rudder-transformer/issues/5735)) ([0cf9dd7](https://github.com/rudderlabs/rudder-transformer/commit/0cf9dd7434c1400e2a5169d329afb2b9f06f8e81))
+* **refiner:** return 400 for unmappable source webhooks ([#5719](https://github.com/rudderlabs/rudder-transformer/issues/5719)) ([ac72877](https://github.com/rudderlabs/rudder-transformer/commit/ac72877702b1ed8c0fcb35dd4d69abee806f0150))
+
+## [1.165.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.164.0...v1.165.0) (2026-10-26)
+
+
+### Features
+
+* **customerio:** support group relationship attributes ([#5716](https://github.com/rudderlabs/rudder-transformer/issues/5716)) ([a1ec80d](https://github.com/rudderlabs/rudder-transformer/commit/a1ec80d29116a46dbf071ff94aaabe015292efca))
+* **pushwoosh:** add pushwoosh destination ([#5645](https://github.com/rudderlabs/rudder-transformer/issues/5645)) ([f1dd798](https://github.com/rudderlabs/rudder-transformer/commit/f1dd7986d0af32dfc4cd69f0549d951deb915d7c)), closes [rudderlabs/rudder-integrations-config#2809](https://github.com/rudderlabs/rudder-integrations-config/issues/2809)
+
+
+### Bug Fixes
+
+* **custom_audience:** remove legacy inline authentication ([#5712](https://github.com/rudderlabs/rudder-transformer/issues/5712)) ([1291c68](https://github.com/rudderlabs/rudder-transformer/commit/1291c6847714bf2e96dab3a467300a03437b6f6f)), closes [rudderlabs/rudder-integrations-config#2855](https://github.com/rudderlabs/rudder-integrations-config/issues/2855)
+* **openai_ads:** honor destination hashing configuration ([#5718](https://github.com/rudderlabs/rudder-transformer/issues/5718)) ([a69ac12](https://github.com/rudderlabs/rudder-transformer/commit/a69ac1237cefdb851d37530b278a1412c18b96a0)), closes [rudder-integrations-config#2864](https://github.com/rudderlabs/rudder-integrations-config/issues/2864)
+
+## [1.164.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.163.0...v1.164.0) (2026-10-22)
+
+
+### Features
+
+* **gainsight_px_audience:** sync trait attributes for audience members ([#5703](https://github.com/rudderlabs/rudder-transformer/issues/5703)) ([aef00d3](https://github.com/rudderlabs/rudder-transformer/commit/aef00d3ddee02801443427f7ade5a6ff3e4329f3))
+
+
+### Bug Fixes
+
+* group router transform events by source job so concurrent syncs reach their own list ([21de025](https://github.com/rudderlabs/rudder-transformer/commit/21de025608b39ae7f2372738234dab8e6adafd34))
+* group router transform events by source job so concurrent syncs reach their own list ([#5705](https://github.com/rudderlabs/rudder-transformer/issues/5705)) ([93fc7b2](https://github.com/rudderlabs/rudder-transformer/commit/93fc7b22cb1d09917231a5be1e0b725d462c5cf9)), closes [#3496](https://github.com/rudderlabs/rudder-transformer/issues/3496) [#3496](https://github.com/rudderlabs/rudder-transformer/issues/3496)
+* key router groups on the message's source job id only ([98cf63f](https://github.com/rudderlabs/rudder-transformer/commit/98cf63ff1d83c9aaee067064e48b40d0621ad166))
+
 ## [1.163.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.162.0...v1.163.0) (2026-10-21)
 
 

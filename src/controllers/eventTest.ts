@@ -6,6 +6,8 @@ import { EventTesterService } from '../services/eventTest/eventTester';
 import { CatchErr, FixMe } from '../types';
 import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
+import { sandboxedParseHttpTemplates } from '../v0/destinations/http/templateSandboxClient';
+import { requestFieldExpression } from '../v0/destinations/http/utils';
 import {
   actionConfigSchema,
   CustomAudienceDestConfig,
@@ -32,6 +34,37 @@ const parseTemplateBodySchema = z.object({
   actions: parseTemplateActionsSchema,
   workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
 });
+
+const httpMappingsSchema = z.array(z.object({ from: z.string() })).optional();
+const httpParseBodySchema = z.object({
+  workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
+  requestBodyTemplate: z.string(),
+  headers: httpMappingsSchema,
+  queryParams: httpMappingsSchema,
+  pathParams: z.array(z.object({ path: z.string() })).optional(),
+});
+
+// The templates parse-template verifies, labelled with the `field`/`index` its response reports.
+// Each request field goes through requestFieldExpression, exactly as the router evaluates it.
+const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
+  const surface = (field: string, values: string[]) =>
+    values.map((value, index) => ({ field, index, template: requestFieldExpression(value) }));
+  return [
+    { field: 'requestBodyTemplate', index: undefined, template: body.requestBodyTemplate },
+    ...surface(
+      'headers',
+      (body.headers ?? []).map(({ from }) => from),
+    ),
+    ...surface(
+      'queryParams',
+      (body.queryParams ?? []).map(({ from }) => from),
+    ),
+    ...surface(
+      'pathParams',
+      (body.pathParams ?? []).map(({ path }) => path),
+    ),
+  ];
+};
 
 const testEventV2Schema = z.object({
   events: z.array(z.record(z.unknown())),
@@ -79,6 +112,27 @@ export class EventTestController {
   public static status(ctx: Context) {
     ctx.status = 200;
     ctx.body = 'OK';
+  }
+
+  public static async parseHttpTemplate(ctx: Context) {
+    const parsed = httpParseBodySchema.safeParse(ctx.request.body);
+    if (!parsed.success) {
+      ctx.status = 400;
+      ctx.body = { error: formatZodError(parsed.error) };
+      return;
+    }
+    const fields = verificationFields(parsed.data);
+    // A single isolate call validates all surfaces while preserving their indices.
+    const results = await sandboxedParseHttpTemplates(
+      fields.map(({ template }) => template),
+      parsed.data.workspaceId,
+    );
+    const errors = results.flatMap((result, i) =>
+      result.valid
+        ? []
+        : [{ field: fields[i].field, index: fields[i].index, messages: result.errors }],
+    );
+    ctx.body = { valid: errors.length === 0, errors };
   }
 
   public static async parseCustomAudienceTemplate(ctx: Context) {

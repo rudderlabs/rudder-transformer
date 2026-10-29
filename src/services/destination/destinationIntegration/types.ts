@@ -57,6 +57,12 @@ export type TransformResult<TBody extends Record<string, unknown> = Record<strin
 export type BatchGroup = {
   body: Record<string, unknown>;
   jobIds: Set<number>;
+  /**
+   * Set when the strategy could not build this chunk (e.g. a template that fails for its data).
+   * Only these jobs fail; the framework re-batches any other group that also carried them, so a
+   * failed job is never partly delivered.
+   */
+  error?: TransformError;
 };
 
 export enum BodyFormat {

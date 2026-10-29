@@ -10,6 +10,7 @@ import {
   identifyTraits,
   pageProperties,
   recordIdentifiers,
+  relationshipAttributes,
   trackProperties,
 } from './profiles';
 import {
@@ -118,7 +119,10 @@ const eventStreamSteps = (scenarioId: string): LiveStep[] => [
       type: 'group',
       userId: ctx.identity('user'),
       groupId: ctx.identity('group'),
-      traits: groupTraits(ctx),
+      traits: {
+        ...groupTraits(ctx),
+        relationshipAttributes: relationshipAttributes(ctx),
+      },
     }),
   },
   {

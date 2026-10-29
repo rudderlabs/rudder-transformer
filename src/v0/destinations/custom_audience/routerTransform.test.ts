@@ -524,7 +524,10 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
             secret: { accessToken: 'stale-account-token' },
           },
         ),
-        errorMatch: /Secret or accessToken is not present in the metadata/,
+        errorMatch:
+          accountDefinitionName === ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS
+            ? /OAuth access token is unavailable.*rudder-server version with machine_oauth support/
+            : /OAuth access token is unavailable in event metadata/,
         statusCode: 500,
       }),
     ),

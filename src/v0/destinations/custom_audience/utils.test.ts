@@ -569,7 +569,12 @@ describe('buildRequestHeaders', () => {
       const build = () => buildRequestHeaders(destination, metadata);
 
       expect(build).toThrow(OAuthSecretError);
-      expect(build).toThrow('Secret or accessToken is not present in the metadata');
+      expect(build).toThrow('OAuth access token is unavailable in event metadata.');
+      if (accountDefinitionName === ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS) {
+        expect(build).toThrow('rudder-server version with machine_oauth support');
+      } else {
+        expect(build).not.toThrow('machine_oauth');
+      }
     },
   );
 

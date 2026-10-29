@@ -130,12 +130,17 @@ export type CustomerIODevicePayload = {
  * POST /api/v2/batch
  * Ref: https://docs.customer.io/integrations/api/track/#tag/track-objects
  */
+export type CustomerIORelationship = {
+  identifiers: Record<string, unknown>;
+  relationship_attributes?: Record<string, unknown>;
+};
+
 export type CustomerIOObjectPayload = {
   identifiers: { object_id: unknown; object_type_id: unknown };
   type: string;
   action: unknown;
   attributes: unknown;
-  cio_relationships: { identifiers: Record<string, unknown> }[];
+  cio_relationships: CustomerIORelationship[];
 };
 
 /**

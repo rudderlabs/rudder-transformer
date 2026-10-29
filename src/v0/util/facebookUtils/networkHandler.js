@@ -28,7 +28,8 @@ const { isHttpStatusSuccess } = require('../index');
  *   - This seems like a generic document that contains errors possible for Graph API
  * 2. https://developers.facebook.com/docs/marketing-api/error-reference/
  *   - The doc seems to be more related to Marketing API
- * 3. https://developers.facebook.com/docs/marketing-api/error-reference/
+ * 3. https://developers.facebook.com/docs/graph-api/overview/rate-limiting/
+ *   - Rate-limit codes 4, 17, 613, and 80003 are handled as throttled responses.
 {
   // A scenario where in we have to know the error with code and subcode, we can conclude that
   // this error will have a particular status, statTags
@@ -169,6 +170,14 @@ const errorDetailsMap = {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(429)
       .setMessageField('error_user_msg')
+      .build(),
+  },
+  // Rate limiting: hourly limit for this API call has been exceeded
+  // ref: https://developers.facebook.com/docs/graph-api/overview/rate-limiting/
+  613: {
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(429)
+      .setMessage('Hourly limit for this API call has been exceeded.')
       .build(),
   },
   // facebook custom audience related error codes

@@ -9,6 +9,7 @@ import {
   mergeContacts,
   registeredId,
   registeredIds,
+  resolveContactId,
 } from './api';
 
 // The CRM Search index is eventually consistent — a fresh contact can drop out of the next
@@ -94,13 +95,47 @@ export const createTwoContactsAndDeleteFirst = async (ctx: RunContext): Promise<
   await deleteContactById(ctx, registeredId(ctx, 'contacts'));
 };
 
-// Merged record id: three contacts, the second merged into the first, all ids kept registered so one
-// batch can address the merged-away id next to an unrelated live contact (the third).
+// Keep the three original ids in order for the seed and read-back. Track a completed merge
+// separately from its id lookup, since that GET can fail after HubSpot has already merged them.
+const completedMergeResponseIds = new WeakMap<RunContext, string | undefined>();
+
 export const createThreeContactsAndMergeSecond = async (ctx: RunContext): Promise<void> => {
   await createTwoContactsAndRegisterIds(ctx);
   await createContactAndRegisterId(ctx, 'third');
   const [primaryId, mergedId] = registeredIds(ctx, 'contacts');
-  await mergeContacts(ctx, primaryId, mergedId);
+  const responseId = await mergeContacts(ctx, primaryId, mergedId);
+  completedMergeResponseIds.set(ctx, responseId);
+  const survivorId = responseId ?? (await resolveContactId(ctx, primaryId));
+  ctx.register({ type: 'contacts', id: survivorId });
+};
+
+// Before the merge, delete whichever originals were created. Afterwards, delete only the
+// survivor and unrelated third contact; original ids can both resolve to the same survivor.
+export const deleteMergedContacts = async (ctx: RunContext): Promise<void> => {
+  const ids = registeredIds(ctx, 'contacts');
+  const failed: string[] = [];
+  let toDelete = ids;
+  if (completedMergeResponseIds.has(ctx)) {
+    try {
+      const survivorId =
+        completedMergeResponseIds.get(ctx) ?? (await resolveContactId(ctx, ids[0]));
+      toDelete = [survivorId, ids[2]];
+    } catch {
+      // Never delete through both original ids when the merge may have given the survivor a new id.
+      toDelete = [ids[2]];
+      failed.push(`resolve merged contacts/${ids[0]}`);
+    }
+  }
+  for (const id of new Set(toDelete)) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await deleteContactById(ctx, id);
+    } catch {
+      failed.push(`contacts/${id}`);
+    }
+  }
+  completedMergeResponseIds.delete(ctx);
+  if (failed.length > 0) throw new Error(`[live:hs] teardown failed for ${failed.join(', ')}`);
 };
 
 // An association links two existing objects (a company and a contact), so its scenario can't mint

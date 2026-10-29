@@ -14,6 +14,7 @@ interface HsAssociationsResponse {
   results?: Array<{ toObjectId: string | number }>;
 }
 interface HsObjectResponse {
+  id?: string | number;
   properties?: Record<string, string>;
 }
 
@@ -124,13 +125,13 @@ export const deleteCrmObjectById = async (
 export const deleteContactById = (ctx: RunContext, id: string): Promise<void> =>
   deleteCrmObjectById(ctx, 'contacts', id);
 
-// Merge `idToMerge` into `primaryId`; the merged-away id stops being a record of its own.
+// Merge `idToMerge` into `primaryId`; HubSpot may assign the survivor a new id.
 export const mergeContacts = async (
   ctx: RunContext,
   primaryId: string,
   idToMerge: string,
-): Promise<void> => {
-  await axios.post(
+): Promise<string | undefined> => {
+  const res = await axios.post<HsObjectResponse>(
     `${HS_BASE}/crm/v3/objects/contacts/merge`,
     { primaryObjectId: primaryId, objectIdToMerge: idToMerge },
     {
@@ -139,6 +140,18 @@ export const mergeContacts = async (
       timeout: 15000,
     },
   );
+  return res.data.id ? String(res.data.id) : undefined;
+};
+
+// GET on an original id resolves to the survivor's current id after a merge.
+export const resolveContactId = async (ctx: RunContext, id: string): Promise<string> => {
+  const res = await axios.get<HsObjectResponse>(`${HS_BASE}/crm/v3/objects/contacts/${id}`, {
+    headers: authHeaders(ctx),
+    httpsAgent: hsAgent,
+    timeout: 15000,
+  });
+  if (!res.data.id) throw new Error('Merged contact has no resolved id');
+  return String(res.data.id);
 };
 
 export const deleteContactByEmail = async (ctx: RunContext): Promise<void> => {

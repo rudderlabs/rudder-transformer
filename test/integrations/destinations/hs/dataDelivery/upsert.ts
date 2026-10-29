@@ -372,7 +372,7 @@ const UPDATE_ENDPOINT = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/up
 const NOT_FOUND_MESSAGE =
   'Could not get some CONTACT objects, they may be deleted or not exist. Check that ids are valid.';
 const NOT_UPDATED_MESSAGE =
-  '[HUBSPOT] Record not updated: its id is missing from the batch/update results (e.g. a merged record).';
+  '[HUBSPOT] Record not updated: its id is missing from the batch/update results.';
 const MULTI_STATUS_MESSAGE =
   '[HUBSPOT Response V1 Handler] - Batch upsert/update completed with partial results';
 
@@ -436,9 +436,9 @@ export const updateMultiStatusData = [
   },
   {
     name: 'hs',
-    id: 'hs_update_200_merged_record_id_left_out',
+    id: 'hs_update_200_input_omitted_from_results',
     description:
-      '200 from batch/update that leaves a merged-away record id out of the results: every job merged into that input fails, the rest succeed',
+      '200 from batch/update with an input silently omitted from results: its jobs fail, the rest succeed',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',

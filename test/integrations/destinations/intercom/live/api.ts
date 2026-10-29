@@ -67,6 +67,29 @@ export const searchContacts = async (
   return res.data?.data ?? [];
 };
 
+// Same query the transform's searchContact sends for an event-stream identify with email and userId
+// (lowercased email OR external_id), so setup waits until the transform itself would find the contact.
+export const searchContactsByEmailOrExternalId = async (
+  ctx: RunContext,
+  email: string,
+  externalId: string,
+): Promise<IntercomContact[]> => {
+  const res = await axios.post<{ data?: IntercomContact[] }>(
+    `${baseUrl(ctx)}/contacts/search`,
+    {
+      query: {
+        operator: 'OR',
+        value: [
+          { field: 'email', operator: '=', value: email.toLowerCase() },
+          { field: 'external_id', operator: '=', value: externalId },
+        ],
+      },
+    },
+    requestConfig(ctx),
+  );
+  return res.data?.data ?? [];
+};
+
 // Contact search is eventually consistent, so a freshly written contact can take a few seconds to appear.
 export const pollContact = (
   ctx: RunContext,
@@ -103,11 +126,12 @@ export const getContactCompanies = async (
   ctx: RunContext,
   contactId: string,
 ): Promise<IntercomCompany[]> => {
-  const res = await axios.get<{ data?: IntercomCompany[] }>(
+  // The attached-companies list has been returned under both `companies` and `data` across API versions.
+  const res = await axios.get<{ data?: IntercomCompany[]; companies?: IntercomCompany[] }>(
     `${baseUrl(ctx)}/contacts/${contactId}/companies`,
     requestConfig(ctx),
   );
-  return res.data?.data ?? [];
+  return res.data?.companies ?? res.data?.data ?? [];
 };
 
 export const getCompanyByCompanyId = async (

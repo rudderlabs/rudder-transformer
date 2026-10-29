@@ -1,3 +1,4 @@
+import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 import type { LiveSpec, RunContext } from '../../../live/types';
 import {
   IntercomContact,
@@ -7,6 +8,7 @@ import {
   getContactCompanies,
   pollContact,
   searchContacts,
+  searchContactsByEmailOrExternalId,
 } from './api';
 
 // Intercom 2.10 rejects custom attributes the workspace has not defined, and the v2 transform turns
@@ -21,7 +23,7 @@ const READBACK = {
 // A setup-created contact must be searchable before the transform runs its create-vs-update search,
 // otherwise the event is routed to a create and 409s on the duplicate. A failed attempt persists
 // nothing, so the retry is safe.
-const SEARCH_RACE = { retries: 3, delayBeforeMs: 3000 };
+const SEARCH_RACE = { retries: 5, delayBeforeMs: 5000 };
 
 const baseEvent = (ctx: RunContext, suffix: string) => ({
   channel: 'web',
@@ -36,6 +38,10 @@ const baseEvent = (ctx: RunContext, suffix: string) => ({
 const createProfile = (ctx: RunContext) => ({ email: ctx.email(), name: `CI Create ${ctx.runId}` });
 const updateProfile = (ctx: RunContext) => ({ email: ctx.email(), name: `CI Update ${ctx.runId}` });
 const retlProfile = (ctx: RunContext) => ({ name: `CI rETL ${ctx.runId}` });
+const emailOnlyProfile = (ctx: RunContext) => ({
+  email: ctx.email(),
+  name: `CI Email Only ${ctx.runId}`,
+});
 const companyProfile = (ctx: RunContext) => ({
   name: `CI Company ${ctx.runId}`,
   plan: 'enterprise',
@@ -51,7 +57,33 @@ const createRunContact = async (ctx: RunContext): Promise<void> => {
   });
   const contact = await pollContact(ctx, 'external_id', ctx.identity('user'));
   if (!contact) {
-    throw new Error('[live:intercom] setup contact never became searchable');
+    throw new Error('[live:intercom] setup contact never became searchable by external_id');
+  }
+  // The transform searches email OR external_id; wait until that exact query finds the contact too,
+  // otherwise it is routed to a create and Intercom answers 409 (contact already exists). A new contact
+  // is searchable by external_id within seconds, but the OR query can take ~30-50s to return it.
+  const startedAt = Date.now();
+  const viaTransformQuery = await pollUntil(
+    async () => {
+      const contacts = await searchContactsByEmailOrExternalId(
+        ctx,
+        ctx.email(),
+        ctx.identity('user'),
+      );
+      return { done: contacts.some((c) => c.id === contact.id), value: contacts };
+    },
+    {
+      label: 'intercom contact via transform search',
+      attempts: 12,
+      delayMs: (n) => Math.min(1000 * 2 ** n, 15000),
+      soft: true,
+    },
+  );
+  if (!viaTransformQuery.some((c) => c.id === contact.id)) {
+    throw new Error(
+      `[live:intercom] setup contact not found via the email OR external_id query the transform sends ` +
+        `after ${Math.round((Date.now() - startedAt) / 1000)}s`,
+    );
   }
 };
 
@@ -132,6 +164,66 @@ export const live = {
           'email',
           (ctx) => ctx.email(),
           (ctx) => ({ ...createProfile(ctx), external_id: ctx.identity('user') }),
+        ),
+        ...READBACK,
+      },
+    },
+    {
+      id: 'intercom-v2-identify-anonymous-id',
+      description:
+        'A v2 identify with an email but no userId, with sendAnonymousId on, creates the contact with anonymousId as external_id',
+      configOverride: (base) => ({ ...base, sendAnonymousId: true }),
+      cleanup: deleteRunContacts,
+      steps: [
+        {
+          stepType: 'pipeline',
+          name: 'identify with anonymousId as external_id',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => ({
+            ...baseEvent(ctx, 'identify-anonymous-id'),
+            type: 'identify',
+            anonymousId: ctx.identity('anon'),
+            context: { traits: emailOnlyProfile(ctx) },
+          }),
+        },
+      ],
+      verify: {
+        check: verifyContact(
+          'email',
+          (ctx) => ctx.email(),
+          (ctx) => ({ ...emailOnlyProfile(ctx), external_id: ctx.identity('anon') }),
+        ),
+        ...READBACK,
+      },
+    },
+    {
+      id: 'intercom-v2-retl-email',
+      description:
+        'A v2 rETL identify mapped by email creates the contact by email without external_id',
+      cleanup: deleteRunContacts,
+      steps: [
+        {
+          stepType: 'pipeline',
+          name: 'rETL identify (email)',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => ({
+            ...baseEvent(ctx, 'retl-email'),
+            type: 'identify',
+            context: {
+              mappedToDestination: 'true',
+              externalId: [{ id: ctx.email(), type: 'INTERCOM-customer', identifierType: 'email' }],
+            },
+            traits: { name: emailOnlyProfile(ctx).name },
+          }),
+        },
+      ],
+      verify: {
+        check: verifyContact(
+          'email',
+          (ctx) => ctx.email(),
+          (ctx) => ({ ...emailOnlyProfile(ctx), external_id: null }),
         ),
         ...READBACK,
       },

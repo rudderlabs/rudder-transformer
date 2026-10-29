@@ -22,6 +22,7 @@ import type {
   CustomMapping,
 } from './types';
 import { CustomAudienceDeliveryAccountSchema } from './types';
+import { clientCredentialsTokenProvider } from './clientCredentials';
 
 export const lookupActionConfig = (
   action: Action,
@@ -203,14 +204,26 @@ const ACCOUNT_AUTH_HANDLERS: Record<string, CustomAudienceAccountAuthHandler> = 
     ]);
     return buildApiKeyHeader(name, value);
   },
-  [ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS]: buildOAuthHeader,
+  [ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS]: async (account, metadata, workspaceId) => {
+    const token = metadata?.secret?.accessToken;
+    if (token !== undefined) {
+      if (typeof token !== 'string' || token.length === 0) {
+        throw new OAuthSecretError('Secret or accessToken is not present in the metadata');
+      }
+      return buildBearerTokenHeader(token);
+    }
+    return buildBearerTokenHeader(
+      await clientCredentialsTokenProvider.getToken(account, workspaceId ?? ''),
+    );
+  },
   [ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE]: buildOAuthHeader,
 };
 
 const resolveAccountAuth = (
   deliveryAccount: unknown,
   metadata?: CustomAudienceAuthMetadata,
-): Record<string, string> => {
+  workspaceId?: string,
+): Promise<Record<string, string>> => {
   const parsedAccount = CustomAudienceDeliveryAccountSchema.safeParse(deliveryAccount);
   if (!parsedAccount.success) {
     throw new ConfigurationError(ERROR_MESSAGES.MISSING_DELIVERY_ACCOUNT);
@@ -225,14 +238,15 @@ const resolveAccountAuth = (
       ERROR_MESSAGES.UNKNOWN_ACCOUNT_DEFINITION(account.accountDefinitionName),
     );
   }
-  return handler(account, metadata);
+  return Promise.resolve(handler(account, metadata, workspaceId));
 };
 
-export const resolveAuth = (
+export const resolveAuth = async (
   destination: CustomAudienceDestination,
   metadata?: CustomAudienceAuthMetadata,
-): Record<string, string> => {
-  const { Config: destConfig, deliveryAccount } = destination;
+): Promise<Record<string, string>> => {
+  const { Config: destConfig, deliveryAccount, WorkspaceID } = destination;
+  const workspaceId = WorkspaceID || metadata?.workspaceId;
   if (destConfig.authenticationEnabled === false) return {};
 
   const hasLinkedAccount =
@@ -241,9 +255,9 @@ export const resolveAuth = (
     if (!hasLinkedAccount) {
       throw new ConfigurationError(ERROR_MESSAGES.MISSING_ACCOUNT_ID);
     }
-    return resolveAccountAuth(deliveryAccount, metadata);
+    return resolveAccountAuth(deliveryAccount, metadata, workspaceId);
   }
-  if (hasLinkedAccount) return resolveAccountAuth(deliveryAccount, metadata);
+  if (hasLinkedAccount) return resolveAccountAuth(deliveryAccount, metadata, workspaceId);
   return {};
 };
 
@@ -260,11 +274,16 @@ const flattenConfigHeaders = (
   return result;
 };
 
-export const buildRequestHeaders = (
+export const buildRequestHeaders = async (
   destination: CustomAudienceDestination,
   metadata?: CustomAudienceAuthMetadata,
-): Record<string, string> => ({
-  'Content-Type': 'application/json',
-  ...flattenConfigHeaders(destination.Config.headers),
-  ...resolveAuth(destination, metadata),
-});
+): Promise<Record<string, string>> => {
+  const authHeaders = await resolveAuth(destination, metadata);
+  const configuredHeaders = flattenConfigHeaders(destination.Config.headers);
+  if ('Authorization' in authHeaders) {
+    Object.keys(configuredHeaders)
+      .filter((name) => name.toLowerCase() === 'authorization')
+      .forEach((name) => delete configuredHeaders[name]);
+  }
+  return { 'Content-Type': 'application/json', ...configuredHeaders, ...authHeaders };
+};

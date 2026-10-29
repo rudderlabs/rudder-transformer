@@ -1,3 +1,4 @@
+import { ConfigurationError } from '@rudderstack/integrations-lib';
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 import { FixMe } from '../../types';
 import { isDestinationRouterTransformEnabled } from '../../features';
@@ -43,6 +44,19 @@ type DestTransformOutputEntry = {
 type EventTesterV2Response = {
   user_transformed_payload?: unknown[];
   dest_transform_output: DestTransformOutputEntry[];
+};
+
+const redactSecretStrings = (value: unknown, secrets: string[]): unknown => {
+  if (typeof value === 'string') {
+    return secrets.reduce((text, secret) => text.replaceAll(secret, '********'), value);
+  }
+  if (Array.isArray(value)) return value.map((item) => redactSecretStrings(item, secrets));
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, redactSecretStrings(item, secrets)]),
+    );
+  }
+  return value;
 };
 
 const destinationKeyOverrides: Record<string, string> = {
@@ -149,13 +163,14 @@ export class EventTesterService {
   private static async sendPayloadsToDestination(
     dest: string,
     transformedPayloads: unknown[],
+    allowedOrigin?: string,
   ): Promise<{ responses: unknown[]; statuses: number[] }> {
     const responses: unknown[] = [];
     const statuses: number[] = [];
 
     for (const payload of transformedPayloads) {
       // eslint-disable-next-line no-await-in-loop
-      const parsedResponse = await sendToDestination(dest, payload);
+      const parsedResponse = await sendToDestination(dest, payload, allowedOrigin);
       let contentType = '';
       let responsePayload = '';
       if (parsedResponse.headers) {
@@ -340,9 +355,14 @@ export class EventTesterService {
       }
 
       if (successfulPayloads.length > 0) {
+        const allowedOrigin = transformedDestination.Config?.baseUrl;
+        if (typeof allowedOrigin !== 'string' || !allowedOrigin) {
+          throw new ConfigurationError('Destination baseUrl is required for test send');
+        }
         const { responses, statuses } = await this.sendPayloadsToDestination(
           dest,
           successfulPayloads,
+          allowedOrigin,
         );
         for (const [j, successIndex] of successIndices.entries()) {
           destOutput[successIndex].destination_response = responses[j];
@@ -351,7 +371,26 @@ export class EventTesterService {
       }
     }
 
-    response.dest_transform_output = destOutput;
+    if (stage.send_to_destination && dest === 'custom_audience') {
+      const secrets = Object.values(secret ?? {}).filter(
+        (value): value is string => typeof value === 'string' && value.length > 0,
+      );
+      for (const result of destResults) {
+        if ('payload' in result && result.payload && typeof result.payload === 'object') {
+          const { headers } = result.payload as { headers?: Record<string, unknown> };
+          const authorization = headers?.Authorization;
+          if (typeof authorization === 'string' && authorization.startsWith('Bearer ')) {
+            secrets.push(authorization.slice('Bearer '.length));
+          }
+        }
+      }
+      response.dest_transform_output = redactSecretStrings(
+        destOutput,
+        secrets,
+      ) as DestTransformOutputEntry[];
+    } else {
+      response.dest_transform_output = destOutput;
+    }
     return response;
   }
 }

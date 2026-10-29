@@ -6,6 +6,7 @@ const http = require('http');
 const https = require('https');
 const axios = require('axios');
 const { PlatformError } = require('@rudderstack/integrations-lib');
+const { guardedHttpsAgent } = require('../util/guardedHttps');
 const stats = require('../util/stats');
 const {
   removeUndefinedValues,
@@ -155,14 +156,16 @@ const commonHandler = async (
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
-  logger.requestLog(`${commonMsg} request`, {
-    metadata: statTags?.metadata,
-    requestDetails: {
-      url: url || requestOptions?.url,
-      body: data || requestOptions?.data,
-      method,
-    },
-  });
+  if (!statTags?.suppressPayloadLogs) {
+    logger.requestLog(`${commonMsg} request`, {
+      metadata: statTags?.metadata,
+      requestDetails: {
+        url: url || requestOptions?.url,
+        body: data || requestOptions?.data,
+        method,
+      },
+    });
+  }
   const startTime = new Date();
   try {
     const response = await axiosMethod(...getHttpMethodArgs(method, args));
@@ -170,10 +173,12 @@ const commonHandler = async (
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    logger.responseLog(`${commonMsg} response`, {
-      metadata: statTags?.metadata,
-      responseDetails: getResponseDetails(clientResponse),
-    });
+    if (!statTags?.suppressPayloadLogs) {
+      logger.responseLog(`${commonMsg} response`, {
+        metadata: statTags?.metadata,
+        responseDetails: getResponseDetails(clientResponse),
+      });
+    }
     if (!disableMetrics) {
       fireHTTPStats(clientResponse, startTime, statTags);
     }
@@ -506,7 +511,7 @@ const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }
  * @param {*} request
  * @returns
  */
-const proxyRequest = async (request, destType) => {
+const proxyRequest = async (request, destType, allowedOrigin = undefined) => {
   const { metadata, endpointPath, body } = request;
   const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
   fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
@@ -517,12 +522,18 @@ const proxyRequest = async (request, destType) => {
     headers,
     method,
   };
+  if (allowedOrigin) {
+    requestOptions.httpsAgent = guardedHttpsAgent(endpoint, allowedOrigin);
+    requestOptions.proxy = false;
+    requestOptions.maxRedirects = 0;
+  }
   const response = await httpSend(
     requestOptions,
     {
       feature: 'proxy',
       destType,
       metadata,
+      suppressPayloadLogs: Boolean(allowedOrigin),
     },
     true,
   );

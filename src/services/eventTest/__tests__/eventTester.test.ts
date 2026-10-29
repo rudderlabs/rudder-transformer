@@ -307,6 +307,7 @@ describe('EventTesterService.testEventV2', () => {
         destination: {
           workspaceId: 'ws-1',
           destinationDefinition: {},
+          config: { baseUrl: 'https://api.example.com' },
           ...(linkedAccount && { deliveryAccount: { accountDefinitionName: 'OAUTH_AUTH_CODE' } }),
         },
         stage: { dest_transform: true, send_to_destination: send },
@@ -330,6 +331,60 @@ describe('EventTesterService.testEventV2', () => {
       'v0',
       {},
     );
+  });
+
+  it('redacts a real Custom Audience token from the test-send response after sending it', async () => {
+    const request = { ...sampleOutput, headers: { Authorization: 'Bearer real-test-token' } };
+    jest
+      .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
+      .mockResolvedValue([
+        {
+          batchedRequest: request,
+          metadata: [{}] as any,
+          destination: {} as any,
+          batched: false,
+          statusCode: 200,
+        },
+      ]);
+    const sendSpy = jest
+      .spyOn(
+        EventTesterService as unknown as {
+          sendPayloadsToDestination: (
+            destination: string,
+            payloads: unknown[],
+            origin: string,
+          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
+        },
+        'sendPayloadsToDestination',
+      )
+      .mockResolvedValue({ responses: ['reflected real-test-token'], statuses: [200] });
+
+    const result = await EventTesterService.testEventV2(
+      {
+        events: [{ type: 'record' }],
+        destination: {
+          workspaceId: 'ws-1',
+          destinationDefinition: {},
+          config: { baseUrl: 'https://api.example.com' },
+          deliveryAccount: { accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_OAUTH_AUTH_CODE' },
+        },
+        stage: { dest_transform: true, send_to_destination: true },
+        secret: { accessToken: 'real-test-token' },
+      },
+      'v0',
+      'custom_audience',
+    );
+
+    expect(sendSpy).toHaveBeenCalledWith('custom_audience', [request], 'https://api.example.com');
+    expect(result).toEqual({
+      dest_transform_output: [
+        {
+          dest_transformed_payload: { ...request, headers: { Authorization: 'Bearer ********' } },
+          destination_response: 'reflected ********',
+          destination_response_status: 200,
+        },
+      ],
+    });
   });
 
   it('runs user transform per event and forwards only successful events into batch dest transform', async () => {
@@ -428,7 +483,11 @@ describe('EventTesterService.testEventV2', () => {
     const result = await EventTesterService.testEventV2(
       {
         events: [{ type: 'record' }, { type: 'record' }],
-        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+        destination: {
+          workspaceId: 'ws-1',
+          destinationDefinition: {},
+          config: { baseUrl: 'https://api.example.com' },
+        },
         connection: {},
         stage: { user_transform: false, dest_transform: true, send_to_destination: true },
         libraries: [],
@@ -470,7 +529,11 @@ describe('EventTesterService.testEventV2', () => {
     const result = await EventTesterService.testEventV2(
       {
         events: [{ type: 'record' }],
-        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+        destination: {
+          workspaceId: 'ws-1',
+          destinationDefinition: {},
+          config: { baseUrl: 'https://api.example.com' },
+        },
         connection: {},
         stage: { user_transform: false, dest_transform: true, send_to_destination: true },
         libraries: [],
@@ -520,7 +583,11 @@ describe('EventTesterService.testEventV2', () => {
     const result = await EventTesterService.testEventV2(
       {
         events: [{ type: 'record' }, { type: 'record' }, { type: 'record' }],
-        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
+        destination: {
+          workspaceId: 'ws-1',
+          destinationDefinition: {},
+          config: { baseUrl: 'https://api.example.com' },
+        },
         connection: {},
         stage: { user_transform: false, dest_transform: true, send_to_destination: true },
         libraries: [],

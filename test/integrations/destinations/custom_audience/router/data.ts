@@ -18,6 +18,9 @@ import {
   useInsertConfigWithRequiredInsertFieldDestination,
   accountManagedDestination,
   accountManagedHeaders,
+  clientCredentialsPreviewDestination,
+  clientCredentialsPreviewHeaders,
+  clientCredentialsPreviewSecret,
   accountManagedApiKeyDestination,
   accountManagedApiKeyHeaders,
   authenticationDisabledDestination,
@@ -800,6 +803,69 @@ export const data: RouterTestData[] = [
               batched: true,
               statusCode: 200,
               destination: accountManagedDestination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'custom-audience-router-test-client-credentials-preview',
+    name: destType,
+    description: 'Uses a supplied Client Credentials preview token without a grant',
+    scenario: 'Business',
+    successCriteria: 'The transformed request carries the supplied masked Bearer token',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: sha256('client-preview@example.com') },
+              }),
+              metadata: { ...generateMetadata(1), secret: clientCredentialsPreviewSecret },
+              destination: clientCredentialsPreviewDestination,
+              connection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertEndpoint,
+                endpointPath: '/insert',
+                headers: clientCredentialsPreviewHeaders,
+                params: {},
+                body: {
+                  JSON: {
+                    audienceId: 'aud-42',
+                    users: [{ email: sha256('client-preview@example.com') }],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ ...generateMetadata(1), secret: clientCredentialsPreviewSecret }],
+              batched: true,
+              statusCode: 200,
+              destination: clientCredentialsPreviewDestination,
             },
           ],
         },

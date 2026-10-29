@@ -14,6 +14,7 @@ import {
   validateRequiredFields,
 } from './utils';
 import { ACCOUNT_DEFINITION_NAMES } from './constants';
+import { clientCredentialsTokenProvider } from './clientCredentials';
 import type {
   ActionConfig,
   CustomAudienceAuthMetadata,
@@ -281,12 +282,15 @@ describe('processFields', () => {
 });
 
 describe('buildRequestHeaders', () => {
+  afterEach(() => jest.restoreAllMocks());
+
   const buildDestination = (
     configOverrides: Partial<CustomAudienceDestConfig> = {},
     deliveryAccount?: unknown,
   ): CustomAudienceDestination =>
     ({
       ID: 'dest-1',
+      WorkspaceID: 'ws-1',
       Config: { ...baseDestConfig, ...configOverrides },
       deliveryAccount: deliveryAccount as CustomAudienceDestination['deliveryAccount'],
     }) as CustomAudienceDestination;
@@ -357,7 +361,7 @@ describe('buildRequestHeaders', () => {
       destination: buildDestination(
         { authenticationEnabled: true, rudderAccountId: 'account-1' },
         {
-          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS,
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
           options: {},
           secret: { accessToken: 'stale-account-token' },
         },
@@ -388,6 +392,32 @@ describe('buildRequestHeaders', () => {
       expectedHeaders: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer auth-code-token',
+      },
+    },
+    {
+      name: 'removes every conflicting Authorization spelling before linked auth',
+      destination: buildDestination(
+        {
+          authenticationEnabled: true,
+          rudderAccountId: 'account-1',
+          headers: [
+            { key: 'Authorization', value: 'stale-1' },
+            { key: 'authorization', value: 'stale-2' },
+            { key: 'aUtHoRiZaTiOn', value: 'stale-3' },
+            { key: 'X-App', value: 'keep' },
+          ],
+        },
+        {
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
+          options: {},
+          secret: {},
+        },
+      ),
+      metadata: { secret: { accessToken: 'metadata-token' } },
+      expectedHeaders: {
+        'Content-Type': 'application/json',
+        'X-App': 'keep',
+        Authorization: 'Bearer metadata-token',
       },
     },
     {
@@ -521,12 +551,35 @@ describe('buildRequestHeaders', () => {
       ),
       errorMessage: 'missing: options.apiKeyName, secret.apiKeyValue',
     },
+    {
+      name: 'Client Credentials token URL is missing',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          id: 'account-1',
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+          options: { clientId: 'client-id' },
+          secret: { clientSecret: 'private-secret' },
+        },
+      ),
+      errorMessage: 'options.tokenUrl',
+    },
+    {
+      name: 'Client Credentials client secret is missing',
+      destination: buildDestination(
+        { authenticationEnabled: true, rudderAccountId: 'account-1' },
+        {
+          id: 'account-1',
+          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+          options: { tokenUrl: 'https://token.example.com', clientId: 'client-id' },
+          secret: {},
+        },
+      ),
+      errorMessage: 'secret.clientSecret',
+    },
   ];
 
-  const oauthAccountDefinitionNames = [
-    ACCOUNT_DEFINITION_NAMES.OAUTH_CLIENT_CREDENTIALS,
-    ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
-  ];
+  const oauthAccountDefinitionNames = [ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE];
   const oauthMetadataFailureCases: {
     name: string;
     metadata?: CustomAudienceAuthMetadata;
@@ -540,19 +593,64 @@ describe('buildRequestHeaders', () => {
     ].map((testCase) => ({ ...testCase, accountDefinitionName })),
   );
 
-  it.each(successCases)('$name', ({ destination, metadata, expectedHeaders }) => {
-    expect(buildRequestHeaders(destination, metadata)).toEqual(expectedHeaders);
+  it.each(successCases)('$name', async ({ destination, metadata, expectedHeaders }) => {
+    expect(await buildRequestHeaders(destination, metadata)).toEqual(expectedHeaders);
   });
 
-  it.each(failureCases)('throws ConfigurationError when $name', ({ destination, errorMessage }) => {
-    const build = () => buildRequestHeaders(destination);
-    expect(build).toThrow(ConfigurationError);
-    expect(build).toThrow(errorMessage);
+  it('grants a Client Credentials token when metadata has no access token', async () => {
+    const grant = jest
+      .spyOn(clientCredentialsTokenProvider, 'getToken')
+      .mockResolvedValue('granted-token');
+    const destination = buildDestination(
+      { authenticationEnabled: true, rudderAccountId: 'account-1' },
+      {
+        id: 'account-1',
+        secretVersion: 3,
+        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+        options: { tokenUrl: 'https://token.example.com', clientId: 'client-id' },
+        secret: { clientSecret: 'private-secret' },
+      },
+    );
+    expect(await buildRequestHeaders(destination)).toEqual({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer granted-token',
+    });
+    expect(grant).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'account-1', secretVersion: 3 }),
+      'ws-1',
+    );
   });
+
+  it('uses a supplied Client Credentials preview token without a grant', async () => {
+    const grant = jest.spyOn(clientCredentialsTokenProvider, 'getToken');
+    const destination = buildDestination(
+      { authenticationEnabled: true, rudderAccountId: 'account-1' },
+      {
+        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+        options: {},
+        secret: {},
+      },
+    );
+    expect(await buildRequestHeaders(destination, { secret: { accessToken: '********' } })).toEqual(
+      {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ********',
+      },
+    );
+    expect(grant).not.toHaveBeenCalled();
+  });
+
+  it.each(failureCases)(
+    'throws ConfigurationError when $name',
+    async ({ destination, errorMessage }) => {
+      await expect(buildRequestHeaders(destination)).rejects.toThrow(ConfigurationError);
+      await expect(buildRequestHeaders(destination)).rejects.toThrow(errorMessage);
+    },
+  );
 
   it.each(oauthMetadataFailureCases)(
     'throws OAuthSecretError when $name for $accountDefinitionName',
-    ({ metadata, accountDefinitionName }) => {
+    async ({ metadata, accountDefinitionName }) => {
       const destination = buildDestination(
         {
           authenticationEnabled: true,
@@ -566,10 +664,10 @@ describe('buildRequestHeaders', () => {
           secret: { accessToken: 'stale-account-token' },
         },
       );
-      const build = () => buildRequestHeaders(destination, metadata);
-
-      expect(build).toThrow(OAuthSecretError);
-      expect(build).toThrow('Secret or accessToken is not present in the metadata');
+      await expect(buildRequestHeaders(destination, metadata)).rejects.toThrow(OAuthSecretError);
+      await expect(buildRequestHeaders(destination, metadata)).rejects.toThrow(
+        'Secret or accessToken is not present in the metadata',
+      );
     },
   );
 });

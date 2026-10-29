@@ -102,6 +102,27 @@ export const headers = {
 
 export const accountManagedDestination = destination;
 
+export const clientCredentialsPreviewSecret = {
+  accessToken: 'component-client-credentials-preview-token-9f8a',
+};
+
+export const clientCredentialsPreviewDestination: ComponentCustomAudienceDestination = {
+  ...destination,
+  deliveryAccount: {
+    id: 'client-credentials-account-1',
+    secretVersion: 1,
+    accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+    options: {},
+    secret: {},
+  },
+};
+
+export const clientCredentialsPreviewHeaders = {
+  'Content-Type': 'application/json',
+  'X-App': 'rudderstack',
+  Authorization: `Bearer ${clientCredentialsPreviewSecret.accessToken}`,
+};
+
 export const accountManagedHeaders = {
   'Content-Type': 'application/json',
   'X-App': 'rudderstack',

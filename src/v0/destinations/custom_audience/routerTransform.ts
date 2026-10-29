@@ -49,10 +49,12 @@ class CustomAudienceIntegration extends DestinationIntegration<
     ) as Partial<Record<Action, string>>;
   }
 
-  transformEvent(input: CustomAudienceRouterInput): TransformedEvent<Record<string, unknown>> {
+  async transformEvent(
+    input: CustomAudienceRouterInput,
+  ): Promise<TransformedEvent<Record<string, unknown>>> {
     const { message, metadata } = input;
     const { action, identifiers } = message;
-    const headers = buildRequestHeaders(this.destination, metadata);
+    const headers = await buildRequestHeaders(this.destination, metadata);
     const { action: resolvedAction, config: actionConfig } = lookupActionConfig(
       action,
       this.destination.Config.actions,

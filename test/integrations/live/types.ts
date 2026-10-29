@@ -55,6 +55,9 @@ interface RunContext {
 // Fields shared by every step.
 interface Step {
   name: string;
+  // Jest timeout for this step in ms (default 120000). For a step that legitimately waits longer,
+  // e.g. a setup action polling a slow, eventually consistent search index.
+  timeoutMs?: number;
 }
 
 // Fields of the /routerTransform input `metadata` a scenario may override (the harness always sets

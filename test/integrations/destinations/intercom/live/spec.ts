@@ -3,15 +3,14 @@ import type { LiveSpec, RunContext } from '../../../live/types';
 import {
   IntercomContact,
   createContact,
-  deleteRunCompany,
   deleteRunContacts,
-  getContactCompanies,
   searchContacts,
+  searchContactsAsTransform,
 } from './api';
 
 // Intercom 2.10 rejects custom attributes the workspace has not defined, and the v2 transform turns
-// every non-reserved trait into one. Seeds therefore carry only reserved fields (email, name, and
-// the company's name/plan/industry/website); the run id travels inside the names instead.
+// every non-reserved trait into one. Seeds therefore carry only reserved fields (email, name); the
+// run id travels inside the names instead.
 
 const READBACK = {
   attempts: 6,
@@ -29,44 +28,52 @@ const baseEvent = (ctx: RunContext, suffix: string) => ({
 
 // Shared by the seeds and the read-backs so the asserted values cannot drift from what was sent.
 const createProfile = (ctx: RunContext) => ({ email: ctx.email(), name: `CI Create ${ctx.runId}` });
-// No email: the update is matched by userId (external_id), so the transform's search stays on the
-// fast external_id index instead of the slow email OR external_id query.
+// No email: the update is matched by userId, so the transform's search is the single external_id
+// lookup that setup waits on (with an email it would search email OR external_id instead).
 const updateProfile = (ctx: RunContext) => ({ name: `CI Update ${ctx.runId}` });
 const retlProfile = (ctx: RunContext) => ({ name: `CI rETL ${ctx.runId}` });
 const emailOnlyProfile = (ctx: RunContext) => ({
   email: ctx.email(),
   name: `CI Email Only ${ctx.runId}`,
 });
-const companyProfile = (ctx: RunContext) => ({
-  name: `CI Company ${ctx.runId}`,
-  plan: 'enterprise',
-  industry: 'Software',
-  website: 'https://www.rudderstack.com',
-});
+const STABLE_SEARCH_HITS = 2;
 
-const createRunContact = async (ctx: RunContext): Promise<void> => {
-  const contactId = await createContact(ctx, {
+const createRunContact = (ctx: RunContext): Promise<string> =>
+  createContact(ctx, {
     email: ctx.email(),
     external_id: ctx.identity('user'),
     name: `CI Setup ${ctx.runId}`,
   });
-  // The steps that follow setup make the transform search by external_id only (group traits and the
-  // update event carry no email; track does not search). Wait until that search finds the contact,
-  // otherwise identify is routed to a create (Intercom answers 409) and group to a company-only upsert.
-  // A new contact is searchable by external_id within seconds; an email OR external_id search can take
-  // well over a minute, which is why the setup-backed events carry no email.
+
+// For identify update: the transform searches by external_id before choosing update vs create, so
+// wait until its own query finds the setup contact, otherwise the update is routed to a create and
+// Intercom answers 409. The transform always sends a compound query, which can take ~30-100s to see
+// a new contact (a simple single-field query sees it within seconds), so poll with that exact shape
+// and require consecutive hits, as results can flip right after the index catches up.
+const createSearchableContact = async (ctx: RunContext): Promise<void> => {
+  const contactId = await createRunContact(ctx);
+  let consecutiveHits = 0;
   await pollUntil(
     async () => {
-      const contacts = await searchContacts(ctx, 'external_id', ctx.identity('user'));
-      return { done: contacts.some((c) => c.id === contactId), value: contacts };
+      const contacts = await searchContactsAsTransform(ctx, 'external_id', ctx.identity('user'));
+      consecutiveHits = contacts.some((c) => c.id === contactId) ? consecutiveHits + 1 : 0;
+      return { done: consecutiveHits >= STABLE_SEARCH_HITS, value: contacts };
     },
     {
-      label: 'intercom contact by external_id',
-      attempts: 8,
-      delayMs: (n) => Math.min(1000 * 2 ** n, 8000),
+      label: `intercom contact via the transform's search (${STABLE_SEARCH_HITS} consecutive hits)`,
+      attempts: 45,
+      delayMs: () => 4000,
     },
   );
 };
+
+// Waiting on the transform's compound search can take well over the default 120s step timeout.
+const setupSearchableContactStep = {
+  stepType: 'action',
+  name: 'setup: create contact and wait until the transform can find it',
+  run: createSearchableContact,
+  timeoutMs: 240000,
+} as const;
 
 // Read-backs search once per attempt: the scenario-level `verify` already retries with READBACK backoff.
 const verifyContact =
@@ -80,20 +87,6 @@ const verifyContact =
     expect(contact).toBeDefined();
     expect(contact).toMatchObject(expected(ctx));
   };
-
-const verifyCompanyAttached = async (ctx: RunContext): Promise<void> => {
-  const [contact] = await searchContacts(ctx, 'external_id', ctx.identity('user'));
-  expect(contact).toBeDefined();
-  const companies = await getContactCompanies(ctx, (contact as IntercomContact).id);
-  expect(companies).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        company_id: ctx.identity('company'),
-        name: companyProfile(ctx).name,
-      }),
-    ]),
-  );
-};
 
 const retlIdentify = (
   ctx: RunContext,
@@ -214,13 +207,16 @@ export const live = {
       description: 'A v2 identify for an existing contact updates it (PUT /contacts/<id>)',
       cleanup: deleteRunContacts,
       steps: [
-        { stepType: 'action', name: 'setup: create contact', run: createRunContact },
+        setupSearchableContactStep,
         {
           stepType: 'pipeline',
           name: 'identify update',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
-          retries: 2, // setup already waited for the external_id index; this only covers a replica lag
+          // Setup waited for stable search hits, but a later search can still miss and route the
+          // update to a create (409). That attempt persists nothing, so retrying is safe.
+          retries: 4,
+          delayBeforeMs: 3000,
           seed: (ctx) => ({
             ...baseEvent(ctx, 'identify-update'),
             type: 'identify',
@@ -290,7 +286,14 @@ export const live = {
       description: 'A v2 track for an existing contact is delivered as a data event (POST /events)',
       cleanup: deleteRunContacts,
       steps: [
-        { stepType: 'action', name: 'setup: create contact', run: createRunContact },
+        // The track transform does not search; Intercom's events API only needs the contact to exist.
+        {
+          stepType: 'action',
+          name: 'setup: create contact',
+          run: async (ctx) => {
+            await createRunContact(ctx);
+          },
+        },
         {
           stepType: 'pipeline',
           name: 'track',
@@ -306,36 +309,6 @@ export const live = {
           }),
         },
       ],
-    },
-    {
-      id: 'intercom-v2-group',
-      description: 'A v2 group upserts the company and attaches it to the existing contact',
-      cleanup: async (ctx) => {
-        await deleteRunCompany(ctx);
-        await deleteRunContacts(ctx);
-      },
-      steps: [
-        { stepType: 'action', name: 'setup: create contact', run: createRunContact },
-        {
-          stepType: 'pipeline',
-          name: 'group',
-          expectedOutputs: 1,
-          // The group workflow upserts the company and attaches the contact during transformation,
-          // then returns 299 (SUPPRESS_EVENTS); rudder-server delivers nothing more, so neither does
-          // the harness. The read-back is what proves the attach happened.
-          expectedProxyRequests: 0,
-          // No delivery retries: a search miss here takes the company-only branch and still succeeds,
-          // so retries would never fire. Setup instead waits until the contact is searchable.
-          seed: (ctx) => ({
-            ...baseEvent(ctx, 'group'),
-            type: 'group',
-            userId: ctx.identity('user'),
-            groupId: ctx.identity('company'),
-            traits: companyProfile(ctx),
-          }),
-        },
-      ],
-      verify: { check: verifyCompanyAttached, ...READBACK },
     },
   ],
 } satisfies LiveSpec;

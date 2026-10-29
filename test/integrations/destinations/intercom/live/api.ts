@@ -21,12 +21,6 @@ export interface IntercomContact {
   name?: string | null;
 }
 
-export interface IntercomCompany {
-  id: string;
-  company_id?: string;
-  name?: string;
-}
-
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles when the suite finishes.
 const intercomAgent = new Agent({ keepAlive: false });
 
@@ -69,6 +63,22 @@ export const searchContacts = async (
   return res.data?.data ?? [];
 };
 
+// The query shape the transform's searchContact sends: always a compound query, even for one lookup.
+// Intercom answers the simple single-field form (searchContacts) within seconds of a write, but the
+// compound form can take ~30-100s to return a new contact, so setup must wait on this shape.
+export const searchContactsAsTransform = async (
+  ctx: RunContext,
+  field: 'email' | 'external_id',
+  value: string,
+): Promise<IntercomContact[]> => {
+  const res = await axios.post<{ data?: IntercomContact[] }>(
+    `${baseUrl(ctx)}/contacts/search`,
+    { query: { operator: 'AND', value: [{ field, operator: '=', value }] } },
+    requestConfig(ctx),
+  );
+  return res.data?.data ?? [];
+};
+
 export const createContact = async (
   ctx: RunContext,
   contact: { email?: string; external_id?: string; name?: string },
@@ -80,35 +90,6 @@ export const createContact = async (
   );
   ctx.register({ type: 'contact', id: res.data.id });
   return res.data.id;
-};
-
-export const getContactCompanies = async (
-  ctx: RunContext,
-  contactId: string,
-): Promise<IntercomCompany[]> => {
-  const res = await axios.get<{ companies?: IntercomCompany[] }>(
-    `${baseUrl(ctx)}/contacts/${contactId}/companies`,
-    requestConfig(ctx),
-  );
-  return res.data?.companies ?? [];
-};
-
-export const getCompanyByCompanyId = async (
-  ctx: RunContext,
-  companyId: string,
-): Promise<IntercomCompany | undefined> => {
-  try {
-    const res = await axios.get<IntercomCompany>(`${baseUrl(ctx)}/companies`, {
-      ...requestConfig(ctx),
-      params: { company_id: companyId },
-    });
-    return res.data;
-  } catch (err) {
-    if ((err as { response?: { status?: number } })?.response?.status === 404) {
-      return undefined;
-    }
-    throw err;
-  }
 };
 
 // Best-effort teardown: logs and swallows so one failure can't strand sibling cleanups.
@@ -147,13 +128,4 @@ export const deleteRunContacts = async (ctx: RunContext): Promise<void> => {
     ),
   );
   await Promise.all([...ids].map((id) => deleteContact(ctx, id)));
-};
-
-export const deleteRunCompany = async (ctx: RunContext): Promise<void> => {
-  await bestEffort('delete company', async () => {
-    const company = await getCompanyByCompanyId(ctx, ctx.identity('company'));
-    if (company) {
-      await axios.delete(`${baseUrl(ctx)}/companies/${company.id}`, requestConfig(ctx));
-    }
-  });
 };

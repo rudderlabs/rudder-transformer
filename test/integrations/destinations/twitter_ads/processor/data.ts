@@ -1,3 +1,6 @@
+import sha256 from 'sha256';
+import { identifierDestination, identifierMetadata } from '../common';
+
 const authHeaderConstant =
   'OAuth oauth_consumer_key="qwe", oauth_nonce="V1kMh028kZLLhfeYozuL0B45Pcx6LvuW", oauth_signature="Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1685603652", oauth_token="dummyAccessToken", oauth_version="1.0"';
 
@@ -2487,6 +2490,175 @@ export const data = [
       },
     },
   },
+  ...[
+    {
+      description: 'Numeric phone hashes as its string equivalent',
+      properties: { phone: 9876543210 },
+      identifiers: [{ hashed_phone_number: sha256('9876543210') }],
+    },
+    {
+      description: 'Numeric email hashes as its lowercased string equivalent',
+      properties: { email: 12345 },
+      identifiers: [{ hashed_email: sha256('12345') }],
+    },
+    {
+      description: 'Numeric twclid is emitted as a string',
+      properties: { twclid: 12345 },
+      identifiers: [{ twclid: '12345' }],
+    },
+    {
+      description: 'Whitespace phone is omitted when an email is available',
+      properties: { phone: '   ', email: 'TeSt@Example.com' },
+      identifiers: [{ hashed_email: sha256('test@example.com') }],
+    },
+    {
+      description: 'Numeric IP and boolean user agent are coerced to strings',
+      properties: { ip_address: 123, user_agent: true },
+      identifiers: [{ ip_address: '123', user_agent: 'true' }],
+    },
+  ].map(({ description, properties, identifiers }) => ({
+    name: 'twitter_ads',
+    description,
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'ABC Searched',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties,
+            },
+            metadata: identifierMetadata,
+            destination: identifierDestination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://ads-api.twitter.com/12/measurement/conversions/dummyPixelId',
+              headers: {
+                Authorization: authHeaderConstant,
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  conversions: [
+                    {
+                      identifiers,
+                      event_id: 'tw-234234324234',
+                      conversion_time: '2020-08-14T05:30:30.118Z',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: identifierMetadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  })),
+  ...[
+    {
+      description: 'Array phone is a data-validation error',
+      properties: { phone: ['9876543210'] },
+      error:
+        '[TWITTER ADS]: properties.phone must be a string, number, bigint or boolean, received array. Aborting message',
+      errorType: 'instrumentation',
+    },
+    {
+      description: 'Object phone is a data-validation error',
+      properties: { phone: { digits: '9876543210' } },
+      error:
+        '[TWITTER ADS]: properties.phone must be a string, number, bigint or boolean, received object. Aborting message',
+      errorType: 'instrumentation',
+    },
+    {
+      description: 'Object twclid is a data-validation error',
+      properties: { twclid: { id: '12345' } },
+      error:
+        '[TWITTER ADS]: properties.twclid must be a string, number, bigint or boolean, received object. Aborting message',
+      errorType: 'instrumentation',
+    },
+    {
+      description: 'Whitespace-only phone falls through to the missing-identifier guard',
+      properties: { phone: '   ' },
+      error:
+        '[TWITTER ADS]: one of twclid, phone, email or ip_address with user_agent must be present in properties.',
+      errorType: 'instrumentation',
+    },
+    {
+      description: 'Non-string event mapping name fails as a configuration error',
+      properties: { email: 'test@example.com' },
+      destination: {
+        Config: {
+          ...identifierDestination.Config,
+          twitterAdsEventNames: [
+            { rudderEventName: { name: 'ABC Searched' }, twitterEventId: 'tw-id' },
+          ],
+        },
+      },
+      error:
+        "[TWITTER ADS]: Event - 'ABC Searched' do not have a corresponding eventId in configuration. Aborting",
+      errorType: 'configuration',
+    },
+  ].map(({ description, properties, destination, error, errorType }) => ({
+    name: 'twitter_ads',
+    description,
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: { type: 'track', event: 'ABC Searched', properties },
+            metadata: identifierMetadata,
+            destination: destination || identifierDestination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error,
+            metadata: identifierMetadata,
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType,
+              destType: 'TWITTER_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  })),
 ].map((tc) => ({
   ...tc,
   mockFns: (_) => {

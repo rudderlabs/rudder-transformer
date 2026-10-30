@@ -20,6 +20,7 @@ const { v5 } = require('uuid');
 const stableStringify = require('fast-json-stable-stringify');
 const {
   InstrumentationError,
+  ConfigurationError,
   BaseError,
   PlatformError,
   TransformationError,
@@ -896,6 +897,18 @@ function handleTemplate(template, value) {
   const hTemplate = Handlebars.compile(template.trim());
   const formattedVal = hTemplate({ value }).trim();
   return formattedVal;
+}
+
+// Only use for customer-configured templates; internally generated templates must retain 5xx errors.
+function compileAndRenderUserTemplate(template, templateInput, templateLabel) {
+  try {
+    return Handlebars.compile(template)(templateInput);
+  } catch (error) {
+    // Handlebars parse errors include a source excerpt after the first line.
+    throw new ConfigurationError(
+      `Failed to render the ${templateLabel} template: ${error.message.split('\n')[0]}`,
+    );
+  }
 }
 
 function handleMultikeyMap(multikeyMap, strictMultiMap, formattedVal, destKey) {
@@ -2570,6 +2583,7 @@ module.exports = {
   batchMultiplexedEvents,
   checkEmptyStringInarray,
   checkSubsetOfArray,
+  compileAndRenderUserTemplate,
   constructPayload,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,

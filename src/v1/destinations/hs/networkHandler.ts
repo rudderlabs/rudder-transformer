@@ -121,20 +121,15 @@ const isSilentFailure = (response: Response, endpoint?: string): boolean => {
 
 const BATCH_UPDATE_ENDPOINT_PATTERN = /\/crm\/v3\/objects\/[^/]+\/batch\/update(\?|$)/;
 const NOT_UPDATED_ERROR =
-  '[HUBSPOT] Record not updated: its id is missing from the batch/update results (e.g. a merged record).';
+  '[HUBSPOT] Record not updated: its id is missing from the batch/update results.';
 
 /**
- * batch/update leaves an input out of `results`, and reports no error for it, when its id no
- * longer addresses a record of its own (e.g. it was merged into another record). Returns the job
- * ids (from each such input's objectWriteTraceId) so they fail instead of reading as delivered.
- * A result's `id` is the record's current id, which need not be the id we sent, so an input also
- * counts as updated when a result echoes its objectWriteTraceId.
- *
- * HubSpot documents that batch update doesn't support merged-away ids
- * (https://developers.hubspot.com/docs/api-reference/legacy/crm/using-object-apis, "Update
- * records"); the silent 200 is observed behaviour, not documented. Only batch/update is checked:
- * upsert and create results aren't keyed by the id we sent. Inputs without an objectWriteTraceId
- * (event-stream updates) are skipped, as they can't be mapped back to their jobs.
+ * Returns job ids for batch/update inputs missing from `results` by both record id and echoed
+ * objectWriteTraceId, so a silently omitted input is not reported as delivered. A result may
+ * carry a different, current record id while echoing the input's trace id. The caller gives
+ * HubSpot's explicit `errors` precedence over these inferred failures.
+ * Only batch/update is checked; upsert and create results aren't keyed by the sent id. Inputs
+ * without an objectWriteTraceId (event-stream updates) cannot be mapped back to their jobs.
  */
 const findNotUpdatedJobIds = (
   response: UpsertResponse,

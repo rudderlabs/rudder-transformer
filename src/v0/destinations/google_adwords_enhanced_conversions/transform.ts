@@ -60,7 +60,6 @@ const responseBuilder = (
   deliveryRequest.params = {
     event,
     customerId: filteredCustomerId,
-    accessToken,
     loginCustomerId: filteredLoginCustomerId,
     subAccount,
   };

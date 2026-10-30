@@ -40,19 +40,12 @@ export class ServiceSelector {
   public static getDestinationServiceByType(
     destType: string,
     workspaceId: string,
+    destinationVersion?: number,
   ): DestinationService {
-    if (shouldUseCdkV2(destType, workspaceId)) {
+    if (shouldUseCdkV2(destType, workspaceId, destinationVersion)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
     }
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
-  }
-
-  private static getPrimaryDestinationService(
-    events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
-  ): DestinationService {
-    const destinationType = events[0]?.destination?.DestinationDefinition?.Name ?? '';
-    const workspaceId = events[0]?.metadata?.workspaceId ?? '';
-    return this.getDestinationServiceByType(destinationType, workspaceId);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -60,9 +53,33 @@ export class ServiceSelector {
     // Implement source event based decision logic for selecting service
   }
 
-  public static getDestinationService(
-    events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
-  ): DestinationService {
-    return this.getPrimaryDestinationService(events);
+  /**
+   * Splits a request by the service each event resolves to. One request can carry several
+   * destinations of the same type (e.g. HTTP v1 on CDK and HTTP v2 native), so selecting from the
+   * first event alone would send the others down the wrong path. An event whose destination carries
+   * no definition falls back to the first event's type, as routing did before grouping.
+   */
+  public static groupByDestinationService<
+    T extends ProcessorTransformationRequest | RouterTransformationRequestData,
+  >(events: T[]): [DestinationService, T[]][] {
+    const primaryType = events[0]?.destination?.DestinationDefinition?.Name ?? '';
+    const services = new Map<string, DestinationService>();
+    const groups = new Map<DestinationService, T[]>();
+    for (const event of events) {
+      const type = event.destination?.DestinationDefinition?.Name ?? primaryType;
+      const workspaceId = event.metadata?.workspaceId ?? '';
+      const version = event.destination?.version;
+      // Resolve once per distinct (type, workspace, version), not once per event.
+      const key = `${type}|${workspaceId}|${version}`;
+      let service = services.get(key);
+      if (!service) {
+        service = this.getDestinationServiceByType(type, workspaceId, version);
+        services.set(key, service);
+      }
+      const group = groups.get(service);
+      if (group) group.push(event);
+      else groups.set(service, [event]);
+    }
+    return [...groups];
   }
 }

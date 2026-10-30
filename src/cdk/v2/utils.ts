@@ -7,6 +7,7 @@ import { generateErrorObject } from '../../v0/util';
 import tags from '../../v0/util/tags';
 import { CatchErr } from '../../types';
 import { isDestinationCdkV2Enabled, getDestinationHandlerName } from '../../features';
+import { getDestinationVersion } from '../../util/utils';
 
 const CDK_V2_ROOT_DIR = __dirname;
 
@@ -109,10 +110,15 @@ export function getErrorInfo(err: CatchErr, isProd: boolean, defTags) {
   return generateErrorObject(new PlatformError(message), defTags);
 }
 
-export function shouldUseCdkV2(destType: string, workspaceId: string) {
+export function shouldUseCdkV2(destType: string, workspaceId: string, destinationVersion?: number) {
   const destTypeUpper = destType.toUpperCase();
 
   if (!isDestinationCdkV2Enabled(destType)) {
+    return false;
+  }
+
+  // HTTP v1 remains on CDK; v2 is a native destination integration.
+  if (destTypeUpper === 'HTTP' && getDestinationVersion(destinationVersion) >= 2) {
     return false;
   }
 

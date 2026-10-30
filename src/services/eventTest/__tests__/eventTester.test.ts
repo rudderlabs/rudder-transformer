@@ -51,13 +51,13 @@ describe('EventTesterService.transformDestination', () => {
 
     expect(destination).toEqual({
       ID: 'dest-id',
-      WorkspaceId: 'workspace-id',
+      WorkspaceID: 'workspace-id',
       RevisionId: 'revision-id',
       DestinationDefinition: { ID: 'definition-id', Name: 'TEST' },
       deliveryAccount: { secret: { token: 'secret' } },
       DeleteAccount: { id: 'delete-account' },
       HasDynamicConfig: true,
-      Version: 2,
+      version: 2,
     });
     expect(destination).not.toHaveProperty('DeliveryAccount');
   });
@@ -298,6 +298,44 @@ describe('EventTesterService.testEventV2', () => {
         { type: 'record', id: 'ok-2' },
       ],
       dest_transform_output: [{ dest_transformed_payload: sampleOutput }],
+    });
+  });
+
+  it('previews native HTTP v2 batches without a connection', async () => {
+    const result = await EventTesterService.testEventV2(
+      {
+        events: [
+          { type: 'track', id: 'a' },
+          { type: 'track', id: 'b' },
+        ],
+        destination: {
+          id: 'http-preview',
+          name: 'HTTP',
+          workspaceId: 'ws-http-preview',
+          version: 2,
+          enabled: true,
+          transformations: [],
+          destinationDefinition: { id: 'http', name: 'HTTP', displayName: 'HTTP', config: {} },
+          config: {
+            apiUrl: 'https://example.org/events',
+            method: 'POST',
+            maxBatchSize: 100,
+            requestBodyTemplate: '{ "items": [$$.events.{ "id": id }] }',
+          },
+        },
+        stage: { dest_transform: true },
+      },
+      'v0',
+      'http',
+    );
+    expect(result.dest_transform_output).toHaveLength(1);
+    const transformed = result.dest_transform_output[0].dest_transformed_payload as {
+      body: { JSON_ARRAY: { batch: string } };
+      endpoint: string;
+    };
+    expect(transformed.endpoint).toBe('https://example.org/events');
+    expect(JSON.parse(transformed.body.JSON_ARRAY.batch)).toEqual({
+      items: [{ id: 'a' }, { id: 'b' }],
     });
   });
 
@@ -624,7 +662,7 @@ describe('EventTesterService.runDestTransform', () => {
       'http',
     );
 
-    expect(selectorSpy).toHaveBeenCalledWith('http', 'workspace-http');
+    expect(selectorSpy).toHaveBeenCalledWith('http', 'workspace-http', undefined);
     expect(init).toHaveBeenCalledTimes(1);
     expect(doRouterTransformation).toHaveBeenCalledWith(
       [
@@ -716,7 +754,7 @@ describe('EventTesterService.runDestTransform', () => {
         destination: expect.objectContaining({
           ID: 'dest-id',
           Name: 'Test Destination',
-          WorkspaceId: 'ws-1',
+          WorkspaceID: 'ws-1',
         }),
       }),
       {},

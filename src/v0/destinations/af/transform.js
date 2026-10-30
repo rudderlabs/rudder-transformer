@@ -15,6 +15,9 @@ const {
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
   simpleProcessRouterDest,
+  constructPayload,
+  getIntegrationsObj,
+  hashToSha256,
 } = require('../../util');
 
 const {
@@ -39,6 +42,30 @@ function determineEndpoint(os, finalEndPoint, androidAppId, appleAppId) {
   throw new ConfigurationError(
     'os name is required along with the respective appId eg. (os->android & Android App Id is required) or (os->ios & Apple App Id is required)',
   );
+}
+
+function getAdvancedMatchingFields(message) {
+  const { phone, ...hashedFields } = constructPayload(
+    message,
+    mappingConfig[ConfigCategory.ADVANCED_MATCHING.name],
+    'af',
+  );
+  if (!isDefinedAndNotNull(phone)) {
+    return hashedFields;
+  }
+  if (getIntegrationsObj(message, 'af')?.hashed) {
+    return { ...hashedFields, phone_number_hashed: String(phone) };
+  }
+  const trimmedPhone = String(phone).trim();
+  const digits = trimmedPhone.replace(/\D/g, '').replace(/^0+/, '');
+  if (!digits) {
+    return hashedFields;
+  }
+  return {
+    ...hashedFields,
+    phone_number_hashed: hashToSha256(digits),
+    ...(trimmedPhone.startsWith('+') && { phone_number_e164_hashed: hashToSha256(`+${digits}`) }),
+  };
 }
 
 function responseBuilderSimple(payload, message, destination) {
@@ -95,6 +122,11 @@ function responseBuilderSimple(payload, message, destination) {
 
   if (isDefinedAndNotNullAndNotEmpty(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
+  }
+
+  // The legacy api2 endpoint that v1 authorization targets has no hashed identifier fields.
+  if (authVersion === 'v2') {
+    Object.assign(updatedPayload, getAdvancedMatchingFields(message));
   }
 
   const finalAuthentication =

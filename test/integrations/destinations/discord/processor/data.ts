@@ -1,3 +1,11 @@
+import {
+  templateErrorDestination,
+  templateErrorMetadata,
+  templateErrorStatTags,
+  templateErrorTrackMessage,
+  templateErrorIdentifyMessage,
+} from '../common';
+
 export const data = [
   {
     name: 'discord',
@@ -903,6 +911,163 @@ export const data = [
               userId: '',
             },
             statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'discord',
+    description: 'Configured track eventTemplate with missing partial aborts with 400',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ...templateErrorDestination,
+              Config: {
+                ...templateErrorDestination.Config,
+                eventTemplateSettings: [
+                  { eventName: 'Signed Up', eventRegex: false, eventTemplate: '{{> foo}}' },
+                ],
+              },
+            },
+            message: templateErrorTrackMessage,
+            metadata: templateErrorMetadata,
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Failed to render the eventTemplate template: The partial foo could not be found',
+            metadata: templateErrorMetadata,
+            statTags: templateErrorStatTags,
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'discord',
+    description: 'Configured identifyTemplate with missing partial aborts with 400',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ...templateErrorDestination,
+              Config: { ...templateErrorDestination.Config, identifyTemplate: '{{> foo}}' },
+            },
+            message: templateErrorIdentifyMessage,
+            metadata: templateErrorMetadata,
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Failed to render the identifyTemplate template: The partial foo could not be found',
+            metadata: templateErrorMetadata,
+            statTags: templateErrorStatTags,
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'discord',
+    description: 'Configured embedTitleTemplate with missing partial aborts with 400',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ...templateErrorDestination,
+              Config: {
+                ...templateErrorDestination.Config,
+                embedFlag: true,
+                embedTitleTemplate: '{{> foo}}',
+              },
+            },
+            message: templateErrorTrackMessage,
+            metadata: templateErrorMetadata,
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Failed to render the embedTitleTemplate template: The partial foo could not be found',
+            metadata: templateErrorMetadata,
+            statTags: templateErrorStatTags,
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'discord',
+    description: 'Configured embedDescriptionTemplate with missing partial aborts with 400',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ...templateErrorDestination,
+              Config: {
+                ...templateErrorDestination.Config,
+                embedFlag: true,
+                embedDescriptionTemplate: '{{> foo}}',
+              },
+            },
+            message: templateErrorIdentifyMessage,
+            metadata: templateErrorMetadata,
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Failed to render the embedDescriptionTemplate template: The partial foo could not be found',
+            metadata: templateErrorMetadata,
+            statTags: templateErrorStatTags,
+            statusCode: 400,
           },
         ],
       },

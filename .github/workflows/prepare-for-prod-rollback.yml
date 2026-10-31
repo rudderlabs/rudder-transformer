@@ -3,8 +3,7 @@ name: Prepare for Rollback in Production Environment
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   validate-actor:

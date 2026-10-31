@@ -9,8 +9,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   generate-tag-names:
@@ -30,6 +29,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 1
 
       - name: Generate Tag Names
@@ -94,6 +94,7 @@ jobs:
           repositories: rudder-devops # to access cross-repo
 
       - name: Checkout Devops Repo
+        # Keeps persisted credentials: ryancyq/github-signed-commit runs in the checked-out repo with the App token
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: rudderlabs/rudder-devops
@@ -200,6 +201,7 @@ jobs:
           repositories: rudder-devops # to access cross-repo
 
       - name: Checkout Devops Repo
+        # Keeps persisted credentials: ryancyq/github-signed-commit runs in the checked-out repo with the App token
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: rudderlabs/rudder-devops
@@ -299,6 +301,7 @@ jobs:
           repositories: rudder-devops # to access cross-repo
 
       - name: Checkout Devops Repo
+        # Keeps persisted credentials: ryancyq/github-signed-commit runs in the checked-out repo with the App token
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: rudderlabs/rudder-devops
@@ -409,6 +412,7 @@ jobs:
       - create-pull-request-shared-user-transformers
       - create-pull-request-hosted-user-transformer
       - create-pull-request-dedicated-user-transformers
+    permissions: {}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1

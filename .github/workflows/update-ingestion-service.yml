@@ -12,8 +12,7 @@ on:
         required: true
   workflow_dispatch: {}
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   update-ingestion-service:
@@ -45,6 +44,7 @@ jobs:
 
       - name: Checkout (main)
         if: github.event_name != 'workflow_dispatch'
+        # Keeps persisted credentials: git fetch and git push use the App token
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/heads/main
@@ -53,6 +53,7 @@ jobs:
 
       - name: Checkout (dispatch branch)
         if: github.event_name == 'workflow_dispatch'
+        # Keeps persisted credentials: git fetch and git push use the App token
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.ref }}
@@ -112,6 +113,7 @@ jobs:
           fi
 
       - name: Clone Ingestion Service Repo
+        # Keeps persisted credentials: git fetch and git push use the App token
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: rudderlabs/rudder-ingestion-svc

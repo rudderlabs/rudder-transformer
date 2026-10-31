@@ -34,7 +34,7 @@ jobs:
     outputs:
       affected: ${{ steps.detect.outputs.affected }}
     permissions:
-      contents: read  # actions/checkout and git fetch of the base
+      contents: read # actions/checkout and git fetch of the base
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
@@ -159,7 +159,7 @@ jobs:
       matrix: ${{ steps.gen.outputs.matrix }}
       has_work: ${{ steps.gen.outputs.has_work }}
     permissions:
-      contents: read  # actions/checkout
+      contents: read # actions/checkout
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1

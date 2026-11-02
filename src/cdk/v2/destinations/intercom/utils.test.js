@@ -1352,6 +1352,13 @@ describe('isRetlIdentifyWithMappedExternalId utility test', () => {
     ['the email lookup', { integrations: { INTERCOM: { lookup: 'email' } } }, false],
     ['no email', { traits: { external_id: 'user-1' } }, false],
     ['no external_id', { traits: { email: 'a@rudderlabs.com' } }, false],
+    ['a number external_id', { traits: { email: 'a@rudderlabs.com', external_id: 7 } }, true],
+    [
+      'an object external_id',
+      { traits: { email: 'a@rudderlabs.com', external_id: { a: 1 } } },
+      false,
+    ],
+    ['an array external_id', { traits: { email: 'a@rudderlabs.com', external_id: ['a'] } }, false],
     ['traits only under context', { traits: undefined }, false],
   ])('returns the right answer for %s', (_, override, expected) => {
     expect(isRetlIdentifyWithMappedExternalId({ ...baseMessage, ...override })).toBe(expected);

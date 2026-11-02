@@ -335,6 +335,7 @@ const isRetlIdentifyWithMappedExternalId = (message) =>
   Boolean(
     message.context?.mappedToDestination &&
       message.traits?.external_id &&
+      ['string', 'number'].includes(typeof message.traits.external_id) &&
       message.traits?.email &&
       message.type?.toLowerCase() === EventType.IDENTIFY &&
       getLookUpField(message) === 'external_id',

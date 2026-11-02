@@ -512,7 +512,7 @@ const transformFailStep: PipelineStep = {
   stepType: 'pipeline',
   name: 'transform fails',
   seed: () => event('a'),
-  expectedFailure: { transform: { statusCode: 500 } },
+  expectedFailure: { transformStatusCode: 500 },
 };
 
 describe('runPipelineStep — expected transform failure', () => {

@@ -91,12 +91,10 @@ const attemptDelivery = async ({
   expect(routerResponse.status).toEqual(HttpStatusCode.Ok);
 
   const routerOutputs = parseRouterOutputs(routerResponse.body);
-  const expectedTransform = step.expectedFailure?.transform;
-  if (expectedTransform) {
+  const transformStatusCode = step.expectedFailure?.transformStatusCode;
+  if (transformStatusCode !== undefined) {
     // Statuses only: a router output carries live credentials (see the count assertion below).
-    expect(routerOutputs.map((o) => o.statusCode)).toEqual(
-      events.map(() => expectedTransform.statusCode),
-    );
+    expect(routerOutputs.map((o) => o.statusCode)).toEqual(events.map(() => transformStatusCode));
     return undefined;
   }
   // /routerTransform reports a per-event transform failure as a non-2xx entry in `output[]`, not as

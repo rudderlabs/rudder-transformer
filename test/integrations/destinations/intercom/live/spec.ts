@@ -102,6 +102,32 @@ const retlIdentify = (
   traits: { ...retlProfile(ctx), email: null },
 });
 
+// ACT2-1371: a user transformation can rename the identifier to external_id and
+// set the lookup, so the row has both an email and an external_id no contact holds yet.
+const retlProfileWithEmail = (ctx: RunContext) => ({ ...retlProfile(ctx), email: ctx.email() });
+const retlIdentifyWithEmail = (ctx: RunContext, suffix: string) => ({
+  ...baseEvent(ctx, suffix),
+  type: 'identify',
+  integrations: { All: true, INTERCOM: { lookup: 'external_id' } },
+  context: {
+    mappedToDestination: 'true',
+    externalId: [
+      { id: ctx.identity('user'), type: 'INTERCOM-customer', identifierType: 'external_id' },
+    ],
+    traits: { external_id: ctx.identity('user') },
+  },
+  traits: { ...retlProfileWithEmail(ctx), external_id: ctx.identity('user') },
+});
+
+const verifyRetlContactWithEmail = {
+  check: verifyContact(
+    'external_id',
+    (ctx) => ctx.identity('user'),
+    (ctx) => retlProfileWithEmail(ctx),
+  ),
+  ...READBACK,
+};
+
 export const live = {
   enabled: true,
   authType: 'apiKey',
@@ -280,6 +306,74 @@ export const live = {
         ),
         ...READBACK,
       },
+    },
+    {
+      id: 'intercom-v2-retl-external-id-with-email',
+      description:
+        'A v2 rETL identify with external_id and email creates the contact with both when neither exists',
+      cleanup: deleteRunContacts,
+      steps: [
+        {
+          stepType: 'pipeline',
+          name: 'rETL identify (external_id + email, new contact)',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => retlIdentifyWithEmail(ctx, 'retl-external-id-email'),
+        },
+      ],
+      verify: verifyRetlContactWithEmail,
+    },
+    {
+      // ACT2-1371: this state answered 409 when the POST carried only the email.
+      id: 'intercom-v2-retl-external-id-email-only-contact',
+      description:
+        'A v2 rETL identify with a new external_id is delivered when a contact holds the email without an external_id',
+      cleanup: deleteRunContacts,
+      steps: [
+        {
+          stepType: 'action',
+          name: 'setup: create a contact with the email and no external_id',
+          run: async (ctx) => {
+            await createContact(ctx, { email: ctx.email(), name: `CI Setup ${ctx.runId}` });
+          },
+        },
+        {
+          stepType: 'pipeline',
+          name: 'rETL identify (external_id + email, email-only contact exists)',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => retlIdentifyWithEmail(ctx, 'retl-email-only-contact'),
+        },
+      ],
+      verify: verifyRetlContactWithEmail,
+    },
+    {
+      // ACT2-1371: separate users can share an email.
+      id: 'intercom-v2-retl-external-id-other-owner-of-email',
+      description:
+        'A v2 rETL identify with a new external_id is delivered when another external_id already holds the email',
+      cleanup: deleteRunContacts,
+      steps: [
+        {
+          stepType: 'action',
+          name: 'setup: create a contact with the email and a different external_id',
+          run: async (ctx) => {
+            await createContact(ctx, {
+              email: ctx.email(),
+              external_id: ctx.identity('other-user'),
+              name: `CI Setup ${ctx.runId}`,
+            });
+          },
+        },
+        {
+          stepType: 'pipeline',
+          name: 'rETL identify (external_id + email, another user holds the email)',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => retlIdentifyWithEmail(ctx, 'retl-other-owner'),
+        },
+      ],
+      verify: verifyRetlContactWithEmail,
     },
     {
       id: 'intercom-v2-track',

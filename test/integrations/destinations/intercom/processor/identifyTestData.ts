@@ -1501,7 +1501,7 @@ export const identifyTestData = [
     description: 'V2 version : external_id set as identifier in rETL flow along with email',
     scenario: 'Business',
     successCriteria:
-      'Response should contain update user payload with email and without external_id in the body',
+      'Contact found by external_id: response should update it with both email and external_id',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1529,6 +1529,53 @@ export const identifyTestData = [
               JSON: {
                 custom_attributes: { key1: 'value1', key2: 'value2' },
                 email: 'test+2@rudderlabs.com',
+                external_id: 'user@2',
+                phone: '+91 9999999999',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-23',
+    name: 'intercom',
+    description:
+      'V2 version : external_id set as identifier in rETL flow along with email, contact not found',
+    scenario: 'Business',
+    successCriteria:
+      'No contact has this external_id: response should create one with both email and external_id',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: rETLExternalIdMessage('user@1', 'test+2@rudderlabs.com'),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: v2Endpoint,
+              headers: v2Headers,
+              method: 'POST',
+              JSON: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                email: 'test+2@rudderlabs.com',
+                external_id: 'user@1',
                 phone: '+91 9999999999',
               },
             }),

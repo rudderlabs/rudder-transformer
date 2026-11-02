@@ -286,9 +286,12 @@ const searchContact = async (message, destination, metadata) => {
     }
   };
 
-  // we are mapping user_id to external_id in the message for rEtl flow when email is not present in traits
+  // In rEtl flow, search only by a mapped external_id when the payload will carry it: without email,
+  // or on an identify with email. Searching email as well would match another user sharing that email.
   const isRetlExternalIdMapping =
-    message.context?.mappedToDestination && message.traits?.external_id && !message.traits?.email;
+    message.context?.mappedToDestination &&
+    message.traits?.external_id &&
+    (!message.traits?.email || message.type?.toLowerCase() === 'identify');
   if (isRetlExternalIdMapping) {
     addLookup('external_id', message.traits.external_id);
   } else {

@@ -2,7 +2,7 @@ jest.mock('../../../adapters/network');
 
 import { handleHttpRequest } from '../../../adapters/network';
 import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
-import { objectExists } from './util';
+import { createAccount, objectExists, updateAccount } from './util';
 
 const mockHandleHttpRequest = handleHttpRequest as unknown as jest.Mock;
 
@@ -32,5 +32,26 @@ describe('objectExists', () => {
       success: false,
       err: '{"message":"not found"}',
     });
+  });
+});
+
+describe('account calls', () => {
+  const rejected = { status: 400, response: { externalapierror: { message: 'bad account' } } };
+
+  it('should report success when the account is created (201)', async () => {
+    mockHandleHttpRequest.mockResolvedValueOnce({
+      processedResponse: { status: 201, response: '' },
+    });
+
+    await expect(createAccount({}, Config, {})).resolves.toEqual({ success: true, err: null });
+  });
+
+  it.each([
+    ['createAccount', () => createAccount({}, Config, {})],
+    ['updateAccount', () => updateAccount('acc-1', {}, Config, {})],
+  ])('%s should return the unwrapped error body on 400 without throwing', async (_, call) => {
+    mockHandleHttpRequest.mockResolvedValueOnce({ processedResponse: rejected });
+
+    await expect(call()).resolves.toEqual({ success: false, err: '{"message":"bad account"}' });
   });
 });

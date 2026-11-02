@@ -7,7 +7,7 @@ const { getUsersEndpoint, getAccountsEndpoint } = require('./config');
 
 // processedResponse already maps no-response failures (timeout/reset) to a retryable status
 const handleErrorResponse = ({ response, status }, customErrMessage, expectedErrStatus) => {
-  const destResp = response?.externalapierror ?? response;
+  const destResp = response.externalapierror ?? response;
   const errMessage = destResp ? JSON.stringify(destResp) : '';
 
   if (status === expectedErrStatus) {
@@ -36,7 +36,7 @@ const objectExists = async (id, Config, objectType, metadata) => {
   if (objectType === 'account') {
     url = `${getAccountsEndpoint(Config)}/${id}`;
   }
-  const { httpResponse: res, processedResponse } = await handleHttpRequest(
+  const { processedResponse } = await handleHttpRequest(
     'get',
     url,
     {
@@ -54,14 +54,14 @@ const objectExists = async (id, Config, objectType, metadata) => {
       module: 'router',
     },
   );
-  if (res.success && res.response && res.response.status === 200) {
+  if (processedResponse.status === 200) {
     return { success: true, err: null };
   }
   return handleErrorResponse(processedResponse, `error while fetching ${objectType}`, 404);
 };
 
 const createAccount = async (payload, Config, metadata) => {
-  const { httpResponse: res, processedResponse } = await handleHttpRequest(
+  const { processedResponse } = await handleHttpRequest(
     'post',
     getAccountsEndpoint(Config),
     payload,
@@ -80,14 +80,14 @@ const createAccount = async (payload, Config, metadata) => {
       module: 'router',
     },
   );
-  if (res.success && res.response.status === 201) {
+  if (processedResponse.status === 201) {
     return { success: true, err: null };
   }
   return handleErrorResponse(processedResponse, 'error while creating account', 400);
 };
 
 const updateAccount = async (accountId, payload, Config, metadata) => {
-  const { httpResponse: res, processedResponse } = await handleHttpRequest(
+  const { processedResponse } = await handleHttpRequest(
     'put',
     `${getAccountsEndpoint(Config)}/${accountId}`,
     payload,
@@ -106,7 +106,7 @@ const updateAccount = async (accountId, payload, Config, metadata) => {
       module: 'router',
     },
   );
-  if (res.success && res.response.status === 204) {
+  if (processedResponse.status === 204) {
     return { success: true, err: null };
   }
   return handleErrorResponse(processedResponse, 'error while updating account', 400);

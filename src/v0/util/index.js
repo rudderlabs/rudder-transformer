@@ -900,12 +900,14 @@ function handleTemplate(template, value) {
 }
 
 // Only use for customer-configured templates; internally generated templates must retain 5xx errors.
-function compileAndRenderUserTemplate(template, templateInput) {
+function compileAndRenderUserTemplate(template, templateInput, templateLabel) {
   try {
     return Handlebars.compile(template)(templateInput);
   } catch (error) {
     // Handlebars parse errors include a source excerpt after the first line.
-    throw new ConfigurationError(`Failed to render template: ${error.message.split('\n')[0]}`);
+    throw new ConfigurationError(
+      `Failed to render the ${templateLabel} template: ${error.message.split('\n')[0]}`,
+    );
   }
 }
 

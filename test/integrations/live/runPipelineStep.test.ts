@@ -492,3 +492,49 @@ describe('runPipelineStep — outputs rudder-server does not deliver', () => {
     ).rejects.toThrow();
   });
 });
+
+// Answers /routerTransform with one failed output per seeded event, carrying `statusCode`.
+const transformFailHttp = (
+  calls: { url: string; body: unknown }[],
+  statusCode: number,
+): LiveHttpClient => ({
+  post: async (url: string, body: object): Promise<LiveHttpResponse> => {
+    calls.push({ url, body });
+    const jobIds = (body as RouterTransformRequestBody).input.map((i) => i.metadata.jobId);
+    return {
+      status: 200,
+      body: { output: jobIds.map((jobId) => ({ ...failedRouterOutput([jobId]), statusCode })) },
+    };
+  },
+});
+
+const transformFailStep = (statusCode = 500): PipelineStep => ({
+  stepType: 'pipeline',
+  name: 'transform fails',
+  seed: () => event('a'),
+  expectedTransformFailure: { statusCode },
+});
+
+describe('runPipelineStep — expected transform failure', () => {
+  it('passes when every output fails with the declared status, without delivering', async () => {
+    const calls: { url: string; body: unknown }[] = [];
+    await expect(run(transformFailStep(), transformFailHttp(calls, 500))).resolves.toBeUndefined();
+    expect(calls.map((c) => c.url)).toEqual(['/routerTransform']);
+  });
+
+  it('fails when the transform fails with a different status', async () => {
+    await expect(run(transformFailStep(), transformFailHttp([], 400))).rejects.toThrow();
+  });
+
+  it('fails when the transform succeeds', async () => {
+    await expect(run(transformFailStep(), stubHttp([]))).rejects.toThrow();
+  });
+
+  it('rejects a step that also declares expectedFailure', async () => {
+    const calls: { url: string; body: unknown }[] = [];
+    await expect(
+      run({ ...transformFailStep(), expectedFailure: {} }, transformFailHttp(calls, 500)),
+    ).rejects.toThrow(/exclusive/);
+    expect(calls).toHaveLength(0);
+  });
+});

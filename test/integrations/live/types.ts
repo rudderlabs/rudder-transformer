@@ -136,6 +136,14 @@ interface PipelineStep extends Step {
     items?: readonly number[];
     category?: string;
   };
+  // Declares that the TRANSFORM itself must fail for every seeded event with this statusCode, so
+  // nothing is delivered — e.g. a transform-time lookup that times out must come back retryable
+  // (500), not aborted (400). For failures a transform decides from the destination's live
+  // behaviour; pure validation errors stay in the mocked suite. Cannot be combined with
+  // expectedFailure, which is about delivery verdicts.
+  expectedTransformFailure?: {
+    statusCode: number;
+  };
   // Re-run seed -> transform -> deliver up to this many extra times (backoff) if delivery fails.
   // For routes that decide create-vs-update by searching an eventually-consistent index: a
   // freshly set-up record can be missed on the first try and 409, then found on a retry. Only use

@@ -76,6 +76,12 @@ const attemptDelivery = async ({
         `expect the whole batch to fail, or name the seed indices that must not be delivered.`,
     );
   }
+  if (step.expectedFailure && step.expectedTransformFailure) {
+    throw new Error(
+      `[live:${destination}:${step.name}] expectedFailure and expectedTransformFailure are ` +
+        `exclusive — a step whose transform fails never reaches delivery.`,
+    );
+  }
   // TODO: this drives only the /routerTransform -> /proxy path. rudder-server also runs
   // the processor transform (/v0/destinations/<dest>) ahead of delivery, whose response shape
   // differs — that chaining is not exercised here (see live/README.md "Deferred").
@@ -91,6 +97,13 @@ const attemptDelivery = async ({
   expect(routerResponse.status).toEqual(HttpStatusCode.Ok);
 
   const routerOutputs = parseRouterOutputs(routerResponse.body);
+  if (step.expectedTransformFailure) {
+    // Statuses only: a router output carries live credentials (see the count assertion below).
+    expect(routerOutputs.map((o) => o.statusCode)).toEqual(
+      events.map(() => step.expectedTransformFailure?.statusCode),
+    );
+    return undefined;
+  }
   // /routerTransform reports a per-event transform failure as a non-2xx entry in `output[]`, not as
   // an HTTP error. Fail on those here, before any count assertion: a step that seeded several
   // events would otherwise satisfy `expectedOutputs` from the survivors alone and report a partly

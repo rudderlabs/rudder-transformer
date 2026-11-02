@@ -269,6 +269,60 @@ const filterCustomAttributes = (payload, type, destination, message) => {
 };
 
 /**
+ * Runs Intercom's contact search for the given lookups
+ * @param {*} lookups
+ * @param {*} destination
+ * @param {*} metadata
+ * @returns the matching contacts
+ */
+const fetchContacts = async (lookups, destination, metadata) => {
+  const lookupOperator = lookups.length > 1 ? 'OR' : 'AND';
+  const lookupQueries = lookups.map((lookup) => ({
+    field: lookup.field,
+    operator: '=',
+    value: lookup.value,
+  }));
+  const data = JSON.stringify({
+    query: {
+      operator: lookupOperator,
+      value: lookupQueries,
+    },
+  });
+
+  const headers = getHeaders(destination);
+  const baseEndPoint = getBaseEndpoint(destination);
+  const endpoint = `${baseEndPoint}/${SEARCH_CONTACT_ENDPOINT}`;
+  const response = await httpPOST(
+    endpoint,
+    data,
+    {
+      headers,
+    },
+    {
+      destType: 'intercom',
+      feature: 'transformation',
+      endpointPath: '/contacts/search',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
+    },
+  );
+  const processedUserResponse = processAxiosResponse(response);
+  if (isHttpStatusSuccess(processedUserResponse.status)) {
+    return processedUserResponse.response?.data;
+  }
+
+  throw new NetworkError(
+    `Unable to search contact due to : ${JSON.stringify(processedUserResponse?.response?.errors)}`,
+    processedUserResponse?.status,
+    {
+      [tags]: getDynamicErrorType(processedUserResponse?.status),
+    },
+    processedUserResponse,
+  );
+};
+
+/**
  * Api call to search contact in intercom to returns id of contact
  * Ref doc : https://developers.intercom.com/docs/references/rest-api/api.intercom.io/Contacts/SearchContacts/
  * @param {*} message
@@ -337,58 +391,31 @@ const searchContact = async (message, destination, metadata) => {
     return null;
   }
 
-  const lookupOperator = lookups.length > 1 ? 'OR' : 'AND';
-  const lookupQueries = lookups.map((lookup) => ({
-    field: lookup.field,
-    operator: '=',
-    value: lookup.value,
-  }));
-  const data = JSON.stringify({
-    query: {
-      operator: lookupOperator,
-      value: lookupQueries,
-    },
-  });
-
-  const headers = getHeaders(destination);
-  const baseEndPoint = getBaseEndpoint(destination);
-  const endpoint = `${baseEndPoint}/${SEARCH_CONTACT_ENDPOINT}`;
-  const response = await httpPOST(
-    endpoint,
-    data,
-    {
-      headers,
-    },
-    {
-      destType: 'intercom',
-      feature: 'transformation',
-      endpointPath: '/contacts/search',
-      requestMethod: 'POST',
-      module: 'router',
-      metadata,
-    },
-  );
-  const processedUserResponse = processAxiosResponse(response);
-  if (isHttpStatusSuccess(processedUserResponse.status)) {
-    const contacts = processedUserResponse.response?.data;
-    if (contacts?.length > 1) {
-      warn('[INTERCOM] Multiple contacts found for the message', {
-        sourceId: metadata.sourceId,
-        destinationId: metadata.destinationId,
-        workspaceId: metadata.workspaceId,
-      });
-    }
-    return contacts?.length > 0 ? contacts[0]?.id : null;
+  const contacts = await fetchContacts(lookups, destination, metadata);
+  if (contacts?.length > 1) {
+    warn('[INTERCOM] Multiple contacts found for the message', {
+      sourceId: metadata.sourceId,
+      destinationId: metadata.destinationId,
+      workspaceId: metadata.workspaceId,
+    });
+  }
+  if (contacts?.length > 0) {
+    return contacts[0]?.id;
   }
 
-  throw new NetworkError(
-    `Unable to search contact due to : ${JSON.stringify(processedUserResponse?.response?.errors)}`,
-    processedUserResponse?.status,
-    {
-      [tags]: getDynamicErrorType(processedUserResponse?.status),
-    },
-    processedUserResponse,
-  );
+  // Intercom answers 409 to a create when a contact holds this email without an external_id, but
+  // accepts one when the email belongs to a different external_id. So adopt only the former, which
+  // keeps separate users that share an email apart.
+  const email = message.traits?.email;
+  if (isRetlExternalIdMapping && typeof email === 'string' && email) {
+    const contactsWithEmail = await fetchContacts(
+      [{ field: 'email', value: email.toLowerCase() }],
+      destination,
+      metadata,
+    );
+    return contactsWithEmail?.find?.((contact) => !contact.external_id)?.id ?? null;
+  }
+  return null;
 };
 
 /**

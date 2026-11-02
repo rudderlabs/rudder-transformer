@@ -50,12 +50,16 @@ const createRunContact = (ctx: RunContext): Promise<string> =>
 // Intercom answers 409. The transform always sends a compound query, which can take ~30-100s to see
 // a new contact (a simple single-field query sees it within seconds), so poll with that exact shape
 // and require consecutive hits, as results can flip right after the index catches up.
-const createSearchableContact = async (ctx: RunContext): Promise<void> => {
-  const contactId = await createRunContact(ctx);
+const waitForTransformSearch = async (
+  ctx: RunContext,
+  field: 'email' | 'external_id',
+  value: string,
+  contactId: string,
+): Promise<void> => {
   let consecutiveHits = 0;
   await pollUntil(
     async () => {
-      const contacts = await searchContactsAsTransform(ctx, 'external_id', ctx.identity('user'));
+      const contacts = await searchContactsAsTransform(ctx, field, value);
       consecutiveHits = contacts.some((c) => c.id === contactId) ? consecutiveHits + 1 : 0;
       return { done: consecutiveHits >= STABLE_SEARCH_HITS, value: contacts };
     },
@@ -65,6 +69,11 @@ const createSearchableContact = async (ctx: RunContext): Promise<void> => {
       delayMs: () => 4000,
     },
   );
+};
+
+const createSearchableContact = async (ctx: RunContext): Promise<void> => {
+  const contactId = await createRunContact(ctx);
+  await waitForTransformSearch(ctx, 'external_id', ctx.identity('user'), contactId);
 };
 
 // Waiting on the transform's compound search can take well over the default 120s step timeout.
@@ -324,17 +333,22 @@ export const live = {
       verify: verifyRetlContactWithEmail,
     },
     {
-      // ACT2-1371: this state answered 409 when the POST carried only the email.
+      // ACT2-1371: Intercom answers 409 to a create in this state, so the contact must be adopted.
       id: 'intercom-v2-retl-external-id-email-only-contact',
       description:
-        'A v2 rETL identify with a new external_id is delivered when a contact holds the email without an external_id',
+        'A v2 rETL identify with a new external_id adopts the contact that holds the email without an external_id',
       cleanup: deleteRunContacts,
       steps: [
         {
           stepType: 'action',
-          name: 'setup: create a contact with the email and no external_id',
+          name: 'setup: create a contact with the email and no external_id, and wait until the transform can find it',
+          timeoutMs: 240000,
           run: async (ctx) => {
-            await createContact(ctx, { email: ctx.email(), name: `CI Setup ${ctx.runId}` });
+            const contactId = await createContact(ctx, {
+              email: ctx.email(),
+              name: `CI Setup ${ctx.runId}`,
+            });
+            await waitForTransformSearch(ctx, 'email', ctx.email(), contactId);
           },
         },
         {
@@ -342,10 +356,19 @@ export const live = {
           name: 'rETL identify (external_id + email, email-only contact exists)',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
+          // A later search can still miss and route this to a create (409), which persists nothing.
+          retries: 4,
+          delayBeforeMs: 3000,
           seed: (ctx) => retlIdentifyWithEmail(ctx, 'retl-email-only-contact'),
         },
       ],
-      verify: verifyRetlContactWithEmail,
+      verify: {
+        check: async (ctx) => {
+          await verifyRetlContactWithEmail.check(ctx);
+          expect(await searchContacts(ctx, 'email', ctx.email())).toHaveLength(1);
+        },
+        ...READBACK,
+      },
     },
     {
       // ACT2-1371: separate users can share an email.

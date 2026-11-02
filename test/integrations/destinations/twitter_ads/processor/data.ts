@@ -2492,29 +2492,9 @@ export const data = [
   },
   ...[
     {
-      description: 'Numeric phone hashes as its string equivalent',
-      properties: { phone: 9876543210 },
-      identifiers: [{ hashed_phone_number: sha256('9876543210') }],
-    },
-    {
-      description: 'Numeric email hashes as its lowercased string equivalent',
-      properties: { email: 12345 },
-      identifiers: [{ hashed_email: sha256('12345') }],
-    },
-    {
-      description: 'Numeric twclid is emitted as a string',
-      properties: { twclid: 12345 },
-      identifiers: [{ twclid: '12345' }],
-    },
-    {
       description: 'Whitespace phone is omitted when an email is available',
       properties: { phone: '   ', email: 'TeSt@Example.com' },
       identifiers: [{ hashed_email: sha256('test@example.com') }],
-    },
-    {
-      description: 'Numeric IP and boolean user agent are coerced to strings',
-      properties: { ip_address: 123, user_agent: true },
-      identifiers: [{ ip_address: '123', user_agent: 'true' }],
     },
   ].map(({ description, properties, identifiers }) => ({
     name: 'twitter_ads',
@@ -2579,24 +2559,34 @@ export const data = [
   })),
   ...[
     {
+      description: 'Numeric phone is a data-validation error',
+      properties: { phone: 9876543210 },
+      error: '[TWITTER ADS]: properties.phone must be a string, received number. Aborting message',
+      errorType: 'instrumentation',
+    },
+    {
+      description: 'Numeric email is a data-validation error',
+      properties: { email: 12345 },
+      error: '[TWITTER ADS]: properties.email must be a string, received number. Aborting message',
+      errorType: 'instrumentation',
+    },
+    {
+      description: 'Boolean user agent is a data-validation error even with a valid email',
+      properties: { email: 'test@example.com', user_agent: true },
+      error:
+        '[TWITTER ADS]: properties.user_agent must be a string, received boolean. Aborting message',
+      errorType: 'instrumentation',
+    },
+    {
       description: 'Array phone is a data-validation error',
       properties: { phone: ['9876543210'] },
-      error:
-        '[TWITTER ADS]: properties.phone must be a string, number or boolean, received array. Aborting message',
+      error: '[TWITTER ADS]: properties.phone must be a string, received array. Aborting message',
       errorType: 'instrumentation',
     },
     {
       description: 'Object phone is a data-validation error',
       properties: { phone: { digits: '9876543210' } },
-      error:
-        '[TWITTER ADS]: properties.phone must be a string, number or boolean, received object. Aborting message',
-      errorType: 'instrumentation',
-    },
-    {
-      description: 'Object twclid is a data-validation error',
-      properties: { twclid: { id: '12345' } },
-      error:
-        '[TWITTER ADS]: properties.twclid must be a string, number or boolean, received object. Aborting message',
+      error: '[TWITTER ADS]: properties.phone must be a string, received object. Aborting message',
       errorType: 'instrumentation',
     },
     {

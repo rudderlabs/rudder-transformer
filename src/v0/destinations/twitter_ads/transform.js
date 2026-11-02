@@ -1,11 +1,6 @@
 const sha256 = require('sha256');
 
-const {
-  InstrumentationError,
-  ConfigurationError,
-  isDefinedNotNullNotEmpty,
-  isPrimitive,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -21,17 +16,17 @@ const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { getAuthHeaderForRequest, getOAuthFields } = require('./util');
 
-// Omits empty identifiers and rejects populated non-scalar values as invalid event data.
+// Rejects non-string identifiers as invalid event data instead of crashing on trim().
 const toTrimmedIdentifier = (value, fieldName) => {
-  if (!isDefinedNotNullNotEmpty(value)) {
+  if (!isDefinedAndNotNull(value)) {
     return undefined;
   }
-  if (!isPrimitive(value)) {
+  if (typeof value !== 'string') {
     throw new InstrumentationError(
-      `[TWITTER ADS]: properties.${fieldName} must be a string, number or boolean, received ${getType(value)}. Aborting message`,
+      `[TWITTER ADS]: properties.${fieldName} must be a string, received ${getType(value)}. Aborting message`,
     );
   }
-  return String(value).trim();
+  return value.trim();
 };
 
 // build final response
@@ -67,14 +62,10 @@ function populateEventId(event, requestJson, destination) {
 
   if (eventNameToIdMappings) {
     const eventName = event?.toString().toLowerCase();
-    const eventObj = eventNameToIdMappings.find((obj) => {
-      const name = obj.rudderEventName;
-      return (
-        isDefinedNotNullNotEmpty(name) &&
-        isPrimitive(name) &&
-        String(name).trim().toLowerCase() === eventName
-      );
-    });
+    const eventObj = eventNameToIdMappings.find(
+      ({ rudderEventName }) =>
+        typeof rudderEventName === 'string' && rudderEventName.trim().toLowerCase() === eventName,
+    );
     eventId = eventObj?.twitterEventId;
   }
 
@@ -138,7 +129,6 @@ function createIdentifiers(properties) {
   const trimmedPhone = toTrimmedIdentifier(phone, 'phone');
   const trimmedIp = toTrimmedIdentifier(ipAddress, 'ip_address');
   const trimmedUserAgent = toTrimmedIdentifier(userAgent, 'user_agent');
-  const trimmedTwclid = toTrimmedIdentifier(twclid, 'twclid');
 
   if (trimmedEmail) {
     identifiers.push({ hashed_email: sha256(trimmedEmail.toLowerCase()) });
@@ -146,9 +136,8 @@ function createIdentifiers(properties) {
   if (trimmedPhone) {
     identifiers.push({ hashed_phone_number: sha256(trimmedPhone) });
   }
-  // Keep nonblank string click IDs unchanged; only coerce non-string scalars.
-  if (trimmedTwclid) {
-    identifiers.push({ twclid: typeof twclid === 'string' ? twclid : trimmedTwclid });
+  if (twclid) {
+    identifiers.push({ twclid });
   }
 
   // ip_address or/and user_agent is required to be

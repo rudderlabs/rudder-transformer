@@ -399,11 +399,18 @@ export const live = {
       verify: {
         check: async (ctx) => {
           await verifyRetlContactWithEmail.check(ctx);
-          expect(await searchContacts(ctx, 'email', ctx.email())).toHaveLength(2);
+          // Looked up by external_id, because an email search can lag by minutes. Had the row replaced
+          // the other user's id, this finds nothing.
+          const [rowContact] = await searchContacts(ctx, 'external_id', ctx.identity('user'));
+          const [otherContact] = await searchContacts(
+            ctx,
+            'external_id',
+            ctx.identity('other-user'),
+          );
+          expect(otherContact).toBeDefined();
+          expect(otherContact.id).not.toBe(rowContact.id);
         },
-        // An email search can lag well behind the write, so use most of the 120s read-back limit.
-        attempts: 13,
-        delayMs: () => 8000,
+        ...READBACK,
       },
     },
     {

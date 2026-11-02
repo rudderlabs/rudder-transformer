@@ -15,7 +15,7 @@ const handleErrorResponse = ({ response, status }, customErrMessage, expectedErr
   if (status === expectedErrStatus && errMessage) {
     return { success: false, err: errMessage };
   }
-  // an unexpected 2xx (e.g. 200 instead of 201) is not a success here; keep aborting it as before
+  // an unexpected 2xx (e.g. 200 instead of 201) is not a success here, so it still aborts
   const errStatus = isHttpStatusSuccess(status) ? 400 : status;
   throw new NetworkError(
     `${customErrMessage}: ${errMessage}`,

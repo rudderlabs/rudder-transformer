@@ -2,19 +2,19 @@ const { NetworkError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { getErrorStatusCode } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getUsersEndpoint, getAccountsEndpoint } = require('./config');
 
-const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
+const handleErrorResponse = (error, customErrMessage, expectedErrStatus) => {
   let destResp;
   let errMessage = '';
-  let errorStatus = defaultStatus;
+  // a timeout/reset (no response) or an empty-body 5xx must stay retryable, not default to 400
+  const errorStatus = getErrorStatusCode(error);
 
   if (error.response && error.response.data) {
     destResp = error.response?.data?.externalapierror ?? error.response?.data;
     errMessage = JSON.stringify(destResp);
-
-    errorStatus = error.response.status;
 
     if (error.response.status === expectedErrStatus) {
       return { success: false, err: errMessage };

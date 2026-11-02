@@ -49,9 +49,9 @@ steps:
       const payload = $.getFieldValueFromMessage(.message, "traits");
       // this is applicable for v2 only
       // without email, keep an explicitly mapped external_id and fall back to user_id
-      // with email, an identify keeps only an explicitly mapped external_id, which searchContact searched by
-      const isIdentifyWithMappedExternalId = $.outputs.messageType === {{$.EventType.IDENTIFY}} && payload.external_id;
-      payload.external_id = $.outputs.apiVersion === "v2" && !payload.email ? (payload.external_id || payload.user_id) : ($.outputs.apiVersion === "v2" && isIdentifyWithMappedExternalId ? payload.external_id : null);
+      // with email, keep it only on an identify that opted in, which searchContact matches by it
+      const keepsMappedExternalId = $.isRetlIdentifyWithMappedExternalId(.message);
+      payload.external_id = $.outputs.apiVersion === "v2" && !payload.email ? (payload.external_id || payload.user_id) : ($.outputs.apiVersion === "v2" && keepsMappedExternalId ? payload.external_id : null);
       payload;
 
   - name: searchContact

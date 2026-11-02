@@ -5,6 +5,8 @@ const {
   getName,
   getHeaders,
   searchContact,
+  deferRepeatClaims,
+  isRetlIdentifyWithMappedExternalId,
   getLookUpField,
   getBaseEndpoint,
   getCompaniesList,
@@ -22,6 +24,7 @@ const { BASE_ENDPOINT, BASE_EU_ENDPOINT, BASE_AU_ENDPOINT } = require('./config'
 jest.mock('axios', () => ({
   ...jest.requireActual('axios'),
   post: jest.fn(),
+  get: jest.fn(),
 }));
 
 describe('separateReservedAndRestMetadata utility test', () => {
@@ -1327,5 +1330,126 @@ describe('addOrUpdateTagsToCompany utility test', () => {
     await addOrUpdateTagsToCompany({ message, destination }, id);
 
     expect(axios.post).not.toHaveBeenCalled();
+  });
+});
+
+describe('isRetlIdentifyWithMappedExternalId utility test', () => {
+  const baseMessage = {
+    type: 'identify',
+    context: { mappedToDestination: 'true' },
+    integrations: { INTERCOM: { lookup: 'external_id' } },
+    traits: { email: 'a@rudderlabs.com', external_id: 'user-1' },
+  };
+
+  it.each([
+    ['identify with email, external_id and the lookup override', {}, true],
+    ['a type in another case', { type: 'IDENTIFY' }, true],
+    ['a track', { type: 'track' }, false],
+    ['a group', { type: 'group' }, false],
+    ['no rETL mapping', { context: {} }, false],
+    ['no lookup override', { integrations: { All: true } }, false],
+    ['the email lookup', { integrations: { INTERCOM: { lookup: 'email' } } }, false],
+    ['no email', { traits: { external_id: 'user-1' } }, false],
+    ['no external_id', { traits: { email: 'a@rudderlabs.com' } }, false],
+    ['traits only under context', { traits: undefined }, false],
+  ])('returns the right answer for %s', (_, override, expected) => {
+    expect(isRetlIdentifyWithMappedExternalId({ ...baseMessage, ...override })).toBe(expected);
+  });
+});
+
+describe('searchContact claim of an email-only contact', () => {
+  const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us', apiVersion: 'v2' } };
+  const metadata = { sourceId: 'source', destinationId: 'dest', workspaceId: 'workspace' };
+  const message = {
+    type: 'identify',
+    context: { mappedToDestination: 'true' },
+    integrations: { INTERCOM: { lookup: 'external_id' } },
+    traits: { email: 'A@rudderlabs.com', external_id: 'user-1' },
+  };
+  const searchResult = (data) => ({ status: 200, data: { type: 'list', data } });
+
+  beforeEach(() => {
+    axios.post.mockReset();
+    axios.get.mockReset();
+    axios.post
+      .mockResolvedValueOnce(searchResult([]))
+      .mockResolvedValueOnce(searchResult([{ id: 'c-1', external_id: null }]));
+  });
+
+  it('searches the email in lower case, and claims a contact the direct read shows is free', async () => {
+    axios.get.mockResolvedValue({ status: 200, data: { id: 'c-1', external_id: null } });
+    await expect(searchContact(message, destination, metadata)).resolves.toBe('c-1');
+    expect(JSON.parse(axios.post.mock.calls[1][1]).query.value).toEqual([
+      { field: 'email', operator: '=', value: 'a@rudderlabs.com' },
+    ]);
+  });
+
+  it('does not claim a contact the direct read shows is taken', async () => {
+    axios.get.mockResolvedValue({ status: 200, data: { id: 'c-1', external_id: 'user-2' } });
+    await expect(searchContact(message, destination, metadata)).resolves.toBeNull();
+  });
+
+  it('does not claim a contact deleted since the search', async () => {
+    axios.get.mockRejectedValue({ response: { status: 404, data: { errors: [] } } });
+    await expect(searchContact(message, destination, metadata)).resolves.toBeNull();
+  });
+
+  it('keeps the status of a failed direct read, so that the row retries', async () => {
+    axios.get.mockRejectedValue({ response: { status: 429, data: { errors: [] } } });
+    await expect(searchContact(message, destination, metadata)).rejects.toMatchObject({
+      status: 429,
+    });
+  });
+
+  it('keeps the status of a failed email search, so that the row retries', async () => {
+    axios.post.mockReset();
+    axios.post
+      .mockResolvedValueOnce(searchResult([]))
+      .mockRejectedValueOnce({ response: { status: 503, data: { errors: [] } } });
+    await expect(searchContact(message, destination, metadata)).rejects.toMatchObject({
+      status: 503,
+    });
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  it('does not look for a contact to claim on an event stream identify', async () => {
+    axios.post.mockReset();
+    axios.post.mockResolvedValue(searchResult([]));
+    const eventStreamMessage = {
+      type: 'identify',
+      userId: 'user-1',
+      context: { traits: { email: 'a@rudderlabs.com' } },
+    };
+    await expect(searchContact(eventStreamMessage, destination, metadata)).resolves.toBeNull();
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+});
+
+describe('deferRepeatClaims utility test', () => {
+  const put = (endpoint, externalId) => ({
+    output: { method: 'PUT', endpoint, body: { JSON: { external_id: externalId } } },
+  });
+
+  it('lets the first claim through and turns a later claim on that contact into a retryable error', () => {
+    const results = deferRepeatClaims([put('c-1', 'a'), put('c-1', 'b'), put('c-2', 'c')]);
+    expect(results[0]).toEqual(put('c-1', 'a'));
+    expect(results[1].output).toBeUndefined();
+    expect(results[1].error.status).toBe(500);
+    expect(results[2]).toEqual(put('c-2', 'c'));
+  });
+
+  it('keeps repeated updates from the same external_id', () => {
+    const results = deferRepeatClaims([put('c-1', 'a'), put('c-1', 'a')]);
+    expect(results).toEqual([put('c-1', 'a'), put('c-1', 'a')]);
+  });
+
+  it('keeps creates, updates without an external_id and failed rows', () => {
+    const results = [
+      { output: { method: 'POST', endpoint: 'c-1', body: { JSON: { external_id: 'a' } } } },
+      { output: { method: 'PUT', endpoint: 'c-1', body: { JSON: { email: 'a@b.com' } } } },
+      { error: new Error('failed') },
+    ];
+    expect(deferRepeatClaims(results)).toEqual(results);
   });
 });

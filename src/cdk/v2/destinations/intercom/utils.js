@@ -4,10 +4,13 @@ const {
   NetworkError,
   ConfigurationError,
   InstrumentationError,
+  RetryableError,
+  info,
   warn,
 } = require('@rudderstack/integrations-lib');
+const { EventType } = require('../../../../constants');
 const tags = require('../../../../v0/util/tags');
-const { httpPOST, handleHttpRequest } = require('../../../../adapters/network');
+const { httpGET, httpPOST, handleHttpRequest } = require('../../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -323,11 +326,131 @@ const fetchContacts = async (lookups, destination, metadata) => {
 };
 
 /**
- * Api call to search contact in intercom to returns id of contact
+ * Whether an rETL identify opted into matching by a mapped external_id while also carrying an email.
+ * Such a row sends both fields and is matched by external_id, so users sharing an email stay separate.
+ * @param {*} message
+ * @returns {boolean}
+ */
+const isRetlIdentifyWithMappedExternalId = (message) =>
+  Boolean(
+    message.context?.mappedToDestination &&
+      message.traits?.external_id &&
+      message.traits?.email &&
+      message.type?.toLowerCase() === EventType.IDENTIFY &&
+      getLookUpField(message) === 'external_id',
+  );
+
+/**
+ * Reads a contact directly, because search results lag behind writes and can't show that a contact
+ * is still unclaimed.
+ * @param {string} contactId
+ * @param {*} destination
+ * @param {*} metadata
+ * @returns the contact, or null when it no longer exists
+ */
+const fetchContact = async (contactId, destination, metadata) => {
+  const response = await httpGET(
+    `${getBaseEndpoint(destination)}/contacts/${contactId}`,
+    { headers: getHeaders(destination) },
+    {
+      destType: 'intercom',
+      feature: 'transformation',
+      endpointPath: '/contacts/{id}',
+      requestMethod: 'GET',
+      module: 'router',
+      metadata,
+    },
+  );
+  const processedResponse = processAxiosResponse(response);
+  if (isHttpStatusSuccess(processedResponse.status)) {
+    return processedResponse.response;
+  }
+  if (processedResponse.status === 404) {
+    return null;
+  }
+  throw new NetworkError(
+    `Unable to fetch contact due to : ${JSON.stringify(processedResponse?.response?.errors)}`,
+    processedResponse?.status,
+    {
+      [tags]: getDynamicErrorType(processedResponse?.status),
+    },
+    processedResponse,
+  );
+};
+
+/**
+ * Finds a contact that holds this email without an external_id, for the row to claim. Intercom answers
+ * 409 to a create in that state, but accepts one when the email belongs to a different external_id.
+ * Intercom has no conditional update, and a PUT silently replaces an external_id. So this reads the
+ * contact directly first, which leaves only rows racing on different router workers able to collide.
+ * @param {string} email
+ * @param {*} destination
+ * @param {*} metadata
+ * @returns the id of the contact to claim, or null to create a new contact
+ */
+const findContactToAdopt = async (email, destination, metadata) => {
+  const contacts = await fetchContacts(
+    [{ field: 'email', value: email.toLowerCase() }],
+    destination,
+    metadata,
+  );
+  const candidate = contacts?.find?.((contact) => !contact.external_id);
+  if (!candidate) {
+    return null;
+  }
+  const contact = await fetchContact(candidate.id, destination, metadata);
+  if (!contact || contact.external_id) {
+    return null;
+  }
+  info('[INTERCOM] Adopting a contact without external_id', {
+    sourceId: metadata.sourceId,
+    destinationId: metadata.destinationId,
+    workspaceId: metadata.workspaceId,
+    contactId: candidate.id,
+  });
+  return candidate.id;
+};
+
+/**
+ * Lets only the first row in a router call write an external_id onto a contact. All rows search before
+ * any is delivered, so several rows sharing an email can claim one contact, and each PUT would replace
+ * the last one's external_id. The other rows retry, and then see that the contact is taken.
+ * @param {Array} transformResults the per-row results of the transform step
+ * @returns the results, with any repeat claim replaced by a retryable error
+ */
+const deferRepeatClaims = (transformResults) => {
+  const claims = new Map();
+  return transformResults.map((result) => {
+    const { method, endpoint, body } = result.output || {};
+    const externalId = body?.JSON?.external_id;
+    if (method !== 'PUT' || !externalId) {
+      return result;
+    }
+    const claimedBy = claims.get(endpoint);
+    if (claimedBy === undefined) {
+      claims.set(endpoint, externalId);
+      return result;
+    }
+    if (claimedBy === externalId) {
+      return result;
+    }
+    return {
+      error: new RetryableError(
+        '[Intercom] Another row in this batch is claiming the same contact, retrying',
+        500,
+      ),
+    };
+  });
+};
+
+/**
+ * Finds the contact a message should update. For an rETL identify with a mapped external_id and an
+ * email, this is the contact holding the external_id, else an unclaimed contact holding the email.
  * Ref doc : https://developers.intercom.com/docs/references/rest-api/api.intercom.io/Contacts/SearchContacts/
  * @param {*} message
  * @param {*} destination
- * @returns
+ * @param {*} metadata
+ * @returns the contact id, or null when the message should create a contact
  */
 const searchContact = async (message, destination, metadata) => {
   const lookups = [];
@@ -340,12 +463,12 @@ const searchContact = async (message, destination, metadata) => {
     }
   };
 
-  // In rEtl flow, search only by a mapped external_id when the payload will carry it: without email,
-  // or on an identify with email. Searching email as well would match another user sharing that email.
+  // In rEtl flow, search only by a mapped external_id when the payload will carry it.
+  // Searching email as well would match another user sharing that email.
+  const shouldClaimByEmail = isRetlIdentifyWithMappedExternalId(message);
   const isRetlExternalIdMapping =
-    message.context?.mappedToDestination &&
-    message.traits?.external_id &&
-    (!message.traits?.email || message.type?.toLowerCase() === 'identify');
+    shouldClaimByEmail ||
+    (message.context?.mappedToDestination && message.traits?.external_id && !message.traits?.email);
   if (isRetlExternalIdMapping) {
     addLookup('external_id', message.traits.external_id);
   } else {
@@ -403,17 +526,8 @@ const searchContact = async (message, destination, metadata) => {
     return contacts[0]?.id;
   }
 
-  // Intercom answers 409 to a create when a contact holds this email without an external_id, but
-  // accepts one when the email belongs to a different external_id. So adopt only the former, which
-  // keeps separate users that share an email apart.
-  const email = message.traits?.email;
-  if (isRetlExternalIdMapping && typeof email === 'string' && email) {
-    const contactsWithEmail = await fetchContacts(
-      [{ field: 'email', value: email.toLowerCase() }],
-      destination,
-      metadata,
-    );
-    return contactsWithEmail?.find?.((contact) => !contact.external_id)?.id ?? null;
+  if (shouldClaimByEmail && typeof message.traits.email === 'string') {
+    return findContactToAdopt(message.traits.email, destination, metadata);
   }
   return null;
 };
@@ -690,6 +804,8 @@ module.exports = {
   getName,
   getHeaders,
   searchContact,
+  deferRepeatClaims,
+  isRetlIdentifyWithMappedExternalId,
   getLookUpField,
   getBaseEndpoint,
   getCompaniesList,

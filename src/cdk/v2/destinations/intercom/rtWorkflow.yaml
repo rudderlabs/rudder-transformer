@@ -3,6 +3,8 @@ bindings:
     path: ../../../../v0/util/index
   - name: isDefinedAndNotNull
     path: ../../../../v0/util
+  - name: deferRepeatClaims
+    path: ./utils
 
 steps:
   - name: validateInput
@@ -14,9 +16,13 @@ steps:
       path: ./procWorkflow.yaml
     loopOverInput: true
 
+  - name: claimCheckedResults
+    template: |
+      $.deferRepeatClaims($.outputs.transform)
+
   - name: successfulEvents
     template: |
-      $.outputs.transform#idx{$.isDefinedAndNotNull(.output)}.({
+      $.outputs.claimCheckedResults#idx{$.isDefinedAndNotNull(.output)}.({
         "batchedRequest": .output,
         "batched": false,
         "destination": ^[idx].destination,
@@ -25,7 +31,7 @@ steps:
       })[]
   - name: failedEvents
     template: |
-      $.outputs.transform#idx.error.(
+      $.outputs.claimCheckedResults#idx.error.(
         $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
   - name: finalPayload

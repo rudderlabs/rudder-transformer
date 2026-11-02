@@ -45,8 +45,8 @@ const createRunContact = (ctx: RunContext): Promise<string> =>
     name: `CI Setup ${ctx.runId}`,
   });
 
-// For identify update: the transform searches by external_id before choosing update vs create, so
-// wait until its own query finds the setup contact, otherwise the update is routed to a create and
+// The transform searches before choosing update vs create, so wait until its own query finds the
+// setup contact, otherwise the update is routed to a create and
 // Intercom answers 409. The transform always sends a compound query, which can take ~30-100s to see
 // a new contact (a simple single-field query sees it within seconds), so poll with that exact shape
 // and require consecutive hits, as results can flip right after the index catches up.
@@ -396,7 +396,13 @@ export const live = {
           seed: (ctx) => retlIdentifyWithEmail(ctx, 'retl-other-owner'),
         },
       ],
-      verify: verifyRetlContactWithEmail,
+      verify: {
+        check: async (ctx) => {
+          await verifyRetlContactWithEmail.check(ctx);
+          expect(await searchContacts(ctx, 'email', ctx.email())).toHaveLength(2);
+        },
+        ...READBACK,
+      },
     },
     {
       id: 'intercom-v2-track',

@@ -1632,4 +1632,97 @@ export const identifyTestData = [
       },
     },
   },
+  {
+    id: 'intercom-identify-test-25',
+    name: 'intercom',
+    description:
+      'V2 version : external_id set as identifier in rETL flow, search is stale about a claimed contact',
+    scenario: 'Business',
+    successCriteria:
+      'The direct read shows the contact is taken: response should create a separate contact',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: rETLExternalIdMessage('user@1', 'stale-index@rudderlabs.com'),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: v2Endpoint,
+              headers: v2Headers,
+              method: 'POST',
+              JSON: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                email: 'stale-index@rudderlabs.com',
+                external_id: 'user@1',
+                phone: '+91 9999999999',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-26',
+    name: 'intercom',
+    description: 'V2 version : external_id in rETL traits with email but no lookup override',
+    scenario: 'Business',
+    successCriteria:
+      'Without the lookup override, behaviour is unchanged: match by email and drop external_id',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: {
+              ...rETLExternalIdMessage('user@2', 'test+2@rudderlabs.com'),
+              integrations: { All: true },
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: `${v2Endpoint}/7070129940741e45d040`,
+              headers: v2Headers,
+              method: 'PUT',
+              JSON: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                email: 'test+2@rudderlabs.com',
+                phone: '+91 9999999999',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
 ];

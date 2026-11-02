@@ -1238,6 +1238,66 @@ const deliveryCallsData = [
   },
   {
     httpReq: {
+      method: 'get',
+      url: 'https://api.intercom.io/contacts/8070129940741e45d043',
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: { type: 'contact', id: '8070129940741e45d043', role: 'user', external_id: null },
+    },
+  },
+  {
+    httpReq: {
+      method: 'get',
+      url: 'https://api.intercom.io/contacts/8070129940741e45d044',
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'contact',
+        id: '8070129940741e45d044',
+        role: 'user',
+        external_id: 'claimed-by-another-row',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'stale-index@rudderlabs.com' }],
+        },
+      },
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        data: [
+          {
+            type: 'contact',
+            id: '8070129940741e45d044',
+            workspace_id: 'rudderWorkspace',
+            external_id: null,
+            role: 'user',
+            email: 'stale-index@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
       method: 'post',
       url: 'https://api.intercom.io/contacts/search',
       data: {

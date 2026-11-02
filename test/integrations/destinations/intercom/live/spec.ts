@@ -401,7 +401,9 @@ export const live = {
           await verifyRetlContactWithEmail.check(ctx);
           expect(await searchContacts(ctx, 'email', ctx.email())).toHaveLength(2);
         },
-        ...READBACK,
+        // An email search can lag well behind the write, so use most of the 120s read-back limit.
+        attempts: 13,
+        delayMs: () => 8000,
       },
     },
     {

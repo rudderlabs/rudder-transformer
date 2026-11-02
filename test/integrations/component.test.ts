@@ -52,6 +52,8 @@ command
   .parse();
 
 const opts = command.opts();
+// HTTP component cases can exceed Jest's 5-second default under CI coverage load.
+const COMPONENT_TEST_TIMEOUT_MS = 30_000;
 if (opts.generate === 'true' && !opts.destination) {
   throw new Error('Invalid option, generate should be true for a destination');
 }
@@ -297,6 +299,7 @@ describe('Component Test Suite', () => {
                 envManager.cleanup();
               }
             },
+            COMPONENT_TEST_TIMEOUT_MS,
           );
         });
       }

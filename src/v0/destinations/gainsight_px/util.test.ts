@@ -1,8 +1,10 @@
-const { handleHttpRequest } = require('../../../adapters/network');
-const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
-const { objectExists } = require('./util');
-
 jest.mock('../../../adapters/network');
+
+import { handleHttpRequest } from '../../../adapters/network';
+import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
+import { objectExists } from './util';
+
+const mockHandleHttpRequest = handleHttpRequest as unknown as jest.Mock;
 
 const Config = { apiKey: 'test-api-key' };
 
@@ -11,7 +13,7 @@ describe('objectExists', () => {
     const timeoutError = Object.assign(new Error('timeout of 60000ms exceeded'), {
       code: 'ECONNABORTED',
     });
-    handleHttpRequest.mockResolvedValueOnce({
+    mockHandleHttpRequest.mockResolvedValueOnce({
       processedResponse: processAxiosResponse({ success: false, response: timeoutError }),
     });
 
@@ -22,7 +24,7 @@ describe('objectExists', () => {
   });
 
   it('should report a missing user without throwing on 404', async () => {
-    handleHttpRequest.mockResolvedValueOnce({
+    mockHandleHttpRequest.mockResolvedValueOnce({
       processedResponse: { status: 404, response: { message: 'not found' } },
     });
 

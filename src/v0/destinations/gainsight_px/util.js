@@ -2,29 +2,22 @@ const { NetworkError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { getErrorStatusCode } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getUsersEndpoint, getAccountsEndpoint } = require('./config');
 
-const handleErrorResponse = (error, customErrMessage, expectedErrStatus) => {
-  let destResp;
-  let errMessage = '';
-  // a timeout/reset (no response) or an empty-body 5xx must stay retryable, not default to 400
-  const errorStatus = getErrorStatusCode(error);
+// processedResponse already maps no-response failures (timeout/reset) to a retryable status
+const handleErrorResponse = ({ response, status }, customErrMessage, expectedErrStatus) => {
+  const destResp = response?.externalapierror ?? response;
+  const errMessage = destResp ? JSON.stringify(destResp) : '';
 
-  if (error.response && error.response.data) {
-    destResp = error.response?.data?.externalapierror ?? error.response?.data;
-    errMessage = JSON.stringify(destResp);
-
-    if (error.response.status === expectedErrStatus) {
-      return { success: false, err: errMessage };
-    }
+  if (status === expectedErrStatus) {
+    return { success: false, err: errMessage };
   }
   throw new NetworkError(
     `${customErrMessage}: ${errMessage}`,
-    errorStatus,
+    status,
     {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destResp,
   );
@@ -43,7 +36,7 @@ const objectExists = async (id, Config, objectType, metadata) => {
   if (objectType === 'account') {
     url = `${getAccountsEndpoint(Config)}/${id}`;
   }
-  const { httpResponse: res } = await handleHttpRequest(
+  const { httpResponse: res, processedResponse } = await handleHttpRequest(
     'get',
     url,
     {
@@ -64,11 +57,11 @@ const objectExists = async (id, Config, objectType, metadata) => {
   if (res.success && res.response && res.response.status === 200) {
     return { success: true, err: null };
   }
-  return handleErrorResponse(res.response, `error while fetching ${objectType}`, 404);
+  return handleErrorResponse(processedResponse, `error while fetching ${objectType}`, 404);
 };
 
 const createAccount = async (payload, Config, metadata) => {
-  const { httpResponse: res } = await handleHttpRequest(
+  const { httpResponse: res, processedResponse } = await handleHttpRequest(
     'post',
     getAccountsEndpoint(Config),
     payload,
@@ -90,11 +83,11 @@ const createAccount = async (payload, Config, metadata) => {
   if (res.success && res.response.status === 201) {
     return { success: true, err: null };
   }
-  return handleErrorResponse(res.response, 'error while creating account', 400);
+  return handleErrorResponse(processedResponse, 'error while creating account', 400);
 };
 
 const updateAccount = async (accountId, payload, Config, metadata) => {
-  const { httpResponse: res } = await handleHttpRequest(
+  const { httpResponse: res, processedResponse } = await handleHttpRequest(
     'put',
     `${getAccountsEndpoint(Config)}/${accountId}`,
     payload,
@@ -116,7 +109,7 @@ const updateAccount = async (accountId, payload, Config, metadata) => {
   if (res.success && res.response.status === 204) {
     return { success: true, err: null };
   }
-  return handleErrorResponse(res.response, 'error while updating account', 400);
+  return handleErrorResponse(processedResponse, 'error while updating account', 400);
 };
 
 /**

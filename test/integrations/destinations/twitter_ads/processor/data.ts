@@ -2582,21 +2582,21 @@ export const data = [
       description: 'Array phone is a data-validation error',
       properties: { phone: ['9876543210'] },
       error:
-        '[TWITTER ADS]: properties.phone must be a string, number, bigint or boolean, received array. Aborting message',
+        '[TWITTER ADS]: properties.phone must be a string, number or boolean, received array. Aborting message',
       errorType: 'instrumentation',
     },
     {
       description: 'Object phone is a data-validation error',
       properties: { phone: { digits: '9876543210' } },
       error:
-        '[TWITTER ADS]: properties.phone must be a string, number, bigint or boolean, received object. Aborting message',
+        '[TWITTER ADS]: properties.phone must be a string, number or boolean, received object. Aborting message',
       errorType: 'instrumentation',
     },
     {
       description: 'Object twclid is a data-validation error',
       properties: { twclid: { id: '12345' } },
       error:
-        '[TWITTER ADS]: properties.twclid must be a string, number, bigint or boolean, received object. Aborting message',
+        '[TWITTER ADS]: properties.twclid must be a string, number or boolean, received object. Aborting message',
       errorType: 'instrumentation',
     },
     {

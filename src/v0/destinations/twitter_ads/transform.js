@@ -4,6 +4,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   isDefinedNotNullNotEmpty,
+  isPrimitive,
 } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
@@ -20,16 +21,14 @@ const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { getAuthHeaderForRequest, getOAuthFields } = require('./util');
 
-const SCALAR_TYPES = ['string', 'number', 'bigint', 'boolean'];
-
 // Omits empty identifiers and rejects populated non-scalar values as invalid event data.
 const toTrimmedIdentifier = (value, fieldName) => {
   if (!isDefinedNotNullNotEmpty(value)) {
     return undefined;
   }
-  if (!SCALAR_TYPES.includes(typeof value)) {
+  if (!isPrimitive(value)) {
     throw new InstrumentationError(
-      `[TWITTER ADS]: properties.${fieldName} must be a string, number, bigint or boolean, received ${getType(value)}. Aborting message`,
+      `[TWITTER ADS]: properties.${fieldName} must be a string, number or boolean, received ${getType(value)}. Aborting message`,
     );
   }
   return String(value).trim();
@@ -67,12 +66,13 @@ function populateEventId(event, requestJson, destination) {
   let eventId = '';
 
   if (eventNameToIdMappings) {
+    const eventName = event?.toString().toLowerCase();
     const eventObj = eventNameToIdMappings.find((obj) => {
       const name = obj.rudderEventName;
       return (
         isDefinedNotNullNotEmpty(name) &&
-        SCALAR_TYPES.includes(typeof name) &&
-        String(name).trim().toLowerCase() === event?.toString().toLowerCase()
+        isPrimitive(name) &&
+        String(name).trim().toLowerCase() === eventName
       );
     });
     eventId = eventObj?.twitterEventId;
@@ -138,6 +138,7 @@ function createIdentifiers(properties) {
   const trimmedPhone = toTrimmedIdentifier(phone, 'phone');
   const trimmedIp = toTrimmedIdentifier(ipAddress, 'ip_address');
   const trimmedUserAgent = toTrimmedIdentifier(userAgent, 'user_agent');
+  const trimmedTwclid = toTrimmedIdentifier(twclid, 'twclid');
 
   if (trimmedEmail) {
     identifiers.push({ hashed_email: sha256(trimmedEmail.toLowerCase()) });
@@ -145,13 +146,11 @@ function createIdentifiers(properties) {
   if (trimmedPhone) {
     identifiers.push({ hashed_phone_number: sha256(trimmedPhone) });
   }
-  // Validate the click ID but keep existing nonblank string values unchanged.
-  const trimmedTwclid = toTrimmedIdentifier(twclid, 'twclid');
+  // Keep nonblank string click IDs unchanged; only coerce non-string scalars.
   if (trimmedTwclid) {
     identifiers.push({ twclid: typeof twclid === 'string' ? twclid : trimmedTwclid });
   }
 
-  // Handle IP and user agent
   // ip_address or/and user_agent is required to be
   // passed in conjunction with another identifier
   // ref: https://developer.x.com/en/docs/x-ads-api/measurement/web-conversions/api-reference/conversions

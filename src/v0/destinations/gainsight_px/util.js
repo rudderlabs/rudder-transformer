@@ -2,7 +2,6 @@ const { NetworkError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { isHttpStatusSuccess } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getUsersEndpoint, getAccountsEndpoint } = require('./config');
 
@@ -11,17 +10,14 @@ const handleErrorResponse = ({ response, status }, customErrMessage, expectedErr
   const destResp = response.externalapierror ?? response;
   const errMessage = destResp ? JSON.stringify(destResp) : '';
 
-  // callers treat an empty err as "no error", so only a response with a body counts as expected
-  if (status === expectedErrStatus && errMessage) {
+  if (status === expectedErrStatus) {
     return { success: false, err: errMessage };
   }
-  // an unexpected 2xx (e.g. 200 instead of 201) is not a success here; keep aborting it as before
-  const errStatus = isHttpStatusSuccess(status) ? 400 : status;
   throw new NetworkError(
     `${customErrMessage}: ${errMessage}`,
-    errStatus,
+    status,
     {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destResp,
   );

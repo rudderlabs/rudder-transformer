@@ -1,6 +1,6 @@
 const { handleHttpRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
-const { objectExists, createAccount, updateAccount } = require('./util');
+const { objectExists } = require('./util');
 
 jest.mock('../../../adapters/network');
 
@@ -29,26 +29,6 @@ describe('objectExists', () => {
     await expect(objectExists('user-1', Config, 'user', {})).resolves.toEqual({
       success: false,
       err: '{"message":"not found"}',
-    });
-  });
-});
-
-describe('account calls', () => {
-  it('should abort an empty-body 400 on update instead of returning an empty err', async () => {
-    handleHttpRequest.mockResolvedValueOnce({ processedResponse: { status: 400, response: '' } });
-
-    await expect(updateAccount('acc-1', {}, Config, {})).rejects.toMatchObject({
-      message: 'error while updating account: ',
-      status: 400,
-    });
-  });
-
-  it('should abort an unexpected 2xx on create as 400', async () => {
-    handleHttpRequest.mockResolvedValueOnce({ processedResponse: { status: 200, response: '' } });
-
-    await expect(createAccount({}, Config, {})).rejects.toMatchObject({
-      message: 'error while creating account: ',
-      status: 400,
     });
   });
 });

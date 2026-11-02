@@ -1725,4 +1725,59 @@ export const identifyTestData = [
       },
     },
   },
+  {
+    id: 'intercom-identify-test-27',
+    name: 'intercom',
+    description: 'V2 version : rETL row claims an email-only contact with company.remove set',
+    scenario: 'Business',
+    successCriteria:
+      'The row was not found by external_id, so no company detach runs: the only request is the PUT',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: {
+              ...rETLExternalIdMessage('user@1', 'email-only@rudderlabs.com'),
+              traits: {
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                email: 'email-only@rudderlabs.com',
+                external_id: 'user@1',
+                phone: '+91 9999999999',
+                company: { id: 'no-detach-mock-exists', remove: true },
+              },
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint: `${v2Endpoint}/8070129940741e45d043`,
+              headers: v2Headers,
+              method: 'PUT',
+              JSON: {
+                company: { id: 'no-detach-mock-exists', remove: true },
+                custom_attributes: { key1: 'value1', key2: 'value2' },
+                email: 'email-only@rudderlabs.com',
+                external_id: 'user@1',
+                phone: '+91 9999999999',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
 ];

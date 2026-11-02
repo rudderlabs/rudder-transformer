@@ -1245,7 +1245,13 @@ const deliveryCallsData = [
     httpRes: {
       status: 200,
       statusText: 'ok',
-      data: { type: 'contact', id: '8070129940741e45d043', role: 'user', external_id: null },
+      data: {
+        type: 'contact',
+        id: '8070129940741e45d043',
+        role: 'user',
+        email: 'email-only@rudderlabs.com',
+        external_id: null,
+      },
     },
   },
   {

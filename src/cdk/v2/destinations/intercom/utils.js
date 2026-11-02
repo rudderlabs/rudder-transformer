@@ -379,18 +379,24 @@ const fetchContact = async (contactId, destination, metadata) => {
 };
 
 /**
- * Finds a contact that holds this email without an external_id, for the row to claim. Intercom answers
- * 409 to a create in that state, but accepts one when the email belongs to a different external_id.
- * Intercom has no conditional update, and a PUT silently replaces an external_id. So this reads the
- * contact directly first, which leaves only rows racing on different router workers able to collide.
- * @param {string} email
+ * Finds a contact that holds this row's email without an external_id, for the row to claim. Intercom
+ * answers 409 to a create in that state, but accepts one when the email belongs to a different
+ * external_id. Intercom has no conditional update, and a PUT silently replaces an external_id. So this
+ * reads the contact directly first, because search can be stale about both its external_id and its
+ * email. That leaves only rows racing on different router workers able to collide.
+ * @param {*} message
  * @param {*} destination
  * @param {*} metadata
  * @returns the id of the contact to claim, or null to create a new contact
  */
-const findContactToAdopt = async (email, destination, metadata) => {
+const findContactToAdopt = async (message, destination, metadata) => {
+  const { email } = message.traits;
+  if (typeof email !== 'string') {
+    return null;
+  }
+  const normalizedEmail = email.toLowerCase();
   const contacts = await fetchContacts(
-    [{ field: 'email', value: email.toLowerCase() }],
+    [{ field: 'email', value: normalizedEmail }],
     destination,
     metadata,
   );
@@ -399,7 +405,7 @@ const findContactToAdopt = async (email, destination, metadata) => {
     return null;
   }
   const contact = await fetchContact(candidate.id, destination, metadata);
-  if (!contact || contact.external_id) {
+  if (!contact || contact.external_id || contact.email?.toLowerCase() !== normalizedEmail) {
     return null;
   }
   info('[INTERCOM] Adopting a contact without external_id', {
@@ -450,8 +456,7 @@ const deferRepeatClaims = (transformResults, inputs) => {
 };
 
 /**
- * Finds the contact a message should update. For an rETL identify with a mapped external_id and an
- * email, this is the contact holding the external_id, else an unclaimed contact holding the email.
+ * Api call to search contact in intercom to returns id of contact
  * Ref doc : https://developers.intercom.com/docs/references/rest-api/api.intercom.io/Contacts/SearchContacts/
  * @param {*} message
  * @param {*} destination
@@ -471,9 +476,8 @@ const searchContact = async (message, destination, metadata) => {
 
   // In rEtl flow, search only by a mapped external_id when the payload will carry it.
   // Searching email as well would match another user sharing that email.
-  const shouldClaimByEmail = isRetlIdentifyWithMappedExternalId(message);
   const isRetlExternalIdMapping =
-    shouldClaimByEmail ||
+    isRetlIdentifyWithMappedExternalId(message) ||
     (message.context?.mappedToDestination && message.traits?.external_id && !message.traits?.email);
   if (isRetlExternalIdMapping) {
     addLookup('external_id', message.traits.external_id);
@@ -528,14 +532,7 @@ const searchContact = async (message, destination, metadata) => {
       workspaceId: metadata.workspaceId,
     });
   }
-  if (contacts?.length > 0) {
-    return contacts[0]?.id;
-  }
-
-  if (shouldClaimByEmail && typeof message.traits.email === 'string') {
-    return findContactToAdopt(message.traits.email, destination, metadata);
-  }
-  return null;
+  return contacts?.length > 0 ? contacts[0]?.id : null;
 };
 
 /**
@@ -810,6 +807,7 @@ module.exports = {
   getName,
   getHeaders,
   searchContact,
+  findContactToAdopt,
   deferRepeatClaims,
   isRetlIdentifyWithMappedExternalId,
   getLookUpField,

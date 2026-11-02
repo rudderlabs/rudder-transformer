@@ -5,6 +5,7 @@ const {
   getName,
   getHeaders,
   searchContact,
+  findContactToAdopt,
   deferRepeatClaims,
   isRetlIdentifyWithMappedExternalId,
   getLookUpField,
@@ -1357,7 +1358,7 @@ describe('isRetlIdentifyWithMappedExternalId utility test', () => {
   });
 });
 
-describe('searchContact claim of an email-only contact', () => {
+describe('findContactToAdopt utility test', () => {
   const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us', apiVersion: 'v2' } };
   const metadata = { sourceId: 'source', destinationId: 'dest', workspaceId: 'workspace' };
   const message = {
@@ -1367,62 +1368,60 @@ describe('searchContact claim of an email-only contact', () => {
     traits: { email: 'A@rudderlabs.com', external_id: 'user-1' },
   };
   const searchResult = (data) => ({ status: 200, data: { type: 'list', data } });
+  const freeContact = { id: 'c-1', email: 'a@rudderlabs.com', external_id: null };
 
   beforeEach(() => {
     axios.post.mockReset();
     axios.get.mockReset();
-    axios.post
-      .mockResolvedValueOnce(searchResult([]))
-      .mockResolvedValueOnce(searchResult([{ id: 'c-1', external_id: null }]));
+    axios.post.mockResolvedValue(searchResult([{ id: 'c-1', external_id: null }]));
   });
 
   it('searches the email in lower case, and claims a contact the direct read shows is free', async () => {
-    axios.get.mockResolvedValue({ status: 200, data: { id: 'c-1', external_id: null } });
-    await expect(searchContact(message, destination, metadata)).resolves.toBe('c-1');
-    expect(JSON.parse(axios.post.mock.calls[1][1]).query.value).toEqual([
+    axios.get.mockResolvedValue({ status: 200, data: freeContact });
+    await expect(findContactToAdopt(message, destination, metadata)).resolves.toBe('c-1');
+    expect(JSON.parse(axios.post.mock.calls[0][1]).query.value).toEqual([
       { field: 'email', operator: '=', value: 'a@rudderlabs.com' },
     ]);
   });
 
-  it('does not claim a contact the direct read shows is taken', async () => {
-    axios.get.mockResolvedValue({ status: 200, data: { id: 'c-1', external_id: 'user-2' } });
-    await expect(searchContact(message, destination, metadata)).resolves.toBeNull();
+  it.each([
+    ['has taken an external_id', { ...freeContact, external_id: 'user-2' }],
+    ['now holds another email', { ...freeContact, email: 'b@rudderlabs.com' }],
+    ['has no email', { ...freeContact, email: null }],
+  ])('does not claim a contact that the direct read shows %s', async (_, contact) => {
+    axios.get.mockResolvedValue({ status: 200, data: contact });
+    await expect(findContactToAdopt(message, destination, metadata)).resolves.toBeNull();
   });
 
   it('does not claim a contact deleted since the search', async () => {
     axios.get.mockRejectedValue({ response: { status: 404, data: { errors: [] } } });
-    await expect(searchContact(message, destination, metadata)).resolves.toBeNull();
+    await expect(findContactToAdopt(message, destination, metadata)).resolves.toBeNull();
   });
 
   it('keeps the status of a failed direct read, so that the row retries', async () => {
     axios.get.mockRejectedValue({ response: { status: 429, data: { errors: [] } } });
-    await expect(searchContact(message, destination, metadata)).rejects.toMatchObject({
+    await expect(findContactToAdopt(message, destination, metadata)).rejects.toMatchObject({
       status: 429,
     });
   });
 
   it('keeps the status of a failed email search, so that the row retries', async () => {
     axios.post.mockReset();
-    axios.post
-      .mockResolvedValueOnce(searchResult([]))
-      .mockRejectedValueOnce({ response: { status: 503, data: { errors: [] } } });
-    await expect(searchContact(message, destination, metadata)).rejects.toMatchObject({
+    axios.post.mockRejectedValue({ response: { status: 503, data: { errors: [] } } });
+    await expect(findContactToAdopt(message, destination, metadata)).rejects.toMatchObject({
       status: 503,
     });
     expect(axios.get).not.toHaveBeenCalled();
   });
 
-  it('does not look for a contact to claim on an event stream identify', async () => {
-    axios.post.mockReset();
-    axios.post.mockResolvedValue(searchResult([]));
-    const eventStreamMessage = {
-      type: 'identify',
-      userId: 'user-1',
-      context: { traits: { email: 'a@rudderlabs.com' } },
-    };
-    await expect(searchContact(eventStreamMessage, destination, metadata)).resolves.toBeNull();
-    expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.get).not.toHaveBeenCalled();
+  it('does not search when the email is not a string', async () => {
+    const result = await findContactToAdopt(
+      { ...message, traits: { ...message.traits, email: 123 } },
+      destination,
+      metadata,
+    );
+    expect(result).toBeNull();
+    expect(axios.post).not.toHaveBeenCalled();
   });
 });
 

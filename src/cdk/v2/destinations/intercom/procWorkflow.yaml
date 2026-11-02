@@ -60,6 +60,12 @@ steps:
       const contactId = await $.searchContact(.message, .destination, .metadata);
       contactId;
 
+  - name: contactToAdopt
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1" && !$.outputs.searchContact && $.isRetlIdentifyWithMappedExternalId(.message)
+    template: |
+      const contactId = await $.findContactToAdopt(.message, .destination, .metadata);
+      contactId;
+
   - name: identifyTransformationForLatestVersion
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1" && !.message.context.mappedToDestination
     template: |
@@ -88,11 +94,12 @@ steps:
       $.context.payload = payload;
       $.assert($.context.payload.external_id || $.context.payload.email, "Either email or userId is required for Identify call");
       const endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts";
-      $.context.requestMethod = $.outputs.searchContact ? 'PUT' : 'POST';
+      const contactId = $.outputs.searchContact || $.outputs.contactToAdopt;
+      $.context.requestMethod = contactId ? 'PUT' : 'POST';
       const company = .message.traits.company || .message.context.traits.company;
       const shouldDetachUserAndCompany = $.outputs.searchContact && company.remove;
       shouldDetachUserAndCompany ? await $.detachContactAndCompany($.outputs.searchContact, company, .destination);
-      $.context.endpoint = $.outputs.searchContact ? endpoint + "/" + $.outputs.searchContact : endpoint;
+      $.context.endpoint = contactId ? endpoint + "/" + contactId : endpoint;
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 
   - name: identifyTransformationForOlderVersion

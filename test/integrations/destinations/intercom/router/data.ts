@@ -1210,7 +1210,7 @@ export const data: RouterTestData[] = [
               statTags: {
                 destType: 'INTERCOM',
                 errorCategory: 'network',
-                errorType: 'retryable',
+                errorType: 'throttled',
                 feature: 'router',
                 implementation: 'cdkV2',
                 module: 'destination',
@@ -1219,7 +1219,7 @@ export const data: RouterTestData[] = [
               },
               destination: destination1,
               metadata: [generateMetadata(2)],
-              statusCode: 500,
+              statusCode: 429,
             },
           ],
         },

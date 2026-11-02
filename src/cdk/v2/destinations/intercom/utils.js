@@ -4,7 +4,7 @@ const {
   NetworkError,
   ConfigurationError,
   InstrumentationError,
-  RetryableError,
+  ThrottledError,
   info,
   warn,
 } = require('@rudderstack/integrations-lib');
@@ -412,18 +412,25 @@ const findContactToAdopt = async (email, destination, metadata) => {
 };
 
 /**
- * Lets only the first row in a router call write an external_id onto a contact. All rows search before
- * any is delivered, so several rows sharing an email can claim one contact, and each PUT would replace
- * the last one's external_id. The other rows retry, and then see that the contact is taken.
+ * Lets only the first opted-in row in a router call write an external_id onto a contact. All rows search
+ * before any is delivered, so several rows sharing an email can claim one contact, and each PUT would
+ * replace the last one's external_id. The other rows retry, and then see that the contact is taken.
+ * They answer 429 because rudder-server's rETL retry limit applies only from 500 up, so a row that
+ * has not been sent yet can't run out of retries while the first row is still being delivered.
  * @param {Array} transformResults the per-row results of the transform step
- * @returns the results, with any repeat claim replaced by a retryable error
+ * @param {Array} inputs the router input, in the same order
+ * @returns the results, with any repeat claim replaced by a throttled error
  */
-const deferRepeatClaims = (transformResults) => {
+const deferRepeatClaims = (transformResults, inputs) => {
   const claims = new Map();
-  return transformResults.map((result) => {
+  return transformResults.map((result, index) => {
     const { method, endpoint, body } = result.output || {};
     const externalId = body?.JSON?.external_id;
-    if (method !== 'PUT' || !externalId) {
+    if (
+      method !== 'PUT' ||
+      !externalId ||
+      !isRetlIdentifyWithMappedExternalId(inputs[index].message)
+    ) {
       return result;
     }
     const claimedBy = claims.get(endpoint);
@@ -435,9 +442,8 @@ const deferRepeatClaims = (transformResults) => {
       return result;
     }
     return {
-      error: new RetryableError(
+      error: new ThrottledError(
         '[Intercom] Another row in this batch is claiming the same contact, retrying',
-        500,
       ),
     };
   });

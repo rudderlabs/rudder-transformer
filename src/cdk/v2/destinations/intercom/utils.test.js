@@ -1430,18 +1430,37 @@ describe('deferRepeatClaims utility test', () => {
   const put = (endpoint, externalId) => ({
     output: { method: 'PUT', endpoint, body: { JSON: { external_id: externalId } } },
   });
+  const optedIn = {
+    message: {
+      type: 'identify',
+      context: { mappedToDestination: 'true' },
+      integrations: { INTERCOM: { lookup: 'external_id' } },
+      traits: { email: 'a@rudderlabs.com', external_id: 'a' },
+    },
+  };
+  const eventStream = {
+    message: { type: 'identify', userId: 'a', context: { traits: { email: 'a@rudderlabs.com' } } },
+  };
 
-  it('lets the first claim through and turns a later claim on that contact into a retryable error', () => {
-    const results = deferRepeatClaims([put('c-1', 'a'), put('c-1', 'b'), put('c-2', 'c')]);
+  it('lets the first claim through and turns a later claim on that contact into a throttled error', () => {
+    const results = deferRepeatClaims(
+      [put('c-1', 'a'), put('c-1', 'b'), put('c-2', 'c')],
+      [optedIn, optedIn, optedIn],
+    );
     expect(results[0]).toEqual(put('c-1', 'a'));
     expect(results[1].output).toBeUndefined();
-    expect(results[1].error.status).toBe(500);
+    expect(results[1].error.status).toBe(429);
     expect(results[2]).toEqual(put('c-2', 'c'));
   });
 
   it('keeps repeated updates from the same external_id', () => {
-    const results = deferRepeatClaims([put('c-1', 'a'), put('c-1', 'a')]);
-    expect(results).toEqual([put('c-1', 'a'), put('c-1', 'a')]);
+    const results = [put('c-1', 'a'), put('c-1', 'a')];
+    expect(deferRepeatClaims(results, [optedIn, optedIn])).toEqual(results);
+  });
+
+  it('keeps event stream updates, which are not claims', () => {
+    const results = [put('c-1', 'a'), put('c-1', 'b')];
+    expect(deferRepeatClaims(results, [eventStream, eventStream])).toEqual(results);
   });
 
   it('keeps creates, updates without an external_id and failed rows', () => {
@@ -1450,6 +1469,6 @@ describe('deferRepeatClaims utility test', () => {
       { output: { method: 'PUT', endpoint: 'c-1', body: { JSON: { email: 'a@b.com' } } } },
       { error: new Error('failed') },
     ];
-    expect(deferRepeatClaims(results)).toEqual(results);
+    expect(deferRepeatClaims(results, [optedIn, optedIn, optedIn])).toEqual(results);
   });
 });

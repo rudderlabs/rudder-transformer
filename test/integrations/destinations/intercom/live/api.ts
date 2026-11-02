@@ -22,6 +22,7 @@ export interface IntercomContact {
 }
 
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles when the suite finishes.
+// With maxSockets left unlimited, Node also sends `Connection: close` on every request.
 const intercomAgent = new Agent({ keepAlive: false });
 
 const baseUrl = (ctx: RunContext): string => {
@@ -40,7 +41,6 @@ const headers = (ctx: RunContext) => {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'Intercom-Version': '2.10',
-    Connection: 'close' as const,
   };
 };
 

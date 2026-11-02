@@ -77,6 +77,12 @@ describe('cdk/v2 utils', () => {
       }
     });
 
+    test('routes HTTP v2 away from CDK v2 while keeping v1 on it', () => {
+      expect(shouldUseCdkV2('HTTP', 'w1')).toBe(true);
+      expect(shouldUseCdkV2('http', 'w1', 1)).toBe(true);
+      expect(shouldUseCdkV2('HTTP', 'w1', 2)).toBe(false);
+    });
+
     test('returns false for unknown destinations before CDK v2 lookup', () => {
       expect(shouldUseCdkV2('../unknown', 'w1')).toBe(false);
     });

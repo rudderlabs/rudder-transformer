@@ -7,6 +7,7 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
+  getType,
   simpleProcessRouterDest,
 } = require('../../util');
 const { EventType } = require('../../../constants');
@@ -14,6 +15,19 @@ const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
 
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { getAuthHeaderForRequest, getOAuthFields } = require('./util');
+
+// Rejects non-string identifiers as invalid event data instead of crashing on trim().
+const toTrimmedIdentifier = (value, fieldName) => {
+  if (!isDefinedAndNotNull(value)) {
+    return undefined;
+  }
+  if (typeof value !== 'string') {
+    throw new InstrumentationError(
+      `[TWITTER ADS]: properties.${fieldName} must be a string, received ${getType(value)}. Aborting message`,
+    );
+  }
+  return value.trim();
+};
 
 // build final response
 function buildResponse(message, requestJson, metadata, endpointUrl) {
@@ -47,8 +61,10 @@ function populateEventId(event, requestJson, destination) {
   let eventId = '';
 
   if (eventNameToIdMappings) {
+    const eventName = event?.toString().toLowerCase();
     const eventObj = eventNameToIdMappings.find(
-      (obj) => obj.rudderEventName?.trim().toLowerCase() === event?.toString().toLowerCase(),
+      ({ rudderEventName }) =>
+        typeof rudderEventName === 'string' && rudderEventName.trim().toLowerCase() === eventName,
     );
     eventId = eventObj?.twitterEventId;
   }
@@ -109,28 +125,21 @@ function createIdentifiers(properties) {
   const identifiers = [];
   const { email, phone, twclid, ip_address: ipAddress, user_agent: userAgent } = properties;
 
-  // Handle email
-  if (email?.trim()) {
-    identifiers.push({
-      hashed_email: sha256(email.trim().toLowerCase()),
-    });
-  }
+  const trimmedEmail = toTrimmedIdentifier(email, 'email');
+  const trimmedPhone = toTrimmedIdentifier(phone, 'phone');
+  const trimmedIp = toTrimmedIdentifier(ipAddress, 'ip_address');
+  const trimmedUserAgent = toTrimmedIdentifier(userAgent, 'user_agent');
 
-  // Handle phone
-  if (phone?.trim()) {
-    identifiers.push({
-      hashed_phone_number: sha256(phone.trim()),
-    });
+  if (trimmedEmail) {
+    identifiers.push({ hashed_email: sha256(trimmedEmail.toLowerCase()) });
   }
-
-  // Handle twclid
+  if (trimmedPhone) {
+    identifiers.push({ hashed_phone_number: sha256(trimmedPhone) });
+  }
   if (twclid) {
     identifiers.push({ twclid });
   }
 
-  // Handle IP and user agent
-  const trimmedIp = ipAddress?.trim();
-  const trimmedUserAgent = userAgent?.trim();
   // ip_address or/and user_agent is required to be
   // passed in conjunction with another identifier
   // ref: https://developer.x.com/en/docs/x-ads-api/measurement/web-conversions/api-reference/conversions

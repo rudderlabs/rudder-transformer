@@ -7,8 +7,7 @@ on:
         description: Hotfix branch name
         required: true
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   validate-actor:

@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
@@ -513,6 +513,36 @@ describe('validateEventAndLowerCaseConversion Tests', () => {
     expect(() => {
       validateEventAndLowerCaseConversion(false, false, false);
     }).toThrow(InstrumentationError);
+  });
+});
+
+describe('compileAndRenderUserTemplate', () => {
+  const { compileAndRenderUserTemplate } = utilities;
+
+  it('renders a valid customer template without changing its output', () => {
+    expect(
+      compileAndRenderUserTemplate('Hello {{name}}', { name: 'Rudder' }, 'eventTemplate'),
+    ).toBe('Hello Rudder');
+  });
+
+  it.each([
+    ['parse', '{{#if}}', /Parse error on line 1/],
+    ['render', '{{> foo}}', /The partial foo could not be found/],
+    ['parse with private text', 'confidential.literal.secret {{#if}}', /Parse error on line 1/],
+  ])('classifies %s failures as configuration errors', (_stage, template, cause) => {
+    let error;
+    try {
+      compileAndRenderUserTemplate(template, {}, 'eventTemplate');
+    } catch (err) {
+      error = err;
+    }
+    expect(error).toBeInstanceOf(ConfigurationError);
+    expect(utilities.getErrorStatusCode(error)).toBe(400);
+    expect(error.statTags).toMatchObject({ errorCategory: 'dataValidation' });
+    expect(error.message).toContain('eventTemplate template:');
+    expect(error.message).toMatch(cause);
+    expect(error.message).not.toContain(template);
+    expect(error.message).not.toContain('confidential.literal.secret');
   });
 });
 

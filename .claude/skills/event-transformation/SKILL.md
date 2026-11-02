@@ -1,6 +1,6 @@
 ---
 name: event-transformation
-description: Business logic for turning one RudderStack event into one destination payload — the standard mapping JSON shape and constructPayload, resolving source values, ISO-4217 minor units, preserving customer data, which event validations a transform may add (only what the partner rejects), and assembling the payload, plus category conventions for ads destinations (identity match fields, deduplication keys). Applied automatically — not user-invocable.
+description: Business logic for turning one RudderStack event into one destination payload — the standard mapping JSON shape and constructPayload, resolving source values, ISO-4217 minor units, mapping the Ecommerce spec (event routing, products[], order value), preserving customer data, which event validations a transform may add (only what the partner rejects), and assembling the payload, plus category conventions for ads destinations (identity match fields, deduplication keys). Applied automatically — not user-invocable.
 ---
 
 # Event Transformation
@@ -267,7 +267,9 @@ hardcoded 100:
 - `src/cdk/v2/destinations/rakuten/utils.js:29`
 - `src/cdk/v2/destinations/optimizely_fullstack/procWorkflow.yaml:196`
 
-Those three are unconditional. `src/v0/destinations/dub/utils.ts:60` also multiplies by 100,
+Those three are unconditional, and two of them also round wrongly: optimizely's
+`Math.floor(revenue * 100)` turns `19.99` into `1998`, and reddit's `:88` doesn't round at all
+(`4.35 * 100` is `434.99999999999994`). `src/v0/destinations/dub/utils.ts:60` also multiplies by 100,
 but only behind the customer-set `convertAmountToCents` flag, and dub's own field doc already
 carries the caveat (`src/v0/destinations/dub/types.ts:90-92`) — so it is opt-in and documented
 rather than silently wrong. Don't treat it as the pattern to copy either.
@@ -442,6 +444,116 @@ Restructuring the JSON to separate message-relative paths from item-level keys d
 this on its own — `context.externalId.0.id` is message-domain and still contributes an `id`
 leaf. The prefix filter is what fixes it. Cover it with a component-test fixture: a custom
 event carrying `properties.id` / `properties.name` must pass them through.
+
+## Mapping The Ecommerce Spec
+
+Destinations that send the RudderStack Ecommerce spec (`Product Viewed`, `Product Added`,
+`Checkout Started`, `Order Completed`, … with `properties.products[]`) to a partner's cart or
+purchase events all do it **one way**, described below. Existing destinations diverge from it on
+almost every point. Don't copy them. Bring a destination onto this shape when you touch its
+ecommerce path.
+
+### 1. Route event names through one table
+
+The spec-event → partner-event table lives in `config`, as a `Map` keyed by the lowercased spec
+name. Match it on `event.trim().toLowerCase()`. The customer's event mapping is checked first and
+normalised the same way. Anything left over is sent as the partner's custom event:
+
+```ts
+// config.ts
+export const ECOMMERCE_EVENTS = new Map([
+  ['product viewed', 'view_item'],
+  ['product added', 'add_to_cart'],
+  ['order completed', 'purchase'],
+]);
+
+// utils.ts
+const resolveEventNames = (event: string, config: DestinationConfig): string[] => {
+  const key = event.trim().toLowerCase();
+  const customerMap = getHashFromArrayWithDuplicate(config.eventsMapping); // trims + lowercases
+  if (Object.hasOwn(customerMap, key)) return [...customerMap[key]];
+  return [ECOMMERCE_EVENTS.get(key) ?? event]; // unmapped → partner's custom event
+};
+```
+
+Use a `Map` and `Object.hasOwn`, never a bare `obj[event]` lookup: a plain object resolves
+`"constructor"` to `Object`. Every other check on the event name uses the same `key`.
+
+### 2. Build items with one rule and one item mapping
+
+```ts
+// config.ts: the spec events that carry one product at the top level of `properties`
+export const SINGLE_PRODUCT_EVENTS = new Set([
+  'product clicked', 'product viewed', 'product added', 'product removed',
+  'product shared', 'product reviewed',
+  'product added to wishlist', 'product removed from wishlist', 'wishlist product added to cart',
+]);
+
+// utils.ts: `key` is the normalised event name from step 1
+const getItems = (properties: Record<string, unknown>, key: string) => {
+  if (Array.isArray(properties.products)) {
+    return properties.products
+      .filter(isPlainObject)
+      .map((product) => constructPayload(product, MAPPING.productMapping));
+  }
+  return SINGLE_PRODUCT_EVENTS.has(key) ? [constructPayload(properties, MAPPING.productMapping)] : [];
+};
+```
+
+- If `products` is an array, its object entries are the items.
+- Otherwise `properties` is the single item **only** for the single-product events above, which
+  put the product at the top level. Every other event without `products[]` sends no items.
+  Promotion, checkout-step, payment, search and coupon events have no product fields: falling
+  back to `properties` there turns a promotion `name` into a fake `item_name`, or sends
+  `items: [{}]` that the partner rejects (or that throws on a `required` product id).
+- The item mapping is one file, `data/<DEST>ProductConfig.json`, used for every event. The
+  product id is always `["product_id", "sku"]`, and any derived id list (e.g. `content_ids`)
+  is built from the mapped items, never from a second chain.
+- Unmapped product keys stay on their item, never merged into event-level data.
+
+### 3. Map order fields in the event mapping JSON
+
+| Destination field | `sourceKeys` |
+| ----------------- | ------------ |
+| Value (gross, default) | `properties.total` → `properties.value` → `properties.revenue` → `price × quantity` |
+| Order id | `properties.order_id` |
+| Currency | `properties.currency`, passed through with **no default** |
+
+```json
+{
+  "destKey": "value",
+  "sourceKeys": [
+    "properties.total",
+    "properties.value",
+    "properties.revenue",
+    {
+      "operation": "multiplication",
+      "args": [
+        { "sourceKeys": "properties.price" },
+        { "sourceKeys": "properties.quantity", "defaultVal": 1 }
+      ]
+    }
+  ],
+  "metadata": { "type": "toNumber" }
+}
+```
+
+- The chain above is the default for a **gross order value** field. `getValueFromMessage` takes the
+  first key that has a value and orders often carry several, so the order decides what gets sent.
+  The spec defines them differently: `total` / `value` include discounts and coupons, `revenue`
+  excludes shipping and tax, `subtotal` is after discounts but before shipping and tax. The SDKs
+  don't calculate any of them. Choose the order, and whether `subtotal` belongs in it, from the
+  partner's own definition of the field. If the partner's value excludes shipping and tax, lead
+  with `revenue`. When moving an existing destination onto this shape, keep its current order
+  unless it is wrong for the partner's field: reordering silently changes the value customers
+  report.
+- The value lives in the mapping JSON, not in an `a || b || c` chain in code, so `0` survives
+  (see [`constructPayload` Sets Only What It Finds](#constructpayload-sets-only-what-it-finds)).
+- The operation default is spelled `defaultVal`. `handleSourceKeysOperation` ignores `default`
+  (`src/v0/util/index.js:597`), so the product resolves to nothing whenever `quantity` is absent.
+- Numbers go through `metadata: { type: "toNumber" }`, never `parseInt` (which truncates cents).
+- Conversion to minor units follows [Monetary Values](#monetary-values--never-assume-two-decimal-places).
+  A missing currency is not defaulted to `USD`.
 
 ## Category Conventions
 

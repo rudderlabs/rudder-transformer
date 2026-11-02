@@ -44,8 +44,11 @@ type EventTesterV2Response = {
   dest_transform_output: DestTransformOutputEntry[];
 };
 
+// Native integrations read the control-plane spelling of these keys.
 const destinationKeyOverrides: Record<string, string> = {
   deliveryAccount: 'deliveryAccount',
+  version: 'version',
+  workspaceId: 'WorkspaceID',
 };
 
 const capitalize = (key: string): string =>
@@ -62,9 +65,9 @@ export class EventTesterService {
     if (events.length === 0) {
       return [];
     }
-    const workspaceId = events[0].destination.WorkspaceId;
+    const workspaceId = events[0].destination.WorkspaceID;
     if (typeof workspaceId !== 'string' || !workspaceId) {
-      return [{ error: 'destination.WorkspaceId is required' }];
+      return [{ error: 'destination.WorkspaceID is required' }];
     }
 
     const inputs: RouterTransformationRequestData[] = events.map((event, idx) => ({
@@ -76,7 +79,11 @@ export class EventTesterService {
       connection: event.connection as Connection,
     }));
 
-    const service = ServiceSelector.getDestinationServiceByType(dest, workspaceId);
+    const service = ServiceSelector.getDestinationServiceByType(
+      dest,
+      workspaceId,
+      inputs[0].destination.version,
+    );
     service.init();
     const responses = isDestinationRouterTransformEnabled(dest)
       ? await service.doRouterTransformation(inputs, dest, version, {})

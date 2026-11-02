@@ -93,32 +93,39 @@ describe('ServiceSelector Service', () => {
     },
   );
 
-  test('getPrimaryDestinationService should return cdk v2 dest service', async () => {
-    const events = [
-      {
-        destination: {
-          DestinationDefinition: {
-            Name: 'WEBHOOK',
-          },
-        },
-      },
-    ] as unknown as ProcessorTransformationRequest[];
-    expect(ServiceSelector['getPrimaryDestinationService'](events)).toBeInstanceOf(
+  test('routes HTTP v2 to native while preserving v1 CDK selection', () => {
+    expect(ServiceSelector.getDestinationServiceByType('HTTP', 'workspace-1', 2)).toBeInstanceOf(
+      NativeIntegrationDestinationService,
+    );
+    expect(ServiceSelector.getDestinationServiceByType('HTTP', 'workspace-1', 1)).toBeInstanceOf(
       CDKV2DestinationService,
     );
   });
 
-  test('getPrimaryDestinationService should return native dest service', async () => {
-    const events = [{}] as ProcessorTransformationRequest[];
-    expect(ServiceSelector['getPrimaryDestinationService'](events)).toBeInstanceOf(
-      NativeIntegrationDestinationService,
-    );
+  test('groups a mixed HTTP request by the service each event resolves to', () => {
+    const event = (jobId: number, version: number) => ({
+      destination: { DestinationDefinition: { Name: 'HTTP' }, version },
+      metadata: { workspaceId: 'workspace-1', jobId },
+    });
+    const groups = ServiceSelector.groupByDestinationService([
+      event(1, 2),
+      event(2, 1),
+      event(3, 2),
+    ] as unknown as ProcessorTransformationRequest[]);
+    expect(groups).toHaveLength(2);
+    expect(groups[0][0]).toBeInstanceOf(NativeIntegrationDestinationService);
+    expect(groups[0][1].map((e) => e.metadata.jobId)).toEqual([1, 3]);
+    expect(groups[1][0]).toBeInstanceOf(CDKV2DestinationService);
+    expect(groups[1][1].map((e) => e.metadata.jobId)).toEqual([2]);
   });
 
-  test('getDestinationService should return native dest service', async () => {
-    const events = [{}] as ProcessorTransformationRequest[];
-    expect(ServiceSelector.getDestinationService(events)).toBeInstanceOf(
-      NativeIntegrationDestinationService,
-    );
+  test("uses the first event's destination type for events without a definition", () => {
+    const groups = ServiceSelector.groupByDestinationService([
+      { destination: { DestinationDefinition: { Name: 'WEBHOOK' } }, metadata: { jobId: 1 } },
+      { destination: {}, metadata: { jobId: 2 } },
+    ] as unknown as ProcessorTransformationRequest[]);
+    expect(groups).toHaveLength(1);
+    expect(groups[0][0]).toBeInstanceOf(CDKV2DestinationService);
+    expect(groups[0][1]).toHaveLength(2);
   });
 });

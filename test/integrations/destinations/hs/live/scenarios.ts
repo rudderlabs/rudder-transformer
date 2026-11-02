@@ -586,14 +586,14 @@ const scenarios: readonly LiveScenario[] = [
     },
   },
   {
-    // A contact merged into another keeps its old id in the warehouse. HubSpot's batch/update
-    // neither updates the surviving contact nor reports an error for a merged-away id: it just
-    // leaves it out of `results`. Its job must still fail, while an unrelated live contact in the
-    // same batch lands.
+    // A warehouse can keep a contact's old id after a merge. HubSpot resolves that id in
+    // batch/update and returns the survivor under its current id, echoing objectWriteTraceId.
+    // Both the merged-away contact's update and the unrelated contact's update must land.
     id: 'hs-retl-contacts-update-by-merged-record-id-v3',
+    // HubSpot DELETE is idempotent and an original id deletes the survivor, so plain teardown suffices.
     cleanup: deleteRegisteredObjects,
     description:
-      'RETL batch with a merged-away hs_object_id fails that job, the live contact still lands',
+      'RETL batch/update resolves a merged-away hs_object_id to the survivor and delivers both updates',
     steps: [
       { stepType: 'action', name: 'setup', run: createThreeContactsAndMergeSecond },
       {
@@ -601,7 +601,6 @@ const scenarios: readonly LiveScenario[] = [
         stepType: 'pipeline',
         expectedOutputs: 1,
         expectedProxyRequests: 1,
-        expectedFailure: { items: [0] },
         seed: (ctx) => {
           const [, mergedId, otherId] = registeredIds(ctx, 'contacts');
           return [
@@ -617,7 +616,10 @@ const scenarios: readonly LiveScenario[] = [
       },
     ],
     verify: {
-      check: verifyRegisteredObjectProperties('contacts', retlRecordIdOtherContactTraits, 2),
+      check: async (ctx) => {
+        await verifyRegisteredObjectProperties('contacts', retlRecordIdUpdateTraits, 1)(ctx);
+        await verifyRegisteredObjectProperties('contacts', retlRecordIdOtherContactTraits, 2)(ctx);
+      },
       ...CONTACT_READBACK,
     },
   },

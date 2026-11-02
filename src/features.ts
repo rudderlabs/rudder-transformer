@@ -104,7 +104,8 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   X_AUDIENCE: { routerTransform: true },
   BLOOMREACH_CATALOG: { routerTransform: true, cdkV2: true, transformerProxy: true },
   SMARTLY: { routerTransform: true, cdkV2: true },
-  HTTP: { routerTransform: true, cdkV2: true },
+  // v1 routes to CDK v2 via shouldUseCdkV2; only v2 reaches the batching framework. Proxy stays off.
+  HTTP: { routerTransform: true, cdkV2: true, batching: true, transformerProxy: false },
   AMAZON_AUDIENCE: { routerTransform: true, transformerProxy: true },
   INTERCOM_V2: { routerTransform: true, transformerProxy: true },
   LINKEDIN_AUDIENCE: { routerTransform: true },

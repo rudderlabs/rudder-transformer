@@ -14,6 +14,7 @@ interface HsAssociationsResponse {
   results?: Array<{ toObjectId: string | number }>;
 }
 interface HsObjectResponse {
+  id?: string | number;
   properties?: Record<string, string>;
 }
 
@@ -124,7 +125,7 @@ export const deleteCrmObjectById = async (
 export const deleteContactById = (ctx: RunContext, id: string): Promise<void> =>
   deleteCrmObjectById(ctx, 'contacts', id);
 
-// Merge `idToMerge` into `primaryId`; the merged-away id stops being a record of its own.
+// Merge `idToMerge` into `primaryId`; HubSpot may assign the survivor a new id.
 export const mergeContacts = async (
   ctx: RunContext,
   primaryId: string,

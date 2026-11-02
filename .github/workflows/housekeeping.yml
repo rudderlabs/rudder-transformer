@@ -6,8 +6,7 @@ on:
     - cron: '0 1 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   prs:
@@ -51,6 +50,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
+        # Keeps persisted credentials: delete-old-branches-action runs git fetch and git ls-remote
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Delete Old Branches

@@ -10,8 +10,7 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   release:
@@ -50,6 +49,7 @@ jobs:
           echo "release_version=$version" >> $GITHUB_OUTPUT
 
       - name: Checkout
+        # Keeps persisted credentials: git fetch uses the App token
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0

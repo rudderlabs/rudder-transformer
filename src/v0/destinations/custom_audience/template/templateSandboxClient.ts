@@ -10,7 +10,7 @@ import { InstrumentationError, PlatformError } from '@rudderstack/integrations-l
 import logger from '../../../../logger';
 import { ERROR_MESSAGES } from '../constants';
 import { templateSandboxRunner } from './ivmScriptRunner';
-import type { ParseTemplateResult } from './templateEngine';
+import type { ParseTemplateResult } from '../../../../util/jsonataTemplate/templateEngine';
 import type { EvaluateResult } from './templateEngineSandbox';
 
 // ---------------------------------------------------------------------------

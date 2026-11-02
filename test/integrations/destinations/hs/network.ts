@@ -57,8 +57,8 @@ export const networkCallsData = [
       },
     },
   },
-  // batch/update 200 that leaves a merged-away record id out of `results` with no error, shape as
-  // returned by the live API (dataDelivery/upsert.ts)
+  // Synthetic batch/update 200 with one input omitted from `results` and no error:
+  // regression coverage for silent omissions (dataDelivery/upsert.ts)
   {
     httpReq: {
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
@@ -82,8 +82,8 @@ export const networkCallsData = [
       },
     },
   },
-  // batch/update 200 whose result for 90005 carries a different (current) record id but echoes the
-  // input's objectWriteTraceId, and that leaves 90006 out entirely (dataDelivery/upsert.ts)
+  // Synthetic batch/update 200: result for 90005 carries a different (current) record id
+  // and echoes objectWriteTraceId; 90006 is silently omitted (dataDelivery/upsert.ts)
   {
     httpReq: {
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
@@ -107,8 +107,8 @@ export const networkCallsData = [
       },
     },
   },
-  // batch/update 200 that leaves every input out (empty results and errors), e.g. all ids belong
-  // to merged records (dataDelivery/upsert.ts)
+  // Synthetic batch/update 200 omitting every input (empty results and errors):
+  // regression coverage for silent omissions (dataDelivery/upsert.ts)
   {
     httpReq: {
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',

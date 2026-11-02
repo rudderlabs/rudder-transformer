@@ -199,6 +199,62 @@ class TypedErrorIntegration extends DestinationIntegration<TestBody> {
   }
 }
 
+// Fails any chunk whose bodies include 'bad', one chunk per job.
+const failBadChunks = () =>
+  new CustomBatchStrategy<TestBody>((payloads) =>
+    payloads.map((p) => ({
+      body: { value: p.body.value },
+      jobIds: new Set([p.jobId]),
+      ...(p.body.value === 'bad'
+        ? { error: { error: 'chunk failed', statusCode: 400, statTags: {} } }
+        : {}),
+    })),
+  );
+
+class ChunkFailIntegration extends DestinationIntegration<TestBody> {
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    return {
+      body: { value: input.message.data ?? '' },
+      endpoint: 'https://api.test.com/events',
+      endpointPath: '/events',
+      method: 'POST',
+    };
+  }
+
+  getBatchStrategy(): BatchStrategy<TestBody> {
+    return failBadChunks();
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
+  }
+}
+
+// Every job goes to /a and /b; only /b's strategy can fail a chunk.
+class MultiplexChunkFailIntegration extends DestinationIntegration<TestBody> {
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody>[] {
+    const value = input.message.data ?? '';
+    return ['a', 'b'].map((path) => ({
+      body: { value },
+      endpoint: `https://api.test.com/${path}`,
+      endpointPath: `/${path}`,
+      method: 'POST',
+    }));
+  }
+
+  getBatchStrategy(endpoint: string): BatchStrategy<TestBody> {
+    return endpoint.endsWith('/b')
+      ? failBadChunks()
+      : new ChunkBatchStrategy({ wrapBody: (bodies) => ({ events: bodies }) });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
+  }
+}
+
 function makeInput(
   jobId: number,
   data: string,
@@ -443,6 +499,42 @@ describe('processDestinationIntegration', () => {
         errorCategory: 'dataValidation',
         errorType: 'instrumentation',
       });
+    });
+  });
+
+  describe('per-chunk batch failures', () => {
+    it('fails only the jobs of a chunk the strategy could not build', async () => {
+      const inputs = [makeInput(1, 'ok'), makeInput(2, 'bad'), makeInput(3, 'ok')];
+      const results = await processDestinationIntegration(inputs, ChunkFailIntegration, {});
+
+      const errors = results.filter((r) => r.statusCode !== 200);
+      expect(errors).toHaveLength(1);
+      expect(errors[0]).toMatchObject({ statusCode: 400, error: 'chunk failed' });
+      expect(errors[0].metadata.map((m) => m.jobId)).toEqual([2]);
+      const delivered = results
+        .filter((r) => r.statusCode === 200)
+        .flatMap((r) => r.metadata.map((m) => m.jobId));
+      expect(delivered.sort()).toEqual([1, 3]);
+    });
+
+    it('removes a multiplexed job from every group when one group fails it', async () => {
+      const inputs = [makeInput(1, 'ok'), makeInput(2, 'bad'), makeInput(3, 'ok')];
+      const results = await processDestinationIntegration(
+        inputs,
+        MultiplexChunkFailIntegration,
+        {},
+      );
+
+      const errors = results.filter((r) => r.statusCode !== 200);
+      expect(errors.flatMap((r) => r.metadata.map((m) => m.jobId))).toEqual([2]);
+      const successes = results.filter((r) => r.statusCode === 200);
+      expect(successes.flatMap((r) => r.metadata.map((m) => m.jobId))).not.toContain(2);
+      // The /a request was rebuilt without job 2's body, not just stripped of its metadata.
+      const requests = successes.flatMap((r) =>
+        Array.isArray(r.batchedRequest) ? r.batchedRequest : [r.batchedRequest!],
+      );
+      const aBody = requests.find((req) => req.endpoint.endsWith('/a'))?.body?.JSON;
+      expect(aBody).toEqual({ events: [{ value: 'ok' }, { value: 'ok' }] });
     });
   });
 

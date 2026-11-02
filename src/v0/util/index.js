@@ -905,9 +905,7 @@ function compileAndRenderUserTemplate(template, templateInput) {
     return Handlebars.compile(template)(templateInput);
   } catch (error) {
     // Handlebars parse errors include a source excerpt after the first line.
-    throw new ConfigurationError(
-      `Failed to render template: ${error.message.split('\n')[0]}`,
-    );
+    throw new ConfigurationError(`Failed to render template: ${error.message.split('\n')[0]}`);
   }
 }
 

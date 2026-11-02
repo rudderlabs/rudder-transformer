@@ -36,8 +36,6 @@ describe('objectExists', () => {
 });
 
 describe('account calls', () => {
-  const rejected = { status: 400, response: { externalapierror: { message: 'bad account' } } };
-
   it('should report success when the account is created (201)', async () => {
     mockHandleHttpRequest.mockResolvedValueOnce({
       processedResponse: { status: 201, response: '' },
@@ -50,7 +48,12 @@ describe('account calls', () => {
     ['createAccount', () => createAccount({}, Config, {})],
     ['updateAccount', () => updateAccount('acc-1', {}, Config, {})],
   ])('%s should return the unwrapped error body on 400 without throwing', async (_, call) => {
-    mockHandleHttpRequest.mockResolvedValueOnce({ processedResponse: rejected });
+    mockHandleHttpRequest.mockResolvedValueOnce({
+      processedResponse: {
+        status: 400,
+        response: { externalapierror: { message: 'bad account' } },
+      },
+    });
 
     await expect(call()).resolves.toEqual({ success: false, err: '{"message":"bad account"}' });
   });

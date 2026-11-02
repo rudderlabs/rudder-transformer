@@ -947,8 +947,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              'Failed to render the eventTemplate template: The partial foo could not be found',
+            error: 'Failed to render template: The partial foo could not be found',
             metadata: templateErrorMetadata,
             statTags: templateErrorStatTags,
             statusCode: 400,
@@ -983,8 +982,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              'Failed to render the identifyTemplate template: The partial foo could not be found',
+            error: 'Failed to render template: The partial foo could not be found',
             metadata: templateErrorMetadata,
             statTags: templateErrorStatTags,
             statusCode: 400,
@@ -1023,8 +1021,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              'Failed to render the embedTitleTemplate template: The partial foo could not be found',
+            error: 'Failed to render template: The partial foo could not be found',
             metadata: templateErrorMetadata,
             statTags: templateErrorStatTags,
             statusCode: 400,
@@ -1063,8 +1060,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              'Failed to render the embedDescriptionTemplate template: The partial foo could not be found',
+            error: 'Failed to render template: The partial foo could not be found',
             metadata: templateErrorMetadata,
             statTags: templateErrorStatTags,
             statusCode: 400,

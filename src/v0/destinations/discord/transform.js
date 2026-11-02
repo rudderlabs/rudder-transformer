@@ -39,15 +39,11 @@ const getEmbed = (templateInput, destination, callType) => {
   return {
     title:
       embedTitleTemplate.length > 0
-        ? compileAndRenderUserTemplate(embedTitleTemplate, templateInput, 'embedTitleTemplate')
+        ? compileAndRenderUserTemplate(embedTitleTemplate, templateInput)
         : 'Message from Rudderstack ',
     description:
       embedDescriptionTemplate.length > 0
-        ? compileAndRenderUserTemplate(
-            embedDescriptionTemplate,
-            templateInput,
-            'embedDescriptionTemplate',
-          )
+        ? compileAndRenderUserTemplate(embedDescriptionTemplate, templateInput)
         : `${callType} call made`,
   };
 };
@@ -87,7 +83,7 @@ const processIdentify = (message, destination) => {
   };
 
   const resultText = identifyTemplateConfig
-    ? compileAndRenderUserTemplate(identifyTemplateConfig, templateInput, 'identifyTemplate')
+    ? compileAndRenderUserTemplate(identifyTemplateConfig, templateInput)
     : Handlebars.compile(
         buildDefaultTraitTemplate(whiteTraitsList, identityTraits, defaultIdentifyTemplate),
       )(templateInput);
@@ -165,7 +161,7 @@ const processTrack = (message, destination) => {
 
   const resultText =
     templateListArray.length > 0
-      ? compileAndRenderUserTemplate(templateListArray[0], templateInput, 'eventTemplate')
+      ? compileAndRenderUserTemplate(templateListArray[0], templateInput)
       : Handlebars.compile(defaultTemplate)(templateInput);
   //  constructing embed message
   if (destination?.Config?.embedFlag) {

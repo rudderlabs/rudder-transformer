@@ -374,7 +374,7 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-3',
     name: 'intercom',
-    description: 'V2 version : Identify rEtl test',
+    description: 'V2 version : user_id set as identifier in rETL flow along with email',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain create user payload with all traits',
@@ -429,7 +429,7 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-4',
     name: 'intercom',
-    description: 'V1 version : successful identify call to create user',
+    description: 'V1 version : successful identify call with nested custom attributes',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain create user payload with all traits',
@@ -478,7 +478,8 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-5',
     name: 'intercom',
-    description: 'V1 version : successful identify call to create user',
+    description:
+      'V1 version : successful identify call with name built from firstName and lastName',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain create user payload with all traits',
@@ -527,7 +528,7 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-6',
     name: 'intercom',
-    description: 'V1 version : successful identify call to update user',
+    description: 'V1 version : successful identify call with name from lastName only',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain update user payload with all traits',
@@ -576,7 +577,7 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-7',
     name: 'intercom',
-    description: 'V1 version : successful identify call to update user',
+    description: 'V1 version : successful identify call with name from firstName only',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain update user payload with all traits',
@@ -625,7 +626,7 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-8',
     name: 'intercom',
-    description: 'V1 version : successful identify call to create user',
+    description: 'V1 version : successful identify call with a company that has an id',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain create user payload with all traits',
@@ -674,7 +675,7 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-9',
     name: 'intercom',
-    description: 'V1 version : successful identify call to create user',
+    description: 'V1 version : successful identify call with a company without id',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain create user payload with all traits',
@@ -748,7 +749,8 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-10',
     name: 'intercom',
-    description: 'V1 version : successful identify call to update user',
+    description:
+      'V1 version : successful identify call without firstName and with a company without name',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain update user payload with all traits',
@@ -1005,7 +1007,7 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-15',
     name: 'intercom',
-    description: 'V1 version : Identify rEtl test',
+    description: 'V1 version : user_id set as identifier in rETL flow along with email',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain create user payload with all traits',
@@ -1065,7 +1067,7 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-16',
     name: 'intercom',
-    description: 'V1 version : Identify test with different lookup field than email',
+    description: 'V2 version : Update contact with external_id as lookup field',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain update user payload with all traits',
@@ -1125,7 +1127,7 @@ export const identifyTestData = [
     id: 'intercom-identify-test-17',
     name: 'intercom',
     description:
-      'V2 version : user_id set as indentifier in rETL flow and that user_id is not present on intercom',
+      'V2 version : user_id set as identifier in rETL flow and that user_id is not present on intercom',
     scenario: 'Business',
     successCriteria:
       'Response should contain create user payload with post method and with both user_id and external_id in the body along with other traits',
@@ -1221,7 +1223,7 @@ export const identifyTestData = [
     id: 'intercom-identify-test-18',
     name: 'intercom',
     description:
-      'V2 version : user_id set as indentifier in rETL flow and that user_id is present on intercom',
+      'V2 version : user_id set as identifier in rETL flow and that user_id is present on intercom',
     scenario: 'Business',
     successCriteria:
       'Response should contain update user payload with put method and with both user_id and external_id in the body along with other traits',
@@ -1316,7 +1318,7 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-19',
     name: 'intercom',
-    description: 'V1 version : user_id set as indentifier in rETL flow',
+    description: 'V1 version : user_id set as identifier in rETL flow',
     scenario: 'Business',
     successCriteria:
       'Response should contain create user payload with post method and with only user_id in the body along with other traits',

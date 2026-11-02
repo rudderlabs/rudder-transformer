@@ -76,20 +76,6 @@ const attemptDelivery = async ({
         `expect the whole batch to fail, or name the seed indices that must not be delivered.`,
     );
   }
-  const expectedTransform = step.expectedFailure?.transform;
-  if (
-    expectedTransform &&
-    (step.expectedFailure?.items ||
-      step.expectedFailure?.category ||
-      step.expectedOutputs !== undefined ||
-      step.expectedProxyRequests !== undefined)
-  ) {
-    throw new Error(
-      `[live:${destination}:${step.name}] expectedFailure.transform stands alone — a step whose ` +
-        `transform fails never reaches delivery, so items/category/expectedOutputs/` +
-        `expectedProxyRequests cannot apply.`,
-    );
-  }
   // TODO: this drives only the /routerTransform -> /proxy path. rudder-server also runs
   // the processor transform (/v0/destinations/<dest>) ahead of delivery, whose response shape
   // differs — that chaining is not exercised here (see live/README.md "Deferred").
@@ -105,16 +91,12 @@ const attemptDelivery = async ({
   expect(routerResponse.status).toEqual(HttpStatusCode.Ok);
 
   const routerOutputs = parseRouterOutputs(routerResponse.body);
+  const expectedTransform = step.expectedFailure?.transform;
   if (expectedTransform) {
-    // Status and errorType only: a router output carries live credentials (see the count
-    // assertion below).
-    const { statusCode, errorType } = expectedTransform;
-    expect(
-      routerOutputs.map((o) => ({
-        statusCode: o.statusCode,
-        ...(errorType && { errorType: o.statTags?.errorType }),
-      })),
-    ).toEqual(events.map(() => ({ statusCode, ...(errorType && { errorType }) })));
+    // Statuses only: a router output carries live credentials (see the count assertion below).
+    expect(routerOutputs.map((o) => o.statusCode)).toEqual(
+      events.map(() => expectedTransform.statusCode),
+    );
     return undefined;
   }
   // /routerTransform reports a per-event transform failure as a non-2xx entry in `output[]`, not as

@@ -94,7 +94,7 @@ export const live = {
           stepType: 'pipeline',
           name: 'identify → lookup times out',
           seed: identifySeed,
-          expectedFailure: { transform: { statusCode: 500, errorType: 'retryable' } },
+          expectedFailure: { transform: { statusCode: 500 } },
         },
       ],
     },

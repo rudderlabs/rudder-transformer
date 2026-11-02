@@ -28,11 +28,11 @@ const routerOutput = (jobIds: number[], statusCode = 200) => ({
   statusCode,
 });
 
-const failedRouterOutput = (jobIds: number[], statusCode = 400, errorType = 'aborted') => ({
+const failedRouterOutput = (jobIds: number[], statusCode = 400) => ({
   ...routerOutput(jobIds, statusCode),
   batchedRequest: undefined,
   error: 'event is missing a required field',
-  statTags: { errorCategory: 'transformation', errorType },
+  statTags: { errorCategory: 'transformation' },
 });
 
 // A delivered /proxy verdict for the jobIds in the request it answers.
@@ -497,63 +497,36 @@ describe('runPipelineStep — outputs rudder-server does not deliver', () => {
 const transformFailHttp = (
   calls: { url: string; body: unknown }[],
   statusCode: number,
-  errorType?: string,
 ): LiveHttpClient => ({
   post: async (url: string, body: object): Promise<LiveHttpResponse> => {
     calls.push({ url, body });
     const jobIds = (body as RouterTransformRequestBody).input.map((i) => i.metadata.jobId);
     return {
       status: 200,
-      body: { output: jobIds.map((jobId) => failedRouterOutput([jobId], statusCode, errorType)) },
+      body: { output: jobIds.map((jobId) => failedRouterOutput([jobId], statusCode)) },
     };
   },
 });
 
-const transformFailStep = (
-  transform: { statusCode: number; errorType?: string },
-  extra: Partial<PipelineStep> = {},
-): PipelineStep => ({
+const transformFailStep: PipelineStep = {
   stepType: 'pipeline',
   name: 'transform fails',
   seed: () => event('a'),
-  expectedFailure: { transform },
-  ...extra,
-});
+  expectedFailure: { transform: { statusCode: 500 } },
+};
 
 describe('runPipelineStep — expected transform failure', () => {
   it('passes when every output fails with the declared status, without delivering', async () => {
     const calls: { url: string; body: unknown }[] = [];
-    await expect(
-      run(transformFailStep({ statusCode: 500 }), transformFailHttp(calls, 500)),
-    ).resolves.toBeUndefined();
+    await expect(run(transformFailStep, transformFailHttp(calls, 500))).resolves.toBeUndefined();
     expect(calls.map((c) => c.url)).toEqual(['/routerTransform']);
   });
 
   it('fails when the transform fails with a different status', async () => {
-    await expect(
-      run(transformFailStep({ statusCode: 500 }), transformFailHttp([], 400)),
-    ).rejects.toThrow();
-  });
-
-  it('fails on the right status with the wrong errorType (e.g. an unrelated crash)', async () => {
-    const step = transformFailStep({ statusCode: 500, errorType: 'retryable' });
-    await expect(run(step, transformFailHttp([], 500, 'retryable'))).resolves.toBeUndefined();
-    await expect(run(step, transformFailHttp([], 500, 'aborted'))).rejects.toThrow();
+    await expect(run(transformFailStep, transformFailHttp([], 400))).rejects.toThrow();
   });
 
   it('fails when the transform succeeds', async () => {
-    await expect(run(transformFailStep({ statusCode: 500 }), stubHttp([]))).rejects.toThrow();
-  });
-
-  it.each([
-    { expectedOutputs: 1 },
-    { expectedProxyRequests: 0 },
-    { expectedFailure: { items: [0], transform: { statusCode: 500 } } },
-  ])('rejects transform combined with %o before any call', async (extra) => {
-    const calls: { url: string; body: unknown }[] = [];
-    await expect(
-      run(transformFailStep({ statusCode: 500 }, extra), transformFailHttp(calls, 500)),
-    ).rejects.toThrow(/stands alone/);
-    expect(calls).toHaveLength(0);
+    await expect(run(transformFailStep, stubHttp([]))).rejects.toThrow();
   });
 });

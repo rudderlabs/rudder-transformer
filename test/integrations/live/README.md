@@ -182,9 +182,9 @@ scenario-level `cleanup`. There are no lifecycle hooks. Each step declares a req
   batching live: whether N events collapse into one delivery request, and whether a batch response
   is attributed back to every job. Pin the outcome with `expectedOutputs`/`expectedProxyRequests`,
   since a grouping regression that fans events out still delivers 2xx on each.
-  The runner fails the step on any output that failed to _transform_ (a non-2xx entry in
-  `output[]`) rather than counting only the survivors, and on any seeded job that comes back with
-  no delivery verdict at all.
+  Unless the step declares `expectedFailure.transform`, the runner fails it on any output that
+  failed to _transform_ (a non-2xx entry in `output[]`) rather than counting only the survivors,
+  and on any seeded job that comes back with no delivery verdict at all.
   `expectedFailure` declares that the step is expected to fail, and how — one field for every
   kind of failure rather than a flag per error class. `items` names seed indices whose jobs must
   come back NOT delivered (omit for a whole-batch failure); `category` asserts the error category
@@ -194,7 +194,12 @@ scenario-level `cleanup`. There are no lifecycle hooks. Each step declares a req
   credential failure, asserting the category is what separates a specific branch from the generic
   one, since both abort the job. To reach a credential branch live, `metadataOverride.secret`
   replaces the resolved secret for that step, because a real account's grant cannot be revoked on
-  demand.
+  demand. `transform: { statusCode, errorType? }` instead asserts the _transform_ fails every
+  seeded event with that status (and `statTags.errorType`), with nothing delivered — for a failure
+  the transform derives from the destination's live behaviour, e.g. a lookup that times out must
+  come back retryable (`500`/`retryable`), not aborted. Pin `errorType`: an unrelated crash is a
+  `500` too. It stands alone — no `items`, `category`, `expectedOutputs` or
+  `expectedProxyRequests`. Pure validation errors stay in the mocked suite.
   `retries` re-runs seed → transform → deliver with backoff when delivery fails — for
   routes that decide create-vs-update via an eventually-consistent search (a just-created record
   can be missed and 409 on the first try). Only use it where a failed attempt persists nothing, so

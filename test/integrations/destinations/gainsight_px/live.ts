@@ -48,7 +48,9 @@ const identifySeed = (ctx: RunContext): Record<string, unknown> => ({
 });
 
 // Makes every transform-time call to the PX API time out with no response, the way a degraded PX
-// does, without touching shared timeout config. Removed when the scenario ends.
+// does. REQUEST_TIMEOUT_IN_MS is read once at module load, so an env override cannot do this.
+// Relies on the live runner hosting the app in-process (component.live.test.ts) — move it into the
+// harness if live runs ever go out-of-process or a second spec needs fault injection.
 const forcePxRequestTimeout = async (ctx: RunContext): Promise<void> => {
   const pxBaseUrl = baseUrl(ctx.liveSecret);
   const id = axios.interceptors.request.use((config) =>
@@ -56,9 +58,6 @@ const forcePxRequestTimeout = async (ctx: RunContext): Promise<void> => {
   );
   ctx.addCleanup(() => axios.interceptors.request.eject(id));
 };
-
-// GET /users/{id} lags writes by several seconds; poll.
-const POLL = { attempts: 8, delayMs: (attempt: number) => 2000 * Math.min(attempt + 1, 4) };
 
 export const live = {
   enabled: true,
@@ -81,7 +80,9 @@ export const live = {
         check: async (ctx: RunContext) => {
           expect(await fetchUserTitle(ctx)).toBe(runTitle(ctx));
         },
-        ...POLL,
+        // GET /users/{id} lags writes by ~6–25 s.
+        attempts: 6,
+        delayMs: () => 5000,
       },
     },
     {
@@ -93,7 +94,7 @@ export const live = {
           stepType: 'pipeline',
           name: 'identify → lookup times out',
           seed: identifySeed,
-          expectedTransformFailure: { statusCode: 500 },
+          expectedFailure: { transform: { statusCode: 500, errorType: 'retryable' } },
         },
       ],
     },

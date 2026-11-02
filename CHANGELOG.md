@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.167.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.166.0...v1.167.0) (2026-11-02)
+
+
+### Features
+
+* **http:** add native v2 JSONata request shaping ([#5739](https://github.com/rudderlabs/rudder-transformer/issues/5739)) ([4a3987d](https://github.com/rudderlabs/rudder-transformer/commit/4a3987d40e906be5ffdc3ceb141295bc4f50a39d))
+
+
+### Bug Fixes
+
+* **discord:** classify customer template failures as configuration errors ([#5751](https://github.com/rudderlabs/rudder-transformer/issues/5751)) ([42b4cd1](https://github.com/rudderlabs/rudder-transformer/commit/42b4cd122aa6c9a9979f661772665ea19f5e866d))
+* **gaec:** remove unused access token from transform params ([#5746](https://github.com/rudderlabs/rudder-transformer/issues/5746)) ([e5656e5](https://github.com/rudderlabs/rudder-transformer/commit/e5656e5e8933fc607ae20335ef6b8a938a221163))
+* **twitter_ads:** classify non-string identifier failures as validation errors ([#5752](https://github.com/rudderlabs/rudder-transformer/issues/5752)) ([9a7506a](https://github.com/rudderlabs/rudder-transformer/commit/9a7506a5832a924cd1ad023985c327dcaf01ea42))
+
 ## [1.166.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.165.0...v1.166.0) (2026-10-27)
 
 

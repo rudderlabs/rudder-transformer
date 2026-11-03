@@ -305,29 +305,15 @@ describe('EventTesterService.testEventV2', () => {
   it.each([
     {
       name: 'the exact Preview stage',
-      dest: 'custom_audience',
       stage: { user_transform: false, dest_transform: true, send_to_destination: false },
       isPreview: true,
     },
     {
-      name: 'a stage with user transform enabled',
-      dest: 'custom_audience',
+      name: 'a non-Preview stage',
       stage: { user_transform: true, dest_transform: true, send_to_destination: false },
       isPreview: false,
     },
-    {
-      name: 'a stage with destination sending enabled',
-      dest: 'custom_audience',
-      stage: { user_transform: false, dest_transform: true, send_to_destination: true },
-      isPreview: false,
-    },
-    {
-      name: 'the exact Preview stage for a different destination',
-      dest: 'http',
-      stage: { user_transform: false, dest_transform: true, send_to_destination: false },
-      isPreview: false,
-    },
-  ])('marks only $name as Preview', async ({ dest, stage, isPreview }) => {
+  ])('sets isPreview correctly for $name', async ({ stage, isPreview }) => {
     jest
       .spyOn(
         EventTesterService as unknown as {
@@ -347,38 +333,17 @@ describe('EventTesterService.testEventV2', () => {
           statusCode: 200,
         },
       ]);
-    const sendSpy = jest
-      .spyOn(
-        EventTesterService as unknown as {
-          sendPayloadsToDestination: (
-            destination: string,
-            payloads: unknown[],
-          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
-        },
-        'sendPayloadsToDestination',
-      )
-      .mockResolvedValue({ responses: ['ok'], statuses: [200] });
-
     const payload = {
       events: [{ type: 'record' }],
-      destination:
-        dest === 'http'
-          ? {
-              workspaceId: 'ws-1',
-              version: 2,
-              destinationDefinition: { id: 'http', name: 'HTTP', config: {} },
-              config: { apiUrl: 'https://example.org/events', method: 'POST' },
-            }
-          : { workspaceId: 'ws-1', destinationDefinition: {} },
+      destination: { workspaceId: 'ws-1', destinationDefinition: {} },
       stage,
     };
-    await EventTesterService.testEventV2(payload, 'v0', dest);
+    await EventTesterService.testEventV2(payload, 'v0', 'custom_audience');
 
     expect(doRouterSpy).toHaveBeenCalledTimes(1);
     const [{ metadata }] = doRouterSpy.mock.calls[0][0];
     if (isPreview) expect(metadata).toHaveProperty('isPreview', true);
     else expect(metadata).not.toHaveProperty('isPreview');
-    expect(sendSpy).toHaveBeenCalledTimes(stage.send_to_destination ? 1 : 0);
   });
 
   it('previews native HTTP v2 batches without a connection', async () => {

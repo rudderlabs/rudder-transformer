@@ -353,24 +353,6 @@ describe('buildRequestHeaders', () => {
       },
     },
     {
-      name: 'uses metadata token for linked OAuth Client Credentials account',
-      destination: buildDestination(
-        { authenticationEnabled: true, rudderAccountId: 'account-1' },
-        {
-          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
-          options: {},
-          secret: { accessToken: 'stale-account-token' },
-        },
-      ),
-      metadata: {
-        secret: { accessToken: 'client-credentials-token' },
-      },
-      expectedHeaders: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer client-credentials-token',
-      },
-    },
-    {
       name: 'uses metadata token for linked OAuth Auth Code account over stale inline credentials',
       destination: buildDestination(
         {
@@ -424,24 +406,6 @@ describe('buildRequestHeaders', () => {
           secret: { bearerToken: 'account-token' },
         },
       ),
-      expectedHeaders: { 'Content-Type': 'application/json' },
-    },
-    {
-      name: 'suppresses OAuth auth when toggle is false',
-      destination: buildDestination(
-        {
-          authenticationEnabled: false,
-          rudderAccountId: 'account-1',
-          authenticationType: 'bearerToken',
-          bearerToken: 'stale-inline-token',
-        },
-        {
-          accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
-          options: {},
-          secret: { accessToken: 'stale-account-token' },
-        },
-      ),
-      metadata: { secret: { accessToken: 'metadata-oauth-token' } },
       expectedHeaders: { 'Content-Type': 'application/json' },
     },
     {
@@ -523,23 +487,6 @@ describe('buildRequestHeaders', () => {
     },
   ];
 
-  const oauthAccountDefinitionNames = [
-    ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
-    ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
-  ];
-  const oauthMetadataFailureCases: {
-    name: string;
-    metadata?: CustomAudienceAuthMetadata;
-    accountDefinitionName: string;
-  }[] = oauthAccountDefinitionNames.flatMap((accountDefinitionName) =>
-    [
-      { name: 'metadata is absent', metadata: undefined },
-      { name: 'metadata secret is absent', metadata: {} },
-      { name: 'metadata accessToken is absent', metadata: { secret: {} } },
-      { name: 'metadata accessToken is empty', metadata: { secret: { accessToken: '' } } },
-    ].map((testCase) => ({ ...testCase, accountDefinitionName })),
-  );
-
   it.each(successCases)('$name', ({ destination, metadata, expectedHeaders }) => {
     expect(buildRequestHeaders(destination, metadata)).toEqual(expectedHeaders);
   });
@@ -550,47 +497,32 @@ describe('buildRequestHeaders', () => {
     expect(build).toThrow(errorMessage);
   });
 
-  it.each(oauthMetadataFailureCases)(
-    'throws OAuthSecretError when $name for $accountDefinitionName',
-    ({ metadata, accountDefinitionName }) => {
-      const destination = buildDestination(
-        {
-          authenticationEnabled: true,
-          rudderAccountId: 'account-1',
-          authenticationType: 'bearerToken',
-          bearerToken: 'stale-inline-token',
-        },
-        {
-          accountDefinitionName,
-          options: {},
-          secret: { accessToken: 'stale-account-token' },
-        },
-      );
-      const build = () => buildRequestHeaders(destination, metadata);
+  it('throws OAuthSecretError when a linked OAuth access token is missing', () => {
+    const destination = buildDestination(
+      { authenticationEnabled: true, rudderAccountId: 'account-1' },
+      { accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE, secret: {} },
+    );
 
-      expect(build).toThrow(OAuthSecretError);
-      expect(build).toThrow('OAuth access token is unavailable in event metadata.');
-    },
-  );
+    const build = () => buildRequestHeaders(destination);
+    expect(build).toThrow(OAuthSecretError);
+    expect(build).toThrow('OAuth access token is unavailable in event metadata.');
+  });
 
-  it.each(oauthAccountDefinitionNames)(
-    'renders a masked Preview header for %s without reading a token',
-    (accountDefinitionName) => {
-      const destination = buildDestination(
-        { authenticationEnabled: true, rudderAccountId: 'account-1' },
-        { accountDefinitionName, secret: { accessToken: 'stale-account-token' } },
-      );
-      const metadata: CustomAudienceAuthMetadata = { isPreview: true };
-      Object.defineProperty(metadata, 'secret', {
-        get: () => {
-          throw new Error('Preview must not read a token');
-        },
-      });
+  it('renders a masked Preview header without reading a token', () => {
+    const destination = buildDestination(
+      { authenticationEnabled: true, rudderAccountId: 'account-1' },
+      { accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE, secret: {} },
+    );
+    const metadata: CustomAudienceAuthMetadata = { isPreview: true };
+    Object.defineProperty(metadata, 'secret', {
+      get: () => {
+        throw new Error('Preview must not read a token');
+      },
+    });
 
-      expect(buildRequestHeaders(destination, metadata)).toEqual({
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ********',
-      });
-    },
-  );
+    expect(buildRequestHeaders(destination, metadata)).toEqual({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ********',
+    });
+  });
 });

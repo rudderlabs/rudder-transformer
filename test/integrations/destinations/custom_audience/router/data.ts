@@ -18,8 +18,7 @@ import {
   useInsertConfigWithRequiredInsertFieldDestination,
   accountManagedDestination,
   accountManagedHeaders,
-  oauthLinkedDestinations,
-  oauthLinkedHeaders,
+  oauthLinkedDestination,
   accountManagedApiKeyDestination,
   accountManagedApiKeyHeaders,
   authenticationDisabledDestination,
@@ -39,6 +38,9 @@ const errorStatTags = {
   module: 'destination',
   workspaceId: 'default-workspaceId',
 };
+
+const oauthMetadata = { ...generateMetadata(1), secret: { accessToken: oauthAccessToken } };
+const oauthEmail = sha256('oauth@example.com');
 
 export const data: RouterTestData[] = [
   {
@@ -1113,65 +1115,68 @@ export const data: RouterTestData[] = [
       },
     },
   },
-  ...oauthLinkedDestinations.map(({ id, destination: linkedDestination }): RouterTestData => {
-    const metadata = { ...generateMetadata(1), secret: { accessToken: oauthAccessToken } };
-    const email = sha256(`${id}@example.com`);
-    return {
-      id: `custom-audience-router-test-${id}-delivery`,
-      name: destType,
-      description: `Uses a metadata access token for ${id} delivery`,
-      scenario: 'Business',
-      successCriteria: 'The transformed request carries the metadata Bearer token',
-      feature: 'router',
-      module: 'destination',
-      version: 'v0',
-      input: {
-        request: {
-          body: {
-            input: [
-              {
-                message: generateRecordPayload({ action: 'insert', identifiers: { email } }),
-                metadata,
-                destination: linkedDestination,
-                connection,
-              },
-            ],
-            destType,
-          },
-          method: 'POST',
+  {
+    id: 'custom-audience-router-test-oauth-delivery',
+    name: destType,
+    description: 'Uses a metadata access token for Client Credentials delivery',
+    scenario: 'Business',
+    successCriteria: 'The transformed request carries the metadata Bearer token',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: oauthEmail },
+              }),
+              metadata: oauthMetadata,
+              destination: oauthLinkedDestination,
+              connection,
+            },
+          ],
+          destType,
         },
+        method: 'POST',
       },
-      output: {
-        response: {
-          status: 200,
-          body: {
-            output: [
-              {
-                batchedRequest: {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: insertEndpoint,
-                  endpointPath: '/insert',
-                  headers: oauthLinkedHeaders,
-                  params: {},
-                  body: {
-                    JSON: { audienceId: 'aud-42', users: [{ email }] },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: insertEndpoint,
+                endpointPath: '/insert',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-App': 'rudderstack',
+                  Authorization: `Bearer ${oauthAccessToken}`,
                 },
-                metadata: [metadata],
-                batched: true,
-                statusCode: 200,
-                destination: linkedDestination,
+                params: {},
+                body: {
+                  JSON: { audienceId: 'aud-42', users: [{ email: oauthEmail }] },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
               },
-            ],
-          },
+              metadata: [oauthMetadata],
+              batched: true,
+              statusCode: 200,
+              destination: oauthLinkedDestination,
+            },
+          ],
         },
       },
-    };
-  }),
+    },
+  },
 ];

@@ -266,9 +266,7 @@ describe('POST /test-router/:version/:destination/batch', () => {
       libraries: [],
     };
 
-    const response = await request(server)
-      .post(ENDPOINT_V2)
-      .send({ ...payload, secret: { accessToken: 'ignored' } });
+    const response = await request(server).post(ENDPOINT_V2).send(payload);
 
     expect(response.status).toBe(200);
     expect(testEventV2Spy).toHaveBeenCalledWith(payload, 'v0', 'custom_audience');

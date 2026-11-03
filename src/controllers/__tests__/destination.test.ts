@@ -491,11 +491,6 @@ describe('Destination controller tests', () => {
           deliveryAccount: { ...account, accountDefinition: undefined },
         },
       },
-      {
-        name: 'the destination is not Custom Audience',
-        destType: 'http',
-        destination: { ...destination },
-      },
     ])(
       'does not trigger REFRESH_TOKEN when $name',
       async ({ destType, destination: candidate }) => {

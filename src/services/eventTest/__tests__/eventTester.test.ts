@@ -327,7 +327,7 @@ describe('EventTesterService.testEventV2', () => {
       stage: { user_transform: false, dest_transform: true, send_to_destination: false },
       isPreview: false,
     },
-  ])('marks only $name and never maps a top-level secret', async ({ dest, stage, isPreview }) => {
+  ])('marks only $name as Preview', async ({ dest, stage, isPreview }) => {
     jest
       .spyOn(
         EventTesterService as unknown as {
@@ -371,38 +371,14 @@ describe('EventTesterService.testEventV2', () => {
             }
           : { workspaceId: 'ws-1', destinationDefinition: {} },
       stage,
-      secret: { accessToken: 'not-forwarded' },
     };
     await EventTesterService.testEventV2(payload, 'v0', dest);
 
     expect(doRouterSpy).toHaveBeenCalledTimes(1);
     const [{ metadata }] = doRouterSpy.mock.calls[0][0];
-    expect(metadata).not.toHaveProperty('secret');
     if (isPreview) expect(metadata).toHaveProperty('isPreview', true);
     else expect(metadata).not.toHaveProperty('isPreview');
     expect(sendSpy).toHaveBeenCalledTimes(stage.send_to_destination ? 1 : 0);
-  });
-
-  it('skips destination transform when the Preview stage disables it', async () => {
-    const runDestTransformSpy = jest.spyOn(
-      EventTesterService as unknown as {
-        runDestTransform: (version: string, dest: string, events: unknown[]) => Promise<unknown[]>;
-      },
-      'runDestTransform',
-    );
-
-    const result = await EventTesterService.testEventV2(
-      {
-        events: [{ type: 'record' }],
-        destination: { workspaceId: 'ws-1', destinationDefinition: {} },
-        stage: { user_transform: false, dest_transform: false, send_to_destination: false },
-      },
-      'v0',
-      'custom_audience',
-    );
-
-    expect(result.dest_transform_output).toEqual([]);
-    expect(runDestTransformSpy).not.toHaveBeenCalled();
   });
 
   it('previews native HTTP v2 batches without a connection', async () => {

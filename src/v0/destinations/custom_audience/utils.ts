@@ -172,19 +172,13 @@ const requireAccountValues = (
 };
 
 const buildOAuthHeader = (
-  account: ParsedCustomAudienceDeliveryAccount,
+  _account: ParsedCustomAudienceDeliveryAccount,
   metadata?: CustomAudienceAuthMetadata,
 ): Record<string, string> => {
   if (metadata?.isPreview) return buildBearerTokenHeader('********');
   const accessToken = metadata?.secret?.accessToken;
   if (typeof accessToken !== 'string' || accessToken.length === 0) {
-    const upgradeHint =
-      account.accountDefinitionName === ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS
-        ? ' The linked account needs a rudder-server version with machine_oauth support.'
-        : '';
-    throw new OAuthSecretError(
-      `OAuth access token is unavailable in event metadata.${upgradeHint}`,
-    );
+    throw new OAuthSecretError('OAuth access token is unavailable in event metadata.');
   }
   return buildBearerTokenHeader(accessToken);
 };

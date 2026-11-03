@@ -6,6 +6,7 @@ import { ServiceSelector } from '../helpers/serviceSelector';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import { DestinationPreTransformationService } from '../services/destination/preTransformation';
 import { MiscService } from '../services/misc';
+import type { Metadata, RudderMessage } from '../types/rudderEvents';
 import {
   ProcessorTransformationRequest,
   RouterTransformationRequest,
@@ -18,8 +19,6 @@ import { checkInvalidRtTfEvents } from '../v0/util';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
 
-// /routerTransform receives this destination key, while the linked account supplies its auth type.
-const CUSTOM_AUDIENCE_DESTINATION = 'custom_audience';
 const MACHINE_OAUTH_AUTH_TYPE = 'machine_oauth';
 
 export class DestinationController {
@@ -82,7 +81,10 @@ export class DestinationController {
 
   public static async destinationTransformAtRouter(ctx: Context) {
     const requestMetadata = MiscService.getRequestMetadata(ctx);
-    const routerRequest = ctx.request.body as RouterTransformationRequest;
+    const routerRequest = ctx.request.body as RouterTransformationRequest<
+      RudderMessage,
+      Metadata & { secret?: { accessToken?: string } }
+    >;
     const destination = routerRequest.destType;
     const events = routerRequest.input;
 
@@ -107,20 +109,13 @@ export class DestinationController {
       ...metaTags,
     });
 
-    const isCustomAudience =
-      typeof destination === 'string' && destination.toLowerCase() === CUSTOM_AUDIENCE_DESTINATION;
     const refreshResponses: RouterTransformationResponse[] = [];
     const dispatchEvents: typeof events = [];
     for (const event of events) {
       const account = event.destination?.deliveryAccount;
       const linkedAccountId = event.destination?.Config?.rudderAccountId;
-      const secret = event.metadata?.secret;
-      const accessToken =
-        secret && typeof secret === 'object' && 'accessToken' in secret
-          ? secret.accessToken
-          : undefined;
+      const accessToken = event.metadata?.secret?.accessToken;
       if (
-        isCustomAudience &&
         event.destination?.Config?.authenticationEnabled !== false &&
         typeof linkedAccountId === 'string' &&
         linkedAccountId.length > 0 &&

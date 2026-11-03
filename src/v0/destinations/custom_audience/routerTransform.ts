@@ -1,9 +1,12 @@
 import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
+import { z } from 'zod';
 import {
   DestinationIntegration,
   CustomBatchStrategy,
   TransformedEvent,
+  makeRouterInputSchema,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import { RecordAction } from '../../../types/rudderEvents';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { ACCOUNT_DEFINITION_NAMES } from './constants';
@@ -16,7 +19,28 @@ import {
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import { customAudienceInputSchema, type Action, type CustomAudienceRouterInput } from './types';
+import {
+  type Action,
+  type CustomAudienceAuthMetadata,
+  CustomAudienceConnectionDestConfigSchema,
+  CustomAudienceDestConfigSchema,
+} from './types';
+
+const customAudienceInputSchema = makeRouterInputSchema({
+  destinationConfig: CustomAudienceDestConfigSchema,
+  message: z
+    .object({
+      type: z.literal('record'),
+      action: z.nativeEnum(RecordAction),
+      identifiers: z.record(z.unknown()),
+    })
+    .passthrough(),
+  connectionConfig: z.object({ destination: CustomAudienceConnectionDestConfigSchema }),
+});
+
+type CustomAudienceRouterInput = z.infer<typeof customAudienceInputSchema> & {
+  metadata?: CustomAudienceAuthMetadata;
+};
 
 class CustomAudienceIntegration extends DestinationIntegration<
   Record<string, unknown>,

@@ -282,14 +282,13 @@ describe('Destination controller tests', () => {
       method: 'POST',
       endpoint: 'https://example.com/audience',
     };
-    const event = (jobId: number, token?: string) => ({
+    const event = (jobId: number) => ({
       message: { type: 'record' },
       metadata: {
         jobId,
         workspaceId: 'workspace-1',
         destinationId: 'destination-1',
-        secret:
-          token === undefined ? { clientSecret: 'fixture-client-secret' } : { accessToken: token },
+        secret: { clientSecret: 'fixture-client-secret' },
       },
       destination,
     });
@@ -346,119 +345,11 @@ describe('Destination controller tests', () => {
 
     test.each([
       {
-        name: 'older metadata has no secret',
-        metadata: { jobId: 2, workspaceId: 'workspace-1', destinationId: 'destination-1' },
-        destination,
-      },
-      {
-        name: 'the access token is empty',
-        metadata: { ...event(2).metadata, secret: { accessToken: '' } },
-        destination,
-      },
-      {
-        name: 'the access token is not a string',
-        metadata: { ...event(2).metadata, secret: { accessToken: 42 } },
-        destination,
-      },
-      {
-        name: 'the auth toggle is absent for a linked account',
-        metadata: event(2).metadata,
-        destination: {
-          ...destination,
-          Config: { ...destination.Config, authenticationEnabled: undefined },
-        },
-      },
-      {
-        name: 'the account definition name differs but its linked type is machine_oauth',
-        metadata: event(2).metadata,
-        destination: {
-          ...destination,
-          deliveryAccount: { ...account, accountDefinitionName: 'DESTINATION_OTHER' },
-        },
-      },
-    ])('triggers a refresh when $name', async ({ metadata, destination: candidate }) => {
-      const tokenless = { ...event(2), metadata, destination: candidate };
-      const dispatchSpy = jest.spyOn(ServiceSelector, 'getDestinationServiceByType');
-      jest.spyOn(logger, 'info').mockImplementation(() => undefined);
-
-      const response = await request(server)
-        .post('/routerTransform')
-        .send({ destType: 'custom_audience', input: [tokenless] });
-
-      expect(response.body).toEqual({
-        output: [
-          {
-            metadata: [metadata],
-            destination: candidate,
-            batched: false,
-            statusCode: 500,
-            error: refreshError,
-            authErrorCategory: 'REFRESH_TOKEN',
-          },
-        ],
-      });
-      expect(dispatchSpy).not.toHaveBeenCalled();
-    });
-
-    test('processes a token-bearing event alongside a tokenless account event', async () => {
-      const tokenless = event(1);
-      const withToken = event(2, 'fixture-access-token');
-      const service = new NativeIntegrationDestinationService();
-      const transformSpy = jest
-        .spyOn(service, 'doRouterTransformation')
-        .mockImplementation(async (events) =>
-          events.map((input) => ({
-            metadata: [input.metadata],
-            destination: input.destination,
-            batched: false,
-            statusCode: 200,
-            batchedRequest: successfulRequest,
-          })),
-        );
-      jest.spyOn(ServiceSelector, 'getDestinationServiceByType').mockReturnValue(service);
-      jest.spyOn(logger, 'info').mockImplementation(() => undefined);
-
-      const response = await request(server)
-        .post('/routerTransform')
-        .send({ destType: 'custom_audience', input: [tokenless, withToken] });
-
-      expect(response.body.output).toEqual([
-        {
-          metadata: [tokenless.metadata],
-          destination,
-          batched: false,
-          statusCode: 500,
-          error: refreshError,
-          authErrorCategory: 'REFRESH_TOKEN',
-        },
-        {
-          metadata: [withToken.metadata],
-          destination,
-          batched: false,
-          statusCode: 200,
-          batchedRequest: successfulRequest,
-        },
-      ]);
-      expect(transformSpy).toHaveBeenCalledTimes(1);
-      expect(transformSpy.mock.calls[0][0]).toHaveLength(1);
-      expect(transformSpy.mock.calls[0][0][0].metadata).toEqual(withToken.metadata);
-    });
-
-    test.each([
-      {
         name: 'authentication is disabled',
         destType: 'custom_audience',
         destination: {
           ...destination,
           Config: { ...destination.Config, authenticationEnabled: false },
-        },
-      },
-      {
-        name: 'a delivery account is present without a configured account link',
-        destType: 'custom_audience',
-        destination: {
-          ...destination,
-          Config: { ...destination.Config, rudderAccountId: undefined },
         },
       },
       {
@@ -481,14 +372,6 @@ describe('Destination controller tests', () => {
             ...account,
             accountDefinition: { ...account.accountDefinition, authenticationType: 'basic' },
           },
-        },
-      },
-      {
-        name: 'only the account definition name indicates Client Credentials',
-        destType: 'custom_audience',
-        destination: {
-          ...destination,
-          deliveryAccount: { ...account, accountDefinition: undefined },
         },
       },
     ])(

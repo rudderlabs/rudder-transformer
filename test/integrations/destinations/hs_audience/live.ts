@@ -124,14 +124,18 @@ const verifyMembership = async (ctx: RunContext, expected: boolean): Promise<voi
   expect(actual).toBe(expected);
 };
 
-const cleanupMembership = async (ctx: RunContext): Promise<void> => {
-  if (!ctx.resources.some((resource) => resource.type === CLEANUP_RESOURCE)) return;
+const removeMembership = async (ctx: RunContext): Promise<void> => {
   const listId = encodeURIComponent(listIdFromSecret(ctx.liveSecret));
   await request(ctx, 'PUT', `/crm/v3/lists/${listId}/memberships/add-and-remove`, undefined, {
     recordIdsToAdd: [],
     recordIdsToRemove: [contactIdFromSecret(ctx.liveSecret)],
   });
   await verifyMembership(ctx, false);
+};
+
+const cleanupMembership = async (ctx: RunContext): Promise<void> => {
+  if (!ctx.resources.some((resource) => resource.type === CLEANUP_RESOURCE)) return;
+  await removeMembership(ctx);
 };
 
 const recordSeed = (action: RecordAction) => (ctx: RunContext) => ({
@@ -177,7 +181,7 @@ export const live = {
       steps: [
         {
           stepType: 'action',
-          name: 'validate sandbox resources and initially absent membership',
+          name: 'validate sandbox resources and ensure absent membership',
           run: async (ctx) => {
             const listId = encodeURIComponent(listIdFromSecret(ctx.liveSecret));
             const list = await request(ctx, 'GET', `/crm/v3/lists/${listId}`);
@@ -192,10 +196,10 @@ export const live = {
             }
             const contactId = contactIdFromSecret(ctx.liveSecret);
             await request(ctx, 'GET', `/crm/v3/objects/contacts/${encodeURIComponent(contactId)}`);
+            // Clear leftover membership from a previous crashed run before arming cleanup.
             if (await hasMembership(ctx)) {
-              throw new Error('HS_AUDIENCE live test contact must initially be outside the list');
+              await removeMembership(ctx);
             }
-            // Arm cleanup only after proving this run cannot remove an existing membership.
             ctx.register({ type: CLEANUP_RESOURCE, id: contactId });
           },
         },

@@ -53,6 +53,15 @@ const destination: Destination = {
 
 const v1Destination = { ...destination, Config: v1Config };
 const v2Destination = { ...destination, Config: v2Config };
+// apiVersion intentionally omitted: the destination falls back to v2
+const noVersionDestination = {
+  ...destination,
+  Config: {
+    apiKey: secret4,
+    appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
+    collectContext: false,
+  },
+};
 
 const user1Traits = {
   age: 23,
@@ -249,6 +258,28 @@ const expectedUser7Traits = {
   name: 'Test Name',
   phone: '9876543210',
   signed_up_at: 1601493060,
+};
+
+// user4Traits as sent by v2: external_id instead of user_id, '_'-flattened custom attributes
+const expectedUser4TraitsV2 = {
+  name: 'Test Name',
+  phone: '9876543210',
+  email: 'test_1@test.com',
+  signed_up_at: 1601493060,
+  external_id: 'test_user_id_1',
+  custom_attributes: {
+    key1: 'value1',
+    address_city: 'Kolkata',
+    address_state: 'West Bengal',
+    'originalArray[0]_nested_field': 'nested value',
+    'originalArray[0]_tags[0]': 'tag_1',
+    'originalArray[0]_tags[1]': 'tag_2',
+    'originalArray[0]_tags[2]': 'tag_3',
+    'originalArray[1]_nested_field': 'nested value',
+    'originalArray[1]_tags[0]': 'tag_1',
+    'originalArray[2]_nested_field': 'nested value',
+    anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
+  },
 };
 
 const timestamp = '2023-11-22T10:12:44.757+05:30';
@@ -808,10 +839,10 @@ export const identifyTestData = [
     id: 'intercom-identify-test-11',
     name: 'intercom',
     description:
-      'No Version : Successful identify call to create user without giving apiVersion in configuration',
+      'No Version : Successful identify call to create user without giving apiVersion in configuration (defaults to v2)',
     scenario: 'Business',
     successCriteria:
-      'Response should take v1 apiVersion by default and response status code should be 200 and response should contain create user payload with all traits',
+      'Destination should default to v2 apiVersion when it is not set, search finds no contact, and response should contain v2 create contact payload with all traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -819,7 +850,7 @@ export const identifyTestData = [
       request: {
         body: [
           {
-            destination: { hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
+            destination: noVersionDestination,
             message: {
               anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               context: {
@@ -841,11 +872,11 @@ export const identifyTestData = [
         body: [
           {
             output: transformResultBuilder({
-              userId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
-              endpoint: v1Endpoint,
-              headers: v1Headers,
+              userId: '',
+              endpoint: v2Endpoint,
+              headers: { ...v2Headers, Authorization: authHeader4 },
               method: 'POST',
-              JSON: expectedUser4Traits,
+              JSON: expectedUser4TraitsV2,
             }),
             statusCode: 200,
             metadata: generateMetadata(1),
@@ -858,10 +889,10 @@ export const identifyTestData = [
     id: 'intercom-identify-test-12',
     name: 'intercom',
     description:
-      'No Version : Successful identify call to create user without giving apiVersion in configuration',
+      'No Version : Successful identify call to create user without giving apiVersion in configuration (defaults to v2)',
     scenario: 'Business',
     successCriteria:
-      'Response should take v1 apiVersion by default and response status code should be 200 and response should contain create user payload with all traits',
+      'Destination should default to v2 apiVersion when it is not set, search finds no contact, and response should contain v2 create contact payload with all traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -869,7 +900,7 @@ export const identifyTestData = [
       request: {
         body: [
           {
-            destination: { hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
+            destination: noVersionDestination,
             message: {
               anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               context: {
@@ -891,11 +922,11 @@ export const identifyTestData = [
         body: [
           {
             output: transformResultBuilder({
-              userId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
-              endpoint: v1Endpoint,
-              headers: v1Headers,
+              userId: '',
+              endpoint: v2Endpoint,
+              headers: { ...v2Headers, Authorization: authHeader4 },
               method: 'POST',
-              JSON: expectedUser5Traits,
+              JSON: expectedUser7Traits,
             }),
             statusCode: 200,
             metadata: generateMetadata(1),
@@ -908,10 +939,10 @@ export const identifyTestData = [
     id: 'intercom-identify-test-13',
     name: 'intercom',
     description:
-      'No Version : Successful identify call to update user without giving apiVersion in configuration',
+      'No Version : Successful identify call to update user without giving apiVersion in configuration (defaults to v2)',
     scenario: 'Business',
     successCriteria:
-      'Response should take v1 apiVersion by default and response status code should be 200 and response should contain update user payload with all traits',
+      'Destination should default to v2 apiVersion when it is not set, search finds an existing contact, and response should contain v2 update contact payload with all traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -919,11 +950,11 @@ export const identifyTestData = [
       request: {
         body: [
           {
-            destination: { hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
+            destination: noVersionDestination,
             message: {
               anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               context: {
-                traits: { ...user5Traits, firstName: undefined },
+                traits: { ...user5Traits, firstName: undefined, email: 'test_3@test.com' },
                 userAgent: 'unknown',
               },
               type: 'identify',
@@ -941,11 +972,11 @@ export const identifyTestData = [
         body: [
           {
             output: transformResultBuilder({
-              userId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
-              endpoint: v1Endpoint,
-              headers: v1Headers,
-              method: 'POST',
-              JSON: { ...expectedUser5Traits, name: 'Name' },
+              userId: '',
+              endpoint: `${v2Endpoint}/7070129940741e45d041`,
+              headers: { ...v2Headers, Authorization: authHeader4 },
+              method: 'PUT',
+              JSON: { ...expectedUser7Traits, email: 'test_3@test.com', name: 'Name' },
             }),
             statusCode: 200,
             metadata: generateMetadata(1),

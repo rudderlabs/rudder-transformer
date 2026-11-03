@@ -5,7 +5,7 @@ const {
   getName,
   getHeaders,
   searchContact,
-  findContactToAdopt,
+  findRetlContact,
   deferRepeatClaims,
   isRetlIdentifyWithMappedExternalId,
   getLookUpField,
@@ -1365,7 +1365,7 @@ describe('isRetlIdentifyWithMappedExternalId utility test', () => {
   });
 });
 
-describe('findContactToAdopt utility test', () => {
+describe('findRetlContact utility test', () => {
   const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us', apiVersion: 'v2' } };
   const metadata = { sourceId: 'source', destinationId: 'dest', workspaceId: 'workspace' };
   const message = {
@@ -1376,19 +1376,53 @@ describe('findContactToAdopt utility test', () => {
   };
   const searchResult = (data) => ({ status: 200, data: { type: 'list', data } });
   const freeContact = { id: 'c-1', email: 'a@rudderlabs.com', external_id: null };
+  const queryOf = (call) => JSON.parse(axios.post.mock.calls[call][1]).query;
 
   beforeEach(() => {
     axios.post.mockReset();
     axios.get.mockReset();
-    axios.post.mockResolvedValue(searchResult([{ id: 'c-1', external_id: null }]));
   });
 
-  it('searches the email in lower case, and claims a contact the direct read shows is free', async () => {
+  it('searches once by external_id or the lower-case email, and prefers the external_id match', async () => {
+    axios.post.mockResolvedValue(
+      searchResult([freeContact, { id: 'c-2', email: 'a@rudderlabs.com', external_id: 'user-1' }]),
+    );
+    await expect(findRetlContact(message, destination, metadata)).resolves.toEqual({
+      contactId: 'c-2',
+      matchedBy: 'external_id',
+    });
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(queryOf(0)).toEqual({
+      operator: 'OR',
+      value: [
+        { field: 'external_id', operator: '=', value: 'user-1' },
+        { field: 'email', operator: '=', value: 'a@rudderlabs.com' },
+      ],
+    });
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  it('claims a contact with the email and no external_id that the direct read shows is free', async () => {
+    axios.post.mockResolvedValue(
+      searchResult([{ id: 'c-0', email: 'a@rudderlabs.com', external_id: 'user-9' }, freeContact]),
+    );
     axios.get.mockResolvedValue({ status: 200, data: freeContact });
-    await expect(findContactToAdopt(message, destination, metadata)).resolves.toBe('c-1');
-    expect(JSON.parse(axios.post.mock.calls[0][1]).query.value).toEqual([
-      { field: 'email', operator: '=', value: 'a@rudderlabs.com' },
-    ]);
+    await expect(findRetlContact(message, destination, metadata)).resolves.toEqual({
+      contactId: 'c-1',
+      matchedBy: 'email',
+    });
+    expect(axios.post).toHaveBeenCalledTimes(1);
+  });
+
+  it('creates when only other users hold the email', async () => {
+    axios.post.mockResolvedValue(
+      searchResult([{ id: 'c-0', email: 'a@rudderlabs.com', external_id: 'user-9' }]),
+    );
+    await expect(findRetlContact(message, destination, metadata)).resolves.toEqual({
+      contactId: null,
+      matchedBy: null,
+    });
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -1396,39 +1430,67 @@ describe('findContactToAdopt utility test', () => {
     ['now holds another email', { ...freeContact, email: 'b@rudderlabs.com' }],
     ['has no email', { ...freeContact, email: null }],
   ])('does not claim a contact that the direct read shows %s', async (_, contact) => {
+    axios.post.mockResolvedValue(searchResult([freeContact]));
     axios.get.mockResolvedValue({ status: 200, data: contact });
-    await expect(findContactToAdopt(message, destination, metadata)).resolves.toBeNull();
+    await expect(findRetlContact(message, destination, metadata)).resolves.toEqual({
+      contactId: null,
+      matchedBy: null,
+    });
   });
 
   it('does not claim a contact deleted since the search', async () => {
+    axios.post.mockResolvedValue(searchResult([freeContact]));
     axios.get.mockRejectedValue({ response: { status: 404, data: { errors: [] } } });
-    await expect(findContactToAdopt(message, destination, metadata)).resolves.toBeNull();
+    await expect(findRetlContact(message, destination, metadata)).resolves.toEqual({
+      contactId: null,
+      matchedBy: null,
+    });
   });
 
   it('keeps the status of a failed direct read, so that the row retries', async () => {
+    axios.post.mockResolvedValue(searchResult([freeContact]));
     axios.get.mockRejectedValue({ response: { status: 429, data: { errors: [] } } });
-    await expect(findContactToAdopt(message, destination, metadata)).rejects.toMatchObject({
+    await expect(findRetlContact(message, destination, metadata)).rejects.toMatchObject({
       status: 429,
     });
   });
 
-  it('keeps the status of a failed email search, so that the row retries', async () => {
-    axios.post.mockReset();
+  it('keeps the status of a failed search, so that the row retries', async () => {
     axios.post.mockRejectedValue({ response: { status: 503, data: { errors: [] } } });
-    await expect(findContactToAdopt(message, destination, metadata)).rejects.toMatchObject({
+    await expect(findRetlContact(message, destination, metadata)).rejects.toMatchObject({
       status: 503,
     });
     expect(axios.get).not.toHaveBeenCalled();
   });
 
-  it('does not search when the email is not a string', async () => {
-    const result = await findContactToAdopt(
-      { ...message, traits: { ...message.traits, email: 123 } },
-      destination,
-      metadata,
-    );
-    expect(result).toBeNull();
-    expect(axios.post).not.toHaveBeenCalled();
+  it('searches by external_id alone when a full page of results has no external_id match', async () => {
+    const page = Array.from({ length: 50 }, (_, i) => ({
+      id: `c-${i}`,
+      email: 'a@rudderlabs.com',
+      external_id: `other-${i}`,
+    }));
+    axios.post
+      .mockResolvedValueOnce(searchResult(page))
+      .mockResolvedValueOnce(searchResult([{ id: 'c-99', external_id: 'user-1' }]));
+    await expect(findRetlContact(message, destination, metadata)).resolves.toEqual({
+      contactId: 'c-99',
+      matchedBy: 'external_id',
+    });
+    expect(queryOf(1)).toEqual({
+      operator: 'AND',
+      value: [{ field: 'external_id', operator: '=', value: 'user-1' }],
+    });
+  });
+
+  it('matches a number external_id against the string Intercom returns', async () => {
+    axios.post.mockResolvedValue(searchResult([{ id: 'c-7', external_id: '7' }]));
+    await expect(
+      findRetlContact(
+        { ...message, traits: { ...message.traits, external_id: 7 } },
+        destination,
+        metadata,
+      ),
+    ).resolves.toEqual({ contactId: 'c-7', matchedBy: 'external_id' });
   });
 });
 

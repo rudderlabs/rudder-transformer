@@ -379,35 +379,53 @@ const fetchContact = async (contactId, destination, metadata) => {
   );
 };
 
+// Intercom's search returns this many contacts per page when no page size is set.
+const SEARCH_PAGE_SIZE = 50;
+
 /**
- * Finds a contact that holds this row's email without an external_id, for the row to claim. Intercom
- * answers 409 to a create in that state, but accepts one when the email belongs to a different
- * external_id. Intercom has no conditional update, and a PUT silently replaces an external_id. So this
- * reads the contact directly first, because search can be stale about both its external_id and its
- * email. That leaves only rows racing on different router workers able to collide.
+ * Finds the contact an opted-in rETL identify (see isRetlIdentifyWithMappedExternalId) should update,
+ * with one search by external_id or email. The contact that holds the row's external_id wins. Failing
+ * that, the row claims a contact that holds its email with no external_id: Intercom answers 409 to a
+ * create in that state, but accepts one when the email belongs to a different external_id. Intercom
+ * has no conditional update, and a PUT silently replaces an external_id. So a claim reads the contact
+ * directly first, because search can be stale about both its external_id and its email. That leaves
+ * only rows racing on different router workers able to collide.
  * @param {*} message
  * @param {*} destination
  * @param {*} metadata
- * @returns the id of the contact to claim, or null to create a new contact
+ * @returns {{contactId: string|null, matchedBy: 'external_id'|'email'|null}}
  */
-const findContactToAdopt = async (message, destination, metadata) => {
-  const { email } = message.traits;
-  if (typeof email !== 'string') {
-    return null;
+const findRetlContact = async (message, destination, metadata) => {
+  const { external_id: externalId, email } = message.traits;
+  const normalizedEmail = typeof email === 'string' ? email.toLowerCase() : null;
+  const idLookup = { field: 'external_id', value: externalId };
+  const lookups = normalizedEmail
+    ? [idLookup, { field: 'email', value: normalizedEmail }]
+    : [idLookup];
+  const holdsId = (contact) => String(contact.external_id) === String(externalId);
+
+  const contacts = (await fetchContacts(lookups, destination, metadata)) || [];
+  let byId = contacts.find(holdsId);
+  // A full page can push the external_id match past it, behind other users sharing the email.
+  if (!byId && normalizedEmail && contacts.length >= SEARCH_PAGE_SIZE) {
+    byId = (await fetchContacts([idLookup], destination, metadata))?.find?.(holdsId);
   }
-  const normalizedEmail = email.toLowerCase();
-  const contacts = await fetchContacts(
-    [{ field: 'email', value: normalizedEmail }],
-    destination,
-    metadata,
-  );
-  const candidate = contacts?.find?.((contact) => !contact.external_id);
+  if (byId) {
+    return { contactId: byId.id, matchedBy: 'external_id' };
+  }
+
+  const notFound = { contactId: null, matchedBy: null };
+  const candidate =
+    normalizedEmail &&
+    contacts.find(
+      (contact) => !contact.external_id && contact.email?.toLowerCase() === normalizedEmail,
+    );
   if (!candidate) {
-    return null;
+    return notFound;
   }
   const contact = await fetchContact(candidate.id, destination, metadata);
   if (!contact || contact.external_id || contact.email?.toLowerCase() !== normalizedEmail) {
-    return null;
+    return notFound;
   }
   info('[INTERCOM] Adopting a contact without external_id', {
     sourceId: metadata.sourceId,
@@ -415,7 +433,7 @@ const findContactToAdopt = async (message, destination, metadata) => {
     workspaceId: metadata.workspaceId,
     contactId: candidate.id,
   });
-  return candidate.id;
+  return { contactId: candidate.id, matchedBy: 'email' };
 };
 
 /**
@@ -808,7 +826,7 @@ module.exports = {
   getName,
   getHeaders,
   searchContact,
-  findContactToAdopt,
+  findRetlContact,
   deferRepeatClaims,
   isRetlIdentifyWithMappedExternalId,
   getLookUpField,

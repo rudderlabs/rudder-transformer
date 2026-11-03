@@ -49,21 +49,21 @@ steps:
       const payload = $.getFieldValueFromMessage(.message, "traits");
       // this is applicable for v2 only
       // without email, keep an explicitly mapped external_id and fall back to user_id
-      // with email, keep it only on an identify that opted in, which searchContact matches by it
+      // with email, keep it only on an identify that opted in, which findRetlContact matches by it
       const keepsMappedExternalId = $.isRetlIdentifyWithMappedExternalId(.message);
       payload.external_id = $.outputs.apiVersion === "v2" && !payload.email ? (payload.external_id || payload.user_id) : ($.outputs.apiVersion === "v2" && keepsMappedExternalId ? payload.external_id : null);
       payload;
 
+  - name: retlContact
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1" && $.isRetlIdentifyWithMappedExternalId(.message)
+    template: |
+      const retlContact = await $.findRetlContact(.message, .destination, .metadata);
+      retlContact;
+
   - name: searchContact
-    condition: ($.outputs.messageType === {{$.EventType.IDENTIFY}} || $.outputs.messageType === {{$.EventType.GROUP}}) && $.outputs.apiVersion !== "v1"
+    condition: ($.outputs.messageType === {{$.EventType.IDENTIFY}} || $.outputs.messageType === {{$.EventType.GROUP}}) && $.outputs.apiVersion !== "v1" && !$.isRetlIdentifyWithMappedExternalId(.message)
     template: |
       const contactId = await $.searchContact(.message, .destination, .metadata);
-      contactId;
-
-  - name: contactToAdopt
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1" && !$.outputs.searchContact && $.isRetlIdentifyWithMappedExternalId(.message)
-    template: |
-      const contactId = await $.findContactToAdopt(.message, .destination, .metadata);
       contactId;
 
   - name: identifyTransformationForLatestVersion
@@ -94,11 +94,14 @@ steps:
       $.context.payload = payload;
       $.assert($.context.payload.external_id || $.context.payload.email, "Either email or userId is required for Identify call");
       const endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts";
-      const contactId = $.outputs.searchContact || $.outputs.contactToAdopt;
+      const retlContact = $.outputs.retlContact || {};
+      const contactId = $.outputs.searchContact || retlContact.contactId;
+      // only a contact found by its id can hold a company link; a claimed one is new to this row
+      const matchedContactId = $.outputs.searchContact || (retlContact.matchedBy === "external_id" ? retlContact.contactId : null);
       $.context.requestMethod = contactId ? 'PUT' : 'POST';
       const company = .message.traits.company || .message.context.traits.company;
-      const shouldDetachUserAndCompany = $.outputs.searchContact && company.remove;
-      shouldDetachUserAndCompany ? await $.detachContactAndCompany($.outputs.searchContact, company, .destination);
+      const shouldDetachUserAndCompany = matchedContactId && company.remove;
+      shouldDetachUserAndCompany ? await $.detachContactAndCompany(matchedContactId, company, .destination);
       $.context.endpoint = contactId ? endpoint + "/" + contactId : endpoint;
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 

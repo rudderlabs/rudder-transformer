@@ -7,7 +7,7 @@ import type {
   CustomAudienceDestination,
   UpdateActionConfig,
 } from '../../../../src/v0/destinations/custom_audience/types';
-import { accountApiKeyValue, accountBearerToken } from './maskedSecrets';
+import { accountApiKeyValue, accountBearerToken, oauthAccessToken } from './maskedSecrets';
 
 type ComponentCustomAudienceDestination = CustomAudienceDestination & Destination;
 
@@ -108,7 +108,7 @@ export const accountManagedHeaders = {
   Authorization: `Bearer ${accountBearerToken}`,
 };
 
-export const oauthPreviewDestinations = [
+export const oauthLinkedDestinations = [
   { id: 'client-credentials', definition: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS },
   { id: 'authorization-code', definition: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE },
 ].map(({ id, definition }) => ({
@@ -124,10 +124,10 @@ export const oauthPreviewDestinations = [
   } as ComponentCustomAudienceDestination,
 }));
 
-export const oauthPreviewHeaders = {
+export const oauthLinkedHeaders = {
   'Content-Type': 'application/json',
   'X-App': 'rudderstack',
-  Authorization: 'Bearer ********',
+  Authorization: `Bearer ${oauthAccessToken}`,
 };
 
 export const accountManagedApiKeyDestination: ComponentCustomAudienceDestination = {

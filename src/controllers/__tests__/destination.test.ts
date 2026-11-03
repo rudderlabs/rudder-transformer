@@ -6,6 +6,12 @@ import { applicationRoutes } from '../../routes';
 import { ServiceSelector } from '../../helpers/serviceSelector';
 import { DynamicConfigParser } from '../../util/dynamicConfigParser';
 import { NativeIntegrationDestinationService } from '../../services/destination/nativeIntegration';
+import { ErrorReportingService } from '../../services/errorReporting';
+import { RouterTransformationResponseListSchema } from '../../types/zodTypes';
+import { EventTesterService } from '../../services/eventTest/eventTester';
+import { DestinationController } from '../destination';
+import logger from '../../logger';
+import stats from '../../util/stats';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -238,6 +244,310 @@ describe('Destination controller tests', () => {
 
       expect(getDestinationServiceSpy).toHaveBeenCalledTimes(1);
       expect(mockDestinationService.doRouterTransformation).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Custom Audience first OAuth grant', () => {
+    const refreshError =
+      'OAuth token unavailable; if this persists, upgrade rudder-server for machine_oauth support';
+    const account = {
+      id: 'account-1',
+      accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_CLIENT_CREDENTIALS',
+      accountDefinition: {
+        name: 'DESTINATION_CUSTOM_AUDIENCE_CLIENT_CREDENTIALS',
+        authenticationType: 'machine_oauth',
+        config: null,
+      },
+      options: {},
+      secret: { clientSecret: 'fixture-client-secret' },
+    };
+    const destination = {
+      ID: 'destination-1',
+      Name: 'Custom Audience',
+      DestinationDefinition: {
+        ID: 'definition-1',
+        Name: 'CUSTOM_AUDIENCE',
+        DisplayName: 'Custom Audience',
+        Config: {},
+      },
+      Config: { authenticationEnabled: true, rudderAccountId: 'account-1' },
+      Enabled: true,
+      WorkspaceID: 'workspace-1',
+      Transformations: [],
+      deliveryAccount: account,
+    };
+    const successfulRequest = {
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://example.com/audience',
+    };
+    const event = (jobId: number, token?: string) => ({
+      message: { type: 'record' },
+      metadata: {
+        jobId,
+        workspaceId: 'workspace-1',
+        destinationId: 'destination-1',
+        secret:
+          token === undefined ? { clientSecret: 'fixture-client-secret' } : { accessToken: token },
+      },
+      destination,
+    });
+
+    beforeEach(() => {
+      jest.restoreAllMocks();
+      jest.spyOn(DynamicConfigParser, 'process').mockImplementation(async (events) => events);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    test('returns one REFRESH_TOKEN event without reporting a transform failure', async () => {
+      const tokenless = event(1);
+      const dispatchSpy = jest.spyOn(ServiceSelector, 'getDestinationServiceByType');
+      const infoSpy = jest.spyOn(logger, 'info').mockImplementation(() => undefined);
+      const reportSpy = jest
+        .spyOn(ErrorReportingService, 'reportError')
+        .mockImplementation(() => undefined);
+      const incrementSpy = jest.spyOn(stats, 'increment').mockImplementation(() => undefined);
+
+      const response = await request(server)
+        .post('/routerTransform')
+        .send({ destType: 'custom_audience', input: [tokenless] });
+
+      const expectedOutput = {
+        metadata: [tokenless.metadata],
+        destination,
+        batched: false,
+        statusCode: 500,
+        error: refreshError,
+        authErrorCategory: 'REFRESH_TOKEN',
+      };
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ output: [expectedOutput] });
+      expect(RouterTransformationResponseListSchema.parse(response.body.output)).toEqual([
+        expectedOutput,
+      ]);
+      expect(response.header['apiversion']).toBe('2');
+      expect(dispatchSpy).not.toHaveBeenCalled();
+      expect(infoSpy).toHaveBeenCalledTimes(1);
+      expect(infoSpy).toHaveBeenCalledWith('REFRESH_TOKEN', {
+        accountId: 'account-1',
+        accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_CLIENT_CREDENTIALS',
+        destinationId: 'destination-1',
+        destinationDefinitionId: 'definition-1',
+      });
+      expect(reportSpy).not.toHaveBeenCalled();
+      expect(incrementSpy.mock.calls.some(([name]) => name === 'event_transform_failure')).toBe(
+        false,
+      );
+    });
+
+    test.each([
+      {
+        name: 'older metadata has no secret',
+        metadata: { jobId: 2, workspaceId: 'workspace-1', destinationId: 'destination-1' },
+        destination,
+      },
+      {
+        name: 'the access token is empty',
+        metadata: { ...event(2).metadata, secret: { accessToken: '' } },
+        destination,
+      },
+      {
+        name: 'the access token is not a string',
+        metadata: { ...event(2).metadata, secret: { accessToken: 42 } },
+        destination,
+      },
+      {
+        name: 'the auth toggle is absent for a linked account',
+        metadata: event(2).metadata,
+        destination: {
+          ...destination,
+          Config: { ...destination.Config, authenticationEnabled: undefined },
+        },
+      },
+      {
+        name: 'the account definition name differs but its linked type is machine_oauth',
+        metadata: event(2).metadata,
+        destination: {
+          ...destination,
+          deliveryAccount: { ...account, accountDefinitionName: 'DESTINATION_OTHER' },
+        },
+      },
+    ])('triggers a refresh when $name', async ({ metadata, destination: candidate }) => {
+      const tokenless = { ...event(2), metadata, destination: candidate };
+      const dispatchSpy = jest.spyOn(ServiceSelector, 'getDestinationServiceByType');
+      jest.spyOn(logger, 'info').mockImplementation(() => undefined);
+
+      const response = await request(server)
+        .post('/routerTransform')
+        .send({ destType: 'custom_audience', input: [tokenless] });
+
+      expect(response.body).toEqual({
+        output: [
+          {
+            metadata: [metadata],
+            destination: candidate,
+            batched: false,
+            statusCode: 500,
+            error: refreshError,
+            authErrorCategory: 'REFRESH_TOKEN',
+          },
+        ],
+      });
+      expect(dispatchSpy).not.toHaveBeenCalled();
+    });
+
+    test('processes a token-bearing event alongside a tokenless account event', async () => {
+      const tokenless = event(1);
+      const withToken = event(2, 'fixture-access-token');
+      const service = new NativeIntegrationDestinationService();
+      const transformSpy = jest
+        .spyOn(service, 'doRouterTransformation')
+        .mockImplementation(async (events) =>
+          events.map((input) => ({
+            metadata: [input.metadata],
+            destination: input.destination,
+            batched: false,
+            statusCode: 200,
+            batchedRequest: successfulRequest,
+          })),
+        );
+      jest.spyOn(ServiceSelector, 'getDestinationServiceByType').mockReturnValue(service);
+      jest.spyOn(logger, 'info').mockImplementation(() => undefined);
+
+      const response = await request(server)
+        .post('/routerTransform')
+        .send({ destType: 'custom_audience', input: [tokenless, withToken] });
+
+      expect(response.body.output).toEqual([
+        {
+          metadata: [tokenless.metadata],
+          destination,
+          batched: false,
+          statusCode: 500,
+          error: refreshError,
+          authErrorCategory: 'REFRESH_TOKEN',
+        },
+        {
+          metadata: [withToken.metadata],
+          destination,
+          batched: false,
+          statusCode: 200,
+          batchedRequest: successfulRequest,
+        },
+      ]);
+      expect(transformSpy).toHaveBeenCalledTimes(1);
+      expect(transformSpy.mock.calls[0][0]).toHaveLength(1);
+      expect(transformSpy.mock.calls[0][0][0].metadata).toEqual(withToken.metadata);
+    });
+
+    test.each([
+      {
+        name: 'authentication is disabled',
+        destType: 'custom_audience',
+        destination: {
+          ...destination,
+          Config: { ...destination.Config, authenticationEnabled: false },
+        },
+      },
+      {
+        name: 'a delivery account is present without a configured account link',
+        destType: 'custom_audience',
+        destination: {
+          ...destination,
+          Config: { ...destination.Config, rudderAccountId: undefined },
+        },
+      },
+      {
+        name: 'the linked account uses oauth',
+        destType: 'custom_audience',
+        destination: {
+          ...destination,
+          deliveryAccount: {
+            ...account,
+            accountDefinition: { ...account.accountDefinition, authenticationType: 'oauth' },
+          },
+        },
+      },
+      {
+        name: 'the linked account is ordinary',
+        destType: 'custom_audience',
+        destination: {
+          ...destination,
+          deliveryAccount: {
+            ...account,
+            accountDefinition: { ...account.accountDefinition, authenticationType: 'basic' },
+          },
+        },
+      },
+      {
+        name: 'only the account definition name indicates Client Credentials',
+        destType: 'custom_audience',
+        destination: {
+          ...destination,
+          deliveryAccount: { ...account, accountDefinition: undefined },
+        },
+      },
+      {
+        name: 'the destination is not Custom Audience',
+        destType: 'http',
+        destination: { ...destination },
+      },
+    ])(
+      'does not trigger REFRESH_TOKEN when $name',
+      async ({ destType, destination: candidate }) => {
+        const tokenless = { ...event(1), destination: candidate };
+        const service = new NativeIntegrationDestinationService();
+        const output = {
+          metadata: [tokenless.metadata],
+          destination: candidate,
+          batched: false,
+          statusCode: 200,
+          batchedRequest: successfulRequest,
+        };
+        const transformSpy = jest
+          .spyOn(service, 'doRouterTransformation')
+          .mockResolvedValue([output]);
+        jest.spyOn(ServiceSelector, 'getDestinationServiceByType').mockReturnValue(service);
+        const infoSpy = jest.spyOn(logger, 'info').mockImplementation(() => undefined);
+
+        const response = await request(server)
+          .post('/routerTransform')
+          .send({ destType, input: [tokenless] });
+
+        expect(response.body).toEqual({ output: [output] });
+        expect(transformSpy).toHaveBeenCalledTimes(1);
+        expect(infoSpy).not.toHaveBeenCalledWith('REFRESH_TOKEN', expect.anything());
+      },
+    );
+
+    test('V2 Preview calls the destination service without entering the router controller', async () => {
+      const controllerSpy = jest.spyOn(DestinationController, 'destinationTransformAtRouter');
+      const service = new NativeIntegrationDestinationService();
+      const transformSpy = jest.spyOn(service, 'doRouterTransformation').mockResolvedValue([]);
+      jest.spyOn(ServiceSelector, 'getDestinationServiceByType').mockReturnValue(service);
+
+      await EventTesterService.testEventV2(
+        {
+          events: [{ type: 'record' }],
+          destination: {
+            workspaceId: 'workspace-1',
+            destinationDefinition: { name: 'CUSTOM_AUDIENCE' },
+            deliveryAccount: account,
+            config: destination.Config,
+          },
+          stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+        },
+        'v0',
+        'custom_audience',
+      );
+
+      expect(controllerSpy).not.toHaveBeenCalled();
+      expect(transformSpy).toHaveBeenCalledTimes(1);
+      expect(transformSpy.mock.calls[0][0][0].metadata).toHaveProperty('isPreview', true);
     });
   });
 

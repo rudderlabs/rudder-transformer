@@ -18,8 +18,8 @@ import {
   useInsertConfigWithRequiredInsertFieldDestination,
   accountManagedDestination,
   accountManagedHeaders,
-  oauthPreviewDestinations,
-  oauthPreviewHeaders,
+  oauthLinkedDestinations,
+  oauthLinkedHeaders,
   accountManagedApiKeyDestination,
   accountManagedApiKeyHeaders,
   authenticationDisabledDestination,
@@ -27,6 +27,7 @@ import {
   firstSourceJobContext,
   secondSourceJobContext,
 } from '../common';
+import { oauthAccessToken } from '../maskedSecrets';
 
 const errorStatTags = {
   destType: 'CUSTOM_AUDIENCE',
@@ -1112,15 +1113,15 @@ export const data: RouterTestData[] = [
       },
     },
   },
-  ...oauthPreviewDestinations.map(({ id, destination: previewDestination }): RouterTestData => {
-    const metadata = { ...generateMetadata(1), isPreview: true };
+  ...oauthLinkedDestinations.map(({ id, destination: linkedDestination }): RouterTestData => {
+    const metadata = { ...generateMetadata(1), secret: { accessToken: oauthAccessToken } };
     const email = sha256(`${id}@example.com`);
     return {
-      id: `custom-audience-router-test-${id}-preview`,
+      id: `custom-audience-router-test-${id}-delivery`,
       name: destType,
-      description: `Renders a masked ${id} Preview header without a token`,
+      description: `Uses a metadata access token for ${id} delivery`,
       scenario: 'Business',
-      successCriteria: 'The transformed request carries a masked Bearer header',
+      successCriteria: 'The transformed request carries the metadata Bearer token',
       feature: 'router',
       module: 'destination',
       version: 'v0',
@@ -1131,7 +1132,7 @@ export const data: RouterTestData[] = [
               {
                 message: generateRecordPayload({ action: 'insert', identifiers: { email } }),
                 metadata,
-                destination: previewDestination,
+                destination: linkedDestination,
                 connection,
               },
             ],
@@ -1152,7 +1153,7 @@ export const data: RouterTestData[] = [
                   method: 'POST',
                   endpoint: insertEndpoint,
                   endpointPath: '/insert',
-                  headers: oauthPreviewHeaders,
+                  headers: oauthLinkedHeaders,
                   params: {},
                   body: {
                     JSON: { audienceId: 'aud-42', users: [{ email }] },
@@ -1165,7 +1166,7 @@ export const data: RouterTestData[] = [
                 metadata: [metadata],
                 batched: true,
                 statusCode: 200,
-                destination: previewDestination,
+                destination: linkedDestination,
               },
             ],
           },

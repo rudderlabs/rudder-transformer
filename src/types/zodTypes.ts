@@ -78,6 +78,7 @@ const commonRouterSchema = z.object({
 });
 
 export const RouterTransformationResponseSchema = commonRouterSchema
+  .extend({ authErrorCategory: z.string().optional() })
   .refine(
     (data) => {
       if (!isHttpStatusSuccess(data.statusCode)) {

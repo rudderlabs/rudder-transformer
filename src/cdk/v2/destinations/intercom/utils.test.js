@@ -1482,6 +1482,25 @@ describe('findRetlContact utility test', () => {
     });
   });
 
+  it.each([
+    ['null', freeContact],
+    ['undefined', { id: 'c-1', email: 'a@rudderlabs.com' }],
+  ])(
+    'does not treat an email-only contact as the match for the external_id "%s"',
+    async (externalId, contact) => {
+      axios.post.mockResolvedValue(searchResult([contact]));
+      axios.get.mockResolvedValue({ status: 200, data: contact });
+      await expect(
+        findRetlContact(
+          { ...message, traits: { ...message.traits, external_id: externalId } },
+          destination,
+          metadata,
+        ),
+      ).resolves.toEqual({ contactId: 'c-1', matchedBy: 'email' });
+      expect(axios.get).toHaveBeenCalledTimes(1);
+    },
+  );
+
   it('matches a number external_id against the string Intercom returns', async () => {
     axios.post.mockResolvedValue(searchResult([{ id: 'c-7', external_id: '7' }]));
     await expect(

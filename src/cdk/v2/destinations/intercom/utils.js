@@ -402,7 +402,8 @@ const findRetlContact = async (message, destination, metadata) => {
   const lookups = normalizedEmail
     ? [idLookup, { field: 'email', value: normalizedEmail }]
     : [idLookup];
-  const holdsId = (contact) => String(contact.external_id) === String(externalId);
+  const holdsId = (contact) =>
+    isDefinedAndNotNull(contact.external_id) && String(contact.external_id) === String(externalId);
 
   const contacts = (await fetchContacts(lookups, destination, metadata)) || [];
   let byId = contacts.find(holdsId);

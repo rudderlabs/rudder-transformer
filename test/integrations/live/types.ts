@@ -129,12 +129,17 @@ interface PipelineStep extends Step {
   //   category the error category the delivery reported, when it reports one (rudder-server reads
   //            it to decide whether a credential is worth refreshing). Asserting it is what
   //            separates a specific failure branch from the generic one — both abort the job.
+  //   transformStatusCode the TRANSFORM itself must fail every seeded event with this status, so
+  //            nothing is delivered — e.g. a transform-time lookup that times out must come back
+  //            retryable (500), not aborted (400). For failures the transform derives from the
+  //            destination's live behaviour; pure validation errors stay in the mocked suite.
   //
   // A step declaring this no longer requires the batch's top-level status to be 2xx, because a
   // partial or auth failure legitimately isn't.
   expectedFailure?: {
     items?: readonly number[];
     category?: string;
+    transformStatusCode?: number;
   };
   // Re-run seed -> transform -> deliver up to this many extra times (backoff) if delivery fails.
   // For routes that decide create-vs-update by searching an eventually-consistent index: a

@@ -91,6 +91,12 @@ const attemptDelivery = async ({
   expect(routerResponse.status).toEqual(HttpStatusCode.Ok);
 
   const routerOutputs = parseRouterOutputs(routerResponse.body);
+  const transformStatusCode = step.expectedFailure?.transformStatusCode;
+  if (transformStatusCode !== undefined) {
+    // Statuses only: a router output carries live credentials (see the count assertion below).
+    expect(routerOutputs.map((o) => o.statusCode)).toEqual(events.map(() => transformStatusCode));
+    return undefined;
+  }
   // /routerTransform reports a per-event transform failure as a non-2xx entry in `output[]`, not as
   // an HTTP error. Fail on those here, before any count assertion: a step that seeded several
   // events would otherwise satisfy `expectedOutputs` from the survivors alone and report a partly

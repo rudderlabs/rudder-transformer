@@ -262,6 +262,64 @@ export const trackTestData = [
     },
   },
   {
+    id: 'intercom-track-test-external-id-with-email',
+    name: 'intercom',
+    description:
+      'V2 version : rETL track keeps dropping a mapped external_id when email is present',
+    scenario: 'Business',
+    successCriteria: 'Response should contain the email and no external_id',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: {
+              userId: 'user@2',
+              event: 'Product Viewed',
+              context: {
+                mappedToDestination: 'true',
+              },
+              traits: {
+                ...properties,
+                email: 'test+2@rudderlabs.com',
+                external_id: 'user@1',
+                event_name: 'Product Viewed',
+              },
+              type: 'track',
+              timestamp,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint,
+              headers: v2Headers,
+              JSON: {
+                ...properties,
+                email: 'test+2@rudderlabs.com',
+                event_name: 'Product Viewed',
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
     id: 'intercom-track-test-3',
     name: 'intercom',
     description: 'V1 version : successful track call with nested properties',

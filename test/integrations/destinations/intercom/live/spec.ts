@@ -45,17 +45,21 @@ const createRunContact = (ctx: RunContext): Promise<string> =>
     name: `CI Setup ${ctx.runId}`,
   });
 
-// For identify update: the transform searches by external_id before choosing update vs create, so
-// wait until its own query finds the setup contact, otherwise the update is routed to a create and
+// The transform searches before choosing update vs create, so wait until its own query finds the
+// setup contact, otherwise the update is routed to a create and
 // Intercom answers 409. The transform always sends a compound query, which can take ~30-100s to see
 // a new contact (a simple single-field query sees it within seconds), so poll with that exact shape
 // and require consecutive hits, as results can flip right after the index catches up.
-const createSearchableContact = async (ctx: RunContext): Promise<void> => {
-  const contactId = await createRunContact(ctx);
+const waitForTransformSearch = async (
+  ctx: RunContext,
+  field: 'email' | 'external_id',
+  value: string,
+  contactId: string,
+): Promise<void> => {
   let consecutiveHits = 0;
   await pollUntil(
     async () => {
-      const contacts = await searchContactsAsTransform(ctx, 'external_id', ctx.identity('user'));
+      const contacts = await searchContactsAsTransform(ctx, field, value);
       consecutiveHits = contacts.some((c) => c.id === contactId) ? consecutiveHits + 1 : 0;
       return { done: consecutiveHits >= STABLE_SEARCH_HITS, value: contacts };
     },
@@ -65,6 +69,11 @@ const createSearchableContact = async (ctx: RunContext): Promise<void> => {
       delayMs: () => 4000,
     },
   );
+};
+
+const createSearchableContact = async (ctx: RunContext): Promise<void> => {
+  const contactId = await createRunContact(ctx);
+  await waitForTransformSearch(ctx, 'external_id', ctx.identity('user'), contactId);
 };
 
 // Waiting on the transform's compound search can take well over the default 120s step timeout.
@@ -101,6 +110,32 @@ const retlIdentify = (
   },
   traits: { ...retlProfile(ctx), email: null },
 });
+
+// ACT2-1371: a user transformation can rename the identifier to external_id and
+// set the lookup, so the row has both an email and an external_id no contact holds yet.
+const retlProfileWithEmail = (ctx: RunContext) => ({ ...retlProfile(ctx), email: ctx.email() });
+const retlIdentifyWithEmail = (ctx: RunContext, suffix: string) => ({
+  ...baseEvent(ctx, suffix),
+  type: 'identify',
+  integrations: { All: true, INTERCOM: { lookup: 'external_id' } },
+  context: {
+    mappedToDestination: 'true',
+    externalId: [
+      { id: ctx.identity('user'), type: 'INTERCOM-customer', identifierType: 'external_id' },
+    ],
+    traits: { external_id: ctx.identity('user') },
+  },
+  traits: { ...retlProfileWithEmail(ctx), external_id: ctx.identity('user') },
+});
+
+const verifyRetlContactWithEmail = {
+  check: verifyContact(
+    'external_id',
+    (ctx) => ctx.identity('user'),
+    (ctx) => retlProfileWithEmail(ctx),
+  ),
+  ...READBACK,
+};
 
 export const live = {
   enabled: true,
@@ -278,6 +313,103 @@ export const live = {
           (ctx) => ctx.identity('user'),
           (ctx) => retlProfile(ctx),
         ),
+        ...READBACK,
+      },
+    },
+    {
+      id: 'intercom-v2-retl-external-id-with-email',
+      description:
+        'A v2 rETL identify with external_id and email creates the contact with both when neither exists',
+      cleanup: deleteRunContacts,
+      steps: [
+        {
+          stepType: 'pipeline',
+          name: 'rETL identify (external_id + email, new contact)',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => retlIdentifyWithEmail(ctx, 'retl-external-id-email'),
+        },
+      ],
+      verify: verifyRetlContactWithEmail,
+    },
+    {
+      // ACT2-1371: Intercom answers 409 to a create in this state, so the contact must be adopted.
+      id: 'intercom-v2-retl-external-id-email-only-contact',
+      description:
+        'A v2 rETL identify with a new external_id adopts the contact that holds the email without an external_id',
+      cleanup: deleteRunContacts,
+      steps: [
+        {
+          stepType: 'action',
+          name: 'setup: create a contact with the email and no external_id, and wait until the transform can find it',
+          timeoutMs: 240000,
+          run: async (ctx) => {
+            const contactId = await createContact(ctx, {
+              email: ctx.email(),
+              name: `CI Setup ${ctx.runId}`,
+            });
+            await waitForTransformSearch(ctx, 'email', ctx.email(), contactId);
+          },
+        },
+        {
+          stepType: 'pipeline',
+          name: 'rETL identify (external_id + email, email-only contact exists)',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          // A later search can still miss and route this to a create (409), which persists nothing.
+          retries: 4,
+          delayBeforeMs: 3000,
+          seed: (ctx) => retlIdentifyWithEmail(ctx, 'retl-email-only-contact'),
+        },
+      ],
+      verify: {
+        check: async (ctx) => {
+          await verifyRetlContactWithEmail.check(ctx);
+          expect(await searchContacts(ctx, 'email', ctx.email())).toHaveLength(1);
+        },
+        ...READBACK,
+      },
+    },
+    {
+      // ACT2-1371: separate users can share an email.
+      id: 'intercom-v2-retl-external-id-other-owner-of-email',
+      description:
+        'A v2 rETL identify with a new external_id is delivered when another external_id already holds the email',
+      cleanup: deleteRunContacts,
+      steps: [
+        {
+          stepType: 'action',
+          name: 'setup: create a contact with the email and a different external_id',
+          run: async (ctx) => {
+            await createContact(ctx, {
+              email: ctx.email(),
+              external_id: ctx.identity('other-user'),
+              name: `CI Setup ${ctx.runId}`,
+            });
+          },
+        },
+        {
+          stepType: 'pipeline',
+          name: 'rETL identify (external_id + email, another user holds the email)',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => retlIdentifyWithEmail(ctx, 'retl-other-owner'),
+        },
+      ],
+      verify: {
+        check: async (ctx) => {
+          await verifyRetlContactWithEmail.check(ctx);
+          // Looked up by external_id, because an email search can lag by minutes. Had the row replaced
+          // the other user's id, this finds nothing.
+          const [rowContact] = await searchContacts(ctx, 'external_id', ctx.identity('user'));
+          const [otherContact] = await searchContacts(
+            ctx,
+            'external_id',
+            ctx.identity('other-user'),
+          );
+          expect(otherContact).toBeDefined();
+          expect(otherContact.id).not.toBe(rowContact.id);
+        },
         ...READBACK,
       },
     },

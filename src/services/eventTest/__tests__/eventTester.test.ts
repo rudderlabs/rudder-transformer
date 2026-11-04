@@ -289,7 +289,7 @@ describe('EventTesterService.testEventV2', () => {
         expect.objectContaining({ message: { type: 'record', id: 'ok-1' } }),
         expect.objectContaining({ message: { type: 'record', id: 'ok-2' } }),
       ]),
-      false,
+      true,
     );
     expect(runDestTransformSpy.mock.calls[0][2]).toHaveLength(2);
     expect(result).toEqual({
@@ -304,24 +304,27 @@ describe('EventTesterService.testEventV2', () => {
 
   it.each([
     {
-      name: 'the exact Preview stage',
+      name: 'Preview',
       stage: { user_transform: false, dest_transform: true, send_to_destination: false },
       isPreview: true,
     },
     {
-      name: 'a non-Preview stage',
-      stage: { user_transform: true, dest_transform: true, send_to_destination: false },
+      name: 'Send',
+      stage: { user_transform: false, dest_transform: true, send_to_destination: true },
       isPreview: false,
     },
   ])('sets isPreview correctly for $name', async ({ stage, isPreview }) => {
     jest
       .spyOn(
         EventTesterService as unknown as {
-          runUserTransform: (events: unknown[], libraries: unknown[]) => Promise<unknown[]>;
+          sendPayloadsToDestination: (
+            destination: string,
+            transformedPayloads: unknown[],
+          ) => Promise<{ responses: unknown[]; statuses: number[] }>;
         },
-        'runUserTransform',
+        'sendPayloadsToDestination',
       )
-      .mockResolvedValue([{ message: { type: 'record' } }]);
+      .mockResolvedValue({ responses: ['ok'], statuses: [200] });
     const doRouterSpy = jest
       .spyOn(NativeIntegrationDestinationService.prototype, 'doRouterTransformation')
       .mockResolvedValue([

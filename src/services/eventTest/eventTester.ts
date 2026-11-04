@@ -327,11 +327,7 @@ export class EventTesterService {
         connection,
       }));
 
-    const isPreview =
-      dest === 'custom_audience' &&
-      stage.user_transform === false &&
-      stage.dest_transform === true &&
-      stage.send_to_destination === false;
+    const isPreview = stage.send_to_destination === false;
     const destResults = await this.runDestTransform(
       version,
       dest,

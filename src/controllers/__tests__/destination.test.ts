@@ -252,9 +252,9 @@ describe('Destination controller tests', () => {
       'OAuth token unavailable; if this persists, upgrade rudder-server for machine_oauth support';
     const account = {
       id: 'account-1',
-      accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_MACHINE_OAUTH_CLIENT_CREDENTIALS',
+      accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_CLIENT_CREDENTIALS',
       accountDefinition: {
-        name: 'DESTINATION_CUSTOM_AUDIENCE_MACHINE_OAUTH_CLIENT_CREDENTIALS',
+        name: 'DESTINATION_CUSTOM_AUDIENCE_CLIENT_CREDENTIALS',
         authenticationType: 'machine_oauth',
         config: null,
       },
@@ -333,7 +333,7 @@ describe('Destination controller tests', () => {
       expect(infoSpy).toHaveBeenCalledTimes(1);
       expect(infoSpy).toHaveBeenCalledWith('REFRESH_TOKEN', {
         accountId: 'account-1',
-        accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_MACHINE_OAUTH_CLIENT_CREDENTIALS',
+        accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_CLIENT_CREDENTIALS',
         destinationId: 'destination-1',
         destinationDefinitionId: 'definition-1',
       });

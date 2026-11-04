@@ -128,7 +128,7 @@
     "uuid": "^11.1.0",
     "valid-url": "^1.0.9",
     "validator": "^13.15.35",
-    "zod": "^3.22.4"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@aws-sdk/client-personalize": "^3.894.0",

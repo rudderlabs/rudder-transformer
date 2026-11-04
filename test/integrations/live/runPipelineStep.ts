@@ -28,6 +28,12 @@ const isSuccessStatus = (status: number): boolean =>
 const isDelivered = (status: number): boolean =>
   isSuccessStatus(status) || status === HttpStatusCode.MultiStatus;
 
+// rudder-server only delivers a router output whose statusCode is 200; any other 2xx is the job's
+// final status with no delivery — 298 (event filtered) and 299 (event already handled by the
+// transformer, e.g. Intercom's group call attaches the company during transformation). Proxying
+// those would send a write production never sends (router/worker.go).
+const isDeliverableOutput = (status: number): boolean => status === HttpStatusCode.Ok;
+
 const sleep = (ms: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -85,6 +91,12 @@ const attemptDelivery = async ({
   expect(routerResponse.status).toEqual(HttpStatusCode.Ok);
 
   const routerOutputs = parseRouterOutputs(routerResponse.body);
+  const transformStatusCode = step.expectedFailure?.transformStatusCode;
+  if (transformStatusCode !== undefined) {
+    // Statuses only: a router output carries live credentials (see the count assertion below).
+    expect(routerOutputs.map((o) => o.statusCode)).toEqual(events.map(() => transformStatusCode));
+    return undefined;
+  }
   // /routerTransform reports a per-event transform failure as a non-2xx entry in `output[]`, not as
   // an HTTP error. Fail on those here, before any count assertion: a step that seeded several
   // events would otherwise satisfy `expectedOutputs` from the survivors alone and report a partly
@@ -121,8 +133,11 @@ const attemptDelivery = async ({
   }
 
   // Build every proxy request up front so count assertions run before delivery — a batching /
-  // dontBatch regression that still delivers 2xx is otherwise waved through silently.
-  const proxyRequestsPerOutput = routerOutputs.map((o) => routerOutputToProxyRequests(o));
+  // dontBatch regression that still delivers 2xx is otherwise waved through silently. Only outputs
+  // rudder-server would deliver (statusCode 200) are proxied.
+  const proxyRequestsPerOutput = routerOutputs
+    .filter((o) => isDeliverableOutput(o.statusCode))
+    .map((o) => routerOutputToProxyRequests(o));
   proxyRequestsPerOutput.forEach((proxyRequests) =>
     expect(proxyRequests.length).toBeGreaterThan(0),
   );
@@ -136,6 +151,10 @@ const attemptDelivery = async ({
   // a batched delivery can have, where a destination maps a batch response back to the wrong number
   // of jobs and the rest are silently left without an outcome.
   const verdictByJobId = new Map<number, number>();
+  // A non-200 2xx output (298 filtered / 299 handled by the transformer) is its jobs' final status.
+  routerOutputs
+    .filter((o) => !isDeliverableOutput(o.statusCode))
+    .forEach((o) => o.metadata.forEach((m) => verdictByJobId.set(Number(m.jobId), o.statusCode)));
   // Distinct error categories seen across the step's proxy calls, so the assertion below can show
   // both "none reported" and "reported the wrong one" as a readable diff.
   const errorCategories: string[] = [];

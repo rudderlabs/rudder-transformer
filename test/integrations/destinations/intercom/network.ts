@@ -1,4 +1,4 @@
-import { authHeader1, authHeader2, authHeader3 } from './maskedSecrets';
+import { authHeader1, authHeader2, authHeader3, authHeader4 } from './maskedSecrets';
 const commonHeaders = {
   Accept: 'application/json',
   Authorization: authHeader1,
@@ -19,6 +19,27 @@ const v1VersionHeaders = {
   Accept: 'application/json',
   'Intercom-Version': '2.10',
   'User-Agent': 'RudderStack',
+};
+
+// v2 headers for a destination whose Config has no apiVersion (defaults to v2)
+const noVersionHeaders = {
+  'Content-Type': 'application/json',
+  Authorization: authHeader4,
+  Accept: 'application/json',
+  'Intercom-Version': '2.10',
+  'User-Agent': 'RudderStack',
+};
+
+const emptySearchResponse = {
+  type: 'list',
+  total_count: 0,
+  pages: {
+    type: 'pages',
+    page: 1,
+    per_page: 50,
+    total_pages: 0,
+  },
+  data: [],
 };
 
 const userPayload = {
@@ -1238,6 +1259,235 @@ const deliveryCallsData = [
   },
   {
     httpReq: {
+      method: 'get',
+      url: 'https://api.intercom.io/contacts/8070129940741e45d043',
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'contact',
+        id: '8070129940741e45d043',
+        role: 'user',
+        email: 'email-only@rudderlabs.com',
+        external_id: null,
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'get',
+      url: 'https://api.intercom.io/contacts/8070129940741e45d044',
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'contact',
+        id: '8070129940741e45d044',
+        role: 'user',
+        external_id: 'claimed-by-another-row',
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'external_id', operator: '=', value: 'user@1' },
+            { field: 'email', operator: '=', value: 'stale-index@rudderlabs.com' },
+          ],
+        },
+      },
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        data: [
+          {
+            type: 'contact',
+            id: '8070129940741e45d044',
+            workspace_id: 'rudderWorkspace',
+            external_id: null,
+            role: 'user',
+            email: 'stale-index@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'external_id', operator: '=', value: 'user@1' },
+            { field: 'email', operator: '=', value: 'other-owner@rudderlabs.com' },
+          ],
+        },
+      },
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        data: [
+          {
+            type: 'contact',
+            id: '8070129940741e45d041',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'someone-else',
+            role: 'user',
+            email: 'other-owner@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'external_id', operator: '=', value: 'user@2' },
+            { field: 'email', operator: '=', value: 'test+2@rudderlabs.com' },
+          ],
+        },
+      },
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 2,
+        data: [
+          {
+            type: 'contact',
+            id: '8070129940741e45d045',
+            workspace_id: 'rudderWorkspace',
+            external_id: null,
+            role: 'user',
+            email: 'test+2@rudderlabs.com',
+          },
+          {
+            type: 'contact',
+            id: '70701240741e45d040',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'user@2',
+            role: 'user',
+            email: 'test+2@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'external_id', operator: '=', value: 'user@1' },
+            { field: 'email', operator: '=', value: 'email-only@rudderlabs.com' },
+          ],
+        },
+      },
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 2,
+        data: [
+          {
+            type: 'contact',
+            id: '8070129940741e45d042',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'someone-else',
+            role: 'user',
+            email: 'email-only@rudderlabs.com',
+          },
+          {
+            type: 'contact',
+            id: '8070129940741e45d043',
+            workspace_id: 'rudderWorkspace',
+            external_id: null,
+            role: 'user',
+            email: 'email-only@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'external_id', operator: '=', value: 'user@7' },
+            { field: 'email', operator: '=', value: 'email-only@rudderlabs.com' },
+          ],
+        },
+      },
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 2,
+        data: [
+          {
+            type: 'contact',
+            id: '8070129940741e45d042',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'someone-else',
+            role: 'user',
+            email: 'email-only@rudderlabs.com',
+          },
+          {
+            type: 'contact',
+            id: '8070129940741e45d043',
+            workspace_id: 'rudderWorkspace',
+            external_id: null,
+            role: 'user',
+            email: 'email-only@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
       method: 'post',
       url: 'https://api.intercom.io/contacts/search',
       data: {
@@ -1346,4 +1596,86 @@ const deliveryCallsData = [
   },
 ];
 
-export const networkCallsData = [...deleteNwData, ...deliveryCallsData];
+const noVersionSearchCallsData = [
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'email', operator: '=', value: 'test_1@test.com' },
+            { field: 'external_id', operator: '=', value: 'test_user_id_1' },
+          ],
+        },
+      },
+      headers: noVersionHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: emptySearchResponse,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test_1@test.com' }],
+        },
+      },
+      headers: noVersionHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: emptySearchResponse,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test_3@test.com' }],
+        },
+      },
+      headers: noVersionHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '7070129940741e45d041',
+            workspace_id: 'rudderWorkspace',
+            role: 'user',
+            email: 'test_3@test.com',
+          },
+        ],
+      },
+    },
+  },
+];
+
+export const networkCallsData = [
+  ...deleteNwData,
+  ...deliveryCallsData,
+  ...noVersionSearchCallsData,
+];

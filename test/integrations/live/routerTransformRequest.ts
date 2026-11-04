@@ -19,6 +19,9 @@ export const buildRouterTransformBody = (
     message,
     destination: {
       ID: `live-${destination}`,
+      // The service selector routes on DestinationDefinition.Name (e.g. CDK v2 vs native), as
+      // rudder-server sends it; without it every CDK v2 destination falls back to the native path.
+      DestinationDefinition: { Name: destination.toUpperCase() },
       Config: config,
       Enabled: true,
       ...(options?.deliveryAccount ? { deliveryAccount: options.deliveryAccount } : {}),

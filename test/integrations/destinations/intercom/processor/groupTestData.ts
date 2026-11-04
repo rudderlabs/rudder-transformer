@@ -193,7 +193,7 @@ export const groupTestData = [
     id: 'intercom-group-test-3',
     name: 'intercom',
     description:
-      'V1 version : successful group call to create company and add user to company based on userId',
+      'V1 version : successful group call to create company and add user to company based on userId without user traits',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain create company and add user to company payload',
@@ -274,7 +274,7 @@ export const groupTestData = [
     id: 'intercom-group-test-4',
     name: 'intercom',
     description:
-      'V1 version : successful group call to create company and add user to company based on userId',
+      'V1 version : successful group call to create company and add user to company based on userId with user email and company website',
     scenario: 'Business',
     successCriteria:
       'Response status code should be 200 and response should contain create company and add user to company payload',

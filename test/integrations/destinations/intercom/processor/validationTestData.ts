@@ -131,7 +131,7 @@ export const validationTestData: ProcessorTestData[] = [
     description: '[Error - V2 version]: Check for unsupported message type',
     scenario: 'Framework',
     successCriteria:
-      'Response should contain error message and status code should be 400, as we are sending a message type which is not supported by intercom destination and the error message should be Event type alias is not supported',
+      'Response should contain error message and status code should be 400, as we are sending a message type which is not supported by intercom destination and the error message should be message type page is not supported',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -219,55 +219,6 @@ export const validationTestData: ProcessorTestData[] = [
   },
   {
     id: 'intercom-validation-test-4',
-    name: 'intercom',
-    description: '[Error - V2 version]: Missing required parameters for an identify call',
-    scenario: 'Framework',
-    successCriteria:
-      'Response status code should be 400 and it should throw instrumentation error with respective error message',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            destination: v2Destination,
-            message: {
-              anonymousId: 'anon@2',
-              type: 'identify',
-              context: {
-                traits: userTraits,
-              },
-              integrations: {
-                INTERCOM: {
-                  lookup: 'phone',
-                },
-              },
-              timestamp: '2020-01-21T00:21:34.208Z',
-            },
-            metadata: generateMetadata(1),
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error:
-              'Either email or userId is required for Identify call: Workflow: procWorkflow, Step: identifyPayloadForLatestVersion, ChildStep: undefined, OriginalError: Either email or userId is required for Identify call',
-            statTags: expectedStatTags,
-            statusCode: 400,
-            metadata: generateMetadata(1),
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'intercom-validation-test-5',
     name: 'intercom',
     description: '[Error - V2 version]: Missing required parameters for an identify call',
     scenario: 'Framework',

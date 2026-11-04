@@ -72,6 +72,8 @@ export type CustomAudienceDeliveryAccount = ParsedCustomAudienceDeliveryAccount;
 export type CustomAudienceAuthMetadata = {
   isPreview?: true;
   secret?: { accessToken?: string };
+  destinationId?: Metadata['destinationId'];
+  destinationDefinitionId?: Metadata['destinationDefinitionId'];
 };
 
 export type CustomAudienceAccountAuthHandler = (

@@ -4,6 +4,7 @@ import {
   OAuthSecretError,
 } from '@rudderstack/integrations-lib';
 
+import logger from '../../../logger';
 import { HashingType, processAudienceRecord, type AudienceField } from '../../util/audienceUtils';
 
 import { RecordAction } from '../../../types/rudderEvents';
@@ -172,12 +173,18 @@ const requireAccountValues = (
 };
 
 const buildOAuthHeader = (
-  _account: ParsedCustomAudienceDeliveryAccount,
+  account: ParsedCustomAudienceDeliveryAccount,
   metadata?: CustomAudienceAuthMetadata,
 ): Record<string, string> => {
   if (metadata?.isPreview) return buildBearerTokenHeader('********');
   const accessToken = metadata?.secret?.accessToken;
   if (typeof accessToken !== 'string' || accessToken.length === 0) {
+    logger.info('missing_access_token', {
+      accountId: account.id,
+      accountDefinitionName: account.accountDefinitionName,
+      destinationId: metadata?.destinationId,
+      destinationDefinitionId: metadata?.destinationDefinitionId,
+    });
     throw new OAuthSecretError('OAuth access token is unavailable in event metadata.');
   }
   return buildBearerTokenHeader(accessToken);

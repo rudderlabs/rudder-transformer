@@ -7,7 +7,6 @@ import { ServiceSelector } from '../../helpers/serviceSelector';
 import { DynamicConfigParser } from '../../util/dynamicConfigParser';
 import { NativeIntegrationDestinationService } from '../../services/destination/nativeIntegration';
 import { ErrorReportingService } from '../../services/errorReporting';
-import logger from '../../logger';
 import stats from '../../util/stats';
 
 let server: any;
@@ -302,7 +301,6 @@ describe('Destination controller tests', () => {
     test('returns one REFRESH_TOKEN event without reporting a transform failure', async () => {
       const tokenless = event(1);
       const dispatchSpy = jest.spyOn(ServiceSelector, 'getDestinationServiceByType');
-      const infoSpy = jest.spyOn(logger, 'info').mockImplementation(() => undefined);
       const reportSpy = jest
         .spyOn(ErrorReportingService, 'reportError')
         .mockImplementation(() => undefined);
@@ -324,13 +322,6 @@ describe('Destination controller tests', () => {
       expect(response.body).toEqual({ output: [expectedOutput] });
       expect(response.header['apiversion']).toBe('2');
       expect(dispatchSpy).not.toHaveBeenCalled();
-      expect(infoSpy).toHaveBeenCalledTimes(1);
-      expect(infoSpy).toHaveBeenCalledWith('REFRESH_TOKEN', {
-        accountId: 'account-1',
-        accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_CLIENT_CREDENTIALS',
-        destinationId: 'destination-1',
-        destinationDefinitionId: 'definition-1',
-      });
       expect(reportSpy).not.toHaveBeenCalled();
       expect(incrementSpy.mock.calls.some(([name]) => name === 'event_transform_failure')).toBe(
         false,
@@ -384,7 +375,6 @@ describe('Destination controller tests', () => {
           .spyOn(service, 'doRouterTransformation')
           .mockResolvedValue([output]);
         jest.spyOn(ServiceSelector, 'getDestinationServiceByType').mockReturnValue(service);
-        const infoSpy = jest.spyOn(logger, 'info').mockImplementation(() => undefined);
 
         const response = await request(server)
           .post('/routerTransform')
@@ -392,7 +382,6 @@ describe('Destination controller tests', () => {
 
         expect(response.body).toEqual({ output: [output] });
         expect(transformSpy).toHaveBeenCalledTimes(1);
-        expect(infoSpy).not.toHaveBeenCalledWith('REFRESH_TOKEN', expect.anything());
       },
     );
   });

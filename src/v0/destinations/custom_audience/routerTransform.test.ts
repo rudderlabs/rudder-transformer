@@ -5,7 +5,6 @@ import { processDestinationIntegration } from '../../../services/destination/des
 import type { Metadata } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { ACCOUNT_DEFINITION_NAMES } from './constants';
-import * as customAudienceUtils from './utils';
 import type {
   Action,
   ActionConfig,
@@ -505,30 +504,6 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
         })
         .sort(),
     ).toEqual(['Bearer oauth-token-a', 'Bearer oauth-token-b']);
-  });
-
-  it('reuses linked Basic account headers for events on the same destination', async () => {
-    const destination = buildDestination(
-      { authenticationEnabled: true, rudderAccountId: 'account-1' },
-      {
-        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.BASIC_AUTH,
-        options: { basicAuthUserName: 'account-user' },
-        secret: { basicAuthPassword: 'account-pass' },
-      },
-    );
-    const headerSpy = jest.spyOn(customAudienceUtils, 'buildRequestHeaders');
-    const inputs = [
-      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination),
-      buildInput(2, 'insert', { email: hashedEmail('c@d.com') }, destination),
-    ];
-
-    try {
-      const results = await processDestinationIntegration(inputs, Integration, {});
-      expect(results.filter((result) => result.statusCode === 200)).toHaveLength(1);
-      expect(headerSpy).toHaveBeenCalledTimes(1);
-    } finally {
-      headerSpy.mockRestore();
-    }
   });
 
   it('throws when requestBody template fails at runtime', async () => {

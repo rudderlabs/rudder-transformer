@@ -1,7 +1,6 @@
 import { mapInBatches } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { REFRESH_TOKEN } from '../adapters/networkhandler/authConstants';
-import logger from '../logger';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import { DestinationPreTransformationService } from '../services/destination/preTransformation';
@@ -127,12 +126,6 @@ export class DestinationController {
           error:
             'OAuth token unavailable; if this persists, upgrade rudder-server for machine_oauth support',
           authErrorCategory: REFRESH_TOKEN,
-        });
-        logger.info(REFRESH_TOKEN, {
-          accountId: account.id,
-          accountDefinitionName: account.accountDefinitionName,
-          destinationId: event.destination.ID,
-          destinationDefinitionId: event.destination.DestinationDefinition?.ID,
         });
       } else {
         dispatchEvents.push(event);

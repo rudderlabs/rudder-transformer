@@ -9,7 +9,6 @@ import {
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { RecordAction } from '../../../types/rudderEvents';
-import { ACCOUNT_DEFINITION_NAMES } from './constants';
 import { sandboxedEvaluateTemplate } from './template/templateSandboxClient';
 import {
   buildRequestHeaders,
@@ -46,8 +45,6 @@ class CustomAudienceIntegration extends DestinationIntegration<
   // so resolve once per configured action — not once per event.
   private endpointByAction?: Partial<Record<Action, string>>;
 
-  private headers?: Record<string, string>;
-
   constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
     super(...args);
     if (!this.connection) {
@@ -75,13 +72,7 @@ class CustomAudienceIntegration extends DestinationIntegration<
   transformEvent(input: CustomAudienceRouterInput): TransformedEvent<Record<string, unknown>> {
     const { message, metadata } = input;
     const { action, identifiers } = message;
-    const accountDefinitionName = this.destination.deliveryAccount?.accountDefinitionName;
-    const isOAuthAccount =
-      accountDefinitionName === ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS ||
-      accountDefinitionName === ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE;
-    const headers = isOAuthAccount
-      ? buildRequestHeaders(this.destination, metadata)
-      : (this.headers ??= buildRequestHeaders(this.destination));
+    const headers = buildRequestHeaders(this.destination, metadata);
     const { action: resolvedAction, config: actionConfig } = lookupActionConfig(
       action,
       this.destination.Config.actions,

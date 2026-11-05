@@ -17,8 +17,9 @@
 
 Where used in workflows:
 
-- Identify v2: `rEtlPayload = getFieldValueFromMessage(message, "traits")` and then forwarded to the contact payload with additional filtering and validation.
-- Identify v1: `rEtlPayload` similarly used, merged with v1-specific fields.
+- Identify v2: `rEtlPayload = getFieldValueFromMessage(message, "traits")`. A selected `external_id` in `context.externalId[0].identifierType` (or an explicit Intercom `lookup: 'external_id'`) is preserved alongside email and matched by ID first. If the ID does not exist, an email-only contact may be claimed only after a direct read confirms it has no ID; a contact with another ID is never claimed. Repeat claims within a router batch are deferred. An explicit `lookup: 'email'` searches only by email (not the row's `userId`) and does not send a mapped `external_id` alongside email. Other explicit lookups, such as `phone`, also take precedence over the selected ID.
+- Saved v2 mappings selecting `user_id` still fall back to `external_id` when email is absent; with email they retain the previous email lookup and payload behavior.
+- Identify v1: `rEtlPayload` similarly used, merged with v1-specific fields; `user_id` is unchanged.
 - Track: When `mappedToDestination`, the payload is taken from input and metadata normalization applied (`addMetadataToPayload`).
 - Group: When `mappedToDestination`, the company creation/update uses the provided payload, then follows attach/tag steps as applicable.
 
@@ -32,6 +33,6 @@ Where used in workflows:
 
 ### Notes
 
-- Ensure RETL mappings set correct top-level fields for the given API version to satisfy validations.
+- The v2 mapper should offer `external_id` and `email` as identifiers; the selected identifier is carried in `context.externalId[0].identifierType` and copied into `traits`. V1 uses `user_id` and `email`.
 - Company-related RETL should provide necessary properties to avoid creating empty companies.
 - No batching is performed by transformer in RETL path; events are processed individually.

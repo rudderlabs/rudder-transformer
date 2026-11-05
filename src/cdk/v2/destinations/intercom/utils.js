@@ -326,20 +326,33 @@ const fetchContacts = async (lookups, destination, metadata) => {
 };
 
 /**
- * Whether an rETL identify opted into matching by a mapped external_id while also carrying an email.
- * Such a row sends both fields and is matched by external_id, so users sharing an email stay separate.
+ * Resolve the ID from the same traits that rEtlPayload sends. A selected external_id overwrites
+ * that trait in addExternalIdToTraits, so its selected value takes precedence even before that step.
+ */
+const getRetlExternalId = (message) =>
+  message.context?.externalId?.[0]?.identifierType === 'external_id'
+    ? message.context.externalId[0].id
+    : getFieldValueFromMessage(message, 'traits')?.external_id;
+
+/**
+ * Whether a mapped rETL identify should match by external_id while also carrying an email.
+ * A v2 mapper selection or an explicit lookup override opts in; other explicit lookups win.
  * @param {*} message
  * @returns {boolean}
  */
-const isRetlIdentifyWithMappedExternalId = (message) =>
-  Boolean(
+const isRetlIdentifyWithMappedExternalId = (message) => {
+  const lookup = getIntegrationsObj(message, 'INTERCOM')?.lookup;
+  const externalId = getRetlExternalId(message);
+  return Boolean(
     message.context?.mappedToDestination &&
-      message.traits?.external_id &&
-      ['string', 'number'].includes(typeof message.traits.external_id) &&
-      message.traits?.email &&
+      externalId &&
+      ['string', 'number'].includes(typeof externalId) &&
+      getFieldValueFromMessage(message, 'traits')?.email &&
       message.type?.toLowerCase() === EventType.IDENTIFY &&
-      getLookUpField(message) === 'external_id',
+      (lookup === 'external_id' ||
+        (!lookup && message.context?.externalId?.[0]?.identifierType === 'external_id')),
   );
+};
 
 /**
  * Reads a contact directly, because search results lag behind writes and can't show that a contact
@@ -396,7 +409,8 @@ const SEARCH_PAGE_SIZE = 50;
  * @returns {{contactId: string|null, matchedBy: 'external_id'|'email'|null}}
  */
 const findRetlContact = async (message, destination, metadata) => {
-  const { external_id: externalId, email } = message.traits;
+  const { email } = getFieldValueFromMessage(message, 'traits');
+  const externalId = getRetlExternalId(message);
   const normalizedEmail = typeof email === 'string' ? email.toLowerCase() : null;
   const idLookup = { field: 'external_id', value: externalId };
   const lookups = normalizedEmail
@@ -496,11 +510,13 @@ const searchContact = async (message, destination, metadata) => {
 
   // In rEtl flow, search only by a mapped external_id when the payload will carry it.
   // Searching email as well would match another user sharing that email.
+  const traits = getFieldValueFromMessage(message, 'traits');
+  const externalId = getRetlExternalId(message);
   const isRetlExternalIdMapping =
     isRetlIdentifyWithMappedExternalId(message) ||
-    (message.context?.mappedToDestination && message.traits?.external_id && !message.traits?.email);
+    (message.context?.mappedToDestination && externalId && !traits?.email);
   if (isRetlExternalIdMapping) {
-    addLookup('external_id', message.traits.external_id);
+    addLookup('external_id', externalId);
   } else {
     // Get lookup field and value from message and traits
     // In case of email, we convert it to lowercase as INTERCOM API expects email in lowercase
@@ -513,7 +529,7 @@ const searchContact = async (message, destination, metadata) => {
       lookupFieldValue = lookupFieldValue.toLowerCase();
     }
     addLookup(lookupField, lookupFieldValue);
-    if (lookupField !== 'external_id') {
+    if (lookupField !== 'external_id' && !getIntegrationsObj(message, 'INTERCOM')?.lookup) {
       addLookup('external_id', getFieldValueFromMessage(message, 'userIdOnly'));
     }
   }
@@ -552,7 +568,14 @@ const searchContact = async (message, destination, metadata) => {
       workspaceId: metadata.workspaceId,
     });
   }
-  return contacts?.length > 0 ? contacts[0]?.id : null;
+  const explicitLookup = getIntegrationsObj(message, 'INTERCOM')?.lookup;
+  // Only accept a contact whose email matches the explicit lookup, even if search returns
+  // stale or mixed results.
+  const contact =
+    explicitLookup === 'email'
+      ? contacts?.find((result) => result.email?.toLowerCase() === lookups[0]?.value)
+      : contacts?.[0];
+  return contact?.id || null;
 };
 
 /**
@@ -829,6 +852,7 @@ module.exports = {
   searchContact,
   findRetlContact,
   deferRepeatClaims,
+  getRetlExternalId,
   isRetlIdentifyWithMappedExternalId,
   getLookUpField,
   getBaseEndpoint,

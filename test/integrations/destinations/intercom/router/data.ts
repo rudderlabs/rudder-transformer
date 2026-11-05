@@ -640,7 +640,6 @@ const retlRowSharingEmail = (externalId: string, jobId: number) => ({
       externalId: [{ id: externalId, type: 'INTERCOM-customer', identifierType: 'external_id' }],
       mappedToDestination: 'true',
     },
-    integrations: { INTERCOM: { lookup: 'external_id' } },
     traits: { email: 'email-only@rudderlabs.com', external_id: externalId },
   },
 });

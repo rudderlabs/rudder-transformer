@@ -32,6 +32,8 @@ const HttpDestinationConfigSchema = z
     apiUrl: z.string().min(1),
     requestBodyTemplate: z.string().min(1),
     method: z.enum(['POST', 'PUT', 'PATCH', 'GET', 'DELETE']).optional(),
+    format: z.enum(['JSON', 'XML', 'FORM']).optional(),
+    xmlRootKey: z.string().optional(),
     maxBatchSize: z.coerce.number().int().min(1).max(MAX_BATCH_SIZE).optional(),
     headers: z.array(mapping).optional(),
     queryParams: z.array(mapping).optional(),

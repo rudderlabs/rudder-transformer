@@ -1,4 +1,4 @@
-import { parseTemplate, evaluateTemplate } from './templateEngine';
+import { parseTemplate, evaluateTemplate, compileTemplate } from './templateEngine';
 
 describe('parseTemplate', () => {
   const validTemplates = [
@@ -206,6 +206,15 @@ describe('parseTemplate', () => {
     { template: '[ $$.events.{ "items": products.{ "sku": sku } } ]', valid: true },
     { template: '[ $$.events.{ "items": products.$map(sku) } ]', valid: false },
     { template: '$$.events.{ "email": email }', valid: false },
+    { template: '[$$.events][0]', valid: true },
+    { template: '[$$.events.{"id": messageId}][0]', valid: true },
+    { template: '{"event": $$.events.{"id": messageId}}', valid: true },
+    { template: '[$$.events][1]', valid: false },
+    { template: '[$$.events][0][0]', valid: false },
+    { template: '$$.events[0]', valid: false },
+    { template: '[$$.events[id = 1]][0]', valid: false },
+    { template: '{"event": $$.events.[messageId]}', valid: false },
+    { template: '{"event": $$.records.{"id": email}}', valid: true },
     { template: '[ $$.events.foo.{ "email": email } ]', valid: false },
     { template: '{ "email": email }', valid: false },
   ])('validates the events collection: $template', ({ template, valid }) => {
@@ -217,6 +226,32 @@ describe('parseTemplate', () => {
     expect(result.valid).toBe(false);
     expect('errors' in result && result.errors[0]).toBe(expectedError);
   });
+});
+
+describe('HTTP template compilation', () => {
+  const events = [{ messageId: 'one' }, { messageId: 'two' }, { messageId: 'three' }];
+  it.each([
+    { template: '[$$.events][0]', expectedOne: events[0], expectedThree: events[0] },
+    {
+      template: '[$$.events.{"id": messageId}][0]',
+      expectedOne: { id: 'one' },
+      expectedThree: { id: 'one' },
+    },
+    {
+      template: '{"event": $$.events.{"id": messageId}}',
+      expectedOne: { event: { id: 'one' } },
+      expectedThree: { event: [{ id: 'one' }, { id: 'two' }, { id: 'three' }] },
+    },
+  ])(
+    'validates and evaluates $template for one and three events',
+    async ({ template, expectedOne, expectedThree }) => {
+      expect(parseTemplate(template, 'events').valid).toBe(true);
+      const compiled = compileTemplate(template, 'events');
+      expect(await compiled({ events: events.slice(0, 1) })).toEqual(expectedOne);
+      expect(await compiled({ events })).toEqual(expectedThree);
+      expect(parseTemplate(template.replace('events', 'records'), 'records').valid).toBe(false);
+    },
+  );
 });
 
 describe('evaluateTemplate', () => {

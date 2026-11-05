@@ -1,14 +1,14 @@
-import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import { z } from 'zod';
+import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import {
   DestinationIntegration,
   CustomBatchStrategy,
   TransformedEvent,
   makeRouterInputSchema,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { RecordAction } from '../../../types/rudderEvents';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
+import { RecordAction } from '../../../types/rudderEvents';
 import { ACCOUNT_DEFINITION_NAMES } from './constants';
 import { sandboxedEvaluateTemplate } from './template/templateSandboxClient';
 import {
@@ -19,12 +19,8 @@ import {
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import {
-  type Action,
-  type CustomAudienceAuthMetadata,
-  CustomAudienceConnectionDestConfigSchema,
-  CustomAudienceDestConfigSchema,
-} from './types';
+import type { Action, CustomAudienceAuthMetadata } from './types';
+import { CustomAudienceDestConfigSchema, CustomAudienceConnectionDestConfigSchema } from './types';
 
 const customAudienceInputSchema = makeRouterInputSchema({
   destinationConfig: CustomAudienceDestConfigSchema,

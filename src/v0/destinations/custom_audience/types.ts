@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { HashingType } from '../../util/audienceUtils';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
-import { RecordAction, type Metadata, type RudderRecordV2 } from '../../../types/rudderEvents';
+import type { Metadata, RecordAction, RudderRecordV2 } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 
 export type Action = `${RecordAction}`;
@@ -72,8 +72,6 @@ export type CustomAudienceDeliveryAccount = ParsedCustomAudienceDeliveryAccount;
 export type CustomAudienceAuthMetadata = {
   isPreview?: true;
   secret?: { accessToken?: string };
-  destinationId?: Metadata['destinationId'];
-  destinationDefinitionId?: Metadata['destinationDefinitionId'];
 };
 
 export type CustomAudienceAccountAuthHandler = (

@@ -113,12 +113,9 @@ export class DestinationController {
     const dispatchEvents: typeof events = [];
     for (const event of events) {
       const account = event.destination?.deliveryAccount;
-      const linkedAccountId = event.destination?.Config?.rudderAccountId;
       const accessToken = event.metadata?.secret?.accessToken;
       if (
         event.destination?.Config?.authenticationEnabled !== false &&
-        typeof linkedAccountId === 'string' &&
-        linkedAccountId.length > 0 &&
         account?.accountDefinition?.authenticationType === MACHINE_OAUTH_AUTH_TYPE &&
         (typeof accessToken !== 'string' || accessToken.length === 0)
       ) {

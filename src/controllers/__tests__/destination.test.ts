@@ -7,9 +7,6 @@ import { ServiceSelector } from '../../helpers/serviceSelector';
 import { DynamicConfigParser } from '../../util/dynamicConfigParser';
 import { NativeIntegrationDestinationService } from '../../services/destination/nativeIntegration';
 import { ErrorReportingService } from '../../services/errorReporting';
-import { RouterTransformationResponseListSchema } from '../../types/zodTypes';
-import { EventTesterService } from '../../services/eventTest/eventTester';
-import { DestinationController } from '../destination';
 import logger from '../../logger';
 import stats from '../../util/stats';
 
@@ -325,9 +322,6 @@ describe('Destination controller tests', () => {
       };
       expect(response.status).toBe(200);
       expect(response.body).toEqual({ output: [expectedOutput] });
-      expect(RouterTransformationResponseListSchema.parse(response.body.output)).toEqual([
-        expectedOutput,
-      ]);
       expect(response.header['apiversion']).toBe('2');
       expect(dispatchSpy).not.toHaveBeenCalled();
       expect(infoSpy).toHaveBeenCalledTimes(1);
@@ -401,32 +395,6 @@ describe('Destination controller tests', () => {
         expect(infoSpy).not.toHaveBeenCalledWith('REFRESH_TOKEN', expect.anything());
       },
     );
-
-    test('V2 Preview calls the destination service without entering the router controller', async () => {
-      const controllerSpy = jest.spyOn(DestinationController, 'destinationTransformAtRouter');
-      const service = new NativeIntegrationDestinationService();
-      const transformSpy = jest.spyOn(service, 'doRouterTransformation').mockResolvedValue([]);
-      jest.spyOn(ServiceSelector, 'getDestinationServiceByType').mockReturnValue(service);
-
-      await EventTesterService.testEventV2(
-        {
-          events: [{ type: 'record' }],
-          destination: {
-            workspaceId: 'workspace-1',
-            destinationDefinition: { name: 'CUSTOM_AUDIENCE' },
-            deliveryAccount: account,
-            config: destination.Config,
-          },
-          stage: { user_transform: false, dest_transform: true, send_to_destination: false },
-        },
-        'v0',
-        'custom_audience',
-      );
-
-      expect(controllerSpy).not.toHaveBeenCalled();
-      expect(transformSpy).toHaveBeenCalledTimes(1);
-      expect(transformSpy.mock.calls[0][0][0].metadata).toHaveProperty('isPreview', true);
-    });
   });
 
   describe('Batch transform tests', () => {

@@ -144,6 +144,88 @@ export const data: RouterTestData[] = [
     },
   },
   {
+    id: 'topsort-router-platform-prefix',
+    name: 'topsort',
+    description: 'Events from web and the iOS and Android apps carry a platform-prefixed id',
+    scenario: 'Business',
+    successCriteria:
+      'The id is `<platform>-<messageId>`: web from channel, ios/android from context.os.name on mobile',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: { ...trackMessage('Product Clicked', 'msg-1'), channel: 'web' },
+              metadata: generateMetadata(1),
+              destination,
+            },
+            {
+              message: {
+                ...trackMessage('Product Viewed', 'msg-2'),
+                channel: 'mobile',
+                context: { page: { path: '/category/123' }, os: { name: 'iOS' } },
+              },
+              metadata: generateMetadata(2),
+              destination,
+            },
+            {
+              message: {
+                ...trackMessage('Product Added', 'msg-3'),
+                channel: 'mobile',
+                context: { page: { path: '/category/123' }, os: { name: 'Android' } },
+              },
+              metadata: generateMetadata(3),
+              destination,
+            },
+          ],
+          destType: 'topsort',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: batchedRequest({
+                impressions: [
+                  {
+                    ...baseEvent,
+                    placement: { ...placement, position: 3, productId: 'product-top' },
+                    id: 'ios-msg-2',
+                  },
+                ],
+                clicks: [
+                  {
+                    ...baseEvent,
+                    placement: { ...placement, position: 3, productId: 'product-top' },
+                    id: 'web-msg-1',
+                  },
+                ],
+                purchases: [
+                  {
+                    ...baseEvent,
+                    items: [{ productId: 'product-top', unitPrice: 49.99, quantity: 5 }],
+                    id: 'android-msg-3',
+                  },
+                ],
+              }),
+              metadata: [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
     id: 'topsort-router-product-array-fan-out',
     name: 'topsort',
     description:

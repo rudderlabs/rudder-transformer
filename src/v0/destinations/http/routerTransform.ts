@@ -16,7 +16,7 @@ import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './tem
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
 import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
 import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
-import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
+import { makeEndpoint, resolveAuthHeaders, toExpressions } from './utils';
 
 const NO_FIELDS: RequestFieldResult = {
   ok: true,
@@ -26,6 +26,8 @@ const NO_FIELDS: RequestFieldResult = {
 class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputSchema> {
   // Request fields are evaluated for the whole batch in one isolate call; transformEvent reads them.
   private fieldResults = new Map<HttpInput, RequestFieldResult>();
+
+  private authHeaders?: Record<string, string>;
 
   async transformEvents(
     inputs: HttpInput[],
@@ -63,12 +65,17 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       if (typeof value !== 'string')
         throw new ConfigurationError(`Header "${key}" must resolve to a string`);
     }
+    this.authHeaders ??= resolveAuthHeaders(this.destination);
     return {
       body: message,
       endpoint: makeEndpoint(config.apiUrl, fields.pathParams),
       endpointPath: '/http',
       method: config.method ?? DEFAULT_METHOD,
-      headers: { ...makeAuthHeaders(config), ...mapped, 'Content-Type': 'application/json' },
+      headers: {
+        ...this.authHeaders,
+        ...mapped,
+        'Content-Type': 'application/json',
+      },
       params: removeUndefinedValues(fields.params),
     };
   }

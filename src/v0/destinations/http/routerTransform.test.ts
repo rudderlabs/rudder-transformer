@@ -72,12 +72,7 @@ describe('HTTP v2 native router', () => {
   });
 
   it.each([
-    { config: { auth: 'basicAuth' }, message: 'Username is required for Basic Authentication' },
-    {
-      config: { auth: 'bearerTokenAuth' },
-      message: 'Token is required for Bearer Token Authentication',
-    },
-    { config: { auth: 'apiKeyAuth', apiKeyName: 'X-Key' }, message: 'API key value is required' },
+    { config: { authenticationEnabled: true }, message: 'rudderAccountId' },
     {
       config: { headers: [{ to: '$.a.b[0]', from: 'x' }] },
       message: 'Invalid request field name: $.a.b[0]',
@@ -108,34 +103,148 @@ describe('HTTP v2 native router', () => {
     });
   });
 
-  it.each([
+  const accountCases = [
     {
-      auth: 'basicAuth',
-      credentials: { username: 'user', password: 'pass' },
+      name: 'basic auth',
+      definition: 'DESTINATION_HTTP_BASIC_AUTH',
+      options: { username: 'user' },
+      secret: { password: 'pass' },
       expected: { Authorization: 'Basic dXNlcjpwYXNz' },
     },
     {
-      auth: 'bearerTokenAuth',
-      credentials: { bearerToken: 'secret' },
+      name: 'basic auth with an empty password',
+      definition: 'DESTINATION_HTTP_BASIC_AUTH',
+      options: { username: 'user' },
+      secret: { password: '' },
+      expected: { Authorization: 'Basic dXNlcjo=' },
+    },
+    {
+      name: 'basic auth with no password',
+      definition: 'DESTINATION_HTTP_BASIC_AUTH',
+      options: { username: 'user' },
+      secret: {},
+      expected: { Authorization: 'Basic dXNlcjo=' },
+    },
+    {
+      name: 'bearer token',
+      definition: 'DESTINATION_HTTP_BEARER_TOKEN',
+      options: {},
+      secret: { bearerToken: 'secret' },
       expected: { Authorization: 'Bearer secret' },
     },
     {
-      auth: 'apiKeyAuth',
-      credentials: { apiKeyName: 'X-Key', apiKeyValue: 'secret' },
+      name: 'API key',
+      definition: 'DESTINATION_HTTP_API_KEY',
+      options: { apiKeyName: 'X-Key' },
+      secret: { apiKeyValue: 'secret' },
       expected: { 'X-Key': 'secret' },
     },
-  ])('adds $auth headers', async ({ auth, credentials, expected }) => {
-    const result = await processDestinationIntegration(
-      [
-        {
-          ...input('one', 1),
-          destination: { ...destination, Config: { ...destination.Config, auth, ...credentials } },
-        },
-      ],
-      Integration,
-      {},
-    );
-    expect((result[0] as unknown as NativeResponse).batchedRequest.headers).toMatchObject(expected);
+  ];
+
+  it.each(accountCases)(
+    'adds $name headers from the linked account',
+    async ({ definition, options, secret, expected }) => {
+      const account = { id: 'account-id', accountDefinitionName: definition, options, secret };
+      const event = input('one', 1);
+      event.destination = {
+        ...destination,
+        Config: { ...destination.Config, authenticationEnabled: true, rudderAccountId: account.id },
+        deliveryAccount: account,
+      };
+      const [response] = await processDestinationIntegration([event], Integration, {});
+      expect((response as unknown as NativeResponse).batchedRequest.headers).toMatchObject(
+        expected,
+      );
+    },
+  );
+
+  it.each([
+    { name: 'missing account', account: undefined, message: 'deliveryAccount is missing' },
+    {
+      name: 'incompatible account',
+      account: {
+        accountDefinitionName: 'DESTINATION_CUSTOM_AUDIENCE_API_KEY',
+        options: {},
+        secret: {},
+      },
+      message: 'unsupported accountDefinitionName',
+    },
+    {
+      name: 'missing basic username',
+      account: {
+        accountDefinitionName: 'DESTINATION_HTTP_BASIC_AUTH',
+        options: {},
+        secret: { password: '' },
+      },
+      message: 'options.username',
+    },
+    {
+      name: 'invalid basic password',
+      account: {
+        accountDefinitionName: 'DESTINATION_HTTP_BASIC_AUTH',
+        options: { username: 'user' },
+        secret: { password: null },
+      },
+      message: 'secret.password',
+    },
+    {
+      name: 'missing bearer token',
+      account: { accountDefinitionName: 'DESTINATION_HTTP_BEARER_TOKEN', options: {}, secret: {} },
+      message: 'secret.bearerToken',
+    },
+    {
+      name: 'missing API key name',
+      account: {
+        accountDefinitionName: 'DESTINATION_HTTP_API_KEY',
+        options: {},
+        secret: { apiKeyValue: 'value' },
+      },
+      message: 'options.apiKeyName',
+    },
+    {
+      name: 'missing API key value',
+      account: {
+        accountDefinitionName: 'DESTINATION_HTTP_API_KEY',
+        options: { apiKeyName: 'X-Key' },
+        secret: {},
+      },
+      message: 'secret.apiKeyValue',
+    },
+  ])('rejects $name with a configuration error', async ({ account, message }) => {
+    const event = input('one', 1);
+    event.destination = {
+      ...destination,
+      Config: { ...destination.Config, authenticationEnabled: true, rudderAccountId: 'account-id' },
+      deliveryAccount: account && { id: 'account-id', ...account },
+    };
+    const [response] = await processDestinationIntegration([event], Integration, {});
+    expect(response).toMatchObject({ statusCode: 400, metadata: [{ jobId: 1 }] });
+    expect(response.error).toContain(message);
+    expect(response.statTags).toMatchObject({ errorType: 'configuration' });
+  });
+
+  it('ignores an attached account and stale inline credentials when authentication is disabled', async () => {
+    const event = input('one', 1);
+    event.destination = {
+      ...destination,
+      Config: {
+        ...destination.Config,
+        authenticationEnabled: false,
+        auth: 'bearerTokenAuth',
+        bearerToken: 'stale',
+      },
+      deliveryAccount: {
+        id: 'account-id',
+        accountDefinitionName: 'DESTINATION_HTTP_BEARER_TOKEN',
+        options: {},
+        secret: { bearerToken: 'secret' },
+      },
+    };
+    const [response] = await processDestinationIntegration([event], Integration, {});
+    expect((response as unknown as NativeResponse).batchedRequest.headers).toEqual({
+      'X-Token': 'static-token',
+      'Content-Type': 'application/json',
+    });
   });
 
   it('rejects an undefined body instead of shipping a non-JSON request', async () => {

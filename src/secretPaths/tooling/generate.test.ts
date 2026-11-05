@@ -3,6 +3,7 @@ import {
   Baseline,
   decoyOf,
   collapseKeyFamily,
+  destinationConfigValues,
   FlattenedOutput,
   flattenRequests,
   fetchedCredentialsOnAuthSurface,
@@ -188,6 +189,47 @@ describe('secret-path generator utilities', () => {
     expect(collapseKeyFamily('params.bd[12]')).toBe('params');
     expect(collapseKeyFamily('bd[12]')).toBeNull();
     expect(collapseKeyFamily('params.fixed')).toBe('params.fixed');
+  });
+
+  it('recognizes configurable header names in linked delivery account options', () => {
+    const names = destinationConfigValues({
+      input: [
+        {
+          destination: {
+            Name: 'HTTP',
+            Config: { apiUrl: 'https://example.org', headers: [{ to: 'X-Static' }] },
+            deliveryAccount: {
+              options: { apiKeyName: 'X-HTTP-Key' },
+              secret: { apiKeyValue: 'not-a-header-name' },
+            },
+          },
+        },
+      ],
+    });
+    expect(names).toEqual(new Set(['https://example.org', 'X-Static', 'X-HTTP-Key']));
+    expect(
+      toSecretPaths(
+        locationsForKey(
+          baseline({ 'req[0]|headers.X-HTTP-Key': 'real-secret' }),
+          flattened({ 'req[0]|headers.X-HTTP-Key': 'decoy-a' }),
+          flattened({ 'req[0]|headers.X-HTTP-Key': 'decoy-b' }),
+          'runtime account secret',
+          names,
+        ),
+      ),
+    ).toEqual(['headers']);
+  });
+
+  it('does not broaden other destinations from their account options', () => {
+    expect(
+      destinationConfigValues({
+        destination: {
+          Name: 'CUSTOM_AUDIENCE',
+          Config: {},
+          deliveryAccount: { options: { apiKeyName: 'X-Account-Key' } },
+        },
+      }),
+    ).toEqual(new Set());
   });
 
   it('records dynamic header evidence from destination config values', () => {

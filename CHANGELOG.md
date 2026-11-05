@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.167.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.167.0...v1.167.1) (2026-11-04)
+
+
+### Bug Fixes
+
+* **gainsight_px:** retry lookup timeouts instead of aborting as 400 ([#5761](https://github.com/rudderlabs/rudder-transformer/issues/5761)) ([8da2fd2](https://github.com/rudderlabs/rudder-transformer/commit/8da2fd2afad017bc5d8ce24003e4163926a15d45))
+* **hs_audience:** make live membership suite resilient to mid-run failures ([8dba8e8](https://github.com/rudderlabs/rudder-transformer/commit/8dba8e8bdc426aea5467d62c318ff5fcd743b99e))
+* **hs_audience:** make live membership suite resilient to mid-run failures ([#5764](https://github.com/rudderlabs/rudder-transformer/issues/5764)) ([867fca0](https://github.com/rudderlabs/rudder-transformer/commit/867fca0e93710335670cd90c4e59b6730eb9a1e4))
+* **intercom:** send mapped external_id with email in rETL v2 identify ([#5763](https://github.com/rudderlabs/rudder-transformer/issues/5763)) ([86aa9b8](https://github.com/rudderlabs/rudder-transformer/commit/86aa9b8fb0a9f39dfafe74f678b5ce14c311dba6))
+
 ## [1.167.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.166.0...v1.167.0) (2026-11-02)
 
 

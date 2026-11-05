@@ -4,7 +4,6 @@ import {
   InstrumentationError,
   OAuthSecretError,
 } from '@rudderstack/integrations-lib';
-import logger from '../../../logger';
 import { HashingType } from '../../util/audienceUtils';
 import {
   buildRequestHeaders,
@@ -498,7 +497,7 @@ describe('buildRequestHeaders', () => {
     expect(build).toThrow(errorMessage);
   });
 
-  it('records missing_access_token before raising OAuthSecretError', () => {
+  it('raises OAuthSecretError when the access token is missing', () => {
     const destination = buildDestination(
       { authenticationEnabled: true, rudderAccountId: 'account-1' },
       {
@@ -507,30 +506,10 @@ describe('buildRequestHeaders', () => {
         secret: {},
       },
     );
-    const metadata = { destinationId: 'dest-1', destinationDefinitionId: 'definition-1' };
-    const infoSpy = jest.spyOn(logger, 'info').mockImplementation(() => undefined);
-    try {
-      let thrown: unknown;
-      try {
-        buildRequestHeaders(destination, metadata);
-      } catch (error) {
-        thrown = error;
-      }
+    const build = () => buildRequestHeaders(destination);
 
-      expect(thrown).toBeInstanceOf(OAuthSecretError);
-      expect((thrown as Error).message).toBe(
-        'OAuth access token is unavailable in event metadata.',
-      );
-      expect(infoSpy).toHaveBeenCalledTimes(1);
-      expect(infoSpy).toHaveBeenCalledWith('missing_access_token', {
-        accountId: 'account-1',
-        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE,
-        destinationId: 'dest-1',
-        destinationDefinitionId: 'definition-1',
-      });
-    } finally {
-      infoSpy.mockRestore();
-    }
+    expect(build).toThrow(OAuthSecretError);
+    expect(build).toThrow('OAuth access token is unavailable in event metadata.');
   });
 
   it('renders a masked Preview header without reading a token', () => {

@@ -8,7 +8,11 @@ type NativeResponse = {
   batchedRequest: {
     endpoint: string;
     headers: Record<string, unknown>;
-    body: { JSON_ARRAY: { batch: string } };
+    body: {
+      JSON_ARRAY: { batch: string };
+      XML: { payload?: string };
+      FORM: Record<string, string>;
+    };
   };
   metadata: { jobId: number }[];
 };
@@ -56,6 +60,20 @@ describe('HTTP v2 native router', () => {
   ])('quotes or retains $value', ({ value, expression }) => {
     expect(requestFieldExpression(value)).toBe(expression);
   });
+
+  const withFormat = (config: Record<string, unknown>, ids = ['one']) =>
+    ids.map((id, i) => ({
+      ...input(id, i + 1),
+      destination: {
+        ...destination,
+        Config: {
+          ...destination.Config,
+          pathParams: [],
+          headers: [{ to: 'Content-Type', from: 'text/plain' }],
+          ...config,
+        },
+      },
+    }));
 
   it('defaults method to POST and batches up to 5000 when unset', async () => {
     const { method, maxBatchSize, ...config } = destination.Config;
@@ -138,6 +156,57 @@ describe('HTTP v2 native router', () => {
     expect((result[0] as unknown as NativeResponse).batchedRequest.headers).toMatchObject(expected);
   });
 
+  it.each([
+    {
+      format: 'XML',
+      expectedHeader: 'application/xml',
+    },
+    {
+      format: 'FORM',
+      expectedHeader: 'application/x-www-form-urlencoded',
+      expectedForm: {
+        'first name': 'Ada',
+        '1abc': '1',
+        empty: '',
+        nested: '{"a":1}',
+        count: '1',
+        active: 'true',
+      },
+    },
+  ])(
+    'serializes $format with v1 helpers and overrides mapped Content-Type',
+    async ({ format, expectedHeader, expectedForm }) => {
+      const events = withFormat({
+        format,
+        xmlRootKey: 'Envelope',
+        requestBodyTemplate: '[$$.events][0]',
+      });
+      events[0].message = {
+        ...events[0].message,
+        'first name': 'Ada',
+        '1abc': 1,
+        empty: '',
+        absent: null,
+        nested: { a: 1 },
+        count: 1,
+        active: true,
+      };
+      const [response] = await processDestinationIntegration(events, Integration, {});
+      const request = (response as unknown as NativeResponse).batchedRequest;
+      expect(request.headers['Content-Type']).toBe(expectedHeader);
+      if (format === 'XML') {
+        expect(request.body.XML.payload).toContain(
+          '<Envelope><type>track</type><id>one</id><value>1</value><first_name>Ada</first_name><_abc>1</_abc><empty/>',
+        );
+        expect(request.body.XML.payload).not.toContain('absent');
+      } else {
+        expect(request.body.FORM).toMatchObject(expectedForm ?? {});
+        expect(request.body.FORM.absent).toBeUndefined();
+      }
+      expect(request.body.JSON_ARRAY).toEqual({});
+    },
+  );
+
   it('rejects an undefined body instead of shipping a non-JSON request', async () => {
     const result = await processDestinationIntegration(
       [
@@ -159,6 +228,97 @@ describe('HTTP v2 native router', () => {
     expect(result).toMatchObject([
       { statusCode: 400, error: 'Request body template did not produce JSON' },
     ]);
+  });
+
+  it('serializes XML batches with repeated event elements and a default root', async () => {
+    const events = withFormat(
+      { format: 'XML', maxBatchSize: '3', requestBodyTemplate: '{"event": $$.events.{"id": id}}' },
+      ['one', 'two', 'three'],
+    );
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(results).toHaveLength(1);
+    expect(results[0].metadata.map((m) => m.jobId)).toEqual([1, 2, 3]);
+    expect((results[0] as unknown as NativeResponse).batchedRequest.body.XML).toEqual({
+      payload:
+        '<?xml version="1.0" encoding="UTF-8"?><root><event><id>one</id></event><event><id>two</id></event><event><id>three</id></event></root>',
+    });
+  });
+
+  it('clamps FORM to one event regardless of configured batch size', async () => {
+    const events = withFormat(
+      { format: 'FORM', maxBatchSize: '50', requestBodyTemplate: '[$$.events][0]' },
+      ['one', 'two', 'three'],
+    );
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(
+      results.map((r) => ({
+        ids: r.metadata.map((m) => m.jobId),
+        form: (r as unknown as NativeResponse).batchedRequest.body.FORM.id,
+      })),
+    ).toEqual([
+      { ids: [1], form: 'one' },
+      { ids: [2], form: 'two' },
+      { ids: [3], form: 'three' },
+    ]);
+  });
+
+  it.each(['XML', 'FORM'])('sends an empty %s body without inventing a payload', async (format) => {
+    const [result] = await processDestinationIntegration(
+      withFormat({ format, requestBodyTemplate: '{}' }),
+      Integration,
+      {},
+    );
+    expect((result as unknown as NativeResponse).batchedRequest.body[format]).toEqual({});
+  });
+
+  it.each(['XML', 'FORM'])('rejects invalid %s shapes per chunk', async (format) => {
+    const events = withFormat({ format, maxBatchSize: '3', requestBodyTemplate: '$$.events' }, [
+      'one',
+      'two',
+      'three',
+    ]);
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(results).toHaveLength(3);
+    expect(
+      results.map((r) => ({ jobId: r.metadata[0].jobId, error: r.error, status: r.statusCode })),
+    ).toEqual(
+      [1, 2, 3].map((jobId) => ({
+        jobId,
+        error: 'Request body template must produce an object for XML/FORM format',
+        status: 400,
+      })),
+    );
+  });
+
+  it.each(
+    ['XML', 'FORM'].flatMap((format) =>
+      ['$$.missing', '1', 'null'].map((template) => ({ format, template })),
+    ),
+  )('rejects $format result from $template', async ({ format, template }) => {
+    const [result] = await processDestinationIntegration(
+      withFormat({ format, requestBodyTemplate: template }),
+      Integration,
+      {},
+    );
+    expect(result).toMatchObject({
+      statusCode: 400,
+      error: 'Request body template must produce an object for XML/FORM format',
+    });
+  });
+
+  it('isolates XML template evaluation failures to their chunks', async () => {
+    const events = withFormat(
+      {
+        format: 'XML',
+        maxBatchSize: '1',
+        requestBodyTemplate: '{"number": $number($$.events.value)}',
+      },
+      ['one', 'two', 'three'],
+    );
+    events[1].message = { ...events[1].message, value: 'invalid' };
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(results.filter((r) => r.error).map((r) => r.metadata[0].jobId)).toEqual([2]);
+    expect(results.filter((r) => r.batched).map((r) => r.metadata[0].jobId)).toEqual([1, 3]);
   });
 
   it('returns per-event errors for an invalid request field and does not send its message', async () => {

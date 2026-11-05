@@ -95,6 +95,8 @@ interface ValidationContext {
   insideObjectOrArray: boolean;
   /** True when this node is a direct child of a [...] array constructor. */
   wrappedInArray: boolean;
+  /** True only for a direct object-literal value (HTTP XML's unwrapped event mapping). */
+  objectPropertyValue: boolean;
   errors: string[];
   collection: string;
 }
@@ -140,6 +142,32 @@ function hasFilterOrPredicate(node: AstNode): boolean {
   );
 }
 
+// JSONata parses `[$$.events][0]` as a unary array with a predicate on the
+// constructor itself. Direct `$$.events[0]` instead has stages on the name step.
+function isAllowedFirstEventArrayPredicate(node: AstNode, collection: string): boolean {
+  const predicates = node.predicate as AstNode[] | undefined;
+  const [eventPath] = node.expressions ?? [];
+  const steps = eventPath?.steps ?? [];
+  return (
+    collection === 'events' &&
+    node.value === '[' &&
+    predicates?.length === 1 &&
+    predicates[0].type === 'filter' &&
+    (predicates[0].expr as AstNode | undefined)?.type === 'number' &&
+    (predicates[0].expr as AstNode).value === 0 &&
+    !node.stages?.length &&
+    node.expressions?.length === 1 &&
+    eventPath?.type === 'path' &&
+    !hasFilterOrPredicate(eventPath) &&
+    (steps.length === 2 ||
+      (steps.length === 3 && steps[2].type === 'unary' && steps[2].value === '{')) &&
+    steps[0].type === 'variable' &&
+    steps[0].value === ROOT_VARIABLE &&
+    steps[1].type === 'name' &&
+    steps[1].value === collection
+  );
+}
+
 /**
  * Unified handler map for all allowed AST node types.
  *
@@ -156,16 +184,35 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
   //   array:  { type: "unary", value: "[", expressions: [...] }
   unary: {
     validate: (node, ctx, walk) => {
+      if (hasFilterOrPredicate(node) && !isAllowedFirstEventArrayPredicate(node, ctx.collection)) {
+        ctx.errors.push('Filter expressions are not supported.');
+        return;
+      }
       if (node.value === '{') {
         const pairs: AstNode[][] = node.lhs ?? [];
         for (const pair of pairs) {
-          walk(pair[0], { ...ctx, insideObjectOrArray: true, wrappedInArray: false });
-          walk(pair[1], { ...ctx, insideObjectOrArray: true, wrappedInArray: false });
+          walk(pair[0], {
+            ...ctx,
+            insideObjectOrArray: true,
+            wrappedInArray: false,
+            objectPropertyValue: false,
+          });
+          walk(pair[1], {
+            ...ctx,
+            insideObjectOrArray: true,
+            wrappedInArray: false,
+            objectPropertyValue: true,
+          });
         }
       } else if (node.value === '[') {
         const elements: AstNode[] = node.expressions ?? [];
         for (const elem of elements) {
-          walk(elem, { ...ctx, insideObjectOrArray: true, wrappedInArray: true });
+          walk(elem, {
+            ...ctx,
+            insideObjectOrArray: true,
+            wrappedInArray: true,
+            objectPropertyValue: false,
+          });
         }
       } else {
         ctx.errors.push(`Expression type "unary(${node.value})" is not supported.`);
@@ -254,12 +301,18 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         return;
       }
 
-      // $$.<collection> mappings must be wrapped in [...] to guarantee array output.
+      // $$.<collection> mappings must be wrapped in [...] to guarantee array output,
+      // except HTTP event mappings used directly as object property values for XML.
       // JSONata unwraps single-element mapping results into bare values, so
       // `$$.<collection>.{...}` with one record returns an object instead of a
       // one-element array. Wrapping in [...] prevents this:
       //   [$$.<collection>.{ "email": email }]   → always an array
-      if (isCollectionPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
+      if (
+        isCollectionPath &&
+        mappingStepIdx >= 0 &&
+        !ctx.wrappedInArray &&
+        !(ctx.collection === 'events' && ctx.objectPropertyValue && steps[2].value === '{')
+      ) {
         ctx.errors.push(
           `$$.${ctx.collection} iteration must be wrapped in [...] to guarantee array output ` +
             `(e.g. [$$.${ctx.collection}.{...}]). Without this, single-record batches produce a bare object.`,
@@ -276,6 +329,7 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
             insideMappingStep: true,
             insideObjectOrArray: true,
             wrappedInArray: false,
+            objectPropertyValue: false,
           });
         } else if (step.type !== 'name' && step.type !== 'variable') {
           // Unknown step type (function, wildcard, descendant, sort, etc.)
@@ -441,6 +495,7 @@ function parseAndValidate(
     insideMappingStep: false,
     insideObjectOrArray: false,
     wrappedInArray: false,
+    objectPropertyValue: false,
     errors: [],
     collection,
   };

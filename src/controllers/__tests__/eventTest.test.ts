@@ -223,6 +223,16 @@ describe('POST /test-router/http/parse-template', () => {
     );
   });
 
+  it('forwards the XML batch template to the same validator as other formats', async () => {
+    const template = '{"event": $$.events.{"id": messageId}}';
+    mockParseHttpTemplates.mockResolvedValue([{ valid: true, recordFields: ['messageId'] }]);
+    const response = await request(server)
+      .post('/test-router/http/parse-template')
+      .send({ workspaceId: 'ws', requestBodyTemplate: template });
+    expect(response.body).toEqual({ valid: true, errors: [] });
+    expect(mockParseHttpTemplates).toHaveBeenCalledWith([template], 'ws');
+  });
+
   it('rejects missing body template', async () => {
     const response = await request(server)
       .post('/test-router/http/parse-template')

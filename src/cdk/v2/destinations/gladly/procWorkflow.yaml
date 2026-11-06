@@ -13,6 +13,8 @@ bindings:
     path: ../../../../adapters/network
   - name: processAxiosResponse
     path: ../../../../adapters/utils/networkUtils
+  - name: assertHttpResp
+    path: ../../bindings/default
 
 steps:
   - name: checkIfProcessed
@@ -63,8 +65,12 @@ steps:
       const endpoint = $.getEndpoint(.destination) + "?" + $.getQueryParams($.context.payload);
       const reqStats = {metadata:.metadata, module: 'router',feature: "transformation", destType:"gladly",requestMethod:"get",endpointPath:"/api/v1/customer-profiles"}
       const rawResponse = await $.httpGET(endpoint,requestOptions, reqStats)
-      const processedResponse = $.processAxiosResponse(rawResponse)
-      processedResponse
+      $.processAxiosResponse(rawResponse)
+
+  - name: validateCustomerLookup
+    condition: $.outputs.findCustomer && $.outputs.findCustomer.status !== 400
+    template: |
+      $.assertHttpResp($.outputs.findCustomer, "Customer lookup failed: " + JSON.stringify($.outputs.findCustomer.response))
 
   - name: createCustomer
     description: Build response for create customer

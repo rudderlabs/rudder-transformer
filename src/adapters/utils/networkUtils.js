@@ -40,8 +40,12 @@ const nodeSysErrorToStatus = (code) => {
       message: '[EEXIST] :: Is a directory',
     },
     EMFILE: {
-      status: 400,
+      status: 500,
       message: '[EMFILE] :: Too many open files in system',
+    },
+    ENFILE: {
+      status: 500,
+      message: '[ENFILE] :: File table overflow',
     },
     ENOENT: {
       status: 400,
@@ -59,12 +63,24 @@ const nodeSysErrorToStatus = (code) => {
       status: 400,
       message: '[ENOTFOUND] :: DNS lookup failed',
     },
+    EHOSTUNREACH: {
+      status: 500,
+      message: '[EHOSTUNREACH] :: Host is unreachable',
+    },
+    ENETUNREACH: {
+      status: 500,
+      message: '[ENETUNREACH] :: Network is unreachable',
+    },
+    ENETDOWN: {
+      status: 500,
+      message: '[ENETDOWN] :: Network is down',
+    },
     EPERM: {
       status: 400,
       message: '[EPERM] :: Operation not permitted',
     },
     EPIPE: {
-      status: 400,
+      status: 500,
       message: '[EPIPE] :: Broken pipe',
     },
     ETIMEDOUT: {

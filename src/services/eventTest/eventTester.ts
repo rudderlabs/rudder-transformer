@@ -327,7 +327,7 @@ export class EventTesterService {
         connection,
       }));
 
-    const isPreview = stage.send_to_destination === false;
+    const isPreview = stage.send_to_destination !== true;
     const destResults = await this.runDestTransform(
       version,
       dest,

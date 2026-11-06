@@ -309,6 +309,11 @@ describe('EventTesterService.testEventV2', () => {
       isPreview: true,
     },
     {
+      name: 'Preview with send flag omitted',
+      stage: { user_transform: false, dest_transform: true },
+      isPreview: true,
+    },
+    {
       name: 'Send',
       stage: { user_transform: false, dest_transform: true, send_to_destination: true },
       isPreview: false,

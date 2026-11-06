@@ -4,10 +4,13 @@ const {
   NetworkError,
   ConfigurationError,
   InstrumentationError,
+  ThrottledError,
+  info,
   warn,
 } = require('@rudderstack/integrations-lib');
+const { EventType } = require('../../../../constants');
 const tags = require('../../../../v0/util/tags');
-const { httpPOST, handleHttpRequest } = require('../../../../adapters/network');
+const { httpGET, httpPOST, handleHttpRequest } = require('../../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -269,11 +272,216 @@ const filterCustomAttributes = (payload, type, destination, message) => {
 };
 
 /**
+ * Runs Intercom's contact search for the given lookups
+ * @param {*} lookups
+ * @param {*} destination
+ * @param {*} metadata
+ * @returns the matching contacts
+ */
+const fetchContacts = async (lookups, destination, metadata) => {
+  const lookupOperator = lookups.length > 1 ? 'OR' : 'AND';
+  const lookupQueries = lookups.map((lookup) => ({
+    field: lookup.field,
+    operator: '=',
+    value: lookup.value,
+  }));
+  const data = JSON.stringify({
+    query: {
+      operator: lookupOperator,
+      value: lookupQueries,
+    },
+  });
+
+  const headers = getHeaders(destination);
+  const baseEndPoint = getBaseEndpoint(destination);
+  const endpoint = `${baseEndPoint}/${SEARCH_CONTACT_ENDPOINT}`;
+  const response = await httpPOST(
+    endpoint,
+    data,
+    {
+      headers,
+    },
+    {
+      destType: 'intercom',
+      feature: 'transformation',
+      endpointPath: '/contacts/search',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
+    },
+  );
+  const processedUserResponse = processAxiosResponse(response);
+  if (isHttpStatusSuccess(processedUserResponse.status)) {
+    return processedUserResponse.response?.data;
+  }
+
+  throw new NetworkError(
+    `Unable to search contact due to : ${JSON.stringify(processedUserResponse?.response?.errors)}`,
+    processedUserResponse?.status,
+    {
+      [tags]: getDynamicErrorType(processedUserResponse?.status),
+    },
+    processedUserResponse,
+  );
+};
+
+/**
+ * Whether an rETL identify opted into matching by a mapped external_id while also carrying an email.
+ * Such a row sends both fields and is matched by external_id, so users sharing an email stay separate.
+ * @param {*} message
+ * @returns {boolean}
+ */
+const isRetlIdentifyWithMappedExternalId = (message) =>
+  Boolean(
+    message.context?.mappedToDestination &&
+      message.traits?.external_id &&
+      ['string', 'number'].includes(typeof message.traits.external_id) &&
+      message.traits?.email &&
+      message.type?.toLowerCase() === EventType.IDENTIFY &&
+      getLookUpField(message) === 'external_id',
+  );
+
+/**
+ * Reads a contact directly, because search results lag behind writes and can't show that a contact
+ * is still unclaimed.
+ * @param {string} contactId
+ * @param {*} destination
+ * @param {*} metadata
+ * @returns the contact, or null when it no longer exists
+ */
+const fetchContact = async (contactId, destination, metadata) => {
+  const response = await httpGET(
+    `${getBaseEndpoint(destination)}/contacts/${contactId}`,
+    { headers: getHeaders(destination) },
+    {
+      destType: 'intercom',
+      feature: 'transformation',
+      endpointPath: '/contacts/{id}',
+      requestMethod: 'GET',
+      module: 'router',
+      metadata,
+    },
+  );
+  const processedResponse = processAxiosResponse(response);
+  if (isHttpStatusSuccess(processedResponse.status)) {
+    return processedResponse.response;
+  }
+  if (processedResponse.status === 404) {
+    return null;
+  }
+  throw new NetworkError(
+    `Unable to fetch contact due to : ${JSON.stringify(processedResponse?.response?.errors)}`,
+    processedResponse?.status,
+    {
+      [tags]: getDynamicErrorType(processedResponse?.status),
+    },
+    processedResponse,
+  );
+};
+
+// Intercom's search returns this many contacts per page when no page size is set.
+const SEARCH_PAGE_SIZE = 50;
+
+/**
+ * Finds the contact an opted-in rETL identify (see isRetlIdentifyWithMappedExternalId) should update,
+ * with one search by external_id or email. The contact that holds the row's external_id wins. Failing
+ * that, the row claims a contact that holds its email with no external_id: Intercom answers 409 to a
+ * create in that state, but accepts one when the email belongs to a different external_id. Intercom
+ * has no conditional update, and a PUT silently replaces an external_id. So a claim reads the contact
+ * directly first, because search can be stale about both its external_id and its email. That leaves
+ * only rows racing on different router workers able to collide.
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} metadata
+ * @returns {{contactId: string|null, matchedBy: 'external_id'|'email'|null}}
+ */
+const findRetlContact = async (message, destination, metadata) => {
+  const { external_id: externalId, email } = message.traits;
+  const normalizedEmail = typeof email === 'string' ? email.toLowerCase() : null;
+  const idLookup = { field: 'external_id', value: externalId };
+  const lookups = normalizedEmail
+    ? [idLookup, { field: 'email', value: normalizedEmail }]
+    : [idLookup];
+  const holdsId = (contact) =>
+    isDefinedAndNotNull(contact.external_id) && String(contact.external_id) === String(externalId);
+
+  const contacts = (await fetchContacts(lookups, destination, metadata)) || [];
+  let byId = contacts.find(holdsId);
+  // A full page can push the external_id match past it, behind other users sharing the email.
+  if (!byId && normalizedEmail && contacts.length >= SEARCH_PAGE_SIZE) {
+    byId = (await fetchContacts([idLookup], destination, metadata))?.find?.(holdsId);
+  }
+  if (byId) {
+    return { contactId: byId.id, matchedBy: 'external_id' };
+  }
+
+  const notFound = { contactId: null, matchedBy: null };
+  const candidate =
+    normalizedEmail &&
+    contacts.find(
+      (contact) => !contact.external_id && contact.email?.toLowerCase() === normalizedEmail,
+    );
+  if (!candidate) {
+    return notFound;
+  }
+  const contact = await fetchContact(candidate.id, destination, metadata);
+  if (!contact || contact.external_id || contact.email?.toLowerCase() !== normalizedEmail) {
+    return notFound;
+  }
+  info('[INTERCOM] Adopting a contact without external_id', {
+    sourceId: metadata.sourceId,
+    destinationId: metadata.destinationId,
+    workspaceId: metadata.workspaceId,
+    contactId: candidate.id,
+  });
+  return { contactId: candidate.id, matchedBy: 'email' };
+};
+
+/**
+ * Lets only the first opted-in row in a router call write an external_id onto a contact. All rows search
+ * before any is delivered, so several rows sharing an email can claim one contact, and each PUT would
+ * replace the last one's external_id. The other rows retry, and then see that the contact is taken.
+ * They answer 429 because rudder-server's rETL retry limit applies only from 500 up, so a row that
+ * has not been sent yet can't run out of retries while the first row is still being delivered.
+ * @param {Array} transformResults the per-row results of the transform step
+ * @param {Array} inputs the router input, in the same order
+ * @returns the results, with any repeat claim replaced by a throttled error
+ */
+const deferRepeatClaims = (transformResults, inputs) => {
+  const claims = new Map();
+  return transformResults.map((result, index) => {
+    const { method, endpoint, body } = result.output || {};
+    const externalId = body?.JSON?.external_id;
+    if (
+      method !== 'PUT' ||
+      !externalId ||
+      !isRetlIdentifyWithMappedExternalId(inputs[index].message)
+    ) {
+      return result;
+    }
+    const claimedBy = claims.get(endpoint);
+    if (claimedBy === undefined) {
+      claims.set(endpoint, externalId);
+      return result;
+    }
+    if (claimedBy === externalId) {
+      return result;
+    }
+    return {
+      error: new ThrottledError(
+        '[Intercom] Another row in this batch is claiming the same contact, retrying',
+      ),
+    };
+  });
+};
+
+/**
  * Api call to search contact in intercom to returns id of contact
  * Ref doc : https://developers.intercom.com/docs/references/rest-api/api.intercom.io/Contacts/SearchContacts/
  * @param {*} message
  * @param {*} destination
- * @returns
+ * @param {*} metadata
+ * @returns the contact id, or null when the message should create a contact
  */
 const searchContact = async (message, destination, metadata) => {
   const lookups = [];
@@ -286,9 +494,11 @@ const searchContact = async (message, destination, metadata) => {
     }
   };
 
-  // we are mapping user_id to external_id in the message for rEtl flow when email is not present in traits
+  // In rEtl flow, search only by a mapped external_id when the payload will carry it.
+  // Searching email as well would match another user sharing that email.
   const isRetlExternalIdMapping =
-    message.context?.mappedToDestination && message.traits?.external_id && !message.traits?.email;
+    isRetlIdentifyWithMappedExternalId(message) ||
+    (message.context?.mappedToDestination && message.traits?.external_id && !message.traits?.email);
   if (isRetlExternalIdMapping) {
     addLookup('external_id', message.traits.external_id);
   } else {
@@ -334,58 +544,15 @@ const searchContact = async (message, destination, metadata) => {
     return null;
   }
 
-  const lookupOperator = lookups.length > 1 ? 'OR' : 'AND';
-  const lookupQueries = lookups.map((lookup) => ({
-    field: lookup.field,
-    operator: '=',
-    value: lookup.value,
-  }));
-  const data = JSON.stringify({
-    query: {
-      operator: lookupOperator,
-      value: lookupQueries,
-    },
-  });
-
-  const headers = getHeaders(destination);
-  const baseEndPoint = getBaseEndpoint(destination);
-  const endpoint = `${baseEndPoint}/${SEARCH_CONTACT_ENDPOINT}`;
-  const response = await httpPOST(
-    endpoint,
-    data,
-    {
-      headers,
-    },
-    {
-      destType: 'intercom',
-      feature: 'transformation',
-      endpointPath: '/contacts/search',
-      requestMethod: 'POST',
-      module: 'router',
-      metadata,
-    },
-  );
-  const processedUserResponse = processAxiosResponse(response);
-  if (isHttpStatusSuccess(processedUserResponse.status)) {
-    const contacts = processedUserResponse.response?.data;
-    if (contacts?.length > 1) {
-      warn('[INTERCOM] Multiple contacts found for the message', {
-        sourceId: metadata.sourceId,
-        destinationId: metadata.destinationId,
-        workspaceId: metadata.workspaceId,
-      });
-    }
-    return contacts?.length > 0 ? contacts[0]?.id : null;
+  const contacts = await fetchContacts(lookups, destination, metadata);
+  if (contacts?.length > 1) {
+    warn('[INTERCOM] Multiple contacts found for the message', {
+      sourceId: metadata.sourceId,
+      destinationId: metadata.destinationId,
+      workspaceId: metadata.workspaceId,
+    });
   }
-
-  throw new NetworkError(
-    `Unable to search contact due to : ${JSON.stringify(processedUserResponse?.response?.errors)}`,
-    processedUserResponse?.status,
-    {
-      [tags]: getDynamicErrorType(processedUserResponse?.status),
-    },
-    processedUserResponse,
-  );
+  return contacts?.length > 0 ? contacts[0]?.id : null;
 };
 
 /**
@@ -660,6 +827,9 @@ module.exports = {
   getName,
   getHeaders,
   searchContact,
+  findRetlContact,
+  deferRepeatClaims,
+  isRetlIdentifyWithMappedExternalId,
   getLookUpField,
   getBaseEndpoint,
   getCompaniesList,

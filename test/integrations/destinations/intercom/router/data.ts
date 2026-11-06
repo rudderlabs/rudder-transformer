@@ -630,6 +630,26 @@ const routerRequest3: RouterTransformationRequest = {
   destType: 'intercom',
 };
 
+const retlRowSharingEmail = (externalId: string, jobId: number) => ({
+  destination: destination1,
+  metadata: generateMetadata(jobId),
+  message: {
+    userId: externalId,
+    type: 'identify' as const,
+    context: {
+      externalId: [{ id: externalId, type: 'INTERCOM-customer', identifierType: 'external_id' }],
+      mappedToDestination: 'true',
+    },
+    integrations: { INTERCOM: { lookup: 'external_id' } },
+    traits: { email: 'email-only@rudderlabs.com', external_id: externalId },
+  },
+});
+
+const routerRequest4: RouterTransformationRequest = {
+  input: [retlRowSharingEmail('user@1', 1), retlRowSharingEmail('user@7', 2)],
+  destType: 'intercom',
+};
+
 export const data: RouterTestData[] = [
   {
     id: 'Intercom-router-test-1',
@@ -1126,6 +1146,80 @@ export const data: RouterTestData[] = [
               destination: destination3,
               metadata: [generateMetadata(3)],
               statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'Intercom-router-test-4',
+    scenario: 'Business',
+    successCriteria:
+      'Only the first row claims the contact, and the other row retries instead of replacing its external_id',
+    name: 'intercom',
+    description:
+      'Intercom router test for two rETL rows sharing the email of an email-only contact',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: routerRequest4,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    email: 'email-only@rudderlabs.com',
+                    external_id: 'user@1',
+                  },
+                  XML: {},
+                  FORM: {},
+                  JSON_ARRAY: {},
+                },
+                endpoint: 'https://api.intercom.io/contacts/8070129940741e45d043',
+                files: {},
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  'Intercom-Version': '2.10',
+                  'User-Agent': 'RudderStack',
+                },
+                method: 'PUT',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: destination1,
+              metadata: [generateMetadata(1)],
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              error: '[Intercom] Another row in this batch is claiming the same contact, retrying',
+              statTags: {
+                destType: 'INTERCOM',
+                errorCategory: 'network',
+                errorType: 'throttled',
+                feature: 'router',
+                implementation: 'cdkV2',
+                module: 'destination',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+              destination: destination1,
+              metadata: [generateMetadata(2)],
+              statusCode: 429,
             },
           ],
         },

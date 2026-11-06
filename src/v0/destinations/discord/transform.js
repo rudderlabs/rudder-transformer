@@ -5,6 +5,7 @@ const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
 const {
+  compileAndRenderUserTemplate,
   defaultPostRequestConfig,
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -21,30 +22,32 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const getEmbed = (templateInput, destination, callType) => {
   // building titleTemplate
   let embedTitleTemplate = '';
-  let titleTemplate;
   if (
     destination.Config?.embedTitleTemplate &&
     destination.Config.embedTitleTemplate.trim().length > 0
   ) {
     embedTitleTemplate = destination.Config.embedTitleTemplate.trim();
-    titleTemplate = Handlebars.compile(embedTitleTemplate);
   }
   // building desription template
   let embedDescriptionTemplate = '';
-  let descriptionTemplate;
   if (
     destination.Config?.embedDescriptionTemplate &&
     destination.Config.embedDescriptionTemplate.trim().length > 0
   ) {
     embedDescriptionTemplate = destination.Config.embedDescriptionTemplate.trim();
-    descriptionTemplate = Handlebars.compile(embedDescriptionTemplate);
   }
   return {
     title:
-      embedTitleTemplate.length > 0 ? titleTemplate(templateInput) : 'Message from Rudderstack ',
+      embedTitleTemplate.length > 0
+        ? compileAndRenderUserTemplate(embedTitleTemplate, templateInput, 'embedTitleTemplate')
+        : 'Message from Rudderstack ',
     description:
       embedDescriptionTemplate.length > 0
-        ? descriptionTemplate(templateInput)
+        ? compileAndRenderUserTemplate(
+            embedDescriptionTemplate,
+            templateInput,
+            'embedDescriptionTemplate',
+          )
         : `${callType} call made`,
   };
 };
@@ -76,11 +79,6 @@ const processIdentify = (message, destination) => {
   // helps the user to build additional handlebar expressions
   const identityTraits = getFieldValueFromMessage(message, 'traits') || {};
 
-  const template = Handlebars.compile(
-    identifyTemplateConfig ||
-      buildDefaultTraitTemplate(whiteTraitsList, identityTraits, defaultIdentifyTemplate),
-  );
-
   const templateInput = {
     name: uName,
     ...identityTraits,
@@ -88,7 +86,11 @@ const processIdentify = (message, destination) => {
     traitsList: identityTraits,
   };
 
-  const resultText = template(templateInput);
+  const resultText = identifyTemplateConfig
+    ? compileAndRenderUserTemplate(identifyTemplateConfig, templateInput, 'identifyTemplate')
+    : Handlebars.compile(
+        buildDefaultTraitTemplate(whiteTraitsList, identityTraits, defaultIdentifyTemplate),
+      )(templateInput);
   //  constructing embed message
   if (destination?.Config?.embedFlag) {
     const embedMessage = getEmbed(templateInput, destination, 'Identify');
@@ -149,10 +151,6 @@ const processTrack = (message, destination) => {
   // track event default handlebar expression
   const defaultTemplate = '{{name}} did {{event}} with {{propertiesList}}';
 
-  const eventTemplate = Handlebars.compile(
-    templateListArray.length > 0 ? templateListArray[0] : defaultTemplate,
-  );
-
   // provide flattened properties as well as properties object
   const identityTraits = getFieldValueFromMessage(message, 'traits') || {};
   const templateInput = {
@@ -165,7 +163,10 @@ const processTrack = (message, destination) => {
     traitsList: identityTraits,
   };
 
-  const resultText = eventTemplate(templateInput);
+  const resultText =
+    templateListArray.length > 0
+      ? compileAndRenderUserTemplate(templateListArray[0], templateInput, 'eventTemplate')
+      : Handlebars.compile(defaultTemplate)(templateInput);
   //  constructing embed message
   if (destination?.Config?.embedFlag) {
     const embedMessage = getEmbed(templateInput, destination, 'Track');

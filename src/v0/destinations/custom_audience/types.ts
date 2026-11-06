@@ -69,10 +69,15 @@ export type ParsedCustomAudienceDeliveryAccount = z.infer<
 
 export type CustomAudienceDeliveryAccount = ParsedCustomAudienceDeliveryAccount;
 
-export type CustomAudienceAuthMetadata = {
-  isPreview?: true;
-  secret?: { accessToken?: string };
-};
+export const CustomAudienceAuthMetadataSchema = z.union([
+  z.object({ isPreview: z.literal(true) }),
+  z.object({
+    isPreview: z.literal(false).optional(),
+    secret: z.object({ accessToken: z.string().min(1) }),
+  }),
+]);
+
+export type CustomAudienceAuthMetadata = z.infer<typeof CustomAudienceAuthMetadataSchema>;
 
 export type CustomAudienceAccountAuthHandler = (
   account: ParsedCustomAudienceDeliveryAccount,

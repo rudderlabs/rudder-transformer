@@ -1,9 +1,15 @@
+import sha256 from 'sha256';
 import { EventTesterService } from '../eventTester';
 import { NativeIntegrationDestinationService } from '../../destination/nativeIntegration';
 import { userTransformHandler } from '../../../routerUtils';
 import { FetchHandler } from '../../../helpers/fetchHandlers';
 import { ServiceSelector } from '../../../helpers/serviceSelector';
 import type { DestinationService } from '../../../interfaces/DestinationService';
+import { ACCOUNT_DEFINITION_NAMES } from '../../../v0/destinations/custom_audience/constants';
+import {
+  connection as customAudienceConnection,
+  destination as customAudienceDestination,
+} from '../../../../test/integrations/destinations/custom_audience/common';
 
 jest.mock('../../../routerUtils', () => ({
   ...jest.requireActual('../../../routerUtils'),
@@ -31,6 +37,15 @@ const buildV1Event = (overrides: Record<string, unknown> = {}) => ({
   libraries: [],
   ...overrides,
 });
+
+type DestTransformSpyService = {
+  runDestTransform: (options: {
+    version: string;
+    dest: string;
+    events: unknown[];
+    isPreview: boolean;
+  }) => Promise<Array<{ payload: unknown } | { error: string }>>;
+};
 
 describe('EventTesterService.transformDestination', () => {
   it('preserves lower-camel deliveryAccount while retaining existing key conversion', () => {
@@ -77,16 +92,7 @@ describe('EventTesterService.testEvent', () => {
 
   it('returns dest_transformed_payload when only dest_transform is enabled', async () => {
     jest
-      .spyOn(
-        EventTesterService as unknown as {
-          runDestTransform: (
-            version: string,
-            dest: string,
-            events: unknown[],
-          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
-        },
-        'runDestTransform',
-      )
+      .spyOn(EventTesterService as unknown as DestTransformSpyService, 'runDestTransform')
       .mockResolvedValue([{ payload: sampleOutput }]);
 
     const result = await EventTesterService.testEvent(
@@ -101,6 +107,54 @@ describe('EventTesterService.testEvent', () => {
 
     expect(result).toEqual([{ dest_transformed_payload: [sampleOutput] }]);
   });
+
+  it.each([
+    {
+      name: 'false',
+      stage: { user_transform: false, dest_transform: true, send_to_destination: false },
+    },
+    { name: 'omitted', stage: { user_transform: false, dest_transform: true } },
+  ])(
+    'previews a Client Credentials account when send_to_destination is $name',
+    async ({ stage }) => {
+      const result = await EventTesterService.testEvent(
+        [
+          buildV1Event({
+            message: {
+              type: 'record',
+              action: 'insert',
+              identifiers: { email: sha256('a@b.com') },
+            },
+            destination: {
+              id: 'dest-1',
+              workspaceId: 'ws-1',
+              destinationDefinition: { name: 'CUSTOM_AUDIENCE' },
+              config: customAudienceDestination.Config,
+              deliveryAccount: {
+                accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+                options: {},
+                secret: {},
+              },
+            },
+            connection: customAudienceConnection,
+            stage,
+          }),
+        ],
+        'v0',
+        'custom_audience',
+      );
+
+      expect(result).toEqual([
+        {
+          dest_transformed_payload: [
+            expect.objectContaining({
+              headers: expect.objectContaining({ Authorization: 'Bearer ********' }),
+            }),
+          ],
+        },
+      ]);
+    },
+  );
 
   it('aborts dest_transform when user_transform fails', async () => {
     jest
@@ -148,16 +202,7 @@ describe('EventTesterService.testEvent', () => {
       .mockResolvedValue([{ message: { type: 'record', transformed: true } }]);
 
     jest
-      .spyOn(
-        EventTesterService as unknown as {
-          runDestTransform: (
-            version: string,
-            dest: string,
-            events: unknown[],
-          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
-        },
-        'runDestTransform',
-      )
+      .spyOn(EventTesterService as unknown as DestTransformSpyService, 'runDestTransform')
       .mockResolvedValue([{ payload: sampleOutput }]);
 
     jest
@@ -199,16 +244,7 @@ describe('EventTesterService.testEvent', () => {
 
   it('aborts send_to_destination when dest_transform fails', async () => {
     jest
-      .spyOn(
-        EventTesterService as unknown as {
-          runDestTransform: (
-            version: string,
-            dest: string,
-            events: unknown[],
-          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
-        },
-        'runDestTransform',
-      )
+      .spyOn(EventTesterService as unknown as DestTransformSpyService, 'runDestTransform')
       .mockResolvedValue([{ error: 'batch transform failed' }]);
 
     const result = await EventTesterService.testEvent(
@@ -253,16 +289,7 @@ describe('EventTesterService.testEventV2', () => {
       ]);
 
     const runDestTransformSpy = jest
-      .spyOn(
-        EventTesterService as unknown as {
-          runDestTransform: (
-            version: string,
-            dest: string,
-            events: unknown[],
-          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
-        },
-        'runDestTransform',
-      )
+      .spyOn(EventTesterService as unknown as DestTransformSpyService, 'runDestTransform')
       .mockResolvedValue([{ payload: sampleOutput }]);
 
     const result = await EventTesterService.testEventV2(
@@ -282,16 +309,16 @@ describe('EventTesterService.testEventV2', () => {
     );
 
     expect(runUserTransformSpy).toHaveBeenCalledTimes(1);
-    expect(runDestTransformSpy).toHaveBeenCalledWith(
-      'v0',
-      'custom_audience',
-      expect.arrayContaining([
+    expect(runDestTransformSpy).toHaveBeenCalledWith({
+      version: 'v0',
+      dest: 'custom_audience',
+      events: expect.arrayContaining([
         expect.objectContaining({ message: { type: 'record', id: 'ok-1' } }),
         expect.objectContaining({ message: { type: 'record', id: 'ok-2' } }),
       ]),
-      true,
-    );
-    expect(runDestTransformSpy.mock.calls[0][2]).toHaveLength(2);
+      isPreview: true,
+    });
+    expect(runDestTransformSpy.mock.calls[0][0].events).toHaveLength(2);
     expect(result).toEqual({
       user_transformed_payload: [
         { type: 'record', id: 'ok-1' },
@@ -394,16 +421,7 @@ describe('EventTesterService.testEventV2', () => {
 
   it('maps destination responses/statuses 1:1 to batched transformed payloads', async () => {
     jest
-      .spyOn(
-        EventTesterService as unknown as {
-          runDestTransform: (
-            version: string,
-            dest: string,
-            events: unknown[],
-          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
-        },
-        'runDestTransform',
-      )
+      .spyOn(EventTesterService as unknown as DestTransformSpyService, 'runDestTransform')
       .mockResolvedValue([
         { payload: sampleOutput },
         { payload: { ...sampleOutput, endpoint: 'https://api.example.com/y' } },
@@ -451,16 +469,7 @@ describe('EventTesterService.testEventV2', () => {
 
   it('returns error and aborts send when dest transform fails', async () => {
     jest
-      .spyOn(
-        EventTesterService as unknown as {
-          runDestTransform: (
-            version: string,
-            dest: string,
-            events: unknown[],
-          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
-        },
-        'runDestTransform',
-      )
+      .spyOn(EventTesterService as unknown as DestTransformSpyService, 'runDestTransform')
       .mockResolvedValue([{ error: 'template evaluation failed' }]);
 
     const result = await EventTesterService.testEventV2(
@@ -485,16 +494,7 @@ describe('EventTesterService.testEventV2', () => {
   it('interleaves successes and errors when dest transform partially fails', async () => {
     const failedOutput = { error: 'invalid field mapping' };
     jest
-      .spyOn(
-        EventTesterService as unknown as {
-          runDestTransform: (
-            version: string,
-            dest: string,
-            events: unknown[],
-          ) => Promise<Array<{ payload: unknown } | { error: string }>>;
-        },
-        'runDestTransform',
-      )
+      .spyOn(EventTesterService as unknown as DestTransformSpyService, 'runDestTransform')
       .mockResolvedValue([
         { payload: sampleOutput },
         { error: 'invalid field mapping' },
@@ -720,7 +720,7 @@ describe('EventTesterService.runDestTransform', () => {
     expect(doRouterTransformation).toHaveBeenCalledWith(
       [
         expect.objectContaining({
-          metadata: { workspaceId: 'workspace-http', jobId: 1 },
+          metadata: { workspaceId: 'workspace-http', jobId: 1, isPreview: true },
         }),
       ],
       'http',

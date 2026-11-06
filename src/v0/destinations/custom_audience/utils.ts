@@ -21,7 +21,7 @@ import type {
   CustomAudienceHeader,
   CustomMapping,
 } from './types';
-import { CustomAudienceDeliveryAccountSchema } from './types';
+import { CustomAudienceAuthMetadataSchema, CustomAudienceDeliveryAccountSchema } from './types';
 
 export const lookupActionConfig = (
   action: Action,
@@ -171,16 +171,13 @@ const requireAccountValues = (
   return values.map(({ value }) => value as string);
 };
 
-const buildOAuthHeader = (
-  account: ParsedCustomAudienceDeliveryAccount,
-  metadata?: CustomAudienceAuthMetadata,
-): Record<string, string> => {
-  if (metadata?.isPreview) return buildBearerTokenHeader('********');
-  const accessToken = metadata?.secret?.accessToken;
-  if (typeof accessToken !== 'string' || accessToken.length === 0) {
+const buildOAuthHeader: CustomAudienceAccountAuthHandler = (_account, metadata) => {
+  const parsedMetadata = CustomAudienceAuthMetadataSchema.safeParse(metadata);
+  if (!parsedMetadata.success) {
     throw new OAuthSecretError('OAuth access token is unavailable in event metadata.');
   }
-  return buildBearerTokenHeader(accessToken);
+  if (parsedMetadata.data.isPreview) return buildBearerTokenHeader('********');
+  return buildBearerTokenHeader(parsedMetadata.data.secret.accessToken);
 };
 
 const ACCOUNT_AUTH_HANDLERS: Record<string, CustomAudienceAccountAuthHandler> = {
@@ -206,7 +203,10 @@ const ACCOUNT_AUTH_HANDLERS: Record<string, CustomAudienceAccountAuthHandler> = 
   },
   [ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS]: buildOAuthHeader,
   [ACCOUNT_DEFINITION_NAMES.OAUTH_AUTH_CODE]: buildOAuthHeader,
-};
+} satisfies Record<
+  (typeof ACCOUNT_DEFINITION_NAMES)[keyof typeof ACCOUNT_DEFINITION_NAMES],
+  CustomAudienceAccountAuthHandler
+>;
 
 const resolveAccountAuth = (
   deliveryAccount: unknown,

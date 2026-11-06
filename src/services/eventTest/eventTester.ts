@@ -26,6 +26,13 @@ type EventTesterV2Payload = {
   libraries?: Record<string, unknown>[];
 };
 
+type DestTransformOptions = {
+  version: string;
+  dest: string;
+  events: DestTransformInput[];
+  isPreview: boolean;
+};
+
 type UserTransformResult = {
   message?: Record<string, unknown>;
   error?: string;
@@ -57,12 +64,12 @@ const capitalize = (key: string): string =>
 const transformKey = (key: string): string => destinationKeyOverrides[key] ?? capitalize(key);
 
 export class EventTesterService {
-  private static async runDestTransform(
-    version: string,
-    dest: string,
-    events: DestTransformInput[],
-    isPreview = false,
-  ): Promise<DestTransformEntry[]> {
+  private static async runDestTransform({
+    version,
+    dest,
+    events,
+    isPreview,
+  }: DestTransformOptions): Promise<DestTransformEntry[]> {
     if (events.length === 0) {
       return [];
     }
@@ -242,7 +249,12 @@ export class EventTesterService {
 
         if (stage.dest_transform) {
           if (!errorFound) {
-            const destResults = await this.runDestTransform(version, dest, [ev]);
+            const destResults = await this.runDestTransform({
+              version,
+              dest,
+              events: [ev],
+              isPreview: !stage.send_to_destination,
+            });
             const destError = destResults.find((r): r is { error: string } => 'error' in r);
             if (destError) {
               errorFound = true;
@@ -328,12 +340,12 @@ export class EventTesterService {
       }));
 
     const isPreview = stage.send_to_destination !== true;
-    const destResults = await this.runDestTransform(
+    const destResults = await this.runDestTransform({
       version,
       dest,
-      eventsForDestTransform,
+      events: eventsForDestTransform,
       isPreview,
-    );
+    });
 
     const destOutput: DestTransformOutputEntry[] = destResults.map((r) =>
       'error' in r

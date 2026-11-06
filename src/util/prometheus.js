@@ -7,6 +7,10 @@ const useMetricsAggregator = process.env.USE_METRICS_AGGREGATOR === 'true';
 const instanceID = process.env.INSTANCE_ID || 'localhost';
 const prefix = 'transformer';
 const defaultLabels = { instanceName: instanceID };
+// User transform summaries are labelled per transformation and scraped per pod, so they export no
+// quantiles by default, only _sum and _count. Set to 'false' to keep the default quantiles.
+const emptyUserTransformPercentiles = process.env.EMPTY_USER_TRANSFORM_PERCENTILES !== 'false';
+const userTransformPercentiles = emptyUserTransformPercentiles ? [] : undefined;
 
 function appendPrefix(name) {
   return `${prefix}_${name}`;
@@ -1097,6 +1101,7 @@ class Prometheus {
         name: 'user_transform_request_latency_summary',
         help: 'user_transform_request_latency_summary',
         type: 'summary',
+        percentiles: userTransformPercentiles,
         labelNames: [
           'workspaceId',
           'transformationId',
@@ -1109,6 +1114,7 @@ class Prometheus {
         name: 'user_transform_batch_size_summary',
         help: 'user_transform_batch_size_summary',
         type: 'summary',
+        percentiles: userTransformPercentiles,
         labelNames: [
           'workspaceId',
           'transformationId',
@@ -1121,6 +1127,7 @@ class Prometheus {
         name: 'user_transform_function_latency_summary',
         help: 'user_transform_function_latency_summary',
         type: 'summary',
+        percentiles: userTransformPercentiles,
         labelNames: [
           'identifier',
           'testMode',
@@ -1137,6 +1144,7 @@ class Prometheus {
         name: 'user_transform_used_heap_size',
         help: 'user_transform_used_heap_size',
         type: 'summary',
+        percentiles: userTransformPercentiles,
         labelNames: [
           'identifier',
           'testMode',

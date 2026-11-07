@@ -1,20 +1,13 @@
 const ivm = require('isolated-vm');
-const { validateIp } = require('./utils');
-const fetch = require('node-fetch');
-const { isNil, isObject, camelCase } = require('lodash');
+const { camelCase } = require('lodash');
 
 const { getLibraryCode, getRudderLibByImportName } = require('./customTransformationsStore');
-const { extractStackTraceUptoLastSubstringMatch } = require('./utils');
 const logger = require('../logger');
 const stats = require('./stats');
-const { fetchWithDnsWrapper } = require('./utils');
+const { injectSandboxApis } = require('./ivmSandboxApis');
 
 const ISOLATE_VM_MEMORY = Number.parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
-const GEOLOCATION_TIMEOUT_IN_MS = Number.parseInt(
-  process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000',
-  10,
-);
 
 const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
 
@@ -207,119 +200,7 @@ async function createIvm(
   // because otherwise 'global' would actually be a Reference{} object in the new isolate.
   await jail.set('global', jail.derefInto());
 
-  // The entire ivm module is transferable! We transfer the module to the new isolate so that we
-  // have access to the library from within the isolate.
-  await jail.set('_ivm', ivm);
-  await jail.set(
-    '_fetch',
-    new ivm.Reference(async (resolve, ...args) => {
-      const fetchStartTime = new Date();
-      const fetchTags = { ...trTags };
-      try {
-        const res = await fetchWithDnsWrapper(trTags, ...args);
-        const data = await res.json();
-        fetchTags.isSuccess = 'true';
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
-      } catch (error) {
-        logger.debug('Error fetching data', error);
-        fetchTags.isSuccess = 'false';
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
-      } finally {
-        stats.timing('fetch_call_duration', fetchStartTime, fetchTags);
-      }
-    }),
-  );
-
-  await jail.set(
-    '_fetchV2',
-    new ivm.Reference(async (resolve, reject, ...args) => {
-      const fetchStartTime = new Date();
-      const fetchTags = { ...trTags };
-      try {
-        const res = await fetchWithDnsWrapper(fetchTags, ...args);
-        const headersContent = {};
-        for (const [header, value] of res.headers) {
-          headersContent[header] = value;
-        }
-        const data = {
-          url: res.url,
-          status: res.status,
-          headers: headersContent,
-          body: await res.text(),
-        };
-
-        try {
-          data.body = JSON.parse(data.body);
-        } catch (e) {
-          logger.debug('Error parsing JSON', e);
-        }
-        fetchTags.isSuccess = 'true';
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
-      } catch (error) {
-        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        logger.debug('Error fetching data in fetchV2', err);
-        fetchTags.isSuccess = 'false';
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
-      } finally {
-        stats.timing('fetchV2_call_duration', fetchStartTime, fetchTags);
-      }
-    }),
-  );
-
-  await jail.set(
-    '_geolocation',
-    new ivm.Reference(async (resolve, reject, ...args) => {
-      const geoStartTime = new Date();
-      const geoTags = { ...trTags };
-      try {
-        validateIp(args[0]);
-        if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
-        const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
-          timeout: GEOLOCATION_TIMEOUT_IN_MS,
-        });
-        if (res.status !== 200) {
-          throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
-        }
-        const geoData = await res.json();
-        geoTags.isSuccess = 'true';
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
-      } catch (error) {
-        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        geoTags.isSuccess = 'false';
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
-      } finally {
-        stats.timing('geo_call_duration', geoStartTime, geoTags);
-      }
-    }),
-  );
-
-  await jail.set('_getCredential', function (key) {
-    if (isNil(credentials) || !isObject(credentials)) {
-      logger.error(
-        `Error fetching credentials map for transformationID: ${transformationId} and workspaceId: ${workspaceId}`,
-      );
-      stats.increment('credential_error_total', trTags);
-      return undefined;
-    }
-    if (key === null || key === undefined) {
-      throw new TypeError('Key should be valid and defined');
-    }
-    return credentials[key];
-  });
-
-  await jail.set('log', function (...args) {
-    if (testMode) {
-      let logString = 'Log:';
-      for (const arg of args) {
-        logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
-      }
-      logs.push(logString);
-    }
-  });
-
-  await jail.set('extractStackTrace', function (trace, stringLiterals) {
-    return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
-  });
+  await injectSandboxApis(jail, { trTags, credentials, testMode, logs });
 
   const bootstrap = await isolate.compileScript(
     'new ' +
@@ -330,6 +211,10 @@ async function createIvm(
       // so you should not put it in the hands of untrusted code.
       let ivm = _ivm;
       delete _ivm;
+
+      // Outside test mode the host injects no 'log', so define the no-op here. Calls then stay
+      // inside the isolate instead of copying their arguments into host memory.
+      if (typeof log !== 'function') global.log = function () {};
 
       // Now we create the other half of the 'log' function in this isolate. We'll just take every
       // argument, create an external copy of it and pass it along to the log function above.

@@ -37,7 +37,7 @@ const HttpDestinationConfigSchema = z
     headers: z.array(mapping).optional(),
     queryParams: z.array(mapping).optional(),
     pathParams: z.array(z.object({ path: z.string() })).optional(),
-    auth: z.enum(['noAuth', 'basicAuth', 'bearerTokenAuth', 'apiKeyAuth']).optional(),
+    authenticationEnabled: z.boolean().optional(),
     username: z.string().optional(),
     password: z.string().optional(),
     bearerToken: z.string().optional(),
@@ -48,13 +48,17 @@ const HttpDestinationConfigSchema = z
     const require = (field: keyof typeof config, message: string) => {
       if (!config[field]) ctx.addIssue({ code: z.ZodIssueCode.custom, path: [field], message });
     };
-    if (config.auth === 'basicAuth') {
-      require('username', 'Username is required for Basic Authentication');
-    } else if (config.auth === 'bearerTokenAuth') {
-      require('bearerToken', 'Token is required for Bearer Token Authentication');
-    } else if (config.auth === 'apiKeyAuth') {
-      require('apiKeyName', 'API key name is required');
+    if (!config.authenticationEnabled) return;
+    // Same precedence as makeAuthHeaders: username, then bearerToken, then apiKeyName.
+    if (config.username || config.bearerToken) return;
+    if (config.apiKeyName) {
       require('apiKeyValue', 'API key value is required');
+    } else {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['authenticationEnabled'],
+        message: 'Authentication is enabled, but no account credentials were found',
+      });
     }
   });
 

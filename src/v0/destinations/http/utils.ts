@@ -38,19 +38,22 @@ export const makeEndpoint = (url: string, pathParams: unknown[]): string => {
   return parts.length > 0 ? `${url.replace(/\/$/, '')}/${parts.join('/')}` : url;
 };
 
-// Required credentials are enforced by the config schema in types.ts.
+// v2 has no auth selector: config-backend inlines the linked account's fields into the config,
+// and each account type has its own required field. Required credentials are enforced in types.ts.
 export const makeAuthHeaders = (config: HttpDestinationConfig): Record<string, string> => {
-  const { auth, username, password = '', bearerToken, apiKeyName = '', apiKeyValue = '' } = config;
-  switch (auth) {
-    case 'basicAuth':
-      return {
-        Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
-      };
-    case 'bearerTokenAuth':
-      return { Authorization: `Bearer ${bearerToken}` };
-    case 'apiKeyAuth':
-      return { [apiKeyName]: apiKeyValue };
-    default:
-      return {};
+  const {
+    authenticationEnabled,
+    username,
+    password = '',
+    bearerToken,
+    apiKeyName,
+    apiKeyValue = '',
+  } = config;
+  if (!authenticationEnabled) return {};
+  if (username) {
+    return { Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}` };
   }
+  if (bearerToken) return { Authorization: `Bearer ${bearerToken}` };
+  if (apiKeyName) return { [apiKeyName]: apiKeyValue };
+  return {};
 };

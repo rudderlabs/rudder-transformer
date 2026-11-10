@@ -90,12 +90,14 @@ describe('HTTP v2 native router', () => {
   });
 
   it.each([
-    { config: { auth: 'basicAuth' }, message: 'Username is required for Basic Authentication' },
     {
-      config: { auth: 'bearerTokenAuth' },
-      message: 'Token is required for Bearer Token Authentication',
+      config: { authenticationEnabled: true },
+      message: 'Authentication is enabled, but no account credentials were found',
     },
-    { config: { auth: 'apiKeyAuth', apiKeyName: 'X-Key' }, message: 'API key value is required' },
+    {
+      config: { authenticationEnabled: true, apiKeyName: 'X-Key' },
+      message: 'API key value is required',
+    },
     {
       config: { headers: [{ to: '$.a.b[0]', from: 'x' }] },
       message: 'Invalid request field name: $.a.b[0]',
@@ -128,32 +130,53 @@ describe('HTTP v2 native router', () => {
 
   it.each([
     {
-      auth: 'basicAuth',
+      auth: 'basic',
       credentials: { username: 'user', password: 'pass' },
       expected: { Authorization: 'Basic dXNlcjpwYXNz' },
     },
     {
-      auth: 'bearerTokenAuth',
+      auth: 'bearer token',
       credentials: { bearerToken: 'secret' },
       expected: { Authorization: 'Bearer secret' },
     },
     {
-      auth: 'apiKeyAuth',
+      auth: 'API key',
       credentials: { apiKeyName: 'X-Key', apiKeyValue: 'secret' },
       expected: { 'X-Key': 'secret' },
+    },
+    {
+      auth: 'basic over a leftover API key name',
+      credentials: { username: 'user', password: 'pass', apiKeyName: 'X-Key' },
+      expected: { Authorization: 'Basic dXNlcjpwYXNz' },
     },
   ])('adds $auth headers', async ({ auth, credentials, expected }) => {
     const result = await processDestinationIntegration(
       [
         {
           ...input('one', 1),
-          destination: { ...destination, Config: { ...destination.Config, auth, ...credentials } },
+          destination: {
+            ...destination,
+            Config: { ...destination.Config, authenticationEnabled: true, ...credentials },
+          },
         },
       ],
       Integration,
       {},
     );
     expect((result[0] as unknown as NativeResponse).batchedRequest.headers).toMatchObject(expected);
+  });
+
+  it('ignores credentials when authentication is disabled', async () => {
+    const event = input('one', 1);
+    event.destination = {
+      ...destination,
+      Config: { ...destination.Config, authenticationEnabled: false, bearerToken: 'secret' },
+    };
+    const [response] = await processDestinationIntegration([event], Integration, {});
+    expect((response as unknown as NativeResponse).batchedRequest.headers).toEqual({
+      'X-Token': 'static-token',
+      'Content-Type': 'application/json',
+    });
   });
 
   const serializeEdgeCases = async (format: string, requestBodyTemplate: string) => {

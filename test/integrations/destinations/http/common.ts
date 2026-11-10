@@ -711,7 +711,7 @@ const destinations: Destination[] = [
 const v2Destination: Destination = {
   Config: {
     apiUrl: 'https://example.org/events',
-    auth: 'bearerTokenAuth',
+    authenticationEnabled: true,
     bearerToken: secret2,
     method: 'POST',
     maxBatchSize: '2',

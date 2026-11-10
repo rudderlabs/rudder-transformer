@@ -355,7 +355,6 @@ describe('Destination controller tests', () => {
     });
     const v2 = httpDestination('dest-v2', 2, {
       apiUrl: 'https://example.com/v2',
-      auth: 'noAuth',
       requestBodyTemplate: '$$.events',
     });
     const input = (destination: typeof v1, jobId: number) => ({

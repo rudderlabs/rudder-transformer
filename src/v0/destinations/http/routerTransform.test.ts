@@ -126,6 +126,11 @@ describe('HTTP v2 native router', () => {
       credentials: { apiKeyName: 'X-Key', apiKeyValue: 'secret' },
       expected: { 'X-Key': 'secret' },
     },
+    {
+      auth: 'basic over a leftover API key name',
+      credentials: { username: 'user', password: 'pass', apiKeyName: 'X-Key' },
+      expected: { Authorization: 'Basic dXNlcjpwYXNz' },
+    },
   ])('adds $auth headers', async ({ auth, credentials, expected }) => {
     const result = await processDestinationIntegration(
       [

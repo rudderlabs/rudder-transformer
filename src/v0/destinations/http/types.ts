@@ -48,9 +48,11 @@ const HttpDestinationConfigSchema = z
       if (!config[field]) ctx.addIssue({ code: z.ZodIssueCode.custom, path: [field], message });
     };
     if (!config.authenticationEnabled) return;
+    // Same precedence as makeAuthHeaders: username, then bearerToken, then apiKeyName.
+    if (config.username || config.bearerToken) return;
     if (config.apiKeyName) {
       require('apiKeyValue', 'API key value is required');
-    } else if (!config.username && !config.bearerToken) {
+    } else {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['authenticationEnabled'],

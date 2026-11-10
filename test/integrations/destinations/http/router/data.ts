@@ -1,6 +1,14 @@
 import { authHeader1, authHeader2 } from '../maskedSecrets';
 import { generateMetadata } from '../../../testUtils';
-import { destType, destinations, v2Destination, traits, properties } from '../common';
+import {
+  destType,
+  destinations,
+  v2Destination,
+  v2XmlDestination,
+  v2FormDestination,
+  traits,
+  properties,
+} from '../common';
 
 const routerRequest1 = {
   input: [
@@ -158,6 +166,130 @@ const routerRequest4 = {
 };
 
 export const data = [
+  {
+    id: 'http-router-v2-xml-batch',
+    name: destType,
+    description: 'HTTP v2 serializes an XML batch under the chosen root key',
+    scenario: 'Framework+Business',
+    successCriteria: 'One XML request contains three repeated event elements',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [1, 2, 3].map((id) => ({
+            message: { type: 'track', messageId: `id${id}` },
+            metadata: generateMetadata(id),
+            destination: v2XmlDestination,
+          })),
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://example.org/events',
+                endpointPath: '/http',
+                headers: { Authorization: authHeader2, 'Content-Type': 'application/xml' },
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {},
+                  FORM: {},
+                  XML: {
+                    payload:
+                      '<?xml version="1.0" encoding="UTF-8"?><Envelope><event><id>id1</id></event><event><id>id2</id></event><event><id>id3</id></event></Envelope>',
+                  },
+                },
+                files: {},
+              },
+              metadata: [1, 2, 3].map((id) => generateMetadata(id)),
+              destination: v2XmlDestination,
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'http-router-v2-form-single-events',
+    name: destType,
+    description: 'HTTP v2 clamps FORM to one request per event despite a stale batch size',
+    scenario: 'Framework+Business',
+    successCriteria: 'Each FORM body contains only its own event',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [1, 2, 3].map((id) => ({
+            message: {
+              type: 'track',
+              messageId: `id${id}`,
+              count: id,
+              active: true,
+              nested: { id },
+            },
+            metadata: generateMetadata(id),
+            destination: v2FormDestination,
+          })),
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [1, 2, 3].map((id) => ({
+            batchedRequest: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://example.org/events',
+              endpointPath: '/http',
+              headers: {
+                Authorization: authHeader2,
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              params: {},
+              files: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  type: 'track',
+                  messageId: `id${id}`,
+                  count: String(id),
+                  active: 'true',
+                  nested: JSON.stringify({ id }),
+                },
+              },
+            },
+            metadata: [generateMetadata(id)],
+            destination: v2FormDestination,
+            batched: true,
+            statusCode: 200,
+          })),
+        },
+      },
+    },
+  },
   {
     id: 'http-router-v2-request-template',
     name: destType,

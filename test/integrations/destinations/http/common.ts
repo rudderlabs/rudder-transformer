@@ -733,6 +733,30 @@ const v2Destination: Destination = {
   version: 2,
 };
 
+const v2XmlDestination: Destination = {
+  ...v2Destination,
+  Config: {
+    ...v2Destination.Config,
+    format: 'XML',
+    maxBatchSize: '3',
+    headers: [{ to: 'Content-Type', from: 'text/plain' }],
+    pathParams: [],
+    requestBodyTemplate: '{"Envelope": {"event": [$$.events.{"id": messageId}]}}',
+  },
+};
+
+const v2FormDestination: Destination = {
+  ...v2Destination,
+  Config: {
+    ...v2Destination.Config,
+    format: 'FORM',
+    maxBatchSize: '50',
+    headers: [{ to: 'Content-Type', from: 'text/plain' }],
+    pathParams: [],
+    requestBodyTemplate: '[$$.events][0]',
+  },
+};
+
 const traits = {
   email: 'john.doe@example.com',
   firstName: 'John',
@@ -804,6 +828,8 @@ export {
   destType,
   destinations,
   v2Destination,
+  v2XmlDestination,
+  v2FormDestination,
   processorInstrumentationErrorStatTags,
   processorConfigurationErrorStatTags,
   RouterInstrumentationErrorStatTags,

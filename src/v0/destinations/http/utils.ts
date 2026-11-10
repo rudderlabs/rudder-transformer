@@ -65,10 +65,9 @@ export const resolveAuthHeaders = (
     case 'DESTINATION_HTTP_BASIC_AUTH': {
       const username = requireValue('options.username', account.options?.username);
       // Basic auth allows an omitted or empty password, but not a malformed value.
+      const passwordValue = account.secret?.password;
       const password =
-        account.secret?.password === undefined
-          ? ''
-          : requireString('secret.password', account.secret.password);
+        passwordValue === undefined ? '' : requireString('secret.password', passwordValue);
       return {
         Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
       };

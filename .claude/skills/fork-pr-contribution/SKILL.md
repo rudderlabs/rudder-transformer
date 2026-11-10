@@ -113,8 +113,9 @@ Put this at the top of the body:
 ```
 
 ```bash
+title=$(gh pr view <pr> -R rudderlabs/rudder-transformer --json title --jq .title)
 gh pr create -R rudderlabs/rudder-transformer --base develop --head contrib/<pr> \
-  --title "<contributor PR title>" --body-file /tmp/contrib-<pr>-body.md
+  --title "$title" --body-file /tmp/contrib-<pr>-body.md
 ```
 
 Then comment on the contributor PR with the new PR's link, so they can follow it to

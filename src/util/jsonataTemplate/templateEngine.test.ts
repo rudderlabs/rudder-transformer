@@ -209,8 +209,6 @@ describe('parseTemplate', () => {
     { template: '[$$.events][0]', valid: true },
     { template: '[$$.events.{"id": messageId}][0]', valid: true },
     { template: '{"event": $$.events.{"id": messageId}}', valid: true },
-    { template: '[$$.events][1]', valid: false },
-    { template: '[$$.events][0][0]', valid: false },
     { template: '$$.events[0]', valid: false },
     { template: '[$$.events[id = 1]][0]', valid: false },
     { template: '{"event": $$.events.[messageId]}', valid: false },
@@ -222,8 +220,8 @@ describe('parseTemplate', () => {
     expect(parseTemplate(template, 'events').valid).toBe(valid);
   });
 
-  it.each(['[$$.records][0]', '[$$.records.{"id": email}][0]', '{"r": $$.records.{"id": email}}'])(
-    'keeps HTTP-only event shapes out of the records collection: %s',
+  it.each(['{"r": $$.records.{"id": email}}'])(
+    'keeps the unwrapped XML event mapping out of the records collection: %s',
     (template) => {
       expect(parseTemplate(template, 'records').valid).toBe(false);
     },

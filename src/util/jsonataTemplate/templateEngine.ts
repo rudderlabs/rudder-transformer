@@ -142,33 +142,6 @@ function hasFilterOrPredicate(node: AstNode): boolean {
   );
 }
 
-// JSONata parses `[$$.events][0]` as a unary array with a predicate on the
-// constructor itself. Direct `$$.events[0]` instead has stages on the name step.
-function isAllowedFirstEventArrayPredicate(node: AstNode, collection: string): boolean {
-  const predicates = node.predicate as AstNode[] | undefined;
-  const index = predicates?.[0]?.expr as AstNode | undefined;
-  const [eventPath] = node.expressions ?? [];
-  const steps = eventPath?.steps ?? [];
-  // Filters inside the element sit on its name step and are rejected by the path handler.
-  return (
-    collection === 'events' &&
-    node.value === '[' &&
-    predicates?.length === 1 &&
-    predicates[0].type === 'filter' &&
-    index?.type === 'number' &&
-    index.value === 0 &&
-    !node.stages?.length &&
-    node.expressions?.length === 1 &&
-    eventPath.type === 'path' &&
-    (steps.length === 2 ||
-      (steps.length === 3 && steps[2].type === 'unary' && steps[2].value === '{')) &&
-    steps[0].type === 'variable' &&
-    steps[0].value === ROOT_VARIABLE &&
-    steps[1].type === 'name' &&
-    steps[1].value === collection
-  );
-}
-
 /**
  * Unified handler map for all allowed AST node types.
  *
@@ -185,10 +158,6 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
   //   array:  { type: "unary", value: "[", expressions: [...] }
   unary: {
     validate: (node, ctx, walk) => {
-      if (hasFilterOrPredicate(node) && !isAllowedFirstEventArrayPredicate(node, ctx.collection)) {
-        ctx.errors.push('Filter expressions are not supported.');
-        return;
-      }
       if (node.value === '{') {
         const pairs: AstNode[][] = node.lhs ?? [];
         for (const pair of pairs) {

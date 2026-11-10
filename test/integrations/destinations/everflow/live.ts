@@ -64,6 +64,9 @@ export const live = {
           name: 'deliver conversion',
           expectedOutputs: 1,
           expectedProxyRequests: 1,
+          // A postback landing before Everflow has recorded the just-minted click gets a 204 and
+          // records nothing, so retrying is safe; seen in CI where the round trip is ~200ms.
+          retries: 2,
           seed: (ctx) => trackEvent(ctx, transactionId(ctx), 'conversion'),
         },
       ],

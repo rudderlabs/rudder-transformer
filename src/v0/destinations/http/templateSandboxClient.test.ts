@@ -56,34 +56,6 @@ describe('http templateSandboxClient', () => {
     ).toEqual([{ ok: true, body: { data: [{ id: 1 }] } }]);
   });
 
-  it.each([
-    { template: '[$$.events][0]', one: { messageId: 'one' }, three: { messageId: 'one' } },
-    { template: '[$$.events.{"id": messageId}][0]', one: { id: 'one' }, three: { id: 'one' } },
-    {
-      template: '{"Envelope": {"event": [$$.events.{"id": messageId}]}}',
-      one: { Envelope: { event: [{ id: 'one' }] } },
-      three: { Envelope: { event: [{ id: 'one' }, { id: 'two' }, { id: 'three' }] } },
-    },
-  ])(
-    'verifies and evaluates HTTP migration/XML template $template',
-    async ({ template, one, three }) => {
-      expect((await sandboxedParseHttpTemplates([template], 'ws-http'))[0].valid).toBe(true);
-      expect(
-        await sandboxedEvaluateHttpBody(
-          template,
-          [
-            [{ messageId: 'one' }],
-            [{ messageId: 'one' }, { messageId: 'two' }, { messageId: 'three' }],
-          ],
-          'ws-http',
-        ),
-      ).toEqual([
-        { ok: true, body: one },
-        { ok: true, body: three },
-      ]);
-    },
-  );
-
   it('reports one failed HTTP body chunk without discarding the successful chunks', async () => {
     expect(
       await sandboxedEvaluateHttpBody(

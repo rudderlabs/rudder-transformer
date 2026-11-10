@@ -83,6 +83,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
     const { requestBodyTemplate, maxBatchSize, format = BodyFormat.JSON } = this.destination.Config;
     return new CustomBatchStrategy<HttpBody>(
       async (payloads) => {
+        // Raw config: the control plane sends maxBatchSize as a string.
         // FORM is always single-event, even when a stale config supplies maxBatchSize.
         const chunks = chunkPayloads(payloads, {
           maxItems: format === BodyFormat.FORM ? 1 : Number(maxBatchSize ?? MAX_BATCH_SIZE),
@@ -102,36 +103,32 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
           const result = bodies[i];
           if (!result.ok)
             return error(`Failed to evaluate requestBody template: ${result.error}`, chunk.jobIds);
-          if (format !== BodyFormat.JSON) {
-            if (!isObject(result.body))
-              return error(
-                'Request body template must produce an object for XML/FORM format',
-                chunk.jobIds,
-              );
-            const body = result.body as Record<string, unknown>;
-            if (format === BodyFormat.FORM)
-              return { body: prepareBody(body, format) as HttpBody, jobIds: chunk.jobIds };
-            // v2 has no xmlRootKey: the template's single top-level key is the root element.
-            const [root, ...extra] = Object.keys(body);
-            if (!root || extra.length > 0 || !isObject(body[root]))
-              return error(
-                'Request body template must produce exactly one top-level key holding an object for XML format; that key becomes the root element',
-                chunk.jobIds,
-              );
-            return {
-              body: prepareBody(
-                body[root] as Record<string, unknown>,
-                format,
-                sanitizeKey(root),
-              ) as HttpBody,
-              jobIds: chunk.jobIds,
-            };
+          if (format === BodyFormat.JSON) {
+            const batch = JSON.stringify(result.body);
+            if (batch === undefined || result.body === null) {
+              return error('Request body template did not produce JSON', chunk.jobIds);
+            }
+            return { body: { batch }, jobIds: chunk.jobIds };
           }
-          const batch = JSON.stringify(result.body);
-          if (batch === undefined || result.body === null) {
-            return error('Request body template did not produce JSON', chunk.jobIds);
-          }
-          return { body: { batch }, jobIds: chunk.jobIds };
+          if (!isObject(result.body))
+            return error(
+              'Request body template must produce an object for XML/FORM format',
+              chunk.jobIds,
+            );
+          const body = result.body as Record<string, unknown>;
+          if (format === BodyFormat.FORM)
+            return { body: prepareBody(body, format), jobIds: chunk.jobIds };
+          // v2 has no xmlRootKey: the template's single top-level key is the root element.
+          const [root, ...extra] = Object.keys(body);
+          if (!root || extra.length > 0 || !isObject(body[root]))
+            return error(
+              'Request body template must produce exactly one top-level key holding an object for XML format; that key becomes the root element',
+              chunk.jobIds,
+            );
+          return {
+            body: prepareBody(body[root] as Record<string, unknown>, format, sanitizeKey(root)),
+            jobIds: chunk.jobIds,
+          };
         });
       },
       format === BodyFormat.JSON ? BodyFormat.JSON_ARRAY : BodyFormat[format],

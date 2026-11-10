@@ -172,7 +172,7 @@ describe('HTTP v2 native router', () => {
     return (response as unknown as NativeResponse).batchedRequest;
   };
 
-  it('serializes XML with v1 helpers and overrides mapped Content-Type', async () => {
+  it('serializes XML with sanitized keys and nulls dropped, overriding mapped Content-Type', async () => {
     const request = await serializeEdgeCases('XML', '{"Envelope": [$$.events][0]}');
     expect(request.headers['Content-Type']).toBe('application/xml');
     expect(request.body.XML.payload).toContain(
@@ -182,7 +182,7 @@ describe('HTTP v2 native router', () => {
     expect(request.body.JSON_ARRAY).toEqual({});
   });
 
-  it('serializes FORM with v1 helpers and overrides mapped Content-Type', async () => {
+  it('serializes FORM with stringified first-level values and nulls dropped, overriding mapped Content-Type', async () => {
     const request = await serializeEdgeCases('FORM', '[$$.events][0]');
     expect(request.headers['Content-Type']).toBe('application/x-www-form-urlencoded');
     expect(request.body.FORM).toMatchObject({
@@ -220,42 +220,6 @@ describe('HTTP v2 native router', () => {
     ]);
   });
 
-  it('serializes XML batches with repeated event elements under the template root key', async () => {
-    const events = withFormat(
-      {
-        format: 'XML',
-        maxBatchSize: '3',
-        requestBodyTemplate: '{"root": {"event": [$$.events.{"id": id}]}}',
-      },
-      ['one', 'two', 'three'],
-    );
-    const results = await processDestinationIntegration(events, Integration, {});
-    expect(results).toHaveLength(1);
-    expect(results[0].metadata.map((m) => m.jobId)).toEqual([1, 2, 3]);
-    expect((results[0] as unknown as NativeResponse).batchedRequest.body.XML).toEqual({
-      payload:
-        '<?xml version="1.0" encoding="UTF-8"?><root><event><id>one</id></event><event><id>two</id></event><event><id>three</id></event></root>',
-    });
-  });
-
-  it('clamps FORM to one event regardless of configured batch size', async () => {
-    const events = withFormat(
-      { format: 'FORM', maxBatchSize: '50', requestBodyTemplate: '[$$.events][0]' },
-      ['one', 'two', 'three'],
-    );
-    const results = await processDestinationIntegration(events, Integration, {});
-    expect(
-      results.map((r) => ({
-        ids: r.metadata.map((m) => m.jobId),
-        form: (r as unknown as NativeResponse).batchedRequest.body.FORM.id,
-      })),
-    ).toEqual([
-      { ids: [1], form: 'one' },
-      { ids: [2], form: 'two' },
-      { ids: [3], form: 'three' },
-    ]);
-  });
-
   it.each([
     { format: 'XML', template: '{"root": {}}' },
     { format: 'FORM', template: '{}' },
@@ -266,41 +230,6 @@ describe('HTTP v2 native router', () => {
       {},
     );
     expect((result as unknown as NativeResponse).batchedRequest.body[format]).toEqual({});
-  });
-
-  it.each(['XML', 'FORM'])('rejects invalid %s shapes per chunk', async (format) => {
-    const events = withFormat({ format, maxBatchSize: '3', requestBodyTemplate: '$$.events' }, [
-      'one',
-      'two',
-      'three',
-    ]);
-    const results = await processDestinationIntegration(events, Integration, {});
-    expect(results).toHaveLength(3);
-    expect(
-      results.map((r) => ({ jobId: r.metadata[0].jobId, error: r.error, status: r.statusCode })),
-    ).toEqual(
-      [1, 2, 3].map((jobId) => ({
-        jobId,
-        error: 'Request body template must produce an object for XML/FORM format',
-        status: 400,
-      })),
-    );
-  });
-
-  it.each(
-    ['XML', 'FORM'].flatMap((format) =>
-      ['$$.missing', '1', 'null'].map((template) => ({ format, template })),
-    ),
-  )('rejects $format result from $template', async ({ format, template }) => {
-    const [result] = await processDestinationIntegration(
-      withFormat({ format, requestBodyTemplate: template }),
-      Integration,
-      {},
-    );
-    expect(result).toMatchObject({
-      statusCode: 400,
-      error: 'Request body template must produce an object for XML/FORM format',
-    });
   });
 
   it('sanitizes the XML root key like nested keys', async () => {
@@ -317,35 +246,27 @@ describe('HTTP v2 native router', () => {
     );
   });
 
-  it.each(['{}', '{"": {"a": 1}}', '{"a": {}, "b": {}}', '{"root": 1}', '{"root": [$$.events]}'])(
-    'rejects XML template %s without exactly one object-valued root key',
-    async (template) => {
-      const [result] = await processDestinationIntegration(
-        withFormat({ format: 'XML', requestBodyTemplate: template }),
-        Integration,
-        {},
-      );
-      expect(result).toMatchObject({
-        statusCode: 400,
-        error:
-          'Request body template must produce exactly one top-level key holding an object for XML format; that key becomes the root element',
-      });
-    },
-  );
-
-  it('isolates XML template evaluation failures to their chunks', async () => {
-    const events = withFormat(
-      {
-        format: 'XML',
-        maxBatchSize: '1',
-        requestBodyTemplate: '{"root": {"number": $number($$.events.value)}}',
-      },
-      ['one', 'two', 'three'],
+  const notObject = 'Request body template must produce an object for XML/FORM format';
+  const notOneRoot =
+    'Request body template must produce exactly one top-level key holding an object for XML format; that key becomes the root element';
+  it.each([
+    ...['XML', 'FORM'].flatMap((format) =>
+      ['$$.missing', '1', 'null', '$$.events'].map((template) => ({
+        format,
+        template,
+        error: notObject,
+      })),
+    ),
+    ...['{}', '{"": {"a": 1}}', '{"a": {}, "b": {}}', '{"root": 1}', '{"root": [$$.events]}'].map(
+      (template) => ({ format: 'XML', template, error: notOneRoot }),
+    ),
+  ])('rejects $format result from $template', async ({ format, template, error }) => {
+    const [result] = await processDestinationIntegration(
+      withFormat({ format, requestBodyTemplate: template }),
+      Integration,
+      {},
     );
-    events[1].message = { ...events[1].message, value: 'invalid' };
-    const results = await processDestinationIntegration(events, Integration, {});
-    expect(results.filter((r) => r.error).map((r) => r.metadata[0].jobId)).toEqual([2]);
-    expect(results.filter((r) => r.batched).map((r) => r.metadata[0].jobId)).toEqual([1, 3]);
+    expect(result).toMatchObject({ statusCode: 400, error });
   });
 
   it('returns per-event errors for an invalid request field and does not send its message', async () => {

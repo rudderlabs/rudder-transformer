@@ -44,7 +44,15 @@ gh pr checks <pr> -R rudderlabs/rudder-transformer
 
 ## 2. Review the diff, including CI and test code
 
-Once the code is in our repo, it runs **with our secrets**. Read the whole diff before step 3:
+Once the code is in our repo, it runs **with our secrets**. Read the whole diff before step 3.
+
+First record the commit you're reviewing. Step 3 merges only this commit:
+
+```bash
+gh pr view <pr> -R rudderlabs/rudder-transformer --json headRefOid --jq .headRefOid
+```
+
+Then read the diff:
 
 ```bash
 gh pr diff <pr> -R rudderlabs/rudder-transformer --name-only
@@ -74,9 +82,11 @@ before step 3.
 git fetch origin develop
 git push origin origin/develop:refs/heads/contrib/<pr>
 gh pr edit <pr> -R rudderlabs/rudder-transformer --base contrib/<pr>
-gh pr merge <pr> -R rudderlabs/rudder-transformer --squash
+gh pr merge <pr> -R rudderlabs/rudder-transformer --squash --match-head-commit <reviewed-sha>
 ```
 
+- `--match-head-commit` makes GitHub refuse the merge if the contributor pushed after your
+  review, so unreviewed code never reaches our repo. If it's refused, go back to step 1.
 - The contributor's PR now shows as **Merged**. The squash commit's author is the PR
   author, so the contributor keeps the credit, and `develop` gets one commit titled with
   the PR title.
@@ -118,16 +128,30 @@ gh pr checks <new-pr> -R rudderlabs/rudder-transformer --watch
 
 - Every check must pass, including the ones that were skipped on the fork PR. zizmor `scan`
   passes here too.
-- If a check that needs secrets fails, report it on the **contributor PR**: the fix comes
-  from the contributor, as a new fork PR to `contrib/<pr>` (repeat steps 1–3). For a trivial
-  fix, a maintainer may push it to `contrib/<pr>` directly, and must say so on the PR.
-- If `develop` moved on, update the branch with a merge (`gh pr update-branch <new-pr>`),
-  not a rebase.
+- If a check that needs secrets fails, report it on the **contributor PR**. The fix comes
+  from the contributor (see [Follow-up fixes](#follow-up-fixes)). For a trivial fix, a
+  maintainer may push it to `contrib/<pr>` directly, and must say so on the PR.
+- If `develop` moved on, update the branch with a merge
+  (`gh pr update-branch <new-pr> -R rudderlabs/rudder-transformer`), not a rebase.
 - Needs one approval. Then merge with a **merge commit**:
 
 ```bash
 gh pr merge <new-pr> -R rudderlabs/rudder-transformer --merge --delete-branch
 ```
+
+## Follow-up fixes
+
+When the contributor needs to change something after step 3, the fix goes into the
+**existing** `contrib/<pr>` branch, so the existing PR to `develop` picks it up. Don't create
+a new `contrib/` branch for the fix PR.
+
+1. Ask the contributor to open a fork PR with base `contrib/<pr>`, using the original PR
+   number. If they opened it against `develop`, retarget it:
+   `gh pr edit <fix-pr> -R rudderlabs/rudder-transformer --base contrib/<pr>`.
+2. Run steps 1 and 2 on `<fix-pr>`, recording its reviewed commit.
+3. Squash-merge it with the pinned commit. Skip creating the branch:
+   `gh pr merge <fix-pr> -R rudderlabs/rudder-transformer --squash --match-head-commit <reviewed-sha>`.
+4. Go back to step 5 on the existing PR to `develop`. CI re-runs on the new commit.
 
 ## Rules
 
@@ -139,5 +163,6 @@ gh pr merge <new-pr> -R rudderlabs/rudder-transformer --merge --delete-branch
 - **Always use `contrib/<pr>`** for the branch name, so anyone can see where the branch came from.
 - **Don't edit the contributor's code** in `contrib/<pr>` without saying so on the PR.
   Requested changes go back to the contributor.
-- **New contributor commits after step 3** arrive as a new fork PR to `contrib/<pr>`
-  (repeat steps 1–3) before the PR to `develop` is merged.
+- **Merge only the commit you reviewed.** Always pass `--match-head-commit` when merging a fork PR.
+- **New contributor commits after step 3** arrive as a fork PR to the existing
+  `contrib/<pr>` (see [Follow-up fixes](#follow-up-fixes)) before the PR to `develop` is merged.

@@ -18,7 +18,7 @@ import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
 import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
 import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
 // shortcut: move these shared serializers into src/v0/destinations/http/ when v1 retires.
-import { metadataHeaders, prepareBody } from '../../../cdk/v2/destinations/http/utils';
+import { metadataHeaders, prepareBody, sanitizeKey } from '../../../cdk/v2/destinations/http/utils';
 
 const NO_FIELDS: RequestFieldResult = {
   ok: true,
@@ -80,12 +80,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
   }
 
   getBatchStrategy(): BatchStrategy<HttpBody> {
-    const {
-      requestBodyTemplate,
-      maxBatchSize,
-      xmlRootKey,
-      format = BodyFormat.JSON,
-    } = this.destination.Config;
+    const { requestBodyTemplate, maxBatchSize, format = BodyFormat.JSON } = this.destination.Config;
     return new CustomBatchStrategy<HttpBody>(
       async (payloads) => {
         // FORM is always single-event, even when a stale config supplies maxBatchSize.
@@ -113,11 +108,21 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
                 'Request body template must produce an object for XML/FORM format',
                 chunk.jobIds,
               );
+            const body = result.body as Record<string, unknown>;
+            if (format === BodyFormat.FORM)
+              return { body: prepareBody(body, format) as HttpBody, jobIds: chunk.jobIds };
+            // v2 has no xmlRootKey: the template's single top-level key is the root element.
+            const [root, ...extra] = Object.keys(body);
+            if (!root || extra.length > 0 || !isObject(body[root]))
+              return error(
+                'Request body template must produce exactly one top-level key holding an object for XML format; that key becomes the root element',
+                chunk.jobIds,
+              );
             return {
               body: prepareBody(
-                result.body as Record<string, unknown>,
+                body[root] as Record<string, unknown>,
                 format,
-                xmlRootKey || 'root',
+                sanitizeKey(root),
               ) as HttpBody,
               jobIds: chunk.jobIds,
             };

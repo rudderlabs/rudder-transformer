@@ -95,8 +95,6 @@ interface ValidationContext {
   insideObjectOrArray: boolean;
   /** True when this node is a direct child of a [...] array constructor. */
   wrappedInArray: boolean;
-  /** True only for a direct object-literal value (HTTP XML's unwrapped event mapping). */
-  objectPropertyValue: boolean;
   errors: string[];
   collection: string;
 }
@@ -161,28 +159,13 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
       if (node.value === '{') {
         const pairs: AstNode[][] = node.lhs ?? [];
         for (const pair of pairs) {
-          walk(pair[0], {
-            ...ctx,
-            insideObjectOrArray: true,
-            wrappedInArray: false,
-            objectPropertyValue: false,
-          });
-          walk(pair[1], {
-            ...ctx,
-            insideObjectOrArray: true,
-            wrappedInArray: false,
-            objectPropertyValue: true,
-          });
+          walk(pair[0], { ...ctx, insideObjectOrArray: true, wrappedInArray: false });
+          walk(pair[1], { ...ctx, insideObjectOrArray: true, wrappedInArray: false });
         }
       } else if (node.value === '[') {
         const elements: AstNode[] = node.expressions ?? [];
         for (const elem of elements) {
-          walk(elem, {
-            ...ctx,
-            insideObjectOrArray: true,
-            wrappedInArray: true,
-            objectPropertyValue: false,
-          });
+          walk(elem, { ...ctx, insideObjectOrArray: true, wrappedInArray: true });
         }
       } else {
         ctx.errors.push(`Expression type "unary(${node.value})" is not supported.`);
@@ -271,18 +254,12 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         return;
       }
 
-      // $$.<collection> mappings must be wrapped in [...] to guarantee array output,
-      // except HTTP event mappings used directly as object property values for XML.
+      // $$.<collection> mappings must be wrapped in [...] to guarantee array output.
       // JSONata unwraps single-element mapping results into bare values, so
       // `$$.<collection>.{...}` with one record returns an object instead of a
       // one-element array. Wrapping in [...] prevents this:
       //   [$$.<collection>.{ "email": email }]   → always an array
-      if (
-        isCollectionPath &&
-        mappingStepIdx >= 0 &&
-        !ctx.wrappedInArray &&
-        !(ctx.collection === 'events' && ctx.objectPropertyValue && steps[2].value === '{')
-      ) {
+      if (isCollectionPath && mappingStepIdx >= 0 && !ctx.wrappedInArray) {
         ctx.errors.push(
           `$$.${ctx.collection} iteration must be wrapped in [...] to guarantee array output ` +
             `(e.g. [$$.${ctx.collection}.{...}]). Without this, single-record batches produce a bare object.`,
@@ -299,7 +276,6 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
             insideMappingStep: true,
             insideObjectOrArray: true,
             wrappedInArray: false,
-            objectPropertyValue: false,
           });
         } else if (step.type !== 'name' && step.type !== 'variable') {
           // Unknown step type (function, wildcard, descendant, sort, etc.)
@@ -387,7 +363,7 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         ctx.errors.push('Function calls are not supported. Only $number() casting is allowed.');
         return;
       }
-      walk(node.arguments![0], { ...ctx, wrappedInArray: false, objectPropertyValue: false });
+      walk(node.arguments![0], { ...ctx, wrappedInArray: false });
     },
     collectFields: (node, insideCollectionIteration, fields, walk, collection) => {
       // After validation, only $number(expr) with a single arg reaches here
@@ -465,7 +441,6 @@ function parseAndValidate(
     insideMappingStep: false,
     insideObjectOrArray: false,
     wrappedInArray: false,
-    objectPropertyValue: false,
     errors: [],
     collection,
   };

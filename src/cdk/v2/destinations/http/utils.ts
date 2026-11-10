@@ -306,4 +306,5 @@ export {
   prepareBody,
   batchSuccessfulEvents,
   stringifyFirstLevelValues,
+  sanitizeKey,
 };

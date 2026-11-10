@@ -206,26 +206,11 @@ describe('parseTemplate', () => {
     { template: '[ $$.events.{ "items": products.{ "sku": sku } } ]', valid: true },
     { template: '[ $$.events.{ "items": products.$map(sku) } ]', valid: false },
     { template: '$$.events.{ "email": email }', valid: false },
-    { template: '[$$.events][0]', valid: true },
-    { template: '[$$.events.{"id": messageId}][0]', valid: true },
-    { template: '{"event": $$.events.{"id": messageId}}', valid: true },
-    { template: '$$.events[0]', valid: false },
-    { template: '[$$.events[id = 1]][0]', valid: false },
-    { template: '{"event": $$.events.[messageId]}', valid: false },
-    { template: '{"event": $$.records.{"id": email}}', valid: true },
-    { template: '{"n": $number($$.events.{"id": id})}', valid: false },
     { template: '[ $$.events.foo.{ "email": email } ]', valid: false },
     { template: '{ "email": email }', valid: false },
   ])('validates the events collection: $template', ({ template, valid }) => {
     expect(parseTemplate(template, 'events').valid).toBe(valid);
   });
-
-  it.each(['{"r": $$.records.{"id": email}}'])(
-    'keeps the unwrapped XML event mapping out of the records collection: %s',
-    (template) => {
-      expect(parseTemplate(template, 'records').valid).toBe(false);
-    },
-  );
 
   it.each(invalidTemplates)('should reject: $name', ({ template, expectedError }) => {
     const result = parseTemplate(template, 'records');

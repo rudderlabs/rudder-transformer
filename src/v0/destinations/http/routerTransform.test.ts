@@ -156,12 +156,8 @@ describe('HTTP v2 native router', () => {
     expect((result[0] as unknown as NativeResponse).batchedRequest.headers).toMatchObject(expected);
   });
 
-  const serializeEdgeCases = async (format: string) => {
-    const events = withFormat({
-      format,
-      xmlRootKey: 'Envelope',
-      requestBodyTemplate: '[$$.events][0]',
-    });
+  const serializeEdgeCases = async (format: string, requestBodyTemplate: string) => {
+    const events = withFormat({ format, requestBodyTemplate });
     events[0].message = {
       ...events[0].message,
       'first name': 'Ada',
@@ -177,7 +173,7 @@ describe('HTTP v2 native router', () => {
   };
 
   it('serializes XML with v1 helpers and overrides mapped Content-Type', async () => {
-    const request = await serializeEdgeCases('XML');
+    const request = await serializeEdgeCases('XML', '{"Envelope": [$$.events][0]}');
     expect(request.headers['Content-Type']).toBe('application/xml');
     expect(request.body.XML.payload).toContain(
       '<Envelope><type>track</type><id>one</id><value>1</value><first_name>Ada</first_name><_abc>1</_abc><empty/>',
@@ -187,7 +183,7 @@ describe('HTTP v2 native router', () => {
   });
 
   it('serializes FORM with v1 helpers and overrides mapped Content-Type', async () => {
-    const request = await serializeEdgeCases('FORM');
+    const request = await serializeEdgeCases('FORM', '[$$.events][0]');
     expect(request.headers['Content-Type']).toBe('application/x-www-form-urlencoded');
     expect(request.body.FORM).toMatchObject({
       'first name': 'Ada',
@@ -224,9 +220,13 @@ describe('HTTP v2 native router', () => {
     ]);
   });
 
-  it('serializes XML batches with repeated event elements and a default root', async () => {
+  it('serializes XML batches with repeated event elements under the template root key', async () => {
     const events = withFormat(
-      { format: 'XML', maxBatchSize: '3', requestBodyTemplate: '{"event": $$.events.{"id": id}}' },
+      {
+        format: 'XML',
+        maxBatchSize: '3',
+        requestBodyTemplate: '{"root": {"event": [$$.events.{"id": id}]}}',
+      },
       ['one', 'two', 'three'],
     );
     const results = await processDestinationIntegration(events, Integration, {});
@@ -256,9 +256,12 @@ describe('HTTP v2 native router', () => {
     ]);
   });
 
-  it.each(['XML', 'FORM'])('sends an empty %s body without inventing a payload', async (format) => {
+  it.each([
+    { format: 'XML', template: '{"root": {}}' },
+    { format: 'FORM', template: '{}' },
+  ])('sends an empty $format body without inventing a payload', async ({ format, template }) => {
     const [result] = await processDestinationIntegration(
-      withFormat({ format, requestBodyTemplate: '{}' }),
+      withFormat({ format, requestBodyTemplate: template }),
       Integration,
       {},
     );
@@ -300,12 +303,42 @@ describe('HTTP v2 native router', () => {
     });
   });
 
+  it('sanitizes the XML root key like nested keys', async () => {
+    const [result] = await processDestinationIntegration(
+      withFormat({
+        format: 'XML',
+        requestBodyTemplate: '{"1 my root": [$$.events.{"id": id}][0]}',
+      }),
+      Integration,
+      {},
+    );
+    expect((result as unknown as NativeResponse).batchedRequest.body.XML.payload).toBe(
+      '<?xml version="1.0" encoding="UTF-8"?><__my_root><id>one</id></__my_root>',
+    );
+  });
+
+  it.each(['{}', '{"": {"a": 1}}', '{"a": {}, "b": {}}', '{"root": 1}', '{"root": [$$.events]}'])(
+    'rejects XML template %s without exactly one object-valued root key',
+    async (template) => {
+      const [result] = await processDestinationIntegration(
+        withFormat({ format: 'XML', requestBodyTemplate: template }),
+        Integration,
+        {},
+      );
+      expect(result).toMatchObject({
+        statusCode: 400,
+        error:
+          'Request body template must produce exactly one top-level key holding an object for XML format; that key becomes the root element',
+      });
+    },
+  );
+
   it('isolates XML template evaluation failures to their chunks', async () => {
     const events = withFormat(
       {
         format: 'XML',
         maxBatchSize: '1',
-        requestBodyTemplate: '{"number": $number($$.events.value)}',
+        requestBodyTemplate: '{"root": {"number": $number($$.events.value)}}',
       },
       ['one', 'two', 'three'],
     );

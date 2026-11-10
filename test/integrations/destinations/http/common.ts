@@ -738,11 +738,10 @@ const v2XmlDestination: Destination = {
   Config: {
     ...v2Destination.Config,
     format: 'XML',
-    xmlRootKey: 'Envelope',
     maxBatchSize: '3',
     headers: [{ to: 'Content-Type', from: 'text/plain' }],
     pathParams: [],
-    requestBodyTemplate: '{"event": $$.events.{"id": messageId}}',
+    requestBodyTemplate: '{"Envelope": {"event": [$$.events.{"id": messageId}]}}',
   },
 };
 

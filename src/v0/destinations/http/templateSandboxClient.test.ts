@@ -60,9 +60,9 @@ describe('http templateSandboxClient', () => {
     { template: '[$$.events][0]', one: { messageId: 'one' }, three: { messageId: 'one' } },
     { template: '[$$.events.{"id": messageId}][0]', one: { id: 'one' }, three: { id: 'one' } },
     {
-      template: '{"event": $$.events.{"id": messageId}}',
-      one: { event: { id: 'one' } },
-      three: { event: [{ id: 'one' }, { id: 'two' }, { id: 'three' }] },
+      template: '{"Envelope": {"event": [$$.events.{"id": messageId}]}}',
+      one: { Envelope: { event: [{ id: 'one' }] } },
+      three: { Envelope: { event: [{ id: 'one' }, { id: 'two' }, { id: 'three' }] } },
     },
   ])(
     'verifies and evaluates HTTP migration/XML template $template',

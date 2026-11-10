@@ -1,6 +1,13 @@
-import { authHeader1, authHeader2 } from '../maskedSecrets';
+import { authHeader1, authHeader2, v2ApiKeyValue } from '../maskedSecrets';
 import { generateMetadata } from '../../../testUtils';
-import { destType, destinations, v2Destination, traits, properties } from '../common';
+import {
+  destType,
+  destinations,
+  v2Destination,
+  v2ApiKeyDestination,
+  traits,
+  properties,
+} from '../common';
 
 const routerRequest1 = {
   input: [
@@ -158,6 +165,66 @@ const routerRequest4 = {
 };
 
 export const data = [
+  {
+    id: 'http-router-v2-api-key',
+    name: destType,
+    description: 'HTTP v2 delivers an API key from its linked account',
+    scenario: 'Business',
+    successCriteria: 'The account-selected header carries the API key',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: { type: 'track', userId: 'user-1', group: 'one' },
+              metadata: generateMetadata(1),
+              destination: v2ApiKeyDestination,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://example.org/events/one',
+                endpointPath: '/http',
+                headers: {
+                  'X-HTTP-Key': v2ApiKeyValue,
+                  'X-Group': 'one',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: { batch: JSON.stringify({ events: [{ userId: 'user-1' }] }) },
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1)],
+              destination: v2ApiKeyDestination,
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
   {
     id: 'http-router-v2-request-template',
     name: destType,

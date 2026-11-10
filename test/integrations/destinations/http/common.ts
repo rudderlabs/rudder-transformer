@@ -1,4 +1,4 @@
-import { secret1, secret2 } from './maskedSecrets';
+import { secret1, secret2, v2ApiKeyValue } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destType = 'http';
@@ -739,6 +739,17 @@ const v2Destination: Destination = {
   },
 };
 
+const v2ApiKeyDestination: Destination = {
+  ...v2Destination,
+  Config: { ...v2Destination.Config, rudderAccountId: 'http-api-key-account' },
+  deliveryAccount: {
+    id: 'http-api-key-account',
+    accountDefinitionName: 'DESTINATION_HTTP_API_KEY',
+    options: { apiKeyName: 'X-HTTP-Key' },
+    secret: { apiKeyValue: v2ApiKeyValue },
+  },
+};
+
 const traits = {
   email: 'john.doe@example.com',
   firstName: 'John',
@@ -810,6 +821,7 @@ export {
   destType,
   destinations,
   v2Destination,
+  v2ApiKeyDestination,
   processorInstrumentationErrorStatTags,
   processorConfigurationErrorStatTags,
   RouterInstrumentationErrorStatTags,

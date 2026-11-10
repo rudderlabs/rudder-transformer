@@ -108,6 +108,16 @@ export const accountManagedHeaders = {
   Authorization: `Bearer ${accountBearerToken}`,
 };
 
+export const oauthLinkedDestination: ComponentCustomAudienceDestination = {
+  ...destination,
+  deliveryAccount: {
+    id: 'account-1',
+    accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+    options: {},
+    secret: {},
+  },
+};
+
 export const accountManagedApiKeyDestination: ComponentCustomAudienceDestination = {
   ...destination,
   Config: {

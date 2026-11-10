@@ -18,7 +18,7 @@ import {
   resolveEndpoint,
   validateRequiredFields,
 } from './utils';
-import type { Action } from './types';
+import type { Action, CustomAudienceAuthMetadata } from './types';
 import { CustomAudienceDestConfigSchema, CustomAudienceConnectionDestConfigSchema } from './types';
 
 const customAudienceInputSchema = makeRouterInputSchema({
@@ -33,6 +33,10 @@ const customAudienceInputSchema = makeRouterInputSchema({
   connectionConfig: z.object({ destination: CustomAudienceConnectionDestConfigSchema }),
 });
 
+type CustomAudienceRouterInput = z.infer<typeof customAudienceInputSchema> & {
+  metadata?: CustomAudienceAuthMetadata;
+};
+
 class CustomAudienceIntegration extends DestinationIntegration<
   Record<string, unknown>,
   typeof customAudienceInputSchema
@@ -40,8 +44,6 @@ class CustomAudienceIntegration extends DestinationIntegration<
   // Endpoint depends only on action.endpoint + connection (constant per request),
   // so resolve once per configured action — not once per event.
   private endpointByAction?: Partial<Record<Action, string>>;
-
-  private headers?: Record<string, string>;
 
   constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
     super(...args);
@@ -67,12 +69,10 @@ class CustomAudienceIntegration extends DestinationIntegration<
     ) as Partial<Record<Action, string>>;
   }
 
-  transformEvent(
-    input: z.infer<typeof customAudienceInputSchema>,
-  ): TransformedEvent<Record<string, unknown>> {
-    const { message } = input;
+  transformEvent(input: CustomAudienceRouterInput): TransformedEvent<Record<string, unknown>> {
+    const { message, metadata } = input;
     const { action, identifiers } = message;
-    this.headers ??= buildRequestHeaders(this.destination);
+    const headers = buildRequestHeaders(this.destination, metadata);
     const { action: resolvedAction, config: actionConfig } = lookupActionConfig(
       action,
       this.destination.Config.actions,
@@ -101,7 +101,7 @@ class CustomAudienceIntegration extends DestinationIntegration<
       // each destination instance has a unique endpoint, but actions are a fixed set.
       endpointPath: `/${resolvedAction}`,
       method: actionConfig.method,
-      headers: this.headers,
+      headers,
       // Force the framework's composite-key grouping to keep different actions
       // in separate groups, even when their (endpoint, method, headers) match.
       // Each action carries its own requestBody template.

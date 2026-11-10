@@ -1,16 +1,24 @@
 import { mapInBatches } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
+import { REFRESH_TOKEN } from '../adapters/networkhandler/authConstants';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import { DestinationPreTransformationService } from '../services/destination/preTransformation';
 import { MiscService } from '../services/misc';
-import { ProcessorTransformationRequest, RouterTransformationRequest } from '../types';
+import type { Metadata, RudderMessage } from '../types/rudderEvents';
+import {
+  ProcessorTransformationRequest,
+  RouterTransformationRequest,
+  RouterTransformationResponse,
+} from '../types';
 import { DynamicConfigParser } from '../util/dynamicConfigParser';
 import stats from '../util/stats';
 import { getIntegrationVersion, getDestinationVersion } from '../util/utils';
 import { checkInvalidRtTfEvents } from '../v0/util';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
+
+const MACHINE_OAUTH_AUTH_TYPE = 'machine_oauth';
 
 export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
@@ -72,7 +80,10 @@ export class DestinationController {
 
   public static async destinationTransformAtRouter(ctx: Context) {
     const requestMetadata = MiscService.getRequestMetadata(ctx);
-    const routerRequest = ctx.request.body as RouterTransformationRequest;
+    const routerRequest = ctx.request.body as RouterTransformationRequest<
+      RudderMessage,
+      Metadata & { secret?: { accessToken?: string } }
+    >;
     const destination = routerRequest.destType;
     const events = routerRequest.input;
 
@@ -97,7 +108,31 @@ export class DestinationController {
       ...metaTags,
     });
 
-    const groups = ServiceSelector.groupByDestinationService(events);
+    const refreshResponses: RouterTransformationResponse[] = [];
+    const dispatchEvents: typeof events = [];
+    for (const event of events) {
+      const account = event.destination?.deliveryAccount;
+      const accessToken = event.metadata?.secret?.accessToken;
+      if (
+        event.destination?.Config?.authenticationEnabled !== false &&
+        account?.accountDefinition?.authenticationType === MACHINE_OAUTH_AUTH_TYPE &&
+        (typeof accessToken !== 'string' || accessToken.length === 0)
+      ) {
+        refreshResponses.push({
+          metadata: [event.metadata],
+          destination: event.destination,
+          batched: false,
+          statusCode: 500,
+          error:
+            'OAuth token unavailable; if this persists, upgrade rudder-server for machine_oauth support',
+          authErrorCategory: REFRESH_TOKEN,
+        });
+      } else {
+        dispatchEvents.push(event);
+      }
+    }
+
+    const groups = ServiceSelector.groupByDestinationService(dispatchEvents);
     const resplist = (
       await mapInBatches(groups, async ([integrationService, groupEvents]) => {
         let preparedEvents = groupEvents;
@@ -132,9 +167,9 @@ export class DestinationController {
       })
     ).flat();
 
-    ctx.body = { output: resplist };
+    ctx.body = { output: [...refreshResponses, ...resplist] };
     ControllerUtility.postProcess(ctx);
-    stats.histogram('dest_transform_output_events', resplist.length, {
+    stats.histogram('dest_transform_output_events', refreshResponses.length + resplist.length, {
       destination,
       version: 'v0',
       destVersion: getDestinationVersion(events[0]?.destination?.version),

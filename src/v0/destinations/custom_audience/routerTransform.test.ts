@@ -8,6 +8,7 @@ import { ACCOUNT_DEFINITION_NAMES } from './constants';
 import type {
   Action,
   ActionConfig,
+  CustomAudienceAuthMetadata,
   CustomAudienceConnection,
   CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
@@ -92,7 +93,10 @@ const buildConnectionWithoutAudienceId = (): CustomAudienceConnection => ({
   config: { destination: { isHashRequired: false } },
 });
 
-const buildMetadata = (jobId: number): Metadata =>
+const buildMetadata = (
+  jobId: number,
+  overrides: Partial<CustomAudienceAuthMetadata> = {},
+): Metadata =>
   ({
     jobId,
     workspaceId: 'ws-1',
@@ -102,6 +106,7 @@ const buildMetadata = (jobId: number): Metadata =>
     sourceCategory: 'warehouse',
     destinationType: 'CUSTOM_AUDIENCE',
     messageId: `msg-${jobId}`,
+    ...overrides,
   }) as Metadata;
 
 const buildInput = (
@@ -110,6 +115,7 @@ const buildInput = (
   identifiers: Record<string, unknown>,
   destination: CustomAudienceDestination = buildDestination(),
   connection: CustomAudienceConnection = buildConnection(),
+  metadataOverrides: Partial<CustomAudienceAuthMetadata> = {},
 ): RouterTransformationRequestData =>
   ({
     message: {
@@ -120,7 +126,7 @@ const buildInput = (
       context: {},
       recordId: String(jobId),
     },
-    metadata: buildMetadata(jobId),
+    metadata: buildMetadata(jobId, metadataOverrides),
     destination,
     connection,
   }) as unknown as RouterTransformationRequestData;
@@ -466,6 +472,39 @@ describe('CustomAudienceIntegration via processDestinationIntegration', () => {
       expect(results[0].error).toMatch(errorMatch);
     },
   );
+
+  it('groups OAuth events by their per-event access token', async () => {
+    const destination = buildDestination(
+      { authenticationEnabled: true, rudderAccountId: 'account-1' },
+      {
+        accountDefinitionName: ACCOUNT_DEFINITION_NAMES.CLIENT_CREDENTIALS,
+        options: {},
+        secret: {},
+      },
+    );
+    const inputs = [
+      buildInput(1, 'insert', { email: hashedEmail('a@b.com') }, destination, buildConnection(), {
+        secret: { accessToken: 'oauth-token-a' },
+      }),
+      buildInput(2, 'insert', { email: hashedEmail('c@d.com') }, destination, buildConnection(), {
+        secret: { accessToken: 'oauth-token-b' },
+      }),
+    ];
+
+    const results = await processDestinationIntegration(inputs, Integration, {});
+    const successes = results.filter((result) => result.statusCode === 200);
+
+    expect(successes).toHaveLength(2);
+    expect(
+      successes
+        .map((result) => {
+          const request = result.batchedRequest;
+          if (!request || Array.isArray(request)) throw new Error('expected single batchedRequest');
+          return request.headers?.Authorization;
+        })
+        .sort(),
+    ).toEqual(['Bearer oauth-token-a', 'Bearer oauth-token-b']);
+  });
 
   it('throws when requestBody template fails at runtime', async () => {
     const destination = buildDestination({

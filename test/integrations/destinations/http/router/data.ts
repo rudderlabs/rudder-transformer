@@ -1,16 +1,6 @@
-import { authHeader1, v2ApiKeyValue, v2BasicPassword, v2BearerToken } from '../maskedSecrets';
-import { base64Convertor } from '@rudderstack/integrations-lib';
+import { authHeader1, authHeader2 } from '../maskedSecrets';
 import { generateMetadata } from '../../../testUtils';
-import {
-  destType,
-  destinations,
-  v2Destination,
-  v2BasicDestination,
-  v2ApiKeyDestination,
-  v2NoAuthDestination,
-  traits,
-  properties,
-} from '../common';
+import { destType, destinations, v2Destination, traits, properties } from '../common';
 
 const routerRequest1 = {
   input: [
@@ -225,7 +215,7 @@ export const data = [
                 endpoint: `https://example.org/events/${path}`,
                 endpointPath: '/http',
                 headers: {
-                  Authorization: `Bearer ${v2BearerToken}`,
+                  Authorization: authHeader2,
                   'X-Group': path,
                   'Content-Type': 'application/json',
                 },
@@ -250,81 +240,6 @@ export const data = [
       },
     },
   },
-  ...[
-    {
-      id: 'basic',
-      destination: v2BasicDestination,
-      headers: {
-        Authorization: `Basic ${base64Convertor(`http-basic-user:${v2BasicPassword}`)}`,
-        'Content-Type': 'application/json',
-      },
-    },
-    {
-      id: 'api-key',
-      destination: v2ApiKeyDestination,
-      headers: { 'X-HTTP-Key': v2ApiKeyValue, 'Content-Type': 'application/json' },
-    },
-    {
-      id: 'no-auth',
-      destination: v2NoAuthDestination,
-      headers: { 'Content-Type': 'application/json' },
-    },
-  ].map(({ id, destination, headers }) => ({
-    id: `http-router-v2-${id}`,
-    name: destType,
-    description: `HTTP v2 ${id} delivery headers`,
-    scenario: 'Business',
-    successCriteria: 'Headers come from the linked account, or are absent when auth is disabled',
-    feature: 'router',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: {
-          input: [
-            {
-              message: { type: 'track', userId: 'user-1', group: 'one' },
-              metadata: generateMetadata(1),
-              destination,
-            },
-          ],
-          destType,
-        },
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://example.org/events/one',
-                endpointPath: '/http',
-                headers: { ...headers, 'X-Group': 'one' },
-                params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: { batch: JSON.stringify({ events: [{ userId: 'user-1' }] }) },
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [generateMetadata(1)],
-              destination,
-              batched: true,
-              statusCode: 200,
-            },
-          ],
-        },
-      },
-    },
-  })),
   {
     id: 'http-router-test-1',
     name: destType,

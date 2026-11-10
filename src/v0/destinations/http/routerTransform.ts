@@ -27,8 +27,6 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
   // Request fields are evaluated for the whole batch in one isolate call; transformEvent reads them.
   private fieldResults = new Map<HttpInput, RequestFieldResult>();
 
-  private authHeaders?: Record<string, string>;
-
   async transformEvents(
     inputs: HttpInput[],
     reqMetadata?: NonNullable<unknown>,
@@ -65,14 +63,13 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       if (typeof value !== 'string')
         throw new ConfigurationError(`Header "${key}" must resolve to a string`);
     }
-    this.authHeaders ??= resolveAuthHeaders(this.destination);
     return {
       body: message,
       endpoint: makeEndpoint(config.apiUrl, fields.pathParams),
       endpointPath: '/http',
       method: config.method ?? DEFAULT_METHOD,
       headers: {
-        ...this.authHeaders,
+        ...resolveAuthHeaders(this.destination),
         ...mapped,
         'Content-Type': 'application/json',
       },

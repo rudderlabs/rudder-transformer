@@ -270,8 +270,8 @@ const sourceName = (source: SecretSource): string =>
 export const valuesFor = (source: SecretSource, body: unknown): string[] =>
   source.kind === 'config' ? configSecretsFor(body, source.key) : runtimeSecretsFor(body);
 
-/** String values observed in each fixture's destination configuration or linked account options. */
-export const destinationConfigValues = (body: unknown): Set<string> => {
+/** String values observed under each fixture case's `destination.Config`. */
+const destinationConfigValues = (body: unknown): Set<string> => {
   const values = new Set<string>();
   const collectStrings = (node: unknown): void => {
     if (typeof node === 'string') {
@@ -285,12 +285,7 @@ export const destinationConfigValues = (body: unknown): Set<string> => {
     if (!node || typeof node !== 'object') return;
     const record = node as Record<string, unknown>;
     if (record.destination && typeof record.destination === 'object') {
-      const destination = record.destination as Record<string, unknown>;
-      collectStrings(destination.Config);
-      const account = destination.deliveryAccount;
-      if (destination.Name === 'HTTP' && account && typeof account === 'object') {
-        collectStrings((account as Record<string, unknown>).options);
-      }
+      collectStrings((record.destination as Record<string, unknown>).Config);
     }
     Object.values(record).forEach(findDestinations);
   };

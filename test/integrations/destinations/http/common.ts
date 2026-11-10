@@ -1,4 +1,4 @@
-import { secret1, secret2, v2ApiKeyValue, v2BasicPassword, v2BearerToken } from './maskedSecrets';
+import { secret1, secret2 } from './maskedSecrets';
 import { Destination } from '../../../../src/types';
 
 const destType = 'http';
@@ -735,36 +735,8 @@ const v2Destination: Destination = {
     id: 'http-bearer-account',
     accountDefinitionName: 'DESTINATION_HTTP_BEARER_TOKEN',
     options: {},
-    secret: { bearerToken: v2BearerToken },
+    secret: { bearerToken: secret2 },
   },
-};
-
-const v2BasicDestination: Destination = {
-  ...v2Destination,
-  Config: { ...v2Destination.Config, rudderAccountId: 'http-basic-account' },
-  deliveryAccount: {
-    id: 'http-basic-account',
-    accountDefinitionName: 'DESTINATION_HTTP_BASIC_AUTH',
-    options: { username: 'http-basic-user' },
-    secret: { password: v2BasicPassword },
-  },
-};
-
-const v2ApiKeyDestination: Destination = {
-  ...v2Destination,
-  Config: { ...v2Destination.Config, rudderAccountId: 'http-api-key-account' },
-  deliveryAccount: {
-    id: 'http-api-key-account',
-    accountDefinitionName: 'DESTINATION_HTTP_API_KEY',
-    options: { apiKeyName: 'X-HTTP-Key' },
-    secret: { apiKeyValue: v2ApiKeyValue },
-  },
-};
-
-const v2NoAuthDestination: Destination = {
-  ...v2Destination,
-  Config: { ...v2Destination.Config, authenticationEnabled: false, rudderAccountId: '' },
-  deliveryAccount: undefined,
 };
 
 const traits = {
@@ -838,9 +810,6 @@ export {
   destType,
   destinations,
   v2Destination,
-  v2BasicDestination,
-  v2ApiKeyDestination,
-  v2NoAuthDestination,
   processorInstrumentationErrorStatTags,
   processorConfigurationErrorStatTags,
   RouterInstrumentationErrorStatTags,

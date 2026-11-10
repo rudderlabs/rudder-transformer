@@ -16,7 +16,7 @@ import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './tem
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
 import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
 import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
-import { makeEndpoint, resolveAuthHeaders, toExpressions } from './utils';
+import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
 
 const NO_FIELDS: RequestFieldResult = {
   ok: true,
@@ -68,11 +68,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       endpoint: makeEndpoint(config.apiUrl, fields.pathParams),
       endpointPath: '/http',
       method: config.method ?? DEFAULT_METHOD,
-      headers: {
-        ...resolveAuthHeaders(this.destination),
-        ...mapped,
-        'Content-Type': 'application/json',
-      },
+      headers: { ...makeAuthHeaders(config), ...mapped, 'Content-Type': 'application/json' },
       params: removeUndefinedValues(fields.params),
     };
   }

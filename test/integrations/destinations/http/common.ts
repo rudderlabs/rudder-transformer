@@ -712,7 +712,7 @@ const v2Destination: Destination = {
   Config: {
     apiUrl: 'https://example.org/events',
     authenticationEnabled: true,
-    rudderAccountId: 'http-bearer-account',
+    bearerToken: secret2,
     method: 'POST',
     maxBatchSize: '2',
     requestBodyTemplate: '{ "events": [$$.events.{ "userId": userId }] }',
@@ -731,12 +731,6 @@ const v2Destination: Destination = {
   Transformations: [],
   WorkspaceID: 'test-workspace-id',
   version: 2,
-  deliveryAccount: {
-    id: 'http-bearer-account',
-    accountDefinitionName: 'DESTINATION_HTTP_BEARER_TOKEN',
-    options: {},
-    secret: { bearerToken: secret2 },
-  },
 };
 
 const traits = {

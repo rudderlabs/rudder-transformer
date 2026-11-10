@@ -37,15 +37,24 @@ const HttpDestinationConfigSchema = z
     queryParams: z.array(mapping).optional(),
     pathParams: z.array(z.object({ path: z.string() })).optional(),
     authenticationEnabled: z.boolean().optional(),
-    rudderAccountId: z.string().optional(),
+    username: z.string().optional(),
+    password: z.string().optional(),
+    bearerToken: z.string().optional(),
+    apiKeyName: z.string().optional(),
+    apiKeyValue: z.string().optional(),
   })
   .superRefine((config, ctx) => {
-    if (config.authenticationEnabled && !config.rudderAccountId) {
+    const require = (field: keyof typeof config, message: string) => {
+      if (!config[field]) ctx.addIssue({ code: z.ZodIssueCode.custom, path: [field], message });
+    };
+    if (!config.authenticationEnabled) return;
+    if (config.apiKeyName) {
+      require('apiKeyValue', 'API key value is required');
+    } else if (!config.username && !config.bearerToken) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['rudderAccountId'],
-        message:
-          'Authentication is enabled, but rudderAccountId does not identify a linked delivery account',
+        path: ['authenticationEnabled'],
+        message: 'Authentication is enabled, but no account credentials were found',
       });
     }
   });

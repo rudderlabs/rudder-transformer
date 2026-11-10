@@ -2,7 +2,6 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
 import type { RequestFieldExpressions } from './httpTemplateSandbox';
 import { mappingKey } from './types';
-import type { Destination } from '../../../types/controlPlaneConfig';
 import type { HttpDestinationConfig } from './types';
 
 // Only leading-$ values are expressions. Everything else is a literal JSONata string.
@@ -39,54 +38,22 @@ export const makeEndpoint = (url: string, pathParams: unknown[]): string => {
   return parts.length > 0 ? `${url.replace(/\/$/, '')}/${parts.join('/')}` : url;
 };
 
-export const resolveAuthHeaders = (
-  destination: Destination<HttpDestinationConfig>,
-): Record<string, string> => {
-  if (!destination.Config.authenticationEnabled) return {};
-
-  const account = destination.deliveryAccount;
-  if (!account)
-    throw new ConfigurationError('Authentication is enabled, but deliveryAccount is missing');
-
-  const requireString = (field: string, value: unknown): string => {
-    if (typeof value !== 'string') {
-      throw new ConfigurationError(`The linked delivery account is missing ${field}`);
-    }
-    return value;
-  };
-  const requireValue = (field: string, value: unknown): string => {
-    const stringValue = requireString(field, value);
-    if (!stringValue)
-      throw new ConfigurationError(`The linked delivery account is missing ${field}`);
-    return stringValue;
-  };
-
-  switch (account.accountDefinitionName) {
-    case 'DESTINATION_HTTP_BASIC_AUTH': {
-      const username = requireValue('options.username', account.options?.username);
-      // Basic auth allows an omitted or empty password, but not a malformed value.
-      const password =
-        account.secret?.password === undefined
-          ? ''
-          : requireString('secret.password', account.secret.password);
-      return {
-        Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
-      };
-    }
-    case 'DESTINATION_HTTP_BEARER_TOKEN':
-      return {
-        Authorization: `Bearer ${requireValue('secret.bearerToken', account.secret?.bearerToken)}`,
-      };
-    case 'DESTINATION_HTTP_API_KEY':
-      return {
-        [requireValue('options.apiKeyName', account.options?.apiKeyName)]: requireValue(
-          'secret.apiKeyValue',
-          account.secret?.apiKeyValue,
-        ),
-      };
-    default:
-      throw new ConfigurationError(
-        `The linked delivery account uses unsupported accountDefinitionName: ${account.accountDefinitionName}`,
-      );
+// v2 has no auth selector: config-backend inlines the linked account's fields into the config,
+// and each account type has its own required field. Required credentials are enforced in types.ts.
+export const makeAuthHeaders = (config: HttpDestinationConfig): Record<string, string> => {
+  const {
+    authenticationEnabled,
+    username,
+    password = '',
+    bearerToken,
+    apiKeyName,
+    apiKeyValue = '',
+  } = config;
+  if (!authenticationEnabled) return {};
+  if (username) {
+    return { Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}` };
   }
+  if (bearerToken) return { Authorization: `Bearer ${bearerToken}` };
+  if (apiKeyName) return { [apiKeyName]: apiKeyValue };
+  return {};
 };

@@ -166,6 +166,61 @@ describe('Topsort batching', () => {
   });
 });
 
+describe('Topsort event id platform prefix', () => {
+  const withContext = (
+    input: RouterTransformationRequestData,
+    fields: Record<string, unknown>,
+  ): RouterTransformationRequestData => ({ ...input, message: { ...input.message, ...fields } });
+
+  it.each([
+    { name: 'web', fields: { channel: 'web' }, id: 'web-msg-1' },
+    {
+      name: 'iOS',
+      fields: { channel: 'mobile', context: { os: { name: 'iOS' } } },
+      id: 'ios-msg-1',
+    },
+    {
+      name: 'Android',
+      fields: { channel: 'mobile', context: { os: { name: 'Android' } } },
+      id: 'android-msg-1',
+    },
+    {
+      name: 'iPadOS',
+      fields: { channel: 'mobile', context: { os: { name: 'iPadOS' } } },
+      id: 'ios-msg-1',
+    },
+    {
+      name: 'KaiOS, which is not iOS',
+      fields: { channel: 'mobile', context: { os: { name: 'KaiOS' } } },
+      id: 'msg-1',
+    },
+    { name: 'mobile without an OS name', fields: { channel: 'mobile' }, id: 'msg-1' },
+    { name: 'a server-side event', fields: { channel: 'server' }, id: 'msg-1' },
+  ])('builds the id for $name', async ({ fields, id }) => {
+    const results = await run([withContext(makeInput(1, 'Product Clicked'), fields)]);
+
+    expect(requestBodies(results)).toEqual([{ clicks: [expect.objectContaining({ id })] }]);
+  });
+
+  it('keeps the prefix on fanned-out and purchase ids', async () => {
+    const mobile = { channel: 'mobile', context: { os: { name: 'Android' } } };
+    const results = await run([
+      withContext(makeInput(1, 'Checkout Started', { products: productsOf(2) }), mobile),
+      withContext(makeInput(2, 'Order Completed', { price: 1, quantity: 1 }), mobile),
+    ]);
+
+    expect(requestBodies(results)).toEqual([
+      {
+        impressions: [
+          expect.objectContaining({ id: 'android-msg-1-0' }),
+          expect.objectContaining({ id: 'android-msg-1-1' }),
+        ],
+        purchases: [expect.objectContaining({ id: 'android-msg-2' })],
+      },
+    ]);
+  });
+});
+
 describe('Topsort validation', () => {
   const failureCases: { name: string; input: RouterTransformationRequestData }[] = [
     { name: 'an unmapped event', input: makeInput(2, 'Totally Unmapped Event') },

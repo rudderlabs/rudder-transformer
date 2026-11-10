@@ -146,19 +146,20 @@ function hasFilterOrPredicate(node: AstNode): boolean {
 // constructor itself. Direct `$$.events[0]` instead has stages on the name step.
 function isAllowedFirstEventArrayPredicate(node: AstNode, collection: string): boolean {
   const predicates = node.predicate as AstNode[] | undefined;
+  const index = predicates?.[0]?.expr as AstNode | undefined;
   const [eventPath] = node.expressions ?? [];
   const steps = eventPath?.steps ?? [];
+  // Filters inside the element sit on its name step and are rejected by the path handler.
   return (
     collection === 'events' &&
     node.value === '[' &&
     predicates?.length === 1 &&
     predicates[0].type === 'filter' &&
-    (predicates[0].expr as AstNode | undefined)?.type === 'number' &&
-    (predicates[0].expr as AstNode).value === 0 &&
+    index?.type === 'number' &&
+    index.value === 0 &&
     !node.stages?.length &&
     node.expressions?.length === 1 &&
-    eventPath?.type === 'path' &&
-    !hasFilterOrPredicate(eventPath) &&
+    eventPath.type === 'path' &&
     (steps.length === 2 ||
       (steps.length === 3 && steps[2].type === 'unary' && steps[2].value === '{')) &&
     steps[0].type === 'variable' &&
@@ -417,7 +418,7 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         ctx.errors.push('Function calls are not supported. Only $number() casting is allowed.');
         return;
       }
-      walk(node.arguments![0], { ...ctx, wrappedInArray: false });
+      walk(node.arguments![0], { ...ctx, wrappedInArray: false, objectPropertyValue: false });
     },
     collectFields: (node, insideCollectionIteration, fields, walk, collection) => {
       // After validation, only $number(expr) with a single arg reaches here

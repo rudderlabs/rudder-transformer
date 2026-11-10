@@ -10,7 +10,7 @@ import type {
   TransformedEvent,
   TransformResult,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { removeUndefinedAndNullValues, removeUndefinedValues } from '../../util';
+import { isObject, removeUndefinedAndNullValues, removeUndefinedValues } from '../../util';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
@@ -18,11 +18,7 @@ import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
 import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
 import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
 // shortcut: move these shared serializers into src/v0/destinations/http/ when v1 retires.
-import {
-  CONTENT_TYPES_MAP,
-  metadataHeaders,
-  prepareBody,
-} from '../../../cdk/v2/destinations/http/utils';
+import { metadataHeaders, prepareBody } from '../../../cdk/v2/destinations/http/utils';
 
 const NO_FIELDS: RequestFieldResult = {
   ok: true,
@@ -77,20 +73,24 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       headers: {
         ...makeAuthHeaders(config),
         ...mapped,
-        ...metadataHeaders(config.format ?? CONTENT_TYPES_MAP.JSON),
+        ...metadataHeaders(config.format ?? BodyFormat.JSON),
       },
       params: removeUndefinedValues(fields.params),
     };
   }
 
   getBatchStrategy(): BatchStrategy<HttpBody> {
-    const { requestBodyTemplate, maxBatchSize, xmlRootKey } = this.destination.Config;
-    const format = this.destination.Config.format ?? CONTENT_TYPES_MAP.JSON;
+    const {
+      requestBodyTemplate,
+      maxBatchSize,
+      xmlRootKey,
+      format = BodyFormat.JSON,
+    } = this.destination.Config;
     return new CustomBatchStrategy<HttpBody>(
       async (payloads) => {
         // FORM is always single-event, even when a stale config supplies maxBatchSize.
         const chunks = chunkPayloads(payloads, {
-          maxItems: format === CONTENT_TYPES_MAP.FORM ? 1 : Number(maxBatchSize ?? MAX_BATCH_SIZE),
+          maxItems: format === BodyFormat.FORM ? 1 : Number(maxBatchSize ?? MAX_BATCH_SIZE),
           wrapBody: () => ({}),
         });
         const bodies = await sandboxedEvaluateHttpBody(
@@ -107,32 +107,20 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
           const result = bodies[i];
           if (!result.ok)
             return error(`Failed to evaluate requestBody template: ${result.error}`, chunk.jobIds);
-          if (format !== CONTENT_TYPES_MAP.JSON) {
-            if (
-              result.body === null ||
-              typeof result.body !== 'object' ||
-              Array.isArray(result.body)
-            ) {
+          if (format !== BodyFormat.JSON) {
+            if (!isObject(result.body))
               return error(
                 'Request body template must produce an object for XML/FORM format',
                 chunk.jobIds,
               );
-            }
-            try {
-              return {
-                body: prepareBody(
-                  result.body as Record<string, unknown>,
-                  format,
-                  xmlRootKey || 'root',
-                ) as HttpBody,
-                jobIds: chunk.jobIds,
-              };
-            } catch (e: unknown) {
-              return error(
-                `Failed to serialize requestBody template: ${(e as Error).message}`,
-                chunk.jobIds,
-              );
-            }
+            return {
+              body: prepareBody(
+                result.body as Record<string, unknown>,
+                format,
+                xmlRootKey || 'root',
+              ) as HttpBody,
+              jobIds: chunk.jobIds,
+            };
           }
           const batch = JSON.stringify(result.body);
           if (batch === undefined || result.body === null) {
@@ -141,7 +129,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
           return { body: { batch }, jobIds: chunk.jobIds };
         });
       },
-      format === CONTENT_TYPES_MAP.JSON ? BodyFormat.JSON_ARRAY : BodyFormat[format],
+      format === BodyFormat.JSON ? BodyFormat.JSON_ARRAY : BodyFormat[format],
     );
   }
 

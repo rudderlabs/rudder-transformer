@@ -156,56 +156,50 @@ describe('HTTP v2 native router', () => {
     expect((result[0] as unknown as NativeResponse).batchedRequest.headers).toMatchObject(expected);
   });
 
-  it.each([
-    {
-      format: 'XML',
-      expectedHeader: 'application/xml',
-    },
-    {
-      format: 'FORM',
-      expectedHeader: 'application/x-www-form-urlencoded',
-      expectedForm: {
-        'first name': 'Ada',
-        '1abc': '1',
-        empty: '',
-        nested: '{"a":1}',
-        count: '1',
-        active: 'true',
-      },
-    },
-  ])(
-    'serializes $format with v1 helpers and overrides mapped Content-Type',
-    async ({ format, expectedHeader, expectedForm }) => {
-      const events = withFormat({
-        format,
-        xmlRootKey: 'Envelope',
-        requestBodyTemplate: '[$$.events][0]',
-      });
-      events[0].message = {
-        ...events[0].message,
-        'first name': 'Ada',
-        '1abc': 1,
-        empty: '',
-        absent: null,
-        nested: { a: 1 },
-        count: 1,
-        active: true,
-      };
-      const [response] = await processDestinationIntegration(events, Integration, {});
-      const request = (response as unknown as NativeResponse).batchedRequest;
-      expect(request.headers['Content-Type']).toBe(expectedHeader);
-      if (format === 'XML') {
-        expect(request.body.XML.payload).toContain(
-          '<Envelope><type>track</type><id>one</id><value>1</value><first_name>Ada</first_name><_abc>1</_abc><empty/>',
-        );
-        expect(request.body.XML.payload).not.toContain('absent');
-      } else {
-        expect(request.body.FORM).toMatchObject(expectedForm ?? {});
-        expect(request.body.FORM.absent).toBeUndefined();
-      }
-      expect(request.body.JSON_ARRAY).toEqual({});
-    },
-  );
+  const serializeEdgeCases = async (format: string) => {
+    const events = withFormat({
+      format,
+      xmlRootKey: 'Envelope',
+      requestBodyTemplate: '[$$.events][0]',
+    });
+    events[0].message = {
+      ...events[0].message,
+      'first name': 'Ada',
+      '1abc': 1,
+      empty: '',
+      absent: null,
+      nested: { a: 1 },
+      count: 1,
+      active: true,
+    };
+    const [response] = await processDestinationIntegration(events, Integration, {});
+    return (response as unknown as NativeResponse).batchedRequest;
+  };
+
+  it('serializes XML with v1 helpers and overrides mapped Content-Type', async () => {
+    const request = await serializeEdgeCases('XML');
+    expect(request.headers['Content-Type']).toBe('application/xml');
+    expect(request.body.XML.payload).toContain(
+      '<Envelope><type>track</type><id>one</id><value>1</value><first_name>Ada</first_name><_abc>1</_abc><empty/>',
+    );
+    expect(request.body.XML.payload).not.toContain('absent');
+    expect(request.body.JSON_ARRAY).toEqual({});
+  });
+
+  it('serializes FORM with v1 helpers and overrides mapped Content-Type', async () => {
+    const request = await serializeEdgeCases('FORM');
+    expect(request.headers['Content-Type']).toBe('application/x-www-form-urlencoded');
+    expect(request.body.FORM).toMatchObject({
+      'first name': 'Ada',
+      '1abc': '1',
+      empty: '',
+      nested: '{"a":1}',
+      count: '1',
+      active: 'true',
+    });
+    expect(request.body.FORM.absent).toBeUndefined();
+    expect(request.body.JSON_ARRAY).toEqual({});
+  });
 
   it('rejects an undefined body instead of shipping a non-JSON request', async () => {
     const result = await processDestinationIntegration(

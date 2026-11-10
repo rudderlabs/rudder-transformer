@@ -53,19 +53,26 @@ First fetch the PR's current commit and record its SHA. Review that exact commit
 `gh pr diff` always shows the PR's latest state, which the contributor can change while
 you're reviewing. Step 3 merges only this SHA.
 
+`<base>` is `develop`, or `contrib/<pr>` for a [follow-up fix](#follow-up-fixes). Each fetch
+names its destination, so it works in any clone, including single-branch ones:
+
 ```bash
-base=develop   # for a follow-up fix PR: base=contrib/<pr>
-git fetch origin "$base" "+refs/pull/<pr>/head:refs/remotes/origin/pr-<pr>"
-sha=$(git rev-parse origin/pr-<pr>)
-echo "$sha"    # note it on the PR, so others can see what was reviewed
+git fetch origin "+refs/heads/<base>:refs/remotes/origin/<base>" \
+  "+refs/pull/<pr>/head:refs/remotes/origin/pr-<pr>"
+git rev-parse origin/pr-<pr>
 ```
+
+The SHA it prints is `<reviewed-sha>`. Write it down and note it on the PR, so others can
+see what was reviewed. Use the full SHA literally in the commands below and in step 3.
+Don't store it in a shell variable: agents run each command in a fresh shell, so the
+variable would be empty by the time you merge.
 
 Then read the diff of that commit against the base (the three dots show only the PR's own
 changes, the same as GitHub's PR diff):
 
 ```bash
-git diff --name-only "origin/$base...$sha"
-git diff "origin/$base...$sha"
+git diff --name-only origin/<base>...<reviewed-sha>
+git diff origin/<base>...<reviewed-sha>
 ```
 
 **Stop and escalate to a maintainer** (don't continue) if the diff touches any of these:
@@ -77,7 +84,7 @@ git diff "origin/$base...$sha"
 Quick scan of the added lines:
 
 ```bash
-git diff "origin/$base...$sha" | grep '^+' \
+git diff origin/<base>...<reviewed-sha> | grep '^+' \
   | grep -nE 'process\.env|child_process|exec\(|spawn|eval\(|fs\.|https?://|curl|wget'
 ```
 
@@ -88,13 +95,15 @@ before step 3.
 ## 3. Merge the contributor PR into `contrib/<pr>`
 
 ```bash
-git fetch origin develop
+git fetch origin "+refs/heads/develop:refs/remotes/origin/develop"
 git push origin origin/develop:refs/heads/contrib/<pr>
 gh pr edit <pr> -R rudderlabs/rudder-transformer --base contrib/<pr>
-gh pr merge <pr> -R rudderlabs/rudder-transformer --squash --match-head-commit "$sha"
+gh pr merge <pr> -R rudderlabs/rudder-transformer --squash --match-head-commit <reviewed-sha>
 ```
 
-- `$sha` is the commit you reviewed in step 2. `--match-head-commit` makes GitHub refuse the merge if the contributor pushed after your
+- `<reviewed-sha>` is the full SHA you recorded in step 2. Never run the merge with it empty:
+  an empty `--match-head-commit` turns the check off.
+- `--match-head-commit` makes GitHub refuse the merge if the contributor pushed after your
   review, so unreviewed code never reaches our repo. If it's refused, go back to step 1.
 - The contributor's PR now shows as **Merged**. The squash commit's author is the PR
   author, so the contributor keeps the credit, and `develop` gets one commit titled with
@@ -158,9 +167,9 @@ a new `contrib/` branch for the fix PR.
 1. Ask the contributor to open a fork PR with base `contrib/<pr>`, using the original PR
    number. If they opened it against `develop`, retarget it:
    `gh pr edit <fix-pr> -R rudderlabs/rudder-transformer --base contrib/<pr>`.
-2. Run steps 1 and 2 on `<fix-pr>` with `base=contrib/<pr>`, so you review only the fix.
+2. Run steps 1 and 2 on `<fix-pr>` with `<base>` = `contrib/<pr>`, so you review only the fix.
 3. Squash-merge it with the reviewed commit. Skip creating the branch:
-   `gh pr merge <fix-pr> -R rudderlabs/rudder-transformer --squash --match-head-commit "$sha"`.
+   `gh pr merge <fix-pr> -R rudderlabs/rudder-transformer --squash --match-head-commit <reviewed-sha>`.
 4. Go back to step 5 on the existing PR to `develop`. CI re-runs on the new commit.
 
 ## Rules

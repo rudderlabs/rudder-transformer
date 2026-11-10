@@ -10,13 +10,15 @@ import type {
   TransformedEvent,
   TransformResult,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { removeUndefinedAndNullValues, removeUndefinedValues } from '../../util';
+import { isObject, removeUndefinedAndNullValues, removeUndefinedValues } from '../../util';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
 import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
 import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
 import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
+// shortcut: move these shared serializers into src/v0/destinations/http/ when v1 retires.
+import { metadataHeaders, prepareBody, sanitizeKey } from '../../../cdk/v2/destinations/http/utils';
 
 const NO_FIELDS: RequestFieldResult = {
   ok: true,
@@ -68,40 +70,69 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       endpoint: makeEndpoint(config.apiUrl, fields.pathParams),
       endpointPath: '/http',
       method: config.method ?? DEFAULT_METHOD,
-      headers: { ...makeAuthHeaders(config), ...mapped, 'Content-Type': 'application/json' },
+      headers: {
+        ...makeAuthHeaders(config),
+        ...mapped,
+        ...metadataHeaders(config.format ?? BodyFormat.JSON),
+      },
       params: removeUndefinedValues(fields.params),
     };
   }
 
   getBatchStrategy(): BatchStrategy<HttpBody> {
-    const { requestBodyTemplate, maxBatchSize = MAX_BATCH_SIZE } = this.destination.Config;
-    return new CustomBatchStrategy<HttpBody>(async (payloads) => {
-      // Raw config: the control plane sends maxBatchSize as a string.
-      const chunks = chunkPayloads(payloads, {
-        maxItems: Number(maxBatchSize),
-        wrapBody: () => ({}),
-      });
-      const bodies = await sandboxedEvaluateHttpBody(
-        requestBodyTemplate,
-        chunks.map((chunk) => chunk.bodies),
-        this.destination.WorkspaceID,
-      );
-      const error = (message: string, jobIds: Set<number>) => ({
-        body: {},
-        jobIds,
-        error: toTransformError(new ConfigurationError(message)),
-      });
-      return chunks.map((chunk, i) => {
-        const result = bodies[i];
-        if (!result.ok)
-          return error(`Failed to evaluate requestBody template: ${result.error}`, chunk.jobIds);
-        const batch = JSON.stringify(result.body);
-        if (batch === undefined || result.body === null) {
-          return error('Request body template did not produce JSON', chunk.jobIds);
-        }
-        return { body: { batch }, jobIds: chunk.jobIds };
-      });
-    }, BodyFormat.JSON_ARRAY);
+    const { requestBodyTemplate, maxBatchSize, format = BodyFormat.JSON } = this.destination.Config;
+    return new CustomBatchStrategy<HttpBody>(
+      async (payloads) => {
+        // Raw config: the control plane sends maxBatchSize as a string.
+        // FORM is always single-event, even when a stale config supplies maxBatchSize.
+        const chunks = chunkPayloads(payloads, {
+          maxItems: format === BodyFormat.FORM ? 1 : Number(maxBatchSize ?? MAX_BATCH_SIZE),
+          wrapBody: () => ({}),
+        });
+        const bodies = await sandboxedEvaluateHttpBody(
+          requestBodyTemplate,
+          chunks.map((chunk) => chunk.bodies),
+          this.destination.WorkspaceID,
+        );
+        const error = (message: string, jobIds: Set<number>) => ({
+          body: {},
+          jobIds,
+          error: toTransformError(new ConfigurationError(message)),
+        });
+        return chunks.map((chunk, i) => {
+          const result = bodies[i];
+          if (!result.ok)
+            return error(`Failed to evaluate requestBody template: ${result.error}`, chunk.jobIds);
+          if (format === BodyFormat.JSON) {
+            const batch = JSON.stringify(result.body);
+            if (batch === undefined || result.body === null) {
+              return error('Request body template did not produce JSON', chunk.jobIds);
+            }
+            return { body: { batch }, jobIds: chunk.jobIds };
+          }
+          if (!isObject(result.body))
+            return error(
+              'Request body template must produce an object for XML/FORM format',
+              chunk.jobIds,
+            );
+          const body = result.body as Record<string, unknown>;
+          if (format === BodyFormat.FORM)
+            return { body: prepareBody(body, format), jobIds: chunk.jobIds };
+          // v2 has no xmlRootKey: the template's single top-level key is the root element.
+          const [root, ...extra] = Object.keys(body);
+          if (!root || extra.length > 0 || !isObject(body[root]))
+            return error(
+              'Request body template must produce exactly one top-level key holding an object for XML format; that key becomes the root element',
+              chunk.jobIds,
+            );
+          return {
+            body: prepareBody(body[root] as Record<string, unknown>, format, sanitizeKey(root)),
+            jobIds: chunk.jobIds,
+          };
+        });
+      },
+      format === BodyFormat.JSON ? BodyFormat.JSON_ARRAY : BodyFormat[format],
+    );
   }
 
   getInputSchema() {

@@ -8,7 +8,11 @@ type NativeResponse = {
   batchedRequest: {
     endpoint: string;
     headers: Record<string, unknown>;
-    body: { JSON_ARRAY: { batch: string } };
+    body: {
+      JSON_ARRAY: { batch: string };
+      XML: { payload?: string };
+      FORM: Record<string, string>;
+    };
   };
   metadata: { jobId: number }[];
 };
@@ -56,6 +60,20 @@ describe('HTTP v2 native router', () => {
   ])('quotes or retains $value', ({ value, expression }) => {
     expect(requestFieldExpression(value)).toBe(expression);
   });
+
+  const withFormat = (config: Record<string, unknown>, ids = ['one']) =>
+    ids.map((id, i) => ({
+      ...input(id, i + 1),
+      destination: {
+        ...destination,
+        Config: {
+          ...destination.Config,
+          pathParams: [],
+          headers: [{ to: 'Content-Type', from: 'text/plain' }],
+          ...config,
+        },
+      },
+    }));
 
   it('defaults method to POST and batches up to 5000 when unset', async () => {
     const { method, maxBatchSize, ...config } = destination.Config;
@@ -161,6 +179,47 @@ describe('HTTP v2 native router', () => {
     });
   });
 
+  const serializeEdgeCases = async (format: string, requestBodyTemplate: string) => {
+    const events = withFormat({ format, requestBodyTemplate });
+    events[0].message = {
+      ...events[0].message,
+      'first name': 'Ada',
+      '1abc': 1,
+      empty: '',
+      absent: null,
+      nested: { a: 1 },
+      count: 1,
+      active: true,
+    };
+    const [response] = await processDestinationIntegration(events, Integration, {});
+    return (response as unknown as NativeResponse).batchedRequest;
+  };
+
+  it('serializes XML with sanitized keys and nulls dropped, overriding mapped Content-Type', async () => {
+    const request = await serializeEdgeCases('XML', '{"Envelope": [$$.events][0]}');
+    expect(request.headers['Content-Type']).toBe('application/xml');
+    expect(request.body.XML.payload).toContain(
+      '<Envelope><type>track</type><id>one</id><value>1</value><first_name>Ada</first_name><_abc>1</_abc><empty/>',
+    );
+    expect(request.body.XML.payload).not.toContain('absent');
+    expect(request.body.JSON_ARRAY).toEqual({});
+  });
+
+  it('serializes FORM with stringified first-level values and nulls dropped, overriding mapped Content-Type', async () => {
+    const request = await serializeEdgeCases('FORM', '[$$.events][0]');
+    expect(request.headers['Content-Type']).toBe('application/x-www-form-urlencoded');
+    expect(request.body.FORM).toMatchObject({
+      'first name': 'Ada',
+      '1abc': '1',
+      empty: '',
+      nested: '{"a":1}',
+      count: '1',
+      active: 'true',
+    });
+    expect(request.body.FORM.absent).toBeUndefined();
+    expect(request.body.JSON_ARRAY).toEqual({});
+  });
+
   it('rejects an undefined body instead of shipping a non-JSON request', async () => {
     const result = await processDestinationIntegration(
       [
@@ -182,6 +241,55 @@ describe('HTTP v2 native router', () => {
     expect(result).toMatchObject([
       { statusCode: 400, error: 'Request body template did not produce JSON' },
     ]);
+  });
+
+  it.each([
+    { format: 'XML', template: '{"root": {}}' },
+    { format: 'FORM', template: '{}' },
+  ])('sends an empty $format body without inventing a payload', async ({ format, template }) => {
+    const [result] = await processDestinationIntegration(
+      withFormat({ format, requestBodyTemplate: template }),
+      Integration,
+      {},
+    );
+    expect((result as unknown as NativeResponse).batchedRequest.body[format]).toEqual({});
+  });
+
+  it('sanitizes the XML root key like nested keys', async () => {
+    const [result] = await processDestinationIntegration(
+      withFormat({
+        format: 'XML',
+        requestBodyTemplate: '{"1 my root": [$$.events.{"id": id}][0]}',
+      }),
+      Integration,
+      {},
+    );
+    expect((result as unknown as NativeResponse).batchedRequest.body.XML.payload).toBe(
+      '<?xml version="1.0" encoding="UTF-8"?><__my_root><id>one</id></__my_root>',
+    );
+  });
+
+  const notObject = 'Request body template must produce an object for XML/FORM format';
+  const notOneRoot =
+    'Request body template must produce exactly one top-level key holding an object for XML format; that key becomes the root element';
+  it.each([
+    ...['XML', 'FORM'].flatMap((format) =>
+      ['$$.missing', '1', 'null', '$$.events'].map((template) => ({
+        format,
+        template,
+        error: notObject,
+      })),
+    ),
+    ...['{}', '{"": {"a": 1}}', '{"a": {}, "b": {}}', '{"root": 1}', '{"root": [$$.events]}'].map(
+      (template) => ({ format: 'XML', template, error: notOneRoot }),
+    ),
+  ])('rejects $format result from $template', async ({ format, template, error }) => {
+    const [result] = await processDestinationIntegration(
+      withFormat({ format, requestBodyTemplate: template }),
+      Integration,
+      {},
+    );
+    expect(result).toMatchObject({ statusCode: 400, error });
   });
 
   it('returns per-event errors for an invalid request field and does not send its message', async () => {

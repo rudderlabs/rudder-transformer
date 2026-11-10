@@ -209,7 +209,7 @@ const prepareBody = (
   contentType: string,
   xmlRootKey?: string,
 ) => {
-  let responseBody: Record<string, unknown> | string;
+  let responseBody: Record<string, unknown>;
   removeUndefinedAndNullRecurse(payload);
   if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(payload)) {
     responseBody = {
@@ -306,4 +306,5 @@ export {
   prepareBody,
   batchSuccessfulEvents,
   stringifyFirstLevelValues,
+  sanitizeKey,
 };

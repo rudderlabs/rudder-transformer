@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.168.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.167.1...v1.168.0) (2026-11-10)
+
+
+### Features
+
+* **custom_audience:** support OAuth linked accounts ([#5717](https://github.com/rudderlabs/rudder-transformer/issues/5717)) ([ae7ccd0](https://github.com/rudderlabs/rudder-transformer/commit/ae7ccd0280aa3d322ba083972535a685141ab13f))
+* **topsort:** prefix event ids with the source platform ([124294e](https://github.com/rudderlabs/rudder-transformer/commit/124294e3dc0bb46d4a2136687f3a07da1c163af2))
+* **topsort:** prefix event ids with the source platform ([#5774](https://github.com/rudderlabs/rudder-transformer/issues/5774)) ([b1642e7](https://github.com/rudderlabs/rudder-transformer/commit/b1642e7dfc7ccb54e4b5b23e55acf675c1dbfa0b)), closes [#5771](https://github.com/rudderlabs/rudder-transformer/issues/5771)
+
 ### [1.167.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.167.0...v1.167.1) (2026-11-04)
 
 

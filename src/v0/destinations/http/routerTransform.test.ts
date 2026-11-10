@@ -139,6 +139,20 @@ describe('HTTP v2 native router', () => {
       secret: { apiKeyValue: 'secret' },
       expected: { 'X-Key': 'secret' },
     },
+    {
+      name: 'API key in the Content-Type header',
+      definition: 'DESTINATION_HTTP_API_KEY',
+      options: { apiKeyName: 'Content-Type' },
+      secret: { apiKeyValue: 'secret' },
+      expected: { 'Content-Type': 'secret' },
+    },
+    {
+      name: 'API key in a lowercase content-type header',
+      definition: 'DESTINATION_HTTP_API_KEY',
+      options: { apiKeyName: 'content-type' },
+      secret: { apiKeyValue: 'secret' },
+      expected: { 'content-type': 'secret' },
+    },
   ];
 
   it.each(accountCases)(
@@ -152,9 +166,13 @@ describe('HTTP v2 native router', () => {
         deliveryAccount: account,
       };
       const [response] = await processDestinationIntegration([event], Integration, {});
-      expect((response as unknown as NativeResponse).batchedRequest.headers).toMatchObject(
-        expected,
-      );
+      const headers = (response as unknown as NativeResponse).batchedRequest.headers;
+      expect(headers).toMatchObject(expected);
+      if (Object.keys(expected).some((name) => name.toLowerCase() === 'content-type')) {
+        expect(
+          Object.keys(headers).filter((name) => name.toLowerCase() === 'content-type'),
+        ).toHaveLength(1);
+      }
     },
   );
 

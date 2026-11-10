@@ -63,15 +63,19 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       if (typeof value !== 'string')
         throw new ConfigurationError(`Header "${key}" must resolve to a string`);
     }
+    const authHeaders = resolveAuthHeaders(this.destination);
+    const hasAccountContentType = Object.keys(authHeaders).some(
+      (name) => name.toLowerCase() === 'content-type',
+    );
     return {
       body: message,
       endpoint: makeEndpoint(config.apiUrl, fields.pathParams),
       endpointPath: '/http',
       method: config.method ?? DEFAULT_METHOD,
       headers: {
-        ...resolveAuthHeaders(this.destination),
+        ...authHeaders,
         ...mapped,
-        'Content-Type': 'application/json',
+        ...(!hasAccountContentType && { 'Content-Type': 'application/json' }),
       },
       params: removeUndefinedValues(fields.params),
     };

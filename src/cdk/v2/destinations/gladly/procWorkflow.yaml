@@ -67,7 +67,11 @@ steps:
       const rawResponse = await $.httpGET(endpoint,requestOptions, reqStats)
       $.processAxiosResponse(rawResponse)
 
+  # 400 means "customer not found" and falls through to createCustomer.
+  # Any other non-2xx (e.g. 500 from a transient network error) throws with its status,
+  # so we never create a duplicate customer or PATCH an undefined id.
   - name: validateCustomerLookup
+    description: Fail the event when the customer lookup errors, keeping the lookup status
     condition: $.outputs.findCustomer && $.outputs.findCustomer.status !== 400
     template: |
       $.assertHttpResp($.outputs.findCustomer, "Customer lookup failed: " + JSON.stringify($.outputs.findCustomer.response))

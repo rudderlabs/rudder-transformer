@@ -13,6 +13,8 @@ const {
 const tags = require('../../v0/util/tags');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
+// Status for a request with no HTTP response: 500 retries, 400 aborts.
+// Shared by every lookup and delivery handler: grep for callers that branch on a status before changing one.
 const nodeSysErrorToStatus = (code) => {
   const sysErrorToStatusMap = {
     EACCES: {
@@ -22,6 +24,10 @@ const nodeSysErrorToStatus = (code) => {
     EADDRINUSE: {
       status: 400,
       message: '[EADDRINUSE] :: Address already in use',
+    },
+    EADDRNOTAVAIL: {
+      status: 500,
+      message: '[EADDRNOTAVAIL] :: Address not available',
     },
     ECONNREFUSED: {
       status: 500,

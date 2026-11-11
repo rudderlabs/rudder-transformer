@@ -93,6 +93,11 @@ const nodeSysErrorToStatus = (code) => {
       status: 500,
       message: '[ETIMEDOUT] :: Operation timed out',
     },
+    ERR_SOCKET_CONNECTION_TIMEOUT: {
+      status: 500,
+      message:
+        '[ERR_SOCKET_CONNECTION_TIMEOUT] :: Could not connect to any resolved address in time',
+    },
     EAI_AGAIN: {
       status: 500,
       message: '[EAI_AGAIN] :: Temporary failure in name resolution',

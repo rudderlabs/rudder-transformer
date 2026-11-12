@@ -4,6 +4,7 @@ import {
   destType,
   destinations,
   v2Destination,
+  v2OverrideDestination,
   v2XmlDestination,
   v2FormDestination,
   traits,
@@ -165,7 +166,121 @@ const routerRequest4 = {
   destType,
 };
 
+const leadOverrideResponse = (id: number) => ({
+  batchedRequest: {
+    version: '1',
+    type: 'REST',
+    method: 'POST',
+    endpoint: 'https://example.org/events/leads',
+    endpointPath: '/http',
+    headers: { Authorization: authHeader2, 'Content-Type': 'application/json' },
+    params: {},
+    files: {},
+    body: {
+      JSON: {},
+      JSON_ARRAY: {
+        batch: JSON.stringify({
+          leads: [{ type: 'track', event: 'Lead', messageId: `id${id}` }],
+        }),
+      },
+      XML: {},
+      FORM: {},
+    },
+  },
+  metadata: [generateMetadata(id)],
+  destination: v2OverrideDestination,
+  batched: true,
+  statusCode: 200,
+});
+
 export const data = [
+  {
+    id: 'http-router-v2-event-overrides',
+    name: destType,
+    description: 'HTTP v2 splits override groups and default events with effective settings',
+    scenario: 'Framework+Business',
+    successCriteria: 'Two named groups and default events produce separate complete requests',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: ['Lead', 'Order', 'Other', 'Lead', 'Other'].map((event, i) => ({
+            message: { type: 'track', event, messageId: `id${i + 1}` },
+            metadata: generateMetadata(i + 1),
+            destination: v2OverrideDestination,
+          })),
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            leadOverrideResponse(1),
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://example.org/events',
+                endpointPath: '/http',
+                headers: { Authorization: authHeader2, 'Content-Type': 'application/json' },
+                params: { source: 'default' },
+                files: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch: JSON.stringify({
+                      orders: [{ type: 'track', event: 'Order', messageId: 'id2' }],
+                    }),
+                  },
+                  XML: {},
+                  FORM: {},
+                },
+              },
+              metadata: [generateMetadata(2)],
+              destination: v2OverrideDestination,
+              batched: true,
+              statusCode: 200,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://example.org/events',
+                endpointPath: '/http',
+                headers: { Authorization: authHeader2, 'Content-Type': 'application/json' },
+                params: { source: 'default' },
+                files: {},
+                body: {
+                  JSON: {},
+                  JSON_ARRAY: {
+                    batch: JSON.stringify([
+                      { type: 'track', event: 'Other', messageId: 'id3' },
+                      { type: 'track', event: 'Other', messageId: 'id5' },
+                    ]),
+                  },
+                  XML: {},
+                  FORM: {},
+                },
+              },
+              metadata: [generateMetadata(3), generateMetadata(5)],
+              destination: v2OverrideDestination,
+              batched: true,
+              statusCode: 200,
+            },
+            leadOverrideResponse(4),
+          ],
+        },
+      },
+    },
+  },
   {
     id: 'http-router-v2-xml-batch',
     name: destType,

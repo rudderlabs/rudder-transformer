@@ -35,22 +35,83 @@ const parseTemplateBodySchema = z.object({
   workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
 });
 
-const httpMappingsSchema = z.array(z.object({ from: z.string() })).optional();
+// Bound template count and size before copying them into the sandbox.
+const MAX_HTTP_PARSE_FIELDS = 100;
+const MAX_HTTP_PARSE_TEMPLATES = 500;
+const MAX_HTTP_PARSE_TEMPLATE_LENGTH = 10_000;
+const httpParseTemplate = z.string().max(MAX_HTTP_PARSE_TEMPLATE_LENGTH);
+const httpMappingsSchema = z
+  .array(z.object({ from: httpParseTemplate }))
+  .max(MAX_HTTP_PARSE_FIELDS)
+  .optional();
+const httpPathParamsSchema = z
+  .array(z.object({ path: httpParseTemplate }))
+  .max(MAX_HTTP_PARSE_FIELDS)
+  .optional();
 const httpParseBodySchema = z.object({
   workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
-  requestBodyTemplate: z.string(),
+  requestBodyTemplate: httpParseTemplate,
   headers: httpMappingsSchema,
   queryParams: httpMappingsSchema,
-  pathParams: z.array(z.object({ path: z.string() })).optional(),
+  pathParams: httpPathParamsSchema,
+  eventOverrides: z
+    .array(
+      z.object({
+        pathParams: httpPathParamsSchema,
+        queryParams: httpMappingsSchema,
+        requestBodyTemplate: httpParseTemplate.optional(),
+      }),
+    )
+    .max(20)
+    .optional(),
 });
 
 // The templates parse-template verifies, labelled with the `field`/`index` its response reports.
 // Each request field goes through requestFieldExpression, exactly as the router evaluates it.
 const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
-  const surface = (field: string, values: string[]) =>
-    values.map((value, index) => ({ field, index, template: requestFieldExpression(value) }));
+  const surface = (field: string, values: string[], group?: number) =>
+    values.map((value, index) => ({
+      field,
+      index,
+      group,
+      template: requestFieldExpression(value),
+    }));
+  const groupFields = (
+    config: {
+      requestBodyTemplate?: string;
+      queryParams?: { from: string }[];
+      pathParams?: { path: string }[];
+    },
+    group: number,
+  ) => [
+    ...(config.requestBodyTemplate === undefined
+      ? []
+      : [
+          {
+            field: 'requestBodyTemplate',
+            index: undefined,
+            group,
+            template: config.requestBodyTemplate as string,
+          },
+        ]),
+    ...surface(
+      'queryParams',
+      (config.queryParams ?? []).map(({ from }) => from),
+      group,
+    ),
+    ...surface(
+      'pathParams',
+      (config.pathParams ?? []).map(({ path }) => path),
+      group,
+    ),
+  ];
   return [
-    { field: 'requestBodyTemplate', index: undefined, template: body.requestBodyTemplate },
+    {
+      field: 'requestBodyTemplate',
+      index: undefined,
+      group: undefined,
+      template: body.requestBodyTemplate,
+    },
     ...surface(
       'headers',
       (body.headers ?? []).map(({ from }) => from),
@@ -63,6 +124,7 @@ const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
       'pathParams',
       (body.pathParams ?? []).map(({ path }) => path),
     ),
+    ...(body.eventOverrides ?? []).flatMap((config, group) => groupFields(config, group)),
   ];
 };
 
@@ -122,6 +184,13 @@ export class EventTestController {
       return;
     }
     const fields = verificationFields(parsed.data);
+    if (fields.length > MAX_HTTP_PARSE_TEMPLATES) {
+      ctx.status = 400;
+      ctx.body = {
+        error: `HTTP parse-template accepts at most ${MAX_HTTP_PARSE_TEMPLATES} fields`,
+      };
+      return;
+    }
     // A single isolate call validates all surfaces while preserving their indices.
     const results = await sandboxedParseHttpTemplates(
       fields.map(({ template }) => template),
@@ -130,7 +199,14 @@ export class EventTestController {
     const errors = results.flatMap((result, i) =>
       result.valid
         ? []
-        : [{ field: fields[i].field, index: fields[i].index, messages: result.errors }],
+        : [
+            {
+              field: fields[i].field,
+              index: fields[i].index,
+              ...(fields[i].group === undefined ? {} : { group: fields[i].group }),
+              messages: result.errors,
+            },
+          ],
     );
     ctx.body = { valid: errors.length === 0, errors };
   }

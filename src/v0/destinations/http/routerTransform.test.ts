@@ -2,11 +2,13 @@ import { processDestinationIntegration } from '../../../services/destination/des
 import { Integration } from './routerTransform';
 import { requestFieldExpression } from './utils';
 import { prepareProxyRequest } from '../../../adapters/network';
+import stats from '../../../util/stats';
 import type { RouterTransformationRequestData } from '../../../types';
 
 type NativeResponse = {
   batchedRequest: {
     endpoint: string;
+    params: Record<string, unknown>;
     headers: Record<string, unknown>;
     body: {
       JSON_ARRAY: { batch: string };
@@ -15,6 +17,7 @@ type NativeResponse = {
     };
   };
   metadata: { jobId: number }[];
+  batched: boolean;
 };
 
 const destination = {
@@ -74,6 +77,292 @@ describe('HTTP v2 native router', () => {
         },
       },
     }));
+
+  const overrideEvents = (settings: Record<string, unknown>, names: string[]) =>
+    names.map(
+      (name, i): RouterTransformationRequestData => ({
+        ...input(String(i + 1), i + 1),
+        message: { type: 'track', event: name, id: String(i + 1) },
+        destination: {
+          ...destination,
+          Config: {
+            ...destination.Config,
+            pathParams: [],
+            headers: [],
+            requestBodyTemplate: '$$.events',
+            ...settings,
+          },
+        },
+      }),
+    );
+
+  it('applies all group settings, inherits omitted settings and leaves other message types on defaults', async () => {
+    const events = overrideEvents(
+      {
+        queryParams: [{ to: 'source', from: 'default' }],
+        maxBatchSize: '3',
+        eventOverrides: [
+          {
+            name: 'Full',
+            events: ['Lead'],
+            pathParams: [{ path: 'lead' }],
+            queryParams: [],
+            requestBodyTemplate: '{"lead": $$.events}',
+            maxBatchSize: '1',
+          },
+          { name: 'Inherited', events: ['Order'], requestBodyTemplate: '{"order": $$.events}' },
+        ],
+      },
+      ['Lead', 'Order', 'lead', 'Lead', 'Other'],
+    );
+    events[3].message = { ...events[3].message, type: 'identify' as const };
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(
+      results.map((result) => ({
+        jobs: result.metadata.map(({ jobId }) => jobId),
+        endpoint: (result as unknown as NativeResponse).batchedRequest.endpoint,
+        params: (result as unknown as NativeResponse).batchedRequest.params,
+        body: JSON.parse(
+          (result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch,
+        ),
+      })),
+    ).toEqual([
+      {
+        jobs: [1],
+        endpoint: 'https://example.org/events/lead',
+        params: {},
+        body: { lead: [events[0].message] },
+      },
+      {
+        jobs: [2],
+        endpoint: 'https://example.org/events',
+        params: { source: 'default' },
+        body: { order: [events[1].message] },
+      },
+      {
+        jobs: [3, 4, 5],
+        endpoint: 'https://example.org/events',
+        params: { source: 'default' },
+        body: [events[2].message, events[3].message, events[4].message],
+      },
+    ]);
+  });
+
+  it('keeps same-URL groups separate and chunks each at its effective limit', async () => {
+    const events = overrideEvents(
+      {
+        maxBatchSize: '3',
+        eventOverrides: [
+          { name: 'A', events: ['A'], maxBatchSize: '2', requestBodyTemplate: '{"a": $$.events}' },
+          { name: 'B', events: ['B'], maxBatchSize: '1', requestBodyTemplate: '{"b": $$.events}' },
+        ],
+      },
+      ['A', 'B', 'A', 'B', 'A', 'other'],
+    );
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(
+      results.map((result) => ({
+        jobs: result.metadata.map(({ jobId }) => jobId),
+        body: JSON.parse(
+          (result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch,
+        ),
+      })),
+    ).toEqual([
+      { jobs: [1, 3], body: { a: [events[0].message, events[2].message] } },
+      { jobs: [2], body: { b: [events[1].message] } },
+      { jobs: [4], body: { b: [events[3].message] } },
+      { jobs: [5], body: { a: [events[4].message] } },
+      { jobs: [6], body: [events[5].message] },
+    ]);
+  });
+
+  it('uses the first matching group when names overlap', async () => {
+    const events = overrideEvents(
+      {
+        eventOverrides: [
+          { name: 'First', events: ['Lead'], requestBodyTemplate: '{"first": $$.events}' },
+          { name: 'Second', events: ['Lead'], requestBodyTemplate: '{"second": $$.events}' },
+        ],
+      },
+      ['Lead'],
+    );
+    const [result] = await processDestinationIntegration(events, Integration, {});
+    expect(
+      JSON.parse((result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch),
+    ).toEqual({ first: [events[0].message] });
+  });
+
+  it('names the override when a mapped field fails and does not fail default events', async () => {
+    const events = overrideEvents(
+      {
+        eventOverrides: [
+          {
+            name: 'Broken',
+            events: ['Lead'],
+            queryParams: [{ to: 'num', from: '$number($$.message.id)' }],
+          },
+        ],
+      },
+      ['Lead', 'Other'],
+    );
+    events[0].message.id = 'invalid';
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(results.find((result) => result.error)).toMatchObject({
+      error: expect.stringContaining('Event override "Broken": Request field evaluation failed'),
+      metadata: [{ jobId: 1 }],
+    });
+    expect(results.find((result) => result.batched)?.metadata).toMatchObject([{ jobId: 2 }]);
+  });
+
+  it('keeps FORM single-event even with an override batch size', async () => {
+    const events = overrideEvents(
+      {
+        format: 'FORM',
+        requestBodyTemplate: '[$$.events][0]',
+        eventOverrides: [{ name: 'Form', events: ['Lead'], maxBatchSize: '5000' }],
+      },
+      ['Lead', 'Lead'],
+    );
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(results.map((result) => result.metadata.map(({ jobId }) => jobId))).toEqual([[1], [2]]);
+  });
+
+  it('counts raw track inputs once, including invalid and dontBatch inputs', async () => {
+    const spy = jest.spyOn(stats, 'counter').mockImplementation(() => undefined);
+    try {
+      const events = overrideEvents(
+        { eventOverrides: [{ name: 'Lead', events: ['Lead'], maxBatchSize: '1' }] },
+        ['Lead', 'Lead', 'other', 'Lead'],
+      );
+      events[1].destination = {
+        ...events[1].destination,
+        Config: { ...events[1].destination.Config, apiUrl: '' },
+      };
+      events[2].metadata.dontBatch = true;
+      events[3].message = { ...events[3].message, type: 'identify' as const };
+      await processDestinationIntegration(events, Integration, {});
+      expect(spy.mock.calls.filter(([name]) => name === 'http_event_override_events')).toEqual([
+        [
+          'http_event_override_events',
+          2,
+          { destType: 'HTTP', workspaceId: 'ws-http', destinationId: 'http-test', matched: 'true' },
+        ],
+        [
+          'http_event_override_events',
+          1,
+          {
+            destType: 'HTTP',
+            workspaceId: 'ws-http',
+            destinationId: 'http-test',
+            matched: 'false',
+          },
+        ],
+      ]);
+      spy.mockClear();
+      const allInvalid = events.slice(0, 2).map((event) => ({
+        ...event,
+        destination: {
+          ...event.destination,
+          Config: { ...event.destination.Config, apiUrl: '' },
+        },
+      }));
+      const failures = await processDestinationIntegration(allInvalid, Integration, {});
+      expect(failures.every((result) => result.statusCode === 400)).toBe(true);
+      expect(spy.mock.calls).toEqual([
+        [
+          'http_event_override_events',
+          2,
+          { destType: 'HTTP', workspaceId: 'ws-http', destinationId: 'http-test', matched: 'true' },
+        ],
+        [
+          'http_event_override_events',
+          0,
+          {
+            destType: 'HTTP',
+            workspaceId: 'ws-http',
+            destinationId: 'http-test',
+            matched: 'false',
+          },
+        ],
+      ]);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it.each([undefined, null, 'invalid'])(
+    'counts missing or invalid Config as unmatched without throwing (%p)',
+    async (config) => {
+      const spy = jest.spyOn(stats, 'counter').mockImplementation(() => undefined);
+      try {
+        const event = {
+          ...input('1', 1),
+          message: { type: 'track', event: 'Lead' },
+          destination: { ...destination, Config: config },
+        } as unknown as RouterTransformationRequestData;
+        const [response] = await processDestinationIntegration([event], Integration, {});
+        expect(response.statusCode).toBe(400);
+        expect(response.error).toContain('destination.Config');
+        expect(spy.mock.calls.filter(([name]) => name === 'http_event_override_events')).toEqual([
+          [
+            'http_event_override_events',
+            0,
+            {
+              destType: 'HTTP',
+              workspaceId: 'ws-http',
+              destinationId: 'http-test',
+              matched: 'true',
+            },
+          ],
+          [
+            'http_event_override_events',
+            1,
+            {
+              destType: 'HTTP',
+              workspaceId: 'ws-http',
+              destinationId: 'http-test',
+              matched: 'false',
+            },
+          ],
+        ]);
+      } finally {
+        spy.mockRestore();
+      }
+    },
+  );
+
+  it.each([
+    [{ events: ['Lead'] }],
+    [{ name: 'Empty', events: ['Lead'] }],
+    [{ name: 'Bad', events: ['Lead'], maxBatchSize: 0 }],
+  ])('counts an invalid override group as unmatched (%p)', async (eventOverrides) => {
+    const spy = jest.spyOn(stats, 'counter').mockImplementation(() => undefined);
+    try {
+      const [event] = overrideEvents({ eventOverrides }, ['Lead']);
+      const [response] = await processDestinationIntegration([event], Integration, {});
+      expect(response.statusCode).toBe(400);
+      expect(response.error).toContain('destination.Config.eventOverrides');
+      expect(spy.mock.calls.filter(([name]) => name === 'http_event_override_events')).toEqual([
+        [
+          'http_event_override_events',
+          0,
+          { destType: 'HTTP', workspaceId: 'ws-http', destinationId: 'http-test', matched: 'true' },
+        ],
+        [
+          'http_event_override_events',
+          1,
+          {
+            destType: 'HTTP',
+            workspaceId: 'ws-http',
+            destinationId: 'http-test',
+            matched: 'false',
+          },
+        ],
+      ]);
+    } finally {
+      spy.mockRestore();
+    }
+  });
 
   it('defaults method to POST and batches up to 5000 when unset', async () => {
     const { method, maxBatchSize, ...config } = destination.Config;

@@ -27,16 +27,41 @@ export const MAX_BATCH_SIZE = 5000;
 
 // Defaults are applied in the router: the framework validates against this schema but hands
 // the destination its raw config.
+const batchSize = z.coerce.number().int().min(1).max(MAX_BATCH_SIZE);
+const pathParams = z.array(z.object({ path: z.string() }));
+const mappings = z.array(mapping);
+
+const overrideGroup = z
+  .object({
+    name: z.string().min(1),
+    events: z.array(z.string().min(1)).min(1).max(100),
+    pathParams: pathParams.optional(),
+    queryParams: mappings.optional(),
+    requestBodyTemplate: z.string().min(1).optional(),
+    maxBatchSize: batchSize.optional(),
+  })
+  .refine(
+    ({ pathParams: paths, queryParams: queries, requestBodyTemplate, maxBatchSize }) =>
+      paths !== undefined ||
+      queries !== undefined ||
+      requestBodyTemplate !== undefined ||
+      maxBatchSize !== undefined,
+    'An event override must set at least one request setting',
+  );
+
+export const overrideGroupsSchema = z.array(overrideGroup).max(20).optional();
+
 const HttpDestinationConfigSchema = z
   .object({
     apiUrl: z.string().min(1),
     requestBodyTemplate: z.string().min(1),
     method: z.enum(['POST', 'PUT', 'PATCH', 'GET', 'DELETE']).optional(),
     format: z.enum(['JSON', 'XML', 'FORM']).optional(),
-    maxBatchSize: z.coerce.number().int().min(1).max(MAX_BATCH_SIZE).optional(),
-    headers: z.array(mapping).optional(),
-    queryParams: z.array(mapping).optional(),
-    pathParams: z.array(z.object({ path: z.string() })).optional(),
+    maxBatchSize: batchSize.optional(),
+    headers: mappings.optional(),
+    queryParams: mappings.optional(),
+    pathParams: pathParams.optional(),
+    eventOverrides: overrideGroupsSchema,
     authenticationEnabled: z.boolean().optional(),
     username: z.string().optional(),
     password: z.string().optional(),

@@ -1,4 +1,6 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
+import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
+import stats from '../../../util/stats';
 import {
   BodyFormat,
   CustomBatchStrategy,
@@ -14,9 +16,15 @@ import { isObject, removeUndefinedAndNullValues, removeUndefinedValues } from '.
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
-import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
+import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE, overrideGroupsSchema } from './types';
 import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
-import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
+import {
+  effectiveConfig,
+  makeAuthHeaders,
+  makeEndpoint,
+  resolveOverrideGroup,
+  toExpressions,
+} from './utils';
 // shortcut: move these shared serializers into src/v0/destinations/http/ when v1 retires.
 import { metadataHeaders, prepareBody, sanitizeKey } from '../../../cdk/v2/destinations/http/utils';
 
@@ -25,39 +33,97 @@ const NO_FIELDS: RequestFieldResult = {
   fields: { headers: {}, params: {}, pathParams: [] },
 };
 
+const groupKey = (index?: number): string =>
+  index === undefined ? 'default' : `override:${index}`;
+
+const groupIndexFromKey = (key: string | undefined): number | undefined =>
+  key?.startsWith('override:') ? Number(key.slice('override:'.length)) : undefined;
+
 class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputSchema> {
-  // Request fields are evaluated for the whole batch in one isolate call; transformEvent reads them.
+  // Request fields are evaluated once per override partition; transformEvent reads the results.
   private fieldResults = new Map<HttpInput, RequestFieldResult>();
+
+  private groupIndices = new Map<HttpInput, number | undefined>();
+
+  recordCallMetrics(
+    inputs: RouterTransformationRequestData[],
+    tags: { destType: string; workspaceId: string; destinationId: string },
+  ): void {
+    // Config is unvalidated here; reject malformed groups only for matching metrics, not routing.
+    const rawConfig: unknown = this.destination.Config;
+    const rawGroups =
+      rawConfig !== null && typeof rawConfig === 'object' && !Array.isArray(rawConfig)
+        ? (rawConfig as Record<string, unknown>).eventOverrides
+        : undefined;
+    const parsedGroups = overrideGroupsSchema.safeParse(rawGroups);
+    const groups = parsedGroups.success ? parsedGroups.data : undefined;
+    let matched = 0;
+    let unmatched = 0;
+    for (const { message } of inputs) {
+      if (message?.type === 'track') {
+        if (resolveOverrideGroup(message, groups) === undefined) unmatched += 1;
+        else matched += 1;
+      }
+    }
+    stats.counter('http_event_override_events', matched, { ...tags, matched: 'true' });
+    stats.counter('http_event_override_events', unmatched, { ...tags, matched: 'false' });
+  }
 
   async transformEvents(
     inputs: HttpInput[],
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<HttpBody>> {
-    const expressions = toExpressions(this.destination.Config);
-    const { headers, queryParams, pathParams } = expressions;
-    // Skip the isolate round-trip (and copying every message into it) when nothing is mapped.
-    if (headers.length + queryParams.length + pathParams.length > 0) {
-      const results = await sandboxedEvaluateRequestFields(
-        expressions,
-        inputs.map(({ message }) => message),
-        this.destination.WorkspaceID,
+    const partitions = new Map<number | undefined, HttpInput[]>();
+    for (const input of inputs) {
+      const index = resolveOverrideGroup(input.message, this.destination.Config.eventOverrides);
+      this.groupIndices.set(input, index);
+      const partition = partitions.get(index) ?? [];
+      partition.push(input);
+      partitions.set(index, partition);
+    }
+    // Bound per-call isolate work: each partition copies its inputs into the same workspace heap.
+    for (const [index, partition] of partitions) {
+      const config = effectiveConfig(
+        this.destination.Config,
+        index === undefined ? undefined : this.destination.Config.eventOverrides?.[index as number],
       );
-      inputs.forEach((input, i) => this.fieldResults.set(input, results[i]));
+      const expressions = toExpressions(config);
+      const { headers, queryParams, pathParams } = expressions;
+      // Skip the isolate round-trip when nothing is mapped in this partition.
+      if (headers.length + queryParams.length + pathParams.length > 0) {
+        // eslint-disable-next-line no-await-in-loop -- evaluations must not overlap on one isolate
+        const results = await sandboxedEvaluateRequestFields(
+          expressions,
+          partition.map(({ message }) => message),
+          this.destination.WorkspaceID,
+        );
+        partition.forEach((input, i) => this.fieldResults.set(input, results[i]));
+      }
     }
     return super.transformEvents(inputs, reqMetadata);
   }
 
   transformEvent(input: HttpInput): TransformedEvent<HttpBody> {
+    const index = this.groupIndices.get(input);
+    const group = index === undefined ? undefined : this.destination.Config.eventOverrides?.[index as number];
     const result = this.fieldResults.get(input) ?? NO_FIELDS;
     if (!result.ok)
-      throw new ConfigurationError(`Request field evaluation failed: ${result.error}`);
-    return this.makeEvent(input.message, result.fields, this.destination.Config);
+      throw new ConfigurationError(
+        `${group ? `Event override "${group.name}": ` : ''}Request field evaluation failed: ${result.error}`,
+      );
+    return this.makeEvent(
+      input.message,
+      result.fields,
+      effectiveConfig(this.destination.Config, group),
+      index,
+    );
   }
 
   private makeEvent(
     message: Record<string, unknown>,
     fields: EvaluatedRequestFields,
     config: HttpDestinationConfig,
+    groupIndex?: number,
   ): TransformedEvent<HttpBody> {
     // Like v1, a mapped header whose source is missing is dropped rather than failing the event.
     const mapped = removeUndefinedAndNullValues(fields.headers);
@@ -69,6 +135,8 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       body: message,
       endpoint: makeEndpoint(config.apiUrl, fields.pathParams),
       endpointPath: '/http',
+      // Group separation is required even at the same URL: body templates and batch sizes can differ.
+      internalGroupKey: groupKey(groupIndex),
       method: config.method ?? DEFAULT_METHOD,
       headers: {
         ...makeAuthHeaders(config),
@@ -80,9 +148,15 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
   }
 
   getBatchStrategy(): BatchStrategy<HttpBody> {
-    const { requestBodyTemplate, maxBatchSize, format = BodyFormat.JSON } = this.destination.Config;
+    const { Config, WorkspaceID } = this.destination;
+    const { format = BodyFormat.JSON, eventOverrides } = Config;
     return new CustomBatchStrategy<HttpBody>(
       async (payloads) => {
+        const index = groupIndexFromKey(payloads[0].internalGroupKey);
+        const { requestBodyTemplate, maxBatchSize } = effectiveConfig(
+          Config,
+          index === undefined ? undefined : eventOverrides?.[index as number],
+        );
         // Raw config: the control plane sends maxBatchSize as a string.
         // FORM is always single-event, even when a stale config supplies maxBatchSize.
         const chunks = chunkPayloads(payloads, {
@@ -92,7 +166,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
         const bodies = await sandboxedEvaluateHttpBody(
           requestBodyTemplate,
           chunks.map((chunk) => chunk.bodies),
-          this.destination.WorkspaceID,
+          WorkspaceID,
         );
         const error = (message: string, jobIds: Set<number>) => ({
           body: {},

@@ -229,6 +229,9 @@ export async function processDestinationIntegration<
     metadataMap.set(metadata.jobId!, metadata);
   }
 
+  // Count raw inputs before validation (including calls where every input is invalid).
+  integration.recordCallMetrics(events, metricTags);
+
   // 2. Validate inputs
   const { valid: validInputs, errors: validationErrors } = validateInputs(events, integration);
   const allErrors: TransformResult<TBody>['errorPayloads'] = [...validationErrors];

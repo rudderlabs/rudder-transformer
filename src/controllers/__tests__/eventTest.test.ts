@@ -223,6 +223,102 @@ describe('POST /test-router/http/parse-template', () => {
     );
   });
 
+  it('verifies groups in the same call and reports their original indices', async () => {
+    mockParseHttpTemplates.mockImplementation(async (templates) =>
+      templates.map((template) =>
+        template.includes('$map')
+          ? { valid: false, errors: ['Invalid function'] }
+          : { valid: true, recordFields: [] },
+      ),
+    );
+    const response = await request(server)
+      .post('/test-router/http/parse-template')
+      .send({
+        workspaceId: 'ws',
+        requestBodyTemplate: '$$.events',
+        eventOverrides: [
+          { requestBodyTemplate: '$$.events', pathParams: [{ path: 'valid' }] },
+          {
+            requestBodyTemplate: '$map($$.events)',
+            queryParams: [{ from: 'valid' }, { from: '$map($$.message)' }],
+            pathParams: [{ path: '$map($$.message)' }],
+          },
+        ],
+      });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      valid: false,
+      errors: [
+        { field: 'requestBodyTemplate', group: 1, messages: ['Invalid function'] },
+        { field: 'queryParams', index: 1, group: 1, messages: ['Invalid function'] },
+        { field: 'pathParams', index: 0, group: 1, messages: ['Invalid function'] },
+      ],
+    });
+    expect(mockParseHttpTemplates).toHaveBeenCalledTimes(1);
+    expect(mockParseHttpTemplates).toHaveBeenCalledWith(
+      [
+        '$$.events',
+        '$$.events',
+        '"valid"',
+        '$map($$.events)',
+        '"valid"',
+        '$map($$.message)',
+        '$map($$.message)',
+      ],
+      'ws',
+    );
+  });
+
+  it.each([
+    { eventOverrides: {}, error: 'eventOverrides' },
+    {
+      eventOverrides: [{ pathParams: [{ path: 5 }] }],
+      error: 'eventOverrides.0.pathParams.0.path',
+    },
+    {
+      eventOverrides: [{ queryParams: [{ from: 5 }] }],
+      error: 'eventOverrides.0.queryParams.0.from',
+    },
+    { eventOverrides: Array.from({ length: 21 }, () => ({})), error: 'eventOverrides' },
+    {
+      eventOverrides: [{ queryParams: Array.from({ length: 101 }, () => ({ from: 'x' })) }],
+      error: 'eventOverrides.0.queryParams',
+    },
+    {
+      eventOverrides: [{ pathParams: Array.from({ length: 101 }, () => ({ path: 'x' })) }],
+      error: 'eventOverrides.0.pathParams',
+    },
+    {
+      eventOverrides: [{ requestBodyTemplate: 'x'.repeat(10_001) }],
+      error: 'eventOverrides.0.requestBodyTemplate',
+    },
+  ])('rejects malformed eventOverrides %p', async ({ eventOverrides, error }) => {
+    const response = await request(server).post('/test-router/http/parse-template').send({
+      workspaceId: 'ws',
+      requestBodyTemplate: '$$.events',
+      eventOverrides,
+    });
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain(error);
+    expect(mockParseHttpTemplates).not.toHaveBeenCalled();
+  });
+
+  it('rejects excessive total fields before sandbox parsing', async () => {
+    const response = await request(server)
+      .post('/test-router/http/parse-template')
+      .send({
+        workspaceId: 'ws',
+        requestBodyTemplate: '$$.events',
+        eventOverrides: Array.from({ length: 5 }, () => ({
+          pathParams: Array.from({ length: 100 }, () => ({ path: 'x' })),
+          requestBodyTemplate: '$$.events',
+        })),
+      });
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain('at most 500 fields');
+    expect(mockParseHttpTemplates).not.toHaveBeenCalled();
+  });
+
   it('rejects missing body template', async () => {
     const response = await request(server)
       .post('/test-router/http/parse-template')

@@ -105,7 +105,8 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
 
   transformEvent(input: HttpInput): TransformedEvent<HttpBody> {
     const index = this.groupIndices.get(input);
-    const group = index === undefined ? undefined : this.destination.Config.eventOverrides?.[index as number];
+    const group =
+      index === undefined ? undefined : this.destination.Config.eventOverrides?.[index as number];
     const result = this.fieldResults.get(input) ?? NO_FIELDS;
     if (!result.ok)
       throw new ConfigurationError(

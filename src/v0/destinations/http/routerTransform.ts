@@ -1,5 +1,4 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
-import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import stats from '../../../util/stats';
 import {
   BodyFormat,
@@ -16,7 +15,7 @@ import { isObject, removeUndefinedAndNullValues, removeUndefinedValues } from '.
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
-import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE, overrideGroupsSchema } from './types';
+import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
 import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
 import {
   effectiveConfig,
@@ -49,32 +48,18 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       : this.destination.Config.eventOverrides?.[index as number];
   }
 
-  recordCallMetrics(
-    inputs: RouterTransformationRequestData[],
-    tags: { destType: string; workspaceId: string; destinationId: string },
-  ): void {
-    // Config is unvalidated here; reject malformed groups only for matching metrics, not routing.
-    const parsedGroups = overrideGroupsSchema.safeParse(this.destination.Config?.eventOverrides);
-    const groups = parsedGroups.success ? parsedGroups.data : undefined;
-    let matched = 0;
-    let unmatched = 0;
-    for (const { message } of inputs) {
-      if (message?.type === 'track') {
-        if (resolveOverrideGroup(message, groups) === undefined) unmatched += 1;
-        else matched += 1;
-      }
-    }
-    stats.counter('http_event_override_events', matched, { ...tags, matched: 'true' });
-    stats.counter('http_event_override_events', unmatched, { ...tags, matched: 'false' });
-  }
-
   async transformEvents(
     inputs: HttpInput[],
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<HttpBody>> {
+    const { ID: destinationId, WorkspaceID: workspaceId, Config } = this.destination;
     const partitions = new Map<number | undefined, HttpInput[]>();
+    let matched = 0;
+    let unmatched = 0;
     for (const input of inputs) {
-      const index = resolveOverrideGroup(input.message, this.destination.Config.eventOverrides);
+      const index = resolveOverrideGroup(input.message, Config.eventOverrides);
+      if (index !== undefined) matched += 1;
+      else if (input.message.type === 'track') unmatched += 1;
       const group = this.overrideAt(index);
       // Groups that change no request fields share the default evaluation.
       const fieldsIndex =
@@ -83,11 +68,12 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       partition.push(input);
       partitions.set(fieldsIndex, partition);
     }
+    const tags = { destType: 'HTTP', workspaceId, destinationId };
+    stats.counter('http_event_override_events', matched, { ...tags, matched: 'true' });
+    stats.counter('http_event_override_events', unmatched, { ...tags, matched: 'false' });
     // Bound per-call isolate work: each partition copies its inputs into the same workspace heap.
     for (const [index, partition] of partitions) {
-      const expressions = toExpressions(
-        effectiveConfig(this.destination.Config, this.overrideAt(index)),
-      );
+      const expressions = toExpressions(effectiveConfig(Config, this.overrideAt(index)));
       const { headers, queryParams, pathParams } = expressions;
       // Skip the isolate round-trip when nothing is mapped in this partition.
       if (headers.length + queryParams.length + pathParams.length > 0) {
@@ -95,7 +81,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
         const results = await sandboxedEvaluateRequestFields(
           expressions,
           partition.map(({ message }) => message),
-          this.destination.WorkspaceID,
+          workspaceId,
         );
         partition.forEach((input, i) => this.fieldResults.set(input, results[i]));
       }

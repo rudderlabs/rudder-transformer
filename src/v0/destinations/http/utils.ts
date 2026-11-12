@@ -5,12 +5,10 @@ import { mappingKey } from './types';
 import type { HttpDestinationConfig } from './types';
 
 export const resolveOverrideGroup = (
-  message: unknown,
+  { type, event }: Record<string, unknown>,
   groups: HttpDestinationConfig['eventOverrides'],
 ): number | undefined => {
-  if (!groups || !message || typeof message !== 'object') return undefined;
-  const { type, event } = message as { type?: unknown; event?: unknown };
-  if (type !== 'track' || typeof event !== 'string') return undefined;
+  if (!groups || type !== 'track' || typeof event !== 'string') return undefined;
   const index = groups.findIndex((group) => group.events.includes(event));
   return index === -1 ? undefined : index;
 };

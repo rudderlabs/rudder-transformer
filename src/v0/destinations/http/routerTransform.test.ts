@@ -227,7 +227,7 @@ describe('HTTP v2 native router', () => {
     expect(results.map((result) => result.metadata.map(({ jobId }) => jobId))).toEqual([[1], [2]]);
   });
 
-  it('counts raw track inputs once, including invalid and dontBatch inputs', async () => {
+  it('counts valid track inputs by override match, including dontBatch inputs', async () => {
     const spy = jest.spyOn(stats, 'counter').mockImplementation(() => undefined);
     try {
       const events = overrideEvents(
@@ -241,127 +241,33 @@ describe('HTTP v2 native router', () => {
       events[2].metadata.dontBatch = true;
       events[3].message = { ...events[3].message, type: 'identify' as const };
       await processDestinationIntegration(events, Integration, {});
-      expect(spy.mock.calls.filter(([name]) => name === 'http_event_override_events')).toEqual([
-        [
-          'http_event_override_events',
-          2,
-          { destType: 'HTTP', workspaceId: 'ws-http', destinationId: 'http-test', matched: 'true' },
-        ],
-        [
-          'http_event_override_events',
-          1,
-          {
+      const totals = { true: 0, false: 0 };
+      for (const [name, value, tags] of spy.mock.calls) {
+        if (name === 'http_event_override_events') {
+          expect(tags).toEqual({
             destType: 'HTTP',
             workspaceId: 'ws-http',
             destinationId: 'http-test',
-            matched: 'false',
-          },
-        ],
-      ]);
-      spy.mockClear();
-      const allInvalid = events.slice(0, 2).map((event) => ({
-        ...event,
-        destination: {
-          ...event.destination,
-          Config: { ...event.destination.Config, apiUrl: '' },
-        },
-      }));
-      const failures = await processDestinationIntegration(allInvalid, Integration, {});
-      expect(failures.every((result) => result.statusCode === 400)).toBe(true);
-      expect(spy.mock.calls).toEqual([
-        [
-          'http_event_override_events',
-          2,
-          { destType: 'HTTP', workspaceId: 'ws-http', destinationId: 'http-test', matched: 'true' },
-        ],
-        [
-          'http_event_override_events',
-          0,
-          {
-            destType: 'HTTP',
-            workspaceId: 'ws-http',
-            destinationId: 'http-test',
-            matched: 'false',
-          },
-        ],
-      ]);
+            matched: expect.any(String),
+          });
+          totals[(tags as { matched: 'true' | 'false' }).matched] += value as number;
+        }
+      }
+      expect(totals).toEqual({ true: 1, false: 1 });
     } finally {
       spy.mockRestore();
     }
   });
 
-  it.each([undefined, null, 'invalid'])(
-    'counts missing or invalid Config as unmatched without throwing (%p)',
-    async (config) => {
-      const spy = jest.spyOn(stats, 'counter').mockImplementation(() => undefined);
-      try {
-        const event = {
-          ...input('1', 1),
-          message: { type: 'track', event: 'Lead' },
-          destination: { ...destination, Config: config },
-        } as unknown as RouterTransformationRequestData;
-        const [response] = await processDestinationIntegration([event], Integration, {});
-        expect(response.statusCode).toBe(400);
-        expect(response.error).toContain('destination.Config');
-        expect(spy.mock.calls.filter(([name]) => name === 'http_event_override_events')).toEqual([
-          [
-            'http_event_override_events',
-            0,
-            {
-              destType: 'HTTP',
-              workspaceId: 'ws-http',
-              destinationId: 'http-test',
-              matched: 'true',
-            },
-          ],
-          [
-            'http_event_override_events',
-            1,
-            {
-              destType: 'HTTP',
-              workspaceId: 'ws-http',
-              destinationId: 'http-test',
-              matched: 'false',
-            },
-          ],
-        ]);
-      } finally {
-        spy.mockRestore();
-      }
-    },
-  );
-
   it.each([
     [{ events: ['Lead'] }],
     [{ name: 'Empty', events: ['Lead'] }],
     [{ name: 'Bad', events: ['Lead'], maxBatchSize: 0 }],
-  ])('counts an invalid override group as unmatched (%p)', async (eventOverrides) => {
-    const spy = jest.spyOn(stats, 'counter').mockImplementation(() => undefined);
-    try {
-      const [event] = overrideEvents({ eventOverrides }, ['Lead']);
-      const [response] = await processDestinationIntegration([event], Integration, {});
-      expect(response.statusCode).toBe(400);
-      expect(response.error).toContain('destination.Config.eventOverrides');
-      expect(spy.mock.calls.filter(([name]) => name === 'http_event_override_events')).toEqual([
-        [
-          'http_event_override_events',
-          0,
-          { destType: 'HTTP', workspaceId: 'ws-http', destinationId: 'http-test', matched: 'true' },
-        ],
-        [
-          'http_event_override_events',
-          1,
-          {
-            destType: 'HTTP',
-            workspaceId: 'ws-http',
-            destinationId: 'http-test',
-            matched: 'false',
-          },
-        ],
-      ]);
-    } finally {
-      spy.mockRestore();
-    }
+  ])('rejects an invalid override group (%p)', async (eventOverrides) => {
+    const [event] = overrideEvents({ eventOverrides }, ['Lead']);
+    const [response] = await processDestinationIntegration([event], Integration, {});
+    expect(response.statusCode).toBe(400);
+    expect(response.error).toContain('destination.Config.eventOverrides');
   });
 
   it('defaults method to POST and batches up to 5000 when unset', async () => {

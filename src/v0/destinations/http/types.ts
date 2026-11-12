@@ -50,7 +50,7 @@ const overrideGroup = z
   );
 
 export const MAX_EVENT_OVERRIDES = 20;
-export const overrideGroupsSchema = z.array(overrideGroup).max(MAX_EVENT_OVERRIDES).optional();
+const overrideGroupsSchema = z.array(overrideGroup).max(MAX_EVENT_OVERRIDES).optional();
 
 const HttpDestinationConfigSchema = z
   .object({

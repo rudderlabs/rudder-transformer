@@ -1,6 +1,5 @@
 import { z, ZodType } from 'zod';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
-import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { generateErrorObject } from '../../../v0/util';
 import type {
   BatchStrategy,
@@ -112,12 +111,6 @@ export abstract class DestinationIntegration<
       | Connection<ExtractConnectionConfig<z.infer<TInputSchema>>>
       | undefined;
   }
-
-  /** Optional per-router-call metrics, before validation and before dontBatch splitting. */
-  recordCallMetrics?(
-    inputs: RouterTransformationRequestData[],
-    tags: { destType: string; workspaceId: string; destinationId: string },
-  ): void;
 
   // --- MUST implement ---
 

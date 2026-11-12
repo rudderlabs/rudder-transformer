@@ -1,6 +1,7 @@
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { Integration } from './routerTransform';
 import { requestFieldExpression } from './utils';
+import { httpTemplateSandboxRunner } from './templateSandboxClient';
 import { prepareProxyRequest } from '../../../adapters/network';
 import stats from '../../../util/stats';
 import type { RouterTransformationRequestData } from '../../../types';
@@ -225,6 +226,41 @@ describe('HTTP v2 native router', () => {
     );
     const results = await processDestinationIntegration(events, Integration, {});
     expect(results.map((result) => result.metadata.map(({ jobId }) => jobId))).toEqual([[1], [2]]);
+  });
+
+  it('evaluates all request fields and all bodies in one isolate call each', async () => {
+    const execute = jest.spyOn(httpTemplateSandboxRunner, 'execute');
+    try {
+      const events = overrideEvents(
+        {
+          queryParams: [{ to: 'v', from: "'1'" }],
+          eventOverrides: [
+            { name: 'Leads', events: ['Lead'], pathParams: [{ path: '$.id' }], maxBatchSize: '1' },
+            { name: 'Orders', events: ['Order'], requestBodyTemplate: '{"orders": $$.events}' },
+          ],
+        },
+        ['Lead', 'Lead', 'Order', 'Other', 'Lead', 'Order'],
+      );
+      events[5].metadata.dontBatch = true;
+      const results = await processDestinationIntegration(events, Integration, {});
+      expect(results.map(({ metadata }) => metadata.map(({ jobId }) => jobId))).toEqual([
+        [1],
+        [2],
+        [3],
+        [4],
+        [5],
+        [6],
+      ]);
+      // Batchable inputs: one request-field call and one body call for five request groups.
+      // The dontBatch input adds its own request-field call; its body joins the same body call.
+      expect(execute.mock.calls.map(([, script]) => script.split('(')[0])).toEqual([
+        'return evaluateRequestFieldsInSandbox',
+        'return evaluateRequestFieldsInSandbox',
+        'return evaluateHttpBodyInSandbox',
+      ]);
+    } finally {
+      execute.mockRestore();
+    }
   });
 
   it('counts valid track inputs by override match, including dontBatch inputs', async () => {

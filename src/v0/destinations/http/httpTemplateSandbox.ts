@@ -30,6 +30,9 @@ export type RequestFieldResult =
   | { ok: true; fields: EvaluatedRequestFields }
   | { ok: false; error: string };
 export type HttpBodyResult = { ok: true; body: unknown } | { ok: false; error: string };
+// Each job is evaluated independently, so one router call needs one isolate call per operation.
+export type RequestFieldJob = [RequestFieldExpressions, unknown[]];
+export type HttpBodyJob = [string, unknown[][]];
 
 declare const globalThis: Record<string, unknown>;
 
@@ -60,7 +63,7 @@ const evaluatePairs = async (
   return out;
 };
 
-globalThis.evaluateRequestFieldsInSandbox = async (
+const evaluateRequestFields = async (
   expressions: RequestFieldExpressions,
   events: unknown[],
 ): Promise<RequestFieldResult[]> => {
@@ -99,7 +102,7 @@ globalThis.evaluateRequestFieldsInSandbox = async (
   return results;
 };
 
-globalThis.evaluateHttpBodyInSandbox = async (
+const evaluateHttpBody = async (
   template: string,
   chunks: unknown[][],
 ): Promise<HttpBodyResult[]> => {
@@ -118,6 +121,26 @@ globalThis.evaluateHttpBodyInSandbox = async (
     } catch (e: unknown) {
       results.push({ ok: false, error: errorMessage(e) });
     }
+  }
+  return results;
+};
+
+globalThis.evaluateRequestFieldsInSandbox = async (
+  jobs: RequestFieldJob[],
+): Promise<RequestFieldResult[][]> => {
+  const results: RequestFieldResult[][] = [];
+  for (const [expressions, events] of jobs) {
+    // eslint-disable-next-line no-await-in-loop -- compiled expressions are not reentrant
+    results.push(await evaluateRequestFields(expressions, events));
+  }
+  return results;
+};
+
+globalThis.evaluateHttpBodyInSandbox = async (jobs: HttpBodyJob[]): Promise<HttpBodyResult[][]> => {
+  const results: HttpBodyResult[][] = [];
+  for (const [template, chunks] of jobs) {
+    // eslint-disable-next-line no-await-in-loop -- compiled expressions are not reentrant
+    results.push(await evaluateHttpBody(template, chunks));
   }
   return results;
 };

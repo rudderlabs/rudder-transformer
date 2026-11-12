@@ -42,11 +42,11 @@ const MAX_HTTP_PARSE_TEMPLATES = 500;
 const MAX_HTTP_PARSE_TEMPLATE_LENGTH = 10_000;
 const httpParseTemplate = z.string().max(MAX_HTTP_PARSE_TEMPLATE_LENGTH);
 const httpMappingsSchema = z
-  .array(z.object({ from: httpParseTemplate }))
+  .array(z.object({ from: httpParseTemplate.optional() }))
   .max(MAX_HTTP_PARSE_FIELDS)
   .optional();
 const httpPathParamsSchema = z
-  .array(z.object({ path: httpParseTemplate }))
+  .array(z.object({ path: httpParseTemplate.optional() }))
   .max(MAX_HTTP_PARSE_FIELDS)
   .optional();
 const httpParseBodySchema = z.object({
@@ -58,6 +58,8 @@ const httpParseBodySchema = z.object({
   eventOverrides: z
     .array(
       z.object({
+        name: z.string().optional(),
+        events: z.array(z.string()).max(MAX_HTTP_PARSE_FIELDS).optional(),
         pathParams: httpPathParamsSchema,
         queryParams: httpMappingsSchema,
         requestBodyTemplate: httpParseTemplate.optional(),
@@ -70,12 +72,12 @@ const httpParseBodySchema = z.object({
 // The templates parse-template verifies, labelled with the `field`/`index`/`group` it reports.
 // Each request field goes through requestFieldExpression, exactly as the router evaluates it.
 const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
-  const surface = (field: string, values: string[], group?: number) =>
+  const surface = (field: string, values: (string | undefined)[], group?: number) =>
     values.map((value, index) => ({
       field,
       index,
       group,
-      template: requestFieldExpression(value),
+      template: typeof value === 'string' ? requestFieldExpression(value) : undefined,
     }));
   const fields = (
     config: Partial<
@@ -114,6 +116,47 @@ const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
     ...(body.eventOverrides ?? []).flatMap((config, group) => fields(config, group)),
   ];
 };
+
+type HttpParseError = { field: string; index?: number; group?: number; messages: string[] };
+
+// An event in two groups makes the router's group choice ambiguous; repeats within one group don't.
+const duplicateEventErrors = (
+  eventOverrides: z.infer<typeof httpParseBodySchema>['eventOverrides'],
+): HttpParseError[] => {
+  const firstGroups = new Map<string, number>();
+  return (eventOverrides ?? []).flatMap(({ events }, group) =>
+    (events ?? []).flatMap((event) => {
+      const firstGroup = firstGroups.get(event);
+      if (firstGroup === undefined) {
+        firstGroups.set(event, group);
+        return [];
+      }
+      return firstGroup === group
+        ? []
+        : [
+            {
+              field: 'events',
+              group,
+              messages: [`event "${event}" is already in eventOverrides[${firstGroup}]`],
+            },
+          ];
+    }),
+  );
+};
+
+// One line per error, for callers that only show text (config-backend's save validation).
+const errorMessage = (
+  errors: HttpParseError[],
+  eventOverrides: z.infer<typeof httpParseBodySchema>['eventOverrides'],
+) =>
+  errors
+    .map(({ field, index, group, messages }) => {
+      const name = typeof group === 'number' ? eventOverrides?.[group]?.name : undefined;
+      const prefix =
+        group === undefined ? '' : `eventOverrides[${group}]${name ? ` "${name}"` : ''}.`;
+      return `${prefix}${index === undefined ? field : `${field}[${index}]`}: ${messages.join('; ')}`;
+    })
+    .join(', ');
 
 const testEventV2Schema = z.object({
   events: z.array(z.record(z.unknown())),
@@ -178,24 +221,38 @@ export class EventTestController {
       };
       return;
     }
+    const { workspaceId, eventOverrides } = parsed.data;
+    const present = fields.filter(
+      (field): field is (typeof fields)[number] & { template: string } =>
+        field.template !== undefined,
+    );
     // A single isolate call validates all surfaces while preserving their indices.
     const results = await sandboxedParseHttpTemplates(
-      fields.map(({ template }) => template),
-      parsed.data.workspaceId,
+      present.map(({ template }) => template),
+      workspaceId,
     );
-    const errors = results.flatMap((result, i) =>
-      result.valid
-        ? []
-        : [
-            {
-              field: fields[i].field,
-              index: fields[i].index,
-              group: fields[i].group,
-              messages: result.errors,
-            },
-          ],
-    );
-    ctx.body = { valid: errors.length === 0, errors };
+    const errors: HttpParseError[] = [
+      ...fields
+        .filter(({ template }) => template === undefined)
+        .map(({ field, index, group }) => ({ field, index, group, messages: ['is required'] })),
+      ...results.flatMap((result, i) =>
+        result.valid
+          ? []
+          : [
+              {
+                field: present[i].field,
+                index: present[i].index,
+                group: present[i].group,
+                messages: result.errors,
+              },
+            ],
+      ),
+      ...duplicateEventErrors(eventOverrides),
+    ];
+    ctx.body =
+      errors.length === 0
+        ? { valid: true, errors }
+        : { valid: false, errors, message: errorMessage(errors, eventOverrides) };
   }
 
   public static async parseCustomAudienceTemplate(ctx: Context) {

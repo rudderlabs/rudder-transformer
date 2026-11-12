@@ -49,7 +49,8 @@ const overrideGroup = z
     'An event override must set at least one request setting',
   );
 
-export const overrideGroupsSchema = z.array(overrideGroup).max(20).optional();
+export const MAX_EVENT_OVERRIDES = 20;
+export const overrideGroupsSchema = z.array(overrideGroup).max(MAX_EVENT_OVERRIDES).optional();
 
 const HttpDestinationConfigSchema = z
   .object({

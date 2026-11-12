@@ -230,7 +230,7 @@ export async function processDestinationIntegration<
   }
 
   // Count raw inputs before validation (including calls where every input is invalid).
-  integration.recordCallMetrics(events, metricTags);
+  integration.recordCallMetrics?.(events, metricTags);
 
   // 2. Validate inputs
   const { valid: validInputs, errors: validationErrors } = validateInputs(events, integration);

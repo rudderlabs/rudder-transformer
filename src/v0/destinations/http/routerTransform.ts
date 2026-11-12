@@ -43,19 +43,18 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
   // Request fields are evaluated once per override partition; transformEvent reads the results.
   private fieldResults = new Map<HttpInput, RequestFieldResult>();
 
-  private groupIndices = new Map<HttpInput, number | undefined>();
+  private overrideAt(index?: number) {
+    return index === undefined
+      ? undefined
+      : this.destination.Config.eventOverrides?.[index as number];
+  }
 
   recordCallMetrics(
     inputs: RouterTransformationRequestData[],
     tags: { destType: string; workspaceId: string; destinationId: string },
   ): void {
     // Config is unvalidated here; reject malformed groups only for matching metrics, not routing.
-    const rawConfig: unknown = this.destination.Config;
-    const rawGroups =
-      rawConfig !== null && typeof rawConfig === 'object' && !Array.isArray(rawConfig)
-        ? (rawConfig as Record<string, unknown>).eventOverrides
-        : undefined;
-    const parsedGroups = overrideGroupsSchema.safeParse(rawGroups);
+    const parsedGroups = overrideGroupsSchema.safeParse(this.destination.Config?.eventOverrides);
     const groups = parsedGroups.success ? parsedGroups.data : undefined;
     let matched = 0;
     let unmatched = 0;
@@ -76,18 +75,19 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
     const partitions = new Map<number | undefined, HttpInput[]>();
     for (const input of inputs) {
       const index = resolveOverrideGroup(input.message, this.destination.Config.eventOverrides);
-      this.groupIndices.set(input, index);
-      const partition = partitions.get(index) ?? [];
+      const group = this.overrideAt(index);
+      // Groups that change no request fields share the default evaluation.
+      const fieldsIndex =
+        group?.pathParams !== undefined || group?.queryParams !== undefined ? index : undefined;
+      const partition = partitions.get(fieldsIndex) ?? [];
       partition.push(input);
-      partitions.set(index, partition);
+      partitions.set(fieldsIndex, partition);
     }
     // Bound per-call isolate work: each partition copies its inputs into the same workspace heap.
     for (const [index, partition] of partitions) {
-      const config = effectiveConfig(
-        this.destination.Config,
-        index === undefined ? undefined : this.destination.Config.eventOverrides?.[index as number],
+      const expressions = toExpressions(
+        effectiveConfig(this.destination.Config, this.overrideAt(index)),
       );
-      const expressions = toExpressions(config);
       const { headers, queryParams, pathParams } = expressions;
       // Skip the isolate round-trip when nothing is mapped in this partition.
       if (headers.length + queryParams.length + pathParams.length > 0) {
@@ -104,9 +104,8 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
   }
 
   transformEvent(input: HttpInput): TransformedEvent<HttpBody> {
-    const index = this.groupIndices.get(input);
-    const group =
-      index === undefined ? undefined : this.destination.Config.eventOverrides?.[index as number];
+    const index = resolveOverrideGroup(input.message, this.destination.Config.eventOverrides);
+    const group = this.overrideAt(index);
     const result = this.fieldResults.get(input) ?? NO_FIELDS;
     if (!result.ok)
       throw new ConfigurationError(
@@ -150,13 +149,12 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
 
   getBatchStrategy(): BatchStrategy<HttpBody> {
     const { Config, WorkspaceID } = this.destination;
-    const { format = BodyFormat.JSON, eventOverrides } = Config;
+    const { format = BodyFormat.JSON } = Config;
     return new CustomBatchStrategy<HttpBody>(
       async (payloads) => {
-        const index = groupIndexFromKey(payloads[0].internalGroupKey);
         const { requestBodyTemplate, maxBatchSize } = effectiveConfig(
           Config,
-          index === undefined ? undefined : eventOverrides?.[index as number],
+          this.overrideAt(groupIndexFromKey(payloads[0].internalGroupKey)),
         );
         // Raw config: the control plane sends maxBatchSize as a string.
         // FORM is always single-event, even when a stale config supplies maxBatchSize.

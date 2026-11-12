@@ -114,13 +114,10 @@ export abstract class DestinationIntegration<
   }
 
   /** Optional per-router-call metrics, before validation and before dontBatch splitting. */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  recordCallMetrics(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _inputs: RouterTransformationRequestData[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _tags: { destType: string; workspaceId: string; destinationId: string },
-  ): void {}
+  recordCallMetrics?(
+    inputs: RouterTransformationRequestData[],
+    tags: { destType: string; workspaceId: string; destinationId: string },
+  ): void;
 
   // --- MUST implement ---
 

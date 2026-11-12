@@ -27,9 +27,8 @@ describe('HTTP override resolution', () => {
     expect(resolveOverrideGroup(message, config.eventOverrides)).toBe(expected);
   });
 
-  it('treats absent or malformed groups as unmatched', () => {
+  it('treats absent groups as unmatched', () => {
     expect(resolveOverrideGroup({ type: 'track', event: 'Lead' }, undefined)).toBeUndefined();
-    expect(resolveOverrideGroup({ type: 'track', event: 'Lead' }, {} as never)).toBeUndefined();
   });
 });
 

@@ -8,6 +8,7 @@ import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
 import { sandboxedParseHttpTemplates } from '../v0/destinations/http/templateSandboxClient';
 import { requestFieldExpression } from '../v0/destinations/http/utils';
+import { MAX_EVENT_OVERRIDES } from '../v0/destinations/http/types';
 import {
   actionConfigSchema,
   CustomAudienceDestConfig,
@@ -62,11 +63,11 @@ const httpParseBodySchema = z.object({
         requestBodyTemplate: httpParseTemplate.optional(),
       }),
     )
-    .max(20)
+    .max(MAX_EVENT_OVERRIDES)
     .optional(),
 });
 
-// The templates parse-template verifies, labelled with the `field`/`index` its response reports.
+// The templates parse-template verifies, labelled with the `field`/`index`/`group` it reports.
 // Each request field goes through requestFieldExpression, exactly as the router evaluates it.
 const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
   const surface = (field: string, values: string[], group?: number) =>
@@ -76,13 +77,11 @@ const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
       group,
       template: requestFieldExpression(value),
     }));
-  const groupFields = (
-    config: {
-      requestBodyTemplate?: string;
-      queryParams?: { from: string }[];
-      pathParams?: { path: string }[];
-    },
-    group: number,
+  const fields = (
+    config: Partial<
+      Pick<typeof body, 'requestBodyTemplate' | 'headers' | 'queryParams' | 'pathParams'>
+    >,
+    group?: number,
   ) => [
     ...(config.requestBodyTemplate === undefined
       ? []
@@ -95,6 +94,11 @@ const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
           },
         ]),
     ...surface(
+      'headers',
+      (config.headers ?? []).map(({ from }) => from),
+      group,
+    ),
+    ...surface(
       'queryParams',
       (config.queryParams ?? []).map(({ from }) => from),
       group,
@@ -106,25 +110,8 @@ const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
     ),
   ];
   return [
-    {
-      field: 'requestBodyTemplate',
-      index: undefined,
-      group: undefined,
-      template: body.requestBodyTemplate,
-    },
-    ...surface(
-      'headers',
-      (body.headers ?? []).map(({ from }) => from),
-    ),
-    ...surface(
-      'queryParams',
-      (body.queryParams ?? []).map(({ from }) => from),
-    ),
-    ...surface(
-      'pathParams',
-      (body.pathParams ?? []).map(({ path }) => path),
-    ),
-    ...(body.eventOverrides ?? []).flatMap((config, group) => groupFields(config, group)),
+    ...fields(body),
+    ...(body.eventOverrides ?? []).flatMap((config, group) => fields(config, group)),
   ];
 };
 
@@ -203,7 +190,7 @@ export class EventTestController {
             {
               field: fields[i].field,
               index: fields[i].index,
-              ...(fields[i].group === undefined ? {} : { group: fields[i].group }),
+              group: fields[i].group,
               messages: result.errors,
             },
           ],

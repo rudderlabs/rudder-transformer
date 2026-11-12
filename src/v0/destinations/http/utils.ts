@@ -8,12 +8,10 @@ export const resolveOverrideGroup = (
   message: unknown,
   groups: HttpDestinationConfig['eventOverrides'],
 ): number | undefined => {
-  if (!message || typeof message !== 'object' || !Array.isArray(groups)) return undefined;
+  if (!groups || !message || typeof message !== 'object') return undefined;
   const { type, event } = message as { type?: unknown; event?: unknown };
   if (type !== 'track' || typeof event !== 'string') return undefined;
-  const index = groups.findIndex(
-    (group) => Array.isArray(group?.events) && group.events.includes(event),
-  );
+  const index = groups.findIndex((group) => group.events.includes(event));
   return index === -1 ? undefined : index;
 };
 

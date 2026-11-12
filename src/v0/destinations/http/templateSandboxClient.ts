@@ -11,9 +11,8 @@ import logger from '../../../logger';
 import { IvmScriptRunner, resolveBundlePath } from '../../../util/ivm/scriptRunner';
 import type { ParseTemplateResult } from '../../../util/jsonataTemplate/templateEngine';
 import type {
-  HttpBodyJob,
   HttpBodyResult,
-  RequestFieldJob,
+  RequestFieldExpressions,
   RequestFieldResult,
 } from './httpTemplateSandbox';
 
@@ -51,15 +50,22 @@ export const sandboxedParseHttpTemplates = (
 ): Promise<ParseTemplateResult[]> =>
   execute(workspaceId, 'return parseHttpTemplatesInSandbox($0)', [templates], 'parsing');
 
-// Results are returned per job, in job order.
+export type RequestFieldJob = [RequestFieldExpressions, unknown[]];
+export type HttpBodyJob = [string, unknown[][]];
+
+// Runs every job in one isolate call, in order (compiled expressions are not reentrant), and
+// returns results per job.
+const evaluateJobs = (fn: string) =>
+  `return (async () => { const results = []; for (const job of $0) results.push(await ${fn}(...job)); return results; })()`;
+
 export const sandboxedEvaluateRequestFields = (
   jobs: RequestFieldJob[],
   workspaceId: string,
 ): Promise<RequestFieldResult[][]> =>
-  execute(workspaceId, 'return evaluateRequestFieldsInSandbox($0)', [jobs], 'evaluation');
+  execute(workspaceId, evaluateJobs('evaluateRequestFieldsInSandbox'), [jobs], 'evaluation');
 
 export const sandboxedEvaluateHttpBody = (
   jobs: HttpBodyJob[],
   workspaceId: string,
 ): Promise<HttpBodyResult[][]> =>
-  execute(workspaceId, 'return evaluateHttpBodyInSandbox($0)', [jobs], 'evaluation');
+  execute(workspaceId, evaluateJobs('evaluateHttpBodyInSandbox'), [jobs], 'evaluation');

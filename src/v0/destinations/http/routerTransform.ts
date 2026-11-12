@@ -13,12 +13,11 @@ import type {
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { isObject, removeUndefinedAndNullValues, removeUndefinedValues } from '../../util';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
-import type { PayloadChunk } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { groupPayloadsByCompositeKey } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
+import type { HttpBodyJob } from './templateSandboxClient';
 import type {
   EvaluatedRequestFields,
-  HttpBodyJob,
   HttpBodyResult,
   RequestFieldResult,
 } from './httpTemplateSandbox';
@@ -47,7 +46,7 @@ const groupIndexFromKey = (key: string | undefined): number | undefined =>
 
 type HttpPayload = TransformResult<HttpBody>['successPayloads'][number];
 
-const chunkKey = ({ jobIds }: PayloadChunk<HttpBody>): string => [...jobIds].join(',');
+const chunkKey = (jobIds: Set<number>): string => [...jobIds].join(',');
 
 class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputSchema> {
   // Request fields are evaluated in one isolate call per transformEvents; transformEvent reads them.
@@ -77,13 +76,9 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       const index = resolveOverrideGroup(input.message, Config.eventOverrides);
       if (index !== undefined) matched += 1;
       else if (input.message.type === 'track') unmatched += 1;
-      const group = this.overrideAt(index);
-      // Groups that change no request fields share the default evaluation.
-      const fieldsIndex =
-        group?.pathParams !== undefined || group?.queryParams !== undefined ? index : undefined;
-      const partition = partitions.get(fieldsIndex) ?? [];
+      const partition = partitions.get(index) ?? [];
       partition.push(input);
-      partitions.set(fieldsIndex, partition);
+      partitions.set(index, partition);
     }
     const tags = { destType: 'HTTP', workspaceId, destinationId };
     stats.counter('http_event_override_events', matched, { ...tags, matched: 'true' });
@@ -180,11 +175,13 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
   // Evaluates, in one isolate call, every chunk of these groups that has no result yet.
   private async evaluateBodies(groups: HttpPayload[][]): Promise<void> {
     const pending = groups
-      .map((payloads) => this.chunkGroup(payloads))
-      .map(({ template, chunks }) => ({
-        template,
-        chunks: chunks.filter((chunk) => !this.bodyResults.has(chunkKey(chunk))),
-      }))
+      .map((payloads) => {
+        const { template, chunks } = this.chunkGroup(payloads);
+        return {
+          template,
+          chunks: chunks.filter(({ jobIds }) => !this.bodyResults.has(chunkKey(jobIds))),
+        };
+      })
       .filter(({ chunks }) => chunks.length > 0);
     if (pending.length === 0) return;
     const results = await sandboxedEvaluateHttpBody(
@@ -192,7 +189,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       this.destination.WorkspaceID,
     );
     pending.forEach(({ chunks }, j) =>
-      chunks.forEach((chunk, i) => this.bodyResults.set(chunkKey(chunk), results[j][i])),
+      chunks.forEach(({ jobIds }, i) => this.bodyResults.set(chunkKey(jobIds), results[j][i])),
     );
   }
 
@@ -204,14 +201,13 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
         // evaluated here instead of being found in the results.
         await this.evaluateBodies([...this.pendingGroups.splice(0), payloads]);
         const { chunks } = this.chunkGroup(payloads);
-        const bodies = chunks.map((chunk) => this.bodyResults.get(chunkKey(chunk))!);
         const error = (message: string, jobIds: Set<number>) => ({
           body: {},
           jobIds,
           error: toTransformError(new ConfigurationError(message)),
         });
-        return chunks.map((chunk, i) => {
-          const result = bodies[i];
+        return chunks.map((chunk) => {
+          const result = this.bodyResults.get(chunkKey(chunk.jobIds))!;
           if (!result.ok)
             return error(`Failed to evaluate requestBody template: ${result.error}`, chunk.jobIds);
           if (format === BodyFormat.JSON) {

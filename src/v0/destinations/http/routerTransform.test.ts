@@ -253,10 +253,12 @@ describe('HTTP v2 native router', () => {
       ]);
       // Batchable inputs: one request-field call and one body call for five request groups.
       // The dontBatch input adds its own request-field call; its body joins the same body call.
-      expect(execute.mock.calls.map(([, script]) => script.split('(')[0])).toEqual([
-        'return evaluateRequestFieldsInSandbox',
-        'return evaluateRequestFieldsInSandbox',
-        'return evaluateHttpBodyInSandbox',
+      expect(
+        execute.mock.calls.map(([, script]) => script.match(/evaluate\w+InSandbox/)?.[0]),
+      ).toEqual([
+        'evaluateRequestFieldsInSandbox',
+        'evaluateRequestFieldsInSandbox',
+        'evaluateHttpBodyInSandbox',
       ]);
     } finally {
       execute.mockRestore();

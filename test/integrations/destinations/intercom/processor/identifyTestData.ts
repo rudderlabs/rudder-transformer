@@ -296,7 +296,6 @@ const rETLExternalIdMessage = (externalId: string, email: string | null) => ({
     mappedToDestination: 'true',
     traits: { external_id: externalId },
   },
-  integrations: { INTERCOM: { lookup: 'external_id' } },
   traits: {
     custom_attributes: { key1: 'value1', key2: 'value2' },
     email,
@@ -1712,10 +1711,9 @@ export const identifyTestData = [
   {
     id: 'intercom-identify-test-26',
     name: 'intercom',
-    description: 'V2 version : external_id in rETL traits with email but no lookup override',
+    description: 'V2 version : external_id selected in rETL with an explicit email lookup',
     scenario: 'Business',
-    successCriteria:
-      'Without the lookup override, behaviour is unchanged: match by email and drop external_id',
+    successCriteria: 'Explicit email lookup wins: match by email and drop external_id',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1726,7 +1724,7 @@ export const identifyTestData = [
             destination: v2Destination,
             message: {
               ...rETLExternalIdMessage('user@2', 'test+2@rudderlabs.com'),
-              integrations: { All: true },
+              integrations: { INTERCOM: { lookup: 'email' } },
             },
             metadata: generateMetadata(1),
           },

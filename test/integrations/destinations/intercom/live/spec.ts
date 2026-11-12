@@ -111,13 +111,11 @@ const retlIdentify = (
   traits: { ...retlProfile(ctx), email: null },
 });
 
-// ACT2-1371: a user transformation can rename the identifier to external_id and
-// set the lookup, so the row has both an email and an external_id no contact holds yet.
+// Native v2 external_id selection must keep the ID even when the row also has an email.
 const retlProfileWithEmail = (ctx: RunContext) => ({ ...retlProfile(ctx), email: ctx.email() });
 const retlIdentifyWithEmail = (ctx: RunContext, suffix: string) => ({
   ...baseEvent(ctx, suffix),
   type: 'identify',
-  integrations: { All: true, INTERCOM: { lookup: 'external_id' } },
   context: {
     mappedToDestination: 'true',
     externalId: [

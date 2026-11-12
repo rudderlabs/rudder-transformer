@@ -380,6 +380,36 @@ const deliveryCallsData = [
   {
     httpReq: {
       method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test+2@rudderlabs.com' }],
+        },
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: { type: 'pages', page: 1, per_page: 50, total_pages: 1 },
+        data: [
+          {
+            type: 'contact',
+            id: '7070129940741e45d040',
+            external_id: 'user@2',
+            email: 'test+2@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
       url: 'https://api.eu.intercom.io/contacts/search',
       data: {
         query: {
@@ -571,11 +601,8 @@ const deliveryCallsData = [
       url: 'https://api.intercom.io/contacts/search',
       data: {
         query: {
-          operator: 'OR',
-          value: [
-            { field: 'email', operator: '=', value: 'test+3@rudderlabs.com' },
-            { field: 'external_id', operator: '=', value: 'user@3' },
-          ],
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test+3@rudderlabs.com' }],
         },
       },
       headers: {

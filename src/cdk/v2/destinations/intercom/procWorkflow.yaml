@@ -49,9 +49,9 @@ steps:
       const payload = $.getFieldValueFromMessage(.message, "traits");
       // this is applicable for v2 only
       // without email, keep an explicitly mapped external_id and fall back to user_id
-      // with email, keep it only on an identify that opted in, which findRetlContact matches by it
+      // with email, keep it only for an external_id-selected identify, which findRetlContact matches by it
       const keepsMappedExternalId = $.isRetlIdentifyWithMappedExternalId(.message);
-      payload.external_id = $.outputs.apiVersion === "v2" && !payload.email ? (payload.external_id || payload.user_id) : ($.outputs.apiVersion === "v2" && keepsMappedExternalId ? payload.external_id : null);
+      payload.external_id = $.outputs.apiVersion === "v2" ? (!payload.email ? (payload.external_id || payload.user_id) : (keepsMappedExternalId ? $.getRetlExternalId(.message) : null)) : null;
       payload;
 
   - name: retlContact

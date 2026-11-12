@@ -8,7 +8,7 @@ import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
 import { sandboxedParseHttpTemplates } from '../v0/destinations/http/templateSandboxClient';
 import { requestFieldExpression } from '../v0/destinations/http/utils';
-import { MAX_EVENT_OVERRIDES } from '../v0/destinations/http/types';
+import { MAX_EVENT_OVERRIDES, MAX_OVERRIDE_EVENTS } from '../v0/destinations/http/types';
 import {
   actionConfigSchema,
   CustomAudienceDestConfig,
@@ -59,7 +59,7 @@ const httpParseBodySchema = z.object({
     .array(
       z.object({
         name: z.string().optional(),
-        events: z.array(z.string()).max(MAX_HTTP_PARSE_FIELDS).optional(),
+        events: z.array(z.string()).max(MAX_OVERRIDE_EVENTS).optional(),
         pathParams: httpPathParamsSchema,
         queryParams: httpMappingsSchema,
         requestBodyTemplate: httpParseTemplate.optional(),
@@ -119,27 +119,25 @@ const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
 
 type HttpParseError = { field: string; index?: number; group?: number; messages: string[] };
 
-// An event in two groups makes the router's group choice ambiguous; repeats within one group don't.
+// The router sends an event to the first group listing it, so a later group listing it never applies.
 const duplicateEventErrors = (
   eventOverrides: z.infer<typeof httpParseBodySchema>['eventOverrides'],
 ): HttpParseError[] => {
   const firstGroups = new Map<string, number>();
   return (eventOverrides ?? []).flatMap(({ events }, group) =>
-    (events ?? []).flatMap((event) => {
+    [...new Set(events)].flatMap((event) => {
       const firstGroup = firstGroups.get(event);
       if (firstGroup === undefined) {
         firstGroups.set(event, group);
         return [];
       }
-      return firstGroup === group
-        ? []
-        : [
-            {
-              field: 'events',
-              group,
-              messages: [`event "${event}" is already in eventOverrides[${firstGroup}]`],
-            },
-          ];
+      return [
+        {
+          field: 'events',
+          group,
+          messages: [`event "${event}" is already in eventOverrides[${firstGroup}]`],
+        },
+      ];
     }),
   );
 };
@@ -235,24 +233,17 @@ export class EventTestController {
       ...fields
         .filter(({ template }) => template === undefined)
         .map(({ field, index, group }) => ({ field, index, group, messages: ['is required'] })),
-      ...results.flatMap((result, i) =>
-        result.valid
-          ? []
-          : [
-              {
-                field: present[i].field,
-                index: present[i].index,
-                group: present[i].group,
-                messages: result.errors,
-              },
-            ],
-      ),
+      ...present.flatMap(({ field, index, group }, i) => {
+        const result = results[i];
+        return result.valid ? [] : [{ field, index, group, messages: result.errors }];
+      }),
       ...duplicateEventErrors(eventOverrides),
     ];
-    ctx.body =
-      errors.length === 0
-        ? { valid: true, errors }
-        : { valid: false, errors, message: errorMessage(errors, eventOverrides) };
+    ctx.body = {
+      valid: errors.length === 0,
+      errors,
+      ...(errors.length > 0 && { message: errorMessage(errors, eventOverrides) }),
+    };
   }
 
   public static async parseCustomAudienceTemplate(ctx: Context) {

@@ -31,10 +31,11 @@ const batchSize = z.coerce.number().int().min(1).max(MAX_BATCH_SIZE);
 const pathParams = z.array(z.object({ path: z.string() }));
 const mappings = z.array(mapping);
 
+export const MAX_OVERRIDE_EVENTS = 100;
 const overrideGroup = z
   .object({
     name: z.string().min(1),
-    events: z.array(z.string().min(1)).min(1).max(100),
+    events: z.array(z.string().min(1)).min(1).max(MAX_OVERRIDE_EVENTS),
     pathParams: pathParams.optional(),
     queryParams: mappings.optional(),
     requestBodyTemplate: z.string().min(1).optional(),

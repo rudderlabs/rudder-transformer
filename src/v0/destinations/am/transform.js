@@ -7,6 +7,8 @@ const get = require('get-value');
 const set = require('set-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
+const { isFeatureEnabled } = require('../../../util/featureFlags');
+const { getFormData } = require('../../../adapters/network');
 const {
   EventType,
   SpecedTraits,
@@ -54,6 +56,13 @@ const logger = require('../../../logger');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const EVENTS_KEY_PATH = 'body.JSON.events';
+
+const GZIP_FLAGS = {
+  '2/httpapi': 'AM_GZIP_HTTPAPI_ENABLED_WORKSPACE_IDS',
+  batch: 'AM_GZIP_BATCH_ENABLED_WORKSPACE_IDS',
+  groupidentify: 'AM_GZIP_GROUPIDENTIFY_ENABLED_WORKSPACE_IDS',
+  usermap: 'AM_GZIP_USERMAP_ENABLED_WORKSPACE_IDS',
+};
 
 const baseEndpoint = (destConfig) => {
   let retVal;
@@ -1117,6 +1126,28 @@ const processRouterDest = async (inputs, reqMetadata) => {
       successRespList.push(
         getSuccessRespEvents(input.message, [input.metadata], input.destination, false),
       );
+    }
+  }
+  // Serialize only after the router has read body.JSON to decide and assemble batches.
+  for (const response of successRespList) {
+    const workspaceId = response.metadata[0]?.workspaceId;
+    if (workspaceId) {
+      const requests = Array.isArray(response.batchedRequest)
+        ? response.batchedRequest
+        : [response.batchedRequest];
+      for (const request of requests) {
+        const flag = GZIP_FLAGS[request.endpointPath];
+        if (flag && isFeatureEnabled(flag, workspaceId)) {
+          if (request.endpointPath === 'groupidentify' || request.endpointPath === 'usermap') {
+            request.body.GZIP = { payload: getFormData(request.body.FORM).toString() };
+            request.body.FORM = {};
+            request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+          } else {
+            request.body.GZIP = { payload: JSON.stringify(request.body.JSON) };
+            request.body.JSON = {};
+          }
+        }
+      }
     }
   }
   return sortBatchesByMinJobId([...successRespList, ...errorRespList]);

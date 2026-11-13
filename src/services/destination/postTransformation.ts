@@ -20,6 +20,7 @@ import { DeleteUsersError } from '../../v0/util/errorTypes/deleteUsersError';
 import tags from '../../v0/util/tags';
 import { ErrorReportingService } from '../errorReporting';
 import logger from '../../logger';
+import { validateDeliveryRequestBody } from './validateDeliveryRequestBody';
 
 const defaultErrorMessages = {
   router: '[Router Transform] Error occurred while processing the payload.',
@@ -79,9 +80,25 @@ export class DestinationPostTransformationService {
     implementation: string,
     destinationType: string,
   ): RouterTransformationResponse[] {
-    const resultantPayloads: RouterTransformationResponse[] = transformedPayloads.map(
-      (payload) => ({ ...payload }),
-    );
+    const resultantPayloads: RouterTransformationResponse[] = transformedPayloads.map((payload) => {
+      if (payload.statusCode < 200 || payload.statusCode >= 300) return { ...payload };
+      try {
+        validateDeliveryRequestBody(payload.batchedRequest);
+        return { ...payload };
+      } catch (error) {
+        const errObj = generateErrorObject(error, metaTo.errorDetails);
+        const failure = {
+          metadata: payload.metadata,
+          destination: payload.destination,
+          batched: false,
+          statusCode: errObj.status,
+          error: errObj.message || defaultErrorMessages.router,
+          statTags: errObj.statTags,
+        } as RouterTransformationResponse;
+        ErrorReportingService.reportError(error as Error, metaTo.errorContext, failure);
+        return failure;
+      }
+    });
     resultantPayloads.forEach((resultantPayload) => {
       if (Array.isArray(resultantPayload.batchedRequest)) {
         resultantPayload.batchedRequest = resultantPayload.batchedRequest.map((request) => ({

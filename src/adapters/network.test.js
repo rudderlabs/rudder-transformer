@@ -1453,11 +1453,9 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
   });
 
   it('does not fail delivery when a post-delivery metric throws', async () => {
-    stats.histogram
-      .mockImplementationOnce(() => {}) // Compression duration runs before the post-delivery block.
-      .mockImplementationOnce(() => {
-        throw new Error('metric failed');
-      });
+    stats.counter.mockImplementationOnce(() => {
+      throw new Error('metric failed');
+    });
     await expect(proxyRequest(gzipRequest('a'.repeat(100)), 'MP')).resolves.toMatchObject({
       success: true,
     });

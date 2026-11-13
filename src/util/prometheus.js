@@ -261,21 +261,6 @@ class Prometheus {
   }
 
   createMetrics(enableSummaryMetrics) {
-    const compressionLabels = ['destType', 'endpointPath', 'workspaceId'];
-    const deliveryLabels = [
-      'destType',
-      'endpointPath',
-      'destinationId',
-      'workspaceId',
-      'sourceId',
-      'feature',
-      'module',
-      'implementation',
-    ];
-    const deliveryByteBuckets = [
-      64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304, 16777216,
-      52428800,
-    ];
     const metrics = [
       // Counters
 
@@ -529,12 +514,11 @@ class Prometheus {
           'sourceId',
         ],
       },
-
       {
         name: 'delivery_compression_bytes_saved_total',
         help: 'Bytes saved by GZIP proxy delivery',
         type: 'counter',
-        labelNames: compressionLabels,
+        labelNames: ['destType', 'endpointPath', 'workspaceId'],
       },
 
       // Gauges
@@ -835,32 +819,48 @@ class Prometheus {
         name: 'delivery_payload_size_bytes',
         help: 'Uncompressed (pre-compression) size in bytes of the outbound delivery request body',
         type: 'histogram',
-        labelNames: [...deliveryLabels, 'compressed'],
+        labelNames: [
+          'destType',
+          'endpointPath',
+          'destinationId',
+          'workspaceId',
+          'sourceId',
+          'feature',
+          'module',
+          'implementation',
+          'compressed',
+        ],
         // Small-end-weighted so sub-1KB payloads are legible (default Prometheus buckets are
         // latency-scaled and collapse everything under 1KB), extended to 50MB so the large-batch
         // tail this metric exists to size (destination body limits run to tens of MB) is not lost
         // in a single +Inf bucket.
-        buckets: deliveryByteBuckets,
+        buckets: [
+          64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304,
+          16777216, 52428800,
+        ],
       },
       {
         name: 'delivery_compressed_payload_size_bytes',
         help: 'Wire size in bytes of the GZIP proxy delivery body',
         type: 'histogram',
-        labelNames: compressionLabels,
-        buckets: deliveryByteBuckets,
+        labelNames: ['destType', 'endpointPath', 'workspaceId'],
+        buckets: [
+          64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304,
+          16777216, 52428800,
+        ],
       },
       {
         name: 'delivery_compression_ratio',
         help: 'Uncompressed bytes divided by GZIP wire bytes for proxy delivery',
         type: 'histogram',
-        labelNames: compressionLabels,
+        labelNames: ['destType', 'endpointPath', 'workspaceId'],
         buckets: [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10, 20, 50, 100],
       },
       {
         name: 'delivery_compression_duration_seconds',
         help: 'Time spent preparing GZIP proxy delivery in seconds',
         type: 'histogram',
-        labelNames: compressionLabels,
+        labelNames: ['destType', 'endpointPath', 'workspaceId'],
         buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10],
       },
 

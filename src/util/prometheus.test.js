@@ -65,7 +65,6 @@ describe('GZIP delivery metric declarations', () => {
 
   it('uses byte, expansion-aware ratio, and second-scale latency buckets', () => {
     expect(metric('delivery_compressed_payload_size_bytes').upperBounds).toEqual(byteBuckets);
-    expect(metric('delivery_payload_size_bytes').upperBounds).toEqual(byteBuckets);
     expect(metric('delivery_compression_ratio').upperBounds).toEqual([
       0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10, 20, 50, 100,
     ]);

@@ -433,7 +433,7 @@ describe('MetricsAggregator', () => {
     });
     const mockResetMetrics = jest.fn();
 
-    const metricsAggregator = new MetricsAggregator({
+    const metricsAggregator = new MetricsAggregator({ 
       prometheusRegistry: { getMetricsAsJSON: mockGetMetricsAsJSON, resetMetrics: mockResetMetrics }
     });
     
@@ -464,7 +464,7 @@ describe('MetricsAggregator', () => {
       throw new Error('Reset metrics error');
     });
 
-    const metricsAggregator = new MetricsAggregator({
+    const metricsAggregator = new MetricsAggregator({ 
       prometheusRegistry: { resetMetrics: mockResetMetrics }
     });
     
@@ -625,7 +625,7 @@ describe('MetricsAggregator', () => {
       ];
     });
 
-    const metricsAggregator = new MetricsAggregator({
+    const metricsAggregator = new MetricsAggregator({ 
       prometheusRegistry: { getMetricsAsJSON: mockGetMetricsAsJSON }
     });
     

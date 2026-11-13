@@ -481,6 +481,26 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
   return { httpResponse, processedResponse };
 };
 
+// INT-7033: baseline distribution of uncompressed delivery-body sizes, keyed by
+// destType / endpointPath / workspace. Fired from proxyRequest (the live proxy-delivery path)
+// rather than prepareProxyRequest, so it carries the authoritative destType (the proxy arg), sees
+// the request's endpointPath and per-job metadata, and never fires for the /proxyTest payload-
+// comparison route (which calls prepareProxy directly and never delivers). `compressed` marks
+// deliveries already on the GZIP format.
+const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }) => {
+  const { payload, payloadFormat } = getPayloadData(body);
+  const size = getUncompressedPayloadSize(payload, payloadFormat);
+  if (size === undefined) {
+    return;
+  }
+  stats.histogram('delivery_payload_size_bytes', size, {
+    ...logger.getLogMetadata(metadata),
+    destType,
+    endpointPath: endpointPath ?? '',
+    compressed: payloadFormat === 'GZIP',
+  });
+};
+
 /**
  * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
  * note: needed for test api
@@ -490,18 +510,15 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
 const proxyRequest = async (request, destType) => {
   const { metadata, endpointPath, body } = request;
   const { payload, payloadFormat } = getPayloadData(body);
-  const deliveryTags = {
-    ...logger.getLogMetadata(metadata),
-    destType,
-    endpointPath: endpointPath ?? '',
-  };
-  const compressionTags = {
-    destType,
-    endpointPath: deliveryTags.endpointPath,
-    ...(deliveryTags.workspaceId && { workspaceId: deliveryTags.workspaceId }),
-  };
   let preparedRequest;
+  let compressionTags;
   if (payloadFormat === 'GZIP') {
+    const { workspaceId } = logger.getLogMetadata(metadata);
+    compressionTags = {
+      destType,
+      endpointPath: endpointPath ?? '',
+      ...(workspaceId && { workspaceId }),
+    };
     const startedAt = process.hrtime.bigint();
     compressionInflight += 1;
     stats.gauge('delivery_compression_inflight', compressionInflight);
@@ -520,15 +537,11 @@ const proxyRequest = async (request, destType) => {
     preparedRequest = await prepareProxyRequest(request);
   }
   const { endpoint, data, method, params, headers } = preparedRequest;
-  try {
-    // INT-7033: baseline size only on live proxy deliveries, not direct /proxyTest preparation.
-    const uncompressed = getUncompressedPayloadSize(payload, payloadFormat);
-    if (uncompressed !== undefined) {
-      stats.histogram('delivery_payload_size_bytes', uncompressed, {
-        ...deliveryTags,
-        compressed: payloadFormat === 'GZIP',
-      });
-      if (payloadFormat === 'GZIP') {
+  fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
+  if (payloadFormat === 'GZIP') {
+    try {
+      const uncompressed = getUncompressedPayloadSize(payload, payloadFormat);
+      if (uncompressed !== undefined) {
         const wireBytes = Buffer.byteLength(data);
         stats.histogram('delivery_compressed_payload_size_bytes', wireBytes, compressionTags);
         stats.histogram('delivery_compression_ratio', uncompressed / wireBytes, compressionTags);
@@ -538,9 +551,9 @@ const proxyRequest = async (request, destType) => {
           compressionTags,
         );
       }
+    } catch (err) {
+      logger.debug(`Delivery metric failed: ${err}`);
     }
-  } catch (err) {
-    logger.debug(`Delivery metric failed: ${err}`);
   }
   const requestOptions = {
     url: endpoint,

@@ -3,7 +3,6 @@ import { Integration } from './routerTransform';
 import { requestFieldExpression } from './utils';
 import { httpTemplateSandboxRunner } from './templateSandboxClient';
 import { prepareProxyRequest } from '../../../adapters/network';
-import stats from '../../../util/stats';
 import type { RouterTransformationRequestData } from '../../../types';
 
 type NativeResponse = {
@@ -262,38 +261,6 @@ describe('HTTP v2 native router', () => {
       ]);
     } finally {
       execute.mockRestore();
-    }
-  });
-
-  it('counts valid track inputs by override match, including dontBatch inputs', async () => {
-    const spy = jest.spyOn(stats, 'counter').mockImplementation(() => undefined);
-    try {
-      const events = overrideEvents(
-        { eventOverrides: [{ name: 'Lead', events: ['Lead'], maxBatchSize: '1' }] },
-        ['Lead', 'Lead', 'other', 'Lead'],
-      );
-      events[1].destination = {
-        ...events[1].destination,
-        Config: { ...events[1].destination.Config, apiUrl: '' },
-      };
-      events[2].metadata.dontBatch = true;
-      events[3].message = { ...events[3].message, type: 'identify' as const };
-      await processDestinationIntegration(events, Integration, {});
-      const totals = { true: 0, false: 0 };
-      for (const [name, value, tags] of spy.mock.calls) {
-        if (name === 'http_event_override_events') {
-          expect(tags).toEqual({
-            destType: 'HTTP',
-            workspaceId: 'ws-http',
-            destinationId: 'http-test',
-            matched: expect.any(String),
-          });
-          totals[(tags as { matched: 'true' | 'false' }).matched] += value as number;
-        }
-      }
-      expect(totals).toEqual({ true: 1, false: 1 });
-    } finally {
-      spy.mockRestore();
     }
   });
 

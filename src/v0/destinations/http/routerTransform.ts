@@ -1,5 +1,4 @@
 import { ConfigurationError } from '@rudderstack/integrations-lib';
-import stats from '../../../util/stats';
 import {
   BodyFormat,
   CustomBatchStrategy,
@@ -15,9 +14,9 @@ import { isObject, removeUndefinedAndNullValues, removeUndefinedValues } from '.
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { groupPayloadsByCompositeKey } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
-import type { HttpBodyJob } from './templateSandboxClient';
 import type {
   EvaluatedRequestFields,
+  HttpBodyJob,
   HttpBodyResult,
   RequestFieldResult,
 } from './httpTemplateSandbox';
@@ -68,21 +67,14 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
     inputs: HttpInput[],
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<HttpBody>> {
-    const { ID: destinationId, WorkspaceID: workspaceId, Config } = this.destination;
+    const { WorkspaceID: workspaceId, Config } = this.destination;
     const partitions = new Map<number | undefined, HttpInput[]>();
-    let matched = 0;
-    let unmatched = 0;
     for (const input of inputs) {
       const index = resolveOverrideGroup(input.message, Config.eventOverrides);
-      if (index !== undefined) matched += 1;
-      else if (input.message.type === 'track') unmatched += 1;
       const partition = partitions.get(index) ?? [];
       partition.push(input);
       partitions.set(index, partition);
     }
-    const tags = { destType: 'HTTP', workspaceId, destinationId };
-    stats.counter('http_event_override_events', matched, { ...tags, matched: 'true' });
-    stats.counter('http_event_override_events', unmatched, { ...tags, matched: 'false' });
     const jobs = [...partitions]
       .map(([index, partition]) => ({
         partition,

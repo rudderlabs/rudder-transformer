@@ -412,9 +412,8 @@ const getUncompressedPayloadSize = (payload, format) => {
  * @param {*} request
  * @returns
  */
-const prepareProxyRequest = async (request) => {
+const prepareProxyRequest = async (request, selectedPayload = getPayloadData(request.body)) => {
   const {
-    body,
     method,
     params,
     endpoint,
@@ -422,7 +421,7 @@ const prepareProxyRequest = async (request) => {
     destinationConfig: config,
   } = request;
   const headers = { ...incomingHeaders };
-  const { payload, payloadFormat } = getPayloadData(body);
+  const { payload, payloadFormat } = selectedPayload;
   if (payloadFormat && payloadFormat === 'GZIP') {
     headers['Content-Encoding'] = 'gzip';
   }
@@ -480,24 +479,65 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
   return { httpResponse, processedResponse };
 };
 
-// INT-7033: baseline distribution of uncompressed delivery-body sizes, keyed by
-// destType / endpointPath / workspace. Fired from proxyRequest (the live proxy-delivery path)
-// rather than prepareProxyRequest, so it carries the authoritative destType (the proxy arg), sees
-// the request's endpointPath and per-job metadata, and never fires for the /proxyTest payload-
-// comparison route (which calls prepareProxy directly and never delivers). `compressed` marks
-// deliveries already on the GZIP format.
-const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }) => {
-  const { payload, payloadFormat } = getPayloadData(body);
-  const size = getUncompressedPayloadSize(payload, payloadFormat);
-  if (size === undefined) {
+const safelyRunDeliveryObservation = (observe) => {
+  try {
+    return observe();
+  } catch (err) {
+    logger.debug(`Delivery metric failed: ${err}`);
+    return undefined;
+  }
+};
+
+const prepareDeliveryRequest = async (request, selectedPayload, tags) => {
+  if (selectedPayload.payloadFormat !== 'GZIP') {
+    return prepareProxyRequest(request, selectedPayload);
+  }
+  const startedAt = safelyRunDeliveryObservation(() => process.hrtime.bigint());
+  // Only decrement when the matching increment succeeded; a metric exception must not affect delivery.
+  const inflightIncremented = tags
+    ? safelyRunDeliveryObservation(() =>
+        stats.gaugeDelta('delivery_compression_inflight', 1, tags),
+      ) === true
+    : false;
+  try {
+    return await prepareProxyRequest(request, selectedPayload);
+  } finally {
+    if (tags && startedAt !== undefined) {
+      safelyRunDeliveryObservation(() => {
+        const duration = Number(process.hrtime.bigint() - startedAt) / 1e9;
+        stats.histogram('delivery_compression_duration_seconds', duration, tags);
+      });
+    }
+    if (inflightIncremented) {
+      safelyRunDeliveryObservation(() =>
+        stats.gaugeDelta('delivery_compression_inflight', -1, tags),
+      );
+    }
+  }
+};
+
+const fireCompressionStats = (data, uncompressed, tags) => {
+  if (!tags || uncompressed === undefined) {
     return;
   }
-  stats.histogram('delivery_payload_size_bytes', size, {
-    ...logger.getLogMetadata(metadata),
-    destType,
-    endpointPath: endpointPath ?? '',
-    compressed: payloadFormat === 'GZIP',
-  });
+  const wireBytes = safelyRunDeliveryObservation(() => Buffer.byteLength(data));
+  if (wireBytes === undefined) {
+    return;
+  }
+  safelyRunDeliveryObservation(() =>
+    stats.histogram('delivery_compressed_payload_size_bytes', wireBytes, tags),
+  );
+  safelyRunDeliveryObservation(() =>
+    stats.histogram('delivery_compression_ratio', uncompressed / wireBytes, tags),
+  );
+  const difference = uncompressed - wireBytes;
+  // Materialize both label-identical series, even if this workspace only ever saves or expands.
+  safelyRunDeliveryObservation(() =>
+    stats.counter('delivery_compression_bytes_saved_total', Math.max(difference, 0), tags),
+  );
+  safelyRunDeliveryObservation(() =>
+    stats.counter('delivery_compression_bytes_expanded_total', Math.max(-difference, 0), tags),
+  );
 };
 
 /**
@@ -508,8 +548,31 @@ const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }
  */
 const proxyRequest = async (request, destType) => {
   const { metadata, endpointPath, body } = request;
-  const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
-  fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
+  const selectedPayload = getPayloadData(body);
+  const { payload, payloadFormat } = selectedPayload;
+  const tags = safelyRunDeliveryObservation(() => ({
+    ...logger.getLogMetadata(metadata),
+    destType,
+    endpointPath: endpointPath ?? '',
+  }));
+  const { endpoint, data, method, params, headers } = await prepareDeliveryRequest(
+    request,
+    selectedPayload,
+    tags,
+  );
+  // INT-7033: baseline size only on live proxy deliveries, not direct /proxyTest preparation.
+  const uncompressed = tags ? getUncompressedPayloadSize(payload, payloadFormat) : undefined;
+  if (uncompressed !== undefined) {
+    safelyRunDeliveryObservation(() =>
+      stats.histogram('delivery_payload_size_bytes', uncompressed, {
+        ...tags,
+        compressed: payloadFormat === 'GZIP',
+      }),
+    );
+  }
+  if (payloadFormat === 'GZIP') {
+    fireCompressionStats(data, uncompressed, tags);
+  }
   const requestOptions = {
     url: endpoint,
     data,

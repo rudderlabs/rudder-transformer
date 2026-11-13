@@ -63,6 +63,14 @@ const gauge = (name, value, tags = {}) => {
   statsClient.gauge(name, value, tags);
 };
 
+const gaugeDelta = (name, delta, tags = {}) => {
+  if (!enableStats || !statsClient) {
+    return false;
+  }
+
+  return statsClient.gaugeDelta(name, delta, tags);
+};
+
 const histogram = (name, value, tags = {}) => {
   if (!enableStats || !statsClient) {
     return;
@@ -109,6 +117,7 @@ module.exports = {
   increment,
   counter,
   gauge,
+  gaugeDelta,
   histogram,
   metricsController,
   resetMetricsController,

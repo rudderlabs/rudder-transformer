@@ -57,6 +57,7 @@ class Prometheus {
     this.aggregatorRegistry = new prometheusClient.AggregatorRegistry();
 
     this.createMetrics(enableSummaryMetrics);
+    this.compressionInflight = new Map();
   }
 
   async metricsController(ctx) {
@@ -254,6 +255,41 @@ class Prometheus {
     }
   }
 
+  gaugeDelta(name, delta, tags = {}) {
+    const fullName = appendPrefix(name);
+    try {
+      let metric = this.prometheusRegistry.getSingleMetric(fullName);
+      if (!metric) {
+        metric = this.newGaugeStat(fullName, name, Object.keys(tags));
+      }
+      const supportedTags = getSupportedMetricTags(metric, tags, fullName);
+      if (name === 'delivery_compression_inflight') {
+        const key = JSON.stringify(metric.labelNames.map((label) => supportedTags[label] ?? ''));
+        const count = (this.compressionInflight.get(key)?.count ?? 0) + delta;
+        metric.set(supportedTags, count);
+        if (count === 0) {
+          this.compressionInflight.delete(key);
+        } else {
+          this.compressionInflight.set(key, { tags: supportedTags, count });
+        }
+      } else {
+        metric.inc(supportedTags, delta);
+      }
+      return true;
+    } catch (e) {
+      logger.error(`Prometheus: Gauge metric ${fullName} failed with error ${e}. Delta: ${delta}`);
+      return false;
+    }
+  }
+
+  resetMetrics() {
+    this.prometheusRegistry.resetMetrics();
+    const gauge = this.prometheusRegistry.getSingleMetric(
+      appendPrefix('delivery_compression_inflight'),
+    );
+    this.compressionInflight.forEach(({ tags, count }) => gauge.set(tags, count));
+  }
+
   async shutdown() {
     if (this.metricsAggregator) {
       await this.metricsAggregator.shutdown();
@@ -261,6 +297,20 @@ class Prometheus {
   }
 
   createMetrics(enableSummaryMetrics) {
+    const deliveryLabels = [
+      'destType',
+      'endpointPath',
+      'destinationId',
+      'workspaceId',
+      'sourceId',
+      'feature',
+      'module',
+      'implementation',
+    ];
+    const deliveryByteBuckets = [
+      64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304, 16777216,
+      52428800,
+    ];
     const metrics = [
       // Counters
 
@@ -515,7 +565,26 @@ class Prometheus {
         ],
       },
 
+      {
+        name: 'delivery_compression_bytes_saved_total',
+        help: 'Bytes saved by GZIP proxy delivery (subtract expanded bytes for net savings)',
+        type: 'counter',
+        labelNames: deliveryLabels,
+      },
+      {
+        name: 'delivery_compression_bytes_expanded_total',
+        help: 'Additional bytes sent when GZIP proxy delivery expands a body',
+        type: 'counter',
+        labelNames: deliveryLabels,
+      },
+
       // Gauges
+      {
+        name: 'delivery_compression_inflight',
+        help: 'GZIP proxy deliveries currently being compressed',
+        type: 'gauge',
+        labelNames: deliveryLabels,
+      },
       {
         name: 'v0_transformation_time',
         help: 'v0_transformation_time',
@@ -807,25 +876,33 @@ class Prometheus {
         name: 'delivery_payload_size_bytes',
         help: 'Uncompressed (pre-compression) size in bytes of the outbound delivery request body',
         type: 'histogram',
-        labelNames: [
-          'destType',
-          'endpointPath',
-          'destinationId',
-          'workspaceId',
-          'sourceId',
-          'feature',
-          'module',
-          'implementation',
-          'compressed',
-        ],
+        labelNames: [...deliveryLabels, 'compressed'],
         // Small-end-weighted so sub-1KB payloads are legible (default Prometheus buckets are
         // latency-scaled and collapse everything under 1KB), extended to 50MB so the large-batch
         // tail this metric exists to size (destination body limits run to tens of MB) is not lost
         // in a single +Inf bucket.
-        buckets: [
-          64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304,
-          16777216, 52428800,
-        ],
+        buckets: deliveryByteBuckets,
+      },
+      {
+        name: 'delivery_compressed_payload_size_bytes',
+        help: 'Wire size in bytes of the GZIP proxy delivery body',
+        type: 'histogram',
+        labelNames: deliveryLabels,
+        buckets: deliveryByteBuckets,
+      },
+      {
+        name: 'delivery_compression_ratio',
+        help: 'Uncompressed bytes divided by GZIP wire bytes for proxy delivery',
+        type: 'histogram',
+        labelNames: deliveryLabels,
+        buckets: [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10, 20, 50, 100],
+      },
+      {
+        name: 'delivery_compression_duration_seconds',
+        help: 'Time spent preparing GZIP proxy delivery in seconds',
+        type: 'histogram',
+        labelNames: deliveryLabels,
+        buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10],
       },
 
       // tracking plan metrics:

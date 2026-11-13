@@ -1317,6 +1317,9 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
   beforeEach(() => {
     axios.mockClear();
     stats.histogram.mockClear();
+    stats.timing.mockClear();
+    stats.counter.mockReset();
+    stats.gauge.mockClear();
     axios.mockResolvedValue({ status: 200, data: {} });
   });
 
@@ -1362,7 +1365,7 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
 
     await proxyRequest(request, 'MP');
 
-    expect(stats.histogram).toHaveBeenCalledTimes(1);
+    expect(stats.histogram).toHaveBeenCalledTimes(4);
     expect(stats.histogram).toHaveBeenCalledWith(
       'delivery_payload_size_bytes',
       Buffer.byteLength(rawArray),
@@ -1375,17 +1378,106 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
     );
   });
 
-  it('does not fire from prepareProxyRequest (the /proxyTest path never delivers)', async () => {
-    await prepareProxyRequest({
-      body: { JSON: { a: 1 } },
-      endpoint: 'https://example.com',
-      endpointPath: '/x',
-      method: 'POST',
-      headers: {},
-      metadata: { workspaceId: 'ws-1' },
-    });
+  const gzipRequest = (payload) => ({
+    body: { GZIP: { payload } },
+    endpoint: 'https://api.mixpanel.com/engage',
+    endpointPath: '/engage',
+    method: 'POST',
+    headers: {},
+    metadata: { destinationId: 'dest-2', workspaceId: 'ws-2', sourceId: 'src-2' },
+  });
+  const gzipTags = {
+    destType: 'MP',
+    endpointPath: '/engage',
+    workspaceId: 'ws-2',
+  };
 
-    expect(stats.histogram).not.toHaveBeenCalled();
+  it('records wire bytes, ratio, savings, duration and a balanced in-flight gauge', async () => {
+    const payload = `🔑${'repeat me '.repeat(100)}`;
+    const response = await proxyRequest(gzipRequest(payload), 'MP');
+    const wireBytes = Buffer.byteLength(axios.mock.calls[0][0].data);
+    const rawBytes = Buffer.byteLength(payload);
+
+    expect(response.success).toBe(true);
+    expect(wireBytes).toBeLessThan(rawBytes);
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_compressed_payload_size_bytes',
+      wireBytes,
+      gzipTags,
+    );
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_compression_ratio',
+      rawBytes / wireBytes,
+      gzipTags,
+    );
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_compression_duration_seconds',
+      expect.any(Number),
+      gzipTags,
+    );
+    expect(
+      stats.histogram.mock.calls.find(
+        ([name]) => name === 'delivery_compression_duration_seconds',
+      )[1],
+    ).toBeGreaterThanOrEqual(0);
+    expect(stats.counter).toHaveBeenCalledWith(
+      'delivery_compression_bytes_saved_total',
+      rawBytes - wireBytes,
+      gzipTags,
+    );
+    expect(stats.gauge.mock.calls).toEqual([
+      ['delivery_compression_inflight', 1],
+      ['delivery_compression_inflight', 0],
+    ]);
+    expect(stats.timing).not.toHaveBeenCalledWith(
+      'outgoing_request_latency',
+      expect.anything(),
+      expect.anything(),
+    );
+  });
+
+  it('emits no compression metrics for a non-GZIP delivery', async () => {
+    await proxyRequest(
+      {
+        ...gzipRequest('unused'),
+        body: { JSON: { batch: ['value'] } },
+      },
+      'MP',
+    );
+
+    expect(stats.histogram.mock.calls.map(([name]) => name)).toEqual([
+      'delivery_payload_size_bytes',
+    ]);
+    expect(stats.counter).not.toHaveBeenCalled();
+    expect(stats.gauge).not.toHaveBeenCalled();
+  });
+
+  it('does not fail delivery when a post-delivery metric throws', async () => {
+    stats.counter.mockImplementationOnce(() => {
+      throw new Error('metric failed');
+    });
+    await expect(proxyRequest(gzipRequest('a'.repeat(100)), 'MP')).resolves.toMatchObject({
+      success: true,
+    });
+    expect(stats.gauge.mock.calls).toEqual([
+      ['delivery_compression_inflight', 1],
+      ['delivery_compression_inflight', 0],
+    ]);
+  });
+
+  it('records duration and decrements the in-flight gauge even when compression fails', async () => {
+    await expect(proxyRequest(gzipRequest({ invalid: true }), 'MP')).rejects.toBeInstanceOf(
+      PlatformError,
+    );
+    expect(stats.histogram).toHaveBeenCalledWith(
+      'delivery_compression_duration_seconds',
+      expect.any(Number),
+      gzipTags,
+    );
+    expect(stats.gauge.mock.calls).toEqual([
+      ['delivery_compression_inflight', 1],
+      ['delivery_compression_inflight', 0],
+    ]);
   });
 
   it('does not emit or throw when the body has no non-empty payload format', async () => {

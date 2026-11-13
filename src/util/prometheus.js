@@ -514,8 +514,20 @@ class Prometheus {
           'sourceId',
         ],
       },
+      {
+        name: 'delivery_compression_bytes_saved_total',
+        help: 'Bytes saved by GZIP proxy delivery',
+        type: 'counter',
+        labelNames: ['destType', 'endpointPath', 'workspaceId'],
+      },
 
       // Gauges
+      {
+        name: 'delivery_compression_inflight',
+        help: 'GZIP proxy deliveries currently being compressed',
+        type: 'gauge',
+        labelNames: [],
+      },
       {
         name: 'v0_transformation_time',
         help: 'v0_transformation_time',
@@ -826,6 +838,30 @@ class Prometheus {
           64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304,
           16777216, 52428800,
         ],
+      },
+      {
+        name: 'delivery_compressed_payload_size_bytes',
+        help: 'Wire size in bytes of the GZIP proxy delivery body',
+        type: 'histogram',
+        labelNames: ['destType', 'endpointPath', 'workspaceId'],
+        buckets: [
+          64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304,
+          16777216, 52428800,
+        ],
+      },
+      {
+        name: 'delivery_compression_ratio',
+        help: 'Uncompressed bytes divided by GZIP wire bytes for proxy delivery',
+        type: 'histogram',
+        labelNames: ['destType', 'endpointPath', 'workspaceId'],
+        buckets: [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10, 20, 50, 100],
+      },
+      {
+        name: 'delivery_compression_duration_seconds',
+        help: 'Time spent preparing GZIP proxy delivery in seconds',
+        type: 'histogram',
+        labelNames: ['destType', 'endpointPath', 'workspaceId'],
+        buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10],
       },
 
       // tracking plan metrics:

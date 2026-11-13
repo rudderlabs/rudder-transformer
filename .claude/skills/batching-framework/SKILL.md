@@ -676,6 +676,14 @@ place — it fails one job while the rest of the batch still ships. For partners
 whole request on one bad item, pair it with the networkHandler fallback above; transform-time
 checks cannot cover rules the partner has and you don't.
 
+### Lookup failures in `transformEvent()`
+
+Throw lookup failures with the status from `processAxiosResponse`; the framework turns it into the
+job's status. With no HTTP response the status comes from `nodeSysErrorToStatus` and `response` is
+a string. Handle only the partner's documented "not found"; never treat other failures as "not
+found", hard-code `|| 400`, or read the body before a 2xx. Reference:
+`src/v0/destinations/hs_audience/lookup.ts`; test a 5xx and a rejected `{ code: 'EPIPE' }`.
+
 ## Metrics
 
 The framework emits these metrics automatically:

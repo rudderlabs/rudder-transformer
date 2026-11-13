@@ -434,7 +434,7 @@ describe('lookupDistinctEmails', () => {
 
   it.each([
     ['ENOTFOUND', 400, 'HubSpot contact lookup was rejected'],
-    ['EPIPE', 400, 'HubSpot contact lookup was rejected'],
+    ['EPIPE', 500, 'HubSpot contact lookup is temporarily unavailable'],
     ['UNKNOWN_CODE', 400, 'HubSpot contact lookup was rejected'],
     ['ETIMEDOUT', 500, 'HubSpot contact lookup is temporarily unavailable'],
     ['ECONNREFUSED', 500, 'HubSpot contact lookup is temporarily unavailable'],

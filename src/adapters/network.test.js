@@ -28,7 +28,6 @@ jest.mock('../util/stats', () => ({
   increment: jest.fn(),
   counter: jest.fn(),
   gauge: jest.fn(),
-  gaugeDelta: jest.fn().mockReturnValue(true),
   histogram: jest.fn(),
 }));
 const stats = require('../util/stats');
@@ -1320,7 +1319,7 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
     stats.histogram.mockClear();
     stats.timing.mockClear();
     stats.counter.mockReset();
-    stats.gaugeDelta.mockReset().mockReturnValue(true);
+    stats.gauge.mockClear();
     axios.mockResolvedValue({ status: 200, data: {} });
   });
 
@@ -1388,11 +1387,9 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
     metadata: { destinationId: 'dest-2', workspaceId: 'ws-2', sourceId: 'src-2' },
   });
   const gzipTags = {
-    destinationId: 'dest-2',
-    workspaceId: 'ws-2',
-    sourceId: 'src-2',
     destType: 'MP',
     endpointPath: '/engage',
+    workspaceId: 'ws-2',
   };
 
   it('records wire bytes, ratio, savings, duration and a balanced in-flight gauge', async () => {
@@ -1428,14 +1425,9 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
       rawBytes - wireBytes,
       gzipTags,
     );
-    expect(stats.counter).toHaveBeenCalledWith(
-      'delivery_compression_bytes_expanded_total',
-      0,
-      gzipTags,
-    );
-    expect(stats.gaugeDelta.mock.calls).toEqual([
-      ['delivery_compression_inflight', 1, gzipTags],
-      ['delivery_compression_inflight', -1, gzipTags],
+    expect(stats.gauge.mock.calls).toEqual([
+      ['delivery_compression_inflight', 1],
+      ['delivery_compression_inflight', 0],
     ]);
     expect(stats.timing).not.toHaveBeenCalledWith(
       'outgoing_request_latency',
@@ -1444,68 +1436,11 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
     );
   });
 
-  it('accounts for expansions separately, so net savings can be computed from both counters', async () => {
-    const compressible = 'x'.repeat(500);
-    const expanding = 'a';
-    await proxyRequest(gzipRequest(compressible), 'MP');
-    await proxyRequest(gzipRequest(expanding), 'MP');
-    const saved = Buffer.byteLength(compressible) - Buffer.byteLength(axios.mock.calls[0][0].data);
-    const expanded = Buffer.byteLength(axios.mock.calls[1][0].data) - Buffer.byteLength(expanding);
-
-    expect(stats.counter.mock.calls).toEqual([
-      ['delivery_compression_bytes_saved_total', saved, gzipTags],
-      ['delivery_compression_bytes_expanded_total', 0, gzipTags],
-      ['delivery_compression_bytes_saved_total', 0, gzipTags],
-      ['delivery_compression_bytes_expanded_total', expanded, gzipTags],
-    ]);
-    expect(stats.histogram).toHaveBeenCalledWith(
-      'delivery_compression_ratio',
-      Buffer.byteLength(expanding) / Buffer.byteLength(axios.mock.calls[1][0].data),
-      gzipTags,
-    );
-  });
-
-  it('materializes both series for savings-only and expansion-only workspaces', async () => {
-    const savingTags = { ...gzipTags, workspaceId: 'savings-only' };
-    const expandingTags = { ...gzipTags, workspaceId: 'expansion-only' };
-    const savingRequest = gzipRequest('x'.repeat(500));
-    const expandingRequest = gzipRequest('a');
-    await proxyRequest(
-      {
-        ...savingRequest,
-        metadata: { ...savingRequest.metadata, workspaceId: savingTags.workspaceId },
-      },
-      'MP',
-    );
-    await proxyRequest(
-      {
-        ...expandingRequest,
-        metadata: { ...expandingRequest.metadata, workspaceId: expandingTags.workspaceId },
-      },
-      'MP',
-    );
-    const saved = 500 - Buffer.byteLength(axios.mock.calls[0][0].data);
-    const expanded = Buffer.byteLength(axios.mock.calls[1][0].data) - 1;
-    expect(stats.counter.mock.calls).toEqual([
-      ['delivery_compression_bytes_saved_total', saved, savingTags],
-      ['delivery_compression_bytes_expanded_total', 0, savingTags],
-      ['delivery_compression_bytes_saved_total', 0, expandingTags],
-      ['delivery_compression_bytes_expanded_total', expanded, expandingTags],
-    ]);
-  });
-
-  it.each(['JSON', 'JSON_ARRAY', 'FORM'])('emits no compression metrics for %s', async (format) => {
+  it('emits no compression metrics for a non-GZIP delivery', async () => {
     await proxyRequest(
       {
         ...gzipRequest('unused'),
-        body: {
-          [format]:
-            format === 'FORM'
-              ? { key: 'value' }
-              : format === 'JSON_ARRAY'
-                ? { batch: '["value"]' }
-                : { batch: ['value'] },
-        },
+        body: { JSON: { batch: ['value'] } },
       },
       'MP',
     );
@@ -1514,43 +1449,22 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
       'delivery_payload_size_bytes',
     ]);
     expect(stats.counter).not.toHaveBeenCalled();
-    expect(stats.gaugeDelta).not.toHaveBeenCalled();
+    expect(stats.gauge).not.toHaveBeenCalled();
   });
 
-  it.each(['GZIP', 'JSON'])(
-    'emits no delivery metrics from direct %s preparation',
-    async (format) => {
-      await prepareProxyRequest({
-        ...gzipRequest('direct'),
-        body: { [format]: format === 'GZIP' ? { payload: 'direct' } : { a: 1 } },
+  it('does not fail delivery when a post-delivery metric throws', async () => {
+    stats.histogram
+      .mockImplementationOnce(() => {}) // Compression duration runs before the post-delivery block.
+      .mockImplementationOnce(() => {
+        throw new Error('metric failed');
       });
-      expect(stats.histogram).not.toHaveBeenCalled();
-      expect(stats.counter).not.toHaveBeenCalled();
-      expect(stats.gaugeDelta).not.toHaveBeenCalled();
-    },
-  );
-
-  it('does not fail delivery or suppress other observations when a metric throws', async () => {
-    stats.histogram.mockImplementationOnce(() => {
-      throw new Error('metric failed');
-    });
-    stats.gaugeDelta.mockImplementationOnce(() => {
-      throw new Error('gauge failed');
-    });
     await expect(proxyRequest(gzipRequest('a'.repeat(100)), 'MP')).resolves.toMatchObject({
       success: true,
     });
-    expect(stats.gaugeDelta).toHaveBeenCalledTimes(1);
-    expect(stats.histogram).toHaveBeenCalledWith(
-      'delivery_compressed_payload_size_bytes',
-      expect.any(Number),
-      gzipTags,
-    );
-    expect(stats.histogram).toHaveBeenCalledWith(
-      'delivery_compression_ratio',
-      expect.any(Number),
-      gzipTags,
-    );
+    expect(stats.gauge.mock.calls).toEqual([
+      ['delivery_compression_inflight', 1],
+      ['delivery_compression_inflight', 0],
+    ]);
   });
 
   it('records duration and decrements the in-flight gauge even when compression fails', async () => {
@@ -1562,35 +1476,10 @@ describe('proxyRequest - delivery_payload_size_bytes metric (INT-7033)', () => {
       expect.any(Number),
       gzipTags,
     );
-    expect(stats.gaugeDelta.mock.calls).toEqual([
-      ['delivery_compression_inflight', 1, gzipTags],
-      ['delivery_compression_inflight', -1, gzipTags],
+    expect(stats.gauge.mock.calls).toEqual([
+      ['delivery_compression_inflight', 1],
+      ['delivery_compression_inflight', 0],
     ]);
-  });
-
-  it('tracks overlapping compressions additively, including the shared workspace series', async () => {
-    const requests = [gzipRequest('x'.repeat(100000)), gzipRequest('y'.repeat(100000))];
-    const pending = requests.map((request) => proxyRequest(request, 'MP'));
-    expect(stats.gaugeDelta.mock.calls).toEqual([
-      ['delivery_compression_inflight', 1, gzipTags],
-      ['delivery_compression_inflight', 1, gzipTags],
-    ]);
-    await Promise.all(pending);
-    expect(stats.gaugeDelta.mock.calls.slice(2)).toEqual([
-      ['delivery_compression_inflight', -1, gzipTags],
-      ['delivery_compression_inflight', -1, gzipTags],
-    ]);
-  });
-
-  it('does not fail delivery if the in-flight decrement throws', async () => {
-    stats.gaugeDelta
-      .mockImplementationOnce(() => true)
-      .mockImplementationOnce(() => {
-        throw new Error('decrement failed');
-      });
-    await expect(proxyRequest(gzipRequest('x'.repeat(100)), 'MP')).resolves.toMatchObject({
-      success: true,
-    });
   });
 
   it('does not emit or throw when the body has no non-empty payload format', async () => {

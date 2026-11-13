@@ -20,6 +20,7 @@ const { setResponsesForMockAxiosAdapter } = require('../../test/testHelper');
 const MAX_CONTENT_LENGTH = parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
 const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
 const REQUEST_TIMEOUT_IN_MS = parseInt(process.env.REQUEST_TIMEOUT_IN_MS, 10) || 1000 * 60;
+let compressionInflight = 0;
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
   // `method` is the request method to be used when making the request
@@ -412,8 +413,9 @@ const getUncompressedPayloadSize = (payload, format) => {
  * @param {*} request
  * @returns
  */
-const prepareProxyRequest = async (request, selectedPayload = getPayloadData(request.body)) => {
+const prepareProxyRequest = async (request) => {
   const {
+    body,
     method,
     params,
     endpoint,
@@ -421,7 +423,7 @@ const prepareProxyRequest = async (request, selectedPayload = getPayloadData(req
     destinationConfig: config,
   } = request;
   const headers = { ...incomingHeaders };
-  const { payload, payloadFormat } = selectedPayload;
+  const { payload, payloadFormat } = getPayloadData(body);
   if (payloadFormat && payloadFormat === 'GZIP') {
     headers['Content-Encoding'] = 'gzip';
   }
@@ -479,67 +481,6 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
   return { httpResponse, processedResponse };
 };
 
-const safelyRunDeliveryObservation = (observe) => {
-  try {
-    return observe();
-  } catch (err) {
-    logger.debug(`Delivery metric failed: ${err}`);
-    return undefined;
-  }
-};
-
-const prepareDeliveryRequest = async (request, selectedPayload, tags) => {
-  if (selectedPayload.payloadFormat !== 'GZIP') {
-    return prepareProxyRequest(request, selectedPayload);
-  }
-  const startedAt = safelyRunDeliveryObservation(() => process.hrtime.bigint());
-  // Only decrement when the matching increment succeeded; a metric exception must not affect delivery.
-  const inflightIncremented = tags
-    ? safelyRunDeliveryObservation(() =>
-        stats.gaugeDelta('delivery_compression_inflight', 1, tags),
-      ) === true
-    : false;
-  try {
-    return await prepareProxyRequest(request, selectedPayload);
-  } finally {
-    if (tags && startedAt !== undefined) {
-      safelyRunDeliveryObservation(() => {
-        const duration = Number(process.hrtime.bigint() - startedAt) / 1e9;
-        stats.histogram('delivery_compression_duration_seconds', duration, tags);
-      });
-    }
-    if (inflightIncremented) {
-      safelyRunDeliveryObservation(() =>
-        stats.gaugeDelta('delivery_compression_inflight', -1, tags),
-      );
-    }
-  }
-};
-
-const fireCompressionStats = (data, uncompressed, tags) => {
-  if (!tags || uncompressed === undefined) {
-    return;
-  }
-  const wireBytes = safelyRunDeliveryObservation(() => Buffer.byteLength(data));
-  if (wireBytes === undefined) {
-    return;
-  }
-  safelyRunDeliveryObservation(() =>
-    stats.histogram('delivery_compressed_payload_size_bytes', wireBytes, tags),
-  );
-  safelyRunDeliveryObservation(() =>
-    stats.histogram('delivery_compression_ratio', uncompressed / wireBytes, tags),
-  );
-  const difference = uncompressed - wireBytes;
-  // Materialize both label-identical series, even if this workspace only ever saves or expands.
-  safelyRunDeliveryObservation(() =>
-    stats.counter('delivery_compression_bytes_saved_total', Math.max(difference, 0), tags),
-  );
-  safelyRunDeliveryObservation(() =>
-    stats.counter('delivery_compression_bytes_expanded_total', Math.max(-difference, 0), tags),
-  );
-};
-
 /**
  * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
  * note: needed for test api
@@ -548,30 +489,58 @@ const fireCompressionStats = (data, uncompressed, tags) => {
  */
 const proxyRequest = async (request, destType) => {
   const { metadata, endpointPath, body } = request;
-  const selectedPayload = getPayloadData(body);
-  const { payload, payloadFormat } = selectedPayload;
-  const tags = safelyRunDeliveryObservation(() => ({
+  const { payload, payloadFormat } = getPayloadData(body);
+  const deliveryTags = {
     ...logger.getLogMetadata(metadata),
     destType,
     endpointPath: endpointPath ?? '',
-  }));
-  const { endpoint, data, method, params, headers } = await prepareDeliveryRequest(
-    request,
-    selectedPayload,
-    tags,
-  );
-  // INT-7033: baseline size only on live proxy deliveries, not direct /proxyTest preparation.
-  const uncompressed = tags ? getUncompressedPayloadSize(payload, payloadFormat) : undefined;
-  if (uncompressed !== undefined) {
-    safelyRunDeliveryObservation(() =>
-      stats.histogram('delivery_payload_size_bytes', uncompressed, {
-        ...tags,
-        compressed: payloadFormat === 'GZIP',
-      }),
-    );
-  }
+  };
+  const compressionTags = {
+    destType,
+    endpointPath: deliveryTags.endpointPath,
+    ...(deliveryTags.workspaceId && { workspaceId: deliveryTags.workspaceId }),
+  };
+  let preparedRequest;
   if (payloadFormat === 'GZIP') {
-    fireCompressionStats(data, uncompressed, tags);
+    const startedAt = process.hrtime.bigint();
+    compressionInflight += 1;
+    stats.gauge('delivery_compression_inflight', compressionInflight);
+    try {
+      preparedRequest = await prepareProxyRequest(request);
+    } finally {
+      compressionInflight -= 1;
+      stats.gauge('delivery_compression_inflight', compressionInflight);
+      stats.histogram(
+        'delivery_compression_duration_seconds',
+        Number(process.hrtime.bigint() - startedAt) / 1e9,
+        compressionTags,
+      );
+    }
+  } else {
+    preparedRequest = await prepareProxyRequest(request);
+  }
+  const { endpoint, data, method, params, headers } = preparedRequest;
+  try {
+    // INT-7033: baseline size only on live proxy deliveries, not direct /proxyTest preparation.
+    const uncompressed = getUncompressedPayloadSize(payload, payloadFormat);
+    if (uncompressed !== undefined) {
+      stats.histogram('delivery_payload_size_bytes', uncompressed, {
+        ...deliveryTags,
+        compressed: payloadFormat === 'GZIP',
+      });
+      if (payloadFormat === 'GZIP') {
+        const wireBytes = Buffer.byteLength(data);
+        stats.histogram('delivery_compressed_payload_size_bytes', wireBytes, compressionTags);
+        stats.histogram('delivery_compression_ratio', uncompressed / wireBytes, compressionTags);
+        stats.counter(
+          'delivery_compression_bytes_saved_total',
+          Math.max(uncompressed - wireBytes, 0),
+          compressionTags,
+        );
+      }
+    }
+  } catch (err) {
+    logger.debug(`Delivery metric failed: ${err}`);
   }
   const requestOptions = {
     url: endpoint,

@@ -104,7 +104,7 @@ class MetricsAggregator {
           `[MetricsAggregator] Error getting metrics from worker ${cluster.worker.id}: ${error.message}`,
           { error: error.stack, workerId: cluster.worker.id, requestId: message.requestId },
         );
-        this.prometheusInstance.resetMetrics();
+        this.prometheusInstance.prometheusRegistry.resetMetrics();
         try {
           cluster.worker.send({
             type: MESSAGE_TYPES.GET_METRICS_RES,
@@ -121,7 +121,7 @@ class MetricsAggregator {
     } else if (message.type === MESSAGE_TYPES.RESET_METRICS_REQ) {
       logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request`);
       try {
-        this.prometheusInstance.resetMetrics();
+        this.prometheusInstance.prometheusRegistry.resetMetrics();
         logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
       } catch (error) {
         logger.error(

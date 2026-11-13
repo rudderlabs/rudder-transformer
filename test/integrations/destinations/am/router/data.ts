@@ -2,6 +2,7 @@ import { Destination } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { secret2 } from '../maskedSecrets';
 import { defaultMockFns } from '../mocs';
+import { getFormData } from '../../../../../src/adapters/network';
 
 const destination: Destination = {
   ID: '123',
@@ -1559,5 +1560,303 @@ export const data: RouterTestData[] = [
     },
     mockFns: defaultMockFns,
     id: '',
+  },
+  // Flag-on fixtures at the HTTP router boundary; existing flag-off cases remain unchanged.
+  // Use distinct credentials so the secret-path generator can trace them in GZIP.payload.
+  {
+    name: 'am',
+    id: 'am-gzip-httpapi',
+    description: 'HTTP API gzip for a listed workspace',
+    scenario: 'A single track event uses the HTTP API gzip flag',
+    successCriteria: 'Only the HTTP API request body is serialized as GZIP',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: { AM_GZIP_HTTPAPI_ENABLED_WORKSPACE_IDS: 'other-workspace,am-gzip-fixture' },
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          destType: 'am',
+          input: [
+            {
+              message: {
+                type: 'track',
+                event: 'Purchase',
+                userId: 'fixture-user-12345',
+                anonymousId: 'fixture-device-12345',
+                timestamp: '2026-09-02T17:51:13.000Z',
+              },
+              metadata: {
+                jobId: 101,
+                userId: 'fixture-user-12345',
+                workspaceId: 'am-gzip-fixture',
+              },
+              destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-1' } },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
+                  headers: { 'Content-Type': 'application/json' },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                    GZIP: {
+                      payload: JSON.stringify({
+                        api_key: 'am-gzip-private-api-key-1',
+                        events: [
+                          {
+                            device_id: 'fixture-device-12345',
+                            user_properties: {},
+                            event_type: 'Purchase',
+                            user_id: 'fixture-user-12345',
+                            time: 1788371473000,
+                            session_id: -1,
+                            library: 'rudderstack',
+                          },
+                        ],
+                        options: { min_id_length: 1 },
+                      }),
+                    },
+                  },
+                  files: {},
+                  userId: 'fixture-device-12345',
+                },
+              ],
+              metadata: [
+                { jobId: 101, userId: 'fixture-user-12345', workspaceId: 'am-gzip-fixture' },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-1' } },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'am',
+    id: 'am-gzip-mixed',
+    description: 'Gzip a batch and group FORM, but leave group HTTP API uncompressed',
+    scenario: 'A group, two same-user tracks and an alias use independently gated endpoints',
+    successCriteria: 'All three flagged endpoints gzip; the other group request remains JSON',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      AM_GZIP_BATCH_ENABLED_WORKSPACE_IDS: 'ALL',
+      AM_GZIP_GROUPIDENTIFY_ENABLED_WORKSPACE_IDS: 'am-gzip-fixture',
+      AM_GZIP_USERMAP_ENABLED_WORKSPACE_IDS: 'am-gzip-fixture',
+    },
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          destType: 'am',
+          input: [
+            {
+              message: {
+                type: 'group',
+                userId: 'fixture-user-12345',
+                integrations: {
+                  Amplitude: { groups: { group_type: 'company', group_value: 'acme' } },
+                },
+              },
+              destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-2' } },
+              metadata: {
+                jobId: 201,
+                userId: 'fixture-user-12345',
+                workspaceId: 'am-gzip-fixture',
+              },
+            },
+            ...[202, 203].map((jobId) => ({
+              message: {
+                type: 'track' as const,
+                event: `Purchase ${jobId}`,
+                userId: 'fixture-user-12345',
+              },
+              destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-2' } },
+              metadata: { jobId, userId: 'fixture-user-12345', workspaceId: 'am-gzip-fixture' },
+            })),
+            {
+              message: {
+                type: 'alias' as const,
+                userId: 'fixture-user-12345',
+                previousId: 'old-user-12345',
+              },
+              destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-2' } },
+              metadata: {
+                jobId: 204,
+                userId: 'fixture-user-12345',
+                workspaceId: 'am-gzip-fixture',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
+                  headers: { 'Content-Type': 'application/json' },
+                  params: {},
+                  files: {},
+                  body: {
+                    JSON: {
+                      api_key: 'am-gzip-private-api-key-2',
+                      events: [
+                        {
+                          user_properties: { company: 'acme' },
+                          event_type: '$identify',
+                          groups: { company: 'acme' },
+                          user_id: 'fixture-user-12345',
+                          time: 0,
+                          session_id: -1,
+                          library: 'rudderstack',
+                        },
+                      ],
+                      options: { min_id_length: 1 },
+                    },
+                    FORM: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                  },
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api2.amplitude.com/groupidentify',
+                  endpointPath: 'groupidentify',
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  params: {},
+                  files: {},
+                  body: {
+                    JSON: {},
+                    FORM: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    GZIP: {
+                      payload: getFormData({
+                        api_key: 'am-gzip-private-api-key-2',
+                        identification: ['{"group_type":"company","group_value":"acme"}'],
+                      }).toString(),
+                    },
+                  },
+                },
+              ],
+              destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-2' } },
+              metadata: [
+                { jobId: 201, userId: 'fixture-user-12345', workspaceId: 'am-gzip-fixture' },
+              ],
+              statusCode: 200,
+            },
+            {
+              batched: true,
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api2.amplitude.com/batch',
+                endpointPath: 'batch',
+                headers: { 'Content-Type': 'application/json' },
+                params: {},
+                files: {},
+                body: {
+                  JSON: {},
+                  FORM: {},
+                  JSON_ARRAY: {},
+                  XML: {},
+                  GZIP: {
+                    payload: JSON.stringify({
+                      api_key: 'am-gzip-private-api-key-2',
+                      events: [202, 203].map((jobId) => ({
+                        user_properties: {},
+                        event_type: `Purchase ${jobId}`,
+                        user_id: 'fixture-user-12345',
+                        time: 0,
+                        session_id: -1,
+                        library: 'rudderstack',
+                      })),
+                      options: { min_id_length: 1 },
+                    }),
+                  },
+                },
+              },
+              destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-2' } },
+              metadata: [202, 203].map((jobId) => ({
+                jobId,
+                userId: 'fixture-user-12345',
+                workspaceId: 'am-gzip-fixture',
+              })),
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api2.amplitude.com/usermap',
+                  endpointPath: 'usermap',
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  params: {},
+                  files: {},
+                  body: {
+                    JSON: {},
+                    FORM: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    GZIP: {
+                      payload: getFormData({
+                        api_key: 'am-gzip-private-api-key-2',
+                        mapping: [
+                          '{"global_user_id":"fixture-user-12345","user_id":"old-user-12345","user_properties":{}}',
+                        ],
+                      }).toString(),
+                    },
+                  },
+                },
+              ],
+              destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-2' } },
+              metadata: [
+                { jobId: 204, userId: 'fixture-user-12345', workspaceId: 'am-gzip-fixture' },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
   },
 ];

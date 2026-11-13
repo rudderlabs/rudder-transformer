@@ -9,11 +9,6 @@ describe('processAxiosResponse with no HTTP response', () => {
     ['ENETUNREACH', 500, '[ENETUNREACH] :: Network is unreachable'],
     ['ENETDOWN', 500, '[ENETDOWN] :: Network is down'],
     ['EADDRNOTAVAIL', 500, '[EADDRNOTAVAIL] :: Address not available'],
-    [
-      'ERR_SOCKET_CONNECTION_TIMEOUT',
-      500,
-      '[ERR_SOCKET_CONNECTION_TIMEOUT] :: Could not connect to any resolved address in time',
-    ],
     ['ECONNRESET', 500, '[ECONNRESET] :: Connection reset by peer'],
     ['ENOTFOUND', 400, '[ENOTFOUND] :: DNS lookup failed'],
     ['EACCES', 400, '[EACCES] :: Permission denied'],

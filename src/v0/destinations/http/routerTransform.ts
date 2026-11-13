@@ -12,6 +12,7 @@ import type {
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { isObject, removeUndefinedAndNullValues, removeUndefinedValues } from '../../util';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
+import type { PayloadChunk } from '../../../services/destination/destinationIntegration/chunkPayloads';
 import { groupPayloadsByCompositeKey } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
 import type {
@@ -164,34 +165,48 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
     return { template: requestBodyTemplate, chunks };
   }
 
-  // Evaluates, in one isolate call, every chunk of these groups that has no result yet.
+  // Evaluates every chunk of these groups that has no result yet, in as few isolate calls as fit.
   private async evaluateBodies(groups: HttpPayload[][]): Promise<void> {
-    const pending = groups
-      .map((payloads) => {
-        const { template, chunks } = this.chunkGroup(payloads);
-        return {
-          template,
-          chunks: chunks.filter(({ jobIds }) => !this.bodyResults.has(chunkKey(jobIds))),
-        };
-      })
-      .filter(({ chunks }) => chunks.length > 0);
-    if (pending.length === 0) return;
-    const results = await sandboxedEvaluateHttpBody(
-      pending.map(({ template, chunks }): HttpBodyJob => [template, chunks.map((c) => c.bodies)]),
-      this.destination.WorkspaceID,
-    );
-    pending.forEach(({ chunks }, j) =>
-      chunks.forEach(({ jobIds }, i) => this.bodyResults.set(chunkKey(jobIds), results[j][i])),
-    );
+    // Each call holds at most MAX_BATCH_SIZE bodies, the most one group could send before calls
+    // were shared, so the isolate's time and memory limits never cover more than that.
+    const calls: { template: string; chunks: PayloadChunk<HttpBody>[] }[][] = [];
+    let size = Infinity;
+    for (const payloads of groups) {
+      const { template, chunks } = this.chunkGroup(payloads);
+      let job: (typeof calls)[number][number] | undefined;
+      for (const chunk of chunks.filter(({ jobIds }) => !this.bodyResults.has(chunkKey(jobIds)))) {
+        if (size + chunk.bodies.length > MAX_BATCH_SIZE) {
+          calls.push([]);
+          size = 0;
+          job = undefined;
+        }
+        if (!job) {
+          job = { template, chunks: [] };
+          calls[calls.length - 1].push(job);
+        }
+        job.chunks.push(chunk);
+        size += chunk.bodies.length;
+      }
+    }
+    for (const jobs of calls) {
+      // eslint-disable-next-line no-await-in-loop -- calls share one isolate and run in turn
+      const results = await sandboxedEvaluateHttpBody(
+        jobs.map(({ template, chunks }): HttpBodyJob => [template, chunks.map((c) => c.bodies)]),
+        this.destination.WorkspaceID,
+      );
+      jobs.forEach(({ chunks }, j) =>
+        chunks.forEach(({ jobIds }, i) => this.bodyResults.set(chunkKey(jobIds), results[j][i])),
+      );
+    }
   }
 
   getBatchStrategy(): BatchStrategy<HttpBody> {
     const { format = BodyFormat.JSON } = this.destination.Config;
     return new CustomBatchStrategy<HttpBody>(
       async (payloads) => {
-        // A re-batched group (fewer jobs after a failure elsewhere) has new chunks; they are
-        // evaluated here instead of being found in the results.
-        await this.evaluateBodies([...this.pendingGroups.splice(0), payloads]);
+        await this.evaluateBodies(this.pendingGroups.splice(0));
+        // Already evaluated above, unless re-batched (fewer jobs after a failure elsewhere).
+        await this.evaluateBodies([payloads]);
         const { chunks } = this.chunkGroup(payloads);
         const error = (message: string, jobIds: Set<number>) => ({
           body: {},

@@ -267,6 +267,27 @@ describe('HTTP v2 native router', () => {
         'evaluateRequestFieldsInSandbox',
         'evaluateHttpBodyInSandbox',
       ]);
+      // Every body is evaluated exactly once, including the first batched group.
+      const [, , [jobs]] = execute.mock.calls[2] as [string, string, [[string, unknown[][]][]]];
+      expect(jobs.flatMap(([, chunks]) => chunks.flat()).length).toBe(events.length);
+    } finally {
+      execute.mockRestore();
+    }
+  });
+
+  it('splits body evaluation into isolate calls of at most 5000 bodies', async () => {
+    const execute = jest.spyOn(httpTemplateSandboxRunner, 'execute');
+    try {
+      const events = overrideEvents({ maxBatchSize: '5000' }, Array(5001).fill('Lead'));
+      const results = await processDestinationIntegration(events, Integration, {});
+      expect(results.map(({ metadata }) => metadata.length)).toEqual([5000, 1]);
+      const bodyCalls = execute.mock.calls
+        .filter(([, script]) => script.includes('evaluateHttpBodyInSandbox'))
+        .map(
+          ([, , [jobs]]) =>
+            (jobs as [string, unknown[][]][]).flatMap(([, chunks]) => chunks.flat()).length,
+        );
+      expect(bodyCalls).toEqual([5000, 1]);
     } finally {
       execute.mockRestore();
     }

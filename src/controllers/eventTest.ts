@@ -8,7 +8,6 @@ import { RecordAction } from '../types/rudderEvents';
 import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
 import { sandboxedParseHttpTemplates } from '../v0/destinations/http/templateSandboxClient';
 import { requestFieldExpression } from '../v0/destinations/http/utils';
-import { MAX_EVENT_OVERRIDES, MAX_OVERRIDE_EVENTS } from '../v0/destinations/http/types';
 import {
   actionConfigSchema,
   CustomAudienceDestConfig,
@@ -42,6 +41,8 @@ const parseTemplateBodySchema = z.object({
 const MAX_HTTP_PARSE_FIELDS = 100;
 const MAX_HTTP_PARSE_TEMPLATES = 500;
 const MAX_HTTP_PARSE_TEMPLATE_LENGTH = 10_000;
+const MAX_EVENT_OVERRIDES = 20;
+const MAX_OVERRIDE_EVENTS = 100;
 const httpParseTemplate = z.string().max(MAX_HTTP_PARSE_TEMPLATE_LENGTH);
 const httpMappingsSchema = z
   .array(z.object({ from: httpParseTemplate.optional() }))

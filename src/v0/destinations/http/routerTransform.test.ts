@@ -293,12 +293,20 @@ describe('HTTP v2 native router', () => {
     }
   });
 
-  it.each([
-    [{ events: ['Lead'] }],
-    [{ name: 'Empty', events: ['Lead'] }],
-    [{ name: 'Bad', events: ['Lead'], maxBatchSize: 0 }],
-  ])('rejects an invalid override group (%p)', async (eventOverrides) => {
-    const [event] = overrideEvents({ eventOverrides }, ['Lead']);
+  it('delivers events of an unnamed override that sets nothing, alongside an empty one', async () => {
+    const events = overrideEvents(
+      { eventOverrides: [{ events: ['Lead'] }, { name: '', events: [] }] },
+      ['Lead'],
+    );
+    const [response] = await processDestinationIntegration(events, Integration, {});
+    expect(response).toMatchObject({ batched: true, metadata: [{ jobId: 1 }] });
+  });
+
+  it('rejects an override batch size the router cannot chunk at', async () => {
+    const [event] = overrideEvents(
+      { eventOverrides: [{ name: 'Bad', events: ['Lead'], maxBatchSize: 0 }] },
+      ['Lead'],
+    );
     const [response] = await processDestinationIntegration([event], Integration, {});
     expect(response.statusCode).toBe(400);
     expect(response.error).toContain('destination.Config.eventOverrides');

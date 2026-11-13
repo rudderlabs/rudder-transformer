@@ -112,7 +112,7 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
     const result = this.fieldResults.get(input) ?? NO_FIELDS;
     if (!result.ok)
       throw new ConfigurationError(
-        `${group ? `Event override "${group.name}": ` : ''}Request field evaluation failed: ${result.error}`,
+        `${group?.name ? `Event override "${group.name}": ` : ''}Request field evaluation failed: ${result.error}`,
       );
     return this.makeEvent(
       input.message,

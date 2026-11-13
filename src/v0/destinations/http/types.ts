@@ -31,27 +31,15 @@ const batchSize = z.coerce.number().int().min(1).max(MAX_BATCH_SIZE);
 const pathParams = z.array(z.object({ path: z.string() }));
 const mappings = z.array(mapping);
 
-export const MAX_OVERRIDE_EVENTS = 100;
-const overrideGroup = z
-  .object({
-    name: z.string().min(1),
-    events: z.array(z.string().min(1)).min(1).max(MAX_OVERRIDE_EVENTS),
-    pathParams: pathParams.optional(),
-    queryParams: mappings.optional(),
-    requestBodyTemplate: z.string().min(1).optional(),
-    maxBatchSize: batchSize.optional(),
-  })
-  .refine(
-    ({ pathParams: paths, queryParams: queries, requestBodyTemplate, maxBatchSize }) =>
-      paths !== undefined ||
-      queries !== undefined ||
-      requestBodyTemplate !== undefined ||
-      maxBatchSize !== undefined,
-    'An event override must set at least one request setting',
-  );
-
-export const MAX_EVENT_OVERRIDES = 20;
-const overrideGroupsSchema = z.array(overrideGroup).max(MAX_EVENT_OVERRIDES).optional();
+// The router only checks what it reads: a group that sets nothing or matches nothing goes unused.
+const overrideGroup = z.object({
+  name: z.string().optional(),
+  events: z.array(z.string()),
+  pathParams: pathParams.optional(),
+  queryParams: mappings.optional(),
+  requestBodyTemplate: z.string().min(1).optional(),
+  maxBatchSize: batchSize.optional(),
+});
 
 const HttpDestinationConfigSchema = z
   .object({
@@ -63,7 +51,7 @@ const HttpDestinationConfigSchema = z
     headers: mappings.optional(),
     queryParams: mappings.optional(),
     pathParams: pathParams.optional(),
-    eventOverrides: overrideGroupsSchema,
+    eventOverrides: z.array(overrideGroup).optional(),
     authenticationEnabled: z.boolean().optional(),
     username: z.string().optional(),
     password: z.string().optional(),

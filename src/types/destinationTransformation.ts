@@ -35,7 +35,6 @@ export type BatchedRequestBody<T = Record<string, unknown>> = {
   JSON_ARRAY?: Record<string, unknown>;
   XML?: Record<string, unknown>;
   FORM?: Record<string, unknown>;
-  GZIP?: { payload: string };
 };
 
 export type BatchedRequest<

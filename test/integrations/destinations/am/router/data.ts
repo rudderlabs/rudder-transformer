@@ -1,4 +1,4 @@
-import { Destination } from '../../../../../src/types';
+import { BatchedRequestBody, Destination } from '../../../../../src/types';
 import { RouterTestData } from '../../../testTypes';
 import { secret2 } from '../maskedSecrets';
 import { defaultMockFns } from '../mocs';
@@ -22,6 +22,9 @@ const destination: Destination = {
   WorkspaceID: '123',
   Transformations: [],
 };
+
+// INT-6922 owns the shared GZIP body type; keep these expectations typed locally until it lands.
+type AmGzipBody = BatchedRequestBody & { GZIP: { payload: string } };
 
 export const data: RouterTestData[] = [
   {
@@ -1635,7 +1638,7 @@ export const data: RouterTestData[] = [
                         options: { min_id_length: 1 },
                       }),
                     },
-                  },
+                  } as AmGzipBody,
                   files: {},
                   userId: 'fixture-device-12345',
                 },
@@ -1771,7 +1774,7 @@ export const data: RouterTestData[] = [
                         identification: ['{"group_type":"company","group_value":"acme"}'],
                       }).toString(),
                     },
-                  },
+                  } as AmGzipBody,
                 },
               ],
               destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-2' } },
@@ -1810,7 +1813,7 @@ export const data: RouterTestData[] = [
                       options: { min_id_length: 1 },
                     }),
                   },
-                },
+                } as AmGzipBody,
               },
               destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-2' } },
               metadata: [202, 203].map((jobId) => ({
@@ -1845,7 +1848,7 @@ export const data: RouterTestData[] = [
                         ],
                       }).toString(),
                     },
-                  },
+                  } as AmGzipBody,
                 },
               ],
               destination: { ...destination, Config: { apiKey: 'am-gzip-private-api-key-2' } },

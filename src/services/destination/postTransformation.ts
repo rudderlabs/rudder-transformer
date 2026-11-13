@@ -20,6 +20,10 @@ import { DeleteUsersError } from '../../v0/util/errorTypes/deleteUsersError';
 import tags from '../../v0/util/tags';
 import { ErrorReportingService } from '../errorReporting';
 import logger from '../../logger';
+import {
+  DeliveryBodyFormatError,
+  validateDeliveryRequestBody,
+} from './validateDeliveryRequestBody';
 
 const defaultErrorMessages = {
   router: '[Router Transform] Error occurred while processing the payload.',
@@ -79,9 +83,28 @@ export class DestinationPostTransformationService {
     implementation: string,
     destinationType: string,
   ): RouterTransformationResponse[] {
-    const resultantPayloads: RouterTransformationResponse[] = transformedPayloads.map(
-      (payload) => ({ ...payload }),
-    );
+    const generatedFailures = new Set<RouterTransformationResponse>();
+    const resultantPayloads: RouterTransformationResponse[] = transformedPayloads.map((payload) => {
+      if ('error' in payload) return { ...payload };
+      try {
+        validateDeliveryRequestBody(payload.batchedRequest);
+        return { ...payload };
+      } catch (error) {
+        const responseMetadata = payload.metadata?.[0];
+        const responseMetaTo: MetaTransferObject = {
+          ...metaTo,
+          errorDetails: {
+            ...metaTo.errorDetails,
+            destinationId: responseMetadata?.destinationId,
+            workspaceId: responseMetadata?.workspaceId,
+          },
+          metadatas: payload.metadata,
+        };
+        const failure = this.handleRouterTransformFailureEvents(error as Error, responseMetaTo);
+        generatedFailures.add(failure);
+        return failure;
+      }
+    });
     resultantPayloads.forEach((resultantPayload) => {
       if (Array.isArray(resultantPayload.batchedRequest)) {
         resultantPayload.batchedRequest = resultantPayload.batchedRequest.map((request) => ({
@@ -98,12 +121,15 @@ export class DestinationPostTransformationService {
 
     if (destHandler?.processMetadataForRouter) {
       return resultantPayloads.map((resultantPayload) => {
-        resultantPayload.metadata = destHandler.processMetadataForRouter(resultantPayload);
+        if (!generatedFailures.has(resultantPayload)) {
+          resultantPayload.metadata = destHandler.processMetadataForRouter(resultantPayload);
+        }
         return resultantPayload;
       });
     }
 
     resultantPayloads.forEach((resp) => {
+      if (generatedFailures.has(resp)) return;
       if ('error' in resp && isObject(resp.statTags) && !isEmpty(resp.statTags)) {
         resp.statTags = {
           ...resp.statTags,
@@ -169,7 +195,7 @@ export class DestinationPostTransformationService {
     const resp = {
       metadata: metaTo.metadatas,
       batched: false,
-      statusCode: 500, // for batch we should consider code error hence keeping retryable
+      statusCode: error instanceof DeliveryBodyFormatError ? errObj.status : 500,
       error: errObj.message || defaultErrorMessages.delivery,
       statTags: errObj.statTags,
     } as RouterTransformationResponse;

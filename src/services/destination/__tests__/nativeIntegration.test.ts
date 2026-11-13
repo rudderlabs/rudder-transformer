@@ -12,6 +12,7 @@ import {
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { ErrorReportingService } from '../../errorReporting';
 import { NativeIntegrationDestinationService } from '../nativeIntegration';
+import stats from '../../../util/stats';
 import { DestinationPostTransformationService } from '../postTransformation';
 
 type NetworkHandlerFactoryResult = ReturnType<typeof networkHandlerFactory.getNetworkHandler>;
@@ -110,6 +111,174 @@ describe('NativeIntegration Service', () => {
 
     console.log('resp:', resp);
     expect(resp).toEqual(expected);
+  });
+
+  test('processor rejects all outputs for a conflicting event, preserving its sibling', async () => {
+    const report = jest.spyOn(ErrorReportingService, 'reportError');
+    const increment = jest.spyOn(stats, 'increment').mockImplementation(jest.fn());
+    const events = [1, 2].map(
+      (jobId) =>
+        ({
+          message: { jobId },
+          metadata: { jobId, destinationId: `dest-${jobId}`, workspaceId: `ws-${jobId}` },
+        }) as unknown as ProcessorTransformationRequest,
+    );
+    const good = {
+      version: 'v0',
+      type: 'REST',
+      method: 'POST',
+      endpoint: '/ok',
+      body: { JSON: { id: 1 } },
+    };
+    const bad = { ...good, body: { JSON: { id: 2 }, GZIP: { payload: 'compressed' } } };
+    jest.spyOn(FetchHandler, 'getDestHandler').mockReturnValue({
+      process: (event: ProcessorTransformationRequest) =>
+        event.metadata.jobId === 1 ? good : [good, bad],
+    } as any);
+
+    const result = await new NativeIntegrationDestinationService().doProcessorTransformation(
+      events,
+      'example',
+      'v0',
+      {},
+    );
+
+    expect(result).toEqual([
+      { output: { ...good, userId: '' }, metadata: events[0].metadata, statusCode: 200 },
+      {
+        metadata: events[1].metadata,
+        statusCode: 400,
+        error: 'delivery request has more than one non-empty body format: JSON, GZIP',
+        statTags: {
+          errorCategory: 'platform',
+          destType: 'EXAMPLE',
+          module: 'destination',
+          implementation: 'native',
+          feature: 'processor',
+          destinationId: 'dest-2',
+          workspaceId: 'ws-2',
+        },
+      },
+    ]);
+    expect(report).toHaveBeenCalledTimes(1);
+    expect(increment).toHaveBeenCalledTimes(1);
+    expect(increment).toHaveBeenCalledWith('event_transform_failure', {
+      destType: 'EXAMPLE',
+      module: 'destination',
+      implementation: 'native',
+      feature: 'processor',
+      destinationId: 'dest-2',
+      workspaceId: 'ws-2',
+    });
+  });
+
+  test('batch validates each response independently and uses only its own metadata', () => {
+    const report = jest.spyOn(ErrorReportingService, 'reportError');
+    const increment = jest.spyOn(stats, 'increment').mockImplementation(jest.fn());
+    const inputs = [1, 2, 3].map((jobId) => ({
+      message: { jobId },
+      destination: { ID: jobId === 3 ? 'group-b' : 'group-a' },
+      metadata: { jobId, destinationId: `dest-${jobId}`, workspaceId: `ws-${jobId}` },
+    }));
+    const good = {
+      version: 'v0',
+      type: 'REST',
+      method: 'POST',
+      endpoint: '/ok',
+      body: { JSON: { id: 1 } },
+    };
+    const bad = { ...good, body: { JSON: { id: 2 }, GZIP: { payload: 'compressed' } } };
+    const makeResponse = (
+      request: typeof good | (typeof good)[],
+      input: (typeof inputs)[number],
+    ) => ({
+      batchedRequest: request,
+      metadata: [input.metadata],
+      batched: false,
+      statusCode: 200,
+      destination: input.destination,
+    });
+    jest.spyOn(FetchHandler, 'getDestHandler').mockReturnValue({
+      batch: (destEvents: typeof inputs) =>
+        destEvents[0].destination.ID === 'group-b'
+          ? [makeResponse(good, destEvents[0])]
+          : [makeResponse([good, bad], destEvents[0]), makeResponse(good, destEvents[1])],
+    } as any);
+
+    const result = new NativeIntegrationDestinationService().doBatchTransformation(
+      inputs as any,
+      'example',
+      'v0',
+      {},
+    );
+
+    expect(result).toEqual([
+      {
+        metadata: [inputs[0].metadata],
+        batched: false,
+        statusCode: 400,
+        error: 'delivery request has more than one non-empty body format: JSON, GZIP',
+        statTags: {
+          errorCategory: 'platform',
+          destType: 'EXAMPLE',
+          module: 'destination',
+          implementation: 'native',
+          feature: 'batch',
+          destinationId: 'dest-1',
+          workspaceId: 'ws-1',
+        },
+      },
+      makeResponse(good, inputs[1]),
+      makeResponse(good, inputs[2]),
+    ]);
+    expect(report).toHaveBeenCalledTimes(1);
+    expect(increment).toHaveBeenCalledTimes(1);
+    expect(increment).toHaveBeenCalledWith('event_transform_failure', {
+      destType: 'EXAMPLE',
+      module: 'destination',
+      implementation: 'native',
+      feature: 'batch',
+      destinationId: 'dest-1',
+      workspaceId: 'ws-1',
+    });
+  });
+
+  test('batch group-wide errors report only the failed destination group', () => {
+    const inputs = [1, 2].map((jobId) => ({
+      message: { jobId },
+      destination: { ID: `group-${jobId}` },
+      metadata: { jobId, destinationId: `dest-${jobId}`, workspaceId: `ws-${jobId}` },
+    }));
+    const good = {
+      batchedRequest: { body: { JSON: { id: 2 } } },
+      metadata: [inputs[1].metadata],
+      batched: false,
+      statusCode: 200,
+    };
+    jest.spyOn(FetchHandler, 'getDestHandler').mockReturnValue({
+      batch: (destEvents: typeof inputs) => {
+        if (destEvents[0].destination.ID === 'group-1') throw new Error('failed group');
+        return [good];
+      },
+    } as any);
+
+    expect(
+      new NativeIntegrationDestinationService().doBatchTransformation(
+        inputs as any,
+        'example',
+        'v0',
+        {},
+      ),
+    ).toEqual([
+      {
+        metadata: [inputs[0].metadata],
+        batched: false,
+        statusCode: 500,
+        error: 'failed group',
+        statTags: { errorCategory: 'transformation' },
+      },
+      good,
+    ]);
   });
 
   describe('deliver - v0 handler adaptation for the v1 route', () => {

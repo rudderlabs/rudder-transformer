@@ -29,6 +29,10 @@ import {
 import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
+import {
+  DeliveryBodyFormatError,
+  validateDeliveryRequestBody,
+} from './validateDeliveryRequestBody';
 import { groupRouterTransformEvents } from '../../v0/util';
 import { isDestinationIntegrationEnabled } from '../../constants/destinationIntegrationsMap';
 import { processDestinationIntegration } from './destinationIntegration/processDestinationIntegration';
@@ -112,6 +116,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
           const transformedPayloads:
             | ProcessorTransformationOutput
             | ProcessorTransformationOutput[] = await destHandler.process(event, requestMetadata);
+          validateDeliveryRequestBody(transformedPayloads);
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,
@@ -123,6 +128,11 @@ export class NativeIntegrationDestinationService implements DestinationService {
               error,
               metaTO,
             );
+          if (error instanceof DeliveryBodyFormatError) {
+            stats.increment('event_transform_failure', {
+              ...metaTO.errorDetails,
+            });
+          }
           return [erroredResp];
         }
       },
@@ -218,13 +228,33 @@ export class NativeIntegrationDestinationService implements DestinationService {
         destEvents[0].metadata?.workspaceId,
         tags.FEATURES.BATCH,
       );
-      metaTO.metadatas = events.map((event) => event.metadata);
+      metaTO.metadatas = destEvents.map((event) => event.metadata);
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
           destEvents,
           requestMetadata,
         );
-        return destBatchedRequests;
+        return destBatchedRequests.map((batchResponse) => {
+          try {
+            validateDeliveryRequestBody(batchResponse.batchedRequest);
+            return batchResponse;
+          } catch (error) {
+            const responseMetadata = batchResponse.metadata?.[0];
+            const responseMetaTO = this.getTags(
+              destinationType,
+              responseMetadata?.destinationId ?? '',
+              responseMetadata?.workspaceId ?? '',
+              tags.FEATURES.BATCH,
+            );
+            responseMetaTO.metadatas = batchResponse.metadata;
+            const failure = DestinationPostTransformationService.handleBatchTransformFailureEvents(
+              error as Error,
+              responseMetaTO,
+            );
+            stats.increment('event_transform_failure', { ...responseMetaTO.errorDetails });
+            return failure;
+          }
+        });
       } catch (error: any) {
         const errResp = DestinationPostTransformationService.handleBatchTransformFailureEvents(
           error,

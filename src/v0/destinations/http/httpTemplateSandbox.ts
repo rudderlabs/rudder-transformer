@@ -125,22 +125,16 @@ const evaluateHttpBody = async (
   return results;
 };
 
-globalThis.evaluateRequestFieldsInSandbox = async (
-  jobs: RequestFieldJob[],
-): Promise<RequestFieldResult[][]> => {
-  const results: RequestFieldResult[][] = [];
-  for (const [expressions, events] of jobs) {
+const inOrder =
+  <J extends unknown[], R>(evaluate: (...job: J) => Promise<R>) =>
+  async (jobs: J[]): Promise<R[]> => {
+    const results: R[] = [];
     // eslint-disable-next-line no-await-in-loop -- compiled expressions are not reentrant
-    results.push(await evaluateRequestFields(expressions, events));
-  }
-  return results;
-};
+    for (const job of jobs) results.push(await evaluate(...job));
+    return results;
+  };
 
-globalThis.evaluateHttpBodyInSandbox = async (jobs: HttpBodyJob[]): Promise<HttpBodyResult[][]> => {
-  const results: HttpBodyResult[][] = [];
-  for (const [template, chunks] of jobs) {
-    // eslint-disable-next-line no-await-in-loop -- compiled expressions are not reentrant
-    results.push(await evaluateHttpBody(template, chunks));
-  }
-  return results;
-};
+globalThis.evaluateRequestFieldsInSandbox = inOrder<RequestFieldJob, RequestFieldResult[]>(
+  evaluateRequestFields,
+);
+globalThis.evaluateHttpBodyInSandbox = inOrder<HttpBodyJob, HttpBodyResult[]>(evaluateHttpBody);

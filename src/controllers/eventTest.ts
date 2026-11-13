@@ -112,12 +112,12 @@ const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
   ];
 };
 
+type HttpEventOverrides = z.infer<typeof httpParseBodySchema>['eventOverrides'];
+
 type HttpParseError = { field: string; index?: number; group?: number; messages: string[] };
 
 // The router sends an event to the first group listing it, so a later group listing it never applies.
-const duplicateEventErrors = (
-  eventOverrides: z.infer<typeof httpParseBodySchema>['eventOverrides'],
-): HttpParseError[] => {
+const duplicateEventErrors = (eventOverrides: HttpEventOverrides): HttpParseError[] => {
   const firstGroups = new Map<string, number>();
   return (eventOverrides ?? []).flatMap(({ events }, group) =>
     [...new Set(events)].flatMap((event) => {
@@ -138,10 +138,7 @@ const duplicateEventErrors = (
 };
 
 // One line per error, for callers that only show text (config-backend's save validation).
-const errorMessage = (
-  errors: HttpParseError[],
-  eventOverrides: z.infer<typeof httpParseBodySchema>['eventOverrides'],
-) =>
+const errorMessage = (errors: HttpParseError[], eventOverrides: HttpEventOverrides) =>
   errors
     .map(({ field, index, group, messages }) => {
       const name = typeof group === 'number' ? eventOverrides?.[group]?.name : undefined;

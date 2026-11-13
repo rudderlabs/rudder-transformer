@@ -1,12 +1,14 @@
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { Integration } from './routerTransform';
 import { requestFieldExpression } from './utils';
+import { httpTemplateSandboxRunner } from './templateSandboxClient';
 import { prepareProxyRequest } from '../../../adapters/network';
 import type { RouterTransformationRequestData } from '../../../types';
 
 type NativeResponse = {
   batchedRequest: {
     endpoint: string;
+    params: Record<string, unknown>;
     headers: Record<string, unknown>;
     body: {
       JSON_ARRAY: { batch: string };
@@ -15,6 +17,7 @@ type NativeResponse = {
     };
   };
   metadata: { jobId: number }[];
+  batched: boolean;
 };
 
 const destination = {
@@ -74,6 +77,240 @@ describe('HTTP v2 native router', () => {
         },
       },
     }));
+
+  const overrideEvents = (settings: Record<string, unknown>, names: string[]) =>
+    names.map(
+      (name, i): RouterTransformationRequestData => ({
+        ...input(String(i + 1), i + 1),
+        message: { type: 'track', event: name, id: String(i + 1) },
+        destination: {
+          ...destination,
+          Config: {
+            ...destination.Config,
+            pathParams: [],
+            headers: [],
+            requestBodyTemplate: '$$.events',
+            ...settings,
+          },
+        },
+      }),
+    );
+
+  it('applies all group settings, inherits omitted settings and matches any message type by event', async () => {
+    const events = overrideEvents(
+      {
+        queryParams: [{ to: 'source', from: 'default' }],
+        maxBatchSize: '3',
+        eventOverrides: [
+          {
+            name: 'Full',
+            events: ['Lead'],
+            pathParams: [{ path: 'lead' }],
+            queryParams: [],
+            requestBodyTemplate: '{"lead": $$.events}',
+            maxBatchSize: '1',
+          },
+          { name: 'Inherited', events: ['Order'], requestBodyTemplate: '{"order": $$.events}' },
+        ],
+      },
+      ['Lead', 'Order', 'lead', 'Lead', 'Other'],
+    );
+    events[3].message = { ...events[3].message, type: 'identify' as const };
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(
+      results
+        .map((result) => ({
+          jobs: result.metadata.map(({ jobId }) => jobId),
+          endpoint: (result as unknown as NativeResponse).batchedRequest.endpoint,
+          params: (result as unknown as NativeResponse).batchedRequest.params,
+          body: JSON.parse(
+            (result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch,
+          ),
+        }))
+        .sort((x, y) => x.jobs[0]! - y.jobs[0]!),
+    ).toEqual([
+      {
+        jobs: [1],
+        endpoint: 'https://example.org/events/lead',
+        params: {},
+        body: { lead: [events[0].message] },
+      },
+      {
+        jobs: [2],
+        endpoint: 'https://example.org/events',
+        params: { source: 'default' },
+        body: { order: [events[1].message] },
+      },
+      {
+        jobs: [3, 5],
+        endpoint: 'https://example.org/events',
+        params: { source: 'default' },
+        body: [events[2].message, events[4].message],
+      },
+      {
+        jobs: [4],
+        endpoint: 'https://example.org/events/lead',
+        params: {},
+        body: { lead: [events[3].message] },
+      },
+    ]);
+  });
+
+  it('keeps same-URL groups separate and chunks each at its effective limit', async () => {
+    const events = overrideEvents(
+      {
+        maxBatchSize: '3',
+        eventOverrides: [
+          { name: 'A', events: ['A'], maxBatchSize: '2', requestBodyTemplate: '{"a": $$.events}' },
+          { name: 'B', events: ['B'], maxBatchSize: '1', requestBodyTemplate: '{"b": $$.events}' },
+        ],
+      },
+      ['A', 'B', 'A', 'B', 'A', 'other'],
+    );
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(
+      results.map((result) => ({
+        jobs: result.metadata.map(({ jobId }) => jobId),
+        body: JSON.parse(
+          (result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch,
+        ),
+      })),
+    ).toEqual([
+      { jobs: [1, 3], body: { a: [events[0].message, events[2].message] } },
+      { jobs: [2], body: { b: [events[1].message] } },
+      { jobs: [4], body: { b: [events[3].message] } },
+      { jobs: [5], body: { a: [events[4].message] } },
+      { jobs: [6], body: [events[5].message] },
+    ]);
+  });
+
+  it('uses the first matching group when names overlap', async () => {
+    const events = overrideEvents(
+      {
+        eventOverrides: [
+          { name: 'First', events: ['Lead'], requestBodyTemplate: '{"first": $$.events}' },
+          { name: 'Second', events: ['Lead'], requestBodyTemplate: '{"second": $$.events}' },
+        ],
+      },
+      ['Lead'],
+    );
+    const [result] = await processDestinationIntegration(events, Integration, {});
+    expect(
+      JSON.parse((result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch),
+    ).toEqual({ first: [events[0].message] });
+  });
+
+  it('names the override when a mapped field fails and does not fail default events', async () => {
+    const events = overrideEvents(
+      {
+        eventOverrides: [
+          {
+            name: 'Broken',
+            events: ['Lead'],
+            queryParams: [{ to: 'num', from: '$number($$.message.id)' }],
+          },
+        ],
+      },
+      ['Lead', 'Other'],
+    );
+    events[0].message.id = 'invalid';
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(results.find((result) => result.error)).toMatchObject({
+      error: expect.stringContaining('Event override "Broken": Request field evaluation failed'),
+      metadata: [{ jobId: 1 }],
+    });
+    expect(results.find((result) => result.batched)?.metadata).toMatchObject([{ jobId: 2 }]);
+  });
+
+  it('keeps FORM single-event even with an override batch size', async () => {
+    const events = overrideEvents(
+      {
+        format: 'FORM',
+        requestBodyTemplate: '[$$.events][0]',
+        eventOverrides: [{ name: 'Form', events: ['Lead'], maxBatchSize: '5000' }],
+      },
+      ['Lead', 'Lead'],
+    );
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(results.map((result) => result.metadata.map(({ jobId }) => jobId))).toEqual([[1], [2]]);
+  });
+
+  it('evaluates all request fields and all bodies in one isolate call each', async () => {
+    const execute = jest.spyOn(httpTemplateSandboxRunner, 'execute');
+    try {
+      const events = overrideEvents(
+        {
+          queryParams: [{ to: 'v', from: "'1'" }],
+          eventOverrides: [
+            { name: 'Leads', events: ['Lead'], pathParams: [{ path: '$.id' }], maxBatchSize: '1' },
+            { name: 'Orders', events: ['Order'], requestBodyTemplate: '{"orders": $$.events}' },
+          ],
+        },
+        ['Lead', 'Lead', 'Order', 'Other', 'Lead', 'Order'],
+      );
+      events[5].metadata.dontBatch = true;
+      const results = await processDestinationIntegration(events, Integration, {});
+      expect(results.map(({ metadata }) => metadata.map(({ jobId }) => jobId))).toEqual([
+        [1],
+        [2],
+        [3],
+        [4],
+        [5],
+        [6],
+      ]);
+      // Batchable inputs: one request-field call and one body call for five request groups.
+      // The dontBatch input adds its own request-field call; its body joins the same body call.
+      expect(
+        execute.mock.calls.map(([, script]) => script.match(/evaluate\w+InSandbox/)?.[0]),
+      ).toEqual([
+        'evaluateRequestFieldsInSandbox',
+        'evaluateRequestFieldsInSandbox',
+        'evaluateHttpBodyInSandbox',
+      ]);
+      // Every body is evaluated exactly once, including the first batched group.
+      const [, , [jobs]] = execute.mock.calls[2] as [string, string, [[string, unknown[][]][]]];
+      expect(jobs.flatMap(([, chunks]) => chunks.flat()).length).toBe(events.length);
+    } finally {
+      execute.mockRestore();
+    }
+  });
+
+  it('splits body evaluation into isolate calls of at most 5000 bodies', async () => {
+    const execute = jest.spyOn(httpTemplateSandboxRunner, 'execute');
+    try {
+      const events = overrideEvents({ maxBatchSize: '5000' }, Array(5001).fill('Lead'));
+      const results = await processDestinationIntegration(events, Integration, {});
+      expect(results.map(({ metadata }) => metadata.length)).toEqual([5000, 1]);
+      const bodyCalls = execute.mock.calls
+        .filter(([, script]) => script.includes('evaluateHttpBodyInSandbox'))
+        .map(
+          ([, , [jobs]]) =>
+            (jobs as [string, unknown[][]][]).flatMap(([, chunks]) => chunks.flat()).length,
+        );
+      expect(bodyCalls).toEqual([5000, 1]);
+    } finally {
+      execute.mockRestore();
+    }
+  });
+
+  it('delivers events of an unnamed override that sets nothing, alongside an empty one', async () => {
+    const events = overrideEvents(
+      { eventOverrides: [{ events: ['Lead'] }, { name: '', events: [] }] },
+      ['Lead'],
+    );
+    const [response] = await processDestinationIntegration(events, Integration, {});
+    expect(response).toMatchObject({ batched: true, metadata: [{ jobId: 1 }] });
+  });
+
+  it('rejects an override batch size the router cannot chunk at', async () => {
+    const [event] = overrideEvents(
+      { eventOverrides: [{ name: 'Bad', events: ['Lead'], maxBatchSize: 0 }] },
+      ['Lead'],
+    );
+    const [response] = await processDestinationIntegration([event], Integration, {});
+    expect(response.statusCode).toBe(400);
+    expect(response.error).toContain('destination.Config.eventOverrides');
+  });
 
   it('defaults method to POST and batches up to 5000 when unset', async () => {
     const { method, maxBatchSize, ...config } = destination.Config;

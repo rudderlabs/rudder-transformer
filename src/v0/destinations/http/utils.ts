@@ -4,6 +4,30 @@ import type { RequestFieldExpressions } from './httpTemplateSandbox';
 import { mappingKey } from './types';
 import type { HttpDestinationConfig } from './types';
 
+export const resolveOverrideGroup = (
+  { event }: Record<string, unknown>,
+  groups: HttpDestinationConfig['eventOverrides'],
+): number | undefined => {
+  if (!groups || typeof event !== 'string') return undefined;
+  const index = groups.findIndex((group) => group.events.includes(event));
+  return index === -1 ? undefined : index;
+};
+
+export const effectiveConfig = (
+  config: HttpDestinationConfig,
+  group?: NonNullable<HttpDestinationConfig['eventOverrides']>[number],
+): HttpDestinationConfig => {
+  if (!group) return config;
+  const { pathParams, queryParams, requestBodyTemplate, maxBatchSize } = group;
+  return {
+    ...config,
+    ...(pathParams !== undefined && { pathParams }),
+    ...(queryParams !== undefined && { queryParams }),
+    ...(requestBodyTemplate !== undefined && { requestBodyTemplate }),
+    ...(maxBatchSize !== undefined && { maxBatchSize }),
+  };
+};
+
 // Only leading-$ values are expressions. Everything else is a literal JSONata string.
 export function requestFieldExpression(value: string): string {
   // v1's enhanceMappings leaves pre-quoted single-quoted literals untouched. Migration

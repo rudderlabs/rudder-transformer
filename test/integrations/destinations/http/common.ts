@@ -733,6 +733,28 @@ const v2Destination: Destination = {
   version: 2,
 };
 
+const v2OverrideDestination: Destination = {
+  ...v2Destination,
+  Config: {
+    ...v2Destination.Config,
+    headers: [],
+    pathParams: [],
+    queryParams: [{ to: 'source', from: 'default' }],
+    requestBodyTemplate: '$$.events',
+    eventOverrides: [
+      {
+        name: 'Leads',
+        events: ['Lead'],
+        pathParams: [{ path: 'leads' }],
+        queryParams: [],
+        requestBodyTemplate: '{"leads": $$.events}',
+        maxBatchSize: '1',
+      },
+      { name: 'Orders', events: ['Order'], requestBodyTemplate: '{"orders": $$.events}' },
+    ],
+  },
+};
+
 const v2XmlDestination: Destination = {
   ...v2Destination,
   Config: {
@@ -828,6 +850,7 @@ export {
   destType,
   destinations,
   v2Destination,
+  v2OverrideDestination,
   v2XmlDestination,
   v2FormDestination,
   processorInstrumentationErrorStatTags,

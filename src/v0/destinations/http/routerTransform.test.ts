@@ -96,7 +96,7 @@ describe('HTTP v2 native router', () => {
       }),
     );
 
-  it('applies all group settings, inherits omitted settings and leaves other message types on defaults', async () => {
+  it('applies all group settings, inherits omitted settings and matches any message type by event', async () => {
     const events = overrideEvents(
       {
         queryParams: [{ to: 'source', from: 'default' }],
@@ -118,14 +118,16 @@ describe('HTTP v2 native router', () => {
     events[3].message = { ...events[3].message, type: 'identify' as const };
     const results = await processDestinationIntegration(events, Integration, {});
     expect(
-      results.map((result) => ({
-        jobs: result.metadata.map(({ jobId }) => jobId),
-        endpoint: (result as unknown as NativeResponse).batchedRequest.endpoint,
-        params: (result as unknown as NativeResponse).batchedRequest.params,
-        body: JSON.parse(
-          (result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch,
-        ),
-      })),
+      results
+        .map((result) => ({
+          jobs: result.metadata.map(({ jobId }) => jobId),
+          endpoint: (result as unknown as NativeResponse).batchedRequest.endpoint,
+          params: (result as unknown as NativeResponse).batchedRequest.params,
+          body: JSON.parse(
+            (result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch,
+          ),
+        }))
+        .sort((x, y) => x.jobs[0]! - y.jobs[0]!),
     ).toEqual([
       {
         jobs: [1],
@@ -140,10 +142,16 @@ describe('HTTP v2 native router', () => {
         body: { order: [events[1].message] },
       },
       {
-        jobs: [3, 4, 5],
+        jobs: [3, 5],
         endpoint: 'https://example.org/events',
         params: { source: 'default' },
-        body: [events[2].message, events[3].message, events[4].message],
+        body: [events[2].message, events[4].message],
+      },
+      {
+        jobs: [4],
+        endpoint: 'https://example.org/events/lead',
+        params: {},
+        body: { lead: [events[3].message] },
       },
     ]);
   });

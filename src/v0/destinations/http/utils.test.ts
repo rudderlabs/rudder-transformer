@@ -20,7 +20,8 @@ describe('HTTP override resolution', () => {
     [{ type: 'track', event: 'Lead' }, 0],
     [{ type: 'track', event: 'Order' }, 1],
     [{ type: 'track', event: 'lead' }, undefined],
-    [{ type: 'identify', event: 'Lead' }, undefined],
+    [{ type: 'identify', event: 'Lead' }, 0],
+    [{ type: 'page', name: 'Lead' }, undefined],
     [{ type: 'track', event: 5 }, undefined],
     [{ type: 'track' }, undefined],
   ])('resolves %p to %p', (message, expected) => {

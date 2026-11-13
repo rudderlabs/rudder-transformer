@@ -25,6 +25,11 @@ const sampleDestination: Destination = {
   WorkspaceID: '',
 };
 
+const gzipGroupDestination: Destination = {
+  ...sampleDestination,
+  Config: { ...sampleDestination.Config, groupKeySettings: [{ groupKey: 'company' }] },
+};
+
 const destinationWithSetOnceProperty = {
   hasDynamicConfig: false,
   Config: {
@@ -84,6 +89,7 @@ const destinationWithUnionAndAppendProperty = {
 
 export {
   sampleDestination,
+  gzipGroupDestination,
   defaultMockFns,
   destinationWithSetOnceProperty,
   destinationWithUnionAndAppendProperty,

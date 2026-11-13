@@ -16,6 +16,9 @@ const ConfigCategory = {
   DEFAULT: {
     name: 'AFDefaultConfig',
   },
+  ADVANCED_MATCHING: {
+    name: 'AFAdvancedMatchingConfig',
+  },
 };
 
 const Event = {

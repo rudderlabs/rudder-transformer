@@ -160,6 +160,22 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 - **App Version**: Maps `context.app.version` to `app_version_name`
 - **Bundle Identifier**: Maps `context.app.namespace` to `bundleIdentifier`
 
+#### Advanced Matching
+
+With v2 authorization (S2S v3 API), the destination sends AppsFlyer's hashed user identifiers
+when the matching trait is present in `traits` or `context.traits`:
+
+| Trait                                    | AppsFlyer field            | Normalization before SHA-256 |
+| ---------------------------------------- | -------------------------- | ---------------------------- |
+| `email`                                  | `email_hashed`             | Trim, lowercase              |
+| `phone`                                  | `phone_number_hashed`      | Digits, no leading zeros     |
+| `phone` (with a leading `+`)             | `phone_number_e164_hashed` | `+` followed by those digits |
+| `firstName` / `firstname` / `first_name` | `first_name_hashed`        | Trim, lowercase              |
+| `lastName` / `lastname` / `last_name`    | `last_name_hashed`         | Trim, lowercase              |
+
+To send pre-hashed values, set `integrations.AF.hashed` to `true`; the destination then skips
+hashing. v1 authorization sends none of these fields.
+
 #### Event Validation
 
 - **AppsFlyer ID Requirement**: All events must include `appsflyerExternalId` in the message

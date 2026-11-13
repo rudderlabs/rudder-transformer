@@ -63,7 +63,7 @@ describe('PostTransformation Service', () => {
       body: { JSON: { id: 1 } },
     };
     const bad = { ...good, body: { JSON: { id: 2 }, GZIP: { payload: 'compressed' } } };
-    const jobs = [metadata(1), { ...metadata(2), destinationId: 'destination-2' }];
+    const jobs = [metadata(1), metadata(2)];
     const destination = { ID: 'destination-1' };
     const input = [
       { batchedRequest: good, metadata: [jobs[0]], destination, statusCode: 200, batched: false },
@@ -86,7 +86,6 @@ describe('PostTransformation Service', () => {
       statTags: {
         errorCategory: 'platform',
         ...errorDetails,
-        destinationId: jobs[1].destinationId,
       },
     };
     const cases = [

@@ -86,12 +86,7 @@ export class DestinationPostTransformationService {
         validateDeliveryRequestBody(payload.batchedRequest);
         return { ...payload };
       } catch (error) {
-        const responseMetadata = payload.metadata?.[0];
-        const errObj = generateErrorObject(error, {
-          ...metaTo.errorDetails,
-          destinationId: responseMetadata?.destinationId,
-          workspaceId: responseMetadata?.workspaceId,
-        });
+        const errObj = generateErrorObject(error, metaTo.errorDetails);
         const failure = {
           metadata: payload.metadata,
           destination: payload.destination,
@@ -128,8 +123,8 @@ export class DestinationPostTransformationService {
     resultantPayloads.forEach((resp) => {
       if ('error' in resp && isObject(resp.statTags) && !isEmpty(resp.statTags)) {
         resp.statTags = {
-          ...metaTo.errorDetails,
           ...resp.statTags,
+          ...metaTo.errorDetails,
         };
         stats.increment('event_transform_failure', {
           destType: metaTo.errorDetails.destType,
@@ -191,7 +186,7 @@ export class DestinationPostTransformationService {
     const resp = {
       metadata: metaTo.metadatas,
       batched: false,
-      statusCode: 500,
+      statusCode: 500, // for batch we should consider code error hence keeping retryable
       error: errObj.message || defaultErrorMessages.delivery,
       statTags: errObj.statTags,
     } as RouterTransformationResponse;

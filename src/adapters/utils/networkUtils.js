@@ -77,10 +77,6 @@ const nodeSysErrorToStatus = (code) => {
       status: 500,
       message: '[ENETUNREACH] :: Network is unreachable',
     },
-    ENETDOWN: {
-      status: 500,
-      message: '[ENETDOWN] :: Network is down',
-    },
     EPERM: {
       status: 400,
       message: '[EPERM] :: Operation not permitted',

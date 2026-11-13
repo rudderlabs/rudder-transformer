@@ -7,7 +7,6 @@ describe('processAxiosResponse with no HTTP response', () => {
     ['EPIPE', 500, '[EPIPE] :: Broken pipe'],
     ['EHOSTUNREACH', 500, '[EHOSTUNREACH] :: Host is unreachable'],
     ['ENETUNREACH', 500, '[ENETUNREACH] :: Network is unreachable'],
-    ['ENETDOWN', 500, '[ENETDOWN] :: Network is down'],
     ['EADDRNOTAVAIL', 500, '[EADDRNOTAVAIL] :: Address not available'],
     ['ECONNRESET', 500, '[ECONNRESET] :: Connection reset by peer'],
     ['ENOTFOUND', 400, '[ENOTFOUND] :: DNS lookup failed'],

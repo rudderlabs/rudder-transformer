@@ -220,6 +220,33 @@ describe('HTTP v2 native router', () => {
     expect(request.body.JSON_ARRAY).toEqual({});
   });
 
+  it('keeps FORM requests separate when a per-event batch size override is present', async () => {
+    const events = withFormat(
+      {
+        format: 'FORM',
+        maxBatchSize: '50',
+        eventOverrides: [{ name: 'track events', events: ['track'], maxBatchSize: '2' }],
+        requestBodyTemplate: '[$$.events][0]',
+      },
+      ['one', 'two', 'three'],
+    );
+    const responses = (await processDestinationIntegration(
+      events,
+      Integration,
+      {},
+    )) as unknown as NativeResponse[];
+    expect(
+      responses.map((response) => ({
+        jobIds: response.metadata.map(({ jobId }) => jobId),
+        body: response.batchedRequest.body.FORM,
+      })),
+    ).toEqual([
+      { jobIds: [1], body: { type: 'track', id: 'one', value: '1' } },
+      { jobIds: [2], body: { type: 'track', id: 'two', value: '2' } },
+      { jobIds: [3], body: { type: 'track', id: 'three', value: '3' } },
+    ]);
+  });
+
   it('rejects an undefined body instead of shipping a non-JSON request', async () => {
     const result = await processDestinationIntegration(
       [

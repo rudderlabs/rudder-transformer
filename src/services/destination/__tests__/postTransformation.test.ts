@@ -63,10 +63,11 @@ describe('PostTransformation Service', () => {
       body: { JSON: { id: 1 } },
     };
     const bad = { ...good, body: { JSON: { id: 2 }, GZIP: { payload: 'compressed' } } };
-    const jobs = [metadata(1), metadata(2)];
+    const jobs = [metadata(1), { ...metadata(2), destinationId: 'destination-2' }];
+    const destination = { ID: 'destination-1' };
     const input = [
-      { batchedRequest: good, metadata: [jobs[0]], statusCode: 200, batched: false },
-      { batchedRequest: bad, metadata: [jobs[1]], statusCode: 200, batched: false },
+      { batchedRequest: good, metadata: [jobs[0]], destination, statusCode: 200, batched: false },
+      { batchedRequest: bad, metadata: [jobs[1]], destination, statusCode: 200, batched: false },
     ] as unknown as RouterTransformationResponse[];
     const errorDetails = {
       destType: 'EXAMPLE',
@@ -78,6 +79,7 @@ describe('PostTransformation Service', () => {
     };
     const expectedFailure = {
       metadata: [jobs[1]],
+      destination,
       batched: false,
       statusCode: 400,
       error: 'delivery request has more than one non-empty body format: JSON, GZIP',
@@ -90,12 +92,13 @@ describe('PostTransformation Service', () => {
     const cases = [
       { name: 'one request', batchedRequest: bad },
       { name: 'one invalid nested request', batchedRequest: [good, bad] },
+      { name: '2xx response with an error key', batchedRequest: bad, error: 'old error' },
     ];
 
-    it.each(cases)('rejects $name and keeps sibling responses', ({ batchedRequest }) => {
+    it.each(cases)('rejects $name and keeps sibling responses', ({ batchedRequest, error }) => {
       const report = jest.spyOn(ErrorReportingService, 'reportError').mockImplementation(jest.fn());
       const increment = jest.spyOn(stats, 'increment').mockImplementation(jest.fn());
-      const responses = [{ ...input[0] }, { ...input[1], batchedRequest }];
+      const responses = [{ ...input[0] }, { ...input[1], batchedRequest, ...(error && { error }) }];
       const meta: MetaTransferObject = {
         errorContext: 'router error',
         errorDetails,
@@ -120,9 +123,11 @@ describe('PostTransformation Service', () => {
       ).toHaveLength(1);
     });
 
-    it('preserves the metadata hook for valid responses without modifying generated failures', () => {
+    it('runs the metadata hook for valid and failed responses', () => {
       const report = jest.spyOn(ErrorReportingService, 'reportError').mockImplementation(jest.fn());
-      const hook = jest.fn(() => [jobs[0], jobs[1]]);
+      const hook = jest.fn((response: RouterTransformationResponse) =>
+        response.destination ? response.metadata : [],
+      );
       const result = DestinationPostTransformationService.handleRouterTransformSuccessEvents(
         input,
         { processMetadataForRouter: hook },
@@ -131,8 +136,8 @@ describe('PostTransformation Service', () => {
         'EXAMPLE',
       );
 
-      expect(result).toEqual([{ ...input[0], metadata: jobs }, expectedFailure]);
-      expect(hook).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([input[0], expectedFailure]);
+      expect(hook).toHaveBeenCalledTimes(2);
       expect(report).toHaveBeenCalledTimes(1);
     });
   });

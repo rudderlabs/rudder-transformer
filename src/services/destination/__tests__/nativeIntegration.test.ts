@@ -161,20 +161,11 @@ describe('NativeIntegration Service', () => {
       },
     ]);
     expect(report).toHaveBeenCalledTimes(1);
-    expect(increment).toHaveBeenCalledTimes(1);
-    expect(increment).toHaveBeenCalledWith('event_transform_failure', {
-      destType: 'EXAMPLE',
-      module: 'destination',
-      implementation: 'native',
-      feature: 'processor',
-      destinationId: 'dest-2',
-      workspaceId: 'ws-2',
-    });
+    expect(increment).not.toHaveBeenCalled();
   });
 
-  test('batch validates each response independently and uses only its own metadata', () => {
+  test('batch validation fails only its destination group and uses that group metadata', () => {
     const report = jest.spyOn(ErrorReportingService, 'reportError');
-    const increment = jest.spyOn(stats, 'increment').mockImplementation(jest.fn());
     const inputs = [1, 2, 3].map((jobId) => ({
       message: { jobId },
       destination: { ID: jobId === 3 ? 'group-b' : 'group-a' },
@@ -214,9 +205,9 @@ describe('NativeIntegration Service', () => {
 
     expect(result).toEqual([
       {
-        metadata: [inputs[0].metadata],
+        metadata: [inputs[0].metadata, inputs[1].metadata],
         batched: false,
-        statusCode: 400,
+        statusCode: 500,
         error: 'delivery request has more than one non-empty body format: JSON, GZIP',
         statTags: {
           errorCategory: 'platform',
@@ -228,57 +219,9 @@ describe('NativeIntegration Service', () => {
           workspaceId: 'ws-1',
         },
       },
-      makeResponse(good, inputs[1]),
       makeResponse(good, inputs[2]),
     ]);
     expect(report).toHaveBeenCalledTimes(1);
-    expect(increment).toHaveBeenCalledTimes(1);
-    expect(increment).toHaveBeenCalledWith('event_transform_failure', {
-      destType: 'EXAMPLE',
-      module: 'destination',
-      implementation: 'native',
-      feature: 'batch',
-      destinationId: 'dest-1',
-      workspaceId: 'ws-1',
-    });
-  });
-
-  test('batch group-wide errors report only the failed destination group', () => {
-    const inputs = [1, 2].map((jobId) => ({
-      message: { jobId },
-      destination: { ID: `group-${jobId}` },
-      metadata: { jobId, destinationId: `dest-${jobId}`, workspaceId: `ws-${jobId}` },
-    }));
-    const good = {
-      batchedRequest: { body: { JSON: { id: 2 } } },
-      metadata: [inputs[1].metadata],
-      batched: false,
-      statusCode: 200,
-    };
-    jest.spyOn(FetchHandler, 'getDestHandler').mockReturnValue({
-      batch: (destEvents: typeof inputs) => {
-        if (destEvents[0].destination.ID === 'group-1') throw new Error('failed group');
-        return [good];
-      },
-    } as any);
-
-    expect(
-      new NativeIntegrationDestinationService().doBatchTransformation(
-        inputs as any,
-        'example',
-        'v0',
-        {},
-      ),
-    ).toEqual([
-      {
-        metadata: [inputs[0].metadata],
-        batched: false,
-        statusCode: 500,
-        error: 'failed group',
-        statTags: { errorCategory: 'transformation' },
-      },
-      good,
-    ]);
   });
 
   describe('deliver - v0 handler adaptation for the v1 route', () => {

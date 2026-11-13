@@ -20,10 +20,7 @@ import { DeleteUsersError } from '../../v0/util/errorTypes/deleteUsersError';
 import tags from '../../v0/util/tags';
 import { ErrorReportingService } from '../errorReporting';
 import logger from '../../logger';
-import {
-  DeliveryBodyFormatError,
-  validateDeliveryRequestBody,
-} from './validateDeliveryRequestBody';
+import { validateDeliveryRequestBody } from './validateDeliveryRequestBody';
 
 const defaultErrorMessages = {
   router: '[Router Transform] Error occurred while processing the payload.',
@@ -83,25 +80,27 @@ export class DestinationPostTransformationService {
     implementation: string,
     destinationType: string,
   ): RouterTransformationResponse[] {
-    const generatedFailures = new Set<RouterTransformationResponse>();
     const resultantPayloads: RouterTransformationResponse[] = transformedPayloads.map((payload) => {
-      if ('error' in payload) return { ...payload };
+      if (payload.statusCode < 200 || payload.statusCode >= 300) return { ...payload };
       try {
         validateDeliveryRequestBody(payload.batchedRequest);
         return { ...payload };
       } catch (error) {
         const responseMetadata = payload.metadata?.[0];
-        const responseMetaTo: MetaTransferObject = {
-          ...metaTo,
-          errorDetails: {
-            ...metaTo.errorDetails,
-            destinationId: responseMetadata?.destinationId,
-            workspaceId: responseMetadata?.workspaceId,
-          },
-          metadatas: payload.metadata,
-        };
-        const failure = this.handleRouterTransformFailureEvents(error as Error, responseMetaTo);
-        generatedFailures.add(failure);
+        const errObj = generateErrorObject(error, {
+          ...metaTo.errorDetails,
+          destinationId: responseMetadata?.destinationId,
+          workspaceId: responseMetadata?.workspaceId,
+        });
+        const failure = {
+          metadata: payload.metadata,
+          destination: payload.destination,
+          batched: false,
+          statusCode: errObj.status,
+          error: errObj.message || defaultErrorMessages.router,
+          statTags: errObj.statTags,
+        } as RouterTransformationResponse;
+        ErrorReportingService.reportError(error as Error, metaTo.errorContext, failure);
         return failure;
       }
     });
@@ -121,19 +120,16 @@ export class DestinationPostTransformationService {
 
     if (destHandler?.processMetadataForRouter) {
       return resultantPayloads.map((resultantPayload) => {
-        if (!generatedFailures.has(resultantPayload)) {
-          resultantPayload.metadata = destHandler.processMetadataForRouter(resultantPayload);
-        }
+        resultantPayload.metadata = destHandler.processMetadataForRouter(resultantPayload);
         return resultantPayload;
       });
     }
 
     resultantPayloads.forEach((resp) => {
-      if (generatedFailures.has(resp)) return;
       if ('error' in resp && isObject(resp.statTags) && !isEmpty(resp.statTags)) {
         resp.statTags = {
-          ...resp.statTags,
           ...metaTo.errorDetails,
+          ...resp.statTags,
         };
         stats.increment('event_transform_failure', {
           destType: metaTo.errorDetails.destType,
@@ -195,7 +191,7 @@ export class DestinationPostTransformationService {
     const resp = {
       metadata: metaTo.metadatas,
       batched: false,
-      statusCode: error instanceof DeliveryBodyFormatError ? errObj.status : 500,
+      statusCode: 500,
       error: errObj.message || defaultErrorMessages.delivery,
       statTags: errObj.statTags,
     } as RouterTransformationResponse;

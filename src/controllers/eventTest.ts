@@ -30,10 +30,12 @@ const parseTemplateActionsSchema = z.object({
   delete: parseTemplateActionConfigSchema.optional(),
 });
 
+const workspaceIdSchema = z.string().min(1, 'workspaceId must be a non-empty string');
+
 const parseTemplateBodySchema = z.object({
   action: z.nativeEnum(RecordAction),
   actions: parseTemplateActionsSchema,
-  workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
+  workspaceId: workspaceIdSchema,
 });
 
 // Bound template count and size before copying them into the sandbox.
@@ -49,20 +51,21 @@ const httpPathParamsSchema = z
   .array(z.object({ path: httpParseTemplate.optional() }))
   .max(MAX_HTTP_PARSE_FIELDS)
   .optional();
-const httpParseBodySchema = z.object({
-  workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
-  requestBodyTemplate: httpParseTemplate,
+// The request fields parse-template verifies; overrides carry the same fields except headers.
+const httpFieldsSchema = z.object({
+  requestBodyTemplate: httpParseTemplate.optional(),
   headers: httpMappingsSchema,
   queryParams: httpMappingsSchema,
   pathParams: httpPathParamsSchema,
+});
+const httpParseBodySchema = httpFieldsSchema.extend({
+  workspaceId: workspaceIdSchema,
+  requestBodyTemplate: httpParseTemplate,
   eventOverrides: z
     .array(
-      z.object({
+      httpFieldsSchema.omit({ headers: true }).extend({
         name: z.string().optional(),
         events: z.array(z.string()).max(MAX_OVERRIDE_EVENTS).optional(),
-        pathParams: httpPathParamsSchema,
-        queryParams: httpMappingsSchema,
-        requestBodyTemplate: httpParseTemplate.optional(),
       }),
     )
     .max(MAX_EVENT_OVERRIDES)
@@ -79,12 +82,7 @@ const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
       group,
       template: typeof value === 'string' ? requestFieldExpression(value) : undefined,
     }));
-  const fields = (
-    config: Partial<
-      Pick<typeof body, 'requestBodyTemplate' | 'headers' | 'queryParams' | 'pathParams'>
-    >,
-    group?: number,
-  ) => [
+  const fields = (config: z.infer<typeof httpFieldsSchema>, group?: number) => [
     ...(config.requestBodyTemplate === undefined
       ? []
       : [
@@ -92,18 +90,15 @@ const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
             field: 'requestBodyTemplate',
             index: undefined,
             group,
-            template: config.requestBodyTemplate as string,
+            template: config.requestBodyTemplate,
           },
         ]),
-    ...surface(
-      'headers',
-      (config.headers ?? []).map(({ from }) => from),
-      group,
-    ),
-    ...surface(
-      'queryParams',
-      (config.queryParams ?? []).map(({ from }) => from),
-      group,
+    ...(['headers', 'queryParams'] as const).flatMap((field) =>
+      surface(
+        field,
+        (config[field] ?? []).map(({ from }) => from),
+        group,
+      ),
     ),
     ...surface(
       'pathParams',

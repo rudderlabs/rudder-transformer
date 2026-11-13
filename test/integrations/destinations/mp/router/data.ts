@@ -1,5 +1,5 @@
 import { overrideDestination } from '../../../testUtils';
-import { sampleDestination } from '../common';
+import { gzipGroupDestination, sampleDestination } from '../common';
 import { authHeader2, secret1, secret2, secret3 } from '../maskedSecrets';
 
 export const data = [
@@ -1762,6 +1762,209 @@ export const data = [
                 Transformations: [],
                 WorkspaceID: '',
               },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description: 'Gzip /engage for an enabled workspace; /import retains the handshake',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      MP_GZIP_ENGAGE_ENABLED_WORKSPACE_IDS: 'gzip-workspace',
+      MP_GZIP_GROUPS_ENABLED_WORKSPACE_IDS: 'other-workspace',
+    },
+    input: {
+      request: {
+        method: 'POST',
+        headers: { 'X-Feature-Gzip-Support': '?1' },
+        body: {
+          destType: 'mp',
+          input: [
+            {
+              destination: sampleDestination,
+              metadata: { jobId: 101, userId: 'profile-user', workspaceId: 'gzip-workspace' },
+              message: {
+                type: 'identify',
+                userId: 'profile-user',
+                anonymousId: 'profile-user-anon',
+                traits: { email: 'profile@example.com' },
+                timestamp: '2023-07-06T06:29:02.402Z',
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.mixpanel.com/engage/',
+                  endpointPath: 'engage',
+                  headers: { 'Content-Type': 'application/json' },
+                  params: { verbose: 2 },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                    GZIP: {
+                      payload: JSON.stringify([
+                        {
+                          $set: { $email: 'profile@example.com' },
+                          $token: secret2,
+                          $distinct_id: 'profile-user',
+                          $time: 1688624942402,
+                        },
+                      ]),
+                    },
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.mixpanel.com/import/',
+                  endpointPath: 'import',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: authHeader2,
+                  },
+                  params: { strict: 0 },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                    GZIP: {
+                      payload: JSON.stringify([
+                        {
+                          event: '$merge',
+                          properties: {
+                            $distinct_ids: ['profile-user', 'profile-user-anon'],
+                            token: secret2,
+                          },
+                        },
+                      ]),
+                    },
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [{ jobId: 101, userId: 'profile-user', workspaceId: 'gzip-workspace' }],
+              destination: sampleDestination,
+              batched: true,
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description: 'Gzip /groups independently while /engage stays JSON_ARRAY',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      MP_GZIP_ENGAGE_ENABLED_WORKSPACE_IDS: 'other-workspace',
+      MP_GZIP_GROUPS_ENABLED_WORKSPACE_IDS: 'gzip-workspace',
+    },
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          destType: 'mp',
+          input: [
+            {
+              destination: gzipGroupDestination,
+              metadata: { jobId: 102, userId: 'group-user', workspaceId: 'gzip-workspace' },
+              message: {
+                type: 'group',
+                userId: 'group-user',
+                traits: { company: 'Example Co' },
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.mixpanel.com/engage/',
+                  endpointPath: 'engage',
+                  headers: { 'Content-Type': 'application/json' },
+                  params: { verbose: 2 },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {
+                      batch: JSON.stringify([
+                        {
+                          $token: secret2,
+                          $distinct_id: 'group-user',
+                          $set: { company: ['Example Co'] },
+                        },
+                      ]),
+                    },
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.mixpanel.com/groups/',
+                  endpointPath: 'groups',
+                  headers: { 'Content-Type': 'application/json' },
+                  params: { verbose: 2 },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                    GZIP: {
+                      payload: JSON.stringify([
+                        {
+                          $token: secret2,
+                          $group_key: 'company',
+                          $group_id: 'Example Co',
+                          $set: { company: 'Example Co' },
+                        },
+                      ]),
+                    },
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [{ jobId: 102, userId: 'group-user', workspaceId: 'gzip-workspace' }],
+              destination: gzipGroupDestination,
+              batched: true,
+              statusCode: 200,
             },
           ],
         },

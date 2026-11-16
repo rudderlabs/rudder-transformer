@@ -20,6 +20,7 @@ const { setResponsesForMockAxiosAdapter } = require('../../test/testHelper');
 const MAX_CONTENT_LENGTH = parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
 const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
 const REQUEST_TIMEOUT_IN_MS = parseInt(process.env.REQUEST_TIMEOUT_IN_MS, 10) || 1000 * 60;
+let compressionInflight = 0;
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
   // `method` is the request method to be used when making the request
@@ -500,6 +501,27 @@ const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }
   });
 };
 
+const prepareGzipProxyRequest = async (request, tags) => {
+  const startedAt = process.hrtime.bigint();
+  compressionInflight += 1;
+  stats.gauge('delivery_compression_inflight', compressionInflight);
+  try {
+    return await prepareProxyRequest(request);
+  } finally {
+    compressionInflight -= 1;
+    stats.gauge('delivery_compression_inflight', compressionInflight);
+    stats.histogram(
+      'delivery_compression_duration_seconds',
+      Number(process.hrtime.bigint() - startedAt) / 1e9,
+      tags,
+    );
+  }
+};
+
+const fireCompressionStats = (data, tags) => {
+  stats.histogram('delivery_compressed_payload_size_bytes', Buffer.byteLength(data), tags);
+};
+
 /**
  * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
  * note: needed for test api
@@ -508,8 +530,19 @@ const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }
  */
 const proxyRequest = async (request, destType) => {
   const { metadata, endpointPath, body } = request;
-  const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
+  const isGzip = getPayloadData(body).payloadFormat === 'GZIP';
+  const tags = {
+    destType,
+    endpointPath: endpointPath ?? '',
+    workspaceId: logger.getLogMetadata(metadata).workspaceId,
+  };
+  const { endpoint, data, method, params, headers } = await (isGzip
+    ? prepareGzipProxyRequest(request, tags)
+    : prepareProxyRequest(request));
   fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
+  if (isGzip) {
+    fireCompressionStats(data, tags);
+  }
   const requestOptions = {
     url: endpoint,
     data,

@@ -72,7 +72,7 @@ Use braze destination in rudder-transformer source code as an example to underst
     - From source code, understand which event types, flows lead to multiplexed events and document them.
     - If an api call is made as an intermidiate call, document the reason for it.
 - **Version Deprecation cadence**
-  - Write this as one `## Version Information` section (exact heading, used once) with `### Current Version`, `### Version Deprecation` and `### Latest Available Version` subsections. The integration audit workflow reads it by heading.
+  - Write this as one `## Version Information` section in the exact format in [audit-sections.md](audit-sections.md). The integration audit workflow parses it.
   - what is the current version being used & end-of-life ?
     - Look for `config.js` file or patterns in api endpoints or any other clues associated with version of destination api.
     - Search the internet for docs around versions available, to get the deprecation date or tentative deprecation period or if deprecation will never happen
@@ -82,12 +82,8 @@ Use braze destination in rudder-transformer source code as an example to underst
   - Maintain all the documentation link references also
 - **Documentation Links**
   - `## Documentation Links` section with all partner API doc links used while writing the README
-  - Must include a `### Changelog References` subsection. The integration audit workflow reads it to find partner changes (auth, deprecations, field and mapping changes, version releases). List, when the partner has them:
-    - the developer changelog or release notes page
-    - the deprecations or API lifecycle page
-    - the page listing API versions and sunset dates
-    - the changelog RSS/Atom feed
-  - Search the internet for these pages. If none exist, add the subsection with a `NEEDS REVIEW` note.
+  - Must include a `### Changelog References` subsection in the exact format in [audit-sections.md](audit-sections.md). The integration audit workflow parses it to find partner changes (auth, deprecations, field and mapping changes, version releases).
+  - Search the internet for each item: changelog, deprecations page, versions page, RSS/Atom feed, and announcements about auth or sunsets that affect this integration. Check every URL opens.
 - **RETL section** —> redirect to **docs/retl.md**
 - **Business logic** —> redirect to **docs/businesslogic.md**
 - **FAQ section**

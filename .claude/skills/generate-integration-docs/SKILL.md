@@ -75,17 +75,12 @@ Create the following files in the destination folder:
   - Rate limits and batch sizes
   - Multiplexing (single input -> multiple outputs)
 
-- **Version Information** (`## Version Information`, exact heading, used once)
-
-  - `### Current Version`: API version in use
-  - `### Version Deprecation`: end-of-life / deprecation status
-  - `### Latest Available Version`: latest available version
-  - Documentation links
+- **Version Information** (`## Version Information`): exact format in [references/audit-sections.md](references/audit-sections.md)
 
 - **Documentation Links** (`## Documentation Links`)
 
   - Partner API doc links used in the README
-  - `### Changelog References` subsection (required): changelog or release notes, deprecations page, API versions and sunset dates page, and RSS/Atom feed, whichever the partner has
+  - `### Changelog References` subsection (required): exact format in [references/audit-sections.md](references/audit-sections.md)
 
 - **RETL section** → link to `docs/retl.md`
 - **Business logic** → link to `docs/businesslogic.md`

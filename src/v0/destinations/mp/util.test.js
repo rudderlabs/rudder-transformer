@@ -335,6 +335,162 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
   });
 });
 
+describe('Mixpanel batched gzip rollout', () => {
+  const engageFlag = 'MP_GZIP_ENGAGE_ENABLED_WORKSPACE_IDS';
+  const groupsFlag = 'MP_GZIP_GROUPS_ENABLED_WORKSPACE_IDS';
+  const originalEngageFlag = process.env[engageFlag];
+  const originalGroupsFlag = process.env[groupsFlag];
+  const workspaceId = 'workspace-1';
+  const batch = [{ event: 'first' }, { event: 'second' }];
+  const eventsFor = (endpointPath) =>
+    batch.map((event) => ({
+      endpoint: `https://api.mixpanel.com/${endpointPath}/`,
+      endpointPath,
+      headers: { 'Content-Type': 'application/json' },
+      params: { verbose: 2 },
+      body: { JSON_ARRAY: { batch: JSON.stringify([event]) } },
+    }));
+
+  beforeEach(() => {
+    delete process.env[engageFlag];
+    delete process.env[groupsFlag];
+  });
+
+  afterAll(() => {
+    if (originalEngageFlag === undefined) delete process.env[engageFlag];
+    else process.env[engageFlag] = originalEngageFlag;
+    if (originalGroupsFlag === undefined) delete process.env[groupsFlag];
+    else process.env[groupsFlag] = originalGroupsFlag;
+  });
+
+  const rolloutCases = [
+    { endpointPath: 'engage', flag: engageFlag, value: 'ALL', expectedGzip: true },
+    {
+      endpointPath: 'engage',
+      flag: engageFlag,
+      value: 'workspace-2, workspace-1',
+      expectedGzip: true,
+    },
+    { endpointPath: 'engage', flag: engageFlag, value: 'workspace-2', expectedGzip: false },
+    { endpointPath: 'engage', flag: engageFlag, value: undefined, expectedGzip: false },
+    { endpointPath: 'groups', flag: groupsFlag, value: 'ALL', expectedGzip: true },
+    {
+      endpointPath: 'groups',
+      flag: groupsFlag,
+      value: 'workspace-2, workspace-1',
+      expectedGzip: true,
+    },
+    { endpointPath: 'groups', flag: groupsFlag, value: 'workspace-2', expectedGzip: false },
+    { endpointPath: 'groups', flag: groupsFlag, value: undefined, expectedGzip: false },
+    { endpointPath: 'groups', flag: engageFlag, value: 'ALL', expectedGzip: false },
+    { endpointPath: 'engage', flag: groupsFlag, value: 'ALL', expectedGzip: false },
+    { endpointPath: 'other', flag: engageFlag, value: 'ALL', expectedGzip: false },
+  ];
+
+  it.each(rolloutCases)(
+    '$endpointPath uses GZIP=$expectedGzip when $flag=$value',
+    ({ endpointPath, flag, value, expectedGzip }) => {
+      if (value !== undefined) process.env[flag] = value;
+      const result = generateBatchedPayloadForArray(eventsFor(endpointPath), {}, workspaceId);
+
+      expect(result).toEqual({
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: `https://api.mixpanel.com/${endpointPath}/`,
+        endpointPath,
+        headers: { 'Content-Type': 'application/json' },
+        params: { verbose: 2 },
+        body: {
+          JSON: {},
+          JSON_ARRAY: expectedGzip ? {} : { batch: JSON.stringify(batch) },
+          XML: {},
+          FORM: {},
+          ...(expectedGzip ? { GZIP: { payload: JSON.stringify(batch) } } : {}),
+        },
+        files: {},
+      });
+    },
+  );
+
+  it('passes the batch workspace ID to the gzip gate without changing metadata', () => {
+    process.env[engageFlag] = 'workspace-1';
+    const destination = { ID: 'mp-destination' };
+    const engageEvents = eventsFor('engage');
+    const input = engageEvents.map((message, index) => ({
+      message,
+      metadata: { jobId: index + 1, workspaceId },
+      destination,
+    }));
+
+    expect(batchEvents(input, maxBatchSizeMock, {})).toEqual([
+      {
+        batchedRequest: {
+          version: '1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://api.mixpanel.com/engage/',
+          endpointPath: 'engage',
+          headers: { 'Content-Type': 'application/json' },
+          params: { verbose: 2 },
+          body: {
+            JSON: {},
+            JSON_ARRAY: {},
+            XML: {},
+            FORM: {},
+            GZIP: { payload: JSON.stringify(batch) },
+          },
+          files: {},
+        },
+        metadata: [
+          { jobId: 1, workspaceId },
+          { jobId: 2, workspaceId },
+        ],
+        destination,
+        batched: true,
+        statusCode: 200,
+      },
+    ]);
+  });
+
+  const importCases = [
+    { flags: false, supportsGzip: false },
+    { flags: false, supportsGzip: true },
+    { flags: true, supportsGzip: false },
+    { flags: true, supportsGzip: true },
+  ];
+
+  it.each(importCases)(
+    '/import keeps handshake with flags=$flags and support=$supportsGzip',
+    ({ flags, supportsGzip }) => {
+      if (flags) {
+        process.env[engageFlag] = 'ALL';
+        process.env[groupsFlag] = 'ALL';
+      }
+      const reqMetadata = supportsGzip ? { features: { [FEATURE_GZIP_SUPPORT]: true } } : {};
+      const result = generateBatchedPayloadForArray(eventsFor('import'), reqMetadata, workspaceId);
+
+      expect(result).toEqual({
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: 'https://api.mixpanel.com/import/',
+        endpointPath: 'import',
+        headers: { 'Content-Type': 'application/json' },
+        params: { verbose: 2 },
+        body: {
+          JSON: {},
+          JSON_ARRAY: supportsGzip ? {} : { batch: JSON.stringify(batch) },
+          XML: {},
+          FORM: {},
+          ...(supportsGzip ? { GZIP: { payload: JSON.stringify(batch) } } : {}),
+        },
+        files: {},
+      });
+    },
+  );
+});
+
 describe('Unit test cases for buildUtmParams', () => {
   it('should return an empty object when campaign is undefined', () => {
     const campaign = undefined;

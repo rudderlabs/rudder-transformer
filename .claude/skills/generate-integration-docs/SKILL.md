@@ -82,6 +82,11 @@ Create the following files in the destination folder:
   - Latest available version
   - Documentation links
 
+- **Documentation Links** (`## Documentation Links`)
+
+  - Partner API doc links used in the README
+  - `### Changelog References` subsection (required): changelog or release notes, deprecations page, API versions and sunset dates page, and RSS/Atom feed, whichever the partner has
+
 - **RETL section** → link to `docs/retl.md`
 - **Business logic** → link to `docs/businesslogic.md`
 - **FAQ section** (empty initially, populated over time)

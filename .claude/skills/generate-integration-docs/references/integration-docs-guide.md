@@ -79,6 +79,14 @@ Use braze destination in rudder-transformer source code as an example to underst
     - Search the internet for docs around new versions available
     - See if change log is available and add possible breaking changes between the version in use and the new version available.
   - Maintain all the documentation link references also
+- **Documentation Links**
+  - `## Documentation Links` section with all partner API doc links used while writing the README
+  - Must include a `### Changelog References` subsection. The integration audit workflow reads it to find partner changes (auth, deprecations, field and mapping changes, version releases). List, when the partner has them:
+    - the developer changelog or release notes page
+    - the deprecations or API lifecycle page
+    - the page listing API versions and sunset dates
+    - the changelog RSS/Atom feed
+  - Search the internet for these pages. If none exist, add the subsection with a `NEEDS REVIEW` note.
 - **RETL section** —> redirect to **docs/retl.md**
 - **Business logic** —> redirect to **docs/businesslogic.md**
 - **FAQ section**

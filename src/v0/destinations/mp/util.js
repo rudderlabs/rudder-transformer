@@ -39,6 +39,16 @@ const {
 } = require('./config');
 const { CommonUtils } = require('../../../util/common');
 const stats = require('../../../util/stats');
+const { isFeatureEnabled } = require('../../../util/featureFlags');
+
+const MP_GZIP_FLAGS = {
+  engage: 'MP_GZIP_ENGAGE_ENABLED_WORKSPACE_IDS',
+  groups: 'MP_GZIP_GROUPS_ENABLED_WORKSPACE_IDS',
+};
+
+const isMpGzipEnabled = (endpointPath, workspaceId) =>
+  Boolean(MP_GZIP_FLAGS[endpointPath]) &&
+  isFeatureEnabled(MP_GZIP_FLAGS[endpointPath], workspaceId);
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
@@ -296,7 +306,7 @@ const groupEventsByEndpoint = (events) => {
   };
 };
 
-const generateBatchedPayloadForArray = (events, reqMetadata) => {
+const generateBatchedPayloadForArray = (events, reqMetadata, workspaceId) => {
   const { batchedRequest } = defaultBatchRequestConfig();
   const firstEvent = events[0];
   batchedRequest.endpoint = firstEvent.endpoint;
@@ -306,8 +316,11 @@ const generateBatchedPayloadForArray = (events, reqMetadata) => {
 
   const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
 
-  if (IsGzipSupported(reqMetadata) && firstEvent.endpoint.includes('import')) {
-    // Gzipping the payload for /import endpoint
+  const isImport = firstEvent.endpoint.includes('import');
+  const useGzip = isImport
+    ? IsGzipSupported(reqMetadata)
+    : isMpGzipEnabled(firstEvent.endpointPath, workspaceId);
+  if (useGzip) {
     batchedRequest.body.GZIP = { payload: JSON.stringify(batchResponseList) };
   } else {
     batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
@@ -319,7 +332,11 @@ const generateBatchedPayloadForArray = (events, reqMetadata) => {
 const batchEvents = (successRespList, maxBatchSize, reqMetadata) => {
   const batchedEvents = batchMultiplexedEvents(successRespList, maxBatchSize);
   return batchedEvents.map((batch) => {
-    const batchedRequest = generateBatchedPayloadForArray(batch.events, reqMetadata);
+    const batchedRequest = generateBatchedPayloadForArray(
+      batch.events,
+      reqMetadata,
+      batch.metadata[0].workspaceId,
+    );
     return getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true);
   });
 };

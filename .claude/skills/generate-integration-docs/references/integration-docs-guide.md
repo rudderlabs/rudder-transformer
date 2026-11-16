@@ -72,6 +72,7 @@ Use braze destination in rudder-transformer source code as an example to underst
     - From source code, understand which event types, flows lead to multiplexed events and document them.
     - If an api call is made as an intermidiate call, document the reason for it.
 - **Version Deprecation cadence**
+  - Write this as one `## Version Information` section (exact heading, used once) with `### Current Version`, `### Version Deprecation` and `### Latest Available Version` subsections. The integration audit workflow reads it by heading.
   - what is the current version being used & end-of-life ?
     - Look for `config.js` file or patterns in api endpoints or any other clues associated with version of destination api.
     - Search the internet for docs around versions available, to get the deprecation date or tentative deprecation period or if deprecation will never happen

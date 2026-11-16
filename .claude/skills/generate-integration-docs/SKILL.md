@@ -75,11 +75,11 @@ Create the following files in the destination folder:
   - Rate limits and batch sizes
   - Multiplexing (single input -> multiple outputs)
 
-- **Version Deprecation**
+- **Version Information** (`## Version Information`, exact heading, used once)
 
-  - Current API version in use
-  - End-of-life / deprecation status
-  - Latest available version
+  - `### Current Version`: API version in use
+  - `### Version Deprecation`: end-of-life / deprecation status
+  - `### Latest Available Version`: latest available version
   - Documentation links
 
 - **Documentation Links** (`## Documentation Links`)

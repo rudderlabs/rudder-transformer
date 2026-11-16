@@ -113,32 +113,66 @@ transformer, and the returned request subscribes the email to the campaign. Only
 
 ### Current Version
 
-- Drip REST API `v2`: subscribers, campaign subscribers, events
-- Drip Shopper Activity API `v3`: `POST /v3/{accountId}/shopper_activity/order`
-- Base URL `https://api.getdrip.com`
+- **API:** Drip REST API
+- **Version:** `v2`
+- **Where in code:** `transform.js` (`${ENDPOINT}/v2/...` for subscribers, campaign subscribers and events), `util.js` (subscriber lookup); base URL in `config.js` (`ENDPOINT`)
+
+- **API:** Drip Shopper Activity API
+- **Version:** `v3`
+- **Where in code:** `transform.js` (`${ENDPOINT}/v3/${Config.accountId}/shopper_activity/order`)
 
 ### Version Deprecation
 
-No deprecation of v2 subscribers or events, or of v3 Shopper Activity, has been announced. Drip marks the
-legacy **v2 Orders** batch endpoint as superseded by v3 Shopper Activity ("We will give fair notice before
-we retire it"); this destination already uses v3 for orders.
+- **API:** Drip REST API
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Drip REST API reference](https://developer.drip.com/)
+
+- **API:** Drip Shopper Activity API
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Shopper Activity overview](https://developer.drip.com/#shopper_activity_overview)
+
+Drip marks the legacy **v2 Orders** batch endpoint as superseded by v3 Shopper Activity ("We will give fair notice before we retire it"); this destination already uses v3 for orders.
 
 ### Latest Available Version
 
-v2 (core) and v3 (Shopper Activity) are current. Drip added a Metrics API in April/May 2026, which is not
-relevant here.
+- **API:** Drip REST API
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Drip REST API reference](https://developer.drip.com/)
+
+- **API:** Drip Shopper Activity API
+- **Version:** `v3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Shopper Activity overview](https://developer.drip.com/#shopper_activity_overview)
+
+Drip added a Metrics API in April/May 2026, which is not relevant here.
 
 ## Documentation Links
 
 ### API Documentation
 
 - [Drip REST API reference](https://developer.drip.com/)
+- [Authentication](https://developer.drip.com/#authentication)
+- [Create or update a subscriber](https://developer.drip.com/#create-or-update-a-subscriber)
+- [Fetch a subscriber](https://developer.drip.com/#fetch-a-subscriber)
+- [Subscribe someone to an email series campaign](https://developer.drip.com/#subscribe-someone-to-an-email-series-campaign)
+- [Record an event](https://developer.drip.com/#record-an-event)
+- [Shopper Activity: create or update an order](https://developer.drip.com/#sapi-create-or-update-order)
 
 ### Changelog References
 
-- [Drip release notes](https://www.drip.com/release-notes) (returns 403 to automated clients; the page is
-  listed in search results)
-- **NEEDS REVIEW**: Drip publishes no developer changelog, deprecations page or RSS feed.
+- **Changelog:** [Drip release notes](https://www.drip.com/release-notes) (blocks automated requests)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Drip publishes no developer changelog, deprecations page or RSS feed. The product release notes occasionally announce API additions.
 
 ## RETL Functionality
 

@@ -85,15 +85,23 @@ None. Router batching combines events; it does not split one event into several.
 
 ### Current Version
 
-Experience API **v2** (`/v2/organizations/...` in `config.js` `batchEndpoint`).
+- **Version:** `v2`
+- **Where in code:** `config.js` (`batchEndpoint`, `https://experience.ninetailed.co/v2/organizations/{{organisationId}}/environments/{{environment}}/events`)
 
 ### Version Deprecation
 
-No deprecation of Experience API v2 found. The legacy Ninetailed app was sunset in March 2026 ([Contentful changelog](https://www.contentful.com/developers/changelog/ninetailed-app-has-been-sunsetted/)). NEEDS REVIEW whether the Experience API host or credentials move to Contentful.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Create or update profiles (sync)](https://contentful.com/developers/docs/references/experience-api/profiles/create-or-update-profiles-sync.md)
+
+Contentful's Experience API reference (Contentful Personalization) still documents `POST https://experience.ninetailed.co/v2/organizations/{organizationId}/environments/{environmentSlug}/events`. The legacy Ninetailed app was sunset ([Contentful changelog, 2026-03-26](https://www.contentful.com/developers/changelog/ninetailed-app-has-been-sunsetted/) (blocks automated requests)); that notice covers the app, not the Experience API.
 
 ### Latest Available Version
 
-v2 is the latest documented version of the Experience API. NEEDS REVIEW.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Create or update profiles (sync)](https://contentful.com/developers/docs/references/experience-api/profiles/create-or-update-profiles-sync.md)
 
 ## RETL Functionality
 
@@ -105,16 +113,18 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ## Documentation Links
 
-- [Experience API (Contentful docs)](https://contentful.com/developers/docs/ninetailed/experience-api)
+- [Experience API (Contentful docs)](https://contentful.com/developers/docs/ninetailed/experience-api) (blocks automated requests; Markdown copy at [experience-api.md](https://contentful.com/developers/docs/ninetailed/experience-api.md))
+- [Create or update profiles (sync batch events)](https://contentful.com/developers/docs/references/experience-api/profiles/create-or-update-profiles-sync.md)
 - [Ninetailed SDK changelog](https://contentful.com/developers/docs/personalization/ninetailed-changelog.md)
 
 ### Changelog References
 
-- [Contentful developer changelog](https://www.contentful.com/developers/changelog/) (Ninetailed entries appear here)
-- [Ninetailed app sunset notice](https://www.contentful.com/developers/changelog/ninetailed-app-has-been-sunsetted/)
-- [Ninetailed SDK changelog](https://contentful.com/developers/docs/personalization/ninetailed-changelog.md)
-- Note: `contentful.com` answered curl with HTTP 429 (bot protection); the URLs were found through web search, and `docs.ninetailed.io` redirects to the Contentful docs. NEEDS REVIEW: confirm in a browser.
-- API versions/sunset page and RSS feed: none found. NEEDS REVIEW.
+- **Changelog:** [Contentful developer changelog](https://www.contentful.com/developers/changelog/) (blocks automated requests; Personalization and Ninetailed entries appear here); [Ninetailed SDK changelog](https://contentful.com/developers/docs/personalization/ninetailed-changelog.md)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Contentful changelog RSS](https://www.contentful.com/developers/changelog.rss)
+- **Announcements:** [Ninetailed app has been sunsetted (2026-03-26)](https://www.contentful.com/developers/changelog/ninetailed-app-has-been-sunsetted/) (blocks automated requests)
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

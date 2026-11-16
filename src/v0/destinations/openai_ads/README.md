@@ -100,15 +100,25 @@ Both are merged into `destination.Config` from the account at runtime; they are 
 
 ### Current Version
 
-- Conversions API **v1**: `POST https://bzr.openai.com/v1/events?pid=<PIXEL-ID>`.
+- **Version:** `v1`
+- **Where in code:** `config.ts` (`ENDPOINT_PATH`, joined to `BASE_URL` in `ENDPOINT`)
+
+Endpoint: `POST https://bzr.openai.com/v1/events?pid=<PIXEL-ID>`.
 
 ### Version Deprecation
 
-- No deprecation announced. OpenAI publishes no versioning or sunset policy for the Ads APIs.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Conversions API](https://developers.openai.com/ads/conversions-api)
+
+OpenAI publishes no versioning or sunset policy for the Ads APIs.
 
 ### Latest Available Version
 
-- v1 is the only version.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Conversions API](https://developers.openai.com/ads/conversions-api)
 
 ## RETL Functionality
 
@@ -123,10 +133,19 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 - [Conversions API](https://developers.openai.com/ads/conversions-api)
 - [Conversion tracking](https://developers.openai.com/ads/conversion-tracking)
 - [Supported events](https://developers.openai.com/ads/supported-events)
+- [Conversion setup (pixels and Conversions API keys)](https://developers.openai.com/ads/api-reference/conversion-setup)
+- [Ads API authentication](https://developers.openai.com/ads/api-reference/authentication)
 - [Ads docs index](https://developers.openai.com/ads/llms.txt)
 
 ### Changelog References
 
-- [OpenAI developer changelog](https://developers.openai.com/changelog). NEEDS REVIEW: as of November 2026 it does not list Ads API entries, and there is no Ads-specific changelog, deprecations page or feed. Watch the [Conversions API](https://developers.openai.com/ads/conversions-api) page itself.
+- **Changelog:** [OpenAI developer changelog](https://developers.openai.com/changelog)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [OpenAI Developers RSS](https://developers.openai.com/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+As of 2026-11-16 neither the developer changelog nor the RSS feed lists Ads API entries, and there is no Ads-specific changelog or deprecations page. Watch the [Conversions API](https://developers.openai.com/ads/conversions-api) page itself.
 
 ## FAQ

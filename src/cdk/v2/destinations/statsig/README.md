@@ -86,15 +86,25 @@ A legacy JavaScript implementation also exists in `src/v0/destinations/statsig/`
 
 ### Current Version
 
-- `https://api.statsig.com/v1/webhooks/rudderstack` (path version `v1`).
+- **Version:** `v1`
+- **Where in code:** `procWorkflow.yaml` (`response.endpoint`, `https://api.statsig.com/v1/webhooks/rudderstack`)
 
 ### Version Deprecation
 
-- No deprecation announced for the `v1` RudderStack webhook. Statsig's server deprecation notices cover SDK initialization changes (for example the direct initialization API, October 31, 2025) that do not affect this webhook ([deprecation notices](https://docs.statsig.com/server/deprecation-notices)).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Statsig RudderStack integration](https://docs.statsig.com/integrations/data-connectors/rudderstack)
+
+Statsig's server deprecation notices cover SDK initialization changes (for example the direct initialization API, October 31, 2025) that do not affect this webhook ([deprecation notices](https://docs.statsig.com/server/deprecation-notices)).
 
 ### Latest Available Version
 
-- `v1` is the only webhook version found. **NEEDS REVIEW**.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Statsig RudderStack integration](https://docs.statsig.com/integrations/data-connectors/rudderstack)
+
+`v1` is the only webhook version found.
 
 ## RETL Functionality
 
@@ -112,9 +122,14 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- [Statsig product updates](https://www.statsig.com/updates)
-- [Statsig server deprecation notices](https://docs.statsig.com/server/deprecation-notices)
-- **NEEDS REVIEW**: no developer API changelog or RSS feed was found (`https://www.statsig.com/updates/rss.xml` returns an HTML page, not a feed).
+- **Changelog:** [Statsig product updates](https://www.statsig.com/updates)
+- **Deprecations:** [Statsig server deprecation notices](https://docs.statsig.com/server/deprecation-notices)
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+`https://www.statsig.com/updates/rss.xml` and `https://www.statsig.com/blog/rss.xml` return HTML pages, not feeds.
 
 ## FAQ
 

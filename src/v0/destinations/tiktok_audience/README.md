@@ -97,15 +97,25 @@ Implementation in **TypeScript** (`src/v0/destinations/tiktok_audience/`). There
 
 ### Current Version
 
-- TikTok API for Business **v1.3**: `https://business-api.tiktok.com/open_api/v1.3/segment/mapping/` (`config.ts`). rudder-auth and rudder-integrations-info also use v1.3.
+- **Version:** `v1.3`
+- **Where in code:** `config.ts` (`BASE_URL`, `ENDPOINT` = `/segment/mapping/`)
+
+rudder-auth and rudder-integrations-info also use v1.3.
 
 ### Version Deprecation
 
-- No sunset date found for v1.3. v1.2 was replaced by v1.3 in 2023 ([Boomi upgrade notes](https://help.boomi.com/docs/Atomsphere/Data_Integration/APIUpgradesChangelog/2023/tiktok-api-upgrade-13)). **NEEDS REVIEW**: TikTok's portal changelog could not be fetched.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [API Reference Overview (current version v1.3)](https://business-api.tiktok.com/portal/docs/api-reference/v1.3) (blocks automated requests)
+
+v1.2 was retired on 2023-08-15 in favour of v1.3 ([Hevo](https://mini-docs.hevodata.com/sources/marketing/tiktok-ads/), [Boomi upgrade notes](https://help.boomi.com/docs/Atomsphere/Data_Integration/APIUpgradesChangelog/2023/tiktok-api-upgrade-13), both third-party). No sunset date for v1.3 and no deprecation of the `/segment/` endpoints was found. The portal's 2027-01-01 Smart+ change covers campaign, ad group and ad creation endpoints only, not audiences.
 
 ### Latest Available Version
 
-- v1.3 is the latest known version. **NEEDS REVIEW**.
+- **Version:** `v1.3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [API Reference Overview (current version v1.3)](https://business-api.tiktok.com/portal/docs/api-reference/v1.3) (blocks automated requests)
 
 ## RETL Functionality
 
@@ -118,12 +128,24 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 ## Documentation Links
 
 - [About API for Business](https://ads.tiktok.com/help/article/marketing-api)
-- [Manage audiences via API](https://ads.tiktok.com/help/article/manage-audiences-api)
-- TikTok API for Business portal: `https://business-api.tiktok.com/portal/docs` (returns 403 to automated requests; the audience create doc ID `1739940506015746` is referenced in rudder-integrations-info).
+- TikTok API for Business portal: [API for Business docs](https://business-api.tiktok.com/portal/docs) (blocks automated requests; the audience create doc ID `1739940506015746` is referenced in rudder-integrations-info)
+- [Create or delete an audience segment](https://business-api.tiktok.com/portal/docs?id=1739940583739393) (Segment API, which includes `/segment/mapping/`; blocks automated requests)
+- [Authentication](https://business-api.tiktok.com/portal/docs?id=1738373164380162) (blocks automated requests)
+- [API Reference Overview (v1.3)](https://business-api.tiktok.com/portal/docs/api-reference/v1.3) (lists `/segment/audience/` and `/segment/mapping/`; blocks automated requests)
+- [Audience types](https://business-api.tiktok.com/portal/docs/audience-types/v1.3) (blocks automated requests)
+- [Create a Custom Audience](https://business-api.tiktok.com/portal/docs/create-a-custom-audience/v1.3) (blocks automated requests)
+- [Permission scope](https://business-api.tiktok.com/portal/docs/permission-scope/v1.3) (segment endpoints need the Create and Update Custom Audiences scope; blocks automated requests)
 
 ### Changelog References
 
-- **NEEDS REVIEW**: TikTok API for Business publishes its changelog inside `https://business-api.tiktok.com/portal/docs`, which blocks automated access, so no changelog URL could be verified. The TikTok for Developers changelog (`https://developers.tiktok.com/docs/changelog`, returned 503 when checked) covers other TikTok developer products, not the Marketing API.
+- **Changelog:** [API for Business blog (weekly "API For Business Platform Update" posts)](https://business-api.tiktok.com/portal/blog) (blocks automated requests)
+- **Deprecations:** None found
+- **Versions:** [Hevo: TikTok Ads API v1.2 deprecated 2023-08-15, v1.3 only](https://mini-docs.hevodata.com/sources/marketing/tiktok-ads/) (third-party)
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The portal's [About the Guide](https://business-api.tiktok.com/portal/docs/about-the-guide/v1.3) (blocks automated requests) page describes a weekly "What's New" section, but no direct URL for it was found, so the blog's platform-update posts are linked instead. TikTok publishes no API version lifecycle page; the v1.2 sunset date comes from a third-party connector doc. No RSS feed for the portal blog was found. The [TikTok for Developers changelog](https://developers.tiktok.com/doc/changelog) (blocks automated requests) covers Login Kit, Research API and other developer products, not the Marketing API.
 
 ## FAQ
 

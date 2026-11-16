@@ -105,26 +105,40 @@ No multiple requests. A page event produces one request that carries both a prof
 
 ### Current Version
 
-- HTTP API **v1**: `POST https://api.appcues.com/v1/accounts/{accountId}/users/{userId}/activity` (`config.js`).
+- **Version:** `v1`
+- **Where in code:** `config.js` (`getEndpoint`: `POST https://api.appcues.com/v1/accounts/{accountId}/users/{userId}/activity`)
 
 ### Version Deprecation
 
-- No deprecation or sunset date announced for the v1 user activity endpoint. Appcues' docs still document it and point to the Public API for bulk import/export.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Appcues HTTP API (user activity)](https://docs.appcues.com/http-api-developer)
+
+Appcues' docs still document the v1 user activity endpoint and point to the Public API for bulk import/export.
 
 ### Latest Available Version
 
-- Appcues **Public API v2** (`https://api.appcues.com/v2`, Basic auth with API key and secret). It has per-user profile (`/v2/accounts/{account_id}/users/{user_id}/profile`) and event (`/v2/accounts/{account_id}/users/{user_id}/events`) endpoints. A move to v2 would require adding API key and secret fields to the destination config. Appcues states the Public API is not available on legacy subscription tiers.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Appcues Public API v2 reference](https://api.appcues.com/v2/docs)
+
+Appcues **Public API v2** (`https://api.appcues.com/v2`, Basic auth with API key and secret) has per-user profile (`/v2/accounts/{account_id}/users/{user_id}/profile`) and event (`/v2/accounts/{account_id}/users/{user_id}/events`) endpoints. A move to v2 would require adding API key and secret fields to the destination config. Appcues states the Public API is not available on legacy subscription tiers.
 
 ## Documentation Links
 
-- [Appcues HTTP API (user activity)](https://docs.appcues.com/http-api-developer)
+- [Appcues HTTP API (user activity endpoint and auth)](https://docs.appcues.com/http-api-developer)
 - [Appcues Public API overview](https://docs.appcues.com/appcues-public-api)
 - [Appcues Public API v2 reference](https://api.appcues.com/v2/docs)
 
 ### Changelog References
 
-- [Appcues product changelog](https://feedback.appcues.com/changelog) (monthly product updates; not API-specific)
-- **NEEDS REVIEW**: no API-specific changelog, deprecations page or RSS feed found.
+- **Changelog:** [Appcues product changelog](https://feedback.appcues.com/changelog) (monthly product updates; not API-specific)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Appcues changelog RSS](https://feedback.appcues.com/api/changelog/feed.rss)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

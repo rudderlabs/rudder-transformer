@@ -96,15 +96,29 @@ None.
 
 ### Current Version
 
-Reddit Ads API **v3** (`https://ads-api.reddit.com/api/v3`, `config.ts` `BASE_URL`); endpoint `PATCH /custom_audiences/{audience_id}/users`.
+- **Version:** `v3`
+- **Where in code:** `config.ts` (`BASE_URL`)
+
+Endpoint: `PATCH {BASE_URL}/custom_audiences/{audience_id}/users`.
 
 ### Version Deprecation
 
-v3 is current; no v3 deprecation announced. Third-party sources report Reddit Ads API v2 public endpoints (except Conversions API) were sunset by Sep 30, 2025 and now return `410 GONE`. This destination never used v2. NEEDS REVIEW: confirm on the Reddit changelog.
+- **Status:** Supported
+- **Sunset date:** 2027-09-30
+- **Source:** [Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning)
+
+Reddit moved the Ads API to quarterly versions in Q4 2026. v3 is Stable for Q4 2026 to Q3 2027 and reaches end of support at the end of Q3 2027; from Q4 2027 its requests return `410 Gone`. Responses carry a `Sunset` header 90 and 60 days before end of support and on every response in the last 30 days.
+
+Reddit sunset all v2 endpoints except the Conversions API on 2025-09-30 ([v2 What's New](https://ads-api.reddit.com/docs/v2/history)). This destination never used v2.
 
 ### Latest Available Version
 
-v3 (in use).
+- **Version:** `v4` (Preview)
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [v4 What's New](https://ads-api.reddit.com/docs/v4/history)
+
+v4 is in Preview in Q4 2026 and becomes Stable in Q1 2027 ([Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning)). Reddit gives no exact v4 release day. v4 still has [Update Custom Audience Users](https://ads-api.reddit.com/docs/v4/api/update-custom-audience-users). Move to v4 or later before v3 reaches end of support on 2027-09-30.
 
 ## RETL Functionality
 
@@ -117,13 +131,18 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 ## Documentation Links
 
 - [Reddit Ads API v3 reference](https://ads-api.reddit.com/docs/v3/)
-- [Update Custom Audience Users](https://ads-api.reddit.com/docs/v3/operations/Update%20Custom%20Audience%20Users)
+- [Update Custom Audience Users](https://ads-api.reddit.com/docs/v3/api/update-custom-audience-users)
+- [Authenticate (Ads API quick start)](https://ads-api.reddit.com/docs/v3/guides/quick-start/authenticate)
 - [Reddit OAuth2 (archived wiki)](https://github.com/reddit-archive/reddit/wiki/OAuth2)
 
 ### Changelog References
 
-- [Reddit Ads API changelog](https://ads-api.reddit.com/docs/v3/changelog) (JavaScript-rendered; returns 200 but content must be read in a browser)
-- Deprecations / API versions page and RSS feed: none found. NEEDS REVIEW.
+- **Changelog:** [What's New (v3)](https://ads-api.reddit.com/docs/v3/history); [What's New (v4 Preview)](https://ads-api.reddit.com/docs/v4/history)
+- **Deprecations:** [Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning); [What's New (v2, deprecated)](https://ads-api.reddit.com/docs/v2/history)
+- **Versions:** [Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning)
+- **Feed:** [Ads API blog RSS](https://ads-api.reddit.com/docs/blog/rss.xml)
+- **Announcements:** [Introducing Versioning for Reddit Ads API (2026-10-20)](https://ads-api.reddit.com/docs/blog/introducing-versioning); [Introducing System Users for Ads API Integrations (2026-09-03)](https://ads-api.reddit.com/docs/blog/system-users-open-beta)
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

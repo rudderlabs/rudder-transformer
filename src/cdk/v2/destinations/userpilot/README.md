@@ -120,21 +120,25 @@ No. One request per event.
 
 ### Current Version
 
-- `/v1/` endpoints with header `X-API-Version: 2020-09-22`:
-  - Identify: `POST {apiEndpoint}/v1/identify`
-  - Track: `POST {apiEndpoint}/v1/track`
-  - Group: `POST {apiEndpoint}/v1/companies/identify`
-- EU data residency uses the `analytex-eu` host, set through `apiEndpoint`.
+- **Version:** `v1` (header `X-API-Version: 2020-09-22`)
+- **Where in code:** `utils.js` (endpoint builder: `{apiEndpoint}/v1/identify`, `/v1/track`, `/v1/companies/identify`); `procWorkflow.yaml` (`$.context.apiVersion = "2020-09-22"`)
+
+EU data residency uses the `analytex-eu` host, set through `apiEndpoint`.
 
 ### Version Deprecation
 
-No deprecation of the `v1` Real-time API or of `X-API-Version: 2020-09-22` has been announced. The current
-company identify reference page no longer lists the `X-API-Version` header, while the identify page still
-does. **NEEDS REVIEW**: check whether the header is still needed.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Identify User](https://docs.userpilot.com/api-references/real-time/identify-user)
+
+The identify reference still requires `X-API-Version: 2020-09-22` and lists no other value. The current company identify reference page no longer lists the `X-API-Version` header. NEEDS REVIEW: check whether the header is still needed for company identify.
 
 ### Latest Available Version
 
-`v1` with `X-API-Version: 2020-09-22` is the latest version documented.
+- **Version:** `v1` (header `X-API-Version: 2020-09-22`)
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Identify User](https://docs.userpilot.com/api-references/real-time/identify-user)
 
 ## Documentation Links
 
@@ -148,9 +152,12 @@ does. **NEEDS REVIEW**: check whether the header is still needed.
 
 ### Changelog References
 
-- [Userpilot Product News](https://userpilot.com/product-news/) (product release notes, not API-specific)
-- **NEEDS REVIEW**: Userpilot publishes no developer changelog, API deprecations page or RSS feed for the
-  HTTP API.
+- **Changelog:** [Userpilot Product News](https://userpilot.com/product-news/) (product release notes, not API-specific)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

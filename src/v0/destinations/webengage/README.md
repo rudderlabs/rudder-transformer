@@ -109,17 +109,28 @@ No.
 
 ### Current Version
 
-WebEngage REST API `v1`:
+- **Version:** `v1`
+- **Where in code:** `config.js` (`ENDPOINT`: `https://api.webengage.com/v1/accounts`, `https://api.in.webengage.com/v1/accounts`)
+
+Endpoints used:
 
 - Users: `POST https://{host}/v1/accounts/{licenseCode}/users`
 - Events: `POST https://{host}/v1/accounts/{licenseCode}/events`
 
 ### Version Deprecation
 
-No deprecation of `v1` has been announced. The auth deprecation of Personal API Keys (no date) applies, see
-Authentication above.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [REST API Getting Started](https://docs.webengage.com/docs/rest-api-getting-started)
+
+The auth deprecation of Personal API Keys (no date) applies, see Authentication above.
 
 ### Latest Available Version
+
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [REST API Getting Started](https://docs.webengage.com/docs/rest-api-getting-started)
 
 `v1` is the only documented REST API version.
 
@@ -133,16 +144,20 @@ use this destination.
 
 - [REST API Getting Started](https://docs.webengage.com/docs/rest-api-getting-started)
 - [REST API overview](https://docs.webengage.com/docs/rest-api-overview)
+- [Tracking Users](https://docs.webengage.com/docs/rest-api-tracking-users)
+- [Tracking Events](https://docs.webengage.com/docs/rest-api-tracking-events)
 - [REST API troubleshooting](https://docs.webengage.com/docs/rest-api-troubleshooting)
 - [Bulk User/Event API](https://docs.webengage.com/docs/bulk-user-api)
 - [Service Accounts](https://knowledgebase.webengage.com/docs/service-accounts)
 
 ### Changelog References
 
-- [WebEngage product updates](https://webengage.com/product-updates)
-- [WebEngage product releases](https://webengage.com/releases/)
-- [WebEngage releases RSS feed](https://webengage.com/releases/feed/)
-- **NEEDS REVIEW**: no API-specific changelog or deprecations page was found.
+- **Changelog:** [WebEngage product updates](https://webengage.com/product-updates); [WebEngage product releases](https://webengage.com/releases/)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [WebEngage releases RSS](https://webengage.com/releases/feed/); [WebEngage product updates RSS](https://webengage.com/product-updates/feed/)
+- **Announcements:** [Personal API Keys to be discontinued, migrate to Service Accounts](https://knowledgebase.webengage.com/docs/service-accounts)
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

@@ -102,18 +102,40 @@ Yes. A `track` event mapped to several Snap events in `rudderEventsToSnapEvents`
 
 ### Current Version
 
-- `legacyApi`: Snap CAPI **v2** (`https://tr.snapchat.com/v2/conversion`), the default.
-- `newApi`: Snap CAPI **v3** (`https://tr.snapchat.com/v3/{ID}/events`).
-
-Both set in `config.js` `ENDPOINT`.
+- **API:** Conversions API v2 (`legacyApi`, the default)
+- **Version:** `v2`
+- **Where in code:** `config.js` (`ENDPOINT.Endpoint_v2` = `https://tr.snapchat.com/v2/conversion`)
+- **API:** Conversions API v3 (`newApi`)
+- **Version:** `v3`
+- **Where in code:** `config.js` (`ENDPOINT.Endpoint_v3` = `https://tr.snapchat.com/v3/{ID}/events`)
 
 ### Version Deprecation
 
-- Snap's [Conversions API introduction](https://developers.snap.com/api/marketing-api/Conversions-API/Introduction) says "Conversions API V2 will be deprecated in early 2025" and points to the [migration guide](https://developers.snap.com/api/marketing-api/Conversions-API/MigrationGuide). No exact shutdown date was found, and as of 2026-11-16 it is not confirmed whether v2 still accepts traffic. NEEDS REVIEW: v2 users (the default) are at risk; consider changing the default to `newApi` and migrating existing destinations.
+- **API:** Conversions API v2
+- **Status:** Deprecated
+- **Sunset date:** None announced
+- **Source:** [Conversions API introduction](https://developers.snap.com/api/marketing-api/Conversions-API/Introduction)
+- **API:** Conversions API v3
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Conversions API introduction](https://developers.snap.com/api/marketing-api/Conversions-API/Introduction)
+
+Snap's introduction says "Conversions API V2 will be deprecated in early 2025" and points to the [migration guide](https://developers.snap.com/api/marketing-api/Conversions-API/MigrationGuide). No exact shutdown date was found, and as of 2026-11-16 it is not confirmed whether v2 still accepts traffic. NEEDS REVIEW: v2 users (the default) are at risk; consider changing the default to `newApi` and migrating existing destinations.
 
 ### Latest Available Version
 
-CAPI **v3** (already implemented). v3 parameters are not identical to v2 (for example `event_type` → `event_name`, `event_conversion_type` → `action_source`, hashed fields move under `user_data`).
+- **API:** Conversions API v2
+- **Version:** `v3`
+- **Released:** 2024-03-21
+- **Upgrade needed:** Yes
+- **Source:** [Snap Marketing API changelog](https://developers.snap.com/marketing-api/Ads-API/changelog)
+- **API:** Conversions API v3
+- **Version:** `v3`
+- **Released:** 2024-03-21
+- **Upgrade needed:** No
+- **Source:** [Snap Marketing API changelog](https://developers.snap.com/marketing-api/Ads-API/changelog)
+
+v3 is already implemented (`newApi`). The changelog entry dated 2024-03-21 announces Conversions API v3. v3 parameters are not identical to v2 (for example `event_type` → `event_name`, `event_conversion_type` → `action_source`, hashed fields move under `user_data`).
 
 ## RETL Functionality
 
@@ -133,10 +155,14 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- [Marketing API announcements](https://developers.snap.com/api/marketing-api/Ads-API/announcements) (covers Marketing API and Conversions API changes and deprecations)
-- [Marketing API newsletter](https://developers.snap.com/marketing-api/Ads-API/newsletter)
-- [CAPI v2 → v3 migration guide](https://developers.snap.com/api/marketing-api/Conversions-API/MigrationGuide)
-- API versions / sunset dates page and RSS feed: none found. NEEDS REVIEW.
+- **Changelog:** [Snap Marketing API changelog](https://developers.snap.com/marketing-api/Ads-API/changelog) (includes Conversions API entries)
+- **Deprecations:** [Marketing API announcements](https://developers.snap.com/api/marketing-api/Ads-API/announcements); [Breaking changes log](https://developers.snap.com/marketing-api/Ads-API/breaking-changes-log)
+- **Versions:** [Conversions API introduction (v2 deprecation, v3 current)](https://developers.snap.com/api/marketing-api/Conversions-API/Introduction)
+- **Feed:** None found
+- **Announcements:** [CAPI v2 deprecation and v2 → v3 migration guide](https://developers.snap.com/api/marketing-api/Conversions-API/MigrationGuide)
+- **Last checked:** 2026-11-16
+
+Snap also publishes a [Marketing API newsletter](https://developers.snap.com/marketing-api/Ads-API/newsletter).
 
 ## FAQ
 

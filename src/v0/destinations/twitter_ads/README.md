@@ -91,16 +91,26 @@ Implementation in **JavaScript** (`src/v0/destinations/twitter_ads/`). There is 
 
 ### Current Version
 
-- Ads API **v12**: `https://ads-api.twitter.com/12/measurement/conversions/<pixelId>` (`config.js`).
+- **Version:** `12`
+- **Where in code:** `config.js` (`BASE_URL` = `https://ads-api.twitter.com/12/measurement/conversions`)
 
 ### Version Deprecation
 
-- v12 (introduced October 27, 2022) has no deprecation or end-of-life date; the versioning page lists both as TBD ([Versions](https://docs.x.com/x-ads-api/fundamentals/versioning)).
-- The code still uses the `ads-api.twitter.com` host. X's current docs and examples use `ads-api.x.com`. No retirement date for the twitter.com host was found. **NEEDS REVIEW**.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Versions](https://docs.x.com/x-ads-api/fundamentals/versioning)
+
+- v12 (introduced 2022-10-27) has no deprecation or end-of-life date; the versioning page lists both as TBD. Versions get a 6-month deprecation window once a successor is announced.
+- The code still uses the `ads-api.twitter.com` host. X's current docs and examples use `ads-api.x.com`. No retirement date for the twitter.com host was found. NEEDS REVIEW.
 
 ### Latest Available Version
 
-- v12 is the latest listed version. The X changelog's October 29, 2026 entry (Conversion API for App Events) still uses `/12/` paths.
+- **Version:** `12`
+- **Released:** 2022-10-27
+- **Upgrade needed:** No
+- **Source:** [Versions](https://docs.x.com/x-ads-api/fundamentals/versioning)
+
+v12 is the latest listed version. The X changelog's 2026-10-29 entry (Conversion API for App Events) still uses `/12/` paths.
 
 ## RETL Functionality
 
@@ -112,15 +122,20 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ## Documentation Links
 
-- [Web conversions (Conversion API)](https://docs.x.com/x-ads-api/measurement/web-conversions)
-- [Conversions API reference](https://developer.x.com/en/docs/twitter-ads-api/measurement/api-reference/conversions)
+- [Web conversions (Conversion API, includes the `POST /12/measurement/conversions/:pixel_id` request)](https://docs.x.com/x-ads-api/measurement/web-conversions)
+- [Making authenticated requests (OAuth 1.0a)](https://docs.x.com/x-ads-api/fundamentals/making-authenticated-requests)
 - [Rate limiting](https://docs.x.com/x-ads-api/fundamentals/rate-limiting)
 
 ### Changelog References
 
-- [X developer changelog](https://docs.x.com/changelog) (covers Ads API, X API v2 and SDKs)
-- [X Ads API versions and sunset dates](https://docs.x.com/x-ads-api/fundamentals/versioning)
-- **NEEDS REVIEW**: no RSS/Atom feed found for the X changelog.
+- **Changelog:** [X developer changelog](https://docs.x.com/changelog) (covers Ads API, X API v2 and SDKs)
+- **Deprecations:** [X Ads API versions (deprecated and end-of-life dates)](https://docs.x.com/x-ads-api/fundamentals/versioning)
+- **Versions:** [X Ads API versions](https://docs.x.com/x-ads-api/fundamentals/versioning)
+- **Feed:** [X changelog RSS](https://docs.x.com/changelog/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+X also announces Ads API versions on the developer forum (for example [Ads API version 11](https://devcommunity.x.com/t/ads-api-version-11/168814), blocks automated requests).
 
 ## FAQ
 

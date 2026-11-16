@@ -101,16 +101,25 @@ Implementation in **JavaScript** (v0). The transformer only shapes rows; **deliv
 
 ### Current Version
 
-- Google Sheets API **v4** (`google.golang.org/api/sheets/v4` in rudder-server).
+- **Version:** `v4`
+- **Where in code:** rudder-server `services/streammanager/googlesheets/googlesheetsmanager.go` (imports `google.golang.org/api/sheets/v4`; `google.golang.org/api` v0.307.0 in rudder-server `go.mod`). The transformer only builds the payload.
 
 ### Version Deprecation
 
-- No deprecation announced for Sheets API v4. Google has no fixed sunset schedule for this API.
-- Auth-related: service-account key creation is blocked by default in new Google Cloud organizations since May 3, 2024 (see Authentication).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Google Sheets API release notes](https://developers.google.com/workspace/sheets/release-notes)
+
+Auth-related: service-account key creation is blocked by default in new Google Cloud organizations since 2024-05-03 (see Authentication and [Secure-by-default organizations](https://docs.cloud.google.com/resource-manager/docs/secure-by-default-organizations)).
 
 ### Latest Available Version
 
-- v4 is the latest version.
+- **Version:** `v4`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Sheets API v4 reference](https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/append)
+
+The Go client module `google.golang.org/api` is at v0.315.0 (2026-11-13); rudder-server uses v0.307.0. Both expose the same Sheets API v4.
 
 ## RETL Functionality
 
@@ -124,11 +133,18 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 - [Sheets API: spreadsheets.values.append](https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/append)
 - [Sheets API usage limits](https://developers.google.com/workspace/sheets/api/limits)
+- [Sheets API: authorize requests](https://developers.google.com/workspace/sheets/api/guides/authorizing)
+- [Create access credentials (service accounts)](https://developers.google.com/workspace/guides/create-credentials)
 - [Secure-by-default organizations (service account key policy)](https://docs.cloud.google.com/resource-manager/docs/secure-by-default-organizations)
+- [Go client package `sheets/v4`](https://pkg.go.dev/google.golang.org/api/sheets/v4)
 
 ### Changelog References
 
-- [Google Sheets API release notes](https://developers.google.com/workspace/sheets/release-notes)
-- [Google Workspace developer release notes](https://developers.google.com/workspace/release-notes)
+- **Changelog:** [Google Sheets API release notes](https://developers.google.com/workspace/sheets/release-notes); [Google Workspace developer release notes](https://developers.google.com/workspace/release-notes)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Google Workspace Updates blog feed](https://workspaceupdates.googleblog.com/feeds/posts/default); [google-api-go-client releases (Atom)](https://github.com/googleapis/google-api-go-client/releases.atom)
+- **Announcements:** [Secure-by-default organizations: service account key creation blocked from 2024-05-03](https://docs.cloud.google.com/resource-manager/docs/secure-by-default-organizations)
+- **Last checked:** 2026-11-16
 
 ## FAQ

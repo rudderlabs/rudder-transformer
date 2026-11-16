@@ -90,26 +90,38 @@ No.
 
 ### Current Version
 
-- Unversioned Vitally RudderStack endpoint: `POST https://api.vitally.io/rudderstack` (hard-coded in `procWorkflow.yaml`).
-- Vitally's help article now shows the endpoint as `https://{subdomain}.api.vitally.io/rudderstack`. The code uses the host without a subdomain, which still exists (it returns `401 Authorization header not present` without a key). **NEEDS REVIEW**: confirm with Vitally that the shared host remains supported for all accounts.
+- **Version:** `Unversioned`
+- **Where in code:** `procWorkflow.yaml` (`response.endpoint = "https://api.vitally.io/rudderstack"`)
+
+Vitally's help article now shows the endpoint as `https://{subdomain}.api.vitally.io/rudderstack`. The code uses the host without a subdomain, which still exists (it returns `401 Authorization header not present` without a key). NEEDS REVIEW: confirm with Vitally that the shared host remains supported for all accounts.
 
 ### Version Deprecation
 
-- No deprecation announced.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Vitally: RudderStack integration](https://docs.vitally.io/en/articles/9847122-rudderstack)
 
 ### Latest Available Version
 
-- The endpoint has no versions. Vitally also has a separate REST API that this integration does not use.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Vitally: RudderStack integration](https://docs.vitally.io/en/articles/9847122-rudderstack)
+
+Vitally also has a separate REST API that this integration does not use.
 
 ## Documentation Links
 
-- [Vitally: RudderStack integration](https://docs.vitally.io/en/articles/9847122-rudderstack)
+- [Vitally: RudderStack integration (endpoint and API key auth)](https://docs.vitally.io/en/articles/9847122-rudderstack)
 
 ### Changelog References
 
-- [Vitally 2026 release notes](https://docs.vitally.io/en/collections/18139014-2026-release-notes)
-- [Vitally 2025 release notes](https://docs.vitally.io/en/collections/11580991-2025-release-notes)
-- **NEEDS REVIEW**: product release notes only; no API changelog, deprecations page or RSS feed found.
+- **Changelog:** [Vitally release notes](https://docs.vitally.io/en/collections/10268628-release-notes) (product release notes; no API changelog)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

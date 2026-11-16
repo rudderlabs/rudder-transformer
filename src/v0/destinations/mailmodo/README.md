@@ -94,16 +94,26 @@ No.
 
 ### Current Version
 
-Mailmodo API `v1`, base URL `https://api.mailmodo.com/api/v1`:
+- **Version:** `v1`
+- **Where in code:** `config.js` (`BASE_URL`: `https://api.mailmodo.com/api/v1`)
+
+Endpoints used:
 
 - `POST /addToList/batch` (identify)
 - `POST /addEvent` (track)
 
 ### Version Deprecation
 
-No deprecation announced.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [API reference guide](https://support.mailmodo.com/articles/238356-api-reference-guide)
 
 ### Latest Available Version
+
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Mailmodo API getting started](https://www.mailmodo.com/developers/8e957152b6128-getting-started-with-mailmodo-api/)
 
 `v1` is the only documented version.
 
@@ -113,14 +123,20 @@ No deprecation announced.
 
 - [Mailmodo API getting started](https://www.mailmodo.com/developers/8e957152b6128-getting-started-with-mailmodo-api/)
 - [API reference guide](https://support.mailmodo.com/articles/238356-api-reference-guide)
+- [Getting the API key](https://support.mailmodo.com/articles/276056-how-to-get-the-mmapi-key-template-id-and-campaign-id)
 - [Adding contacts via API](https://support.mailmodo.com/articles/204907-adding-contacts-via-api)
+- [Custom events and how to send them](https://support.mailmodo.com/articles/427952-what-are-custom-events-and-how-to-send-them-to-mailmodo)
 
 ### Changelog References
 
-- [Mailmodo "What's New": August 2024, Mailmodo 2.0](https://support.mailmodo.com/articles/320448-august-2024-mailmodo-2-0)
-  (monthly product release notes in the Help Center)
-- **NEEDS REVIEW**: Mailmodo publishes no API changelog, deprecations page or RSS feed, and no index URL
-  for the "What's New" section was confirmed.
+- **Changelog:** [Mailmodo "What's New" (monthly product release notes)](https://support.mailmodo.com/categories/452014-what-s-new)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Mailmodo publishes no API changelog or deprecations page.
 
 ## RETL Functionality
 

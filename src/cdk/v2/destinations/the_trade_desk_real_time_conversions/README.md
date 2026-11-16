@@ -89,15 +89,25 @@ Implementation in **CDK v2** (`procWorkflow.yaml` + `utils.js`). Code exists onl
 
 ### Current Version
 
-- Real-time conversion endpoint `https://insight.adsrvr.org/track/realtimeconversion`. The URL has no version segment. Code references the partner-portal doc `v3/portal/data/doc/DataConversionEventsApi`.
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`REAL_TIME_CONVERSION_ENDPOINT`), set as `response.endpoint` in `procWorkflow.yaml`
+
+Endpoint: `POST https://insight.adsrvr.org/track/realtimeconversion`. The URL has no version segment.
 
 ### Version Deprecation
 
-- No deprecation announced for the real-time conversion endpoint. NEEDS REVIEW: check the Trade Desk partner portal changelog (login required).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Conversion Events API](https://partner.thetradedesk.com/v3/portal/data/doc/DataConversionEventsApi) (partner portal, login required)
+
+No public deprecation notice for the real-time conversion endpoint was found (search on 2026-11-16). The Trade Desk publishes its docs and release notes only inside the partner portal. NEEDS REVIEW: confirm in the portal.
 
 ### Latest Available Version
 
-- Unversioned endpoint; the endpoint in use is the current one. NEEDS REVIEW.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Conversion Events API](https://partner.thetradedesk.com/v3/portal/data/doc/DataConversionEventsApi) (partner portal, login required)
 
 ## RETL Functionality
 
@@ -113,12 +123,17 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 - [RudderStack docs: The Trade Desk Real Time Conversions](https://www.rudderstack.com/docs/destinations/streaming-destinations/trade-desk-realtime-conversions/)
 - [Tealium connector guide (public summary of the same API)](https://docs.tealium.com/server-side-connectors/the-trade-desk-real-time-conversion-events-connector/)
 
+The endpoint takes no auth header; the advertiser ID (`adv`) and tracker ID (`tracker_id`) go in the request body.
+
 ### Changelog References
 
-NEEDS REVIEW: The Trade Desk publishes release notes only inside the partner portal (login required). The pages below load but their content could not be checked:
+- **Changelog:** [Data API release notes](https://partner.thetradedesk.com/v3/portal/data/doc/DataReleaseNotes) (login required); [Platform API change log](https://partner.thetradedesk.com/v3/portal/api/doc/ApiChangeLog) (login required)
+- **Deprecations:** [Platform API deprecations](https://partner.thetradedesk.com/v3/portal/api/doc/ApiDeprecation) (login required)
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
-- [Platform API change log](https://partner.thetradedesk.com/v3/portal/api/doc/ApiChangeLog)
-- [Platform API deprecations](https://partner.thetradedesk.com/v3/portal/api/doc/ApiDeprecation)
-- [Data API release notes](https://partner.thetradedesk.com/v3/portal/data/doc/DataReleaseNotes)
+The partner portal is a single-page app that returns `200` for any path, so these links can't be checked automatically.
 
 ## FAQ

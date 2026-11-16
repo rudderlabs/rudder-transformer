@@ -106,27 +106,39 @@ No. One request per event.
 
 ### Current Version
 
-- REST API **v1**, base `https://api.refiner.io/v1` (`config.js`).
+- **Version:** `v1`
+- **Where in code:** `config.js` (`BASE_ENDPOINT`: `https://api.refiner.io/v1`)
 
 ### Version Deprecation
 
-- No deprecation or versioning policy published.
-- The code posts track and page events to `/v1/track`. Refiner's current docs only document `/v1/track-event`. `/v1/track` still answers (a probe returned `401`, not `404`), so it looks like an undocumented legacy alias. **NEEDS REVIEW**: move to `/v1/track-event` before the alias is removed.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Refiner REST API](https://refiner.io/docs/api/)
+
+Refiner publishes no deprecation or versioning policy. The code posts track and page events to `/v1/track`. Refiner's current docs only document `/v1/track-event`. `/v1/track` still answers (a probe returned `401`, not `404`), so it looks like an undocumented legacy alias. NEEDS REVIEW: move to `/v1/track-event` before the alias is removed.
 
 ### Latest Available Version
 
-- v1 is the only version documented.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Refiner REST API](https://refiner.io/docs/api/)
 
 ## Documentation Links
 
 - [Refiner REST API](https://refiner.io/docs/api/)
+- [Refiner authentication](https://refiner.io/docs/api/#authentication)
 - [Refiner identify user](https://refiner.io/docs/api/#identify-user)
 - [Refiner track event](https://refiner.io/docs/api/#track-event)
 
 ### Changelog References
 
-- [Refiner product updates](https://refiner.io/docs/product-updates/) (product changelog; not API-specific)
-- **NEEDS REVIEW**: no API changelog, deprecations page or RSS feed found.
+- **Changelog:** [Refiner product updates](https://refiner.io/docs/product-updates/) (product changelog; not API-specific)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

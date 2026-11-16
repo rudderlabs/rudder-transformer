@@ -116,16 +116,23 @@ No. One output request per event (the lookup is an intermediate call, not a deli
 
 ### Current Version
 
-Gladly REST API `v1` (`/api/v1/customer-profiles`). Gladly uses URL path versioning and documents which
-changes it treats as backwards compatible ([REST API](https://developer.gladly.com/rest/)).
+- **Version:** `v1`
+- **Where in code:** `src/cdk/v2/destinations/gladly/utils.js` (`getEndpoint`, `/api/v1/customer-profiles`)
 
 ### Version Deprecation
 
-No deprecation of the `v1` customer-profiles API has been announced. Gladly does retire older report API
-versions (for example ContactExportReport and ContactExportReportV2, and Contact Summary and Work Sessions
-reports deprecated on 2026-09-02, per the June 2026 release notes), which this destination does not use.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Gladly REST API: URL path versioning](https://developer.gladly.com/rest/#section/URL-Path-Versioning)
+
+Gladly uses URL path versioning and documents which changes it treats as backwards compatible. Gladly does retire older report API versions (ContactExportReport and ContactExportReportV2, and Contact Summary and Work Sessions reports deprecated on 2026-09-02, per the [June 2026 release notes](https://help.gladly.com/docs/june-2026-releases)), which this destination does not use.
 
 ### Latest Available Version
+
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Gladly REST API reference](https://developer.gladly.com/rest/)
 
 `v1` is the only REST API version for customer profiles.
 
@@ -134,15 +141,22 @@ reports deprecated on 2026-09-02, per the June 2026 release notes), which this d
 ### API Documentation
 
 - [Gladly REST API reference](https://developer.gladly.com/rest/)
+- [Find customers](https://developer.gladly.com/rest/#operation/findCustomers) (`GET /api/v1/customer-profiles`)
+- [Create customer](https://developer.gladly.com/rest/#operation/createCustomer) (`POST /api/v1/customer-profiles`)
+- [Update customer](https://developer.gladly.com/rest/#operation/updateCustomer) (`PATCH /api/v1/customer-profiles/{customerId}`)
+- [Authentication (Basic auth)](https://developer.gladly.com/rest/#section/Authentication)
 - [Generate API tokens and create webhooks](https://help.gladly.com/generate-api-tokens-and-create-webhooks)
 
 ### Changelog References
 
-- [Gladly June 2026 releases](https://help.gladly.com/docs/june-2026-releases) (monthly release notes;
-  other months follow `https://help.gladly.com/docs/<month>-<year>-releases`)
-- [Gladly November 2025 releases](https://help.gladly.com/docs/november-2025-releases)
-- **NEEDS REVIEW**: Gladly has no developer changelog, deprecations page or RSS feed for the REST API, and
-  no index page for the monthly release notes was found.
+- **Changelog:** [What's New and Product Releases](https://help.gladly.com/docs/whats-new)
+- **Deprecations:** [Non-backwards compatible changes](https://developer.gladly.com/rest/#section/Non-Backwards-Compatible-Changes)
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Gladly has no developer changelog for the REST API. The product release notes are grouped by year ([2026 release notes](https://help.gladly.com/docs/2026-release-notes)), with one page per month. No 2026 release note mentions a change to the customer-profiles API or to API token auth.
 
 ## RETL Functionality
 

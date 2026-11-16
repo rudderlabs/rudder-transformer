@@ -84,15 +84,23 @@ None.
 
 ### Current Version
 
-Unversioned Lytics collect API: `https://api.lytics.io/collect/json/{stream}` (`procWorkflow.yaml`, `prepareContext` step).
+- **Version:** `Unversioned`
+- **Where in code:** `procWorkflow.yaml` (`prepareContext` step, `https://api.lytics.io/collect/json/{stream}`)
 
 ### Version Deprecation
 
-No published deprecation for the collect endpoint. Contentstack's Lytics changelog lists product deprecations (legacy audience builder sunset May 4, 2026; Data Activation Layer deprecated Sep 10, 2026), neither of which affects this endpoint. NEEDS REVIEW: possible host migration to `lytics-api.contentstack.com`.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Contentstack changelog, Lytics filter](https://www.contentstack.com/docs/changelog?filter=lytics)
+
+The Lytics changelog lists product deprecations (legacy audience builder sunset May 4, 2026; Data Activation Layer deprecated Sep 10, 2026). Neither affects the collect endpoint. The [Lytics API page](https://www.contentstack.com/docs/developers/apis/lytics-api) now lists regional `*lytics-api.contentstack.com` hosts and does not mention `api.lytics.io`. NEEDS REVIEW: whether the collect endpoint will move to a Contentstack host.
 
 ### Latest Available Version
 
-No versioned successor documented. NEEDS REVIEW.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Lytics API (Contentstack)](https://www.contentstack.com/docs/developers/apis/lytics-api)
 
 ## RETL Functionality
 
@@ -110,9 +118,12 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- [Contentstack changelog, Lytics filter](https://www.contentstack.com/docs/changelog?filter=lytics) (`docs.lytics.com/changelog` redirects here)
-- Deprecations / API versions page: none found. NEEDS REVIEW.
-- RSS/Atom feed: none found. NEEDS REVIEW.
+- **Changelog:** [Contentstack changelog, Lytics filter](https://www.contentstack.com/docs/changelog?filter=lytics) (`docs.lytics.com/changelog` redirects here)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

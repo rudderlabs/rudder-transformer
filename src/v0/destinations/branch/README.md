@@ -100,15 +100,23 @@ No. One request per event.
 
 ### Current Version
 
-- Events API **v2**: `https://api2.branch.io/v2/event/standard` and `https://api2.branch.io/v2/event/custom` (`config.js`).
+- **Version:** `v2`
+- **Where in code:** `config.js` (`endpoints.standardEventUrl`, `endpoints.customEventUrl`: `https://api2.branch.io/v2/event/standard` and `/v2/event/custom`)
 
 ### Version Deprecation
 
-- No deprecation announced for Events API v2. Branch's older v1 custom event endpoint is marked deprecated in its [public API repo](https://github.com/BranchMetrics/branch-deep-linking-public-api); this integration does not use v1.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Branch Events API reference](https://help.branch.io/apidocs/events.md)
+
+Branch's older v1 custom event endpoint is marked deprecated in its [public API repo](https://github.com/BranchMetrics/branch-deep-linking-public-api). This integration does not use v1.
 
 ### Latest Available Version
 
-- v2 is the latest Events API version.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Branch Events API reference](https://help.branch.io/apidocs/events.md)
 
 ## Documentation Links
 
@@ -116,12 +124,18 @@ No. One request per event.
 - [Branch Events API overview](https://help.branch.io/apidocs/events/overview.md)
 - [Track Branch Events](https://help.branch.io/developer-hub/track-branch-events.md)
 - [EU Hosted Data](https://help.branch.io/account-hub/eu-hosted-data-for-new-enterprise-customers.md)
+- [Branch Key (account settings, used for auth)](https://help.branch.io/account-hub/profile-settings.md)
 
 ### Changelog References
 
-- [Branch release notes index](https://help.branch.io/account-hub/category/release-notes.md) (product and API release notes; also available as [llms.txt](https://help.branch.io/account-hub/category/release-notes/llms.txt))
-- **NEEDS REVIEW**: no API-specific deprecations page, version sunset page or RSS feed found. The HTML help pages block non-browser clients; the `.md` URLs above load.
-- Note: `docs.branchapp.com` is a different company (Branch payments), not Branch.io.
+- **Changelog:** [Branch release notes index](https://help.branch.io/account-hub/category/release-notes.md) (product and API release notes; also as [llms.txt](https://help.branch.io/account-hub/category/release-notes/llms.txt))
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The HTML help pages block non-browser clients; the `.md` URLs above load. The `branch-deep-linking-public-api` GitHub repo has no releases, so its releases feed is empty. Note: `docs.branchapp.com` is a different company (Branch payments), not Branch.io.
 
 ## RETL Functionality
 

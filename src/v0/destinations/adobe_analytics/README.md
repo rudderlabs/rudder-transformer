@@ -93,16 +93,27 @@ None.
 
 ### Current Version
 
-Data Insertion API, XML POST to `https://<trackingServerSecureUrl>/b/ss//6` (format `6` = XML response; empty report-suite segment because the RSID is in the XML body). See `transform.js` `responseBuilderSimple`.
+- **Version:** `Unversioned` (Data Insertion API, XML POST to `/b/ss//6`)
+- **Where in code:** `transform.js` (`responseBuilderSimple`, `${trackingServerSecureUrl}/b/ss//6`)
+
+Format `6` is the XML response format. The report-suite segment is empty because the RSID is in the XML body.
 
 ### Version Deprecation
 
-No end-of-life announced. Adobe "plans to continue support for the Data Insertion API" but recommends the Bulk Data Insertion API for new server-side implementations ([Data Insertion API](https://developer.adobe.com/analytics-collection-apis/methods/data-insertion/)).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Data Insertion API](https://developer.adobe.com/analytics-collection-apis/methods/data-insertion/)
+
+Adobe "plans to continue support for the Data Insertion API" but recommends the Bulk Data Insertion API for new server-side implementations. The Adobe Analytics 1.4 API end-of-life does not affect the Data Insertion API ([1.4 API end-of-life FAQ](https://developer.adobe.com/analytics-apis/docs/1.4/guides/eol)).
 
 ### Latest Available Version
 
-- [Bulk Data Insertion API](https://developer.adobe.com/analytics-collection-apis/methods/bulk-data-insertion/endpoints) (CSV batches, IMS auth).
-- Adobe Experience Platform Edge Network (Web SDK / Edge Network Server API) as the long-term collection path. Moving would change payload format and auth. NEEDS REVIEW.
+- **Version:** `Unversioned` (Data Insertion API)
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Analytics collection APIs overview](https://developer.adobe.com/analytics-collection-apis/)
+
+Alternatives: the [Bulk Data Insertion API](https://developer.adobe.com/analytics-collection-apis/methods/bulk-data-insertion/endpoints) (CSV batches, IMS auth) and Adobe Experience Platform Edge Network (Web SDK / Edge Network Server API). Moving to either would change payload format and auth.
 
 ## RETL Functionality
 
@@ -121,9 +132,12 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- [Adobe Analytics release notes (latest)](https://experienceleague.adobe.com/en/docs/analytics/release-notes/latest)
-- [Adobe Analytics 1.4 API end-of-life](https://experienceleague.adobe.com/en/docs/discontinued/using/analytics-1-4-apis) (discontinued-features page)
-- API versions / sunset page for the Data Insertion API and RSS feed: none found. NEEDS REVIEW.
+- **Changelog:** [Adobe Analytics release notes (latest)](https://experienceleague.adobe.com/en/docs/analytics/release-notes/latest)
+- **Deprecations:** [Adobe Analytics 1.4 API end-of-life](https://experienceleague.adobe.com/en/docs/discontinued/using/analytics-1-4-apis)
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** [1.4 API end-of-life FAQ (Data Insertion API not affected)](https://developer.adobe.com/analytics-apis/docs/1.4/guides/eol)
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

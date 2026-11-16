@@ -91,16 +91,28 @@ Implementation in **JavaScript** (v0), `src/v0/destinations/x_audience/`. Adds a
 
 ### Current Version
 
-- X Ads API **v12** (`https://ads-api.twitter.com/12/...` in `config.js`; rudder-integrations-info uses `https://ads-api.x.com/12/...`).
+- **Version:** `12`
+- **Where in code:** `config.js` (`BASE_URL` = `https://ads-api.twitter.com/12/accounts/:account_id/custom_audiences/:audience_id/users`)
+
+rudder-integrations-info uses `https://ads-api.x.com/12/...`.
 
 ### Version Deprecation
 
-- v12 (introduced October 27, 2022): deprecation and end of life both **TBD** on the X versioning page. Versions get a 6-month deprecation window once a successor is announced.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Versions](https://docs.x.com/x-ads-api/fundamentals/versioning)
+
+- v12 (introduced 2022-10-27): deprecation and end of life both TBD on the X versioning page. Versions get a 6-month deprecation window once a successor is announced.
 - The transformer still uses the `ads-api.twitter.com` host while X's docs use `ads-api.x.com`. No retirement date for the old host has been found. NEEDS REVIEW.
 
 ### Latest Available Version
 
-- v12 is the latest listed version ([Versions](https://docs.x.com/x-ads-api/fundamentals/versioning)). Responses carry an `x-current-api-version` header and calls to deprecated endpoints return `x-api-warn`.
+- **Version:** `12`
+- **Released:** 2022-10-27
+- **Upgrade needed:** No
+- **Source:** [Versions](https://docs.x.com/x-ads-api/fundamentals/versioning)
+
+Responses carry an `x-current-api-version` header and calls to deprecated endpoints return `x-api-warn`.
 
 ## RETL Functionality
 
@@ -113,13 +125,19 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 ## Documentation Links
 
 - [Audiences (custom audience users endpoint)](https://docs.x.com/x-ads-api/audiences)
+- [Audiences API reference: `POST accounts/:account_id/custom_audiences/:custom_audience_id/users`](https://docs.x.com/x-ads-api/audiences/reference)
 - [Making authenticated requests](https://docs.x.com/x-ads-api/fundamentals/making-authenticated-requests)
 - [Rate limiting](https://docs.x.com/x-ads-api/fundamentals/rate-limiting)
 
 ### Changelog References
 
-- [X Ads API versions (introduced, deprecated, end-of-life dates)](https://docs.x.com/x-ads-api/fundamentals/versioning)
-- [X developer changelog](https://docs.x.com/changelog)
-- NEEDS REVIEW: X announces Ads API versions on the developer forum (for example [Ads API version 11](https://devcommunity.x.com/t/ads-api-version-11/168814)); the forum blocks automated requests, so the Ads API category URL was not verified.
+- **Changelog:** [X developer changelog](https://docs.x.com/changelog) (covers Ads API, X API v2 and SDKs)
+- **Deprecations:** [X Ads API versions (deprecated and end-of-life dates)](https://docs.x.com/x-ads-api/fundamentals/versioning)
+- **Versions:** [X Ads API versions](https://docs.x.com/x-ads-api/fundamentals/versioning)
+- **Feed:** [X changelog RSS](https://docs.x.com/changelog/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+X also announces Ads API versions on the developer forum (for example [Ads API version 11](https://devcommunity.x.com/t/ads-api-version-11/168814), blocks automated requests).
 
 ## FAQ

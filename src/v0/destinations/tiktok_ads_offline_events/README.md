@@ -92,17 +92,28 @@ The Offline Event Set ID is **not** a config field; each event must carry `prope
 
 ### Current Version
 
-- TikTok API for Business **v1.3**: `https://business-api.tiktok.com/open_api/v1.3/offline/track/` (processor path) and `/offline/batch/` (router path).
+- **Version:** `v1.3`
+- **Where in code:** `config.js` (`BASE_URL`; `/offline/track/` for the processor path, `/offline/batch/` for the router path)
 
 ### Version Deprecation
 
-- No sunset date for v1.3 found.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Events API 2.0 Overview (Events API 1.0 sunset notice)](https://business-api.tiktok.com/portal/docs/events-api-2.0/v1.3) (blocks automated requests)
+
 - `PlaceAnOrder` is soft-deprecated by TikTok in favour of `Purchase` (comment in `config.js`). The default map still sends `Order Completed` as `PlaceAnOrder`.
-- TikTok's v1.3 docs now describe sending offline events through the unified Events API 2.0 endpoint `/event/track/` with `event_source: "offline"` and the offline Event Set ID as `event_source_id` ([Report App, Web, Offline, or CRM Events](https://business-api.tiktok.com/portal/docs/report-app-web-offline-or-crm-events/v1.3)). No retirement date for `/offline/track/` and `/offline/batch/` was found. NEEDS REVIEW: check the TikTok portal changelog.
+- TikTok's v1.3 docs now describe sending offline events through the unified Events API 2.0 endpoint `/event/track/` with `event_source: "offline"` and the offline Event Set ID as `event_source_id` ([Report App, Web, Offline, or CRM Events](https://business-api.tiktok.com/portal/docs/report-app-web-offline-or-crm-events/v1.3), blocks automated requests). TikTok's [Events API 2.0 Overview](https://business-api.tiktok.com/portal/docs/events-api-2.0/v1.3) (blocks automated requests) lists `/offline/track/` and `/offline/batch/` among six Events API 1.0 endpoints that "will be sunset in H2 2024". This integration still sends to both.
+
+NEEDS REVIEW: TikTok gives only "H2 2024", no exact day, and the v1.3 API reference and rate-limit pages still list `/offline/track/`, so whether the endpoints are already switched off is unconfirmed. Migration to `/event/track/` is likely needed.
 
 ### Latest Available Version
 
-- v1.3 is the current Business API version. Within it, Events API 2.0 (`/event/track/`) is the recommended path for offline events.
+- **Version:** `v1.3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [API Reference Overview (current version v1.3)](https://business-api.tiktok.com/portal/docs/api-reference/v1.3) (blocks automated requests)
+
+Within v1.3, Events API 2.0 (`/event/track/`) is the recommended path for offline events.
 
 ## RETL Functionality
 
@@ -114,13 +125,25 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ## Documentation Links
 
-- [Report App, Web, Offline, or CRM Events (Events API 2.0, v1.3)](https://business-api.tiktok.com/portal/docs/report-app-web-offline-or-crm-events/v1.3)
-- [Update an Offline Event set (v1.3)](https://business-api.tiktok.com/portal/docs/update-an-offline-event-set/v1.3)
-- [About Events API for offline (TikTok help)](https://ads.tiktok.com/help/article/about-events-api-for-offline)
+- [Report App, Web, Offline, or CRM Events (Events API 2.0, v1.3)](https://business-api.tiktok.com/portal/docs/report-app-web-offline-or-crm-events/v1.3) (blocks automated requests)
+- [Update an Offline Event set (v1.3)](https://business-api.tiktok.com/portal/docs/update-an-offline-event-set/v1.3) (blocks automated requests)
+- [Events API 2.0 Overview](https://business-api.tiktok.com/portal/docs/events-api-2.0/v1.3) (blocks automated requests)
+- [Offline Events API reference (v1.3)](https://business-api.tiktok.com/portal/docs/offline-events/v1.3) (blocks automated requests)
+- [Report Offline Events in bulk (v1.3)](https://business-api.tiktok.com/portal/docs/report-offline-events-in-bulk/v1.3) (blocks automated requests)
+- [API Reference Overview (v1.3)](https://business-api.tiktok.com/portal/docs/api-reference/v1.3) (blocks automated requests)
+- [Authentication](https://business-api.tiktok.com/portal/docs?id=1738373164380162) (blocks automated requests)
+- [How to upload offline events in Events Manager for Events API (TikTok help)](https://ads.tiktok.com/help/article/about-events-api-for-offline)
 - [RudderStack docs: TikTok Ads Offline Events](https://www.rudderstack.com/docs/destinations/streaming-destinations/tiktok-ads-offline-events/)
 
 ### Changelog References
 
-NEEDS REVIEW: TikTok's API for Business changelog and version pages are on `business-api.tiktok.com/portal`, which returns `403` to automated requests, so no changelog URL could be verified. No RSS feed is known.
+- **Changelog:** [API for Business blog (weekly "API For Business Platform Update" posts)](https://business-api.tiktok.com/portal/blog) (blocks automated requests)
+- **Deprecations:** [Events API 2.0 Overview (Events API 1.0 sunset notice)](https://business-api.tiktok.com/portal/docs/events-api-2.0/v1.3) (blocks automated requests)
+- **Versions:** [Hevo: TikTok Ads API v1.2 deprecated 2023-08-15, v1.3 only](https://mini-docs.hevodata.com/sources/marketing/tiktok-ads/) (third-party)
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The portal's [About the Guide](https://business-api.tiktok.com/portal/docs/about-the-guide/v1.3) (blocks automated requests) page describes a weekly "What's New" section, but no direct URL for it was found, so the blog's platform-update posts are linked instead. TikTok publishes no API version lifecycle page; the v1.2 sunset date comes from a third-party connector doc. No RSS feed for the portal blog was found. The [TikTok for Developers changelog](https://developers.tiktok.com/doc/changelog) (blocks automated requests) covers Login Kit, Research API and other developer products, not the Marketing API.
 
 ## FAQ

@@ -95,15 +95,25 @@ No.
 
 ### Current Version
 
-- Koddi event collection API (OpenAPI title `k1-event-collection`, spec version `1`). The base URL is customer-specific: `https://{clientname}.koddi.io/event-collection/beacon` with `?action=impression`, `?action=click` or `/conversion`.
+- **Version:** `Unversioned`
+- **Where in code:** `utils.js` (`getEndpoint`, built from `Config.apiBaseUrl`)
+
+Koddi event collection API (OpenAPI title `k1-event-collection`, spec version `1`). The base URL is customer-specific: `https://{clientname}.koddi.io/event-collection/beacon` with `?action=impression`, `?action=click` or `/conversion`. The URL has no version segment.
 
 ### Version Deprecation
 
-- No deprecation announced.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Koddi Impressions](https://developers.koddi.com/reference/impressions-1)
 
 ### Latest Available Version
 
-- Version `1` is the only version documented.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Koddi Impressions](https://developers.koddi.com/reference/impressions-1)
+
+Spec version `1` is the only version documented.
 
 ## Documentation Links
 
@@ -112,9 +122,18 @@ No.
 - [Koddi Clicks](https://developers.koddi.com/reference/clicks-1)
 - [Koddi Conversions](https://developers.koddi.com/reference/conversions-1)
 
+The event collection endpoints take no auth header.
+
 ### Changelog References
 
-- **NEEDS REVIEW**: Koddi publishes no developer changelog, release notes, deprecations page or RSS feed (`developers.koddi.com/changelog` returns 404). Changes have to be tracked through the Koddi account team.
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Koddi publishes no developer changelog, release notes, deprecations page or feed (`developers.koddi.com/changelog` returns 404, and the [docs index](https://developers.koddi.com/llms.txt) lists none). Changes have to be tracked through the Koddi account team.
 
 ## RETL Functionality
 

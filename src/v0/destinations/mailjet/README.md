@@ -101,14 +101,23 @@ No. Many events are combined into one request; one event never produces several.
 
 ### Current Version
 
-Mailjet Email API **v3 REST**: `POST https://api.mailjet.com/v3/REST/contactslist/{listId}/managemanycontacts`.
+- **Version:** `v3`
+- **Where in code:** `config.js` (`CONFIG_CATEGORIES.IDENTIFY.endpoint`: `https://api.mailjet.com/v3/REST/contactslist/list_ID/managemanycontacts`)
 
 ### Version Deprecation
 
-No deprecation of v3 REST has been announced. v3.1 exists only for the Send API (transactional email) and
-does not replace the contacts endpoints.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Versioning](https://dev.mailjet.com/docs/email-api/email-api-overview/versioning)
+
+v3.1 exists only for the Send API (transactional email) and does not replace the contacts endpoints.
 
 ### Latest Available Version
+
+- **Version:** `v3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Versioning](https://dev.mailjet.com/docs/email-api/email-api-overview/versioning)
 
 v3 is the latest version of the contacts REST API. (Send API v3.1 and Content API v1 cover other features.)
 
@@ -118,17 +127,21 @@ v3 is the latest version of the contacts REST API. (Send API v3.1 and Content AP
 
 - [Versioning](https://dev.mailjet.com/docs/email-api/email-api-overview/versioning)
 - [About the Mailjet API](https://dev.mailjet.com/docs/email-api/email-api-overview/about-mailjet-api)
+- [Authentication](https://dev.mailjet.com/docs/email-api/email-api-overview/authentication)
 - [Contact management guide](https://dev.mailjet.com/email/guides/contact-management/)
 - [Bulk contact management reference](https://dev.mailjet.com/email/reference/contacts/bulk-contact-management/)
 - [Rate limits](https://dev.mailjet.com/email/reference/overview/rate-limits/)
 
 ### Changelog References
 
-- [Mailjet API versioning](https://dev.mailjet.com/email/reference/overview/versioning/) (API versions and
-  their auth)
-- **NEEDS REVIEW**: no Mailjet developer changelog, deprecations page or RSS feed was found
-  (`dev.mailjet.com/changelog` returns 404, and the Mailjet blog release pages return 403 to automated
-  clients).
+- **Changelog:** [Mailjet product releases](https://www.mailjet.com/releases/) (blocks automated requests)
+- **Deprecations:** None found
+- **Versions:** [Versioning](https://dev.mailjet.com/docs/email-api/email-api-overview/versioning)
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Mailjet has no developer API changelog (`dev.mailjet.com/changelog` returns 404). The releases page covers product features.
 
 ## RETL Functionality
 

@@ -119,22 +119,40 @@ None. One input → one hit.
 
 ### Current Version
 
-- **Event collection**: Universal Analytics Measurement Protocol v1 (`v=1`, `https://www.google-analytics.com/collect`), set in `config.js` (`GA_ENDPOINT`) and `transform.js` (`rawPayload.v = '1'`).
-- **User deletion**: Google Analytics User Deletion API v3 (`/analytics/v3/userDeletion/userDeletionRequests:upsert`).
+- **API:** Universal Analytics Measurement Protocol
+- **Version:** `v1`
+- **Where in code:** `config.js` (`GA_ENDPOINT`, `https://www.google-analytics.com/collect`); `transform.js` (`v: '1'` in the raw payload)
+- **API:** Google Analytics User Deletion API
+- **Version:** `v3`
+- **Where in code:** `config.js` (`GA_USER_DELETION_ENDPOINT`)
 
 ### Version Deprecation
 
-- **Standard UA**: stopped processing hits on **July 1, 2023**.
-- **UA 360**: one-time processing extension ended **July 1, 2024**.
-- **Data, UI and API access** (including the User Deletion API): shut off from the **week of July 1, 2024**; un-exported data permanently deleted.
-- Source: [Universal Analytics is going away](https://support.google.com/analytics/answer/11583528).
-- Every endpoint this destination calls is end-of-life. Events sent to GA or GA360 are not recorded by Google. NEEDS REVIEW: GA360 should probably also be marked `deprecated` in `rudder-integrations-config`.
+- **API:** Universal Analytics Measurement Protocol
+- **Status:** Sunset
+- **Sunset date:** 2023-07-01
+- **Source:** [Universal Analytics is going away](https://support.google.com/analytics/answer/11583528)
+- **API:** Google Analytics User Deletion API
+- **Status:** Sunset
+- **Sunset date:** 2024-07-01
+- **Source:** [Universal Analytics is going away](https://support.google.com/analytics/answer/11583528)
+
+Standard UA properties stopped processing hits on 2023-07-01. UA 360 properties had a one-time extension to 2024-07-01. Google shut off UA data, UI and API access (including the User Deletion API) from the week of 2024-07-01 and deleted data that was not exported. Every endpoint this destination calls is end-of-life, so events sent to GA or GA360 are not recorded by Google. NEEDS REVIEW: GA360 should probably also be marked `deprecated` in `rudder-integrations-config`.
 
 ### Latest Available Version
 
-- Google Analytics 4 with the [GA4 Measurement Protocol](https://developers.google.com/analytics/devguides/collection/protocol/ga4) (`/mp/collect`, needs `measurement_id` + `api_secret`). RudderStack ships this as the separate `GA4` / `GA4_V2` destinations.
-- GA4 user deletion uses the Admin API [`properties.submitUserDeletion`](https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1alpha/properties/submitUserDeletion).
-- The data model differs (events with parameters instead of hit types and Enhanced Ecommerce `pr<n>` parameters), so this is a replacement, not an upgrade path.
+- **API:** GA4 Measurement Protocol (replaces the UA Measurement Protocol)
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [GA4 Measurement Protocol](https://developers.google.com/analytics/devguides/collection/protocol/ga4)
+- **API:** Google Analytics Admin API `properties.submitUserDeletion` (replaces the User Deletion API)
+- **Version:** `v1alpha`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [GA4 Admin API: submitUserDeletion](https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1alpha/properties/submitUserDeletion)
+
+The GA4 Measurement Protocol (`/mp/collect`) needs `measurement_id` and `api_secret`. RudderStack ships it as the separate `GA4` / `GA4_V2` destinations. The data model differs (events with parameters instead of hit types and Enhanced Ecommerce `pr<n>` parameters), so this is a replacement, not an upgrade path.
 
 ## RETL Functionality
 
@@ -147,16 +165,22 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 ## Documentation Links
 
 - [UA Measurement Protocol (legacy docs)](https://developers.google.com/analytics/legacy/universal-analytics)
+- [UA Measurement Protocol v1 overview](https://developers.google.com/analytics/devguides/collection/protocol/v1)
+- [UA Measurement Protocol v1 parameter reference](https://developers.google.com/analytics/devguides/collection/protocol/v1/reference)
+- [User Deletion API v3](https://developers.google.com/analytics/devguides/config/userdeletion/v3)
+- [User Deletion API v3: userDeletionRequests.upsert](https://developers.google.com/analytics/devguides/config/userdeletion/v3/reference/userDeletion/userDeletionRequest/upsert)
 - [Universal Analytics shutdown](https://support.google.com/analytics/answer/11583528)
 - [GA4 Measurement Protocol](https://developers.google.com/analytics/devguides/collection/protocol/ga4)
 - [GA4 Admin API: submitUserDeletion](https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1alpha/properties/submitUserDeletion)
 
 ### Changelog References
 
-- [Universal Analytics sunset announcement and timeline](https://support.google.com/analytics/answer/11583528)
-- [Google Analytics release notes ("What's new")](https://support.google.com/analytics/answer/9164320)
-- [GA4 Measurement Protocol changelog](https://developers.google.com/analytics/devguides/collection/protocol/ga4/changelog)
-- RSS/Atom feed: none found. NEEDS REVIEW.
+- **Changelog:** [Google Analytics release notes ("What's new")](https://support.google.com/analytics/answer/9164320); [GA4 Measurement Protocol changelog](https://developers.google.com/analytics/devguides/collection/protocol/ga4/changelog)
+- **Deprecations:** [Universal Analytics is going away](https://support.google.com/analytics/answer/11583528)
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Universal Analytics sunset timeline](https://support.google.com/analytics/answer/11583528)
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

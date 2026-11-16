@@ -96,15 +96,25 @@ No.
 
 ### Current Version
 
-- Unversioned server-side API: `POST {host}/api/track` and `POST {host}/api/add_user_properties`.
+- **Version:** `Unversioned`
+- **Where in code:** `procWorkflow.yaml` (`endpointHost`; paths `/api/track`, `/api/add_user_properties`)
 
 ### Version Deprecation
 
-- No deprecation announced. The Add User Properties spec is marked `deprecated: false`.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Heap server-side APIs overview](https://developers.heap.io/reference/server-side-apis-overview)
+
+The Add User Properties spec is marked `deprecated: false`.
 
 ### Latest Available Version
 
-- These endpoints are unversioned; no newer server-side ingestion API was found.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Heap server-side APIs overview](https://developers.heap.io/reference/server-side-apis-overview)
+
+No newer server-side ingestion API was found.
 
 ## Documentation Links
 
@@ -115,10 +125,14 @@ No.
 
 ### Changelog References
 
-- [heap.js 5 changelog](https://developers.heap.io/docs/heapjs-5-changelog) (client SDK)
-- [Classic heap.js changelog](https://developers.heap.io/docs/heapjs-changelog) (client SDK)
-- [Heap developer docs index (llms.txt)](https://developers.heap.io/llms.txt) (lists all SDK changelogs)
-- **NEEDS REVIEW**: no server-side API changelog, deprecations page or RSS feed found.
+- **Changelog:** [heap.js 5 changelog](https://developers.heap.io/docs/heapjs-5-changelog); [Classic heap.js changelog](https://developers.heap.io/docs/heapjs-changelog)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Heap publishes no server-side API changelog; the changelogs above cover the client SDK. [llms.txt](https://developers.heap.io/llms.txt) lists all SDK changelogs.
 
 ## RETL Functionality
 

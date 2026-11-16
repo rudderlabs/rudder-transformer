@@ -91,15 +91,25 @@ Implementation in **JavaScript** (v0), `src/v0/destinations/rockerbox/`. Sends c
 
 ### Current Version
 
-- Rockerbox RudderStack webhook `https://webhooks.getrockerbox.com/rudderstack`. Unversioned; built by Rockerbox for RudderStack.
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`BASE_ENDPOINT`)
+
+Endpoint: `https://webhooks.getrockerbox.com/rudderstack?advertiser=<advertiserId>`, a webhook Rockerbox built for RudderStack.
 
 ### Version Deprecation
 
-- None announced. NEEDS REVIEW: Rockerbox joined DoubleVerify (announced February 26, 2025, [Rockerbox blog](https://www.rockerbox.com/blog/exciting-news-were-joining-doubleverify)); check with Rockerbox whether the `getrockerbox.com` webhook host is staying.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Rockerbox docs: RudderStack onsite identity integration](https://data-foundation.rockerbox.com/first-party-integrations/types/onsite-pixel/core/rudderstack)
+
+NEEDS REVIEW: Rockerbox joined DoubleVerify (announced 2025-02-26, [Rockerbox blog](https://www.rockerbox.com/blog/exciting-news-were-joining-doubleverify)); check with Rockerbox whether the `getrockerbox.com` webhook host is staying.
 
 ### Latest Available Version
 
-- Unversioned; the endpoint in use is the only one known.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Rockerbox docs: RudderStack onsite identity integration](https://data-foundation.rockerbox.com/first-party-integrations/types/onsite-pixel/core/rudderstack)
 
 ## RETL Functionality
 
@@ -115,8 +125,17 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 - [Rockerbox Data Foundation docs](https://data-foundation.rockerbox.com/)
 - [Rockerbox docs: RudderStack onsite identity integration](https://data-foundation.rockerbox.com/first-party-integrations/types/onsite-pixel/core/rudderstack)
 
+The webhook takes no auth header; the advertiser ID goes in the `advertiser` query parameter.
+
 ### Changelog References
 
-NEEDS REVIEW: Rockerbox publishes no developer changelog, release notes, deprecation page or feed. The [Data Foundation docs index](https://data-foundation.rockerbox.com/llms.txt) has none. Changes to the webhook would come from Rockerbox directly.
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** [Rockerbox blog RSS](https://www.rockerbox.com/blog/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Rockerbox publishes no developer changelog or release notes; the [Data Foundation docs index](https://data-foundation.rockerbox.com/llms.txt) has none. The blog feed is the company blog, where the DoubleVerify announcement appeared. Changes to the webhook would come from Rockerbox directly.
 
 ## FAQ

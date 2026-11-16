@@ -94,16 +94,25 @@ Implementation in **JavaScript** (`src/v0/destinations/adj/`). There is no CDK v
 
 ### Current Version
 
-- S2S events API: `POST https://s2s.adjust.com/event` with query parameters. The API has no version segment.
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`baseEndpoint`, `https://s2s.adjust.com/event`)
 
 ### Version Deprecation
 
-- No deprecation announced for `s2s.adjust.com/event`.
-- Auth-related: S2S Security (Bearer tokens) is available and opt-in. See Authentication above.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [S2S events API](https://dev.adjust.com/en/api/s2s-api/events)
+
+S2S Security (Bearer tokens) is available and opt-in. See Authentication above and [S2S security](https://dev.adjust.com/en/api/s2s-api/security).
 
 ### Latest Available Version
 
-- Not versioned. Adjust documents `created_at_unix`, `adid` and Bearer auth as current recommended parameters.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [S2S events API](https://dev.adjust.com/en/api/s2s-api/events)
+
+Adjust documents `created_at_unix`, `adid` and Bearer auth as current recommended parameters.
 
 ## RETL Functionality
 
@@ -122,7 +131,14 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- **NEEDS REVIEW**: no Adjust API changelog, deprecations page or RSS feed was found. The S2S security pages above are the main auth-change references.
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Adjust publishes no API changelog, release notes, deprecations page or feed for the S2S API (`dev.adjust.com/en/changelog` and `help.adjust.com/en/article/release-notes` return 404). The [S2S security](https://dev.adjust.com/en/api/s2s-api/security) pages are the main reference for auth changes.
 
 ## FAQ
 

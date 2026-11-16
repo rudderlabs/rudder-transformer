@@ -93,16 +93,25 @@ From the [Event API docs](https://docs.newrelic.com/docs/data-apis/ingest-apis/e
 
 ### Current Version
 
-- Event API `v1`: `https://insights-collector.newrelic.com/v1/accounts/<accountId>/events` (US) and `https://insights-collector.eu01.nr-data.net/v1/accounts/<accountId>/events` (EU).
+- **Version:** `v1`
+- **Where in code:** `procWorkflow.yaml` (`prepareContext` step, `baseEndpoint`): `https://insights-collector.newrelic.com/v1/accounts/<accountId>/events` (US) and `https://insights-collector.eu01.nr-data.net/v1/accounts/<accountId>/events` (EU)
 
 ### Version Deprecation
 
-- No deprecation of Event API `v1` has been announced.
-- Insights insert keys are "not recommended" but still supported, with no date ([New Relic API keys](https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/)).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Event API introduction](https://docs.newrelic.com/docs/data-apis/ingest-apis/event-api/introduction-event-api/)
+
+Insights insert keys are "not recommended" but still supported, with no end date ([New Relic API keys](https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/)). The [end-of-life notices](https://docs.newrelic.com/eol/) list no Event API or insert key entry.
 
 ### Latest Available Version
 
-- `v1` is the only Event API version. The current docs show `https://insights-collector.newrelic.com/v1/accounts/events` without the account ID in the path. A JP data center (`insights-collector.jp.nr-data.net`) is also listed but not supported by this integration. **NEEDS REVIEW**: confirm whether the account-ID path form is still preferred.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Event API introduction](https://docs.newrelic.com/docs/data-apis/ingest-apis/event-api/introduction-event-api/)
+
+`v1` is the only Event API version. The current docs show `https://insights-collector.newrelic.com/v1/accounts/events` without the account ID in the path. A JP data center (`insights-collector.jp.nr-data.net`) is also listed but not supported by this integration. NEEDS REVIEW: confirm whether the account-ID path form is still preferred.
 
 ## RETL Functionality
 
@@ -120,10 +129,12 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- [New Relic release notes](https://docs.newrelic.com/docs/release-notes/)
-- [What's new in New Relic](https://docs.newrelic.com/whats-new/)
-- [What's new RSS feed](https://docs.newrelic.com/whats-new/feed.xml)
-- [End-of-life notices](https://docs.newrelic.com/eol/)
+- **Changelog:** [New Relic release notes](https://docs.newrelic.com/docs/release-notes/); [What's new in New Relic](https://docs.newrelic.com/whats-new/)
+- **Deprecations:** [End-of-life notices](https://docs.newrelic.com/eol/)
+- **Versions:** None found
+- **Feed:** [What's new RSS](https://docs.newrelic.com/whats-new/feed.xml); [End-of-life RSS](https://docs.newrelic.com/eol/feed.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

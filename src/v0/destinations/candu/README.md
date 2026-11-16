@@ -83,15 +83,23 @@ Implementation in **JavaScript** (`src/v0/destinations/candu/`). There is no CDK
 
 ### Current Version
 
-- `https://api.candu.ai/api/eventWebhook`. The path has no version segment.
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`endpoint`: `https://api.candu.ai/api/eventWebhook`)
 
 ### Version Deprecation
 
-- No deprecation announced. Candu does not publish an API versioning policy.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Candu REST API (eventWebhook)](https://developers.candu.ai/docs/get-data-into-candu-via-the-rest-api)
+
+Candu does not publish an API versioning policy.
 
 ### Latest Available Version
 
-- Not versioned. **NEEDS REVIEW**.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Candu REST API (eventWebhook)](https://developers.candu.ai/docs/get-data-into-candu-via-the-rest-api)
 
 ## RETL Functionality
 
@@ -103,13 +111,17 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ## Documentation Links
 
-- [Candu REST API (eventWebhook)](https://developers.candu.ai/docs/get-data-into-candu-via-the-rest-api)
-- [Get user data into Candu](https://docs.candu.ai/en/articles/5917572-get-user-data-into-candu.md)
+- [Candu REST API (eventWebhook endpoint and API key auth)](https://developers.candu.ai/docs/get-data-into-candu-via-the-rest-api)
+- [Get user data into Candu](https://docs.candu.ai/en/articles/5917572-get-user-data-into-candu)
 
 ### Changelog References
 
-- [Candu changelog](https://www.candu.ai/changelog) (product changelog; not API-specific)
-- **NEEDS REVIEW**: no API changelog, deprecations page or RSS feed found.
+- **Changelog:** [Candu changelog](https://www.candu.ai/changelog) (product changelog; not API-specific)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

@@ -146,7 +146,8 @@ No deprecation of the v1 REST API has been announced, and no sunset date is publ
 
 ### Changelog References
 
-- [Developer changelog, 2025 index](https://developer.clevertap.com/docs/2025) (monthly changelog pages, mostly SDK releases)
+- [Developer changelog](https://developer.clevertap.com/docs/changelog) (index of all years)
+- [Developer changelog, 2026](https://developer.clevertap.com/docs/2026) (monthly changelog pages for the current year, mostly SDK releases)
 - [Product release notes](https://docs.clevertap.com/docs/whats-new)
 - NEEDS REVIEW: No REST API-specific changelog, API versions or sunset page, or RSS feed was found.
 

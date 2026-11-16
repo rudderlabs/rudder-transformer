@@ -60,8 +60,8 @@ type APIResponse = {
 } & ({ data: FacebookSuccessResponse } | { error: string });
 
 const FACEBOOK_GRAPH_API_URL = 'https://graph.facebook.com/v25.0';
-// Graph's fields parameter replaces defaults; field_data must remain explicit for existing traits.
-const FACEBOOK_LEAD_FIELDS = 'field_data,custom_disclaimer_responses';
+// Graph's fields parameter replaces the defaults, so list them explicitly alongside the disclaimers.
+const FACEBOOK_LEAD_FIELDS = 'created_time,id,ad_id,form_id,field_data,custom_disclaimer_responses';
 
 /**
  * Fetches lead data from Facebook Graph API for a single lead ID
@@ -178,8 +178,7 @@ export async function hydrate(input: SourceHydrationRequest): Promise<SourceHydr
         }
       });
 
-      // Only Meta's dedicated consent record can populate this trait, not a same-named form field.
-      delete traits.custom_disclaimer_responses;
+      // Meta's consent record overrides a same-named form field only when Meta returns one.
       const { custom_disclaimer_responses: disclaimerResponses } = result.data;
       if (Array.isArray(disclaimerResponses) && disclaimerResponses.length > 0) {
         traits.custom_disclaimer_responses = disclaimerResponses;

@@ -280,7 +280,7 @@ describe('Facebook Lead Ads Hydration', () => {
               {
                 params: {
                   access_token: 'test_token',
-                  fields: 'field_data,custom_disclaimer_responses',
+                  fields: 'created_time,id,ad_id,form_id,field_data,custom_disclaimer_responses',
                 },
               },
               {
@@ -393,7 +393,7 @@ describe('Facebook Lead Ads Hydration', () => {
       { name: 'null', disclaimerResponses: null },
       { name: 'empty', disclaimerResponses: [] },
     ])(
-      'should omit $name disclaimer responses and any colliding traits',
+      'should keep a same-named form field when disclaimer responses are $name',
       async ({ disclaimerResponses }) => {
         const result = await hydrate(mockLeadWithCollidingDisclaimers(disclaimerResponses));
 
@@ -401,7 +401,13 @@ describe('Facebook Lead Ads Hydration', () => {
           {
             event: {
               anonymousId: '123456',
-              context: { traits: { pageId: 'page_123', email: 'john@example.com' } },
+              context: {
+                traits: {
+                  pageId: 'page_123',
+                  email: 'john@example.com',
+                  custom_disclaimer_responses: 'form field value',
+                },
+              },
             },
             statusCode: 200,
           },
@@ -425,7 +431,7 @@ describe('Facebook Lead Ads Hydration', () => {
         expectedSchema: { type: 'string' },
       },
     ])(
-      'should warn and omit $name disclaimer responses without failing the lead',
+      'should warn, keep a same-named form field, and not fail the lead for $name disclaimer responses',
       async ({ disclaimerResponses, expectedSchema }) => {
         const result = await hydrate(mockLeadWithCollidingDisclaimers(disclaimerResponses));
 
@@ -433,7 +439,13 @@ describe('Facebook Lead Ads Hydration', () => {
           {
             event: {
               anonymousId: '123456',
-              context: { traits: { pageId: 'page_123', email: 'john@example.com' } },
+              context: {
+                traits: {
+                  pageId: 'page_123',
+                  email: 'john@example.com',
+                  custom_disclaimer_responses: 'form field value',
+                },
+              },
             },
             statusCode: 200,
           },

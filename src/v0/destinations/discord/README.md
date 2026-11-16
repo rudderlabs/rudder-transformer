@@ -96,15 +96,27 @@ Discord posts a text message (and optionally an embed) to a Discord channel thro
 
 ### Current Version
 
-- The code uses the `webhookUrl` the user pastes. URLs copied from the Discord UI have no version segment (`/api/webhooks/...`), so they go to Discord's default API version. A user can add a version (for example `/api/v10/webhooks/...`).
+- **Version:** `Unversioned`
+- **Where in code:** `src/v0/destinations/discord/transform.js` (`buildResponse`, `destination.Config.webhookUrl`)
+
+The code uses the `webhookUrl` the user pastes. URLs copied from the Discord UI have no version segment (`/api/webhooks/...`), so they go to Discord's default API version. A user can add a version (for example `/api/v10/webhooks/...`).
 
 ### Version Deprecation
 
-- Discord's API reference lists v6, v7 and v8 as deprecated, v3 to v5 as discontinued, and v9 and v10 as available. Discord has historically kept v6 as the default for unversioned routes. No removal date for the default unversioned route is announced. NEEDS REVIEW: confirm which version unversioned webhook URLs resolve to today.
+- **Status:** Unknown
+- **Sunset date:** None announced
+- **Source:** [Discord API reference: API versioning](https://docs.discord.com/developers/reference)
+
+Discord's API reference lists v6, v7 and v8 as deprecated, v3 to v5 as discontinued (requests fail with 400), and v9 and v10 as available. The reference does not mark which version unversioned routes resolve to; Discord has historically kept v6 as the default. No removal date for the default unversioned route is announced. NEEDS REVIEW: confirm which version unversioned webhook URLs resolve to today.
 
 ### Latest Available Version
 
-- v10 (per the [API reference](https://docs.discord.com/developers/reference)).
+- **Version:** `v10`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Discord API reference: API versioning](https://docs.discord.com/developers/reference)
+
+Pinning `/api/v10/` in the webhook URL avoids depending on the unversioned default.
 
 ## RETL Functionality
 
@@ -123,9 +135,12 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- Developer changelog: [https://docs.discord.com/developers/change-log](https://docs.discord.com/developers/change-log)
-- API versions and their status: [https://docs.discord.com/developers/reference](https://docs.discord.com/developers/reference) (API Versioning section)
-- RSS/Atom feed: none found. NEEDS REVIEW.
+- **Changelog:** [Discord developer change log](https://docs.discord.com/developers/change-log)
+- **Deprecations:** [API versioning (deprecated and discontinued versions)](https://docs.discord.com/developers/reference)
+- **Versions:** [API versioning](https://docs.discord.com/developers/reference)
+- **Feed:** [Change log RSS](https://docs.discord.com/developers/change-log/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

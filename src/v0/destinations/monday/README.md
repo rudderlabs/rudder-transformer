@@ -115,19 +115,29 @@ Rate-limit errors return HTTP 429 with a `Retry-After` header. Each RudderStack 
 
 ### Current Version
 
-- Endpoint `https://api.monday.com/v2` (GraphQL API v2).
-- No `API-Version` header is sent. Per [API versioning](https://developer.monday.com/api-reference/docs/api-versioning), such calls get the **Current** version: `2026-10` since October 26, 2026.
+- **Version:** `2026-10`
+- **Where in code:** `src/v0/destinations/monday/config.js` (`ENDPOINT`, `https://api.monday.com/v2`); no `API-Version` header is set in `transform.js` (`responseBuilder`) or `util.js` (`getBoardDetails`)
+
+The endpoint is GraphQL API v2. Calls without an `API-Version` header get the **Current** version per [API versioning](https://developer.monday.com/api-reference/docs/api-versioning): `2026-10` since 2026-10-26.
 
 ### Version Deprecation
 
-- Because the version is not pinned, the integration moves to the new Current version every quarter. `2027-01` becomes Current on January 15, 2027.
-- Versions `2024-10` and `2025-01` were deprecated on February 15, 2026 ([announcement](https://developer.monday.com/api-reference/changelog/deprecating-versions-2025-01-and-2024-10-on-february-15th-2026)). monday announces each deprecation at least six months ahead.
-- The board lookup requests `columns { settings_str }`. monday announced the deprecation of `settings_str` on columns on September 23, 2025 ([changelog](https://developer.monday.com/api-reference/changelog/deprecating-settings_str-field-on-columns)). The code does not use this field. If it is removed from a future Current version, the lookup query fails and every event fails. NEEDS REVIEW: confirm the removal version and drop `settings_str` from the query.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [API versioning](https://developer.monday.com/api-reference/docs/api-versioning)
+
+Because the version is not pinned, the integration moves to the new Current version every quarter. `2027-01` becomes Current on 2027-01-15. Versions `2024-10` and `2025-01` were deprecated on 2026-02-15 ([announcement](https://developer.monday.com/api-reference/changelog/deprecating-versions-2025-01-and-2024-10-on-february-15th-2026)). monday announces each deprecation at least six months ahead.
+
+The board lookup requests `columns { settings_str }`. monday announced the deprecation of `settings_str` on columns on 2025-09-23 ([changelog](https://developer.monday.com/api-reference/changelog/deprecating-settings_str-field-on-columns)). The code does not use this field. If it is removed from a future Current version, the lookup query fails and every event fails. NEEDS REVIEW: confirm the removal version and drop `settings_str` from the query.
 
 ### Latest Available Version
 
-- Current: `2026-10`. Release candidate: `2027-01`.
-- Recommended: pin `API-Version` in the request headers to avoid unannounced behaviour changes.
+- **Version:** `2026-10`
+- **Released:** 2026-10-26
+- **Upgrade needed:** No
+- **Source:** [2026-10 is now the current API version](https://developer.monday.com/api-reference/changelog/2026-10-is-now-the-current-api-version)
+
+Release candidate: `2027-01` (Current from 2027-01-15). Recommended: pin `API-Version` in the request headers to avoid unannounced behaviour changes.
 
 ## RETL Functionality
 
@@ -140,6 +150,8 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 ## Documentation Links
 
 - [monday API: create_item and items](https://developer.monday.com/api-reference/reference/items)
+- [monday API: boards](https://developer.monday.com/api-reference/reference/boards)
+- [monday API: columns](https://developer.monday.com/api-reference/reference/columns)
 - [monday API: authentication](https://developer.monday.com/api-reference/docs/authentication)
 - [monday API: rate limits](https://developer.monday.com/api-reference/docs/rate-limits)
 - [monday API: errors](https://developer.monday.com/api-reference/docs/errors)
@@ -147,10 +159,12 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- Developer changelog: [https://developer.monday.com/api-reference/changelog](https://developer.monday.com/api-reference/changelog)
-- Changelog RSS feed: [https://developer.monday.com/api-reference/changelog.rss](https://developer.monday.com/api-reference/changelog.rss)
-- API versions, release schedule and deprecation dates: [https://developer.monday.com/api-reference/docs/api-versioning](https://developer.monday.com/api-reference/docs/api-versioning)
-- Latest version announcement: [2026-10 is now the current API version](https://developer.monday.com/api-reference/changelog/2026-10-is-now-the-current-api-version)
+- **Changelog:** [Developer changelog](https://developer.monday.com/api-reference/changelog)
+- **Deprecations:** [API versioning (deprecation dates)](https://developer.monday.com/api-reference/docs/api-versioning)
+- **Versions:** [API versioning](https://developer.monday.com/api-reference/docs/api-versioning)
+- **Feed:** [Changelog RSS](https://developer.monday.com/api-reference/changelog.rss)
+- **Announcements:** [Deprecating `settings_str` field on `columns`](https://developer.monday.com/api-reference/changelog/deprecating-settings_str-field-on-columns); [Deprecating versions 2025-01 and 2024-10 on 2026-02-15](https://developer.monday.com/api-reference/changelog/deprecating-versions-2025-01-and-2024-10-on-february-15th-2026)
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

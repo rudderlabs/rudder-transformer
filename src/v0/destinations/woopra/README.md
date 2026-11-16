@@ -85,15 +85,23 @@ None. One input event produces one request.
 
 ### Current Version
 
-The Woopra HTTP Tracking API has no version number in its paths. The code uses `https://www.woopra.com/track/identify` and `https://www.woopra.com/track/ce` (`config.js`).
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`BASE_URL`, `https://www.woopra.com/track`); `transform.js` appends `/identify` and `/ce`
 
 ### Version Deprecation
 
-No deprecation announced. Woopra joined Appier (product now listed as "Appier AIRIS (formerly Woopra)"); the announcement says there will be no interruption to Woopra products or services. `NEEDS REVIEW`: monitor for any Appier migration of the tracking endpoint.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Intro: HTTP Tracking API](https://docs.woopra.com/reference/intro-http-tracking)
+
+Appier acquired Woopra in 2022 ([Appier press release](https://www.appier.com/en/press-media/appier-finalizes-acquisition-of-woopra-to-create-the-next-gen-ai-powered-customer-data-platform)); the product is now listed as "Appier AIRIS (formerly Woopra)". No migration of the tracking endpoint has been announced. NEEDS REVIEW: monitor for any Appier migration of the tracking endpoint.
 
 ### Latest Available Version
 
-The unversioned HTTP Tracking API used here is the current one.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Intro: HTTP Tracking API](https://docs.woopra.com/reference/intro-http-tracking)
 
 ## Documentation Links
 
@@ -102,11 +110,18 @@ The unversioned HTTP Tracking API used here is the current one.
 - [Intro: HTTP Tracking API](https://docs.woopra.com/reference/intro-http-tracking)
 - [Track custom event (`/track/ce`)](https://docs.woopra.com/reference/track-ce)
 - [Track identify (`/track/identify`)](https://docs.woopra.com/reference/track-identify)
-- [Woopra is joining Appier](https://www.woopra.com/blog/woopra-is-joining-appier)
+- [Appier finalizes acquisition of Woopra](https://www.appier.com/en/press-media/appier-finalizes-acquisition-of-woopra-to-create-the-next-gen-ai-powered-customer-data-platform)
 
 ### Changelog References
 
-`NEEDS REVIEW`: Woopra/Appier does not publish a developer changelog, deprecations page or RSS feed for the HTTP Tracking API that we could find. The API docs above are the only reference.
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The Woopra blog (`www.woopra.com/blog`) returned HTTP 500 on 2026-11-16, so the earlier "Woopra is joining Appier" post link was replaced with Appier's press release.
 
 ## RETL Functionality
 

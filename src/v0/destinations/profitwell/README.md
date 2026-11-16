@@ -116,13 +116,23 @@ No. Each event produces one delivery request (the GET is made during transformat
 
 ### Current Version
 
-ProfitWell API **v2** (`https://api.profitwell.com/v2/...`, paths in `transform.js` and `utils.js`).
+- **Version:** `v2`
+- **Where in code:** `config.js` (`BASE_ENDPOINT`), with `/v2/users/...` and `/v2/subscriptions/...` paths built in `transform.js` and `utils.js`
 
 ### Version Deprecation
 
-No published end-of-life date for ProfitWell API v2. Paddle lists it as legacy docs on `classic.paddle.com`. **NEEDS REVIEW**.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [ProfitWell API v2 (Paddle Classic docs)](https://classic.paddle.com/profitwell/)
+
+Paddle hosts the ProfitWell API docs on the legacy `classic.paddle.com` site, and Paddle Classic is closed to new signups. Paddle is deleting free ProfitWell Metrics accounts that have been inactive for 12 months ([offboarding FAQs](https://www.paddle.com/help/profitwell-metrics/setup/configure/metrics-account-offboarding-faqs)); no end date for the API itself is published.
 
 ### Latest Available Version
+
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [ProfitWell API v2 (Paddle Classic docs)](https://classic.paddle.com/profitwell/)
 
 v2 is the only documented ProfitWell API version. Paddle's current product APIs (Paddle Billing) are a separate platform, not a ProfitWell API v3.
 
@@ -134,8 +144,12 @@ v2 is the only documented ProfitWell API version. Paddle's current product APIs 
 
 ### Changelog References
 
-- [Paddle developer changelog](https://developer.paddle.com/changelog) (covers Paddle Billing; ProfitWell API changes are not listed there)
-- No ProfitWell-specific changelog, deprecation page or RSS feed was found. **NEEDS REVIEW**
+- **Changelog:** [Paddle developer changelog](https://developer.paddle.com/changelog) (covers Paddle Billing; ProfitWell API changes are not listed there)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Paddle developer changelog RSS](https://developer.paddle.com/changelog.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

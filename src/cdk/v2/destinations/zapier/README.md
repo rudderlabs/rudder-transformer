@@ -79,15 +79,25 @@ Yes. When an event or page/screen name maps to several URLs, one response per UR
 
 ### Current Version
 
-Not versioned. Catch Hook URLs (`https://hooks.zapier.com/hooks/catch/{userId}/{hookId}/`) are supplied by the customer.
+- **Version:** `Unversioned`
+- **Where in code:** `src/cdk/v2/destinations/zapier/procWorkflow.yaml` (`prepareContext` step, `zapUrl`; `trackEndpoint` and `endpointForOthers` steps for per-event URLs)
+
+Catch Hook URLs (`https://hooks.zapier.com/hooks/catch/{userId}/{hookId}/`) are supplied by the customer.
 
 ### Version Deprecation
 
-None. Zapier distinguishes legacy webhook routes (without user ID) only by a lower rate limit.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Trigger Zaps from webhooks](https://help.zapier.com/hc/en-us/articles/8496288690317)
+
+Zapier distinguishes legacy webhook routes (without user ID) only by a lower rate limit ([rate limits](https://help.zapier.com/hc/en-us/articles/29972220283789)).
 
 ### Latest Available Version
 
-Not applicable.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Trigger Zaps from webhooks](https://help.zapier.com/hc/en-us/articles/8496288690317)
 
 ## Documentation Links
 
@@ -96,8 +106,12 @@ Not applicable.
 
 ### Changelog References
 
-- Zapier product changelog: https://zapier.com/changelog
-- NEEDS REVIEW: no Catch Hook-specific changelog, deprecations page or feed found.
+- **Changelog:** [Zapier changelog](https://zapier.com/changelog); [Product updates (Zapier help)](https://help.zapier.com/hc/en-us/categories/13951101412877-Product-updates)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** [Updated webhook behaviour: Catch Hook URLs return 404 when the Zap is off or deleted](https://help.zapier.com/hc/en-us/articles/24290475355277-Maximize-efficiency-with-updated-webhook-behaviour)
+- **Last checked:** 2026-11-16
 
 ## RETL
 

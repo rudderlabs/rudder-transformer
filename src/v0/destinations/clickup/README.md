@@ -120,15 +120,25 @@ No. One event creates one task.
 
 ### Current Version
 
-ClickUp API **v2** (`https://api.clickup.com/api/v2`, `config.js`).
+- **Version:** `v2`
+- **Where in code:** `src/v0/destinations/clickup/config.js` (`VERSION`, used by `createTaskEndPoint` and `getCustomFieldsEndPoint`)
 
 ### Version Deprecation
 
-No end-of-life date for v2 has been announced. ClickUp is moving endpoints to v3 gradually; most endpoints, including task create and list custom fields, are still v2.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Get started with the ClickUp API](https://developer.clickup.com/docs/Getting%20Started)
+
+ClickUp is moving endpoints to v3 gradually; most endpoints, including create task and get accessible custom fields, are still v2.
 
 ### Latest Available Version
 
-v3 exists for a subset of endpoints. ClickUp's terminology guide notes v2 "Team" is v3 "Workspace". **NEEDS REVIEW**: check whether a v3 task create endpoint exists before planning a migration.
+- **Version:** `v3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [ClickUp API v2 and v3 terminology](https://developer.clickup.com/docs/general-v2-v3-api)
+
+v3 covers only a subset of endpoints. The v3 reference has no create task or list custom fields endpoint, so there is nothing to upgrade to yet. v2 "Team" is v3 "Workspace".
 
 ## Documentation Links
 
@@ -139,11 +149,14 @@ v3 exists for a subset of endpoints. ClickUp's terminology guide notes v2 "Team"
 
 ### Changelog References
 
-- [ClickUp API v2 and v3 terminology](https://developer.clickup.com/docs/general-v2-v3-api) (version differences)
-- [ClickUp product changelog](https://feedback.clickup.com/changelog) (product-wide, not API-specific)
-- [ClickUp release notes](https://clickup.com/release-notes) (product-wide)
-- [ClickUp Public API feedback board](https://feedback.clickup.com/public-api)
-- ClickUp has no API-specific changelog, deprecation page or RSS feed that we could find. **NEEDS REVIEW**
+- **Changelog:** [ClickUp product changelog](https://feedback.clickup.com/changelog); [ClickUp release notes](https://clickup.com/release-notes)
+- **Deprecations:** None found
+- **Versions:** [ClickUp API v2 and v3 terminology](https://developer.clickup.com/docs/general-v2-v3-api)
+- **Feed:** [ClickUp changelog RSS](https://feedback.clickup.com/api/changelog/feed.rss)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+ClickUp has no API-specific changelog; the changelog and release notes are product-wide. API issues are tracked on the [Public API feedback board](https://feedback.clickup.com/public-api).
 
 ## RETL Functionality
 

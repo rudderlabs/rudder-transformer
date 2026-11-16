@@ -79,15 +79,23 @@ No.
 
 ### Current Version
 
-`https://track.attributionapp.com/v1/import` (`config.js`), i.e. tracking API **v1**.
+- **Version:** `v1`
+- **Where in code:** `config.js` (`batchEndpoint`, `https://track.attributionapp.com/v1/import`)
 
 ### Version Deprecation
 
-None announced.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [HTTP track API](https://help.attributionapp.com/docs/http-track)
 
 ### Latest Available Version
 
-v1. NEEDS REVIEW: Attribution's public docs describe `POST /v1/t` (single track call) but do not document `/v1/import`, which this code uses. Confirm with Attribution that `/v1/import` with a `batch` array is still supported.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [HTTP track API](https://help.attributionapp.com/docs/http-track)
+
+NEEDS REVIEW: Attribution's public docs describe `POST /v1/t` (single track call) but do not document `/v1/import`, which this code uses. Confirm with Attribution that `/v1/import` with a `batch` array is still supported.
 
 ## Documentation Links
 
@@ -97,8 +105,14 @@ v1. NEEDS REVIEW: Attribution's public docs describe `POST /v1/t` (single track 
 
 ### Changelog References
 
-- NEEDS REVIEW: Attribution publishes no changelog, release notes, deprecations page or feed for its tracking API. The only changelog found covers its MCP tools, not the tracking API: https://docs.attributionapp.com/docs/mcp-changelog
-- Docs index (lists every docs page, useful for spotting new pages): https://docs.attributionapp.com/llms.txt
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Attribution blog RSS](https://www.attributionapp.com/feed.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Attribution publishes no changelog for its tracking API. The only changelog found covers its MCP tools ([MCP changelog](https://docs.attributionapp.com/docs/mcp-changelog)), and the only release notes page is from 2021 ([Release notes](https://docs.attributionapp.com/docs/release-notes-oct-25th-2021)). The [docs index](https://docs.attributionapp.com/llms.txt) lists every docs page and is useful for spotting new ones.
 
 ## RETL
 

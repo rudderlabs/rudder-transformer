@@ -86,15 +86,25 @@ Processor destination (`transformAtV1: "processor"`). No `processRouterDest` is 
 
 ### Current Version
 
-RevenueCat REST API **v1** (`https://api.revenuecat.com/v1`, `config.js`).
+- **Version:** `v1`
+- **Where in code:** `config.js` (`BASE_URL`, `https://api.revenuecat.com/v1`)
 
 ### Version Deprecation
 
-No v1 sunset date announced. v2 is under development and does not yet cover all v1 use cases; RevenueCat says to use v1 for those.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Community: ETA for v2 covering all endpoints](https://community.revenuecat.com/general-questions-7/is-there-any-eta-for-to-complete-v2-version-upgrade-for-all-the-endpoints-3744)
+
+v2 does not yet cover all v1 use cases, and RevenueCat says to use v1 for those.
 
 ### Latest Available Version
 
-REST API **v2** (`https://api.revenuecat.com/v2`). Breaking differences: Bearer secret keys with scoped permissions (v1 keys rejected), different resource model and ID formats. `NEEDS REVIEW`: whether v2 has equivalents for `POST /receipts` and subscriber attributes before any migration.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [REST API v2](https://www.revenuecat.com/docs/api-v2)
+
+REST API v2 (`https://api.revenuecat.com/v2`) differs from v1: Bearer secret keys with scoped permissions (v1 keys are rejected), a different resource model and different ID formats. The first v2 functionality appeared in the [2023-11-02 changelog entry](https://www.revenuecat.com/changelog/release/new-rest-api-v2-functionality-app-management-overview-metrics-2023-11-02). NEEDS REVIEW: whether v2 has equivalents for `POST /receipts` and subscriber attributes before any migration.
 
 ## Documentation Links
 
@@ -103,13 +113,17 @@ REST API **v2** (`https://api.revenuecat.com/v2`). Breaking differences: Bearer 
 - [REST API v1](https://www.revenuecat.com/docs/api-v1)
 - [REST API v2](https://www.revenuecat.com/docs/api-v2)
 - [API reference index](https://www.revenuecat.com/docs/api-reference/llms.txt)
+- [Authentication (API keys)](https://www.revenuecat.com/docs/projects/authentication)
 - [Community: ETA for v2 covering all endpoints](https://community.revenuecat.com/general-questions-7/is-there-any-eta-for-to-complete-v2-version-upgrade-for-all-the-endpoints-3744)
 
 ### Changelog References
 
-- [RevenueCat Announcements (community)](https://community.revenuecat.com/revenuecat-announcements-2)
-- [REST API v2 page (lists v1 → v2 differences)](https://www.revenuecat.com/docs/api-v2)
-- `NEEDS REVIEW`: RevenueCat has no dedicated REST API changelog, deprecations page or RSS feed that we could find.
+- **Changelog:** [RevenueCat changelog](https://www.revenuecat.com/changelog); [RevenueCat Announcements (community)](https://community.revenuecat.com/revenuecat-announcements-2)
+- **Deprecations:** None found
+- **Versions:** [REST API v2 (lists v1 to v2 differences)](https://www.revenuecat.com/docs/api-v2)
+- **Feed:** [RevenueCat blog RSS](https://www.revenuecat.com/blog/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

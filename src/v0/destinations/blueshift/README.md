@@ -92,13 +92,21 @@ None.
 
 ### Current Version
 
-Blueshift REST API **v1** (`/api/v1/event`, `/api/v1/customers`).
+- **Version:** `v1`
+- **Where in code:** `transform.js` (`${baseURL}/api/v1/event`, `${baseURL}/api/v1/customers`); hosts in `config.js` (`BASE_URL`, `BASE_URL_EU`)
 
 ### Version Deprecation
 
-No deprecation announced for v1.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Send an event](https://developer.blueshift.com/reference-link/post_api-v1-event)
 
 ### Latest Available Version
+
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Blueshift developer portal](https://developer.blueshift.com/)
 
 v1 is the latest version of the Event and Customers APIs.
 
@@ -109,12 +117,20 @@ v1 is the latest version of the Event and Customers APIs.
 - [Blueshift developer portal](https://developer.blueshift.com/)
 - [Send an event](https://developer.blueshift.com/reference-link/post_api-v1-event)
 - [Create or update a customer](https://developer.blueshift.com/reference-link/post_api-v1-customers)
+- [Use API keys (authentication)](https://developer.blueshift.com/docs/authentication-of-api-requests)
+- [API keys (Blueshift support)](https://support-blueshift.blueconic.com/en/articles/809452-api-keys)
 - [BlueConic acquires Blueshift (MarTech)](https://martech.org/blueconic-acquires-blueshift-as-cdps-move-from-data-to-action/)
 
 ### Changelog References
 
-- [Blueshift support / release notes (now hosted by BlueConic)](https://support-blueshift.blueconic.com/)
-- `NEEDS REVIEW`: Blueshift has no developer API changelog, deprecations page or RSS feed that we could find. Product updates are posted on blueshift.com under `/product-update/`, which blocks automated access.
+- **Changelog:** [Blueshift release notes (hosted by BlueConic)](https://support-blueshift.blueconic.com/en/collections/1458023-release-notes)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Blueshift has no developer API changelog. The release notes cover Launchpad product releases. Monthly product updates are also posted on blueshift.com under `/product-update/`, which blocks automated access.
 
 ## RETL Functionality
 

@@ -93,28 +93,51 @@ Vero applies customer-specific limits per client IP over a five-minute window an
 
 ### Current Version
 
-Vero Track API **v2** (`https://api.getvero.com/api/v2`, `config.js`).
+- **Version:** `v2`
+- **Where in code:** `config.js` (`BASE_URL`: `https://api.getvero.com/api/v2`)
 
 ### Version Deprecation
 
-No deprecation announced. Vero states the Track API endpoints have had no breaking changes since before 2016. Vero 2.0 (the rebuilt platform) keeps the same Track API and renames Auth Token to Tracking API Key.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Vero API overview](https://help.getvero.com/api-reference/track/overview)
+
+Vero states the Track API endpoints have had no breaking changes since before 2016. Vero 2.0 (the rebuilt platform) keeps the same Track API and renames Auth Token to Tracking API Key.
 
 ### Latest Available Version
 
-v2 is the latest Track API version. Vero also offers a separate Campaigns API (Bearer/OAuth, public preview) that does not replace the Track API.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Vero Track API reference](https://help.getvero.com/track-api-reference)
+
+Vero also offers a separate Campaigns API (Bearer/OAuth, public preview) that does not replace the Track API.
 
 ## Documentation Links
 
 ### API Documentation
 
 - [Vero Track API reference](https://help.getvero.com/track-api-reference)
-- [Vero API overview](https://help.getvero.com/api-reference/overview)
+- [Vero API overview (base URL, authentication)](https://help.getvero.com/api-reference/overview)
+- [Identify (`/users/track`)](https://help.getvero.com/api-reference/users/identify)
+- [Track (`/events/track`)](https://help.getvero.com/api-reference/events/track)
+- [Alias (`/users/reidentify`)](https://help.getvero.com/api-reference/users/alias)
+- [Edit tags (`/users/tags/edit`)](https://help.getvero.com/api-reference/tags/edit)
+- [Unsubscribe](https://help.getvero.com/api-reference/users/unsubscribe)
+- [Resubscribe](https://help.getvero.com/api-reference/users/resubscribe)
 - [Legacy Vero developer docs (referenced in code)](https://developers.getvero.com/)
 - [Vero MCP / Campaigns API authentication](https://help.getvero.com/vero-ai/mcp-authentication)
 
 ### Changelog References
 
-`NEEDS REVIEW`: Vero publishes no developer changelog, deprecations page or RSS feed that we could find. The best available sources are the [Track API reference](https://help.getvero.com/track-api-reference) (stability statement) and the [docs index](https://help.getvero.com/llms.txt), which lists new API pages as they are added.
+- **Changelog:** [Vero changelog](https://feedback.getvero.com/changelog)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Vero changelog RSS](https://feedback.getvero.com/api/v1/changelog/feed.rss)
+- **Announcements:** [Tracking API key management in Vero 2.0 (2025-02-17)](https://feedback.getvero.com/changelog/tracking-api-key-management-in-vero-20)
+- **Last checked:** 2026-11-16
+
+The [docs index](https://help.getvero.com/llms.txt) also lists new API pages as they are added.
 
 ## RETL Functionality
 

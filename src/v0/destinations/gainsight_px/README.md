@@ -97,27 +97,40 @@ No delivered multiplexing. `group` writes the account during transformation and 
 
 ### Current Version
 
-Gainsight PX REST API **v1** (`https://api.aptrinsic.com/v1`, `https://api-eu.aptrinsic.com/v1`, `https://api-us2.aptrinsic.com/v1`, in `config.js`). PX API docs are versioned separately (documentation version `0.1.6`).
+- **Version:** `v1`
+- **Where in code:** `config.js` (`BASE_ENDPOINT`, `BASE_EU_ENDPOINT`, `BASE_US2_ENDPOINT`: `https://api.aptrinsic.com/v1`, `https://api-eu.aptrinsic.com/v1`, `https://api-us2.aptrinsic.com/v1`)
 
 ### Version Deprecation
 
-No deprecation announced for v1. The PX API changelog lists only additive changes in 2026 (for example `GET/PUT /v1/content-library` on Oct 6, 2026).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [PX API changelog](https://px-apidocs.gainsight.com/changes)
+
+The PX API changelog lists only additive changes in 2026 (for example `GET/PUT /v1/content-library` on 2026-10-06). The PX API docs are versioned separately from the URL version (documentation version `0.1.6`).
 
 ### Latest Available Version
 
-v1.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [PX REST API reference](https://px-apidocs.gainsight.com/)
 
 ## Documentation Links
 
 - [PX REST API reference](https://px-apidocs.gainsight.com/)
-- [Work with the Gainsight PX REST API](https://support.gainsight.com/PX/API/Work_with_the_Gainsight_PX_REST_API)
+- [Work with the Gainsight PX REST API (API key auth)](https://support.gainsight.com/PX/API/Work_with_the_Gainsight_PX_REST_API)
+- [Users endpoints](https://px-apidocs.gainsight.com/group/endpoint-users)
+- [Accounts endpoints](https://px-apidocs.gainsight.com/group/endpoint-accounts)
+- [Custom events endpoints](https://px-apidocs.gainsight.com/group/endpoint-custom-events)
 
 ### Changelog References
 
-- API changelog: https://px-apidocs.gainsight.com/changes
-- API changelog RSS feed: https://px-apidocs.gainsight.com/changes.rss
-- Product release notes: https://support.gainsight.com/PX/Release_Notes
-- No separate deprecations or API lifecycle page found.
+- **Changelog:** [PX API changelog](https://px-apidocs.gainsight.com/changes); [PX product release notes](https://support.gainsight.com/PX/Release_Notes)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [PX API changelog RSS](https://px-apidocs.gainsight.com/changes.rss)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## RETL
 

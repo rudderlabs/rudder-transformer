@@ -90,15 +90,25 @@ Userlist built a RudderStack-specific endpoint that accepts RudderStack events a
 
 ### Current Version
 
-- Unversioned custom endpoint: `https://incoming.userlist.com/rudderstack/events`.
+- **Version:** `Unversioned`
+- **Where in code:** `procWorkflow.yaml` (`response.endpoint = "https://incoming.userlist.com/rudderstack/events"`)
 
 ### Version Deprecation
 
-- No deprecation announced. Userlist publishes no version policy for this endpoint. NEEDS REVIEW.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Userlist: RudderStack integration](https://userlist.com/docs/integrations/rudderstack/)
+
+Userlist publishes no version policy for this custom endpoint.
 
 ### Latest Available Version
 
-- Not applicable (unversioned). The public Push API at `https://push.userlist.com` is also unversioned.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Userlist: RudderStack integration](https://userlist.com/docs/integrations/rudderstack/)
+
+The public Push API at `https://push.userlist.com` is also unversioned.
 
 ## RETL Functionality
 
@@ -117,7 +127,14 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- NEEDS REVIEW: Userlist publishes no developer changelog, deprecations page, version list or feed. `https://userlist.com/changelog/` returns 404. Product news appears on the [Userlist blog](https://userlist.com/blog/).
+- **Changelog:** [Userlist product updates](https://userlist.com/updates/) (product news; no developer changelog)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+`https://userlist.com/changelog/` returns 404. The site's Atom feeds (`/feed.xml`, `/blog/feed.xml`) carry blog posts only, not product updates.
 
 ## FAQ
 

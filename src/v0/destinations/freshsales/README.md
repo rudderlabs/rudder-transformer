@@ -107,25 +107,45 @@ NEEDS REVIEW for each.
 
 ### Current Version
 
-Freshworks CRM (Freshsales Suite) REST API. It has no version in the path (`/crm/sales/api/...`).
+- **Version:** `Unversioned`
+- **Where in code:** `src/v0/destinations/freshsales/config.js` (`CONFIG_CATEGORIES` `baseUrl*` paths and `LIFECYCLE_STAGE_ENDPOINT`, all under `/crm/sales/api/`)
+
+Freshworks CRM (Freshsales Suite) REST API. It has no version in the path.
 
 ### Version Deprecation
 
-No versioning and no announced deprecation. NEEDS REVIEW.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Freshworks CRM (Freshsales) API](https://developers.freshworks.com/crm/api/)
 
 ### Latest Available Version
 
-Same unversioned API.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Freshworks CRM (Freshsales) API](https://developers.freshworks.com/crm/api/)
 
 ## Documentation Links
 
 - [Freshworks CRM (Freshsales) API](https://developers.freshworks.com/crm/api/)
+- [Authentication](https://developers.freshworks.com/crm/api/#authentication)
+- [Upsert a contact](https://developers.freshworks.com/crm/api/#upsert_a_contact) (`/crm/sales/api/contacts/upsert`)
+- [Upsert an account](https://developers.freshworks.com/crm/api/#upsert_an_account) (`/crm/sales/api/sales_accounts/upsert`)
+- [Create a sales activity](https://developers.freshworks.com/crm/api/#create_sales_activity) (`/crm/sales/api/sales_activities`)
+- [List all sales activities](https://developers.freshworks.com/crm/api/#list_all_sales_activities)
+- [Admin configuration (selectors: sales activity types, lifecycle stages)](https://developers.freshworks.com/crm/api/#admin_configuration)
 - [Freshsales Classic API (legacy)](https://developer.freshsales.io/api/)
 
 ### Changelog References
 
-- [What's new with Freshsales (product updates)](https://www.freshworks.com/crm/sales/resources/product-updates)
-- No API changelog, deprecations page or RSS feed found. NEEDS REVIEW.
+- **Changelog:** [Freshworks community product updates (Freshsales release notes)](https://community.freshworks.com/product-updates) (blocks automated requests)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Freshworks publishes no API changelog for Freshsales; release notes are product-wide. The former "What's new with Freshsales" page now redirects to the Freshsales product page. API-related notices appear occasionally in the [Freshworks developer community](https://community.freshworks.dev/c/product-apis/8).
 
 ## RETL Functionality
 

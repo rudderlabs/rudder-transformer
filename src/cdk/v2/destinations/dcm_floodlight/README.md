@@ -94,15 +94,27 @@ None.
 
 ### Current Version
 
-Floodlight tag endpoint `https://ad.doubleclick.net/ddm/activity/` (unversioned; `utils.js`). This is not the Campaign Manager 360 REST API.
+- **Version:** Unversioned
+- **Where in code:** `utils.js` (`BASE_URL`), `https://ad.doubleclick.net/ddm/activity/`
+
+This is the Floodlight tag endpoint, not the Campaign Manager 360 REST API.
 
 ### Version Deprecation
 
-No deprecation announced for the `ddm/activity` tag URL. The separate CM360 REST API (not used here) is at v5, with deprecation and sunset "not yet announced" on Google's deprecation schedule.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Track mobile app conversions with Floodlight](https://support.google.com/campaignmanager/answer/4568975)
+
+No deprecation is announced for the `ddm/activity` tag URL. The separate CM360 REST API (not used here) is at v5, with no deprecation or sunset announced on Google's [deprecation schedule](https://developers.google.com/doubleclick-advertisers/deprecation).
 
 ### Latest Available Version
 
-The unversioned tag URL is current. Google recommends the Google tag (gtag.js) for web; the server-side image-tag URL format remains documented for in-app conversion tracking.
+- **Version:** Unversioned
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Track mobile app conversions with Floodlight](https://support.google.com/campaignmanager/answer/4568975)
+
+Google recommends the Google tag (gtag.js) for web; the server-side image-tag URL format remains documented for in-app conversion tracking.
 
 ## Documentation Links
 
@@ -114,9 +126,14 @@ The unversioned tag URL is current. Google recommends the Google tag (gtag.js) f
 
 ### Changelog References
 
-- [Campaign Manager 360 API release notes](https://developers.google.com/doubleclick-advertisers/rel_notes) (covers the REST API, not tag URLs)
-- [Campaign Manager 360 API deprecation schedule](https://developers.google.com/doubleclick-advertisers/deprecation)
-- `NEEDS REVIEW`: Google publishes no changelog specific to Floodlight tag URL parameters. Changes are announced in Campaign Manager 360 Help Center articles.
+- **Changelog:** [Campaign Manager 360 API release notes](https://developers.google.com/doubleclick-advertisers/rel_notes)
+- **Deprecations:** [Campaign Manager 360 API deprecation schedule](https://developers.google.com/doubleclick-advertisers/deprecation)
+- **Versions:** Not versioned
+- **Feed:** [Google Ads developer blog Atom feed](https://developers.google.com/ads/blog/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Google publishes no changelog specific to Floodlight tag URL parameters. The linked release notes and deprecation schedule cover the CM360 REST API, not tag URLs; tag changes are announced in Campaign Manager 360 Help Center articles.
 
 ## RETL Functionality
 

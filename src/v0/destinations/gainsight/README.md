@@ -125,38 +125,72 @@ Non-2xx responses throw `NetworkError` with a status-based error type. A 2xx tha
 
 ### Current Version
 
-No single API version. Paths used:
-
-- People: `https://<domain>/v1.0/api/people` (PUT upsert)
-- Events: `https://<domain>/v1.0/api/eventManager/event` (POST)
-- Company: `https://<domain>/v1/data/objects/...` (Company API v1)
+- **API:** People (Person) API
+- **Version:** `v1.0`
+- **Where in code:** `config.js` (`getBaseEndpoint`, `ENDPOINTS.identifyEndpoint`: `https://<domain>/v1.0/api/people`)
+- **API:** Events API
+- **Version:** `v1.0`
+- **Where in code:** `config.js` (`ENDPOINTS.trackEndpoint`: `https://<domain>/v1.0/api/eventManager/event`)
+- **API:** Company API
+- **Version:** `v1`
+- **Where in code:** `config.js` (`getCompanyBaseEndpoint`: `https://<domain>/v1/data/objects/...`)
 
 ### Version Deprecation
 
-No published deprecation dates for these paths. However, the current People API docs document `PUT /v1/peoplemgmt/v1.0/people`, not the `/v1.0/api/people` path the code uses. The code's path is the older Person API path. It still works per our test fixtures, but its long-term support is not documented. NEEDS REVIEW.
+- **API:** People (Person) API
+- **Status:** Unknown
+- **Sunset date:** None announced
+- **Source:** [People API](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Person_API/People_API_Documentation)
+- **API:** Events API
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Events API](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Events_API/Events_API)
+- **API:** Company API
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Company API](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Company_and_Relationship_API/Company_API_Documentation)
 
-Auth: access keys are not deprecated, but see the April 2026 IP allow-listing requirement above.
+The current People API docs document `PUT /v1/peoplemgmt/v1.0/people`, not the `/v1.0/api/people` path the code uses. The code's path is the older Person API path ("the Person API is renamed as the People API"). It still works per our test fixtures, but Gainsight no longer documents it. NEEDS REVIEW: confirm with Gainsight whether the old path has a sunset date.
+
+Auth: access keys are not deprecated, but see the April 2026 IP allow-listing requirement above. Gainsight also required access keys that had not been rotated recently to be regenerated; unrotated keys were temporarily disabled from 2026-02-13 ([Salesforce security advisory FAQs](https://communities.gainsight.com/community-news-2/salesforce-security-advisory-faqs-29809)).
 
 ### Latest Available Version
 
-- People API: `/v1/peoplemgmt/v1.0/people` (single) and `/v1/peoplemgmt/v1.0/people/async` (up to 50 records).
-- Company API: `/v1/data/objects/Company` (unchanged).
-- Events API: `/v1.0/api/eventManager/event` with `eventVersion` such as `v01`.
+- **API:** People API
+- **Version:** `v1.0` (`/v1/peoplemgmt/v1.0/people`, and `/v1/peoplemgmt/v1.0/people/async` for up to 50 records)
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [People API](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Person_API/People_API_Documentation)
+- **API:** Events API
+- **Version:** `v1.0` (with `eventVersion` such as `v01`)
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Events API](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Events_API/Events_API)
+- **API:** Company API
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Company API](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Company_and_Relationship_API/Company_API_Documentation)
+
+The People API upgrade is a path move to `/v1/peoplemgmt/v1.0/people`; the version string is unchanged.
 
 ## Documentation Links
 
 - [Gainsight API and developer docs](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs)
 - [Generate REST API Key](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Generate_REST_API/Generate_REST_API_Key)
+- [Allow list trusted IP addresses](https://support.gainsight.com/gainsight_nxt/01Onboarding_and_Implementation/Onboarding_for_Gainsight_NXT_in_Salesforce/Login_and_Permissions/Allow_List_Trusted_IP_Addresses)
 - [People API](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Person_API/People_API_Documentation)
 - [Company API](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Company_and_Relationship_API/Company_API_Documentation)
 - [Events API](https://support.gainsight.com/gainsight_nxt/API_and_Developer_Docs/Events_API/Events_API)
 
 ### Changelog References
 
-- [Gainsight CS release notes](https://support.gainsight.com/gainsight_nxt/Release_Notes)
-- [Gainsight CS Q1 April 2026 release notes (PKCE OAuth, mandatory IP allow listing for access keys)](https://support.gainsight.com/gainsight_nxt/Release_Notes/Current_Release_Notes_-_2026/01_Gainsight_CS_Release_Notes_Q1_April_2026)
-- [Gainsight community product updates](https://communities.gainsight.com/product-updates)
-- No API-specific deprecations page or RSS feed found. NEEDS REVIEW.
+- **Changelog:** [Gainsight CS release notes](https://support.gainsight.com/gainsight_nxt/Release_Notes); [Gainsight community product updates](https://communities.gainsight.com/product-updates)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Gainsight CS Q1 April 2026 release notes (PKCE OAuth, mandatory IP allow listing for access keys)](https://support.gainsight.com/gainsight_nxt/Release_Notes/Current_Release_Notes_-_2026/01_Gainsight_CS_Release_Notes_Q1_April_2026); [Salesforce security advisory FAQs (unrotated access keys disabled from 2026-02-13)](https://communities.gainsight.com/community-news-2/salesforce-security-advisory-faqs-29809)
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

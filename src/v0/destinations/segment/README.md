@@ -101,25 +101,37 @@ These are likely bugs in `transform.js`. NEEDS REVIEW.
 
 ### Current Version
 
-Segment HTTP Tracking API **v1** (`https://api.segment.io/v1/batch`). Source: `config.js`.
+- **Version:** `v1`
+- **Where in code:** `config.js` (`batchEndpoint` = `https://api.segment.io/v1/batch`)
 
 ### Version Deprecation
 
-v1 is the only version of the Tracking API. No deprecation announced.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Segment HTTP API source](https://www.twilio.com/docs/segment/connections/sources/catalog/libraries/server/http-api)
 
 ### Latest Available Version
 
-v1. No newer Tracking API version exists.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Segment HTTP API source](https://www.twilio.com/docs/segment/connections/sources/catalog/libraries/server/http-api)
+
+v1 is the only version of the Tracking API.
 
 ## Documentation Links
 
-- [Segment HTTP API source](https://www.twilio.com/docs/segment/connections/sources/catalog/libraries/server/http-api)
+- [Segment HTTP API source (batch endpoint and write-key Basic auth)](https://www.twilio.com/docs/segment/connections/sources/catalog/libraries/server/http-api)
 - [Regional Segment](https://www.twilio.com/docs/segment/guides/regional-segment)
 
 ### Changelog References
 
-- [Twilio changelog, Segment filter](https://www.twilio.com/en-us/changelog?product=Segment)
-- No dedicated API deprecations page or RSS feed found. NEEDS REVIEW.
+- **Changelog:** [Twilio changelog, Segment filter](https://www.twilio.com/en-us/changelog?product=Segment)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Twilio changelog RSS (all products)](https://www.twilio.com/en-us/changelog.feed.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

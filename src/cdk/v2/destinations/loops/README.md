@@ -81,15 +81,25 @@ None.
 
 ### Current Version
 
-Loops REST API **v1** (`https://app.loops.so/api/v1/...`).
+- **Version:** `v1`
+- **Where in code:** `procWorkflow.yaml` (`$.context.endpoint`: `https://app.loops.so/api/v1/contacts/update`, `https://app.loops.so/api/v1/events/send`)
 
 ### Version Deprecation
 
-No deprecation announced for v1. The Sep 11 2025 changelog entry deprecated the top-level `error` and `path` keys in error responses (replaced by `success` and `message`); this affects error parsing only, and this integration does not parse responses.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Loops API changelog](https://loops.so/docs/api-reference/changelog)
+
+The 2025-09-11 changelog entry deprecated the top-level `error` and `path` keys in error responses (replaced by `success` and `message`). This affects error parsing only, and this integration does not parse responses.
 
 ### Latest Available Version
 
-v1 is the only and latest version.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [API introduction](https://loops.so/docs/api-reference/intro)
+
+v1 is the only published version.
 
 ## Documentation Links
 
@@ -101,8 +111,12 @@ v1 is the only and latest version.
 
 ### Changelog References
 
-- [Loops API changelog](https://loops.so/docs/api-reference/changelog)
-- [Loops product changelog](https://loops.so/changelog)
+- **Changelog:** [Loops API changelog](https://loops.so/docs/api-reference/changelog); [Loops product changelog](https://loops.so/changelog)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [API changelog RSS](https://loops.so/docs/api-reference/changelog/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

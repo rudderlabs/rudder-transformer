@@ -105,30 +105,45 @@ Yes for `audiencelist`: one event can produce a remove request and an add reques
 
 ### Current Version
 
-Marketo Engage REST API **v1**: `POST|DELETE /rest/v1/lists/{listId}/leads.json?id=...` and `/identity/oauth/token`.
+- **Version:** `v1`
+- **Where in code:** `transformV2.js` and `transform.js` (inline `https://${accountId}.mktorest.com/rest/v1/lists/${listId}/leads.json`); token from `../marketo/util.js` (`getAuthToken`)
+
+Marketo Engage REST API v1: `POST|DELETE /rest/v1/lists/{listId}/leads.json?id=...` and `/identity/oauth/token`.
 
 ### Version Deprecation
 
-No sunset announced for REST v1. The `access_token` query parameter was removed on August 31, 2026; this code is not affected. See [Marketo README](../marketo/README.md#version-deprecation).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [REST API overview](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/rest-api)
+
+The `access_token` query parameter was removed on 2026-08-31; this code sends the token in the `Authorization` header and is not affected. See [Marketo README](../marketo/README.md#version-deprecation).
 
 ### Latest Available Version
 
-v1 (only version).
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [REST API overview](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/rest-api)
 
 ## Documentation Links
 
 - [List Membership](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/lead-database/list-membership)
 - [Static Lists](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/assets/static-lists)
 - [Authentication](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/authentication)
+- [Identity API reference](https://developer.adobe.com/marketo-apis/api/identity)
 - [REST API limits](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/rest-api)
 - [Error codes](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/error-codes)
 
 ### Changelog References
 
-- Release notes (current): https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/current
-- Release notes, August 2026: https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/previous-releases/2026/release-notes-aug-26
-- Deprecation announcement (Sep 16, 2025): https://experienceleaguecommunities.adobe.com/adobe-marketo-engage-27/updates-to-deprecation-of-soap-api-and-access-token-in-query-parameter-for-rest-api-147711
-- NEEDS REVIEW: no Marketo developer changelog page or RSS/Atom feed exists. See the full list in the [Marketo README](../marketo/README.md#changelog-references).
+- **Changelog:** [Marketo Engage release notes (current)](https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/current)
+- **Deprecations:** [Authentication: `access_token` query parameter removed 2026-08-31](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/authentication)
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Updates to deprecation of SOAP API and `access_token` query parameter (2025-09-16)](https://experienceleaguecommunities.adobe.com/adobe-marketo-engage-27/updates-to-deprecation-of-soap-api-and-access-token-in-query-parameter-for-rest-api-147711); [Bearer tokens now required (2025-04-21)](https://experienceleaguecommunities.adobe.com/adobe-marketo-engage-27/marketo-engage-rest-api-bearer-tokens-now-required-160950); [Release notes, August 2026](https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/previous-releases/2026/release-notes-aug-26)
+- **Last checked:** 2026-11-16
+
+Adobe publishes no Marketo developer changelog page or RSS/Atom feed. See the full list in the [Marketo README](../marketo/README.md#changelog-references).
 
 ## RETL
 

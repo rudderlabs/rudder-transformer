@@ -98,24 +98,45 @@ Not required. Each order is independent and carries its own `date` and `land` ti
 
 ### Current Version
 
-Unversioned event pixel endpoint: `GET https://track.linksynergy.com/ep`.
+- **Version:** `Unversioned`
+- **Where in code:** `procWorkflow.yaml` (`response.endpoint`)
+
+Endpoint: `GET https://track.linksynergy.com/ep`.
 
 ### Version Deprecation
 
-No public versioning or deprecation information. NEEDS REVIEW.
+- **Status:** Unknown
+- **Sunset date:** None announced
+- **Source:** [Rakuten Advertising developer portal](https://developers.rakutenadvertising.com/)
+
+Rakuten shares the event pixel spec privately; the public developer portal does not document it. No public versioning or deprecation information found.
 
 ### Latest Available Version
 
-Unknown. Rakuten also offers token-based server-to-server APIs (Postback API on `api.linksynergy.com`) that are documented only to customers. NEEDS REVIEW.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Rakuten Advertising developer portal](https://developers.rakutenadvertising.com/)
+
+Rakuten also offers token-based server-to-server APIs (Postback API on `api.linksynergy.com`) that are documented only to customers. NEEDS REVIEW.
 
 ## Documentation Links
 
 - [Rakuten Advertising developer portal](https://developers.rakutenadvertising.com/)
 - [Rakuten Advertising developer portal: access tokens](https://developers.rakutenadvertising.com/guides/access_tokens)
 
+The `/ep` pixel takes no auth header; the access tokens guide applies to Rakuten's token-based APIs.
+
 ### Changelog References
 
-- NEEDS REVIEW: no public changelog, release notes, deprecations page or RSS feed found for Rakuten Advertising APIs. The endpoint spec is shared privately by Rakuten.
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+No public changelog, release notes, deprecations page or feed found for Rakuten Advertising APIs. The developer portal is a single-page app that returns `200` for any path.
 
 ## RETL Functionality
 

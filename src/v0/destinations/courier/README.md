@@ -104,25 +104,39 @@ No. One input event produces one request.
 
 ### Current Version
 
-The endpoint is `https://api.courier.com/inbound/rudderstack` (`config.js`). The path has no version segment; Courier's REST API is unversioned.
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`API_URL`: `https://api.courier.com/inbound/rudderstack`)
 
 ### Version Deprecation
 
-No deprecation of the inbound RudderStack endpoint has been announced.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Courier: RudderStack integration](https://www.courier.com/docs/integrations/cdp/rudderstack)
 
 ### Latest Available Version
 
-Not applicable (unversioned API). The integration uses the current endpoint documented by Courier.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Courier API reference](https://www.courier.com/docs/reference/api-overview)
+
+The path has no version segment; Courier's REST API is unversioned. The integration uses the current endpoint documented by Courier.
 
 ## Documentation Links
 
-- [Courier: RudderStack integration](https://www.courier.com/docs/external-integrations/cdp/rudderstack)
-- [Courier: Inbound events](https://www.courier.com/docs/platform/automations/inbound-events)
+- [Courier: RudderStack integration](https://www.courier.com/docs/integrations/cdp/rudderstack)
+- [Courier: Inbound events](https://www.courier.com/docs/journeys/automations/inbound-events)
+- [Courier API reference (base URLs, bearer auth, rate limits)](https://www.courier.com/docs/reference/api-overview)
+- [Courier: Track an event](https://www.courier.com/docs/api-reference/track-events/track-an-event)
 
 ### Changelog References
 
-- [Courier changelog](https://www.courier.com/changelog) (product and API changes; no RSS feed found)
-- Courier has no separate API deprecation or versioning page. **NEEDS REVIEW**
+- **Changelog:** [Courier changelog](https://www.courier.com/changelog)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** [Improved API Settings (environment-specific API keys)](https://www.courier.com/changelog/improved-api-settings); [Custom Environments (2026-04-30)](https://www.courier.com/changelog/new-custom-environments)
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

@@ -92,15 +92,25 @@ Implementation in **JavaScript** (`src/v0/destinations/factorsai/`)
 
 ### Current Version
 
-- No version in the endpoint path: `https://api.factors.ai/integrations/rudderstack_platform`. This is a partner-built endpoint for RudderStack, not a versioned public API.
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`BASE_URL`, `https://api.factors.ai/integrations/rudderstack_platform`)
+
+This is a partner-built endpoint for RudderStack, not a versioned public API.
 
 ### Version Deprecation
 
-- No deprecation announced. Factors AI publishes no lifecycle policy for this endpoint. NEEDS REVIEW.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Factors AI: RudderStack integration](https://help.factors.ai/en/articles/7283693-rudderstack-integration)
+
+Factors AI publishes no lifecycle policy for this endpoint.
 
 ### Latest Available Version
 
-- Not applicable. The endpoint is unversioned. NEEDS REVIEW with Factors AI if a newer ingestion endpoint exists.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Factors AI: RudderStack integration](https://help.factors.ai/en/articles/7283693-rudderstack-integration)
 
 ## RETL Functionality
 
@@ -117,7 +127,12 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- NEEDS REVIEW: Factors AI does not publish a developer changelog, deprecations page, version list or changelog feed for its API. `https://www.factors.ai/changelog` returns 404. The closest source is the [Factors AI blog](https://www.factors.ai/blog), which covers product news, not API changes.
+- **Changelog:** [Factors AI product updates and releases](https://www.factors.ai/product-updates-and-releases)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

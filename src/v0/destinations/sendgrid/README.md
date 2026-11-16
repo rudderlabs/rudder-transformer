@@ -115,15 +115,23 @@ NEEDS REVIEW for each.
 
 ### Current Version
 
-SendGrid **Web API v3** (`https://api.sendgrid.com/v3`, from `config.js`).
+- **Version:** `v3`
+- **Where in code:** `config.js` (`BASE_ENDPOINT` = `https://api.sendgrid.com/v3`); `util.js` (field definitions URL)
 
 ### Version Deprecation
 
-v3 has no announced end-of-life. The older v2 Mail Send API had its recipient limit cut to 1,000 per request from July 9, 2025; this integration does not use v2.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [How to use the SendGrid v3 API](https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api)
+
+The older v2 Mail Send API had its recipient limit cut to 1,000 per request from 2025-07-09; this integration does not use v2.
 
 ### Latest Available Version
 
-v3 is the latest version.
+- **Version:** `v3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [How to use the SendGrid v3 API](https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api)
 
 ## Documentation Links
 
@@ -131,14 +139,20 @@ v3 is the latest version.
 - [Add or update contacts](https://www.twilio.com/docs/sendgrid/api-reference/contacts/add-or-update-a-contact)
 - [Delete contacts](https://www.twilio.com/docs/sendgrid/api-reference/contacts/delete-contacts)
 - [Get field definitions](https://www.twilio.com/docs/sendgrid/api-reference/custom-fields/get-all-field-definitions)
+- [Authentication (API keys)](https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api/authentication)
 - [Rate limits](https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api/rate-limits)
 - [EU data residency FAQ](https://www.twilio.com/docs/sendgrid/data-residency/faq)
 
 ### Changelog References
 
-- [Twilio changelog, SendGrid filter](https://www.twilio.com/en-us/changelog?product=SendGrid)
-- [Twilio changelog (all products)](https://www.twilio.com/en-us/changelog)
-- No dedicated SendGrid deprecations page or RSS feed found. NEEDS REVIEW.
+- **Changelog:** [Twilio changelog, SendGrid filter](https://www.twilio.com/en-us/changelog?product=SendGrid)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Twilio changelog RSS (all products)](https://www.twilio.com/en-us/changelog.feed.xml)
+- **Announcements:** [Retirement of legacy SendGrid API/SMTP IP addresses, permanent on 2026-08-31](https://status.twilio.com/incidents/rn6jhbzx6db0)
+- **Last checked:** 2026-11-16
+
+The IP retirement only affects clients that call SendGrid by hard-coded IP address. This integration uses the `api.sendgrid.com` hostname, so it is not affected.
 
 ## RETL Functionality
 

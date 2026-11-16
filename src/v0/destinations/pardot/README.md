@@ -86,7 +86,7 @@ Pardot was renamed Marketing Cloud Account Engagement by Salesforce. The destina
 
 ### Rate Limits
 
-From the [Account Engagement API overview](https://developer.salesforce.com/docs/marketing/pardot/guide/overview.html):
+From the [Account Engagement API overview](https://developer.salesforce.com/docs/marketing/pardot/guide/overview.html) (blocks automated requests):
 
 - Daily requests per account: Growth 25,000, Plus 50,000, Advanced 100,000, Premium 100,000. Resets daily in the account's time zone. Exceeding returns error code `122`.
 - Concurrent requests: 5. A sixth concurrent request returns error code `66`.
@@ -112,18 +112,29 @@ Neither `66` nor `122` is in the retryable list, so these events are aborted. Se
 
 ### Current Version
 
-- Account Engagement API **v4**: `https://pi.pardot.com/api/prospect/version/4/do/upsert/...` (`config.js`, `version = '4'`).
-- v4 is the version for business units with "Allow Multiple Prospects with the Same Email Address" (AMPSEA) enabled. v3 is for business units without it.
+- **Version:** `v4`
+- **Where in code:** `config.js` (`version = '4'`, `BASE_URL`), giving `https://pi.pardot.com/api/prospect/version/4/do/upsert/...`
+
+v4 is the version for business units with "Allow Multiple Prospects with the Same Email Address" (AMPSEA) enabled. v3 is for business units without it.
 
 ### Version Deprecation
 
-- Salesforce has not announced an end-of-life date for v3 or v4. No official retirement notice was found. NEEDS REVIEW.
-- Salesforce calls v5 the preferred version and builds new features only there.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Account Engagement API: Version 3 and 4 overview](https://developer.salesforce.com/docs/marketing/pardot/guide/version-3-4-overview.html) (blocks automated requests)
+
+Salesforce has not announced an end-of-life date for v3 or v4. It calls v5 the preferred version and builds new features only there.
 
 ### Latest Available Version
 
-- **v5** (`https://pi.pardot.com/api/v5/objects/prospects`, with `/do/upsertLatestByEmail`). Moving to v5 changes request format (JSON instead of form), endpoints and error format.
-- Note: the code always uses the production host `pi.pardot.com`. Developer and sandbox business units need `pi.demo.pardot.com`, so they are not supported.
+- **Version:** `v5`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Salesforce Developers blog: Pardot API v5, why you should upgrade](https://developer.salesforce.com/blogs/2023/01/account-engagement-pardot-api-v5-why-you-should-upgrade) (blocks automated requests)
+
+v5 uses `https://pi.pardot.com/api/v5/objects/prospects` with `/do/upsertLatestByEmail`. Moving to v5 changes request format (JSON instead of form), endpoints and error format.
+
+Note: the code always uses the production host `pi.pardot.com`. Developer and sandbox business units need `pi.demo.pardot.com`, so they are not supported.
 
 ## RETL Functionality
 
@@ -135,22 +146,26 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ## Documentation Links
 
-- [Account Engagement API: Get started (rate limits)](https://developer.salesforce.com/docs/marketing/pardot/guide/overview.html)
-- [Account Engagement API: Authentication](https://developer.salesforce.com/docs/marketing/pardot/guide/authentication.html)
-- [Account Engagement API: Version 3 and 4 overview](https://developer.salesforce.com/docs/marketing/pardot/guide/version-3-4-overview.html)
-- [Account Engagement API: Error codes](https://developer.salesforce.com/docs/marketing/pardot/guide/error-codes.html)
-- [Salesforce Developers blog: Pardot API v5, why you should upgrade](https://developer.salesforce.com/blogs/2023/01/account-engagement-pardot-api-v5-why-you-should-upgrade)
+- [Account Engagement API: Get started (rate limits)](https://developer.salesforce.com/docs/marketing/pardot/guide/overview.html) (blocks automated requests)
+- [Account Engagement API: Authentication](https://developer.salesforce.com/docs/marketing/pardot/guide/authentication.html) (blocks automated requests)
+- [Account Engagement API: Version 3 and 4 overview](https://developer.salesforce.com/docs/marketing/pardot/guide/version-3-4-overview.html) (blocks automated requests)
+- [Account Engagement API v4: Prospect object (upsert)](https://developer.salesforce.com/docs/marketing/pardot/guide/prospects-v4.html) (blocks automated requests)
+- [Account Engagement API: Error codes](https://developer.salesforce.com/docs/marketing/pardot/guide/error-codes.html) (blocks automated requests)
+- [Salesforce Developers blog: Pardot API v5, why you should upgrade](https://developer.salesforce.com/blogs/2023/01/account-engagement-pardot-api-v5-why-you-should-upgrade) (blocks automated requests)
 - [RudderStack docs: Pardot destination](https://www.rudderstack.com/docs/destinations/streaming-destinations/pardot/)
 
 The developer.salesforce.com and admin.salesforce.com pages return 403 to automated `curl`; they are indexed by search engines and load in a browser.
 
 ### Changelog References
 
-- Salesforce release notes (Account Engagement section; API changes are listed under "Account Engagement" for each release): [https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm](https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm)
-- API versions page (v3/v4 vs v5): [https://developer.salesforce.com/docs/marketing/pardot/guide/version-3-4-overview.html](https://developer.salesforce.com/docs/marketing/pardot/guide/version-3-4-overview.html)
-- Connected app usage restrictions (auth change): [https://admin.salesforce.com/blog/2025/get-ready-for-changes-to-connected-app-usage-restrictions](https://admin.salesforce.com/blog/2025/get-ready-for-changes-to-connected-app-usage-restrictions)
-- RudderStack note on Salesforce External Client Apps: [https://www.rudderstack.com/docs/releases/salesforce-eca/](https://www.rudderstack.com/docs/releases/salesforce-eca/)
-- NEEDS REVIEW: no Account Engagement API-specific changelog page or RSS/Atom feed was found.
+- **Changelog:** [Salesforce release notes (Account Engagement section)](https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm)
+- **Deprecations:** None found
+- **Versions:** [Account Engagement API: Version 3 and 4 overview](https://developer.salesforce.com/docs/marketing/pardot/guide/version-3-4-overview.html) (blocks automated requests)
+- **Feed:** [Salesforce Developers blog feed](https://developer.salesforce.com/blogs/feed) (blocks automated requests)
+- **Announcements:** [Connected app usage restrictions](https://admin.salesforce.com/blog/2025/get-ready-for-changes-to-connected-app-usage-restrictions) (blocks automated requests); [RudderStack note on Salesforce External Client Apps](https://www.rudderstack.com/docs/releases/salesforce-eca/)
+- **Last checked:** 2026-11-16
+
+No Account Engagement API-specific changelog or deprecations page exists; API changes appear under "Account Engagement" in each Salesforce release.
 
 ## FAQ
 

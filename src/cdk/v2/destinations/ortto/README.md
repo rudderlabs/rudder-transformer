@@ -114,19 +114,27 @@ No. One event produces one request.
 
 ### Current Version
 
-Ortto API **v1** (`/v1/person/merge`, `/v1/activities/create` in `config.js`).
+- **Version:** `v1`
+- **Where in code:** `config.js` (`IDENTIFY_ENDPOINT` for `/v1/person/merge`, `TRACK_ENDPOINT` for `/v1/activities/create`)
 
 ### Version Deprecation
 
-No deprecation of v1 or of these endpoints has been announced.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Ortto developer guide](https://help.ortto.com/a-223-developer-guide)
 
 ### Latest Available Version
+
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Ortto API reference](https://help.ortto.com/a-250-api-reference)
 
 v1 is the only published Ortto API version.
 
 ## Documentation Links
 
-- [Ortto developer guide](https://help.ortto.com/a-223-developer-guide)
+- [Ortto developer guide (API keys, regional hosts)](https://help.ortto.com/a-223-developer-guide)
 - [Ortto API reference](https://help.ortto.com/a-250-api-reference)
 - [Ortto: Person merge](https://help.ortto.com/developer/latest/api-reference/person/merge.html)
 - [Ortto: Create custom activity events](https://help.ortto.com/a-271-create-a-custom-activity-event-create)
@@ -134,9 +142,14 @@ v1 is the only published Ortto API version.
 
 ### Changelog References
 
-- [Ortto changelog](https://roadmap.ortto.com/changelog) (product-wide; API changes appear here when announced)
-- [Ortto product updates](https://ortto.com/product-updates/)
-- Ortto has no API-specific changelog, deprecation page or RSS feed that we could find. **NEEDS REVIEW**
+- **Changelog:** [Ortto changelog](https://roadmap.ortto.com/changelog); [Ortto product updates](https://ortto.com/product-updates/)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Ortto changelog RSS](https://roadmap.ortto.com/api/changelog/feed.rss)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The Ortto changelog is product-wide. API changes appear there when announced.
 
 ## RETL Functionality
 

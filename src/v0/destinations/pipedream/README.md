@@ -90,15 +90,25 @@ Depends on the customer's workflow. Pipedream runs workflow executions concurren
 
 ### Current Version
 
-Not applicable. Pipedream HTTP triggers are customer-specific URLs with no API version.
+- **Version:** `Unversioned`
+- **Where in code:** `src/v0/destinations/webhook/transform.js` (`processEvent`, `destination.Config.pipedreamUrl`), called from `src/v0/destinations/pipedream/transform.js`
+
+Pipedream HTTP triggers are customer-specific URLs with no API version.
 
 ### Version Deprecation
 
-Not applicable. No deprecation of HTTP triggers announced.
+- **Status:** Deprecated
+- **Sunset date:** 2027-03-31
+- **Source:** [Workflows and String are shutting down on March 31, 2027](https://pipedream.com/docs/workflows)
+
+Pipedream Workflows (which own the HTTP triggers this destination posts to) is in maintenance mode: sign-ups and new subscriptions are closed, existing workflows run until 2027-03-31, and all Workflows data is deleted by 2027-04-30. Pipedream Connect is not affected. After the shutdown, events sent to workflow HTTP trigger URLs are expected to fail. NEEDS REVIEW: confirm what the trigger URLs return after 2027-03-31 and plan the destination's deprecation.
 
 ### Latest Available Version
 
-Not applicable.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Pipedream triggers (HTTP)](https://pipedream.com/docs/workflows/building-workflows/triggers)
 
 ## Documentation Links
 
@@ -107,10 +117,12 @@ Not applicable.
 
 ### Changelog References
 
-- [Pipedream docs changelog](https://pipedream.com/docs/changelog)
-- [Pipedream docs changelog RSS](https://pipedream.com/docs/changelog/rss.xml)
-- [Pipedream product changelog](https://pipedream.com/changelog)
-- [Pipedream product changelog RSS](https://pipedream.com/changelog/rss.xml)
+- **Changelog:** [Pipedream changelog](https://pipedream.com/docs/changelog)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** [Pipedream changelog RSS](https://pipedream.com/docs/changelog/rss.xml)
+- **Announcements:** [Workflows and String are shutting down on March 31, 2027](https://pipedream.com/docs/workflows)
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

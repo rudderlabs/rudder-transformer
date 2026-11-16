@@ -102,28 +102,49 @@ No. One event produces one request (products become extra `bd[n]` query paramete
 
 ### Current Version
 
-Awin S2S tracking, `tv=2` (`https://www.awin1.com/sread.php?tt=ss&tv=2...`, `config.js` and `utils.js`).
+- **Version:** `tv=2`
+- **Where in code:** `config.js` (`BASE_URL`), `utils.js` (`params.tv`)
+
+Awin S2S tracking: `https://www.awin1.com/sread.php?tt=ss&tv=2...`.
 
 ### Version Deprecation
 
-No deprecation announced for `sread.php` S2S or `tv=2`.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Awin: Direct S2S tracking](https://help.awin.com/developers/docs/direct-s2s)
 
 ### Latest Available Version
 
-The newer option is the **Awin Conversion API** (authenticated, batch). Moving to it would require OAuth2 credentials and a new request format.
+- **Version:** `tv=2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Awin: Direct S2S tracking](https://help.awin.com/developers/docs/direct-s2s)
+
+Awin recommends its authenticated, batch **Conversion API** over direct S2S ([Direct S2S tracking](https://help.awin.com/developers/docs/direct-s2s), updated 2026-04-08). Moving to it would require an API token and a new request format.
 
 ## Documentation Links
 
 - [Awin: Direct S2S tracking](https://help.awin.com/developers/docs/direct-s2s)
 - [Awin: Server-to-server tracking](https://help.awin.com/docs/server-to-server-tracking)
 - [Awin: Conversion API](https://help.awin.com/apidocs/conversion-api)
+- [Awin: S2S via Conversion API](https://help.awin.com/developers/docs/s2s-via-conversion-api)
+- [Awin: API authentication](https://help.awin.com/apidocs/api-authentication)
 - [Awin: Product Level Tracking](https://help.awin.com/developers/docs/product-level-tracking-2)
 - [Awin: Commission groups](https://help.awin.com/developers/docs/commission-groups)
 - [Awin: APIs overview](https://help.awin.com/docs/awins-apis-overview)
 
+`sread.php` takes no auth; the API authentication page applies only to the Conversion API.
+
 ### Changelog References
 
-- Awin publishes no developer changelog, deprecations page or RSS feed that we could find. Individual help pages show an update date. **NEEDS REVIEW**
+- **Changelog:** [Awin release notes](https://help.awin.com/docs/release-notes)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Awin publishes no developer changelog; the release notes cover the Awin platform. Individual help pages show an update date.
 
 ## RETL Functionality
 

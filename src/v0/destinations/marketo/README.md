@@ -140,20 +140,32 @@ No. One output request per input event. Intermediate lookup/create calls are not
 
 ### Current Version
 
-Marketo Engage REST API **v1** (`/rest/v1/...`) plus the identity service `/identity/oauth/token`. Endpoints are built inline in `transform.js` and `util.js`; there is no version constant.
+- **Version:** `v1`
+- **Where in code:** `transform.js` (inline `https://${accountId}.mktorest.com/rest/v1/...` URLs); `util.js` (`getAuthToken`, `/identity/oauth/token`)
+
+Marketo Engage REST API v1 (`/rest/v1/...`) plus the identity service `/identity/oauth/token`. There is no version constant.
 
 ### Version Deprecation
 
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [REST API overview](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/rest-api)
+
 Adobe has not announced a sunset for REST API v1. Deprecations that matter for this integration:
 
-- `access_token` query parameter: removed August 31, 2026. Code is compliant (header only). See [Authentication](#authentication).
-- SOAP API: end of life July 31, 2026 (not used).
-- From September 30, 2026, Get Lead Activities / Get Lead Changes with `listId` on lists of 10,000+ leads fail with `1003` (not used by this code).
-- From July 31, 2026, Merge Leads with more than 25 IDs fails with `1080` (not used).
+- `access_token` query parameter: removed 2026-08-31. Code is compliant (header only). See [Authentication](#authentication).
+- SOAP API: end of life 2026-07-31 (not used).
+- From 2026-09-30, Get Lead Activities / Get Lead Changes with `listId` on lists of 10,000+ leads fail with `1003` (not used by this code).
+- From 2026-07-31, Merge Leads with more than 25 IDs fails with `1080` (not used).
 
 ### Latest Available Version
 
-v1 is the only REST API version. NEEDS REVIEW: Adobe offers an Adobe IMS bearer token only for its hosted Marketo MCP server (beta); no announcement extends IMS auth to the REST API.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [REST API overview](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/rest-api)
+
+v1 is the only REST API version. Adobe offers an Adobe IMS bearer token only for its hosted Marketo MCP server (beta); no announcement extends IMS auth to the REST API.
 
 ## Documentation Links
 
@@ -168,14 +180,14 @@ v1 is the only REST API version. NEEDS REVIEW: Adobe offers an Adobe IMS bearer 
 
 ### Changelog References
 
-- Release notes (current month): https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/current
-- Release notes, August 2026 (`access_token` removal after August 31, 2026): https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/previous-releases/2026/release-notes-aug-26
-- Release notes, May 2026 (SOAP end July 31, 2026; `access_token` August 31, 2026): https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/previous-releases/2026/release-notes-may-26
-- Release notes, October 2025 (earlier March 31, 2026 date): https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/previous-releases/2025/release-notes-oct-25
-- Deprecation announcement (Adobe community, Sep 16, 2025): https://experienceleaguecommunities.adobe.com/adobe-marketo-engage-27/updates-to-deprecation-of-soap-api-and-access-token-in-query-parameter-for-rest-api-147711
-- Original deprecation announcement: https://experienceleaguecommunities.adobe.com/adobe-marketo-engage-27/deprecation-of-soap-api-and-access-token-in-query-parameter-for-rest-api-37
-- "Bearer Tokens Now Required" (Adobe community, Apr 21, 2025): https://experienceleaguecommunities.adobe.com/adobe-marketo-engage-27/marketo-engage-rest-api-bearer-tokens-now-required-160950
-- NEEDS REVIEW: Adobe publishes no developer changelog page or RSS/Atom feed for the Marketo REST API; monthly release notes and the authentication page carry deprecation notices. Release-note URLs follow `previous-releases/{year}/release-notes-{mon}-{yy}` but not every month exists (July 2026 returns 404).
+- **Changelog:** [Marketo Engage release notes (current)](https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/current)
+- **Deprecations:** [Authentication: `access_token` query parameter removed 2026-08-31](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/authentication)
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Updates to deprecation of SOAP API and `access_token` query parameter (2025-09-16)](https://experienceleaguecommunities.adobe.com/adobe-marketo-engage-27/updates-to-deprecation-of-soap-api-and-access-token-in-query-parameter-for-rest-api-147711); [Original SOAP API and `access_token` deprecation announcement](https://experienceleaguecommunities.adobe.com/adobe-marketo-engage-27/deprecation-of-soap-api-and-access-token-in-query-parameter-for-rest-api-37); [Bearer tokens now required (2025-04-21)](https://experienceleaguecommunities.adobe.com/adobe-marketo-engage-27/marketo-engage-rest-api-bearer-tokens-now-required-160950); [Release notes, May 2026 (SOAP end 2026-07-31, `access_token` 2026-08-31)](https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/previous-releases/2026/release-notes-may-26); [Release notes, August 2026](https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/previous-releases/2026/release-notes-aug-26); [Release notes, September 2026 (`listId` `1003` from 2026-09-30)](https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/previous-releases/2026/release-notes-sep-26); [Release notes, October 2025 (earlier 2026-03-31 date)](https://experienceleague.adobe.com/en/docs/marketo/using/release-notes/previous-releases/2025/release-notes-oct-25)
+- **Last checked:** 2026-11-16
+
+Adobe publishes no developer changelog page or RSS/Atom feed for the Marketo REST API. Monthly release notes and the authentication page carry deprecation notices. Release-note URLs follow `previous-releases/{year}/release-notes-{mon}-{yy}`, but not every month exists (July 2026 returns 404). v1 is the only REST API version, so there is no versions page.
 
 ## RETL
 

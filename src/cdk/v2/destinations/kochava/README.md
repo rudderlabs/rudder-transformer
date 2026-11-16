@@ -84,15 +84,23 @@ No.
 
 ### Current Version
 
-Kochava S2S post-install event API: `POST https://control.kochava.com/track/json`. The endpoint is unversioned.
+- **Version:** `Unversioned`
+- **Where in code:** `procWorkflow.yaml` (`response.endpoint`, `https://control.kochava.com/track/json`)
 
 ### Version Deprecation
 
-None announced. Kochava's docs still show this endpoint (over `http://`; the code uses `https://`).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Post-Install Event Setup](https://support.kochava.com/server-to-server-integration/post-install-event-setup/)
+
+Kochava's docs still show this endpoint over `http://`; the code uses `https://`.
 
 ### Latest Available Version
 
-Same endpoint. No newer version found.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Post-Install Event Setup](https://support.kochava.com/server-to-server-integration/post-install-event-setup/)
 
 ## Documentation Links
 
@@ -101,7 +109,14 @@ Same endpoint. No newer version found.
 
 ### Changelog References
 
-- NEEDS REVIEW: Kochava publishes no public changelog, release notes, deprecations page or feed for the S2S API (`https://support.kochava.com/release-notes/` returns 404). Watch the support site: https://support.kochava.com/
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Kochava publishes no public changelog, release notes, deprecations page or feed for the S2S API. `https://support.kochava.com/release-notes/` returns 404 and `https://support.kochava.com/feed/` has no items. Watch the [support site](https://support.kochava.com/).
 
 ## RETL
 

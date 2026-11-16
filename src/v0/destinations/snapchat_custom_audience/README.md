@@ -114,15 +114,25 @@ Yes. An event with both `add` and `remove` produces at least two requests (POST 
 
 ### Current Version
 
-Snap Marketing API **v1** (`https://adsapi.snapchat.com/v1`, `config.js`).
+- **Version:** `v1`
+- **Where in code:** `config.js` (`BASE_URL` = `https://adsapi.snapchat.com/v1`)
 
 ### Version Deprecation
+
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Breaking changes log](https://developers.snap.com/marketing-api/Ads-API/breaking-changes-log)
 
 No deprecation of v1 or of the segment users endpoints has been announced. Snap's policy: deprecation date is 90 days after the announcement, with end of life two weeks after sunset ([breaking changes log](https://developers.snap.com/marketing-api/Ads-API/breaking-changes-log)). Snap's docs mark the `id` field in the add-users body as legacy ("should be skipped for new implementations"); this code only sends `id` for removals, where Snap still lists it as required.
 
 ### Latest Available Version
 
-v1 is the latest Ads API version. (Snap's Conversions API is separately versioned, v3, and not used here.)
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Snap Marketing API changelog](https://developers.snap.com/marketing-api/Ads-API/changelog)
+
+v1 is the only Ads API version. Snap's Conversions API is separately versioned (v3) and not used here.
 
 ## Documentation Links
 
@@ -132,11 +142,14 @@ v1 is the latest Ads API version. (Snap's Conversions API is separately versione
 
 ### Changelog References
 
-- [Snap Marketing API changelog](https://developers.snap.com/marketing-api/Ads-API/changelog)
-- [Snap Marketing API announcements](https://developers.snap.com/marketing-api/Ads-API/announcements)
-- [Snap Marketing API breaking changes log](https://developers.snap.com/marketing-api/Ads-API/breaking-changes-log) (deprecation policy; entries not updated since 2020)
-- [Snap Marketing API newsletter](https://developers.snap.com/marketing-api/Ads-API/newsletter)
-- No RSS feed found.
+- **Changelog:** [Snap Marketing API changelog](https://developers.snap.com/marketing-api/Ads-API/changelog)
+- **Deprecations:** [Breaking changes log](https://developers.snap.com/marketing-api/Ads-API/breaking-changes-log) (deprecation policy; entries not updated since 2020); [Marketing API announcements](https://developers.snap.com/marketing-api/Ads-API/announcements)
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Access token expiry set to 3600 seconds (changelog entry 2024-09-18)](https://developers.snap.com/marketing-api/Ads-API/changelog)
+- **Last checked:** 2026-11-16
+
+Snap also publishes a [Marketing API newsletter](https://developers.snap.com/marketing-api/Ads-API/newsletter).
 
 ## RETL Functionality
 

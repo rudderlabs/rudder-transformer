@@ -1,4 +1,23 @@
+import type MockAxiosAdapter from 'axios-mock-adapter';
 import { authHeader1, secret1, secret2 } from '../maskedSecrets';
+
+const lookupFailureInput = {
+  message: {
+    type: 'identify',
+    userId: 'lookup-failure-user',
+    context: { traits: { email: 'lookup-failure@rudderlabs.com' } },
+  },
+  destination: {
+    DestinationDefinition: { Name: 'GLADLY', Config: {} },
+    Config: {
+      apiToken: secret2,
+      userName: secret1,
+      domain: 'rudderlabs.us-uat.gladly.qa',
+    },
+  },
+  metadata: { jobId: 4, userId: 'u1' },
+};
+
 export const data = [
   {
     name: 'gladly',
@@ -438,6 +457,101 @@ export const data = [
               },
               metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'gladly',
+    description: 'EPIPE during customer lookup retries without creating or updating a customer',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: { input: [lookupFailureInput], destType: 'gladly' },
+        method: 'POST',
+      },
+    },
+    mockFns: (mockAdapter: MockAxiosAdapter) => {
+      mockAdapter
+        .onGet(
+          'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles?email=lookup-failure%40rudderlabs.com',
+        )
+        .replyOnce(() =>
+          Promise.reject(Object.assign(new Error('broken pipe'), { code: 'EPIPE' })),
+        );
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: lookupFailureInput.destination,
+              error:
+                '{"message":"Customer lookup failed: \\"[EPIPE] :: Broken pipe\\"","destinationResponse":"[EPIPE] :: Broken pipe"}',
+              metadata: [lookupFailureInput.metadata],
+              statTags: {
+                destType: 'GLADLY',
+                errorCategory: 'network',
+                errorType: 'retryable',
+                feature: 'router',
+                implementation: 'cdkV2',
+                module: 'destination',
+              },
+              statusCode: 500,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'gladly',
+    description:
+      'ECONNRESET during customer lookup retries without creating or updating a customer',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: { input: [lookupFailureInput], destType: 'gladly' },
+        method: 'POST',
+      },
+    },
+    mockFns: (mockAdapter: MockAxiosAdapter) => {
+      mockAdapter
+        .onGet(
+          'https://rudderlabs.us-uat.gladly.qa/api/v1/customer-profiles?email=lookup-failure%40rudderlabs.com',
+        )
+        .replyOnce(() =>
+          Promise.reject(Object.assign(new Error('connection reset'), { code: 'ECONNRESET' })),
+        );
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: lookupFailureInput.destination,
+              error:
+                '{"message":"Customer lookup failed: \\"[ECONNRESET] :: Connection reset by peer\\"","destinationResponse":"[ECONNRESET] :: Connection reset by peer"}',
+              metadata: [lookupFailureInput.metadata],
+              statTags: {
+                destType: 'GLADLY',
+                errorCategory: 'network',
+                errorType: 'retryable',
+                feature: 'router',
+                implementation: 'cdkV2',
+                module: 'destination',
+              },
+              statusCode: 500,
             },
           ],
         },

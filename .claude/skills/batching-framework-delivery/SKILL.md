@@ -139,6 +139,12 @@ turn a genuine shape change into a silent fallback instead of a visible failure.
 
 If a shape is real, mock it. If you cannot produce a mock for it, delete the branch.
 
+**A transport failure is one shape every destination gets.** With no HTTP response, the status
+comes from `nodeSysErrorToStatus` (500, or 400 for permanent and unknown codes) and the response is
+a string such as `"[ENOTFOUND] :: DNS lookup failed"`. A `'4xx'` override that reads per-item
+results (`failed_records`, `errors[]`) must not treat their absence as success; leave a string
+response to the fallback.
+
 **An empty body is a shape too.** Auth failures often come back with no body. In that case
 `no error detail returned` tells the reader nothing, but the status does. Map the statuses this
 API actually sends with an empty body to what they mean for this destination's credentials, for

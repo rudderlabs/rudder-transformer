@@ -2,6 +2,8 @@ import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
+import axios from 'axios';
+import MockAxiosAdapter from 'axios-mock-adapter';
 import { applicationRoutes } from '../../routes';
 import { NativeIntegrationDestinationService } from '../../services/destination/nativeIntegration';
 import { ServiceSelector } from '../../helpers/serviceSelector';
@@ -150,6 +152,43 @@ describe('Delivery controller tests', () => {
   });
 
   describe('Delivery V1 tests', () => {
+    test('retries an EPIPE from the HTTP client for every job', async () => {
+      mockedFrameworkProxyRequest.mockImplementation(
+        jest.requireActual('../../adapters/network').proxyRequest,
+      );
+      const mockAdapter = new MockAxiosAdapter(axios, { onNoMatch: 'throwException' });
+      mockAdapter
+        .onPost('https://example.com/events')
+        .replyOnce(() =>
+          Promise.reject(Object.assign(new Error('broken pipe'), { code: 'EPIPE' })),
+        );
+      try {
+        const metadata = [
+          { jobId: 1, destinationId: 'dest-1', workspaceId: 'ws-1' },
+          { jobId: 2, destinationId: 'dest-1', workspaceId: 'ws-1' },
+        ];
+        const response = await request(server)
+          .post('/v1/destinations/rudder_test/proxy')
+          .send({
+            body: { JSON: { event: 'test' } },
+            metadata,
+            destinationConfig: {},
+            endpoint: 'https://example.com/events',
+            method: 'POST',
+          });
+
+        expect(response.status).toBe(200);
+        expect(response.body.output).toMatchObject({
+          status: 500,
+          response: metadata.map((job) => ({ statusCode: 500, metadata: job })),
+        });
+        expect(mockAdapter.history.post).toHaveLength(1);
+      } finally {
+        mockAdapter.restore();
+        mockedFrameworkProxyRequest.mockReset();
+      }
+    });
+
     test('successful delivery', async () => {
       const testOutput = { status: 200, message: 'success' };
       const mockDestinationService = new NativeIntegrationDestinationService();

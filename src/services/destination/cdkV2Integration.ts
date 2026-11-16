@@ -22,7 +22,6 @@ import stats from '../../util/stats';
 import { groupRouterTransformEvents } from '../../v0/util';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
-import { validateDeliveryRequestBody } from './validateDeliveryRequestBody';
 
 export class CDKV2DestinationService implements DestinationService {
   public init() {}
@@ -77,7 +76,6 @@ export class CDKV2DestinationService implements DestinationService {
             tags.FEATURES.PROCESSOR,
             requestMetadata,
           );
-          validateDeliveryRequestBody(transformedPayloads);
           stats.increment('event_transform_success', {
             destType: destinationType,
             module: tags.MODULES.DESTINATION,

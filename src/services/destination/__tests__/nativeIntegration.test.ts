@@ -113,9 +113,10 @@ describe('NativeIntegration Service', () => {
     expect(resp).toEqual(expected);
   });
 
-  test('processor rejects all outputs for a conflicting event, preserving its sibling', async () => {
+  test('processor post-transform guard rejects a conflicting event, preserving its sibling', async () => {
     const report = jest.spyOn(ErrorReportingService, 'reportError');
     const increment = jest.spyOn(stats, 'increment').mockImplementation(jest.fn());
+    const processMetadata = jest.fn(({ metadata }) => metadata);
     const events = [1, 2].map(
       (jobId) =>
         ({
@@ -134,6 +135,7 @@ describe('NativeIntegration Service', () => {
     jest.spyOn(FetchHandler, 'getDestHandler').mockReturnValue({
       process: (event: ProcessorTransformationRequest) =>
         event.metadata.jobId === 1 ? good : [good, bad],
+      processMetadata,
     } as any);
 
     const result = await new NativeIntegrationDestinationService().doProcessorTransformation(
@@ -160,6 +162,7 @@ describe('NativeIntegration Service', () => {
         },
       },
     ]);
+    expect(processMetadata).toHaveBeenCalledTimes(1);
     expect(report).toHaveBeenCalledTimes(1);
     expect(increment).not.toHaveBeenCalled();
   });

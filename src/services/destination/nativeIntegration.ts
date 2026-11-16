@@ -113,7 +113,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
           const transformedPayloads:
             | ProcessorTransformationOutput
             | ProcessorTransformationOutput[] = await destHandler.process(event, requestMetadata);
-          validateDeliveryRequestBody(transformedPayloads);
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,

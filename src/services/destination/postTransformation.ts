@@ -33,6 +33,7 @@ export class DestinationPostTransformationService {
     transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[],
     destHandler: any,
   ): ProcessorTransformationResponse[] {
+    validateDeliveryRequestBody(transformedPayloads);
     if (!Array.isArray(transformedPayloads)) {
       transformedPayloads = [transformedPayloads];
     }

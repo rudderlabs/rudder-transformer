@@ -13,6 +13,8 @@ const {
 const tags = require('../../v0/util/tags');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
+// Status for a request with no HTTP response: 500 retries, 400 aborts.
+// Shared by every lookup and delivery handler: grep for callers that branch on a status before changing one.
 const nodeSysErrorToStatus = (code) => {
   const sysErrorToStatusMap = {
     EACCES: {
@@ -22,6 +24,10 @@ const nodeSysErrorToStatus = (code) => {
     EADDRINUSE: {
       status: 400,
       message: '[EADDRINUSE] :: Address already in use',
+    },
+    EADDRNOTAVAIL: {
+      status: 500,
+      message: '[EADDRNOTAVAIL] :: Address not available',
     },
     ECONNREFUSED: {
       status: 500,
@@ -40,8 +46,12 @@ const nodeSysErrorToStatus = (code) => {
       message: '[EEXIST] :: Is a directory',
     },
     EMFILE: {
-      status: 400,
+      status: 500,
       message: '[EMFILE] :: Too many open files in system',
+    },
+    ENFILE: {
+      status: 500,
+      message: '[ENFILE] :: File table overflow',
     },
     ENOENT: {
       status: 400,
@@ -59,12 +69,20 @@ const nodeSysErrorToStatus = (code) => {
       status: 400,
       message: '[ENOTFOUND] :: DNS lookup failed',
     },
+    EHOSTUNREACH: {
+      status: 500,
+      message: '[EHOSTUNREACH] :: Host is unreachable',
+    },
+    ENETUNREACH: {
+      status: 500,
+      message: '[ENETUNREACH] :: Network is unreachable',
+    },
     EPERM: {
       status: 400,
       message: '[EPERM] :: Operation not permitted',
     },
     EPIPE: {
-      status: 400,
+      status: 500,
       message: '[EPIPE] :: Broken pipe',
     },
     ETIMEDOUT: {

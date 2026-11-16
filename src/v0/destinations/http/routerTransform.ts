@@ -12,11 +12,24 @@ import type {
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import { isObject, removeUndefinedAndNullValues, removeUndefinedValues } from '../../util';
 import { chunkPayloads } from '../../../services/destination/destinationIntegration/chunkPayloads';
+import type { PayloadChunk } from '../../../services/destination/destinationIntegration/chunkPayloads';
+import { groupPayloadsByCompositeKey } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { sandboxedEvaluateHttpBody, sandboxedEvaluateRequestFields } from './templateSandboxClient';
-import type { EvaluatedRequestFields, RequestFieldResult } from './httpTemplateSandbox';
+import type {
+  EvaluatedRequestFields,
+  HttpBodyJob,
+  HttpBodyResult,
+  RequestFieldResult,
+} from './httpTemplateSandbox';
 import { DEFAULT_METHOD, HttpInputSchema, MAX_BATCH_SIZE } from './types';
 import type { HttpBody, HttpDestinationConfig, HttpInput } from './types';
-import { makeAuthHeaders, makeEndpoint, toExpressions } from './utils';
+import {
+  effectiveConfig,
+  makeAuthHeaders,
+  makeEndpoint,
+  resolveOverrideGroup,
+  toExpressions,
+} from './utils';
 // shortcut: move these shared serializers into src/v0/destinations/http/ when v1 retires.
 import { metadataHeaders, prepareBody, sanitizeKey } from '../../../cdk/v2/destinations/http/utils';
 
@@ -25,39 +38,95 @@ const NO_FIELDS: RequestFieldResult = {
   fields: { headers: {}, params: {}, pathParams: [] },
 };
 
+const groupKey = (index?: number): string =>
+  index === undefined ? 'default' : `override:${index}`;
+
+const groupIndexFromKey = (key: string | undefined): number | undefined =>
+  key?.startsWith('override:') ? Number(key.slice('override:'.length)) : undefined;
+
+type HttpPayload = TransformResult<HttpBody>['successPayloads'][number];
+
+const chunkKey = (jobIds: Set<number>): string => [...jobIds].join(',');
+
 class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputSchema> {
-  // Request fields are evaluated for the whole batch in one isolate call; transformEvent reads them.
+  // Request fields are evaluated in one isolate call per transformEvents; transformEvent reads them.
   private fieldResults = new Map<HttpInput, RequestFieldResult>();
+
+  // Request groups from every transformEvents call, so the first batch call can evaluate every
+  // body in one isolate call. Results are keyed by chunk job IDs, which identify a chunk exactly.
+  private pendingGroups: HttpPayload[][] = [];
+
+  private bodyResults = new Map<string, HttpBodyResult>();
+
+  private overrideAt(index?: number) {
+    return index === undefined
+      ? undefined
+      : this.destination.Config.eventOverrides?.[index as number];
+  }
 
   async transformEvents(
     inputs: HttpInput[],
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<HttpBody>> {
-    const expressions = toExpressions(this.destination.Config);
-    const { headers, queryParams, pathParams } = expressions;
-    // Skip the isolate round-trip (and copying every message into it) when nothing is mapped.
-    if (headers.length + queryParams.length + pathParams.length > 0) {
-      const results = await sandboxedEvaluateRequestFields(
-        expressions,
-        inputs.map(({ message }) => message),
-        this.destination.WorkspaceID,
-      );
-      inputs.forEach((input, i) => this.fieldResults.set(input, results[i]));
+    const { WorkspaceID: workspaceId, Config } = this.destination;
+    const partitions = new Map<number | undefined, HttpInput[]>();
+    for (const input of inputs) {
+      const index = resolveOverrideGroup(input.message, Config.eventOverrides);
+      const partition = partitions.get(index) ?? [];
+      partition.push(input);
+      partitions.set(index, partition);
     }
-    return super.transformEvents(inputs, reqMetadata);
+    const jobs = [...partitions]
+      .map(([index, partition]) => ({
+        partition,
+        expressions: toExpressions(effectiveConfig(Config, this.overrideAt(index))),
+      }))
+      // Skip partitions with nothing mapped, and the isolate round-trip when none remain.
+      .filter(
+        ({ expressions: { headers, queryParams, pathParams } }) =>
+          headers.length + queryParams.length + pathParams.length > 0,
+      );
+    if (jobs.length > 0) {
+      const results = await sandboxedEvaluateRequestFields(
+        jobs.map(({ expressions, partition }) => [
+          expressions,
+          partition.map(({ message }) => message),
+        ]),
+        workspaceId,
+      );
+      jobs.forEach(({ partition }, j) =>
+        partition.forEach((input, i) => this.fieldResults.set(input, results[j][i])),
+      );
+    }
+    const result = await super.transformEvents(inputs, reqMetadata);
+    // Group exactly as the framework will: one call's payloads together (dontBatch calls hold one).
+    this.pendingGroups.push(
+      ...groupPayloadsByCompositeKey(result.successPayloads).map(({ payloads }) => payloads),
+    );
+    return result;
   }
 
   transformEvent(input: HttpInput): TransformedEvent<HttpBody> {
+    const index = resolveOverrideGroup(input.message, this.destination.Config.eventOverrides);
+    const group = this.overrideAt(index);
     const result = this.fieldResults.get(input) ?? NO_FIELDS;
     if (!result.ok)
-      throw new ConfigurationError(`Request field evaluation failed: ${result.error}`);
-    return this.makeEvent(input.message, result.fields, this.destination.Config);
+      throw new ConfigurationError(
+        `${group?.name ? `Event override "${group.name}": ` : ''}Request field evaluation failed: ${result.error}`,
+      );
+    return this.makeEvent(
+      input.message,
+      result.fields,
+      effectiveConfig(this.destination.Config, group),
+      index,
+    );
   }
 
   private makeEvent(
     message: Record<string, unknown>,
     fields: EvaluatedRequestFields,
     config: HttpDestinationConfig,
+    groupIndex?: number,
   ): TransformedEvent<HttpBody> {
     // Like v1, a mapped header whose source is missing is dropped rather than failing the event.
     const mapped = removeUndefinedAndNullValues(fields.headers);
@@ -69,6 +138,8 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
       body: message,
       endpoint: makeEndpoint(config.apiUrl, fields.pathParams),
       endpointPath: '/http',
+      // Group separation is required even at the same URL: body templates and batch sizes can differ.
+      internalGroupKey: groupKey(groupIndex),
       method: config.method ?? DEFAULT_METHOD,
       headers: {
         ...makeAuthHeaders(config),
@@ -79,28 +150,71 @@ class HttpIntegration extends DestinationIntegration<HttpBody, typeof HttpInputS
     };
   }
 
+  private chunkGroup(payloads: HttpPayload[]) {
+    const { Config } = this.destination;
+    const { requestBodyTemplate, maxBatchSize } = effectiveConfig(
+      Config,
+      this.overrideAt(groupIndexFromKey(payloads[0].internalGroupKey)),
+    );
+    // Raw config: the control plane sends maxBatchSize as a string.
+    // FORM is always single-event, even when a stale config supplies maxBatchSize.
+    const chunks = chunkPayloads(payloads, {
+      maxItems: Config.format === BodyFormat.FORM ? 1 : Number(maxBatchSize ?? MAX_BATCH_SIZE),
+      wrapBody: () => ({}),
+    });
+    return { template: requestBodyTemplate, chunks };
+  }
+
+  // Evaluates every chunk of these groups that has no result yet, in as few isolate calls as fit.
+  private async evaluateBodies(groups: HttpPayload[][]): Promise<void> {
+    // Each call holds at most MAX_BATCH_SIZE bodies, the most one group could send before calls
+    // were shared, so the isolate's time and memory limits never cover more than that.
+    const calls: { template: string; chunks: PayloadChunk<HttpBody>[] }[][] = [];
+    let size = Infinity;
+    for (const payloads of groups) {
+      const { template, chunks } = this.chunkGroup(payloads);
+      let job: (typeof calls)[number][number] | undefined;
+      for (const chunk of chunks.filter(({ jobIds }) => !this.bodyResults.has(chunkKey(jobIds)))) {
+        if (size + chunk.bodies.length > MAX_BATCH_SIZE) {
+          calls.push([]);
+          size = 0;
+          job = undefined;
+        }
+        if (!job) {
+          job = { template, chunks: [] };
+          calls[calls.length - 1].push(job);
+        }
+        job.chunks.push(chunk);
+        size += chunk.bodies.length;
+      }
+    }
+    for (const jobs of calls) {
+      // eslint-disable-next-line no-await-in-loop -- calls share one isolate and run in turn
+      const results = await sandboxedEvaluateHttpBody(
+        jobs.map(({ template, chunks }): HttpBodyJob => [template, chunks.map((c) => c.bodies)]),
+        this.destination.WorkspaceID,
+      );
+      jobs.forEach(({ chunks }, j) =>
+        chunks.forEach(({ jobIds }, i) => this.bodyResults.set(chunkKey(jobIds), results[j][i])),
+      );
+    }
+  }
+
   getBatchStrategy(): BatchStrategy<HttpBody> {
-    const { requestBodyTemplate, maxBatchSize, format = BodyFormat.JSON } = this.destination.Config;
+    const { format = BodyFormat.JSON } = this.destination.Config;
     return new CustomBatchStrategy<HttpBody>(
       async (payloads) => {
-        // Raw config: the control plane sends maxBatchSize as a string.
-        // FORM is always single-event, even when a stale config supplies maxBatchSize.
-        const chunks = chunkPayloads(payloads, {
-          maxItems: format === BodyFormat.FORM ? 1 : Number(maxBatchSize ?? MAX_BATCH_SIZE),
-          wrapBody: () => ({}),
-        });
-        const bodies = await sandboxedEvaluateHttpBody(
-          requestBodyTemplate,
-          chunks.map((chunk) => chunk.bodies),
-          this.destination.WorkspaceID,
-        );
+        await this.evaluateBodies(this.pendingGroups.splice(0));
+        // Already evaluated above, unless re-batched (fewer jobs after a failure elsewhere).
+        await this.evaluateBodies([payloads]);
+        const { chunks } = this.chunkGroup(payloads);
         const error = (message: string, jobIds: Set<number>) => ({
           body: {},
           jobIds,
           error: toTransformError(new ConfigurationError(message)),
         });
-        return chunks.map((chunk, i) => {
-          const result = bodies[i];
+        return chunks.map((chunk) => {
+          const result = this.bodyResults.get(chunkKey(chunk.jobIds))!;
           if (!result.ok)
             return error(`Failed to evaluate requestBody template: ${result.error}`, chunk.jobIds);
           if (format === BodyFormat.JSON) {

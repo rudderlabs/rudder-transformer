@@ -30,6 +30,9 @@ export type RequestFieldResult =
   | { ok: true; fields: EvaluatedRequestFields }
   | { ok: false; error: string };
 export type HttpBodyResult = { ok: true; body: unknown } | { ok: false; error: string };
+// Each job is evaluated independently, so one router call needs one isolate call per operation.
+export type RequestFieldJob = [RequestFieldExpressions, unknown[]];
+export type HttpBodyJob = [string, unknown[][]];
 
 declare const globalThis: Record<string, unknown>;
 
@@ -60,7 +63,7 @@ const evaluatePairs = async (
   return out;
 };
 
-globalThis.evaluateRequestFieldsInSandbox = async (
+const evaluateRequestFields = async (
   expressions: RequestFieldExpressions,
   events: unknown[],
 ): Promise<RequestFieldResult[]> => {
@@ -99,7 +102,7 @@ globalThis.evaluateRequestFieldsInSandbox = async (
   return results;
 };
 
-globalThis.evaluateHttpBodyInSandbox = async (
+const evaluateHttpBody = async (
   template: string,
   chunks: unknown[][],
 ): Promise<HttpBodyResult[]> => {
@@ -121,3 +124,17 @@ globalThis.evaluateHttpBodyInSandbox = async (
   }
   return results;
 };
+
+const inOrder =
+  <J extends unknown[], R>(evaluate: (...job: J) => Promise<R>) =>
+  async (jobs: J[]): Promise<R[]> => {
+    const results: R[] = [];
+    // eslint-disable-next-line no-await-in-loop -- compiled expressions are not reentrant
+    for (const job of jobs) results.push(await evaluate(...job));
+    return results;
+  };
+
+globalThis.evaluateRequestFieldsInSandbox = inOrder<RequestFieldJob, RequestFieldResult[]>(
+  evaluateRequestFields,
+);
+globalThis.evaluateHttpBodyInSandbox = inOrder<HttpBodyJob, HttpBodyResult[]>(evaluateHttpBody);

@@ -610,7 +610,9 @@ Suitable for organizations that need to:
 
 ### Changelog References
 
-**NEEDS REVIEW**: No public developer changelog, release notes, deprecation page or versions page was found for the Bluecore Events API.
+- [Bluecore Release Notes](https://help.bluecore.com/help/release-notes)
+
+**NEEDS REVIEW**: No deprecations page, API versions page or RSS feed was found for the Bluecore Events API.
 
 ### RudderStack Documentation
 

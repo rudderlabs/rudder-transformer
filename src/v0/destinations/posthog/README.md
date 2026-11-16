@@ -94,15 +94,23 @@ None.
 
 ### Current Version
 
-Unversioned capture API: `POST {yourInstance or https://app.posthog.com}/batch`.
+- **Version:** `Unversioned`
+- **Where in code:** `config.ts` (`DEFAULT_BASE_ENDPOINT`); `transform.ts` and `routerTransform.ts` (`/batch`)
 
 ### Version Deprecation
 
-The capture/batch API is unversioned and has no announced sunset. PostHog's current docs name `https://us.i.posthog.com` / `https://eu.i.posthog.com` as ingestion hosts. NEEDS REVIEW: whether the `app.posthog.com` default should move to `us.i.posthog.com`.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Capture and batch API](https://posthog.com/docs/api/capture)
+
+PostHog's current docs name `https://us.i.posthog.com` and `https://eu.i.posthog.com` as the ingestion hosts. This integration defaults to `https://app.posthog.com`. NEEDS REVIEW: no PostHog notice was found that deprecates `app.posthog.com` for ingestion; decide whether the default should move to `us.i.posthog.com`.
 
 ### Latest Available Version
 
-Not applicable (no API versioning).
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Capture and batch API](https://posthog.com/docs/api/capture)
 
 ## RETL Functionality
 
@@ -115,14 +123,17 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 ## Documentation Links
 
 - [Capture and batch API](https://posthog.com/docs/api/capture)
-- [API overview (rate limits)](https://posthog.com/docs/api)
+- [API overview (rate limits, authentication)](https://posthog.com/docs/api)
 - [Ingestion warnings (event size)](https://posthog.com/docs/data/ingestion-warnings)
 
 ### Changelog References
 
-- [PostHog changelog](https://posthog.com/changelog)
-- [PostHog changelog RSS feed](https://posthog.com/changelog.rss)
-- NEEDS REVIEW: no API deprecations or versions/sunset page found (the API is unversioned).
+- **Changelog:** [PostHog changelog](https://posthog.com/changelog)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** [PostHog changelog RSS](https://posthog.com/changelog.rss)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

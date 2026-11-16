@@ -92,15 +92,25 @@ From the [Conversions API docs](https://learn.microsoft.com/en-us/linkedin/marke
 
 ### Current Version
 
-`LinkedIn-Version: 202609` (`API_VERSION` in `config.js`), REST path `/rest/conversionEvents`.
+- **Version:** `202609`
+- **Where in code:** `config.js` (`API_VERSION`, sent as the `LinkedIn-Version` header; REST path `BATCH_ENDPOINT` = `/rest/conversionEvents`)
 
 ### Version Deprecation
 
-LinkedIn monthly versions are supported for at least one year. Version `202609` sunsets on **September 15, 2027** ([Migrations](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations)).
+- **Status:** Supported
+- **Sunset date:** 2027-09-15
+- **Source:** [Migrations](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations)
+
+LinkedIn monthly versions are supported for at least one year.
 
 ### Latest Available Version
 
-`202610` (October 2026), per the [Recent Marketing API Changes](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes) page as of November 2026.
+- **Version:** `202610`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Recent Marketing API Changes](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes)
+
+`202610` (October 2026) is marked Latest on the Recent Marketing API Changes page as of 2026-11-16.
 
 ## RETL Functionality
 
@@ -115,13 +125,16 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 - [Conversions API](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api)
 - [LinkedIn Marketing API versioning](https://learn.microsoft.com/en-us/linkedin/marketing/versioning)
 - [LinkedIn API error handling](https://learn.microsoft.com/en-us/linkedin/shared/api-guide/concepts/error-handling)
+- [LinkedIn OAuth 2.0 authorization code flow](https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow)
 
 ### Changelog References
 
-- Release notes: [Recent Marketing API Changes](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes)
-- API versions and sunset dates: [Migrations](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations)
-- Versioning policy: [LinkedIn Marketing API versioning](https://learn.microsoft.com/en-us/linkedin/marketing/versioning)
-- RSS/Atom feed: none found (NEEDS REVIEW)
+- **Changelog:** [Recent Marketing API Changes](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes)
+- **Deprecations:** [Migrations (version sunset dates)](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations)
+- **Versions:** [Migrations](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations); [LinkedIn Marketing API versioning](https://learn.microsoft.com/en-us/linkedin/marketing/versioning)
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

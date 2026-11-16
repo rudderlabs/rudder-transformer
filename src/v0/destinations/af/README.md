@@ -240,47 +240,72 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 
 ### Current Version
 
-AppsFlyer maintains two API endpoints for Server-to-Server events:
+- **API:** S2S events API (Dev key, `v1` authorization)
+- **Version:** `v2`
+- **Where in code:** `config.js` (`ENDPOINT`, `https://api2.appsflyer.com/inappevent/`)
+- **API:** S2S events API (S2S key, `v2` authorization)
+- **Version:** `v3`
+- **Where in code:** `config.js` (`ENDPOINT_V2`, `https://api3.appsflyer.com/inappevent/`)
+- **API:** OpenDSR API (user deletion)
+- **Version:** `v1`
+- **Where in code:** `deleteUsers.js` (`endpoint`, `https://hq1.appsflyer.com/api/gdpr/v1/opendsr_request`)
 
-- **API v2 (Legacy)**: `https://api2.appsflyer.com/inappevent/{app_id}`
+The destination picks the S2S endpoint from the authorization setting: `v1` (Dev Key) uses the api2 endpoint, `v2` (S2S Key) uses the api3 endpoint.
 
-  - Uses Dev Key authentication
-  - Still supported but legacy
-
-- **API v3 (Current)**: `https://api3.appsflyer.com/inappevent/{app_id}`
-  - Uses Server-to-Server Key authentication
-  - Recommended for new implementations
-  - Enhanced security and features
-
-### Version Selection
-
-The destination automatically selects the appropriate API version based on configuration:
-
-- **v1 Authorization** → Uses API v2 endpoint with Dev Key
-- **v2 Authorization** → Uses API v3 endpoint with S2S Key
+NEEDS REVIEW: AppsFlyer's OpenDSR docs show the create path as `/api/gdpr/v1/opendsr_requests` (plural); the code uses `opendsr_request`.
 
 ### Version Deprecation
 
-**NEEDS REVIEW**: No official deprecation timeline found for API v2. AppsFlyer continues to support both versions without announced end-of-life dates.
+- **API:** S2S events API v2 (api2, Dev key)
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Bulletin: Upgrading the AppsFlyer S2S API](https://support.appsflyer.com/hc/en-us/articles/20509378973457-Bulletin-Upgrading-the-AppsFlyer-S2S-API) (blocks automated requests)
+- **API:** S2S events API v3 (api3, S2S key)
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [S2S events API v3 reference](https://dev.appsflyer.com/hc/reference/s2s-events-api3-post)
+- **API:** OpenDSR API
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Send OpenDSR API requests](https://support.appsflyer.com/hc/en-us/articles/11332840660625-Send-OpenDSR-API-requests) (blocks automated requests)
+
+AppsFlyer's bulletin says the api2 endpoint "will be deprecated in the future" and asks advertisers to switch to api3 with a new S2S key. After an app completes the production migration, AppsFlyer blocks api2 for that app. No date is published.
 
 ### Latest Available Version
 
-- **API v3** (`https://api3.appsflyer.com/inappevent/{app_id}`) is the latest available S2S events API version and is supported by this integration
+- **API:** S2S events API
+- **Version:** `v3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [S2S events API v3 reference](https://dev.appsflyer.com/hc/reference/s2s-events-api3-post)
+- **API:** OpenDSR API
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Send OpenDSR API requests](https://support.appsflyer.com/hc/en-us/articles/11332840660625-Send-OpenDSR-API-requests) (blocks automated requests)
+
+The integration supports api3 through the `v2` authorization setting. Destinations still on `v1` (Dev Key) use api2.
 
 ## Documentation Links
 
 ### AppsFlyer API Documentation
 
 - [Server-to-Server Events API v3](https://dev.appsflyer.com/hc/reference/s2s-events-api3-post)
-- [Server-to-Server Events Overview](https://support.appsflyer.com/hc/en-us/articles/207034486-Server-to-server-events-API-for-mobile-S2S-mobile)
-- [OpenDSR API for User Deletion](https://support.appsflyer.com/hc/en-us/articles/11332840660625-Send-OpenDSR-API-requests)
+- [Server-to-Server Events Overview](https://support.appsflyer.com/hc/en-us/articles/207034486-Server-to-server-events-API-for-mobile-S2S-mobile) (blocks automated requests)
+- [OpenDSR API for User Deletion](https://support.appsflyer.com/hc/en-us/articles/11332840660625-Send-OpenDSR-API-requests) (blocks automated requests)
 - [API Rate Limits and Traits](https://dev.appsflyer.com/hc/reference/overview-3)
+- [Managing AppsFlyer tokens (Dev key and S2S key)](https://support.appsflyer.com/hc/en-us/articles/360004562377) (blocks automated requests)
 
 ### Changelog References
 
-- [AppsFlyer bulletins (what's new)](https://support.appsflyer.com/hc/en-us/sections/6551161473041-Bulletins)
+- **Changelog:** [What's new in AppsFlyer (bulletins)](https://support.appsflyer.com/hc/en-us/sections/6551161473041-Bulletins) (blocks automated requests); [Product news](https://www.appsflyer.com/product-news/)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Bulletin: Upgrading the AppsFlyer S2S API](https://support.appsflyer.com/hc/en-us/articles/20509378973457-Bulletin-Upgrading-the-AppsFlyer-S2S-API) (blocks automated requests)
+- **Last checked:** 2026-11-16
 
-**NEEDS REVIEW**: No changelog or versions page specific to the S2S events API was found.
+AppsFlyer publishes no API changelog, versions page or feed for the S2S events API. The dev hub changelog path returns 404 and the product-news feed has no items.
 
 ### RETL Functionality
 

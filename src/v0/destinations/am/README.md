@@ -293,9 +293,10 @@ Amplitude events include a timestamp field, which is populated with the event's 
 
 ### Current Version
 
-- **Current Version of Amplitude API used in integration**: HTTP API v2
+- **Version:** `2` (HTTP V2 API, `/2/httpapi`)
+- **Where in code:** `config.js` (`BASE_URL`, `BASE_URL_EU`); `transform.js` (`getEndpoint`, path `2/httpapi`)
 
-Amplitude HTTP API v2 is used for event tracking.
+The Batch Event Upload (`/batch`), Group Identify (`/groupidentify`) and User Mapping (`/usermap`) endpoints have no version in the path. User deletion calls the User Privacy API at `/api/2/deletions/users` (`deleteUsers.js`).
 
 ### API Endpoints
 
@@ -325,11 +326,18 @@ Amplitude HTTP API v2 is used for event tracking.
 
 ### Version Deprecation
 
-Amplitude HTTP API v2 is the current version and there is no announced deprecation date. Amplitude maintains backward compatibility for their APIs and typically provides ample notice before deprecating any API version. The HTTP API v2 replaced the deprecated HTTP API v1.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [HTTP V2 API](https://amplitude.com/docs/apis/analytics/http-v2)
+
+HTTP V2 replaced the deprecated HTTP API (V1). Amplitude has not published a sunset date for V2.
 
 ### Latest Available Version
 
-HTTP API v2 is the latest available version of the Amplitude HTTP API and is used by this integration.
+- **Version:** `2` (HTTP V2 API)
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [HTTP V2 API](https://amplitude.com/docs/apis/analytics/http-v2)
 
 ## Documentation Links
 
@@ -344,7 +352,12 @@ HTTP API v2 is the latest available version of the Amplitude HTTP API and is use
 
 ### Changelog References
 
-- [Amplitude platform updates](https://community.amplitude.com/kb/platform-updates)
+- **Changelog:** [Amplitude product releases](https://amplitude.com/releases); [Amplitude platform updates](https://community.amplitude.com/kb/platform-updates)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Amplitude changelog RSS](https://amplitude.com/releases/feed.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

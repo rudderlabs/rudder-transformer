@@ -96,15 +96,25 @@ No intermediate calls for track events or rETL identify events.
 
 ### Current Version
 
-Marketing API **3.0** (`https://<dc>.api.mailchimp.com/3.0/...`).
+- **Version:** `3.0`
+- **Where in code:** `utils.js` (`getMailChimpBaseEndpoint`, `getBatchEndpoint`: `https://<dc>.api.mailchimp.com/3.0/lists/<audienceId>`)
 
 ### Version Deprecation
 
-No sunset announced for 3.0. Older APIs (Export API 1.0, API 2.0) were retired ([release note](https://mailchimp.com/developer/release-notes/export-api-1-0-and-api-2-0-no-longer-supported)).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Marketing API fundamentals](https://mailchimp.com/developer/marketing/docs/fundamentals/)
+
+Older APIs (Export API 1.0, API 2.0) were retired ([release note](https://mailchimp.com/developer/release-notes/2023/6/1/)).
 
 ### Latest Available Version
 
-3.0.
+- **Version:** `3.0`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Marketing API fundamentals](https://mailchimp.com/developer/marketing/docs/fundamentals/)
+
+Mailchimp launched [Audiences endpoints (BETA)](https://mailchimp.com/developer/release-notes/2025/8/7/) on 2025-08-07 as an alternative to the List Members endpoints, inside Marketing API 3.0. They are not a new API version.
 
 ## RETL Functionality
 
@@ -117,18 +127,25 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 ## Documentation Links
 
 - [Marketing API fundamentals](https://mailchimp.com/developer/marketing/docs/fundamentals/)
+- [Send your first API request (authentication)](https://mailchimp.com/developer/marketing/guides/quick-start/)
+- [Get list info](https://mailchimp.com/developer/marketing/api/lists/get-list-info/)
 - [Add or update list member](https://mailchimp.com/developer/marketing/api/list-members/add-or-update-list-member/)
 - [Get member info](https://mailchimp.com/developer/marketing/api/list-members/get-member-info/)
+- [Add member event](https://mailchimp.com/developer/marketing/api/list-member-events/add-event/)
 - [Batch subscribe or unsubscribe](https://mailchimp.com/developer/marketing/api/lists/batch-subscribe-or-unsubscribe/)
 - [Merge fields](https://mailchimp.com/developer/marketing/docs/merge-fields/)
 - [Rate limits and timeouts](https://mailchimp.com/developer/marketing/api-concepts/rate-limits-and-timeouts)
 
 ### Changelog References
 
-- Release notes: [Mailchimp Developer release notes](https://mailchimp.com/developer/release-notes/)
-- Release notes index (machine-readable): [release-notes/llms.txt](https://mailchimp.com/developer/release-notes/llms.txt)
-- API versions: [Marketing API fundamentals](https://mailchimp.com/developer/marketing/docs/fundamentals/) (only 3.0 is current; no versions/sunset page found, NEEDS REVIEW)
-- RSS/Atom feed: none found (NEEDS REVIEW)
+- **Changelog:** [Mailchimp Developer release notes](https://mailchimp.com/developer/release-notes/)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Export API 1.0 and API 2.0 no longer supported (2023-06-01)](https://mailchimp.com/developer/release-notes/2023/6/1/); [Changes when using multiple authorization methods (2021-02-17)](https://mailchimp.com/developer/release-notes/2021/2/17/)
+- **Last checked:** 2026-11-16
+
+A machine-readable index of all release notes is at [release-notes/llms.txt](https://mailchimp.com/developer/release-notes/llms.txt). Only Marketing API 3.0 is current; Mailchimp publishes no versions or sunset page. The 2021-02-17 change makes the Authorization header win over an `apikey` query parameter; this integration sends only the Authorization header.
 
 ## FAQ
 

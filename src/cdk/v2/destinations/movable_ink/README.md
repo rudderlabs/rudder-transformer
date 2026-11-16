@@ -92,15 +92,25 @@ None.
 
 ### Current Version
 
+- **Version:** `Unversioned`
+- **Where in code:** `procWorkflow.yaml` (`response.endpoint = .destination.Config.endpoint`)
+
 The destination does not call a versioned API path. It POSTs to the customer-configured collector URL (`collector.movableink-dmz.com/behavioral/<key>`).
 
 ### Version Deprecation
 
-No deprecation or sunset is announced for the Behavior Events collector. NEEDS REVIEW: Movable Ink has no public API lifecycle page.
+- **Status:** Unknown
+- **Sunset date:** None announced
+- **Source:** [Movable Ink SDK: Behavior Events (iOS)](https://sdk-mobile.movableink.com/ios-sdk/behavior-events)
+
+Movable Ink has no public API lifecycle page; the Behavior Events API reference is login-gated.
 
 ### Latest Available Version
 
-Not applicable; the collector endpoint is unversioned.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Movable Ink SDK: Behavior Events (iOS)](https://sdk-mobile.movableink.com/ios-sdk/behavior-events)
 
 ## RETL Functionality
 
@@ -112,13 +122,21 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ## Documentation Links
 
-- NEEDS REVIEW: the versions link in `.github/scripts/versions.json` (`https://movableink.com/developers/docs`) returns 404; the Behavior Events API reference is login-gated.
 - [Movable Ink SDK: Behavior Events (iOS)](https://sdk-mobile.movableink.com/ios-sdk/behavior-events)
 - [RudderStack Movable Ink docs](https://www.rudderstack.com/docs/destinations/streaming-destinations/movable-ink/)
 
+The Behavior Events API reference (`learning.movableink.com`) is login-gated, and the versions link in `.github/scripts/versions.json` (`https://movableink.com/developers/docs`) returns 404. Endpoint keys and Basic auth credentials come from the Movable Ink Client Experience team.
+
 ### Changelog References
 
-NEEDS REVIEW: Movable Ink does not publish a public developer changelog, deprecations page, API versions page or RSS feed for the Behavior Events API. Changes are communicated through the Movable Ink Client Experience team.
+- **Changelog:** [Movable Ink mobile SDK changelog](https://sdk-mobile.movableink.com/changelog)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** [iOS SDK releases (Atom)](https://github.com/movableink/ios-sdk/releases.atom)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Movable Ink has no public changelog for the Behavior Events collector API. The mobile SDK changelog covers changes to the behavior event schema sent through the SDKs (for example, the `meta` field in SDK v2.1), which is the closest public source. Collector changes are communicated through the Client Experience team.
 
 ## FAQ
 

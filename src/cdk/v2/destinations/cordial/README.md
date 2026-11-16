@@ -100,7 +100,10 @@ Cordial does not publish fixed numbers. Limits are set per API, differ by HTTP m
 
 ### Current Version
 
-Cordial REST API **v2**:
+- **Version:** `v2`
+- **Where in code:** `config.js` (`getCreateContactEndpoint`, `getUpdateContactEndpoint`, `getEventsEndpoint`)
+
+Cordial REST API v2:
 
 - `GET /v2/contacts/{id}` and `GET /v2/contacts/email:{email}` (lookup)
 - `POST /v2/contacts` (create), `PUT /v2/contacts/{id}` or `PUT /v2/contacts/email:{email}` (update)
@@ -108,22 +111,36 @@ Cordial REST API **v2**:
 
 ### Version Deprecation
 
-No deprecation or sunset is announced for v2. Cordial does not publish an API lifecycle policy. NEEDS REVIEW.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Cordial REST API](https://developers.cordial.com/api)
+
+The developer portal describes v2 as the stable version ("All paths versioned: /v2/"). Cordial does not publish an API lifecycle policy.
 
 ### Latest Available Version
 
-v2 is the latest documented version (all paths in the Cordial API reference are under `/v2/`).
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Cordial REST API](https://developers.cordial.com/api)
 
 ## Documentation Links
 
-- [Cordial API reference (v2)](https://developers.cordial.com/api)
-- [Contacts API](https://support.cordial.com/hc/en-us/articles/203885958-Contacts-API)
-- [Contact activities API](https://support.cordial.com/hc/en-us/articles/203885968)
-- [API rate limits](https://support.cordial.com/hc/en-us/articles/7323031900301)
+- [Cordial REST API (v2)](https://developers.cordial.com/api)
+- [Full API reference (Swagger, v2)](https://api.cordial.io/docs/v2/)
+- [Authentication (HTTP Basic with API key)](https://developers.cordial.com/api#auth)
+- [API rate limits](https://support.cordial.com/hc/en-us/articles/7323031900301) (blocks automated requests)
 
 ### Changelog References
 
-NEEDS REVIEW: Cordial does not publish a public API changelog, deprecations page or feed. The developer portal footer has a "Changelog" link with no target. The closest related page is the [Cordial product showcase](https://cordial.com/new-releases/), which covers product releases rather than API changes.
+- **Changelog:** [Cordial product showcase (product releases)](https://cordial.com/new-releases/) (blocks automated requests)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Cordial publishes no API changelog. The developer portal footer has a "Changelog" link, but `https://developers.cordial.com/changelog` serves the portal home page. The product showcase covers product releases, not API changes.
 
 ## RETL Functionality
 

@@ -297,21 +297,27 @@ According to Google Ads documentation: "Each conversion upload is treated as a s
 
 ### Current Version
 
-- **Google Ads API Version**: v25 (in use by this destination)
-- **Endpoint Base**: `https://googleads.googleapis.com/v25/customers/{customerId}`
-- **Released**: July 22, 2026
+- **Version:** `v25`
+- **Where in code:** `config.js` (`API_VERSION`, `BASE_ENDPOINT`)
+
+Endpoint base: `https://googleads.googleapis.com/v25/customers/{customerId}`. v25 was released on 2026-07-22.
 
 ### Version Deprecation
 
-Google Ads API follows a regular deprecation schedule:
+- **Status:** Supported
+- **Sunset date:** 2027-08 (Google publishes the month only)
+- **Source:** [Google Ads API release and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
 
-- **v25**: Current version used by this destination, with sunset expected in **August 2027**
-- **Support period**: Each version is supported for approximately 12 months
-- **Deprecation notice**: Google Ads API publishes sunset dates and release notes for migration planning
+Google sunsets each version about 12 months after release and publishes sunset dates and release notes for migration planning.
 
 ### Latest Available Version
 
-Google Ads API maintains multiple versions simultaneously. The destination currently uses v25. The latest available version is v26 (released October 14, 2026, sunset November 2027). Check the [Google Ads API versioning documentation](https://developers.google.com/google-ads/api/docs/concepts/versioning), [sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates), and [release notes](https://developers.google.com/google-ads/api/docs/release-notes) for the latest version information and migration guides.
+- **Version:** `v26`
+- **Released:** 2026-10-14
+- **Upgrade needed:** Yes
+- **Source:** [Google Ads API release and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
+
+Minor releases v26.1 (2026-10-28) and v26.2 (2026-11-11) followed. See the [versioning guide](https://developers.google.com/google-ads/api/docs/concepts/versioning) and [release notes](https://developers.google.com/google-ads/api/docs/release-notes) for migration details.
 
 ## Documentation Links
 
@@ -319,17 +325,23 @@ Google Ads API maintains multiple versions simultaneously. The destination curre
 
 - [Google Ads API Overview](https://developers.google.com/google-ads/api/docs/start)
 - [Offline Conversions Management](https://developers.google.com/google-ads/api/docs/conversions/upload-offline)
-- [Click Conversions Upload (v25 - current)](https://developers.google.com/google-ads/api/rest/reference/rest/v25/customers/uploadClickConversions)
-- [Call Conversions Upload (v25 - current)](https://developers.google.com/google-ads/api/rest/reference/rest/v25/customers/uploadCallConversions)
+- [ConversionUploadService reference (v25, `uploadClickConversions`, `uploadCallConversions`)](https://developers.google.com/google-ads/api/reference/rpc/v25/ConversionUploadService)
+- [OfflineUserDataJobService reference (v25, store sales)](https://developers.google.com/google-ads/api/reference/rpc/v25/OfflineUserDataJobService)
+- [GoogleAdsService reference (v25, `searchStream`)](https://developers.google.com/google-ads/api/reference/rpc/v25/GoogleAdsService)
 - [Store Sales Conversions](https://developers.google.com/google-ads/api/docs/conversions/upload-store-sales-transactions)
 - [Rate Limits and Quotas](https://developers.google.com/google-ads/api/docs/productionize/rate-limits)
+- [OAuth overview](https://developers.google.com/google-ads/api/docs/oauth/overview)
 - [API Versioning and Migration](https://developers.google.com/google-ads/api/docs/concepts/versioning)
 - [Google Ads API Release Notes](https://developers.google.com/google-ads/api/docs/release-notes)
 
 ### Changelog References
 
-- [Google Ads API sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
-- [Google Ads API release notes](https://developers.google.com/google-ads/api/docs/release-notes)
+- **Changelog:** [Google Ads API release notes](https://developers.google.com/google-ads/api/docs/release-notes)
+- **Deprecations:** [Google Ads API deprecations and unversioned changes](https://developers.google.com/google-ads/api/docs/deprecations)
+- **Versions:** [Google Ads API release and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
+- **Feed:** [Google Ads developer blog Atom feed](https://developers.google.com/ads/blog/rss.xml)
+- **Announcements:** [Offline click conversion imports restricted to existing adopters from 2026-06-15](https://developers.google.com/ads/blog/posts/2026/05/changes-to-offline-click-conversion); [IP address and session attributes in click conversions restricted to allowlisted adopters from 2026-02-02](https://developers.google.com/ads/blog/posts/2026/01/changes-to-ip-address-and-session); [Data Manager API supports Google Ads call conversions (2026-11-04)](https://developers.google.com/ads/blog/posts/2026/11/data-manager-api-now-supports-google); [Developer tokens sunset on 2026-09-09; the `developer-token` header is now ignored and will be rejected in a future major version](https://developers.google.com/google-ads/api/docs/api-policy/developer-token)
+- **Last checked:** 2026-11-16
 
 ## Troubleshooting
 

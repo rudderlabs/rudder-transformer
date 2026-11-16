@@ -10,7 +10,7 @@ Implementation in **Javascript**
 
   - Required for constructing API endpoints
   - Can be overridden per event via `properties.profileId`
-  - Used in endpoint: `https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/{requestType}`
+  - Used in endpoint: `https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/{profileId}/conversions/{requestType}`
 
 - **OAuth 2.0 Authentication**:
   - Authentication type: OAuth 2.0
@@ -205,8 +205,8 @@ Implementation in **Javascript**
 
 **Endpoints**:
 
-- `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
-- `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
+- `POST /dfareporting/v5/userprofiles/{profileId}/conversions/batchinsert`
+- `POST /dfareporting/v5/userprofiles/{profileId}/conversions/batchupdate`
 
 For detailed rate limits, error handling, and requesting additional quota, see [Rate Limits and Batch Sizes](#rate-limits-and-batch-sizes) section below.
 
@@ -316,12 +316,12 @@ For detailed rate limits, error handling, and requesting additional quota, see [
 
 **Endpoints Used**:
 
-1. `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
+1. `POST /dfareporting/v5/userprofiles/{profileId}/conversions/batchinsert`
 
    - Batch size: Up to 1000 conversions
    - Rate limit: Subject to the quota limits above (50,000 requests/day, 1 QPS default)
 
-2. `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
+2. `POST /dfareporting/v5/userprofiles/{profileId}/conversions/batchupdate`
    - Batch size: Up to 1000 conversions
    - Rate limit: Subject to the quota limits above (50,000 requests/day, 1 QPS default)
    - Additional constraint: Can only update existing conversions
@@ -357,33 +357,27 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 
 ### Current Version
 
-**API Version**: `v4` (Campaign Manager 360 API, formerly DCM/DFA Reporting API)
+- **Version:** `v5`
+- **Where in code:** `config.js` (`BASE_URL`), `https://dfareporting.googleapis.com/dfareporting/v5/userprofiles`
 
-**Evidence**:
-
-- Base URL: `https://dfareporting.googleapis.com/dfareporting/v4/userprofiles`
-- API endpoints use `/dfareporting/v4/` path
-- Implementation uses v4-specific payload structures
+Requests go to `/dfareporting/v5/userprofiles/{profileId}/conversions/{batchinsert|batchupdate}`.
 
 ### Version Deprecation
 
-**API v4 Deprecation Timeline**:
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Campaign Manager 360 API deprecation schedule](https://developers.google.com/doubleclick-advertisers/deprecation)
 
-- **Deprecation Date**: September 2, 2025
-- **Sunset Date**: February 26, 2026
-- Google typically provides 6+ months between deprecation and sunset for migration
-- Migration to v5 is recommended before the sunset date
+v4 was deprecated when v5 was released on 2025-09-02 and sunset on 2026-02-26 ([v4 sunset reminder](https://developers.google.com/ads/blog/posts/2026/01/campaign-manager-360-api-v4-sunset)). Requests to v4 now return errors.
 
 ### Latest Available Version
 
-**Yes** - Campaign Manager 360 API v5 is available
+- **Version:** `v5`
+- **Released:** 2025-09-02
+- **Upgrade needed:** No
+- **Source:** [Announcing v5 release](https://developers.google.com/ads/blog/posts/2025/09/announcing-v5-release-and-changes-for)
 
-**Migration Considerations**:
-
-- Review the v5 API documentation for breaking changes
-- Test conversions API endpoints in v5 before migration
-- Plan migration timeline to complete before February 26, 2026
-- v5 endpoint format: `https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/{profileId}/conversions/{requestType}`
+Google recommends moving conversion uploads to the Data Manager API ([upgrade guide](https://developers.google.com/data-manager/api/devguides/events/cm360/offline/upgrade)), but has not announced a deprecation of the Campaign Manager 360 Conversions service.
 
 ## Documentation Links
 
@@ -399,12 +393,17 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 
 **API Reference**:
 
-- [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchinsert)
-- [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchupdate)
+- [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/rest/v5/conversions/batchinsert)
+- [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/rest/v5/conversions/batchupdate)
 
 ### Changelog References
 
-- [Campaign Manager 360 API deprecation schedule](https://developers.google.com/doubleclick-advertisers/deprecation)
+- **Changelog:** [Campaign Manager 360 API changelog](https://developers.google.com/doubleclick-advertisers/changelog); [Release notes](https://developers.google.com/doubleclick-advertisers/rel_notes)
+- **Deprecations:** [Campaign Manager 360 API deprecation schedule](https://developers.google.com/doubleclick-advertisers/deprecation)
+- **Versions:** [Campaign Manager 360 API deprecation schedule](https://developers.google.com/doubleclick-advertisers/deprecation)
+- **Feed:** [Google Ads developer blog Atom feed](https://developers.google.com/ads/blog/rss.xml)
+- **Announcements:** [v5 released and v4 sunset set for 2026-02-26](https://developers.google.com/ads/blog/posts/2025/09/announcing-v5-release-and-changes-for); [v4 sunset reminder](https://developers.google.com/ads/blog/posts/2026/01/campaign-manager-360-api-v4-sunset)
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

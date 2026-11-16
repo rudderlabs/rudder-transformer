@@ -127,34 +127,59 @@ All of these fail only the offending event (HTTP 400, instrumentation error); th
 
 ### Current Version
 
-- post-events: `v1` of the Pushwoosh integration events API.
-- setTags: Pushwoosh JSON API `1.3`.
-- **Events**: Pushwoosh integration events endpoint (`/integration-segment/v1/post-events`), unversioned beyond `v1`
-- **Tags**: Pushwoosh legacy JSON API `1.3` (`/json/1.3/setTags`)
-
-### API Endpoints
-
-- `https://integration-rudderstack.svc-nue.pushwoosh.com/integration-segment/v1/post-events`
-- `https://api.pushwoosh.com/json/1.3/setTags`
+- **API:** Integration events endpoint (`post-events`)
+- **Version:** `v1`
+- **Where in code:** `config.ts` (`EVENTS_ENDPOINT`, `https://integration-rudderstack.svc-nue.pushwoosh.com/integration-segment/v1/post-events`)
+- **API:** Device API (`setTags`)
+- **Version:** `1.3`
+- **Where in code:** `config.ts` (`SET_TAGS_ENDPOINT`, `https://api.pushwoosh.com/json/1.3/setTags`)
 
 ### Version Deprecation
 
-**NEEDS REVIEW** — end-of-life dates for JSON API 1.3 and the integration events endpoint, and whether a newer `setTags` version exists, were not verified against the Pushwoosh API reference.
+- **API:** Integration events endpoint
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [RudderStack integration](https://docs.pushwoosh.com/product/integrations/rudderstack-integration/)
+- **API:** Device API (`setTags`)
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Device API](https://docs.pushwoosh.com/developer/api-reference/device-api/)
+
+The Pushwoosh [developer changelog](https://docs.pushwoosh.com/developer/changelog) lists no deprecation of `/json/1.3/setTags` or the integration events endpoint. A breaking change on 2026-10-07 reserves tags named `PW_FF_*` (any case) for feature flags: `setTags` drops their values.
 
 ### Latest Available Version
 
-- **NEEDS REVIEW**: Whether a newer `setTags` version than JSON API `1.3` exists was not verified against the Pushwoosh API reference.
+- **API:** Integration events endpoint
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [RudderStack integration](https://docs.pushwoosh.com/product/integrations/rudderstack-integration/)
+- **API:** Device API (`setTags`)
+- **Version:** `1.3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Device API](https://docs.pushwoosh.com/developer/api-reference/device-api/)
 
 ## Documentation Links
 
 ### API Documentation
 
 - [Pushwoosh API reference](https://docs.pushwoosh.com/developer/api-reference/)
+- [Device API (`setTags`)](https://docs.pushwoosh.com/developer/api-reference/device-api/)
+- [Tags API](https://docs.pushwoosh.com/developer/api-reference/tags/)
+- [API access token (authentication)](https://docs.pushwoosh.com/developer/api-reference/api-access-token/)
+- [RudderStack integration (`post-events`)](https://docs.pushwoosh.com/product/integrations/rudderstack-integration/)
 
 ### Changelog References
 
-- [Pushwoosh developer changelog](https://docs.pushwoosh.com/developer/changelog)
-- [Pushwoosh product release notes](https://docs.pushwoosh.com/product/release-notes/)
+- **Changelog:** [Pushwoosh developer changelog](https://docs.pushwoosh.com/developer/changelog); [Pushwoosh product release notes](https://docs.pushwoosh.com/product/release-notes/)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The developer changelog tags each entry as Added, Changed, Fixed, Deprecated or Breaking, so deprecations show up there. Pushwoosh publishes no RSS feed for it (`/developer/changelog/rss.xml` and `/rss.xml` return 404).
 
 ### RETL Functionality
 

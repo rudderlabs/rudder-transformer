@@ -356,12 +356,10 @@ When the API returns error code `40100`, the destination automatically triggers 
 
 ### Current Version
 
-- **API Version**: v1.3 (TikTok Business API)
-- **Events Version**: Supports both Events 1.0 and Events 2.0
-- **Default**: Events 2.0 (v2)
-- **Implementation Type**: v0
-- **Last Updated**: July 2025
-- **Maintainer**: RudderStack Integration Team
+- **Version:** `v1.3`
+- **Where in code:** `config.js` (`BASE_URL`, used by `TRACK_ENDPOINT`, `BATCH_ENDPOINT` and `trackEndpointV2`)
+
+Supports both Events 1.0 (`/pixel/track/`, `/pixel/batch/`) and Events 2.0 (`/event/track/`). Events 2.0 (v2) is the default. Implementation type: v0. Maintainer: RudderStack Integration Team.
 
 ### Version Comparison
 
@@ -378,19 +376,23 @@ When the API returns error code `40100`, the destination automatically triggers 
 
 ### Version Deprecation
 
-- **Events 1.0**: Will be deprecated by H2'2024 (as indicated in UI configuration)
-- **Current Status**: Both versions supported, v2 is default
-- **Recommendation**:
-  - Use Events 2.0 (v2) for all new implementations
-  - Migrate existing Events 1.0 integrations to Events 2.0
-  - Events 2.0 offers better performance, higher batch limits, and more user data fields
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Events API 2.0 Overview (Events API 1.0 sunset notice)](https://business-api.tiktok.com/portal/docs/events-api-2.0/v1.3) (blocks automated requests)
 
-**NEEDS REVIEW** - The H2'2024 deprecation timeline should be verified against current TikTok official announcements for accuracy.
+- TikTok's Events API 2.0 Overview says six Events API 1.0 endpoints, including `/pixel/track/` and `/pixel/batch/` used by this integration's Events 1.0 path, "will be sunset in H2 2024", and recommends `/event/track/`. The UI configuration also labels Events 1.0 as deprecated by H2 2024. Both Events 1.0 and Events 2.0 are still supported by this integration, with Events 2.0 as the default.
+- Recommendation: use Events 2.0 (v2) for all new implementations and migrate existing Events 1.0 destinations. Events 2.0 offers higher batch limits and more user data fields.
+
+NEEDS REVIEW: TikTok gives only "H2 2024", no exact day, and the v1.3 API reference still lists the Events 1.0 endpoints, so whether `/pixel/track/` and `/pixel/batch/` are already switched off is unconfirmed.
 
 ### Latest Available Version
 
-- **Business API**: v1.3 is the latest version found and is used by this integration. No newer `/open_api/` version was found.
-- **Events API**: Events 2.0 is the latest Events API version and is the default in this integration.
+- **Version:** `v1.3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [API Reference Overview (current version v1.3)](https://business-api.tiktok.com/portal/docs/api-reference/v1.3) (blocks automated requests)
+
+No newer `/open_api/` version than v1.3 was found. TikTok's v1.3 release date was not found; v1.2 was retired on 2023-08-15 per [Hevo](https://mini-docs.hevodata.com/sources/marketing/tiktok-ads/) (third-party). Events 2.0 is the latest Events API and is the default in this integration.
 
 ### Breaking Changes Between Versions
 
@@ -424,17 +426,31 @@ When the API returns error code `40100`, the destination automatically triggers 
 
 ### TikTok Business API Documentation
 
-- **Official Documentation**: [TikTok Business API Overview](https://business-api.tiktok.com/portal/docs)
+- **Official Documentation**: [TikTok Business API Overview](https://business-api.tiktok.com/portal/docs) (blocks automated requests)
+- **About API for Business**: [About API for Business](https://ads.tiktok.com/help/article/marketing-api)
 - **Events API Overview**: [TikTok Events API Overview](https://ads.tiktok.com/help/article/events-api)
-- **Events 2.0 API usage** [TikTok Events API usage](https://business-api.tiktok.com/portal/docs?id=1771100779668482)
+- **Events 2.0 API usage** [TikTok Events API usage](https://business-api.tiktok.com/portal/docs?id=1771100779668482) (blocks automated requests)
+- **Events API 2.0 Overview**: [Events API 2.0 Overview](https://business-api.tiktok.com/portal/docs/events-api-2.0/v1.3) (blocks automated requests)
+- **Report events**: [Report App, Web, Offline, or CRM Events](https://business-api.tiktok.com/portal/docs/report-app-web-offline-or-crm-events/v1.3) (blocks automated requests)
+- **API Reference**: [API Reference Overview (v1.3)](https://business-api.tiktok.com/portal/docs/api-reference/v1.3) (blocks automated requests)
+- **Authentication**: [TikTok API for Business authentication](https://business-api.tiktok.com/portal/docs?id=1738373164380162) (blocks automated requests)
 - **Standard Events**: [TikTok Standard Events Parameters](https://ads.tiktok.com/help/article/standard-events-parameters?lang=en)
 - **Pixel Setup**: [TikTok Pixel Setup Guide](https://ads.tiktok.com/help/article/get-started-pixel)
-- **Rate Limits**: [TikTok API Limits Documentation](https://business-api.tiktok.com/portal/docs?id=1771100779668482#item-link-API%20limits)
+- **Rate Limits**: [TikTok API Limits Documentation](https://business-api.tiktok.com/portal/docs?id=1771100779668482#item-link-API%20limits) (blocks automated requests)
 - **Support Channels**: [TikTok Business Help Center](https://ads.tiktok.com/help/)
 
 ### Changelog References
 
-- [TikTok Events API changelog](https://ads.tiktok.com/resources/help/article/events-api-changelog)
+- **Changelog:** [API for Business blog (weekly "API For Business Platform Update" posts)](https://business-api.tiktok.com/portal/blog) (blocks automated requests); [TikTok Pixel release notes](https://ads.tiktok.com/help/article/pixel-release-notes?lang=en)
+- **Deprecations:** [Events API 2.0 Overview (Events API 1.0 sunset notice)](https://business-api.tiktok.com/portal/docs/events-api-2.0/v1.3) (blocks automated requests)
+- **Versions:** [Hevo: TikTok Ads API v1.2 deprecated 2023-08-15, v1.3 only](https://mini-docs.hevodata.com/sources/marketing/tiktok-ads/) (third-party)
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The portal's [About the Guide](https://business-api.tiktok.com/portal/docs/about-the-guide/v1.3) (blocks automated requests) page describes a weekly "What's New" section, but no direct URL for it was found, so the blog's platform-update posts are linked instead. TikTok publishes no API version lifecycle page; the v1.2 sunset date comes from a third-party connector doc. No RSS feed for the portal blog was found. The [TikTok for Developers changelog](https://developers.tiktok.com/doc/changelog) (blocks automated requests) covers Login Kit, Research API and other developer products, not the Marketing API.
+
+The previously linked Events API changelog help article (`events-api-changelog`) no longer exists.
 
 ### RETL Functionality
 

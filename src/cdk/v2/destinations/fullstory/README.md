@@ -99,15 +99,25 @@ Fullstory applies a per-second limit and a burst limit per org but does not publ
 
 ### Current Version
 
-Fullstory Server API **v2**: `POST /v2/users`, `POST /v2/events`.
+- **Version:** `v2`
+- **Where in code:** `procWorkflow.yaml` (`$.context.endpoint`, `https://api.fullstory.com/v2/users` and `https://api.fullstory.com/v2/events`)
 
 ### Version Deprecation
 
-No deprecation is announced for v2. Fullstory's policy is to publish breaking changes as a new major version (for example `/v3/users`) that clients opt into, so v2 endpoints are not changed in place.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Server API breaking changes](https://developer.fullstory.com/server/breaking-changes/)
+
+Fullstory publishes breaking changes as a new major version (for example `/v3/users`) that clients opt into, so v2 endpoints are not changed in place.
 
 ### Latest Available Version
 
-v2 is the latest Server API version. It replaced the v1 user and event endpoints.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Server API breaking changes](https://developer.fullstory.com/server/breaking-changes/)
+
+v2 replaced the v1 user and event endpoints. The developer docs also list a Beta version.
 
 ## Documentation Links
 
@@ -115,11 +125,18 @@ v2 is the latest Server API version. It replaced the v1 user and event endpoints
 - [Create user](https://developer.fullstory.com/server/users/create-user/)
 - [Create event](https://developer.fullstory.com/server/events/create-event/)
 - [API limits](https://developer.fullstory.com/overview/limits/)
+- [Server API authentication](https://developer.fullstory.com/server/authentication/)
 
 ### Changelog References
 
-- [Server API breaking changes policy](https://developer.fullstory.com/server/breaking-changes/)
-- NEEDS REVIEW: Fullstory publishes no dedicated Server API changelog, release notes page or RSS feed.
+- **Changelog:** [Fullstory release notes](https://help.fullstory.com/hc/en-us/articles/4410282600343-Fullstory-Release-Notes); [Browser API changelog](https://developer.fullstory.com/browser/changelog/)
+- **Deprecations:** [Server API breaking changes policy](https://developer.fullstory.com/server/breaking-changes/)
+- **Versions:** [Server API breaking changes (versions)](https://developer.fullstory.com/server/breaking-changes/)
+- **Feed:** [Browser API changelog RSS](https://developer.fullstory.com/browser/changelog/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Fullstory publishes no dedicated Server API changelog; the browser changelog and feed cover the client API.
 
 ## RETL Functionality
 

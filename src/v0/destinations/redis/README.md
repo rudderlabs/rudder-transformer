@@ -76,15 +76,25 @@ No. One identify produces one Redis write.
 
 ### Current Version
 
-There is no partner HTTP API. rudder-server uses the Go client `github.com/redis/go-redis/v9` at **v9.23.0** (rudder-server `go.mod`, checked November 2026).
+- **Version:** `v9.23.0`
+- **Where in code:** rudder-server `go.mod` (`github.com/redis/go-redis/v9`), used in `services/kvstoremanager/redis/redis.go`
+
+There is no partner HTTP API. rudder-server delivers to Redis through the go-redis client.
 
 ### Version Deprecation
 
-go-redis does not publish end-of-life dates. The project supports the last two Go versions and the last three Redis releases (Redis 8.x at the time of writing). No v10 module has been released.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [go-redis README (supported versions)](https://github.com/redis/go-redis/blob/master/README.md)
+
+go-redis does not publish end-of-life dates. The project supports the last two Go versions and the last three Redis releases. No v10 module has been released.
 
 ### Latest Available Version
 
-**v9.23.0** (released October 5, 2026), the version rudder-server already uses.
+- **Version:** `v9.23.0`
+- **Released:** 2026-10-05
+- **Upgrade needed:** No
+- **Source:** [go-redis releases](https://github.com/redis/go-redis/releases)
 
 ## Documentation Links
 
@@ -93,10 +103,11 @@ go-redis does not publish end-of-life dates. The project supports the last two G
 
 ### Changelog References
 
-- Release notes: [https://github.com/redis/go-redis/releases](https://github.com/redis/go-redis/releases)
-- Release notes file: [https://github.com/redis/go-redis/blob/master/RELEASE-NOTES.md](https://github.com/redis/go-redis/blob/master/RELEASE-NOTES.md)
-- Versions: [https://pkg.go.dev/github.com/redis/go-redis/v9?tab=versions](https://pkg.go.dev/github.com/redis/go-redis/v9?tab=versions)
-- Deprecations / sunset dates: none published; support policy is in the [README](https://github.com/redis/go-redis/blob/master/README.md). NEEDS REVIEW
-- Atom feed: [https://github.com/redis/go-redis/releases.atom](https://github.com/redis/go-redis/releases.atom)
+- **Changelog:** [go-redis releases](https://github.com/redis/go-redis/releases); [RELEASE-NOTES.md](https://github.com/redis/go-redis/blob/master/RELEASE-NOTES.md)
+- **Deprecations:** None found
+- **Versions:** [go-redis v9 versions (pkg.go.dev)](https://pkg.go.dev/github.com/redis/go-redis/v9?tab=versions)
+- **Feed:** [go-redis releases (Atom)](https://github.com/redis/go-redis/releases.atom)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ

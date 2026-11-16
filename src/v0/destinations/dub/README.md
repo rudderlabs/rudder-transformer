@@ -205,33 +205,43 @@ Dub follows the [IETF standard](https://datatracker.ietf.org/doc/html/draft-ietf
 
 ### Current Version
 
-- **API Version**: Dub doesn't use versioned API endpoints
-- **Base URL**: `https://api.dub.co`
-- **Endpoints Used**:
-  - `/track/lead` - For lead conversion tracking
-  - `/track/sale` - For sales conversion tracking
+- **Version:** `Unversioned`
+- **Where in code:** `config.ts` (`BASE_URL`, `LEAD_ENDPOINT_PATH` = `/track/lead`, `SALES_ENDPOINT_PATH` = `/track/sale`)
 
 ### Version Deprecation
 
-No data available
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Dub API introduction](https://dub.co/docs/api-reference/introduction)
 
 ### Latest Available Version
 
-Not applicable. Dub API endpoints are not versioned.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Dub API introduction](https://dub.co/docs/api-reference/introduction)
+
+Dub API endpoints have no version in the path.
 
 ## Documentation Links
 
 ### API Documentation
 
-- [Dub API Overview](https://dub.co/docs/api-reference)
-- [Track Lead API](https://dub.co/docs/api-reference/endpoint/track-lead)
-- [Track Sale API](https://dub.co/docs/api-reference/endpoint/track-sale)
-- [API Authentication](https://dub.co/docs/api-reference/tokens)
-- [Error Handling](https://dub.co/docs/api-reference/errors)
+- [Dub API Overview](https://dub.co/docs/api-reference/introduction)
+- [Track Lead API](https://dub.co/docs/api-reference/track/lead)
+- [Track Sale API](https://dub.co/docs/api-reference/track/sale)
+- [API Authentication](https://dub.co/docs/api-reference/authentication)
+- [Error Handling](https://dub.co/docs/api-reference/introduction#error-handling)
+- [Rate Limits](https://dub.co/docs/api-reference/rate-limits)
 
 ### Changelog References
 
-- [Dub changelog](https://dub.co/changelog)
+- **Changelog:** [Dub changelog](https://dub.co/changelog)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** [dub-ts SDK releases (Atom)](https://github.com/dubinc/dub-ts/releases.atom) (SDK generated from the Dub OpenAPI spec)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ### Pricing and Plans
 

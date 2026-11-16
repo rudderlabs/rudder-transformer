@@ -91,16 +91,27 @@ Where `[op]` can be either `add` or `remove` to specify the operation type.
 
 ### Current Version
 
-- **API Version**: `2026-07` (`https://api.criteo.com/2026-07/`, set in `config.js`)
+- **Version:** `2026-07`
+- **Where in code:** `config.js` (`version`, used in `BASE_ENDPOINT`)
 
 ### Version Deprecation
 
-- Criteo supports each stable API version for 12 months after release. Calls to an unsupported version fall forward to the oldest supported stable version.
-- Criteo has not yet published an exact end-of-support date for `2026-07`. Check the versioning policy page for the current schedule.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Versioning policy](https://developers.criteo.com/criteo-apis/docs/versioning-policy)
+
+From 2026.07 Criteo releases two stable versions a year. Each is supported for 12 months, and the last 3 months are a deprecation window. The release schedule lists `2026-07` as entering deprecation in April 2027 and being decommissioned in July 2027, without exact days.
+
+NEEDS REVIEW: the code calls `PATCH /{version}/audiences/{audienceId}/contactlist`. Criteo's [2023.10 release notes](https://developers.criteo.com/marketing-solutions/changelog/version-202310-release-notes) list the Legacy Audiences endpoints, including `/audiences/{audience-id}/contactlist`, as removed, replaced by `PATCH /marketing-solutions/audience-segments/{audience-segment-id}/contact-list`. Confirm whether Criteo still accepts the legacy path.
 
 ### Latest Available Version
 
-- `2026-07` is the latest stable version found in the Criteo changelog and is the version used by this integration
+- **Version:** `2026-07`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Marketing Solutions API changelog](https://developers.criteo.com/marketing-solutions/changelog/changelog)
+
+The changelog dates `2026-07` to July 2026 without a day. The next planned version is `2027-01` (January 2027) per the [versioning policy](https://developers.criteo.com/criteo-apis/docs/versioning-policy).
 
 ## Error Handling
 
@@ -178,10 +189,15 @@ const criteoEvent = processEvent(event);
 ## Documentation Links
 
 - **Official Documentation**: [Criteo Marketing Solutions API](https://developers.criteo.com/marketing-solutions/)
-- **API Reference**: [Criteo API Reference](https://developers.criteo.com/marketing-solutions/docs/api-error-types)
-- **Support Channels**: [Criteo Developer Support](https://developers.criteo.com/support)
+- **Audience segments**: [Audience segments guide](https://developers.criteo.com/marketing-solutions/docs/audience-segments)
+- **Authentication**: [Criteo API authentication](https://developers.criteo.com/marketing-solutions/docs/authentication)
+- **API Reference**: [Criteo API error types](https://developers.criteo.com/marketing-solutions/docs/api-error-types)
 
 ### Changelog References
 
-- [Criteo Marketing Solutions changelog](https://developers.criteo.com/marketing-solutions/changelog/changelog)
-- [Criteo versioning policy](https://developers.criteo.com/marketing-solutions/docs/versioning-policy)
+- **Changelog:** [Marketing Solutions API changelog](https://developers.criteo.com/marketing-solutions/changelog/changelog)
+- **Deprecations:** [Versioning policy (deprecation windows)](https://developers.criteo.com/criteo-apis/docs/versioning-policy); [Marketing Solutions versioning and deprecated endpoints](https://developers.criteo.com/marketing-solutions/docs/versioning-policy)
+- **Versions:** [Versioning policy and release schedule](https://developers.criteo.com/criteo-apis/docs/versioning-policy)
+- **Feed:** [Changelog RSS](https://developers.criteo.com/marketing-solutions/changelog/changelog/rss.xml)
+- **Announcements:** [Version 2023.10 release notes: Legacy Audiences endpoints removed](https://developers.criteo.com/marketing-solutions/changelog/version-202310-release-notes)
+- **Last checked:** 2026-11-16

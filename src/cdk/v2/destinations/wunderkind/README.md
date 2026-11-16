@@ -105,15 +105,25 @@ None.
 
 ### Current Version
 
-- Not versioned. Payload is the Wunderkind "event processing request" shape sent to an account-specific Lambda function.
+- **Version:** `Unversioned`
+- **Where in code:** `procWorkflow.yaml` (`buildPayload`)
+
+The payload is the Wunderkind "event processing request" shape, sent to an account-specific AWS Lambda function. The transformer builds only the payload; there is no partner HTTP endpoint or version in the code.
 
 ### Version Deprecation
 
-- Not applicable. No public API or deprecation schedule. NEEDS REVIEW with Wunderkind.
+- **Status:** Unknown
+- **Sunset date:** None announced
+- **Source:** [RudderStack Wunderkind cloud mode docs](https://www.rudderstack.com/docs/destinations/streaming-destinations/wunderkind/cloud-mode/)
+
+Wunderkind publishes no public API or deprecation schedule for this Lambda payload. The payload schema comes from the Wunderkind team.
 
 ### Latest Available Version
 
-- Not applicable.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [RudderStack Wunderkind cloud mode docs](https://www.rudderstack.com/docs/destinations/streaming-destinations/wunderkind/cloud-mode/)
 
 ## RETL Functionality
 
@@ -127,10 +137,18 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 - [Wunderkind](https://www.wunderkind.co)
 - [AWS Lambda Invoke API](https://docs.aws.amazon.com/lambda/latest/api/API_Invoke.html)
+- [RudderStack Wunderkind cloud mode docs (payload format)](https://www.rudderstack.com/docs/destinations/streaming-destinations/wunderkind/cloud-mode/)
 
 ### Changelog References
 
-- NEEDS REVIEW: Wunderkind publishes no public developer changelog, release notes, deprecations page or feed for this Lambda integration. Changes are communicated through the Wunderkind Technical Account Manager.
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Wunderkind publishes no public developer changelog, release notes, deprecations page or feed for this Lambda integration. Changes are communicated through the Wunderkind team.
 
 ## FAQ
 

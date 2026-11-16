@@ -98,15 +98,25 @@ NEEDS REVIEW: no published rate limits found for the June HTTP API.
 
 ### Current Version
 
-No version in the URL path. Endpoints: `https://api.june.so/api/{identify,track,page,group}`.
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`BASE_ENDPOINT`, `https://api.june.so/api`; paths `/identify`, `/track`, `/group`, `/page`)
 
 ### Version Deprecation
 
-No API versioning or sunset schedule published. NEEDS REVIEW: the June product was announced as retired after the team joined Amplitude in August 2025; confirm the API's operating status.
+- **Status:** Sunset
+- **Sunset date:** 2025-08-08
+- **Source:** [A new chapter for June](https://www.june.so/blog/a-new-chapter)
+
+June announced on 2025-07-08 that its team was joining Amplitude and that the standalone June product would wind down on 2025-08-08. On 2026-11-16 the `api.june.so` host did not resolve.
 
 ### Latest Available Version
 
-Not applicable (unversioned API).
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [A new chapter for June](https://www.june.so/blog/a-new-chapter)
+
+No successor API exists; June recommended migrating to Amplitude.
 
 ## RETL Functionality
 
@@ -119,12 +129,16 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 ## Documentation Links
 
 - [June HTTP API — Track](https://www.june.so/docs/tracking/http-api/track) (reference in source code)
-- [June API reference](https://docs.june.so/api-reference) (from `versions.json`; NEEDS REVIEW: may no longer resolve)
-- [June joins Amplitude announcement](https://www.june.so)
+- [June joins Amplitude announcement](https://www.june.so/blog/a-new-chapter)
 
 ### Changelog References
 
-NEEDS REVIEW: no developer changelog, deprecations page, version list or changelog feed was found for June. The only partner status signal is the August 2025 announcement on [june.so](https://www.june.so) that the June product is being retired.
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** [A new chapter for June (product wind-down on 2025-08-08)](https://www.june.so/blog/a-new-chapter)
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

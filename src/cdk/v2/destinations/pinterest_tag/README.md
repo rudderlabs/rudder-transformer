@@ -96,16 +96,42 @@ None.
 
 ### Current Version
 
-- `legacyApi` (schema default): Conversions API v3, `POST https://ct.pinterest.com/events/v3`
-- `newApi`: API v5, `POST https://api.pinterest.com/v5/ad_accounts/{adAccountId}/events`
+- **API:** Conversions API v3 (`legacyApi`, schema default)
+- **Version:** `v3`
+- **Where in code:** `config.js` (`ENDPOINT`)
+- **API:** API v5 (`newApi`)
+- **Version:** `v5`
+- **Where in code:** `config.js` (`getV5EventsEndpoint`)
+
+Endpoints: `POST https://ct.pinterest.com/events/v3` and `POST https://api.pinterest.com/v5/ad_accounts/{adAccountId}/events`. `API_VERSION` in `config.js` maps the schema values to the two versions.
 
 ### Version Deprecation
 
-RudderStack's public docs state Pinterest planned to deprecate API v3 on June 30, 2023 ([RudderStack Pinterest Tag cloud mode docs](https://www.rudderstack.com/docs/destinations/streaming-destinations/pinterest-ads/pinterest-ads-cloud-mode/)). NEEDS REVIEW: no Pinterest-owned notice found for `ct.pinterest.com/events/v3`, and `legacyApi` is still the schema default; confirm whether v3 still accepts traffic and whether existing connections should be migrated.
+- **API:** Conversions API v3
+- **Status:** Deprecated
+- **Sunset date:** None announced
+- **Source:** [Pinterest API Migration Required by June 2023](https://community.pinterest.biz/t/pinterest-api-migration-required-by-june-2023/1374)
+- **API:** API v5
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Send conversions (v5)](https://developers.pinterest.com/docs/api/v5/events-create/)
+
+Pinterest said on 2023-02-01 that legacy API versions v3 and v4 are no longer supported from July 2023, with no exact day. RudderStack's [cloud mode docs](https://www.rudderstack.com/docs/destinations/streaming-destinations/pinterest-ads/pinterest-ads-cloud-mode/) give 2023-06-30 for v3. NEEDS REVIEW: no Pinterest notice names `ct.pinterest.com/events/v3` specifically, and `legacyApi` is still the schema default; confirm whether v3 still accepts traffic and whether existing connections should be migrated.
 
 ### Latest Available Version
 
-API v5 (`newApi`). Spec-level changes are published as releases of the `pinterest/api-description` repository.
+- **API:** Conversions API v3
+- **Version:** `v5`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Send conversions (v5)](https://developers.pinterest.com/docs/api/v5/events-create/)
+- **API:** API v5
+- **Version:** `v5`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Send conversions (v5)](https://developers.pinterest.com/docs/api/v5/events-create/)
+
+Spec-level changes to v5 are published as releases of the [`pinterest/api-description`](https://github.com/pinterest/api-description/releases) repository.
 
 ## RETL Functionality
 
@@ -118,14 +144,21 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 ## Documentation Links
 
 - [Send conversions (v5)](https://developers.pinterest.com/docs/api/v5/events-create/)
+- [Conversions API v3 reference](https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html)
 - [Conversions API guide](https://developers.pinterest.com/docs/conversions/conversions/)
+- [Set up authentication and authorization](https://developers.pinterest.com/docs/getting-started/set-up-authentication-and-authorization/)
 - [Rate limits](https://developers.pinterest.com/docs/reference/ratelimits/)
 
 ### Changelog References
 
-- [Pinterest developer changelog](https://developers.pinterest.com/docs/changelog/)
-- [API v5 spec releases (pinterest/api-description)](https://github.com/pinterest/api-description/releases) (GitHub releases also offer an Atom feed at `https://github.com/pinterest/api-description/releases.atom`)
-- NEEDS REVIEW: no dedicated API versions/sunset-date page found.
+- **Changelog:** [Pinterest developer changelog](https://developers.pinterest.com/docs/changelog/changelog/); [API v5 spec releases (pinterest/api-description)](https://github.com/pinterest/api-description/releases)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [API v5 spec releases Atom](https://github.com/pinterest/api-description/releases.atom); [Developer community announcements RSS](https://community.pinterest.biz/c/developers/articles-announcements/354.rss)
+- **Announcements:** [Pinterest API Migration Required by June 2023](https://community.pinterest.biz/t/pinterest-api-migration-required-by-june-2023/1374)
+- **Last checked:** 2026-11-16
+
+Pinterest lists deprecations as entries in the developer changelog rather than on a separate page.
 
 ## FAQ
 

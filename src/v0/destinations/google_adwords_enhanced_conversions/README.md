@@ -116,34 +116,51 @@ When the `AMP_enable-google-ads-customer-picker` flag is on, the UI shows picker
 
 ### Current Version
 
-Google Ads API **v25** (`API_VERSION` in `config.ts`):
+- **Version:** `v25`
+- **Where in code:** `config.ts` (`API_VERSION`, `BASE_ENDPOINT`)
+
+Endpoints:
 
 - `POST /v25/customers/{customerId}:uploadConversionAdjustments`
 - `POST /v25/customers/{customerId}/googleAds:searchStream` (conversion action lookup through the SDK)
 
 ### Version Deprecation
 
-v25 was released on July 22, 2026 and sunsets in **August 2027**. Google aims to sunset each version about a year after release; requests to a sunset version fail.
+- **Status:** Supported
+- **Sunset date:** 2027-08 (Google publishes the month only)
+- **Source:** [Google Ads API release and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
 
-Google moved offline conversion imports and enhanced conversions for leads to the Data Manager API (blocked in the Google Ads API from June 15, 2026). No equivalent notice was found for enhanced conversions for web via `UploadConversionAdjustments`. NEEDS REVIEW: watch for a Data Manager migration notice for web enhancements.
+v25 was released on 2026-07-22. Google sunsets each version about a year after release; requests to a sunset version fail.
+
+Google moved offline conversion imports and enhanced conversions for leads to the Data Manager API (restricted to existing adopters in the Google Ads API from 2026-06-15). No equivalent notice was found for enhanced conversions for web through `UploadConversionAdjustments`. NEEDS REVIEW: watch for a Data Manager migration notice for web enhancements.
 
 ### Latest Available Version
 
-**v26** (released October 14, 2026, sunset November 2027), with minor releases v26.1 (October 28, 2026) and v26.2 (November 11, 2026). No `ConversionAdjustmentUploadService` changes were found in the v26 release notes. NEEDS REVIEW before upgrading.
+- **Version:** `v26`
+- **Released:** 2026-10-14
+- **Upgrade needed:** Yes
+- **Source:** [Google Ads API release and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
+
+Minor releases v26.1 (2026-10-28) and v26.2 (2026-11-11) followed. No `ConversionAdjustmentUploadService` changes were found in the v26 release notes. NEEDS REVIEW before upgrading.
 
 ## Documentation Links
 
 - [Enhanced conversions for web (API)](https://developers.google.com/google-ads/api/docs/conversions/enhanced-conversions/web)
 - [Google Ads API quotas](https://developers.google.com/google-ads/api/docs/best-practices/quotas)
+- [ConversionAdjustmentUploadService reference (v25)](https://developers.google.com/google-ads/api/reference/rpc/v25/ConversionAdjustmentUploadService)
+- [GoogleAdsService reference (v25, `searchStream`)](https://developers.google.com/google-ads/api/reference/rpc/v25/GoogleAdsService)
+- [OAuth overview](https://developers.google.com/google-ads/api/docs/oauth/overview)
 - [Improvements to conversion adjustment uploads (blog)](https://developers.google.com/ads/blog/posts/2024/08/improvements-to-conversion-adjustment)
 - [Changes to offline click conversion import support (blog)](https://developers.google.com/ads/blog/posts/2026/05/changes-to-offline-click-conversion)
 
 ### Changelog References
 
-- [Google Ads API release notes](https://developers.google.com/google-ads/api/docs/release-notes)
-- [Google Ads API deprecation and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
-- [Google Advertising and Measurement developer blog](https://developers.google.com/ads/blog)
-- Feeds: [release announcements](https://developers.google.com/ads/blog/feeds/releases), [deprecation and sunset announcements](https://developers.google.com/ads/blog/feeds/deprecations), [Google Ads API posts](https://developers.google.com/ads/blog/feeds/products/google-ads-api)
+- **Changelog:** [Google Ads API release notes](https://developers.google.com/google-ads/api/docs/release-notes)
+- **Deprecations:** [Google Ads API deprecations and unversioned changes](https://developers.google.com/google-ads/api/docs/deprecations)
+- **Versions:** [Google Ads API release and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
+- **Feed:** [Google Ads developer blog Atom feed](https://developers.google.com/ads/blog/rss.xml)
+- **Announcements:** [Developer tokens sunset on 2026-09-09; the `developer-token` header is now ignored and will be rejected in a future major version](https://developers.google.com/google-ads/api/docs/api-policy/developer-token)
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

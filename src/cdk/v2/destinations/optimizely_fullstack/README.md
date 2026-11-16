@@ -103,15 +103,21 @@ NEEDS REVIEW: Optimizely does not publish a rate limit for the Event API (`logx.
 
 ### Current Version
 
-Event API v1: `POST https://logx.optimizely.com/v1/events`.
+- **Version:** `v1`
+- **Where in code:** `config.js` (`ENDPOINT`, `https://logx.optimizely.com/v1/events`)
 
 ### Version Deprecation
 
-No deprecation announced for `/v1/events`.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Event API log endpoint](https://docs.optimizely.com/experimentation-strategy/data-api/log-endpoint)
 
 ### Latest Available Version
 
-v1 is the latest Event API version.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Event API log endpoint](https://docs.optimizely.com/experimentation-strategy/data-api/log-endpoint)
 
 ## RETL Functionality
 
@@ -127,9 +133,14 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- [Feature Experimentation developer changelog](https://docs.developers.optimizely.com/feature-experimentation/changelog)
-- [Feature Experimentation release notes](https://support.optimizely.com/hc/en-us/articles/7663600395021)
-- NEEDS REVIEW: no Event API–specific deprecations page, version/sunset page or RSS feed found.
+- **Changelog:** [Feature Experimentation release notes](https://docs.optimizely.com/feature-experimentation/release-notes)
+- **Deprecations:** [Feature Experimentation migration timeline (legacy Full Stack sunset)](https://docs.optimizely.com/feature-experimentation/docs/feature-experimentation-migration-timeline)
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The former developer changelog at `docs.developers.optimizely.com/feature-experimentation/changelog` now redirects to the docs home page.
 
 ## FAQ
 

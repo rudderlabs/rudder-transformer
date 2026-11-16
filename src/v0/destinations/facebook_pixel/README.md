@@ -247,22 +247,25 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 
 ### Current Version
 
-- **API Version**: v25.0 (Facebook Graph API)
-- **Release Date**: February 18, 2026
-- **Endpoint**: `https://graph.facebook.com/v25.0/{PIXEL_ID}/events`
-
-### Latest Available Version
-
-- **Latest Version**: v26.0 (Released July 29, 2026)
-- **Current Implementation**: v25.0 (Released February 18, 2026)
-- **Previous Versions**: v24.0, v23.0, v22.0, etc.
+- **Version:** `v25.0`
+- **Where in code:** `config.js` (`VERSION`), endpoint `https://graph.facebook.com/v25.0/{PIXEL_ID}/events`
 
 ### Version Deprecation
 
-- **Deprecation Schedule**: Facebook Graph API versions have explicit expiration dates in the changelog
-- **v25.0 Status**: Active; available until July 29, 2028
-- **Upgrade Recommendation**: Plan migration to v26.0 before July 29, 2028
-- **Breaking Changes**: Review Facebook's changelog when upgrading between versions
+- **Status:** Supported
+- **Sunset date:** 2027-02-23
+- **Source:** [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
+
+The Marketing API version table lists v25.0 (released 2026-02-18) as available until 2027-02-23. The [Graph API versions page](https://developers.facebook.com/docs/graph-api/changelog/versions) lists the same version until 2028-07-29. This endpoint is part of the Marketing API, so the earlier Marketing API date applies. Meta supports the previous Marketing API version for at least 90 days after a new one ships ([versioning policy](https://developers.facebook.com/docs/marketing-api/overview/versioning)).
+
+### Latest Available Version
+
+- **Version:** `v27.0`
+- **Released:** 2026-11-04
+- **Upgrade needed:** Yes
+- **Source:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog)
+
+No Conversions API changes were found in the [Marketing API v27.0 changelog](https://developers.facebook.com/documentation/ads-commerce/marketing-api/marketing-api-changelog/version27.0). Review Meta's changelog for breaking changes when upgrading.
 
 ## Documentation Links
 
@@ -275,12 +278,17 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 - **[PII Hashing Guidelines](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/customer-information-parameters/)**: Customer information and hashing requirements
 - **[Standard Events Reference](https://developers.facebook.com/docs/meta-pixel/reference/)**: Facebook standard events documentation
 - **[Graph API Changelog](https://developers.facebook.com/docs/graph-api/changelog/)**: Version updates and deprecation information
+- **[Server Event Parameters](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/server-event/)**: Fields of each event sent to `/{PIXEL_ID}/events`
+- **[Get Started](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started/)**: Access token generation for the Conversions API
 
 ### Changelog References
 
-- [Graph API versions and availability dates](https://developers.facebook.com/docs/graph-api/changelog/versions)
-- [Graph API changelog](https://developers.facebook.com/documentation/development/graph-api/changelog)
-- [Marketing API changelog](https://developers.facebook.com/documentation/ads-commerce/marketing-api/marketing-api-changelog)
+- **Changelog:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog); [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
+- **Deprecations:** [Graph API breaking changes](https://developers.facebook.com/docs/graph-api/changelog/breaking-changes); [Graph API out-of-cycle changes](https://developers.facebook.com/docs/graph-api/changelog/out-of-cycle-changes); [Marketing API out-of-cycle changes](https://developers.facebook.com/docs/marketing-api/out-of-cycle-changes)
+- **Versions:** [Graph API versions and expiration dates](https://developers.facebook.com/docs/graph-api/changelog/versions); [Marketing API versioning](https://developers.facebook.com/docs/marketing-api/overview/versioning)
+- **Feed:** [Meta for Developers blog Atom feed](https://developers.facebook.com/blog/feed/)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

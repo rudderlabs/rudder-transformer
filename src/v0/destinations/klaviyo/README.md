@@ -282,38 +282,49 @@ The transformer groups consecutive events of the same type to maintain ordering 
 
 ### Current Version
 
-- **V1 API**: Revision `2023-02-22` (deprecated)
-- **V2 API**: Revision `2024-10-15` (current default)
+- **API:** `apiVersion: v1` (also used when `apiVersion` is not set)
+- **Version:** `2023-02-22`
+- **Where in code:** `config.ts` (`KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V1].revision`, `getKlaviyoRevision`)
+- **API:** `apiVersion: v2`
+- **Version:** `2024-10-15`
+- **Where in code:** `config.ts` (`KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V2].revision`, `getKlaviyoRevision`)
+- **API:** `apiVersion: v3`
+- **Version:** `2026-04-15`
+- **Where in code:** `config.ts` (`KLAVIYO_VERSION_CONFIG[KLAVIYO_API_VERSION.V3].revision`, `getKlaviyoRevision`)
 
-### API Version Lifecycle
-
-Klaviyo provides **2 years** of support for each API revision:
-
-1. **Stable** (Year 1): Active support, non-breaking changes only
-2. **Deprecated** (Year 2): Use discouraged, migration recommended
-3. **Retired** (Year 3+): No longer supported, breakages likely
+The revision is sent in the `revision` request header. `transform.ts` also hardcodes `2023-02-22` for one request path.
 
 ### Version Deprecation
 
-| Revision   | Status     | Planned Retirement |
-| ---------- | ---------- | ------------------ |
-| 2023-02-22 | Deprecated | ~February 2025     |
-| 2024-10-15 | Stable     | ~October 2026      |
-| 2026-04-15 | Stable     | ~April 2028        |
+- **API:** `apiVersion: v1`
+- **Status:** Sunset
+- **Sunset date:** 2025-02-22
+- **Source:** [API versioning and deprecation policy](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
+- **API:** `apiVersion: v2`
+- **Status:** Sunset
+- **Sunset date:** 2026-10-15
+- **Source:** [Klaviyo API changelog](https://developers.klaviyo.com/en/docs/changelog_)
+- **API:** `apiVersion: v3`
+- **Status:** Supported
+- **Sunset date:** 2028-04-15
+- **Source:** [API versioning and deprecation policy](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
 
-**Recommendation**: Continue using `apiVersion: v2` to preserve existing behavior. Use `apiVersion: v3` only when you are ready for strict consent enforcement on both subscribe and unsubscribe requests.
+Klaviyo supports each revision for 2 years: stable for the first year, deprecated for the second, then retired ("no longer supported"). The changelog states `2024-10-15` was supported until 2026-10-15. The `2023-02-22` and `2026-04-15` dates are derived from the 2-year policy; `2026-04-15` becomes deprecated on 2027-04-15. Retired revisions may still respond but can break without notice.
+
+**Recommendation**: `apiVersion: v1` and `v2` now send retired revisions. Use `apiVersion: v3` when strict consent enforcement on both subscribe and unsubscribe requests is acceptable.
 
 ### Latest Available Version
 
-- **Latest Revision**: `2026-10-15` (GA), per the Klaviyo API changelog
+- **Version:** `2026-10-15`
+- **Released:** 2026-10-15
+- **Upgrade needed:** Yes
+- **Source:** [Klaviyo API changelog](https://developers.klaviyo.com/en/docs/changelog_)
 
-### Breaking Changes Between Versions
+**Breaking changes between `apiVersion` settings:**
 
 - V2 requires E.164 phone number format
 - V2 uses `/api/profile-import` instead of `/api/profiles` for profile creation
 - V2 supports additional metadata operations (fieldsToUnset, fieldsToAppend, fieldsToUnappend)
-
-[Version Policy Reference](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
 
 ## Processor vs Router Destination
 
@@ -361,17 +372,26 @@ Identifier priority depends on configuration and API version.
 ### REST API Documentation
 
 - [Klaviyo API Overview](https://developers.klaviyo.com/en/reference/api_overview)
+- [Authentication](https://developers.klaviyo.com/en/docs/authenticate_)
 - [Profiles API](https://developers.klaviyo.com/en/reference/profiles_api_overview)
+- [Create Profile](https://developers.klaviyo.com/en/reference/create_profile)
+- [Update Profile](https://developers.klaviyo.com/en/reference/update_profile)
+- [Create or Update Profile (profile-import)](https://developers.klaviyo.com/en/reference/create_or_update_profile)
 - [Events API](https://developers.klaviyo.com/en/reference/events_api_overview)
+- [Create Event](https://developers.klaviyo.com/en/reference/create_event)
 - [Subscriptions API](https://developers.klaviyo.com/en/reference/bulk_subscribe_profiles)
+- [Bulk Unsubscribe Profiles](https://developers.klaviyo.com/en/reference/bulk_unsubscribe_profiles)
 - [Rate Limits](https://developers.klaviyo.com/en/docs/rate_limits_and_error_handling)
 - [API Versioning Policy](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
 
 ### Changelog References
 
-- [Klaviyo API changelog](https://developers.klaviyo.com/en/docs/changelog_)
-- [API versioning and deprecation policy](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
-- [API overview and revisions](https://developers.klaviyo.com/en/reference/api_overview)
+- **Changelog:** [Klaviyo API changelog](https://developers.klaviyo.com/en/docs/changelog_)
+- **Deprecations:** [API versioning and deprecation policy](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
+- **Versions:** [API overview and revisions](https://developers.klaviyo.com/en/reference/api_overview)
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

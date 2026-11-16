@@ -234,21 +234,42 @@ The destination processes operations in batches, and Google Ads applies the fina
 
 ### Current Version
 
-- **Google Ads API Version**: v25
-- **Endpoint Base**: `https://googleads.googleapis.com/v25/customers`
+- **API:** Google Ads API
+- **Version:** `v25`
+- **Where in code:** `config.ts` (`API_VERSION`, `BASE_ENDPOINT`)
+- **API:** Data Manager API
+- **Version:** `v1`
+- **Where in code:** `dataManager/config.ts` (`DATA_MANAGER_INGEST_ENDPOINT_PATH`, `DATA_MANAGER_REMOVE_ENDPOINT_PATH`)
+
+The Data Manager path is used when the destination's delivery account is `DESTINATION_GOOGLE_ADWORDS_REMARKETING_LISTS_DM_OAUTH`.
 
 ### Version Deprecation
 
-- Google Ads API follows a regular deprecation cycle
-- Typically maintains 3-4 versions simultaneously
-- Older versions are deprecated approximately 12 months after new version release
-- **Current Status**: v25 (released July 22, 2026) is supported; v26 is newer
-- **Sunset Window**: v25 is expected to sunset in August 2027
-- **Upgrade Path**: When new versions are released, update the Google Ads `API_VERSION` constants across the transformer, integrations-info, and integrations-lib repositories so runtime code, tests, and metadata stay aligned.
+- **API:** Google Ads API
+- **Status:** Supported
+- **Sunset date:** 2027-08 (Google publishes the month only)
+- **Source:** [Google Ads API release and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
+- **API:** Data Manager API
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Data Manager API reference](https://developers.google.com/data-manager/api/reference)
+
+v25 was released on 2026-07-22 and Google sunsets each version about 12 months after release. From 2026-04-01, Google Ads API Customer Match requests (`OfflineUserDataJobService`) fail with `CUSTOMER_NOT_ALLOWLISTED_FOR_THIS_FEATURE` unless the caller sent Customer Match requests between 2025-10-01 and 2026-03-31; Google recommends the Data Manager API ([deprecations](https://developers.google.com/google-ads/api/docs/deprecations)).
+
+**Upgrade path:** When new versions are released, update the Google Ads `API_VERSION` constants across the transformer, integrations-info, and integrations-lib repositories so runtime code, tests, and metadata stay aligned.
 
 ### Latest Available Version
 
-- **Latest Version**: v26 (released October 14, 2026, sunset November 2027), per the Google Ads API sunset dates page
+- **API:** Google Ads API
+- **Version:** `v26`
+- **Released:** 2026-10-14
+- **Upgrade needed:** Yes
+- **Source:** [Google Ads API release and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
+- **API:** Data Manager API
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Data Manager API reference](https://developers.google.com/data-manager/api/reference)
 
 ### Breaking Changes
 
@@ -264,11 +285,20 @@ The destination processes operations in batches, and Google Ads applies the fina
 - [Manage Customer Lists](https://developers.google.com/google-ads/api/docs/remarketing/audience-segments/customer-match/manage)
 - [Offline User Data Jobs](https://developers.google.com/google-ads/api/reference/rpc/v25/OfflineUserDataJobService)
 - [API Rate Limits](https://developers.google.com/google-ads/api/docs/best-practices/quotas)
+- [OAuth overview](https://developers.google.com/google-ads/api/docs/oauth/overview)
+- [Data Manager API: Customer Match for Google Ads](https://developers.google.com/data-manager/api/devguides/audiences/google-ads/customer-match)
+- [Data Manager API: `audienceMembers.ingest`](https://developers.google.com/data-manager/api/reference/rest/v1/audienceMembers/ingest)
+- [Data Manager API: `audienceMembers.remove`](https://developers.google.com/data-manager/api/reference/rest/v1/audienceMembers/remove)
+- [Data Manager API: set up API access](https://developers.google.com/data-manager/api/devguides/quickstart/set-up-access)
 
 ### Changelog References
 
-- [Google Ads API sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
-- [Google Ads API release notes](https://developers.google.com/google-ads/api/docs/release-notes)
+- **Changelog:** [Google Ads API release notes](https://developers.google.com/google-ads/api/docs/release-notes); [Data Manager API posts](https://developers.google.com/ads/blog/feeds/products/data-manager-api)
+- **Deprecations:** [Google Ads API deprecations and unversioned changes](https://developers.google.com/google-ads/api/docs/deprecations)
+- **Versions:** [Google Ads API release and sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
+- **Feed:** [Google Ads developer blog Atom feed](https://developers.google.com/ads/blog/rss.xml)
+- **Announcements:** [Google Ads API Customer Match restricted to existing adopters from 2026-04-01; use the Data Manager API](https://developers.google.com/ads/blog/posts/2026/03/changes-to-customer-match-support-in); [Developer tokens sunset on 2026-09-09; the `developer-token` header is now ignored and will be rejected in a future major version](https://developers.google.com/google-ads/api/docs/api-policy/developer-token)
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

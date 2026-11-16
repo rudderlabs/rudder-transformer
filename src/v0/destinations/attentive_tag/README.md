@@ -115,16 +115,26 @@ Requests over the limit return 429.
 
 ### Current Version
 
-Attentive REST API **v1** (`https://api.attentivemobile.com/v1`). Endpoints used:
+- **Version:** `v1`
+- **Where in code:** `config.js` (`BASE_URL`)
+
+Attentive REST API v1 (`https://api.attentivemobile.com/v1`). Endpoints used:
 `/v1/identity-resolution/user-identifiers`, `/v1/attributes/custom`, `/v1/subscriptions`, `/v1/subscriptions/unsubscribe`, `/v1/events/custom`, `/v1/events/ecommerce/purchase`, `/v1/events/ecommerce/add-to-cart`, `/v1/events/ecommerce/product-view`.
 
 ### Version Deprecation
 
-No sunset date for v1 has been published. v1 is still documented and supported.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Attentive API reference](https://docs.attentive.com/openapi/reference/overview/)
 
 ### Latest Available Version
 
-Attentive documents an **API V2** reference (for example V2 user attributes, segments and bulk operations) alongside the unversioned v1 reference. NEEDS REVIEW: which v2 endpoints replace the v1 endpoints used here, and whether any changes would break this integration.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Attentive API V2 reference](https://docs.attentive.com/openapi/reference-v2/overview/)
+
+Attentive API V2 covers only user attributes (single and bulk create/update with attributes, subscriptions and identifiers), segments and bulk operations. The v1 event, subscription and unsubscribe endpoints used here have no V2 equivalent and v1 is still documented. NEEDS REVIEW: whether V2 user attributes should replace the v1 identify and custom attributes calls.
 
 ## Documentation Links
 
@@ -132,13 +142,28 @@ Attentive documents an **API V2** reference (for example V2 user attributes, seg
 
 - [Attentive API reference](https://docs.attentive.com/openapi/reference/overview/)
 - [Attentive API V2 reference](https://docs.attentive.com/openapi/reference-v2/overview/)
+- [Authentication](https://docs.attentive.com/docs/authentication)
 - [API Rate Limits](https://docs.attentive.com/docs/api-rate-limits)
+- [Identify (user identifiers)](https://docs.attentive.com/reference/identify)
+- [Custom Attributes](https://docs.attentive.com/reference/postcustomattributes)
+- [Subscribe user](https://docs.attentive.com/reference/addsubscriptions)
+- [Unsubscribe subscriptions](https://docs.attentive.com/reference/unsubscribesubscriptions)
 - [Custom Events](https://docs.attentive.com/reference/postcustomevents)
 - [Custom Events (OpenAPI tag)](https://docs.attentive.com/openapi/reference/tag/Custom-Events)
+- [Purchase events](https://docs.attentive.com/reference/postpurchaseevents)
+- [Add to cart events](https://docs.attentive.com/reference/postaddtocartevents)
+- [Product view events](https://docs.attentive.com/reference/postproductviewevents)
 
 ### Changelog References
 
-- NEEDS REVIEW: No developer changelog, release notes, deprecations page, API versions page or RSS feed was found for the Attentive API. The docs index ([llms.txt](https://docs.attentive.com/llms.txt)) lists no changelog.
+- **Changelog:** [Attentive release notes](https://www.attentive.com/release-notes) (blocks automated requests)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Attentive has no developer changelog. The docs index ([llms.txt](https://docs.attentive.com/llms.txt)) lists no changelog, deprecations or versions page, so the product release notes are the closest source.
 
 ### RETL Functionality
 

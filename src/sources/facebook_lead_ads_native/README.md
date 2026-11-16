@@ -63,27 +63,43 @@ Not required. Each lead is a separate, immutable submission.
 
 ### Current Version
 
-Graph API **v25.0** (`FACEBOOK_GRAPH_API_URL` in `hydrate.ts`).
+- **Version:** `v25.0`
+- **Where in code:** `hydrate.ts` (`FACEBOOK_GRAPH_API_URL`), used by `fetchLeadData` for `GET /{lead-id}`
 
 ### Version Deprecation
 
-v25.0 was released February 18, 2026 and is available until **July 29, 2028**.
+- **Status:** Supported
+- **Sunset date:** 2027-02-23
+- **Source:** [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
+
+The Marketing API version table lists v25.0 (released 2026-02-18) as available until 2027-02-23. The [Graph API versions page](https://developers.facebook.com/docs/graph-api/changelog/versions) lists the same version until 2028-07-29. This endpoint is part of the Marketing API, so the earlier Marketing API date applies. Meta supports the previous Marketing API version for at least 90 days after a new one ships ([versioning policy](https://developers.facebook.com/docs/marketing-api/overview/versioning)).
+
+NEEDS REVIEW: lead retrieval is documented under the Marketing API, so the Marketing API date is used. If Meta treats `GET /{lead-id}` as a Graph API call, v25.0 is available until 2028-07-29.
 
 ### Latest Available Version
 
-**v26.0**, released July 29, 2026 (expiry not yet announced).
+- **Version:** `v27.0`
+- **Released:** 2026-11-04
+- **Upgrade needed:** Yes
+- **Source:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog)
+
+The [Marketing API v27.0 changelog](https://developers.facebook.com/documentation/ads-commerce/marketing-api/marketing-api-changelog/version27.0) only adds lead form fields (`phone_otp_verification_type`); no lead retrieval changes were found.
 
 ## Documentation Links
 
 - [Retrieving leads](https://developers.facebook.com/docs/marketing-api/guides/lead-ads/retrieving)
 - [Webhooks for Lead Ads](https://developers.facebook.com/docs/graph-api/webhooks/getting-started/webhooks-for-leadgen)
 - [Graph API versioning](https://developers.facebook.com/docs/graph-api/guides/versioning)
+- [Lead Ads overview](https://developers.facebook.com/docs/marketing-api/guides/lead-ads)
+- [Access tokens](https://developers.facebook.com/docs/facebook-login/guides/access-tokens)
 
 ### Changelog References
 
-- Changelog: [https://developers.facebook.com/docs/graph-api/changelog](https://developers.facebook.com/docs/graph-api/changelog)
-- Deprecations: [Breaking changes](https://developers.facebook.com/docs/graph-api/changelog/breaking-changes), [Out-of-cycle changes](https://developers.facebook.com/docs/graph-api/changelog/out-of-cycle-changes)
-- Versions and sunset dates: [https://developers.facebook.com/docs/graph-api/changelog/versions](https://developers.facebook.com/docs/graph-api/changelog/versions)
-- RSS/Atom feed: none found. NEEDS REVIEW
+- **Changelog:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog); [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
+- **Deprecations:** [Graph API breaking changes](https://developers.facebook.com/docs/graph-api/changelog/breaking-changes); [Graph API out-of-cycle changes](https://developers.facebook.com/docs/graph-api/changelog/out-of-cycle-changes); [Marketing API out-of-cycle changes](https://developers.facebook.com/docs/marketing-api/out-of-cycle-changes)
+- **Versions:** [Graph API versions and expiration dates](https://developers.facebook.com/docs/graph-api/changelog/versions); [Marketing API versioning](https://developers.facebook.com/docs/marketing-api/overview/versioning)
+- **Feed:** [Meta for Developers blog Atom feed](https://developers.facebook.com/blog/feed/)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ

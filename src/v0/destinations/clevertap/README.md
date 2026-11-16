@@ -119,18 +119,23 @@ Device mode message types (`db-config.json`): web `identify`, `track`, `page`; A
 
 ### Current Version
 
-CleverTap REST API **v1**:
+- **Version:** `v1`
+- **Where in code:** `config.js` (`getEndpoint`, `https://api.clevertap.com/1` or `https://<region>.api.clevertap.com/1`)
 
-- `POST /1/upload` for profiles, device tokens and events.
-- `POST /1/delete/profiles.json` for user deletion.
+Endpoints used: `POST /1/upload` for profiles, device tokens and events, and `POST /1/delete/profiles.json` for user deletion (`deleteUsers.js`).
 
 ### Version Deprecation
 
-No deprecation of the v1 REST API has been announced, and no sunset date is published.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Upload Events API](https://developer.clevertap.com/docs/upload-events-api)
 
 ### Latest Available Version
 
-**v1** is the latest CleverTap REST API version. The integration uses it.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Upload Events API](https://developer.clevertap.com/docs/upload-events-api)
 
 ## Documentation Links
 
@@ -139,17 +144,23 @@ No deprecation of the v1 REST API has been announced, and no sunset date is publ
 - [Upload Events API](https://developer.clevertap.com/docs/upload-events-api)
 - [Upload User Profiles API](https://developer.clevertap.com/docs/upload-user-profiles-api)
 - [Upload Device Tokens API](https://developer.clevertap.com/docs/upload-device-tokens-api)
-- [Delete User Profiles / Disassociate API](https://developer.clevertap.com/docs/disassociate-api)
+- [Delete User Profile API](https://developer.clevertap.com/docs/delete-user-profile-api)
+- [Disassociate API](https://developer.clevertap.com/docs/disassociate-api)
+- [API Authentication](https://developer.clevertap.com/docs/authentication)
 - [API Request Limit](https://developer.clevertap.com/docs/api-request-limit)
 - [Region (IDC) endpoints](https://developer.clevertap.com/docs/idc)
 - [Recording customer purchases (Charged)](https://developer.clevertap.com/docs/concepts-events#recording-customer-purchases)
 
 ### Changelog References
 
-- [Developer changelog](https://developer.clevertap.com/docs/changelog) (index of all years)
-- [Developer changelog, 2026](https://developer.clevertap.com/docs/2026) (monthly changelog pages for the current year, mostly SDK releases)
-- [Product release notes](https://docs.clevertap.com/docs/whats-new)
-- NEEDS REVIEW: No REST API-specific changelog, API versions or sunset page, or RSS feed was found.
+- **Changelog:** [Developer changelog](https://developer.clevertap.com/docs/changelog) (index of all years, mostly SDK releases); [Product release notes (What's New)](https://docs.clevertap.com/docs/whats-new)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+CleverTap publishes no REST API-specific changelog, API versions or sunset page, or RSS feed (`developer.clevertap.com/changelog.rss` returns 404). Auth uses the account ID and passcode headers described in [API Authentication](https://developer.clevertap.com/docs/authentication); no change to it is announced.
 
 ### RETL Functionality
 

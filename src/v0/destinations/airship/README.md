@@ -243,33 +243,46 @@ Event ordering is **not strictly required** for Group events. Similar to Identif
 
 ### Current Version
 
-- **API Version**: Airship API v3
-- **Accept Header**: `application/vnd.urbanairship+json; version=3`
-- **Implementation**: Uses the current and only supported version of Airship API
+- **Version:** `v3`
+- **Where in code:** `transform.js` (`DEFAULT_ACCEPT_HEADER`, `application/vnd.urbanairship+json; version=3`); base URLs in `config.js` (`BASE_URL_US`, `BASE_URL_EU`)
 
 ### Version Deprecation
 
-- **Current Status**: Airship API v3 is the current and only supported version
-- **Deprecation**: No deprecation timeline announced
-- **Stability**: Version 3 has been stable and is actively maintained by Airship
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Airship API introduction](https://www.airship.com/docs/developer/rest-api/ua/introduction/)
+
+Airship requires `version=3` in the `Accept` header for all API requests. Version 3 is the only supported version.
 
 ### Latest Available Version
 
-- **API v3** is the latest available version and is used by this integration
+- **Version:** `v3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Airship API introduction](https://www.airship.com/docs/developer/rest-api/ua/introduction/)
 
 ## Documentation Links
 
 ### REST API Documentation
 
-- [Airship API Overview](https://docs.airship.com/api/ua/)
-- [Named Users Tags API](https://docs.airship.com/api/ua/#operation/api/named_users/tags/post)
-- [Named Users Attributes API](https://docs.airship.com/api/ua/#operation/api/named_users/named_user_id/attributes/post)
-- [Custom Events API](https://docs.airship.com/api/ua/#operation/api/custom-events/post)
-- [API Best Practices](https://support.airship.com/hc/en-us/articles/360051990652-What-are-the-best-practices-for-the-use-of-the-Airship-Messaging-API)
+- [Airship API Overview](https://www.airship.com/docs/developer/rest-api/ua/)
+- [API introduction (request format, version header)](https://www.airship.com/docs/developer/rest-api/ua/introduction/)
+- [Named Users API (tags and attributes)](https://www.airship.com/docs/developer/rest-api/ua/operations/named-users/)
+- [Custom Events API](https://www.airship.com/docs/developer/rest-api/ua/operations/custom-events/)
+- [API security (Bearer token)](https://www.airship.com/docs/developer/rest-api/ua/api-security/)
+- [API authorization reference](https://www.airship.com/docs/developer/rest-api/ua/api-auth-reference/)
+- [API Best Practices](https://support.airship.eu/hc/en-us/articles/5578632836123-Best-Practices-for-the-use-of-the-Airship-Messaging-API) (blocks automated requests)
 
 ### Changelog References
 
-- [Airship what's new](https://www.airship.com/docs/whats-new/)
+- **Changelog:** [Airship what's new](https://www.airship.com/docs/whats-new/); [All releases](https://www.airship.com/docs/whats-new/releases/)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [OAuth 2.0 authorization support (2024-03-14)](https://www.airship.com/docs/whats-new/2024-03-14-oauth-2-0-support/)
+- **Last checked:** 2026-11-16
+
+Airship publishes no RSS feed for What's New (`index.xml`, `feed.xml` and `rss.xml` return 404) and no API deprecations page. This integration authenticates with a Bearer token; OAuth 2.0 is an optional alternative, and no removal of Bearer tokens is announced.
 
 ### RETL Functionality
 

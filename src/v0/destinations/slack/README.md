@@ -114,16 +114,27 @@ Exceeding the limit returns HTTP `429` with a `Retry-After` header. rudder-serve
 
 ### Current Version
 
-- Slack incoming webhooks (no versioned API). The request is `POST <webhook URL>` with `Content-Type: application/x-www-form-urlencoded` and a `payload=<JSON>` form body.
+- **Version:** `Unversioned`
+- **Where in code:** `src/v0/destinations/slack/transform.js` (`buildResponse`, `channelWebhook` or `destination.Config.webhookUrl`)
+
+Slack incoming webhooks are not versioned. The request is `POST <webhook URL>` with `Content-Type: application/x-www-form-urlencoded` and a `payload=<JSON>` form body.
 
 ### Version Deprecation
 
-- Incoming webhooks are not versioned and have no sunset date.
-- Legacy custom-integration webhooks (`incomingWebhooksType: legacy`) are documented by Slack as legacy, and Slack recommends migrating them to Slack apps ([Legacy incoming webhooks](https://docs.slack.dev/legacy/legacy-custom-integrations/legacy-custom-integrations-incoming-webhooks)). No retirement date was found. NEEDS REVIEW.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Sending messages using incoming webhooks](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks)
+
+Legacy custom-integration webhooks (`incomingWebhooksType: legacy`) are documented by Slack as legacy, and Slack recommends migrating them to Slack apps ([Legacy incoming webhooks](https://docs.slack.dev/legacy/legacy-custom-integrations/legacy-custom-integrations-incoming-webhooks)). No retirement date is given. Slack had scheduled classic apps to stop working on 2026-11-16, then paused that on 2025-12-08; classic apps keep working for now.
 
 ### Latest Available Version
 
-- Not applicable. App-based incoming webhooks (`modern`) are the current option. They are bound to one channel and ignore `channel`, `username` and `icon_url` overrides, which is why `modern` mode uses a webhook URL per channel.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Sending messages using incoming webhooks](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks)
+
+App-based incoming webhooks (`modern`) are the current option. They are bound to one channel and ignore `channel`, `username` and `icon_url` overrides, which is why `modern` mode uses a webhook URL per channel.
 
 ## RETL Functionality
 
@@ -141,11 +152,12 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ### Changelog References
 
-- Developer changelog: [https://docs.slack.dev/changelog/](https://docs.slack.dev/changelog/)
-- Deprecations: [https://api.slack.com/changelog/deprecations](https://api.slack.com/changelog/deprecations)
-- Changelog RSS feed: [https://docs.slack.dev/changelog/rss.xml](https://docs.slack.dev/changelog/rss.xml)
-- Changelog Atom feed: [https://docs.slack.dev/changelog/atom.xml](https://docs.slack.dev/changelog/atom.xml)
-- API versions and sunset dates page: not applicable (webhooks are unversioned).
+- **Changelog:** [Developer changelog](https://docs.slack.dev/changelog/)
+- **Deprecations:** [Changelog: deprecation tag](https://docs.slack.dev/changelog/tags/deprecation); [Deprecations (legacy changelog)](https://api.slack.com/changelog/deprecations)
+- **Versions:** Not versioned
+- **Feed:** [Changelog RSS](https://docs.slack.dev/changelog/rss.xml); [Changelog Atom](https://docs.slack.dev/changelog/atom.xml)
+- **Announcements:** [Discontinuing legacy custom bots and classic apps](https://docs.slack.dev/changelog/2024-09-legacy-custom-bots-classic-apps-deprecation/); [Classic apps deprecation paused](https://docs.slack.dev/changelog/2025/12/08/classic-apps-deprecation-paused)
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

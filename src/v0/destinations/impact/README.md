@@ -106,6 +106,9 @@ None.
 
 ### Current Version
 
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`CONFIG_CATEGORIES.CONVERSION.base_url`, `CONFIG_CATEGORIES.PAGELOAD.endPoint`)
+
 The endpoints are not versioned in the URL:
 
 - `POST https://api.impact.com/Advertisers/{AccountSID}/Conversions`
@@ -115,25 +118,40 @@ impact.com applies the API version set in the account's API settings unless a re
 
 ### Version Deprecation
 
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Versioning](https://integrations.impact.com/brand-api-reference/readme/versioning)
+
 impact.com does not publish sunset dates for API versions. New versions are released only for backwards-incompatible changes, and accounts upgrade by changing their API settings.
 
 ### Latest Available Version
 
-**v14** (released June 1, 2026). Earlier: v13 (March 1, 2025), v12 (May 6, 2024), v11 (October 12, 2022). The v14 changelog adds flat-fee payouts for creator tasks to the Conversions endpoint; no breaking change affecting the fields RudderStack sends was found. NEEDS REVIEW.
+- **Version:** `v14`
+- **Released:** 2026-06-01
+- **Upgrade needed:** No
+- **Source:** [Versioning](https://integrations.impact.com/brand-api-reference/readme/versioning)
+
+Earlier versions: v13 (2025-03-01), v12 (2024-05-06), v11 (2022-10-12). The v14 changelog adds pay-per-task (flat-fee) conversions for creator campaigns to the Conversions endpoint; no breaking change affecting the fields RudderStack sends was found. NEEDS REVIEW.
 
 ## Documentation Links
 
-- [Submit a conversion](https://integrations.impact.com/impact-brand/reference/submit-a-conversion)
-- [Create a page load](https://integrations.impact.com/impact-brand/reference/create-a-pageload)
-- [API integration implementation](https://integrations.impact.com/impact-brand/docs/api-integration-implementation)
-- [Rate limits](https://integrations.impact.com/impact-brand/reference/rate-limits)
+- [Submit a conversion](https://integrations.impact.com/brand-api-reference/reference/conversions/conversions)
+- [Create a page load](https://integrations.impact.com/brand-api-reference/reference/page-load/page-load)
+- [Authentication](https://integrations.impact.com/brand-api-reference/readme/authentication)
+- [Create an API key](https://integrations.impact.com/rest-apis/api-quick-start/create-an-api-key)
+- [API integration implementation](https://integrations.impact.com/integration-guides/for-brands/tracking-integrations/api-online-sale/implementation)
+- [Rate limits](https://integrations.impact.com/brand-api-reference/readme/rate-limits)
 
 ### Changelog References
 
-- [Brand API changelog](https://integrations.impact.com/impact-brand/changelog)
-- [API versioning (versions and release dates)](https://integrations.impact.com/impact-brand/reference/versioning)
-- [API changelog summary (help center)](https://help.impact.com/other/readme/api-access-tokens-and-changelog/api-changelog-summary)
-- RSS/Atom feed: none found.
+- **Changelog:** [Brand API changelog](https://integrations.impact.com/brand-api-reference/readme/changelog); [API changelog summary (help center)](https://help.impact.com/other/reference-documentation/api-access-tokens-and-changelog/api-changelog-summary)
+- **Deprecations:** None found
+- **Versions:** [Versioning](https://integrations.impact.com/brand-api-reference/readme/versioning)
+- **Feed:** None found
+- **Announcements:** [Migrate to scoped tokens](https://help.impact.com/other/reference-documentation/api-access-tokens-and-changelog/migrate-to-scoped-tokens)
+- **Last checked:** 2026-11-16
+
+Tokens created before April 2025 are legacy tokens; they keep working with read/write or read-only permissions ([Authentication](https://integrations.impact.com/brand-api-reference/readme/authentication)).
 
 ## RETL Functionality
 

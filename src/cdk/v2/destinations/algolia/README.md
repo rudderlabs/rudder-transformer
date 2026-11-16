@@ -113,15 +113,23 @@ From `db-config.json`: `"supportedMessageTypes": { "cloud": ["track"] }`.
 
 ### Current Version
 
-Algolia Insights API **v1**: `https://insights.algolia.io/1/events`.
+- **Version:** `v1`
+- **Where in code:** `src/v0/destinations/algolia/config.js` (`ENDPOINT`, `https://insights.algolia.io/1/events`), bound into `procWorkflow.yaml` and `rtWorkflow.yaml`
 
 ### Version Deprecation
 
-No deprecation of Insights API v1 has been announced, and no sunset date is published.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Insights REST API](https://www.algolia.com/doc/rest-api/insights)
+
+The Insights API reference states that `/1/` is the current version. No deprecation notice for Insights API v1 was found in the Algolia changelog.
 
 ### Latest Available Version
 
-**v1** (`/1/`) is the latest Insights API version. The integration uses it.
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Insights REST API](https://www.algolia.com/doc/rest-api/insights)
 
 ## Documentation Links
 
@@ -130,11 +138,16 @@ No deprecation of Insights API v1 has been announced, and no sunset date is publ
 - [Insights REST API](https://www.algolia.com/doc/rest-api/insights)
 - [Push events](https://www.algolia.com/doc/rest-api/insights/push-events)
 - [Event types](https://www.algolia.com/doc/guides/sending-events/concepts/event-types)
+- [API keys (authentication)](https://www.algolia.com/doc/guides/security/api-keys)
 
 ### Changelog References
 
-- [Algolia product changelog](https://changelog.algolia.com/) (filterable by label, includes "API & Libraries" and "Events")
-- NEEDS REVIEW: No Insights API-specific changelog, deprecations page, API versions page or RSS feed was found.
+- **Changelog:** [Algolia changelog](https://changelog.algolia.com/) (filter by the "API & Libraries" and "Events" labels)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Changelog RSS](https://changelog.algolia.com/rss.xml); [Changelog Atom](https://changelog.algolia.com/atom.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

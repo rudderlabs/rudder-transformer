@@ -129,15 +129,27 @@ From [Zoho CRM API limits](https://www.zoho.com/crm/developer/docs/api/v8/api-li
 
 ### Current Version
 
-- Zoho CRM REST API **v6** (`/crm/v6/{module}/upsert`, `/crm/v6/{module}`, `/crm/v6/coql`), from `ZOHO_SDK` in `@rudderstack/integrations-lib`.
+- **Version:** `v6`
+- **Where in code:** `ZOHO_SDK.ZOHO.getBaseRecordUrl` in `@rudderstack/integrations-lib` (`getRecordPath`, `/crm/v6/{module}`), called from `src/cdk/v2/destinations/zoho/utils.ts` (`deduceModuleInfoV2`, `sendCOQLRequest`)
+
+Endpoints used: `/crm/v6/{module}/upsert`, `/crm/v6/{module}` (delete) and `/crm/v6/coql`.
 
 ### Version Deprecation
 
-- Zoho has not announced an end-of-life for v6. The V7 and V8 launch announcements state that older versions are not being deprecated at this time ([V8 announcement](https://help.zoho.com/portal/en/community/topic/zoho-crms-v8-apis-are-here)).
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Zoho CRM's V8 APIs are here](https://help.zoho.com/portal/en/community/topic/zoho-crms-v8-apis-are-here)
+
+The V7 and V8 launch announcements state that older versions are not being deprecated at this time.
 
 ### Latest Available Version
 
-- **v8**. See the [V8 changelog](https://www.zoho.com/crm/developer/docs/api/v8/change-log.html) and [What's new in V8](https://www.zoho.com/crm/developer/docs/api/v8/whats-new.html). No breaking change to upsert, delete or COQL was identified in the V8 changelog. NEEDS REVIEW before upgrading.
+- **Version:** `v8`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [What's new in V8](https://www.zoho.com/crm/developer/docs/api/v8/whats-new.html)
+
+No breaking change to upsert, delete or COQL was identified in the [V8 changelog](https://www.zoho.com/crm/developer/docs/api/v8/change-log.html). No V9 API has been released. NEEDS REVIEW before upgrading.
 
 ## RETL Functionality
 
@@ -152,14 +164,21 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 - [Upsert records (v6)](https://www.zoho.com/crm/developer/docs/api/v6/upsert-records.html)
 - [Delete records (v6)](https://www.zoho.com/crm/developer/docs/api/v6/delete-records.html)
 - [COQL overview (v6)](https://www.zoho.com/crm/developer/docs/api/v6/COQL-Overview.html)
+- [Get records through a COQL query (v6)](https://www.zoho.com/crm/developer/docs/api/v6/Get-Records-through-COQL-Query.html)
+- [OAuth overview (v6)](https://www.zoho.com/crm/developer/docs/api/v6/oauth-overview.html)
+- [Multi DC (v6)](https://www.zoho.com/crm/developer/docs/api/v6/multi-dc.html)
 - [API limits (v8)](https://www.zoho.com/crm/developer/docs/api/v8/api-limits.html)
 
 ### Changelog References
 
-- API changelog (V8): [https://www.zoho.com/crm/developer/docs/api/v8/change-log.html](https://www.zoho.com/crm/developer/docs/api/v8/change-log.html)
-- What's new in V8: [https://www.zoho.com/crm/developer/docs/api/v8/whats-new.html](https://www.zoho.com/crm/developer/docs/api/v8/whats-new.html)
-- Zoho CRM release notes (filter by Developer Platform): [https://www.zoho.com/crm/whats-new/release-notes.html?yearOpt=all&labelTag=Developer%20Platform&topicTag=all&DCTag=all&editionTag=all](https://www.zoho.com/crm/whats-new/release-notes.html?yearOpt=all&labelTag=Developer%20Platform&topicTag=all&DCTag=all&editionTag=all)
-- Deprecations / API versions and sunset dates page and RSS feed: none found. NEEDS REVIEW
+- **Changelog:** [API changelog (V8)](https://www.zoho.com/crm/developer/docs/api/v8/change-log.html); [Zoho CRM release notes (Developer Platform)](https://www.zoho.com/crm/whats-new/release-notes.html?yearOpt=all&labelTag=Developer%20Platform&topicTag=all&DCTag=all&editionTag=all)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Mandatory field behavior changes in Zoho CRM APIs (Last_Name no longer system-mandatory in Leads and Contacts, planned by end of October 2026)](https://help.zoho.com/portal/en/community/topic/crm-developer-update-mandatory-field-behavior-changes-in-zoho-crm-apis); [Zoho CRM's V8 APIs are here](https://help.zoho.com/portal/en/community/topic/zoho-crms-v8-apis-are-here)
+- **Last checked:** 2026-11-16
+
+The mandatory field change affects Upsert Records (V2 to V8) and the Fields and Layouts metadata APIs. This destination checks module mandatory fields (`fetchModuleWiseMandatoryFields`), which lists `Last_Name` for Leads and Contacts. NEEDS REVIEW: confirm whether that check should change once the rollout is live.
 
 ## FAQ
 

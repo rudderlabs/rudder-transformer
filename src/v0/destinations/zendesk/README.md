@@ -226,18 +226,31 @@ Not strictly required. Events carry no timestamp from the RudderStack payload (t
 
 ### Current Version
 
-- **Zendesk Support REST API v2**: base URL `https://{domain}.zendesk.com/api/v2/` (`getBaseEndpoint` in `config.js`).
-- Track uses the Events API (`/api/v2/users/{user_id}/events`), which is also under `/api/v2`.
+- **Version:** `v2`
+- **Where in code:** `src/v0/destinations/zendesk/config.js` (`getBaseEndpoint`)
+
+Track uses the Events API (`/api/v2/users/{user_id}/events`), which is also under `/api/v2`.
 
 ### Version Deprecation
 
-- Zendesk does not publish versioned REST APIs or version sunset dates. v2 is the only version. Changes follow the [change policy](https://developer.zendesk.com/api-reference/introduction/api_changes/): 3 months' notice for breaking changes to Business Critical endpoints, 1 month for Standard, 1 week for Beta.
-- **Auth deprecation is the live risk, not the API version.** API token authentication, which this destination relies on, is deactivated for good on **April 30, 2027**. See [Authentication](#authentication).
-- No deprecation was found for the endpoints used (users, user identities, user fields, organizations, organization fields, organization memberships, events). NEEDS REVIEW: re-check the changelog periodically.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Change policy](https://developer.zendesk.com/api-reference/introduction/api_changes/)
+
+Zendesk does not publish versioned REST APIs or version sunset dates. Changes follow the change policy: 3 months' notice for breaking changes to Business Critical endpoints, 1 month for Standard, 1 week for Beta.
+
+**Auth deprecation is the live risk, not the API version.** API token authentication, which this destination relies on, is deactivated for good on 2027-04-30 ([announcement](https://support.zendesk.com/hc/en-us/articles/10851263566234-Announcing-the-removal-of-API-tokens-as-an-authentication-method-for-API-requests)). See [Authentication](#authentication).
+
+No deprecation was found for the endpoints used (users, user identities, user fields, organizations, organization fields, organization memberships, events).
 
 ### Latest Available Version
 
-- REST API v2 is the latest and only version. No newer version exists to upgrade to.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Zendesk API changelog](https://developer.zendesk.com/api-reference/changelog/changelog/)
+
+REST API v2 is the latest and only version.
 
 ## Documentation Links
 
@@ -261,17 +274,14 @@ Not strictly required. Events carry no timestamp from the RudderStack payload (t
 
 ### Changelog References
 
-- [Zendesk API changelog](https://developer.zendesk.com/api-reference/changelog/changelog/): breaking changes, deprecations and betas announced after June 22, 2022
-- [Developer updates (Zendesk help)](https://support.zendesk.com/hc/en-us/sections/4405298889242): announcements and breaking changes for developers, including the auth deprecations
-- [What is being removed](https://support.zendesk.com/hc/en-us/articles/4408843026714-What-is-being-removed-updated-August-2026): Zendesk feature-removal list
-- [API change policy](https://developer.zendesk.com/api-reference/introduction/api_changes/): notice periods for breaking changes
-- Key auth announcements:
-  - [Announcing the removal of API tokens as an authentication method for API requests](https://support.zendesk.com/hc/en-us/articles/10851263566234-Announcing-the-removal-of-API-tokens-as-an-authentication-method-for-API-requests)
-  - [Developer update: Enhanced security guidelines for third-party apps, integrations, and bots](https://support.zendesk.com/hc/en-us/articles/9590471542170-Developer-update-Enhanced-security-guidelines-for-third-party-apps-integrations-and-bots)
-  - [OAuth refresh token grant type and token expirations](https://support.zendesk.com/hc/en-us/articles/9182123625370-Announcing-support-for-OAuth-refresh-token-grant-type-and-OAuth-access-and-refresh-token-expirations)
-  - [Deprecation of password access for APIs](https://support.zendesk.com/hc/en-us/articles/9941874259354-Deprecation-of-password-access-for-APIs)
-- API versions and sunset dates page: none. Zendesk has a single unversioned v2 API.
-- RSS/Atom feed: NEEDS REVIEW. No feed was found for the changelog or the Developer updates section. The section is readable as JSON through the Help Center API: `https://support.zendesk.com/api/v2/help_center/en-us/sections/4405298889242/articles.json?sort_by=created_at&sort_order=desc`.
+- **Changelog:** [Zendesk API changelog](https://developer.zendesk.com/api-reference/changelog/changelog/); [Developer updates (Zendesk help)](https://support.zendesk.com/hc/en-us/sections/4405298889242)
+- **Deprecations:** [What is being removed](https://support.zendesk.com/hc/en-us/articles/4408843026714-What-is-being-removed-updated-August-2026); [API change policy](https://developer.zendesk.com/api-reference/introduction/api_changes/)
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** [Removal of API tokens as an authentication method (deactivated 2027-04-30)](https://support.zendesk.com/hc/en-us/articles/10851263566234-Announcing-the-removal-of-API-tokens-as-an-authentication-method-for-API-requests); [Enhanced security guidelines for third-party apps, integrations, and bots](https://support.zendesk.com/hc/en-us/articles/9590471542170-Developer-update-Enhanced-security-guidelines-for-third-party-apps-integrations-and-bots); [OAuth refresh token grant type and token expirations](https://support.zendesk.com/hc/en-us/articles/9182123625370-Announcing-support-for-OAuth-refresh-token-grant-type-and-OAuth-access-and-refresh-token-expirations); [Deprecation of password access for APIs](https://support.zendesk.com/hc/en-us/articles/9941874259354-Deprecation-of-password-access-for-APIs)
+- **Last checked:** 2026-11-16
+
+The changelog covers changes announced after June 22, 2022; earlier ones are in Developer updates. No RSS/Atom feed exists for either. The Developer updates section is readable as JSON through the Help Center API: `https://support.zendesk.com/api/v2/help_center/en-us/sections/4405298889242/articles.json?sort_by=created_at&sort_order=desc`.
 
 ## RETL Functionality
 

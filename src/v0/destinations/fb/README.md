@@ -109,16 +109,27 @@ Meta does not publish a specific limit for `/{app-id}/activities`. Graph API app
 
 ### Current Version
 
-Graph API **v25.0** (`VERSION` in `config.js`): `https://graph.facebook.com/v25.0/{appID}/activities`.
+- **Version:** `v25.0`
+- **Where in code:** `config.js` (`VERSION`), used in `transform.js` to build `https://graph.facebook.com/v25.0/{appID}/activities`
 
 ### Version Deprecation
 
-- v25.0 was released on February 18, 2026 and expires on **July 29, 2028**.
-- Meta no longer recommends the App Events API for new integrations and recommends the Conversions API for app events. Existing integrations keep working, but Meta has said development of the App Events API will be discontinued. No shutdown date is announced.
+- **Status:** Supported
+- **Sunset date:** 2028-07-29
+- **Source:** [Graph API versions](https://developers.facebook.com/docs/graph-api/changelog/versions)
+
+v25.0 was released on 2026-02-18. Meta no longer recommends the [App Events API](https://developers.facebook.com/docs/marketing-api/app-event-api) for new integrations and recommends the Conversions API for app events. Existing integrations keep working, but Meta will discontinue development of the App Events API. No shutdown date is announced.
+
+NEEDS REVIEW: the App Events API is documented under the Marketing API, whose version table lists v25.0 as available only until 2027-02-23 ([Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)). Confirm which schedule applies to `/{app-id}/activities`.
 
 ### Latest Available Version
 
-Graph API **v26.0** (released July 29, 2026; expiration TBD). No App Events API changes requiring migration were found between v25.0 and v26.0. NEEDS REVIEW before upgrading.
+- **Version:** `v27.0`
+- **Released:** 2026-11-04
+- **Upgrade needed:** Yes
+- **Source:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog)
+
+No App Events API changes requiring migration were found between v25.0 and v27.0. NEEDS REVIEW before upgrading.
 
 ## Documentation Links
 
@@ -126,14 +137,16 @@ Graph API **v26.0** (released July 29, 2026; expiration TBD). No App Events API 
 - [Application activities reference](https://developers.facebook.com/docs/graph-api/reference/application/activities/)
 - [Customer information parameters](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/customer-information-parameters/)
 - [Graph API rate limiting](https://developers.facebook.com/docs/graph-api/overview/rate-limiting)
+- [Access tokens](https://developers.facebook.com/docs/facebook-login/guides/access-tokens)
 
 ### Changelog References
 
-- [Graph API changelog (all versions)](https://developers.facebook.com/docs/graph-api/changelog)
-- [Graph API versions, release and expiration dates](https://developers.facebook.com/docs/graph-api/changelog/versions)
-- [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
-- [Marketing API versioning policy](https://developers.facebook.com/docs/marketing-api/overview/versioning)
-- RSS/Atom feed: none found.
+- **Changelog:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog); [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
+- **Deprecations:** [Graph API breaking changes](https://developers.facebook.com/docs/graph-api/changelog/breaking-changes); [Graph API out-of-cycle changes](https://developers.facebook.com/docs/graph-api/changelog/out-of-cycle-changes); [Marketing API out-of-cycle changes](https://developers.facebook.com/docs/marketing-api/out-of-cycle-changes)
+- **Versions:** [Graph API versions and expiration dates](https://developers.facebook.com/docs/graph-api/changelog/versions); [Marketing API versioning](https://developers.facebook.com/docs/marketing-api/overview/versioning)
+- **Feed:** [Meta for Developers blog Atom feed](https://developers.facebook.com/blog/feed/)
+- **Announcements:** [App Events API no longer recommended for new integrations; development to be discontinued](https://developers.facebook.com/docs/marketing-api/app-event-api)
+- **Last checked:** 2026-11-16
 
 ## RETL Functionality
 

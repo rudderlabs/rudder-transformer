@@ -244,39 +244,53 @@ Iterable destination does not implement automatic deduplication based on unique 
 
 ### Current Version
 
-Iterable uses a single API version without versioned releases. The destination uses the latest available API endpoints.
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`BASE_URL`, `constructEndpoint`, `ConfigCategory` endpoints); `deleteUsers.js` (`users/byUserId/:userId`)
 
-**NEEDS REVIEW** - No specific API version information found in the implementation or documentation.
+The integration calls unversioned `/api/...` endpoints on `api.iterable.com` (US) and `api.eu.iterable.com` (EU):
 
-### API Endpoints Used
-
-- **Users API**: For user profile management and updates
-- **Events API**: For event tracking and bulk operations
-- **Commerce API**: For purchase and cart tracking
-- **Catalogs API**: For RETL catalog management
+- Users: `users/update`, `users/updateEmail`, `users/registerDeviceToken`, `users/registerBrowserToken`, `users/bulkUpdate`, `users/byUserId/:userId` (delete)
+- Events: `events/track`, `events/trackBulk`
+- Commerce: `commerce/trackPurchase`, `commerce/updateCart`
+- Catalogs: `catalogs/:catalogName/items` (RETL)
 
 ### Version Deprecation
 
-Not applicable. The Iterable API is not versioned, so there is no version-level deprecation. Iterable announces endpoint changes in its product updates and release notes.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Iterable API Explorer](https://api.iterable.com/api/docs)
+
+The Iterable API is not versioned, so there is no version-level deprecation. Iterable announces endpoint changes in its release notes and community product updates.
 
 ### Latest Available Version
 
-Not applicable. The Iterable API is not versioned.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Iterable API Explorer](https://api.iterable.com/api/docs)
 
 ## Documentation Links
 
 ### REST API Documentation
 
-- [Iterable API Overview](https://support.iterable.com/hc/en-us/articles/204780579-API-Overview-and-Sample-Payloads)
+- [Iterable API Overview](https://support.iterable.com/hc/en-us/articles/204780579-API-Overview-and-Sample-Payloads) (blocks automated requests)
+- [Getting Started with Iterable's API](https://support.iterable.com/hc/en-us/articles/41044692130196-Getting-Started-with-Iterable-s-API) (blocks automated requests)
 - [Iterable API Documentation (USDC)](https://api.iterable.com/api/docs)
 - [Iterable API Documentation (EUDC)](https://api.eu.iterable.com/api/docs)
-- [User Deletion Documentation](https://support.iterable.com/hc/en-us/articles/360032290032-Deleting-Users)
-- [API Keys Documentation](https://support.iterable.com/hc/en-us/articles/360043464871-API-Keys)
+- [Iterable API specification (OpenAPI JSON, lists every endpoint above)](https://api.iterable.com/api-docs)
+- [User Deletion Documentation](https://support.iterable.com/hc/en-us/articles/360032290032-Deleting-Users) (blocks automated requests)
+- [API Keys Documentation](https://support.iterable.com/hc/en-us/articles/360043464871-API-Keys) (blocks automated requests)
 
 ### Changelog References
 
-- [Iterable product updates](https://community.iterable.com/product-updates)
-- [Iterable release notes](https://support.iterable.com/hc/en-us/categories/19957780777492-Release-Notes-and-Disclaimers)
+- **Changelog:** [Iterable release notes](https://support.iterable.com/hc/en-us/categories/19957780777492-Release-Notes-and-Disclaimers) (blocks automated requests); [Iterable product updates](https://community.iterable.com/product-updates)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** [Rate limiting for API keys in the query string or request body, from 2025-11-10](https://community.iterable.com/product-updates/changes-to-rate-limiting-for-api-keys-in-query-string-or-request-body-legacy-projects-only-1378)
+- **Last checked:** 2026-11-16
+
+The 2025-11-10 rate limit applies only to legacy projects that pass the API key outside the HTTP header. This integration sends the key in the `api_key` header.
 
 ### RETL Functionality
 

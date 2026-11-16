@@ -93,15 +93,25 @@ From [DMP Segment Users](https://learn.microsoft.com/en-us/linkedin/marketing/ma
 
 ### Current Version
 
-`LinkedIn-Version: 202603` (`API_VERSION` in `config.ts`). Endpoints `/rest/dmpSegments/{id}/users` and `/rest/dmpSegments/{id}/companies`. rudder-integrations-info (audience listing/creation) also uses `202603`.
+- **Version:** `202603`
+- **Where in code:** `config.ts` (`API_VERSION`, sent as the `LinkedIn-Version` header)
+
+Endpoints `/rest/dmpSegments/{id}/users` and `/rest/dmpSegments/{id}/companies`. rudder-integrations-info (audience listing/creation) also uses `202603`.
 
 ### Version Deprecation
 
-Version `202603` sunsets on **March 16, 2027** ([Migrations](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations)).
+- **Status:** Supported
+- **Sunset date:** 2027-03-16
+- **Source:** [Migrations](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations)
 
 ### Latest Available Version
 
-`202610` (October 2026), per [Recent Marketing API Changes](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes) as of November 2026.
+- **Version:** `202610`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Recent Marketing API Changes](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes)
+
+`202610` (October 2026) is marked Latest on the Recent Marketing API Changes page as of 2026-11-16.
 
 ## RETL Functionality
 
@@ -116,13 +126,16 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 - [DMP Segment Users](https://learn.microsoft.com/en-us/linkedin/marketing/matched-audiences/create-and-manage-segment-users)
 - [DMP Segment Companies](https://learn.microsoft.com/en-us/linkedin/marketing/matched-audiences/create-and-manage-segment-companies)
 - [LinkedIn Marketing API versioning](https://learn.microsoft.com/en-us/linkedin/marketing/versioning)
+- [LinkedIn OAuth 2.0 authorization code flow](https://learn.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow)
 
 ### Changelog References
 
-- Release notes: [Recent Marketing API Changes](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes)
-- API versions and sunset dates: [Migrations](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations)
-- Versioning policy: [LinkedIn Marketing API versioning](https://learn.microsoft.com/en-us/linkedin/marketing/versioning)
-- RSS/Atom feed: none found (NEEDS REVIEW)
+- **Changelog:** [Recent Marketing API Changes](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes)
+- **Deprecations:** [Migrations (version sunset dates)](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations)
+- **Versions:** [Migrations](https://learn.microsoft.com/en-us/linkedin/marketing/integrations/migrations); [LinkedIn Marketing API versioning](https://learn.microsoft.com/en-us/linkedin/marketing/versioning)
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

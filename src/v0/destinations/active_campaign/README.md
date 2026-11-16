@@ -128,38 +128,76 @@ One identify event can make many API calls (see Intermediate Calls), so the 5 rp
 
 ### Current Version
 
-- ActiveCampaign API **v3** (`/api/3/...`) for contacts, tags, lists, fields, site tracking domains and event names.
-- Event tracking uses `https://trackcmp.net/event`, which is not versioned.
+- **API:** REST API
+- **Version:** `v3`
+- **Where in code:** `config.js` (`CONFIG_CATEGORIES`, `/api/3/...` endpoint paths)
+
+- **API:** Event tracking
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`CONFIG_CATEGORIES.TRACK.endPoint`, `CONFIG_CATEGORIES.SCREEN.endPoint`: `https://trackcmp.net/event`)
+
+API v3 covers contacts, tags, lists, fields, site tracking domains and event names. Event tracking posts to `https://trackcmp.net/event`.
 
 ### Version Deprecation
 
-No deprecation of API v3 has been announced. ActiveCampaign still documents API v1 alongside v3, with no sunset date published. NEEDS REVIEW: no published deprecation timeline for `https://trackcmp.net/event` was found.
+- **API:** REST API
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [API Overview](https://developers.activecampaign.com/reference/overview)
+
+- **API:** Event tracking
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Track event](https://developers.activecampaign.com/reference/track-event)
+
+ActiveCampaign still documents API v1 alongside v3, with no sunset date published. Several v3 reference pages describe themselves as the v3 replacement for a v1 action.
 
 ### Latest Available Version
 
-API **v3** is the latest version. The integration uses it.
+- **API:** REST API
+- **Version:** `v3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [API Overview](https://developers.activecampaign.com/reference/overview)
+
+- **API:** Event tracking
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Track event](https://developers.activecampaign.com/reference/track-event)
 
 ## Documentation Links
 
 ### API Documentation
 
 - [API Overview](https://developers.activecampaign.com/reference/overview)
+- [Authentication](https://developers.activecampaign.com/reference/authentication)
 - [Rate Limits](https://developers.activecampaign.com/reference/rate-limits)
 - [Pagination](https://developers.activecampaign.com/reference/pagination)
-- [Create or update contact (sync)](https://developers.activecampaign.com/reference/create-or-update-contact-new)
+- [Create or update a contact by email (sync)](https://developers.activecampaign.com/reference/sync-a-contacts-data)
 - [Retrieve all tags](https://developers.activecampaign.com/reference/retrieve-all-tags)
 - [Create a tag](https://developers.activecampaign.com/reference/create-a-new-tag)
 - [Add a tag to a contact](https://developers.activecampaign.com/reference/create-contact-tag)
 - [Update list status for a contact](https://developers.activecampaign.com/reference/update-list-status-for-contact)
 - [Retrieve fields](https://developers.activecampaign.com/reference/retrieve-fields)
+- [Set a contact custom field value](https://developers.activecampaign.com/reference/create-fieldvalue)
 - [Site tracking](https://developers.activecampaign.com/reference/site-tracking)
+- [Add a site tracking domain](https://developers.activecampaign.com/reference/add-a-site-tracking-domain)
+- [Contact event tracking API guide](https://developers.activecampaign.com/reference/contact-event-tracking-api-guide)
 - [List all event types](https://developers.activecampaign.com/reference/list-all-event-types)
 - [Create an event (name only)](https://developers.activecampaign.com/reference/create-a-new-event-name-only)
 - [Track event](https://developers.activecampaign.com/reference/track-event)
 
 ### Changelog References
 
-- NEEDS REVIEW: Web search lists a developer changelog at `https://developers.activecampaign.com/changelog`, but it returned 404 when fetched. No deprecations page, API versions page or RSS feed was found.
+- **Changelog:** [Product updates (release notes)](https://www.activecampaign.com/release-notes)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Product updates RSS](https://www.activecampaign.com/release-notes/feed.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The developer changelog at `https://developers.activecampaign.com/changelog` is still listed by search engines but returns 404, so the product release notes are the closest source.
 
 ### RETL Functionality
 

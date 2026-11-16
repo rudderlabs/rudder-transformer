@@ -80,15 +80,27 @@ NEEDS REVIEW: LaunchDarkly does not document a limit for the synced segments end
 
 ### Current Version
 
-REST API v2 path: `POST https://app.launchdarkly.com/api/v2/segment-targets/rudderstack`. No `LD-API-Version` header is sent, so the API version associated with the access token applies.
+- **Version:** `v2`
+- **Where in code:** `config.js` (`ENDPOINT`, `https://app.launchdarkly.com/api/v2/segment-targets/rudderstack`)
+
+No `LD-API-Version` header is sent, so the REST API date version set on the customer's access token applies.
 
 ### Version Deprecation
 
-The LaunchDarkly REST API is date-versioned through the `LD-API-Version` header. The [REST API migration guide](https://launchdarkly.com/docs/guides/api/api-migration-guide) states that version `20220603` reaches end of life on **December 31, 2026** and that `20240415` is required from January 1, 2027. NEEDS REVIEW: confirm whether the synced segments (`segment-targets`) integration endpoint is affected and whether customer tokens on older versions will break.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [REST API versioning](https://launchdarkly.com/docs/api#versioning)
+
+The `/api/v2` path has no announced sunset. The REST API is also date-versioned through the `LD-API-Version` header: the [REST API migration guide](https://launchdarkly.com/docs/guides/api/api-migration-guide) states that version `20220603` reaches end of life on 2026-12-31 and that `20240415` is required after that. New access tokens default to `20240415`. NEEDS REVIEW: whether the synced segments (`segment-targets`) endpoint behaves differently between date versions, and whether customer tokens pinned to `20220603` will fail after 2026-12-31.
 
 ### Latest Available Version
 
-`20240415` (per the migration guide). The current list can be read from `GET /api/v2/versions`.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [REST API versioning](https://launchdarkly.com/docs/api#versioning)
+
+The latest date version is `20240415`, released 2024-04-15 per the versioning table. The current list can be read from [`GET /api/v2/versions`](https://launchdarkly.com/docs/api/other/get-versions).
 
 ## RETL Functionality
 
@@ -102,15 +114,19 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 - [Building a synced segments integration](https://launchdarkly.com/docs/guides/integrations/build-synced-segments)
 - [REST API migration guide: 20220603 to 20240415](https://launchdarkly.com/docs/guides/api/api-migration-guide)
-- [API access tokens](https://docs.launchdarkly.com/home/account-security/api-access-tokens)
+- [API access tokens](https://launchdarkly.com/docs/home/account/api)
+- [REST API authentication](https://launchdarkly.com/docs/api#authentication)
 - [REST API versioning](https://launchdarkly.com/docs/api#versioning)
+- [Segments API reference](https://launchdarkly.com/docs/api/segments)
 
 ### Changelog References
 
-- Product changelog: [LaunchDarkly Product Updates](https://launchdarkly.com/changelog/)
-- API versions and end-of-life dates: [REST API migration guide](https://launchdarkly.com/docs/guides/api/api-migration-guide), [REST API versioning](https://launchdarkly.com/docs/api#versioning)
-- Docs changelog: [LaunchDarkly documentation changelog](https://launchdarkly.com/docs/home/changelog)
-- RSS/Atom feed: none found (NEEDS REVIEW)
+- **Changelog:** [LaunchDarkly product updates](https://launchdarkly.com/changelog/); [Documentation changelog](https://launchdarkly.com/docs/home/changelog)
+- **Deprecations:** [REST API migration guide](https://launchdarkly.com/docs/guides/api/api-migration-guide)
+- **Versions:** [REST API versioning](https://launchdarkly.com/docs/api#versioning)
+- **Feed:** [LaunchDarkly blog RSS](https://launchdarkly.com/blog/feed/)
+- **Announcements:** [REST API version `20220603` end of life on 2026-12-31](https://launchdarkly.com/docs/guides/api/api-migration-guide)
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

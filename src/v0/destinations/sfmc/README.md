@@ -275,28 +275,71 @@ Track events that update data extensions also require strict event ordering to e
 
 ### Current Version
 
-Salesforce Marketing Cloud uses REST API v1 for the endpoints used by this destination.
+- **API:** REST API
+- **Version:** `v1`
+- **Where in code:** `config.js` (`ENDPOINTS.CONTACTS`, `ENDPOINTS.INSERT_CONTACTS`, `ENDPOINTS.EVENT`)
+
+- **API:** Authentication
+- **Version:** `v2`
+- **Where in code:** `config.js` (`ENDPOINTS.GET_TOKEN`)
+
+The REST endpoints used are `/contacts/v1/contacts`, `/hub/v1/dataevents/key:{key}/rows/{primaryKeys}` and `/interaction/v1/events`. Tokens come from `auth.marketingcloudapis.com/v2/token` (enhanced installed package, client credentials).
 
 ### Version Deprecation
 
-**NEEDS REVIEW**: Salesforce does not publish a version lifecycle or end-of-life dates for the Marketing Cloud REST v1 endpoints used by this destination.
+- **API:** REST API
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [REST API overview](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/rest-api-overview.html) (blocks automated requests)
+
+- **API:** Authentication
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Installed package types](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/installed-package-types.html) (blocks automated requests)
+
+Salesforce stopped creating legacy packages in August 2019. Legacy packages must keep using `/v1/requestToken` and can't use OAuth 2.0. This integration uses the enhanced-package `/v2/token` endpoint, so it is not affected.
 
 ### Latest Available Version
 
-- **v1** is the only version of the REST endpoints used by this destination (`/contacts/v1`, `/hub/v1`, `/interaction/v1`)
+- **API:** REST API
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [REST API overview](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/rest-api-overview.html) (blocks automated requests)
+
+- **API:** Authentication
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Access token for server-to-server integrations](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/access-token-s2s.html) (blocks automated requests)
+
+Salesforce publishes no version lifecycle or end-of-life dates for the Marketing Cloud REST v1 routes.
 
 ## Documentation Links
 
 ### REST API Documentation
 
-- [Salesforce Marketing Cloud REST API Overview](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/rest-api-overview.html)
-- [Authentication](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/authentication.html)
-- [Data Extensions](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/data-extension-rows-via-rest.html)
-- [Event Definitions](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/event-definition-key.html)
+All developer.salesforce.com pages below block automated requests.
+
+- [Salesforce Marketing Cloud REST API Overview](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/rest-api-overview.html) (blocks automated requests)
+- [API Integration (authentication)](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/api-integration) (blocks automated requests)
+- [Access token for server-to-server integrations (`POST /v2/token`)](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/access-token-s2s.html) (blocks automated requests)
+- [Installed package types](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/installed-package-types.html) (blocks automated requests)
+- [Create contacts (`POST /contacts/v1/contacts`)](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/createContacts.html) (blocks automated requests)
+- [Data Extension Rows Synchronous API (`PUT /hub/v1/dataevents/key:{key}/rows/{primaryKeys}`)](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/data-extensions-api-synch.html) (blocks automated requests)
+- [Fire an entry event (`POST /interaction/v1/events`)](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/postEvent.html) (blocks automated requests)
+- [Event Definitions](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/event-definition-key.html) (blocks automated requests)
 
 ### Changelog References
 
-**NEEDS REVIEW**: No public developer changelog, release notes, deprecation page or versions page was found for the Marketing Cloud REST API.
+- **Changelog:** [Marketing Cloud Engagement release notes](https://help.salesforce.com/s/articleView?id=release-notes.rn_marketing_engagement.htm&language=en_US); [Release notes archive](https://help.salesforce.com/s/articleView?id=release-notes.rn_marketing_engagement_archive.htm&language=en_US)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Salesforce publishes no developer changelog, deprecations page or feed for the Marketing Cloud REST API. API changes appear in the seasonal Marketing Cloud Engagement release notes.
 
 ### RETL Functionality
 

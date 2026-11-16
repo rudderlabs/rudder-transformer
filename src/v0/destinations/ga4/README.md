@@ -261,37 +261,49 @@ The GA4 Measurement Protocol API has the following characteristics:
 
 ### Current Version
 
-GA4 uses the Google Analytics Measurement Protocol, which does not have versioned releases. The API is continuously updated by Google without version-specific endpoints.
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`ENDPOINT` = `https://www.google-analytics.com/mp/collect`, `DEBUG_ENDPOINT` = `https://www.google-analytics.com/debug/mp/collect`)
+
+The GA4 Measurement Protocol has no versioned endpoints. Google updates it in place and records changes in the Measurement Protocol changelog.
 
 ### API Endpoints
 
 - **Production**: `https://www.google-analytics.com/mp/collect`
 - **Debug/Validation**: `https://www.google-analytics.com/debug/mp/collect`
-- **EU Data Processing**: `https://region1.google-analytics.com/mp/collect`
-  - Use this endpoint if you want your data to be processed in the EU
-  - Automatically used when EU data processing is configured
+- **EU Data Processing**: `https://region1.google-analytics.com/mp/collect`. Google offers this endpoint for EU data processing. The transformer does not use it; it always sends to `www.google-analytics.com`.
 
 ### Version Deprecation
 
-Not applicable. The Measurement Protocol has no versioned endpoints, so there is no version-level deprecation. Google records changes in the Measurement Protocol changelog.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Measurement Protocol (GA4) changelog](https://developers.google.com/analytics/devguides/collection/protocol/ga4/changelog)
 
 ### Latest Available Version
 
-Not applicable. The Measurement Protocol is not versioned; this integration uses the current `/mp/collect` endpoint.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [GA4 Measurement Protocol Overview](https://developers.google.com/analytics/devguides/collection/protocol/ga4)
 
 ## Documentation Links
 
 ### GA4 Measurement Protocol Documentation
 
 - [GA4 Measurement Protocol Overview](https://developers.google.com/analytics/devguides/collection/protocol/ga4)
-- [Send Events to Google Analytics](https://developers.google.com/analytics/devguides/collection/protocol/ga4/sending-events)
+- [Send Events to Google Analytics (`measurement_id`, `firebase_app_id`, `api_secret`)](https://developers.google.com/analytics/devguides/collection/protocol/ga4/sending-events)
 - [Measurement Protocol Reference](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference)
 - [Event Collection Limits](https://support.google.com/analytics/answer/9267744)
 - [Validating Events](https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events)
+- [Measurement Protocol policy](https://developers.google.com/analytics/devguides/collection/protocol/ga4/policy)
 
 ### Changelog References
 
-- [Measurement Protocol (GA4) changelog](https://developers.google.com/analytics/devguides/collection/protocol/ga4/changelog)
+- **Changelog:** [Measurement Protocol (GA4) changelog](https://developers.google.com/analytics/devguides/collection/protocol/ga4/changelog)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

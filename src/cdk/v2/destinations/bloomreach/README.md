@@ -118,29 +118,44 @@ Requests over the rate limit return 429 and are not saved.
 
 ### Current Version
 
-Bloomreach Engagement Tracking API **v2** batch endpoint: `{apiBaseUrl}/track/v2/projects/{projectToken}/batch`.
+- **Version:** `v2`
+- **Where in code:** `config.ts` (`getBatchEndpoint`)
+
+Bloomreach Engagement Tracking API batch endpoint: `{apiBaseUrl}/track/v2/projects/{projectToken}/batch`.
 
 ### Version Deprecation
 
-No deprecation of the v2 tracking endpoints has been announced, and no sunset date is published.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Tracking API overview](https://documentation.bloomreach.com/engagement/reference/tracking-api-overview-2)
+
+Bloomreach is renaming Engagement to Marketing in the product UI ([Release 1.318](https://documentation.bloomreach.com/engagement/changelog/1318), 2026-09-16); the release notes say the service and functionality do not change. The Data hub [Tracking API](https://documentation.bloomreach.com/data-hub/reference/tracking-api-overview) (`/track/u/v1/batch`, stream-based auth) is a separate surface that this integration does not use.
 
 ### Latest Available Version
 
-**v2** (`/track/v2/`) is the latest version. The integration uses it.
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Tracking API overview](https://documentation.bloomreach.com/engagement/reference/tracking-api-overview-2)
 
 ## Documentation Links
 
 ### API Documentation
 
 - [Engagement API reference](https://documentation.bloomreach.com/engagement/reference/welcome)
+- [About Engagement API](https://documentation.bloomreach.com/engagement/reference/about)
+- [Authentication](https://documentation.bloomreach.com/engagement/docs/authentication)
 - [Tracking API overview](https://documentation.bloomreach.com/engagement/reference/tracking-api-overview-2)
 - [Batch commands](https://documentation.bloomreach.com/engagement/reference/batch-commands-2)
 
 ### Changelog References
 
-- [Bloomreach Engagement changelog](https://documentation.bloomreach.com/engagement/changelog)
-- [Bloomreach Engagement changelog RSS feed](https://documentation.bloomreach.com/engagement/changelog.rss)
-- NEEDS REVIEW: No separate deprecations or API versions/sunset page was found.
+- **Changelog:** [Bloomreach Engagement changelog](https://documentation.bloomreach.com/engagement/changelog)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Changelog RSS](https://documentation.bloomreach.com/engagement/changelog.rss)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

@@ -231,12 +231,8 @@ For detailed error handling logic, see the [Business Logic Documentation](./docs
 
 ### Current Version
 
-- **Version**: CDK v2 (Component Development Kit v2)
-- **Implementation Language**: JavaScript
-- **Framework**: RudderStack CDK v2 with YAML workflow processing
-- **Status**: Beta
-- **Last Updated**: 2024
-- **Maintainer**: RudderStack Team
+- **Version:** `v1`
+- **Where in code:** `config.js` (`BASE_URL`)
 
 ### API Version Details
 
@@ -247,13 +243,20 @@ For detailed error handling logic, see the [Business Logic Documentation](./docs
 
 ### Version Deprecation
 
-- **Current Status**: No known deprecation notices
-- **End-of-Life**: API version end-of-life information is not publicly available
-- **Migration Path**: Migration information is not publicly documented
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Events API](https://help.bluecore.com/help/events-api)
+
+As of March 2024 the API host changed from `api.bluecore.com` to `api.bluecore.app`. This integration already uses `api.bluecore.app`.
 
 ### Latest Available Version
 
-- **Latest Version**: `v1` (`/api/track/mobile/v1`) is the only publicly documented version of the Events API; Bluecore does not publish a versioning policy
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Events API](https://help.bluecore.com/help/events-api)
+
+`v1` (`/api/track/mobile/v1`) is the only publicly documented version of the Events API; Bluecore does not publish a versioning policy.
 
 ### Compatibility
 
@@ -604,15 +607,18 @@ Suitable for organizations that need to:
 ### Official Documentation
 
 - **Bluecore Platform**: [https://www.bluecore.com/](https://www.bluecore.com/)
-- **Bluecore Events API Documentation**: [https://help.bluecore.com/en/articles/6786828-events-api](https://help.bluecore.com/en/articles/6786828-events-api)
+- **Bluecore Events API Documentation**: [https://help.bluecore.com/help/events-api](https://help.bluecore.com/help/events-api)
 
 **Note**: This integration uses Bluecore's Events API with endpoint `https://api.bluecore.app/api/track/mobile/v1`. The complete API documentation including parameters, event types, and examples is available in the Events API documentation link above.
 
 ### Changelog References
 
-- [Bluecore Release Notes](https://help.bluecore.com/help/release-notes)
-
-**NEEDS REVIEW**: No deprecations page, API versions page or RSS feed was found for the Bluecore Events API.
+- **Changelog:** [Bluecore release notes](https://help.bluecore.com/help/release-notes)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Events API host changed to `api.bluecore.app` (March 2024)](https://help.bluecore.com/help/events-api)
+- **Last checked:** 2026-11-16
 
 ### RudderStack Documentation
 

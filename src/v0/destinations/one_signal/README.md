@@ -104,16 +104,36 @@ NEEDS REVIEW: The transformer sends **no `Authorization` header** in either vers
 
 ### Current Version
 
-- `V1` (default): Player model, `https://onesignal.com/api/v1/players` and `https://onesignal.com/api/v1/apps/{app_id}/users/{external_user_id}`
-- `V2`: User model, `https://api.onesignal.com/apps/{app_id}/users`
+- **API:** Player model (`V1`, default)
+- **Version:** `v1`
+- **Where in code:** `config.js` (`BASE_URL`, `https://onesignal.com/api/v1`; paths in `ENDPOINTS`)
+- **API:** User model (`V2`)
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`BASE_URL_V2`, `https://api.onesignal.com/apps/{{app_id}}/users`)
+
+`V1` calls `/players`, `/players/{player_id}` and `/apps/{app_id}/users/{external_user_id}`. `V2` calls the User model Create User endpoint.
 
 ### Version Deprecation
 
-OneSignal labels the Player model APIs as deprecated ("Player Model (Deprecated)" in the [User Model migration guide](https://documentation.onesignal.com/docs/user-model-migration-guide)), and the [Add a device](https://documentation.onesignal.com/reference/add-a-device) page says "This is a Legacy API. Use Create User or Create Subscription instead." No removal date for `/api/v1/players` was found. NEEDS REVIEW: a third-party source mentions V1 user tokens being deprecated on 2026-06-15; not confirmed in OneSignal's own docs.
+- **API:** Player model (`V1`)
+- **Status:** Deprecated
+- **Sunset date:** None announced
+- **Source:** [Add a device](https://documentation.onesignal.com/reference/add-a-device)
+- **API:** User model (`V2`)
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Create user](https://documentation.onesignal.com/reference/create-user)
+
+OneSignal lists the Player model endpoints under "Deprecated" in its API reference, and the [Add a device](https://documentation.onesignal.com/reference/add-a-device) page says "This is a Legacy API. Use Create User or Create Subscription instead." The [Software Lifecycle Policy](https://onesignal.com/software-lifecycle-policy) promises a deprecation window of 3 to 6 months before a shutdown. No removal date for `/api/v1/players` is published.
 
 ### Latest Available Version
 
-User model (V2) APIs on `api.onesignal.com`. V2 is not the default here; the default remains `V1`.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [User Model migration guide](https://documentation.onesignal.com/docs/user-model-migration-guide)
+
+The User model (`V2`) is the current API. The integration supports it, but the default remains `V1`.
 
 ## RETL Functionality
 
@@ -127,14 +147,22 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 - [Create user (User model)](https://documentation.onesignal.com/reference/create-user)
 - [Add a device (Player model)](https://documentation.onesignal.com/reference/add-a-device)
+- [Edit device (Player model)](https://documentation.onesignal.com/reference/edit-device)
+- [Edit tags with external user id (Player model)](https://documentation.onesignal.com/reference/edit-tags-with-external-user-id)
+- [Keys and IDs (authentication)](https://documentation.onesignal.com/docs/keys-and-ids)
 - [Rate limits](https://documentation.onesignal.com/reference/rate-limits)
 - [User Model migration guide](https://documentation.onesignal.com/docs/user-model-migration-guide)
 
 ### Changelog References
 
-- [OneSignal changelog](https://documentation.onesignal.com/release-notes/changelog)
-- [User Model migration guide (Player to User endpoint mapping)](https://documentation.onesignal.com/docs/user-model-migration-guide)
-- NEEDS REVIEW: no API versions/sunset-date page or changelog RSS feed found.
+- **Changelog:** [OneSignal changelog](https://documentation.onesignal.com/release-notes/changelog)
+- **Deprecations:** [Software Lifecycle Policy](https://onesignal.com/software-lifecycle-policy); [User Model migration guide (Player to User endpoint mapping)](https://documentation.onesignal.com/docs/user-model-migration-guide)
+- **Versions:** None found
+- **Feed:** [Changelog RSS](https://documentation.onesignal.com/release-notes/changelog/rss.xml)
+- **Announcements:** [Migrating from legacy API keys](https://documentation.onesignal.com/docs/keys-and-ids#migrating-from-legacy-api-keys)
+- **Last checked:** 2026-11-16
+
+OneSignal introduced App and Organization API keys in November 2024. Its keys page says the legacy User Auth key and REST API key are still accepted but can no longer be created, and asks users moving to new keys to switch the base URL from `https://onesignal.com/api/v1/` to `https://api.onesignal.com`. No removal date for legacy keys is published.
 
 ## FAQ
 

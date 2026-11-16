@@ -113,15 +113,25 @@ None during transformation.
 
 ### Current Version
 
-- TTD first-party data API, partner portal v3: `POST https://<data-server>/data/advertiser`.
+- **Version:** `Unversioned`
+- **Where in code:** `utils.js` (`getFirstPartyEndpoint`, `POST <data-server>/data/advertiser`); `config.js` (`DATA_SERVERS_BASE_ENDPOINTS_MAP`)
+
+The endpoint path has no version. "v3" in the docs URLs is the partner portal version, not an API version.
 
 ### Version Deprecation
 
-- No deprecation of `POST /data/advertiser` was found. TTD publishes upcoming changes for the Data API on the partner portal, but the page could not be read without JavaScript. NEEDS REVIEW.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Data API upcoming changes](https://partner.thetradedesk.com/v3/portal/data/doc/UpcomingChangesData)
+
+NEEDS REVIEW: the partner portal is a JavaScript app that returns HTTP 200 for any path, so the upcoming-changes page content could not be read automatically. No deprecation of `POST /data/advertiser` was found by search.
 
 ### Latest Available Version
 
-- v3 partner portal (current). NEEDS REVIEW for any newer data upload API.
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Post data to advertiser (first-party data)](https://partner.thetradedesk.com/v3/portal/data/doc/post-data-advertiser-external)
 
 ## RETL Functionality
 
@@ -133,16 +143,20 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ## Documentation Links
 
-- [Post data to advertiser (first-party data)](https://partner.thetradedesk.com/v3/portal/data/doc/post-data-advertiser-external)
+- [Post data to advertiser (first-party data, signature header auth)](https://partner.thetradedesk.com/v3/portal/data/doc/post-data-advertiser-external)
 - [Data environments (data servers)](https://partner.thetradedesk.com/v3/portal/data/doc/DataEnvironments)
 - [API rate limits](https://partner.thetradedesk.com/v3/portal/api/doc/RateLimits)
 
 ### Changelog References
 
-- Data API release notes: [https://partner.thetradedesk.com/v3/portal/data/doc/ReleaseNotesData](https://partner.thetradedesk.com/v3/portal/data/doc/ReleaseNotesData)
-- Data API release notes archive: [https://partner.thetradedesk.com/v3/portal/data/doc/ReleaseNotesDataArchives](https://partner.thetradedesk.com/v3/portal/data/doc/ReleaseNotesDataArchives)
-- Data API upcoming changes (deprecations): [https://partner.thetradedesk.com/v3/portal/data/doc/UpcomingChangesData](https://partner.thetradedesk.com/v3/portal/data/doc/UpcomingChangesData)
-- API versions and sunset dates page / RSS feed: none found. NEEDS REVIEW
+- **Changelog:** [Data API release notes](https://partner.thetradedesk.com/v3/portal/data/doc/ReleaseNotesData); [Data API release notes archive](https://partner.thetradedesk.com/v3/portal/data/doc/ReleaseNotesDataArchives)
+- **Deprecations:** [Data API upcoming changes](https://partner.thetradedesk.com/v3/portal/data/doc/UpcomingChangesData)
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The partner portal answers HTTP 200 for any path (single-page app), so a 200 does not prove these pages exist. They are the paths referenced in `config.js` and earlier docs. NEEDS REVIEW: confirm in a browser with a partner portal login.
 
 ## FAQ
 

@@ -130,19 +130,44 @@ Exceeding a limit returns HTTP `429`. Brevo returns `x-sib-ratelimit-*` headers 
 
 ### Current Version
 
-- **Main API**: v3 (`https://api.sendinblue.com/v3/...`) for contacts.
-- **Tracker API**: v2 (`https://in-automate.sendinblue.com/api/v2/trackEvent`, `trackLink`, `trackPage`).
+- **API:** Main API (contacts)
+- **Version:** `v3`
+- **Where in code:** `config.js` (`BASE_ENDPOINT_MAIN`, `VERSION_MAIN`, `CONFIG_CATEGORIES`, `getContactDetailsEndpoint`, `getUnlinkContactEndpoint`)
+- **API:** Tracker API (track, page, link)
+- **Version:** `v2`
+- **Where in code:** `config.js` (`BASE_ENDPOINT_TRACKER`, `VERSION_TRACKER`, `CONFIG_CATEGORIES.TRACK_EVENTS`, `TRACK_LINK`, `PAGE`)
+
+Main API calls go to `https://api.sendinblue.com/v3/...`; tracker calls go to `https://in-automate.sendinblue.com/api/v2/trackEvent`, `trackLink` and `trackPage`.
 
 ### Version Deprecation
 
-- No end-of-life date has been announced for API v3 or the v2 tracker.
+- **API:** Main API (contacts)
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Brevo API changelog](https://developers.brevo.com/changelog)
+- **API:** Tracker API (track, page, link)
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Tracker REST implementation](https://developers.brevo.com/docs/tracker-rest-implementation)
+
 - Brevo's docs label the `in-automate` REST tracker as legacy ([Track custom events (REST)](https://developers.brevo.com/docs/track-custom-events-rest)) and point to the v3 Events API as the current way to track events. No removal date was found. NEEDS REVIEW.
 - The integration uses the pre-rebrand `sendinblue.com` hosts; Brevo's documentation now uses `api.brevo.com` / `in-automate.brevo.com`. No retirement date for the old hosts was found. NEEDS REVIEW.
+- Brevo deprecated `POST /contacts/batch` on 2026-10-30 ([notice](https://developers.brevo.com/changelog/2026/5/12)). This integration does not call it.
 
 ### Latest Available Version
 
-- **Main API**: v3 is still the latest.
-- **Events**: `POST https://api.brevo.com/v3/events` (and `/v3/events/batch`, up to 200 events per request) is the newer Events API. Moving track events to it would change auth (`api-key` instead of `ma-key`) and the payload shape.
+- **API:** Main API (contacts)
+- **Version:** `v3`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Brevo API overview](https://developers.brevo.com/docs/getting-started)
+- **API:** Tracker API (track, page, link)
+- **Version:** `v3`
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Event endpoints](https://developers.brevo.com/docs/event-endpoints)
+
+`POST https://api.brevo.com/v3/events` (and `/v3/events/batch`, up to 200 events per request) is the newer Events API. Moving track events to it would change auth (`api-key` instead of `ma-key`) and the payload shape.
 
 ## RETL Functionality
 
@@ -154,17 +179,29 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 
 ## Documentation Links
 
+- [Brevo API overview](https://developers.brevo.com/docs/getting-started)
+- [API key authentication](https://developers.brevo.com/docs/api-key-authentication)
 - [Create a contact](https://developers.brevo.com/reference/createcontact)
+- [Create a contact via double opt-in](https://developers.brevo.com/reference/create-doi-contact)
+- [Update a contact](https://developers.brevo.com/reference/update-contact)
+- [Remove a contact from a list](https://developers.brevo.com/reference/remove-contact-from-list)
 - [Brevo API rate limits](https://developers.brevo.com/docs/api-limits)
 - [Rate limit headers](https://developers.brevo.com/docs/limit-headers)
+- [Tracker REST implementation](https://developers.brevo.com/docs/tracker-rest-implementation)
 - [Track custom events (REST, legacy tracker)](https://developers.brevo.com/docs/track-custom-events-rest)
+- [Track link clicks (REST)](https://developers.brevo.com/docs/track-link-clicks-rest)
+- [Track page views (REST)](https://developers.brevo.com/docs/track-page-views-rest)
 
 ### Changelog References
 
-- Developer changelog: [https://developers.brevo.com/changelog](https://developers.brevo.com/changelog)
-- Changelog RSS feed: [https://developers.brevo.com/changelog.rss](https://developers.brevo.com/changelog.rss)
-- Deprecations / API lifecycle page: none found. NEEDS REVIEW
-- API versions and sunset dates page: none found. NEEDS REVIEW
+- **Changelog:** [Brevo API changelog](https://developers.brevo.com/changelog)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Brevo changelog RSS](https://developers.brevo.com/changelog.rss)
+- **Announcements:** [OAuth 2.0 machine-to-machine authentication, API keys unaffected (2026-10-06)](https://developers.brevo.com/changelog/2026/10/6)
+- **Last checked:** 2026-11-16
+
+Brevo posts deprecation notices as changelog entries (for example [`POST /contacts/batch`, 2026-10-30](https://developers.brevo.com/changelog/2026/5/12)); it has no separate deprecations or versions page.
 
 ## FAQ
 

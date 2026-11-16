@@ -12,7 +12,6 @@ const {
   validateMixpanelPayloadLimits,
   toArray,
 } = require('./util');
-const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   mappingConfig,
@@ -289,9 +288,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
       version: '1',
     };
 
-    const result = generateBatchedPayloadForArray(events, {
-      features: { [FEATURE_GZIP_SUPPORT]: true },
-    });
+    const result = generateBatchedPayloadForArray(events);
 
     expect(result).toEqual(expectedBatchedRequest);
   });
@@ -327,9 +324,7 @@ describe('Unit test cases for generateBatchedPayloadForArray', () => {
       version: '1',
     };
 
-    const result = generateBatchedPayloadForArray(events, {
-      features: { [FEATURE_GZIP_SUPPORT]: true },
-    });
+    const result = generateBatchedPayloadForArray(events);
 
     expect(result).toEqual(expectedBatchedRequest);
   });
@@ -391,7 +386,7 @@ describe('Mixpanel batched gzip rollout', () => {
     '$endpointPath uses GZIP=$expectedGzip when $flag=$value',
     ({ endpointPath, flag, value, expectedGzip }) => {
       if (value !== undefined) process.env[flag] = value;
-      const result = generateBatchedPayloadForArray(eventsFor(endpointPath), {}, workspaceId);
+      const result = generateBatchedPayloadForArray(eventsFor(endpointPath), workspaceId);
 
       expect(result).toEqual({
         version: '1',
@@ -423,7 +418,7 @@ describe('Mixpanel batched gzip rollout', () => {
       destination,
     }));
 
-    expect(batchEvents(input, maxBatchSizeMock, {})).toEqual([
+    expect(batchEvents(input, maxBatchSizeMock)).toEqual([
       {
         batchedRequest: {
           version: '1',
@@ -453,42 +448,27 @@ describe('Mixpanel batched gzip rollout', () => {
     ]);
   });
 
-  const importCases = [
-    { flags: false, supportsGzip: false },
-    { flags: false, supportsGzip: true },
-    { flags: true, supportsGzip: false },
-    { flags: true, supportsGzip: true },
-  ];
+  it('/import always uses GZIP without the handshake or workspace flags', () => {
+    const result = generateBatchedPayloadForArray(eventsFor('import'), workspaceId);
 
-  it.each(importCases)(
-    '/import keeps handshake with flags=$flags and support=$supportsGzip',
-    ({ flags, supportsGzip }) => {
-      if (flags) {
-        process.env[engageFlag] = 'ALL';
-        process.env[groupsFlag] = 'ALL';
-      }
-      const reqMetadata = supportsGzip ? { features: { [FEATURE_GZIP_SUPPORT]: true } } : {};
-      const result = generateBatchedPayloadForArray(eventsFor('import'), reqMetadata, workspaceId);
-
-      expect(result).toEqual({
-        version: '1',
-        type: 'REST',
-        method: 'POST',
-        endpoint: 'https://api.mixpanel.com/import/',
-        endpointPath: 'import',
-        headers: { 'Content-Type': 'application/json' },
-        params: { verbose: 2 },
-        body: {
-          JSON: {},
-          JSON_ARRAY: supportsGzip ? {} : { batch: JSON.stringify(batch) },
-          XML: {},
-          FORM: {},
-          ...(supportsGzip ? { GZIP: { payload: JSON.stringify(batch) } } : {}),
-        },
-        files: {},
-      });
-    },
-  );
+    expect(result).toEqual({
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://api.mixpanel.com/import/',
+      endpointPath: 'import',
+      headers: { 'Content-Type': 'application/json' },
+      params: { verbose: 2 },
+      body: {
+        JSON: {},
+        JSON_ARRAY: {},
+        XML: {},
+        FORM: {},
+        GZIP: { payload: JSON.stringify(batch) },
+      },
+      files: {},
+    });
+  });
 });
 
 describe('Unit test cases for buildUtmParams', () => {

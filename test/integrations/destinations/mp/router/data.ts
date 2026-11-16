@@ -427,7 +427,6 @@ export const data = [
           destType: 'mp',
         },
         method: 'POST',
-        headers: { 'X-Feature-Gzip-Support': '?1' },
       },
     },
     output: {
@@ -1332,8 +1331,9 @@ export const data = [
                 params: { strict: 1 },
                 body: {
                   JSON: {},
-                  JSON_ARRAY: {
-                    batch: JSON.stringify([
+                  JSON_ARRAY: {},
+                  GZIP: {
+                    payload: JSON.stringify([
                       {
                         event: 'Loaded a Page',
                         properties: {
@@ -1434,8 +1434,9 @@ export const data = [
                   params: { strict: 1 },
                   body: {
                     JSON: {},
-                    JSON_ARRAY: {
-                      batch: JSON.stringify([
+                    JSON_ARRAY: {},
+                    GZIP: {
+                      payload: JSON.stringify([
                         {
                           event: 'Product Viewed',
                           properties: {
@@ -1593,8 +1594,9 @@ export const data = [
                   params: { strict: 1 },
                   body: {
                     JSON: {},
-                    JSON_ARRAY: {
-                      batch: JSON.stringify([
+                    JSON_ARRAY: {},
+                    GZIP: {
+                      payload: JSON.stringify([
                         {
                           event: '$merge',
                           properties: {
@@ -1770,7 +1772,7 @@ export const data = [
   },
   {
     name: 'mp',
-    description: 'Gzip /engage for an enabled workspace; /import retains the handshake',
+    description: 'Gzip /engage for an enabled workspace and /import without a header',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1781,7 +1783,6 @@ export const data = [
     input: {
       request: {
         method: 'POST',
-        headers: { 'X-Feature-Gzip-Support': '?1' },
         body: {
           destType: 'mp',
           input: [

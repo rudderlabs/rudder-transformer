@@ -208,7 +208,7 @@ describe('NativeIntegration Service', () => {
 
     expect(result).toEqual([
       {
-        metadata: [inputs[0].metadata, inputs[1].metadata, inputs[2].metadata],
+        metadata: [inputs[0].metadata, inputs[1].metadata],
         batched: false,
         statusCode: 500,
         error: 'delivery request has more than one non-empty body format: JSON, GZIP',

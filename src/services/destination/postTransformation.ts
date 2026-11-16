@@ -15,7 +15,7 @@ import {
   FixMe,
 } from '../../types';
 import stats from '../../util/stats';
-import { generateErrorObject } from '../../v0/util';
+import { generateErrorObject, getErrorRespEvents } from '../../v0/util';
 import { DeleteUsersError } from '../../v0/util/errorTypes/deleteUsersError';
 import tags from '../../v0/util/tags';
 import { ErrorReportingService } from '../errorReporting';
@@ -87,14 +87,10 @@ export class DestinationPostTransformationService {
         validateDeliveryRequestBody(payload.batchedRequest);
         return { ...payload };
       } catch (error) {
-        const errObj = generateErrorObject(error, metaTo.errorDetails);
+        const { status, message, statTags } = generateErrorObject(error, metaTo.errorDetails);
         const failure = {
-          metadata: payload.metadata,
+          ...getErrorRespEvents(payload.metadata, status, message, statTags),
           destination: payload.destination,
-          batched: false,
-          statusCode: errObj.status,
-          error: errObj.message || defaultErrorMessages.router,
-          statTags: errObj.statTags,
         } as RouterTransformationResponse;
         ErrorReportingService.reportError(error as Error, metaTo.errorContext, failure);
         return failure;

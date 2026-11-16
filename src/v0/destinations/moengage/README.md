@@ -406,13 +406,17 @@ The destination performs automatic data type conversions:
 - **Last Updated**: July 2025
 - **Maintainer**: RudderStack Integrations Team
 
-### API Deprecation
+### Version Deprecation
 
 - **Status**: No known deprecation timeline for v1 APIs
 - **Migration Path**: No migration required at this time
 - **Monitoring**: API version compatibility should be monitored for future changes
 
 **Note**: Information about API versioning and deprecation timeline should be confirmed from MoEngage's official documentation or support channels.
+
+### Latest Available Version
+
+- **NEEDS REVIEW**: MoEngage does not publish an API versioning or changelog page. v1 is the only version found for the endpoints this integration uses.
 
 ## Documentation Links
 
@@ -425,6 +429,10 @@ The destination performs automatic data type conversions:
 - [User Merge API](https://developers.moengage.com/hc/en-us/articles/10990676421908-User-Merge-API) - User profile merging
 - [Data Centers in MoEngage](https://help.moengage.com/hc/en-us/articles/360057030512-Data-Centers-in-MoEngage) - Regional data center information
 - [Object Data Type Support](https://help.moengage.com/hc/en-us/articles/29787626775828-Support-for-Object-Data-Type) - Object data type feature
+
+### Changelog References
+
+**NEEDS REVIEW**: No public developer changelog, release notes, deprecation page or versions page was found for the MoEngage Data API.
 
 ### RudderStack Documentation
 

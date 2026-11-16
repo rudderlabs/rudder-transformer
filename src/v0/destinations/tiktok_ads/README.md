@@ -6,15 +6,6 @@ Implementation in **JavaScript** (ES6+)
 
 TikTok Ads destination enables you to send event data from RudderStack to TikTok's Business API for advertising optimization, conversion tracking, and audience targeting. This integration supports both Events 1.0 and Events 2.0 APIs, with real-time event tracking, batch processing, and comprehensive user data hashing for privacy compliance.
 
-## Version Information
-
-- **Current Version**: v1.3 (TikTok Business API)
-- **Implementation Type**: v0
-- **Events API Support**: Events 1.0 (v1) and Events 2.0 (v2)
-- **Default Version**: Events 2.0 (v2)
-- **Last Updated**: July 2025
-- **Maintainer**: RudderStack Integration Team
-
 ## Configuration
 
 ### Required Settings
@@ -368,6 +359,9 @@ When the API returns error code `40100`, the destination automatically triggers 
 - **API Version**: v1.3 (TikTok Business API)
 - **Events Version**: Supports both Events 1.0 and Events 2.0
 - **Default**: Events 2.0 (v2)
+- **Implementation Type**: v0
+- **Last Updated**: July 2025
+- **Maintainer**: RudderStack Integration Team
 
 ### Version Comparison
 
@@ -382,7 +376,7 @@ When the API returns error code `40100`, the destination automatically triggers 
 | **Content Type Default** | `product_group`                   | `product`                                                                 |
 | **Limited Data Use**     | Not supported                     | Supported via `limited_data_use` parameter                                |
 
-### Deprecation Timeline
+### Version Deprecation
 
 - **Events 1.0**: Will be deprecated by H2'2024 (as indicated in UI configuration)
 - **Current Status**: Both versions supported, v2 is default
@@ -392,6 +386,11 @@ When the API returns error code `40100`, the destination automatically triggers 
   - Events 2.0 offers better performance, higher batch limits, and more user data fields
 
 **NEEDS REVIEW** - The H2'2024 deprecation timeline should be verified against current TikTok official announcements for accuracy.
+
+### Latest Available Version
+
+- **Business API**: v1.3 is the latest version found and is used by this integration. No newer `/open_api/` version was found.
+- **Events API**: Events 2.0 is the latest Events API version and is the default in this integration.
 
 ### Breaking Changes Between Versions
 
@@ -432,6 +431,10 @@ When the API returns error code `40100`, the destination automatically triggers 
 - **Pixel Setup**: [TikTok Pixel Setup Guide](https://ads.tiktok.com/help/article/get-started-pixel)
 - **Rate Limits**: [TikTok API Limits Documentation](https://business-api.tiktok.com/portal/docs?id=1771100779668482#item-link-API%20limits)
 - **Support Channels**: [TikTok Business Help Center](https://ads.tiktok.com/help/)
+
+### Changelog References
+
+- [TikTok Events API changelog](https://ads.tiktok.com/resources/help/article/events-api-changelog)
 
 ### RETL Functionality
 

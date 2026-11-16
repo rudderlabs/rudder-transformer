@@ -283,6 +283,12 @@ The following Facebook API error codes are configured as abortable (will not be 
 
 **NEEDS REVIEW**: Current deprecation timeline for v25.0 needs verification from official Facebook documentation.
 
+- v25.0 is available until July 29, 2028, per the Graph API versions page. Meta keeps each Graph API version available for about two years after the next version ships.
+
+### Latest Available Version
+
+- **Latest Version**: v26.0 (released July 29, 2026), per the Graph API versions page
+
 ### Upgrade Considerations
 
 **NEEDS REVIEW**: Breaking changes between v25.0 and newer versions need to be documented when upgrading.
@@ -297,6 +303,12 @@ The following Facebook API error codes are configured as abortable (will not be 
 - [Custom Audience Users Endpoint](https://developers.facebook.com/docs/marketing-api/reference/custom-audience/users/)
 - [Facebook Graph API Rate Limiting](https://developers.facebook.com/docs/graph-api/overview/rate-limiting/)
 - [Marketing API Versioning](https://developers.facebook.com/docs/marketing-api/overview/versioning/)
+
+### Changelog References
+
+- [Graph API versions and availability dates](https://developers.facebook.com/docs/graph-api/changelog/versions)
+- [Graph API changelog](https://developers.facebook.com/documentation/development/graph-api/changelog)
+- [Marketing API changelog](https://developers.facebook.com/documentation/ads-commerce/marketing-api/marketing-api-changelog)
 
 ### RETL Functionality
 

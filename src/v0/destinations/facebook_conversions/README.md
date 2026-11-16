@@ -267,6 +267,14 @@ Based on Facebook's official documentation:
 - **v25.0 Release Date**: February 18, 2026
 - **Previous implementation**: v24.0
 
+### Version Deprecation
+
+- v25.0 is available until July 29, 2028, per the Graph API versions page. Meta keeps each Graph API version available for about two years after the next version ships.
+
+### Latest Available Version
+
+- **Latest Version**: v26.0 (released July 29, 2026), per the Graph API versions page
+
 ### Version Features (v25.0)
 
 - Latest privacy controls and compliance features
@@ -287,6 +295,12 @@ Based on Facebook's official documentation:
 - [Data Processing Options](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/data-processing-options/)
 - [Graph API Changelog](https://developers.facebook.com/docs/graph-api/changelog/)
 - [Rate Limiting Information](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
+
+### Changelog References
+
+- [Graph API versions and availability dates](https://developers.facebook.com/docs/graph-api/changelog/versions)
+- [Graph API changelog](https://developers.facebook.com/documentation/development/graph-api/changelog)
+- [Marketing API changelog](https://developers.facebook.com/documentation/ads-commerce/marketing-api/marketing-api-changelog)
 
 ### RudderStack Documentation
 

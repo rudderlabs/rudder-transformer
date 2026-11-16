@@ -293,7 +293,7 @@ Klaviyo provides **2 years** of support for each API revision:
 2. **Deprecated** (Year 2): Use discouraged, migration recommended
 3. **Retired** (Year 3+): No longer supported, breakages likely
 
-### Version Deprecation Schedule
+### Version Deprecation
 
 | Revision   | Status     | Planned Retirement |
 | ---------- | ---------- | ------------------ |
@@ -302,6 +302,10 @@ Klaviyo provides **2 years** of support for each API revision:
 | 2026-04-15 | Stable     | ~April 2028        |
 
 **Recommendation**: Continue using `apiVersion: v2` to preserve existing behavior. Use `apiVersion: v3` only when you are ready for strict consent enforcement on both subscribe and unsubscribe requests.
+
+### Latest Available Version
+
+- **Latest Revision**: `2026-10-15` (GA), per the Klaviyo API changelog
 
 ### Breaking Changes Between Versions
 
@@ -362,6 +366,12 @@ Identifier priority depends on configuration and API version.
 - [Subscriptions API](https://developers.klaviyo.com/en/reference/bulk_subscribe_profiles)
 - [Rate Limits](https://developers.klaviyo.com/en/docs/rate_limits_and_error_handling)
 - [API Versioning Policy](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
+
+### Changelog References
+
+- [Klaviyo API changelog](https://developers.klaviyo.com/en/docs/changelog_)
+- [API versioning and deprecation policy](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
+- [API overview and revisions](https://developers.klaviyo.com/en/reference/api_overview)
 
 ### RETL Functionality
 

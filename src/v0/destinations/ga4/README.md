@@ -271,6 +271,14 @@ GA4 uses the Google Analytics Measurement Protocol, which does not have versione
   - Use this endpoint if you want your data to be processed in the EU
   - Automatically used when EU data processing is configured
 
+### Version Deprecation
+
+Not applicable. The Measurement Protocol has no versioned endpoints, so there is no version-level deprecation. Google records changes in the Measurement Protocol changelog.
+
+### Latest Available Version
+
+Not applicable. The Measurement Protocol is not versioned; this integration uses the current `/mp/collect` endpoint.
+
 ## Documentation Links
 
 ### GA4 Measurement Protocol Documentation
@@ -280,6 +288,10 @@ GA4 uses the Google Analytics Measurement Protocol, which does not have versione
 - [Measurement Protocol Reference](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference)
 - [Event Collection Limits](https://support.google.com/analytics/answer/9267744)
 - [Validating Events](https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events)
+
+### Changelog References
+
+- [Measurement Protocol (GA4) changelog](https://developers.google.com/analytics/devguides/collection/protocol/ga4/changelog)
 
 ### RETL Functionality
 

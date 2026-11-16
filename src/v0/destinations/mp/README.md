@@ -354,7 +354,7 @@ if (mappedProperties.$insert_id) {
 
 ## Version Information
 
-### Current API Versions
+### Current Version
 
 Mixpanel API is versioned by endpoint rather than having global API versions. The implementation uses the current stable endpoints:
 
@@ -364,11 +364,16 @@ Mixpanel API is versioned by endpoint rather than having global API versions. Th
 - **Groups API**: Current stable version (no versioning in URL)
 - **GDPR API**: v3.0 (as specified in endpoint URL)
 
-### API Endpoint Versioning
+### Version Deprecation
 
 - **Base Endpoints**: No version deprecation concerns as Mixpanel maintains backward compatibility
 - **GDPR API**: Uses v3.0 which is the current stable version
 - **No Breaking Changes**: Mixpanel typically maintains backward compatibility for their APIs
+
+### Latest Available Version
+
+- **Base Endpoints**: Not applicable. Import, Track, Engage and Groups endpoints are not versioned.
+- **GDPR API**: v3.0, which is used by this integration
 
 ### Implementation Version
 
@@ -388,6 +393,10 @@ Mixpanel API is versioned by endpoint rather than having global API versions. Th
 - [Identity Merge](https://developer.mixpanel.com/reference/identity-merge)
 - [Event Deduplication](https://developer.mixpanel.com/reference/event-deduplication)
 - [User Deletion](https://developer.mixpanel.com/reference/delete-profile)
+
+### Changelog References
+
+- [Mixpanel changelogs](https://docs.mixpanel.com/changelogs)
 
 ### RETL Functionality
 

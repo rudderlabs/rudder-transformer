@@ -145,7 +145,14 @@ Note that rate limiting applies to Split.io's Admin API (used for feature flag m
 - **Endpoints Used**:
   - `https://events.split.io/api/events` - Single event endpoint (currently implemented)
   - `https://events.split.io/api/events/bulk` - Bulk events endpoint (available but not implemented)
+
+### Version Deprecation
+
 - **Deprecation**: No deprecation schedule announced for Events API
+
+### Latest Available Version
+
+Not applicable. The Split.io Events API does not use versioned endpoints.
 
 ### Version Compatibility
 
@@ -169,6 +176,10 @@ Note that rate limiting applies to Split.io's Admin API (used for feature flag m
 - [Traffic Types](https://help.split.io/hc/en-us/articles/360019916311-Traffic-type)
 - [Environments](https://help.split.io/hc/en-us/articles/360019915771-Environments)
 - [Creating Metrics](https://help.split.io/hc/en-us/articles/22005565241101-Metrics)
+
+### Changelog References
+
+- [Harness Feature Management & Experimentation release notes](https://developer.harness.io/release-notes/more-products/feature-management-experimentation)
 
 ### RETL Functionality
 

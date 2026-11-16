@@ -397,7 +397,7 @@ eventsMapping: [
 
 ## Version Information
 
-### Current Version in Use
+### Current Version
 
 **API Versions Supported:**
 
@@ -412,7 +412,7 @@ eventsMapping: [
 - Version schema: `schema.json` (lines 10-14)
 - UI configuration: `ui-config.json` shows v2 labeled as "API v2 (Deprecated)"
 
-### Version Deprecation Status
+### Version Deprecation
 
 **Current Status:**
 
@@ -440,6 +440,10 @@ eventsMapping: [
 
 - `ui-config.json` (lines 29-32) - v2 labeled as "API v2 (Deprecated)"
 - Reddit Ads API Migration Guide: https://ads-api.reddit.com/docs/v3/capi-migration
+
+### Latest Available Version
+
+- **v3** (`https://ads-api.reddit.com/api/v3/pixels/`) is the latest available version and is supported by this integration
 
 ### Version Differences
 
@@ -599,13 +603,17 @@ Events must have timestamps within the last 7 days (168 hours). Older events wil
 
 ---
 
-## Related Documentation
+## Documentation Links
 
 - **Reddit Ads API v2 Documentation:** https://ads-api.reddit.com/docs/v2/
 - **Reddit Ads API v3 Documentation:** https://ads-api.reddit.com/docs/v3/
 - **Reddit Ads API v3 Conversion Documentation:** https://ads-api.reddit.com/docs/v3/operations/Post%20Conversion%20Events
 - **Reddit OAuth Documentation:** https://github.com/reddit-archive/reddit/wiki/oauth2
 - **Event Metadata Reference:** https://business.reddithelp.com/s/article/about-event-metadata
+
+### Changelog References
+
+- [Reddit Ads API v3 changelog](https://ads-api.reddit.com/docs/v3/changelog)
 
 ## Support
 

@@ -101,16 +101,33 @@ Event-specific:
 - Group v2: multiple API calls per event: create/update company, attach contact to company (if contact found), and add tags
 - Track: single API call
 
-### Version Information
+## Version Information
+
+### Current Version
 
 - Current supported API versions in transformer: 1.4 and 2.10 (via `Intercom-Version` header)
 - Intercom maintains versioned APIs with changelogs
+
+### Version Deprecation
+
+- Intercom's API changelog does not publish a sunset or deprecation date for versions 1.4 or 2.10. Breaking changes are released only in new API versions.
+
+### Latest Available Version
+
+- 2.18 (released 2026-11-09), per the Intercom API changelog
 - Docs:
   - Intercom API Changelog index — `https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-changelog`
   - 2.10 reference (release 2023-09-14) — `https://developers.intercom.com/docs/references/2.10/introduction` (confirm availability)
   - 1.4 reference — `https://developers.intercom.com/docs/references/1.4/introduction`
 
-### Documentation Links (API Endpoints Used)
+## Documentation Links
+
+### Changelog References
+
+- [Intercom API changelog](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-changelog)
+- [Update your API version](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/update-your-api-version)
+
+### API Endpoints Used
 
 - Contacts Search: `POST /contacts/search`
 - Contacts CRUD (v2): `POST /contacts`, `PUT /contacts/{id}`

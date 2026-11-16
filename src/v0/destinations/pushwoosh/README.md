@@ -6,11 +6,6 @@ Implementation in **TypeScript** on the batching framework (`DestinationIntegrat
 
 Pushwoosh is a customer engagement platform (push, in-app, email, SMS, Customer Journeys). The RudderStack Pushwoosh destination sends `track` events to Pushwoosh as custom events and `identify` traits as user-specific tags, so they can drive segmentation and Customer Journey triggers. Pushwoosh matches everything by **User ID**: the Pushwoosh SDK in the customer's app must call `setUserId` with the same value RudderStack sends as `userId`.
 
-## Version Information
-
-- **Events**: Pushwoosh integration events endpoint (`/integration-segment/v1/post-events`), unversioned beyond `v1`
-- **Tags**: Pushwoosh legacy JSON API `1.3` (`/json/1.3/setTags`)
-
 ## Configuration
 
 ### Required Settings
@@ -134,6 +129,8 @@ All of these fail only the offending event (HTTP 400, instrumentation error); th
 
 - post-events: `v1` of the Pushwoosh integration events API.
 - setTags: Pushwoosh JSON API `1.3`.
+- **Events**: Pushwoosh integration events endpoint (`/integration-segment/v1/post-events`), unversioned beyond `v1`
+- **Tags**: Pushwoosh legacy JSON API `1.3` (`/json/1.3/setTags`)
 
 ### API Endpoints
 
@@ -144,11 +141,20 @@ All of these fail only the offending event (HTTP 400, instrumentation error); th
 
 **NEEDS REVIEW** — end-of-life dates for JSON API 1.3 and the integration events endpoint, and whether a newer `setTags` version exists, were not verified against the Pushwoosh API reference.
 
+### Latest Available Version
+
+- **NEEDS REVIEW**: Whether a newer `setTags` version than JSON API `1.3` exists was not verified against the Pushwoosh API reference.
+
 ## Documentation Links
 
 ### API Documentation
 
 - [Pushwoosh API reference](https://docs.pushwoosh.com/developer/api-reference/)
+
+### Changelog References
+
+- [Pushwoosh developer changelog](https://docs.pushwoosh.com/developer/changelog)
+- [Pushwoosh product release notes](https://docs.pushwoosh.com/product/release-notes/)
 
 ### RETL Functionality
 

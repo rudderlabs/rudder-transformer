@@ -400,6 +400,14 @@ Despite this time-based ordering, the issue here is, the user attributes can end
 
 Braze doesn't have any versioned releases of thier APIs.
 
+### Version Deprecation
+
+Braze REST API endpoints are not versioned, so there is no version-level deprecation. Braze announces deprecations of individual endpoints in its release notes.
+
+### Latest Available Version
+
+Not applicable. Braze REST API endpoints are not versioned.
+
 ## Documentation Links
 
 ### REST API Documentation
@@ -409,6 +417,12 @@ Braze doesn't have any versioned releases of thier APIs.
 - [User Identify API](https://www.braze.com/docs/api/endpoints/user_data/post_user_identify/)
 - [User Delete API](https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/)
 - [Subscription Group API](https://www.braze.com/docs/api/endpoints/subscription_groups/)
+
+### Changelog References
+
+- [Braze API changelog](https://www.braze.com/docs/api/changelog)
+- [Braze release notes](https://www.braze.com/docs/releases)
+- [Braze deprecations](https://www.braze.com/docs/releases/deprecations)
 
 ### RETL Functionality
 

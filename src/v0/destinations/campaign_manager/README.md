@@ -374,7 +374,7 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 - Google typically provides 6+ months between deprecation and sunset for migration
 - Migration to v5 is recommended before the sunset date
 
-### Available Versions
+### Latest Available Version
 
 **Yes** - Campaign Manager 360 API v5 is available
 
@@ -401,6 +401,10 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 
 - [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchinsert)
 - [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchupdate)
+
+### Changelog References
+
+- [Campaign Manager 360 API deprecation schedule](https://developers.google.com/doubleclick-advertisers/deprecation)
 
 ## RETL Functionality
 

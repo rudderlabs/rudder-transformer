@@ -226,12 +226,21 @@ No event-stream multiplexing is implemented. Identify and Track each generate ex
 
 ## Version Information
 
+### Current Version
+
 - **Sprig API version used:** v2
 - **Endpoints used:**
   - Event ingestion/profile update: `POST https://api.sprig.com/v2/users`
   - User deletion: `POST https://api.sprig.com/v2/purge/visitors`
 - **Other Sprig API versions:** Sprig also exposes a v1 Export API (`GET /v1/responses`, `GET /v1/surveys`, `GET /v1/themes`) which uses `Authorization: Bearer <apiKey>` instead of `API-Key`. This integration does not use v1 at all, so the difference in auth scheme is not relevant to the transformer.
+
+### Version Deprecation
+
 - **Deprecation status:** No public deprecation or end-of-life notice for these Sprig v2 endpoints was identified in the referenced public API docs. The v1 endpoints remain documented alongside v2 and are not marked deprecated.
+
+### Latest Available Version
+
+- v2 is the latest version of the endpoints this integration uses. No newer Sprig API version was identified in the public API docs.
 - **Documentation reference:** [Sprig API overview](https://docs.sprig.com/reference/sprig-api/overview)
 
 ## Testing
@@ -251,10 +260,14 @@ npm run test:ts -- component --destination=sprig
 
 There are no Sprig-specific co-located unit test files under `src/cdk/v2/destinations/sprig/` or `src/v0/destinations/sprig/` at the time of writing.
 
-## Additional Documentation
+## Documentation Links
 
 - [Business logic and field mappings](./docs/businesslogic.md)
 - [RETL support](./docs/retl.md)
+
+### Changelog References
+
+- [Sprig changelog](https://docs.sprig.com/changelog)
 
 ## Troubleshooting
 

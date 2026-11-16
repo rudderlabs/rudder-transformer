@@ -211,9 +211,13 @@ Dub follows the [IETF standard](https://datatracker.ietf.org/doc/html/draft-ietf
   - `/track/lead` - For lead conversion tracking
   - `/track/sale` - For sales conversion tracking
 
-### Deprecation Information
+### Version Deprecation
 
 No data available
+
+### Latest Available Version
+
+Not applicable. Dub API endpoints are not versioned.
 
 ## Documentation Links
 
@@ -224,6 +228,10 @@ No data available
 - [Track Sale API](https://dub.co/docs/api-reference/endpoint/track-sale)
 - [API Authentication](https://dub.co/docs/api-reference/tokens)
 - [Error Handling](https://dub.co/docs/api-reference/errors)
+
+### Changelog References
+
+- [Dub changelog](https://dub.co/changelog)
 
 ### Pricing and Plans
 

@@ -87,6 +87,21 @@ Where `[op]` can be either `add` or `remove` to specify the operation type.
 - **Handling Strategy**: Automatic retry with exponential backoff
 - **Batch Size**: Maximum 50,000 identifiers per request
 
+## Version Information
+
+### Current Version
+
+- **API Version**: `2026-07` (`https://api.criteo.com/2026-07/`, set in `config.js`)
+
+### Version Deprecation
+
+- Criteo supports each stable API version for 12 months after release. Calls to an unsupported version fall forward to the oldest supported stable version.
+- Criteo has not yet published an exact end-of-support date for `2026-07`. Check the versioning policy page for the current schedule.
+
+### Latest Available Version
+
+- `2026-07` is the latest stable version found in the Criteo changelog and is the version used by this integration
+
 ## Error Handling
 
 ### Common Errors
@@ -160,8 +175,13 @@ const criteoEvent = processEvent(event);
 - **Criteo API Response**: Check the response body for detailed error messages
 - **Network Monitoring**: Monitor API calls and response times
 
-## References
+## Documentation Links
 
 - **Official Documentation**: [Criteo Marketing Solutions API](https://developers.criteo.com/marketing-solutions/)
 - **API Reference**: [Criteo API Reference](https://developers.criteo.com/marketing-solutions/docs/api-error-types)
 - **Support Channels**: [Criteo Developer Support](https://developers.criteo.com/support)
+
+### Changelog References
+
+- [Criteo Marketing Solutions changelog](https://developers.criteo.com/marketing-solutions/changelog/changelog)
+- [Criteo versioning policy](https://developers.criteo.com/marketing-solutions/docs/versioning-policy)

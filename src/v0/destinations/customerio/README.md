@@ -222,7 +222,7 @@ All Customer.io event types result in single API calls to their respective endpo
 
 ## Version Information
 
-### Current API Versions
+### Current Version
 
 Customer.io uses versioned APIs but does not have versioned releases with deprecation schedules:
 
@@ -231,13 +231,13 @@ Customer.io uses versioned APIs but does not have versioned releases with deprec
 - **Track API v2**: Used for batch operations (group events)
   - Endpoints: `/api/v2/entity`, `/api/v2/batch`
 
-### Deprecation Information
+### Version Deprecation
 
 - **No Deprecation Timeline**: Customer.io maintains backward compatibility without announced deprecation dates
 - **Version Stability**: Both v1 and v2 APIs are stable and actively maintained
 - **Migration Path**: No migration required as both versions are supported indefinitely
 
-### New Versions Available
+### Latest Available Version
 
 - **Current Status**: No newer API versions are available
 - **v2 API**: Represents the latest batch processing capabilities
@@ -253,6 +253,10 @@ Customer.io uses versioned APIs but does not have versioned releases with deprec
 - [Track Events API](https://docs.customer.io/integrations/api/track/#operation/track)
 - [Merge Customers API](https://docs.customer.io/integrations/api/track/#operation/merge)
 - [Batch API v2](https://docs.customer.io/integrations/api/track/#operation/batch)
+
+### Changelog References
+
+- [Customer.io release notes](https://docs.customer.io/release-notes/)
 
 ### RETL Functionality
 

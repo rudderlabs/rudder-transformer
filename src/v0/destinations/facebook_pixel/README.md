@@ -251,17 +251,17 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 - **Release Date**: February 18, 2026
 - **Endpoint**: `https://graph.facebook.com/v25.0/{PIXEL_ID}/events`
 
-### Available Versions
+### Latest Available Version
 
-- **Latest Version**: v25.0 (Released February 18, 2026)
+- **Latest Version**: v26.0 (Released July 29, 2026)
 - **Current Implementation**: v25.0 (Released February 18, 2026)
 - **Previous Versions**: v24.0, v23.0, v22.0, etc.
 
 ### Version Deprecation
 
 - **Deprecation Schedule**: Facebook Graph API versions have explicit expiration dates in the changelog
-- **v25.0 Status**: Active; expiration date not yet announced in the Graph API versions table
-- **Upgrade Recommendation**: Plan migration to v26.0 once available and before Meta announces a v25.0 expiration date
+- **v25.0 Status**: Active; available until July 29, 2028
+- **Upgrade Recommendation**: Plan migration to v26.0 before July 29, 2028
 - **Breaking Changes**: Review Facebook's changelog when upgrading between versions
 
 ## Documentation Links
@@ -275,6 +275,12 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 - **[PII Hashing Guidelines](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/customer-information-parameters/)**: Customer information and hashing requirements
 - **[Standard Events Reference](https://developers.facebook.com/docs/meta-pixel/reference/)**: Facebook standard events documentation
 - **[Graph API Changelog](https://developers.facebook.com/docs/graph-api/changelog/)**: Version updates and deprecation information
+
+### Changelog References
+
+- [Graph API versions and availability dates](https://developers.facebook.com/docs/graph-api/changelog/versions)
+- [Graph API changelog](https://developers.facebook.com/documentation/development/graph-api/changelog)
+- [Marketing API changelog](https://developers.facebook.com/documentation/ads-commerce/marketing-api/marketing-api-changelog)
 
 ### RETL Functionality
 

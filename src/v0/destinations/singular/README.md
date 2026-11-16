@@ -300,7 +300,7 @@ Based on the [S2S Integration Guide](https://support.singular.net/hc/en-us/artic
 
 ## Version Information
 
-### Current API Version
+### Current Version
 
 - **SESSION Endpoint**: V1 (`/api/v1/launch`)
 - **EVENT Endpoint**: V1 (`/api/v1/evt`) and V2 (`/api/v2/evt`)
@@ -313,9 +313,14 @@ Based on the [S2S Integration Guide](https://support.singular.net/hc/en-us/artic
 | V1          | `/api/v1/evt`    | Events with platform device IDs (IDFA, AIFA, etc.) |
 | V2          | `/api/v2/evt`    | Events with Singular Device ID (SDID) only         |
 
-### Deprecation Information
+### Version Deprecation
 
 **NEEDS REVIEW**: No specific deprecation timeline found in Singular's documentation. The V1 and V2 APIs appear to be maintained in parallel for different use cases rather than as successor versions.
+
+### Latest Available Version
+
+- **SESSION Endpoint**: V1 (`/api/v1/launch`) is the only documented version
+- **EVENT Endpoint**: V2 (`/api/v2/evt`) is the newest documented version, but Singular maintains V1 and V2 in parallel for different identifier types, so both are used by this integration
 
 ## Documentation Links
 
@@ -328,6 +333,10 @@ Based on the [S2S Integration Guide](https://support.singular.net/hc/en-us/artic
 - [S2S Integration Testing Guide](https://support.singular.net/hc/en-us/articles/360002675072)
 - [Retrieving Device Data Guide](https://support.singular.net/hc/en-us/articles/30848622982299-Server-to-Server-Retrieving-Device-Data-Guide)
 - [PC & Console Game Integration Guide](https://support.singular.net/hc/en-us/articles/19147380039579-PC-Console-Game-Integration-Guide)
+
+### Changelog References
+
+**NEEDS REVIEW**: No public developer changelog, release notes, deprecation page or versions page was found for the Singular S2S API.
 
 ### Standard Events Documentation
 

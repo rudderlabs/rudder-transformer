@@ -242,9 +242,13 @@ The destination processes operations in batches, and Google Ads applies the fina
 - Google Ads API follows a regular deprecation cycle
 - Typically maintains 3-4 versions simultaneously
 - Older versions are deprecated approximately 12 months after new version release
-- **Current Status**: v25 is the latest stable version (released July 22, 2026)
+- **Current Status**: v25 (released July 22, 2026) is supported; v26 is newer
 - **Sunset Window**: v25 is expected to sunset in August 2027
 - **Upgrade Path**: When new versions are released, update the Google Ads `API_VERSION` constants across the transformer, integrations-info, and integrations-lib repositories so runtime code, tests, and metadata stay aligned.
+
+### Latest Available Version
+
+- **Latest Version**: v26 (released October 14, 2026, sunset November 2027), per the Google Ads API sunset dates page
 
 ### Breaking Changes
 
@@ -260,6 +264,11 @@ The destination processes operations in batches, and Google Ads applies the fina
 - [Manage Customer Lists](https://developers.google.com/google-ads/api/docs/remarketing/audience-segments/customer-match/manage)
 - [Offline User Data Jobs](https://developers.google.com/google-ads/api/reference/rpc/v25/OfflineUserDataJobService)
 - [API Rate Limits](https://developers.google.com/google-ads/api/docs/best-practices/quotas)
+
+### Changelog References
+
+- [Google Ads API sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
+- [Google Ads API release notes](https://developers.google.com/google-ads/api/docs/release-notes)
 
 ### RETL Functionality
 

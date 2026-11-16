@@ -89,6 +89,20 @@ Normalization:
 
 - **Max subscribers per request**: 1000 (`MAX_BATCH_SIZE`).
 
+## Version Information
+
+### Current Version
+
+- The Iterable API is not versioned. This integration uses the unversioned `/api/lists/subscribe` and `/api/lists/unsubscribe` endpoints (US and EU data centers).
+
+### Version Deprecation
+
+- Not applicable. The Iterable API has no versioned endpoints, so there is no version-level deprecation.
+
+### Latest Available Version
+
+- Not applicable. The Iterable API is not versioned.
+
 ## Error Handling
 
 The v1 network handler classifies each subscriber in the bulk response individually:
@@ -111,8 +125,13 @@ Transport-level failures are fanned out across every job in the batch:
 - **Unit tests**: co-located `*.test.ts` files. Run with `npm test -- --testPathPattern="iterable_audience" --no-coverage`.
 - **Integration tests**: `test/integrations/destinations/iterable_audience`. Run with `npm run test:ts -- component --destination=iterable_audience`.
 
-## References
+## Documentation Links
 
 - [Iterable List Subscribe API](https://api.iterable.com/api/docs#lists_subscribeToList)
 - [Iterable List Unsubscribe API](https://api.iterable.com/api/docs#lists_unsubscribeFromList)
 - [Iterable API Keys](https://support.iterable.com/hc/en-us/articles/360043464871-API-Keys)
+
+### Changelog References
+
+- [Iterable product updates](https://community.iterable.com/product-updates)
+- [Iterable release notes](https://support.iterable.com/hc/en-us/categories/19957780777492-Release-Notes-and-Disclaimers)

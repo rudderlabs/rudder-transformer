@@ -123,3 +123,31 @@ Only HTTP 200 and 477 have delivery overrides. HTTP 200 returns per-job verdicts
 These details can contain identifiers or list text echoed by HubSpot. The formatter does not serialize the entire response. Ordinary 4xx and 5xx failures use the framework response path, which attaches the raw HubSpot body to the thrown error's `destinationResponse`. Proxy v1 copies that body as JSON into each job's `error` and retains the HTTP status. The formatted reason appears in the top-level `message`. Lookup failures include the compact formatted reason without attaching the raw response body. Transport errors without a HubSpot envelope, unmatched-email correlation errors, and membership id/job count mismatches retain static reasons.
 
 The router Authorization and lookup/membership error-detail policies deliberately differ from the companion HubSpot spec in `rudder-specs`. That spec remains outside this change.
+
+## Version Information
+
+### Current Version
+
+- **HubSpot CRM API v3**, set in `config.ts`:
+  - Contact lookup: `POST https://api.hubapi.com/crm/v3/objects/contacts/batch/read`
+  - List membership: `PUT https://api.hubapi.com/crm/v3/lists/:listId/memberships/add-and-remove`
+
+### Version Deprecation
+
+- HubSpot has not published an end-of-life date for the v3 CRM APIs. Since the move to date-based versioning in March 2026, HubSpot states that legacy v1 to v4 APIs remain available at their previous URLs.
+
+### Latest Available Version
+
+- HubSpot moved to date-based API versions (`/YYYY-MM/` paths) on March 30, 2026. New versions ship in March and September, and each is supported for 18 months. `2026-03` was the first date-based version.
+- **NEEDS REVIEW**: Confirm the latest generally available date-based version on the HubSpot versioning page.
+
+## Documentation Links
+
+- [CRM API | Contacts (v3)](https://developers.hubspot.com/docs/api-reference/crm-contacts-v3/guide)
+
+### Changelog References
+
+- [HubSpot Developer Changelog](https://developers.hubspot.com/changelog)
+- [HubSpot Developer Changelog RSS feed](https://developers.hubspot.com/changelog/rss.xml)
+- [API versioning and release schedule](https://developers.hubspot.com/docs/developer-tooling/platform/versioning)
+- [Deprecated APIs](https://developers.hubspot.com/docs/api/deprecated-apis)

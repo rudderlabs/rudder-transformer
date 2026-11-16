@@ -255,6 +255,14 @@ Iterable uses a single API version without versioned releases. The destination u
 - **Commerce API**: For purchase and cart tracking
 - **Catalogs API**: For RETL catalog management
 
+### Version Deprecation
+
+Not applicable. The Iterable API is not versioned, so there is no version-level deprecation. Iterable announces endpoint changes in its product updates and release notes.
+
+### Latest Available Version
+
+Not applicable. The Iterable API is not versioned.
+
 ## Documentation Links
 
 ### REST API Documentation
@@ -264,6 +272,11 @@ Iterable uses a single API version without versioned releases. The destination u
 - [Iterable API Documentation (EUDC)](https://api.eu.iterable.com/api/docs)
 - [User Deletion Documentation](https://support.iterable.com/hc/en-us/articles/360032290032-Deleting-Users)
 - [API Keys Documentation](https://support.iterable.com/hc/en-us/articles/360043464871-API-Keys)
+
+### Changelog References
+
+- [Iterable product updates](https://community.iterable.com/product-updates)
+- [Iterable release notes](https://support.iterable.com/hc/en-us/categories/19957780777492-Release-Notes-and-Disclaimers)
 
 ### RETL Functionality
 

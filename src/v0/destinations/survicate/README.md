@@ -276,6 +276,20 @@ export const SurvicateMessageSchema = z
   .passthrough();
 ```
 
+## Version Information
+
+### Current Version
+
+- The Survicate partner endpoints are not versioned. This integration sends to `https://hv.survicate.com/integrations/partners/rudder-stack/{identify|group|track}` (set in `config.ts`).
+
+### Version Deprecation
+
+- **NEEDS REVIEW**: Survicate does not publish a versioning or deprecation policy for these partner endpoints. The destination is maintained by Survicate, so endpoint changes come from Survicate directly.
+
+### Latest Available Version
+
+- Not applicable. The Survicate partner endpoints are not versioned.
+
 ## Error Handling
 
 The integration validates and handles the following error cases:
@@ -314,8 +328,12 @@ If tests fail, check:
 3. Ensure user has proper RudderStack event format
 4. Verify event types are one of: identify, group, track
 
-## References
+## Documentation Links
 
 - [RudderStack Event Specification](https://www.rudderstack.com/docs/event-spec/standard-events/)
 - [RudderStack Destination Development Guide](https://www.rudderstack.com/docs/destinations/)
 - [Survicate API Documentation](https://www.survicate.com)
+
+### Changelog References
+
+**NEEDS REVIEW**: No public developer changelog, release notes, deprecation page or versions page was found for the Survicate partner endpoints.

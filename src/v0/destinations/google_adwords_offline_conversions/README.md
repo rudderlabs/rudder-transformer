@@ -299,7 +299,7 @@ According to Google Ads documentation: "Each conversion upload is treated as a s
 
 - **Google Ads API Version**: v25 (in use by this destination)
 - **Endpoint Base**: `https://googleads.googleapis.com/v25/customers/{customerId}`
-- **Latest Available Version**: v25 (released July 22, 2026)
+- **Released**: July 22, 2026
 
 ### Version Deprecation
 
@@ -309,9 +309,9 @@ Google Ads API follows a regular deprecation schedule:
 - **Support period**: Each version is supported for approximately 12 months
 - **Deprecation notice**: Google Ads API publishes sunset dates and release notes for migration planning
 
-### Available Versions
+### Latest Available Version
 
-Google Ads API maintains multiple versions simultaneously. The destination currently uses v25, which is also the latest available version. Check the [Google Ads API versioning documentation](https://developers.google.com/google-ads/api/docs/concepts/versioning), [sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates), and [release notes](https://developers.google.com/google-ads/api/docs/release-notes) for the latest version information and migration guides.
+Google Ads API maintains multiple versions simultaneously. The destination currently uses v25. The latest available version is v26 (released October 14, 2026, sunset November 2027). Check the [Google Ads API versioning documentation](https://developers.google.com/google-ads/api/docs/concepts/versioning), [sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates), and [release notes](https://developers.google.com/google-ads/api/docs/release-notes) for the latest version information and migration guides.
 
 ## Documentation Links
 
@@ -325,6 +325,11 @@ Google Ads API maintains multiple versions simultaneously. The destination curre
 - [Rate Limits and Quotas](https://developers.google.com/google-ads/api/docs/productionize/rate-limits)
 - [API Versioning and Migration](https://developers.google.com/google-ads/api/docs/concepts/versioning)
 - [Google Ads API Release Notes](https://developers.google.com/google-ads/api/docs/release-notes)
+
+### Changelog References
+
+- [Google Ads API sunset dates](https://developers.google.com/google-ads/api/docs/sunset-dates)
+- [Google Ads API release notes](https://developers.google.com/google-ads/api/docs/release-notes)
 
 ## Troubleshooting
 

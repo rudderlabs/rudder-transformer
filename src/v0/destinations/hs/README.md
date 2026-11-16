@@ -554,7 +554,7 @@ instead of "John Updated"
 
 ## Version Information
 
-### Current Implementation
+### Current Version
 
 The HubSpot destination implements support for two API versions:
 
@@ -581,7 +581,7 @@ The HubSpot destination implements support for two API versions:
   - Track Events: `/events/v3/send`
   - Properties: `/properties/v1/contacts/properties` (still v1)
 
-### Deprecation Timeline
+### Version Deprecation
 
 #### Contact Lists API (v1)
 
@@ -623,6 +623,12 @@ The HubSpot destination implements support for two API versions:
   - Limited to Hub ID-based tracking
   - Fewer analytics capabilities
 - **Migration Path**: Use `/events/v3/send` with custom behavioral events
+
+### Latest Available Version
+
+- HubSpot moved to date-based API versions (`/YYYY-MM/` paths, for example `/crm/objects/2026-03/contacts`) on March 30, 2026. New versions ship in March and September, and each is supported for 18 months. Legacy v1 to v4 APIs remain available at their previous URLs.
+- `2026-03` was the first date-based version. A `2026-09` version was scheduled for September 2026.
+- **NEEDS REVIEW**: Confirm the latest generally available date-based version on the HubSpot versioning page.
 
 ### API Version Comparison
 
@@ -684,7 +690,7 @@ For detailed business logic, field mappings, and transformation flows, please re
 - [HubSpot Developer Documentation](https://developers.hubspot.com/docs/)
 - [API Usage Guidelines and Limits](https://developers.hubspot.com/docs/developer-tooling/platform/usage-guidelines)
 - [HubSpot Developer Changelog](https://developers.hubspot.com/changelog)
-- [Deprecated APIs](https://developers.hubspot.com/docs/api/deprecated-apis)
+- [Deprecated APIs](https://developers.hubspot.com/docs/api-reference/deprecated-apis)
 
 #### Contacts API
 
@@ -720,10 +726,13 @@ For detailed business logic, field mappings, and transformation flows, please re
 
 - [HubSpot Duplicates Management Guide](https://knowledge.ostsdigital.com/hubspot-crm/contacts/deduplicate-contacts-companies-deals-tickets-and-products)
 
-#### Changelog References
+### Changelog References
 
+- [HubSpot Developer Changelog](https://developers.hubspot.com/changelog)
+- [HubSpot Developer Changelog RSS feed](https://developers.hubspot.com/changelog/rss.xml)
+- [API versioning and release schedule](https://developers.hubspot.com/docs/developer-tooling/platform/versioning)
+- [Deprecated APIs](https://developers.hubspot.com/docs/api-reference/deprecated-apis)
 - [Contact Lists API v1 Sunset Extension](https://developers.hubspot.com/changelog/extension-contact-lists-api-v1-sunset-moved-to-april-30-2026)
-- [Legacy Contacts API Batch Rate Limits](https://developers.hubspot.com/changelog/new-rate-limits-for-the-legacy-contacts-api-batch-create-or-update-endpoint)
 - [Fall Spotlight 2025: New & Improved APIs](https://developers.hubspot.com/changelog/new-and-improved-apis-fall-spotlight-2025)
 
 ## FAQ

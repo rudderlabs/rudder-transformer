@@ -238,7 +238,7 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 
 ## Version Information
 
-### Current API Versions
+### Current Version
 
 AppsFlyer maintains two API endpoints for Server-to-Server events:
 
@@ -259,9 +259,13 @@ The destination automatically selects the appropriate API version based on confi
 - **v1 Authorization** → Uses API v2 endpoint with Dev Key
 - **v2 Authorization** → Uses API v3 endpoint with S2S Key
 
-### Deprecation Information
+### Version Deprecation
 
 **NEEDS REVIEW**: No official deprecation timeline found for API v2. AppsFlyer continues to support both versions without announced end-of-life dates.
+
+### Latest Available Version
+
+- **API v3** (`https://api3.appsflyer.com/inappevent/{app_id}`) is the latest available S2S events API version and is supported by this integration
 
 ## Documentation Links
 
@@ -271,6 +275,12 @@ The destination automatically selects the appropriate API version based on confi
 - [Server-to-Server Events Overview](https://support.appsflyer.com/hc/en-us/articles/207034486-Server-to-server-events-API-for-mobile-S2S-mobile)
 - [OpenDSR API for User Deletion](https://support.appsflyer.com/hc/en-us/articles/11332840660625-Send-OpenDSR-API-requests)
 - [API Rate Limits and Traits](https://dev.appsflyer.com/hc/reference/overview-3)
+
+### Changelog References
+
+- [AppsFlyer bulletins (what's new)](https://support.appsflyer.com/hc/en-us/sections/6551161473041-Bulletins)
+
+**NEEDS REVIEW**: No changelog or versions page specific to the S2S events API was found.
 
 ### RETL Functionality
 

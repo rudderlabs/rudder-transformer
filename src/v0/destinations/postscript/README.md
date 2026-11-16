@@ -213,6 +213,10 @@ PostScript maintains backward compatibility with v1 API but recommends using v2 
 
 **NEEDS REVIEW**: Specific deprecation timeline for v1 API not found in public documentation.
 
+### Latest Available Version
+
+- **v2** is the latest available Postscript API version and is used by this integration
+
 ## Documentation Links
 
 ### API Documentation
@@ -223,6 +227,10 @@ PostScript maintains backward compatibility with v1 API but recommends using v2 
 - [Create Custom Event API](https://developers.postscript.io/reference/create-custom-event)
 - [Rate Limits](https://developers.postscript.io/docs/rate-limits)
 - [Authentication](https://developers.postscript.io/docs/api-authentication)
+
+### Changelog References
+
+- [Postscript API changelog](https://developers.postscript.io/changelog)
 
 ### RETL Functionality
 

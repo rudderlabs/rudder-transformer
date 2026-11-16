@@ -6,10 +6,6 @@ Implementation in **Javascript** (NOT a CDK v2 implementation)
 
 Amplitude is a product analytics platform that helps companies understand user behavior, ship the right features, and improve business outcomes. The RudderStack Amplitude integration sends event data to Amplitude for analysis, allowing you to track user actions, identify users, and analyze user behavior patterns.
 
-## Version Information
-
-- **Current Version of Amplitude API used in integration**: HTTP API v2
-
 ## Configuration
 
 ### Required Settings
@@ -297,6 +293,8 @@ Amplitude events include a timestamp field, which is populated with the event's 
 
 ### Current Version
 
+- **Current Version of Amplitude API used in integration**: HTTP API v2
+
 Amplitude HTTP API v2 is used for event tracking.
 
 ### API Endpoints
@@ -329,6 +327,10 @@ Amplitude HTTP API v2 is used for event tracking.
 
 Amplitude HTTP API v2 is the current version and there is no announced deprecation date. Amplitude maintains backward compatibility for their APIs and typically provides ample notice before deprecating any API version. The HTTP API v2 replaced the deprecated HTTP API v1.
 
+### Latest Available Version
+
+HTTP API v2 is the latest available version of the Amplitude HTTP API and is used by this integration.
+
 ## Documentation Links
 
 ### API Documentation
@@ -339,6 +341,10 @@ Amplitude HTTP API v2 is the current version and there is no announced deprecati
 - [Amplitude User Privacy API](https://amplitude.com/docs/apis/analytics/user-privacy)
 - [Amplitude User Mapping API](https://amplitude.com/docs/apis/analytics/user-mapping)
 - [Amplitude API Authentication](https://amplitude.com/docs/apis/authentication)
+
+### Changelog References
+
+- [Amplitude platform updates](https://community.amplitude.com/kb/platform-updates)
 
 ### RETL Functionality
 

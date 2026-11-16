@@ -253,6 +253,10 @@ Event ordering is **not strictly required** for Group events. Similar to Identif
 - **Deprecation**: No deprecation timeline announced
 - **Stability**: Version 3 has been stable and is actively maintained by Airship
 
+### Latest Available Version
+
+- **API v3** is the latest available version and is used by this integration
+
 ## Documentation Links
 
 ### REST API Documentation
@@ -262,6 +266,10 @@ Event ordering is **not strictly required** for Group events. Similar to Identif
 - [Named Users Attributes API](https://docs.airship.com/api/ua/#operation/api/named_users/named_user_id/attributes/post)
 - [Custom Events API](https://docs.airship.com/api/ua/#operation/api/custom-events/post)
 - [API Best Practices](https://support.airship.com/hc/en-us/articles/360051990652-What-are-the-best-practices-for-the-use-of-the-Airship-Messaging-API)
+
+### Changelog References
+
+- [Airship what's new](https://www.airship.com/docs/whats-new/)
 
 ### RETL Functionality
 

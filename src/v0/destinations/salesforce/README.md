@@ -134,13 +134,13 @@ Throttling cost per identify event: **3 units** (defined in `db-config.json`).
 
 Example: if `context.externalId` contains both `Salesforce-Lead` and `Salesforce-Account`, two separate requests are generated.
 
-## Version Deprecation
+## Version Information
 
-### Current API Version
+### Current Version
 
 **v50.0** (Winter '21 release) — defined as `SF_API_VERSION = '50.0'` in `config.js`.
 
-### Deprecation Status
+### Version Deprecation
 
 Salesforce retires API versions in waves. So far:
 
@@ -223,6 +223,13 @@ See [docs/retl.md](docs/retl.md) for detailed RETL documentation.
 ## Business Logic
 
 See [docs/businesslogic.md](docs/businesslogic.md) for detailed business logic documentation including field mappings, authentication flows, record lookup strategies, and example payloads.
+
+## Documentation Links
+
+### Changelog References
+
+- [REST API end-of-life policy (retired and deprecated versions)](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/api_rest_eol.htm)
+- [Salesforce Platform API Versions 21.0 through 30.0 Retirement](https://help.salesforce.com/s/articleView?id=000389618&language=en_US&type=1)
 
 ## FAQ
 

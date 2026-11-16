@@ -277,6 +277,14 @@ Track events that update data extensions also require strict event ordering to e
 
 Salesforce Marketing Cloud uses REST API v1 for the endpoints used by this destination.
 
+### Version Deprecation
+
+**NEEDS REVIEW**: Salesforce does not publish a version lifecycle or end-of-life dates for the Marketing Cloud REST v1 endpoints used by this destination.
+
+### Latest Available Version
+
+- **v1** is the only version of the REST endpoints used by this destination (`/contacts/v1`, `/hub/v1`, `/interaction/v1`)
+
 ## Documentation Links
 
 ### REST API Documentation
@@ -285,6 +293,10 @@ Salesforce Marketing Cloud uses REST API v1 for the endpoints used by this desti
 - [Authentication](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/authentication.html)
 - [Data Extensions](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/data-extension-rows-via-rest.html)
 - [Event Definitions](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/event-definition-key.html)
+
+### Changelog References
+
+**NEEDS REVIEW**: No public developer changelog, release notes, deprecation page or versions page was found for the Marketing Cloud REST API.
 
 ### RETL Functionality
 

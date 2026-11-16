@@ -219,7 +219,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
         destEvents[0].metadata?.workspaceId,
         tags.FEATURES.BATCH,
       );
-      metaTO.metadatas = destEvents.map((event) => event.metadata);
+      metaTO.metadatas = events.map((event) => event.metadata);
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
           destEvents,

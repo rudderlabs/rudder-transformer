@@ -167,7 +167,7 @@ describe('NativeIntegration Service', () => {
     expect(increment).not.toHaveBeenCalled();
   });
 
-  test('batch validation fails only its destination group and uses that group metadata', () => {
+  test('batch validation follows the existing failure handler and leaves sibling responses', () => {
     const report = jest.spyOn(ErrorReportingService, 'reportError');
     const inputs = [1, 2, 3].map((jobId) => ({
       message: { jobId },
@@ -208,7 +208,7 @@ describe('NativeIntegration Service', () => {
 
     expect(result).toEqual([
       {
-        metadata: [inputs[0].metadata, inputs[1].metadata],
+        metadata: [inputs[0].metadata, inputs[1].metadata, inputs[2].metadata],
         batched: false,
         statusCode: 500,
         error: 'delivery request has more than one non-empty body format: JSON, GZIP',

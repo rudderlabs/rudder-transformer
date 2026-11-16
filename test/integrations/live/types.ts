@@ -116,6 +116,16 @@ interface PipelineStep extends Step {
   // Exact number of proxy requests across all outputs (where a dontBatch regression would slip
   // through). Omit to keep the loose per-output `> 0` assertion.
   expectedProxyRequests?: number;
+  // Opt-in checks for each actual router request and its vendor response, in delivery order.
+  // The response predicate must return a boolean; the runner reports only the endpoint and HTTP
+  // status on failure, never the request or partner body (both may contain credentials).
+  expectedRequests?: readonly {
+    endpoint: string;
+    contentType?: string;
+    // Optional check on the uncompressed router GZIP payload (errors never print the payload).
+    payload?: (ctx: RunContext, body: string) => boolean;
+    accepts: (status: number, body: unknown) => boolean;
+  }[];
   // Declares that this step is expected to fail, and how. One field for every kind of failure —
   // a rejected item, a bad credential, a throttled batch — so the step API does not grow a
   // separate flag per error class.
@@ -329,7 +339,12 @@ interface LiveHttpResponse {
   body: unknown;
 }
 interface LiveHttpClient {
-  post: (url: string, body: object) => Promise<LiveHttpResponse>;
+  // The optional callback receives the raw vendor reply to /proxy before response handling.
+  post: (
+    url: string,
+    body: object,
+    onVendorResponse?: (response: { status: number; body: unknown }) => void,
+  ) => Promise<LiveHttpResponse>;
 }
 
 // Structured delivery failure — the retry loop and the throw site both consume this, so the

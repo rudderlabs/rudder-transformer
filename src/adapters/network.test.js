@@ -13,6 +13,7 @@ const {
   httpSend,
   fireHTTPStats,
   proxyRequest,
+  registerProxyResponseObserver,
   prepareProxyRequest,
   handleHttpRequest,
   httpDELETE,
@@ -1287,6 +1288,52 @@ describe('handleHttpRequest tests', () => {
 describe('proxyRequest tests', () => {
   beforeEach(() => {
     axios.mockClear();
+  });
+
+  test('observes the raw vendor reply at the delivery boundary without forwarding the token', async () => {
+    const vendor = { status: 200, data: { status: 1 } };
+    axios.mockResolvedValueOnce(vendor);
+    const observed = jest.fn();
+    const unregister = registerProxyResponseObserver('live-test-token', observed);
+    try {
+      await proxyRequest(
+        {
+          body: { JSON: { event: 'test' } },
+          method: 'POST',
+          endpoint: 'https://example.com/collect',
+          headers: { 'x-live-vendor-observation': 'live-test-token' },
+          metadata: {},
+        },
+        'AM',
+      );
+      expect(observed).toHaveBeenCalledWith({ success: true, response: vendor });
+      expect(axios.mock.calls[0][0].headers).not.toHaveProperty('x-live-vendor-observation');
+    } finally {
+      unregister();
+    }
+  });
+
+  test('observes a failed partner reply without forwarding the token', async () => {
+    const vendor = { status: 400, data: { error: 'invalid' } };
+    axios.mockRejectedValueOnce({ response: vendor });
+    const observed = jest.fn();
+    const unregister = registerProxyResponseObserver('live-failed-token', observed);
+    try {
+      await proxyRequest(
+        {
+          body: { JSON: { event: 'test' } },
+          method: 'POST',
+          endpoint: 'https://example.com/collect',
+          headers: { 'x-live-vendor-observation': 'live-failed-token' },
+          metadata: {},
+        },
+        'AM',
+      );
+      expect(observed).toHaveBeenCalledWith({ success: false, response: { response: vendor } });
+      expect(axios.mock.calls[0][0].headers).not.toHaveProperty('x-live-vendor-observation');
+    } finally {
+      unregister();
+    }
   });
 
   test('should proxy request correctly', async () => {

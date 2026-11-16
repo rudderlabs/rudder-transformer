@@ -195,6 +195,130 @@ describe('runPipelineStep — seeding', () => {
   });
 });
 
+describe('runPipelineStep — gzip vendor assertions', () => {
+  const secret = 'never-print-this-secret';
+  const expected = {
+    endpoint: '/collect',
+    accepts: (status: number, body: unknown) => status === 200 && body === 'ok',
+  };
+  const step = (
+    request: NonNullable<PipelineStep['expectedRequests']>[number] = expected,
+  ): PipelineStep => ({
+    stepType: 'pipeline',
+    name: 'gzip assertion',
+    seed: () => event('test'),
+    expectedOutputs: 1,
+    expectedRequests: [request],
+  });
+  const liveHttp = (body: Record<string, unknown>, status = 200): LiveHttpClient => ({
+    post: async (url, request, onVendorResponse) => {
+      if (url === '/routerTransform') {
+        const jobIds = (request as RouterTransformRequestBody).input.map((i) => i.metadata.jobId);
+        const output = routerOutput(jobIds);
+        return {
+          status: 200,
+          body: {
+            output: [
+              {
+                ...output,
+                batchedRequest: {
+                  ...output.batchedRequest,
+                  headers: { Authorization: secret },
+                  body,
+                },
+              },
+            ],
+          },
+        };
+      }
+      onVendorResponse?.({ status, body: status === 200 ? 'ok' : { secret } });
+      const jobIds = (request as { metadata: { jobId: number }[] }).metadata.map((m) => m.jobId);
+      return { status: 200, body: deliveredProxyOutput(jobIds) };
+    },
+  });
+
+  it('observes the vendor reply and accepts exclusive GZIP', async () => {
+    await expect(
+      run(step(), liveHttp({ GZIP: { payload: 'compressed-by-proxy' } })),
+    ).resolves.toBeUndefined();
+  });
+
+  it.each([
+    { name: 'missing gzip', body: { JSON: { key: secret } } },
+    { name: 'empty gzip', body: { GZIP: {} } },
+    { name: 'mixed formats', body: { GZIP: { payload: secret }, FORM: { key: secret } } },
+  ])('rejects $name without leaking request data', async ({ body }) => {
+    const error = await run(step(), liveHttp(body)).then(
+      () => '',
+      (e: Error) => e.message,
+    );
+    expect(error).toContain('exclusive non-empty GZIP');
+    expect(error).not.toContain(secret);
+  });
+
+  it('rejects an unexpected GZIP payload without leaking its contents', async () => {
+    const error = await run(
+      step({ ...expected, payload: () => false }),
+      liveHttp({ GZIP: { payload: secret } }),
+    ).then(
+      () => '',
+      (e: Error) => e.message,
+    );
+    expect(error).toContain('GZIP payload failed content check');
+    expect(error).not.toContain(secret);
+  });
+
+  it('rejects a mismatched endpoint without leaking the request', async () => {
+    const error = await run(
+      step({ ...expected, endpoint: '/different' }),
+      liveHttp({ GZIP: { payload: secret } }),
+    ).then(
+      () => '',
+      (e: Error) => e.message,
+    );
+    expect(error).toContain('expected endpoint /different');
+    expect(error).not.toContain(secret);
+  });
+
+  it('rejects a vendor predicate error without leaking its details', async () => {
+    const error = await run(
+      step({
+        ...expected,
+        accepts: () => {
+          throw new Error(secret);
+        },
+      }),
+      liveHttp({ GZIP: { payload: secret } }),
+    ).then(
+      () => '',
+      (e: Error) => e.message,
+    );
+    expect(error).toContain('vendor response failed acceptance check (HTTP 200)');
+    expect(error).not.toContain(secret);
+  });
+
+  it('rejects a failed vendor response even if the proxy claims success', async () => {
+    const error = await run(step(), liveHttp({ GZIP: { payload: secret } }, 400)).then(
+      () => '',
+      (e: Error) => e.message,
+    );
+    expect(error).toContain('vendor response failed acceptance check (HTTP 400)');
+    expect(error).not.toContain(secret);
+  });
+
+  it('rejects a mismatched vendor body even if HTTP 200 and proxy delivery succeeded', async () => {
+    const error = await run(
+      step({ endpoint: '/collect', accepts: () => false }),
+      liveHttp({ GZIP: { payload: secret } }),
+    ).then(
+      () => '',
+      (e: Error) => e.message,
+    );
+    expect(error).toContain('vendor response failed acceptance check (HTTP 200)');
+    expect(error).not.toContain(secret);
+  });
+});
+
 describe('runPipelineStep — delivery attribution', () => {
   it('fails the step when a seeded job comes back without a delivery verdict', async () => {
     const http: LiveHttpClient = {

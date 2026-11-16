@@ -21,6 +21,13 @@ const MAX_CONTENT_LENGTH = parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 10000
 const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
 const REQUEST_TIMEOUT_IN_MS = parseInt(process.env.REQUEST_TIMEOUT_IN_MS, 10) || 1000 * 60;
 let compressionInflight = 0;
+// In-process observation hook for the live suite, keyed by an opaque per-request header.
+// Only installed during live tests; never store a reply unless a test registered its token.
+const proxyResponseObservers = new Map();
+const registerProxyResponseObserver = (token, observer) => {
+  proxyResponseObservers.set(token, observer);
+  return () => proxyResponseObservers.delete(token);
+};
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
   // `method` is the request method to be used when making the request
@@ -536,9 +543,14 @@ const proxyRequest = async (request, destType) => {
     endpointPath: endpointPath ?? '',
     workspaceId: logger.getLogMetadata(metadata).workspaceId,
   };
+  const observerToken = request.headers?.['x-live-vendor-observation'];
+  const observer = proxyResponseObservers.get(observerToken);
+  // Never forward an observation token to the partner, even if the token is unknown/expired.
+  const vendorRequest = observerToken ? { ...request, headers: { ...request.headers } } : request;
+  if (observerToken) delete vendorRequest.headers['x-live-vendor-observation'];
   const { endpoint, data, method, params, headers } = await (isGzip
-    ? prepareGzipProxyRequest(request, tags)
-    : prepareProxyRequest(request));
+    ? prepareGzipProxyRequest(vendorRequest, tags)
+    : prepareProxyRequest(vendorRequest));
   fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
   if (isGzip) {
     fireCompressionStats(data, tags);
@@ -559,10 +571,13 @@ const proxyRequest = async (request, destType) => {
     },
     true,
   );
+  // The live suite may inspect the raw reply before a destination handler normalizes or discards it.
+  observer?.(response);
   return response;
 };
 
 module.exports = {
+  registerProxyResponseObserver,
   httpSend,
   httpGET,
   httpDELETE,

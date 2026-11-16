@@ -1,4 +1,5 @@
 import { HttpStatusCode } from 'axios';
+import type { ProxyV1Request } from '../../../src/types';
 import { randomInt } from 'crypto';
 import {
   parseDeliveryOutput,
@@ -8,6 +9,7 @@ import {
 import { buildRouterTransformBody } from './routerTransformRequest';
 import type {
   DeliveryFailure,
+  LiveHttpResponse,
   PipelineStep,
   RunContext,
   RunPipelineStepParams,
@@ -38,6 +40,77 @@ const sleep = (ms: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+
+// The live HTTP client supplies the vendor reply observed at the proxy boundary, before the
+// destination response handler can discard it. Never print its body (which may contain secrets).
+const deliverAndObserve = async (
+  destination: string,
+  proxyRequest: ProxyV1Request,
+  expected: NonNullable<PipelineStep['expectedRequests']>[number],
+  http: RunPipelineStepParams['http'],
+): Promise<LiveHttpResponse> => {
+  let observed: { status: number; body: unknown } | undefined;
+  const deliveryResponse = await http.post(
+    `/v1/destinations/${destination}/proxy`,
+    proxyRequest,
+    (response) => {
+      observed = response;
+    },
+  );
+  if (!observed) {
+    throw new Error(`[live:${destination}:${expected.endpoint}] vendor response was not observed`);
+  }
+  let accepted = false;
+  try {
+    accepted = expected.accepts(observed.status, observed.body);
+  } catch {
+    // A predicate may throw while parsing an unexpected vendor body; never print that body.
+  }
+  if (!accepted) {
+    throw new Error(
+      `[live:${destination}:${expected.endpoint}] vendor response failed acceptance check ` +
+        `(HTTP ${observed.status})`,
+    );
+  }
+  return deliveryResponse;
+};
+
+const assertRequest = (
+  destination: string,
+  request: ProxyV1Request,
+  expected: NonNullable<PipelineStep['expectedRequests']>[number],
+  ctx: RunContext,
+): void => {
+  const endpoint = new URL(request.endpoint).pathname;
+  if (endpoint !== expected.endpoint) {
+    throw new Error(
+      `[live:${destination}] expected endpoint ${expected.endpoint}, got another path`,
+    );
+  }
+  if (
+    typeof request.body?.GZIP?.payload !== 'string' ||
+    request.body.GZIP.payload.length === 0 ||
+    ['JSON', 'JSON_ARRAY', 'FORM', 'XML'].some(
+      (format) => Object.keys(request.body?.[format] ?? {}).length > 0,
+    )
+  ) {
+    throw new Error(`[live:${destination}:${endpoint}] expected exclusive non-empty GZIP payload`);
+  }
+  if (expected.contentType && request.headers?.['Content-Type'] !== expected.contentType) {
+    throw new Error(`[live:${destination}:${endpoint}] unexpected Content-Type`);
+  }
+  if (expected.payload) {
+    let valid = false;
+    try {
+      valid = expected.payload(ctx, request.body.GZIP.payload);
+    } catch {
+      // Parsing a malformed payload may throw; never include its contents in a test failure.
+    }
+    if (!valid) {
+      throw new Error(`[live:${destination}:${endpoint}] GZIP payload failed content check`);
+    }
+  }
+};
 
 // Seed the step's events and pair each with a jobId. Ids are numbered from one random base so they
 // are unique by construction across the call — a duplicate would make a per-item delivery verdict
@@ -141,9 +214,16 @@ const attemptDelivery = async ({
   proxyRequestsPerOutput.forEach((proxyRequests) =>
     expect(proxyRequests.length).toBeGreaterThan(0),
   );
+  const allProxyRequests = proxyRequestsPerOutput.flat();
   if (expectedProxyRequests !== undefined) {
-    const total = proxyRequestsPerOutput.reduce((n, proxyRequests) => n + proxyRequests.length, 0);
-    expect(total).toEqual(expectedProxyRequests);
+    expect(allProxyRequests.length).toEqual(expectedProxyRequests);
+  }
+  const { expectedRequests } = step;
+  if (expectedRequests) {
+    expect(allProxyRequests.length).toEqual(expectedRequests.length);
+    allProxyRequests.forEach((request, index) =>
+      assertRequest(destination, request, expectedRequests[index], ctx),
+    );
   }
 
   // Every seeded job must come back carrying a delivery verdict. Checking only that the verdicts
@@ -182,44 +262,42 @@ const attemptDelivery = async ({
     }),
   );
 
-  for (const proxyRequests of proxyRequestsPerOutput) {
-    for (const proxyRequest of proxyRequests) {
-      // eslint-disable-next-line no-await-in-loop -- deliver sequentially; order matches transform output
-      const deliveryResponse = await http.post(
-        `/v1/destinations/${destination}/proxy`,
-        proxyRequest,
-      );
+  for (const [index, proxyRequest] of allProxyRequests.entries()) {
+    const expected = expectedRequests?.[index];
+    // eslint-disable-next-line no-await-in-loop -- deliver sequentially; order matches transform output
+    const deliveryResponse = expected
+      ? await deliverAndObserve(destination, proxyRequest, expected, http)
+      : await http.post(`/v1/destinations/${destination}/proxy`, proxyRequest);
 
-      const deliveryOutput = parseDeliveryOutput(deliveryResponse.body);
-      expect(deliveryOutput).toBeDefined();
+    const deliveryOutput = parseDeliveryOutput(deliveryResponse.body);
+    expect(deliveryOutput).toBeDefined();
 
-      const jobStates = deliveryOutput.response ?? [];
-      jobStates.forEach((js) => verdictByJobId.set(js.metadata.jobId, js.statusCode));
-      const category = deliveryOutput.authErrorCategory;
-      if (category && !errorCategories.includes(category)) {
-        errorCategories.push(category);
-      }
+    const jobStates = deliveryOutput.response ?? [];
+    jobStates.forEach((js) => verdictByJobId.set(js.metadata.jobId, js.statusCode));
+    const category = deliveryOutput.authErrorCategory;
+    if (category && !errorCategories.includes(category)) {
+      errorCategories.push(category);
+    }
 
-      // A job the step declared as an expected failure is not a delivery failure — it is the
-      // outcome under test. Everything else still has to be delivered, and when nothing is expected
-      // to fail the batch's own status must be 2xx as well (a partial failure carries the
-      // destination's status, which may legitimately not be).
-      const unexpectedFailures = jobStates.filter(
-        (js) => !isDelivered(js.statusCode) && !expectedFailureJobIds.has(js.metadata.jobId),
-      );
-      const batchFailed = expectedFailureJobIds.size === 0 && !isDelivered(deliveryOutput.status);
-      if (unexpectedFailures.length > 0 || batchFailed) {
-        const redactedJobStates = jobStates.map((js) => ({
-          ...js,
-          metadata: { ...js.metadata, secret: '[redacted]' },
-        }));
-        return {
-          proxyStatus: deliveryResponse.status,
-          verdictStatus: deliveryOutput.status,
-          message: deliveryOutput.message,
-          jobStates: redactedJobStates,
-        };
-      }
+    // A job the step declared as an expected failure is not a delivery failure — it is the
+    // outcome under test. Everything else still has to be delivered, and when nothing is expected
+    // to fail the batch's own status must be 2xx as well (a partial failure carries the
+    // destination's status, which may legitimately not be).
+    const unexpectedFailures = jobStates.filter(
+      (js) => !isDelivered(js.statusCode) && !expectedFailureJobIds.has(js.metadata.jobId),
+    );
+    const batchFailed = expectedFailureJobIds.size === 0 && !isDelivered(deliveryOutput.status);
+    if (unexpectedFailures.length > 0 || batchFailed) {
+      const redactedJobStates = jobStates.map((js) => ({
+        ...js,
+        metadata: { ...js.metadata, secret: '[redacted]' },
+      }));
+      return {
+        proxyStatus: deliveryResponse.status,
+        verdictStatus: deliveryOutput.status,
+        message: deliveryOutput.message,
+        jobStates: redactedJobStates,
+      };
     }
   }
 

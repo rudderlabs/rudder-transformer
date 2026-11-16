@@ -6,7 +6,7 @@ The integration audit workflow parses two README sections by heading and by bull
 
 - Use the headings and bold labels exactly as shown, in the order shown. Don't rename, merge or skip a label.
 - Every label gets a value. When something doesn't exist, use the fixed word for that label (`None found`, `Not versioned`, `None announced`, `Unknown`). `None found` means you searched and it doesn't exist.
-- Values are facts with a source: a Markdown link, a code path, or a date in `YYYY-MM-DD`. Don't write "recently", "soon" or "early 2025" without the source link that says it.
+- Values are facts with a source: a Markdown link, a code path, or a date in `YYYY-MM-DD` (`YYYY-MM` when the partner gives only the month). Don't write "recently", "soon" or "early 2025" without the source link that says it.
 - Every URL must open (check it). Don't invent or guess URLs. A URL that blocks automated requests can stay if you confirmed it through search; add `(blocks automated requests)` after it.
 - Use `NEEDS REVIEW` only for a fact you couldn't confirm, after the bullets, never in place of a bullet value.
 - Free text is allowed below the bullets of a subsection, for context such as breaking changes between versions.
@@ -40,8 +40,8 @@ The integration audit workflow parses two README sections by heading and by bull
 | Version | The version string in backticks, or `Unversioned` when the API has no version |
 | Where in code | File path and constant or function where the version or endpoint is set |
 | Status | `Supported`, `Deprecated`, `Sunset` or `Unknown` |
-| Sunset date | `YYYY-MM-DD` or `None announced` |
-| Released | `YYYY-MM-DD` or `Unknown` |
+| Sunset date | `YYYY-MM-DD`, `YYYY-MM` when the partner publishes only the month, or `None announced` |
+| Released | `YYYY-MM-DD`, `YYYY-MM` when the partner publishes only the month, or `Unknown` |
 | Upgrade needed | `Yes` or `No` (`No` when we're on the latest version or the API is unversioned) |
 | Source | Link to the page that states the status, date or latest version |
 

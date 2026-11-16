@@ -501,6 +501,27 @@ const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }
   });
 };
 
+const prepareGzipProxyRequest = async (request, tags) => {
+  const startedAt = process.hrtime.bigint();
+  compressionInflight += 1;
+  stats.gauge('delivery_compression_inflight', compressionInflight);
+  try {
+    return await prepareProxyRequest(request);
+  } finally {
+    compressionInflight -= 1;
+    stats.gauge('delivery_compression_inflight', compressionInflight);
+    stats.histogram(
+      'delivery_compression_duration_seconds',
+      Number(process.hrtime.bigint() - startedAt) / 1e9,
+      tags,
+    );
+  }
+};
+
+const fireCompressionStats = (data, tags) => {
+  stats.histogram('delivery_compressed_payload_size_bytes', Buffer.byteLength(data), tags);
+};
+
 /**
  * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
  * note: needed for test api
@@ -509,51 +530,18 @@ const fireDeliveryPayloadSizeStats = (body, { destType, endpointPath, metadata }
  */
 const proxyRequest = async (request, destType) => {
   const { metadata, endpointPath, body } = request;
-  const { payload, payloadFormat } = getPayloadData(body);
-  let preparedRequest;
-  let compressionTags;
-  if (payloadFormat === 'GZIP') {
-    const { workspaceId } = logger.getLogMetadata(metadata);
-    compressionTags = {
-      destType,
-      endpointPath: endpointPath ?? '',
-      ...(workspaceId && { workspaceId }),
-    };
-    const startedAt = process.hrtime.bigint();
-    compressionInflight += 1;
-    stats.gauge('delivery_compression_inflight', compressionInflight);
-    try {
-      preparedRequest = await prepareProxyRequest(request);
-    } finally {
-      compressionInflight -= 1;
-      stats.gauge('delivery_compression_inflight', compressionInflight);
-      stats.histogram(
-        'delivery_compression_duration_seconds',
-        Number(process.hrtime.bigint() - startedAt) / 1e9,
-        compressionTags,
-      );
-    }
-  } else {
-    preparedRequest = await prepareProxyRequest(request);
-  }
-  const { endpoint, data, method, params, headers } = preparedRequest;
+  const isGzip = getPayloadData(body).payloadFormat === 'GZIP';
+  const tags = {
+    destType,
+    endpointPath: endpointPath ?? '',
+    workspaceId: logger.getLogMetadata(metadata).workspaceId,
+  };
+  const { endpoint, data, method, params, headers } = await (isGzip
+    ? prepareGzipProxyRequest(request, tags)
+    : prepareProxyRequest(request));
   fireDeliveryPayloadSizeStats(body, { destType, endpointPath, metadata });
-  if (payloadFormat === 'GZIP') {
-    try {
-      const uncompressed = getUncompressedPayloadSize(payload, payloadFormat);
-      if (uncompressed !== undefined) {
-        const wireBytes = Buffer.byteLength(data);
-        stats.histogram('delivery_compressed_payload_size_bytes', wireBytes, compressionTags);
-        stats.histogram('delivery_compression_ratio', uncompressed / wireBytes, compressionTags);
-        stats.counter(
-          'delivery_compression_bytes_saved_total',
-          Math.max(uncompressed - wireBytes, 0),
-          compressionTags,
-        );
-      }
-    } catch (err) {
-      logger.debug(`Delivery metric failed: ${err}`);
-    }
+  if (isGzip) {
+    fireCompressionStats(data, tags);
   }
   const requestOptions = {
     url: endpoint,

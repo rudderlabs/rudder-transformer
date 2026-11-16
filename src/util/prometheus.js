@@ -514,13 +514,6 @@ class Prometheus {
           'sourceId',
         ],
       },
-      {
-        name: 'delivery_compression_bytes_saved_total',
-        help: 'Bytes saved by GZIP proxy delivery',
-        type: 'counter',
-        labelNames: ['destType', 'endpointPath', 'workspaceId'],
-      },
-
       // Gauges
       {
         name: 'delivery_compression_inflight',
@@ -848,13 +841,6 @@ class Prometheus {
           64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536, 262144, 1048576, 4194304,
           16777216, 52428800,
         ],
-      },
-      {
-        name: 'delivery_compression_ratio',
-        help: 'Uncompressed bytes divided by GZIP wire bytes for proxy delivery',
-        type: 'histogram',
-        labelNames: ['destType', 'endpointPath', 'workspaceId'],
-        buckets: [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 5, 10, 20, 50, 100],
       },
       {
         name: 'delivery_compression_duration_seconds',

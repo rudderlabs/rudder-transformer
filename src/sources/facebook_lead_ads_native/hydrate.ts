@@ -49,6 +49,10 @@ interface FacebookSuccessResponse {
     name: string;
     values: string[];
   }[];
+  custom_disclaimer_responses?: {
+    checkbox_key: string;
+    is_checked: string;
+  }[];
 }
 
 type APIResponse = {
@@ -56,6 +60,8 @@ type APIResponse = {
 } & ({ data: FacebookSuccessResponse } | { error: string });
 
 const FACEBOOK_GRAPH_API_URL = 'https://graph.facebook.com/v25.0';
+// Graph's fields parameter replaces defaults; field_data must remain explicit for existing traits.
+const FACEBOOK_LEAD_FIELDS = 'field_data,custom_disclaimer_responses';
 
 /**
  * Fetches lead data from Facebook Graph API for a single lead ID
@@ -75,6 +81,7 @@ async function fetchLeadData(
     {
       params: {
         access_token: accessToken,
+        fields: FACEBOOK_LEAD_FIELDS,
       },
     },
     {
@@ -170,6 +177,17 @@ export async function hydrate(input: SourceHydrationRequest): Promise<SourceHydr
           traits[field.name] = firstValue;
         }
       });
+
+      // Only Meta's dedicated consent record can populate this trait, not a same-named form field.
+      delete traits.custom_disclaimer_responses;
+      const { custom_disclaimer_responses: disclaimerResponses } = result.data;
+      if (Array.isArray(disclaimerResponses) && disclaimerResponses.length > 0) {
+        traits.custom_disclaimer_responses = disclaimerResponses;
+      } else if (disclaimerResponses != null && !Array.isArray(disclaimerResponses)) {
+        logger.warn('[facebook_lead_ads_native] custom_disclaimer_responses is not an array', {
+          responseSchema: JsonSchemaGenerator.generate(disclaimerResponses),
+        });
+      }
 
       // Return job with updated traits
       updatedJob.event = {

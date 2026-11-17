@@ -1,4 +1,5 @@
 import Koa from 'koa';
+import axios, { AxiosError } from 'axios';
 import bodyParser from 'koa-bodyparser';
 import request from 'supertest';
 import { Command } from 'commander';
@@ -256,7 +257,41 @@ describe('Live Integration Test Suite', () => {
                     connection,
                     deliveryAccount,
                     http: {
-                      post: async (url, body) => agent().post(url).send(body),
+                      post: async (url, body, onVendorResponse) => {
+                        if (!onVendorResponse) return agent().post(url).send(body);
+                        // Keep the last vendor reply; each /proxy delivery is expected to make one vendor call.
+                        const interceptorId = axios.interceptors.response.use(
+                          (response) => {
+                            onVendorResponse({
+                              status: response.status,
+                              body: response.data,
+                              request: {
+                                headers: response.config.headers,
+                                data: response.config.data,
+                              },
+                            });
+                            return response;
+                          },
+                          (error: AxiosError) => {
+                            if (error.response) {
+                              onVendorResponse({
+                                status: error.response.status,
+                                body: error.response.data,
+                                request: {
+                                  headers: error.config?.headers,
+                                  data: error.config?.data,
+                                },
+                              });
+                            }
+                            throw error;
+                          },
+                        );
+                        try {
+                          return await agent().post(url).send(body);
+                        } finally {
+                          axios.interceptors.response.eject(interceptorId);
+                        }
+                      },
                     },
                   });
                   return;

@@ -6,8 +6,14 @@ import {
   type TransformedEvent,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
-import { ACTION_ATTR_VALUE, MAX_BATCH_SIZE, MAX_PAYLOAD_SIZE } from './config';
-import { buildBulkBody, getBulkTrackEndpoint, normalizeExternalId } from './utils';
+import {
+  ACTION_ATTR_VALUE,
+  BULK_MAX_BATCH_SIZE,
+  MAX_PAYLOAD_SIZE,
+  STANDARD_MAX_BATCH_SIZE,
+  STANDARD_TRACK_PATH,
+} from './config';
+import { buildTrackBody, getTrackEndpoint, normalizeExternalId } from './utils';
 import { brazeAudienceDelivery } from './delivery';
 import {
   BrazeAudienceRouterRequestSchema,
@@ -24,6 +30,8 @@ class BrazeAudienceIntegration extends DestinationIntegration<
 
   private readonly headers: Record<string, string>;
 
+  private readonly track: { endpoint: string; endpointPath: string };
+
   constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
     super(...args);
     if (!this.connection) {
@@ -36,6 +44,8 @@ class BrazeAudienceIntegration extends DestinationIntegration<
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.destination.Config.restApiKey}`,
     };
+    const { dataCenter, trackEndpoint } = this.destination.Config;
+    this.track = getTrackEndpoint(dataCenter, trackEndpoint);
   }
 
   private get connectionConfig(): BrazeAudienceConnectionConfig {
@@ -59,8 +69,6 @@ class BrazeAudienceIntegration extends DestinationIntegration<
       throw new InstrumentationError('external_id is missing or empty after trim');
     }
 
-    const { endpoint, endpointPath } = getBulkTrackEndpoint(this.destination.Config.dataCenter);
-
     const body = {
       external_id: externalId,
       [customAttributeName]: attrValue,
@@ -68,18 +76,19 @@ class BrazeAudienceIntegration extends DestinationIntegration<
 
     return {
       body,
-      endpoint,
-      endpointPath,
+      ...this.track,
       method: 'POST',
       headers: this.headers,
     };
   }
 
   getBatchStrategy(): BatchStrategy<BrazeAudienceAttributePayload> {
+    const { endpointPath } = this.track;
     return new ChunkBatchStrategy<BrazeAudienceAttributePayload>({
-      maxItems: MAX_BATCH_SIZE,
+      maxItems:
+        endpointPath === STANDARD_TRACK_PATH ? STANDARD_MAX_BATCH_SIZE : BULK_MAX_BATCH_SIZE,
       maxPayloadSize: MAX_PAYLOAD_SIZE,
-      wrapBody: (bodies) => buildBulkBody(bodies),
+      wrapBody: (bodies) => buildTrackBody(bodies, endpointPath),
     });
   }
 

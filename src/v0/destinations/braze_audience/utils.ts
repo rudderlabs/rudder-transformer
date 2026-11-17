@@ -1,22 +1,27 @@
 import { getEndpointFromConfig } from '../braze/util';
-import { BULK_TRACK_PATH } from './config';
+import { BRAZE_PARTNER_NAME } from '../braze/config';
+import {
+  BULK_TRACK_PATH,
+  DEFAULT_TRACK_ENDPOINT,
+  STANDARD_TRACK_PATH,
+  type TrackEndpoint,
+} from './config';
 import type { BrazeAudienceAttributePayload } from './types';
 
-export const getBulkTrackEndpoint = (
+export const getTrackEndpoint = (
   dataCenter: string,
+  trackEndpoint: TrackEndpoint = DEFAULT_TRACK_ENDPOINT,
 ): { endpoint: string; endpointPath: string } => {
   const base = getEndpointFromConfig({
     Config: { dataCenter },
   } as Parameters<typeof getEndpointFromConfig>[0]);
-  return {
-    endpoint: `${base}${BULK_TRACK_PATH}`,
-    endpointPath: BULK_TRACK_PATH,
-  };
+  const endpointPath = trackEndpoint === 'standard' ? STANDARD_TRACK_PATH : BULK_TRACK_PATH;
+  return { endpoint: `${base}${endpointPath}`, endpointPath };
 };
 
 /**
  * Permanent Braze `/users/track` identity error `type` values.
- * Docs list uppercase enums; live `/users/track/bulk` often returns human
+ * Docs list uppercase enums; live Braze responses often return human
  * messages (e.g. "'external_id' must be fewer than 988 bytes") instead.
  */
 const ABORTED_IDENTITY_TYPES = new Set([
@@ -40,9 +45,17 @@ export const isIdentityAborted = (type?: string): boolean => {
   );
 };
 
-export const buildBulkBody = (
+/**
+ * `/users/track` documents a `partner` field and the event-stream braze destination sends it;
+ * `/users/track/bulk`'s published schema does not list one, so bulk bodies stay without it.
+ */
+export const buildTrackBody = (
   attributes: BrazeAudienceAttributePayload[],
-): { attributes: BrazeAudienceAttributePayload[] } => ({ attributes });
+  endpointPath: string,
+): { partner?: string; attributes: BrazeAudienceAttributePayload[] } =>
+  endpointPath === STANDARD_TRACK_PATH
+    ? { partner: BRAZE_PARTNER_NAME, attributes }
+    : { attributes };
 
 /**
  * Trim and require a non-empty external_id.

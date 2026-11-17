@@ -1,12 +1,13 @@
 import { z } from 'zod';
 import { RecordAction } from '../../../types/rudderEvents';
 import { makeRouterInputSchema } from '../../../services/destination/destinationIntegration/destinationIntegration';
-import { DATA_CENTERS } from './config';
+import { DATA_CENTERS, TRACK_ENDPOINTS } from './config';
 
 export const BrazeAudienceAccountConfigSchema = z
   .object({
     restApiKey: z.string().min(1),
     dataCenter: z.enum(DATA_CENTERS),
+    trackEndpoint: z.enum(TRACK_ENDPOINTS).optional(),
   })
   .passthrough();
 

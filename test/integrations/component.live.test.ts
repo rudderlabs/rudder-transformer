@@ -259,9 +259,17 @@ describe('Live Integration Test Suite', () => {
                     http: {
                       post: async (url, body, onVendorResponse) => {
                         if (!onVendorResponse) return agent().post(url).send(body);
+                        // Keep the last vendor reply; each /proxy delivery is expected to make one vendor call.
                         const interceptorId = axios.interceptors.response.use(
                           (response) => {
-                            onVendorResponse({ status: response.status, body: response.data });
+                            onVendorResponse({
+                              status: response.status,
+                              body: response.data,
+                              request: {
+                                headers: response.config.headers,
+                                data: response.config.data,
+                              },
+                            });
                             return response;
                           },
                           (error: AxiosError) => {
@@ -269,6 +277,10 @@ describe('Live Integration Test Suite', () => {
                               onVendorResponse({
                                 status: error.response.status,
                                 body: error.response.data,
+                                request: {
+                                  headers: error.config?.headers,
+                                  data: error.config?.data,
+                                },
                               });
                             }
                             throw error;

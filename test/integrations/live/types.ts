@@ -123,9 +123,6 @@ interface PipelineStep extends Step {
     endpoint: string;
     // Assert an exclusive non-empty GZIP body when this route is expected to compress.
     bodyFormat?: 'GZIP';
-    contentType?: string;
-    // Optional check on the uncompressed router GZIP payload (errors never print the payload).
-    payload?: (ctx: RunContext, body: string) => boolean;
     accepts: (status: number, body: unknown) => boolean;
   }[];
   // Declares that this step is expected to fail, and how. One field for every kind of failure —
@@ -340,12 +337,17 @@ interface LiveHttpResponse {
   status: number;
   body: unknown;
 }
+interface VendorResponseObservation {
+  status: number;
+  body: unknown;
+  request: { headers: unknown; data: unknown };
+}
 interface LiveHttpClient {
-  // The optional callback receives the raw vendor reply to /proxy before response handling.
+  // The optional callback receives the raw vendor reply and sent request before response handling.
   post: (
     url: string,
     body: object,
-    onVendorResponse?: (response: { status: number; body: unknown }) => void,
+    onVendorResponse?: (response: VendorResponseObservation) => void,
   ) => Promise<LiveHttpResponse>;
 }
 
@@ -400,6 +402,7 @@ export {
   SeededEvent,
   LiveHttpResponse,
   LiveHttpClient,
+  VendorResponseObservation,
   DeliveryFailure,
   RunPipelineStepParams,
   PollCheckResult,

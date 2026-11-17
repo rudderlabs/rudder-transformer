@@ -1,3 +1,4 @@
+import { gzipSync } from 'zlib';
 import { runPipelineStep } from './runPipelineStep';
 import { RunContextImpl } from './runContext';
 import { buildRouterTransformBody } from './routerTransformRequest';
@@ -8,6 +9,7 @@ import type {
   RouterTransformRequestBody,
   RunContext,
   SeededEvent,
+  VendorResponseObservation,
 } from './types';
 
 const ctx = (): RunContext =>
@@ -211,7 +213,14 @@ describe('runPipelineStep — gzip vendor assertions', () => {
     expectedOutputs: 1,
     expectedRequests: [request],
   });
-  const liveHttp = (body: Record<string, unknown>, status = 200): LiveHttpClient => ({
+  const liveHttp = (
+    body: Record<string, unknown>,
+    status = 200,
+    sentRequest: VendorResponseObservation['request'] = {
+      headers: { 'Content-Encoding': 'gzip', Authorization: secret },
+      data: gzipSync((body.GZIP as { payload?: string } | undefined)?.payload ?? ''),
+    },
+  ): LiveHttpClient => ({
     post: async (url, request, onVendorResponse) => {
       if (url === '/routerTransform') {
         const jobIds = (request as RouterTransformRequestBody).input.map((i) => i.metadata.jobId);
@@ -232,13 +241,17 @@ describe('runPipelineStep — gzip vendor assertions', () => {
           },
         };
       }
-      onVendorResponse?.({ status, body: status === 200 ? 'ok' : { secret } });
+      onVendorResponse?.({
+        status,
+        body: status === 200 ? 'ok' : { secret },
+        request: sentRequest,
+      });
       const jobIds = (request as { metadata: { jobId: number }[] }).metadata.map((m) => m.jobId);
       return { status: 200, body: deliveredProxyOutput(jobIds) };
     },
   });
 
-  it('observes the vendor reply and accepts exclusive GZIP', async () => {
+  it('accepts an exclusive GZIP body sent with gzip encoding and matching decompressed bytes', async () => {
     await expect(
       run(step(), liveHttp({ GZIP: { payload: 'compressed-by-proxy' } })),
     ).resolves.toBeUndefined();
@@ -264,16 +277,44 @@ describe('runPipelineStep — gzip vendor assertions', () => {
     expect(error).not.toContain(secret);
   });
 
-  it('rejects an unexpected GZIP payload without leaking its contents', async () => {
-    const error = await run(
-      step({ ...expected, payload: () => false }),
-      liveHttp({ GZIP: { payload: secret } }),
-    ).then(
+  it.each([
+    {
+      name: 'missing gzip encoding header',
+      request: { headers: { Authorization: secret }, data: gzipSync(secret) },
+      message: 'missing Content-Encoding: gzip',
+    },
+    {
+      name: 'missing gzip magic bytes',
+      request: {
+        headers: { 'Content-Encoding': 'gzip', Authorization: secret },
+        data: Buffer.from('plain text'),
+      },
+      message: 'missing gzip magic bytes',
+    },
+    {
+      name: 'invalid gzip data',
+      request: {
+        headers: { 'Content-Encoding': 'gzip', Authorization: secret },
+        data: Buffer.from([0x1f, 0x8b, 0, 0]),
+      },
+      message: 'gzip decompression failed',
+    },
+    {
+      name: 'different decompressed payload',
+      request: {
+        headers: { 'Content-Encoding': 'gzip', Authorization: secret },
+        data: gzipSync('different payload'),
+      },
+      message: 'gzip payload differs from router output',
+    },
+  ])('rejects $name without leaking credentials or bytes', async ({ request, message }) => {
+    const error = await run(step(), liveHttp({ GZIP: { payload: secret } }, 200, request)).then(
       () => '',
       (e: Error) => e.message,
     );
-    expect(error).toContain('GZIP payload failed content check');
+    expect(error).toContain(message);
     expect(error).not.toContain(secret);
+    expect(error).not.toContain('plain text');
   });
 
   it('rejects a mismatched endpoint without leaking the request', async () => {

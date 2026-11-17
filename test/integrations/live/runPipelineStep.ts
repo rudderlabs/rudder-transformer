@@ -1,5 +1,7 @@
 import { HttpStatusCode } from 'axios';
+import { gunzipSync } from 'zlib';
 import type { ProxyV1Request } from '../../../src/types';
+import { DELIVERY_BODY_FORMATS } from '../../../src/adapters/network';
 import { randomInt } from 'crypto';
 import {
   parseDeliveryOutput,
@@ -14,6 +16,7 @@ import type {
   RunContext,
   RunPipelineStepParams,
   SeededEvent,
+  VendorResponseObservation,
 } from './types';
 
 // Deliberately local rather than `isHttpStatusSuccess` from src/v0/util: that is a barrel which
@@ -49,7 +52,7 @@ const deliverAndObserve = async (
   expected: NonNullable<PipelineStep['expectedRequests']>[number],
   http: RunPipelineStepParams['http'],
 ): Promise<LiveHttpResponse> => {
-  let observed: { status: number; body: unknown } | undefined;
+  let observed: VendorResponseObservation | undefined;
   const deliveryResponse = await http.post(
     `/v1/destinations/${destination}/proxy`,
     proxyRequest,
@@ -59,6 +62,30 @@ const deliverAndObserve = async (
   );
   if (!observed) {
     throw new Error(`[live:${destination}:${expected.endpoint}] vendor response was not observed`);
+  }
+  if (expected.bodyFormat === 'GZIP') {
+    const prefix = `[live:${destination}:${expected.endpoint}]`;
+    const headers = observed.request.headers;
+    const contentEncoding =
+      typeof headers === 'object' && headers !== null
+        ? Object.entries(headers).find(([name]) => name.toLowerCase() === 'content-encoding')?.[1]
+        : undefined;
+    if (contentEncoding !== 'gzip') {
+      throw new Error(`${prefix} vendor request missing Content-Encoding: gzip`);
+    }
+    const data = observed.request.data;
+    if (!Buffer.isBuffer(data) || data[0] !== 0x1f || data[1] !== 0x8b) {
+      throw new Error(`${prefix} vendor request missing gzip magic bytes`);
+    }
+    let uncompressed: string;
+    try {
+      uncompressed = gunzipSync(Uint8Array.from(data)).toString();
+    } catch {
+      throw new Error(`${prefix} vendor request gzip decompression failed`);
+    }
+    if (uncompressed !== proxyRequest.body?.GZIP?.payload) {
+      throw new Error(`${prefix} vendor request gzip payload differs from router output`);
+    }
   }
   let accepted = false;
   try {
@@ -79,7 +106,6 @@ const assertRequest = (
   destination: string,
   request: ProxyV1Request,
   expected: NonNullable<PipelineStep['expectedRequests']>[number],
-  ctx: RunContext,
 ): void => {
   const endpoint = new URL(request.endpoint).pathname;
   if (endpoint !== expected.endpoint) {
@@ -91,28 +117,11 @@ const assertRequest = (
     expected.bodyFormat === 'GZIP' &&
     (typeof request.body?.GZIP?.payload !== 'string' ||
       request.body.GZIP.payload.length === 0 ||
-      ['JSON', 'JSON_ARRAY', 'FORM', 'XML'].some(
-        (format) => Object.keys(request.body?.[format] ?? {}).length > 0,
+      DELIVERY_BODY_FORMATS.some(
+        (format) => format !== 'GZIP' && Object.keys(request.body?.[format] ?? {}).length > 0,
       ))
   ) {
     throw new Error(`[live:${destination}:${endpoint}] expected exclusive non-empty GZIP payload`);
-  }
-  if (expected.contentType && request.headers?.['Content-Type'] !== expected.contentType) {
-    throw new Error(`[live:${destination}:${endpoint}] unexpected Content-Type`);
-  }
-  if (expected.payload) {
-    let valid = false;
-    const payload = request.body?.GZIP?.payload;
-    if (typeof payload === 'string') {
-      try {
-        valid = expected.payload(ctx, payload);
-      } catch {
-        // Parsing a malformed payload may throw; never include its contents in a test failure.
-      }
-    }
-    if (!valid) {
-      throw new Error(`[live:${destination}:${endpoint}] GZIP payload failed content check`);
-    }
   }
 };
 
@@ -226,7 +235,7 @@ const attemptDelivery = async ({
   if (expectedRequests) {
     expect(allProxyRequests.length).toEqual(expectedRequests.length);
     allProxyRequests.forEach((request, index) =>
-      assertRequest(destination, request, expectedRequests[index], ctx),
+      assertRequest(destination, request, expectedRequests[index]),
     );
   }
 

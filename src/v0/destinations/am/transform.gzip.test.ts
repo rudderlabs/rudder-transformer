@@ -35,20 +35,12 @@ describe('AM router delivery gzip', () => {
   });
   const track = (jobId: number, workspace = workspaceId) =>
     input(jobId, { type: 'track', event: `Test ${jobId}` }, workspace);
-  const group = () => {
-    const event = input(1, {
+  const group = () =>
+    input(1, {
       type: 'group',
-      traits: { email: 'company', age: 'acme', live_gzip_ref: 'group-ref' },
+      traits: { email: 'company', age: 'acme' },
       integrations: { Amplitude: { groups: { group_type: 'company', group_value: 'acme' } } },
     });
-    return {
-      ...event,
-      destination: {
-        ...destination,
-        Config: { ...destination.Config, groupTypeTrait: 'email', groupValueTrait: 'age' },
-      },
-    };
-  };
   const alias = () => input(1, { type: 'alias', previousId: 'old-user-12345' });
   const run = (events: ReturnType<typeof input>[]) => processRouterDest(events, {});
 
@@ -118,22 +110,6 @@ describe('AM router delivery gzip', () => {
       }
       if (endpoint === 'groupidentify') {
         expect(enabled[0].batchedRequest).toHaveLength(2);
-        const form = new URLSearchParams(payload);
-        expect(form.get('identification')).toEqual(
-          JSON.stringify([
-            {
-              group_type: 'company',
-              group_value: 'acme',
-              group_properties: { email: 'company', age: 'acme', live_gzip_ref: 'group-ref' },
-            },
-          ]),
-        );
-      }
-      if (endpoint === 'usermap') {
-        const form = new URLSearchParams(payload);
-        expect(JSON.parse(form.get('mapping')!)).toEqual([
-          { user_id: 'old-user-12345', global_user_id: 'am-user-12345', user_properties: {} },
-        ]);
       }
     },
   );

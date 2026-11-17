@@ -378,6 +378,7 @@ const PAYLOAD_FORMAT_HANDLERS = {
     rawString: (payload) => payload?.payload,
   },
 };
+const DELIVERY_BODY_FORMATS = Object.keys(PAYLOAD_FORMAT_HANDLERS);
 
 const extractPayloadForFormat = (payload, format) => {
   if (!payload) {
@@ -577,4 +578,5 @@ module.exports = {
   enhanceRequestOptions,
   fireHTTPStats,
   getZippedPayload,
+  DELIVERY_BODY_FORMATS,
 };

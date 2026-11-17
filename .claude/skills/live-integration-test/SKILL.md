@@ -125,7 +125,9 @@ literals cuts both ways here: a conversion or transaction id that has to exist i
 account is exactly the opaque, account-scoped value `ctx.liveSecret.resourceIds` is for — a literal
 goes stale the moment the account is re-seeded, and `ctx.runId` never matches anything. Use
 `ctx.runId` / a random value only for the negative scenario above, where *not* matching is the
-point.
+point. The exception is an id the partner **expires** (a click or session id that only attributes
+within a window): a stored one passes for weeks then fails on every branch at once, so mint it per
+run in a setup `action` and keep only the stable parent ids (offer, campaign) in `resourceIds`.
 
 Give each a stable `id` and a one-line `description`.
 

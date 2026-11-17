@@ -456,7 +456,7 @@ const process = (event) => {
 // Bad — routing the major through getDestHandler (conflates the architecture-version axis)
 ```
 
-Escalate the v2 branch to a sibling module (`transformV2.ts` — the existing repo convention) only on large divergence; prefer that over `./v1` / `./v2` subdirs (none exist today), though subdirs aren't strictly banned for a major large enough to warrant its own tree. Branch `routerTransform` / `deleteUsers` / the proxy `networkHandler` (which reads top-level `destinationVersion`) only when a major actually changes them. Full reference: CONTRIBUTING.md → "Dispatching on the integration major".
+Escalate the v2 branch to a sibling module (`transformV2.ts` — the existing repo convention) only on large divergence; prefer that over `./v1` / `./v2` subdirs (none exist today), though subdirs aren't strictly banned for a major large enough to warrant its own tree. Branch `routerTransform` / `deleteUsers` / the proxy `networkHandler` (which reads top-level `destinationVersion`) only when a major actually changes them. Full reference: `.claude/skills/destination-versioning/SKILL.md`.
 
 ## No Re-Export Shims, No Empty Placeholder Files
 

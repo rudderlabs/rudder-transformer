@@ -1,16 +1,23 @@
 import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import { Integration } from './routerTransform';
 import { requestFieldExpression } from './utils';
+import { httpTemplateSandboxRunner } from './templateSandboxClient';
 import { prepareProxyRequest } from '../../../adapters/network';
 import type { RouterTransformationRequestData } from '../../../types';
 
 type NativeResponse = {
   batchedRequest: {
     endpoint: string;
+    params: Record<string, unknown>;
     headers: Record<string, unknown>;
-    body: { JSON_ARRAY: { batch: string } };
+    body: {
+      JSON_ARRAY: { batch: string };
+      XML: { payload?: string };
+      FORM: Record<string, string>;
+    };
   };
   metadata: { jobId: number }[];
+  batched: boolean;
 };
 
 const destination = {
@@ -57,6 +64,254 @@ describe('HTTP v2 native router', () => {
     expect(requestFieldExpression(value)).toBe(expression);
   });
 
+  const withFormat = (config: Record<string, unknown>, ids = ['one']) =>
+    ids.map((id, i) => ({
+      ...input(id, i + 1),
+      destination: {
+        ...destination,
+        Config: {
+          ...destination.Config,
+          pathParams: [],
+          headers: [{ to: 'Content-Type', from: 'text/plain' }],
+          ...config,
+        },
+      },
+    }));
+
+  const overrideEvents = (settings: Record<string, unknown>, names: string[]) =>
+    names.map(
+      (name, i): RouterTransformationRequestData => ({
+        ...input(String(i + 1), i + 1),
+        message: { type: 'track', event: name, id: String(i + 1) },
+        destination: {
+          ...destination,
+          Config: {
+            ...destination.Config,
+            pathParams: [],
+            headers: [],
+            requestBodyTemplate: '$$.events',
+            ...settings,
+          },
+        },
+      }),
+    );
+
+  it('applies all group settings, inherits omitted settings and matches any message type by event', async () => {
+    const events = overrideEvents(
+      {
+        queryParams: [{ to: 'source', from: 'default' }],
+        maxBatchSize: '3',
+        eventOverrides: [
+          {
+            name: 'Full',
+            events: ['Lead'],
+            pathParams: [{ path: 'lead' }],
+            queryParams: [],
+            requestBodyTemplate: '{"lead": $$.events}',
+            maxBatchSize: '1',
+          },
+          { name: 'Inherited', events: ['Order'], requestBodyTemplate: '{"order": $$.events}' },
+        ],
+      },
+      ['Lead', 'Order', 'lead', 'Lead', 'Other'],
+    );
+    events[3].message = { ...events[3].message, type: 'identify' as const };
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(
+      results
+        .map((result) => ({
+          jobs: result.metadata.map(({ jobId }) => jobId),
+          endpoint: (result as unknown as NativeResponse).batchedRequest.endpoint,
+          params: (result as unknown as NativeResponse).batchedRequest.params,
+          body: JSON.parse(
+            (result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch,
+          ),
+        }))
+        .sort((x, y) => x.jobs[0]! - y.jobs[0]!),
+    ).toEqual([
+      {
+        jobs: [1],
+        endpoint: 'https://example.org/events/lead',
+        params: {},
+        body: { lead: [events[0].message] },
+      },
+      {
+        jobs: [2],
+        endpoint: 'https://example.org/events',
+        params: { source: 'default' },
+        body: { order: [events[1].message] },
+      },
+      {
+        jobs: [3, 5],
+        endpoint: 'https://example.org/events',
+        params: { source: 'default' },
+        body: [events[2].message, events[4].message],
+      },
+      {
+        jobs: [4],
+        endpoint: 'https://example.org/events/lead',
+        params: {},
+        body: { lead: [events[3].message] },
+      },
+    ]);
+  });
+
+  it('keeps same-URL groups separate and chunks each at its effective limit', async () => {
+    const events = overrideEvents(
+      {
+        maxBatchSize: '3',
+        eventOverrides: [
+          { name: 'A', events: ['A'], maxBatchSize: '2', requestBodyTemplate: '{"a": $$.events}' },
+          { name: 'B', events: ['B'], maxBatchSize: '1', requestBodyTemplate: '{"b": $$.events}' },
+        ],
+      },
+      ['A', 'B', 'A', 'B', 'A', 'other'],
+    );
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(
+      results.map((result) => ({
+        jobs: result.metadata.map(({ jobId }) => jobId),
+        body: JSON.parse(
+          (result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch,
+        ),
+      })),
+    ).toEqual([
+      { jobs: [1, 3], body: { a: [events[0].message, events[2].message] } },
+      { jobs: [2], body: { b: [events[1].message] } },
+      { jobs: [4], body: { b: [events[3].message] } },
+      { jobs: [5], body: { a: [events[4].message] } },
+      { jobs: [6], body: [events[5].message] },
+    ]);
+  });
+
+  it('uses the first matching group when names overlap', async () => {
+    const events = overrideEvents(
+      {
+        eventOverrides: [
+          { name: 'First', events: ['Lead'], requestBodyTemplate: '{"first": $$.events}' },
+          { name: 'Second', events: ['Lead'], requestBodyTemplate: '{"second": $$.events}' },
+        ],
+      },
+      ['Lead'],
+    );
+    const [result] = await processDestinationIntegration(events, Integration, {});
+    expect(
+      JSON.parse((result as unknown as NativeResponse).batchedRequest.body.JSON_ARRAY.batch),
+    ).toEqual({ first: [events[0].message] });
+  });
+
+  it('names the override when a mapped field fails and does not fail default events', async () => {
+    const events = overrideEvents(
+      {
+        eventOverrides: [
+          {
+            name: 'Broken',
+            events: ['Lead'],
+            queryParams: [{ to: 'num', from: '$number($$.message.id)' }],
+          },
+        ],
+      },
+      ['Lead', 'Other'],
+    );
+    events[0].message.id = 'invalid';
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(results.find((result) => result.error)).toMatchObject({
+      error: expect.stringContaining('Event override "Broken": Request field evaluation failed'),
+      metadata: [{ jobId: 1 }],
+    });
+    expect(results.find((result) => result.batched)?.metadata).toMatchObject([{ jobId: 2 }]);
+  });
+
+  it('keeps FORM single-event even with an override batch size', async () => {
+    const events = overrideEvents(
+      {
+        format: 'FORM',
+        requestBodyTemplate: '[$$.events][0]',
+        eventOverrides: [{ name: 'Form', events: ['Lead'], maxBatchSize: '5000' }],
+      },
+      ['Lead', 'Lead'],
+    );
+    const results = await processDestinationIntegration(events, Integration, {});
+    expect(results.map((result) => result.metadata.map(({ jobId }) => jobId))).toEqual([[1], [2]]);
+  });
+
+  it('evaluates all request fields and all bodies in one isolate call each', async () => {
+    const execute = jest.spyOn(httpTemplateSandboxRunner, 'execute');
+    try {
+      const events = overrideEvents(
+        {
+          queryParams: [{ to: 'v', from: "'1'" }],
+          eventOverrides: [
+            { name: 'Leads', events: ['Lead'], pathParams: [{ path: '$.id' }], maxBatchSize: '1' },
+            { name: 'Orders', events: ['Order'], requestBodyTemplate: '{"orders": $$.events}' },
+          ],
+        },
+        ['Lead', 'Lead', 'Order', 'Other', 'Lead', 'Order'],
+      );
+      events[5].metadata.dontBatch = true;
+      const results = await processDestinationIntegration(events, Integration, {});
+      expect(results.map(({ metadata }) => metadata.map(({ jobId }) => jobId))).toEqual([
+        [1],
+        [2],
+        [3],
+        [4],
+        [5],
+        [6],
+      ]);
+      // Batchable inputs: one request-field call and one body call for five request groups.
+      // The dontBatch input adds its own request-field call; its body joins the same body call.
+      expect(
+        execute.mock.calls.map(([, script]) => script.match(/evaluate\w+InSandbox/)?.[0]),
+      ).toEqual([
+        'evaluateRequestFieldsInSandbox',
+        'evaluateRequestFieldsInSandbox',
+        'evaluateHttpBodyInSandbox',
+      ]);
+      // Every body is evaluated exactly once, including the first batched group.
+      const [, , [jobs]] = execute.mock.calls[2] as [string, string, [[string, unknown[][]][]]];
+      expect(jobs.flatMap(([, chunks]) => chunks.flat()).length).toBe(events.length);
+    } finally {
+      execute.mockRestore();
+    }
+  });
+
+  it('splits body evaluation into isolate calls of at most 5000 bodies', async () => {
+    const execute = jest.spyOn(httpTemplateSandboxRunner, 'execute');
+    try {
+      const events = overrideEvents({ maxBatchSize: '5000' }, Array(5001).fill('Lead'));
+      const results = await processDestinationIntegration(events, Integration, {});
+      expect(results.map(({ metadata }) => metadata.length)).toEqual([5000, 1]);
+      const bodyCalls = execute.mock.calls
+        .filter(([, script]) => script.includes('evaluateHttpBodyInSandbox'))
+        .map(
+          ([, , [jobs]]) =>
+            (jobs as [string, unknown[][]][]).flatMap(([, chunks]) => chunks.flat()).length,
+        );
+      expect(bodyCalls).toEqual([5000, 1]);
+    } finally {
+      execute.mockRestore();
+    }
+  });
+
+  it('delivers events of an unnamed override that sets nothing, alongside an empty one', async () => {
+    const events = overrideEvents(
+      { eventOverrides: [{ events: ['Lead'] }, { name: '', events: [] }] },
+      ['Lead'],
+    );
+    const [response] = await processDestinationIntegration(events, Integration, {});
+    expect(response).toMatchObject({ batched: true, metadata: [{ jobId: 1 }] });
+  });
+
+  it('rejects an override batch size the router cannot chunk at', async () => {
+    const [event] = overrideEvents(
+      { eventOverrides: [{ name: 'Bad', events: ['Lead'], maxBatchSize: 0 }] },
+      ['Lead'],
+    );
+    const [response] = await processDestinationIntegration([event], Integration, {});
+    expect(response.statusCode).toBe(400);
+    expect(response.error).toContain('destination.Config.eventOverrides');
+  });
+
   it('defaults method to POST and batches up to 5000 when unset', async () => {
     const { method, maxBatchSize, ...config } = destination.Config;
     const events = [input('1', 1), input('2', 2), input('3', 3)].map((event) => ({
@@ -72,12 +327,14 @@ describe('HTTP v2 native router', () => {
   });
 
   it.each([
-    { config: { auth: 'basicAuth' }, message: 'Username is required for Basic Authentication' },
     {
-      config: { auth: 'bearerTokenAuth' },
-      message: 'Token is required for Bearer Token Authentication',
+      config: { authenticationEnabled: true },
+      message: 'Authentication is enabled, but no account credentials were found',
     },
-    { config: { auth: 'apiKeyAuth', apiKeyName: 'X-Key' }, message: 'API key value is required' },
+    {
+      config: { authenticationEnabled: true, apiKeyName: 'X-Key' },
+      message: 'API key value is required',
+    },
     {
       config: { headers: [{ to: '$.a.b[0]', from: 'x' }] },
       message: 'Invalid request field name: $.a.b[0]',
@@ -110,32 +367,94 @@ describe('HTTP v2 native router', () => {
 
   it.each([
     {
-      auth: 'basicAuth',
+      auth: 'basic',
       credentials: { username: 'user', password: 'pass' },
       expected: { Authorization: 'Basic dXNlcjpwYXNz' },
     },
     {
-      auth: 'bearerTokenAuth',
+      auth: 'bearer token',
       credentials: { bearerToken: 'secret' },
       expected: { Authorization: 'Bearer secret' },
     },
     {
-      auth: 'apiKeyAuth',
+      auth: 'API key',
       credentials: { apiKeyName: 'X-Key', apiKeyValue: 'secret' },
       expected: { 'X-Key': 'secret' },
+    },
+    {
+      auth: 'basic over a leftover API key name',
+      credentials: { username: 'user', password: 'pass', apiKeyName: 'X-Key' },
+      expected: { Authorization: 'Basic dXNlcjpwYXNz' },
     },
   ])('adds $auth headers', async ({ auth, credentials, expected }) => {
     const result = await processDestinationIntegration(
       [
         {
           ...input('one', 1),
-          destination: { ...destination, Config: { ...destination.Config, auth, ...credentials } },
+          destination: {
+            ...destination,
+            Config: { ...destination.Config, authenticationEnabled: true, ...credentials },
+          },
         },
       ],
       Integration,
       {},
     );
     expect((result[0] as unknown as NativeResponse).batchedRequest.headers).toMatchObject(expected);
+  });
+
+  it('ignores credentials when authentication is disabled', async () => {
+    const event = input('one', 1);
+    event.destination = {
+      ...destination,
+      Config: { ...destination.Config, authenticationEnabled: false, bearerToken: 'secret' },
+    };
+    const [response] = await processDestinationIntegration([event], Integration, {});
+    expect((response as unknown as NativeResponse).batchedRequest.headers).toEqual({
+      'X-Token': 'static-token',
+      'Content-Type': 'application/json',
+    });
+  });
+
+  const serializeEdgeCases = async (format: string, requestBodyTemplate: string) => {
+    const events = withFormat({ format, requestBodyTemplate });
+    events[0].message = {
+      ...events[0].message,
+      'first name': 'Ada',
+      '1abc': 1,
+      empty: '',
+      absent: null,
+      nested: { a: 1 },
+      count: 1,
+      active: true,
+    };
+    const [response] = await processDestinationIntegration(events, Integration, {});
+    return (response as unknown as NativeResponse).batchedRequest;
+  };
+
+  it('serializes XML with sanitized keys and nulls dropped, overriding mapped Content-Type', async () => {
+    const request = await serializeEdgeCases('XML', '{"Envelope": [$$.events][0]}');
+    expect(request.headers['Content-Type']).toBe('application/xml');
+    expect(request.body.XML.payload).toContain(
+      '<Envelope><type>track</type><id>one</id><value>1</value><first_name>Ada</first_name><_abc>1</_abc><empty/>',
+    );
+    expect(request.body.XML.payload).not.toContain('absent');
+    expect(request.body.JSON_ARRAY).toEqual({});
+  });
+
+  it('serializes FORM with stringified first-level values and nulls dropped, overriding mapped Content-Type', async () => {
+    const request = await serializeEdgeCases('FORM', '[$$.events][0]');
+    expect(request.headers['Content-Type']).toBe('application/x-www-form-urlencoded');
+    expect(request.body.FORM).toMatchObject({
+      'first name': 'Ada',
+      '1abc': '1',
+      empty: '',
+      nested: '{"a":1}',
+      count: '1',
+      active: 'true',
+    });
+    expect(request.body.FORM.absent).toBeUndefined();
+    expect(request.body.JSON_ARRAY).toEqual({});
   });
 
   it('rejects an undefined body instead of shipping a non-JSON request', async () => {
@@ -159,6 +478,55 @@ describe('HTTP v2 native router', () => {
     expect(result).toMatchObject([
       { statusCode: 400, error: 'Request body template did not produce JSON' },
     ]);
+  });
+
+  it.each([
+    { format: 'XML', template: '{"root": {}}' },
+    { format: 'FORM', template: '{}' },
+  ])('sends an empty $format body without inventing a payload', async ({ format, template }) => {
+    const [result] = await processDestinationIntegration(
+      withFormat({ format, requestBodyTemplate: template }),
+      Integration,
+      {},
+    );
+    expect((result as unknown as NativeResponse).batchedRequest.body[format]).toEqual({});
+  });
+
+  it('sanitizes the XML root key like nested keys', async () => {
+    const [result] = await processDestinationIntegration(
+      withFormat({
+        format: 'XML',
+        requestBodyTemplate: '{"1 my root": [$$.events.{"id": id}][0]}',
+      }),
+      Integration,
+      {},
+    );
+    expect((result as unknown as NativeResponse).batchedRequest.body.XML.payload).toBe(
+      '<?xml version="1.0" encoding="UTF-8"?><__my_root><id>one</id></__my_root>',
+    );
+  });
+
+  const notObject = 'Request body template must produce an object for XML/FORM format';
+  const notOneRoot =
+    'Request body template must produce exactly one top-level key holding an object for XML format; that key becomes the root element';
+  it.each([
+    ...['XML', 'FORM'].flatMap((format) =>
+      ['$$.missing', '1', 'null', '$$.events'].map((template) => ({
+        format,
+        template,
+        error: notObject,
+      })),
+    ),
+    ...['{}', '{"": {"a": 1}}', '{"a": {}, "b": {}}', '{"root": 1}', '{"root": [$$.events]}'].map(
+      (template) => ({ format: 'XML', template, error: notOneRoot }),
+    ),
+  ])('rejects $format result from $template', async ({ format, template, error }) => {
+    const [result] = await processDestinationIntegration(
+      withFormat({ format, requestBodyTemplate: template }),
+      Integration,
+      {},
+    );
+    expect(result).toMatchObject({ statusCode: 400, error });
   });
 
   it('returns per-event errors for an invalid request field and does not send its message', async () => {

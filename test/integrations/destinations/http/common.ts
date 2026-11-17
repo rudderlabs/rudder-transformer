@@ -711,7 +711,7 @@ const destinations: Destination[] = [
 const v2Destination: Destination = {
   Config: {
     apiUrl: 'https://example.org/events',
-    auth: 'bearerTokenAuth',
+    authenticationEnabled: true,
     bearerToken: secret2,
     method: 'POST',
     maxBatchSize: '2',
@@ -731,6 +731,52 @@ const v2Destination: Destination = {
   Transformations: [],
   WorkspaceID: 'test-workspace-id',
   version: 2,
+};
+
+const v2OverrideDestination: Destination = {
+  ...v2Destination,
+  Config: {
+    ...v2Destination.Config,
+    headers: [],
+    pathParams: [],
+    queryParams: [{ to: 'source', from: 'default' }],
+    requestBodyTemplate: '$$.events',
+    eventOverrides: [
+      {
+        name: 'Leads',
+        events: ['Lead'],
+        pathParams: [{ path: 'leads' }],
+        queryParams: [],
+        requestBodyTemplate: '{"leads": $$.events}',
+        maxBatchSize: '1',
+      },
+      { name: 'Orders', events: ['Order'], requestBodyTemplate: '{"orders": $$.events}' },
+    ],
+  },
+};
+
+const v2XmlDestination: Destination = {
+  ...v2Destination,
+  Config: {
+    ...v2Destination.Config,
+    format: 'XML',
+    maxBatchSize: '3',
+    headers: [{ to: 'Content-Type', from: 'text/plain' }],
+    pathParams: [],
+    requestBodyTemplate: '{"Envelope": {"event": [$$.events.{"id": messageId}]}}',
+  },
+};
+
+const v2FormDestination: Destination = {
+  ...v2Destination,
+  Config: {
+    ...v2Destination.Config,
+    format: 'FORM',
+    maxBatchSize: '50',
+    headers: [{ to: 'Content-Type', from: 'text/plain' }],
+    pathParams: [],
+    requestBodyTemplate: '[$$.events][0]',
+  },
 };
 
 const traits = {
@@ -804,6 +850,9 @@ export {
   destType,
   destinations,
   v2Destination,
+  v2OverrideDestination,
+  v2XmlDestination,
+  v2FormDestination,
   processorInstrumentationErrorStatTags,
   processorConfigurationErrorStatTags,
   RouterInstrumentationErrorStatTags,

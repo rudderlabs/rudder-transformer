@@ -4,6 +4,30 @@ import type { RequestFieldExpressions } from './httpTemplateSandbox';
 import { mappingKey } from './types';
 import type { HttpDestinationConfig } from './types';
 
+export const resolveOverrideGroup = (
+  { event }: Record<string, unknown>,
+  groups: HttpDestinationConfig['eventOverrides'],
+): number | undefined => {
+  if (!groups || typeof event !== 'string') return undefined;
+  const index = groups.findIndex((group) => group.events.includes(event));
+  return index === -1 ? undefined : index;
+};
+
+export const effectiveConfig = (
+  config: HttpDestinationConfig,
+  group?: NonNullable<HttpDestinationConfig['eventOverrides']>[number],
+): HttpDestinationConfig => {
+  if (!group) return config;
+  const { pathParams, queryParams, requestBodyTemplate, maxBatchSize } = group;
+  return {
+    ...config,
+    ...(pathParams !== undefined && { pathParams }),
+    ...(queryParams !== undefined && { queryParams }),
+    ...(requestBodyTemplate !== undefined && { requestBodyTemplate }),
+    ...(maxBatchSize !== undefined && { maxBatchSize }),
+  };
+};
+
 // Only leading-$ values are expressions. Everything else is a literal JSONata string.
 export function requestFieldExpression(value: string): string {
   // v1's enhanceMappings leaves pre-quoted single-quoted literals untouched. Migration
@@ -38,19 +62,22 @@ export const makeEndpoint = (url: string, pathParams: unknown[]): string => {
   return parts.length > 0 ? `${url.replace(/\/$/, '')}/${parts.join('/')}` : url;
 };
 
-// Required credentials are enforced by the config schema in types.ts.
+// v2 has no auth selector: config-backend inlines the linked account's fields into the config,
+// and each account type has its own required field. Required credentials are enforced in types.ts.
 export const makeAuthHeaders = (config: HttpDestinationConfig): Record<string, string> => {
-  const { auth, username, password = '', bearerToken, apiKeyName = '', apiKeyValue = '' } = config;
-  switch (auth) {
-    case 'basicAuth':
-      return {
-        Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
-      };
-    case 'bearerTokenAuth':
-      return { Authorization: `Bearer ${bearerToken}` };
-    case 'apiKeyAuth':
-      return { [apiKeyName]: apiKeyValue };
-    default:
-      return {};
+  const {
+    authenticationEnabled,
+    username,
+    password = '',
+    bearerToken,
+    apiKeyName,
+    apiKeyValue = '',
+  } = config;
+  if (!authenticationEnabled) return {};
+  if (username) {
+    return { Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}` };
   }
+  if (bearerToken) return { Authorization: `Bearer ${bearerToken}` };
+  if (apiKeyName) return { [apiKeyName]: apiKeyValue };
+  return {};
 };

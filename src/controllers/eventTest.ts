@@ -29,42 +29,125 @@ const parseTemplateActionsSchema = z.object({
   delete: parseTemplateActionConfigSchema.optional(),
 });
 
+const workspaceIdSchema = z.string().min(1, 'workspaceId must be a non-empty string');
+
 const parseTemplateBodySchema = z.object({
   action: z.nativeEnum(RecordAction),
   actions: parseTemplateActionsSchema,
-  workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
+  workspaceId: workspaceIdSchema,
 });
 
-const httpMappingsSchema = z.array(z.object({ from: z.string() })).optional();
-const httpParseBodySchema = z.object({
-  workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
-  requestBodyTemplate: z.string(),
+// Bound template count and size before copying them into the sandbox.
+const MAX_HTTP_PARSE_FIELDS = 100;
+const MAX_HTTP_PARSE_TEMPLATES = 500;
+const MAX_HTTP_PARSE_TEMPLATE_LENGTH = 10_000;
+const MAX_EVENT_OVERRIDES = 20;
+const MAX_OVERRIDE_EVENTS = 100;
+const httpParseTemplate = z.string().max(MAX_HTTP_PARSE_TEMPLATE_LENGTH);
+const httpMappingsSchema = z
+  .array(z.object({ from: httpParseTemplate.optional() }))
+  .max(MAX_HTTP_PARSE_FIELDS)
+  .optional();
+const httpPathParamsSchema = z
+  .array(z.object({ path: httpParseTemplate.optional() }))
+  .max(MAX_HTTP_PARSE_FIELDS)
+  .optional();
+// The request fields parse-template verifies; overrides carry the same fields except headers.
+const httpFieldsSchema = z.object({
+  requestBodyTemplate: httpParseTemplate.optional(),
   headers: httpMappingsSchema,
   queryParams: httpMappingsSchema,
-  pathParams: z.array(z.object({ path: z.string() })).optional(),
+  pathParams: httpPathParamsSchema,
+});
+const httpParseBodySchema = httpFieldsSchema.extend({
+  workspaceId: workspaceIdSchema,
+  requestBodyTemplate: httpParseTemplate,
+  eventOverrides: z
+    .array(
+      httpFieldsSchema.omit({ headers: true }).extend({
+        name: z.string().optional(),
+        events: z.array(z.string()).max(MAX_OVERRIDE_EVENTS).optional(),
+      }),
+    )
+    .max(MAX_EVENT_OVERRIDES)
+    .optional(),
 });
 
-// The templates parse-template verifies, labelled with the `field`/`index` its response reports.
+// The templates parse-template verifies, labelled with the `field`/`index`/`group` it reports.
 // Each request field goes through requestFieldExpression, exactly as the router evaluates it.
 const verificationFields = (body: z.infer<typeof httpParseBodySchema>) => {
-  const surface = (field: string, values: string[]) =>
-    values.map((value, index) => ({ field, index, template: requestFieldExpression(value) }));
-  return [
-    { field: 'requestBodyTemplate', index: undefined, template: body.requestBodyTemplate },
-    ...surface(
-      'headers',
-      (body.headers ?? []).map(({ from }) => from),
-    ),
-    ...surface(
-      'queryParams',
-      (body.queryParams ?? []).map(({ from }) => from),
+  const surface = (field: string, values: (string | undefined)[], group?: number) =>
+    values.map((value, index) => ({
+      field,
+      index,
+      group,
+      template: typeof value === 'string' ? requestFieldExpression(value) : undefined,
+    }));
+  const fields = (config: z.infer<typeof httpFieldsSchema>, group?: number) => [
+    ...(config.requestBodyTemplate === undefined
+      ? []
+      : [
+          {
+            field: 'requestBodyTemplate',
+            index: undefined,
+            group,
+            template: config.requestBodyTemplate,
+          },
+        ]),
+    ...(['headers', 'queryParams'] as const).flatMap((field) =>
+      surface(
+        field,
+        (config[field] ?? []).map(({ from }) => from),
+        group,
+      ),
     ),
     ...surface(
       'pathParams',
-      (body.pathParams ?? []).map(({ path }) => path),
+      (config.pathParams ?? []).map(({ path }) => path),
+      group,
     ),
   ];
+  return [
+    ...fields(body),
+    ...(body.eventOverrides ?? []).flatMap((config, group) => fields(config, group)),
+  ];
 };
+
+type HttpEventOverrides = z.infer<typeof httpParseBodySchema>['eventOverrides'];
+
+type HttpParseError = { field: string; index?: number; group?: number; messages: string[] };
+
+// The router sends an event to the first group listing it, so a later group listing it never applies.
+const duplicateEventErrors = (eventOverrides: HttpEventOverrides): HttpParseError[] => {
+  const firstGroups = new Map<string, number>();
+  return (eventOverrides ?? []).flatMap(({ events }, group) =>
+    [...new Set(events)].flatMap((event) => {
+      const firstGroup = firstGroups.get(event);
+      if (firstGroup === undefined) {
+        firstGroups.set(event, group);
+        return [];
+      }
+      return [
+        {
+          field: 'events',
+          group,
+          messages: [`event "${event}" is already in eventOverrides[${firstGroup}]`],
+        },
+      ];
+    }),
+  );
+};
+
+// One line per error, for callers that only show text (config-backend's save validation).
+const errorMessage = (errors: HttpParseError[], eventOverrides: HttpEventOverrides) =>
+  errors
+    .map(({ field, index, group, messages }) => {
+      const name = typeof group === 'number' ? eventOverrides?.[group]?.name : undefined;
+      const prefix =
+        group === undefined ? '' : `eventOverrides[${group}]${name ? ` "${name}"` : ''}.`;
+      return `${prefix}${index === undefined ? field : `${field}[${index}]`}: ${messages.join('; ')}`;
+    })
+    .join(', ');
 
 const testEventV2Schema = z.object({
   events: z.array(z.record(z.unknown())),
@@ -122,17 +205,38 @@ export class EventTestController {
       return;
     }
     const fields = verificationFields(parsed.data);
+    if (fields.length > MAX_HTTP_PARSE_TEMPLATES) {
+      ctx.status = 400;
+      ctx.body = {
+        error: `HTTP parse-template accepts at most ${MAX_HTTP_PARSE_TEMPLATES} fields`,
+      };
+      return;
+    }
+    const { workspaceId, eventOverrides } = parsed.data;
+    const present = fields.filter(
+      (field): field is (typeof fields)[number] & { template: string } =>
+        field.template !== undefined,
+    );
     // A single isolate call validates all surfaces while preserving their indices.
     const results = await sandboxedParseHttpTemplates(
-      fields.map(({ template }) => template),
-      parsed.data.workspaceId,
+      present.map(({ template }) => template),
+      workspaceId,
     );
-    const errors = results.flatMap((result, i) =>
-      result.valid
-        ? []
-        : [{ field: fields[i].field, index: fields[i].index, messages: result.errors }],
-    );
-    ctx.body = { valid: errors.length === 0, errors };
+    const errors: HttpParseError[] = [
+      ...fields
+        .filter(({ template }) => template === undefined)
+        .map(({ field, index, group }) => ({ field, index, group, messages: ['is required'] })),
+      ...present.flatMap(({ field, index, group }, i) => {
+        const result = results[i];
+        return result.valid ? [] : [{ field, index, group, messages: result.errors }];
+      }),
+      ...duplicateEventErrors(eventOverrides),
+    ];
+    ctx.body = {
+      valid: errors.length === 0,
+      errors,
+      ...(errors.length > 0 && { message: errorMessage(errors, eventOverrides) }),
+    };
   }
 
   public static async parseCustomAudienceTemplate(ctx: Context) {

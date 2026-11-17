@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.169.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.168.0...v1.169.0) (2026-11-16)
+
+
+### Features
+
+* **am:** gate router delivery gzip by workspace and endpoint ([#5786](https://github.com/rudderlabs/rudder-transformer/issues/5786)) ([567e7e9](https://github.com/rudderlabs/rudder-transformer/commit/567e7e95bab9eca8269ba48ab5b661ada8e0cbb4))
+* **http:** gate v2 auth on authenticationEnabled ([#5769](https://github.com/rudderlabs/rudder-transformer/issues/5769)) ([71ce3c1](https://github.com/rudderlabs/rudder-transformer/commit/71ce3c1de1272faf71af728a1cd0754caab14ed3))
+* **http:** support v2 event-name request overrides ([#5782](https://github.com/rudderlabs/rudder-transformer/issues/5782)) ([4ed8d4f](https://github.com/rudderlabs/rudder-transformer/commit/4ed8d4fd18e011bade463223f9eaff063d81c4c2))
+* **http:** support XML and FORM bodies in v2 router ([#5768](https://github.com/rudderlabs/rudder-transformer/issues/5768)) ([f4d5d8d](https://github.com/rudderlabs/rudder-transformer/commit/f4d5d8da5a236e6d3843cf39d7be4f31616d32f2))
+* **mp:** gate engage and groups gzip by workspace ([#5785](https://github.com/rudderlabs/rudder-transformer/issues/5785)) ([b549f90](https://github.com/rudderlabs/rudder-transformer/commit/b549f90218a71846d9cf3d51cf1f48b17e3c90da))
+* **proxy:** add gzip delivery compression metrics ([#5783](https://github.com/rudderlabs/rudder-transformer/issues/5783)) ([da43065](https://github.com/rudderlabs/rudder-transformer/commit/da430653c450f0d0e6e1aa170043a243fdef69e1))
+
+
+### Bug Fixes
+
+* retry transient no-response network errors instead of aborting ([#5773](https://github.com/rudderlabs/rudder-transformer/issues/5773)) ([a363039](https://github.com/rudderlabs/rudder-transformer/commit/a363039d5c2dc1098c7daa09077763227f0ef573))
+
 ## [1.168.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.167.1...v1.168.0) (2026-11-10)
 
 

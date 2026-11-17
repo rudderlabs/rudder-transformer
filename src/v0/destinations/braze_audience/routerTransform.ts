@@ -6,14 +6,8 @@ import {
   type TransformedEvent,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
 import type { BatchStrategy } from '../../../services/destination/destinationIntegration/types';
-import {
-  ACTION_ATTR_VALUE,
-  BULK_MAX_BATCH_SIZE,
-  MAX_PAYLOAD_SIZE,
-  STANDARD_MAX_BATCH_SIZE,
-  STANDARD_TRACK_PATH,
-} from './config';
-import { buildTrackBody, getTrackEndpoint, normalizeExternalId } from './utils';
+import { ACTION_ATTR_VALUE, MAX_PAYLOAD_SIZE, type TrackEndpointSpec } from './config';
+import { buildTrackBody, getTrackEndpointSpec, getTrackUrl, normalizeExternalId } from './utils';
 import { brazeAudienceDelivery } from './delivery';
 import {
   BrazeAudienceRouterRequestSchema,
@@ -30,7 +24,9 @@ class BrazeAudienceIntegration extends DestinationIntegration<
 
   private readonly headers: Record<string, string>;
 
-  private readonly track: { endpoint: string; endpointPath: string };
+  private readonly track: TrackEndpointSpec;
+
+  private readonly endpoint: string;
 
   constructor(...args: ConstructorParameters<typeof DestinationIntegration>) {
     super(...args);
@@ -45,7 +41,8 @@ class BrazeAudienceIntegration extends DestinationIntegration<
       Authorization: `Bearer ${this.destination.Config.restApiKey}`,
     };
     const { dataCenter, trackEndpoint } = this.destination.Config;
-    this.track = getTrackEndpoint(dataCenter, trackEndpoint);
+    this.track = getTrackEndpointSpec(trackEndpoint);
+    this.endpoint = getTrackUrl(dataCenter, this.track);
   }
 
   private get connectionConfig(): BrazeAudienceConnectionConfig {
@@ -76,19 +73,19 @@ class BrazeAudienceIntegration extends DestinationIntegration<
 
     return {
       body,
-      ...this.track,
+      endpoint: this.endpoint,
+      endpointPath: this.track.path,
       method: 'POST',
       headers: this.headers,
     };
   }
 
   getBatchStrategy(): BatchStrategy<BrazeAudienceAttributePayload> {
-    const { endpointPath } = this.track;
+    const { track } = this;
     return new ChunkBatchStrategy<BrazeAudienceAttributePayload>({
-      maxItems:
-        endpointPath === STANDARD_TRACK_PATH ? STANDARD_MAX_BATCH_SIZE : BULK_MAX_BATCH_SIZE,
+      maxItems: track.maxItems,
       maxPayloadSize: MAX_PAYLOAD_SIZE,
-      wrapBody: (bodies) => buildTrackBody(bodies, endpointPath),
+      wrapBody: (bodies) => buildTrackBody(bodies, track),
     });
   }
 

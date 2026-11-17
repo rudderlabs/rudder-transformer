@@ -1,4 +1,5 @@
 import { RecordAction } from '../../../types/rudderEvents';
+import { BRAZE_PARTNER_NAME, TRACK_BRAZE_MAX_REQ_COUNT } from '../braze/config';
 
 /**
  * Which Braze endpoint an account syncs through. `bulk` needs Braze's limited-beta
@@ -9,13 +10,32 @@ export const TRACK_ENDPOINTS = ['standard', 'bulk'] as const;
 export type TrackEndpoint = (typeof TRACK_ENDPOINTS)[number];
 export const DEFAULT_TRACK_ENDPOINT: TrackEndpoint = 'bulk';
 
-export const BULK_TRACK_PATH = '/users/track/bulk';
-export const STANDARD_TRACK_PATH = '/users/track';
+export type TrackEndpointSpec = {
+  path: string;
+  /** Records per request. */
+  maxItems: number;
+  /** Sent as the body's `partner` field when set. */
+  partner?: string;
+};
 
-// Ref: https://www.braze.com/docs/api/endpoints/user_data/post_user_track_bulk/
-export const BULK_MAX_BATCH_SIZE = 1000;
+/** Everything that differs between the two endpoints; the rest of the destination reads it from here. */
+export const TRACK_ENDPOINT_SPECS: Record<TrackEndpoint, TrackEndpointSpec> = {
+  // Ref: https://www.braze.com/docs/api/endpoints/user_data/post_user_track/
+  // 75 per request and the `partner` field, shared with the event-stream braze destination.
+  standard: {
+    path: '/users/track',
+    maxItems: TRACK_BRAZE_MAX_REQ_COUNT,
+    partner: BRAZE_PARTNER_NAME,
+  },
+  // Ref: https://www.braze.com/docs/api/endpoints/user_data/post_user_track_bulk/
+  // Its published schema lists no `partner` field, so bulk bodies go without one.
+  bulk: { path: '/users/track/bulk', maxItems: 1000 },
+};
 
-/** Braze `/users/track/bulk` documented ~2 MB cap; leave headroom for JSON overhead. */
+/**
+ * Byte cap per request on both endpoints. Sized for bulk's documented ~2 MB limit with headroom for
+ * JSON overhead; a Standard batch (75 records) never comes near it, its limit is `maxItems`.
+ */
 export const MAX_PAYLOAD_SIZE = '1.8mb';
 
 export const DATA_CENTERS = [
@@ -41,6 +61,3 @@ export const ACTION_ATTR_VALUE: Record<RecordAction, boolean> = {
   [RecordAction.UPDATE]: true,
   [RecordAction.DELETE]: false,
 };
-
-// /users/track batch cap; shared with the event-stream braze destination so the two cannot drift.
-export { TRACK_BRAZE_MAX_REQ_COUNT as STANDARD_MAX_BATCH_SIZE } from '../braze/config';

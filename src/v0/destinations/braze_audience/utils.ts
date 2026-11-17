@@ -1,22 +1,29 @@
 import { getEndpointFromConfig } from '../braze/util';
-import { BRAZE_PARTNER_NAME } from '../braze/config';
 import {
-  BULK_TRACK_PATH,
   DEFAULT_TRACK_ENDPOINT,
-  STANDARD_TRACK_PATH,
+  TRACK_ENDPOINT_SPECS,
+  TRACK_ENDPOINTS,
   type TrackEndpoint,
+  type TrackEndpointSpec,
 } from './config';
 import type { BrazeAudienceAttributePayload } from './types';
 
-export const getTrackEndpoint = (
-  dataCenter: string,
-  trackEndpoint: TrackEndpoint = DEFAULT_TRACK_ENDPOINT,
-): { endpoint: string; endpointPath: string } => {
+const isTrackEndpoint = (value: unknown): value is TrackEndpoint =>
+  (TRACK_ENDPOINTS as readonly unknown[]).includes(value);
+
+/**
+ * The endpoint spec for an account's `trackEndpoint`. Absent means bulk (accounts saved before the
+ * option existed). An unknown value also resolves to the default here, because the integration is
+ * built before input validation runs; validation then rejects every record of that destination.
+ */
+export const getTrackEndpointSpec = (trackEndpoint: unknown): TrackEndpointSpec =>
+  TRACK_ENDPOINT_SPECS[isTrackEndpoint(trackEndpoint) ? trackEndpoint : DEFAULT_TRACK_ENDPOINT];
+
+export const getTrackUrl = (dataCenter: string, spec: TrackEndpointSpec): string => {
   const base = getEndpointFromConfig({
     Config: { dataCenter },
   } as Parameters<typeof getEndpointFromConfig>[0]);
-  const endpointPath = trackEndpoint === 'standard' ? STANDARD_TRACK_PATH : BULK_TRACK_PATH;
-  return { endpoint: `${base}${endpointPath}`, endpointPath };
+  return `${base}${spec.path}`;
 };
 
 /**
@@ -45,17 +52,11 @@ export const isIdentityAborted = (type?: string): boolean => {
   );
 };
 
-/**
- * `/users/track` documents a `partner` field and the event-stream braze destination sends it;
- * `/users/track/bulk`'s published schema does not list one, so bulk bodies stay without it.
- */
 export const buildTrackBody = (
   attributes: BrazeAudienceAttributePayload[],
-  endpointPath: string,
+  { partner }: TrackEndpointSpec,
 ): { partner?: string; attributes: BrazeAudienceAttributePayload[] } =>
-  endpointPath === STANDARD_TRACK_PATH
-    ? { partner: BRAZE_PARTNER_NAME, attributes }
-    : { attributes };
+  partner ? { partner, attributes } : { attributes };
 
 /**
  * Trim and require a non-empty external_id.

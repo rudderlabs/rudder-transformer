@@ -88,11 +88,12 @@ const assertRequest = (
     );
   }
   if (
-    typeof request.body?.GZIP?.payload !== 'string' ||
-    request.body.GZIP.payload.length === 0 ||
-    ['JSON', 'JSON_ARRAY', 'FORM', 'XML'].some(
-      (format) => Object.keys(request.body?.[format] ?? {}).length > 0,
-    )
+    expected.bodyFormat === 'GZIP' &&
+    (typeof request.body?.GZIP?.payload !== 'string' ||
+      request.body.GZIP.payload.length === 0 ||
+      ['JSON', 'JSON_ARRAY', 'FORM', 'XML'].some(
+        (format) => Object.keys(request.body?.[format] ?? {}).length > 0,
+      ))
   ) {
     throw new Error(`[live:${destination}:${endpoint}] expected exclusive non-empty GZIP payload`);
   }
@@ -101,10 +102,13 @@ const assertRequest = (
   }
   if (expected.payload) {
     let valid = false;
-    try {
-      valid = expected.payload(ctx, request.body.GZIP.payload);
-    } catch {
-      // Parsing a malformed payload may throw; never include its contents in a test failure.
+    const payload = request.body?.GZIP?.payload;
+    if (typeof payload === 'string') {
+      try {
+        valid = expected.payload(ctx, payload);
+      } catch {
+        // Parsing a malformed payload may throw; never include its contents in a test failure.
+      }
     }
     if (!valid) {
       throw new Error(`[live:${destination}:${endpoint}] GZIP payload failed content check`);

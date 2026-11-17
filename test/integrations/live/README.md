@@ -182,8 +182,9 @@ scenario-level `cleanup`. There are no lifecycle hooks. Each step declares a req
   batching live: whether N events collapse into one delivery request, and whether a batch response
   is attributed back to every job. Pin the outcome with `expectedOutputs`/`expectedProxyRequests`,
   since a grouping regression that fans events out still delivers 2xx on each. For GZIP paths,
-  `expectedRequests` additionally pins the request count and each endpoint, requires an exclusive
-  non-empty GZIP body, and checks the vendor's response against `accepts(status, body)`; the runner
+  `expectedRequests` additionally pins the request count and each endpoint. Set `bodyFormat: 'GZIP'`
+  on a request to require an exclusive non-empty GZIP body. The runner checks the vendor's response
+  against `accepts(status, body)` and
   reports failures without printing request or vendor bodies.
   Unless the step declares `expectedFailure.transformStatusCode`, the runner fails it on any output that
   failed to _transform_ (a non-2xx entry in `output[]`) rather than counting only the survivors,

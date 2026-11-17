@@ -10,6 +10,7 @@ const track = (ctx: RunContext, event: string) => ({
 
 const ingested = (endpoint: string, count: number) => ({
   endpoint,
+  bodyFormat: 'GZIP' as const,
   accepts: (status: number, body: unknown) =>
     status === 200 &&
     typeof body === 'object' &&
@@ -31,6 +32,7 @@ const groupTraits = (ctx: RunContext) => ({
 // HTTP 200 here does not prove persistence if the project lacks the Accounts/Portfolio add-ons.
 const form = (endpoint: string) => ({
   endpoint,
+  bodyFormat: 'GZIP' as const,
   contentType: 'application/x-www-form-urlencoded',
   accepts: (status: number, body: unknown) => status === 200 && body === 'success',
 });

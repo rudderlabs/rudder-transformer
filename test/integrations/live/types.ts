@@ -121,6 +121,8 @@ interface PipelineStep extends Step {
   // status on failure, never the request or partner body (both may contain credentials).
   expectedRequests?: readonly {
     endpoint: string;
+    // Assert an exclusive non-empty GZIP body when this route is expected to compress.
+    bodyFormat?: 'GZIP';
     contentType?: string;
     // Optional check on the uncompressed router GZIP payload (errors never print the payload).
     payload?: (ctx: RunContext, body: string) => boolean;

@@ -13,6 +13,7 @@ const track = (ctx: RunContext, suffix: string) => ({
 // supplies a count; do not assume the same status envelope as the profile endpoints.
 const profileResponse = (endpoint: string) => ({
   endpoint,
+  bodyFormat: 'GZIP' as const,
   accepts: (status: number, body: unknown) =>
     status === 200 &&
     typeof body === 'object' &&
@@ -45,6 +46,7 @@ export const live: LiveSpec = {
           expectedRequests: [
             {
               endpoint: '/import/',
+              bodyFormat: 'GZIP',
               accepts: (status, body) =>
                 status === 200 &&
                 typeof body === 'object' &&

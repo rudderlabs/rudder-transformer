@@ -199,6 +199,7 @@ describe('runPipelineStep — gzip vendor assertions', () => {
   const secret = 'never-print-this-secret';
   const expected = {
     endpoint: '/collect',
+    bodyFormat: 'GZIP' as const,
     accepts: (status: number, body: unknown) => status === 200 && body === 'ok',
   };
   const step = (
@@ -240,6 +241,13 @@ describe('runPipelineStep — gzip vendor assertions', () => {
   it('observes the vendor reply and accepts exclusive GZIP', async () => {
     await expect(
       run(step(), liveHttp({ GZIP: { payload: 'compressed-by-proxy' } })),
+    ).resolves.toBeUndefined();
+  });
+
+  it('accepts a non-GZIP body when the format assertion is omitted', async () => {
+    const { bodyFormat: _bodyFormat, ...withoutGzipAssertion } = expected;
+    await expect(
+      run(step(withoutGzipAssertion), liveHttp({ JSON: { key: secret } })),
     ).resolves.toBeUndefined();
   });
 

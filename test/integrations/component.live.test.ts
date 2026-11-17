@@ -1,4 +1,5 @@
 import Koa from 'koa';
+import axios, { AxiosError } from 'axios';
 import bodyParser from 'koa-bodyparser';
 import request from 'supertest';
 import { Command } from 'commander';
@@ -14,9 +15,6 @@ import {
   retryUntilPasses,
 } from '@rudderstack/integrations-lib/build/live-test';
 import { applicationRoutes } from '../../src/routes/index';
-import { randomUUID } from 'crypto';
-import { registerProxyResponseObserver } from '../../src/adapters/network';
-import type { ProxyV1Request } from '../../src/types';
 import { RunContextImpl } from './live/runContext';
 import { runPipelineStep } from './live/runPipelineStep';
 import { readString } from './live/coerce';
@@ -261,35 +259,25 @@ describe('Live Integration Test Suite', () => {
                     http: {
                       post: async (url, body, onVendorResponse) => {
                         if (!onVendorResponse) return agent().post(url).send(body);
-                        const token = randomUUID();
-                        const unregister = registerProxyResponseObserver(
-                          token,
-                          (reply: {
-                            success: boolean;
-                            response: {
-                              status?: number;
-                              data?: unknown;
-                              response?: { status: number; data: unknown };
-                            };
-                          }) => {
-                            const vendor = reply.success
-                              ? reply.response
-                              : reply.response?.response;
-                            if (vendor?.status !== undefined) {
-                              onVendorResponse({ status: vendor.status, body: vendor.data });
+                        const interceptorId = axios.interceptors.response.use(
+                          (response) => {
+                            onVendorResponse({ status: response.status, body: response.data });
+                            return response;
+                          },
+                          (error: AxiosError) => {
+                            if (error.response) {
+                              onVendorResponse({
+                                status: error.response.status,
+                                body: error.response.data,
+                              });
                             }
+                            throw error;
                           },
                         );
                         try {
-                          const proxyBody = body as ProxyV1Request;
-                          return await agent()
-                            .post(url)
-                            .send({
-                              ...proxyBody,
-                              headers: { ...proxyBody.headers, 'x-live-vendor-observation': token },
-                            });
+                          return await agent().post(url).send(body);
                         } finally {
-                          unregister();
+                          axios.interceptors.response.eject(interceptorId);
                         }
                       },
                     },

@@ -4,6 +4,22 @@ Thanks for helping improve RudderStack.
 
 Building an integration here is mostly an AI agent's job now. This repo ships the skills an agent needs, so the code comes quickly. What takes time is **checking** it: for you, for us, and for every customer whose events flow through it. This guide is built around that. Follow it and your PR arrives already verified, and it merges fast.
 
+## Contents
+
+- [The short version](#the-short-version): the whole flow in one table
+- [Before you start](#before-you-start): sandbox account, AI agent, repo setup
+- **Building an integration**
+  1. [Plan](#step-1-plan): agree on what to build ([sources](#planning-a-source) have their own questions)
+  2. [Tests first](#step-2-tests-first): agree on how it behaves
+  3. [Build](#step-3-build): the agent writes the code from the skills ([don't copy the nearest destination](#dont-copy-the-nearest-destination))
+  4. [Prove it](#step-4-prove-it): checks, plus a [live test](#live-test-against-your-sandbox) or [real webhooks](#real-webhooks-for-a-source)
+  5. [Open the PR](#step-5-open-the-pr): the evidence block and [commit rules](#commits-and-pr-titles)
+- [What makes a review slow](#what-makes-a-review-slow): what sends a PR back
+- [During review](#during-review): handling comments, and how your PR gets merged
+- [Small changes](#small-changes): bug fixes and improvements
+- [Skills in this repo](#skills-in-this-repo): which skill covers what
+- [Getting help](#getting-help) and [References](#references)
+
 ## The short version
 
 | Step | You do | You get |

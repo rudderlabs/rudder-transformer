@@ -39,12 +39,16 @@ const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
-const { HTTP_STATUS_CODES, VDM_V2_SCHEMA_VERSION, ERROR_MESSAGES } = require('./constant');
+const {
+  HTTP_STATUS_CODES,
+  VDM_V2_SCHEMA_VERSION,
+  ERROR_MESSAGES,
+  FEATURE_FILTER_CODE,
+} = require('./constant');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
-const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
 const { CommonUtils } = require('../../util/common');
 
 // ========================================================================
@@ -2295,14 +2299,6 @@ const validateEventName = (event) => {
   }
 };
 
-const IsGzipSupported = (reqMetadata = {}) => {
-  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
-    const { features } = reqMetadata;
-    return !!features?.[FEATURE_GZIP_SUPPORT];
-  }
-  return false;
-};
-
 /**
  * Returns an array containing the values of the specified key from each object in the input array.
  * If the input array is falsy (null, undefined, empty array), an empty array is returned.
@@ -2691,7 +2687,6 @@ module.exports = {
   getAuthErrCategoryFromStCode,
   isValidInteger,
   isNewStatusCodesAccepted,
-  IsGzipSupported,
   parseConfigArray,
   findExistingBatch,
   removeDuplicateMetadata,

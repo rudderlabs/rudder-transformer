@@ -11,7 +11,6 @@ const API_CALL = 'api_call_count';
 const JSON_MIME_TYPE = 'application/json';
 
 const FEATURE_FILTER_CODE = 'filter-code';
-const FEATURE_GZIP_SUPPORT = 'gzip-support';
 
 const VDM_V2_SCHEMA_VERSION = '1.1';
 
@@ -100,7 +99,6 @@ module.exports = {
   HTTP_STATUS_CODES,
   USER_LEAD_CACHE_TTL,
   FEATURE_FILTER_CODE,
-  FEATURE_GZIP_SUPPORT,
   VDM_V2_SCHEMA_VERSION,
   ERROR_MESSAGES,
 };

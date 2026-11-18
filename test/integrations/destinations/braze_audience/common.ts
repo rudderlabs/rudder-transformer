@@ -40,6 +40,16 @@ export const auDestination = {
   },
 };
 
+// Account saved with the Standard sync endpoint; the base fixture has no trackEndpoint, i.e. bulk.
+export const standardDestination = {
+  ...destination,
+  ID: 'braze-audience-dest-standard',
+  Config: {
+    ...destination.Config,
+    trackEndpoint: 'standard',
+  },
+};
+
 export const connection = {
   sourceId: 'src-1',
   destinationId: destination.ID,
@@ -76,6 +86,7 @@ export const secondSourceJobContext = sourceJobContext('source-job-2');
 export const bulkEndpoint = 'https://rest.iad-03.braze.com/users/track/bulk';
 export const euBulkEndpoint = 'https://rest.fra-01.braze.eu/users/track/bulk';
 export const auBulkEndpoint = 'https://rest.au-01.braze.com/users/track/bulk';
+export const standardEndpoint = 'https://rest.iad-03.braze.com/users/track';
 
 export const headers = {
   'Content-Type': 'application/json',

@@ -4,10 +4,12 @@
 // Request bodies and response payloads are exported so dataDelivery/data.ts can
 // reference the same objects in expected output (destinationResponse lock-step).
 
-import { bulkEndpoint, headers } from '../common';
+import { bulkEndpoint, headers, standardEndpoint } from '../common';
 
 export const bulkTrackEndpoint = bulkEndpoint;
 export const bulkTrackPath = '/users/track/bulk';
+export const standardTrackEndpoint = standardEndpoint;
+export const standardTrackPath = '/users/track';
 export { headers };
 
 // ---------------------------------------------------------------------------
@@ -51,6 +53,16 @@ export const serverErrorBody = {
   ],
 };
 
+// Standard (/users/track) request: 75 per batch and the `partner` field.
+export const standardPartialBody = {
+  partner: 'RudderStack',
+  attributes: [
+    { external_id: 'std-ok', rs_high_intent: true },
+    { external_id: 'std-too-large', rs_high_intent: true },
+    { external_id: 'std-transient', rs_high_intent: false },
+  ],
+};
+
 // ---------------------------------------------------------------------------
 // Destination responses
 // ---------------------------------------------------------------------------
@@ -73,6 +85,16 @@ export const partialRetryableResponse = {
   errors: [{ type: 'SOME_TRANSIENT_ATTR_ERROR', index: 0 }],
 };
 
+// /users/track names the array each error indexes (`input_array`); the index is still positional.
+export const standardPartialResponse = {
+  message: 'success',
+  attributes_processed: 1,
+  errors: [
+    { type: 'EXTERNAL_USER_ID_TOO_LARGE', input_array: 'attributes', index: 1 },
+    { type: 'SOME_TRANSIENT_ATTR_ERROR', input_array: 'attributes', index: 2 },
+  ],
+};
+
 export const authErrorResponse = {
   message: 'Invalid API key',
 };
@@ -89,9 +111,9 @@ export const serverErrorResponse = {
 // Mock registrations
 // ---------------------------------------------------------------------------
 
-const post = (data: Record<string, unknown>) => ({
+const post = (data: Record<string, unknown>, url = bulkTrackEndpoint) => ({
   method: 'POST',
-  url: bulkTrackEndpoint,
+  url,
   data,
 });
 
@@ -107,6 +129,10 @@ export const networkCallsData = [
   {
     httpReq: post(partialRetryableBody),
     httpRes: { data: partialRetryableResponse, status: 201 },
+  },
+  {
+    httpReq: post(standardPartialBody, standardTrackEndpoint),
+    httpRes: { data: standardPartialResponse, status: 201 },
   },
   {
     httpReq: post(authErrorBody),

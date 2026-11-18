@@ -29,6 +29,7 @@ import {
 import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
+import { validateDeliveryRequestBody } from './validateDeliveryRequestBody';
 import { groupRouterTransformEvents } from '../../v0/util';
 import { isDestinationIntegrationEnabled } from '../../constants/destinationIntegrationsMap';
 import { processDestinationIntegration } from './destinationIntegration/processDestinationIntegration';
@@ -218,12 +219,13 @@ export class NativeIntegrationDestinationService implements DestinationService {
         destEvents[0].metadata?.workspaceId,
         tags.FEATURES.BATCH,
       );
-      metaTO.metadatas = events.map((event) => event.metadata);
+      metaTO.metadatas = destEvents.map((event) => event.metadata);
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
           destEvents,
           requestMetadata,
         );
+        destBatchedRequests.forEach((r) => validateDeliveryRequestBody(r.batchedRequest));
         return destBatchedRequests;
       } catch (error: any) {
         const errResp = DestinationPostTransformationService.handleBatchTransformFailureEvents(

@@ -10,6 +10,8 @@ import {
   bulkEndpoint,
   euBulkEndpoint,
   auBulkEndpoint,
+  standardDestination,
+  standardEndpoint,
   headers,
   RouterInstrumentationErrorStatTags,
   firstSourceJobContext,
@@ -97,6 +99,82 @@ export const data: RouterTestData[] = [
               batched: true,
               statusCode: 200,
               destination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'braze-audience-router-standard-endpoint',
+    name: destType,
+    description:
+      'trackEndpoint standard batches to /users/track with the RudderStack partner field',
+    scenario: 'Business',
+    successCriteria: 'Endpoint is /users/track and the body carries partner: RudderStack',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                identifiers: { external_id: 'user-1' },
+                action: 'insert',
+              }),
+              metadata: generateMetadata(1),
+              destination: standardDestination,
+              connection,
+            },
+            {
+              message: generateRecordPayload({
+                identifiers: { external_id: 'user-2' },
+                action: 'delete',
+              }),
+              metadata: generateMetadata(2),
+              destination: standardDestination,
+              connection,
+            },
+          ],
+          destType,
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: standardEndpoint,
+                endpointPath: '/users/track',
+                headers,
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      { external_id: 'user-1', rs_high_intent: true },
+                      { external_id: 'user-2', rs_high_intent: false },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1), generateMetadata(2)],
+              batched: true,
+              statusCode: 200,
+              destination: standardDestination,
             },
           ],
         },

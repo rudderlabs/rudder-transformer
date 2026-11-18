@@ -100,8 +100,8 @@ GitHub-OIDC → Vault auth, and the CI workflow are now implemented — see
 
 **Scope — transform path.** The harness drives only `/routerTransform → /proxy`. rudder-server
 also runs the processor transform (`/v0/destinations/<dest>`) ahead of delivery, whose response
-shape differs; that chaining is not exercised here (INT-NNNN). **GZIP** proxy bodies are likewise
-unmapped (INT-NNNN) — see `routerProxyRequests.ts`.
+shape differs; that chaining is not exercised here (INT-NNNN). **GZIP** proxy bodies are
+passed through to `/proxy`; the delivery adapter compresses the payload before sending it to the vendor.
 
 ## Running it locally
 
@@ -182,6 +182,10 @@ scenario-level `cleanup`. There are no lifecycle hooks. Each step declares a req
   batching live: whether N events collapse into one delivery request, and whether a batch response
   is attributed back to every job. Pin the outcome with `expectedOutputs`/`expectedProxyRequests`,
   since a grouping regression that fans events out still delivers 2xx on each.
+  `expectedRequests` pins the request count and each endpoint, and checks the vendor's response
+  against `accepts(status, body)`. Set `bodyFormat: 'GZIP'` to require an exclusive non-empty router
+  GZIP body and verify that the sent request uses gzip encoding and decompresses exactly to that
+  body. Failures never print request headers, bytes, or vendor bodies.
   Unless the step declares `expectedFailure.transformStatusCode`, the runner fails it on any output that
   failed to _transform_ (a non-2xx entry in `output[]`) rather than counting only the survivors,
   and on any seeded job that comes back with no delivery verdict at all.

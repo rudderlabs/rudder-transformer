@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.170.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.169.0...v1.170.0) (2026-11-18)
+
+
+### Features
+
+* **braze_audience:** sync through /users/track when the account chooses standard ([#5801](https://github.com/rudderlabs/rudder-transformer/issues/5801)) ([5549012](https://github.com/rudderlabs/rudder-transformer/commit/554901247bfc5b6463c3e14654acdf28780b31ec)), closes [rudderlabs/rudder-integrations-config#2910](https://github.com/rudderlabs/rudder-integrations-config/issues/2910) [rudderlabs/rudder-integrations-config#2910](https://github.com/rudderlabs/rudder-integrations-config/issues/2910) [rudderlabs/rudder-integrations-config#2910](https://github.com/rudderlabs/rudder-integrations-config/issues/2910)
+* **facebook_lead_ads_native:** include custom disclaimer responses in hydrated leads ([#5790](https://github.com/rudderlabs/rudder-transformer/issues/5790)) ([1899034](https://github.com/rudderlabs/rudder-transformer/commit/1899034e1c8611d8f36326cf6f1c457fd0d2d5e4))
+
+
+### Bug Fixes
+
+* **destination:** reject conflicting delivery body formats ([#5784](https://github.com/rudderlabs/rudder-transformer/issues/5784)) ([667a77d](https://github.com/rudderlabs/rudder-transformer/commit/667a77d9216d35a7a7eda896affaaaa79ad2fd10))
+
 ## [1.169.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.168.0...v1.169.0) (2026-11-16)
 
 

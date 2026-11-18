@@ -1,7 +1,14 @@
 import { MetaTransferObject } from '../../../types/index';
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { DestinationPostTransformationService } from '../postTransformation';
-import { DeliveryV1Response, ProcessorTransformationResponse, ProxyMetdata } from '../../../types';
+import {
+  DeliveryV1Response,
+  ProcessorTransformationResponse,
+  ProxyMetdata,
+  RouterTransformationResponse,
+} from '../../../types';
+import stats from '../../../util/stats';
+import { ErrorReportingService } from '../../errorReporting';
 
 afterEach(() => {
   jest.restoreAllMocks();
@@ -45,6 +52,93 @@ describe('PostTransformation Service', () => {
     } as ProcessorTransformationResponse;
 
     expect(resp).toEqual(expected);
+  });
+
+  describe('router delivery body validation', () => {
+    const good = {
+      version: 'v0',
+      type: 'REST',
+      method: 'POST',
+      endpoint: '/ok',
+      body: { JSON: { id: 1 } },
+    };
+    const bad = { ...good, body: { JSON: { id: 2 }, GZIP: { payload: 'compressed' } } };
+    const jobs = [metadata(1), metadata(2)];
+    const destination = { ID: 'destination-1' };
+    const input = [
+      { batchedRequest: good, metadata: [jobs[0]], destination, statusCode: 200, batched: false },
+      { batchedRequest: bad, metadata: [jobs[1]], destination, statusCode: 200, batched: false },
+    ] as unknown as RouterTransformationResponse[];
+    const errorDetails = {
+      destType: 'EXAMPLE',
+      module: 'destination',
+      implementation: 'native',
+      feature: 'router',
+      destinationId: jobs[0].destinationId,
+      workspaceId: jobs[0].workspaceId,
+    };
+    const expectedFailure = {
+      metadata: [jobs[1]],
+      destination,
+      batched: false,
+      statusCode: 400,
+      error: 'delivery request has more than one non-empty body format: JSON, GZIP',
+      statTags: {
+        errorCategory: 'platform',
+        ...errorDetails,
+      },
+    };
+    const cases = [
+      { name: 'one request', batchedRequest: bad },
+      { name: 'one invalid nested request', batchedRequest: [good, bad] },
+      { name: '2xx response with an error key', batchedRequest: bad, error: 'old error' },
+    ];
+
+    it.each(cases)('rejects $name and keeps sibling responses', ({ batchedRequest, error }) => {
+      const report = jest.spyOn(ErrorReportingService, 'reportError').mockImplementation(jest.fn());
+      const increment = jest.spyOn(stats, 'increment').mockImplementation(jest.fn());
+      const responses = [{ ...input[0] }, { ...input[1], batchedRequest, ...(error && { error }) }];
+      const meta: MetaTransferObject = {
+        errorContext: 'router error',
+        errorDetails,
+        metadata: jobs[0],
+      };
+
+      const result = DestinationPostTransformationService.handleRouterTransformSuccessEvents(
+        responses,
+        undefined,
+        meta,
+        'native',
+        'EXAMPLE',
+      );
+
+      expect(result).toEqual([{ ...input[0], batchedRequest: { ...good } }, expectedFailure]);
+      expect(report).toHaveBeenCalledTimes(1);
+      expect(
+        increment.mock.calls.filter(([name]) => name === 'event_transform_success'),
+      ).toHaveLength(1);
+      expect(
+        increment.mock.calls.filter(([name]) => name === 'event_transform_failure'),
+      ).toHaveLength(1);
+    });
+
+    it('runs the metadata hook for valid and failed responses', () => {
+      const report = jest.spyOn(ErrorReportingService, 'reportError').mockImplementation(jest.fn());
+      const hook = jest.fn((response: RouterTransformationResponse) =>
+        response.destination ? response.metadata : [],
+      );
+      const result = DestinationPostTransformationService.handleRouterTransformSuccessEvents(
+        input,
+        { processMetadataForRouter: hook },
+        { errorContext: 'router error', errorDetails, metadata: jobs[0] },
+        'native',
+        'EXAMPLE',
+      );
+
+      expect(result).toEqual([input[0], expectedFailure]);
+      expect(hook).toHaveBeenCalledTimes(2);
+      expect(report).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('handlevV1DeliveriesFailureEvents', () => {

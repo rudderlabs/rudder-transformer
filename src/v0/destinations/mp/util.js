@@ -17,7 +17,6 @@ const {
   batchMultiplexedEvents,
   getSuccessRespEvents,
   defaultBatchRequestConfig,
-  IsGzipSupported,
   isObject,
   isDefinedAndNotNull,
   removeUndefinedValues,
@@ -306,7 +305,7 @@ const groupEventsByEndpoint = (events) => {
   };
 };
 
-const generateBatchedPayloadForArray = (events, reqMetadata, workspaceId) => {
+const generateBatchedPayloadForArray = (events, workspaceId) => {
   const { batchedRequest } = defaultBatchRequestConfig();
   const firstEvent = events[0];
   batchedRequest.endpoint = firstEvent.endpoint;
@@ -317,9 +316,7 @@ const generateBatchedPayloadForArray = (events, reqMetadata, workspaceId) => {
   const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
 
   const isImport = firstEvent.endpoint.includes('import');
-  const useGzip = isImport
-    ? IsGzipSupported(reqMetadata)
-    : isMpGzipEnabled(firstEvent.endpointPath, workspaceId);
+  const useGzip = isImport || isMpGzipEnabled(firstEvent.endpointPath, workspaceId);
   if (useGzip) {
     batchedRequest.body.GZIP = { payload: JSON.stringify(batchResponseList) };
   } else {
@@ -329,12 +326,11 @@ const generateBatchedPayloadForArray = (events, reqMetadata, workspaceId) => {
   return batchedRequest;
 };
 
-const batchEvents = (successRespList, maxBatchSize, reqMetadata) => {
+const batchEvents = (successRespList, maxBatchSize) => {
   const batchedEvents = batchMultiplexedEvents(successRespList, maxBatchSize);
   return batchedEvents.map((batch) => {
     const batchedRequest = generateBatchedPayloadForArray(
       batch.events,
-      reqMetadata,
       batch.metadata[0].workspaceId,
     );
     return getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true);

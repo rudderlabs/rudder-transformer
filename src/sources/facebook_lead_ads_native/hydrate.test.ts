@@ -280,6 +280,7 @@ describe('Facebook Lead Ads Hydration', () => {
               {
                 params: {
                   access_token: 'test_token',
+                  fields: 'created_time,id,ad_id,form_id,field_data,custom_disclaimer_responses',
                 },
               },
               {
@@ -329,6 +330,132 @@ describe('Facebook Lead Ads Hydration', () => {
         },
       );
     });
+
+    const mockLeadWithCollidingDisclaimers = (disclaimerResponses?: unknown) => {
+      mockHttpGET.mockResolvedValue({
+        success: true,
+        response: {
+          data: {
+            field_data: [
+              { name: 'email', values: ['john@example.com'] },
+              { name: 'custom_disclaimer_responses', values: ['form field value'] },
+            ],
+            ...(disclaimerResponses !== undefined && {
+              custom_disclaimer_responses: disclaimerResponses,
+            }),
+          },
+          status: 200,
+        },
+      });
+      const input = createValidInput(['123456']);
+      input.batch[0].event.context.traits = {
+        pageId: 'page_123',
+        custom_disclaimer_responses: 'old value',
+      };
+      return input;
+    };
+
+    it('should retain Meta disclaimer strings and override a same-named form field', async () => {
+      const disclaimerResponses = [
+        { checkbox_key: 'marketing_contact_consent', is_checked: '1' },
+        { checkbox_key: 'sms_consent', is_checked: '' },
+      ];
+      const result = (await hydrate(
+        mockLeadWithCollidingDisclaimers(disclaimerResponses),
+      )) as SuccessResponse;
+
+      expect(result.batch).toEqual([
+        {
+          event: {
+            anonymousId: '123456',
+            context: {
+              traits: {
+                pageId: 'page_123',
+                email: 'john@example.com',
+                custom_disclaimer_responses: disclaimerResponses,
+              },
+            },
+          },
+          statusCode: 200,
+        },
+      ]);
+      expect(
+        (
+          result.batch[0].event.context?.traits
+            ?.custom_disclaimer_responses as typeof disclaimerResponses
+        )[1].is_checked,
+      ).toBe('');
+      expect(logger.warn).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      { name: 'missing', disclaimerResponses: undefined },
+      { name: 'null', disclaimerResponses: null },
+      { name: 'empty', disclaimerResponses: [] },
+    ])(
+      'should keep a same-named form field when disclaimer responses are $name',
+      async ({ disclaimerResponses }) => {
+        const result = await hydrate(mockLeadWithCollidingDisclaimers(disclaimerResponses));
+
+        expect(result.batch).toEqual([
+          {
+            event: {
+              anonymousId: '123456',
+              context: {
+                traits: {
+                  pageId: 'page_123',
+                  email: 'john@example.com',
+                  custom_disclaimer_responses: 'form field value',
+                },
+              },
+            },
+            statusCode: 200,
+          },
+        ]);
+        expect(logger.warn).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each([
+      {
+        name: 'object',
+        disclaimerResponses: { checkbox_key: 'unexpected' },
+        expectedSchema: {
+          type: 'object',
+          properties: { checkbox_key: { type: 'string' } },
+        },
+      },
+      {
+        name: 'string',
+        disclaimerResponses: 'unexpected',
+        expectedSchema: { type: 'string' },
+      },
+    ])(
+      'should warn, keep a same-named form field, and not fail the lead for $name disclaimer responses',
+      async ({ disclaimerResponses, expectedSchema }) => {
+        const result = await hydrate(mockLeadWithCollidingDisclaimers(disclaimerResponses));
+
+        expect(result.batch).toEqual([
+          {
+            event: {
+              anonymousId: '123456',
+              context: {
+                traits: {
+                  pageId: 'page_123',
+                  email: 'john@example.com',
+                  custom_disclaimer_responses: 'form field value',
+                },
+              },
+            },
+            statusCode: 200,
+          },
+        ]);
+        expect(logger.warn).toHaveBeenCalledWith(
+          '[facebook_lead_ads_native] custom_disclaimer_responses is not an array',
+          { responseSchema: expectedSchema },
+        );
+      },
+    );
 
     it('should handle empty batch array', async () => {
       const input = {

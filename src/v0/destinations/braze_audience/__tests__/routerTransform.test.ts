@@ -217,3 +217,66 @@ describe('BrazeAudienceIntegration via processDestinationIntegration', () => {
     });
   });
 });
+
+describe('BrazeAudienceIntegration trackEndpoint', () => {
+  const endpointCases = [
+    {
+      name: 'absent (account saved before the option existed) → bulk',
+      config: {},
+      endpoint: 'https://rest.iad-03.braze.com/users/track/bulk',
+      partner: undefined,
+    },
+    {
+      name: 'bulk → /users/track/bulk without partner',
+      config: { trackEndpoint: 'bulk' as const },
+      endpoint: 'https://rest.iad-03.braze.com/users/track/bulk',
+      partner: undefined,
+    },
+    {
+      name: 'standard → /users/track with partner',
+      config: { trackEndpoint: 'standard' as const },
+      endpoint: 'https://rest.iad-03.braze.com/users/track',
+      partner: 'RudderStack',
+    },
+  ];
+
+  const batchSizeCases = [
+    { name: 'standard splits at 75', trackEndpoint: 'standard' as const, sizes: [75, 1] },
+    { name: 'bulk keeps 76 in one request', trackEndpoint: 'bulk' as const, sizes: [76] },
+  ];
+
+  it.each(endpointCases)('$name', async ({ config, endpoint, partner }) => {
+    const dest = buildDestination(config);
+    const results = await processDestinationIntegration(
+      [buildInput(1, 'insert', { external_id: 'u1' }, dest)],
+      Integration,
+      {},
+    );
+    expect(results[0].statusCode).toBe(200);
+    expect(getEndpoint(results[0])).toBe(endpoint);
+    expect(getJsonBody(results[0]).partner).toBe(partner);
+    expect(getJsonBody(results[0]).attributes).toEqual([
+      { external_id: 'u1', rs_audience_high_intent: true },
+    ]);
+  });
+
+  it.each(batchSizeCases)('$name', async ({ trackEndpoint, sizes }) => {
+    const dest = buildDestination({ trackEndpoint });
+    const inputs = Array.from({ length: 76 }, (_, i) =>
+      buildInput(i + 1, 'insert', { external_id: `u${i + 1}` }, dest),
+    );
+    const results = await processDestinationIntegration(inputs, Integration, {});
+    expect(results.map((r) => getJsonBody(r).attributes.length)).toEqual(sizes);
+  });
+
+  it('rejects an unknown trackEndpoint at schema validation', async () => {
+    const dest = buildDestination({ trackEndpoint: 'users_track' as unknown as 'standard' });
+    const results = await processDestinationIntegration(
+      [buildInput(1, 'insert', { external_id: 'u1' }, dest)],
+      Integration,
+      {},
+    );
+    expect(results[0].statusCode).toBe(400);
+    expect(results[0].error).toMatch(/trackEndpoint/);
+  });
+});

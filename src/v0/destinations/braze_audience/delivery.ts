@@ -1,7 +1,7 @@
 /**
- * Delivery handling for the Braze audience bulk attribute sync.
+ * Delivery handling for the Braze audience attribute sync.
  *
- * Braze answers `/users/track/bulk` with a **2xx** even when individual records were rejected,
+ * Braze answers `/users/track` and `/users/track/bulk` alike with a **2xx** even when individual records were rejected,
  * listing them in `errors[]`. Each entry carries `index` — a position in the posted `attributes`
  * array — so correlation is positional, and without this entry the framework would read a
  * partially-failed batch as a plain success. Keyed on '2xx' rather than 201 because the check it

@@ -17,6 +17,9 @@ import {
   rateLimitResponse,
   serverErrorBody,
   serverErrorResponse,
+  standardTrackEndpoint,
+  standardTrackPath,
+  standardPartialBody,
 } from './network';
 
 // Messages produced by the batching framework's delivery bridge, which owns response handling for
@@ -28,13 +31,14 @@ const frameworkFailure = (reason: string) => `[BRAZE_AUDIENCE] ${reason}`;
 const proxyPayload = (
   JSON: Record<string, unknown>,
   metadata: ReturnType<typeof generateMetadata>[],
+  { endpoint, endpointPath } = { endpoint: bulkTrackEndpoint, endpointPath: bulkTrackPath },
 ) =>
   generateProxyV1Payload(
     {
       JSON,
       headers,
-      endpoint: bulkTrackEndpoint,
-      endpointPath: bulkTrackPath,
+      endpoint,
+      endpointPath,
     },
     metadata,
   );
@@ -276,6 +280,52 @@ const scenarios: ProxyV1TestData[] = [
                 statusCode: 500,
                 metadata: generateMetadata(2),
                 error: JSON.stringify(serverErrorResponse),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'braze_audience_v1_standard_partial_errors',
+    name: destType,
+    description:
+      '[Proxy v1] /users/track 201 with indexed errors: identity error aborts, other error retries, rest succeed',
+    successCriteria: 'Index 1 identity error → 400; index 2 transient → 500; index 0 → 200',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: proxyPayload(
+          standardPartialBody,
+          [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
+          { endpoint: standardTrackEndpoint, endpointPath: standardTrackPath },
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 201,
+            // Two different failure reasons, so the framework summarizes the batch.
+            message: frameworkFailure('2 of 3 events failed; see per-event errors'),
+            response: [
+              { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
+              {
+                statusCode: 400,
+                metadata: generateMetadata(2),
+                error: 'EXTERNAL_USER_ID_TOO_LARGE',
+              },
+              {
+                statusCode: 500,
+                metadata: generateMetadata(3),
+                error: 'SOME_TRANSIENT_ATTR_ERROR',
               },
             ],
           },

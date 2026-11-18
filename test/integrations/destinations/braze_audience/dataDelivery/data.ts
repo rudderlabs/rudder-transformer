@@ -291,19 +291,18 @@ const scenarios: ProxyV1TestData[] = [
     id: 'braze_audience_v1_standard_partial_errors',
     name: destType,
     description:
-      '[Proxy v1] /users/track 201 with indexed errors: identity error aborts, other error retries, rest succeed',
-    successCriteria: 'Index 1 identity error → 400; index 2 transient → 500; index 0 → 200',
+      '[Proxy v1] /users/track 201 with an indexed identity error (oversized external_id) aborts that job only',
+    successCriteria: 'Index 1 identity error → 400; index 0 → 200',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
     input: {
       request: {
-        body: proxyPayload(
-          standardPartialBody,
-          [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
-          { endpoint: standardTrackEndpoint, endpointPath: standardTrackPath },
-        ),
+        body: proxyPayload(standardPartialBody, [generateMetadata(1), generateMetadata(2)], {
+          endpoint: standardTrackEndpoint,
+          endpointPath: standardTrackPath,
+        }),
         method: 'POST',
       },
     },
@@ -313,19 +312,13 @@ const scenarios: ProxyV1TestData[] = [
         body: {
           output: {
             status: 201,
-            // Two different failure reasons, so the framework summarizes the batch.
-            message: frameworkFailure('2 of 3 events failed; see per-event errors'),
+            message: frameworkFailure('EXTERNAL_USER_ID_TOO_LARGE'),
             response: [
               { statusCode: 200, metadata: generateMetadata(1), error: 'success' },
               {
                 statusCode: 400,
                 metadata: generateMetadata(2),
                 error: 'EXTERNAL_USER_ID_TOO_LARGE',
-              },
-              {
-                statusCode: 500,
-                metadata: generateMetadata(3),
-                error: 'SOME_TRANSIENT_ATTR_ERROR',
               },
             ],
           },

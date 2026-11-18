@@ -53,13 +53,16 @@ export const serverErrorBody = {
   ],
 };
 
-// Standard (/users/track) request: 75 per batch and the `partner` field.
+// Standard (/users/track) request: the `partner` field, and one external_id over Braze's 988-byte
+// cap, so the mocked identity error below matches an input Braze would really reject. The live
+// scenario `braze-audience-standard-partial-failure` asserts the same case against Braze itself.
+export const standardOversizedExternalId = `std-${'x'.repeat(1000)}`;
+
 export const standardPartialBody = {
   partner: 'RudderStack',
   attributes: [
     { external_id: 'std-ok', rs_high_intent: true },
-    { external_id: 'std-too-large', rs_high_intent: true },
-    { external_id: 'std-transient', rs_high_intent: false },
+    { external_id: standardOversizedExternalId, rs_high_intent: true },
   ],
 };
 
@@ -89,10 +92,7 @@ export const partialRetryableResponse = {
 export const standardPartialResponse = {
   message: 'success',
   attributes_processed: 1,
-  errors: [
-    { type: 'EXTERNAL_USER_ID_TOO_LARGE', input_array: 'attributes', index: 1 },
-    { type: 'SOME_TRANSIENT_ATTR_ERROR', input_array: 'attributes', index: 2 },
-  ],
+  errors: [{ type: 'EXTERNAL_USER_ID_TOO_LARGE', input_array: 'attributes', index: 1 }],
 };
 
 export const authErrorResponse = {

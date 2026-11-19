@@ -1,5 +1,4 @@
-// Run with: node --test .github/scripts/integrations_audit/*.test.js
-const test = require('node:test');
+// Runs with the repo Jest suite (npm test).
 const assert = require('node:assert');
 const { applyPlan } = require('./create-tickets');
 

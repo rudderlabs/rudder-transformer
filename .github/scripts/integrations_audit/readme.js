@@ -1,6 +1,7 @@
 // Reads the audit sections of integration READMEs (format: .claude/skills/generate-integration-docs/references/audit-sections.md).
 const fs = require('fs');
 const path = require('path');
+const { escapeRegExp } = require('./common');
 
 const INTEGRATION_ROOTS = [
   'src/v0/destinations',
@@ -30,10 +31,6 @@ const VALUE_PATTERNS = {
   'Last checked': /^\d{4}-\d{2}-\d{2}$/,
 };
 
-function escapeRegExp(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 /** Body of `heading` at `level`, up to the next heading of the same or higher level. */
 function section(text, heading, level) {
   const re = new RegExp(
@@ -51,17 +48,16 @@ function bullets(body) {
   }));
 }
 
-/** Splits bullets into per-API groups; a group starts at `- **API:**` (or is the single unnamed group). */
+/** Splits bullets into per-API groups; a group starts at `- **API:**`, or is one unnamed group. */
 function groupByApi(items) {
   const groups = [];
-  let current = null;
   for (const item of items) {
-    if (item.label === 'API' || !current) {
-      current = { api: item.label === 'API' ? item.value : null, fields: {} };
-      groups.push(current);
-      if (item.label === 'API') continue;
+    if (item.label === 'API') {
+      groups.push({ api: item.value, fields: {} });
+      continue;
     }
-    current.fields[item.label] = item.value;
+    if (!groups.length) groups.push({ api: null, fields: {} });
+    groups[groups.length - 1].fields[item.label] = item.value;
   }
   return groups;
 }
@@ -73,11 +69,20 @@ function links(value) {
   }));
 }
 
+function plain(value) {
+  return (value || '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/`/g, '');
+}
+
 function validate(text) {
   const problems = [];
   if ((text.match(/^## Version Information\s*$/gm) || []).length !== 1) {
     problems.push('needs exactly one "## Version Information"');
   }
+  const checkValues = (where, items) =>
+    items
+      .filter((i) => VALUE_PATTERNS[i.label] && !VALUE_PATTERNS[i.label].test(i.value))
+      .forEach((i) => problems.push(`${where}: bad ${i.label} "${i.value.slice(0, 40)}"`));
+
   for (const [sub, required] of Object.entries(VERSION_LABELS)) {
     const body = section(text, sub, 3);
     if (body === null) {
@@ -89,23 +94,47 @@ function validate(text) {
     required
       .filter((r) => !names.includes(r))
       .forEach((r) => problems.push(`${sub}: missing ${r}`));
-    items
-      .filter((i) => VALUE_PATTERNS[i.label] && i.label !== 'Last checked')
-      .filter((i) => !VALUE_PATTERNS[i.label].test(i.value))
-      .forEach((i) => problems.push(`${sub}: bad ${i.label} "${i.value.slice(0, 40)}"`));
+    checkValues(sub, items);
   }
   const cr = section(text, 'Changelog References', 3);
   if (cr === null) {
     problems.push('missing "### Changelog References"');
   } else {
-    const order = bullets(cr)
-      .map((i) => i.label)
-      .filter((l) => CHANGELOG_LABELS.includes(l));
+    const items = bullets(cr);
+    const order = items.map((i) => i.label).filter((l) => CHANGELOG_LABELS.includes(l));
     if (order.join('|') !== CHANGELOG_LABELS.join('|')) {
       problems.push(`Changelog References labels must be ${CHANGELOG_LABELS.join(', ')}`);
     }
+    checkValues('Changelog References', items);
   }
   return problems;
+}
+
+/** The group for the same API in another subsection; a single unnamed group applies to every API. */
+function matchGroup(groups, group, i) {
+  const byName = group.api && groups.find((g) => g.api === group.api);
+  return (byName || (groups.length === 1 ? groups[0] : groups[i]) || {}).fields || {};
+}
+
+/** One record per API, with the three version subsections joined and values reduced to plain facts. */
+function versionRecords(text) {
+  const [current, deprecation, latest] = Object.keys(VERSION_LABELS).map((sub) =>
+    groupByApi(bullets(section(text, sub, 3))),
+  );
+  return current.map((group, i) => {
+    const dep = matchGroup(deprecation, group, i);
+    const lat = matchGroup(latest, group, i);
+    const sunset = /^\d{4}-\d{2}(-\d{2})?/.exec(dep['Sunset date'] || '');
+    return {
+      api: group.api ? plain(group.api) : null,
+      current: plain(group.fields.Version),
+      status: (/^\w+/.exec(dep.Status || '') || ['Unknown'])[0],
+      sunsetDate: sunset ? sunset[0] : null,
+      latest: plain(lat.Version) || null,
+      upgradeNeeded: /^Yes/.test(lat['Upgrade needed'] || ''),
+      sourceUrl: links(dep.Source || '')[0]?.url || links(lat.Source || '')[0]?.url || null,
+    };
+  });
 }
 
 function listFiles(dir, ext) {
@@ -126,26 +155,23 @@ function readIntegration(repoRoot, dir) {
   const name = path.basename(dir);
   if (problems.length) return { name, dir, readmePath, problems };
 
-  const versions = Object.fromEntries(
-    Object.keys(VERSION_LABELS).map((sub) => [sub, groupByApi(bullets(section(text, sub, 3)))]),
-  );
-  const changelogItems = bullets(section(text, 'Changelog References', 3));
-  const changelog = Object.fromEntries(
-    changelogItems.map((i) => [i.label, { value: i.value, links: links(i.value) }]),
-  );
-  const title = (text.match(/^# (.+)$/m) || [])[1] || name;
+  // Index pages list many changes; Announcements links are single posts, so they are not included.
+  const changelogIndexUrls = bullets(section(text, 'Changelog References', 3))
+    .filter((i) => i.label !== 'Announcements')
+    .flatMap((i) => links(i.value).map((l) => l.url));
+  const heading = (text.match(/^# (.+)$/m) || [])[1] || name;
 
   return {
     name,
     title:
-      title
+      heading
         .replace(/(\s+(RudderStack|Destination|Integration|Documentation|Guide))+$/i, '')
         .trim() || name,
     dir,
     readmePath,
     problems,
-    versions,
-    changelog,
+    versions: versionRecords(text),
+    changelogIndexUrls,
     sections: {
       versionInformation: section(text, 'Version Information', 2),
       documentationLinks: section(text, 'Documentation Links', 2),
@@ -173,4 +199,4 @@ function discover(repoRoot) {
   return dirs.sort();
 }
 
-module.exports = { discover, readIntegration, validate, section, bullets, groupByApi, links };
+module.exports = { discover, readIntegration };

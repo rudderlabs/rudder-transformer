@@ -33,7 +33,7 @@ jobs:
   audit:
     name: Run Integration Audit
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     permissions:
       contents: read # to checkout repository code (actions/checkout)
 

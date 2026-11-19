@@ -76,7 +76,7 @@ async function getCurrentCycleId(teamId) {
   }
 }
 
-async function searchIssues({ titleContains, teamId, states, limit = 50, throwOnError = false }) {
+async function searchIssues({ titleContains, teamId, states, limit = 50 }) {
   try {
     const filter = {
       team: { id: { eq: teamId || LINEAR_TEAM_ID } },
@@ -97,16 +97,13 @@ async function searchIssues({ titleContains, teamId, states, limit = 50, throwOn
           priority: issue.priority,
           url: issue.url,
           dueDate: issue.dueDate,
-          description: issue.description || '',
-          state: { name: state?.name, type: state?.type },
+          state: { name: state?.name },
           parentId: parent?.id || null,
         };
       }),
     );
   } catch (error) {
     console.error(`Error searching issues with title "${titleContains}":`, error.message);
-    // Callers that create tickets must not read a failed search as "no existing ticket".
-    if (throwOnError) throw error;
     return [];
   }
 }
@@ -260,12 +257,31 @@ async function createComment(issueId, body) {
   if (!result.success) throw new Error(`Failed to comment on issue "${issueId}"`);
 }
 
+const ISSUES_BY_TITLE = `query IssuesByTitle($teamId: ID!, $title: String!) {
+  issues(filter: { team: { id: { eq: $teamId } }, title: { containsIgnoreCase: $title } }, first: 250) {
+    nodes { id identifier title url priority dueDate description state { type } parent { id } }
+  }
+}`;
+
+/** Issues in any state whose title contains `title`, in one request; throws on error so a failure is never read as "none". */
+async function findIssuesByTitle(title) {
+  const { data } = await linearClient.client.rawRequest(ISSUES_BY_TITLE, {
+    teamId: LINEAR_TEAM_ID,
+    title,
+  });
+  return data.issues.nodes.map(({ parent, ...issue }) => ({
+    ...issue,
+    parentId: parent?.id || null,
+  }));
+}
+
 module.exports = {
   createIssue,
   listIssuesByParent,
   updateIssue,
   updateIssueDescription,
   createComment,
+  findIssuesByTitle,
   getStateId,
   getUserId,
   getCurrentUserId,
@@ -277,5 +293,4 @@ module.exports = {
   MAINTENANCE_PROJECT_ID,
   KTLO_LABEL_ID,
   VERSION_UPGRADE_LABEL_ID,
-  OPEN_STATES,
 };

@@ -6,24 +6,12 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 const { discover, readIntegration } = require('./readme');
-
-const REPO_ROOT = path.resolve(__dirname, '../../..');
-const IMPACTS = ['breaking', 'version_upgrade', 'opportunity'];
-const CATEGORIES = [
-  'version_upgrade',
-  'endpoint_lifecycle',
-  'auth',
-  'request_response_fields',
-  'new_mapping',
-  'validation_limits',
-  'new_capability',
-  'error_handling',
-];
+const { REPO_ROOT, CATEGORIES, IMPACTS, isoDate, pool } = require('./common');
 
 function parseArgs(argv) {
   const opts = {
-    only: null,
-    limit: null,
+    only: '',
+    limit: 0,
     concurrency: 3,
     timeoutSec: 300,
     lookbackDays: 45,
@@ -34,31 +22,14 @@ function parseArgs(argv) {
   for (let i = 2; i < argv.length; i += 2) {
     const key = argv[i].replace(/^--/, '').replace(/-([a-z])/g, (_, c) => c.toUpperCase());
     if (!(key in opts)) throw new Error(`Unknown option ${argv[i]}`);
-    const v = argv[i + 1];
-    opts[key] =
-      key === 'only'
-        ? v.split(',').map((s) => s.trim())
-        : typeof opts[key] === 'number'
-          ? Number(v)
-          : v;
+    opts[key] = typeof opts[key] === 'number' ? Number(argv[i + 1]) : argv[i + 1];
   }
-  return opts;
-}
-
-function isoDate(d) {
-  return d.toISOString().slice(0, 10);
+  return { ...opts, only: opts.only ? opts.only.split(',').map((s) => s.trim()) : null };
 }
 
 function buildPrompt(template, integration, opts) {
   const today = new Date();
   const since = new Date(today.getTime() - opts.lookbackDays * 86400000);
-  const sections = [
-    '## Version Information',
-    integration.sections.versionInformation.trim(),
-    '',
-    '## Documentation Links',
-    integration.sections.documentationLinks.trim(),
-  ].join('\n');
   const values = {
     title: integration.title,
     name: integration.name,
@@ -66,7 +37,13 @@ function buildPrompt(template, integration, opts) {
     today: isoDate(today),
     since: isoDate(since),
     lookbackDays: opts.lookbackDays,
-    sections,
+    sections: [
+      '## Version Information',
+      integration.sections.versionInformation.trim(),
+      '',
+      '## Documentation Links',
+      integration.sections.documentationLinks.trim(),
+    ].join('\n'),
     onDemandFiles: integration.onDemandFiles.map((f) => `\`${f}\``).join(', ') || 'none',
     maxFetches: opts.maxFetches,
     maxSearches: opts.maxSearches,
@@ -74,29 +51,16 @@ function buildPrompt(template, integration, opts) {
   return template.replace(/\{\{(\w+)\}\}/g, (_, k) => String(values[k]));
 }
 
-/** How to run cursor-agent and read its text result. */
-const CURSOR = {
-  command: (prompt) => ['cursor-agent', ['-p', '--force', '--output-format', 'json', prompt]],
-  parse: (stdout) => {
-    const r = JSON.parse(stdout);
-    // Token counts are read when cursor-agent reports them; otherwise the summary shows "–".
-    const u = r.usage || {};
-    const usage =
-      u.input_tokens != null || u.inputTokens != null
-        ? {
-            inputTokens: u.input_tokens ?? u.inputTokens,
-            outputTokens: u.output_tokens ?? u.outputTokens ?? null,
-          }
-        : {};
-    return { text: r.result || '', isError: Boolean(r.is_error), usage };
-  },
-};
+/** Reads `cursor-agent --output-format json`; it reports API time but no token counts. */
+function parseCursorOutput(stdout) {
+  const r = JSON.parse(stdout);
+  return { text: r.result || '', isError: Boolean(r.is_error), apiMs: r.duration_api_ms ?? null };
+}
 
-function runAgent(adapter, prompt, opts) {
-  const [cmd, args] = adapter.command(prompt, opts);
+function runCursor(prompt, timeoutSec) {
   return new Promise((resolve) => {
     const started = Date.now();
-    const child = spawn(cmd, args, {
+    const child = spawn('cursor-agent', ['-p', '--force', '--output-format', 'json', prompt], {
       cwd: REPO_ROOT,
       detached: true,
       stdio: ['ignore', 'pipe', 'pipe'],
@@ -111,23 +75,15 @@ function runAgent(adapter, prompt, opts) {
       } catch {
         child.kill('SIGKILL');
       }
-    }, opts.timeoutSec * 1000);
+    }, timeoutSec * 1000);
+    const finish = (code, err) => {
+      clearTimeout(timer);
+      resolve({ code, stdout, stderr: err || stderr, timedOut, durationMs: Date.now() - started });
+    };
     child.stdout.on('data', (d) => (stdout += d));
     child.stderr.on('data', (d) => (stderr += d));
-    child.on('error', (err) => {
-      clearTimeout(timer);
-      resolve({
-        code: -1,
-        stdout,
-        stderr: String(err),
-        timedOut,
-        durationMs: Date.now() - started,
-      });
-    });
-    child.on('close', (code) => {
-      clearTimeout(timer);
-      resolve({ code, stdout, stderr, timedOut, durationMs: Date.now() - started });
-    });
+    child.on('error', (err) => finish(-1, String(err)));
+    child.on('close', (code) => finish(code));
   });
 }
 
@@ -153,9 +109,9 @@ function validateFindings(result, name) {
   return errors;
 }
 
-async function auditOne(integration, template, adapter, opts) {
+async function auditOne(integration, template, opts) {
   const prompt = buildPrompt(template, integration, opts);
-  const run = await runAgent(adapter, prompt, opts);
+  const run = await runCursor(prompt, opts.timeoutSec);
   const base = {
     integration: integration.name,
     title: integration.title,
@@ -166,66 +122,44 @@ async function auditOne(integration, template, adapter, opts) {
   if (run.timedOut) return { ...base, status: 'timeout' };
   let parsed;
   try {
-    parsed = adapter.parse(run.stdout);
+    parsed = parseCursorOutput(run.stdout);
   } catch {
     return { ...base, status: 'agent_error', error: (run.stderr || run.stdout).slice(-500) };
   }
+  const withApi = { ...base, apiMs: parsed.apiMs };
   if (parsed.isError || run.code !== 0) {
-    return { ...base, status: 'agent_error', usage: parsed.usage, error: parsed.text.slice(-500) };
+    return { ...withApi, status: 'agent_error', error: parsed.text.slice(-500) };
   }
   try {
     const result = extractFindings(parsed.text);
     const errors = validateFindings(result, integration.name);
-    if (errors.length)
-      return {
-        ...base,
-        status: 'invalid_output',
-        usage: parsed.usage,
-        error: errors.join('; '),
-        result,
-      };
-    return { ...base, status: 'ok', usage: parsed.usage, result };
+    if (errors.length) {
+      return { ...withApi, status: 'invalid_output', error: errors.join('; '), result };
+    }
+    return { ...withApi, status: 'ok', result };
   } catch (err) {
     return {
-      ...base,
+      ...withApi,
       status: 'invalid_output',
-      usage: parsed.usage,
       error: String(err.message),
       tail: parsed.text.slice(-500),
     };
   }
 }
 
-async function pool(items, size, worker) {
-  const results = [];
-  let next = 0;
-  await Promise.all(
-    Array.from({ length: Math.min(size, items.length) }, async () => {
-      while (next < items.length) {
-        const i = next++;
-        results[i] = await worker(items[i]);
-      }
-    }),
-  );
-  return results;
-}
-
-function fmtTokens(u = {}) {
-  return u.inputTokens != null ? `${u.inputTokens} in / ${u.outputTokens ?? '–'} out` : '–';
-}
+const seconds = (ms) => (ms == null ? '–' : `${Math.round(ms / 1000)}s`);
 
 function writeSummary(outDir, records, skipped, opts) {
   const lines = [
     `# Integration audit run (${isoDate(new Date())}, lookback ${opts.lookbackDays} days)`,
     '',
-    '| Integration | Status | Findings | Time | Tokens |',
-    '|---|---|---:|---:|---|',
+    '| Integration | Status | Findings | Time | API time |',
+    '|---|---|---:|---:|---:|',
+    ...records.map(
+      (r) =>
+        `| ${r.integration} | ${r.status} | ${r.result ? r.result.findings.length : '–'} | ${seconds(r.durationMs)} | ${seconds(r.apiMs)} |`,
+    ),
   ];
-  for (const r of records) {
-    lines.push(
-      `| ${r.integration} | ${r.status} | ${r.result ? r.result.findings.length : '–'} | ${Math.round(r.durationMs / 1000)}s | ${fmtTokens(r.usage)} |`,
-    );
-  }
   if (skipped.length) {
     lines.push('', '## Skipped: README not audit-ready', '');
     skipped.forEach((s) => lines.push(`- ${s.name}: ${s.problems.join('; ')}`));
@@ -251,14 +185,12 @@ async function main() {
   const template = fs.readFileSync(path.join(__dirname, 'prompt.md'), 'utf8');
   console.log(`Auditing ${ready.length} integrations (skipped ${skipped.length})`);
   const records = await pool(ready, opts.concurrency, async (integration) => {
-    const record = await auditOne(integration, template, CURSOR, opts);
+    const record = await auditOne(integration, template, opts);
     fs.writeFileSync(
       path.join(outDir, 'findings', `${integration.name}.json`),
       `${JSON.stringify(record, null, 2)}\n`,
     );
-    console.log(
-      `${record.status.padEnd(14)} ${integration.name} ${Math.round(record.durationMs / 1000)}s`,
-    );
+    console.log(`${record.status.padEnd(14)} ${integration.name} ${seconds(record.durationMs)}`);
     return record;
   });
   writeSummary(outDir, records, skipped, opts);
@@ -272,11 +204,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = {
-  CURSOR,
-  buildPrompt,
-  extractFindings,
-  validateFindings,
-  parseArgs,
-  writeSummary,
-};
+module.exports = { parseCursorOutput, extractFindings, validateFindings, writeSummary };

@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const { applyPlan } = require('./create-tickets');
 
-const IDS = { ktlo: 'ktlo', versionUpgrade: 'vu', project: 'proj' };
+const IDS = { labels: { KTLO: 'ktlo', VersionUpgrade: 'vu' }, project: 'proj' };
 
 function fakeLinear() {
   const issues = [];
@@ -73,6 +73,7 @@ const sub = (type, items, priority = 4, dueDate = null) => ({
   type,
   priority,
   dueDate,
+  labels: type === 'versionUpgrade' ? ['KTLO', 'VersionUpgrade'] : ['KTLO'],
   items,
 });
 

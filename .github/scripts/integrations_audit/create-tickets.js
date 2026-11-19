@@ -4,14 +4,19 @@
 // Usage: LINEAR_API_KEY=… LINEAR_TEAM_ID=… node create-tickets.js [--out audit-out]
 const fs = require('fs');
 const path = require('path');
+const {
+  TYPE_ORDER,
+  escapeRegExp,
+  outDirFromArgs,
+  pool,
+  mostUrgent,
+  earliest,
+  readmeLine,
+  itemMarkdown,
+} = require('./common');
 
-const REPO_ROOT = path.resolve(__dirname, '../../..');
 const CLOSED_STATE_TYPES = ['completed', 'canceled'];
-const TYPES = ['versionUpgrade', 'authFeature', 'mappingFeature', 'other'];
-
-function escapeRegExp(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+const CONCURRENCY = 4;
 
 function isOpen(issue) {
   return !CLOSED_STATE_TYPES.includes(issue.state?.type);
@@ -19,29 +24,6 @@ function isOpen(issue) {
 
 function issueNumber(issue) {
   return parseInt(String(issue.identifier || '').replace(/\D+/g, ''), 10) || 0;
-}
-
-/** Linear priority: 1 Urgent … 4 Low, 0 none. */
-function mostUrgent(a, b) {
-  const rank = (p) => (p >= 1 && p <= 4 ? p : 5);
-  return rank(a) <= rank(b) ? a : b;
-}
-
-function earliest(a, b) {
-  return [a, b].filter(Boolean).sort()[0] || null;
-}
-
-function readmeLine(readmePath) {
-  return `- [ ] Update the README (\`${readmePath}\`): Version Information, Configuration or mappings`;
-}
-
-function itemMarkdown(item) {
-  const when = item.effectiveDate ? ` (effective ${item.effectiveDate})` : '';
-  const source = item.announcementUrl ? `Source: ${item.announcementUrl} · ` : '';
-  return [
-    `- [ ] **${item.title}**${when}: ${item.summary}`,
-    `  ${source}Key: \`${item.key}\``,
-  ].join('\n');
 }
 
 function subticketDescription(parent, sub) {
@@ -58,7 +40,7 @@ function parentDescription(parent) {
   return [
     `Integration Audit round for **${parent.integrationTitle}** (\`${parent.readmePath}\`).`,
     '',
-    'One subticket per change type (versionUpgrade, authFeature, mappingFeature, other). Later audit runs add new items to the open subticket of the same type. This ticket closes when all its subtickets are done.',
+    `One subticket per change type (${TYPE_ORDER.join(', ')}). Later audit runs add new items to the open subticket of the same type. This ticket closes when all its subtickets are done.`,
     '',
   ].join('\n');
 }
@@ -74,17 +56,15 @@ function appendItems(description, items, readmePath) {
 }
 
 function knownKeys(issues) {
-  const keys = new Set();
-  issues.forEach((i) => {
-    for (const m of (i.description || '').matchAll(/Key: `([^`]+)`/g)) keys.add(m[1]);
-  });
-  return keys;
+  return new Set(
+    issues.flatMap((i) => [...(i.description || '').matchAll(/Key: `([^`]+)`/g)].map((m) => m[1])),
+  );
 }
 
 async function applyParent(parent, client, ids) {
   const title = escapeRegExp(parent.integrationTitle);
   const parentRe = new RegExp(`^${title} – Integration Audit \\d{2}/\\d{2}/\\d{4}$`);
-  const subRe = new RegExp(`^${title} – (${TYPES.join('|')})$`);
+  const subRe = new RegExp(`^${title} – (${TYPE_ORDER.join('|')})$`);
 
   const found = await client.search(`${parent.integrationTitle} – `);
   const parents = found.filter((i) => !i.parentId && parentRe.test(i.title));
@@ -95,10 +75,13 @@ async function applyParent(parent, client, ids) {
   const pending = parent.subtickets
     .map((s) => ({ ...s, items: s.items.filter((i) => !seen.has(i.key)) }))
     .filter((s) => s.items.length);
-  const report = { integration: parent.integration, created: [], updated: [], skippedItems: 0 };
-  report.skippedItems =
-    parent.subtickets.reduce((n, s) => n + s.items.length, 0) -
-    pending.reduce((n, s) => n + s.items.length, 0);
+  const countItems = (subtickets) => subtickets.reduce((n, s) => n + s.items.length, 0);
+  const report = {
+    integration: parent.integration,
+    created: [],
+    updated: [],
+    skippedItems: countItems(parent.subtickets) - countItems(pending),
+  };
   if (!pending.length) return report;
 
   let openParent = parents.filter(isOpen).sort((a, b) => issueNumber(b) - issueNumber(a))[0];
@@ -106,7 +89,7 @@ async function applyParent(parent, client, ids) {
     openParent = await client.create({
       title: parent.title,
       description: parentDescription(parent),
-      labelIds: [ids.ktlo],
+      labelIds: [ids.labels.KTLO],
       projectId: ids.project,
     });
     report.created.push({ title: parent.title, url: openParent.url });
@@ -116,22 +99,23 @@ async function applyParent(parent, client, ids) {
     const open = subs.find(
       (i) => i.parentId === openParent.id && isOpen(i) && i.title === sub.title,
     );
-    const labelIds = sub.type === 'versionUpgrade' ? [ids.ktlo, ids.versionUpgrade] : [ids.ktlo];
     if (open) {
-      await client.update(open.id, {
-        description: appendItems(open.description, sub.items, parent.readmePath),
-        priority: mostUrgent(open.priority, sub.priority),
-        dueDate: earliest(open.dueDate, sub.dueDate),
-      });
-      await client.comment(
-        open.id,
-        [
-          `Integration Audit added ${sub.items.length} item(s):`,
-          ...sub.items.map(
-            (i) => `- ${i.title}${i.announcementUrl ? ` (${i.announcementUrl})` : ''}`,
-          ),
-        ].join('\n'),
-      );
+      await Promise.all([
+        client.update(open.id, {
+          description: appendItems(open.description, sub.items, parent.readmePath),
+          priority: mostUrgent(open.priority, sub.priority),
+          dueDate: earliest(open.dueDate, sub.dueDate),
+        }),
+        client.comment(
+          open.id,
+          [
+            `Integration Audit added ${sub.items.length} item(s):`,
+            ...sub.items.map(
+              (i) => `- ${i.title}${i.announcementUrl ? ` (${i.announcementUrl})` : ''}`,
+            ),
+          ].join('\n'),
+        ),
+      ]);
       report.updated.push({ title: sub.title, url: open.url, added: sub.items.length });
     } else {
       const created = await client.create({
@@ -140,7 +124,7 @@ async function applyParent(parent, client, ids) {
         parentId: openParent.id,
         priority: sub.priority,
         dueDate: sub.dueDate,
-        labelIds,
+        labelIds: sub.labels.map((l) => ids.labels[l]),
         projectId: ids.project,
       });
       report.created.push({ title: sub.title, url: created.url, items: sub.items.length });
@@ -149,18 +133,19 @@ async function applyParent(parent, client, ids) {
   return report;
 }
 
-/** Applies every parent; one integration failing doesn't stop the others. */
+/** Applies every parent, a few integrations at a time; one integration failing doesn't stop the others. */
 async function applyPlan(plan, client, ids) {
-  const reports = [];
-  const failures = [];
-  for (const parent of plan.parents) {
+  const results = await pool(plan.parents, CONCURRENCY, async (parent) => {
     try {
-      reports.push(await applyParent(parent, client, ids));
+      return { report: await applyParent(parent, client, ids) };
     } catch (error) {
-      failures.push({ integration: parent.integration, error: error.message });
+      return { failure: { integration: parent.integration, error: error.message } };
     }
-  }
-  return { reports, failures };
+  });
+  return {
+    reports: results.filter((r) => r.report).map((r) => r.report),
+    failures: results.filter((r) => r.failure).map((r) => r.failure),
+  };
 }
 
 function toMarkdown({ reports, failures }) {
@@ -187,23 +172,20 @@ function linearClient() {
   const api = require('../linearApi');
   return {
     client: {
-      search: (titleContains) =>
-        api.searchIssues({ titleContains, limit: 250, throwOnError: true }),
-      create: (fields) => api.createIssue(fields),
-      update: (id, fields) => api.updateIssue(id, fields),
-      comment: (id, body) => api.createComment(id, body),
+      search: api.findIssuesByTitle,
+      create: api.createIssue,
+      update: api.updateIssue,
+      comment: api.createComment,
     },
     ids: {
-      ktlo: api.KTLO_LABEL_ID,
-      versionUpgrade: api.VERSION_UPGRADE_LABEL_ID,
+      labels: { KTLO: api.KTLO_LABEL_ID, VersionUpgrade: api.VERSION_UPGRADE_LABEL_ID },
       project: api.MAINTENANCE_PROJECT_ID,
     },
   };
 }
 
 async function main() {
-  const outArg = process.argv.indexOf('--out');
-  const outDir = path.resolve(REPO_ROOT, outArg > -1 ? process.argv[outArg + 1] : 'audit-out');
+  const outDir = outDirFromArgs(process.argv);
   const plan = JSON.parse(fs.readFileSync(path.join(outDir, 'plan.json'), 'utf8'));
   const { client, ids } = linearClient();
   const result = await applyPlan(plan, client, ids);
@@ -220,4 +202,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { applyPlan, appendItems, knownKeys, toMarkdown };
+module.exports = { applyPlan };

@@ -4,7 +4,7 @@ const assert = require('node:assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { CURSOR, extractFindings, validateFindings, writeSummary } = require('./run');
+const { parseCursorOutput, extractFindings, validateFindings, writeSummary } = require('./run');
 
 const finding = {
   category: 'auth',
@@ -21,23 +21,25 @@ const finding = {
 const resultText = (body) =>
   `Checked the changelog.\nBEGIN_FINDINGS_JSON\n${JSON.stringify(body)}\nEND_FINDINGS_JSON`;
 
-test('cursor output: reads the result text and token counts when reported', () => {
-  const parsed = CURSOR.parse(
+test('cursor output: reads the result text and API time', () => {
+  const parsed = parseCursorOutput(
     JSON.stringify({
+      type: 'result',
       is_error: false,
       result: 'done',
-      usage: { input_tokens: 1200, output_tokens: 80 },
+      duration_ms: 40000,
+      duration_api_ms: 31000,
     }),
   );
-  assert.deepStrictEqual(parsed, {
-    text: 'done',
-    isError: false,
-    usage: { inputTokens: 1200, outputTokens: 80 },
-  });
+  assert.deepStrictEqual(parsed, { text: 'done', isError: false, apiMs: 31000 });
 });
 
-test('cursor output: no usage means no token counts', () => {
-  assert.deepStrictEqual(CURSOR.parse(JSON.stringify({ result: 'done' })).usage, {});
+test('cursor output: an error result is flagged', () => {
+  assert.deepStrictEqual(parseCursorOutput(JSON.stringify({ is_error: true, result: 'boom' })), {
+    text: 'boom',
+    isError: true,
+    apiMs: null,
+  });
 });
 
 test('findings: the last marked block is used and validated', () => {
@@ -64,7 +66,7 @@ test('findings: output without the marker block is an error', () => {
   assert.throws(() => extractFindings('no json here'), /no BEGIN_FINDINGS_JSON block/);
 });
 
-test('summary: shows tokens when reported and lists skipped READMEs', () => {
+test('summary: shows time and API time, and lists skipped READMEs', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'audit-'));
   writeSummary(
     dir,
@@ -72,8 +74,8 @@ test('summary: shows tokens when reported and lists skipped READMEs', () => {
       {
         integration: 'am',
         status: 'ok',
-        durationMs: 31000,
-        usage: { inputTokens: 900, outputTokens: 40 },
+        durationMs: 40000,
+        apiMs: 31000,
         result: { findings: [] },
       },
       { integration: 'hs', status: 'timeout', durationMs: 300000 },
@@ -82,8 +84,7 @@ test('summary: shows tokens when reported and lists skipped READMEs', () => {
     { lookbackDays: 45 },
   );
   const md = fs.readFileSync(path.join(dir, 'summary.md'), 'utf8');
-  assert.match(md, /\| am \| ok \| 0 \| 31s \| 900 in \/ 40 out \|/);
+  assert.match(md, /\| am \| ok \| 0 \| 40s \| 31s \|/);
   assert.match(md, /\| hs \| timeout \| – \| 300s \| – \|/);
   assert.match(md, /- foo: missing "### Changelog References"/);
-  assert.doesNotMatch(md, /cost/i);
 });

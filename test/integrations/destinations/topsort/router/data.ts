@@ -467,6 +467,73 @@ export const data: RouterTestData[] = [
     },
   },
   {
+    id: 'topsort-router-zero-price-purchase-lines',
+    name: 'topsort',
+    description:
+      'Zero-priced purchase lines are dropped, and a purchase with only zero-priced lines is skipped',
+    scenario: 'Business',
+    successCriteria:
+      'The mixed purchase is sent without its zero-priced line; the all-zero purchase returns a 298 (filtered)',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: trackMessage('Order Completed', 'msg-1', {
+                products: [products[0], { product_id: 'product-free', price: 0, quantity: 1 }],
+              }),
+              metadata: generateMetadata(1),
+              destination,
+            },
+            {
+              message: trackMessage('Order Completed', 'msg-2', { price: 0 }),
+              metadata: generateMetadata(2),
+              destination,
+            },
+          ],
+          destType: 'topsort',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: batchedRequest({
+                purchases: [
+                  {
+                    ...baseEvent,
+                    items: [{ productId: 'product-a', unitPrice: 40, quantity: 2 }],
+                    id: 'msg-1',
+                  },
+                ],
+              }),
+              metadata: [generateMetadata(1)],
+              batched: true,
+              statusCode: 200,
+              destination,
+            },
+            {
+              metadata: [generateMetadata(2)],
+              batched: false,
+              statusCode: 298,
+              error: 'Every purchase item has a zero unit price. Skipping event.',
+              destination,
+              // A filtered event is not an error, so it carries no error stat tags.
+              statTags: {},
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
     id: 'topsort-router-missing-api-key',
     name: 'topsort',
     description: 'An empty API key fails every event at validation, before any request is built',

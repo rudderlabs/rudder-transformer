@@ -2,6 +2,7 @@ import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 import type { LiveSpec, RunContext } from '../../../live/types';
 import {
   clearMembership,
+  clearMembershipVia,
   customAttributeNameFromSecret,
   externalId,
   fetchMembership,
@@ -144,7 +145,7 @@ export const live = {
       id: 'braze-audience-standard-membership-join',
       description: 'Account trackEndpoint=standard: INSERT sets the attribute via /users/track',
       configOverride: standardEndpoint,
-      cleanup: clearMembership,
+      cleanup: clearMembershipVia('standard'),
       steps: [
         {
           name: 'record insert → POST /users/track → membership true',
@@ -166,7 +167,7 @@ export const live = {
       description:
         'Account trackEndpoint=standard: /users/track 2xx with an indexed error fails only that record',
       configOverride: standardEndpoint,
-      cleanup: clearMembership,
+      cleanup: clearMembershipVia('standard'),
       steps: [
         {
           name: 'valid + oversized external_id in one /users/track request → only index 1 fails',

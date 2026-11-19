@@ -1,14 +1,13 @@
 #!/usr/bin/env node
-// Runs the integration audit: one agent call per integration, each with a time and budget limit.
+// Runs the integration audit: one cursor-agent call per integration, each with a time limit.
 // Usage: node run.js [--only hs,marketo] [--limit 5] [--concurrency 3] [--timeout-sec 300]
-//                    [--budget-usd 1] [--lookback-days 45] [--agent cursor|claude] (cursor in CI, claude for local runs) [--out audit-out]
+//                    [--lookback-days 45] [--out audit-out]
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 const { discover, readIntegration } = require('./readme');
 
 const REPO_ROOT = path.resolve(__dirname, '../../..');
-const ALLOWED_TOOLS = ['WebFetch', 'WebSearch', 'Read', 'Grep', 'Glob'];
 const IMPACTS = ['breaking', 'version_upgrade', 'opportunity'];
 const CATEGORIES = [
   'version_upgrade',
@@ -27,11 +26,9 @@ function parseArgs(argv) {
     limit: null,
     concurrency: 3,
     timeoutSec: 300,
-    budgetUsd: 1,
     lookbackDays: 45,
     maxFetches: 6,
     maxSearches: 2,
-    agent: process.env.AUDIT_AGENT || 'cursor',
     out: 'audit-out',
   };
   for (let i = 2; i < argv.length; i += 2) {
@@ -77,49 +74,21 @@ function buildPrompt(template, integration, opts) {
   return template.replace(/\{\{(\w+)\}\}/g, (_, k) => String(values[k]));
 }
 
-/** Agent adapters: the command to run, and how to read its text result and usage. */
-const AGENTS = {
-  claude: {
-    command: (prompt, opts) => [
-      'claude',
-      [
-        '-p',
-        prompt,
-        '--output-format',
-        'json',
-        '--allowedTools',
-        ...ALLOWED_TOOLS,
-        '--max-budget-usd',
-        String(opts.budgetUsd),
-        '--strict-mcp-config',
-        '--no-session-persistence',
-        ...(process.env.AUDIT_CLAUDE_ARGS ? process.env.AUDIT_CLAUDE_ARGS.split(' ') : []),
-      ],
-    ],
-    parse: (stdout) => {
-      const r = JSON.parse(stdout);
-      const u = r.usage || {};
-      return {
-        text: r.result || '',
-        isError: Boolean(r.is_error),
-        usage: {
-          costUsd: r.total_cost_usd ?? null,
-          inputTokens:
-            (u.input_tokens || 0) +
-            (u.cache_read_input_tokens || 0) +
-            (u.cache_creation_input_tokens || 0),
-          outputTokens: u.output_tokens ?? null,
-          turns: r.num_turns ?? null,
-        },
-      };
-    },
-  },
-  cursor: {
-    command: (prompt) => ['cursor-agent', ['-p', '--force', '--output-format', 'json', prompt]],
-    parse: (stdout) => {
-      const r = JSON.parse(stdout);
-      return { text: r.result || '', isError: Boolean(r.is_error), usage: {} };
-    },
+/** How to run cursor-agent and read its text result. */
+const CURSOR = {
+  command: (prompt) => ['cursor-agent', ['-p', '--force', '--output-format', 'json', prompt]],
+  parse: (stdout) => {
+    const r = JSON.parse(stdout);
+    // Token counts are read when cursor-agent reports them; otherwise the summary shows "–".
+    const u = r.usage || {};
+    const usage =
+      u.input_tokens != null || u.inputTokens != null
+        ? {
+            inputTokens: u.input_tokens ?? u.inputTokens,
+            outputTokens: u.output_tokens ?? u.outputTokens ?? null,
+          }
+        : {};
+    return { text: r.result || '', isError: Boolean(r.is_error), usage };
   },
 };
 
@@ -241,27 +210,22 @@ async function pool(items, size, worker) {
   return results;
 }
 
-function fmtUsage(u = {}) {
-  const cost = u.costUsd != null ? `$${u.costUsd.toFixed(3)}` : '–';
-  const tokens = u.inputTokens != null ? `${u.inputTokens} in / ${u.outputTokens ?? '–'} out` : '–';
-  return { cost, tokens };
+function fmtTokens(u = {}) {
+  return u.inputTokens != null ? `${u.inputTokens} in / ${u.outputTokens ?? '–'} out` : '–';
 }
 
 function writeSummary(outDir, records, skipped, opts) {
   const lines = [
-    `# Integration audit run (${isoDate(new Date())}, agent: ${opts.agent}, lookback ${opts.lookbackDays} days)`,
+    `# Integration audit run (${isoDate(new Date())}, lookback ${opts.lookbackDays} days)`,
     '',
-    '| Integration | Status | Findings | Time | Cost | Tokens |',
-    '|---|---|---:|---:|---:|---|',
+    '| Integration | Status | Findings | Time | Tokens |',
+    '|---|---|---:|---:|---|',
   ];
   for (const r of records) {
-    const { cost, tokens } = fmtUsage(r.usage);
     lines.push(
-      `| ${r.integration} | ${r.status} | ${r.result ? r.result.findings.length : '–'} | ${Math.round(r.durationMs / 1000)}s | ${cost} | ${tokens} |`,
+      `| ${r.integration} | ${r.status} | ${r.result ? r.result.findings.length : '–'} | ${Math.round(r.durationMs / 1000)}s | ${fmtTokens(r.usage)} |`,
     );
   }
-  const totalCost = records.reduce((s, r) => s + (r.usage?.costUsd || 0), 0);
-  lines.push('', `Total cost: $${totalCost.toFixed(3)}`);
   if (skipped.length) {
     lines.push('', '## Skipped: README not audit-ready', '');
     skipped.forEach((s) => lines.push(`- ${s.name}: ${s.problems.join('; ')}`));
@@ -271,8 +235,6 @@ function writeSummary(outDir, records, skipped, opts) {
 
 async function main() {
   const opts = parseArgs(process.argv);
-  const adapter = AGENTS[opts.agent];
-  if (!adapter) throw new Error(`Unknown agent "${opts.agent}"`);
   const outDir = path.resolve(REPO_ROOT, opts.out);
   fs.mkdirSync(path.join(outDir, 'findings'), { recursive: true });
 
@@ -287,17 +249,15 @@ async function main() {
   if (opts.limit) ready = ready.slice(0, opts.limit);
 
   const template = fs.readFileSync(path.join(__dirname, 'prompt.md'), 'utf8');
-  console.log(
-    `Auditing ${ready.length} integrations with ${opts.agent} (skipped ${skipped.length})`,
-  );
+  console.log(`Auditing ${ready.length} integrations (skipped ${skipped.length})`);
   const records = await pool(ready, opts.concurrency, async (integration) => {
-    const record = await auditOne(integration, template, adapter, opts);
+    const record = await auditOne(integration, template, CURSOR, opts);
     fs.writeFileSync(
       path.join(outDir, 'findings', `${integration.name}.json`),
       `${JSON.stringify(record, null, 2)}\n`,
     );
     console.log(
-      `${record.status.padEnd(14)} ${integration.name} ${Math.round(record.durationMs / 1000)}s ${fmtUsage(record.usage).cost}`,
+      `${record.status.padEnd(14)} ${integration.name} ${Math.round(record.durationMs / 1000)}s`,
     );
     return record;
   });
@@ -312,4 +272,11 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildPrompt, extractFindings, validateFindings, parseArgs };
+module.exports = {
+  CURSOR,
+  buildPrompt,
+  extractFindings,
+  validateFindings,
+  parseArgs,
+  writeSummary,
+};

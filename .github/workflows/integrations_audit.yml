@@ -69,7 +69,7 @@ jobs:
           INTEGRATIONS: ${{ inputs.integrations }}
           LOOKBACK_DAYS: ${{ inputs.lookback_days }}
         run: |
-          args=(--agent cursor --lookback-days "$LOOKBACK_DAYS" --concurrency 4 --timeout-sec 300 --out audit-out)
+          args=(--lookback-days "$LOOKBACK_DAYS" --concurrency 4 --timeout-sec 300 --out audit-out)
           if [ -n "$INTEGRATIONS" ]; then args+=(--only "$INTEGRATIONS"); fi
           node .github/scripts/integrations_audit/run.js "${args[@]}"
           cat audit-out/summary.md >> "$GITHUB_STEP_SUMMARY"

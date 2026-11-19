@@ -13,7 +13,6 @@ import type { EverflowDestinationConfig, EverflowMessage } from './types';
 type MappingEntry = {
   sourceKeys: string | string[];
   destKey: string;
-  required?: boolean;
   metadata?: Record<string, unknown>;
 };
 

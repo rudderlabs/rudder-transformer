@@ -223,7 +223,7 @@ describe('EverflowIntegration', () => {
     );
   });
 
-  // Everflow attributes click-less postbacks via oid+affid, coupon or email; it 204s what it can't.
+  // Everflow attributes clickless postbacks via oid+affid, coupon or email; it 204s what it can't.
   it('omits transaction_id without synthetic fallbacks when the event has none', () => {
     const { params } = transform(
       track({

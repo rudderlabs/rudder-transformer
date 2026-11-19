@@ -23,7 +23,8 @@ Rules:
 
 - Don't change repository files (scratch files under `/tmp` are fine). Don't call Linear or any write API.
 - Only report facts you saw on a partner page, with its URL. Never invent URLs or dates.
-- Skip entries about products or endpoints this integration does not use. Count them in `skipped`.
+- Always report auth changes as `breaking`: a new or required auth method, a deprecated or removed one, and token, scope, refresh or expiry rules. Report them even for an auth method this integration doesn't use yet, because moving to it is a breaking change for the integration.
+- Skip other entries about products or endpoints this integration does not use. Count them in `skipped`.
 - If a source can't be fetched, list it in `unreachable` and carry on.
 
 ## Output

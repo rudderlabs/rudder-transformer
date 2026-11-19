@@ -4,7 +4,13 @@ const assert = require('node:assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { parseCursorOutput, extractFindings, validateFindings, writeSummary } = require('./run');
+const {
+  cursorArgs,
+  parseCursorOutput,
+  extractFindings,
+  validateFindings,
+  writeSummary,
+} = require('./run');
 
 const finding = {
   category: 'auth',
@@ -20,6 +26,18 @@ const finding = {
 
 const resultText = (body) =>
   `Checked the changelog.\nBEGIN_FINDINGS_JSON\n${JSON.stringify(body)}\nEND_FINDINGS_JSON`;
+
+test('cursor args: trusted headless JSON run, model only when set, prompt last', () => {
+  assert.deepStrictEqual(cursorArgs('p', ''), [
+    '-p',
+    '--force',
+    '--trust',
+    '--output-format',
+    'json',
+    'p',
+  ]);
+  assert.deepStrictEqual(cursorArgs('p', 'gpt-5').slice(-3), ['--model', 'gpt-5', 'p']);
+});
 
 test('cursor output: reads the result text and API time', () => {
   const parsed = parseCursorOutput(

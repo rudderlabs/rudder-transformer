@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Runs the integration audit: one cursor-agent call per integration, each with a time limit.
 // Usage: node run.js [--only hs,marketo] [--limit 5] [--concurrency 3] [--timeout-sec 300]
-//                    [--lookback-days 45] [--out audit-out]
+//                    [--lookback-days 45] [--model <name>] [--out audit-out]
+// Without --model, cursor-agent uses its default (Auto routing on a fresh install).
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
@@ -17,6 +18,7 @@ function parseArgs(argv) {
     lookbackDays: 45,
     maxFetches: 6,
     maxSearches: 2,
+    model: '',
     out: 'audit-out',
   };
   for (let i = 2; i < argv.length; i += 2) {
@@ -57,10 +59,23 @@ function parseCursorOutput(stdout) {
   return { text: r.result || '', isError: Boolean(r.is_error), apiMs: r.duration_api_ms ?? null };
 }
 
-function runCursor(prompt, timeoutSec) {
+/** `--force` runs tools without approval; the workflow's `.cursor/cli.json` deny rules still apply. */
+function cursorArgs(prompt, model) {
+  return [
+    '-p',
+    '--force',
+    '--trust',
+    '--output-format',
+    'json',
+    ...(model ? ['--model', model] : []),
+    prompt,
+  ];
+}
+
+function runCursor(prompt, opts) {
   return new Promise((resolve) => {
     const started = Date.now();
-    const child = spawn('cursor-agent', ['-p', '--force', '--output-format', 'json', prompt], {
+    const child = spawn('cursor-agent', cursorArgs(prompt, opts.model), {
       cwd: REPO_ROOT,
       detached: true,
       stdio: ['ignore', 'pipe', 'pipe'],
@@ -75,7 +90,7 @@ function runCursor(prompt, timeoutSec) {
       } catch {
         child.kill('SIGKILL');
       }
-    }, timeoutSec * 1000);
+    }, opts.timeoutSec * 1000);
     const finish = (code, err) => {
       clearTimeout(timer);
       resolve({ code, stdout, stderr: err || stderr, timedOut, durationMs: Date.now() - started });
@@ -111,7 +126,7 @@ function validateFindings(result, name) {
 
 async function auditOne(integration, template, opts) {
   const prompt = buildPrompt(template, integration, opts);
-  const run = await runCursor(prompt, opts.timeoutSec);
+  const run = await runCursor(prompt, opts);
   const base = {
     integration: integration.name,
     title: integration.title,
@@ -204,4 +219,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseCursorOutput, extractFindings, validateFindings, writeSummary };
+module.exports = { cursorArgs, parseCursorOutput, extractFindings, validateFindings, writeSummary };

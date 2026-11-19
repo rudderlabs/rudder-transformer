@@ -354,21 +354,40 @@ if (mappedProperties.$insert_id) {
 
 ## Version Information
 
-### Current API Versions
+### Current Version
 
-Mixpanel API is versioned by endpoint rather than having global API versions. The implementation uses the current stable endpoints:
+- **API:** Ingestion API (Import, Engage, Groups)
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`BASE_ENDPOINT`, `BASE_ENDPOINT_EU`, `BASE_ENDPOINT_IN`); `transform.js` (`setImportCredentials`, `/import/`, `/engage/`, `/groups/`)
+- **API:** GDPR API (data deletions)
+- **Version:** `v3.0`
+- **Where in code:** `config.js` (`CREATE_DELETION_TASK_ENDPOINT`, `CREATE_DELETION_TASK_ENDPOINT_EU`, `CREATE_DELETION_TASK_ENDPOINT_IN`)
 
-- **Import API**: Current stable version (no versioning in URL)
-- **Track API**: Current stable version (no versioning in URL)
-- **Engage API**: Current stable version (no versioning in URL)
-- **Groups API**: Current stable version (no versioning in URL)
-- **GDPR API**: v3.0 (as specified in endpoint URL)
+### Version Deprecation
 
-### API Endpoint Versioning
+- **API:** Ingestion API (Import, Engage, Groups)
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Ingestion API overview](https://developer.mixpanel.com/reference/overview)
+- **API:** GDPR API (data deletions)
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [GDPR API](https://docs.mixpanel.com/reference/gdpr-api)
 
-- **Base Endpoints**: No version deprecation concerns as Mixpanel maintains backward compatibility
-- **GDPR API**: Uses v3.0 which is the current stable version
-- **No Breaking Changes**: Mixpanel typically maintains backward compatibility for their APIs
+Mixpanel deprecated Project Secret (API Secret) authentication and retires it on 2027-03-03 ([Project Secret](https://docs.mixpanel.com/reference/project-secret)). This integration authenticates `/import` with the project token or a service account, and the GDPR API with a bearer token, so it does not use Project Secret.
+
+### Latest Available Version
+
+- **API:** Ingestion API (Import, Engage, Groups)
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Ingestion API overview](https://developer.mixpanel.com/reference/overview)
+- **API:** GDPR API (data deletions)
+- **Version:** `v3.0`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Create deletion task](https://docs.mixpanel.com/reference/create-deletion)
 
 ### Implementation Version
 
@@ -388,6 +407,18 @@ Mixpanel API is versioned by endpoint rather than having global API versions. Th
 - [Identity Merge](https://developer.mixpanel.com/reference/identity-merge)
 - [Event Deduplication](https://developer.mixpanel.com/reference/event-deduplication)
 - [User Deletion](https://developer.mixpanel.com/reference/delete-profile)
+- [GDPR API](https://docs.mixpanel.com/reference/gdpr-api)
+- [Create deletion task (GDPR API v3.0)](https://docs.mixpanel.com/reference/create-deletion)
+- [Authentication](https://developer.mixpanel.com/reference/authentication)
+
+### Changelog References
+
+- **Changelog:** [Mixpanel changelogs](https://docs.mixpanel.com/changelogs)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** [Mixpanel changelogs RSS](https://docs.mixpanel.com/changelogs/rss.xml)
+- **Announcements:** [Project Secret deprecated, retired 2027-03-03](https://docs.mixpanel.com/reference/project-secret)
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

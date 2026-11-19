@@ -280,7 +280,7 @@ For `batchupdate` requests with `enableEnhancedConversions: true`:
 ### 6. API Delivery
 
 ```
-POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/{requestType}
+POST https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/{profileId}/conversions/{requestType}
 
 Authorization: Bearer {access_token}
 Content-Type: application/json
@@ -306,12 +306,12 @@ Content-Type: application/json
 
 **Endpoints Used**:
 
-1. `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
+1. `POST /dfareporting/v5/userprofiles/{profileId}/conversions/batchinsert`
 
    - Batch size: Up to 1000 conversions
    - Rate limit: Subject to the quota limits above (50,000 requests/day, 1 QPS default)
 
-2. `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
+2. `POST /dfareporting/v5/userprofiles/{profileId}/conversions/batchupdate`
    - Batch size: Up to 1000 conversions
    - Rate limit: Subject to the quota limits above (50,000 requests/day, 1 QPS default)
    - Additional constraint: Can only update existing conversions
@@ -493,7 +493,7 @@ The Campaign Manager 360 destination supports RETL functionality with the follow
 - **VDM v1**: ❌ Not supported
 - **VDM v2**: ❌ Not supported (no record message type)
 - **Supported Events**: Track events only (conversions)
-- **API Integration**: Campaign Manager 360 Conversions API (v4)
+- **API Integration**: Campaign Manager 360 Conversions API (v5)
 - **Batching**: Up to 1000 conversions per batch
 - **Enhanced Conversions**: ✅ Supported for batchupdate requests
 

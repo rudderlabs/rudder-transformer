@@ -101,25 +101,63 @@ Event-specific:
 - Group v2: multiple API calls per event: create/update company, attach contact to company (if contact found), and add tags
 - Track: single API call
 
-### Version Information
+## Version Information
 
-- Current supported API versions in transformer: 1.4 and 2.10 (via `Intercom-Version` header)
-- Intercom maintains versioned APIs with changelogs
-- Docs:
-  - Intercom API Changelog index — `https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-changelog`
-  - 2.10 reference (release 2023-09-14) — `https://developers.intercom.com/docs/references/2.10/introduction` (confirm availability)
-  - 1.4 reference — `https://developers.intercom.com/docs/references/1.4/introduction`
+### Current Version
 
-### Documentation Links (API Endpoints Used)
+- **API:** Intercom REST API, `apiVersion: v2` (default)
+- **Version:** `2.10`
+- **Where in code:** `utils.js` (`getHeaders`, `Intercom-Version` header)
+- **API:** Intercom REST API, `apiVersion: v1`
+- **Version:** `1.4`
+- **Where in code:** `utils.js` (`getHeaders`, `Intercom-Version` header; `attachUserAndCompany` always sends `1.4` for `POST /users`)
 
-- Contacts Search: `POST /contacts/search`
-- Contacts CRUD (v2): `POST /contacts`, `PUT /contacts/{id}`
-- Users (v1): `POST /users`
-- Companies: `POST /companies`, `GET /companies?company_id=...|name=...`
-- Attach Contact to Company: `POST /contacts/{id}/companies` (v2)
-- Detach Contact from Company: `DELETE /contacts/{contact_id}/companies/{company_id}` (v2)
-- Events: `POST /events`
-- Tags: `POST /tags`
+### Version Deprecation
+
+- **API:** `2.10`
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Intercom API changelog](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-changelog)
+- **API:** `1.4`
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Intercom API changelog](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-changelog)
+
+Intercom's API changelog does not publish a sunset or deprecation date for versions 1.4 or 2.10. Breaking changes are released only in new API versions.
+
+### Latest Available Version
+
+- **Version:** `2.18`
+- **Released:** 2026-11-09
+- **Upgrade needed:** Yes
+- **Source:** [Intercom API changelog](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-changelog)
+
+Version references: [2.10 reference](https://developers.intercom.com/docs/references/2.10/introduction) (released 2023-09-14) and [1.4 reference](https://developers.intercom.com/docs/references/1.4/introduction). To upgrade, follow [Update your API version](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/update-your-api-version).
+
+## Documentation Links
+
+### Changelog References
+
+- **Changelog:** [Intercom API changelog](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-changelog); [Intercom product changes](https://www.intercom.com/changes/en)
+- **Deprecations:** [Unversioned changes](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/unversioned-changes)
+- **Versions:** [Intercom API changelog](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-changelog); [Update your API version](https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/update-your-api-version)
+- **Feed:** [Intercom product changes RSS](https://www.intercom.com/changes/en/feed.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+The unversioned changes page lists changes that apply to all API versions, including access token scope and permission changes. None of the 2026 entries affects the contacts, users, companies, events or tags endpoints this integration calls.
+
+### API Endpoints Used
+
+- Authentication: [Authentication](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication)
+- Contacts Search: `POST /contacts/search` ([2.10 reference](https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/contacts/searchcontacts))
+- Contacts CRUD (v2): `POST /contacts` ([create](https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/contacts/createcontact)), `PUT /contacts/{id}` ([update](https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/contacts/updatecontact))
+- Users (v1): `POST /users` ([1.4 reference](https://developers.intercom.com/docs/references/1.4/rest-api/users/create-or-update-user))
+- Companies: `POST /companies` ([2.10](https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/companies/createorupdatecompany), [1.4](https://developers.intercom.com/docs/references/1.4/rest-api/companies/create-or-update-company)), `GET /companies?company_id=...|name=...` ([2.10](https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/companies/retrievecompany))
+- Attach Contact to Company: `POST /contacts/{id}/companies` (v2, [reference](https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/contacts/attachcontacttoacompany)); v1 uses `POST /users` with companies ([1.4 reference](https://developers.intercom.com/docs/references/1.4/rest-api/users/companies-and-users/))
+- Detach Contact from Company: `DELETE /contacts/{contact_id}/companies/{company_id}` (v2, [reference](https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/contacts/detachcontactfromacompany))
+- Events: `POST /events` ([2.10 reference](https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/data-events/createdataevent))
+- Tags: `POST /tags` ([2.10 reference](https://developers.intercom.com/docs/references/2.10/rest-api/api.intercom.io/tags/createtag))
 
 Authoritative docs live under Intercom Developer Hub. Use the version switcher to match your `Intercom-Version`.
 

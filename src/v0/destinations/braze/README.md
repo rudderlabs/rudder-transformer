@@ -398,17 +398,50 @@ Despite this time-based ordering, the issue here is, the user attributes can end
 
 ### Current Version
 
-Braze doesn't have any versioned releases of thier APIs.
+- **Version:** `Unversioned`
+- **Where in code:** `config.ts` (`getIdentifyEndpoint`, `getTrackEndPoint`, `getAliasMergeEndPoint`, `getSubscriptionGroupEndPoint`); `deleteUsers.ts` (`/users/delete`); `util.ts` (`/users/export/ids`)
+
+Braze REST API endpoints are not versioned as a whole. The subscription group endpoint carries a `v2` path segment (`/v2/subscription/status/set`), which is the endpoint's own revision, not an API version.
+
+### Version Deprecation
+
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Braze deprecations](https://www.braze.com/docs/releases/deprecations)
+
+Braze announces deprecations of individual endpoints in its release notes and deprecations page. None of the endpoints this integration calls is listed there.
+
+### Latest Available Version
+
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Braze API overview](https://www.braze.com/docs/api/basics)
 
 ## Documentation Links
 
 ### REST API Documentation
 
 - [Braze REST API Overview](https://www.braze.com/docs/api/basics/)
+- [API keys and identifiers](https://www.braze.com/docs/user_guide/administer/global/workspace_settings/apis_and_identifiers)
 - [User Track API](https://www.braze.com/docs/api/endpoints/user_data/post_user_track/)
 - [User Identify API](https://www.braze.com/docs/api/endpoints/user_data/post_user_identify/)
+- [User Merge API](https://www.braze.com/docs/api/endpoints/user_data/post_users_merge/)
 - [User Delete API](https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/)
+- [Export User Profile by Identifier API](https://www.braze.com/docs/api/endpoints/export/user_data/post_users_identifier/)
+- [Update Subscription Group Status v2 API](https://www.braze.com/docs/api/endpoints/subscription_groups/post_update_user_subscription_group_status_v2/)
 - [Subscription Group API](https://www.braze.com/docs/api/endpoints/subscription_groups/)
+
+### Changelog References
+
+- **Changelog:** [Braze release notes](https://www.braze.com/docs/releases/history/)
+- **Deprecations:** [Braze deprecations](https://www.braze.com/docs/releases/deprecations)
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** [REST API key moved to the Authorization header (2020-05)](https://www.braze.com/docs/releases/2020/may/)
+- **Last checked:** 2026-11-16
+
+The May 2020 change moved the REST API key from the request body to a `Bearer` Authorization header. This integration already sends the key in the header.
 
 ### RETL Functionality
 

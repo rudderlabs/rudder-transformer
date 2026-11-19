@@ -276,6 +276,28 @@ export const SurvicateMessageSchema = z
   .passthrough();
 ```
 
+## Version Information
+
+### Current Version
+
+- **Version:** `Unversioned`
+- **Where in code:** `config.ts` (`ENDPOINT_CONFIG`: `https://hv.survicate.com/integrations/partners/rudder-stack/{identify|group|track}`)
+
+### Version Deprecation
+
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Survicate: RudderStack integration](https://help.survicate.com/en/articles/14432753-rudderstack-integration)
+
+Survicate does not publish a versioning or deprecation policy for these partner endpoints. The destination is maintained by Survicate, so endpoint changes come from Survicate directly.
+
+### Latest Available Version
+
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Survicate: RudderStack integration](https://help.survicate.com/en/articles/14432753-rudderstack-integration)
+
 ## Error Handling
 
 The integration validates and handles the following error cases:
@@ -314,8 +336,24 @@ If tests fail, check:
 3. Ensure user has proper RudderStack event format
 4. Verify event types are one of: identify, group, track
 
-## References
+## Documentation Links
 
+- [Survicate: RudderStack integration (destination key setup)](https://help.survicate.com/en/articles/14432753-rudderstack-integration)
+- [Survicate developer docs](https://developers.survicate.com/)
+- [RudderStack Survicate destination docs](https://www.rudderstack.com/docs/destinations/streaming-destinations/survicate/)
 - [RudderStack Event Specification](https://www.rudderstack.com/docs/event-spec/standard-events/)
 - [RudderStack Destination Development Guide](https://www.rudderstack.com/docs/destinations/)
-- [Survicate API Documentation](https://www.survicate.com)
+- [Survicate website](https://www.survicate.com)
+
+The partner endpoints (`/integrations/partners/rudder-stack/*`) have no public API reference; the help article above is the only Survicate doc for them.
+
+### Changelog References
+
+- **Changelog:** None found
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+Survicate's developer docs only have a [JavaScript SDK changelog](https://developers.survicate.com/javascript/js-sdk-changelog/), which does not cover the partner endpoints this integration calls.

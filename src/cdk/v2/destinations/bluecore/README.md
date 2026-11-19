@@ -37,14 +37,6 @@ This integration enables retailers to sync customer profiles, track user behavio
 - **No OAuth**: OAuth authentication is not supported
 - **Security**: Namespace is treated as a secret key and encrypted in storage
 
-## Version Information
-
-- **Current Version**: CDK v2 (Latest)
-- **Implementation Type**: CDK v2 (Component Development Kit v2)
-- **Last Updated**: 2024
-- **Maintainer**: RudderStack Team
-- **Status**: Beta
-
 ## Features
 
 ### Supported Capabilities
@@ -237,12 +229,10 @@ For detailed error handling logic, see the [Business Logic Documentation](./docs
 
 ## Version Information
 
-### Current Implementation
+### Current Version
 
-- **Version**: CDK v2 (Component Development Kit v2)
-- **Implementation Language**: JavaScript
-- **Framework**: RudderStack CDK v2 with YAML workflow processing
-- **Status**: Beta
+- **Version:** `v1`
+- **Where in code:** `config.js` (`BASE_URL`)
 
 ### API Version Details
 
@@ -251,11 +241,22 @@ For detailed error handling logic, see the [Business Logic Documentation](./docs
 - **Authentication**: Namespace token passed in request payload
 - **Versioning Strategy**: Bluecore's API versioning strategy is not publicly documented
 
-### Deprecation Information
+### Version Deprecation
 
-- **Current Status**: No known deprecation notices
-- **End-of-Life**: API version end-of-life information is not publicly available
-- **Migration Path**: Migration information is not publicly documented
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Events API](https://help.bluecore.com/help/events-api)
+
+As of March 2024 the API host changed from `api.bluecore.com` to `api.bluecore.app`. This integration already uses `api.bluecore.app`.
+
+### Latest Available Version
+
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Events API](https://help.bluecore.com/help/events-api)
+
+`v1` (`/api/track/mobile/v1`) is the only publicly documented version of the Events API; Bluecore does not publish a versioning policy.
 
 ### Compatibility
 
@@ -601,14 +602,23 @@ Suitable for organizations that need to:
 - **No Event Splitting**: Events are not split into multiple Bluecore events
 - **No Event Combining**: Multiple RudderStack events are not combined into single Bluecore events
 
-## References
+## Documentation Links
 
 ### Official Documentation
 
 - **Bluecore Platform**: [https://www.bluecore.com/](https://www.bluecore.com/)
-- **Bluecore Events API Documentation**: [https://help.bluecore.com/en/articles/6786828-events-api](https://help.bluecore.com/en/articles/6786828-events-api)
+- **Bluecore Events API Documentation**: [https://help.bluecore.com/help/events-api](https://help.bluecore.com/help/events-api)
 
 **Note**: This integration uses Bluecore's Events API with endpoint `https://api.bluecore.app/api/track/mobile/v1`. The complete API documentation including parameters, event types, and examples is available in the Events API documentation link above.
+
+### Changelog References
+
+- **Changelog:** [Bluecore release notes](https://help.bluecore.com/help/release-notes)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Events API host changed to `api.bluecore.app` (March 2024)](https://help.bluecore.com/help/events-api)
+- **Last checked:** 2026-11-16
 
 ### RudderStack Documentation
 

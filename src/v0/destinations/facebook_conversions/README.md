@@ -261,21 +261,27 @@ Based on Facebook's official documentation:
 
 ### Current Version
 
-- **Facebook Graph API**: v25.0 (latest as of June 11, 2026)
-- **Implementation**: JavaScript (v0)
-- **Current Implementation Uses**: v25.0
-- **v25.0 Release Date**: February 18, 2026
-- **Previous implementation**: v24.0
+- **Version:** `v25.0`
+- **Where in code:** `config.js` (`VERSION`), endpoint `https://graph.facebook.com/v25.0/{pixelId}/events`
 
-### Version Features (v25.0)
+The previous implementation used v24.0.
 
-- Latest privacy controls and compliance features
-- Enhanced attribution modeling
-- Updated data processing options
-- Improved debugging and monitoring capabilities
-- Performance optimizations
+### Version Deprecation
 
-**Recommendation**: Keep Facebook Conversions on the latest supported Graph API version and review Meta changelog at each release.
+- **Status:** Supported
+- **Sunset date:** 2027-02-23
+- **Source:** [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
+
+The Marketing API version table lists v25.0 (released 2026-02-18) as available until 2027-02-23. The [Graph API versions page](https://developers.facebook.com/docs/graph-api/changelog/versions) lists the same version until 2028-07-29. This endpoint is part of the Marketing API, so the earlier Marketing API date applies. Meta supports the previous Marketing API version for at least 90 days after a new one ships ([versioning policy](https://developers.facebook.com/docs/marketing-api/overview/versioning)).
+
+### Latest Available Version
+
+- **Version:** `v27.0`
+- **Released:** 2026-11-04
+- **Upgrade needed:** Yes
+- **Source:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog)
+
+No Conversions API changes were found in the [Marketing API v27.0 changelog](https://developers.facebook.com/documentation/ads-commerce/marketing-api/marketing-api-changelog/version27.0). Keep Facebook Conversions on a supported Graph API version and review the Meta changelog at each release.
 
 ## Documentation Links
 
@@ -284,13 +290,24 @@ Based on Facebook's official documentation:
 - [Facebook Conversions API Overview](https://developers.facebook.com/docs/marketing-api/conversions-api/)
 - [Graph API Versions](https://developers.facebook.com/docs/graph-api/changelog/versions)
 - [Server Events API](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
-- [Data Processing Options](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/data-processing-options/)
+- [Data Processing Options](https://developers.facebook.com/docs/marketing-apis/data-processing-options)
 - [Graph API Changelog](https://developers.facebook.com/docs/graph-api/changelog/)
 - [Rate Limiting Information](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
+- [Server event parameters](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/server-event/)
+- [Get started (access token)](https://developers.facebook.com/docs/marketing-api/conversions-api/get-started/)
+
+### Changelog References
+
+- **Changelog:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog); [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
+- **Deprecations:** [Graph API breaking changes](https://developers.facebook.com/docs/graph-api/changelog/breaking-changes); [Graph API out-of-cycle changes](https://developers.facebook.com/docs/graph-api/changelog/out-of-cycle-changes); [Marketing API out-of-cycle changes](https://developers.facebook.com/docs/marketing-api/out-of-cycle-changes)
+- **Versions:** [Graph API versions and expiration dates](https://developers.facebook.com/docs/graph-api/changelog/versions); [Marketing API versioning](https://developers.facebook.com/docs/marketing-api/overview/versioning)
+- **Feed:** [Meta for Developers blog Atom feed](https://developers.facebook.com/blog/feed/)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ### RudderStack Documentation
 
-- [Facebook Conversions API Destination](https://www.rudderstack.com/docs/destinations/streaming-destinations/facebook-conversions-api/)
+- [Facebook Conversions API Destination](https://www.rudderstack.com/docs/destinations/streaming-destinations/fb-conversions/)
 - [Event Specification](https://www.rudderstack.com/docs/event-spec/)
 
 ## RETL Functionality

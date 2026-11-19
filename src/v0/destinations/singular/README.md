@@ -31,6 +31,8 @@ Implementation in **TypeScript** (v0)
   - Used for PC/Console game attribution where standard mobile device IDs are not available
   - [PC & Console Game Integration Guide](https://support.singular.net/hc/en-us/articles/19147380039579-PC-Console-Game-Integration-Guide)
 
+- [PC & Console API Endpoint Reference](https://support.singular.net/hc/en-us/articles/17499952586779)
+
 - **Event Filtering**: Client-side event filtering for device-mode integrations
 
   - Options: Disable, Allowlist (whitelistedEvents), Denylist (blacklistedEvents)
@@ -300,12 +302,17 @@ Based on the [S2S Integration Guide](https://support.singular.net/hc/en-us/artic
 
 ## Version Information
 
-### Current API Version
+### Current Version
 
-- **SESSION Endpoint**: V1 (`/api/v1/launch`)
-- **EVENT Endpoint**: V1 (`/api/v1/evt`) and V2 (`/api/v2/evt`)
-
-### Version Selection
+- **API:** SESSION endpoint
+- **Version:** `v1`
+- **Where in code:** `config.ts` (`BASE_URL` + `SESSION_ENDPOINT_PATH_V1`, `/api/v1/launch`)
+- **API:** EVENT endpoint (platform device IDs)
+- **Version:** `v1`
+- **Where in code:** `config.ts` (`BASE_URL` + `EVENT_ENDPOINT_PATH_V1`, `/api/v1/evt`)
+- **API:** EVENT endpoint (Singular Device ID)
+- **Version:** `v2`
+- **Where in code:** `config.ts` (`BASE_URL` + `EVENT_ENDPOINT_PATH_V2`, `/api/v2/evt`)
 
 | API Version | Endpoint         | Use Case                                           |
 | ----------- | ---------------- | -------------------------------------------------- |
@@ -313,26 +320,65 @@ Based on the [S2S Integration Guide](https://support.singular.net/hc/en-us/artic
 | V1          | `/api/v1/evt`    | Events with platform device IDs (IDFA, AIFA, etc.) |
 | V2          | `/api/v2/evt`    | Events with Singular Device ID (SDID) only         |
 
-### Deprecation Information
+### Version Deprecation
 
-**NEEDS REVIEW**: No specific deprecation timeline found in Singular's documentation. The V1 and V2 APIs appear to be maintained in parallel for different use cases rather than as successor versions.
+- **API:** SESSION endpoint v1
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [SESSION Endpoint API Reference](https://support.singular.net/hc/en-us/articles/31394799175963-Server-to-Server-SESSION-Endpoint-API-Reference) (blocks automated requests)
+- **API:** EVENT endpoint v1
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [PC & Console API Endpoint Reference](https://support.singular.net/hc/en-us/articles/17499952586779) (blocks automated requests)
+- **API:** EVENT endpoint v2
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [EVENT Endpoint API Reference](https://support.singular.net/hc/en-us/articles/31496864868635-Server-to-Server-EVENT-Endpoint-API-Reference) (blocks automated requests)
+
+Singular's PC & Console API reference says EVENT endpoint V2 is required as of 2026-07-15: accounts created after that date must use V2 and cannot use V1. Existing V1 integrations are not affected. No sunset date for V1 is published for existing accounts.
+
+### Latest Available Version
+
+- **API:** SESSION endpoint
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [SESSION Endpoint API Reference](https://support.singular.net/hc/en-us/articles/31394799175963-Server-to-Server-SESSION-Endpoint-API-Reference) (blocks automated requests)
+- **API:** EVENT endpoint
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [EVENT Endpoint API Reference](https://support.singular.net/hc/en-us/articles/31496864868635-Server-to-Server-EVENT-Endpoint-API-Reference) (blocks automated requests)
+
+The integration already sends SDID events to V2 and falls back to V1 when no SDID is present. NEEDS REVIEW: confirm whether Singular accounts created after 2026-07-15 reject the V1 EVENT calls this integration still makes for events without an SDID.
 
 ## Documentation Links
 
 ### Singular S2S API Documentation
 
-- [S2S Integration Guide](https://support.singular.net/hc/en-us/articles/360037640812-Server-to-Server-Integration-Guide)
-- [SESSION Endpoint API Reference](https://support.singular.net/hc/en-us/articles/31394799175963-Server-to-Server-SESSION-Endpoint-API-Reference)
-- [EVENT Endpoint API Reference](https://support.singular.net/hc/en-us/articles/31496864868635-Server-to-Server-EVENT-Endpoint-API-Reference)
-- [S2S Response Codes & Error Handling](https://support.singular.net/hc/en-us/articles/31542603988379)
-- [S2S Integration Testing Guide](https://support.singular.net/hc/en-us/articles/360002675072)
-- [Retrieving Device Data Guide](https://support.singular.net/hc/en-us/articles/30848622982299-Server-to-Server-Retrieving-Device-Data-Guide)
-- [PC & Console Game Integration Guide](https://support.singular.net/hc/en-us/articles/19147380039579-PC-Console-Game-Integration-Guide)
+- [S2S Integration Guide](https://support.singular.net/hc/en-us/articles/360037640812-Server-to-Server-Integration-Guide) (blocks automated requests)
+- [SESSION Endpoint API Reference](https://support.singular.net/hc/en-us/articles/31394799175963-Server-to-Server-SESSION-Endpoint-API-Reference) (blocks automated requests)
+- [EVENT Endpoint API Reference](https://support.singular.net/hc/en-us/articles/31496864868635-Server-to-Server-EVENT-Endpoint-API-Reference) (blocks automated requests)
+- [S2S Response Codes & Error Handling](https://support.singular.net/hc/en-us/articles/31542603988379) (blocks automated requests)
+- [Retrieving Device Data Guide](https://support.singular.net/hc/en-us/articles/30848622982299-Server-to-Server-Retrieving-Device-Data-Guide) (blocks automated requests)
+- [PC & Console Game Integration Guide](https://support.singular.net/hc/en-us/articles/19147380039579-PC-Console-Game-Integration-Guide) (blocks automated requests)
+- [PC & Console API Endpoint Reference](https://support.singular.net/hc/en-us/articles/17499952586779) (blocks automated requests)
+
+### Changelog References
+
+- **Changelog:** [Singular product updates](https://support.singular.net/hc/en-us/articles/360061042971) (blocks automated requests)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [PC & Console API Endpoint Reference](https://support.singular.net/hc/en-us/articles/17499952586779) (blocks automated requests) (EVENT V2 required for accounts created after 2026-07-15)
+- **Last checked:** 2026-11-16
+
+Singular publishes no developer changelog, deprecations page, versions page or feed for the S2S API. All `support.singular.net` pages and `www.singular.net` block automated requests.
 
 ### Standard Events Documentation
 
-- [Defining In-App Events](https://support.singular.net/hc/en-us/articles/360036736891)
-- [Standard Event Naming Convention](https://support.singular.net/hc/en-us/articles/7648172966299)
+- [How to Track In-App Events](https://support.singular.net/hc/en-us/articles/360036736891) (blocks automated requests)
+- [Event presets by vertical (standard events and attributes)](https://support.singular.net/hc/en-us/articles/7648172966299) (blocks automated requests)
 
 ## RETL Functionality
 

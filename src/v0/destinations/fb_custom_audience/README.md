@@ -267,36 +267,45 @@ The following Facebook API error codes are configured as abortable (will not be 
 
 ### Current Version
 
-- **API Version**: v25.0
-- **Endpoint**: `https://graph.facebook.com/v25.0/{audience-id}/users`
-- **Implementation**: Hardcoded in `config.ts`
-
-### Version Support Policy
-
-**NEEDS REVIEW**: Facebook's specific version support policy for Graph API needs verification. Based on general industry patterns:
-
-- Facebook typically supports API versions for approximately 2 years
-- New versions are released quarterly
-- Deprecation notices are usually provided well in advance
+- **Version:** `v25.0`
+- **Where in code:** `config.ts` (`BASE_URL`), endpoint `https://graph.facebook.com/v25.0/{audience-id}/users`
 
 ### Version Deprecation
 
-**NEEDS REVIEW**: Current deprecation timeline for v25.0 needs verification from official Facebook documentation.
+- **Status:** Supported
+- **Sunset date:** 2027-02-23
+- **Source:** [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
 
-### Upgrade Considerations
+The Marketing API version table lists v25.0 (released 2026-02-18) as available until 2027-02-23. The [Graph API versions page](https://developers.facebook.com/docs/graph-api/changelog/versions) lists the same version until 2028-07-29. This endpoint is part of the Marketing API, so the earlier Marketing API date applies. Meta supports the previous Marketing API version for at least 90 days after a new one ships ([versioning policy](https://developers.facebook.com/docs/marketing-api/overview/versioning)).
 
-**NEEDS REVIEW**: Breaking changes between v25.0 and newer versions need to be documented when upgrading.
+### Latest Available Version
+
+- **Version:** `v27.0`
+- **Released:** 2026-11-04
+- **Upgrade needed:** Yes
+- **Source:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog)
+
+The [Marketing API v27.0 changelog](https://developers.facebook.com/documentation/ads-commerce/marketing-api/marketing-api-changelog/version27.0) has no changes to the `/{audience-id}/users` endpoint; its Lookalike `lookalike_spec` change does not affect this destination. Since 2026-01-06, updates to flagged customer file custom audiences fail on all versions ([Graph API v24.0 changelog](https://developers.facebook.com/docs/graph-api/changelog/version24.0/)). Document breaking changes here when upgrading.
 
 ## Documentation Links
 
 ### Facebook API Documentation
 
-**NEEDS REVIEW**: Official Facebook documentation links are currently inaccessible. The following links should be verified:
-
 - [Facebook Custom Audience API](https://developers.facebook.com/docs/marketing-api/reference/custom-audience/)
 - [Custom Audience Users Endpoint](https://developers.facebook.com/docs/marketing-api/reference/custom-audience/users/)
 - [Facebook Graph API Rate Limiting](https://developers.facebook.com/docs/graph-api/overview/rate-limiting/)
 - [Marketing API Versioning](https://developers.facebook.com/docs/marketing-api/overview/versioning/)
+- [Custom Audiences guide](https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/)
+- [Marketing API authorization](https://developers.facebook.com/docs/marketing-api/overview/authorization)
+
+### Changelog References
+
+- **Changelog:** [Graph API changelog](https://developers.facebook.com/docs/graph-api/changelog); [Marketing API changelog](https://developers.facebook.com/docs/marketing-api/marketing-api-changelog)
+- **Deprecations:** [Graph API breaking changes](https://developers.facebook.com/docs/graph-api/changelog/breaking-changes); [Graph API out-of-cycle changes](https://developers.facebook.com/docs/graph-api/changelog/out-of-cycle-changes); [Marketing API out-of-cycle changes](https://developers.facebook.com/docs/marketing-api/out-of-cycle-changes)
+- **Versions:** [Graph API versions and expiration dates](https://developers.facebook.com/docs/graph-api/changelog/versions); [Marketing API versioning](https://developers.facebook.com/docs/marketing-api/overview/versioning)
+- **Feed:** [Meta for Developers blog Atom feed](https://developers.facebook.com/blog/feed/)
+- **Announcements:** [Updates to flagged customer file custom audiences fail on all versions from 2026-01-06](https://developers.facebook.com/docs/graph-api/changelog/version24.0/)
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

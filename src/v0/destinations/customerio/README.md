@@ -222,37 +222,70 @@ All Customer.io event types result in single API calls to their respective endpo
 
 ## Version Information
 
-### Current API Versions
+### Current Version
 
-Customer.io uses versioned APIs but does not have versioned releases with deprecation schedules:
+- **API:** Track API v1
+- **Version:** `v1`
+- **Where in code:** `config.ts` (`BASE_ENDPOINT_V1`, `ENDPOINTS`)
+- **API:** Track API v2
+- **Version:** `v2`
+- **Where in code:** `config.ts` (`BASE_ENDPOINT_V2`, `ENDPOINTS.objectEvent`); `v2/config.ts` (`getV2Endpoint`)
 
-- **Track API v1**: Used for most operations (identify, track, alias, device management)
-  - Endpoints: `/api/v1/customers/:id`, `/api/v1/customers/:id/events`, `/api/v1/events`, `/api/v1/merge_customers`, `/api/v1/customers/:id/devices`
-- **Track API v2**: Used for batch operations (group events)
-  - Endpoints: `/api/v2/entity`, `/api/v2/batch`
+Track API v1 handles identify, track, alias and device calls (`/api/v1/customers/:id`, `/api/v1/customers/:id/events`, `/api/v1/events`, `/api/v1/merge_customers`, `/api/v1/customers/:id/devices`). Track API v2 (`/api/v2/batch`) handles group events, and all events when `apiVersion` is set to `v2`.
 
-### Deprecation Information
+### Version Deprecation
 
-- **No Deprecation Timeline**: Customer.io maintains backward compatibility without announced deprecation dates
-- **Version Stability**: Both v1 and v2 APIs are stable and actively maintained
-- **Migration Path**: No migration required as both versions are supported indefinitely
+- **API:** Track API v1
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Track API reference](https://docs.customer.io/integrations/api/track/)
+- **API:** Track API v2
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Track API reference](https://docs.customer.io/integrations/api/track/)
 
-### New Versions Available
+Customer.io's Track API reference says libraries and CDPs such as RudderStack use the v1 API, and suggests the Pipelines API for new direct integrations. Neither Track API version has an announced end-of-life.
 
-- **Current Status**: No newer API versions are available
-- **v2 API**: Represents the latest batch processing capabilities
-- **Feature Parity**: v1 and v2 APIs serve different purposes (individual vs batch operations)
+### Latest Available Version
+
+- **API:** Track API v1
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Track API reference](https://docs.customer.io/integrations/api/track/)
+- **API:** Track API v2
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Track API reference](https://docs.customer.io/integrations/api/track/)
+
+v1 and v2 serve different purposes (single calls and batch calls), and both are current.
 
 ## Documentation Links
 
 ### REST API Documentation
 
 - [Customer.io Track API Overview](https://docs.customer.io/integrations/api/track/)
+- [Manage your API credentials](https://docs.customer.io/accounts/settings/managing-credentials/)
 - [Track API Rate Limits](https://docs.customer.io/integrations/api/track/#section/Track-API-limits)
 - [Identify API](https://docs.customer.io/integrations/api/track/#operation/identify)
 - [Track Events API](https://docs.customer.io/integrations/api/track/#operation/track)
+- [Track Anonymous Events API](https://docs.customer.io/integrations/api/track/#operation/trackanonymous)
 - [Merge Customers API](https://docs.customer.io/integrations/api/track/#operation/merge)
+- [Add or Update Device API](https://docs.customer.io/integrations/api/track/#operation/add_device)
+- [Delete Device API](https://docs.customer.io/integrations/api/track/#operation/delete_device)
 - [Batch API v2](https://docs.customer.io/integrations/api/track/#operation/batch)
+
+### Changelog References
+
+- **Changelog:** [Customer.io release notes](https://docs.customer.io/release-notes/)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** [Public and private API keys for Customer.io APIs (2026-10-30)](https://docs.customer.io/release-notes/2026-10-30-public-private-api-keys/)
+- **Last checked:** 2026-11-16
+
+Since 2026-10-30, Customer.io accepts private (`sk_`) and public (`pk_`) keys as Bearer tokens on the Track API. Site ID and Track API key pairs, which this integration uses with Basic auth, keep working.
 
 ### RETL Functionality
 

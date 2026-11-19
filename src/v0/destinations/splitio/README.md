@@ -141,11 +141,25 @@ Note that rate limiting applies to Split.io's Admin API (used for feature flag m
 
 ### Current Version
 
-- **API Version**: Split.io Events API does not use versioned endpoints
-- **Endpoints Used**:
-  - `https://events.split.io/api/events` - Single event endpoint (currently implemented)
-  - `https://events.split.io/api/events/bulk` - Bulk events endpoint (available but not implemented)
-- **Deprecation**: No deprecation schedule announced for Events API
+- **Version:** `Unversioned`
+- **Where in code:** `config.js` (`BASE_URL`, `ENDPOINT_PATH`, `endpoints.eventUrl` = `https://events.split.io/api/events`)
+
+The bulk endpoint `https://events.split.io/api/events/bulk` exists but is not used.
+
+### Version Deprecation
+
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Events overview](https://docs.split.io/reference/events-overview)
+
+Split is now Harness Feature Management & Experimentation (FME). The Split-to-Harness migration changes Admin API keys and endpoints, not the Events API or the SDK-key Bearer auth this integration uses ([Admin API updates](https://developer.harness.io/feature-management-experimentation/troubleshooting-and-resources/split-to-harness-migration/migrate-from-split-to-harness/api-updates)).
+
+### Latest Available Version
+
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Events overview](https://docs.split.io/reference/events-overview)
 
 ### Version Compatibility
 
@@ -165,10 +179,19 @@ Note that rate limiting applies to Split.io's Admin API (used for feature flag m
 
 ### Split.io Help Center
 
-- [Events Guide](https://help.split.io/hc/en-us/articles/360020585772-Events)
-- [Traffic Types](https://help.split.io/hc/en-us/articles/360019916311-Traffic-type)
-- [Environments](https://help.split.io/hc/en-us/articles/360019915771-Environments)
-- [Creating Metrics](https://help.split.io/hc/en-us/articles/22005565241101-Metrics)
+- [Events](https://developer.harness.io/feature-management-experimentation/use-fme/release-monitoring/events/index)
+- [Traffic types](https://developer.harness.io/feature-management-experimentation/management-and-administration/traffic-types)
+- [Environments](https://developer.harness.io/feature-management-experimentation/management-and-administration/environments)
+- [Metrics](https://developer.harness.io/feature-management-experimentation/use-fme/experimentation/metrics/index)
+
+### Changelog References
+
+- **Changelog:** [Harness FME release notes](https://developer.harness.io/release-notes/more-products/feature-management-experimentation)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** [Harness FME release notes RSS](https://developer.harness.io/release-notes/more-products/feature-management-experimentation/rss.xml)
+- **Announcements:** [Split-to-Harness Admin API updates](https://developer.harness.io/feature-management-experimentation/troubleshooting-and-resources/split-to-harness-migration/migrate-from-split-to-harness/api-updates)
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

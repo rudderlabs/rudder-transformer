@@ -123,3 +123,45 @@ Only HTTP 200 and 477 have delivery overrides. HTTP 200 returns per-job verdicts
 These details can contain identifiers or list text echoed by HubSpot. The formatter does not serialize the entire response. Ordinary 4xx and 5xx failures use the framework response path, which attaches the raw HubSpot body to the thrown error's `destinationResponse`. Proxy v1 copies that body as JSON into each job's `error` and retains the HTTP status. The formatted reason appears in the top-level `message`. Lookup failures include the compact formatted reason without attaching the raw response body. Transport errors without a HubSpot envelope, unmatched-email correlation errors, and membership id/job count mismatches retain static reasons.
 
 The router Authorization and lookup/membership error-detail policies deliberately differ from the companion HubSpot spec in `rudder-specs`. That spec remains outside this change.
+
+## Version Information
+
+### Current Version
+
+- **Version:** `v3`
+- **Where in code:** `config.ts` (`CONTACT_BATCH_READ_PATH`, `MEMBERSHIP_ENDPOINT_PATH` on `HUBSPOT_API_BASE`)
+
+Endpoints: `POST https://api.hubapi.com/crm/v3/objects/contacts/batch/read` (contact lookup) and `PUT https://api.hubapi.com/crm/v3/lists/:listId/memberships/add-and-remove` (list membership).
+
+### Version Deprecation
+
+- **Status:** Deprecated
+- **Sunset date:** None announced
+- **Source:** [Legacy APIs and legacy apps: what's going unsupported and when](https://developers.hubspot.com/changelog/legacy-apis-and-legacy-apps-whats-going-unsupported-and-when)
+
+On 2026-09-15 HubSpot announced that it no longer releases bug fixes, reliability improvements or security updates for v1 to v3 APIs, and that "after September 2027, these endpoints will be unsupported". No exact day is given. The [versioning page](https://developers.hubspot.com/docs/developer-tooling/platform/versioning) still says legacy APIs "are still supported and available at their previous URLs".
+
+### Latest Available Version
+
+- **Version:** `2026-09`
+- **Released:** 2026-09-08
+- **Upgrade needed:** Yes
+- **Source:** [CRM API write validation enforcement (2026-09 ships 2026-09-08)](https://developers.hubspot.com/changelog/crm-api-write-validation-enforcement)
+
+HubSpot moved to date-based API versions (`/YYYY-MM/` paths) on 2026-03-30. New versions ship in March and September, and each is supported for 18 months ([versioning page](https://developers.hubspot.com/docs/developer-tooling/platform/versioning)). `2026-03` was the first date-based version; `2026-09` followed on 2026-09-08.
+
+## Documentation Links
+
+- [CRM API | Contacts (v3)](https://developers.hubspot.com/docs/api-reference/crm-contacts-v3/guide)
+- [Batch read contacts](https://developers.hubspot.com/docs/api-reference/legacy/crm/objects/contacts/batch/get-contacts)
+- [CRM Lists (v3), including list memberships](https://developers.hubspot.com/docs/api-reference/legacy/crm/lists/guide)
+- [Authentication overview](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview)
+
+### Changelog References
+
+- **Changelog:** [HubSpot Developer Changelog](https://developers.hubspot.com/changelog)
+- **Deprecations:** [Deprecated APIs](https://developers.hubspot.com/docs/api-reference/deprecated-apis)
+- **Versions:** [API versioning and release schedule](https://developers.hubspot.com/docs/developer-tooling/platform/versioning)
+- **Feed:** [HubSpot Developer Changelog RSS](https://developers.hubspot.com/changelog/rss.xml)
+- **Announcements:** [Legacy APIs and legacy apps: what's going unsupported and when (v1 to v3 unsupported after September 2027)](https://developers.hubspot.com/changelog/legacy-apis-and-legacy-apps-whats-going-unsupported-and-when); [Introducing date-based API versioning](https://developers.hubspot.com/changelog/introducing-date-based-api-versioning)
+- **Last checked:** 2026-11-16

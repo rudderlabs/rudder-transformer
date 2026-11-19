@@ -10,13 +10,13 @@ This document outlines the business logic and mappings used in the Campaign Mana
 
 **Primary Endpoints**:
 
-1. `POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
-2. `POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
+1. `POST https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/{profileId}/conversions/batchinsert`
+2. `POST https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/{profileId}/conversions/batchupdate`
 
 **Documentation**:
 
-- [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchinsert)
-- [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchupdate)
+- [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/rest/v5/conversions/batchinsert)
+- [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/rest/v5/conversions/batchupdate)
 - [Enhanced Conversions](https://developers.google.com/doubleclick-advertisers/guides/conversions_ec)
 
 ### Request Flow for Track Events
@@ -511,7 +511,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         }
       }
     },
-    "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert",
+    "endpoint": "https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/{profileId}/conversions/batchinsert",
     "headers": {
       "Authorization": "Bearer {access_token}",
       "Content-Type": "application/json"

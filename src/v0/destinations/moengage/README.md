@@ -400,31 +400,50 @@ The destination performs automatic data type conversions:
 
 ### Current Version
 
-- **API Version**: v1
-- **Implementation Type**: v0
-- **Endpoints**: All MoEngage API endpoints used are v1
-- **Last Updated**: July 2025
-- **Maintainer**: RudderStack Integrations Team
+- **Version:** `v1`
+- **Where in code:** `config.js` (`endpoints`, `https://api-<dc>.moengage.com/v1/{customer,event,device,customer/merge}`)
 
-### API Deprecation
+All MoEngage Data API endpoints this integration uses (Track User, Track Event, Track Device, Merge Users) are v1.
 
-- **Status**: No known deprecation timeline for v1 APIs
-- **Migration Path**: No migration required at this time
-- **Monitoring**: API version compatibility should be monitored for future changes
+### Version Deprecation
 
-**Note**: Information about API versioning and deprecation timeline should be confirmed from MoEngage's official documentation or support channels.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Data API overview](https://www.moengage.com/docs/api/data/data-overview)
+
+MoEngage's legacy [Push API v2 and v2.1](https://www.moengage.com/docs/api/push/push-api-v2-legacy) are deprecated as of 2026-10-30 and stop working after 2027-01-31; this integration does not use them.
+
+### Latest Available Version
+
+- **Version:** `v1`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [API reference](https://www.moengage.com/docs/api/introduction)
 
 ## Documentation Links
 
 ### MoEngage API Documentation
 
-- [API Overview](https://developers.moengage.com/hc/en-us/articles/4404674776724-Overview) - General Data API overview and rate limits
-- [Track User API](https://developers.moengage.com/hc/en-us/articles/4413167462804-Track-User) - User identification and attribute tracking
-- [Create Event API](https://developers.moengage.com/hc/en-us/articles/4413174104852-Create-Event) - Event tracking and analytics
-- [Track Device API](https://developers.moengage.com/hc/en-us/articles/31285296671252) - Device information tracking
-- [User Merge API](https://developers.moengage.com/hc/en-us/articles/10990676421908-User-Merge-API) - User profile merging
-- [Data Centers in MoEngage](https://help.moengage.com/hc/en-us/articles/360057030512-Data-Centers-in-MoEngage) - Regional data center information
-- [Object Data Type Support](https://help.moengage.com/hc/en-us/articles/29787626775828-Support-for-Object-Data-Type) - Object data type feature
+- [API Overview](https://www.moengage.com/docs/api/introduction) - Base URLs, data centers, authentication and error handling
+- [Data API Overview](https://www.moengage.com/docs/api/data/data-overview) - Users, events and devices
+- [Rate Limits](https://www.moengage.com/docs/api/rate-limits) - Rate limits and payload caps
+- [Track User API](https://www.moengage.com/docs/api/user/track-user) - User identification and attribute tracking
+- [Track Event API](https://www.moengage.com/docs/api/event/track-event) - Event tracking and analytics
+- [Track Device API](https://www.moengage.com/docs/api/device/track-device) - Device information tracking
+- [Merge Users API](https://www.moengage.com/docs/api/user/merge-users) - User profile merging
+- [Data Centers in MoEngage](https://www.moengage.com/docs/user-guide/data/key-concepts/data-centers-in-moengage) - Regional data center information
+- [Object Data Type Support](https://www.moengage.com/docs/user-guide/data/key-concepts/support-for-object-data-type) - Object data type feature
+
+### Changelog References
+
+- **Changelog:** [Product release notes](https://www.moengage.com/docs/release-notes/product)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** None found
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
+
+MoEngage publishes RSS feeds only for SDK release notes; [Subscribe to Release Notes](https://www.moengage.com/docs/release-notes/subscribe-to-release-notes) says product release notes have no feed yet. MoEngage APIs use Basic auth by default; [OAuth 2.0](https://moengage.com/docs/api/oauth/oauth-overview) and AWS STS keys are also available. No deprecation of Basic auth is announced.
 
 ### RudderStack Documentation
 

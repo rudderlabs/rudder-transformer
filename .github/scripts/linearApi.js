@@ -76,7 +76,7 @@ async function getCurrentCycleId(teamId) {
   }
 }
 
-async function searchIssues({ titleContains, teamId, states, limit = 50 }) {
+async function searchIssues({ titleContains, teamId, states, limit = 50, throwOnError = false }) {
   try {
     const filter = {
       team: { id: { eq: teamId || LINEAR_TEAM_ID } },
@@ -97,13 +97,16 @@ async function searchIssues({ titleContains, teamId, states, limit = 50 }) {
           priority: issue.priority,
           url: issue.url,
           dueDate: issue.dueDate,
-          state: { name: state?.name },
+          description: issue.description || '',
+          state: { name: state?.name, type: state?.type },
           parentId: parent?.id || null,
         };
       }),
     );
   } catch (error) {
     console.error(`Error searching issues with title "${titleContains}":`, error.message);
+    // Callers that create tickets must not read a failed search as "no existing ticket".
+    if (throwOnError) throw error;
     return [];
   }
 }
@@ -252,11 +255,17 @@ async function updateIssueDescription(issueId, description) {
   return updateIssue(issueId, { description });
 }
 
+async function createComment(issueId, body) {
+  const result = await linearClient.createComment({ issueId, body });
+  if (!result.success) throw new Error(`Failed to comment on issue "${issueId}"`);
+}
+
 module.exports = {
   createIssue,
   listIssuesByParent,
   updateIssue,
   updateIssueDescription,
+  createComment,
   getStateId,
   getUserId,
   getCurrentUserId,
@@ -268,4 +277,5 @@ module.exports = {
   MAINTENANCE_PROJECT_ID,
   KTLO_LABEL_ID,
   VERSION_UPGRADE_LABEL_ID,
+  OPEN_STATES,
 };

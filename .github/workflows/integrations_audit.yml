@@ -1,0 +1,107 @@
+name: Integration Audit
+
+# Checks partner changelogs against what each integration's README says it uses,
+# then creates or updates one Linear parent per integration with a subticket per change type.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch to audit (READMEs and audit scripts are read from it)
+        required: true
+        default: develop
+      create_tickets:
+        description: Create and update Linear tickets (off = plan only, shown in the run summary)
+        type: boolean
+        required: true
+        default: true
+      integrations:
+        description: Comma-separated integration folder names (empty = all with an audit-ready README)
+        required: false
+        default: ''
+      lookback_days:
+        description: Days of partner changes to check
+        required: false
+        default: '45'
+
+permissions: {}
+
+concurrency:
+  group: integrations-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Run Integration Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read # to checkout repository code (actions/checkout)
+
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install Cursor CLI
+        run: |
+          curl https://cursor.com/install -fsS | bash
+          echo "$HOME/.cursor/bin" >> "$GITHUB_PATH"
+
+      # Cursor loads Claude Code hooks from .claude/settings.json; its lint-staged hook blocks every shell command.
+      - name: Disable Claude Code hooks for Cursor
+        run: rm -f .claude/settings.json .claude/settings.local.json
+
+      - name: Audit integrations
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          INTEGRATIONS: ${{ inputs.integrations }}
+          LOOKBACK_DAYS: ${{ inputs.lookback_days }}
+        run: |
+          args=(--agent cursor --lookback-days "$LOOKBACK_DAYS" --concurrency 4 --timeout-sec 300 --out audit-out)
+          if [ -n "$INTEGRATIONS" ]; then args+=(--only "$INTEGRATIONS"); fi
+          node .github/scripts/integrations_audit/run.js "${args[@]}"
+          cat audit-out/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Plan Linear tickets
+        run: |
+          node .github/scripts/integrations_audit/plan-tickets.js --out audit-out
+          cat audit-out/plan.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Only the Linear SDK is needed, so install it alone rather than the whole repo's dependencies.
+      - name: Install Linear SDK
+        if: inputs.create_tickets
+        run: |
+          version=$(node -p "require('./package.json').dependencies['@linear/sdk'] || require('./package.json').devDependencies['@linear/sdk']")
+          npm install --no-save --no-package-lock --prefix "$RUNNER_TEMP/linear" "@linear/sdk@$version"
+
+      - name: Create and update Linear tickets
+        if: inputs.create_tickets
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          LINEAR_TEAM_ID: ${{ secrets.LINEAR_TEAM_ID }}
+          NODE_PATH: ${{ runner.temp }}/linear/node_modules
+        run: |
+          status=0
+          node .github/scripts/integrations_audit/create-tickets.js --out audit-out || status=$?
+          if [ -f audit-out/tickets.md ]; then cat audit-out/tickets.md >> "$GITHUB_STEP_SUMMARY"; fi
+          exit "$status"
+
+      - name: Upload audit results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: integrations-audit
+          path: audit-out
+          retention-days: 30

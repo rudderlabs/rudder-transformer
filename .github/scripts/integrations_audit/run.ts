@@ -1,16 +1,37 @@
-#!/usr/bin/env node
 // Runs the integration audit: one cursor-agent call per integration, each with a time limit.
-// Usage: node run.js [--only hs,marketo] [--limit 5] [--concurrency 3] [--timeout-sec 300]
-//                    [--lookback-days 45] [--model <name>] [--out audit-out]
+// Usage: tsx run.ts [--only hs,marketo] [--limit 5] [--concurrency 3] [--timeout-sec 300]
+//                   [--lookback-days 45] [--model <name>] [--out audit-out]
 // Without --model, cursor-agent uses its default (Auto routing on a fresh install).
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
-const { discover, readIntegration } = require('./readme');
-const { REPO_ROOT, CATEGORIES, IMPACTS, isoDate, pool } = require('./common');
+import fs from 'fs';
+import path from 'path';
+import { spawn } from 'child_process';
+import { discover, readIntegration, Integration } from './readme';
+import {
+  REPO_ROOT,
+  CATEGORIES,
+  IMPACTS,
+  isoDate,
+  pool,
+  AgentResult,
+  AuditRecord,
+  Category,
+  Impact,
+} from './common';
 
-function parseArgs(argv) {
-  const opts = {
+export interface Options {
+  only: string[] | null;
+  limit: number;
+  concurrency: number;
+  timeoutSec: number;
+  lookbackDays: number;
+  maxFetches: number;
+  maxSearches: number;
+  model: string;
+  out: string;
+}
+
+export function parseArgs(argv: string[]): Options {
+  const opts: Record<string, string | number> = {
     only: '',
     limit: 0,
     concurrency: 3,
@@ -22,17 +43,21 @@ function parseArgs(argv) {
     out: 'audit-out',
   };
   for (let i = 2; i < argv.length; i += 2) {
-    const key = argv[i].replace(/^--/, '').replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+    const key = argv[i].replace(/^--/, '').replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
     if (!(key in opts)) throw new Error(`Unknown option ${argv[i]}`);
     opts[key] = typeof opts[key] === 'number' ? Number(argv[i + 1]) : argv[i + 1];
   }
-  return { ...opts, only: opts.only ? opts.only.split(',').map((s) => s.trim()) : null };
+  const only = String(opts.only);
+  return {
+    ...(opts as unknown as Options),
+    only: only ? only.split(',').map((s) => s.trim()) : null,
+  };
 }
 
-function buildPrompt(template, integration, opts) {
+export function buildPrompt(template: string, integration: Integration, opts: Options): string {
   const today = new Date();
   const since = new Date(today.getTime() - opts.lookbackDays * 86400000);
-  const values = {
+  const values: Record<string, string | number> = {
     title: integration.title,
     name: integration.name,
     dir: integration.dir,
@@ -50,17 +75,11 @@ function buildPrompt(template, integration, opts) {
     maxFetches: opts.maxFetches,
     maxSearches: opts.maxSearches,
   };
-  return template.replace(/\{\{(\w+)\}\}/g, (_, k) => String(values[k]));
-}
-
-/** Reads `cursor-agent --output-format json`; it reports API time but no token counts. */
-function parseCursorOutput(stdout) {
-  const r = JSON.parse(stdout);
-  return { text: r.result || '', isError: Boolean(r.is_error), apiMs: r.duration_api_ms ?? null };
+  return template.replace(/\{\{(\w+)\}\}/g, (_, k: string) => String(values[k]));
 }
 
 /** `--force` runs tools without approval; the workflow's `.cursor/cli.json` deny rules still apply. */
-function cursorArgs(prompt, model) {
+export function cursorArgs(prompt: string, model: string): string[] {
   return [
     '-p',
     '--force',
@@ -72,7 +91,27 @@ function cursorArgs(prompt, model) {
   ];
 }
 
-function runCursor(prompt, opts) {
+export interface AgentOutput {
+  text: string;
+  isError: boolean;
+  apiMs: number | null;
+}
+
+/** Reads `cursor-agent --output-format json`; it reports API time but no token counts. */
+export function parseCursorOutput(stdout: string): AgentOutput {
+  const r = JSON.parse(stdout);
+  return { text: r.result || '', isError: Boolean(r.is_error), apiMs: r.duration_api_ms ?? null };
+}
+
+interface ProcessResult {
+  code: number | null;
+  stdout: string;
+  stderr: string;
+  timedOut: boolean;
+  durationMs: number;
+}
+
+function runCursor(prompt: string, opts: Options): Promise<ProcessResult> {
   return new Promise((resolve) => {
     const started = Date.now();
     const child = spawn('cursor-agent', cursorArgs(prompt, opts.model), {
@@ -86,12 +125,12 @@ function runCursor(prompt, opts) {
     const timer = setTimeout(() => {
       timedOut = true;
       try {
-        process.kill(-child.pid, 'SIGKILL');
+        process.kill(-(child.pid as number), 'SIGKILL');
       } catch {
         child.kill('SIGKILL');
       }
     }, opts.timeoutSec * 1000);
-    const finish = (code, err) => {
+    const finish = (code: number | null, err?: string) => {
       clearTimeout(timer);
       resolve({ code, stdout, stderr: err || stderr, timedOut, durationMs: Date.now() - started });
     };
@@ -102,20 +141,21 @@ function runCursor(prompt, opts) {
   });
 }
 
-function extractFindings(text) {
+export function extractFindings(text: string): AgentResult {
   const blocks = [...text.matchAll(/BEGIN_FINDINGS_JSON\s*([\s\S]*?)\s*END_FINDINGS_JSON/g)];
   if (!blocks.length) throw new Error('no BEGIN_FINDINGS_JSON block');
   const raw = blocks[blocks.length - 1][1].replace(/^```(json)?\s*|\s*```$/g, '');
   return JSON.parse(raw);
 }
 
-function validateFindings(result, name) {
-  const errors = [];
+export function validateFindings(result: AgentResult, name: string): string[] {
+  const errors: string[] = [];
   if (result.integration !== name) errors.push(`integration is "${result.integration}"`);
   if (!Array.isArray(result.findings)) errors.push('findings is not an array');
   (result.findings || []).forEach((f, i) => {
-    if (!CATEGORIES.includes(f.category)) errors.push(`findings[${i}].category "${f.category}"`);
-    if (!IMPACTS.includes(f.impact)) errors.push(`findings[${i}].impact "${f.impact}"`);
+    if (!CATEGORIES.includes(f.category as Category))
+      errors.push(`findings[${i}].category "${f.category}"`);
+    if (!IMPACTS.includes(f.impact as Impact)) errors.push(`findings[${i}].impact "${f.impact}"`);
     if (!/^https?:\/\//.test(f.announcementUrl || ''))
       errors.push(`findings[${i}].announcementUrl missing`);
     if (f.effectiveDate && !/^\d{4}-\d{2}(-\d{2})?$/.test(f.effectiveDate))
@@ -124,7 +164,11 @@ function validateFindings(result, name) {
   return errors;
 }
 
-async function auditOne(integration, template, opts) {
+async function auditOne(
+  integration: Integration,
+  template: string,
+  opts: Options,
+): Promise<AuditRecord> {
   const prompt = buildPrompt(template, integration, opts);
   const run = await runCursor(prompt, opts);
   const base = {
@@ -135,7 +179,7 @@ async function auditOne(integration, template, opts) {
     promptChars: prompt.length,
   };
   if (run.timedOut) return { ...base, status: 'timeout' };
-  let parsed;
+  let parsed: AgentOutput;
   try {
     parsed = parseCursorOutput(run.stdout);
   } catch {
@@ -156,15 +200,20 @@ async function auditOne(integration, template, opts) {
     return {
       ...withApi,
       status: 'invalid_output',
-      error: String(err.message),
+      error: String((err as Error).message),
       tail: parsed.text.slice(-500),
     };
   }
 }
 
-const seconds = (ms) => (ms == null ? '–' : `${Math.round(ms / 1000)}s`);
+const seconds = (ms: number | null | undefined) => (ms == null ? '–' : `${Math.round(ms / 1000)}s`);
 
-function writeSummary(outDir, records, skipped, opts) {
+export function writeSummary(
+  outDir: string,
+  records: AuditRecord[],
+  skipped: Pick<Integration, 'name' | 'problems'>[],
+  opts: Pick<Options, 'lookbackDays'>,
+): void {
   const lines = [
     `# Integration audit run (${isoDate(new Date())}, lookback ${opts.lookbackDays} days)`,
     '',
@@ -182,16 +231,17 @@ function writeSummary(outDir, records, skipped, opts) {
   fs.writeFileSync(path.join(outDir, 'summary.md'), `${lines.join('\n')}\n`);
 }
 
-async function main() {
+async function main(): Promise<void> {
   const opts = parseArgs(process.argv);
   const outDir = path.resolve(REPO_ROOT, opts.out);
   fs.mkdirSync(path.join(outDir, 'findings'), { recursive: true });
 
   let integrations = discover(REPO_ROOT).map((d) => readIntegration(REPO_ROOT, d));
-  if (opts.only) {
-    const missing = opts.only.filter((n) => !integrations.some((i) => i.name === n));
+  const { only } = opts;
+  if (only) {
+    const missing = only.filter((n) => !integrations.some((i) => i.name === n));
     if (missing.length) throw new Error(`No README for: ${missing.join(', ')}`);
-    integrations = integrations.filter((i) => opts.only.includes(i.name));
+    integrations = integrations.filter((i) => only.includes(i.name));
   }
   const skipped = integrations.filter((i) => i.problems.length);
   let ready = integrations.filter((i) => !i.problems.length);
@@ -218,5 +268,3 @@ if (require.main === module) {
     process.exit(1);
   });
 }
-
-module.exports = { cursorArgs, parseCursorOutput, extractFindings, validateFindings, writeSummary };

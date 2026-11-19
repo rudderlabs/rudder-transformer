@@ -58,6 +58,12 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      # The audit scripts are TypeScript run with tsx; only tsx is installed, not the repo's dependencies.
+      - name: Install tsx
+        run: |
+          npm install --no-save --no-package-lock --prefix "$RUNNER_TEMP/tools" tsx@4.19.2
+          echo "$RUNNER_TEMP/tools/node_modules/.bin" >> "$GITHUB_PATH"
+
       # The installer puts `cursor-agent` (and its `agent` alias) in ~/.local/bin.
       - name: Install Cursor CLI
         run: |
@@ -93,12 +99,12 @@ jobs:
           args=(--lookback-days "$LOOKBACK_DAYS" --concurrency 4 --timeout-sec 300 --out audit-out)
           if [ -n "$INTEGRATIONS" ]; then args+=(--only "$INTEGRATIONS"); fi
           if [ -n "$MODEL" ]; then args+=(--model "$MODEL"); fi
-          node .github/scripts/integrations_audit/run.js "${args[@]}"
+          tsx .github/scripts/integrations_audit/run.ts "${args[@]}"
           cat audit-out/summary.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Plan Linear tickets
         run: |
-          node .github/scripts/integrations_audit/plan-tickets.js --out audit-out
+          tsx .github/scripts/integrations_audit/plan-tickets.ts --out audit-out
           cat audit-out/plan.md >> "$GITHUB_STEP_SUMMARY"
 
       # Only the Linear SDK is needed, so install it alone rather than the whole repo's dependencies.
@@ -116,7 +122,7 @@ jobs:
           NODE_PATH: ${{ runner.temp }}/linear/node_modules
         run: |
           status=0
-          node .github/scripts/integrations_audit/create-tickets.js --out audit-out || status=$?
+          tsx .github/scripts/integrations_audit/create-tickets.ts --out audit-out || status=$?
           if [ -f audit-out/tickets.md ]; then cat audit-out/tickets.md >> "$GITHUB_STEP_SUMMARY"; fi
           exit "$status"
 

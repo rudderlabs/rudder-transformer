@@ -1,10 +1,9 @@
-#!/usr/bin/env node
 // Applies plan.json to Linear: one open parent per integration, at most one open subticket per type.
 // Items already on any audit ticket of the integration (open, done or canceled) are skipped, by key.
-// Usage: LINEAR_API_KEY=… LINEAR_TEAM_ID=… node create-tickets.js [--out audit-out]
-const fs = require('fs');
-const path = require('path');
-const {
+// Usage: LINEAR_API_KEY=… LINEAR_TEAM_ID=… tsx create-tickets.ts [--out audit-out]
+import fs from 'fs';
+import path from 'path';
+import {
   TYPE_ORDER,
   escapeRegExp,
   outDirFromArgs,
@@ -13,20 +12,72 @@ const {
   earliest,
   readmeLine,
   itemMarkdown,
-} = require('./common');
+  LabelKey,
+  Plan,
+  PlanItem,
+  PlannedParent,
+  PlannedSubticket,
+} from './common';
 
 const CLOSED_STATE_TYPES = ['completed', 'canceled'];
 const CONCURRENCY = 4;
 
-function isOpen(issue) {
-  return !CLOSED_STATE_TYPES.includes(issue.state?.type);
+export interface LinearIssue {
+  id: string;
+  identifier: string;
+  title: string;
+  url: string;
+  description?: string | null;
+  priority?: number;
+  dueDate?: string | null;
+  state?: { type?: string } | null;
+  parentId?: string | null;
 }
 
-function issueNumber(issue) {
+export interface IssueFields {
+  title?: string;
+  description?: string;
+  parentId?: string;
+  priority?: number;
+  dueDate?: string | null;
+  labelIds?: string[];
+  projectId?: string;
+}
+
+/** The Linear operations the ticket step needs; production uses linearApi.js, tests a fake. */
+export interface LinearClient {
+  search(title: string): Promise<LinearIssue[]>;
+  create(fields: IssueFields): Promise<Pick<LinearIssue, 'id' | 'url'>>;
+  update(id: string, fields: IssueFields): Promise<unknown>;
+  comment(id: string, body: string): Promise<unknown>;
+}
+
+export interface LinearIds {
+  labels: Record<LabelKey, string>;
+  project: string;
+}
+
+interface ParentReport {
+  integration: string;
+  created: { title: string; url: string; items?: number }[];
+  updated: { title: string; url: string; added: number }[];
+  skippedItems: number;
+}
+
+interface Failure {
+  integration: string;
+  error: string;
+}
+
+function isOpen(issue: LinearIssue): boolean {
+  return !CLOSED_STATE_TYPES.includes(issue.state?.type || '');
+}
+
+function issueNumber(issue: LinearIssue): number {
   return parseInt(String(issue.identifier || '').replace(/\D+/g, ''), 10) || 0;
 }
 
-function subticketDescription(parent, sub) {
+function subticketDescription(parent: PlannedParent, sub: PlannedSubticket): string {
   return [
     `Changes found by the Integration Audit for **${parent.integrationTitle}**. Check each item against the integration and update the README when done.`,
     '',
@@ -36,7 +87,7 @@ function subticketDescription(parent, sub) {
   ].join('\n');
 }
 
-function parentDescription(parent) {
+function parentDescription(parent: PlannedParent): string {
   return [
     `Integration Audit round for **${parent.integrationTitle}** (\`${parent.readmePath}\`).`,
     '',
@@ -46,7 +97,11 @@ function parentDescription(parent) {
 }
 
 /** Inserts new items above the README checklist line, or at the end. */
-function appendItems(description, items, readmePath) {
+function appendItems(
+  description: string | null | undefined,
+  items: PlanItem[],
+  readmePath: string,
+): string {
   const marker = '- [ ] Update the README';
   const block = items.map(itemMarkdown).join('\n');
   const text = description || '';
@@ -55,13 +110,17 @@ function appendItems(description, items, readmePath) {
   return `${text.slice(0, at)}${block}\n${text.slice(at)}`;
 }
 
-function knownKeys(issues) {
+function knownKeys(issues: LinearIssue[]): Set<string> {
   return new Set(
     issues.flatMap((i) => [...(i.description || '').matchAll(/Key: `([^`]+)`/g)].map((m) => m[1])),
   );
 }
 
-async function applyParent(parent, client, ids) {
+async function applyParent(
+  parent: PlannedParent,
+  client: LinearClient,
+  ids: LinearIds,
+): Promise<ParentReport> {
   const title = escapeRegExp(parent.integrationTitle);
   const parentRe = new RegExp(`^${title} – Integration Audit \\d{2}/\\d{2}/\\d{4}$`);
   const subRe = new RegExp(`^${title} – (${TYPE_ORDER.join('|')})$`);
@@ -69,14 +128,15 @@ async function applyParent(parent, client, ids) {
   const found = await client.search(`${parent.integrationTitle} – `);
   const parents = found.filter((i) => !i.parentId && parentRe.test(i.title));
   const parentIds = new Set(parents.map((p) => p.id));
-  const subs = found.filter((i) => parentIds.has(i.parentId) && subRe.test(i.title));
+  const subs = found.filter((i) => i.parentId && parentIds.has(i.parentId) && subRe.test(i.title));
   const seen = knownKeys([...parents, ...subs]);
 
   const pending = parent.subtickets
     .map((s) => ({ ...s, items: s.items.filter((i) => !seen.has(i.key)) }))
     .filter((s) => s.items.length);
-  const countItems = (subtickets) => subtickets.reduce((n, s) => n + s.items.length, 0);
-  const report = {
+  const countItems = (subtickets: PlannedSubticket[]) =>
+    subtickets.reduce((n, s) => n + s.items.length, 0);
+  const report: ParentReport = {
     integration: parent.integration,
     created: [],
     updated: [],
@@ -84,7 +144,9 @@ async function applyParent(parent, client, ids) {
   };
   if (!pending.length) return report;
 
-  let openParent = parents.filter(isOpen).sort((a, b) => issueNumber(b) - issueNumber(a))[0];
+  let openParent: Pick<LinearIssue, 'id' | 'url'> | undefined = parents
+    .filter(isOpen)
+    .sort((a, b) => issueNumber(b) - issueNumber(a))[0];
   if (!openParent) {
     openParent = await client.create({
       title: parent.title,
@@ -94,16 +156,15 @@ async function applyParent(parent, client, ids) {
     });
     report.created.push({ title: parent.title, url: openParent.url });
   }
+  const parentId = openParent.id;
 
   for (const sub of pending) {
-    const open = subs.find(
-      (i) => i.parentId === openParent.id && isOpen(i) && i.title === sub.title,
-    );
+    const open = subs.find((i) => i.parentId === parentId && isOpen(i) && i.title === sub.title);
     if (open) {
       await Promise.all([
         client.update(open.id, {
           description: appendItems(open.description, sub.items, parent.readmePath),
-          priority: mostUrgent(open.priority, sub.priority),
+          priority: mostUrgent(open.priority ?? 0, sub.priority),
           dueDate: earliest(open.dueDate, sub.dueDate),
         }),
         client.comment(
@@ -121,7 +182,7 @@ async function applyParent(parent, client, ids) {
       const created = await client.create({
         title: sub.title,
         description: subticketDescription(parent, sub),
-        parentId: openParent.id,
+        parentId,
         priority: sub.priority,
         dueDate: sub.dueDate,
         labelIds: sub.labels.map((l) => ids.labels[l]),
@@ -134,21 +195,31 @@ async function applyParent(parent, client, ids) {
 }
 
 /** Applies every parent, a few integrations at a time; one integration failing doesn't stop the others. */
-async function applyPlan(plan, client, ids) {
+export async function applyPlan(
+  plan: Pick<Plan, 'parents'>,
+  client: LinearClient,
+  ids: LinearIds,
+): Promise<{ reports: ParentReport[]; failures: Failure[] }> {
   const results = await pool(plan.parents, CONCURRENCY, async (parent) => {
     try {
       return { report: await applyParent(parent, client, ids) };
     } catch (error) {
-      return { failure: { integration: parent.integration, error: error.message } };
+      return { failure: { integration: parent.integration, error: (error as Error).message } };
     }
   });
   return {
-    reports: results.filter((r) => r.report).map((r) => r.report),
-    failures: results.filter((r) => r.failure).map((r) => r.failure),
+    reports: results.flatMap((r) => (r.report ? [r.report] : [])),
+    failures: results.flatMap((r) => (r.failure ? [r.failure] : [])),
   };
 }
 
-function toMarkdown({ reports, failures }) {
+function toMarkdown({
+  reports,
+  failures,
+}: {
+  reports: ParentReport[];
+  failures: Failure[];
+}): string {
   const lines = ['# Linear tickets', ''];
   const changed = reports.filter((r) => r.created.length || r.updated.length);
   if (!changed.length && !failures.length) lines.push('No new tickets or items.', '');
@@ -168,7 +239,9 @@ function toMarkdown({ reports, failures }) {
   return `${lines.join('\n')}\n`;
 }
 
-function linearClient() {
+/** linearApi.js reads its credentials when loaded, so it is required only when tickets are applied. */
+function linearClient(): { client: LinearClient; ids: LinearIds } {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
   const api = require('../linearApi');
   return {
     client: {
@@ -184,11 +257,11 @@ function linearClient() {
   };
 }
 
-async function main() {
+async function main(): Promise<void> {
   const outDir = outDirFromArgs(process.argv);
-  const plan = JSON.parse(fs.readFileSync(path.join(outDir, 'plan.json'), 'utf8'));
+  const planJson: Plan = JSON.parse(fs.readFileSync(path.join(outDir, 'plan.json'), 'utf8'));
   const { client, ids } = linearClient();
-  const result = await applyPlan(plan, client, ids);
+  const result = await applyPlan(planJson, client, ids);
   const md = toMarkdown(result);
   fs.writeFileSync(path.join(outDir, 'tickets.md'), md);
   process.stdout.write(md);
@@ -201,5 +274,3 @@ if (require.main === module) {
     process.exit(1);
   });
 }
-
-module.exports = { applyPlan };

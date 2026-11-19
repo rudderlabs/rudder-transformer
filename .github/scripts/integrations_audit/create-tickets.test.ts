@@ -1,37 +1,48 @@
 // Runs with the repo Jest suite (npm test).
-const assert = require('node:assert');
-const { applyPlan } = require('./create-tickets');
+import assert from 'node:assert';
+import { applyPlan, IssueFields, LinearClient, LinearIds, LinearIssue } from './create-tickets';
+import { PlanItem, PlannedParent, PlannedSubticket, SubticketType } from './common';
 
-const IDS = { labels: { KTLO: 'ktlo', VersionUpgrade: 'vu' }, project: 'proj' };
+const IDS: LinearIds = { labels: { KTLO: 'ktlo', VersionUpgrade: 'vu' }, project: 'proj' };
 
-function fakeLinear() {
-  const issues = [];
-  const comments = [];
+type FakeIssue = LinearIssue & Omit<IssueFields, 'parentId'>;
+
+interface FakeLinear extends LinearClient {
+  issues: FakeIssue[];
+  comments: { id: string; body: string }[];
+  failSearchFor: string | null;
+  close(title: string): void;
+}
+
+function fakeLinear(): FakeLinear {
+  const issues: FakeIssue[] = [];
+  const comments: { id: string; body: string }[] = [];
   let n = 0;
-  return {
+  const fake: FakeLinear = {
     issues,
     comments,
     failSearchFor: null,
     async search(text) {
-      if (this.failSearchFor && text.startsWith(this.failSearchFor)) throw new Error('Linear down');
+      if (fake.failSearchFor && text.startsWith(fake.failSearchFor)) throw new Error('Linear down');
       return issues.filter((i) => i.title.includes(text)).map((i) => ({ ...i }));
     },
     async create(fields) {
       n += 1;
-      const issue = {
+      const issue: FakeIssue = {
         id: `id${n}`,
         identifier: `INT-${n}`,
         url: `https://linear.app/INT-${n}`,
         state: { type: 'backlog' },
-        parentId: fields.parentId || null,
         ...fields,
+        title: fields.title || '',
+        parentId: fields.parentId || null,
       };
       issues.push(issue);
       return issue;
     },
     async update(id, fields) {
       Object.assign(
-        issues.find((i) => i.id === id),
+        get(fake, (i) => i.id === id),
         fields,
       );
     },
@@ -39,21 +50,34 @@ function fakeLinear() {
       comments.push({ id, body });
     },
     close(title) {
-      issues.find((i) => i.title === title).state = { type: 'completed' };
+      get(fake, (i) => i.title === title).state = { type: 'completed' };
     },
   };
+  return fake;
 }
 
-const item = (key, extra = {}) => ({
+/** The last fake issue matching `match`; fails the test if there is none. */
+function get(linear: FakeLinear, match: string | ((i: FakeIssue) => boolean)): FakeIssue {
+  const test = typeof match === 'string' ? (i: FakeIssue) => i.title === match : match;
+  const found = linear.issues.filter(test).pop();
+  if (!found) throw new Error(`no issue matching ${String(match)}`);
+  return found;
+}
+
+const item = (key: string): PlanItem => ({
   key,
+  category: 'auth',
+  impact: 'breaking',
   title: `Item ${key}`,
   summary: 'What changes.',
   announcementUrl: `https://partner.example/${key}`,
   effectiveDate: null,
-  ...extra,
+  source: 'agent',
+  priority: 4,
+  dueDate: null,
 });
 
-function planFor(date, subtickets) {
+function planFor(date: string, subtickets: PlannedSubticket[]): { parents: PlannedParent[] } {
   return {
     parents: [
       {
@@ -67,7 +91,12 @@ function planFor(date, subtickets) {
   };
 }
 
-const sub = (type, items, priority = 4, dueDate = null) => ({
+const sub = (
+  type: SubticketType,
+  items: PlanItem[],
+  priority = 4,
+  dueDate: string | null = null,
+): PlannedSubticket => ({
   title: `Zendesk – ${type}`,
   type,
   priority,
@@ -89,13 +118,13 @@ test('first run creates a parent and one subticket per type', async () => {
     reports[0].created.map((c) => c.title),
     ['Zendesk – Integration Audit 19/11/2026', 'Zendesk – authFeature', 'Zendesk – other'],
   );
-  const auth = linear.issues.find((i) => i.title === 'Zendesk – authFeature');
+  const auth = get(linear, 'Zendesk – authFeature');
   assert.strictEqual(auth.parentId, 'id1');
   assert.strictEqual(auth.priority, 1);
   assert.deepStrictEqual(auth.labelIds, ['ktlo']);
-  assert.match(auth.description, /Key: `a1`/);
+  assert.match(auth.description || '', /Key: `a1`/);
   assert.match(
-    auth.description,
+    auth.description || '',
     /Update the README \(`src\/v0\/destinations\/zendesk\/README.md`\)/,
   );
 });
@@ -103,7 +132,7 @@ test('first run creates a parent and one subticket per type', async () => {
 test('versionUpgrade subtickets also get the VersionUpgrade label', async () => {
   const linear = fakeLinear();
   await applyPlan(planFor('19/11/2026', [sub('versionUpgrade', [item('v1')])]), linear, IDS);
-  const vu = linear.issues.find((i) => i.title === 'Zendesk – versionUpgrade');
+  const vu = get(linear, 'Zendesk – versionUpgrade');
   assert.deepStrictEqual(vu.labelIds, ['ktlo', 'vu']);
 });
 
@@ -133,8 +162,9 @@ test('a new item of an open type is appended above the README line, with a comme
   );
 
   assert.strictEqual(linear.issues.length, 2, 'no new parent or subticket');
-  const auth = linear.issues.find((i) => i.title === 'Zendesk – authFeature');
-  assert.ok(auth.description.indexOf('Key: `a2`') < auth.description.indexOf('Update the README'));
+  const auth = get(linear, 'Zendesk – authFeature');
+  const description = auth.description || '';
+  assert.ok(description.indexOf('Key: `a2`') < description.indexOf('Update the README'));
   assert.strictEqual(auth.priority, 1);
   assert.strictEqual(auth.dueDate, '2026-12-20');
   assert.strictEqual(reports[0].updated[0].added, 1);
@@ -146,7 +176,7 @@ test('a new type gets its own subticket under the open parent', async () => {
   await applyPlan(planFor('19/11/2026', [sub('authFeature', [item('a1')])]), linear, IDS);
   await applyPlan(planFor('19/12/2026', [sub('mappingFeature', [item('m1')])]), linear, IDS);
 
-  const mapping = linear.issues.find((i) => i.title === 'Zendesk – mappingFeature');
+  const mapping = get(linear, 'Zendesk – mappingFeature');
   assert.strictEqual(mapping.parentId, 'id1');
   assert.strictEqual(linear.issues.filter((i) => !i.parentId).length, 1, 'still one parent');
 });
@@ -173,9 +203,9 @@ test('an item on a closed ticket is not reopened; a new change after the round c
     next.reports[0].created.map((c) => c.title),
     ['Zendesk – Integration Audit 19/12/2026', 'Zendesk – authFeature'],
   );
-  const newSub = linear.issues.filter((i) => i.title === 'Zendesk – authFeature').pop();
-  assert.doesNotMatch(newSub.description, /Key: `a1`/);
-  assert.match(newSub.description, /Key: `a2`/);
+  const newSub = get(linear, 'Zendesk – authFeature');
+  assert.doesNotMatch(newSub.description || '', /Key: `a1`/);
+  assert.match(newSub.description || '', /Key: `a2`/);
 });
 
 test('tickets of an integration whose title starts the same are not mixed up', async () => {

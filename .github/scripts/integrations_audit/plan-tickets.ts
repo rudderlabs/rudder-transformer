@@ -1,11 +1,10 @@
-#!/usr/bin/env node
 // Turns audit findings into a Linear ticket plan: one parent per integration, one subticket per change type.
-// Writes plan.json / plan.md and never calls Linear (create-tickets.js applies the plan).
-// Usage: node plan-tickets.js [--out audit-out]
-const fs = require('fs');
-const path = require('path');
-const { readIntegration } = require('./readme');
-const {
+// Writes plan.json / plan.md and never calls Linear (create-tickets.ts applies the plan).
+// Usage: tsx plan-tickets.ts [--out audit-out]
+import fs from 'fs';
+import path from 'path';
+import { readIntegration, Integration } from './readme';
+import {
   REPO_ROOT,
   TYPE_BY_CATEGORY,
   TYPE_ORDER,
@@ -16,24 +15,34 @@ const {
   earliest,
   readmeLine,
   itemMarkdown,
-} = require('./common');
+  AuditRecord,
+  Plan,
+  PlanItem,
+  PlannedParent,
+  PlannedSubticket,
+} from './common';
 
 const DAY = 86400000;
-const PRIORITY_NAMES = { 1: 'Urgent', 2: 'High', 3: 'Medium', 4: 'Low' };
+const PRIORITY_NAMES: Record<number, string> = { 1: 'Urgent', 2: 'High', 3: 'Medium', 4: 'Low' };
+
+type UnkeyedItem = Omit<PlanItem, 'key' | 'priority' | 'dueDate'>;
 
 /** A YYYY-MM date counts from the first of the month, the earliest it could take effect. */
-function parseDate(value) {
+function parseDate(value: string | null | undefined): Date | null {
   const m = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(value || '');
   return m ? new Date(Date.UTC(+m[1], +m[2] - 1, m[3] ? +m[3] : 1)) : null;
 }
 
 /** Same thresholds as the version audit: days until the change takes effect. */
-function priorityFor(item, today) {
+export function priorityFor(
+  item: Pick<PlanItem, 'impact' | 'effectiveDate'>,
+  today: Date,
+): { priority: number; dueDate: string | null } {
   const date = parseDate(item.effectiveDate);
   // A release date is not a deadline: only a future date makes a plain version upgrade urgent.
   const isDeadline = item.impact !== 'version_upgrade' || (date && date > today);
   if (date && isDeadline) {
-    const days = Math.floor((date - today) / DAY);
+    const days = Math.floor((date.getTime() - today.getTime()) / DAY);
     if (days < 90) return { priority: 1, dueDate: isoDate(new Date(today.getTime() + DAY)) };
     if (days < 180) return { priority: 2, dueDate: isoDate(new Date(date.getTime() - 90 * DAY)) };
     if (days < 365) return { priority: 3, dueDate: isoDate(new Date(date.getTime() - 180 * DAY)) };
@@ -42,7 +51,7 @@ function priorityFor(item, today) {
   return { priority: item.impact === 'breaking' ? 2 : 4, dueDate: null };
 }
 
-function slug(text) {
+function slug(text: string | null | undefined): string {
   return (text || '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
@@ -51,14 +60,14 @@ function slug(text) {
 }
 
 /** Version items the README itself already states: deprecated, sunset, or an upgrade is due. */
-function readmeVersionItems(integration) {
-  return integration.versions
-    .map((v) => {
-      const deprecated = v.status === 'Deprecated' || v.status === 'Sunset';
-      if (!v.upgradeNeeded && !deprecated) return null;
-      const move = v.upgradeNeeded && v.latest && v.latest !== v.current;
-      const label = `${v.api ? `${v.api}: ` : ''}${move ? `${v.current} → ${v.latest}` : v.current}`;
-      return {
+function readmeVersionItems(integration: Integration): UnkeyedItem[] {
+  return integration.versions.flatMap((v): UnkeyedItem[] => {
+    const deprecated = v.status === 'Deprecated' || v.status === 'Sunset';
+    if (!v.upgradeNeeded && !deprecated) return [];
+    const move = v.upgradeNeeded && v.latest && v.latest !== v.current;
+    const label = `${v.api ? `${v.api}: ` : ''}${move ? `${v.current} → ${v.latest}` : v.current}`;
+    return [
+      {
         category: 'version_upgrade',
         impact: deprecated ? 'breaking' : 'version_upgrade',
         title: deprecated ? `${label} (${v.status})` : label,
@@ -69,9 +78,9 @@ function readmeVersionItems(integration) {
         current: v.current,
         api: v.api,
         source: 'readme',
-      };
-    })
-    .filter(Boolean);
+      },
+    ];
+  });
 }
 
 /**
@@ -79,7 +88,7 @@ function readmeVersionItems(integration) {
  * A README deprecation keys on the API and the version in use, so a status change isn't filed again.
  * A changelog index URL covers many changes, so the title is added to it.
  */
-function itemKey(item, indexUrls) {
+export function itemKey(item: UnkeyedItem, indexUrls: Set<string>): string {
   const api = slug(item.api);
   if (item.source === 'readme' && item.impact === 'breaking') {
     return `readme:${api}:${slug(item.current)}`;
@@ -89,8 +98,14 @@ function itemKey(item, indexUrls) {
   return indexUrls.has(url) ? `url:${url}#${slug(item.title)}` : `url:${url}`;
 }
 
-function itemsFor(record, integration) {
-  const agentItems = record.result.findings.map((f) => ({ ...f, source: 'agent' }));
+function itemsFor(
+  record: AuditRecord,
+  integration: Integration,
+): (UnkeyedItem & { key: string })[] {
+  const agentItems: UnkeyedItem[] = (record.result?.findings || []).map((f) => ({
+    ...f,
+    source: 'agent',
+  }));
   // A README upgrade the agent also reported is kept once, with the agent's announcement link.
   // README deprecations and sunsets are always kept: they carry a deadline the agent may not repeat.
   const agentTargets = new Set(
@@ -101,22 +116,22 @@ function itemsFor(record, integration) {
       r.impact !== 'version_upgrade' || !agentTargets.has((r.targetVersion || '').toLowerCase()),
   );
   const indexUrls = new Set(integration.changelogIndexUrls.map(normUrl));
-  const seen = new Set();
+  const seen = new Set<string>();
   return [...agentItems, ...readmeItems]
     .map((i) => ({ ...i, key: itemKey(i, indexUrls) }))
-    .filter((i) => !seen.has(i.key) && seen.add(i.key));
+    .filter((i) => !seen.has(i.key) && Boolean(seen.add(i.key)));
 }
 
-function plan(outDir, today) {
+export function plan(outDir: string, today: Date): Plan {
   const findingsDir = path.join(outDir, 'findings');
-  const records = fs
+  const records: AuditRecord[] = fs
     .readdirSync(findingsDir)
     .filter((f) => f.endsWith('.json'))
     .map((f) => JSON.parse(fs.readFileSync(path.join(findingsDir, f), 'utf8')));
   const dateTag = isoDate(today).split('-').reverse().join('/');
 
-  const parents = [];
-  const failed = [];
+  const parents: PlannedParent[] = [];
+  const failed: Plan['failed'] = [];
   for (const record of records) {
     if (record.status !== 'ok') {
       failed.push({ integration: record.integration, status: record.status, error: record.error });
@@ -126,20 +141,22 @@ function plan(outDir, today) {
     const items = itemsFor(record, integration);
     if (!items.length) continue;
 
-    const subtickets = TYPE_ORDER.map((type) => {
-      const typed = items
+    const subtickets = TYPE_ORDER.flatMap((type): PlannedSubticket[] => {
+      const typed: PlanItem[] = items
         .filter((i) => TYPE_BY_CATEGORY[i.category] === type)
         .map((i) => ({ ...i, ...priorityFor(i, today) }));
-      if (!typed.length) return null;
-      return {
-        title: `${record.title} – ${type}`,
-        type,
-        priority: typed.map((i) => i.priority).reduce(mostUrgent),
-        dueDate: typed.map((i) => i.dueDate).reduce(earliest, null),
-        labels: type === 'versionUpgrade' ? ['KTLO', 'VersionUpgrade'] : ['KTLO'],
-        items: typed,
-      };
-    }).filter(Boolean);
+      if (!typed.length) return [];
+      return [
+        {
+          title: `${record.title} – ${type}`,
+          type,
+          priority: typed.map((i) => i.priority).reduce(mostUrgent),
+          dueDate: typed.map((i) => i.dueDate).reduce<string | null>(earliest, null),
+          labels: type === 'versionUpgrade' ? ['KTLO', 'VersionUpgrade'] : ['KTLO'],
+          items: typed,
+        },
+      ];
+    });
 
     parents.push({
       integration: record.integration,
@@ -152,7 +169,7 @@ function plan(outDir, today) {
   return { generatedAt: today.toISOString(), parents, failed };
 }
 
-function toMarkdown(result) {
+export function toMarkdown(result: Plan): string {
   const lines = ['# Linear ticket plan', ''];
   if (!result.parents.length) lines.push('No tickets needed.', '');
   for (const p of result.parents) {
@@ -177,7 +194,7 @@ function toMarkdown(result) {
   return `${lines.join('\n')}\n`;
 }
 
-function main() {
+function main(): void {
   const outDir = outDirFromArgs(process.argv);
   const result = plan(outDir, new Date(`${isoDate(new Date())}T00:00:00Z`));
   fs.writeFileSync(path.join(outDir, 'plan.json'), `${JSON.stringify(result, null, 2)}\n`);

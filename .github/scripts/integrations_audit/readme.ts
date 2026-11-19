@@ -1,7 +1,7 @@
 // Reads the audit sections of integration READMEs (format: .claude/skills/generate-integration-docs/references/audit-sections.md).
-const fs = require('fs');
-const path = require('path');
-const { escapeRegExp } = require('./common');
+import fs from 'fs';
+import path from 'path';
+import { escapeRegExp } from './common';
 
 const INTEGRATION_ROOTS = [
   'src/v0/destinations',
@@ -10,7 +10,7 @@ const INTEGRATION_ROOTS = [
   'src/sources',
 ];
 
-const VERSION_LABELS = {
+const VERSION_LABELS: Record<string, string[]> = {
   'Current Version': ['Version', 'Where in code'],
   'Version Deprecation': ['Status', 'Sunset date', 'Source'],
   'Latest Available Version': ['Version', 'Released', 'Upgrade needed', 'Source'],
@@ -23,7 +23,7 @@ const CHANGELOG_LABELS = [
   'Announcements',
   'Last checked',
 ];
-const VALUE_PATTERNS = {
+const VALUE_PATTERNS: Record<string, RegExp> = {
   Status: /^(Supported|Deprecated|Sunset|Unknown)\b/,
   'Sunset date': /^(\d{4}-\d{2}(-\d{2})?|None announced)\b/,
   Released: /^(\d{4}-\d{2}(-\d{2})?|Unknown)\b/,
@@ -31,8 +31,41 @@ const VALUE_PATTERNS = {
   'Last checked': /^\d{4}-\d{2}-\d{2}$/,
 };
 
+interface Bullet {
+  label: string;
+  value: string;
+}
+
+interface ApiGroup {
+  api: string | null;
+  fields: Record<string, string>;
+}
+
+/** One API's version facts, joined across the three version subsections. */
+export interface VersionRecord {
+  api: string | null;
+  current: string;
+  status: string;
+  sunsetDate: string | null;
+  latest: string | null;
+  upgradeNeeded: boolean;
+  sourceUrl: string | null;
+}
+
+export interface Integration {
+  name: string;
+  title: string;
+  dir: string;
+  readmePath: string;
+  problems: string[];
+  versions: VersionRecord[];
+  changelogIndexUrls: string[];
+  sections: { versionInformation: string; documentationLinks: string };
+  onDemandFiles: string[];
+}
+
 /** Body of `heading` at `level`, up to the next heading of the same or higher level. */
-function section(text, heading, level) {
+function section(text: string, heading: string, level: number): string | null {
   const re = new RegExp(
     `^${'#'.repeat(level)} ${escapeRegExp(heading)}[ \\t]*\\n([\\s\\S]*?)(?=^#{1,${level}} |(?![\\s\\S]))`,
     'm',
@@ -41,16 +74,16 @@ function section(text, heading, level) {
   return m ? m[1] : null;
 }
 
-function bullets(body) {
-  return [...body.matchAll(/^- \*\*([^*]+?):\*\*\s*(.*)$/gm)].map((m) => ({
+function bullets(body: string | null): Bullet[] {
+  return [...(body || '').matchAll(/^- \*\*([^*]+?):\*\*\s*(.*)$/gm)].map((m) => ({
     label: m[1],
     value: m[2].trim(),
   }));
 }
 
 /** Splits bullets into per-API groups; a group starts at `- **API:**`, or is one unnamed group. */
-function groupByApi(items) {
-  const groups = [];
+function groupByApi(items: Bullet[]): ApiGroup[] {
+  const groups: ApiGroup[] = [];
   for (const item of items) {
     if (item.label === 'API') {
       groups.push({ api: item.value, fields: {} });
@@ -62,23 +95,23 @@ function groupByApi(items) {
   return groups;
 }
 
-function links(value) {
+function links(value: string): { title: string; url: string }[] {
   return [...value.matchAll(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g)].map((m) => ({
     title: m[1],
     url: m[2],
   }));
 }
 
-function plain(value) {
+function plain(value: string | undefined): string {
   return (value || '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/`/g, '');
 }
 
-function validate(text) {
-  const problems = [];
+function validate(text: string): string[] {
+  const problems: string[] = [];
   if ((text.match(/^## Version Information\s*$/gm) || []).length !== 1) {
     problems.push('needs exactly one "## Version Information"');
   }
-  const checkValues = (where, items) =>
+  const checkValues = (where: string, items: Bullet[]) =>
     items
       .filter((i) => VALUE_PATTERNS[i.label] && !VALUE_PATTERNS[i.label].test(i.value))
       .forEach((i) => problems.push(`${where}: bad ${i.label} "${i.value.slice(0, 40)}"`));
@@ -111,13 +144,13 @@ function validate(text) {
 }
 
 /** The group for the same API in another subsection; a single unnamed group applies to every API. */
-function matchGroup(groups, group, i) {
-  const byName = group.api && groups.find((g) => g.api === group.api);
-  return (byName || (groups.length === 1 ? groups[0] : groups[i]) || {}).fields || {};
+function matchGroup(groups: ApiGroup[], group: ApiGroup, i: number): Record<string, string> {
+  const byName = group.api ? groups.find((g) => g.api === group.api) : undefined;
+  return (byName || (groups.length === 1 ? groups[0] : groups[i]))?.fields || {};
 }
 
 /** One record per API, with the three version subsections joined and values reduced to plain facts. */
-function versionRecords(text) {
+function versionRecords(text: string): VersionRecord[] {
   const [current, deprecation, latest] = Object.keys(VERSION_LABELS).map((sub) =>
     groupByApi(bullets(section(text, sub, 3))),
   );
@@ -137,7 +170,7 @@ function versionRecords(text) {
   });
 }
 
-function listFiles(dir, ext) {
+function listFiles(dir: string, ext: string): string[] {
   try {
     return fs
       .readdirSync(dir)
@@ -148,33 +181,39 @@ function listFiles(dir, ext) {
   }
 }
 
-function readIntegration(repoRoot, dir) {
+export function readIntegration(repoRoot: string, dir: string): Integration {
   const readmePath = path.join(dir, 'README.md');
   const text = fs.readFileSync(path.join(repoRoot, readmePath), 'utf8');
   const problems = validate(text);
   const name = path.basename(dir);
-  if (problems.length) return { name, dir, readmePath, problems };
+  const heading = (text.match(/^# (.+)$/m) || [])[1] || name;
+  const title =
+    heading
+      .replace(/(\s+(RudderStack|Destination|Integration|Documentation|Guide))+$/i, '')
+      .trim() || name;
+  const base = { name, title, dir, readmePath, problems };
+  if (problems.length) {
+    return {
+      ...base,
+      versions: [],
+      changelogIndexUrls: [],
+      sections: { versionInformation: '', documentationLinks: '' },
+      onDemandFiles: [],
+    };
+  }
 
   // Index pages list many changes; Announcements links are single posts, so they are not included.
   const changelogIndexUrls = bullets(section(text, 'Changelog References', 3))
     .filter((i) => i.label !== 'Announcements')
     .flatMap((i) => links(i.value).map((l) => l.url));
-  const heading = (text.match(/^# (.+)$/m) || [])[1] || name;
 
   return {
-    name,
-    title:
-      heading
-        .replace(/(\s+(RudderStack|Destination|Integration|Documentation|Guide))+$/i, '')
-        .trim() || name,
-    dir,
-    readmePath,
-    problems,
+    ...base,
     versions: versionRecords(text),
     changelogIndexUrls,
     sections: {
-      versionInformation: section(text, 'Version Information', 2),
-      documentationLinks: section(text, 'Documentation Links', 2),
+      versionInformation: section(text, 'Version Information', 2) || '',
+      documentationLinks: section(text, 'Documentation Links', 2) || '',
     },
     onDemandFiles: [
       ...listFiles(path.join(repoRoot, dir, 'docs'), '.md'),
@@ -183,10 +222,10 @@ function readIntegration(repoRoot, dir) {
   };
 }
 
-function discover(repoRoot) {
-  const dirs = [];
+export function discover(repoRoot: string): string[] {
+  const dirs: string[] = [];
   for (const root of INTEGRATION_ROOTS) {
-    let names = [];
+    let names: string[] = [];
     try {
       names = fs.readdirSync(path.join(repoRoot, root));
     } catch {
@@ -198,5 +237,3 @@ function discover(repoRoot) {
   }
   return dirs.sort();
 }
-
-module.exports = { discover, readIntegration };

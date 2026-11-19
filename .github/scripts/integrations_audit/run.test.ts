@@ -1,17 +1,18 @@
 // Runs with the repo Jest suite (npm test).
-const assert = require('node:assert');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const {
+import assert from 'node:assert';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import {
   cursorArgs,
   parseCursorOutput,
   extractFindings,
   validateFindings,
   writeSummary,
-} = require('./run');
+} from './run';
+import { AgentResult, AuditRecord, Finding } from './common';
 
-const finding = {
+const finding: Finding = {
   category: 'auth',
   impact: 'breaking',
   title: 'API keys removed',
@@ -23,7 +24,16 @@ const finding = {
   affects: 'Configuration',
 };
 
-const resultText = (body) =>
+const agentResult = (integration: string, findings: Finding[]): AgentResult => ({
+  integration,
+  sourcesChecked: [],
+  unreachable: [],
+  latestVersionSeen: null,
+  skipped: 0,
+  findings,
+});
+
+const resultText = (body: AgentResult) =>
   `Checked the changelog.\nBEGIN_FINDINGS_JSON\n${JSON.stringify(body)}\nEND_FINDINGS_JSON`;
 
 test('cursor args: trusted headless JSON run, model only when set, prompt last', () => {
@@ -60,17 +70,17 @@ test('cursor output: an error result is flagged', () => {
 });
 
 test('findings: the last marked block is used and validated', () => {
-  const text = `${resultText({ integration: 'x', findings: [] })}\n${resultText({ integration: 'zendesk', findings: [finding] })}`;
+  const text = `${resultText(agentResult('x', []))}\n${resultText(agentResult('zendesk', [finding]))}`;
   const result = extractFindings(text);
   assert.strictEqual(result.integration, 'zendesk');
   assert.deepStrictEqual(validateFindings(result, 'zendesk'), []);
 });
 
 test('findings: wrong integration, unknown category and bad dates are rejected', () => {
-  const result = {
-    integration: 'hs',
-    findings: [{ ...finding, category: 'pricing', effectiveDate: 'soon', announcementUrl: '' }],
-  };
+  // Deliberately invalid agent output, so the shape is cast past the type checker.
+  const result = agentResult('hs', [
+    { ...finding, category: 'pricing', effectiveDate: 'soon', announcementUrl: '' },
+  ] as unknown as Finding[]);
   assert.deepStrictEqual(validateFindings(result, 'zendesk'), [
     'integration is "hs"',
     'findings[0].category "pricing"',
@@ -85,17 +95,23 @@ test('findings: output without the marker block is an error', () => {
 
 test('summary: shows time and API time, and lists skipped READMEs', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'audit-'));
+  const record = (integration: string): Omit<AuditRecord, 'status' | 'durationMs'> => ({
+    integration,
+    title: integration,
+    readmePath: `src/v0/destinations/${integration}/README.md`,
+    promptChars: 1000,
+  });
   writeSummary(
     dir,
     [
       {
-        integration: 'am',
+        ...record('am'),
         status: 'ok',
         durationMs: 40000,
         apiMs: 31000,
-        result: { findings: [] },
+        result: agentResult('am', []),
       },
-      { integration: 'hs', status: 'timeout', durationMs: 300000 },
+      { ...record('hs'), status: 'timeout', durationMs: 300000 },
     ],
     [{ name: 'foo', problems: ['missing "### Changelog References"'] }],
     { lookbackDays: 45 },

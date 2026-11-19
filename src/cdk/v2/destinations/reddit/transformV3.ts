@@ -137,6 +137,19 @@ const prepareProductsArrayWithItemCount = (message: RudderMessage): RedditEventM
     };
   }
 
+  // Only emit a single-product payload when the event actually carries product data.
+  // Reddit flags item_count/products as unsupported on PageVisit, SignUp and other
+  // non-commerce events, so a bare page/track event must not default to item_count: 1.
+  if (
+    eventProperties?.product_id === undefined &&
+    eventProperties?.name === undefined &&
+    eventProperties?.category === undefined &&
+    eventProperties?.price === undefined &&
+    eventProperties?.quantity === undefined
+  ) {
+    return {};
+  }
+
   return {
     item_count: 1,
     products: [

@@ -75,12 +75,12 @@ Create the following files in the destination folder:
   - Rate limits and batch sizes
   - Multiplexing (single input -> multiple outputs)
 
-- **Version Deprecation**
+- **Version Information** (`## Version Information`): exact format in [references/audit-sections.md](references/audit-sections.md)
 
-  - Current API version in use
-  - End-of-life / deprecation status
-  - Latest available version
-  - Documentation links
+- **Documentation Links** (`## Documentation Links`)
+
+  - Partner API doc links used in the README
+  - `### Changelog References` subsection (required): exact format in [references/audit-sections.md](references/audit-sections.md)
 
 - **RETL section** → link to `docs/retl.md`
 - **Business logic** → link to `docs/businesslogic.md`

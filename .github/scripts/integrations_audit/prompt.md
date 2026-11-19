@@ -21,7 +21,7 @@ Files you may read only when needed (for example, to check whether a changed fie
 
 Rules:
 
-- Don't create, edit or delete files. Don't call Linear or any write API.
+- Don't change repository files (scratch files under `/tmp` are fine). Don't call Linear or any write API.
 - Only report facts you saw on a partner page, with its URL. Never invent URLs or dates.
 - Skip entries about products or endpoints this integration does not use. Count them in `skipped`.
 - If a source can't be fetched, list it in `unreachable` and carry on.

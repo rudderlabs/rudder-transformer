@@ -65,7 +65,7 @@
     "@bugsnag/js": "^7.20.2",
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
-    "@pyroscope/nodejs": "^0.4.5",
+    "@pyroscope/nodejs": "^0.7.1",
     "@rudderstack/integrations-lib": "^0.2.78",
     "@rudderstack/json-template-engine": "^0.19.5",
     "@rudderstack/workflow-engine": "^0.9.1",

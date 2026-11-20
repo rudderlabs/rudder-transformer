@@ -252,11 +252,40 @@ async function updateIssueDescription(issueId, description) {
   return updateIssue(issueId, { description });
 }
 
+async function createComment(issueId, body) {
+  const result = await linearClient.createComment({ issueId, body });
+  if (!result.success) throw new Error(`Failed to comment on issue "${issueId}"`);
+}
+
+const ISSUES_BY_TITLE = `query IssuesByTitle($teamId: ID!, $title: String!) {
+  issues(
+    filter: { team: { id: { eq: $teamId } }, title: { containsIgnoreCase: $title } }
+    first: 250
+    includeArchived: true
+  ) {
+    nodes { id identifier title url priority dueDate description archivedAt trashed state { type } parent { id } }
+  }
+}`;
+
+/** Issues in any state, archived ones included and deleted ones left out, whose title contains `title`, in one request; throws on error so a failure is never read as "none". */
+async function findIssuesByTitle(title) {
+  const { data } = await linearClient.client.rawRequest(ISSUES_BY_TITLE, {
+    teamId: LINEAR_TEAM_ID,
+    title,
+  });
+  // Deleted issues (in the trash) are left out: deleting a ticket means its items are no longer filed.
+  return data.issues.nodes
+    .filter((issue) => !issue.trashed)
+    .map(({ parent, trashed, ...issue }) => ({ ...issue, parentId: parent?.id || null }));
+}
+
 module.exports = {
   createIssue,
   listIssuesByParent,
   updateIssue,
   updateIssueDescription,
+  createComment,
+  findIssuesByTitle,
   getStateId,
   getUserId,
   getCurrentUserId,

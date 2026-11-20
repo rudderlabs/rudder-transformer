@@ -263,20 +263,20 @@ const ISSUES_BY_TITLE = `query IssuesByTitle($teamId: ID!, $title: String!) {
     first: 250
     includeArchived: true
   ) {
-    nodes { id identifier title url priority dueDate description archivedAt state { type } parent { id } }
+    nodes { id identifier title url priority dueDate description archivedAt trashed state { type } parent { id } }
   }
 }`;
 
-/** Issues in any state, archived ones included, whose title contains `title`, in one request; throws on error so a failure is never read as "none". */
+/** Issues in any state, archived ones included and deleted ones left out, whose title contains `title`, in one request; throws on error so a failure is never read as "none". */
 async function findIssuesByTitle(title) {
   const { data } = await linearClient.client.rawRequest(ISSUES_BY_TITLE, {
     teamId: LINEAR_TEAM_ID,
     title,
   });
-  return data.issues.nodes.map(({ parent, ...issue }) => ({
-    ...issue,
-    parentId: parent?.id || null,
-  }));
+  // Deleted issues (in the trash) are left out: deleting a ticket means its items are no longer filed.
+  return data.issues.nodes
+    .filter((issue) => !issue.trashed)
+    .map(({ parent, trashed, ...issue }) => ({ ...issue, parentId: parent?.id || null }));
 }
 
 module.exports = {

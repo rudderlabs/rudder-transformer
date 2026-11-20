@@ -153,7 +153,7 @@
     "commitizen": "^4.3.0",
     "commitlint": "^19.8.0",
     "esbuild": "^0.28.0",
-    "eslint": "^8.57.1",
+    "eslint": "^10.15.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-config-prettier": "^10.1.8",

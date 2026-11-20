@@ -262,16 +262,18 @@ describe('Topsort validation', () => {
       error: 'Impressions and clicks need properties.resolvedBidId',
     },
     {
-      name: 'a purchase line without a price',
+      name: 'a purchase with no priced line',
       input: makeInput(2, 'Order Completed', {
-        products: [{ product_id: 'paid', price: 10 }, { product_id: 'unpriced' }],
+        products: [{ product_id: 'unpriced' }, { product_id: 'nan', price: 'abc' }],
       }),
-      error: 'Every purchase item needs a numeric price',
+      error: 'No purchase item has a numeric price',
     },
     {
-      name: 'a purchase line with a non-numeric price',
-      input: makeInput(2, 'Order Completed', { products: [{ product_id: 'p', price: 'abc' }] }),
-      error: 'Every purchase item needs a numeric price',
+      name: 'a purchase whose only lines are unpriced or zero-priced',
+      input: makeInput(2, 'Order Completed', {
+        products: [{ product_id: 'unpriced' }, { product_id: 'free', price: 0 }],
+      }),
+      error: 'No purchase item has a numeric price',
     },
   ];
 
@@ -308,12 +310,14 @@ describe('Topsort validation', () => {
   });
 });
 
-describe('Topsort zero-price purchase lines', () => {
-  it('drops only the zero-priced lines of a purchase', async () => {
+describe('Topsort zero-price and unpriced purchase lines', () => {
+  it('drops only the zero-priced and unpriced lines of a purchase', async () => {
     const products = [
       { product_id: 'paid', price: 10, quantity: 1 },
       { product_id: 'free', price: 0, quantity: 1 },
       { product_id: 'free-string', price: '0', quantity: 1 },
+      { product_id: 'unpriced', quantity: 1 },
+      { product_id: 'non-numeric', price: 'abc', quantity: 1 },
     ];
     const results = await run([makeInput(1, 'Order Completed', { products })]);
 

@@ -487,7 +487,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(7)],
               batched: false,
               statusCode: 400,
-              error: 'Every purchase item needs a numeric price',
+              error: 'No purchase item has a numeric price',
               destination,
               statTags: statTags('dataValidation', 'instrumentation'),
             },
@@ -500,10 +500,10 @@ export const data: RouterTestData[] = [
     id: 'topsort-router-zero-price-purchase-lines',
     name: 'topsort',
     description:
-      'Zero-priced purchase lines are dropped, and a purchase with only zero-priced lines is skipped',
+      'Zero-priced and unpriced purchase lines are dropped, and a purchase with only zero-priced lines is skipped',
     scenario: 'Business',
     successCriteria:
-      'The mixed purchase is sent without its zero-priced line; the all-zero purchase returns a 298 (filtered)',
+      'The mixed purchase is sent without its zero-priced and unpriced lines; the all-zero purchase returns a 298 (filtered)',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -513,7 +513,11 @@ export const data: RouterTestData[] = [
           input: [
             {
               message: trackMessage('Order Completed', 'msg-1', {
-                products: [products[0], { product_id: 'product-free', price: 0, quantity: 1 }],
+                products: [
+                  products[0],
+                  { product_id: 'product-free', price: 0, quantity: 1 },
+                  { product_id: 'product-unpriced', quantity: 1 },
+                ],
               }),
               metadata: generateMetadata(1),
               destination,

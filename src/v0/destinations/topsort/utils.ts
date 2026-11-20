@@ -91,21 +91,21 @@ export const buildTopsortEvents = (
   const eventId = getEventId(message);
 
   if (type === 'purchases') {
-    // Lines priced at zero are dropped. A purchase left with no lines is skipped rather than
-    // failed: Topsort rejects a purchase without items (`no_purchase_items`).
+    // Lines priced at zero are dropped. So are lines without a numeric price: Topsort rejects the
+    // whole request for one (`UnitPrice ... failed on the 'required' tag`), and a non-numeric
+    // price maps to NaN, which serializes as null and is rejected the same way.
     const purchasedProducts = products ?? [message];
     const mappedItems = purchasedProducts.map((product) => mapFields(product, purchaseItemMapping));
-    // Topsort rejects the whole request when any line lacks a unit price (`UnitPrice ... failed
-    // on the 'required' tag`). A non-numeric price maps to NaN, which serializes as null and is
-    // rejected the same way.
-    if (
-      mappedItems.some(({ unitPrice }) => typeof unitPrice !== 'number' || Number.isNaN(unitPrice))
-    ) {
-      throw new InstrumentationError('Every purchase item needs a numeric price');
-    }
-    const items = mappedItems.filter(({ unitPrice }) => unitPrice !== 0);
+    const isPriced = ({ unitPrice }: Record<string, unknown>) =>
+      typeof unitPrice === 'number' && !Number.isNaN(unitPrice);
+    const items = mappedItems.filter((item) => isPriced(item) && item.unitPrice !== 0);
+    // A purchase left with no lines can't be sent: Topsort rejects it (`no_purchase_items`). An
+    // all-zero purchase is skipped, as a legitimately free order; a missing price is a data error.
     if (items.length === 0) {
-      throw new FilteredEventsError('Every purchase item has a zero unit price. Skipping event.');
+      if (mappedItems.every(isPriced)) {
+        throw new FilteredEventsError('Every purchase item has a zero unit price. Skipping event.');
+      }
+      throw new InstrumentationError('No purchase item has a numeric price');
     }
     return [{ type, event: { ...basePayload, items, id: eventId } }];
   }

@@ -176,7 +176,6 @@ describe('Context Reset Utilities', () => {
       const expectedApiCalls = [
         ['global', {}],
         ['_ivm', require('isolated-vm')],
-        ['log', expect.any(Function)],
         ['_fetch', expect.any(Object)],
         ['_fetchV2', expect.any(Object)],
         ['_geolocation', expect.any(Object)],
@@ -278,10 +277,8 @@ describe('Context Reset Utilities', () => {
       });
     });
 
-    test('should inject a non-throwing log function', () => {
-      const log = injectedFunctions.log;
-      expect(log).toBeDefined();
-      expect(() => log('Jev classification failed', { reason: 'unavailable' })).not.toThrow();
+    test('should not inject a host log function (bootstrap defines log inside the isolate)', () => {
+      expect(mockJail.set).not.toHaveBeenCalledWith('log', expect.anything());
     });
 
     test('should inject working getCredential function', () => {

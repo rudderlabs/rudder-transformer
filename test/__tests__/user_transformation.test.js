@@ -1272,21 +1272,19 @@ describe("User transformation with IVM cache", () => {
     }
   });
 
-  it('keeps log available in a V1 fail-open branch after a cache hit', async () => {
+  it('exposes the same globals and a working log on cache miss and cache hit', async () => {
     const versionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);
     const respBody = {
       versionId,
       codeVersion: "1",
-      name: "Jev fail-open log regression",
+      name: "sandbox globals parity",
       code: `
         export async function transformEvent(event) {
-          try {
-            throw new Error('Jev unavailable');
-          } catch (error) {
-            log('Jev classification failed; returning original event');
-            return event;
-          }
+          // A function argument cannot be copied to the host, so this throws if log is host-backed.
+          log('fail-open branch', () => 1);
+          event.sandboxGlobals = Object.getOwnPropertyNames(globalThis).sort();
+          return event;
         }
       `
     };
@@ -1297,16 +1295,16 @@ describe("User transformation with IVM cache", () => {
         status: 200,
         json: jest.fn().mockResolvedValue(respBody)
       });
-    const expectedOutput = inputData.map(({ message }) => ({
-      transformedEvent: message,
-      metadata: {}
-    }));
-
     const output = await userTransformHandler(inputData, versionId, []);
     const outputCached = await userTransformHandler(inputData, versionId, []);
 
-    expect(output).toEqual(expectedOutput);
-    expect(outputCached).toEqual(expectedOutput);
+    expect(output).toHaveLength(inputData.length);
+    output.forEach(({ transformedEvent }) => {
+      expect(transformedEvent.sandboxGlobals).toEqual(
+        expect.arrayContaining(['log', 'fetch', 'fetchV2', 'geolocation', 'getCredential']),
+      );
+    });
+    expect(outputCached).toEqual(output);
   });
 
   it(`Simple ${name} async fetchV2 test for V1 transformation - transformEvent`, async () => {

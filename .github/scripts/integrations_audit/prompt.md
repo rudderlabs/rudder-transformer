@@ -12,6 +12,12 @@ The README is the record of what this integration uses. These are its audit sect
 
 Files you may read only when needed (for example, to check whether a changed field is mapped): {{onDemandFiles}}
 
+## Already filed
+
+Items already on this integration's audit tickets, as `key`: title:
+
+{{filedItems}}
+
 ## Steps
 
 1. Fetch the Changelog References links first (Changelog, Deprecations, Versions, Feed, Announcements). Use a feed when there is one, because entries carry dates.
@@ -26,6 +32,7 @@ Rules:
 - Always report auth changes as `breaking`: a new or required auth method, a deprecated or removed one, and token, scope, refresh or expiry rules. Report them even for an auth method this integration doesn't use yet, because moving to it is a breaking change for the integration.
 - Skip other entries about products or endpoints this integration does not use. Count them in `skipped`.
 - If a source can't be fetched, list it in `unreachable` and carry on.
+- Still report a change that is already filed, and set its `sameAs` to that item's key, even if you would word or categorise it differently. Set `sameAs` to null only for a change none of the filed items describes. One announcement can contain several changes: match on the change, not on the link.
 
 ## Output
 
@@ -48,7 +55,8 @@ BEGIN_FINDINGS_JSON
 "announcedOn": "<YYYY-MM-DD or null>",
 "effectiveDate": "<YYYY-MM-DD, YYYY-MM or null>",
 "targetVersion": "<version string, only for version_upgrade, else null>",
-"affects": "<README section, endpoint or file this hits>"
+"affects": "<README section, endpoint or file this hits>",
+"sameAs": "<key from Already filed for the same change, or null>"
 }
 ]
 }

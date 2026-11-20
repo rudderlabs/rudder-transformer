@@ -9,6 +9,8 @@ import {
   extractFindings,
   validateFindings,
   writeSummary,
+  agentEnv,
+  redact,
 } from './run';
 import { AgentResult, AuditRecord, Finding } from './common';
 
@@ -120,4 +122,26 @@ test('summary: shows time and API time, and lists skipped READMEs', () => {
   assert.match(md, /\| am \| ok \| 0 \| 40s \| 31s \|/);
   assert.match(md, /\| hs \| timeout \| – \| 300s \| – \|/);
   assert.match(md, /- foo: missing "### Changelog References"/);
+});
+
+test('the agent gets only the environment it needs, never the runner files', () => {
+  const env = agentEnv({
+    PATH: '/bin',
+    HOME: '/home/runner',
+    CURSOR_API_KEY: 'not-a-real-key',
+    GITHUB_ENV: '/tmp/env',
+    GITHUB_OUTPUT: '/tmp/out',
+    LINEAR_API_KEY: 'lin_api',
+  });
+  assert.deepStrictEqual(env, {
+    PATH: '/bin',
+    HOME: '/home/runner',
+    CURSOR_API_KEY: 'not-a-real-key',
+  });
+});
+
+test('the Cursor key is masked in text written to artifacts', () => {
+  const env = { CURSOR_API_KEY: 'not-a-real-key' };
+  assert.strictEqual(redact('auth not-a-real-key failed', env), 'auth *** failed');
+  assert.strictEqual(redact('nothing to mask', {}), 'nothing to mask');
 });

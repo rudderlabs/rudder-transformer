@@ -258,12 +258,16 @@ async function createComment(issueId, body) {
 }
 
 const ISSUES_BY_TITLE = `query IssuesByTitle($teamId: ID!, $title: String!) {
-  issues(filter: { team: { id: { eq: $teamId } }, title: { containsIgnoreCase: $title } }, first: 250) {
-    nodes { id identifier title url priority dueDate description state { type } parent { id } }
+  issues(
+    filter: { team: { id: { eq: $teamId } }, title: { containsIgnoreCase: $title } }
+    first: 250
+    includeArchived: true
+  ) {
+    nodes { id identifier title url priority dueDate description archivedAt state { type } parent { id } }
   }
 }`;
 
-/** Issues in any state whose title contains `title`, in one request; throws on error so a failure is never read as "none". */
+/** Issues in any state, archived ones included, whose title contains `title`, in one request; throws on error so a failure is never read as "none". */
 async function findIssuesByTitle(title) {
   const { data } = await linearClient.client.rawRequest(ISSUES_BY_TITLE, {
     teamId: LINEAR_TEAM_ID,

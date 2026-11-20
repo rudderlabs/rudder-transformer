@@ -208,6 +208,30 @@ test('an item on a closed ticket is not reopened; a new change after the round c
   assert.match(newSub.description || '', /Key: `a2`/);
 });
 
+test('archived tickets still count as filed, but new items go to a new open round', async () => {
+  const linear = fakeLinear();
+  await applyPlan(planFor('19/11/2026', [sub('authFeature', [item('a1')])]), linear, IDS);
+  linear.issues.forEach((i) => Object.assign(i, { archivedAt: '2027-05-19T00:00:00Z' }));
+
+  const again = await applyPlan(
+    planFor('19/12/2026', [sub('authFeature', [item('a1')])]),
+    linear,
+    IDS,
+  );
+  assert.deepStrictEqual(again.reports[0].created, []);
+  assert.strictEqual(again.reports[0].skippedItems, 1);
+
+  const next = await applyPlan(
+    planFor('19/12/2026', [sub('authFeature', [item('a1'), item('a2')])]),
+    linear,
+    IDS,
+  );
+  assert.deepStrictEqual(
+    next.reports[0].created.map((c) => c.title),
+    ['Zendesk – Integration Audit 19/12/2026', 'Zendesk – authFeature'],
+  );
+});
+
 test('tickets of an integration whose title starts the same are not mixed up', async () => {
   const linear = fakeLinear();
   await linear.create({ title: 'Zendesk Chat – Integration Audit 01/11/2026' });

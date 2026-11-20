@@ -17,6 +17,7 @@ import {
   PlanItem,
   PlannedParent,
   PlannedSubticket,
+  TicketCounts,
 } from './common';
 
 const CLOSED_STATE_TYPES = ['completed', 'canceled'];
@@ -32,6 +33,7 @@ export interface LinearIssue {
   dueDate?: string | null;
   state?: { type?: string } | null;
   parentId?: string | null;
+  archivedAt?: string | null;
 }
 
 export interface IssueFields {
@@ -59,6 +61,9 @@ export interface LinearIds {
 
 interface ParentReport {
   integration: string;
+  integrationTitle: string;
+  /** The open parent the new items went under; unset when nothing was new. */
+  parentUrl?: string;
   created: { title: string; url: string; items?: number }[];
   updated: { title: string; url: string; added: number }[];
   skippedItems: number;
@@ -69,8 +74,9 @@ interface Failure {
   error: string;
 }
 
+/** Archived issues (Linear archives closed ones automatically) still count for dedupe but get no new items. */
 function isOpen(issue: LinearIssue): boolean {
-  return !CLOSED_STATE_TYPES.includes(issue.state?.type || '');
+  return !issue.archivedAt && !CLOSED_STATE_TYPES.includes(issue.state?.type || '');
 }
 
 function issueNumber(issue: LinearIssue): number {
@@ -110,10 +116,19 @@ function appendItems(
   return `${text.slice(0, at)}${block}\n${text.slice(at)}`;
 }
 
-function knownKeys(issues: LinearIssue[]): Set<string> {
-  return new Set(
-    issues.flatMap((i) => [...(i.description || '').matchAll(/Key: `([^`]+)`/g)].map((m) => m[1])),
-  );
+/** An integration's audit parents and their subtickets, in any state. */
+export async function findAuditIssues(
+  client: Pick<LinearClient, 'search'>,
+  integrationTitle: string,
+): Promise<{ parents: LinearIssue[]; subs: LinearIssue[] }> {
+  const title = escapeRegExp(integrationTitle);
+  const parentRe = new RegExp(`^${title} – Integration Audit \\d{2}/\\d{2}/\\d{4}$`);
+  const subRe = new RegExp(`^${title} – (${TYPE_ORDER.join('|')})$`);
+  const found = await client.search(`${integrationTitle} – `);
+  const parents = found.filter((i) => !i.parentId && parentRe.test(i.title));
+  const parentIds = new Set(parents.map((p) => p.id));
+  const subs = found.filter((i) => i.parentId && parentIds.has(i.parentId) && subRe.test(i.title));
+  return { parents, subs };
 }
 
 async function applyParent(
@@ -121,15 +136,13 @@ async function applyParent(
   client: LinearClient,
   ids: LinearIds,
 ): Promise<ParentReport> {
-  const title = escapeRegExp(parent.integrationTitle);
-  const parentRe = new RegExp(`^${title} – Integration Audit \\d{2}/\\d{2}/\\d{4}$`);
-  const subRe = new RegExp(`^${title} – (${TYPE_ORDER.join('|')})$`);
-
-  const found = await client.search(`${parent.integrationTitle} – `);
-  const parents = found.filter((i) => !i.parentId && parentRe.test(i.title));
-  const parentIds = new Set(parents.map((p) => p.id));
-  const subs = found.filter((i) => i.parentId && parentIds.has(i.parentId) && subRe.test(i.title));
-  const seen = knownKeys([...parents, ...subs]);
+  const { parents, subs } = await findAuditIssues(client, parent.integrationTitle);
+  // Any `Key:` line counts, even on an item someone has reworded by hand.
+  const seen = new Set(
+    [...parents, ...subs].flatMap((i) =>
+      [...(i.description || '').matchAll(/Key: `([^`]+)`/g)].map((m) => m[1]),
+    ),
+  );
 
   const pending = parent.subtickets
     .map((s) => ({ ...s, items: s.items.filter((i) => !seen.has(i.key)) }))
@@ -138,6 +151,7 @@ async function applyParent(
     subtickets.reduce((n, s) => n + s.items.length, 0);
   const report: ParentReport = {
     integration: parent.integration,
+    integrationTitle: parent.integrationTitle,
     created: [],
     updated: [],
     skippedItems: countItems(parent.subtickets) - countItems(pending),
@@ -157,6 +171,7 @@ async function applyParent(
     report.created.push({ title: parent.title, url: openParent.url });
   }
   const parentId = openParent.id;
+  report.parentUrl = openParent.url;
 
   for (const sub of pending) {
     const open = subs.find((i) => i.parentId === parentId && isOpen(i) && i.title === sub.title);
@@ -240,7 +255,7 @@ function toMarkdown({
 }
 
 /** linearApi.js reads its credentials when loaded, so it is required only when tickets are applied. */
-function linearClient(): { client: LinearClient; ids: LinearIds } {
+export function linearClient(): { client: LinearClient; ids: LinearIds } {
   // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
   const api = require('../linearApi');
   return {
@@ -264,6 +279,16 @@ async function main(): Promise<void> {
   const result = await applyPlan(planJson, client, ids);
   const md = toMarkdown(result);
   fs.writeFileSync(path.join(outDir, 'tickets.md'), md);
+  const counts: TicketCounts = {
+    created: result.reports.reduce((n, r) => n + r.created.length, 0),
+    updated: result.reports.reduce((n, r) => n + r.updated.length, 0),
+    skippedItems: result.reports.reduce((n, r) => n + r.skippedItems, 0),
+    failed: result.failures.map((f) => f.integration),
+    changed: result.reports.flatMap((r) =>
+      r.parentUrl ? [{ title: r.integrationTitle, url: r.parentUrl }] : [],
+    ),
+  };
+  fs.writeFileSync(path.join(outDir, 'tickets.json'), `${JSON.stringify(counts, null, 2)}\n`);
   process.stdout.write(md);
   if (result.failures.length) process.exit(1);
 }

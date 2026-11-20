@@ -9,6 +9,8 @@ updates:
     schedule:
       interval: 'daily'
   - package-ecosystem: 'npm'
-    directory: '/'
+    directories:
+      - '/'
+      - '/.github/scripts/integrations_audit' # tools of the Integration Audit workflow
     schedule:
       interval: 'daily'

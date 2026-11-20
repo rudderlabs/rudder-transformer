@@ -1,4 +1,5 @@
 // Shared by the audit scripts: the change taxonomy, types, small helpers and the ticket item format.
+import fs from 'fs';
 import path from 'path';
 
 export const REPO_ROOT = path.resolve(__dirname, '../../..');
@@ -37,6 +38,8 @@ export interface Finding {
   effectiveDate?: string | null;
   targetVersion?: string | null;
   affects?: string;
+  /** Key of an already filed item that describes the same change, or null for a new change. */
+  sameAs?: string | null;
 }
 
 export interface AgentResult {
@@ -79,6 +82,35 @@ export interface PlanItem {
   key: string;
   priority: number;
   dueDate: string | null;
+}
+
+/** An item already on an integration's audit tickets, as read back from Linear. */
+export interface FiledItem {
+  key: string;
+  title: string;
+}
+
+export function filedItemsPath(outDir: string, integration: string): string {
+  return path.join(outDir, 'filed', `${integration}.json`);
+}
+
+/** Filed items written by filed-items.ts; none when that step didn't run (tickets off). */
+export function readFiledItems(outDir: string, integration: string): FiledItem[] {
+  try {
+    return JSON.parse(fs.readFileSync(filedItemsPath(outDir, integration), 'utf8'));
+  } catch {
+    return [];
+  }
+}
+
+/** What create-tickets.ts writes to tickets.json, for the Slack message. */
+export interface TicketCounts {
+  created: number;
+  updated: number;
+  skippedItems: number;
+  failed: string[];
+  /** Integrations that got new items, with their parent ticket. */
+  changed: { title: string; url: string }[];
 }
 
 export type LabelKey = 'KTLO' | 'VersionUpgrade';
@@ -169,4 +201,11 @@ export function itemMarkdown(item: ItemForMarkdown): string {
   const when = item.effectiveDate ? ` (effective ${item.effectiveDate})` : '';
   const source = item.announcementUrl ? `Source: ${item.announcementUrl} · ` : '';
   return `- [ ] **${item.title}**${when}: ${item.summary}\n  ${source}Key: \`${item.key}\``;
+}
+
+/** Items in a ticket description, parsed from the format `itemMarkdown` writes. */
+export function parseItems(description: string | null | undefined): FiledItem[] {
+  return [...(description || '').matchAll(/^- \[[ xX]\] \*\*(.+?)\*\*.*\n.*Key: `([^`]+)`/gm)].map(
+    (m) => ({ title: m[1], key: m[2] }),
+  );
 }

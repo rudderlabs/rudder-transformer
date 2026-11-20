@@ -237,3 +237,20 @@ export function discover(repoRoot: string): string[] {
   }
   return dirs.sort();
 }
+
+/** Integrations to audit: all with a README, or the `only` ones; `skipped` have a README that isn't audit-ready. */
+export function selectIntegrations(
+  repoRoot: string,
+  only: string[] | null,
+): { ready: Integration[]; skipped: Integration[] } {
+  let integrations = discover(repoRoot).map((d) => readIntegration(repoRoot, d));
+  if (only) {
+    const missing = only.filter((n) => !integrations.some((i) => i.name === n));
+    if (missing.length) throw new Error(`No README for: ${missing.join(', ')}`);
+    integrations = integrations.filter((i) => only.includes(i.name));
+  }
+  return {
+    ready: integrations.filter((i) => !i.problems.length),
+    skipped: integrations.filter((i) => i.problems.length),
+  };
+}

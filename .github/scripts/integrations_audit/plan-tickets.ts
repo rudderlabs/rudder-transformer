@@ -3,7 +3,8 @@
 // Usage: tsx plan-tickets.ts [--out audit-out]
 import fs from 'fs';
 import path from 'path';
-import { readIntegration, Integration } from './readme';
+import { discover, readIntegration, Integration } from './readme';
+import { validateFindings } from './run';
 import {
   REPO_ROOT,
   TYPE_BY_CATEGORY,
@@ -15,7 +16,10 @@ import {
   earliest,
   readmeLine,
   itemMarkdown,
+  readFiledItems,
   AuditRecord,
+  FiledItem,
+  RunStatus,
   Plan,
   PlanItem,
   PlannedParent,
@@ -25,7 +29,7 @@ import {
 const DAY = 86400000;
 const PRIORITY_NAMES: Record<number, string> = { 1: 'Urgent', 2: 'High', 3: 'Medium', 4: 'Low' };
 
-type UnkeyedItem = Omit<PlanItem, 'key' | 'priority' | 'dueDate'>;
+type UnkeyedItem = Omit<PlanItem, 'key' | 'priority' | 'dueDate'> & { sameAs?: string | null };
 
 /** A YYYY-MM date counts from the first of the month, the earliest it could take effect. */
 function parseDate(value: string | null | undefined): Date | null {
@@ -98,9 +102,28 @@ export function itemKey(item: UnkeyedItem, indexUrls: Set<string>): string {
   return indexUrls.has(url) ? `url:${url}#${slug(item.title)}` : `url:${url}`;
 }
 
-function itemsFor(
+/**
+ * A finding the agent matched to a filed item keeps that item's key, so it isn't filed again.
+ * A new change whose link is already used (by a filed item or another finding) gets the category,
+ * then the title, added to its key: one announcement can carry several changes.
+ */
+function agentKey(
+  item: UnkeyedItem,
+  indexUrls: Set<string>,
+  taken: (key: string) => boolean,
+  filedKeys: Set<string>,
+): string {
+  if (item.sameAs && filedKeys.has(item.sameAs)) return item.sameAs;
+  const key = itemKey(item, indexUrls);
+  if (!key.startsWith('url:')) return key;
+  const options = [key, `${key}#${item.category}`, `${key}#${item.category}#${slug(item.title)}`];
+  return options.find((k) => !taken(k)) || options[options.length - 1];
+}
+
+export function itemsFor(
   record: AuditRecord,
   integration: Integration,
+  filed: FiledItem[] = [],
 ): (UnkeyedItem & { key: string })[] {
   const agentItems: UnkeyedItem[] = (record.result?.findings || []).map((f) => ({
     ...f,
@@ -116,29 +139,72 @@ function itemsFor(
       r.impact !== 'version_upgrade' || !agentTargets.has((r.targetVersion || '').toLowerCase()),
   );
   const indexUrls = new Set(integration.changelogIndexUrls.map(normUrl));
+  const filedKeys = new Set(filed.map((f) => f.key));
+  const used = new Set<string>();
+  const taken = (key: string) => filedKeys.has(key) || used.has(key);
+  const keyed = [
+    ...agentItems.map((i) => {
+      const key = agentKey(i, indexUrls, taken, filedKeys);
+      used.add(key);
+      return { ...i, key };
+    }),
+    ...readmeItems.map((i) => ({ ...i, key: itemKey(i, indexUrls) })),
+  ];
   const seen = new Set<string>();
-  return [...agentItems, ...readmeItems]
-    .map((i) => ({ ...i, key: itemKey(i, indexUrls) }))
-    .filter((i) => !seen.has(i.key) && Boolean(seen.add(i.key)));
+  return keyed.filter((i) => !seen.has(i.key) && Boolean(seen.add(i.key)));
+}
+
+const STATUSES: RunStatus[] = ['ok', 'timeout', 'agent_error', 'invalid_output'];
+
+export interface LoadedRecord {
+  name: string;
+  status: RunStatus;
+  error?: string;
+  record?: AuditRecord;
+  integration?: Integration;
+}
+
+/**
+ * Reads findings/*.json. They come from the agent's job, so they are untrusted data: only files named
+ * after an integration of this checkout count, its README and title come from the checkout, and the
+ * findings are validated again.
+ */
+export function loadRecords(outDir: string): LoadedRecord[] {
+  const dirs = new Map(discover(REPO_ROOT).map((d) => [path.basename(d), d]));
+  const findingsDir = path.join(outDir, 'findings');
+  const files = fs.existsSync(findingsDir) ? fs.readdirSync(findingsDir) : [];
+  return files.flatMap((file): LoadedRecord[] => {
+    const name = file.replace(/\.json$/, '');
+    const dir = dirs.get(name);
+    if (!file.endsWith('.json') || !dir) return [];
+    let record: AuditRecord;
+    try {
+      record = JSON.parse(fs.readFileSync(path.join(findingsDir, file), 'utf8'));
+    } catch {
+      return [{ name, status: 'invalid_output', error: 'unreadable findings file' }];
+    }
+    const status = STATUSES.includes(record.status) ? record.status : 'invalid_output';
+    if (status !== 'ok') return [{ name, status, error: String(record.error || '').slice(0, 500) }];
+    const errors =
+      record.integration !== name || !record.result
+        ? ['findings belong to another integration']
+        : validateFindings(record.result, name);
+    if (errors.length) return [{ name, status: 'invalid_output', error: errors.join('; ') }];
+    return [{ name, status, record, integration: readIntegration(REPO_ROOT, dir) }];
+  });
 }
 
 export function plan(outDir: string, today: Date): Plan {
-  const findingsDir = path.join(outDir, 'findings');
-  const records: AuditRecord[] = fs
-    .readdirSync(findingsDir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => JSON.parse(fs.readFileSync(path.join(findingsDir, f), 'utf8')));
   const dateTag = isoDate(today).split('-').reverse().join('/');
-
   const parents: PlannedParent[] = [];
   const failed: Plan['failed'] = [];
-  for (const record of records) {
-    if (record.status !== 'ok') {
-      failed.push({ integration: record.integration, status: record.status, error: record.error });
+  for (const loaded of loadRecords(outDir)) {
+    const { record, integration } = loaded;
+    if (!record || !integration) {
+      failed.push({ integration: loaded.name, status: loaded.status, error: loaded.error });
       continue;
     }
-    const integration = readIntegration(REPO_ROOT, path.dirname(record.readmePath));
-    const items = itemsFor(record, integration);
+    const items = itemsFor(record, integration, readFiledItems(outDir, integration.name));
     if (!items.length) continue;
 
     const subtickets = TYPE_ORDER.flatMap((type): PlannedSubticket[] => {
@@ -148,7 +214,7 @@ export function plan(outDir: string, today: Date): Plan {
       if (!typed.length) return [];
       return [
         {
-          title: `${record.title} – ${type}`,
+          title: `${integration.title} – ${type}`,
           type,
           priority: typed.map((i) => i.priority).reduce(mostUrgent),
           dueDate: typed.map((i) => i.dueDate).reduce<string | null>(earliest, null),
@@ -159,10 +225,10 @@ export function plan(outDir: string, today: Date): Plan {
     });
 
     parents.push({
-      integration: record.integration,
-      integrationTitle: record.title,
-      readmePath: record.readmePath,
-      title: `${record.title} – Integration Audit ${dateTag}`,
+      integration: integration.name,
+      integrationTitle: integration.title,
+      readmePath: integration.readmePath,
+      title: `${integration.title} – Integration Audit ${dateTag}`,
       subtickets,
     });
   }

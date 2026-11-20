@@ -5,14 +5,16 @@
 import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
-import { discover, readIntegration, Integration } from './readme';
+import { selectIntegrations, Integration } from './readme';
 import {
   REPO_ROOT,
   CATEGORIES,
   IMPACTS,
   isoDate,
   pool,
+  readFiledItems,
   AgentResult,
+  FiledItem,
   AuditRecord,
   Category,
   Impact,
@@ -54,7 +56,12 @@ export function parseArgs(argv: string[]): Options {
   };
 }
 
-export function buildPrompt(template: string, integration: Integration, opts: Options): string {
+export function buildPrompt(
+  template: string,
+  integration: Integration,
+  opts: Pick<Options, 'lookbackDays' | 'maxFetches' | 'maxSearches'>,
+  filed: FiledItem[] = [],
+): string {
   const today = new Date();
   const since = new Date(today.getTime() - opts.lookbackDays * 86400000);
   const values: Record<string, string | number> = {
@@ -74,6 +81,7 @@ export function buildPrompt(template: string, integration: Integration, opts: Op
     onDemandFiles: integration.onDemandFiles.map((f) => `\`${f}\``).join(', ') || 'none',
     maxFetches: opts.maxFetches,
     maxSearches: opts.maxSearches,
+    filedItems: filed.map((f) => `- \`${f.key}\`: ${f.title}`).join('\n') || 'none',
   };
   return template.replace(/\{\{(\w+)\}\}/g, (_, k: string) => String(values[k]));
 }
@@ -111,11 +119,25 @@ interface ProcessResult {
   durationMs: number;
 }
 
+/** Environment variables the agent gets; everything else (GITHUB_ENV, GITHUB_OUTPUT, …) is withheld. */
+const AGENT_ENV_KEYS = ['PATH', 'HOME', 'USER', 'SHELL', 'TMPDIR', 'LANG', 'CURSOR_API_KEY'];
+
+export function agentEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  return Object.fromEntries(AGENT_ENV_KEYS.filter((k) => env[k]).map((k) => [k, env[k]]));
+}
+
+/** Masks the agent's API key in text that is written to the (public) run artifacts. */
+export function redact(text: string, env: NodeJS.ProcessEnv = process.env): string {
+  const key = env.CURSOR_API_KEY;
+  return key && key.length >= 8 ? text.split(key).join('***') : text;
+}
+
 function runCursor(prompt: string, opts: Options): Promise<ProcessResult> {
   return new Promise((resolve) => {
     const started = Date.now();
     const child = spawn('cursor-agent', cursorArgs(prompt, opts.model), {
       cwd: REPO_ROOT,
+      env: agentEnv(process.env),
       detached: true,
       stdio: ['ignore', 'pipe', 'pipe'],
     });
@@ -169,7 +191,8 @@ async function auditOne(
   template: string,
   opts: Options,
 ): Promise<AuditRecord> {
-  const prompt = buildPrompt(template, integration, opts);
+  const filed = readFiledItems(path.resolve(REPO_ROOT, opts.out), integration.name);
+  const prompt = buildPrompt(template, integration, opts, filed);
   const run = await runCursor(prompt, opts);
   const base = {
     integration: integration.name,
@@ -236,16 +259,9 @@ async function main(): Promise<void> {
   const outDir = path.resolve(REPO_ROOT, opts.out);
   fs.mkdirSync(path.join(outDir, 'findings'), { recursive: true });
 
-  let integrations = discover(REPO_ROOT).map((d) => readIntegration(REPO_ROOT, d));
-  const { only } = opts;
-  if (only) {
-    const missing = only.filter((n) => !integrations.some((i) => i.name === n));
-    if (missing.length) throw new Error(`No README for: ${missing.join(', ')}`);
-    integrations = integrations.filter((i) => only.includes(i.name));
-  }
-  const skipped = integrations.filter((i) => i.problems.length);
-  let ready = integrations.filter((i) => !i.problems.length);
-  if (opts.limit) ready = ready.slice(0, opts.limit);
+  const selected = selectIntegrations(REPO_ROOT, opts.only);
+  const { skipped } = selected;
+  const ready = opts.limit ? selected.ready.slice(0, opts.limit) : selected.ready;
 
   const template = fs.readFileSync(path.join(__dirname, 'prompt.md'), 'utf8');
   console.log(`Auditing ${ready.length} integrations (skipped ${skipped.length})`);
@@ -253,13 +269,18 @@ async function main(): Promise<void> {
     const record = await auditOne(integration, template, opts);
     fs.writeFileSync(
       path.join(outDir, 'findings', `${integration.name}.json`),
-      `${JSON.stringify(record, null, 2)}\n`,
+      `${redact(JSON.stringify(record, null, 2))}\n`,
     );
     console.log(`${record.status.padEnd(14)} ${integration.name} ${seconds(record.durationMs)}`);
     return record;
   });
   writeSummary(outDir, records, skipped, opts);
   console.log(`Summary: ${path.join(outDir, 'summary.md')}`);
+  // Every call failing means a setup problem (key, usage limit, CLI), not partner news: fail the run.
+  if (records.length && !records.some((r) => r.status === 'ok')) {
+    console.error('No integration was audited; see the statuses above.');
+    process.exitCode = 1;
+  }
 }
 
 if (require.main === module) {

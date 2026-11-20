@@ -180,8 +180,9 @@ jobs:
           path: audit-out/filed
 
       # The agent reads untrusted partner pages and has a shell, so it runs in a container: non-root,
-      # no capabilities, the checkout read-only, only audit-out writable, and only the Cursor key passed.
-      # The runner's token, the code of later steps and host sudo stay out of reach.
+      # no capabilities, read-only root and checkout (only audit-out and tmpfs writable), process and
+      # memory limits (4 agents run in parallel), and only the Cursor key passed. The runner's token,
+      # the code of later steps and host sudo stay out of reach.
       - name: Audit integrations
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
@@ -196,7 +197,9 @@ jobs:
           mkdir -p audit-out
           chmod -R a+rwX audit-out
           status=0
-          docker run --rm --user node --cap-drop ALL --security-opt no-new-privileges \
+          docker run --rm --init --user node --cap-drop ALL --security-opt no-new-privileges \
+            --read-only --tmpfs /tmp --tmpfs /home/node:uid=1000,gid=1000 \
+            --pids-limit 512 --memory 4g \
             -e CURSOR_API_KEY \
             -e PATH=/tools/node_modules/.bin:/cursor-cli:/usr/local/bin:/usr/bin:/bin \
             -v "$PWD:/repo:ro" -v "$PWD/audit-out:/repo/audit-out" \

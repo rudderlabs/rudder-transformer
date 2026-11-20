@@ -104,6 +104,21 @@ export function itemKey(item: UnkeyedItem, indexUrls: Set<string>): string {
 }
 
 /**
+ * The filed key the agent's `sameAs` names. It may carry the title after the key (`<key>: <title>`, the
+ * way filed items are listed in the prompt), so the longest filed key it starts with counts.
+ */
+export function filedKeyOf(
+  sameAs: string | null | undefined,
+  filedKeys: Set<string>,
+): string | undefined {
+  const value = (sameAs || '').replace(/`/g, '').trim();
+  if (filedKeys.has(value)) return value;
+  return [...filedKeys]
+    .filter((k) => value.startsWith(`${k}:`) || value.startsWith(`${k} `))
+    .sort((a, b) => b.length - a.length)[0];
+}
+
+/**
  * Key of a new change. One whose link is already used (by a filed item or another finding) gets
  * the category, then the title, added to its key: one announcement can carry several changes.
  */
@@ -143,8 +158,7 @@ export function itemsFor(
   const keyed = [
     ...agentItems.map((i) => {
       // A finding the agent matched to a filed item keeps that item's key, so it isn't filed again.
-      const key =
-        i.sameAs && filedKeys.has(i.sameAs) ? i.sameAs : newChangeKey(i, indexUrls, taken);
+      const key = filedKeyOf(i.sameAs, filedKeys) ?? newChangeKey(i, indexUrls, taken);
       used.add(key);
       return { ...i, key };
     }),

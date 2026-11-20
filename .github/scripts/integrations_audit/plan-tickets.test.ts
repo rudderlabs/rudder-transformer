@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { itemsFor, loadRecords } from './plan-tickets';
+import { itemsFor, loadRecords, filedKeyOf } from './plan-tickets';
 import { filedItems } from './filed-items';
 import { itemMarkdown, parseItems, AuditRecord, Finding } from './common';
 import { Integration } from './readme';
@@ -232,4 +232,18 @@ test('findings are untrusted: unknown files, wrong owners and bad statuses are n
   assert.strictEqual(byName.hs.status, 'invalid_output');
   assert.strictEqual(byName.klaviyo.status, 'invalid_output');
   assert.strictEqual(byName.marketo.status, 'invalid_output');
+});
+
+test('a sameAs with the title after the key still matches the filed key', () => {
+  const keys = new Set(['url:https://p.example/pixel', 'url:https://p.example/pixel#auth']);
+  assert.strictEqual(
+    filedKeyOf('url:https://p.example/pixel: New ad accounts get no Pixel', keys),
+    'url:https://p.example/pixel',
+  );
+  assert.strictEqual(
+    filedKeyOf('`url:https://p.example/pixel#auth`', keys),
+    'url:https://p.example/pixel#auth',
+  );
+  assert.strictEqual(filedKeyOf('url:https://p.example/pixel-other', keys), undefined);
+  assert.strictEqual(filedKeyOf(null, keys), undefined);
 });

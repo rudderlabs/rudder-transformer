@@ -45,14 +45,6 @@ concurrency:
   group: integrations-audit
   cancel-in-progress: false
 
-env:
-  # Cursor CLI release and the sha256 Cursor publishes next to each tarball (<url>.sha256).
-  CURSOR_CLI_VERSION: 2026.11.19-f005e9d
-  CURSOR_CLI_SHA256_X64: a25986eaf0c9330aeeec599a139711cb9f267c64562d073a72b751edf5161695
-  CURSOR_CLI_SHA256_ARM64: 5ff05be0d7c0b7754574dbcd677c35254a3ff190ed6457e71bbee0f276237e29
-  # The agent runs in this image (Node from .nvmrc, with curl and git for the agent's shell).
-  AGENT_IMAGE: node:22.23.4-bookworm@sha256:7702d8aa4d5910871692af4480eb3ba86f23047a6417a44d857d06c95d060d3f
-
 jobs:
   filed:
     name: Read filed audit items
@@ -123,34 +115,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .nvmrc
-
-      # Only the audit tools (tsx, @linear/sdk) from their own lockfile, not the repo's dependencies.
-      # The same in every job: each job sets up its own tools, so the agent's job can't change them.
-      - name: Install audit tools
-        run: |
-          mkdir -p "$RUNNER_TEMP/tools"
-          cp .github/scripts/integrations_audit/package.json .github/scripts/integrations_audit/package-lock.json "$RUNNER_TEMP/tools/"
-          npm ci --prefix "$RUNNER_TEMP/tools" --ignore-scripts --no-audit --no-fund
-          echo "$RUNNER_TEMP/tools/node_modules/.bin" >> "$GITHUB_PATH"
-
-      # A pinned release, checked against Cursor's published sha256, instead of `curl | bash`.
-      - name: Install Cursor CLI
-        run: |
-          case "$(uname -m)" in
-            x86_64) arch=x64; sum="$CURSOR_CLI_SHA256_X64" ;;
-            aarch64 | arm64) arch=arm64; sum="$CURSOR_CLI_SHA256_ARM64" ;;
-            *) echo "Unsupported runner architecture $(uname -m)" >&2; exit 1 ;;
-          esac
-          tarball="$RUNNER_TEMP/cursor-cli.tar.gz"
-          curl -fsSL "https://downloads.cursor.com/lab/$CURSOR_CLI_VERSION/linux/$arch/agent-cli-package.tar.gz" -o "$tarball"
-          echo "$sum  $tarball" | sha256sum -c -
-          dir="$RUNNER_TEMP/cursor-cli"
-          mkdir -p "$dir"
-          tar --strip-components=1 -xzf "$tarball" -C "$dir"
+      # The agent's environment (Node, pinned Cursor CLI, audit tools) is the image in
+      # .github/scripts/integrations_audit/Dockerfile, built here before any secret is used.
+      - name: Build the agent image
+        run: docker build -t integrations-audit-agent .github/scripts/integrations_audit
 
       # The audit agent researches and reports; it never needs to change the repo:
       # - Cursor loads CLAUDE.md/AGENTS.md as instructions and runs Claude Code hooks from .claude/settings.json;
@@ -201,10 +169,8 @@ jobs:
             --read-only --tmpfs /tmp --tmpfs /home/node:uid=1000,gid=1000 \
             --pids-limit 512 --memory 4g \
             -e CURSOR_API_KEY \
-            -e PATH=/tools/node_modules/.bin:/cursor-cli:/usr/local/bin:/usr/bin:/bin \
             -v "$PWD:/repo:ro" -v "$PWD/audit-out:/repo/audit-out" \
-            -v "$RUNNER_TEMP/tools:/tools:ro" -v "$RUNNER_TEMP/cursor-cli:/cursor-cli" \
-            -w /repo "$AGENT_IMAGE" \
+            integrations-audit-agent \
             tsx .github/scripts/integrations_audit/run.ts "${args[@]}" || status=$?
           if [ -f audit-out/summary.md ]; then cat audit-out/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
           exit "$status"

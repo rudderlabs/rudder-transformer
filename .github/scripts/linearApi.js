@@ -1,5 +1,4 @@
-// Linear API helper for Integration SDK Version Audit workflow
-// Reference implementation using @linear/sdk
+// Linear API helper for the Integration Audit workflow (.github/scripts/integrations_audit), using @linear/sdk.
 
 const LINEAR_API_KEY = process.env.LINEAR_API_KEY;
 const LINEAR_TEAM_ID = process.env.LINEAR_TEAM_ID;
@@ -14,145 +13,10 @@ if (!LINEAR_TEAM_ID) {
 const { LinearClient } = require('@linear/sdk');
 const linearClient = new LinearClient({ apiKey: LINEAR_API_KEY });
 
-const OPEN_STATES = ['Queued', 'In Progress', 'Todo', 'Backlog', 'Triage'];
-
-// Hardcoded Linear IDs for master ticket creation
+// Linear IDs the audit tickets use
 const MAINTENANCE_PROJECT_ID = 'f99cafb5-7d4a-4549-8c77-afe2644feba9'; // Integrations: Maintenance Project
 const KTLO_LABEL_ID = '68c1ca4f-cc21-4c28-9ce5-618a8b39c788'; // Type: KTLO
 const VERSION_UPGRADE_LABEL_ID = '2ee64e36-d577-4b4b-9ae4-e7292db061d4'; // KTLO Type: VersionUpgrade
-
-async function getStateId(stateName, teamId) {
-  try {
-    const team = await linearClient.team(teamId);
-    const states = await team.states();
-    const state = states.nodes.find((s) => s.name.toLowerCase() === stateName.toLowerCase());
-    if (!state) {
-      console.warn(
-        `State "${stateName}" not found. Available states: ${states.nodes.map((s) => s.name).join(', ')}`,
-      );
-      return null;
-    }
-    return state.id;
-  } catch (error) {
-    console.error(`Error fetching state ID for "${stateName}":`, error.message);
-    return null;
-  }
-}
-
-async function getCurrentUserId() {
-  try {
-    const viewer = await linearClient.viewer;
-    return viewer?.id || null;
-  } catch (error) {
-    console.error('Error fetching current user ID:', error.message);
-    return null;
-  }
-}
-
-async function getUserId(userName) {
-  try {
-    const users = await linearClient.users();
-    const user = users.nodes.find(
-      (u) =>
-        u.name?.toLowerCase().includes(userName.toLowerCase()) ||
-        u.displayName?.toLowerCase().includes(userName.toLowerCase()) ||
-        u.email?.toLowerCase().includes(userName.toLowerCase()),
-    );
-    return user?.id || null;
-  } catch (error) {
-    console.error(`Error fetching user ID for "${userName}":`, error.message);
-    return null;
-  }
-}
-
-async function getCurrentCycleId(teamId) {
-  try {
-    const team = await linearClient.team(teamId);
-    const cycle = await team.activeCycle;
-    return cycle?.id || null;
-  } catch (error) {
-    console.error('Error fetching current cycle ID:', error.message);
-    return null;
-  }
-}
-
-async function searchIssues({ titleContains, teamId, states, limit = 50 }) {
-  try {
-    const filter = {
-      team: { id: { eq: teamId || LINEAR_TEAM_ID } },
-      title: { containsIgnoreCase: titleContains },
-    };
-    if (states && states.length > 0) {
-      filter.state = { name: { in: states } };
-    }
-    const issues = await linearClient.issues({ filter, first: limit });
-    return Promise.all(
-      issues.nodes.map(async (issue) => {
-        const state = await issue.state;
-        const parent = await issue.parent;
-        return {
-          id: issue.id,
-          identifier: issue.identifier,
-          title: issue.title,
-          priority: issue.priority,
-          url: issue.url,
-          dueDate: issue.dueDate,
-          state: { name: state?.name },
-          parentId: parent?.id || null,
-        };
-      }),
-    );
-  } catch (error) {
-    console.error(`Error searching issues with title "${titleContains}":`, error.message);
-    return [];
-  }
-}
-
-async function findOpenAuditMasterTicket() {
-  const results = await searchIssues({
-    titleContains: 'Integration Version Audit [Rudder Transformer]',
-    states: OPEN_STATES,
-  });
-  // Filter to only top-level tickets (no parent) and sort by highest issue number
-  const getNumber = (id) => parseInt(id.replace(/\D+/g, ''), 10) || 0;
-  const masterTickets = results
-    .filter((issue) => !issue.parentId)
-    .sort((a, b) => getNumber(b.identifier) - getNumber(a.identifier));
-  return masterTickets.length > 0 ? masterTickets[0] : null;
-}
-
-async function findOpenSubticketByIntegration(parentId, integrationName) {
-  const results = await searchIssues({
-    titleContains: `${integrationName} Version Audit`,
-    states: OPEN_STATES,
-  });
-  return results.find((issue) => issue.parentId === parentId) || null;
-}
-
-async function findOpenSubticketGlobally(integrationName) {
-  // Find all open audit master tickets to validate parentage
-  const masterResults = await searchIssues({
-    titleContains: 'Integration Version Audit [Rudder Transformer]',
-    states: OPEN_STATES,
-  });
-  const auditMasterIds = new Set(
-    masterResults.filter((issue) => !issue.parentId).map((issue) => issue.id),
-  );
-
-  // Search for matching subtickets
-  const results = await searchIssues({
-    titleContains: `${integrationName} Version Audit`,
-    states: OPEN_STATES,
-  });
-
-  // Only accept subtickets whose parent is an audit master, pick newest
-  const getNumber = (id) => parseInt(id.replace(/\D+/g, ''), 10) || 0;
-  const validSubs = results
-    .filter((issue) => issue.parentId && auditMasterIds.has(issue.parentId))
-    .sort((a, b) => getNumber(b.identifier) - getNumber(a.identifier));
-
-  return validSubs.length > 0 ? validSubs[0] : null;
-}
 
 async function createIssue({
   title,
@@ -200,32 +64,6 @@ async function createIssue({
   }
 }
 
-async function listIssuesByParent(parentId, limit = 250) {
-  try {
-    const issues = await linearClient.issues({
-      filter: { parent: { id: { eq: parentId } } },
-      first: limit,
-    });
-    return Promise.all(
-      issues.nodes.map(async (issue) => {
-        const state = await issue.state;
-        return {
-          id: issue.id,
-          identifier: issue.identifier,
-          title: issue.title,
-          priority: issue.priority,
-          url: issue.url,
-          dueDate: issue.dueDate,
-          state: { name: state?.name },
-        };
-      }),
-    );
-  } catch (error) {
-    console.error(`Error listing issues by parent "${parentId}":`, error.message);
-    throw error;
-  }
-}
-
 async function updateIssue(issueId, fields) {
   try {
     const result = await linearClient.updateIssue(issueId, fields);
@@ -246,10 +84,6 @@ async function updateIssue(issueId, fields) {
     console.error(`Error updating issue "${issueId}":`, error.message);
     throw error;
   }
-}
-
-async function updateIssueDescription(issueId, description) {
-  return updateIssue(issueId, { description });
 }
 
 async function createComment(issueId, body) {
@@ -281,19 +115,9 @@ async function findIssuesByTitle(title) {
 
 module.exports = {
   createIssue,
-  listIssuesByParent,
   updateIssue,
-  updateIssueDescription,
   createComment,
   findIssuesByTitle,
-  getStateId,
-  getUserId,
-  getCurrentUserId,
-  getCurrentCycleId,
-  searchIssues,
-  findOpenAuditMasterTicket,
-  findOpenSubticketByIntegration,
-  findOpenSubticketGlobally,
   MAINTENANCE_PROJECT_ID,
   KTLO_LABEL_ID,
   VERSION_UPGRADE_LABEL_ID,

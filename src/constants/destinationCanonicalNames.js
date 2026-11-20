@@ -191,6 +191,7 @@ const DestCanonicalNames = {
   airship: ['airship', 'Airship', 'AIRSHIP'],
   singular: ['Singular'],
   adj: ['Adjust', 'ADJ', 'adjust', 'adj'],
+  af: ['AppsFlyer', 'AF', 'appsflyer', 'af'],
 };
 
 module.exports = {

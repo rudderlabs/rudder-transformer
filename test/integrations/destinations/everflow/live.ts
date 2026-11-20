@@ -8,21 +8,22 @@ const CLICK_RESOURCE = 'everflow-click';
 // keepAlive:false so the click socket doesn't linger as an open handle.
 const agent = new Agent({ keepAlive: false });
 
+const offerParams = (ctx: RunContext) => ({
+  oid: requiredResourceId(ctx.liveSecret, DEST, 'offerId', 'the test offer id (oid)'),
+  affid: requiredResourceId(
+    ctx.liveSecret,
+    DEST,
+    'affiliateId',
+    'a partner id (affid) with access to the offer',
+  ),
+});
+
 // A stored transaction_id stops converting once its click ages past the offer's attribution
 // window, so mint a fresh click every run via the tracking domain's JS SDK click endpoint.
 const mintClick = async (ctx: RunContext): Promise<void> => {
   const { origin } = new URL(String(ctx.liveSecret.config.postbackUrl));
   const { data } = await axios.get<{ transaction_id?: string }>(`${origin}/sdk/click`, {
-    params: {
-      oid: requiredResourceId(ctx.liveSecret, DEST, 'offerId', 'the test offer id (oid)'),
-      affid: requiredResourceId(
-        ctx.liveSecret,
-        DEST,
-        'affiliateId',
-        'a partner id (affid) with access to the offer',
-      ),
-      async: 'json',
-    },
+    params: { ...offerParams(ctx), async: 'json' },
     httpsAgent: agent,
   });
   if (!data.transaction_id) {
@@ -41,12 +42,12 @@ const transactionId = (ctx: RunContext): string => {
   return click.id;
 };
 
-const trackEvent = (ctx: RunContext, id: string, suffix: string) => ({
+const trackEvent = (ctx: RunContext, properties: Record<string, unknown>, suffix: string) => ({
   type: 'track',
   messageId: `${ctx.runId}-${suffix}`,
   timestamp: ctx.now(),
   integrations: { All: true },
-  properties: { transactionId: id },
+  properties,
 });
 
 export const live = {
@@ -67,7 +68,7 @@ export const live = {
           // A postback landing before Everflow has recorded the just-minted click gets a 204 and
           // records nothing, so retrying is safe; seen in CI where the round trip is ~200ms.
           retries: 2,
-          seed: (ctx) => trackEvent(ctx, transactionId(ctx), 'conversion'),
+          seed: (ctx) => trackEvent(ctx, { transactionId: transactionId(ctx) }, 'conversion'),
         },
       ],
     },
@@ -81,7 +82,30 @@ export const live = {
           expectedOutputs: 1,
           expectedProxyRequests: 1,
           expectedFailure: { items: [0] },
-          seed: (ctx) => trackEvent(ctx, ctx.identity('random-transaction'), 'random-transaction'),
+          seed: (ctx) =>
+            trackEvent(
+              ctx,
+              { transactionId: ctx.identity('random-transaction') },
+              'random-transaction',
+            ),
+        },
+      ],
+    },
+    {
+      id: 'everflow-clickless-conversion',
+      description: 'A track event without a transaction ID converts via offer and partner IDs',
+      steps: [
+        {
+          stepType: 'pipeline',
+          name: 'deliver clickless conversion',
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) =>
+            trackEvent(
+              ctx,
+              { ...offerParams(ctx), order_id: ctx.identity('clickless-order') },
+              'clickless',
+            ),
         },
       ],
     },

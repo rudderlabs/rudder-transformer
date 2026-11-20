@@ -97,6 +97,8 @@ jobs:
     permissions:
       contents: read # to call reusable workflow (ingestion-service-test.yml)
     needs: [build-transformer-image, generate-tag-names]
+    # Dependabot PRs push no image and get no secrets, so there is nothing to test against.
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     uses: ./.github/workflows/ingestion-service-test.yml
     with:
       build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}

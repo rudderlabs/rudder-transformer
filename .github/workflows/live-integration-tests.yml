@@ -181,7 +181,8 @@ jobs:
 
   live:
     needs: discover
-    if: needs.discover.outputs.has_work == 'true'
+    # Dependabot PRs get no OIDC token or secrets for Vault and AWS.
+    if: needs.discover.outputs.has_work == 'true' && github.event.pull_request.user.login != 'dependabot[bot]'
     name: live (${{ matrix.destination }})
     # required: puts the job in infra1-us → PrivateLink path to dev Vault
     runs-on: arc-amd64

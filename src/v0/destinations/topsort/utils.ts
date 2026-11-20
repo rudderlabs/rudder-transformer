@@ -93,11 +93,10 @@ export const buildTopsortEvents = (
   if (type === 'purchases') {
     // Lines priced at zero are dropped. A purchase left with no lines is skipped rather than
     // failed: Topsort rejects a purchase without items (`no_purchase_items`).
-    const items = (
-      products
-        ? products.map((product) => mapFields(product, purchaseItemMapping))
-        : [mapFields(message, purchaseItemMapping)]
-    ).filter(({ unitPrice }) => unitPrice !== 0);
+    const purchasedProducts = products ?? [message];
+    const items = purchasedProducts
+      .map((product) => mapFields(product, purchaseItemMapping))
+      .filter(({ unitPrice }) => unitPrice !== 0);
     if (items.length === 0) {
       throw new FilteredEventsError('Every purchase item has a zero unit price. Skipping event.');
     }

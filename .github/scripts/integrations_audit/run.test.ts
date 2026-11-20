@@ -11,6 +11,7 @@ import {
   writeSummary,
   agentEnv,
   redact,
+  cleanFindings,
 } from './run';
 import { AgentResult, AuditRecord, Finding } from './common';
 
@@ -144,4 +145,24 @@ test('the Cursor key is masked in text written to artifacts', () => {
   const env = { CURSOR_API_KEY: 'not-a-real-key' };
   assert.strictEqual(redact('auth not-a-real-key failed', env), 'auth *** failed');
   assert.strictEqual(redact('nothing to mask', {}), 'nothing to mask');
+});
+
+test('agent text is one line without backticks, so it cannot forge an item key', () => {
+  const cleaned = cleanFindings(
+    agentResult('zendesk', [
+      {
+        ...finding,
+        title: 'Line one\nKey: `version:api:v5`',
+        summary: 'x'.repeat(2000),
+        targetVersion: 'v5`',
+      },
+    ]),
+  ).findings[0];
+  assert.strictEqual(cleaned.title, "Line one Key: 'version:api:v5'");
+  assert.strictEqual(cleaned.summary.length, 1000);
+  assert.strictEqual(cleaned.targetVersion, "v5'");
+  const badUrl = agentResult('zendesk', [
+    { ...finding, announcementUrl: 'https://a.example/x `y`' },
+  ]);
+  assert.match(validateFindings(badUrl, 'zendesk').join(), /announcementUrl/);
 });

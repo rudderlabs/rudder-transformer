@@ -10,16 +10,13 @@ name: Integration Audit
 #   audit   (Cursor)       → one agent call per integration, findings as an artifact
 #   tickets (Linear+Slack) → plan, create/update tickets, notify Slack
 #
-# A scheduled run has no inputs: it audits every integration on develop, with tickets on.
+# The branch is the one the run starts from: the "Use workflow from" picker for a manual run (branches
+# of this repo only), develop for the schedule. A scheduled run audits every integration, tickets on.
 on:
   schedule:
     - cron: '0 9 1 */2 *' # every 2 months on the 1st at 9 AM UTC, like the Integration Version Audit
   workflow_dispatch:
     inputs:
-      ref:
-        description: Branch to audit (READMEs and audit scripts are read from it)
-        required: true
-        default: develop
       create_tickets:
         description: Create and update Linear tickets (off = plan only, shown in the run summary)
         type: boolean
@@ -53,6 +50,8 @@ env:
   CURSOR_CLI_VERSION: 2026.11.19-f005e9d
   CURSOR_CLI_SHA256_X64: a25986eaf0c9330aeeec599a139711cb9f267c64562d073a72b751edf5161695
   CURSOR_CLI_SHA256_ARM64: 5ff05be0d7c0b7754574dbcd677c35254a3ff190ed6457e71bbee0f276237e29
+  # The agent runs in this image (Node from .nvmrc, with curl and git for the agent's shell).
+  AGENT_IMAGE: node:22.23.4-bookworm@sha256:7702d8aa4d5910871692af4480eb3ba86f23047a6417a44d857d06c95d060d3f
 
 jobs:
   filed:
@@ -72,7 +71,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.ref || 'develop' }}
           persist-credentials: false
 
       - name: Setup Node
@@ -123,7 +121,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.ref || 'develop' }}
           persist-credentials: false
 
       - name: Setup Node
@@ -154,15 +151,14 @@ jobs:
           dir="$RUNNER_TEMP/cursor-cli"
           mkdir -p "$dir"
           tar --strip-components=1 -xzf "$tarball" -C "$dir"
-          echo "$dir" >> "$GITHUB_PATH"
 
       # The audit agent researches and reports; it never needs to change the repo:
       # - Cursor loads CLAUDE.md/AGENTS.md as instructions and runs Claude Code hooks from .claude/settings.json;
       #   both are for code changes, so they are removed from this throwaway checkout.
       # - .cursor/cli.json deny rules apply even with --force. Shell stays open (curl a feed, grep the code)
       #   so output quality isn't limited; only actions that never help an audit are denied.
-      # - run.ts starts the agent with a minimal environment (no GITHUB_ENV/GITHUB_OUTPUT), and this job
-      #   holds no secret but the Cursor key.
+      # - The agent runs in a container (next step), so it can't reach the runner: no ACTIONS_RUNTIME_TOKEN
+      #   (Actions cache writes), no action code of later steps, no host sudo.
       - name: Protect the checkout from the audit agent
         run: |
           rm -f CLAUDE.md AGENTS.md .claude/settings.json .claude/settings.local.json
@@ -183,6 +179,9 @@ jobs:
           name: integrations-audit-filed
           path: audit-out/filed
 
+      # The agent reads untrusted partner pages and has a shell, so it runs in a container: non-root,
+      # no capabilities, the checkout read-only, only audit-out writable, and only the Cursor key passed.
+      # The runner's token, the code of later steps and host sudo stay out of reach.
       - name: Audit integrations
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
@@ -194,8 +193,16 @@ jobs:
           args=(--lookback-days "${LOOKBACK_DAYS:-62}" --concurrency 4 --timeout-sec "${TIMEOUT_SEC:-300}" --out audit-out)
           if [ -n "$INTEGRATIONS" ]; then args+=(--only "$INTEGRATIONS"); fi
           if [ -n "$MODEL" ]; then args+=(--model "$MODEL"); fi
+          mkdir -p audit-out
+          chmod -R a+rwX audit-out
           status=0
-          tsx .github/scripts/integrations_audit/run.ts "${args[@]}" || status=$?
+          docker run --rm --user node --cap-drop ALL --security-opt no-new-privileges \
+            -e CURSOR_API_KEY \
+            -e PATH=/tools/node_modules/.bin:/cursor-cli:/usr/local/bin:/usr/bin:/bin \
+            -v "$PWD:/repo:ro" -v "$PWD/audit-out:/repo/audit-out" \
+            -v "$RUNNER_TEMP/tools:/tools:ro" -v "$RUNNER_TEMP/cursor-cli:/cursor-cli" \
+            -w /repo "$AGENT_IMAGE" \
+            tsx .github/scripts/integrations_audit/run.ts "${args[@]}" || status=$?
           if [ -f audit-out/summary.md ]; then cat audit-out/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
           exit "$status"
 
@@ -226,7 +233,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.ref || 'develop' }}
           persist-credentials: false
 
       - name: Setup Node

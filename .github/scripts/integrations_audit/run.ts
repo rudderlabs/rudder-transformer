@@ -170,6 +170,29 @@ export function extractFindings(text: string): AgentResult {
   return JSON.parse(raw);
 }
 
+/** Agent text goes into ticket descriptions: one line, no backticks (they delimit item keys), bounded. */
+export function cleanText(text: unknown, max: number): string {
+  return String(text ?? '')
+    .replace(/[\r\n]+/g, ' ')
+    .replace(/`/g, "'")
+    .trim()
+    .slice(0, max);
+}
+
+/** The agent's findings with their free text made safe for ticket descriptions. */
+export function cleanFindings(result: AgentResult): AgentResult {
+  return {
+    ...result,
+    findings: (result.findings || []).map((f) => ({
+      ...f,
+      title: cleanText(f.title, 200),
+      summary: cleanText(f.summary, 1000),
+      affects: f.affects == null ? f.affects : cleanText(f.affects, 200),
+      targetVersion: f.targetVersion ? cleanText(f.targetVersion, 100) : f.targetVersion,
+    })),
+  };
+}
+
 export function validateFindings(result: AgentResult, name: string): string[] {
   const errors: string[] = [];
   if (result.integration !== name) errors.push(`integration is "${result.integration}"`);
@@ -178,7 +201,7 @@ export function validateFindings(result: AgentResult, name: string): string[] {
     if (!CATEGORIES.includes(f.category as Category))
       errors.push(`findings[${i}].category "${f.category}"`);
     if (!IMPACTS.includes(f.impact as Impact)) errors.push(`findings[${i}].impact "${f.impact}"`);
-    if (!/^https?:\/\//.test(f.announcementUrl || ''))
+    if (!/^https?:\/\/[^\s`]+$/.test(f.announcementUrl || ''))
       errors.push(`findings[${i}].announcementUrl missing`);
     if (f.effectiveDate && !/^\d{4}-\d{2}(-\d{2})?$/.test(f.effectiveDate))
       errors.push(`findings[${i}].effectiveDate "${f.effectiveDate}"`);
@@ -213,7 +236,7 @@ async function auditOne(
     return { ...withApi, status: 'agent_error', error: parsed.text.slice(-500) };
   }
   try {
-    const result = extractFindings(parsed.text);
+    const result = cleanFindings(extractFindings(parsed.text));
     const errors = validateFindings(result, integration.name);
     if (errors.length) {
       return { ...withApi, status: 'invalid_output', error: errors.join('; '), result };

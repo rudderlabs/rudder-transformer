@@ -210,15 +210,11 @@ export function itemMarkdown(item: ItemForMarkdown): string {
 }
 
 /**
- * Items in a ticket description: every `Key:` line, with the title of the item line above it.
- * An item someone reworded by hand keeps its key; its title is then the key itself.
+ * Items in a ticket description, in the exact format `itemMarkdown` writes: an item line, then its key on
+ * the next, indented line. Agent text is one line without backticks, so it can't forge a key line.
+ * Linear stores the source as `[url](<url>)`, which is also one token without spaces or backticks.
  */
 export function parseItems(description: string | null | undefined): FiledItem[] {
-  const lines = (description || '').split('\n');
-  return lines.flatMap((line, i) => {
-    const key = /Key: `([^`]+)`/.exec(line)?.[1];
-    if (!key) return [];
-    const title = /^- \[[ xX]\] \*\*(.+?)\*\*/.exec(lines[i - 1] || '')?.[1];
-    return [{ key, title: title || key }];
-  });
+  const item = /^- \[[ xX]\] \*\*(.+?)\*\*.*\n {2}(?:Source: [^\s`]+ · )?Key: `([^`]+)`$/gm;
+  return [...(description || '').matchAll(item)].map((m) => ({ title: m[1], key: m[2] }));
 }

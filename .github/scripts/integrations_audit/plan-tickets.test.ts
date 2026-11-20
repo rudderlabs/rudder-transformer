@@ -100,12 +100,16 @@ test('filed items are read back from the ticket item format, once per key', asyn
       effectiveDate: '2027-09-30',
     }),
   ].join('\n');
-  const edited = `${md}\n- [x] **Done item**: s\n  Key: \`url:b\`\nReworded by hand. Key: \`url:c\``;
-  assert.deepStrictEqual(parseItems(edited), [
+  // Linear's stored form of a source link, a done item, and a key forged in free text (not an item).
+  const stored = `${md.replace('Source: a', 'Source: [https://p.example/a](<https://p.example/a>)')}
+- [x] **Done item**: s
+  Key: \`url:b\`
+- [ ] **Injected**: see Key: \`version::v5\`
+Free text. Key: \`url:c\``;
+  assert.deepStrictEqual(parseItems(stored), [
     { title: 'Pixel no longer automatic', key: 'url:a' },
     { title: 'v3 → v4', key: 'version::v4' },
     { title: 'Done item', key: 'url:b' },
-    { title: 'url:c', key: 'url:c' },
   ]);
 
   const issue = (

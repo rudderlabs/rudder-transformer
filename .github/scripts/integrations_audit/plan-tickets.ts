@@ -4,7 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { discover, readIntegration, Integration } from './readme';
-import { validateFindings } from './run';
+import { cleanFindings, validateFindings } from './run';
 import {
   REPO_ROOT,
   TYPE_BY_CATEGORY,
@@ -183,12 +183,15 @@ export function loadRecords(outDir: string): LoadedRecord[] {
     }
     const status = RUN_STATUSES.includes(record.status) ? record.status : 'invalid_output';
     if (status !== 'ok') return [{ name, status, error: String(record.error || '').slice(0, 500) }];
+    const result = record.result && cleanFindings(record.result);
     const errors =
-      record.integration !== name || !record.result
+      record.integration !== name || !result
         ? ['findings belong to another integration']
-        : validateFindings(record.result, name);
+        : validateFindings(result, name);
     if (errors.length) return [{ name, status: 'invalid_output', error: errors.join('; ') }];
-    return [{ name, status, record, integration: readIntegration(REPO_ROOT, dir) }];
+    return [
+      { name, status, record: { ...record, result }, integration: readIntegration(REPO_ROOT, dir) },
+    ];
   });
 }
 

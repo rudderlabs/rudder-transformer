@@ -94,13 +94,29 @@ export const buildTopsortEvents = (
     // Lines priced at zero are dropped. A purchase left with no lines is skipped rather than
     // failed: Topsort rejects a purchase without items (`no_purchase_items`).
     const purchasedProducts = products ?? [message];
-    const items = purchasedProducts
-      .map((product) => mapFields(product, purchaseItemMapping))
-      .filter(({ unitPrice }) => unitPrice !== 0);
+    const mappedItems = purchasedProducts.map((product) => mapFields(product, purchaseItemMapping));
+    // Topsort rejects the whole request when any line lacks a unit price (`UnitPrice ... failed
+    // on the 'required' tag`). A non-numeric price maps to NaN, which serializes as null and is
+    // rejected the same way.
+    if (
+      mappedItems.some(({ unitPrice }) => typeof unitPrice !== 'number' || Number.isNaN(unitPrice))
+    ) {
+      throw new InstrumentationError('Every purchase item needs a numeric price');
+    }
+    const items = mappedItems.filter(({ unitPrice }) => unitPrice !== 0);
     if (items.length === 0) {
       throw new FilteredEventsError('Every purchase item has a zero unit price. Skipping event.');
     }
     return [{ type, event: { ...basePayload, items, id: eventId } }];
+  }
+
+  // Topsort rejects an impression or click carrying neither (`Entity ... failed on the
+  // 'required_without' tag`): sponsored ones need the bid, organic ones the entity. Both come from
+  // the message, so every event a message fans out to shares them.
+  if (!basePayload.resolvedBidId && !basePayload.entity) {
+    throw new InstrumentationError(
+      'Impressions and clicks need properties.resolvedBidId (sponsored) or properties.entity (organic)',
+    );
   }
 
   const placementPayload = mapFields(message, placementMapping);

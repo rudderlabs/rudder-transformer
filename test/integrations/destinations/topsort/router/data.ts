@@ -369,7 +369,7 @@ export const data: RouterTestData[] = [
       'Invalid events fail on their own while the valid event in the same batch is still sent',
     scenario: 'Validation',
     successCriteria:
-      'Non-track, unmapped, unsupported-type and missing-messageId events each return a 400; the valid click is delivered',
+      'Non-track, unmapped, unsupported-type, missing-messageId, entity-less click and unpriced purchase events each return a 400; the valid click is delivered',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -400,6 +400,19 @@ export const data: RouterTestData[] = [
             {
               message: { ...trackMessage('Product Clicked', 'msg-5'), messageId: undefined },
               metadata: generateMetadata(5),
+              destination,
+            },
+            {
+              message: trackMessage('Product Clicked', 'msg-6', {
+                resolvedBidId: undefined,
+                entity: undefined,
+              }),
+              metadata: generateMetadata(6),
+              destination,
+            },
+            {
+              message: trackMessage('Order Completed', 'msg-7', { price: undefined }),
+              metadata: generateMetadata(7),
               destination,
             },
           ],
@@ -458,6 +471,23 @@ export const data: RouterTestData[] = [
               batched: false,
               statusCode: 400,
               error: 'Event not mapped: bids',
+              destination,
+              statTags: statTags('dataValidation', 'instrumentation'),
+            },
+            {
+              metadata: [generateMetadata(6)],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Impressions and clicks need properties.resolvedBidId (sponsored) or properties.entity (organic)',
+              destination,
+              statTags: statTags('dataValidation', 'instrumentation'),
+            },
+            {
+              metadata: [generateMetadata(7)],
+              batched: false,
+              statusCode: 400,
+              error: 'Every purchase item needs a numeric price',
               destination,
               statTags: statTags('dataValidation', 'instrumentation'),
             },

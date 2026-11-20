@@ -1,4 +1,4 @@
-# The Integration Audit agent's environment: Node (from .nvmrc), the Cursor CLI and the audit tools.
+# The Integration Audit agent's environment: Node (same version as .nvmrc), the Cursor CLI and the audit tools.
 # The workflow runs it locked down (read-only, non-root, no capabilities); see integrations_audit.yml.
 # Build context: this folder. The bookworm image (not slim) keeps curl and git for the agent's shell.
 FROM node:22.23.4-bookworm@sha256:7702d8aa4d5910871692af4480eb3ba86f23047a6417a44d857d06c95d060d3f

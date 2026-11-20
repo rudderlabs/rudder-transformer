@@ -71,7 +71,6 @@ jobs:
           node-version-file: .nvmrc
 
       # Only the audit tools (tsx, @linear/sdk) from their own lockfile, not the repo's dependencies.
-      # The same in every job: each job sets up its own tools, so the agent's job can't change them.
       - name: Install audit tools
         run: |
           mkdir -p "$RUNNER_TEMP/tools"
@@ -125,8 +124,6 @@ jobs:
       #   both are for code changes, so they are removed from this throwaway checkout.
       # - .cursor/cli.json deny rules apply even with --force. Shell stays open (curl a feed, grep the code)
       #   so output quality isn't limited; only actions that never help an audit are denied.
-      # - The agent runs in a container (next step), so it can't reach the runner: no ACTIONS_RUNTIME_TOKEN
-      #   (Actions cache writes), no action code of later steps, no host sudo.
       - name: Protect the checkout from the audit agent
         run: |
           rm -f CLAUDE.md AGENTS.md .claude/settings.json .claude/settings.local.json
@@ -159,7 +156,9 @@ jobs:
           MODEL: ${{ inputs.model }}
           TIMEOUT_SEC: ${{ inputs.timeout_sec }}
         run: |
-          args=(--lookback-days "${LOOKBACK_DAYS:-62}" --concurrency 4 --timeout-sec "${TIMEOUT_SEC:-300}" --out audit-out)
+          args=(--concurrency 4 --out audit-out)
+          if [ -n "$LOOKBACK_DAYS" ]; then args+=(--lookback-days "$LOOKBACK_DAYS"); fi
+          if [ -n "$TIMEOUT_SEC" ]; then args+=(--timeout-sec "$TIMEOUT_SEC"); fi
           if [ -n "$INTEGRATIONS" ]; then args+=(--only "$INTEGRATIONS"); fi
           if [ -n "$MODEL" ]; then args+=(--model "$MODEL"); fi
           mkdir -p audit-out
@@ -210,7 +209,6 @@ jobs:
           node-version-file: .nvmrc
 
       # Only the audit tools (tsx, @linear/sdk) from their own lockfile, not the repo's dependencies.
-      # The same in every job: each job sets up its own tools, so the agent's job can't change them.
       - name: Install audit tools
         run: |
           mkdir -p "$RUNNER_TEMP/tools"

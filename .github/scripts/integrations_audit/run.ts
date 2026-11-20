@@ -1,6 +1,6 @@
 // Runs the integration audit: one cursor-agent call per integration, each with a time limit.
 // Usage: tsx run.ts [--only hs,marketo] [--limit 5] [--concurrency 3] [--timeout-sec 300]
-//                   [--lookback-days 45] [--model <name>] [--out audit-out]
+//                   [--lookback-days 62] [--model <name>] [--out audit-out]
 // Without --model, cursor-agent uses its default (Auto routing on a fresh install).
 import fs from 'fs';
 import path from 'path';
@@ -38,7 +38,7 @@ export function parseArgs(argv: string[]): Options {
     limit: 0,
     concurrency: 3,
     timeoutSec: 300,
-    lookbackDays: 45,
+    lookbackDays: 62,
     maxFetches: 6,
     maxSearches: 2,
     model: '',
@@ -119,7 +119,7 @@ interface ProcessResult {
   durationMs: number;
 }
 
-/** Environment variables the agent gets; everything else (GITHUB_ENV, GITHUB_OUTPUT, …) is withheld. */
+/** Environment variables the agent gets; everything else in the caller's environment is withheld. */
 const AGENT_ENV_KEYS = ['PATH', 'HOME', 'USER', 'SHELL', 'TMPDIR', 'LANG', 'CURSOR_API_KEY'];
 
 export function agentEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
@@ -188,7 +188,7 @@ export function cleanFindings(result: AgentResult): AgentResult {
       title: cleanText(f.title, 200),
       summary: cleanText(f.summary, 1000),
       affects: f.affects == null ? f.affects : cleanText(f.affects, 200),
-      targetVersion: f.targetVersion ? cleanText(f.targetVersion, 100) : f.targetVersion,
+      targetVersion: f.targetVersion == null ? f.targetVersion : cleanText(f.targetVersion, 100),
     })),
   };
 }
@@ -236,7 +236,7 @@ async function auditOne(
     return { ...withApi, status: 'agent_error', error: parsed.text.slice(-500) };
   }
   try {
-    const result = cleanFindings(extractFindings(parsed.text));
+    const result = extractFindings(parsed.text);
     const errors = validateFindings(result, integration.name);
     if (errors.length) {
       return { ...withApi, status: 'invalid_output', error: errors.join('; '), result };

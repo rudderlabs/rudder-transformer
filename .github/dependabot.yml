@@ -1,14 +1,67 @@
 version: 2
+# Same layout as the other RudderStack repos: weekly, a 7-day cooldown before a new release is
+# proposed (supply-chain safety), RudderStack's own packages excluded from the cooldown, security
+# fixes grouped into one PR. Security updates don't wait for the schedule.
 updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+      exclude:
+        - 'rudderlabs/*'
+    groups:
+      actions-security:
+        applies-to: security-updates
+        patterns:
+          - '*'
+      actions:
+        patterns:
+          - '*'
+
+  # Base images are public (node, ubuntu). rudderstack/* images live in private ECR, which
+  # Dependabot can't read, so they are ignored by name.
   - package-ecosystem: 'docker'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    ignore:
+      - dependency-name: 'rudderstack/*'
+    groups:
+      docker:
+        patterns:
+          - '*'
+
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+      exclude:
+        - '@rudderlabs/*'
+        - '@rudderstack/*'
+    groups:
+      npm-security:
+        applies-to: security-updates
+        patterns:
+          - '*'
+      # Major updates match no group, so each one gets its own PR.
+      npm-production:
+        applies-to: version-updates
+        dependency-type: 'production'
+        update-types:
+          - 'minor'
+          - 'patch'
+      npm-development:
+        applies-to: version-updates
+        dependency-type: 'development'
+        update-types:
+          - 'minor'
+          - 'patch'

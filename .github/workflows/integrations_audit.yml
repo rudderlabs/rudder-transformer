@@ -77,6 +77,7 @@ jobs:
           node-version-file: .nvmrc
 
       # Only the audit tools (tsx, @linear/sdk) from their own lockfile, not the repo's dependencies.
+      # The same in every job: each job sets up its own tools, so the agent's job can't change them.
       - name: Install audit tools
         run: |
           mkdir -p "$RUNNER_TEMP/tools"
@@ -126,6 +127,8 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      # Only the audit tools (tsx, @linear/sdk) from their own lockfile, not the repo's dependencies.
+      # The same in every job: each job sets up its own tools, so the agent's job can't change them.
       - name: Install audit tools
         run: |
           mkdir -p "$RUNNER_TEMP/tools"
@@ -227,6 +230,8 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      # Only the audit tools (tsx, @linear/sdk) from their own lockfile, not the repo's dependencies.
+      # The same in every job: each job sets up its own tools, so the agent's job can't change them.
       - name: Install audit tools
         run: |
           mkdir -p "$RUNNER_TEMP/tools"
@@ -283,17 +288,18 @@ jobs:
           retention-days: 30
 
       # Same channel and format as the Integration Version Audit. The run fails when any job failed.
-      # tsx may be missing if setup failed, so a plain failure message is the fallback.
+      # tsx may be missing if setup failed, so a plain failure message (same heading and team as
+      # slack-message.ts) is the fallback.
       - name: Build Slack message
         id: message
         if: always()
         env:
-          RUN_STATUS: ${{ (needs.filed.result == 'failure' || needs.audit.result != 'success' || job.status != 'success') && 'failure' || 'success' }}
+          JOB_STATUS: ${{ (needs.filed.result == 'failure' || needs.audit.result != 'success' || job.status != 'success') && 'failure' || 'success' }}
           CREATE_TICKETS: ${{ inputs.create_tickets }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/integrations_audit.yml
         run: |
-          if ! text=$(JOB_STATUS="$RUN_STATUS" tsx .github/scripts/integrations_audit/slack-message.ts --out audit-out); then
+          if ! text=$(tsx .github/scripts/integrations_audit/slack-message.ts --out audit-out); then
             text=$(jq -n --arg t ":x: *Integration Audit (Rudder Transformer) failed*"$'\n'"<$RUN_URL|View workflow run>"$'\n'"CC: <!subteam^S02AEQL26CT>" '$t')
           fi
           echo "text=$text" >> "$GITHUB_OUTPUT"

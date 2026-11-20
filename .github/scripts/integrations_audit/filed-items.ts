@@ -4,7 +4,8 @@
 import fs from 'fs';
 import path from 'path';
 import { selectIntegrations } from './readme';
-import { REPO_ROOT, outDirFromArgs, pool, parseItems, filedItemsPath, FiledItem } from './common';
+import { REPO_ROOT, pool, parseItems, filedItemsPath, FiledItem } from './common';
+import { parseArgs } from './run';
 import { findAuditIssues, linearClient, LinearClient } from './create-tickets';
 
 const CONCURRENCY = 4;
@@ -19,11 +20,9 @@ export async function filedItems(
 }
 
 async function main(): Promise<void> {
-  const outDir = outDirFromArgs(process.argv);
-  const i = process.argv.indexOf('--only');
-  const only =
-    i > -1 && process.argv[i + 1] ? process.argv[i + 1].split(',').map((s) => s.trim()) : null;
-  const { ready } = selectIntegrations(REPO_ROOT, only);
+  const opts = parseArgs(process.argv);
+  const outDir = path.resolve(REPO_ROOT, opts.out);
+  const { ready } = selectIntegrations(REPO_ROOT, opts.only);
   const { client } = linearClient();
   fs.mkdirSync(path.join(outDir, 'filed'), { recursive: true });
   const counts = await pool(ready, CONCURRENCY, async (integration) => {

@@ -12,6 +12,7 @@ import {
   earliest,
   readmeLine,
   itemMarkdown,
+  parseItems,
   LabelKey,
   Plan,
   PlanItem,
@@ -137,11 +138,8 @@ async function applyParent(
   ids: LinearIds,
 ): Promise<ParentReport> {
   const { parents, subs } = await findAuditIssues(client, parent.integrationTitle);
-  // Any `Key:` line counts, even on an item someone has reworded by hand.
   const seen = new Set(
-    [...parents, ...subs].flatMap((i) =>
-      [...(i.description || '').matchAll(/Key: `([^`]+)`/g)].map((m) => m[1]),
-    ),
+    [...parents, ...subs].flatMap((i) => parseItems(i.description).map((f) => f.key)),
   );
 
   const pending = parent.subtickets

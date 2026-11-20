@@ -20,6 +20,7 @@ import {
   AuditRecord,
   FiledItem,
   RunStatus,
+  RUN_STATUSES,
   Plan,
   PlanItem,
   PlannedParent,
@@ -103,17 +104,14 @@ export function itemKey(item: UnkeyedItem, indexUrls: Set<string>): string {
 }
 
 /**
- * A finding the agent matched to a filed item keeps that item's key, so it isn't filed again.
- * A new change whose link is already used (by a filed item or another finding) gets the category,
- * then the title, added to its key: one announcement can carry several changes.
+ * Key of a new change. One whose link is already used (by a filed item or another finding) gets
+ * the category, then the title, added to its key: one announcement can carry several changes.
  */
-function agentKey(
+function newChangeKey(
   item: UnkeyedItem,
   indexUrls: Set<string>,
   taken: (key: string) => boolean,
-  filedKeys: Set<string>,
 ): string {
-  if (item.sameAs && filedKeys.has(item.sameAs)) return item.sameAs;
   const key = itemKey(item, indexUrls);
   if (!key.startsWith('url:')) return key;
   const options = [key, `${key}#${item.category}`, `${key}#${item.category}#${slug(item.title)}`];
@@ -144,7 +142,9 @@ export function itemsFor(
   const taken = (key: string) => filedKeys.has(key) || used.has(key);
   const keyed = [
     ...agentItems.map((i) => {
-      const key = agentKey(i, indexUrls, taken, filedKeys);
+      // A finding the agent matched to a filed item keeps that item's key, so it isn't filed again.
+      const key =
+        i.sameAs && filedKeys.has(i.sameAs) ? i.sameAs : newChangeKey(i, indexUrls, taken);
       used.add(key);
       return { ...i, key };
     }),
@@ -153,8 +153,6 @@ export function itemsFor(
   const seen = new Set<string>();
   return keyed.filter((i) => !seen.has(i.key) && Boolean(seen.add(i.key)));
 }
-
-const STATUSES: RunStatus[] = ['ok', 'timeout', 'agent_error', 'invalid_output'];
 
 export interface LoadedRecord {
   name: string;
@@ -183,7 +181,7 @@ export function loadRecords(outDir: string): LoadedRecord[] {
     } catch {
       return [{ name, status: 'invalid_output', error: 'unreadable findings file' }];
     }
-    const status = STATUSES.includes(record.status) ? record.status : 'invalid_output';
+    const status = RUN_STATUSES.includes(record.status) ? record.status : 'invalid_output';
     if (status !== 'ok') return [{ name, status, error: String(record.error || '').slice(0, 500) }];
     const errors =
       record.integration !== name || !record.result

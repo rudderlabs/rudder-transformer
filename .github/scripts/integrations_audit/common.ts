@@ -51,7 +51,8 @@ export interface AgentResult {
   findings: Finding[];
 }
 
-export type RunStatus = 'ok' | 'timeout' | 'agent_error' | 'invalid_output';
+export const RUN_STATUSES = ['ok', 'timeout', 'agent_error', 'invalid_output'] as const;
+export type RunStatus = (typeof RUN_STATUSES)[number];
 
 /** What run.ts writes per integration to findings/<name>.json. */
 export interface AuditRecord {
@@ -94,13 +95,18 @@ export function filedItemsPath(outDir: string, integration: string): string {
   return path.join(outDir, 'filed', `${integration}.json`);
 }
 
+/** A JSON file's content, or `fallback` when it is missing or unreadable. */
+export function readJson<T>(file: string, fallback: T): T {
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
+    return fallback;
+  }
+}
+
 /** Filed items written by filed-items.ts; none when that step didn't run (tickets off). */
 export function readFiledItems(outDir: string, integration: string): FiledItem[] {
-  try {
-    return JSON.parse(fs.readFileSync(filedItemsPath(outDir, integration), 'utf8'));
-  } catch {
-    return [];
-  }
+  return readJson<FiledItem[]>(filedItemsPath(outDir, integration), []);
 }
 
 /** What create-tickets.ts writes to tickets.json, for the Slack message. */
@@ -203,9 +209,16 @@ export function itemMarkdown(item: ItemForMarkdown): string {
   return `- [ ] **${item.title}**${when}: ${item.summary}\n  ${source}Key: \`${item.key}\``;
 }
 
-/** Items in a ticket description, parsed from the format `itemMarkdown` writes. */
+/**
+ * Items in a ticket description: every `Key:` line, with the title of the item line above it.
+ * An item someone reworded by hand keeps its key; its title is then the key itself.
+ */
 export function parseItems(description: string | null | undefined): FiledItem[] {
-  return [...(description || '').matchAll(/^- \[[ xX]\] \*\*(.+?)\*\*.*\n.*Key: `([^`]+)`/gm)].map(
-    (m) => ({ title: m[1], key: m[2] }),
-  );
+  const lines = (description || '').split('\n');
+  return lines.flatMap((line, i) => {
+    const key = /Key: `([^`]+)`/.exec(line)?.[1];
+    if (!key) return [];
+    const title = /^- \[[ xX]\] \*\*(.+?)\*\*/.exec(lines[i - 1] || '')?.[1];
+    return [{ key, title: title || key }];
+  });
 }

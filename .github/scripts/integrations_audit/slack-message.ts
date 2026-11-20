@@ -1,9 +1,8 @@
 // Builds the Slack message for a finished audit run from the files in the output folder.
 // Prints the text as one JSON string, ready for the Slack payload.
 // Usage: JOB_STATUS=… RUN_URL=… WORKFLOW_URL=… CREATE_TICKETS=… tsx slack-message.ts [--out audit-out]
-import fs from 'fs';
 import path from 'path';
-import { outDirFromArgs, AuditRecord, TicketCounts } from './common';
+import { outDirFromArgs, readJson, AuditRecord, TicketCounts } from './common';
 import { loadRecords } from './plan-tickets';
 
 const NAME = 'Integration Audit (Rudder Transformer)';
@@ -67,14 +66,6 @@ export function slackText(facts: RunFacts): string {
   return lines.join('\n');
 }
 
-function readJson<T>(file: string): T | null {
-  try {
-    return JSON.parse(fs.readFileSync(file, 'utf8'));
-  } catch {
-    return null;
-  }
-}
-
 function main(): void {
   const outDir = outDirFromArgs(process.argv);
   const text = slackText({
@@ -83,7 +74,7 @@ function main(): void {
     workflowUrl: process.env.WORKFLOW_URL || '',
     createTickets: process.env.CREATE_TICKETS === 'true',
     records: loadRecords(outDir).map((r) => ({ integration: r.name, status: r.status })),
-    tickets: readJson<TicketCounts>(path.join(outDir, 'tickets.json')),
+    tickets: readJson<TicketCounts | null>(path.join(outDir, 'tickets.json'), null),
   });
   process.stdout.write(JSON.stringify(text));
 }

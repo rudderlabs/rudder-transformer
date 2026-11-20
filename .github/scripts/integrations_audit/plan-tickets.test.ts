@@ -100,10 +100,12 @@ test('filed items are read back from the ticket item format, once per key', asyn
       effectiveDate: '2027-09-30',
     }),
   ].join('\n');
-  assert.deepStrictEqual(parseItems(`${md}\n- [x] **Done item**: s\n  Key: \`url:b\``), [
+  const edited = `${md}\n- [x] **Done item**: s\n  Key: \`url:b\`\nReworded by hand. Key: \`url:c\``;
+  assert.deepStrictEqual(parseItems(edited), [
     { title: 'Pixel no longer automatic', key: 'url:a' },
     { title: 'v3 → v4', key: 'version::v4' },
     { title: 'Done item', key: 'url:b' },
+    { title: 'url:c', key: 'url:c' },
   ]);
 
   const issue = (

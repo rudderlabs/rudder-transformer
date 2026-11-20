@@ -9,7 +9,11 @@ name: Integration Audit
 #   filed   (Linear)       → items already on audit tickets, for the agent to recognise repeats
 #   audit   (Cursor)       → one agent call per integration, findings as an artifact
 #   tickets (Linear+Slack) → plan, create/update tickets, notify Slack
+#
+# A scheduled run has no inputs: it audits every integration on develop, with tickets on.
 on:
+  schedule:
+    - cron: '0 9 1 */2 *' # every 2 months on the 1st at 9 AM UTC, like the Integration Version Audit
   workflow_dispatch:
     inputs:
       ref:
@@ -26,9 +30,9 @@ on:
         required: false
         default: ''
       lookback_days:
-        description: Days of partner changes to check
+        description: Days of partner changes to check (62 covers the 2-month schedule)
         required: false
-        default: '45'
+        default: '62'
       model:
         description: Cursor model (empty = Cursor's default, Auto routing)
         required: false
@@ -53,7 +57,7 @@ env:
 jobs:
   filed:
     name: Read filed audit items
-    if: inputs.create_tickets
+    if: (github.event_name == 'schedule' || inputs.create_tickets)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -68,7 +72,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ inputs.ref || 'develop' }}
           persist-credentials: false
 
       - name: Setup Node
@@ -119,7 +123,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ inputs.ref || 'develop' }}
           persist-credentials: false
 
       - name: Setup Node
@@ -173,7 +177,7 @@ jobs:
           JSON
 
       - name: Download filed items
-        if: inputs.create_tickets
+        if: (github.event_name == 'schedule' || inputs.create_tickets)
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: integrations-audit-filed
@@ -187,7 +191,7 @@ jobs:
           MODEL: ${{ inputs.model }}
           TIMEOUT_SEC: ${{ inputs.timeout_sec }}
         run: |
-          args=(--lookback-days "$LOOKBACK_DAYS" --concurrency 4 --timeout-sec "${TIMEOUT_SEC:-300}" --out audit-out)
+          args=(--lookback-days "${LOOKBACK_DAYS:-62}" --concurrency 4 --timeout-sec "${TIMEOUT_SEC:-300}" --out audit-out)
           if [ -n "$INTEGRATIONS" ]; then args+=(--only "$INTEGRATIONS"); fi
           if [ -n "$MODEL" ]; then args+=(--model "$MODEL"); fi
           status=0
@@ -202,7 +206,7 @@ jobs:
           name: integrations-audit-findings
           path: audit-out/findings
           if-no-files-found: ignore
-          retention-days: 30
+          retention-days: 14
 
   tickets:
     name: Plan tickets and notify
@@ -222,7 +226,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ inputs.ref || 'develop' }}
           persist-credentials: false
 
       - name: Setup Node
@@ -264,7 +268,7 @@ jobs:
           cat audit-out/plan.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Create and update Linear tickets
-        if: inputs.create_tickets && steps.plan.outcome == 'success'
+        if: (github.event_name == 'schedule' || inputs.create_tickets) && steps.plan.outcome == 'success'
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
           LINEAR_TEAM_ID: ${{ secrets.LINEAR_TEAM_ID }}
@@ -285,7 +289,7 @@ jobs:
             audit-out/plan.md
             audit-out/tickets.md
           if-no-files-found: ignore
-          retention-days: 30
+          retention-days: 14
 
       # Same channel and format as the Integration Version Audit. The run fails when any job failed.
       # tsx may be missing if setup failed, so a plain failure message (same heading and team as
@@ -295,7 +299,7 @@ jobs:
         if: always()
         env:
           JOB_STATUS: ${{ (needs.filed.result == 'failure' || needs.audit.result != 'success' || job.status != 'success') && 'failure' || 'success' }}
-          CREATE_TICKETS: ${{ inputs.create_tickets }}
+          CREATE_TICKETS: ${{ github.event_name == 'schedule' || inputs.create_tickets }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/integrations_audit.yml
         run: |

@@ -112,6 +112,7 @@ const destinationCapabilities: Record<string, DestinationCapabilities> = {
   TOPSORT: { routerTransform: true, batching: true },
   CUSTOMERIO_AUDIENCE: { routerTransform: true },
   ACCOIL_ANALYTICS: { routerTransform: true, cdkV2: true },
+  TEXTKIT: { routerTransform: true, cdkV2: true },
   POSTSCRIPT: { routerTransform: true },
   POSTHOG: { routerTransform: true, batching: true },
   CUSTOM_AUDIENCE: { routerTransform: true, batching: true, transformerProxy: false },

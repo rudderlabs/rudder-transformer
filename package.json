@@ -23,7 +23,7 @@
     "lint:fix": "eslint . --fix",
     "lint:fix:json": "eslint --ext .json --fix .",
     "lint": "npm run format && npm run lint:fix",
-    "check:merge": "npm run verify || exit 1; codecov",
+    "check:merge": "npm run verify",
     "start": "node dist/src/index.js",
     "start:dev": "nodemon",
     "build:start": "npm run build && npm run start",

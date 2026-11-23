@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.171.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.170.0...v1.171.0) (2026-11-23)
+
+
+### Features
+
+* **topsort:** drop zero-priced purchase lines ([#5805](https://github.com/rudderlabs/rudder-transformer/issues/5805)) ([dd6d6d5](https://github.com/rudderlabs/rudder-transformer/commit/dd6d6d5803bcfdf4974ef7fd7f5c1e3bb3f3ce62))
+* **topsort:** drop zero-priced purchase lines ([#5808](https://github.com/rudderlabs/rudder-transformer/issues/5808)) ([7d332ab](https://github.com/rudderlabs/rudder-transformer/commit/7d332ab07962b43e02d2e7930624a7cf7128b98e)), closes [#5805](https://github.com/rudderlabs/rudder-transformer/issues/5805)
+
+
+### Bug Fixes
+
+* **everflow:** allow postbacks without transaction_id ([#5809](https://github.com/rudderlabs/rudder-transformer/issues/5809)) ([6f95a09](https://github.com/rudderlabs/rudder-transformer/commit/6f95a093f53416b753bc08052762dcb73e8dbebe))
+
 ## [1.170.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.169.0...v1.170.0) (2026-11-18)
 
 

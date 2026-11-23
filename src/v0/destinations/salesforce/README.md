@@ -134,28 +134,37 @@ Throttling cost per identify event: **3 units** (defined in `db-config.json`).
 
 Example: if `context.externalId` contains both `Salesforce-Lead` and `Salesforce-Account`, two separate requests are generated.
 
-## Version Deprecation
+## Version Information
 
-### Current API Version
+### Current Version
 
-**v50.0** (Winter '21 release) — defined as `SF_API_VERSION = '50.0'` in `config.js`.
+- **Version:** `v50.0`
+- **Where in code:** `config.js` (`SF_API_VERSION = '50.0'`), used in `transform.js` and `utils.js` to build `/services/data/v50.0/...` URLs
 
-### Deprecation Status
+v50.0 is the Winter '21 release.
 
-Salesforce retires API versions in waves. So far:
+### Version Deprecation
 
-- **Versions 7.0–20.0**: retired in Summer '22 (June 2022)
-- **Versions 21.0–30.0**: retired in Summer '25 (June 2025)
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [REST API end-of-life policy](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/api_rest_eol.htm) (blocks automated requests)
 
-Version 50.0 (Winter '21) has **not been announced for retirement** yet. Salesforce commits to a minimum 3-year support window per version, and retirements are announced at least 1 year in advance. However, v50.0 is over 5 years old, so it may be included in a future retirement wave.
+Salesforce retires API versions in waves and announces each wave at least one year ahead:
 
-Reference: [Salesforce Platform API Versions 21.0 through 30.0 Retirement](https://help.salesforce.com/s/articleView?id=000389618&language=en_US&type=1)
+- Versions 7.0–20.0: retired in Summer '22.
+- Versions 21.0–30.0: retired in Summer '25 ([retirement notice](https://help.salesforce.com/s/articleView?id=000389618&language=en_US&type=1)).
+- Versions 31.0–40.0: deprecated from Summer '27 and retired from Summer '28, per the end-of-life policy page.
+
+v50.0 is not in any announced wave yet, but it is over five years old and is likely in a future one.
 
 ### Latest Available Version
 
-As of Spring '26, the latest Salesforce REST API version is **v66.0**. The current code uses **v50.0** — that is 16 major versions behind. To upgrade, update `SF_API_VERSION` in `config.js`.
+- **Version:** `v68.0`
+- **Released:** 2026-10-09
+- **Upgrade needed:** Yes
+- **Source:** [Salesforce Developers guide to the Winter '27 release](https://developer.salesforce.com/blogs/2026/10/developers-guide-to-the-winter-26-release) (blocks automated requests)
 
-Reference: [The Salesforce Developer's Guide to the Spring '26 Release](https://developer.salesforce.com/blogs/2026/01/developers-guide-to-the-spring-26-release)
+v68.0 is Winter '27; its final instance rollout was 2026-10-09 (the blog URL slug says "winter-26", the post is Winter '27). The code is 18 major versions behind. To upgrade, update `SF_API_VERSION` in `config.js`.
 
 ### Legacy Destination Deprecation
 
@@ -223,6 +232,24 @@ See [docs/retl.md](docs/retl.md) for detailed RETL documentation.
 ## Business Logic
 
 See [docs/businesslogic.md](docs/businesslogic.md) for detailed business logic documentation including field mappings, authentication flows, record lookup strategies, and example payloads.
+
+## Documentation Links
+
+- [REST API: sObject basic information (create record)](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_sobject_basic_info.htm) (blocks automated requests)
+- [REST API: parameterized search](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_search_parameterized.htm) (blocks automated requests)
+- [OAuth 2.0 username-password flow](https://help.salesforce.com/s/articleView?id=sf.remoteaccess_oauth_username_password_flow.htm&type=5)
+- [REST API end-of-life policy](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/api_rest_eol.htm) (blocks automated requests)
+
+### Changelog References
+
+- **Changelog:** [Salesforce release notes](https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm)
+- **Deprecations:** [REST API end-of-life policy (retired and deprecated versions)](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/api_rest_eol.htm) (blocks automated requests)
+- **Versions:** [REST API end-of-life policy (supported version range)](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/api_rest_eol.htm) (blocks automated requests)
+- **Feed:** [Salesforce Developers blog feed](https://developer.salesforce.com/blogs/feed) (blocks automated requests)
+- **Announcements:** [Platform API versions 21.0 through 30.0 retirement](https://help.salesforce.com/s/articleView?id=000389618&language=en_US&type=1); [Connected app usage restrictions](https://admin.salesforce.com/blog/2025/get-ready-for-changes-to-connected-app-usage-restrictions) (blocks automated requests); [RudderStack note on Salesforce External Client Apps](https://www.rudderstack.com/docs/releases/salesforce-eca/)
+- **Last checked:** 2026-11-16
+
+This destination authenticates with the OAuth 2.0 username-password flow (`grant_type=password`). Salesforce blocks that flow by default in orgs created from Summer '23 onward, and third-party sources report a full retirement in 2027. NEEDS REVIEW: no official Salesforce page with a retirement date for the username-password flow was found.
 
 ## FAQ
 

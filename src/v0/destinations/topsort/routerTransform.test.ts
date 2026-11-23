@@ -253,3 +253,46 @@ describe('Topsort validation', () => {
     expect(failedJobIds(results)).toEqual([1, 2]);
   });
 });
+
+describe('Topsort zero-price purchase lines', () => {
+  it('drops only the zero-priced lines of a purchase', async () => {
+    const products = [
+      { product_id: 'paid', price: 10, quantity: 1 },
+      { product_id: 'free', price: 0, quantity: 1 },
+      { product_id: 'free-string', price: '0', quantity: 1 },
+      { product_id: 'unpriced', quantity: 1 },
+    ];
+    const results = await run([makeInput(1, 'Order Completed', { products })]);
+
+    expect(requestBodies(results)).toEqual([
+      {
+        purchases: [
+          expect.objectContaining({
+            items: [
+              { productId: 'paid', unitPrice: 10, quantity: 1 },
+              { productId: 'unpriced', quantity: 1 },
+            ],
+          }),
+        ],
+      },
+    ]);
+  });
+
+  it('skips a purchase whose every line is zero-priced, without failing the batch', async () => {
+    const results = await run([
+      makeInput(1, 'Product Clicked'),
+      makeInput(2, 'Order Completed', { products: [{ product_id: 'free', price: 0 }] }),
+    ]);
+
+    expect(requestBodies(results)).toEqual([
+      { clicks: [expect.objectContaining({ id: 'msg-1' })] },
+    ]);
+    expect(results.filter(({ batched }) => !batched)).toEqual([
+      expect.objectContaining({
+        metadata: [expect.objectContaining({ jobId: 2 })],
+        statusCode: 298,
+        error: 'Every purchase item has a zero unit price. Skipping event.',
+      }),
+    ]);
+  });
+});

@@ -223,19 +223,18 @@ describe('EverflowIntegration', () => {
     );
   });
 
-  it('rejects missing transaction ids without synthetic fallbacks', () => {
-    expect(() =>
-      transform(
-        track({
-          messageId: 'fallback-message',
-          anonymousId: 'fallback-anonymous',
-          context: { referrer: { id: 'fallback-referrer' } },
-          properties: {},
-        }),
-      ),
-    ).toThrow(
-      'Missing required value from ["properties.transactionId","properties.transaction_id","properties.tid"]',
+  // Everflow attributes clickless postbacks via oid+affid, coupon or email; it 204s what it can't.
+  it('omits transaction_id without synthetic fallbacks when the event has none', () => {
+    const { params } = transform(
+      track({
+        messageId: 'fallback-message',
+        anonymousId: 'fallback-anonymous',
+        context: { referrer: { id: 'fallback-referrer' } },
+        properties: { oid: 'offer-1', affid: 'affiliate-1' },
+      }),
     );
+    expect(params).not.toHaveProperty('transaction_id');
+    expect(params).toMatchObject({ oid: 'offer-1', affid: 'affiliate-1', user_id: 'user-1' });
   });
 
   it.each([

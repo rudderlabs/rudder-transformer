@@ -226,13 +226,27 @@ No event-stream multiplexing is implemented. Identify and Track each generate ex
 
 ## Version Information
 
-- **Sprig API version used:** v2
-- **Endpoints used:**
-  - Event ingestion/profile update: `POST https://api.sprig.com/v2/users`
-  - User deletion: `POST https://api.sprig.com/v2/purge/visitors`
-- **Other Sprig API versions:** Sprig also exposes a v1 Export API (`GET /v1/responses`, `GET /v1/surveys`, `GET /v1/themes`) which uses `Authorization: Bearer <apiKey>` instead of `API-Key`. This integration does not use v1 at all, so the difference in auth scheme is not relevant to the transformer.
-- **Deprecation status:** No public deprecation or end-of-life notice for these Sprig v2 endpoints was identified in the referenced public API docs. The v1 endpoints remain documented alongside v2 and are not marked deprecated.
-- **Documentation reference:** [Sprig API overview](https://docs.sprig.com/reference/sprig-api/overview)
+### Current Version
+
+- **Version:** `v2`
+- **Where in code:** `procWorkflow.yaml` (`response.endpoint = "https://api.sprig.com/v2/users"`); `src/v0/destinations/sprig/deleteUsers.js` (`endpoint`: `https://api.sprig.com/v2/purge/visitors`)
+
+Sprig also exposes a v1 Export API (`GET /v1/responses`, `GET /v1/surveys`, `GET /v1/themes`) which uses `Authorization: Bearer <apiKey>` instead of `API-Key`. This integration does not use v1, so the difference in auth scheme is not relevant to the transformer.
+
+### Version Deprecation
+
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Sprig API overview](https://docs.sprig.com/reference/sprig-api/overview)
+
+The v1 endpoints remain documented alongside v2 and are not marked deprecated. The Sprig changelog has no deprecation entries for the v2 users or purge endpoints.
+
+### Latest Available Version
+
+- **Version:** `v2`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Sprig API overview](https://docs.sprig.com/reference/sprig-api/overview)
 
 ## Testing
 
@@ -251,10 +265,22 @@ npm run test:ts -- component --destination=sprig
 
 There are no Sprig-specific co-located unit test files under `src/cdk/v2/destinations/sprig/` or `src/v0/destinations/sprig/` at the time of writing.
 
-## Additional Documentation
+## Documentation Links
 
+- [Sprig API overview (authentication, rate limits)](https://docs.sprig.com/reference/sprig-api/overview)
+- [Upsert a User (`POST /v2/users`)](https://docs.sprig.com/reference/sprig-api/v2/post-user-v2-1)
+- [Purge Visitors (`POST /v2/purge/visitors`)](https://docs.sprig.com/reference/sprig-api/v2/post-v2-purge-visitors-1)
 - [Business logic and field mappings](./docs/businesslogic.md)
 - [RETL support](./docs/retl.md)
+
+### Changelog References
+
+- **Changelog:** [Sprig changelog](https://docs.sprig.com/changelog)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Sprig changelog RSS](https://docs.sprig.com/changelog/rss.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ## Troubleshooting
 

@@ -397,49 +397,48 @@ eventsMapping: [
 
 ## Version Information
 
-### Current Version in Use
+### Current Version
 
-**API Versions Supported:**
+- **API:** Conversions API v2 (legacy, the default)
+- **Version:** `v2.0`
+- **Where in code:** `config.js` (`ENDPOINT` = `https://ads-api.reddit.com/api/v2.0/conversions/events/`)
+- **API:** Conversions API v3
+- **Version:** `v3`
+- **Where in code:** `config.js` (`V3_ENDPOINT` = `https://ads-api.reddit.com/api/v3/pixels/`)
 
-- **v2 (Legacy):** `https://ads-api.reddit.com/api/v2.0/conversions/events/`
-- **v3 (Current):** `https://ads-api.reddit.com/api/v3/pixels/`
+**Default Version:** v2 (for backward compatibility). The version is chosen by `utils.js` `decideVersion()` from `destination.Config.version` (`schema.json`); `ui-config.json` labels v2 as "API v2 (Deprecated)".
 
-**Default Version:** v2 (for backward compatibility)
+### Version Deprecation
 
-**Source:**
+- **API:** Conversions API v2
+- **Status:** Deprecated
+- **Sunset date:** None announced
+- **Source:** [Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning)
+- **API:** Conversions API v3
+- **Status:** Supported
+- **Sunset date:** 2027-09-30
+- **Source:** [Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning)
 
-- Endpoint configuration: `config.js` (lines 1-2)
-- Version schema: `schema.json` (lines 10-14)
-- UI configuration: `ui-config.json` shows v2 labeled as "API v2 (Deprecated)"
+- Reddit sunset all v2 endpoints except the Conversions API on 2025-09-30 ([v2 What's New](https://ads-api.reddit.com/docs/v2/history)). The versioning page says "support for CAPI v2 will continue" but encourages migration to CAPI v3. The v2 docs are marked "reached end of support".
+- From Q4 2026 Reddit releases a new Ads API version each quarter. v3 is Stable from Q4 2026 and reaches end of support at the end of Q3 2027 (2027-09-30); after that, requests return `410 Gone` ([Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning); [Introducing Versioning](https://ads-api.reddit.com/docs/blog/introducing-versioning), 2026-10-20).
+- Recommendation: use v3 for all Reddit destination setups and migrate existing v2 destinations. Plan the v3 → v4 move before 2027-09-30.
 
-### Version Deprecation Status
+Migration guide: [CAPI v2 to v3 Migration](https://ads-api.reddit.com/docs/v3/guides/programs/capi/migration).
 
-**Current Status:**
+### Latest Available Version
 
-- **v2:** Deprecated - Reddit has not sunset the v2 Conversion Events API
-- **v3:** Current and recommended version for all integrations
-- **Migration Required:** All v2 implementations should migrate to v3
+- **API:** Conversions API v2
+- **Version:** `v4` (Preview; Stable from Q1 2027)
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning)
+- **API:** Conversions API v3
+- **Version:** `v4` (Preview; Stable from Q1 2027)
+- **Released:** Unknown
+- **Upgrade needed:** Yes
+- **Source:** [Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning)
 
-**Deprecation Timeline:**
-
-- Reddit officially deprecated the v2 Conversion Events API
-- v3 is the current production API with improved features and stability
-- New integrations must use v3
-- Existing v2 integrations should migrate to v3 as soon as possible
-
-**Migration Benefits:**
-
-- Improved payload structure with better error handling
-- Test mode support via `test_id` field
-- Enhanced event tracking with `action_source` field
-- Better alignment with Reddit's current API standards
-
-**Recommendation:** Use v3 for all Reddit destination setups. Migrate existing v2 integrations to v3 immediately.
-
-**Sources:**
-
-- `ui-config.json` (lines 29-32) - v2 labeled as "API v2 (Deprecated)"
-- Reddit Ads API Migration Guide: https://ads-api.reddit.com/docs/v3/capi-migration
+v3 is the latest Stable version and is supported by this integration. v4 entered Preview in Q4 2026; Preview schemas can still change. Changes from v3 are listed in [Upgrading from v3](https://ads-api.reddit.com/docs/v4/guides/versioning/upgrading-from-v3). The v3 Post Conversion Events endpoint was released on 2025-10-01 ([v3 What's New](https://ads-api.reddit.com/docs/v3/history)).
 
 ### Version Differences
 
@@ -599,13 +598,26 @@ Events must have timestamps within the last 7 days (168 hours). Older events wil
 
 ---
 
-## Related Documentation
+## Documentation Links
 
 - **Reddit Ads API v2 Documentation:** https://ads-api.reddit.com/docs/v2/
 - **Reddit Ads API v3 Documentation:** https://ads-api.reddit.com/docs/v3/
-- **Reddit Ads API v3 Conversion Documentation:** https://ads-api.reddit.com/docs/v3/operations/Post%20Conversion%20Events
+- **Reddit Ads API v3 Conversion Documentation:** https://ads-api.reddit.com/docs/v3/operations/Post%20Conversion%20Events (redirects to [Post Conversion Events](https://ads-api.reddit.com/docs/v3/api/post-conversion-events))
+- **CAPI v2 to v3 Migration:** https://ads-api.reddit.com/docs/v3/guides/programs/capi/migration
+- **Reddit Ads API authentication:** https://ads-api.reddit.com/docs/v3/guides/quick-start/authenticate
 - **Reddit OAuth Documentation:** https://github.com/reddit-archive/reddit/wiki/oauth2
 - **Event Metadata Reference:** https://business.reddithelp.com/s/article/about-event-metadata
+
+### Changelog References
+
+- **Changelog:** [v3 What's New](https://ads-api.reddit.com/docs/v3/history); [v2 What's New](https://ads-api.reddit.com/docs/v2/history)
+- **Deprecations:** [Versioning (lifecycle and end-of-support dates)](https://ads-api.reddit.com/docs/v3/guides/versioning)
+- **Versions:** [Versioning](https://ads-api.reddit.com/docs/v3/guides/versioning); [Upgrading from v3 to v4](https://ads-api.reddit.com/docs/v4/guides/versioning/upgrading-from-v3)
+- **Feed:** [Reddit Ads API blog RSS](https://ads-api.reddit.com/docs/blog/rss.xml)
+- **Announcements:** [Introducing Versioning for Reddit Ads API (v3 end of support end of Q3 2027)](https://ads-api.reddit.com/docs/blog/introducing-versioning); [Introducing System Users for Ads API Integrations](https://ads-api.reddit.com/docs/blog/system-users-open-beta)
+- **Last checked:** 2026-11-16
+
+The old `https://ads-api.reddit.com/docs/v3/changelog` link now redirects to v3 What's New.
 
 ## Support
 

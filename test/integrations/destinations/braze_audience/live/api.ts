@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { Agent } from 'https';
 import { getEndpointFromConfig } from '../../../../../src/v0/destinations/braze/util';
+import {
+  TRACK_ENDPOINT_SPECS,
+  type TrackEndpoint,
+} from '../../../../../src/v0/destinations/braze_audience/config';
 import type { LiveSecret, RunContext } from '../../../live/types';
 
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles when the suite finishes.
@@ -42,11 +46,20 @@ const authHeaders = (ctx: RunContext) => ({
   Connection: 'close' as const,
 });
 
-/** Set membership boolean via Braze /users/track/bulk (setup / cleanup). */
-export const setMembership = async (ctx: RunContext, value: boolean): Promise<void> => {
+/**
+ * Set membership boolean directly in Braze (setup / cleanup), through the same endpoint the scenario
+ * syncs with: a key may hold only `users.track` (Standard) or only `users.track.bulk` (Bulk).
+ */
+export const setMembership = async (
+  ctx: RunContext,
+  value: boolean,
+  endpoint: TrackEndpoint = 'bulk',
+): Promise<void> => {
+  const { path, partner } = TRACK_ENDPOINT_SPECS[endpoint];
   const res = await axios.post(
-    `${restBaseUrl(ctx)}/users/track/bulk`,
+    `${restBaseUrl(ctx)}${path}`,
     {
+      ...(partner ? { partner } : {}),
       attributes: [
         {
           external_id: externalId(ctx),
@@ -63,7 +76,7 @@ export const setMembership = async (ctx: RunContext, value: boolean): Promise<vo
   );
   if (res.status < 200 || res.status >= 300) {
     throw new Error(
-      `Braze track/bulk setMembership(${value}) failed: status=${res.status} body=${JSON.stringify(res.data)}`,
+      `Braze ${path} setMembership(${value}) failed: status=${res.status} body=${JSON.stringify(res.data)}`,
     );
   }
 };
@@ -103,7 +116,14 @@ export const fetchMembership = async (ctx: RunContext): Promise<boolean | undefi
   return undefined;
 };
 
-/** Best-effort cleanup: set membership false so the run-scoped external_id stops advertising true. */
-export const clearMembership = async (ctx: RunContext): Promise<void> => {
-  await setMembership(ctx, false);
-};
+/**
+ * Best-effort cleanup: set membership false so the run-scoped external_id stops advertising true.
+ * Pass the scenario's endpoint, so cleanup works with a key that only holds that endpoint's permission.
+ */
+export const clearMembershipVia =
+  (endpoint: TrackEndpoint) =>
+  async (ctx: RunContext): Promise<void> => {
+    await setMembership(ctx, false, endpoint);
+  };
+
+export const clearMembership = clearMembershipVia('bulk');

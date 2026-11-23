@@ -197,32 +197,49 @@ While PostScript custom events include timestamps (`occurred_at` field), maintai
 
 ### Current Version
 
-- **API Version**: v2
-- **Base URL**: `https://api.postscript.io/api/v2`
-- **Endpoints Used**:
-  - `/subscribers` - For subscriber management
-  - `/custom-events` - For event tracking
+- **Version:** `v2`
+- **Where in code:** `config.ts` (`BASE_ENDPOINT`)
+
+Base URL `https://api.postscript.io/api/v2`. Endpoints used:
+
+- `GET /subscribers` (lookup), `POST /subscribers`, `PATCH /subscribers/{id}` (`SUBSCRIBERS_ENDPOINT`)
+- `POST /events` (`CUSTOM_EVENTS_ENDPOINT`)
 
 ### Version Deprecation
 
-PostScript maintains backward compatibility with v1 API but recommends using v2 for new integrations. The v2 API includes:
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [v2.0 API is out of beta](https://developers.postscript.io/changelog/v20-api-is-out-of-beta)
 
-- Improved object identifiers with prefixes (e.g., `s_` for subscriber IDs)
-- Enhanced error handling and response formats
-- Better support for partner integrations
+Postscript still documents the v1 API and encourages partners to migrate to v2. No v1 deprecation timeline is published.
 
-**NEEDS REVIEW**: Specific deprecation timeline for v1 API not found in public documentation.
+### Latest Available Version
+
+- **Version:** `v2`
+- **Released:** 2022-03-29
+- **Upgrade needed:** No
+- **Source:** [v2.0 API is out of beta](https://developers.postscript.io/changelog/v20-api-is-out-of-beta)
 
 ## Documentation Links
 
 ### API Documentation
 
 - [PostScript API Overview](https://developers.postscript.io/)
+- [Authentication](https://developers.postscript.io/docs/api-authentication)
+- [Rate Limits](https://developers.postscript.io/docs/rate-limits)
+- [Get Subscribers API](https://developers.postscript.io/reference/get-subscribers)
 - [Create Subscriber API](https://developers.postscript.io/reference/create-subscriber)
 - [Update Subscriber API](https://developers.postscript.io/reference/update-subscriber-by-id)
 - [Create Custom Event API](https://developers.postscript.io/reference/create-custom-event)
-- [Rate Limits](https://developers.postscript.io/docs/rate-limits)
-- [Authentication](https://developers.postscript.io/docs/api-authentication)
+
+### Changelog References
+
+- **Changelog:** [Postscript API changelog](https://developers.postscript.io/changelog)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Changelog RSS](https://developers.postscript.io/changelog.rss)
+- **Announcements:** [v2.0 API is out of beta (2022-03-29)](https://developers.postscript.io/changelog/v20-api-is-out-of-beta)
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

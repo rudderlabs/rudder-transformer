@@ -554,77 +554,62 @@ instead of "John Updated"
 
 ## Version Information
 
-### Current Implementation
+### Current Version
 
-The HubSpot destination implements support for two API versions:
+- **API:** New API (`apiVersion: "newApi"`): CRM and Custom Events
+- **Version:** `v3`
+- **Where in code:** `config.ts` (`IDENTIFY_CRM_*`, `BATCH_IDENTIFY_CRM_*`, `CRM_*_ALL_OBJECTS_ENDPOINT_PATH`, `CRM_V3_PROPERTIES_ENDPOINT_PATH`, `TRACK_CRM_ENDPOINT_PATH` on `BASE_ENDPOINT`)
+- **API:** Legacy API (`apiVersion: "legacyApi"`): Contacts, Properties and Events HTTP API
+- **Version:** `v1`
+- **Where in code:** `config.ts` (`IDENTIFY_CREATE_NEW_CONTACT_ENDPOINT_PATH`, `IDENTIFY_CREATE_UPDATE_CONTACT_ENDPOINT_PATH`, `BATCH_CONTACT_ENDPOINT_PATH`, `CONTACT_PROPERTY_MAP_ENDPOINT_PATH`, `TRACK_ENDPOINT_PATH` on `TRACK_BASE_ENDPOINT`)
 
-#### Legacy API (v1)
+New API endpoints:
 
-- **Config Value**: `apiVersion: "legacyApi"`
-- **Status**: Partially deprecated, but still functional
-- **Endpoints**:
-  - Contacts: `/contacts/v1/*`
-  - Batch Contacts: `/contacts/v1/contact/batch/`
-  - Track Events: `https://track.hubspot.com/v1/event`
-  - Properties: `/properties/v1/contacts/properties`
+- Contacts: `/crm/v3/objects/contacts`, `/crm/v3/objects/contacts/:contactId`
+- Batch Contacts: `/crm/v3/objects/contacts/batch/create`, `/batch/update`, `/batch/upsert`
+- Search: `/crm/v3/objects/contacts/search`, `/crm/v3/objects/:objectType/search`
+- Custom Objects: `/crm/v3/objects/:objectType`, `/crm/v3/objects/:objectType/batch/upsert`
+- Associations: `/crm/v3/associations/:fromObjectType/:toObjectType/batch/create`
+- Properties: `/crm/v3/properties/:objectType`
+- Track Events: `/events/v3/send`
 
-#### New API (v3)
+Legacy API endpoints:
 
-- **Config Value**: `apiVersion: "newApi"`
-- **Status**: Current recommended version
-- **Endpoints**:
-  - Contacts: `/crm/v3/objects/contacts`
-  - Batch Contacts: `/crm/v3/objects/contacts/batch/*`
-  - Search: `/crm/v3/objects/contacts/search`
-  - Custom Objects: `/crm/v3/objects/:objectType`
-  - Associations: `/crm/v3/associations/:fromObjectType/:toObjectType/batch/create`
-  - Track Events: `/events/v3/send`
-  - Properties: `/properties/v1/contacts/properties` (still v1)
+- Contacts: `/contacts/v1/contact`, `/contacts/v1/contact/createOrUpdate/email/:contact_email`
+- Batch Contacts: `/contacts/v1/contact/batch/`
+- Properties: `/properties/v1/contacts/properties` (also used by the New API for contact property lookup)
+- Track Events: `https://track.hubspot.com/v1/event`
 
-### Deprecation Timeline
+### Version Deprecation
 
-#### Contact Lists API (v1)
+- **API:** New API (CRM v3, Events v3)
+- **Status:** Deprecated
+- **Sunset date:** None announced
+- **Source:** [Legacy APIs and legacy apps: what's going unsupported and when](https://developers.hubspot.com/changelog/legacy-apis-and-legacy-apps-whats-going-unsupported-and-when)
+- **API:** Legacy API (Contacts v1, Properties v1, Events HTTP API v1)
+- **Status:** Deprecated
+- **Sunset date:** None announced
+- **Source:** [Legacy APIs and legacy apps: what's going unsupported and when](https://developers.hubspot.com/changelog/legacy-apis-and-legacy-apps-whats-going-unsupported-and-when)
 
-- **Sunset Date**: April 30, 2026
-- **Status**: Extended (originally scheduled for September 30, 2025)
-- **Impact**: Not directly used by this destination
-- **Migration**: Use Lists v3 API
+On 2026-09-15 HubSpot announced that it no longer releases bug fixes, reliability improvements or security updates for v1 to v3 APIs, and that "after September 2027, these endpoints will be unsupported". No exact day is given. v4 APIs become unsupported on 2027-03-30 (not used here). The [versioning page](https://developers.hubspot.com/docs/developer-tooling/platform/versioning) still says legacy APIs "are still supported and available at their previous URLs".
 
-[Changelog: Contact Lists API v1 Sunset](https://developers.hubspot.com/changelog/extension-contact-lists-api-v1-sunset-moved-to-april-30-2026)
+**Related sunsets:**
 
-#### Legacy Behavioral Events Tool
+- Contact Lists API v1 was sunset on 2026-04-30 (not used by this destination; [changelog](https://developers.hubspot.com/changelog/extension-contact-lists-api-v1-sunset-moved-to-april-30-2026)).
+- The Legacy Custom Behavioral Events tool stopped accepting new event definitions and completion data on 2025-08-01; existing data remains accessible. Use the Custom Events API (`/events/v3/send`) instead ([HubSpot Knowledge Base: Custom Events](https://knowledge.hubspot.com/reports/create-custom-events)).
+- The legacy Contacts batch endpoint (`/contacts/v1/contact/batch/`) still works with adjusted rate limits (see the Rate Limits section; HubSpot's changelog post on these limits now returns 404). Migration path: `/crm/v3/objects/contacts/batch/create` and `/batch/update`.
+- The legacy Track Events endpoint (`https://track.hubspot.com/v1/event`) still works with limited features: no custom timestamps, Hub ID-based tracking only and fewer analytics capabilities. Migration path: `/events/v3/send` with custom behavioral events.
 
-- **Sunset Date**: August 1, 2025
-- **Status**: Active deprecation
-- **Impact**: Affects legacy track events created in the Legacy Custom Events tool
-- **Behavior After Sunset**:
-  - Can no longer create new event definitions
-  - Can no longer send new completion data
-  - Existing event data remains accessible
-- **Migration**: Use Custom Events API (`/events/v3/send`)
+### Latest Available Version
 
-[HubSpot Knowledge Base: Custom Events](https://knowledge.hubspot.com/reports/create-custom-events)
+- **Version:** `2026-09`
+- **Released:** 2026-09-08
+- **Upgrade needed:** Yes
+- **Source:** [CRM API write validation enforcement (2026-09 ships 2026-09-08)](https://developers.hubspot.com/changelog/crm-api-write-validation-enforcement)
 
-#### Legacy Contacts API Batch Endpoint
+HubSpot moved to date-based API versions (`/YYYY-MM/` paths, for example `/crm/objects/2026-03/contacts`) on 2026-03-30. New versions ship in March and September, and each is supported for 18 months ([versioning page](https://developers.hubspot.com/docs/developer-tooling/platform/versioning)). `2026-03` was the first date-based version; `2026-09` followed on 2026-09-08 and enforces admin-configured validation rules on all CRM write paths.
 
-- **Endpoint**: `/contacts/v1/contact/batch/`
-- **Status**: Still functional, but rate limits adjusted
-- **Impact**: Rate limits have been modified (details in Rate Limits section)
-- **Migration Path**: Use `/crm/v3/objects/contacts/batch/create` and `/crm/v3/objects/contacts/batch/update`
-
-[Changelog: Legacy Contacts API Batch Rate Limits](https://developers.hubspot.com/changelog/new-rate-limits-for-the-legacy-contacts-api-batch-create-or-update-endpoint)
-
-#### Legacy Track Events Endpoint
-
-- **Endpoint**: `https://track.hubspot.com/v1/event`
-- **Status**: Still functional, limited features
-- **Limitations**:
-  - No custom timestamps
-  - Limited to Hub ID-based tracking
-  - Fewer analytics capabilities
-- **Migration Path**: Use `/events/v3/send` with custom behavioral events
-
-### API Version Comparison
+**API version comparison:**
 
 | Feature                        | Legacy API (v1) | New API (v3)                    |
 | ------------------------------ | --------------- | ------------------------------- |
@@ -640,25 +625,9 @@ The HubSpot destination implements support for two API versions:
 | **Event Batch Endpoint**       | ✗               | ✓ (500 events)                  |
 | **Rate Limits**                | 100 req/10s     | 100 req/10s (1250/s for events) |
 
-### Recommended Version
+**Recommended version:** use the New API (v3) for new integrations, rETL / warehouse sources, custom objects and associations, event tracking with timestamps, and stricter property validation. The Legacy API (v1) is acceptable for existing integrations that don't need v3 features, simple contact management, and when larger batch sizes are needed (1000 vs 100).
 
-**Use New API (v3)** for:
-
-- New integrations
-- rETL / warehouse sources
-- Custom objects and associations
-- Enhanced event tracking with timestamps
-- Better property validation and handling
-
-**Legacy API (v1) is acceptable for**:
-
-- Existing integrations that don't need v3 features
-- Simple contact management use cases
-- When larger batch sizes are needed (1000 vs 100)
-
-### Breaking Changes (v1 → v3)
-
-When migrating from Legacy API to New API:
+**Breaking changes (v1 → v3):**
 
 1. **Batch Size**: Reduced from 1000 to 100 contacts per batch
 2. **Lookup Field**: Required configuration field for contact search
@@ -682,17 +651,20 @@ For detailed business logic, field mappings, and transformation flows, please re
 #### General
 
 - [HubSpot Developer Documentation](https://developers.hubspot.com/docs/)
+- [Authentication overview](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview)
+- [Private apps](https://developers.hubspot.com/docs/apps/legacy-apps/private-apps/overview)
 - [API Usage Guidelines and Limits](https://developers.hubspot.com/docs/developer-tooling/platform/usage-guidelines)
 - [HubSpot Developer Changelog](https://developers.hubspot.com/changelog)
-- [Deprecated APIs](https://developers.hubspot.com/docs/api/deprecated-apis)
+- [Deprecated APIs](https://developers.hubspot.com/docs/api-reference/deprecated-apis)
+- [Legacy API migration guide](https://developers.hubspot.com/docs/api-reference/legacy/migration-guide)
 
 #### Contacts API
 
 - [CRM API | Contacts (v3)](https://developers.hubspot.com/docs/api-reference/crm-contacts-v3/guide)
-- [Legacy Contacts API (v1)](https://legacydocs.hubspot.com/docs/methods/contacts/contacts-overview)
-- [Create Contact](https://legacydocs.hubspot.com/docs/methods/contacts/create_contact)
-- [Create or Update Contact](https://legacydocs.hubspot.com/docs/methods/contacts/create_or_update)
-- [Batch Create or Update Contacts](https://legacydocs.hubspot.com/docs/methods/contacts/batch_create_or_update)
+- [CRM Search](https://developers.hubspot.com/docs/api-reference/legacy/crm/search-the-crm)
+- [Create Contact (v1)](https://legacydocs.hubspot.com/docs/methods/contacts/create_contact)
+- [Create or Update Contact (v1)](https://legacydocs.hubspot.com/docs/methods/contacts/create_or_update)
+- [Batch Create or Update Contacts (v1)](https://legacydocs.hubspot.com/docs/methods/contacts/batch_create_or_update)
 
 #### Custom Objects API
 
@@ -713,18 +685,22 @@ For detailed business logic, field mappings, and transformation flows, please re
 
 #### Property Management
 
-- [Contact Properties API](https://legacydocs.hubspot.com/docs/methods/contacts/v2/contact-properties-overview)
+- [CRM Properties (v3)](https://developers.hubspot.com/docs/api-reference/legacy/crm/properties/guide)
+- [Get all contact properties (v1)](https://developers.hubspot.com/docs/api-reference/legacy/crm/properties/v1/contact-properties/get-properties-v1-contacts-properties)
 - [Property History](https://knowledge.hubspot.com/crm-setup/hubspots-change-sources-in-property-history)
 
 #### Deduplication
 
 - [HubSpot Duplicates Management Guide](https://knowledge.ostsdigital.com/hubspot-crm/contacts/deduplicate-contacts-companies-deals-tickets-and-products)
 
-#### Changelog References
+### Changelog References
 
-- [Contact Lists API v1 Sunset Extension](https://developers.hubspot.com/changelog/extension-contact-lists-api-v1-sunset-moved-to-april-30-2026)
-- [Legacy Contacts API Batch Rate Limits](https://developers.hubspot.com/changelog/new-rate-limits-for-the-legacy-contacts-api-batch-create-or-update-endpoint)
-- [Fall Spotlight 2025: New & Improved APIs](https://developers.hubspot.com/changelog/new-and-improved-apis-fall-spotlight-2025)
+- **Changelog:** [HubSpot Developer Changelog](https://developers.hubspot.com/changelog)
+- **Deprecations:** [Deprecated APIs](https://developers.hubspot.com/docs/api-reference/deprecated-apis)
+- **Versions:** [API versioning and release schedule](https://developers.hubspot.com/docs/developer-tooling/platform/versioning)
+- **Feed:** [HubSpot Developer Changelog RSS](https://developers.hubspot.com/changelog/rss.xml)
+- **Announcements:** [Legacy APIs and legacy apps: what's going unsupported and when (v1 to v3 unsupported after September 2027)](https://developers.hubspot.com/changelog/legacy-apis-and-legacy-apps-whats-going-unsupported-and-when); [Introducing date-based API versioning](https://developers.hubspot.com/changelog/introducing-date-based-api-versioning); [Fall 2026 Spotlight](https://developers.hubspot.com/changelog/fall-2026-spotlight); [Contact Lists API v1 sunset moved to 2026-04-30](https://developers.hubspot.com/changelog/extension-contact-lists-api-v1-sunset-moved-to-april-30-2026)
+- **Last checked:** 2026-11-16
 
 ## FAQ
 

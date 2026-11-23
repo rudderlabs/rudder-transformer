@@ -6,10 +6,6 @@ Implementation in **Javascript** (NOT a CDK v2 implementation)
 
 Amplitude is a product analytics platform that helps companies understand user behavior, ship the right features, and improve business outcomes. The RudderStack Amplitude integration sends event data to Amplitude for analysis, allowing you to track user actions, identify users, and analyze user behavior patterns.
 
-## Version Information
-
-- **Current Version of Amplitude API used in integration**: HTTP API v2
-
 ## Configuration
 
 ### Required Settings
@@ -297,7 +293,10 @@ Amplitude events include a timestamp field, which is populated with the event's 
 
 ### Current Version
 
-Amplitude HTTP API v2 is used for event tracking.
+- **Version:** `2` (HTTP V2 API, `/2/httpapi`)
+- **Where in code:** `config.js` (`BASE_URL`, `BASE_URL_EU`); `transform.js` (`getEndpoint`, path `2/httpapi`)
+
+The Batch Event Upload (`/batch`), Group Identify (`/groupidentify`) and User Mapping (`/usermap`) endpoints have no version in the path. User deletion calls the User Privacy API at `/api/2/deletions/users` (`deleteUsers.js`).
 
 ### API Endpoints
 
@@ -327,7 +326,18 @@ Amplitude HTTP API v2 is used for event tracking.
 
 ### Version Deprecation
 
-Amplitude HTTP API v2 is the current version and there is no announced deprecation date. Amplitude maintains backward compatibility for their APIs and typically provides ample notice before deprecating any API version. The HTTP API v2 replaced the deprecated HTTP API v1.
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [HTTP V2 API](https://amplitude.com/docs/apis/analytics/http-v2)
+
+HTTP V2 replaced the deprecated HTTP API (V1). Amplitude has not published a sunset date for V2.
+
+### Latest Available Version
+
+- **Version:** `2` (HTTP V2 API)
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [HTTP V2 API](https://amplitude.com/docs/apis/analytics/http-v2)
 
 ## Documentation Links
 
@@ -339,6 +349,15 @@ Amplitude HTTP API v2 is the current version and there is no announced deprecati
 - [Amplitude User Privacy API](https://amplitude.com/docs/apis/analytics/user-privacy)
 - [Amplitude User Mapping API](https://amplitude.com/docs/apis/analytics/user-mapping)
 - [Amplitude API Authentication](https://amplitude.com/docs/apis/authentication)
+
+### Changelog References
+
+- **Changelog:** [Amplitude product releases](https://amplitude.com/releases); [Amplitude platform updates](https://community.amplitude.com/kb/platform-updates)
+- **Deprecations:** None found
+- **Versions:** None found
+- **Feed:** [Amplitude changelog RSS](https://amplitude.com/releases/feed.xml)
+- **Announcements:** None found
+- **Last checked:** 2026-11-16
 
 ### RETL Functionality
 

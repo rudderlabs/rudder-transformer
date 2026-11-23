@@ -1,0 +1,9 @@
+{
+  "name": "integrations-audit-tools",
+  "private": true,
+  "description": "Tools the Integration Audit workflow installs with npm ci (the repo's own dependencies are not installed).",
+  "dependencies": {
+    "@linear/sdk": "68.0.0",
+    "tsx": "4.19.2"
+  }
+}

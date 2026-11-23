@@ -89,6 +89,30 @@ Normalization:
 
 - **Max subscribers per request**: 1000 (`MAX_BATCH_SIZE`).
 
+## Version Information
+
+### Current Version
+
+- **Version:** `Unversioned`
+- **Where in code:** `config.ts` (`SUBSCRIBE_CATEGORY`, `UNSUBSCRIBE_CATEGORY`, `getSubscribeEndpoint`, `getUnsubscribeEndpoint`), built on `../iterable/config.js` (`BASE_URL`, `constructEndpoint`)
+
+This integration uses the unversioned `/api/lists/subscribe` and `/api/lists/unsubscribe` endpoints (US and EU data centers).
+
+### Version Deprecation
+
+- **Status:** Supported
+- **Sunset date:** None announced
+- **Source:** [Iterable API Explorer](https://api.iterable.com/api/docs)
+
+The Iterable API has no versioned endpoints, so there is no version-level deprecation.
+
+### Latest Available Version
+
+- **Version:** `Unversioned`
+- **Released:** Unknown
+- **Upgrade needed:** No
+- **Source:** [Iterable API Explorer](https://api.iterable.com/api/docs)
+
 ## Error Handling
 
 The v1 network handler classifies each subscriber in the bulk response individually:
@@ -111,8 +135,20 @@ Transport-level failures are fanned out across every job in the batch:
 - **Unit tests**: co-located `*.test.ts` files. Run with `npm test -- --testPathPattern="iterable_audience" --no-coverage`.
 - **Integration tests**: `test/integrations/destinations/iterable_audience`. Run with `npm run test:ts -- component --destination=iterable_audience`.
 
-## References
+## Documentation Links
 
 - [Iterable List Subscribe API](https://api.iterable.com/api/docs#lists_subscribeToList)
 - [Iterable List Unsubscribe API](https://api.iterable.com/api/docs#lists_unsubscribeFromList)
-- [Iterable API Keys](https://support.iterable.com/hc/en-us/articles/360043464871-API-Keys)
+- [Iterable API specification (OpenAPI JSON)](https://api.iterable.com/api-docs)
+- [Iterable API Keys](https://support.iterable.com/hc/en-us/articles/360043464871-API-Keys) (blocks automated requests)
+
+### Changelog References
+
+- **Changelog:** [Iterable release notes](https://support.iterable.com/hc/en-us/categories/19957780777492-Release-Notes-and-Disclaimers) (blocks automated requests); [Iterable product updates](https://community.iterable.com/product-updates)
+- **Deprecations:** None found
+- **Versions:** Not versioned
+- **Feed:** None found
+- **Announcements:** [Rate limiting for API keys in the query string or request body, from 2025-11-10](https://community.iterable.com/product-updates/changes-to-rate-limiting-for-api-keys-in-query-string-or-request-body-legacy-projects-only-1378)
+- **Last checked:** 2026-11-16
+
+The 2025-11-10 rate limit applies only to legacy projects that pass the API key outside the HTTP header. This integration sends the key in the `Api-Key` header.

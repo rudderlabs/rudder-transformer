@@ -65,7 +65,7 @@ const waitForTransformSearch = async (
     },
     {
       label: `intercom contact via the transform's search (${STABLE_SEARCH_HITS} consecutive hits)`,
-      attempts: 45,
+      attempts: 75,
       delayMs: () => 4000,
     },
   );
@@ -76,12 +76,14 @@ const createSearchableContact = async (ctx: RunContext): Promise<void> => {
   await waitForTransformSearch(ctx, 'external_id', ctx.identity('user'), contactId);
 };
 
-// Waiting on the transform's compound search can take well over the default 120s step timeout.
+// Polling allows ~5 min, well over the default 120s step timeout.
+const SEARCH_WAIT_TIMEOUT_MS = 360000;
+
 const setupSearchableContactStep = {
   stepType: 'action',
   name: 'setup: create contact and wait until the transform can find it',
   run: createSearchableContact,
-  timeoutMs: 240000,
+  timeoutMs: SEARCH_WAIT_TIMEOUT_MS,
 } as const;
 
 // Read-backs search once per attempt: the scenario-level `verify` already retries with READBACK backoff.
@@ -342,7 +344,7 @@ export const live = {
         {
           stepType: 'action',
           name: 'setup: create a contact with the email and no external_id, and wait until the transform can find it',
-          timeoutMs: 240000,
+          timeoutMs: SEARCH_WAIT_TIMEOUT_MS,
           run: async (ctx) => {
             const contactId = await createContact(ctx, {
               email: ctx.email(),

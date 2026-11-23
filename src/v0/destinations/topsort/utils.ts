@@ -4,6 +4,7 @@ import {
   getHashFromArray,
 } from '@rudderstack/integrations-lib';
 import { constructPayload, isAndroidFamily, isAppleFamily } from '../../util';
+import { FilteredEventsError } from '../../util/errorTypes';
 import { ECOMM_EVENTS_WITH_PRODUCT_ARRAY } from './config';
 import trackMapping from './data/TopsortTrackConfig.json';
 import placementMapping from './data/TopsortPlacementConfig.json';
@@ -90,9 +91,15 @@ export const buildTopsortEvents = (
   const eventId = getEventId(message);
 
   if (type === 'purchases') {
-    const items = products
-      ? products.map((product) => mapFields(product, purchaseItemMapping))
-      : [mapFields(message, purchaseItemMapping)];
+    // Lines priced at zero are dropped. A purchase left with no lines is skipped rather than
+    // failed: Topsort rejects a purchase without items (`no_purchase_items`).
+    const purchasedProducts = products ?? [message];
+    const items = purchasedProducts
+      .map((product) => mapFields(product, purchaseItemMapping))
+      .filter(({ unitPrice }) => unitPrice !== 0);
+    if (items.length === 0) {
+      throw new FilteredEventsError('Every purchase item has a zero unit price. Skipping event.');
+    }
     return [{ type, event: { ...basePayload, items, id: eventId } }];
   }
 

@@ -91,16 +91,32 @@ export const buildTopsortEvents = (
   const eventId = getEventId(message);
 
   if (type === 'purchases') {
-    // Lines priced at zero are dropped. A purchase left with no lines is skipped rather than
-    // failed: Topsort rejects a purchase without items (`no_purchase_items`).
+    // Lines priced at zero are dropped. So are lines without a numeric price: Topsort rejects the
+    // whole request for one (`UnitPrice ... failed on the 'required' tag`), and a non-numeric
+    // price maps to NaN, which serializes as null and is rejected the same way.
     const purchasedProducts = products ?? [message];
-    const items = purchasedProducts
-      .map((product) => mapFields(product, purchaseItemMapping))
-      .filter(({ unitPrice }) => unitPrice !== 0);
+    const mappedItems = purchasedProducts.map((product) => mapFields(product, purchaseItemMapping));
+    const isPriced = ({ unitPrice }: Record<string, unknown>) =>
+      typeof unitPrice === 'number' && !Number.isNaN(unitPrice);
+    const items = mappedItems.filter((item) => isPriced(item) && item.unitPrice !== 0);
+    // A purchase left with no lines can't be sent: Topsort rejects it (`no_purchase_items`). An
+    // all-zero purchase is skipped, as a legitimately free order; a missing price is a data error.
     if (items.length === 0) {
-      throw new FilteredEventsError('Every purchase item has a zero unit price. Skipping event.');
+      if (mappedItems.every(isPriced)) {
+        throw new FilteredEventsError('Every purchase item has a zero unit price. Skipping event.');
+      }
+      throw new InstrumentationError('No purchase item has a numeric price');
     }
     return [{ type, event: { ...basePayload, items, id: eventId } }];
+  }
+
+  // Topsort rejects an impression or click carrying neither (`Entity ... failed on the
+  // 'required_without' tag`): sponsored ones need the bid, organic ones the entity. Both come from
+  // the message, so every event a message fans out to shares them.
+  if (!basePayload.resolvedBidId && !basePayload.entity) {
+    throw new InstrumentationError(
+      'Impressions and clicks need properties.resolvedBidId (sponsored) or properties.entity (organic)',
+    );
   }
 
   const placementPayload = mapFields(message, placementMapping);

@@ -37,7 +37,7 @@ const makeInput = (
     anonymousId: 'anon-1',
     messageId: `msg-${jobId}`,
     timestamp: '2024-11-05T15:19:08+00:00',
-    properties: { product_id: 'p-1', ...properties },
+    properties: { product_id: 'p-1', price: 10, resolvedBidId: 'bid-1', ...properties },
   },
   metadata: {
     jobId,
@@ -246,6 +246,62 @@ describe('Topsort validation', () => {
     expect(failedJobIds(results)).toEqual([2]);
   });
 
+  // Each of these is a request Topsort rejects with a 400, so it fails before being sent.
+  const rejectedByTopsortCases = [
+    {
+      name: 'a click with neither resolvedBidId nor entity',
+      input: makeInput(2, 'Product Clicked', { resolvedBidId: undefined }),
+      error: 'Impressions and clicks need properties.resolvedBidId',
+    },
+    {
+      name: 'fanned-out impressions with neither resolvedBidId nor entity',
+      input: makeInput(2, 'Checkout Started', {
+        resolvedBidId: undefined,
+        products: productsOf(3),
+      }),
+      error: 'Impressions and clicks need properties.resolvedBidId',
+    },
+    {
+      name: 'a purchase with no priced line',
+      input: makeInput(2, 'Order Completed', {
+        products: [{ product_id: 'unpriced' }, { product_id: 'nan', price: 'abc' }],
+      }),
+      error: 'No purchase item has a numeric price',
+    },
+    {
+      name: 'a purchase whose only lines are unpriced or zero-priced',
+      input: makeInput(2, 'Order Completed', {
+        products: [{ product_id: 'unpriced' }, { product_id: 'free', price: 0 }],
+      }),
+      error: 'No purchase item has a numeric price',
+    },
+  ];
+
+  it.each(rejectedByTopsortCases)('fails $name with a 400', async ({ input, error }) => {
+    const results = await run([makeInput(1, 'Product Clicked'), input]);
+
+    expect(requestBodies(results)).toEqual([
+      { clicks: [expect.objectContaining({ id: 'msg-1' })] },
+    ]);
+    expect(results.filter(({ batched }) => !batched)).toEqual([
+      expect.objectContaining({
+        metadata: [expect.objectContaining({ jobId: 2 })],
+        statusCode: 400,
+        error: expect.stringContaining(error),
+      }),
+    ]);
+  });
+
+  it('sends an organic click that carries an entity', async () => {
+    const entity = { type: 'product', id: 'p-1' };
+    const results = await run([
+      makeInput(1, 'Product Clicked', { resolvedBidId: undefined, entity }),
+    ]);
+
+    expect(requestBodies(results)).toEqual([{ clicks: [expect.objectContaining({ entity })] }]);
+    expect(failedJobIds(results)).toEqual([]);
+  });
+
   it('emits no request when every event fails', async () => {
     const results = await run([makeInput(1, 'Unmapped A'), makeInput(2, 'Unmapped B')]);
 
@@ -254,13 +310,14 @@ describe('Topsort validation', () => {
   });
 });
 
-describe('Topsort zero-price purchase lines', () => {
-  it('drops only the zero-priced lines of a purchase', async () => {
+describe('Topsort zero-price and unpriced purchase lines', () => {
+  it('drops only the zero-priced and unpriced lines of a purchase', async () => {
     const products = [
       { product_id: 'paid', price: 10, quantity: 1 },
       { product_id: 'free', price: 0, quantity: 1 },
       { product_id: 'free-string', price: '0', quantity: 1 },
       { product_id: 'unpriced', quantity: 1 },
+      { product_id: 'non-numeric', price: 'abc', quantity: 1 },
     ];
     const results = await run([makeInput(1, 'Order Completed', { products })]);
 
@@ -268,10 +325,7 @@ describe('Topsort zero-price purchase lines', () => {
       {
         purchases: [
           expect.objectContaining({
-            items: [
-              { productId: 'paid', unitPrice: 10, quantity: 1 },
-              { productId: 'unpriced', quantity: 1 },
-            ],
+            items: [{ productId: 'paid', unitPrice: 10, quantity: 1 }],
           }),
         ],
       },

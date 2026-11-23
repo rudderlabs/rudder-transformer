@@ -1,8 +1,0 @@
-coverage:
-  status:
-    patch:
-      default:
-        informational: true
-ignore:
-  - '**/*.bench.js'
-  - '**/*.bench.ts'

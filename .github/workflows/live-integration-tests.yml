@@ -78,7 +78,7 @@ jobs:
               .dockerignore|.eslintignore|.eslintrc.json|.gitignore|.prettierignore|.prettierrc|.truffleignore|.versionrc)
                 return 0
                 ;;
-              codecov.yml|commitlint.config.js|sonar-project.properties)
+              commitlint.config.js|sonar-project.properties)
                 return 0
                 ;;
               *)

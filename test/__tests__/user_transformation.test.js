@@ -283,6 +283,45 @@ describe("User transformation", () => {
     expect(output).toEqual(expectedData);
   });
 
+  it("sends the events' workspace id with the transformation and library code lookups", async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const workspaceId = "workspace-1";
+    const events = [
+      {
+        message: { messageId: "message-1", type: "track", event: "event-1" },
+        metadata: { messageId: "message-1", workspaceId }
+      }
+    ];
+    const transformationBody = {
+      codeVersion: "1",
+      name,
+      versionId,
+      workspaceId,
+      code: `
+        export function transformEvent(event) {
+          return event;
+        }
+      `
+    };
+    const libraryBody = { name: "lib", code: "export function noop() {}" };
+    fetch.mockImplementation(async url => ({
+      status: 200,
+      json: jest
+        .fn()
+        .mockResolvedValue(
+          url.includes("/transformationLibrary/") ? libraryBody : transformationBody
+        )
+    }));
+
+    await userTransformHandler(events, versionId, [libraryVersionId]);
+
+    expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}&workspaceId=${workspaceId}`,
+      `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}&workspaceId=${workspaceId}`
+    ]);
+  });
+
   it(`Simple ${name} async test for V1 transformation - transformBatch returning an array containing error`, async () => {
     const versionId = randomID();
     const libraryVersionId = randomID();

@@ -48,7 +48,9 @@ async function createIvm(
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
-    libraryVersionIds.map(async (libraryVersionId) => await getLibraryCode(libraryVersionId)),
+    libraryVersionIds.map(
+      async (libraryVersionId) => await getLibraryCode(libraryVersionId, workspaceId),
+    ),
   );
   const librariesMap = {};
   if (code && libraries) {

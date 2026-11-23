@@ -575,7 +575,11 @@ describe('EventTesterService.runUserTransform', () => {
       'custom_audience',
     );
 
-    expect(innerHandler).toHaveBeenCalledWith([expect.anything()], 'transform-v1', []);
+    expect(innerHandler).toHaveBeenCalledWith(
+      [expect.objectContaining({ metadata: { workspaceId: 'ws-1' } })],
+      'transform-v1',
+      [],
+    );
     expect(result).toEqual([{ user_transformed_payload: { type: 'record', transformed: true } }]);
   });
 

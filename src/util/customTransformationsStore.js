@@ -25,9 +25,6 @@ logger.info(
   `Transformation store cache TTL: ${CACHE_TTL_SECONDS}s${CACHE_TTL_SECONDS === 0 ? ' (no expiry)' : ''}`,
 );
 
-// A store per entity rather than one shared instance: transformations and libraries are both
-// keyed by versionId, so a single cache would let them collide.
-//
 // `inFlight` deduplicates concurrent fetches for the same key: without it, every caller that
 // misses during the fetch window issues its own request to the config backend.
 const createStore = () => ({
@@ -45,7 +42,7 @@ const RUDDER_LIBRARY_URL = `${CONFIG_BACKEND_URL}/rudderstackTransformationLibra
 
 // Returns the cached entry, or fetches and caches it. Failures are never cached, so a transient
 // config backend outage does not poison the entry for the rest of the TTL.
-async function fetchAndCache(store, { key, url, entity, logContext }) {
+async function fetchAndCache(store, { key, errorId = key, url, entity, logContext }) {
   const cached = store.cache.get(key);
   if (cached !== undefined) return cached;
 
@@ -55,7 +52,7 @@ async function fetchAndCache(store, { key, url, entity, logContext }) {
   const request = (async () => {
     const response = await fetchWithProxy(url, configBackendRequestOptions());
 
-    responseStatusHandler(response.status, entity, key, url);
+    responseStatusHandler(response.status, entity, errorId, url);
     const myJson = await response.json();
     store.cache.set(key, myJson);
     return myJson;
@@ -72,19 +69,29 @@ async function fetchAndCache(store, { key, url, entity, logContext }) {
   }
 }
 
-async function getTransformationCode(versionId) {
+function versionLookupUrl(baseUrl, versionId, workspaceId) {
+  const url = `${baseUrl}?versionId=${encodeURIComponent(versionId)}`;
+  return workspaceId ? `${url}&workspaceId=${encodeURIComponent(workspaceId)}` : url;
+}
+
+// Keyed by the full URL so a cached or in-flight result is only shared by the same workspace.
+async function getTransformationCode(versionId, workspaceId) {
+  const url = versionLookupUrl(TRANSFORMATION_URL, versionId, workspaceId);
   return fetchAndCache(transformationStore, {
-    key: versionId,
-    url: `${TRANSFORMATION_URL}?versionId=${versionId}`,
+    key: url,
+    errorId: versionId,
+    url,
     entity: 'Transformation',
     logContext: `transformation code for versionId: ${versionId}`,
   });
 }
 
-async function getLibraryCode(versionId) {
+async function getLibraryCode(versionId, workspaceId) {
+  const url = versionLookupUrl(TRANSFORMATION_LIBRARY_URL, versionId, workspaceId);
   return fetchAndCache(libraryStore, {
-    key: versionId,
-    url: `${TRANSFORMATION_LIBRARY_URL}?versionId=${versionId}`,
+    key: url,
+    errorId: versionId,
+    url,
     entity: 'Transformation Library',
     logContext: `library code for versionId: ${versionId}`,
   });

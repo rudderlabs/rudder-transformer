@@ -125,7 +125,7 @@ See [docs/businesslogic.md](docs/businesslogic.md).
 - [Movable Ink SDK: Behavior Events (iOS)](https://sdk-mobile.movableink.com/ios-sdk/behavior-events)
 - [RudderStack Movable Ink docs](https://www.rudderstack.com/docs/destinations/streaming-destinations/movable-ink/)
 
-The Behavior Events API reference (`learning.movableink.com`) is login-gated, and the versions link in `.github/scripts/versions.json` (`https://movableink.com/developers/docs`) returns 404. Endpoint keys and Basic auth credentials come from the Movable Ink Client Experience team.
+The Behavior Events API reference (`learning.movableink.com`) is login-gated, and the developer docs page (`https://movableink.com/developers/docs`) returns 404. Endpoint keys and Basic auth credentials come from the Movable Ink Client Experience team.
 
 ### Changelog References
 

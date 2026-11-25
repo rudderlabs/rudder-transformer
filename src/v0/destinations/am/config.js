@@ -120,6 +120,7 @@ events.forEach((event) => {
 });
 // Ref : https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/#response
 const DELETE_MAX_BATCH_SIZE = 100;
+const DELETE_REQUEST_INTERVAL_MS = 1000; // Amplitude User Privacy API: at most one request per second.
 const DESTINATION = 'amplitude';
 const IDENTIFY_AM = '$identify';
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
@@ -134,6 +135,7 @@ module.exports = {
   mappingConfig,
   nameToEventMap,
   DELETE_MAX_BATCH_SIZE,
+  DELETE_REQUEST_INTERVAL_MS,
   batchEventsWithUserIdLengthLowerThanFive,
   IDENTIFY_AM,
   AMBatchSizeLimit,

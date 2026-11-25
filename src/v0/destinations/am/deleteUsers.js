@@ -8,7 +8,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const { executeCommonValidations } = require('../../util/regulation-api');
-const { DELETE_MAX_BATCH_SIZE } = require('./config');
+const { DELETE_MAX_BATCH_SIZE, DELETE_REQUEST_INTERVAL_MS } = require('./config');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -32,11 +32,10 @@ const userDeletionHandler = async (userAttributes, config) => {
       ? 'https://analytics.eu.amplitude.com/api/2/deletions/users'
       : 'https://amplitude.com/api/2/deletions/users';
   const endpointPath = '/api/2/deletions/users';
-  const requestIntervalMs = 1000; // Amplitude User Privacy API: at most one request per second.
   let previousRequestStart;
   for (const batch of batchEvents) {
     if (previousRequestStart !== undefined) {
-      const remainingMs = requestIntervalMs - (Date.now() - previousRequestStart);
+      const remainingMs = DELETE_REQUEST_INTERVAL_MS - (performance.now() - previousRequestStart);
       if (remainingMs > 0) {
         // eslint-disable-next-line no-await-in-loop -- Amplitude limits request starts to one per second.
         await new Promise((resolve) => {
@@ -52,7 +51,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     const requestOptions = {
       headers,
     };
-    previousRequestStart = Date.now();
+    previousRequestStart = performance.now();
     // eslint-disable-next-line no-await-in-loop -- Stop immediately on a failed batch.
     const resp = await httpPOST(url, data, requestOptions, {
       destType: 'am',

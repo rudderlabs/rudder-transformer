@@ -92,6 +92,25 @@ describe('Amplitude user deletion pacing', () => {
     expect(jest.getTimerCount()).toBe(0);
   });
 
+  it('keeps request starts spaced when the wall clock jumps forward', async () => {
+    const starts = [];
+    httpPOST.mockImplementation(() => {
+      starts.push(performance.now());
+      return Promise.resolve(success);
+    });
+
+    const result = processDeleteUsers(deletionJob(200));
+    expect(starts).toEqual([0]);
+    jest.setSystemTime(60_000);
+    await jest.advanceTimersByTimeAsync(999);
+    expect(starts).toEqual([0]);
+    await jest.advanceTimersByTimeAsync(1);
+
+    await expect(result).resolves.toEqual({ statusCode: 200, status: 'successful' });
+    expect(starts).toEqual([0, 1000]);
+    expect(jest.getTimerCount()).toBe(0);
+  });
+
   it('stops on a middle-batch 429 and returns 429 to the worker', async () => {
     jest.spyOn(ErrorReportingService, 'reportError').mockImplementation(() => {});
     httpPOST.mockResolvedValueOnce(success).mockResolvedValueOnce(rateLimited);

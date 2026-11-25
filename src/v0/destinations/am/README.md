@@ -160,7 +160,7 @@ The Amplitude destination does not make any intermediate API calls. All events a
 - **Rate Limit**: 1 request per second, up to 8 parallel requests per project
 - **Implementation**:
   - Users are deleted based on their user_id
-  - Batches are processed in parallel
+  - Batches are sent sequentially, with each request starting at least 1 second after the previous one started; no delay is added before the first request or after the last.
   - Supports both US and EU data centers
   - Includes `requester: "RudderStack"` and `ignore_invalid_id: "true"` in requests
 

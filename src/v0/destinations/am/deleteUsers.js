@@ -32,37 +32,48 @@ const userDeletionHandler = async (userAttributes, config) => {
       ? 'https://analytics.eu.amplitude.com/api/2/deletions/users'
       : 'https://amplitude.com/api/2/deletions/users';
   const endpointPath = '/api/2/deletions/users';
-  await Promise.all(
-    batchEvents.map(async (batch) => {
-      const data = {
-        user_ids: batch,
-        requester: 'RudderStack',
-        ignore_invalid_id: 'true',
-      };
-      const requestOptions = {
-        headers,
-      };
-      const resp = await httpPOST(url, data, requestOptions, {
-        destType: 'am',
-        feature: 'deleteUsers',
-        endpointPath,
-        requestMethod: 'POST',
-        module: 'deletion',
-      });
-      const handledDelResponse = processAxiosResponse(resp);
-      if (!isHttpStatusSuccess(handledDelResponse.status)) {
-        throw new NetworkError(
-          'User deletion request failed',
-          handledDelResponse.status,
-          {
-            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
-            [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
-          },
-          handledDelResponse,
-        );
+  const requestIntervalMs = 1000; // Amplitude User Privacy API: at most one request per second.
+  let previousRequestStart;
+  for (const batch of batchEvents) {
+    if (previousRequestStart !== undefined) {
+      const remainingMs = requestIntervalMs - (Date.now() - previousRequestStart);
+      if (remainingMs > 0) {
+        // eslint-disable-next-line no-await-in-loop -- Amplitude limits request starts to one per second.
+        await new Promise((resolve) => {
+          setTimeout(resolve, remainingMs);
+        });
       }
-    }),
-  );
+    }
+    const data = {
+      user_ids: batch,
+      requester: 'RudderStack',
+      ignore_invalid_id: 'true',
+    };
+    const requestOptions = {
+      headers,
+    };
+    previousRequestStart = Date.now();
+    // eslint-disable-next-line no-await-in-loop -- Stop immediately on a failed batch.
+    const resp = await httpPOST(url, data, requestOptions, {
+      destType: 'am',
+      feature: 'deleteUsers',
+      endpointPath,
+      requestMethod: 'POST',
+      module: 'deletion',
+    });
+    const handledDelResponse = processAxiosResponse(resp);
+    if (!isHttpStatusSuccess(handledDelResponse.status)) {
+      throw new NetworkError(
+        'User deletion request failed',
+        handledDelResponse.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+          [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
+        },
+        handledDelResponse,
+      );
+    }
+  }
   return { statusCode: 200, status: 'successful' };
 };
 const processDeleteUsers = async (event) => {

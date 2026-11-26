@@ -354,7 +354,7 @@ export async function processDestinationIntegration<
   if (alreadyDeliveredJobIds.size > 0) {
     for (const response of successResponses) {
       for (const { jobId } of response.metadata) {
-        if (jobId !== undefined) alreadyDeliveredJobIds.delete(jobId);
+        if (typeof jobId === 'number') alreadyDeliveredJobIds.delete(jobId);
       }
     }
     for (const id of alreadyDeliveredJobIds) {

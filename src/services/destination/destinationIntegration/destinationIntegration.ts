@@ -3,6 +3,7 @@ import type { Connection, Destination } from '../../../types/controlPlaneConfig'
 import { generateErrorObject } from '../../../v0/util';
 import type {
   BatchStrategy,
+  AlreadyDelivered,
   TransformedEvent,
   TransformError,
   TransformResult,
@@ -12,6 +13,7 @@ import type {
 import type { DeliverySpec } from './delivery';
 
 export type {
+  AlreadyDelivered,
   TransformedEvent,
   TransformError,
   TransformResult,
@@ -115,13 +117,13 @@ export abstract class DestinationIntegration<
   // --- MUST implement ---
 
   /**
-   * Builds the delivery request for one input. May be sync or async — the framework awaits the
-   * result either way, so a destination that needs no I/O keeps returning a plain object and is
-   * unaffected.
+   * Builds the delivery request for one input, or returns AlreadyDelivered when the transform
+   * has completed delivery and no request remains. May be sync or async — the framework awaits
+   * the result either way, so a destination that needs no I/O keeps returning a plain object.
    *
-   * Async is for enrichment the payload cannot be built without: a lookup whose result belongs in
-   * the body. It runs once per input, so any I/O here MUST be cache-backed — an uncached call per
-   * event turns a single router transform into one request per job.
+   * Async is for enrichment or delivery that requires I/O. It runs once per input, so any lookup
+   * I/O here MUST be cache-backed — an uncached call per event turns a single router transform
+   * into one request per job.
    *
    * Throwing fails only this input: the caller records it against this jobId and the rest of the
    * batch is unaffected.
@@ -132,7 +134,8 @@ export abstract class DestinationIntegration<
   ):
     | TransformedEvent<TBody>
     | TransformedEvent<TBody>[]
-    | Promise<TransformedEvent<TBody> | TransformedEvent<TBody>[]>;
+    | AlreadyDelivered
+    | Promise<TransformedEvent<TBody> | TransformedEvent<TBody>[] | AlreadyDelivered>;
 
   abstract getBatchStrategy(endpoint: string): BatchStrategy<TBody>;
 
@@ -143,6 +146,7 @@ export abstract class DestinationIntegration<
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<TBody>> {
     const successPayloads: TransformResult<TBody>['successPayloads'] = [];
+    const alreadyDeliveredJobIds: TransformResult<TBody>['alreadyDeliveredJobIds'] = new Set();
     const errorPayloads: TransformResult<TBody>['errorPayloads'] = [];
 
     for (const input of inputs) {
@@ -154,17 +158,32 @@ export abstract class DestinationIntegration<
         // event race the same miss.
         // eslint-disable-next-line no-await-in-loop
         const transformedPayload = await this.transformEvent(input, reqMetadata);
-        const results = Array.isArray(transformedPayload)
-          ? transformedPayload
-          : [transformedPayload];
-        for (const result of results) {
-          successPayloads.push({ ...result, jobId });
+        if (!Array.isArray(transformedPayload) && transformedPayload.alreadyDelivered === true) {
+          if (
+            'body' in transformedPayload ||
+            'endpoint' in transformedPayload ||
+            'endpointPath' in transformedPayload ||
+            'method' in transformedPayload ||
+            'headers' in transformedPayload ||
+            'params' in transformedPayload ||
+            'internalGroupKey' in transformedPayload
+          ) {
+            throw new Error('AlreadyDelivered cannot contain request fields');
+          }
+          alreadyDeliveredJobIds.add(jobId);
+        } else {
+          const results = Array.isArray(transformedPayload)
+            ? transformedPayload
+            : [transformedPayload];
+          for (const result of results) {
+            successPayloads.push({ ...result, jobId });
+          }
         }
       } catch (error: unknown) {
         errorPayloads.push({ ...toTransformError(error), jobId });
       }
     }
 
-    return { successPayloads, errorPayloads };
+    return { successPayloads, alreadyDeliveredJobIds, errorPayloads };
   }
 }

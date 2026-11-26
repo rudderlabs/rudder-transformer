@@ -17,7 +17,8 @@ import {
   ChunkBatchStrategy,
   CustomBatchStrategy,
 } from '../destinationIntegration';
-import type { BatchStrategy, TransformResult } from '../destinationIntegration';
+import type { AlreadyDelivered, BatchStrategy, TransformResult } from '../destinationIntegration';
+import stats from '../../../../util/stats';
 import type {
   ProcessorTransformationOutput,
   RouterTransformationRequestData,
@@ -55,7 +56,7 @@ class SimpleIntegration extends DestinationIntegration<TestBody> {
   // implementation; TypeScript will not let an async override narrow a sync base signature.
   transformEvent(
     input: RouterTransformationRequestData<TestMessage>,
-  ): TransformedEvent<TestBody> | Promise<TransformedEvent<TestBody>> {
+  ): TransformedEvent<TestBody> | AlreadyDelivered | Promise<TransformedEvent<TestBody>> {
     const { message } = input;
     return {
       body: { value: message.data ?? '' },
@@ -75,6 +76,30 @@ class SimpleIntegration extends DestinationIntegration<TestBody> {
 
   getInputSchema() {
     return z.object({}).passthrough();
+  }
+}
+
+class AlreadyDeliveredIntegration extends SimpleIntegration {
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody> | AlreadyDelivered {
+    if (input.message.data === 'delivered') return { alreadyDelivered: true };
+    return super.transformEvent(input) as TransformedEvent<TestBody>;
+  }
+}
+
+class AlreadyDeliveredWithFailureIntegration extends AlreadyDeliveredIntegration {
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody> | AlreadyDelivered {
+    if (input.message.shouldFail) throw new InstrumentationError('transform failed');
+    return super.transformEvent(input);
+  }
+}
+
+class AlreadyDeliveredWithBatchFailureIntegration extends AlreadyDeliveredIntegration {
+  getBatchStrategy(): BatchStrategy<TestBody> {
+    return failBadChunks();
   }
 }
 
@@ -132,7 +157,7 @@ class AsyncEnrichFailIntegration extends SimpleIntegration {
     if (input.metadata.jobId === 1) {
       throw new ConfigurationError('enrichment lookup failed');
     }
-    return super.transformEvent(input);
+    return super.transformEvent(input) as Promise<TransformedEvent<TestBody>>;
   }
 }
 
@@ -349,6 +374,207 @@ describe('processDestinationIntegration', () => {
       expect(req.body?.FORM).toEqual({});
       expect(req.files).toEqual({});
       expect(resp.destination).toBe(mockDestination);
+    });
+  });
+
+  describe('already delivered during transformation', () => {
+    const metricTags = { destType: 'TEST', workspaceId: 'ws-1', destinationId: 'dest-1' };
+    let counterSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      counterSpy = jest.spyOn(stats, 'counter').mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      counterSpy.mockRestore();
+    });
+
+    it('returns a single request-free 299 with exactly one metadata entry', async () => {
+      const input = makeInput(1, 'delivered');
+      expect(await processDestinationIntegration([input], AlreadyDeliveredIntegration, {})).toEqual(
+        [
+          {
+            metadata: [input.metadata],
+            destination: mockDestination,
+            batched: false,
+            statusCode: 299,
+          },
+        ],
+      );
+      expect(counterSpy).toHaveBeenCalledWith(
+        'destination_integration_already_delivered_count',
+        1,
+        metricTags,
+      );
+      expect(counterSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles batchable and dontBatch markers beside normal requests without batching them', async () => {
+      const delivered = makeInput(1, 'delivered');
+      const singleDelivered = makeInput(2, 'delivered', { dontBatch: true });
+      const request = makeInput(3, 'send');
+      const results = await processDestinationIntegration(
+        [delivered, singleDelivered, request],
+        AlreadyDeliveredIntegration,
+        {},
+      );
+
+      expect(results).toEqual([
+        {
+          batchedRequest: {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: 'https://api.test.com/events',
+            endpointPath: '/events',
+            headers: { 'Content-Type': 'application/json' },
+            params: {},
+            body: { JSON: { events: [{ value: 'send' }] }, JSON_ARRAY: {}, XML: {}, FORM: {} },
+            files: {},
+          },
+          metadata: [request.metadata],
+          destination: mockDestination,
+          batched: true,
+          statusCode: 200,
+        },
+        {
+          metadata: [delivered.metadata],
+          destination: mockDestination,
+          batched: false,
+          statusCode: 299,
+        },
+        {
+          metadata: [singleDelivered.metadata],
+          destination: mockDestination,
+          batched: false,
+          statusCode: 299,
+        },
+      ]);
+      expect(counterSpy).toHaveBeenCalledWith(
+        'destination_integration_already_delivered_count',
+        2,
+        metricTags,
+      );
+    });
+
+    it('deduplicates markers for one job, with only one metadata entry and one count', async () => {
+      const inputs = [makeInput(1, 'delivered'), makeInput(1, 'delivered')];
+      expect(await processDestinationIntegration(inputs, AlreadyDeliveredIntegration, {})).toEqual([
+        {
+          metadata: [inputs[1].metadata],
+          destination: mockDestination,
+          batched: false,
+          statusCode: 299,
+        },
+      ]);
+      expect(counterSpy).toHaveBeenCalledWith(
+        'destination_integration_already_delivered_count',
+        1,
+        metricTags,
+      );
+    });
+
+    it('prefers a normal request over a marker for the same job', async () => {
+      const marker = makeInput(1, 'delivered');
+      const request = makeInput(1, 'send');
+      const results = await processDestinationIntegration(
+        [marker, request],
+        AlreadyDeliveredIntegration,
+        {},
+      );
+      expect(results).toEqual([
+        {
+          batchedRequest: {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: 'https://api.test.com/events',
+            endpointPath: '/events',
+            headers: { 'Content-Type': 'application/json' },
+            params: {},
+            body: { JSON: { events: [{ value: 'send' }] }, JSON_ARRAY: {}, XML: {}, FORM: {} },
+            files: {},
+          },
+          metadata: [request.metadata],
+          destination: mockDestination,
+          batched: true,
+          statusCode: 200,
+        },
+      ]);
+      expect(results.flatMap((r) => r.metadata.map((m) => m.jobId))).toEqual([1]);
+      expect(counterSpy).not.toHaveBeenCalledWith(
+        'destination_integration_already_delivered_count',
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('prefers a transform failure for a job with a marker', async () => {
+      const marker = makeInput(1, 'delivered');
+      const failed = makeInput(1, 'fail', { shouldFail: true });
+      const results = await processDestinationIntegration(
+        [marker, failed],
+        AlreadyDeliveredWithFailureIntegration,
+        {},
+      );
+      expect(results).toEqual([
+        {
+          metadata: [failed.metadata],
+          destination: mockDestination,
+          batched: false,
+          statusCode: 400,
+          error: 'transform failed',
+          statTags: expect.objectContaining({ errorType: 'instrumentation' }),
+        },
+      ]);
+      expect(counterSpy).not.toHaveBeenCalledWith(
+        'destination_integration_already_delivered_count',
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('prefers a batch-strategy failure for a job with a marker', async () => {
+      const marker = makeInput(1, 'delivered');
+      const failed = makeInput(1, 'bad');
+      const other = makeInput(2, 'ok');
+      const results = await processDestinationIntegration(
+        [marker, failed, other],
+        AlreadyDeliveredWithBatchFailureIntegration,
+        {},
+      );
+      expect(results).toEqual([
+        {
+          batchedRequest: {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: 'https://api.test.com/events',
+            endpointPath: '/events',
+            headers: { 'Content-Type': 'application/json' },
+            params: {},
+            body: { JSON: { value: 'ok' }, JSON_ARRAY: {}, XML: {}, FORM: {} },
+            files: {},
+          },
+          metadata: [other.metadata],
+          destination: mockDestination,
+          batched: true,
+          statusCode: 200,
+        },
+        {
+          metadata: [failed.metadata],
+          destination: mockDestination,
+          batched: false,
+          statusCode: 400,
+          error: 'chunk failed',
+          statTags: {},
+        },
+      ]);
+      expect(counterSpy).not.toHaveBeenCalledWith(
+        'destination_integration_already_delivered_count',
+        expect.anything(),
+        expect.anything(),
+      );
     });
   });
 

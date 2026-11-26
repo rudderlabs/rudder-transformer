@@ -14,6 +14,7 @@ import {
 import type { BatchGroup, TransformError } from './types';
 import { BodyFormat } from './types';
 import tags from '../../../v0/util/tags';
+import { HTTP_STATUS_CODES } from '../../../v0/util/constant';
 import stats from '../../../util/stats';
 import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 
@@ -248,10 +249,12 @@ export async function processDestinationIntegration<
   // 4. Transform all events (batchable + nonBatchable)
   const batchablePayloads: TransformResult<TBody>['successPayloads'] = [];
   const nonBatchablePayloads: TransformResult<TBody>['successPayloads'] = [];
+  const alreadyDeliveredJobIds = new Set<number>();
 
   if (batchableEvents.length > 0) {
     const batchResult = await integration.transformEvents(batchableEvents, reqMetadata);
     batchablePayloads.push(...batchResult.successPayloads);
+    batchResult.alreadyDeliveredJobIds.forEach((id) => alreadyDeliveredJobIds.add(id));
     allErrors.push(...batchResult.errorPayloads);
   }
 
@@ -259,6 +262,7 @@ export async function processDestinationIntegration<
     // eslint-disable-next-line no-await-in-loop
     const singleResult = await integration.transformEvents([nonBatchableEvent], reqMetadata);
     nonBatchablePayloads.push(...singleResult.successPayloads);
+    singleResult.alreadyDeliveredJobIds.forEach((id) => alreadyDeliveredJobIds.add(id));
     allErrors.push(...singleResult.errorPayloads);
   }
 
@@ -290,7 +294,6 @@ export async function processDestinationIntegration<
     (typeof allGroups)[number],
     { bodyFormat: BodyFormat; batches: BatchGroup[] }
   >();
-  const batchFailedJobIds = new Set<number>();
   let toBatch = allGroups;
   while (toBatch.length > 0) {
     const failedThisRound = new Set<number>();
@@ -301,8 +304,8 @@ export async function processDestinationIntegration<
       for (const { error, jobIds } of batches) {
         if (error) {
           for (const jobId of jobIds) {
-            if (!batchFailedJobIds.has(jobId)) {
-              batchFailedJobIds.add(jobId);
+            if (!failedJobIds.has(jobId)) {
+              failedJobIds.add(jobId);
               failedThisRound.add(jobId);
               allErrors.push({ jobId, ...error });
             }
@@ -318,7 +321,7 @@ export async function processDestinationIntegration<
     for (const [group, { batches }] of groupBatches) {
       if (batches.some((batch) => [...batch.jobIds].some((id) => failedThisRound.has(id)))) {
         groupBatches.delete(group);
-        const payloads = group.payloads.filter((payload) => !batchFailedJobIds.has(payload.jobId));
+        const payloads = group.payloads.filter((payload) => !failedJobIds.has(payload.jobId));
         if (payloads.length > 0) toBatch.push({ ...group, payloads });
       }
     }
@@ -345,9 +348,37 @@ export async function processDestinationIntegration<
     }
   }
 
-  // 9. Merge success responses that share jobIds (multiplexed events across groups)
+  // 9. Failure wins over a request-bearing success, which wins over a delivery marker.
+  // Resolve markers only after batch-strategy failures; never merge request-free 299s with requests.
+  const deliveredResponses: RouterTransformationResponse[] = [];
+  if (alreadyDeliveredJobIds.size > 0) {
+    for (const response of successResponses) {
+      for (const { jobId } of response.metadata) {
+        if (jobId !== undefined) alreadyDeliveredJobIds.delete(jobId);
+      }
+    }
+    for (const id of alreadyDeliveredJobIds) {
+      if (!failedJobIds.has(id)) {
+        deliveredResponses.push({
+          metadata: resolveMetadata(new Set([id]), metadataMap),
+          destination,
+          batched: false,
+          statusCode: HTTP_STATUS_CODES.SUPPRESS_EVENTS,
+        });
+      }
+    }
+    if (deliveredResponses.length > 0) {
+      stats.counter(
+        'destination_integration_already_delivered_count',
+        deliveredResponses.length,
+        metricTags,
+      );
+    }
+  }
+
   return [
     ...combineBatchRequestsWithSameJobIds(successResponses),
     ...mapErrorPayloadToServerFormat(allErrors, metadataMap, destination),
+    ...deliveredResponses,
   ];
 }

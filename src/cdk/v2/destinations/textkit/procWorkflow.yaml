@@ -1,0 +1,62 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - path: ./utils
+  - path: ./config
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() === {{$.EventType.TRACK}}, "message type " + .message.type + " is not supported");
+      $.assertConfig(.destination.Config.apiKey, "apiKey must be supplied in destination config");
+      $.assert(.message.event, "event is required for track call");
+
+  - name: prepareContext
+    template: |
+      $.context.phone = .message.().({{{{$.getGenericPaths("phone")}}}});
+
+  - name: buildPayload
+    steps:
+      - name: smsPayload
+        condition: .destination.Config.smsEventName && .message.event === .destination.Config.smsEventName
+        template: |
+          $.assert($.context.phone, "phone is required to send an SMS");
+          $.assert(.message.properties.body, "properties.body is required to send an SMS");
+          $.context.endpoint = $.MESSAGES_ENDPOINT;
+          $.context.payload = {
+            "to": $.context.phone,
+            "body": .message.properties.body,
+            "from": .destination.Config.fromNumber
+          };
+        else:
+          name: trackPayload
+          template: |
+            const userId = .message.().({{{{$.getGenericPaths("userIdOnly")}}}});
+            $.assert(userId || $.context.phone, "userId or phone is required for track call");
+            $.context.endpoint = $.TRACK_ENDPOINT;
+            $.context.payload = {
+              "event": $.normalizeEventName(.message.event),
+              "user_id": userId ? String(userId) : undefined,
+              "phone": $.context.phone,
+              "properties": $.getScalarProperties(.message.properties)
+            };
+
+  - name: buildResponse
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload);
+      response.endpoint = $.context.endpoint;
+      response.method = "POST";
+      response.headers = $.removeUndefinedAndNullValues({
+        "Authorization": "Bearer " + .destination.Config.apiKey,
+        "Content-Type": "application/json",
+        "Idempotency-Key": .message.messageId
+      });
+      response

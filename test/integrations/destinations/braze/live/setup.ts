@@ -1,7 +1,7 @@
 import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 import type { RunContext } from '../../../live/types';
 import { createUserWithAttributes, exportUserByExternalId } from './api';
-import { dedupExistingInitialAttrs } from './profiles';
+import { NESTED_ARRAY_ATTR, dedupExistingInitialAttrs, nestedArrayInitialAttrs } from './profiles';
 
 // Alias-merge collapses two existing external_id profiles into one. Seed both up front — the "keep"
 // profile (userId) and the "merge" profile (previousId) — so the merge request has real targets. The
@@ -57,6 +57,26 @@ export const createDedupUserAndWait = async (ctx: RunContext): Promise<void> => 
     },
     {
       label: 'dedup user searchable',
+      attempts: 9,
+      delayMs: (n) => Math.min(1000 * 2 ** n, 16000),
+    },
+  );
+};
+
+// supportDedup + nested-array mutation scenario: seed the user WITH a populated object array and wait
+// until the array itself is returned by export, so the $update/$remove have real targets and the
+// transform's dedup lookup finds the existing profile.
+export const createDedupUserWithArrayAndWait = async (ctx: RunContext): Promise<void> => {
+  const externalId = ctx.identity('user');
+  await createUserWithAttributes(ctx, externalId, nestedArrayInitialAttrs(ctx));
+  await pollUntil(
+    async () => {
+      const p = await exportUserByExternalId(ctx, externalId);
+      const arr = p?.custom_attributes?.[NESTED_ARRAY_ATTR];
+      return { done: Array.isArray(arr) && (arr as unknown[]).length > 0, value: p };
+    },
+    {
+      label: 'dedup array user searchable',
       attempts: 9,
       delayMs: (n) => Math.min(1000 * 2 ** n, 16000),
     },

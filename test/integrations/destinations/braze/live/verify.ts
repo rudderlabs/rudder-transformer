@@ -83,3 +83,25 @@ export const verifyNestedArrayAttribute = async (ctx: RunContext): Promise<void>
     expect.arrayContaining([expect.objectContaining({ name: marker })]),
   );
 };
+
+// dedup + nested-array $add/$update/$remove with _merge_objects: true on a populated array. After the
+// op lands, the array must show: the added object (id 1); the updated object with its new name AND
+// the untouched `keep` field preserved by the merge (the _merge_objects: true assertion — with the
+// directive dropped or false, Braze replaces the object and `keep` is gone); and no trace of the
+// removed id-3 object.
+export const verifyNestedArrayMutations = async (ctx: RunContext): Promise<void> => {
+  const marker = nestedArrayMarker(ctx);
+  const profile = await exportUserByExternalId(ctx, ctx.identity('user'));
+  const arr = (profile?.custom_attributes?.[NESTED_ARRAY_ATTR] ?? []) as Record<string, unknown>[];
+  expect(Array.isArray(arr)).toBe(true);
+  // $add
+  expect(arr).toEqual(expect.arrayContaining([expect.objectContaining({ name: marker })]));
+  // $update + _merge_objects: true — name updated, sibling `keep` field survived the merge
+  expect(arr).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ name: `${marker}-upd`, keep: `keep-${ctx.runId}` }),
+    ]),
+  );
+  // $remove — the id-3 object is gone
+  expect(arr.some((o) => o.id === 3)).toBe(false);
+};

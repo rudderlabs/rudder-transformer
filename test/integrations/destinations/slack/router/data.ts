@@ -4,6 +4,8 @@ import {
   baseRouterDestination as baseDestination,
   generateCommonMessage,
   generateCommonMetadata,
+  invalidRouterTemplateNameDestination,
+  invalidModernChannelNameDestination,
 } from '../common';
 
 export const data: RouterTestData[] = [
@@ -168,4 +170,74 @@ export const data: RouterTestData[] = [
       return {};
     },
   },
+  ...[
+    {
+      id: 'invalid-template-event-name',
+      destination: invalidRouterTemplateNameDestination,
+      field: 'eventTemplateSettings.eventName',
+    },
+    {
+      id: 'invalid-modern-channel-event-name',
+      destination: invalidModernChannelNameDestination,
+      field: 'eventChannelSettings.eventName',
+    },
+  ].map(
+    ({ id, destination, field }): RouterTestData => ({
+      id: `slack-router-${id}`,
+      name: 'slack',
+      description: `Track rejects a non-string ${field} as configuration`,
+      scenario: `Sending a track event with a non-string ${field}`,
+      successCriteria: 'The event should fail with a configuration error',
+      feature: 'router',
+      module: 'destination',
+      version: 'v0',
+      input: {
+        request: {
+          method: 'POST',
+          body: {
+            input: [
+              {
+                destination,
+                message: generateCommonMessage(
+                  'track',
+                  '12345',
+                  'anonymous-1',
+                  'slack-invalid-config',
+                  { event: 'Signup' },
+                ),
+                metadata: generateCommonMetadata(992, 'u1', 'slack-invalid-config'),
+              },
+            ],
+            destType: 'slack',
+          },
+        },
+      },
+      output: {
+        response: {
+          status: 200,
+          body: {
+            output: [
+              {
+                batched: false,
+                destination,
+                error: `${field} must be a string`,
+                metadata: [generateCommonMetadata(992, 'u1', 'slack-invalid-config')],
+                statTags: {
+                  destType: 'SLACK',
+                  destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+                  errorCategory: 'dataValidation',
+                  errorType: 'configuration',
+                  feature: 'router',
+                  implementation: 'native',
+                  module: 'destination',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 400,
+              },
+            ],
+          },
+        },
+      },
+    }),
+  ),
 ];

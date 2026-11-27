@@ -80,6 +80,31 @@ describe('Utils Functions', () => {
         'Path value cannot contain "/"',
       );
     });
+    test('should resolve property paths with member, quoted-key and wildcard segments', () => {
+      const message = { traits: { id: 'a', 'user-id': 'U1', ids: ['x', 'y'] } };
+      const pathParams = [
+        { path: '$.traits.id' },
+        { path: "$.traits['user-id']" },
+        { path: '$.traits.ids[*]' },
+        { path: '$.traits.ids.*' },
+      ];
+      expect(prepareEndpoint(message, 'https://api.example.com', pathParams)).toBe(
+        'https://api.example.com/a/U1/x/x',
+      );
+    });
+    test.each([
+      ['script expression', '$.items[(@.length-1)]'],
+      ['member script expression', '$.items.(@.length-1)'],
+      ['filter expression', '$.items[?(@.id)]'],
+      ['descendant', '$..id'],
+      ['slice', '$.items[0:1]'],
+      ['union', '$.items[0,1]'],
+    ])('should reject a %s in a path param', (_, path) => {
+      const message = { items: [{ id: 'first' }, { id: 'last' }] };
+      expect(() => prepareEndpoint(message, 'https://api.example.com', [{ path }])).toThrowError(
+        'Path param must be a property path',
+      );
+    });
   });
 
   describe('prepareBody', () => {

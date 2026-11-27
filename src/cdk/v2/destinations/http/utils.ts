@@ -98,12 +98,44 @@ const validateQueryParams = (params: Record<string, unknown>): Record<string, un
   return Object.fromEntries(filteredKeys.map((key) => [key, params[key]]));
 };
 
+// The segment kinds the HTTP v1 config schema allows (.key, ['key'], [0], [*], .*).
+const PROPERTY_PATH_KEY_TYPES = new Set([
+  'identifier',
+  'numeric_literal',
+  'string_literal',
+  'wildcard',
+]);
+
+// Script and filter segments are refused because rs-jsonpath evaluates them as code; slice,
+// union and descendant segments are refused because the config schema never allowed them.
+const isPropertyPath = (path: string): boolean => {
+  let components: { expression: { type: string }; scope?: string; operation?: string }[];
+  try {
+    components = jsonpath.parse(path);
+  } catch {
+    return false;
+  }
+  const [root, ...segments] = components;
+  return (
+    root?.expression.type === 'root' &&
+    segments.every(
+      ({ expression, scope, operation }) =>
+        scope === 'child' &&
+        (operation === 'member' || operation === 'subscript') &&
+        PROPERTY_PATH_KEY_TYPES.has(expression.type),
+    )
+  );
+};
+
 const getPathValueFromJsonpath = (message: Record<string, unknown>, path: string) => {
   let finalPath: string | null = path;
   if (path.includes('/')) {
     throw new ConfigurationError('Path value cannot contain "/"');
   }
   if (path.includes('$')) {
+    if (!isPropertyPath(path)) {
+      throw new ConfigurationError('Path param must be a property path such as $.traits.email');
+    }
     try {
       [finalPath = null] = jsonpath.query(message, path);
     } catch (error: any) {

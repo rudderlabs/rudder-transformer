@@ -7,6 +7,7 @@ import {
 } from './api';
 import {
   createDedupUserAndWait,
+  createDedupUserWithArrayAndWait,
   createGroupUserAndWait,
   createMergeUsers,
   createSubscriptionUser,
@@ -32,6 +33,7 @@ import {
   identifyCreateTraits,
   identityResolutionTraits,
   multiProductTraits,
+  nestedArrayMutationTraits,
   nestedArrayTraits,
   orderCompletedTraits,
   pageTraits,
@@ -46,6 +48,7 @@ import {
 import {
   verifyGroupAttribute,
   verifyNestedArrayAttribute,
+  verifyNestedArrayMutations,
   verifyProfileByAlias,
   verifyProfileByExternalId,
   verifySubscriptionStatus,
@@ -898,6 +901,48 @@ export const live = {
         },
       ],
       verify: { check: verifyNestedArrayAttribute, ...READBACK },
+    },
+
+    // ─── supportDedup + nested-array $update/$remove/_merge_objects on a POPULATED array (INT-7744) ───
+    // Extends the add-only scenario above to the other two operations and the merge directive. Setup
+    // seeds the user with an object array holding ids 2 and 3; the identify then $updates id 2 (sending
+    // only a new name, with _merge_objects: true so the object's other `keep` field is preserved rather
+    // than replaced), $removes id 3, and $adds id 1. With supportDedup the unchanged email is stripped,
+    // so all three ops AND _merge_objects must survive the reduce branch and apply at Braze. Before the
+    // fix the operation key and _merge_objects were dropped, so none of the mutations would land and the
+    // seeded array would read back unchanged.
+    {
+      id: 'braze-identify-dedup-nested-array-update-remove',
+      description:
+        'supportDedup existing user delivers nested-array $update/$remove with _merge_objects on a populated array',
+      configOverride: (base) => ({
+        ...base,
+        supportDedup: true,
+        enableNestedArrayOperations: true,
+      }),
+      cleanup: deleteUserByExternalId,
+      steps: [
+        {
+          stepType: 'action',
+          name: 'setup: create + settle dedup user with array',
+          run: createDedupUserWithArrayAndWait,
+        },
+        {
+          stepType: 'pipeline',
+          name: 'identify existing (dedup + $update/$remove/_merge_objects)',
+          retries: 2,
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => ({
+            ...baseEvent(ctx, 'dedup-nested-mutate'),
+            type: 'identify',
+            userId: ctx.identity('user'),
+            properties: { mergeObjectsUpdateOperation: true },
+            context: { ...brazeLibraryContext, traits: nestedArrayMutationTraits(ctx) },
+          }),
+        },
+      ],
+      verify: { check: verifyNestedArrayMutations, ...READBACK },
     },
 
     // ─── per-job delivery mapping: MERGE branch ───

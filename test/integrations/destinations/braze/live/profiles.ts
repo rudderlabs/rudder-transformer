@@ -203,3 +203,25 @@ export const nestedArrayTraits = (ctx: RunContext): Record<string, unknown> => (
     add: [{ id: 1, name: nestedArrayMarker(ctx), age: 27 }],
   },
 });
+
+// ─── dedup + nested-array $update / $remove / _merge_objects on a POPULATED array ───
+// Unlike nestedArrayTraits (which runs against a fresh profile, so only $add lands), these drive the
+// other two operations and the merge directive against a user that already holds the array. Setup
+// seeds two objects: id 2 carries a secondary `keep` field so _merge_objects: true is observable (the
+// field must survive an $update that only sends `name`), and id 3 is the $remove target.
+export const nestedArrayInitialAttrs = (ctx: RunContext): Record<string, unknown> => ({
+  email: ctx.email(),
+  [NESTED_ARRAY_ATTR]: [
+    { id: 2, name: 'before', keep: `keep-${ctx.runId}` },
+    { id: 3, name: 'to-remove' },
+  ],
+});
+// $update id 2 (new `name` only — `keep` is left to the merge), $remove id 3, $add id 1.
+export const nestedArrayMutationTraits = (ctx: RunContext): Record<string, unknown> => ({
+  email: ctx.email(),
+  [NESTED_ARRAY_ATTR]: {
+    update: [{ identifier: 'id', id: 2, name: `${nestedArrayMarker(ctx)}-upd` }],
+    remove: [{ identifier: 'id', id: 3 }],
+    add: [{ id: 1, name: nestedArrayMarker(ctx) }],
+  },
+});

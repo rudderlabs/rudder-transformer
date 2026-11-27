@@ -62,31 +62,19 @@ const processIdentify = (message, destination) => {
   logger.debug('defaulTraitsList:: ', traitsList);
   const uName = getName(message);
 
-  const template = Handlebars.compile(
+  const rawTemplate =
     (identifyTemplateConfig
       ? identifyTemplateConfig.trim()?.length === 0
         ? undefined
         : identifyTemplateConfig
       : undefined) ||
-      buildDefaultTraitTemplate(
-        traitsList,
-        getFieldValueFromMessage(message, 'traits'),
-        defaultIdentifyTemplate || {},
-      ),
-  );
-  logger.debug(
-    'identifyTemplateConfig: ',
-    (identifyTemplateConfig
-      ? identifyTemplateConfig.trim()?.length === 0
-        ? undefined
-        : identifyTemplateConfig
-      : undefined) ||
-      buildDefaultTraitTemplate(
-        traitsList,
-        getFieldValueFromMessage(message, 'traits'),
-        defaultIdentifyTemplate || {},
-      ),
-  );
+    buildDefaultTraitTemplate(
+      traitsList,
+      getFieldValueFromMessage(message, 'traits'),
+      defaultIdentifyTemplate || {},
+    );
+  const template = Handlebars.compile(rawTemplate);
+  logger.debug('identifyTemplateConfig: ', rawTemplate);
 
   // provide a fat input with flattened traits as well as traits object
   // helps the user to build additional handlebar expressions
@@ -95,7 +83,7 @@ const processIdentify = (message, destination) => {
   const templateInput = {
     name: uName,
     ...identityTraits,
-    traits: stringifyJSON(identityTraits, traitsList),
+    traits: new Handlebars.SafeString(stringifyJSON(identityTraits, traitsList, true)),
     traitsList: identityTraits,
   };
 
@@ -241,8 +229,10 @@ const processTrack = (message, destination) => {
     event: eventName,
     ...message.properties,
     properties: message.properties,
-    propertiesList: stringifyJSON(message.properties || {}),
-    traits: stringifyJSON(identityTraits, traitsList),
+    propertiesList: new Handlebars.SafeString(
+      stringifyJSON(message.properties || {}, undefined, true),
+    ),
+    traits: new Handlebars.SafeString(stringifyJSON(identityTraits, traitsList, true)),
     traitsList: identityTraits,
   };
 

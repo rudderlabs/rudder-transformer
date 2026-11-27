@@ -1,4 +1,5 @@
 const { NetworkError } = require('@rudderstack/integrations-lib');
+const truncateUtf8Bytes = require('truncate-utf8-bytes');
 const {
   getDynamicErrorType,
   processAxiosResponse,
@@ -18,11 +19,48 @@ const { HTTP_STATUS_CODES } = require('../../util/constant');
 const getNormalizedErrorStatus = (status) =>
   isHttpStatusSuccess(status) ? HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR : status;
 
+const RESPONSE_LIMIT_BYTES = 4 * 1024;
+const TRUNCATED = '... [truncated]';
+const TRUNCATED_STRUCTURED_RESPONSE = '[truncated ActiveCampaign response]';
+
+const truncateUtf8 = (text) => {
+  if (Buffer.byteLength(text, 'utf8') <= RESPONSE_LIMIT_BYTES) return text;
+  const budget = RESPONSE_LIMIT_BYTES - Buffer.byteLength(TRUNCATED, 'utf8');
+  return truncateUtf8Bytes(text, budget) + TRUNCATED;
+};
+
+const boundResponse = (response) => {
+  if (typeof response === 'string') return truncateUtf8(response);
+  if (!response || typeof response !== 'object') return response;
+
+  // Stop visiting a large JSON tree early, before stringify can build an unbounded copy.
+  const tooLarge = new Error('Response exceeds ActiveCampaign error budget');
+  let budget = RESPONSE_LIMIT_BYTES;
+  try {
+    const serialized = JSON.stringify(response, (key, value) => {
+      if (typeof value === 'string') {
+        budget -= Buffer.byteLength(value, 'utf8');
+      }
+      budget -= Buffer.byteLength(key, 'utf8') + 1;
+      if (budget < 0) throw tooLarge;
+      return value;
+    });
+    return Buffer.byteLength(serialized, 'utf8') <= RESPONSE_LIMIT_BYTES
+      ? response
+      : TRUNCATED_STRUCTURED_RESPONSE;
+  } catch (err) {
+    if (err !== tooLarge) throw err;
+    return TRUNCATED_STRUCTURED_RESPONSE;
+  }
+};
+
 const errorHandler = (httpCallError, message) => {
   const { response, status } = processAxiosResponse(httpCallError);
+  const destinationResponse = boundResponse(response);
   let msg = message;
   if (response) {
-    msg = `${message} (${httpCallError.response?.statusText},${JSON.stringify(response)})`;
+    const excerpt = truncateUtf8(JSON.stringify(destinationResponse));
+    msg = `${message} (${httpCallError.response?.statusText},${excerpt})`;
   }
   const errorStatus = getNormalizedErrorStatus(status);
   throw new NetworkError(
@@ -31,7 +69,7 @@ const errorHandler = (httpCallError, message) => {
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
     },
-    response,
+    destinationResponse,
   );
 };
 

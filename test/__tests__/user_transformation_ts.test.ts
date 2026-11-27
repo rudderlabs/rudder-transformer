@@ -78,4 +78,27 @@ describe('User Transform Service', () => {
       },
     });
   });
+  // A 400 per event, not a retryable status: rudder-server would otherwise retry the batch forever.
+  it('answers a batch whose events name different workspaces with a 400 per event and no lookup', async () => {
+    (fetch as jest.MockedFunction<typeof fetch>).mockClear();
+    const event = (messageId: string, workspaceId: string) => ({
+      message: { messageId, type: 'track', event: 'e' },
+      metadata: { messageId, workspaceId, sourceId: 'src', destinationId: 'dst' },
+      destination: { Transformations: [{ VersionID: 'mixed-workspaces-version' }] },
+    });
+
+    const output = await UserTransformService.transformRoutine([
+      event('m1', 'workspace-a'),
+      event('m2', 'workspace-b'),
+    ] as any);
+
+    expect(output.retryStatus).toBe(200);
+    expect(
+      output.transformedEvents.map(({ statusCode, error }) => ({ statusCode, error })),
+    ).toEqual([
+      { statusCode: 400, error: 'Error: Events in a batch must belong to a single workspace' },
+      { statusCode: 400, error: 'Error: Events in a batch must belong to a single workspace' },
+    ]);
+    expect(fetch).not.toHaveBeenCalled();
+  });
 });

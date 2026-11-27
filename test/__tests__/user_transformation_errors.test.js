@@ -688,10 +688,11 @@ describe("Batch workspace checks", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("rejects a batch with a non-string workspace before fetching code", async () => {
+  // false and 0 must not read as "no workspace"
+  it.each([123, false, 0])("rejects a batch with the non-string workspace %p before fetching code", async (invalid) => {
     const invalidEvents = [
-      { message: { messageId: "msg1" }, metadata: { messageId: "msg1", workspaceId: 123 } },
-      { message: { messageId: "msg2" }, metadata: { messageId: "msg2", workspaceId: 123 } },
+      { message: { messageId: "msg1" }, metadata: { messageId: "msg1", workspaceId: invalid } },
+      { message: { messageId: "msg2" }, metadata: { messageId: "msg2", workspaceId: invalid } },
     ];
 
     await expect(userTransformHandler(invalidEvents, versionId, [])).rejects.toThrow(

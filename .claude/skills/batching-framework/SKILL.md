@@ -127,7 +127,7 @@ transform, **reuse it — do not reimplement the payload logic in `routerTransfo
   array wrapper the API expects.
 - Legacy transforms may be synchronous or asynchronous. The framework awaits `transformEvent`,
   so reuse the existing chain without removing `async`/`await` just to satisfy the framework.
-  Cache lookup I/O performed per event so a router batch does not make one call per job.
+  Cache any lookup I/O done per event, so a router batch doesn't make one call per job.
 - **Keep the legacy `processRouterDest` exported.** During pre-GA env-var rollout the destination
   falls back to it for workspaces not yet enabled, so it must stay functional.
 

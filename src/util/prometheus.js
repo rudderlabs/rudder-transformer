@@ -392,6 +392,12 @@ class Prometheus {
         labelNames: ['destinationType', 'destinationId'],
       },
       {
+        name: 'destination_integration_already_delivered_count',
+        help: 'Destination integration jobs delivered during transformation',
+        type: 'counter',
+        labelNames: ['destType', 'workspaceId', 'destinationId'],
+      },
+      {
         name: 'shopify_client_side_identifier_event',
         help: 'shopify_client_side_identifier_event',
         type: 'counter',

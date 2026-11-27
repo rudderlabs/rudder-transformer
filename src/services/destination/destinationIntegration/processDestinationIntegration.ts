@@ -266,7 +266,8 @@ export async function processDestinationIntegration<
     allErrors.push(...singleResult.errorPayloads);
   }
 
-  // 5. Remove failed jobIds from payloads before building success responses.
+  // 5. Remove failed jobIds from payloads before building success responses. This set grows
+  // during batching, and step 9 uses it to suppress markers for every failed job.
   // This handles the multiplexing case: if transformEvent for jobId=1 produces
   // payloads for both /track and /identify endpoints, and the /identify payload
   // fails, jobId=1 must be removed from the /track payloads too — a partially
@@ -329,9 +330,11 @@ export async function processDestinationIntegration<
 
   // 8. Convert successful batches to server format
   const successResponses: RouterTransformationResponse[] = [];
+  const requestJobIds = new Set<number>();
   for (const [group, { bodyFormat, batches }] of groupBatches) {
     for (const batchResult of batches) {
       stats.histogram('output_batch_size', batchResult.jobIds.size, metricTags);
+      batchResult.jobIds.forEach((id) => requestJobIds.add(id));
       successResponses.push(
         mapSuccessPayloadToServerFormat(
           batchResult,
@@ -352,13 +355,8 @@ export async function processDestinationIntegration<
   // Resolve markers only after batch-strategy failures; never merge request-free 299s with requests.
   const deliveredResponses: RouterTransformationResponse[] = [];
   if (alreadyDeliveredJobIds.size > 0) {
-    for (const response of successResponses) {
-      for (const { jobId } of response.metadata) {
-        if (typeof jobId === 'number') alreadyDeliveredJobIds.delete(jobId);
-      }
-    }
     for (const id of alreadyDeliveredJobIds) {
-      if (!failedJobIds.has(id)) {
+      if (!failedJobIds.has(id) && !requestJobIds.has(id)) {
         deliveredResponses.push({
           metadata: resolveMetadata(new Set([id]), metadataMap),
           destination,

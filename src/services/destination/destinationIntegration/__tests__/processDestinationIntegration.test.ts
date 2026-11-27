@@ -52,11 +52,9 @@ const mockDestination: Destination = {
 };
 
 class SimpleIntegration extends DestinationIntegration<TestBody> {
-  // Declared as the sync-or-async union so subclasses below can override it with an async
-  // implementation; TypeScript will not let an async override narrow a sync base signature.
-  transformEvent(
+  protected buildRequest(
     input: RouterTransformationRequestData<TestMessage>,
-  ): TransformedEvent<TestBody> | AlreadyDelivered | Promise<TransformedEvent<TestBody>> {
+  ): TransformedEvent<TestBody> {
     const { message } = input;
     return {
       body: { value: message.data ?? '' },
@@ -65,6 +63,14 @@ class SimpleIntegration extends DestinationIntegration<TestBody> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     };
+  }
+
+  // Declared as the sync-or-async union so subclasses below can override it with an async
+  // implementation; TypeScript will not let an async override narrow a sync base signature.
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody> | AlreadyDelivered | Promise<TransformedEvent<TestBody>> {
+    return this.buildRequest(input);
   }
 
   getBatchStrategy(): BatchStrategy<TestBody> {
@@ -84,7 +90,7 @@ class AlreadyDeliveredIntegration extends SimpleIntegration {
     input: RouterTransformationRequestData<TestMessage>,
   ): TransformedEvent<TestBody> | AlreadyDelivered {
     if (input.message.data === 'delivered') return { alreadyDelivered: true };
-    return super.transformEvent(input) as TransformedEvent<TestBody>;
+    return this.buildRequest(input);
   }
 }
 
@@ -157,7 +163,7 @@ class AsyncEnrichFailIntegration extends SimpleIntegration {
     if (input.metadata.jobId === 1) {
       throw new ConfigurationError('enrichment lookup failed');
     }
-    return super.transformEvent(input) as Promise<TransformedEvent<TestBody>>;
+    return this.buildRequest(input);
   }
 }
 

@@ -39,6 +39,18 @@ const mockDestination: Destination = {
 };
 
 class TestIntegration extends DestinationIntegration<TestBody> {
+  protected buildRequest(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody> {
+    return {
+      body: { value: input.message.data ?? '' },
+      endpoint: 'https://api.test.com/events',
+      endpointPath: '/events',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    };
+  }
+
   // Declared as the sync-or-async union so subclasses below can override it with an async
   // implementation; TypeScript will not let an async override narrow a sync base signature.
   transformEvent(
@@ -47,13 +59,7 @@ class TestIntegration extends DestinationIntegration<TestBody> {
     | TransformedEvent<TestBody>
     | AlreadyDelivered
     | Promise<TransformedEvent<TestBody> | AlreadyDelivered> {
-    return {
-      body: { value: input.message.data ?? '' },
-      endpoint: 'https://api.test.com/events',
-      endpointPath: '/events',
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-    };
+    return this.buildRequest(input);
   }
 
   getBatchStrategy(): BatchStrategy<TestBody> {
@@ -76,7 +82,7 @@ class AsyncTransformIntegration extends TestIntegration {
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformedEvent<TestBody>> {
     this.seen.push({ input, reqMetadata });
-    const base = (await super.transformEvent(input)) as TransformedEvent<TestBody>;
+    const base = this.buildRequest(input);
     return { ...base, body: { value: `${base.body.value}-enriched` } };
   }
 }
@@ -87,7 +93,7 @@ class AlreadyDeliveredIntegration extends TestIntegration {
   ): TransformedEvent<TestBody> | AlreadyDelivered {
     return input.message.data === 'delivered'
       ? { alreadyDelivered: true }
-      : (super.transformEvent(input) as TransformedEvent<TestBody>);
+      : this.buildRequest(input);
   }
 }
 
@@ -261,10 +267,10 @@ describe('DestinationIntegration.transformEvents', () => {
         transformEvent(
           input: RouterTransformationRequestData<TestMessage>,
         ): TransformedEvent<TestBody> {
-          const request = super.transformEvent(input) as TransformedEvent<TestBody>;
-          // A spread can carry extra fields from an untyped builder even when the request is typed.
-          const result = { ...request, alreadyDelivered: flag };
-          return result as TransformedEvent<TestBody>;
+          const request = this.buildRequest(input);
+          // Simulate an untyped builder attaching a marker to a request at runtime.
+          Object.defineProperty(request, 'alreadyDelivered', { value: flag, enumerable: true });
+          return request;
         }
       }
       const integration = new FlaggedRequestIntegration(mockDestination);
@@ -306,6 +312,8 @@ describe('DestinationIntegration.transformEvents', () => {
           expect.objectContaining({
             jobId: 1,
             error: 'AlreadyDelivered cannot contain request fields',
+            statusCode: 400,
+            statTags: expect.objectContaining({ errorCategory: 'platform' }),
           }),
         ],
       });
@@ -323,7 +331,7 @@ describe('DestinationIntegration.transformEvents', () => {
           setTimeout(resolve, 0);
         });
         order.push(`end-${input.metadata.jobId}`);
-        return super.transformEvent(input) as TransformedEvent<TestBody>;
+        return this.buildRequest(input);
       }
     }
 

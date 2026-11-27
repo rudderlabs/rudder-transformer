@@ -105,10 +105,20 @@ const processIdentify = (message, destination) => {
 
 const isEventNameMatchesRegex = (eventName, regex) => eventName.match(regex)?.length > 0;
 
+const getNonBlankConfigString = (value, field) => {
+  if (value === null || value === undefined) return undefined;
+  if (typeof value !== 'string') {
+    throw new ConfigurationError(`${field} must be a string`);
+  }
+  return value.trim().length > 0 ? value : undefined;
+};
+
 const getChannelForEventName = (eventChannelSettings, eventName) => {
   for (const channelConfig of eventChannelSettings) {
-    const configEventName =
-      channelConfig?.eventName?.trim()?.length > 0 ? channelConfig.eventName : null;
+    const configEventName = getNonBlankConfigString(
+      channelConfig?.eventName,
+      'eventChannelSettings.eventName',
+    );
     const channelWebhook =
       channelConfig?.eventChannelWebhook?.length > 0 ? channelConfig.eventChannelWebhook : null;
 
@@ -133,10 +143,14 @@ const getChannelForEventName = (eventChannelSettings, eventName) => {
 };
 const getChannelNameForEvent = (eventChannelSettings, eventName) => {
   for (const channelConfig of eventChannelSettings) {
-    const configEventName =
-      channelConfig?.eventName?.trim()?.length > 0 ? channelConfig.eventName : null;
-    const configEventChannel =
-      channelConfig?.eventChannel?.trim()?.length > 0 ? channelConfig.eventChannel : null;
+    const configEventName = getNonBlankConfigString(
+      channelConfig?.eventName,
+      'eventChannelSettings.eventName',
+    );
+    const configEventChannel = getNonBlankConfigString(
+      channelConfig?.eventChannel,
+      'eventChannelSettings.eventChannel',
+    );
     if (configEventName && configEventChannel) {
       if (channelConfig.eventRegex) {
         logger.debug('regex: ', `${configEventName} trying to match with ${eventName}`);
@@ -159,13 +173,14 @@ const getChannelNameForEvent = (eventChannelSettings, eventName) => {
 
 const buildtemplateList = (templateListForThisEvent, eventTemplateSettings, eventName) => {
   eventTemplateSettings.forEach((templateConfig) => {
-    const configEventName =
-      templateConfig?.eventName?.trim()?.length > 0 ? templateConfig.eventName : undefined;
-    const configEventTemplate = templateConfig.eventTemplate
-      ? templateConfig.eventTemplate.trim()?.length > 0
-        ? templateConfig.eventTemplate
-        : undefined
-      : undefined;
+    const configEventName = getNonBlankConfigString(
+      templateConfig?.eventName,
+      'eventTemplateSettings.eventName',
+    );
+    const configEventTemplate = getNonBlankConfigString(
+      templateConfig?.eventTemplate,
+      'eventTemplateSettings.eventTemplate',
+    );
     if (configEventName && configEventTemplate) {
       if (templateConfig.eventRegex) {
         if (isEventNameMatchesRegex(eventName, new RegExp(configEventName, 'g'))) {

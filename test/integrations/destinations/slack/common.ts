@@ -80,6 +80,25 @@ export const baseRouterDestination = {
   },
 };
 
+export const invalidTemplateDestination = overrideDestination(baseProcessorDestination, {
+  eventTemplateSettings: [{ eventName: 'Signup', eventTemplate: 123 }],
+});
+
+export const invalidLegacyChannelDestination = overrideDestination(baseProcessorDestination, {
+  eventChannelSettings: [{ eventName: 'Signup', eventChannel: [] }],
+});
+
+export const invalidRouterTemplateNameDestination = overrideDestination(baseRouterDestination, {
+  eventTemplateSettings: [{ eventName: {}, eventTemplate: 'Custom' }],
+});
+
+export const invalidModernChannelNameDestination = overrideDestination(baseRouterDestination, {
+  incomingWebhooksType: 'modern',
+  eventChannelSettings: [
+    { eventName: 0, eventChannelWebhook: 'https://hooks.slack.com/services/alerts' },
+  ],
+});
+
 /**
  * Generate a common context object for test messages
  */

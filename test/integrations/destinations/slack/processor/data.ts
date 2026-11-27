@@ -4,6 +4,8 @@ import {
   baseProcessorDestination as baseDestination,
   generateCommonMessage,
   generateCommonMetadata,
+  invalidTemplateDestination,
+  invalidLegacyChannelDestination,
 } from '../common';
 
 export const data: ProcessorTestData[] = [
@@ -240,4 +242,67 @@ export const data: ProcessorTestData[] = [
       return {};
     },
   },
+  ...[
+    {
+      id: 'invalid-event-template',
+      destination: invalidTemplateDestination,
+      field: 'eventTemplateSettings.eventTemplate',
+    },
+    {
+      id: 'invalid-legacy-channel',
+      destination: invalidLegacyChannelDestination,
+      field: 'eventChannelSettings.eventChannel',
+    },
+  ].map(
+    ({ id, destination, field }): ProcessorTestData => ({
+      id: `slack-${id}`,
+      name: 'slack',
+      description: `Track rejects a non-string ${field} as configuration`,
+      scenario: `Sending a track event with a non-string ${field}`,
+      successCriteria: 'The event should fail with a configuration error',
+      feature: 'processor',
+      module: 'destination',
+      version: 'v0',
+      input: {
+        request: {
+          method: 'POST',
+          body: [
+            {
+              destination,
+              message: generateCommonMessage(
+                'track',
+                '12345',
+                'anonymous-1',
+                'slack-invalid-config',
+                { event: 'Signup' },
+              ),
+              metadata: generateCommonMetadata(991, '12345', 'slack-invalid-config'),
+            },
+          ],
+        },
+      },
+      output: {
+        response: {
+          status: 200,
+          body: [
+            {
+              metadata: generateCommonMetadata(991, '12345', 'slack-invalid-config'),
+              statusCode: 400,
+              error: `${field} must be a string`,
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'SLACK',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'processor',
+                destinationId: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    }),
+  ),
 ];

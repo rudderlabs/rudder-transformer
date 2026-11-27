@@ -443,6 +443,41 @@ describe('searchContact utility test', () => {
     );
   });
 
+  it.each([
+    ['email', 'TEST@RUDDERLABS.COM', 'test@rudderlabs.com'],
+    ['phone', '+91 9999999999', '+91 9999999999'],
+  ])(
+    'honors explicit %s lookup even when userId matches another contact',
+    async (lookup, value, expected) => {
+      const message = {
+        type: 'identify',
+        userId: 'other-user',
+        context: {
+          mappedToDestination: 'true',
+          externalId: [{ identifierType: 'external_id', id: 'selected-id' }],
+          traits: {
+            email: 'TEST@RUDDERLABS.COM',
+            phone: '+91 9999999999',
+            external_id: 'selected-id',
+          },
+        },
+        integrations: { INTERCOM: { lookup } },
+      };
+      const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+      const metadata = { sourceId: 'source', destinationId: 'dest', workspaceId: 'workspace' };
+      axios.post.mockResolvedValue({
+        status: 200,
+        data: { data: [{ id: 'matching-contact', [lookup]: expected }] },
+      });
+
+      await expect(searchContact(message, destination, metadata)).resolves.toBe('matching-contact');
+      expect(JSON.parse(axios.post.mock.calls[0][1]).query).toEqual({
+        operator: 'AND',
+        value: [{ field: lookup, operator: '=', value: expected }],
+      });
+    },
+  );
+
   it('Should search by external_id only for mappedToDestination flow without email', async () => {
     const message = {
       context: {
@@ -494,6 +529,35 @@ describe('searchContact utility test', () => {
         headers: getHeaders(destination),
       }),
     );
+  });
+
+  it('does not update a userId-matched contact ahead of an explicitly selected email contact', async () => {
+    const message = {
+      type: 'identify',
+      userId: 'other-user',
+      context: {
+        mappedToDestination: 'true',
+        externalId: [{ identifierType: 'external_id', id: 'selected-id' }],
+        traits: { email: 'TEST@RUDDERLABS.COM', external_id: 'selected-id' },
+      },
+      integrations: { INTERCOM: { lookup: 'email' } },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    const metadata = { sourceId: 'source', destinationId: 'dest', workspaceId: 'workspace' };
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        data: [
+          { id: 'wrong-contact', email: 'other@rudderlabs.com', external_id: 'other-user' },
+          { id: 'matching-contact', email: 'test@rudderlabs.com' },
+        ],
+      },
+    });
+    await expect(searchContact(message, destination, metadata)).resolves.toBe('matching-contact');
+    expect(JSON.parse(axios.post.mock.calls[0][1]).query).toEqual({
+      operator: 'AND',
+      value: [{ field: 'email', operator: '=', value: 'test@rudderlabs.com' }],
+    });
   });
 
   it('Should successfully search contact by email', async () => {
@@ -1337,29 +1401,94 @@ describe('addOrUpdateTagsToCompany utility test', () => {
 describe('isRetlIdentifyWithMappedExternalId utility test', () => {
   const baseMessage = {
     type: 'identify',
-    context: { mappedToDestination: 'true' },
-    integrations: { INTERCOM: { lookup: 'external_id' } },
+    context: {
+      mappedToDestination: 'true',
+      externalId: [{ id: 'user-1', type: 'INTERCOM-customer', identifierType: 'external_id' }],
+    },
     traits: { email: 'a@rudderlabs.com', external_id: 'user-1' },
   };
 
   it.each([
-    ['identify with email, external_id and the lookup override', {}, true],
+    ['native external_id selection without override', {}, true],
     ['a type in another case', { type: 'IDENTIFY' }, true],
     ['a track', { type: 'track' }, false],
     ['a group', { type: 'group' }, false],
     ['no rETL mapping', { context: {} }, false],
-    ['no lookup override', { integrations: { All: true } }, false],
-    ['the email lookup', { integrations: { INTERCOM: { lookup: 'email' } } }, false],
-    ['no email', { traits: { external_id: 'user-1' } }, false],
-    ['no external_id', { traits: { email: 'a@rudderlabs.com' } }, false],
-    ['a number external_id', { traits: { email: 'a@rudderlabs.com', external_id: 7 } }, true],
     [
-      'an object external_id',
-      { traits: { email: 'a@rudderlabs.com', external_id: { a: 1 } } },
+      'explicit phone lookup with native external_id',
+      { integrations: { INTERCOM: { lookup: 'phone' } } },
       false,
     ],
-    ['an array external_id', { traits: { email: 'a@rudderlabs.com', external_id: ['a'] } }, false],
-    ['traits only under context', { traits: undefined }, false],
+    [
+      'explicit email lookup with native external_id',
+      { integrations: { INTERCOM: { lookup: 'email' } } },
+      false,
+    ],
+    [
+      'legacy user_id selection with email',
+      { context: { mappedToDestination: 'true', externalId: [{ identifierType: 'user_id' }] } },
+      false,
+    ],
+    [
+      'external_id trait on an email-selected row',
+      { context: { mappedToDestination: 'true', externalId: [{ identifierType: 'email' }] } },
+      false,
+    ],
+    ['no selection or override', { context: { mappedToDestination: 'true' } }, false],
+    [
+      'explicit external_id lookup on a legacy row',
+      {
+        context: { mappedToDestination: 'true' },
+        integrations: { INTERCOM: { lookup: 'external_id' } },
+      },
+      true,
+    ],
+    ['no email', { traits: { external_id: 'user-1' } }, false],
+    [
+      'no external_id',
+      { traits: { email: 'a@rudderlabs.com' }, context: { mappedToDestination: 'true' } },
+      false,
+    ],
+    [
+      'a number external_id',
+      {
+        context: { ...baseMessage.context, externalId: [{ identifierType: 'external_id', id: 7 }] },
+        traits: { email: 'a@rudderlabs.com', external_id: 7 },
+      },
+      true,
+    ],
+    [
+      'an object external_id',
+      {
+        context: {
+          ...baseMessage.context,
+          externalId: [{ identifierType: 'external_id', id: { a: 1 } }],
+        },
+        traits: { email: 'a@rudderlabs.com', external_id: { a: 1 } },
+      },
+      false,
+    ],
+    [
+      'an array external_id',
+      {
+        context: {
+          ...baseMessage.context,
+          externalId: [{ identifierType: 'external_id', id: ['a'] }],
+        },
+        traits: { email: 'a@rudderlabs.com', external_id: ['a'] },
+      },
+      false,
+    ],
+    [
+      'traits only under context',
+      { traits: undefined, context: { ...baseMessage.context, traits: baseMessage.traits } },
+      true,
+    ],
+    [
+      'selected ID with conflicting trait',
+      { traits: { ...baseMessage.traits, external_id: 'other-id' } },
+      true,
+    ],
   ])('returns the right answer for %s', (_, override, expected) => {
     expect(isRetlIdentifyWithMappedExternalId({ ...baseMessage, ...override })).toBe(expected);
   });
@@ -1373,6 +1502,14 @@ describe('findRetlContact utility test', () => {
     context: { mappedToDestination: 'true' },
     integrations: { INTERCOM: { lookup: 'external_id' } },
     traits: { email: 'A@rudderlabs.com', external_id: 'user-1' },
+  };
+  const selectedMessage = {
+    ...message,
+    context: {
+      mappedToDestination: 'true',
+      externalId: [{ identifierType: 'external_id', id: 'selected-id' }],
+    },
+    integrations: { All: true },
   };
   const searchResult = (data) => ({ status: 200, data: { type: 'list', data } });
   const freeContact = { id: 'c-1', email: 'a@rudderlabs.com', external_id: null };
@@ -1400,6 +1537,33 @@ describe('findRetlContact utility test', () => {
       ],
     });
     expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [
+      'context-only traits',
+      {
+        ...selectedMessage,
+        traits: undefined,
+        context: { ...selectedMessage.context, traits: message.traits },
+      },
+    ],
+    ['conflicting top-level trait', selectedMessage],
+  ])('searches for the selected ID with %s', async (_, row) => {
+    axios.post.mockResolvedValue(
+      searchResult([{ id: 'selected-contact', external_id: 'selected-id' }]),
+    );
+    await expect(findRetlContact(row, destination, metadata)).resolves.toEqual({
+      contactId: 'selected-contact',
+      matchedBy: 'external_id',
+    });
+    expect(queryOf(0)).toEqual({
+      operator: 'OR',
+      value: [
+        { field: 'external_id', operator: '=', value: 'selected-id' },
+        { field: 'email', operator: '=', value: 'a@rudderlabs.com' },
+      ],
+    });
   });
 
   it('claims a contact with the email and no external_id that the direct read shows is free', async () => {

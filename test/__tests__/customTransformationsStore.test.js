@@ -145,6 +145,111 @@ describe('config backend request URLs', () => {
   });
 });
 
+describe('workspace-scoped code lookups', () => {
+  const lookups = [
+    {
+      name: 'transformation',
+      fetchCode: (store, versionId, workspaceId) =>
+        store.getTransformationCode(versionId, workspaceId),
+      path: '/transformation/getByVersionId',
+    },
+    {
+      name: 'library',
+      fetchCode: (store, versionId, workspaceId) => store.getLibraryCode(versionId, workspaceId),
+      path: '/transformationLibrary/getByVersionId',
+    },
+  ];
+
+  it.each(lookups)('sends the workspace id with the $name lookup', async ({ fetchCode, path }) => {
+    const store = loadStore();
+    store.fetchWithProxy.mockResolvedValue(okResponse({ code: 'some-code' }));
+
+    await fetchCode(store, 'version-1', 'workspace-1');
+
+    expect(store.fetchWithProxy).toHaveBeenCalledWith(
+      `${store.CONFIG_BACKEND_URL}${path}?versionId=version-1&workspaceId=workspace-1`,
+      expect.any(Object),
+    );
+  });
+
+  it.each(lookups)(
+    'URL-encodes both ids on the $name lookup and keeps their case',
+    async ({ fetchCode, path }) => {
+      const store = loadStore();
+      store.fetchWithProxy.mockResolvedValue(okResponse({ code: 'some-code' }));
+
+      await fetchCode(store, 'Version&1', 'Workspace#1');
+
+      const url = new URL(store.fetchWithProxy.mock.calls[0][0]);
+      expect(`${url.origin}${url.pathname}`).toBe(`${store.CONFIG_BACKEND_URL}${path}`);
+      expect(Object.fromEntries(url.searchParams)).toEqual({
+        versionId: 'Version&1',
+        workspaceId: 'Workspace#1',
+      });
+    },
+  );
+
+  it.each(lookups)(
+    'keys the $name cache by workspace as well as version',
+    async ({ fetchCode, path }) => {
+      const store = loadStore();
+      store.fetchWithProxy
+        .mockResolvedValueOnce(okResponse({ code: 'workspace-1-code' }))
+        .mockResolvedValueOnce(okResponse({ code: 'workspace-2-code' }));
+
+      expect(await fetchCode(store, 'version-1', 'workspace-1')).toEqual({
+        code: 'workspace-1-code',
+      });
+      expect(await fetchCode(store, 'version-1', 'workspace-2')).toEqual({
+        code: 'workspace-2-code',
+      });
+      expect(await fetchCode(store, 'version-1', 'workspace-1')).toEqual({
+        code: 'workspace-1-code',
+      });
+
+      expect(store.fetchWithProxy).toHaveBeenCalledTimes(2);
+      expect(store.fetchWithProxy).toHaveBeenLastCalledWith(
+        `${store.CONFIG_BACKEND_URL}${path}?versionId=version-1&workspaceId=workspace-2`,
+        expect.any(Object),
+      );
+    },
+  );
+
+  it.each(lookups)(
+    'does not serve a $name cached without a workspace to a workspace lookup',
+    async ({ fetchCode }) => {
+      const store = loadStore();
+      store.fetchWithProxy
+        .mockResolvedValueOnce(okResponse({ code: 'unscoped-code' }))
+        .mockResolvedValueOnce(okResponse({ code: 'workspace-1-code' }));
+
+      await fetchCode(store, 'version-1');
+
+      expect(await fetchCode(store, 'version-1', 'workspace-1')).toEqual({
+        code: 'workspace-1-code',
+      });
+      expect(store.fetchWithProxy).toHaveBeenCalledTimes(2);
+    },
+  );
+
+  it.each(lookups)(
+    'does not join an in-flight $name lookup for another workspace',
+    async ({ fetchCode }) => {
+      const store = loadStore();
+      store.fetchWithProxy.mockImplementation(async (url) => okResponse({ url }));
+
+      const [first, second] = await Promise.all([
+        fetchCode(store, 'version-1', 'workspace-1'),
+        fetchCode(store, 'version-1', 'workspace-2'),
+      ]);
+
+      expect(store.fetchWithProxy).toHaveBeenCalledTimes(2);
+      expect(first.url).toContain('workspaceId=workspace-1');
+      expect(second.url).toContain('workspaceId=workspace-2');
+    },
+  );
+});
+
 describe('config backend failures', () => {
   const failureCases = [
     {

@@ -128,7 +128,7 @@ export class EventTesterService {
     const librariesVersionIDs = libraries
       .map((library) => library.versionId)
       .filter((versionId): versionId is string => typeof versionId === 'string');
-    const { Transformations } = destination;
+    const { Transformations, WorkspaceID } = destination;
     const transformationVersionId = Array.isArray(Transformations)
       ? Transformations[0]?.versionId
       : undefined;
@@ -142,7 +142,7 @@ export class EventTesterService {
       events.map(async (event, idx) => {
         try {
           const transformedEvents = await userTransformHandler()(
-            [event],
+            [{ ...event, metadata: { workspaceId: WorkspaceID } }],
             transformationVersionId,
             librariesVersionIDs,
           );

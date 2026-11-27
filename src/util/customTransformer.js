@@ -323,6 +323,13 @@ async function runUserTransform(
   };
 }
 
+// The single workspace shared by all events ('' when none has one), or undefined if they disagree.
+function batchWorkspaceId(events) {
+  const workspaceIds = new Set(events.map((ev) => ev.metadata?.workspaceId ?? ''));
+  const [workspaceId = ''] = workspaceIds;
+  return workspaceIds.size > 1 || typeof workspaceId !== 'string' ? undefined : workspaceId;
+}
+
 async function userTransformHandler(
   events,
   versionId,
@@ -332,7 +339,18 @@ async function userTransformHandler(
   returnMetadata = false,
 ) {
   if (versionId) {
-    const res = testMode ? trRevCode : await getTransformationCode(versionId);
+    let res = trRevCode;
+    if (!testMode) {
+      // The code is looked up once per batch, so if any event has a workspace, every event must have the same one.
+      const workspaceId = batchWorkspaceId(events);
+      if (workspaceId === undefined) {
+        throw new Error('Events in a batch must belong to a single workspace');
+      }
+      res = await getTransformationCode(versionId, workspaceId);
+    } else if (res && !res.workspaceId) {
+      const workspaceId = batchWorkspaceId(events);
+      if (workspaceId) res = { ...res, workspaceId };
+    }
     if (res) {
       // Events contain message and destination. We take the message part of event and run transformation on it.
       // And put back the destination after transformation

@@ -80,7 +80,7 @@ describe("JS Transformation Error Tests", () => {
       const code = "import {add} from 'jsLib1';\nexport function transformEvent(event, metadata) {\n event['result'] = add(1, 2); return event; \n}";
       const trRevCode = contructTrRevCode(code);
 
-      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}&workspaceId=${workspaceId}`;
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValueOnce({
@@ -117,7 +117,7 @@ describe("JS Transformation Error Tests", () => {
       const code = "import {add} from 'jsLib2';\nexport function transformEvent(event, metadata) {\n event['result'] = add(1, 2); return event; \n}";
       const trRevCode = contructTrRevCode(code);
 
-      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}&workspaceId=${workspaceId}`;
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
@@ -196,7 +196,7 @@ describe("JS Transformation Error Tests", () => {
       const code = "import {add} from 'jsLib1';\nexport function transformBatch(events, metadata) {\n events[0] = add(1, 5); return events; \n}";
       const trRevCode = contructTrRevCode(code);
 
-      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}&workspaceId=${workspaceId}`;
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValueOnce({
@@ -233,7 +233,7 @@ describe("JS Transformation Error Tests", () => {
       const code = "import {add} from 'jsLib2';\nexport function transformBatch(events, metadata) {\n add(1, 2); return events; \n}";
       const trRevCode = {...contructTrRevCode(code), name: "test-transformation"} ;
 
-      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}&workspaceId=${workspaceId}`;
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
@@ -371,7 +371,7 @@ describe("JS Transformation Error Tests when using ivm cache", () => {
       });
 
 
-      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}&workspaceId=${workspaceId}`;
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValueOnce({
@@ -427,7 +427,7 @@ describe("JS Transformation Error Tests when using ivm cache", () => {
       });
 
 
-      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}&workspaceId=${workspaceId}`;
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
@@ -561,7 +561,7 @@ describe("JS Transformation Error Tests when using ivm cache", () => {
           json: jest.fn().mockResolvedValueOnce(trRevCode)
       });
 
-      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}&workspaceId=${workspaceId}`;
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValueOnce({
@@ -616,7 +616,7 @@ describe("JS Transformation Error Tests when using ivm cache", () => {
           json: jest.fn().mockResolvedValueOnce(trRevCode)
       });
 
-      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}&workspaceId=${workspaceId}`;
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
@@ -655,6 +655,118 @@ describe("JS Transformation Error Tests when using ivm cache", () => {
       resultCached.forEach(ev => { expect(ev.error).toEqual(
         "Error: Manual Error 2\n    at add (library jsLib2:3:23)\n    at transformBatch (test-transformation:3:2)"
       ) });
+    });
+  });
+});
+
+describe("Batch workspace checks", () => {
+  beforeEach(() => {
+    fetch.mockReset();
+  });
+
+  it("rejects a batch whose events belong to different workspaces before fetching code", async () => {
+    const mixedEvents = [
+      { message: { messageId: "msg1" }, metadata: { messageId: "msg1", workspaceId: "workspace-a" } },
+      { message: { messageId: "msg2" }, metadata: { messageId: "msg2", workspaceId: "workspace-b" } },
+    ];
+
+    await expect(userTransformHandler(mixedEvents, versionId, [])).rejects.toThrow(
+      "Events in a batch must belong to a single workspace",
+    );
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("rejects a batch where only some events have a workspace before fetching code", async () => {
+    const partialEvents = [
+      { message: { messageId: "msg1" }, metadata: { messageId: "msg1", workspaceId: "workspace-a" } },
+      { message: { messageId: "msg2" }, metadata: { messageId: "msg2" } },
+    ];
+
+    await expect(userTransformHandler(partialEvents, versionId, [])).rejects.toThrow(
+      "Events in a batch must belong to a single workspace",
+    );
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  // false and 0 must not read as "no workspace"
+  it.each([123, false, 0])("rejects a batch with the non-string workspace %p before fetching code", async (invalid) => {
+    const invalidEvents = [
+      { message: { messageId: "msg1" }, metadata: { messageId: "msg1", workspaceId: invalid } },
+      { message: { messageId: "msg2" }, metadata: { messageId: "msg2", workspaceId: invalid } },
+    ];
+
+    await expect(userTransformHandler(invalidEvents, versionId, [])).rejects.toThrow(
+      "Events in a batch must belong to a single workspace",
+    );
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("looks up code without a workspace when no event has one", async () => {
+    const unscopedVersionId = "unscopedVersionId";
+    const trRevCode = contructTrRevCode(
+      "export function transformEvent(event, metadata) {\n return event; \n}",
+    );
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${unscopedVersionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValueOnce({
+        status: 200,
+        json: jest.fn().mockResolvedValueOnce(trRevCode),
+      });
+
+    const result = await userTransformHandler(events, unscopedVersionId, []);
+
+    expect(result.length).toBe(2);
+    expect(fetch).toHaveBeenCalledWith(transformerUrl);
+  });
+
+  it("does not reject a mixed-workspace batch in test mode", async () => {
+    const mixedEvents = [
+      { message: { messageId: "msg1" }, metadata: { messageId: "msg1", workspaceId: "workspace-a" } },
+      { message: { messageId: "msg2" }, metadata: { messageId: "msg2", workspaceId: "workspace-b" } },
+    ];
+    const trRevCode = contructTrRevCode(
+      "export function transformEvent(event, metadata) {\n return event; \n}",
+    );
+
+    const result = await userTransformHandler(mixedEvents, versionId, [], trRevCode, true);
+
+    expect(result.transformedEvents.length).toBe(2);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  describe("library lookups in test mode", () => {
+    const code = "export function transformEvent(event, metadata) {\n return event; \n}";
+    const eventsWithWorkspace = [
+      { message: { messageId: "msg1" }, metadata: { messageId: "msg1", workspaceId: "workspace-a" } },
+      { message: { messageId: "msg2" }, metadata: { messageId: "msg2", workspaceId: "workspace-a" } },
+    ];
+
+    beforeEach(() => {
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ name: "lib", code: "export function noop() {}" }),
+      });
+    });
+
+    it("uses the events' workspace when the code revision has none", async () => {
+      const { workspaceId: _, ...trRevCode } = contructTrRevCode(code);
+
+      await userTransformHandler(eventsWithWorkspace, versionId, ["testModeLib1"], trRevCode, true);
+
+      expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+        "https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=testModeLib1&workspaceId=workspace-a",
+      ]);
+    });
+
+    it("keeps the code revision's own workspace", async () => {
+      const trRevCode = contructTrRevCode(code);
+
+      await userTransformHandler(eventsWithWorkspace, versionId, ["testModeLib2"], trRevCode, true);
+
+      expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+        `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=testModeLib2&workspaceId=${workspaceId}`,
+      ]);
     });
   });
 });

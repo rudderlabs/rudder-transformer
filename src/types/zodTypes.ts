@@ -1,6 +1,7 @@
 import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { z } from 'zod';
 import { isHttpStatusSuccess } from '../v0/util';
+import { HTTP_STATUS_CODES } from '../v0/util/constant';
 
 const ProcessorTransformationOutputSchema = z.object({
   version: z.string(),
@@ -95,7 +96,12 @@ export const RouterTransformationResponseSchema = commonRouterSchema
   )
   .refine(
     (data) => {
-      if (isHttpStatusSuccess(data.statusCode)) {
+      // The batching framework may have delivered a job during transformation; it answers
+      // with request-free 299. Other router successes still require a delivery request.
+      if (
+        isHttpStatusSuccess(data.statusCode) &&
+        data.statusCode !== HTTP_STATUS_CODES.SUPPRESS_EVENTS
+      ) {
         return isDefinedAndNotNullAndNotEmpty(data.batchedRequest);
       }
       return true;

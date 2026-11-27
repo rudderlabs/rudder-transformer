@@ -27,6 +27,7 @@ export type TransformedEvent<TBody extends Record<string, unknown> = Record<stri
   endpoint: string;
   endpointPath: string;
   method: string;
+  alreadyDelivered?: never;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
   // Optional discriminator that adds to the composite grouping key (alongside
@@ -34,6 +35,19 @@ export type TransformedEvent<TBody extends Record<string, unknown> = Record<stri
   // (e.g. action type when multiple actions share a URL) can keep groups separate
   // without polluting the user-visible request fields.
   internalGroupKey?: string;
+};
+
+// Returned on its own when transformEvent has already delivered the input. Never put it
+// inside a payload array or attach request fields: there is nothing left to batch.
+export type AlreadyDelivered = {
+  alreadyDelivered: true;
+  body?: never;
+  endpoint?: never;
+  endpointPath?: never;
+  method?: never;
+  headers?: never;
+  params?: never;
+  internalGroupKey?: never;
 };
 
 export type TransformError = {
@@ -51,6 +65,7 @@ export type TransformError = {
 
 export type TransformResult<TBody extends Record<string, unknown> = Record<string, unknown>> = {
   successPayloads: (TransformedEvent<TBody> & { jobId: number })[];
+  alreadyDeliveredJobIds: Set<number>;
   errorPayloads: (TransformError & { jobId: number })[];
 };
 

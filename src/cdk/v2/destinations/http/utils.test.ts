@@ -6,7 +6,11 @@ import {
   stringifyFirstLevelValues,
   validateHeaders,
 } from './utils';
-import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
+import {
+  ConfigurationError,
+  InstrumentationError,
+  PlatformError,
+} from '@rudderstack/integrations-lib';
 
 describe('Utils Functions', () => {
   describe('getCustomMappings', () => {
@@ -79,6 +83,35 @@ describe('Utils Functions', () => {
       expect(() => prepareEndpoint(message, apiUrl, pathParams)).toThrowError(
         'Path value cannot contain "/"',
       );
+    });
+    test('should resolve property paths with member, quoted-key, index and wildcard segments', () => {
+      const message = {
+        traits: { id: 'a', user_id: 'U1', ids: ['x', 'y'], items: [{ id: 'first' }] },
+      };
+      const pathParams = [
+        { path: '$.traits.id' },
+        { path: "$.traits['user_id']" },
+        { path: '$.traits["user_id"]' },
+        { path: '$.traits.items[0].id' },
+        { path: '$.traits.ids[*]' },
+        { path: '$.traits.ids.*' },
+      ];
+      expect(prepareEndpoint(message, 'https://api.example.com', pathParams)).toBe(
+        'https://api.example.com/a/U1/U1/first/x/x',
+      );
+    });
+    test.each([
+      ['script expression', '$.items[(@.length-1)]'],
+      ['member script expression', '$.items.(@.length-1)'],
+      ['filter expression', '$.items[?(@.id)]'],
+      ['descendant', '$..id'],
+      ['slice', '$.items[0:1]'],
+      ['union', '$.items[0,1]'],
+    ])('should reject a %s in a path param', (_, path) => {
+      const message = { items: [{ id: 'first' }, { id: 'last' }] };
+      const call = () => prepareEndpoint(message, 'https://api.example.com', [{ path }]);
+      expect(call).toThrow(ConfigurationError);
+      expect(call).toThrow('Path param must be a property path');
     });
   });
 

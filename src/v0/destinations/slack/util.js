@@ -1,5 +1,28 @@
 /* eslint-disable no-nested-ternary */
+const Handlebars = require('handlebars');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { getFieldValueFromMessage } = require('../../util');
+
+const formatValue = (value) => {
+  if (value === null || typeof value !== 'object') {
+    return String(value);
+  }
+  try {
+    return JSON.stringify(value);
+  } catch (error) {
+    throw new InstrumentationError('Unable to serialize object-valued trait or property');
+  }
+};
+
+// Preserve JSON quotes in message text, but escape characters that can form markup.
+const escapeTemplateValue = (value) => Handlebars.escapeExpression(value).replace(/&quot;/g, '"');
+
+Handlebars.registerHelper('formatTraitValue', (value) => {
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+  return new Handlebars.SafeString(escapeTemplateValue(formatValue(value)));
+});
 
 /**
  * get the name value from following heirarchy
@@ -52,22 +75,21 @@ const getWhiteListedTraits = (destination) => {
 };
 
 /**
- * Stringifying json for traits
- * Not using JSON.stringify() since we forst want to check for whiteListedTraits
+ * Formats selected traits and properties as key/value text.
+ * Filters keys before serializing object values.
  * @param {*} json input json to be stringified
  * @param {*} whiteListedTraits
+ * @param {boolean} escapeForTemplate escape markup for safe insertion into a Slack template
  * @returns Stringified Json
  */
-const stringifyJSON = (json, whiteListedTraits) => {
+const stringifyJSON = (json, whiteListedTraits, escapeForTemplate = false) => {
   let output = '';
   Object.keys(json).forEach((key) => {
-    if (whiteListedTraits && whiteListedTraits.length > 0) {
-      if (whiteListedTraits.includes(key)) {
-        output += `${key}: ${json[key]} `;
-      }
-    } else {
-      output += `${key}: ${json[key]} `;
+    if (whiteListedTraits?.length > 0 && !whiteListedTraits.includes(key)) {
+      return;
     }
+    const text = formatValue(json[key]);
+    output += `${key}: ${escapeForTemplate ? escapeTemplateValue(text) : text} `;
   });
   return output;
 };
@@ -78,16 +100,10 @@ const stringifyJSON = (json, whiteListedTraits) => {
  */
 const buildDefaultTraitTemplate = (traitsList, traits, template) => {
   let generatedStringFromTemplate = template;
-  // build template with whitelisted traits
-  traitsList.forEach((trait) => {
-    generatedStringFromTemplate += `${trait}: {{"${trait}"}} `;
+  const keys = traitsList.length > 0 ? traitsList : traits ? Object.keys(traits) : [];
+  keys.forEach((trait) => {
+    generatedStringFromTemplate += `${trait}: {{formatTraitValue (lookup this "${trait}")}} `;
   });
-  // else with all traits
-  if (traitsList.length === 0 && !!traits) {
-    Object.keys(traits).forEach((traitKey) => {
-      generatedStringFromTemplate += `${traitKey}: {{"${traitKey}"}} `;
-    });
-  }
   return generatedStringFromTemplate;
 };
 

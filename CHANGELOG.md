@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.171.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.171.0...v1.171.1) (2026-11-27)
+
+
+### Bug Fixes
+
+* **http:** restrict pathParams to property paths [RUD-3513] ([#5833](https://github.com/rudderlabs/rudder-transformer/issues/5833)) ([e8e10f6](https://github.com/rudderlabs/rudder-transformer/commit/e8e10f6339ad6d0ae9666c498027df06ba765b63))
+
 ## [1.171.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.170.0...v1.171.0) (2026-11-23)
 
 

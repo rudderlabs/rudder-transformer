@@ -94,6 +94,7 @@ export type ProcessorTransformationOutput = {
   params?: Record<string, unknown>;
   body?: BatchedRequestBody;
   files?: Record<string, unknown>;
+  destinationVersion?: number;
 };
 
 export type ProcessorTransformationResponse = {

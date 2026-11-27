@@ -3,6 +3,7 @@ import { InstrumentationError, NetworkError } from '@rudderstack/integrations-li
 import {
   DestinationIntegration,
   TransformedEvent,
+  AlreadyDelivered,
   ChunkBatchStrategy,
   CustomBatchStrategy,
   parseSizeToBytes,
@@ -38,11 +39,9 @@ const mockDestination: Destination = {
 };
 
 class TestIntegration extends DestinationIntegration<TestBody> {
-  // Declared as the sync-or-async union so subclasses below can override it with an async
-  // implementation; TypeScript will not let an async override narrow a sync base signature.
-  transformEvent(
+  protected buildRequest(
     input: RouterTransformationRequestData<TestMessage>,
-  ): TransformedEvent<TestBody> | Promise<TransformedEvent<TestBody>> {
+  ): TransformedEvent<TestBody> {
     return {
       body: { value: input.message.data ?? '' },
       endpoint: 'https://api.test.com/events',
@@ -50,6 +49,17 @@ class TestIntegration extends DestinationIntegration<TestBody> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     };
+  }
+
+  // Declared as the sync-or-async union so subclasses below can override it with an async
+  // implementation; TypeScript will not let an async override narrow a sync base signature.
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ):
+    | TransformedEvent<TestBody>
+    | AlreadyDelivered
+    | Promise<TransformedEvent<TestBody> | AlreadyDelivered> {
+    return this.buildRequest(input);
   }
 
   getBatchStrategy(): BatchStrategy<TestBody> {
@@ -72,8 +82,28 @@ class AsyncTransformIntegration extends TestIntegration {
     reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformedEvent<TestBody>> {
     this.seen.push({ input, reqMetadata });
-    const base = await super.transformEvent(input);
+    const base = this.buildRequest(input);
     return { ...base, body: { value: `${base.body.value}-enriched` } };
+  }
+}
+
+class AlreadyDeliveredIntegration extends TestIntegration {
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody> | AlreadyDelivered {
+    return input.message.data === 'delivered'
+      ? { alreadyDelivered: true }
+      : this.buildRequest(input);
+  }
+}
+
+class AsyncAlreadyDeliveredIntegration extends TestIntegration {
+  async transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): Promise<TransformedEvent<TestBody> | AlreadyDelivered> {
+    return input.message.data === 'delivered'
+      ? { alreadyDelivered: true }
+      : super.transformEvent(input);
   }
 }
 
@@ -178,9 +208,117 @@ describe('DestinationIntegration.transformEvents', () => {
         expect.objectContaining({ jobId: 1, body: { value: 'hello-enriched' } }),
         expect.objectContaining({ jobId: 2, body: { value: 'world-enriched' } }),
       ],
+      alreadyDeliveredJobIds: new Set(),
       errorPayloads: [],
     });
   });
+
+  it.each([
+    { name: 'synchronous', Integration: AlreadyDeliveredIntegration },
+    { name: 'asynchronous', Integration: AsyncAlreadyDeliveredIntegration },
+  ])('collects $name markers separately from normal payloads', async ({ Integration }) => {
+    const integration = new Integration(mockDestination);
+    const request = makeInput(2, 'send');
+    const result = await integration.transformEvents(
+      [makeInput(1, 'delivered'), request, makeInput(1, 'delivered')],
+      {},
+    );
+
+    expect(result).toEqual({
+      successPayloads: [
+        {
+          body: { value: 'send' },
+          endpoint: 'https://api.test.com/events',
+          endpointPath: '/events',
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          jobId: 2,
+        },
+      ],
+      alreadyDeliveredJobIds: new Set([1]),
+      errorPayloads: [],
+    });
+  });
+
+  it('keeps a marker exclusive of request fields and payload arrays in the type contract', () => {
+    const delivered: AlreadyDelivered = { alreadyDelivered: true };
+    // @ts-expect-error A delivered marker cannot also carry a request body.
+    const mixed: AlreadyDelivered = { alreadyDelivered: true, body: { value: 'unexpected' } };
+    const markedRequest: TransformedEvent<TestBody> = {
+      body: { value: 'send' },
+      endpoint: '/events',
+      endpointPath: '/events',
+      method: 'POST',
+      // @ts-expect-error A request payload cannot carry a delivery marker.
+      alreadyDelivered: false,
+    };
+    // @ts-expect-error A marker cannot appear among request payloads.
+    const array: TransformedEvent<TestBody>[] = [delivered];
+    expect(delivered).toEqual({ alreadyDelivered: true });
+    void mixed;
+    void markedRequest;
+    void array;
+  });
+
+  it.each([false, undefined])(
+    'keeps a request carrying alreadyDelivered: %s as a request, not a 299 marker',
+    async (flag) => {
+      class FlaggedRequestIntegration extends TestIntegration {
+        transformEvent(
+          input: RouterTransformationRequestData<TestMessage>,
+        ): TransformedEvent<TestBody> {
+          const request = this.buildRequest(input);
+          // Simulate an untyped builder attaching a marker to a request at runtime.
+          Object.defineProperty(request, 'alreadyDelivered', { value: flag, enumerable: true });
+          return request;
+        }
+      }
+      const integration = new FlaggedRequestIntegration(mockDestination);
+      const result = await integration.transformEvents([makeInput(1, 'send')], {});
+      expect(result).toEqual({
+        successPayloads: [
+          {
+            body: { value: 'send' },
+            endpoint: 'https://api.test.com/events',
+            endpointPath: '/events',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            alreadyDelivered: flag,
+            jobId: 1,
+          },
+        ],
+        alreadyDeliveredJobIds: new Set(),
+        errorPayloads: [],
+      });
+    },
+  );
+
+  it.each(['body', 'endpoint', 'endpointPath', 'method', 'headers', 'params', 'internalGroupKey'])(
+    'rejects a true marker mixed with request field %s',
+    async (field) => {
+      class MixedMarkerIntegration extends TestIntegration {
+        transformEvent(): AlreadyDelivered {
+          return { alreadyDelivered: true, [field]: undefined };
+        }
+      }
+      const result = await new MixedMarkerIntegration(mockDestination).transformEvents(
+        [makeInput(1, 'delivered')],
+        {},
+      );
+      expect(result).toEqual({
+        successPayloads: [],
+        alreadyDeliveredJobIds: new Set(),
+        errorPayloads: [
+          expect.objectContaining({
+            jobId: 1,
+            error: 'AlreadyDelivered cannot contain request fields',
+            statusCode: 400,
+            statTags: expect.objectContaining({ errorCategory: 'platform' }),
+          }),
+        ],
+      });
+    },
+  );
 
   it('runs async transformEvent calls sequentially so a cache-backed lookup is not raced', async () => {
     const order: string[] = [];
@@ -193,7 +331,7 @@ describe('DestinationIntegration.transformEvents', () => {
           setTimeout(resolve, 0);
         });
         order.push(`end-${input.metadata.jobId}`);
-        return super.transformEvent(input);
+        return this.buildRequest(input);
       }
     }
 

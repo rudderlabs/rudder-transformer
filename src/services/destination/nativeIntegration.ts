@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
-import { mapInBatches } from '@rudderstack/integrations-lib';
+import { ConfigurationError, mapInBatches } from '@rudderstack/integrations-lib';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { proxyRequest } from '../../adapters/network';
 import { processAxiosResponse } from '../../adapters/utils/networkUtils';
@@ -27,6 +27,7 @@ import {
   UserDeletionResponse,
 } from '../../types/index';
 import stats from '../../util/stats';
+import { getDestinationVersion } from '../../util/utils';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { validateDeliveryRequestBody } from './validateDeliveryRequestBody';
@@ -40,6 +41,11 @@ import {
   resolveDeliverySpec,
 } from './destinationIntegration/delivery';
 import type { DeliveryContext, DeliveryRequestContext } from './destinationIntegration/delivery';
+
+const UNENROLLED_ZENDESK_V2_ERROR = 'Zendesk v2 requires batching framework enrollment';
+
+const isZendeskV2 = (destinationType: string, version?: number): boolean =>
+  destinationType.toUpperCase() === 'ZENDESK' && getDestinationVersion(version) >= 2;
 
 /**
  * Whether the framework's delivery branch may answer this request — the route rudder-server called
@@ -138,8 +144,22 @@ export class NativeIntegrationDestinationService implements DestinationService {
     version: string,
     requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
-    const groupedEvents: RouterTransformationRequestData[][] =
+    const initialGroups: RouterTransformationRequestData[][] =
       await groupRouterTransformEvents(events);
+    // The generic grouping key is destination ID, not workspace or integration major.
+    // Zendesk rollout and OAuth credentials are scoped to both of those dimensions.
+    const groupedEvents = initialGroups.flatMap((group) =>
+      destinationType.toUpperCase() === 'ZENDESK'
+        ? Object.values(
+            groupBy(group, (event) =>
+              JSON.stringify([
+                event.metadata.workspaceId,
+                getDestinationVersion(event.destination?.version),
+              ]),
+            ),
+          )
+        : [group],
+    );
 
     const response: RouterTransformationResponse[][] = await mapInBatches(
       groupedEvents,
@@ -170,11 +190,55 @@ export class NativeIntegrationDestinationService implements DestinationService {
               requestMetadata,
             );
           } else {
-            destHandler = FetchHandler.getDestHandler(destinationType, version);
-            transformedResponse = await destHandler.processRouterDest(
-              destInputArray,
-              requestMetadata,
-            );
+            // Guard each job, not just the group's first destination: mixed majors can share
+            // a destination ID and must not send any v2 job through the legacy router.
+            const legacyInputs: RouterTransformationRequestData[] = [];
+            const rejectedResponses: RouterTransformationResponse[] = [];
+            for (const input of destInputArray) {
+              if (isZendeskV2(destinationType, input.destination?.version)) {
+                rejectedResponses.push({
+                  metadata: [input.metadata],
+                  destination: input.destination,
+                  batched: false,
+                  statusCode: 400,
+                  error: UNENROLLED_ZENDESK_V2_ERROR,
+                  statTags: {
+                    errorCategory: tags.ERROR_CATEGORIES.DATA_VALIDATION,
+                    errorType: tags.ERROR_TYPES.CONFIGURATION,
+                  },
+                });
+              } else {
+                legacyInputs.push(input);
+              }
+            }
+            if (legacyInputs.length > 0) {
+              try {
+                destHandler = FetchHandler.getDestHandler(destinationType, version);
+                transformedResponse = await destHandler.processRouterDest(
+                  legacyInputs,
+                  requestMetadata,
+                );
+              } catch (error) {
+                if (rejectedResponses.length === 0) throw error;
+                // A legacy failure must not turn rejected v2 jobs into a retryable group error.
+                const legacyMetaTO = this.getTags(
+                  destinationType,
+                  legacyInputs[0].metadata?.destinationId,
+                  legacyInputs[0].metadata?.workspaceId,
+                  tags.FEATURES.ROUTER,
+                );
+                legacyMetaTO.metadatas = legacyInputs.map((input) => input.metadata);
+                transformedResponse = [
+                  DestinationPostTransformationService.handleRouterTransformFailureEvents(
+                    error as Error,
+                    legacyMetaTO,
+                  ),
+                ];
+              }
+            } else {
+              transformedResponse = [];
+            }
+            transformedResponse = [...transformedResponse, ...rejectedResponses];
           }
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             transformedResponse,
@@ -245,6 +309,33 @@ export class NativeIntegrationDestinationService implements DestinationService {
     version: string,
   ): Promise<DeliveryV0Response | DeliveryV1Response> {
     try {
+      const metadatas = Array.isArray(deliveryRequest.metadata)
+        ? deliveryRequest.metadata
+        : [deliveryRequest.metadata];
+      const firstMetadata = metadatas[0];
+      if (destinationType.toUpperCase() === 'ZENDESK') {
+        const auth =
+          deliveryRequest.headers?.Authorization ?? deliveryRequest.headers?.authorization;
+        if (
+          deliveryRequest.destinationVersion == null &&
+          typeof auth === 'string' &&
+          /^bearer\s/i.test(auth)
+        ) {
+          throw new ConfigurationError('Zendesk OAuth proxy request requires destinationVersion');
+        }
+        if (
+          metadatas.length === 0 ||
+          metadatas.some((meta) => meta.workspaceId !== firstMetadata?.workspaceId)
+        ) {
+          throw new ConfigurationError('Zendesk proxy request must contain one workspace');
+        }
+        if (
+          isZendeskV2(destinationType, deliveryRequest.destinationVersion) &&
+          !isDestinationIntegrationEnabled(destinationType, firstMetadata?.workspaceId)
+        ) {
+          throw new ConfigurationError(UNENROLLED_ZENDESK_V2_ERROR);
+        }
+      }
       const originalDestName = destinationType;
       const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
         originalDestName,

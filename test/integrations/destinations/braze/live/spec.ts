@@ -857,6 +857,49 @@ export const live = {
       verify: { check: verifyProfileByExternalId(dedupExistingUpdateTraits), ...READBACK },
     },
 
+    // ─── supportDedup + nested-array operations on an EXISTING user (INT-7744) ───
+    // The combined path the fix targets: with supportDedup an existing user's unchanged traits are
+    // stripped, but custom-attribute operations ($add/$update/$remove) are deltas and must still
+    // reach Braze. Setup settles the user so doLookup finds it and takes the dedup-reduce branch; the
+    // identify's email is unchanged (deduped away) while the nested-array ops must survive. Before the
+    // fix the operation-bearing key was dropped with the unchanged traits, so dedup returned null and
+    // nothing delivered — the pipeline step (expectedOutputs: 1) would fail. The read-back asserts the
+    // $add object still landed, proving the operations reached Braze.
+    // NOTE: like braze-nested-array-attribute-ops, requires object-array custom attributes enabled in
+    // the workspace.
+    {
+      id: 'braze-identify-dedup-nested-array-ops',
+      description:
+        'supportDedup for an existing user still delivers nested-array $add/$update/$remove operations',
+      configOverride: (base) => ({
+        ...base,
+        supportDedup: true,
+        enableNestedArrayOperations: true,
+      }),
+      cleanup: deleteUserByExternalId,
+      steps: [
+        {
+          stepType: 'action',
+          name: 'setup: create + settle dedup user',
+          run: createDedupUserAndWait,
+        },
+        {
+          stepType: 'pipeline',
+          name: 'identify existing (dedup + nested-array ops)',
+          retries: 2,
+          expectedOutputs: 1,
+          expectedProxyRequests: 1,
+          seed: (ctx) => ({
+            ...baseEvent(ctx, 'dedup-nested-ops'),
+            type: 'identify',
+            userId: ctx.identity('user'),
+            context: { ...brazeLibraryContext, traits: nestedArrayTraits(ctx) },
+          }),
+        },
+      ],
+      verify: { check: verifyNestedArrayAttribute, ...READBACK },
+    },
+
     // ─── per-job delivery mapping: MERGE branch ───
     // The per-job-delivery scenario covers the track branch; this covers the alias merge
     // path (buildMergeRequest / scopedMetadataForChunk). Delivery-only (merge is async, like

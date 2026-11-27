@@ -53,17 +53,18 @@ jobs:
         with:
           egress-policy: audit
 
+      # The PR author, not github.actor: a human re-running a Dependabot PR's job changes the actor.
       - name: Check actor
         id: check
         env:
-          GITHUB_ACTOR_NAME: ${{ github.actor }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login || github.actor }}
         run: |
-          if [[ "$GITHUB_ACTOR_NAME" == "dependabot[bot]" ]]; then
+          if [[ "$PR_AUTHOR" == "dependabot[bot]" ]]; then
             echo "is_dependabot=true" >> $GITHUB_OUTPUT
             echo "Actor is dependabot[bot] - skipping certain steps"
           else
             echo "is_dependabot=false" >> $GITHUB_OUTPUT
-            echo "Actor is $GITHUB_ACTOR_NAME - proceeding normally"
+            echo "Actor is $PR_AUTHOR - proceeding normally"
           fi
 
   get_sha:
@@ -181,7 +182,9 @@ jobs:
           echo "Running TypeScript tests..."
           docker run --rm $BUILD_TAG npm run test:ts:ci
 
+      # Dependabot PRs get no AWS role or registry login: the image is built and tested, never pushed.
       - name: Configure AWS Credentials
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
           aws-region: ${{ vars.AWS_ECR_REGION }}
@@ -190,6 +193,7 @@ jobs:
 
       - name: Login to ECR
         id: login-ecr
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # 2.1.7
 
       - name: Build and Push Multi-platform Images to ECR
@@ -207,6 +211,7 @@ jobs:
             GIT_COMMIT_SHA=${{ github.sha }}
 
       - name: Login to DockerHub
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}

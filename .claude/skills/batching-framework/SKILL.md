@@ -69,7 +69,7 @@ processDestinationIntegration()      [framework orchestrator]
     |
 DestinationIntegration<TBody>        [your integration class]
     |--- getInputSchema()            → Zod schema for upfront validation
-    |--- transformEvent()            → per-event transform → TransformedEvent<TBody>
+    |--- transformEvent()            → awaited per-event transform → payload(s) or AlreadyDelivered
     |--- getBatchStrategy()          → batch strategy factory
     |
 Framework groups by composite key:  (endpoint, method, headers, params, internalGroupKey)
@@ -125,38 +125,39 @@ transform, **reuse it — do not reimplement the payload logic in `routerTransfo
   `body.JSON`, and pass `endpoint`/`method`/`headers`/`params` straight through. `posthog` is the
   canonical example (it reuses `processEvent` from its transform). `wrapBody` then re-assembles the
   array wrapper the API expects.
-- Legacy transforms are often declared `async` but do no real I/O. Since `transformEvent` must be
-  synchronous, drop the cosmetic `async`/`await` from the reused chain so it returns directly.
-  Callers that `await` a now-plain value are unaffected.
+- Legacy transforms may be synchronous or asynchronous. The framework awaits `transformEvent`,
+  so reuse the existing chain without removing `async`/`await` just to satisfy the framework.
+  Cache any lookup I/O done per event, so a router batch doesn't make one call per job.
 - **Keep the legacy `processRouterDest` exported.** During pre-GA env-var rollout the destination
   falls back to it for workspaces not yet enabled, so it must stay functional.
 
 ## DestinationIntegration Abstract Class
 
 ```typescript
-import { DestinationIntegration } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import { DestinationIntegration, type AlreadyDelivered, type TransformedEvent } from '../../../services/destination/destinationIntegration/destinationIntegration';
 
 // Type parameters:
 //   TBody         — shape of each item in the batch (your per-event payload)
-//   TConfig       — destination config type (from destination.Config)
-//   TConnectionConfig — connection config type (from connection.config)
+//   TInputSchema  — destination router input schema (defaults to a generic schema)
+// myInputSchema is built with makeRouterInputSchema, as described below.
 
-class MyIntegration extends DestinationIntegration<TBody, TConfig, TConnectionConfig> {
+class MyIntegration extends DestinationIntegration<TBody, typeof myInputSchema> {
   // MUST implement these three methods:
 
   transformEvent(
     input: RouterTransformationRequestData,
-  ): TransformedEvent<TBody> | TransformedEvent<TBody>[];
-  // Transform a single input event into one or more intermediate payloads.
-  // Throw InstrumentationError for bad input — framework wraps it into error response.
-  // MUST be synchronous — the framework calls transformEvent WITHOUT awaiting it
-  // (see transformEvents in destinationIntegration.ts). Never make it async / return a Promise;
-  // an async transformEvent would push a Promise as the payload and silently corrupt the batch.
+  ): TransformedEvent<TBody> | TransformedEvent<TBody>[] | AlreadyDelivered |
+     Promise<TransformedEvent<TBody> | TransformedEvent<TBody>[] | AlreadyDelivered>;
+  // Transform one input into payload(s), or return { alreadyDelivered: true } when
+  // it was delivered during transformation and no request remains. The marker must
+  // stand alone, never in a payload array and never alongside request fields.
+  // Sync and async results are both supported: transformEvents awaits each input.
+  // Throw InstrumentationError for bad input — framework wraps it into an error response.
 
   getBatchStrategy(endpoint: string): BatchStrategy<TBody>;
   // Return a batch strategy instance that defines how events are chunked and wrapped.
 
-  getInputSchema(): ZodType;
+  getInputSchema(): typeof myInputSchema;
   // Return a Zod schema for input validation (run before transformEvent).
 }
 
@@ -233,7 +234,7 @@ type TransformedEvent<TBody> = {
 };
 ```
 
-The framework groups all `TransformedEvent` objects by a composite key of `(endpoint, method, headers, params, internalGroupKey)`. Events in the same group are batched together.
+The framework groups all `TransformedEvent` objects by a composite key of `(endpoint, method, headers, params, internalGroupKey)`. Events in the same group are batched together. When `transformEvent` performs delivery itself, return `{ alreadyDelivered: true }` instead of a request: after failures and request-bearing jobs are resolved, the framework emits one request-free 299 per surviving job to report delivery already performed; the framework's delivery path does not run for that job. A job with a failure or a request-bearing response never also gets a 299.
 
 > **Put batch-invariant fields in `headers`/`params`.** Anything that must be identical across a batch (auth token, account/customer IDs, target action, API resource being addressed) belongs in `headers` or `params` so the composite key naturally keeps incompatible events apart. You usually don't need `internalGroupKey` if these already carry the distinguishing values.
 
@@ -673,8 +674,9 @@ Use `InstrumentationError` for bad input data (no retry), `ConfigurationError` f
 
 Validating in `transformEvent()` is what keeps a known-bad event out of a batch in the first
 place — it fails one job while the rest of the batch still ships. For partners that reject the
-whole request on one bad item, pair it with the networkHandler fallback above; transform-time
-checks cannot cover rules the partner has and you don't.
+whole request on one bad item, pair it with the `delivery.ts` verdict above (or the legacy
+`networkHandler` fallback for non-framework destinations); transform-time checks cannot cover
+rules the partner has and you don't.
 
 ### Lookup failures in `transformEvent()`
 

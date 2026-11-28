@@ -14,6 +14,7 @@ import {
 import type { BatchGroup, TransformError } from './types';
 import { BodyFormat } from './types';
 import tags from '../../../v0/util/tags';
+import { HTTP_STATUS_CODES } from '../../../v0/util/constant';
 import stats from '../../../util/stats';
 import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 
@@ -248,10 +249,12 @@ export async function processDestinationIntegration<
   // 4. Transform all events (batchable + nonBatchable)
   const batchablePayloads: TransformResult<TBody>['successPayloads'] = [];
   const nonBatchablePayloads: TransformResult<TBody>['successPayloads'] = [];
+  const alreadyDeliveredJobIds = new Set<number>();
 
   if (batchableEvents.length > 0) {
     const batchResult = await integration.transformEvents(batchableEvents, reqMetadata);
     batchablePayloads.push(...batchResult.successPayloads);
+    batchResult.alreadyDeliveredJobIds.forEach((id) => alreadyDeliveredJobIds.add(id));
     allErrors.push(...batchResult.errorPayloads);
   }
 
@@ -259,6 +262,7 @@ export async function processDestinationIntegration<
     // eslint-disable-next-line no-await-in-loop
     const singleResult = await integration.transformEvents([nonBatchableEvent], reqMetadata);
     nonBatchablePayloads.push(...singleResult.successPayloads);
+    singleResult.alreadyDeliveredJobIds.forEach((id) => alreadyDeliveredJobIds.add(id));
     allErrors.push(...singleResult.errorPayloads);
   }
 
@@ -345,9 +349,30 @@ export async function processDestinationIntegration<
     }
   }
 
-  // 9. Merge success responses that share jobIds (multiplexed events across groups)
+  // 9. Emit one request-free 299 for each job delivered during transformation.
+  // Keep these responses separate from request-bearing successes.
+  const deliveredResponses: RouterTransformationResponse[] = [];
+  if (alreadyDeliveredJobIds.size > 0) {
+    for (const id of alreadyDeliveredJobIds) {
+      deliveredResponses.push({
+        metadata: resolveMetadata(new Set([id]), metadataMap),
+        destination,
+        batched: false,
+        statusCode: HTTP_STATUS_CODES.SUPPRESS_EVENTS,
+      });
+    }
+    if (deliveredResponses.length > 0) {
+      stats.counter(
+        'destination_integration_already_delivered_count',
+        deliveredResponses.length,
+        metricTags,
+      );
+    }
+  }
+
   return [
     ...combineBatchRequestsWithSameJobIds(successResponses),
     ...mapErrorPayloadToServerFormat(allErrors, metadataMap, destination),
+    ...deliveredResponses,
   ];
 }

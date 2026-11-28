@@ -1,6 +1,7 @@
 import { pollUntil } from '@rudderstack/integrations-lib/build/live-test';
 import type { LiveSpec, RunContext } from '../../../live/types';
 import {
+  ContactLookup,
   IntercomContact,
   createContact,
   deleteRunContacts,
@@ -45,21 +46,18 @@ const createRunContact = (ctx: RunContext): Promise<string> =>
     name: `CI Setup ${ctx.runId}`,
   });
 
-// The transform searches before choosing update vs create, so wait until its own query finds the
-// setup contact, otherwise the update is routed to a create and
-// Intercom answers 409. The transform always sends a compound query, which can take ~30-100s to see
-// a new contact (a simple single-field query sees it within seconds), so poll with that exact shape
-// and require consecutive hits, as results can flip right after the index catches up.
+// The transform searches before choosing update vs create. Its compound query can take ~30-100s
+// to see a new contact, and single-field AND and two-field OR queries can index at different times.
+// Poll the exact query for the scenario and require consecutive hits before delivery.
 const waitForTransformSearch = async (
   ctx: RunContext,
-  field: 'email' | 'external_id',
-  value: string,
+  lookups: ContactLookup[],
   contactId: string,
 ): Promise<void> => {
   let consecutiveHits = 0;
   await pollUntil(
     async () => {
-      const contacts = await searchContactsAsTransform(ctx, field, value);
+      const contacts = await searchContactsAsTransform(ctx, lookups);
       consecutiveHits = contacts.some((c) => c.id === contactId) ? consecutiveHits + 1 : 0;
       return { done: consecutiveHits >= STABLE_SEARCH_HITS, value: contacts };
     },
@@ -73,7 +71,11 @@ const waitForTransformSearch = async (
 
 const createSearchableContact = async (ctx: RunContext): Promise<void> => {
   const contactId = await createRunContact(ctx);
-  await waitForTransformSearch(ctx, 'external_id', ctx.identity('user'), contactId);
+  await waitForTransformSearch(
+    ctx,
+    [{ field: 'external_id', value: ctx.identity('user') }],
+    contactId,
+  );
 };
 
 // Polling allows ~5 min, well over the default 120s step timeout.
@@ -350,7 +352,14 @@ export const live = {
               email: ctx.email(),
               name: `CI Setup ${ctx.runId}`,
             });
-            await waitForTransformSearch(ctx, 'email', ctx.email(), contactId);
+            await waitForTransformSearch(
+              ctx,
+              [
+                { field: 'external_id', value: ctx.identity('user') },
+                { field: 'email', value: ctx.email().toLowerCase() },
+              ],
+              contactId,
+            );
           },
         },
         {

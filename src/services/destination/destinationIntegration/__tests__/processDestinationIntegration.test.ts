@@ -17,7 +17,8 @@ import {
   ChunkBatchStrategy,
   CustomBatchStrategy,
 } from '../destinationIntegration';
-import type { BatchStrategy, TransformResult } from '../destinationIntegration';
+import type { AlreadyDelivered, BatchStrategy, TransformResult } from '../destinationIntegration';
+import stats from '../../../../util/stats';
 import type {
   ProcessorTransformationOutput,
   RouterTransformationRequestData,
@@ -51,11 +52,9 @@ const mockDestination: Destination = {
 };
 
 class SimpleIntegration extends DestinationIntegration<TestBody> {
-  // Declared as the sync-or-async union so subclasses below can override it with an async
-  // implementation; TypeScript will not let an async override narrow a sync base signature.
-  transformEvent(
+  protected buildRequest(
     input: RouterTransformationRequestData<TestMessage>,
-  ): TransformedEvent<TestBody> | Promise<TransformedEvent<TestBody>> {
+  ): TransformedEvent<TestBody> {
     const { message } = input;
     return {
       body: { value: message.data ?? '' },
@@ -64,6 +63,14 @@ class SimpleIntegration extends DestinationIntegration<TestBody> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     };
+  }
+
+  // Declared as the sync-or-async union so subclasses below can override it with an async
+  // implementation; TypeScript will not let an async override narrow a sync base signature.
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody> | AlreadyDelivered | Promise<TransformedEvent<TestBody>> {
+    return this.buildRequest(input);
   }
 
   getBatchStrategy(): BatchStrategy<TestBody> {
@@ -75,6 +82,15 @@ class SimpleIntegration extends DestinationIntegration<TestBody> {
 
   getInputSchema() {
     return z.object({}).passthrough();
+  }
+}
+
+class AlreadyDeliveredIntegration extends SimpleIntegration {
+  transformEvent(
+    input: RouterTransformationRequestData<TestMessage>,
+  ): TransformedEvent<TestBody> | AlreadyDelivered {
+    if (input.message.data === 'delivered') return { alreadyDelivered: true };
+    return this.buildRequest(input);
   }
 }
 
@@ -132,7 +148,7 @@ class AsyncEnrichFailIntegration extends SimpleIntegration {
     if (input.metadata.jobId === 1) {
       throw new ConfigurationError('enrichment lookup failed');
     }
-    return super.transformEvent(input);
+    return this.buildRequest(input);
   }
 }
 
@@ -349,6 +365,87 @@ describe('processDestinationIntegration', () => {
       expect(req.body?.FORM).toEqual({});
       expect(req.files).toEqual({});
       expect(resp.destination).toBe(mockDestination);
+    });
+  });
+
+  describe('already delivered during transformation', () => {
+    const metricTags = { destType: 'TEST', workspaceId: 'ws-1', destinationId: 'dest-1' };
+    let counterSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      counterSpy = jest.spyOn(stats, 'counter').mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      counterSpy.mockRestore();
+    });
+
+    it('returns a single request-free 299 with exactly one metadata entry', async () => {
+      const input = makeInput(1, 'delivered');
+      expect(await processDestinationIntegration([input], AlreadyDeliveredIntegration, {})).toEqual(
+        [
+          {
+            metadata: [input.metadata],
+            destination: mockDestination,
+            batched: false,
+            statusCode: 299,
+          },
+        ],
+      );
+      expect(counterSpy).toHaveBeenCalledWith(
+        'destination_integration_already_delivered_count',
+        1,
+        metricTags,
+      );
+      expect(counterSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles batchable and dontBatch markers beside normal requests without batching them', async () => {
+      const delivered = makeInput(1, 'delivered');
+      const singleDelivered = makeInput(2, 'delivered', { dontBatch: true });
+      const request = makeInput(3, 'send');
+      const results = await processDestinationIntegration(
+        [delivered, singleDelivered, request],
+        AlreadyDeliveredIntegration,
+        {},
+      );
+
+      expect(results).toEqual([
+        {
+          batchedRequest: {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: 'https://api.test.com/events',
+            endpointPath: '/events',
+            headers: { 'Content-Type': 'application/json' },
+            params: {},
+            body: { JSON: { events: [{ value: 'send' }] }, JSON_ARRAY: {}, XML: {}, FORM: {} },
+            files: {},
+          },
+          metadata: [request.metadata],
+          destination: mockDestination,
+          batched: true,
+          statusCode: 200,
+        },
+        {
+          metadata: [delivered.metadata],
+          destination: mockDestination,
+          batched: false,
+          statusCode: 299,
+        },
+        {
+          metadata: [singleDelivered.metadata],
+          destination: mockDestination,
+          batched: false,
+          statusCode: 299,
+        },
+      ]);
+      expect(counterSpy).toHaveBeenCalledWith(
+        'destination_integration_already_delivered_count',
+        2,
+        metricTags,
+      );
     });
   });
 

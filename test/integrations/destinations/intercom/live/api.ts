@@ -21,6 +21,8 @@ export interface IntercomContact {
   name?: string | null;
 }
 
+export type ContactLookup = { field: 'email' | 'external_id'; value: string };
+
 // keepAlive:false so read-back/cleanup sockets don't linger as open handles when the suite finishes.
 // With maxSockets left unlimited, Node also sends `Connection: close` on every request.
 const intercomAgent = new Agent({ keepAlive: false });
@@ -63,17 +65,21 @@ export const searchContacts = async (
   return res.data?.data ?? [];
 };
 
-// The query shape the transform's searchContact sends: always a compound query, even for one lookup.
-// Intercom answers the simple single-field form (searchContacts) within seconds of a write, but the
-// compound form can take ~30-100s to return a new contact, so setup must wait on this shape.
+// Match fetchContacts in the transform: a compound AND query for one lookup, or an OR query for
+// external_id and email. Intercom can index these query shapes at different times, so setup must
+// wait on the same one the transform will use.
 export const searchContactsAsTransform = async (
   ctx: RunContext,
-  field: 'email' | 'external_id',
-  value: string,
+  lookups: ContactLookup[],
 ): Promise<IntercomContact[]> => {
   const res = await axios.post<{ data?: IntercomContact[] }>(
     `${baseUrl(ctx)}/contacts/search`,
-    { query: { operator: 'AND', value: [{ field, operator: '=', value }] } },
+    {
+      query: {
+        operator: lookups.length > 1 ? 'OR' : 'AND',
+        value: lookups.map(({ field, value }) => ({ field, operator: '=', value })),
+      },
+    },
     requestConfig(ctx),
   );
   return res.data?.data ?? [];

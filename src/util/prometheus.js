@@ -392,6 +392,30 @@ class Prometheus {
         labelNames: ['destinationType', 'destinationId'],
       },
       {
+        name: 'destination_integration_already_delivered_count',
+        help: 'Destination integration jobs delivered during transformation',
+        type: 'counter',
+        labelNames: ['destType', 'workspaceId', 'destinationId'],
+      },
+      {
+        name: 'zendesk_identify_transform_count',
+        help: 'Zendesk identify transforms started',
+        type: 'counter',
+        labelNames: ['destVersion'],
+      },
+      {
+        name: 'zendesk_field_cache_lookup_count',
+        help: 'Zendesk field-key cache lookups',
+        type: 'counter',
+        labelNames: ['type', 'outcome'],
+      },
+      {
+        name: 'zendesk_delivery_auth_expired_count',
+        help: 'Zendesk OAuth delivery token expirations',
+        type: 'counter',
+        labelNames: ['destVersion'],
+      },
+      {
         name: 'shopify_client_side_identifier_event',
         help: 'shopify_client_side_identifier_event',
         type: 'counter',

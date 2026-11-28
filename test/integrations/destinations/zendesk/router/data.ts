@@ -1,4 +1,5 @@
 import { authHeader1, secret1, secret2 } from '../maskedSecrets';
+import { frameworkData } from './frameworkData';
 export const data = [
   {
     name: 'zendesk',
@@ -379,4 +380,5 @@ export const data = [
       },
     },
   },
+  ...frameworkData,
 ];

@@ -65,13 +65,6 @@ type TrackChunk = {
   externalIds: Set<string>;
 };
 
-const CUSTOM_ATTRIBUTE_OPERATION_KEYS = ['$add', '$update', '$remove'];
-const MERGE_OBJECTS_KEY = '_merge_objects';
-
-const hasCustomAttributeOperation = (value: unknown) =>
-  isObject(value) &&
-  Object.keys(value as object).some((key) => CUSTOM_ATTRIBUTE_OPERATION_KEYS.includes(key));
-
 const formatGender = (gender: unknown) => {
   if (typeof gender !== 'string') {
     return null;
@@ -242,7 +235,8 @@ const CustomAttributeOperationUtil = {
       });
       opsResultArray.push(myObj);
     }
-    data[MERGE_OBJECTS_KEY] = isDefinedAndNotNull(mergeObjectsUpdateOperation)
+    // eslint-disable-next-line no-underscore-dangle
+    data._merge_objects = isDefinedAndNotNull(mergeObjectsUpdateOperation)
       ? mergeObjectsUpdateOperation
       : false;
     (data[key] as Record<string, unknown>)[`$${CustomAttributeOperationTypes.UPDATE}`] =
@@ -521,7 +515,16 @@ const BrazeDedupUtility = {
     const keys = Object.keys(userData)
       .filter((key) => !excludeKeys.has(key))
       .filter((key) => !BRAZE_NON_BILLABLE_ATTRIBUTES.includes(key))
-      .filter((key) => !hasCustomAttributeOperation(userData[key]));
+      .filter((key) => {
+        if (isObject(userData[key])) {
+          return !(
+            Object.keys(userData[key] as object).includes('$add') ||
+            Object.keys(userData[key] as object).includes('$update') ||
+            Object.keys(userData[key] as object).includes('$remove')
+          );
+        }
+        return true;
+      });
 
     if (keys.length > 0) {
       keys.forEach((key) => {
@@ -545,22 +548,6 @@ const BrazeDedupUtility = {
         deduplicatedUserData[key] = userData[key];
       }
     });
-
-    // Operations are deltas, so they must be sent even when the stored profile matches.
-    Object.keys(userData).forEach((key) => {
-      if (!excludeKeys.has(key) && hasCustomAttributeOperation(userData[key])) {
-        deduplicatedUserData[key] = userData[key];
-      }
-    });
-
-    if (
-      isDefined(userData[MERGE_OBJECTS_KEY]) &&
-      Object.values(deduplicatedUserData).some(
-        (value) => isObject(value) && Object.keys(value as object).includes('$update'),
-      )
-    ) {
-      deduplicatedUserData[MERGE_OBJECTS_KEY] = userData[MERGE_OBJECTS_KEY];
-    }
 
     if (Object.keys(deduplicatedUserData).length === 0) {
       return null;

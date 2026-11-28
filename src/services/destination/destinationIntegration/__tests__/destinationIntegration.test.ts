@@ -220,7 +220,7 @@ describe('DestinationIntegration.transformEvents', () => {
     const integration = new Integration(mockDestination);
     const request = makeInput(2, 'send');
     const result = await integration.transformEvents(
-      [makeInput(1, 'delivered'), request, makeInput(1, 'delivered')],
+      [makeInput(1, 'delivered'), request, makeInput(3, 'delivered')],
       {},
     );
 
@@ -235,7 +235,7 @@ describe('DestinationIntegration.transformEvents', () => {
           jobId: 2,
         },
       ],
-      alreadyDeliveredJobIds: new Set([1]),
+      alreadyDeliveredJobIds: new Set([1, 3]),
       errorPayloads: [],
     });
   });
@@ -289,33 +289,6 @@ describe('DestinationIntegration.transformEvents', () => {
         ],
         alreadyDeliveredJobIds: new Set(),
         errorPayloads: [],
-      });
-    },
-  );
-
-  it.each(['body', 'endpoint', 'endpointPath', 'method', 'headers', 'params', 'internalGroupKey'])(
-    'rejects a true marker mixed with request field %s',
-    async (field) => {
-      class MixedMarkerIntegration extends TestIntegration {
-        transformEvent(): AlreadyDelivered {
-          return { alreadyDelivered: true, [field]: undefined };
-        }
-      }
-      const result = await new MixedMarkerIntegration(mockDestination).transformEvents(
-        [makeInput(1, 'delivered')],
-        {},
-      );
-      expect(result).toEqual({
-        successPayloads: [],
-        alreadyDeliveredJobIds: new Set(),
-        errorPayloads: [
-          expect.objectContaining({
-            jobId: 1,
-            error: 'AlreadyDelivered cannot contain request fields',
-            statusCode: 400,
-            statTags: expect.objectContaining({ errorCategory: 'platform' }),
-          }),
-        ],
       });
     },
   );

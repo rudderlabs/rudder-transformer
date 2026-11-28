@@ -37,20 +37,17 @@ export type TransformedEvent<TBody extends Record<string, unknown> = Record<stri
   internalGroupKey?: string;
 };
 
-export const REQUEST_FIELDS = [
-  'body',
-  'endpoint',
-  'endpointPath',
-  'method',
-  'headers',
-  'params',
-  'internalGroupKey',
-] as const satisfies readonly (keyof Omit<TransformedEvent, 'alreadyDelivered'>)[];
-
 // Returned on its own when transformEvent has already delivered the input. Never put it
 // inside a payload array or attach request fields: there is nothing left to batch.
-export type AlreadyDelivered = { alreadyDelivered: true } & {
-  [K in (typeof REQUEST_FIELDS)[number]]?: never;
+export type AlreadyDelivered = {
+  alreadyDelivered: true;
+  body?: never;
+  endpoint?: never;
+  endpointPath?: never;
+  method?: never;
+  headers?: never;
+  params?: never;
+  internalGroupKey?: never;
 };
 
 export type TransformError = {

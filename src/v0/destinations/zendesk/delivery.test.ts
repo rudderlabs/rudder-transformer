@@ -2,8 +2,8 @@ import {
   resolveDeliverySpec,
   retry,
 } from '../../../services/destination/destinationIntegration/destinationIntegration';
+import { NativeIntegrationDestinationService } from '../../../services/destination/nativeIntegration';
 import { Integration } from './routerTransform';
-import { processDestinationIntegration } from '../../../services/destination/destinationIntegration/processDestinationIntegration';
 import type { RouterTransformationRequestData } from '../../../types';
 
 jest.mock('./utils', () => ({
@@ -55,7 +55,23 @@ describe('Zendesk delivery authentication', () => {
         secret: { accessToken: 'token' },
       },
     } as unknown as RouterTransformationRequestData;
-    const [output] = await processDestinationIntegration([event], Integration, {});
+    const priorEnrollment = process.env.ZENDESK_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS;
+    process.env.ZENDESK_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS = 'ws';
+    let output;
+    try {
+      [output] = await new NativeIntegrationDestinationService().doRouterTransformation(
+        [event],
+        'zendesk',
+        'v0',
+        {},
+      );
+    } finally {
+      if (priorEnrollment === undefined) {
+        delete process.env.ZENDESK_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS;
+      } else {
+        process.env.ZENDESK_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS = priorEnrollment;
+      }
+    }
     expect(output.batchedRequest).toMatchObject({ destinationVersion: 2 });
     const request = output.batchedRequest;
     const fallback = jest.fn(() => retry('legacy 401'));

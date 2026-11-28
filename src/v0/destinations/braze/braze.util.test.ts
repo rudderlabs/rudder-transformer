@@ -36,7 +36,6 @@ import {
   RudderBrazeMessage,
 } from './types';
 import { ProcessorTransformationOutput } from '../../../types/destinationTransformation';
-import { process as processBrazeEvent } from './transform';
 
 // Mock the handleHttpRequest function
 jest.mock('../../../adapters/network');
@@ -858,7 +857,7 @@ describe('dedup utility tests', () => {
       expect(result).toEqual({ country: 'US', external_id: '123', language: 'en' });
     });
 
-    test('keeps operations when all ordinary traits are unchanged', () => {
+    test('returns null if all keys have $add, $update, or $remove properties', () => {
       const userData = {
         external_id: '123',
         color: {
@@ -869,66 +868,17 @@ describe('dedup utility tests', () => {
         age: 25,
         ethnicity: 'asian',
       };
-      store.set('123', {
+
+      const storeData = {
         external_id: '123',
-        custom_attributes: { age: 25, ethnicity: 'asian' },
-      });
-
-      expect(BrazeDedupUtility.deduplicate(userData, store)).toEqual({
-        external_id: '123',
-        color: userData.color,
-      });
-    });
-
-    const operationCases = [
-      { name: '$add', operation: { $add: ['blue'] } },
-      { name: '$update', operation: { $update: [{ name: 'red' }] } },
-      { name: '$remove', operation: { $remove: ['green'] } },
-    ];
-
-    it.each(operationCases)('sends repeated $name operations for stored users', ({ operation }) => {
-      store.set('123', {
-        external_id: '123',
-        custom_attributes: { color: operation, age: 25 },
-      });
-      const userData = { external_id: '123', color: operation, age: 25 };
-      const expected = { external_id: '123', color: operation };
-
-      expect(BrazeDedupUtility.deduplicate(userData, store)).toEqual(expected);
-      expect(BrazeDedupUtility.deduplicate(userData, store)).toEqual(expected);
-    });
-
-    it.each([false, true])('preserves _merge_objects=%s with $update', (expectedMerge) => {
-      const operation = { $update: [{ name: 'red' }] };
-      store.set('123', {
-        external_id: '123',
-        custom_attributes: { color: operation },
-        _merge_objects: expectedMerge,
-      });
-      const userData = { external_id: '123', color: operation, _merge_objects: expectedMerge };
-
-      expect(BrazeDedupUtility.deduplicate(userData, store)).toEqual(userData);
-      expect(BrazeDedupUtility.deduplicate(userData, store)).toEqual(userData);
-    });
-
-    test('does not force unchanged _merge_objects through without $update', () => {
-      store.set('123', { external_id: '123', _merge_objects: false });
-      const userData = { external_id: '123', color: { $add: ['blue'] }, _merge_objects: false };
-
-      expect(BrazeDedupUtility.deduplicate(userData, store)).toEqual({
-        external_id: '123',
-        color: userData.color,
-      });
-    });
-
-    test('does not restore excluded operation-shaped attributes', () => {
-      store.set('123', { external_id: '123' });
-      expect(
-        BrazeDedupUtility.deduplicate(
-          { external_id: '123', custom_events: { $add: ['ignored'] } },
-          store,
-        ),
-      ).toBeNull();
+        custom_attributes: {
+          age: 25,
+          ethnicity: 'asian',
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(result).toBeNull();
     });
 
     test('deduplicates user data correctly when user data is null and it doesnt exist in stored data', () => {
@@ -1060,73 +1010,6 @@ describe('dedup utility tests', () => {
         undefinedProperty: undefined,
       });
     });
-  });
-});
-
-describe('Braze generated operations with trait deduplication', () => {
-  test('forwards nested-array $add/$update/$remove and merge setting for a stored user', async () => {
-    const destination = {
-      ID: 'braze',
-      Config: {
-        restApiKey: 'restApiKey',
-        dataCenter: 'eu-01',
-        supportDedup: true,
-        enableNestedArrayOperations: true,
-      },
-    } as BrazeDestination;
-    const userStore = new Map([
-      ['123', { external_id: '123', custom_attributes: { unchanged: 'same' } }],
-    ]);
-    const createEvent = () =>
-      ({
-        destination,
-        metadata: {
-          sourceId: 'source-1',
-          workspaceId: 'workspace-1',
-          sourceType: 'javascript',
-          sourceCategory: 'cloud',
-          destinationId: 'braze',
-          jobId: 1,
-          destinationType: 'BRAZE',
-          messageId: 'message-1',
-        },
-        message: {
-          type: 'identify',
-          userId: '123',
-          traits: {
-            unchanged: 'same',
-            items: {
-              add: [{ id: 'new' }],
-              update: [{ identifier: 'id', id: 'old', name: 'updated' }],
-              remove: [{ identifier: 'id', id: 'gone' }],
-            },
-          },
-          properties: { mergeObjectsUpdateOperation: false },
-        },
-      }) as BrazeRouterRequest;
-    const expectedAttributes = {
-      external_id: '123',
-      _merge_objects: false,
-      items: {
-        $add: [{ id: 'new' }],
-        $update: [
-          {
-            $identifier_key: 'id',
-            $identifier_value: 'old',
-            $new_object: { name: 'updated' },
-          },
-        ],
-        $remove: [{ $identifier_key: 'id', $identifier_value: 'gone' }],
-      },
-    };
-
-    const processEvent = () =>
-      processBrazeEvent(createEvent(), {
-        userStore,
-        failedLookupIdentifiers: new Set(),
-      });
-    expect((await processEvent()).body?.JSON).toEqual({ attributes: [expectedAttributes] });
-    expect((await processEvent()).body?.JSON).toEqual({ attributes: [expectedAttributes] });
   });
 });
 

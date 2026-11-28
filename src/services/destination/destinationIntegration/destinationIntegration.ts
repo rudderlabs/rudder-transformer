@@ -1,5 +1,4 @@
 import { z, ZodType } from 'zod';
-import { PlatformError } from '@rudderstack/integrations-lib';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import { generateErrorObject } from '../../../v0/util';
 import type {
@@ -12,7 +11,6 @@ import type {
   ExtractConnectionConfig,
 } from './types';
 import type { DeliverySpec } from './delivery';
-import { REQUEST_FIELDS } from './types';
 
 export type {
   AlreadyDelivered,
@@ -160,10 +158,10 @@ export abstract class DestinationIntegration<
         // event race the same miss.
         // eslint-disable-next-line no-await-in-loop
         const transformedPayload = await this.transformEvent(input, reqMetadata);
-        if (!Array.isArray(transformedPayload) && transformedPayload.alreadyDelivered === true) {
-          if (REQUEST_FIELDS.some((field) => field in transformedPayload)) {
-            throw new PlatformError('AlreadyDelivered cannot contain request fields');
-          }
+        if (
+          'alreadyDelivered' in transformedPayload &&
+          transformedPayload.alreadyDelivered === true
+        ) {
           alreadyDeliveredJobIds.add(jobId);
         } else {
           const results = Array.isArray(transformedPayload)

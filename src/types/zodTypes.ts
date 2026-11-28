@@ -20,7 +20,6 @@ const ProcessorTransformationOutputSchema = z.object({
     })
     .optional(),
   files: z.record(z.unknown()).optional(),
-  destinationVersion: z.number().optional(),
 });
 
 const STAT_TAGS_ERROR_MESSAGE = "statTags and error can't be empty when status is not a 2XX";

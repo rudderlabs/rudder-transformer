@@ -244,7 +244,7 @@ describe('Zendesk framework router', () => {
     );
   });
 
-  it('carries the OAuth major on a framework-produced track request', async () => {
+  it('builds a framework track request for a v2 OAuth destination', async () => {
     request.mockResolvedValueOnce({ users: [{ id: 22 }] });
     const event = input(
       9,
@@ -266,7 +266,7 @@ describe('Zendesk framework router', () => {
     event.metadata.secret = { accessToken: 'token' };
     const [response] = await run(event);
     expect(response.statusCode).toBe(200);
-    expect(response.batchedRequest).toMatchObject({ destinationVersion: 2 });
+    expect(response.batchedRequest).toMatchObject({ headers: { Authorization: 'test' } });
   });
 
   it('rejects v2 without the linked OAuth account and token before doing any I/O', async () => {

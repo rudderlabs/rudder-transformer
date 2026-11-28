@@ -189,6 +189,20 @@ export class NativeIntegrationDestinationService implements DestinationService {
               IntegrationClass,
               requestMetadata,
             );
+            if (destinationType.toUpperCase() === 'ZENDESK') {
+              for (const transformResult of transformedResponse) {
+                if (transformResult.batchedRequest) {
+                  const requests = Array.isArray(transformResult.batchedRequest)
+                    ? transformResult.batchedRequest
+                    : [transformResult.batchedRequest];
+                  for (const request of requests) {
+                    request.destinationVersion = getDestinationVersion(
+                      transformResult.destination.version,
+                    );
+                  }
+                }
+              }
+            }
           } else {
             // Guard each job, not just the group's first destination: mixed majors can share
             // a destination ID and must not send any v2 job through the legacy router.

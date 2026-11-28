@@ -16,7 +16,6 @@ import { BodyFormat } from './types';
 import tags from '../../../v0/util/tags';
 import { HTTP_STATUS_CODES } from '../../../v0/util/constant';
 import stats from '../../../util/stats';
-import { getDestinationVersion } from '../../../util/utils';
 import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 
 // ---------------------------------------------------------------------------
@@ -173,11 +172,6 @@ function mapSuccessPayloadToServerFormat(
         FORM: bodyFormat === BodyFormat.FORM ? batchResult.body : {},
       },
       files: {},
-      // The proxy payload has no destination object. The major must accompany the request,
-      // not be confused with the REST request-config version above.
-      ...(destination.DestinationDefinition?.Name?.toUpperCase() === 'ZENDESK'
-        ? { destinationVersion: getDestinationVersion(destination.version) }
-        : {}),
     },
     metadata: resolveMetadata(batchResult.jobIds, metadataMap),
     destination,
@@ -272,8 +266,7 @@ export async function processDestinationIntegration<
     allErrors.push(...singleResult.errorPayloads);
   }
 
-  // 5. Remove failed jobIds from payloads before building success responses. This set grows
-  // during batching, and step 9 uses it to suppress markers for every failed job.
+  // 5. Remove failed jobIds from payloads before building success responses.
   // This handles the multiplexing case: if transformEvent for jobId=1 produces
   // payloads for both /track and /identify endpoints, and the /identify payload
   // fails, jobId=1 must be removed from the /track payloads too — a partially
@@ -301,6 +294,7 @@ export async function processDestinationIntegration<
     (typeof allGroups)[number],
     { bodyFormat: BodyFormat; batches: BatchGroup[] }
   >();
+  const batchFailedJobIds = new Set<number>();
   let toBatch = allGroups;
   while (toBatch.length > 0) {
     const failedThisRound = new Set<number>();
@@ -311,8 +305,8 @@ export async function processDestinationIntegration<
       for (const { error, jobIds } of batches) {
         if (error) {
           for (const jobId of jobIds) {
-            if (!failedJobIds.has(jobId)) {
-              failedJobIds.add(jobId);
+            if (!batchFailedJobIds.has(jobId)) {
+              batchFailedJobIds.add(jobId);
               failedThisRound.add(jobId);
               allErrors.push({ jobId, ...error });
             }
@@ -328,7 +322,7 @@ export async function processDestinationIntegration<
     for (const [group, { batches }] of groupBatches) {
       if (batches.some((batch) => [...batch.jobIds].some((id) => failedThisRound.has(id)))) {
         groupBatches.delete(group);
-        const payloads = group.payloads.filter((payload) => !failedJobIds.has(payload.jobId));
+        const payloads = group.payloads.filter((payload) => !batchFailedJobIds.has(payload.jobId));
         if (payloads.length > 0) toBatch.push({ ...group, payloads });
       }
     }
@@ -336,11 +330,9 @@ export async function processDestinationIntegration<
 
   // 8. Convert successful batches to server format
   const successResponses: RouterTransformationResponse[] = [];
-  const requestJobIds = new Set<number>();
   for (const [group, { bodyFormat, batches }] of groupBatches) {
     for (const batchResult of batches) {
       stats.histogram('output_batch_size', batchResult.jobIds.size, metricTags);
-      batchResult.jobIds.forEach((id) => requestJobIds.add(id));
       successResponses.push(
         mapSuccessPayloadToServerFormat(
           batchResult,
@@ -357,19 +349,17 @@ export async function processDestinationIntegration<
     }
   }
 
-  // 9. Failure wins over a request-bearing success, which wins over a delivery marker.
-  // Resolve markers only after batch-strategy failures; never merge request-free 299s with requests.
+  // 9. Emit one request-free 299 for each job delivered during transformation.
+  // Keep these responses separate from request-bearing successes.
   const deliveredResponses: RouterTransformationResponse[] = [];
   if (alreadyDeliveredJobIds.size > 0) {
     for (const id of alreadyDeliveredJobIds) {
-      if (!failedJobIds.has(id) && !requestJobIds.has(id)) {
-        deliveredResponses.push({
-          metadata: resolveMetadata(new Set([id]), metadataMap),
-          destination,
-          batched: false,
-          statusCode: HTTP_STATUS_CODES.SUPPRESS_EVENTS,
-        });
-      }
+      deliveredResponses.push({
+        metadata: resolveMetadata(new Set([id]), metadataMap),
+        destination,
+        batched: false,
+        statusCode: HTTP_STATUS_CODES.SUPPRESS_EVENTS,
+      });
     }
     if (deliveredResponses.length > 0) {
       stats.counter(
